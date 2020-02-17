@@ -10,6 +10,7 @@
 /* globals DOMParser */
 
 import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 
 import { normalizeSpacing, normalizeSpacerunSpans } from './space';
 
@@ -68,7 +69,7 @@ function documentToView( htmlDocument ) {
 		fragment.appendChild( nodes[ 0 ] );
 	}
 
-	return domConverter.domToView( fragment );
+	return domConverter.domToView( new ViewDocument(), fragment );
 }
 
 // Extracts both `CSSStyleSheet` and string representation from all `style` elements available in a provided `htmlDocument`.

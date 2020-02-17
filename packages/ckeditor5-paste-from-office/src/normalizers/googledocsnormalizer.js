@@ -19,6 +19,14 @@ const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
  * @implements module:paste-from-office/normalizer~Normalizer
  */
 export default class GoogleDocsNormalizer {
+	constructor( document ) {
+		/**
+		 * @readonly
+		 * @type {module:engine/view/document~Document}
+		 */
+		this.document = document;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -30,7 +38,7 @@ export default class GoogleDocsNormalizer {
 	 * @inheritDoc
 	 */
 	execute( data ) {
-		const writer = new UpcastWriter();
+		const writer = new UpcastWriter( this.document );
 
 		removeBoldWrapper( data.content, writer );
 		unwrapParagraphInListItem( data.content, writer );

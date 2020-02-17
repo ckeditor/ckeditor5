@@ -27,7 +27,7 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 		return;
 	}
 
-	const writer = new UpcastWriter();
+	const writer = new UpcastWriter( documentFragment.document );
 	const itemLikeElements = findAllItemLikeElements( documentFragment, writer );
 
 	if ( !itemLikeElements.length ) {
@@ -160,7 +160,7 @@ function detectListStyle( listLikeItem, stylesString ) {
 // @param {module:engine/view/upcastwriter~UpcastWriter} writer
 // @returns {module:engine/view/element~Element} Newly created list element.
 function insertNewEmptyList( listStyle, element, writer ) {
-	const list = new Element( listStyle.type );
+	const list = new Element( writer.document, listStyle.type );
 	const position = element.parent.getChildIndex( element );
 
 	writer.insertChild( position, list, element.parent );

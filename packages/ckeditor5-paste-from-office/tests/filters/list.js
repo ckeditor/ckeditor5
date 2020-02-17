@@ -5,7 +5,7 @@
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import View from '@ckeditor/ckeditor5-engine/src/view/view';
+import Document from '@ckeditor/ckeditor5-engine/src/view/document';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 import {
@@ -22,7 +22,7 @@ describe( 'PasteFromOffice - filters', () => {
 				const html = '<p style="mso-list:l0 level1 lfo0"><span style="mso-list:Ignore">1.</span>Item 1</p>';
 				const view = htmlDataProcessor.toView( html );
 
-				transformListItemLikeElementsIntoLists( view, '', new View() );
+				transformListItemLikeElementsIntoLists( view, '' );
 
 				expect( view.childCount ).to.equal( 1 );
 				expect( view.getChild( 0 ).name ).to.equal( 'ol' );
@@ -33,7 +33,7 @@ describe( 'PasteFromOffice - filters', () => {
 				const html = '<p style="mso-list:l0 level1 lfo0"><span style="mso-list:Ignore">1.</span>Item 1</p>';
 				const view = htmlDataProcessor.toView( html );
 
-				transformListItemLikeElementsIntoLists( view, '@list l0:level1 { mso-level-number-format: bullet; }', new View() );
+				transformListItemLikeElementsIntoLists( view, '@list l0:level1 { mso-level-number-format: bullet; }' );
 
 				expect( view.childCount ).to.equal( 1 );
 				expect( view.getChild( 0 ).name ).to.equal( 'ul' );
@@ -44,7 +44,7 @@ describe( 'PasteFromOffice - filters', () => {
 				const html = '<h1>H1</h1><p>Foo Bar</p>';
 				const view = htmlDataProcessor.toView( html );
 
-				transformListItemLikeElementsIntoLists( view, '', new View() );
+				transformListItemLikeElementsIntoLists( view, '' );
 
 				expect( view.childCount ).to.equal( 2 );
 				expect( stringify( view ) ).to.equal( html );
@@ -54,7 +54,7 @@ describe( 'PasteFromOffice - filters', () => {
 				const html = '<p style="mso-list:"><span style="mso-list:Ignore">1.</span>Item 1</p>';
 				const view = htmlDataProcessor.toView( html );
 
-				transformListItemLikeElementsIntoLists( view, '', new View() );
+				transformListItemLikeElementsIntoLists( view, '' );
 
 				expect( view.childCount ).to.equal( 1 );
 				expect( view.getChild( 0 ).name ).to.equal( 'ol' );
@@ -65,7 +65,7 @@ describe( 'PasteFromOffice - filters', () => {
 				const html = '<p style="mso-list:none">not numbered<o:p></o:p></p>';
 				const view = htmlDataProcessor.toView( html );
 
-				transformListItemLikeElementsIntoLists( view, '', new View() );
+				transformListItemLikeElementsIntoLists( view, '' );
 
 				expect( view.childCount ).to.equal( 1 );
 				expect( view.getChild( 0 ).name ).to.equal( 'ol' );
@@ -75,7 +75,7 @@ describe( 'PasteFromOffice - filters', () => {
 			it( 'handles empty body correctly', () => {
 				const view = htmlDataProcessor.toView( '' );
 
-				transformListItemLikeElementsIntoLists( view, '', new View() );
+				transformListItemLikeElementsIntoLists( view, '' );
 
 				expect( view.childCount ).to.equal( 0 );
 				expect( stringify( view ) ).to.equal( '' );
@@ -85,10 +85,11 @@ describe( 'PasteFromOffice - filters', () => {
 
 	describe( 'list - paste from google docs', () => {
 		const htmlDataProcessor = new HtmlDataProcessor();
-		let writer;
+		let writer, viewDocument;
 
 		before( () => {
-			writer = new UpcastWriter();
+			viewDocument = new Document();
+			writer = new UpcastWriter( viewDocument );
 		} );
 
 		describe( 'unwrapParagraphInListItem', () => {
