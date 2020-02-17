@@ -15,7 +15,7 @@ The {@link module:table/table~Table} feature offers table creation and editing t
 
 Sometimes the default table formatting is not enough or maybe you just want to paste a table from other text editor and preserve as much formatting as possible. This is when {@link module:table/tableproperties~TableProperties table properties} and {@link module:table/tablecellproperties~TableCellProperties table cell properties} plugins come in handy.
 
-Take, for example, a table in the editor below. You may have noticed that there are plenty of table cells with non–standard formatting, especially when compared with the previous demo. Put a selection in the table and click the **"Table properties"** button in the toolbar to open a pop–up with multiple options that will allow you to shape the look of the entire table to your needs. You can change the border of the entire table, set its background color, change its dimensions or tune the alignment for the best look of your content.
+Take, for example, a table in the editor below. You may have noticed that there are plenty of table cells with non–standard formatting like background colors or borders, especially when compared with the previous demo. Put a selection in the table and click the **"Table properties"** button in the toolbar to open a pop–up with multiple options that will allow you to shape the look of the entire table to your needs. You can change the border of the entire table, set its background color, change its dimensions or tune the alignment for the best look of your content.
 
 Now if you are satisfied with the look of your table, it is time to focus on individual cells. Put the caret in the table cell you would like to change and click the **"Cell properties"** button in the toolbar. A now–familiar form with styling options will show up, but this time the adjustments will apply to an individual table cell. If you look closely, you may also spot some new fields: "Padding" and "Table cell text alignment". Use the former to give the text in a cell some space around it. The latter will be useful when your table cell requires a non–standard text alignment, be it horizontal or vertical.
 
@@ -166,26 +166,44 @@ The {@link module:table/table~Table} plugin registers the following UI component
 * The `'tableColumn'` dropdown.
 * The `'tableRow'` dropdown.
 * The `'mergeTableCells'` dropdown.
+* The `'tableProperties'` button.
+* The `'tableCellProperties'` button.
 
 And the following commands:
 
 | {@link framework/guides/architecture/core-editor-architecture#commands Command} name | Implemented by |
-|----------------------------------|-----------------------------------------------------------------------------|
-| `'insertTable'`                  | {@link module:table/commands/inserttablecommand~InsertTableCommand}         |
-| `'insertTableColumnLeft'`        | {@link module:table/commands/insertcolumncommand~InsertColumnCommand}       |
-| `'insertTableColumnRight'`       | {@link module:table/commands/insertcolumncommand~InsertColumnCommand}       |
-| `'insertTableRowAbove'`          | {@link module:table/commands/insertrowcommand~InsertRowCommand}             |
-| `'insertTableRowBelow'`          | {@link module:table/commands/insertrowcommand~InsertRowCommand}             |
-| `'removeTableColumn'`            | {@link module:table/commands/removecolumncommand~RemoveColumnCommand}       |
-| `'removeTableRow'`               | {@link module:table/commands/removerowcommand~RemoveRowCommand}             |
-| `'setTableColumnHeader'`         | {@link module:table/commands/setheadercolumncommand~SetHeaderColumnCommand} |
-| `'setTableRowHeader'`            | {@link module:table/commands/setheaderrowcommand~SetHeaderRowCommand}       |
-| `'mergeTableCellRight'`          | {@link module:table/commands/mergecellcommand~MergeCellCommand}             |
-| `'mergeTableCellLeft'`           | {@link module:table/commands/mergecellcommand~MergeCellCommand}             |
-| `'mergeTableCellUp'`             | {@link module:table/commands/mergecellcommand~MergeCellCommand}             |
-| `'mergeTableCellDown'`           | {@link module:table/commands/mergecellcommand~MergeCellCommand}             |
-| `'splitTableCellVertically'`     | {@link module:table/commands/splitcellcommand~SplitCellCommand}             |
-| `'splitTableCellHorizontally'`   | {@link module:table/commands/splitcellcommand~SplitCellCommand}             |
+|----------------------------------|---------------------------------------------------------------------------------------------------------------------------|
+| `'insertTable'`                  | {@link module:table/commands/inserttablecommand~InsertTableCommand}                                                       |
+| `'insertTableColumnLeft'`        | {@link module:table/commands/insertcolumncommand~InsertColumnCommand}                                                     |
+| `'insertTableColumnRight'`       | {@link module:table/commands/insertcolumncommand~InsertColumnCommand}                                                     |
+| `'insertTableRowAbove'`          | {@link module:table/commands/insertrowcommand~InsertRowCommand}                                                           |
+| `'insertTableRowBelow'`          | {@link module:table/commands/insertrowcommand~InsertRowCommand}                                                           |
+| `'removeTableColumn'`            | {@link module:table/commands/removecolumncommand~RemoveColumnCommand}                                                     |
+| `'removeTableRow'`               | {@link module:table/commands/removerowcommand~RemoveRowCommand}                                                           |
+| `'setTableColumnHeader'`         | {@link module:table/commands/setheadercolumncommand~SetHeaderColumnCommand}                                               |
+| `'setTableRowHeader'`            | {@link module:table/commands/setheaderrowcommand~SetHeaderRowCommand}                                                     |
+| `'mergeTableCellRight'`          | {@link module:table/commands/mergecellcommand~MergeCellCommand}                                                           |
+| `'mergeTableCellLeft'`           | {@link module:table/commands/mergecellcommand~MergeCellCommand}                                                           |
+| `'mergeTableCellUp'`             | {@link module:table/commands/mergecellcommand~MergeCellCommand}                                                           |
+| `'mergeTableCellDown'`           | {@link module:table/commands/mergecellcommand~MergeCellCommand}                                                           |
+| `'splitTableCellVertically'`     | {@link module:table/commands/splitcellcommand~SplitCellCommand}                                                           |
+| `'splitTableCellHorizontally'`   | {@link module:table/commands/splitcellcommand~SplitCellCommand}                                                           |
+| `'tableCellBorderStyle'`         | {@link module:table/tablecellproperties/commands/tablecellborderstylecommand~TableCellBorderStyleCommand}                 |
+| `'tableCellBorderColor'`         | {@link module:table/tablecellproperties/commands/tablecellbordercolorcommand~TableCellBorderColorCommand}                 |
+| `'tableCellBorderWidth'`         | {@link module:table/tablecellproperties/commands/tablecellborderwidthcommand~TableCellBorderWidthCommand}                 |
+| `'tableCellHorizontalAlignment'` | {@link module:table/tablecellproperties/commands/tablecellhorizontalalignmentcommand~TableCellHorizontalAlignmentCommand} |
+| `'tableCellWidth'`               | {@link module:table/tablecellproperties/commands/tablecellwidthcommand~TableCellWidthCommand}                             |
+| `'tableCellHeight'`              | {@link module:table/tablecellproperties/commands/tablecellheightcommand~TableCellHeightCommand}                           |
+| `'tableCellPadding'`             | {@link module:table/tablecellproperties/commands/tablecellpaddingcommand~TableCellPaddingCommand}                         |
+| `'tableCellBackgroundColor'`     | {@link module:table/tablecellproperties/commands/tablecellbackgroundcolorcommand~TableCellBackgroundColorCommand}         |
+| `'tableCellVerticalAlignment'`   | {@link module:table/tablecellproperties/commands/tablecellverticalalignmentcommand~TableCellVerticalAlignmentCommand}     |
+| `'tableBorderColor'`             | {@link module:table/tableproperties/commands/tablebordercolorcommand~TableBorderColorCommand}                             |
+| `'tableBorderStyle'`             | {@link module:table/tableproperties/commands/tableborderstylecommand~TableBorderStyleCommand}                             |
+| `'tableBorderWidth'`             | {@link module:table/tableproperties/commands/tableborderwidthcommand~TableBorderWidthCommand}                             |
+| `'tableAlignment'`               | {@link module:table/tableproperties/commands/tablealignmentcommand~TableAlignmentCommand}                                 |
+| `'tableWidth'`                   | {@link module:table/tableproperties/commands/tablewidthcommand~TableWidthCommand}                                         |
+| `'tableHeight'`                  | {@link module:table/tableproperties/commands/tableheightcommand~TableHeightCommand}                                       |
+| `'tableBackgroundColor'`         | {@link module:table/tableproperties/commands/tablebackgroundcolorcommand~TableBackgroundColorCommand}                     |
 
 The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon toolbars for tables.
 * The content toolbar shows up when table cell is selected and is anchored to the table. It is possible to {@link module:table/table~TableConfig#contentToolbar configure} its content. Normally, it contains the table-related tools such as `'tableColumn'`, `'tableRow'`, and `'mergeTableCells'` dropdowns.
