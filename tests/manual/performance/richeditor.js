@@ -30,6 +30,7 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import StandardEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/standardeditingmode';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
+import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
@@ -74,6 +75,7 @@ ClassicEditor
 			RemoveFormat,
 			StandardEditingMode,
 			SpecialCharacters,
+			SpecialCharactersEssentials,
 			TableProperties,
 			TableCellProperties,
 			ImageUpload,
