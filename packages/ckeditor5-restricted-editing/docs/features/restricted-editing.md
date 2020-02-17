@@ -33,7 +33,7 @@ Then you can switch to the restricted editing mode to see how the editable and n
 
 ## Configuration
 
-It is possible to configure which features should be available in restricted mode. For instance, following configuration will only allow for bolding, typing and text deletion.
+It is possible to configure which features should be available in the restricted mode. For instance, the following configuration will not only allow typing and deleting but also bolding text.
 
 ```js
 import RestrictedEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/restrictededitingmode';
