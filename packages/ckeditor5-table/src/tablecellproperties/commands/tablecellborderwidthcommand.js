@@ -30,7 +30,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *
  * will set the `borderWidth` attribute to `'5px'` in the model.
  *
- * @extends module:core/command~Command
+ * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellBorderWidthCommand extends TableCellPropertyCommand {
 	/**

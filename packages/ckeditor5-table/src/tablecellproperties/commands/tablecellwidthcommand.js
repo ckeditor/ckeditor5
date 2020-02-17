@@ -30,7 +30,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *
  * Will set `width` attribute to `'50px'` in the model.
  *
- * @extends module:table/tablecellproperties/commands/tablecellpropertycommand
+ * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellWidthCommand extends TableCellPropertyCommand {
 	/**

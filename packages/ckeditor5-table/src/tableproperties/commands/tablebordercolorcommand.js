@@ -22,7 +22,7 @@ import { getSingleValue } from '../../commands/utils';
  *			value: '#f00'
  *		} );
  *
- * @extends module:table/tableproperties/commands/tablepropertycommand
+ * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
  */
 export default class TableBorderColorCommand extends TablePropertyCommand {
 	/**

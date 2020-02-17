@@ -21,7 +21,7 @@ import TablePropertyCommand from './tablepropertycommand';
  *			value: 'right'
  *		} );
  *
- * @extends module:table/tableproperties/commands/tablepropertycommand
+ * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
  */
 export default class TableAlignmentCommand extends TablePropertyCommand {
 	/**
