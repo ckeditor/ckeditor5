@@ -13,6 +13,12 @@ The {@link module:table/table~Table} feature offers table creation and editing t
 
 ## Styling tables and table cells
 
+Sometimes the default table formatting is not enough or maybe you just want to paste a table from other text editor and preserve as much formatting as possible. This is when {@link module:table/tableproperties~TableProperties table properties} and {@link module:table/tablecellproperties~TableCellProperties table cell properties} plugins come in handy.
+
+Take, for example, a table in the editor below. You may have noticed that there are plenty of table cells with non–standard formatting, especially when compared with the previous demo. Put a selection in the table and click the **"Table properties"** button in the toolbar to open a pop–up with multiple options that will allow you to shape the look of the entire table to your needs. You can change the border of the entire table, set its background color, change its dimensions or tune the alignment for the best look of your content.
+
+Now if you are satisfied with the look of your table, it is time to focus on individual cells. Put the caret in the table cell you would like to change and click the **"Cell properties"** button in the toolbar. A now–familiar form with styling options will show up, but this time the adjustments will apply to an individual table cell. If you look closely, you may also spot some new fields: "Padding" and "Table cell text alignment". Use the former to give the text in a cell some space around it. The latter will be useful when your table cell requires a non–standard text alignment, be it horizontal or vertical.
+
 {@snippet features/table-styling}
 
 ## Installation
