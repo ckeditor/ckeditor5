@@ -35,6 +35,9 @@ import Selection from './selection';
  *		writer.appendChild( text, someViewElement );
  */
 export default class UpcastWriter {
+	/**
+	 * @param {module:engine/view/document~Document} document
+	 */
 	constructor( document ) {
 		/**
 		 * @readonly

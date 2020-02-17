@@ -37,6 +37,9 @@ import { isPlainObject } from 'lodash-es';
  * section of the {@glink framework/guides/architecture/editing-engine Editing engine architecture} guide.
  */
 export default class DowncastWriter {
+	/**
+	 * @param {module:engine/view/document~Document} document
+	 */
 	constructor( document ) {
 		/**
 		 * @readonly
