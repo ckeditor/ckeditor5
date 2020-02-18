@@ -11,7 +11,7 @@ The {@link module:table/table~Table} feature offers table creation and editing t
 
 ### Basic table features
 
-The editor bellow shows the basic set of table features focusing on the **structure and semantics**. These features allow users to insert new tables into the content, add or remove columns and rows, define headers and merge multiple cells. It is also worth noting that you will find them out–of–the–box in all {@link builds/guides/overview ready–to–use editor builds}.
+The editor bellow shows the basic set of table features focusing on the **structure and semantics**. These features allow users to insert new tables into the content, add or remove columns and rows, define headers, and merge multiple cells. It is also worth noting that you will find them out–of–the–box in all {@link builds/guides/overview ready–to–use editor builds}.
 
 {@snippet features/table}
 
@@ -19,14 +19,14 @@ Use the **"Insert table"** button in the toolbar to create new tables. Focus any
 
 ### Table and cell styling tools
 
-In addition to the default table features described in the [previous section](#basic-table-features), the editor below comes with some additional tools that will help you modify **the look of tables and table cells**, for instance, border color and style, background color, padding, or text alignment.
+In addition to the default table features described in the [previous section](#basic-table-features), the editor below comes with some additional tools that will help you modify **the look of tables and table cells**, for instance, their border color and style, background color, padding, or text alignment.
 
 {@snippet features/table-styling}
 
-Put the caret anywhere inside the table and click the **"Table properties"** button in the toolbar to open a pop–up with multiple options that will allow you to shape the look of the entire table to your needs. If you click the **"Cell properties"** button, a similar interface will appear but for individual table cells. [Learn more](#configuring-background-and-border-colors) about configuring color palettes in the table styling pop–up interfaces.
+Put the caret anywhere inside the table and click the **"Table properties"** button in the toolbar to open a pop–up with multiple options that will allow you to shape the look of the entire table. If you click the **"Cell properties"** button, a similar interface will appear with styling options for individual table cells. [Learn more](#configuring-background-and-border-colors) about configuring color palettes in the table styling pop–up interfaces.
 
 <info-box>
-	By default, table styling tools are not included in {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
+	By default, table styling tools are not included in the {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
 </info-box>
 
 ## Installation
@@ -37,9 +37,9 @@ Put the caret anywhere inside the table and click the **"Table properties"** but
 	The basic table features are enabled by default in all builds. The installation instructions are for developers interested in building their own, custom rich text editor.
 </info-box>
 
-To add only the basic tables features to your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
+To add only the basic table features to your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
 
-```bash
+```
 npm install --save @ckeditor/ckeditor5-table
 ```
 
@@ -65,7 +65,7 @@ ClassicEditor
 
 To enable not only the [basic table features](#basic-table-features-2) but also the rich table and cell styling tools in your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
 
-```bash
+```
 npm install --save @ckeditor/ckeditor5-table
 ```
 
@@ -194,12 +194,12 @@ ClassicEditor
 
 ## Block vs inline content in table cells
 
-The table feature allows creating block content (like paragraphs, lists, headings, etc.) in table cells. However, if a table cell contains just one paragraph and this paragraph has no special attributes (like text alignment), this cell content is considered "inline" and the paragraph is not rendered.
+The table feature allows creating block content (like paragraphs, lists, headings, etc.) in table cells. However, if a table cell contains just one paragraph and this paragraph has no special attributes (like text alignment), the cell content is considered "inline" and the paragraph is not rendered.
 
-This means that a table cell can be in two states: with inline content or with block content. The reason for this differentiation is that most tables contain only inline content (e.g. in the [demo](#demo) above) and it is common for "data tables" to not contain any block content. In such scenario, printing out `<p>` elements would be semantically incorrect and also unnecessary. There are, however, scenarios where the user wants to create, for example, a list inside the table and then support for block content is necessary, too.
+This means that a table cell can be in two states: with inline content or with block content. The reason for this differentiation is that most tables contain only inline content (e.g. in the [demo](#demos) above) and it is common for "data tables" to not contain any block content. In such scenario, printing out `<p>` elements would be semantically incorrect and also unnecessary. There are, however, scenarios where the user wants to create, for example, a list inside the table and then support for block content is necessary, too.
 
 <info-box>
-	"Rendering" here means the view layer. In the model a cell is always filled with at least a `<paragraph>`. It is because of consistency, as since a cell always has some block content, the text is never directly inside `<tableCell>`. This also allows features like <kbd>Enter</kbd> support to work out of the box (since a `<paragraph>` exists in the model, it can be split despite the fact that it is not present in the view).
+	"Rendering" here means the view layer. In the model a cell is always filled with at least a `<paragraph>`. This is because of consistency, as &mdash; since a cell always has some block content &mdash; the text is never directly inside `<tableCell>`. This also allows features like <kbd>Enter</kbd> support to work out of the box (since a `<paragraph>` exists in the model, it can be split despite the fact that it is not present in the view).
 </info-box>
 
 ### Inline content
@@ -234,7 +234,7 @@ The above model structure will be rendered to the {@link module:editor-classic/c
 </figure>
 ```
 
-In the editing view (the editable container in which the user edits the content) additional `<span>` elements are created to compensate for the hidden `<paragraph>` elements:
+In the editing view (the editable container in which the user edits the content), additional `<span>` elements are created to compensate for the hidden `<paragraph>` elements:
 
 ```html
 <figure class="table">
@@ -296,7 +296,7 @@ The above model structure will be rendered to the data and to the editing view a
 ```
 
 <info-box info>
-	At the moment it is not possible to completely disallow block content in tables. See the [discussion on GitHub](https://github.com/ckeditor/ckeditor5-table/issues/101) about adding a configuration option that would enable that. 👍 if you need this feature.
+	At the moment it is not possible to completely disallow block content in tables. See the [discussion on GitHub](https://github.com/ckeditor/ckeditor5-table/issues/101) about adding a configuration option that would enable that. Add a 👍 if you need this feature.
 </info-box>
 
 ## Common API
@@ -312,24 +312,24 @@ The table plugins register the following UI components:
 	</thead>
 	<tbody>
 		<tr>
-			<td><code>'insertTable'</code> dropdown</td>
+			<td>The <code>'insertTable'</code> dropdown</td>
 			<td rowspan="4">{@link module:table/table~Table}</td>
 		</tr>
 		<tr>
-			<td><code>'tableColumn'</code> dropdown</td>
+			<td>The <code>'tableColumn'</code> dropdown</td>
 		</tr>
 		<tr>
-			<td><code>'tableRow'</code> dropdown</td>
+			<td>The <code>'tableRow'</code> dropdown</td>
 		</tr>
 		<tr>
-			<td><code>'mergeTableCells'</code> dropdown</td>
+			<td>The <code>'mergeTableCells'</code> dropdown</td>
 		</tr>
 		<tr>
-			<td><code>'tableProperties'</code> button</td>
+			<td>The <code>'tableProperties'</code> button</td>
 			<td>{@link module:table/tableproperties~TableProperties}</td>
 		</tr>
 		<tr>
-			<td><code>'tableCellProperties'</code> button</td>
+			<td>The <code>'tableCellProperties'</code> button</td>
 			<td>{@link module:table/tablecellproperties~TableCellProperties}</td>
 		</tr>
 	</tbody>
@@ -338,7 +338,7 @@ The table plugins register the following UI components:
 #### Toolbars
 
 The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon toolbars for tables.
-* The content toolbar shows up when table cell is selected and is anchored to the table. It is possible to {@link module:table/table~TableConfig#contentToolbar configure} its content. Normally, it contains the table-related tools such as `'tableColumn'`, `'tableRow'`, and `'mergeTableCells'` dropdowns.
+* The content toolbar shows up when a table cell is selected and it is anchored to the table. It is possible to {@link module:table/table~TableConfig#contentToolbar configure} its content. Normally, the toolbar contains the table-related tools such as `'tableColumn'`, `'tableRow'`, and `'mergeTableCells'` dropdowns.
 * The table toolbar shows up when the whole table is selected, for instance using the widget handler. It is possible to {@link module:table/table~TableConfig#tableToolbar configure} its content.
 
 ### Editor commands
