@@ -98,6 +98,13 @@ export default class TableSelection extends Plugin {
 		setupTableSelectionHighlighting( editor, this );
 
 		selection.on( 'change:range', () => this._clearSelectionOnExternalChange( selection ) );
+
+		this.listenTo( editor.editing.view.document, 'cut', ( evt, data ) => {
+			if ( this.hasMultiCellSelection ) {
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { priority: 'high' } );
 	}
 
 	/**
