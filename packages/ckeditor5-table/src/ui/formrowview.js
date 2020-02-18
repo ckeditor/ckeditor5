@@ -12,7 +12,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import '../../theme/formrow.css';
 
 /**
- * The class representing a single row in the complex form,
+ * The class representing a single row in a complex form,
  * used by {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}.
  *
  * **Note**: For now this class is private. When more use cases arrive (beyond ckeditor5-table),
@@ -30,7 +30,7 @@ export default class FormRowView extends View {
 	 * @param {Array.<module:ui/view~View>} options.children
 	 * @param {String} [options.class]
 	 * @param {module:ui/view~View} [options.labelView] When passed, the row gets the `group` and `aria-labelledby`
-	 * DOM attributes and get described by the label.
+	 * DOM attributes and gets described by the label.
 	 */
 	constructor( locale, options = {} ) {
 		super( locale );
