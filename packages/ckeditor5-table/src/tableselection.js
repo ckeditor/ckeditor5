@@ -227,6 +227,43 @@ export default class TableSelection extends Plugin {
 				writer.append( tableCell._clone( true ), rowsMap.get( row ) );
 			}
 
+			// Fix table;
+
+			const { row: startRow, column: startColumn } = this._tableUtils.getCellLocation( this._startElement );
+			const { row: endRow, column: endColumn } = this._tableUtils.getCellLocation( this._endElement );
+
+			const width = endColumn - startColumn + 1;
+			const height = endRow - startRow + 1;
+
+			for ( const row of table.getChildren() ) {
+				for ( const tableCell of row.getChildren() ) {
+					const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+					const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
+
+					const { row, column } = this._tableUtils.getCellLocation( tableCell );
+
+					if ( column + colspan > width ) {
+						const newSpan = width - column;
+
+						if ( newSpan > 1 ) {
+							writer.setAttribute( 'colspan', newSpan, tableCell );
+						} else {
+							writer.removeAttribute( 'colspan', tableCell );
+						}
+					}
+
+					if ( row + rowspan > height ) {
+						const newSpan = height - row;
+
+						if ( newSpan > 1 ) {
+							writer.setAttribute( 'rowspan', newSpan, tableCell );
+						} else {
+							writer.removeAttribute( 'rowspan', tableCell );
+						}
+					}
+				}
+			}
+
 			return fragment;
 		} );
 	}

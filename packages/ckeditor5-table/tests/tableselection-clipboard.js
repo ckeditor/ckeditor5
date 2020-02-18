@@ -81,6 +81,108 @@ describe( 'table selection', () => {
 					preventDefault: preventDefaultSpy
 				} );
 			} );
+
+			it( 'should fix selected table (cell has colspan that exceeds rectangular selection by 1)', done => {
+				setModelData( model, modelTable( [
+					[ '11[]', '12', '13' ],
+					[ '21', { contents: '22', colspan: 2 } ],
+					[ '31', '32', '33' ]
+				] ) );
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
+
+				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+					expect( stringifyView( data.content ) ).to.equal( viewTable( [
+						[ '11', '12' ],
+						[ '21', '22' ],
+						[ '31', '32' ]
+					] ) );
+
+					done();
+				} );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: createDataTransfer(),
+					preventDefault: sinon.spy()
+				} );
+			} );
+
+			it( 'should fix selected table (cell has colspan that exceeds rectangular selection but spans over selection)', done => {
+				setModelData( model, modelTable( [
+					[ '11[]', '12', '13' ],
+					[ { contents: '21', colspan: 3 } ],
+					[ '31', '32', '33' ]
+				] ) );
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
+
+				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+					expect( stringifyView( data.content ) ).to.equal( viewTable( [
+						[ '11', '12' ],
+						[ { contents: '21', colspan: 2 } ],
+						[ '31', '32' ]
+					] ) );
+
+					done();
+				} );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: createDataTransfer(),
+					preventDefault: sinon.spy()
+				} );
+			} );
+
+			it( 'should fix selected table (cell has rowspan that exceeds rectangular selection by 1)', done => {
+				setModelData( model, modelTable( [
+					[ '11[]', '12', '13' ],
+					[ '21', { contents: '22', rowspan: 2 }, '23' ],
+					[ '31', '32', '33' ]
+				] ) );
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+
+				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+					expect( stringifyView( data.content ) ).to.equal( viewTable( [
+						[ '11', '12', '13' ],
+						[ '21', '22', '23' ]
+					] ) );
+
+					done();
+				} );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: createDataTransfer(),
+					preventDefault: sinon.spy()
+				} );
+			} );
+
+			it( 'should fix selected table (cell has rowspan that exceeds rectangular selection but spans over selection)', done => {
+				setModelData( model, modelTable( [
+					[ '11[]', { contents: '12', rowspan: 3 }, '13' ],
+					[ '21', '23' ],
+					[ '31', '33' ]
+				] ) );
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+
+				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+					expect( stringifyView( data.content ) ).to.equal( viewTable( [
+						[ '11', { contents: '12', rowspan: 2 }, '13' ],
+						[ '21', '23' ]
+					] ) );
+
+					done();
+				} );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: createDataTransfer(),
+					preventDefault: sinon.spy()
+				} );
+			} );
 		} );
 
 		describe( 'cut', () => {
