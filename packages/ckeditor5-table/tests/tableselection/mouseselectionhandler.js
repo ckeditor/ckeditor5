@@ -11,10 +11,10 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 
 import TableEditing from '../../src/tableediting';
 import TableSelection from '../../src/tableselection';
-import { modelTable, viewTable } from '../_utils/utils';
+import { assertSelectedCells, modelTable, viewTable } from '../_utils/utils';
 
 describe( 'table selection', () => {
-	let editor, model, modelRoot, view, viewDoc;
+	let editor, model, view, viewDoc;
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -22,7 +22,6 @@ describe( 'table selection', () => {
 		} );
 
 		model = editor.model;
-		modelRoot = model.document.getRoot();
 		view = editor.editing.view;
 		viewDoc = view.document;
 
@@ -74,7 +73,7 @@ describe( 'table selection', () => {
 
 			movePressedMouseOver( getTableCell( '01' ) );
 
-			assertSelectedCells( [
+			assertSelectedCells( model, [
 				[ 1, 1 ],
 				[ 0, 0 ]
 			] );
@@ -100,7 +99,7 @@ describe( 'table selection', () => {
 
 			movePressedMouseOver( getTableCell( '11' ) );
 
-			assertSelectedCells( [
+			assertSelectedCells( model, [
 				[ 1, 1 ],
 				[ 1, 1 ]
 			] );
@@ -126,7 +125,7 @@ describe( 'table selection', () => {
 
 			movePressedMouseOver( getTableCell( '00' ) );
 
-			assertSelectedCells( [
+			assertSelectedCells( model, [
 				[ 1, 1 ],
 				[ 1, 1 ]
 			] );
@@ -147,7 +146,7 @@ describe( 'table selection', () => {
 			pressMouseButtonOver( getTableCell( '00' ) );
 			movePressedMouseOver( getTableCell( '22' ) );
 
-			assertSelectedCells( [
+			assertSelectedCells( model, [
 				[ 1, 1, 1 ],
 				[ 1, 1, 1 ],
 				[ 1, 1, 1 ]
@@ -173,7 +172,7 @@ describe( 'table selection', () => {
 
 			movePressedMouseOver( getTableCell( '11' ) );
 
-			assertSelectedCells( [
+			assertSelectedCells( model, [
 				[ 1, 1, 0 ],
 				[ 1, 1, 0 ],
 				[ 0, 0, 0 ]
@@ -214,7 +213,7 @@ describe( 'table selection', () => {
 			movePressedMouseOver( getTableCell( '01' ) );
 			releaseMouseButtonOver( getTableCell( '01' ) );
 
-			assertSelectedCells( [
+			assertSelectedCells( model, [
 				[ 1, 1 ],
 				[ 0, 0 ]
 			] );
@@ -226,7 +225,7 @@ describe( 'table selection', () => {
 
 			moveReleasedMouseOver( getTableCell( '11' ) );
 
-			assertSelectedCells( [
+			assertSelectedCells( model, [
 				[ 1, 1 ],
 				[ 0, 0 ]
 			] );
@@ -240,7 +239,7 @@ describe( 'table selection', () => {
 
 			releaseMouseButtonOver( getTableCell( '01' ) );
 
-			assertSelectedCells( [
+			assertSelectedCells( model, [
 				[ 0, 0 ],
 				[ 0, 0 ]
 			] );
@@ -262,7 +261,7 @@ describe( 'table selection', () => {
 			movePressedMouseOver( getTableCell( '01' ) );
 			makeMouseLeave();
 
-			assertSelectedCells( [
+			assertSelectedCells( model, [
 				[ 1, 1 ],
 				[ 0, 0 ]
 			] );
@@ -274,7 +273,7 @@ describe( 'table selection', () => {
 
 			moveReleasedMouseOver( getTableCell( '11' ) );
 
-			assertSelectedCells( [
+			assertSelectedCells( model, [
 				[ 1, 1 ],
 				[ 0, 0 ]
 			] );
@@ -296,7 +295,7 @@ describe( 'table selection', () => {
 			movePressedMouseOver( getTableCell( '01' ) );
 			makeMouseLeave();
 
-			assertSelectedCells( [
+			assertSelectedCells( model, [
 				[ 1, 1 ],
 				[ 0, 0 ]
 			] );
@@ -308,7 +307,7 @@ describe( 'table selection', () => {
 
 			movePressedMouseOver( getTableCell( '11' ) );
 
-			assertSelectedCells( [
+			assertSelectedCells( model, [
 				[ 1, 1 ],
 				[ 1, 1 ]
 			] );
@@ -322,7 +321,7 @@ describe( 'table selection', () => {
 
 			makeMouseLeave();
 
-			assertSelectedCells( [
+			assertSelectedCells( model, [
 				[ 0, 0 ],
 				[ 0, 0 ]
 			] );
@@ -396,50 +395,6 @@ describe( 'table selection', () => {
 			], { asWidget: true } ) + '<p>{}foo</p>' );
 		} );
 	} );
-
-	// Helper method for asserting selected table cells.
-	//
-	// To check if a table has expected cells selected pass two dimensional array of truthy and falsy values:
-	//
-	//		assertSelectedCells( [
-	//			[ 0, 1 ],
-	//			[ 0, 1 ]
-	//		] );
-	//
-	// The above call will check if table has second column selected (assuming no spans).
-	//
-	// **Note**: This function operates on child indexes - not rows/columns.
-	function assertSelectedCells( tableMap ) {
-		const tableIndex = 0;
-
-		for ( let rowIndex = 0; rowIndex < tableMap.length; rowIndex++ ) {
-			const row = tableMap[ rowIndex ];
-
-			for ( let cellIndex = 0; cellIndex < row.length; cellIndex++ ) {
-				const expectSelected = row[ cellIndex ];
-
-				if ( expectSelected ) {
-					assertNodeIsSelected( [ tableIndex, rowIndex, cellIndex ] );
-				} else {
-					assertNodeIsNotSelected( [ tableIndex, rowIndex, cellIndex ] );
-				}
-			}
-		}
-	}
-
-	function assertNodeIsSelected( path ) {
-		const node = modelRoot.getNodeByPath( path );
-		const selectionRanges = Array.from( model.document.selection.getRanges() );
-
-		expect( selectionRanges.some( range => range.containsItem( node ) ), `Expected node [${ path }] to be selected` ).to.be.true;
-	}
-
-	function assertNodeIsNotSelected( path ) {
-		const node = modelRoot.getNodeByPath( path );
-		const selectionRanges = Array.from( model.document.selection.getRanges() );
-
-		expect( selectionRanges.every( range => !range.containsItem( node ) ), `Expected node [${ path }] to be not selected` ).to.be.true;
-	}
 
 	function getTableCell( data ) {
 		for ( const value of view.createRangeIn( viewDoc.getRoot() ) ) {

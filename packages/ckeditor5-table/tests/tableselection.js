@@ -9,7 +9,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 
 import TableEditing from '../src/tableediting';
 import TableSelection from '../src/tableselection';
-import { modelTable, viewTable } from './_utils/utils';
+import { assertSelectedCells, modelTable, viewTable } from './_utils/utils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
@@ -60,7 +60,7 @@ describe( 'table selection', () => {
 
 				sinon.assert.calledOnce( spy );
 
-				assertSelectedCells( [
+				assertSelectedCells( model, [
 					[ 1, 1, 0 ],
 					[ 0, 0, 0 ],
 					[ 0, 0, 0 ]
@@ -106,7 +106,7 @@ describe( 'table selection', () => {
 
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
 
-				assertSelectedCells( [
+				assertSelectedCells( model, [
 					[ 1, 1, 0 ],
 					[ 0, 0, 0 ],
 					[ 0, 0, 0 ]
@@ -118,7 +118,7 @@ describe( 'table selection', () => {
 
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
 
-				assertSelectedCells( [
+				assertSelectedCells( model, [
 					[ 1, 1, 0 ],
 					[ 1, 1, 0 ],
 					[ 0, 0, 0 ]
@@ -130,7 +130,7 @@ describe( 'table selection', () => {
 
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 2 ] ) );
 
-				assertSelectedCells( [
+				assertSelectedCells( model, [
 					[ 1, 1, 1 ],
 					[ 0, 0, 0 ],
 					[ 0, 0, 0 ]
@@ -142,7 +142,7 @@ describe( 'table selection', () => {
 
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
 
-				assertSelectedCells( [
+				assertSelectedCells( model, [
 					[ 0, 1, 0 ],
 					[ 0, 1, 0 ],
 					[ 0, 1, 0 ]
@@ -154,7 +154,7 @@ describe( 'table selection', () => {
 
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
 
-				assertSelectedCells( [
+				assertSelectedCells( model, [
 					[ 0, 0, 0 ],
 					[ 0, 1, 0 ],
 					[ 0, 1, 0 ]
@@ -162,7 +162,7 @@ describe( 'table selection', () => {
 
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
 
-				assertSelectedCells( [
+				assertSelectedCells( model, [
 					[ 0, 1, 0 ],
 					[ 0, 1, 0 ],
 					[ 0, 0, 0 ]
@@ -170,7 +170,7 @@ describe( 'table selection', () => {
 
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
 
-				assertSelectedCells( [
+				assertSelectedCells( model, [
 					[ 0, 0, 0 ],
 					[ 0, 1, 1 ],
 					[ 0, 1, 1 ]
@@ -185,7 +185,7 @@ describe( 'table selection', () => {
 
 				tableSelection.stopSelection();
 
-				assertSelectedCells( [
+				assertSelectedCells( model, [
 					[ 1, 1, 0 ],
 					[ 0, 0, 0 ],
 					[ 0, 0, 0 ]
@@ -208,7 +208,7 @@ describe( 'table selection', () => {
 
 				tableSelection.stopSelection( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
 
-				assertSelectedCells( [
+				assertSelectedCells( model, [
 					[ 1, 1, 0 ],
 					[ 0, 0, 0 ],
 					[ 0, 0, 0 ]
@@ -236,7 +236,7 @@ describe( 'table selection', () => {
 
 				tableSelection.clearSelection();
 
-				assertSelectedCells( [
+				assertSelectedCells( model, [
 					[ 1, 1, 0 ],
 					[ 0, 0, 0 ],
 					[ 0, 0, 0 ]
@@ -298,7 +298,7 @@ describe( 'table selection', () => {
 			} );
 		} );
 
-		describe.only( 'behavior', () => {
+		describe( 'behavior', () => {
 			it( 'should clear selection on external changes', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
@@ -307,7 +307,7 @@ describe( 'table selection', () => {
 					writer.setSelection( modelRoot.getNodeByPath( [ 0, 0, 0, 0 ] ), 0 );
 				} );
 
-				assertSelectedCells( [
+				assertSelectedCells( model, [
 					[ 0, 0, 0 ],
 					[ 0, 0, 0 ],
 					[ 0, 0, 0 ]
@@ -322,48 +322,4 @@ describe( 'table selection', () => {
 			} );
 		} );
 	} );
-
-	// Helper method for asserting selected table cells.
-	//
-	// To check if a table has expected cells selected pass two dimensional array of truthy and falsy values:
-	//
-	//		assertSelectedCells( [
-	//			[ 0, 1 ],
-	//			[ 0, 1 ]
-	//		] );
-	//
-	// The above call will check if table has second column selected (assuming no spans).
-	//
-	// **Note**: This function operates on child indexes - not rows/columns.
-	function assertSelectedCells( tableMap ) {
-		const tableIndex = 0;
-
-		for ( let rowIndex = 0; rowIndex < tableMap.length; rowIndex++ ) {
-			const row = tableMap[ rowIndex ];
-
-			for ( let cellIndex = 0; cellIndex < row.length; cellIndex++ ) {
-				const expectSelected = row[ cellIndex ];
-
-				if ( expectSelected ) {
-					assertNodeIsSelected( [ tableIndex, rowIndex, cellIndex ] );
-				} else {
-					assertNodeIsNotSelected( [ tableIndex, rowIndex, cellIndex ] );
-				}
-			}
-		}
-	}
-
-	function assertNodeIsSelected( path ) {
-		const node = modelRoot.getNodeByPath( path );
-		const selectionRanges = Array.from( model.document.selection.getRanges() );
-
-		expect( selectionRanges.some( range => range.containsItem( node ) ), `Expected node [${ path }] to be selected` ).to.be.true;
-	}
-
-	function assertNodeIsNotSelected( path ) {
-		const node = modelRoot.getNodeByPath( path );
-		const selectionRanges = Array.from( model.document.selection.getRanges() );
-
-		expect( selectionRanges.every( range => !range.containsItem( node ) ), `Expected node [${ path }] to be not selected` ).to.be.true;
-	}
 } );
