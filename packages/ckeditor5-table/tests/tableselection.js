@@ -9,7 +9,9 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 
 import TableEditing from '../src/tableediting';
 import TableSelection from '../src/tableselection';
-import { modelTable } from './_utils/utils';
+import { modelTable, viewTable } from './_utils/utils';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'table selection', () => {
 	let editor, model, tableSelection, modelRoot;
@@ -293,6 +295,30 @@ describe( 'table selection', () => {
 				expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
 					firstCell, modelRoot.getNodeByPath( [ 0, 1, 1 ] ), lastCell
 				] );
+			} );
+		} );
+
+		describe.only( 'behavior', () => {
+			it( 'should clear selection on external changes', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+
+				editor.model.change( writer => {
+					writer.setSelection( modelRoot.getNodeByPath( [ 0, 0, 0, 0 ] ), 0 );
+				} );
+
+				assertSelectedCells( [
+					[ 0, 0, 0 ],
+					[ 0, 0, 0 ],
+					[ 0, 0, 0 ]
+				] );
+
+				expect( editor.editing.view.document.selection.isFake ).to.be.false;
+				assertEqualMarkup( getViewData( editor.editing.view ), viewTable( [
+					[ '{}11', '12', '13' ],
+					[ '21', '22', '23' ],
+					[ '31', '32', '33' ]
+				], { asWidget: true } ) );
 			} );
 		} );
 	} );

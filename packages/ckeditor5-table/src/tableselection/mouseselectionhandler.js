@@ -153,6 +153,8 @@ export default class MouseSelectionHandler {
 	}
 }
 
+mix( MouseSelectionHandler, ObservableMixin );
+
 function isButtonPressed( domEventData ) {
 	return !!domEventData.domEvent.buttons;
 }

@@ -90,9 +90,14 @@ export default class TableSelection extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		this._tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const editor = this.editor;
+		const selection = editor.model.document.selection;
 
-		setupTableSelectionHighlighting( this.editor, this );
+		this._tableUtils = editor.plugins.get( 'TableUtils' );
+
+		setupTableSelectionHighlighting( editor, this );
+
+		selection.on( 'change:range', () => this._clearSelectionOnExternalChange( selection ) );
 	}
 
 	/**
@@ -233,5 +238,17 @@ export default class TableSelection extends Plugin {
 		model.change( writer => {
 			writer.setSelection( modelRanges );
 		} );
+	}
+
+	/**
+	 * Checks if selection has changed from an external source and it is required to clear internal state.
+	 *
+	 * @param {module:engine/model/documentselection~DocumentSelection} selection
+	 * @private
+	 */
+	_clearSelectionOnExternalChange( selection ) {
+		if ( selection.rangeCount <= 1 && this.hasMultiCellSelection ) {
+			this.clearSelection();
+		}
 	}
 }
