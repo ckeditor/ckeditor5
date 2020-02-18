@@ -12,54 +12,54 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Spanish (https://www.transifex.com/ckeditor/teams/11143/es/)\n"
-"Language: es\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Thai (https://www.transifex.com/ckeditor/teams/11143/th/)\n"
+"Language: th\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Label for the image widget."
 msgid "image widget"
-msgstr "Widget de imagen"
+msgstr "วิดเจ็ตรูปภาพ"
 
 msgctxt "Label for the Side image option."
 msgid "Side image"
-msgstr "Imagen lateral"
+msgstr "รูปด้านข้าง"
 
 msgctxt "Label for the Full size image option."
 msgid "Full size image"
-msgstr "Imagen a tamaño completo"
+msgstr "รูปขนาดเต็ม"
 
 msgctxt "Label for the Left aligned image option"
 msgid "Left aligned image"
-msgstr "Imagen alineada a la izquierda"
+msgstr "จัดแนวภาพซ้าย"
 
 msgctxt "Label for the Centered image option"
 msgid "Centered image"
-msgstr "Imagen centrada"
+msgstr "จัดแนวรูปกึ่งกลาง"
 
 msgctxt "Label for the Right aligned image option"
 msgid "Right aligned image"
-msgstr "Imagen alineada a la derecha"
+msgstr "จัดแนวภาพขวา"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
-msgstr "Cambiar el texto alternativo de la imagen"
+msgstr "เปลี่ยนข้อความเมื่อไม่พบรูป"
 
 msgctxt "Label for the image text alternative input."
 msgid "Text alternative"
-msgstr "Texto alternativo"
+msgstr "ข้อความเมื่อไม่พบรูป"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
-msgstr "Introducir título de la imagen"
+msgstr "ระบุคำอธิบายภาพ"
 
 msgctxt "Label for the insert image toolbar button."
 msgid "Insert image"
-msgstr "Insertar imagen"
+msgstr "แทรกรูป"
 
 msgctxt "Title of the notification displayed when upload fails."
 msgid "Upload failed"
-msgstr "Fallo en la subida"
+msgstr "อัปโหลดไม่สำเร็จ"
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"
-msgstr "Barra de herramientas de imagen"
+msgstr "เครื่องมือรูปภาพ"
