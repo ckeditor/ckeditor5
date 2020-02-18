@@ -264,6 +264,7 @@ describe( 'ImageResize', () => {
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-left' );
 			const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-left' );
 			const finalPointerPosition = initialPosition.clone().moveBy( 0, 10 );
+			const plugin = editor.plugins.get( 'WidgetResize' );
 
 			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, {
 				from: initialPosition,
@@ -272,10 +273,13 @@ describe( 'ImageResize', () => {
 
 			expect( '120px' ).to.be.equal( domParts.widget.style.width );
 
-			// ui#update (fired after undo changes) handling is throttled. Wait, so that it will redraw instantly.
-			await wait( 220 );
-
 			editor.commands.get( 'undo' ).execute();
+
+			// Toggle _visibleResizer to force synchronous redraw. Otherwise you'd need to wait ~200ms for
+			// throttled redraw to take place, making tests slower.
+			const visibleResizer = plugin._visibleResizer;
+			plugin._visibleResizer = null;
+			plugin._visibleResizer = visibleResizer;
 
 			const resizerWrapper = document.querySelector( '.ck-widget__resizer' );
 			const shadowBoundingRect = resizerWrapper.getBoundingClientRect();
