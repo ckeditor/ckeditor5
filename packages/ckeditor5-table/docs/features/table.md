@@ -23,7 +23,9 @@ In addition to the default table features described in the [previous section](#b
 
 {@snippet features/table-styling}
 
-Put the caret anywhere inside the table and click the **"Table properties"** button in the toolbar to open a pop–up with multiple options that will allow you to shape the look of the entire table. If you click the **"Cell properties"** button, a similar interface will appear with styling options for individual table cells. [Learn more](#configuring-background-and-border-colors) about configuring color palettes in the table styling pop–up interfaces.
+Put the caret anywhere inside the table and click the **"Table properties"** button in the toolbar to open a pop–up with multiple options that will allow you to shape the look of the entire table. If you click the **"Cell properties"** button, a similar interface will appear with styling options for individual table cells.
+
+[Learn more](#configuring-styling-tools) about configuring color palettes in the table styling pop–up interfaces.
 
 <info-box>
 	By default, table styling tools are not included in the {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
@@ -102,13 +104,15 @@ ClassicEditor
 	.catch( ... );
 ```
 
-[Learn more](#configuring-background-and-border-colors) about configuring color palettes in the table and table cell properties pop–ups.
+<info-box info>
+	Learn more about [configuring color palettes](#configuring-styling-tools) in the table and table cell property pop–ups.
+</info-box>
 
 <info-box info>
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
-## Configuring background and border colors
+## Configuring styling tools
 
 <info-box>
 	By default, table styling tools are not included in {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
@@ -124,10 +128,10 @@ With the selection inside any table cell, use the **"Table properties"** and **"
 
 You can use these specific configuration options to define customized color palettes for background and border colors to match your document:
 
-* {@link module:table/table~TableConfig#tableProperties `config.tableProperties.borderColors`} — defines the color palette for table borders,
-* {@link module:table/table~TableConfig#tableProperties `config.tableProperties.backgroundColors`} — defines the color palette for table backgrounds,
-* {@link module:table/table~TableConfig#tableCellProperties `config.tableCellProperties.borderColors`} — defines the color palette for cell borders,
-* {@link module:table/table~TableConfig#tableCellProperties `config.tableCellProperties.backgroundColors`} – defines the color palette for cell backgrounds.
+* {@link module:table/table~TableConfig#tableProperties `tableProperties.borderColors`} — defines the color palette for table borders,
+* {@link module:table/table~TableConfig#tableProperties `tableProperties.backgroundColors`} — defines the color palette for table backgrounds,
+* {@link module:table/table~TableConfig#tableCellProperties `tableCellProperties.borderColors`} — defines the color palette for cell borders,
+* {@link module:table/table~TableConfig#tableCellProperties `tableCellProperties.backgroundColors`} – defines the color palette for cell backgrounds.
 
 <info-box>
 	The above configurations **do not** impact the {@link builds/guides/integration/basic-api#setting-the-editor-data data loaded into the editor}, i.e. they do not limit or filter the colors in the data. They are used only in the user interface allowing users to pick colors in a more convenient way.
