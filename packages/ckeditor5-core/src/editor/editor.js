@@ -20,6 +20,7 @@ import EditingKeystrokeHandler from '../editingkeystrokehandler';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 /**
  * The class representing a basic, generic editor.
@@ -162,13 +163,21 @@ export default class Editor {
 		this.model = new Model();
 
 		/**
+		 * StylesProcessor is responsible for writing and reading a normalized styles object.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/stylesmap~StylesProcessor}
+		 */
+		this.stylesProcessor = new StylesProcessor();
+
+		/**
 		 * The {@link module:engine/controller/datacontroller~DataController data controller}.
 		 * Used e.g. for setting and retrieving the editor data.
 		 *
 		 * @readonly
 		 * @member {module:engine/controller/datacontroller~DataController}
 		 */
-		this.data = new DataController( this.model );
+		this.data = new DataController( this.model, this.stylesProcessor );
 
 		/**
 		 * The {@link module:engine/controller/editingcontroller~EditingController editing controller}.
@@ -177,7 +186,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:engine/controller/editingcontroller~EditingController}
 		 */
-		this.editing = new EditingController( this.model );
+		this.editing = new EditingController( this.model, this.stylesProcessor );
 		this.editing.view.document.bind( 'isReadOnly' ).to( this );
 
 		/**

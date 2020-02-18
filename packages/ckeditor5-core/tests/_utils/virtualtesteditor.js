@@ -21,7 +21,7 @@ export default class VirtualTestEditor extends Editor {
 		super( config );
 
 		// Use the HTML data processor in this editor.
-		this.data.processor = new HtmlDataProcessor();
+		this.data.processor = new HtmlDataProcessor( this.stylesProcessor );
 
 		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot();
