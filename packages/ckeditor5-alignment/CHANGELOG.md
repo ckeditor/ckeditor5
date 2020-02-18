@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v16.0.0...v17.0.0) (2020-02-18)
+
+### MAJOR BREAKING CHANGES
+
+* The `align-left`, `align-right`, `align-center`, and `align-justify` icons have been moved to `ckeditor5-core`.
+
+### Other changes
+
+* Moved alignment icons to ckeditor5-core (see [ckeditor/ckeditor5-table#227](https://github.com/ckeditor/ckeditor5-table/issues/227)). ([410e279](https://github.com/ckeditor/ckeditor5-alignment/commit/410e279))
+* Reverted year 2020 in .po files license header. ([15b257e](https://github.com/ckeditor/ckeditor5-alignment/commit/15b257e))
+* Updated translations. ([288672f](https://github.com/ckeditor/ckeditor5-alignment/commit/288672f)) 
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Other changes
