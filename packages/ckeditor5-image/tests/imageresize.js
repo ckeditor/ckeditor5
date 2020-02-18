@@ -272,9 +272,10 @@ describe( 'ImageResize', () => {
 
 			expect( '120px' ).to.be.equal( domParts.widget.style.width );
 
-			editor.commands.get( 'undo' ).execute();
+			// ui#update (fired after undo changes) handling is throttled. Wait, so that it will redraw instantly.
+			await wait( 200 );
 
-			await wait( 200 ); // ui#update event is throttled.
+			editor.commands.get( 'undo' ).execute();
 
 			const resizerWrapper = document.querySelector( '.ck-widget__resizer' );
 			const shadowBoundingRect = resizerWrapper.getBoundingClientRect();
