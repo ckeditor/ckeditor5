@@ -214,6 +214,7 @@ export default class TableSelection extends Plugin {
 			writer.insert( table, fragment, 0 );
 
 			const rowsMap = new Map();
+			const columnsIndexesMap = new Map();
 
 			for ( const tableCell of this.getSelectedTableCells() ) {
 				const row = tableCell.parent;
@@ -224,14 +225,38 @@ export default class TableSelection extends Plugin {
 					rowsMap.set( row, newRow );
 				}
 
-				writer.append( tableCell._clone( true ), rowsMap.get( row ) );
-			}
+				const clonedCell = tableCell._clone( true );
+				columnsIndexesMap.set( clonedCell, this._tableUtils.getCellLocation( tableCell ) );
 
-			// Fix table;
+				writer.append( clonedCell, rowsMap.get( row ) );
+			}
 
 			const { row: startRow, column: startColumn } = this._tableUtils.getCellLocation( this._startElement );
 			const { row: endRow, column: endColumn } = this._tableUtils.getCellLocation( this._endElement );
 
+			// Prepend cells.
+			for ( const row of table.getChildren() ) {
+				for ( const tableCell of Array.from( row.getChildren() ) ) {
+					const { column } = this._tableUtils.getCellLocation( tableCell );
+					const { column: originalColumn } = columnsIndexesMap.get( tableCell );
+
+					const shiftedColumn = originalColumn - startColumn;
+
+					if ( column !== shiftedColumn ) {
+						for ( let i = 0; i < shiftedColumn - column; i++ ) {
+							const prepCell = writer.createElement( 'tableCell' );
+							writer.insert( prepCell, writer.createPositionBefore( tableCell ) );
+
+							const paragraph = writer.createElement( 'paragraph' );
+
+							writer.insert( paragraph, prepCell, 0 );
+							writer.insertText( '', paragraph, 0 );
+						}
+					}
+				}
+			}
+
+			// Trim table.
 			const width = endColumn - startColumn + 1;
 			const height = endRow - startRow + 1;
 

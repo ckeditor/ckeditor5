@@ -82,7 +82,7 @@ describe( 'table selection', () => {
 				} );
 			} );
 
-			it( 'should fix selected table (cell has colspan that exceeds rectangular selection by 1)', done => {
+			it( 'should trim selected table to a selection rectangle (inner cell with colspan, no colspan after trim)', done => {
 				setModelData( model, modelTable( [
 					[ '11[]', '12', '13' ],
 					[ '21', { contents: '22', colspan: 2 } ],
@@ -108,7 +108,7 @@ describe( 'table selection', () => {
 				} );
 			} );
 
-			it( 'should fix selected table (cell has colspan that exceeds rectangular selection but spans over selection)', done => {
+			it( 'should trim selected table to a selection rectangle (inner cell with colspan, has colspan after trim)', done => {
 				setModelData( model, modelTable( [
 					[ '11[]', '12', '13' ],
 					[ { contents: '21', colspan: 3 } ],
@@ -134,7 +134,7 @@ describe( 'table selection', () => {
 				} );
 			} );
 
-			it( 'should fix selected table (cell has rowspan that exceeds rectangular selection by 1)', done => {
+			it( 'should trim selected table to a selection rectangle (inner cell with rowspan, no colspan after trim)', done => {
 				setModelData( model, modelTable( [
 					[ '11[]', '12', '13' ],
 					[ '21', { contents: '22', rowspan: 2 }, '23' ],
@@ -159,7 +159,7 @@ describe( 'table selection', () => {
 				} );
 			} );
 
-			it( 'should fix selected table (cell has rowspan that exceeds rectangular selection but spans over selection)', done => {
+			it( 'should trim selected table to a selection rectangle (inner cell with rowspan, has rowspan after trim)', done => {
 				setModelData( model, modelTable( [
 					[ '11[]', { contents: '12', rowspan: 3 }, '13' ],
 					[ '21', '23' ],
@@ -173,6 +173,57 @@ describe( 'table selection', () => {
 					expect( stringifyView( data.content ) ).to.equal( viewTable( [
 						[ '11', { contents: '12', rowspan: 2 }, '13' ],
 						[ '21', '23' ]
+					] ) );
+
+					done();
+				} );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: createDataTransfer(),
+					preventDefault: sinon.spy()
+				} );
+			} );
+
+			it( 'should prepend spanned columns with empty cells (outside cell with colspan)', done => {
+				setModelData( model, modelTable( [
+					[ '11[]', '12', '13' ],
+					[ { contents: '21', colspan: 2 }, '23' ],
+					[ '31', '32', '33' ]
+				] ) );
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
+
+				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+					expect( stringifyView( data.content ) ).to.equal( viewTable( [
+						[ '12', '13' ],
+						[ '', '23' ],
+						[ '32', '33' ]
+					] ) );
+
+					done();
+				} );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: createDataTransfer(),
+					preventDefault: sinon.spy()
+				} );
+			} );
+
+			it( 'should prepend spanned columns with empty cells (outside cell with rowspan)', done => {
+				setModelData( model, modelTable( [
+					[ '11[]', { contents: '12', rowspan: 2 }, '13' ],
+					[ '21', '23' ],
+					[ '31', '32', '33' ]
+				] ) );
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
+
+				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+					expect( stringifyView( data.content ) ).to.equal( viewTable( [
+						[ '21', '', '23' ],
+						[ '31', '32', '33' ]
 					] ) );
 
 					done();
