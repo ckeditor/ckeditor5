@@ -8,7 +8,6 @@ import ViewElement from '../../src/view/element';
 import ViewText from '../../src/view/text';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewConsumable from '../../src/conversion/viewconsumable';
-import StylesMap, { StylesProcessor } from '../../src/view/stylesmap';
 import { addBorderRules } from '../../src/view/styles/border';
 import { addMarginRules } from '../../src/view/styles/margin';
 import { addPaddingRules } from '../../src/view/styles/padding';
@@ -16,8 +15,15 @@ import { addPaddingRules } from '../../src/view/styles/padding';
 describe( 'ViewConsumable', () => {
 	let viewConsumable, el, viewDocument;
 
-	beforeEach( () => {
+	before( () => {
 		viewDocument = new ViewDocument();
+
+		addBorderRules( viewDocument.stylesProcessor );
+		addMarginRules( viewDocument.stylesProcessor );
+		addPaddingRules( viewDocument.stylesProcessor );
+	} );
+
+	beforeEach( () => {
 		viewConsumable = new ViewConsumable();
 		el = new ViewElement( viewDocument, 'p' );
 	} );
@@ -558,13 +564,7 @@ describe( 'ViewConsumable', () => {
 
 	describe( 'style shorthands handling', () => {
 		before( () => {
-			const stylesProcessor = new StylesProcessor();
 
-			StylesMap._setProcessor( stylesProcessor );
-
-			addBorderRules( stylesProcessor );
-			addMarginRules( stylesProcessor );
-			addPaddingRules( stylesProcessor );
 		} );
 
 		describe( 'add', () => {

@@ -7,16 +7,15 @@ import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
 import { addBorderRules } from '../../../src/view/styles/border';
 
 describe( 'Border styles normalization', () => {
-	let styles;
+	let styles, stylesProcessor;
 
 	before( () => {
-		const stylesProcessor = new StylesProcessor();
-		StylesMap._setProcessor( stylesProcessor );
+		stylesProcessor = new StylesProcessor();
 		addBorderRules( stylesProcessor );
 	} );
 
 	beforeEach( () => {
-		styles = new StylesMap();
+		styles = new StylesMap( stylesProcessor );
 	} );
 
 	it( 'should parse border shorthand', () => {

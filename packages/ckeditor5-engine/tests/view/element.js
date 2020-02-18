@@ -237,7 +237,12 @@ describe( 'Element', () => {
 	} );
 
 	describe( 'isSimilar()', () => {
-		const el = new Element( document, 'p', { foo: 'bar' } );
+		let el;
+
+		beforeEach( () => {
+			el = new Element( document, 'p', { foo: 'bar' } );
+		} );
+
 		it( 'should return false when comparing to non-element', () => {
 			expect( el.isSimilar( null ) ).to.be.false;
 			expect( el.isSimilar( {} ) ).to.be.false;

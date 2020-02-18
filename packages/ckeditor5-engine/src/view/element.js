@@ -111,7 +111,7 @@ export default class Element extends Node {
 		 * @protected
 		 * @member {module:engine/view/stylesmap~StylesMap} module:engine/view/element~Element#_styles
 		 */
-		this._styles = new StylesMap();
+		this._styles = new StylesMap( this.document.stylesProcessor );
 
 		if ( this._attrs.has( 'style' ) ) {
 			// Remove style attribute and handle it by styles map.

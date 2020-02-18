@@ -11,7 +11,7 @@ import DocumentSelection from './documentselection';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import StylesMap from './stylesmap';
+import { StylesProcessor } from './stylesmap';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
@@ -46,6 +46,14 @@ export default class Document {
 		 * @member {module:utils/collection~Collection} module:engine/view/document~Document#roots
 		 */
 		this.roots = new Collection( { idProperty: 'rootName' } );
+
+		/**
+		 * StylesProcessor is responsible for writing and reading a normalized styles object.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/stylesmap~StylesProcessor}
+		 */
+		this.stylesProcessor = new StylesProcessor();
 
 		/**
 		 * Defines whether document is in read-only mode.
@@ -174,7 +182,7 @@ export default class Document {
 	 * @param {Function} callback
 	 */
 	addStyleProcessorRules( callback ) {
-		callback( StylesMap._styleProcessor );
+		callback( this.stylesProcessor );
 	}
 
 	/**

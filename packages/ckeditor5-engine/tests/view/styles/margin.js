@@ -7,16 +7,15 @@ import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
 import { addMarginRules } from '../../../src/view/styles/margin';
 
 describe( 'Margin styles normalizer', () => {
-	let styles;
+	let styles, stylesProcessor;
 
 	before( () => {
-		const stylesProcessor = new StylesProcessor();
-		StylesMap._setProcessor( stylesProcessor );
+		stylesProcessor = new StylesProcessor();
 		addMarginRules( stylesProcessor );
 	} );
 
 	beforeEach( () => {
-		styles = new StylesMap();
+		styles = new StylesMap( stylesProcessor );
 	} );
 
 	it( 'should set all margins (1 value defined)', () => {

@@ -7,16 +7,15 @@ import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
 import { addPaddingRules } from '../../../src/view/styles/padding';
 
 describe( 'Padding styles normalization', () => {
-	let styles;
+	let styles, stylesProcessor;
 
 	before( () => {
-		const stylesProcessor = new StylesProcessor();
-		StylesMap._setProcessor( stylesProcessor );
+		stylesProcessor = new StylesProcessor();
 		addPaddingRules( stylesProcessor );
 	} );
 
 	beforeEach( () => {
-		styles = new StylesMap();
+		styles = new StylesMap( stylesProcessor );
 	} );
 
 	it( 'should set all padding values (1 value defined)', () => {

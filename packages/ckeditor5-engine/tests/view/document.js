@@ -10,7 +10,6 @@ import Document from '../../src/view/document';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import createViewRoot from './_utils/createroot';
-import StylesMap from '../../src/view/stylesmap';
 
 describe( 'Document', () => {
 	let domRoot, viewDocument;
@@ -94,13 +93,13 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'addStyleProcessorRules()', () => {
-		it( 'should ', () => {
+		it( 'should execute callback with an instance of StyleProcessor as the first argument', () => {
 			const spy = sinon.spy();
 
 			viewDocument.addStyleProcessorRules( spy );
 
 			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, StylesMap._styleProcessor );
+			sinon.assert.calledWithExactly( spy, viewDocument.stylesProcessor );
 		} );
 	} );
 } );
