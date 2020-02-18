@@ -273,7 +273,7 @@ describe( 'ImageResize', () => {
 			expect( '120px' ).to.be.equal( domParts.widget.style.width );
 
 			// ui#update (fired after undo changes) handling is throttled. Wait, so that it will redraw instantly.
-			await wait( 200 );
+			await wait( 220 );
 
 			editor.commands.get( 'undo' ).execute();
 
