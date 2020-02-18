@@ -14,7 +14,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  * The table cell padding command.
  *
  * The command is registered by the {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
- * `'tableCellPadding'` editor command.
+ * the `'tableCellPadding'` editor command.
  *
  * To change the padding of selected cells, execute the command:
  *

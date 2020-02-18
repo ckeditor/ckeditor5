@@ -14,7 +14,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  * The table cell height command.
  *
  * The command is registered by the {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
- * `'tableCellHeight'` editor command.
+ * the `'tableCellHeight'` editor command.
  *
  * To change the height of selected cells, execute the command:
  *
