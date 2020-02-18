@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v16.0.0...v17.0.0) (2020-02-18)
+
+### Other changes
+
+* Reverted year 2020 in .po files license header. ([fc6f9c3](https://github.com/ckeditor/ckeditor5-autosave/commit/fc6f9c3))
+* Updated translations. ([d0042f4](https://github.com/ckeditor/ckeditor5-autosave/commit/d0042f4)) 
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Other changes
