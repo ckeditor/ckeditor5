@@ -40,6 +40,20 @@ describe( 'table selection', () => {
 
 	describe( 'Clipboard integration', () => {
 		describe( 'copy', () => {
+			it( 'should to nothing for normal selection in table', () => {
+				const dataTransferMock = createDataTransfer();
+				const spy = sinon.spy();
+
+				viewDocument.on( 'clipboardOutput', spy );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: dataTransferMock,
+					preventDefault: sinon.spy()
+				} );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
 			it( 'should copy selected table cells as standalone table', done => {
 				const dataTransferMock = createDataTransfer();
 				const preventDefaultSpy = sinon.spy();
