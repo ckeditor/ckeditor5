@@ -55,8 +55,8 @@ describe( 'table selection', () => {
 
 					expect( data.content ).is.instanceOf( ViewDocumentFragment );
 					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '22', '23' ],
-						[ '32', '33' ]
+						[ '12', '13' ],
+						[ '22', '23' ]
 					] ) );
 
 					done();

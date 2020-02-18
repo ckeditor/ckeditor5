@@ -99,6 +99,21 @@ export default class TableSelection extends Plugin {
 
 		selection.on( 'change:range', () => this._clearSelectionOnExternalChange( selection ) );
 
+		this.listenTo( editor.editing.view.document, 'copy', ( evt, data ) => {
+			if ( !this.hasMultiCellSelection ) {
+				return;
+			}
+
+			const dataTransfer = data.dataTransfer;
+
+			data.preventDefault();
+			evt.stop();
+
+			const content = editor.data.toView( this.getSelectedTableAsFragment() );
+
+			editor.editing.view.document.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name } );
+		}, { priority: 'normal' } );
+
 		this.listenTo( editor.editing.view.document, 'cut', ( evt, data ) => {
 			if ( this.hasMultiCellSelection ) {
 				data.preventDefault();
@@ -188,6 +203,32 @@ export default class TableSelection extends Plugin {
 	clearSelection() {
 		this._startElement = undefined;
 		this._endElement = undefined;
+	}
+
+	getSelectedTableAsFragment() {
+		return this.editor.model.change( writer => {
+			const fragment = writer.createDocumentFragment();
+
+			const table = writer.createElement( 'table' );
+
+			writer.insert( table, fragment, 0 );
+
+			const rowsMap = new Map();
+
+			for ( const tableCell of this.getSelectedTableCells() ) {
+				const row = tableCell.parent;
+
+				if ( !rowsMap.has( row ) ) {
+					const newRow = row._clone();
+					writer.append( newRow, table );
+					rowsMap.set( row, newRow );
+				}
+
+				writer.append( tableCell._clone( true ), rowsMap.get( row ) );
+			}
+
+			return fragment;
+		} );
 	}
 
 	/**
