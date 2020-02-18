@@ -23,7 +23,7 @@ In addition to the default table features described in the [previous section](#b
 
 {@snippet features/table-styling}
 
-Put the caret anywhere inside the table and click the **"Table properties"** button in the toolbar to open a pop–up with multiple options that will allow you to shape the look of the entire table to your needs. If you click the **"Cell properties"** button, a similar interface will appear but for individual table cells.
+Put the caret anywhere inside the table and click the **"Table properties"** button in the toolbar to open a pop–up with multiple options that will allow you to shape the look of the entire table to your needs. If you click the **"Cell properties"** button, a similar interface will appear but for individual table cells. [Learn more](#configuring-background-and-border-colors) about configuring color palettes in the table styling pop–up interfaces.
 
 <info-box>
 	By default, table styling tools are not included in {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
@@ -85,16 +85,112 @@ ClassicEditor
 			contentToolbar: [
 				'tableColumn', 'tableRow', 'mergeTableCells',
 				'tableProperties', 'tableCellProperties'
-			]
+			],
+
+			// Configuration of the TableProperties plugin.
+			tableProperties: {
+				// ...
+			},
+
+			// Configuration of the TableCellProperties plugin.
+			tableCellProperties: {
+				// ...
+			}
 		}
 	} )
 	.then( ... )
 	.catch( ... );
 ```
 
+[Learn more](#configuring-background-and-border-colors) about configuring color palettes in the table and table cell properties pop–ups.
+
 <info-box info>
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
+
+## Configuring background and border colors
+
+<info-box>
+	By default, table styling tools are not included in {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
+</info-box>
+
+Table and cell styling tools allow users to create tables with colorful backgrounds and borders. These colors can be easily picked using color palettes in **"Table properties"** and **"Cell properties"** pop–ups. To help users choose the right colors for the content, the color palettes can be pre–configured, like in the editor below:
+
+{@snippet features/table-styling-colors}
+
+With the selection inside any table cell, use the **"Table properties"** and **"Cell properties"** buttons in the toolbar to inspect available styling and color options.
+
+### Customizing color palettes
+
+You can use these specific configuration options to define customized color palettes for background and border colors to match your document:
+
+* {@link module:table/table~TableConfig#tableProperties `config.tableProperties.borderColors`} — defines the color palette for table borders,
+* {@link module:table/table~TableConfig#tableProperties `config.tableProperties.backgroundColors`} — defines the color palette for table backgrounds,
+* {@link module:table/table~TableConfig#tableCellProperties `config.tableCellProperties.borderColors`} — defines the color palette for cell borders,
+* {@link module:table/table~TableConfig#tableCellProperties `config.tableCellProperties.backgroundColors`} – defines the color palette for cell backgrounds.
+
+<info-box>
+	The above configurations **do not** impact the {@link builds/guides/integration/basic-api#setting-the-editor-data data loaded into the editor}, i.e. they do not limit or filter the colors in the data. They are used only in the user interface allowing users to pick colors in a more convenient way.
+</info-box>
+
+For instance, to the define the same color palette for all border and background configurations, use the following code snippet:
+
+```js
+const customColorPalette = [
+	{
+		color: 'hsl(4, 90%, 58%)',
+		label: 'Red'
+	},
+	{
+		color: 'hsl(340, 82%, 52%)',
+		label: 'Pink'
+	},
+	{
+		color: 'hsl(291, 64%, 42%)',
+		label: 'Purple'
+	},
+	{
+		color: 'hsl(262, 52%, 47%)',
+		label: 'Deep Purple'
+	},
+	{
+		color: 'hsl(231, 48%, 48%)',
+		label: 'Indigo'
+	},
+	{
+		color: 'hsl(207, 90%, 54%)',
+		label: 'Blue'
+	},
+
+	// ...
+];
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Table, TableToolbar, TableProperties, TableCellProperties, Bold, ... ],
+		toolbar: [ 'insertTable', ... ],
+		table: {
+			contentToolbar: [
+				'tableColumn', 'tableRow', 'mergeTableCells',
+				'tableProperties', 'tableCellProperties'
+			],
+
+			// Set the palettes for tables.
+			tableProperties: {
+				borderColors: customColorPalette,
+				backgroundColors: customColorPalette
+			},
+
+			// Set the palettes for table cells.
+			tableCellProperties: {
+				borderColors: customColorPalette,
+				backgroundColors: customColorPalette
+			}
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
 
 ## Block vs inline content in table cells
 
