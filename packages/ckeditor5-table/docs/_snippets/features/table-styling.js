@@ -74,7 +74,7 @@ const COLOR_PALETTE = [
 		label: 'Light Aqua',
 	},
 	{
-		color: 'hsl(180, 60%, 28%)',
+		color: 'hsl(180, 97%, 31%)',
 		label: 'Aqua'
 	},
 	{
