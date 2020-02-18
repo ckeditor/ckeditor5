@@ -11,7 +11,6 @@ import DocumentSelection from './documentselection';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import { StylesProcessor } from './stylesmap';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
@@ -24,8 +23,10 @@ import { StylesProcessor } from './stylesmap';
 export default class Document {
 	/**
 	 * Creates a Document instance.
+	 *
+	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor Styles processor.
 	 */
-	constructor() {
+	constructor( stylesProcessor ) {
 		/**
 		 * Selection done on this document.
 		 *
@@ -53,7 +54,7 @@ export default class Document {
 		 * @readonly
 		 * @member {module:engine/view/stylesmap~StylesProcessor}
 		 */
-		this.stylesProcessor = new StylesProcessor();
+		this.stylesProcessor = stylesProcessor;
 
 		/**
 		 * Defines whether document is in read-only mode.

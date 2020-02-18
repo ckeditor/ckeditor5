@@ -22,8 +22,18 @@ import ViewDocument from '../view/document';
 export default class HtmlDataProcessor {
 	/**
 	 * Creates a new instance of the HTML data processor class.
+	 *
+	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor Styles processor.
 	 */
-	constructor() {
+	constructor( stylesProcessor ) {
+		/**
+		 * Styles processor.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/stylesmap~StylesProcessor}
+		 */
+		this.stylesProcessor = stylesProcessor;
+
 		/**
 		 * A DOM parser instance used to parse an HTML string to an HTML document.
 		 *
@@ -73,7 +83,7 @@ export default class HtmlDataProcessor {
 	toView( data ) {
 		// Convert input HTML data to DOM DocumentFragment.
 		const domFragment = this._toDom( data );
-		const viewDocument = new ViewDocument();
+		const viewDocument = new ViewDocument( this.stylesProcessor );
 
 		// Convert DOM DocumentFragment to view DocumentFragment.
 		return this._domConverter.domToView( viewDocument, domFragment );

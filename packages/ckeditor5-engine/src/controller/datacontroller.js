@@ -47,10 +47,11 @@ export default class DataController {
 	 * Creates a data controller instance.
 	 *
 	 * @param {module:engine/model/model~Model} model Data model.
+	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor Styles processor.
 	 * @param {module:engine/dataprocessor/dataprocessor~DataProcessor} [dataProcessor] Data processor that should be used
 	 * by the controller.
 	 */
-	constructor( model, dataProcessor ) {
+	constructor( model, stylesProcessor, dataProcessor ) {
 		/**
 		 * Data model.
 		 *
@@ -58,6 +59,14 @@ export default class DataController {
 		 * @member {module:engine/model/model~Model}
 		 */
 		this.model = model;
+
+		/**
+		 * Styles processor.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/stylesmap~StylesProcessor}
+		 */
+		this.stylesProcessor = stylesProcessor;
 
 		/**
 		 * Data processor used during the conversion.
@@ -187,7 +196,7 @@ export default class DataController {
 
 		// First, convert elements.
 		const modelRange = ModelRange._createIn( modelElementOrFragment );
-		const viewDocument = new ViewDocument();
+		const viewDocument = new ViewDocument( this.stylesProcessor );
 
 		const viewDocumentFragment = new ViewDocumentFragment( viewDocument );
 

@@ -62,14 +62,17 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class View {
-	constructor() {
+	/**
+	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor Styles processor.
+	 */
+	constructor( stylesProcessor ) {
 		/**
 		 * Instance of the {@link module:engine/view/document~Document} associated with this view controller.
 		 *
 		 * @readonly
 		 * @type {module:engine/view/document~Document}
 		 */
-		this.document = new Document();
+		this.document = new Document( stylesProcessor );
 
 		/**
 		 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} used by
