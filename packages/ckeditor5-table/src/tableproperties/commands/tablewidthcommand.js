@@ -14,9 +14,9 @@ import TablePropertyCommand from './tablepropertycommand';
  * The table width command.
  *
  * The command is registered by the {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
- * `'tableWidth'` editor command.
+ * the `'tableWidth'` editor command.
  *
- * To change width of the selected table, execute the command:
+ * To change the width of the selected table, execute the command:
  *
  *		editor.execute( 'tableWidth', {
  *			value: '400px'
@@ -28,7 +28,7 @@ import TablePropertyCommand from './tablepropertycommand';
  *			value: '50'
  *		} );
  *
- * Will set the `width` attribute to `'50px'` in the model.
+ * will set the `width` attribute to `'50px'` in the model.
  *
  * @extends module:table/tableproperties/commands/tablepropertycommand
  */

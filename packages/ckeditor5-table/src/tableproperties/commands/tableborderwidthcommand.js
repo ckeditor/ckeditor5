@@ -14,7 +14,7 @@ import TablePropertyCommand from './tablepropertycommand';
  * The table width border command.
  *
  * The command is registered by the {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
- * `'tableBorderWidth'` editor command.
+ * the `'tableBorderWidth'` editor command.
  *
  * To change the border width of the selected table, execute the command:
  *
@@ -28,7 +28,7 @@ import TablePropertyCommand from './tablepropertycommand';
  *			value: '5'
  *		} );
  *
- * Will set the `borderWidth` attribute to `'5px'` in the model.
+ * will set the `borderWidth` attribute to `'5px'` in the model.
  *
  * @extends module:table/tableproperties/commands/tablepropertycommand
  */

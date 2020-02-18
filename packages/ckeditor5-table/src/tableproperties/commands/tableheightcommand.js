@@ -14,9 +14,9 @@ import { addDefaultUnitToNumericValue } from '../../commands/utils';
  * The table height command.
  *
  * The command is registered by the {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
- * `'tableHeight'` editor command.
+ * the `'tableHeight'` editor command.
  *
- * To change height of the selected table, execute the command:
+ * To change the height of the selected table, execute the command:
  *
  *		editor.execute( 'tableHeight', {
  *			value: '500px'
@@ -28,7 +28,7 @@ import { addDefaultUnitToNumericValue } from '../../commands/utils';
  *			value: '50'
  *		} );
  *
- * Will set the `height` attribute to `'50px'` in the model.
+ * will set the `height` attribute to `'50px'` in the model.
  *
  * @extends module:core/command~Command
  */
