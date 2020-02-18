@@ -37,7 +37,7 @@ describe( 'table selection', () => {
 		await editor.destroy();
 	} );
 
-	describe( 'MouseSelectionObserver', () => {
+	describe( 'MouseSelectionHandler', () => {
 		it( 'should not start table selection when mouse move is inside one table cell', () => {
 			setModelData( model, modelTable( [
 				[ '[]00', '01' ],
