@@ -9,8 +9,10 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 
 import TableEditing from '../src/tableediting';
 import TableSelection from '../src/tableselection';
-import { modelTable } from './_utils/utils';
+import { modelTable, viewTable } from './_utils/utils';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
+import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'table selection', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument;
@@ -37,6 +39,36 @@ describe( 'table selection', () => {
 	} );
 
 	describe( 'Clipboard integration', () => {
+		describe( 'copy', () => {
+			it( 'should copy selected table cells as standalone table', done => {
+				const dataTransferMock = createDataTransfer();
+				const preventDefaultSpy = sinon.spy();
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+
+				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+					expect( preventDefaultSpy.calledOnce ).to.be.true;
+					expect( data.method ).to.equal( 'copy' );
+
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+
+					expect( data.content ).is.instanceOf( ViewDocumentFragment );
+					expect( stringifyView( data.content ) ).to.equal( viewTable( [
+						[ '22', '23' ],
+						[ '32', '33' ]
+					] ) );
+
+					done();
+				} );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+		} );
+
 		describe( 'cut', () => {
 			it( 'is disabled for multi-range selection over a table', () => {
 				const dataTransferMock = createDataTransfer();
