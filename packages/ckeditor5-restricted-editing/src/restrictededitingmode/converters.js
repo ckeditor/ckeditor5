@@ -15,7 +15,7 @@ const HIGHLIGHT_CLASS = 'restricted-editing-exception_selected';
 /**
  * Adds a visual highlight style to a restricted editing exception that the selection is anchored to.
  *
- * The highlight is turned on by adding the `.ck-restricted-editing-exception_selected` class to the
+ * The highlight is turned on by adding the `.restricted-editing-exception_selected` class to the
  * exception in the view:
  *
  * * The class is removed before the conversion starts, as callbacks added with the `'highest'` priority
