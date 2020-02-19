@@ -11,8 +11,7 @@ Changelog
 
 * Implemented lazy loading for the font color and background color dropdowns. This will reduce editor initialization time. Closes [ckeditor/ckeditor5#6192](https://github.com/ckeditor/ckeditor5/issues/6192). ([165417c](https://github.com/ckeditor/ckeditor5-font/commit/165417c))
 * Moved `normalizeColorOptions()` and `getLocalizedColorOptions()` to `ckeditor5-ui` (see ckeditor/ckeditor5/issues/6106). ([c3e7673](https://github.com/ckeditor/ckeditor5-font/commit/c3e7673))
-* Reverted year 2020 in .po files license header. ([0e2c867](https://github.com/ckeditor/ckeditor5-font/commit/0e2c867))
-* Updated translations. ([db84e7a](https://github.com/ckeditor/ckeditor5-font/commit/db84e7a)) 
+* Updated translations. ([db84e7a](https://github.com/ckeditor/ckeditor5-font/commit/db84e7a))
 
 
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-font/compare/v15.0.0...v16.0.0) (2019-12-04)
