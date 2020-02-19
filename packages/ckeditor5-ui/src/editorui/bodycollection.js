@@ -37,7 +37,7 @@ export default class BodyCollection extends ViewCollection {
 	 * Creates a new instance of the {@link module:ui/editorui/bodycollection~BodyCollection}.
 	 *
 	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor editor's locale} instance.
-	 * @param {Array.<module:ui/view~View>} [initialItems] The initial items of the collection.
+	 * @param {Iterable.<module:ui/view~View>} [initialItems] The initial items of the collection.
 	 */
 	constructor( locale, initialItems = [] ) {
 		super( initialItems );
