@@ -1,6 +1,26 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### MINOR BREAKING CHANGES
+
+* The `getResizeObserver()` helper is no longer available. We recommend using the [`ResizeObserver`](http://ckeditor.com/docs/ckeditor5/latest/api/module_utils_dom_resizeobserver-ResizeObserver.html) class instead.
+* The getResizeObserver() helper is no longer available. We recommend using the ResizeObserver class instead.
+
+### Features
+
+* Added iterator interface to the `Config` class. ([1fdf2f1](https://github.com/ckeditor/ckeditor5-utils/commit/1fdf2f1))
+
+### Other changes
+
+* Fix typo. ([e52178f](https://github.com/ckeditor/ckeditor5-utils/commit/e52178f))
+* Improved `toMap` method performance. This results in improved editor data processing speed. Closes [ckeditor/ckeditor5#5854](https://github.com/ckeditor/ckeditor5/issues/5854). ([fef816e](https://github.com/ckeditor/ckeditor5-utils/commit/fef816e))
+* Replaced the `getResizeObserver()` helper with the `ResizeObserver` class for performance reasons. Closes [ckeditor/ckeditor5#6145](https://github.com/ckeditor/ckeditor5/issues/6145). ([5ed4799](https://github.com/ckeditor/ckeditor5-utils/commit/5ed4799))
+* Replaced the getResizeObserver() helper with the ResizeObserver class for performance reasons. See [ckeditor/ckeditor5#6145](https://github.com/ckeditor/ckeditor5/issues/6145). ([05c97f8](https://github.com/ckeditor/ckeditor5-utils/commit/05c97f8))
+* The `uid()` helper should be a lot faster. Closes [ckeditor/ckeditor5#6188](https://github.com/ckeditor/ckeditor5/issues/6188). ([b57fc3f](https://github.com/ckeditor/ckeditor5-utils/commit/b57fc3f))
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Bug fixes
