@@ -5,23 +5,15 @@ Changelog
 
 ### Features
 
-* Added width and height fields to the table cell properties view. Closes [ckeditor/ckeditor5#6189](https://github.com/ckeditor/ckeditor5/issues/6189). ([19fc8e9](https://github.com/ckeditor/ckeditor5-table/commit/19fc8e9))
-* Implemented the table properties form. Closes [ckeditor/ckeditor5#6112](https://github.com/ckeditor/ckeditor5/issues/6112). ([a11a146](https://github.com/ckeditor/ckeditor5-table/commit/a11a146))
-* Introduced the table and table cell properties plugins. Closes [ckeditor/ckeditor5#6048](https://github.com/ckeditor/ckeditor5/issues/6048). ([d57085d](https://github.com/ckeditor/ckeditor5-table/commit/d57085d))
-* Introduced the table cell properties UI. Closes [ckeditor/ckeditor5#6049](https://github.com/ckeditor/ckeditor5/issues/6049). ([1eb4b4c](https://github.com/ckeditor/ckeditor5-table/commit/1eb4b4c))
+* Implemented the table and table cell properties forms. Closes [ckeditor/ckeditor5#3287](https://github.com/ckeditor/ckeditor5/issues/3287).
 
 ### Bug fixes
 
-* Cancelling the table and table cell property forms should not remove a newly created table. Closes [ckeditor/ckeditor5#6180](https://github.com/ckeditor/ckeditor5/issues/6180). ([e31b431](https://github.com/ckeditor/ckeditor5-table/commit/e31b431))
 * Fixed a bug with spellchecking or pasting via the context menu into a table cell crashing the editor. Closes [ckeditor/ckeditor5#6062](https://github.com/ckeditor/ckeditor5/issues/6062). ([be0d759](https://github.com/ckeditor/ckeditor5-table/commit/be0d759))
 
 ### Other changes
 
-* Convert `alignment` table property to a `<figure>` element. Closes [ckeditor/ckeditor5#6197](https://github.com/ckeditor/ckeditor5/issues/6197). Closes [ckeditor/ckeditor5#6179](https://github.com/ckeditor/ckeditor5/issues/6179). ([717608c](https://github.com/ckeditor/ckeditor5-table/commit/717608c))
 * Implemented lazy loading for the table dropdown. This will reduce editor initialization time. Closes [ckeditor/ckeditor5#6193](https://github.com/ckeditor/ckeditor5/issues/6193). ([5daa487](https://github.com/ckeditor/ckeditor5-table/commit/5daa487))
-* Reverted year 2020 in .po files license header. ([6547c8d](https://github.com/ckeditor/ckeditor5-table/commit/6547c8d))
-* Table and table cell properties commands should add the default "px" unit to all unitless numeric values. Closes [ckeditor/ckeditor5#6098](https://github.com/ckeditor/ckeditor5/issues/6098). ([ee46155](https://github.com/ckeditor/ckeditor5-table/commit/ee46155))
-* Updated translations. ([7c2de1c](https://github.com/ckeditor/ckeditor5-table/commit/7c2de1c)) 
 
 
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v15.0.0...v16.0.0) (2019-12-04)
@@ -32,7 +24,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([7b2df5c](https://github.com/ckeditor/ckeditor5-table/commit/7b2df5c)) 
+* Updated translations. ([7b2df5c](https://github.com/ckeditor/ckeditor5-table/commit/7b2df5c))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v14.0.0...v15.0.0) (2019-10-23)
