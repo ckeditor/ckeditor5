@@ -34,7 +34,13 @@ export default class InsertTableView extends View {
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
-		this.items = this.createCollection();
+
+		/**
+		 * Creates an array of box views.
+		 *
+		 * @private
+		 */
+		this.items = this.createCollection( this._createGridCollection() );
 
 		/**
 		 * The currently selected number of rows of the new table.
@@ -99,24 +105,6 @@ export default class InsertTableView extends View {
 			}
 		} );
 
-		// Add grid boxes to table selection view.
-		for ( let index = 0; index < 100; index++ ) {
-			const boxView = new TableSizeGridBoxView();
-
-			// Listen to box view 'over' event which indicates that mouse is over this box.
-			boxView.on( 'over', () => {
-				// Translate box index to the row & column index.
-				const row = Math.floor( index / 10 );
-				const column = index % 10;
-
-				// As row & column indexes are zero-based transform it to number of selected rows & columns.
-				this.set( 'rows', row + 1 );
-				this.set( 'columns', column + 1 );
-			} );
-
-			this.items.add( boxView );
-		}
-
 		this.on( 'change:columns', () => {
 			this._highlightGridBoxes();
 		} );
@@ -161,6 +149,34 @@ export default class InsertTableView extends View {
 
 			boxView.set( 'isOn', isOn );
 		} );
+	}
+
+	/**
+	 * @private
+	 * @returns {module:table/ui/inserttableview~TableSizeGridBoxView[]} An array of boxes to be placed in table grid.
+	 */
+	_createGridCollection() {
+		const returnValue = [];
+
+		// Add grid boxes to table selection view.
+		for ( let index = 0; index < 100; index++ ) {
+			const boxView = new TableSizeGridBoxView();
+
+			// Listen to box view 'over' event which indicates that mouse is over this box.
+			boxView.on( 'over', () => {
+				// Translate box index to the row & column index.
+				const row = Math.floor( index / 10 );
+				const column = index % 10;
+
+				// As row & column indexes are zero-based transform it to number of selected rows & columns.
+				this.set( 'rows', row + 1 );
+				this.set( 'columns', column + 1 );
+			} );
+
+			returnValue.push( boxView );
+		}
+
+		return returnValue;
 	}
 }
 
