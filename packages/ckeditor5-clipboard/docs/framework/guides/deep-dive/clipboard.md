@@ -93,6 +93,104 @@ editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
 }, { priority: 'lowest' } );
 ```
 
+### Paste as plain text plugin example
+You can use knowledge from previous sections to create a full plugin which will allow users to paste the content as plain text while the feature is toggled on.
+If you're not familiar with creating plugins in CKEditor 5, we'd advise starting from reading [Creating a simple plugin](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/creating-simple-plugin.html) guide to get a better understanding of what's going on in the code below.
+
+```js
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Command from '@ckeditor/ckeditor5-core/src/command';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+
+import plainTextToHtml from '@ckeditor/ckeditor5-clipboard/src/utils/plaintexttohtml';
+
+class PastePlainText extends Plugin {
+	static get pluginName() {
+		return 'PastePlainText'
+	}
+
+	static get requires() {
+		return [ PastePlainTextUI, PastePlainTextCommand ]
+	}
+
+	init() {
+		const editor = this.editor;
+
+		// Introduce `pastePlainText` property to the editor and set it by default to false.
+		editor.set( 'pastePlainText', false );
+		editor.commands.add( 'pastePlainText', new PastePlainTextCommand( editor ) );
+
+		// Logic responsible for converting HTML to plain text.
+		const clipboardPlugin = editor.plugins.get( 'Clipboard' );
+		const editingView = editor.editing.view;
+
+		editingView.document.on( 'clipboardInput', ( evt, data ) => {
+			if ( editor.isReadOnly || !editor.pastePlainText ) {
+				return;
+			}
+
+			const dataTransfer = data.dataTransfer;
+			let content = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
+			content = clipboardPlugin._htmlDataProcessor.toView( content );
+			clipboardPlugin.fire( 'inputTransformation', { content, dataTransfer } );
+			editingView.scrollToTheSelection();
+
+			evt.stop();
+		} );
+	}
+};
+
+class PastePlainTextUI extends Plugin {
+	init() {
+		const editor = this.editor;
+
+		editor.ui.componentFactory.add( 'pastePlainText', locale => {
+			const view = new ButtonView( locale );
+			const command = editor.commands.get( 'pastePlainText' );
+
+			view.set( {
+				label: 'Paste as plain text',
+				withText: true,
+				tooltip: true,
+				isToggleable: true
+			} );
+
+			// Callback executed once the button is clicked.
+			view.on( 'execute', () => {
+				editor.execute( 'pastePlainText' );
+			} );
+
+			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+
+			return view;
+		} );
+	}
+};
+
+class PastePlainTextCommand extends Command {
+	refresh() {
+		// Disable the command if the editor is in read-only mode.
+		this.isEnabled = !this.editor.isReadOnly;
+	}
+
+	execute() {
+		// Activate pasting plain text.
+		this.value ? this.value = false : this.value = true;
+		this.editor.set( 'pastePlainText', this.value );
+	}
+}
+
+ClassicEditor
+    .create( document.querySelector( '#editor' ), {
+        extraPlugins: [ PastePlainText ],
+		toolbar: [ 'pastePlainText' ],
+        // ...
+    } )
+    .catch( error => {
+        console.log( error );
+    } );
+```
+
 ## Output pipeline
 
 The output pipeline is the equivalent of the input pipeline but for the copy and cut operations.
