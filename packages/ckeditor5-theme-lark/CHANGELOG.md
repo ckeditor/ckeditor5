@@ -5,7 +5,7 @@ Changelog
 
 ### MAJOR BREAKING CHANGES
 
-* The restricted and standard mode editing now uses `ck-restricted-editing-exception` CSS class for spans used to mark editable content.
+* Changed the class denoting the restricted editing exception spans from `ck-restricted-editing-exception` to `restricted-editing-exception`.
 
 ### Features
 
@@ -18,7 +18,7 @@ Changelog
 
 ### Bug fixes
 
-* Removed `ck-` prefix from CSS classes used in the editor content. Closes [ckeditor/ckeditor5#5899](https://github.com/ckeditor/ckeditor5/issues/5899). ([599f16e](https://github.com/ckeditor/ckeditor5-theme-lark/commit/599f16e))
+* Removed `ck-` prefix from the restricted editing's CSS classes used in the editor content. Closes [ckeditor/ckeditor5#5899](https://github.com/ckeditor/ckeditor5/issues/5899). ([599f16e](https://github.com/ckeditor/ckeditor5-theme-lark/commit/599f16e))
 
 ### Other changes
 
