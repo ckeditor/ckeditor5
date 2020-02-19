@@ -16,8 +16,9 @@ import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-u
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 import { fixtures, browserFixtures } from './fixtures';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
-const htmlDataProcessor = new HtmlDataProcessor();
+const htmlDataProcessor = new HtmlDataProcessor( new StylesProcessor() );
 
 /**
  * Mocks dataTransfer object which can be used for simulating paste.
