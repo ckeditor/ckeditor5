@@ -25,17 +25,31 @@ describe( 'Collection', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'allows setting initial collection items', () => {
-			const item1 = getItem( 'foo' );
-			const item2 = getItem( 'bar' );
-			const collection = new Collection( [ item1, item2 ] );
+		describe( 'setting initial collection items', () => {
+			it( 'works using an array', () => {
+				const item1 = getItem( 'foo' );
+				const item2 = getItem( 'bar' );
+				const collection = new Collection( [ item1, item2 ] );
 
-			expect( collection ).to.have.length( 2 );
+				expect( collection ).to.have.length( 2 );
 
-			expect( collection.get( 0 ) ).to.equal( item1 );
-			expect( collection.get( 1 ) ).to.equal( item2 );
-			expect( collection.get( 'foo' ) ).to.equal( item1 );
-			expect( collection.get( 'bar' ) ).to.equal( item2 );
+				expect( collection.get( 0 ) ).to.equal( item1 );
+				expect( collection.get( 1 ) ).to.equal( item2 );
+				expect( collection.get( 'foo' ) ).to.equal( item1 );
+				expect( collection.get( 'bar' ) ).to.equal( item2 );
+			} );
+
+			it( 'works using an iterable', () => {
+				const item1 = getItem( 'foo' );
+				const item2 = getItem( 'bar' );
+				const itemsSet = new Set( [ item1, item2 ] );
+				const collection = new Collection( itemsSet );
+
+				expect( collection ).to.have.length( 2 );
+
+				expect( collection.get( 0 ) ).to.equal( item1 );
+				expect( collection.get( 1 ) ).to.equal( item2 );
+			} );
 		} );
 
 		describe( 'options', () => {

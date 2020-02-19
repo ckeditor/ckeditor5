@@ -10,6 +10,7 @@
 import EmitterMixin from './emittermixin';
 import CKEditorError from './ckeditorerror';
 import uid from './uid';
+import isIterable from './isiterable';
 import mix from './mix';
 
 /**
@@ -54,14 +55,14 @@ export default class Collection {
 	 *		nonEmptyCollection.add( { name: 'George' } );
 	 *		console.log( collection.get( 'George' ) ); // -> { name: 'George' }
 	 *
-	 * @param {Array.<Object>|Object} initialItemsOrOptions The initial items of the collection or
+	 * @param {Iterable.<Object>|Object} initialItemsOrOptions The initial items of the collection or
 	 * the options object.
 	 * @param {Object} [options={}] The options object, when the first argument is an array of initial items.
 	 * @param {String} [options.idProperty='id'] The name of the property which is used to identify an item.
 	 * Items that do not have such a property will be assigned one when added to the collection.
 	 */
 	constructor( initialItemsOrOptions = {}, options = {} ) {
-		const hasInitialItems = initialItemsOrOptions instanceof Array;
+		const hasInitialItems = isIterable( initialItemsOrOptions );
 
 		if ( !hasInitialItems ) {
 			options = initialItemsOrOptions;
