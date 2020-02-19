@@ -153,10 +153,10 @@ export default class InsertTableView extends View {
 
 	/**
 	 * @private
-	 * @returns {module:table/ui/inserttableview~TableSizeGridBoxView[]} An array of boxes to be placed in table grid.
+	 * @returns {Set.<module:table/ui/inserttableview~TableSizeGridBoxView>} An array of boxes to be placed in table grid.
 	 */
 	_createGridCollection() {
-		const returnValue = [];
+		const returnValue = new Set();
 
 		// Add grid boxes to table selection view.
 		for ( let index = 0; index < 100; index++ ) {
@@ -173,7 +173,7 @@ export default class InsertTableView extends View {
 				this.set( 'columns', column + 1 );
 			} );
 
-			returnValue.push( boxView );
+			returnValue.add( boxView );
 		}
 
 		return returnValue;
