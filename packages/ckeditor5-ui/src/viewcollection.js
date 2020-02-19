@@ -9,7 +9,6 @@
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
 /**
  * Collects {@link module:ui/view~View} instances.
@@ -54,11 +53,8 @@ export default class ViewCollection extends Collection {
 	 *
 	 * @param {Array.<module:ui/view~View>} [initialItems] The initial items of the collection.
 	 */
-	constructor( itemsOrLocale = [] ) {
-		const locale = itemsOrLocale instanceof Locale ? itemsOrLocale : new Locale();
-		const items = itemsOrLocale instanceof Locale ? [] : itemsOrLocale;
-
-		super( items, {
+	constructor( initialItems = [] ) {
+		super( initialItems, {
 			// An #id Number attribute should be legal and not break the `ViewCollection` instance.
 			// https://github.com/ckeditor/ckeditor5-ui/issues/93
 			idProperty: 'viewUid'
@@ -75,14 +71,6 @@ export default class ViewCollection extends Collection {
 				view.element.remove();
 			}
 		} );
-
-		/**
-		 * The {@link module:core/editor/editor~Editor#locale editor's locale} instance.
-		 * See the view {@link module:ui/view~View#locale locale} property.
-		 *
-		 * @member {module:utils/locale~Locale}
-		 */
-		this.locale = locale;
 
 		/**
 		 * A parent element within which child views are rendered and managed in DOM.

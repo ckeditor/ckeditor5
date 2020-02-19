@@ -13,7 +13,6 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import ViewCollection from '../src/viewcollection';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
 let TestView, view, childA, childB;
 
@@ -64,7 +63,7 @@ describe( 'View', () => {
 				const collection = new ViewCollection();
 
 				expect( view.locale ).to.equal( locale );
-				expect( collection.locale ).to.be.an.instanceOf( Locale );
+				expect( collection.locale ).to.be.undefined;
 
 				view._viewCollections.add( collection );
 				expect( collection.locale ).to.equal( view.locale );
