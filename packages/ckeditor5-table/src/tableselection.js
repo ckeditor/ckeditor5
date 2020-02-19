@@ -14,6 +14,7 @@ import TableUtils from './tableutils';
 import { setupTableSelectionHighlighting } from './tableselection/converters';
 import MouseSelectionHandler from './tableselection/mouseselectionhandler';
 import { findAncestor } from './commands/utils';
+import cropTable from './tableselection/croptable';
 
 /**
  * The table selection plugin.
@@ -249,24 +250,10 @@ export default class TableSelection extends Plugin {
 		}
 
 		return this.editor.model.change( writer => {
-			const tableUtils = this._tableUtils;
-			const selectedTableCells = Array.from( this.getSelectedTableCells() );
-
-			const { row: startRow, column: startColumn } = tableUtils.getCellLocation( this._startElement );
-
-			const tableCopy = makeTableCopy( writer, startColumn, selectedTableCells, tableUtils );
-
-			const { row: endRow, column: endColumn } = tableUtils.getCellLocation( this._endElement );
-			const selectionWidth = endColumn - startColumn + 1;
-			const selectionHeight = endRow - startRow + 1;
-
-			trimTableCopyToSelection( tableCopy, selectionWidth, selectionHeight, writer, tableUtils );
-
-			const sourceTable = findAncestor( 'table', this._startElement );
-			updateHeadings( tableCopy, sourceTable, startRow, startColumn, writer );
-
 			const documentFragment = writer.createDocumentFragment();
-			writer.insert( tableCopy, documentFragment, 0 );
+
+			const table = cropTable( this.getSelectedTableCells(), this._tableUtils, writer );
+			writer.insert( table, documentFragment, 0 );
 
 			return documentFragment;
 		} );
@@ -306,104 +293,6 @@ export default class TableSelection extends Plugin {
 	_clearSelectionOnExternalChange( selection ) {
 		if ( selection.rangeCount <= 1 && this.hasMultiCellSelection ) {
 			this.clearSelection();
-		}
-	}
-}
-
-function makeTableCopy( writer, startColumn, selectedTableCells, tableUtils ) {
-	const tableCopy = writer.createElement( 'table' );
-
-	const rowToCopyMap = new Map();
-	const copyToOriginalColumnMap = new Map();
-
-	for ( const tableCell of selectedTableCells ) {
-		const row = findAncestor( 'tableRow', tableCell );
-
-		if ( !rowToCopyMap.has( row ) ) {
-			const rowCopy = row._clone();
-			writer.append( rowCopy, tableCopy );
-			rowToCopyMap.set( row, rowCopy );
-		}
-
-		const tableCellCopy = tableCell._clone( true );
-		const { column } = tableUtils.getCellLocation( tableCell );
-
-		copyToOriginalColumnMap.set( tableCellCopy, column );
-
-		writer.append( tableCellCopy, rowToCopyMap.get( row ) );
-	}
-
-	addMissingTableCells( tableCopy, startColumn, copyToOriginalColumnMap, writer, tableUtils );
-
-	return tableCopy;
-}
-
-function updateHeadings( tableCopy, sourceTable, startRow, startColumn, writer ) {
-	const headingRows = parseInt( sourceTable.getAttribute( 'headingRows' ) || 0 );
-
-	if ( headingRows > 0 ) {
-		const copiedRows = headingRows - startRow;
-		writer.setAttribute( 'headingRows', copiedRows, tableCopy );
-	}
-
-	const headingColumns = parseInt( sourceTable.getAttribute( 'headingColumns' ) || 0 );
-
-	if ( headingColumns > 0 ) {
-		const copiedColumns = headingColumns - startColumn;
-		writer.setAttribute( 'headingColumns', copiedColumns, tableCopy );
-	}
-}
-
-function addMissingTableCells( tableCopy, startColumn, copyToOriginalColumnMap, writer, tableUtils ) {
-	for ( const row of tableCopy.getChildren() ) {
-		for ( const tableCell of Array.from( row.getChildren() ) ) {
-			const { column } = tableUtils.getCellLocation( tableCell );
-
-			const originalColumn = copyToOriginalColumnMap.get( tableCell );
-			const shiftedColumn = originalColumn - startColumn;
-
-			if ( column !== shiftedColumn ) {
-				for ( let i = 0; i < shiftedColumn - column; i++ ) {
-					const prepCell = writer.createElement( 'tableCell' );
-					writer.insert( prepCell, writer.createPositionBefore( tableCell ) );
-
-					const paragraph = writer.createElement( 'paragraph' );
-
-					writer.insert( paragraph, prepCell, 0 );
-					writer.insertText( '', paragraph, 0 );
-				}
-			}
-		}
-	}
-}
-
-function trimTableCopyToSelection( tableCopy, width, height, writer, tableUtils ) {
-	for ( const row of tableCopy.getChildren() ) {
-		for ( const tableCell of row.getChildren() ) {
-			const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
-			const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
-
-			const { row, column } = tableUtils.getCellLocation( tableCell );
-
-			if ( column + colspan > width ) {
-				const newSpan = width - column;
-
-				if ( newSpan > 1 ) {
-					writer.setAttribute( 'colspan', newSpan, tableCell );
-				} else {
-					writer.removeAttribute( 'colspan', tableCell );
-				}
-			}
-
-			if ( row + rowspan > height ) {
-				const newSpan = height - row;
-
-				if ( newSpan > 1 ) {
-					writer.setAttribute( 'rowspan', newSpan, tableCell );
-				} else {
-					writer.removeAttribute( 'rowspan', tableCell );
-				}
-			}
 		}
 	}
 }
