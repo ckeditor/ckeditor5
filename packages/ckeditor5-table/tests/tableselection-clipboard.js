@@ -28,9 +28,9 @@ describe( 'table selection', () => {
 		tableSelection = editor.plugins.get( TableSelection );
 
 		setModelData( model, modelTable( [
-			[ '11[]', '12', '13' ],
-			[ '21', '22', '23' ],
-			[ '31', '32', '33' ]
+			[ '00[]', '01', '02' ],
+			[ '10', '11', '12' ],
+			[ '20', '21', '22' ]
 		] ) );
 	} );
 
@@ -69,8 +69,8 @@ describe( 'table selection', () => {
 
 					expect( data.content ).is.instanceOf( ViewDocumentFragment );
 					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '12', '13' ],
-						[ '22', '23' ]
+						[ '01', '02' ],
+						[ '11', '12' ]
 					] ) );
 
 					done();
@@ -84,9 +84,9 @@ describe( 'table selection', () => {
 
 			it( 'should trim selected table to a selection rectangle (inner cell with colspan, no colspan after trim)', done => {
 				setModelData( model, modelTable( [
-					[ '11[]', '12', '13' ],
-					[ '21', { contents: '22', colspan: 2 } ],
-					[ '31', '32', '33' ]
+					[ '00[]', '01', '02' ],
+					[ '10', { contents: '11', colspan: 2 } ],
+					[ '20', '21', '22' ]
 				] ) );
 
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
@@ -94,9 +94,9 @@ describe( 'table selection', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '11', '12' ],
-						[ '21', '22' ],
-						[ '31', '32' ]
+						[ '00', '01' ],
+						[ '10', '11' ],
+						[ '20', '21' ]
 					] ) );
 
 					done();
@@ -110,9 +110,9 @@ describe( 'table selection', () => {
 
 			it( 'should trim selected table to a selection rectangle (inner cell with colspan, has colspan after trim)', done => {
 				setModelData( model, modelTable( [
-					[ '11[]', '12', '13' ],
-					[ { contents: '21', colspan: 3 } ],
-					[ '31', '32', '33' ]
+					[ '00[]', '01', '02' ],
+					[ { contents: '10', colspan: 3 } ],
+					[ '20', '21', '22' ]
 				] ) );
 
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
@@ -120,9 +120,9 @@ describe( 'table selection', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '11', '12' ],
-						[ { contents: '21', colspan: 2 } ],
-						[ '31', '32' ]
+						[ '00', '01' ],
+						[ { contents: '10', colspan: 2 } ],
+						[ '20', '21' ]
 					] ) );
 
 					done();
@@ -136,9 +136,9 @@ describe( 'table selection', () => {
 
 			it( 'should trim selected table to a selection rectangle (inner cell with rowspan, no colspan after trim)', done => {
 				setModelData( model, modelTable( [
-					[ '11[]', '12', '13' ],
-					[ '21', { contents: '22', rowspan: 2 }, '23' ],
-					[ '31', '32', '33' ]
+					[ '00[]', '01', '02' ],
+					[ '10', { contents: '11', rowspan: 2 }, '12' ],
+					[ '20', '21', '22' ]
 				] ) );
 
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
@@ -146,8 +146,8 @@ describe( 'table selection', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '11', '12', '13' ],
-						[ '21', '22', '23' ]
+						[ '00', '01', '02' ],
+						[ '10', '11', '12' ]
 					] ) );
 
 					done();
@@ -161,9 +161,9 @@ describe( 'table selection', () => {
 
 			it( 'should trim selected table to a selection rectangle (inner cell with rowspan, has rowspan after trim)', done => {
 				setModelData( model, modelTable( [
-					[ '11[]', { contents: '12', rowspan: 3 }, '13' ],
-					[ '21', '23' ],
-					[ '31', '33' ]
+					[ '00[]', { contents: '01', rowspan: 3 }, '02' ],
+					[ '10', '12' ],
+					[ '20', '22' ]
 				] ) );
 
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
@@ -171,8 +171,8 @@ describe( 'table selection', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '11', { contents: '12', rowspan: 2 }, '13' ],
-						[ '21', '23' ]
+						[ '00', { contents: '01', rowspan: 2 }, '02' ],
+						[ '10', '12' ]
 					] ) );
 
 					done();
@@ -186,9 +186,9 @@ describe( 'table selection', () => {
 
 			it( 'should prepend spanned columns with empty cells (outside cell with colspan)', done => {
 				setModelData( model, modelTable( [
-					[ '11[]', '12', '13' ],
-					[ { contents: '21', colspan: 2 }, '23' ],
-					[ '31', '32', '33' ]
+					[ '00[]', '01', '02' ],
+					[ { contents: '10', colspan: 2 }, '12' ],
+					[ '20', '21', '22' ]
 				] ) );
 
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
@@ -196,9 +196,9 @@ describe( 'table selection', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '12', '13' ],
-						[ '', '23' ],
-						[ '32', '33' ]
+						[ '01', '02' ],
+						[ '', '12' ],
+						[ '21', '22' ]
 					] ) );
 
 					done();
@@ -212,9 +212,9 @@ describe( 'table selection', () => {
 
 			it( 'should prepend spanned columns with empty cells (outside cell with rowspan)', done => {
 				setModelData( model, modelTable( [
-					[ '11[]', { contents: '12', rowspan: 2 }, '13' ],
-					[ '21', '23' ],
-					[ '31', '32', '33' ]
+					[ '00[]', { contents: '01', rowspan: 2 }, '02' ],
+					[ '10', '12' ],
+					[ '20', '21', '22' ]
 				] ) );
 
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
@@ -222,8 +222,8 @@ describe( 'table selection', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '21', '', '23' ],
-						[ '31', '32', '33' ]
+						[ '10', '', '12' ],
+						[ '20', '21', '22' ]
 					] ) );
 
 					done();
@@ -242,35 +242,35 @@ describe( 'table selection', () => {
 				//                    Input table:                                         Copied table:
 				//
 				//   +----+----+----+----+----+----+----+----+----+
-				//   | 11 | 12 | 13 | 14 | 15      | 17 | 18 | 19 |
+				//   | 00 | 01 | 02 | 03 | 04      | 06 | 07 | 08 |
 				//   +----+----+    +----+         +----+----+----+
-				//   | 21 | 22 |    | 24 |         | 27 | 28 | 29 |
+				//   | 10 | 11 |    | 13 |         | 16 | 17 | 18 |
 				//   +----+----+    +----+         +----+----+----+             +----+----+----+---------+----+----+
-				//   | 31 | 32 |    | 34 |         | 37           |             | 32 |    | 34 |    |    | 37 |    |
+				//   | 20 | 21 |    | 23 |         | 26           |             | 21 |    | 23 |    |    | 26 |    |
 				//   +----+----+    +----+         +----+----+----+             +----+----+----+----+----+----+----+
-				//   | 41 | 42 |    | 44 |         | 47 | 48      |             | 42 |    | 44 |    |    | 47 | 48 |
+				//   | 30 | 31 |    | 33 |         | 36 | 37      |             | 31 |    | 33 |    |    | 36 | 37 |
 				//   +----+----+----+----+         +----+----+----+             +----+----+----+----+----+----+----+
-				//   | 51                |         | 57 | 58 | 59 |             |    |    |    |    |    | 57 | 58 |
+				//   | 40                |         | 46 | 47 | 48 |             |    |    |    |    |    | 46 | 47 |
 				//   +----+----+----+----+         +----+----+----+     ==>     +----+----+----+----+----+----+----+
-				//   | 61 | 62 | 63 | 64 |         | 67 | 68 | 69 |             | 62 | 63 | 64 |    |    | 67 | 68 |
+				//   | 50 | 51 | 52 | 53 |         | 56 | 57 | 58 |             | 51 | 52 | 53 |    |    | 56 | 57 |
 				//   +----+----+----+----+----+----+    +----+----+             +----+----+----+----+----+----+----+
-				//   | 71 | 72           | 75 | 76 |    | 78 | 79 |             | 72 |    |    | 75 | 76 |    | 78 |
+				//   | 60 | 61           | 64 | 65 |    | 67 | 68 |             | 61 |    |    | 64 | 65 |    | 67 |
 				//   +----+----+----+----+----+----+    +----+----+             +----+----+----+----+----+----+----+
-				//   | 81 | 82 | 83 | 84 | 85 | 86 |    | 88 | 89 |             | 82 | 83 | 84 | 85 | 86 |    | 88 |
+				//   | 70 | 71 | 72 | 73 | 74 | 75 |    | 77 | 78 |             | 71 | 72 | 73 | 74 | 75 |    | 77 |
 				//   +----+    +----+----+----+----+    +----+----+             +----+----+----+----+----+----+----+
-				//   | 91 |    | 93 | 94 | 95 | 96 |    | 98 | 99 |
+				//   | 80 |    | 82 | 83 | 84 | 85 |    | 87 | 88 |
 				//   +----+----+----+----+----+----+----+----+----+
 				//
 				setModelData( model, modelTable( [
-					[ '11', '12', { contents: '13', rowspan: 4 }, '14', { contents: '15', colspan: 2, rowspan: 7 }, '17', '18', '19' ],
-					[ '21', '22', '24', '27', '28', '29' ],
-					[ '31', '32', '34', { contents: '37', colspan: 3 } ],
-					[ '41', '42', '44', '47', { contents: '48', colspan: 2 } ],
-					[ { contents: '51', colspan: 4 }, '57', '58', '59' ],
-					[ '61', '62', '63', '64', { contents: '67', rowspan: 4 }, '68', '69' ],
-					[ '71', { contents: '72', colspan: 3 }, '78', '79' ],
-					[ '81', { contents: '82', rowspan: 2 }, '83', '84', '85', '86', '88', '89' ],
-					[ '91', '93', '94', '95', '96', '98', '99' ]
+					[ '00', '01', { contents: '02', rowspan: 4 }, '03', { contents: '04', colspan: 2, rowspan: 7 }, '07', '07', '08' ],
+					[ '10', '11', '13', '17', '17', '18' ],
+					[ '20', '21', '23', { contents: '27', colspan: 3 } ],
+					[ '30', '31', '33', '37', { contents: '37', colspan: 2 } ],
+					[ { contents: '40', colspan: 4 }, '47', '47', '48' ],
+					[ '50', '51', '52', '53', { contents: '57', rowspan: 4 }, '57', '58' ],
+					[ '60', { contents: '61', colspan: 3 }, '67', '68' ],
+					[ '70', { contents: '71', rowspan: 2 }, '72', '73', '74', '75', '77', '78' ],
+					[ '80', '82', '83', '84', '85', '87', '88' ]
 				] ) );
 
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
@@ -278,12 +278,12 @@ describe( 'table selection', () => {
 
 				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '32', '', '34', '', '', { contents: '37', colspan: 2 } ],
-						[ '42', '', '44', '', '', '47', '48' ],
-						[ '', '', '', '', '', '57', '58' ],
-						[ '62', '63', '64', '', '', { contents: '67', rowspan: 3 }, '68' ],
-						[ { contents: '72', colspan: 3 }, '', '', '', '78' ],
-						[ '82', '83', '84', '85', '86', '88' ]
+						[ '21', '', '23', '', '', { contents: '27', colspan: 2 } ],
+						[ '31', '', '33', '', '', '37', '37' ],
+						[ '', '', '', '', '', '47', '47' ],
+						[ '51', '52', '53', '', '', { contents: '57', rowspan: 3 }, '57' ],
+						[ { contents: '61', colspan: 3 }, '', '', '', '67' ],
+						[ '71', '72', '73', '74', '75', '77' ]
 					] ) );
 
 					done();
