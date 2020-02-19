@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-enter/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### Other changes
+
+* Added fix for track changes. Closes [ckeditor/ckeditor5#6072](https://github.com/ckeditor/ckeditor5/issues/6072). ([4848bcb](https://github.com/ckeditor/ckeditor5-enter/commit/4848bcb))
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-enter/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 Internal changes only (updated dependencies, documentation, etc.).
