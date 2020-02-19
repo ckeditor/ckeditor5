@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-* Add `TextWatcher#isEnabled` property to toggle text watching. ([fa79d00](https://github.com/ckeditor/ckeditor5-typing/commit/fa79d00))
+* Add `TextWatcher#isEnabled` property to allow toggling text watcher on and off. ([fa79d00](https://github.com/ckeditor/ckeditor5-typing/commit/fa79d00))
 
 
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-typing/compare/v15.0.0...v16.0.0) (2019-12-04)
