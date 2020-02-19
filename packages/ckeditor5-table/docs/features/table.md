@@ -118,7 +118,7 @@ ClassicEditor
 	By default, table styling tools are not included in {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
 </info-box>
 
-Table and cell styling tools allow users to create tables with colorful backgrounds and borders. These colors can be easily picked using color palettes in **"Table properties"** and **"Cell properties"** pop–ups. To help users choose the right colors for the content, the color palettes can be pre–configured, like in the editor below:
+Among other formatting options, table and cell styling tools allow users to create tables with colorful backgrounds and borders. These colors can be easily picked using color palettes in the **"Table properties"** and **"Cell properties"** pop–ups. To help users choose the right colors for the content, the color palettes can be pre–configured, like in the editor below:
 
 {@snippet features/table-styling-colors}
 
@@ -128,16 +128,16 @@ With the selection inside any table cell, use the **"Table properties"** and **"
 
 You can use these specific configuration options to define customized color palettes for background and border colors to match your document:
 
-* {@link module:table/table~TableConfig#tableProperties `tableProperties.borderColors`} — defines the color palette for table borders,
-* {@link module:table/table~TableConfig#tableProperties `tableProperties.backgroundColors`} — defines the color palette for table backgrounds,
-* {@link module:table/table~TableConfig#tableCellProperties `tableCellProperties.borderColors`} — defines the color palette for cell borders,
-* {@link module:table/table~TableConfig#tableCellProperties `tableCellProperties.backgroundColors`} – defines the color palette for cell backgrounds.
+* {@link module:table/table~TableConfig#tableProperties `tableProperties.borderColors`} &ndash; Defines the color palette for table borders.
+* {@link module:table/table~TableConfig#tableProperties `tableProperties.backgroundColors`} &ndash; Defines the color palette for table background.
+* {@link module:table/table~TableConfig#tableCellProperties `tableCellProperties.borderColors`} &ndash; Defines the color palette for cell borders.
+* {@link module:table/table~TableConfig#tableCellProperties `tableCellProperties.backgroundColors`} &ndash; Defines the color palette for cell background.
 
 <info-box>
 	The above configurations **do not** impact the {@link builds/guides/integration/basic-api#setting-the-editor-data data loaded into the editor}, i.e. they do not limit or filter the colors in the data. They are used only in the user interface allowing users to pick colors in a more convenient way.
 </info-box>
 
-For instance, to the define the same color palette for all border and background configurations, use the following code snippet:
+For instance, to define the same color palette for all border and background configurations, use the following code snippet:
 
 ```js
 const customColorPalette = [
