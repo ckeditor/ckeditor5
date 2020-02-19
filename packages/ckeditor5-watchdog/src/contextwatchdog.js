@@ -24,7 +24,7 @@ import getSubNodes from './utils/getsubnodes';
  */
 export default class ContextWatchdog extends Watchdog {
 	/**
-	 * The `ContextWatchdog` class constructor.
+	 * The context watchdog class constructor.
 	 *
 	 * 	const watchdog = new ContextWatchdog( Context );
 	 *
@@ -32,7 +32,7 @@ export default class ContextWatchdog extends Watchdog {
 	 *
 	 * 	await watchdog.add( item );
 	 *
-	 * See {@glink features/watchdog the watchdog feature guide} to learn more how to use this feature.
+	 * See the {@glink features/watchdog Watchdog feature guide} to learn more how to use this feature.
 	 *
 	 * @param {Function} Context The {@link module:core/context~Context} class.
 	 * @param {module:watchdog/watchdog~WatchdogConfig} [watchdogConfig] The watchdog configuration.
@@ -65,8 +65,8 @@ export default class ContextWatchdog extends Watchdog {
 		this._context = null;
 
 		/**
-		 * Context props (nodes/references) that are gathered during the initial context creation
-		 * and are used to distinguish error origin.
+		 * Context properties (nodes/references) that are gathered during the initial context creation
+		 * and are used to distinguish the origin of an error.
 		 *
 		 * @private
 		 * @type {Set.<*>}
@@ -82,7 +82,7 @@ export default class ContextWatchdog extends Watchdog {
 		this._actionQueue = new ActionQueue();
 
 		/**
-		 * Config for the {@link module:core/context~Context}.
+		 * The configuration for the {@link module:core/context~Context}.
 		 *
 		 * @private
 		 * @member {Object} #_contextConfig
@@ -137,7 +137,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * The context instance. Keep in mind that this property might be changed when the `ContextWatchdog` restarts,
+	 * The context instance. Keep in mind that this property might be changed when the context watchdog restarts,
 	 * so do not keep this instance internally. Always operate on the `ContextWatchdog#context` property.
 	 *
 	 * @type {module:core/context~Context|null}
@@ -147,14 +147,14 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Initializes the context watchdog. Once it's created the watchdog takes care about
-	 * recreating the context and provided items and starts the error handling mechanism.
+	 * Initializes the context watchdog. Once it is created, the watchdog takes care about
+	 * recreating the context and the provided items, and starts the error handling mechanism.
 	 *
 	 * 	await watchdog.create( {
 	 * 		plugins: []
 	 * 	} );
 	 *
-	 * @param {Object} [contextConfig] Context configuration. See {@link module:core/context~Context}.
+	 * @param {Object} [contextConfig] The context configuration. See {@link module:core/context~Context}.
 	 * @returns {Promise}
 	 */
 	create( contextConfig = {} ) {
@@ -166,12 +166,12 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Returns the item instance with the given `itemId`.
+	 * Returns an item instance with the given `itemId`.
 	 *
 	 * 	const editor1 = watchdog.getItem( 'editor1' );
 	 *
-	 * @param {String} itemId The item id.
-	 * @returns {*} The item instance or `undefined` if an item with given id has not been found.
+	 * @param {String} itemId The item ID.
+	 * @returns {*} The item instance or `undefined` if an item with a given ID has not been found.
 	 */
 	getItem( itemId ) {
 		const watchdog = this._getWatchdog( itemId );
@@ -180,11 +180,11 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Gets state of the given item. For the list of available states see {@link #state}.
+	 * Gets the state of the given item. See {@link #state} for a list of available states.
 	 *
 	 * 	const editor1State = watchdog.getItemState( 'editor1' );
 	 *
-	 * @param {String} itemId Item id.
+	 * @param {String} itemId Item ID.
 	 * @returns {'initializing'|'ready'|'crashed'|'crashedPermanently'|'destroyed'} The state of the item.
 	 */
 	getItemState( itemId ) {
@@ -222,15 +222,15 @@ export default class ContextWatchdog extends Watchdog {
 	 *		creator: ( element, config ) => ClassicEditor.create( element, config )
 	 *	] );
 	 *
-	 * And then the instance can be retrieved using the {@link #getItem} method:
+	 * Then an instance can be retrieved using the {@link #getItem} method:
 	 *
 	 * 	const editor1 = watchdog.getItem( 'editor1' );
 	 *
-	 * Note that this method can be called multiple times, but for performance reasons it's better
+	 * Note that this method can be called multiple times, but for performance reasons it is better
 	 * to pass all items together.
 	 *
 	 * @param {module:watchdog/contextwatchdog~WatchdogItemConfiguration|Array.<module:watchdog/contextwatchdog~WatchdogItemConfiguration>}
-	 * itemConfigurationOrItemConfigurations Item configuration object or an array of item configurations.
+	 * itemConfigurationOrItemConfigurations An item configuration object or an array of item configurations.
 	 * @returns {Promise}
 	 */
 	add( itemConfigurationOrItemConfigurations ) {
@@ -298,7 +298,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Removes and destroys item(s) with given id(s).
+	 * Removes and destroys item(s) with given ID(s).
 	 *
 	 * 	await watchdog.remove( 'editor1' );
 	 *
@@ -306,7 +306,7 @@ export default class ContextWatchdog extends Watchdog {
 	 *
 	 * 	await watchdog.remove( [ 'editor1', 'editor2' ] );
 	 *
-	 * @param {Array.<String>|String} itemIdOrItemIds Item id or an array of item ids.
+	 * @param {Array.<String>|String} itemIdOrItemIds Item ID or an array of item IDs.
 	 * @returns {Promise}
 	 */
 	remove( itemIdOrItemIds ) {
@@ -326,8 +326,8 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Destroys the `ContextWatchdog` and all added items.
-	 * Once the `ContextWatchdog` is destroyed new items can not be added.
+	 * Destroys the context watchdog and all added items.
+	 * Once the context watchdog is destroyed, new items cannot be added.
 	 *
 	 * 	await watchdog.destroy();
 	 *
@@ -345,7 +345,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Restarts the `ContextWatchdog`.
+	 * Restarts the context watchdog.
 	 *
 	 * @protected
 	 * @returns {Promise}
@@ -391,7 +391,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Destroys the `Context` instance and all added items.
+	 * Destroys the context instance and all added items.
 	 *
 	 * @private
 	 * @returns {Promise}
@@ -416,10 +416,10 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Returns watchdog for the given item id.
+	 * Returns the watchdog for a given item ID.
 	 *
 	 * @protected
-	 * @param {String} itemId Item id.
+	 * @param {String} itemId Item ID.
 	 * @returns {module:watchdog/watchdog~Watchdog} Watchdog
 	 */
 	_getWatchdog( itemId ) {
@@ -433,7 +433,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Checks whether the error comes from the `Context` instance and not from the item instances.
+	 * Checks whether an error comes from the context instance and not from the item instances.
 	 *
 	 * @protected
 	 * @param {Error} error
@@ -450,7 +450,7 @@ export default class ContextWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Fired after the watchdog restarts context and added items because of the crash.
+	 * Fired after the watchdog restarts the context and the added items because of a crash.
 	 *
 	 * 	watchdog.on( 'restart', () => {
 	 * 		console.log( 'The context has been restarted.' );
@@ -463,7 +463,7 @@ export default class ContextWatchdog extends Watchdog {
 	 * Fired when a new error occurred in one of the added items.
 	 *
 	 * 	watchdog.on( 'itemError', ( evt, { error, itemId, causesRestart } ) => {
-	 *		console.log( `An error occurred in an item with the '${ itemId }' id.` );
+	 *		console.log( `An error occurred in an item with the '${ itemId }' ID.` );
 	 * 	} );
 	 *
 	 * @event itemError
@@ -473,7 +473,7 @@ export default class ContextWatchdog extends Watchdog {
 	 * Fired after an item has been restarted.
 	 *
 	 * 	watchdog.on( 'itemRestart', ( evt, { itemId } ) => {
-	 *		console.log( 'An item with with the '${ itemId }' id has been restarted.' );
+	 *		console.log( 'An item with with the '${ itemId }' ID has been restarted.' );
 	 * 	} );
 	 *
 	 * @event itemRestart
@@ -520,27 +520,27 @@ class ActionQueue {
 }
 
 /**
- * The `WatchdogItemConfiguration` interface.
+ * The watchdog item configuration interface.
  *
  * @typedef {module:watchdog/contextwatchdog~EditorWatchdogConfiguration} module:watchdog/contextwatchdog~WatchdogItemConfiguration
  */
 
 /**
- * The `EditorWatchdogConfiguration` interface specifies how editors should be created and destroyed.
+ * The editor watchdog configuration interface specifies how editors should be created and destroyed.
  *
  * @typedef {Object} module:watchdog/contextwatchdog~EditorWatchdogConfiguration
  *
  * @property {String} id A unique item identificator.
  *
- * @property {'editor'} type Type of the item to create. At the moment, only `'editor'` is supported.
+ * @property {'editor'} type The type of the item to create. At the moment, only `'editor'` is supported.
  *
  * @property {Function} creator A function that initializes the item (the editor). The function takes editor initialization arguments
- * and should return a promise. E.g. `( el, config ) => ClassicEditor.create( el, config )`.
+ * and should return a promise. For example: `( el, config ) => ClassicEditor.create( el, config )`.
  *
  * @property {Function} [destructor] A function that destroys the item instance (the editor). The function
- * takes an item and should return a promise. E.g. `editor => editor.destroy()`
+ * takes an item and should return a promise. For example: `editor => editor.destroy()`
  *
- * @property {String|HTMLElement} sourceElementOrData The source element or data which will be passed
+ * @property {String|HTMLElement} sourceElementOrData The source element or data that will be passed
  * as the first argument to the `Editor.create()` method.
  *
  * @property {Object} config An editor configuration.

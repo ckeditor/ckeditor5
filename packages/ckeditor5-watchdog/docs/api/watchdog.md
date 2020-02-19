@@ -14,7 +14,7 @@ See the {@link features/watchdog Watchdog feature} guide and the {@link module:w
 
 ## Installation
 
-```bash
+```
 npm install --save @ckeditor/ckeditor5-watchdog
 ```
 
