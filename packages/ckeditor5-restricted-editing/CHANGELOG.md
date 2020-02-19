@@ -3,6 +3,12 @@ Changelog
 
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-restricted-editing/compare/v16.0.0...v17.0.0) (2020-02-19)
 
+### MAJOR BREAKING CHANGES
+
+* Changed the class denoting the exception spans from `ck-restricted-editing-exception` to `restricted-editing-exception`. See [ckeditor/ckeditor5-restricted-editing#6](https://github.com/ckeditor/ckeditor5-restricted-editing/pull/6).
+
+	The data produced by version 16.0.0 of this package will not be recognized by the new version of this package. The easiest migration method is to replace all occurrences of `class="ck-restricted-editing-exception"` with `class="restricted-editing-exception"` prior to loading the data into the editor.
+
 ### Features
 
 * Add `enableCommand()` method to `RestrictedEditingModeEditing`. Closes [ckeditor/ckeditor5#6041](https://github.com/ckeditor/ckeditor5/issues/6041). Closes [ckeditor/ckeditor5#6011](https://github.com/ckeditor/ckeditor5/issues/6011). ([e617559](https://github.com/ckeditor/ckeditor5-restricted-editing/commit/e617559))
@@ -21,8 +27,7 @@ Changelog
 
 * Added CSS classes to the editable elements to differentiate between the restricted and standard modes. See [ckeditor/ckeditor5#5829](https://github.com/ckeditor/ckeditor5/issues/5829). ([de38be8](https://github.com/ckeditor/ckeditor5-restricted-editing/commit/de38be8))
 * Align CSS class names to the changes in the restricted editing feature. See [ckeditor/ckeditor5#5899](https://github.com/ckeditor/ckeditor5/issues/5899). ([3ba00b0](https://github.com/ckeditor/ckeditor5-restricted-editing/commit/3ba00b0))
-* Reverted year 2020 in .po files license header. ([f6e58b4](https://github.com/ckeditor/ckeditor5-restricted-editing/commit/f6e58b4))
-* Updated translations. ([c076842](https://github.com/ckeditor/ckeditor5-restricted-editing/commit/c076842)) 
+* Updated translations. ([c076842](https://github.com/ckeditor/ckeditor5-restricted-editing/commit/c076842))
 
 
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-restricted-editing/tree/v16.0.0) (2019-12-04)
