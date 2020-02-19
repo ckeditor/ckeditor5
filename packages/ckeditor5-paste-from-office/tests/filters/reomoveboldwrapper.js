@@ -7,9 +7,10 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
 import removeBoldWrapper from '../../src/filters/removeboldwrapper';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import Document from '@ckeditor/ckeditor5-engine/src/view/document';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 describe( 'PasteFromOffice - filters', () => {
-	const htmlDataProcessor = new HtmlDataProcessor();
+	const htmlDataProcessor = new HtmlDataProcessor( new StylesProcessor() );
 	describe( 'removeBoldWrapper', () => {
 		let writer, viewDocument;
 

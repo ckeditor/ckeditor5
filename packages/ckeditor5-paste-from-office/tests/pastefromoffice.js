@@ -10,9 +10,10 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
 import { createDataTransfer } from './_utils/utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 describe( 'PasteFromOffice', () => {
-	const htmlDataProcessor = new HtmlDataProcessor();
+	const htmlDataProcessor = new HtmlDataProcessor( new StylesProcessor() );
 	let editor, pasteFromOffice, clipboard;
 
 	testUtils.createSinonSandbox();

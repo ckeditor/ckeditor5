@@ -12,10 +12,11 @@ import {
 	transformListItemLikeElementsIntoLists,
 	unwrapParagraphInListItem
 } from '../../src/filters/list';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 describe( 'PasteFromOffice - filters', () => {
 	describe( 'list - paste from MS Word', () => {
-		const htmlDataProcessor = new HtmlDataProcessor();
+		const htmlDataProcessor = new HtmlDataProcessor( new StylesProcessor() );
 
 		describe( 'transformListItemLikeElementsIntoLists()', () => {
 			it( 'replaces list-like elements with semantic lists', () => {
