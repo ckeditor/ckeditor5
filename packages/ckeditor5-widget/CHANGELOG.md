@@ -18,15 +18,14 @@ Changelog
 ### Other changes
 
 * Align code to changes in `Plugin` API. ([81bb636](https://github.com/ckeditor/ckeditor5-widget/commit/81bb636))
-* Reverted year 2020 in .po files license header. ([b9d3e61](https://github.com/ckeditor/ckeditor5-widget/commit/b9d3e61))
-* Updated translations. ([75b8c83](https://github.com/ckeditor/ckeditor5-widget/commit/75b8c83)) 
+* Updated translations. ([75b8c83](https://github.com/ckeditor/ckeditor5-widget/commit/75b8c83))
 
 
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Other changes
 
-* Updated translations. ([b3bf5f0](https://github.com/ckeditor/ckeditor5-widget/commit/b3bf5f0)) 
+* Updated translations. ([b3bf5f0](https://github.com/ckeditor/ckeditor5-widget/commit/b3bf5f0))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v11.1.0...v15.0.0) (2019-10-23)
