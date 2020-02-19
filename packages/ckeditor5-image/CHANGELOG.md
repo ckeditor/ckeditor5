@@ -5,7 +5,7 @@ Changelog
 
 ### MINOR BREAKING CHANGES
 
-* Resizer options object now also takes an editor instance.
+* Resizer options object now also takes the editor instance.
 * Removed the `downcastWriter` property from the [`ResizerOptions` interface](https://ckeditor.com/docs/ckeditor5/latest/api/module_widget_widgetresize-ResizerOptions.html).
 
 ### Bug fixes
@@ -15,8 +15,7 @@ Changelog
 
 ### Other changes
 
-* Reverted year 2020 in .po files license header. ([fa866da](https://github.com/ckeditor/ckeditor5-image/commit/fa866da))
-* Updated translations. ([b81e08c](https://github.com/ckeditor/ckeditor5-image/commit/b81e08c)) 
+* Updated translations. ([b81e08c](https://github.com/ckeditor/ckeditor5-image/commit/b81e08c))
 
 
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v15.0.0...v16.0.0) (2019-12-04)
