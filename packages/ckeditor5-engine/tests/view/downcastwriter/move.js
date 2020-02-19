@@ -16,8 +16,15 @@ import Position from '../../../src/view/position';
 import Document from '../../../src/view/document';
 import Mapper from '../../../src/conversion/mapper';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	describe( 'move()', () => {
 		let writer, document;
 
@@ -38,7 +45,7 @@ describe( 'DowncastWriter', () => {
 		}
 
 		before( () => {
-			document = new Document();
+			document = new Document( stylesProcessor );
 			writer = new DowncastWriter( document );
 		} );
 

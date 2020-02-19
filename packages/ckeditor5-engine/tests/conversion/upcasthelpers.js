@@ -28,13 +28,20 @@ import { setData as viewSetData } from '../../src/dev-utils/view';
 import Mapper from '../../src/conversion/mapper';
 import ViewSelection from '../../src/view/selection';
 import ViewRange from '../../src/view/range';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'UpcastHelpers', () => {
 	let upcastDispatcher, model, schema, upcastHelpers, viewDocument;
 
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	beforeEach( () => {
 		model = new Model();
-		viewDocument = new ViewDocument();
+		viewDocument = new ViewDocument( stylesProcessor );
 
 		schema = model.schema;
 
@@ -700,9 +707,15 @@ describe( 'UpcastHelpers', () => {
 describe( 'upcast-converters', () => {
 	let dispatcher, schema, context, model, viewDocument;
 
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	beforeEach( () => {
 		model = new Model();
-		viewDocument = new ViewDocument();
+		viewDocument = new ViewDocument( stylesProcessor );
 		schema = model.schema;
 
 		schema.register( 'paragraph', { inheritAllFrom: '$block' } );

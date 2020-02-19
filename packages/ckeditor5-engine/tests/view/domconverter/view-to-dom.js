@@ -19,13 +19,15 @@ import { INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../../src/view/filler';
 import { parse } from '../../../src/dev-utils/view';
 
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DomConverter', () => {
-	let converter, viewDocument;
+	let converter, viewDocument, stylesProcessor;
 
 	before( () => {
+		stylesProcessor = new StylesProcessor();
 		converter = new DomConverter();
-		viewDocument = new ViewDocument();
+		viewDocument = new ViewDocument( stylesProcessor );
 	} );
 
 	describe( 'viewToDom()', () => {

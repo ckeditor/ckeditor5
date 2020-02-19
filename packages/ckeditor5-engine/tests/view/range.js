@@ -12,6 +12,7 @@ import TextProxy from '../../src/view/textproxy';
 import TreeWalker from '../../src/view/treewalker';
 import Document from '../../src/view/document';
 import { parse, stringify } from '../../src/dev-utils/view';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 function getRange( view, options = {} ) {
 	const { selection } = parse( view, options );
@@ -20,10 +21,14 @@ function getRange( view, options = {} ) {
 }
 
 describe( 'Range', () => {
-	let document;
+	let document, stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
-		document = new Document();
+		document = new Document( stylesProcessor );
 	} );
 
 	describe( 'constructor()', () => {

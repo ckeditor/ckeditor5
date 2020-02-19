@@ -6,12 +6,17 @@
 import Document from '../../../src/view/document.js';
 import RootAttributeElement from '../../../src/view/rooteditableelement.js';
 import createRoot from '../_utils/createroot.js';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'createRoot', () => {
-	let viewDoc;
+	let viewDoc, stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
-		viewDoc = new Document();
+		viewDoc = new Document( stylesProcessor );
 	} );
 
 	it( 'should create view root element with given data', () => {

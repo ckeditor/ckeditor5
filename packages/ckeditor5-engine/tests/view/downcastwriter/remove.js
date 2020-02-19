@@ -14,8 +14,15 @@ import UIElement from '../../../src/view/uielement';
 
 import Document from '../../../src/view/document';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	describe( 'remove()', () => {
 		let writer, document;
 
@@ -38,7 +45,7 @@ describe( 'DowncastWriter', () => {
 		}
 
 		beforeEach( () => {
-			document = new Document();
+			document = new Document( stylesProcessor );
 			writer = new DowncastWriter( document );
 		} );
 

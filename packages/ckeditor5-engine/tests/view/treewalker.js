@@ -13,12 +13,15 @@ import Position from '../../src/view/position';
 import Range from '../../src/view/range';
 import createViewRoot from './_utils/createroot';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'TreeWalker', () => {
 	let doc, root, img1, paragraph, bold, textAbcd, charY, img2, charX, rootBeginning, rootEnding;
+	let stylesProcessor;
 
 	before( () => {
-		doc = new Document();
+		stylesProcessor = new StylesProcessor();
+		doc = new Document( stylesProcessor );
 		root = createViewRoot( doc );
 
 		// root

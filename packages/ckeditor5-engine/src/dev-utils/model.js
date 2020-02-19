@@ -39,6 +39,7 @@ import {
 
 import { isPlainObject } from 'lodash-es';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
+import { StylesProcessor } from '../view/stylesmap';
 
 /**
  * Writes the content of a model {@link module:engine/model/document~Document document} to an HTML-like string.
@@ -210,7 +211,8 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 
 	// Set up conversion.
 	// Create a temporary view controller.
-	const view = new View();
+	const stylesProcessor = new StylesProcessor();
+	const view = new View( stylesProcessor );
 	const viewDocument = view.document;
 	const viewRoot = new ViewRootEditableElement( viewDocument, 'div' );
 

@@ -15,14 +15,20 @@ import createViewRoot from './_utils/createroot';
 import { parse } from '../../src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'DocumentSelection', () => {
 	let documentSelection, el, range1, range2, range3, document;
+	let stylesProcessor;
 
 	testUtils.createSinonSandbox();
 
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	beforeEach( () => {
-		document = new Document();
+		document = new Document( stylesProcessor );
 		const text = new Text( document, 'xxxxxxxxxxxxxxxxxxxx' );
 		el = new Element( document, 'p', null, text );
 
@@ -1085,7 +1091,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should return EditableElement when selection is placed inside', () => {
-			const viewDocument = new Document();
+			const viewDocument = new Document( stylesProcessor );
 			documentSelection._setTo( viewDocument.selection );
 			const root = createViewRoot( viewDocument, 'div', 'main' );
 			const element = new Element( document, 'p' );

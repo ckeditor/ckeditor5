@@ -7,12 +7,17 @@ import { default as ContainerElement, getFillerOffset } from '../../src/view/con
 import Element from '../../src/view/element';
 import Document from '../../src/view/document';
 import { parse } from '../../src/dev-utils/view';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'ContainerElement', () => {
-	let document;
+	let document, stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
-		document = new Document();
+		document = new Document( stylesProcessor );
 	} );
 
 	describe( 'constructor()', () => {

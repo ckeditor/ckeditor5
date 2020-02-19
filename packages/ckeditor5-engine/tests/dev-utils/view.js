@@ -20,8 +20,15 @@ import Range from '../../src/view/range';
 import View from '../../src/view/view';
 import XmlDataProcessor from '../../src/dataprocessor/xmldataprocessor';
 import createViewRoot from '../view/_utils/createroot';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'view test utils', () => {
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	describe( 'getData, setData', () => {
 		afterEach( () => {
 			sinon.restore();
@@ -31,7 +38,7 @@ describe( 'view test utils', () => {
 			it( 'should use stringify method', () => {
 				const element = document.createElement( 'div' );
 				const stringifySpy = sinon.spy( getData, '_stringify' );
-				const view = new View();
+				const view = new View( stylesProcessor );
 				const viewDocument = view.document;
 				const options = {
 					showType: false,
@@ -58,7 +65,7 @@ describe( 'view test utils', () => {
 			it( 'should use stringify method with selection', () => {
 				const element = document.createElement( 'div' );
 				const stringifySpy = sinon.spy( getData, '_stringify' );
-				const view = new View();
+				const view = new View( stylesProcessor );
 				const viewDocument = view.document;
 				const options = { showType: false, showPriority: false };
 				const root = createAttachedRoot( viewDocument, element );
@@ -89,7 +96,7 @@ describe( 'view test utils', () => {
 
 		describe( 'setData', () => {
 			it( 'should use parse method', () => {
-				const view = new View();
+				const view = new View( stylesProcessor );
 				const viewDocument = view.document;
 				const data = 'foobar<b>baz</b>';
 				const parseSpy = sinon.spy( setData, '_parse' );
@@ -108,7 +115,7 @@ describe( 'view test utils', () => {
 			} );
 
 			it( 'should use parse method with selection', () => {
-				const view = new View();
+				const view = new View( stylesProcessor );
 				const viewDocument = view.document;
 				const data = '[<b>baz</b>]';
 				const parseSpy = sinon.spy( setData, '_parse' );
@@ -137,7 +144,7 @@ describe( 'view test utils', () => {
 		let viewDocument;
 
 		beforeEach( () => {
-			viewDocument = new ViewDocument();
+			viewDocument = new ViewDocument( stylesProcessor );
 		} );
 
 		it( 'should write text', () => {
@@ -426,7 +433,7 @@ describe( 'view test utils', () => {
 		let viewDocument;
 
 		beforeEach( () => {
-			viewDocument = new ViewDocument();
+			viewDocument = new ViewDocument( stylesProcessor );
 		} );
 
 		it( 'should return empty DocumentFragment for empty string', () => {

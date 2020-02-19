@@ -9,12 +9,17 @@ import UIElement from '../../src/view/uielement';
 import Element from '../../src/view/element';
 import Document from '../../src/view/document';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'UIElement', () => {
-	let uiElement, doc;
+	let uiElement, doc, stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
-		doc = new Document();
+		doc = new Document( stylesProcessor );
 
 		uiElement = new UIElement( doc, 'span', {
 			foo: 'bar',

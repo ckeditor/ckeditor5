@@ -15,13 +15,16 @@ import { INLINE_FILLER } from '../../../src/view/filler';
 import { parse } from '../../../src/dev-utils/view';
 
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DomConverter', () => {
-	let converter, viewDocument;
+	let converter, viewDocument, stylesProcessor;
 
 	before( () => {
 		converter = new DomConverter();
-		viewDocument = new ViewDocument();
+		stylesProcessor = new StylesProcessor();
+
+		viewDocument = new ViewDocument( stylesProcessor );
 	} );
 
 	describe( 'bindElements()', () => {
@@ -149,7 +152,7 @@ describe( 'DomConverter', () => {
 			const domText = document.createTextNode( 'x' );
 			const domP = createElement( document, 'p', null, [ domB, domText, domI ] );
 
-			const viewP = parse( '<p><b></b><i></i></p>' );
+			const viewP = parse( '<p><b></b><i></i></p>', { stylesProcessor } );
 			const viewB = viewP.getChild( 0 );
 			const viewI = viewP.getChild( 1 );
 
@@ -164,7 +167,7 @@ describe( 'DomConverter', () => {
 			const domText = document.createTextNode( 'x' );
 			const domP = createElement( document, 'p', null, domText );
 
-			const viewP = parse( '<p></p>' );
+			const viewP = parse( '<p></p>', { stylesProcessor } );
 
 			converter.bindElements( domP, viewP );
 

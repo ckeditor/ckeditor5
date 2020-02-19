@@ -6,13 +6,20 @@
 import DowncastWriter from '../../../src/view/downcastwriter';
 import { parse } from '../../../src/dev-utils/view';
 import Document from '../../../src/view/document';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	describe( 'rename()', () => {
 		let root, foo, writer;
 
 		before( () => {
-			writer = new DowncastWriter( new Document() );
+			writer = new DowncastWriter( new Document( stylesProcessor ) );
 		} );
 
 		beforeEach( () => {

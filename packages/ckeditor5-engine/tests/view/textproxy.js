@@ -12,12 +12,18 @@ import RootEditableElement from '../../src/view/rooteditableelement';
 import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import Document from '../../src/view/document';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'TextProxy', () => {
 	let text, parent, wrapper, textProxy, document;
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
-		document = new Document();
+		document = new Document( stylesProcessor );
 		text = new Text( document, 'abcdefgh' );
 		parent = new ContainerElement( document, 'p', [], [ text ] );
 		wrapper = new ContainerElement( document, 'div', [], parent );

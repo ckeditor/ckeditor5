@@ -9,9 +9,10 @@ import ViewUIElement from '../../../src/view/uielement';
 import ViewContainer from '../../../src/view/containerelement';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocument from '../../../src/view/document';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DOMConverter UIElement integration', () => {
-	let converter, viewDocument;
+	let converter, viewDocument, stylesProcessor;
 
 	function createUIElement( name ) {
 		const element = new ViewUIElement( viewDocument, name );
@@ -26,9 +27,13 @@ describe( 'DOMConverter UIElement integration', () => {
 		return element;
 	}
 
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	beforeEach( () => {
 		converter = new DomConverter();
-		viewDocument = new ViewDocument();
+		viewDocument = new ViewDocument( stylesProcessor );
 	} );
 
 	describe( 'viewToDom()', () => {

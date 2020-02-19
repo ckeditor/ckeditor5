@@ -21,13 +21,19 @@ import ModelWriter from '../../src/model/writer';
 
 import first from '@ckeditor/ckeditor5-utils/src/first';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'UpcastDispatcher', () => {
 	let model, viewDocument;
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
 		model = new Model();
-		viewDocument = new ViewDocument();
+		viewDocument = new ViewDocument( stylesProcessor );
 	} );
 
 	describe( 'constructor()', () => {

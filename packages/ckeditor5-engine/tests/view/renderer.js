@@ -26,14 +26,20 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
-describe( 'Renderer', () => {
+describe.only( 'Renderer', () => {
 	let view, selection, domConverter, renderer, viewDocument;
+	let stylesProcessor;
 
 	testUtils.createSinonSandbox();
 
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	beforeEach( () => {
-		view = new View();
+		view = new View( stylesProcessor );
 		viewDocument = view.document;
 
 		renderer = new Renderer( view );
@@ -3118,7 +3124,7 @@ describe( 'Renderer', () => {
 					'<ol><li class="bar2 baz4 bax5">Item 1</li></ol><p class="p1 p2"><i>Foo</i></p>' ) );
 			} );
 
-			it( 'should handle styles change in replaced elements', () => {
+			it.only( 'should handle styles change in replaced elements', () => {
 				const view = '' +
 					'<container:ol>' +
 						'<container:li style="color:#000;font-weight:bold;">Foo</container:li>' +
@@ -3129,7 +3135,7 @@ describe( 'Renderer', () => {
 						'</container:li>' +
 					'</container:ol>';
 
-				viewRoot._appendChild( parse( view ) );
+				viewRoot._appendChild( parse( view, { stylesProcessor } ) );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -3526,7 +3532,7 @@ describe( 'Renderer', () => {
 		// #1560
 		describe( 'attributes manipulation on replaced element', () => {
 			it( 'should rerender element if it was removed after having its attributes removed (attribute)', () => {
-				const writer = new DowncastWriter();
+				const writer = new DowncastWriter( viewDocument );
 
 				// 1. Setup initial view/DOM.
 				viewRoot._appendChild( parse( '<container:p>1</container:p>' ) );
@@ -3555,7 +3561,7 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should rerender element if it was removed after having its attributes removed (classes)', () => {
-				const writer = new DowncastWriter();
+				const writer = new DowncastWriter( viewDocument );
 
 				// 1. Setup initial view/DOM.
 				viewRoot._appendChild( parse( '<container:h1>h1</container:h1><container:p>p</container:p>' ) );
@@ -3585,7 +3591,7 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should rerender element if it was removed and have its attributes removed after', () => {
-				const writer = new DowncastWriter();
+				const writer = new DowncastWriter( viewDocument );
 
 				// 1. Setup initial view/DOM.
 				viewRoot._appendChild( parse( '<container:p>1</container:p>' ) );

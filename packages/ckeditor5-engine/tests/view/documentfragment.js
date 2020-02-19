@@ -9,12 +9,17 @@ import Node from '../../src/view/node';
 import Text from '../../src/view/text';
 import TextProxy from '../../src/view/textproxy';
 import Document from '../../src/view/document';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'DocumentFragment', () => {
-	let document;
+	let document, stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
-		document = new Document();
+		document = new Document( stylesProcessor );
 	} );
 
 	describe( 'constructor()', () => {

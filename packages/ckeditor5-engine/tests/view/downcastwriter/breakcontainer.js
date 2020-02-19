@@ -10,8 +10,15 @@ import ContainerElement from '../../../src/view/containerelement';
 import Position from '../../../src/view/position';
 import Document from '../../../src/view/document';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	describe( 'breakContainer()', () => {
 		let writer, document;
 
@@ -28,7 +35,7 @@ describe( 'DowncastWriter', () => {
 		}
 
 		before( () => {
-			document = new Document();
+			document = new Document( stylesProcessor );
 			writer = new DowncastWriter( document );
 		} );
 

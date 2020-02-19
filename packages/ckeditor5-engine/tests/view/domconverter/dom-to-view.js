@@ -11,18 +11,19 @@ import ViewDocumentSelection from '../../../src/view/documentselection';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '../../../src/view/filler';
-
+import { StylesProcessor } from '../../../src/view/stylesmap';
 import { parse, stringify } from '../../../src/dev-utils/view';
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 describe( 'DomConverter', () => {
-	let converter, viewDocument;
+	let converter, viewDocument, stylesProcessor;
 
 	before( () => {
 		converter = new DomConverter();
-		viewDocument = new ViewDocument();
+		stylesProcessor = new StylesProcessor();
+		viewDocument = new ViewDocument( stylesProcessor );
 	} );
 
 	describe( 'domToView()', () => {

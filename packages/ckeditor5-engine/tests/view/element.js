@@ -9,12 +9,17 @@ import Element from '../../src/view/element';
 import Text from '../../src/view/text';
 import TextProxy from '../../src/view/textproxy';
 import Document from '../../src/view/document';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Element', () => {
-	let document;
+	let document, stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
-		document = new Document();
+		document = new Document( stylesProcessor );
 	} );
 
 	describe( 'constructor()', () => {
@@ -410,7 +415,7 @@ describe( 'Element', () => {
 			} );
 
 			it( 'set proper #document on inserted children', () => {
-				const anotherDocument = new Document();
+				const anotherDocument = new Document( stylesProcessor );
 				const anotherEl = new Element( anotherDocument, 'p' );
 
 				parent._insertChild( 0, anotherEl );

@@ -24,6 +24,7 @@ import AttributeElement from '../view/attributeelement';
 import ContainerElement from '../view/containerelement';
 import EmptyElement from '../view/emptyelement';
 import UIElement from '../view/uielement';
+import { StylesProcessor } from '../view/stylesmap';
 
 const ELEMENT_RANGE_START_TOKEN = '[';
 const ELEMENT_RANGE_END_TOKEN = ']';
@@ -98,7 +99,10 @@ export function setData( view, data, options = {} ) {
 	const root = document.getRoot( rootName );
 
 	view.change( writer => {
-		const result = setData._parse( data, { rootElement: root } );
+		const result = setData._parse( data, {
+			rootElement: root,
+			stylesProcessor: document.stylesProcessor
+		} );
 
 		if ( result.view && result.selection ) {
 			writer.setSelection( result.selection );
@@ -321,16 +325,24 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  * this node will be used as the root for all parsed nodes.
  * @param {Boolean} [options.sameSelectionCharacters=false] When set to `false`, the selection inside the text should be marked using
  * `{` and `}` and the selection outside the ext using `[` and `]`. When set to `true`, both should be marked with `[` and `]` only.
+ * @param {module:engine/view/stylesmap~StylesProcessor} [options.stylesProcessor] Styles processor.
  * @returns {module:engine/view/text~Text|module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment|Object}
  * Returns the parsed view node or an object with two fields: `view` and `selection` when selection ranges were included in the data
  * to parse.
  */
 export function parse( data, options = {} ) {
+	if ( !options.stylesProcessor ) {
+	// 	console.log( 'Missing "stylesProcessor". parse()' );
+		options.stylesProcessor = new StylesProcessor();
+	}
+
+	const stylesProcessor = options.stylesProcessor;
+
 	options.order = options.order || [];
 	const rangeParser = new RangeParser( {
 		sameSelectionCharacters: options.sameSelectionCharacters
 	} );
-	const processor = new XmlDataProcessor( {
+	const processor = new XmlDataProcessor( stylesProcessor, {
 		namespaces: Object.keys( allowedTypes )
 	} );
 

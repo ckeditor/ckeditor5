@@ -25,10 +25,19 @@ export default class XmlDataProcessor {
 	/**
 	 * Creates a new instance of the XML data processor class.
 	 *
+	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor Styles processor.
 	 * @param {Object} options Configuration options.
 	 * @param {Array<String>} [options.namespaces=[]] A list of namespaces allowed to use in the XML input.
 	 */
-	constructor( options = {} ) {
+	constructor( stylesProcessor, options = {} ) {
+		/**
+		 * Styles processor.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/stylesmap~StylesProcessor}
+		 */
+		this.stylesProcessor = stylesProcessor;
+
 		/**
 		 * A list of namespaces allowed to use in the XML input.
 		 *
@@ -91,7 +100,7 @@ export default class XmlDataProcessor {
 	toView( data ) {
 		// Convert input XML data to DOM DocumentFragment.
 		const domFragment = this._toDom( data );
-		const viewDocument = new ViewDocument();
+		const viewDocument = new ViewDocument( this.stylesProcessor );
 
 		// Convert DOM DocumentFragment to view DocumentFragment.
 		return this._domConverter.domToView( viewDocument, domFragment, { keepOriginalCase: true } );

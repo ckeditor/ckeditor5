@@ -9,14 +9,21 @@ import Model from '../../src/model/model';
 import ModelText from '../../src/model/text';
 
 import MarkerOperation from '../../src/model/operation/markeroperation';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Bug ckeditor5-engine@1323', () => {
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	describe( 'constructor()', () => {
 		let model, editing, root, range;
 
 		beforeEach( () => {
 			model = new Model();
-			editing = new EditingController( model );
+			editing = new EditingController( model, stylesProcessor );
 			root = model.document.createRoot();
 			root._appendChild( new ModelText( 'foo' ) );
 			range = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 0 ) );

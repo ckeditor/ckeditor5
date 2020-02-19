@@ -22,14 +22,21 @@ import ModelDocumentFragment from '../../src/model/documentfragment';
 
 import { getData as getModelData, parse } from '../../src/dev-utils/model';
 import { getData as getViewData } from '../../src/dev-utils/view';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'EditingController', () => {
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	describe( 'constructor()', () => {
 		let model, editing;
 
 		beforeEach( () => {
 			model = new Model();
-			editing = new EditingController( model );
+			editing = new EditingController( model, stylesProcessor );
 		} );
 
 		afterEach( () => {
@@ -77,7 +84,7 @@ describe( 'EditingController', () => {
 			model = new Model();
 			modelRoot = model.document.createRoot();
 
-			editing = new EditingController( model );
+			editing = new EditingController( model, stylesProcessor );
 
 			domRoot = document.createElement( 'div' );
 			domRoot.contentEditable = true;
@@ -477,7 +484,7 @@ describe( 'EditingController', () => {
 			model.document.createRoot();
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			const editing = new EditingController( model );
+			const editing = new EditingController( model, stylesProcessor );
 
 			const spy = sinon.spy();
 
@@ -501,7 +508,7 @@ describe( 'EditingController', () => {
 			model.document.createRoot();
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			const editing = new EditingController( model );
+			const editing = new EditingController( model, stylesProcessor );
 
 			const spy = sinon.spy( editing.view, 'destroy' );
 

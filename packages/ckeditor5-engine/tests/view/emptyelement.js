@@ -8,12 +8,18 @@ import Element from '../../src/view/element';
 import Document from '../../src/view/document';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'EmptyElement', () => {
 	let element, emptyElement, document;
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
-		document = new Document();
+		document = new Document( stylesProcessor );
 		element = new Element( document, 'b' );
 		emptyElement = new EmptyElement( document, 'img', {
 			alt: 'alternative text',

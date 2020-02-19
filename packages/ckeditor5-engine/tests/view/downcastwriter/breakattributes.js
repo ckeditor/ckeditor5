@@ -14,13 +14,20 @@ import Range from '../../../src/view/range';
 import Position from '../../../src/view/position';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	describe( 'breakAttributes()', () => {
 		let writer, document;
 
 		beforeEach( () => {
-			document = new Document();
+			document = new Document( stylesProcessor );
 			writer = new DowncastWriter( document );
 		} );
 

@@ -8,8 +8,15 @@ import { stringify, parse } from '../../../src/dev-utils/view';
 
 import Document from '../../../src/view/document';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	describe( 'mergeContainers()', () => {
 		let writer;
 
@@ -26,7 +33,7 @@ describe( 'DowncastWriter', () => {
 		}
 
 		before( () => {
-			writer = new DowncastWriter( new Document() );
+			writer = new DowncastWriter( new Document( stylesProcessor ) );
 		} );
 
 		it( 'should merge two container elements - position between elements', () => {

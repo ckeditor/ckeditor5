@@ -12,14 +12,17 @@ import RootEditableElement from '../../src/view/rooteditableelement';
 import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import Document from '../../src/view/document';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Node', () => {
 	let root, document,
 		one, two, three,
-		charB, charA, charR, img;
+		charB, charA, charR, img,
+		stylesProcessor;
 
 	before( () => {
-		document = new Document();
+		stylesProcessor = new StylesProcessor();
+		document = new Document( stylesProcessor );
 
 		charB = new Text( document, 'b' );
 		charA = new Text( document, 'a' );

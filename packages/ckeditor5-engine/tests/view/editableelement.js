@@ -8,13 +8,20 @@ import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
 import EditableElement from '../../src/view/editableelement';
 import Range from '../../src/view/range';
 import Document from '../../src/view/document';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'EditableElement', () => {
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	describe( 'is', () => {
 		let el;
 
 		before( () => {
-			el = new EditableElement( new Document(), 'div' );
+			el = new EditableElement( new Document( stylesProcessor ), 'div' );
 		} );
 
 		it( 'should return true for containerElement/editable/element, also with correct name and element name', () => {

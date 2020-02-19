@@ -11,13 +11,19 @@ import ViewRange from '../../../src/view/range';
 import createViewRoot from '../_utils/createroot';
 import ViewElement from '../../../src/view/element';
 import ViewSelection from '../../../src/view/selection';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
 	let writer, attributes, root, doc;
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
 		attributes = { foo: 'bar', baz: 'quz' };
-		doc = new Document();
+		doc = new Document( stylesProcessor );
 		root = createViewRoot( doc );
 		writer = new DowncastWriter( doc );
 	} );

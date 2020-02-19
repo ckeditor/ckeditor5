@@ -17,12 +17,14 @@ import ViewUIElement from '../../src/view/uielement';
 import ViewText from '../../src/view/text';
 import ViewPosition from '../../src/view/position';
 import ViewRange from '../../src/view/range';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Mapper', () => {
-	let viewDocument;
+	let viewDocument, stylesProcessor;
 
-	beforeEach( () => {
-		viewDocument = new ViewDocument();
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+		viewDocument = new ViewDocument( stylesProcessor );
 	} );
 
 	describe( 'clearBindings', () => {

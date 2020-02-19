@@ -18,6 +18,7 @@ import ViewRange from '../../../src/view/range';
 import ViewElement from '../../../src/view/element';
 import ViewPosition from '../../../src/view/position';
 import ViewSelection from '../../../src/view/selection';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -31,6 +32,12 @@ describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 6;
 	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
 
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	beforeEach( () => {
 		domRoot = createElement( document, 'div', {
 			id: 'editor',
@@ -39,7 +46,7 @@ describe( 'view', () => {
 
 		document.body.appendChild( domRoot );
 
-		view = new View();
+		view = new View( stylesProcessor );
 		viewDocument = view.document;
 
 		ObserverMock = class extends Observer {

@@ -8,13 +8,20 @@
 import XmlDataProcessor from '../../src/dataprocessor/xmldataprocessor';
 import xssTemplates from '../../tests/dataprocessor/_utils/xsstemplates';
 import ViewDocumentFragment from '../../src/view/documentfragment';
+import ViewDocument from '../../src/view/document';
 import { stringify, parse } from '../../src/dev-utils/view';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'XmlDataProcessor', () => {
-	let dataProcessor;
+	let stylesProcessor, dataProcessor, viewDocument;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
-		dataProcessor = new XmlDataProcessor();
+		dataProcessor = new XmlDataProcessor( stylesProcessor );
+		viewDocument = new ViewDocument( stylesProcessor );
 	} );
 
 	describe( 'toView', () => {
@@ -43,7 +50,7 @@ describe( 'XmlDataProcessor', () => {
 		} );
 
 		it( 'should allow to use registered namespaces', () => {
-			dataProcessor = new XmlDataProcessor( {
+			dataProcessor = new XmlDataProcessor( stylesProcessor, {
 				namespaces: [ 'foo', 'bar' ]
 			} );
 
@@ -82,13 +89,13 @@ describe( 'XmlDataProcessor', () => {
 
 	describe( 'toData', () => {
 		it( 'should return empty string when empty DocumentFragment is passed', () => {
-			const fragment = new ViewDocumentFragment();
+			const fragment = new ViewDocumentFragment( viewDocument );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( '' );
 		} );
 
 		it( 'should return text if document fragment with single text node is passed', () => {
-			const fragment = new ViewDocumentFragment();
+			const fragment = new ViewDocumentFragment( viewDocument );
 			fragment._appendChild( parse( 'foo bar' ) );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( 'foo bar' );

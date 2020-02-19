@@ -21,9 +21,15 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
 import UpcastHelpers from '../../src/conversion/upcasthelpers';
 import DowncastHelpers from '../../src/conversion/downcasthelpers';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'DataController', () => {
 	let model, modelDocument, htmlDataProcessor, data, schema, upcastHelpers, downcastHelpers, viewDocument;
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
 		model = new Model();
@@ -36,10 +42,10 @@ describe( 'DataController', () => {
 
 		schema.register( '$title', { inheritAllFrom: '$root' } );
 
-		htmlDataProcessor = new HtmlDataProcessor();
-		viewDocument = new ViewDocument();
+		htmlDataProcessor = new HtmlDataProcessor( stylesProcessor );
+		viewDocument = new ViewDocument( stylesProcessor );
 
-		data = new DataController( model, htmlDataProcessor );
+		data = new DataController( model, stylesProcessor, htmlDataProcessor );
 
 		upcastHelpers = new UpcastHelpers( [ data.upcastDispatcher ] );
 		downcastHelpers = new DowncastHelpers( [ data.downcastDispatcher ] );
@@ -47,7 +53,7 @@ describe( 'DataController', () => {
 
 	describe( 'constructor()', () => {
 		it( 'works without data processor', () => {
-			const data = new DataController( model );
+			const data = new DataController( model, stylesProcessor );
 
 			expect( data.processor ).to.be.undefined;
 		} );

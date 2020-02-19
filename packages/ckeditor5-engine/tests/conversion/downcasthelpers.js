@@ -35,18 +35,22 @@ import View from '../../src/view/view';
 import createViewRoot from '../view/_utils/createroot';
 import { setData as setModelData } from '../../src/dev-utils/model';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'DowncastHelpers', () => {
 	let model, modelRoot, viewRoot, downcastHelpers, controller;
+	let modelRootStart, stylesProcessor;
 
-	let modelRootStart;
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
 		model = new Model();
 		const modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
 
-		controller = new EditingController( model );
+		controller = new EditingController( model, stylesProcessor );
 
 		// Set name of view root the same as dom root.
 		// This is a mock of attaching view root to dom root.
@@ -1323,7 +1327,7 @@ describe( 'DowncastHelpers', () => {
 				let markerRange, viewDocument;
 
 				beforeEach( () => {
-					viewDocument = new ViewDocument();
+					viewDocument = new ViewDocument( stylesProcessor );
 
 					downcastHelpers.elementToElement( {
 						model: 'div',
@@ -1451,12 +1455,18 @@ describe( 'DowncastHelpers', () => {
 describe( 'downcast converters', () => {
 	let dispatcher, modelDoc, modelRoot, viewRoot, controller, modelRootStart, model;
 
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	beforeEach( () => {
 		model = new Model();
 		modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
 
-		controller = new EditingController( model );
+		controller = new EditingController( model, stylesProcessor );
 
 		viewRoot = controller.view.document.getRoot();
 		// Set name of view root the same as dom root.
@@ -1505,7 +1515,7 @@ describe( 'downcast converters', () => {
 		let viewDocument;
 
 		beforeEach( () => {
-			viewDocument = new ViewDocument();
+			viewDocument = new ViewDocument( stylesProcessor );
 		} );
 
 		it( 'should remove items from view accordingly to changes in model #1', () => {
@@ -1697,7 +1707,7 @@ describe( 'downcast converters', () => {
 		let viewDocument;
 
 		beforeEach( () => {
-			viewDocument = new ViewDocument();
+			viewDocument = new ViewDocument( stylesProcessor );
 		} );
 
 		it( 'should return attribute element from descriptor object', () => {
@@ -1787,6 +1797,11 @@ describe( 'downcast converters', () => {
 
 describe( 'downcast selection converters', () => {
 	let dispatcher, mapper, model, view, modelDoc, modelRoot, docSelection, viewDoc, viewRoot, viewSelection, downcastHelpers;
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
 		model = new Model();
@@ -1926,7 +1941,7 @@ describe( 'downcast selection converters', () => {
 			let marker, viewDocument;
 
 			beforeEach( () => {
-				viewDocument = new ViewDocument();
+				viewDocument = new ViewDocument( stylesProcessor );
 			} );
 
 			it( 'in container', () => {

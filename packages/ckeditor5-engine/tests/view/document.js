@@ -10,9 +10,14 @@ import Document from '../../src/view/document';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import createViewRoot from './_utils/createroot';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Document', () => {
-	let domRoot, viewDocument;
+	let domRoot, viewDocument, stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	testUtils.createSinonSandbox();
 
@@ -23,7 +28,7 @@ describe( 'Document', () => {
 		} );
 		document.body.appendChild( domRoot );
 
-		viewDocument = new Document();
+		viewDocument = new Document( stylesProcessor );
 	} );
 
 	afterEach( () => {

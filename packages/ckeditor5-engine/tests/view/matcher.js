@@ -6,12 +6,17 @@
 import Matcher from '../../src/view/matcher';
 import Element from '../../src/view/element';
 import Document from '../../src/view/document';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Matcher', () => {
-	let document;
+	let document, stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
-		document = new Document();
+		document = new Document( stylesProcessor );
 	} );
 
 	describe( 'add', () => {

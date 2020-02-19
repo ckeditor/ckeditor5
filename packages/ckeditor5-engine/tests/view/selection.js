@@ -16,14 +16,20 @@ import createViewRoot from './_utils/createroot';
 import { parse } from '../../src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Selection', () => {
 	let selection, el, range1, range2, range3, viewDocument;
+	let stylesProcessor;
 
 	testUtils.createSinonSandbox();
 
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	beforeEach( () => {
-		viewDocument = new Document();
+		viewDocument = new Document( stylesProcessor );
 
 		const text = new Text( viewDocument, 'xxxxxxxxxxxxxxxxxxxx' );
 		el = new Element( viewDocument, 'p', null, text );

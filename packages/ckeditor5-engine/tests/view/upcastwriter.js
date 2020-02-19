@@ -12,14 +12,16 @@ import ViewPosition from '../../src/view/position';
 import ViewRange from '../../src/view/range';
 import ViewSelection from '../../src/view/selection';
 import Document from '../../src/view/document';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'UpcastWriter', () => {
-	let writer, view, dataprocessor, document;
+	let writer, view, dataprocessor, document, stylesProcessor;
 
 	before( () => {
-		document = new Document();
+		stylesProcessor = new StylesProcessor();
+		document = new Document( stylesProcessor );
 		writer = new UpcastWriter( document );
-		dataprocessor = new HtmlDataProcessor();
+		dataprocessor = new HtmlDataProcessor( stylesProcessor );
 	} );
 
 	beforeEach( () => {

@@ -11,16 +11,18 @@ import ViewConsumable from '../../src/conversion/viewconsumable';
 import { addBorderRules } from '../../src/view/styles/border';
 import { addMarginRules } from '../../src/view/styles/margin';
 import { addPaddingRules } from '../../src/view/styles/padding';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'ViewConsumable', () => {
-	let viewConsumable, el, viewDocument;
+	let viewConsumable, el, viewDocument, stylesProcessor;
 
 	before( () => {
-		viewDocument = new ViewDocument();
+		stylesProcessor = new StylesProcessor();
+		viewDocument = new ViewDocument( stylesProcessor );
 
-		addBorderRules( viewDocument.stylesProcessor );
-		addMarginRules( viewDocument.stylesProcessor );
-		addPaddingRules( viewDocument.stylesProcessor );
+		addBorderRules( stylesProcessor );
+		addMarginRules( stylesProcessor );
+		addPaddingRules( stylesProcessor );
 	} );
 
 	beforeEach( () => {

@@ -18,13 +18,17 @@ import createViewRoot from './_utils/createroot';
 import AttributeElement from '../../src/view/attributeelement';
 import ContainerElement from '../../src/view/containerelement';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Position', () => {
 	const parentMock = {};
 	let document;
 
-	beforeEach( () => {
-		document = new Document();
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+		document = new Document( stylesProcessor );
 	} );
 
 	describe( 'constructor()', () => {
@@ -644,7 +648,7 @@ describe( 'Position', () => {
 		let root;
 
 		beforeEach( () => {
-			const doc = new Document();
+			const doc = new Document( stylesProcessor );
 
 			root = createViewRoot( doc );
 

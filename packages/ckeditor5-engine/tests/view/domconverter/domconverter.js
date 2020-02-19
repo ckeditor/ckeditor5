@@ -13,11 +13,16 @@ import ViewContainerElement from '../../../src/view/containerelement';
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '../../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DomConverter', () => {
-	let converter;
+	let converter, stylesProcessor;
 
 	testUtils.createSinonSandbox();
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
 		converter = new DomConverter();
@@ -38,9 +43,8 @@ describe( 'DomConverter', () => {
 		let viewEditable, domEditable, domEditableParent, viewDocument;
 
 		beforeEach( () => {
-			viewDocument = new ViewDocument();
+			viewDocument = new ViewDocument( stylesProcessor );
 			viewEditable = new ViewEditable( viewDocument, 'div' );
-			viewEditable._document = viewDocument;
 
 			domEditable = document.createElement( 'div' );
 			domEditableParent = document.createElement( 'div' );
@@ -203,7 +207,7 @@ describe( 'DomConverter', () => {
 			domUiDeepSpan = document.createElement( 'span' );
 			domUiSpan.appendChild( domUiDeepSpan );
 
-			viewDocument = new ViewDocument();
+			viewDocument = new ViewDocument( stylesProcessor );
 
 			const viewUiSpan = new ViewUIElement( viewDocument, 'span' );
 			const viewElementSpan = new ViewContainerElement( viewDocument, 'span' );
