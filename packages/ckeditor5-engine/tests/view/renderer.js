@@ -28,7 +28,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
-describe.only( 'Renderer', () => {
+describe( 'Renderer', () => {
 	let view, selection, domConverter, renderer, viewDocument;
 	let stylesProcessor;
 
@@ -3124,7 +3124,7 @@ describe.only( 'Renderer', () => {
 					'<ol><li class="bar2 baz4 bax5">Item 1</li></ol><p class="p1 p2"><i>Foo</i></p>' ) );
 			} );
 
-			it.only( 'should handle styles change in replaced elements', () => {
+			it( 'should handle styles change in replaced elements', () => {
 				const view = '' +
 					'<container:ol>' +
 						'<container:li style="color:#000;font-weight:bold;">Foo</container:li>' +

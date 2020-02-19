@@ -1811,7 +1811,7 @@ describe( 'downcast selection converters', () => {
 
 		model.schema.extend( '$text', { allowIn: '$root' } );
 
-		view = new View();
+		view = new View( new StylesProcessor() );
 		viewDoc = view.document;
 		viewRoot = createViewRoot( viewDoc );
 		viewSelection = viewDoc.selection;
