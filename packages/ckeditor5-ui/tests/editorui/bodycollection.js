@@ -28,6 +28,14 @@ describe( 'BodyCollection', () => {
 		}
 	} );
 
+	describe( 'constructor', () => {
+		it( 'assigns locale', () => {
+			const instance = new BodyCollection( locale );
+
+			expect( instance.locale ).to.be.equal( locale );
+		} );
+	} );
+
 	describe( 'attachToDom', () => {
 		it( 'should create wrapper and put the collection in that wrapper', () => {
 			const body = new BodyCollection( locale );
