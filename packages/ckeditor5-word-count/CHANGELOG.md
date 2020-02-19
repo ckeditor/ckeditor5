@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-word-count/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### Other changes
+
+* Reverted year 2020 in .po files license header. ([af7ad18](https://github.com/ckeditor/ckeditor5-word-count/commit/af7ad18))
+* Updated translations. ([d8e40e5](https://github.com/ckeditor/ckeditor5-word-count/commit/d8e40e5)) 
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-word-count/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Other changes
