@@ -186,18 +186,19 @@ CloudServices.Token = Token;
  */
 
 /**
- * Optional parameter used for integration with Cloud Services, when uploading the editor build to Cloud Services.
+ * An optional parameter used for integration with CKEditor Cloud Services when uploading the editor build to cloud services.
  *
- * Whenever the editor build or the configuration changes, this parameter should be set to a new, unique value, to differentiate
+ * Whenever the editor build or the configuration changes, this parameter should be set to a new, unique value to differentiate
  * the new bundle (build + configuration) from the old ones.
  *
  * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#bundleVersion
  */
 
 /**
- * Document ID, used by the `RealTimeCollaborativeEditing` plugin. All editor instances created with the same document ID will collaborate.
- * It means that each document needs a different document ID if you do not want to start collaboration between these documents.
- * The ID is usually a primary key of the document in the database, but you are free to provide whatever identifier fits your scenario.
+ * The document ID used by the `RealTimeCollaborativeEditing` plugin. All editor instances created with the same document ID will
+ * collaborate. It means that each document needs a different document ID if you do not want to start collaboration between these
+ * documents. The ID is usually a primary key of the document in the database but you are free to provide whatever identifier fits your
+ * scenario.
  *
  * Note: Unlike most plugins, `RealTimeCollaborativeEditing` is not included in any CKEditor 5 build and needs to be installed manually.
  * Check [Collaboration overview](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/overview.html) for more details.
