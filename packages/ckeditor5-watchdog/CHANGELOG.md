@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### MAJOR BREAKING CHANGES
+
+* The `Watchdog` class was renamed to `EditorWatchdog` and is available in `src/editorwatchdog.js`.
+* The `EditorWatchdog.for()` method was removed in favor of the constructor.
+* The `EditorWatchdog#constructor()` API changed, now the `EditorWatchdog` accepts the editor class as the first argument and the watchdog configuration as the second argument. The `EditorWatchdog` editor creator now defaults to `( sourceElementOrData, config ) => Editor.create( sourceElementOrData, config )`.
+
+### Features
+
+* Introduced `ContextWatchdog` which is a watchdog for `Context`. Closes [ckeditor/ckeditor5#6079](https://github.com/ckeditor/ckeditor5/issues/6079). Closes [ckeditor/ckeditor5#6042](https://github.com/ckeditor/ckeditor5/issues/6042). Closes [ckeditor/ckeditor5#4696](https://github.com/ckeditor/ckeditor5/issues/4696). ([76c4938](https://github.com/ckeditor/ckeditor5-watchdog/commit/76c4938))
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Bug fixes
