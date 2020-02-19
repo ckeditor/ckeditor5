@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-highlight/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### Other changes
+
+* Reverted year 2020 in .po files license header. ([bbd7bac](https://github.com/ckeditor/ckeditor5-highlight/commit/bbd7bac))
+* Updated translations. ([d016764](https://github.com/ckeditor/ckeditor5-highlight/commit/d016764)) 
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-highlight/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Bug fixes
