@@ -5,15 +5,14 @@ Changelog
 
 ### Other changes
 
-* Reverted year 2020 in .po files license header. ([8950025](https://github.com/ckeditor/ckeditor5-ckfinder/commit/8950025))
-* Updated translations. ([2660bf3](https://github.com/ckeditor/ckeditor5-ckfinder/commit/2660bf3)) 
+* Updated translations. ([2660bf3](https://github.com/ckeditor/ckeditor5-ckfinder/commit/2660bf3))
 
 
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-ckfinder/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Other changes
 
-* Updated translations. ([ff9da0b](https://github.com/ckeditor/ckeditor5-ckfinder/commit/ff9da0b)) 
+* Updated translations. ([ff9da0b](https://github.com/ckeditor/ckeditor5-ckfinder/commit/ff9da0b))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-ckfinder/compare/v11.0.5...v15.0.0) (2019-10-23)
@@ -24,7 +23,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([8e44572](https://github.com/ckeditor/ckeditor5-ckfinder/commit/8e44572)) 
+* Updated translations. ([8e44572](https://github.com/ckeditor/ckeditor5-ckfinder/commit/8e44572))
 
 
 ## [11.0.5](https://github.com/ckeditor/ckeditor5-ckfinder/compare/v11.0.4...v11.0.5) (2019-08-26)
