@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### Bug fixes
+
+* The main toolbar should always stay on top of contextual UI elements. Closes [ckeditor/ckeditor5#6220](https://github.com/ckeditor/ckeditor5/issues/6220). ([bf805f2](https://github.com/ckeditor/ckeditor5-editor-classic/commit/bf805f2))
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Features
