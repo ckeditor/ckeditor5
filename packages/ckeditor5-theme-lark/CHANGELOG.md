@@ -1,6 +1,31 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### MAJOR BREAKING CHANGES
+
+* The restricted and standard mode editing now uses `ck-restricted-editing-exception` CSS class for spans used to mark editable content.
+
+### Features
+
+* Added styles for rich error messages in the table and table cell properties forms (see [ckeditor/ckeditor5#6131](https://github.com/ckeditor/ckeditor5/issues/6131)). ([f859f4b](https://github.com/ckeditor/ckeditor5-theme-lark/commit/f859f4b))
+* Added styles for the color input (see ckeditor/ckeditor5/issues/6106). ([e64013f](https://github.com/ckeditor/ckeditor5-theme-lark/commit/e64013f))
+* Added styles for the LabeledView (see [ckeditor/ckeditor5-table#227](https://github.com/ckeditor/ckeditor5-table/issues/227)). ([4e36147](https://github.com/ckeditor/ckeditor5-theme-lark/commit/4e36147))
+* Added styles of new fields in the table cell properties view. Code refactoring (see [ckeditor/ckeditor5#6189](https://github.com/ckeditor/ckeditor5/issues/6189)). ([c2bf945](https://github.com/ckeditor/ckeditor5-theme-lark/commit/c2bf945))
+* Added the special character info view styles (see [ckeditor/ckeditor5#5817](https://github.com/ckeditor/ckeditor5/issues/5817)). ([86079fd](https://github.com/ckeditor/ckeditor5-theme-lark/commit/86079fd))
+* Brought styles for various UI views: the compact toolbar, table form, table form row and header, table cell properties form, and table properties form (see ckeditor/ckeditor5/issues/6112). ([339aec1](https://github.com/ckeditor/ckeditor5-theme-lark/commit/339aec1))
+
+### Bug fixes
+
+* Removed `ck-` prefix from CSS classes used in the editor content. Closes [ckeditor/ckeditor5#5899](https://github.com/ckeditor/ckeditor5/issues/5899). ([599f16e](https://github.com/ckeditor/ckeditor5-theme-lark/commit/599f16e))
+
+### Other changes
+
+* Add hover state for all restricted editing exceptions and fix the width of a collapsed exception in restricted editing. Closes [ckeditor/ckeditor5#5829](https://github.com/ckeditor/ckeditor5/issues/5829). ([08d6613](https://github.com/ckeditor/ckeditor5-theme-lark/commit/08d6613))
+* Set default cursor in restricted editing mode while restricted editing exceptions still have text cursor when you hover over them. Closes [ckeditor/ckeditor5#5992](https://github.com/ckeditor/ckeditor5/issues/5992). ([2602ab4](https://github.com/ckeditor/ckeditor5-theme-lark/commit/2602ab4))
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### MAJOR BREAKING CHANGES
