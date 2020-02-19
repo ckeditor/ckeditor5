@@ -12,6 +12,7 @@ import toMarkdown from './lib/to-markdown/to-markdown';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import GFMRenderer from './lib/marked/renderer';
 import converters from './lib/to-markdown/converters';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 /**
  * This data processor implementation uses GitHub Flavored Markdown as input/output data.
@@ -28,7 +29,7 @@ export default class GFMDataProcessor {
 		 * @private
 		 * @member {module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}
 		 */
-		this._htmlDP = new HtmlDataProcessor();
+		this._htmlDP = new HtmlDataProcessor( new StylesProcessor() );
 	}
 
 	/**
