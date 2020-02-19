@@ -13,6 +13,7 @@ import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
 import { setupTableSelectionHighlighting } from './tableselection/converters';
 import MouseSelectionHandler from './tableselection/mouseselectionhandler';
+import { findAncestor } from './commands/utils';
 
 /**
  * The table selection plugin.
@@ -209,9 +210,9 @@ export default class TableSelection extends Plugin {
 		return this.editor.model.change( writer => {
 			const fragment = writer.createDocumentFragment();
 
-			const table = writer.createElement( 'table' );
+			const tableCopy = writer.createElement( 'table' );
 
-			writer.insert( table, fragment, 0 );
+			writer.insert( tableCopy, fragment, 0 );
 
 			const rowsMap = new Map();
 			const columnsIndexesMap = new Map();
@@ -221,7 +222,7 @@ export default class TableSelection extends Plugin {
 
 				if ( !rowsMap.has( row ) ) {
 					const newRow = row._clone();
-					writer.append( newRow, table );
+					writer.append( newRow, tableCopy );
 					rowsMap.set( row, newRow );
 				}
 
@@ -234,8 +235,25 @@ export default class TableSelection extends Plugin {
 			const { row: startRow, column: startColumn } = this._tableUtils.getCellLocation( this._startElement );
 			const { row: endRow, column: endColumn } = this._tableUtils.getCellLocation( this._endElement );
 
+			const sourceTable = findAncestor( 'table', this._startElement );
+
+			// Calculate headings.
+			const headingRows = parseInt( sourceTable.getAttribute( 'headingRows' ) || 0 );
+
+			if ( headingRows > 0 ) {
+				const copiedRows = headingRows - startRow;
+				writer.setAttribute( 'headingRows', copiedRows, tableCopy );
+			}
+
+			const headingColumns = parseInt( sourceTable.getAttribute( 'headingColumns' ) || 0 );
+
+			if ( headingColumns > 0 ) {
+				const copiedColumns = headingColumns - startColumn;
+				writer.setAttribute( 'headingColumns', copiedColumns, tableCopy );
+			}
+
 			// Prepend cells.
-			for ( const row of table.getChildren() ) {
+			for ( const row of tableCopy.getChildren() ) {
 				for ( const tableCell of Array.from( row.getChildren() ) ) {
 					const { column } = this._tableUtils.getCellLocation( tableCell );
 					const { column: originalColumn } = columnsIndexesMap.get( tableCell );
@@ -260,7 +278,7 @@ export default class TableSelection extends Plugin {
 			const width = endColumn - startColumn + 1;
 			const height = endRow - startRow + 1;
 
-			for ( const row of table.getChildren() ) {
+			for ( const row of tableCopy.getChildren() ) {
 				for ( const tableCell of row.getChildren() ) {
 					const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
 					const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );

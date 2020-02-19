@@ -294,6 +294,61 @@ describe( 'table selection', () => {
 					preventDefault: sinon.spy()
 				} );
 			} );
+
+			it( 'should update table heading attributes (selection with headings)', done => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02', '03', '04' ],
+					[ '10', '11', '12', '13', '14' ],
+					[ '20', '21', '22', '23', '24' ],
+					[ '30', '31', '32', '33', '34' ],
+					[ '40', '41', '42', '43', '44' ]
+				], { headingRows: 3, headingColumns: 2 } ) );
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 3, 3 ] ) );
+
+				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+					expect( stringifyView( data.content ) ).to.equal( viewTable( [
+						[ '11', '12', '13' ],
+						[ '21', '22', '23' ],
+						[ { contents: '31', isHeading: true }, '32', '33' ] // TODO: bug in viewTable
+					], { headingRows: 2, headingColumns: 1 } ) );
+
+					done();
+				} );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: createDataTransfer(),
+					preventDefault: sinon.spy()
+				} );
+			} );
+
+			it( 'should update table heading attributes (selection without headings)', done => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02', '03', '04' ],
+					[ '10', '11', '12', '13', '14' ],
+					[ '20', '21', '22', '23', '24' ],
+					[ '30', '31', '32', '33', '34' ],
+					[ '40', '41', '42', '43', '44' ]
+				], { headingRows: 3, headingColumns: 2 } ) );
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 3, 2 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 4, 4 ] ) );
+
+				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+					expect( stringifyView( data.content ) ).to.equal( viewTable( [
+						[ '32', '33', '34' ],
+						[ '42', '43', '44' ]
+					] ) );
+
+					done();
+				} );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: createDataTransfer(),
+					preventDefault: sinon.spy()
+				} );
+			} );
 		} );
 
 		describe( 'cut', () => {
