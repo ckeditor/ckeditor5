@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-page-break/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### Bug fixes
+
+* Focus the editor before executing toolbar buttons' command. See [ckeditor/ckeditor5#353](https://github.com/ckeditor/ckeditor5/issues/353). ([03364dd](https://github.com/ckeditor/ckeditor5-page-break/commit/03364dd))
+
+### Other changes
+
+* Reverted year 2020 in .po files license header. ([7290942](https://github.com/ckeditor/ckeditor5-page-break/commit/7290942))
+* Updated translations. ([797d806](https://github.com/ckeditor/ckeditor5-page-break/commit/797d806)) 
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-page-break/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Other changes
