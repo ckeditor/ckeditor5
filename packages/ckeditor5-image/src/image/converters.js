@@ -36,7 +36,7 @@ export function viewFigureToModel() {
 		}
 
 		// Find an image element inside the figure element.
-		const viewImage = Array.from( data.viewItem.getChildren() ).find( viewChild => viewChild.is( 'img' ) );
+		const viewImage = getImgViewFromFigure( data.viewItem );
 
 		// Do not convert if image element is absent, is missing src attribute or was already converted.
 		if ( !viewImage || !viewImage.hasAttribute( 'src' ) || !conversionApi.consumable.test( viewImage, { name: true } ) ) {
