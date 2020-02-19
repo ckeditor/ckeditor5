@@ -18,7 +18,7 @@ describe( 'DataApiMixin', () => {
 		mix( CustomEditor, DataApiMixin );
 
 		editor = new CustomEditor();
-		editor.data.processor = new HtmlDataProcessor();
+		editor.data.processor = new HtmlDataProcessor( editor.stylesProcessor );
 		editor.model.document.createRoot( '$root', 'main' );
 		editor.model.document.createRoot( '$root', 'secondRoot' );
 		editor.model.schema.extend( '$text', { allowIn: '$root' } );
