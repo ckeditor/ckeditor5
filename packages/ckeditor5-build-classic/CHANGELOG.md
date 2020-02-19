@@ -3,6 +3,12 @@ Changelog
 
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v16.0.0...v17.0.0) (2020-02-19)
 
+We are happy to announce the release of CKEditor 5 v17.0.0.
+
+Refer to the [main changelog](https://github.com/ckeditor/ckeditor5/releases/tag/v17.0.0) to find out about all the new features, improvements and possible breaking changes.
+
+Blog post coming soon...
+
 ### Dependencies
 
 Major releases (contain major breaking changes):
@@ -14,6 +20,13 @@ Major releases (contain minor breaking changes):
 * [@ckeditor/ckeditor5-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-image/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-utils/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v17.0.0)
+
+Releases containing new features:
+
+* [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-engine/releases/tag/v17.0.0)
+* [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-table/releases/tag/v17.0.0)
+* [@ckeditor/ckeditor5-typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-typing/releases/tag/v17.0.0)
+* [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-ui/releases/tag/v17.0.0)
 
 Major releases (dependencies of those packages have breaking changes):
 
@@ -28,7 +41,6 @@ Major releases (dependencies of those packages have breaking changes):
 * [@ckeditor/ckeditor5-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-core/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-easy-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-easy-image/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-editor-classic/releases/tag/v17.0.0)
-* [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-engine/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-enter/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-essentials](https://www.npmjs.com/package/@ckeditor/ckeditor5-essentials): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-essentials/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-heading/releases/tag/v17.0.0)
@@ -38,9 +50,6 @@ Major releases (dependencies of those packages have breaking changes):
 * [@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-media-embed/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-paragraph/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-paste-from-office/releases/tag/v17.0.0)
-* [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-table/releases/tag/v17.0.0)
-* [@ckeditor/ckeditor5-typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-typing/releases/tag/v17.0.0)
-* [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-ui/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-undo/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-upload/releases/tag/v17.0.0)
 
