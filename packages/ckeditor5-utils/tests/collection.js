@@ -25,18 +25,44 @@ describe( 'Collection', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'allows to change the id property used by the collection', () => {
-			const item1 = { id: 'foo', name: 'xx' };
-			const item2 = { id: 'foo', name: 'yy' };
-			const collection = new Collection( { idProperty: 'name' } );
-
-			collection.add( item1 );
-			collection.add( item2 );
+		it( 'allows setting initial collection items', () => {
+			const item1 = getItem( 'foo' );
+			const item2 = getItem( 'bar' );
+			const collection = new Collection( [ item1, item2 ] );
 
 			expect( collection ).to.have.length( 2 );
 
-			expect( collection.get( 'xx' ) ).to.equal( item1 );
-			expect( collection.remove( 'yy' ) ).to.equal( item2 );
+			expect( collection.get( 0 ) ).to.equal( item1 );
+			expect( collection.get( 1 ) ).to.equal( item2 );
+			expect( collection.get( 'foo' ) ).to.equal( item1 );
+			expect( collection.get( 'bar' ) ).to.equal( item2 );
+		} );
+
+		describe( 'options', () => {
+			it( 'allow to change the id property used by the collection', () => {
+				const item1 = { id: 'foo', name: 'xx' };
+				const item2 = { id: 'foo', name: 'yy' };
+				const collection = new Collection( { idProperty: 'name' } );
+
+				collection.add( item1 );
+				collection.add( item2 );
+
+				expect( collection ).to.have.length( 2 );
+
+				expect( collection.get( 'xx' ) ).to.equal( item1 );
+				expect( collection.remove( 'yy' ) ).to.equal( item2 );
+			} );
+
+			it( 'allow to change the id property used by the collection (initial items)', () => {
+				const item1 = { id: 'foo', name: 'xx' };
+				const item2 = { id: 'foo', name: 'yy' };
+				const collection = new Collection( [ item1, item2 ], { idProperty: 'name' } );
+
+				expect( collection ).to.have.length( 2 );
+
+				expect( collection.get( 'xx' ) ).to.equal( item1 );
+				expect( collection.remove( 'yy' ) ).to.equal( item2 );
+			} );
 		} );
 	} );
 

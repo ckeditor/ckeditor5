@@ -28,10 +28,45 @@ export default class Collection {
 	/**
 	 * Creates a new Collection instance.
 	 *
-	 * @param {Object} [options={}] The options object.
-	 * @param {String} [options.idProperty='id'] The name of the property which is considered to identify an item.
+	 * You can provide an array of initial items the collection will be created with:
+	 *
+	 *		const collection = new Collection( [ { id: 'John' }, { id: 'Mike' } ] );
+	 *
+	 *		console.log( collection.get( 0 ) ); // -> { id: 'John' }
+	 *		console.log( collection.get( 1 ) ); // -> { id: 'Mike' }
+	 *		console.log( collection.get( 'Mike' ) ); // -> { id: 'Mike' }
+	 *
+	 * Or you can first create a collection and then add new items using the {@link #add} method:
+	 *
+	 *		const collection = new Collection();
+	 *
+	 *		collection.add( { id: 'John' } );
+	 *		console.log( collection.get( 0 ) ); // -> { id: 'John' }
+	 *
+	 * Whatever option you choose, you can always pass a configuration object as the last argument
+	 * of the constructor:
+	 *
+	 *		const emptyCollection = new Collection( { idProperty: 'name' } );
+	 *		emptyCollection.add( { name: 'John' } );
+	 *		console.log( collection.get( 'John' ) ); // -> { name: 'John' }
+	 *
+	 *		const nonEmptyCollection = new Collection( [ { name: 'John' } ], { idProperty: 'name' } );
+	 *		nonEmptyCollection.add( { name: 'George' } );
+	 *		console.log( collection.get( 'George' ) ); // -> { name: 'George' }
+	 *
+	 * @param {Array.<Object>|Object} initialItemsOrOptions The initial items of the collection or
+	 * the options object.
+	 * @param {Object} [options={}] The options object, when the first argument is an array of initial items.
+	 * @param {String} [options.idProperty='id'] The name of the property which is used to identify an item.
+	 * Items that do not have such a property will be assigned one when added to the collection.
 	 */
-	constructor( options = {} ) {
+	constructor( initialItemsOrOptions = {}, options = {} ) {
+		const hasInitialItems = initialItemsOrOptions instanceof Array;
+
+		if ( !hasInitialItems ) {
+			options = initialItemsOrOptions;
+		}
+
 		/**
 		 * The internal list of items in the collection.
 		 *
@@ -87,6 +122,14 @@ export default class Collection {
 		 * @member {Array}
 		 */
 		this._skippedIndexesFromExternal = [];
+
+		// Set the initial content of the collection (if provided in the constructor).
+		if ( hasInitialItems ) {
+			for ( const item of initialItemsOrOptions ) {
+				this._items.push( item );
+				this._itemMap.set( this._getItemIdBeforeAdding( item ), item );
+			}
+		}
 
 		/**
 		 * A collection instance this collection is bound to as a result
@@ -602,6 +645,47 @@ export default class Collection {
 				return result;
 			}, [] );
 		} );
+	}
+
+	_getItemIdBeforeAdding( item ) {
+		const idProperty = this._idProperty;
+		let itemId;
+
+		if ( ( idProperty in item ) ) {
+			itemId = item[ idProperty ];
+
+			if ( typeof itemId != 'string' ) {
+				/**
+				 * This item's id should be a string.
+				 *
+				 * @error collection-add-invalid-id
+				 * @param {Object} item The item being added to the collection.
+				 * @param {module:utils/collection~Collection} collection The collection the item is added to.
+				 */
+				throw new CKEditorError( 'collection-add-invalid-id', {
+					item,
+					collection: this,
+				} );
+			}
+
+			if ( this.get( itemId ) ) {
+				/**
+				 * This item already exists in the collection.
+				 *
+				 * @error collection-add-item-already-exists
+				 * @param {Object} item The item being added to the collection.
+				 * @param {module:utils/collection~Collection} collection The collection the item is added to.
+				 */
+				throw new CKEditorError( 'collection-add-item-already-exists', {
+					item,
+					collection: this
+				} );
+			}
+		} else {
+			item[ idProperty ] = itemId = uid();
+		}
+
+		return itemId;
 	}
 
 	/**
