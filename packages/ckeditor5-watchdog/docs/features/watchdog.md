@@ -11,15 +11,15 @@ In order to limit the effect of an editor crash on the user experience, you can 
 
 The {@link module:watchdog/watchdog~Watchdog} utility allows you to do exactly that. It ensures that an editor instance is running, despite a potential crash. It works by detecting that an editor crashed, destroying it, and automatically creating a new instance of that editor with the content of the previous editor.
 
-It should be noticed that the most "dangerous" places in the API - like `editor.model.change()`, `editor.editing.view.change()`, emitters - are covered with checks and `try-catch` blocks that allow detecting unknown errors and restart editor when they occur.
+Note that the most "dangerous" places in the CKEditor 5 API, like `editor.model.change()`, `editor.editing.view.change()` or emitters, are covered with checks and `try-catch` blocks that allow detecting unknown errors and restart the editor when they occur.
 
 There are two available types of watchdogs:
 
-* [editor watchdog](#editor-watchdog) - to be used with a single editor instance,
-* [context watchdog](#context-watchdog) - to be used when your application uses `Context`.
+* [Editor watchdog](#editor-watchdog) &ndash; To be used with a single editor instance.
+* [Context watchdog](#context-watchdog) &ndash; To be used when your application uses the context.
 
 <info-box>
-	Note: a watchdog can be used only with an {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source editor built from source}.
+	Note: A watchdog can be used only with an {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source editor built from source}.
 </info-box>
 
 ## Usage
@@ -28,7 +28,7 @@ There are two available types of watchdogs:
 
 Install the [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog) package:
 
-```bash
+```
 npm install --save @ckeditor/ckeditor5-watchdog
 ```
 
@@ -63,10 +63,10 @@ In other words, your goal is to create a watchdog instance and make the watchdog
 
 #### Controlling editor creation and destruction
 
-For more control over the creation and destruction of editor instances, you can use {@link module:watchdog/editorwatchdog~EditorWatchdog#setCreator `EditorWatchdog#setCreator()`} and, if needed, the {@link module:watchdog/editorwatchdog~EditorWatchdog#setDestructor `EditorWatchdog#setDestructor()`}:
+For more control over the creation and destruction of editor instances, you can use {@link module:watchdog/editorwatchdog~EditorWatchdog#setCreator `EditorWatchdog#setCreator()`} and, if needed, the {@link module:watchdog/editorwatchdog~EditorWatchdog#setDestructor `EditorWatchdog#setDestructor()`} methods:
 
 ```js
-// Create editor watchdog.
+// Create an editor watchdog.
 const watchdog = new EditorWatchdog();
 
 // Define a callback that will create an editor instance and return it.
@@ -89,12 +89,12 @@ watchdog.setDestructor( editor => {
 		} );
 } );
 
-// Create editor instance and start watching it.
+// Create an editor instance and start watching it.
 watchdog.create( elementOrData, editorConfig );
 ```
 
 <info-box>
-	The default (not overridden ny `setDestructor()`) editor destructor simply executes `Editor#destroy()`.
+	The default (not overridden by `setDestructor()`) editor destructor simply executes `Editor#destroy()`.
 </info-box>
 
 #### Editor watchdog API
@@ -114,11 +114,11 @@ watchdog.editor;
 // The current state of the editor.
 // The editor might be in one of the following states:
 //
-// * `initializing` - before the first initialization, and after crashes, before the editor is ready,
-// * `ready` - a state when a user can interact with the editor,
-// * `crashed` - a state when an error occurs - it quickly changes to `initializing` or `crashedPermanently` depending on how many and how frequency errors have been caught recently,
-// * `crashedPermanently` - a state when the watchdog stops reacting to errors and keeps the editor crashed,
-// * `destroyed` - a state when the editor is manually destroyed by the user after calling `watchdog.destroy()`.
+// * `initializing` - Before the first initialization, and after crashes, before the editor is ready.
+// * `ready` - A state when the user can interact with the editor.
+// * `crashed` - A state when an error occurs. It quickly changes to `initializing` or `crashedPermanently` depending on how many and how frequent errors have been caught recently.
+// * `crashedPermanently` - A state when the watchdog stops reacting to errors and keeps the editor crashed.
+// * `destroyed` - A state when the editor is manually destroyed by the user after calling `watchdog.destroy()`.
 watchdog.state;
 
 // Listen to state changes.
@@ -137,7 +137,7 @@ watchdog.on( 'stateChange', () => {
 	prevState = currentState;
 } );
 
-// An array of editor crashes info.
+// An array of editor crash information.
 watchdog.crashes.forEach( crashInfo => console.log( crashInfo ) );
 ```
 
@@ -145,7 +145,7 @@ watchdog.crashes.forEach( crashInfo => console.log( crashInfo ) );
 
 Install the [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog) package:
 
-```bash
+```
 npm install --save @ckeditor/ckeditor5-watchdog
 ```
 
@@ -161,12 +161,12 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Context from '@ckeditor/ckeditor5-core/src/context';
 
-// Create a context watchdog and pass the `Context` class with optional watchdog configuration:
+// Create a context watchdog and pass the context class with optional watchdog configuration:
 const watchdog = new ContextWatchdog( Context, {
 	crashNumberLimit: 10
 } );
 
-// Initialize the watchdog with context configuration:
+// Initialize the watchdog with the context configuration:
 await watchdog.create( {
 	plugins: [
 	    // ...
@@ -175,7 +175,7 @@ await watchdog.create( {
 } );
 
 // Add editor instances.
-// You mat also use multiple `ContextWatchdog#add()` calls, each adding a single editor.
+// You may also use multiple `ContextWatchdog#add()` calls, each adding a single editor.
 await watchdog.add( [ {
 	id: 'editor1',
 	type: 'editor',
@@ -220,7 +220,7 @@ await watchdog.add( {
 } );
 ```
 
-To destroy one of the item instances use {@link module:watchdog/contextwatchdog~ContextWatchdog#remove `ContextWatchdog#remove`}:
+To destroy one of the item instances, use {@link module:watchdog/contextwatchdog~ContextWatchdog#remove `ContextWatchdog#remove`}:
 
 ```js
 await watchdog.remove( [ 'editor1', 'editor2' ] );
@@ -235,7 +235,7 @@ await watchdog.remove( 'editor2' );
 The context watchdog feature provides the following API:
 
 ```js
-// Creating watchdog that will use the `Context` class and watchdog configuration.
+// Creating a watchdog that will use the context class and the watchdog configuration.
 const watchdog = new ContextWatchdog( Context, watchdogConfig );
 
 // Setting a custom creator for the context.
@@ -249,6 +249,7 @@ watchdog.setCreator( async config => {
 
 // Setting a custom destructor for the context.
 watchdog.setDestructor( async context => {
+	
 	// Do something before destroy.
 
 	await context.destroy();
@@ -279,15 +280,15 @@ await watchdog.add( [
     // ...
 ] );
 
-// Remove and destroy given item (or items).
+// Remove and destroy a given item (or items).
 await watchdog.remove( 'editor1' );
 
 await watchdog.remove( [ 'editor1', 'editor2', ... ] );
 
-// Getting given item instance.
+// Getting the given item instance.
 const editor1 = watchdog.getItem( 'editor1' );
 
-// Getting given item state.
+// Getting the state of the given item.
 const editor1State = watchdog.getItemState( 'editor1' );
 
 // Getting the context state.
@@ -298,21 +299,20 @@ const contextState = watchdog.state;
 // See also `ContextWatchdog#event:itemError`.
 watchdog.on( 'error', ( _, { error } ) => {
 
-// The `restart` event is fired when the context is set back to the `ready` state (after it was in `crashed` state).
+// The `restart` event is fired when the context is set back to the `ready` state (after it was in the `crashed` state).
 // Similarly, this event is not thrown for internal item restarts.
 watchdog.on( 'restart', () => {
 	console.log( 'The context has been restarted.' );
 } );
 
-
 // The `itemError` event is fired when an error occurred in one of the added items.
 watchdog.on( 'itemError', ( _, { error, itemId } ) => {
-	console.log( `An error occurred in an item with the '${ itemId }' id.` );
+	console.log( `An error occurred in an item with the '${ itemId }' ID.` );
 } );
 
-// The `itemRestart` event is fired when an item is set back to the `ready` state (after it was in `crashed` state).
+// The `itemRestart` event is fired when an item is set back to the `ready` state (after it was in the `crashed` state).
 watchdog.on( 'itemRestart', ( _, { itemId } ) => {
-	console.log( 'An item with with the '${ itemId }' id has been restarted.' );
+	console.log( 'An item with with the '${ itemId }' ID has been restarted.' );
 } );
 ```
 
@@ -320,9 +320,9 @@ watchdog.on( 'itemRestart', ( _, { itemId } ) => {
 
 Both {@link module:watchdog/editorwatchdog~EditorWatchdog#constructor `EditorWatchdog`} and {@link module:watchdog/contextwatchdog~ContextWatchdog#constructor `ContextWatchdog`} constructors accept a {@link module:watchdog/watchdog~WatchdogConfig configuration object} as the second argument with the following optional properties:
 
-* `crashNumberLimit` - A threshold specifying the number of errors (defaults to `3`). After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod` the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
-* `minimumNonErrorTimePeriod` - An average amount of milliseconds between last editor errors (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reachedm the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
-* `saveInterval` - A minimum number of milliseconds between saving editor data internally (defaults to 5000). Note that for large documents this might have an impact on the editor performance.
+* `crashNumberLimit` &ndash; A threshold specifying the number of errors (defaults to `3`). After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod`, the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
+* `minimumNonErrorTimePeriod` &ndash; An average number of milliseconds between the last editor errors (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached, the watchdog changes its state to `crashedPermanently` and it stops restarting the editor. This prevents an infinite restart loop.
+* `saveInterval` &ndash; A minimum number of milliseconds between saving the editor data internally (defaults to 5000). Note that for large documents this might impact the editor performance.
 
 ```js
 const editorWatchdog = new EditorWatchdog( ClassicEditor, {
