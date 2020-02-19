@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-indent/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### Bug fixes
+
+* Focus the editor before executing toolbar buttons' command. See [ckeditor/ckeditor5#353](https://github.com/ckeditor/ckeditor5/issues/353). ([ff49482](https://github.com/ckeditor/ckeditor5-indent/commit/ff49482))
+
+### Other changes
+
+* Reverted year 2020 in .po files license header. ([23ffd01](https://github.com/ckeditor/ckeditor5-indent/commit/23ffd01))
+* Updated translations. ([f0a7140](https://github.com/ckeditor/ckeditor5-indent/commit/f0a7140)) 
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-indent/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Other changes
