@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-essentials/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-essentials/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 Internal changes only (updated dependencies, documentation, etc.).
