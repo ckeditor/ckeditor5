@@ -110,7 +110,7 @@ export default class TableSelection extends Plugin {
 			data.preventDefault();
 			evt.stop();
 
-			const content = editor.data.toView( this.getSelectedTableAsFragment() );
+			const content = editor.data.toView( this.getSelectionAsFragment() );
 
 			editor.editing.view.document.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name } );
 		}, { priority: 'normal' } );
@@ -206,7 +206,16 @@ export default class TableSelection extends Plugin {
 		this._endElement = undefined;
 	}
 
-	getSelectedTableAsFragment() {
+	/**
+	 * Returns selected table fragment as a document fragment.
+	 *
+	 * @returns {module:engine/model/documentfragment~DocumentFragment|undefined}
+	 */
+	getSelectionAsFragment() {
+		if ( !this.hasMultiCellSelection ) {
+			return;
+		}
+
 		return this.editor.model.change( writer => {
 			const fragment = writer.createDocumentFragment();
 
