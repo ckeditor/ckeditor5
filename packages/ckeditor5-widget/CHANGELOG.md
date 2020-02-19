@@ -1,6 +1,27 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### MINOR BREAKING CHANGES
+
+* Resizer options object now also takes an editor instance.
+
+### Features
+
+* Introduced API to temporarily disable the `WidgetToolbarRepository` plugin (prevent the toolbar from showing up). Closes [ckeditor/ckeditor5#5964](https://github.com/ckeditor/ckeditor5/issues/5964). ([b9cf062](https://github.com/ckeditor/ckeditor5-widget/commit/b9cf062))
+
+### Bug fixes
+
+* Fixed image resize behavior upon short clicking a handle without dragging. Image will no longer became full width, nor will it briefly flash an unexpected size. Closes [ckeditor/ckeditor5#5189](https://github.com/ckeditor/ckeditor5/issues/5189). Closes [ckeditor/ckeditor5#5195](https://github.com/ckeditor/ckeditor5/issues/5195). ([d6a5c93](https://github.com/ckeditor/ckeditor5-widget/commit/d6a5c93))
+
+### Other changes
+
+* Align code to changes in `Plugin` API. ([81bb636](https://github.com/ckeditor/ckeditor5-widget/commit/81bb636))
+* Reverted year 2020 in .po files license header. ([b9d3e61](https://github.com/ckeditor/ckeditor5-widget/commit/b9d3e61))
+* Updated translations. ([75b8c83](https://github.com/ckeditor/ckeditor5-widget/commit/75b8c83)) 
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Other changes
