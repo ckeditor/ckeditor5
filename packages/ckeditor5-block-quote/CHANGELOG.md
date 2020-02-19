@@ -9,8 +9,7 @@ Changelog
 
 ### Other changes
 
-* Reverted year 2020 in .po files license header. ([ca40f64](https://github.com/ckeditor/ckeditor5-block-quote/commit/ca40f64))
-* Updated translations. ([77fbbad](https://github.com/ckeditor/ckeditor5-block-quote/commit/77fbbad)) 
+* Updated translations. ([77fbbad](https://github.com/ckeditor/ckeditor5-block-quote/commit/77fbbad))
 
 
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-block-quote/compare/v15.0.0...v16.0.0) (2019-12-04)
