@@ -5,15 +5,14 @@ Changelog
 
 ### Other changes
 
-* Reverted year 2020 in .po files license header. ([af7ad18](https://github.com/ckeditor/ckeditor5-word-count/commit/af7ad18))
-* Updated translations. ([d8e40e5](https://github.com/ckeditor/ckeditor5-word-count/commit/d8e40e5)) 
+* Updated translations. ([d8e40e5](https://github.com/ckeditor/ckeditor5-word-count/commit/d8e40e5))
 
 
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-word-count/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Other changes
 
-* Updated translations. ([ffa4b14](https://github.com/ckeditor/ckeditor5-word-count/commit/ffa4b14)) 
+* Updated translations. ([ffa4b14](https://github.com/ckeditor/ckeditor5-word-count/commit/ffa4b14))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-word-count/compare/v10.0.2...v15.0.0) (2019-10-23)
