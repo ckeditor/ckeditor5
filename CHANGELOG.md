@@ -3,17 +3,23 @@ Changelog
 
 ## [17.0.0](https://github.com/ckeditor/ckeditor5/compare/v16.0.0...v17.0.0) (2020-02-19)
 
-### Features
+We are happy to announce the release of CKEditor 5 v17.0.0.
 
-Besides new features introduced by the dependencies, this version also introduces the following features:
+From the end user perspective, this release introduces support for styling tables and table cells as well as a new special characters picker feature. We also worked on improving the editor initialization and data processing performance.
 
-* Introduced the special characters feature. ([7115863](https://github.com/ckeditor/ckeditor5/commit/7115863))
+From the developer perspective, we introduced support for editor contexts, adjusted the watchdog to work with editor contexts (which introduced breaking changes in that package) and introduced an extensible system for parsing and normalizing CSS properties which main goal was to make the editor better pick up certain style names in pasted/loaded content.
 
-### Bug fixes
+As usual, we also fixed a couple of bugs and improved existing features. The two features which got most improvements are image resizing and the restricted editing feature.
 
-Besides changes in the dependencies, this version also contains the following bug fixes:
+Finally, this release comes with a couple of **important breaking changes**. The most notable ones are:
 
-* Focus the editor before executing toolbar buttons' command. Closes [#353](https://github.com/ckeditor/ckeditor5/issues/353). ([0d0505f](https://github.com/ckeditor/ckeditor5/commit/0d0505f))
+* The decoupled document build: the highlight plugin was replaced with font color and font background color features. The upgrade path requires performing data migration or customizing the build to use the highlight feature. Refer to https://github.com/ckeditor/ckeditor5-build-decoupled-document/releases/tag/v17.0.0 for more information.
+* The watchdog package: the `Watchdog` class was renamed and moved to a new module. See https://github.com/ckeditor/ckeditor5-watchdog/releases/tag/v17.0.0 for more information.
+* The restricted editing package: The class used by this feature to mark exceptions was changed from `ck-restricted-editing-exception` to `restricted-editing-exception`. The upgrade path requires performing data migration. Refer to https://github.com/ckeditor/ckeditor5-restricted-editing/releases/tag/v17.0.0 for more information.
+
+Check the list of packages below to learn more about other breaking changes.
+
+Blog post coming soon...
 
 ### Dependencies
 
@@ -35,7 +41,15 @@ Major releases (contain minor breaking changes):
 * [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-utils/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v17.0.0)
 
-Major releases (dependencies of those packages have breaking changes):
+Releases containing new features:
+
+* [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-engine/releases/tag/v17.0.0)
+* [@ckeditor/ckeditor5-mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-mention/releases/tag/v17.0.0)
+* [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-table/releases/tag/v17.0.0)
+* [@ckeditor/ckeditor5-typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-typing/releases/tag/v17.0.0)
+* [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-ui/releases/tag/v17.0.0)
+
+Other releases:
 
 * [@ckeditor/ckeditor-cloud-services-core](https://www.npmjs.com/package/@ckeditor/ckeditor-cloud-services-core): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor-cloud-services-core/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-adapter-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/releases/tag/v17.0.0)
@@ -58,7 +72,6 @@ Major releases (dependencies of those packages have breaking changes):
 * [@ckeditor/ckeditor5-editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-editor-classic/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/releases/tag/v17.0.0)
-* [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-engine/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-enter/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-essentials](https://www.npmjs.com/package/@ckeditor/ckeditor5-essentials): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-essentials/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-heading/releases/tag/v17.0.0)
@@ -69,14 +82,10 @@ Major releases (dependencies of those packages have breaking changes):
 * [@ckeditor/ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-list/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-markdown-gfm/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-media-embed/releases/tag/v17.0.0)
-* [@ckeditor/ckeditor5-mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-mention/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-page-break](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-page-break/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-paragraph/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-paste-from-office/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-remove-format](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-remove-format/releases/tag/v17.0.0)
-* [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-table/releases/tag/v17.0.0)
-* [@ckeditor/ckeditor5-typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-typing/releases/tag/v17.0.0)
-* [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-ui/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-undo/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-upload/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-word-count](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-word-count/releases/tag/v17.0.0)
@@ -101,7 +110,7 @@ Major releases (contain major breaking changes):
 
 * [@ckeditor/ckeditor5-theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark): v15.0.0 => [v16.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/releases/tag/v16.0.0)
 
-Major releases (dependencies of those packages have breaking changes):
+Other releases:
 
 * [@ckeditor/ckeditor-cloud-services-core](https://www.npmjs.com/package/@ckeditor/ckeditor-cloud-services-core): v15.0.0 => [v16.0.0](https://github.com/ckeditor/ckeditor-cloud-services-core/releases/tag/v16.0.0)
 * [@ckeditor/ckeditor5-adapter-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder): v15.0.0 => [v16.0.0](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/releases/tag/v16.0.0)
@@ -178,7 +187,7 @@ Major releases (contain major breaking changes):
 * [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui): v14.0.0 => [v15.0.0](https://github.com/ckeditor/ckeditor5-ui/releases/tag/v15.0.0)
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v11.1.0 => [v15.0.0](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v15.0.0)
 
-Major releases (dependencies of those packages have breaking changes):
+Other releases:
 
 * [@ckeditor/ckeditor-cloud-services-core](https://www.npmjs.com/package/@ckeditor/ckeditor-cloud-services-core): v3.0.1 => [v15.0.0](https://github.com/ckeditor/ckeditor-cloud-services-core/releases/tag/v15.0.0)
 * [@ckeditor/ckeditor5-adapter-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder): v11.0.5 => [v15.0.0](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/releases/tag/v15.0.0)
