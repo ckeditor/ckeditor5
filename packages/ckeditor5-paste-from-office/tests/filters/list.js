@@ -85,7 +85,7 @@ describe( 'PasteFromOffice - filters', () => {
 	} );
 
 	describe( 'list - paste from google docs', () => {
-		const htmlDataProcessor = new HtmlDataProcessor();
+		const htmlDataProcessor = new HtmlDataProcessor( new StylesProcessor() );
 		let writer, viewDocument;
 
 		before( () => {
