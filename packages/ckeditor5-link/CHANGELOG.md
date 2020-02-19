@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-link/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### Bug fixes
+
+* The link balloon toolbar will be displayed on links even if the `link` command is disabled. ([163684e](https://github.com/ckeditor/ckeditor5-link/commit/163684e))
+
+### Other changes
+
+* Reverted year 2020 in .po files license header. ([358226a](https://github.com/ckeditor/ckeditor5-link/commit/358226a))
+* Updated translations. ([c0830b9](https://github.com/ckeditor/ckeditor5-link/commit/c0830b9)) 
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-link/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Bug fixes
