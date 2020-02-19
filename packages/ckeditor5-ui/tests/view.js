@@ -89,6 +89,17 @@ describe( 'View', () => {
 			expect( view._viewCollections ).to.have.length( 2 );
 			expect( view._viewCollections.get( 1 ) ).to.equal( collection );
 		} );
+
+		it( 'accepts initial views', () => {
+			const viewA = new View();
+			const viewB = new View();
+
+			const collection = view.createCollection( [ viewA, viewB ] );
+
+			expect( collection ).to.have.length( 2 );
+			expect( collection.get( 0 ) ).to.equal( viewA );
+			expect( collection.get( 1 ) ).to.equal( viewB );
+		} );
 	} );
 
 	describe( 'registerChild()', () => {

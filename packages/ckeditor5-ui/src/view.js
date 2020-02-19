@@ -276,10 +276,11 @@ export default class View {
 	 *		// <p><child#element></p>
 	 *		view.items.add( child );
 	 *
+	 * @param {Array.<module:ui/view~View>} [views] Initial views of the collection.
 	 * @returns {module:ui/viewcollection~ViewCollection} A new collection of view instances.
 	 */
-	createCollection() {
-		const collection = new ViewCollection();
+	createCollection( views ) {
+		const collection = new ViewCollection( views );
 
 		this._viewCollections.add( collection );
 
