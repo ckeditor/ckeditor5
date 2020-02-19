@@ -25,7 +25,7 @@ export function toImageWidget( viewElement, writer, label ) {
 	return toWidget( viewElement, writer, { label: labelCreator } );
 
 	function labelCreator() {
-		const imgElement = viewElement.getChild( 0 );
+		const imgElement = getImgViewFromFigure( viewElement );
 		const altText = imgElement.getAttribute( 'alt' );
 
 		return altText ? `${ altText } ${ label }` : label;
@@ -105,6 +105,20 @@ export function isImageAllowed( model ) {
 	return isImageAllowedInParent( selection, schema, model ) &&
 		!checkSelectionOnObject( selection, schema ) &&
 		isInOtherImage( selection );
+}
+
+/**
+ * Get img view element from the figure view.
+ *
+ * Using figureView.getChild(0) - is unsafe,
+ * because there are can be "figcaption" or smth else.
+ * This approach provide ability to extend plugin logic with other custom plugins.
+ *
+ * @param {module:engine/view/element~Element} figureView
+ * @returns {module:engine/view/element~Element}
+ */
+export function getImgViewFromFigure( figureView ) {
+	return Array.from( figureView.getChildren() ).find( viewChild => viewChild.is( 'img' ) );
 }
 
 // Checks if image is allowed by schema in optimal insertion parent.

@@ -8,6 +8,7 @@
  */
 
 import first from '@ckeditor/ckeditor5-utils/src/first';
+import { getImgViewFromFigure } from './utils';
 
 /**
  * Returns a function that converts the image view representation:
@@ -81,7 +82,7 @@ export function srcsetAttributeConverter() {
 
 		const writer = conversionApi.writer;
 		const figure = conversionApi.mapper.toViewElement( data.item );
-		const img = figure.getChild( 0 );
+		const img = getImgViewFromFigure( figure );
 
 		if ( data.attributeNewValue === null ) {
 			const srcset = data.attributeOldValue;
@@ -122,7 +123,7 @@ export function modelToViewAttributeConverter( attributeKey ) {
 
 		const viewWriter = conversionApi.writer;
 		const figure = conversionApi.mapper.toViewElement( data.item );
-		const img = figure.getChild( 0 );
+		const img = getImgViewFromFigure( figure );
 
 		if ( data.attributeNewValue !== null ) {
 			viewWriter.setAttribute( data.attributeKey, data.attributeNewValue, img );
