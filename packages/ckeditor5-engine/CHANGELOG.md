@@ -5,10 +5,10 @@ Changelog
 
 ### Features
 
+* Introduced CSS style normalization for conversion. Closes [ckeditor/ckeditor5#6047](https://github.com/ckeditor/ckeditor5/issues/6047). ([b2a8189](https://github.com/ckeditor/ckeditor5-engine/commit/b2a8189))
 * Added a `startsWith()` method to `SchemaContext`. ([11fa53a](https://github.com/ckeditor/ckeditor5-engine/commit/11fa53a))
 * Introduced `DocumentSelection#event:change:marker`. Closes [ckeditor/ckeditor5#6133](https://github.com/ckeditor/ckeditor5/issues/6133). ([5106014](https://github.com/ckeditor/ckeditor5-engine/commit/5106014))
 * Introduced `Model#createOperationFromJSON()` which is an alias for `OperationFactory.fromJSON()`. Closes [ckeditor/ckeditor5#6094](https://github.com/ckeditor/ckeditor5/issues/6094). ([ebaa2cc](https://github.com/ckeditor/ckeditor5-engine/commit/ebaa2cc))
-* Introduced CSS style normalization for conversion. Closes [ckeditor/ckeditor5#6047](https://github.com/ckeditor/ckeditor5/issues/6047). ([b2a8189](https://github.com/ckeditor/ckeditor5-engine/commit/b2a8189))
 
 ### Bug fixes
 
@@ -18,7 +18,7 @@ Changelog
 ### Other changes
 
 * Allow selection on object elements. Closes [ckeditor/ckeditor5#6154](https://github.com/ckeditor/ckeditor5/issues/6154). ([0dec72d](https://github.com/ckeditor/ckeditor5-engine/commit/0dec72d))
-* Improved `parseAttributes` function performance. This results in improved editor data processing speed. Closes [ckeditor/ckeditor5#5854](https://github.com/ckeditor/ckeditor5/issues/5854). ([ecaf056](https://github.com/ckeditor/ckeditor5-engine/commit/ecaf056))
+* Improved `parseAttributes()` function performance. This results in improved editor data processing speed. Closes [ckeditor/ckeditor5#5854](https://github.com/ckeditor/ckeditor5/issues/5854). ([ecaf056](https://github.com/ckeditor/ckeditor5-engine/commit/ecaf056))
 
 
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v15.0.0...v16.0.0) (2019-12-04)
