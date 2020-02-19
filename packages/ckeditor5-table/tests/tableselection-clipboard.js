@@ -92,20 +92,11 @@ describe( 'table selection', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
 
-				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '00', '01' ],
-						[ '10', '11' ],
-						[ '20', '21' ]
-					] ) );
-
-					done();
-				} );
-
-				viewDocument.fire( 'copy', {
-					dataTransfer: createDataTransfer(),
-					preventDefault: sinon.spy()
-				} );
+				assertClipboardCopy( viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				] ), done );
 			} );
 
 			it( 'should trim selected table to a selection rectangle (inner cell with colspan, has colspan after trim)', done => {
@@ -118,20 +109,11 @@ describe( 'table selection', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
 
-				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '00', '01' ],
-						[ { contents: '10', colspan: 2 } ],
-						[ '20', '21' ]
-					] ) );
-
-					done();
-				} );
-
-				viewDocument.fire( 'copy', {
-					dataTransfer: createDataTransfer(),
-					preventDefault: sinon.spy()
-				} );
+				assertClipboardCopy( viewTable( [
+					[ '00', '01' ],
+					[ { contents: '10', colspan: 2 } ],
+					[ '20', '21' ]
+				] ), done );
 			} );
 
 			it( 'should trim selected table to a selection rectangle (inner cell with rowspan, no colspan after trim)', done => {
@@ -144,19 +126,10 @@ describe( 'table selection', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
 
-				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '00', '01', '02' ],
-						[ '10', '11', '12' ]
-					] ) );
-
-					done();
-				} );
-
-				viewDocument.fire( 'copy', {
-					dataTransfer: createDataTransfer(),
-					preventDefault: sinon.spy()
-				} );
+				assertClipboardCopy( viewTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				] ), done );
 			} );
 
 			it( 'should trim selected table to a selection rectangle (inner cell with rowspan, has rowspan after trim)', done => {
@@ -169,19 +142,10 @@ describe( 'table selection', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
 
-				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '00', { contents: '01', rowspan: 2 }, '02' ],
-						[ '10', '12' ]
-					] ) );
-
-					done();
-				} );
-
-				viewDocument.fire( 'copy', {
-					dataTransfer: createDataTransfer(),
-					preventDefault: sinon.spy()
-				} );
+				assertClipboardCopy( viewTable( [
+					[ '00', { contents: '01', rowspan: 2 }, '02' ],
+					[ '10', '12' ]
+				] ), done );
 			} );
 
 			it( 'should prepend spanned columns with empty cells (outside cell with colspan)', done => {
@@ -194,20 +158,11 @@ describe( 'table selection', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
 
-				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '01', '02' ],
-						[ '', '12' ],
-						[ '21', '22' ]
-					] ) );
-
-					done();
-				} );
-
-				viewDocument.fire( 'copy', {
-					dataTransfer: createDataTransfer(),
-					preventDefault: sinon.spy()
-				} );
+				assertClipboardCopy( viewTable( [
+					[ '01', '02' ],
+					[ '', '12' ],
+					[ '21', '22' ]
+				] ), done );
 			} );
 
 			it( 'should prepend spanned columns with empty cells (outside cell with rowspan)', done => {
@@ -220,19 +175,10 @@ describe( 'table selection', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
 
-				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '10', '', '12' ],
-						[ '20', '21', '22' ]
-					] ) );
-
-					done();
-				} );
-
-				viewDocument.fire( 'copy', {
-					dataTransfer: createDataTransfer(),
-					preventDefault: sinon.spy()
-				} );
+				assertClipboardCopy( viewTable( [
+					[ '10', '', '12' ],
+					[ '20', '21', '22' ]
+				] ), done );
 			} );
 
 			it( 'should fix selected table to a selection rectangle (hardcore case)', done => {
@@ -276,23 +222,14 @@ describe( 'table selection', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 7, 6 ] ) );
 
-				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '21', '', '23', '', '', { contents: '27', colspan: 2 } ],
-						[ '31', '', '33', '', '', '37', '37' ],
-						[ '', '', '', '', '', '47', '47' ],
-						[ '51', '52', '53', '', '', { contents: '57', rowspan: 3 }, '57' ],
-						[ { contents: '61', colspan: 3 }, '', '', '', '67' ],
-						[ '71', '72', '73', '74', '75', '77' ]
-					] ) );
-
-					done();
-				} );
-
-				viewDocument.fire( 'copy', {
-					dataTransfer: createDataTransfer(),
-					preventDefault: sinon.spy()
-				} );
+				assertClipboardCopy( viewTable( [
+					[ '21', '', '23', '', '', { contents: '27', colspan: 2 } ],
+					[ '31', '', '33', '', '', '37', '37' ],
+					[ '', '', '', '', '', '47', '47' ],
+					[ '51', '52', '53', '', '', { contents: '57', rowspan: 3 }, '57' ],
+					[ { contents: '61', colspan: 3 }, '', '', '', '67' ],
+					[ '71', '72', '73', '74', '75', '77' ]
+				] ), done );
 			} );
 
 			it( 'should update table heading attributes (selection with headings)', done => {
@@ -307,20 +244,11 @@ describe( 'table selection', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 3, 3 ] ) );
 
-				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '11', '12', '13' ],
-						[ '21', '22', '23' ],
-						[ { contents: '31', isHeading: true }, '32', '33' ] // TODO: bug in viewTable
-					], { headingRows: 2, headingColumns: 1 } ) );
-
-					done();
-				} );
-
-				viewDocument.fire( 'copy', {
-					dataTransfer: createDataTransfer(),
-					preventDefault: sinon.spy()
-				} );
+				assertClipboardCopy( viewTable( [
+					[ '11', '12', '13' ],
+					[ '21', '22', '23' ],
+					[ { contents: '31', isHeading: true }, '32', '33' ] // TODO: bug in viewTable
+				], { headingRows: 2, headingColumns: 1 } ), done );
 			} );
 
 			it( 'should update table heading attributes (selection without headings)', done => {
@@ -335,19 +263,10 @@ describe( 'table selection', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 3, 2 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 4, 4 ] ) );
 
-				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '32', '33', '34' ],
-						[ '42', '43', '44' ]
-					] ) );
-
-					done();
-				} );
-
-				viewDocument.fire( 'copy', {
-					dataTransfer: createDataTransfer(),
-					preventDefault: sinon.spy()
-				} );
+				assertClipboardCopy( viewTable( [
+					[ '32', '33', '34' ],
+					[ '42', '43', '44' ]
+				] ), done );
 			} );
 		} );
 
@@ -386,6 +305,19 @@ describe( 'table selection', () => {
 			} );
 		} );
 	} );
+
+	function assertClipboardCopy( expectedViewTable, callback ) {
+		viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+			expect( stringifyView( data.content ) ).to.equal( expectedViewTable );
+
+			callback();
+		} );
+
+		viewDocument.fire( 'copy', {
+			dataTransfer: createDataTransfer(),
+			preventDefault: sinon.spy()
+		} );
+	}
 
 	function createDataTransfer() {
 		const store = new Map();
