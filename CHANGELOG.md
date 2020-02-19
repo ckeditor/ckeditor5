@@ -5,9 +5,9 @@ Changelog
 
 We are happy to announce the release of CKEditor 5 v17.0.0.
 
-From the end user perspective, this release introduces support for styling tables and table cells as well as a new special characters picker feature. We also worked on improving the editor initialization and data processing performance.
+From the end user perspective, this release introduces [support for styling tables and table cells](https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html) as well as a [new special characters picker](https://ckeditor.com/docs/ckeditor5/latest/features/table.html#table-and-cell-styling-tools) feature. We also worked on improving the editor initialization and data processing performance.
 
-From the developer perspective, we introduced support for editor contexts, adjusted the watchdog to work with editor contexts (which introduced breaking changes in that package) and introduced an extensible system for parsing and normalizing CSS properties which main goal was to make the editor better pick up certain style names in pasted/loaded content.
+From the developer perspective, we introduced support for [editor contexts](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_context-Context.html), adjusted the watchdog to work with editor contexts (which introduced breaking changes in that package) and introduced an [extensible system for parsing and normalizing CSS properties](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_stylesmap-StylesMap.html) which main goal was to make the editor better pick up certain style names in pasted/loaded content.
 
 As usual, we also fixed a couple of bugs and improved existing features. The two features which got most improvements are image resizing and the restricted editing feature.
 
