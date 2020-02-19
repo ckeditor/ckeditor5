@@ -21,7 +21,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *			value: '#f00'
  *		} );
  *
- * @extends module:core/command~Command
+ * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellBackgroundColorCommand extends TableCellPropertyCommand {
 	/**

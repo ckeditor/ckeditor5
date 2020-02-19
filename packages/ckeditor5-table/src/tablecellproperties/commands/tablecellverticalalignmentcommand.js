@@ -29,7 +29,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *
  * The `'middle'` value is the default one so there is no need to set it.
  *
- * @extends module:table/tablecellproperties/commands/tablecellpropertycommand
+ * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellVerticalAlignmentCommand extends TableCellPropertyCommand {
 	/**

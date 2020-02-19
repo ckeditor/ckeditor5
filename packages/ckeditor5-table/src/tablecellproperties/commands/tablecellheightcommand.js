@@ -30,7 +30,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *
  * will set the `height` attribute to `'50px'` in the model.
  *
- * @extends module:table/tablecellproperties/commands/tablecellpropertycommand
+ * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellHeightCommand extends TableCellPropertyCommand {
 	/**

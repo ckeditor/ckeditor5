@@ -30,7 +30,7 @@ import { addDefaultUnitToNumericValue } from '../../commands/utils';
  *
  * will set the `height` attribute to `'50px'` in the model.
  *
- * @extends module:core/command~Command
+ * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
  */
 export default class TableHeightCommand extends TablePropertyCommand {
 	/**

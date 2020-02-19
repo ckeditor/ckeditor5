@@ -29,7 +29,8 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *		} );
  *
  * will set the `padding` attribute to `'5px'` in the model.
- * @extends module:table/tablecellproperties/commands/tablecellpropertycommand
+ *
+ * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellPaddingCommand extends TableCellPropertyCommand {
 	/**

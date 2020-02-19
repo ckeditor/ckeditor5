@@ -22,7 +22,7 @@ import { getSingleValue } from '../../commands/utils';
  *			value: 'dashed'
  *		} );
  *
- * @extends module:table/tableproperties/commands/tablepropertycommand
+ * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
  */
 export default class TableBorderStyleCommand extends TablePropertyCommand {
 	/**

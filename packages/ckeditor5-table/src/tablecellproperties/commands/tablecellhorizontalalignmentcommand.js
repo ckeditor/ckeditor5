@@ -21,7 +21,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *			value: 'right'
  *		} );
  *
- * @extends module:table/tablecellproperties/commands/tablecellpropertycommand
+ * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellHorizontalAlignmentCommand extends TableCellPropertyCommand {
 	/**
