@@ -51,7 +51,7 @@ export default class ViewCollection extends Collection {
 	/**
 	 * Creates a new instance of the {@link module:ui/viewcollection~ViewCollection}.
 	 *
-	 * @param {Array.<module:ui/view~View>} [initialItems] The initial items of the collection.
+	 * @param {Iterable.<module:ui/view~View>} [initialItems] The initial items of the collection.
 	 */
 	constructor( initialItems = [] ) {
 		super( initialItems, {
