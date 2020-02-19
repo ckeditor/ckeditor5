@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-cloud-services/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### Other changes
+
+* Changed the `CloudServices` plugin to a context plugin. Part of [ckeditor/ckeditor5#5891](https://github.com/ckeditor/ckeditor5/issues/5891). ([12ca96d](https://github.com/ckeditor/ckeditor5-cloud-services/commit/12ca96d))
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-cloud-services/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 Internal changes only (updated dependencies, documentation, etc.).
