@@ -8,24 +8,24 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import TableEditing from '../src/tableediting';
-import TableSelection from '../src/tableselection';
 import { modelTable, viewTable } from './_utils/utils';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import TableClipboard from '../src/tableclipboard';
 
-describe( 'table selection', () => {
+describe( 'table copy-paste', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument;
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
-			plugins: [ TableEditing, TableSelection, Paragraph, Clipboard ]
+			plugins: [ TableEditing, TableClipboard, Paragraph, Clipboard ]
 		} );
 
 		model = editor.model;
 		modelRoot = model.document.getRoot();
 		viewDocument = editor.editing.view.document;
-		tableSelection = editor.plugins.get( TableSelection );
+		tableSelection = editor.plugins.get( 'TableSelection' );
 
 		setModelData( model, modelTable( [
 			[ '00[]', '01', '02' ],

@@ -94,16 +94,12 @@ export default class TableSelection extends Plugin {
 	init() {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
-		const viewDocument = editor.editing.view.document;
 
 		this._tableUtils = editor.plugins.get( 'TableUtils' );
 
 		setupTableSelectionHighlighting( editor, this );
 
 		selection.on( 'change:range', () => this._clearSelectionOnExternalChange( selection ) );
-
-		this.listenTo( viewDocument, 'copy', createTableCopyHandler( this, editor ), { priority: 'normal' } );
-		this.listenTo( viewDocument, 'cut', createPreventTableCutHandler( this ), { priority: 'high' } );
 	}
 
 	/**
@@ -277,32 +273,4 @@ export default class TableSelection extends Plugin {
 			this.clearSelection();
 		}
 	}
-}
-
-function createPreventTableCutHandler( tableSelection ) {
-	return ( evt, data ) => {
-		if ( tableSelection.hasMultiCellSelection ) {
-			data.preventDefault();
-			evt.stop();
-		}
-	};
-}
-
-function createTableCopyHandler( tableSelection, editor ) {
-	return ( evt, data ) => {
-		if ( !tableSelection.hasMultiCellSelection ) {
-			return;
-		}
-
-		data.preventDefault();
-		evt.stop();
-
-		const content = editor.data.toView( tableSelection.getSelectionAsFragment() );
-
-		editor.editing.view.document.fire( 'clipboardOutput', {
-			dataTransfer: data.dataTransfer,
-			content,
-			method: evt.name
-		} );
-	};
 }
