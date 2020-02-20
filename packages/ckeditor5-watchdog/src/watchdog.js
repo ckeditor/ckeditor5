@@ -41,12 +41,12 @@ export default class Watchdog {
 		/**
 		 * Specifies the state of the item watched by the watchdog. The state can be one of the following values:
 		 *
-		 * * `initializing` - before the first initialization, and after crashes, before the item is ready,
-		 * * `ready` - a state when a user can interact with the item,
-		 * * `crashed` - a state when an error occurs - it quickly changes to `initializing` or `crashedPermanently`
-		 * depending on how many and how frequency errors have been caught recently,
-		 * * `crashedPermanently` - a state when the watchdog stops reacting to errors and keeps the item it is watching crashed,
-		 * * `destroyed` - a state when the item is manually destroyed by the user after calling `watchdog.destroy()`
+		 * * `initializing` &ndash; Before the first initialization, and after crashes, before the item is ready.
+		 * * `ready` &ndash; A state when the user can interact with the item.
+		 * * `crashed` &ndash; A state when an error occurs. It quickly changes to `initializing` or `crashedPermanently`
+		 * depending on how many and how frequent errors have been caught recently.
+		 * * `crashedPermanently` &ndash; A state when the watchdog stops reacting to errors and keeps the item it is watching crashed,
+		 * * `destroyed` &ndash; A state when the item is manually destroyed by the user after calling `watchdog.destroy()`.
 		 *
 		 * @public
 		 * @member {'initializing'|'ready'|'crashed'|'crashedPermanently'|'destroyed'} #state
@@ -61,8 +61,8 @@ export default class Watchdog {
 		this._crashNumberLimit = typeof config.crashNumberLimit === 'number' ? config.crashNumberLimit : 3;
 
 		/**
-		 * Returns the result of `Date.now()` call. It can be overridden in tests to mock time as the popular
-		 * approaches like `sinon.useFakeTimers()` does not work well with error handling.
+		 * Returns the result of the `Date.now()` call. It can be overridden in tests to mock time as some popular
+		 * approaches like `sinon.useFakeTimers()` do not work well with error handling.
 		 *
 		 * @protected
 		 */
@@ -151,7 +151,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Sets the function that is responsible for creating watchded items.
+	 * Sets the function that is responsible for creating watched items.
 	 *
 	 * @param {Function} creator A callback responsible for creating an item. Returns a promise
 	 * that is resolved when the item is created.
@@ -161,7 +161,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Sets the function that is responsible for destructing watched items.
+	 * Sets the function that is responsible for destroying watched items.
 	 *
 	 * @param {Function} destructor A callback that takes the item and returns the promise
 	 * to the destroying process.
@@ -180,12 +180,12 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Starts listening to the specific event name by registering a callback that will be executed
-	 * whenever an event with given name fires.
+	 * Starts listening to a specific event name by registering a callback that will be executed
+	 * whenever an event with a given name fires.
 	 *
 	 * Note that this method differs from the CKEditor 5's default `EventEmitterMixin` implementation.
 	 *
-	 * @param {String} eventName  Event name.
+	 * @param {String} eventName The event name.
 	 * @param {Function} callback A callback which will be added to event listeners.
 	 */
 	on( eventName, callback ) {
@@ -201,7 +201,7 @@ export default class Watchdog {
 	 *
 	 * Note that this method differs from the CKEditor 5's default `EventEmitterMixin` implementation.
 	 *
-	 * @param {String} eventName Event name.
+	 * @param {String} eventName The event name.
 	 * @param {Function} callback A callback which will be removed from event listeners.
 	 */
 	off( eventName, callback ) {
@@ -210,12 +210,12 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Fires an event with given event name and arguments.
+	 * Fires an event with a given event name and arguments.
 	 *
 	 * Note that this method differs from the CKEditor 5's default `EventEmitterMixin` implementation.
 	 *
 	 * @protected
-	 * @param {String} eventName Event name.
+	 * @param {String} eventName The event name.
 	 * @param  {...*} args Event arguments.
 	 */
 	_fire( eventName, ...args ) {
@@ -247,13 +247,13 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Checks if the error comes from the watched item and restarts it.
+	 * Checks if an error comes from the watched item and restarts it.
 	 * It reacts to {@link module:utils/ckeditorerror~CKEditorError `CKEditorError` errors} only.
 	 *
 	 * @private
 	 * @fires error
 	 * @param {Error} error Error.
-	 * @param {ErrorEvent|PromiseRejectionEvent} evt Error event.
+	 * @param {ErrorEvent|PromiseRejectionEvent} evt An error event.
 	 */
 	_handleError( error, evt ) {
 		// @if CK_DEBUG // if ( error.is && error.is( 'CKEditorError' ) && error.context === undefined ) {
@@ -288,7 +288,7 @@ export default class Watchdog {
 	}
 
 	/**
-	 * Checks whether the error should be handled by the watchdog.
+	 * Checks whether an error should be handled by the watchdog.
 	 *
 	 * @private
 	 * @param {Error} error An error that was caught by the error handling process.
@@ -347,13 +347,13 @@ export default class Watchdog {
  *
  * @property {Number} [crashNumberLimit=3] A threshold specifying the number of watched item crashes
  * when the watchdog stops restarting the item in case of errors.
- * After this limit is reached and the time between last errors is shorter than `minimumNonErrorTimePeriod`
+ * After this limit is reached and the time between the last errors is shorter than `minimumNonErrorTimePeriod`,
  * the watchdog changes its state to `crashedPermanently` and it stops restarting the item. This prevents an infinite restart loop.
  *
- * @property {Number} [minimumNonErrorTimePeriod=5000] An average amount of milliseconds between last watched item errors
- * (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached
+ * @property {Number} [minimumNonErrorTimePeriod=5000] An average number of milliseconds between the last watched item errors
+ * (defaults to 5000). When the period of time between errors is lower than that and the `crashNumberLimit` is also reached,
  * the watchdog changes its state to `crashedPermanently` and it stops restarting the item. This prevents an infinite restart loop.
  *
- * @property {Number} [saveInterval=5000] A minimum number of milliseconds between saving editor data internally, (defaults to 5000).
- * Note that for large documents this might have an impact on the editor performance.
+ * @property {Number} [saveInterval=5000] A minimum number of milliseconds between saving the editor data internally (defaults to 5000).
+ * Note that for large documents this might impact the editor performance.
  */

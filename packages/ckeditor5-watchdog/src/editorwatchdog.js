@@ -164,10 +164,10 @@ export default class EditorWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Creates and keep running the editor instance using the defined creator and destructor.
+	 * Creates the editor instance and keeps it running, using the defined creator and destructor.
 	 *
-	 * @param {HTMLElement|String|Object.<String|String>} [elementOrData] Editor's source element or the editor's data.
-	 * @param {module:core/editor/editorconfig~EditorConfig} [config] Editor configuration.
+	 * @param {HTMLElement|String|Object.<String|String>} [elementOrData] The editor source element or the editor data.
+	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
 	 * @param {Object} [context] A context for the editor.
 	 *
 	 * @returns {Promise}
@@ -203,7 +203,7 @@ export default class EditorWatchdog extends Watchdog {
 	/**
 	 * Destroys the watchdog and the current editor instance. It fires the callback
 	 * registered in {@link #setDestructor `setDestructor()`} and uses it to destroy the editor instance.
-	 * It also sets state to `destroyed`.
+	 * It also sets the state to `destroyed`.
 	 *
 	 * @returns {Promise}
 	 */
@@ -290,8 +290,8 @@ export default class EditorWatchdog extends Watchdog {
 	}
 
 	/**
-	 * Traverses error context and the current editor to find out whether these structures are connected
-	 * via properties to each other.
+	 * Traverses the error context and the current editor to find out whether these structures are connected
+	 * to each other via properties.
 	 *
 	 * @protected
 	 * @param {module:utils/ckeditorerror~CKEditorError} error
@@ -301,7 +301,7 @@ export default class EditorWatchdog extends Watchdog {
 	}
 
 	/**
-	 * A function used to clone the editor configuration
+	 * Clones the editor configuration.
 	 *
 	 * @private
 	 * @param {Object} config
