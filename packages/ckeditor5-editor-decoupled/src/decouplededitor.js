@@ -72,7 +72,7 @@ export default class DecoupledEditor extends Editor {
 			secureSourceElement( this );
 		}
 
-		this.data.processor = new HtmlDataProcessor( this.stylesProcessor );
+		this.data.processor = new HtmlDataProcessor( this.data.stylesProcessor );
 
 		this.model.document.createRoot();
 
