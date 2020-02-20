@@ -158,5 +158,3 @@ mix( MouseSelectionHandler, ObservableMixin );
 function isButtonPressed( domEventData ) {
 	return !!domEventData.domEvent.buttons;
 }
-
-mix( MouseSelectionHandler, ObservableMixin );
