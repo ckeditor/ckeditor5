@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-typing/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### Features
+
+* Add `TextWatcher#isEnabled` property to allow toggling text watcher on and off. ([fa79d00](https://github.com/ckeditor/ckeditor5-typing/commit/fa79d00))
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-typing/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 Internal changes only (updated dependencies, documentation, etc.).
