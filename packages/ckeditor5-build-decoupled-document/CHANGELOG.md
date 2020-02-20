@@ -11,11 +11,9 @@ Blog post coming soon...
 
 ### BREAKING CHANGES
 
-The document editor build does not contain the highlight feature anymore. It was replaced with the font color and font background color features. You should install the highlight feature back in case you expect that the highlight feature was already used by the users of the editor. Otherwise, the markup created in the past by that feature will be filtered out the next time it is loaded to the editor.
+The document editor build does not contain the highlight feature anymore. It was replaced with the font color and font background color features.
 
-In case you want to migrate to using the font and font background color features, you need to migrate your existing content. This requires replacing spans created by the highlight feature with `<span style="color:?">` or `<span style="background-color:?">`, depending on the configured highlight markers.
-
-In case you have used the highlight plugin, we have prepared a [simple plugin which will allow you to prevent potential data loss](https://codepen.io/ckeditor/pen/oNXzGeO?editors=1010).
+In case you expect that the highlight feature was already used by the users of the editor, you should either use [a simple highlight to font color conversion plugin](https://codepen.io/ckeditor/pen/oNXzGeO?editors=1010) or install the highlight feature back. Otherwise, the markup created in the past by that feature will be filtered out the next time it is loaded to the editor. If you would like to migrate existing content yourself, you need to replace spans created by the highlight feature with `<span style="color:?">` or `<span style="background-color:?">`, depending on the configured highlight markers.
 
 ### Other changes
 
