@@ -77,7 +77,7 @@ export default class BalloonEditor extends Editor {
 
 		this.config.define( 'balloonToolbar', this.config.get( 'toolbar' ) );
 
-		this.data.processor = new HtmlDataProcessor( this.stylesProcessor );
+		this.data.processor = new HtmlDataProcessor( this.data.stylesProcessor );
 
 		this.model.document.createRoot();
 
