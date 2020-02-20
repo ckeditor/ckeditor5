@@ -61,7 +61,7 @@ export default class DataController {
 		this.model = model;
 
 		/**
-		 * Styles processor.
+		 * StylesProcessor is responsible for writing and reading a normalized styles object.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/stylesmap~StylesProcessor}
