@@ -7,7 +7,7 @@ Changelog
 
 * The `Watchdog` class was renamed to `EditorWatchdog` and is available in `src/editorwatchdog.js`.
 * The `EditorWatchdog.for()` method was removed in favor of the constructor.
-* The `EditorWatchdog#constructor()` API changed, now the `EditorWatchdog` constructor accepts the editor class as the first argument and the watchdog configuration as the second argument. The `EditorWatchdog` editor creator now defaults to `( sourceElementOrData, config ) => Editor.create( sourceElementOrData, config )`.
+* The `EditorWatchdog#constructor()` API changed. Now the `EditorWatchdog` constructor accepts the editor class as the first argument and the watchdog configuration as the second argument. The `EditorWatchdog` editor creator now defaults to `( sourceElementOrData, config ) => Editor.create( sourceElementOrData, config )`.
 
 ### Features
 
