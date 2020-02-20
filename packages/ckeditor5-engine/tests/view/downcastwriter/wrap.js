@@ -527,7 +527,7 @@ describe( 'DowncastWriter', () => {
 			let view, viewDocument, viewRoot;
 
 			beforeEach( () => {
-				view = new View();
+				view = new View( stylesProcessor );
 				viewDocument = view.document;
 				viewRoot = createViewRoot( viewDocument );
 			} );

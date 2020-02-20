@@ -14,12 +14,18 @@ import createViewRoot from './_utils/createroot';
 import View from '../../src/view/view';
 import ViewRange from '../../src/view/range';
 import { setData } from '../../src/dev-utils/view';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'placeholder', () => {
 	let view, viewDocument, viewRoot;
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
-		view = new View();
+		view = new View( stylesProcessor );
 		viewDocument = view.document;
 		viewRoot = createViewRoot( viewDocument );
 		viewDocument.isFocused = true;
@@ -172,7 +178,7 @@ describe( 'placeholder', () => {
 			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			const secondView = new View();
+			const secondView = new View( stylesProcessor );
 			const secondDocument = secondView.document;
 			secondDocument.isFocused = true;
 			const secondRoot = createViewRoot( secondDocument );

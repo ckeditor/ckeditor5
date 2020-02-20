@@ -10,6 +10,7 @@ import Observer from '../../../src/view/observer/observer';
 import View from '../../../src/view/view';
 import UIElement from '../../../src/view/uielement';
 import createViewRoot from '../_utils/createroot';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 class ClickObserver extends DomEventObserver {
 	constructor( view ) {
@@ -45,9 +46,14 @@ class ClickCapturingObserver extends ClickObserver {
 
 describe( 'DomEventObserver', () => {
 	let view, viewDocument;
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
-		view = new View();
+		view = new View( stylesProcessor );
 		viewDocument = view.document;
 	} );
 

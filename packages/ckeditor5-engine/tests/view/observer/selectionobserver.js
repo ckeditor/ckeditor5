@@ -13,9 +13,15 @@ import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import createViewRoot from '../_utils/createroot';
 import { parse } from '../../../src/dev-utils/view';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'SelectionObserver', () => {
 	let view, viewDocument, viewRoot, selectionObserver, domRoot, domMain, domDocument;
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( done => {
 		domDocument = document;
@@ -24,7 +30,7 @@ describe( 'SelectionObserver', () => {
 		domMain = domRoot.childNodes[ 0 ];
 		domDocument.body.appendChild( domRoot );
 
-		view = new View();
+		view = new View( stylesProcessor );
 		viewDocument = view.document;
 		createViewRoot( viewDocument );
 		view.attachDomRoot( domMain );

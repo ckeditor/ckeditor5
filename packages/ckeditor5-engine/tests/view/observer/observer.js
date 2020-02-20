@@ -5,11 +5,18 @@
 
 import Observer from '../../../src/view/observer/observer';
 import View from '../../../src/view/view';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'Observer', () => {
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should create Observer with properties', () => {
-			const view = new View();
+			const view = new View( stylesProcessor );
 			const observer = new Observer( view );
 
 			expect( observer ).to.be.an.instanceof( Observer );

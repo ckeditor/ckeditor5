@@ -10,8 +10,9 @@ import DomEventObserver from '../../../src/view/observer/domeventobserver';
 import ViewRange from '../../../src/view/range';
 import createViewRoot from '../_utils/createroot';
 import { setData } from '../../../src/dev-utils/view';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
-const view = new View();
+const view = new View( new StylesProcessor() );
 const viewDocument = view.document;
 const domEditable = document.getElementById( 'editor' );
 const viewRoot = createViewRoot( viewDocument );

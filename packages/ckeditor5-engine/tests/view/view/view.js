@@ -97,7 +97,7 @@ describe( 'view', () => {
 		const oldEnvIsAndroid = env.isAndroid;
 		env.isAndroid = true;
 
-		const newView = new View();
+		const newView = new View( stylesProcessor );
 		expect( newView.getObserver( InputObserver ) ).to.be.instanceof( InputObserver );
 
 		env.isAndroid = oldEnvIsAndroid;
@@ -166,7 +166,7 @@ describe( 'view', () => {
 			// The variable will be overwritten.
 			view.destroy();
 
-			view = new View();
+			view = new View( stylesProcessor );
 			viewDocument = view.document;
 			view._renderer.render = sinon.spy();
 
@@ -276,7 +276,7 @@ describe( 'view', () => {
 			// The variable will be overwritten.
 			view.destroy();
 
-			view = new View();
+			view = new View( stylesProcessor );
 			viewDocument = view.document;
 			view._renderer.render = sinon.spy();
 		} );
@@ -565,7 +565,7 @@ describe( 'view', () => {
 				createElement( document, 'p' )
 			] );
 
-			const view = new View();
+			const view = new View( stylesProcessor );
 			const viewDocument = view.document;
 
 			createViewRoot( viewDocument, 'div', 'main' );
@@ -582,7 +582,7 @@ describe( 'view', () => {
 		it( 'should render changes in the Document', () => {
 			const domDiv = document.createElement( 'div' );
 
-			const view = new View();
+			const view = new View( stylesProcessor );
 			const viewDocument = view.document;
 			createViewRoot( viewDocument, 'div', 'main' );
 			view.attachDomRoot( domDiv );
@@ -599,7 +599,7 @@ describe( 'view', () => {
 		it( 'should render attribute changes', () => {
 			const domRoot = document.createElement( 'div' );
 
-			const view = new View();
+			const view = new View( stylesProcessor );
 			const viewDocument = view.document;
 			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 

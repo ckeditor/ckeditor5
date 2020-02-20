@@ -3729,7 +3729,7 @@ describe( 'Renderer', () => {
 		let view, viewDoc, viewRoot, domRoot, converter;
 
 		beforeEach( () => {
-			view = new View();
+			view = new View( stylesProcessor );
 			viewDoc = view.document;
 			domRoot = document.createElement( 'div' );
 			document.body.appendChild( domRoot );

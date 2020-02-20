@@ -6,17 +6,21 @@
 import InputObserver from '../../../src/view/observer/inputobserver';
 import View from '../../../src/view/view';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'InputObserver', () => {
-	let view, viewDocument, observer;
 	const oldEnvIsAndroid = env.isAndroid;
 
+	let view, viewDocument, observer;
+	let stylesProcessor;
+
 	before( () => {
+		stylesProcessor = new StylesProcessor();
 		env.isAndroid = true;
 	} );
 
 	beforeEach( () => {
-		view = new View();
+		view = new View( stylesProcessor );
 		viewDocument = view.document;
 		observer = view.getObserver( InputObserver );
 	} );

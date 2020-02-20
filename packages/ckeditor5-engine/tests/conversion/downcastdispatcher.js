@@ -13,13 +13,19 @@ import ModelRange from '../../src/model/range';
 
 import View from '../../src/view/view';
 import ViewContainerElement from '../../src/view/containerelement';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'DowncastDispatcher', () => {
 	let dispatcher, doc, root, differStub, model, view, mapper;
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
 		model = new Model();
-		view = new View();
+		view = new View( stylesProcessor );
 		doc = model.document;
 		mapper = new Mapper();
 		dispatcher = new DowncastDispatcher( { mapper } );

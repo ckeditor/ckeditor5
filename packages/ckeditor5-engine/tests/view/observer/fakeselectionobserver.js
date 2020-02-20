@@ -13,12 +13,15 @@ import createViewRoot from '../_utils/createroot';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData, stringify } from '../../../src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'FakeSelectionObserver', () => {
-	let observer, view, viewDocument, root, domRoot;
+	let observer, view, viewDocument, root, domRoot, stylesProcessor;
 	testUtils.createSinonSandbox();
 
 	before( () => {
+		stylesProcessor = new StylesProcessor();
+
 		domRoot = createElement( document, 'div', {
 			contenteditable: 'true'
 		} );
@@ -30,7 +33,7 @@ describe( 'FakeSelectionObserver', () => {
 	} );
 
 	beforeEach( () => {
-		view = new View();
+		view = new View( stylesProcessor );
 		viewDocument = view.document;
 		root = createViewRoot( viewDocument );
 		view.attachDomRoot( domRoot );

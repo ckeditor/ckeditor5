@@ -8,12 +8,18 @@ import FocusObserver from '../../../src/view/observer/focusobserver';
 import View from '../../../src/view/view';
 import createViewRoot from '../_utils/createroot';
 import { setData } from '../../../src/dev-utils/view';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'FocusObserver', () => {
 	let view, viewDocument, observer;
+	let stylesProcessor;
+
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
 
 	beforeEach( () => {
-		view = new View();
+		view = new View( stylesProcessor );
 		viewDocument = view.document;
 		observer = view.getObserver( FocusObserver );
 	} );
@@ -157,7 +163,7 @@ describe( 'FocusObserver', () => {
 			domRoot = document.createElement( 'div' );
 			document.body.appendChild( domRoot );
 
-			view = new View();
+			view = new View( stylesProcessor );
 			viewDocument = view.document;
 			createViewRoot( viewDocument );
 			view.attachDomRoot( domRoot );

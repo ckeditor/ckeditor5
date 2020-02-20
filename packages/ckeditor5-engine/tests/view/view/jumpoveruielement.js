@@ -16,9 +16,11 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import createViewRoot from '../_utils/createroot';
 import { setData as setViewData } from '../../../src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'View', () => {
 	let view, viewDocument, domRoot, domSelection, viewRoot, foo, bar, ui, ui2;
+	let stylesProcessor;
 
 	function createUIElement( name, contents ) {
 		const element = new UIElement( viewDocument, name );
@@ -33,13 +35,17 @@ describe( 'View', () => {
 		return element;
 	}
 
+	before( () => {
+		stylesProcessor = new StylesProcessor();
+	} );
+
 	beforeEach( () => {
 		domRoot = createElement( document, 'div', {
 			contenteditable: 'true'
 		} );
 		document.body.appendChild( domRoot );
 
-		view = new View();
+		view = new View( stylesProcessor );
 		viewDocument = view.document;
 		viewRoot = createViewRoot( viewDocument );
 		view.attachDomRoot( domRoot );

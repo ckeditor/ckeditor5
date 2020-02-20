@@ -889,7 +889,7 @@ describe( 'upcast-converters', () => {
 
 			modelSetData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
-			view = new View();
+			view = new View( stylesProcessor );
 			viewDocument = view.document;
 			viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 

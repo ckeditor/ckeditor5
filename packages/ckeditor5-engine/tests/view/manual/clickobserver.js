@@ -8,8 +8,9 @@
 import View from '../../../src/view/view';
 import DomEventObserver from '../../../src/view/observer/domeventobserver';
 import createViewRoot from '../_utils/createroot';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
-const view = new View();
+const view = new View( new StylesProcessor() );
 const viewDocument = view.document;
 
 // Disable rendering for this example, because it re-enables all observers each time view is rendered.
