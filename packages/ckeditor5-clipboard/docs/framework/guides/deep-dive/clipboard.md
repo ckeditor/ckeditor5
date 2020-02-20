@@ -95,7 +95,7 @@ editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
 
 ### Paste as plain text plugin example
 You can use knowledge from previous sections to create a full plugin which will allow users to paste the content as plain text while the feature is toggled on.
-If you're not familiar with creating plugins in CKEditor 5, we'd advise starting from reading [Creating a simple plugin](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/creating-simple-plugin.html) guide to get a better understanding of what's going on in the code below.
+If you're not familiar with creating plugins in CKEditor 5, we'd advise starting from reading {@link framework/guides/creating-simple-plugin Creating a simple plugin} guide to get a better understanding of what's going on in the code below.
 
 ```js
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
