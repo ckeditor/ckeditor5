@@ -181,14 +181,14 @@ class PastePlainTextCommand extends Command {
 }
 
 ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        extraPlugins: [ PastePlainText ],
+	.create( document.querySelector( '#editor' ), {
+		extraPlugins: [ PastePlainText ],
 		toolbar: [ 'pastePlainText' ],
-        // ...
-    } )
-    .catch( error => {
-        console.log( error );
-    } );
+		// ...
+	} )
+	.catch( error => {
+    	console.log( error );
+	} );
 ```
 
 ## Output pipeline
