@@ -937,7 +937,7 @@ describe( 'EditorWatchdog', () => {
 				constructor( sourceElements, config ) {
 					super( config );
 
-					this.data.processor = new HtmlDataProcessor( this.stylesProcessor );
+					this.data.processor = new HtmlDataProcessor( this.data.stylesProcessor );
 
 					// Create a root for each source element.
 					for ( const rootName of Object.keys( sourceElements ) ) {
