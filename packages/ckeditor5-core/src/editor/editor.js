@@ -52,6 +52,8 @@ export default class Editor {
 	 * @param {Object} [config={}] The editor configuration.
 	 */
 	constructor( config = {} ) {
+		const stylesProcessor = new StylesProcessor();
+
 		/**
 		 * The editor context.
 		 * When it is not provided through the configuration, the editor creates it.
@@ -163,21 +165,13 @@ export default class Editor {
 		this.model = new Model();
 
 		/**
-		 * StylesProcessor is responsible for writing and reading a normalized styles object.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/stylesmap~StylesProcessor}
-		 */
-		this.stylesProcessor = new StylesProcessor();
-
-		/**
 		 * The {@link module:engine/controller/datacontroller~DataController data controller}.
 		 * Used e.g. for setting and retrieving the editor data.
 		 *
 		 * @readonly
 		 * @member {module:engine/controller/datacontroller~DataController}
 		 */
-		this.data = new DataController( this.model, this.stylesProcessor );
+		this.data = new DataController( this.model, stylesProcessor );
 
 		/**
 		 * The {@link module:engine/controller/editingcontroller~EditingController editing controller}.
@@ -186,7 +180,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:engine/controller/editingcontroller~EditingController}
 		 */
-		this.editing = new EditingController( this.model, this.stylesProcessor );
+		this.editing = new EditingController( this.model, stylesProcessor );
 		this.editing.view.document.bind( 'isReadOnly' ).to( this );
 
 		/**
