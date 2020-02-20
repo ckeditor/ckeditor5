@@ -130,7 +130,7 @@ export default class MouseSelectionHandler {
 	}
 
 	/**
-	 * Finds model table cell for given DOM event.
+	 * Finds a model table cell for a given DOM event.
 	 *
 	 * @private
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
