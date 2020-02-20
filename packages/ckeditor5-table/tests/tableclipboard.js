@@ -14,7 +14,7 @@ import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfr
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import TableClipboard from '../src/tableclipboard';
 
-describe.only( 'table clipboard', () => {
+describe( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument;
 
 	beforeEach( async () => {
