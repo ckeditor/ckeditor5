@@ -8,3 +8,10 @@
  * it acts as a message to the builder telling that it should look for the corresponding styles
  * **in the theme** when compiling the editor.
  */
+
+.ck.ck-editor__editable .table table {
+	& td.selected,
+	& th.selected {
+		box-shadow: inset 0 0 0 1px var(--ck-color-focus-border);
+	}
+}
