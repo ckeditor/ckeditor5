@@ -13,7 +13,7 @@ Blog post coming soon...
 
 The document editor build does not contain the highlight feature anymore. It was replaced with the font color and font background color features.
 
-In case you expect that the highlight feature was already used by the users of the editor, you should either use [a simple highlight to font color conversion plugin](https://codepen.io/ckeditor/pen/oNXzGeO?editors=1010) or install the highlight feature back. Otherwise, the markup created in the past by that feature will be filtered out the next time it is loaded to the editor. If you would like to migrate existing content yourself, you need to replace spans created by the highlight feature with `<span style="color:?">` or `<span style="background-color:?">`, depending on the configured highlight markers.
+If you expect that the highlight feature has already been used by the users of the editor, either use the [simple highlight to font color conversion plugin](https://codepen.io/ckeditor/pen/oNXzGeO?editors=1010) or install the highlight feature back. Otherwise the markup created in the past by that feature will be filtered out the next time it is loaded into the editor. If you would like to migrate the existing content yourself, you need to replace `<span>` elements created by the highlight feature with `<span style="color:?">` or `<span style="background-color:?">`, depending on the configured highlight markers.
 
 ### Other changes
 
@@ -40,7 +40,7 @@ Releases containing new features:
 * [@ckeditor/ckeditor5-typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-typing/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-ui/releases/tag/v17.0.0)
 
-Major releases (dependencies of those packages have breaking changes):
+Major releases (dependencies of these packages have breaking changes):
 
 * [@ckeditor/ckeditor-cloud-services-core](https://www.npmjs.com/package/@ckeditor/ckeditor-cloud-services-core): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor-cloud-services-core/releases/tag/v17.0.0)
 * [@ckeditor/ckeditor5-adapter-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/releases/tag/v17.0.0)
