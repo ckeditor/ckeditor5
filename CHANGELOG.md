@@ -5,9 +5,9 @@ Changelog
 
 We are happy to announce the release of CKEditor 5 v17.0.0.
 
-From the end user perspective, this release introduces [support for styling tables and table cells](https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html) as well as a [new special characters picker](https://ckeditor.com/docs/ckeditor5/latest/features/table.html#table-and-cell-styling-tools) feature. We also worked on improving the editor initialization and data processing performance.
+From the end user perspective, this release introduces [support for styling tables and table cells](https://ckeditor.com/docs/ckeditor5/latest/features/table.html#table-and-cell-styling-tools) as well as a [new special characters picker](https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html) feature. We also worked on improving the editor initialization and data processing performance.
 
-From the developer perspective, we introduced support for [editor contexts](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_context-Context.html), adjusted the watchdog to work with editor contexts (which introduced breaking changes in that package) and introduced an [extensible system for parsing and normalizing CSS properties](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_stylesmap-StylesMap.html) which main goal was to make the editor better pick up certain style names in pasted/loaded content.
+From the developer perspective, we added support for [editor contexts](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_context-Context.html), adjusted the watchdog to work with editor contexts (which introduced breaking changes in that package) and introduced an [extensible system for parsing and normalizing CSS properties](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_stylesmap-StylesMap.html) which main goal was to make the editor better pick up certain style names in pasted/loaded content.
 
 As usual, we also fixed a couple of bugs and improved existing features. The two features which got most improvements are image resizing and the restricted editing feature.
 
@@ -15,7 +15,7 @@ Finally, this release comes with a couple of **important breaking changes**. The
 
 * The decoupled document build: the highlight plugin was replaced with font color and font background color features. The upgrade path requires performing data migration or customizing the build to use the highlight feature. Refer to https://github.com/ckeditor/ckeditor5-build-decoupled-document/releases/tag/v17.0.0 for more information.
 * The watchdog package: the `Watchdog` class was renamed and moved to a new module. See https://github.com/ckeditor/ckeditor5-watchdog/releases/tag/v17.0.0 for more information.
-* The restricted editing package: The class used by this feature to mark exceptions was changed from `ck-restricted-editing-exception` to `restricted-editing-exception`. The upgrade path requires performing data migration. Refer to https://github.com/ckeditor/ckeditor5-restricted-editing/releases/tag/v17.0.0 for more information.
+* The restricted editing package: the class used by this feature to mark exceptions was changed from `ck-restricted-editing-exception` to `restricted-editing-exception`. The upgrade path requires performing data migration. Refer to https://github.com/ckeditor/ckeditor5-restricted-editing/releases/tag/v17.0.0 for more information.
 
 Check the list of packages below to learn more about other breaking changes.
 
