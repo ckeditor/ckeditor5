@@ -39,24 +39,29 @@ export default class TableClipboard extends Plugin {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
-		const tableSelection = editor.plugins.get( 'TableSelection' );
+		/**
+		 * A table selection plugin instance.
+		 *
+		 * @private
+		 * @readonly
+		 * @member {module:table/tableselection~TableSelection} module:tableclipboard~TableClipboard#_tableSelection
+		 */
+		this._tableSelection = editor.plugins.get( 'TableSelection' );
 
-		this.listenTo( viewDocument, 'copy', createTableCopyHandler( tableSelection, editor ), { priority: 'normal' } );
-		this.listenTo( viewDocument, 'cut', createPreventTableCutHandler( tableSelection ), { priority: 'high' } );
+		this.listenTo( viewDocument, 'copy', ( evt, data ) => this._onCopy( evt, data ), { priority: 'normal' } );
+		this.listenTo( viewDocument, 'cut', ( evt, data ) => this._onCut( evt, data ), { priority: 'high' } );
 	}
-}
 
-function createPreventTableCutHandler( tableSelection ) {
-	return ( evt, data ) => {
-		if ( tableSelection.hasMultiCellSelection ) {
-			data.preventDefault();
-			evt.stop();
-		}
-	};
-}
+	/**
+	 * A clipboard "copy" event handler.
+	 *
+	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
+	 * @param {Object} data Clipboard event data.
+	 * @private
+	 */
+	_onCopy( evt, data ) {
+		const tableSelection = this._tableSelection;
 
-function createTableCopyHandler( tableSelection, editor ) {
-	return ( evt, data ) => {
 		if ( !tableSelection.hasMultiCellSelection ) {
 			return;
 		}
@@ -64,12 +69,29 @@ function createTableCopyHandler( tableSelection, editor ) {
 		data.preventDefault();
 		evt.stop();
 
-		const content = editor.data.toView( tableSelection.getSelectionAsFragment() );
+		const dataController = this.editor.data;
+		const viewDocument = this.editor.editing.view.document;
 
-		editor.editing.view.document.fire( 'clipboardOutput', {
+		const content = dataController.toView( tableSelection.getSelectionAsFragment() );
+
+		viewDocument.fire( 'clipboardOutput', {
 			dataTransfer: data.dataTransfer,
 			content,
 			method: evt.name
 		} );
-	};
+	}
+
+	/**
+	 * A clipboard "cut" event handler.
+	 *
+	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
+	 * @param {Object} data Clipboard event data.
+	 * @private
+	 */
+	_onCut( evt, data ) {
+		if ( this._tableSelection.hasMultiCellSelection ) {
+			data.preventDefault();
+			evt.stop();
+		}
+	}
 }
