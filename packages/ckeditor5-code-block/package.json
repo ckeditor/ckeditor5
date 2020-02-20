@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-code-block",
-  "version": "16.0.0",
+  "version": "17.0.0",
   "description": "Code Block feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
