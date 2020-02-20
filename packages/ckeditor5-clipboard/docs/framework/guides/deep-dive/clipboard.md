@@ -94,10 +94,19 @@ editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
 ```
 
 ### Paste as plain text plugin example
+
 You can use knowledge from previous sections to create a full plugin which will allow users to paste the content as plain text while the feature is toggled on.
+
 If you're not familiar with creating plugins in CKEditor 5, we'd advise starting from reading {@link framework/guides/creating-simple-plugin Creating a simple plugin} guide to get a better understanding of what's going on in the code below.
 
 ```js
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
@@ -116,16 +125,15 @@ class PastePlainText extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		// Introduce `pastePlainText` property to the editor and set it by default to false.
-		editor.set( 'pastePlainText', false );
 		editor.commands.add( 'pastePlainText', new PastePlainTextCommand( editor ) );
 
 		// Logic responsible for converting HTML to plain text.
 		const clipboardPlugin = editor.plugins.get( 'Clipboard' );
+		const command = editor.commands.get( 'pastePlainText' );
 		const editingView = editor.editing.view;
 
 		editingView.document.on( 'clipboardInput', ( evt, data ) => {
-			if ( editor.isReadOnly || !editor.pastePlainText ) {
+			if ( editor.isReadOnly || !command.value ) {
 				return;
 			}
 
@@ -176,14 +184,13 @@ class PastePlainTextCommand extends Command {
 	execute() {
 		// Activate pasting plain text.
 		this.value = !this.value;
-		this.editor.set( 'pastePlainText', this.value );
 	}
 }
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		extraPlugins: [ PastePlainText ],
-		toolbar: [ 'pastePlainText' ],
+		plugins: [ Essentials, Paragraph, Bold, Italic, PastePlainText ],
+		toolbar: [ 'bold', 'italic', 'pastePlainText' ],
 		// ...
 	} )
 	.catch( error => {
