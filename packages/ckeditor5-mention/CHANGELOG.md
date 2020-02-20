@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### Features
+
+* Implemented debounced mechanism for requesting a mention feed. Closes [ckeditor/ckeditor5#4619](https://github.com/ckeditor/ckeditor5/issues/4619). ([f50db9c](https://github.com/ckeditor/ckeditor5-mention/commit/f50db9c))
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 Internal changes only (updated dependencies, documentation, etc.).
