@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### Features
+
+* Introduced the concept of editor contexts and context plugins. Contexts provide a common, higher-level environment for solutions which use multiple editors and/or plugins that work outside an editor. Closes [ckeditor/ckeditor5#5891](https://github.com/ckeditor/ckeditor5/issues/5891). ([672e55e](https://github.com/ckeditor/ckeditor5-core/commit/672e55e))
+* Added vertical alignment icons. Moved horizontal alignment icons form `@ckeditor/ckeditor5-alignment` (see [ckeditor/ckeditor5-table#227](https://github.com/ckeditor/ckeditor5-table/issues/227)). ([ada4a79](https://github.com/ckeditor/ckeditor5-core/commit/ada4a79))
+* Introduced `Plugin#isEnabled`, `Plugin#forceDisabled()` and `Plugin#clearForceDisabled()`. ([7449450](https://github.com/ckeditor/ckeditor5-core/commit/7449450))
+
+### Other changes
+
+* Updated translations. ([6a2b584](https://github.com/ckeditor/ckeditor5-core/commit/6a2b584))
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Other changes
