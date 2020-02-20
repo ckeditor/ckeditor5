@@ -328,7 +328,7 @@ export function assertTableCellStyle( editor, tableCellStyle ) {
 }
 
 /**
- * Helper method for asserting selected table cells.
+ * A helper method for asserting selected table cells.
  *
  * To check if a table has expected cells selected pass two dimensional array of truthy and falsy values:
  *

@@ -14,21 +14,21 @@ import { findAncestor } from '../commands/utils';
 import MouseEventsObserver from './mouseeventsobserver';
 
 /**
- * A mouse selection handler for table selection.
+ * A mouse selection handler class for the table selection.
  *
  * It registers the {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver} to observe view document mouse events
  * and invoke proper {@link module:table/tableselection~TableSelection} actions.
  */
 export default class MouseSelectionHandler {
 	/**
-	 * Creates instance of `MouseSelectionHandler`.
+	 * Creates an instance of the `MouseSelectionHandler`.
 	 *
 	 * @param {module:table/tableselection~TableSelection} tableSelection
 	 * @param {module:engine/controller/editingcontroller~EditingController} editing
 	 */
 	constructor( tableSelection, editing ) {
 		/**
-		 * Table selection.
+		 * The table selection plugin instance.
 		 *
 		 * @private
 		 * @readonly
@@ -38,7 +38,7 @@ export default class MouseSelectionHandler {
 
 		/**
 		 * A flag indicating that the mouse selection is "active". A selection is "active" if it was started and not yet finished.
-		 * A selection can be "active" for instance if user moves a mouse over a table while holding a mouse button down.
+		 * A selection can be "active", for instance, if a user moves a mouse over a table while holding a mouse button down.
 		 *
 		 * @readonly
 		 * @member {Boolean}
@@ -65,9 +65,9 @@ export default class MouseSelectionHandler {
 	}
 
 	/**
-	 * Handles starting a selection when "mousedown" event has table cell target.
+	 * Handles starting a selection when "mousedown" event has table cell as a DOM target.
 	 *
-	 * If no table cell in event target it will clear previous selection.
+	 * If there is no table cell in the event target, it will clear the previous selection.
 	 *
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 * @private
@@ -87,9 +87,9 @@ export default class MouseSelectionHandler {
 	}
 
 	/**
-	 * Handles updating table selection when "mousemove" event has a table cell target.
+	 * Handles updating the table selection when the "mousemove" event has a table cell as a DOM target.
 	 *
-	 * Does nothing if no table cell in event target or selection is not started.
+	 * Does nothing if there is no table cell in event target or the selection has not been started yet.
 	 *
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 * @private
@@ -111,9 +111,9 @@ export default class MouseSelectionHandler {
 	}
 
 	/**
-	 * Handles ending (not clearing) table selection on "mouseup" event.
+	 * Handles ending (not clearing) the table selection on the "mouseup" event.
 	 *
-	 * Does nothing if selection is not started.
+	 * Does nothing if the selection has not been started yet.
 	 *
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 * @private

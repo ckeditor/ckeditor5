@@ -8,7 +8,7 @@
  */
 
 /**
- * Adds a visual highlight style to a selected table cells.
+ * Adds a visual highlight style to selected table cells.
  *
  * @param {module:core/editor/editor~Editor} editor
  * @param {module:table/tableselection~TableSelection} tableSelection
@@ -27,7 +27,7 @@ export function setupTableSelectionHighlighting( editor, tableSelection ) {
 			for ( const tableCell of tableSelection.getSelectedTableCells() ) {
 				const viewElement = conversionApi.mapper.toViewElement( tableCell );
 
-				viewWriter.addClass( 'selected', viewElement );
+				viewWriter.addClass( 'ck-editor__editable_selected', viewElement );
 				highlighted.add( viewElement );
 			}
 
@@ -43,7 +43,7 @@ function clearHighlightedTableCells( highlighted, view ) {
 
 	view.change( writer => {
 		for ( const previouslyHighlighted of previous ) {
-			writer.removeClass( 'selected', previouslyHighlighted );
+			writer.removeClass( 'ck-editor__editable_selected', previouslyHighlighted );
 		}
 	} );
 }
