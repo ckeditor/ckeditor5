@@ -1,6 +1,26 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### Features
+
+* Introduced CSS style normalization for conversion. Closes [ckeditor/ckeditor5#6047](https://github.com/ckeditor/ckeditor5/issues/6047). ([b2a8189](https://github.com/ckeditor/ckeditor5-engine/commit/b2a8189))
+* Added a `startsWith()` method to `SchemaContext`. ([11fa53a](https://github.com/ckeditor/ckeditor5-engine/commit/11fa53a))
+* Introduced `DocumentSelection#event:change:marker`. Closes [ckeditor/ckeditor5#6133](https://github.com/ckeditor/ckeditor5/issues/6133). ([5106014](https://github.com/ckeditor/ckeditor5-engine/commit/5106014))
+* Introduced `Model#createOperationFromJSON()` which is an alias for `OperationFactory.fromJSON()`. Closes [ckeditor/ckeditor5#6094](https://github.com/ckeditor/ckeditor5/issues/6094). ([ebaa2cc](https://github.com/ckeditor/ckeditor5-engine/commit/ebaa2cc))
+
+### Bug fixes
+
+* Changes irrelevant to the view (e.g. inside UIElements) will no longer force a view render nor will they trigger mutation event on the document. Closes [ckeditor/ckeditor5#5600](https://github.com/ckeditor/ckeditor5/issues/5600). ([b7e2bfe](https://github.com/ckeditor/ckeditor5-engine/commit/b7e2bfe))
+* DOM selection change will not be converted if the selection was placed outside of the editable element. Closes [ckeditor/ckeditor5#4199](https://github.com/ckeditor/ckeditor5/issues/4199). ([1c3749e](https://github.com/ckeditor/ckeditor5-engine/commit/1c3749e))
+
+### Other changes
+
+* Allow selection on object elements. Closes [ckeditor/ckeditor5#6154](https://github.com/ckeditor/ckeditor5/issues/6154). ([0dec72d](https://github.com/ckeditor/ckeditor5-engine/commit/0dec72d))
+* Improved `parseAttributes()` function performance. This results in improved editor data processing speed. Closes [ckeditor/ckeditor5#5854](https://github.com/ckeditor/ckeditor5/issues/5854). ([ecaf056](https://github.com/ckeditor/ckeditor5-engine/commit/ecaf056))
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Other changes
