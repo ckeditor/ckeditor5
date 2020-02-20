@@ -14,7 +14,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  * The table cell width command.
  *
  * The command is registered by the {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
- * `'tableCellWidth'` editor command.
+ * the `'tableCellWidth'` editor command.
  *
  * To change the width of selected cells, execute the command:
  *
@@ -22,15 +22,15 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *			value: '50px'
  *		} );
  *
- * **Note**: This command adds a default `'px'` unit to a numeric values. Executing:
+ * **Note**: This command adds a default `'px'` unit to numeric values. Executing:
  *
  *		editor.execute( 'tableCellWidth', {
  *			value: '50'
  *		} );
  *
- * Will set `width` attribute to `'50px'` in the model.
+ * will set the `width` attribute to `'50px'` in the model.
  *
- * @extends module:table/tablecellproperties/commands/tablecellpropertycommand
+ * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellWidthCommand extends TableCellPropertyCommand {
 	/**

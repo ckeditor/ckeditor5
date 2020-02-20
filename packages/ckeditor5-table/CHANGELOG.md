@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### Features
+
+* Implemented the table and table cell properties forms. Closes [ckeditor/ckeditor5#3287](https://github.com/ckeditor/ckeditor5/issues/3287).
+
+### Bug fixes
+
+* Fixed a bug with spellchecking or pasting via the context menu into a table cell crashing the editor. Closes [ckeditor/ckeditor5#6062](https://github.com/ckeditor/ckeditor5/issues/6062). ([be0d759](https://github.com/ckeditor/ckeditor5-table/commit/be0d759))
+
+### Other changes
+
+* Implemented lazy loading for the table dropdown. This will reduce editor initialization time. Closes [ckeditor/ckeditor5#6193](https://github.com/ckeditor/ckeditor5/issues/6193). ([5daa487](https://github.com/ckeditor/ckeditor5-table/commit/5daa487))
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Bug fixes
@@ -9,7 +24,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([7b2df5c](https://github.com/ckeditor/ckeditor5-table/commit/7b2df5c)) 
+* Updated translations. ([7b2df5c](https://github.com/ckeditor/ckeditor5-table/commit/7b2df5c))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v14.0.0...v15.0.0) (2019-10-23)

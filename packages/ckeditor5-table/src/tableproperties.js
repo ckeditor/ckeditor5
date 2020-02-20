@@ -15,7 +15,7 @@ import TablePropertiesUI from './tableproperties/tablepropertiesui';
 /**
  * The table properties feature.
  *
- * This is a "glue" plugin which loads the
+ * This is a "glue" plugin that loads the
  * {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing table editing feature} and
  * the {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI table properties UI feature}.
  *
@@ -38,10 +38,10 @@ export default class TableProperties extends Plugin {
 }
 
 /**
- * A configuration of the table properties user interface (balloon). It allows to define:
+ * The configuration of the table properties user interface (balloon). It allows to define:
  *
- * * the color palette for the table border color style field (`tableProperties.borderColors`),
- * * the color palette for the table background style field (`tableProperties.backgroundColors`).
+ * * The color palette for the table border color style field (`tableProperties.borderColors`),
+ * * The color palette for the table background style field (`tableProperties.backgroundColors`).
  *
  *		const tableConfig = {
  *			tableProperties: {
@@ -62,7 +62,7 @@ export default class TableProperties extends Plugin {
  *			}
  *		};
  *
- * **Note**: The configurations do not impact the data being loaded into the editor,
+ * **Note**: The configurations do not impact the data loaded into the editor,
  * i.e. they do not limit or filter the colors in the data. They are used only in the user interface
  * allowing users to pick colors in a more convenient way.
  *

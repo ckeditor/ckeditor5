@@ -14,7 +14,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  * The table cell border width command.
  *
  * The command is registered by the {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
- * `'tableCellBorderWidth'` editor command.
+ * the `'tableCellBorderWidth'` editor command.
  *
  * To change the border width of selected cells, execute the command:
  *
@@ -30,7 +30,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *
  * will set the `borderWidth` attribute to `'5px'` in the model.
  *
- * @extends module:core/command~Command
+ * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellBorderWidthCommand extends TableCellPropertyCommand {
 	/**

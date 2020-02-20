@@ -8,7 +8,7 @@
  */
 
 /**
- * Conversion helper for upcasting attribute using normalized styles.
+ * Conversion helper for upcasting attributes using normalized styles.
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
  * @param {String} modelElement
@@ -31,7 +31,7 @@ export function upcastStyleToAttribute( conversion, modelElement, modelAttribute
 }
 
 /**
- * Conversion helper for upcasting border styles for view element.
+ * Conversion helper for upcasting border styles for view elements.
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
  * @param {String} viewElementName
@@ -71,7 +71,7 @@ export function upcastBorderStyles( conversion, viewElementName ) {
 }
 
 /**
- * Conversion helper for downcasting attribute to a style.
+ * Conversion helper for downcasting an attribute to a style.
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
  * @param {String} modelElement
@@ -94,7 +94,7 @@ export function downcastAttributeToStyle( conversion, modelElement, modelAttribu
 }
 
 /**
- * Conversion helper for downcasting attributes from model's table to a view table (not to figure).
+ * Conversion helper for downcasting attributes from the model table to a view table (not to `<figure>`).
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
  * @param {String} modelAttribute

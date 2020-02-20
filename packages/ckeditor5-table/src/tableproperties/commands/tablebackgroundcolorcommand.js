@@ -13,7 +13,7 @@ import TablePropertyCommand from './tablepropertycommand';
  * The table background color command.
  *
  * The command is registered by the {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
- * `'tableBackgroundColor'` editor command.
+ * the `'tableBackgroundColor'` editor command.
  *
  * To change the background color of the selected table, execute the command:
  *
@@ -21,7 +21,7 @@ import TablePropertyCommand from './tablepropertycommand';
  *			value: '#f00'
  *		} );
  *
- * @extends module:table/tableproperties/commands/tablepropertycommand
+ * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
  */
 export default class TableBackgroundColorCommand extends TablePropertyCommand {
 	/**

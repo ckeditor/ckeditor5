@@ -20,7 +20,7 @@ import '../theme/table.css';
  *
  * For a detailed overview, check the {@glink features/table Table feature documentation}.
  *
- * This is a "glue" plugin which loads the {@link module:table/tableediting~TableEditing table editing feature}
+ * This is a "glue" plugin that loads the {@link module:table/tableediting~TableEditing table editing feature}
  * and {@link module:table/tableui~TableUI table UI feature}.
  *
  * @extends module:core/plugin~Plugin
@@ -42,7 +42,7 @@ export default class Table extends Plugin {
 }
 
 /**
- * The configuration of the table features. Used by the table features in the `@ckeditor/ckeditor5-table` package.
+ * The configuration of the table feature. Used by the table feature in the `@ckeditor/ckeditor5-table` package.
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -65,7 +65,7 @@ export default class Table extends Plugin {
  */
 
 /**
- * An array of colors definitions (either strings or objects).
+ * An array of color definitions (either strings or objects).
  *
  *		const colors = [
  *			{
