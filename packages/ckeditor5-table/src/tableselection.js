@@ -206,11 +206,11 @@ export default class TableSelection extends Plugin {
 		const startLocation = this._tableUtils.getCellLocation( this._startElement );
 		const endLocation = this._tableUtils.getCellLocation( this._endElement );
 
-		const startRow = startLocation.row > endLocation.row ? endLocation.row : startLocation.row;
-		const endRow = startLocation.row > endLocation.row ? startLocation.row : endLocation.row;
+		const startRow = Math.min( startLocation.row, endLocation.row );
+		const endRow = Math.max( startLocation.row, endLocation.row );
 
-		const startColumn = startLocation.column > endLocation.column ? endLocation.column : startLocation.column;
-		const endColumn = startLocation.column > endLocation.column ? startLocation.column : endLocation.column;
+		const startColumn = Math.min( startLocation.column, endLocation.column );
+		const endColumn = Math.max( startLocation.column, endLocation.column );
 
 		for ( const cellInfo of new TableWalker( this._startElement.parent.parent, { startRow, endRow } ) ) {
 			if ( cellInfo.column >= startColumn && cellInfo.column <= endColumn ) {
