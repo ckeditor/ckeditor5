@@ -14,6 +14,8 @@ import TableUtils from './tableutils';
 import { setupTableSelectionHighlighting } from './tableselection/converters';
 import MouseSelectionHandler from './tableselection/mouseselectionhandler';
 
+import '../theme/tableselection.css';
+
 /**
  * The table selection plugin.
  *
