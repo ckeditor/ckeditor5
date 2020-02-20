@@ -79,7 +79,10 @@ describe( 'table selection', () => {
 			] );
 
 			assertEqualMarkup( getViewData( view ), viewTable( [
-				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
+				[
+					{ contents: '00', class: 'ck-editor__editable_selected', isSelected: true },
+					{ contents: '01', class: 'ck-editor__editable_selected', isSelected: true }
+				],
 				[ '10', '11' ]
 			], { asWidget: true } ) );
 		} );
@@ -105,8 +108,14 @@ describe( 'table selection', () => {
 			] );
 
 			assertEqualMarkup( getViewData( view ), viewTable( [
-				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
-				[ { contents: '10', class: 'selected', isSelected: true }, { contents: '11', class: 'selected', isSelected: true } ]
+				[
+					{ contents: '00', class: 'ck-editor__editable_selected', isSelected: true },
+					{ contents: '01', class: 'ck-editor__editable_selected', isSelected: true }
+				],
+				[
+					{ contents: '10', class: 'ck-editor__editable_selected', isSelected: true },
+					{ contents: '11', class: 'ck-editor__editable_selected', isSelected: true }
+				]
 			], { asWidget: true } ) );
 		} );
 
@@ -131,8 +140,14 @@ describe( 'table selection', () => {
 			] );
 
 			assertEqualMarkup( getViewData( view ), viewTable( [
-				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
-				[ { contents: '10', class: 'selected', isSelected: true }, { contents: '11', class: 'selected', isSelected: true } ]
+				[
+					{ contents: '00', class: 'ck-editor__editable_selected', isSelected: true },
+					{ contents: '01', class: 'ck-editor__editable_selected', isSelected: true }
+				],
+				[
+					{ contents: '10', class: 'ck-editor__editable_selected', isSelected: true },
+					{ contents: '11', class: 'ck-editor__editable_selected', isSelected: true }
+				]
 			], { asWidget: true } ) );
 		} );
 
@@ -154,19 +169,19 @@ describe( 'table selection', () => {
 
 			assertEqualMarkup( getViewData( view ), viewTable( [
 				[
-					{ contents: '00', class: 'selected', isSelected: true },
-					{ contents: '01', class: 'selected', isSelected: true },
-					{ contents: '02', class: 'selected', isSelected: true }
+					{ contents: '00', class: 'ck-editor__editable_selected', isSelected: true },
+					{ contents: '01', class: 'ck-editor__editable_selected', isSelected: true },
+					{ contents: '02', class: 'ck-editor__editable_selected', isSelected: true }
 				],
 				[
-					{ contents: '10', class: 'selected', isSelected: true },
-					{ contents: '11', class: 'selected', isSelected: true },
-					{ contents: '12', class: 'selected', isSelected: true }
+					{ contents: '10', class: 'ck-editor__editable_selected', isSelected: true },
+					{ contents: '11', class: 'ck-editor__editable_selected', isSelected: true },
+					{ contents: '12', class: 'ck-editor__editable_selected', isSelected: true }
 				],
 				[
-					{ contents: '20', class: 'selected', isSelected: true },
-					{ contents: '21', class: 'selected', isSelected: true },
-					{ contents: '22', class: 'selected', isSelected: true }
+					{ contents: '20', class: 'ck-editor__editable_selected', isSelected: true },
+					{ contents: '21', class: 'ck-editor__editable_selected', isSelected: true },
+					{ contents: '22', class: 'ck-editor__editable_selected', isSelected: true }
 				]
 			], { asWidget: true } ) );
 
@@ -180,13 +195,13 @@ describe( 'table selection', () => {
 
 			assertEqualMarkup( getViewData( view ), viewTable( [
 				[
-					{ contents: '00', class: 'selected', isSelected: true },
-					{ contents: '01', class: 'selected', isSelected: true },
+					{ contents: '00', class: 'ck-editor__editable_selected', isSelected: true },
+					{ contents: '01', class: 'ck-editor__editable_selected', isSelected: true },
 					'02'
 				],
 				[
-					{ contents: '10', class: 'selected', isSelected: true },
-					{ contents: '11', class: 'selected', isSelected: true },
+					{ contents: '10', class: 'ck-editor__editable_selected', isSelected: true },
+					{ contents: '11', class: 'ck-editor__editable_selected', isSelected: true },
 					'12'
 				],
 				[
@@ -219,7 +234,10 @@ describe( 'table selection', () => {
 			] );
 
 			assertEqualMarkup( getViewData( view ), viewTable( [
-				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
+				[
+					{ contents: '00', class: 'ck-editor__editable_selected', isSelected: true },
+					{ contents: '01', class: 'ck-editor__editable_selected', isSelected: true }
+				],
 				[ '10', '11' ]
 			], { asWidget: true } ) );
 
@@ -267,7 +285,10 @@ describe( 'table selection', () => {
 			] );
 
 			assertEqualMarkup( getViewData( view ), viewTable( [
-				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
+				[
+					{ contents: '00', class: 'ck-editor__editable_selected', isSelected: true },
+					{ contents: '01', class: 'ck-editor__editable_selected', isSelected: true }
+				],
 				[ '10', '11' ]
 			], { asWidget: true } ) );
 
@@ -301,7 +322,10 @@ describe( 'table selection', () => {
 			] );
 
 			assertEqualMarkup( getViewData( view ), viewTable( [
-				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
+				[
+					{ contents: '00', class: 'ck-editor__editable_selected', isSelected: true },
+					{ contents: '01', class: 'ck-editor__editable_selected', isSelected: true }
+				],
 				[ '10', '11' ]
 			], { asWidget: true } ) );
 

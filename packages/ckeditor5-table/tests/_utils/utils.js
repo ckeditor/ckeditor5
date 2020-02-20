@@ -421,7 +421,7 @@ function makeRows( tableData, options ) {
 				const attributes = isObject ? tableCellData : {};
 
 				if ( asWidget ) {
-					attributes.class = WIDGET_TABLE_CELL_CLASS + ( attributes.class ? ` ${ attributes.class }` : '' );
+					attributes.class = getClassToSet( attributes );
 					attributes.contenteditable = 'true';
 				}
 
@@ -442,4 +442,12 @@ function makeRows( tableData, options ) {
 
 			return `${ previousRowsString }<${ rowElement }>${ tableRowString }</${ rowElement }>`;
 		}, '' );
+}
+
+// Properly handles passed CSS class - editor do sort them.
+function getClassToSet( attributes ) {
+	return ( WIDGET_TABLE_CELL_CLASS + ( attributes.class ? ` ${ attributes.class }` : '' ) )
+		.split( ' ' )
+		.sort()
+		.join( ' ' );
 }
