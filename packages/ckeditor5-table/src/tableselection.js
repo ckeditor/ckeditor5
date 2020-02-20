@@ -33,8 +33,8 @@ import MouseSelectionHandler from './tableselection/mouseselectionhandler';
  *
  * Setting the table selection start in table cell "b" and the end in table cell "g" will select table cells: "b", "c", "d", "f", and "g".
  * The cells that span over multiple rows or columns can extend over the selection rectangle. For instance, setting a selection from
- * the table cell "a" to the table cell "i" will create a selection in which the table cell "i" will be (partially) outside the rectangle of selected
- * cells: "a", "b", "e", "f", "h", and "i".
+ * the table cell "a" to the table cell "i" will create a selection in which the table cell "i" will be (partially) outside
+ * the rectangle of selected cells: "a", "b", "e", "f", "h", and "i".
  *
  * @extends module:core/plugin~Plugin
  */
@@ -109,11 +109,12 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Starts the selection process.
-	 *
-	 * This method enables the table selection process.
+	 * Marks the table cell as a start of a table selection.
 	 *
 	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( tableCell );
+	 *
+	 * This method will clear the previous selection. The model selection will not be updated until
+	 * the {@link #setSelectingTo} method is used.
 	 *
 	 * @param {module:engine/model/element~Element} tableCell
 	 */
@@ -125,12 +126,14 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Updates current table selection end element. Table selection is defined by #start and #end element.
-	 * This method updates the #end element. Must be preceded by {@link #startSelectingFrom}.
+	 * Updates current table selection end element. Table selection is defined by a start and an end element.
+	 * This method updates the end element. Must be preceded by {@link #startSelectingFrom}.
 	 *
 	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( startTableCell );
 	 *
 	 *		editor.plugins.get( 'TableSelection' ).setSelectingTo( endTableCell );
+	 *
+	 * This method will update model selection if start and end cells are different and belongs to the same table.
 	 *
 	 * @param {module:engine/model/element~Element} tableCell
 	 */
@@ -151,7 +154,8 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Stops the selection process (but do not clear the current selection). The selection process is finished but the selection in the model remains.
+	 * Stops the selection process (but do not clear the current selection).
+	 * The selection process is finished but the selection in the model remains.
 	 *
 	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( startTableCell );
 	 *		editor.plugins.get( 'TableSelection' ).setSelectingTo( endTableCell );
