@@ -175,7 +175,7 @@ class PastePlainTextCommand extends Command {
 
 	execute() {
 		// Activate pasting plain text.
-		this.value ? this.value = false : this.value = true;
+		this.value = !this.value;
 		this.editor.set( 'pastePlainText', this.value );
 	}
 }
