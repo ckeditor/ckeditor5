@@ -128,7 +128,7 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Updates current table selection end element. Table selection is defined by a start and an end element.
+	 * Updates the current table selection end element. Table selection is defined by a start and an end element.
 	 * This method updates the end element. Must be preceded by {@link #startSelectingFrom}.
 	 *
 	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( startTableCell );
