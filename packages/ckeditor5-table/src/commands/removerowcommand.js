@@ -105,7 +105,7 @@ export default class RemoveRowCommand extends Command {
 	}
 }
 
-// Returns a cell to focus on the same column of the focused table cell before removing a row.
+// Returns a cell that should be focused before removing the row, belonging to the same column as the currently focused cell.
 function getCellToFocus( table, removedRow, columnToFocus ) {
 	const row = table.getChild( removedRow );
 
