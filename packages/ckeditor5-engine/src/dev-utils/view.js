@@ -331,12 +331,7 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  * to parse.
  */
 export function parse( data, options = {} ) {
-	if ( !options.stylesProcessor ) {
-	// 	console.log( 'Missing "stylesProcessor". parse()' );
-		options.stylesProcessor = new StylesProcessor();
-	}
-
-	const stylesProcessor = options.stylesProcessor;
+	const stylesProcessor = new StylesProcessor();
 
 	options.order = options.order || [];
 	const rangeParser = new RangeParser( {
