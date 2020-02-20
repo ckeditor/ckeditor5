@@ -10,8 +10,8 @@
  */
 
 .ck.ck-editor__editable .table table {
-	& td.selected,
-	& th.selected {
+	& td.ck-editor__editable_selected,
+	& th.ck-editor__editable_selected {
 		box-shadow: inset 0 0 0 1px var(--ck-color-focus-border);
 	}
 }
