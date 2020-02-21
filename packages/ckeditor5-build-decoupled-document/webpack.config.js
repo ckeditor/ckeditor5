@@ -80,7 +80,7 @@ module.exports = {
 							},
 							minify: true
 						} )
-					},
+					}
 				]
 			}
 		]
