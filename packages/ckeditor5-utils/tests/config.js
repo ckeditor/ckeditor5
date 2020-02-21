@@ -55,7 +55,7 @@ describe( 'Config', () => {
 		it( 'should set default parameters', () => {
 			const defaultConfig = {
 				foo: 1,
-				bar: 2,
+				bar: 2
 			};
 
 			config = new Config( {}, defaultConfig );
@@ -86,11 +86,11 @@ describe( 'Config', () => {
 		it( 'passed parameters should override default parameters', () => {
 			const defaultConfig = {
 				foo: 1,
-				bar: 2,
+				bar: 2
 			};
 
 			config = new Config( {
-				foo: 10,
+				foo: 10
 			}, defaultConfig );
 
 			expect( config.get( 'foo' ) ).to.equal( 10 );
@@ -106,7 +106,7 @@ describe( 'Config', () => {
 				b: {
 					foo: {
 						first: 1,
-						second: 2,
+						second: 2
 					}
 				}
 			};

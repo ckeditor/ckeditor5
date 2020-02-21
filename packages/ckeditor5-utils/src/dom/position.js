@@ -250,7 +250,7 @@ function getAbsoluteRectCoordinates( { left, top } ) {
 
 	return {
 		left: left + scrollX,
-		top: top + scrollY,
+		top: top + scrollY
 	};
 }
 

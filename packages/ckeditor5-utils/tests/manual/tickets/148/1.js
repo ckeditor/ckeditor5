@@ -29,7 +29,7 @@ function updateSourcePosition() {
 		target,
 		positions: [
 			positions.above,
-			positions.below,
+			positions.below
 		],
 		limiter
 	} );
