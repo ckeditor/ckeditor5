@@ -112,7 +112,7 @@ describe( 'CloudServices', () => {
 				.create( {
 					plugins: [ CloudServices ],
 					cloudServices: {
-						tokenUrl: 'http://token-endpoint',
+						tokenUrl: 'http://token-endpoint'
 					}
 				} )
 				.then( context => {

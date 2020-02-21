@@ -41,7 +41,7 @@ function handleRequest( xhr, resolve, reject ) {
 	const xhrSpan = requestOutput.querySelector( '.xhr-data' );
 	const xhrData = {
 		status: xhr.status,
-		response: xhr.response,
+		response: xhr.response
 	};
 	xhrSpan.innerText = JSON.stringify( xhrData, null, 2 );
 
