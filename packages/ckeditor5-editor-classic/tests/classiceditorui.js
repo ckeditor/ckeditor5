@@ -26,7 +26,7 @@ describe( 'ClassicEditorUI', () => {
 	beforeEach( () => {
 		return VirtualClassicTestEditor
 			.create( '', {
-				toolbar: [ 'foo', 'bar' ],
+				toolbar: [ 'foo', 'bar' ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -115,7 +115,7 @@ describe( 'ClassicEditorUI', () => {
 				return VirtualClassicTestEditor
 					.create( 'foo', {
 						extraPlugins: [ Paragraph ],
-						placeholder: 'placeholder-text',
+						placeholder: 'placeholder-text'
 					} )
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
