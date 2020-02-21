@@ -26,7 +26,7 @@ describe( 'InlineEditorUI', () => {
 	beforeEach( () => {
 		return VirtualInlineTestEditor
 			.create( 'foo', {
-				toolbar: [ 'foo', 'bar' ],
+				toolbar: [ 'foo', 'bar' ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -137,7 +137,7 @@ describe( 'InlineEditorUI', () => {
 				return VirtualInlineTestEditor
 					.create( 'foo', {
 						extraPlugins: [ Paragraph ],
-						placeholder: 'placeholder-text',
+						placeholder: 'placeholder-text'
 					} )
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
