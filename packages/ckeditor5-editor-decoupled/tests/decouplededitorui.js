@@ -26,7 +26,7 @@ describe( 'DecoupledEditorUI', () => {
 	beforeEach( () => {
 		return VirtualDecoupledTestEditor
 			.create( '', {
-				toolbar: [ 'foo', 'bar' ],
+				toolbar: [ 'foo', 'bar' ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -87,7 +87,7 @@ describe( 'DecoupledEditorUI', () => {
 				return VirtualDecoupledTestEditor
 					.create( 'foo', {
 						extraPlugins: [ Paragraph ],
-						placeholder: 'placeholder-text',
+						placeholder: 'placeholder-text'
 					} )
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
