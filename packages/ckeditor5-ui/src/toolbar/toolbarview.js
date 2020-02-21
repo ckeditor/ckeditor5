@@ -14,7 +14,7 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
-import getResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/getresizeobserver';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import preventDefault from '../bindings/preventdefault.js';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -246,6 +246,7 @@ export default class ToolbarView extends View {
 	 */
 	destroy() {
 		this._behavior.destroy();
+		this.resizeObserver.destroy();
 
 		return super.destroy();
 	}
@@ -696,15 +697,13 @@ class DynamicGrouping {
 		let previousWidth;
 
 		// TODO: Consider debounce.
-		this.resizeObserver = getResizeObserver( ( [ entry ] ) => {
+		this.resizeObserver = new ResizeObserver( this.viewElement, entry => {
 			if ( !previousWidth || previousWidth !== entry.contentRect.width ) {
 				this._updateGrouping();
 
 				previousWidth = entry.contentRect.width;
 			}
 		} );
-
-		this.resizeObserver.observe( this.viewElement );
 
 		this._updateGrouping();
 	}

@@ -15,7 +15,7 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import normalizeToolbarConfig from '../normalizetoolbarconfig';
 import { debounce } from 'lodash-es';
-import getResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/getresizeobserver';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 
 const toPx = toUnit( 'px' );
@@ -143,7 +143,7 @@ export default class BalloonToolbar extends Plugin {
 				const editableElement = editor.ui.view.editable.element;
 
 				// Set toolbar's max-width on the initialization and update it on the editable resize.
-				const widthObserver = getResizeObserver( () => {
+				this.widthObserver = new ResizeObserver( editableElement, () => {
 					// We need to check if there's already the editable element in the DOM.
 					// Otherwise the `Rect` instance will complain that source (editableElement) is not available
 					// to obtain the element's geometry.
@@ -155,8 +155,6 @@ export default class BalloonToolbar extends Plugin {
 					// It's a safe value, because at the moment we don't re-calculate it when position of the selection changes.
 					this.toolbarView.maxWidth = toPx( new Rect( editableElement ).width * 0.66 );
 				} );
-
-				widthObserver.observe( editableElement );
 			} );
 		}
 	}
@@ -294,6 +292,7 @@ export default class BalloonToolbar extends Plugin {
 		this._fireSelectionChangeDebounced.cancel();
 		this.toolbarView.destroy();
 		this.focusTracker.destroy();
+		this.widthObserver.destroy();
 	}
 
 	/**
