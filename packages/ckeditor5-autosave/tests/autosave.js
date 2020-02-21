@@ -592,7 +592,7 @@ describe( 'Autosave', () => {
 			return editor.destroy().then( () => {
 				sinon.assert.calledOnce( spy );
 				expect( savedStates ).to.deep.equal( [
-					'<p>foo</p><p>bar</p>',
+					'<p>foo</p><p>bar</p>'
 				] );
 			} );
 		} );
