@@ -106,7 +106,7 @@ function renderButton() {
 
 	ui.buttonStates.add( toolbar( [
 		button( {
-			label: 'State: normal (none)',
+			label: 'State: normal (none)'
 		} ),
 		button( {
 			label: 'State: disabled',
@@ -234,7 +234,7 @@ function renderButton() {
 		button( {
 			label: 'This button has a tooltip (south)',
 			withText: true,
-			tooltip: 'The content of the tooltip',
+			tooltip: 'The content of the tooltip'
 		} ),
 		button( {
 			label: 'This one too – north',
