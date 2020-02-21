@@ -26,7 +26,7 @@ describe( 'DowncastWriter', () => {
 		// @param {String} expectedResult
 		// @param {String} expectedRemoved
 		// @param {Boolean} asItem
-		function test( input, expectedResult, expectedRemoved, asItem = false ) {
+		function testRemove( input, expectedResult, expectedRemoved, asItem = false ) {
 			const { view, selection } = parse( input );
 
 			const range = selection.getFirstRange();
@@ -70,19 +70,19 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove single text node', () => {
-			test( '<container:p>[foobar]</container:p>', '<container:p>[]</container:p>', 'foobar' );
+			testRemove( '<container:p>[foobar]</container:p>', '<container:p>[]</container:p>', 'foobar' );
 		} );
 
 		it( 'should not leave empty text nodes', () => {
-			test( '<container:p>{foobar}</container:p>', '<container:p>[]</container:p>', 'foobar' );
+			testRemove( '<container:p>{foobar}</container:p>', '<container:p>[]</container:p>', 'foobar' );
 		} );
 
 		it( 'should remove part of the text node', () => {
-			test( '<container:p>f{oob}ar</container:p>', '<container:p>f{}ar</container:p>', 'oob' );
+			testRemove( '<container:p>f{oob}ar</container:p>', '<container:p>f{}ar</container:p>', 'oob' );
 		} );
 
 		it( 'should remove parts of nodes #1', () => {
-			test(
+			testRemove(
 				'<container:p>f{oo<attribute:b view-priority="10">ba}r</attribute:b></container:p>',
 				'<container:p>f[]<attribute:b view-priority="10">r</attribute:b></container:p>',
 				'oo<attribute:b view-priority="10">ba</attribute:b>'
@@ -90,7 +90,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should support unicode', () => {
-			test(
+			testRemove(
 				'<container:p>நி{லை<attribute:b view-priority="10">க்}கு</attribute:b></container:p>',
 				'<container:p>நி[]<attribute:b view-priority="10">கு</attribute:b></container:p>',
 				'லை<attribute:b view-priority="10">க்</attribute:b>'
@@ -98,7 +98,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should merge after removing #1', () => {
-			test(
+			testRemove(
 				'<container:p>' +
 					'<attribute:b view-priority="1">foo</attribute:b>[bar]<attribute:b view-priority="1">bazqux</attribute:b>' +
 				'</container:p>',
@@ -108,7 +108,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should merge after removing #2', () => {
-			test(
+			testRemove(
 				'<container:p>' +
 					'<attribute:b view-priority="1">fo{o</attribute:b>bar<attribute:b view-priority="1">ba}zqux</attribute:b>' +
 				'</container:p>',
@@ -118,11 +118,11 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove part of the text node in document fragment', () => {
-			test( 'fo{ob}ar', 'fo{}ar', 'ob' );
+			testRemove( 'fo{ob}ar', 'fo{}ar', 'ob' );
 		} );
 
 		it( 'should remove EmptyElement', () => {
-			test(
+			testRemove(
 				'<container:p>foo[<empty:img></empty:img>]bar</container:p>',
 				'<container:p>foo{}bar</container:p>',
 				'<empty:img></empty:img>'
@@ -141,7 +141,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove UIElement', () => {
-			test(
+			testRemove(
 				'<container:p>foo[<ui:span></ui:span>]bar</container:p>',
 				'<container:p>foo{}bar</container:p>',
 				'<ui:span></ui:span>'
@@ -160,19 +160,19 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove single text node (as item)', () => {
-			test( '<container:p>[foobar]</container:p>', '<container:p></container:p>', 'foobar', true );
+			testRemove( '<container:p>[foobar]</container:p>', '<container:p></container:p>', 'foobar', true );
 		} );
 
 		it( 'should not leave empty text nodes (as item)', () => {
-			test( '<container:p>{foobar}</container:p>', '<container:p></container:p>', 'foobar', true );
+			testRemove( '<container:p>{foobar}</container:p>', '<container:p></container:p>', 'foobar', true );
 		} );
 
 		it( 'should remove part of the text node (as item)', () => {
-			test( '<container:p>f{oob}ar</container:p>', '<container:p>far</container:p>', 'oob', true );
+			testRemove( '<container:p>f{oob}ar</container:p>', '<container:p>far</container:p>', 'oob', true );
 		} );
 
 		it( 'should merge after removing (as item)', () => {
-			test(
+			testRemove(
 				'<container:p>' +
 					'<attribute:b view-priority="1">foo</attribute:b>[bar]<attribute:b view-priority="1">bazqux</attribute:b>' +
 				'</container:p>',
@@ -183,7 +183,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove EmptyElement (as item)', () => {
-			test(
+			testRemove(
 				'<container:p>foo[<empty:img></empty:img>]bar</container:p>',
 				'<container:p>foobar</container:p>',
 				'<empty:img></empty:img>',
@@ -192,7 +192,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove UIElement (as item)', () => {
-			test(
+			testRemove(
 				'<container:p>foo[<ui:span></ui:span>]bar</container:p>',
 				'<container:p>foobar</container:p>',
 				'<ui:span></ui:span>',

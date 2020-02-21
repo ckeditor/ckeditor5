@@ -32,7 +32,7 @@ describe( 'DowncastWriter', () => {
 			 * @param {String} input
 			 * @param {String} expected
 			 */
-			function test( input, expected ) {
+			function testBreakAttributes( input, expected ) {
 				const { view, selection } = parse( input );
 
 				const newPosition = writer.breakAttributes( selection.getFirstPosition() );
@@ -43,28 +43,28 @@ describe( 'DowncastWriter', () => {
 			}
 
 			it( 'should not break text nodes if they are not in attribute elements - middle', () => {
-				test(
+				testBreakAttributes(
 					'<container:p>foo{}bar</container:p>',
 					'<container:p>foo{}bar</container:p>'
 				);
 			} );
 
 			it( 'should not break text nodes if they are not in attribute elements - beginning', () => {
-				test(
+				testBreakAttributes(
 					'<container:p>{}foobar</container:p>',
 					'<container:p>{}foobar</container:p>'
 				);
 			} );
 
 			it( 'should not break text nodes if they are not in attribute elements #2 - end', () => {
-				test(
+				testBreakAttributes(
 					'<container:p>foobar{}</container:p>',
 					'<container:p>foobar{}</container:p>'
 				);
 			} );
 
 			it( 'should split attribute element', () => {
-				test(
+				testBreakAttributes(
 					'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>',
 					'<container:p>' +
 					'<attribute:b view-priority="1">foo</attribute:b>[]<attribute:b view-priority="1">bar</attribute:b>' +
@@ -73,7 +73,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should move from beginning of the nested text node to the container', () => {
-				test(
+				testBreakAttributes(
 					'<container:p>' +
 					'<attribute:b view-priority="1"><attribute:u view-priority="1">{}foobar</attribute:u></attribute:b>' +
 					'</container:p>',
@@ -84,14 +84,14 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should stick selection in text node if it is in container', () => {
-				test(
+				testBreakAttributes(
 					'<container:p>foo{}<attribute:b view-priority="1">bar</attribute:b></container:p>',
 					'<container:p>foo{}<attribute:b view-priority="1">bar</attribute:b></container:p>'
 				);
 			} );
 
 			it( 'should split nested attributes', () => {
-				test(
+				testBreakAttributes(
 					'<container:p>' +
 					'<attribute:b view-priority="1"><attribute:u view-priority="1">foo{}bar</attribute:u></attribute:b>' +
 					'</container:p>',
@@ -112,7 +112,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should move from end of the nested text node to the container', () => {
-				test(
+				testBreakAttributes(
 					'<container:p>' +
 					'<attribute:b view-priority="1"><attribute:u view-priority="1">foobar{}</attribute:u></attribute:b>' +
 					'</container:p>',
@@ -123,14 +123,14 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should split attribute element directly in document fragment', () => {
-				test(
+				testBreakAttributes(
 					'<attribute:b view-priority="1">foo{}bar</attribute:b>',
 					'<attribute:b view-priority="1">foo</attribute:b>[]<attribute:b view-priority="1">bar</attribute:b>'
 				);
 			} );
 
 			it( 'should not split text directly in document fragment', () => {
-				test(
+				testBreakAttributes(
 					'foo{}bar',
 					'foo{}bar'
 				);
@@ -144,7 +144,7 @@ describe( 'DowncastWriter', () => {
 			 * @param {String} input
 			 * @param {String} expected
 			 */
-			function test( input, expected ) {
+			function testBreak( input, expected ) {
 				const { view, selection } = parse( input );
 
 				const newRange = writer.breakAttributes( selection.getFirstRange() );
@@ -169,21 +169,21 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should not break text nodes if they are not in attribute elements', () => {
-				test(
+				testBreak(
 					'<container:p>foo{}bar</container:p>',
 					'<container:p>foo{}bar</container:p>'
 				);
 			} );
 
 			it( 'should break at collapsed range and return collapsed one', () => {
-				test(
+				testBreak(
 					'<container:p><attribute:b>foo{}bar</attribute:b></container:p>',
 					'<container:p><attribute:b>foo</attribute:b>[]<attribute:b>bar</attribute:b></container:p>'
 				);
 			} );
 
 			it( 'should break inside text node #1', () => {
-				test(
+				testBreak(
 					'<container:p><attribute:b>foo{bar}baz</attribute:b></container:p>',
 					'<container:p>' +
 						'<attribute:b>foo</attribute:b>[<attribute:b>bar</attribute:b>]<attribute:b>baz</attribute:b>' +
@@ -192,49 +192,49 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should break inside text node #2', () => {
-				test(
+				testBreak(
 					'<container:p><attribute:b>foo{barbaz}</attribute:b></container:p>',
 					'<container:p><attribute:b>foo</attribute:b>[<attribute:b>barbaz</attribute:b>]</container:p>'
 				);
 			} );
 
 			it( 'should break inside text node #3', () => {
-				test(
+				testBreak(
 					'<container:p><attribute:b>foo{barbaz]</attribute:b></container:p>',
 					'<container:p><attribute:b>foo</attribute:b>[<attribute:b>barbaz</attribute:b>]</container:p>'
 				);
 			} );
 
 			it( 'should break inside text node #4', () => {
-				test(
+				testBreak(
 					'<container:p><attribute:b>{foo}barbaz</attribute:b></container:p>',
 					'<container:p>[<attribute:b>foo</attribute:b>]<attribute:b>barbaz</attribute:b></container:p>'
 				);
 			} );
 
 			it( 'should break inside text node #5', () => {
-				test(
+				testBreak(
 					'<container:p><attribute:b>[foo}barbaz</attribute:b></container:p>',
 					'<container:p>[<attribute:b>foo</attribute:b>]<attribute:b>barbaz</attribute:b></container:p>'
 				);
 			} );
 
 			it( 'should break placed inside different nodes', () => {
-				test(
+				testBreak(
 					'<container:p>foo{bar<attribute:b>baz}qux</attribute:b></container:p>',
 					'<container:p>foo{bar<attribute:b>baz</attribute:b>]<attribute:b>qux</attribute:b></container:p>'
 				);
 			} );
 
 			it( 'should split attribute element directly in document fragment', () => {
-				test(
+				testBreak(
 					'<attribute:b>fo{ob}ar</attribute:b>',
 					'<attribute:b>fo</attribute:b>[<attribute:b>ob</attribute:b>]<attribute:b>ar</attribute:b>'
 				);
 			} );
 
 			it( 'should not split text directly in document fragment', () => {
-				test(
+				testBreak(
 					'foo{}bar',
 					'foo{}bar'
 				);

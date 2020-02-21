@@ -131,43 +131,43 @@ describe( 'model test utils', () => {
 		} );
 
 		it( 'should insert text', () => {
-			test( 'this is test text', '[]this is test text' );
+			testUtils( 'this is test text', '[]this is test text' );
 		} );
 
 		it( 'should insert text with selection around', () => {
-			test( '[this is test text]' );
+			testUtils( '[this is test text]' );
 		} );
 
 		it( 'should insert text with selection inside #1', () => {
-			test( 'this [is test] text' );
+			testUtils( 'this [is test] text' );
 		} );
 
 		it( 'should insert text with selection inside #2', () => {
-			test( '[this is test] text' );
+			testUtils( '[this is test] text' );
 		} );
 
 		it( 'should insert text with selection inside #3', () => {
-			test( 'this is [test text]' );
+			testUtils( 'this is [test text]' );
 		} );
 
 		it( 'should insert unicode text with selection', () => {
-			test( 'நி[லைக்]கு' );
+			testUtils( 'நி[லைக்]கு' );
 		} );
 
 		it( 'should insert element', () => {
-			test( '<b>foo bar</b>', '[]<b>foo bar</b>' );
+			testUtils( '<b>foo bar</b>', '[]<b>foo bar</b>' );
 		} );
 
 		it( 'should insert element with selection inside #1', () => {
-			test( '<b>[foo ]bar</b>' );
+			testUtils( '<b>[foo ]bar</b>' );
 		} );
 
 		it( 'should insert element with selection inside #2', () => {
-			test( '[<b>foo ]bar</b>' );
+			testUtils( '[<b>foo ]bar</b>' );
 		} );
 
 		it( 'should insert element with selection inside #3', () => {
-			test( '<b>[foo bar</b>]' );
+			testUtils( '<b>[foo bar</b>]' );
 		} );
 
 		it( 'should insert backward selection', () => {
@@ -201,7 +201,7 @@ describe( 'model test utils', () => {
 			expect( getData( model, { rootName: 'textOnly' } ) ).to.equal( 'a[b]c' );
 		} );
 
-		function test( data, expected ) {
+		function testUtils( data, expected ) {
 			expected = expected || data;
 
 			setData( model, data );

@@ -1461,22 +1461,22 @@ describe( 'Writer', () => {
 
 		describe( 'should create a marker operation if a marker was affected', () => {
 			it( '<p>Foo[</p><p>Bar]</p>', () => {
-				test( p1, 'end', p2, 0 );
+				testMerge( p1, 'end', p2, 0 );
 			} );
 
 			it( '<p>[Foo</p><p>]Bar</p>', () => {
-				test( p1, 0, p2, 0 );
+				testMerge( p1, 0, p2, 0 );
 			} );
 
 			it( '<p>[Foo</p>]<p>Bar</p>', () => {
-				test( p1, 0, root, 1 );
+				testMerge( p1, 0, root, 1 );
 			} );
 
 			it( '<p>Foo</p>[<p>Bar]</p>', () => {
-				test( root, 1, p2, 'end' );
+				testMerge( root, 1, p2, 'end' );
 			} );
 
-			function test( startElement, startOffset, endElement, endOffset ) {
+			function testMerge( startElement, startOffset, endElement, endOffset ) {
 				const markerRange = new Range(
 					Position._createAt( startElement, startOffset ),
 					Position._createAt( endElement, endOffset )

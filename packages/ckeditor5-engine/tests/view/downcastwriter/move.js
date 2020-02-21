@@ -27,7 +27,7 @@ describe( 'DowncastWriter', () => {
 		// @param {String} input
 		// @param {String} expectedResult
 		// @param {String} expectedRemoved
-		function test( source, destination, sourceAfterMove, destinationAfterMove ) {
+		function testMove( source, destination, sourceAfterMove, destinationAfterMove ) {
 			const { view: srcView, selection: srcSelection } = parse( source );
 			const { view: dstView, selection: dstSelection } = parse( destination );
 
@@ -42,7 +42,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should move single text node', () => {
-			test(
+			testMove(
 				'<container:p>[foobar]</container:p>',
 				'<container:p>[]</container:p>',
 				'<container:p></container:p>',
@@ -51,7 +51,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should not leave empty text nodes', () => {
-			test(
+			testMove(
 				'<container:p>{foobar}</container:p>',
 				'<container:p>[]</container:p>',
 				'<container:p></container:p>',
@@ -60,7 +60,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should move part of the text node', () => {
-			test(
+			testMove(
 				'<container:p>f{oob}ar</container:p>',
 				'<container:p>[]</container:p>',
 				'<container:p>far</container:p>',
@@ -69,7 +69,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should support unicode', () => {
-			test(
+			testMove(
 				'<container:p>நி{லை}க்கு</container:p>',
 				'<container:p>நி{}கு</container:p>',
 				'<container:p>நிக்கு</container:p>',
@@ -78,7 +78,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should move parts of nodes', () => {
-			test(
+			testMove(
 				'<container:p>f{oo<attribute:b view-priority="10">ba}r</attribute:b></container:p>',
 				'<container:p>[]<attribute:b view-priority="10">qux</attribute:b></container:p>',
 				'<container:p>f<attribute:b view-priority="10">r</attribute:b></container:p>',
@@ -87,7 +87,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should merge after moving #1', () => {
-			test(
+			testMove(
 				'<container:p>' +
 					'<attribute:b view-priority="1">foo</attribute:b>[bar]<attribute:b view-priority="1">bazqux</attribute:b>' +
 				'</container:p>',
@@ -100,7 +100,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should merge after moving #2', () => {
-			test(
+			testMove(
 				'<container:p>' +
 					'<attribute:b view-priority="1">fo{o</attribute:b>bar<attribute:b view-priority="1">ba}zqux</attribute:b>' +
 				'</container:p>',
@@ -113,7 +113,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should move part of the text node in document fragment', () => {
-			test( 'fo{ob}ar', 'fo{}ar', 'foar', 'fo{ob}ar' );
+			testMove( 'fo{ob}ar', 'fo{}ar', 'foar', 'fo{ob}ar' );
 		} );
 
 		it( 'should correctly move text nodes inside same parent', () => {
@@ -139,7 +139,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should move EmptyElement', () => {
-			test(
+			testMove(
 				'<container:p>foo[<empty:img></empty:img>]bar</container:p>',
 				'<container:div>baz{}quix</container:div>',
 				'<container:p>foobar</container:p>',
@@ -162,7 +162,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should move UIElement', () => {
-			test(
+			testMove(
 				'<container:p>foo[<ui:span></ui:span>]bar</container:p>',
 				'<container:div>baz{}quix</container:div>',
 				'<container:p>foobar</container:p>',
