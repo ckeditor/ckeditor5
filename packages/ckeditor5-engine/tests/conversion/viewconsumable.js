@@ -563,10 +563,6 @@ describe( 'ViewConsumable', () => {
 	} );
 
 	describe( 'style shorthands handling', () => {
-		before( () => {
-
-		} );
-
 		describe( 'add', () => {
 			it( 'should add padding shorthands', () => {
 				viewConsumable.add( el, { styles: [ 'margin' ] } );
