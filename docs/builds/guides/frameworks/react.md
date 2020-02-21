@@ -189,7 +189,7 @@ yarn add @babel/plugin-transform-react-jsx @babel/plugin-transform-react-jsx-sel
 Before you start modifying the webpack configuration, first install some CKEditor 5 dependencies that you will need:
 
 <info-box>
-  Create React App uses `style-loader` in version `0.23.1` which might cause issues during a building process. To avoid it, it's recommended to bump the version manually to `1.0.0` which is used in CKEditor 5 packages.
+  Create React App uses `style-loader` in version `0.23.1` which might cause issues during a building process. To avoid it, it is recommended to bump the version manually to `1.0.0` which is used in CKEditor 5 packages.
 </info-box>
 
 ```bash
