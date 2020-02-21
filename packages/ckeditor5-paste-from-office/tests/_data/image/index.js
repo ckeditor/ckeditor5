@@ -156,7 +156,7 @@ export const browserFixtures = {
 			adjacentGroups: adjacentGroupsRtfChrome,
 			onlineOffline: onlineOfflineRtfChrome,
 			shapesOnlineOffline: shapesOnlineOfflineRtfChrome
-		},
+		}
 
 	},
 
