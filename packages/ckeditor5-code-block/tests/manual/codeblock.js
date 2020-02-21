@@ -19,7 +19,7 @@ ClassicEditor
 			'heading', '|',
 			'bold', 'italic', 'code', 'blockQuote', 'codeBlock', '|',
 			'outdent', 'indent', '|',
-			'undo', 'redo',
+			'undo', 'redo'
 		]
 	} )
 	.then( editor => {

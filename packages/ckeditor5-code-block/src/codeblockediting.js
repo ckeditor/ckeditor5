@@ -67,7 +67,7 @@ export default class CodeBlockEditing extends Plugin {
 				{ language: 'php', label: 'PHP' },
 				{ language: 'python', label: 'Python' },
 				{ language: 'ruby', label: 'Ruby' },
-				{ language: 'typescript', label: 'TypeScript' },
+				{ language: 'typescript', label: 'TypeScript' }
 			],
 
 			// A single tab.
