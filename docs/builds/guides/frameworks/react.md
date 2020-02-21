@@ -160,7 +160,7 @@ Integrating the rich text editor from source allows you to use the full power of
 
 This guide assumes that you are using [Create React App CLI](https://github.com/facebook/create-react-app) as your boilerplate and it goes through adjusting it to fit CKEditor 5 needs. If you use your custom webpack setup, please read more about {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source including CKEditor 5 built from source}.
 
-### Using `create-react-app@2`
+### Using `create-react-app@2+`
 
 The configuration needs to be ejected to make it possible to customize the webpack configuration. In order to be able to build CKEditor 5 from source, you need to tell webpack how to handle CKEditor 5's SVG and CSS files (by adding loaders configuration). Additionally, you need to exclude the CKEditor 5 source from existing loaders.
 
@@ -168,7 +168,7 @@ The configuration needs to be ejected to make it possible to customize the webpa
   You can see all the changes described below in this example project: https://github.com/ckeditor/ckeditor5-react-example/commits/master.
 </info-box>
 
-Create a sample application using `create-react-app@2` first:
+Create a sample application using `create-react-app@2+` first:
 
 ```bash
 npx create-react-app ckeditor5-react-example && cd ckeditor5-react-example
@@ -187,6 +187,10 @@ yarn add @babel/plugin-transform-react-jsx @babel/plugin-transform-react-jsx-sel
 #### Installing missing dependencies
 
 Before you start modifying the webpack configuration, first install some CKEditor 5 dependencies that you will need:
+
+<info-box>
+  Create React App uses `style-loader` in version `0.23.1` which might cause issues during a building process. To avoid it, it's recommended to bump the version manually to `1.0.0` which is used in CKEditor 5 packages.
+</info-box>
 
 ```bash
 yarn add \
@@ -348,7 +352,7 @@ Finally, you can see your application live:
 yarn start
 ```
 
-You can read more about using CKEditor 5 from source in the @link builds/guides/integration/advanced-setup#scenario-2-building-from-source Advanced setup guide}.
+You can read more about using CKEditor 5 from source in the {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source Advanced setup guide}.
 
 ### Using `create-react-app@1`
 
