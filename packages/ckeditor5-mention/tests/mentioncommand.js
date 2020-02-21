@@ -104,7 +104,7 @@ describe( 'MentionCommand', () => {
 			command.execute( {
 				marker: '#',
 				mention: '#John',
-				range: model.createRange( start, end ),
+				range: model.createRange( start, end )
 			} );
 
 			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '#John' );
@@ -142,7 +142,7 @@ describe( 'MentionCommand', () => {
 
 			const testCases = [
 				{ marker: '##', mention: '##foo' },
-				{ marker: '', mention: '@foo' },
+				{ marker: '', mention: '@foo' }
 			];
 
 			for ( const options of testCases ) {
