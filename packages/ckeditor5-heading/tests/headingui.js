@@ -25,7 +25,7 @@ describe( 'HeadingUI', () => {
 			'Paragraph': 'Paragraph',
 			'Heading': 'Heading',
 			'Heading 1': 'Heading 1',
-			'Heading 2': 'Heading 2',
+			'Heading 2': 'Heading 2'
 		} );
 
 		addTranslations( 'pl', {
@@ -33,7 +33,7 @@ describe( 'HeadingUI', () => {
 			'Paragraph': 'Akapit',
 			'Heading': 'Nagłówek',
 			'Heading 1': 'Nagłówek 1',
-			'Heading 2': 'Nagłówek 2',
+			'Heading 2': 'Nagłówek 2'
 		} );
 	} );
 
@@ -211,7 +211,7 @@ describe( 'HeadingUI', () => {
 
 					expect( listView.items.map( item => item.children.first.label ) ).to.deep.equal( [
 						'Custom paragraph title',
-						'Custom heading1 title',
+						'Custom heading1 title'
 					] );
 				} );
 			} );
