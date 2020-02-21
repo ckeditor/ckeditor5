@@ -41,7 +41,7 @@ ClassicEditor
 					title: 'Red pen',
 					color: 'var(--ck-highlight-pen-red)',
 					type: 'pen'
-				},
+				}
 			]
 		}
 	} )

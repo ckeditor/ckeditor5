@@ -110,7 +110,7 @@ describe( 'HighlightUI', () => {
 				'var(--ck-highlight-pen-red)',
 				'var(--ck-highlight-pen-green)',
 				undefined,
-				'',
+				''
 			] );
 		} );
 
