@@ -77,7 +77,7 @@ describe( 'CKFinderUploadAdapter', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Clipboard, Image, ImageUpload, CKFinderUploadAdapter ],
+					plugins: [ Clipboard, Image, ImageUpload, CKFinderUploadAdapter ]
 				} )
 				.then( editor => {
 					const fileRepository = editor.plugins.get( FileRepository );
