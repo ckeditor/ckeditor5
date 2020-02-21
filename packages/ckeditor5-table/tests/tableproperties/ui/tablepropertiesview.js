@@ -36,7 +36,7 @@ const VIEW_OPTIONS = {
 			model: 'rgb(0,255,0)',
 			label: 'Green',
 			hasBorder: false
-		},
+		}
 	]
 };
 
@@ -575,7 +575,7 @@ describe( 'table properties', () => {
 					view.heightInput,
 					view.alignmentToolbar,
 					view.saveButtonView,
-					view.cancelButtonView,
+					view.cancelButtonView
 				] );
 			} );
 

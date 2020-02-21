@@ -110,7 +110,7 @@ export function getBorderStyleLabels( t ) {
 		groove: t( 'Groove' ),
 		ridge: t( 'Ridge' ),
 		inset: t( 'Inset' ),
-		outset: t( 'Outset' ),
+		outset: t( 'Outset' )
 	};
 }
 
