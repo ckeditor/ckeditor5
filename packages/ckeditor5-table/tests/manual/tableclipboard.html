@@ -11,65 +11,74 @@
 
 <div style="display:flex">
 	<div style="flex:1;">
-		<div id="editor">
-			<h3>A simple table to test selection:</h3>
-			<table>
-				<thead>
-					<tr>
-						<td>0</td>
-						<td>1</td>
-						<td>2</td>
-						<td>3</td>
-						<td>4</td>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>a</td>
-						<td>b</td>
-						<td>c</td>
-						<td>d</td>
-						<td>e</td>
-					</tr>
-					<tr>
-						<td>f</td>
-						<td>g</td>
-						<td>h</td>
-						<td>i</td>
-						<td>j</td>
-					</tr>
-					<tr>
-						<td>k</td>
-						<td>l</td>
-						<td>m</td>
-						<td>n</td>
-						<td>o</td>
-					</tr>
-					<tr>
-						<td>p</td>
-						<td>q</td>
-						<td>r</td>
-						<td>s</td>
-						<td>t</td>
-					</tr>
-				</tbody>
-			</table>
 
-			<h3>A complex table</h3>
+		<h3>A "content" test editor</h3>
 
+		<div id="editor-content">
+			<figure class="table" style="width:60%;">
+				<table
+					style="background-color:hsl(0,0%,90%);border-bottom:2px solid hsl(30, 75%, 60%);border-left:2px solid hsl(30, 75%, 60%);border-right:2px solid hsl(30, 75%, 60%);border-top:2px solid hsl(30, 75%, 60%);">
+					<thead>
+						<tr>
+							<th>0</th>
+							<th>1</th>
+							<th>2</th>
+							<th>3</th>
+							<th>4</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+							<td style="border-bottom:4px dashed hsl(0, 75%, 60%);border-left:4px dashed hsl(0, 75%, 60%);border-right:4px dashed hsl(0, 75%, 60%);border-top:4px dashed hsl(0, 75%, 60%);height:30px;text-align:right;vertical-align:top;width:30px;">
+								c
+							</td>
+							<td>d</td>
+							<td><i><strong>e</strong></i></td>
+						</tr>
+						<tr>
+							<td style="background-color:hsl(210,75%,60%);">f</td>
+							<td style="background-color:hsl(210,75%,60%);">g</td>
+							<td style="background-color:hsl(210,75%,60%);">h</td>
+							<td style="background-color:hsl(210,75%,60%);">i</td>
+							<td style="background-color:hsl(210,75%,60%);"><i><strong>j</strong></i></td>
+						</tr>
+						<tr>
+							<td>k</td>
+							<td>l</td>
+							<td>m</td>
+							<td>n</td>
+							<td><i><strong>o</strong></i></td>
+						</tr>
+						<tr>
+							<td>p</td>
+							<td>q</td>
+							<td>r</td>
+							<td>s</td>
+							<td>t</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+		</div>
+
+		<h3>A "geometry" test editor</h3>
+
+		<div id="editor-geometry">
 			<figure class="table">
 				<table>
 					<thead>
 						<tr>
-							<td>a</td>
-							<td>b</td>
-							<td>c</td>
-							<td>d</td>
-							<td>e</td>
-							<td>f</td>
-							<td>g</td>
-							<td>h</td>
-							<td>i</td>
+							<th>a</th>
+							<th>b</th>
+							<th>c</th>
+							<th>d</th>
+							<th>e</th>
+							<th>f</th>
+							<th>g</th>
+							<th>h</th>
+							<th>i</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -78,7 +87,7 @@
 							<td>01</td>
 							<td rowspan="4">02</td>
 							<td>03</td>
-							<td rowspan="7" colspan="2">04</td>
+							<td colspan="2" rowspan="7">04</td>
 							<td>07</td>
 							<td>07</td>
 							<td>08</td>
