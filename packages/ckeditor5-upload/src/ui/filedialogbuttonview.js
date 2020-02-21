@@ -95,7 +95,7 @@ export default class FileDialogButtonView extends View {
 		this.setTemplate( {
 			tag: 'span',
 			attributes: {
-				class: 'ck-file-dialog-button',
+				class: 'ck-file-dialog-button'
 			},
 			children: [
 				this.buttonView,
