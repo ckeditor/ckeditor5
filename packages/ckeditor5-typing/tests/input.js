@@ -576,7 +576,7 @@ describe( 'Input feature', () => {
 					type: 'children',
 					oldChildren: Array.from( viewRoot.getChild( 0 ).getChild( 0 ).getChildren() ),
 					newChildren: [
-						new ViewElement( 'strong', null, new ViewText( 'Fx' ) ),
+						new ViewElement( 'strong', null, new ViewText( 'Fx' ) )
 					],
 					node: viewRoot.getChild( 0 ).getChild( 0 )
 				}
