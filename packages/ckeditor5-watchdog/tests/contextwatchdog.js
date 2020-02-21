@@ -271,7 +271,7 @@ describe( 'ContextWatchdog', () => {
 				creator: ( el, config ) => ClassicTestEditor.create( el, config ),
 				destructor: destructorSpy,
 				sourceElementOrData: element1,
-				config: {},
+				config: {}
 			} );
 
 			await watchdog.destroy();

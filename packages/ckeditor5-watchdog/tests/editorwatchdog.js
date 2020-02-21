@@ -764,7 +764,7 @@ describe( 'EditorWatchdog', () => {
 			const SAVE_INTERVAL = 30;
 
 			const watchdog = new EditorWatchdog( ClassicTestEditor, {
-				saveInterval: SAVE_INTERVAL,
+				saveInterval: SAVE_INTERVAL
 			} );
 
 			return watchdog.create( element, {
