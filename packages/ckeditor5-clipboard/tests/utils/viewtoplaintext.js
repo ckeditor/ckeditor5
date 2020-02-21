@@ -8,7 +8,7 @@ import viewToPlainText from '../../src/utils/viewtoplaintext';
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'viewToPlainText()', () => {
-	function test( viewString, expectedText ) {
+	function testViewToPlainText( viewString, expectedText ) {
 		const view = parseView( viewString );
 		const text = viewToPlainText( view );
 
@@ -16,14 +16,14 @@ describe( 'viewToPlainText()', () => {
 	}
 
 	it( 'should output text contents of given view', () => {
-		test(
+		testViewToPlainText(
 			'<container:p>Foo<strong>Bar</strong>Xyz</container:p>',
 			'FooBarXyz'
 		);
 	} );
 
 	it( 'should put empty line between container elements', () => {
-		test(
+		testViewToPlainText(
 			'<container:h1>Header</container:h1>' +
 			'<container:p>Foo</container:p>' +
 			'<container:p>Bar</container:p>' +
@@ -35,7 +35,7 @@ describe( 'viewToPlainText()', () => {
 	} );
 
 	it( 'should output alt attribute of image elements', () => {
-		test(
+		testViewToPlainText(
 			'<container:p>Foo</container:p>' +
 			'<img src="foo.jpg" alt="Alt" />',
 
@@ -44,7 +44,7 @@ describe( 'viewToPlainText()', () => {
 	} );
 
 	it( 'should not put empty line after li (if not needed)', () => {
-		test(
+		testViewToPlainText(
 			'<container:p>Foo</container:p>' +
 			'<container:ul>' +
 				'<container:li>A</container:li>' +
@@ -58,7 +58,7 @@ describe( 'viewToPlainText()', () => {
 	} );
 
 	it( 'should not put empty line before/after figcaption (if not needed)', () => {
-		test(
+		testViewToPlainText(
 			'<container:p>Foo</container:p>' +
 			'<container:figure>' +
 				'<img src="foo.jpg" alt="Alt" />' +
