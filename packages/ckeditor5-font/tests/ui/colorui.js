@@ -19,7 +19,7 @@ describe( 'ColorUI', () => {
 		colors: [
 			'yellow',
 			{
-				color: '#000',
+				color: '#000'
 			},
 			{
 				color: 'rgb(255, 255, 255)',
@@ -334,7 +334,7 @@ describe( 'ColorUI', () => {
 						plugins: [ TestColorPlugin ],
 						testColor: testColorConfig,
 						toolbar: [ 'testColor' ],
-						language: 'pl',
+						language: 'pl'
 					} )
 					.then( newEditor => {
 						editor = newEditor;

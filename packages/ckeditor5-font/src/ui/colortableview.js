@@ -150,7 +150,7 @@ export default class ColorTableView extends View {
 				focusPrevious: 'arrowup',
 
 				// Navigate list items forwards using the Arrow Down key.
-				focusNext: 'arrowdown',
+				focusNext: 'arrowdown'
 			}
 		} );
 

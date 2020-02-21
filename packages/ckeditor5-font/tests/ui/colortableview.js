@@ -50,7 +50,7 @@ describe( 'ColorTableView', () => {
 		colors: [
 			'yellow',
 			{
-				color: '#000',
+				color: '#000'
 			},
 			{
 				color: 'rgb(255, 255, 255)',
