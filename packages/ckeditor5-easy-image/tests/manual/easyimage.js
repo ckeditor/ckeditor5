@@ -40,7 +40,7 @@ ClassicEditor
 				'tableRow',
 				'mergeTableCells'
 			]
-		},
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
