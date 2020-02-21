@@ -20,7 +20,7 @@ import ImageToolbar from '../../../../src/imagetoolbar';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Link, Bold, Image, Undo, ImageToolbar, BalloonToolbar, ImageCaption ],
-		toolbar: [ 'bold', 'undo', 'redo' ],
+		toolbar: [ 'bold', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
