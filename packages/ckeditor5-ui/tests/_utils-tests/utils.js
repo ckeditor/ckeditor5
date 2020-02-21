@@ -19,7 +19,7 @@ describe( 'utils', () => {
 			it( 'creates collections and regions', () => {
 				const view = testUtils.createTestUIView( {
 					foo: el => el.firstChild,
-					bar: el => el.lastChild,
+					bar: el => el.lastChild
 				} );
 
 				expect( view.foo._parentElement ).to.equal( document.body.firstChild );
@@ -29,7 +29,7 @@ describe( 'utils', () => {
 			it( 'is rendered', () => {
 				const view = testUtils.createTestUIView( {
 					foo: el => el.firstChild,
-					bar: el => el.lastChild,
+					bar: el => el.lastChild
 				} );
 
 				expect( view.isRendered ).to.be.true;

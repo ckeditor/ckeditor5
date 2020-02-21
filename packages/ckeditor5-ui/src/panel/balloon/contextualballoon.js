@@ -597,7 +597,7 @@ class RotatorView extends View {
 								}
 							]
 						},
-						this.buttonNextView,
+						this.buttonNextView
 					]
 				},
 				{

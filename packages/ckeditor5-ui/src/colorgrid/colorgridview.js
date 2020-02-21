@@ -87,7 +87,7 @@ export default class ColorGridView extends View {
 				focusPrevious: 'arrowleft',
 
 				// Navigate grid items forwards using the arrowdown key.
-				focusNext: 'arrowright',
+				focusNext: 'arrowright'
 			}
 		} );
 
