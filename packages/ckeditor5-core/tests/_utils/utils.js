@@ -34,6 +34,7 @@ const utils = {
 	 */
 
 	createSinonSandbox() {
+		// eslint-disable-next-line mocha/no-top-level-hooks
 		afterEach( () => {
 			utils.sinon.restore();
 		} );
