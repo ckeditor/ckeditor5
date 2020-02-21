@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { testDataProcessor as test } from '../../tests/_utils/utils';
+import { testDataProcessor } from '../_utils/utils';
 
 describe( 'GFMDataProcessor', () => {
 	describe( 'strong and emphasis', () => {
 		it( 'should process strong', () => {
-			test(
+			testDataProcessor(
 				'**this is strong** and __this too__',
 
 				'<p><strong>this is strong</strong> and <strong>this too</strong></p>',
@@ -19,7 +19,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process emphasis', () => {
-			test(
+			testDataProcessor(
 				'*this is emphasis* and _this too_',
 
 				'<p><em>this is emphasis</em> and <em>this too</em></p>',
@@ -30,7 +30,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process strong and emphasis together #1', () => {
-			test(
+			testDataProcessor(
 				'***This is strong and em.***',
 
 				'<p><strong><em>This is strong and em.</em></strong></p>',
@@ -41,7 +41,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process strong and emphasis together #2', () => {
-			test(
+			testDataProcessor(
 				'Single ***word*** is strong and em.',
 
 				'<p>Single <strong><em>word</em></strong> is strong and em.</p>',
@@ -52,7 +52,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process strong and emphasis together #3', () => {
-			test(
+			testDataProcessor(
 				'___This is strong and em.___',
 
 				'<p><strong><em>This is strong and em.</em></strong></p>',
@@ -64,7 +64,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process strong and emphasis together #4', () => {
-			test(
+			testDataProcessor(
 				'Single ___word___ is strong and em.',
 
 				'<p>Single <strong><em>word</em></strong> is strong and em.</p>',
@@ -75,7 +75,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should not process emphasis inside words', () => {
-			test(
+			testDataProcessor(
 				'This should_not_be_emp.',
 
 				'<p>This should_not_be_emp.</p>'
@@ -86,7 +86,7 @@ describe( 'GFMDataProcessor', () => {
 		// it is done on GitHub.
 
 		// it( 'should process nested emphasis #1', () => {
-		// 	test(
+		// 	testDataProcessor(
 		// 		'*test **test** test*',
 		//
 		// 		// GitHub is rendering as:
@@ -96,7 +96,7 @@ describe( 'GFMDataProcessor', () => {
 		// 	);
 		// } );
 		// it( 'should process nested emphasis #2', () => {
-		// 	test(
+		// 	testDataProcessor(
 		// 		'_test __test__ test_',
 		//
 		// 		// GitHub is rendering as:

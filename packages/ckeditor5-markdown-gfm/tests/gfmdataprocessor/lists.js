@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { testDataProcessor as test } from '../../tests/_utils/utils';
+import { testDataProcessor } from '../_utils/utils';
 
 describe( 'GFMDataProcessor', () => {
 	describe( 'lists', () => {
 		it( 'should process tight asterisks', () => {
-			test(
+			testDataProcessor(
 				'*	item 1\n' +
 				'*	item 2\n' +
 				'*	item 3',
@@ -29,7 +29,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process loose asterisks', () => {
-			test(
+			testDataProcessor(
 				'*	item 1\n' +
 				'\n' +
 				'*	item 2\n' +
@@ -59,7 +59,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process tight pluses', () => {
-			test(
+			testDataProcessor(
 				'+	item 1\n' +
 				'+	item 2\n' +
 				'+	item 3',
@@ -78,7 +78,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process loose pluses', () => {
-			test(
+			testDataProcessor(
 				'+	item 1\n' +
 				'\n' +
 				'+	item 2\n' +
@@ -107,7 +107,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process tight minuses', () => {
-			test(
+			testDataProcessor(
 				'-	item 1\n' +
 				'-	item 2\n' +
 				'-	item 3',
@@ -126,7 +126,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process loose minuses', () => {
-			test(
+			testDataProcessor(
 				'-	item 1\n' +
 				'\n' +
 				'-	item 2\n' +
@@ -155,7 +155,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process ordered list with tabs', () => {
-			test(
+			testDataProcessor(
 				'1.	item 1\n' +
 				'2.	item 2\n' +
 				'3.	item 3',
@@ -174,7 +174,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process ordered list with spaces', () => {
-			test(
+			testDataProcessor(
 				'1. item 1\n' +
 				'2. item 2\n' +
 				'3. item 3',
@@ -193,7 +193,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process loose ordered list with tabs', () => {
-			test(
+			testDataProcessor(
 				'1.	item 1\n' +
 				'\n' +
 				'2.	item 2\n' +
@@ -222,7 +222,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process loose ordered list with spaces', () => {
-			test(
+			testDataProcessor(
 				'1. item 1\n' +
 				'\n' +
 				'2. item 2\n' +
@@ -251,7 +251,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process nested and mixed lists', () => {
-			test(
+			testDataProcessor(
 				'1. First\n' +
 				'2. Second:\n' +
 				'	* Fee\n' +
@@ -282,7 +282,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process nested and mixed loose lists', () => {
-			test(
+			testDataProcessor(
 				'1. First\n' +
 				'\n' +
 				'2. Second:\n' +
@@ -322,7 +322,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should create same bullet from different list indicators', () => {
-			test(
+			testDataProcessor(
 				'* test\n' +
 				'+ test\n' +
 				'- test',

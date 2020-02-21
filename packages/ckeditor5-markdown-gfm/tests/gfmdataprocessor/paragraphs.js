@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { testDataProcessor as test } from '../../tests/_utils/utils';
+import { testDataProcessor } from '../_utils/utils';
 
 describe( 'GFMDataProcessor', () => {
 	describe( 'paragraphs', () => {
 		it( 'single line', () => {
-			test(
+			testDataProcessor(
 				'single line paragraph',
 
 				'<p>single line paragraph</p>'
@@ -16,7 +16,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'multiline', () => {
-			test(
+			testDataProcessor(
 				'first\n' +
 				'second\n' +
 				'third',
@@ -30,7 +30,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'with header after #1', () => {
-			test(
+			testDataProcessor(
 				'single line\n' +
 				'# header',
 
@@ -47,7 +47,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'with header after #2', () => {
-			test(
+			testDataProcessor(
 				'single line\n' +
 				'header\n' +
 				'===',
@@ -66,7 +66,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'with blockquote after', () => {
-			test(
+			testDataProcessor(
 				'single line' +
 				'\n> quote',
 
@@ -86,7 +86,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'with list after', () => {
-			test(
+			testDataProcessor(
 				'single line\n' +
 				'* item',
 
@@ -106,7 +106,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'with div element after', () => {
-			test(
+			testDataProcessor(
 				'single line\n' +
 				'<div>div element</div>',
 

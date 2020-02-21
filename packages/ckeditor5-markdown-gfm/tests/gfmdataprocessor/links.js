@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { testDataProcessor as test } from '../../tests/_utils/utils';
+import { testDataProcessor } from '../_utils/utils';
 
 describe( 'GFMDataProcessor', () => {
 	describe( 'links', () => {
 		it( 'should autolink', () => {
-			test(
+			testDataProcessor(
 				'Link: <http://example.com/>.',
 				'<p>Link: <a href="http://example.com/">http://example.com/</a>.</p>',
 
@@ -18,7 +18,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should autolink #2', () => {
-			test(
+			testDataProcessor(
 				'Link: http://example.com/.',
 				'<p>Link: <a href="http://example.com/">http://example.com/</a>.</p>',
 
@@ -28,7 +28,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should autolink with params', () => {
-			test(
+			testDataProcessor(
 				'Link: <http://example.com/?foo=1&bar=2>.',
 				'<p>Link: <a href="http://example.com/?foo=1&bar=2">http://example.com/?foo=1&bar=2</a>.</p>',
 
@@ -38,7 +38,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should autolink inside list', () => {
-			test(
+			testDataProcessor(
 				'* <http://example.com/>',
 
 				'<ul><li><a href="http://example.com/">http://example.com/</a></li></ul>',
@@ -49,7 +49,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should autolink inside blockquote', () => {
-			test(
+			testDataProcessor(
 				'> Blockquoted: <http://example.com/>',
 
 				'<blockquote>' +
@@ -62,14 +62,14 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should not autolink inside inline code', () => {
-			test(
+			testDataProcessor(
 				'`<http://example.com/>`',
 				'<p><code><http://example.com/></code></p>'
 			);
 		} );
 
 		it( 'should not autolink inside code block', () => {
-			test(
+			testDataProcessor(
 				'	<http://example.com/>',
 				'<pre><code><http://example.com/></code></pre>',
 
@@ -81,35 +81,35 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should not process already linked #1', () => {
-			test(
+			testDataProcessor(
 				'Already linked: [http://example.com/](http://example.com/)',
 				'<p>Already linked: <a href="http://example.com/">http://example.com/</a></p>'
 			);
 		} );
 
 		it( 'should not process already linked #2', () => {
-			test(
+			testDataProcessor(
 				'Already linked: [**http://example.com/**](http://example.com/)',
 				'<p>Already linked: <a href="http://example.com/"><strong>http://example.com/</strong></a></p>'
 			);
 		} );
 
 		it( 'should process inline links', () => {
-			test(
+			testDataProcessor(
 				'[URL](/url/)',
 				'<p><a href="/url/">URL</a></p>'
 			);
 		} );
 
 		it( 'should process inline links with title', () => {
-			test(
+			testDataProcessor(
 				'[URL and title](/url/ "title")',
 				'<p><a href="/url/" title="title">URL and title</a></p>'
 			);
 		} );
 
 		it( 'should process inline links with title preceded by two spaces', () => {
-			test(
+			testDataProcessor(
 				'[URL and title](/url/  "title preceded by two spaces")',
 				'<p><a href="/url/" title="title preceded by two spaces">URL and title</a></p>',
 
@@ -119,7 +119,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process inline links with title preceded by tab', () => {
-			test(
+			testDataProcessor(
 				'[URL and title](/url/	"title preceded by tab")',
 				'<p><a href="/url/" title="title preceded by tab">URL and title</a></p>',
 
@@ -129,7 +129,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process inline links with title that has spaces afterwards', () => {
-			test(
+			testDataProcessor(
 				'[URL and title](/url/ "title has spaces afterward"  )',
 				'<p><a href="/url/" title="title has spaces afterward">URL and title</a></p>',
 
@@ -139,7 +139,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process inline links with spaces in URL', () => {
-			test(
+			testDataProcessor(
 				'[URL and title]( /url/has space )',
 				'<p><a href="/url/has space">URL and title</a></p>',
 
@@ -149,7 +149,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process inline links with titles and spaces in URL', () => {
-			test(
+			testDataProcessor(
 				'[URL and title]( /url/has space/ "url has space and title")',
 				'<p><a href="/url/has space/" title="url has space and title">URL and title</a></p>',
 
@@ -159,7 +159,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process empty link', () => {
-			test(
+			testDataProcessor(
 				'[Empty]()',
 
 				'<p><a href="">Empty</a></p>'
@@ -167,7 +167,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links', () => {
-			test(
+			testDataProcessor(
 				'Foo [bar] [1].\n' +
 				'[1]: /url/  "Title"',
 
@@ -180,7 +180,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links - without space', () => {
-			test(
+			testDataProcessor(
 				'Foo [bar][1].\n' +
 				'[1]: /url/  "Title"',
 
@@ -191,7 +191,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links - with newline', () => {
-			test(
+			testDataProcessor(
 				'Foo [bar]\n' +
 				'[1].\n' +
 				'[1]: /url/  "Title"',
@@ -203,7 +203,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links - with embedded brackets', () => {
-			test(
+			testDataProcessor(
 				'With [embedded [brackets]] [b].\n' +
 				'[b]: /url/',
 
@@ -214,7 +214,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links - with reference indented once', () => {
-			test(
+			testDataProcessor(
 				'Indented [once][].\n' +
 				' [once]: /url',
 
@@ -225,7 +225,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links - with reference indented twice', () => {
-			test(
+			testDataProcessor(
 				'Indented [twice][].\n' +
 				'  [twice]: /url',
 
@@ -236,7 +236,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links - with reference indented three times', () => {
-			test(
+			testDataProcessor(
 				'Indented [trice][].\n' +
 				'   [trice]: /url',
 
@@ -247,7 +247,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should NOT process reference links - with reference indented four times', () => {
-			test(
+			testDataProcessor(
 				'Indented [four][].\n' +
 				'    [four]: /url',
 
@@ -266,7 +266,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links when title and reference are same #1', () => {
-			test(
+			testDataProcessor(
 				'[this] [this]\n' +
 				'[this]: foo',
 
@@ -277,7 +277,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links when title and reference are same #2', () => {
-			test(
+			testDataProcessor(
 				'[this][this]\n' +
 				'[this]: foo',
 
@@ -288,7 +288,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links when only title is provided and is same as reference #1', () => {
-			test(
+			testDataProcessor(
 				'[this] []\n' +
 				'[this]: foo',
 
@@ -299,7 +299,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links when only title is provided and is same as reference #2', () => {
-			test(
+			testDataProcessor(
 				'[this][]\n' +
 				'[this]: foo',
 
@@ -310,7 +310,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links when only title is provided and is same as reference #3', () => {
-			test(
+			testDataProcessor(
 				'[this]\n' +
 				'[this]: foo',
 
@@ -321,7 +321,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should not process reference links when reference is not found #1', () => {
-			test(
+			testDataProcessor(
 				'[this] []',
 
 				'<p>[this] []</p>'
@@ -329,7 +329,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should not process reference links when reference is not found #2', () => {
-			test(
+			testDataProcessor(
 				'[this][]',
 
 				'<p>[this][]</p>'
@@ -337,7 +337,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should not process reference links when reference is not found #2', () => {
-			test(
+			testDataProcessor(
 				'[this]',
 
 				'<p>[this]</p>'
@@ -345,7 +345,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links nested in brackets #1', () => {
-			test(
+			testDataProcessor(
 				'[a reference inside [this][]]\n' +
 				'[this]: foo',
 
@@ -356,7 +356,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links nested in brackets #2', () => {
-			test(
+			testDataProcessor(
 				'[a reference inside [this]]\n' +
 				'[this]: foo',
 
@@ -367,7 +367,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should not process reference links when title is same as reference but reference is different', () => {
-			test(
+			testDataProcessor(
 				'[this](/something/else/)\n' +
 				'[this]: foo',
 
@@ -378,7 +378,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should not process reference links suppressed by backslashes', () => {
-			test(
+			testDataProcessor(
 				'Suppress \\[this] and [this\\].\n' +
 				'[this]: foo',
 
@@ -389,7 +389,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links when used across multiple lines #1', () => {
-			test(
+			testDataProcessor(
 				'This is [multiline\n' +
 				'reference]\n' +
 				'[multiline reference]: foo',
@@ -402,7 +402,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links when used across multiple lines #2', () => {
-			test(
+			testDataProcessor(
 				'This is [multiline \n' +
 				'reference]\n' +
 				'[multiline reference]: foo',
@@ -415,7 +415,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process reference links case-insensitive', () => {
-			test(
+			testDataProcessor(
 				'[hi]\n' +
 				'[HI]: /url',
 
