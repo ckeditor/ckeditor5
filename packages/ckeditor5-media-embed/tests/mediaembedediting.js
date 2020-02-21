@@ -100,7 +100,7 @@ describe( 'MediaEmbedEditing', () => {
 						providers: [
 							testProviders.A,
 							testProviders.B,
-							testProviders.C,
+							testProviders.C
 						]
 					} ).then( editor => {
 						editor.setData( '<figure class="media"><div data-oembed-url="foo.com/123"></div></figure>' );
@@ -149,7 +149,7 @@ describe( 'MediaEmbedEditing', () => {
 							testMediaUpcast( [
 								'https://www.dailymotion.com/video/foo',
 								'www.dailymotion.com/video/foo',
-								'dailymotion.com/video/foo',
+								'dailymotion.com/video/foo'
 							],
 							'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
 								'<iframe src="https://www.dailymotion.com/embed/video/foo" ' +
@@ -164,7 +164,7 @@ describe( 'MediaEmbedEditing', () => {
 								testMediaUpcast( [
 									'https://www.open.spotify.com/artist/foo',
 									'www.open.spotify.com/artist/foo',
-									'open.spotify.com/artist/foo',
+									'open.spotify.com/artist/foo'
 								],
 								'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
 									'<iframe src="https://open.spotify.com/embed/artist/foo" ' +
@@ -178,7 +178,7 @@ describe( 'MediaEmbedEditing', () => {
 								testMediaUpcast( [
 									'https://www.open.spotify.com/album/foo',
 									'www.open.spotify.com/album/foo',
-									'open.spotify.com/album/foo',
+									'open.spotify.com/album/foo'
 								],
 								'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
 									'<iframe src="https://open.spotify.com/embed/album/foo" ' +
@@ -192,7 +192,7 @@ describe( 'MediaEmbedEditing', () => {
 								testMediaUpcast( [
 									'https://www.open.spotify.com/track/foo',
 									'www.open.spotify.com/track/foo',
-									'open.spotify.com/track/foo',
+									'open.spotify.com/track/foo'
 								],
 								'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
 									'<iframe src="https://open.spotify.com/embed/track/foo" ' +
@@ -289,7 +289,7 @@ describe( 'MediaEmbedEditing', () => {
 							testMediaUpcast( [
 								'https://www.instagram.com/p/foo',
 								'www.instagram.com/p/foo',
-								'instagram.com/p/foo',
+								'instagram.com/p/foo'
 							] );
 						} );
 
@@ -297,7 +297,7 @@ describe( 'MediaEmbedEditing', () => {
 							testMediaUpcast( [
 								'https://www.twitter.com/foo/bar',
 								'www.twitter.com/foo/bar',
-								'twitter.com/foo/bar',
+								'twitter.com/foo/bar'
 							] );
 						} );
 
@@ -305,7 +305,7 @@ describe( 'MediaEmbedEditing', () => {
 							testMediaUpcast( [
 								'https://www.google.com/maps/foo',
 								'www.google.com/maps/foo',
-								'google.com/maps/foo',
+								'google.com/maps/foo'
 							] );
 						} );
 
@@ -313,7 +313,7 @@ describe( 'MediaEmbedEditing', () => {
 							testMediaUpcast( [
 								'https://www.flickr.com/foo/bar',
 								'www.flickr.com/foo/bar',
-								'flickr.com/foo/bar',
+								'flickr.com/foo/bar'
 							] );
 						} );
 
@@ -321,7 +321,7 @@ describe( 'MediaEmbedEditing', () => {
 							testMediaUpcast( [
 								'https://www.facebook.com/foo/bar',
 								'www.facebook.com/foo/bar',
-								'facebook.com/foo/bar',
+								'facebook.com/foo/bar'
 							] );
 						} );
 					} );
@@ -347,11 +347,11 @@ describe( 'MediaEmbedEditing', () => {
 				it( 'extend #providers but with the lower priority', () => {
 					return createTestEditor( {
 						providers: [
-							testProviders.A,
+							testProviders.A
 						],
 						extraProviders: [
 							testProviders.extraA,
-							testProviders.extraB,
+							testProviders.extraB
 						]
 					} ).then( editor => {
 						editor.setData( '<figure class="media"><div data-oembed-url="foo.com/123"></div></figure>' );
@@ -405,7 +405,7 @@ describe( 'MediaEmbedEditing', () => {
 						providers: [],
 						extraProviders: [
 							testProviders.A,
-							testProviders.B,
+							testProviders.B
 						],
 						removeProviders: [ 'A' ]
 					} ).then( editor => {

@@ -116,7 +116,7 @@ describe( 'MediaFormView', () => {
 			expect( view._focusables.map( f => f ) ).to.have.members( [
 				view.urlInputView,
 				view.saveButtonView,
-				view.cancelButtonView,
+				view.cancelButtonView
 			] );
 		} );
 
