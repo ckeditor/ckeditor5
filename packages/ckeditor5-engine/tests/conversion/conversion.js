@@ -533,7 +533,7 @@ describe( 'Conversion', () => {
 				conversion.elementToElement( { model: 'image', view: 'img' } );
 
 				schema.register( 'image', {
-					inheritAllFrom: '$block',
+					inheritAllFrom: '$block'
 				} );
 			} );
 

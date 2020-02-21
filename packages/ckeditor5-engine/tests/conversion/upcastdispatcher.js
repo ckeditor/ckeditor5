@@ -300,7 +300,7 @@ describe( 'UpcastDispatcher', () => {
 					new ModelElement( '$marker', { 'data-name': 'marker2' } ),
 					new ModelText( 'b' ),
 					new ModelElement( '$marker', { 'data-name': 'marker1' } ),
-					new ModelText( 'ar' ),
+					new ModelText( 'ar' )
 				] );
 
 				// Insert to conversion tree.
@@ -599,7 +599,7 @@ describe( 'UpcastDispatcher', () => {
 				const spy = sinon.spy();
 
 				model.schema.register( 'div', {
-					allowIn: '$root',
+					allowIn: '$root'
 				} );
 
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {

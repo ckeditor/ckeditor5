@@ -89,7 +89,7 @@ describe( 'Styles utils', () => {
 				'rgba(1,2,3,0.7',
 				'rgba((1,2,3,0.7',
 				'rgba(1,a,3,0.7)',
-				'rgba(1,2,3,*)',
+				'rgba(1,2,3,*)'
 			], value => !isColor( value ) );
 		} );
 

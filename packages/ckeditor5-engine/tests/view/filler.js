@@ -10,7 +10,7 @@ import {
 	INLINE_FILLER,
 	startsWithFiller,
 	isInlineFiller,
-	getDataWithoutFiller,
+	getDataWithoutFiller
 } from '../../src/view/filler';
 
 describe( 'filler', () => {
