@@ -97,7 +97,7 @@ editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
 
 You can use knowledge from previous sections to create a full plugin which will allow users to paste the content as plain text while the feature is toggled on.
 
-If you're not familiar with creating plugins in CKEditor 5, we'd advise starting from reading {@link framework/guides/creating-simple-plugin Creating a simple plugin} guide to get a better understanding of what's going on in the code below.
+If you are not familiar with creating plugins in CKEditor 5, we would advise starting from reading {@link framework/guides/creating-simple-plugin Creating a simple plugin} guide to get a better understanding of what's going on in the code below.
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
