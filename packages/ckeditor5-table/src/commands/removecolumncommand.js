@@ -51,7 +51,6 @@ export default class RemoveColumnCommand extends Command {
 		const table = tableRow.parent;
 
 		const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
-		const row = table.getChildIndex( tableRow );
 
 		// Cache the table before removing or updating colspans.
 		const tableMap = [ ...new TableWalker( table ) ];
@@ -59,10 +58,12 @@ export default class RemoveColumnCommand extends Command {
 		// Get column index of removed column.
 		const cellData = tableMap.find( value => value.cell === tableCell );
 		const removedColumn = cellData.column;
+		const selectionRow = cellData.row;
+		const cellToFocus = getCellToFocus( tableCell );
 
 		model.change( writer => {
 			// Update heading columns attribute if removing a row from head section.
-			if ( headingColumns && row <= headingColumns ) {
+			if ( headingColumns && selectionRow <= headingColumns ) {
 				writer.setAttribute( 'headingColumns', headingColumns - 1, table );
 			}
 
@@ -75,6 +76,21 @@ export default class RemoveColumnCommand extends Command {
 					writer.remove( cell );
 				}
 			}
+
+			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
 	}
+}
+
+// Returns a proper table cell to focus after removing a column. It should be a next sibling to selection visually stay in place but:
+// - selection is on last table cell it will return previous cell.
+// - table cell is spanned over 2+ columns - it will be truncated so the selection should stay in that cell.
+function getCellToFocus( tableCell ) {
+	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+
+	if ( colspan > 1 ) {
+		return tableCell;
+	}
+
+	return tableCell.nextSibling ? tableCell.nextSibling : tableCell.previousSibling;
 }

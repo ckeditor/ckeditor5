@@ -259,9 +259,7 @@ describe( 'TableEditing', () => {
 
 		describe( 'on TAB', () => {
 			it( 'should do nothing if selection is not in a table', () => {
-				setModelData( model, '<paragraph>[]</paragraph>' + modelTable( [
-					[ '11', '12' ]
-				] ) );
+				setModelData( model, '<paragraph>[]</paragraph>' + modelTable( [ [ '11', '12' ] ] ) );
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 

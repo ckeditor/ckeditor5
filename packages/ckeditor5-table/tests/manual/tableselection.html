@@ -1,0 +1,151 @@
+<style>
+	body {
+		font-family: Helvetica, Arial, sans-serif;
+		font-size: 14px;
+	}
+
+	.print-selected {
+		background: #b8e3ff;
+	}
+</style>
+
+<div id="editor">
+	<h3>A simple table to test selection:</h3>
+	<table>
+		<thead>
+			<tr>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>a</td>
+				<td>b</td>
+				<td>c</td>
+				<td>d</td>
+				<td>e</td>
+			</tr>
+			<tr>
+				<td>f</td>
+				<td>g</td>
+				<td>h</td>
+				<td>i</td>
+				<td>j</td>
+			</tr>
+			<tr>
+				<td>k</td>
+				<td>l</td>
+				<td>m</td>
+				<td>n</td>
+				<td>o</td>
+			</tr>
+			<tr>
+				<td>p</td>
+				<td>q</td>
+				<td>r</td>
+				<td>s</td>
+				<td>t</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>A complex table</h3>
+
+	<figure class="table">
+		<table>
+			<thead>
+				<tr>
+					<td>a</td>
+					<td>b</td>
+					<td>c</td>
+					<td>d</td>
+					<td>e</td>
+					<td>f</td>
+					<td>g</td>
+					<td>h</td>
+					<td>i</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>00</td>
+					<td>01</td>
+					<td rowspan="4">02</td>
+					<td>03</td>
+					<td rowspan="7" colspan="2">04</td>
+					<td>07</td>
+					<td>07</td>
+					<td>08</td>
+				</tr>
+				<tr>
+					<td>10</td>
+					<td>11</td>
+					<td>13</td>
+					<td>17</td>
+					<td>17</td>
+					<td>18</td>
+				</tr>
+				<tr>
+					<td>20</td>
+					<td>21</td>
+					<td>23</td>
+					<td colspan="3">27</td>
+				</tr>
+				<tr>
+					<td>30</td>
+					<td>31</td>
+					<td>33</td>
+					<td>37</td>
+					<td colspan="2">37</td>
+				</tr>
+				<tr>
+					<td colspan="4">40</td>
+					<td>47</td>
+					<td>47</td>
+					<td>48</td>
+				</tr>
+				<tr>
+					<td>50</td>
+					<td>51</td>
+					<td>52</td>
+					<td>53</td>
+					<td rowspan="4">57</td>
+					<td>57</td>
+					<td>58</td>
+				</tr>
+				<tr>
+					<td>60</td>
+					<td colspan="3">61</td>
+					<td>67</td>
+					<td>68</td>
+				</tr>
+				<tr>
+					<td>70</td>
+					<td rowspan="2">71</td>
+					<td>72</td>
+					<td>73</td>
+					<td>74</td>
+					<td>75</td>
+					<td>77</td>
+					<td>78</td>
+				</tr>
+				<tr>
+					<td>80</td>
+					<td>82</td>
+					<td>83</td>
+					<td>84</td>
+					<td>85</td>
+					<td>87</td>
+					<td>88</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+</div>
+
+<h2>Model contents:</h2>
+<pre><code id="model"></code></pre>
