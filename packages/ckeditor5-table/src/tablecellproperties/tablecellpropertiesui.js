@@ -34,7 +34,7 @@ const ERROR_TEXT_TIMEOUT = 500;
 
 /**
  * The table cell properties UI plugin. It introduces the `'tableCellProperties'` button
- * that opens a form allowing to specify visual styling of a table cell.
+ * that opens a form allowing to specify the visual styling of a table cell.
  *
  * It uses the
  * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon plugin}.
@@ -272,7 +272,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	/**
 	 * Shows the {@link #view} in the {@link #_balloon}.
 	 *
-	 * **Note**: Each time a view is shown, the new {@link #_undoStepBatch} is created that contains
+	 * **Note**: Each time a view is shown, a new {@link #_undoStepBatch} is created. It contains
 	 * all changes made to the document when the view is visible, allowing a single undo step
 	 * for all of them.
 	 *
@@ -322,7 +322,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when the {@link #view} is the visible in the {@link #_balloon}.
+	 * Returns `true` when the {@link #view} is visible in the {@link #_balloon}.
 	 *
 	 * @private
 	 * @type {Boolean}
@@ -342,7 +342,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	}
 
 	/**
-	 * Creates a callback that when executed upon {@link #view view's} property change
+	 * Creates a callback that when executed upon the {@link #view view's} property change
 	 * executes a related editor command with the new property value.
 	 *
 	 * @private
@@ -359,9 +359,9 @@ export default class TableCellPropertiesUI extends Plugin {
 	}
 
 	/**
-	 * Creates a callback that when executed upon {@link #view view's} property change:
-	 * * executes a related editor command with the new property value if the value is valid,
-	 * * or sets the error text next to the invalid field, if the value did not pass the validation.
+	 * Creates a callback that when executed upon the {@link #view view's} property change:
+	 * * Executes a related editor command with the new property value if the value is valid,
+	 * * Or sets the error text next to the invalid field, if the value did not pass the validation.
 	 *
 	 * @private
 	 * @param {Object} options

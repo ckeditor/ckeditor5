@@ -47,7 +47,7 @@ export default class ColorInputView extends View {
 		this.set( 'value', '' );
 
 		/**
-		 * The `id` attribute of the input (i.e. to pair with a `<label>` element).
+		 * The `id` attribute of the input (i.e. to pair with the `<label>` element).
 		 *
 		 * @observable
 		 * @member {String} #id
@@ -74,7 +74,7 @@ export default class ColorInputView extends View {
 		this.set( 'hasError', false );
 
 		/**
-		 * The `id` of the element describing this field, e.g. when it has
+		 * The `id` of the element describing this field. When the field has
 		 * some error, it helps screen readers read the error text.
 		 *
 		 * @observable
@@ -83,7 +83,7 @@ export default class ColorInputView extends View {
 		this.set( 'ariaDescribedById' );
 
 		/**
-		 * Cached reference to the options passed to the constructor.
+		 * A cached reference to the options passed to the constructor.
 		 *
 		 * @member {Object}
 		 */

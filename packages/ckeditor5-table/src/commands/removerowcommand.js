@@ -15,7 +15,7 @@ import { findAncestor, updateNumericAttribute } from './utils';
 /**
  * The remove row command.
  *
- * The command is registered by {@link module:table/tableediting~TableEditing} as `'removeTableRow'` editor command.
+ * The command is registered by {@link module:table/tableediting~TableEditing} as the `'removeTableRow'` editor command.
  *
  * To remove the row containing the selected cell, execute the command:
  *
@@ -105,7 +105,7 @@ export default class RemoveRowCommand extends Command {
 	}
 }
 
-// Returns a cell to focus on the same column of the focused table cell before removing a row.
+// Returns a cell that should be focused before removing the row, belonging to the same column as the currently focused cell.
 function getCellToFocus( table, removedRow, columnToFocus ) {
 	const row = table.getChild( removedRow );
 

@@ -29,21 +29,21 @@ const VALIGN_VALUES_REG_EXP = /^(top|bottom)$/;
 /**
  * The table cell properties editing feature.
  *
- * Introduces table cells's model attributes and their conversion:
+ * Introduces table cell model attributes and their conversion:
  *
  * - border: `borderStyle`, `borderColor` and `borderWidth`
  * - background color: `backgroundColor`
  * - cell padding: `padding`
  * - horizontal and vertical alignment: `horizontalAlignment`, `verticalAlignment`
- * - cell width & height: `width` & `height`
+ * - cell width and height: `width`, `height`
  *
  * It also registers commands used to manipulate the above attributes:
  *
- * - border: `'tableCellBorderStyle'`, `'tableCellBorderColor'` and `'tableCellBorderWidth'` commands
- * - background color: `'tableCellBackgroundColor'`
- * - cell padding: `'tableCellPadding'`
- * - horizontal and vertical alignment: `'tableCellHorizontalAlignment'`, `'tableCellVerticalAlignment'`
- * - width & height: `'tableCellWidth'` & `'tableCellHeight'`
+ * - border: the `'tableCellBorderStyle'`, `'tableCellBorderColor'` and `'tableCellBorderWidth'` commands
+ * - background color: the `'tableCellBackgroundColor'` command
+ * - cell padding: the `'tableCellPadding'` command
+ * - horizontal and vertical alignment: the `'tableCellHorizontalAlignment'` and `'tableCellVerticalAlignment'` commands
+ * - width and height: the `'tableCellWidth'` and `'tableCellHeight'` commands
  *
  * @extends module:core/plugin~Plugin
  */
@@ -99,7 +99,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 	}
 }
 
-// Enables `'borderStyle'`, `'borderColor'` and `'borderWidth'` attributes for table cells.
+// Enables the `'borderStyle'`, `'borderColor'` and `'borderWidth'` attributes for table cells.
 //
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion

@@ -14,7 +14,7 @@ import { findAncestor } from '../../commands/utils';
 /**
  * The table cell attribute command.
  *
- * The command is a base command for other table property commands.
+ * This command is a base command for other table property commands.
  *
  * @extends module:core/command~Command
  */
@@ -52,7 +52,7 @@ export default class TablePropertyCommand extends Command {
 	 * @param {*} [options.value] If set, the command will set the attribute on the selected table.
 	 * If not set, the command will remove the attribute from the selected table.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Pass the model batch instance to the command to aggregate changes,
-	 * e.g. allow a single undo step for multiple executions.
+	 * for example, to allow a single undo step for multiple executions.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
@@ -88,7 +88,7 @@ export default class TablePropertyCommand extends Command {
 	}
 
 	/**
-	 * Returns the proper model value. Can be used to add a default unit to numeric values.
+	 * Returns the proper model value. It can be used to add a default unit to numeric values.
 	 *
 	 * @private
 	 * @param {*} value

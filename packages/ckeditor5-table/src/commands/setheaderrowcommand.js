@@ -15,7 +15,7 @@ import TableWalker from '../tablewalker';
 /**
  * The header row command.
  *
- * The command is registered by {@link module:table/tableediting~TableEditing} as `'setTableColumnHeader'` editor command.
+ * The command is registered by {@link module:table/tableediting~TableEditing} as the `'setTableColumnHeader'` editor command.
  *
  * You can make the row containing the selected cell a [header](https://www.w3.org/TR/html50/tabular-data.html#the-th-element) by executing:
  *
@@ -61,8 +61,8 @@ export default class SetHeaderRowCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} options
-	 * @param {Boolean} [options.forceValue] If set, the command will set (`true`) or unset (`false`) header rows according to `forceValue`
-	 * parameter instead of the current model state.
+	 * @param {Boolean} [options.forceValue] If set, the command will set (`true`) or unset (`false`) the header rows according to
+	 * the `forceValue` parameter instead of the current model state.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;

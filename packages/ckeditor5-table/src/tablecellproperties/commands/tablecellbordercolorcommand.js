@@ -14,7 +14,7 @@ import { getSingleValue } from '../../commands/utils';
  * The table cell border color command.
  *
  * The command is registered by the {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
- * `'tableCellBorderColor'` editor command.
+ * the `'tableCellBorderColor'` editor command.
  *
  * To change the border color of selected cells, execute the command:
  *
@@ -22,11 +22,11 @@ import { getSingleValue } from '../../commands/utils';
  *			value: '#f00'
  *		} );
  *
- * @extends module:core/command~Command
+ * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellBorderColorCommand extends TableCellPropertyCommand {
 	/**
-	 * Creates a new `TableCellBorderWidthCommand` instance.
+	 * Creates a new `TableCellBorderColorCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
 	 */

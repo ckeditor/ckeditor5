@@ -50,9 +50,9 @@ export default class TableCellPropertyCommand extends Command {
 	 * @fires execute
 	 * @param {Object} [options]
 	 * @param {*} [options.value] If set, the command will set the attribute on selected table cells.
-	 * If it is not set, the command will remove the attribute from selected table cells.
+	 * If it is not set, the command will remove the attribute from the selected table cells.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Pass the model batch instance to the command to aggregate changes,
-	 * e.g. allow a single undo step for multiple executions.
+	 * for example to allow a single undo step for multiple executions.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
@@ -89,7 +89,7 @@ export default class TableCellPropertyCommand extends Command {
 	}
 
 	/**
-	 * Returns the proper model value. Can be used to add a default unit to numeric values.
+	 * Returns the proper model value. It can be used to add a default unit to numeric values.
 	 *
 	 * @private
 	 * @param {*} value

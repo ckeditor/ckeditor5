@@ -51,7 +51,7 @@ export default class FormHeaderView extends View {
 		this.set( 'class', options.class || null );
 
 		/**
-		 * Label of the header.
+		 * The label of the header.
 		 *
 		 * @readonly
 		 * @member {String} #label

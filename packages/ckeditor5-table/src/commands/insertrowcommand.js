@@ -13,7 +13,7 @@ import { findAncestor } from './utils';
 /**
  * The insert row command.
  *
- * The command is registered by {@link module:table/tableediting~TableEditing} as `'insertTableRowBelow'` and
+ * The command is registered by {@link module:table/tableediting~TableEditing} as the `'insertTableRowBelow'` and
  * `'insertTableRowAbove'` editor commands.
  *
  * To insert a row below the selected cell, execute the following command:

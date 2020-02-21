@@ -27,7 +27,7 @@ import tableMergeCellIcon from './../theme/icons/table-merge-cell.svg';
  * * The `'tableRow'` dropdown,
  * * The `'mergeTableCells'` dropdown.
  *
- * The `'tableColumn'`, `'tableRow'`, `'mergeTableCells'` dropdowns work best with {@link module:table/tabletoolbar~TableToolbar}.
+ * The `'tableColumn'`, `'tableRow'` and `'mergeTableCells'` dropdowns work best with {@link module:table/tabletoolbar~TableToolbar}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -208,7 +208,7 @@ export default class TableUI extends Plugin {
 	}
 
 	/**
-	 * Creates a dropdown view from the set of options.
+	 * Creates a dropdown view from a set of options.
 	 *
 	 * @private
 	 * @param {String} label The dropdown button label.
@@ -255,11 +255,11 @@ export default class TableUI extends Plugin {
 
 // Adds an option to a list view.
 //
-// @param {module:table/tableui~DropdownOption} option Configuration option.
+// @param {module:table/tableui~DropdownOption} option A configuration option.
 // @param {module:core/editor/editor~Editor} editor
-// @param {Array.<module:core/command~Command>} commands List of commands to update.
+// @param {Array.<module:core/command~Command>} commands The list of commands to update.
 // @param {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>} itemDefinitions
-// Collection of dropdown items to update with given option.
+// A collection of dropdown items to update with the given option.
 function addListOption( option, editor, commands, itemDefinitions ) {
 	const model = option.model = new Model( option.model );
 	const { commandName, bindIsOn } = option.model;

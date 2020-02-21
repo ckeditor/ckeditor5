@@ -13,7 +13,7 @@ import TablePropertyCommand from './tablepropertycommand';
  * The table alignment command.
  *
  * The command is registered by the {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
- * `'tableAlignment'` editor command.
+ * the `'tableAlignment'` editor command.
  *
  * To change the alignment of the selected table, execute the command:
  *
@@ -21,7 +21,7 @@ import TablePropertyCommand from './tablepropertycommand';
  *			value: 'right'
  *		} );
  *
- * @extends module:table/tableproperties/commands/tablepropertycommand
+ * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
  */
 export default class TableAlignmentCommand extends TablePropertyCommand {
 	/**

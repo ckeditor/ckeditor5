@@ -16,10 +16,12 @@ import MouseSelectionHandler from './tableselection/mouseselectionhandler';
 import { findAncestor } from './commands/utils';
 import cropTable from './tableselection/croptable';
 
+import '../theme/tableselection.css';
+
 /**
  * The table selection plugin.
  *
- * It introduces the ability to select table cells. Table selection is described by two nodes: start and end.
+ * It introduces the ability to select table cells. The table selection is described by two nodes: start and end.
  * Both are the oposite corners of an rectangle that spans over them.
  *
  * Consider a table:
@@ -33,10 +35,10 @@ import cropTable from './tableselection/croptable';
  *		2 | h | i     | j |
  *		  +---+---+---+---+
  *
- * Setting table selection start as table cell "b" and end as table cell "g" will select table cells: "b", "c", "d", "f", and "g".
- * The cells that spans over multiple rows or columns can extend over the selection rectangle. For instance setting a selection from
- * table cell "a" to table cell "i" will create a selection in which table cell "i" will be extended over a rectangular of the selected
- * cell: "a", "b", "e", "f", "h", and "i".
+ * Setting the table selection start in table cell "b" and the end in table cell "g" will select table cells: "b", "c", "d", "f", and "g".
+ * The cells that span over multiple rows or columns can extend over the selection rectangle. For instance, setting a selection from
+ * the table cell "a" to the table cell "i" will create a selection in which the table cell "i" will be (partially) outside
+ * the rectangle of selected cells: "a", "b", "e", "f", "h", and "i".
  *
  * @extends module:core/plugin~Plugin
  */
@@ -71,16 +73,16 @@ export default class TableSelection extends Plugin {
 		this._mouseHandler = new MouseSelectionHandler( this, this.editor.editing );
 
 		/**
-		 * A table utilities.
+		 * A reference to the table utilities used across the class.
 		 *
 		 * @private
 		 * @readonly
-		 * @member {module:table/tableutils~TableUtils}
+		 * @member {module:table/tableutils~TableUtils} #_tableUtils
 		 */
 	}
 
 	/**
-	 * Flag indicating that there are selected table cells and the selection has more than one table cell.
+	 * A flag indicating that there are selected table cells and the selection includes more than one table cell.
 	 *
 	 * @type {Boolean}
 	 */
@@ -111,11 +113,12 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Starts a selection process.
-	 *
-	 * This method enables the table selection process.
+	 * Marks the table cell as a start of a table selection.
 	 *
 	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( tableCell );
+	 *
+	 * This method will clear the previous selection. The model selection will not be updated until
+	 * the {@link #setSelectingTo} method is used.
 	 *
 	 * @param {module:engine/model/element~Element} tableCell
 	 */
@@ -127,12 +130,14 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Updates current table selection end element. Table selection is defined by #start and #end element.
-	 * This method updates the #end element. Must be preceded by {@link #startSelectingFrom}.
+	 * Updates the current table selection end element. Table selection is defined by a start and an end element.
+	 * This method updates the end element. Must be preceded by {@link #startSelectingFrom}.
 	 *
 	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( startTableCell );
 	 *
 	 *		editor.plugins.get( 'TableSelection' ).setSelectingTo( endTableCell );
+	 *
+	 * This method will update model selection if start and end cells are different and belongs to the same table.
 	 *
 	 * @param {module:engine/model/element~Element} tableCell
 	 */
@@ -153,13 +158,14 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Stops selection process (but do not clear the current selection). The selecting process is ended but the selection in model remains.
+	 * Stops the selection process (but do not clear the current selection).
+	 * The selection process is finished but the selection in the model remains.
 	 *
 	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( startTableCell );
 	 *		editor.plugins.get( 'TableSelection' ).setSelectingTo( endTableCell );
 	 *		editor.plugins.get( 'TableSelection' ).stopSelection();
 	 *
-	 * To clear selection use {@link #clearSelection}.
+	 * To clear the selection use {@link #clearSelection}.
 	 *
 	 * @param {module:engine/model/element~Element} [tableCell]
 	 */
@@ -172,7 +178,7 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Stops current selection process and clears table selection.
+	 * Stops the current selection process and clears the table selection in the model.
 	 *
 	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( startTableCell );
 	 *		editor.plugins.get( 'TableSelection' ).setSelectingTo( endTableCell );
@@ -186,13 +192,13 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Returns iterator for selected table cells.
+	 * Returns an iterator for selected table cells.
 	 *
 	 *		tableSelection.startSelectingFrom( startTableCell );
 	 *		tableSelection.stopSelection( endTableCell );
 	 *
 	 *		const selectedTableCells = Array.from( tableSelection.getSelectedTableCells() );
-	 *		// The above array will consist a rectangular table selection.
+	 *		// The above array will represent a rectangular table selection.
 	 *
 	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */
@@ -204,11 +210,11 @@ export default class TableSelection extends Plugin {
 		const startLocation = this._tableUtils.getCellLocation( this._startElement );
 		const endLocation = this._tableUtils.getCellLocation( this._endElement );
 
-		const startRow = startLocation.row > endLocation.row ? endLocation.row : startLocation.row;
-		const endRow = startLocation.row > endLocation.row ? startLocation.row : endLocation.row;
+		const startRow = Math.min( startLocation.row, endLocation.row );
+		const endRow = Math.max( startLocation.row, endLocation.row );
 
-		const startColumn = startLocation.column > endLocation.column ? endLocation.column : startLocation.column;
-		const endColumn = startLocation.column > endLocation.column ? startLocation.column : endLocation.column;
+		const startColumn = Math.min( startLocation.column, endLocation.column );
+		const endColumn = Math.max( startLocation.column, endLocation.column );
 
 		for ( const cellInfo of new TableWalker( findAncestor( 'table', this._startElement ), { startRow, endRow } ) ) {
 			if ( cellInfo.column >= startColumn && cellInfo.column <= endColumn ) {
@@ -238,7 +244,7 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Set proper model selection for currently selected table cells.
+	 * Synchronizes the model selection with currently selected table cells.
 	 *
 	 * @private
 	 */
@@ -263,7 +269,7 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Checks if selection has changed from an external source and it is required to clear internal state.
+	 * Checks if the selection has changed via an external change and if it is required to clear the internal state of the plugin.
 	 *
 	 * @param {module:engine/model/documentselection~DocumentSelection} selection
 	 * @private
