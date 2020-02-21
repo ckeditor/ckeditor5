@@ -117,7 +117,7 @@ export default class LinkActionsView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-link-actions',
+					'ck-link-actions'
 				],
 
 				// https://github.com/ckeditor/ckeditor5-link/issues/90

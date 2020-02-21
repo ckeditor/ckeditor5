@@ -367,14 +367,14 @@ describe( 'LinkCommand', () => {
 
 				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
 					linkIsFoo: false,
-					linkIsBar: true,
+					linkIsBar: true
 				} );
 
 				command.restoreManualDecoratorStates();
 
 				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
 					linkIsFoo: true,
-					linkIsBar: true,
+					linkIsBar: true
 				} );
 			} );
 		} );
