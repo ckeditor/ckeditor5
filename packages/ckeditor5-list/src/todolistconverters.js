@@ -99,7 +99,7 @@ export function dataModelViewInsertion( model ) {
 
 		const checkbox = viewWriter.createEmptyElement( 'input', {
 			type: 'checkbox',
-			disabled: 'disabled',
+			disabled: 'disabled'
 		} );
 
 		if ( data.item.getAttribute( 'todoListChecked' ) ) {
