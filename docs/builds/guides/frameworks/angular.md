@@ -450,7 +450,7 @@ export class MyComponent {
 }
 ```
 
-For advanced usage see the {@link features/ui-language Setting UI language} guide.
+For advanced usage see the {@link features/ui-language Setting the UI language} guide.
 
 ## Contributing and reporting issues
 

@@ -606,7 +606,7 @@ Then, {@link builds/guides/integration/configuration configure} the language of 
 />
 ```
 
-For more information, please refer to the {@link features/ui-language "Setting UI language"} guide.
+For more information, please refer to the {@link features/ui-language Setting the UI language} guide.
 
 ### CKEditor 5 built from source
 

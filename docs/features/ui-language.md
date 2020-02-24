@@ -1,5 +1,6 @@
 ---
 category: features
+menu-title: UI language
 ---
 
 {@snippet features/build-ui-language-source}
