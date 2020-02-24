@@ -172,9 +172,9 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'visual resizers', () => {
-		beforeEach( () => createEditor() );
+		beforeEach( async () => {
+			await createEditor();
 
-		beforeEach( () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
@@ -214,9 +214,9 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'standard image resizing', () => {
-		beforeEach( () => createEditor() );
+		beforeEach( async () => {
+			await createEditor();
 
-		beforeEach( () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
@@ -316,9 +316,9 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'side image resizing', () => {
-		beforeEach( () => createEditor() );
+		beforeEach( async () => {
+			await createEditor();
 
-		beforeEach( () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
@@ -529,9 +529,9 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'undo integration', () => {
-		beforeEach( () => createEditor() );
+		beforeEach( async () => {
+			await createEditor();
 
-		beforeEach( () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
@@ -560,9 +560,9 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'table integration', () => {
-		beforeEach( () => createEditor() );
+		beforeEach( async () => {
+			await createEditor();
 
-		beforeEach( () => {
 			setData( editor.model,
 				'<table>' +
 					`<tableRow><tableCell>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]</tableCell></tableRow>` +
@@ -585,8 +585,6 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'srcset integration', () => {
-		beforeEach( () => createEditor() );
-
 		// The image is 96x96 pixels.
 		const imageBaseUrl = '/assets/sample.png';
 		const getModel = () => editor.model.document.getRoot().getChild( 0 );
@@ -609,7 +607,9 @@ describe( 'ImageResize', () => {
 			}
 		} );
 
-		beforeEach( () => {
+		beforeEach( async () => {
+			await createEditor();
+
 			editor.setData(
 				`<figure class="image">
 					<img src="${ imageBaseUrl }"
@@ -710,15 +710,15 @@ describe( 'ImageResize', () => {
 	describe( 'widget toolbar integration', () => {
 		let widgetToolbarRepository;
 
-		beforeEach( () => createEditor( {
-			plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize, ImageToolbar, ImageTextAlternative ],
-			image: {
-				toolbar: [ 'imageTextAlternative' ],
-				resizeUnit: 'px'
-			}
-		} ) );
-
 		beforeEach( async () => {
+			await createEditor( {
+				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize, ImageToolbar, ImageTextAlternative ],
+				image: {
+					toolbar: [ 'imageTextAlternative' ],
+					resizeUnit: 'px'
+				}
+			} );
+
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );

@@ -53,7 +53,7 @@ describe( 'ImageStyleEditing', () => {
 						styles: [
 							{ name: 'fullStyle', title: 'foo', icon: 'object-center', isDefault: true },
 							{ name: 'sideStyle', title: 'bar', icon: 'object-right', className: 'side-class' },
-							{ name: 'dummyStyle', title: 'baz', icon: 'object-dummy', className: 'dummy-class' },
+							{ name: 'dummyStyle', title: 'baz', icon: 'object-dummy', className: 'dummy-class' }
 						]
 					}
 				} )
