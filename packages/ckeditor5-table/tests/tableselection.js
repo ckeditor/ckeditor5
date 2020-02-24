@@ -12,6 +12,7 @@ import TableSelection from '../src/tableselection';
 import { assertSelectedCells, modelTable, viewTable } from './_utils/utils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import DocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 
 describe( 'table selection', () => {
 	let editor, model, tableSelection, modelRoot;
@@ -295,6 +296,19 @@ describe( 'table selection', () => {
 				expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
 					firstCell, modelRoot.getNodeByPath( [ 0, 1, 1 ] ), lastCell
 				] );
+			} );
+		} );
+
+		describe( 'getSelectionAsFragment()', () => {
+			it( 'should return undefined if no table cells are selected', () => {
+				expect( tableSelection.getSelectionAsFragment() ).to.be.undefined;
+			} );
+
+			it( 'should return document fragment for selected table cells', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+
+				expect( tableSelection.getSelectionAsFragment() ).to.be.instanceOf( DocumentFragment );
 			} );
 		} );
 

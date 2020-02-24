@@ -13,6 +13,8 @@ import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
 import { setupTableSelectionHighlighting } from './tableselection/converters';
 import MouseSelectionHandler from './tableselection/mouseselectionhandler';
+import { findAncestor } from './commands/utils';
+import cropTable from './tableselection/croptable';
 
 import '../theme/tableselection.css';
 
@@ -214,11 +216,31 @@ export default class TableSelection extends Plugin {
 		const startColumn = Math.min( startLocation.column, endLocation.column );
 		const endColumn = Math.max( startLocation.column, endLocation.column );
 
-		for ( const cellInfo of new TableWalker( this._startElement.parent.parent, { startRow, endRow } ) ) {
+		for ( const cellInfo of new TableWalker( findAncestor( 'table', this._startElement ), { startRow, endRow } ) ) {
 			if ( cellInfo.column >= startColumn && cellInfo.column <= endColumn ) {
 				yield cellInfo.cell;
 			}
 		}
+	}
+
+	/**
+	 * Returns selected table fragment as a document fragment.
+	 *
+	 * @returns {module:engine/model/documentfragment~DocumentFragment|undefined}
+	 */
+	getSelectionAsFragment() {
+		if ( !this.hasMultiCellSelection ) {
+			return;
+		}
+
+		return this.editor.model.change( writer => {
+			const documentFragment = writer.createDocumentFragment();
+
+			const table = cropTable( this.getSelectedTableCells(), this._tableUtils, writer );
+			writer.insert( table, documentFragment, 0 );
+
+			return documentFragment;
+		} );
 	}
 
 	/**
