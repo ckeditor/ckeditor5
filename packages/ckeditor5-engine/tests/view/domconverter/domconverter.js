@@ -16,16 +16,14 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DomConverter', () => {
-	let converter, stylesProcessor;
+	let converter, stylesProcessor, viewDocument;
 
 	testUtils.createSinonSandbox();
 
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	beforeEach( () => {
-		converter = new DomConverter();
+		stylesProcessor = new StylesProcessor();
+		viewDocument = new ViewDocument( stylesProcessor );
+		converter = new DomConverter( viewDocument );
 	} );
 
 	describe( 'constructor()', () => {
@@ -34,7 +32,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should create converter with defined block mode filler', () => {
-			converter = new DomConverter( { blockFillerMode: 'nbsp' } );
+			converter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
 			expect( converter.blockFillerMode ).to.equal( 'nbsp' );
 		} );
 	} );
@@ -300,7 +298,7 @@ describe( 'DomConverter', () => {
 	describe( 'isBlockFiller()', () => {
 		describe( 'mode "nbsp"', () => {
 			beforeEach( () => {
-				converter = new DomConverter( { blockFillerMode: 'nbsp' } );
+				converter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
 			} );
 
 			it( 'should return true if the node is an nbsp filler and is a single child of a block level element', () => {
@@ -383,7 +381,7 @@ describe( 'DomConverter', () => {
 
 		describe( 'mode "br"', () => {
 			beforeEach( () => {
-				converter = new DomConverter( { blockFillerMode: 'br' } );
+				converter = new DomConverter( viewDocument, { blockFillerMode: 'br' } );
 			} );
 
 			it( 'should return true if the node is an instance of the BR block filler', () => {
@@ -395,7 +393,7 @@ describe( 'DomConverter', () => {
 			} );
 
 			it( 'should return false if the node is an instance of the NBSP block filler', () => {
-				converter = new DomConverter( { blockFillerMode: 'br' } );
+				converter = new DomConverter( viewDocument, { blockFillerMode: 'br' } );
 				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
 				// NBSP must be check inside a context.
 				const context = document.createElement( 'div' );

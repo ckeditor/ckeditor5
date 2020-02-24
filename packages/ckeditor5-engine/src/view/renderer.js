@@ -564,7 +564,7 @@ export default class Renderer {
 				remove( actualDomChildren[ i ] );
 			} else { // 'equal'
 				// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
-				this._markDescendantTextToSync( this.domConverter.domToView( this._viewDocument, expectedDomChildren[ i ] ) );
+				this._markDescendantTextToSync( this.domConverter.domToView( expectedDomChildren[ i ] ) );
 				i++;
 			}
 		}

@@ -96,15 +96,4 @@ describe( 'Document', () => {
 			expect( calls ).to.equal( 4 );
 		} );
 	} );
-
-	describe( 'addStyleProcessorRules()', () => {
-		it( 'should execute callback with an instance of StyleProcessor as the first argument', () => {
-			const spy = sinon.spy();
-
-			viewDocument.addStyleProcessorRules( spy );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, viewDocument.stylesProcessor );
-		} );
-	} );
 } );

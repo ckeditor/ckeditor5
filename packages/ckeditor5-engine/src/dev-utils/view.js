@@ -14,6 +14,7 @@
  */
 
 import View from '../view/view';
+import ViewDocument from '../view/document';
 import ViewDocumentFragment from '../view/documentfragment';
 import XmlDataProcessor from '../dataprocessor/xmldataprocessor';
 import ViewElement from '../view/element';
@@ -99,10 +100,7 @@ export function setData( view, data, options = {} ) {
 	const root = document.getRoot( rootName );
 
 	view.change( writer => {
-		const result = setData._parse( data, {
-			rootElement: root,
-			stylesProcessor: document.stylesProcessor
-		} );
+		const result = setData._parse( data, { rootElement: root } );
 
 		if ( result.view && result.selection ) {
 			writer.setSelection( result.selection );
@@ -331,13 +329,13 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  * to parse.
  */
 export function parse( data, options = {} ) {
-	const stylesProcessor = new StylesProcessor();
+	const viewDocument = new ViewDocument( new StylesProcessor() );
 
 	options.order = options.order || [];
 	const rangeParser = new RangeParser( {
 		sameSelectionCharacters: options.sameSelectionCharacters
 	} );
-	const processor = new XmlDataProcessor( stylesProcessor, {
+	const processor = new XmlDataProcessor( viewDocument, {
 		namespaces: Object.keys( allowedTypes )
 	} );
 

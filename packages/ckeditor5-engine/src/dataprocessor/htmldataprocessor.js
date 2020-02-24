@@ -11,7 +11,6 @@
 
 import BasicHtmlWriter from './basichtmlwriter';
 import DomConverter from '../view/domconverter';
-import ViewDocument from '../view/document';
 
 /**
  * The HTML data processor class.
@@ -23,17 +22,9 @@ export default class HtmlDataProcessor {
 	/**
 	 * Creates a new instance of the HTML data processor class.
 	 *
-	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor Styles processor.
+	 * @param {module:engine/view/document~Document} document
 	 */
-	constructor( stylesProcessor ) {
-		/**
-		 * Styles processor.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/stylesmap~StylesProcessor}
-		 */
-		this.stylesProcessor = stylesProcessor;
-
+	constructor( document ) {
 		/**
 		 * A DOM parser instance used to parse an HTML string to an HTML document.
 		 *
@@ -48,7 +39,7 @@ export default class HtmlDataProcessor {
 		 * @private
 		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
-		this._domConverter = new DomConverter( { blockFillerMode: 'nbsp' } );
+		this._domConverter = new DomConverter( document, { blockFillerMode: 'nbsp' } );
 
 		/**
 		 * A basic HTML writer instance used to convert DOM elements to an HTML string.
@@ -83,10 +74,9 @@ export default class HtmlDataProcessor {
 	toView( data ) {
 		// Convert input HTML data to DOM DocumentFragment.
 		const domFragment = this._toDom( data );
-		const viewDocument = new ViewDocument( this.stylesProcessor );
 
 		// Convert DOM DocumentFragment to view DocumentFragment.
-		return this._domConverter.domToView( viewDocument, domFragment );
+		return this._domConverter.domToView( domFragment );
 	}
 
 	/**

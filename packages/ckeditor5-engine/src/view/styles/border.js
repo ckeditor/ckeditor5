@@ -12,7 +12,7 @@ import { getShorthandValues, getBoxSidesValueReducer, getBoxSidesValues, isLengt
 /**
  * Adds a border CSS styles processing rules.
  *
- *		editor.editing.view.document.addStyleProcessorRules( addBorderRules );
+ *		editor.data.addStyleProcessorRules( addBorderRules );
  *
  * This rules merges all [border](https://developer.mozilla.org/en-US/docs/Web/CSS/border) styles notation shorthands:
  *

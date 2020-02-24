@@ -34,11 +34,9 @@ describe( 'Renderer', () => {
 
 	testUtils.createSinonSandbox();
 
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
+
 		view = new View( stylesProcessor );
 		viewDocument = view.document;
 

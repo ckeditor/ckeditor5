@@ -171,22 +171,6 @@ export default class Document {
 	}
 
 	/**
-	 * Adds a style processor normalization rules.
-	 *
-	 * The available style processors:
-	 *
-	 * * background: {@link module:engine/view/styles/background~addBackgroundRules}
-	 * * border: {@link module:engine/view/styles/border~addBorderRules}
-	 * * margin: {@link module:engine/view/styles/margin~addMarginRules}
-	 * * padding: {@link module:engine/view/styles/padding~addPaddingRules}
-	 *
-	 * @param {Function} callback
-	 */
-	addStyleProcessorRules( callback ) {
-		callback( this.stylesProcessor );
-	}
-
-	/**
 	 * Performs post-fixer loops. Executes post-fixer callbacks as long as none of them has done any changes to the model.
 	 *
 	 * @protected

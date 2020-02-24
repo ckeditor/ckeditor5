@@ -21,9 +21,9 @@ describe( 'DomConverter', () => {
 	let converter, viewDocument, stylesProcessor;
 
 	before( () => {
-		converter = new DomConverter();
 		stylesProcessor = new StylesProcessor();
 		viewDocument = new ViewDocument( stylesProcessor );
+		converter = new DomConverter( viewDocument );
 	} );
 
 	describe( 'domToView()', () => {
@@ -36,7 +36,7 @@ describe( 'DomConverter', () => {
 
 			converter.bindElements( domImg, viewImg );
 
-			const viewP = converter.domToView( viewDocument, domP );
+			const viewP = converter.domToView( domP );
 
 			expect( viewP ).to.be.an.instanceof( ViewElement );
 			expect( viewP.name ).to.equal( 'p' );
@@ -57,7 +57,7 @@ describe( 'DomConverter', () => {
 			const domText = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', { 'class': 'foo' }, [ domImg, domText ] );
 
-			const viewP = converter.domToView( viewDocument, domP, { bind: true } );
+			const viewP = converter.domToView( domP, { bind: true } );
 
 			expect( viewP ).to.be.an.instanceof( ViewElement );
 			expect( viewP.name ).to.equal( 'p' );
@@ -77,7 +77,7 @@ describe( 'DomConverter', () => {
 			const domText = document.createTextNode( 'நிலைக்கு' );
 			const domP = createElement( document, 'p', { 'class': 'foo' }, [ domText ] );
 
-			const viewP = converter.domToView( viewDocument, domP, { bind: true } );
+			const viewP = converter.domToView( domP, { bind: true } );
 
 			expect( viewP.childCount ).to.equal( 1 );
 
@@ -97,7 +97,7 @@ describe( 'DomConverter', () => {
 
 			converter.bindElements( domImg, viewImg );
 
-			const viewP = converter.domToView( viewDocument, domP, { withChildren: false } );
+			const viewP = converter.domToView( domP, { withChildren: false } );
 
 			expect( viewP ).to.be.an.instanceof( ViewElement );
 			expect( viewP.name ).to.equal( 'p' );
@@ -117,7 +117,7 @@ describe( 'DomConverter', () => {
 			domFragment.appendChild( domImg );
 			domFragment.appendChild( domText );
 
-			const viewFragment = converter.domToView( viewDocument, domFragment, { bind: true } );
+			const viewFragment = converter.domToView( domFragment, { bind: true } );
 
 			expect( viewFragment ).to.be.an.instanceof( ViewDocumentFragment );
 			expect( viewFragment.childCount ).to.equal( 2 );
@@ -140,7 +140,7 @@ describe( 'DomConverter', () => {
 
 			converter.bindElements( domImg, viewImg );
 
-			const viewFragment = converter.domToView( viewDocument, domFragment, { withChildren: false } );
+			const viewFragment = converter.domToView( domFragment, { withChildren: false } );
 
 			expect( viewFragment ).to.be.an.instanceof( ViewDocumentFragment );
 
@@ -154,7 +154,7 @@ describe( 'DomConverter', () => {
 
 			converter.bindDocumentFragments( domFragment, viewFragment );
 
-			const viewFragment2 = converter.domToView( viewDocument, domFragment );
+			const viewFragment2 = converter.domToView( domFragment );
 
 			expect( viewFragment2 ).to.equal( viewFragment );
 		} );
@@ -163,19 +163,19 @@ describe( 'DomConverter', () => {
 			// eslint-disable-next-line new-cap
 			const domFiller = BR_FILLER( document );
 
-			expect( converter.domToView( viewDocument, domFiller ) ).to.be.null;
+			expect( converter.domToView( domFiller ) ).to.be.null;
 		} );
 
 		it( 'should return null for empty text node', () => {
 			const textNode = document.createTextNode( '' );
 
-			expect( converter.domToView( viewDocument, textNode ) ).to.be.null;
+			expect( converter.domToView( textNode ) ).to.be.null;
 		} );
 
 		it( 'should return null for a comment', () => {
 			const comment = document.createComment( 'abc' );
 
-			expect( converter.domToView( viewDocument, comment ) ).to.be.null;
+			expect( converter.domToView( comment ) ).to.be.null;
 		} );
 
 		describe( 'it should clear whitespaces', () => {
@@ -190,7 +190,7 @@ describe( 'DomConverter', () => {
 					] )
 				] );
 
-				const viewDiv = converter.domToView( viewDocument, domDiv );
+				const viewDiv = converter.domToView( domDiv );
 
 				expect( viewDiv.childCount ).to.equal( 2 );
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
@@ -208,7 +208,7 @@ describe( 'DomConverter', () => {
 					document.createTextNode( ' ' )
 				] );
 
-				const viewDiv = converter.domToView( viewDocument, domDiv );
+				const viewDiv = converter.domToView( domDiv );
 
 				expect( viewDiv.childCount ).to.equal( 2 );
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
@@ -223,7 +223,7 @@ describe( 'DomConverter', () => {
 					document.createTextNode( ' ' )
 				] );
 
-				const viewDiv = converter.domToView( viewDocument, domDiv );
+				const viewDiv = converter.domToView( domDiv );
 
 				expect( viewDiv.childCount ).to.equal( 1 );
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
@@ -237,7 +237,7 @@ describe( 'DomConverter', () => {
 					document.createTextNode( '\n' )
 				] );
 
-				const viewDiv = converter.domToView( viewDocument, domDiv );
+				const viewDiv = converter.domToView( domDiv );
 
 				expect( viewDiv.childCount ).to.equal( 1 );
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
@@ -251,7 +251,7 @@ describe( 'DomConverter', () => {
 					document.createTextNode( '\r' )
 				] );
 
-				const viewDiv = converter.domToView( viewDocument, domDiv );
+				const viewDiv = converter.domToView( domDiv );
 
 				expect( viewDiv.childCount ).to.equal( 1 );
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
@@ -265,7 +265,7 @@ describe( 'DomConverter', () => {
 					document.createTextNode( '\t' )
 				] );
 
-				const viewDiv = converter.domToView( viewDocument, domDiv );
+				const viewDiv = converter.domToView( domDiv );
 
 				expect( viewDiv.childCount ).to.equal( 1 );
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
@@ -283,7 +283,7 @@ describe( 'DomConverter', () => {
 					] )
 				] );
 
-				const viewDiv = converter.domToView( viewDocument, domDiv );
+				const viewDiv = converter.domToView( domDiv );
 
 				expect( viewDiv.childCount ).to.equal( 2 );
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data )
@@ -300,7 +300,7 @@ describe( 'DomConverter', () => {
 					] )
 				] );
 
-				const viewDiv = converter.domToView( viewDocument, domDiv );
+				const viewDiv = converter.domToView( domDiv );
 
 				expect( viewDiv.childCount ).to.equal( 1 );
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
@@ -314,7 +314,7 @@ describe( 'DomConverter', () => {
 					] )
 				] );
 
-				const viewDiv = converter.domToView( viewDocument, domDiv );
+				const viewDiv = converter.domToView( domDiv );
 
 				expect( viewDiv.childCount ).to.equal( 1 );
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
@@ -327,7 +327,7 @@ describe( 'DomConverter', () => {
 					document.createTextNode( ' bar' )
 				] );
 
-				const viewP = converter.domToView( viewDocument, domP );
+				const viewP = converter.domToView( domP );
 
 				expect( viewP.childCount ).to.equal( 3 );
 				expect( viewP.getChild( 2 ).data ).to.equal( 'bar' );
@@ -340,7 +340,7 @@ describe( 'DomConverter', () => {
 					document.createTextNode( ' \u00a0bar' )
 				] );
 
-				const viewP = converter.domToView( viewDocument, domP );
+				const viewP = converter.domToView( domP );
 
 				expect( viewP.childCount ).to.equal( 3 );
 				expect( viewP.getChild( 2 ).data ).to.equal( ' bar' );
@@ -355,7 +355,7 @@ describe( 'DomConverter', () => {
 					document.createTextNode( ' bar' )
 				] );
 
-				const viewP = converter.domToView( viewDocument, domP );
+				const viewP = converter.domToView( domP );
 
 				expect( viewP.childCount ).to.equal( 3 );
 				expect( viewP.getChild( 2 ).data ).to.equal( 'bar' );
@@ -370,7 +370,7 @@ describe( 'DomConverter', () => {
 					] )
 				] );
 
-				const viewP = converter.domToView( viewDocument, domP );
+				const viewP = converter.domToView( domP );
 
 				expect( viewP.childCount ).to.equal( 3 );
 				expect( viewP.getChild( 2 ).getChild( 0 ).data ).to.equal( 'bar' );
@@ -385,7 +385,7 @@ describe( 'DomConverter', () => {
 					document.createTextNode( 'x' )
 				] );
 
-				const viewP = converter.domToView( viewDocument, domP );
+				const viewP = converter.domToView( domP );
 
 				expect( viewP.childCount ).to.equal( 5 );
 				expect( viewP.getChild( 2 ).data ).to.equal( 'foo ' );
@@ -401,7 +401,7 @@ describe( 'DomConverter', () => {
 					] )
 				] );
 
-				const viewDiv = converter.domToView( viewDocument, domDiv );
+				const viewDiv = converter.domToView( domDiv );
 
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'f o o' );
 				expect( viewDiv.getChild( 1 ).getChild( 0 ).data ).to.equal( 'fo o' );
@@ -416,7 +416,7 @@ describe( 'DomConverter', () => {
 					document.createTextNode( '\n\n \t\r\n' )
 				] );
 
-				const viewDiv = converter.domToView( viewDocument, domDiv );
+				const viewDiv = converter.domToView( domDiv );
 
 				expect( viewDiv.childCount ).to.equal( 1 );
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'f o o' );
@@ -434,7 +434,7 @@ describe( 'DomConverter', () => {
 						domElement.appendChild( document.createTextNode( text.replace( /_/g, '\u00A0' ) ) );
 					}
 
-					const viewElement = converter.domToView( viewDocument, domElement );
+					const viewElement = converter.domToView( domElement );
 
 					let data = '';
 
@@ -524,7 +524,7 @@ describe( 'DomConverter', () => {
 					] )
 				] );
 
-				const viewDiv = converter.domToView( viewDocument, domDiv );
+				const viewDiv = converter.domToView( domDiv );
 
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( '   foo\n   foo  ' );
 			} );
@@ -539,7 +539,7 @@ describe( 'DomConverter', () => {
 					document.createTextNode( 'word' )
 				] );
 
-				const viewDiv = converter.domToView( viewDocument, domDiv );
+				const viewDiv = converter.domToView( domDiv );
 
 				expect( viewDiv.getChild( 1 ).name ).to.equal( 'span' );
 				expect( viewDiv.getChild( 1 ).childCount ).to.equal( 1 );
@@ -556,7 +556,7 @@ describe( 'DomConverter', () => {
 					document.createTextNode( 'word' )
 				] );
 
-				const viewDiv = converter.domToView( viewDocument, domDiv );
+				const viewDiv = converter.domToView( domDiv );
 
 				expect( viewDiv.getChild( 1 ).name ).to.equal( 'span' );
 				expect( viewDiv.getChild( 1 ).childCount ).to.equal( 1 );
@@ -580,7 +580,7 @@ describe( 'DomConverter', () => {
 					] )
 				] );
 
-				const viewDiv = converter.domToView( viewDocument, domDiv );
+				const viewDiv = converter.domToView( domDiv );
 
 				expect( viewDiv.getChild( 0 ).name ).to.equal( 'span' );
 				expect( viewDiv.getChild( 0 ).childCount ).to.equal( 2 );
@@ -598,7 +598,7 @@ describe( 'DomConverter', () => {
 					createElement( document, 'br' )
 				] );
 
-				const viewP = converter.domToView( viewDocument, domP );
+				const viewP = converter.domToView( domP );
 
 				expect( viewP.childCount ).to.equal( 2 );
 				expect( viewP.getChild( 0 ).data ).to.equal( 'foo ' );
@@ -610,7 +610,7 @@ describe( 'DomConverter', () => {
 					createElement( document, 'br' )
 				] );
 
-				const viewP = converter.domToView( viewDocument, domP );
+				const viewP = converter.domToView( domP );
 
 				expect( viewP.childCount ).to.equal( 2 );
 				expect( viewP.getChild( 0 ).data ).to.equal( 'foo  ' );
@@ -622,7 +622,7 @@ describe( 'DomConverter', () => {
 					createElement( document, 'br' )
 				] );
 
-				const viewP = converter.domToView( viewDocument, domP );
+				const viewP = converter.domToView( domP );
 
 				expect( viewP.childCount ).to.equal( 2 );
 				expect( viewP.getChild( 0 ).data ).to.equal( 'foo ' );
@@ -636,7 +636,7 @@ describe( 'DomConverter', () => {
 					createElement( document, 'br' )
 				] );
 
-				const viewP = converter.domToView( viewDocument, domP );
+				const viewP = converter.domToView( domP );
 
 				expect( viewP.childCount ).to.equal( 2 );
 				expect( viewP.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo ' );
@@ -650,7 +650,7 @@ describe( 'DomConverter', () => {
 		describe( 'clearing auto filler', () => {
 			it( 'should remove inline filler when converting dom to view', () => {
 				const text = document.createTextNode( INLINE_FILLER + 'foo' );
-				const view = converter.domToView( viewDocument, text );
+				const view = converter.domToView( text );
 
 				expect( view.data ).to.equal( 'foo' );
 			} );
@@ -658,14 +658,14 @@ describe( 'DomConverter', () => {
 			// See https://github.com/ckeditor/ckeditor5/issues/692.
 			it( 'should not remove space after inline filler if previous node nor next node does not exist', () => {
 				const text = document.createTextNode( INLINE_FILLER + ' ' );
-				const view = converter.domToView( viewDocument, text );
+				const view = converter.domToView( text );
 
 				expect( view.data ).to.equal( ' ' );
 			} );
 
 			it( 'should convert non breaking space to normal space after inline filler', () => {
 				const text = document.createTextNode( INLINE_FILLER + '\u00A0' );
-				const view = converter.domToView( viewDocument, text );
+				const view = converter.domToView( text );
 
 				expect( view.data ).to.equal( ' ' );
 			} );
@@ -678,7 +678,7 @@ describe( 'DomConverter', () => {
 			const domText = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, [ domImg, domText ] );
 
-			const viewChildren = Array.from( converter.domChildrenToView( viewDocument, domP ) );
+			const viewChildren = Array.from( converter.domChildrenToView( domP ) );
 
 			expect( viewChildren.length ).to.equal( 2 );
 			expect( stringify( viewChildren[ 0 ] ) ).to.equal( '<img></img>' );
@@ -690,7 +690,7 @@ describe( 'DomConverter', () => {
 			const domFiller = BR_FILLER( document );
 			const domP = createElement( document, 'p', null, domFiller );
 
-			const viewChildren = Array.from( converter.domChildrenToView( viewDocument, domP ) );
+			const viewChildren = Array.from( converter.domChildrenToView( domP ) );
 
 			expect( viewChildren.length ).to.equal( 0 );
 		} );
@@ -700,7 +700,7 @@ describe( 'DomConverter', () => {
 			const domB = createElement( document, 'b', null, 'bar' );
 			const domP = createElement( document, 'p', null, [ domB, domText ] );
 
-			const viewChildren = Array.from( converter.domChildrenToView( viewDocument, domP, { withChildren: false } ) );
+			const viewChildren = Array.from( converter.domChildrenToView( domP, { withChildren: false } ) );
 
 			expect( viewChildren.length ).to.equal( 2 );
 			expect( stringify( viewChildren[ 0 ] ) ).to.equal( '<b></b>' );
@@ -766,7 +766,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should converter position inside block filler', () => {
-			const converter = new DomConverter( { blockFillerMode: 'nbsp' } );
+			const converter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
 			const domFiller = NBSP_FILLER( document ); // eslint-disable-line new-cap
 			const domP = createElement( document, 'p', null, domFiller );
 

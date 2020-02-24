@@ -15,13 +15,10 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 describe( 'XmlDataProcessor', () => {
 	let stylesProcessor, dataProcessor, viewDocument;
 
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	beforeEach( () => {
-		dataProcessor = new XmlDataProcessor( stylesProcessor );
+		stylesProcessor = new StylesProcessor();
 		viewDocument = new ViewDocument( stylesProcessor );
+		dataProcessor = new XmlDataProcessor( viewDocument );
 	} );
 
 	describe( 'toView', () => {
@@ -50,7 +47,7 @@ describe( 'XmlDataProcessor', () => {
 		} );
 
 		it( 'should allow to use registered namespaces', () => {
-			dataProcessor = new XmlDataProcessor( stylesProcessor, {
+			dataProcessor = new XmlDataProcessor( viewDocument, {
 				namespaces: [ 'foo', 'bar' ]
 			} );
 

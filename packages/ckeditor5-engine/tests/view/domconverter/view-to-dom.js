@@ -24,10 +24,10 @@ import { StylesProcessor } from '../../../src/view/stylesmap';
 describe( 'DomConverter', () => {
 	let converter, viewDocument, stylesProcessor;
 
-	before( () => {
+	beforeEach( () => {
 		stylesProcessor = new StylesProcessor();
-		converter = new DomConverter();
 		viewDocument = new ViewDocument( stylesProcessor );
+		converter = new DomConverter( viewDocument );
 	} );
 
 	describe( 'viewToDom()', () => {

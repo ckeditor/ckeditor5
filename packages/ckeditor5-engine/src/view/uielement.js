@@ -43,12 +43,12 @@ export default class UIElement extends Element {
 	 * @protected
 	 * @param {module:engine/view/document~Document} document A document where the element belongs to.
 	 * @param {String} name Node name.
-	 * @param {Object|Iterable} [attrs] Collection of attributes.
+	 * @param {Object|Iterable} [attributes] Collection of attributes.
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
 	 * A list of nodes to be inserted into created element.
 	 */
-	constructor( document, name, attrs, children ) {
-		super( document, name, attrs, children );
+	constructor( document, name, attributes, children ) {
+		super( document, name, attributes, children );
 
 		/**
 		 * Returns `null` because filler is not needed for UIElements.

@@ -20,11 +20,10 @@ import { StylesProcessor } from '../../../src/view/stylesmap';
 describe( 'DomConverter', () => {
 	let converter, viewDocument, stylesProcessor;
 
-	before( () => {
-		converter = new DomConverter();
+	beforeEach( () => {
 		stylesProcessor = new StylesProcessor();
-
 		viewDocument = new ViewDocument( stylesProcessor );
+		converter = new DomConverter( viewDocument );
 	} );
 
 	describe( 'bindElements()', () => {
@@ -63,7 +62,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should return corresponding view document fragment', () => {
 			const domFragment = document.createDocumentFragment();
-			const viewFragment = converter.domToView( viewDocument, domFragment );
+			const viewFragment = converter.domToView( domFragment );
 
 			converter.bindElements( domFragment, viewFragment );
 
@@ -86,7 +85,7 @@ describe( 'DomConverter', () => {
 
 			converter.bindElements( domImg, viewImg );
 
-			const viewP = converter.domToView( viewDocument, domP );
+			const viewP = converter.domToView( domP );
 			const viewText = viewP.getChild( 1 );
 
 			expect( converter.findCorrespondingViewText( domText ) ).to.equal( viewText );
@@ -96,7 +95,7 @@ describe( 'DomConverter', () => {
 			const domText = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, domText );
 
-			const viewP = converter.domToView( viewDocument, domP );
+			const viewP = converter.domToView( domP );
 			const viewText = viewP.getChild( 0 );
 
 			converter.bindElements( domP, viewP );
@@ -109,7 +108,7 @@ describe( 'DomConverter', () => {
 			const domText = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, [ domImg, domText ] );
 
-			const viewP = converter.domToView( viewDocument, domP );
+			const viewP = converter.domToView( domP );
 
 			converter.bindElements( domP, viewP );
 
@@ -121,7 +120,7 @@ describe( 'DomConverter', () => {
 			const domTextBar = document.createTextNode( 'bar' );
 			const domP = createElement( document, 'p', null, [ domTextFoo, domTextBar ] );
 
-			const viewP = converter.domToView( viewDocument, domP );
+			const viewP = converter.domToView( domP );
 
 			converter.bindElements( domP, viewP );
 
@@ -139,7 +138,7 @@ describe( 'DomConverter', () => {
 			const domFiller = document.createTextNode( INLINE_FILLER );
 			const domP = createElement( document, 'p', null, domFiller );
 
-			const viewP = converter.domToView( viewDocument, domP );
+			const viewP = converter.domToView( domP );
 
 			converter.bindElements( domP, viewP );
 
@@ -212,7 +211,7 @@ describe( 'DomConverter', () => {
 
 			converter.bindElements( domImg, viewImg );
 
-			const viewP = converter.domToView( viewDocument, domP );
+			const viewP = converter.domToView( domP );
 			const viewText = viewP.getChild( 1 );
 
 			expect( converter.findCorrespondingDomText( viewText ) ).to.equal( domText );
@@ -224,7 +223,7 @@ describe( 'DomConverter', () => {
 
 			domP.appendChild( domText );
 
-			const viewP = converter.domToView( viewDocument, domP );
+			const viewP = converter.domToView( domP );
 			const viewText = viewP.getChild( 0 );
 
 			converter.bindElements( domP, viewP );
@@ -240,7 +239,7 @@ describe( 'DomConverter', () => {
 			domP.appendChild( domImg );
 			domP.appendChild( domText );
 
-			const viewP = converter.domToView( viewDocument, domP );
+			const viewP = converter.domToView( domP );
 			const viewText = viewP.getChild( 1 );
 
 			converter.bindElements( domP, viewP );
@@ -254,7 +253,7 @@ describe( 'DomConverter', () => {
 
 			domP.appendChild( domText );
 
-			const viewP = converter.domToView( viewDocument, domP );
+			const viewP = converter.domToView( domP );
 			const viewText = viewP.getChild( 0 );
 
 			expect( converter.findCorrespondingDomText( viewText ) ).to.be.null;
@@ -262,7 +261,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should return null if there is no previous sibling and parent', () => {
 			const domText = document.createTextNode( 'foo' );
-			const viewText = converter.domToView( viewDocument, domText );
+			const viewText = converter.domToView( domText );
 
 			expect( converter.findCorrespondingDomText( viewText ) ).to.be.null;
 		} );

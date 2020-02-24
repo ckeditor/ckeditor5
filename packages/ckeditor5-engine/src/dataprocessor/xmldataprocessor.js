@@ -11,7 +11,6 @@
 
 import BasicHtmlWriter from './basichtmlwriter';
 import DomConverter from '../view/domconverter';
-import ViewDocument from '../view/document';
 
 /**
  * The XML data processor class.
@@ -25,19 +24,11 @@ export default class XmlDataProcessor {
 	/**
 	 * Creates a new instance of the XML data processor class.
 	 *
-	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor Styles processor.
+	 * @param {module:engine/view/document~Document} document
 	 * @param {Object} options Configuration options.
 	 * @param {Array<String>} [options.namespaces=[]] A list of namespaces allowed to use in the XML input.
 	 */
-	constructor( stylesProcessor, options = {} ) {
-		/**
-		 * Styles processor.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/stylesmap~StylesProcessor}
-		 */
-		this.stylesProcessor = stylesProcessor;
-
+	constructor( document, options = {} ) {
 		/**
 		 * A list of namespaces allowed to use in the XML input.
 		 *
@@ -63,7 +54,7 @@ export default class XmlDataProcessor {
 		 * @private
 		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
-		this._domConverter = new DomConverter( { blockFillerMode: 'nbsp' } );
+		this._domConverter = new DomConverter( document, { blockFillerMode: 'nbsp' } );
 
 		/**
 		 * A basic HTML writer instance used to convert DOM elements to an XML string.
@@ -100,10 +91,9 @@ export default class XmlDataProcessor {
 	toView( data ) {
 		// Convert input XML data to DOM DocumentFragment.
 		const domFragment = this._toDom( data );
-		const viewDocument = new ViewDocument( this.stylesProcessor );
 
 		// Convert DOM DocumentFragment to view DocumentFragment.
-		return this._domConverter.domToView( viewDocument, domFragment, { keepOriginalCase: true } );
+		return this._domConverter.domToView( domFragment, { keepOriginalCase: true } );
 	}
 
 	/**

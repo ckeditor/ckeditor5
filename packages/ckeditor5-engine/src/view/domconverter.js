@@ -44,10 +44,17 @@ export default class DomConverter {
 	/**
 	 * Creates DOM converter.
 	 *
+	 * @param {module:engine/view/document~Document} document
 	 * @param {Object} options Object with configuration options.
 	 * @param {module:engine/view/filler~BlockFillerMode} [options.blockFillerMode='br'] The type of the block filler to use.
 	 */
-	constructor( options = {} ) {
+	constructor( document, options = {} ) {
+		/**
+		 * @readonly
+		 * @type {module:engine/view/document~Document}
+		 */
+		this.document = document;
+
 		/**
 		 * The mode of a block filler used by DOM converter.
 		 *
@@ -373,7 +380,6 @@ export default class DomConverter {
 	 * {@link module:engine/view/filler fillers} `null` will be returned.
 	 * For all DOM elements rendered by {@link module:engine/view/uielement~UIElement} that UIElement will be returned.
 	 *
-	 * @param {module:engine/view/document~Document} viewDocument View document where the created node will belong to.
 	 * @param {Node|DocumentFragment} domNode DOM node or document fragment to transform.
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
@@ -382,7 +388,7 @@ export default class DomConverter {
 	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Converted node or document fragment
 	 * or `null` if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
 	 */
-	domToView( viewDocument, domNode, options = {} ) {
+	domToView( domNode, options = {} ) {
 		if ( this.isBlockFiller( domNode, this.blockFillerMode ) ) {
 			return null;
 		}
@@ -400,7 +406,7 @@ export default class DomConverter {
 			} else {
 				const textData = this._processDataFromDomText( domNode );
 
-				return textData === '' ? null : new ViewText( viewDocument, textData );
+				return textData === '' ? null : new ViewText( this.document, textData );
 			}
 		} else if ( this.isComment( domNode ) ) {
 			return null;
@@ -413,7 +419,7 @@ export default class DomConverter {
 
 			if ( this.isDocumentFragment( domNode ) ) {
 				// Create view document fragment.
-				viewElement = new ViewDocumentFragment( viewDocument );
+				viewElement = new ViewDocumentFragment( this.document );
 
 				if ( options.bind ) {
 					this.bindDocumentFragments( domNode, viewElement );
@@ -421,7 +427,7 @@ export default class DomConverter {
 			} else {
 				// Create view element.
 				const viewName = options.keepOriginalCase ? domNode.tagName : domNode.tagName.toLowerCase();
-				viewElement = new ViewElement( viewDocument, viewName );
+				viewElement = new ViewElement( this.document, viewName );
 
 				if ( options.bind ) {
 					this.bindElements( domNode, viewElement );
@@ -436,7 +442,7 @@ export default class DomConverter {
 			}
 
 			if ( options.withChildren || options.withChildren === undefined ) {
-				for ( const child of this.domChildrenToView( viewDocument, domNode, options ) ) {
+				for ( const child of this.domChildrenToView( domNode, options ) ) {
 					viewElement._appendChild( child );
 				}
 			}
@@ -450,15 +456,14 @@ export default class DomConverter {
 	 * the {@link module:engine/view/domconverter~DomConverter#domToView} method.
 	 * Additionally this method omits block {@link module:engine/view/filler filler}, if it exists in the DOM parent.
 	 *
-	 * @param {module:engine/view/document~Document} viewDocument View document where the created node will belong to.
 	 * @param {HTMLElement} domElement Parent DOM element.
 	 * @param {Object} options See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
 	 * @returns {Iterable.<module:engine/view/node~Node>} View nodes.
 	 */
-	* domChildrenToView( viewDocument, domElement, options = {} ) {
+	* domChildrenToView( domElement, options = {} ) {
 		for ( let i = 0; i < domElement.childNodes.length; i++ ) {
 			const domChild = domElement.childNodes[ i ];
-			const viewChild = this.domToView( viewDocument, domChild, options );
+			const viewChild = this.domToView( domChild, options );
 
 			if ( viewChild !== null ) {
 				yield viewChild;
@@ -802,7 +807,7 @@ export default class DomConverter {
 	/**
 	 * Checks if the node is an instance of the block filler for this DOM converter.
 	 *
-	 *		const converter = new DomConverter( { blockFillerMode: 'br' } );
+	 *		const converter = new DomConverter( viewDocument, { blockFillerMode: 'br' } );
 	 *
 	 *		converter.isBlockFiller( BR_FILLER( document ) ); // true
 	 *		converter.isBlockFiller( NBSP_FILLER( document ) ); // false

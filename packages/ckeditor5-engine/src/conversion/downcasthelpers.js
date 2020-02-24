@@ -416,12 +416,12 @@ export function remove() {
  * provided by the {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor} object. If a priority
  * is not provided in the descriptor, the default priority will be used.
  *
- * @param {module:engine/view/document~Document} document
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer
  * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} descriptor
  * @returns {module:engine/view/attributeelement~AttributeElement}
  */
-export function createViewElementFromHighlightDescriptor( document, descriptor ) {
-	const viewElement = new ViewAttributeElement( document, 'span', descriptor.attributes );
+export function createViewElementFromHighlightDescriptor( writer, descriptor ) {
+	const viewElement = writer.createAttributeElement( 'span', descriptor.attributes );
 
 	if ( descriptor.classes ) {
 		viewElement._addClass( descriptor.classes );
@@ -921,7 +921,7 @@ function highlightText( highlightDescriptor ) {
 		}
 
 		const viewWriter = conversionApi.writer;
-		const viewElement = createViewElementFromHighlightDescriptor( viewWriter.document, descriptor );
+		const viewElement = createViewElementFromHighlightDescriptor( viewWriter, descriptor );
 		const viewSelection = viewWriter.document.selection;
 
 		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection ) {
@@ -1035,7 +1035,7 @@ function removeHighlight( highlightDescriptor ) {
 		}
 
 		// View element that will be used to unwrap `AttributeElement`s.
-		const viewHighlightElement = createViewElementFromHighlightDescriptor( conversionApi.writer.document, descriptor );
+		const viewHighlightElement = createViewElementFromHighlightDescriptor( conversionApi.writer, descriptor );
 
 		// Get all elements bound with given marker name.
 		const elements = conversionApi.mapper.markerNameToElements( data.markerName );

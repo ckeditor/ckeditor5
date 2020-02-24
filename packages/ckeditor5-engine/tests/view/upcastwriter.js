@@ -17,14 +17,12 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 describe( 'UpcastWriter', () => {
 	let writer, view, dataprocessor, document, stylesProcessor;
 
-	before( () => {
+	beforeEach( () => {
 		stylesProcessor = new StylesProcessor();
 		document = new Document( stylesProcessor );
 		writer = new UpcastWriter( document );
-		dataprocessor = new HtmlDataProcessor( stylesProcessor );
-	} );
+		dataprocessor = new HtmlDataProcessor( document );
 
-	beforeEach( () => {
 		const html = '' +
 			'<h1 style="color:blue;position:fixed;">Heading <strong>1</strong></h1>' +
 			'<p class="foo1 bar2" style="text-align:left;" data-attr="abc">Foo <i>Bar</i> <strong>Bold</strong></p>' +

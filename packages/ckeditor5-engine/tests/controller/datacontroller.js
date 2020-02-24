@@ -24,14 +24,10 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'DataController', () => {
-	let model, modelDocument, htmlDataProcessor, data, schema, upcastHelpers, downcastHelpers, viewDocument;
-	let stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
+	let model, modelDocument, htmlDataProcessor, data, schema, upcastHelpers, downcastHelpers, viewDocument, stylesProcessor;
 
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		model = new Model();
 
 		schema = model.schema;
@@ -42,10 +38,10 @@ describe( 'DataController', () => {
 
 		schema.register( '$title', { inheritAllFrom: '$root' } );
 
-		htmlDataProcessor = new HtmlDataProcessor( stylesProcessor );
 		viewDocument = new ViewDocument( stylesProcessor );
+		htmlDataProcessor = new HtmlDataProcessor( viewDocument );
 
-		data = new DataController( model, stylesProcessor, htmlDataProcessor );
+		data = new DataController( stylesProcessor, model, htmlDataProcessor );
 
 		upcastHelpers = new UpcastHelpers( [ data.upcastDispatcher ] );
 		downcastHelpers = new DowncastHelpers( [ data.downcastDispatcher ] );
@@ -53,7 +49,7 @@ describe( 'DataController', () => {
 
 	describe( 'constructor()', () => {
 		it( 'works without data processor', () => {
-			const data = new DataController( model, stylesProcessor );
+			const data = new DataController( stylesProcessor, model );
 
 			expect( data.processor ).to.be.undefined;
 		} );
@@ -575,6 +571,17 @@ describe( 'DataController', () => {
 			data.destroy();
 
 			expect( data ).to.respondTo( 'destroy' );
+		} );
+	} );
+
+	describe( 'addStyleProcessorRules()', () => {
+		it( 'should execute callback with an instance of StyleProcessor as the first argument', () => {
+			const spy = sinon.spy();
+
+			data.addStyleProcessorRules( spy );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, stylesProcessor );
 		} );
 	} );
 } );

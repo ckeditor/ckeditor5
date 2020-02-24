@@ -27,13 +27,10 @@ describe( 'DOMConverter UIElement integration', () => {
 		return element;
 	}
 
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	beforeEach( () => {
-		converter = new DomConverter();
+		stylesProcessor = new StylesProcessor();
 		viewDocument = new ViewDocument( stylesProcessor );
+		converter = new DomConverter( viewDocument );
 	} );
 
 	describe( 'viewToDom()', () => {
@@ -68,7 +65,7 @@ describe( 'DOMConverter UIElement integration', () => {
 			const uiElement = createUIElement( 'div' );
 			const domElement = converter.viewToDom( uiElement, document, { bind: true } );
 
-			expect( converter.domToView( viewDocument, domElement ) ).to.equal( uiElement );
+			expect( converter.domToView( domElement ) ).to.equal( uiElement );
 		} );
 
 		it( 'should return UIElement for nodes inside', () => {
@@ -78,10 +75,10 @@ describe( 'DOMConverter UIElement integration', () => {
 			const domParagraph = domElement.childNodes[ 0 ];
 			const domSpan = domParagraph.childNodes[ 0 ];
 
-			expect( converter.domToView( viewDocument, domParagraph ) ).to.equal( uiElement );
-			expect( converter.domToView( viewDocument, domSpan ) ).to.be.equal( uiElement );
-			expect( converter.domToView( viewDocument, domParagraph.childNodes[ 0 ] ) ).equal( uiElement );
-			expect( converter.domToView( viewDocument, domSpan.childNodes[ 0 ] ) ).equal( uiElement );
+			expect( converter.domToView( domParagraph ) ).to.equal( uiElement );
+			expect( converter.domToView( domSpan ) ).to.be.equal( uiElement );
+			expect( converter.domToView( domParagraph.childNodes[ 0 ] ) ).equal( uiElement );
+			expect( converter.domToView( domSpan.childNodes[ 0 ] ) ).equal( uiElement );
 		} );
 	} );
 

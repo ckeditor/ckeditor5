@@ -13,13 +13,12 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 import ViewDocument from '../../src/view/document';
 
 describe( 'HtmlDataProcessor', () => {
-	const stylesProcessor = new StylesProcessor();
-	const dataProcessor = new HtmlDataProcessor( stylesProcessor );
-
-	let viewDocument;
+	let stylesProcessor, dataProcessor, viewDocument;
 
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		viewDocument = new ViewDocument( stylesProcessor );
+		dataProcessor = new HtmlDataProcessor( viewDocument );
 	} );
 
 	describe( 'toView()', () => {

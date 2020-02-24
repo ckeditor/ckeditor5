@@ -46,12 +46,12 @@ export default class DataController {
 	/**
 	 * Creates a data controller instance.
 	 *
-	 * @param {module:engine/model/model~Model} model Data model.
 	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor Styles processor.
+	 * @param {module:engine/model/model~Model} model Data model.
 	 * @param {module:engine/dataprocessor/dataprocessor~DataProcessor} [dataProcessor] Data processor that should be used
 	 * by the controller.
 	 */
-	constructor( model, stylesProcessor, dataProcessor ) {
+	constructor( stylesProcessor, model, dataProcessor ) {
 		/**
 		 * Data model.
 		 *
@@ -379,6 +379,22 @@ export default class DataController {
 		return this.model.change( writer => {
 			return this.upcastDispatcher.convert( viewElementOrFragment, writer, context );
 		} );
+	}
+
+	/**
+	 * Adds a style processor normalization rules.
+	 *
+	 * The available style processors:
+	 *
+	 * * background: {@link module:engine/view/styles/background~addBackgroundRules}
+	 * * border: {@link module:engine/view/styles/border~addBorderRules}
+	 * * margin: {@link module:engine/view/styles/margin~addMarginRules}
+	 * * padding: {@link module:engine/view/styles/padding~addPaddingRules}
+	 *
+	 * @param {Function} callback
+	 */
+	addStyleProcessorRules( callback ) {
+		callback( this.stylesProcessor );
 	}
 
 	/**
