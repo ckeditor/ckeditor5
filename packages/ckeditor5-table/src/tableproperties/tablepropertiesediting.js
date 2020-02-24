@@ -69,9 +69,8 @@ export default class TablePropertiesEditing extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
-		const viewDoc = editor.editing.view.document;
 
-		viewDoc.addStyleProcessorRules( addBorderRules );
+		editor.data.addStyleProcessorRules( addBorderRules );
 		enableBorderProperties( schema, conversion );
 		editor.commands.add( 'tableBorderColor', new TableBorderColorCommand( editor ) );
 		editor.commands.add( 'tableBorderStyle', new TableBorderStyleCommand( editor ) );
@@ -86,7 +85,7 @@ export default class TablePropertiesEditing extends Plugin {
 		enableTableToFigureProperty( schema, conversion, 'height', 'height' );
 		editor.commands.add( 'tableHeight', new TableHeightCommand( editor ) );
 
-		viewDoc.addStyleProcessorRules( addBackgroundRules );
+		editor.data.addStyleProcessorRules( addBackgroundRules );
 		enableProperty( schema, conversion, 'backgroundColor', 'background-color' );
 		editor.commands.add( 'tableBackgroundColor', new TableBackgroundColorCommand( editor ) );
 	}
