@@ -66,7 +66,7 @@ export default class ClassicEditor extends Editor {
 			this.sourceElement = sourceElementOrData;
 		}
 
-		this.data.processor = new HtmlDataProcessor( this.data.stylesProcessor );
+		this.data.processor = new HtmlDataProcessor( this.editing.view.document );
 
 		this.model.document.createRoot();
 
