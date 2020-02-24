@@ -31,7 +31,7 @@ describe( 'attachToForm()', () => {
 		mix( CustomEditor, ElementApiMixin );
 
 		editor = new CustomEditor();
-		editor.data.processor = new HtmlDataProcessor( editor.stylesProcessor );
+		editor.data.processor = new HtmlDataProcessor( editor.editing.view.document );
 		editor.model.document.createRoot();
 		editor.model.schema.extend( '$text', { allowIn: '$root' } );
 		editor.fire( 'ready' );

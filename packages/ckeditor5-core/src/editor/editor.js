@@ -171,7 +171,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:engine/controller/datacontroller~DataController}
 		 */
-		this.data = new DataController( this.model, stylesProcessor );
+		this.data = new DataController( stylesProcessor, this.model );
 
 		/**
 		 * The {@link module:engine/controller/editingcontroller~EditingController editing controller}.

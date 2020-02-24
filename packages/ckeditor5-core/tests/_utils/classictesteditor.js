@@ -34,7 +34,7 @@ export default class ClassicTestEditor extends Editor {
 		}
 
 		// Use the HTML data processor in this editor.
-		this.data.processor = new HtmlDataProcessor( this.data.stylesProcessor );
+		this.data.processor = new HtmlDataProcessor( this.editing.view.document );
 
 		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot();
