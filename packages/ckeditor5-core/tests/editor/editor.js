@@ -149,7 +149,7 @@ describe( 'Editor', () => {
 				bar: 'foo',
 				foo: {
 					c: 3
-				},
+				}
 			} );
 
 			expect( editor.config.get( 'foo' ) ).to.deep.equal( {

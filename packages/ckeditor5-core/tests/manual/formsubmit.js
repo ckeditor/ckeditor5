@@ -14,7 +14,7 @@ document.getElementById( 'form' ).submit = () => {};
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet ],
-		toolbar: [ 'bold', 'italic', 'undo', 'redo' ],
+		toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
