@@ -256,7 +256,6 @@ export default class ToolbarView extends View {
 	 */
 	destroy() {
 		this._behavior.destroy();
-		this.resizeObserver.destroy();
 
 		return super.destroy();
 	}
