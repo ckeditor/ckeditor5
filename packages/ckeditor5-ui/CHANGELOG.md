@@ -1,6 +1,28 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### Features
+
+* Created the `LabeledView` class (see https://github.com/ckeditor/ckeditor5-table/pull/227). ([ec39406](https://github.com/ckeditor/ckeditor5-ui/commit/ec39406))
+
+  Also added `id` properties to the `DropdownView` and `LabelView` for compatibility with the `LabeledView`.
+* Implemented the `Toolbar#isCompact` property to turn regular toolbars into compact ones (with less spacing) (see [ckeditor/ckeditor5#6112](https://github.com/ckeditor/ckeditor5/issues/6112)). ([a6b9c09](https://github.com/ckeditor/ckeditor5-ui/commit/a6b9c09))
+* Reintroduced the concept of body collections with a focus on better management of multiple editors and support for context plugins (plugins which leave outside an editor instance). Closes [ckeditor/ckeditor5#5888](https://github.com/ckeditor/ckeditor5/issues/5888). ([23d12e9](https://github.com/ckeditor/ckeditor5-ui/commit/23d12e9))
+
+### Bug fixes
+
+* Make `BlockToolbar` work with an empty configuration. Closes [ckeditor/ckeditor5#5980](https://github.com/ckeditor/ckeditor5/issues/5980). ([1e05098](https://github.com/ckeditor/ckeditor5-ui/commit/1e05098))
+
+### Other changes
+
+* Replaced the `getResizeObserver()` helper with new `ResizeObserver` class in `ToolbarView`. ([be98aa4](https://github.com/ckeditor/ckeditor5-ui/commit/be98aa4))
+
+  Follow-up on: https://github.com/ckeditor/ckeditor5-utils/pull/320
+* Updated translations. ([b8bd38e](https://github.com/ckeditor/ckeditor5-ui/commit/b8bd38e))
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Features
@@ -13,7 +35,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([16ee253](https://github.com/ckeditor/ckeditor5-ui/commit/16ee253)) 
+* Updated translations. ([16ee253](https://github.com/ckeditor/ckeditor5-ui/commit/16ee253))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v14.0.0...v15.0.0) (2019-10-23)
