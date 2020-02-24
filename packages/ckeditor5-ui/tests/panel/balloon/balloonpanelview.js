@@ -183,9 +183,13 @@ describe( 'BalloonPanelView', () => {
 					BalloonPanelView.defaultPositions.southArrowNorth,
 					BalloonPanelView.defaultPositions.southArrowNorthWest,
 					BalloonPanelView.defaultPositions.southArrowNorthEast,
+					BalloonPanelView.defaultPositions.southArrowNorthMiddleWest,
+					BalloonPanelView.defaultPositions.southArrowNorthMiddleEast,
 					BalloonPanelView.defaultPositions.northArrowSouth,
 					BalloonPanelView.defaultPositions.northArrowSouthWest,
-					BalloonPanelView.defaultPositions.northArrowSouthEast
+					BalloonPanelView.defaultPositions.northArrowSouthEast,
+					BalloonPanelView.defaultPositions.northArrowSouthMiddleWest,
+					BalloonPanelView.defaultPositions.northArrowSouthMiddleEast,
 				],
 				limiter: document.body,
 				fitInViewport: true
@@ -711,7 +715,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should have a proper length', () => {
-			expect( Object.keys( positions ) ).to.have.length( 18 );
+			expect( Object.keys( positions ) ).to.have.length( 30 );
 		} );
 
 		// ------- North
@@ -732,11 +736,27 @@ describe( 'BalloonPanelView', () => {
 			} );
 		} );
 
+		it( 'should define the "northArrowSouthMiddleEast" position', () => {
+			expect( positions.northArrowSouthMiddleEast( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 50 - arrowVOffset,
+				left: 112.5 + arrowHOffset,
+				name: 'arrow_sme'
+			} );
+		} );
+
 		it( 'should define the "northArrowSouthWest" position', () => {
 			expect( positions.northArrowSouthWest( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 50 - arrowVOffset,
 				left: 150 - arrowHOffset,
 				name: 'arrow_sw'
+			} );
+		} );
+
+		it( 'should define the "northArrowSouthMiddleWest" position', () => {
+			expect( positions.northArrowSouthMiddleWest( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 50 - arrowVOffset,
+				left: 162.5 - arrowHOffset,
+				name: 'arrow_smw'
 			} );
 		} );
 
@@ -758,11 +778,27 @@ describe( 'BalloonPanelView', () => {
 			} );
 		} );
 
+		it( 'should define the "northWestArrowSouthMiddleWest" position', () => {
+			expect( positions.northWestArrowSouthMiddleWest( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 50 - arrowVOffset,
+				left: 87.5 - arrowHOffset,
+				name: 'arrow_smw'
+			} );
+		} );
+
 		it( 'should define the "northWestArrowSouthEast" position', () => {
 			expect( positions.northWestArrowSouthEast( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 50 - arrowVOffset,
 				left: 50 + arrowHOffset,
 				name: 'arrow_se'
+			} );
+		} );
+
+		it( 'should define the "northWestArrowSouthMiddleEast" position', () => {
+			expect( positions.northWestArrowSouthMiddleEast( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 50 - arrowVOffset,
+				left: 62.5 + arrowHOffset,
+				name: 'arrow_sme'
 			} );
 		} );
 
@@ -784,11 +820,27 @@ describe( 'BalloonPanelView', () => {
 			} );
 		} );
 
+		it( 'should define the "northEastArrowSouthMiddleEast" position', () => {
+			expect( positions.northEastArrowSouthMiddleEast( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 50 - arrowVOffset,
+				left: 162.5 + arrowHOffset,
+				name: 'arrow_sme'
+			} );
+		} );
+
 		it( 'should define the "northEastArrowSouthWest" position', () => {
 			expect( positions.northEastArrowSouthWest( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 50 - arrowVOffset,
 				left: 200 - arrowHOffset,
 				name: 'arrow_sw'
+			} );
+		} );
+
+		it( 'should define the "northEastArrowSouthMiddleWest" position', () => {
+			expect( positions.northEastArrowSouthMiddleWest( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 50 - arrowVOffset,
+				left: 187.5 - arrowHOffset,
+				name: 'arrow_smw'
 			} );
 		} );
 
@@ -810,11 +862,27 @@ describe( 'BalloonPanelView', () => {
 			} );
 		} );
 
+		it( 'should define the "southArrowNorthMiddleEast" position', () => {
+			expect( positions.southArrowNorthMiddleEast( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 200 + arrowVOffset,
+				left: 112.5 + arrowHOffset,
+				name: 'arrow_nme'
+			} );
+		} );
+
 		it( 'should define the "southArrowNorthWest" position', () => {
 			expect( positions.southArrowNorthWest( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 200 + arrowVOffset,
 				left: 150 - arrowHOffset,
 				name: 'arrow_nw'
+			} );
+		} );
+
+		it( 'should define the "southArrowNorthMiddleWest" position', () => {
+			expect( positions.southArrowNorthMiddleWest( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 200 + arrowVOffset,
+				left: 137.5 - arrowHOffset,
+				name: 'arrow_nmw'
 			} );
 		} );
 
@@ -836,11 +904,27 @@ describe( 'BalloonPanelView', () => {
 			} );
 		} );
 
+		it( 'should define the "southWestArrowNorthMiddleWest" position', () => {
+			expect( positions.southWestArrowNorthMiddleWest( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 200 + arrowVOffset,
+				left: 87.5 - arrowHOffset,
+				name: 'arrow_nmw'
+			} );
+		} );
+
 		it( 'should define the "southWestArrowNorthEast" position', () => {
 			expect( positions.southWestArrowNorthEast( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 200 + arrowVOffset,
 				left: 50 + arrowHOffset,
 				name: 'arrow_ne'
+			} );
+		} );
+
+		it( 'should define the "southWestArrowNorthMiddleEast" position', () => {
+			expect( positions.southWestArrowNorthMiddleEast( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 200 + arrowVOffset,
+				left: 62.5 + arrowHOffset,
+				name: 'arrow_nme'
 			} );
 		} );
 
@@ -862,11 +946,27 @@ describe( 'BalloonPanelView', () => {
 			} );
 		} );
 
+		it( 'should define the "southEastArrowNorthMiddleEast" position', () => {
+			expect( positions.southEastArrowNorthMiddleEast( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 200 + arrowVOffset,
+				left: 162.5 + arrowHOffset,
+				name: 'arrow_nme'
+			} );
+		} );
+
 		it( 'should define the "southEastArrowNorthWest" position', () => {
 			expect( positions.southEastArrowNorthWest( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 200 + arrowVOffset,
 				left: 200 - arrowHOffset,
 				name: 'arrow_nw'
+			} );
+		} );
+
+		it( 'should define the "southEastArrowNorthMiddleWest" position', () => {
+			expect( positions.southEastArrowNorthMiddleWest( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 200 + arrowVOffset,
+				left: 187.5 - arrowHOffset,
+				name: 'arrow_nmw'
 			} );
 		} );
 	} );
