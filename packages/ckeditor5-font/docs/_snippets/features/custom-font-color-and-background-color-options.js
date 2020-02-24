@@ -184,7 +184,7 @@ ClassicEditor
 				{
 					color: 'hsl(330,100%,90%)',
 					hasBorder: true
-				},
+				}
 			],
 			columns: 9,
 			documentColors: 18

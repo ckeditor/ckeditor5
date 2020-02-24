@@ -11,7 +11,7 @@ describe( 'DocumentColorCollection', () => {
 
 	const colors = [
 		{
-			color: '111',
+			color: '111'
 		},
 		{
 			color: '222'
