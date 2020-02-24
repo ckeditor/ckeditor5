@@ -5,6 +5,8 @@
 
 import MarkdownDataProcessor from '../../src/gfmdataprocessor';
 import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 /**
  * Tests MarkdownDataProcessor.
@@ -15,7 +17,8 @@ import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
  * markdown string (which will be used if this parameter is not provided).
  */
 export function testDataProcessor( markdown, viewString, normalizedMarkdown ) {
-	const dataProcessor = new MarkdownDataProcessor();
+	const viewDocument = new ViewDocument( new StylesProcessor() );
+	const dataProcessor = new MarkdownDataProcessor( viewDocument );
 	const viewFragment = dataProcessor.toView( markdown );
 
 	// Check if view has correct data.

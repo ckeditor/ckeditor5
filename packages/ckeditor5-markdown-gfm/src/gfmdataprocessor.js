@@ -12,7 +12,6 @@ import toMarkdown from './lib/to-markdown/to-markdown';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import GFMRenderer from './lib/marked/renderer';
 import converters from './lib/to-markdown/converters';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 /**
  * This data processor implementation uses GitHub Flavored Markdown as input/output data.
@@ -22,14 +21,19 @@ import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
  * @implements module:engine/dataprocessor/dataprocessor~DataProcessor
  */
 export default class GFMDataProcessor {
-	constructor() {
+	/**
+	 * Creates a new instance of the HTML data processor class.
+	 *
+	 * @param {module:engine/view/document~Document} document
+	 */
+	constructor( document ) {
 		/**
 		 * HTML data processor used to process HTML produced by the Markdown-to-HTML converter and the other way.
 		 *
 		 * @private
 		 * @member {module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}
 		 */
-		this._htmlDP = new HtmlDataProcessor( new StylesProcessor() );
+		this._htmlDP = new HtmlDataProcessor( document );
 	}
 
 	/**
