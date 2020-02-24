@@ -604,7 +604,7 @@ describe( 'LinkEditing', () => {
 					.create( {
 						plugins: [ Paragraph, LinkEditing, Enter, CustomLinks ],
 						link: {
-							addTargetToExternalLinks: true,
+							addTargetToExternalLinks: true
 						}
 					} )
 					.then( newEditor => {
