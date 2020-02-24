@@ -22,10 +22,11 @@ describe( 'DataApiMixin', () => {
 		editor.model.document.createRoot( '$root', 'main' );
 		editor.model.document.createRoot( '$root', 'secondRoot' );
 		editor.model.schema.extend( '$text', { allowIn: '$root' } );
+		editor.fire( 'ready' ); // (#6139)
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	describe( 'setData()', () => {

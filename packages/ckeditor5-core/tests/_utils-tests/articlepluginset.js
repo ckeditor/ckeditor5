@@ -29,18 +29,15 @@ import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml'
 describe( 'ArticlePluginSet', () => {
 	let editor, editorElement;
 
-	beforeEach( () => {
+	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, { plugins: [ ArticlePluginSet ] } )
-			.then( newEditor => {
-				editor = newEditor;
-			} );
+		editor = await ClassicTestEditor.create( editorElement, { plugins: [ ArticlePluginSet ] } );
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 
 		editorElement.remove();
 	} );
