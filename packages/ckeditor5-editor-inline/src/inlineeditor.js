@@ -64,7 +64,7 @@ export default class InlineEditor extends Editor {
 	constructor( sourceElementOrData, config ) {
 		super( config );
 
-		this.data.processor = new HtmlDataProcessor( this.data.stylesProcessor );
+		this.data.processor = new HtmlDataProcessor( this.editing.view.document );
 
 		this.model.document.createRoot();
 
