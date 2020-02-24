@@ -87,14 +87,14 @@ const customColorPalette = [
 	{
 		color: 'hsl(200, 18%, 100%)',
 		label: 'White'
-	},
+	}
 ];
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-table-styling-colors' ), {
 		extraPlugins: [
 			CKEditorPlugins.TableProperties,
-			CKEditorPlugins.TableCellProperties,
+			CKEditorPlugins.TableCellProperties
 		],
 		cloudServices: CS_CONFIG,
 		toolbar: {
