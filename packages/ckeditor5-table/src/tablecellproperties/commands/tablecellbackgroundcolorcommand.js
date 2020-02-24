@@ -13,7 +13,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  * The table cell background color command.
  *
  * The command is registered by the {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
- * `'tableCellBackgroundColor'` editor command.
+ * the `'tableCellBackgroundColor'` editor command.
  *
  * To change the background color of selected cells, execute the command:
  *
@@ -21,7 +21,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *			value: '#f00'
  *		} );
  *
- * @extends module:core/command~Command
+ * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellBackgroundColorCommand extends TableCellPropertyCommand {
 	/**

@@ -34,7 +34,7 @@ const isEmpty = val => val === '';
  * with respect to the table in the editor content, if one is selected.
  *
  * @param {module:core/editor/editor~Editor} editor The editor instance.
- * @param {String} target Either "cell" or "table". Determines the the target the balloon will
+ * @param {String} target Either "cell" or "table". Determines the target the balloon will
  * be attached to.
  */
 export function repositionContextualBalloon( editor, target ) {
@@ -154,7 +154,7 @@ export function colorFieldValidator( value ) {
 }
 
 /**
- * Returns `true` when the passed value is an empty string, number without unit or a valid CSS length expression.
+ * Returns `true` when the passed value is an empty string, a number without a unit or a valid CSS length expression.
  * Otherwise, `false` is returned.
  *
  * See {@link module:engine/view/styles/utils~isLength}.
@@ -170,7 +170,7 @@ export function lengthFieldValidator( value ) {
 }
 
 /**
- * Returns `true` when the passed value is an empty string, number without unit or a valid CSS length expression.
+ * Returns `true` when the passed value is an empty string, a number without a unit or a valid CSS length expression.
  * Otherwise, `false` is returned.
  *
  * See {@link module:engine/view/styles/utils~isLength}.
@@ -220,7 +220,7 @@ export function getBorderStyleDefinitions( view ) {
 }
 
 /**
- * A helper that fills a toolbar toolbar with buttons that:
+ * A helper that fills a toolbar with buttons that:
  *
  * * have some labels,
  * * have some icons,
@@ -233,7 +233,7 @@ export function getBorderStyleDefinitions( view ) {
  * @param {module:ui/toolbar/toolbarview~ToolbarView} options.toolbar
  * @param {Object.<String,String>} labels
  * @param {String} propertyName
- * @param {Function} nameToValue Function that maps button name to value. By default names are the same as values.
+ * @param {Function} nameToValue A function that maps a button name to a value. By default names are the same as values.
  */
 export function fillToolbar( { view, icons, toolbar, labels, propertyName, nameToValue } ) {
 	for ( const name in labels ) {
@@ -393,18 +393,18 @@ export const defaultColors = [
 ];
 
 /**
- * Returns a creator for color input with a label.
+ * Returns a creator for a color input with a label.
  *
- * For given options, it returns a function that creates an instance of
+ * For given options, it returns a function that creates an instance of a
  * {@link module:table/ui/colorinputview~ColorInputView color input} logically related to
- * a {@link module:ui/labeledview/labeledview~LabeledView labeled view} in DOM.
+ * a {@link module:ui/labeledview/labeledview~LabeledView labeled view} in the DOM.
  *
  * The helper does the following:
  *
- * * It sets color input's `id` and `ariaDescribedById` attributes.
- * * It binds color input's `isReadOnly` to the labeled view.
- * * It binds color input's `hasError` to the labeled view.
- * * It enables a logic that cleans up the error when user starts typing in the color input.
+ * * It sets the color input `id` and `ariaDescribedById` attributes.
+ * * It binds the color input `isReadOnly` to the labeled view.
+ * * It binds the color input `hasError` to the labeled view.
+ * * It enables a logic that cleans up the error when the user starts typing in the color input.
  *
  * Usage:
  *
@@ -414,7 +414,7 @@ export const defaultColors = [
  *		} );
  *
  *		const labeledInputView = new LabeledView( locale, colorInputCreator );
- *		console.log( labeledInputView.view ); // An color input instance.
+ *		console.log( labeledInputView.view ); // A color input instance.
  *
  * @private
  * @param options Color input options.

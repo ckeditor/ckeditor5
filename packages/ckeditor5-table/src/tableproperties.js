@@ -62,7 +62,7 @@ export default class TableProperties extends Plugin {
  *			}
  *		};
  *
- * **Note**: The configurations do not impact the data being loaded into the editor,
+ * **Note**: The configurations do not impact the data loaded into the editor,
  * i.e. they do not limit or filter the colors in the data. They are used only in the user interface
  * allowing users to pick colors in a more convenient way.
  *

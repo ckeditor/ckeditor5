@@ -1,0 +1,184 @@
+<style>
+	body {
+		font-family: Helvetica, Arial, sans-serif;
+		font-size: 14px;
+	}
+
+	.print-selected {
+		background: #b8e3ff;
+	}
+
+	/* This shouldn't be needed. See https://github.com/ckeditor/ckeditor5/issues/6314 */
+	.external-source td, .external-source th {
+		border: solid 1px hsl(0, 0%, 85%);
+	}
+</style>
+
+<h3>A "content" test editor</h3>
+
+<div id="editor-content">
+	<p>Jelly-o topping chocolate danish. Powder donut dragée cupcake sesame snaps cotton candy. Cotton candy pudding apple pie liquorice
+	sugar plum cookie. Powder gummi bears macaroon. Gingerbread soufflé liquorice jelly-o marzipan pudding. Toffee sweet candy canes danish
+	macaroon cotton candy fruitcake. Sesame snaps cake cookie chocolate cupcake. Ice cream pie apple pie sweet. Wafer ice cream gingerbread
+	fruitcake donut jelly sweet. Sugar plum chocolate gummi bears. Jelly-o oat cake wafer brownie gingerbread pie dragée. Marshmallow
+	marzipan candy canes. Cotton candy liquorice cake soufflé pie candy.</p>
+	<figure class="table">
+		<table>
+			<thead>
+				<tr>
+					<th>0</th>
+					<th>1</th>
+					<th>2</th>
+					<th>3</th>
+					<th>4</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>a</td>
+					<td>b</td>
+					<td><strong>c</strong></td>
+					<td><a href="https://example.com">d</a></td>
+					<td>e</td>
+				</tr>
+				<tr>
+					<td><i>f</i></td>
+					<td><i>g</i></td>
+					<td><i><strong>h</strong></i></td>
+					<td><i>i</i></td>
+					<td><i>j</i></td>
+				</tr>
+				<tr>
+					<td>k</td>
+					<td>l</td>
+					<td><strong>m</strong></td>
+					<td>n</td>
+					<td>o</td>
+				</tr>
+				<tr>
+					<td>p</td>
+					<td>
+						<ul>
+							<li>q</li>
+							<li>q</li>
+						</ul>
+					</td>
+					<td>
+						<ol>
+							<li>r</li>
+							<li>r</li>
+						</ol>
+					</td>
+					<td>s</td>
+					<td>
+						<blockquote><p>t</p></blockquote>
+						<p>t</p></td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<p>Halvah oat cake lemon drops. Cake tart caramels. Topping soufflé cheesecake. Chocolate bar sugar plum pastry sesame snaps bear claw
+		gummies cotton candy topping. Tootsie roll topping cake chocolate bar marshmallow lemon drops. Cheesecake cookie croissant chupa
+		chups. Biscuit jujubes lollipop fruitcake sesame snaps halvah. Marzipan croissant dessert chocolate cheesecake halvah jelly beans.
+		Caramels pastry bear claw oat cake sugar plum muffin sweet roll cake. Chocolate bar sweet roll sweet roll bonbon apple pie pastry
+		lemon drops icing. Apple pie wafer marzipan. Cake donut macaroon pudding. Gummi bears wafer toffee chocolate bar bear claw.
+		Fruitcake jelly chocolate bar.</p>
+</div>
+
+<h3>A "geometry" test editor</h3>
+
+<div id="editor-geometry">
+	<figure class="table">
+		<table>
+			<thead>
+				<tr>
+					<th>a</th>
+					<th>b</th>
+					<th>c</th>
+					<th>d</th>
+					<th>e</th>
+					<th>f</th>
+					<th>g</th>
+					<th>h</th>
+					<th>i</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>00</td>
+					<td>01</td>
+					<td rowspan="4">02</td>
+					<td>03</td>
+					<td colspan="2" rowspan="7">04</td>
+					<td>07</td>
+					<td>07</td>
+					<td>08</td>
+				</tr>
+				<tr>
+					<td>10</td>
+					<td>11</td>
+					<td>13</td>
+					<td>17</td>
+					<td>17</td>
+					<td>18</td>
+				</tr>
+				<tr>
+					<td>20</td>
+					<td>21</td>
+					<td>23</td>
+					<td colspan="3">27</td>
+				</tr>
+				<tr>
+					<td>30</td>
+					<td>31</td>
+					<td>33</td>
+					<td>37</td>
+					<td colspan="2">37</td>
+				</tr>
+				<tr>
+					<td colspan="4">40</td>
+					<td>47</td>
+					<td>47</td>
+					<td>48</td>
+				</tr>
+				<tr>
+					<td>50</td>
+					<td>51</td>
+					<td>52</td>
+					<td>53</td>
+					<td rowspan="4">57</td>
+					<td>57</td>
+					<td>58</td>
+				</tr>
+				<tr>
+					<td>60</td>
+					<td colspan="3">61</td>
+					<td>67</td>
+					<td>68</td>
+				</tr>
+				<tr>
+					<td>70</td>
+					<td rowspan="2">71</td>
+					<td>72</td>
+					<td>73</td>
+					<td>74</td>
+					<td>75</td>
+					<td>77</td>
+					<td>78</td>
+				</tr>
+				<tr>
+					<td>80</td>
+					<td>82</td>
+					<td>83</td>
+					<td>84</td>
+					<td>85</td>
+					<td>87</td>
+					<td>88</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+</div>
+
+<h2>Model contents:</h2>
+<pre><code id="model"></code></pre>
