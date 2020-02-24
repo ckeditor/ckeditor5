@@ -15,7 +15,7 @@ ClassicEditor
 			items: [
 				'heading', '|', 'bold', 'italic', '|', 'undo', 'redo'
 			],
-			viewportTopOffset: window.getViewportTopOffsetConfig(),
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		mention: {
 			feeds: [
