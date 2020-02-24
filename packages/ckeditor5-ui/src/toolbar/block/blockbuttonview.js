@@ -55,7 +55,7 @@ export default class BlockButtonView extends ButtonView {
 				class: 'ck-block-toolbar-button',
 				style: {
 					top: bind.to( 'top', val => toPx( val ) ),
-					left: bind.to( 'left', val => toPx( val ) ),
+					left: bind.to( 'left', val => toPx( val ) )
 				}
 			}
 		} );

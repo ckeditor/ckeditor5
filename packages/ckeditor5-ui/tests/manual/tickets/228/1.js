@@ -11,6 +11,6 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet ],
-		toolbar: [ 'heading' ],
+		toolbar: [ 'heading' ]
 	} )
 	.catch( err => console.error( err.stack ) );

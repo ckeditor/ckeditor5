@@ -77,7 +77,7 @@ export default class TooltipView extends View {
 
 					children: [
 						{
-							text: bind.to( 'text' ),
+							text: bind.to( 'text' )
 						}
 					]
 				}

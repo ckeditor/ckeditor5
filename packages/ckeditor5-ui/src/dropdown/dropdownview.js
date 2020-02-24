@@ -198,7 +198,7 @@ export default class DropdownView extends View {
 		buttonView.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-dropdown__button',
+					'ck-dropdown__button'
 				]
 			}
 		} );
