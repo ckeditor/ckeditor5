@@ -55,6 +55,17 @@ describe( 'table cell properties', () => {
 						expect( command.isEnabled ).to.be.true;
 					} );
 				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should be true is selection has table cells', () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true }, '01' ],
+							[ '10', { contents: '11', isSelected: true } ]
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+				} );
 			} );
 
 			describe( 'value', () => {
