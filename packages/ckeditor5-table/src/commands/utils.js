@@ -43,14 +43,6 @@ export function getSelectedTableCell( position ) {
 	return isTableCellSelected ? position.nodeAfter : findAncestor( 'tableCell', position );
 }
 
-export function getSelectedTableCells( model ) {
-	const selection = model.document.selection;
-
-	return Array.from( selection.getSelectedBlocks() )
-		.map( element => findAncestor( 'tableCell', model.createPositionAt( element, 0 ) ) )
-		.filter( tableCell => !!tableCell );
-}
-
 /**
  * A common method to update the numeric value. If a value is the default one, it will be unset.
  *

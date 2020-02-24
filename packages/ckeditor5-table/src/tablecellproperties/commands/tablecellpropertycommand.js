@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { getSelectedTableCells } from '../../commands/utils';
+import { findAncestor } from '../../commands/utils';
 
 /**
  * The table cell attribute command.
@@ -110,4 +110,13 @@ export default class TableCellPropertyCommand extends Command {
 
 		return everyCellHasAttribute ? firstCellValue : undefined;
 	}
+}
+
+// Returns all selected table cells.
+function getSelectedTableCells( model ) {
+	const selection = model.document.selection;
+
+	return Array.from( selection.getSelectedBlocks() )
+		.map( element => findAncestor( 'tableCell', model.createPositionAt( element, 0 ) ) )
+		.filter( tableCell => !!tableCell );
 }
