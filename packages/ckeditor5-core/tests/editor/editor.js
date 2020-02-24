@@ -262,7 +262,23 @@ describe( 'Editor', () => {
 			const context = await Context.create( { plugins: [ ContextPlugin ] } );
 			const editor = await TestEditor.create( { context } );
 
-			expect( editor.config.get( 'plugins' ) ).to.be.undefined;
+			expect( editor.config.get( 'plugins' ) ).to.be.empty;
+		} );
+
+		it( 'should copy builtin plugins', async () => {
+			TestEditor.builtinPlugins = [ PluginA ];
+
+			class ContextPlugin {
+				static get isContextPlugin() {
+					return true;
+				}
+			}
+
+			const context = await Context.create( { plugins: [ ContextPlugin ] } );
+			const editor = await TestEditor.create( { context } );
+
+			expect( editor.config.get( 'plugins' ) ).to.deep.equal( [ PluginA ] );
+			expect( editor.config.get( 'plugins' ) ).to.not.equal( TestEditor.builtinPlugins );
 		} );
 
 		it( 'should pass DOM element using reference, not copy', async () => {
