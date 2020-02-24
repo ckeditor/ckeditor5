@@ -121,6 +121,68 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.equal( '2em' );
 					} );
 				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should be undefined if no table cell has a borderWidth property', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true },
+								{ contents: '01', isSelected: true }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if only some table cell has a borderWidth property', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, borderWidth: '1px' },
+								{ contents: '01', isSelected: true }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, borderWidth: '1px' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if one of selected table cells has different borderWidth property value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, borderWidth: '1px' },
+								{ contents: '01', isSelected: true, borderWidth: '20px' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, borderWidth: '1px' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if all table cell has the same borderWidth property value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, borderWidth: '1px' },
+								{ contents: '01', isSelected: true, borderWidth: '1px' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, borderWidth: '1px' }
+							]
+						] ) );
+
+						expect( command.value ).to.equal( '1px' );
+					} );
+				} );
 			} );
 
 			describe( 'execute()', () => {

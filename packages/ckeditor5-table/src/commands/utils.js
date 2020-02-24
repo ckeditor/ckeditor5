@@ -29,6 +29,12 @@ export function findAncestor( parentName, positionOrElement ) {
 	}
 }
 
+function getSelectedTableCell( firstPosition ) {
+	const isTableCellSelected = firstPosition.nodeAfter && firstPosition.nodeAfter.is( 'tableCell' );
+
+	return isTableCellSelected ? firstPosition.nodeAfter : findAncestor( 'tableCell', firstPosition );
+}
+
 /**
  * Returns a first selected table cell from a multi-cell or in-cell selection.
  *
@@ -39,9 +45,16 @@ export function findAncestor( parentName, positionOrElement ) {
  */
 export function getFirstSelectedTableCell( selection ) {
 	const firstPosition = selection.getFirstPosition();
-	const isTableCellSelected = firstPosition.nodeAfter && firstPosition.nodeAfter.is( 'tableCell' );
 
-	return isTableCellSelected ? firstPosition.nodeAfter : findAncestor( 'tableCell', firstPosition );
+	return getSelectedTableCell( firstPosition );
+}
+
+export function getSelectedTableCells( model ) {
+	const selection = model.document.selection;
+
+	return Array.from( selection.getSelectedBlocks() )
+		.map( element => findAncestor( 'tableCell', model.createPositionAt( element, 0 ) ) )
+		.filter( tableCell => !!tableCell );
 }
 
 /**

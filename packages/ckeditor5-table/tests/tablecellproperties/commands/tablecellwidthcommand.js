@@ -96,6 +96,68 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.equal( '100px' );
 					} );
 				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should be undefined if no table cell has a width property', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true },
+								{ contents: '01', isSelected: true }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if only some table cell has a width property', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, width: '100px' },
+								{ contents: '01', isSelected: true }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, width: '100px' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if one of selected table cells has different width property value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, width: '100px' },
+								{ contents: '01', isSelected: true, width: '25px' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, width: '100px' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if all table cell has the same width property value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, width: '100px' },
+								{ contents: '01', isSelected: true, width: '100px' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, width: '100px' }
+							]
+						] ) );
+
+						expect( command.value ).to.equal( '100px' );
+					} );
+				} );
 			} );
 
 			describe( 'execute()', () => {

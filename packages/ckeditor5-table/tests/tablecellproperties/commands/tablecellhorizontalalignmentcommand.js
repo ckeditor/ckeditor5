@@ -96,6 +96,68 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.equal( 'center' );
 					} );
 				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should be undefined if no table cell has a horizontalAlignment property', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true },
+								{ contents: '01', isSelected: true }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if only some table cell has a horizontalAlignment property', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, horizontalAlignment: 'center' },
+								{ contents: '01', isSelected: true }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, horizontalAlignment: 'center' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if one of selected table cells has different horizontalAlignment property value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, horizontalAlignment: 'center' },
+								{ contents: '01', isSelected: true, horizontalAlignment: 'right' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, horizontalAlignment: 'center' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if all table cell has the same horizontalAlignment property value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, horizontalAlignment: 'center' },
+								{ contents: '01', isSelected: true, horizontalAlignment: 'center' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, horizontalAlignment: 'center' }
+							]
+						] ) );
+
+						expect( command.value ).to.equal( 'center' );
+					} );
+				} );
 			} );
 
 			describe( 'execute()', () => {

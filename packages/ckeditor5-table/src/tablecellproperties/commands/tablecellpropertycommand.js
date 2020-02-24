@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor, getFirstSelectedTableCell } from '../../commands/utils';
+import { getSelectedTableCells } from '../../commands/utils';
 
 /**
  * The table cell attribute command.
@@ -36,10 +36,11 @@ export default class TableCellPropertyCommand extends Command {
 	 */
 	refresh() {
 		const editor = this.editor;
-		const tableCell = getFirstSelectedTableCell( editor.model.document.selection );
 
-		this.isEnabled = !!tableCell;
-		this.value = this._getAttribute( tableCell );
+		const selectedTableCells = getSelectedTableCells( editor.model );
+
+		this.isEnabled = !!selectedTableCells.length;
+		this.value = this._getSingleValue( selectedTableCells );
 	}
 
 	/**
@@ -54,12 +55,10 @@ export default class TableCellPropertyCommand extends Command {
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
-		const selection = model.document.selection;
 
 		const { value, batch } = options;
 
-		const tableCells = Array.from( selection.getSelectedBlocks() )
-			.map( element => findAncestor( 'tableCell', model.createPositionAt( element, 0 ) ) );
+		const tableCells = getSelectedTableCells( model );
 		const valueToSet = this._getValueToSet( value );
 
 		model.enqueueChange( batch || 'default', writer => {
@@ -95,5 +94,20 @@ export default class TableCellPropertyCommand extends Command {
 	 */
 	_getValueToSet( value ) {
 		return value;
+	}
+
+	/**
+	 * Returns a single value for selected table cells. If all cells have the same value set it returns that value or undefined otherwise.
+	 *
+	 * @param {Array.<module:engine/model/element~Element>} tableCell
+	 * @returns {*}
+	 * @private
+	 */
+	_getSingleValue( tableCell ) {
+		const firstCellValue = this._getAttribute( tableCell[ 0 ] );
+
+		const everyCellHasAttribute = tableCell.every( tableCell => this._getAttribute( tableCell ) === firstCellValue );
+
+		return everyCellHasAttribute ? firstCellValue : undefined;
 	}
 }

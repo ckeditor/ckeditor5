@@ -121,6 +121,68 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.equal( 'ridge' );
 					} );
 				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should be undefined if no table cell has a borderStyle property', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true },
+								{ contents: '01', isSelected: true }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if only some table cell has a borderStyle property', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, borderStyle: 'solid' },
+								{ contents: '01', isSelected: true }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, borderStyle: 'solid' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if one of selected table cells has different borderStyle property value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, borderStyle: 'solid' },
+								{ contents: '01', isSelected: true, borderStyle: 'ridge' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, borderStyle: 'solid' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if all table cell has the same borderStyle property value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, borderStyle: 'solid' },
+								{ contents: '01', isSelected: true, borderStyle: 'solid' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, borderStyle: 'solid' }
+							]
+						] ) );
+
+						expect( command.value ).to.equal( 'solid' );
+					} );
+				} );
 			} );
 
 			describe( 'execute()', () => {

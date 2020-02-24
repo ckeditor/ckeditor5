@@ -121,6 +121,68 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.equal( '2em' );
 					} );
 				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should be undefined if no table cell has a padding property', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true },
+								{ contents: '01', isSelected: true }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if only some table cell has a padding property', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, padding: '2em' },
+								{ contents: '01', isSelected: true }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, padding: '2em' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if one of selected table cells has different padding property value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, padding: '2em' },
+								{ contents: '01', isSelected: true, padding: '3em' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, padding: '2em' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if all table cell has the same padding property value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, padding: '2em' },
+								{ contents: '01', isSelected: true, padding: '2em' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, padding: '2em' }
+							]
+						] ) );
+
+						expect( command.value ).to.equal( '2em' );
+					} );
+				} );
 			} );
 
 			describe( 'execute()', () => {

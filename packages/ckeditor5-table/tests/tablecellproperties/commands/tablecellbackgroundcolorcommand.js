@@ -96,6 +96,68 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.equal( 'blue' );
 					} );
 				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should be undefined if no table cell has a backgroundColor property', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true },
+								{ contents: '01', isSelected: true }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if only some table cell has a backgroundColor property', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, backgroundColor: '#f00' },
+								{ contents: '01', isSelected: true }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, backgroundColor: '#f00' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if one of selected table cells has different backgroundColor property value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, backgroundColor: '#f00' },
+								{ contents: '01', isSelected: true, backgroundColor: 'pink' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, backgroundColor: '#f00' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if all table cell has the same backgroundColor property value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, backgroundColor: '#f00' },
+								{ contents: '01', isSelected: true, backgroundColor: '#f00' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, backgroundColor: '#f00' }
+							]
+						] ) );
+
+						expect( command.value ).to.equal( '#f00' );
+					} );
+				} );
 			} );
 
 			describe( 'execute()', () => {
