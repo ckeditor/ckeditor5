@@ -50,7 +50,7 @@ describe( 'Base64UploadAdapter', () => {
 		it( 'should set the loader', () => {
 			return ClassicTestEditor
 				.create( div, {
-					plugins: [ Base64UploadAdapter ],
+					plugins: [ Base64UploadAdapter ]
 				} )
 				.then( editor => {
 					expect( editor.plugins.get( FileRepository ).createUploadAdapter ).is.a( 'function' );
@@ -65,7 +65,7 @@ describe( 'Base64UploadAdapter', () => {
 
 		beforeEach( () => {
 			return ClassicTestEditor.create( div, {
-				plugins: [ Base64UploadAdapter ],
+				plugins: [ Base64UploadAdapter ]
 			} ).then( _editor => {
 				editor = _editor;
 				fileRepository = editor.plugins.get( FileRepository );

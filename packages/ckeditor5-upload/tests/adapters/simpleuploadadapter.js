@@ -93,7 +93,7 @@ describe( 'SimpleUploadAdapter', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ SimpleUploadAdapter ],
+					plugins: [ SimpleUploadAdapter ]
 				} )
 				.then( editor => {
 					const fileRepository = editor.plugins.get( FileRepository );
