@@ -196,11 +196,9 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 			toolbar = widgetToolbarRepository._toolbarDefinitions.get( 'mediaEmbed' ).view;
 			balloon = editor.plugins.get( 'ContextualBalloon' );
 			balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
-		} );
-	} );
 
-	beforeEach( () => {
-		editor.ui.focusTracker.isFocused = true;
+			editor.ui.focusTracker.isFocused = true;
+		} );
 	} );
 
 	afterEach( () => {
