@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { testDataProcessor as test } from '../../tests/_utils/utils';
+import { testDataProcessor } from '../_utils/utils';
 
 describe( 'GFMDataProcessor', () => {
 	describe( 'tables', () => {
 		it( 'should process tables', () => {
-			test(
+			testDataProcessor(
 				'| Heading 1 | Heading 2\n' +
 				'| --- | ---\n' +
 				'| Cell 1    | Cell 2\n' +
@@ -42,7 +42,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process tables with aligned columns', () => {
-			test(
+			testDataProcessor(
 				'| Header 1 | Header 2 | Header 3 | Header 4 |\n' +
 				'| :------: | -------: | :------- | -------- |\n' +
 				'| Cell 1   | Cell 2   | Cell 3   | Cell 4   |\n' +
@@ -82,7 +82,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process not table without borders', () => {
-			test(
+			testDataProcessor(
 				'Header 1 | Header 2\n' +
 				'-------- | --------\n' +
 				'Cell 1   | Cell 2\n' +
@@ -116,7 +116,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process formatting inside cells', () => {
-			test(
+			testDataProcessor(
 				'Header 1|Header 2|Header 3|Header 4\n' +
 				':-------|:------:|-------:|--------\n' +
 				'*Cell 1*  |**Cell 2**  |~~Cell 3~~  |Cell 4',

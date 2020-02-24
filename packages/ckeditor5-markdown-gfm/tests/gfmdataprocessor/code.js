@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { testDataProcessor as test } from '../../tests/_utils/utils';
+import { testDataProcessor } from '../_utils/utils';
 
 describe( 'GFMDataProcessor', () => {
 	describe( 'code', () => {
 		it( 'should process inline code', () => {
-			test(
+			testDataProcessor(
 				'regular text and `inline code`',
 
 				'<p>regular text and <code>inline code</code></p>'
@@ -16,7 +16,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should properly process multiple code', () => {
-			test(
+			testDataProcessor(
 				'`this is code` and this is `too`',
 
 				'<p><code>this is code</code> and this is <code>too</code></p>'
@@ -24,7 +24,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process spaces inside inline code', () => {
-			test(
+			testDataProcessor(
 				'regular text and` inline code`',
 
 				'<p>regular text and<code>inline code</code></p>',
@@ -36,7 +36,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should properly process backticks inside code spans #1', () => {
-			test(
+			testDataProcessor(
 				'`` `backticks` ``',
 
 				'<p><code>`backticks`</code></p>'
@@ -44,7 +44,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should properly process backticks inside code spans #2', () => {
-			test(
+			testDataProcessor(
 				'`` some `backticks` inside ``',
 
 				'<p><code>some `backticks` inside</code></p>'
@@ -52,7 +52,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process code blocks indented with tabs', () => {
-			test(
+			testDataProcessor(
 				'	code block',
 
 				// GitHub is rendering as:
@@ -68,7 +68,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process code blocks indented with spaces', () => {
-			test(
+			testDataProcessor(
 				'    code block',
 
 				// GitHub is rendering as:
@@ -86,7 +86,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process multi line code blocks indented with tabs', () => {
-			test(
+			testDataProcessor(
 				'	first line\n' +
 				'	second line',
 
@@ -108,7 +108,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process multi line code blocks indented with spaces', () => {
-			test(
+			testDataProcessor(
 				'    first line\n' +
 				'    second line',
 
@@ -130,7 +130,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process multi line code blocks with trailing spaces', () => {
-			test(
+			testDataProcessor(
 				'	the lines in this block  \n' +
 				'	all contain trailing spaces  ',
 
@@ -151,7 +151,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process code block with language name', () => {
-			test(
+			testDataProcessor(
 				'``` js\n' +
 				'var a = \'hello\';\n' +
 				'console.log(a + \' world\');\n' +
@@ -166,7 +166,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process code block with language name and using ~~~ as delimiter', () => {
-			test(
+			testDataProcessor(
 				'~~~ bash\n' +
 				'#!/bin/bash\n' +
 				'~~~',
@@ -185,7 +185,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process code block with language name and using ``````` as delimiter', () => {
-			test(
+			testDataProcessor(
 				'``````` js\n' +
 				'var a = \'hello\';\n' +
 				'console.log(a + \' world\');\n' +
@@ -207,7 +207,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process code block with language name and using ~~~~~~~~~~ as delimiter', () => {
-			test(
+			testDataProcessor(
 				'~~~~~~~~~~ js\n' +
 				'var a = \'hello\';\n' +
 				'console.log(a + \' world\');\n' +
@@ -229,7 +229,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process empty code block', () => {
-			test(
+			testDataProcessor(
 				'``` js\n' +
 				'```',
 
@@ -246,7 +246,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process code block with empty line', () => {
-			test(
+			testDataProcessor(
 				'``` js\n' +
 				'\n' +
 				'```',
@@ -264,7 +264,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process nested code', () => {
-			test(
+			testDataProcessor(
 				'````` code `` code ``` `````',
 
 				// GitHub is rendering as:
