@@ -371,7 +371,7 @@ describe( 'Widget', () => {
 				const keydownHandler = sinon.spy();
 				const domEventDataMock = {
 					keyCode: keyCodes.arrowright,
-					preventDefault: sinon.spy(),
+					preventDefault: sinon.spy()
 				};
 				setModelData( model, '<paragraph>foo</paragraph>[<widget></widget>]' );
 				viewDocument.on( 'keydown', keydownHandler );
@@ -387,7 +387,7 @@ describe( 'Widget', () => {
 				const keydownHandler = sinon.spy();
 				const domEventDataMock = {
 					keyCode: keyCodes.arrowleft,
-					preventDefault: sinon.spy(),
+					preventDefault: sinon.spy()
 				};
 				setModelData( model, '[<widget></widget>]<paragraph>foo</paragraph>' );
 				viewDocument.on( 'keydown', keydownHandler );
@@ -850,7 +850,7 @@ describe( 'Widget', () => {
 				setModelData( model, input );
 				const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
 				const domEventDataMock = {
-					keyCode: direction == 'backward' ? keyCodes.backspace : keyCodes.delete,
+					keyCode: direction == 'backward' ? keyCodes.backspace : keyCodes.delete
 				};
 
 				viewDocument.fire( 'keydown', new DomEventData(
