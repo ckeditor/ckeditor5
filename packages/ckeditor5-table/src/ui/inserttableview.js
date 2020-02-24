@@ -34,13 +34,7 @@ export default class InsertTableView extends View {
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
-
-		/**
-		 * Creates an array of box views.
-		 *
-		 * @private
-		 */
-		this.items = this.createCollection( this._createGridCollection() );
+		this.items = this._createGridCollection();
 
 		/**
 		 * The currently selected number of rows of the new table.
@@ -153,10 +147,10 @@ export default class InsertTableView extends View {
 
 	/**
 	 * @private
-	 * @returns {Set.<module:table/ui/inserttableview~TableSizeGridBoxView>} An array of boxes to be placed in table grid.
+	 * @returns {module:ui/viewcollection~ViewCollection} A view collection containing boxes to be placed in a table grid.
 	 */
 	_createGridCollection() {
-		const returnValue = new Set();
+		const boxes = new Set();
 
 		// Add grid boxes to table selection view.
 		for ( let index = 0; index < 100; index++ ) {
@@ -173,10 +167,10 @@ export default class InsertTableView extends View {
 				this.set( 'columns', column + 1 );
 			} );
 
-			returnValue.add( boxView );
+			boxes.add( boxView );
 		}
 
-		return returnValue;
+		return this.createCollection( boxes );
 	}
 }
 
