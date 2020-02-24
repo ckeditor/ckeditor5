@@ -72,6 +72,17 @@ export default class BalloonToolbar extends Plugin {
 		 */
 		this.focusTracker = new FocusTracker();
 
+		/**
+		 * An instance of the resize observer that helps dynamically determine the geometry of the toolbar
+		 * and manage items that do not fit into a single row.
+		 *
+		 * **Note:** Created in {@link #init}.
+		 *
+		 * @readonly
+		 * @member {module:utils/dom/getresizeobserver~ResizeObserver}
+		 */
+		this.resizeObserver = null;
+
 		// Wait for the EditorUI#init. EditableElement is not available before.
 		editor.ui.once( 'ready', () => {
 			this.focusTracker.add( editor.ui.getEditableElement() );
@@ -151,9 +162,9 @@ export default class BalloonToolbar extends Plugin {
 						return;
 					}
 
-					// In the balloon editor toolbar's max-width should be set to the 2/3 of the editable's width.
-					// It's a safe value, because at the moment we don't re-calculate it when position of the selection changes.
-					this.toolbarView.maxWidth = toPx( new Rect( editableElement ).width * 0.66 );
+					// In the balloon editor toolbar's max-width should be set to the 0.9 of the editable's width.
+					// It's a safe value, because it keeps the balloon very close to the boundaries of the editable.
+					this.toolbarView.maxWidth = toPx( new Rect( editableElement ).width * .9 );
 				} );
 			} );
 		}
@@ -180,10 +191,25 @@ export default class BalloonToolbar extends Plugin {
 	_createToolbarView() {
 		const shouldGroupWhenFull = !this._balloonConfig.shouldNotGroupWhenFull;
 		const toolbarView = new ToolbarView( this.editor.locale, { shouldGroupWhenFull } );
+		const balloonToolbarPlugins = this.editor.config.get( 'balloonToolbar' );
+		const bind = toolbarView.bindTemplate;
 
 		toolbarView.extendTemplate( {
 			attributes: {
-				class: [ 'ck-toolbar_floating', 'ck-balloon-toolbar_min-width' ]
+				class: [
+					'ck-toolbar_floating',
+					// When balloon toolbar contains `heading` plugin and the width of the editable is narrower than 200px,
+					// the balloon may fold too "agressively" and not show any of the buttons (only "three dots" button is visible
+					// to trigger dropdown menu with buttons that don't fit the toolbar width boundary).
+					//
+					// This is a workaround for the case. By default `ck-balloon-toolbar_min-width` class sets static `min-width` to 180px.
+					// The value matches a dynamic value (90% of the editable width) set by ResizeObserver's callback during initialization.
+					bind.if( 'maxWidth', 'ck-balloon-toolbar_min-width', value => {
+						if ( parseFloat( value ) <= 200 ) {
+							return balloonToolbarPlugins.find( plugin => plugin === 'heading' );
+						}
+					} )
+				]
 			}
 		} );
 
@@ -292,7 +318,10 @@ export default class BalloonToolbar extends Plugin {
 		this._fireSelectionChangeDebounced.cancel();
 		this.toolbarView.destroy();
 		this.focusTracker.destroy();
-		this.widthObserver.destroy();
+
+		if ( this.resizeObserver ) {
+			this.resizeObserver.destroy();
+		}
 	}
 
 	/**
@@ -322,16 +351,24 @@ function getBalloonPositions( isBackward ) {
 		defaultPositions.northWestArrowSouth,
 		defaultPositions.northWestArrowSouthWest,
 		defaultPositions.northWestArrowSouthEast,
+		defaultPositions.northWestArrowSouthMiddleEast,
+		defaultPositions.northWestArrowSouthMiddleWest,
 		defaultPositions.southWestArrowNorth,
 		defaultPositions.southWestArrowNorthWest,
-		defaultPositions.southWestArrowNorthEast
+		defaultPositions.southWestArrowNorthEast,
+		defaultPositions.southWestArrowNorthMiddleWest,
+		defaultPositions.southWestArrowNorthMiddleEast,
 	] : [
 		defaultPositions.southEastArrowNorth,
 		defaultPositions.southEastArrowNorthEast,
 		defaultPositions.southEastArrowNorthWest,
+		defaultPositions.southEastArrowNorthMiddleEast,
+		defaultPositions.southEastArrowNorthMiddleWest,
 		defaultPositions.northEastArrowSouth,
 		defaultPositions.northEastArrowSouthEast,
-		defaultPositions.northEastArrowSouthWest
+		defaultPositions.northEastArrowSouthWest,
+		defaultPositions.northEastArrowSouthMiddleEast,
+		defaultPositions.northEastArrowSouthMiddleWest,
 	];
 }
 
