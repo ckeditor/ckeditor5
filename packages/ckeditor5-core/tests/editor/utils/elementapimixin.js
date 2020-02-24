@@ -24,7 +24,7 @@ describe( 'ElementApiMixin', () => {
 		editor.data.processor = new HtmlDataProcessor();
 		editor.model.document.createRoot();
 		editor.model.schema.extend( '$text', { allowIn: '$root' } );
-		editor.fire( 'ready' );
+		editor.fire( 'ready' ); // (#6139)
 	} );
 
 	afterEach( async () => {
