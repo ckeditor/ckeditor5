@@ -32,15 +32,15 @@ export function findAncestor( parentName, positionOrElement ) {
 /**
  * Returns a first selected table cell from a multi-cell or in-cell selection.
  *
- *		const tableCell = getFirstSelectedTableCell( editor.model.selection );
+ *		const tableCell = getSelectedTableCell( editor.model.document.selection.getFirstPosition() );
  *
- * @param {module:engine/model/documentselection~DocumentSelection} selection Document selection.
+ * @param {module:engine/model/position~Position} position Document position.
  * @returns {module:engine/model/element~Element}
  */
-export function getFirstSelectedTableCell( selection ) {
-	const firstPosition = selection.getFirstPosition();
+export function getSelectedTableCell( position ) {
+	const isTableCellSelected = position.nodeAfter && position.nodeAfter.is( 'tableCell' );
 
-	return getSelectedTableCell( firstPosition );
+	return isTableCellSelected ? position.nodeAfter : findAncestor( 'tableCell', position );
 }
 
 export function getSelectedTableCells( model ) {
@@ -135,13 +135,4 @@ export function addDefaultUnitToNumericValue( value, defaultUnit ) {
 	}
 
 	return `${ numericValue }${ defaultUnit }`;
-}
-
-// Returns a table cell for two scenarios:
-// 1. Selection is on table cell (position is before table cell).
-// 2. Selection is inside a table cell (position is inside as well).
-function getSelectedTableCell( position ) {
-	const isTableCellSelected = position.nodeAfter && position.nodeAfter.is( 'tableCell' );
-
-	return isTableCellSelected ? position.nodeAfter : findAncestor( 'tableCell', position );
 }

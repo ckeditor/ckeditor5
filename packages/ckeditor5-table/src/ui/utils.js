@@ -14,7 +14,7 @@ import Model from '@ckeditor/ckeditor5-ui/src/model';
 import ColorInputView from './colorinputview';
 import { isColor, isLength, isPercentage } from '@ckeditor/ckeditor5-engine/src/view/styles/utils';
 import { getTableWidgetAncestor } from '../utils';
-import { findAncestor, getFirstSelectedTableCell } from '../commands/utils';
+import { findAncestor, getSelectedTableCell } from '../commands/utils';
 
 const DEFAULT_BALLOON_POSITIONS = BalloonPanelView.defaultPositions;
 const BALLOON_POSITIONS = [
@@ -81,7 +81,7 @@ export function getBalloonTablePositionData( editor ) {
  * @returns {module:utils/dom/position~Options}
  */
 export function getBalloonCellPositionData( editor ) {
-	const modelTableCell = getFirstSelectedTableCell( editor.model.document.selection );
+	const modelTableCell = getSelectedTableCell( editor.model.document.selection.getFirstPosition() );
 	const viewTableCell = editor.editing.mapper.toViewElement( modelTableCell );
 
 	return {
