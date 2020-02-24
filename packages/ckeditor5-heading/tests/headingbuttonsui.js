@@ -124,7 +124,7 @@ describe( 'HeadingButtonUI', () => {
 					heading: {
 						options: [
 							{ model: 'paragraph' },
-							{ model: 'heading1', view: 'h2', icon: customIcon },
+							{ model: 'heading1', view: 'h2', icon: customIcon }
 						]
 					},
 					plugins: [ HeadingButtonsUI, HeadingEditing ],
