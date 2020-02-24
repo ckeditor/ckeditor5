@@ -20,7 +20,7 @@ describe( 'DowncastWriter', () => {
 		//
 		// @param {String} input
 		// @param {String} expected
-		function test( input, expected ) {
+		function testBreakContainer( input, expected ) {
 			const { view, selection } = parse( input );
 
 			const newPosition = writer.breakContainer( selection.getFirstPosition() );
@@ -32,7 +32,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'break inside element - should break container element at given position', () => {
-			test(
+			testBreakContainer(
 				'<container:div>' +
 					'<container:p>' +
 						'<attribute:b>foo</attribute:b>[]<attribute:u>bar</attribute:u>' +
@@ -51,14 +51,14 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'break at start of element - should not break container and place returned position before element', () => {
-			test(
+			testBreakContainer(
 				'<container:div><container:p>[]foobar</container:p></container:div>',
 				'<container:div>[]<container:p>foobar</container:p></container:div>'
 			);
 		} );
 
 		it( 'break at the end of element - should not break container and place returned position after element', () => {
-			test(
+			testBreakContainer(
 				'<container:div><container:p>foobar[]</container:p></container:div>',
 				'<container:div><container:p>foobar</container:p>[]</container:div>'
 			);

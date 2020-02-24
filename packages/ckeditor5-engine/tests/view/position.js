@@ -598,28 +598,28 @@ describe( 'Position', () => {
 			const afterLoremPosition = new Position( liOl1, 5 );
 			const otherPosition = Position._createAt( afterLoremPosition );
 
-			test( afterLoremPosition, otherPosition, liOl1 );
+			testParent( afterLoremPosition, otherPosition, liOl1 );
 		} );
 
 		it( 'for two positions in the same element returns the element', () => {
 			const startMaecenasPosition = Position._createAt( liOl2, 0 );
 			const beforeTellusPosition = new Position( liOl2, 18 );
 
-			test( startMaecenasPosition, beforeTellusPosition, liOl2 );
+			testParent( startMaecenasPosition, beforeTellusPosition, liOl2 );
 		} );
 
 		it( 'works when one of the positions is nested deeper than the other #1', () => {
 			const firstPosition = new Position( liUl1, 1 );
 			const secondPosition = new Position( p, 3 );
 
-			test( firstPosition, secondPosition, div );
+			testParent( firstPosition, secondPosition, div );
 		} );
 
 		it( 'works when one of the positions is nested deeper than the other #2', () => {
 			const firstPosition = new Position( liOl2, 10 );
 			const secondPosition = new Position( section, 1 );
 
-			test( firstPosition, secondPosition, section );
+			testParent( firstPosition, secondPosition, section );
 		} );
 
 		it( 'for two positions in different trees returns null', () => {
@@ -627,10 +627,10 @@ describe( 'Position', () => {
 			const posInDiv = new Position( div, 0 );
 			const firstPosition = new Position( liOl2, 10 );
 
-			test( posInDiv, firstPosition, null );
+			testParent( posInDiv, firstPosition, null );
 		} );
 
-		function test( positionA, positionB, lca ) {
+		function testParent( positionA, positionB, lca ) {
 			expect( positionA.getCommonAncestor( positionB ) ).to.equal( lca );
 			expect( positionB.getCommonAncestor( positionA ) ).to.equal( lca );
 		}

@@ -392,7 +392,7 @@ describe( 'DataController utils', () => {
 				} );
 				schema.register( 'inlineWidget', {
 					isObject: true,
-					allowIn: [ '$block', '$clipboardHolder' ],
+					allowIn: [ '$block', '$clipboardHolder' ]
 				} );
 				schema.register( 'listItem', {
 					inheritAllFrom: '$block',
@@ -620,7 +620,7 @@ describe( 'DataController utils', () => {
 				it( 'should not merge a paragraph wrapped in blockQuote with list item (checking left merge)', () => {
 					model.schema.register( 'blockQuote', {
 						allowWhere: '$block',
-						allowContentOf: '$root',
+						allowContentOf: '$root'
 					} );
 
 					setData( model, '<listItem>fo[]o</listItem>' );
@@ -647,7 +647,7 @@ describe( 'DataController utils', () => {
 				it( 'should not merge a paragraph wrapped in blockQuote with list item (checking right merge)', () => {
 					model.schema.register( 'blockQuote', {
 						allowWhere: '$block',
-						allowContentOf: '$root',
+						allowContentOf: '$root'
 					} );
 
 					setData( model, '<listItem>fo[]o</listItem>' );
@@ -674,7 +674,7 @@ describe( 'DataController utils', () => {
 				it( 'should not merge a paragraph wrapped in blockQuote with list item (checking both merges)', () => {
 					model.schema.register( 'blockQuote', {
 						allowWhere: '$block',
-						allowContentOf: '$root',
+						allowContentOf: '$root'
 					} );
 
 					setData( model, '<listItem>fo[]o</listItem>' );

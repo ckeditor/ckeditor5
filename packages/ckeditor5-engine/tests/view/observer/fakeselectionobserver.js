@@ -156,7 +156,7 @@ describe( 'FakeSelectionObserver', () => {
 		return new Promise( resolve => {
 			const data = {
 				keyCode,
-				preventDefault: sinon.spy(),
+				preventDefault: sinon.spy()
 			};
 
 			viewDocument.once( 'keydown', () => {
@@ -202,7 +202,7 @@ describe( 'FakeSelectionObserver', () => {
 
 		const data = {
 			keyCode,
-			preventDefault: sinon.spy(),
+			preventDefault: sinon.spy()
 		};
 
 		viewDocument.fire( 'keydown', new DomEventData( viewDocument, { target: document.body }, data ) );

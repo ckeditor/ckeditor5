@@ -154,15 +154,15 @@ describe( 'Conversion', () => {
 			it( 'config.view is a string', () => {
 				conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 
-				test( '<p>Foo</p>', '<paragraph>Foo</paragraph>' );
+				testConversion( '<p>Foo</p>', '<paragraph>Foo</paragraph>' );
 			} );
 
 			it( 'config.converterPriority is defined (override downcast)', () => {
 				conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 				conversion.elementToElement( { model: 'paragraph', view: 'div', converterPriority: 'high' } );
 
-				test( '<div>Foo</div>', '<paragraph>Foo</paragraph>' );
-				test( '<p>Foo</p>', '<paragraph>Foo</paragraph>', '<div>Foo</div>' );
+				testConversion( '<div>Foo</div>', '<paragraph>Foo</paragraph>' );
+				testConversion( '<p>Foo</p>', '<paragraph>Foo</paragraph>', '<div>Foo</div>' );
 			} );
 
 			it( 'config.converterPriority is defined (override upcast)', () => {
@@ -172,7 +172,7 @@ describe( 'Conversion', () => {
 				conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 				conversion.elementToElement( { model: 'foo', view: 'p', converterPriority: 'high' } );
 
-				test( '<p>Foo</p>', '<foo>Foo</foo>', '<p>Foo</p>' );
+				testConversion( '<p>Foo</p>', '<foo>Foo</foo>', '<p>Foo</p>' );
 			} );
 
 			it( 'config.view is an object', () => {
@@ -188,7 +188,7 @@ describe( 'Conversion', () => {
 					}
 				} );
 
-				test( '<p class="fancy">Foo</p>', '<fancyParagraph>Foo</fancyParagraph>' );
+				testConversion( '<p class="fancy">Foo</p>', '<fancyParagraph>Foo</fancyParagraph>' );
 			} );
 
 			it( 'config.view is an object with upcastAlso defined', () => {
@@ -206,9 +206,9 @@ describe( 'Conversion', () => {
 					]
 				} );
 
-				test( '<p>Foo</p>', '<paragraph>Foo</paragraph>' );
-				test( '<div>Foo</div>', '<paragraph>Foo</paragraph>', '<p>Foo</p>' );
-				test( '<span style="display:block">Foo</span>', '<paragraph>Foo</paragraph>', '<p>Foo</p>' );
+				testConversion( '<p>Foo</p>', '<paragraph>Foo</paragraph>' );
+				testConversion( '<div>Foo</div>', '<paragraph>Foo</paragraph>', '<p>Foo</p>' );
+				testConversion( '<span style="display:block">Foo</span>', '<paragraph>Foo</paragraph>', '<p>Foo</p>' );
 			} );
 
 			it( 'upcastAlso given as a function', () => {
@@ -247,11 +247,11 @@ describe( 'Conversion', () => {
 					view: 'p'
 				} );
 
-				test( '<p></p>', '<paragraph></paragraph>' );
-				test( '<p style="font-size:20px"></p>', '<paragraph></paragraph>', '<p></p>' );
+				testConversion( '<p></p>', '<paragraph></paragraph>' );
+				testConversion( '<p style="font-size:20px"></p>', '<paragraph></paragraph>', '<p></p>' );
 
-				test( '<h2></h2>', '<heading></heading>' );
-				test( '<p style="font-size:26px"></p>', '<heading></heading>', '<h2></h2>' );
+				testConversion( '<h2></h2>', '<heading></heading>' );
+				testConversion( '<p style="font-size:26px"></p>', '<heading></heading>', '<h2></h2>' );
 			} );
 		} );
 
@@ -263,15 +263,19 @@ describe( 'Conversion', () => {
 			it( 'config.view is a string', () => {
 				conversion.attributeToElement( { model: 'bold', view: 'strong' } );
 
-				test( '<p><strong>Foo</strong> bar</p>', '<paragraph><$text bold="true">Foo</$text> bar</paragraph>' );
+				testConversion( '<p><strong>Foo</strong> bar</p>', '<paragraph><$text bold="true">Foo</$text> bar</paragraph>' );
 			} );
 
 			it( 'config.converterPriority is defined (override downcast)', () => {
 				conversion.attributeToElement( { model: 'bold', view: 'strong' } );
 				conversion.attributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
 
-				test( '<p><b>Foo</b></p>', '<paragraph><$text bold="true">Foo</$text></paragraph>' );
-				test( '<p><strong>Foo</strong></p>', '<paragraph><$text bold="true">Foo</$text></paragraph>', '<p><b>Foo</b></p>' );
+				testConversion( '<p><b>Foo</b></p>', '<paragraph><$text bold="true">Foo</$text></paragraph>' );
+				testConversion(
+					'<p><strong>Foo</strong></p>',
+					'<paragraph><$text bold="true">Foo</$text></paragraph>',
+					'<p><b>Foo</b></p>'
+				);
 			} );
 
 			it( 'config.converterPriority is defined (override upcast)', () => {
@@ -281,7 +285,7 @@ describe( 'Conversion', () => {
 				conversion.attributeToElement( { model: 'bold', view: 'strong' } );
 				conversion.attributeToElement( { model: 'foo', view: 'strong', converterPriority: 'high' } );
 
-				test(
+				testConversion(
 					'<p><strong>Foo</strong></p>',
 					'<paragraph><$text foo="true">Foo</$text></paragraph>',
 					'<p><strong>Foo</strong></p>'
@@ -297,7 +301,7 @@ describe( 'Conversion', () => {
 					}
 				} );
 
-				test( '<p><span class="bold">Foo</span> bar</p>', '<paragraph><$text bold="true">Foo</$text> bar</paragraph>' );
+				testConversion( '<p><span class="bold">Foo</span> bar</p>', '<paragraph><$text bold="true">Foo</$text> bar</paragraph>' );
 			} );
 
 			it( 'config.view is an object with upcastAlso defined', () => {
@@ -333,48 +337,48 @@ describe( 'Conversion', () => {
 					]
 				} );
 
-				test(
+				testConversion(
 					'<p><strong>Foo</strong></p>',
 					'<paragraph><$text bold="true">Foo</$text></paragraph>'
 				);
 
-				test(
+				testConversion(
 					'<p><b>Foo</b></p>',
 					'<paragraph><$text bold="true">Foo</$text></paragraph>',
 					'<p><strong>Foo</strong></p>'
 				);
 
-				test(
+				testConversion(
 					'<p><span class="bold">Foo</span></p>',
 					'<paragraph><$text bold="true">Foo</$text></paragraph>',
 					'<p><strong>Foo</strong></p>'
 				);
 
-				test(
+				testConversion(
 					'<p><span style="font-weight: bold;">Foo</span></p>',
 					'<paragraph><$text bold="true">Foo</$text></paragraph>',
 					'<p><strong>Foo</strong></p>'
 				);
 
-				test(
+				testConversion(
 					'<p><span style="font-weight: 500;">Foo</span></p>',
 					'<paragraph>Foo</paragraph>',
 					'<p>Foo</p>'
 				);
 
-				test(
+				testConversion(
 					'<p><span style="font-weight: 600;">Foo</span></p>',
 					'<paragraph><$text bold="true">Foo</$text></paragraph>',
 					'<p><strong>Foo</strong></p>'
 				);
 
-				test(
+				testConversion(
 					'<p style="font-weight: 600;">Foo</p>',
 					'<paragraph><$text bold="true">Foo</$text></paragraph>',
 					'<p><strong>Foo</strong></p>'
 				);
 
-				test(
+				testConversion(
 					'<p><x-bold style="font-wieght:bold">Foo</x-bold></p>',
 					'<paragraph><$text xBold="true">Foo</$text></paragraph>',
 					'<p><x-bold>Foo</x-bold></p>'
@@ -451,29 +455,29 @@ describe( 'Conversion', () => {
 					}
 				} );
 
-				test(
+				testConversion(
 					'<p><span style="font-size:1.2em">Foo</span> bar</p>',
 					'<paragraph><$text fontSize="big">Foo</$text> bar</paragraph>'
 				);
 
-				test(
+				testConversion(
 					'<p><span style="font-size:12px">Foo</span> bar</p>',
 					'<paragraph><$text fontSize="big">Foo</$text> bar</paragraph>',
 					'<p><span style="font-size:1.2em">Foo</span> bar</p>'
 				);
 
-				test(
+				testConversion(
 					'<p><span style="font-size:0.8em">Foo</span> bar</p>',
 					'<paragraph><$text fontSize="small">Foo</$text> bar</paragraph>'
 				);
 
-				test(
+				testConversion(
 					'<p><span style="font-size:8px">Foo</span> bar</p>',
 					'<paragraph><$text fontSize="small">Foo</$text> bar</paragraph>',
 					'<p><span style="font-size:0.8em">Foo</span> bar</p>'
 				);
 
-				test(
+				testConversion(
 					'<p><span style="font-size:10px">Foo</span> bar</p>',
 					'<paragraph>Foo bar</paragraph>',
 					'<p>Foo bar</p>'
@@ -507,17 +511,17 @@ describe( 'Conversion', () => {
 					}
 				} );
 
-				test(
+				testConversion(
 					'<p><span style="text-decoration:underline">Foo</span></p>',
 					'<paragraph><$text textDecoration="underline">Foo</$text></paragraph>'
 				);
 
-				test(
+				testConversion(
 					'<p><span style="text-decoration:line-through">Foo</span></p>',
 					'<paragraph><$text textDecoration="lineThrough">Foo</$text></paragraph>'
 				);
 
-				test(
+				testConversion(
 					'<p><span style="text-decoration:underline">Foo</span></p>',
 					'<paragraph><$text textDecoration="underline">Foo</$text></paragraph>'
 				);
@@ -529,7 +533,7 @@ describe( 'Conversion', () => {
 				conversion.elementToElement( { model: 'image', view: 'img' } );
 
 				schema.register( 'image', {
-					inheritAllFrom: '$block',
+					inheritAllFrom: '$block'
 				} );
 			} );
 
@@ -540,7 +544,7 @@ describe( 'Conversion', () => {
 
 				conversion.attributeToAttribute( { model: 'source', view: 'src' } );
 
-				test( '<img src="foo.jpg"></img>', '<image source="foo.jpg"></image>' );
+				testConversion( '<img src="foo.jpg"></img>', '<image source="foo.jpg"></image>' );
 			} );
 
 			it( 'config.view and config.model are objects', () => {
@@ -565,8 +569,8 @@ describe( 'Conversion', () => {
 
 				conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 
-				test( '<img class="aside half-size"></img>', '<image aside="aside"></image>' );
-				test( '<p class="aside half-size"></p>', '<paragraph></paragraph>', '<p></p>' );
+				testConversion( '<img class="aside half-size"></img>', '<image aside="aside"></image>' );
+				testConversion( '<p class="aside half-size"></p>', '<paragraph></paragraph>', '<p></p>' );
 			} );
 
 			it( 'config.view and config.model are objects - convert to style attribute', () => {
@@ -595,8 +599,8 @@ describe( 'Conversion', () => {
 
 				conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 
-				test( '<img style="float:right;margin:5px;width:50%"></img>', '<image aside="aside"></image>' );
-				test( '<p style="float:right;margin:5px;width:50%"></p>', '<paragraph></paragraph>', '<p></p>' );
+				testConversion( '<img style="float:right;margin:5px;width:50%"></img>', '<image aside="aside"></image>' );
+				testConversion( '<p style="float:right;margin:5px;width:50%"></p>', '<paragraph></paragraph>', '<p></p>' );
 			} );
 
 			it( 'config is an array with upcastAlso defined', () => {
@@ -635,23 +639,23 @@ describe( 'Conversion', () => {
 					}
 				} );
 
-				test(
+				testConversion(
 					'<p class="align-right">Foo</p>',
 					'<paragraph align="right">Foo</paragraph>'
 				);
 
-				test(
+				testConversion(
 					'<p style="text-align:right">Foo</p>',
 					'<paragraph align="right">Foo</paragraph>',
 					'<p class="align-right">Foo</p>'
 				);
 
-				test(
+				testConversion(
 					'<p class="align-center">Foo</p>',
 					'<paragraph align="center">Foo</paragraph>'
 				);
 
-				test(
+				testConversion(
 					'<p style="text-align:center">Foo</p>',
 					'<paragraph align="center">Foo</paragraph>',
 					'<p class="align-center">Foo</p>'
@@ -674,7 +678,7 @@ describe( 'Conversion', () => {
 					}
 				} );
 
-				test( '<img src="foo.jpg"></img>', '<image source="foo.jpg"></image>' );
+				testConversion( '<img src="foo.jpg"></img>', '<image source="foo.jpg"></image>' );
 			} );
 
 			// #1443.
@@ -693,7 +697,7 @@ describe( 'Conversion', () => {
 				conversion.attributeToAttribute( { model: 'border', view: { key: 'class', value: 'border' } } );
 				conversion.attributeToAttribute( { model: 'shade', view: { key: 'class', value: 'shade' } } );
 
-				test(
+				testConversion(
 					'<div class="border"><div class="shade"></div></div>',
 					'<div border="border"><div shade="shade"></div></div>'
 				);
@@ -707,11 +711,11 @@ describe( 'Conversion', () => {
 				conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
 				conversion.attributeToAttribute( { model: 'foo', view: 'foofoo', converterPriority: 'high' } );
 
-				test( '<img foo="foo"></img>', '<image foo="foo"></image>', '<img foofoo="foo"></img>' );
+				testConversion( '<img foo="foo"></img>', '<image foo="foo"></image>', '<img foofoo="foo"></img>' );
 			} );
 		} );
 
-		function test( input, expectedModel, expectedView = null ) {
+		function testConversion( input, expectedModel, expectedView = null ) {
 			loadData( input );
 
 			expect( modelStringify( model.document.getRoot() ) ).to.equal( expectedModel );

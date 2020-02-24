@@ -180,7 +180,7 @@ describe( 'Differ', () => {
 				// so there is also a diff for text.
 				expectChanges( [
 					{ type: 'attribute', range: diffRange, attributeKey: 'align', attributeOldValue: null, attributeNewValue: 'center' },
-					{ type: 'insert', name: '$text', length: 3, position },
+					{ type: 'insert', name: '$text', length: 3, position }
 				] );
 			} );
 		} );
@@ -431,7 +431,7 @@ describe( 'Differ', () => {
 				remove( removePositionB, 2 );
 
 				expectChanges( [
-					{ type: 'remove', name: '$text', length: 3, position: removePositionB },
+					{ type: 'remove', name: '$text', length: 3, position: removePositionB }
 				] );
 			} );
 		} );

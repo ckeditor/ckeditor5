@@ -19,7 +19,7 @@ describe( 'DowncastWriter', () => {
 		//
 		// @param {String} input
 		// @param {String} expected
-		function test( input, expected ) {
+		function testMerge( input, expected ) {
 			const { view, selection } = parse( input );
 			const newPosition = writer.mergeAttributes( selection.getFirstPosition() );
 			expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
@@ -30,32 +30,32 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should not merge if inside text node', () => {
-			test( '<container:p>fo{}bar</container:p>', '<container:p>fo{}bar</container:p>' );
+			testMerge( '<container:p>fo{}bar</container:p>', '<container:p>fo{}bar</container:p>' );
 		} );
 
 		it( 'should not merge if between containers', () => {
-			test(
+			testMerge(
 				'<container:div><container:p>foo</container:p>[]<container:p>bar</container:p></container:div>',
 				'<container:div><container:p>foo</container:p>[]<container:p>bar</container:p></container:div>'
 			);
 		} );
 
 		it( 'should return same position when inside empty container', () => {
-			test(
+			testMerge(
 				'<container:p>[]</container:p>',
 				'<container:p>[]</container:p>'
 			);
 		} );
 
 		it( 'should not merge when position is placed at the beginning of the container', () => {
-			test(
+			testMerge(
 				'<container:p>[]<attribute:b view-priority="1"></attribute:b></container:p>',
 				'<container:p>[]<attribute:b view-priority="1"></attribute:b></container:p>'
 			);
 		} );
 
 		it( 'should not merge when position is placed at the end of the container', () => {
-			test(
+			testMerge(
 				'<container:p><attribute:b view-priority="1"></attribute:b>[]</container:p>',
 				'<container:p><attribute:b view-priority="1"></attribute:b>[]</container:p>'
 			);
@@ -73,7 +73,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should merge when placed between similar attribute nodes', () => {
-			test(
+			testMerge(
 				'<container:p>' +
 					'<attribute:b view-priority="1" foo="bar">baz</attribute:b>[]' +
 					'<attribute:b view-priority="1" foo="bar">qux</attribute:b>' +
@@ -83,7 +83,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should not merge when placed between non-similar attribute nodes', () => {
-			test(
+			testMerge(
 				'<container:p>' +
 					'<attribute:b view-priority="1" foo="bar"></attribute:b>[]<attribute:b view-priority="1" foo="baz"></attribute:b>' +
 				'</container:p>',
@@ -94,7 +94,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should not merge when placed between similar attribute nodes with different priority', () => {
-			test(
+			testMerge(
 				'<container:p>' +
 					'<attribute:b view-priority="1" foo="bar"></attribute:b>[]<attribute:b view-priority="2" foo="bar"></attribute:b>' +
 				'</container:p>',
@@ -105,7 +105,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should merge attribute nodes and their contents if possible', () => {
-			test(
+			testMerge(
 				'<container:p>' +
 					'<attribute:b view-priority="1" foo="bar">foo</attribute:b>[]' +
 					'<attribute:b view-priority="1" foo="bar">bar</attribute:b>' +
@@ -115,35 +115,35 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove empty attributes after merge #1', () => {
-			test(
+			testMerge(
 				'<container:p><attribute:b>[]</attribute:b></container:p>',
 				'<container:p>[]</container:p>'
 			);
 		} );
 
 		it( 'should remove empty attributes after merge #2', () => {
-			test(
+			testMerge(
 				'<container:p><attribute:b>foo</attribute:b><attribute:i>[]</attribute:i><attribute:b>bar</attribute:b></container:p>',
 				'<container:p><attribute:b view-priority="10">foo{}bar</attribute:b></container:p>'
 			);
 		} );
 
 		it( 'should remove empty attributes after merge #3', () => {
-			test(
+			testMerge(
 				'<container:p><attribute:b></attribute:b><attribute:i>[]</attribute:i><attribute:b></attribute:b></container:p>',
 				'<container:p>[]</container:p>'
 			);
 		} );
 
 		it( 'should not merge when placed between EmptyElements', () => {
-			test(
+			testMerge(
 				'<container:p><empty:img></empty:img>[]<empty:img></empty:img></container:p>',
 				'<container:p><empty:img></empty:img>[]<empty:img></empty:img></container:p>'
 			);
 		} );
 
 		it( 'should not merge when placed between UIElements', () => {
-			test(
+			testMerge(
 				'<container:p><ui:span></ui:span>[]<ui:span></ui:span></container:p>',
 				'<container:p><ui:span></ui:span>[]<ui:span></ui:span></container:p>'
 			);
