@@ -82,7 +82,10 @@ export function getBalloonTablePositionData( editor ) {
  */
 export function getBalloonCellPositionData( editor ) {
 	const firstPosition = editor.model.document.selection.getFirstPosition();
-	const modelTableCell = findAncestor( 'tableCell', firstPosition );
+	const nodeAfter = firstPosition.nodeAfter;
+
+	const isTableCellSelected = nodeAfter && nodeAfter.is( 'tableCell' );
+	const modelTableCell = isTableCellSelected ? nodeAfter : findAncestor( 'tableCell', firstPosition );
 	const viewTableCell = editor.editing.mapper.toViewElement( modelTableCell );
 
 	return {
