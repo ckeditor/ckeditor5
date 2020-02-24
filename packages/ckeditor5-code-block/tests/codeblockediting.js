@@ -660,7 +660,7 @@ describe( 'CodeBlockEditing', () => {
 					plugins: [ CodeBlockEditing, AlignmentEditing, BoldEditing, Enter, Paragraph ],
 					codeBlock: {
 						languages: [
-							{ language: 'cpp', label: 'C++', class: '' },
+							{ language: 'cpp', label: 'C++', class: '' }
 						]
 					}
 				} )
@@ -765,7 +765,7 @@ describe( 'CodeBlockEditing', () => {
 					plugins: [ CodeBlockEditing, AlignmentEditing, BoldEditing, Enter, Paragraph ],
 					codeBlock: {
 						languages: [
-							{ language: 'cpp', label: 'C++', class: '' },
+							{ language: 'cpp', label: 'C++', class: '' }
 						]
 					}
 				} )
@@ -792,7 +792,7 @@ describe( 'CodeBlockEditing', () => {
 					codeBlock: {
 						languages: [
 							{ language: 'javascript', label: 'JavaScript', class: 'language-js' },
-							{ language: 'swift', label: 'Swift', class: 'swift ios-code' },
+							{ language: 'swift', label: 'Swift', class: 'swift ios-code' }
 						]
 					}
 				} )
@@ -956,7 +956,7 @@ describe( 'CodeBlockEditing', () => {
 							languages: [
 								{ language: 'foo', label: 'Foo' },
 								{ language: 'bar', label: 'Bar' },
-								{ language: 'qux', label: 'Qux', class: 'qux' },
+								{ language: 'qux', label: 'Qux', class: 'qux' }
 							]
 						}
 					} )
@@ -984,7 +984,7 @@ describe( 'CodeBlockEditing', () => {
 							languages: [
 								{ language: 'foo', label: 'Foo' },
 								{ language: 'bar', label: 'Bar' },
-								{ language: 'qux', label: 'Qux', class: '' },
+								{ language: 'qux', label: 'Qux', class: '' }
 							]
 						}
 					} )
@@ -1050,7 +1050,7 @@ describe( 'CodeBlockEditing', () => {
 						languages: [
 							{ language: 'foo', label: 'Foo', class: 'foo' },
 							{ language: 'baz', label: 'Baz', class: 'baz bar' },
-							{ language: 'qux', label: 'Qux', class: 'qux' },
+							{ language: 'qux', label: 'Qux', class: 'qux' }
 						]
 					}
 				} ).then( editor => {
@@ -1071,7 +1071,7 @@ describe( 'CodeBlockEditing', () => {
 						languages: [
 							{ language: 'foo', label: 'Foo', class: 'foo' },
 							{ language: 'baz', label: 'Baz', class: 'baz bar' },
-							{ language: 'qux', label: 'Qux', class: 'qux' },
+							{ language: 'qux', label: 'Qux', class: 'qux' }
 						]
 					}
 				} ).then( editor => {
