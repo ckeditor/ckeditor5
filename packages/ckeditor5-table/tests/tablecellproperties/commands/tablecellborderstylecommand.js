@@ -8,9 +8,10 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { assertTableCellStyle, modelTable, setTableCellWithObjectAttributes } from '../../_utils/utils';
+import { assertTableCellStyle, modelTable, setTableCellWithObjectAttributes, viewTable } from '../../_utils/utils';
 import TableCellPropertiesEditing from '../../../src/tablecellproperties/tablecellpropertiesediting';
 import TableCellBorderStyleCommand from '../../../src/tablecellproperties/commands/tablecellborderstylecommand';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
@@ -170,6 +171,44 @@ describe( 'table cell properties', () => {
 						command.execute();
 
 						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					beforeEach( () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true }, '01' ],
+							[ '10', { contents: '11', isSelected: true } ]
+						] ) );
+					} );
+
+					it( 'should set selected table cell borderStyle to a passed value', () => {
+						command.execute( { value: 'solid' } );
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[
+								{ contents: '00', style: 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' },
+								'01'
+							],
+							[
+								'10',
+								{ contents: '11', style: 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' }
+							]
+						] ) );
+					} );
+
+					it( 'should remove borderStyle from a selected table cell if no value is passed', () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true, borderStyle: 'solid' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, borderStyle: 'solid' } ]
+						] ) );
+
+						command.execute();
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						] ) );
 					} );
 				} );
 			} );

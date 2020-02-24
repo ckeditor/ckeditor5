@@ -8,9 +8,10 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { assertTableCellStyle, modelTable, setTableCellWithObjectAttributes } from '../../_utils/utils';
+import { assertTableCellStyle, modelTable, setTableCellWithObjectAttributes, viewTable } from '../../_utils/utils';
 import TableCellPropertiesEditing from '../../../src/tablecellproperties/tablecellpropertiesediting';
 import TableCellBorderWidthCommand from '../../../src/tablecellproperties/commands/tablecellborderwidthcommand';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
@@ -226,6 +227,44 @@ describe( 'table cell properties', () => {
 						command.execute();
 
 						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					beforeEach( () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true }, '01' ],
+							[ '10', { contents: '11', isSelected: true } ]
+						] ) );
+					} );
+
+					it( 'should set selected table cell borderWidth to a passed value', () => {
+						command.execute( { value: '1px' } );
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[
+								{ contents: '00', style: 'border-bottom:1px;border-left:1px;border-right:1px;border-top:1px;' },
+								'01'
+							],
+							[
+								'10',
+								{ contents: '11', style: 'border-bottom:1px;border-left:1px;border-right:1px;border-top:1px;' }
+							]
+						] ) );
+					} );
+
+					it( 'should remove borderWidth from a selected table cell if no value is passed', () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true, borderWidth: '1px' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, borderWidth: '1px' } ]
+						] ) );
+
+						command.execute();
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						] ) );
 					} );
 				} );
 			} );

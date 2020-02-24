@@ -8,9 +8,10 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { assertTableCellStyle, modelTable } from '../../_utils/utils';
+import { assertTableCellStyle, modelTable, viewTable } from '../../_utils/utils';
 import TableCellPropertiesEditing from '../../../src/tablecellproperties/tablecellpropertiesediting';
 import TableCellHorizontalAlignmentCommand from '../../../src/tablecellproperties/commands/tablecellhorizontalalignmentcommand';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
@@ -145,6 +146,38 @@ describe( 'table cell properties', () => {
 						command.execute();
 
 						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					beforeEach( () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true }, '01' ],
+							[ '10', { contents: '11', isSelected: true } ]
+						] ) );
+					} );
+
+					it( 'should set selected table cell horizontalAlignment to a passed value', () => {
+						command.execute( { value: 'right' } );
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[ { contents: '00', style: 'text-align:right;' }, '01' ],
+							[ '10', { contents: '11', style: 'text-align:right;' } ]
+						] ) );
+					} );
+
+					it( 'should remove horizontalAlignment from a selected table cell if no value is passed', () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true, horizontalAlignment: 'right' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, horizontalAlignment: 'right' } ]
+						] ) );
+
+						command.execute();
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						] ) );
 					} );
 				} );
 			} );

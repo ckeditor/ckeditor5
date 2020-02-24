@@ -8,9 +8,10 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { assertTableCellStyle, modelTable } from '../../_utils/utils';
+import { assertTableCellStyle, modelTable, viewTable } from '../../_utils/utils';
 import TableCellPropertiesEditing from '../../../src/tablecellproperties/tablecellpropertiesediting';
 import TableCellWidthCommand from '../../../src/tablecellproperties/commands/tablecellwidthcommand';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
@@ -201,6 +202,38 @@ describe( 'table cell properties', () => {
 						command.execute();
 
 						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					beforeEach( () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true }, '01' ],
+							[ '10', { contents: '11', isSelected: true } ]
+						] ) );
+					} );
+
+					it( 'should set selected table cell width to a passed value', () => {
+						command.execute( { value: '25px' } );
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[ { contents: '00', style: 'width:25px;' }, '01' ],
+							[ '10', { contents: '11', style: 'width:25px;' } ]
+						] ) );
+					} );
+
+					it( 'should remove width from a selected table cell if no value is passed', () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true, width: '25px' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, width: '25px' } ]
+						] ) );
+
+						command.execute();
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						] ) );
 					} );
 				} );
 			} );

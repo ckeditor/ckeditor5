@@ -38,7 +38,9 @@ export default class TableCellPropertyCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
-		const tableCell = findAncestor( 'tableCell', selection.getFirstPosition() );
+		const firstPosition = selection.getFirstPosition();
+		const isTableCellSelected = firstPosition.nodeAfter && firstPosition.nodeAfter.is( 'tableCell' );
+		const tableCell = isTableCellSelected ? firstPosition.nodeAfter : findAncestor( 'tableCell', firstPosition );
 
 		this.isEnabled = !!tableCell;
 		this.value = this._getAttribute( tableCell );
