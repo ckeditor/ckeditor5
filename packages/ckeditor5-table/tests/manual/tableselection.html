@@ -7,6 +7,11 @@
 	.print-selected {
 		background: #b8e3ff;
 	}
+
+	/* This shouldn't be needed. See https://github.com/ckeditor/ckeditor5/issues/6314 */
+	.external-source td, .external-source th {
+		border: solid 1px hsl(0, 0%, 85%);
+	}
 </style>
 <div style="display:flex">
 	<div style="flex:1;">
@@ -152,7 +157,7 @@
 
 	<div style="padding-left: 2em;flex: 1;">
 		<h3>Content editable to test paste</h3>
-		<div contenteditable="true" class="ck-content" style="padding: 1em;border: 1px dotted #333;">
+		<div contenteditable="true" class="ck-content external-source" style="padding: 1em;border: 1px dotted #333;">
 			paste here
 		</div>
 	</div>
