@@ -49,7 +49,7 @@ export default class Clipboard extends Plugin {
 		 * @private
 		 * @member {module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor} #_htmlDataProcessor
 		 */
-		this._htmlDataProcessor = new HtmlDataProcessor( editor.data.stylesProcessor );
+		this._htmlDataProcessor = new HtmlDataProcessor( viewDocument );
 
 		view.addObserver( ClipboardObserver );
 
