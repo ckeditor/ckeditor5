@@ -113,7 +113,7 @@ describe( 'SpecialCharactersNavigationView', () => {
 					} ) )
 					.to.deep.equal( [
 						{ label: 'groupA', withText: true },
-						{ label: 'groupB', withText: true },
+						{ label: 'groupB', withText: true }
 					] );
 			} );
 
