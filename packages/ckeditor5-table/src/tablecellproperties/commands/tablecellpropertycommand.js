@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor } from '../../commands/utils';
+import { findAncestor, getFirstSelectedTableCell } from '../../commands/utils';
 
 /**
  * The table cell attribute command.
@@ -36,11 +36,7 @@ export default class TableCellPropertyCommand extends Command {
 	 */
 	refresh() {
 		const editor = this.editor;
-		const selection = editor.model.document.selection;
-
-		const firstPosition = selection.getFirstPosition();
-		const isTableCellSelected = firstPosition.nodeAfter && firstPosition.nodeAfter.is( 'tableCell' );
-		const tableCell = isTableCellSelected ? firstPosition.nodeAfter : findAncestor( 'tableCell', firstPosition );
+		const tableCell = getFirstSelectedTableCell( editor.model.document.selection );
 
 		this.isEnabled = !!tableCell;
 		this.value = this._getAttribute( tableCell );

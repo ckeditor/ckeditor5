@@ -30,6 +30,21 @@ export function findAncestor( parentName, positionOrElement ) {
 }
 
 /**
+ * Returns a first selected table cell from a multi-cell or in-cell selection.
+ *
+ *		const tableCell = getFirstSelectedTableCell( editor.model.selection );
+ *
+ * @param {module:engine/model/documentselection~DocumentSelection} selection Document selection.
+ * @returns {module:engine/model/element~Element}
+ */
+export function getFirstSelectedTableCell( selection ) {
+	const firstPosition = selection.getFirstPosition();
+	const isTableCellSelected = firstPosition.nodeAfter && firstPosition.nodeAfter.is( 'tableCell' );
+
+	return isTableCellSelected ? firstPosition.nodeAfter : findAncestor( 'tableCell', firstPosition );
+}
+
+/**
  * A common method to update the numeric value. If a value is the default one, it will be unset.
  *
  * @param {String} key An attribute key.
