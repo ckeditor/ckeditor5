@@ -11,7 +11,9 @@ import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/
 import SpecialCharactersCurrency from '@ckeditor/ckeditor5-special-characters/src/specialcharacterscurrency';
 import SpecialCharactersMathematical from '@ckeditor/ckeditor5-special-characters/src/specialcharactersmathematical';
 
-ClassicEditor.builtinPlugins.push( SpecialCharacters );
+import Font from '@ckeditor/ckeditor5-font/src/font';
+
+ClassicEditor.builtinPlugins.push( SpecialCharacters, Font );
 
 window.ClassicEditor = ClassicEditor;
 window.SpecialCharacters = SpecialCharacters;
