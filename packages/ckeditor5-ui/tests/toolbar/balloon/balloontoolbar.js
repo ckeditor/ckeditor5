@@ -12,9 +12,11 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -235,9 +237,13 @@ describe( 'BalloonToolbar', () => {
 						defaultPositions.southEastArrowNorth,
 						defaultPositions.southEastArrowNorthEast,
 						defaultPositions.southEastArrowNorthWest,
+						defaultPositions.southEastArrowNorthMiddleEast,
+						defaultPositions.southEastArrowNorthMiddleWest,
 						defaultPositions.northEastArrowSouth,
 						defaultPositions.northEastArrowSouthEast,
-						defaultPositions.northEastArrowSouthWest
+						defaultPositions.northEastArrowSouthWest,
+						defaultPositions.northEastArrowSouthMiddleEast,
+						defaultPositions.northEastArrowSouthMiddleWest,
 					]
 				}
 			} );
@@ -294,9 +300,13 @@ describe( 'BalloonToolbar', () => {
 						defaultPositions.northWestArrowSouth,
 						defaultPositions.northWestArrowSouthWest,
 						defaultPositions.northWestArrowSouthEast,
+						defaultPositions.northWestArrowSouthMiddleEast,
+						defaultPositions.northWestArrowSouthMiddleWest,
 						defaultPositions.southWestArrowNorth,
 						defaultPositions.southWestArrowNorthWest,
-						defaultPositions.southWestArrowNorthEast
+						defaultPositions.southWestArrowNorthEast,
+						defaultPositions.southWestArrowNorthMiddleWest,
+						defaultPositions.southWestArrowNorthMiddleEast,
 					]
 				}
 			} );
@@ -372,7 +382,7 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.calledOnce( balloonAddSpy );
 		} );
 
-		it( 'should set the toolbar max-width to half of the editable width', done => {
+		it( 'should set the toolbar max-width to 90% of the editable width', done => {
 			const viewElement = editor.ui.view.editable.element;
 
 			setData( model, '<paragraph>b[ar]</paragraph>' );
@@ -387,7 +397,7 @@ describe( 'BalloonToolbar', () => {
 			// See more: https://twitter.com/paul_irish/status/912693347315150849/photo/1
 			setTimeout( () => {
 				// The expected width should be 2/3 of the editor's editable element's width.
-				const expectedWidth = toPx( new Rect( viewElement ).width * 0.66 );
+				const expectedWidth = toPx( new Rect( viewElement ).width * 0.9 );
 				expect( balloonToolbar.toolbarView.maxWidth ).to.be.equal( expectedWidth );
 
 				done();
@@ -451,6 +461,18 @@ describe( 'BalloonToolbar', () => {
 
 			clock.tick( 200 );
 			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should destroy #resizeObserver if is available', () => {
+			const editable = editor.ui.getEditableElement();
+			const resizeObserver = new ResizeObserver( editable, () => {} );
+			const destroySpy = sinon.spy( resizeObserver, 'destroy' );
+
+			balloonToolbar.resizeObserver = resizeObserver;
+
+			balloonToolbar.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
 		} );
 	} );
 
@@ -590,6 +612,36 @@ describe( 'BalloonToolbar', () => {
 
 			balloonToolbar.show();
 			sinon.assert.notCalled( balloonAddSpy );
+		} );
+	} );
+
+	describe( 'has `Heading` plugin and editable width is less then 200px', () => {
+		let editor, balloonToolbar, viewElement;
+
+		beforeEach( () => {
+			return ClassicTestEditor.create( editorElement, {
+				plugins: [ Heading, BalloonToolbar ],
+				balloonToolbar: [ 'heading' ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
+				viewElement = editor.ui.view.editable.element;
+			} );
+		} );
+
+		afterEach( () => {
+			editor.destroy();
+		} );
+
+		it( 'should contain `.ck-balloon-toolbar_min-width`', done => {
+			viewElement.style.width = '200px';
+
+			// We have to wait for a ResizeObserver to set the editable's width.
+			setTimeout( () => {
+				expect( balloonToolbar.toolbarView.element.classList.contains( 'ck-balloon-toolbar_min-width' ) ).to.be.true;
+
+				done();
+			}, 200 );
 		} );
 	} );
 
