@@ -62,7 +62,8 @@ export function parseHtml( htmlString ) {
 // @param {Document} htmlDocument Native `Document` object to be transformed.
 // @returns {module:engine/view/documentfragment~DocumentFragment}
 function documentToView( htmlDocument ) {
-	const domConverter = new DomConverter( { blockFillerMode: 'nbsp' } );
+	const viewDocument = new ViewDocument( new StylesProcessor() );
+	const domConverter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
 	const fragment = htmlDocument.createDocumentFragment();
 	const nodes = htmlDocument.body.childNodes;
 
@@ -70,7 +71,7 @@ function documentToView( htmlDocument ) {
 		fragment.appendChild( nodes[ 0 ] );
 	}
 
-	return domConverter.domToView( new ViewDocument( new StylesProcessor() ), fragment );
+	return domConverter.domToView( fragment );
 }
 
 // Extracts both `CSSStyleSheet` and string representation from all `style` elements available in a provided `htmlDocument`.

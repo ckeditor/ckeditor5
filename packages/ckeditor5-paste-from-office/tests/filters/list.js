@@ -16,7 +16,7 @@ import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 describe( 'PasteFromOffice - filters', () => {
 	describe( 'list - paste from MS Word', () => {
-		const htmlDataProcessor = new HtmlDataProcessor( new StylesProcessor() );
+		const htmlDataProcessor = new HtmlDataProcessor( new Document( new StylesProcessor() ) );
 
 		describe( 'transformListItemLikeElementsIntoLists()', () => {
 			it( 'replaces list-like elements with semantic lists', () => {
@@ -85,12 +85,12 @@ describe( 'PasteFromOffice - filters', () => {
 	} );
 
 	describe( 'list - paste from google docs', () => {
-		const htmlDataProcessor = new HtmlDataProcessor( new StylesProcessor() );
-		let writer, viewDocument;
+		let writer, viewDocument, htmlDataProcessor;
 
-		before( () => {
-			viewDocument = new Document();
+		beforeEach( () => {
+			viewDocument = new Document( new StylesProcessor() );
 			writer = new UpcastWriter( viewDocument );
+			htmlDataProcessor = new HtmlDataProcessor( viewDocument );
 		} );
 
 		describe( 'unwrapParagraphInListItem', () => {

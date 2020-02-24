@@ -10,7 +10,7 @@ import Document from '@ckeditor/ckeditor5-engine/src/view/document';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 describe( 'PasteFromOffice - filters', () => {
-	const htmlDataProcessor = new HtmlDataProcessor( new StylesProcessor() );
+	const htmlDataProcessor = new HtmlDataProcessor( new Document( new StylesProcessor() ) );
 	describe( 'removeBoldWrapper', () => {
 		let writer, viewDocument;
 

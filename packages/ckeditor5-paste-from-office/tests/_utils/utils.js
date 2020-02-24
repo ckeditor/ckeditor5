@@ -7,6 +7,7 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import normalizeClipboardData from '@ckeditor/ckeditor5-clipboard/src/utils/normalizeclipboarddata';
@@ -18,7 +19,7 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 import { fixtures, browserFixtures } from './fixtures';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
-const htmlDataProcessor = new HtmlDataProcessor( new StylesProcessor() );
+const htmlDataProcessor = new HtmlDataProcessor( new ViewDocument( new StylesProcessor() ) );
 
 /**
  * Mocks dataTransfer object which can be used for simulating paste.
