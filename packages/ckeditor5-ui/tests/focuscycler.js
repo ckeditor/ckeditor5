@@ -376,7 +376,7 @@ describe( 'FocusCycler', () => {
 			cycler = new FocusCycler( {
 				focusables, focusTracker, keystrokeHandler,
 				actions: {
-					focusPrevious: [ 'arrowup', 'arrowleft' ],
+					focusPrevious: [ 'arrowup', 'arrowleft' ]
 				}
 			} );
 

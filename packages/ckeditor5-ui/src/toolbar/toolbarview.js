@@ -197,7 +197,7 @@ export default class ToolbarView extends View {
 					'ck',
 					'ck-toolbar',
 					bind.to( 'class' ),
-					bind.if( 'isCompact', 'ck-toolbar_compact' ),
+					bind.if( 'isCompact', 'ck-toolbar_compact' )
 				],
 				role: 'toolbar',
 				'aria-label': bind.to( 'ariaLabel' ),
@@ -340,7 +340,7 @@ class ItemsView extends View {
 				class: [
 					'ck',
 					'ck-toolbar__items'
-				],
+				]
 			},
 			children: this.children
 		} );

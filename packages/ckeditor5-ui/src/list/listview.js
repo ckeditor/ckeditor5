@@ -67,7 +67,7 @@ export default class ListView extends View {
 				focusPrevious: 'arrowup',
 
 				// Navigate toolbar items forwards using the arrowdown key.
-				focusNext: 'arrowdown',
+				focusNext: 'arrowdown'
 			}
 		} );
 
