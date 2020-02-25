@@ -10,6 +10,8 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableSelection from './tableselection';
 import { clearTableCellsContents } from './tableselection/utils';
+import viewToPlainText from '@ckeditor/ckeditor5-clipboard/src/utils/viewtoplaintext';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
 /**
  * The table clipboard integration plugin.
@@ -49,8 +51,8 @@ export default class TableClipboard extends Plugin {
 		 */
 		this._tableSelection = editor.plugins.get( 'TableSelection' );
 
-		this.listenTo( viewDocument, 'copy', ( evt, data ) => this._onCopy( evt, data ), { priority: 'normal' } );
-		this.listenTo( viewDocument, 'cut', ( evt, data ) => this._onCut( evt, data ), { priority: 'high' } );
+		this.listenTo( viewDocument, 'copy', ( evt, data ) => this._onCopy( evt, data ) );
+		this.listenTo( viewDocument, 'cut', ( evt, data ) => this._onCut( evt, data ) );
 	}
 
 	/**
@@ -70,16 +72,7 @@ export default class TableClipboard extends Plugin {
 		data.preventDefault();
 		evt.stop();
 
-		const dataController = this.editor.data;
-		const viewDocument = this.editor.editing.view.document;
-
-		const content = dataController.toView( tableSelection.getSelectionAsFragment() );
-
-		viewDocument.fire( 'clipboardOutput', {
-			dataTransfer: data.dataTransfer,
-			content,
-			method: evt.name
-		} );
+		this._copySelectedCellsToClipboard( tableSelection.getSelectionAsFragment(), data );
 	}
 
 	/**
@@ -90,11 +83,32 @@ export default class TableClipboard extends Plugin {
 	 * @private
 	 */
 	_onCut( evt, data ) {
-		if ( this._tableSelection.hasMultiCellSelection ) {
-			data.preventDefault();
-			evt.stop();
+		const tableSelection = this._tableSelection;
 
-			clearTableCellsContents( this.editor.model, this._tableSelection.getSelectedTableCells() );
+		if ( !tableSelection.hasMultiCellSelection ) {
+			return;
 		}
+
+		data.preventDefault();
+		evt.stop();
+
+		this._copySelectedCellsToClipboard( tableSelection.getSelectionAsFragment(), data );
+		clearTableCellsContents( this.editor.model, tableSelection.getSelectedTableCells() );
+	}
+
+	/**
+	 * Handles clipboard output the same way as Clipboard plugin would.
+	 *
+	 * @private
+	 * @param {Array.<module:engine/model/element~Element>} selectedTableCells
+	 * @param {module:clipboard/clipboard~ClipboardOutputEventData} data Event data.
+	 */
+	_copySelectedCellsToClipboard( selectedTableCells, data ) {
+		const dataController = this.editor.data;
+
+		const content = dataController.toView( selectedTableCells );
+
+		data.dataTransfer.setData( 'text/html', new HtmlDataProcessor().toData( content ) );
+		data.dataTransfer.setData( 'text/plain', viewToPlainText( content ) );
 	}
 }

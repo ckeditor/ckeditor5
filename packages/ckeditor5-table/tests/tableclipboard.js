@@ -10,8 +10,6 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import TableEditing from '../src/tableediting';
 import { modelTable, viewTable } from './_utils/utils';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
-import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import TableClipboard from '../src/tableclipboard';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
@@ -55,35 +53,26 @@ describe( 'table clipboard', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 
-			it( 'should copy selected table cells as standalone table', done => {
-				const dataTransferMock = createDataTransfer();
+			it( 'should copy selected table cells as a standalone table', () => {
 				const preventDefaultSpy = sinon.spy();
 
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
 
-				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-					expect( preventDefaultSpy.calledOnce ).to.be.true;
-					expect( data.method ).to.equal( 'copy' );
-
-					expect( data.dataTransfer ).to.equal( dataTransferMock );
-
-					expect( data.content ).is.instanceOf( ViewDocumentFragment );
-					expect( stringifyView( data.content ) ).to.equal( viewTable( [
-						[ '01', '02' ],
-						[ '11', '12' ]
-					] ) );
-
-					done();
-				} );
-
-				viewDocument.fire( 'copy', {
-					dataTransfer: dataTransferMock,
+				const data = {
+					dataTransfer: createDataTransfer(),
 					preventDefault: preventDefaultSpy
-				} );
+				};
+				viewDocument.fire( 'copy', data );
+
+				sinon.assert.calledOnce( preventDefaultSpy );
+				expect( data.dataTransfer.getData( 'text/html' ) ).to.equal( viewTable( [
+					[ '01', '02' ],
+					[ '11', '12' ]
+				] ) );
 			} );
 
-			it( 'should trim selected table to a selection rectangle (inner cell with colspan, no colspan after trim)', done => {
+			it( 'should trim selected table to a selection rectangle (inner cell with colspan, no colspan after trim)', () => {
 				setModelData( model, modelTable( [
 					[ '00[]', '01', '02' ],
 					[ '10', { contents: '11', colspan: 2 } ],
@@ -93,14 +82,14 @@ describe( 'table clipboard', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
 
-				assertClipboardCopy( viewTable( [
+				assertClipboardContentOnMethod( 'copy', viewTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ]
-				] ), done );
+				] ) );
 			} );
 
-			it( 'should trim selected table to a selection rectangle (inner cell with colspan, has colspan after trim)', done => {
+			it( 'should trim selected table to a selection rectangle (inner cell with colspan, has colspan after trim)', () => {
 				setModelData( model, modelTable( [
 					[ '00[]', '01', '02' ],
 					[ { contents: '10', colspan: 3 } ],
@@ -110,14 +99,14 @@ describe( 'table clipboard', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
 
-				assertClipboardCopy( viewTable( [
+				assertClipboardContentOnMethod( 'copy', viewTable( [
 					[ '00', '01' ],
 					[ { contents: '10', colspan: 2 } ],
 					[ '20', '21' ]
-				] ), done );
+				] ) );
 			} );
 
-			it( 'should trim selected table to a selection rectangle (inner cell with rowspan, no colspan after trim)', done => {
+			it( 'should trim selected table to a selection rectangle (inner cell with rowspan, no colspan after trim)', () => {
 				setModelData( model, modelTable( [
 					[ '00[]', '01', '02' ],
 					[ '10', { contents: '11', rowspan: 2 }, '12' ],
@@ -127,13 +116,13 @@ describe( 'table clipboard', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
 
-				assertClipboardCopy( viewTable( [
+				assertClipboardContentOnMethod( 'copy', viewTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ]
-				] ), done );
+				] ) );
 			} );
 
-			it( 'should trim selected table to a selection rectangle (inner cell with rowspan, has rowspan after trim)', done => {
+			it( 'should trim selected table to a selection rectangle (inner cell with rowspan, has rowspan after trim)', () => {
 				setModelData( model, modelTable( [
 					[ '00[]', { contents: '01', rowspan: 3 }, '02' ],
 					[ '10', '12' ],
@@ -143,13 +132,13 @@ describe( 'table clipboard', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
 
-				assertClipboardCopy( viewTable( [
+				assertClipboardContentOnMethod( 'copy', viewTable( [
 					[ '00', { contents: '01', rowspan: 2 }, '02' ],
 					[ '10', '12' ]
-				] ), done );
+				] ) );
 			} );
 
-			it( 'should prepend spanned columns with empty cells (outside cell with colspan)', done => {
+			it( 'should prepend spanned columns with empty cells (outside cell with colspan)', () => {
 				setModelData( model, modelTable( [
 					[ '00[]', '01', '02' ],
 					[ { contents: '10', colspan: 2 }, '12' ],
@@ -159,14 +148,14 @@ describe( 'table clipboard', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
 
-				assertClipboardCopy( viewTable( [
+				assertClipboardContentOnMethod( 'copy', viewTable( [
 					[ '01', '02' ],
-					[ '', '12' ],
+					[ '&nbsp;', '12' ],
 					[ '21', '22' ]
-				] ), done );
+				] ) );
 			} );
 
-			it( 'should prepend spanned columns with empty cells (outside cell with rowspan)', done => {
+			it( 'should prepend spanned columns with empty cells (outside cell with rowspan)', () => {
 				setModelData( model, modelTable( [
 					[ '00[]', { contents: '01', rowspan: 2 }, '02' ],
 					[ '10', '12' ],
@@ -176,13 +165,13 @@ describe( 'table clipboard', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
 
-				assertClipboardCopy( viewTable( [
-					[ '10', '', '12' ],
+				assertClipboardContentOnMethod( 'copy', viewTable( [
+					[ '10', '&nbsp;', '12' ],
 					[ '20', '21', '22' ]
-				] ), done );
+				] ) );
 			} );
 
-			it( 'should fix selected table to a selection rectangle (hardcore case)', done => {
+			it( 'should fix selected table to a selection rectangle (hardcore case)', () => {
 				// This test check how previous simple rules run together (mixed prepending and trimming).
 				// In the example below a selection is set from cell "32" to "88"
 				//
@@ -223,17 +212,17 @@ describe( 'table clipboard', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 7, 6 ] ) );
 
-				assertClipboardCopy( viewTable( [
-					[ '21', '', '23', '', '', { contents: '27', colspan: 2 } ],
-					[ '31', '', '33', '', '', '37', '37' ],
-					[ '', '', '', '', '', '47', '47' ],
-					[ '51', '52', '53', '', '', { contents: '57', rowspan: 3 }, '57' ],
-					[ { contents: '61', colspan: 3 }, '', '', '', '67' ],
+				assertClipboardContentOnMethod( 'copy', viewTable( [
+					[ '21', '&nbsp;', '23', '&nbsp;', '&nbsp;', { contents: '27', colspan: 2 } ],
+					[ '31', '&nbsp;', '33', '&nbsp;', '&nbsp;', '37', '37' ],
+					[ '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '47', '47' ],
+					[ '51', '52', '53', '&nbsp;', '&nbsp;', { contents: '57', rowspan: 3 }, '57' ],
+					[ { contents: '61', colspan: 3 }, '&nbsp;', '&nbsp;', '&nbsp;', '67' ],
 					[ '71', '72', '73', '74', '75', '77' ]
-				] ), done );
+				] ) );
 			} );
 
-			it( 'should update table heading attributes (selection with headings)', done => {
+			it( 'should update table heading attributes (selection with headings)', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02', '03', '04' ],
 					[ '10', '11', '12', '13', '14' ],
@@ -245,14 +234,14 @@ describe( 'table clipboard', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 3, 3 ] ) );
 
-				assertClipboardCopy( viewTable( [
+				assertClipboardContentOnMethod( 'copy', viewTable( [
 					[ '11', '12', '13' ],
 					[ '21', '22', '23' ],
 					[ { contents: '31', isHeading: true }, '32', '33' ] // TODO: bug in viewTable
-				], { headingRows: 2, headingColumns: 1 } ), done );
+				], { headingRows: 2, headingColumns: 1 } ) );
 			} );
 
-			it( 'should update table heading attributes (selection without headings)', done => {
+			it( 'should update table heading attributes (selection without headings)', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01', '02', '03', '04' ],
 					[ '10', '11', '12', '13', '14' ],
@@ -264,10 +253,10 @@ describe( 'table clipboard', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 3, 2 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 4, 4 ] ) );
 
-				assertClipboardCopy( viewTable( [
+				assertClipboardContentOnMethod( 'copy', viewTable( [
 					[ '32', '33', '34' ],
 					[ '42', '43', '44' ]
-				] ), done );
+				] ) );
 			} );
 		} );
 
@@ -307,20 +296,36 @@ describe( 'table clipboard', () => {
 					[ '20', '21', '22' ]
 				] ) );
 			} );
+
+			it( 'should copy selected table cells as a standalone table', () => {
+				const preventDefaultSpy = sinon.spy();
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+
+				const data = {
+					dataTransfer: createDataTransfer(),
+					preventDefault: preventDefaultSpy
+				};
+				viewDocument.fire( 'cut', data );
+
+				sinon.assert.calledOnce( preventDefaultSpy );
+				expect( data.dataTransfer.getData( 'text/html' ) ).to.equal( viewTable( [
+					[ '01', '02' ],
+					[ '11', '12' ]
+				] ) );
+			} );
 		} );
 	} );
 
-	function assertClipboardCopy( expectedViewTable, callback ) {
-		viewDocument.on( 'clipboardOutput', ( evt, data ) => {
-			expect( stringifyView( data.content ) ).to.equal( expectedViewTable );
-
-			callback();
-		} );
-
-		viewDocument.fire( 'copy', {
+	function assertClipboardContentOnMethod( method, expectedViewTable ) {
+		const data = {
 			dataTransfer: createDataTransfer(),
 			preventDefault: sinon.spy()
-		} );
+		};
+		viewDocument.fire( method, data );
+
+		expect( data.dataTransfer.getData( 'text/html' ) ).to.equal( expectedViewTable );
 	}
 
 	function createDataTransfer() {
