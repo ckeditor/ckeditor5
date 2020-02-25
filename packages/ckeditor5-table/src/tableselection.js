@@ -14,6 +14,7 @@ import TableUtils from './tableutils';
 import { setupTableSelectionHighlighting } from './tableselection/converters';
 import MouseSelectionHandler from './tableselection/mouseselectionhandler';
 import { findAncestor } from './commands/utils';
+import { clearTableCellsContents } from './tableselection/utils';
 import cropTable from './tableselection/croptable';
 
 import '../theme/tableselection.css';
@@ -107,7 +108,7 @@ export default class TableSelection extends Plugin {
 			if ( this.hasMultiCellSelection ) {
 				evt.stop();
 
-				this.clearSelectedTableCells();
+				clearTableCellsContents( editor.model, this.getSelectedTableCells() );
 			}
 		}, { priority: 'high' } );
 	}
@@ -248,17 +249,6 @@ export default class TableSelection extends Plugin {
 			writer.insert( table, documentFragment, 0 );
 
 			return documentFragment;
-		} );
-	}
-
-	// TODO: helper function?
-	clearSelectedTableCells() {
-		const model = this.editor.model;
-
-		model.change( writer => {
-			for ( const tableCell of this.getSelectedTableCells() ) {
-				model.deleteContent( writer.createSelection( tableCell, 'in' ) );
-			}
 		} );
 	}
 
