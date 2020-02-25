@@ -14,11 +14,8 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 describe( 'Element', () => {
 	let document, stylesProcessor;
 
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		document = new Document( stylesProcessor );
 	} );
 

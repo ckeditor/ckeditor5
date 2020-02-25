@@ -16,16 +16,14 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 describe( 'ViewConsumable', () => {
 	let viewConsumable, el, viewDocument, stylesProcessor;
 
-	before( () => {
+	beforeEach( () => {
 		stylesProcessor = new StylesProcessor();
 		viewDocument = new ViewDocument( stylesProcessor );
 
 		addBorderRules( stylesProcessor );
 		addMarginRules( stylesProcessor );
 		addPaddingRules( stylesProcessor );
-	} );
 
-	beforeEach( () => {
 		viewConsumable = new ViewConsumable();
 		el = new ViewElement( viewDocument, 'p' );
 	} );

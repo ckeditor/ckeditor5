@@ -13,15 +13,10 @@ import { parse } from '../../../src/dev-utils/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'MutationObserver', () => {
-	let view, domEditor, viewDocument, viewRoot, mutationObserver, lastMutations, domRoot;
-
-	let stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
+	let view, domEditor, viewDocument, viewRoot, mutationObserver, lastMutations, domRoot, stylesProcessor;
 
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		domRoot = document.createElement( 'div' );
 		domRoot.innerHTML = '<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>';
 		document.body.appendChild( domRoot );

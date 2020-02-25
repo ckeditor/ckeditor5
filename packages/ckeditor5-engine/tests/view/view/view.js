@@ -30,15 +30,11 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 6;
-	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
-
-	let stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
+	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount, stylesProcessor;
 
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
+
 		domRoot = createElement( document, 'div', {
 			id: 'editor',
 			contenteditable: 'true'

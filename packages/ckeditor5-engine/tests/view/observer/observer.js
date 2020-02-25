@@ -10,7 +10,7 @@ import { StylesProcessor } from '../../../src/view/stylesmap';
 describe( 'Observer', () => {
 	let stylesProcessor;
 
-	before( () => {
+	beforeEach( () => {
 		stylesProcessor = new StylesProcessor();
 	} );
 

@@ -17,7 +17,7 @@ describe( 'DowncastWriter', () => {
 	let writer, attributes, root, doc;
 	let stylesProcessor;
 
-	before( () => {
+	beforeEach( () => {
 		stylesProcessor = new StylesProcessor();
 	} );
 

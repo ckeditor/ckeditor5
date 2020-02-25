@@ -14,11 +14,8 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 describe( 'UIElement', () => {
 	let uiElement, doc, stylesProcessor;
 
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		doc = new Document( stylesProcessor );
 
 		uiElement = new UIElement( doc, 'span', {

@@ -9,12 +9,9 @@ import { addBorderRules } from '../../../src/view/styles/border';
 describe( 'Border styles normalization', () => {
 	let styles, stylesProcessor;
 
-	before( () => {
+	beforeEach( () => {
 		stylesProcessor = new StylesProcessor();
 		addBorderRules( stylesProcessor );
-	} );
-
-	beforeEach( () => {
 		styles = new StylesMap( stylesProcessor );
 	} );
 

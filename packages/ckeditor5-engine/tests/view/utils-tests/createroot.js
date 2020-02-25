@@ -11,11 +11,8 @@ import { StylesProcessor } from '../../../src/view/stylesmap';
 describe( 'createRoot', () => {
 	let viewDoc, stylesProcessor;
 
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		viewDoc = new Document( stylesProcessor );
 	} );
 

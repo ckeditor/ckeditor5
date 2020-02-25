@@ -9,12 +9,9 @@ import { addPaddingRules } from '../../../src/view/styles/padding';
 describe( 'Padding styles normalization', () => {
 	let styles, stylesProcessor;
 
-	before( () => {
+	beforeEach( () => {
 		stylesProcessor = new StylesProcessor();
 		addPaddingRules( stylesProcessor );
-	} );
-
-	beforeEach( () => {
 		styles = new StylesMap( stylesProcessor );
 	} );
 

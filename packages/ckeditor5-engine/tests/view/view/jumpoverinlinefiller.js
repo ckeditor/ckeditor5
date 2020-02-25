@@ -16,14 +16,11 @@ import { parse, setData } from '../../../src/dev-utils/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'View', () => {
-	let view, viewDocument, domRoot;
-	let stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
+	let view, viewDocument, domRoot, stylesProcessor;
 
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
+
 		domRoot = createElement( document, 'div', {
 			contenteditable: 'true'
 		} );

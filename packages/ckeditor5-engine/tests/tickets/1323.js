@@ -12,16 +12,11 @@ import MarkerOperation from '../../src/model/operation/markeroperation';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Bug ckeditor5-engine@1323', () => {
-	let stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	describe( 'constructor()', () => {
-		let model, editing, root, range;
+		let model, editing, root, range, stylesProcessor;
 
 		beforeEach( () => {
+			stylesProcessor = new StylesProcessor();
 			model = new Model();
 			editing = new EditingController( model, stylesProcessor );
 			root = model.document.createRoot();

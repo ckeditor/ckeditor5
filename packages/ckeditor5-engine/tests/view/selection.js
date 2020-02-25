@@ -24,11 +24,8 @@ describe( 'Selection', () => {
 
 	testUtils.createSinonSandbox();
 
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		viewDocument = new Document( stylesProcessor );
 
 		const text = new Text( viewDocument, 'xxxxxxxxxxxxxxxxxxxx' );

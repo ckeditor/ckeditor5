@@ -45,14 +45,10 @@ class ClickCapturingObserver extends ClickObserver {
 }
 
 describe( 'DomEventObserver', () => {
-	let view, viewDocument;
-	let stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
+	let view, viewDocument, stylesProcessor;
 
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		view = new View( stylesProcessor );
 		viewDocument = view.document;
 	} );

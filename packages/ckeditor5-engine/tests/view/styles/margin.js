@@ -9,12 +9,9 @@ import { addMarginRules } from '../../../src/view/styles/margin';
 describe( 'Margin styles normalizer', () => {
 	let styles, stylesProcessor;
 
-	before( () => {
+	beforeEach( () => {
 		stylesProcessor = new StylesProcessor();
 		addMarginRules( stylesProcessor );
-	} );
-
-	beforeEach( () => {
 		styles = new StylesMap( stylesProcessor );
 	} );
 

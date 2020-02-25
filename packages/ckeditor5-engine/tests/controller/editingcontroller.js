@@ -27,7 +27,7 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 describe( 'EditingController', () => {
 	let stylesProcessor;
 
-	before( () => {
+	beforeEach( () => {
 		stylesProcessor = new StylesProcessor();
 	} );
 

@@ -14,11 +14,8 @@ describe( 'AttributeElement', () => {
 	let document;
 	let stylesProcessor;
 
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		document = new Document( stylesProcessor );
 	} );
 

@@ -16,8 +16,7 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'TreeWalker', () => {
-	let doc, root, img1, paragraph, bold, textAbcd, charY, img2, charX, rootBeginning, rootEnding;
-	let stylesProcessor;
+	let doc, root, img1, paragraph, bold, textAbcd, charY, img2, charX, rootBeginning, rootEnding, stylesProcessor;
 
 	before( () => {
 		stylesProcessor = new StylesProcessor();

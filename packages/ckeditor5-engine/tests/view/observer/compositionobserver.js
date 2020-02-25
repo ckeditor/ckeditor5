@@ -9,14 +9,10 @@ import View from '../../../src/view/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'CompositionObserver', () => {
-	let view, viewDocument, observer;
-	let stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
+	let view, viewDocument, observer, stylesProcessor;
 
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		view = new View( stylesProcessor );
 		viewDocument = view.document;
 		observer = view.getObserver( CompositionObserver );

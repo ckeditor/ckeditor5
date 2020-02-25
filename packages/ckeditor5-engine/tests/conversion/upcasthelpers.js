@@ -705,15 +705,11 @@ describe( 'UpcastHelpers', () => {
 } );
 
 describe( 'upcast-converters', () => {
-	let dispatcher, schema, context, model, viewDocument;
-
-	let stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
+	let dispatcher, schema, context, model, viewDocument, stylesProcessor;
 
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
+
 		model = new Model();
 		viewDocument = new ViewDocument( stylesProcessor );
 		schema = model.schema;

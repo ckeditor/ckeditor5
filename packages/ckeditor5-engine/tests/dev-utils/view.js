@@ -25,7 +25,7 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 describe( 'view test utils', () => {
 	let stylesProcessor;
 
-	before( () => {
+	beforeEach( () => {
 		stylesProcessor = new StylesProcessor();
 	} );
 

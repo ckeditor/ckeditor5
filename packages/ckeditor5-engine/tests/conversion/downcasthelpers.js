@@ -39,14 +39,11 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 import DowncastWriter from '../../src/view/downcastwriter';
 
 describe( 'DowncastHelpers', () => {
-	let model, modelRoot, viewRoot, downcastHelpers, controller;
-	let modelRootStart, stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
+	let model, modelRoot, viewRoot, downcastHelpers, controller, modelRootStart, stylesProcessor;
 
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
+
 		model = new Model();
 		const modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
@@ -1454,15 +1451,10 @@ describe( 'DowncastHelpers', () => {
 } );
 
 describe( 'downcast converters', () => {
-	let dispatcher, modelDoc, modelRoot, viewRoot, controller, modelRootStart, model;
-
-	let stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
+	let dispatcher, modelDoc, modelRoot, viewRoot, controller, modelRootStart, model, stylesProcessor;
 
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		model = new Model();
 		modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
@@ -1800,11 +1792,8 @@ describe( 'downcast selection converters', () => {
 	let dispatcher, mapper, model, view, modelDoc, modelRoot, docSelection, viewDoc, viewRoot, viewSelection, downcastHelpers;
 	let stylesProcessor;
 
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		model = new Model();
 		modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
@@ -1812,7 +1801,7 @@ describe( 'downcast selection converters', () => {
 
 		model.schema.extend( '$text', { allowIn: '$root' } );
 
-		view = new View( new StylesProcessor() );
+		view = new View( stylesProcessor );
 		viewDoc = view.document;
 		viewRoot = createViewRoot( viewDoc );
 		viewSelection = viewDoc.selection;

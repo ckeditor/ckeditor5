@@ -9,12 +9,9 @@ import { addBackgroundRules } from '../../../src/view/styles/background';
 describe( 'Background styles normalization', () => {
 	let styles, stylesProcessor;
 
-	before( () => {
+	beforeEach( () => {
 		stylesProcessor = new StylesProcessor();
 		addBackgroundRules( stylesProcessor );
-	} );
-
-	beforeEach( () => {
 		styles = new StylesMap( stylesProcessor );
 	} );
 

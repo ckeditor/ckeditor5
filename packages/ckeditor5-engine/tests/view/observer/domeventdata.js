@@ -10,14 +10,10 @@ import View from '../../../src/view/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DomEventData', () => {
-	let view, viewDocument, viewBody, domRoot;
-	let stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
+	let view, viewDocument, viewBody, domRoot, stylesProcessor;
 
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		view = new View( stylesProcessor );
 		viewDocument = view.document;
 

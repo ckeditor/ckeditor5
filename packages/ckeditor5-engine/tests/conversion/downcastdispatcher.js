@@ -16,14 +16,10 @@ import ViewContainerElement from '../../src/view/containerelement';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'DowncastDispatcher', () => {
-	let dispatcher, doc, root, differStub, model, view, mapper;
-	let stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
+	let dispatcher, doc, root, differStub, model, view, mapper, stylesProcessor;
 
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		model = new Model();
 		view = new View( stylesProcessor );
 		doc = model.document;

@@ -23,11 +23,8 @@ function getRange( view, options = {} ) {
 describe( 'Range', () => {
 	let document, stylesProcessor;
 
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		document = new Document( stylesProcessor );
 	} );
 

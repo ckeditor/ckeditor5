@@ -23,11 +23,8 @@ describe( 'DocumentSelection', () => {
 
 	testUtils.createSinonSandbox();
 
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		document = new Document( stylesProcessor );
 		const text = new Text( document, 'xxxxxxxxxxxxxxxxxxxx' );
 		el = new Element( document, 'p', null, text );

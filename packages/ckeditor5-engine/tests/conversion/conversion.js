@@ -21,15 +21,11 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Conversion', () => {
-	let conversion, downcastDispA, upcastDispaA, downcastDispB;
-
-	let stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
+	let conversion, downcastDispA, upcastDispaA, downcastDispB, stylesProcessor;
 
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
+
 		// Placeholders. Will be used only to see if their were given as attribute for a spy function.
 		downcastDispA = Symbol( 'downA' );
 		downcastDispB = Symbol( 'downB' );

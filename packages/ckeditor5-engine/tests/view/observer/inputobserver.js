@@ -11,15 +11,14 @@ import { StylesProcessor } from '../../../src/view/stylesmap';
 describe( 'InputObserver', () => {
 	const oldEnvIsAndroid = env.isAndroid;
 
-	let view, viewDocument, observer;
-	let stylesProcessor;
+	let view, viewDocument, observer, stylesProcessor;
 
 	before( () => {
-		stylesProcessor = new StylesProcessor();
 		env.isAndroid = true;
 	} );
 
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
 		view = new View( stylesProcessor );
 		viewDocument = view.document;
 		observer = view.getObserver( InputObserver );

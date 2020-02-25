@@ -15,13 +15,11 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 describe( 'Document', () => {
 	let domRoot, viewDocument, stylesProcessor;
 
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
+
 		domRoot = createElement( document, 'div', {
 			id: 'editor',
 			contenteditable: 'true'

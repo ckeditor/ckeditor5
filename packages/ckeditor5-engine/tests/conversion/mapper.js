@@ -22,7 +22,7 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 describe( 'Mapper', () => {
 	let viewDocument, stylesProcessor;
 
-	before( () => {
+	beforeEach( () => {
 		stylesProcessor = new StylesProcessor();
 		viewDocument = new ViewDocument( stylesProcessor );
 	} );

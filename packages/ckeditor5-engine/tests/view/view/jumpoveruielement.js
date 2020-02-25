@@ -19,8 +19,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'View', () => {
-	let view, viewDocument, domRoot, domSelection, viewRoot, foo, bar, ui, ui2;
-	let stylesProcessor;
+	let view, viewDocument, domRoot, domSelection, viewRoot, foo, bar, ui, ui2, stylesProcessor;
 
 	function createUIElement( name, contents ) {
 		const element = new UIElement( viewDocument, name );
@@ -35,11 +34,9 @@ describe( 'View', () => {
 		return element;
 	}
 
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	beforeEach( () => {
+		stylesProcessor = new StylesProcessor();
+
 		domRoot = createElement( document, 'div', {
 			contenteditable: 'true'
 		} );
