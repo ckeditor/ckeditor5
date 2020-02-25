@@ -32,11 +32,27 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'BalloonToolbar', () => {
 	let editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
+	let resizeCallback;
+
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
+
+		// Make sure other tests of the editor do not affect tests that follow.
+		// Without it, if an instance of ResizeObserver already exists somewhere undestroyed
+		// in DOM, the following DOM mock will have no effect.
+		ResizeObserver._observerInstance = null;
+
+		testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+			resizeCallback = callback;
+
+			return {
+				observe: sinon.spy(),
+				unobserve: sinon.spy()
+			};
+		} );
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -382,26 +398,23 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.calledOnce( balloonAddSpy );
 		} );
 
-		it( 'should set the toolbar max-width to 90% of the editable width', done => {
+		it( 'should set the toolbar max-width to 90% of the editable width', () => {
 			const viewElement = editor.ui.view.editable.element;
 
 			setData( model, '<paragraph>b[ar]</paragraph>' );
 
 			expect( global.document.body.contains( viewElement ) ).to.be.true;
-
 			viewElement.style.width = '400px';
 
-			// Unfortunately we have to wait for async ResizeObserver execution.
-			// ResizeObserver which has been called after changing width of viewElement,
-			// needs 2x requestAnimationFrame or timeout to update a layout.
-			// See more: https://twitter.com/paul_irish/status/912693347315150849/photo/1
-			setTimeout( () => {
-				// The expected width should be 2/3 of the editor's editable element's width.
-				const expectedWidth = toPx( new Rect( viewElement ).width * 0.9 );
-				expect( balloonToolbar.toolbarView.maxWidth ).to.be.equal( expectedWidth );
+			resizeCallback( [ {
+				target: viewElement,
+				contentRect: new Rect( viewElement )
+			} ] );
 
-				done();
-			}, 500 );
+			// The expected width should be 90% of the editor's editable element's width.
+			const expectedWidth = toPx( new Rect( viewElement ).width * 0.9 );
+
+			expect( balloonToolbar.toolbarView.maxWidth ).to.be.equal( expectedWidth );
 		} );
 	} );
 
