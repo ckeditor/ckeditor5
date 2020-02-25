@@ -330,7 +330,9 @@ function setupCustomClassConversion( viewElementName, modelElementName, editor )
 	editor.conversion.for( 'upcast' ).add( upcastCustomClasses( viewElementName ), { priority: 'low' } );
 
 	// Define downcast converters for a model element with a "low" priority so they are run after the default converters.
-	editor.conversion.for( 'downcast' ).add( downcastCustomClasses( modelElementName ), { priority: 'low' } );
+	// Use `downcastCustomClassesToFigure` if you'd like to keep your classes on <figure> element or `downcastCustomClassesToChild` if you'd like to keep your classes on a <figure> child element, i.e. <img>.
+	editor.conversion.for( 'downcast' ).add( downcastCustomClassesToFigure( modelElementName ), { priority: 'low' } );
+	// editor.conversion.for( 'downcast' ).add( downcastCustomClassesToChild( viewElementName, modelElementName ), { priority: 'low' } );
 }
 
 /**
@@ -375,11 +377,11 @@ function upcastCustomClasses( elementName ) {
 }
 
 /**
- * Creates a downcast converter that adds classes defined in the `customClass` attribute to a given view element.
+ * Creates a downcast converter that adds classes defined in the `customClass` attribute to a <figure> element.
  *
  * This converter expects that the view element is nested in a <figure> element.
  */
-function downcastCustomClasses( modelElementName ) {
+function downcastCustomClassesToFigure( modelElementName ) {
 	return dispatcher => dispatcher.on( `insert:${ modelElementName }`, ( evt, data, conversionApi ) => {
 		const modelElement = data.item;
 
@@ -389,14 +391,30 @@ function downcastCustomClasses( modelElementName ) {
 			return;
 		}
 
-		// The code below assumes that classes are set on the <figure> element...
+		// The code below assumes that classes are set on the <figure> element.
 		conversionApi.writer.addClass( modelElement.getAttribute( 'customClass' ), viewFigure );
+	} );
+}
 
-		// ... but if you prefer the classes to be passed to the <img> element, find the view element inside the <figure>:
-		//
-		// const viewElement = findViewChild( viewFigure, viewElementName, conversionApi );
-		//
-		// conversionApi.writer.addClass( modelElement.getAttribute( 'customClass' ), viewElement );
+/**
+ * Creates a downcast converter that adds classes defined in the `customClass` attribute to a <figure> child element.
+ *
+ * This converter expects that the view element is nested in a <figure> element.
+ */
+function downcastCustomClassesToChild( viewElementName, modelElementName ) {
+	return dispatcher => dispatcher.on( `insert:${ modelElementName }`, ( evt, data, conversionApi ) => {
+		const modelElement = data.item;
+
+		const viewFigure = conversionApi.mapper.toViewElement( modelElement );
+
+		if ( !viewFigure ) {
+			return;
+		}
+
+		// The code below assumes that classes are set on the element inside the <figure>.
+		const viewElement = findViewChild( viewFigure, viewElementName, conversionApi );
+
+		conversionApi.writer.addClass( modelElement.getAttribute( 'customClass' ), viewElement );
 	} );
 }
 
