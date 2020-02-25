@@ -12,7 +12,7 @@ import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/i
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import getResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/getresizeobserver';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 
 const toPx = toUnit( 'px' );
@@ -141,6 +141,17 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
 		this.editable = new InlineEditableUIView( locale, editingView, editableElement );
+
+		/**
+		 * An instance of the resize observer that helps dynamically determine the geometry of the toolbar
+		 * and manage items that do not fit into a single row.
+		 *
+		 * **Note:** Created in {@link #render}.
+		 *
+		 * @readonly
+		 * @member {module:utils/dom/getresizeobserver~ResizeObserver}
+		 */
+		this.resizeObserver = null;
 	}
 
 	/**
@@ -159,7 +170,7 @@ export default class InlineEditorUIView extends EditorUIView {
 		// if 'shouldToolbarGroupWhenFull' in config is set to 'true'.
 		if ( options.shouldGroupWhenFull ) {
 			const editableElement = this.editable.element;
-			const widthObserver = getResizeObserver( () => {
+			this.resizeObserver = new ResizeObserver( editableElement, () => {
 				// We need to check if there's already the editable element in the DOM.
 				// Otherwise the `Rect` instance will complain that source (editableElement) is not available
 				// to obtain the element's geometry.
@@ -169,8 +180,17 @@ export default class InlineEditorUIView extends EditorUIView {
 
 				this.toolbar.maxWidth = toPx( new Rect( editableElement ).width );
 			} );
+		}
+	}
 
-			widthObserver.observe( editableElement );
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		if ( this.resizeObserver ) {
+			this.resizeObserver.destroy();
 		}
 	}
 
