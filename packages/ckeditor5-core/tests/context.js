@@ -49,6 +49,26 @@ describe( 'Context', () => {
 		} );
 	} );
 
+	describe( 'editors', () => {
+		it( 'should keep all the editors created within the context and fire event:add whenever an editor is added', async () => {
+			const spy = sinon.spy();
+			const context = await Context.create();
+
+			context.editors.on( 'add', spy );
+
+			const editorA = await VirtualTestEditor.create( { context } );
+
+			expect( spy.calledOnce );
+
+			const editorB = await VirtualTestEditor.create( { context } );
+
+			expect( spy.calledTwice );
+
+			expect( context.editors.has( editorA ) );
+			expect( context.editors.has( editorB ) );
+		} );
+	} );
+
 	describe( 'locale', () => {
 		it( 'is instantiated and t() is exposed', () => {
 			const context = new Context();
@@ -260,5 +280,86 @@ describe( 'Context', () => {
 			sinon.assert.calledOnce( editorB.destroy );
 			sinon.assert.notCalled( editorC.destroy );
 		} );
+
+		it( 'should not crash when destroyed for the second time', async () => {
+			const context = await Context.create();
+
+			await VirtualTestEditor.create( { context } );
+			await context.destroy();
+			await context.destroy();
+		} );
+
+		it( 'should not crash when destroyed for the second time - editor own managed context', async () => {
+			const editor = await VirtualTestEditor.create();
+
+			await editor.destroy();
+			await editor.destroy();
+		} );
+	} );
+
+	describe( 'builtinPlugins', () => {
+		class PluginA extends ContextPlugin {}
+		class PluginB extends ContextPlugin {}
+		class PluginC extends ContextPlugin {}
+
+		beforeEach( () => {
+			Context.builtinPlugins = [ PluginA, PluginB, PluginC ];
+		} );
+
+		afterEach( () => {
+			delete Context.builtinPlugins;
+		} );
+
+		it( 'should load plugins built in the Context even if the passed config is empty', () => {
+			const context = new Context();
+
+			return context.initPlugins()
+				.then( () => {
+					expect( getPlugins( context ).length ).to.equal( 3 );
+
+					expect( context.plugins.get( PluginA ) ).to.be.an.instanceof( ContextPlugin );
+					expect( context.plugins.get( PluginB ) ).to.be.an.instanceof( ContextPlugin );
+					expect( context.plugins.get( PluginC ) ).to.be.an.instanceof( ContextPlugin );
+				} );
+		} );
+
+		it( 'should load plugins provided in the config and should ignore plugins built in the Editor', () => {
+			const context = new Context( {
+				plugins: [
+					PluginA
+				]
+			} );
+
+			return context.initPlugins()
+				.then( () => {
+					expect( getPlugins( context ).length ).to.equal( 1 );
+
+					expect( context.plugins.get( PluginA ) ).to.be.an.instanceof( ContextPlugin );
+				} );
+		} );
+	} );
+
+	describe( 'defaultConfig', () => {
+		beforeEach( () => {
+			Context.defaultConfig = { foo: 1, bar: 2 };
+		} );
+
+		afterEach( () => {
+			delete Context.defaultConfig;
+		} );
+
+		it( 'should extend an editor configuration using built in config', () => {
+			const context = new Context( {
+				foo: 4
+			} );
+
+			expect( context.config.get( 'foo' ) ).to.equal( 4 );
+			expect( context.config.get( 'bar' ) ).to.equal( 2 );
+		} );
 	} );
 } );
+
+function getPlugins( editor ) {
+	return Array.from( editor.plugins )
+		.map( entry => entry[ 1 ] ); // Get instances.
+}

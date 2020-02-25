@@ -43,7 +43,9 @@ describe( 'attachToForm()', () => {
 		submitStub.restore();
 		form.remove();
 
-		return editor.destroy();
+		if ( editor ) {
+			return editor.destroy();
+		}
 	} );
 
 	it( 'should throw an error when is used with editor without `ElementApiMixin`', () => {
@@ -126,6 +128,7 @@ describe( 'attachToForm()', () => {
 		expect( textarea.value ).to.equal( '' );
 
 		return editor.destroy().then( () => {
+			editor = null;
 			// Submit method is no longer replaced by our implementation.
 			expect( form.submit ).to.equal( submitStub );
 			form.submit();
@@ -141,6 +144,8 @@ describe( 'attachToForm()', () => {
 		expect( textarea.value ).to.equal( '' );
 
 		return editor.destroy().then( () => {
+			editor = null;
+
 			form.dispatchEvent( new Event( 'submit', {
 				// We need to be able to do preventDefault() to prevent page reloads in Firefox.
 				cancelable: true
@@ -172,6 +177,8 @@ describe( 'attachToForm()', () => {
 		expect( textarea.value ).to.equal( 'foo bar' );
 
 		return editor.destroy().then( () => {
+			editor = null;
+
 			expect( form.submit ).to.equal( input );
 			input.remove();
 		} );

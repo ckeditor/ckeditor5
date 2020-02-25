@@ -147,6 +147,7 @@ function collectMemoryStats() {
 // 		google-chrome -js-flags="--expose-gc"
 //
 function skipIfNoGarbageCollector() {
+	// eslint-disable-next-line mocha/no-top-level-hooks
 	before( function() {
 		if ( !window.gc ) {
 			this.skip();

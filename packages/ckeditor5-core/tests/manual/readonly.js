@@ -15,7 +15,7 @@ ClassicEditor
 		plugins: [ ArticlePluginSet, BalloonToolbar ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ],
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},
 		balloonToolbar: [ 'bold', 'italic', 'link' ]
 	} )

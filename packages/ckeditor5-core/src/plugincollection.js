@@ -21,16 +21,16 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  */
 export default class PluginCollection {
 	/**
-	 * Creates an instance of the PluginCollection class.
+	 * Creates an instance of the plugin collection class.
 	 * Allows loading and initializing plugins and their dependencies.
-	 * Allows to provide a list of already loaded plugins, these plugins won't be destroyed along with this collection.
+	 * Allows to provide a list of already loaded plugins. These plugins will not be destroyed along with this collection.
 	 *
 	 * @param {module:core/editor/editor~Editor|module:core/context~Context} context
 	 * @param {Array.<Function>} [availablePlugins] Plugins (constructors) which the collection will be able to use
 	 * when {@link module:core/plugincollection~PluginCollection#init} is used with plugin names (strings, instead of constructors).
 	 * Usually, the editor will pass its built-in plugins to the collection so they can later be
 	 * used in `config.plugins` or `config.removePlugins` by names.
-	 * @param {Iterable.<Array>} contextPlugins List of already initialized plugins represented by a
+	 * @param {Iterable.<Array>} contextPlugins A list of already initialized plugins represented by a
 	 * `[ PluginConstructor, pluginInstance ]` pair.
 	 */
 	constructor( context, availablePlugins = [], contextPlugins = [] ) {
@@ -47,7 +47,7 @@ export default class PluginCollection {
 		this._plugins = new Map();
 
 		/**
-		 * Map of plugin constructors which can be retrieved by their names.
+		 * A map of plugin constructors that can be retrieved by their names.
 		 *
 		 * @protected
 		 * @type {Map.<String|Function,Function>}
@@ -72,7 +72,7 @@ export default class PluginCollection {
 			this._contextPlugins.set( PluginConstructor, pluginInstance );
 			this._contextPlugins.set( pluginInstance, PluginConstructor );
 
-			// To make it possible to require plugin by its name.
+			// To make it possible to require a plugin by its name.
 			if ( PluginConstructor.pluginName ) {
 				this._availablePlugins.set( PluginConstructor.pluginName, PluginConstructor );
 			}
@@ -146,11 +146,11 @@ export default class PluginCollection {
 	}
 
 	/**
-	 * Checks if plugin is loaded.
+	 * Checks if a plugin is loaded.
 	 *
-	 *		// Check if 'Clipboard' plugin was loaded.
+	 *		// Check if the 'Clipboard' plugin was loaded.
 	 *		if ( editor.plugins.has( 'Clipboard' ) ) {
-	 *			// Now use clipboard plugin instance:
+	 *			// Now use the clipboard plugin instance:
 	 *			const clipboard = editor.plugins.get( 'Clipboard' );
 	 *
 	 *			// ...
@@ -237,7 +237,7 @@ export default class PluginCollection {
 					 * This is a generic error logged to the console when a JavaSript error is thrown during the initialization
 					 * of one of the plugins.
 					 *
-					 * If you correctly handled the promise returned by the editor's `create()` method (like shown below)
+					 * If you correctly handled the promise returned by the editor's `create()` method (like shown below),
 					 * you will find the original error logged to the console, too:
 					 *
 					 *		ClassicEditor.create( document.getElementById( 'editor' ) )
@@ -283,11 +283,11 @@ export default class PluginCollection {
 
 						if ( PluginConstructor.isContextPlugin && !RequiredPluginConstructor.isContextPlugin ) {
 							/**
-							 * If a plugin is a `ContextPlugin` all plugins it requires should also be a `ContextPlugin`,
-							 * instead of `Plugin`. In other words, if one plugin can be used in the `Context`,
-							 * all its requirements also should be ready to be used in the`Context`. Note that context
+							 * If a plugin is a context plugin, all plugins it requires should also be context plugins
+							 * instead of plugins. In other words, if one plugin can be used in the context,
+							 * all its requirements should also be ready to be used in the context. Note that the context
 							 * provides only a part of the API provided by the editor. If one plugin needs a full
-							 * editor API, all plugins which require it, are considered as plugins which need a full
+							 * editor API, all plugins which require it are considered as plugins that need a full
 							 * editor API.
 							 *
 							 * @error plugincollection-context-required
