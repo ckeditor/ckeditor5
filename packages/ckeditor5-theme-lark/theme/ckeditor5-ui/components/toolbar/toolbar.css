@@ -13,6 +13,15 @@
 	padding: 0 var(--ck-spacing-small);
 	border: 1px solid var(--ck-color-toolbar-border);
 
+	& .ck.ck-toolbar__separator {
+		align-self: stretch;
+		width: 1px;
+		min-width: 1px;
+		margin-top: 0;
+		margin-bottom: 0;
+		background: var(--ck-color-toolbar-border);
+	}
+
 	& > .ck-toolbar__items {
 		& > * {
 			/* Make sure items wrapped to the next line have v-spacing */
@@ -21,6 +30,12 @@
 
 			/* (#11) Separate toolbar items. */
 			margin-right: var(--ck-spacing-small);
+		}
+
+		/* Don't display a separator after an empty items container, for instance,
+		when all items were grouped */
+		&:empty + .ck.ck-toolbar__separator {
+			display: none;
 		}
 	}
 
@@ -88,15 +103,6 @@
 		}
 	}
 
-	& .ck.ck-toolbar__separator {
-		align-self: stretch;
-		width: 1px;
-		min-width: 1px;
-		margin-top: 0;
-		margin-bottom: 0;
-		background: var(--ck-color-toolbar-border);
-	}
-
 	@nest .ck-toolbar-container & {
 		border: 0;
 	}
@@ -108,10 +114,6 @@
  */
 [dir="rtl"] .ck.ck-toolbar,
 .ck.ck-toolbar[dir="rtl"] {
-	& > .ck.ck-toolbar__grouped-dropdown {
-		padding-right: var(--ck-spacing-small);
-	}
-
 	& > .ck.ck-toolbar__items {
 		& > * {
 			/* (#11) Separate toolbar items. */
@@ -124,8 +126,14 @@
 		}
 	}
 
+	/* Separate the the separator form the grouping dropdown when some items are grouped. */
+	/* stylelint-disable-next-line no-descending-specificity */
+	& > .ck.ck-toolbar__separator {
+		margin-left: var(--ck-spacing-small);
+	}
+
 	/* Some spacing between the items and the separator before the grouped items dropdown. */
-	&.ck-toolbar_grouping > .ck-toolbar__items:not(:only-child) {
+	&.ck-toolbar_grouping > .ck-toolbar__items:not(:empty):not(:only-child) {
 		margin-left: var(--ck-spacing-small);
 	}
 }
@@ -136,18 +144,20 @@
  */
 [dir="ltr"] .ck.ck-toolbar,
 .ck.ck-toolbar[dir="ltr"] {
-	& > .ck.ck-toolbar__grouped-dropdown {
-		padding-left: var(--ck-spacing-small);
-	}
-
 	& > .ck.ck-toolbar__items {
 		& > *:last-child {
 			margin-right: 0;
 		}
 	}
 
+	/* Separate the the separator form the grouping dropdown when some items are grouped. */
+	/* stylelint-disable-next-line no-descending-specificity */
+	& > .ck.ck-toolbar__separator {
+		margin-right: var(--ck-spacing-small);
+	}
+
 	/* Some spacing between the items and the separator before the grouped items dropdown. */
-	&.ck-toolbar_grouping > .ck-toolbar__items:not(:only-child) {
+	&.ck-toolbar_grouping > .ck-toolbar__items:not(:empty):not(:only-child) {
 		margin-right: var(--ck-spacing-small);
 	}
 }
