@@ -51,19 +51,19 @@ export default class TableClipboard extends Plugin {
 		 */
 		this._tableSelection = editor.plugins.get( 'TableSelection' );
 
-		this.listenTo( viewDocument, 'copy', ( evt, data ) => this._onCopy( evt, data ) );
-		this.listenTo( viewDocument, 'cut', ( evt, data ) => this._onCut( evt, data ) );
+		this.listenTo( viewDocument, 'copy', ( evt, data ) => this._onCopyCut( evt, data ) );
+		this.listenTo( viewDocument, 'cut', ( evt, data ) => this._onCopyCut( evt, data ) );
 		this.listenTo( viewDocument, 'clipboardOutput', ( evt, data ) => this._onClipboardOutput( evt, data ) );
 	}
 
 	/**
-	 * A clipboard "copy" event handler.
+	 * Copies table content to a clipboard on "copy" & "cut" events.
 	 *
 	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
 	 * @param {Object} data Clipboard event data.
 	 * @private
 	 */
-	_onCopy( evt, data ) {
+	_onCopyCut( evt, data ) {
 		const tableSelection = this._tableSelection;
 
 		if ( !tableSelection.hasMultiCellSelection ) {
@@ -73,32 +73,20 @@ export default class TableClipboard extends Plugin {
 		data.preventDefault();
 		evt.stop();
 
-		this._copySelectedCellsToClipboard( tableSelection.getSelectionAsFragment(), data, evt.name );
+		const dataController = this.editor.data;
+		const viewDocument = this.editor.editing.view.document;
+
+		const content = dataController.toView( this._tableSelection.getSelectionAsFragment() );
+
+		viewDocument.fire( 'clipboardOutput', {
+			dataTransfer: data.dataTransfer,
+			content,
+			method: evt.name
+		} );
 	}
 
 	/**
-	 * A clipboard "cut" event handler.
-	 *
-	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
-	 * @param {Object} data Clipboard event data.
-	 * @private
-	 */
-	_onCut( evt, data ) {
-		const tableSelection = this._tableSelection;
-
-		if ( !tableSelection.hasMultiCellSelection ) {
-			return;
-		}
-
-		data.preventDefault();
-		evt.stop();
-
-		this._copySelectedCellsToClipboard( tableSelection.getSelectionAsFragment(), data, evt.name );
-		clearTableCellsContents( this.editor.model, tableSelection.getSelectedTableCells() );
-	}
-
-	/**
-	 * Overrides default Clipboard plugin "clipboardOutput" handler. The table contents clearing is on in {@link #_onCut} handler.
+	 * Overrides default Clipboard plugin "clipboardOutput" handler to properly handle clearing selected table contents.
 	 *
 	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
 	 * @param {Object} data Clipboard event data.
@@ -113,26 +101,7 @@ export default class TableClipboard extends Plugin {
 
 		data.dataTransfer.setData( 'text/html', new HtmlDataProcessor().toData( data.content ) );
 		data.dataTransfer.setData( 'text/plain', viewToPlainText( data.content ) );
-	}
 
-	/**
-	 * Handles clipboard output the same way as Clipboard plugin would.
-	 *
-	 * @private
-	 * @param {Array.<module:engine/model/element~Element>} selectedTableCells
-	 * @param {module:clipboard/clipboard~ClipboardOutputEventData} data Event data.
-	 * @param {String} method Copy/cut method.
-	 */
-	_copySelectedCellsToClipboard( selectedTableCells, data, method ) {
-		const dataController = this.editor.data;
-		const viewDocument = this.editor.editing.view.document;
-
-		const content = dataController.toView( this._tableSelection.getSelectionAsFragment() );
-
-		viewDocument.fire( 'clipboardOutput', {
-			dataTransfer: data.dataTransfer,
-			content,
-			method
-		} );
+		clearTableCellsContents( this.editor.model, this._tableSelection.getSelectedTableCells() );
 	}
 }

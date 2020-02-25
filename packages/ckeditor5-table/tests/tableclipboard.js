@@ -13,7 +13,7 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import TableClipboard from '../src/tableclipboard';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-describe.only( 'table clipboard', () => {
+describe( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument;
 
 	beforeEach( async () => {
@@ -278,9 +278,25 @@ describe.only( 'table clipboard', () => {
 				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( '00' );
 			} );
 
+			it( 'should be preventable', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+
+				viewDocument.on( 'clipboardOutput', evt => evt.stop(), { priority: 'high' } );
+
+				viewDocument.fire( 'cut', {
+					dataTransfer: createDataTransfer(),
+					preventDefault: sinon.spy()
+				} );
+
+				assertEqualMarkup( getModelData( model ), modelTable( [
+					[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true }, '02' ],
+					[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true }, '12' ],
+					[ '20', '21', '22' ]
+				] ) );
+			} );
+
 			it( 'is clears selected table cells', () => {
-				const dataTransferMock = createDataTransfer();
-				const preventDefaultSpy = sinon.spy();
 				const spy = sinon.spy();
 
 				viewDocument.on( 'clipboardOutput', spy );
@@ -289,8 +305,8 @@ describe.only( 'table clipboard', () => {
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
 
 				viewDocument.fire( 'cut', {
-					dataTransfer: dataTransferMock,
-					preventDefault: preventDefaultSpy
+					dataTransfer: createDataTransfer(),
+					preventDefault: sinon.spy()
 				} );
 
 				assertEqualMarkup( getModelData( model ), modelTable( [
