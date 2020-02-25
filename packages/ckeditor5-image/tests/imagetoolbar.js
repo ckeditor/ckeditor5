@@ -61,7 +61,7 @@ describe( 'ImageToolbar', () => {
 		global.document.body.appendChild( editorElement );
 
 		return ClassicEditor.create( editorElement, {
-			plugins: [ ImageToolbar ],
+			plugins: [ ImageToolbar ]
 		} )
 			.then( editor => {
 				expect( editor.plugins.get( ImageToolbar )._toolbar ).to.be.undefined;
