@@ -139,8 +139,8 @@ export default class StylesMap {
 	 *			'margin-right': '1em'
 	 *		} );
 	 *
-	 * ***Note**:* This method uses {@link module:engine/view/document~Document#addStyleProcessorRules enabled style processor rules}
-	 * to normalize passed values.
+	 * ***Note**:* This method uses {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules
+	 * enabled style processor rules} to normalize passed values.
 	 *
 	 *		// Enable 'margin' shorthand processing:
 	 *		editor.data.addStyleProcessorRules( addMarginRules );
@@ -192,8 +192,8 @@ export default class StylesMap {
 	 *
 	 *		styles.toString();   // -> 'margin-right:2px;'
 	 *
-	 * ***Note**:* This method uses {@link module:engine/view/document~Document#addStyleProcessorRules enabled style processor rules}
-	 * to normalize passed values.
+	 * ***Note**:* This method uses {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules
+	 * enabled style processor rules} to normalize passed values.
 	 *
 	 *		// Enable 'margin' shorthand processing:
 	 *		editor.data.addStyleProcessorRules( addMarginRules );

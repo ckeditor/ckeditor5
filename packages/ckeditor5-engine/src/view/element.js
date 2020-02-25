@@ -381,7 +381,7 @@ export default class Element extends Node {
 	 * If the style does not exist `undefined` is returned.
 	 *
 	 * **Note**: This method can work with normalized style names if
-	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#getAsString `StylesMap#getAsString()`} for details.
 	 *
 	 * For an element with style set to `'margin:1px'`:
@@ -429,7 +429,7 @@ export default class Element extends Node {
 	 * Will return a `2px` string.
 	 *
 	 * **Note**: This method will return normalized values only if
-	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#getNormalized `StylesMap#getNormalized()`} for details.
 	 *
 	 *
@@ -761,7 +761,7 @@ export default class Element extends Node {
 	 *		} );
 	 *
 	 * **Note**: This method can work with normalized style names if
-	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#setStyle
@@ -783,7 +783,7 @@ export default class Element extends Node {
 	 *		element._removeStyle( [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
 	 *
 	 * **Note**: This method can work with normalized style names if
-	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#removeStyle

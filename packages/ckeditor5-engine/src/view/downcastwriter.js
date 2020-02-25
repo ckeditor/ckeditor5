@@ -328,7 +328,7 @@ export default class DowncastWriter {
 	 *		}, element );
 	 *
 	 * **Note**: The passed style can be normalized if
-	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
 	 * @param {String|Object} property Property name or object with key - value pairs.
@@ -350,7 +350,7 @@ export default class DowncastWriter {
 	 *		writer.removeStyle( [ 'color', 'border-top' ], element ); // Removes both 'color' and 'border-top' styles.
 	 *
 	 * **Note**: This method can work with normalized style names if
-	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
 	 *
 	 * @param {Array.<String>|String} property
