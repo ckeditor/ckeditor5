@@ -70,33 +70,11 @@ export default class WidgetResize extends Plugin {
 
 		this._observer = Object.create( DomEmitterMixin );
 
-		this._observer.listenTo( domDocument, 'mousedown', ( event, domEventData ) => {
-			if ( !Resizer.isResizeHandle( domEventData.target ) ) {
-				return;
-			}
+		this._observer.listenTo( domDocument, 'mousedown', this._mouseDownListener.bind( this ) );
 
-			const resizeHandle = domEventData.target;
+		this._observer.listenTo( domDocument, 'mousemove', this._mouseMoveListener.bind( this ) );
 
-			this._activeResizer = this._getResizerByHandle( resizeHandle );
-
-			if ( this._activeResizer ) {
-				this._activeResizer.begin( resizeHandle );
-			}
-		} );
-
-		this._observer.listenTo( domDocument, 'mousemove', ( event, domEventData ) => {
-			if ( this._activeResizer ) {
-				this._activeResizer.updateSize( domEventData );
-			}
-		} );
-
-		this._observer.listenTo( domDocument, 'mouseup', () => {
-			if ( this._activeResizer ) {
-				this._activeResizer.commit();
-
-				this._activeResizer = null;
-			}
-		} );
+		this._observer.listenTo( domDocument, 'mouseup', this._mouseUpListener.bind( this ) );
 
 		const redrawFocusedResizer = () => {
 			if ( this._visibleResizer ) {
@@ -127,6 +105,10 @@ export default class WidgetResize extends Plugin {
 
 	destroy() {
 		this._observer.stopListening();
+
+		for ( const resizer of this._resizers.values() ) {
+			resizer.destroy();
+		}
 	}
 
 	/**
@@ -186,6 +168,43 @@ export default class WidgetResize extends Plugin {
 	 */
 	_getResizerByViewElement( viewElement ) {
 		return this._resizers.get( viewElement );
+	}
+
+	/**
+	 * @protected
+	 * @param {module:utils/eventinfo~EventInfo} event
+	 * @param {Event} domEventData Native DOM event.
+	 */
+	_mouseDownListener( event, domEventData ) {
+		if ( !Resizer.isResizeHandle( domEventData.target ) ) {
+			return;
+		}
+		const resizeHandle = domEventData.target;
+		this._activeResizer = this._getResizerByHandle( resizeHandle );
+		if ( this._activeResizer ) {
+			this._activeResizer.begin( resizeHandle );
+		}
+	}
+
+	/**
+	 * @protected
+	 * @param {module:utils/eventinfo~EventInfo} event
+	 * @param {Event} domEventData Native DOM event.
+	 */
+	_mouseMoveListener( event, domEventData ) {
+		if ( this._activeResizer ) {
+			this._activeResizer.updateSize( domEventData );
+		}
+	}
+
+	/**
+	 * @protected
+	 */
+	_mouseUpListener() {
+		if ( this._activeResizer ) {
+			this._activeResizer.commit();
+			this._activeResizer = null;
+		}
 	}
 }
 
