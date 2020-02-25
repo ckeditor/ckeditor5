@@ -42,23 +42,24 @@
 	}
 }
 
-.ck-restricted-editing_mode_restricted .restricted-editing-exception {
-	cursor: text;
-
-	& * {
-		cursor: text;
-	}
-
-	&:hover {
-		background: var(--ck-color-restricted-editing-exception-hover-background);
-	}
-}
-
 .ck-restricted-editing_mode_restricted {
 	cursor: default;
 
-	/* For some reason, we also need to override user agent styles for links inside the editor. */
-	& *:not(.restricted-editing-exception) {
+	/* We also have to override all elements inside the restricted editable to prevent cursor switching between default and text
+	during the pointer movement. */
+	& * {
 		cursor: default;
+	}
+
+	& .restricted-editing-exception {
+		cursor: text;
+
+		& * {
+			cursor: text;
+		}
+
+		&:hover {
+			background: var(--ck-color-restricted-editing-exception-hover-background);
+		}
 	}
 }
