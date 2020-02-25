@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableSelection from './tableselection';
+import { clearTableCellsContents } from './tableselection/utils';
 
 /**
  * The table clipboard integration plugin.
@@ -92,6 +93,8 @@ export default class TableClipboard extends Plugin {
 		if ( this._tableSelection.hasMultiCellSelection ) {
 			data.preventDefault();
 			evt.stop();
+
+			clearTableCellsContents( this.editor.model, this._tableSelection.getSelectedTableCells() );
 		}
 	}
 }

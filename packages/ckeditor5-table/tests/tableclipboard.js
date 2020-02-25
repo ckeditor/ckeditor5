@@ -5,7 +5,7 @@
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import TableEditing from '../src/tableediting';
 import { modelTable, viewTable } from './_utils/utils';
@@ -13,6 +13,7 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import TableClipboard from '../src/tableclipboard';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument;
@@ -271,25 +272,6 @@ describe( 'table clipboard', () => {
 		} );
 
 		describe( 'cut', () => {
-			it( 'is disabled for multi-range selection over a table', () => {
-				const dataTransferMock = createDataTransfer();
-				const preventDefaultSpy = sinon.spy();
-				const spy = sinon.spy();
-
-				viewDocument.on( 'clipboardOutput', spy );
-
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
-
-				viewDocument.fire( 'cut', {
-					dataTransfer: dataTransferMock,
-					preventDefault: preventDefaultSpy
-				} );
-
-				sinon.assert.notCalled( spy );
-				sinon.assert.calledOnce( preventDefaultSpy );
-			} );
-
 			it( 'is not disabled normal selection over a table', () => {
 				const dataTransferMock = createDataTransfer();
 				const spy = sinon.spy();
@@ -302,6 +284,28 @@ describe( 'table clipboard', () => {
 				} );
 
 				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'is clears selected table cells', () => {
+				const dataTransferMock = createDataTransfer();
+				const preventDefaultSpy = sinon.spy();
+				const spy = sinon.spy();
+
+				viewDocument.on( 'clipboardOutput', spy );
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+
+				viewDocument.fire( 'cut', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+
+				assertEqualMarkup( getModelData( model ), modelTable( [
+					[ { contents: '', isSelected: true }, { contents: '', isSelected: true }, '02' ],
+					[ { contents: '', isSelected: true }, { contents: '', isSelected: true }, '12' ],
+					[ '20', '21', '22' ]
+				] ) );
 			} );
 		} );
 	} );
