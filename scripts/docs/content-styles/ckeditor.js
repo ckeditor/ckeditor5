@@ -35,9 +35,13 @@ import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
+import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
+import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 import StandardEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/standardeditingmode';
 import RestrictedEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/restrictededitingmode';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Font from '@ckeditor/ckeditor5-font/src/font';
 import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
@@ -76,9 +80,13 @@ ClassicEditor.builtinPlugins = [
 	PageBreak,
 	Paragraph,
 	PasteFromOffice,
+	SpecialCharacters,
+	SpecialCharactersEssentials,
 	StandardEditingMode,
 	RestrictedEditingMode,
 	Table,
+	TableProperties,
+	TableCellProperties,
 	TableToolbar,
 	Font,
 	Highlight,

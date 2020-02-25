@@ -52,7 +52,10 @@ class SimpleBoxUI extends Plugin {
 			buttonView.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 			// Execute the command when the button is clicked (executed).
-			this.listenTo( buttonView, 'execute', () => editor.execute( 'insertSimpleBox' ) );
+			this.listenTo( buttonView, 'execute', () => {
+				editor.execute( 'insertSimpleBox' );
+				editor.editing.view.focus();
+			} );
 
 			return buttonView;
 		} );

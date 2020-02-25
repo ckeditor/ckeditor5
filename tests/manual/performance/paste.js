@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals document, DataTransfer */
 
 import { getPerformanceData, createPerformanceEditor, renderPerformanceDataButtons } from '../../_utils/utils';
 
@@ -16,9 +16,14 @@ createPerformanceEditor( document.querySelector( '#editor' ) )
 
 		for ( const button of buttons ) {
 			button.addEventListener( 'click', function() {
-				const content = fixtures[ this.getAttribute( 'data-file-name' ) ];
+				const fixtureHtml = fixtures[ this.getAttribute( 'data-file-name' ) ];
 
-				editor.setData( content );
+				const data = new DataTransfer();
+				data.setData( 'text/html', fixtureHtml );
+
+				editor.editing.view.document.fire( 'clipboardInput', {
+					dataTransfer: data
+				} );
 			} );
 			button.disabled = false;
 		}

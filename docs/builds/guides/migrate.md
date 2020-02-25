@@ -581,7 +581,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-specialChars">specialChars</a></td>
-			<td>N/A. There is <a href="https://github.com/ckeditor/ckeditor5/issues/1110" target="_blank" rel="noopener">no special characters plugin in CKEditor 5 yet</a>.</td>
+			<td>Refer to the {@link features/special-characters Special characters feature} guide to learn more about support inserting special characters in CKEditor 5.</td>
 		</tr>
 		<tr>
 			<td><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-startupFocus">startupFocus</a></td>

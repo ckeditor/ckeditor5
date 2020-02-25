@@ -1,0 +1,107 @@
+<div id="test-controls">
+	Call <code>editor.setData()</code> with:
+	<span id="fixture-buttons"></span>
+	HTML payload.
+	<br><br>
+	Cases marked with "(semantic)" contain elements known by the editor. Cases with "(styled)" focuses on styling using the <code>[style]</code> attribute.
+</div>
+
+<hr>
+
+<div id="word-count-wrapper" style="display:none">
+	Words: <span id="word-count"></span> Characters: <span id="character-count"></span>
+</div>
+
+<div id="editor">
+	<h1>Rich editor (h1)</h1>
+
+	<p>
+		This editor features exceptionally high number of plugins.
+	</p>
+
+	<p>
+		It
+		<strong>features</strong>
+		<em>some basic</em>
+		<s>font</s>
+		<sub>styling &mdash;</sub>
+		<sup>nothing</sup>
+		<u>too crazy</u>.
+		<a href="https://ckeditor.com">Links</a> are also here.
+	</p>
+
+	<p>
+		Font can have customized
+		<span style="background-color:#e6e64c">background</span>,
+		<span style="color:#ff0000">foreground</span>,
+		<span style="font-family:'Trebuchet MS', Helvetica, sans-serif">font face</span>,
+		<span class="text-big">height</span>.
+		You can also <mark class="marker-yellow">mark</mark> it or use <code>code</code> if you want to.
+	</p>
+
+	<p style="text-align:right">
+		Text alignment can be customized.
+	</p>
+
+	<ol>
+		<li>Ordered list
+			<ol>
+				<li>Ordered list</li>
+			</ol>
+		</li>
+	</ol>
+
+	<ul>
+		<li>Unordered list
+			<ul>
+				<li>Unordered list</li>
+			</ul>
+		</li>
+	</ul>
+
+	<ul>
+		<li><input type="checkbox">To-do list item 1</li>
+		<li><input type="checkbox" checked="checked">To-do list item 2</li>
+		<li><input type="checkbox">To-do list item 3</li>
+	</ul>
+
+	<p style="margin-left:40px">Indenting a paragraph is fine too.</p>
+
+	<blockquote>
+		An example blockquote text.
+	</blockquote>
+
+	<figure>
+		<table style="border: 1px solid green;background:#fdfd77;width:200px;height:140px">
+			<thead>
+				<tr>
+					<td><p>header</p></td>
+					<td style="border:2px dashed black;background-color: lightblue"><p>styled header</p></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td style="border:2px dashed black;background-color: lightblue"><p>styled cell</p></td>
+					<td><p>cell</p></td>
+				</tr>
+
+			</tbody>
+		</table>
+	</figure>
+
+	<figure class="media">
+		<oembed url="https://www.youtube.com/watch?v=CB70skVw3nU"></oembed>
+	</figure>
+
+	<pre><code class="language-xml">&lt;blockquote&gt;
+		An example blockquote text.
+&lt;/blockquote&gt;</code></pre>
+
+	<p>Time to separate it with a horizontal rule, followed by a page break:</p>
+
+	<hr>
+
+	<div class="page-break" style="page-break-after:always;"><span style="display:none;">&nbsp;</span></div>
+
+	<p>There is a possibility to work with the restricted editing plugin: <span class="restricted-editing-exception">Like that</span>.</p>
+</div>
