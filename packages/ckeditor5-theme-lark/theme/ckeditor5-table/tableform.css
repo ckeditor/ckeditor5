@@ -1,0 +1,95 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../mixins/_rounded.css";
+
+:root {
+	--ck-table-properties-error-arrow-size: 6px;
+	--ck-table-properties-min-error-width: 150px;
+}
+
+.ck.ck-table-form {
+	& .ck-form__row {
+		&.ck-table-form__border-row {
+			& .ck-labeled-view {
+				& > .ck-label {
+					font-size: var(--ck-font-size-tiny);
+					text-align: center;
+				}
+			}
+
+			& .ck-table-form__border-style {
+				width: 80px;
+				min-width: 80px;
+			}
+
+			& .ck-table-form__border-width {
+				width: 50px;
+				min-width: 50px;
+			}
+		}
+
+		&.ck-table-form__dimensions-row {
+			padding: 0;
+
+			& .ck-labeled-view > .ck-label {
+				font-size: 10px;
+				text-align: center;
+			}
+
+			& .ck-table-form__dimensions-row__width {
+				margin-right: var(--ck-spacing-small);
+			}
+
+			& .ck-table-form__dimensions-row__height {
+				margin-left: var(--ck-spacing-small);
+			}
+
+			& .ck-table-form__dimension-operator {
+				margin: 0;
+				align-self: start;
+				display: inline-block;
+				height: var(--ck-ui-component-min-height);
+				line-height: var(--ck-ui-component-min-height);
+			}
+		}
+	}
+
+	& .ck.ck-labeled-view {
+		& .ck.ck-labeled-view__status {
+			@mixin ck-rounded-corners;
+
+			background: var(--ck-color-base-error);
+			color: var(--ck-color-base-background);
+			padding: var(--ck-spacing-small) var(--ck-spacing-medium);
+			min-width: var(--ck-table-properties-min-error-width);
+			text-align: center;
+
+			/* The arrow pointing towards the field. */
+			&::after {
+				border-color: transparent transparent var(--ck-color-base-error) transparent;
+				border-width: 0 var(--ck-table-properties-error-arrow-size) var(--ck-table-properties-error-arrow-size) var(--ck-table-properties-error-arrow-size);
+				border-style: solid;
+			}
+
+			animation: ck-table-form-labeled-view-status-appear .15s ease both;
+		}
+
+		/* Hide the error balloon when the field is blurred. Makes the experience much more clear. */
+		& .ck-input.ck-error:not(:focus) + .ck.ck-labeled-view__status {
+			display: none;
+		}
+	}
+}
+
+@keyframes ck-table-form-labeled-view-status-appear {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}

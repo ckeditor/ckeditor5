@@ -80,6 +80,7 @@ const ui = testUtils.createTestUIView( {
 	'toolbarWrap': '#toolbar-wrap',
 	'toolbarSeparator': '#toolbar-separator',
 	'toolbarMultiRow': '#toolbar-multi-row',
+	'toolbarCompact': '#toolbar-compact',
 
 	'inputLabeled': '#input-labeled',
 	'inputReadOnly': '#input-read-only'
@@ -105,7 +106,7 @@ function renderButton() {
 
 	ui.buttonStates.add( toolbar( [
 		button( {
-			label: 'State: normal (none)',
+			label: 'State: normal (none)'
 		} ),
 		button( {
 			label: 'State: disabled',
@@ -233,7 +234,7 @@ function renderButton() {
 		button( {
 			label: 'This button has a tooltip (south)',
 			withText: true,
-			tooltip: 'The content of the tooltip',
+			tooltip: 'The content of the tooltip'
 		} ),
 		button( {
 			label: 'This one too – north',
@@ -485,6 +486,28 @@ function renderToolbar() {
 			icon: boldIcon
 		} )
 	] ) );
+
+	// --- Compact ------------------------------------------------------------
+
+	const compactToolbar = toolbar( [
+		button( {
+			icon: boldIcon,
+			withText: false
+		} ),
+		button( {
+			icon: italicIcon,
+			withText: false,
+			isOn: true
+		} ),
+		button( {
+			icon: cancelIcon,
+			withText: false
+		} )
+	] );
+
+	compactToolbar.isCompact = true;
+
+	ui.toolbarCompact.add( compactToolbar );
 }
 
 function renderInput() {

@@ -5,6 +5,7 @@
 
 :root {
 	--ck-color-restricted-editing-exception-background: hsla(31, 100%, 65%, .2);
+	--ck-color-restricted-editing-exception-hover-background: hsla(31, 100%, 65%, .35);
 	--ck-color-restricted-editing-exception-brackets: hsla(31, 100%, 40%, .4);
 	--ck-color-restricted-editing-selected-exception-background: hsla(31, 100%, 65%, .5);
 	--ck-color-restricted-editing-selected-exception-brackets: hsla(31, 100%, 40%, .6);
@@ -36,6 +37,28 @@
 	}
 
 	&.restricted-editing-exception_collapsed {
-		padding-left: 1em;
+		/* Empty exception should have the same width as exception with at least 1 char */
+		padding-left: 1ch;
+	}
+}
+
+.ck-restricted-editing_mode_restricted .restricted-editing-exception {
+	cursor: text;
+
+	& * {
+		cursor: text;
+	}
+
+	&:hover {
+		background: var(--ck-color-restricted-editing-exception-hover-background);
+	}
+}
+
+.ck-restricted-editing_mode_restricted {
+	cursor: default;
+
+	/* For some reason, we also need to override user agent styles for links inside the editor. */
+	& *:not(.restricted-editing-exception) {
+		cursor: default;
 	}
 }
