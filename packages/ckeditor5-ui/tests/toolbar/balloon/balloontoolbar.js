@@ -12,7 +12,6 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -28,7 +27,7 @@ const toPx = toUnit( 'px' );
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-/* global document, window, Event, setTimeout */
+/* global document, window, Event */
 
 describe( 'BalloonToolbar', () => {
 	let editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
@@ -625,36 +624,6 @@ describe( 'BalloonToolbar', () => {
 
 			balloonToolbar.show();
 			sinon.assert.notCalled( balloonAddSpy );
-		} );
-	} );
-
-	describe( 'has `Heading` plugin and editable width is less then 200px', () => {
-		let editor, balloonToolbar, viewElement;
-
-		beforeEach( () => {
-			return ClassicTestEditor.create( editorElement, {
-				plugins: [ Heading, BalloonToolbar ],
-				balloonToolbar: [ 'heading' ]
-			} ).then( newEditor => {
-				editor = newEditor;
-				balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
-				viewElement = editor.ui.view.editable.element;
-			} );
-		} );
-
-		afterEach( () => {
-			editor.destroy();
-		} );
-
-		it( 'should contain `.ck-balloon-toolbar_min-width`', done => {
-			viewElement.style.width = '200px';
-
-			// We have to wait for a ResizeObserver to set the editable's width.
-			setTimeout( () => {
-				expect( balloonToolbar.toolbarView.element.classList.contains( 'ck-balloon-toolbar_min-width' ) ).to.be.true;
-
-				done();
-			}, 200 );
 		} );
 	} );
 

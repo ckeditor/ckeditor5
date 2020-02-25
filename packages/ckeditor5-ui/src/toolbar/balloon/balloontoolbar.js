@@ -191,24 +191,11 @@ export default class BalloonToolbar extends Plugin {
 	_createToolbarView() {
 		const shouldGroupWhenFull = !this._balloonConfig.shouldNotGroupWhenFull;
 		const toolbarView = new ToolbarView( this.editor.locale, { shouldGroupWhenFull } );
-		const balloonToolbarPlugins = this.editor.config.get( 'balloonToolbar' );
-		const bind = toolbarView.bindTemplate;
 
 		toolbarView.extendTemplate( {
 			attributes: {
 				class: [
 					'ck-toolbar_floating',
-					// When balloon toolbar contains `heading` plugin and the width of the editable is narrower than 200px,
-					// the balloon may fold too "agressively" and not show any of the buttons (only "three dots" button is visible
-					// to trigger dropdown menu with buttons that don't fit the toolbar width boundary).
-					//
-					// This is a workaround for the case. By default `ck-balloon-toolbar_min-width` class sets static `min-width` to 180px.
-					// The value matches a dynamic value (90% of the editable width) set by ResizeObserver's callback during initialization.
-					bind.if( 'maxWidth', 'ck-balloon-toolbar_min-width', value => {
-						if ( parseFloat( value ) <= 200 ) {
-							return balloonToolbarPlugins.find( plugin => plugin === 'heading' );
-						}
-					} )
 				]
 			}
 		} );
