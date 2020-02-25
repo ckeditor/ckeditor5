@@ -755,7 +755,7 @@ describe( 'BalloonPanelView', () => {
 		it( 'should define the "northArrowSouthMiddleWest" position', () => {
 			expect( positions.northArrowSouthMiddleWest( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 50 - arrowVOffset,
-				left: 162.5 - arrowHOffset,
+				left: 137.5 - arrowHOffset,
 				name: 'arrow_smw'
 			} );
 		} );

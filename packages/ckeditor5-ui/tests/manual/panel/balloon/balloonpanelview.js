@@ -9,10 +9,24 @@ import BalloonPanelView from '../../../../src/panel/balloon/balloonpanelview';
 
 const defaultPositions = BalloonPanelView.defaultPositions;
 const container = document.querySelector( '#container' );
+const headingRegex = /(w*)arrow\w*/i;
+
+let currentHeading = '';
 
 for ( const i in defaultPositions ) {
 	const target = document.createElement( 'div' );
+	const heading = document.createElement( 'h1' );
+	const headingText = getCapitalizedHeading( i );
+
+	heading.textContent = headingText;
 	target.classList.add( 'target' );
+
+	// Lazy heading
+	if ( currentHeading !== headingText ) {
+		container.appendChild( heading );
+		currentHeading = headingText;
+	}
+
 	container.appendChild( target );
 
 	const balloon = new BalloonPanelView();
@@ -26,4 +40,12 @@ for ( const i in defaultPositions ) {
 			defaultPositions[ i ]
 		]
 	} );
+}
+
+function getCapitalizedHeading( text ) {
+	const headingText = text.replace( headingRegex, '$1' );
+	const normalizedHeading = headingText.replace( /([a-z])([A-Z])/, '$1 $2' );
+	const capitalizedText = normalizedHeading.charAt( 0 ).toUpperCase() + normalizedHeading.slice( 1 );
+
+	return capitalizedText;
 }
