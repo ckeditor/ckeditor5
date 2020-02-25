@@ -181,15 +181,15 @@ describe( 'BalloonPanelView', () => {
 				target,
 				positions: [
 					BalloonPanelView.defaultPositions.southArrowNorth,
-					BalloonPanelView.defaultPositions.southArrowNorthWest,
-					BalloonPanelView.defaultPositions.southArrowNorthEast,
 					BalloonPanelView.defaultPositions.southArrowNorthMiddleWest,
 					BalloonPanelView.defaultPositions.southArrowNorthMiddleEast,
+					BalloonPanelView.defaultPositions.southArrowNorthWest,
+					BalloonPanelView.defaultPositions.southArrowNorthEast,
 					BalloonPanelView.defaultPositions.northArrowSouth,
-					BalloonPanelView.defaultPositions.northArrowSouthWest,
-					BalloonPanelView.defaultPositions.northArrowSouthEast,
 					BalloonPanelView.defaultPositions.northArrowSouthMiddleWest,
 					BalloonPanelView.defaultPositions.northArrowSouthMiddleEast,
+					BalloonPanelView.defaultPositions.northArrowSouthWest,
+					BalloonPanelView.defaultPositions.northArrowSouthEast,
 				],
 				limiter: document.body,
 				fitInViewport: true
@@ -271,7 +271,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_sw' );
+				expect( view.position ).to.equal( 'arrow_smw' );
 			} );
 
 			it( 'should put balloon on the `north west` side of the target element when ' +
@@ -412,7 +412,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_sw' );
+				expect( view.position ).to.equal( 'arrow_smw' );
 			} );
 
 			it( 'should put balloon on the `south east` position when `north east` is limited', () => {
