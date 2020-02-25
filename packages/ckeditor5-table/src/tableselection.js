@@ -102,6 +102,14 @@ export default class TableSelection extends Plugin {
 		setupTableSelectionHighlighting( editor, this );
 
 		selection.on( 'change:range', () => this._clearSelectionOnExternalChange( selection ) );
+
+		this.listenTo( editor.editing.view.document, 'delete', evt => {
+			if ( this.hasMultiCellSelection ) {
+				evt.stop();
+
+				this.clearSelectedTableCells();
+			}
+		}, { priority: 'high' } );
 	}
 
 	/**
@@ -240,6 +248,17 @@ export default class TableSelection extends Plugin {
 			writer.insert( table, documentFragment, 0 );
 
 			return documentFragment;
+		} );
+	}
+
+	// TODO: helper function?
+	clearSelectedTableCells() {
+		const model = this.editor.model;
+
+		model.change( writer => {
+			for ( const tableCell of this.getSelectedTableCells() ) {
+				model.deleteContent( writer.createSelection( tableCell, 'in' ) );
+			}
 		} );
 	}
 
