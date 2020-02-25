@@ -106,7 +106,7 @@ export default class View {
 		 * @protected
 		 * @type {module:engine/view/renderer~Renderer}
 		 */
-		this._renderer = new Renderer( this );
+		this._renderer = new Renderer( this.domConverter, this.document.selection );
 		this._renderer.bind( 'isFocused' ).to( this.document );
 
 		/**

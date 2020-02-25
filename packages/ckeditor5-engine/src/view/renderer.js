@@ -41,9 +41,10 @@ export default class Renderer {
 	/**
 	 * Creates a renderer instance.
 	 *
-	 * @param {module:engine/view/view~View} view View editing controller.
+	 * @param {module:engine/view/domconverter~DomConverter} domConverter Converter instance.
+	 * @param {module:engine/view/documentselection~DocumentSelection} selection View selection.
 	 */
-	constructor( view ) {
+	constructor( domConverter, selection ) {
 		/**
 		 * Set of DOM Documents instances.
 		 *
@@ -58,7 +59,7 @@ export default class Renderer {
 		 * @readonly
 		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
-		this.domConverter = view.domConverter;
+		this.domConverter = domConverter;
 
 		/**
 		 * Set of nodes which attributes changed and may need to be rendered.
@@ -90,7 +91,7 @@ export default class Renderer {
 		 * @readonly
 		 * @member {module:engine/view/documentselection~DocumentSelection}
 		 */
-		this.selection = view.document.selection;
+		this.selection = selection;
 
 		/**
 		 * Indicates if the view document is focused and selection can be rendered. Selection will not be rendered if
@@ -115,14 +116,6 @@ export default class Renderer {
 		 * @type {null|HTMLElement}
 		 */
 		this._fakeSelectionContainer = null;
-
-		/**
-		 * Reference to the {@link module:engine/view/view~View#document}.
-		 *
-		 * @private
-		 * @member {module:engine/view/document~Document}
-		 */
-		this._viewDocument = view.document;
 	}
 
 	/**
