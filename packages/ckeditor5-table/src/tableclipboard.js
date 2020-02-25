@@ -53,6 +53,7 @@ export default class TableClipboard extends Plugin {
 
 		this.listenTo( viewDocument, 'copy', ( evt, data ) => this._onCopy( evt, data ) );
 		this.listenTo( viewDocument, 'cut', ( evt, data ) => this._onCut( evt, data ) );
+		this.listenTo( viewDocument, 'clipboardOutput', ( evt, data ) => this._onClipboardOutput( evt, data ) );
 	}
 
 	/**
@@ -72,7 +73,7 @@ export default class TableClipboard extends Plugin {
 		data.preventDefault();
 		evt.stop();
 
-		this._copySelectedCellsToClipboard( tableSelection.getSelectionAsFragment(), data );
+		this._copySelectedCellsToClipboard( tableSelection.getSelectionAsFragment(), data, evt.name );
 	}
 
 	/**
@@ -92,8 +93,26 @@ export default class TableClipboard extends Plugin {
 		data.preventDefault();
 		evt.stop();
 
-		this._copySelectedCellsToClipboard( tableSelection.getSelectionAsFragment(), data );
+		this._copySelectedCellsToClipboard( tableSelection.getSelectionAsFragment(), data, evt.name );
 		clearTableCellsContents( this.editor.model, tableSelection.getSelectedTableCells() );
+	}
+
+	/**
+	 * Overrides default Clipboard plugin "clipboardOutput" handler. The table contents clearing is on in {@link #_onCut} handler.
+	 *
+	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
+	 * @param {Object} data Clipboard event data.
+	 * @private
+	 */
+	_onClipboardOutput( evt, data ) {
+		if ( !this._tableSelection.hasMultiCellSelection && data.method !== 'cut' ) {
+			return;
+		}
+
+		evt.stop();
+
+		data.dataTransfer.setData( 'text/html', new HtmlDataProcessor().toData( data.content ) );
+		data.dataTransfer.setData( 'text/plain', viewToPlainText( data.content ) );
 	}
 
 	/**
@@ -102,13 +121,18 @@ export default class TableClipboard extends Plugin {
 	 * @private
 	 * @param {Array.<module:engine/model/element~Element>} selectedTableCells
 	 * @param {module:clipboard/clipboard~ClipboardOutputEventData} data Event data.
+	 * @param {String} method Copy/cut method.
 	 */
-	_copySelectedCellsToClipboard( selectedTableCells, data ) {
+	_copySelectedCellsToClipboard( selectedTableCells, data, method ) {
 		const dataController = this.editor.data;
+		const viewDocument = this.editor.editing.view.document;
 
-		const content = dataController.toView( selectedTableCells );
+		const content = dataController.toView( this._tableSelection.getSelectionAsFragment() );
 
-		data.dataTransfer.setData( 'text/html', new HtmlDataProcessor().toData( content ) );
-		data.dataTransfer.setData( 'text/plain', viewToPlainText( content ) );
+		viewDocument.fire( 'clipboardOutput', {
+			dataTransfer: data.dataTransfer,
+			content,
+			method
+		} );
 	}
 }

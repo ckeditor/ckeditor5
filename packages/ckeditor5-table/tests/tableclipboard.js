@@ -13,7 +13,7 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import TableClipboard from '../src/tableclipboard';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-describe( 'table clipboard', () => {
+describe.only( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument;
 
 	beforeEach( async () => {
@@ -39,7 +39,7 @@ describe( 'table clipboard', () => {
 
 	describe( 'Clipboard integration', () => {
 		describe( 'copy', () => {
-			it( 'should to nothing for normal selection in table', () => {
+			it( 'should do nothing for normal selection in table', () => {
 				const dataTransferMock = createDataTransfer();
 				const spy = sinon.spy();
 
@@ -261,18 +261,21 @@ describe( 'table clipboard', () => {
 		} );
 
 		describe( 'cut', () => {
-			it( 'is not disabled normal selection over a table', () => {
-				const dataTransferMock = createDataTransfer();
-				const spy = sinon.spy();
+			it( 'should not block clipboardOutput if no multi-cell selection', () => {
+				setModelData( model, modelTable( [
+					[ '[00]', '01', '02' ],
+					[ '10', '11', '12' ],
+					[ '20', '21', '22' ]
+				] ) );
 
-				viewDocument.on( 'clipboardOutput', spy );
+				const dataTransferMock = createDataTransfer();
 
 				viewDocument.fire( 'cut', {
 					dataTransfer: dataTransferMock,
 					preventDefault: sinon.spy()
 				} );
 
-				sinon.assert.calledOnce( spy );
+				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( '00' );
 			} );
 
 			it( 'is clears selected table cells', () => {
