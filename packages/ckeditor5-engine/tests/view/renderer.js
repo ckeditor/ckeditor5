@@ -33,13 +33,11 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Renderer', () => {
 	let selection, domConverter, renderer, viewDocument;
-	let stylesProcessor;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		viewDocument = new ViewDocument( stylesProcessor );
+		viewDocument = new ViewDocument( new StylesProcessor() );
 		selection = new DocumentSelection();
 		domConverter = new DomConverter( viewDocument );
 		renderer = new Renderer( domConverter, selection );
@@ -3132,7 +3130,7 @@ describe( 'Renderer', () => {
 						'</container:li>' +
 					'</container:ol>';
 
-				viewRoot._appendChild( parse( view, { stylesProcessor } ) );
+				viewRoot._appendChild( parse( view ) );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -3726,7 +3724,7 @@ describe( 'Renderer', () => {
 		let view, viewDoc, viewRoot, domRoot, converter;
 
 		beforeEach( () => {
-			view = new View( stylesProcessor );
+			view = new View( new StylesProcessor() );
 			viewDoc = view.document;
 			domRoot = document.createElement( 'div' );
 			document.body.appendChild( domRoot );

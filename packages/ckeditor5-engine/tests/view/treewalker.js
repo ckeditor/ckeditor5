@@ -16,11 +16,10 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'TreeWalker', () => {
-	let doc, root, img1, paragraph, bold, textAbcd, charY, img2, charX, rootBeginning, rootEnding, stylesProcessor;
+	let doc, root, img1, paragraph, bold, textAbcd, charY, img2, charX, rootBeginning, rootEnding;
 
 	before( () => {
-		stylesProcessor = new StylesProcessor();
-		doc = new Document( stylesProcessor );
+		doc = new Document( new StylesProcessor() );
 		root = createViewRoot( doc );
 
 		// root

@@ -19,13 +19,11 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'DocumentSelection', () => {
 	let documentSelection, el, range1, range2, range3, document;
-	let stylesProcessor;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		document = new Document( stylesProcessor );
+		document = new Document( new StylesProcessor() );
 		const text = new Text( document, 'xxxxxxxxxxxxxxxxxxxx' );
 		el = new Element( document, 'p', null, text );
 
@@ -1088,7 +1086,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should return EditableElement when selection is placed inside', () => {
-			const viewDocument = new Document( stylesProcessor );
+			const viewDocument = new Document( new StylesProcessor() );
 			documentSelection._setTo( viewDocument.selection );
 			const root = createViewRoot( viewDocument, 'div', 'main' );
 			const element = new Element( document, 'p' );

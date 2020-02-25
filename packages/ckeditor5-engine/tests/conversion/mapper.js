@@ -20,11 +20,10 @@ import ViewRange from '../../src/view/range';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Mapper', () => {
-	let viewDocument, stylesProcessor;
+	let viewDocument;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		viewDocument = new ViewDocument( stylesProcessor );
+		viewDocument = new ViewDocument( new StylesProcessor() );
 	} );
 
 	describe( 'clearBindings', () => {

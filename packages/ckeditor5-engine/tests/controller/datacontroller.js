@@ -24,10 +24,10 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'DataController', () => {
-	let model, modelDocument, htmlDataProcessor, data, schema, upcastHelpers, downcastHelpers, viewDocument, stylesProcessor;
+	let model, modelDocument, htmlDataProcessor, data, schema, upcastHelpers, downcastHelpers, viewDocument;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
+		const stylesProcessor = new StylesProcessor();
 		model = new Model();
 
 		schema = model.schema;
@@ -49,7 +49,7 @@ describe( 'DataController', () => {
 
 	describe( 'constructor()', () => {
 		it( 'works without data processor', () => {
-			const data = new DataController( stylesProcessor, model );
+			const data = new DataController( new StylesProcessor(), model );
 
 			expect( data.processor ).to.be.undefined;
 		} );
@@ -576,6 +576,9 @@ describe( 'DataController', () => {
 
 	describe( 'addStyleProcessorRules()', () => {
 		it( 'should execute callback with an instance of StyleProcessor as the first argument', () => {
+			const stylesProcessor = new StylesProcessor();
+			const data = new DataController( stylesProcessor, model, htmlDataProcessor );
+
 			const spy = sinon.spy();
 
 			data.addStyleProcessorRules( spy );

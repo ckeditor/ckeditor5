@@ -9,10 +9,10 @@ import { addMarginRules } from '../../src/view/styles/margin';
 import { getBoxSidesValueReducer } from '../../src/view/styles/utils';
 
 describe( 'StylesMap', () => {
-	let stylesMap, stylesProcessor;
+	let stylesMap;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
+		const stylesProcessor = new StylesProcessor();
 
 		// Define simple "foo" shorthand normalizers, similar to the "margin" shorthand normalizers, for testing purposes.
 		stylesProcessor.setNormalizer( 'foo', value => ( {

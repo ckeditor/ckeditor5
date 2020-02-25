@@ -16,17 +16,15 @@ import { parse, setData } from '../../../src/dev-utils/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'View', () => {
-	let view, viewDocument, domRoot, stylesProcessor;
+	let view, viewDocument, domRoot;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-
 		domRoot = createElement( document, 'div', {
 			contenteditable: 'true'
 		} );
 		document.body.appendChild( domRoot );
 
-		view = new View( stylesProcessor );
+		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 		createViewRoot( viewDocument );
 		view.attachDomRoot( domRoot );

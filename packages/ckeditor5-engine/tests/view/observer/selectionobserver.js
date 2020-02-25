@@ -17,11 +17,6 @@ import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'SelectionObserver', () => {
 	let view, viewDocument, viewRoot, selectionObserver, domRoot, domMain, domDocument;
-	let stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
 
 	beforeEach( done => {
 		domDocument = document;
@@ -30,7 +25,7 @@ describe( 'SelectionObserver', () => {
 		domMain = domRoot.childNodes[ 0 ];
 		domDocument.body.appendChild( domRoot );
 
-		view = new View( stylesProcessor );
+		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 		createViewRoot( viewDocument );
 		view.attachDomRoot( domMain );

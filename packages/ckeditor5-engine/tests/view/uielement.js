@@ -12,11 +12,10 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'UIElement', () => {
-	let uiElement, doc, stylesProcessor;
+	let uiElement, doc;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		doc = new Document( stylesProcessor );
+		doc = new Document( new StylesProcessor() );
 
 		uiElement = new UIElement( doc, 'span', {
 			foo: 'bar',

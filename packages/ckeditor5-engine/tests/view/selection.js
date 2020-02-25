@@ -20,13 +20,11 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Selection', () => {
 	let selection, el, range1, range2, range3, viewDocument;
-	let stylesProcessor;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		viewDocument = new Document( stylesProcessor );
+		viewDocument = new Document( new StylesProcessor() );
 
 		const text = new Text( viewDocument, 'xxxxxxxxxxxxxxxxxxxx' );
 		el = new Element( viewDocument, 'p', null, text );

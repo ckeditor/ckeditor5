@@ -12,12 +12,6 @@ import Document from '../../../src/view/document';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
-	let stylesProcessor;
-
-	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	describe( 'mergeAttributes', () => {
 		let writer, document;
 
@@ -33,7 +27,7 @@ describe( 'DowncastWriter', () => {
 		}
 
 		before( () => {
-			document = new Document( stylesProcessor );
+			document = new Document( new StylesProcessor() );
 			writer = new DowncastWriter( document );
 		} );
 

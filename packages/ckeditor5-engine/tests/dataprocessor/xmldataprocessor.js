@@ -13,11 +13,10 @@ import { stringify, parse } from '../../src/dev-utils/view';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'XmlDataProcessor', () => {
-	let stylesProcessor, dataProcessor, viewDocument;
+	let dataProcessor, viewDocument;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		viewDocument = new ViewDocument( stylesProcessor );
+		viewDocument = new ViewDocument( new StylesProcessor() );
 		dataProcessor = new XmlDataProcessor( viewDocument );
 	} );
 

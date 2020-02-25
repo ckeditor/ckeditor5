@@ -11,11 +11,10 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'EmptyElement', () => {
-	let element, emptyElement, document, stylesProcessor;
+	let element, emptyElement, document;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		document = new Document( stylesProcessor );
+		document = new Document( new StylesProcessor() );
 		element = new Element( document, 'b' );
 		emptyElement = new EmptyElement( document, 'img', {
 			alt: 'alternative text',

@@ -12,7 +12,7 @@ import ViewDocument from '../../../src/view/document';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DOMConverter UIElement integration', () => {
-	let converter, viewDocument, stylesProcessor;
+	let converter, viewDocument;
 
 	function createUIElement( name ) {
 		const element = new ViewUIElement( viewDocument, name );
@@ -28,8 +28,7 @@ describe( 'DOMConverter UIElement integration', () => {
 	}
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		viewDocument = new ViewDocument( stylesProcessor );
+		viewDocument = new ViewDocument( new StylesProcessor() );
 		converter = new DomConverter( viewDocument );
 	} );
 

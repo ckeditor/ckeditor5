@@ -7,10 +7,10 @@ import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
 import { addBackgroundRules } from '../../../src/view/styles/background';
 
 describe( 'Background styles normalization', () => {
-	let styles, stylesProcessor;
+	let styles;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
+		const stylesProcessor = new StylesProcessor();
 		addBackgroundRules( stylesProcessor );
 		styles = new StylesMap( stylesProcessor );
 	} );

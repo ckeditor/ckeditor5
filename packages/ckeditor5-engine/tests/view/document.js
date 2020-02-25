@@ -13,20 +13,18 @@ import createViewRoot from './_utils/createroot';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Document', () => {
-	let domRoot, viewDocument, stylesProcessor;
+	let domRoot, viewDocument;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-
 		domRoot = createElement( document, 'div', {
 			id: 'editor',
 			contenteditable: 'true'
 		} );
 		document.body.appendChild( domRoot );
 
-		viewDocument = new Document( stylesProcessor );
+		viewDocument = new Document( new StylesProcessor() );
 	} );
 
 	afterEach( () => {

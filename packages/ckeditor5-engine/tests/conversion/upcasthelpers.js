@@ -33,15 +33,9 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 describe( 'UpcastHelpers', () => {
 	let upcastDispatcher, model, schema, upcastHelpers, viewDocument;
 
-	let stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	beforeEach( () => {
 		model = new Model();
-		viewDocument = new ViewDocument( stylesProcessor );
+		viewDocument = new ViewDocument( new StylesProcessor() );
 
 		schema = model.schema;
 
@@ -705,13 +699,11 @@ describe( 'UpcastHelpers', () => {
 } );
 
 describe( 'upcast-converters', () => {
-	let dispatcher, schema, context, model, viewDocument, stylesProcessor;
+	let dispatcher, schema, context, model, viewDocument;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-
 		model = new Model();
-		viewDocument = new ViewDocument( stylesProcessor );
+		viewDocument = new ViewDocument( new StylesProcessor() );
 		schema = model.schema;
 
 		schema.register( 'paragraph', { inheritAllFrom: '$block' } );
@@ -885,7 +877,7 @@ describe( 'upcast-converters', () => {
 
 			modelSetData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
-			view = new View( stylesProcessor );
+			view = new View( new StylesProcessor() );
 			viewDocument = view.document;
 			viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 

@@ -22,11 +22,10 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DomConverter', () => {
-	let converter, viewDocument, stylesProcessor;
+	let converter, viewDocument;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		viewDocument = new ViewDocument( stylesProcessor );
+		viewDocument = new ViewDocument( new StylesProcessor() );
 		converter = new DomConverter( viewDocument );
 	} );
 

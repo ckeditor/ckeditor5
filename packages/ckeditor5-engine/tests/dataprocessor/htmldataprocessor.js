@@ -13,11 +13,10 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 import ViewDocument from '../../src/view/document';
 
 describe( 'HtmlDataProcessor', () => {
-	let stylesProcessor, dataProcessor, viewDocument;
+	let dataProcessor, viewDocument;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		viewDocument = new ViewDocument( stylesProcessor );
+		viewDocument = new ViewDocument( new StylesProcessor() );
 		dataProcessor = new HtmlDataProcessor( viewDocument );
 	} );
 

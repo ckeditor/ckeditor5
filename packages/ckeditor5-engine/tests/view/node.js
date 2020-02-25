@@ -17,12 +17,10 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 describe( 'Node', () => {
 	let root, document,
 		one, two, three,
-		charB, charA, charR, img,
-		stylesProcessor;
+		charB, charA, charR, img;
 
 	before( () => {
-		stylesProcessor = new StylesProcessor();
-		document = new Document( stylesProcessor );
+		document = new Document( new StylesProcessor() );
 
 		charB = new Text( document, 'b' );
 		charA = new Text( document, 'a' );

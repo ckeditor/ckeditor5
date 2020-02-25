@@ -13,12 +13,11 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Bug ckeditor5-engine@1323', () => {
 	describe( 'constructor()', () => {
-		let model, editing, root, range, stylesProcessor;
+		let model, editing, root, range;
 
 		beforeEach( () => {
-			stylesProcessor = new StylesProcessor();
 			model = new Model();
-			editing = new EditingController( model, stylesProcessor );
+			editing = new EditingController( model, new StylesProcessor() );
 			root = model.document.createRoot();
 			root._appendChild( new ModelText( 'foo' ) );
 			range = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 0 ) );

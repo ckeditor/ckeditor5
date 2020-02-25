@@ -13,15 +13,14 @@ import { parse } from '../../../src/dev-utils/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'MutationObserver', () => {
-	let view, domEditor, viewDocument, viewRoot, mutationObserver, lastMutations, domRoot, stylesProcessor;
+	let view, domEditor, viewDocument, viewRoot, mutationObserver, lastMutations, domRoot;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
 		domRoot = document.createElement( 'div' );
 		domRoot.innerHTML = '<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>';
 		document.body.appendChild( domRoot );
 
-		view = new View( stylesProcessor );
+		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 		domEditor = document.getElementById( 'main' );
 		lastMutations = null;
@@ -39,7 +38,7 @@ describe( 'MutationObserver', () => {
 
 		viewRoot = viewDocument.getRoot();
 
-		viewRoot._appendChild( parse( '<container:p>foo</container:p><container:p>bar</container:p>', { stylesProcessor } ) );
+		viewRoot._appendChild( parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
 		view.forceRender();
 	} );
@@ -99,7 +98,7 @@ describe( 'MutationObserver', () => {
 
 	it( 'should handle unbold', () => {
 		viewRoot._removeChildren( 0, viewRoot.childCount );
-		viewRoot._appendChild( parse( '<container:p><attribute:b>foo</attribute:b></container:p>', { stylesProcessor } ) );
+		viewRoot._appendChild( parse( '<container:p><attribute:b>foo</attribute:b></container:p>' ) );
 		view.forceRender();
 
 		const domP = domEditor.childNodes[ 0 ];
@@ -206,7 +205,7 @@ describe( 'MutationObserver', () => {
 		view.attachDomRoot( domAdditionalEditor, 'additional' );
 
 		viewDocument.getRoot( 'additional' )._appendChild(
-			parse( '<container:p>foo</container:p><container:p>bar</container:p>', { stylesProcessor } ) );
+			parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
 		// Render AdditionalEditor (first editor has been rendered in the beforeEach function)
 		view.forceRender();
@@ -228,7 +227,7 @@ describe( 'MutationObserver', () => {
 
 	it( 'should fire children mutation if the mutation occurred in the inline filler', () => {
 		const { view: viewContainer, selection } = parse(
-			'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>', { stylesProcessor }
+			'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>'
 		);
 
 		view.change( writer => {
@@ -248,7 +247,7 @@ describe( 'MutationObserver', () => {
 
 	it( 'should have no inline filler in mutation', () => {
 		const { view: viewContainer, selection } = parse(
-			'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>', { stylesProcessor }
+			'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>'
 		);
 
 		view.change( writer => {
@@ -260,7 +259,7 @@ describe( 'MutationObserver', () => {
 		inlineFiller.data += 'x';
 
 		view.change( () => {
-			viewContainer.getChild( 1 )._appendChild( parse( 'x', { stylesProcessor } ) );
+			viewContainer.getChild( 1 )._appendChild( parse( 'x' ) );
 			mutationObserver.flush();
 		} );
 
@@ -281,8 +280,7 @@ describe( 'MutationObserver', () => {
 			'<container:p>' +
 				'foo' +
 				'<attribute:b>[]</attribute:b>' +
-			'</container:p>',
-			{ stylesProcessor }
+			'</container:p>'
 		);
 
 		view.change( writer => {
@@ -314,8 +312,7 @@ describe( 'MutationObserver', () => {
 				'foo' +
 				'<attribute:b>bar</attribute:b>' +
 				'[]' +
-			'</container:p>',
-			{ stylesProcessor }
+			'</container:p>'
 		);
 
 		view.change( writer => {
@@ -358,8 +355,7 @@ describe( 'MutationObserver', () => {
 			'<container:p>' +
 				'<attribute:b>[]</attribute:b>' +
 				'foo' +
-			'</container:p>',
-			{ stylesProcessor }
+			'</container:p>'
 		);
 
 		view.change( writer => {
@@ -385,7 +381,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should have no block filler in mutation', () => {
-		viewRoot._appendChild( parse( '<container:p></container:p>', { stylesProcessor } ) );
+		viewRoot._appendChild( parse( '<container:p></container:p>' ) );
 
 		view.forceRender();
 
@@ -404,7 +400,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should ignore mutation with bogus br inserted on the end of the empty paragraph', () => {
-		viewRoot._appendChild( parse( '<container:p></container:p>', { stylesProcessor } ) );
+		viewRoot._appendChild( parse( '<container:p></container:p>' ) );
 
 		view.forceRender();
 
@@ -417,7 +413,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should ignore mutation with bogus br inserted on the end of the paragraph with text', () => {
-		viewRoot._appendChild( parse( '<container:p>foo</container:p>', { stylesProcessor } ) );
+		viewRoot._appendChild( parse( '<container:p>foo</container:p>' ) );
 
 		view.forceRender();
 
@@ -430,7 +426,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should ignore mutation with bogus br inserted on the end of the paragraph while processing text mutations', () => {
-		viewRoot._appendChild( parse( '<container:p>foo</container:p>', { stylesProcessor } ) );
+		viewRoot._appendChild( parse( '<container:p>foo</container:p>' ) );
 
 		view.forceRender();
 
@@ -447,7 +443,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should ignore child mutations which resulted in no changes – when element contains elements', () => {
-		viewRoot._appendChild( parse( '<container:p><container:x></container:x></container:p>', { stylesProcessor } ) );
+		viewRoot._appendChild( parse( '<container:p><container:x></container:x></container:p>' ) );
 
 		view.forceRender();
 
@@ -481,7 +477,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should not ignore mutation with br inserted not on the end of the paragraph', () => {
-		viewRoot._appendChild( parse( '<container:p>foo</container:p>', { stylesProcessor } ) );
+		viewRoot._appendChild( parse( '<container:p>foo</container:p>' ) );
 
 		view.forceRender();
 
@@ -500,7 +496,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should not ignore mutation inserting element different than br on the end of the empty paragraph', () => {
-		viewRoot._appendChild( parse( '<container:p></container:p>', { stylesProcessor } ) );
+		viewRoot._appendChild( parse( '<container:p></container:p>' ) );
 
 		view.forceRender();
 
@@ -518,7 +514,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should not ignore mutation inserting element different than br on the end of the paragraph with text', () => {
-		viewRoot._appendChild( parse( '<container:p>foo</container:p>', { stylesProcessor } ) );
+		viewRoot._appendChild( parse( '<container:p>foo</container:p>' ) );
 
 		view.forceRender();
 

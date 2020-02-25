@@ -14,10 +14,10 @@ import { addPaddingRules } from '../../src/view/styles/padding';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'ViewConsumable', () => {
-	let viewConsumable, el, viewDocument, stylesProcessor;
+	let viewConsumable, el, viewDocument;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
+		const stylesProcessor = new StylesProcessor();
 		viewDocument = new ViewDocument( stylesProcessor );
 
 		addBorderRules( stylesProcessor );

@@ -16,13 +16,12 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DomConverter', () => {
-	let converter, stylesProcessor, viewDocument;
+	let converter, viewDocument;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		viewDocument = new ViewDocument( stylesProcessor );
+		viewDocument = new ViewDocument( new StylesProcessor() );
 		converter = new DomConverter( viewDocument );
 	} );
 
@@ -41,7 +40,7 @@ describe( 'DomConverter', () => {
 		let viewEditable, domEditable, domEditableParent, viewDocument;
 
 		beforeEach( () => {
-			viewDocument = new ViewDocument( stylesProcessor );
+			viewDocument = new ViewDocument( new StylesProcessor() );
 			viewEditable = new ViewEditable( viewDocument, 'div' );
 
 			domEditable = document.createElement( 'div' );
@@ -205,7 +204,7 @@ describe( 'DomConverter', () => {
 			domUiDeepSpan = document.createElement( 'span' );
 			domUiSpan.appendChild( domUiDeepSpan );
 
-			viewDocument = new ViewDocument( stylesProcessor );
+			viewDocument = new ViewDocument( new StylesProcessor() );
 
 			const viewUiSpan = new ViewUIElement( viewDocument, 'span' );
 			const viewElementSpan = new ViewContainerElement( viewDocument, 'span' );

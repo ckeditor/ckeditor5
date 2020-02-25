@@ -25,18 +25,12 @@ import { getData as getViewData } from '../../src/dev-utils/view';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'EditingController', () => {
-	let stylesProcessor;
-
-	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	describe( 'constructor()', () => {
 		let model, editing;
 
 		beforeEach( () => {
 			model = new Model();
-			editing = new EditingController( model, stylesProcessor );
+			editing = new EditingController( model, new StylesProcessor() );
 		} );
 
 		afterEach( () => {
@@ -84,7 +78,7 @@ describe( 'EditingController', () => {
 			model = new Model();
 			modelRoot = model.document.createRoot();
 
-			editing = new EditingController( model, stylesProcessor );
+			editing = new EditingController( model, new StylesProcessor() );
 
 			domRoot = document.createElement( 'div' );
 			domRoot.contentEditable = true;
@@ -484,7 +478,7 @@ describe( 'EditingController', () => {
 			model.document.createRoot();
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			const editing = new EditingController( model, stylesProcessor );
+			const editing = new EditingController( model, new StylesProcessor() );
 
 			const spy = sinon.spy();
 
@@ -508,7 +502,7 @@ describe( 'EditingController', () => {
 			model.document.createRoot();
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			const editing = new EditingController( model, stylesProcessor );
+			const editing = new EditingController( model, new StylesProcessor() );
 
 			const spy = sinon.spy( editing.view, 'destroy' );
 

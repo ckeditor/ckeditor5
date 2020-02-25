@@ -8,15 +8,9 @@ import View from '../../../src/view/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'Observer', () => {
-	let stylesProcessor;
-
-	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	describe( 'constructor()', () => {
 		it( 'should create Observer with properties', () => {
-			const view = new View( stylesProcessor );
+			const view = new View( new StylesProcessor() );
 			const observer = new Observer( view );
 
 			expect( observer ).to.be.an.instanceof( Observer );

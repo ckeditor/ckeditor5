@@ -11,12 +11,6 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
-	let stylesProcessor;
-
-	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	describe( 'mergeContainers()', () => {
 		let writer;
 
@@ -33,7 +27,7 @@ describe( 'DowncastWriter', () => {
 		}
 
 		before( () => {
-			writer = new DowncastWriter( new Document( stylesProcessor ) );
+			writer = new DowncastWriter( new Document( new StylesProcessor() ) );
 		} );
 
 		it( 'should merge two container elements - position between elements', () => {

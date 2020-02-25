@@ -11,11 +11,10 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'KeyObserver', () => {
-	let view, viewDocument, observer, stylesProcessor;
+	let view, viewDocument, observer;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		view = new View( stylesProcessor );
+		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 		observer = view.getObserver( KeyObserver );
 	} );

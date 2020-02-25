@@ -24,11 +24,8 @@ describe( 'Position', () => {
 	const parentMock = {};
 	let document;
 
-	let stylesProcessor;
-
 	before( () => {
-		stylesProcessor = new StylesProcessor();
-		document = new Document( stylesProcessor );
+		document = new Document( new StylesProcessor() );
 	} );
 
 	describe( 'constructor()', () => {
@@ -648,7 +645,7 @@ describe( 'Position', () => {
 		let root;
 
 		beforeEach( () => {
-			const doc = new Document( stylesProcessor );
+			const doc = new Document( new StylesProcessor() );
 
 			root = createViewRoot( doc );
 

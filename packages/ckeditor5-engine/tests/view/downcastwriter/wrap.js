@@ -22,17 +22,11 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
-	let stylesProcessor;
-
-	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	describe( 'wrap()', () => {
 		let writer, document;
 
 		beforeEach( () => {
-			document = new Document( stylesProcessor );
+			document = new Document( new StylesProcessor() );
 			writer = new DowncastWriter( document );
 		} );
 
@@ -527,7 +521,7 @@ describe( 'DowncastWriter', () => {
 			let view, viewDocument, viewRoot;
 
 			beforeEach( () => {
-				view = new View( stylesProcessor );
+				view = new View( new StylesProcessor() );
 				viewDocument = view.document;
 				viewRoot = createViewRoot( viewDocument );
 			} );

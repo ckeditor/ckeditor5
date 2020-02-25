@@ -30,11 +30,9 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 6;
-	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount, stylesProcessor;
+	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-
 		domRoot = createElement( document, 'div', {
 			id: 'editor',
 			contenteditable: 'true'
@@ -42,7 +40,7 @@ describe( 'view', () => {
 
 		document.body.appendChild( domRoot );
 
-		view = new View( stylesProcessor );
+		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 
 		ObserverMock = class extends Observer {
@@ -93,7 +91,7 @@ describe( 'view', () => {
 		const oldEnvIsAndroid = env.isAndroid;
 		env.isAndroid = true;
 
-		const newView = new View( stylesProcessor );
+		const newView = new View( new StylesProcessor() );
 		expect( newView.getObserver( InputObserver ) ).to.be.instanceof( InputObserver );
 
 		env.isAndroid = oldEnvIsAndroid;
@@ -162,7 +160,7 @@ describe( 'view', () => {
 			// The variable will be overwritten.
 			view.destroy();
 
-			view = new View( stylesProcessor );
+			view = new View( new StylesProcessor() );
 			viewDocument = view.document;
 			view._renderer.render = sinon.spy();
 
@@ -272,7 +270,7 @@ describe( 'view', () => {
 			// The variable will be overwritten.
 			view.destroy();
 
-			view = new View( stylesProcessor );
+			view = new View( new StylesProcessor() );
 			viewDocument = view.document;
 			view._renderer.render = sinon.spy();
 		} );
@@ -561,7 +559,7 @@ describe( 'view', () => {
 				createElement( document, 'p' )
 			] );
 
-			const view = new View( stylesProcessor );
+			const view = new View( new StylesProcessor() );
 			const viewDocument = view.document;
 
 			createViewRoot( viewDocument, 'div', 'main' );
@@ -578,7 +576,7 @@ describe( 'view', () => {
 		it( 'should render changes in the Document', () => {
 			const domDiv = document.createElement( 'div' );
 
-			const view = new View( stylesProcessor );
+			const view = new View( new StylesProcessor() );
 			const viewDocument = view.document;
 			createViewRoot( viewDocument, 'div', 'main' );
 			view.attachDomRoot( domDiv );
@@ -595,7 +593,7 @@ describe( 'view', () => {
 		it( 'should render attribute changes', () => {
 			const domRoot = document.createElement( 'div' );
 
-			const view = new View( stylesProcessor );
+			const view = new View( new StylesProcessor() );
 			const viewDocument = view.document;
 			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 

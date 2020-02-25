@@ -18,11 +18,10 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DomConverter', () => {
-	let converter, viewDocument, stylesProcessor;
+	let converter, viewDocument;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		viewDocument = new ViewDocument( stylesProcessor );
+		viewDocument = new ViewDocument( new StylesProcessor() );
 		converter = new DomConverter( viewDocument );
 	} );
 
@@ -151,7 +150,7 @@ describe( 'DomConverter', () => {
 			const domText = document.createTextNode( 'x' );
 			const domP = createElement( document, 'p', null, [ domB, domText, domI ] );
 
-			const viewP = parse( '<p><b></b><i></i></p>', { stylesProcessor } );
+			const viewP = parse( '<p><b></b><i></i></p>' );
 			const viewB = viewP.getChild( 0 );
 			const viewI = viewP.getChild( 1 );
 
@@ -166,7 +165,7 @@ describe( 'DomConverter', () => {
 			const domText = document.createTextNode( 'x' );
 			const domP = createElement( document, 'p', null, domText );
 
-			const viewP = parse( '<p></p>', { stylesProcessor } );
+			const viewP = parse( '<p></p>' );
 
 			converter.bindElements( domP, viewP );
 

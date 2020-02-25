@@ -16,12 +16,10 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'FakeSelectionObserver', () => {
-	let observer, view, viewDocument, root, domRoot, stylesProcessor;
+	let observer, view, viewDocument, root, domRoot;
 	testUtils.createSinonSandbox();
 
 	before( () => {
-		stylesProcessor = new StylesProcessor();
-
 		domRoot = createElement( document, 'div', {
 			contenteditable: 'true'
 		} );
@@ -33,7 +31,7 @@ describe( 'FakeSelectionObserver', () => {
 	} );
 
 	beforeEach( () => {
-		view = new View( stylesProcessor );
+		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 		root = createViewRoot( viewDocument );
 		view.attachDomRoot( domRoot );

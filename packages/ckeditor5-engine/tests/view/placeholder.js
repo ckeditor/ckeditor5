@@ -18,14 +18,9 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'placeholder', () => {
 	let view, viewDocument, viewRoot;
-	let stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
 
 	beforeEach( () => {
-		view = new View( stylesProcessor );
+		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 		viewRoot = createViewRoot( viewDocument );
 		viewDocument.isFocused = true;
@@ -178,7 +173,7 @@ describe( 'placeholder', () => {
 			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			const secondView = new View( stylesProcessor );
+			const secondView = new View( new StylesProcessor() );
 			const secondDocument = secondView.document;
 			secondDocument.isFocused = true;
 			const secondRoot = createViewRoot( secondDocument );

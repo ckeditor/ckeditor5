@@ -18,11 +18,10 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 describe( 'DomConverter', () => {
-	let converter, viewDocument, stylesProcessor;
+	let converter, viewDocument;
 
 	before( () => {
-		stylesProcessor = new StylesProcessor();
-		viewDocument = new ViewDocument( stylesProcessor );
+		viewDocument = new ViewDocument( new StylesProcessor() );
 		converter = new DomConverter( viewDocument );
 	} );
 

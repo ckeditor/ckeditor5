@@ -11,17 +11,11 @@ import Document from '../../src/view/document';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'EditableElement', () => {
-	let stylesProcessor;
-
-	before( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	describe( 'is', () => {
 		let el;
 
 		before( () => {
-			el = new EditableElement( new Document( stylesProcessor ), 'div' );
+			el = new EditableElement( new Document( new StylesProcessor() ), 'div' );
 		} );
 
 		it( 'should return true for containerElement/editable/element, also with correct name and element name', () => {

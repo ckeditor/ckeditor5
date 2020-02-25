@@ -17,17 +17,11 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
-	let stylesProcessor;
-
-	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	describe( 'breakAttributes()', () => {
 		let writer, document;
 
 		beforeEach( () => {
-			document = new Document( stylesProcessor );
+			document = new Document( new StylesProcessor() );
 			writer = new DowncastWriter( document );
 		} );
 

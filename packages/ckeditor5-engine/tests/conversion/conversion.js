@@ -21,11 +21,9 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Conversion', () => {
-	let conversion, downcastDispA, upcastDispaA, downcastDispB, stylesProcessor;
+	let conversion, downcastDispA, upcastDispaA, downcastDispB;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-
 		// Placeholders. Will be used only to see if their were given as attribute for a spy function.
 		downcastDispA = Symbol( 'downA' );
 		downcastDispB = Symbol( 'downB' );
@@ -124,7 +122,7 @@ describe( 'Conversion', () => {
 
 		beforeEach( () => {
 			model = new Model();
-			const controller = new EditingController( model, stylesProcessor );
+			const controller = new EditingController( model, new StylesProcessor() );
 
 			const modelDoc = model.document;
 			modelRoot = modelDoc.createRoot();
@@ -722,7 +720,7 @@ describe( 'Conversion', () => {
 		}
 
 		function loadData( input ) {
-			const parsedView = viewParse( input, { stylesProcessor } );
+			const parsedView = viewParse( input );
 			let convertedModel;
 
 			model.change( writer => {

@@ -11,11 +11,10 @@ import { setData } from '../../../src/dev-utils/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'FocusObserver', () => {
-	let view, viewDocument, observer, stylesProcessor;
+	let view, viewDocument, observer;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		view = new View( stylesProcessor );
+		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 		observer = view.getObserver( FocusObserver );
 	} );
@@ -159,7 +158,7 @@ describe( 'FocusObserver', () => {
 			domRoot = document.createElement( 'div' );
 			document.body.appendChild( domRoot );
 
-			view = new View( stylesProcessor );
+			view = new View( new StylesProcessor() );
 			viewDocument = view.document;
 			createViewRoot( viewDocument );
 			view.attachDomRoot( domRoot );

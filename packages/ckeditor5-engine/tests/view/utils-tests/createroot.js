@@ -9,11 +9,10 @@ import createRoot from '../_utils/createroot.js';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'createRoot', () => {
-	let viewDoc, stylesProcessor;
+	let viewDoc;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		viewDoc = new Document( stylesProcessor );
+		viewDoc = new Document( new StylesProcessor() );
 	} );
 
 	it( 'should create view root element with given data', () => {

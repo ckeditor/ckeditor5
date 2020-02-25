@@ -7,10 +7,10 @@ import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
 import { addPaddingRules } from '../../../src/view/styles/padding';
 
 describe( 'Padding styles normalization', () => {
-	let styles, stylesProcessor;
+	let styles;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
+		const stylesProcessor = new StylesProcessor();
 		addPaddingRules( stylesProcessor );
 		styles = new StylesMap( stylesProcessor );
 	} );

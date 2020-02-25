@@ -15,11 +15,10 @@ import Document from '../../src/view/document';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'TextProxy', () => {
-	let text, parent, wrapper, textProxy, document, stylesProcessor;
+	let text, parent, wrapper, textProxy, document;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		document = new Document( stylesProcessor );
+		document = new Document( new StylesProcessor() );
 		text = new Text( document, 'abcdefgh' );
 		parent = new ContainerElement( document, 'p', [], [ text ] );
 		wrapper = new ContainerElement( document, 'div', [], parent );

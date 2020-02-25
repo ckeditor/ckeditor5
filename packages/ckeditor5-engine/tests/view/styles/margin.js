@@ -7,10 +7,10 @@ import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
 import { addMarginRules } from '../../../src/view/styles/margin';
 
 describe( 'Margin styles normalizer', () => {
-	let styles, stylesProcessor;
+	let styles;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
+		const stylesProcessor = new StylesProcessor();
 		addMarginRules( stylesProcessor );
 		styles = new StylesMap( stylesProcessor );
 	} );

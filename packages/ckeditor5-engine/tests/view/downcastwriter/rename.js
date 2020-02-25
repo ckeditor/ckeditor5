@@ -9,17 +9,11 @@ import Document from '../../../src/view/document';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
-	let stylesProcessor;
-
-	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
-
 	describe( 'rename()', () => {
 		let root, foo, writer;
 
 		before( () => {
-			writer = new DowncastWriter( new Document( stylesProcessor ) );
+			writer = new DowncastWriter( new Document( new StylesProcessor() ) );
 		} );
 
 		beforeEach( () => {

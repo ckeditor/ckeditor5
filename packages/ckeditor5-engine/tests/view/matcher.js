@@ -9,11 +9,10 @@ import Document from '../../src/view/document';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Matcher', () => {
-	let document, stylesProcessor;
+	let document;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		document = new Document( stylesProcessor );
+		document = new Document( new StylesProcessor() );
 	} );
 
 	describe( 'add', () => {

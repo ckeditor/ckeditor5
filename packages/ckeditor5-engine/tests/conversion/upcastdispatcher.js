@@ -24,12 +24,11 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'UpcastDispatcher', () => {
-	let model, viewDocument, stylesProcessor;
+	let model, viewDocument;
 
 	beforeEach( () => {
 		model = new Model();
-		stylesProcessor = new StylesProcessor();
-		viewDocument = new ViewDocument( stylesProcessor );
+		viewDocument = new ViewDocument( new StylesProcessor() );
 	} );
 
 	describe( 'constructor()', () => {

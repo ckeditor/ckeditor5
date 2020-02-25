@@ -12,11 +12,9 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'AttributeElement', () => {
 	let document;
-	let stylesProcessor;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		document = new Document( stylesProcessor );
+		document = new Document( new StylesProcessor() );
 	} );
 
 	describe( 'constructor()', () => {
@@ -154,7 +152,7 @@ describe( 'AttributeElement', () => {
 
 	describe( 'getFillerOffset', () => {
 		it( 'should return position 0 if it is the only element in the container', () => {
-			const { selection } = parse( '<container:p><attribute:b>[]</attribute:b></container:p>', { stylesProcessor } );
+			const { selection } = parse( '<container:p><attribute:b>[]</attribute:b></container:p>' );
 			const attribute = selection.getFirstPosition().parent;
 
 			expect( attribute.getFillerOffset() ).to.equals( 0 );
@@ -162,26 +160,26 @@ describe( 'AttributeElement', () => {
 
 		it( 'should return position 0 if it is the only nested element in the container', () => {
 			const { selection } = parse(
-				'<container:p><attribute:b><attribute:i>[]</attribute:i></attribute:b></container:p>', { stylesProcessor } );
+				'<container:p><attribute:b><attribute:i>[]</attribute:i></attribute:b></container:p>' );
 			const attribute = selection.getFirstPosition().parent;
 
 			expect( attribute.getFillerOffset() ).to.equals( 0 );
 		} );
 
 		it( 'should return null if element contains another element', () => {
-			const attribute = parse( '<attribute:b><attribute:i></attribute:i></attribute:b>', { stylesProcessor } );
+			const attribute = parse( '<attribute:b><attribute:i></attribute:i></attribute:b>' );
 
 			expect( attribute.getFillerOffset() ).to.be.null;
 		} );
 
 		it( 'should return null if element contains text', () => {
-			const attribute = parse( '<attribute:b>text</attribute:b>', { stylesProcessor } );
+			const attribute = parse( '<attribute:b>text</attribute:b>' );
 
 			expect( attribute.getFillerOffset() ).to.be.null;
 		} );
 
 		it( 'should return null if container element contains text', () => {
-			const { selection } = parse( '<container:p><attribute:b>[]</attribute:b>foo</container:p>', { stylesProcessor } );
+			const { selection } = parse( '<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
 			const attribute = selection.getFirstPosition().parent;
 
 			expect( attribute.getFillerOffset() ).to.be.null;
@@ -189,14 +187,14 @@ describe( 'AttributeElement', () => {
 
 		it( 'should return null if it is the parent contains text', () => {
 			const { selection } = parse(
-				'<container:p><attribute:b><attribute:i>[]</attribute:i>foo</attribute:b></container:p>', { stylesProcessor } );
+				'<container:p><attribute:b><attribute:i>[]</attribute:i>foo</attribute:b></container:p>' );
 			const attribute = selection.getFirstPosition().parent;
 
 			expect( attribute.getFillerOffset() ).to.be.null;
 		} );
 
 		it( 'should return null if there is no parent container element', () => {
-			const { selection } = parse( '<attribute:b><attribute:i>[]</attribute:i>foo</attribute:b>', { stylesProcessor } );
+			const { selection } = parse( '<attribute:b><attribute:i>[]</attribute:i>foo</attribute:b>' );
 			const attribute = selection.getFirstPosition().parent;
 
 			expect( attribute.getFillerOffset() ).to.be.null;
@@ -210,8 +208,7 @@ describe( 'AttributeElement', () => {
 
 		it( 'should return offset after all children if it is the only nested element in the container and has UIElement inside', () => {
 			const { selection } = parse(
-				'<container:p><attribute:b><attribute:i>[]<ui:span></ui:span></attribute:i></attribute:b></container:p>',
-				{ stylesProcessor }
+				'<container:p><attribute:b><attribute:i>[]<ui:span></ui:span></attribute:i></attribute:b></container:p>'
 			);
 			const attribute = selection.getFirstPosition().parent;
 
@@ -219,7 +216,7 @@ describe( 'AttributeElement', () => {
 		} );
 
 		it( 'should return offset after all children if there is no parent container element and has UIElement inside', () => {
-			const { selection } = parse( '<attribute:b>[]<ui:span></ui:span><ui:span></ui:span></attribute:b>', { stylesProcessor } );
+			const { selection } = parse( '<attribute:b>[]<ui:span></ui:span><ui:span></ui:span></attribute:b>' );
 			const attribute = selection.getFirstPosition().parent;
 
 			expect( attribute.getFillerOffset() ).to.equal( 2 );

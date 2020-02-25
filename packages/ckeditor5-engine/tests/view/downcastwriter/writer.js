@@ -15,15 +15,10 @@ import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
 	let writer, attributes, root, doc;
-	let stylesProcessor;
-
-	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-	} );
 
 	beforeEach( () => {
 		attributes = { foo: 'bar', baz: 'quz' };
-		doc = new Document( stylesProcessor );
+		doc = new Document( new StylesProcessor() );
 		root = createViewRoot( doc );
 		writer = new DowncastWriter( doc );
 	} );

@@ -15,11 +15,10 @@ import Document from '../../src/view/document';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'UpcastWriter', () => {
-	let writer, view, dataprocessor, document, stylesProcessor;
+	let writer, view, dataprocessor, document;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-		document = new Document( stylesProcessor );
+		document = new Document( new StylesProcessor() );
 		writer = new UpcastWriter( document );
 		dataprocessor = new HtmlDataProcessor( document );
 

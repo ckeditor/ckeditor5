@@ -39,16 +39,14 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 import DowncastWriter from '../../src/view/downcastwriter';
 
 describe( 'DowncastHelpers', () => {
-	let model, modelRoot, viewRoot, downcastHelpers, controller, modelRootStart, stylesProcessor;
+	let model, modelRoot, viewRoot, downcastHelpers, controller, modelRootStart;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
-
 		model = new Model();
 		const modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
 
-		controller = new EditingController( model, stylesProcessor );
+		controller = new EditingController( model, new StylesProcessor() );
 
 		// Set name of view root the same as dom root.
 		// This is a mock of attaching view root to dom root.
@@ -1325,7 +1323,7 @@ describe( 'DowncastHelpers', () => {
 				let markerRange, viewDocument;
 
 				beforeEach( () => {
-					viewDocument = new ViewDocument( stylesProcessor );
+					viewDocument = new ViewDocument( new StylesProcessor() );
 
 					downcastHelpers.elementToElement( {
 						model: 'div',
@@ -1451,15 +1449,14 @@ describe( 'DowncastHelpers', () => {
 } );
 
 describe( 'downcast converters', () => {
-	let dispatcher, modelDoc, modelRoot, viewRoot, controller, modelRootStart, model, stylesProcessor;
+	let dispatcher, modelDoc, modelRoot, viewRoot, controller, modelRootStart, model;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
 		model = new Model();
 		modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
 
-		controller = new EditingController( model, stylesProcessor );
+		controller = new EditingController( model, new StylesProcessor() );
 
 		viewRoot = controller.view.document.getRoot();
 		// Set name of view root the same as dom root.
@@ -1508,7 +1505,7 @@ describe( 'downcast converters', () => {
 		let viewDocument;
 
 		beforeEach( () => {
-			viewDocument = new ViewDocument( stylesProcessor );
+			viewDocument = new ViewDocument( new StylesProcessor() );
 		} );
 
 		it( 'should remove items from view accordingly to changes in model #1', () => {
@@ -1790,10 +1787,8 @@ describe( 'downcast converters', () => {
 
 describe( 'downcast selection converters', () => {
 	let dispatcher, mapper, model, view, modelDoc, modelRoot, docSelection, viewDoc, viewRoot, viewSelection, downcastHelpers;
-	let stylesProcessor;
 
 	beforeEach( () => {
-		stylesProcessor = new StylesProcessor();
 		model = new Model();
 		modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
@@ -1801,7 +1796,7 @@ describe( 'downcast selection converters', () => {
 
 		model.schema.extend( '$text', { allowIn: '$root' } );
 
-		view = new View( stylesProcessor );
+		view = new View( new StylesProcessor() );
 		viewDoc = view.document;
 		viewRoot = createViewRoot( viewDoc );
 		viewSelection = viewDoc.selection;
@@ -1931,7 +1926,7 @@ describe( 'downcast selection converters', () => {
 			let marker, viewDocument;
 
 			beforeEach( () => {
-				viewDocument = new ViewDocument( stylesProcessor );
+				viewDocument = new ViewDocument( new StylesProcessor() );
 			} );
 
 			it( 'in container', () => {
