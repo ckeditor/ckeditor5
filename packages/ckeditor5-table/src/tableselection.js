@@ -96,14 +96,14 @@ export default class TableSelection extends Plugin {
 	init() {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
+		const viewDoc = editor.editing.view.document;
 
 		this._tableUtils = editor.plugins.get( 'TableUtils' );
 
 		setupTableSelectionHighlighting( editor, this );
 
-		selection.on( 'change:range', () => this._clearSelectionOnExternalChange( selection ) );
-
-		this.listenTo( editor.editing.view.document, 'delete', evt => {
+		this.listenTo( selection, 'change:range', () => this._clearSelectionOnExternalChange( selection ) );
+		this.listenTo( viewDoc, 'delete', evt => {
 			if ( this.hasMultiCellSelection ) {
 				evt.stop();
 
