@@ -17,7 +17,7 @@ import { findAncestor } from '../commands/utils';
  *		tableSelection.startSelectingFrom( startCell )
  *		tableSelection.setSelectingFrom( endCell )
  *
- *		const croppedTable = cropTable( tableSelection.getSelectedTableCells );
+ *		const croppedTable = cropTable( tableSelection.getSelectedTableCells() );
  *
  * **Note**: This function is used also by {@link module:table/tableselection~TableSelection#getSelectionAsFragment}
  *
