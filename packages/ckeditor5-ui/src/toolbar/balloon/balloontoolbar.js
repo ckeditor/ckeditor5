@@ -78,7 +78,7 @@ export default class BalloonToolbar extends Plugin {
 		 *
 		 * **Note:** Created in {@link #init}.
 		 *
-		 * @readonly
+		 * @protected
 		 * @member {module:utils/dom/getresizeobserver~ResizeObserver}
 		 */
 		this.resizeObserver = null;
@@ -154,7 +154,7 @@ export default class BalloonToolbar extends Plugin {
 				const editableElement = editor.ui.view.editable.element;
 
 				// Set toolbar's max-width on the initialization and update it on the editable resize.
-				this.widthObserver = new ResizeObserver( editableElement, () => {
+				this.resizeObserver = new ResizeObserver( editableElement, () => {
 					// We need to check if there's already the editable element in the DOM.
 					// Otherwise the `Rect` instance will complain that source (editableElement) is not available
 					// to obtain the element's geometry.
