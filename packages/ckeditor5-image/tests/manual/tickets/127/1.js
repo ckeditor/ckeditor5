@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -20,7 +20,7 @@ import ImageToolbar from '../../../../src/imagetoolbar';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Link, Bold, Image, Undo, ImageToolbar, BalloonToolbar, ImageCaption ],
-		toolbar: [ 'bold', 'undo', 'redo' ],
+		toolbar: [ 'bold', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

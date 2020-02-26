@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,7 +13,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 describe( 'ImageStyleUI', () => {
-	let editor;
+	let editor, editorElement;
 
 	const styles = [
 		{ name: 'style 1', title: 'Style 1 title', icon: 'style1-icon', isDefault: true },
@@ -22,7 +22,7 @@ describe( 'ImageStyleUI', () => {
 	];
 
 	beforeEach( () => {
-		const editorElement = global.document.createElement( 'div' );
+		editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
@@ -38,6 +38,7 @@ describe( 'ImageStyleUI', () => {
 	} );
 
 	afterEach( () => {
+		editorElement.remove();
 		return editor.destroy();
 	} );
 
@@ -91,11 +92,12 @@ describe( 'ImageStyleUI', () => {
 				}
 			} )
 			.then( newEditor => {
-				editor = newEditor;
-
-				const buttonView = editor.ui.componentFactory.create( 'imageStyle:style 1' );
+				const buttonView = newEditor.ui.componentFactory.create( 'imageStyle:style 1' );
 
 				expect( buttonView.label ).to.equal( 'Default title' );
+
+				editorElement.remove();
+				return newEditor.destroy();
 			} );
 	} );
 
@@ -113,7 +115,9 @@ describe( 'ImageStyleUI', () => {
 			} )
 			.then( newEditor => {
 				expect( newEditor.config.get( 'image.toolbar' ) ).to.deep.equal( [ 'foo', 'bar' ] );
-				newEditor.destroy();
+
+				editorElement.remove();
+				return newEditor.destroy();
 			} );
 	} );
 
@@ -124,9 +128,7 @@ describe( 'ImageStyleUI', () => {
 					plugins: [ ImageStyleUI ]
 				} )
 				.then( newEditor => {
-					editor = newEditor;
-
-					const plugin = editor.plugins.get( ImageStyleUI );
+					const plugin = newEditor.plugins.get( ImageStyleUI );
 
 					expect( plugin.localizedDefaultStylesTitles ).to.deep.equal( {
 						'Full size image': 'Full size image',
@@ -135,6 +137,8 @@ describe( 'ImageStyleUI', () => {
 						'Centered image': 'Centered image',
 						'Right aligned image': 'Right aligned image'
 					} );
+
+					return newEditor.destroy();
 				} );
 		} );
 	} );

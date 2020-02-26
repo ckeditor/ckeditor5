@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,10 +10,10 @@ import ImageCaption from '../src/imagecaption';
 import ImageCaptionEditing from '../src/imagecaption/imagecaptionediting';
 
 describe( 'ImageCaption', () => {
-	let editor;
+	let editor, editorElement;
 
 	beforeEach( () => {
-		const editorElement = window.document.createElement( 'div' );
+		editorElement = window.document.createElement( 'div' );
 		window.document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
@@ -23,6 +23,11 @@ describe( 'ImageCaption', () => {
 			.then( newEditor => {
 				editor = newEditor;
 			} );
+	} );
+
+	afterEach( () => {
+		editorElement.remove();
+		return editor.destroy();
 	} );
 
 	it( 'should be loaded', () => {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -92,7 +92,10 @@ export default class ImageStyleUI extends Plugin {
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 			view.bind( 'isOn' ).to( command, 'value', value => value === style.name );
 
-			this.listenTo( view, 'execute', () => editor.execute( 'imageStyle', { value: style.name } ) );
+			this.listenTo( view, 'execute', () => {
+				editor.execute( 'imageStyle', { value: style.name } );
+				editor.editing.view.focus();
+			} );
 
 			return view;
 		} );

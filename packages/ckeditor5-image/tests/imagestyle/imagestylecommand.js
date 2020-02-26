@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -35,7 +35,7 @@ describe( 'ImageStyleCommand', () => {
 	} );
 
 	it( 'command value should be false if no image is selected', () => {
-		setData( model, '[]<image></image>' );
+		setData( model, '<p>[]</p><image></image>' );
 
 		expect( command.value ).to.be.false;
 	} );

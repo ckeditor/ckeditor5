@@ -1,6 +1,34 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### MINOR BREAKING CHANGES
+
+* Resizer options object now also takes the editor instance.
+* Removed the `downcastWriter` property from the [`ResizerOptions` interface](https://ckeditor.com/docs/ckeditor5/latest/api/module_widget_widgetresize-ResizerOptions.html).
+
+### Bug fixes
+
+* Fixed image resize behavior upon short clicking a handle without dragging. Image will no longer became full width, nor will it briefly flash an unexpected size. Closes [ckeditor/ckeditor5#5189](https://github.com/ckeditor/ckeditor5/issues/5189) and closes [ckeditor/ckeditor5#5195](https://github.com/ckeditor/ckeditor5/issues/5195). ([9148013](https://github.com/ckeditor/ckeditor5-image/commit/9148013))
+* Focus the editor before executing toolbar buttons' command. See [ckeditor/ckeditor5#353](https://github.com/ckeditor/ckeditor5/issues/353). ([5a700a2](https://github.com/ckeditor/ckeditor5-image/commit/5a700a2))
+
+### Other changes
+
+* Updated translations. ([b81e08c](https://github.com/ckeditor/ckeditor5-image/commit/b81e08c))
+
+
+## [16.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v15.0.0...v16.0.0) (2019-12-04)
+
+### Bug fixes
+
+* Improved markup operation performance of the editor with the image plugin enabled. See [ckeditor/ckeditor5#4504](https://github.com/ckeditor/ckeditor5/issues/4504). ([6c7fc94](https://github.com/ckeditor/ckeditor5-image/commit/6c7fc94))
+
+### Other changes
+
+* Updated translations. ([01cdb59](https://github.com/ckeditor/ckeditor5-image/commit/01cdb59))
+
+
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v14.0.0...v15.0.0) (2019-10-23)
 
 ### MAJOR BREAKING CHANGES

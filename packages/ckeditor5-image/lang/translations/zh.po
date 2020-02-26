@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -26,7 +26,7 @@ msgstr "側邊圖片"
 
 msgctxt "Label for the Full size image option."
 msgid "Full size image"
-msgstr "完整大小圖片"
+msgstr "完整尺寸圖片"
 
 msgctxt "Label for the Left aligned image option"
 msgid "Left aligned image"
@@ -42,11 +42,11 @@ msgstr "向右對齊圖片"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
-msgstr "變更圖片的文字替代"
+msgstr "修改圖片的替代文字"
 
 msgctxt "Label for the image text alternative input."
 msgid "Text alternative"
-msgstr "文字替代"
+msgstr "替代文字"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"

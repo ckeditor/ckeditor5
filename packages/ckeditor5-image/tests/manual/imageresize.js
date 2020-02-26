@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -31,6 +31,10 @@ const commonConfig = {
 			'alignLeft',
 			'side' // Purposely using side image instead right aligned image to make sure it works well with both style types.
 		]
+	},
+	table: {
+		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
+		tableToolbar: [ 'bold', 'italic' ]
 	},
 	cloudServices: CS_CONFIG
 };
