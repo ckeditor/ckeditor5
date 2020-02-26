@@ -314,7 +314,8 @@ export default class Context {
  *				context.plugins.get( BarPlugin ); // -> An instance of the Bar plugin.
  *			} );
  *
- * See also {@link module:core/editor/editor~Editor.builtinPlugins} and {@link module:core/context~Context.defaultConfig}.
+ * See also {@link module:core/context~Context.defaultConfig `Context.defaultConfig`}
+ * and {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}.
  *
  * @static
  * @member {Array.<Function>} module:core/context~Context.builtinPlugins
@@ -346,7 +347,8 @@ export default class Context {
  *				context.config.get( 'bar' ); // -> 3
  *			} );
  *
- * See also {@link module:core/editor/editor~Editor.defaultConfig} and {@link module:core/context~Context.builtinPlugins}.
+ * See also {@link module:core/context~Context.builtinPlugins `Context.builtinPlugins`}
+ * and {@link module:core/editor/editor~Editor.defaultConfig `Editor.defaultConfig`}.
  *
  * @static
  * @member {Object} module:core/context~Context.defaultConfig
