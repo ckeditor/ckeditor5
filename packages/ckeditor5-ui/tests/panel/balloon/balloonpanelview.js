@@ -271,7 +271,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_smw' );
+				expect( view.position ).to.equal( 'arrow_sw' );
 			} );
 
 			it( 'should put balloon on the `north west` side of the target element when ' +
@@ -412,7 +412,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_smw' );
+				expect( view.position ).to.equal( 'arrow_sw' );
 			} );
 
 			it( 'should put balloon on the `south east` position when `north east` is limited', () => {
