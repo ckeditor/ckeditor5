@@ -50,7 +50,7 @@ export default class ImageToolbar extends Plugin {
 		widgetToolbarRepository.register( 'image', {
 			ariaLabel: t( 'Image toolbar' ),
 			items: editor.config.get( 'image.toolbar' ) || [],
-			getRelatedElement: getSelectedImageWidget,
+			getRelatedElement: getSelectedImageWidget
 		} );
 	}
 }
