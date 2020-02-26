@@ -46,14 +46,13 @@ function parseHeadingText( text ) {
 	return getCapitalizedHeading( normalizedText );
 }
 
-// This helper function creates normalize heading text from a fullname of the position,
+// This helper function creates normalize heading text from a full name of the position,
 // removing `ArrowXyz` part, like in the example:
 // `southEastArrowNorthMiddleEast` -> `south East`.
 function getNormalizeHeading( text ) {
-	const headingRegex = /(w*)arrow\w*/i;
-	const headingText = text.replace( headingRegex, '$1' );
-
-	return headingText.replace( /([a-z])([A-Z])/, '$1 $2' );
+	return text
+		.replace( /(w*)arrow\w*/i, '$1' )
+		.replace( /([a-z])([A-Z])/, '$1 $2' );
 }
 
 function getCapitalizedHeading( text ) {
