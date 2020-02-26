@@ -48,30 +48,35 @@ export default class RemoveRowCommand extends Command {
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 
-		const currentRow = table.getChildIndex( tableRow );
+		const removedRow = table.getChildIndex( tableRow );
+
+		const tableMap = [ ...new TableWalker( table, { endRow: removedRow } ) ];
+
+		const cellData = tableMap.find( value => value.cell === tableCell );
+
 		const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
+		const columnToFocus = cellData.column;
+
 		model.change( writer => {
-			if ( headingRows && currentRow <= headingRows ) {
+			if ( headingRows && removedRow <= headingRows ) {
 				updateNumericAttribute( 'headingRows', headingRows - 1, table, writer, 0 );
 			}
-
-			const tableMap = [ ...new TableWalker( table, { endRow: currentRow } ) ];
 
 			const cellsToMove = new Map();
 
 			// Get cells from removed row that are spanned over multiple rows.
 			tableMap
-				.filter( ( { row, rowspan } ) => row === currentRow && rowspan > 1 )
+				.filter( ( { row, rowspan } ) => row === removedRow && rowspan > 1 )
 				.forEach( ( { column, cell, rowspan } ) => cellsToMove.set( column, { cell, rowspanToSet: rowspan - 1 } ) );
 
 			// Reduce rowspan on cells that are above removed row and overlaps removed row.
 			tableMap
-				.filter( ( { row, rowspan } ) => row <= currentRow - 1 && row + rowspan > currentRow )
+				.filter( ( { row, rowspan } ) => row <= removedRow - 1 && row + rowspan > removedRow )
 				.forEach( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
 
 			// Move cells to another row.
-			const targetRow = currentRow + 1;
+			const targetRow = removedRow + 1;
 			const tableWalker = new TableWalker( table, { includeSpanned: true, startRow: targetRow, endRow: targetRow } );
 
 			let previousCell;
@@ -93,6 +98,27 @@ export default class RemoveRowCommand extends Command {
 			}
 
 			writer.remove( tableRow );
+
+			const cellToFocus = getCellToFocus( table, removedRow, columnToFocus );
+			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
+	}
+}
+
+// Returns a cell that should be focused before removing the row, belonging to the same column as the currently focused cell.
+function getCellToFocus( table, removedRow, columnToFocus ) {
+	const row = table.getChild( removedRow );
+
+	// Default to first table cell.
+	let cellToFocus = row.getChild( 0 );
+	let column = 0;
+
+	for ( const tableCell of row.getChildren() ) {
+		if ( column > columnToFocus ) {
+			return cellToFocus;
+		}
+
+		cellToFocus = tableCell;
+		column += parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
 	}
 }

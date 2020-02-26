@@ -190,7 +190,7 @@ describe( 'UI Utils', () => {
 				groove: 'Groove',
 				ridge: 'Ridge',
 				inset: 'Inset',
-				outset: 'Outset',
+				outset: 'Outset'
 			} );
 		} );
 	} );
@@ -330,7 +330,7 @@ describe( 'UI Utils', () => {
 				'Groove',
 				'Ridge',
 				'Inset',
-				'Outset',
+				'Outset'
 			] );
 		} );
 
@@ -350,7 +350,7 @@ describe( 'UI Utils', () => {
 				false,
 				false,
 				false,
-				false,
+				false
 			] );
 
 			view.borderStyle = 'inset';

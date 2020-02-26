@@ -71,7 +71,7 @@ const COLOR_PALETTE = [
 	},
 	{
 		color: 'hsl(180, 52%, 58%)',
-		label: 'Light Aqua',
+		label: 'Light Aqua'
 	},
 	{
 		color: 'hsl(180, 97%, 31%)',
@@ -95,7 +95,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-table-styling' ), {
 		extraPlugins: [
 			CKEditorPlugins.TableProperties,
-			CKEditorPlugins.TableCellProperties,
+			CKEditorPlugins.TableCellProperties
 		],
 		cloudServices: CS_CONFIG,
 		toolbar: {

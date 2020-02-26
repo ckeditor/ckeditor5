@@ -36,7 +36,7 @@ const VIEW_OPTIONS = {
 			model: 'rgb(0,255,0)',
 			label: 'Green',
 			hasBorder: false
-		},
+		}
 	]
 };
 
@@ -479,7 +479,7 @@ describe( 'table cell properties', () => {
 								'Align cell text to the left',
 								'Align cell text to the center',
 								'Align cell text to the right',
-								'Justify cell text',
+								'Justify cell text'
 							] );
 
 							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
@@ -518,7 +518,7 @@ describe( 'table cell properties', () => {
 							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
 								'Align cell text to the top',
 								'Align cell text to the middle',
-								'Align cell text to the bottom',
+								'Align cell text to the bottom'
 							] );
 
 							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [

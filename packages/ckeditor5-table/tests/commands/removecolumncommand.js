@@ -72,7 +72,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '02' ],
-				[ '<paragraph>10[]</paragraph>', '12' ],
+				[ '10', '[]12' ],
 				[ '20', '22' ]
 			] ) );
 		} );
@@ -87,7 +87,7 @@ describe( 'RemoveColumnCommand', () => {
 			command.execute();
 
 			assertEqualMarkup( getData( model ), modelTable( [
-				[ '<paragraph>[]01</paragraph>' ],
+				[ '[]01' ],
 				[ '11' ],
 				[ '21' ]
 			] ) );
@@ -104,7 +104,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			assertEqualMarkup( getData( model ), modelTable( [
 				[ '01' ],
-				[ '<paragraph>[]11</paragraph>' ],
+				[ '[]11' ],
 				[ '21' ]
 			], { headingColumns: 1 } ) );
 		} );
@@ -123,7 +123,7 @@ describe( 'RemoveColumnCommand', () => {
 			assertEqualMarkup( getData( model ), modelTable( [
 				[ { colspan: 3, contents: '00' }, '03' ],
 				[ { colspan: 2, contents: '10' }, '13' ],
-				[ { colspan: 2, contents: '<paragraph>20[]</paragraph>' }, '23' ],
+				[ { colspan: 2, contents: '20' }, '[]23' ],
 				[ '30', '31', '33' ],
 				[ '40', '41', '43' ]
 
@@ -143,6 +143,22 @@ describe( 'RemoveColumnCommand', () => {
 				[ { colspan: 2, contents: '[]00' }, '03' ],
 				[ '10', '13' ],
 				[ '21', '22', '23' ]
+			] ) );
+		} );
+
+		it( 'should move focus to previous column of removed cell if in last column', () => {
+			setData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12[]' ],
+				[ '20', '21', '22' ]
+			] ) );
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '00', '01' ],
+				[ '10', '[]11' ],
+				[ '20', '21' ]
 			] ) );
 		} );
 	} );
