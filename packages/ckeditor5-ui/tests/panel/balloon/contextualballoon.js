@@ -276,7 +276,7 @@ describe( 'ContextualBalloon', () => {
 			balloon.add( {
 				view: viewB,
 				position: {
-					target: 'foo',
+					target: 'foo'
 				}
 			} );
 
@@ -290,7 +290,7 @@ describe( 'ContextualBalloon', () => {
 			const data = {
 				view: viewB,
 				position: {
-					target: 'foo',
+					target: 'foo'
 				}
 			};
 

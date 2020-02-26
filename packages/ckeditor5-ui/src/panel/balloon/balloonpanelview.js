@@ -719,7 +719,7 @@ BalloonPanelView.defaultPositions = {
 		top: getSouthTop( targetRect, balloonRect ),
 		left: targetRect.right - BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_nw'
-	} ),
+	} )
 };
 
 // Returns the top coordinate for positions starting with `north*`.

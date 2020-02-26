@@ -345,7 +345,7 @@ describe( 'StickyPanelView', () => {
 
 			it( 'is false if view.isSticky is false', () => {
 				testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-					top: 10,
+					top: 10
 				} );
 
 				expect( view.isSticky ).to.be.false;
@@ -477,7 +477,7 @@ describe( 'StickyPanelView', () => {
 
 			it( 'is not set if view.isSticky is false', () => {
 				testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-					top: 10,
+					top: 10
 				} );
 
 				expect( view.isSticky ).to.be.false;

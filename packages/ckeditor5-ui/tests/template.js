@@ -101,7 +101,7 @@ describe( 'Template', () => {
 
 		it( 'defines #children collection', () => {
 			const elementTpl = new Template( {
-				tag: 'p',
+				tag: 'p'
 			} );
 
 			const textTpl = new Template( {
@@ -119,7 +119,7 @@ describe( 'Template', () => {
 			const def = {
 				tag: 'p',
 				attributes: {
-					a: 'foo',
+					a: 'foo'
 				},
 				children: [
 					{
@@ -167,7 +167,7 @@ describe( 'Template', () => {
 		describe( 'DOM Node', () => {
 			it( 'creates HTMLElement', () => {
 				const el = new Template( {
-					tag: 'p',
+					tag: 'p'
 				} ).render();
 
 				expect( el ).to.be.instanceof( HTMLElement );
@@ -882,7 +882,7 @@ describe( 'Template', () => {
 						tag: 'p',
 						attributes: {
 							style: {
-								width: '20px',
+								width: '20px'
 							}
 						}
 					} );
@@ -906,7 +906,7 @@ describe( 'Template', () => {
 						tag: 'p',
 						attributes: {
 							style: {
-								left: '20px',
+								left: '20px'
 							}
 						}
 					} );
@@ -1224,14 +1224,14 @@ describe( 'Template', () => {
 					tag: 'a',
 					attributes: {
 						foo: 'af',
-						bar: 'ab',
+						bar: 'ab'
 					},
 					children: [
 						{
 							tag: 'b',
 							attributes: {
 								foo: 'bf',
-								bar: 'bb',
+								bar: 'bb'
 							}
 						}
 					]
@@ -1274,14 +1274,14 @@ describe( 'Template', () => {
 					tag: 'a',
 					attributes: {
 						foo: 'af',
-						bar: 'ab',
+						bar: 'ab'
 					},
 					children: [
 						{
 							tag: 'b',
 							attributes: {
 								foo: 'bf',
-								bar: 'bb',
+								bar: 'bb'
 							}
 						}
 					]
@@ -1546,7 +1546,7 @@ describe( 'Template', () => {
 			const template = new Template( {
 				tag: 'div',
 				children: [
-					viewA,
+					viewA
 				]
 			} );
 
@@ -1596,7 +1596,7 @@ describe( 'Template', () => {
 				setElement( {
 					tag: 'p',
 					on: {
-						x: bind.to( 'a' ),
+						x: bind.to( 'a' )
 					}
 				} );
 
@@ -1648,7 +1648,7 @@ describe( 'Template', () => {
 						{
 							tag: 'span',
 							attributes: {
-								'class': 'y',
+								'class': 'y'
 							},
 							on: {
 								'test@p': bind.to( 'c' )
@@ -1660,10 +1660,10 @@ describe( 'Template', () => {
 								{
 									tag: 'span',
 									attributes: {
-										'class': 'y',
+										'class': 'y'
 									}
 								}
-							],
+							]
 						}
 					],
 					on: {
@@ -1761,7 +1761,7 @@ describe( 'Template', () => {
 						}
 					],
 					on: {
-						x: bind.to( 'a' ),
+						x: bind.to( 'a' )
 					}
 				} );
 
@@ -2313,7 +2313,7 @@ describe( 'Template', () => {
 			const def = {
 				tag: 'p',
 				attributes: {
-					a: 'foo',
+					a: 'foo'
 				}
 			};
 			const ext = {
@@ -2470,7 +2470,7 @@ describe( 'Template', () => {
 			it( 'creates new - no attributes', () => {
 				extensionTest(
 					{
-						tag: 'p',
+						tag: 'p'
 					},
 					{
 						attributes: {
@@ -2711,7 +2711,7 @@ describe( 'Template', () => {
 				expectToThrowCKEditorError( () => {
 					extensionTest(
 						{
-							tag: 'p',
+							tag: 'p'
 						},
 						{
 							children: [
@@ -2895,7 +2895,7 @@ describe( 'Template', () => {
 
 				Template.extend( template.children[ 0 ], {
 					attributes: {
-						class: 'B',
+						class: 'B'
 					},
 					children: [
 						'B',
@@ -2982,7 +2982,7 @@ describe( 'Template', () => {
 							{
 								tag: 'span'
 							}
-						],
+						]
 					},
 					{
 						on: {

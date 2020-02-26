@@ -139,7 +139,7 @@ export default class ButtonView extends View {
 					bind.if( 'isVisible', 'ck-hidden', value => !value ),
 					bind.to( 'isOn', value => value ? 'ck-on' : 'ck-off' ),
 					bind.if( 'withText', 'ck-button_with-text' ),
-					bind.if( 'withKeystroke', 'ck-button_with-keystroke' ),
+					bind.if( 'withKeystroke', 'ck-button_with-keystroke' )
 				],
 				type: bind.to( 'type', value => value ? value : 'button' ),
 				tabindex: bind.to( 'tabindex' ),
@@ -232,7 +232,7 @@ export default class ButtonView extends View {
 					'ck-button__label'
 				],
 				style: bind.to( 'labelStyle' ),
-				id: `ck-editor__aria-label_${ ariaLabelUid }`,
+				id: `ck-editor__aria-label_${ ariaLabelUid }`
 			},
 
 			children: [
