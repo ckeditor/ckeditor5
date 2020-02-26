@@ -9,14 +9,13 @@ import BalloonPanelView from '../../../../src/panel/balloon/balloonpanelview';
 
 const defaultPositions = BalloonPanelView.defaultPositions;
 const container = document.querySelector( '#container' );
-const headingRegex = /(w*)arrow\w*/i;
 
 let currentHeading = '';
 
 for ( const i in defaultPositions ) {
 	const target = document.createElement( 'div' );
 	const heading = document.createElement( 'h1' );
-	const headingText = getCapitalizedHeading( i );
+	const headingText = parseHeadingText( i );
 
 	heading.textContent = headingText;
 	target.classList.add( 'target' );
@@ -42,10 +41,21 @@ for ( const i in defaultPositions ) {
 	} );
 }
 
-function getCapitalizedHeading( text ) {
-	const headingText = text.replace( headingRegex, '$1' );
-	const normalizedHeading = headingText.replace( /([a-z])([A-Z])/, '$1 $2' );
-	const capitalizedText = normalizedHeading.charAt( 0 ).toUpperCase() + normalizedHeading.slice( 1 );
+function parseHeadingText( text ) {
+	const normalizedText = getNormalizeHeading( text );
+	return getCapitalizedHeading( normalizedText );
+}
 
-	return capitalizedText;
+// This helper function create normalize heading text from a fullname of the position,
+// removing `ArrowXyz` part, like in the example:
+// `southEastArrowNorthMiddleEast` -> `south East`.
+function getNormalizeHeading( text ) {
+	const headingRegex = /(w*)arrow\w*/i;
+	const headingText = text.replace( headingRegex, '$1' );
+
+	return headingText.replace( /([a-z])([A-Z])/, '$1 $2' );
+}
+
+function getCapitalizedHeading( text ) {
+	return text.charAt( 0 ).toUpperCase() + text.slice( 1 );
 }
