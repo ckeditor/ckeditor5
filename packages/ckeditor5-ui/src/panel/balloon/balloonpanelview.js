@@ -540,7 +540,7 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  * 		[ Target ]
  *
  *
- * * `northEastArrowSoutMiddlehWest`
+ * * `northEastArrowSouthMiddleWest`
  *
  * 		     +-----------------+
  * 		     |     Balloon     |
