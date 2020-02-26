@@ -128,7 +128,7 @@ export default class Collection {
 		if ( hasInitialItems ) {
 			for ( const item of initialItemsOrOptions ) {
 				this._items.push( item );
-				this._itemMap.set( this._getItemIdBeforeAdding( item ), item );
+				this._itemMap.set( this._getItemId( item ), item );
 			}
 		}
 
@@ -648,7 +648,16 @@ export default class Collection {
 		} );
 	}
 
-	_getItemIdBeforeAdding( item ) {
+	/**
+	 * Returns an unique id property for a given `item`.
+	 *
+	 * The method will generate new id and assign it to the `item` if it doesn't have any.
+	 *
+	 * @private
+	 * @param {Object} item Item to be added.
+	 * @returns {String}
+	 */
+	_getItemId( item ) {
 		const idProperty = this._idProperty;
 		let itemId;
 
