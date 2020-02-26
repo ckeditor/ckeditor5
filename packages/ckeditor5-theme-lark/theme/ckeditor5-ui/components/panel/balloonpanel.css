@@ -111,4 +111,40 @@
 			bottom: calc(-1 * var(--ck-balloon-arrow-height));
 		}
 	}
+
+	&.ck-balloon-panel_arrow_sme {
+		&::before,
+		&::after {
+			right: 25%;
+			margin-right: calc(2 * var(--ck-balloon-arrow-half-width));
+			bottom: calc(-1 * var(--ck-balloon-arrow-height));
+		}
+	}
+
+	&.ck-balloon-panel_arrow_smw {
+		&::before,
+		&::after {
+			left: 25%;
+			margin-left: calc(2 * var(--ck-balloon-arrow-half-width));
+			bottom: calc(-1 * var(--ck-balloon-arrow-height));
+		}
+	}
+
+	&.ck-balloon-panel_arrow_nme {
+		&::before,
+		&::after {
+			right: 25%;
+			margin-right: calc(2 * var(--ck-balloon-arrow-half-width));
+			top: calc(-1 * var(--ck-balloon-arrow-height));
+		}
+	}
+
+	&.ck-balloon-panel_arrow_nmw {
+		&::before,
+		&::after {
+			left: 25%;
+			margin-left: calc(2 * var(--ck-balloon-arrow-half-width));
+			top: calc(-1 * var(--ck-balloon-arrow-height));
+		}
+	}
 }
