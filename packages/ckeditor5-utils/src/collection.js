@@ -180,32 +180,7 @@ export default class Collection {
 	 * @fires add
 	 */
 	add( item, index ) {
-		let itemId;
-		const idProperty = this._idProperty;
-
-		if ( ( idProperty in item ) ) {
-			itemId = item[ idProperty ];
-
-			if ( typeof itemId != 'string' ) {
-				/**
-				 * This item's id should be a string.
-				 *
-				 * @error collection-add-invalid-id
-				 */
-				throw new CKEditorError( 'collection-add-invalid-id', this );
-			}
-
-			if ( this.get( itemId ) ) {
-				/**
-				 * This item already exists in the collection.
-				 *
-				 * @error collection-add-item-already-exists
-				 */
-				throw new CKEditorError( 'collection-add-item-already-exists', this );
-			}
-		} else {
-			item[ idProperty ] = itemId = uid();
-		}
+		const itemId = this._getItemIdBeforeAdding( item );
 
 		// TODO: Use ES6 default function argument.
 		if ( index === undefined ) {
@@ -669,13 +644,8 @@ export default class Collection {
 				 * This item's id should be a string.
 				 *
 				 * @error collection-add-invalid-id
-				 * @param {Object} item The item being added to the collection.
-				 * @param {module:utils/collection~Collection} collection The collection the item is added to.
 				 */
-				throw new CKEditorError( 'collection-add-invalid-id', {
-					item,
-					collection: this,
-				} );
+				throw new CKEditorError( 'collection-add-invalid-id', this );
 			}
 
 			if ( this.get( itemId ) ) {
@@ -683,13 +653,8 @@ export default class Collection {
 				 * This item already exists in the collection.
 				 *
 				 * @error collection-add-item-already-exists
-				 * @param {Object} item The item being added to the collection.
-				 * @param {module:utils/collection~Collection} collection The collection the item is added to.
 				 */
-				throw new CKEditorError( 'collection-add-item-already-exists', {
-					item,
-					collection: this
-				} );
+				throw new CKEditorError( 'collection-add-item-already-exists', this );
 			}
 		} else {
 			item[ idProperty ] = itemId = uid();
