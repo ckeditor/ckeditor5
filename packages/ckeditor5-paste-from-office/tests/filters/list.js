@@ -110,9 +110,8 @@ describe( 'PasteFromOffice - filters', () => {
 					expect( view.childCount ).to.equal( 1 );
 					expect( stringify( view ) ).to.equal(
 						`<ol><li ${ level1 }>Foo` +
-							'<ol><li>' +
-								`<ol><li ${ level3 }>Bar` +
-									`<ol><li ${ level4 }>Baz</li></ol></li></ol></li></ol></li></ol>` );
+							`<ol><li ${ level3 }>Bar` +
+								`<ol><li ${ level4 }>Baz</li></ol></li></ol></li></ol>` );
 				} );
 
 				it( 'handles indentation in both directions', () => {
@@ -125,10 +124,8 @@ describe( 'PasteFromOffice - filters', () => {
 					expect( view.childCount ).to.equal( 1 );
 					expect( stringify( view ) ).to.equal(
 						`<ol><li ${ level1 }>Foo` +
-							'<ol><li>' +
-								`<ol><li ${ level3 }>Bar` +
-									`<ol><li ${ level4 }>Baz</li></ol>` +
-								'</li></ol>' +
+							`<ol><li ${ level3 }>Bar` +
+								`<ol><li ${ level4 }>Baz</li></ol>` +
 							`</li><li ${ level2 }>Bax</li></ol>` +
 						`</li><li ${ level1 }>123</li></ol>` );
 				} );
@@ -155,11 +152,11 @@ describe( 'PasteFromOffice - filters', () => {
 						'@list l0:level2 { mso-level-number-format: bullet; }' );
 
 					expect( view.childCount ).to.equal( 1 );
+
 					expect( stringify( view ) ).to.equal(
 						`<ul><li ${ level1 }>Foo` +
-							'<ul><li>' +
-								`<ol><li ${ level3 }>Bar</li></ol>` +
-							`</li><li ${ level2 }>Baz</li></ul>` +
+							`<ul><li ${ level3 }>Bar</li>` +
+							`<li ${ level2 }>Baz</li></ul>` +
 						'</li></ul>' );
 				} );
 
@@ -171,8 +168,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 					expect( view.childCount ).to.equal( 1 );
 					expect( stringify( view ) ).to.equal(
-						'<ol><li>' +
-							`<ol><li ${ level2 }>Foo</li></ol>` +
+						`<ol><li ${ level2 }>Foo` +
 						`</li><li ${ level1 }>Bar` +
 							`<ol><li ${ level2 }>Baz</li></ol></li></ol>` );
 				} );
