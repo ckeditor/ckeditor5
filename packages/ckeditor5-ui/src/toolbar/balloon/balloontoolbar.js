@@ -194,9 +194,7 @@ export default class BalloonToolbar extends Plugin {
 
 		toolbarView.extendTemplate( {
 			attributes: {
-				class: [
-					'ck-toolbar_floating',
-				]
+				class: [ 'ck-toolbar_floating' ]
 			}
 		} );
 
@@ -344,7 +342,7 @@ function getBalloonPositions( isBackward ) {
 		defaultPositions.southWestArrowNorthWest,
 		defaultPositions.southWestArrowNorthEast,
 		defaultPositions.southWestArrowNorthMiddleWest,
-		defaultPositions.southWestArrowNorthMiddleEast,
+		defaultPositions.southWestArrowNorthMiddleEast
 	] : [
 		defaultPositions.southEastArrowNorth,
 		defaultPositions.southEastArrowNorthEast,
@@ -355,7 +353,7 @@ function getBalloonPositions( isBackward ) {
 		defaultPositions.northEastArrowSouthEast,
 		defaultPositions.northEastArrowSouthWest,
 		defaultPositions.northEastArrowSouthMiddleEast,
-		defaultPositions.northEastArrowSouthMiddleWest,
+		defaultPositions.northEastArrowSouthMiddleWest
 	];
 }
 

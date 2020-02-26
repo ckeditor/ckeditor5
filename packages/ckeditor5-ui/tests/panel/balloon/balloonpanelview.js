@@ -189,7 +189,7 @@ describe( 'BalloonPanelView', () => {
 					BalloonPanelView.defaultPositions.northArrowSouthMiddleWest,
 					BalloonPanelView.defaultPositions.northArrowSouthMiddleEast,
 					BalloonPanelView.defaultPositions.northArrowSouthWest,
-					BalloonPanelView.defaultPositions.northArrowSouthEast,
+					BalloonPanelView.defaultPositions.northArrowSouthEast
 				],
 				limiter: document.body,
 				fitInViewport: true

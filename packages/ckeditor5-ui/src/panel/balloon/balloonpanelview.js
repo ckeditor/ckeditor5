@@ -232,7 +232,7 @@ export default class BalloonPanelView extends View {
 				defaultPositions.northArrowSouthMiddleWest,
 				defaultPositions.northArrowSouthMiddleEast,
 				defaultPositions.northArrowSouthWest,
-				defaultPositions.northArrowSouthEast,
+				defaultPositions.northArrowSouthEast
 			],
 			limiter: defaultLimiterElement,
 			fitInViewport: true
@@ -903,7 +903,7 @@ BalloonPanelView.defaultPositions = {
 		top: getSouthTop( targetRect, balloonRect ),
 		left: targetRect.right - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_ne'
-	} ),
+	} )
 
 };
 

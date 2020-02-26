@@ -258,7 +258,7 @@ describe( 'BalloonToolbar', () => {
 						defaultPositions.northEastArrowSouthEast,
 						defaultPositions.northEastArrowSouthWest,
 						defaultPositions.northEastArrowSouthMiddleEast,
-						defaultPositions.northEastArrowSouthMiddleWest,
+						defaultPositions.northEastArrowSouthMiddleWest
 					]
 				}
 			} );
@@ -321,7 +321,7 @@ describe( 'BalloonToolbar', () => {
 						defaultPositions.southWestArrowNorthWest,
 						defaultPositions.southWestArrowNorthEast,
 						defaultPositions.southWestArrowNorthMiddleWest,
-						defaultPositions.southWestArrowNorthMiddleEast,
+						defaultPositions.southWestArrowNorthMiddleEast
 					]
 				}
 			} );
