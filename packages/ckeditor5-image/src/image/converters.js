@@ -8,7 +8,7 @@
  */
 
 import first from '@ckeditor/ckeditor5-utils/src/first';
-import { getImgViewFromFigure } from './utils';
+import { getViewImgFromWidget } from './utils';
 
 /**
  * Returns a function that converts the image view representation:
@@ -36,7 +36,7 @@ export function viewFigureToModel() {
 		}
 
 		// Find an image element inside the figure element.
-		const viewImage = getImgViewFromFigure( data.viewItem );
+		const viewImage = getViewImgFromWidget( data.viewItem );
 
 		// Do not convert if image element is absent, is missing src attribute or was already converted.
 		if ( !viewImage || !viewImage.hasAttribute( 'src' ) || !conversionApi.consumable.test( viewImage, { name: true } ) ) {
@@ -82,7 +82,7 @@ export function srcsetAttributeConverter() {
 
 		const writer = conversionApi.writer;
 		const figure = conversionApi.mapper.toViewElement( data.item );
-		const img = getImgViewFromFigure( figure );
+		const img = getViewImgFromWidget( figure );
 
 		if ( data.attributeNewValue === null ) {
 			const srcset = data.attributeOldValue;
@@ -123,7 +123,7 @@ export function modelToViewAttributeConverter( attributeKey ) {
 
 		const viewWriter = conversionApi.writer;
 		const figure = conversionApi.mapper.toViewElement( data.item );
-		const img = getImgViewFromFigure( figure );
+		const img = getViewImgFromWidget( figure );
 
 		if ( data.attributeNewValue !== null ) {
 			viewWriter.setAttribute( data.attributeKey, data.attributeNewValue, img );

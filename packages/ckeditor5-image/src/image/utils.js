@@ -25,7 +25,7 @@ export function toImageWidget( viewElement, writer, label ) {
 	return toWidget( viewElement, writer, { label: labelCreator } );
 
 	function labelCreator() {
-		const imgElement = getImgViewFromFigure( viewElement );
+		const imgElement = getViewImgFromWidget( viewElement );
 		const altText = imgElement.getAttribute( 'alt' );
 
 		return altText ? `${ altText } ${ label }` : label;
@@ -108,16 +108,15 @@ export function isImageAllowed( model ) {
 }
 
 /**
- * Get img view element from the figure view.
+ * Get view `<img>` element from the view widget (`<figure>`).
  *
- * Using figureView.getChild(0) - is unsafe,
- * because there are can be "figcaption" or smth else.
- * This approach provide ability to extend plugin logic with other custom plugins.
+ * Assuming that image is always a first child of a widget (ie. `figureView.getChild( 0 )`) is unsafe as other features might
+ * inject their own elements to the widget.
  *
  * @param {module:engine/view/element~Element} figureView
  * @returns {module:engine/view/element~Element}
  */
-export function getImgViewFromFigure( figureView ) {
+export function getViewImgFromWidget( figureView ) {
 	return Array.from( figureView.getChildren() ).find( viewChild => viewChild.is( 'img' ) );
 }
 

@@ -13,7 +13,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import uploadingPlaceholder from '../../theme/icons/image_placeholder.svg';
 import env from '@ckeditor/ckeditor5-utils/src/env';
-import { getImgViewFromFigure } from '../image/utils';
+import { getViewImgFromWidget } from '../image/utils';
 
 import '../../theme/imageuploadprogress.css';
 import '../../theme/imageuploadicon.css';
@@ -144,7 +144,7 @@ function _showPlaceholder( placeholder, viewFigure, writer ) {
 		writer.addClass( 'ck-image-upload-placeholder', viewFigure );
 	}
 
-	const viewImg = getImgViewFromFigure( viewFigure );
+	const viewImg = getViewImgFromWidget( viewFigure );
 
 	if ( viewImg.getAttribute( 'src' ) !== placeholder ) {
 		writer.setAttribute( 'src', placeholder, viewImg );
@@ -271,7 +271,7 @@ function _removeUIElement( viewFigure, writer, uniqueProperty ) {
 // @param {module:upload/filerepository~FileLoader} loader
 function _displayLocalImage( viewFigure, writer, loader ) {
 	if ( loader.data ) {
-		const viewImg = getImgViewFromFigure( viewFigure );
+		const viewImg = getViewImgFromWidget( viewFigure );
 
 		writer.setAttribute( 'src', loader.data, viewImg );
 	}
