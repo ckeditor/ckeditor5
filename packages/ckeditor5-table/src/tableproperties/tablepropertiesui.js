@@ -22,7 +22,7 @@ import {
 	lengthFieldValidator,
 	lineWidthFieldValidator,
 	repositionContextualBalloon,
-	defaultColors,
+	defaultColors
 } from '../ui/utils';
 import {
 	getLocalizedColorOptions,
@@ -255,7 +255,7 @@ export default class TablePropertiesUI extends Plugin {
 			backgroundColor: commands.get( 'tableBackgroundColor' ).value || '',
 			width: commands.get( 'tableWidth' ).value || '',
 			height: commands.get( 'tableHeight' ).value || '',
-			alignment: commands.get( 'tableAlignment' ).value || '',
+			alignment: commands.get( 'tableAlignment' ).value || ''
 		} );
 	}
 

@@ -324,7 +324,7 @@ export default class TablePropertiesView extends View {
 		this.children.add( new FormRowView( locale, {
 			children: [
 				this.saveButtonView,
-				this.cancelButtonView,
+				this.cancelButtonView
 			],
 			class: 'ck-table-form__action-row'
 		} ) );
@@ -366,7 +366,7 @@ export default class TablePropertiesView extends View {
 			this.heightInput,
 			this.alignmentToolbar,
 			this.saveButtonView,
-			this.cancelButtonView,
+			this.cancelButtonView
 		].forEach( view => {
 			// Register the view as focusable.
 			this._focusables.add( view );
@@ -455,7 +455,7 @@ export default class TablePropertiesView extends View {
 
 		borderColorInput.set( {
 			label: t( 'Color' ),
-			class: 'ck-table-form__border-color',
+			class: 'ck-table-form__border-color'
 		} );
 
 		borderColorInput.view.bind( 'value' ).to( this, 'borderColor' );
@@ -502,7 +502,7 @@ export default class TablePropertiesView extends View {
 
 		backgroundInput.set( {
 			label: t( 'Background' ),
-			class: 'ck-table-properties-form__background',
+			class: 'ck-table-properties-form__background'
 		} );
 
 		backgroundInput.view.bind( 'value' ).to( this, 'backgroundColor' );
@@ -537,7 +537,7 @@ export default class TablePropertiesView extends View {
 
 		widthInput.set( {
 			label: t( 'Width' ),
-			class: 'ck-table-form__dimensions-row__width',
+			class: 'ck-table-form__dimensions-row__width'
 		} );
 
 		widthInput.view.bind( 'value' ).to( this, 'width' );
@@ -566,7 +566,7 @@ export default class TablePropertiesView extends View {
 
 		heightInput.set( {
 			label: t( 'Height' ),
-			class: 'ck-table-form__dimensions-row__height',
+			class: 'ck-table-form__dimensions-row__height'
 		} );
 
 		heightInput.view.bind( 'value' ).to( this, 'height' );
@@ -652,7 +652,7 @@ export default class TablePropertiesView extends View {
 			icon: checkIcon,
 			class: 'ck-button-save',
 			type: 'submit',
-			withText: true,
+			withText: true
 		} );
 
 		saveButtonView.bind( 'isEnabled' ).toMany( fieldsThatShouldValidateToSave, 'errorText', ( ...errorTexts ) => {
@@ -664,7 +664,7 @@ export default class TablePropertiesView extends View {
 			icon: cancelIcon,
 			class: 'ck-button-cancel',
 			type: 'cancel',
-			withText: true,
+			withText: true
 		} );
 
 		cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );
