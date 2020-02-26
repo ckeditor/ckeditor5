@@ -46,7 +46,7 @@ function parseHeadingText( text ) {
 	return getCapitalizedHeading( normalizedText );
 }
 
-// This helper function create normalize heading text from a fullname of the position,
+// This helper function creates normalize heading text from a fullname of the position,
 // removing `ArrowXyz` part, like in the example:
 // `southEastArrowNorthMiddleEast` -> `south East`.
 function getNormalizeHeading( text ) {
