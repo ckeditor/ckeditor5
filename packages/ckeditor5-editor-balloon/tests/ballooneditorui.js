@@ -120,7 +120,7 @@ describe( 'BalloonEditorUI', () => {
 				return VirtualBalloonTestEditor
 					.create( 'foo', {
 						extraPlugins: [ BalloonToolbar, Paragraph ],
-						placeholder: 'placeholder-text',
+						placeholder: 'placeholder-text'
 					} )
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
@@ -159,7 +159,7 @@ describe( 'BalloonEditorUI', () => {
 					.create( element, {
 						plugins: [ BalloonToolbar ],
 						extraPlugins: [ Paragraph ],
-						placeholder: 'config takes precedence',
+						placeholder: 'config takes precedence'
 					} )
 					.then( newEditor => {
 						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
