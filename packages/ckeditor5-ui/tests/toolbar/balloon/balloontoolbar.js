@@ -125,7 +125,7 @@ describe( 'BalloonToolbar', () => {
 			} );
 	} );
 
-	it( 'should not group items when the shouldNotGroupWhenFull option is enabled', () => {
+	it( 'should not group items when the config.shouldNotGroupWhenFull option is enabled', () => {
 		const editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
