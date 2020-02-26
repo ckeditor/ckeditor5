@@ -108,7 +108,22 @@ export default class TableSelection extends Plugin {
 			if ( this.hasMultiCellSelection ) {
 				evt.stop();
 
+				// TODO: why not deleteContent decorator???
 				clearTableCellsContents( editor.model, this.getSelectedTableCells() );
+			}
+		}, { priority: 'high' } );
+
+		this.listenTo( editor.model, 'deleteContent', ( evt, args ) => {
+			const [ selection ] = args;
+
+			if ( this.hasMultiCellSelection && selection.is( 'documentSelection' ) ) {
+				evt.stop();
+
+				clearTableCellsContents( this.editor.model, this.getSelectedTableCells() );
+
+				editor.model.change( writer => {
+					writer.setSelection( Array.from( this.getSelectedTableCells() ).pop(), 0 );
+				} );
 			}
 		}, { priority: 'high' } );
 	}

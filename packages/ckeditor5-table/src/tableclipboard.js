@@ -9,7 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableSelection from './tableselection';
-import { clearTableCellsContents } from './tableselection/utils';
 
 /**
  * The table clipboard integration plugin.
@@ -51,22 +50,6 @@ export default class TableClipboard extends Plugin {
 
 		this.listenTo( viewDocument, 'copy', ( evt, data ) => this._onCopyCut( evt, data ) );
 		this.listenTo( viewDocument, 'cut', ( evt, data ) => this._onCopyCut( evt, data ) );
-
-		// TODO: move to table selection plugin as it looks like a general problem solver.
-
-		this.listenTo( editor.model, 'deleteContent', ( evt, args ) => {
-			const [ selection ] = args;
-
-			if ( this._tableSelection.hasMultiCellSelection && selection.is( 'documentSelection' ) ) {
-				evt.stop();
-
-				clearTableCellsContents( this.editor.model, this._tableSelection.getSelectedTableCells() );
-
-				editor.model.change( writer => {
-					writer.setSelection( Array.from( this._tableSelection.getSelectedTableCells() ).pop(), 0 );
-				} );
-			}
-		}, { priority: 'high' } );
 	}
 
 	/**
