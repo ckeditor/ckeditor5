@@ -1,4 +1,3 @@
-
 ---
 menu-title: Angular component
 category: builds-integration-frameworks
