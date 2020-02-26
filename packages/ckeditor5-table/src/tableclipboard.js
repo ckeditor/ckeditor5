@@ -10,8 +10,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableSelection from './tableselection';
 import { clearTableCellsContents } from './tableselection/utils';
-import viewToPlainText from '@ckeditor/ckeditor5-clipboard/src/utils/viewtoplaintext';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
 /**
  * The table clipboard integration plugin.
@@ -98,25 +96,5 @@ export default class TableClipboard extends Plugin {
 			content,
 			method: evt.name
 		} );
-	}
-
-	/**
-	 * Overrides default Clipboard plugin "clipboardOutput" handler to properly handle clearing selected table contents.
-	 *
-	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
-	 * @param {Object} data Clipboard event data.
-	 * @private
-	 */
-	_onClipboardOutput( evt, data ) {
-		if ( !this._tableSelection.hasMultiCellSelection && data.method !== 'cut' ) {
-			return;
-		}
-
-		evt.stop();
-
-		data.dataTransfer.setData( 'text/html', new HtmlDataProcessor().toData( data.content ) );
-		data.dataTransfer.setData( 'text/plain', viewToPlainText( data.content ) );
-
-		clearTableCellsContents( this.editor.model, this._tableSelection.getSelectedTableCells() );
 	}
 }
