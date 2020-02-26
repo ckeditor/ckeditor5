@@ -7,7 +7,6 @@
  * @module paste-from-office/filters/list
  */
 
-import Element from '@ckeditor/ckeditor5-engine/src/view/element';
 import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
@@ -160,7 +159,7 @@ function detectListStyle( listLikeItem, stylesString ) {
 // @param {module:engine/view/upcastwriter~UpcastWriter} writer
 // @returns {module:engine/view/element~Element} Newly created list element.
 function insertNewEmptyList( listStyle, element, writer ) {
-	const list = new Element( writer.document, listStyle.type );
+	const list = writer.createElement( listStyle.type );
 	const position = element.parent.getChildIndex( element );
 
 	writer.insertChild( position, list, element.parent );
