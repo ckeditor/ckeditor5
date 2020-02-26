@@ -8,41 +8,41 @@ import diffToChanges from '../src/difftochanges';
 
 describe( 'diffToChanges', () => {
 	describe( 'equal patterns', () => {
-		test( 0,		'',				'' );
-		test( 0,		'abc',			'abc' );
+		testDiff( 0,		'',				'' );
+		testDiff( 0,		'abc',			'abc' );
 	} );
 
 	describe( 'insertion', () => {
-		test( 1,		'',				'abc' );
-		test( 1,		'abc',			'abcd' );
-		test( 1,		'abc',			'abcdef' );
-		test( 2,		'abc',			'xxabcyy' );
-		test( 2,		'abc',			'axxbyyc' );
+		testDiff( 1,		'',				'abc' );
+		testDiff( 1,		'abc',			'abcd' );
+		testDiff( 1,		'abc',			'abcdef' );
+		testDiff( 2,		'abc',			'xxabcyy' );
+		testDiff( 2,		'abc',			'axxbyyc' );
 	} );
 
 	describe( 'deletion', () => {
-		test( 1,		'abc',			'' );
-		test( 1,		'abc',			'ac' );
-		test( 1,		'abc',			'bc' );
-		test( 1,		'abc',			'ab' );
-		test( 1,		'abc',			'c' );
-		test( 2,		'abc',			'b' );
+		testDiff( 1,		'abc',			'' );
+		testDiff( 1,		'abc',			'ac' );
+		testDiff( 1,		'abc',			'bc' );
+		testDiff( 1,		'abc',			'ab' );
+		testDiff( 1,		'abc',			'c' );
+		testDiff( 2,		'abc',			'b' );
 	} );
 
 	describe( 'replacement', () => {
-		test( 2,		'abc',			'def' );
-		test( 2,		'abc',			'axc' );
-		test( 2,		'abc',			'axyc' );
-		test( 2,		'abc',			'xybc' );
-		test( 2,		'abc',			'abxy' );
+		testDiff( 2,		'abc',			'def' );
+		testDiff( 2,		'abc',			'axc' );
+		testDiff( 2,		'abc',			'axyc' );
+		testDiff( 2,		'abc',			'xybc' );
+		testDiff( 2,		'abc',			'abxy' );
 	} );
 
 	describe( 'various', () => {
-		test( 3,		'abc',			'xbccy' );
-		test( 2,		'abcdef',		'defabc' );
-		test( 4,		'abcdef',		'axxdeyyfz' );
-		test( 4,		'abcdef',		'xybzc' );
-		test( 5,		'abcdef',		'bdxfy' );
+		testDiff( 3,		'abc',			'xbccy' );
+		testDiff( 2,		'abcdef',		'defabc' );
+		testDiff( 4,		'abcdef',		'axxdeyyfz' );
+		testDiff( 4,		'abcdef',		'xybzc' );
+		testDiff( 5,		'abcdef',		'bdxfy' );
 	} );
 
 	it( 'works with arrays', () => {
@@ -62,7 +62,7 @@ describe( 'diffToChanges', () => {
 		expect( changes ).to.have.lengthOf( 3 );
 	} );
 
-	function test( expectedChangeNumber, oldStr, newStr ) {
+	function testDiff( expectedChangeNumber, oldStr, newStr ) {
 		it( `${ oldStr } => ${ newStr }`, () => {
 			const changes = diffToChanges( diff( oldStr, newStr ), newStr );
 			const oldStrChars = Array.from( oldStr );

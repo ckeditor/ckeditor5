@@ -109,7 +109,7 @@ describe( 'getOptimalPosition()', () => {
 				innerWidth: 10000,
 				innerHeight: 10000,
 				scrollX: 100,
-				scrollY: 100,
+				scrollY: 100
 			} );
 
 			assertPosition( { element, target, positions: [ attachLeft ] }, {
@@ -170,7 +170,7 @@ describe( 'getOptimalPosition()', () => {
 				}, {
 					position: 'absolute',
 					borderLeftWidth: '20px',
-					borderTopWidth: '40px',
+					borderTopWidth: '40px'
 				} );
 
 				element.parentElement = parent;
