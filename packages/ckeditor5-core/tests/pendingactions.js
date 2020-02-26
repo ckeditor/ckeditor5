@@ -12,7 +12,7 @@ let editor, pendingActions;
 describe( 'PendingActions', () => {
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			plugins: [ PendingActions ],
+			plugins: [ PendingActions ]
 		} ).then( newEditor => {
 			editor = newEditor;
 			pendingActions = editor.plugins.get( PendingActions );

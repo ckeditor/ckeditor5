@@ -15,17 +15,20 @@ describe( 'ElementApiMixin', () => {
 	let editor;
 
 	beforeEach( () => {
-		class CustomEditor extends Editor {}
+		class CustomEditor extends Editor {
+		}
+
 		mix( CustomEditor, ElementApiMixin );
 
 		editor = new CustomEditor();
 		editor.data.processor = new HtmlDataProcessor( editor.editing.view.document );
 		editor.model.document.createRoot();
 		editor.model.schema.extend( '$text', { allowIn: '$root' } );
+		editor.fire( 'ready' ); // (#6139)
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	describe( 'updateSourceElement()', () => {
