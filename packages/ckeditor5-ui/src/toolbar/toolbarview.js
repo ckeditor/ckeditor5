@@ -64,11 +64,11 @@ export default class ToolbarView extends View {
 		/**
 		 * The maximum width of the toolbar element.
 		 *
-		 * Note:
-		 * The value coresponds with {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull}.
-		 * If the `#shouldGroupWhenFull` is set to `true` then you can manipulate `#maxWidth` to set how many items
-		 * inside the {@link module:ui/toolbar/toolbarview} will be shown.
+		 * **Note**: When set to a specific value (e.g. `'200px'`), the value will affect the behavior of the
+		 * {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull}
+		 * option by changing the number of {@link #items} that will be displayed in the toolbar at a time.
 		 *
+		 * @observable
 		 * @default 'auto'
 		 * @member {String} #maxWidth
 		 */
@@ -713,7 +713,7 @@ class DynamicGrouping {
 
 	/**
 	 * Enables the grouping functionality, just like {@link #_enableGroupingOnResize} but the difference is that
-	 * it listens to the {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth} changes.
+	 * it listens to the changes of {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth} instead.
 	 *
 	 * @private
 	 */
@@ -826,6 +826,8 @@ class DynamicGrouping {
  * When set to `true`, the toolbar will automatically group {@link module:ui/toolbar/toolbarview~ToolbarView#items} that
  * would normally wrap to the next line when there is not enough space to display them in a single row, for
  * instance, if the parent container of the toolbar is narrow.
+ *
+ * Also see: {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth}.
  *
  * @member {Boolean} module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull
  */
