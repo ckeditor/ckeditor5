@@ -73,7 +73,11 @@ export default class InlineEditor extends Editor {
 			secureSourceElement( this );
 		}
 
-		const view = new InlineEditorUIView( this.locale, this.editing.view, this.sourceElement );
+		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
+
+		const view = new InlineEditorUIView( this.locale, this.editing.view, this.sourceElement, {
+			shouldToolbarGroupWhenFull
+		} );
 		this.ui = new InlineEditorUI( this, view );
 
 		attachToForm( this );

@@ -10,11 +10,18 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import createRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
+
+const toPx = toUnit( 'px' );
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'InlineEditorUIView', () => {
 	let locale, view, editingView, editingViewRoot;
+	let resizeCallback;
 
 	testUtils.createSinonSandbox();
 
@@ -24,6 +31,24 @@ describe( 'InlineEditorUIView', () => {
 		editingViewRoot = createRoot( editingView.document );
 		view = new InlineEditorUIView( locale, editingView );
 		view.editable.name = editingViewRoot.rootName;
+
+		// Make sure other tests of the editor do not affect tests that follow.
+		// Without it, if an instance of ResizeObserver already exists somewhere undestroyed
+		// in DOM, the following DOM mock will have no effect.
+		ResizeObserver._observerInstance = null;
+
+		testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+			resizeCallback = callback;
+
+			return {
+				observe: sinon.spy(),
+				unobserve: sinon.spy()
+			};
+		} );
+	} );
+
+	afterEach( () => {
+		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -38,6 +63,16 @@ describe( 'InlineEditorUIView', () => {
 
 			it( 'is not rendered', () => {
 				expect( view.toolbar.isRendered ).to.be.false;
+			} );
+
+			it( 'should have the shouldGroupWhenFull option set based on constructor options', () => {
+				const view = new InlineEditorUIView( locale, editingView, null, {
+					shouldToolbarGroupWhenFull: true
+				} );
+
+				expect( view.toolbar.options.shouldGroupWhenFull ).to.be.true;
+
+				view.destroy();
 			} );
 		} );
 
@@ -79,10 +114,6 @@ describe( 'InlineEditorUIView', () => {
 			view.render();
 		} );
 
-		afterEach( () => {
-			view.destroy();
-		} );
-
 		describe( '#toolbar', () => {
 			it( 'is given the right CSS classes', () => {
 				expect( view.toolbar.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
@@ -90,6 +121,48 @@ describe( 'InlineEditorUIView', () => {
 
 			it( 'sets the default value of the #viewportTopOffset attribute', () => {
 				expect( view.viewportTopOffset ).to.equal( 0 );
+			} );
+
+			describe( 'automatic resizing when shouldToolbarGroupWhenFull is "true"', () => {
+				it( 'should set and update toolbar max-width according to the width of the editable element', () => {
+					const locale = new Locale();
+					const editingView = new EditingView();
+					const editingViewRoot = createRoot( editingView.document );
+					const view = new InlineEditorUIView( locale, editingView, null, {
+						shouldToolbarGroupWhenFull: true
+					} );
+					view.editable.name = editingViewRoot.rootName;
+					view.render();
+
+					const editableElement = view.editable.element;
+
+					// View element should be inside the body, otherwise the `Rect` instance will complain
+					// that it's not available in the DOM.
+					global.document.body.appendChild( editableElement );
+
+					editableElement.style.width = '400px';
+
+					resizeCallback( [ {
+						target: editableElement,
+						contentRect: new Rect( editableElement )
+					} ] );
+
+					// Include paddings.
+					expect( view.toolbar.maxWidth ).to.be.equal( toPx( new Rect( editableElement ).width ) );
+
+					editableElement.style.width = '200px';
+
+					resizeCallback( [ {
+						target: editableElement,
+						contentRect: new Rect( editableElement )
+					} ] );
+
+					// Include paddings.
+					expect( view.toolbar.maxWidth ).to.be.equal( toPx( new Rect( editableElement ).width ) );
+
+					editableElement.remove();
+					view.destroy();
+				} );
 			} );
 		} );
 
