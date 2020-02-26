@@ -316,8 +316,6 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'srcset integration', () => {
-		beforeEach( () => createEditor() );
-
 		// The image is 96x96 pixels.
 		const imageBaseUrl = '/assets/sample.png';
 		let model;
@@ -330,6 +328,16 @@ describe( 'ImageResize', () => {
 				preloadImage( imageBaseUrl + '?b' ),
 				preloadImage( imageBaseUrl + '?c' )
 			] );
+		} );
+
+		after( () => {
+			for ( const image of images ) {
+				image.remove();
+			}
+		} );
+
+		beforeEach( async () => {
+			await createEditor();
 
 			editor.setData(
 				`<figure class="image">
@@ -343,12 +351,6 @@ describe( 'ImageResize', () => {
 
 			widget = viewDocument.getRoot().getChild( 0 );
 			model = editor.model.document.getRoot().getChild( 0 );
-		} );
-
-		after( () => {
-			for ( const image of images ) {
-				image.remove();
-			}
 		} );
 
 		it( 'works with images containing srcset', () => {
