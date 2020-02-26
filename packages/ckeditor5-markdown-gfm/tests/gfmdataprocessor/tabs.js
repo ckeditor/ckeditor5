@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { testDataProcessor as test } from '../../tests/_utils/utils';
+import { testDataProcessor } from '../_utils/utils';
 
 describe( 'GFMDataProcessor', () => {
 	describe( 'tabs', () => {
 		it( 'should process list item with tabs', () => {
-			test(
+			testDataProcessor(
 				'+	this is a list item indented with tabs',
 
 				// GitHub will render it as (notice two spaces at the beginning of the list item):
@@ -25,7 +25,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process list item with spaces', () => {
-			test(
+			testDataProcessor(
 				'+   this is a list item indented with spaces',
 
 				// GitHub will render it as (notice two spaces at the beginning of the list item):
@@ -42,7 +42,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process code block indented by tab', () => {
-			test(
+			testDataProcessor(
 				'	this code block is indented by one tab',
 
 				'<pre><code>this code block is indented by one tab</code></pre>',
@@ -55,7 +55,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process code block indented by two tabs', () => {
-			test(
+			testDataProcessor(
 				'		this code block is indented by two tabs',
 
 				'<pre><code>    this code block is indented by two tabs</code></pre>',
@@ -68,7 +68,7 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process list items indented with tabs as code block', () => {
-			test(
+			testDataProcessor(
 				'	+	list item\n' +
 				'	next line',
 

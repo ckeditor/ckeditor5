@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { testDataProcessor as test } from '../../tests/_utils/utils';
+import { testDataProcessor } from '../_utils/utils';
 
 describe( 'GFMDataProcessor', () => {
 	// Horizontal rules are are always rendered by GitHub as <hr> and normalized when converting
@@ -11,23 +11,23 @@ describe( 'GFMDataProcessor', () => {
 	describe( 'horizontal rules', () => {
 		describe( 'dashes', () => {
 			it( '#1', () => {
-				test( '---', '<hr></hr>', '* * *' );
+				testDataProcessor( '---', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#2', () => {
-				test( ' ---', '<hr></hr>', '* * *' );
+				testDataProcessor( ' ---', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#3', () => {
-				test( '  ---', '<hr></hr>', '* * *' );
+				testDataProcessor( '  ---', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#4', () => {
-				test( '   ---', '<hr></hr>', '* * *' );
+				testDataProcessor( '   ---', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#5 - code', () => {
-				test(
+				testDataProcessor(
 					'    ---',
 
 					// Four spaces are interpreted as code block.
@@ -43,23 +43,23 @@ describe( 'GFMDataProcessor', () => {
 
 		describe( 'dashes with spaces', () => {
 			it( '#1', () => {
-				test( '- - -', '<hr></hr>', '* * *' );
+				testDataProcessor( '- - -', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#2', () => {
-				test( ' - - -', '<hr></hr>', '* * *' );
+				testDataProcessor( ' - - -', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#3', () => {
-				test( '  - - -', '<hr></hr>', '* * *' );
+				testDataProcessor( '  - - -', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#4', () => {
-				test( '   - - -', '<hr></hr>', '* * *' );
+				testDataProcessor( '   - - -', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#5 - code', () => {
-				test(
+				testDataProcessor(
 					'    - - -',
 
 					// Four spaces are interpreted as code block.
@@ -75,23 +75,23 @@ describe( 'GFMDataProcessor', () => {
 
 		describe( 'asterisks', () => {
 			it( '#1', () => {
-				test( '***', '<hr></hr>', '* * *' );
+				testDataProcessor( '***', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#2', () => {
-				test( ' ***', '<hr></hr>', '* * *' );
+				testDataProcessor( ' ***', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#3', () => {
-				test( '  ***', '<hr></hr>', '* * *' );
+				testDataProcessor( '  ***', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#4', () => {
-				test( '   ***', '<hr></hr>', '* * *' );
+				testDataProcessor( '   ***', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#5 - code', () => {
-				test(
+				testDataProcessor(
 					'    ***',
 
 					// Four spaces are interpreted as code block.
@@ -107,23 +107,23 @@ describe( 'GFMDataProcessor', () => {
 
 		describe( 'asterisks with spaces', () => {
 			it( '#1', () => {
-				test( '* * *', '<hr></hr>', '* * *' );
+				testDataProcessor( '* * *', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#2', () => {
-				test( ' * * *', '<hr></hr>', '* * *' );
+				testDataProcessor( ' * * *', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#3', () => {
-				test( '  * * *', '<hr></hr>', '* * *' );
+				testDataProcessor( '  * * *', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#4', () => {
-				test( '   * * *', '<hr></hr>', '* * *' );
+				testDataProcessor( '   * * *', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#5 - code', () => {
-				test(
+				testDataProcessor(
 					'    * * *',
 
 					// Four spaces are interpreted as code block.
@@ -139,23 +139,23 @@ describe( 'GFMDataProcessor', () => {
 
 		describe( 'underscores', () => {
 			it( '#1', () => {
-				test( '___', '<hr></hr>', '* * *' );
+				testDataProcessor( '___', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#2', () => {
-				test( ' ___', '<hr></hr>', '* * *' );
+				testDataProcessor( ' ___', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#3', () => {
-				test( '  ___', '<hr></hr>', '* * *' );
+				testDataProcessor( '  ___', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#4', () => {
-				test( '   ___', '<hr></hr>', '* * *' );
+				testDataProcessor( '   ___', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#5 - code', () => {
-				test(
+				testDataProcessor(
 					'    ___',
 
 					// Four spaces are interpreted as code block.
@@ -171,23 +171,23 @@ describe( 'GFMDataProcessor', () => {
 
 		describe( 'underscores with spaces', () => {
 			it( '#1', () => {
-				test( '_ _ _', '<hr></hr>', '* * *' );
+				testDataProcessor( '_ _ _', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#2', () => {
-				test( ' _ _ _', '<hr></hr>', '* * *' );
+				testDataProcessor( ' _ _ _', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#3', () => {
-				test( '  _ _ _', '<hr></hr>', '* * *' );
+				testDataProcessor( '  _ _ _', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#4', () => {
-				test( '   _ _ _', '<hr></hr>', '* * *' );
+				testDataProcessor( '   _ _ _', '<hr></hr>', '* * *' );
 			} );
 
 			it( '#5 - code', () => {
-				test(
+				testDataProcessor(
 					'    _ _ _',
 
 					// Four spaces are interpreted as code block.

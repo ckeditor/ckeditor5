@@ -22,7 +22,7 @@ const testCases = {
 	'peroid': { test: '\\.', result: '.' },
 	'exclamation mark': { test: '\\!', result: '!' },
 	'plus': { test: '\\+', result: '+' },
-	'minus': { test: '\\-', result: '-' },
+	'minus': { test: '\\-', result: '-' }
 };
 
 describe( 'GFMDataProcessor', () => {
