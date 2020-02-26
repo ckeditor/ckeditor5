@@ -50,6 +50,31 @@ describe( 'Collection', () => {
 				expect( collection.get( 0 ) ).to.equal( item1 );
 				expect( collection.get( 1 ) ).to.equal( item2 );
 			} );
+
+			it( 'generates id for items that doesn\'t have it', () => {
+				const item = {};
+				const collection = new Collection( [ item ] );
+
+				expect( collection.get( 0 ).id ).to.be.a( 'string' );
+				expect( collection.get( 0 ).id ).not.to.be.empty;
+			} );
+
+			it( 'throws an error when invalid item key is provided', () => {
+				const badIdItem = getItem( 1 ); // Number id is not supported.
+
+				expectToThrowCKEditorError( () => {
+					return new Collection( [ badIdItem ] );
+				}, /^collection-add-invalid-id/ );
+			} );
+
+			it( 'throws an error when items have a duplicated key', () => {
+				const item1 = getItem( 'foo' );
+				const item2 = getItem( 'foo' );
+
+				expectToThrowCKEditorError( () => {
+					return new Collection( [ item1, item2 ] );
+				}, /^collection-add-item-already-exists/ );
+			} );
 		} );
 
 		describe( 'options', () => {
