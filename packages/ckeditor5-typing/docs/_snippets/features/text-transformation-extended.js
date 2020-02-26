@@ -47,7 +47,7 @@ ClassicEditor
 						from: /(\. )([a-z])$/,
 						to: matches => [ null, matches[ 1 ].toUpperCase() ]
 					}
-				],
+				]
 			}
 		}
 	} )

@@ -194,7 +194,7 @@ describe( 'Typing – bogus BR integration', () => {
 				generateMutationMock( 'childList', paragraph, text, [ br ] ),
 				generateMutationMock( 'characterData', text ),
 				generateMutationMock( 'characterData', text ),
-				generateMutationMock( 'characterData', text ),
+				generateMutationMock( 'characterData', text )
 			] );
 		} );
 	} );
