@@ -208,9 +208,9 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'side image resizing', () => {
-		beforeEach( () => createEditor() );
+		beforeEach( async () => {
+			await createEditor();
 
-		beforeEach( () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
@@ -252,9 +252,9 @@ describe( 'ImageResize', () => {
 	} );
 
 	describe( 'undo integration', () => {
-		beforeEach( () => createEditor() );
+		beforeEach( async () => {
+			await createEditor();
 
-		beforeEach( () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
@@ -323,24 +323,14 @@ describe( 'ImageResize', () => {
 		let model;
 		let images = [];
 
-		before( () => {
-			return Promise.all( [
+		before( async () => {
+			images = await Promise.all( [
 				preloadImage( imageBaseUrl ),
 				preloadImage( imageBaseUrl + '?a' ),
 				preloadImage( imageBaseUrl + '?b' ),
 				preloadImage( imageBaseUrl + '?c' )
-			] ).then( loadedImages => {
-				images = loadedImages;
-			} );
-		} );
+			] );
 
-		after( () => {
-			for ( const image of images ) {
-				image.remove();
-			}
-		} );
-
-		beforeEach( () => {
 			editor.setData(
 				`<figure class="image">
 					<img src="${ imageBaseUrl }"
@@ -353,6 +343,12 @@ describe( 'ImageResize', () => {
 
 			widget = viewDocument.getRoot().getChild( 0 );
 			model = editor.model.document.getRoot().getChild( 0 );
+		} );
+
+		after( () => {
+			for ( const image of images ) {
+				image.remove();
+			}
 		} );
 
 		it( 'works with images containing srcset', () => {
@@ -402,15 +398,15 @@ describe( 'ImageResize', () => {
 	describe( 'widget toolbar integration', () => {
 		let widgetToolbarRepository;
 
-		beforeEach( () => createEditor( {
-			plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize, ImageToolbar, ImageTextAlternative ],
-			image: {
-				toolbar: [ 'imageTextAlternative' ],
-				resizeUnit: 'px'
-			}
-		} ) );
-
 		beforeEach( async () => {
+			await createEditor( {
+				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize, ImageToolbar, ImageTextAlternative ],
+				image: {
+					toolbar: [ 'imageTextAlternative' ],
+					resizeUnit: 'px'
+				}
+			} );
+
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
