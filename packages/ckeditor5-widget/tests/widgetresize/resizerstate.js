@@ -87,7 +87,7 @@ describe( 'ResizerState', () => {
 				height: 200,
 				widthPercents: 25,
 				handleHostWidth: 80,
-				handleHostHeight: 160,
+				handleHostHeight: 160
 			} );
 
 			expect( state.proposedWidthPercents, 'proposedWidthPercents' ).to.be.equal( 25 );
