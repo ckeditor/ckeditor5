@@ -155,13 +155,6 @@ export default class BalloonToolbar extends Plugin {
 
 				// Set toolbar's max-width on the initialization and update it on the editable resize.
 				this.resizeObserver = new ResizeObserver( editableElement, () => {
-					// We need to check if there's already the editable element in the DOM.
-					// Otherwise the `Rect` instance will complain that source (editableElement) is not available
-					// to obtain the element's geometry.
-					if ( !editableElement.ownerDocument.body.contains( editableElement ) ) {
-						return;
-					}
-
 					// In the balloon editor toolbar's max-width should be set to the 0.9 of the editable's width.
 					// It's a safe value, because it keeps the balloon very close to the boundaries of the editable.
 					this.toolbarView.maxWidth = toPx( new Rect( editableElement ).width * .9 );
