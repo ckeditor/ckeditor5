@@ -156,10 +156,11 @@ export default class BalloonToolbar extends Plugin {
 			this.listenTo( editor, 'ready', () => {
 				const editableElement = editor.ui.view.editable.element;
 
-				// Set toolbar's max-width on the initialization and update it on the editable resize.
+				// Set #toolbarView's max-width on the initialization and update it on the editable resize.
 				this._resizeObserver = new ResizeObserver( editableElement, () => {
-					// In the balloon editor toolbar's max-width should be set to the 0.9 of the editable's width.
-					// It's a safe value, because it keeps the balloon very close to the boundaries of the editable.
+					// The max-width equals 90% of the editable's width for the best user experience.
+					// The value keeps the balloon very close to the boundaries of the editable and limits the cases
+					// when the balloon juts out from the editable element it belongs to.
 					this.toolbarView.maxWidth = toPx( new Rect( editableElement ).width * .9 );
 				} );
 			} );
