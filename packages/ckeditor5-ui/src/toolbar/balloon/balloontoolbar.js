@@ -15,6 +15,10 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import normalizeToolbarConfig from '../normalizetoolbarconfig';
 import { debounce } from 'lodash-es';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+
+const toPx = toUnit( 'px' );
 
 /**
  * The contextual toolbar.
@@ -45,6 +49,14 @@ export default class BalloonToolbar extends Plugin {
 		super( editor );
 
 		/**
+		 * A cached and normalized `config.balloonToolbar` object.
+		 *
+		 * @type {module:core/editor/editorconfig~EditorConfig#balloonToolbar}
+		 * @private
+		 */
+		this._balloonConfig = normalizeToolbarConfig( editor.config.get( 'balloonToolbar' ) );
+
+		/**
 		 * The toolbar view displayed in the balloon.
 		 *
 		 * @type {module:ui/toolbar/toolbarview~ToolbarView}
@@ -65,6 +77,20 @@ export default class BalloonToolbar extends Plugin {
 			this.focusTracker.add( editor.ui.getEditableElement() );
 			this.focusTracker.add( this.toolbarView.element );
 		} );
+
+		/**
+		 * An instance of the resize observer that allows to respond to changes in editable's geometry
+		 * so the toolbar can stay within its boundaries (and group toolbar items that do not fit).
+		 *
+		 * **Note**: Used only when `shouldNotGroupWhenFull` was **not** set in the
+		 * {@link module:core/editor/editorconfig~EditorConfig#balloonToolbar configuration}.
+		 *
+		 * **Note:** Created in {@link #init}.
+		 *
+		 * @protected
+		 * @member {module:utils/dom/resizeobserver~ResizeObserver}
+		 */
+		this._resizeObserver = null;
 
 		/**
 		 * The contextual balloon plugin instance.
@@ -125,6 +151,20 @@ export default class BalloonToolbar extends Plugin {
 				this.show();
 			}
 		} );
+
+		if ( !this._balloonConfig.shouldNotGroupWhenFull ) {
+			this.listenTo( editor, 'ready', () => {
+				const editableElement = editor.ui.view.editable.element;
+
+				// Set #toolbarView's max-width on the initialization and update it on the editable resize.
+				this._resizeObserver = new ResizeObserver( editableElement, () => {
+					// The max-width equals 90% of the editable's width for the best user experience.
+					// The value keeps the balloon very close to the boundaries of the editable and limits the cases
+					// when the balloon juts out from the editable element it belongs to.
+					this.toolbarView.maxWidth = toPx( new Rect( editableElement ).width * .9 );
+				} );
+			} );
+		}
 	}
 
 	/**
@@ -134,10 +174,9 @@ export default class BalloonToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	afterInit() {
-		const config = normalizeToolbarConfig( this.editor.config.get( 'balloonToolbar' ) );
 		const factory = this.editor.ui.componentFactory;
 
-		this.toolbarView.fillFromConfig( config.items, factory );
+		this.toolbarView.fillFromConfig( this._balloonConfig.items, factory );
 	}
 
 	/**
@@ -147,7 +186,10 @@ export default class BalloonToolbar extends Plugin {
 	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
 	_createToolbarView() {
-		const toolbarView = new ToolbarView( this.editor.locale );
+		const shouldGroupWhenFull = !this._balloonConfig.shouldNotGroupWhenFull;
+		const toolbarView = new ToolbarView( this.editor.locale, {
+			shouldGroupWhenFull
+		} );
 
 		toolbarView.extendTemplate( {
 			attributes: {
@@ -260,6 +302,10 @@ export default class BalloonToolbar extends Plugin {
 		this._fireSelectionChangeDebounced.cancel();
 		this.toolbarView.destroy();
 		this.focusTracker.destroy();
+
+		if ( this._resizeObserver ) {
+			this._resizeObserver.destroy();
+		}
 	}
 
 	/**
@@ -289,22 +335,32 @@ function getBalloonPositions( isBackward ) {
 		defaultPositions.northWestArrowSouth,
 		defaultPositions.northWestArrowSouthWest,
 		defaultPositions.northWestArrowSouthEast,
+		defaultPositions.northWestArrowSouthMiddleEast,
+		defaultPositions.northWestArrowSouthMiddleWest,
 		defaultPositions.southWestArrowNorth,
 		defaultPositions.southWestArrowNorthWest,
-		defaultPositions.southWestArrowNorthEast
+		defaultPositions.southWestArrowNorthEast,
+		defaultPositions.southWestArrowNorthMiddleWest,
+		defaultPositions.southWestArrowNorthMiddleEast
 	] : [
 		defaultPositions.southEastArrowNorth,
 		defaultPositions.southEastArrowNorthEast,
 		defaultPositions.southEastArrowNorthWest,
+		defaultPositions.southEastArrowNorthMiddleEast,
+		defaultPositions.southEastArrowNorthMiddleWest,
 		defaultPositions.northEastArrowSouth,
 		defaultPositions.northEastArrowSouthEast,
-		defaultPositions.northEastArrowSouthWest
+		defaultPositions.northEastArrowSouthWest,
+		defaultPositions.northEastArrowSouthMiddleEast,
+		defaultPositions.northEastArrowSouthMiddleWest
 	];
 }
 
 /**
  * Contextual toolbar configuration. Used by the {@link module:ui/toolbar/balloon/balloontoolbar~BalloonToolbar}
  * feature.
+ *
+ * ## Configuring toolbar items
  *
  *		const config = {
  *			balloonToolbar: [ 'bold', 'italic', 'undo', 'redo' ]
@@ -317,6 +373,17 @@ function getBalloonPositions( isBackward ) {
  *		};
  *
  * Read also about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
+ *
+ * ## Configuring items grouping
+ *
+ * You can prevent automatic items grouping by setting the `shouldNotGroupWhenFull` option:
+ *
+ *		const config = {
+ *			balloonToolbar: {
+ *				items: [ 'bold', 'italic', 'undo', 'redo' ]
+ *			},
+ *			shouldNotGroupWhenFull: true
+ *		};
  *
  * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#balloonToolbar
  */

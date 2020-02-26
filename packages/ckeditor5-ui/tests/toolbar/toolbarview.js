@@ -180,6 +180,22 @@ describe( 'ToolbarView', () => {
 				expect( view.element.classList.contains( 'ck-toolbar_compact' ) ).to.be.true;
 			} );
 		} );
+
+		describe( 'style', () => {
+			it( 'reacts on view#maxWidth', () => {
+				view.maxWidth = '100px';
+				expect( view.element.style.maxWidth ).to.equal( '100px' );
+
+				view.maxWidth = undefined;
+				expect( view.element.style.maxWidth ).to.equal( '' );
+
+				view.maxWidth = null;
+				expect( view.element.style.maxWidth ).to.equal( '' );
+
+				view.maxWidth = '200px';
+				expect( view.element.style.maxWidth ).to.equal( '200px' );
+			} );
+		} );
 	} );
 
 	describe( 'render()', () => {
