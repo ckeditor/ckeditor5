@@ -65,15 +65,9 @@ export default class ToolbarView extends View {
 		 * The maximum width of the toolbar element.
 		 *
 		 * Note:
-		 * You should not change the toolbar's max-width manually, because by default it's binded
-		 * with the editor's editable element's width and it will be applied automatically each time its value will change.
-		 *
-		 * If you set `config.toolbar.shouldNotGroupWhenFull: true` and also set `ToolbarView#maxWidth`,
-		 * the max-width will be applied and — in this case — you should be careful, because if you set
-		 * the value to be too small, this may cause visual and usability issues with your toolbar.
-		 *
-		 * Another scenario is when the toolbar is grouping overflowing items and you will be trying to set `ToolbarView#maxWidth`.
-		 * This new value will be immediately overridden and will not be applied.
+		 * The value coresponds with {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull}.
+		 * If the `#shouldGroupWhenFull` is set to `true` then you can manipulate `#maxWidth` to set how many items
+		 * inside the {@link module:ui/toolbar/toolbarview} will be shown.
 		 *
 		 * @default 'auto'
 		 * @member {String} #maxWidth
@@ -720,9 +714,6 @@ class DynamicGrouping {
 	/**
 	 * Enables the grouping functionality, just like {@link #_enableGroupingOnResize} but the difference is that
 	 * it listens to the {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth} changes.
-	 *
-	 * Note: Right now it works only with {@link module:editor-inline/inlineeditor~InlineEditor} and
-	 * {@link module:editor-balloon/ballooneditor~BalloonEditor}.
 	 *
 	 * @private
 	 */
