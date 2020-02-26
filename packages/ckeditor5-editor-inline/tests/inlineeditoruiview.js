@@ -13,15 +13,17 @@ import createRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 
 const toPx = toUnit( 'px' );
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-/* globals setTimeout */
+/* globals */
 
 describe( 'InlineEditorUIView', () => {
 	let locale, view, editingView, editingViewRoot;
+	let resizeCallback;
 
 	testUtils.createSinonSandbox();
 
@@ -31,6 +33,20 @@ describe( 'InlineEditorUIView', () => {
 		editingViewRoot = createRoot( editingView.document );
 		view = new InlineEditorUIView( locale, editingView );
 		view.editable.name = editingViewRoot.rootName;
+
+		// Make sure other tests of the editor do not affect tests that follow.
+		// Without it, if an instance of ResizeObserver already exists somewhere undestroyed
+		// in DOM, the following DOM mock will have no effect.
+		ResizeObserver._observerInstance = null;
+
+		testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+			resizeCallback = callback;
+
+			return {
+				observe: sinon.spy(),
+				unobserve: sinon.spy()
+			};
+		} );
 	} );
 
 	describe( 'constructor()', () => {
@@ -102,27 +118,25 @@ describe( 'InlineEditorUIView', () => {
 				expect( view.viewportTopOffset ).to.equal( 0 );
 			} );
 
-			// Sometimes this test can fail, due to the fact that it have to wait for async ResizeObserver execution.
-			it( 'max-width should be set to the width of the editable element', done => {
+			it( 'max-width should be set to the width of the editable element', () => {
 				const viewElement = view.editable.element;
 
+				// View element should be inside the body, otherwise the `Rect` instance will complain
+				// that it's not available in the DOM.
 				global.document.body.appendChild( viewElement );
-				expect( global.document.body.contains( viewElement ) ).to.be.true;
 
 				viewElement.style.width = '400px';
 
-				// Unfortunately we have to wait for async ResizeObserver execution.
-				// ResizeObserver which has been called after changing width of viewElement,
-				// needs 2x requestAnimationFrame or timeout to update a layout.
-				// See more: https://twitter.com/paul_irish/status/912693347315150849/photo/1
-				setTimeout( () => {
-					const editableWidthWithPadding = toPx( new Rect( viewElement ).width );
-					expect( view.toolbar.maxWidth ).to.be.equal( editableWidthWithPadding );
+				resizeCallback( [ {
+					target: viewElement,
+					contentRect: new Rect( viewElement )
+				} ] );
 
-					global.document.body.removeChild( viewElement );
+				const editableWidthWithPadding = toPx( new Rect( viewElement ).width );
 
-					done();
-				}, 500 );
+				expect( view.toolbar.maxWidth ).to.be.equal( editableWidthWithPadding );
+
+				viewElement.remove();
 			} );
 		} );
 
