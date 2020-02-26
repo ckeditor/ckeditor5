@@ -286,9 +286,10 @@ export class MyComponent {
 
 		this.watchdog = new ContextWatchdog( Context );
 
-		this.watchdog.create( contextConfig ).then( () => {
-			this.ready = true;
-		} );
+		this.watchdog.create( contextConfig )
+			.then( () => {
+				this.ready = true;
+			} );
 	}
 }
 ```
