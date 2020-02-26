@@ -31,6 +31,9 @@ export default class InlineEditorUIView extends EditorUIView {
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, it will be automatically created by
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}. Otherwise, the given element will be used.
 	 * @param {Object} [options={}] Configuration options for the view instance.
+	 * @param {Boolean} [options.shouldToolbarGroupWhenFull] When set `true` enables automatic items grouping
+	 * in the main {@link module:editor-inline/inlineeditoruiview~InlineEditorUIView#toolbar toolbar}.
+	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
 	 */
 	constructor( locale, editingView, editableElement, options = {} ) {
 		super( locale );
@@ -148,10 +151,10 @@ export default class InlineEditorUIView extends EditorUIView {
 		 *
 		 * **Note:** Created in {@link #render}.
 		 *
-		 * @readonly
-		 * @member {module:utils/dom/getresizeobserver~ResizeObserver}
+		 * @private
+		 * @member {module:utils/dom/resizeobserver~ResizeObserver}
 		 */
-		this.resizeObserver = null;
+		this._resizeObserver = null;
 	}
 
 	/**
@@ -170,14 +173,8 @@ export default class InlineEditorUIView extends EditorUIView {
 		// if 'shouldToolbarGroupWhenFull' in config is set to 'true'.
 		if ( options.shouldGroupWhenFull ) {
 			const editableElement = this.editable.element;
-			this.resizeObserver = new ResizeObserver( editableElement, () => {
-				// We need to check if there's already the editable element in the DOM.
-				// Otherwise the `Rect` instance will complain that source (editableElement) is not available
-				// to obtain the element's geometry.
-				if ( !editableElement.ownerDocument.body.contains( editableElement ) ) {
-					return;
-				}
 
+			this._resizeObserver = new ResizeObserver( editableElement, () => {
 				this.toolbar.maxWidth = toPx( new Rect( editableElement ).width );
 			} );
 		}
@@ -189,8 +186,8 @@ export default class InlineEditorUIView extends EditorUIView {
 	destroy() {
 		super.destroy();
 
-		if ( this.resizeObserver ) {
-			this.resizeObserver.destroy();
+		if ( this._resizeObserver ) {
+			this._resizeObserver.destroy();
 		}
 	}
 
