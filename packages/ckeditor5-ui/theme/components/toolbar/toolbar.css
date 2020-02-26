@@ -51,13 +51,4 @@
 			display: none;
 		}
 	}
-
-	/* Balloon Toolbar
-	 *
-	 * This class can be used to set a different min-width for the balloon toolbar.
-	 * NOTE: It can also overrule a width and max-width of the balloon toolbar if it will be set with a higher value.
-	 */
-	&.ck-balloon-toolbar_min-width {
-		min-width: 180px;
-	}
 }
