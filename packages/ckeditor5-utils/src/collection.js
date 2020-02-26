@@ -128,7 +128,7 @@ export default class Collection {
 		if ( hasInitialItems ) {
 			for ( const item of initialItemsOrOptions ) {
 				this._items.push( item );
-				this._itemMap.set( this._getItemId( item ), item );
+				this._itemMap.set( this._getItemIdBeforeAdding( item ), item );
 			}
 		}
 
@@ -657,7 +657,7 @@ export default class Collection {
 	 * @param {Object} item Item to be added.
 	 * @returns {String}
 	 */
-	_getItemId( item ) {
+	_getItemIdBeforeAdding( item ) {
 		const idProperty = this._idProperty;
 		let itemId;
 
