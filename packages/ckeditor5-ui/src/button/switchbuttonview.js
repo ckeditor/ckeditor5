@@ -77,7 +77,7 @@ export default class SwitchButtonView extends ButtonView {
 				class: [
 					'ck',
 					'ck-button__toggle'
-				],
+				]
 			},
 
 			children: [
@@ -88,7 +88,7 @@ export default class SwitchButtonView extends ButtonView {
 						class: [
 							'ck',
 							'ck-button__toggle__inner'
-						],
+						]
 					}
 				}
 			]

@@ -71,7 +71,7 @@ export default class BodyCollection extends ViewCollection {
 					'ck-body',
 					'ck-rounded-corners'
 				],
-				dir: this.locale.uiLanguageDirection,
+				dir: this.locale.uiLanguageDirection
 			},
 			children: this
 		} ).render();

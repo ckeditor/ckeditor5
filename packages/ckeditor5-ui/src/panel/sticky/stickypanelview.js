@@ -182,7 +182,7 @@ export default class StickyPanelView extends View {
 					'ck-sticky-panel__content',
 					// Toggle class of the panel when "sticky" state changes in the view.
 					bind.if( 'isSticky', 'ck-sticky-panel__content_sticky' ),
-					bind.if( '_isStickyToTheLimiter', 'ck-sticky-panel__content_sticky_bottom-limit' ),
+					bind.if( '_isStickyToTheLimiter', 'ck-sticky-panel__content_sticky_bottom-limit' )
 				],
 				style: {
 					width: bind.to( 'isSticky', isSticky => {
