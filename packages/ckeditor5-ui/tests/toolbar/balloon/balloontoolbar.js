@@ -480,7 +480,7 @@ describe( 'BalloonToolbar', () => {
 			const resizeObserver = new ResizeObserver( editable, () => {} );
 			const destroySpy = sinon.spy( resizeObserver, 'destroy' );
 
-			balloonToolbar.resizeObserver = resizeObserver;
+			balloonToolbar._resizeObserver = resizeObserver;
 
 			balloonToolbar.destroy();
 

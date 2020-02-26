@@ -445,43 +445,43 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  *
  * * `northWestArrowSouthWest`
  *
- * 		+-----------------+
- * 		|     Balloon     |
- * 		+-----------------+
- * 		 V
- * 		 [ Target ]
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		 V
+ *		 [ Target ]
  *
  * * `northWestArrowSouthMiddleWest`
  *
- * 		+-----------------+
- * 		|     Balloon     |
- * 		+-----------------+
- * 		    V
- * 		    [ Target ]
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		    V
+ *		    [ Target ]
  *
  * * `northWestArrowSouth`
  *
- * 		+-----------------+
- * 		|     Balloon     |
- * 		+-----------------+
- * 		         V
- * 		         [ Target ]
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		         V
+ *		         [ Target ]
  *
  * * `northWestArrowSouthMiddleEast`
  *
- * 		 +-----------------+
- * 		 |     Balloon     |
- * 		 +-----------------+
- * 		              V
- * 		              [ Target ]
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		             V
+ *		             [ Target ]
  *
  * * `northWestArrowSouthEast`
  *
- * 		+-----------------+
- * 		|     Balloon     |
- * 		+-----------------+
- * 		                 V
- * 		                 [ Target ]
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		                 V
+ *		                 [ Target ]
  *
  *
  *
@@ -489,88 +489,86 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  *
  * * `northArrowSouthWest`
  *
- * 		    +-----------------+
- * 		    |     Balloon     |
- * 		    +-----------------+
- * 		     V
- * 		[ Target ]
+ *		    +-----------------+
+ *		    |     Balloon     |
+ *		    +-----------------+
+ *		     V
+ *		[ Target ]
  *
  * * `northArrowSouthMiddleWest`
  *
- * 		 +-----------------+
- * 		 |     Balloon     |
- * 		 +-----------------+
- * 		     V
- * 		[ Target ]
+ *		 +-----------------+
+ *		 |     Balloon     |
+ *		 +-----------------+
+ *		     V
+ *		[ Target ]
  *
  * * `northArrowSouth`
  *
- * 		+-----------------+
- * 		|     Balloon     |
- * 		+-----------------+
- * 		         V
- * 		    [ Target ]
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		         V
+ *		    [ Target ]
  *
  * * `northArrowSouthMiddleEast`
  *
- * 		+-----------------+
- * 		|     Balloon     |
- * 		+-----------------+
- * 		             V
- * 		        [ Target ]
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		             V
+ *		        [ Target ]
  *
  * * `northArrowSouthEast`
  *
- * 		+-----------------+
- * 		|     Balloon     |
- * 		+-----------------+
- * 		                V
- * 		           [ Target ]
- *
- *
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		                V
+ *		           [ Target ]
  *
  * **North east**
  *
  * * `northEastArrowSouthWest`
  *
- * 		        +-----------------+
- * 		        |     Balloon     |
- * 		        +-----------------+
- * 		         V
- * 		[ Target ]
+ *		        +-----------------+
+ *		        |     Balloon     |
+ *		        +-----------------+
+ *		         V
+ *		[ Target ]
  *
  *
  * * `northEastArrowSouthMiddleWest`
  *
- * 		     +-----------------+
- * 		     |     Balloon     |
- * 		     +-----------------+
- * 		         V
- * 		[ Target ]
+ *		     +-----------------+
+ *		     |     Balloon     |
+ *		     +-----------------+
+ *		         V
+ *		[ Target ]
  *
  * * `northEastArrowSouth`
  *
- * 		+-----------------+
- * 		|     Balloon     |
- * 		+-----------------+
- * 		         V
- * 		[ Target ]
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		         V
+ *		[ Target ]
  *
  * * `northEastArrowSouthMiddleEast`
  *
- * 		 +-----------------+
- * 		 |     Balloon     |
- * 		 +-----------------+
- * 		              V
- * 		     [ Target ]
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		             V
+ *		    [ Target ]
  *
  * * `northEastArrowSouthEast`
  *
- * 		+-----------------+
- * 		|     Balloon     |
- * 		+-----------------+
- * 		                 V
- * 		        [ Target ]
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		                 V
+ *		        [ Target ]
  *
  *
  *
@@ -623,11 +621,11 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  *
  * * `southWestArrowNorthWest`
  *
- *		  [ Target ]
- *		  ^
- *		 +-----------------+
- *		 |     Balloon     |
- *		 +-----------------+
+ *		 [ Target ]
+ *		 ^
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
  *
  * * `southWestArrowNorthMiddleWest`
  *

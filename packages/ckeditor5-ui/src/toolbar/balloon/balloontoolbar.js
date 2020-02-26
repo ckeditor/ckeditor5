@@ -49,9 +49,9 @@ export default class BalloonToolbar extends Plugin {
 		super( editor );
 
 		/**
-		 * A normalized `config.balloonToolbar` object.
+		 * A cached and normalized `config.balloonToolbar` object.
 		 *
-		 * @type {Object}
+		 * @type {module:core/editor/editorconfig~EditorConfig#balloonToolbar}
 		 * @private
 		 */
 		this._balloonConfig = normalizeToolbarConfig( editor.config.get( 'balloonToolbar' ) );
@@ -72,22 +72,25 @@ export default class BalloonToolbar extends Plugin {
 		 */
 		this.focusTracker = new FocusTracker();
 
-		/**
-		 * An instance of the resize observer that helps dynamically determine the geometry of the toolbar
-		 * and manage items that do not fit into a single row.
-		 *
-		 * **Note:** Created in {@link #init}.
-		 *
-		 * @protected
-		 * @member {module:utils/dom/getresizeobserver~ResizeObserver}
-		 */
-		this.resizeObserver = null;
-
 		// Wait for the EditorUI#init. EditableElement is not available before.
 		editor.ui.once( 'ready', () => {
 			this.focusTracker.add( editor.ui.getEditableElement() );
 			this.focusTracker.add( this.toolbarView.element );
 		} );
+
+		/**
+		 * An instance of the resize observer that allows to respond to changes in editable's geometry
+		 * so the toolbar can stay within its boundaries (and group toolbar items that do not fit).
+		 *
+		 * **Note**: Used only when `shouldNotGroupWhenFull` was **not** set in the
+		 * {@link module:core/editor/editorconfig~EditorConfig#balloonToolbar configuration}.
+		 *
+		 * **Note:** Created in {@link #init}.
+		 *
+		 * @protected
+		 * @member {module:utils/dom/resizeobserver~ResizeObserver}
+		 */
+		this._resizeObserver = null;
 
 		/**
 		 * The contextual balloon plugin instance.
@@ -154,7 +157,7 @@ export default class BalloonToolbar extends Plugin {
 				const editableElement = editor.ui.view.editable.element;
 
 				// Set toolbar's max-width on the initialization and update it on the editable resize.
-				this.resizeObserver = new ResizeObserver( editableElement, () => {
+				this._resizeObserver = new ResizeObserver( editableElement, () => {
 					// In the balloon editor toolbar's max-width should be set to the 0.9 of the editable's width.
 					// It's a safe value, because it keeps the balloon very close to the boundaries of the editable.
 					this.toolbarView.maxWidth = toPx( new Rect( editableElement ).width * .9 );
@@ -183,7 +186,9 @@ export default class BalloonToolbar extends Plugin {
 	 */
 	_createToolbarView() {
 		const shouldGroupWhenFull = !this._balloonConfig.shouldNotGroupWhenFull;
-		const toolbarView = new ToolbarView( this.editor.locale, { shouldGroupWhenFull } );
+		const toolbarView = new ToolbarView( this.editor.locale, {
+			shouldGroupWhenFull
+		} );
 
 		toolbarView.extendTemplate( {
 			attributes: {
@@ -297,8 +302,8 @@ export default class BalloonToolbar extends Plugin {
 		this.toolbarView.destroy();
 		this.focusTracker.destroy();
 
-		if ( this.resizeObserver ) {
-			this.resizeObserver.destroy();
+		if ( this._resizeObserver ) {
+			this._resizeObserver.destroy();
 		}
 	}
 
@@ -354,6 +359,8 @@ function getBalloonPositions( isBackward ) {
  * Contextual toolbar configuration. Used by the {@link module:ui/toolbar/balloon/balloontoolbar~BalloonToolbar}
  * feature.
  *
+ * ## Configuring toolbar items
+ *
  *		const config = {
  *			balloonToolbar: [ 'bold', 'italic', 'undo', 'redo' ]
  *		};
@@ -365,6 +372,17 @@ function getBalloonPositions( isBackward ) {
  *		};
  *
  * Read also about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
+ *
+ * ## Configuring items grouping
+ *
+ * You can prevent automatic items grouping by setting the `shouldNotGroupWhenFull` option:
+ *
+ *		const config = {
+ *			balloonToolbar: {
+ *				items: [ 'bold', 'italic', 'undo', 'redo' ]
+ *			},
+ *			shouldNotGroupWhenFull: true
+ *		};
  *
  * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#balloonToolbar
  */
