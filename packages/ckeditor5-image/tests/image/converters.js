@@ -259,5 +259,23 @@ describe( 'Image converters', () => {
 				'<figure class="ck-widget image" contenteditable="false"><img src=""></img></figure>'
 			);
 		} );
+
+		it( 'should set attribute on <img> even if other element is present inside figure', () => {
+			editor.model.schema.register( 'foo', {
+				allowIn: 'image'
+			} );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'foo', view: 'foo' } );
+
+			setModelData( model, '<image src=""><foo></foo></image>' );
+			const image = document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'alt', 'foo bar', image );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				'<figure class="ck-widget image" contenteditable="false"><foo></foo><img alt="foo bar" src=""></img></figure>'
+			);
+		} );
 	} );
 } );
