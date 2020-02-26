@@ -30,33 +30,33 @@ describe( 'getParents', () => {
 		div = createElement( document, 'div', {}, [ p1, p2 ] );
 	} );
 
-	function test( a, b, lca ) {
+	function testParents( a, b, lca ) {
 		expect( getCommonAncestor( a, b ) ).to.equal( lca );
 		expect( getCommonAncestor( b, a ) ).to.equal( lca );
 	}
 
 	it( 'should return lowest common ancestor of nodes in different tree branches', () => {
-		test( p1, p2, div );
-		test( span1, span2, p1 );
-		test( b, span2, p1 );
-		test( i, b, div );
+		testParents( p1, p2, div );
+		testParents( span1, span2, p1 );
+		testParents( b, span2, p1 );
+		testParents( i, b, div );
 	} );
 
 	it( 'should return one of nodes if it is a parent of another node', () => {
-		test( div, p1, div );
-		test( p1, b, p1 );
+		testParents( div, p1, div );
+		testParents( p1, b, p1 );
 	} );
 
 	it( 'should return the node if both parameters are same', () => {
-		test( div, div, div );
-		test( b, b, b );
+		testParents( div, div, div );
+		testParents( b, b, b );
 	} );
 
 	it( 'should return null for nodes that do not have common ancestor (different trees)', () => {
 		const diffB = createElement( document, 'b' );
 		const diffDiv = createElement( document, 'div', {}, diffB );
 
-		test( diffB, span1, null );
-		test( diffDiv, p1, null );
+		testParents( diffB, span1, null );
+		testParents( diffDiv, p1, null );
 	} );
 } );
