@@ -1825,7 +1825,7 @@ describe( 'downcast selection converters', () => {
 	describe( 'default converters', () => {
 		describe( 'range selection', () => {
 			it( 'in same container', () => {
-				test(
+				testSelection(
 					[ 1, 4 ],
 					'foobar',
 					'f{oob}ar'
@@ -1833,7 +1833,7 @@ describe( 'downcast selection converters', () => {
 			} );
 
 			it( 'in same container with unicode characters', () => {
-				test(
+				testSelection(
 					[ 2, 6 ],
 					'நிலைக்கு',
 					'நி{லைக்}கு'
@@ -1841,7 +1841,7 @@ describe( 'downcast selection converters', () => {
 			} );
 
 			it( 'in same container, over attribute', () => {
-				test(
+				testSelection(
 					[ 1, 5 ],
 					'fo<$text bold="true">ob</$text>ar',
 					'f{o<strong>ob</strong>a}r'
@@ -1849,7 +1849,7 @@ describe( 'downcast selection converters', () => {
 			} );
 
 			it( 'in same container, next to attribute', () => {
-				test(
+				testSelection(
 					[ 1, 2 ],
 					'fo<$text bold="true">ob</$text>ar',
 					'f{o}<strong>ob</strong>ar'
@@ -1857,7 +1857,7 @@ describe( 'downcast selection converters', () => {
 			} );
 
 			it( 'in same attribute', () => {
-				test(
+				testSelection(
 					[ 2, 4 ],
 					'f<$text bold="true">ooba</$text>r',
 					'f<strong>o{ob}a</strong>r'
@@ -1865,7 +1865,7 @@ describe( 'downcast selection converters', () => {
 			} );
 
 			it( 'in same attribute, selection same as attribute', () => {
-				test(
+				testSelection(
 					[ 2, 4 ],
 					'fo<$text bold="true">ob</$text>ar',
 					'fo{<strong>ob</strong>}ar'
@@ -1873,7 +1873,7 @@ describe( 'downcast selection converters', () => {
 			} );
 
 			it( 'starts in text node, ends in attribute #1', () => {
-				test(
+				testSelection(
 					[ 1, 3 ],
 					'fo<$text bold="true">ob</$text>ar',
 					'f{o<strong>o}b</strong>ar'
@@ -1881,7 +1881,7 @@ describe( 'downcast selection converters', () => {
 			} );
 
 			it( 'starts in text node, ends in attribute #2', () => {
-				test(
+				testSelection(
 					[ 1, 4 ],
 					'fo<$text bold="true">ob</$text>ar',
 					'f{o<strong>ob</strong>}ar'
@@ -1889,7 +1889,7 @@ describe( 'downcast selection converters', () => {
 			} );
 
 			it( 'starts in attribute, ends in text node', () => {
-				test(
+				testSelection(
 					[ 3, 5 ],
 					'fo<$text bold="true">ob</$text>ar',
 					'fo<strong>o{b</strong>a}r'
@@ -1904,7 +1904,7 @@ describe( 'downcast selection converters', () => {
 				}, { priority: 'high' } );
 
 				// Similar test case as the first in this suite.
-				test(
+				testSelection(
 					[ 1, 4 ],
 					'foobar',
 					'foobar' // No selection in view.
@@ -1912,7 +1912,7 @@ describe( 'downcast selection converters', () => {
 			} );
 
 			it( 'should convert backward selection', () => {
-				test(
+				testSelection(
 					[ 1, 3, 'backward' ],
 					'foobar',
 					'f{oo}bar'
@@ -1930,7 +1930,7 @@ describe( 'downcast selection converters', () => {
 			} );
 
 			it( 'in container', () => {
-				test(
+				testSelection(
 					[ 1, 1 ],
 					'foobar',
 					'f{}oobar'
@@ -1938,7 +1938,7 @@ describe( 'downcast selection converters', () => {
 			} );
 
 			it( 'in attribute', () => {
-				test(
+				testSelection(
 					[ 3, 3 ],
 					'f<$text bold="true">ooba</$text>r',
 					'f<strong>oo{}ba</strong>r'
@@ -2139,7 +2139,7 @@ describe( 'downcast selection converters', () => {
 				}, { priority: 'high' } );
 
 				// Similar test case as above.
-				test(
+				testSelection(
 					[ 3, 3 ],
 					'f<$text bold="true">ooba</$text>r',
 					'foobar' // No selection in view and no attribute.
@@ -2151,13 +2151,13 @@ describe( 'downcast selection converters', () => {
 	describe( 'clean-up', () => {
 		describe( 'convertRangeSelection', () => {
 			it( 'should remove all ranges before adding new range', () => {
-				test(
+				testSelection(
 					[ 0, 2 ],
 					'foobar',
 					'{fo}obar'
 				);
 
-				test(
+				testSelection(
 					[ 3, 5 ],
 					'foobar',
 					'foo{ba}r'
@@ -2169,13 +2169,13 @@ describe( 'downcast selection converters', () => {
 
 		describe( 'convertCollapsedSelection', () => {
 			it( 'should remove all ranges before adding new range', () => {
-				test(
+				testSelection(
 					[ 2, 2 ],
 					'foobar',
 					'fo{}obar'
 				);
 
-				test(
+				testSelection(
 					[ 3, 3 ],
 					'foobar',
 					'foo{}bar'
@@ -2187,7 +2187,7 @@ describe( 'downcast selection converters', () => {
 
 		describe( 'clearAttributes', () => {
 			it( 'should remove all ranges before adding new range', () => {
-				test(
+				testSelection(
 					[ 3, 3 ],
 					'foobar',
 					'foo<strong>[]</strong>bar',
@@ -2210,7 +2210,7 @@ describe( 'downcast selection converters', () => {
 			} );
 
 			it( 'should do nothing if the attribute element had been already removed', () => {
-				test(
+				testSelection(
 					[ 3, 3 ],
 					'foobar',
 					'foo<strong>[]</strong>bar',
@@ -2288,7 +2288,7 @@ describe( 'downcast selection converters', () => {
 		} );
 
 		it( 'should not be used to convert selection that is not on table cell', () => {
-			test(
+			testSelection(
 				[ 1, 5 ],
 				'f{o<$text bold="true">ob</$text>a}r',
 				'f{o<strong>ob</strong>a}r'
@@ -2296,7 +2296,7 @@ describe( 'downcast selection converters', () => {
 		} );
 
 		it( 'should add a class to the selected table cell', () => {
-			test(
+			testSelection(
 				// table tr#0 td#0 [foo, table tr#0 td#0 bar]
 				[ [ 0, 0, 0, 0 ], [ 0, 0, 0, 3 ] ],
 				'<table><tr><td>foo</td></tr><tr><td>bar</td></tr></table>',
@@ -2305,7 +2305,7 @@ describe( 'downcast selection converters', () => {
 		} );
 
 		it( 'should not be used if selection contains more than just a table cell', () => {
-			test(
+			testSelection(
 				// table tr td#1 f{oo bar, table tr#2 bar]
 				[ [ 0, 0, 0, 1 ], [ 0, 0, 1, 3 ] ],
 				'<table><tr><td>foo</td><td>bar</td></tr></table>',
@@ -2319,7 +2319,7 @@ describe( 'downcast selection converters', () => {
 	// to set the selection (because then we would test converters using converters).
 	// Instead, the `test` function expects to be passed `selectionPaths` which is an array containing two numbers or two arrays,
 	// that are offsets or paths of selection positions in root element.
-	function test( selectionPaths, modelInput, expectedView, selectionAttributes = {} ) {
+	function testSelection( selectionPaths, modelInput, expectedView, selectionAttributes = {} ) {
 		// Parse passed `modelInput` string and set it as current model.
 		setModelData( model, modelInput );
 

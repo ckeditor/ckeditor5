@@ -38,7 +38,7 @@ describe( 'DowncastWriter', () => {
 			 * @param {String} wrapAttribute
 			 * @param {String} expected
 			 */
-			function test( input, wrapAttribute, expected ) {
+			function testWrap( input, wrapAttribute, expected ) {
 				const { view, selection } = parse( input );
 				const newRange = writer.wrap( selection.getFirstRange(), parse( wrapAttribute ) );
 
@@ -47,7 +47,7 @@ describe( 'DowncastWriter', () => {
 			}
 
 			it( 'wraps single text node', () => {
-				test(
+				testWrap(
 					'<container:p>[foobar]</container:p>',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'<container:p>[<attribute:b view-priority="1">foobar</attribute:b>]</container:p>'
@@ -55,7 +55,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'wraps single text node in document fragment', () => {
-				test(
+				testWrap(
 					'{foobar}',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'[<attribute:b view-priority="1">foobar</attribute:b>]'
@@ -99,7 +99,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'wraps part of a single text node #1', () => {
-				test(
+				testWrap(
 					'<container:p>[foo}bar</container:p>',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'<container:p>[<attribute:b view-priority="1">foo</attribute:b>]bar</container:p>'
@@ -107,7 +107,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'wraps part of a single text node #2', () => {
-				test(
+				testWrap(
 					'<container:p>{foo}bar</container:p>',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'<container:p>[<attribute:b view-priority="1">foo</attribute:b>]bar</container:p>'
@@ -115,7 +115,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should support unicode', () => {
-				test(
+				testWrap(
 					'<container:p>நி{லை}க்கு</container:p>',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'<container:p>நி[<attribute:b view-priority="1">லை</attribute:b>]க்கு</container:p>'
@@ -123,7 +123,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should join wrapping element with a nested attribute element', () => {
-				test(
+				testWrap(
 					'<container:p>' +
 						'<attribute:u view-priority="1">' +
 							'<attribute:b view-priority="2" class="bar">{foo}</attribute:b>' +
@@ -141,7 +141,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should join wrapping element with a part of a nested attribute element', () => {
-				test(
+				testWrap(
 					'<container:p>' +
 						'<attribute:i view-priority="1">' +
 							'<attribute:b view-priority="2" class="bar">fo{ob}ar</attribute:b>' +
@@ -161,7 +161,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'wraps part of a single text node #3', () => {
-				test(
+				testWrap(
 					'<container:p>foo{bar}</container:p>',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'<container:p>foo[<attribute:b view-priority="1">bar</attribute:b>]</container:p>'
@@ -169,7 +169,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should not wrap inside nested containers', () => {
-				test(
+				testWrap(
 					'<container:div>[foobar<container:p>baz</container:p>]</container:div>',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'<container:div>[<attribute:b view-priority="1">foobar</attribute:b><container:p>baz</container:p>]</container:div>'
@@ -177,7 +177,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'wraps according to priorities', () => {
-				test(
+				testWrap(
 					'<container:p>[<attribute:u view-priority="1">foobar</attribute:u>]</container:p>',
 
 					'<attribute:b view-priority="2"></attribute:b>',
@@ -189,7 +189,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'merges wrapped nodes #1', () => {
-				test(
+				testWrap(
 					'<container:p>' +
 						'[<attribute:b view-priority="1">foo</attribute:b>bar<attribute:b view-priority="1">baz</attribute:b>]' +
 					'</container:p>',
@@ -201,7 +201,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'merges wrapped nodes #2', () => {
-				test(
+				testWrap(
 					'<container:p><attribute:b view-priority="1">foo</attribute:b>[bar}baz</container:p>',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'<container:p><attribute:b view-priority="1">foo{bar</attribute:b>]baz</container:p>'
@@ -209,7 +209,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'merges wrapped nodes #3', () => {
-				test(
+				testWrap(
 					'<container:p><attribute:b view-priority="1">foobar</attribute:b>[baz]</container:p>',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'<container:p><attribute:b view-priority="1">foobar{baz</attribute:b>]</container:p>'
@@ -217,7 +217,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'merges wrapped nodes #4', () => {
-				test(
+				testWrap(
 					'<container:p>[foo<attribute:i view-priority="1">bar</attribute:i>]baz</container:p>',
 
 					'<attribute:b view-priority="1"></attribute:b>',
@@ -229,7 +229,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'merges wrapped nodes #5', () => {
-				test(
+				testWrap(
 					'<container:p>[foo<attribute:i view-priority="1">bar</attribute:i>baz]</container:p>',
 
 					'<attribute:b view-priority="2"></attribute:b>',
@@ -247,7 +247,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'merges wrapped nodes #6', () => {
-				test(
+				testWrap(
 					'<container:div>f{o<attribute:strong>ob</attribute:strong>a}r</container:div>',
 
 					'<attribute:span view-priority="1"></attribute:span>',
@@ -261,7 +261,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should wrap single element by merging attributes', () => {
-				test(
+				testWrap(
 					'<container:p>[<attribute:b view-priority="1" foo="bar" one="two"></attribute:b>]</container:p>',
 					'<attribute:b view-priority="1" baz="qux" one="two"></attribute:b>',
 					'<container:p>[<attribute:b view-priority="1" baz="qux" foo="bar" one="two"></attribute:b>]</container:p>'
@@ -269,7 +269,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should not merge attributes when they differ', () => {
-				test(
+				testWrap(
 					'<container:p>[<attribute:b view-priority="1" foo="bar">text</attribute:b>]</container:p>',
 
 					'<attribute:b view-priority="1" foo="baz"></attribute:b>',
@@ -283,7 +283,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should wrap single element by merging classes', () => {
-				test(
+				testWrap(
 					'<container:p>[<attribute:b view-priority="1" class="foo bar baz"></attribute:b>]</container:p>',
 					'<attribute:b view-priority="1" class="foo bar qux jax"></attribute:b>',
 					'<container:p>[<attribute:b view-priority="1" class="bar baz foo jax qux"></attribute:b>]</container:p>'
@@ -291,7 +291,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should wrap single element by merging styles', () => {
-				test(
+				testWrap(
 					'<container:p>' +
 						'[<attribute:b view-priority="1" style="color:red; position: absolute"></attribute:b>]' +
 					'</container:p>',
@@ -305,7 +305,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should not merge styles when they differ', () => {
-				test(
+				testWrap(
 					'<container:p>[<attribute:b view-priority="1" style="color:red"></attribute:b>]</container:p>',
 
 					'<attribute:b view-priority="1" style="color:black"></attribute:b>',
@@ -321,7 +321,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should not merge single elements when they have different priority', () => {
-				test(
+				testWrap(
 					'<container:p>[<attribute:b view-priority="2" style="color:red"></attribute:b>]</container:p>',
 
 					'<attribute:b view-priority="1" style="color:red"></attribute:b>',
@@ -337,7 +337,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should be merged with outside element when wrapping all children', () => {
-				test(
+				testWrap(
 					'<container:p>' +
 						'<attribute:b view-priority="1" foo="bar">[foobar<attribute:i view-priority="1">baz</attribute:i>]</attribute:b>' +
 					'</container:p>',
@@ -356,7 +356,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should be merged with broken element', () => {
-				test(
+				testWrap(
 					'<container:p>' +
 						'[<attribute:b view-priority="1" foo="bar">foo}bar</attribute:b>' +
 					'</container:p>',
@@ -371,7 +371,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should be merged with broken element and merged with siblings', () => {
-				test(
+				testWrap(
 					'<container:p>' +
 						'<attribute:b view-priority="1" baz="qux" foo="bar">xyz</attribute:b>' +
 						'[<attribute:b view-priority="1" foo="bar">foo}bar</attribute:b>' +
@@ -387,7 +387,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should wrap EmptyElement', () => {
-				test(
+				testWrap(
 					'<container:p>[<empty:img></empty:img>]</container:p>',
 					'<attribute:b></attribute:b>',
 					'<container:p>[<attribute:b view-priority="10"><empty:img></empty:img></attribute:b>]</container:p>'
@@ -405,7 +405,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should wrap UIElement', () => {
-				test(
+				testWrap(
 					'<container:p>[<ui:span></ui:span>]</container:p>',
 					'<attribute:b></attribute:b>',
 					'<container:p>[<attribute:b view-priority="10"><ui:span></ui:span></attribute:b>]</container:p>'
@@ -423,7 +423,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should keep stable hierarchy when wrapping with attribute with same priority', () => {
-				test(
+				testWrap(
 					'<container:p>[<attribute:span>foo</attribute:span>]</container:p>',
 
 					'<attribute:b></attribute:b>',
@@ -435,7 +435,7 @@ describe( 'DowncastWriter', () => {
 					'</container:p>'
 				);
 
-				test(
+				testWrap(
 					'<container:p>[<attribute:b>foo</attribute:b>]</container:p>',
 
 					'<attribute:span></attribute:span>',
@@ -449,7 +449,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should keep stable hierarchy when wrapping with attribute with same priority that can\'t be merged', () => {
-				test(
+				testWrap(
 					'<container:p>[<attribute:span name="foo">foo</attribute:span>]</container:p>',
 
 					'<attribute:span name="bar"></attribute:span>',
@@ -461,7 +461,7 @@ describe( 'DowncastWriter', () => {
 					'</container:p>'
 				);
 
-				test(
+				testWrap(
 					'<container:p>[<attribute:span name="bar">foo</attribute:span>]</container:p>',
 
 					'<attribute:span name="foo"></attribute:span>',
@@ -475,7 +475,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should not join elements if element to wrap has id', () => {
-				test(
+				testWrap(
 					'<container:p>[<attribute:span foo="foo" view-id="foo">xyz</attribute:span>]</container:p>',
 
 					'<attribute:span bar="bar"></attribute:span>',
@@ -489,7 +489,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should not join elements if wrapper element has id', () => {
-				test(
+				testWrap(
 					'<container:p>[<attribute:span foo="foo">xyz</attribute:span>]</container:p>',
 
 					'<attribute:span bar="bar" view-id="foo"></attribute:span>',
@@ -503,7 +503,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should not join elements if they have different ids', () => {
-				test(
+				testWrap(
 					'<container:p>[<attribute:span foo="foo" view-id="foo">xyz</attribute:span>]</container:p>',
 
 					'<attribute:span bar="bar" view-id="bar"></attribute:span>',
@@ -537,7 +537,7 @@ describe( 'DowncastWriter', () => {
 			 * @param {String} wrapAttribute
 			 * @param {String} expected
 			 */
-			function test( input, wrapAttribute, expected ) {
+			function testWrap( input, wrapAttribute, expected ) {
 				const { view, selection } = parse( input, { rootElement: viewRoot } );
 				viewDocument.selection._setTo( selection );
 
@@ -560,7 +560,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should wrap position at the beginning of text node', () => {
-				test(
+				testWrap(
 					'<container:p>{}foobar</container:p>',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'<container:p><attribute:b view-priority="1">[]</attribute:b>foobar</container:p>'
@@ -568,7 +568,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should wrap position inside text node', () => {
-				test(
+				testWrap(
 					'<container:p>foo{}bar</container:p>',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'<container:p>foo<attribute:b view-priority="1">[]</attribute:b>bar</container:p>'
@@ -576,7 +576,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should support unicode', () => {
-				test(
+				testWrap(
 					'<container:p>நிலை{}க்கு</container:p>',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'<container:p>நிலை<attribute:b view-priority="1">[]</attribute:b>க்கு</container:p>'
@@ -584,7 +584,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should wrap position inside document fragment', () => {
-				test(
+				testWrap(
 					'<attribute:b view-priority="1">foo</attribute:b>[]<attribute:b view-priority="3">bar</attribute:b>',
 
 					'<attribute:b view-priority="2"></attribute:b>',
@@ -596,7 +596,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should wrap position at the end of text node', () => {
-				test(
+				testWrap(
 					'<container:p>foobar{}</container:p>',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'<container:p>foobar<attribute:b view-priority="1">[]</attribute:b></container:p>'
@@ -604,7 +604,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should merge with existing attributes #1', () => {
-				test(
+				testWrap(
 					'<container:p><attribute:b view-priority="1">foo</attribute:b>[]</container:p>',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'<container:p><attribute:b view-priority="1">foo{}</attribute:b></container:p>'
@@ -612,7 +612,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should merge with existing attributes #2', () => {
-				test(
+				testWrap(
 					'<container:p>[]<attribute:b view-priority="1">foo</attribute:b></container:p>',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'<container:p><attribute:b view-priority="1">{}foo</attribute:b></container:p>'
@@ -620,7 +620,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should wrap when inside nested attributes', () => {
-				test(
+				testWrap(
 					'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>',
 
 					'<attribute:u view-priority="1"></attribute:u>',
@@ -636,7 +636,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should merge when wrapping between same attribute', () => {
-				test(
+				testWrap(
 					'<container:p>' +
 						'<attribute:b view-priority="1">foo</attribute:b>[]<attribute:b view-priority="1">bar</attribute:b>' +
 					'</container:p>',
@@ -648,7 +648,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should move position to text node if in same attribute', () => {
-				test(
+				testWrap(
 					'<container:p><attribute:b view-priority="1">foobar[]</attribute:b></container:p>',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'<container:p><attribute:b view-priority="1">foobar{}</attribute:b></container:p>'

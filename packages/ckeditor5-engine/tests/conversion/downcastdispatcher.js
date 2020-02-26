@@ -102,7 +102,7 @@ describe( 'DowncastDispatcher', () => {
 				{ type: 'insert', position, length: 1 },
 				{ type: 'attribute', position, range, attributeKey: 'key', attributeOldValue: null, attributeNewValue: 'foo' },
 				{ type: 'remove', position, length: 1, name: 'paragraph' },
-				{ type: 'insert', position, length: 3 },
+				{ type: 'insert', position, length: 3 }
 			];
 
 			view.change( writer => {

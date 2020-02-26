@@ -27,7 +27,7 @@ describe( 'DowncastWriter', () => {
 		// @param {String} input
 		// @param {String} unwrapAttribute
 		// @param {String} expected
-		function test( input, unwrapAttribute, expected ) {
+		function testUnwrap( input, unwrapAttribute, expected ) {
 			const { view, selection } = parse( input );
 
 			const newRange = writer.unwrap( selection.getFirstRange(), parse( unwrapAttribute ) );
@@ -40,7 +40,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should do nothing on collapsed ranges', () => {
-			test(
+			testUnwrap(
 				'<container:p>f{}oo</container:p>',
 				'<attribute:b view-priority="10"></attribute:b>',
 				'<container:p>f{}oo</container:p>'
@@ -48,7 +48,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should do nothing on single text node', () => {
-			test(
+			testUnwrap(
 				'<container:p>[foobar]</container:p>',
 				'<attribute:b view-priority="1"></attribute:b>',
 				'<container:p>[foobar]</container:p>'
@@ -92,7 +92,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should unwrap single node', () => {
-			test(
+			testUnwrap(
 				'<container:p>[<attribute:b view-priority="1">foobar</attribute:b>]</container:p>',
 				'<attribute:b view-priority="1"></attribute:b>',
 				'<container:p>[foobar]</container:p>'
@@ -100,7 +100,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should not unwrap attributes with different priorities #1', () => {
-			test(
+			testUnwrap(
 				'<container:p>[<attribute:b view-priority="1">foobar</attribute:b>]</container:p>',
 				'<attribute:b view-priority="2"></attribute:b>',
 				'<container:p>[<attribute:b view-priority="1">foobar</attribute:b>]</container:p>'
@@ -108,7 +108,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should not unwrap attributes with different priorities #2', () => {
-			test(
+			testUnwrap(
 				'<container:p>' +
 				'[' +
 					'<attribute:b view-priority="2">foo</attribute:b>' +
@@ -122,7 +122,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should unwrap part of the node', () => {
-			test(
+			testUnwrap(
 				'<container:p>[baz<attribute:b view-priority="1">foo}bar</attribute:b></container:p>',
 				'<attribute:b view-priority="1"></attribute:b>',
 				'<container:p>[bazfoo]<attribute:b view-priority="1">bar</attribute:b></container:p>'
@@ -130,7 +130,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should support unicode', () => {
-			test(
+			testUnwrap(
 				'<container:p>[நிலை<attribute:b view-priority="1">க்}கு</attribute:b></container:p>',
 				'<attribute:b view-priority="1"></attribute:b>',
 				'<container:p>[நிலைக்]<attribute:b view-priority="1">கு</attribute:b></container:p>'
@@ -138,7 +138,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should unwrap nested attributes', () => {
-			test(
+			testUnwrap(
 				'<container:p>' +
 					'[<attribute:u view-priority="1"><attribute:b view-priority="1">foobar</attribute:b></attribute:u>]' +
 				'</container:p>',
@@ -148,7 +148,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should unwrap a part of a nested attribute', () => {
-			test(
+			testUnwrap(
 				'<container:p>' +
 					'<attribute:u view-priority="1"><attribute:b view-priority="1">fo{ob}ar</attribute:b></attribute:u>' +
 				'</container:p>',
@@ -164,7 +164,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should merge unwrapped nodes #1', () => {
-			test(
+			testUnwrap(
 				'<container:p>foo[<attribute:b view-priority="1">bar</attribute:b>]baz</container:p>',
 				'<attribute:b view-priority="1"></attribute:b>',
 				'<container:p>foo{bar}baz</container:p>'
@@ -184,7 +184,7 @@ describe( 'DowncastWriter', () => {
 			const attribute = '<attribute:b view-priority="1"></attribute:b>';
 			const result = '<container:p>foo<attribute:u view-priority="1">bar{bazqux</attribute:u>]</container:p>';
 
-			test( input, attribute, result );
+			testUnwrap( input, attribute, result );
 		} );
 
 		it( 'should merge unwrapped nodes #3', () => {
@@ -205,7 +205,7 @@ describe( 'DowncastWriter', () => {
 				'</attribute:b>' +
 			'</container:p>';
 
-			test( input, attribute, result );
+			testUnwrap( input, attribute, result );
 		} );
 
 		it( 'should merge unwrapped nodes #4', () => {
@@ -225,7 +225,7 @@ describe( 'DowncastWriter', () => {
 				'<attribute:u view-priority="1">bar{baz}qux</attribute:u>' +
 			'</container:p>';
 
-			test( input, attribute, result );
+			testUnwrap( input, attribute, result );
 		} );
 
 		it( 'should merge unwrapped nodes #5', () => {
@@ -239,7 +239,7 @@ describe( 'DowncastWriter', () => {
 			const attribute = '<attribute:b view-priority="1"></attribute:b>';
 			const result = '<container:p>[<attribute:u view-priority="1">foobarbaz</attribute:u>]</container:p>';
 
-			test( input, attribute, result );
+			testUnwrap( input, attribute, result );
 		} );
 
 		it( 'should unwrap mixed ranges #1', () => {
@@ -252,11 +252,11 @@ describe( 'DowncastWriter', () => {
 			const attribute = '<attribute:b view-priority="1"></attribute:b>';
 			const result = '<container:p>[<attribute:u view-priority="1">foo</attribute:u>]</container:p>';
 
-			test( input, attribute, result );
+			testUnwrap( input, attribute, result );
 		} );
 
 		it( 'should unwrap mixed ranges #2', () => {
-			test(
+			testUnwrap(
 				'<container:p>' +
 					'[<attribute:u view-priority="1"><attribute:b view-priority="1">foo}</attribute:b></attribute:u>' +
 				'</container:p>',
@@ -266,7 +266,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should unwrap single element by removing matching attributes', () => {
-			test(
+			testUnwrap(
 				'<container:p>[<attribute:b view-priority="1" foo="bar" baz="qux">test</attribute:b>]</container:p>',
 				'<attribute:b view-priority="1" baz="qux"></attribute:b>',
 				'<container:p>[<attribute:b view-priority="1" foo="bar">test</attribute:b>]</container:p>'
@@ -274,7 +274,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should not unwrap single element when attributes are different', () => {
-			test(
+			testUnwrap(
 				'<container:p>[<attribute:b view-priority="1" baz="qux" foo="bar">test</attribute:b>]</container:p>',
 				'<attribute:b view-priority="1" baz="qux" test="true"></attribute:b>',
 				'<container:p>[<attribute:b view-priority="1" baz="qux" foo="bar">test</attribute:b>]</container:p>'
@@ -282,7 +282,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should unwrap single element by removing matching classes', () => {
-			test(
+			testUnwrap(
 				'<container:p>[<attribute:b view-priority="1" class="bar baz foo">test</attribute:b>]</container:p>',
 				'<attribute:b view-priority="1" class="baz foo"></attribute:b>',
 				'<container:p>[<attribute:b view-priority="1" class="bar">test</attribute:b>]</container:p>'
@@ -290,7 +290,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should not unwrap single element when classes are different', () => {
-			test(
+			testUnwrap(
 				'<container:p>[<attribute:b view-priority="1" class="bar baz foo">test</attribute:b>]</container:p>',
 				'<attribute:b view-priority="1" class="baz foo qux"></attribute:b>',
 				'<container:p>[<attribute:b view-priority="1" class="bar baz foo">test</attribute:b>]</container:p>'
@@ -298,7 +298,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should unwrap single element by removing matching styles', () => {
-			test(
+			testUnwrap(
 				'<container:p>' +
 					'[<attribute:b view-priority="1" style="color:red;position:absolute;top:10px;">test</attribute:b>]' +
 				'</container:p>',
@@ -308,7 +308,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should not unwrap single element when styles are different', () => {
-			test(
+			testUnwrap(
 				'<container:p>' +
 					'[<attribute:b view-priority="1" style="color:red;position:absolute;top:10px">test</attribute:b>]' +
 				'</container:p>',
@@ -320,7 +320,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should partially unwrap part of a node', () => {
-			test(
+			testUnwrap(
 				'<container:p>' +
 					'[<attribute:b view-priority="1" baz="qux" foo="bar">foo}bar</attribute:b>' +
 				'</container:p>',
@@ -333,7 +333,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should partially unwrap a nested attribute', () => {
-			test(
+			testUnwrap(
 				'<container:p>' +
 					'[<attribute:i view-priority="1">' +
 						'<attribute:b view-priority="1" style="color:red;position:absolute;top:10px;">test</attribute:b>' +
@@ -349,7 +349,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should partially unwrap a part of a nested attribute', () => {
-			test(
+			testUnwrap(
 				'<container:p>' +
 					'<attribute:i view-priority="1">' +
 						'<attribute:b view-priority="1" style="color:red;position:absolute;top:10px;">t{es}t</attribute:b>' +
@@ -367,7 +367,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should be merged after being partially unwrapped', () => {
-			test(
+			testUnwrap(
 				'<container:p>' +
 					'<attribute:b view-priority="1" baz="qux">xyz</attribute:b>' +
 					'[<attribute:b view-priority="1" baz="qux" foo="bar">foo}bar</attribute:b>' +
@@ -381,7 +381,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should unwrap single node in document fragment', () => {
-			test(
+			testUnwrap(
 				'<container:p>[<attribute:b view-priority="1">foobar</attribute:b>]</container:p>',
 				'<attribute:b view-priority="1"></attribute:b>',
 				'<container:p>[foobar]</container:p>'
@@ -389,7 +389,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should unwrap EmptyElement', () => {
-			test(
+			testUnwrap(
 				'<container:p>[<attribute:b><empty:img></empty:img></attribute:b>]</container:p>',
 				'<attribute:b></attribute:b>',
 				'<container:p>[<empty:img></empty:img>]</container:p>'
@@ -408,7 +408,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should unwrap UIElement', () => {
-			test(
+			testUnwrap(
 				'<container:p>[<attribute:b><ui:span></ui:span></attribute:b>]</container:p>',
 				'<attribute:b></attribute:b>',
 				'<container:p>[<ui:span></ui:span>]</container:p>'

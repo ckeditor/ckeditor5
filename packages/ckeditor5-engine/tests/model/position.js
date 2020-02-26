@@ -1209,14 +1209,14 @@ describe( 'Position', () => {
 			const pos1 = new Position( root, [ 0 ] );
 			const pos2 = new Position( otherRoot, [ 0 ] );
 
-			test( pos1, pos2, null );
+			testAncestor( pos1, pos2, null );
 		} );
 
 		it( 'for two the same positions returns the parent element #1', () => {
 			const fPosition = new Position( root, [ 1, 0, 0 ] );
 			const otherPosition = new Position( root, [ 1, 0, 0 ] );
 
-			test( fPosition, otherPosition, li1 );
+			testAncestor( fPosition, otherPosition, li1 );
 		} );
 
 		it( 'for two the same positions returns the parent element #2', () => {
@@ -1230,21 +1230,21 @@ describe( 'Position', () => {
 
 			const postion = new Position( root, [ 0, 3 ] ); // <p>foo^bar</p>
 
-			test( postion, postion, p );
+			testAncestor( postion, postion, p );
 		} );
 
 		it( 'for two positions in the same element returns the element', () => {
 			const fPosition = new Position( root, [ 1, 0, 0 ] );
 			const zPosition = new Position( root, [ 1, 0, 2 ] );
 
-			test( fPosition, zPosition, li1 );
+			testAncestor( fPosition, zPosition, li1 );
 		} );
 
 		it( 'works when one positions is nested deeper than the other', () => {
 			const zPosition = new Position( root, [ 1, 0, 2 ] );
 			const liPosition = new Position( root, [ 1, 1 ] );
 
-			test( liPosition, zPosition, ul );
+			testAncestor( liPosition, zPosition, ul );
 		} );
 
 		// Checks if by mistake someone didn't use getCommonPath() + getNodeByPath().
@@ -1259,7 +1259,7 @@ describe( 'Position', () => {
 
 			const postion = new Position( root, [ 0, 0 ] ); // <p>^<a></a></p>
 
-			test( postion, postion, p );
+			testAncestor( postion, postion, p );
 		} );
 
 		it( 'works fine with positions located in DocumentFragment', () => {
@@ -1267,10 +1267,10 @@ describe( 'Position', () => {
 			const zPosition = new Position( docFrag, [ 1, 0, 2 ] );
 			const afterLiPosition = new Position( docFrag, [ 1, 2 ] );
 
-			test( zPosition, afterLiPosition, ul );
+			testAncestor( zPosition, afterLiPosition, ul );
 		} );
 
-		function test( positionA, positionB, lca ) {
+		function testAncestor( positionA, positionB, lca ) {
 			expect( positionA.getCommonAncestor( positionB ) ).to.equal( lca );
 			expect( positionB.getCommonAncestor( positionA ) ).to.equal( lca );
 		}

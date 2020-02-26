@@ -25,7 +25,7 @@ describe( 'DowncastWriter', () => {
 		// @param {String} input
 		// @param {Array.<String>} nodesToInsert
 		// @param {String} expected
-		function test( input, nodesToInsert, expected ) {
+		function testInsert( input, nodesToInsert, expected ) {
 			nodesToInsert = nodesToInsert.map( node => parse( node ) );
 			const { view, selection } = parse( input );
 
@@ -40,7 +40,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should return collapsed range in insertion position when using empty array', () => {
-			test(
+			testInsert(
 				'<container:p>foo{}bar</container:p>',
 				[],
 				'<container:p>foo{}bar</container:p>'
@@ -48,7 +48,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should insert text into another text node #1', () => {
-			test(
+			testInsert(
 				'<container:p>foo{}bar</container:p>',
 				[ 'baz' ],
 				'<container:p>foo{baz}bar</container:p>'
@@ -56,7 +56,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should insert text into another text node #2', () => {
-			test(
+			testInsert(
 				'<container:p>foobar{}</container:p>',
 				[ 'baz' ],
 				'<container:p>foobar{baz]</container:p>'
@@ -64,7 +64,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should insert text into another text node #3', () => {
-			test(
+			testInsert(
 				'<container:p>{}foobar</container:p>',
 				[ 'baz' ],
 				'<container:p>[baz}foobar</container:p>'
@@ -72,7 +72,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should break attributes when inserting into text node', () => {
-			test(
+			testInsert(
 				'<container:p>foo{}bar</container:p>',
 				[ '<attribute:b view-priority="1">baz</attribute:b>' ],
 				'<container:p>foo[<attribute:b view-priority="1">baz</attribute:b>]bar</container:p>'
@@ -80,7 +80,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should merge text nodes', () => {
-			test(
+			testInsert(
 				'<container:p>[]foobar</container:p>',
 				[ 'baz' ],
 				'<container:p>[baz}foobar</container:p>'
@@ -88,7 +88,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should merge same attribute nodes', () => {
-			test(
+			testInsert(
 				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>',
 				[ '<attribute:b view-priority="1">baz</attribute:b>' ],
 				'<container:p><attribute:b view-priority="1">foo{baz}bar</attribute:b></container:p>'
@@ -96,7 +96,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should not merge different attributes', () => {
-			test(
+			testInsert(
 				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>',
 				[ '<attribute:b view-priority="2">baz</attribute:b>' ],
 				'<container:p>' +
@@ -116,7 +116,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should allow to insert multiple nodes', () => {
-			test(
+			testInsert(
 				'<container:p>[]</container:p>',
 				[ '<attribute:b view-priority="1">foo</attribute:b>', 'bar' ],
 				'<container:p>[<attribute:b view-priority="1">foo</attribute:b>bar]</container:p>'
@@ -124,7 +124,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should merge after inserting multiple nodes', () => {
-			test(
+			testInsert(
 				'<container:p><attribute:b view-priority="1">qux</attribute:b>[]baz</container:p>',
 				[ '<attribute:b view-priority="1">foo</attribute:b>', 'bar' ],
 				'<container:p><attribute:b view-priority="1">qux{foo</attribute:b>bar}baz</container:p>'
@@ -132,7 +132,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should insert text into in document fragment', () => {
-			test(
+			testInsert(
 				'foo{}bar',
 				[ 'baz' ],
 				'foo{baz}bar'
@@ -140,7 +140,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should merge same attribute nodes in document fragment', () => {
-			test(
+			testInsert(
 				'<attribute:b view-priority="2">foo</attribute:b>[]',
 				[ '<attribute:b view-priority="1">bar</attribute:b>' ],
 				'<attribute:b view-priority="2">foo</attribute:b>[<attribute:b view-priority="1">bar</attribute:b>]'
@@ -148,7 +148,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should insert unicode text into unicode text', () => {
-			test(
+			testInsert(
 				'நி{}க்கு',
 				[ 'லை' ],
 				'நி{லை}க்கு'
@@ -187,7 +187,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should allow to insert EmptyElement into container', () => {
-			test(
+			testInsert(
 				'<container:p>[]</container:p>',
 				[ '<empty:img></empty:img>' ],
 				'<container:p>[<empty:img></empty:img>]</container:p>'

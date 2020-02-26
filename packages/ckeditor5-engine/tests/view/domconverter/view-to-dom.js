@@ -248,7 +248,7 @@ describe( 'DomConverter', () => {
 				);
 			} );
 
-			function test( inputTexts, output ) {
+			function testConvert( inputTexts, output ) {
 				if ( typeof inputTexts == 'string' ) {
 					inputTexts = [ inputTexts ];
 				}
@@ -272,150 +272,150 @@ describe( 'DomConverter', () => {
 			}
 
 			// At the beginning.
-			test( ' x', '_x' );
-			test( '  x', '_ x' );
-			test( '   x', '_ _x' );
-			test( '    x', '_ _ x' );
+			testConvert( ' x', '_x' );
+			testConvert( '  x', '_ x' );
+			testConvert( '   x', '_ _x' );
+			testConvert( '    x', '_ _ x' );
 
 			// At the end.
-			test( 'x ', 'x_' );
-			test( 'x  ', 'x _' );
-			test( 'x   ', 'x __' );
-			test( 'x    ', 'x _ _' );
+			testConvert( 'x ', 'x_' );
+			testConvert( 'x  ', 'x _' );
+			testConvert( 'x   ', 'x __' );
+			testConvert( 'x    ', 'x _ _' );
 
 			// In the middle.
-			test( 'x x', 'x x' );
-			test( 'x  x', 'x _x' );
-			test( 'x   x', 'x _ x' );
-			test( 'x    x', 'x _ _x' );
+			testConvert( 'x x', 'x x' );
+			testConvert( 'x  x', 'x _x' );
+			testConvert( 'x   x', 'x _ x' );
+			testConvert( 'x    x', 'x _ _x' );
 
 			// Complex.
-			test( ' x ', '_x_' );
-			test( '  x  x  ', '_ x _x _' );
-			test( '   x x  ', '_ _x x _' );
-			test( '   x x   ', '_ _x x __' );
-			test( '   x    x ', '_ _x _ _x_' );
+			testConvert( ' x ', '_x_' );
+			testConvert( '  x  x  ', '_ x _x _' );
+			testConvert( '   x x  ', '_ _x x _' );
+			testConvert( '   x x   ', '_ _x x __' );
+			testConvert( '   x    x ', '_ _x _ _x_' );
 
 			// Only spaces.
-			test( ' ', '_' );
-			test( '  ', '__' );
-			test( '   ', '_ _' );
-			test( '    ', '_ __' );
-			test( '     ', '_ _ _' );
-			test( '      ', '_ _ __' );
+			testConvert( ' ', '_' );
+			testConvert( '  ', '__' );
+			testConvert( '   ', '_ _' );
+			testConvert( '    ', '_ __' );
+			testConvert( '     ', '_ _ _' );
+			testConvert( '      ', '_ _ __' );
 
 			// With hard &nbsp;
 			// It should be treated like a normal sign.
-			test( '_x', '_x' );
-			test( ' _x', '__x' );
-			test( '  _x', '_ _x' );
-			test( ' __x', '___x' );
-			test( '___x', '___x' );
-			test( '_ _x', '_ _x' );
-			test( ' _ x', '__ x' );
-			test( '  _x', '_ _x' );
+			testConvert( '_x', '_x' );
+			testConvert( ' _x', '__x' );
+			testConvert( '  _x', '_ _x' );
+			testConvert( ' __x', '___x' );
+			testConvert( '___x', '___x' );
+			testConvert( '_ _x', '_ _x' );
+			testConvert( ' _ x', '__ x' );
+			testConvert( '  _x', '_ _x' );
 
-			test( 'x_', 'x_' );
-			test( 'x_ ', 'x__' );
-			test( 'x_  ', 'x_ _' );
-			test( 'x__ ', 'x___' );
-			test( 'x___', 'x___' );
-			test( 'x_ _', 'x_ _' );
-			test( 'x _ ', 'x __' );
-			test( 'x  _', 'x __' );
+			testConvert( 'x_', 'x_' );
+			testConvert( 'x_ ', 'x__' );
+			testConvert( 'x_  ', 'x_ _' );
+			testConvert( 'x__ ', 'x___' );
+			testConvert( 'x___', 'x___' );
+			testConvert( 'x_ _', 'x_ _' );
+			testConvert( 'x _ ', 'x __' );
+			testConvert( 'x  _', 'x __' );
 
-			test( 'x_x', 'x_x' );
-			test( 'x___x', 'x___x' );
-			test( 'x__ x', 'x__ x' );
-			test( 'x_  x', 'x_ _x' );
-			test( 'x  _x', 'x __x' );
-			test( 'x __x', 'x __x' );
-			test( 'x _ x', 'x _ x' );
-			test( 'x  _  x', 'x __ _x' );
+			testConvert( 'x_x', 'x_x' );
+			testConvert( 'x___x', 'x___x' );
+			testConvert( 'x__ x', 'x__ x' );
+			testConvert( 'x_  x', 'x_ _x' );
+			testConvert( 'x  _x', 'x __x' );
+			testConvert( 'x __x', 'x __x' );
+			testConvert( 'x _ x', 'x _ x' );
+			testConvert( 'x  _  x', 'x __ _x' );
 
-			test( [ 'x', 'y' ], 'xy' );
-			test( [ 'x ', 'y' ], 'x y' );
-			test( [ 'x  ', 'y' ], 'x _y' );
-			test( [ 'x   ', 'y' ], 'x __y' );
-			test( [ 'x    ', 'y' ], 'x _ _y' );
+			testConvert( [ 'x', 'y' ], 'xy' );
+			testConvert( [ 'x ', 'y' ], 'x y' );
+			testConvert( [ 'x  ', 'y' ], 'x _y' );
+			testConvert( [ 'x   ', 'y' ], 'x __y' );
+			testConvert( [ 'x    ', 'y' ], 'x _ _y' );
 
-			test( [ 'x', ' y' ], 'x y' );
-			test( [ 'x ', ' y' ], 'x_ y' );
-			test( [ 'x  ', ' y' ], 'x _ y' );
-			test( [ 'x   ', ' y' ], 'x __ y' );
-			test( [ 'x    ', ' y' ], 'x _ _ y' );
+			testConvert( [ 'x', ' y' ], 'x y' );
+			testConvert( [ 'x ', ' y' ], 'x_ y' );
+			testConvert( [ 'x  ', ' y' ], 'x _ y' );
+			testConvert( [ 'x   ', ' y' ], 'x __ y' );
+			testConvert( [ 'x    ', ' y' ], 'x _ _ y' );
 
-			test( [ 'x', '_y' ], 'x_y' );
-			test( [ 'x ', '_y' ], 'x _y' );
-			test( [ 'x  ', '_y' ], 'x __y' );
+			testConvert( [ 'x', '_y' ], 'x_y' );
+			testConvert( [ 'x ', '_y' ], 'x _y' );
+			testConvert( [ 'x  ', '_y' ], 'x __y' );
 
 			// Two text nodes.
-			test( [ 'x   ', '_y' ], 'x ___y' );
-			test( [ 'x    ', '_y' ], 'x _ __y' );
+			testConvert( [ 'x   ', '_y' ], 'x ___y' );
+			testConvert( [ 'x    ', '_y' ], 'x _ __y' );
 
-			test( [ 'x', '  y' ], 'x _y' );
-			test( [ 'x ', '  y' ], 'x_ _y' );
-			test( [ 'x  ', '  y' ], 'x _ _y' );
-			test( [ 'x   ', '  y' ], 'x __ _y' );
-			test( [ 'x    ', '  y' ], 'x _ _ _y' );
+			testConvert( [ 'x', '  y' ], 'x _y' );
+			testConvert( [ 'x ', '  y' ], 'x_ _y' );
+			testConvert( [ 'x  ', '  y' ], 'x _ _y' );
+			testConvert( [ 'x   ', '  y' ], 'x __ _y' );
+			testConvert( [ 'x    ', '  y' ], 'x _ _ _y' );
 
-			test( [ 'x', '   y' ], 'x _ y' );
-			test( [ 'x ', '   y' ], 'x_ _ y' );
-			test( [ 'x  ', '   y' ], 'x _ _ y' );
-			test( [ 'x   ', '   y' ], 'x __ _ y' );
-			test( [ 'x    ', '   y' ], 'x _ _ _ y' );
+			testConvert( [ 'x', '   y' ], 'x _ y' );
+			testConvert( [ 'x ', '   y' ], 'x_ _ y' );
+			testConvert( [ 'x  ', '   y' ], 'x _ _ y' );
+			testConvert( [ 'x   ', '   y' ], 'x __ _ y' );
+			testConvert( [ 'x    ', '   y' ], 'x _ _ _ y' );
 
-			test( [ 'x',	' '		], 'x_' );
-			test( [ 'x',	'  '	], 'x _' );
-			test( [ 'x',	'   '	], 'x __' );
-			test( [ 'x ',	' '		], 'x__' );
-			test( [ 'x ',	'  '	], 'x_ _' );
-			test( [ 'x ',	'   '	], 'x_ __' );
-			test( [ 'x  ',	' '		], 'x __' );
-			test( [ 'x  ',	'  '	], 'x _ _' );
-			test( [ 'x  ',	'   '	], 'x _ __' );
-			test( [ 'x   ',	' '		], 'x ___' );
-			test( [ 'x   ',	'  '	], 'x __ _' );
-			test( [ 'x   ',	'   '	], 'x __ __' );
+			testConvert( [ 'x',	' '		], 'x_' );
+			testConvert( [ 'x',	'  '	], 'x _' );
+			testConvert( [ 'x',	'   '	], 'x __' );
+			testConvert( [ 'x ',	' '		], 'x__' );
+			testConvert( [ 'x ',	'  '	], 'x_ _' );
+			testConvert( [ 'x ',	'   '	], 'x_ __' );
+			testConvert( [ 'x  ',	' '		], 'x __' );
+			testConvert( [ 'x  ',	'  '	], 'x _ _' );
+			testConvert( [ 'x  ',	'   '	], 'x _ __' );
+			testConvert( [ 'x   ',	' '		], 'x ___' );
+			testConvert( [ 'x   ',	'  '	], 'x __ _' );
+			testConvert( [ 'x   ',	'   '	], 'x __ __' );
 
-			test( [ ' ',	'x'		], '_x' );
-			test( [ '  ',	'x'		], '_ x' );
-			test( [ '   ',	'x'		], '_ _x' );
-			test( [ ' ',	' x'	], '_ x' );
-			test( [ '  ',	' x'	], '__ x' );
-			test( [ '   ',	' x'	], '_ _ x' );
-			test( [ ' ',	'  x'	], '_ _x' );
-			test( [ '  ',	'  x'	], '__ _x' );
-			test( [ '   ',	'  x'	], '_ _ _x' );
-			test( [ ' ',	'   x'	], '_ _ x' );
-			test( [ '  ',	'   x'	], '__ _ x' );
-			test( [ '   ',	'   x'	], '_ _ _ x' );
+			testConvert( [ ' ',	'x'		], '_x' );
+			testConvert( [ '  ',	'x'		], '_ x' );
+			testConvert( [ '   ',	'x'		], '_ _x' );
+			testConvert( [ ' ',	' x'	], '_ x' );
+			testConvert( [ '  ',	' x'	], '__ x' );
+			testConvert( [ '   ',	' x'	], '_ _ x' );
+			testConvert( [ ' ',	'  x'	], '_ _x' );
+			testConvert( [ '  ',	'  x'	], '__ _x' );
+			testConvert( [ '   ',	'  x'	], '_ _ _x' );
+			testConvert( [ ' ',	'   x'	], '_ _ x' );
+			testConvert( [ '  ',	'   x'	], '__ _ x' );
+			testConvert( [ '   ',	'   x'	], '_ _ _ x' );
 
 			// "Non-empty" + "empty" text nodes.
-			test( [ 'x',	' ',		'x'		],	'x x' );
-			test( [ 'x',	' ',		' x'	],	'x_ x' );
-			test( [ 'x',	'  ',		' x'	],	'x _ x' );
-			test( [ 'x',	'   ',		'  x'	],	'x __ _x' );
-			test( [ 'x ',	' ',		' x'	],	'x__ x' );
-			test( [ 'x ',	'  ',		' x'	],	'x_ _ x' );
-			test( [ 'x ',	'   ',		'  x'	],	'x_ __ _x' );
-			test( [ 'x  ',	' ',		' x'	],	'x __ x' );
-			test( [ 'x  ',	'  ',		' x'	],	'x _ _ x' );
-			test( [ 'x  ',	'   ',		'  x'	],	'x _ __ _x' );
-			test( [ 'x   ',	' ',		' x'	],	'x ___ x' );
-			test( [ 'x   ',	'  ',		' x'	],	'x __ _ x' );
-			test( [ 'x   ',	'   ',		'  x'	],	'x __ __ _x' );
+			testConvert( [ 'x',	' ',		'x'		],	'x x' );
+			testConvert( [ 'x',	' ',		' x'	],	'x_ x' );
+			testConvert( [ 'x',	'  ',		' x'	],	'x _ x' );
+			testConvert( [ 'x',	'   ',		'  x'	],	'x __ _x' );
+			testConvert( [ 'x ',	' ',		' x'	],	'x__ x' );
+			testConvert( [ 'x ',	'  ',		' x'	],	'x_ _ x' );
+			testConvert( [ 'x ',	'   ',		'  x'	],	'x_ __ _x' );
+			testConvert( [ 'x  ',	' ',		' x'	],	'x __ x' );
+			testConvert( [ 'x  ',	'  ',		' x'	],	'x _ _ x' );
+			testConvert( [ 'x  ',	'   ',		'  x'	],	'x _ __ _x' );
+			testConvert( [ 'x   ',	' ',		' x'	],	'x ___ x' );
+			testConvert( [ 'x   ',	'  ',		' x'	],	'x __ _ x' );
+			testConvert( [ 'x   ',	'   ',		'  x'	],	'x __ __ _x' );
 
 			// "Empty" + "empty" text nodes.
-			test( [ ' ', ' ' ], '__' );
-			test( [ '  ', ' ' ], '___' );
-			test( [ '   ', ' ' ], '_ __' );
-			test( [ ' ', '  ' ], '_ _' );
-			test( [ ' ', '   ' ], '_ __' );
-			test( [ '  ', '  ' ], '__ _' );
-			test( [ '  ', '   ' ], '__ __' );
-			test( [ '   ', '  ' ], '_ _ _' );
-			test( [ '   ', '   ' ], '_ _ __' );
+			testConvert( [ ' ', ' ' ], '__' );
+			testConvert( [ '  ', ' ' ], '___' );
+			testConvert( [ '   ', ' ' ], '_ __' );
+			testConvert( [ ' ', '  ' ], '_ _' );
+			testConvert( [ ' ', '   ' ], '_ __' );
+			testConvert( [ '  ', '  ' ], '__ _' );
+			testConvert( [ '  ', '   ' ], '__ __' );
+			testConvert( [ '   ', '  ' ], '_ _ _' );
+			testConvert( [ '   ', '   ' ], '_ _ __' );
 
 			it( 'not in preformatted blocks', () => {
 				const viewPre = new ViewContainerElement( viewDocument, 'pre', null, [

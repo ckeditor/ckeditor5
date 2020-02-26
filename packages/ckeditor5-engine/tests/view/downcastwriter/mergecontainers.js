@@ -19,7 +19,7 @@ describe( 'DowncastWriter', () => {
 		//
 		// @param {String} input
 		// @param {String} expected
-		function test( input, expected ) {
+		function testMerge( input, expected ) {
 			const { view, selection } = parse( input );
 
 			const newPosition = writer.mergeContainers( selection.getFirstPosition() );
@@ -31,7 +31,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should merge two container elements - position between elements', () => {
-			test(
+			testMerge(
 				'<container:div>' +
 					'<attribute:b>foo</attribute:b>' +
 				'</container:div>' +
@@ -44,14 +44,14 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should merge two container elements - position in text', () => {
-			test(
+			testMerge(
 				'<container:div>foo</container:div>[]<container:div>bar</container:div>',
 				'<container:div>foo{}bar</container:div>'
 			);
 		} );
 
 		it( 'should merge two different container elements', () => {
-			test(
+			testMerge(
 				'<container:div>foo</container:div>[]<container:p>bar</container:p>',
 				'<container:div>foo{}bar</container:div>'
 			);
