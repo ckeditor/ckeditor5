@@ -70,7 +70,7 @@ describe( 'WidgetToolbarRepository', () => {
 		it( 'should create a widget toolbar and add it to the collection', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: () => null,
+				getRelatedElement: () => null
 			} );
 
 			expect( widgetToolbarRepository._toolbarDefinitions.size ).to.equal( 1 );
@@ -510,7 +510,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 	it( 'balloon toolbar should be hidden when the widget is selected', () => {
 		widgetToolbarRepository.register( 'fake', {
 			items: editor.config.get( 'fake.toolbar' ),
-			getRelatedElement: getSelectedFakeWidget,
+			getRelatedElement: getSelectedFakeWidget
 		} );
 
 		const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;

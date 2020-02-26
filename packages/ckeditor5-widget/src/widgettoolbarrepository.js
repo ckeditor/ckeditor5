@@ -142,7 +142,7 @@ export default class WidgetToolbarRepository extends Plugin {
 		this._toolbarDefinitions.set( toolbarId, {
 			view: toolbarView,
 			getRelatedElement,
-			balloonClassName,
+			balloonClassName
 		} );
 	}
 
@@ -216,7 +216,7 @@ export default class WidgetToolbarRepository extends Plugin {
 			this._balloon.add( {
 				view: toolbarDefinition.view,
 				position: getBalloonPositionData( this.editor, relatedElement ),
-				balloonClassName: toolbarDefinition.balloonClassName,
+				balloonClassName: toolbarDefinition.balloonClassName
 			} );
 
 			// Update toolbar position each time stack with toolbar view is switched to visible.
