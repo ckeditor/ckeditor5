@@ -19,8 +19,6 @@ const toPx = toUnit( 'px' );
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-/* globals */
-
 describe( 'InlineEditorUIView', () => {
 	let locale, view, editingView, editingViewRoot;
 	let resizeCallback;
@@ -49,6 +47,10 @@ describe( 'InlineEditorUIView', () => {
 		} );
 	} );
 
+	afterEach( () => {
+		view.destroy();
+	} );
+
 	describe( 'constructor()', () => {
 		describe( '#toolbar', () => {
 			it( 'is created', () => {
@@ -61,6 +63,16 @@ describe( 'InlineEditorUIView', () => {
 
 			it( 'is not rendered', () => {
 				expect( view.toolbar.isRendered ).to.be.false;
+			} );
+
+			it( 'should have the shouldGroupWhenFull option set based on constructor options', () => {
+				const view = new InlineEditorUIView( locale, editingView, null, {
+					shouldToolbarGroupWhenFull: true
+				} );
+
+				expect( view.toolbar.options.shouldGroupWhenFull ).to.be.true;
+
+				view.destroy();
 			} );
 		} );
 
@@ -99,14 +111,7 @@ describe( 'InlineEditorUIView', () => {
 
 	describe( 'render()', () => {
 		beforeEach( () => {
-			// We need to set this option explicitly before render phase,
-			// otherwise it is `undefined` and toolbar items grouping will be skipped in tests.
-			view.toolbar.options.shouldGroupWhenFull = true;
 			view.render();
-		} );
-
-		afterEach( () => {
-			view.destroy();
 		} );
 
 		describe( '#toolbar', () => {
@@ -118,25 +123,46 @@ describe( 'InlineEditorUIView', () => {
 				expect( view.viewportTopOffset ).to.equal( 0 );
 			} );
 
-			it( 'max-width should be set to the width of the editable element', () => {
-				const viewElement = view.editable.element;
+			describe( 'automatic resizing when shouldToolbarGroupWhenFull is "true"', () => {
+				it( 'should set and update toolbar max-width according to the width of the editable element', () => {
+					const locale = new Locale();
+					const editingView = new EditingView();
+					const editingViewRoot = createRoot( editingView.document );
+					const view = new InlineEditorUIView( locale, editingView, null, {
+						shouldToolbarGroupWhenFull: true
+					} );
+					view.editable.name = editingViewRoot.rootName;
+					view.render();
 
-				// View element should be inside the body, otherwise the `Rect` instance will complain
-				// that it's not available in the DOM.
-				global.document.body.appendChild( viewElement );
+					const editableElement = view.editable.element;
 
-				viewElement.style.width = '400px';
+					// View element should be inside the body, otherwise the `Rect` instance will complain
+					// that it's not available in the DOM.
+					global.document.body.appendChild( editableElement );
 
-				resizeCallback( [ {
-					target: viewElement,
-					contentRect: new Rect( viewElement )
-				} ] );
+					editableElement.style.width = '400px';
 
-				const editableWidthWithPadding = toPx( new Rect( viewElement ).width );
+					resizeCallback( [ {
+						target: editableElement,
+						contentRect: new Rect( editableElement )
+					} ] );
 
-				expect( view.toolbar.maxWidth ).to.be.equal( editableWidthWithPadding );
+					// Include paddings.
+					expect( view.toolbar.maxWidth ).to.be.equal( toPx( new Rect( editableElement ).width ) );
 
-				viewElement.remove();
+					editableElement.style.width = '200px';
+
+					resizeCallback( [ {
+						target: editableElement,
+						contentRect: new Rect( editableElement )
+					} ] );
+
+					// Include paddings.
+					expect( view.toolbar.maxWidth ).to.be.equal( toPx( new Rect( editableElement ).width ) );
+
+					editableElement.remove();
+					view.destroy();
+				} );
 			} );
 		} );
 
