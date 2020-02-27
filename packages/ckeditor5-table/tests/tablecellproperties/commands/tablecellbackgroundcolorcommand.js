@@ -113,7 +113,7 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if only some table cell has a backgroundColor property', () => {
+					it( 'should be undefined if only some table cells have the "backgroundColor" property', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true, backgroundColor: '#f00' },
