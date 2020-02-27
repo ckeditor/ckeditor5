@@ -1,6 +1,8 @@
 ---
 menu-title: Paste from Word
 category: features-pasting
+classes: main__content--no-toc
+toc: false
 order: 10
 ---
 
