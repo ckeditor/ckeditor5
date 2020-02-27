@@ -30,7 +30,7 @@ export function findAncestor( parentName, positionOrElement ) {
 }
 
 /**
- * Returns a first selected table cell from a multi-cell or in-cell selection.
+ * Returns the first selected table cell from a multi-cell or in-cell selection.
  *
  *		const tableCell = getSelectedTableCell( editor.model.document.selection.getFirstPosition() );
  *
