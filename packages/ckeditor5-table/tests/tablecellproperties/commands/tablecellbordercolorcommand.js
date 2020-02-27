@@ -123,7 +123,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'multi-cell selection', () => {
-					it( 'should be undefined if no table cell has a borderColor property', () => {
+					it( 'should be undefined if no table cells have the "borderColor" property', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true },
