@@ -21,7 +21,7 @@ ClassicEditor
 			'|', 'bold', 'italic', 'link',
 			'|', 'insertTable',
 			'|', 'codeBlock',
-			'|', 'undo', 'redo',
+			'|', 'undo', 'redo'
 		],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
