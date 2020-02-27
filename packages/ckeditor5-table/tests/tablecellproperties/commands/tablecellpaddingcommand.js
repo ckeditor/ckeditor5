@@ -168,7 +168,7 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if all table cell has the same padding property value', () => {
+					it( 'should be set if all table cells have the same "padding" property value', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true, padding: '2em' },
