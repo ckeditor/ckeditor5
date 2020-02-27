@@ -239,7 +239,7 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should remove verticalAlignment from a selected table cell if no value is passed', () => {
+					it( 'should remove "verticalAlignment" from selected table cells if no value is passed', () => {
 						setData( model, modelTable( [
 							[ { contents: '00', isSelected: true, verticalAlignment: 'top' }, '01' ],
 							[ '10', { contents: '11', isSelected: true, verticalAlignment: 'top' } ]
