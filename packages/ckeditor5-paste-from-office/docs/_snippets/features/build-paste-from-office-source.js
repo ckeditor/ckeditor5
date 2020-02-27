@@ -14,6 +14,7 @@ import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
 import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Font from '@ckeditor/ckeditor5-font/src/font';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
@@ -29,6 +30,7 @@ ClassicEditor.builtinPlugins.push(
 	Superscript,
 	Underline,
 	Font,
+	HorizontalLine,
 	Indent,
 	IndentBlock,
 	ImageResize,
