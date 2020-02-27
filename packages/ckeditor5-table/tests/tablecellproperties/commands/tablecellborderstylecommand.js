@@ -270,7 +270,7 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should remove borderStyle from a selected table cell if no value is passed', () => {
+					it( 'should remove "borderStyle" from selected table cells if no value is passed', () => {
 						setData( model, modelTable( [
 							[ { contents: '00', isSelected: true, borderStyle: 'solid' }, '01' ],
 							[ '10', { contents: '11', isSelected: true, borderStyle: 'solid' } ]
