@@ -14,9 +14,16 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+
+const toPx = toUnit( 'px' );
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -24,11 +31,27 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'BalloonToolbar', () => {
 	let editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
+	let resizeCallback;
+
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
+
+		// Make sure other tests of the editor do not affect tests that follow.
+		// Without it, if an instance of ResizeObserver already exists somewhere undestroyed
+		// in DOM, the following DOM mock will have no effect.
+		ResizeObserver._observerInstance = null;
+
+		testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+			resizeCallback = callback;
+
+			return {
+				observe: sinon.spy(),
+				unobserve: sinon.spy()
+			};
+		} );
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -100,6 +123,27 @@ describe( 'BalloonToolbar', () => {
 
 				return editor.destroy();
 			} );
+	} );
+
+	it( 'should not group items when the config.shouldNotGroupWhenFull option is enabled', () => {
+		const editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		return ClassicTestEditor.create( editorElement, {
+			plugins: [ Paragraph, Bold, Italic, Underline, BalloonToolbar ],
+			balloonToolbar: {
+				items: [ 'bold', 'italic', 'underline' ],
+				shouldNotGroupWhenFull: true
+			}
+		} ).then( editor => {
+			const balloonToolbar = editor.plugins.get( BalloonToolbar );
+
+			expect( balloonToolbar.toolbarView.options.shouldGroupWhenFull ).to.be.false;
+
+			return editor.destroy();
+		} ).then( () => {
+			editorElement.remove();
+		} );
 	} );
 
 	it( 'should fire internal `_selectionChangeDebounced` event 200 ms after last selection change', () => {
@@ -208,9 +252,13 @@ describe( 'BalloonToolbar', () => {
 						defaultPositions.southEastArrowNorth,
 						defaultPositions.southEastArrowNorthEast,
 						defaultPositions.southEastArrowNorthWest,
+						defaultPositions.southEastArrowNorthMiddleEast,
+						defaultPositions.southEastArrowNorthMiddleWest,
 						defaultPositions.northEastArrowSouth,
 						defaultPositions.northEastArrowSouthEast,
-						defaultPositions.northEastArrowSouthWest
+						defaultPositions.northEastArrowSouthWest,
+						defaultPositions.northEastArrowSouthMiddleEast,
+						defaultPositions.northEastArrowSouthMiddleWest
 					]
 				}
 			} );
@@ -267,9 +315,13 @@ describe( 'BalloonToolbar', () => {
 						defaultPositions.northWestArrowSouth,
 						defaultPositions.northWestArrowSouthWest,
 						defaultPositions.northWestArrowSouthEast,
+						defaultPositions.northWestArrowSouthMiddleEast,
+						defaultPositions.northWestArrowSouthMiddleWest,
 						defaultPositions.southWestArrowNorth,
 						defaultPositions.southWestArrowNorthWest,
-						defaultPositions.southWestArrowNorthEast
+						defaultPositions.southWestArrowNorthEast,
+						defaultPositions.southWestArrowNorthMiddleWest,
+						defaultPositions.southWestArrowNorthMiddleEast
 					]
 				}
 			} );
@@ -344,6 +396,25 @@ describe( 'BalloonToolbar', () => {
 			balloonToolbar.show();
 			sinon.assert.calledOnce( balloonAddSpy );
 		} );
+
+		it( 'should set the toolbar max-width to 90% of the editable width', () => {
+			const viewElement = editor.ui.view.editable.element;
+
+			setData( model, '<paragraph>b[ar]</paragraph>' );
+
+			expect( global.document.body.contains( viewElement ) ).to.be.true;
+			viewElement.style.width = '400px';
+
+			resizeCallback( [ {
+				target: viewElement,
+				contentRect: new Rect( viewElement )
+			} ] );
+
+			// The expected width should be 90% of the editor's editable element's width.
+			const expectedWidth = toPx( new Rect( viewElement ).width * 0.9 );
+
+			expect( balloonToolbar.toolbarView.maxWidth ).to.be.equal( expectedWidth );
+		} );
 	} );
 
 	describe( 'hide()', () => {
@@ -402,6 +473,18 @@ describe( 'BalloonToolbar', () => {
 
 			clock.tick( 200 );
 			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should destroy #resizeObserver if is available', () => {
+			const editable = editor.ui.getEditableElement();
+			const resizeObserver = new ResizeObserver( editable, () => {} );
+			const destroySpy = sinon.spy( resizeObserver, 'destroy' );
+
+			balloonToolbar._resizeObserver = resizeObserver;
+
+			balloonToolbar.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
 		} );
 	} );
 

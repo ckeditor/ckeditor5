@@ -224,9 +224,13 @@ export default class BalloonPanelView extends View {
 			element: this.element,
 			positions: [
 				defaultPositions.southArrowNorth,
+				defaultPositions.southArrowNorthMiddleWest,
+				defaultPositions.southArrowNorthMiddleEast,
 				defaultPositions.southArrowNorthWest,
 				defaultPositions.southArrowNorthEast,
 				defaultPositions.northArrowSouth,
+				defaultPositions.northArrowSouthMiddleWest,
+				defaultPositions.northArrowSouthMiddleEast,
 				defaultPositions.northArrowSouthWest,
 				defaultPositions.northArrowSouthEast
 			],
@@ -435,85 +439,157 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  *
  * The available positioning functions are as follows:
  *
- * **North**
  *
- * * `northArrowSouth`
- *
- * 		+-----------------+
- * 		|     Balloon     |
- * 		+-----------------+
- * 		         V
- * 		    [ Target ]
- *
- * * `northArrowSouthEast`
- *
- * 		+-----------------+
- * 		|     Balloon     |
- * 		+-----------------+
- * 		               V
- * 		          [ Target ]
- *
- * * `northArrowSouthWest`
- *
- * 		  +-----------------+
- * 		  |     Balloon     |
- * 		  +-----------------+
- * 		     V
- * 		[ Target ]
  *
  * **North west**
  *
- * * `northWestArrowSouth`
- *
- * 		+-----------------+
- * 		|     Balloon     |
- * 		+-----------------+
- * 		         V
- * 		         [ Target ]
- *
  * * `northWestArrowSouthWest`
  *
- * 		+-----------------+
- * 		|     Balloon     |
- * 		+-----------------+
- * 		   V
- * 		   [ Target ]
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		 V
+ *		 [ Target ]
+ *
+ * * `northWestArrowSouthMiddleWest`
+ *
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		    V
+ *		    [ Target ]
+ *
+ * * `northWestArrowSouth`
+ *
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		         V
+ *		         [ Target ]
+ *
+ * * `northWestArrowSouthMiddleEast`
+ *
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		             V
+ *		             [ Target ]
  *
  * * `northWestArrowSouthEast`
  *
- * 		+-----------------+
- * 		|     Balloon     |
- * 		+-----------------+
- * 		               V
- * 		               [ Target ]
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		                 V
+ *		                 [ Target ]
+ *
+ *
+ *
+ * **North**
+ *
+ * * `northArrowSouthWest`
+ *
+ *		    +-----------------+
+ *		    |     Balloon     |
+ *		    +-----------------+
+ *		     V
+ *		[ Target ]
+ *
+ * * `northArrowSouthMiddleWest`
+ *
+ *		 +-----------------+
+ *		 |     Balloon     |
+ *		 +-----------------+
+ *		     V
+ *		[ Target ]
+ *
+ * * `northArrowSouth`
+ *
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		         V
+ *		    [ Target ]
+ *
+ * * `northArrowSouthMiddleEast`
+ *
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		             V
+ *		        [ Target ]
+ *
+ * * `northArrowSouthEast`
+ *
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		                V
+ *		           [ Target ]
  *
  * **North east**
  *
+ * * `northEastArrowSouthWest`
+ *
+ *		        +-----------------+
+ *		        |     Balloon     |
+ *		        +-----------------+
+ *		         V
+ *		[ Target ]
+ *
+ *
+ * * `northEastArrowSouthMiddleWest`
+ *
+ *		     +-----------------+
+ *		     |     Balloon     |
+ *		     +-----------------+
+ *		         V
+ *		[ Target ]
+ *
  * * `northEastArrowSouth`
  *
- * 		+-----------------+
- * 		|     Balloon     |
- * 		+-----------------+
- * 		         V
- * 		[ Target ]
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		         V
+ *		[ Target ]
+ *
+ * * `northEastArrowSouthMiddleEast`
+ *
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		             V
+ *		    [ Target ]
  *
  * * `northEastArrowSouthEast`
  *
- * 		+-----------------+
- * 		|     Balloon     |
- * 		+-----------------+
- * 		               V
- * 		      [ Target ]
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *		                 V
+ *		        [ Target ]
  *
- * * `northEastArrowSouthWest`
  *
- * 		      +-----------------+
- * 		      |     Balloon     |
- * 		      +-----------------+
- * 		         V
- * 		[ Target ]
  *
  * **South**
+ *
+ *
+ * * `southArrowNorthWest`
+ *
+ *		[ Target ]
+ *		     ^
+ *		    +-----------------+
+ *		    |     Balloon     |
+ *		    +-----------------+
+ *
+ * * `southArrowNorthMiddleWest`
+ *
+ *		   [ Target ]
+ *		        ^
+ *		    +-----------------+
+ *		    |     Balloon     |
+ *		    +-----------------+
  *
  * * `southArrowNorth`
  *
@@ -523,23 +599,41 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  *		|     Balloon     |
  *		+-----------------+
  *
- * * `southArrowNorthEast`
+ * * `southArrowNorthMiddleEast`
  *
- *		          [ Target ]
- *		               ^
- *		+-----------------+
- *		|     Balloon     |
- *		+-----------------+
- *
- * * `southArrowNorthWest`
- *
- *		[ Target ]
- *		     ^
+ *		            [ Target ]
+ *		                 ^
  *		   +-----------------+
  *		   |     Balloon     |
  *		   +-----------------+
  *
+ * * `southArrowNorthEast`
+ *
+ *		            [ Target ]
+ *		                 ^
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *
+ *
+ *
  * **South west**
+ *
+ * * `southWestArrowNorthWest`
+ *
+ *		 [ Target ]
+ *		 ^
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *
+ * * `southWestArrowNorthMiddleWest`
+ *
+ *		     [ Target ]
+ *		     ^
+ *		 +-----------------+
+ *		 |     Balloon     |
+ *		 +-----------------+
  *
  * * `southWestArrowNorth`
  *
@@ -549,23 +643,40 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  *		|     Balloon     |
  *		+-----------------+
  *
- * * `southWestArrowNorthWest`
+ * * `southWestArrowNorthMiddleEast`
  *
- *		  [ Target ]
- *		  ^
+ *		              [ Target ]
+ *		              ^
  *		+-----------------+
  *		|     Balloon     |
  *		+-----------------+
  *
  * * `southWestArrowNorthEast`
  *
- *		               [ Target ]
- *		               ^
+ *		                 [ Target ]
+ *		                 ^
  *		+-----------------+
  *		|     Balloon     |
  *		+-----------------+
  *
+ *
+ *
  * **South east**
+ *
+ * * `southEastArrowNorthWest`
+ *
+ *		[ Target ]
+ *		         ^
+ *		        +-----------------+
+ *		        |     Balloon     |
+ *		        +-----------------+
+* * `southEastArrowNorthMiddleWest`
+ *
+ *		   [ Target ]
+ *		            ^
+ *		        +-----------------+
+ *		        |     Balloon     |
+ *		        +-----------------+
  *
  * * `southEastArrowNorth`
  *
@@ -575,21 +686,22 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  *		|     Balloon     |
  *		+-----------------+
  *
- * * `southEastArrowNorthEast`
+ * * `southEastArrowNorthMiddleEast`
  *
- *		       [ Target ]
- *		                ^
+ *		     [ Target ]
+ *		              ^
  *		+-----------------+
  *		|     Balloon     |
  *		+-----------------+
  *
- * * `southEastArrowNorthWest`
+ * * `southEastArrowNorthEast`
  *
- *		[ Target ]
- *		         ^
- *		       +-----------------+
- *		       |     Balloon     |
- *		       +-----------------+
+ *		        [ Target ]
+ *		                 ^
+ *		+-----------------+
+ *		|     Balloon     |
+ *		+-----------------+
+ *
  *
  * See {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo}.
  *
@@ -601,27 +713,20 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  * @member {Object} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions
  */
 BalloonPanelView.defaultPositions = {
-	// ------- North
 
-	northArrowSouth: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-		name: 'arrow_s'
-	} ),
+	// ------- North west
 
-	northArrowSouthEast: ( targetRect, balloonRect ) => ( {
+	northWestArrowSouthWest: ( targetRect, balloonRect ) => ( {
 		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.left + targetRect.width / 2 - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_se'
-	} ),
-
-	northArrowSouthWest: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.left + targetRect.width / 2 - BalloonPanelView.arrowHorizontalOffset,
+		left: targetRect.left - BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_sw'
 	} ),
 
-	// ------- North west
+	northWestArrowSouthMiddleWest: ( targetRect, balloonRect ) => ( {
+		top: getNorthTop( targetRect, balloonRect ),
+		left: targetRect.left - ( balloonRect.width * .25 ) - BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_smw'
+	} ),
 
 	northWestArrowSouth: ( targetRect, balloonRect ) => ( {
 		top: getNorthTop( targetRect, balloonRect ),
@@ -629,10 +734,10 @@ BalloonPanelView.defaultPositions = {
 		name: 'arrow_s'
 	} ),
 
-	northWestArrowSouthWest: ( targetRect, balloonRect ) => ( {
+	northWestArrowSouthMiddleEast: ( targetRect, balloonRect ) => ( {
 		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.left - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_sw'
+		left: targetRect.left - ( balloonRect.width * .75 ) + BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_sme'
 	} ),
 
 	northWestArrowSouthEast: ( targetRect, balloonRect ) => ( {
@@ -641,19 +746,39 @@ BalloonPanelView.defaultPositions = {
 		name: 'arrow_se'
 	} ),
 
-	// ------- North east
+	// ------- North
 
-	northEastArrowSouth: ( targetRect, balloonRect ) => ( {
+	northArrowSouthWest: ( targetRect, balloonRect ) => ( {
 		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.right - balloonRect.width / 2,
+		left: targetRect.left + targetRect.width / 2 - BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_sw'
+	} ),
+
+	northArrowSouthMiddleWest: ( targetRect, balloonRect ) => ( {
+		top: getNorthTop( targetRect, balloonRect ),
+		left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * .25 ) - BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_smw'
+	} ),
+
+	northArrowSouth: ( targetRect, balloonRect ) => ( {
+		top: getNorthTop( targetRect, balloonRect ),
+		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
 		name: 'arrow_s'
 	} ),
 
-	northEastArrowSouthEast: ( targetRect, balloonRect ) => ( {
+	northArrowSouthMiddleEast: ( targetRect, balloonRect ) => ( {
 		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.right - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
+		left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * .75 ) + BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_sme'
+	} ),
+
+	northArrowSouthEast: ( targetRect, balloonRect ) => ( {
+		top: getNorthTop( targetRect, balloonRect ),
+		left: targetRect.left + targetRect.width / 2 - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_se'
 	} ),
+
+	// ------- North east
 
 	northEastArrowSouthWest: ( targetRect, balloonRect ) => ( {
 		top: getNorthTop( targetRect, balloonRect ),
@@ -661,27 +786,41 @@ BalloonPanelView.defaultPositions = {
 		name: 'arrow_sw'
 	} ),
 
-	// ------- South
-
-	southArrowNorth: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-		name: 'arrow_n'
+	northEastArrowSouthMiddleWest: ( targetRect, balloonRect ) => ( {
+		top: getNorthTop( targetRect, balloonRect ),
+		left: targetRect.right - ( balloonRect.width * .25 ) - BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_smw'
+	} ),
+	northEastArrowSouth: ( targetRect, balloonRect ) => ( {
+		top: getNorthTop( targetRect, balloonRect ),
+		left: targetRect.right - balloonRect.width / 2,
+		name: 'arrow_s'
 	} ),
 
-	southArrowNorthEast: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.left + targetRect.width / 2 - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_ne'
+	northEastArrowSouthMiddleEast: ( targetRect, balloonRect ) => ( {
+		top: getNorthTop( targetRect, balloonRect ),
+		left: targetRect.right - ( balloonRect.width * .75 ) + BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_sme'
 	} ),
 
-	southArrowNorthWest: ( targetRect, balloonRect ) => ( {
+	northEastArrowSouthEast: ( targetRect, balloonRect ) => ( {
+		top: getNorthTop( targetRect, balloonRect ),
+		left: targetRect.right - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_se'
+	} ),
+	// ------- South west
+
+	southWestArrowNorthWest: ( targetRect, balloonRect ) => ( {
 		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.left + targetRect.width / 2 - BalloonPanelView.arrowHorizontalOffset,
+		left: targetRect.left - BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_nw'
 	} ),
 
-	// ------- South west
+	southWestArrowNorthMiddleWest: ( targetRect, balloonRect ) => ( {
+		top: getSouthTop( targetRect, balloonRect ),
+		left: targetRect.left - ( balloonRect.width * .25 ) - BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_nmw'
+	} ),
 
 	southWestArrowNorth: ( targetRect, balloonRect ) => ( {
 		top: getSouthTop( targetRect, balloonRect ),
@@ -689,10 +828,10 @@ BalloonPanelView.defaultPositions = {
 		name: 'arrow_n'
 	} ),
 
-	southWestArrowNorthWest: ( targetRect, balloonRect ) => ( {
+	southWestArrowNorthMiddleEast: ( targetRect, balloonRect ) => ( {
 		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.left - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_nw'
+		left: targetRect.left - ( balloonRect.width * .75 ) + BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_nme'
 	} ),
 
 	southWestArrowNorthEast: ( targetRect, balloonRect ) => ( {
@@ -701,7 +840,50 @@ BalloonPanelView.defaultPositions = {
 		name: 'arrow_ne'
 	} ),
 
+	// ------- South
+
+	southArrowNorthWest: ( targetRect, balloonRect ) => ( {
+		top: getSouthTop( targetRect, balloonRect ),
+		left: targetRect.left + targetRect.width / 2 - BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_nw'
+	} ),
+	southArrowNorthMiddleWest: ( targetRect, balloonRect ) => ( {
+		top: getSouthTop( targetRect, balloonRect ),
+		left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * 0.25 ) - BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_nmw'
+	} ),
+
+	southArrowNorth: ( targetRect, balloonRect ) => ( {
+		top: getSouthTop( targetRect, balloonRect ),
+		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
+		name: 'arrow_n'
+	} ),
+
+	southArrowNorthMiddleEast: ( targetRect, balloonRect ) => ( {
+		top: getSouthTop( targetRect, balloonRect ),
+		left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * 0.75 ) + BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_nme'
+	} ),
+
+	southArrowNorthEast: ( targetRect, balloonRect ) => ( {
+		top: getSouthTop( targetRect, balloonRect ),
+		left: targetRect.left + targetRect.width / 2 - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_ne'
+	} ),
+
 	// ------- South east
+
+	southEastArrowNorthWest: ( targetRect, balloonRect ) => ( {
+		top: getSouthTop( targetRect, balloonRect ),
+		left: targetRect.right - BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_nw'
+	} ),
+
+	southEastArrowNorthMiddleWest: ( targetRect, balloonRect ) => ( {
+		top: getSouthTop( targetRect, balloonRect ),
+		left: targetRect.right - ( balloonRect.width * .25 ) - BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_nmw'
+	} ),
 
 	southEastArrowNorth: ( targetRect, balloonRect ) => ( {
 		top: getSouthTop( targetRect, balloonRect ),
@@ -709,17 +891,18 @@ BalloonPanelView.defaultPositions = {
 		name: 'arrow_n'
 	} ),
 
+	southEastArrowNorthMiddleEast: ( targetRect, balloonRect ) => ( {
+		top: getSouthTop( targetRect, balloonRect ),
+		left: targetRect.right - ( balloonRect.width * .75 ) + BalloonPanelView.arrowHorizontalOffset,
+		name: 'arrow_nme'
+	} ),
+
 	southEastArrowNorthEast: ( targetRect, balloonRect ) => ( {
 		top: getSouthTop( targetRect, balloonRect ),
 		left: targetRect.right - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_ne'
-	} ),
-
-	southEastArrowNorthWest: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.right - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_nw'
 	} )
+
 };
 
 // Returns the top coordinate for positions starting with `north*`.
