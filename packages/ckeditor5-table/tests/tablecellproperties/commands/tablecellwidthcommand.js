@@ -128,7 +128,7 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if one of selected table cells has different width property value', () => {
+					it( 'should be undefined if one of selected table cells has a different "width" property value', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true, width: '100px' },
