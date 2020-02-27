@@ -75,25 +75,6 @@ describe( 'Node', () => {
 
 			expect( node ).to.have.property( 'previousSibling' ).that.is.null;
 		} );
-
-		it( 'document', () => {
-			expect( root ).to.have.property( 'document' ).that.equals( doc );
-
-			expect( one ).to.have.property( 'document' ).that.equals( doc );
-			expect( two ).to.have.property( 'document' ).that.equals( doc );
-			expect( three ).to.have.property( 'document' ).that.equals( doc );
-
-			expect( textBA ).to.have.property( 'document' ).that.equals( doc );
-			expect( img ).to.have.property( 'document' ).that.equals( doc );
-			expect( textR ).to.have.property( 'document' ).that.equals( doc );
-
-			expect( node ).to.have.property( 'document' ).that.is.null;
-
-			// DocumentFragment does not have document property, so node's document property should be null.
-			const docFrag = new DocumentFragment();
-			docFrag._appendChild( node );
-			expect( node ).to.have.property( 'document' ).that.is.null;
-		} );
 	} );
 
 	describe( 'constructor()', () => {

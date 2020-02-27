@@ -38,11 +38,6 @@ describe( 'TextProxy', () => {
 		expect( textProxyNoParent ).to.have.property( 'root' ).that.equals( textNoParent );
 	} );
 
-	it( 'should have document property', () => {
-		expect( textProxy ).to.have.property( 'document' ).that.equals( doc );
-		expect( textProxyNoParent ).to.have.property( 'document' ).that.equals( null );
-	} );
-
 	it( 'should have parent property', () => {
 		expect( textProxy ).to.have.property( 'parent' ).that.equals( element );
 		expect( textProxyNoParent ).to.have.property( 'parent' ).that.equals( null );

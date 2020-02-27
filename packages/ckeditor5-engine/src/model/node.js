@@ -189,23 +189,6 @@ export default class Node {
 	}
 
 	/**
-	 * {@link module:engine/model/document~Document Document} that owns this node or `null` if the node has no parent or is inside
-	 * a {@link module:engine/model/documentfragment~DocumentFragment DocumentFragment}.
-	 *
-	 * @readonly
-	 * @type {module:engine/model/document~Document|null}
-	 */
-	get document() {
-		// This is a top element of a sub-tree.
-		if ( this.root == this ) {
-			return null;
-		}
-
-		// Root may be `DocumentFragment` which does not have document property.
-		return this.root.document || null;
-	}
-
-	/**
 	 * Gets path to the node. The path is an array containing starting offsets of consecutive ancestors of this node,
 	 * beginning from {@link module:engine/model/node~Node#root root}, down to this node's starting offset. The path can be used to
 	 * create {@link module:engine/model/position~Position Position} instance.

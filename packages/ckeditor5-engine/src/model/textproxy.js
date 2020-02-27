@@ -164,17 +164,6 @@ export default class TextProxy {
 	}
 
 	/**
-	 * {@link module:engine/model/document~Document Document} that owns text node represented by this text proxy or `null` if the text node
-	 * has no parent or is inside a {@link module:engine/model/documentfragment~DocumentFragment DocumentFragment}.
-	 *
-	 * @readonly
-	 * @type {module:engine/model/document~Document|null}
-	 */
-	get document() {
-		return this.textNode.document;
-	}
-
-	/**
 	 * Checks whether this object is of the given.
 	 *
 	 *		textProxy.is( 'textProxy' ); // -> true
