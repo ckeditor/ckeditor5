@@ -262,6 +262,46 @@ export class MyComponent {
 </button>
 ```
 
+### `watchdog`
+
+An instance of the {@link module:watchdog/contextwatchdog~ContextWatchdog `ContextWatchdog`} class that is responsible for providing the same context to multiple editor instances and restarting the whole structure in case of crashes.
+
+```ts
+import CKSource from 'path/to/custom/build';
+
+const Context = CKSource.Context;
+const Editor = CKSource.Editor;
+const ContextWatchdog = CKSource.ContextWatchdog;
+
+@Component( {
+	// ...
+} )
+export class MyComponent {
+	public editor = Editor;
+	public watchdog: any;
+	public ready = false;
+
+	ngOnInit() {
+		const contextConfig = {};
+
+		this.watchdog = new ContextWatchdog( Context );
+
+		this.watchdog.create( contextConfig )
+			.then( () => {
+				this.ready = true;
+			} );
+	}
+}
+```
+
+```html
+<div *ngIf="ready">
+	<ckeditor [watchdog]="watchdog" ...></ckeditor>
+	<ckeditor [watchdog]="watchdog" ...></ckeditor>
+	<ckeditor [watchdog]="watchdog" ...></ckeditor>
+</div>
+```
+
 ## Supported `@Output` properties
 
 The following `@Output` properties are supported by the CKEditor 5 rich text editor component for Angular:
@@ -270,6 +310,8 @@ The following `@Output` properties are supported by the CKEditor 5 rich text edi
 
 Fired when the editor is ready. It corresponds with the [`editor#ready`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editor-Editor.html#event-ready) event.
 It is fired with the editor instance.
+
+Note that this method might be called multiple times. Apart from initialization, it is also called whenever the editor is restarted after a crash. Do not keep the reference to the editor instance internally, because it will change in case of restart. Instead, you should use `watchdog.editor` property.
 
 ### `change`
 
@@ -308,6 +350,10 @@ It is fired with an object containing the editor and the CKEditor 5 `blur` event
 
 Fired when the editing view of the editor is focused. It corresponds with the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
 It is fired with an object containing the editor and the CKEditor 5 `focus` event data.
+
+### `error`
+
+Fired when the editor crashes (except of crashes during the editor initialization). Once the editor is crashed, the internal watchdog mechanism restarts the editor and fires the [ready](#ready) event.
 
 ## Styling
 
