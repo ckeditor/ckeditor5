@@ -123,7 +123,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'multi-cell selection', () => {
-					it( 'should be undefined if no table cell has a padding property', () => {
+					it( 'should be undefined if no table cells have the "padding" property', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true },
