@@ -128,7 +128,7 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if one of selected table cells has different height property value', () => {
+					it( 'should be undefined if one of selected table cells has a different "height" property value', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true, height: '100px' },
