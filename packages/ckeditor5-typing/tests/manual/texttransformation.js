@@ -10,17 +10,15 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import TextTransformation from '../../src/texttransformation';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, TextTransformation, CodeBlock ],
+		plugins: [ ArticlePluginSet, TextTransformation ],
 		toolbar: [
 			'heading',
 			'|', 'bulletedList', 'numberedList', 'blockQuote',
 			'|', 'bold', 'italic', 'link',
 			'|', 'insertTable',
-			'|', 'codeBlock',
 			'|', 'undo', 'redo'
 		],
 		image: {
