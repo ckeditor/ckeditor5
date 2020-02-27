@@ -230,7 +230,7 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should set selected table cell verticalAlignment to a passed value', () => {
+					it( 'should set the "verticalAlignment" attribute value of selected table cells', () => {
 						command.execute( { value: 'top' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
