@@ -15,9 +15,12 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import Input from '@ckeditor/ckeditor5-typing/src/input';
+import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 
 describe( 'table selection', () => {
-	let editor, model, tableSelection, modelRoot, element;
+	let editor, model, tableSelection, modelRoot, element, viewDocument;
 
 	describe( 'TableSelection - input integration', () => {
 		afterEach( async () => {
@@ -34,14 +37,14 @@ describe( 'table selection', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
 
-				const domEventData = new DomEventData( editor.editing.view.document, {
+				const domEventData = new DomEventData( viewDocument, {
 					preventDefault: sinon.spy()
 				}, {
 					direction: 'backward',
 					unit: 'character',
 					sequence: 1
 				} );
-				editor.editing.view.document.fire( 'delete', domEventData );
+				viewDocument.fire( 'delete', domEventData );
 
 				assertEqualMarkup( getModelData( model ), modelTable( [
 					[ '', '', '13' ],
@@ -54,14 +57,14 @@ describe( 'table selection', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
 
-				const domEventData = new DomEventData( editor.editing.view.document, {
+				const domEventData = new DomEventData( viewDocument, {
 					preventDefault: sinon.spy()
 				}, {
 					direction: 'forward',
 					unit: 'character',
 					sequence: 1
 				} );
-				editor.editing.view.document.fire( 'delete', domEventData );
+				viewDocument.fire( 'delete', domEventData );
 
 				assertEqualMarkup( getModelData( model ), modelTable( [
 					[ '[]', '', '13' ],
@@ -71,17 +74,76 @@ describe( 'table selection', () => {
 			} );
 
 			it( 'should not interfere with default key handler if no table selection', () => {
-				const domEventData = new DomEventData( editor.editing.view.document, {
+				setModelData( model, modelTable( [
+					[ '11[]', '12', '13' ],
+					[ '21', '22', '23' ],
+					[ '31', '32', '33' ]
+				] ) );
+
+				const domEventData = new DomEventData( viewDocument, {
 					preventDefault: sinon.spy()
 				}, {
 					direction: 'backward',
 					unit: 'character',
 					sequence: 1
 				} );
-				editor.editing.view.document.fire( 'delete', domEventData );
+				viewDocument.fire( 'delete', domEventData );
 
 				assertEqualMarkup( getModelData( model ), modelTable( [
 					[ '1[]', '12', '13' ],
+					[ '21', '22', '23' ],
+					[ '31', '32', '33' ]
+				] ) );
+			} );
+		} );
+
+		describe( 'on user input', () => {
+			beforeEach( async () => {
+				await setupEditor( [ Input ] );
+			} );
+
+			it( 'should clear contents of the selected table cells and put selection in last cell on user input', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+
+				viewDocument.fire( 'keydown', { keyCode: getCode( 'x' ) } );
+
+				//                                      figure       table         tbody         tr            td            span
+				const viewSpan = viewDocument.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 1 ).getChild( 1 ).getChild( 0 );
+
+				viewDocument.fire( 'mutations', [
+					{
+						type: 'children',
+						oldChildren: [],
+						newChildren: [ new ViewText( 'x' ) ],
+						node: viewSpan
+					}
+				] );
+
+				assertEqualMarkup( getModelData( model ), modelTable( [
+					[ '', '', '13' ],
+					[ '', 'x[]', '23' ],
+					[ '31', '32', '33' ]
+				] ) );
+			} );
+
+			it( 'should not interfere with default key handler if no table selection', () => {
+				viewDocument.fire( 'keydown', { keyCode: getCode( 'x' ) } );
+
+				//                                      figure       table         tbody         tr            td            span
+				const viewSpan = viewDocument.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+				viewDocument.fire( 'mutations', [
+					{
+						type: 'children',
+						oldChildren: [],
+						newChildren: [ new ViewText( 'x' ) ],
+						node: viewSpan
+					}
+				] );
+
+				assertEqualMarkup( getModelData( model ), modelTable( [
+					[ 'x[]11', '12', '13' ],
 					[ '21', '22', '23' ],
 					[ '31', '32', '33' ]
 				] ) );
@@ -99,10 +161,11 @@ describe( 'table selection', () => {
 
 		model = editor.model;
 		modelRoot = model.document.getRoot();
+		viewDocument = editor.editing.view.document;
 		tableSelection = editor.plugins.get( TableSelection );
 
 		setModelData( model, modelTable( [
-			[ '11[]', '12', '13' ],
+			[ '[]11', '12', '13' ],
 			[ '21', '22', '23' ],
 			[ '31', '32', '33' ]
 		] ) );
