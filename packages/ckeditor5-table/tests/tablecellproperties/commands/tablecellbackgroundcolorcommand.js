@@ -128,7 +128,7 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if one of selected table cells has different backgroundColor property value', () => {
+					it( 'should be undefined if one of selected table cells has a different "backgroundColor" property value', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true, backgroundColor: '#f00' },
