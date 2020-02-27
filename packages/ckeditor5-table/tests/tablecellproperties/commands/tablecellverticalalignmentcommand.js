@@ -128,7 +128,7 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if one of selected table cells has different verticalAlignment property value', () => {
+					it( 'should be undefined if one of selected table cells has a different "verticalAlignment" property value', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true, verticalAlignment: 'bottom' },
