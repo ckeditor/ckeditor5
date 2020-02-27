@@ -295,7 +295,7 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should remove height from a selected table cell if no value is passed', () => {
+					it( 'should remove "height" from selected table cells if no value is passed', () => {
 						setData( model, modelTable( [
 							[ { contents: '00', isSelected: true, height: '100px' }, '01' ],
 							[ '10', { contents: '11', isSelected: true, height: '100px' } ]
