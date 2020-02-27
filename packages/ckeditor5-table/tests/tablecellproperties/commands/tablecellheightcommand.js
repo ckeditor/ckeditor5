@@ -98,7 +98,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'multi-cell selection', () => {
-					it( 'should be undefined if no table cell has a height property', () => {
+					it( 'should be undefined if no table cell have the "height" property', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true },
