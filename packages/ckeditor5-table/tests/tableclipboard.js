@@ -310,8 +310,8 @@ describe( 'table clipboard', () => {
 				} );
 
 				assertEqualMarkup( getModelData( model ), modelTable( [
-					[ { contents: '', isSelected: true }, { contents: '', isSelected: true }, '02' ],
-					[ { contents: '', isSelected: true }, { contents: '', isSelected: true }, '12' ],
+					[ '', '', '02' ],
+					[ '', '[]', '12' ],
 					[ '20', '21', '22' ]
 				] ) );
 			} );
