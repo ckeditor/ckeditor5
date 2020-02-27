@@ -57,7 +57,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'multi-cell selection', () => {
-					it( 'should be true is selection has table cells', () => {
+					it( 'should be true if the selection contains some table cells', () => {
 						setData( model, modelTable( [
 							[ { contents: '00', isSelected: true }, '01' ],
 							[ '10', { contents: '11', isSelected: true } ]
