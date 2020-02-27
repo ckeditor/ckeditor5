@@ -216,38 +216,6 @@ describe( 'Text transformation feature', () => {
 	} );
 
 	describe( 'configuration', () => {
-		it( 'should contain only one #configuredTransformations', () => {
-			return createEditorInstance( {
-				typing: {
-					transformations: {
-						include: [
-							{ from: 'CKE', to: 'CKEditor' }
-						]
-					}
-				}
-			} ).then( () => {
-				const plugin = editor.plugins.get( 'TextTransformation' );
-
-				expect( plugin.configuredTransformations.length ).to.be.equal( 1 );
-			} );
-		} );
-
-		it( 'should contain only one #_normalizedConfiguredTransformations', () => {
-			return createEditorInstance( {
-				typing: {
-					transformations: {
-						include: [
-							{ from: 'CKE', to: 'CKEditor' }
-						]
-					}
-				}
-			} ).then( () => {
-				const plugin = editor.plugins.get( 'TextTransformation' );
-
-				expect( plugin._normalizedConfiguredTransformations.size ).to.be.equal( 1 );
-			} );
-		} );
-
 		it( 'should allow adding own rules with string pattern', () => {
 			return createEditorInstance( {
 				typing: {
