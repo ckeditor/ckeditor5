@@ -286,7 +286,7 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should set selected table cell height to a passed value', () => {
+					it( 'should set the "height" attribute value of selected table cells', () => {
 						command.execute( { value: '100px' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
