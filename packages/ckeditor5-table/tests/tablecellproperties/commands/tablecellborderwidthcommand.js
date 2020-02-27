@@ -311,7 +311,7 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should set selected table cell borderWidth to a passed value', () => {
+					it( 'should set the "borderWidth" attribute value of selected table cells', () => {
 						command.execute( { value: '1px' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
