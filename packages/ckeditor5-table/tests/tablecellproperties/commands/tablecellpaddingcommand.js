@@ -311,7 +311,7 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should set selected table cell padding to a passed value', () => {
+					it( 'should set the "padding" attribute value of selected table cells', () => {
 						command.execute( { value: '25px' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
