@@ -239,7 +239,7 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should remove backgroundColor from a selected table cell if no value is passed', () => {
+					it( 'should remove "backgroundColor" from a selected table cell if no value is passed', () => {
 						setData( model, modelTable( [
 							[ { contents: '00', isSelected: true, backgroundColor: '#f00' }, '01' ],
 							[ '10', { contents: '11', isSelected: true, backgroundColor: '#f00' } ]
