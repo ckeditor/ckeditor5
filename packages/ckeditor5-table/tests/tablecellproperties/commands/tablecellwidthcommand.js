@@ -143,7 +143,7 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if all table cell has the same width property value', () => {
+					it( 'should be set if all table cells have the same "width" property value', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true, width: '100px' },
