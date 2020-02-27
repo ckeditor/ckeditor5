@@ -93,29 +93,20 @@ export default class TextTransformation extends Plugin {
 			}
 		} );
 
-		this.editor = editor;
-
 		/**
-		 * Stores all configured transformations.
-		 *
-		 * @member {Array} #configuredTransformations
-		 */
-		this.configuredTransformations = getConfiguredTransformations( editor.config.get( 'typing.transformations' ) );
-
-		/**
-		 * Stores all normalized versions of configured transformations.
+		 * The current editor instance.
 		 *
 		 * @private
-		 * @member {Map<from:String|to:String,String>} #_normalizedConfiguredTransformations
+		 * @type {module:core/editor/editor~Editor}
 		 */
-		this._normalizedConfiguredTransformations = new Map();
+		this._editor = editor;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	init() {
-		const model = this.editor.model;
+		const model = this._editor.model;
 		const modelSelection = model.document.selection;
 
 		modelSelection.on( 'change:range', () => {
@@ -123,29 +114,7 @@ export default class TextTransformation extends Plugin {
 			this.isEnabled = !modelSelection.anchor.parent.is( 'codeBlock' );
 		} );
 
-		// Set normalized versions of configured transformations once, early on the initialization, so
-		// we don't have to iterate over the configuration and normalize each instance of `from` and `to` of the transformation,
-		// inside the TextWatcher's text testing callback.
-		this._setNormalizedTransformations( this.configuredTransformations );
-
 		this._enableTransformationWatchers();
-	}
-
-	/**
-	 * A helper for setting normalized configured transformations.
-	 *
-	 * @private
-	 * @param {Array} transformations Configured transformations data.
-	 */
-	_setNormalizedTransformations( transformations ) {
-		for ( const transformation of transformations ) {
-			// The key is a text from we should normalize the transformation,
-			// eg: `{ key: '(c)', value: { from: '(c)', to: '©' } }`.
-			this._normalizedConfiguredTransformations.set( transformation.from, {
-				from: normalizeFrom( transformation.from ),
-				to: normalizeTo( transformation.to )
-			} );
-		}
 	}
 
 	/**
@@ -154,15 +123,14 @@ export default class TextTransformation extends Plugin {
 	 * @private
 	 */
 	_enableTransformationWatchers() {
-		const editor = this.editor;
+		const editor = this._editor;
 		const model = editor.model;
 		const input = editor.plugins.get( 'Input' );
+		const configuredTransformations = getConfiguredTransformations( editor.config.get( 'typing.transformations' ) );
+		const normalizedConfiguredTransformations =	getNormalizedTransformations( configuredTransformations );
 
 		const testCallback = text => {
-			for ( const transformation of this.configuredTransformations ) {
-				// Get the normalized version of the configured transformation.
-				// See `_setNormalizedTransformations()`, to get more information how key-value pairs are created.
-				const normalizedTransformation = this._normalizedConfiguredTransformations.get( transformation.from );
+			for ( const normalizedTransformation of normalizedConfiguredTransformations ) {
 				const from = normalizedTransformation.from;
 				const match = from.test( text );
 
@@ -180,8 +148,7 @@ export default class TextTransformation extends Plugin {
 				return;
 			}
 
-			const from = data.normalizedTransformation.from;
-			const to = data.normalizedTransformation.to;
+			const { from, to } = data.normalizedTransformation;
 
 			const matches = from.exec( data.text );
 			const replaces = to( matches.slice( 1 ) );
@@ -284,6 +251,17 @@ function getConfiguredTransformations( config ) {
 	return expandGroupsAndRemoveDuplicates( configured )
 		.filter( isNotRemoved ) // Filter out 'remove' transformations as they might be set in group
 		.map( transformation => TRANSFORMATIONS[ transformation ] || transformation );
+}
+
+// Return normalized configured transformations array.
+//
+// @param {Array.<module:typing/texttransformation~TextTransformationDescription>} transformations
+// @returns {Array.<{from:String,to:Function}>}
+function getNormalizedTransformations( transformations ) {
+	return transformations.map( transformation => ( {
+		from: normalizeFrom( transformation.from ),
+		to: normalizeTo( transformation.to )
+	} ) );
 }
 
 // Reads definitions and expands named groups if needed to transformation names.
