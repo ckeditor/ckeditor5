@@ -153,7 +153,7 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if one of selected table cells has different borderColor property value', () => {
+					it( 'should be undefined if one of selected table cells has a different "borderColor" property value', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true, borderColor: '#f00' },
