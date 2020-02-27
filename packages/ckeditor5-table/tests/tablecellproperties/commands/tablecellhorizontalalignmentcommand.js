@@ -230,7 +230,7 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should set selected table cell horizontalAlignment to a passed value', () => {
+					it( 'should set the "horizontalAlignment" attribute value of selected table cells', () => {
 						command.execute( { value: 'right' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
