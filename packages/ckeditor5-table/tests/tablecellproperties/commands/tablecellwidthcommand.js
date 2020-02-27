@@ -295,7 +295,7 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should remove width from a selected table cell if no value is passed', () => {
+					it( 'should remove "width" from selected table cells if no value is passed', () => {
 						setData( model, modelTable( [
 							[ { contents: '00', isSelected: true, width: '25px' }, '01' ],
 							[ '10', { contents: '11', isSelected: true, width: '25px' } ]
