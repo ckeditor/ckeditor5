@@ -239,7 +239,7 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should remove horizontalAlignment from a selected table cell if no value is passed', () => {
+					it( 'should remove the "horizontalAlignment" attribute from selected table cells if no value is passed', () => {
 						setData( model, modelTable( [
 							[ { contents: '00', isSelected: true, horizontalAlignment: 'right' }, '01' ],
 							[ '10', { contents: '11', isSelected: true, horizontalAlignment: 'right' } ]
