@@ -30,7 +30,7 @@ describe( 'table selection', () => {
 				await setupEditor( [ Delete ] );
 			} );
 
-			it( 'should clear contents of the selected table cells', () => {
+			it( 'should clear contents of the selected table cells and put selection in last cell on backward delete', () => {
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
 
@@ -44,8 +44,28 @@ describe( 'table selection', () => {
 				editor.editing.view.document.fire( 'delete', domEventData );
 
 				assertEqualMarkup( getModelData( model ), modelTable( [
-					[ { contents: '', isSelected: true }, { contents: '', isSelected: true }, '13' ],
-					[ { contents: '', isSelected: true }, { contents: '', isSelected: true }, '23' ],
+					[ '', '', '13' ],
+					[ '', '[]', '23' ],
+					[ '31', '32', '33' ]
+				] ) );
+			} );
+
+			it( 'should clear contents of the selected table cells and put selection in last cell on forward delete', () => {
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+
+				const domEventData = new DomEventData( editor.editing.view.document, {
+					preventDefault: sinon.spy()
+				}, {
+					direction: 'forward',
+					unit: 'character',
+					sequence: 1
+				} );
+				editor.editing.view.document.fire( 'delete', domEventData );
+
+				assertEqualMarkup( getModelData( model ), modelTable( [
+					[ '[]', '', '13' ],
+					[ '', '', '23' ],
 					[ '31', '32', '33' ]
 				] ) );
 			} );
