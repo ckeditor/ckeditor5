@@ -230,7 +230,7 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should set selected table cell backgroundColor to a passed value', () => {
+					it( 'should set the "backgroundColor" attribute value of selected table cells', () => {
 						command.execute( { value: '#f00' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
