@@ -92,6 +92,22 @@ describe( 'ImageLoadObserver', () => {
 		sinon.assert.notCalled( spy );
 	} );
 
+	it( 'should not fire `loadImage` event for non-image elements', () => {
+		const spy = sinon.spy();
+
+		viewDocument.on( 'imageLoaded', spy );
+
+		setData( view, '<p>foo</p>' );
+
+		sinon.assert.notCalled( spy );
+
+		const img = domRoot.querySelector( 'p' );
+
+		img.dispatchEvent( new Event( 'load' ) );
+
+		sinon.assert.notCalled( spy );
+	} );
+
 	it( 'should do nothing with an image when changes are in the other parent', () => {
 		setData(
 			view,
