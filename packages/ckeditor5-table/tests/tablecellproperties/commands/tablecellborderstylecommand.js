@@ -255,7 +255,7 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should set selected table cell borderStyle to a passed value', () => {
+					it( 'should set the "borderStyle" attribute value of selected table cells', () => {
 						command.execute( { value: 'solid' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
