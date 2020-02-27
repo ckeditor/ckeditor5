@@ -25,7 +25,7 @@ import {
 	fillToolbar,
 	getBorderStyleDefinitions,
 	getBorderStyleLabels,
-	getLabeledColorInputCreator,
+	getLabeledColorInputCreator
 } from '../../ui/utils';
 import FormRowView from '../../ui/formrowview';
 import FormHeaderView from '../../ui/formheaderview';
@@ -366,7 +366,7 @@ export default class TableCellPropertiesView extends View {
 			children: [
 				alignmentLabel,
 				horizontalAlignmentToolbar,
-				verticalAlignmentToolbar,
+				verticalAlignmentToolbar
 			],
 			class: 'ck-table-cell-properties-form__alignment-row'
 		} ) );
@@ -375,7 +375,7 @@ export default class TableCellPropertiesView extends View {
 		this.children.add( new FormRowView( locale, {
 			children: [
 				this.saveButtonView,
-				this.cancelButtonView,
+				this.cancelButtonView
 			],
 			class: 'ck-table-form__action-row'
 		} ) );
@@ -508,7 +508,7 @@ export default class TableCellPropertiesView extends View {
 
 		borderColorInput.set( {
 			label: t( 'Color' ),
-			class: 'ck-table-form__border-color',
+			class: 'ck-table-form__border-color'
 		} );
 
 		borderColorInput.view.bind( 'value' ).to( this, 'borderColor' );
@@ -531,7 +531,7 @@ export default class TableCellPropertiesView extends View {
 			borderRowLabel,
 			borderStyleDropdown,
 			borderColorInput,
-			borderWidthInput,
+			borderWidthInput
 		};
 	}
 
@@ -555,7 +555,7 @@ export default class TableCellPropertiesView extends View {
 
 		backgroundInput.set( {
 			label: t( 'Background' ),
-			class: 'ck-table-cell-properties-form__background',
+			class: 'ck-table-cell-properties-form__background'
 		} );
 
 		backgroundInput.view.bind( 'value' ).to( this, 'backgroundColor' );
@@ -590,7 +590,7 @@ export default class TableCellPropertiesView extends View {
 
 		widthInput.set( {
 			label: t( 'Width' ),
-			class: 'ck-table-form__dimensions-row__width',
+			class: 'ck-table-form__dimensions-row__width'
 		} );
 
 		widthInput.view.bind( 'value' ).to( this, 'width' );
@@ -619,7 +619,7 @@ export default class TableCellPropertiesView extends View {
 
 		heightInput.set( {
 			label: t( 'Height' ),
-			class: 'ck-table-form__dimensions-row__height',
+			class: 'ck-table-form__dimensions-row__height'
 		} );
 
 		heightInput.view.bind( 'value' ).to( this, 'height' );
@@ -651,7 +651,7 @@ export default class TableCellPropertiesView extends View {
 
 		paddingInput.set( {
 			label: t( 'Padding' ),
-			class: 'ck-table-cell-properties-form__padding',
+			class: 'ck-table-cell-properties-form__padding'
 		} );
 
 		paddingInput.view.bind( 'value' ).to( this, 'padding' );
@@ -752,7 +752,7 @@ export default class TableCellPropertiesView extends View {
 			icon: checkIcon,
 			class: 'ck-button-save',
 			type: 'submit',
-			withText: true,
+			withText: true
 		} );
 
 		saveButtonView.bind( 'isEnabled' ).toMany( fieldsThatShouldValidateToSave, 'errorText', ( ...errorTexts ) => {
@@ -764,7 +764,7 @@ export default class TableCellPropertiesView extends View {
 			icon: cancelIcon,
 			class: 'ck-button-cancel',
 			type: 'cancel',
-			withText: true,
+			withText: true
 		} );
 
 		cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );
@@ -787,7 +787,7 @@ export default class TableCellPropertiesView extends View {
 			left: t( 'Align cell text to the left' ),
 			center: t( 'Align cell text to the center' ),
 			right: t( 'Align cell text to the right' ),
-			justify: t( 'Justify cell text' ),
+			justify: t( 'Justify cell text' )
 		};
 	}
 

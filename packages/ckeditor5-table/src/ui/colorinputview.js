@@ -120,7 +120,7 @@ export default class ColorInputView extends View {
 			children: [
 				this._inputView,
 				this._dropdownView
-			],
+			]
 		} );
 	}
 
@@ -170,7 +170,7 @@ export default class ColorInputView extends View {
 		dropdown.buttonView.extendTemplate( {
 			attributes: {
 				class: 'ck-input-color__button'
-			},
+			}
 		} );
 
 		dropdown.buttonView.children.add( colorPreview );
