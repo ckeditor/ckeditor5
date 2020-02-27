@@ -113,7 +113,7 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if only some table cell has a horizontalAlignment property', () => {
+					it( 'should be undefined if only some table cells have the "horizontalAlignment" property', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true, horizontalAlignment: 'center' },
