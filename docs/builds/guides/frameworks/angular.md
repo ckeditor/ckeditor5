@@ -264,7 +264,7 @@ export class MyComponent {
 
 ### `watchdog`
 
-An instance of the {@link module:watchdog/contextwatchdog~ContextWatchdog `ContextWatchdog`} class that is responsible for providing the same context to the editor instances and restarting the whole structure in case of crashes.
+An instance of the {@link module:watchdog/contextwatchdog~ContextWatchdog `ContextWatchdog`} class that is responsible for providing the same context to multiple editor instances and restarting the whole structure in case of crashes.
 
 ```ts
 import CKSource from 'path/to/custom/build';
@@ -311,7 +311,7 @@ The following `@Output` properties are supported by the CKEditor 5 rich text edi
 Fired when the editor is ready. It corresponds with the [`editor#ready`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editor-Editor.html#event-ready) event.
 It is fired with the editor instance.
 
-Note that this method might be called multiple times. It is called whenever the editor crashes and is restarted, hence the editor property should not be kept internally (because it might change).
+Note that this method might be called multiple times. Apart from initialization, it is also called whenever the editor is restarted after a crash. Do not keep the reference to the editor instance internally, because it will change in case of restart. Instead, you should use `watchdog.editor` property.
 
 ### `change`
 
@@ -353,7 +353,7 @@ It is fired with an object containing the editor and the CKEditor 5 `focus` even
 
 ### `error`
 
-Fired when the editor crashes after its initialization. Once the editor is crashed, the internal watchdog mechanism restarts the editor and fires the [ready](#ready) event.
+Fired when the editor crashes (except of crashes during the editor initialization). Once the editor is crashed, the internal watchdog mechanism restarts the editor and fires the [ready](#ready) event.
 
 ## Styling
 
