@@ -114,14 +114,20 @@ export default class TableSelection extends Plugin {
 		const editor = this.editor;
 
 		const deleteCommand = editor.commands.get( 'delete' );
+
+		if ( deleteCommand ) {
+			this.listenTo( deleteCommand, 'execute', event => {
+				this._handleDeleteCommand( event, { isForward: false } );
+			}, { priority: 'high' } );
+		}
+
 		const forwardDeleteCommand = editor.commands.get( 'forwardDelete' );
 
-		this.listenTo( deleteCommand, 'execute', event => {
-			this._handleDeleteCommand( event, { isForward: false } );
-		}, { priority: 'high' } );
-		this.listenTo( forwardDeleteCommand, 'execute', event => {
-			this._handleDeleteCommand( event, { isForward: true } );
-		}, { priority: 'high' } );
+		if ( forwardDeleteCommand ) {
+			this.listenTo( forwardDeleteCommand, 'execute', event => {
+				this._handleDeleteCommand( event, { isForward: true } );
+			}, { priority: 'high' } );
+		}
 	}
 
 	/**
