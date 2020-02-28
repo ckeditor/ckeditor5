@@ -14,7 +14,7 @@ import Model from '@ckeditor/ckeditor5-ui/src/model';
 import ColorInputView from './colorinputview';
 import { isColor, isLength, isPercentage } from '@ckeditor/ckeditor5-engine/src/view/styles/utils';
 import { getTableWidgetAncestor } from '../utils';
-import { findAncestor, getSelectedTableCell } from '../commands/utils';
+import { findAncestor } from '../commands/utils';
 
 const DEFAULT_BALLOON_POSITIONS = BalloonPanelView.defaultPositions;
 const BALLOON_POSITIONS = [
@@ -81,7 +81,7 @@ export function getBalloonTablePositionData( editor ) {
  * @returns {module:utils/dom/position~Options}
  */
 export function getBalloonCellPositionData( editor ) {
-	const modelTableCell = getSelectedTableCell( editor.model.document.selection.getFirstPosition() );
+	const modelTableCell = getTableCellAtPosition( editor.model.document.selection.getFirstPosition() );
 	const viewTableCell = editor.editing.mapper.toViewElement( modelTableCell );
 
 	return {
@@ -466,4 +466,14 @@ function colorConfigToColorGridDefinitions( colorConfig ) {
 			hasBorder: item.hasBorder
 		}
 	} ) );
+}
+
+// Returns the first selected table cell from a multi-cell or in-cell selection.
+//
+// @param {module:engine/model/position~Position} position Document position.
+// @returns {module:engine/model/element~Element}
+function getTableCellAtPosition( position ) {
+	const isTableCellSelected = position.nodeAfter && position.nodeAfter.is( 'tableCell' );
+
+	return isTableCellSelected ? position.nodeAfter : findAncestor( 'tableCell', position );
 }
