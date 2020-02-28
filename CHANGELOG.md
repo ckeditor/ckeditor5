@@ -19,7 +19,7 @@ Finally, this release comes with a couple of **important breaking changes**. The
 
 Check the list of packages below to learn more about other breaking changes.
 
-Blog post coming soon...
+https://ckeditor.com/blog/CKEditor-5-v17.0.0-with-table-styles-special-characters-and-performance-improvements/
 
 ### Dependencies
 
