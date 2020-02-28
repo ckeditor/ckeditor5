@@ -70,10 +70,19 @@ export default class InsertColumnCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const tableUtils = editor.plugins.get( 'TableUtils' );
+		const insertBefore = this.order == 'left';
 
-		const firstPosition = selection.getFirstPosition();
+		let referencePosition = insertBefore ? selection.getFirstPosition() : selection.getLastPosition();
 
-		const tableCell = findAncestor( 'tableCell', firstPosition );
+		// In case of multi cell selection, the boundary position is outside the cell, so make sure to nest it into it.
+		referencePosition = referencePosition.getLastMatchingPosition(
+			value => value.item.is( 'element' ) && [ 'table', 'tableRow', 'tableCell' ].includes( value.item.parent.name ),
+			{
+				direction: insertBefore ? 'forward' : 'backward'
+			}
+		);
+
+		const tableCell = findAncestor( 'tableCell', referencePosition );
 		const table = tableCell.parent.parent;
 
 		const { column } = tableUtils.getCellLocation( tableCell );
