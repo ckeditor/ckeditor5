@@ -364,6 +364,17 @@ describe( 'WidgetResize', () => {
 			} );
 		} );
 
+		it( 'doesn\'t call options.onCommit in case of no change', () => {
+			createResizer();
+
+			const commitStub = sinon.stub();
+			const domParts = getWidgetDomParts( editor, widget, 'top-left' );
+
+			resizerMouseSimulator.down( editor, domParts.resizeHandle );
+			resizerMouseSimulator.up( editor );
+			expect( commitStub.callCount, 'call count' ).to.be.eql( 0 );
+		} );
+
 		it( 'returns proper value when resize host is different from widget wrapper', () => {
 			createResizer( {
 				unit: undefined,
