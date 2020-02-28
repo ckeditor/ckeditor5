@@ -81,6 +81,7 @@ export function getBalloonTablePositionData( editor ) {
  * @returns {module:utils/dom/position~Options}
  */
 export function getBalloonCellPositionData( editor ) {
+	// This is a bit naive. See https://github.com/ckeditor/ckeditor5/issues/6357.
 	const modelTableCell = getTableCellAtPosition( editor.model.document.selection.getFirstPosition() );
 	const viewTableCell = editor.editing.mapper.toViewElement( modelTableCell );
 
