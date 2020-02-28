@@ -442,6 +442,20 @@ describe( 'table selection', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/6114
+		it( 'should prevent default the "mousemove" event to prevent the native DOM selection from changing', () => {
+			setModelData( model, modelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			pressMouseButtonOver( getTableCell( '00' ) );
+			const domEvtData = movePressedMouseOver( getTableCell( '11' ) );
+			releaseMouseButtonOver( getTableCell( '11' ) );
+
+			sinon.assert.calledOnce( domEvtData.preventDefault );
+		} );
 	} );
 
 	function getTableCell( data ) {
@@ -461,7 +475,7 @@ describe( 'table selection', () => {
 	}
 
 	function movePressedMouseOver( target ) {
-		moveMouseOver( target, mouseButtonPressed );
+		return moveMouseOver( target, mouseButtonPressed );
 	}
 
 	function moveReleasedMouseOver( target ) {
@@ -469,7 +483,7 @@ describe( 'table selection', () => {
 	}
 
 	function moveMouseOver( target, ...decorators ) {
-		fireEvent( view, 'mousemove', addTarget( target ), ...decorators );
+		return fireEvent( view, 'mousemove', addTarget( target ), ...decorators );
 	}
 
 	function releaseMouseButtonOver( target ) {
@@ -505,5 +519,7 @@ describe( 'table selection', () => {
 		}
 
 		viewDoc.fire( eventName, domEvtDataStub );
+
+		return domEvtDataStub;
 	}
 } );

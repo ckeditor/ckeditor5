@@ -101,6 +101,9 @@ export default class MouseSelectionHandler {
 			return;
 		}
 
+		// https://github.com/ckeditor/ckeditor5/issues/6114
+		domEventData.preventDefault();
+
 		const tableCell = this._getModelTableCellFromDomEvent( domEventData );
 
 		if ( !tableCell ) {
