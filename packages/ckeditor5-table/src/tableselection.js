@@ -229,6 +229,7 @@ export default class TableSelection extends Plugin {
 	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */
 	* getSelectedTableCells() {
+		// TODO: this function should be removed. See https://github.com/ckeditor/ckeditor5/issues/6358
 		if ( !this.hasMultiCellSelection ) {
 			return;
 		}

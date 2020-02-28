@@ -114,6 +114,8 @@ export default class TableCellPropertyCommand extends Command {
 }
 
 // Returns all selected table cells.
+// The implementation of this function is incorrect as it may return a single cell twice.
+// See https://github.com/ckeditor/ckeditor5/issues/6358.
 function getSelectedTableCells( model ) {
 	const selection = model.document.selection;
 
