@@ -189,6 +189,15 @@ export default class Node {
 	}
 
 	/**
+	 * Returns true if a node is in a tree rooted in an element of the root type.
+	 *
+	 * @returns {Boolean}
+	 */
+	isAttached() {
+		return this.root.is( 'rootElement' );
+	}
+
+	/**
 	 * Gets path to the node. The path is an array containing starting offsets of consecutive ancestors of this node,
 	 * beginning from {@link module:engine/model/node~Node#root root}, down to this node's starting offset. The path can be used to
 	 * create {@link module:engine/model/position~Position Position} instance.

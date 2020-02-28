@@ -9,7 +9,6 @@ import Node from '../../src/view/node';
 import DocumentFragment from '../../src/view/documentfragment';
 import RootEditableElement from '../../src/view/rooteditableelement';
 
-import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import Document from '../../src/view/document';
 import { StylesProcessor } from '../../src/view/stylesmap';
@@ -180,9 +179,9 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return proper element for nodes in different branches and on different levels', () => {
-			const foo = new Text( 'foo' );
-			const bar = new Text( 'bar' );
-			const bom = new Text( 'bom' );
+			const foo = new Text( document, 'foo' );
+			const bar = new Text( document, 'bar' );
+			const bom = new Text( document, 'bom' );
 			const d = new Element( document, 'd', null, [ bar ] );
 			const c = new Element( document, 'c', null, [ foo, d ] );
 			const b = new Element( document, 'b', null, [ c ] );
@@ -207,8 +206,8 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return document fragment', () => {
-			const foo = new Text( 'foo' );
-			const bar = new Text( 'bar' );
+			const foo = new Text( document, 'foo' );
+			const bar = new Text( document, 'bar' );
 			const df = new DocumentFragment( document, [ foo, bar ] );
 
 			expect( foo.getCommonAncestor( bar ) ).to.equal( df );
@@ -232,7 +231,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should throw an error if parent does not contain element', () => {
-			const f = new Text( 'f' );
+			const f = new Text( document, 'f' );
 			const bar = new Element( document, 'bar', [], [] );
 
 			f.parent = bar;
@@ -266,7 +265,6 @@ describe( 'Node', () => {
 
 		it( 'should return root element', () => {
 			const parent = new RootEditableElement( document, 'div' );
-			parent._document = createDocumentMock();
 			const child = new Element( document, 'p' );
 
 			child.parent = parent;
@@ -352,9 +350,32 @@ describe( 'Node', () => {
 		} );
 	} );
 
+	describe( 'isAttached()', () => {
+		it( 'returns false for a fresh node', () => {
+			const char = new Text( document, 'x' );
+			const el = new Element( document, 'one' );
+
+			expect( char.isAttached() ).to.equal( false );
+			expect( el.isAttached() ).to.equal( false );
+		} );
+
+		it( 'returns true for the root element', () => {
+			const root = new RootEditableElement( document, 'div' );
+
+			expect( root.isAttached() ).to.equal( true );
+		} );
+
+		it( 'returns false for a node attached to a document fragment', () => {
+			const foo = new Text( document, 'foo' );
+			new DocumentFragment( document, [ foo ] ); // eslint-disable-line no-new
+
+			expect( foo.isAttached() ).to.equal( false );
+		} );
+	} );
+
 	describe( '_remove()', () => {
 		it( 'should remove node from its parent', () => {
-			const char = new Text( 'a' );
+			const char = new Text( document, 'a' );
 			const parent = new Element( document, 'p', null, [ char ] );
 			char._remove();
 
@@ -362,7 +383,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'uses parent._removeChildren method', () => {
-			const char = new Text( 'a' );
+			const char = new Text( document, 'a' );
 			const parent = new Element( document, 'p', null, [ char ] );
 			const _removeChildrenSpy = sinon.spy( parent, '_removeChildren' );
 			const index = char.index;
@@ -399,7 +420,7 @@ describe( 'Node', () => {
 		} );
 
 		beforeEach( () => {
-			text = new Text( 'foo' );
+			text = new Text( document, 'foo' );
 			img = new Element( document, 'img', { 'src': 'img.png' } );
 
 			root = new Element( document, 'p', { renderer: { markToSync: rootChangeSpy } } );

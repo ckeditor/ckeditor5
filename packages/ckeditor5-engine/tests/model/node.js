@@ -8,8 +8,10 @@ import DocumentFragment from '../../src/model/documentfragment';
 import Node from '../../src/model/node';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
+import RootElement from '../../src/model/rootelement';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 
 describe( 'Node', () => {
 	let doc, root, node,
@@ -383,6 +385,55 @@ describe( 'Node', () => {
 			otherRoot._appendChild( otherElement );
 
 			expect( three.isAfter( otherElement ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isAttached()', () => {
+		it( 'returns false for a fresh node', () => {
+			const char = new Text( 'x' );
+			const el = new Element( 'one' );
+
+			expect( char.isAttached() ).to.equal( false );
+			expect( el.isAttached() ).to.equal( false );
+		} );
+
+		it( 'returns true for the root element', () => {
+			const model = new Model();
+			const root = new RootElement( model.document, 'root' );
+
+			expect( root.isAttached() ).to.equal( true );
+		} );
+
+		it( 'returns false for a node attached to a document fragment', () => {
+			const foo = new Text( 'foo' );
+			new DocumentFragment( [ foo ] ); // eslint-disable-line no-new
+
+			expect( foo.isAttached() ).to.equal( false );
+		} );
+
+		it( 'returns true for a node moved to graveyard', () => {
+			return ModelTestEditor.create()
+				.then( editor => {
+					const model = editor.model;
+					const root = model.document.getRoot();
+
+					// Allow "paragraph" element to be added as a child in block elements.
+					model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+					const node = model.change( writer => writer.createElement( 'paragraph' ) );
+
+					expect( node.isAttached() ).to.equal( false );
+
+					model.change( writer => writer.append( node, root ) );
+
+					expect( node.isAttached() ).to.equal( true );
+
+					model.change( writer => writer.remove( node ) );
+
+					expect( node.isAttached() ).to.equal( true );
+
+					return editor.destroy();
+				} );
 		} );
 	} );
 

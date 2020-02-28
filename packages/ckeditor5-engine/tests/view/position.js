@@ -546,7 +546,6 @@ describe( 'Position', () => {
 		it( 'should return EditableElement when position is placed inside', () => {
 			const p = new Element( document, 'p' );
 			const editable = new EditableElement( document, 'div', null, p );
-			editable._document = document;
 			const position = new Position( p, 0 );
 
 			expect( position.editableElement ).to.equal( editable );

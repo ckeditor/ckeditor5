@@ -667,10 +667,6 @@ export default class Element extends Node {
 		if ( key == 'class' ) {
 			parseClasses( this._classes, value );
 		} else if ( key == 'style' ) {
-			// if (!this._styles ) {
-			// 	debugger;
-			// }
-
 			this._styles.setTo( value );
 		} else {
 			this._attrs.set( key, value );

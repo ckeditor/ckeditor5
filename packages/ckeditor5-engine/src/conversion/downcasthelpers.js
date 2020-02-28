@@ -544,7 +544,7 @@ export function clearAttributes() {
 			// Not collapsed selection should not have artifacts.
 			if ( range.isCollapsed ) {
 				// Position might be in the node removed by the view writer.
-				if ( range.end.parent.parent ) {
+				if ( range.end.parent.isAttached() ) {
 					conversionApi.writer.mergeAttributes( range.start );
 				}
 			}
