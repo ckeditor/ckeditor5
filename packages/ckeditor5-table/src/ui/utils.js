@@ -81,8 +81,7 @@ export function getBalloonTablePositionData( editor ) {
  * @returns {module:utils/dom/position~Options}
  */
 export function getBalloonCellPositionData( editor ) {
-	const firstPosition = editor.model.document.selection.getFirstPosition();
-	const modelTableCell = findAncestor( 'tableCell', firstPosition );
+	const modelTableCell = getTableCellAtPosition( editor.model.document.selection.getFirstPosition() );
 	const viewTableCell = editor.editing.mapper.toViewElement( modelTableCell );
 
 	return {
@@ -467,4 +466,14 @@ function colorConfigToColorGridDefinitions( colorConfig ) {
 			hasBorder: item.hasBorder
 		}
 	} ) );
+}
+
+// Returns the first selected table cell from a multi-cell or in-cell selection.
+//
+// @param {module:engine/model/position~Position} position Document position.
+// @returns {module:engine/model/element~Element}
+function getTableCellAtPosition( position ) {
+	const isTableCellSelected = position.nodeAfter && position.nodeAfter.is( 'tableCell' );
+
+	return isTableCellSelected ? position.nodeAfter : findAncestor( 'tableCell', position );
 }
