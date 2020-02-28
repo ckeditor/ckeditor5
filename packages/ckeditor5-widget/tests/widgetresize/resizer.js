@@ -82,6 +82,23 @@ describe( 'Resizer', () => {
 		} );
 	} );
 
+	describe( 'redraw()', () => {
+		it( 'works fetch proper rect if handleHostRect argument not given explicitly', () => {
+			const resizerInstance = createResizer( {
+				getHandleHost: widgetWrapper => widgetWrapper
+			} );
+			resizerInstance.attach();
+			const renderedElement = resizerInstance._viewResizerWrapper.render( document );
+
+			document.body.appendChild( renderedElement );
+
+			resizerInstance.redraw();
+
+			// Cleanup.
+			renderedElement.remove();
+		} );
+	} );
+
 	describe( '_proposeNewSize()', () => {
 		let resizer;
 
@@ -139,14 +156,14 @@ describe( 'Resizer', () => {
 		} );
 	} );
 
-	function createResizer() {
+	function createResizer( customOptions ) {
 		const model = new Element( 'resizable' );
 		const viewElement = new ContainerElement( 'div' );
 
-		return new Resizer( {
+		return new Resizer( Object.assign( {
 			modelElement: model,
 			viewElement,
 			editor
-		} );
+		}, customOptions ) );
 	}
 } );
