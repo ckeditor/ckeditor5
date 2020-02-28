@@ -364,10 +364,12 @@ describe( 'WidgetResize', () => {
 			} );
 		} );
 
-		it( 'doesn\'t call options.onCommit in case of no change', () => {
-			createResizer();
-
+		it( 'doesn\'t call options.onCommit() in case of no change', () => {
 			const commitStub = sinon.stub();
+			createResizer( {
+				onCommit: commitStub
+			} );
+
 			const domParts = getWidgetDomParts( editor, widget, 'top-left' );
 
 			resizerMouseSimulator.down( editor, domParts.resizeHandle );
@@ -506,6 +508,7 @@ describe( 'WidgetResize', () => {
 				]
 			} );
 	}
+
 	function simpleWidgetPlugin( editor ) {
 		editor.model.schema.register( 'widget', {
 			inheritAllFrom: '$block',
