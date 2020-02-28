@@ -97,7 +97,8 @@ export default class TableCellPropertyCommand extends Command {
 	}
 
 	/**
-	 * Returns a single value for all selected table cells. If the value is the same for all cells, it will be returned (`undefined` otherwise).
+	 * Returns a single value for all selected table cells. If the value is the same for all cells,
+	 * it will be returned (`undefined` otherwise).
 	 *
 	 * @param {Array.<module:engine/model/element~Element>} tableCell
 	 * @returns {*}
