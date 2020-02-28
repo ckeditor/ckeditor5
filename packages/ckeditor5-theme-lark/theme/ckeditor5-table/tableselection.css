@@ -4,7 +4,7 @@
  */
 
 :root {
-	--ck-table-selected-cell-background: hsl(210, 92%, 85%);
+	--ck-table-selected-cell-background: hsl(210, 92%, 90%);
 }
 
 .ck.ck-editor__editable .table table {
