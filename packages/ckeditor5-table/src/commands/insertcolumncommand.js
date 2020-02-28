@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { findAncestor } from './utils';
+import { getRangeContainedElement, findAncestor } from './utils';
 
 /**
  * The insert column command.
@@ -81,12 +81,5 @@ export default class InsertColumnCommand extends Command {
 		const { column } = tableUtils.getCellLocation( tableCell );
 
 		tableUtils.insertColumns( table, { columns: 1, at: insertBefore ? column : column + 1 } );
-
-		function getRangeContainedElement( range ) {
-			const nodeAfterStart = range.start.nodeAfter;
-			const nodeBeforeEnd = range.end.nodeBefore;
-
-			return ( nodeAfterStart && nodeAfterStart.is( 'element' ) && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
-		}
 	}
 }

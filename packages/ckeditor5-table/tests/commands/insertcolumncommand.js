@@ -94,7 +94,7 @@ describe( 'InsertColumnCommand', () => {
 			it( 'should insert column after a multi column selection', () => {
 				setData( model, modelTable( [
 					[ '11', '12', '13' ],
-					[ '21', '22[]', '23' ]
+					[ '21', '22', '23' ]
 				] ) );
 
 				const tableSelection = editor.plugins.get( TableSelection );
