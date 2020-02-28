@@ -12,9 +12,12 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 import TableEditing from '../../src/tableediting';
 import TableSelection from '../../src/tableselection';
 import { assertSelectedCells, modelTable, viewTable } from '../_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'table selection', () => {
 	let editor, model, view, viewDoc;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -417,6 +420,27 @@ describe( 'table selection', () => {
 				[ '00', '01' ],
 				[ '10', '11' ]
 			], { asWidget: true } ) + '<p>{}foo</p>' );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/6353
+		it( 'should do nothing on successive "mouseup" events beyond the table after the selection was fininished', () => {
+			const spy = testUtils.sinon.spy( editor.plugins.get( 'TableSelection' ), 'stopSelection' );
+
+			setModelData( model, modelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			pressMouseButtonOver( getTableCell( '00' ) );
+			movePressedMouseOver( getTableCell( '11' ) );
+			releaseMouseButtonOver( getTableCell( '11' ) );
+
+			sinon.assert.calledOnce( spy );
+
+			pressMouseButtonOver( viewDoc.getRoot() );
+			releaseMouseButtonOver( viewDoc.getRoot() );
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
