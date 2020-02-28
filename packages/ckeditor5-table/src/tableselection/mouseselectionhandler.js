@@ -95,7 +95,7 @@ export default class MouseSelectionHandler {
 	 * @private
 	 */
 	_handleMouseMove( domEventData ) {
-		if ( !isButtonPressed( domEventData ) ) {
+		if ( !this._isSelecting || !isButtonPressed( domEventData ) ) {
 			this._tableSelection.stopSelection();
 
 			return;
