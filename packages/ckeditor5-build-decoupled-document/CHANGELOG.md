@@ -7,7 +7,7 @@ We are happy to announce the release of CKEditor 5 v17.0.0.
 
 Refer to the [main changelog](https://github.com/ckeditor/ckeditor5/releases/tag/v17.0.0) to find out about all the new features, improvements and possible breaking changes.
 
-Blog post coming soon...
+https://ckeditor.com/blog/CKEditor-5-v17.0.0-with-table-styles-special-characters-and-performance-improvements/
 
 ### BREAKING CHANGES
 
