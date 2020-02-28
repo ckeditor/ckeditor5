@@ -70,24 +70,24 @@ export default class InsertColumnCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const tableUtils = editor.plugins.get( 'TableUtils' );
-		const insertBefore = this.order == 'left';
+		const insertBefore = this.order === 'left';
 
-		let referencePosition = insertBefore ? selection.getFirstPosition() : selection.getLastPosition();
+		const referencePosition = insertBefore ? selection.getFirstPosition() : selection.getLastPosition();
+		const referenceRange = insertBefore ? selection.getFirstRange() : selection.getLastRange();
 
-		// In case of multi cell selection, the boundary position is outside the cell, so make sure to nest it into it.
-		referencePosition = referencePosition.getLastMatchingPosition(
-			value => value.item.is( 'element' ) && [ 'table', 'tableRow', 'tableCell' ].includes( value.item.parent.name ),
-			{
-				direction: insertBefore ? 'forward' : 'backward'
-			}
-		);
-
-		const tableCell = findAncestor( 'tableCell', referencePosition );
+		const tableCell = getRangeContainedElement( referenceRange ) || findAncestor( 'tableCell', referencePosition );
 		const table = tableCell.parent.parent;
 
 		const { column } = tableUtils.getCellLocation( tableCell );
-		const insertAt = this.order === 'right' ? column + 1 : column;
+		const insertAt = insertBefore ? column : column + 1;
 
 		tableUtils.insertColumns( table, { columns: 1, at: insertAt } );
+
+		function getRangeContainedElement( range ) {
+			const nodeAfterStart = range.start.nodeAfter;
+			const nodeBeforeEnd = range.end.nodeBefore;
+
+			return ( nodeAfterStart && nodeAfterStart.is( 'element' ) && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
+		}
 	}
 }
