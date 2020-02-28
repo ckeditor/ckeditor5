@@ -79,9 +79,8 @@ export default class InsertColumnCommand extends Command {
 		const table = tableCell.parent.parent;
 
 		const { column } = tableUtils.getCellLocation( tableCell );
-		const insertAt = insertBefore ? column : column + 1;
 
-		tableUtils.insertColumns( table, { columns: 1, at: insertAt } );
+		tableUtils.insertColumns( table, { columns: 1, at: insertBefore ? column : column + 1 } );
 
 		function getRangeContainedElement( range ) {
 			const nodeAfterStart = range.start.nodeAfter;
