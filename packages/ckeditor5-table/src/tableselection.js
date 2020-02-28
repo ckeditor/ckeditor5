@@ -14,6 +14,7 @@ import TableUtils from './tableutils';
 import { setupTableSelectionHighlighting } from './tableselection/converters';
 import MouseSelectionHandler from './tableselection/mouseselectionhandler';
 import { findAncestor } from './commands/utils';
+import { clearTableCellsContents } from './tableselection/utils';
 import cropTable from './tableselection/croptable';
 
 import '../theme/tableselection.css';
@@ -95,13 +96,38 @@ export default class TableSelection extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const selection = editor.model.document.selection;
+		const model = editor.model;
+		const selection = model.document.selection;
 
 		this._tableUtils = editor.plugins.get( 'TableUtils' );
 
 		setupTableSelectionHighlighting( editor, this );
 
-		selection.on( 'change:range', () => this._clearSelectionOnExternalChange( selection ) );
+		this.listenTo( selection, 'change:range', () => this._clearSelectionOnExternalChange( selection ) );
+		this.listenTo( model, 'deleteContent', ( evt, args ) => this._handleDeleteContent( evt, args ), { priority: 'high' } );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	afterInit() {
+		const editor = this.editor;
+
+		const deleteCommand = editor.commands.get( 'delete' );
+
+		if ( deleteCommand ) {
+			this.listenTo( deleteCommand, 'execute', event => {
+				this._handleDeleteCommand( event, { isForward: false } );
+			}, { priority: 'high' } );
+		}
+
+		const forwardDeleteCommand = editor.commands.get( 'forwardDelete' );
+
+		if ( forwardDeleteCommand ) {
+			this.listenTo( forwardDeleteCommand, 'execute', event => {
+				this._handleDeleteCommand( event, { isForward: true } );
+			}, { priority: 'high' } );
+		}
 	}
 
 	/**
@@ -277,6 +303,52 @@ export default class TableSelection extends Plugin {
 	_clearSelectionOnExternalChange( selection ) {
 		if ( selection.rangeCount <= 1 && this.hasMultiCellSelection ) {
 			this.clearSelection();
+		}
+	}
+
+	/**
+	 * It overrides default `model.deleteContent()` behavior over a selected table fragment.
+	 *
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} event
+	 * @param {Array.<*>} args Delete content method arguments.
+	 */
+	_handleDeleteContent( event, args ) {
+		const [ selection ] = args;
+		const model = this.editor.model;
+
+		if ( this.hasMultiCellSelection && selection.is( 'documentSelection' ) ) {
+			event.stop();
+
+			clearTableCellsContents( model, this.getSelectedTableCells() );
+
+			model.change( writer => {
+				writer.setSelection( Array.from( this.getSelectedTableCells() ).pop(), 0 );
+			} );
+		}
+	}
+
+	/**
+	 * It overrides default `DeleteCommand` behavior over a selected table fragment.
+	 *
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} event
+	 * @param {Object} options
+	 * @param {Boolean} options.isForward Whether it handles forward or backward delete.
+	 */
+	_handleDeleteCommand( event, options ) {
+		const model = this.editor.model;
+
+		if ( this.hasMultiCellSelection ) {
+			event.stop();
+
+			clearTableCellsContents( model, this.getSelectedTableCells() );
+
+			const tableCell = options.isForward ? this._startElement : this._endElement;
+
+			model.change( writer => {
+				writer.setSelection( tableCell, 0 );
+			} );
 		}
 	}
 }
