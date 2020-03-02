@@ -37,17 +37,13 @@ export default class RemoveRowCommand extends Command {
 	 * @inheritDoc
 	 */
 	execute() {
-		const model = this.editor.model;
-		const selection = model.document.selection;
-
-		const firstPosition = selection.getFirstPosition();
-		const tableCell = findAncestor( 'tableCell', firstPosition );
+		const tableCell = this._getReferenceCells().next().value;
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 
-		const removedRow = table.getChildIndex( tableRow );
+		const removedRowIndex = table.getChildIndex( tableRow );
 
-		const tableMap = [ ...new TableWalker( table, { endRow: removedRow } ) ];
+		const tableMap = [ ...new TableWalker( table, { endRow: removedRowIndex } ) ];
 
 		const cellData = tableMap.find( value => value.cell === tableCell );
 
@@ -55,8 +51,8 @@ export default class RemoveRowCommand extends Command {
 
 		const columnToFocus = cellData.column;
 
-		model.change( writer => {
-			if ( headingRows && removedRow <= headingRows ) {
+		this.editor.model.change( writer => {
+			if ( headingRows && removedRowIndex <= headingRows ) {
 				updateNumericAttribute( 'headingRows', headingRows - 1, table, writer, 0 );
 			}
 
@@ -64,16 +60,16 @@ export default class RemoveRowCommand extends Command {
 
 			// Get cells from removed row that are spanned over multiple rows.
 			tableMap
-				.filter( ( { row, rowspan } ) => row === removedRow && rowspan > 1 )
+				.filter( ( { row, rowspan } ) => row === removedRowIndex && rowspan > 1 )
 				.forEach( ( { column, cell, rowspan } ) => cellsToMove.set( column, { cell, rowspanToSet: rowspan - 1 } ) );
 
 			// Reduce rowspan on cells that are above removed row and overlaps removed row.
 			tableMap
-				.filter( ( { row, rowspan } ) => row <= removedRow - 1 && row + rowspan > removedRow )
+				.filter( ( { row, rowspan } ) => row <= removedRowIndex - 1 && row + rowspan > removedRowIndex )
 				.forEach( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
 
 			// Move cells to another row.
-			const targetRow = removedRow + 1;
+			const targetRow = removedRowIndex + 1;
 			const tableWalker = new TableWalker( table, { includeSpanned: true, startRow: targetRow, endRow: targetRow } );
 
 			let previousCell;
@@ -94,9 +90,12 @@ export default class RemoveRowCommand extends Command {
 				}
 			}
 
+			// Temporary workaround to avoid the "model-selection-range-intersects" error.
+			writer.setSelection( writer.createSelection( table, 'on' ) );
+
 			writer.remove( tableRow );
 
-			const cellToFocus = getCellToFocus( table, removedRow, columnToFocus );
+			const cellToFocus = getCellToFocus( table, removedRowIndex, columnToFocus );
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
 	}
