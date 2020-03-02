@@ -695,7 +695,8 @@ export default class TableCellPropertiesView extends View {
 			labels: this._horizontalAlignmentLabels,
 			propertyName: 'horizontalAlignment',
 			nameToValue: name => {
-				return name === 'left' ? '' : name;
+				const isRTLContent = this.locale.contentLanguageDirection === 'rtl';
+				return name === ( isRTLContent ? 'right' : 'left' ) ? '' : name;
 			}
 		} );
 
@@ -783,12 +784,29 @@ export default class TableCellPropertiesView extends View {
 	get _horizontalAlignmentLabels() {
 		const t = this.t;
 
-		return {
+		const labels = {
 			left: t( 'Align cell text to the left' ),
 			center: t( 'Align cell text to the center' ),
 			right: t( 'Align cell text to the right' ),
 			justify: t( 'Justify cell text' )
 		};
+
+		// Set of labels which can be reversed to match proper {@link #uiLanguage editor UI language}.
+		const ltr = [ 'left', 'center', 'right' ];
+		const labelsDirection = this.locale.uiLanguageDirection === 'rtl' ? ltr.reverse() : ltr;
+
+		// Creates object with a proper order of labeles.
+		const orderedLabels = labelsDirection.reduce( ( acc, curr ) => {
+			return {
+				...acc,
+				[ curr ]: labels[ curr ]
+			};
+		}, {} );
+
+		// Appends other labels.
+		orderedLabels.justify = labels.justify;
+
+		return orderedLabels;
 	}
 
 	/**
