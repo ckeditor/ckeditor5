@@ -474,11 +474,33 @@ describe( 'table cell properties', () => {
 							expect( toolbar.ariaLabel ).to.equal( 'Horizontal text alignment toolbar' );
 						} );
 
-						it( 'should bring alignment buttons', () => {
+						it( 'should bring alignment buttons in the right order in LTR (default)', () => {
 							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
 								'Align cell text to the left',
 								'Align cell text to the center',
 								'Align cell text to the right',
+								'Justify cell text'
+							] );
+
+							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
+								true, false, false, false
+							] );
+						} );
+
+						it( 'should bring alignment buttons in the right order in RTL', () => {
+							// Creates its own local instances of locale, view and toolbar.
+							const locale = {
+								t: val => val,
+								uiLanguageDirection: 'rtl',
+								contentLanguageDirection: 'rtl'
+							};
+							const view = new TableCellPropertiesView( locale, VIEW_OPTIONS );
+							const toolbar = view.horizontalAlignmentToolbar;
+
+							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
+								'Align cell text to the right',
+								'Align cell text to the center',
+								'Align cell text to the left',
 								'Justify cell text'
 							] );
 
