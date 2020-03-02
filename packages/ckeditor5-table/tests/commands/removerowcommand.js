@@ -85,6 +85,45 @@ describe( 'RemoveRowCommand', () => {
 			] ) );
 		} );
 
+		it( 'should remove a row if all its cells are selected', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ],
+				[ '20', '21' ]
+			] ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+			tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '00', '01' ],
+				[ '[]20', '21' ]
+			] ) );
+		} );
+
+		it( 'should remove multiple rows if more than one row is selected', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ],
+				[ '20', '21' ]
+			] ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+			tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 0 ] ) );
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '00', '01[]' ]
+			] ) );
+		} );
+
 		it( 'should remove a given row from a table start', () => {
 			setData( model, modelTable( [
 				[ '[]00', '01' ],
