@@ -110,7 +110,11 @@ export default class DeleteCommand extends Command {
 				);
 			} );
 
-			model.deleteContent( selection, { doNotResetEntireContent } );
+			model.deleteContent( selection, {
+				doNotResetEntireContent,
+				direction: this.direction
+			} );
+
 			this._buffer.input( changeCount );
 
 			writer.setSelection( selection );
