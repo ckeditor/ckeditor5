@@ -110,29 +110,6 @@ export default class TableSelection extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
-		const editor = this.editor;
-
-		const deleteCommand = editor.commands.get( 'delete' );
-
-		if ( deleteCommand ) {
-			this.listenTo( deleteCommand, 'execute', event => {
-				this._handleDeleteCommand( event, { isForward: false } );
-			}, { priority: 'high' } );
-		}
-
-		const forwardDeleteCommand = editor.commands.get( 'forwardDelete' );
-
-		if ( forwardDeleteCommand ) {
-			this.listenTo( forwardDeleteCommand, 'execute', event => {
-				this._handleDeleteCommand( event, { isForward: true } );
-			}, { priority: 'high' } );
-		}
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	destroy() {
 		super.destroy();
 		this._mouseHandler.stopListening();
@@ -315,40 +292,19 @@ export default class TableSelection extends Plugin {
 	 * @param {Array.<*>} args Delete content method arguments.
 	 */
 	_handleDeleteContent( event, args ) {
-		const [ selection ] = args;
+		const [ selection, options ] = args;
 		const model = this.editor.model;
+		const isBackward = !options || options.direction == 'backward';
 
-		if ( this.hasMultiCellSelection && selection.is( 'documentSelection' ) ) {
+		if ( this.hasMultiCellSelection && selection.rangeCount > 1 ) {
 			event.stop();
 
-			clearTableCellsContents( model, this.getSelectedTableCells() );
-
 			model.change( writer => {
-				writer.setSelection( Array.from( this.getSelectedTableCells() ).pop(), 0 );
-			} );
-		}
-	}
+				clearTableCellsContents( model, this.getSelectedTableCells() );
 
-	/**
-	 * It overrides default `DeleteCommand` behavior over a selected table fragment.
-	 *
-	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} event
-	 * @param {Object} options
-	 * @param {Boolean} options.isForward Whether it handles forward or backward delete.
-	 */
-	_handleDeleteCommand( event, options ) {
-		const model = this.editor.model;
+				const tableCell = isBackward ? this._endElement : this._startElement;
 
-		if ( this.hasMultiCellSelection ) {
-			event.stop();
-
-			clearTableCellsContents( model, this.getSelectedTableCells() );
-
-			const tableCell = options.isForward ? this._startElement : this._endElement;
-
-			model.change( writer => {
-				writer.setSelection( tableCell, 0 );
+				writer.setSelection( tableCell, 'in' );
 			} );
 		}
 	}
