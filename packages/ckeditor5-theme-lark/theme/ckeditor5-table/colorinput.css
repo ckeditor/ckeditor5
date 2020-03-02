@@ -3,20 +3,37 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 @import "../mixins/_rounded.css";
 
 .ck.ck-input-color {
 	& > .ck.ck-input-text {
-		border-top-right-radius: 0;
-		border-bottom-right-radius: 0;
+		@mixin ck-dir ltr {
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+
+		@mixin ck-dir rtl {
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+		}
 	}
 
 	& > .ck.ck-dropdown {
 		& > .ck.ck-input-color__button {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-			margin-left: -1px;
 			padding: 0;
+
+			@mixin ck-dir ltr {
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+				margin-left: -1px;
+			}
+
+			@mixin ck-dir rtl {
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+				margin-right: -1px;
+			}
 
 			&.ck-disabled {
 				background: var(--ck-color-input-disabled-background);
