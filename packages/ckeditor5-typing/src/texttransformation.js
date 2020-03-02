@@ -126,11 +126,10 @@ export default class TextTransformation extends Plugin {
 		const editor = this._editor;
 		const model = editor.model;
 		const input = editor.plugins.get( 'Input' );
-		const configuredTransformations = getConfiguredTransformations( editor.config.get( 'typing.transformations' ) );
-		const normalizedConfiguredTransformations =	getNormalizedTransformations( configuredTransformations );
+		const normalizedTransformations = normalizeTransformations( editor.config.get( 'typing.transformations' ) );
 
 		const testCallback = text => {
-			for ( const normalizedTransformation of normalizedConfiguredTransformations ) {
+			for ( const normalizedTransformation of normalizedTransformations ) {
 				const from = normalizedTransformation.from;
 				const match = from.test( text );
 
@@ -240,8 +239,8 @@ function buildQuotesRegExp( quoteCharacter ) {
 // Reads text transformation config and returns normalized array of transformations objects.
 //
 // @param {module:typing/texttransformation~TextTransformationDescription} config
-// @returns {Array.<module:typing/texttransformation~TextTransformationDescription>}
-function getConfiguredTransformations( config ) {
+// @returns {Array.<{from:String,to:Function}>}
+function normalizeTransformations( config ) {
 	const extra = config.extra || [];
 	const remove = config.remove || [];
 	const isNotRemoved = transformation => !remove.includes( transformation );
@@ -250,18 +249,11 @@ function getConfiguredTransformations( config ) {
 
 	return expandGroupsAndRemoveDuplicates( configured )
 		.filter( isNotRemoved ) // Filter out 'remove' transformations as they might be set in group
-		.map( transformation => TRANSFORMATIONS[ transformation ] || transformation );
-}
-
-// Return normalized configured transformations array.
-//
-// @param {Array.<module:typing/texttransformation~TextTransformationDescription>} transformations
-// @returns {Array.<{from:String,to:Function}>}
-function getNormalizedTransformations( transformations ) {
-	return transformations.map( transformation => ( {
-		from: normalizeFrom( transformation.from ),
-		to: normalizeTo( transformation.to )
-	} ) );
+		.map( transformation => TRANSFORMATIONS[ transformation ] || transformation )
+		.map( transformation => ( {
+			from: normalizeFrom( transformation.from ),
+			to: normalizeTo( transformation.to )
+		} ) );
 }
 
 // Reads definitions and expands named groups if needed to transformation names.
