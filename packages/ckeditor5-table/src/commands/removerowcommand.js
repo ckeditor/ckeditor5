@@ -28,12 +28,9 @@ export default class RemoveRowCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const model = this.editor.model;
-		const doc = model.document;
+		const firstCell = this._getReferenceCells().next().value;
 
-		const tableCell = findAncestor( 'tableCell', doc.selection.getFirstPosition() );
-
-		this.isEnabled = !!tableCell && tableCell.parent.parent.childCount > 1;
+		this.isEnabled = !!firstCell && firstCell.parent.parent.childCount > 1;
 	}
 
 	/**
@@ -102,6 +99,25 @@ export default class RemoveRowCommand extends Command {
 			const cellToFocus = getCellToFocus( table, removedRow, columnToFocus );
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
+	}
+
+	/**
+	 * Returns cells that are selected and are a reference to removing rows.
+	 *
+	 * @private
+	 * @returns {Iterable.<module:engine/model/element~Element>} Generates `tableCell` elements.
+	 */
+	* _getReferenceCells() {
+		const plugins = this.editor.plugins;
+		if ( plugins.has( 'TableSelection' ) && plugins.get( 'TableSelection' ).hasMultiCellSelection ) {
+			for ( const cell of plugins.get( 'TableSelection' ).getSelectedTableCells() ) {
+				yield cell;
+			}
+		} else {
+			const selection = this.editor.model.document.selection;
+
+			yield findAncestor( 'tableCell', selection.getFirstPosition() );
+		}
 	}
 }
 
