@@ -52,52 +52,57 @@ export default class RemoveRowCommand extends Command {
 		const columnToFocus = cellData.column;
 
 		this.editor.model.change( writer => {
-			if ( headingRows && removedRowIndex <= headingRows ) {
-				updateNumericAttribute( 'headingRows', headingRows - 1, table, writer, 0 );
-			}
-
-			const cellsToMove = new Map();
-
-			// Get cells from removed row that are spanned over multiple rows.
-			tableMap
-				.filter( ( { row, rowspan } ) => row === removedRowIndex && rowspan > 1 )
-				.forEach( ( { column, cell, rowspan } ) => cellsToMove.set( column, { cell, rowspanToSet: rowspan - 1 } ) );
-
-			// Reduce rowspan on cells that are above removed row and overlaps removed row.
-			tableMap
-				.filter( ( { row, rowspan } ) => row <= removedRowIndex - 1 && row + rowspan > removedRowIndex )
-				.forEach( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
-
-			// Move cells to another row.
-			const targetRow = removedRowIndex + 1;
-			const tableWalker = new TableWalker( table, { includeSpanned: true, startRow: targetRow, endRow: targetRow } );
-
-			let previousCell;
-
-			for ( const { row, column, cell } of [ ...tableWalker ] ) {
-				if ( cellsToMove.has( column ) ) {
-					const { cell: cellToMove, rowspanToSet } = cellsToMove.get( column );
-					const targetPosition = previousCell ?
-						writer.createPositionAfter( previousCell ) :
-						writer.createPositionAt( table.getChild( row ), 0 );
-
-					writer.move( writer.createRangeOn( cellToMove ), targetPosition );
-					updateNumericAttribute( 'rowspan', rowspanToSet, cellToMove, writer );
-
-					previousCell = cellToMove;
-				} else {
-					previousCell = cell;
-				}
-			}
-
 			// Temporary workaround to avoid the "model-selection-range-intersects" error.
 			writer.setSelection( writer.createSelection( table, 'on' ) );
 
-			writer.remove( tableRow );
+			this._removeRow( headingRows, removedRowIndex, table, writer, tableMap, tableRow );
 
 			const cellToFocus = getCellToFocus( table, removedRowIndex, columnToFocus );
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
+	}
+
+	/**
+	 * @private
+	 */
+	_removeRow( headingRows, removedRowIndex, table, writer, tableMap, tableRow ) {
+		if ( headingRows && removedRowIndex <= headingRows ) {
+			updateNumericAttribute( 'headingRows', headingRows - 1, table, writer, 0 );
+		}
+
+		const cellsToMove = new Map();
+
+		// Get cells from removed row that are spanned over multiple rows.
+		tableMap
+			.filter( ( { row, rowspan } ) => row === removedRowIndex && rowspan > 1 )
+			.forEach( ( { column, cell, rowspan } ) => cellsToMove.set( column, { cell, rowspanToSet: rowspan - 1 } ) );
+
+		// Reduce rowspan on cells that are above removed row and overlaps removed row.
+		tableMap
+			.filter( ( { row, rowspan } ) => row <= removedRowIndex - 1 && row + rowspan > removedRowIndex )
+			.forEach( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
+
+		// Move cells to another row.
+		const targetRow = removedRowIndex + 1;
+		const tableWalker = new TableWalker( table, { includeSpanned: true, startRow: targetRow, endRow: targetRow } );
+		let previousCell;
+
+		for ( const { row, column, cell } of [ ...tableWalker ] ) {
+			if ( cellsToMove.has( column ) ) {
+				const { cell: cellToMove, rowspanToSet } = cellsToMove.get( column );
+				const targetPosition = previousCell ?
+					writer.createPositionAfter( previousCell ) :
+					writer.createPositionAt( table.getChild( row ), 0 );
+				writer.move( writer.createRangeOn( cellToMove ), targetPosition );
+				updateNumericAttribute( 'rowspan', rowspanToSet, cellToMove, writer );
+				previousCell = cellToMove;
+			}
+			else {
+				previousCell = cell;
+			}
+		}
+
+		writer.remove( tableRow );
 	}
 
 	/**
@@ -121,8 +126,8 @@ export default class RemoveRowCommand extends Command {
 }
 
 // Returns a cell that should be focused before removing the row, belonging to the same column as the currently focused cell.
-function getCellToFocus( table, removedRow, columnToFocus ) {
-	const row = table.getChild( removedRow );
+function getCellToFocus( table, removedRowIndex, columnToFocus ) {
+	const row = table.getChild( removedRowIndex );
 
 	// Default to first table cell.
 	let cellToFocus = row.getChild( 0 );
