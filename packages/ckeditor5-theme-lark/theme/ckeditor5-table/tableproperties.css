@@ -2,6 +2,7 @@
  * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+ @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 .ck.ck-table-properties-form {
 	width: 320px;
@@ -16,6 +17,25 @@
 				& .ck-toolbar__items > * {
 					width: 40px;
 				}
+
+				& .ck-button {
+					margin: 0;
+
+					@mixin ck-dir rtl {
+						&:first-child {
+							border-radius: var(--ck-border-radius);
+							border-top-left-radius: 0;
+							border-bottom-left-radius: 0;
+						}
+
+						&:last-child {
+							border-radius: var(--ck-border-radius);
+							border-top-right-radius: 0;
+							border-bottom-right-radius: 0;
+						}
+					}
+				}
+
 			}
 		}
 	}
