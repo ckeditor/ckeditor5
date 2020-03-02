@@ -39,20 +39,17 @@
 				text-align: center;
 			}
 
-			& .ck-table-form__dimensions-row__width {
-				margin-right: var(--ck-spacing-small);
-			}
-
+			& .ck-table-form__dimensions-row__width,
 			& .ck-table-form__dimensions-row__height {
-				margin-left: var(--ck-spacing-small);
+				margin: 0
 			}
 
 			& .ck-table-form__dimension-operator {
-				margin: 0;
 				align-self: start;
 				display: inline-block;
 				height: var(--ck-ui-component-min-height);
 				line-height: var(--ck-ui-component-min-height);
+				margin: 0 var(--ck-spacing-small);
 			}
 		}
 	}
