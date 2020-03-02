@@ -119,9 +119,9 @@ export default class TextWatcher {
 
 		const { text, range } = getLastTextLine( rangeBeforeSelection, model );
 
-		const textHasMatch = this.testCallback( text );
+		const textMatcher = this.testCallback( text );
 
-		if ( !textHasMatch && this.hasMatch ) {
+		if ( !textMatcher && this.hasMatch ) {
 			/**
 			 * Fired whenever the text does not match anymore. Fired only when the text watcher found a match.
 			 *
@@ -130,13 +130,12 @@ export default class TextWatcher {
 			this.fire( 'unmatched' );
 		}
 
-		this.hasMatch = textHasMatch;
+		this.hasMatch = textMatcher && textMatcher.match;
 
-		if ( textHasMatch ) {
-			// If text matches, get the normalized transformation from the match and then pass it to the
-			// event data object.
-			const normalizedTransformation = textHasMatch.normalizedTransformation;
-			const eventData = Object.assign( data, { normalizedTransformation, text, range } );
+		if ( this.hasMatch ) {
+			// If text matches and testCallback() returns additional data, pass the data to the eventData object.
+			const additionalData = textMatcher.data;
+			const eventData = Object.assign( data, { text, range, ...additionalData } );
 
 			/**
 			 * Fired whenever the text watcher found a match for data changes.

@@ -141,24 +141,41 @@ describe( 'TextWatcher', () => {
 	} );
 
 	describe( 'events', () => {
-		it( 'should fire "matched:data" event when test callback returns true for model data changes', () => {
-			testCallbackStub.returns( true );
+		describe( '"matched:data" should fired when test callback returns true for model data changes', () => {
+			it( 'without additional data', () => {
+				testCallbackStub.returns( { match: true } );
 
-			model.change( writer => {
-				writer.insertText( '@', doc.selection.getFirstPosition() );
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				sinon.assert.calledOnce( testCallbackStub );
+				sinon.assert.calledOnce( matchedDataSpy );
+				sinon.assert.notCalled( matchedSelectionSpy );
+				sinon.assert.notCalled( unmatchedSpy );
 			} );
 
-			sinon.assert.calledOnce( testCallbackStub );
-			sinon.assert.calledOnce( matchedDataSpy );
-			sinon.assert.notCalled( matchedSelectionSpy );
-			sinon.assert.notCalled( unmatchedSpy );
+			it( 'with additional data', () => {
+				const additionalData = { abc: 'xyz' };
+				testCallbackStub.returns( { match: true, data: additionalData } );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				sinon.assert.calledOnce( testCallbackStub );
+				sinon.assert.calledOnce( matchedDataSpy );
+				sinon.assert.notCalled( unmatchedSpy );
+
+				expect( matchedDataSpy.firstCall.args[ 1 ] ).to.deep.include( additionalData );
+			} );
 		} );
 
 		it( 'should not fire "matched:data" event when watcher is disabled' +
 		' (even when test callback returns true for model data changes)', () => {
 			watcher.isEnabled = false;
 
-			testCallbackStub.returns( true );
+			testCallbackStub.returns( { match: true } );
 
 			model.change( writer => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -171,7 +188,7 @@ describe( 'TextWatcher', () => {
 		} );
 
 		it( 'should fire "matched:selection" event when test callback returns true for model data changes', () => {
-			testCallbackStub.returns( true );
+			testCallbackStub.returns( { match: true } );
 
 			model.enqueueChange( 'transparent', writer => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -191,7 +208,7 @@ describe( 'TextWatcher', () => {
 		' (even when test callback returns true for model data changes)', () => {
 			watcher.isEnabled = false;
 
-			testCallbackStub.returns( true );
+			testCallbackStub.returns( { match: true } );
 
 			model.enqueueChange( 'transparent', writer => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -208,7 +225,7 @@ describe( 'TextWatcher', () => {
 		} );
 
 		it( 'should not fire "matched" event when test callback returns false', () => {
-			testCallbackStub.returns( false );
+			testCallbackStub.returns( { match: false } );
 
 			model.change( writer => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -221,7 +238,7 @@ describe( 'TextWatcher', () => {
 		} );
 
 		it( 'should fire "unmatched" event when test callback returns false when it was previously matched', () => {
-			testCallbackStub.returns( true );
+			testCallbackStub.returns( { match: true } );
 
 			model.change( writer => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -243,7 +260,7 @@ describe( 'TextWatcher', () => {
 		} );
 
 		it( 'should fire "umatched" event when selection is expanded', () => {
-			testCallbackStub.returns( true );
+			testCallbackStub.returns( { match: true } );
 
 			model.change( writer => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );

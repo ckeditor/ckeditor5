@@ -136,7 +136,9 @@ export default class TextTransformation extends Plugin {
 				if ( match ) {
 					return {
 						match,
-						normalizedTransformation
+						data: {
+							normalizedTransformation
+						}
 					};
 				}
 			}
