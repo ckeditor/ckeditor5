@@ -105,7 +105,7 @@ class MutationHandler {
 
 		// Create fresh DomConverter so it will not use existing mapping and convert current DOM to model.
 		// This wouldn't be needed if DomConverter would allow to create fresh view without checking any mappings.
-		const freshDomConverter = new DomConverter();
+		const freshDomConverter = new DomConverter( this.editor.editing.view.document );
 		const modelFromCurrentDom = this.editor.data.toModel(
 			freshDomConverter.domToView( domMutationCommonAncestor )
 		).getChild( 0 );

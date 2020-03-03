@@ -130,7 +130,7 @@ describe( 'Input feature', () => {
 				{
 					type: 'children',
 					oldChildren: [],
-					newChildren: [ new ViewText( 'x' ) ],
+					newChildren: [ new ViewText( viewDocument, 'x' ) ],
 					node: viewRoot.getChild( 0 )
 				}
 			] );
@@ -150,7 +150,7 @@ describe( 'Input feature', () => {
 				{
 					type: 'children',
 					oldChildren: [],
-					newChildren: [ new ViewText( 'x' ) ],
+					newChildren: [ new ViewText( viewDocument, 'x' ) ],
 					node: viewRoot.getChild( 0 )
 				}
 			] );
@@ -189,13 +189,13 @@ describe( 'Input feature', () => {
 				{
 					type: 'children',
 					oldChildren: [],
-					newChildren: [ new ViewText( 'x' ) ],
+					newChildren: [ new ViewText( viewDocument, 'x' ) ],
 					node: viewRoot.getChild( 0 )
 				},
 				{
 					type: 'children',
 					oldChildren: [],
-					newChildren: [ new ViewText( 'y' ) ],
+					newChildren: [ new ViewText( viewDocument, 'y' ) ],
 					node: viewRoot.getChild( 1 )
 				}
 			] );
@@ -211,7 +211,7 @@ describe( 'Input feature', () => {
 				{
 					type: 'children',
 					oldChildren: [],
-					newChildren: [ new ViewText( 'x' ), new ViewElement( 'img' ) ],
+					newChildren: [ new ViewText( viewDocument, 'x' ), new ViewElement( viewDocument, 'img' ) ],
 					node: viewRoot.getChild( 0 )
 				}
 			] );
@@ -224,8 +224,8 @@ describe( 'Input feature', () => {
 			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
-					oldChildren: [ new ViewText( 'foobar' ) ],
-					newChildren: [ new ViewText( 'x' ), new ViewElement( 'img' ) ],
+					oldChildren: [ new ViewText( viewDocument, 'foobar' ) ],
+					newChildren: [ new ViewText( viewDocument, 'x' ), new ViewElement( viewDocument, 'img' ) ],
 					node: viewRoot.getChild( 0 )
 				}
 			] );
@@ -240,8 +240,12 @@ describe( 'Input feature', () => {
 			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
-					oldChildren: [ new ViewText( 'foo' ), viewRoot.getChild( 0 ).getChild( 1 ) ],
-					newChildren: [ new ViewText( 'foo' ), viewRoot.getChild( 0 ).getChild( 1 ), new ViewText( 'x' ) ],
+					oldChildren: [ new ViewText( viewDocument, 'foo' ), viewRoot.getChild( 0 ).getChild( 1 ) ],
+					newChildren: [
+						new ViewText( viewDocument, 'foo' ),
+						viewRoot.getChild( 0 ).getChild( 1 ),
+						new ViewText( viewDocument, 'x' )
+					],
 					node: viewRoot.getChild( 0 )
 				}
 			] );
@@ -254,7 +258,7 @@ describe( 'Input feature', () => {
 			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
-					oldChildren: [ new ViewText( 'foobar' ) ],
+					oldChildren: [ new ViewText( viewDocument, 'foobar' ) ],
 					newChildren: [],
 					node: viewRoot.getChild( 0 )
 				}
@@ -271,7 +275,7 @@ describe( 'Input feature', () => {
 				{
 					type: 'children',
 					oldChildren: [],
-					newChildren: [ new ViewElement( 'img' ) ],
+					newChildren: [ new ViewElement( viewDocument, 'img' ) ],
 					node: viewRoot.getChild( 0 )
 				}
 			] );
@@ -510,9 +514,9 @@ describe( 'Input feature', () => {
 					type: 'children',
 					oldChildren: [ viewRoot.getChild( 0 ).getChild( 0 ) ],
 					newChildren: [
-						new ViewElement( 'strong', null, new ViewText( 'Foo' ) ),
-						new ViewText( ' ' ),
-						new ViewElement( 'br' )
+						new ViewElement( viewDocument, 'strong', null, new ViewText( viewDocument, 'Foo' ) ),
+						new ViewText( viewDocument, ' ' ),
+						new ViewElement( viewDocument, 'br' )
 					],
 					node: viewRoot.getChild( 0 )
 				}
@@ -541,11 +545,11 @@ describe( 'Input feature', () => {
 					type: 'children',
 					oldChildren: [ ...viewRoot.getChild( 0 ).getChildren() ],
 					newChildren: [
-						new ViewElement( 'strong', null, new ViewText( 'Foo' ) ),
-						new ViewElement( 'br' ),
-						new ViewElement( 'strong', null, new ViewText( 'Bar' ) ),
-						new ViewText( ' ' ),
-						new ViewElement( 'br' )
+						new ViewElement( viewDocument, 'strong', null, new ViewText( viewDocument, 'Foo' ) ),
+						new ViewElement( viewDocument, 'br' ),
+						new ViewElement( viewDocument, 'strong', null, new ViewText( viewDocument, 'Bar' ) ),
+						new ViewText( viewDocument, ' ' ),
+						new ViewElement( viewDocument, 'br' )
 					],
 					node: viewRoot.getChild( 0 )
 				}
@@ -576,7 +580,7 @@ describe( 'Input feature', () => {
 					type: 'children',
 					oldChildren: Array.from( viewRoot.getChild( 0 ).getChild( 0 ).getChildren() ),
 					newChildren: [
-						new ViewElement( 'strong', null, new ViewText( 'Fx' ) )
+						new ViewElement( viewDocument, 'strong', null, new ViewText( viewDocument, 'Fx' ) )
 					],
 					node: viewRoot.getChild( 0 ).getChild( 0 )
 				}
@@ -624,9 +628,9 @@ describe( 'Input feature', () => {
 					type: 'children',
 					oldChildren: [ ...viewRoot.getChild( 0 ).getChildren() ],
 					newChildren: [
-						new ViewText( 'Foo' ),
-						new ViewContainerElement( 'placeholder' ),
-						new ViewText( 'f' )
+						new ViewText( viewDocument, 'Foo' ),
+						new ViewContainerElement( viewDocument, 'placeholder' ),
+						new ViewText( viewDocument, 'f' )
 					],
 					node: viewRoot.getChild( 0 )
 				}
@@ -660,11 +664,11 @@ describe( 'Input feature', () => {
 					type: 'children',
 					oldChildren: [ ...viewRoot.getChild( 0 ).getChildren() ],
 					newChildren: [
-						new ViewText( 'foo' ),
-						new ViewContainerElement( 'placeholder' ),
-						new ViewText( 'bar' ),
-						new ViewContainerElement( 'placeholder' ),
-						new ViewText( 'baz' )
+						new ViewText( viewDocument, 'foo' ),
+						new ViewContainerElement( viewDocument, 'placeholder' ),
+						new ViewText( viewDocument, 'bar' ),
+						new ViewContainerElement( viewDocument, 'placeholder' ),
+						new ViewText( viewDocument, 'baz' )
 					],
 					node: viewRoot.getChild( 0 )
 				}
