@@ -40,10 +40,11 @@ export default class MouseSelectionHandler {
 		 * A flag indicating that the mouse selection is "active". A selection is "active" if it was started and not yet finished.
 		 * A selection can be "active", for instance, if a user moves a mouse over a table while holding a mouse button down.
 		 *
+		 * @private
 		 * @readonly
 		 * @member {Boolean}
 		 */
-		this.isSelecting = false;
+		this._isSelecting = false;
 
 		/**
 		 * Editing mapper.
@@ -77,12 +78,11 @@ export default class MouseSelectionHandler {
 
 		if ( !tableCell ) {
 			this._tableSelection.clearSelection();
-			this._tableSelection.stopSelection();
 
 			return;
 		}
 
-		this.isSelecting = true;
+		this._isSelecting = true;
 		this._tableSelection.startSelectingFrom( tableCell );
 	}
 
@@ -95,11 +95,14 @@ export default class MouseSelectionHandler {
 	 * @private
 	 */
 	_handleMouseMove( domEventData ) {
-		if ( !isButtonPressed( domEventData ) ) {
+		if ( !this._isSelecting || !isButtonPressed( domEventData ) ) {
 			this._tableSelection.stopSelection();
 
 			return;
 		}
+
+		// https://github.com/ckeditor/ckeditor5/issues/6114
+		domEventData.preventDefault();
 
 		const tableCell = this._getModelTableCellFromDomEvent( domEventData );
 
@@ -119,9 +122,11 @@ export default class MouseSelectionHandler {
 	 * @private
 	 */
 	_handleMouseUp( domEventData ) {
-		if ( !this.isSelecting ) {
+		if ( !this._isSelecting ) {
 			return;
 		}
+
+		this._isSelecting = false;
 
 		const tableCell = this._getModelTableCellFromDomEvent( domEventData );
 
