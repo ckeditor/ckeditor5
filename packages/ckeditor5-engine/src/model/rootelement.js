@@ -17,12 +17,12 @@ export default class RootElement extends Element {
 	/**
 	 * Creates root element.
 	 *
-	 * @param {module:engine/model/document~Document} doc Document that is an owner of this root.
+	 * @param {module:engine/model/document~Document} document Document that is an owner of this root.
 	 * @param {String} name Node name.
 	 * @param {String} [rootName='main'] Unique root name used to identify this root
 	 * element by {@link module:engine/model/document~Document}.
 	 */
-	constructor( doc, name, rootName = 'main' ) {
+	constructor( document, name, rootName = 'main' ) {
 		super( name );
 
 		/**
@@ -31,7 +31,7 @@ export default class RootElement extends Element {
 		 * @private
 		 * @member {module:engine/model/document~Document}
 		 */
-		this._doc = doc;
+		this._document = document;
 
 		/**
 		 * Unique root name used to identify this root element by {@link module:engine/model/document~Document}.
@@ -45,13 +45,11 @@ export default class RootElement extends Element {
 	/**
 	 * {@link module:engine/model/document~Document Document} that owns this root element.
 	 *
-	 * In contrary, to {@link module:engine/model/node~Node node}, root element always have a `document`.
-	 *
 	 * @readonly
 	 * @type {module:engine/model/document~Document|null}
 	 */
 	get document() {
-		return this._doc;
+		return this._document;
 	}
 
 	/**

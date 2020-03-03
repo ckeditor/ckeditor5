@@ -9,14 +9,10 @@ import { addPaddingRules } from '../../../src/view/styles/padding';
 describe( 'Padding styles normalization', () => {
 	let styles;
 
-	before( () => {
-		const stylesProcessor = new StylesProcessor();
-		StylesMap._setProcessor( stylesProcessor );
-		addPaddingRules( stylesProcessor );
-	} );
-
 	beforeEach( () => {
-		styles = new StylesMap();
+		const stylesProcessor = new StylesProcessor();
+		addPaddingRules( stylesProcessor );
+		styles = new StylesMap( stylesProcessor );
 	} );
 
 	it( 'should set all padding values (1 value defined)', () => {

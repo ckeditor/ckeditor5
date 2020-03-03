@@ -28,11 +28,14 @@ export default class EmptyElement extends Element {
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#createEmptyElement
 	 * @protected
+	 * @param {module:engine/view/document~Document} document The document instance to which this element belongs.
 	 * @param {String} name Node name.
-	 * @param {Object|Iterable} [attributes] Collection of attributes.
+	 * @param {Object|Iterable} [attrs] Collection of attributes.
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
+	 * A list of nodes to be inserted into created element.
 	 */
-	constructor( name, attributes, children ) {
-		super( name, attributes, children );
+	constructor( document, name, attrs, children ) {
+		super( document, name, attrs, children );
 
 		/**
 		 * Returns `null` because filler is not needed for EmptyElements.

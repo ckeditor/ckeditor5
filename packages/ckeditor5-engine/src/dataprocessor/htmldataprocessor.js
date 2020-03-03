@@ -21,8 +21,10 @@ import DomConverter from '../view/domconverter';
 export default class HtmlDataProcessor {
 	/**
 	 * Creates a new instance of the HTML data processor class.
+	 *
+	 * @param {module:engine/view/document~Document} document The view document instance.
 	 */
-	constructor() {
+	constructor( document ) {
 		/**
 		 * A DOM parser instance used to parse an HTML string to an HTML document.
 		 *
@@ -37,7 +39,7 @@ export default class HtmlDataProcessor {
 		 * @private
 		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
-		this._domConverter = new DomConverter( { blockFillerMode: 'nbsp' } );
+		this._domConverter = new DomConverter( document, { blockFillerMode: 'nbsp' } );
 
 		/**
 		 * A basic HTML writer instance used to convert DOM elements to an HTML string.

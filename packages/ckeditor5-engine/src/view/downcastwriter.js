@@ -37,8 +37,13 @@ import { isPlainObject } from 'lodash-es';
  * section of the {@glink framework/guides/architecture/editing-engine Editing engine architecture} guide.
  */
 export default class DowncastWriter {
+	/**
+	 * @param {module:engine/view/document~Document} document The view document instance.
+	 */
 	constructor( document ) {
 		/**
+		 * The view document instance in which this writer operates.
+		 *
 		 * @readonly
 		 * @type {module:engine/view/document~Document}
 		 */
@@ -145,7 +150,7 @@ export default class DowncastWriter {
 	 * @returns {module:engine/view/text~Text} The created text node.
 	 */
 	createText( data ) {
-		return new Text( data );
+		return new Text( this.document, data );
 	}
 
 	/**
@@ -168,7 +173,7 @@ export default class DowncastWriter {
 	 * @returns {module:engine/view/attributeelement~AttributeElement} Created element.
 	 */
 	createAttributeElement( name, attributes, options = {} ) {
-		const attributeElement = new AttributeElement( name, attributes );
+		const attributeElement = new AttributeElement( this.document, name, attributes );
 
 		if ( options.priority ) {
 			attributeElement._priority = options.priority;
@@ -200,7 +205,7 @@ export default class DowncastWriter {
 	 * @returns {module:engine/view/containerelement~ContainerElement} Created element.
 	 */
 	createContainerElement( name, attributes ) {
-		return new ContainerElement( name, attributes );
+		return new ContainerElement( this.document, name, attributes );
 	}
 
 	/**
@@ -214,7 +219,7 @@ export default class DowncastWriter {
 	 * @returns {module:engine/view/editableelement~EditableElement} Created element.
 	 */
 	createEditableElement( name, attributes ) {
-		const editableElement = new EditableElement( name, attributes );
+		const editableElement = new EditableElement( this.document, name, attributes );
 		editableElement._document = this.document;
 
 		return editableElement;
@@ -231,7 +236,7 @@ export default class DowncastWriter {
 	 * @returns {module:engine/view/emptyelement~EmptyElement} Created element.
 	 */
 	createEmptyElement( name, attributes ) {
-		return new EmptyElement( name, attributes );
+		return new EmptyElement( this.document, name, attributes );
 	}
 
 	/**
@@ -255,7 +260,7 @@ export default class DowncastWriter {
 	 * @returns {module:engine/view/uielement~UIElement} Created element.
 	 */
 	createUIElement( name, attributes, renderFunction ) {
-		const uiElement = new UIElement( name, attributes );
+		const uiElement = new UIElement( this.document, name, attributes );
 
 		if ( renderFunction ) {
 			uiElement.render = renderFunction;
@@ -325,7 +330,7 @@ export default class DowncastWriter {
 	 *		}, element );
 	 *
 	 * **Note**: The passed style can be normalized if
-	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
 	 * @param {String|Object} property Property name or object with key - value pairs.
@@ -347,7 +352,7 @@ export default class DowncastWriter {
 	 *		writer.removeStyle( [ 'color', 'border-top' ], element ); // Removes both 'color' and 'border-top' styles.
 	 *
 	 * **Note**: This method can work with normalized style names if
-	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
 	 *
 	 * @param {Array.<String>|String} property
@@ -686,7 +691,7 @@ export default class DowncastWriter {
 
 		// If range is collapsed - nothing to remove.
 		if ( range.isCollapsed ) {
-			return new DocumentFragment();
+			return new DocumentFragment( this.document );
 		}
 
 		// Break attributes at range start and end.
@@ -708,7 +713,7 @@ export default class DowncastWriter {
 		range.end = mergePosition.clone();
 
 		// Return removed nodes.
-		return new DocumentFragment( removed );
+		return new DocumentFragment( this.document, removed );
 	}
 
 	/**
@@ -914,7 +919,7 @@ export default class DowncastWriter {
 	 * @param {module:engine/view/containerelement~ContainerElement} viewElement Element to be renamed.
 	 */
 	rename( newName, viewElement ) {
-		const newElement = new ContainerElement( newName, viewElement.getAttributes() );
+		const newElement = new ContainerElement( this.document, newName, viewElement.getAttributes() );
 
 		this.insert( Position._createAfter( viewElement ), newElement );
 		this.move( Range._createIn( viewElement ), Position._createAt( newElement, 0 ) );
@@ -985,7 +990,7 @@ export default class DowncastWriter {
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
 	 *
-	 * **Note:** This factory method creates it's own {@link module:engine/view/position~Position} instances basing on passed values.
+	 * **Note:** This factory method creates its own {@link module:engine/view/position~Position} instances basing on passed values.
 	 *
 	 * @param {module:engine/view/position~Position} start Start position.
 	 * @param {module:engine/view/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
@@ -1807,7 +1812,7 @@ function breakTextNode( position ) {
 	position.parent._data = position.parent.data.slice( 0, position.offset );
 
 	// Insert new text node after position's parent text node.
-	position.parent.parent._insertChild( position.parent.index + 1, new Text( textToMove ) );
+	position.parent.parent._insertChild( position.parent.index + 1, new Text( position.root.document, textToMove ) );
 
 	// Return new position between two newly created text nodes.
 	return new Position( position.parent.parent, position.parent.index + 1 );

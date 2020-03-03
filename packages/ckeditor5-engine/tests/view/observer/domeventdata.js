@@ -7,12 +7,13 @@
 
 import DomEventData from '../../../src/view/observer/domeventdata';
 import View from '../../../src/view/view';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DomEventData', () => {
 	let view, viewDocument, viewBody, domRoot;
 
 	beforeEach( () => {
-		view = new View();
+		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 
 		domRoot = document.createElement( 'div' );

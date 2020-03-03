@@ -5,6 +5,7 @@
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import DocumentSelection from '../../../src/view/documentselection';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 /**
  * Creates {@link module:engine/view/document~Document view Document} mock.
@@ -16,6 +17,7 @@ export default function createDocumentMock() {
 	doc.set( 'isFocused', false );
 	doc.set( 'isReadOnly', false );
 	doc.selection = new DocumentSelection();
+	doc.stylesProcessor = new StylesProcessor();
 
 	return doc;
 }

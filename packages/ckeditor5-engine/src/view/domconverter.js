@@ -44,10 +44,17 @@ export default class DomConverter {
 	/**
 	 * Creates DOM converter.
 	 *
+	 * @param {module:engine/view/document~Document} document The view document instance.
 	 * @param {Object} options Object with configuration options.
 	 * @param {module:engine/view/filler~BlockFillerMode} [options.blockFillerMode='br'] The type of the block filler to use.
 	 */
-	constructor( options = {} ) {
+	constructor( document, options = {} ) {
+		/**
+		 * @readonly
+		 * @type {module:engine/view/document~Document}
+		 */
+		this.document = document;
+
 		/**
 		 * The mode of a block filler used by DOM converter.
 		 *
@@ -399,7 +406,7 @@ export default class DomConverter {
 			} else {
 				const textData = this._processDataFromDomText( domNode );
 
-				return textData === '' ? null : new ViewText( textData );
+				return textData === '' ? null : new ViewText( this.document, textData );
 			}
 		} else if ( this.isComment( domNode ) ) {
 			return null;
@@ -412,7 +419,7 @@ export default class DomConverter {
 
 			if ( this.isDocumentFragment( domNode ) ) {
 				// Create view document fragment.
-				viewElement = new ViewDocumentFragment();
+				viewElement = new ViewDocumentFragment( this.document );
 
 				if ( options.bind ) {
 					this.bindDocumentFragments( domNode, viewElement );
@@ -420,7 +427,7 @@ export default class DomConverter {
 			} else {
 				// Create view element.
 				const viewName = options.keepOriginalCase ? domNode.tagName : domNode.tagName.toLowerCase();
-				viewElement = new ViewElement( viewName );
+				viewElement = new ViewElement( this.document, viewName );
 
 				if ( options.bind ) {
 					this.bindElements( domNode, viewElement );
@@ -800,7 +807,7 @@ export default class DomConverter {
 	/**
 	 * Checks if the node is an instance of the block filler for this DOM converter.
 	 *
-	 *		const converter = new DomConverter( { blockFillerMode: 'br' } );
+	 *		const converter = new DomConverter( viewDocument, { blockFillerMode: 'br' } );
 	 *
 	 *		converter.isBlockFiller( BR_FILLER( document ) ); // true
 	 *		converter.isBlockFiller( NBSP_FILLER( document ) ); // false

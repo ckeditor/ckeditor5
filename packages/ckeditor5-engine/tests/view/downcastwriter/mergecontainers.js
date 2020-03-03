@@ -8,6 +8,7 @@ import { stringify, parse } from '../../../src/dev-utils/view';
 
 import Document from '../../../src/view/document';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
 	describe( 'mergeContainers()', () => {
@@ -26,7 +27,7 @@ describe( 'DowncastWriter', () => {
 		}
 
 		before( () => {
-			writer = new DowncastWriter( new Document() );
+			writer = new DowncastWriter( new Document( new StylesProcessor() ) );
 		} );
 
 		it( 'should merge two container elements - position between elements', () => {

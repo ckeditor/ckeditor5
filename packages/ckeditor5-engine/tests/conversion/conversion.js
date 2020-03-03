@@ -18,6 +18,7 @@ import { parse as viewParse, stringify as viewStringify } from '../../src/dev-ut
 import { stringify as modelStringify } from '../../src/dev-utils/model';
 import ConversionHelpers from '../../src/conversion/conversionhelpers';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Conversion', () => {
 	let conversion, downcastDispA, upcastDispaA, downcastDispB;
@@ -121,7 +122,7 @@ describe( 'Conversion', () => {
 
 		beforeEach( () => {
 			model = new Model();
-			const controller = new EditingController( model );
+			const controller = new EditingController( model, new StylesProcessor() );
 
 			const modelDoc = model.document;
 			modelRoot = modelDoc.createRoot();

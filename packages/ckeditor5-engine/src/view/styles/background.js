@@ -12,7 +12,7 @@ import { getShorthandValues, isAttachment, isColor, isPosition, isRepeat, isURL 
 /**
  * Adds a background CSS styles processing rules.
  *
- *		editor.editing.view.document.addStyleProcessorRules( addBackgroundRules );
+ *		editor.data.addStyleProcessorRules( addBackgroundRules );
  *
  * The normalized value is stored as:
  *

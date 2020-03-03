@@ -33,9 +33,14 @@ export default class AttributeElement extends Element {
 	 * @see module:engine/view/downcastwriter~DowncastWriter#createAttributeElement
 	 * @see module:engine/view/element~Element
 	 * @protected
+	 * @param {module:engine/view/document~Document} document The document instance to which this element belongs.
+	 * @param {String} name Node name.
+	 * @param {Object|Iterable} [attrs] Collection of attributes.
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
+	 * A list of nodes to be inserted into created element.
 	 */
-	constructor( name, attrs, children ) {
-		super( name, attrs, children );
+	constructor( document, name, attrs, children ) {
+		super( document, name, attrs, children );
 
 		/**
 		 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.

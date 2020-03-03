@@ -144,16 +144,15 @@ export function hidePlaceholder( writer, element ) {
  * @returns {Boolean}
  */
 export function needsPlaceholder( element ) {
-	const doc = element.document;
-
-	// The element was removed from document.
-	if ( !doc ) {
+	if ( !element.isAttached() ) {
 		return false;
 	}
 
 	// The element is empty only as long as it contains nothing but uiElements.
 	const isEmptyish = !Array.from( element.getChildren() )
 		.some( element => !element.is( 'uiElement' ) );
+
+	const doc = element.document;
 
 	// If the element is empty and the document is blurred.
 	if ( !doc.isFocused && isEmptyish ) {
@@ -201,6 +200,7 @@ function updateDocumentPlaceholders( doc, writer ) {
 // @returns {Boolean} True if any changes were made to the view document.
 function updatePlaceholder( writer, element, config ) {
 	const { text, isDirectHost } = config;
+
 	const hostElement = isDirectHost ? element : getChildPlaceholderHostSubstitute( element );
 	let wasViewModified = false;
 

@@ -829,7 +829,7 @@ function isUnvisitedBlock( element, visited ) {
 
 	visited.add( element );
 
-	return element.document.model.schema.isBlock( element ) && element.parent;
+	return element.root.document.model.schema.isBlock( element ) && element.parent;
 }
 
 // Checks if the given element is a $block was not previously visited and is a top block in a range.
@@ -841,7 +841,8 @@ function isUnvisitedTopBlock( element, visited, range ) {
 // It will search until first ancestor that is a limit element.
 // Marks all ancestors as already visited to not include any of them later on.
 function getParentBlock( position, visited ) {
-	const schema = position.parent.document.model.schema;
+	const element = position.parent;
+	const schema = element.root.document.model.schema;
 
 	const ancestors = position.parent.getAncestors( { parentFirst: true, includeSelf: true } );
 
@@ -887,7 +888,7 @@ function isTopBlockInRange( block, range ) {
 // @param {module:engine/model/node~Node} node
 // @returns {module:engine/model/node~Node|undefined}
 function findAncestorBlock( node ) {
-	const schema = node.document.model.schema;
+	const schema = node.root.document.model.schema;
 
 	let parent = node.parent;
 

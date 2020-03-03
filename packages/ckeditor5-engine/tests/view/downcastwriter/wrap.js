@@ -19,13 +19,14 @@ import { stringify, parse } from '../../../src/dev-utils/view';
 import createViewRoot from '../_utils/createroot';
 import Document from '../../../src/view/document';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
 	describe( 'wrap()', () => {
 		let writer, document;
 
 		beforeEach( () => {
-			document = new Document();
+			document = new Document( new StylesProcessor() );
 			writer = new DowncastWriter( document );
 		} );
 
@@ -62,12 +63,12 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should throw error when element is not instance of AttributeElement', () => {
-				const container = new ContainerElement( 'p', null, new Text( 'foo' ) );
+				const container = new ContainerElement( document, 'p', null, new Text( 'foo' ) );
 				const range = new Range(
 					new Position( container, 0 ),
 					new Position( container, 1 )
 				);
-				const b = new Element( 'b' );
+				const b = new Element( document, 'b' );
 
 				expectToThrowCKEditorError( () => {
 					writer.wrap( range, b );
@@ -75,13 +76,13 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should throw error when range placed in two containers', () => {
-				const container1 = new ContainerElement( 'p' );
-				const container2 = new ContainerElement( 'p' );
+				const container1 = new ContainerElement( document, 'p' );
+				const container2 = new ContainerElement( document, 'p' );
 				const range = new Range(
 					new Position( container1, 0 ),
 					new Position( container2, 1 )
 				);
-				const b = new AttributeElement( 'b' );
+				const b = new AttributeElement( document, 'b' );
 
 				expectToThrowCKEditorError( () => {
 					writer.wrap( range, b );
@@ -89,8 +90,8 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should throw when range has no parent container', () => {
-				const el = new AttributeElement( 'b' );
-				const b = new AttributeElement( 'b' );
+				const el = new AttributeElement( document, 'b' );
+				const b = new AttributeElement( document, 'b' );
 
 				expectToThrowCKEditorError( () => {
 					writer.wrap( Range._createFromParentsAndOffsets( el, 0, el, 0 ), b );
@@ -394,12 +395,12 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should throw if range is inside EmptyElement', () => {
-				const emptyElement = new EmptyElement( 'img' );
-				const container = new ContainerElement( 'p', null, emptyElement );
+				const emptyElement = new EmptyElement( document, 'img' );
+				const container = new ContainerElement( document, 'p', null, emptyElement );
 				const range = Range._createFromParentsAndOffsets( emptyElement, 0, container, 1 );
 
 				expectToThrowCKEditorError( () => {
-					writer.wrap( range, new AttributeElement( 'b' ) );
+					writer.wrap( range, new AttributeElement( document, 'b' ) );
 				}, 'view-writer-cannot-break-empty-element', document );
 			} );
 
@@ -412,12 +413,12 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should throw if range is inside UIElement', () => {
-				const uiElement = new UIElement( 'span' );
-				const container = new ContainerElement( 'p', null, uiElement );
+				const uiElement = new UIElement( document, 'span' );
+				const container = new ContainerElement( document, 'p', null, uiElement );
 				const range = Range._createFromParentsAndOffsets( uiElement, 0, container, 1 );
 
 				expectToThrowCKEditorError( () => {
-					writer.wrap( range, new AttributeElement( 'b' ) );
+					writer.wrap( range, new AttributeElement( document, 'b' ) );
 				}, 'view-writer-cannot-break-ui-element', document );
 			} );
 
@@ -520,7 +521,7 @@ describe( 'DowncastWriter', () => {
 			let view, viewDocument, viewRoot;
 
 			beforeEach( () => {
-				view = new View();
+				view = new View( new StylesProcessor() );
 				viewDocument = view.document;
 				viewRoot = createViewRoot( viewDocument );
 			} );
@@ -543,15 +544,15 @@ describe( 'DowncastWriter', () => {
 				const newPosition = writer.wrap( selection.getFirstRange(), parse( wrapAttribute ) );
 
 				// Moving parsed elements to a document fragment so the view root is not shown in `stringify`.
-				const viewChildren = new DocumentFragment( view.getChildren() );
+				const viewChildren = new DocumentFragment( viewDocument, view.getChildren() );
 
 				expect( stringify( viewChildren, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
 			}
 
 			it( 'should throw error when element is not instance of AttributeElement', () => {
-				const container = new ContainerElement( 'p', null, new Text( 'foo' ) );
+				const container = new ContainerElement( document, 'p', null, new Text( 'foo' ) );
 				const position = new Position( container, 0 );
-				const b = new Element( 'b' );
+				const b = new Element( document, 'b' );
 
 				expectToThrowCKEditorError( () => {
 					writer.wrap( new Range( position ), b );

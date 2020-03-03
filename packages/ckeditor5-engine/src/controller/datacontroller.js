@@ -47,10 +47,9 @@ export default class DataController {
 	 * Creates a data controller instance.
 	 *
 	 * @param {module:engine/model/model~Model} model Data model.
-	 * @param {module:engine/dataprocessor/dataprocessor~DataProcessor} [dataProcessor] Data processor that should be used
-	 * by the controller.
+	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance.
 	 */
-	constructor( model, dataProcessor ) {
+	constructor( model, stylesProcessor ) {
 		/**
 		 * Data model.
 		 *
@@ -60,12 +59,19 @@ export default class DataController {
 		this.model = model;
 
 		/**
-		 * Data processor used during the conversion.
+		 * Styles processor used during the conversion.
 		 *
 		 * @readonly
-		 * @member {module:engine/dataprocessor/dataprocessor~DataProcessor}
+		 * @member {module:engine/view/stylesmap~StylesProcessor}
 		 */
-		this.processor = dataProcessor;
+		this.stylesProcessor = stylesProcessor;
+
+		/**
+		 * Data processor used during the conversion.
+		 *
+		 * @member {module:engine/dataprocessor/dataprocessor~DataProcessor} #processor
+		 */
+		this.processor;
 
 		/**
 		 * Mapper used for the conversion. It has no permanent bindings, because they are created when getting data and
@@ -187,12 +193,13 @@ export default class DataController {
 
 		// First, convert elements.
 		const modelRange = ModelRange._createIn( modelElementOrFragment );
+		const viewDocument = new ViewDocument( this.stylesProcessor );
 
-		const viewDocumentFragment = new ViewDocumentFragment();
+		const viewDocumentFragment = new ViewDocumentFragment( viewDocument );
 
 		// Create separate ViewDowncastWriter just for data conversion purposes.
 		// We have no view controller and rendering do DOM in DataController so view.change() block is not used here.
-		const viewWriter = new ViewDowncastWriter( new ViewDocument() );
+		const viewWriter = new ViewDowncastWriter( viewDocument );
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
 		this.downcastDispatcher.convertInsert( modelRange, viewWriter );
@@ -369,6 +376,22 @@ export default class DataController {
 		return this.model.change( writer => {
 			return this.upcastDispatcher.convert( viewElementOrFragment, writer, context );
 		} );
+	}
+
+	/**
+	 * Adds a style processor normalization rules.
+	 *
+	 * You can implement your own rules as well as use one of the available processor rules:
+	 *
+	 * * background: {@link module:engine/view/styles/background~addBackgroundRules}
+	 * * border: {@link module:engine/view/styles/border~addBorderRules}
+	 * * margin: {@link module:engine/view/styles/margin~addMarginRules}
+	 * * padding: {@link module:engine/view/styles/padding~addPaddingRules}
+	 *
+	 * @param {Function} callback
+	 */
+	addStyleProcessorRules( callback ) {
+		callback( this.stylesProcessor );
 	}
 
 	/**

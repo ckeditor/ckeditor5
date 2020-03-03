@@ -31,8 +31,9 @@ export default class EditingController {
 	 * Creates an editing controller instance.
 	 *
 	 * @param {module:engine/model/model~Model} model Editing model.
+	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance.
 	 */
-	constructor( model ) {
+	constructor( model, stylesProcessor ) {
 		/**
 		 * Editor model.
 		 *
@@ -47,7 +48,7 @@ export default class EditingController {
 		 * @readonly
 		 * @member {module:engine/view/view~View}
 		 */
-		this.view = new View();
+		this.view = new View( stylesProcessor );
 
 		/**
 		 * Mapper which describes the model-view binding.
@@ -115,10 +116,9 @@ export default class EditingController {
 				return null;
 			}
 
-			const viewRoot = new RootEditableElement( root.name );
+			const viewRoot = new RootEditableElement( this.view.document, root.name );
 
 			viewRoot.rootName = root.rootName;
-			viewRoot._document = this.view.document;
 			this.mapper.bindElements( root, viewRoot );
 
 			return viewRoot;

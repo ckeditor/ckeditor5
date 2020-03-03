@@ -9,10 +9,11 @@ import Text from '../../../src/view/text';
 import Position from '../../../src/view/position';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import Document from '../../../src/view/document';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
 	describe( 'mergeAttributes', () => {
-		let writer;
+		let writer, document;
 
 		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
 		// test merge position.
@@ -26,7 +27,8 @@ describe( 'DowncastWriter', () => {
 		}
 
 		before( () => {
-			writer = new DowncastWriter( new Document() );
+			document = new Document( new StylesProcessor() );
+			writer = new DowncastWriter( document );
 		} );
 
 		it( 'should not merge if inside text node', () => {
@@ -63,9 +65,9 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should merge when placed between two text nodes', () => {
 			// <p>foobar</p> -> <p>foo|bar</p>
-			const t1 = new Text( 'foo' );
-			const t2 = new Text( 'bar' );
-			const p = new ContainerElement( 'p', null, [ t1, t2 ] );
+			const t1 = new Text( document, 'foo' );
+			const t2 = new Text( document, 'bar' );
+			const p = new ContainerElement( document, 'p', null, [ t1, t2 ] );
 			const position = new Position( p, 1 );
 
 			const newPosition = writer.mergeAttributes( position );

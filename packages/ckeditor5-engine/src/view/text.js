@@ -12,7 +12,7 @@ import Node from './node';
 /**
  * Tree view text node.
  *
- * The constructor of this class shouldn't be used directly. To create new Text instances
+ * The constructor of this class should not be used directly. To create a new text node instance
  * use the {@link module:engine/view/downcastwriter~DowncastWriter#createText `DowncastWriter#createText()`}
  * method when working on data downcasted from the model or the
  * {@link module:engine/view/upcastwriter~UpcastWriter#createText `UpcastWriter#createText()`}
@@ -25,10 +25,11 @@ export default class Text extends Node {
 	 * Creates a tree view text node.
 	 *
 	 * @protected
+	 * @param {module:engine/view/document~Document} document The document instance to which this text node belongs.
 	 * @param {String} data The text's data.
 	 */
-	constructor( data ) {
-		super();
+	constructor( document, data ) {
+		super( document );
 
 		/**
 		 * The text content.
@@ -125,7 +126,7 @@ export default class Text extends Node {
 	 * @returns {module:engine/view/text~Text} Text node that is a clone of this node.
 	 */
 	_clone() {
-		return new Text( this.data );
+		return new Text( this.document, this.data );
 	}
 
 	// @if CK_DEBUG_ENGINE // toString() {

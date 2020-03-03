@@ -10,6 +10,7 @@ import Observer from '../../../src/view/observer/observer';
 import View from '../../../src/view/view';
 import UIElement from '../../../src/view/uielement';
 import createViewRoot from '../_utils/createroot';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 class ClickObserver extends DomEventObserver {
 	constructor( view ) {
@@ -47,7 +48,7 @@ describe( 'DomEventObserver', () => {
 	let view, viewDocument;
 
 	beforeEach( () => {
-		view = new View();
+		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 	} );
 
@@ -165,7 +166,7 @@ describe( 'DomEventObserver', () => {
 		let domRoot, domEvent, evtSpy, uiElement;
 
 		function createUIElement( name ) {
-			const element = new UIElement( name );
+			const element = new UIElement( viewDocument, name );
 
 			element.render = function( domDocument ) {
 				const root = this.toDomElement( domDocument );
