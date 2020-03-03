@@ -21,14 +21,19 @@ import converters from './lib/to-markdown/converters';
  * @implements module:engine/dataprocessor/dataprocessor~DataProcessor
  */
 export default class GFMDataProcessor {
-	constructor() {
+	/**
+	 * Creates a new instance of the Markdown data processor class.
+	 *
+	 * @param {module:engine/view/document~Document} document
+	 */
+	constructor( document ) {
 		/**
 		 * HTML data processor used to process HTML produced by the Markdown-to-HTML converter and the other way.
 		 *
 		 * @private
 		 * @member {module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}
 		 */
-		this._htmlDP = new HtmlDataProcessor();
+		this._htmlDP = new HtmlDataProcessor( document );
 	}
 
 	/**
@@ -62,4 +67,3 @@ export default class GFMDataProcessor {
 		return toMarkdown( html, { gfm: true, converters } );
 	}
 }
-

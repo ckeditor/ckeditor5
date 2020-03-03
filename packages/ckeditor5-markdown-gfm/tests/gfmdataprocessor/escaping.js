@@ -5,6 +5,8 @@
 
 import MarkdownDataProcessor from '../../src/gfmdataprocessor';
 import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 const testCases = {
 	'backslash': { test: '\\\\', result: '\\' },
@@ -27,7 +29,8 @@ describe( 'GFMDataProcessor', () => {
 	let dataProcessor;
 
 	beforeEach( () => {
-		dataProcessor = new MarkdownDataProcessor();
+		const viewDocument = new ViewDocument( new StylesProcessor() );
+		dataProcessor = new MarkdownDataProcessor( viewDocument );
 	} );
 
 	describe( 'escaping', () => {
