@@ -44,25 +44,19 @@ export default class RemoveRowCommand extends Command {
 		};
 		const firstCell = referenceCells[ 0 ];
 		const table = firstCell.parent.parent;
-
 		const tableMap = [ ...new TableWalker( table, { endRow: removedRowIndexes.last } ) ];
-
-		const firstCellData = tableMap.find( value => value.cell === firstCell );
-
-		const headingRows = table.getAttribute( 'headingRows' ) || 0;
-
-		const columnToFocus = firstCellData.column;
 
 		this.editor.model.change( writer => {
 			// Temporary workaround to avoid the "model-selection-range-intersects" error.
 			writer.setSelection( writer.createSelection( table, 'on' ) );
 
+			const firstCellData = tableMap.find( value => value.cell === firstCell );
+			const columnToFocus = firstCellData.column;
 			let cellToFocus;
 
 			for ( let i = removedRowIndexes.last; i >= removedRowIndexes.first; i-- ) {
 				const removedRowIndex = i;
-				const tableRow = table.getChild( removedRowIndex );
-				this._removeRow( headingRows, removedRowIndex, table, writer, tableMap, tableRow );
+				this._removeRow( removedRowIndex, table, writer, tableMap );
 
 				cellToFocus = getCellToFocus( table, removedRowIndex, columnToFocus );
 			}
@@ -74,12 +68,14 @@ export default class RemoveRowCommand extends Command {
 	/**
 	 * @private
 	 */
-	_removeRow( headingRows, removedRowIndex, table, writer, tableMap, tableRow ) {
+	_removeRow( removedRowIndex, table, writer, tableMap ) {
+		const cellsToMove = new Map();
+		const tableRow = table.getChild( removedRowIndex );
+		const headingRows = table.getAttribute( 'headingRows' ) || 0;
+
 		if ( headingRows && removedRowIndex <= headingRows ) {
 			updateNumericAttribute( 'headingRows', headingRows - 1, table, writer, 0 );
 		}
-
-		const cellsToMove = new Map();
 
 		// Get cells from removed row that are spanned over multiple rows.
 		tableMap
