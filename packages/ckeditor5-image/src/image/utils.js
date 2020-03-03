@@ -25,7 +25,7 @@ export function toImageWidget( viewElement, writer, label ) {
 	return toWidget( viewElement, writer, { label: labelCreator } );
 
 	function labelCreator() {
-		const imgElement = viewElement.getChild( 0 );
+		const imgElement = getViewImgFromWidget( viewElement );
 		const altText = imgElement.getAttribute( 'alt' );
 
 		return altText ? `${ altText } ${ label }` : label;
@@ -105,6 +105,19 @@ export function isImageAllowed( model ) {
 	return isImageAllowedInParent( selection, schema, model ) &&
 		!checkSelectionOnObject( selection, schema ) &&
 		isInOtherImage( selection );
+}
+
+/**
+ * Get view `<img>` element from the view widget (`<figure>`).
+ *
+ * Assuming that image is always a first child of a widget (ie. `figureView.getChild( 0 )`) is unsafe as other features might
+ * inject their own elements to the widget.
+ *
+ * @param {module:engine/view/element~Element} figureView
+ * @returns {module:engine/view/element~Element}
+ */
+export function getViewImgFromWidget( figureView ) {
+	return Array.from( figureView.getChildren() ).find( viewChild => viewChild.is( 'img' ) );
 }
 
 // Checks if image is allowed by schema in optimal insertion parent.
