@@ -5,6 +5,8 @@
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
+import Document from '@ckeditor/ckeditor5-engine/src/view/document';
 
 /**
  * Parses given string of HTML and returns normalized HTML.
@@ -13,7 +15,7 @@ import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
  * @returns {String} Normalized HTML string.
  */
 export default function normalizeHtml( html ) {
-	const processor = new HtmlDataProcessor();
+	const processor = new HtmlDataProcessor( new Document( new StylesProcessor() ) );
 	const parsed = processor.toView( html );
 
 	return stringify( parsed );
