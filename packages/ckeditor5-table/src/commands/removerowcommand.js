@@ -67,9 +67,7 @@ export default class RemoveRowCommand extends Command {
 				cellToFocus = getCellToFocus( table, removedRowIndex, columnToFocus );
 			}
 
-			if ( cellToFocus ) {
-				writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
-			}
+			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
 	}
 
