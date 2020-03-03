@@ -126,8 +126,8 @@ describe( 'RemoveColumnCommand', () => {
 
 				assertEqualMarkup( getData( model ), modelTable( [
 					[ '01' ],
-					[ '[]11' ],
-					[ '21' ],
+					[ '11' ],
+					[ '[]21' ],
 					[ '31' ]
 				] ) );
 			} );
@@ -149,8 +149,8 @@ describe( 'RemoveColumnCommand', () => {
 
 				assertEqualMarkup( getData( model ), modelTable( [
 					[ '00', '02' ],
-					[ '10', '[]12' ],
-					[ '20', '22' ],
+					[ '10', '12' ],
+					[ '20', '[]22' ],
 					[ '30', '32' ]
 				] ) );
 			} );
@@ -189,7 +189,7 @@ describe( 'RemoveColumnCommand', () => {
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
 
 				command.execute();
 
@@ -212,19 +212,20 @@ describe( 'RemoveColumnCommand', () => {
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
 
 				command.execute();
 
 				assertEqualMarkup( getData( model ), modelTable( [
 					[ '00', '03' ],
-					[ '10', '[]13' ],
-					[ '20', '23' ],
+					[ '10', '13' ],
+					[ '20', '[]23' ],
 					[ '30', '33' ]
 				] ) );
 			} );
 
 			it( 'should properly remove two last columns', () => {
+				// There's no handling for selection in case like that.
 				setData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ],
@@ -235,7 +236,7 @@ describe( 'RemoveColumnCommand', () => {
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
 				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
 
 				command.execute();
 

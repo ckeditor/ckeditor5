@@ -40,7 +40,9 @@ export default class RemoveColumnCommand extends Command {
 	execute() {
 		const model = this.editor.model;
 
-		const firstCell = this._getReferenceCells().next().value;
+		const referenceCells = Array.from( this._getReferenceCells() );
+		const firstCell = referenceCells[ 0 ];
+		const lastCell = referenceCells[ referenceCells.length - 1 ];
 		const tableRow = firstCell.parent;
 		const table = tableRow.parent;
 
@@ -50,28 +52,41 @@ export default class RemoveColumnCommand extends Command {
 		const tableMap = [ ...new TableWalker( table ) ];
 
 		// Get column index of removed column.
-		const cellData = tableMap.find( value => value.cell === firstCell );
-		const removedColumn = cellData.column;
-		const selectionRow = cellData.row;
-		const cellToFocus = getCellToFocus( firstCell );
+		const firstCellData = tableMap.find( value => value.cell === firstCell );
+		const selectionRow = firstCellData.row;
+		const cellsToFocus = getCellToFocus( firstCell, lastCell );
+
+		const removedColumnIndexes = {
+			first: firstCellData.column,
+			last: tableMap.find( value => value.cell === lastCell ).column
+		};
 
 		model.change( writer => {
+			// A temporary workaround to avoid the "model-selection-range-intersects" error.
+			writer.setSelection( writer.createSelection( table, 'on' ) );
+
 			// Update heading columns attribute if removing a row from head section.
 			if ( headingColumns && selectionRow <= headingColumns ) {
 				writer.setAttribute( 'headingColumns', headingColumns - 1, table );
 			}
 
-			for ( const { cell, column, colspan } of tableMap ) {
-				// If colspaned cell overlaps removed column decrease it's span.
-				if ( column <= removedColumn && colspan > 1 && column + colspan > removedColumn ) {
-					updateNumericAttribute( 'colspan', colspan - 1, cell, writer );
-				} else if ( column === removedColumn ) {
-					// The cell in removed column has colspan of 1.
-					writer.remove( cell );
+			for (
+				let removedColumnIndex = removedColumnIndexes.last;
+				removedColumnIndex >= removedColumnIndexes.first;
+				removedColumnIndex--
+			) {
+				for ( const { cell, column, colspan } of tableMap ) {
+					// If colspaned cell overlaps removed column decrease it's span.
+					if ( column <= removedColumnIndex && colspan > 1 && column + colspan > removedColumnIndex ) {
+						updateNumericAttribute( 'colspan', colspan - 1, cell, writer );
+					} else if ( column === removedColumnIndex ) {
+						// The cell in removed column has colspan of 1.
+						writer.remove( cell );
+					}
 				}
 			}
 
-			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
+			writer.setSelection( writer.createPositionAt( cellsToFocus.reverse().filter( item => item != null )[ 0 ], 0 ) );
 		} );
 	}
 
@@ -98,12 +113,13 @@ export default class RemoveColumnCommand extends Command {
 // Returns a proper table cell to focus after removing a column. It should be a next sibling to selection visually stay in place but:
 // - selection is on last table cell it will return previous cell.
 // - table cell is spanned over 2+ columns - it will be truncated so the selection should stay in that cell.
-function getCellToFocus( tableCell ) {
-	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+function getCellToFocus( firstCell, lastCell ) {
+	const colspan = parseInt( lastCell.getAttribute( 'colspan' ) || 1 );
 
 	if ( colspan > 1 ) {
-		return tableCell;
+		return [ firstCell, lastCell ];
 	}
 
-	return tableCell.nextSibling ? tableCell.nextSibling : tableCell.previousSibling;
+	// return lastCell.nextSibling ? lastCell.nextSibling : lastCell.previousSibling;
+	return [ firstCell.previousSibling, lastCell.nextSibling ];
 }
