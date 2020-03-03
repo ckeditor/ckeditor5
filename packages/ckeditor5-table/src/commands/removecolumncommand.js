@@ -28,13 +28,10 @@ export default class RemoveColumnCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const editor = this.editor;
-		const selection = editor.model.document.selection;
-		const tableUtils = editor.plugins.get( 'TableUtils' );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const firstCell = this._getReferenceCells().next().value;
 
-		const tableCell = findAncestor( 'tableCell', selection.getFirstPosition() );
-
-		this.isEnabled = !!tableCell && tableUtils.getColumns( tableCell.parent.parent ) > 1;
+		this.isEnabled = !!firstCell && tableUtils.getColumns( firstCell.parent.parent ) > 1;
 	}
 
 	/**
@@ -79,6 +76,25 @@ export default class RemoveColumnCommand extends Command {
 
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
+	}
+
+	/**
+	 * Returns cells that are selected and are a reference to removing rows.
+	 *
+	 * @private
+	 * @returns {Iterable.<module:engine/model/element~Element>} Generates `tableCell` elements.
+	 */
+	* _getReferenceCells() {
+		const plugins = this.editor.plugins;
+		if ( plugins.has( 'TableSelection' ) && plugins.get( 'TableSelection' ).hasMultiCellSelection ) {
+			for ( const cell of plugins.get( 'TableSelection' ).getSelectedTableCells() ) {
+				yield cell;
+			}
+		} else {
+			const selection = this.editor.model.document.selection;
+
+			yield findAncestor( 'tableCell', selection.getFirstPosition() );
+		}
 	}
 }
 
