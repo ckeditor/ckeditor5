@@ -171,6 +171,9 @@ ClassicEditor
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
+The plugin is installed in all {@link builds/guides/overview#available-builds builds} by dafault.
+
+
 ## Contribute
 
 The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5-typing.
