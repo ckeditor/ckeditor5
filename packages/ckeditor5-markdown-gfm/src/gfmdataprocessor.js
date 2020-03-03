@@ -22,7 +22,7 @@ import converters from './lib/to-markdown/converters';
  */
 export default class GFMDataProcessor {
 	/**
-	 * Creates a new instance of the HTML data processor class.
+	 * Creates a new instance of the Markdown data processor class.
 	 *
 	 * @param {module:engine/view/document~Document} document
 	 */
@@ -67,4 +67,3 @@ export default class GFMDataProcessor {
 		return toMarkdown( html, { gfm: true, converters } );
 	}
 }
-
