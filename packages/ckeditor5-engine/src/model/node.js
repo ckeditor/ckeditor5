@@ -189,7 +189,7 @@ export default class Node {
 	}
 
 	/**
-	 * Returns true if a node is in a tree rooted in an element of the root type.
+	 * Returns true if the node is in a tree rooted in the document (is a descendant of one of its roots).
 	 *
 	 * @returns {Boolean}
 	 */

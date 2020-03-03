@@ -24,7 +24,7 @@ export default class XmlDataProcessor {
 	/**
 	 * Creates a new instance of the XML data processor class.
 	 *
-	 * @param {module:engine/view/document~Document} document
+	 * @param {module:engine/view/document~Document} document The view document instance.
 	 * @param {Object} options Configuration options.
 	 * @param {Array<String>} [options.namespaces=[]] A list of namespaces allowed to use in the XML input.
 	 */

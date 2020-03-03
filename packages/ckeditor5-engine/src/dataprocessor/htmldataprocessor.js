@@ -22,7 +22,7 @@ export default class HtmlDataProcessor {
 	/**
 	 * Creates a new instance of the HTML data processor class.
 	 *
-	 * @param {module:engine/view/document~Document} document
+	 * @param {module:engine/view/document~Document} document The view document instance.
 	 */
 	constructor( document ) {
 		/**
