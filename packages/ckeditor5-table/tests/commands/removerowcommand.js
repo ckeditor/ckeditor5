@@ -105,23 +105,71 @@ describe( 'RemoveRowCommand', () => {
 			] ) );
 		} );
 
-		it( 'should remove multiple rows if more than one row is selected', () => {
-			setData( model, modelTable( [
-				[ '00', '01' ],
-				[ '10', '11' ],
-				[ '20', '21' ]
-			] ) );
+		describe( 'multiple rows selection', () => {
+			it( 'should properly remove when middle rows are selected', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				] ) );
 
-			const tableSelection = editor.plugins.get( TableSelection );
-			const modelRoot = model.document.getRoot();
-			tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
-			tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 0 ] ) );
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 0 ] ) );
 
-			command.execute();
+				command.execute();
 
-			assertEqualMarkup( getData( model ), modelTable( [
-				[ '00', '01[]' ]
-			] ) );
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00', '01' ],
+					[ '[]30', '31' ]
+				] ) );
+			} );
+
+			it( 'should properly remove when beginning rows are selected', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '[]20', '21' ],
+					[ '30', '31' ]
+				] ) );
+			} );
+
+			// This test is blocked by (#6370).
+			//
+			// it( 'should properly remove when tailing rows are selected', () => {
+			// 	setData( model, modelTable( [
+			// 		[ '00', '01' ],
+			// 		[ '10', '11' ],
+			// 		[ '20', '21' ],
+			// 		[ '30', '31' ]
+			// 	] ) );
+
+			// 	const tableSelection = editor.plugins.get( TableSelection );
+			// 	const modelRoot = model.document.getRoot();
+			// 	tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 2, 0 ] ) );
+			// 	tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 36, 0 ] ) );
+
+			// 	command.execute();
+
+			// 	assertEqualMarkup( getData( model ), modelTable( [
+			// 		[ '00', '01' ],
+			// 		[ '10', '11[]' ]
+			// 	] ) );
+			// } );
 		} );
 
 		it( 'should remove a given row from a table start', () => {
