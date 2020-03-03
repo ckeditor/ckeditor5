@@ -71,7 +71,7 @@ export default class BootstrapEditor extends Editor {
 		this.sourceElement = element;
 
 		// Use the HTML data processor in this editor.
-		this.data.processor = new HtmlDataProcessor();
+		this.data.processor = new HtmlDataProcessor( this.editing.view.document );
 
 		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot();

@@ -22,8 +22,7 @@ describe( 'EditableUIView', () => {
 		editableElement = document.createElement( 'div' );
 
 		editingView = new EditingView();
-		editingViewRoot = new ViewRootEditableElement( 'div' );
-		editingViewRoot._document = editingView.document;
+		editingViewRoot = new ViewRootEditableElement( editingView.document, 'div' );
 		editingView.document.roots.add( editingViewRoot );
 		view = new EditableUIView( locale, editingView );
 		view.name = editingViewRoot.rootName;
@@ -125,14 +124,13 @@ describe( 'EditableUIView', () => {
 			// https://github.com/ckeditor/ckeditor5/issues/1530.
 			// https://github.com/ckeditor/ckeditor5/issues/1676.
 			it( 'should work when update is handled during the rendering phase', () => {
-				const secondEditingViewRoot = new ViewRootEditableElement( 'div' );
+				const secondEditingViewRoot = new ViewRootEditableElement( editingView.document, 'div' );
 				const secondView = new EditableUIView( locale, editingView );
 				const secondEditableElement = document.createElement( 'div' );
 
 				document.body.appendChild( secondEditableElement );
 
 				secondEditingViewRoot.rootName = 'second';
-				secondEditingViewRoot._document = editingView.document;
 				editingView.document.roots.add( secondEditingViewRoot );
 
 				secondView.name = 'second';
