@@ -39,12 +39,9 @@ export default class RemoveColumnCommand extends Command {
 	 */
 	execute() {
 		const model = this.editor.model;
-		const selection = model.document.selection;
 
-		const firstPosition = selection.getFirstPosition();
-
-		const tableCell = findAncestor( 'tableCell', firstPosition );
-		const tableRow = tableCell.parent;
+		const firstCell = this._getReferenceCells().next().value;
+		const tableRow = firstCell.parent;
 		const table = tableRow.parent;
 
 		const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
@@ -53,10 +50,10 @@ export default class RemoveColumnCommand extends Command {
 		const tableMap = [ ...new TableWalker( table ) ];
 
 		// Get column index of removed column.
-		const cellData = tableMap.find( value => value.cell === tableCell );
+		const cellData = tableMap.find( value => value.cell === firstCell );
 		const removedColumn = cellData.column;
 		const selectionRow = cellData.row;
-		const cellToFocus = getCellToFocus( tableCell );
+		const cellToFocus = getCellToFocus( firstCell );
 
 		model.change( writer => {
 			// Update heading columns attribute if removing a row from head section.
