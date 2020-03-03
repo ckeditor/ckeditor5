@@ -52,8 +52,6 @@ export default class Editor {
 	 * @param {Object} [config={}] The editor configuration.
 	 */
 	constructor( config = {} ) {
-		const stylesProcessor = new StylesProcessor();
-
 		/**
 		 * The editor context.
 		 * When it is not provided through the configuration, the editor creates it.
@@ -164,6 +162,8 @@ export default class Editor {
 		 */
 		this.model = new Model();
 
+		const stylesProcessor = new StylesProcessor();
+
 		/**
 		 * The {@link module:engine/controller/datacontroller~DataController data controller}.
 		 * Used e.g. for setting and retrieving the editor data.
@@ -171,7 +171,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:engine/controller/datacontroller~DataController}
 		 */
-		this.data = new DataController( stylesProcessor, this.model );
+		this.data = new DataController( this.model, stylesProcessor );
 
 		/**
 		 * The {@link module:engine/controller/editingcontroller~EditingController editing controller}.
