@@ -24,7 +24,7 @@ export default class Document {
 	/**
 	 * Creates a Document instance.
 	 *
-	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance..
+	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance.
 	 */
 	constructor( stylesProcessor ) {
 		/**

@@ -36,10 +36,12 @@ import Selection from './selection';
  */
 export default class UpcastWriter {
 	/**
-	 * @param {module:engine/view/document~Document} document
+	 * @param {module:engine/view/document~Document} document The view document instance in which this upcast writer operates.
 	 */
 	constructor( document ) {
 		/**
+		 * The view document instance in which this upcast writer operates.
+		 *
 		 * @readonly
 		 * @type {module:engine/view/document~Document}
 		 */

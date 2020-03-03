@@ -17,11 +17,11 @@ import { clone } from 'lodash-es';
 import '@ckeditor/ckeditor5-utils/src/version';
 
 /**
- * Abstract tree view node class.
+ * Abstract view node class.
  *
  * This is an abstract class. Its constructor should not be used directly.
- * Use the {@link module:engine/view/element~Element} class to create view elements
- * or {@link module:engine/view/text~Text} class to create view text nodes.
+ * Use the {@link module:engine/view/downcastwriter~DowncastWriter} or {@link module:engine/view/upcastwriter~UpcastWriter}
+ * to create new instances of view nodes.
  *
  * @abstract
  */
@@ -29,11 +29,12 @@ export default class Node {
 	/**
 	 * Creates a tree view node.
 	 *
-	 * @param {module:engine/view/document~Document} document A document where the node belongs to.
+	 * @protected
+	 * @param {module:engine/view/document~Document} document The document instance to which this node belongs.
 	 */
 	constructor( document ) {
 		/**
-		 * A document where the node belongs to.
+		 * The document instance to which this node belongs.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/document~Document}
@@ -119,7 +120,7 @@ export default class Node {
 	}
 
 	/**
-	 * Returns true if a node is in a tree rooted in an element of the root type.
+	 * Returns true if the node is in a tree rooted in the document (is a descendant of one of its roots).
 	 *
 	 * @returns {Boolean}
 	 */

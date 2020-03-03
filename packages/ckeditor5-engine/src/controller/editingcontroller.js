@@ -31,7 +31,7 @@ export default class EditingController {
 	 * Creates an editing controller instance.
 	 *
 	 * @param {module:engine/model/model~Model} model Editing model.
-	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance..
+	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance.
 	 */
 	constructor( model, stylesProcessor ) {
 		/**

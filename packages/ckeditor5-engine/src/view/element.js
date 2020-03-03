@@ -48,9 +48,9 @@ export default class Element extends Node {
 	 *
 	 * Attributes can be passed in various formats:
 	 *
-	 *		new Element( 'div', { class: 'editor', contentEditable: 'true' } ); // object
-	 *		new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
-	 *		new Element( 'div', mapOfAttributes ); // map
+	 *		new Element( viewDocument, 'div', { class: 'editor', contentEditable: 'true' } ); // object
+	 *		new Element( viewDocument, 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
+	 *		new Element( viewDocument, 'div', mapOfAttributes ); // map
 	 *
 	 * @protected
 	 * @param {module:engine/view/document~Document} document The document instance to which this element belongs.
