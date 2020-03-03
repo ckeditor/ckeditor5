@@ -46,12 +46,10 @@ export default class DataController {
 	/**
 	 * Creates a data controller instance.
 	 *
-	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor Styles processor.
 	 * @param {module:engine/model/model~Model} model Data model.
-	 * @param {module:engine/dataprocessor/dataprocessor~DataProcessor} [dataProcessor] Data processor that should be used
-	 * by the controller.
+	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor Styles processor.
 	 */
-	constructor( stylesProcessor, model, dataProcessor ) {
+	constructor( model, stylesProcessor ) {
 		/**
 		 * Data model.
 		 *
@@ -61,7 +59,7 @@ export default class DataController {
 		this.model = model;
 
 		/**
-		 * StylesProcessor is responsible for writing and reading a normalized styles object.
+		 * Styles processor used during the conversion.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/stylesmap~StylesProcessor}
@@ -71,10 +69,9 @@ export default class DataController {
 		/**
 		 * Data processor used during the conversion.
 		 *
-		 * @readonly
-		 * @member {module:engine/dataprocessor/dataprocessor~DataProcessor}
+		 * @member {module:engine/dataprocessor/dataprocessor~DataProcessor} #processor
 		 */
-		this.processor = dataProcessor;
+		this.processor;
 
 		/**
 		 * Mapper used for the conversion. It has no permanent bindings, because they are created when getting data and

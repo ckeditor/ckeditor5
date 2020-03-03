@@ -41,17 +41,20 @@ describe( 'DataController', () => {
 		viewDocument = new ViewDocument( stylesProcessor );
 		htmlDataProcessor = new HtmlDataProcessor( viewDocument );
 
-		data = new DataController( stylesProcessor, model, htmlDataProcessor );
+		data = new DataController( model, stylesProcessor );
+		data.processor = htmlDataProcessor;
 
 		upcastHelpers = new UpcastHelpers( [ data.upcastDispatcher ] );
 		downcastHelpers = new DowncastHelpers( [ data.downcastDispatcher ] );
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'works without data processor', () => {
-			const data = new DataController( new StylesProcessor(), model );
+		it( 'sets the model and styles processor properties', () => {
+			const stylesProcessor = new StylesProcessor();
+			const data = new DataController( model, stylesProcessor );
 
-			expect( data.processor ).to.be.undefined;
+			expect( data.model ).to.equal( model );
+			expect( data.stylesProcessor ).to.equal( stylesProcessor );
 		} );
 	} );
 
@@ -577,7 +580,7 @@ describe( 'DataController', () => {
 	describe( 'addStyleProcessorRules()', () => {
 		it( 'should execute callback with an instance of StyleProcessor as the first argument', () => {
 			const stylesProcessor = new StylesProcessor();
-			const data = new DataController( stylesProcessor, model, htmlDataProcessor );
+			const data = new DataController( model, stylesProcessor );
 
 			const spy = sinon.spy();
 
