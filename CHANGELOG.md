@@ -21,6 +21,10 @@ Check the list of packages below to learn more about other breaking changes.
 
 https://ckeditor.com/blog/CKEditor-5-v17.0.0-with-table-styles-special-characters-and-performance-improvements/
 
+### Collaboration features
+
+The CKEditor 5 Collaboration features changelog can be found here: https://ckeditor.com/collaboration/changelog.
+
 ### Dependencies
 
 New packages:
