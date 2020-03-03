@@ -82,6 +82,54 @@ describe( 'Resizer', () => {
 		} );
 	} );
 
+	describe( 'attach()', () => {
+		it( 'doesn\'t show resizer if it\'s initialized as disabled', () => {
+			const resizerInstance = createResizer();
+			resizerInstance.isEnabled = false;
+			resizerInstance.attach();
+
+			const domResizeeWrapper = resizerInstance._viewResizerWrapper.render( document );
+			expect( domResizeeWrapper.style.display ).to.be.equal( 'none' );
+		} );
+
+		it( 'hides the resizer if it gets disabled at a runtime', () => {
+			const resizerInstance = createResizer();
+			resizerInstance.isEnabled = true;
+			resizerInstance.attach();
+			const domResizeeWrapper = resizerInstance._viewResizerWrapper.render( document );
+
+			resizerInstance.isEnabled = false;
+			expect( domResizeeWrapper.style.display ).to.be.equal( 'none' );
+		} );
+
+		it( 'restores the resizer if it gets enabled at a runtime', () => {
+			const resizerInstance = createResizer();
+			resizerInstance.isEnabled = false;
+			resizerInstance.attach();
+			const domResizeeWrapper = resizerInstance._viewResizerWrapper.render( document );
+
+			resizerInstance.isEnabled = true;
+			expect( domResizeeWrapper.style.display ).to.be.equal( '' );
+		} );
+	} );
+
+	describe( 'redraw()', () => {
+		it( 'works fetch proper rect if handleHostRect argument not given explicitly', () => {
+			const resizerInstance = createResizer( {
+				getHandleHost: widgetWrapper => widgetWrapper
+			} );
+			resizerInstance.attach();
+			const renderedElement = resizerInstance._viewResizerWrapper.render( document );
+
+			document.body.appendChild( renderedElement );
+
+			resizerInstance.redraw();
+
+			// Cleanup.
+			renderedElement.remove();
+		} );
+	} );
+
 	describe( '_proposeNewSize()', () => {
 		let resizer;
 
@@ -139,14 +187,14 @@ describe( 'Resizer', () => {
 		} );
 	} );
 
-	function createResizer() {
+	function createResizer( customOptions ) {
 		const model = new Element( 'resizable' );
 		const viewElement = new ContainerElement( 'div' );
 
-		return new Resizer( {
+		return new Resizer( Object.assign( {
 			modelElement: model,
 			viewElement,
 			editor
-		} );
+		}, customOptions ) );
 	}
 } );

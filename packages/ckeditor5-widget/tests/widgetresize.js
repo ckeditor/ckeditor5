@@ -363,6 +363,107 @@ describe( 'WidgetResize', () => {
 				} )();
 			} );
 		} );
+
+		it( 'doesn\'t call options.onCommit() in case of no change', () => {
+			const commitStub = sinon.stub();
+			createResizer( {
+				onCommit: commitStub
+			} );
+
+			const domParts = getWidgetDomParts( editor, widget, 'top-left' );
+
+			resizerMouseSimulator.down( editor, domParts.resizeHandle );
+			resizerMouseSimulator.up( editor );
+			expect( commitStub.callCount, 'call count' ).to.be.eql( 0 );
+		} );
+
+		it( 'returns proper value when resize host is different from widget wrapper', () => {
+			createResizer( {
+				unit: undefined,
+				getHandleHost( domWidgetElement ) {
+					return domWidgetElement.querySelector( '.sub-div' );
+				}
+			} );
+
+			const usedHandle = 'bottom-right';
+			const pointerDifference = { x: -10, y: -10 };
+			const expectedWidth = '20%';
+
+			const domParts = getWidgetDomParts( editor, widget, usedHandle );
+			const resizeHost = domParts.widget.querySelector( '.sub-div' );
+			const initialPointerPosition = getHandleCenterPoint( resizeHost, usedHandle );
+			const finalPointerPosition = initialPointerPosition.moveBy( pointerDifference.x, pointerDifference.y );
+
+			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+			expect( commitStub.callCount, 'call count' ).to.be.eql( 1 );
+			expect( commitStub.args[ 0 ][ 0 ], 'width' ).to.be.equal( expectedWidth );
+			sinon.assert.calledOnce( commitStub );
+		} );
+
+		it( 'doesn\'t break if the widget wrapper was removed from DOM', () => {
+			const resizer = createResizer( {
+				unit: undefined
+			} );
+			const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
+
+			domParts.resizeWrapper.remove();
+
+			resizer.redraw();
+		} );
+	} );
+
+	describe( 'attachTo()', () => {
+		it( 'works without WidgetToolbarRepository plugin', async () => {
+			const localEditorElement = createEditorElement();
+			const localEditor = await ClassicEditor.create( localEditorElement, {
+				plugins: [
+					WidgetResize, simpleWidgetPlugin
+				]
+			} );
+
+			setModelData( localEditor.model, '[<widget></widget>]' );
+
+			const resizerOptions = {
+				modelElement: localEditor.model.document.getRoot().getChild( 0 ),
+				viewElement: localEditor.editing.view.document.getRoot().getChild( 0 ),
+				editor: localEditor,
+
+				isCentered: () => false,
+				getHandleHost( domWidgetElement ) {
+					return domWidgetElement;
+				},
+				getResizeHost( domWidgetElement ) {
+					return domWidgetElement;
+				},
+
+				onCommit: commitStub
+			};
+
+			localEditor.plugins.get( WidgetResize ).attachTo( resizerOptions );
+			// Nothing should be thrown.
+			// And clean up.
+			localEditorElement.remove();
+			return localEditor.destroy();
+		} );
+	} );
+
+	describe( 'init()', () => {
+		it( 'adds listener to redraw resizer on visible resizer change', async () => {
+			setModelData( editor.model, '<widget></widget><paragraph>[]</paragraph>' );
+			widget = editor.editing.view.document.getRoot().getChild( 0 );
+
+			const resizer = createResizer();
+			const redrawSpy = sinon.spy( resizer, 'redraw' );
+
+			focusEditor( editor );
+
+			editor.model.change( writer => {
+				const widgetModel = editor.model.document.getRoot().getChild( 0 );
+				writer.setSelection( widgetModel, 'on' );
+			} );
+
+			expect( redrawSpy.callCount ).to.be.equal( 1 );
+		} );
 	} );
 
 	describe( '_getResizerByHandle()', () => {
@@ -406,27 +507,34 @@ describe( 'WidgetResize', () => {
 					ArticlePluginSet, WidgetResize, simpleWidgetPlugin
 				]
 			} );
+	}
 
-		function simpleWidgetPlugin( editor ) {
-			editor.model.schema.register( 'widget', {
-				inheritAllFrom: '$block',
-				isObject: true
+	function simpleWidgetPlugin( editor ) {
+		editor.model.schema.register( 'widget', {
+			inheritAllFrom: '$block',
+			isObject: true
+		} );
+
+		editor.conversion.for( 'downcast' )
+			.elementToElement( {
+				model: 'widget',
+				view: ( modelItem, viewWriter ) => {
+					const parentDiv = viewWriter.createContainerElement( 'div' );
+					viewWriter.setStyle( 'height', '50px', parentDiv );
+					viewWriter.setStyle( 'width', '25%', parentDiv ); // It evaluates to 100px.
+
+					const subDiv = viewWriter.createContainerElement( 'div' );
+					viewWriter.insert( viewWriter.createPositionAt( subDiv, 'start' ), viewWriter.createText( 'foo' ) );
+					viewWriter.addClass( 'sub-div', subDiv );
+					viewWriter.setStyle( 'height', '20px', subDiv );
+					viewWriter.setStyle( 'width', '50px', subDiv );
+					viewWriter.insert( viewWriter.createPositionAt( parentDiv, 'start' ), subDiv );
+
+					return toWidget( parentDiv, viewWriter, {
+						label: 'element label'
+					} );
+				}
 			} );
-
-			editor.conversion.for( 'downcast' )
-				.elementToElement( {
-					model: 'widget',
-					view: ( modelItem, viewWriter ) => {
-						const div = viewWriter.createContainerElement( 'div' );
-						viewWriter.setStyle( 'height', '50px', div );
-						viewWriter.setStyle( 'width', '25%', div ); // It evaluates to 100px.
-
-						return toWidget( div, viewWriter, {
-							label: 'element label'
-						} );
-					}
-				} );
-		}
 	}
 
 	function createEditorElement() {
