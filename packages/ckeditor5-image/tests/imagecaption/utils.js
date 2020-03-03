@@ -45,8 +45,7 @@ describe( 'image captioning utils', () => {
 		} );
 
 		it( 'should return false for other elements', () => {
-			const editable = new ViewEditableElement( 'figcaption', { contenteditable: true } );
-			editable._document = document;
+			const editable = new ViewEditableElement( document, 'figcaption', { contenteditable: true } );
 
 			expect( isCaption( editable ) ).to.be.false;
 		} );
@@ -70,34 +69,34 @@ describe( 'image captioning utils', () => {
 
 	describe( 'matchImageCaption', () => {
 		it( 'should return null for element that is not a figcaption', () => {
-			const element = new ViewElement( 'div' );
+			const element = new ViewElement( document, 'div' );
 
 			expect( matchImageCaption( element ) ).to.be.null;
 		} );
 
 		it( 'should return null if figcaption has no parent', () => {
-			const element = new ViewElement( 'figcaption' );
+			const element = new ViewElement( document, 'figcaption' );
 
 			expect( matchImageCaption( element ) ).to.be.null;
 		} );
 
 		it( 'should return null if figcaption\'s parent is not a figure', () => {
-			const element = new ViewElement( 'figcaption' );
-			new ViewElement( 'div', null, element ); // eslint-disable-line no-new
+			const element = new ViewElement( document, 'figcaption' );
+			new ViewElement( document, 'div', null, element ); // eslint-disable-line no-new
 
 			expect( matchImageCaption( element ) ).to.be.null;
 		} );
 
 		it( 'should return null if parent has no image class', () => {
-			const element = new ViewElement( 'figcaption' );
-			new ViewElement( 'figure', null, element ); // eslint-disable-line no-new
+			const element = new ViewElement( document, 'figcaption' );
+			new ViewElement( document, 'figure', null, element ); // eslint-disable-line no-new
 
 			expect( matchImageCaption( element ) ).to.be.null;
 		} );
 
 		it( 'should return object if element is a valid caption', () => {
-			const element = new ViewElement( 'figcaption' );
-			new ViewElement( 'figure', { class: 'image' }, element ); // eslint-disable-line no-new
+			const element = new ViewElement( document, 'figcaption' );
+			new ViewElement( document, 'figure', { class: 'image' }, element ); // eslint-disable-line no-new
 
 			expect( matchImageCaption( element ) ).to.deep.equal( { name: true } );
 		} );

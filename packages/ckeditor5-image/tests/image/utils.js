@@ -15,10 +15,11 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import Image from '../../src/image/imageediting';
 
 describe( 'image widget utils', () => {
-	let element, image, writer;
+	let element, image, writer, viewDocument;
 
 	beforeEach( () => {
-		writer = new ViewDowncastWriter( new ViewDocument() );
+		viewDocument = new ViewDocument();
+		writer = new ViewDowncastWriter( viewDocument );
 		image = writer.createContainerElement( 'img' );
 		element = writer.createContainerElement( 'figure' );
 		writer.insert( writer.createPositionAt( element, 0 ), image );
@@ -62,7 +63,7 @@ describe( 'image widget utils', () => {
 
 		it( 'should return true when image widget is the only element in the selection', () => {
 			// We need to create a container for the element to be able to create a Range on this element.
-			frag = new ViewDocumentFragment( [ element ] );
+			frag = new ViewDocumentFragment( viewDocument, [ element ] );
 
 			const selection = writer.createSelection( element, 'on' );
 
@@ -73,7 +74,7 @@ describe( 'image widget utils', () => {
 			const notWidgetizedElement = writer.createContainerElement( 'p' );
 
 			// We need to create a container for the element to be able to create a Range on this element.
-			frag = new ViewDocumentFragment( [ notWidgetizedElement ] );
+			frag = new ViewDocumentFragment( viewDocument, [ notWidgetizedElement ] );
 
 			const selection = writer.createSelection( notWidgetizedElement, 'on' );
 
@@ -83,7 +84,7 @@ describe( 'image widget utils', () => {
 		it( 'should return false when widget element is not the only element in the selection', () => {
 			const notWidgetizedElement = writer.createContainerElement( 'p' );
 
-			frag = new ViewDocumentFragment( [ element, notWidgetizedElement ] );
+			frag = new ViewDocumentFragment( viewDocument, [ element, notWidgetizedElement ] );
 
 			const selection = writer.createSelection( writer.createRangeIn( frag ) );
 

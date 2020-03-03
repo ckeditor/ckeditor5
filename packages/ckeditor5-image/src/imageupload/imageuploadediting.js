@@ -129,7 +129,7 @@ export default class ImageUploadEditing extends Plugin {
 				return;
 			}
 
-			const writer = new UpcastWriter();
+			const writer = new UpcastWriter( editor.editing.view.document );
 
 			for ( const fetchableImage of fetchableImages ) {
 				// Set attribute marking that the image was processed already.
