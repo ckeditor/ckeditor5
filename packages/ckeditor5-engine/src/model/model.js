@@ -440,8 +440,8 @@ export default class Model {
 	 * `[<image src="foo.jpg"></image>]` -> `<paragraph>[]</paragraph>`.
 	 *
 	 * @param {'forward'|'backward'} [options.direction='backward'] The direction in which the content is being consumed.
-	 * Deleting backward corresponds to using the <kbd>Delete</kbd> key, while deleting content forward corresponds to
-	 * the <kbd>Shift</kbd>+<kbd>Delete</kbd> keystroke.
+	 * Deleting backward corresponds to using the <kbd>Backspace</kbd> key, while deleting content forward corresponds to
+	 * the <kbd>Shift</kbd>+<kbd>Backspace</kbd> keystroke.
 	 */
 	deleteContent( selection, options ) {
 		deleteContent( this, selection, options );
