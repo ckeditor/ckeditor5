@@ -3,6 +3,7 @@
 		"collapseGroups",
 		"removeDimensions",
 		{ "removeAttrs": { "attrs": "(fill|stroke|fill-rule)" } },
+		{ "convertPathData": { "noSpaceAfterFlags": false } },
 		"removeTitle",
 		"removeComments",
 		"removeMetadata"

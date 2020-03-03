@@ -19,7 +19,11 @@ Finally, this release comes with a couple of **important breaking changes**. The
 
 Check the list of packages below to learn more about other breaking changes.
 
-Blog post coming soon...
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v17.0.0-with-table-styles-special-characters-and-performance-improvements/.
+
+### Collaboration features
+
+The CKEditor 5 Collaboration features changelog can be found here: https://ckeditor.com/collaboration/changelog.
 
 ### Dependencies
 
