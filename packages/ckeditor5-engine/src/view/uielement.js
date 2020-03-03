@@ -41,7 +41,7 @@ export default class UIElement extends Element {
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#createUIElement
 	 * @protected
-	 * @param {module:engine/view/document~Document} document A document where the element belongs to.
+	 * @param {module:engine/view/document~Document} document The document instance to which this element belongs.
 	 * @param {String} name Node name.
 	 * @param {Object|Iterable} [attributes] Collection of attributes.
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]

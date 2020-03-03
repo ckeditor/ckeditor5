@@ -47,7 +47,7 @@ export default class DataController {
 	 * Creates a data controller instance.
 	 *
 	 * @param {module:engine/model/model~Model} model Data model.
-	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor Styles processor.
+	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance..
 	 */
 	constructor( model, stylesProcessor ) {
 		/**

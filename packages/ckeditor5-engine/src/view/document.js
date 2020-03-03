@@ -24,7 +24,7 @@ export default class Document {
 	/**
 	 * Creates a Document instance.
 	 *
-	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor Styles processor.
+	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance..
 	 */
 	constructor( stylesProcessor ) {
 		/**
@@ -49,7 +49,7 @@ export default class Document {
 		this.roots = new Collection( { idProperty: 'rootName' } );
 
 		/**
-		 * StylesProcessor is responsible for writing and reading a normalized styles object.
+		 * The styles processor instance used by this document when normalizing styles.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/stylesmap~StylesProcessor}

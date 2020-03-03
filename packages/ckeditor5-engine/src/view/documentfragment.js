@@ -25,14 +25,15 @@ export default class DocumentFragment {
 	 * Creates new DocumentFragment instance.
 	 *
 	 * @protected
-	 * @param {module:engine/view/document~Document} document A document where the document fragment belongs to.
+	 * @param {module:engine/view/document~Document} document The document to which this document fragment belongs.
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
 	 * A list of nodes to be inserted into the created document fragment.
 	 */
 	constructor( document, children ) {
 		/**
-		 * A document where the document fragment belongs to.
+		 * The document to which this document fragment belongs.
 		 *
+		 * @readonly
 		 * @member {module:engine/view/document~Document}
 		 */
 		this.document = document;

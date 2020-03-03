@@ -44,7 +44,7 @@ export default class DomConverter {
 	/**
 	 * Creates DOM converter.
 	 *
-	 * @param {module:engine/view/document~Document} document
+	 * @param {module:engine/view/document~Document} document The view document instance.
 	 * @param {Object} options Object with configuration options.
 	 * @param {module:engine/view/filler~BlockFillerMode} [options.blockFillerMode='br'] The type of the block filler to use.
 	 */

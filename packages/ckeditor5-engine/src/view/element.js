@@ -53,7 +53,7 @@ export default class Element extends Node {
 	 *		new Element( 'div', mapOfAttributes ); // map
 	 *
 	 * @protected
-	 * @param {module:engine/view/document~Document} document A document where the element belongs to.
+	 * @param {module:engine/view/document~Document} document The document instance to which this element belongs.
 	 * @param {String} name Node name.
 	 * @param {Object|Iterable} [attrs] Collection of attributes.
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]

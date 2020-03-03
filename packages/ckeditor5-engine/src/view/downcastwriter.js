@@ -38,10 +38,12 @@ import { isPlainObject } from 'lodash-es';
  */
 export default class DowncastWriter {
 	/**
-	 * @param {module:engine/view/document~Document} document
+	 * @param {module:engine/view/document~Document} document The view document instance.
 	 */
 	constructor( document ) {
 		/**
+		 * The view document instance in which this writer operates.
+		 *
 		 * @readonly
 		 * @type {module:engine/view/document~Document}
 		 */
@@ -988,7 +990,7 @@ export default class DowncastWriter {
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
 	 *
-	 * **Note:** This factory method creates it's own {@link module:engine/view/position~Position} instances basing on passed values.
+	 * **Note:** This factory method creates its own {@link module:engine/view/position~Position} instances basing on passed values.
 	 *
 	 * @param {module:engine/view/position~Position} start Start position.
 	 * @param {module:engine/view/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
@@ -1810,7 +1812,7 @@ function breakTextNode( position ) {
 	position.parent._data = position.parent.data.slice( 0, position.offset );
 
 	// Insert new text node after position's parent text node.
-	position.parent.parent._insertChild( position.parent.index + 1, new Text( position.parent.document, textToMove ) );
+	position.parent.parent._insertChild( position.parent.index + 1, new Text( position.root.document, textToMove ) );
 
 	// Return new position between two newly created text nodes.
 	return new Position( position.parent.parent, position.parent.index + 1 );

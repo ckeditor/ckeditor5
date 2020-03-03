@@ -63,7 +63,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
  */
 export default class View {
 	/**
-	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor Styles processor.
+	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance..
 	 */
 	constructor( stylesProcessor ) {
 		/**

@@ -35,6 +35,7 @@ export default class Node {
 		/**
 		 * A document where the node belongs to.
 		 *
+		 * @readonly
 		 * @member {module:engine/view/document~Document}
 		 */
 		this.document = document;
