@@ -30,6 +30,19 @@ export function findAncestor( parentName, positionOrElement ) {
 }
 
 /**
+ * Returns an element contained by a range, if it's the only one element contained by the range and if it's fully contained.
+ *
+ * @param {module:engine/model/range~Range} range
+ * @returns {module:engine/model/element~Element|null}
+ */
+export function getRangeContainedElement( range ) {
+	const nodeAfterStart = range.start.nodeAfter;
+	const nodeBeforeEnd = range.end.nodeBefore;
+
+	return ( nodeAfterStart && nodeAfterStart.is( 'element' ) && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
+}
+
+/**
  * A common method to update the numeric value. If a value is the default one, it will be unset.
  *
  * @param {String} key An attribute key.

@@ -7,7 +7,8 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import InsertColumnCommand from '../../src/commands/insertcolumncommand';
-import { defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
+import TableSelection from '../../src/tableselection';
+import { assertSelectedCells, defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
 import TableUtils from '../../src/tableutils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
@@ -17,7 +18,7 @@ describe( 'InsertColumnCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ TableUtils ]
+				plugins: [ TableUtils, TableSelection ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -76,7 +77,7 @@ describe( 'InsertColumnCommand', () => {
 				] ) );
 			} );
 
-			it( 'should insert columns at table end', () => {
+			it( 'should insert column at table end', () => {
 				setData( model, modelTable( [
 					[ '11', '12' ],
 					[ '21', '22[]' ]
@@ -88,6 +89,31 @@ describe( 'InsertColumnCommand', () => {
 					[ '11', '12', '' ],
 					[ '21', '22[]', '' ]
 				] ) );
+			} );
+
+			it( 'should insert column after a multi column selection', () => {
+				setData( model, modelTable( [
+					[ '11', '12', '13' ],
+					[ '21', '22', '23' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '11', '12', '', '13' ],
+					[ '21', '22', '', '23' ]
+				] ) );
+
+				assertSelectedCells( model, [
+					[ 1, 1, 0, 0 ],
+					[ 1, 1, 0, 0 ]
+				] );
 			} );
 
 			it( 'should update table heading columns attribute when inserting column in headings section', () => {
@@ -212,6 +238,31 @@ describe( 'InsertColumnCommand', () => {
 					[ '', '11', '12' ],
 					[ '', '[]21', '22' ]
 				] ) );
+			} );
+
+			it( 'should insert column before a multi column selection', () => {
+				setData( model, modelTable( [
+					[ '11', '12', '13' ],
+					[ '21', '22', '23' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '', '11', '12', '13' ],
+					[ '', '21', '22', '23' ]
+				] ) );
+
+				assertSelectedCells( model, [
+					[ 0, 1, 1, 0 ],
+					[ 0, 1, 1, 0 ]
+				] );
 			} );
 
 			it( 'should update table heading columns attribute when inserting column in headings section', () => {
