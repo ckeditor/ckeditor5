@@ -147,30 +147,30 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should return false for non-widgetized elements', () => {
-			expect( isWidget( new ViewElement( 'p' ) ) ).to.be.false;
+			expect( isWidget( new ViewElement( viewDocument, 'p' ) ) ).to.be.false;
 		} );
 
 		it( 'should return false for text node', () => {
-			expect( isWidget( new ViewText( 'p' ) ) ).to.be.false;
+			expect( isWidget( new ViewText( viewDocument, 'p' ) ) ).to.be.false;
 		} );
 	} );
 
 	describe( 'label utils', () => {
 		it( 'should allow to set label for element', () => {
-			const element = new ViewElement( 'p' );
+			const element = new ViewElement( viewDocument, 'p' );
 			setLabel( element, 'foo bar baz', writer );
 
 			expect( getLabel( element ) ).to.equal( 'foo bar baz' );
 		} );
 
 		it( 'should return empty string for elements without label', () => {
-			const element = new ViewElement( 'div' );
+			const element = new ViewElement( viewDocument, 'div' );
 
 			expect( getLabel( element ) ).to.equal( '' );
 		} );
 
 		it( 'should allow to use a function as label creator', () => {
-			const element = new ViewElement( 'p' );
+			const element = new ViewElement( viewDocument, 'p' );
 			let caption = 'foo';
 			setLabel( element, () => caption, writer );
 
@@ -185,8 +185,7 @@ describe( 'widget utils', () => {
 
 		beforeEach( () => {
 			viewDocument = new ViewDocument();
-			element = new ViewEditableElement( 'div' );
-			element._document = viewDocument;
+			element = new ViewEditableElement( viewDocument, 'div' );
 			toWidgetEditable( element, writer );
 		} );
 
@@ -199,8 +198,7 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should add proper contenteditable value when element is read-only - initialization', () => {
-			const element = new ViewEditableElement( 'div' );
-			element._document = viewDocument;
+			const element = new ViewEditableElement( viewDocument, 'div' );
 			element.isReadOnly = true;
 			toWidgetEditable( element, writer );
 
@@ -228,14 +226,12 @@ describe( 'widget utils', () => {
 				testUtils.sinon.stub( env, 'isEdge' ).get( () => true );
 
 				viewDocument = new ViewDocument();
-				element = new ViewEditableElement( 'div' );
-				element._document = viewDocument;
+				element = new ViewEditableElement( viewDocument, 'div' );
 				toWidgetEditable( element, writer );
 			} );
 
 			it( 'should add contenteditable attribute when element is read-only - initialization', () => {
-				const element = new ViewEditableElement( 'div' );
-				element._document = viewDocument;
+				const element = new ViewEditableElement( viewDocument, 'div' );
 				element.isReadOnly = true;
 				toWidgetEditable( element, writer );
 
@@ -256,7 +252,7 @@ describe( 'widget utils', () => {
 		let element, addSpy, removeSpy, set, remove;
 
 		beforeEach( () => {
-			element = new ViewElement( 'p' );
+			element = new ViewElement( viewDocument, 'p' );
 			addSpy = sinon.spy();
 			removeSpy = sinon.spy();
 
@@ -469,11 +465,11 @@ describe( 'widget utils', () => {
 			modelP = new ModelElement( 'p', null, [ modelFoo, modelSpan, modelBar ] );
 
 			// VIEW: <p>foo<span>xyz</span>bar</p>
-			const viewFoo = new ViewText( 'foo' );
-			viewXyz = new ViewText( 'xyz' );
-			viewSpan = new ViewElement( 'span', null, viewXyz );
-			const viewBar = new ViewText( 'bar' );
-			viewP = new ViewElement( 'p', null, [ viewFoo, viewSpan, viewBar ] );
+			const viewFoo = new ViewText( viewDocument, 'foo' );
+			viewXyz = new ViewText( viewDocument, 'xyz' );
+			viewSpan = new ViewElement( viewDocument, 'span', null, viewXyz );
+			const viewBar = new ViewText( viewDocument, 'bar' );
+			viewP = new ViewElement( viewDocument, 'p', null, [ viewFoo, viewSpan, viewBar ] );
 
 			mapper.bindElements( modelP, viewP );
 			mapper.bindElements( modelSpan, viewSpan );
