@@ -57,7 +57,7 @@ export default class IndentBlock extends Plugin {
 		const outdentConfig = Object.assign( { direction: 'backward' }, configuration );
 
 		if ( useOffsetConfig ) {
-			editor.editing.view.document.addStyleProcessorRules( addMarginRules );
+			editor.data.addStyleProcessorRules( addMarginRules );
 			this._setupConversionUsingOffset( editor.conversion );
 
 			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( indentConfig ) ) );
