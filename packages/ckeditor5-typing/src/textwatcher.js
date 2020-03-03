@@ -26,10 +26,19 @@ export default class TextWatcher {
 	 * Creates a text watcher instance.
 	 *
 	 * @param {module:engine/model/model~Model} model
-	 * @param {Function} testCallback The function used to match the text.
+	 * @param {module:typing/textwatcher~TextWatcher#testCallback} testCallback
 	 */
 	constructor( model, testCallback ) {
 		this.model = model;
+
+		/**
+		 * The function used to match the text.
+		 *
+		 * @member {Function} #testCallback
+		 * @returns {Object} textMatcher
+		 * @returns {Boolean} textMatcher.match The value indicates if text matches the pattern.
+		 * @returns {Any} [textMatcher.data] Additional data that can be returned from the callback.
+		 */
 		this.testCallback = testCallback;
 		this.hasMatch = false;
 

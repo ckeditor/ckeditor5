@@ -134,6 +134,7 @@ export default class TextTransformation extends Plugin {
 				const match = from.test( text );
 
 				if ( match ) {
+					// See {module:typing/textwatcher~TextWatcher#testCallback}
 					return {
 						match,
 						data: {
