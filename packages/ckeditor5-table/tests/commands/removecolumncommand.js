@@ -177,6 +177,75 @@ describe( 'RemoveColumnCommand', () => {
 					[ '30' ]
 				] ) );
 			} );
+
+			it( 'should properly remove two first columns', () => {
+				setData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ],
+					[ '20', '21', '22' ],
+					[ '30', '31', '32' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 0 ] ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '02' ],
+					[ '[]12' ],
+					[ '22' ],
+					[ '32' ]
+				] ) );
+			} );
+
+			it( 'should properly remove two middle columns', () => {
+				setData( model, modelTable( [
+					[ '00', '01', '02', '03' ],
+					[ '10', '11', '12', '13' ],
+					[ '20', '21', '22', '23' ],
+					[ '30', '31', '32', '33' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00', '03' ],
+					[ '10', '[]13' ],
+					[ '20', '23' ],
+					[ '30', '33' ]
+				] ) );
+			} );
+
+			it( 'should properly remove two last columns', () => {
+				setData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ],
+					[ '20', '21', '22' ],
+					[ '30', '31', '32' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00' ],
+					[ '[]10' ],
+					[ '20' ],
+					[ '30' ]
+				] ) );
+			} );
 		} );
 
 		it( 'should change heading columns if removing a heading column', () => {
