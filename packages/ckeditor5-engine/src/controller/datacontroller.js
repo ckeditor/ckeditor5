@@ -381,7 +381,7 @@ export default class DataController {
 	/**
 	 * Adds a style processor normalization rules.
 	 *
-	 * The available style processors:
+	 * You can implement your own rules as well as use one of the available processor rules:
 	 *
 	 * * background: {@link module:engine/view/styles/background~addBackgroundRules}
 	 * * border: {@link module:engine/view/styles/border~addBorderRules}
