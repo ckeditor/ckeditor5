@@ -127,27 +127,6 @@ describe( 'RemoveRowCommand', () => {
 				] ) );
 			} );
 
-			it( 'should properly remove when beginning rows are selected', () => {
-				setData( model, modelTable( [
-					[ '00', '01' ],
-					[ '10', '11' ],
-					[ '20', '21' ],
-					[ '30', '31' ]
-				] ) );
-
-				const tableSelection = editor.plugins.get( TableSelection );
-				const modelRoot = model.document.getRoot();
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
-
-				command.execute();
-
-				assertEqualMarkup( getData( model ), modelTable( [
-					[ '[]20', '21' ],
-					[ '30', '31' ]
-				] ) );
-			} );
-
 			// This test is blocked by (#6370).
 			//
 			// it( 'should properly remove when tailing rows are selected', () => {
@@ -170,6 +149,67 @@ describe( 'RemoveRowCommand', () => {
 			// 		[ '10', '11[]' ]
 			// 	] ) );
 			// } );
+
+			it( 'should properly remove when beginning rows are selected', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '[]20', '21' ],
+					[ '30', '31' ]
+				] ) );
+			} );
+
+			it( 'should support removing multiple headings', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				], { headingRows: 3 } ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '[]20', '21' ],
+					[ '30', '31' ]
+				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should support removing mixed heading and cell rows', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 1 } ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '[]20', '21' ]
+				] ) );
+			} );
 		} );
 
 		it( 'should remove a given row from a table start', () => {
