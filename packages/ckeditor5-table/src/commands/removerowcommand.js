@@ -37,28 +37,39 @@ export default class RemoveRowCommand extends Command {
 	 * @inheritDoc
 	 */
 	execute() {
-		const tableCell = this._getReferenceCells().next().value;
-		const tableRow = tableCell.parent;
-		const table = tableRow.parent;
+		const referenceCells = Array.from( this._getReferenceCells() );
+		const removedRowIndexes = {
+			first: referenceCells[ 0 ].parent.index,
+			last: referenceCells[ referenceCells.length - 1 ].parent.index
+		};
+		const firstCell = referenceCells[ 0 ];
+		const table = firstCell.parent.parent;
 
-		const removedRowIndex = table.getChildIndex( tableRow );
+		const tableMap = [ ...new TableWalker( table, { endRow: removedRowIndexes.last } ) ];
 
-		const tableMap = [ ...new TableWalker( table, { endRow: removedRowIndex } ) ];
-
-		const cellData = tableMap.find( value => value.cell === tableCell );
+		const firstCellData = tableMap.find( value => value.cell === firstCell );
 
 		const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
-		const columnToFocus = cellData.column;
+		const columnToFocus = firstCellData.column;
 
 		this.editor.model.change( writer => {
 			// Temporary workaround to avoid the "model-selection-range-intersects" error.
 			writer.setSelection( writer.createSelection( table, 'on' ) );
 
-			this._removeRow( headingRows, removedRowIndex, table, writer, tableMap, tableRow );
+			let cellToFocus;
 
-			const cellToFocus = getCellToFocus( table, removedRowIndex, columnToFocus );
-			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
+			for ( let i = removedRowIndexes.last; i >= removedRowIndexes.first; i-- ) {
+				const removedRowIndex = i;
+				const tableRow = table.getChild( removedRowIndex );
+				this._removeRow( headingRows, removedRowIndex, table, writer, tableMap, tableRow );
+
+				cellToFocus = getCellToFocus( table, removedRowIndex, columnToFocus );
+			}
+
+			if ( cellToFocus ) {
+				writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
+			}
 		} );
 	}
 
