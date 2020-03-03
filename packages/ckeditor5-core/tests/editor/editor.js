@@ -453,14 +453,19 @@ describe( 'Editor', () => {
 			const editor = new TestEditor();
 
 			editor.on( 'destroy', () => {
-				done();
+				spy();
 			} );
 
-			editor.destroy();
+			editor
+				.destroy()
+				.then( () => {
+					done();
+				} );
 
-			sinon.assert.notCalled( spy );
-
-			editor.fire( 'ready' );
+			setTimeout( () => {
+				sinon.assert.notCalled( spy );
+				editor.fire( 'ready' );
+			} );
 		} );
 	} );
 
