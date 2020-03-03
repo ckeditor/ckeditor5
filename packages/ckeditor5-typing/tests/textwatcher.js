@@ -141,7 +141,7 @@ describe( 'TextWatcher', () => {
 	} );
 
 	describe( 'events', () => {
-		describe( '"matched:data" should fired when test callback returns true for model data changes', () => {
+		describe( '"matched:data" should be fired when test callback returns true for model data changes', () => {
 			it( 'without additional data', () => {
 				testCallbackStub.returns( { match: true } );
 
