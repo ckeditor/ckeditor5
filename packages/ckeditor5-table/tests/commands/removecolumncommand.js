@@ -7,6 +7,7 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import RemoveColumnCommand from '../../src/commands/removecolumncommand';
+import TableSelection from '../../src/tableselection';
 import { defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
 import TableUtils from '../../src/tableutils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -17,7 +18,7 @@ describe( 'RemoveColumnCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ TableUtils ]
+				plugins: [ TableUtils, TableSelection ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -39,6 +40,20 @@ describe( 'RemoveColumnCommand', () => {
 				[ '00[]', '01' ],
 				[ '10', '11' ]
 			] ) );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be true if selection contains multiple cells', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+			tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
