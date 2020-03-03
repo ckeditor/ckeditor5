@@ -11,6 +11,11 @@ import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+
+const toPx = toUnit( 'px' );
 
 /**
  * Inline editor UI view. Uses an nline editable and a floating toolbar.
@@ -25,8 +30,12 @@ export default class InlineEditorUIView extends EditorUIView {
 	 * @param {module:engine/view/view~View} editingView The editing view instance this view is related to.
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, it will be automatically created by
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}. Otherwise, the given element will be used.
+	 * @param {Object} [options={}] Configuration options for the view instance.
+	 * @param {Boolean} [options.shouldToolbarGroupWhenFull] When set `true` enables automatic items grouping
+	 * in the main {@link module:editor-inline/inlineeditoruiview~InlineEditorUIView#toolbar toolbar}.
+	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
 	 */
-	constructor( locale, editingView, editableElement ) {
+	constructor( locale, editingView, editableElement, options = {} ) {
 		super( locale );
 
 		/**
@@ -35,7 +44,9 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * @readonly
 		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
-		this.toolbar = new ToolbarView( locale );
+		this.toolbar = new ToolbarView( locale, {
+			shouldGroupWhenFull: options.shouldToolbarGroupWhenFull
+		} );
 
 		/**
 		 * The offset from the top edge of the web browser's viewport which makes the
@@ -133,6 +144,17 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
 		this.editable = new InlineEditableUIView( locale, editingView, editableElement );
+
+		/**
+		 * An instance of the resize observer that helps dynamically determine the geometry of the toolbar
+		 * and manage items that do not fit into a single row.
+		 *
+		 * **Note:** Created in {@link #render}.
+		 *
+		 * @private
+		 * @member {module:utils/dom/resizeobserver~ResizeObserver}
+		 */
+		this._resizeObserver = null;
 	}
 
 	/**
@@ -144,6 +166,29 @@ export default class InlineEditorUIView extends EditorUIView {
 		this.body.add( this.panel );
 		this.registerChild( this.editable );
 		this.panel.content.add( this.toolbar );
+
+		const options = this.toolbar.options;
+
+		// Set toolbar's max-width on the initialization and update it on the editable resize,
+		// if 'shouldToolbarGroupWhenFull' in config is set to 'true'.
+		if ( options.shouldGroupWhenFull ) {
+			const editableElement = this.editable.element;
+
+			this._resizeObserver = new ResizeObserver( editableElement, () => {
+				this.toolbar.maxWidth = toPx( new Rect( editableElement ).width );
+			} );
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		if ( this._resizeObserver ) {
+			this._resizeObserver.destroy();
+		}
 	}
 
 	/**

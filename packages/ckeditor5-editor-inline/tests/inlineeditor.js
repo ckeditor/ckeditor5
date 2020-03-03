@@ -183,6 +183,22 @@ describe( 'InlineEditor', () => {
 			} );
 		} );
 
+		it( 'should pass the config.toolbar.shouldNotGroupWhenFull configuration to the view', () => {
+			const editorElement = document.createElement( 'div' );
+
+			return InlineEditor.create( editorElement, {
+				toolbar: {
+					shouldNotGroupWhenFull: true
+				}
+			} ).then( editor => {
+				expect( editor.ui.view.toolbar.options.shouldGroupWhenFull ).to.be.false;
+
+				return editor.destroy();
+			} ).then( () => {
+				editorElement.remove();
+			} );
+		} );
+
 		it( 'throws if initial data is passed in Editor#create and config.initialData is also used', done => {
 			InlineEditor.create( '<p>Hello world!</p>', {
 				initialData: '<p>I am evil!</p>',

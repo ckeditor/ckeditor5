@@ -86,11 +86,6 @@ describe( 'InlineEditorUI', () => {
 			it( 'pin() is called on editor.ui#update', () => {
 				const spy = sinon.stub( view.panel, 'pin' );
 
-				view.panel.hide();
-
-				editor.ui.fire( 'update' );
-				sinon.assert.notCalled( spy );
-
 				view.panel.show();
 
 				editor.ui.fire( 'update' );
@@ -99,6 +94,15 @@ describe( 'InlineEditorUI', () => {
 					target: view.editable.element,
 					positions: sinon.match.array
 				} );
+			} );
+
+			it( 'pin() is not called on editor.ui#update when panel is hidden', () => {
+				const spy = sinon.stub( view.panel, 'pin' );
+
+				view.panel.hide();
+
+				editor.ui.fire( 'update' );
+				sinon.assert.notCalled( spy );
 			} );
 		} );
 
