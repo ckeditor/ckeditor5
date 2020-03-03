@@ -115,7 +115,7 @@ describe( 'table selection', () => {
 					{
 						type: 'children',
 						oldChildren: [],
-						newChildren: [ new ViewText( 'x' ) ],
+						newChildren: [ new ViewText( viewDocument, 'x' ) ],
 						node: viewSpan
 					}
 				] );
@@ -137,7 +137,7 @@ describe( 'table selection', () => {
 					{
 						type: 'children',
 						oldChildren: [],
-						newChildren: [ new ViewText( 'x' ) ],
+						newChildren: [ new ViewText( viewDocument, 'x' ) ],
 						node: viewSpan
 					}
 				] );
