@@ -10,8 +10,10 @@
 /* globals DOMParser */
 
 import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 
 import { normalizeSpacing, normalizeSpacerunSpans } from './space';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 /**
  * Parses provided HTML extracting contents of `<body>` and `<style>` tags.
@@ -60,7 +62,8 @@ export function parseHtml( htmlString ) {
 // @param {Document} htmlDocument Native `Document` object to be transformed.
 // @returns {module:engine/view/documentfragment~DocumentFragment}
 function documentToView( htmlDocument ) {
-	const domConverter = new DomConverter( { blockFillerMode: 'nbsp' } );
+	const viewDocument = new ViewDocument( new StylesProcessor() );
+	const domConverter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
 	const fragment = htmlDocument.createDocumentFragment();
 	const nodes = htmlDocument.body.childNodes;
 

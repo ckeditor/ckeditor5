@@ -51,7 +51,7 @@ export default class PasteFromOffice extends Plugin {
 		const normalizers = [];
 
 		normalizers.push( new MSWordNormalizer() );
-		normalizers.push( new GoogleDocsNormalizer() );
+		normalizers.push( new GoogleDocsNormalizer( editor.editing.view.document ) );
 
 		editor.plugins.get( 'Clipboard' ).on(
 			'inputTransformation',
