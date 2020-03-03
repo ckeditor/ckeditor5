@@ -108,6 +108,77 @@ describe( 'RemoveColumnCommand', () => {
 			] ) );
 		} );
 
+		describe( 'with multiple cells selected', () => {
+			it( 'should properly remove the first column', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 0 ] ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '01' ],
+					[ '[]11' ],
+					[ '21' ],
+					[ '31' ]
+				] ) );
+			} );
+
+			it( 'should properly remove a middle column', () => {
+				setData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ],
+					[ '20', '21', '22' ],
+					[ '30', '31', '32' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00', '02' ],
+					[ '10', '[]12' ],
+					[ '20', '22' ],
+					[ '30', '32' ]
+				] ) );
+			} );
+
+			it( 'should properly remove the last column', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00' ],
+					[ '[]10' ],
+					[ '20' ],
+					[ '30' ]
+				] ) );
+			} );
+		} );
+
 		it( 'should change heading columns if removing a heading column', () => {
 			setData( model, modelTable( [
 				[ '00', '01' ],

@@ -105,8 +105,8 @@ describe( 'RemoveRowCommand', () => {
 			] ) );
 		} );
 
-		describe( 'multiple rows selection', () => {
-			it( 'should properly remove when middle rows are selected', () => {
+		describe( 'with multiple rows selected', () => {
+			it( 'should properly remove middle rows', () => {
 				setData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
@@ -129,7 +129,7 @@ describe( 'RemoveRowCommand', () => {
 
 			// This test is blocked by (#6370).
 			//
-			// it( 'should properly remove when tailing rows are selected', () => {
+			// it( 'should properly remove tailing rows', () => {
 			// 	setData( model, modelTable( [
 			// 		[ '00', '01' ],
 			// 		[ '10', '11' ],
@@ -150,7 +150,7 @@ describe( 'RemoveRowCommand', () => {
 			// 	] ) );
 			// } );
 
-			it( 'should properly remove when beginning rows are selected', () => {
+			it( 'should properly remove beginning rows', () => {
 				setData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
