@@ -12,6 +12,11 @@
 	.external-source td, .external-source th {
 		border: solid 1px hsl(0, 0%, 85%);
 	}
+
+	/* It should not create entire viewport scroll. */
+	pre {
+		overflow: auto;
+	}
 </style>
 
 <h3>A "content" test editor</h3>
@@ -52,7 +57,13 @@
 					<td>k</td>
 					<td>l</td>
 					<td><strong>m</strong></td>
-					<td>n</td>
+					<td>
+						<p>n</p>
+						<figure class="image image-style-side">
+							<img src="sample.jpg" />
+							<figcaption>Caption!</figcaption>
+						</figure>
+					</td>
 					<td>o</td>
 				</tr>
 				<tr>
