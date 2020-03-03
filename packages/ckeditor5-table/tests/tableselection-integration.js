@@ -108,15 +108,16 @@ describe( 'table selection', () => {
 
 				viewDocument.fire( 'keydown', { keyCode: getCode( 'x' ) } );
 
-				//                                      figure       table         tbody         tr            td            span
-				const viewSpan = viewDocument.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 1 ).getChild( 1 ).getChild( 0 );
+				// Mutate at the place where the document selection was put; it's more realistic
+				// than mutating at some arbitrary position.
+				const placeOfMutation = viewDocument.selection.getFirstRange().start.parent;
 
 				viewDocument.fire( 'mutations', [
 					{
 						type: 'children',
 						oldChildren: [],
 						newChildren: [ new ViewText( 'x' ) ],
-						node: viewSpan
+						node: placeOfMutation
 					}
 				] );
 
@@ -130,15 +131,16 @@ describe( 'table selection', () => {
 			it( 'should not interfere with default key handler if no table selection', () => {
 				viewDocument.fire( 'keydown', { keyCode: getCode( 'x' ) } );
 
-				//                                      figure       table         tbody         tr            td            span
-				const viewSpan = viewDocument.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+				// Mutate at the place where the document selection was put; it's more realistic
+				// than mutating at some arbitrary position.
+				const placeOfMutation = viewDocument.selection.getFirstRange().start.parent;
 
 				viewDocument.fire( 'mutations', [
 					{
 						type: 'children',
 						oldChildren: [],
 						newChildren: [ new ViewText( 'x' ) ],
-						node: viewSpan
+						node: placeOfMutation
 					}
 				] );
 

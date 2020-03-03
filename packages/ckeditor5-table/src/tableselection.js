@@ -293,19 +293,34 @@ export default class TableSelection extends Plugin {
 	 */
 	_handleDeleteContent( event, args ) {
 		const [ selection, options ] = args;
-		const model = this.editor.model;
-		const isBackward = !options || options.direction == 'backward';
 
-		if ( this.hasMultiCellSelection && selection.rangeCount > 1 ) {
-			event.stop();
+		// This Model#deleteContent() hook supports multiple-cell selections only.
+		// **Note**: It executes Model#deleteContent() itself for each individual cell within
+		// the selection, so this also avoids infinite loops.
+		if ( selection.rangeCount > 1 ) {
+			const model = this.editor.model;
+			const isBackward = !options || options.direction == 'backward';
+			const selectedTableCells = [ ...this.getSelectedTableCells() ];
 
-			model.change( writer => {
-				clearTableCellsContents( model, this.getSelectedTableCells() );
+			// There are possible multiple-range selection that have nothing to do with tables.
+			// Let's filter them out and focus on table cells only.
+			if ( selectedTableCells.length ) {
+				event.stop();
 
-				const tableCell = isBackward ? this._endElement : this._startElement;
+				model.change( writer => {
+					clearTableCellsContents( model, selectedTableCells );
 
-				writer.setSelection( tableCell, 'in' );
-			} );
+					const tableCell = isBackward ? this._endElement : this._startElement;
+
+					// The insertContent() helper passes the actual DocumentSelection,
+					// while the deleteContent() helper always operates on the abstract clones.
+					if ( selection.is( 'documentSelection' ) ) {
+						writer.setSelection( tableCell, 'in' );
+					} else {
+						selection.setTo( tableCell, 'in' );
+					}
+				} );
+			}
 		}
 	}
 }
