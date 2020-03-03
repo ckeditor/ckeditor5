@@ -548,15 +548,30 @@ export default class Renderer {
 		let i = 0;
 		const nodesToUnbind = new Set();
 
+		// Handle deletions first.
+		// This is to prevent a situation where an element that already exists in `actualDomChildren` is inserted at a different
+		// index in `actualDomChildren`. Since `actualDomChildren` is a `NodeList`, this works like move, not like an insert,
+		// and it disrupts the whole algorithm. See https://github.com/ckeditor/ckeditor5/issues/6367.
+		//
+		// It doesn't matter in what order we remove or add nodes, as long as we remove and add correct nodes at correct indexes.
+		for ( const action of diff ) {
+			if ( action === 'delete' ) {
+				nodesToUnbind.add( actualDomChildren[ i ] );
+				remove( actualDomChildren[ i ] );
+			} else if ( action === 'equal' ) {
+				i++;
+			}
+		}
+
+		i = 0;
+
 		for ( const action of diff ) {
 			if ( action === 'insert' ) {
 				insertAt( domElement, i, expectedDomChildren[ i ] );
 				i++;
-			} else if ( action === 'delete' ) {
-				nodesToUnbind.add( actualDomChildren[ i ] );
-				remove( actualDomChildren[ i ] );
-			} else { // 'equal'
+			} else if ( action === 'equal' ) {
 				// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
+				// Do it here (not in the loop above) because only after insertions the `i` index is correct.
 				this._markDescendantTextToSync( this.domConverter.domToView( expectedDomChildren[ i ] ) );
 				i++;
 			}

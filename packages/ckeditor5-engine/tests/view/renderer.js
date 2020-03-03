@@ -3217,6 +3217,24 @@ describe( 'Renderer', () => {
 
 				expect( domRoot.innerHTML ).to.equal( '<p><a href="#href">Foo<i>Bar</i></a></p>' );
 			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/6367.
+			it( 'should correctly handle moving a DOM element when rendering children', () => {
+				viewRoot._insertChild( 0, parse( 'y<attribute:span>x</attribute:span>' ) );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				const viewSpan = viewRoot._removeChildren( 1, 1 )[ 0 ];
+				viewRoot._insertChild( 0, viewSpan );
+				viewRoot._insertChild( 2, parse( '<attribute:strong>z</attribute:strong>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+
+				// This would throw without a fix.
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<span>x</span>y<strong>z</strong>' );
+			} );
 		} );
 
 		describe( 'optimal (minimal) rendering – minimal children changes', () => {
@@ -3303,7 +3321,7 @@ describe( 'Renderer', () => {
 				expect( getMutationStats( observer.takeRecords() ) ).to.be.empty;
 			} );
 
-			it( 'should add and remove one', () => {
+			it( 'should remove and add one', () => {
 				viewRoot._appendChild( parse( '<container:p>1</container:p><container:p>2</container:p>' ) );
 
 				renderer.markToSync( 'children', viewRoot );
@@ -3317,8 +3335,8 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
-					'added: 1, removed: 0',
-					'added: 0, removed: 1'
+					'added: 0, removed: 1',
+					'added: 1, removed: 0'
 				] );
 			} );
 
@@ -3450,7 +3468,7 @@ describe( 'Renderer', () => {
 					expect( getMutationStats( observer.takeRecords() ) ).to.be.empty;
 				} );
 
-				it( 'should add and remove one', () => {
+				it( 'should remove and add one', () => {
 					viewRoot._appendChild( parse( makeContainers( 151 ) ) );
 
 					renderer.markToSync( 'children', viewRoot );
@@ -3464,8 +3482,8 @@ describe( 'Renderer', () => {
 					renderer.render();
 
 					expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
-						'added: 1, removed: 0',
-						'added: 0, removed: 1'
+						'added: 0, removed: 1',
+						'added: 1, removed: 0'
 					] );
 				} );
 
