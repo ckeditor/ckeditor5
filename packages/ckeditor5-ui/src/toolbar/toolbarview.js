@@ -62,6 +62,19 @@ export default class ToolbarView extends View {
 		this.set( 'ariaLabel', t( 'Editor toolbar' ) );
 
 		/**
+		 * The maximum width of the toolbar element.
+		 *
+		 * **Note**: When set to a specific value (e.g. `'200px'`), the value will affect the behavior of the
+		 * {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull}
+		 * option by changing the number of {@link #items} that will be displayed in the toolbar at a time.
+		 *
+		 * @observable
+		 * @default 'auto'
+		 * @member {String} #maxWidth
+		 */
+		this.set( 'maxWidth', 'auto' );
+
+		/**
 		 * A collection of toolbar items (buttons, dropdowns, etc.).
 		 *
 		 * @readonly
@@ -181,7 +194,10 @@ export default class ToolbarView extends View {
 					bind.if( 'isCompact', 'ck-toolbar_compact' )
 				],
 				role: 'toolbar',
-				'aria-label': bind.to( 'ariaLabel' )
+				'aria-label': bind.to( 'ariaLabel' ),
+				style: {
+					maxWidth: bind.to( 'maxWidth' )
+				}
 			},
 
 			children: this.children,
@@ -570,6 +586,7 @@ class DynamicGrouping {
 		this.viewElement = view.element;
 
 		this._enableGroupingOnResize();
+		this._enableGroupingOnMaxWidthChange( view );
 	}
 
 	/**
@@ -695,6 +712,18 @@ class DynamicGrouping {
 	}
 
 	/**
+	 * Enables the grouping functionality, just like {@link #_enableGroupingOnResize} but the difference is that
+	 * it listens to the changes of {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth} instead.
+	 *
+	 * @private
+	 */
+	_enableGroupingOnMaxWidthChange( view ) {
+		view.on( 'change:maxWidth', () => {
+			this._updateGrouping();
+		} );
+	}
+
+	/**
 	 * When called, it will remove the last item from {@link #ungroupedItems} and move it back
 	 * to the {@link #groupedItems} collection.
 	 *
@@ -797,6 +826,8 @@ class DynamicGrouping {
  * When set to `true`, the toolbar will automatically group {@link module:ui/toolbar/toolbarview~ToolbarView#items} that
  * would normally wrap to the next line when there is not enough space to display them in a single row, for
  * instance, if the parent container of the toolbar is narrow.
+ *
+ * Also see: {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth}.
  *
  * @member {Boolean} module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull
  */
