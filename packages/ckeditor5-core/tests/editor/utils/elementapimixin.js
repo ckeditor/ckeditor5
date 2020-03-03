@@ -21,7 +21,7 @@ describe( 'ElementApiMixin', () => {
 		mix( CustomEditor, ElementApiMixin );
 
 		editor = new CustomEditor();
-		editor.data.processor = new HtmlDataProcessor();
+		editor.data.processor = new HtmlDataProcessor( editor.editing.view.document );
 		editor.model.document.createRoot();
 		editor.model.schema.extend( '$text', { allowIn: '$root' } );
 		editor.fire( 'ready' ); // (#6139)
