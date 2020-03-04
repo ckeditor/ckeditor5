@@ -95,6 +95,56 @@ describe( 'table selection', () => {
 					[ '31', '32', '33' ]
 				] ) );
 			} );
+
+			it( 'should work with any arbitrary selection passed to Model#deleteContent() (delete backwards)', () => {
+				const selection = model.createSelection( [
+					model.createRange(
+						model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ),
+						model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] )
+					),
+					model.createRange(
+						model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] ),
+						model.createPositionFromPath( modelRoot, [ 0, 0, 2 ] )
+					)
+				] );
+
+				model.change( writer => {
+					model.deleteContent( selection );
+					writer.setSelection( selection );
+				} );
+
+				assertEqualMarkup( getModelData( model ), modelTable( [
+					[ '', '[]', '13' ],
+					[ '21', '22', '23' ],
+					[ '31', '32', '33' ]
+				] ) );
+			} );
+
+			it( 'should work with any arbitrary selection passed to Model#deleteContent() (delete forwards)', () => {
+				const selection = model.createSelection( [
+					model.createRange(
+						model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ),
+						model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] )
+					),
+					model.createRange(
+						model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] ),
+						model.createPositionFromPath( modelRoot, [ 0, 0, 2 ] )
+					)
+				] );
+
+				model.change( writer => {
+					model.deleteContent( selection, {
+						direction: 'forward'
+					} );
+					writer.setSelection( selection );
+				} );
+
+				assertEqualMarkup( getModelData( model ), modelTable( [
+					[ '[]', '', '13' ],
+					[ '21', '22', '23' ],
+					[ '31', '32', '33' ]
+				] ) );
+			} );
 		} );
 
 		describe( 'on user input', () => {

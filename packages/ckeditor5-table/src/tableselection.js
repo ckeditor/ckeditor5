@@ -14,7 +14,7 @@ import TableUtils from './tableutils';
 import { setupTableSelectionHighlighting } from './tableselection/converters';
 import MouseSelectionHandler from './tableselection/mouseselectionhandler';
 import { findAncestor } from './commands/utils';
-import { clearTableCellsContents } from './tableselection/utils';
+import { getTableCellsInSelection, clearTableCellsContents } from './tableselection/utils';
 import cropTable from './tableselection/croptable';
 
 import '../theme/tableselection.css';
@@ -300,7 +300,7 @@ export default class TableSelection extends Plugin {
 		if ( selection.rangeCount > 1 ) {
 			const model = this.editor.model;
 			const isBackward = !options || options.direction == 'backward';
-			const selectedTableCells = [ ...this.getSelectedTableCells() ];
+			const selectedTableCells = getTableCellsInSelection( selection );
 
 			// There are possible multiple-range selection that have nothing to do with tables.
 			// Let's filter them out and focus on table cells only.
@@ -308,19 +308,20 @@ export default class TableSelection extends Plugin {
 				event.stop();
 
 				model.change( writer => {
-					clearTableCellsContents( model, selectedTableCells );
+					const tableCellToSelect = selectedTableCells[ isBackward ? selectedTableCells.length - 1 : 0 ];
 
-					const tableCell = isBackward ? this._endElement : this._startElement;
+					clearTableCellsContents( model, selectedTableCells );
 
 					// The insertContent() helper passes the actual DocumentSelection,
 					// while the deleteContent() helper always operates on the abstract clones.
 					if ( selection.is( 'documentSelection' ) ) {
-						writer.setSelection( tableCell, 'in' );
+						writer.setSelection( tableCellToSelect, 'in' );
 					} else {
-						selection.setTo( tableCell, 'in' );
+						selection.setTo( tableCellToSelect, 'in' );
 					}
 				} );
 			}
 		}
 	}
 }
+
