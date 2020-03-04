@@ -14,7 +14,7 @@ import TableUtils from './tableutils';
 import { setupTableSelectionHighlighting } from './tableselection/converters';
 import MouseSelectionHandler from './tableselection/mouseselectionhandler';
 import { findAncestor } from './commands/utils';
-import { clearTableCellsContents } from './tableselection/utils';
+import { getTableCellsInSelection, clearTableCellsContents } from './tableselection/utils';
 import cropTable from './tableselection/croptable';
 
 import '../theme/tableselection.css';
@@ -105,29 +105,6 @@ export default class TableSelection extends Plugin {
 
 		this.listenTo( selection, 'change:range', () => this._clearSelectionOnExternalChange( selection ) );
 		this.listenTo( model, 'deleteContent', ( evt, args ) => this._handleDeleteContent( evt, args ), { priority: 'high' } );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	afterInit() {
-		const editor = this.editor;
-
-		const deleteCommand = editor.commands.get( 'delete' );
-
-		if ( deleteCommand ) {
-			this.listenTo( deleteCommand, 'execute', event => {
-				this._handleDeleteCommand( event, { isForward: false } );
-			}, { priority: 'high' } );
-		}
-
-		const forwardDeleteCommand = editor.commands.get( 'forwardDelete' );
-
-		if ( forwardDeleteCommand ) {
-			this.listenTo( forwardDeleteCommand, 'execute', event => {
-				this._handleDeleteCommand( event, { isForward: true } );
-			}, { priority: 'high' } );
-		}
 	}
 
 	/**
@@ -315,41 +292,30 @@ export default class TableSelection extends Plugin {
 	 * @param {Array.<*>} args Delete content method arguments.
 	 */
 	_handleDeleteContent( event, args ) {
-		const [ selection ] = args;
+		const [ selection, options ] = args;
 		const model = this.editor.model;
+		const isBackward = !options || options.direction == 'backward';
+		const selectedTableCells = getTableCellsInSelection( selection );
 
-		if ( this.hasMultiCellSelection && selection.is( 'documentSelection' ) ) {
-			event.stop();
-
-			clearTableCellsContents( model, this.getSelectedTableCells() );
-
-			model.change( writer => {
-				writer.setSelection( Array.from( this.getSelectedTableCells() ).pop(), 0 );
-			} );
+		if ( !selectedTableCells.length ) {
+			return;
 		}
-	}
 
-	/**
-	 * It overrides default `DeleteCommand` behavior over a selected table fragment.
-	 *
-	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} event
-	 * @param {Object} options
-	 * @param {Boolean} options.isForward Whether it handles forward or backward delete.
-	 */
-	_handleDeleteCommand( event, options ) {
-		const model = this.editor.model;
+		event.stop();
 
-		if ( this.hasMultiCellSelection ) {
-			event.stop();
+		model.change( writer => {
+			const tableCellToSelect = selectedTableCells[ isBackward ? selectedTableCells.length - 1 : 0 ];
 
-			clearTableCellsContents( model, this.getSelectedTableCells() );
+			clearTableCellsContents( model, selectedTableCells );
 
-			const tableCell = options.isForward ? this._startElement : this._endElement;
-
-			model.change( writer => {
-				writer.setSelection( tableCell, 0 );
-			} );
-		}
+			// The insertContent() helper passes the actual DocumentSelection,
+			// while the deleteContent() helper always operates on the abstract clones.
+			if ( selection.is( 'documentSelection' ) ) {
+				writer.setSelection( tableCellToSelect, 'in' );
+			} else {
+				selection.setTo( tableCellToSelect, 'in' );
+			}
+		} );
 	}
 }
+

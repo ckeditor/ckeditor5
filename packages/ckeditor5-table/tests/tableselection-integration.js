@@ -95,6 +95,56 @@ describe( 'table selection', () => {
 					[ '31', '32', '33' ]
 				] ) );
 			} );
+
+			it( 'should work with any arbitrary selection passed to Model#deleteContent() (delete backwards)', () => {
+				const selection = model.createSelection( [
+					model.createRange(
+						model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ),
+						model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] )
+					),
+					model.createRange(
+						model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] ),
+						model.createPositionFromPath( modelRoot, [ 0, 0, 2 ] )
+					)
+				] );
+
+				model.change( writer => {
+					model.deleteContent( selection );
+					writer.setSelection( selection );
+				} );
+
+				assertEqualMarkup( getModelData( model ), modelTable( [
+					[ '', '[]', '13' ],
+					[ '21', '22', '23' ],
+					[ '31', '32', '33' ]
+				] ) );
+			} );
+
+			it( 'should work with any arbitrary selection passed to Model#deleteContent() (delete forwards)', () => {
+				const selection = model.createSelection( [
+					model.createRange(
+						model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ),
+						model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] )
+					),
+					model.createRange(
+						model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] ),
+						model.createPositionFromPath( modelRoot, [ 0, 0, 2 ] )
+					)
+				] );
+
+				model.change( writer => {
+					model.deleteContent( selection, {
+						direction: 'forward'
+					} );
+					writer.setSelection( selection );
+				} );
+
+				assertEqualMarkup( getModelData( model ), modelTable( [
+					[ '[]', '', '13' ],
+					[ '21', '22', '23' ],
+					[ '31', '32', '33' ]
+				] ) );
+			} );
 		} );
 
 		describe( 'on user input', () => {
@@ -108,15 +158,16 @@ describe( 'table selection', () => {
 
 				viewDocument.fire( 'keydown', { keyCode: getCode( 'x' ) } );
 
-				//                                      figure       table         tbody         tr            td            span
-				const viewSpan = viewDocument.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 1 ).getChild( 1 ).getChild( 0 );
+				// Mutate at the place where the document selection was put; it's more realistic
+				// than mutating at some arbitrary position.
+				const placeOfMutation = viewDocument.selection.getFirstRange().start.parent;
 
 				viewDocument.fire( 'mutations', [
 					{
 						type: 'children',
 						oldChildren: [],
 						newChildren: [ new ViewText( viewDocument, 'x' ) ],
-						node: viewSpan
+						node: placeOfMutation
 					}
 				] );
 
@@ -130,15 +181,16 @@ describe( 'table selection', () => {
 			it( 'should not interfere with default key handler if no table selection', () => {
 				viewDocument.fire( 'keydown', { keyCode: getCode( 'x' ) } );
 
-				//                                      figure       table         tbody         tr            td            span
-				const viewSpan = viewDocument.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+				// Mutate at the place where the document selection was put; it's more realistic
+				// than mutating at some arbitrary position.
+				const placeOfMutation = viewDocument.selection.getFirstRange().start.parent;
 
 				viewDocument.fire( 'mutations', [
 					{
 						type: 'children',
 						oldChildren: [],
 						newChildren: [ new ViewText( viewDocument, 'x' ) ],
-						node: viewSpan
+						node: placeOfMutation
 					}
 				] );
 
