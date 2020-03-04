@@ -438,6 +438,10 @@ export default class Model {
 	 * **Note:** if there is no valid position for the selection, the paragraph will always be created:
 	 *
 	 * `[<image src="foo.jpg"></image>]` -> `<paragraph>[]</paragraph>`.
+	 *
+	 * @param {'forward'|'backward'} [options.direction='backward'] The direction in which the content is being consumed.
+	 * Deleting backward corresponds to using the <kbd>Backspace</kbd> key, while deleting content forward corresponds to
+	 * the <kbd>Shift</kbd>+<kbd>Backspace</kbd> keystroke.
 	 */
 	deleteContent( selection, options ) {
 		deleteContent( this, selection, options );
