@@ -29,17 +29,31 @@ export default class TextWatcher {
 	 * @param {module:typing/textwatcher~TextWatcher#testCallback} testCallback
 	 */
 	constructor( model, testCallback ) {
+		/**
+		 * @readonly
+		 * @member {module:engine/model/model~Model}
+		 */
 		this.model = model;
 
 		/**
 		 * The function used to match the text.
 		 *
+		 * The test callback can return 3 values:
+		 *
+		 * * `false` if there is no match,
+		 * * `true` if there is a match,
+		 * * an object if there is a match and we want to pass some additional information to the {@link #matched:data} event.
+		 *
 		 * @member {Function} #testCallback
-		 * @returns {Object} textMatcher
-		 * @returns {Boolean} textMatcher.match The value indicates if text matches the pattern.
-		 * @returns {Any} [textMatcher.data] Additional data that can be returned from the callback.
 		 */
 		this.testCallback = testCallback;
+
+		/**
+		 * Whether there is a match currently.
+		 *
+		 * @readonly
+		 * @member {Boolean}
+		 */
 		this.hasMatch = false;
 
 		/**
@@ -128,42 +142,48 @@ export default class TextWatcher {
 
 		const { text, range } = getLastTextLine( rangeBeforeSelection, model );
 
-		const textMatcher = this.testCallback( text );
+		const testResult = this.testCallback( text );
 
-		if ( !textMatcher && this.hasMatch ) {
-			/**
-			 * Fired whenever the text does not match anymore. Fired only when the text watcher found a match.
-			 *
-			 * @event unmatched
-			 */
+		if ( !testResult && this.hasMatch ) {
 			this.fire( 'unmatched' );
 		}
 
-		this.hasMatch = textMatcher && textMatcher.match;
+		this.hasMatch = !!testResult;
 
-		if ( this.hasMatch ) {
-			// If text matches and testCallback() returns additional data, pass the data to the eventData object.
-			const additionalData = textMatcher.data;
-			const eventData = Object.assign( data, { text, range, ...additionalData } );
+		if ( testResult ) {
+			const eventData = Object.assign( data, { text, range } );
 
-			/**
-			 * Fired whenever the text watcher found a match for data changes.
-			 *
-			 * @event matched:data
-			 * @param {Object} data Event data.
-			 * @param {String} data.text The full text before selection.
-			 * @param {module:engine/model/batch~Batch} data.batch A batch associated with a change.
-			 */
-			/**
-			 * Fired whenever the text watcher found a match for selection changes.
-			 *
-			 * @event matched:selection
-			 * @param {Object} data Event data.
-			 * @param {String} data.text The full text before selection.
-			 */
+			if ( typeof testResult == 'object' ) {
+				Object.assign( eventData, testResult );
+			}
+
 			this.fire( `matched:${ suffix }`, eventData );
 		}
 	}
 }
 
 mix( TextWatcher, ObservableMixin );
+
+/**
+ * Fired whenever the text does not match anymore. Fired only when the text watcher found a match.
+ *
+ * @event unmatched
+ */
+
+/**
+ * Fired whenever the text watcher found a match for data changes.
+ *
+ * @event matched:data
+ * @param {Object} data Event data.
+ * @param {String} data.text The full text before selection to which the regexp was applied.
+ * @param {module:engine/model/range~Range} data.range The range representing the position of the `data.text`.
+ * @param {module:engine/model/batch~Batch} data.batch A batch associated with a change.
+ */
+
+/**
+ * Fired whenever the text watcher found a match for selection changes.
+ *
+ * @event matched:selection
+ * @param {Object} data Event data.
+ * @param {String} data.text The full text before selection.
+ */
