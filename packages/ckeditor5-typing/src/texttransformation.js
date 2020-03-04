@@ -92,21 +92,13 @@ export default class TextTransformation extends Plugin {
 				include: DEFAULT_TRANSFORMATIONS
 			}
 		} );
-
-		/**
-		 * The current editor instance.
-		 *
-		 * @private
-		 * @type {module:core/editor/editor~Editor}
-		 */
-		this._editor = editor;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	init() {
-		const model = this._editor.model;
+		const model = this.editor.model;
 		const modelSelection = model.document.selection;
 
 		modelSelection.on( 'change:range', () => {
@@ -123,7 +115,7 @@ export default class TextTransformation extends Plugin {
 	 * @private
 	 */
 	_enableTransformationWatchers() {
-		const editor = this._editor;
+		const editor = this.editor;
 		const model = editor.model;
 		const input = editor.plugins.get( 'Input' );
 		const normalizedTransformations = normalizeTransformations( editor.config.get( 'typing.transformations' ) );
