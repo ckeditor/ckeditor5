@@ -166,7 +166,7 @@ describe( 'table selection', () => {
 					{
 						type: 'children',
 						oldChildren: [],
-						newChildren: [ new ViewText( 'x' ) ],
+						newChildren: [ new ViewText( viewDocument, 'x' ) ],
 						node: placeOfMutation
 					}
 				] );
@@ -189,7 +189,7 @@ describe( 'table selection', () => {
 					{
 						type: 'children',
 						oldChildren: [],
-						newChildren: [ new ViewText( 'x' ) ],
+						newChildren: [ new ViewText( viewDocument, 'x' ) ],
 						node: placeOfMutation
 					}
 				] );
