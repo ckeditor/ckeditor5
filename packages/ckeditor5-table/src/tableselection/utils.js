@@ -42,7 +42,7 @@ export function getTableCellsInSelection( selection ) {
 	for ( const range of selection.getRanges() ) {
 		const element = getRangeContainedElement( range );
 
-		if ( element.is( 'tableCell' ) ) {
+		if ( element && element.is( 'tableCell' ) ) {
 			cells.push( element );
 		}
 	}
