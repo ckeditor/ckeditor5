@@ -8,12 +8,13 @@
 import KeyObserver from '../../../src/view/observer/keyobserver';
 import View from '../../../src/view/view';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'KeyObserver', () => {
 	let view, viewDocument, observer;
 
 	beforeEach( () => {
-		view = new View();
+		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 		observer = view.getObserver( KeyObserver );
 	} );

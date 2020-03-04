@@ -48,18 +48,19 @@ export default class Element extends Node {
 	 *
 	 * Attributes can be passed in various formats:
 	 *
-	 *		new Element( 'div', { class: 'editor', contentEditable: 'true' } ); // object
-	 *		new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
-	 *		new Element( 'div', mapOfAttributes ); // map
+	 *		new Element( viewDocument, 'div', { class: 'editor', contentEditable: 'true' } ); // object
+	 *		new Element( viewDocument, 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
+	 *		new Element( viewDocument, 'div', mapOfAttributes ); // map
 	 *
 	 * @protected
+	 * @param {module:engine/view/document~Document} document The document instance to which this element belongs.
 	 * @param {String} name Node name.
 	 * @param {Object|Iterable} [attrs] Collection of attributes.
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
 	 * A list of nodes to be inserted into created element.
 	 */
-	constructor( name, attrs, children ) {
-		super();
+	constructor( document, name, attrs, children ) {
+		super( document );
 
 		/**
 		 * Name of the element.
@@ -110,7 +111,7 @@ export default class Element extends Node {
 		 * @protected
 		 * @member {module:engine/view/stylesmap~StylesMap} module:engine/view/element~Element#_styles
 		 */
-		this._styles = new StylesMap();
+		this._styles = new StylesMap( this.document.stylesProcessor );
 
 		if ( this._attrs.has( 'style' ) ) {
 			// Remove style attribute and handle it by styles map.
@@ -380,13 +381,13 @@ export default class Element extends Node {
 	 * If the style does not exist `undefined` is returned.
 	 *
 	 * **Note**: This method can work with normalized style names if
-	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#getAsString `StylesMap#getAsString()`} for details.
 	 *
 	 * For an element with style set to `'margin:1px'`:
 	 *
 	 *		// Enable 'margin' shorthand processing:
-	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
+	 *		editor.data.addStyleProcessorRules( addMarginRules );
 	 *
 	 *		const element = view.change( writer => {
 	 *			const element = writer.createElement();
@@ -428,7 +429,7 @@ export default class Element extends Node {
 	 * Will return a `2px` string.
 	 *
 	 * **Note**: This method will return normalized values only if
-	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#getNormalized `StylesMap#getNormalized()`} for details.
 	 *
 	 *
@@ -563,7 +564,7 @@ export default class Element extends Node {
 		}
 
 		// ContainerElement and AttributeElement should be also cloned properly.
-		const cloned = new this.constructor( this.name, this._attrs, childrenClone );
+		const cloned = new this.constructor( this.document, this.name, this._attrs, childrenClone );
 
 		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
 		// parse once again in constructor.
@@ -610,7 +611,7 @@ export default class Element extends Node {
 		this._fireChange( 'children', this );
 		let count = 0;
 
-		const nodes = normalize( items );
+		const nodes = normalize( this.document, items );
 
 		for ( const node of nodes ) {
 			// If node that is being added to this element is already inside another element, first remove it from the old parent.
@@ -619,6 +620,7 @@ export default class Element extends Node {
 			}
 
 			node.parent = this;
+			node.document = this.document;
 
 			this._children.splice( index, 0, node );
 			index++;
@@ -755,7 +757,7 @@ export default class Element extends Node {
 	 *		} );
 	 *
 	 * **Note**: This method can work with normalized style names if
-	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#setStyle
@@ -777,7 +779,7 @@ export default class Element extends Node {
 	 *		element._removeStyle( [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
 	 *
 	 * **Note**: This method can work with normalized style names if
-	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#removeStyle
@@ -886,10 +888,10 @@ function parseClasses( classesSet, classesString ) {
 //
 // @param {String|module:engine/view/item~Item|Iterable.<String|module:engine/view/item~Item>}
 // @returns {Iterable.<module:engine/view/node~Node>}
-function normalize( nodes ) {
+function normalize( document, nodes ) {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
-		return [ new Text( nodes ) ];
+		return [ new Text( document, nodes ) ];
 	}
 
 	if ( !isIterable( nodes ) ) {
@@ -900,11 +902,11 @@ function normalize( nodes ) {
 	return Array.from( nodes )
 		.map( node => {
 			if ( typeof node == 'string' ) {
-				return new Text( node );
+				return new Text( document, node );
 			}
 
 			if ( node instanceof TextProxy ) {
-				return new Text( node.data );
+				return new Text( document, node.data );
 			}
 
 			return node;

@@ -6,12 +6,13 @@
 /* globals document */
 import CompositionObserver from '../../../src/view/observer/compositionobserver';
 import View from '../../../src/view/view';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'CompositionObserver', () => {
 	let view, viewDocument, observer;
 
 	beforeEach( () => {
-		view = new View();
+		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 		observer = view.getObserver( CompositionObserver );
 	} );

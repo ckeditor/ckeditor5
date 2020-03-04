@@ -11,19 +11,27 @@ import ModelText from '../../src/model/text';
 import ModelPosition from '../../src/model/position';
 import ModelRange from '../../src/model/range';
 
+import ViewDocument from '../../src/view/document';
 import ViewElement from '../../src/view/element';
 import ViewUIElement from '../../src/view/uielement';
 import ViewText from '../../src/view/text';
 import ViewPosition from '../../src/view/position';
 import ViewRange from '../../src/view/range';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Mapper', () => {
+	let viewDocument;
+
+	beforeEach( () => {
+		viewDocument = new ViewDocument( new StylesProcessor() );
+	} );
+
 	describe( 'clearBindings', () => {
 		it( 'should remove all mapping', () => {
-			const viewA = new ViewElement( 'a' );
-			const viewB = new ViewElement( 'b' );
-			const viewC = new ViewElement( 'c' );
-			const viewD = new ViewElement( 'd' );
+			const viewA = new ViewElement( viewDocument, 'a' );
+			const viewB = new ViewElement( viewDocument, 'b' );
+			const viewC = new ViewElement( viewDocument, 'c' );
+			const viewD = new ViewElement( viewDocument, 'd' );
 
 			const modelA = new ModelElement( 'a' );
 			const modelB = new ModelElement( 'b' );
@@ -69,7 +77,7 @@ describe( 'Mapper', () => {
 
 	describe( 'unbindModelElement', () => {
 		it( 'should remove binding between given model element and view element that it was bound to', () => {
-			const viewA = new ViewElement( 'a' );
+			const viewA = new ViewElement( viewDocument, 'a' );
 			const modelA = new ModelElement( 'a' );
 
 			const mapper = new Mapper();
@@ -85,7 +93,7 @@ describe( 'Mapper', () => {
 		} );
 
 		it( 'should not remove binding between view and model element if view element got rebound', () => {
-			const viewA = new ViewElement( 'a' );
+			const viewA = new ViewElement( viewDocument, 'a' );
 			const modelA = new ModelElement( 'a' );
 			const modelB = new ModelElement( 'b' );
 
@@ -105,7 +113,7 @@ describe( 'Mapper', () => {
 
 	describe( 'unbindViewElement', () => {
 		it( 'should remove binding between given view element and model element that it was bound to', () => {
-			const viewA = new ViewElement( 'a' );
+			const viewA = new ViewElement( viewDocument, 'a' );
 			const modelA = new ModelElement( 'a' );
 
 			const mapper = new Mapper();
@@ -121,8 +129,8 @@ describe( 'Mapper', () => {
 		} );
 
 		it( 'should not remove binding between model and view element if model element got rebound', () => {
-			const viewA = new ViewElement( 'a' );
-			const viewB = new ViewElement( 'b' );
+			const viewA = new ViewElement( viewDocument, 'a' );
+			const viewB = new ViewElement( viewDocument, 'b' );
 			const modelA = new ModelElement( 'a' );
 
 			const mapper = new Mapper();
@@ -201,21 +209,21 @@ describe( 'Mapper', () => {
 				new ModelText( 'zz' )
 			] );
 
-			viewTextB = new ViewText( 'b' );
-			viewTextO = new ViewText( 'o' );
-			viewTextM = new ViewText( 'm' );
-			viewTextX = new ViewText( 'x' );
-			viewTextY = new ViewText( 'y' );
-			viewTextZZ = new ViewText( 'zz' );
-			viewTextFOO = new ViewText( 'foo' );
-			viewTextBAR = new ViewText( 'bar' );
-			viewImg = new ViewElement( 'img' );
-			viewSup = new ViewElement( 'sup', {}, [ viewTextO ] );
-			viewU = new ViewElement( 'u', {}, [ viewTextB, viewSup, viewTextM ] );
-			viewI = new ViewElement( 'i', {}, [ viewTextFOO ] );
-			viewB = new ViewElement( 'b', {}, [ viewI ] );
-			viewP = new ViewElement( 'p', {}, [ viewTextY, viewB, viewTextBAR, viewImg, viewU ] );
-			viewDiv = new ViewElement( 'div', {}, [ viewTextX, viewP, viewTextZZ ] );
+			viewTextB = new ViewText( viewDocument, 'b' );
+			viewTextO = new ViewText( viewDocument, 'o' );
+			viewTextM = new ViewText( viewDocument, 'm' );
+			viewTextX = new ViewText( viewDocument, 'x' );
+			viewTextY = new ViewText( viewDocument, 'y' );
+			viewTextZZ = new ViewText( viewDocument, 'zz' );
+			viewTextFOO = new ViewText( viewDocument, 'foo' );
+			viewTextBAR = new ViewText( viewDocument, 'bar' );
+			viewImg = new ViewElement( viewDocument, 'img' );
+			viewSup = new ViewElement( viewDocument, 'sup', {}, [ viewTextO ] );
+			viewU = new ViewElement( viewDocument, 'u', {}, [ viewTextB, viewSup, viewTextM ] );
+			viewI = new ViewElement( viewDocument, 'i', {}, [ viewTextFOO ] );
+			viewB = new ViewElement( viewDocument, 'b', {}, [ viewI ] );
+			viewP = new ViewElement( viewDocument, 'p', {}, [ viewTextY, viewB, viewTextBAR, viewImg, viewU ] );
+			viewDiv = new ViewElement( viewDocument, 'div', {}, [ viewTextX, viewP, viewTextZZ ] );
 
 			mapper = new Mapper();
 			mapper.bindElements( modelP, viewP );
@@ -467,17 +475,17 @@ describe( 'Mapper', () => {
 			modelDiv = new ModelRootElement();
 			modelDiv._appendChild( [ new ModelText( 'x' ), modelWidget, new ModelText( 'zz' ) ] );
 
-			viewTextX = new ViewText( 'y' );
-			viewTextZZ = new ViewText( 'zz' );
-			viewTextFOO = new ViewText( 'foo' );
-			viewTextLABEL = new ViewText( 'label' );
+			viewTextX = new ViewText( viewDocument, 'y' );
+			viewTextZZ = new ViewText( viewDocument, 'zz' );
+			viewTextFOO = new ViewText( viewDocument, 'foo' );
+			viewTextLABEL = new ViewText( viewDocument, 'label' );
 
-			viewImg = new ViewElement( 'img' );
-			viewMask = new ViewElement( 'mask', {}, [ viewTextLABEL ] );
-			viewCaption = new ViewElement( 'caption', {}, [ viewTextFOO ] );
-			viewWrapper = new ViewElement( 'wrapper', {}, [ viewImg, viewCaption ] );
-			viewWidget = new ViewElement( 'widget', [ viewMask, viewWrapper ] );
-			viewDiv = new ViewElement( 'div', {}, [ viewTextX, viewWidget, viewTextZZ ] );
+			viewImg = new ViewElement( viewDocument, 'img' );
+			viewMask = new ViewElement( viewDocument, 'mask', {}, [ viewTextLABEL ] );
+			viewCaption = new ViewElement( viewDocument, 'caption', {}, [ viewTextFOO ] );
+			viewWrapper = new ViewElement( viewDocument, 'wrapper', {}, [ viewImg, viewCaption ] );
+			viewWidget = new ViewElement( viewDocument, 'widget', [ viewMask, viewWrapper ] );
+			viewDiv = new ViewElement( viewDocument, 'div', {}, [ viewTextX, viewWidget, viewTextZZ ] );
 
 			mapper = new Mapper();
 			mapper.bindElements( modelDiv, viewDiv );
@@ -574,15 +582,15 @@ describe( 'Mapper', () => {
 
 			modelRoot = new ModelRootElement( 'root', null, [ modelListItem1, modelListItem11, modelListItem12, modelListItem2 ] );
 
-			viewListItem11 = new ViewElement( 'li', null, new ViewText( 'bbb' ) );
-			viewListItem12 = new ViewElement( 'li', null, new ViewText( 'ccc' ) );
-			viewListNested = new ViewElement( 'ul', null, [ viewListItem11, viewListItem12 ] );
+			viewListItem11 = new ViewElement( viewDocument, 'li', null, new ViewText( viewDocument, 'bbb' ) );
+			viewListItem12 = new ViewElement( viewDocument, 'li', null, new ViewText( viewDocument, 'ccc' ) );
+			viewListNested = new ViewElement( viewDocument, 'ul', null, [ viewListItem11, viewListItem12 ] );
 
-			viewListItem1 = new ViewElement( 'li', null, [ new ViewText( 'aaa' ), viewListNested ] );
-			viewListItem2 = new ViewElement( 'li', null, new ViewText( 'ddd' ) );
-			viewList = new ViewElement( 'ul', null, [ viewListItem1, viewListItem2 ] );
+			viewListItem1 = new ViewElement( viewDocument, 'li', null, [ new ViewText( viewDocument, 'aaa' ), viewListNested ] );
+			viewListItem2 = new ViewElement( viewDocument, 'li', null, new ViewText( viewDocument, 'ddd' ) );
+			viewList = new ViewElement( viewDocument, 'ul', null, [ viewListItem1, viewListItem2 ] );
 
-			viewRoot = new ViewElement( 'div', null, viewList );
+			viewRoot = new ViewElement( viewDocument, 'div', null, viewList );
 
 			mapper = new Mapper();
 			mapper.bindElements( modelRoot, viewRoot );
@@ -632,7 +640,7 @@ describe( 'Mapper', () => {
 		} );
 
 		it( 'should bind element to a marker name', () => {
-			const view = new ViewElement( 'a' );
+			const view = new ViewElement( viewDocument, 'a' );
 
 			mapper.bindElementToMarker( view, 'marker' );
 
@@ -644,9 +652,9 @@ describe( 'Mapper', () => {
 		} );
 
 		it( 'should bind multiple elements to a marker name', () => {
-			const viewA = new ViewElement( 'a' );
-			const viewB = new ViewElement( 'b' );
-			const viewC = new ViewElement( 'c' );
+			const viewA = new ViewElement( viewDocument, 'a' );
+			const viewB = new ViewElement( viewDocument, 'b' );
+			const viewC = new ViewElement( viewDocument, 'c' );
 
 			mapper.bindElementToMarker( viewA, 'marker' );
 			mapper.bindElementToMarker( viewB, 'marker' );
@@ -658,8 +666,8 @@ describe( 'Mapper', () => {
 		} );
 
 		it( 'should unbind element from a marker name', () => {
-			const viewA = new ViewElement( 'a' );
-			const viewB = new ViewElement( 'b' );
+			const viewA = new ViewElement( viewDocument, 'a' );
+			const viewB = new ViewElement( viewDocument, 'b' );
 
 			mapper.bindElementToMarker( viewA, 'marker' );
 			mapper.bindElementToMarker( viewA, 'markerB' );
@@ -701,7 +709,7 @@ describe( 'Mapper', () => {
 		} );
 
 		it( 'should return length according to callback added by registerViewToModelLength', () => {
-			const viewElement = new ViewElement( 'span' );
+			const viewElement = new ViewElement( viewDocument, 'span' );
 
 			mapper.registerViewToModelLength( 'span', () => 4 );
 
@@ -709,7 +717,7 @@ describe( 'Mapper', () => {
 		} );
 
 		it( 'should return 1 for mapped elements', () => {
-			const viewElement = new ViewElement( 'span' );
+			const viewElement = new ViewElement( viewDocument, 'span' );
 			const modelElement = new ModelElement( 'span' );
 			mapper.bindElements( modelElement, viewElement );
 
@@ -717,24 +725,24 @@ describe( 'Mapper', () => {
 		} );
 
 		it( 'should return 0 for ui elements', () => {
-			const viewUiElement = new ViewUIElement( 'span' );
+			const viewUiElement = new ViewUIElement( viewDocument, 'span' );
 
 			expect( mapper.getModelLength( viewUiElement ) ).to.equal( 0 );
 		} );
 
 		it( 'should return length of data for text nodes', () => {
-			const viewText = new ViewText( 'foo' );
+			const viewText = new ViewText( viewDocument, 'foo' );
 
 			expect( mapper.getModelLength( viewText ) ).to.equal( 3 );
 		} );
 
 		it( 'should return sum of length of children for unmapped element', () => {
 			const modelP = new ModelElement( 'p' );
-			const viewP = new ViewElement( 'p' );
-			const viewUi = new ViewUIElement( 'span' );
-			const viewFoo = new ViewText( 'foo' );
-			const viewCallback = new ViewElement( 'xxx' );
-			const viewDiv = new ViewElement( 'div', null, [ viewP, viewUi, viewFoo, viewCallback ] );
+			const viewP = new ViewElement( viewDocument, 'p' );
+			const viewUi = new ViewUIElement( viewDocument, 'span' );
+			const viewFoo = new ViewText( viewDocument, 'foo' );
+			const viewCallback = new ViewElement( viewDocument, 'xxx' );
+			const viewDiv = new ViewElement( viewDocument, 'div', null, [ viewP, viewUi, viewFoo, viewCallback ] );
 
 			mapper.bindElements( modelP, viewP );
 			mapper.registerViewToModelLength( 'xxx', () => 2 );
@@ -750,10 +758,10 @@ describe( 'Mapper', () => {
 			const modelP = new ModelElement( 'p' );
 			const modelDiv = new ModelElement( 'div' );
 
-			const viewText = new ViewText( 'foo' );
-			const viewSpan = new ViewElement( 'span', null, viewText );
-			const viewP = new ViewElement( 'p', null, viewSpan );
-			const viewDiv = new ViewElement( 'div', null, viewP );
+			const viewText = new ViewText( viewDocument, 'foo' );
+			const viewSpan = new ViewElement( viewDocument, 'span', null, viewText );
+			const viewP = new ViewElement( viewDocument, 'p', null, viewSpan );
+			const viewDiv = new ViewElement( viewDocument, 'div', null, viewP );
 
 			mapper.bindElements( modelP, viewP );
 			mapper.bindElements( modelDiv, viewDiv );
@@ -770,8 +778,8 @@ describe( 'Mapper', () => {
 
 	describe( 'flushUnboundMarkerNames()', () => {
 		it( 'should return marker names of markers which elements has been unbound and clear that list', () => {
-			const viewA = new ViewElement( 'a' );
-			const viewB = new ViewElement( 'b' );
+			const viewA = new ViewElement( viewDocument, 'a' );
+			const viewB = new ViewElement( viewDocument, 'b' );
 
 			const mapper = new Mapper();
 

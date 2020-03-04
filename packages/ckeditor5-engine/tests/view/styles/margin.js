@@ -9,14 +9,10 @@ import { addMarginRules } from '../../../src/view/styles/margin';
 describe( 'Margin styles normalizer', () => {
 	let styles;
 
-	before( () => {
-		const stylesProcessor = new StylesProcessor();
-		StylesMap._setProcessor( stylesProcessor );
-		addMarginRules( stylesProcessor );
-	} );
-
 	beforeEach( () => {
-		styles = new StylesMap();
+		const stylesProcessor = new StylesProcessor();
+		addMarginRules( stylesProcessor );
+		styles = new StylesMap( stylesProcessor );
 	} );
 
 	it( 'should set all margins (1 value defined)', () => {

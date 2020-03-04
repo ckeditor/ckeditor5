@@ -11,6 +11,7 @@ import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import ViewDocumentFragment from '../../src/view/documentfragment';
+import ViewDocument from '../../src/view/document';
 
 import { getData, setData, stringify, parse as parseModel } from '../../src/dev-utils/model';
 import { parse as parseView, stringify as stringifyView } from '../../src/dev-utils/view';
@@ -20,11 +21,13 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
 import UpcastHelpers from '../../src/conversion/upcasthelpers';
 import DowncastHelpers from '../../src/conversion/downcasthelpers';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'DataController', () => {
-	let model, modelDocument, htmlDataProcessor, data, schema, upcastHelpers, downcastHelpers;
+	let model, modelDocument, htmlDataProcessor, data, schema, upcastHelpers, downcastHelpers, viewDocument;
 
 	beforeEach( () => {
+		const stylesProcessor = new StylesProcessor();
 		model = new Model();
 
 		schema = model.schema;
@@ -35,19 +38,23 @@ describe( 'DataController', () => {
 
 		schema.register( '$title', { inheritAllFrom: '$root' } );
 
-		htmlDataProcessor = new HtmlDataProcessor();
+		viewDocument = new ViewDocument( stylesProcessor );
+		htmlDataProcessor = new HtmlDataProcessor( viewDocument );
 
-		data = new DataController( model, htmlDataProcessor );
+		data = new DataController( model, stylesProcessor );
+		data.processor = htmlDataProcessor;
 
 		upcastHelpers = new UpcastHelpers( [ data.upcastDispatcher ] );
 		downcastHelpers = new DowncastHelpers( [ data.downcastDispatcher ] );
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'works without data processor', () => {
-			const data = new DataController( model );
+		it( 'sets the model and styles processor properties', () => {
+			const stylesProcessor = new StylesProcessor();
+			const data = new DataController( model, stylesProcessor );
 
-			expect( data.processor ).to.be.undefined;
+			expect( data.model ).to.equal( model );
+			expect( data.stylesProcessor ).to.equal( stylesProcessor );
 		} );
 	} );
 
@@ -139,7 +146,7 @@ describe( 'DataController', () => {
 			schema.register( 'inlineRoot' );
 			schema.extend( '$text', { allowIn: 'inlineRoot' } );
 
-			const viewFragment = new ViewDocumentFragment( [ parseView( 'foo' ) ] );
+			const viewFragment = new ViewDocumentFragment( viewDocument, [ parseView( 'foo' ) ] );
 
 			// Model fragment in root.
 			expect( stringify( data.toModel( viewFragment ) ) ).to.equal( '' );
@@ -567,6 +574,20 @@ describe( 'DataController', () => {
 			data.destroy();
 
 			expect( data ).to.respondTo( 'destroy' );
+		} );
+	} );
+
+	describe( 'addStyleProcessorRules()', () => {
+		it( 'should execute callback with an instance of StyleProcessor as the first argument', () => {
+			const stylesProcessor = new StylesProcessor();
+			const data = new DataController( model, stylesProcessor );
+
+			const spy = sinon.spy();
+
+			data.addStyleProcessorRules( spy );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, stylesProcessor );
 		} );
 	} );
 } );

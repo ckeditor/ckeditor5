@@ -12,7 +12,7 @@ import { getPositionShorthandNormalizer, getBoxSidesValueReducer } from './utils
 /**
  * Adds a margin CSS styles processing rules.
  *
- *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
+ *		editor.data.addStyleProcessorRules( addMarginRules );
  *
  * The normalized value is stored as:
  *

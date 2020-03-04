@@ -9,9 +9,16 @@ import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 import xssTemplates from '../../tests/dataprocessor/_utils/xsstemplates';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import { stringify, parse } from '../../src/dev-utils/view';
+import { StylesProcessor } from '../../src/view/stylesmap';
+import ViewDocument from '../../src/view/document';
 
 describe( 'HtmlDataProcessor', () => {
-	const dataProcessor = new HtmlDataProcessor();
+	let dataProcessor, viewDocument;
+
+	beforeEach( () => {
+		viewDocument = new ViewDocument( new StylesProcessor() );
+		dataProcessor = new HtmlDataProcessor( viewDocument );
+	} );
 
 	describe( 'toView()', () => {
 		it( 'should return empty DocumentFragment when empty string is passed', () => {
@@ -89,13 +96,13 @@ describe( 'HtmlDataProcessor', () => {
 
 	describe( 'toData()', () => {
 		it( 'should return empty string when empty DocumentFragment is passed', () => {
-			const fragment = new ViewDocumentFragment();
+			const fragment = new ViewDocumentFragment( viewDocument );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( '' );
 		} );
 
 		it( 'should return text if document fragment with single text node is passed', () => {
-			const fragment = new ViewDocumentFragment();
+			const fragment = new ViewDocumentFragment( viewDocument );
 			fragment._appendChild( parse( 'foo bar' ) );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( 'foo bar' );

@@ -10,7 +10,9 @@ import DocumentFragment from '../../src/view/documentfragment';
 import Text from '../../src/view/text';
 import TextProxy from '../../src/view/textproxy';
 import TreeWalker from '../../src/view/treewalker';
+import Document from '../../src/view/document';
 import { parse, stringify } from '../../src/dev-utils/view';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 function getRange( view, options = {} ) {
 	const { selection } = parse( view, options );
@@ -19,6 +21,12 @@ function getRange( view, options = {} ) {
 }
 
 describe( 'Range', () => {
+	let document;
+
+	beforeEach( () => {
+		document = new Document( new StylesProcessor() );
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'creates range from provided positions', () => {
 			const start = new Position( {}, 1 );
@@ -101,7 +109,7 @@ describe( 'Range', () => {
 
 	describe( 'getRoot', () => {
 		it( 'should return root element in which range is created', () => {
-			const viewRoot = new Element( 'div' );
+			const viewRoot = new Element( document, 'div' );
 			const range = getRange( '<p>f{oo</p><p>ba}r</p>', { rootElement: viewRoot } );
 
 			expect( range.root ).to.equal( viewRoot );
@@ -297,7 +305,7 @@ describe( 'Range', () => {
 		let viewRoot, range;
 
 		beforeEach( () => {
-			viewRoot = new Element( 'div' );
+			viewRoot = new Element( document, 'div' );
 			range = getRange( '<p>fo{o</p><p>bar</p><p>xy}z</p>', { rootElement: viewRoot } );
 		} );
 
@@ -324,7 +332,7 @@ describe( 'Range', () => {
 		let viewRoot, range, beforeF, afterF, beforeB, afterX;
 
 		beforeEach( () => {
-			viewRoot = new Element( 'div' );
+			viewRoot = new Element( document, 'div' );
 			range = getRange( '<p>fo{o</p><p>bar</p><p>xy}z</p>', { rootElement: viewRoot } );
 
 			beforeF = new Position( viewRoot.getChild( 0 ).getChild( 0 ), 0 );
@@ -395,12 +403,12 @@ describe( 'Range', () => {
 		// t1      t2             t3
 
 		beforeEach( () => {
-			t1 = new Text( 'foo' );
-			t2 = new Text( 'bar' );
-			t3 = new Text( 'baz' );
-			p1 = new Element( 'p', null, [ t1, t2 ] );
-			p2 = new Element( 'p', null, t3 );
-			root = new Element( 'div', null, [ p1, p2 ] );
+			t1 = new Text( document, 'foo' );
+			t2 = new Text( document, 'bar' );
+			t3 = new Text( document, 'baz' );
+			p1 = new Element( document, 'p', null, [ t1, t2 ] );
+			p2 = new Element( document, 'p', null, t3 );
+			root = new Element( document, 'div', null, [ p1, p2 ] );
 		} );
 
 		describe( 'isIntersecting', () => {
@@ -445,7 +453,7 @@ describe( 'Range', () => {
 
 			it( 'should return false if ranges are in different roots', () => {
 				const range = Range._createFromParentsAndOffsets( t1, 0, t2, 3 );
-				const otherRange = Range._createFromParentsAndOffsets( new Element( 'div' ), 1, t3, 0 );
+				const otherRange = Range._createFromParentsAndOffsets( new Element( document, 'div' ), 1, t3, 0 );
 
 				expect( range.isIntersecting( otherRange ) ).to.be.false;
 				expect( otherRange.isIntersecting( range ) ).to.be.false;
@@ -677,9 +685,9 @@ describe( 'Range', () => {
 		let div, p, foz;
 
 		beforeEach( () => {
-			foz = new Text( 'foz' );
-			p = new Element( 'p', null, foz );
-			div = new Element( 'div', null, p );
+			foz = new Text( document, 'foz' );
+			p = new Element( document, 'p', null, foz );
+			div = new Element( document, 'div', null, p );
 		} );
 
 		describe( '_createIn', () => {
@@ -704,7 +712,7 @@ describe( 'Range', () => {
 			} );
 
 			it( 'should create a proper range on a text proxy', () => {
-				const text = new Text( 'foobar' );
+				const text = new Text( document, 'foobar' );
 				const textProxy = new TextProxy( text, 2, 3 );
 				const range = Range._createOn( textProxy );
 
@@ -751,13 +759,13 @@ describe( 'Range', () => {
 
 	describe( 'getCommonAncestor()', () => {
 		it( 'should return common ancestor for positions from Range', () => {
-			const foz = new Text( 'foz' );
-			const bar = new Text( 'bar' );
+			const foz = new Text( document, 'foz' );
+			const bar = new Text( document, 'bar' );
 
-			const li1 = new Element( 'li', null, foz );
-			const li2 = new Element( 'li', null, bar );
+			const li1 = new Element( document, 'li', null, foz );
+			const li2 = new Element( document, 'li', null, bar );
 
-			const ul = new Element( 'ul', null, [ li1, li2 ] );
+			const ul = new Element( document, 'ul', null, [ li1, li2 ] );
 
 			const range = new Range( new Position( li1, 0 ), new Position( li2, 2 ) );
 

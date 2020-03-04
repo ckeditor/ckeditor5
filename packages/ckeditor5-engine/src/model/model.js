@@ -334,7 +334,7 @@ export default class Model {
 	 *
 	 *		// You can create your own HtmlDataProcessor instance or use editor.data.processor
 	 *		// if you have not overridden the default one (which is the HtmlDataProcessor instance).
-	 *		const htmlDP = new HtmlDataProcessor();
+	 *		const htmlDP = new HtmlDataProcessor( viewDocument );
 	 *
 	 *		// Convert an HTML string to a view document fragment:
 	 *		const viewFragment = htmlDP.toView( htmlString );

@@ -13,14 +13,16 @@ import ViewContainerElement from '../../../src/view/containerelement';
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '../../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DomConverter', () => {
-	let converter;
+	let converter, viewDocument;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		converter = new DomConverter();
+		viewDocument = new ViewDocument( new StylesProcessor() );
+		converter = new DomConverter( viewDocument );
 	} );
 
 	describe( 'constructor()', () => {
@@ -29,7 +31,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should create converter with defined block mode filler', () => {
-			converter = new DomConverter( { blockFillerMode: 'nbsp' } );
+			converter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
 			expect( converter.blockFillerMode ).to.equal( 'nbsp' );
 		} );
 	} );
@@ -38,9 +40,8 @@ describe( 'DomConverter', () => {
 		let viewEditable, domEditable, domEditableParent, viewDocument;
 
 		beforeEach( () => {
-			viewDocument = new ViewDocument();
-			viewEditable = new ViewEditable( 'div' );
-			viewEditable._document = viewDocument;
+			viewDocument = new ViewDocument( new StylesProcessor() );
+			viewEditable = new ViewEditable( viewDocument, 'div' );
 
 			domEditable = document.createElement( 'div' );
 			domEditableParent = document.createElement( 'div' );
@@ -192,7 +193,7 @@ describe( 'DomConverter', () => {
 			return sel;
 		}
 
-		let domP, domFillerTextNode, domUiSpan, domUiDeepSpan;
+		let domP, domFillerTextNode, domUiSpan, domUiDeepSpan, viewDocument;
 
 		beforeEach( () => {
 			// <p>INLINE_FILLERfoo<span></span></p>.
@@ -203,8 +204,10 @@ describe( 'DomConverter', () => {
 			domUiDeepSpan = document.createElement( 'span' );
 			domUiSpan.appendChild( domUiDeepSpan );
 
-			const viewUiSpan = new ViewUIElement( 'span' );
-			const viewElementSpan = new ViewContainerElement( 'span' );
+			viewDocument = new ViewDocument( new StylesProcessor() );
+
+			const viewUiSpan = new ViewUIElement( viewDocument, 'span' );
+			const viewElementSpan = new ViewContainerElement( viewDocument, 'span' );
 
 			domP.appendChild( domFillerTextNode );
 			domP.appendChild( domUiSpan );
@@ -294,7 +297,7 @@ describe( 'DomConverter', () => {
 	describe( 'isBlockFiller()', () => {
 		describe( 'mode "nbsp"', () => {
 			beforeEach( () => {
-				converter = new DomConverter( { blockFillerMode: 'nbsp' } );
+				converter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
 			} );
 
 			it( 'should return true if the node is an nbsp filler and is a single child of a block level element', () => {
@@ -377,7 +380,7 @@ describe( 'DomConverter', () => {
 
 		describe( 'mode "br"', () => {
 			beforeEach( () => {
-				converter = new DomConverter( { blockFillerMode: 'br' } );
+				converter = new DomConverter( viewDocument, { blockFillerMode: 'br' } );
 			} );
 
 			it( 'should return true if the node is an instance of the BR block filler', () => {
@@ -389,7 +392,7 @@ describe( 'DomConverter', () => {
 			} );
 
 			it( 'should return false if the node is an instance of the NBSP block filler', () => {
-				converter = new DomConverter( { blockFillerMode: 'br' } );
+				converter = new DomConverter( viewDocument, { blockFillerMode: 'br' } );
 				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
 				// NBSP must be check inside a context.
 				const context = document.createElement( 'div' );

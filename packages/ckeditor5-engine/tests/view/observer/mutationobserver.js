@@ -10,6 +10,7 @@ import MutationObserver from '../../../src/view/observer/mutationobserver';
 import UIElement from '../../../src/view/uielement';
 import createViewRoot from '../_utils/createroot';
 import { parse } from '../../../src/dev-utils/view';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'MutationObserver', () => {
 	let view, domEditor, viewDocument, viewRoot, mutationObserver, lastMutations, domRoot;
@@ -19,7 +20,7 @@ describe( 'MutationObserver', () => {
 		domRoot.innerHTML = '<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>';
 		document.body.appendChild( domRoot );
 
-		view = new View();
+		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 		domEditor = document.getElementById( 'main' );
 		lastMutations = null;
@@ -225,7 +226,9 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should fire children mutation if the mutation occurred in the inline filler', () => {
-		const { view: viewContainer, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
+		const { view: viewContainer, selection } = parse(
+			'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>'
+		);
 
 		view.change( writer => {
 			viewRoot._appendChild( viewContainer );
@@ -243,7 +246,9 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should have no inline filler in mutation', () => {
-		const { view: viewContainer, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
+		const { view: viewContainer, selection } = parse(
+			'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>'
+		);
 
 		view.change( writer => {
 			viewRoot._appendChild( viewContainer );

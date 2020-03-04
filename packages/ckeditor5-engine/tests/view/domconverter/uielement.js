@@ -8,12 +8,14 @@
 import ViewUIElement from '../../../src/view/uielement';
 import ViewContainer from '../../../src/view/containerelement';
 import DomConverter from '../../../src/view/domconverter';
+import ViewDocument from '../../../src/view/document';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DOMConverter UIElement integration', () => {
-	let converter;
+	let converter, viewDocument;
 
 	function createUIElement( name ) {
-		const element = new ViewUIElement( name );
+		const element = new ViewUIElement( viewDocument, name );
 
 		element.render = function( domDocument ) {
 			const root = this.toDomElement( domDocument );
@@ -26,12 +28,13 @@ describe( 'DOMConverter UIElement integration', () => {
 	}
 
 	beforeEach( () => {
-		converter = new DomConverter();
+		viewDocument = new ViewDocument( new StylesProcessor() );
+		converter = new DomConverter( viewDocument );
 	} );
 
 	describe( 'viewToDom()', () => {
 		it( 'should create DOM element from UIElement', () => {
-			const uiElement = new ViewUIElement( 'div' );
+			const uiElement = new ViewUIElement( viewDocument, 'div' );
 			const domElement = converter.viewToDom( uiElement, document );
 
 			expect( domElement ).to.be.instanceOf( HTMLElement );
@@ -81,7 +84,7 @@ describe( 'DOMConverter UIElement integration', () => {
 	describe( 'domPositionToView()', () => {
 		it( 'should convert position inside UIElement to position before it', () => {
 			const uiElement = createUIElement( 'h1' );
-			const container = new ViewContainer( 'div', null, [ new ViewContainer( 'div' ), uiElement ] );
+			const container = new ViewContainer( viewDocument, 'div', null, [ new ViewContainer( viewDocument, 'div' ), uiElement ] );
 			const domContainer = converter.viewToDom( container, document, { bind: true } );
 
 			const viewPosition = converter.domPositionToView( domContainer.childNodes[ 1 ], 0 );
@@ -92,7 +95,7 @@ describe( 'DOMConverter UIElement integration', () => {
 
 		it( 'should convert position inside UIElement children to position before UIElement', () => {
 			const uiElement = createUIElement( 'h1' );
-			const container = new ViewContainer( 'div', null, [ new ViewContainer( 'div' ), uiElement ] );
+			const container = new ViewContainer( viewDocument, 'div', null, [ new ViewContainer( viewDocument, 'div' ), uiElement ] );
 			const domContainer = converter.viewToDom( container, document, { bind: true } );
 
 			const viewPosition = converter.domPositionToView( domContainer.childNodes[ 1 ].childNodes[ 0 ], 1 );

@@ -17,19 +17,30 @@ import { clone } from 'lodash-es';
 import '@ckeditor/ckeditor5-utils/src/version';
 
 /**
- * Abstract tree view node class.
+ * Abstract view node class.
  *
  * This is an abstract class. Its constructor should not be used directly.
- * Use the {@link module:engine/view/element~Element} class to create view elements
- * or {@link module:engine/view/text~Text} class to create view text nodes.
+ * Use the {@link module:engine/view/downcastwriter~DowncastWriter} or {@link module:engine/view/upcastwriter~UpcastWriter}
+ * to create new instances of view nodes.
  *
  * @abstract
  */
 export default class Node {
 	/**
 	 * Creates a tree view node.
+	 *
+	 * @protected
+	 * @param {module:engine/view/document~Document} document The document instance to which this node belongs.
 	 */
-	constructor() {
+	constructor( document ) {
+		/**
+		 * The document instance to which this node belongs.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/document~Document}
+		 */
+		this.document = document;
+
 		/**
 		 * Parent element. Null by default. Set by {@link module:engine/view/element~Element#_insertChild}.
 		 *
@@ -109,19 +120,12 @@ export default class Node {
 	}
 
 	/**
-	 * {@link module:engine/view/document~Document View document} that owns this node, or `null` if the node is inside
-	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
+	 * Returns true if the node is in a tree rooted in the document (is a descendant of one of its roots).
 	 *
-	 * @readonly
-	 * @type {module:engine/view/document~Document|null}
+	 * @returns {Boolean}
 	 */
-	get document() {
-		// Parent might be Node, null or DocumentFragment.
-		if ( this.parent instanceof Node ) {
-			return this.parent.document;
-		} else {
-			return null;
-		}
+	isAttached() {
+		return this.root.is( 'rootElement' );
 	}
 
 	/**
