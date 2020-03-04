@@ -30,6 +30,8 @@ export default class TextWatcher {
 	 */
 	constructor( model, testCallback ) {
 		/**
+		 * The editor's model.
+		 *
 		 * @readonly
 		 * @member {module:engine/model/model~Model}
 		 */
@@ -45,6 +47,7 @@ export default class TextWatcher {
 		 * * an object if there is a match and we want to pass some additional information to the {@link #matched:data} event.
 		 *
 		 * @member {Function} #testCallback
+		 * @returns {Object} testResult
 		 */
 		this.testCallback = testCallback;
 
@@ -153,6 +156,7 @@ export default class TextWatcher {
 		if ( testResult ) {
 			const eventData = Object.assign( data, { text, range } );
 
+			// If the test callback returns an object with additional data, assign the data as well.
 			if ( typeof testResult == 'object' ) {
 				Object.assign( eventData, testResult );
 			}
@@ -165,19 +169,13 @@ export default class TextWatcher {
 mix( TextWatcher, ObservableMixin );
 
 /**
- * Fired whenever the text does not match anymore. Fired only when the text watcher found a match.
- *
- * @event unmatched
- */
-
-/**
  * Fired whenever the text watcher found a match for data changes.
  *
  * @event matched:data
  * @param {Object} data Event data.
  * @param {String} data.text The full text before selection to which the regexp was applied.
  * @param {module:engine/model/range~Range} data.range The range representing the position of the `data.text`.
- * @param {module:engine/model/batch~Batch} data.batch A batch associated with a change.
+ * @param {Object} data.testResult [Optional] The additional data returned from the {module:typing/textwatcher~TextWatcher#testCallback}.
  */
 
 /**
@@ -186,4 +184,12 @@ mix( TextWatcher, ObservableMixin );
  * @event matched:selection
  * @param {Object} data Event data.
  * @param {String} data.text The full text before selection.
+ * @param {module:engine/model/range~Range} data.range The range representing the position of the `data.text`.
+ * @param {Object} data.testResult [Optional] The additional data returned from the {module:typing/textwatcher~TextWatcher#testCallback}.
+ */
+
+/**
+ * Fired whenever the text does not match anymore. Fired only when the text watcher found a match.
+ *
+ * @event unmatched
  */
