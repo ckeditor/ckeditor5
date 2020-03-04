@@ -3245,6 +3245,29 @@ describe( 'Renderer', () => {
 
 				expect( domRoot.innerHTML ).to.equal( '<span>x</span>y<strong>z</strong>' );
 			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/6367, but more complex
+			it( 'should correctly handle moving a DOM element when rendering children (more complex case)', () => {
+				viewRoot._insertChild( 0,
+					parse( '1<attribute:span>2</attribute:span><attribute:span>3</attribute:span>4<attribute:span>5</attribute:span>' )
+				);
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				const viewSpan5 = viewRoot._removeChildren( 4, 1 )[ 0 ];
+				const viewSpan2 = viewRoot._removeChildren( 1, 1 )[ 0 ];
+				viewRoot._insertChild( 0, viewSpan2 );
+				viewRoot._insertChild( 1, parse( '<attribute:strong>6</attribute:strong>' ) );
+				viewRoot._insertChild( 4, parse( '<attribute:strong>7</attribute:strong>' ) );
+				viewRoot._insertChild( 2, viewSpan5 );
+
+				renderer.markToSync( 'children', viewRoot );
+
+				// This would throw without a fix.
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<span>2</span><strong>6</strong><span>5</span>1<span>3</span><strong>7</strong>4' );
+			} );
 		} );
 
 		describe( 'optimal (minimal) rendering – minimal children changes', () => {
