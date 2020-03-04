@@ -7,6 +7,8 @@
  * @module table/tableselection/utils
  */
 
+import { getRangeContainedElement } from '../commands/utils';
+
 /**
  * Clears contents of the passed table cells.
  *
@@ -38,10 +40,10 @@ export function getTableCellsInSelection( selection ) {
 	const cells = [];
 
 	for ( const range of selection.getRanges() ) {
-		for ( const item of range.getItems() ) {
-			if ( item.is( 'tableCell' ) ) {
-				cells.push( item );
-			}
+		const element = getRangeContainedElement( range );
+
+		if ( element.is( 'tableCell' ) ) {
+			cells.push( element );
 		}
 	}
 
