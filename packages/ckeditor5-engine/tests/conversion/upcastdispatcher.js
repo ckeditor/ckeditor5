@@ -8,6 +8,7 @@ import ViewContainerElement from '../../src/view/containerelement';
 import ViewElement from '../../src/view/element';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewText from '../../src/view/text';
+import ViewDocument from '../../src/view/document';
 
 import Model from '../../src/model/model';
 import ModelText from '../../src/model/text';
@@ -20,12 +21,14 @@ import ModelWriter from '../../src/model/writer';
 
 import first from '@ckeditor/ckeditor5-utils/src/first';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'UpcastDispatcher', () => {
-	let model;
+	let model, viewDocument;
 
 	beforeEach( () => {
 		model = new Model();
+		viewDocument = new ViewDocument( new StylesProcessor() );
 	} );
 
 	describe( 'constructor()', () => {
@@ -56,7 +59,7 @@ describe( 'UpcastDispatcher', () => {
 		} );
 
 		it( 'should create api for a conversion process', () => {
-			const viewElement = new ViewContainerElement( 'p', null, new ViewText( 'foobar' ) );
+			const viewElement = new ViewContainerElement( viewDocument, 'p', null, new ViewText( viewDocument, 'foobar' ) );
 
 			// To be sure that both converters was called.
 			const spy = sinon.spy();
@@ -108,16 +111,16 @@ describe( 'UpcastDispatcher', () => {
 		it( 'should fire viewCleanup event on converted view part', () => {
 			sinon.spy( dispatcher, 'fire' );
 
-			const viewP = new ViewContainerElement( 'p' );
+			const viewP = new ViewContainerElement( viewDocument, 'p' );
 			model.change( writer => dispatcher.convert( viewP, writer ) );
 
 			expect( dispatcher.fire.calledWith( 'viewCleanup', viewP ) ).to.be.true;
 		} );
 
 		it( 'should fire proper events', () => {
-			const viewText = new ViewText( 'foobar' );
-			const viewElement = new ViewContainerElement( 'p', null, viewText );
-			const viewFragment = new ViewDocumentFragment( viewElement );
+			const viewText = new ViewText( viewDocument, 'foobar' );
+			const viewElement = new ViewContainerElement( viewDocument, 'p', null, viewText );
+			const viewFragment = new ViewDocumentFragment( viewDocument, viewElement );
 
 			sinon.spy( dispatcher, 'fire' );
 
@@ -134,7 +137,7 @@ describe( 'UpcastDispatcher', () => {
 
 		it( 'should convert ViewText', () => {
 			const spy = sinon.spy();
-			const viewText = new ViewText( 'foobar' );
+			const viewText = new ViewText( viewDocument, 'foobar' );
 
 			dispatcher.on( 'text', ( evt, data, conversionApi ) => {
 				// Check if this method has been fired.
@@ -170,7 +173,7 @@ describe( 'UpcastDispatcher', () => {
 
 		it( 'should convert ViewContainerElement', () => {
 			const spy = sinon.spy();
-			const viewElement = new ViewContainerElement( 'p', { attrKey: 'attrValue' } );
+			const viewElement = new ViewContainerElement( viewDocument, 'p', { attrKey: 'attrValue' } );
 
 			dispatcher.on( 'element', ( evt, data, conversionApi ) => {
 				// Check if this method has been fired.
@@ -208,7 +211,7 @@ describe( 'UpcastDispatcher', () => {
 
 		it( 'should convert ViewDocumentFragment', () => {
 			const spy = sinon.spy();
-			const viewFragment = new ViewDocumentFragment();
+			const viewFragment = new ViewDocumentFragment( viewDocument );
 
 			dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 				// Check if this method has been fired.
@@ -242,9 +245,9 @@ describe( 'UpcastDispatcher', () => {
 		} );
 
 		it( 'should remove empty elements that was created as a result of split', () => {
-			const viewElement = new ViewElement( 'div', null, [
-				new ViewElement( 'p', null, [
-					new ViewElement( 'img' )
+			const viewElement = new ViewElement( viewDocument, 'div', null, [
+				new ViewElement( viewDocument, 'p', null, [
+					new ViewElement( viewDocument, 'img' )
 				] )
 			] );
 
@@ -289,7 +292,7 @@ describe( 'UpcastDispatcher', () => {
 		} );
 
 		it( 'should extract temporary markers elements from converter element and create static markers list', () => {
-			const viewFragment = new ViewDocumentFragment();
+			const viewFragment = new ViewDocumentFragment( viewDocument );
 
 			dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 				// Create model fragment.
@@ -326,7 +329,7 @@ describe( 'UpcastDispatcher', () => {
 			dispatcher = new UpcastDispatcher( { schema: model.schema } );
 
 			const spy = sinon.spy();
-			const viewElement = new ViewContainerElement( 'third' );
+			const viewElement = new ViewContainerElement( viewDocument, 'third' );
 			let checkChildResult;
 
 			model.schema.register( 'first', {
@@ -377,8 +380,8 @@ describe( 'UpcastDispatcher', () => {
 			spyP = sinon.spy();
 			spyText = sinon.spy();
 
-			viewP = new ViewContainerElement( 'p' );
-			viewText = new ViewText( 'foobar' );
+			viewP = new ViewContainerElement( viewDocument, 'p' );
+			viewText = new ViewText( viewDocument, 'foobar' );
 			modelP = new ModelElement( 'paragraph' );
 			modelText = new ModelText( 'foobar' );
 
@@ -404,9 +407,9 @@ describe( 'UpcastDispatcher', () => {
 			spyNull = sinon.spy();
 			spyArray = sinon.spy();
 
-			viewDiv = new ViewContainerElement( 'div' ); // Will not be recognized and not converted.
-			viewNull = new ViewContainerElement( 'null' ); // Will return `null` in `data.modelRange` upon conversion.
-			viewArray = new ViewContainerElement( 'array' ); // Will return an array in `data.modelRange` upon conversion.
+			viewDiv = new ViewContainerElement( viewDocument, 'div' ); // Will not be recognized and not converted.
+			viewNull = new ViewContainerElement( viewDocument, 'null' ); // Will return `null` in `data.modelRange` upon conversion.
+			viewArray = new ViewContainerElement( viewDocument, 'array' ); // Will return an array in `data.modelRange` upon conversion.
 
 			dispatcher.on( 'element:null', ( evt, data ) => {
 				spyNull();
@@ -444,7 +447,7 @@ describe( 'UpcastDispatcher', () => {
 					expect( textResult.modelCursor.path ).to.deep.equal( [ 7 ] );
 				} );
 
-				model.change( writer => dispatcher.convert( new ViewDocumentFragment(), writer ) );
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument ), writer ) );
 
 				expect( spy.calledOnce ).to.be.true;
 				expect( spyP.calledOnce ).to.be.true;
@@ -459,7 +462,7 @@ describe( 'UpcastDispatcher', () => {
 					expect( conversionApi.convertItem( viewNull, data.modelCursor ).modelRange ).to.equal( null );
 				} );
 
-				model.change( writer => dispatcher.convert( new ViewDocumentFragment(), writer ) );
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument ), writer ) );
 
 				expect( spy.calledOnce ).to.be.true;
 				expect( spyNull.calledOnce ).to.be.true;
@@ -473,7 +476,7 @@ describe( 'UpcastDispatcher', () => {
 				} );
 
 				expectToThrowCKEditorError( () => {
-					model.change( writer => dispatcher.convert( new ViewDocumentFragment(), writer ) );
+					model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument ), writer ) );
 				}, /^view-conversion-dispatcher-incorrect-result/, model );
 
 				expect( spy.calledOnce ).to.be.true;
@@ -501,7 +504,7 @@ describe( 'UpcastDispatcher', () => {
 					expect( result.modelCursor.path ).to.deep.equal( [ 7 ] );
 				} );
 
-				model.change( writer => dispatcher.convert( new ViewDocumentFragment( [ viewP, viewText ] ), writer ) );
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument, [ viewP, viewText ] ), writer ) );
 
 				expect( spy.calledOnce ).to.be.true;
 				expect( spyP.calledOnce ).to.be.true;
@@ -534,7 +537,7 @@ describe( 'UpcastDispatcher', () => {
 					spy();
 				} );
 
-				model.change( writer => dispatcher.convert( new ViewDocumentFragment(), writer ) );
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument ), writer ) );
 				sinon.assert.calledOnce( spy );
 			} );
 
@@ -571,7 +574,7 @@ describe( 'UpcastDispatcher', () => {
 					spy();
 				} );
 
-				model.change( writer => dispatcher.convert( new ViewDocumentFragment(), writer ) );
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument ), writer ) );
 				sinon.assert.calledOnce( spy );
 			} );
 
@@ -591,7 +594,7 @@ describe( 'UpcastDispatcher', () => {
 					spy();
 				} );
 
-				model.change( writer => dispatcher.convert( new ViewDocumentFragment(), writer ) );
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument ), writer ) );
 				sinon.assert.calledOnce( spy );
 			} );
 
@@ -610,7 +613,7 @@ describe( 'UpcastDispatcher', () => {
 					spy();
 				} );
 
-				model.change( writer => dispatcher.convert( new ViewDocumentFragment(), writer, [ '$root', 'paragraph' ] ) );
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument ), writer, [ '$root', 'paragraph' ] ) );
 				sinon.assert.calledOnce( spy );
 			} );
 		} );
@@ -633,7 +636,7 @@ describe( 'UpcastDispatcher', () => {
 					evt.stop();
 				}, { priority: 'high' } );
 
-				const viewElement = new ViewElement( 'p' );
+				const viewElement = new ViewElement( viewDocument, 'p' );
 
 				model.change( writer => dispatcher.convert( viewElement, writer ) );
 
@@ -695,12 +698,12 @@ describe( 'UpcastDispatcher', () => {
 					evt.stop();
 				}, { priority: 'high' } );
 
-				const viewElement = new ViewElement( 'p', null, [
-					new ViewText( 'foo' ),
-					new ViewElement( 'image' ),
-					new ViewText( 'bar' ),
-					new ViewElement( 'image' ),
-					new ViewText( 'xyz' )
+				const viewElement = new ViewElement( viewDocument, 'p', null, [
+					new ViewText( viewDocument, 'foo' ),
+					new ViewElement( viewDocument, 'image' ),
+					new ViewText( viewDocument, 'bar' ),
+					new ViewElement( viewDocument, 'image' ),
+					new ViewText( viewDocument, 'xyz' )
 				] );
 
 				model.change( writer => dispatcher.convert( viewElement, writer, [ '$root' ] ) );

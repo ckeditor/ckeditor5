@@ -13,6 +13,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 import { parse, setData } from '../../../src/dev-utils/view';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'View', () => {
 	let view, viewDocument, domRoot;
@@ -23,7 +24,7 @@ describe( 'View', () => {
 		} );
 		document.body.appendChild( domRoot );
 
-		view = new View();
+		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 		createViewRoot( viewDocument );
 		view.attachDomRoot( domRoot );

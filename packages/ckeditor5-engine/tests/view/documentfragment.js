@@ -8,27 +8,35 @@ import Element from '../../src/view/element';
 import Node from '../../src/view/node';
 import Text from '../../src/view/text';
 import TextProxy from '../../src/view/textproxy';
+import Document from '../../src/view/document';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'DocumentFragment', () => {
+	let document;
+
+	beforeEach( () => {
+		document = new Document( new StylesProcessor() );
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should create DocumentFragment without children', () => {
-			const fragment = new DocumentFragment();
+			const fragment = new DocumentFragment( document );
 
 			expect( fragment ).to.be.an.instanceof( DocumentFragment );
 			expect( fragment.childCount ).to.equal( 0 );
 		} );
 
-		it( 'should create DocumentFragment with child node', () => {
-			const child = new Element( 'p' );
-			const fragment = new DocumentFragment( child );
+		it( 'should create DocumentFragment  document,with child node', () => {
+			const child = new Element( document, 'p' );
+			const fragment = new DocumentFragment( document, child );
 
 			expect( fragment.childCount ).to.equal( 1 );
 			expect( fragment.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
 		} );
 
-		it( 'should create DocumentFragment with multiple nodes', () => {
-			const children = [ new Element( 'p' ), new Element( 'div' ) ];
-			const fragment = new DocumentFragment( children );
+		it( 'should create DocumentFragment  document,with multiple nodes', () => {
+			const children = [ new Element( document, 'p' ), new Element( document, 'div' ) ];
+			const fragment = new DocumentFragment( document, children );
 
 			expect( fragment.childCount ).to.equal( 2 );
 			expect( fragment.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
@@ -38,8 +46,8 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'iterator', () => {
 		it( 'should iterate over all nodes added to document fragment', () => {
-			const children = [ new Element( 'p' ), new Element( 'div' ) ];
-			const fragment = new DocumentFragment( children );
+			const children = [ new Element( document, 'p' ), new Element( document, 'div' ) ];
+			const fragment = new DocumentFragment( document, children );
 
 			const arr = Array.from( fragment );
 
@@ -51,7 +59,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'getRoot', () => {
 		it( 'should return document fragment', () => {
-			const fragment = new DocumentFragment();
+			const fragment = new DocumentFragment( document );
 
 			expect( fragment.root ).to.equal( fragment );
 		} );
@@ -59,13 +67,13 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'isEmpty', () => {
 		it( 'should return true if there are no children in document fragment', () => {
-			const fragment = new DocumentFragment();
+			const fragment = new DocumentFragment( document );
 
 			expect( fragment.isEmpty ).to.be.true;
 		} );
 
 		it( 'should return false if there are children in document fragment', () => {
-			const fragment = new DocumentFragment( [ new Element( 'p' ) ] );
+			const fragment = new DocumentFragment( document, [ new Element( document, 'p' ) ] );
 
 			expect( fragment.isEmpty ).to.be.false;
 		} );
@@ -75,7 +83,7 @@ describe( 'DocumentFragment', () => {
 		let frag;
 
 		before( () => {
-			frag = new DocumentFragment();
+			frag = new DocumentFragment( document );
 		} );
 
 		it( 'should return true for documentFragment', () => {
@@ -102,11 +110,11 @@ describe( 'DocumentFragment', () => {
 		let fragment, el1, el2, el3, el4;
 
 		beforeEach( () => {
-			fragment = new DocumentFragment();
-			el1 = new Element( 'el1' );
-			el2 = new Element( 'el2' );
-			el3 = new Element( 'el3' );
-			el4 = new Element( 'el4' );
+			fragment = new DocumentFragment( document );
+			el1 = new Element( document, 'el1' );
+			el2 = new Element( document, 'el2' );
+			el3 = new Element( document, 'el3' );
+			el4 = new Element( document, 'el4' );
 		} );
 
 		describe( 'insertion', () => {
@@ -129,7 +137,7 @@ describe( 'DocumentFragment', () => {
 				expect( fragment.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 
 				fragment._removeChildren( 0, 1 );
-				fragment._insertChild( 0, [ new Element( 'p' ), 'abc' ] );
+				fragment._insertChild( 0, [ new Element( document, 'p' ), 'abc' ] );
 
 				expect( fragment.childCount ).to.equal( 2 );
 				expect( fragment.getChild( 1 ) ).to.have.property( 'data' ).that.equals( 'abc' );
@@ -168,8 +176,8 @@ describe( 'DocumentFragment', () => {
 			} );
 
 			it( 'should accept and correctly handle text proxies', () => {
-				const frag = new DocumentFragment();
-				const text = new Text( 'abcxyz' );
+				const frag = new DocumentFragment( document );
+				const text = new Text( document, 'abcxyz' );
 				const textProxy = new TextProxy( text, 2, 3 );
 
 				frag._insertChild( 0, textProxy );
@@ -260,10 +268,10 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'node methods when inserted to fragment', () => {
 		it( 'index should return proper value', () => {
-			const node1 = new Node();
-			const node2 = new Node();
-			const node3 = new Node();
-			const fragment = new DocumentFragment( [ node1, node2, node3 ] );
+			const node1 = new Node( document );
+			const node2 = new Node( document );
+			const node3 = new Node( document );
+			const fragment = new DocumentFragment( document, [ node1, node2, node3 ] );
 
 			expect( node1.index ).to.equal( 0 );
 			expect( node2.index ).to.equal( 1 );
@@ -274,10 +282,10 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'nextSibling should return proper node', () => {
-			const node1 = new Node();
-			const node2 = new Node();
-			const node3 = new Node();
-			new DocumentFragment( [ node1, node2, node3 ] ); // eslint-disable-line no-new
+			const node1 = new Node( document );
+			const node2 = new Node( document );
+			const node3 = new Node( document );
+			new DocumentFragment( document, [ node1, node2, node3 ] ); // eslint-disable-line no-new
 
 			expect( node1.nextSibling ).to.equal( node2 );
 			expect( node2.nextSibling ).to.equal( node3 );
@@ -285,10 +293,10 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'previousSibling should return proper node', () => {
-			const node1 = new Node();
-			const node2 = new Node();
-			const node3 = new Node();
-			new DocumentFragment( [ node1, node2, node3 ] ); // eslint-disable-line no-new
+			const node1 = new Node( document );
+			const node2 = new Node( document );
+			const node3 = new Node( document );
+			new DocumentFragment( document, [ node1, node2, node3 ] ); // eslint-disable-line no-new
 
 			expect( node1.previousSibling ).to.be.null;
 			expect( node2.previousSibling ).to.equal( node1 );
@@ -296,10 +304,10 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( '_remove() should remove node from fragment', () => {
-			const node1 = new Node();
-			const node2 = new Node();
-			const node3 = new Node();
-			const fragment = new DocumentFragment( [ node1, node2, node3 ] );
+			const node1 = new Node( document );
+			const node2 = new Node( document );
+			const node3 = new Node( document );
+			const fragment = new DocumentFragment( document, [ node1, node2, node3 ] );
 
 			node1._remove();
 			node3._remove();

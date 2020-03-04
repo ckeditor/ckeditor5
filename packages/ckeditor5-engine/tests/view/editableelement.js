@@ -7,14 +7,15 @@ import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
 
 import EditableElement from '../../src/view/editableelement';
 import Range from '../../src/view/range';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Document from '../../src/view/document';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'EditableElement', () => {
 	describe( 'is', () => {
 		let el;
 
 		before( () => {
-			el = new EditableElement( 'div' );
+			el = new EditableElement( new Document( new StylesProcessor() ), 'div' );
 		} );
 
 		it( 'should return true for containerElement/editable/element, also with correct name and element name', () => {
@@ -52,58 +53,20 @@ describe( 'EditableElement', () => {
 		} );
 	} );
 
-	describe( 'document', () => {
-		let element, docMock;
-
-		beforeEach( () => {
-			element = new EditableElement( 'div' );
-			docMock = createDocumentMock();
-		} );
-
-		it( 'should allow to set document', () => {
-			element._document = docMock;
-
-			expect( element.document ).to.equal( docMock );
-		} );
-
-		it( 'should return undefined if document is not set', () => {
-			expect( element.document ).to.be.undefined;
-		} );
-
-		it( 'should throw if trying to set document again', () => {
-			element._document = docMock;
-			const newDoc = createDocumentMock();
-
-			expectToThrowCKEditorError( () => {
-				element._document = newDoc;
-			}, 'view-editableelement-document-already-set: View document is already set.', docMock );
-		} );
-
-		it( 'should be cloned properly', () => {
-			element._document = docMock;
-			const newElement = element._clone();
-
-			expect( newElement.document ).to.equal( docMock );
-		} );
-	} );
-
 	describe( 'isFocused', () => {
 		let docMock, viewMain, viewHeader;
 
 		beforeEach( () => {
 			docMock = createDocumentMock();
 
-			viewMain = new EditableElement( 'div' );
-			viewMain._document = docMock;
+			viewMain = new EditableElement( docMock, 'div' );
 
-			viewHeader = new EditableElement( 'h1' );
-			viewHeader._document = docMock;
+			viewHeader = new EditableElement( docMock, 'h1' );
 			viewHeader.rootName = 'header';
 		} );
 
 		it( 'should be observable', () => {
-			const root = new EditableElement( 'div' );
-			root._document = createDocumentMock();
+			const root = new EditableElement( docMock, 'div' );
 
 			expect( root.isFocused ).to.be.false;
 
@@ -155,9 +118,14 @@ describe( 'EditableElement', () => {
 	} );
 
 	describe( 'isReadOnly', () => {
+		let docMock;
+
+		beforeEach( () => {
+			docMock = createDocumentMock();
+		} );
+
 		it( 'should be observable', () => {
-			const root = new EditableElement( 'div' );
-			root._document = createDocumentMock();
+			const root = new EditableElement( docMock, 'div' );
 
 			expect( root.isReadOnly ).to.be.false;
 
@@ -173,8 +141,7 @@ describe( 'EditableElement', () => {
 		} );
 
 		it( 'should be bound to the document#isReadOnly', () => {
-			const root = new EditableElement( 'div' );
-			root._document = createDocumentMock();
+			const root = new EditableElement( docMock, 'div' );
 
 			root.document.isReadOnly = false;
 
@@ -186,13 +153,18 @@ describe( 'EditableElement', () => {
 		} );
 	} );
 
-	describe( 'getDocument', () => {
-		it( 'should return document', () => {
-			const docMock = createDocumentMock();
-			const root = new EditableElement( 'div' );
-			root._document = docMock;
+	describe( 'document', () => {
+		let element, docMock;
 
-			expect( root.document ).to.equal( docMock );
+		beforeEach( () => {
+			docMock = createDocumentMock();
+			element = new EditableElement( docMock, 'div' );
+		} );
+
+		it( 'should be cloned properly', () => {
+			const newElement = element._clone();
+
+			expect( newElement.document ).to.equal( docMock );
 		} );
 	} );
 } );

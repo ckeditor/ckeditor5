@@ -7,12 +7,13 @@
 
 import MouseObserver from '../../../src/view/observer/mouseobserver';
 import View from '../../../src/view/view';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'MouseObserver', () => {
 	let view, viewDocument, observer;
 
 	beforeEach( () => {
-		view = new View();
+		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 		observer = view.addObserver( MouseObserver );
 	} );

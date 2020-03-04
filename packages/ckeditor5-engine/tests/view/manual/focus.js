@@ -9,8 +9,9 @@ import View from '../../../src/view/view';
 import ViewPosition from '../../../src/view/position';
 import ViewRange from '../../../src/view/range';
 import createViewRoot from '../_utils/createroot';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
-const view = new View();
+const view = new View( new StylesProcessor() );
 const viewDocument = view.document;
 
 const domEditable1 = document.getElementById( 'editable1' );

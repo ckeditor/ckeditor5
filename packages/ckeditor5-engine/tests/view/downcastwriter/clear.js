@@ -13,6 +13,7 @@ import UIElement from '../../../src/view/uielement';
 
 import Document from '../../../src/view/document';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DowncastWriter', () => {
 	describe( 'clear()', () => {
@@ -32,13 +33,13 @@ describe( 'DowncastWriter', () => {
 		}
 
 		beforeEach( () => {
-			document = new Document();
+			document = new Document( new StylesProcessor() );
 			writer = new DowncastWriter( document );
 		} );
 
 		it( 'should throw when range placed in two containers', () => {
-			const p1 = new ContainerElement( 'p' );
-			const p2 = new ContainerElement( 'p' );
+			const p1 = new ContainerElement( document, 'p' );
+			const p2 = new ContainerElement( document, 'p' );
 
 			expectToThrowCKEditorError( () => {
 				writer.clear( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
@@ -46,7 +47,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when range has no parent container', () => {
-			const el = new AttributeElement( 'b' );
+			const el = new AttributeElement( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
 				writer.clear( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
@@ -54,7 +55,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove matched element from range', () => {
-			const elementToRemove = new AttributeElement( 'b' );
+			const elementToRemove = new AttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -64,7 +65,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove matched element from range when range is inside text node', () => {
-			const elementToRemove = new AttributeElement( 'b' );
+			const elementToRemove = new AttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -74,7 +75,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove multiple matched elements from range', () => {
-			const elementToRemove = new AttributeElement( 'b' );
+			const elementToRemove = new AttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -84,7 +85,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove multiple matched elements from range when range is inside text node', () => {
-			const elementToRemove = new AttributeElement( 'b' );
+			const elementToRemove = new AttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -94,7 +95,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove only matched element', () => {
-			const elementToRemove = new AttributeElement( 'b' );
+			const elementToRemove = new AttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -104,7 +105,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove part of node when range ends inside this node', () => {
-			const elementToRemove = new AttributeElement( 'b' );
+			const elementToRemove = new AttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -114,7 +115,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove part of node when range starts inside this node', () => {
-			const elementToRemove = new AttributeElement( 'b' );
+			const elementToRemove = new AttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -124,7 +125,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove part of node when range starts and ends inside this node', () => {
-			const elementToRemove = new AttributeElement( 'b' );
+			const elementToRemove = new AttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -134,7 +135,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should merge after removing', () => {
-			const elementToRemove = new AttributeElement( 'b' );
+			const elementToRemove = new AttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -146,7 +147,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove EmptyElement', () => {
-			const elementToRemove = new EmptyElement( 'img' );
+			const elementToRemove = new EmptyElement( document, 'img' );
 
 			testDowncast(
 				elementToRemove,
@@ -156,7 +157,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove UIElement', () => {
-			const elementToRemove = new UIElement( 'span' );
+			const elementToRemove = new UIElement( document, 'span' );
 
 			testDowncast(
 				elementToRemove,
@@ -166,7 +167,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove ContainerElement', () => {
-			const elementToRemove = new ContainerElement( 'p' );
+			const elementToRemove = new ContainerElement( document, 'p' );
 
 			testDowncast(
 				elementToRemove,

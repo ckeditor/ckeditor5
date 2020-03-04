@@ -14,6 +14,7 @@
  */
 
 import View from '../view/view';
+import ViewDocument from '../view/document';
 import ViewDocumentFragment from '../view/documentfragment';
 import XmlDataProcessor from '../dataprocessor/xmldataprocessor';
 import ViewElement from '../view/element';
@@ -24,6 +25,7 @@ import AttributeElement from '../view/attributeelement';
 import ContainerElement from '../view/containerelement';
 import EmptyElement from '../view/emptyelement';
 import UIElement from '../view/uielement';
+import { StylesProcessor } from '../view/stylesmap';
 
 const ELEMENT_RANGE_START_TOKEN = '[';
 const ELEMENT_RANGE_END_TOKEN = ']';
@@ -321,16 +323,19 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  * this node will be used as the root for all parsed nodes.
  * @param {Boolean} [options.sameSelectionCharacters=false] When set to `false`, the selection inside the text should be marked using
  * `{` and `}` and the selection outside the ext using `[` and `]`. When set to `true`, both should be marked with `[` and `]` only.
+ * @param {module:engine/view/stylesmap~StylesProcessor} [options.stylesProcessor] Styles processor.
  * @returns {module:engine/view/text~Text|module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment|Object}
  * Returns the parsed view node or an object with two fields: `view` and `selection` when selection ranges were included in the data
  * to parse.
  */
 export function parse( data, options = {} ) {
+	const viewDocument = new ViewDocument( new StylesProcessor() );
+
 	options.order = options.order || [];
 	const rangeParser = new RangeParser( {
 		sameSelectionCharacters: options.sameSelectionCharacters
 	} );
-	const processor = new XmlDataProcessor( {
+	const processor = new XmlDataProcessor( viewDocument, {
 		namespaces: Object.keys( allowedTypes )
 	} );
 
@@ -927,7 +932,10 @@ class ViewStringify {
 function _convertViewElements( rootNode ) {
 	if ( rootNode.is( 'element' ) || rootNode.is( 'documentFragment' ) ) {
 		// Convert element or leave document fragment.
-		const convertedElement = rootNode.is( 'documentFragment' ) ? new ViewDocumentFragment() : _convertElement( rootNode );
+
+		const convertedElement = rootNode.is( 'documentFragment' ) ?
+			new ViewDocumentFragment( rootNode.document ) :
+			_convertElement( rootNode.document, rootNode );
 
 		// Convert all child nodes.
 		// Cache the nodes in array. Otherwise, we would skip some nodes because during iteration we move nodes
@@ -973,10 +981,10 @@ function _convertViewElements( rootNode ) {
 // module:engine/view/emptyelement~EmptyElement|module:engine/view/uielement~UIElement|
 // module:engine/view/containerelement~ContainerElement} A tree view
 // element converted according to its name.
-function _convertElement( viewElement ) {
+function _convertElement( viewDocument, viewElement ) {
 	const info = _convertElementNameAndInfo( viewElement );
 	const ElementConstructor = allowedTypes[ info.type ];
-	const newElement = ElementConstructor ? new ElementConstructor( info.name ) : new ViewElement( info.name );
+	const newElement = ElementConstructor ? new ElementConstructor( viewDocument, info.name ) : new ViewElement( viewDocument, info.name );
 
 	if ( newElement.is( 'attributeElement' ) ) {
 		if ( info.priority !== null ) {

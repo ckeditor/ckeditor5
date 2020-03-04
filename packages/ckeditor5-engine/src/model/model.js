@@ -334,7 +334,7 @@ export default class Model {
 	 *
 	 *		// You can create your own HtmlDataProcessor instance or use editor.data.processor
 	 *		// if you have not overridden the default one (which is the HtmlDataProcessor instance).
-	 *		const htmlDP = new HtmlDataProcessor();
+	 *		const htmlDP = new HtmlDataProcessor( viewDocument );
 	 *
 	 *		// Convert an HTML string to a view document fragment:
 	 *		const viewFragment = htmlDP.toView( htmlString );
@@ -438,6 +438,10 @@ export default class Model {
 	 * **Note:** if there is no valid position for the selection, the paragraph will always be created:
 	 *
 	 * `[<image src="foo.jpg"></image>]` -> `<paragraph>[]</paragraph>`.
+	 *
+	 * @param {'forward'|'backward'} [options.direction='backward'] The direction in which the content is being consumed.
+	 * Deleting backward corresponds to using the <kbd>Backspace</kbd> key, while deleting content forward corresponds to
+	 * the <kbd>Shift</kbd>+<kbd>Backspace</kbd> keystroke.
 	 */
 	deleteContent( selection, options ) {
 		deleteContent( this, selection, options );

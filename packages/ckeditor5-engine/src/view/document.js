@@ -11,7 +11,6 @@ import DocumentSelection from './documentselection';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import StylesMap from './stylesmap';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
@@ -24,8 +23,10 @@ import StylesMap from './stylesmap';
 export default class Document {
 	/**
 	 * Creates a Document instance.
+	 *
+	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance.
 	 */
-	constructor() {
+	constructor( stylesProcessor ) {
 		/**
 		 * Selection done on this document.
 		 *
@@ -46,6 +47,14 @@ export default class Document {
 		 * @member {module:utils/collection~Collection} module:engine/view/document~Document#roots
 		 */
 		this.roots = new Collection( { idProperty: 'rootName' } );
+
+		/**
+		 * The styles processor instance used by this document when normalizing styles.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/stylesmap~StylesProcessor}
+		 */
+		this.stylesProcessor = stylesProcessor;
 
 		/**
 		 * Defines whether document is in read-only mode.
@@ -159,22 +168,6 @@ export default class Document {
 	destroy() {
 		this.roots.map( root => root.destroy() );
 		this.stopListening();
-	}
-
-	/**
-	 * Adds a style processor normalization rules.
-	 *
-	 * The available style processors:
-	 *
-	 * * background: {@link module:engine/view/styles/background~addBackgroundRules}
-	 * * border: {@link module:engine/view/styles/border~addBorderRules}
-	 * * margin: {@link module:engine/view/styles/margin~addMarginRules}
-	 * * padding: {@link module:engine/view/styles/padding~addPaddingRules}
-	 *
-	 * @param {Function} callback
-	 */
-	addStyleProcessorRules( callback ) {
-		callback( StylesMap._styleProcessor );
 	}
 
 	/**

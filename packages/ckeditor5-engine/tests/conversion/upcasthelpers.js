@@ -10,6 +10,7 @@ import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewText from '../../src/view/text';
 import ViewUIElement from '../../src/view/uielement';
 import ViewAttributeElement from '../../src/view/attributeelement';
+import ViewDocument from '../../src/view/document';
 
 import Model from '../../src/model/model';
 import ModelDocumentFragment from '../../src/model/documentfragment';
@@ -27,12 +28,14 @@ import { setData as viewSetData } from '../../src/dev-utils/view';
 import Mapper from '../../src/conversion/mapper';
 import ViewSelection from '../../src/view/selection';
 import ViewRange from '../../src/view/range';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'UpcastHelpers', () => {
-	let upcastDispatcher, model, schema, upcastHelpers;
+	let upcastDispatcher, model, schema, upcastHelpers, viewDocument;
 
 	beforeEach( () => {
 		model = new Model();
+		viewDocument = new ViewDocument( new StylesProcessor() );
 
 		schema = model.schema;
 
@@ -61,7 +64,7 @@ describe( 'UpcastHelpers', () => {
 		it( 'config.view is a string', () => {
 			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
 
-			expectResult( new ViewContainerElement( 'p' ), '<paragraph></paragraph>' );
+			expectResult( new ViewContainerElement( viewDocument, 'p' ), '<paragraph></paragraph>' );
 		} );
 
 		it( 'can be overwritten using converterPriority', () => {
@@ -72,7 +75,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.elementToElement( { view: 'p', model: 'p' } );
 			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph', converterPriority: 'high' } );
 
-			expectResult( new ViewContainerElement( 'p' ), '<paragraph></paragraph>' );
+			expectResult( new ViewContainerElement( viewDocument, 'p' ), '<paragraph></paragraph>' );
 		} );
 
 		it( 'config.view is an object', () => {
@@ -88,8 +91,8 @@ describe( 'UpcastHelpers', () => {
 				model: 'fancyParagraph'
 			} );
 
-			expectResult( new ViewContainerElement( 'p', { class: 'fancy' } ), '<fancyParagraph></fancyParagraph>' );
-			expectResult( new ViewContainerElement( 'p' ), '' );
+			expectResult( new ViewContainerElement( viewDocument, 'p', { class: 'fancy' } ), '<fancyParagraph></fancyParagraph>' );
+			expectResult( new ViewContainerElement( viewDocument, 'p' ), '' );
 		} );
 
 		it( 'config.model is a function', () => {
@@ -108,8 +111,11 @@ describe( 'UpcastHelpers', () => {
 				}
 			} );
 
-			expectResult( new ViewContainerElement( 'p', { class: 'heading', 'data-level': 2 } ), '<heading level="2"></heading>' );
-			expectResult( new ViewContainerElement( 'p', { 'data-level': 2 } ), '' );
+			expectResult(
+				new ViewContainerElement( viewDocument, 'p', { class: 'heading', 'data-level': 2 } ),
+				'<heading level="2"></heading>'
+			);
+			expectResult( new ViewContainerElement( viewDocument, 'p', { 'data-level': 2 } ), '' );
 		} );
 
 		it( 'config.view is not set - should fire conversion for every element', () => {
@@ -117,20 +123,23 @@ describe( 'UpcastHelpers', () => {
 				model: 'paragraph'
 			} );
 
-			expectResult( new ViewContainerElement( 'p' ), '<paragraph></paragraph>' );
-			expectResult( new ViewContainerElement( 'foo' ), '<paragraph></paragraph>' );
+			expectResult( new ViewContainerElement( viewDocument, 'p' ), '<paragraph></paragraph>' );
+			expectResult( new ViewContainerElement( viewDocument, 'foo' ), '<paragraph></paragraph>' );
 		} );
 
 		it( 'should fire conversion of the element children', () => {
 			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
 
-			expectResult( new ViewContainerElement( 'p', null, new ViewText( 'foo' ) ), '<paragraph>foo</paragraph>' );
+			expectResult(
+				new ViewContainerElement( viewDocument, 'p', null, new ViewText( viewDocument, 'foo' ) ),
+				'<paragraph>foo</paragraph>'
+			);
 		} );
 
 		it( 'should not insert a model element if it is not allowed by schema', () => {
 			upcastHelpers.elementToElement( { view: 'h2', model: 'heading' } );
 
-			expectResult( new ViewContainerElement( 'h2' ), '' );
+			expectResult( new ViewContainerElement( viewDocument, 'h2' ), '' );
 		} );
 
 		it( 'should auto-break elements', () => {
@@ -142,10 +151,10 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.elementToElement( { view: 'h2', model: 'heading' } );
 
 			expectResult(
-				new ViewContainerElement( 'p', null, [
-					new ViewText( 'Foo' ),
-					new ViewContainerElement( 'h2', null, new ViewText( 'Xyz' ) ),
-					new ViewText( 'Bar' )
+				new ViewContainerElement( viewDocument, 'p', null, [
+					new ViewText( viewDocument, 'Foo' ),
+					new ViewContainerElement( viewDocument, 'h2', null, new ViewText( viewDocument, 'Xyz' ) ),
+					new ViewText( viewDocument, 'Bar' )
 				] ),
 				'<paragraph>Foo</paragraph><heading>Xyz</heading><paragraph>Bar</paragraph>'
 			);
@@ -155,7 +164,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
 			upcastHelpers.elementToElement( { view: 'p', model: () => null, converterPriority: 'high' } );
 
-			expectResult( new ViewContainerElement( 'p' ), '<paragraph></paragraph>' );
+			expectResult( new ViewContainerElement( viewDocument, 'p' ), '<paragraph></paragraph>' );
 		} );
 	} );
 
@@ -168,7 +177,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.elementToAttribute( { view: 'strong', model: 'bold' } );
 
 			expectResult(
-				new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ),
+				new ViewAttributeElement( viewDocument, 'strong', null, new ViewText( viewDocument, 'foo' ) ),
 				'<$text bold="true">foo</$text>'
 			);
 		} );
@@ -178,7 +187,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.elementToAttribute( { view: 'strong', model: 'bold', converterPriority: 'high' } );
 
 			expectResult(
-				new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ),
+				new ViewAttributeElement( viewDocument, 'strong', null, new ViewText( viewDocument, 'foo' ) ),
 				'<$text bold="true">foo</$text>'
 			);
 		} );
@@ -193,11 +202,11 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			expectResult(
-				new ViewAttributeElement( 'span', { class: 'bold' }, new ViewText( 'foo' ) ),
+				new ViewAttributeElement( viewDocument, 'span', { class: 'bold' }, new ViewText( viewDocument, 'foo' ) ),
 				'<$text bold="true">foo</$text>'
 			);
 
-			expectResult( new ViewAttributeElement( 'span', {}, new ViewText( 'foo' ) ), 'foo' );
+			expectResult( new ViewAttributeElement( viewDocument, 'span', {}, new ViewText( viewDocument, 'foo' ) ), 'foo' );
 		} );
 
 		it( 'model attribute value is given', () => {
@@ -217,11 +226,11 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			expectResult(
-				new ViewAttributeElement( 'span', { class: 'styled styled-dark' }, new ViewText( 'foo' ) ),
+				new ViewAttributeElement( viewDocument, 'span', { class: 'styled styled-dark' }, new ViewText( viewDocument, 'foo' ) ),
 				'<$text styled="dark">foo</$text>'
 			);
 
-			expectResult( new ViewAttributeElement( 'span', {}, new ViewText( 'foo' ) ), 'foo' );
+			expectResult( new ViewAttributeElement( viewDocument, 'span', {}, new ViewText( viewDocument, 'foo' ) ), 'foo' );
 		} );
 
 		it( 'model attribute value is a function', () => {
@@ -254,17 +263,17 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			expectResult(
-				new ViewAttributeElement( 'span', { style: 'font-size:9px' }, new ViewText( 'foo' ) ),
+				new ViewAttributeElement( viewDocument, 'span', { style: 'font-size:9px' }, new ViewText( viewDocument, 'foo' ) ),
 				'<$text fontSize="small">foo</$text>'
 			);
 
 			expectResult(
-				new ViewAttributeElement( 'span', { style: 'font-size:12px' }, new ViewText( 'foo' ) ),
+				new ViewAttributeElement( viewDocument, 'span', { style: 'font-size:12px' }, new ViewText( viewDocument, 'foo' ) ),
 				'foo'
 			);
 
 			expectResult(
-				new ViewAttributeElement( 'span', { style: 'font-size:14px' }, new ViewText( 'foo' ) ),
+				new ViewAttributeElement( viewDocument, 'span', { style: 'font-size:14px' }, new ViewText( viewDocument, 'foo' ) ),
 				'<$text fontSize="big">foo</$text>'
 			);
 		} );
@@ -273,7 +282,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.elementToAttribute( { view: 'em', model: 'italic' } );
 
 			expectResult(
-				new ViewAttributeElement( 'em', null, new ViewText( 'foo' ) ),
+				new ViewAttributeElement( viewDocument, 'em', null, new ViewText( viewDocument, 'foo' ) ),
 				'foo'
 			);
 		} );
@@ -290,7 +299,7 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			expectResult(
-				new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ),
+				new ViewAttributeElement( viewDocument, 'strong', null, new ViewText( viewDocument, 'foo' ) ),
 				'<$text bold="true">foo</$text>'
 			);
 		} );
@@ -307,7 +316,12 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			expectResult(
-				new ViewAttributeElement( 'span', { class: 'attrib-a', style: 'color:attrib-b;' }, new ViewText( 'foo' ) ),
+				new ViewAttributeElement(
+					viewDocument,
+					'span',
+					{ class: 'attrib-a', style: 'color:attrib-b;' },
+					new ViewText( viewDocument, 'foo' )
+				),
 				'<$text attribA="true" attribB="true">foo</$text>'
 			);
 		} );
@@ -329,7 +343,7 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			expectResult(
-				new ViewAttributeElement( 'strong', { class: 'foo' }, new ViewText( 'foo' ) ),
+				new ViewAttributeElement( viewDocument, 'strong', { class: 'foo' }, new ViewText( viewDocument, 'foo' ) ),
 				'<$text attribB="true" bold="true">foo</$text>'
 			);
 		} );
@@ -345,9 +359,10 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewAttributeElement(
+					viewDocument,
 					'strong',
 					null,
-					new ViewContainerElement( 'p', null, new ViewText( 'Foo' ) )
+					new ViewContainerElement( viewDocument, 'p', null, new ViewText( viewDocument, 'Foo' ) )
 				),
 				'<paragraph><$text bold="true">Foo</$text></paragraph>'
 			);
@@ -375,7 +390,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.attributeToAttribute( { view: 'src', model: 'source' } );
 
 			expectResult(
-				new ViewAttributeElement( 'img', { src: 'foo.jpg' } ),
+				new ViewAttributeElement( viewDocument, 'img', { src: 'foo.jpg' } ),
 				'<image source="foo.jpg"></image>'
 			);
 		} );
@@ -388,7 +403,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.attributeToAttribute( { view: { key: 'src' }, model: 'source' } );
 
 			expectResult(
-				new ViewAttributeElement( 'img', { src: 'foo.jpg' } ),
+				new ViewAttributeElement( viewDocument, 'img', { src: 'foo.jpg' } ),
 				'<image source="foo.jpg"></image>'
 			);
 		} );
@@ -401,7 +416,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.attributeToAttribute( { view: { name: 'img', key: 'src' }, model: { name: 'image', key: 'source' } } );
 
 			expectResult(
-				new ViewAttributeElement( 'img', { src: 'foo.jpg' } ),
+				new ViewAttributeElement( viewDocument, 'img', { src: 'foo.jpg' } ),
 				'<image source="foo.jpg"></image>'
 			);
 		} );
@@ -415,7 +430,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.attributeToAttribute( { view: { key: 'src' }, model: 'source', converterPriority: 'normal' } );
 
 			expectResult(
-				new ViewAttributeElement( 'img', { src: 'foo.jpg' } ),
+				new ViewAttributeElement( viewDocument, 'img', { src: 'foo.jpg' } ),
 				'<image source="foo.jpg"></image>'
 			);
 		} );
@@ -434,7 +449,7 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			expectResult(
-				new ViewAttributeElement( 'img', { 'data-style': 'dark' } ),
+				new ViewAttributeElement( viewDocument, 'img', { 'data-style': 'dark' } ),
 				'<image styled="dark"></image>'
 			);
 		} );
@@ -459,17 +474,17 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
 
 			expectResult(
-				new ViewContainerElement( 'img', { class: 'styled-dark' } ),
+				new ViewContainerElement( viewDocument, 'img', { class: 'styled-dark' } ),
 				'<image styled="dark"></image>'
 			);
 
 			expectResult(
-				new ViewContainerElement( 'img', { class: 'styled-xxx' } ),
+				new ViewContainerElement( viewDocument, 'img', { class: 'styled-xxx' } ),
 				'<image></image>'
 			);
 
 			expectResult(
-				new ViewContainerElement( 'p', { class: 'styled-dark' } ),
+				new ViewContainerElement( viewDocument, 'p', { class: 'styled-dark' } ),
 				'<paragraph></paragraph>'
 			);
 		} );
@@ -496,7 +511,7 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			expectResult(
-				new ViewAttributeElement( 'img', { 'class': 'styled-dark' } ),
+				new ViewAttributeElement( viewDocument, 'img', { 'class': 'styled-dark' } ),
 				'<image styled="dark"></image>'
 			);
 		} );
@@ -505,7 +520,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.attributeToAttribute( { view: 'src', model: 'source' } );
 
 			expectResult(
-				new ViewAttributeElement( 'img', { src: 'foo.jpg' } ),
+				new ViewAttributeElement( viewDocument, 'img', { src: 'foo.jpg' } ),
 				'<image></image>'
 			);
 		} );
@@ -538,7 +553,7 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			expectResult(
-				new ViewAttributeElement( 'img', { class: 'styled' } ),
+				new ViewAttributeElement( viewDocument, 'img', { class: 'styled' } ),
 				'<image styled="true"></image>'
 			);
 		} );
@@ -559,9 +574,10 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewContainerElement(
+					viewDocument,
 					'div',
 					{ class: 'border' },
-					new ViewContainerElement( 'div', { class: 'shade' } )
+					new ViewContainerElement( viewDocument, 'div', { class: 'shade' } )
 				),
 				'<div border="border"><div shade="shade"></div></div>'
 			);
@@ -576,12 +592,12 @@ describe( 'UpcastHelpers', () => {
 		it( 'config.view is a string', () => {
 			upcastHelpers.elementToMarker( { view: 'marker-search', model: 'search' } );
 
-			const frag = new ViewDocumentFragment( [
-				new ViewText( 'fo' ),
-				new ViewUIElement( 'marker-search' ),
-				new ViewText( 'oba' ),
-				new ViewUIElement( 'marker-search' ),
-				new ViewText( 'r' )
+			const frag = new ViewDocumentFragment( viewDocument, [
+				new ViewText( viewDocument, 'fo' ),
+				new ViewUIElement( viewDocument, 'marker-search' ),
+				new ViewText( viewDocument, 'oba' ),
+				new ViewUIElement( viewDocument, 'marker-search' ),
+				new ViewText( viewDocument, 'r' )
 			] );
 
 			const marker = { name: 'search', start: [ 2 ], end: [ 5 ] };
@@ -593,12 +609,12 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.elementToMarker( { view: 'marker-search', model: 'search-result' } );
 			upcastHelpers.elementToMarker( { view: 'marker-search', model: 'search', converterPriority: 'high' } );
 
-			const frag = new ViewDocumentFragment( [
-				new ViewText( 'fo' ),
-				new ViewUIElement( 'marker-search' ),
-				new ViewText( 'oba' ),
-				new ViewUIElement( 'marker-search' ),
-				new ViewText( 'r' )
+			const frag = new ViewDocumentFragment( viewDocument, [
+				new ViewText( viewDocument, 'fo' ),
+				new ViewUIElement( viewDocument, 'marker-search' ),
+				new ViewText( viewDocument, 'oba' ),
+				new ViewUIElement( viewDocument, 'marker-search' ),
+				new ViewText( viewDocument, 'r' )
 			] );
 
 			const marker = { name: 'search', start: [ 2 ], end: [ 5 ] };
@@ -615,12 +631,12 @@ describe( 'UpcastHelpers', () => {
 				model: 'search'
 			} );
 
-			const frag = new ViewDocumentFragment( [
-				new ViewText( 'f' ),
-				new ViewUIElement( 'span', { 'data-marker': 'search' } ),
-				new ViewText( 'oob' ),
-				new ViewUIElement( 'span', { 'data-marker': 'search' } ),
-				new ViewText( 'ar' )
+			const frag = new ViewDocumentFragment( viewDocument, [
+				new ViewText( viewDocument, 'f' ),
+				new ViewUIElement( viewDocument, 'span', { 'data-marker': 'search' } ),
+				new ViewText( viewDocument, 'oob' ),
+				new ViewUIElement( viewDocument, 'span', { 'data-marker': 'search' } ),
+				new ViewText( viewDocument, 'ar' )
 			] );
 
 			const marker = { name: 'search', start: [ 1 ], end: [ 4 ] };
@@ -634,12 +650,12 @@ describe( 'UpcastHelpers', () => {
 				model: viewElement => 'comment:' + viewElement.getAttribute( 'data-comment-id' )
 			} );
 
-			const frag = new ViewDocumentFragment( [
-				new ViewText( 'foo' ),
-				new ViewUIElement( 'comment', { 'data-comment-id': 4 } ),
-				new ViewText( 'b' ),
-				new ViewUIElement( 'comment', { 'data-comment-id': 4 } ),
-				new ViewText( 'ar' )
+			const frag = new ViewDocumentFragment( viewDocument, [
+				new ViewText( viewDocument, 'foo' ),
+				new ViewUIElement( viewDocument, 'comment', { 'data-comment-id': 4 } ),
+				new ViewText( viewDocument, 'b' ),
+				new ViewUIElement( viewDocument, 'comment', { 'data-comment-id': 4 } ),
+				new ViewText( viewDocument, 'ar' )
 			] );
 
 			const marker = { name: 'comment:4', start: [ 3 ], end: [ 4 ] };
@@ -652,12 +668,12 @@ describe( 'UpcastHelpers', () => {
 
 			upcastHelpers.elementToMarker( { view: 'marker-search', model: 'search' } );
 
-			const element = new ViewContainerElement( 'p', null, [
-				new ViewText( 'fo' ),
-				new ViewUIElement( 'marker-search' ),
-				new ViewText( 'oba' ),
-				new ViewUIElement( 'marker-search' ),
-				new ViewText( 'r' )
+			const element = new ViewContainerElement( viewDocument, 'p', null, [
+				new ViewText( viewDocument, 'fo' ),
+				new ViewUIElement( viewDocument, 'marker-search' ),
+				new ViewText( viewDocument, 'oba' ),
+				new ViewUIElement( viewDocument, 'marker-search' ),
+				new ViewText( viewDocument, 'r' )
 			] );
 
 			const marker = { name: 'search', start: [ 0, 2 ], end: [ 0, 5 ] };
@@ -683,10 +699,11 @@ describe( 'UpcastHelpers', () => {
 } );
 
 describe( 'upcast-converters', () => {
-	let dispatcher, schema, context, model;
+	let dispatcher, schema, context, model, viewDocument;
 
 	beforeEach( () => {
 		model = new Model();
+		viewDocument = new ViewDocument( new StylesProcessor() );
 		schema = model.schema;
 
 		schema.register( 'paragraph', { inheritAllFrom: '$block' } );
@@ -699,7 +716,7 @@ describe( 'upcast-converters', () => {
 
 	describe( 'convertText()', () => {
 		it( 'should return converter converting ViewText to ModelText', () => {
-			const viewText = new ViewText( 'foobar' );
+			const viewText = new ViewText( viewDocument, 'foobar' );
 
 			dispatcher.on( 'text', convertText() );
 
@@ -711,7 +728,7 @@ describe( 'upcast-converters', () => {
 		} );
 
 		it( 'should not convert already consumed texts', () => {
-			const viewText = new ViewText( 'foofuckbafuckr' );
+			const viewText = new ViewText( viewDocument, 'foofuckbafuckr' );
 
 			// Default converter for elements. Returns just converted children. Added with lowest priority.
 			dispatcher.on( 'text', convertText(), { priority: 'lowest' } );
@@ -739,7 +756,7 @@ describe( 'upcast-converters', () => {
 				}
 			} );
 
-			const viewText = new ViewText( 'foobar' );
+			const viewText = new ViewText( viewDocument, 'foobar' );
 			dispatcher.on( 'text', convertText() );
 			let conversionResult = model.change( writer => dispatcher.convert( viewText, writer, context ) );
 
@@ -755,7 +772,7 @@ describe( 'upcast-converters', () => {
 		} );
 
 		it( 'should support unicode', () => {
-			const viewText = new ViewText( 'நிலைக்கு' );
+			const viewText = new ViewText( viewDocument, 'நிலைக்கு' );
 
 			dispatcher.on( 'text', convertText() );
 
@@ -769,9 +786,9 @@ describe( 'upcast-converters', () => {
 
 	describe( 'convertToModelFragment()', () => {
 		it( 'should return converter converting whole ViewDocumentFragment to ModelDocumentFragment', () => {
-			const viewFragment = new ViewDocumentFragment( [
-				new ViewContainerElement( 'p', null, new ViewText( 'foo' ) ),
-				new ViewText( 'bar' )
+			const viewFragment = new ViewDocumentFragment( viewDocument, [
+				new ViewContainerElement( viewDocument, 'p', null, new ViewText( viewDocument, 'foo' ) ),
+				new ViewText( viewDocument, 'bar' )
 			] );
 
 			// To get any meaningful results we have to actually convert something.
@@ -788,7 +805,7 @@ describe( 'upcast-converters', () => {
 		} );
 
 		it( 'should not convert already consumed (converted) changes', () => {
-			const viewP = new ViewContainerElement( 'p', null, new ViewText( 'foo' ) );
+			const viewP = new ViewContainerElement( viewDocument, 'p', null, new ViewText( viewDocument, 'foo' ) );
 
 			// To get any meaningful results we have to actually convert something.
 			dispatcher.on( 'text', convertText() );
@@ -818,9 +835,12 @@ describe( 'upcast-converters', () => {
 
 		it( 'should forward correct modelCursor', () => {
 			const spy = sinon.spy();
-			const view = new ViewDocumentFragment( [
-				new ViewContainerElement( 'div', null, [ new ViewText( 'abc' ), new ViewContainerElement( 'foo' ) ] ),
-				new ViewContainerElement( 'bar' )
+			const view = new ViewDocumentFragment( viewDocument, [
+				new ViewContainerElement( viewDocument, 'div', null, [
+					new ViewText( viewDocument, 'abc' ),
+					new ViewContainerElement( viewDocument, 'foo' )
+				] ),
+				new ViewContainerElement( viewDocument, 'bar' )
 			] );
 			const position = ModelPosition._createAt( new ModelElement( 'element' ), 0 );
 
@@ -857,7 +877,7 @@ describe( 'upcast-converters', () => {
 
 			modelSetData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
-			view = new View();
+			view = new View( new StylesProcessor() );
 			viewDocument = view.document;
 			viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 

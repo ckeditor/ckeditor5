@@ -24,10 +24,11 @@ export default class XmlDataProcessor {
 	/**
 	 * Creates a new instance of the XML data processor class.
 	 *
+	 * @param {module:engine/view/document~Document} document The view document instance.
 	 * @param {Object} options Configuration options.
 	 * @param {Array<String>} [options.namespaces=[]] A list of namespaces allowed to use in the XML input.
 	 */
-	constructor( options = {} ) {
+	constructor( document, options = {} ) {
 		/**
 		 * A list of namespaces allowed to use in the XML input.
 		 *
@@ -53,7 +54,7 @@ export default class XmlDataProcessor {
 		 * @private
 		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
-		this._domConverter = new DomConverter( { blockFillerMode: 'nbsp' } );
+		this._domConverter = new DomConverter( document, { blockFillerMode: 'nbsp' } );
 
 		/**
 		 * A basic HTML writer instance used to convert DOM elements to an XML string.

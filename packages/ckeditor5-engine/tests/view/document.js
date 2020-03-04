@@ -10,7 +10,7 @@ import Document from '../../src/view/document';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import createViewRoot from './_utils/createroot';
-import StylesMap from '../../src/view/stylesmap';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Document', () => {
 	let domRoot, viewDocument;
@@ -24,7 +24,7 @@ describe( 'Document', () => {
 		} );
 		document.body.appendChild( domRoot );
 
-		viewDocument = new Document();
+		viewDocument = new Document( new StylesProcessor() );
 	} );
 
 	afterEach( () => {
@@ -90,17 +90,6 @@ describe( 'Document', () => {
 			viewDocument._callPostFixers();
 
 			expect( calls ).to.equal( 4 );
-		} );
-	} );
-
-	describe( 'addStyleProcessorRules()', () => {
-		it( 'should ', () => {
-			const spy = sinon.spy();
-
-			viewDocument.addStyleProcessorRules( spy );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, StylesMap._styleProcessor );
 		} );
 	} );
 } );

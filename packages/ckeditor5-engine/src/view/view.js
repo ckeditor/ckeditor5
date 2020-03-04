@@ -62,14 +62,17 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class View {
-	constructor() {
+	/**
+	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance.
+	 */
+	constructor( stylesProcessor ) {
 		/**
 		 * Instance of the {@link module:engine/view/document~Document} associated with this view controller.
 		 *
 		 * @readonly
 		 * @type {module:engine/view/document~Document}
 		 */
-		this.document = new Document();
+		this.document = new Document( stylesProcessor );
 
 		/**
 		 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} used by
@@ -79,7 +82,7 @@ export default class View {
 		 * @readonly
 		 * @type {module:engine/view/domconverter~DomConverter}
 		 */
-		this.domConverter = new DomConverter();
+		this.domConverter = new DomConverter( this.document );
 
 		/**
 		 * Roots of the DOM tree. Map on the `HTMLElement`s with roots names as keys.

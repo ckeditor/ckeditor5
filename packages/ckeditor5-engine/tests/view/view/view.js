@@ -18,6 +18,7 @@ import ViewRange from '../../../src/view/range';
 import ViewElement from '../../../src/view/element';
 import ViewPosition from '../../../src/view/position';
 import ViewSelection from '../../../src/view/selection';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -39,7 +40,7 @@ describe( 'view', () => {
 
 		document.body.appendChild( domRoot );
 
-		view = new View();
+		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 
 		ObserverMock = class extends Observer {
@@ -90,7 +91,7 @@ describe( 'view', () => {
 		const oldEnvIsAndroid = env.isAndroid;
 		env.isAndroid = true;
 
-		const newView = new View();
+		const newView = new View( new StylesProcessor() );
 		expect( newView.getObserver( InputObserver ) ).to.be.instanceof( InputObserver );
 
 		env.isAndroid = oldEnvIsAndroid;
@@ -159,7 +160,7 @@ describe( 'view', () => {
 			// The variable will be overwritten.
 			view.destroy();
 
-			view = new View();
+			view = new View( new StylesProcessor() );
 			viewDocument = view.document;
 			view._renderer.render = sinon.spy();
 
@@ -269,7 +270,7 @@ describe( 'view', () => {
 			// The variable will be overwritten.
 			view.destroy();
 
-			view = new View();
+			view = new View( new StylesProcessor() );
 			viewDocument = view.document;
 			view._renderer.render = sinon.spy();
 		} );
@@ -558,7 +559,7 @@ describe( 'view', () => {
 				createElement( document, 'p' )
 			] );
 
-			const view = new View();
+			const view = new View( new StylesProcessor() );
 			const viewDocument = view.document;
 
 			createViewRoot( viewDocument, 'div', 'main' );
@@ -575,12 +576,12 @@ describe( 'view', () => {
 		it( 'should render changes in the Document', () => {
 			const domDiv = document.createElement( 'div' );
 
-			const view = new View();
+			const view = new View( new StylesProcessor() );
 			const viewDocument = view.document;
 			createViewRoot( viewDocument, 'div', 'main' );
 			view.attachDomRoot( domDiv );
 
-			viewDocument.getRoot()._appendChild( new ViewElement( 'p' ) );
+			viewDocument.getRoot()._appendChild( new ViewElement( viewDocument, 'p' ) );
 			view.forceRender();
 
 			expect( domDiv.childNodes.length ).to.equal( 1 );
@@ -592,13 +593,13 @@ describe( 'view', () => {
 		it( 'should render attribute changes', () => {
 			const domRoot = document.createElement( 'div' );
 
-			const view = new View();
+			const view = new View( new StylesProcessor() );
 			const viewDocument = view.document;
 			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 
 			view.attachDomRoot( domRoot );
 
-			const viewP = new ViewElement( 'p', { class: 'foo' } );
+			const viewP = new ViewElement( viewDocument, 'p', { class: 'foo' } );
 			viewRoot._appendChild( viewP );
 			view.forceRender();
 

@@ -7,13 +7,17 @@
 
 import UIElement from '../../src/view/uielement';
 import Element from '../../src/view/element';
+import Document from '../../src/view/document';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'UIElement', () => {
-	let uiElement;
+	let uiElement, doc;
 
 	beforeEach( () => {
-		uiElement = new UIElement( 'span', {
+		doc = new Document( new StylesProcessor() );
+
+		uiElement = new UIElement( doc, 'span', {
 			foo: 'bar',
 			style: 'margin-top: 2em;color: white;',
 			class: 'foo bar'
@@ -32,7 +36,7 @@ describe( 'UIElement', () => {
 
 		it( 'should throw if child elements are passed to constructor', () => {
 			expectToThrowCKEditorError( () => {
-				new UIElement( 'img', null, [ new Element( 'i' ) ] ); // eslint-disable-line no-new
+				new UIElement( doc, 'img', null, [ new Element( doc, 'i' ) ] ); // eslint-disable-line no-new
 			}, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
 		} );
 	} );
@@ -41,7 +45,7 @@ describe( 'UIElement', () => {
 		let el;
 
 		before( () => {
-			el = new UIElement( 'span' );
+			el = new UIElement( doc, 'span' );
 		} );
 
 		it( 'should return true for uiElement/element, also with correct name and element name', () => {
@@ -82,7 +86,7 @@ describe( 'UIElement', () => {
 	describe( '_appendChild()', () => {
 		it( 'should throw when try to append new child element', () => {
 			expectToThrowCKEditorError( () => {
-				uiElement._appendChild( new Element( 'i' ) );
+				uiElement._appendChild( new Element( doc, 'i' ) );
 			}, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
 		} );
 	} );
@@ -90,7 +94,7 @@ describe( 'UIElement', () => {
 	describe( '_insertChild()', () => {
 		it( 'should throw when try to insert new child element', () => {
 			expectToThrowCKEditorError( () => {
-				uiElement._insertChild( 0, new Element( 'i' ) );
+				uiElement._insertChild( 0, new Element( doc, 'i' ) );
 			}, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
 		} );
 	} );

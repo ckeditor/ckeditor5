@@ -11,16 +11,17 @@ import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 import ViewPosition from '../../src/view/position';
 import ViewRange from '../../src/view/range';
 import ViewSelection from '../../src/view/selection';
+import Document from '../../src/view/document';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'UpcastWriter', () => {
-	let writer, view, dataprocessor;
-
-	before( () => {
-		writer = new UpcastWriter();
-		dataprocessor = new HtmlDataProcessor();
-	} );
+	let writer, view, dataprocessor, document;
 
 	beforeEach( () => {
+		document = new Document( new StylesProcessor() );
+		writer = new UpcastWriter( document );
+		dataprocessor = new HtmlDataProcessor( document );
+
 		const html = '' +
 			'<h1 style="color:blue;position:fixed;">Heading <strong>1</strong></h1>' +
 			'<p class="foo1 bar2" style="text-align:left;" data-attr="abc">Foo <i>Bar</i> <strong>Bold</strong></p>' +
@@ -350,7 +351,7 @@ describe( 'UpcastWriter', () => {
 		} );
 
 		it( 'should do nothing for elements without parent', () => {
-			const element = new Element( 'p', null, 'foo' );
+			const element = new Element( document, 'p', null, 'foo' );
 
 			writer.unwrapElement( element );
 
@@ -382,7 +383,7 @@ describe( 'UpcastWriter', () => {
 		} );
 
 		it( 'should have no effect on detached element', () => {
-			const el = new Element( 'h2' );
+			const el = new Element( document, 'h2' );
 
 			const renamed = writer.rename( 'h3', el );
 
@@ -581,41 +582,41 @@ describe( 'UpcastWriter', () => {
 
 	describe( 'createPositionAt()', () => {
 		it( 'should return instance of Position', () => {
-			const span = new Element( 'span' );
+			const span = new Element( document, 'span' );
 			expect( writer.createPositionAt( span, 0 ) ).to.be.instanceof( ViewPosition );
 		} );
 	} );
 
 	describe( 'createPositionAfter()', () => {
 		it( 'should return instance of Position', () => {
-			const span = new Element( 'span', undefined, new Element( 'span' ) );
+			const span = new Element( document, 'span', undefined, new Element( document, 'span' ) );
 			expect( writer.createPositionAfter( span.getChild( 0 ) ) ).to.be.instanceof( ViewPosition );
 		} );
 	} );
 
 	describe( 'createPositionBefore()', () => {
 		it( 'should return instance of Position', () => {
-			const span = new Element( 'span', undefined, new Element( 'span' ) );
+			const span = new Element( document, 'span', undefined, new Element( document, 'span' ) );
 			expect( writer.createPositionBefore( span.getChild( 0 ) ) ).to.be.instanceof( ViewPosition );
 		} );
 	} );
 
 	describe( 'createRange()', () => {
 		it( 'should return instance of Range', () => {
-			expect( writer.createRange( writer.createPositionAt( new Element( 'span' ), 0 ) ) ).to.be.instanceof( ViewRange );
+			expect( writer.createRange( writer.createPositionAt( new Element( document, 'span' ), 0 ) ) ).to.be.instanceof( ViewRange );
 		} );
 	} );
 
 	describe( 'createRangeIn()', () => {
 		it( 'should return instance of Range', () => {
-			const span = new Element( 'span', undefined, new Element( 'span' ) );
+			const span = new Element( document, 'span', undefined, new Element( document, 'span' ) );
 			expect( writer.createRangeIn( span.getChild( 0 ) ) ).to.be.instanceof( ViewRange );
 		} );
 	} );
 
 	describe( 'createRangeOn()', () => {
 		it( 'should return instance of Range', () => {
-			const span = new Element( 'span', undefined, new Element( 'span' ) );
+			const span = new Element( document, 'span', undefined, new Element( document, 'span' ) );
 			expect( writer.createRangeOn( span.getChild( 0 ) ) ).to.be.instanceof( ViewRange );
 		} );
 	} );

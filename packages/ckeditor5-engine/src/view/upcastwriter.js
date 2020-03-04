@@ -29,12 +29,25 @@ import Selection from './selection';
  * Unlike `DowncastWriter`, which is available in the {@link module:engine/view/view~View#change `View#change()`} block,
  * `UpcastWriter` can be created wherever you need it:
  *
- *		const writer = new UpcastWriter();
+ *		const writer = new UpcastWriter( viewDocument );
  *		const text = writer.createText( 'foo!' );
  *
  *		writer.appendChild( text, someViewElement );
  */
 export default class UpcastWriter {
+	/**
+	 * @param {module:engine/view/document~Document} document The view document instance in which this upcast writer operates.
+	 */
+	constructor( document ) {
+		/**
+		 * The view document instance in which this upcast writer operates.
+		 *
+		 * @readonly
+		 * @type {module:engine/view/document~Document}
+		 */
+		this.document = document;
+	}
+
 	/**
 	 * Creates a new {@link module:engine/view/documentfragment~DocumentFragment} instance.
 	 *
@@ -43,7 +56,7 @@ export default class UpcastWriter {
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} The created document fragment.
 	 */
 	createDocumentFragment( children ) {
-		return new DocumentFragment( children );
+		return new DocumentFragment( this.document, children );
 	}
 
 	/**
@@ -62,7 +75,7 @@ export default class UpcastWriter {
 	 * @returns {module:engine/view/element~Element} Created element.
 	 */
 	createElement( name, attrs, children ) {
-		return new Element( name, attrs, children );
+		return new Element( this.document, name, attrs, children );
 	}
 
 	/**
@@ -72,7 +85,7 @@ export default class UpcastWriter {
 	 * @returns {module:engine/view/text~Text} The created text node.
 	 */
 	createText( data ) {
-		return new Text( data );
+		return new Text( this.document, data );
 	}
 
 	/**
@@ -201,7 +214,7 @@ export default class UpcastWriter {
 	 * was not replaced (happens for detached elements).
 	 */
 	rename( newName, element ) {
-		const newElement = new Element( newName, element.getAttributes(), element.getChildren() );
+		const newElement = new Element( this.document, newName, element.getAttributes(), element.getChildren() );
 
 		return this.replace( element, newElement ) ? newElement : null;
 	}
@@ -271,7 +284,7 @@ export default class UpcastWriter {
 	 *		} );
 	 *
 	 * **Note**: This method can work with normalized style names if
-	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
 	 * @see module:engine/view/element~Element#_setStyle
@@ -293,7 +306,7 @@ export default class UpcastWriter {
 	 *		writer.removeStyle( element, [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
 	 *
 	 * **Note**: This method can work with normalized style names if
-	 * {@link module:engine/view/document~Document#addStyleProcessorRules a particular style processor rule is enabled}.
+	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
 	 *
 	 * @see module:engine/view/element~Element#_removeStyle

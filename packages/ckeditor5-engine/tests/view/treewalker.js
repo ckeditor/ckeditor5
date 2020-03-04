@@ -13,12 +13,13 @@ import Position from '../../src/view/position';
 import Range from '../../src/view/range';
 import createViewRoot from './_utils/createroot';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'TreeWalker', () => {
 	let doc, root, img1, paragraph, bold, textAbcd, charY, img2, charX, rootBeginning, rootEnding;
 
 	before( () => {
-		doc = new Document();
+		doc = new Document( new StylesProcessor() );
 		root = createViewRoot( doc );
 
 		// root
@@ -33,14 +34,14 @@ describe( 'TreeWalker', () => {
 		//     |
 		//     |- X
 
-		textAbcd = new Text( 'abcd' );
-		bold = new AttributeElement( 'b', null, [ textAbcd ] );
-		charY = new Text( 'y' );
-		img2 = new ContainerElement( 'img2' );
-		charX = new Text( 'x' );
+		textAbcd = new Text( doc, 'abcd' );
+		bold = new AttributeElement( doc, 'b', null, [ textAbcd ] );
+		charY = new Text( doc, 'y' );
+		img2 = new ContainerElement( doc, 'img2' );
+		charX = new Text( doc, 'x' );
 
-		paragraph = new ContainerElement( 'p', null, [ bold, charY, img2, charX ] );
-		img1 = new ContainerElement( 'img1' );
+		paragraph = new ContainerElement( doc, 'p', null, [ bold, charY, img2, charX ] );
+		img1 = new ContainerElement( doc, 'img1' );
 
 		root._insertChild( 0, [ img1, paragraph ] );
 
@@ -994,11 +995,11 @@ describe( 'TreeWalker', () => {
 	} );
 
 	it( 'should iterate over document fragment', () => {
-		const foo = new Text( 'foo' );
-		const bar = new Text( 'bar' );
-		const p = new ContainerElement( 'p', null, foo );
-		const b = new AttributeElement( 'b', null, bar );
-		const docFrag = new DocumentFragment( [ p, b ] );
+		const foo = new Text( doc, 'foo' );
+		const bar = new Text( doc, 'bar' );
+		const p = new ContainerElement( doc, 'p', null, foo );
+		const b = new AttributeElement( doc, 'b', null, bar );
+		const docFrag = new DocumentFragment( doc, [ p, b ] );
 
 		const expected = [
 			{

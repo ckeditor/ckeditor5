@@ -189,20 +189,12 @@ export default class Node {
 	}
 
 	/**
-	 * {@link module:engine/model/document~Document Document} that owns this node or `null` if the node has no parent or is inside
-	 * a {@link module:engine/model/documentfragment~DocumentFragment DocumentFragment}.
+	 * Returns true if the node is in a tree rooted in the document (is a descendant of one of its roots).
 	 *
-	 * @readonly
-	 * @type {module:engine/model/document~Document|null}
+	 * @returns {Boolean}
 	 */
-	get document() {
-		// This is a top element of a sub-tree.
-		if ( this.root == this ) {
-			return null;
-		}
-
-		// Root may be `DocumentFragment` which does not have document property.
-		return this.root.document || null;
+	isAttached() {
+		return this.root.is( 'rootElement' );
 	}
 
 	/**

@@ -15,15 +15,17 @@ import createViewRoot from './_utils/createroot';
 import { parse } from '../../src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'DocumentSelection', () => {
-	let documentSelection, el, range1, range2, range3;
+	let documentSelection, el, range1, range2, range3, document;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		const text = new Text( 'xxxxxxxxxxxxxxxxxxxx' );
-		el = new Element( 'p', null, text );
+		document = new Document( new StylesProcessor() );
+		const text = new Text( document, 'xxxxxxxxxxxxxxxxxxxx' );
+		el = new Element( document, 'p', null, text );
 
 		documentSelection = new DocumentSelection();
 
@@ -845,8 +847,8 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'should collapse selection at node and offset', () => {
-				const foo = new Text( 'foo' );
-				const p = new Element( 'p', null, foo );
+				const foo = new Text( document, 'foo' );
+				const p = new Element( document, 'p', null, foo );
 
 				documentSelection._setTo( foo, 0 );
 				let range = documentSelection.getFirstRange();
@@ -864,7 +866,7 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'should throw an error when the second parameter is not passed and first is an item', () => {
-				const foo = new Text( 'foo' );
+				const foo = new Text( document, 'foo' );
 
 				expectToThrowCKEditorError( () => {
 					documentSelection._setTo( foo );
@@ -872,8 +874,8 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'should collapse selection at node and flag', () => {
-				const foo = new Text( 'foo' );
-				const p = new Element( 'p', null, foo );
+				const foo = new Text( document, 'foo' );
+				const p = new Element( document, 'p', null, foo );
 
 				documentSelection._setTo( foo, 'end' );
 				let range = documentSelection.getFirstRange();
@@ -1029,10 +1031,10 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should allow setting selection on an item', () => {
-			const textNode1 = new Text( 'foo' );
-			const textNode2 = new Text( 'bar' );
-			const textNode3 = new Text( 'baz' );
-			const element = new Element( 'p', null, [ textNode1, textNode2, textNode3 ] );
+			const textNode1 = new Text( document, 'foo' );
+			const textNode2 = new Text( document, 'bar' );
+			const textNode3 = new Text( document, 'baz' );
+			const element = new Element( document, 'p', null, [ textNode1, textNode2, textNode3 ] );
 
 			documentSelection._setTo( textNode2, 'on' );
 
@@ -1045,7 +1047,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should allow setting selection inside an element', () => {
-			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
+			const element = new Element( document, 'p', null, [ new Text( document, 'foo' ), new Text( document, 'bar' ) ] );
 
 			documentSelection._setTo( element, 'in' );
 
@@ -1058,7 +1060,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should allow setting backward selection inside an element', () => {
-			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
+			const element = new Element( document, 'p', null, [ new Text( document, 'foo' ), new Text( document, 'bar' ) ] );
 
 			documentSelection._setTo( element, 'in', { backward: true } );
 
@@ -1084,10 +1086,10 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should return EditableElement when selection is placed inside', () => {
-			const viewDocument = new Document();
+			const viewDocument = new Document( new StylesProcessor() );
 			documentSelection._setTo( viewDocument.selection );
 			const root = createViewRoot( viewDocument, 'div', 'main' );
-			const element = new Element( 'p' );
+			const element = new Element( document, 'p' );
 			root._appendChild( element );
 
 			documentSelection._setTo( Range._createFromParentsAndOffsets( element, 0, element, 0 ) );

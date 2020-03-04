@@ -9,7 +9,6 @@
 
 import { isArray } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import StylesMap from '../view/stylesmap';
 
 /**
  * Class used for handling consumption of view {@link module:engine/view/element~Element elements},
@@ -89,7 +88,7 @@ export default class ViewConsumable {
 
 		// For elements create new ViewElementConsumables or update already existing one.
 		if ( !this._consumables.has( element ) ) {
-			elementConsumables = new ViewElementConsumables();
+			elementConsumables = new ViewElementConsumables( element );
 			this._consumables.set( element, elementConsumables );
 		} else {
 			elementConsumables = this._consumables.get( element );
@@ -239,6 +238,7 @@ export default class ViewConsumable {
 	 */
 	static consumablesFromElement( element ) {
 		const consumables = {
+			element,
 			name: true,
 			attributes: [],
 			classes: [],
@@ -284,7 +284,7 @@ export default class ViewConsumable {
 	 */
 	static createFrom( from, instance ) {
 		if ( !instance ) {
-			instance = new ViewConsumable();
+			instance = new ViewConsumable( from );
 		}
 
 		if ( from.is( 'text' ) ) {
@@ -319,8 +319,17 @@ export default class ViewConsumable {
 class ViewElementConsumables {
 	/**
 	 * Creates ViewElementConsumables instance.
+	 *
+	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} from View node or document fragment
+	 * from which `ViewElementConsumables` is being created.
 	 */
-	constructor() {
+	constructor( from ) {
+		/**
+		 * @readonly
+		 * @member {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment}
+		 */
+		this.element = from;
+
 		/**
 		 * Flag indicating if name of the element can be consumed.
 		 *
@@ -510,7 +519,7 @@ class ViewElementConsumables {
 			consumables.set( name, true );
 
 			if ( type === 'styles' ) {
-				for ( const alsoName of StylesMap.getRelatedStyles( name ) ) {
+				for ( const alsoName of this.element.document.stylesProcessor.getRelatedStyles( name ) ) {
 					consumables.set( alsoName, true );
 				}
 			}
@@ -577,7 +586,7 @@ class ViewElementConsumables {
 				consumables.set( name, false );
 
 				if ( type == 'styles' ) {
-					for ( const toConsume of StylesMap.getRelatedStyles( name ) ) {
+					for ( const toConsume of this.element.document.stylesProcessor.getRelatedStyles( name ) ) {
 						consumables.set( toConsume, false );
 					}
 				}

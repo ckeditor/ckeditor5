@@ -9,25 +9,28 @@ import Node from '../../src/view/node';
 import DocumentFragment from '../../src/view/documentfragment';
 import RootEditableElement from '../../src/view/rooteditableelement';
 
-import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Document from '../../src/view/document';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'Node', () => {
-	let root,
+	let root, document,
 		one, two, three,
 		charB, charA, charR, img;
 
 	before( () => {
-		charB = new Text( 'b' );
-		charA = new Text( 'a' );
-		img = new Element( 'img' );
-		charR = new Text( 'r' );
+		document = new Document( new StylesProcessor() );
 
-		one = new Element( 'one' );
-		two = new Element( 'two', null, [ charB, charA, img, charR ] );
-		three = new Element( 'three' );
+		charB = new Text( document, 'b' );
+		charA = new Text( document, 'a' );
+		img = new Element( document, 'img' );
+		charR = new Text( document, 'r' );
 
-		root = new Element( null, null, [ one, two, three ] );
+		one = new Element( document, 'one' );
+		two = new Element( document, 'two', null, [ charB, charA, img, charR ] );
+		three = new Element( document, 'three' );
+
+		root = new Element( document, null, null, [ one, two, three ] );
 	} );
 
 	describe( 'is()', () => {
@@ -125,7 +128,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return ancestors including DocumentFragment', () => {
-			const fragment = new DocumentFragment( root );
+			const fragment = new DocumentFragment( document, root );
 			const result = img.getAncestors();
 			root._remove();
 
@@ -146,7 +149,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return null for detached subtrees', () => {
-			const detached = new Element( 'foo' );
+			const detached = new Element( document, 'foo' );
 
 			expect( img.getCommonAncestor( detached ) ).to.be.null;
 			expect( detached.getCommonAncestor( img ) ).to.be.null;
@@ -176,14 +179,14 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return proper element for nodes in different branches and on different levels', () => {
-			const foo = new Text( 'foo' );
-			const bar = new Text( 'bar' );
-			const bom = new Text( 'bom' );
-			const d = new Element( 'd', null, [ bar ] );
-			const c = new Element( 'c', null, [ foo, d ] );
-			const b = new Element( 'b', null, [ c ] );
-			const e = new Element( 'e', null, [ bom ] );
-			const a = new Element( 'a', null, [ b, e ] );
+			const foo = new Text( document, 'foo' );
+			const bar = new Text( document, 'bar' );
+			const bom = new Text( document, 'bom' );
+			const d = new Element( document, 'd', null, [ bar ] );
+			const c = new Element( document, 'c', null, [ foo, d ] );
+			const b = new Element( document, 'b', null, [ c ] );
+			const e = new Element( document, 'e', null, [ bom ] );
+			const a = new Element( document, 'a', null, [ b, e ] );
 
 			// <a><b><c>foo<d>bar</d></c></b><e>bom</e></a>
 
@@ -203,9 +206,9 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return document fragment', () => {
-			const foo = new Text( 'foo' );
-			const bar = new Text( 'bar' );
-			const df = new DocumentFragment( [ foo, bar ] );
+			const foo = new Text( document, 'foo' );
+			const bar = new Text( document, 'bar' );
+			const df = new DocumentFragment( document, [ foo, bar ] );
 
 			expect( foo.getCommonAncestor( bar ) ).to.equal( df );
 		} );
@@ -228,8 +231,8 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should throw an error if parent does not contain element', () => {
-			const f = new Text( 'f' );
-			const bar = new Element( 'bar', [], [] );
+			const f = new Text( document, 'f' );
+			const bar = new Element( document, 'bar', [], [] );
 
 			f.parent = bar;
 
@@ -253,42 +256,16 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'getDocument()', () => {
-		it( 'should return null if any parent has not set Document', () => {
-			expect( charA.document ).to.be.null;
-		} );
-
-		it( 'should return Document attached to the parent element', () => {
-			const docMock = createDocumentMock();
-			const parent = new RootEditableElement( 'div' );
-			parent._document = docMock;
-			const child = new Element( 'p' );
-
-			child.parent = parent;
-
-			expect( parent.document ).to.equal( docMock );
-			expect( child.document ).to.equal( docMock );
-		} );
-
-		it( 'should return null if element is inside DocumentFragment', () => {
-			const child = new Element( 'p' );
-			new DocumentFragment( [ child ] ); // eslint-disable-line no-new
-
-			expect( child.document ).to.be.null;
-		} );
-	} );
-
 	describe( 'getRoot()', () => {
 		it( 'should return this element if it has no parent', () => {
-			const child = new Element( 'p' );
+			const child = new Element( document, 'p' );
 
 			expect( child.root ).to.equal( child );
 		} );
 
 		it( 'should return root element', () => {
-			const parent = new RootEditableElement( 'div' );
-			parent._document = createDocumentMock();
-			const child = new Element( 'p' );
+			const parent = new RootEditableElement( document, 'div' );
+			const child = new Element( document, 'p' );
 
 			child.parent = parent;
 
@@ -326,8 +303,8 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return false if elements are in different roots', () => {
-			const otherRoot = new Element( 'root' );
-			const otherElement = new Element( 'element' );
+			const otherRoot = new Element( document, 'root' );
+			const otherElement = new Element( document, 'element' );
 
 			otherRoot._appendChild( otherElement );
 
@@ -364,8 +341,8 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return false if elements are in different roots', () => {
-			const otherRoot = new Element( 'root' );
-			const otherElement = new Element( 'element' );
+			const otherRoot = new Element( document, 'root' );
+			const otherElement = new Element( document, 'element' );
 
 			otherRoot._appendChild( otherElement );
 
@@ -373,18 +350,41 @@ describe( 'Node', () => {
 		} );
 	} );
 
+	describe( 'isAttached()', () => {
+		it( 'returns false for a fresh node', () => {
+			const char = new Text( document, 'x' );
+			const el = new Element( document, 'one' );
+
+			expect( char.isAttached() ).to.equal( false );
+			expect( el.isAttached() ).to.equal( false );
+		} );
+
+		it( 'returns true for the root element', () => {
+			const root = new RootEditableElement( document, 'div' );
+
+			expect( root.isAttached() ).to.equal( true );
+		} );
+
+		it( 'returns false for a node attached to a document fragment', () => {
+			const foo = new Text( document, 'foo' );
+			new DocumentFragment( document, [ foo ] ); // eslint-disable-line no-new
+
+			expect( foo.isAttached() ).to.equal( false );
+		} );
+	} );
+
 	describe( '_remove()', () => {
 		it( 'should remove node from its parent', () => {
-			const char = new Text( 'a' );
-			const parent = new Element( 'p', null, [ char ] );
+			const char = new Text( document, 'a' );
+			const parent = new Element( document, 'p', null, [ char ] );
 			char._remove();
 
 			expect( parent.getChildIndex( char ) ).to.equal( -1 );
 		} );
 
 		it( 'uses parent._removeChildren method', () => {
-			const char = new Text( 'a' );
-			const parent = new Element( 'p', null, [ char ] );
+			const char = new Text( document, 'a' );
+			const parent = new Element( document, 'p', null, [ char ] );
 			const _removeChildrenSpy = sinon.spy( parent, '_removeChildren' );
 			const index = char.index;
 			char._remove();
@@ -396,15 +396,18 @@ describe( 'Node', () => {
 
 	describe( 'toJSON()', () => {
 		it( 'should prevent circular reference when stringifying a node', () => {
-			const char = new Text( 'a' );
-			const parent = new Element( 'p', null );
+			const char = new Text( document, 'a' );
+			const parent = new Element( document, 'p', null );
 			parent._appendChild( char );
+
+			sinon.stub( char, 'document' ).value( 'view.Document()' );
 
 			const json = JSON.stringify( char );
 			const parsed = JSON.parse( json );
 
 			expect( parsed ).to.deep.equal( {
-				_textData: 'a'
+				_textData: 'a',
+				document: 'view.Document()'
 			} );
 		} );
 	} );
@@ -417,10 +420,10 @@ describe( 'Node', () => {
 		} );
 
 		beforeEach( () => {
-			text = new Text( 'foo' );
-			img = new Element( 'img', { 'src': 'img.png' } );
+			text = new Text( document, 'foo' );
+			img = new Element( document, 'img', { 'src': 'img.png' } );
 
-			root = new Element( 'p', { renderer: { markToSync: rootChangeSpy } } );
+			root = new Element( document, 'p', { renderer: { markToSync: rootChangeSpy } } );
 			root._appendChild( [ text, img ] );
 
 			root.on( 'change:children', ( evt, node ) => rootChangeSpy( 'children', node ) );
@@ -470,7 +473,7 @@ describe( 'Node', () => {
 
 		describe( '_insertChild()', () => {
 			it( 'should fire change event', () => {
-				root._insertChild( 1, new Element( 'img' ) );
+				root._insertChild( 1, new Element( document, 'img' ) );
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'children', root );
@@ -479,7 +482,7 @@ describe( 'Node', () => {
 
 		describe( '_appendChild()', () => {
 			it( 'should fire change event', () => {
-				root._appendChild( new Element( 'img' ) );
+				root._appendChild( new Element( document, 'img' ) );
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'children', root );

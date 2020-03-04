@@ -7,8 +7,9 @@
 
 import View from '../../../src/view/view';
 import createViewRoot from '../_utils/createroot';
+import { StylesProcessor } from '../../../src/view/stylesmap';
 
-const view = new View();
+const view = new View( new StylesProcessor() );
 const viewDocument = view.document;
 
 viewDocument.on( 'focus', ( evt, data ) => console.log( `Focus in ${ data.domTarget.id }.` ) );

@@ -39,6 +39,7 @@ import {
 
 import { isPlainObject } from 'lodash-es';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
+import { StylesProcessor } from '../view/stylesmap';
 
 /**
  * Writes the content of a model {@link module:engine/model/document~Document document} to an HTML-like string.
@@ -210,12 +211,12 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 
 	// Set up conversion.
 	// Create a temporary view controller.
-	const view = new View();
+	const stylesProcessor = new StylesProcessor();
+	const view = new View( stylesProcessor );
 	const viewDocument = view.document;
-	const viewRoot = new ViewRootEditableElement( 'div' );
+	const viewRoot = new ViewRootEditableElement( viewDocument, 'div' );
 
 	// Create a temporary root element in view document.
-	viewRoot._document = view.document;
 	viewRoot.rootName = 'main';
 	viewDocument.roots.add( viewRoot );
 
@@ -242,7 +243,7 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 		// Stringify object types values for properly display as an output string.
 		const attributes = convertAttributes( modelItem.getAttributes(), stringifyAttributeValue );
 
-		return new ViewContainerElement( modelItem.name, attributes );
+		return new ViewContainerElement( viewDocument, modelItem.name, attributes );
 	} ) );
 
 	downcastDispatcher.on( 'selection', convertRangeSelection() );

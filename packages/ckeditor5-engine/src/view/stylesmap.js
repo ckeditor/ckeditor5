@@ -17,28 +17,28 @@ import { get, isObject, merge, set, unset } from 'lodash-es';
 export default class StylesMap {
 	/**
 	 * Creates Styles instance.
+	 *
+	 * @param {module:engine/view/stylesmap~StylesProcessor} styleProcessor
 	 */
-	constructor() {
+	constructor( styleProcessor ) {
 		/**
 		 * Keeps an internal representation of styles map. Normalized styles are kept as object tree to allow unified modification and
 		 * value access model using lodash's get, set, unset, etc methods.
 		 *
 		 * When no style processor rules are defined the it acts as simple key-value storage.
 		 *
-		 * @type {Object}
 		 * @private
+		 * @type {Object}
 		 */
 		this._styles = {};
 
-		// Hide _styleProcessor from the watchdog by making this property non-enumarable. Watchdog checks errors for their editor origin
-		// by checking if two objects are connected through properties. Using singleton is against this check as it would detect
-		// that two editors are connected through single style processor instance.
-		Object.defineProperty( this, '_styleProcessor', {
-			get() {
-				return StylesMap._styleProcessor;
-			},
-			enumerable: false
-		} );
+		/**
+		 * An instance of the {@link module:engine/view/stylesmap~StylesProcessor}.
+		 *
+		 * @private
+		 * @member {module:engine/view/stylesmap~StylesProcessor}
+		 */
+		this._styleProcessor = styleProcessor;
 	}
 
 	/**
@@ -94,7 +94,7 @@ export default class StylesMap {
 	 * **Note**: This check supports normalized style names.
 	 *
 	 *		// Enable 'margin' shorthand processing:
-	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
+	 *		editor.data.addStyleProcessorRules( addMarginRules );
 	 *
 	 *		styles.setTo( 'margin:2px;' );
 	 *
@@ -139,11 +139,11 @@ export default class StylesMap {
 	 *			'margin-right': '1em'
 	 *		} );
 	 *
-	 * ***Note**:* This method uses {@link module:engine/view/document~Document#addStyleProcessorRules enabled style processor rules}
-	 * to normalize passed values.
+	 * ***Note**:* This method uses {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules
+	 * enabled style processor rules} to normalize passed values.
 	 *
 	 *		// Enable 'margin' shorthand processing:
-	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
+	 *		editor.data.addStyleProcessorRules( addMarginRules );
 	 *
 	 *		styles.set( 'margin', '2px' );
 	 *
@@ -192,11 +192,11 @@ export default class StylesMap {
 	 *
 	 *		styles.toString();   // -> 'margin-right:2px;'
 	 *
-	 * ***Note**:* This method uses {@link module:engine/view/document~Document#addStyleProcessorRules enabled style processor rules}
-	 * to normalize passed values.
+	 * ***Note**:* This method uses {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules
+	 * enabled style processor rules} to normalize passed values.
 	 *
 	 *		// Enable 'margin' shorthand processing:
-	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
+	 *		editor.data.addStyleProcessorRules( addMarginRules );
 	 *
 	 *		styles.setTo( 'margin:1px' );
 	 *
@@ -220,7 +220,7 @@ export default class StylesMap {
 	 * Returns a normalized style object or a single value.
 	 *
 	 *		// Enable 'margin' shorthand processing:
-	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
+	 *		editor.data.addStyleProcessorRules( addMarginRules );
 	 *
 	 *		const styles = new Styles();
 	 *		styles.setTo( 'margin:1px 2px 3em;' );
@@ -256,7 +256,7 @@ export default class StylesMap {
 	 * **Note**: This method supports normalized styles if defined.
 	 *
 	 *		// Enable 'margin' shorthand processing:
-	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
+	 *		editor.data.addStyleProcessorRules( addMarginRules );
 	 *
 	 *		styles.set( 'margin' , '1px' );
 	 *		styles.set( 'background', '#f00' );
@@ -282,7 +282,7 @@ export default class StylesMap {
 	 * Returns property as a value string or undefined if property is not set.
 	 *
 	 *		// Enable 'margin' shorthand processing:
-	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
+	 *		editor.data.addStyleProcessorRules( addMarginRules );
 	 *
 	 *		const styles = new Styles();
 	 *		styles.setTo( 'margin:1px;' );
@@ -372,28 +372,6 @@ export default class StylesMap {
 	}
 
 	/**
-	 * Returns related style names.
-	 *
-	 *		// Enable 'margin' shorthand processing:
-	 *		editor.editing.view.document.addStyleProcessorRules( addMarginRules );
-	 *
-	 *		StylesMap.getRelatedStyles( 'margin' );
-	 *		// will return: [ 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ];
-	 *
-	 *		StylesMap.getRelatedStyles( 'margin-top' );
-	 *		// will return: [ 'margin' ];
-	 *
-	 * **Note**: To define new style relations load an existing style processor (as shown above) or use
-	 * {@link module:engine/view/stylesmap~StylesProcessor#setStyleRelation `StylesProcessor.setStyleRelation()`}.
-	 *
-	 * @param {String} name
-	 * @returns {Array.<String>}
-	 */
-	static getRelatedStyles( name ) {
-		return this._styleProcessor.getRelatedStyles( name );
-	}
-
-	/**
 	 * Returns normalized styles entries for further processing.
 	 *
 	 * @private
@@ -438,32 +416,6 @@ export default class StylesMap {
 		if ( isParentEmpty ) {
 			this.remove( parentPath );
 		}
-	}
-
-	/**
-	 * Returns global StylesProcessor instance.
-	 *
-	 * @returns {module:engine/view/stylesmap~StylesProcessor}
-	 * @private
-	 */
-	static get _styleProcessor() {
-		if ( !this._processor ) {
-			this._processor = new StylesProcessor();
-		}
-
-		return this._processor;
-	}
-
-	/**
-	 * Set new StylesProcessor instance.
-	 *
-	 * This is an internal method used mostly in tests.
-	 *
-	 * @param processor
-	 * @protected
-	 */
-	static _setProcessor( processor ) {
-		this._processor = processor;
 	}
 }
 

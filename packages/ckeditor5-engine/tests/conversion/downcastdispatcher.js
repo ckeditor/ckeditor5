@@ -13,13 +13,14 @@ import ModelRange from '../../src/model/range';
 
 import View from '../../src/view/view';
 import ViewContainerElement from '../../src/view/containerelement';
+import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'DowncastDispatcher', () => {
 	let dispatcher, doc, root, differStub, model, view, mapper;
 
 	beforeEach( () => {
 		model = new Model();
-		view = new View();
+		view = new View( new StylesProcessor() );
 		doc = model.document;
 		mapper = new Mapper();
 		dispatcher = new DowncastDispatcher( { mapper } );
@@ -414,8 +415,8 @@ describe( 'DowncastDispatcher', () => {
 			root._appendChild( [ image ] );
 
 			// Create view elements that will be "mapped" to model elements.
-			const viewCaption = new ViewContainerElement( 'caption' );
-			const viewFigure = new ViewContainerElement( 'figure', null, viewCaption );
+			const viewCaption = new ViewContainerElement( view.document, 'caption' );
+			const viewFigure = new ViewContainerElement( view.document, 'figure', null, viewCaption );
 
 			// Create custom highlight handler mock.
 			viewFigure._setCustomProperty( 'addHighlight', () => {} );
