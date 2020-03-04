@@ -569,6 +569,34 @@ describe( 'CodeBlockEditing', () => {
 					return editor.destroy();
 				} );
 		} );
+
+		// See #5910.
+		it( 'should allow to indent an entire code block with at least two lines', () => {
+			const element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ CodeBlockEditing, AlignmentEditing, IndentEditing ]
+				} )
+				.then( newEditor => {
+					const editor = newEditor;
+
+					editor.setData( '<pre><code class="language-css">\t\tx\n\tx</code></pre>' );
+					editor.model.change( writer => {
+						writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'on' );
+					} );
+					editor.execute( 'indent' );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'<codeBlock language="css">[\t\t\tx<softBreak></softBreak>\t\tx]</codeBlock>'
+					);
+
+					element.remove();
+
+					return editor.destroy();
+				} );
+		} );
 	} );
 
 	describe( 'editing pipeline m -> v', () => {
