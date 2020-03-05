@@ -82,7 +82,7 @@ describe( 'PasteFromOffice - filters', () => {
 				expect( stringify( view ) ).to.equal( '' );
 			} );
 
-			describe( 'Nesting', () => {
+			describe( 'nesting', () => {
 				const level1 = 'style="mso-list:l0 level1 lfo0"';
 				const level2 = 'style="mso-list:l0 level2 lfo0"';
 				const level3 = 'style="mso-list:l0 level3 lfo0"';
@@ -98,7 +98,9 @@ describe( 'PasteFromOffice - filters', () => {
 					expect( stringify( view ) ).to.equal(
 						`<ol><li ${ level1 }>Foo` +
 							`<ol><li ${ level2 }>Bar` +
-								`<ol><li ${ level3 }>Baz</li></ol></li></ol></li></ol>` );
+								`<ol><li ${ level3 }>Baz</li></ol>` +
+							'</li></ol>' +
+						'</li></ol>' );
 				} );
 
 				it( 'handles non-linear indentation', () => {
@@ -111,7 +113,9 @@ describe( 'PasteFromOffice - filters', () => {
 					expect( stringify( view ) ).to.equal(
 						`<ol><li ${ level1 }>Foo` +
 							`<ol><li ${ level3 }>Bar` +
-								`<ol><li ${ level4 }>Baz</li></ol></li></ol></li></ol>` );
+								`<ol><li ${ level4 }>Baz</li></ol>` +
+							'</li></ol>' +
+						'</li></ol>' );
 				} );
 
 				it( 'handles indentation in both directions', () => {
@@ -141,7 +145,9 @@ describe( 'PasteFromOffice - filters', () => {
 					expect( stringify( view ) ).to.equal(
 						`<ul><li ${ level1 }>Foo` +
 							`<ol><li ${ level2 }>Bar` +
-								`<ul><li ${ level3 }>Baz</li></ul></li></ol></li></ul>` );
+								`<ul><li ${ level3 }>Baz</li></ul>` +
+							'</li></ol>' +
+						'</li></ul>' );
 				} );
 
 				it( 'handles different list styles #2', () => {
@@ -168,9 +174,12 @@ describe( 'PasteFromOffice - filters', () => {
 
 					expect( view.childCount ).to.equal( 1 );
 					expect( stringify( view ) ).to.equal(
-						`<ol><li ${ level2 }>Foo` +
-						`</li><li ${ level1 }>Bar` +
-							`<ol><li ${ level2 }>Baz</li></ol></li></ol>` );
+						'<ol>' +
+							`<li ${ level2 }>Foo</li>` +
+							`<li ${ level1 }>Bar` +
+								`<ol><li ${ level2 }>Baz</li></ol>` +
+							'</li>' +
+						'</ol>' );
 				} );
 			} );
 		} );
