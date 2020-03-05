@@ -16,6 +16,7 @@ import TableUtils from './tableutils';
 import MouseEventsObserver from './tableselection/mouseeventsobserver';
 import { getTableCellsInSelection, clearTableCellsContents } from './tableselection/utils';
 import { findAncestor } from './commands/utils';
+import cropTable from './tableselection/croptable';
 
 import '../theme/tableselection.css';
 
@@ -77,6 +78,22 @@ export default class TableSelection extends Plugin {
 		// @if CK_DEBUG //	}
 
 		return selectedCells;
+	}
+
+	/**
+	 * Returns a selected table fragment as a document fragment.
+	 *
+	 * @returns {module:engine/model/documentfragment~DocumentFragment}
+	 */
+	getSelectionAsFragment() {
+		return this.editor.model.change( writer => {
+			const documentFragment = writer.createDocumentFragment();
+			const table = cropTable( this.getSelectedTableCells(), this.editor.plugins.get( 'TableUtils' ), writer );
+
+			writer.insert( table, documentFragment, 0 );
+
+			return documentFragment;
+		} );
 	}
 
 	/**
