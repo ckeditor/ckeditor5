@@ -194,7 +194,11 @@ CloudServices.Token = Token;
  * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#bundleVersion
  */
 
+/* eslint-disable max-len */
 /**
+ * **This configuration property has been deprecated and will be removed in the next major release.
+ * Use [`config.collaboration.channelId`](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration-integration.html#the-channelid-configuration-property) instead.**
+ *
  * The document ID used by the `RealTimeCollaborativeEditing` plugin. All editor instances created with the same document ID will
  * collaborate. It means that each document needs a different document ID if you do not want to start collaboration between these
  * documents. The ID is usually a primary key of the document in the database but you are free to provide whatever identifier fits your
@@ -203,5 +207,7 @@ CloudServices.Token = Token;
  * Note: Unlike most plugins, `RealTimeCollaborativeEditing` is not included in any CKEditor 5 build and needs to be installed manually.
  * Check [Collaboration overview](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/overview.html) for more details.
  *
+ * @deprecated
  * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#documentId
  */
+/* eslint-enable max-len */
