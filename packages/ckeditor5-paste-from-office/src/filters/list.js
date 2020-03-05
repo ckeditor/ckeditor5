@@ -18,7 +18,7 @@ import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
  *		<p class=MsoListParagraphCxSpFirst style='mso-list:l1 level1 lfo1'>...</p> // Paragraph based list.
  *		<h1 style='mso-list:l0 level1 lfo1'>...</h1> // Heading 1 based list.
  *
- * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment The view structure which to transform.
+ * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment The view structure to be transformed.
  * @param {String} stylesString Styles from which list-like elements styling will be extracted.
  */
 export function transformListItemLikeElementsIntoLists( documentFragment, stylesString ) {
