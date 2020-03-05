@@ -16,7 +16,7 @@
 		outline: unset;
 		box-shadow: unset;
 
-		&::selection {
+		& ::selection {
 			background-color: transparent;
 		}
 
