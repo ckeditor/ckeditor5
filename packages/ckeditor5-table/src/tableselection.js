@@ -7,8 +7,6 @@
  * @module table/tableselection
  */
 
-/* global setTimeout */
-
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import TableWalker from './tablewalker';
@@ -143,22 +141,21 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Enables making cell selection by Shift+click. Creates a selection from the cell which previously hold
+	 * Enables making cells selection by Shift+click. Creates a selection from the cell which previously hold
 	 * the selection to the cell which was clicked (can be the same cell, in which case it selects a single cell).
 	 *
 	 * @private
 	 */
 	_enableShiftClickSelection() {
 		const editor = this.editor;
-		const model = editor.model;
-		let blockNextSelectionChange = false;
+		let blockSelectionChange = false;
 
 		this.listenTo( editor.editing.view.document, 'mousedown', ( evt, domEventData ) => {
 			if ( !domEventData.domEvent.shiftKey ) {
 				return;
 			}
 
-			const anchorCell = findAncestor( 'tableCell', model.document.selection.anchor.parent );
+			const anchorCell = findAncestor( 'tableCell', editor.model.document.selection.anchor.parent );
 
 			if ( !anchorCell ) {
 				return;
@@ -170,22 +167,14 @@ export default class TableSelection extends Plugin {
 				return;
 			}
 
-			const cellsToSelect = this._getCellsToSelect( anchorCell, targetCell );
-
-			model.change( writer => {
-				blockNextSelectionChange = true;
-
-				writer.setSelection(
-					cellsToSelect.cells.map( cell => writer.createRangeOn( cell ) ),
-					{ backward: cellsToSelect.backward }
-				);
-			} );
+			blockSelectionChange = true;
+			this._setCellsSelection( anchorCell, targetCell );
 
 			domEventData.preventDefault();
+		} );
 
-			setTimeout( () => {
-				blockNextSelectionChange = false;
-			}, 0 );
+		this.listenTo( editor.editing.view.document, 'mouseup', () => {
+			blockSelectionChange = false;
 		} );
 
 		// We need to ignore a `selectionChange` event that is fired after we render our new table cells selection.
@@ -199,42 +188,38 @@ export default class TableSelection extends Plugin {
 		// This breaks our dear cells selection.
 		//
 		// Theoretically this issue concerns only Safari that is the only browser that do normalize the selection.
-		// However, to avoid code branching and to have a good coverage for this event blocker, I
+		// However, to avoid code branching and to have a good coverage for this event blocker, I enabled it for all browsers.
+		//
+		// Note: I'm keeping the `blockSelectionChange` state separately for shift+click and mouse drag (exact same logic)
+		// so I don't have to try to analyze whether they don't overlap in some weird cases. Probably they don't.
+		// But I have other things to do, like writing this comment.
 		this.listenTo( editor.editing.view.document, 'selectionChange', evt => {
-			if ( blockNextSelectionChange ) {
-				// @if CK_DEBUG // console.log( 'Blocked selectionChange.' );
+			if ( blockSelectionChange ) {
+				// @if CK_DEBUG // console.log( 'Blocked selectionChange to avoid breaking table cells selection.' );
 
 				evt.stop();
 			}
 		}, { priority: 'highest' } );
 	}
 
+	/**
+	 * Enables making cells selection by dragging.
+	 *
+	 * The selection is made only on mousemove. We start tracking the mouse on mousedown.
+	 * However, the cells selection is enabled only after the mouse cursor left the anchor cell.
+	 * Thanks to that normal text selection within one cell works just fine. However, you can still select
+	 * just one cell by leaving the anchor cell and moving back to it.
+	 *
+	 * @private
+	 */
 	_enableMouseDragSelection() {
 		const editor = this.editor;
-		const model = editor.model;
 		let anchorCell, targetCell;
 		let beganCellSelection = false;
 		let blockSelectionChange = false;
 
-		const setModelSelection = () => {
-			const cellsToSelect = this._getCellsToSelect( anchorCell, targetCell );
-
-			model.change( writer => {
-				blockSelectionChange = true;
-
-				writer.setSelection(
-					cellsToSelect.cells.map( cell => writer.createRangeOn( cell ) ),
-					{ backward: cellsToSelect.backward }
-				);
-			} );
-		};
-
-		const haveSameTableParent = ( cellA, cellB ) => {
-			return cellA.parent.parent == cellB.parent.parent;
-		};
-
 		this.listenTo( editor.editing.view.document, 'mousedown', ( evt, domEventData ) => {
-			// Make sure to not conflict with the shift+click listener and any other possible handlers.
+			// Make sure to not conflict with the shift+click listener and any other possible handler.
 			if ( domEventData.domEvent.shiftKey || domEventData.domEvent.ctrlKey || domEventData.domEvent.altKey ) {
 				return;
 			}
@@ -256,16 +241,20 @@ export default class TableSelection extends Plugin {
 			if ( newTargetCell && haveSameTableParent( anchorCell, newTargetCell ) ) {
 				targetCell = newTargetCell;
 
+				// Switch to the cell selection mode after the mouse cursor left the anchor cell.
+				// Switch off only on mouseup (makes selecting a single cell possible).
 				if ( !beganCellSelection && targetCell != anchorCell ) {
 					beganCellSelection = true;
 				}
 			}
 
+			// Yep, not making a cell selection yet. See method docs.
 			if ( !beganCellSelection ) {
 				return;
 			}
 
-			setModelSelection();
+			blockSelectionChange = true;
+			this._setCellsSelection( anchorCell, targetCell );
 
 			domEventData.preventDefault();
 		} );
@@ -277,17 +266,22 @@ export default class TableSelection extends Plugin {
 			targetCell = null;
 		} );
 
+		// See the explanation in `_enableShiftClickSelection()`.
 		this.listenTo( editor.editing.view.document, 'selectionChange', evt => {
 			if ( blockSelectionChange ) {
-				// @if CK_DEBUG // console.log( 'Blocked selectionChange 2.' );
+				// @if CK_DEBUG // console.log( 'Blocked selectionChange to avoid breaking table cells selection.' );
 
 				evt.stop();
 			}
 		}, { priority: 'highest' } );
+
+		function haveSameTableParent( cellA, cellB ) {
+			return cellA.parent.parent == cellB.parent.parent;
+		}
 	}
 
 	/**
-	 * It overrides default `model.deleteContent()` behavior over a selected table fragment.
+	 * It overrides the default `model.deleteContent()` behavior over a selected table fragment.
 	 *
 	 * @private
 	 * @param {module:utils/eventinfo~EventInfo} event
@@ -320,7 +314,34 @@ export default class TableSelection extends Plugin {
 		} );
 	}
 
+	/**
+	 * Sets the model selection based on given anchor and target cells (can be the same cell).
+	 * Takes care of setting backward flag.
+	 *
+	 * @private
+	 * @param {module:engine/model/element~Element} anchorCell
+	 * @param {module:engine/model/element~Element} targetCell
+	 */
+	_setCellsSelection( anchorCell, targetCell ) {
+		const cellsToSelect = this._getCellsToSelect( anchorCell, targetCell );
+
+		this.editor.model.change( writer => {
+			writer.setSelection(
+				cellsToSelect.cells.map( cell => writer.createRangeOn( cell ) ),
+				{ backward: cellsToSelect.backward }
+			);
+		} );
+	}
+
+	/**
+	 * Returns the model table cell element based on the target element of the passed DOM event.
+	 *
+	 * @private
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
+	 * @returns {module:engine/model/element~Element|undefined} Returns the table cell or `undefined`.
+	 */
 	_getModelTableCellFromDomEvent( domEventData ) {
+		// Note: Work with positions (not element mapping) because the target element can be an attribute or other non-mapped element.
 		const viewTargetElement = domEventData.target;
 		const viewPosition = this.editor.editing.view.createPositionAt( viewTargetElement, 0 );
 		const modelPosition = this.editor.editing.mapper.toModelPosition( viewPosition );
@@ -343,6 +364,9 @@ export default class TableSelection extends Plugin {
 	 *
 	 * The cells are returned in a reverse direction if the selection is backward.
 	 *
+	 * @private
+	 * @param {module:engine/model/element~Element} anchorCell
+	 * @param {module:engine/model/element~Element} targetCell
 	 * @returns {Array.<module:engine/model/element~Element>}
 	 */
 	_getCellsToSelect( anchorCell, targetCell ) {
@@ -378,6 +402,7 @@ export default class TableSelection extends Plugin {
 	}
 }
 
+// Naively check whether the selection should be backward or not. See the longer explanation where this function is used.
 function checkIsBackward( startLocation, endLocation ) {
 	if ( startLocation.row > endLocation.row ) {
 		return true;
