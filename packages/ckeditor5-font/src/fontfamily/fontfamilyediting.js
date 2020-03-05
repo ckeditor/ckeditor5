@@ -49,7 +49,8 @@ export default class FontFamilyEditing extends Plugin {
 				'Times New Roman, Times, serif',
 				'Trebuchet MS, Helvetica, sans-serif',
 				'Verdana, Geneva, sans-serif'
-			]
+			],
+			disableValueMatching: false
 		} );
 	}
 
@@ -71,8 +72,34 @@ export default class FontFamilyEditing extends Plugin {
 		const definition = buildDefinition( FONT_FAMILY, options );
 
 		// Set-up the two-way conversion.
-		editor.conversion.attributeToElement( definition );
+		if ( editor.config.get( 'fontFamily.disableValueMatching' ) ) {
+			this._setupGenericConverters();
+		} else {
+			editor.conversion.attributeToElement( definition );
+		}
 
 		editor.commands.add( FONT_FAMILY, new FontFamilyCommand( editor ) );
+	}
+
+	/**
+	 * @private
+	 */
+	_setupGenericConverters() {
+		const editor = this.editor;
+
+		editor.conversion.for( 'downcast' ).attributeToElement( {
+			model: FONT_FAMILY,
+			view: ( attributeValue, writer ) => writer.createAttributeElement( 'span', { style: 'font-family:' + attributeValue } )
+		} );
+
+		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+			model: {
+				key: FONT_FAMILY,
+				value: viewElement => viewElement.getStyle( 'font-family' )
+			},
+			view: {
+				name: 'span'
+			}
+		} );
 	}
 }
