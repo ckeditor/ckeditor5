@@ -52,11 +52,16 @@ export default class TableSelection extends Plugin {
 		// TODO move to the engine?
 		editor.editing.view.addObserver( MouseEventsObserver );
 
-		this._defineConverters();
+		this._defineSelectionConverter();
 		this._enableShiftClickSelection();
 		this._enableMouseDragSelection();
 	}
 
+	/**
+	 * Returns currently selected table cells or `null` if not a table cells selection.
+	 *
+	 * @returns {Array.<module:engine/model/element~Element>}
+	 */
 	getSelectedTableCells() {
 		const selection = this.editor.model.document.selection;
 
@@ -66,6 +71,7 @@ export default class TableSelection extends Plugin {
 			return null;
 		}
 
+		// This should never happen, but let's know if it ever happens.
 		// @if CK_DEBUG //	if ( selectedCells.length != selection.rangeCount ) {
 		// @if CK_DEBUG //		console.warn( 'Mixed selection warning. The selection contains table cells and some other ranges.' );
 		// @if CK_DEBUG //	}
@@ -73,13 +79,23 @@ export default class TableSelection extends Plugin {
 		return selectedCells;
 	}
 
-	_defineConverters() {
+	/**
+	 * Defines a selection converter which marks selected cells with a specific class.
+	 *
+	 * The real DOM selection is put in the last cell. Since the order of ranges is dependent on whether the
+	 * selection is backward or not, the last cell with usually be close to the "focus" end of the selection
+	 * (a selection has anchor and focus).
+	 *
+	 * The real DOM selection is then hidden with CSS.
+	 *
+	 * @private
+	 */
+	_defineSelectionConverter() {
 		const editor = this.editor;
 		const highlighted = new Set();
 
 		editor.conversion.for( 'editingDowncast' ).add( dispatcher => dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
 			const viewWriter = conversionApi.writer;
-			// const viewSelection = viewWriter.document.selection;
 
 			clearHighlightedTableCells( viewWriter );
 
@@ -109,6 +125,12 @@ export default class TableSelection extends Plugin {
 		}
 	}
 
+	/**
+	 * Enables making cell selection by Shift+click. Creates a selection from the cell which previously hold
+	 * the selection to the cell which was clicked (can be the same cell, in which case it selects a single cell).
+	 *
+	 * @private
+	 */
 	_enableShiftClickSelection() {
 		const editor = this.editor;
 		const model = editor.model;
@@ -131,11 +153,15 @@ export default class TableSelection extends Plugin {
 				return;
 			}
 
-			const cellsToSelect = this._getCellsBetweenAnchorAndTarget( anchorCell, targetCell );
+			const cellsToSelect = this._getCellsToSelect( anchorCell, targetCell );
 
 			model.change( writer => {
 				blockNextSelectionChange = true;
-				writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
+
+				writer.setSelection(
+					cellsToSelect.cells.map( cell => writer.createRangeOn( cell ) ),
+					{ backward: cellsToSelect.backward }
+				);
 			} );
 
 			domEventData.preventDefault();
@@ -171,14 +197,18 @@ export default class TableSelection extends Plugin {
 		const model = editor.model;
 		let anchorCell, targetCell;
 		let beganCellSelection = false;
-		let blockNextSelectionChange = false;
+		let blockSelectionChange = false;
 
 		const setModelSelection = () => {
-			const cellsToSelect = this._getCellsBetweenAnchorAndTarget( anchorCell, targetCell );
+			const cellsToSelect = this._getCellsToSelect( anchorCell, targetCell );
 
 			model.change( writer => {
-				blockNextSelectionChange = true;
-				writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
+				blockSelectionChange = true;
+
+				writer.setSelection(
+					cellsToSelect.cells.map( cell => writer.createRangeOn( cell ) ),
+					{ backward: cellsToSelect.backward }
+				);
 			} );
 		};
 
@@ -225,13 +255,13 @@ export default class TableSelection extends Plugin {
 
 		this.listenTo( editor.editing.view.document, 'mouseup', () => {
 			beganCellSelection = false;
-			blockNextSelectionChange = false;
+			blockSelectionChange = false;
 			anchorCell = null;
 			targetCell = null;
 		} );
 
 		this.listenTo( editor.editing.view.document, 'selectionChange', evt => {
-			if ( blockNextSelectionChange ) {
+			if ( blockSelectionChange ) {
 				// @if CK_DEBUG // console.log( 'Blocked selectionChange 2.' );
 
 				evt.stop();
@@ -291,11 +321,14 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Returns an array of table cells that should be selected based on the
+	 * given anchor cell and target (focus) cell.
+	 *
+	 * The cells are returned in a reverse direction if the selection is backward.
 	 *
 	 * @returns {Array.<module:engine/model/element~Element>}
 	 */
-	_getCellsBetweenAnchorAndTarget( anchorCell, targetCell ) {
+	_getCellsToSelect( anchorCell, targetCell ) {
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const startLocation = tableUtils.getCellLocation( anchorCell );
 		const endLocation = tableUtils.getCellLocation( targetCell );
@@ -314,11 +347,17 @@ export default class TableSelection extends Plugin {
 			}
 		}
 
+		// A selection started in the bottom right corner and finished in the upper left corner
+		// should have it ranges returned in the reverse order.
+		// However, this is only half of the story because the selection could be made to the left (then the left cell is a focus)
+		// or to the right (then the right cell is a focus), while being a forward selection in both cases
+		// (because it was made from top to bottom). This isn't handled.
+		// This method would need to be smarter, but the ROI is microscopic, so I skip this.
 		if ( checkIsBackward( startLocation, endLocation ) ) {
-			cells.reverse();
+			return { cells: cells.reverse(), backward: true };
 		}
 
-		return cells;
+		return { cells, backward: false };
 	}
 }
 
