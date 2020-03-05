@@ -13,6 +13,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
+import MouseEventsObserver from './tableselection/mouseeventsobserver';
 import { getTableCellsInSelection, clearTableCellsContents } from './tableselection/utils';
 import { findAncestor } from './commands/utils';
 
@@ -47,8 +48,13 @@ export default class TableSelection extends Plugin {
 
 		this.listenTo( model, 'deleteContent', ( evt, args ) => this._handleDeleteContent( evt, args ), { priority: 'high' } );
 
+		// Currently the MouseObserver only handles `mouseup` events.
+		// TODO move to the engine?
+		editor.editing.view.addObserver( MouseEventsObserver );
+
 		this._defineConverters();
 		this._enableShiftClickSelection();
+		this._enableMouseDragSelection();
 	}
 
 	getSelectedTableCells() {
@@ -160,6 +166,67 @@ export default class TableSelection extends Plugin {
 		}, { priority: 'highest' } );
 	}
 
+	_enableMouseDragSelection() {
+		const editor = this.editor;
+		const model = editor.model;
+		let anchorCell, targetCell;
+		let blockNextSelectionChange = false;
+
+		const setModelSelection = () => {
+			const cellsToSelect = this._getCellsBetweenAnchorAndTarget( anchorCell, targetCell );
+
+			model.change( writer => {
+				blockNextSelectionChange = true;
+				writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
+			} );
+		};
+
+		this.listenTo( editor.editing.view.document, 'mousedown', ( evt, domEventData ) => {
+			// Make sure to not conflict with the shift+click listener and any other possible handlers.
+			if ( domEventData.domEvent.shiftKey || domEventData.domEvent.ctrlKey || domEventData.domEvent.altKey ) {
+				return;
+			}
+
+			anchorCell = this._getModelTableCellFromDomEvent( domEventData );
+		} );
+
+		this.listenTo( editor.editing.view.document, 'mousemove', ( evt, domEventData ) => {
+			if ( !domEventData.domEvent.buttons ) {
+				return;
+			}
+
+			if ( !anchorCell ) {
+				return;
+			}
+
+			const newTargetCell = this._getModelTableCellFromDomEvent( domEventData );
+
+			if ( newTargetCell ) {
+				targetCell = newTargetCell;
+
+				setModelSelection();
+			} else {
+				setModelSelection();
+			}
+
+			domEventData.preventDefault();
+		} );
+
+		this.listenTo( editor.editing.view.document, 'mouseup', () => {
+			blockNextSelectionChange = false;
+			anchorCell = null;
+			targetCell = null;
+		} );
+
+		this.listenTo( editor.editing.view.document, 'selectionChange', evt => {
+			if ( blockNextSelectionChange ) {
+				// @if CK_DEBUG // console.log( 'Blocked selectionChange 2.' );
+
+				evt.stop();
+			}
+		}, { priority: 'highest' } );
+	}
+
 	/**
 	 * It overrides default `model.deleteContent()` behavior over a selected table fragment.
 	 *
@@ -196,7 +263,9 @@ export default class TableSelection extends Plugin {
 
 	_getModelTableCellFromDomEvent( domEventData ) {
 		const viewTargetElement = domEventData.target;
-		const modelElement = this.editor.editing.mapper.toModelElement( viewTargetElement );
+		const viewPosition = this.editor.editing.view.createPositionAt( viewTargetElement, 0 );
+		const modelPosition = this.editor.editing.mapper.toModelPosition( viewPosition );
+		const modelElement = modelPosition.parent;
 
 		if ( !modelElement ) {
 			return;
