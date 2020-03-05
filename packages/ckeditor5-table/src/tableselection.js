@@ -7,39 +7,19 @@
  * @module table/tableselection
  */
 
+/* global setTimeout */
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
-import { setupTableSelectionHighlighting } from './tableselection/converters';
-import MouseSelectionHandler from './tableselection/mouseselectionhandler';
-import { findAncestor } from './commands/utils';
 import { getTableCellsInSelection, clearTableCellsContents } from './tableselection/utils';
-import cropTable from './tableselection/croptable';
+import { findAncestor } from './commands/utils';
 
 import '../theme/tableselection.css';
 
 /**
- * The table selection plugin.
- *
- * It introduces the ability to select table cells. The table selection is described by two nodes: start and end.
- * Both are the oposite corners of an rectangle that spans over them.
- *
- * Consider a table:
- *
- *		    0   1   2   3
- *		  +---+---+---+---+
- *		0 | a | b | c | d |
- *		  +-------+   +---+
- *		1 | e | f |   | g |
- *		  +---+---+---+---+
- *		2 | h | i     | j |
- *		  +---+---+---+---+
- *
- * Setting the table selection start in table cell "b" and the end in table cell "g" will select table cells: "b", "c", "d", "f", and "g".
- * The cells that span over multiple rows or columns can extend over the selection rectangle. For instance, setting a selection from
- * the table cell "a" to the table cell "i" will create a selection in which the table cell "i" will be (partially) outside
- * the rectangle of selected cells: "a", "b", "e", "f", "h", and "i".
+ * TODO
  *
  * @extends module:core/plugin~Plugin
  */
@@ -61,227 +41,123 @@ export default class TableSelection extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
-		super( editor );
-
-		/**
-		 * A mouse selection handler.
-		 *
-		 * @private
-		 * @readonly
-		 * @member {module:table/tableselection/mouseselectionhandler~MouseSelectionHandler}
-		 */
-		this._mouseHandler = new MouseSelectionHandler( this, this.editor.editing );
-
-		/**
-		 * A reference to the table utilities used across the class.
-		 *
-		 * @private
-		 * @readonly
-		 * @member {module:table/tableutils~TableUtils} #_tableUtils
-		 */
-	}
-
-	/**
-	 * A flag indicating that there are selected table cells and the selection includes more than one table cell.
-	 *
-	 * @type {Boolean}
-	 */
-	get hasMultiCellSelection() {
-		return !!this._startElement && !!this._endElement && this._startElement !== this._endElement;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	init() {
 		const editor = this.editor;
 		const model = editor.model;
-		const selection = model.document.selection;
 
-		this._tableUtils = editor.plugins.get( 'TableUtils' );
-
-		setupTableSelectionHighlighting( editor, this );
-
-		this.listenTo( selection, 'change:range', () => this._clearSelectionOnExternalChange( selection ) );
 		this.listenTo( model, 'deleteContent', ( evt, args ) => this._handleDeleteContent( evt, args ), { priority: 'high' } );
+
+		this._defineConverters();
+		this._enableShiftClickSelection();
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	destroy() {
-		super.destroy();
-		this._mouseHandler.stopListening();
-	}
+	getSelectedTableCells() {
+		const selection = this.editor.model.document.selection;
 
-	/**
-	 * Marks the table cell as a start of a table selection.
-	 *
-	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( tableCell );
-	 *
-	 * This method will clear the previous selection. The model selection will not be updated until
-	 * the {@link #setSelectingTo} method is used.
-	 *
-	 * @param {module:engine/model/element~Element} tableCell
-	 */
-	startSelectingFrom( tableCell ) {
-		this.clearSelection();
+		const selectedCells = getTableCellsInSelection( selection );
 
-		this._startElement = tableCell;
-		this._endElement = tableCell;
-	}
-
-	/**
-	 * Updates the current table selection end element. Table selection is defined by a start and an end element.
-	 * This method updates the end element. Must be preceded by {@link #startSelectingFrom}.
-	 *
-	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( startTableCell );
-	 *
-	 *		editor.plugins.get( 'TableSelection' ).setSelectingTo( endTableCell );
-	 *
-	 * This method will update model selection if start and end cells are different and belongs to the same table.
-	 *
-	 * @param {module:engine/model/element~Element} tableCell
-	 */
-	setSelectingTo( tableCell ) {
-		if ( !this._startElement ) {
-			this._startElement = tableCell;
+		if ( selectedCells.length == 0 ) {
+			return null;
 		}
 
-		const table = this._startElement.parent.parent;
+		// @if CK_DEBUG //	if ( selectedCells.length != selection.rangeCount ) {
+		// @if CK_DEBUG //		console.warn( 'Mixed selection warning. The selection contains table cells and some other ranges.' );
+		// @if CK_DEBUG //	}
 
-		// Do not add tableCell to selection if it is from other table or is already set as end element.
-		if ( table !== tableCell.parent.parent || this._endElement === tableCell ) {
-			return;
-		}
-
-		this._endElement = tableCell;
-		this._updateModelSelection();
+		return selectedCells;
 	}
 
-	/**
-	 * Stops the selection process (but do not clear the current selection).
-	 * The selection process is finished but the selection in the model remains.
-	 *
-	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( startTableCell );
-	 *		editor.plugins.get( 'TableSelection' ).setSelectingTo( endTableCell );
-	 *		editor.plugins.get( 'TableSelection' ).stopSelection();
-	 *
-	 * To clear the selection use {@link #clearSelection}.
-	 *
-	 * @param {module:engine/model/element~Element} [tableCell]
-	 */
-	stopSelection( tableCell ) {
-		if ( tableCell && tableCell.parent.parent === this._startElement.parent.parent ) {
-			this._endElement = tableCell;
-		}
+	_defineConverters() {
+		const editor = this.editor;
+		const highlighted = new Set();
 
-		this._updateModelSelection();
-	}
+		editor.conversion.for( 'editingDowncast' ).add( dispatcher => dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+			const viewWriter = conversionApi.writer;
+			// const viewSelection = viewWriter.document.selection;
 
-	/**
-	 * Stops the current selection process and clears the table selection in the model.
-	 *
-	 *		editor.plugins.get( 'TableSelection' ).startSelectingFrom( startTableCell );
-	 *		editor.plugins.get( 'TableSelection' ).setSelectingTo( endTableCell );
-	 *		editor.plugins.get( 'TableSelection' ).stopSelection();
-	 *
-	 *		editor.plugins.get( 'TableSelection' ).clearSelection();
-	 */
-	clearSelection() {
-		this._startElement = undefined;
-		this._endElement = undefined;
-	}
+			clearHighlightedTableCells( viewWriter );
 
-	/**
-	 * Returns an iterator for selected table cells.
-	 *
-	 *		tableSelection.startSelectingFrom( startTableCell );
-	 *		tableSelection.stopSelection( endTableCell );
-	 *
-	 *		const selectedTableCells = Array.from( tableSelection.getSelectedTableCells() );
-	 *		// The above array will represent a rectangular table selection.
-	 *
-	 * @returns {Iterable.<module:engine/model/element~Element>}
-	 */
-	* getSelectedTableCells() {
-		// TODO: this function should be removed. See https://github.com/ckeditor/ckeditor5/issues/6358
-		if ( !this.hasMultiCellSelection ) {
-			return;
-		}
+			const selectedCells = this.getSelectedTableCells();
 
-		const startLocation = this._tableUtils.getCellLocation( this._startElement );
-		const endLocation = this._tableUtils.getCellLocation( this._endElement );
-
-		const startRow = Math.min( startLocation.row, endLocation.row );
-		const endRow = Math.max( startLocation.row, endLocation.row );
-
-		const startColumn = Math.min( startLocation.column, endLocation.column );
-		const endColumn = Math.max( startLocation.column, endLocation.column );
-
-		for ( const cellInfo of new TableWalker( findAncestor( 'table', this._startElement ), { startRow, endRow } ) ) {
-			if ( cellInfo.column >= startColumn && cellInfo.column <= endColumn ) {
-				yield cellInfo.cell;
+			if ( !selectedCells ) {
+				return;
 			}
+
+			for ( const tableCell of selectedCells ) {
+				const viewElement = conversionApi.mapper.toViewElement( tableCell );
+
+				viewWriter.addClass( 'ck-editor__editable_selected', viewElement );
+				highlighted.add( viewElement );
+			}
+
+			const lastViewCell = conversionApi.mapper.toViewElement( selectedCells[ selectedCells.length - 1 ] );
+			viewWriter.setSelection( lastViewCell, 0 );
+		}, { priority: 'lowest' } ) );
+
+		function clearHighlightedTableCells( writer ) {
+			for ( const previouslyHighlighted of highlighted ) {
+				writer.removeClass( 'ck-editor__editable_selected', previouslyHighlighted );
+			}
+
+			highlighted.clear();
 		}
 	}
 
-	/**
-	 * Returns selected table fragment as a document fragment.
-	 *
-	 * @returns {module:engine/model/documentfragment~DocumentFragment|undefined}
-	 */
-	getSelectionAsFragment() {
-		if ( !this.hasMultiCellSelection ) {
-			return;
-		}
-
-		return this.editor.model.change( writer => {
-			const documentFragment = writer.createDocumentFragment();
-
-			const table = cropTable( this.getSelectedTableCells(), this._tableUtils, writer );
-			writer.insert( table, documentFragment, 0 );
-
-			return documentFragment;
-		} );
-	}
-
-	/**
-	 * Synchronizes the model selection with currently selected table cells.
-	 *
-	 * @private
-	 */
-	_updateModelSelection() {
-		if ( !this.hasMultiCellSelection ) {
-			return;
-		}
-
+	_enableShiftClickSelection() {
 		const editor = this.editor;
 		const model = editor.model;
+		let blockNextSelectionChange = false;
 
-		const modelRanges = [];
+		this.listenTo( editor.editing.view.document, 'mousedown', ( evt, domEventData ) => {
+			if ( !domEventData.domEvent.shiftKey ) {
+				return;
+			}
 
-		for ( const tableCell of this.getSelectedTableCells() ) {
-			modelRanges.push( model.createRangeOn( tableCell ) );
-		}
+			const anchorCell = findAncestor( 'tableCell', model.document.selection.anchor.parent );
 
-		// Update model's selection
-		model.change( writer => {
-			writer.setSelection( modelRanges );
+			if ( !anchorCell ) {
+				return;
+			}
+
+			const targetCell = this._getModelTableCellFromDomEvent( domEventData );
+
+			if ( !targetCell ) {
+				return;
+			}
+
+			const cellsToSelect = this._getCellsBetweenAnchorAndTarget( anchorCell, targetCell );
+
+			model.change( writer => {
+				blockNextSelectionChange = true;
+				writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
+			} );
+
+			domEventData.preventDefault();
+
+			setTimeout( () => {
+				blockNextSelectionChange = false;
+			}, 0 );
 		} );
-	}
 
-	/**
-	 * Checks if the selection has changed via an external change and if it is required to clear the internal state of the plugin.
-	 *
-	 * @param {module:engine/model/documentselection~DocumentSelection} selection
-	 * @private
-	 */
-	_clearSelectionOnExternalChange( selection ) {
-		if ( selection.rangeCount <= 1 && this.hasMultiCellSelection ) {
-			this.clearSelection();
-		}
+		// We need to ignore a `selectionChange` event that is fired after we render our new table cells selection.
+		// When downcasting table cells selection to the view, we put the view selection in the last selected cell
+		// in a place that may not be natively a "correct" location. This is – we put it directly in the `<td>` element.
+		// All browsers fire the native `selectionchange` event.
+		// However, all browsers except Safari return the selection in the exact place where we put it
+		// (even though it's visually normalized). Safari returns `<td><p>^foo` that makes our selection observer
+		// fire our `selectionChange` event (because the view selection that we set in the first step differs from the DOM selection).
+		// Since `selectionChange` is fired, we automatically update the model selection that moves it that paragraph.
+		// This breaks our dear cells selection.
+		//
+		// Theoretically this issue concerns only Safari that is the only browser that do normalize the selection.
+		// However, to avoid code branching and to have a good coverage for this event blocker, I
+		this.listenTo( editor.editing.view.document, 'selectionChange', evt => {
+			if ( blockNextSelectionChange ) {
+				// @if CK_DEBUG // console.log( 'Blocked selectionChange.' );
+
+				evt.stop();
+			}
+		}, { priority: 'highest' } );
 	}
 
 	/**
@@ -317,5 +193,63 @@ export default class TableSelection extends Plugin {
 			}
 		} );
 	}
+
+	_getModelTableCellFromDomEvent( domEventData ) {
+		const viewTargetElement = domEventData.target;
+		const modelElement = this.editor.editing.mapper.toModelElement( viewTargetElement );
+
+		if ( !modelElement ) {
+			return;
+		}
+
+		if ( modelElement.is( 'tableCell' ) ) {
+			return modelElement;
+		}
+
+		return findAncestor( 'tableCell', modelElement );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @returns {Array.<module:engine/model/element~Element>}
+	 */
+	_getCellsBetweenAnchorAndTarget( anchorCell, targetCell ) {
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const startLocation = tableUtils.getCellLocation( anchorCell );
+		const endLocation = tableUtils.getCellLocation( targetCell );
+
+		const startRow = Math.min( startLocation.row, endLocation.row );
+		const endRow = Math.max( startLocation.row, endLocation.row );
+
+		const startColumn = Math.min( startLocation.column, endLocation.column );
+		const endColumn = Math.max( startLocation.column, endLocation.column );
+
+		const cells = [];
+
+		for ( const cellInfo of new TableWalker( findAncestor( 'table', anchorCell ), { startRow, endRow } ) ) {
+			if ( cellInfo.column >= startColumn && cellInfo.column <= endColumn ) {
+				cells.push( cellInfo.cell );
+			}
+		}
+
+		if ( checkIsBackward( startLocation, endLocation ) ) {
+			cells.reverse();
+		}
+
+		return cells;
+	}
+}
+
+function checkIsBackward( startLocation, endLocation ) {
+	if ( startLocation.row > endLocation.row ) {
+		return true;
+	}
+
+	if ( startLocation.row == endLocation.row && startLocation.column > endLocation.column ) {
+		return true;
+	}
+
+	return false;
 }
 
