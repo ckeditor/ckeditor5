@@ -12,6 +12,14 @@
 	& th.ck-editor__editable_selected {
 		background-color: var(--ck-table-selected-cell-background) !important;
 
+		caret-color: transparent;
+		outline: unset;
+		box-shadow: unset;
+
+		&::selection {
+			background-color: transparent;
+		}
+
 		& .ck-widget_selected {
 			outline: unset;
 		}
