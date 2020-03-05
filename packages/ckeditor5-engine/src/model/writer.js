@@ -1130,7 +1130,7 @@ export default class Writer {
 	 *
 	 *		// Sets selection to given ranges.
 	 *		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
-	 *		writer.setSelection( range );
+	 *		writer.setSelection( ranges );
 	 *
 	 *		// Sets selection to other selection.
 	 *		const otherSelection = writer.createSelection();
