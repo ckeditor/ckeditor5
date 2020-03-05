@@ -170,6 +170,7 @@ export default class TableSelection extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		let anchorCell, targetCell;
+		let beganCellSelection = false;
 		let blockNextSelectionChange = false;
 
 		const setModelSelection = () => {
@@ -204,15 +205,22 @@ export default class TableSelection extends Plugin {
 			if ( newTargetCell ) {
 				targetCell = newTargetCell;
 
-				setModelSelection();
-			} else {
-				setModelSelection();
+				if ( !beganCellSelection && targetCell != anchorCell ) {
+					beganCellSelection = true;
+				}
 			}
+
+			if ( !beganCellSelection ) {
+				return;
+			}
+
+			setModelSelection();
 
 			domEventData.preventDefault();
 		} );
 
 		this.listenTo( editor.editing.view.document, 'mouseup', () => {
+			beganCellSelection = false;
 			blockNextSelectionChange = false;
 			anchorCell = null;
 			targetCell = null;
