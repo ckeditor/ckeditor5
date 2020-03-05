@@ -247,6 +247,26 @@ describe( 'RemoveColumnCommand', () => {
 					[ '30' ]
 				] ) );
 			} );
+
+			it( 'should properly remove multiple heading columns', () => {
+				// There's no handling for selection in case like that.
+				setData( model, modelTable( [
+					[ '00', '01', '02', '03', '04' ],
+					[ '10', '11', '12', '13', '14' ]
+				], { headingColumns: 3 } ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 3 ] ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00', '04' ],
+					[ '10', '[]14' ]
+				], { headingColumns: 1 } ) );
+			} );
 		} );
 
 		it( 'should change heading columns if removing a heading column', () => {

@@ -46,14 +46,11 @@ export default class RemoveColumnCommand extends Command {
 		const tableRow = firstCell.parent;
 		const table = tableRow.parent;
 
-		const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
-
 		// Cache the table before removing or updating colspans.
 		const tableMap = [ ...new TableWalker( table ) ];
 
 		// Get column index of removed column.
 		const firstCellData = tableMap.find( value => value.cell === firstCell );
-		const selectionRow = firstCellData.row;
 		const cellsToFocus = getCellToFocus( firstCell, lastCell );
 
 		const removedColumnIndexes = {
@@ -65,10 +62,7 @@ export default class RemoveColumnCommand extends Command {
 			// A temporary workaround to avoid the "model-selection-range-intersects" error.
 			writer.setSelection( writer.createSelection( table, 'on' ) );
 
-			// Update heading columns attribute if removing a row from head section.
-			if ( headingColumns && selectionRow <= headingColumns ) {
-				writer.setAttribute( 'headingColumns', headingColumns - 1, table );
-			}
+			adjustHeadingColumns( table, removedColumnIndexes, writer );
 
 			for (
 				let removedColumnIndex = removedColumnIndexes.last;
@@ -107,6 +101,18 @@ export default class RemoveColumnCommand extends Command {
 
 			yield findAncestor( 'tableCell', selection.getFirstPosition() );
 		}
+	}
+}
+
+// Updates heading columns attribute if removing a row from head section.
+function adjustHeadingColumns( table, removedColumnIndexes, writer ) {
+	const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
+
+	if ( headingColumns && removedColumnIndexes.first <= headingColumns ) {
+		const headingsRemoved = Math.min( headingColumns - 1 /* Other numbers are 0-based */, removedColumnIndexes.last ) -
+			removedColumnIndexes.first + 1;
+
+		writer.setAttribute( 'headingColumns', headingColumns - headingsRemoved, table );
 	}
 }
 
