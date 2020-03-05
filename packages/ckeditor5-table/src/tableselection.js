@@ -182,6 +182,10 @@ export default class TableSelection extends Plugin {
 			} );
 		};
 
+		const haveSameTableParent = ( cellA, cellB ) => {
+			return cellA.parent.parent == cellB.parent.parent;
+		};
+
 		this.listenTo( editor.editing.view.document, 'mousedown', ( evt, domEventData ) => {
 			// Make sure to not conflict with the shift+click listener and any other possible handlers.
 			if ( domEventData.domEvent.shiftKey || domEventData.domEvent.ctrlKey || domEventData.domEvent.altKey ) {
@@ -202,7 +206,7 @@ export default class TableSelection extends Plugin {
 
 			const newTargetCell = this._getModelTableCellFromDomEvent( domEventData );
 
-			if ( newTargetCell ) {
+			if ( newTargetCell && haveSameTableParent( anchorCell, newTargetCell ) ) {
 				targetCell = newTargetCell;
 
 				if ( !beganCellSelection && targetCell != anchorCell ) {
