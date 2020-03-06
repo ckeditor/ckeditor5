@@ -30,7 +30,19 @@ export default class RemoveRowCommand extends Command {
 	refresh() {
 		const firstCell = this._getReferenceCells().next().value;
 
-		this.isEnabled = !!firstCell && firstCell.parent.parent.childCount > 1;
+		if ( firstCell ) {
+			const table = firstCell.parent.parent;
+			const tableUtils = this.editor.plugins.get( 'TableUtils' );
+			const tableRowCount = table && tableUtils.getRows( table );
+
+			const tableMap = [ ...new TableWalker( table ) ];
+			const selectedCells = Array.from( this._getReferenceCells() );
+			const rowIndexes = tableMap.filter( entry => selectedCells.includes( entry.cell ) ).map( el => el.row );
+
+			this.isEnabled = Math.max.apply( null, rowIndexes ) - Math.min.apply( null, rowIndexes ) < ( tableRowCount - 1 );
+		} else {
+			this.isEnabled = false;
+		}
 	}
 
 	/**

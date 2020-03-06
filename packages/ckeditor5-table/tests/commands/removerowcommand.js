@@ -43,7 +43,8 @@ describe( 'RemoveRowCommand', () => {
 		it( 'should be true if selection contains multiple cells', () => {
 			setData( model, modelTable( [
 				[ '00', '01' ],
-				[ '10', '11' ]
+				[ '10', '11' ],
+				[ '20', '21' ]
 			] ) );
 
 			const tableSelection = editor.plugins.get( TableSelection );
@@ -60,6 +61,22 @@ describe( 'RemoveRowCommand', () => {
 			setData( model, modelTable( [
 				[ '00[]', '01' ]
 			] ) );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false if all the rows are selected', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+			);
 
 			expect( command.isEnabled ).to.be.false;
 		} );
