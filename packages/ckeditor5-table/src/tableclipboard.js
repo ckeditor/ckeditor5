@@ -39,30 +39,21 @@ export default class TableClipboard extends Plugin {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
-		/**
-		 * A table selection plugin instance.
-		 *
-		 * @private
-		 * @readonly
-		 * @member {module:table/tableselection~TableSelection} module:tableclipboard~TableClipboard#_tableSelection
-		 */
-		this._tableSelection = editor.plugins.get( 'TableSelection' );
-
-		this.listenTo( viewDocument, 'copy', ( evt, data ) => this._onCopy( evt, data ), { priority: 'normal' } );
-		this.listenTo( viewDocument, 'cut', ( evt, data ) => this._onCut( evt, data ), { priority: 'high' } );
+		this.listenTo( viewDocument, 'copy', ( evt, data ) => this._onCopyCut( evt, data ) );
+		this.listenTo( viewDocument, 'cut', ( evt, data ) => this._onCopyCut( evt, data ) );
 	}
 
 	/**
-	 * A clipboard "copy" event handler.
+	 * Copies table content to a clipboard on "copy" & "cut" events.
 	 *
 	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
 	 * @param {Object} data Clipboard event data.
 	 * @private
 	 */
-	_onCopy( evt, data ) {
-		const tableSelection = this._tableSelection;
+	_onCopyCut( evt, data ) {
+		const tableSelection = this.editor.plugins.get( 'TableSelection' );
 
-		if ( !tableSelection.hasMultiCellSelection ) {
+		if ( !tableSelection.getSelectedTableCells() ) {
 			return;
 		}
 
@@ -79,19 +70,5 @@ export default class TableClipboard extends Plugin {
 			content,
 			method: evt.name
 		} );
-	}
-
-	/**
-	 * A clipboard "cut" event handler.
-	 *
-	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
-	 * @param {Object} data Clipboard event data.
-	 * @private
-	 */
-	_onCut( evt, data ) {
-		if ( this._tableSelection.hasMultiCellSelection ) {
-			data.preventDefault();
-			evt.stop();
-		}
 	}
 }

@@ -12,6 +12,11 @@
 	.external-source td, .external-source th {
 		border: solid 1px hsl(0, 0%, 85%);
 	}
+
+	/* It should not create entire viewport scroll. */
+	pre {
+		overflow: auto;
+	}
 </style>
 
 <h3>A "content" test editor</h3>
@@ -52,7 +57,13 @@
 					<td>k</td>
 					<td>l</td>
 					<td><strong>m</strong></td>
-					<td>n</td>
+					<td>
+						<p>n</p>
+						<figure class="image image-style-side">
+							<img src="sample.jpg" />
+							<figcaption>Caption!</figcaption>
+						</figure>
+					</td>
 					<td>o</td>
 				</tr>
 				<tr>
@@ -110,7 +121,7 @@
 					<td rowspan="4">02</td>
 					<td>03</td>
 					<td colspan="2" rowspan="7">04</td>
-					<td>07</td>
+					<td>06</td>
 					<td>07</td>
 					<td>08</td>
 				</tr>
@@ -118,7 +129,7 @@
 					<td>10</td>
 					<td>11</td>
 					<td>13</td>
-					<td>17</td>
+					<td>16</td>
 					<td>17</td>
 					<td>18</td>
 				</tr>
@@ -126,18 +137,18 @@
 					<td>20</td>
 					<td>21</td>
 					<td>23</td>
-					<td colspan="3">27</td>
+					<td colspan="3">26</td>
 				</tr>
 				<tr>
 					<td>30</td>
 					<td>31</td>
 					<td>33</td>
-					<td>37</td>
+					<td>36</td>
 					<td colspan="2">37</td>
 				</tr>
 				<tr>
 					<td colspan="4">40</td>
-					<td>47</td>
+					<td>46</td>
 					<td>47</td>
 					<td>48</td>
 				</tr>
@@ -146,7 +157,7 @@
 					<td>51</td>
 					<td>52</td>
 					<td>53</td>
-					<td rowspan="4">57</td>
+					<td rowspan="4">56</td>
 					<td>57</td>
 					<td>58</td>
 				</tr>

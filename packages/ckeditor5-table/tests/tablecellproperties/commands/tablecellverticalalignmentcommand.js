@@ -8,9 +8,10 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { assertTableCellStyle, modelTable } from '../../_utils/utils';
+import { assertTableCellStyle, modelTable, viewTable } from '../../_utils/utils';
 import TableCellPropertiesEditing from '../../../src/tablecellproperties/tablecellpropertiesediting';
 import TableCellVerticalAlignmentCommand from '../../../src/tablecellproperties/commands/tablecellverticalalignmentcommand';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
@@ -54,6 +55,17 @@ describe( 'table cell properties', () => {
 						expect( command.isEnabled ).to.be.true;
 					} );
 				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should be true if the selection contains some table cells', () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true }, '01' ],
+							[ '10', { contents: '11', isSelected: true } ]
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+				} );
 			} );
 
 			describe( 'value', () => {
@@ -80,6 +92,68 @@ describe( 'table cell properties', () => {
 
 					it( 'should be true is selection has table cell', () => {
 						setData( model, modelTable( [ [ { verticalAlignment: 'bottom', contents: 'f[o]o' } ] ] ) );
+
+						expect( command.value ).to.equal( 'bottom' );
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should be undefined if no table cells have the "verticalAlignment" property', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true },
+								{ contents: '01', isSelected: true }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if only some table cells have the "verticalAlignment" property', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, verticalAlignment: 'bottom' },
+								{ contents: '01', isSelected: true }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, verticalAlignment: 'bottom' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if one of selected table cells has a different "verticalAlignment" property value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, verticalAlignment: 'bottom' },
+								{ contents: '01', isSelected: true, verticalAlignment: 'top' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, verticalAlignment: 'bottom' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if all table cells have the same "verticalAlignment" property value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, verticalAlignment: 'bottom' },
+								{ contents: '01', isSelected: true, verticalAlignment: 'bottom' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, verticalAlignment: 'bottom' }
+							]
+						] ) );
 
 						expect( command.value ).to.equal( 'bottom' );
 					} );
@@ -145,6 +219,38 @@ describe( 'table cell properties', () => {
 						command.execute();
 
 						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					beforeEach( () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true }, '01' ],
+							[ '10', { contents: '11', isSelected: true } ]
+						] ) );
+					} );
+
+					it( 'should set the "verticalAlignment" attribute value of selected table cells', () => {
+						command.execute( { value: 'top' } );
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[ { contents: '00', style: 'vertical-align:top;' }, '01' ],
+							[ '10', { contents: '11', style: 'vertical-align:top;' } ]
+						] ) );
+					} );
+
+					it( 'should remove "verticalAlignment" from selected table cells if no value is passed', () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true, verticalAlignment: 'top' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, verticalAlignment: 'top' } ]
+						] ) );
+
+						command.execute();
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						] ) );
 					} );
 				} );
 			} );
