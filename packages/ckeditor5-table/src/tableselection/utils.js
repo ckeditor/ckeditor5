@@ -7,6 +7,8 @@
  * @module table/tableselection/utils
  */
 
+import { getRangeContainedElement } from '../commands/utils';
+
 /**
  * Clears contents of the passed table cells.
  *
@@ -17,8 +19,6 @@
  *
  *		clearTableCellsContents( editor.model, tableSelection.getSelectedTableCells() );
  *
- * **Note**: This function is used also by {@link module:table/tableselection~TableSelection#getSelectionAsFragment}
- *
  * @param {module:engine/model/model~Model} model
  * @param {Iterable.<module:engine/model/element~Element>} tableCells
  */
@@ -28,4 +28,24 @@ export function clearTableCellsContents( model, tableCells ) {
 			model.deleteContent( writer.createSelection( tableCell, 'in' ) );
 		}
 	} );
+}
+
+/**
+ * Returns all model cells within the provided model selection.
+ *
+ * @param {Iterable.<module:engine/model/selection~Selection>} selection
+ * @returns {Array.<module:engine/model/element~Element>}
+ */
+export function getTableCellsInSelection( selection ) {
+	const cells = [];
+
+	for ( const range of selection.getRanges() ) {
+		const element = getRangeContainedElement( range );
+
+		if ( element && element.is( 'tableCell' ) ) {
+			cells.push( element );
+		}
+	}
+
+	return cells;
 }
