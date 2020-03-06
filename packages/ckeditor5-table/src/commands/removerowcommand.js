@@ -118,15 +118,20 @@ export default class RemoveRowCommand extends Command {
 	 */
 	* _getReferenceCells() {
 		const plugins = this.editor.plugins;
-		if ( plugins.has( 'TableSelection' ) && plugins.get( 'TableSelection' ).hasMultiCellSelection ) {
-			for ( const cell of plugins.get( 'TableSelection' ).getSelectedTableCells() ) {
-				yield cell;
-			}
-		} else {
-			const selection = this.editor.model.document.selection;
+		if ( plugins.has( 'TableSelection' ) ) {
+			const selectedCells = plugins.get( 'TableSelection' ).getSelectedTableCells();
 
-			yield findAncestor( 'tableCell', selection.getFirstPosition() );
+			if ( selectedCells ) {
+				for ( const cell of selectedCells ) {
+					yield cell;
+				}
+
+				return;
+			}
 		}
+
+		const selection = this.editor.model.document.selection;
+		yield findAncestor( 'tableCell', selection.getFirstPosition() );
 	}
 }
 
