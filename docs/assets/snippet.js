@@ -13,11 +13,11 @@ setTimeout( () => {
 	const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;
 
 	editables.forEach( editable => {
-		if ( !editable.ckeditorInstance ) {
+		const editor = editable.ckeditorInstance;
+
+		if ( !editor ) {
 			return;
 		}
-
-		const editor = editable.ckeditorInstance;
 
 		editor.plugins.get( 'Clipboard' ).listenTo( editor.editing.view.document, 'clipboardInput', ( evt, data ) => {
 			const htmlString = data.dataTransfer.getData( 'text/html' );

@@ -195,7 +195,6 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	margin-bottom: 1.5rem;
 }
 
-
 /* https://github.com/ckeditor/ckeditor5/issues/896 */
 .live-snippet .ck.ck-content h2,
 .live-snippet .ck.ck-content h3,
