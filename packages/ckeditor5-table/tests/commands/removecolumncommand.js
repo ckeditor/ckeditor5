@@ -46,8 +46,8 @@ describe( 'RemoveColumnCommand', () => {
 
 		it( 'should be true if selection contains multiple cells', () => {
 			setData( model, modelTable( [
-				[ '00', '01' ],
-				[ '10', '11' ]
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
 			] ) );
 
 			const tableSelection = editor.plugins.get( TableSelection );
@@ -64,6 +64,20 @@ describe( 'RemoveColumnCommand', () => {
 				[ '10[]' ],
 				[ '20[]' ]
 			] ) );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false if all columns are selected', () => {
+			setData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			] ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+			tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 2 ] ) );
 
 			expect( command.isEnabled ).to.be.false;
 		} );

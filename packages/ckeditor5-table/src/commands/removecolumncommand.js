@@ -28,10 +28,21 @@ export default class RemoveColumnCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const firstCell = this._getReferenceCells().next().value;
 
-		this.isEnabled = !!firstCell && tableUtils.getColumns( firstCell.parent.parent ) > 1;
+		if ( firstCell ) {
+			const table = firstCell.parent.parent;
+			const tableUtils = this.editor.plugins.get( 'TableUtils' );
+			const tableColumnCount = table && tableUtils.getColumns( table );
+
+			const tableMap = [ ...new TableWalker( table ) ];
+			const selectedCells = Array.from( this._getReferenceCells() );
+			const columnIndexes = tableMap.filter( entry => selectedCells.includes( entry.cell ) ).map( el => el.column );
+
+			this.isEnabled = Math.max.apply( null, columnIndexes ) - Math.min.apply( null, columnIndexes ) < ( tableColumnCount - 1 );
+		} else {
+			this.isEnabled = false;
+		}
 	}
 
 	/**
