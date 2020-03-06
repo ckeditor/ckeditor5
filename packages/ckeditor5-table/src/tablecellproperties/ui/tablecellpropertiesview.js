@@ -682,6 +682,7 @@ export default class TableCellPropertiesView extends View {
 		// -- Horizontal ---------------------------------------------------
 
 		const horizontalAlignmentToolbar = new ToolbarView( locale );
+		const isRTLContent = this.locale.contentLanguageDirection === 'rtl';
 
 		horizontalAlignmentToolbar.set( {
 			isCompact: true,
@@ -695,7 +696,6 @@ export default class TableCellPropertiesView extends View {
 			labels: this._horizontalAlignmentLabels,
 			propertyName: 'horizontalAlignment',
 			nameToValue: name => {
-				const isRTLContent = this.locale.contentLanguageDirection === 'rtl';
 				return name === ( isRTLContent ? 'right' : 'left' ) ? '' : name;
 			}
 		} );
@@ -782,31 +782,20 @@ export default class TableCellPropertiesView extends View {
 	 * @type {Object.<String,String>}
 	 */
 	get _horizontalAlignmentLabels() {
+		const locale = this.locale;
 		const t = this.t;
 
-		const labels = {
-			left: t( 'Align cell text to the left' ),
-			center: t( 'Align cell text to the center' ),
-			right: t( 'Align cell text to the right' ),
-			justify: t( 'Justify cell text' )
-		};
+		const left = t( 'Align cell text to the left' );
+		const center = t( 'Align cell text to the center' );
+		const right = t( 'Align cell text to the right' );
+		const justify = t( 'Justify cell text' );
 
-		// Set of labels which can be reversed to match proper {@link #uiLanguage editor UI language}.
-		const ltr = [ 'left', 'center', 'right' ];
-		const labelsDirection = this.locale.uiLanguageDirection === 'rtl' ? ltr.reverse() : ltr;
-
-		// Creates object with a proper order of labeles.
-		const orderedLabels = labelsDirection.reduce( ( acc, curr ) => {
-			return {
-				...acc,
-				[ curr ]: labels[ curr ]
-			};
-		}, {} );
-
-		// Appends other labels.
-		orderedLabels.justify = labels.justify;
-
-		return orderedLabels;
+		// Returns object with a proper order of labeles.
+		if ( locale.uiLanguageDirection === 'rtl' ) {
+			return { right, center, left, justify };
+		} else {
+			return { left, center, right, justify };
+		}
 	}
 
 	/**
