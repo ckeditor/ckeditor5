@@ -1275,11 +1275,11 @@ describe( 'DataController utils', () => {
 			it( 'should not remove empty elements when not-allowed element is paste', () => {
 				setData( model, '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
 
-				// pasted content is forbidden in current selection
+				// Pasted content is forbidden in current selection.
 				const affectedRange = insertHelper( '<wrapper><limit><paragraph>foo</paragraph></limit></wrapper>' );
 
 				expect( getData( model ) ).to.equal( '<wrapper><limit>[]<paragraph></paragraph></limit></wrapper>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
+				expect( stringify( root, affectedRange ) ).to.equal( '<wrapper><limit>[]<paragraph></paragraph></limit></wrapper>' );
 			} );
 
 			it( 'should correctly paste allowed nodes', () => {

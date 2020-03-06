@@ -10,6 +10,7 @@ import Selection from '../../../src/model/selection';
 import Element from '../../../src/model/element';
 import deleteContent from '../../../src/model/utils/deletecontent';
 import { setData, getData } from '../../../src/dev-utils/model';
+import { stringify } from '../../../src/dev-utils/view';
 
 describe( 'DataController utils', () => {
 	let model, doc;
@@ -444,7 +445,7 @@ describe( 'DataController utils', () => {
 					'<paragraph><pchild>[]ar</pchild></paragraph><paragraph>x</paragraph>'
 				);
 
-				it( 'merges elements when left end deep nested (3rd level)', () => {
+				it( 'merges elements when right end deep nested (3rd level)', () => {
 					const root = doc.getRoot();
 
 					// We need to use the raw API due to https://github.com/ckeditor/ckeditor5-engine/issues/905.
@@ -615,7 +616,7 @@ describe( 'DataController utils', () => {
 					.to.equal( 'x[]z' );
 			} );
 
-			it( 'creates a paragraph when text is not allowed (custom selection)', () => {
+			it( 'moves the (custom) selection to the nearest paragraph', () => {
 				setData(
 					model,
 					'<paragraph>[x]</paragraph><paragraph>yyy</paragraph><paragraph>z</paragraph>',
@@ -633,6 +634,9 @@ describe( 'DataController utils', () => {
 
 				expect( getData( model, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>[x]</paragraph><paragraph></paragraph><paragraph>z</paragraph>' );
+
+				expect( stringify( root, selection ) )
+					.to.equal( '<$root><paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph></$root>' );
 			} );
 
 			it( 'creates a paragraph when text is not allowed (block widget selected)', () => {
@@ -725,7 +729,7 @@ describe( 'DataController utils', () => {
 					.to.equal( '<paragraph>x[]</paragraph><paragraph>z</paragraph>' );
 			} );
 
-			it( 'creates paragraph when after deletion there is no valid selection range', () => {
+			it( 'does not create a paragraph when after deletion there is no valid selection range (empty root)', () => {
 				setData(
 					model,
 					'[<blockWidget></blockWidget>]',
@@ -735,7 +739,7 @@ describe( 'DataController utils', () => {
 				deleteContent( model, doc.selection, { doNotAutoparagraph: true } );
 
 				expect( getData( model, { rootName: 'bodyRoot' } ) )
-					.to.equal( '<paragraph>[]</paragraph>' );
+					.to.equal( '[]' );
 			} );
 		} );
 

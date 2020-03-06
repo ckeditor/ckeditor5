@@ -1242,10 +1242,10 @@ describe( 'Selection post-fixer', () => {
 				} );
 
 				expect( getModelData( model ) ).to.equal(
-					'<paragraph>foo[]</paragraph>' +
+					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
-							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
+							'[<tableCell><paragraph>aaa</paragraph></tableCell>]' +
 							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>' +
