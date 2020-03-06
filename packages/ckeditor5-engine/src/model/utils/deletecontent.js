@@ -109,12 +109,12 @@ export default function deleteContent( model, selection, options = {} ) {
 
 		// 4. Add a paragraph to set selection in it.
 		// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
-		if ( shouldAutoparagraph( schema, startPos ) ) {
+		if ( !options.doNotAutoparagraph && shouldAutoparagraph( schema, startPos ) ) {
 			// If auto-paragraphing is off, find the closest valid selection range and collapse the selection there.
 			// If there is no valid selection range, create paragraph anyway and set selection there.
 			const validSelectionRange = schema.getNearestSelectionRange( startPos );
 
-			if ( options.doNotAutoparagraph && validSelectionRange ) {
+			if ( validSelectionRange ) {
 				collapseSelectionAt( writer, selection, validSelectionRange );
 			} else {
 				insertParagraph( writer, startPos, selection );

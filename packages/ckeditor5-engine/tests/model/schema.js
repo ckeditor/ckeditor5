@@ -1420,9 +1420,17 @@ describe( 'Schema', () => {
 				isObject: true
 			} );
 
+			// Similar to the <caption> case.
 			model.schema.register( 'blockWidget', {
 				allowIn: '$root',
 				allowContentOf: '$block',
+				isObject: true
+			} );
+
+			// Similar to the <tableCell> case.
+			model.schema.register( 'blockContainerWidget', {
+				allowIn: '$root',
+				allowContentOf: '$root',
 				isObject: true
 			} );
 
@@ -1619,6 +1627,48 @@ describe( 'Schema', () => {
 				'[]<blockWidget></blockWidget><paragraph></paragraph>',
 				'both',
 				'[<blockWidget></blockWidget>]<paragraph></paragraph>'
+			);
+		} );
+
+		describe( 'in case of other types of objects', () => {
+			test(
+				'should return null when cannot leave a limit element',
+				'<blockContainerWidget>[]</blockContainerWidget>',
+				'both',
+				null
+			);
+
+			test(
+				'should return null when cannot leave a limit element (surrounded with paragraphs)',
+				'<paragraph>x</paragraph><blockContainerWidget>[]</blockContainerWidget><paragraph>x</paragraph>',
+				'both',
+				null
+			);
+
+			test(
+				'should return null when cannot leave a limit element (surrounded by other widgets)',
+
+				'<blockContainerWidget><paragraph>x</paragraph></blockContainerWidget>' +
+				'<blockContainerWidget>[]</blockContainerWidget>' +
+				'<blockContainerWidget><paragraph>x</paragraph></blockContainerWidget>',
+
+				'both',
+
+				null
+			);
+
+			test(
+				'should keep scanning even though encountering a limit in one direction (left)',
+				'<paragraph>x</paragraph><blockContainerWidget>[]<paragraph>x</paragraph></blockContainerWidget><paragraph>x</paragraph>',
+				'both',
+				'<paragraph>x</paragraph><blockContainerWidget><paragraph>[]x</paragraph></blockContainerWidget><paragraph>x</paragraph>'
+			);
+
+			test(
+				'should keep scanning even though encountering a limit in one direction (right)',
+				'<paragraph>x</paragraph><blockContainerWidget><paragraph>x</paragraph>[]</blockContainerWidget><paragraph>x</paragraph>',
+				'both',
+				'<paragraph>x</paragraph><blockContainerWidget><paragraph>x[]</paragraph></blockContainerWidget><paragraph>x</paragraph>'
 			);
 		} );
 

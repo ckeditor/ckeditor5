@@ -50,13 +50,11 @@ export default function insertContent( model, content, selectable, placeOrOffset
 			selection = writer.createSelection( selectable, placeOrOffset );
 		}
 
-		const insertionPosition = selection.getFirstPosition();
-
 		if ( !selection.isCollapsed ) {
 			model.deleteContent( selection, { doNotAutoparagraph: true } );
 		}
 
-		const insertion = new Insertion( model, writer, insertionPosition );
+		const insertion = new Insertion( model, writer, selection.anchor );
 
 		let nodesToInsert;
 
@@ -89,7 +87,7 @@ export default function insertContent( model, content, selectable, placeOrOffset
 			// @if CK_DEBUG // console.warn( 'Cannot determine a proper selection range after insertion.' );
 		}
 
-		const affectedRange = insertion.getAffectedRange() || model.createRange( insertionPosition );
+		const affectedRange = insertion.getAffectedRange() || model.createRange( selection.anchor );
 
 		insertion.destroy();
 
