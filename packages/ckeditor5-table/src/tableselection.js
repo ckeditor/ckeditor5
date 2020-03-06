@@ -59,7 +59,7 @@ export default class TableSelection extends Plugin {
 	/**
 	 * Returns currently selected table cells or `null` if not a table cells selection.
 	 *
-	 * @returns {Array.<module:engine/model/element~Element>}
+	 * @returns {Array.<module:engine/model/element~Element>|null}
 	 */
 	getSelectedTableCells() {
 		const selection = this.editor.model.document.selection;
@@ -81,12 +81,18 @@ export default class TableSelection extends Plugin {
 	/**
 	 * Returns a selected table fragment as a document fragment.
 	 *
-	 * @returns {module:engine/model/documentfragment~DocumentFragment}
+	 * @returns {module:engine/model/documentfragment~DocumentFragment|null}
 	 */
 	getSelectionAsFragment() {
+		const selectedCells = this.getSelectedTableCells();
+
+		if ( !selectedCells ) {
+			return null;
+		}
+
 		return this.editor.model.change( writer => {
 			const documentFragment = writer.createDocumentFragment();
-			const table = cropTable( this.getSelectedTableCells(), this.editor.plugins.get( 'TableUtils' ), writer );
+			const table = cropTable( selectedCells, this.editor.plugins.get( 'TableUtils' ), writer );
 
 			writer.insert( table, documentFragment, 0 );
 
@@ -163,14 +169,12 @@ export default class TableSelection extends Plugin {
 
 			const targetCell = this._getModelTableCellFromDomEvent( domEventData );
 
-			if ( !targetCell ) {
-				return;
+			if ( targetCell && haveSameTableParent( anchorCell, targetCell ) ) {
+				blockSelectionChange = true;
+				this._setCellSelection( anchorCell, targetCell );
+
+				domEventData.preventDefault();
 			}
-
-			blockSelectionChange = true;
-			this._setCellsSelection( anchorCell, targetCell );
-
-			domEventData.preventDefault();
 		} );
 
 		this.listenTo( editor.editing.view.document, 'mouseup', () => {
@@ -254,7 +258,7 @@ export default class TableSelection extends Plugin {
 			}
 
 			blockSelectionChange = true;
-			this._setCellsSelection( anchorCell, targetCell );
+			this._setCellSelection( anchorCell, targetCell );
 
 			domEventData.preventDefault();
 		} );
@@ -274,10 +278,6 @@ export default class TableSelection extends Plugin {
 				evt.stop();
 			}
 		}, { priority: 'highest' } );
-
-		function haveSameTableParent( cellA, cellB ) {
-			return cellA.parent.parent == cellB.parent.parent;
-		}
 	}
 
 	/**
@@ -318,11 +318,11 @@ export default class TableSelection extends Plugin {
 	 * Sets the model selection based on given anchor and target cells (can be the same cell).
 	 * Takes care of setting backward flag.
 	 *
-	 * @private
+	 * @protected
 	 * @param {module:engine/model/element~Element} anchorCell
 	 * @param {module:engine/model/element~Element} targetCell
 	 */
-	_setCellsSelection( anchorCell, targetCell ) {
+	_setCellSelection( anchorCell, targetCell ) {
 		const cellsToSelect = this._getCellsToSelect( anchorCell, targetCell );
 
 		this.editor.model.change( writer => {
@@ -415,3 +415,6 @@ function checkIsBackward( startLocation, endLocation ) {
 	return false;
 }
 
+function haveSameTableParent( cellA, cellB ) {
+	return cellA.parent.parent == cellB.parent.parent;
+}
