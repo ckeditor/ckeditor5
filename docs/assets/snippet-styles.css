@@ -150,7 +150,7 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	position: absolute;
 	top: 0;
 	right: 0;
-	padding: 20px;
+	padding: 10px;
 	/* reset default button styling */
 	background: none;
 	border: none;
@@ -160,6 +160,10 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	-moz-appearance: none;
 	appearance: none;
 	cursor: pointer;
+}
+
+.main__notification-close:active:focus {
+	outline: none;
 }
 
 @keyframes fadeIn {
