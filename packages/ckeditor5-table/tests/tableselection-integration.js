@@ -34,8 +34,10 @@ describe( 'table selection', () => {
 			} );
 
 			it( 'should clear contents of the selected table cells and put selection in last cell on backward delete', () => {
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
 
 				const domEventData = new DomEventData( viewDocument, {
 					preventDefault: sinon.spy()
@@ -54,8 +56,10 @@ describe( 'table selection', () => {
 			} );
 
 			it( 'should clear contents of the selected table cells and put selection in last cell on forward delete', () => {
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
 
 				const domEventData = new DomEventData( viewDocument, {
 					preventDefault: sinon.spy()
@@ -153,8 +157,10 @@ describe( 'table selection', () => {
 			} );
 
 			it( 'should clear contents of the selected table cells and put selection in last cell on user input', () => {
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
 
 				viewDocument.fire( 'keydown', { keyCode: getCode( 'x' ) } );
 

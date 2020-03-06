@@ -39,15 +39,6 @@ export default class TableClipboard extends Plugin {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
-		/**
-		 * A table selection plugin instance.
-		 *
-		 * @private
-		 * @readonly
-		 * @member {module:table/tableselection~TableSelection} module:tableclipboard~TableClipboard#_tableSelection
-		 */
-		this._tableSelection = editor.plugins.get( 'TableSelection' );
-
 		this.listenTo( viewDocument, 'copy', ( evt, data ) => this._onCopyCut( evt, data ) );
 		this.listenTo( viewDocument, 'cut', ( evt, data ) => this._onCopyCut( evt, data ) );
 	}
@@ -60,9 +51,9 @@ export default class TableClipboard extends Plugin {
 	 * @private
 	 */
 	_onCopyCut( evt, data ) {
-		const tableSelection = this._tableSelection;
+		const tableSelection = this.editor.plugins.get( 'TableSelection' );
 
-		if ( !tableSelection.hasMultiCellSelection ) {
+		if ( !tableSelection.getSelectedTableCells() ) {
 			return;
 		}
 
@@ -72,7 +63,7 @@ export default class TableClipboard extends Plugin {
 		const dataController = this.editor.data;
 		const viewDocument = this.editor.editing.view.document;
 
-		const content = dataController.toView( this._tableSelection.getSelectionAsFragment() );
+		const content = dataController.toView( tableSelection.getSelectionAsFragment() );
 
 		viewDocument.fire( 'clipboardOutput', {
 			dataTransfer: data.dataTransfer,

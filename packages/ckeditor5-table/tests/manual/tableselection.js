@@ -40,7 +40,7 @@ function createEditor( target, inspectorName ) {
 		} )
 		.then( editor => {
 			window.editors[ inspectorName ] = editor;
-			CKEditorInspector.attach( inspectorName, editor );
+			CKEditorInspector.attach( { [ inspectorName ]: editor } );
 
 			editor.model.document.on( 'change', () => {
 				printModelContents( editor );
