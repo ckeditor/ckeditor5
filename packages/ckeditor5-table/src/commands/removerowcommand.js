@@ -78,7 +78,13 @@ export default class RemoveRowCommand extends Command {
 	}
 
 	/**
+	 * Removes a row from the given `table`.
+	 *
 	 * @private
+	 * @param {Number} removedRowIndex Index of the row that should be removed.
+	 * @param {module:engine/model/element~Element} table
+	 * @param {module:engine/model/writer~Writer} writer
+	 * @param {module:engine/model/element~Element[]} tableMap Table map retrieved from {@link module:table/tablewalker~TableWalker}.
 	 */
 	_removeRow( removedRowIndex, table, writer, tableMap ) {
 		const cellsToMove = new Map();
