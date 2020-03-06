@@ -109,6 +109,69 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	margin-bottom: 0;
 }
 
+/* warning notification */
+
+.main__notification.notice {
+	position: fixed;
+	max-width: 650px;
+	border: 1px solid #e4e4e4;
+	border-left-color: #f9c669;
+	border-left-width: 3px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+	/* override .notice class' margins and paddings */
+	padding: 20px 40px 20px 20px;
+	margin: 0;
+	/* elevate the warning above the editor's toolbars */
+	z-index: 99999999;
+	animation: fadeIn .3s ease-in-out forwards;
+}
+
+/* class chaining for style overriding */
+.formatted .main__notification-title {
+	font-weight: bold;
+	font-size: 16px;
+	padding: 0;
+	margin: 0;
+}
+
+.main__notification-body {
+	margin-top: 10px;
+}
+
+.main__notification-body p {
+  margin-bottom: 0.3em;
+}
+
+.main__notification-body p:last-child {
+	margin-bottom: 0;
+}
+
+.main__notification-close {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 20px;
+	/* reset default button styling */
+	background: none;
+	border: none;
+	box-shadow: none;
+	line-height: 1;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	cursor: pointer;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
 /* examples/builds/inline-editor.html */
 .live-snippet .image-style-left, .live-snippet .image-style-right {
 	float: left;
@@ -131,6 +194,7 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 .live-snippet blockquote p:first-of-type {
 	margin-bottom: 1.5rem;
 }
+
 
 /* https://github.com/ckeditor/ckeditor5/issues/896 */
 .live-snippet .ck.ck-content h2,
