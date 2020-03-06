@@ -52,8 +52,10 @@ describe( 'RemoveColumnCommand', () => {
 
 			const tableSelection = editor.plugins.get( TableSelection );
 			const modelRoot = model.document.getRoot();
-			tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-			tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
+			);
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -76,8 +78,10 @@ describe( 'RemoveColumnCommand', () => {
 
 			const tableSelection = editor.plugins.get( TableSelection );
 			const modelRoot = model.document.getRoot();
-			tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-			tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 2 ] ) );
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 0, 2 ] )
+			);
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -133,8 +137,10 @@ describe( 'RemoveColumnCommand', () => {
 
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 0 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+				);
 
 				command.execute();
 
@@ -156,8 +162,10 @@ describe( 'RemoveColumnCommand', () => {
 
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+				);
 
 				command.execute();
 
@@ -179,8 +187,10 @@ describe( 'RemoveColumnCommand', () => {
 
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+				);
 
 				command.execute();
 
@@ -202,8 +212,10 @@ describe( 'RemoveColumnCommand', () => {
 
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
 
 				command.execute();
 
@@ -225,8 +237,10 @@ describe( 'RemoveColumnCommand', () => {
 
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 2 ] )
+				);
 
 				command.execute();
 
@@ -249,8 +263,10 @@ describe( 'RemoveColumnCommand', () => {
 
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 2 ] )
+				);
 
 				command.execute();
 
@@ -271,8 +287,10 @@ describe( 'RemoveColumnCommand', () => {
 
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 3 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 3 ] )
+				);
 
 				command.execute();
 
