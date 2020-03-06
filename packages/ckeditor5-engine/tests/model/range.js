@@ -1351,6 +1351,47 @@ describe( 'Range', () => {
 		} );
 	} );
 
+	describe( 'getContainerElement()', () => {
+		beforeEach( () => {
+			prepareRichRoot( root );
+		} );
+
+		it( 'should return an element when it is fully contained by the range', () => {
+			// <div><h>first</h><p>lorem ipsum</p></div>[<p>foo</p>]<p>bar</p><div><h>second</h><p>lorem</p></div>
+			const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+
+			expect( range.getContainedElement() ).to.equal( root.getNodeByPath( [ 1 ] ) );
+		} );
+
+		it( 'should return "null" if the range is collapsed', () => {
+			// <div><h>first</h><p>lorem ipsum</p></div>[]<p>foo</p><p>bar</p><div><h>second</h><p>lorem</p></div>
+			const range = new Range( new Position( root, [ 1 ] ) );
+
+			expect( range.getContainedElement() ).to.be.null;
+		} );
+
+		it( 'should return "null" if it contains 2+ elements', () => {
+			// <div><h>first</h><p>lorem ipsum</p></div>[<p>foo</p><p>bar</p>]<div><h>second</h><p>lorem</p></div>
+			const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
+
+			expect( range.getContainedElement() ).to.be.null;
+		} );
+
+		it( 'should return "null" if it contains an element and some other nodes', () => {
+			// <div><h>first</h><p>lorem ipsum</p></div>[<p>foo</p><p>ba]r</p><div><h>second</h><p>lorem</p></div>
+			const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2, 2 ] ) );
+
+			expect( range.getContainedElement() ).to.be.null;
+		} );
+
+		it( 'should return "null" if it fully contains a node but the node is not an element', () => {
+			// <div><h>first</h><p>lorem ipsum</p></div><p>foo</p><p>[bar]</p><div><h>second</h><p>lorem</p></div>
+			const range = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 3 ] ) );
+
+			expect( range.getContainedElement() ).to.be.null;
+		} );
+	} );
+
 	function mapNodesToNames( nodes ) {
 		return nodes.map( node => {
 			return ( node instanceof Element ) ? 'E:' + node.name : 'T:' + node.data;
