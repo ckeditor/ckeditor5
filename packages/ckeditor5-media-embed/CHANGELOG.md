@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [17.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### Other changes
+
+* Updated translations. ([7c9dca4](https://github.com/ckeditor/ckeditor5-media-embed/commit/7c9dca4))
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Other changes

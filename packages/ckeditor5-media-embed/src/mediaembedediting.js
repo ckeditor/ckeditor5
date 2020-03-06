@@ -141,7 +141,7 @@ export default class MediaEmbedEditing extends Plugin {
 				{
 					name: 'facebook',
 					url: /^facebook\.com/
-				},
+				}
 			]
 		} );
 
