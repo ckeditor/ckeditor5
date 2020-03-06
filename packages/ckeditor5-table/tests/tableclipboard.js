@@ -56,8 +56,10 @@ describe( 'table clipboard', () => {
 			it( 'should copy selected table cells as a standalone table', () => {
 				const preventDefaultSpy = sinon.spy();
 
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 2 ] )
+				);
 
 				const data = {
 					dataTransfer: createDataTransfer(),
@@ -79,8 +81,10 @@ describe( 'table clipboard', () => {
 					[ '20', '21', '22' ]
 				] ) );
 
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+				);
 
 				assertClipboardContentOnMethod( 'copy', viewTable( [
 					[ '00', '01' ],
@@ -96,8 +100,10 @@ describe( 'table clipboard', () => {
 					[ '20', '21', '22' ]
 				] ) );
 
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+				);
 
 				assertClipboardContentOnMethod( 'copy', viewTable( [
 					[ '00', '01' ],
@@ -113,8 +119,10 @@ describe( 'table clipboard', () => {
 					[ '20', '21', '22' ]
 				] ) );
 
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 2 ] )
+				);
 
 				assertClipboardContentOnMethod( 'copy', viewTable( [
 					[ '00', '01', '02' ],
@@ -129,8 +137,10 @@ describe( 'table clipboard', () => {
 					[ '20', '22' ]
 				] ) );
 
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
 
 				assertClipboardContentOnMethod( 'copy', viewTable( [
 					[ '00', { contents: '01', rowspan: 2 }, '02' ],
@@ -145,8 +155,10 @@ describe( 'table clipboard', () => {
 					[ '20', '21', '22' ]
 				] ) );
 
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 2 ] )
+				);
 
 				assertClipboardContentOnMethod( 'copy', viewTable( [
 					[ '01', '02' ],
@@ -162,8 +174,10 @@ describe( 'table clipboard', () => {
 					[ '20', '21', '22' ]
 				] ) );
 
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 2 ] )
+				);
 
 				assertClipboardContentOnMethod( 'copy', viewTable( [
 					[ '10', '&nbsp;', '12' ],
@@ -209,8 +223,10 @@ describe( 'table clipboard', () => {
 					[ '80', '82', '83', '84', '85', '87', '88' ]
 				] ) );
 
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 7, 6 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 2, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 7, 6 ] )
+				);
 
 				assertClipboardContentOnMethod( 'copy', viewTable( [
 					[ '21', '&nbsp;', '23', '&nbsp;', '&nbsp;', { contents: '27', colspan: 2 } ],
@@ -231,8 +247,10 @@ describe( 'table clipboard', () => {
 					[ '40', '41', '42', '43', '44' ]
 				], { headingRows: 3, headingColumns: 2 } ) );
 
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 3, 3 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 3, 3 ] )
+				);
 
 				assertClipboardContentOnMethod( 'copy', viewTable( [
 					[ '11', '12', '13' ],
@@ -250,8 +268,10 @@ describe( 'table clipboard', () => {
 					[ '40', '41', '42', '43', '44' ]
 				], { headingRows: 3, headingColumns: 2 } ) );
 
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 3, 2 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 4, 4 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 3, 2 ] ),
+					modelRoot.getNodeByPath( [ 0, 4, 4 ] )
+				);
 
 				assertClipboardContentOnMethod( 'copy', viewTable( [
 					[ '32', '33', '34' ],
@@ -279,8 +299,10 @@ describe( 'table clipboard', () => {
 			} );
 
 			it( 'should be preventable', () => {
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
 
 				viewDocument.on( 'clipboardOutput', evt => evt.stop(), { priority: 'high' } );
 
@@ -301,8 +323,10 @@ describe( 'table clipboard', () => {
 
 				viewDocument.on( 'clipboardOutput', spy );
 
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
 
 				viewDocument.fire( 'cut', {
 					dataTransfer: createDataTransfer(),
@@ -319,8 +343,10 @@ describe( 'table clipboard', () => {
 			it( 'should copy selected table cells as a standalone table', () => {
 				const preventDefaultSpy = sinon.spy();
 
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 2 ] )
+				);
 
 				const data = {
 					dataTransfer: createDataTransfer(),

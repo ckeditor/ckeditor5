@@ -100,8 +100,10 @@ describe( 'InsertColumnCommand', () => {
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
 
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
 
 				command.execute();
 
@@ -249,8 +251,10 @@ describe( 'InsertColumnCommand', () => {
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
 
-				tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
 
 				command.execute();
 
