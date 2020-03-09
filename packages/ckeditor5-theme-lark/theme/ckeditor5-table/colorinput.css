@@ -67,6 +67,11 @@
 
 		& .ck.ck-icon {
 			margin-right: var(--ck-spacing-standard);
+
+			@mixin ck-dir rtl {
+				margin-right: 0;
+				margin-left: var(--ck-spacing-standard);
+			}
 		}
 	}
 }
