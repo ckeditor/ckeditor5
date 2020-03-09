@@ -1351,7 +1351,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'getContainerElement()', () => {
+	describe( 'getContainedElement()', () => {
 		beforeEach( () => {
 			prepareRichRoot( root );
 		} );
