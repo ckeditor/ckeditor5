@@ -66,6 +66,64 @@ describe( 'FontFamilyEditing', () => {
 					'Trebuchet MS, Helvetica, sans-serif',
 					'Verdana, Geneva, sans-serif'
 				] );
+
+				expect( editor.config.get( 'fontFamily.disableValueMatching' ) ).to.equal( false );
+			} );
+		} );
+
+		describe( 'disableValueMatching=true', () => {
+			beforeEach( () => {
+				return VirtualTestEditor
+					.create( {
+						plugins: [ FontFamilyEditing, Paragraph ],
+						fontFamily: {
+							options: [
+								'Arial',
+							],
+							disableValueMatching: true
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+
+						doc = editor.model;
+					} );
+			} );
+
+			describe( 'editing pipeline conversion', () => {
+				it( 'should convert unknown fontFamily attribute values', () => {
+					setModelData( doc, '<paragraph>f<$text fontFamily="foo-bar">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:foo-bar;">o</span>o</p>' );
+				} );
+
+				it( 'should convert defined fontFamily attribute values', () => {
+					setModelData( doc, '<paragraph>f<$text fontFamily="Arial">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial;">o</span>o</p>' );
+				} );
+			} );
+
+			describe( 'data pipeline conversions', () => {
+				it( 'should convert from an element with defined style when with other styles', () => {
+					const data = '<p>f<span style="font-family: Other;font-size: 18px">o</span>o</p>';
+
+					editor.setData( data );
+
+					expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="Other">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Other;">o</span>o</p>' );
+				} );
+
+				it( 'should convert from a complex definition', () => {
+					const data = '<p>f<span style="font-family:Arial,sans-serif;">o</span>o</p>';
+
+					editor.setData( data );
+
+					expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="Arial,sans-serif">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).to.equal( data );
+				} );
 			} );
 		} );
 	} );

@@ -73,7 +73,7 @@ export default class FontFamilyEditing extends Plugin {
 
 		// Set-up the two-way conversion.
 		if ( editor.config.get( 'fontFamily.disableValueMatching' ) ) {
-			this._setupGenericConverters();
+			this._prepareAnyValueConverters();
 		} else {
 			editor.conversion.attributeToElement( definition );
 		}
@@ -82,14 +82,19 @@ export default class FontFamilyEditing extends Plugin {
 	}
 
 	/**
+	 * Those converters enable keeping any value found as `style="font-family: *"` as a value of an attribute on a text even
+	 * if it isn't defined in the plugin configuration.
+	 *
 	 * @private
 	 */
-	_setupGenericConverters() {
+	_prepareAnyValueConverters() {
 		const editor = this.editor;
 
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: FONT_FAMILY,
-			view: ( attributeValue, writer ) => writer.createAttributeElement( 'span', { style: 'font-family:' + attributeValue } )
+			view: ( attributeValue, writer ) => {
+				return writer.createAttributeElement( 'span', { style: 'font-family:' + attributeValue }, { priority: 7 } );
+			}
 		} );
 
 		editor.conversion.for( 'upcast' ).attributeToAttribute( {
@@ -98,7 +103,10 @@ export default class FontFamilyEditing extends Plugin {
 				value: viewElement => viewElement.getStyle( 'font-family' )
 			},
 			view: {
-				name: 'span'
+				name: 'span',
+				styles: {
+					'font-family': /.*/
+				}
 			}
 		} );
 	}
