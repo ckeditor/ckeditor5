@@ -67,3 +67,23 @@ export function getTableWidgetAncestor( selection ) {
 
 	return null;
 }
+
+/**
+ * Returns all model cells within the provided model selection.
+ *
+ * @param {module:engine/model/selection~Selection} selection
+ * @returns {Array.<module:engine/model/element~Element>}
+ */
+export function getSelectedTableCells( selection ) {
+	const cells = [];
+
+	for ( const range of selection.getRanges() ) {
+		const element = range.getContainedElement();
+
+		if ( element && element.is( 'tableCell' ) ) {
+			cells.push( element );
+		}
+	}
+
+	return cells;
+}
