@@ -71,7 +71,7 @@ export default class RemoveColumnCommand extends Command {
 
 		model.change( writer => {
 			// A temporary workaround to avoid the "model-selection-range-intersects" error.
-			writer.setSelection( writer.createSelection( table, 'on' ) );
+			writer.setSelection( writer.createRangeOn( table ) );
 
 			adjustHeadingColumns( table, removedColumnIndexes, writer );
 
@@ -81,7 +81,7 @@ export default class RemoveColumnCommand extends Command {
 				removedColumnIndex--
 			) {
 				for ( const { cell, column, colspan } of tableMap ) {
-					// If colspaned cell overlaps removed column decrease it's span.
+					// If colspaned cell overlaps removed column decrease its span.
 					if ( column <= removedColumnIndex && colspan > 1 && column + colspan > removedColumnIndex ) {
 						updateNumericAttribute( 'colspan', colspan - 1, cell, writer );
 					} else if ( column === removedColumnIndex ) {
