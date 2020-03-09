@@ -83,25 +83,22 @@ export default class InputCommand extends Command {
 		const doc = model.document;
 		const text = options.text || '';
 		const textInsertions = text.length;
-		const range = options.range || doc.selection.getFirstRange();
+		const selection = options.range ? model.createSelection( options.range ) : doc.selection;
 		const resultRange = options.resultRange;
 
 		model.enqueueChange( this._buffer.batch, writer => {
-			const isCollapsedRange = range.isCollapsed;
-
 			this._buffer.lock();
 
-			model.deleteContent( model.createSelection( range ) );
+			model.deleteContent( selection );
 
 			if ( text ) {
-				model.insertContent( writer.createText( text, doc.selection.getAttributes() ), range.start );
+				model.insertContent( writer.createText( text, doc.selection.getAttributes() ), selection );
 			}
 
 			if ( resultRange ) {
 				writer.setSelection( resultRange );
-			} else if ( isCollapsedRange ) {
-				// If range was collapsed just shift the selection by the number of inserted characters.
-				writer.setSelection( range.start.getShiftedBy( textInsertions ) );
+			} else if ( !selection.is( 'documentSelection' ) ) {
+				writer.setSelection( selection );
 			}
 
 			this._buffer.unlock();
