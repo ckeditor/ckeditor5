@@ -80,7 +80,7 @@ describe( 'FontFamilyEditing', () => {
 						plugins: [ FontFamilyEditing, Paragraph ],
 						fontFamily: {
 							options: [
-								'Arial',
+								'Arial'
 							],
 							disableValueMatching: true
 						}
