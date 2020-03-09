@@ -71,13 +71,15 @@ export default class SetHeaderColumnCommand extends Command {
 		const tableRow = firstCell.parent;
 		const table = tableRow.parent;
 
-		const selectionColumn = Math.max( tableUtils.getCellLocation( firstCell ).column, tableUtils.getCellLocation( lastCell ).column );
+		const [ selectedColumnMin, selectedColumnMax ] =
+			// Returned cells might not necessary be in order, so make sure to sort it.
+			[ tableUtils.getCellLocation( firstCell ).column, tableUtils.getCellLocation( lastCell ).column ].sort();
 
 		if ( options.forceValue === this.value ) {
 			return;
 		}
 
-		const headingColumnsToSet = this.value ? selectionColumn : selectionColumn + 1;
+		const headingColumnsToSet = this.value ? selectedColumnMin : selectedColumnMax + 1;
 
 		model.change( writer => {
 			updateNumericAttribute( 'headingColumns', headingColumnsToSet, table, writer, 0 );

@@ -200,7 +200,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 		describe( 'multi-cell selection', () => {
 			describe( 'setting header', () => {
-				it( 'should set it correctly in a middle of single-row, multiple cell selection ', () => {
+				it( 'should set it correctly in a middle of single-row, multiple cell selection', () => {
 					setData( model, modelTable( [
 						[ '00', '01', '02', '03' ]
 					] ) );
@@ -225,7 +225,7 @@ describe( 'SetHeaderColumnCommand', () => {
 					] );
 				} );
 
-				it( 'should set it correctly in a middle of multi-row, multiple cell selection ', () => {
+				it( 'should set it correctly in a middle of multi-row, multiple cell selection', () => {
 					setData( model, modelTable( [
 						[ '00', '01', '02', '03' ],
 						[ '10', '11', '12', '13' ]
@@ -250,6 +250,118 @@ describe( 'SetHeaderColumnCommand', () => {
 					assertSelectedCells( model, [
 						[ 0, 1, 0, 0 ],
 						[ 0, 1, 0, 0 ]
+					] );
+				} );
+
+				it( 'should remove header columns in case of multiple cell selection', () => {
+					setData( model, modelTable( [
+						[ '00', '01', '02', '03' ]
+					], { headingColumns: 4 } ) );
+
+					const tableSelection = editor.plugins.get( TableSelection );
+					const modelRoot = model.document.getRoot();
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 0, 2 ] )
+					);
+
+					command.execute();
+
+					assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '03' ]
+					], {
+						headingColumns: 1
+					} ) );
+
+					assertSelectedCells( model, [
+						[ 0, 1, 1, 0 ]
+					] );
+				} );
+
+				it( 'should remove header columns in case of multiple cell selection - reversed order', () => {
+					setData( model, modelTable( [
+						[ '00', '01', '02', '03' ]
+					], {
+						headingColumns: 4
+					} ) );
+
+					const tableSelection = editor.plugins.get( TableSelection );
+					const modelRoot = model.document.getRoot();
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
+						modelRoot.getNodeByPath( [ 0, 0, 1 ] )
+					);
+
+					command.execute();
+
+					assertEqualMarkup( getData( model, {
+						withoutSelection: true
+					} ), modelTable( [
+						[ '00', '01', '02', '03' ]
+					], {
+						headingColumns: 1
+					} ) );
+
+					assertSelectedCells( model, [
+						[ 0, 1, 1, 0 ]
+					] );
+				} );
+
+				it( 'should respect forceValue=true in case of multiple cell selection', () => {
+					setData( model, modelTable( [
+						[ '00', '01', '02', '03' ]
+					], {
+						headingColumns: 3
+					} ) );
+
+					const tableSelection = editor.plugins.get( TableSelection );
+					const modelRoot = model.document.getRoot();
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 0, 2 ] )
+					);
+
+					command.execute( { forceValue: true } );
+
+					assertEqualMarkup( getData( model, {
+						withoutSelection: true
+					} ), modelTable( [
+						[ '00', '01', '02', '03' ]
+					], {
+						headingColumns: 3
+					} ) );
+
+					assertSelectedCells( model, [
+						[ 0, 1, 1, 0 ]
+					] );
+				} );
+
+				it( 'should respect forceValue=false in case of multiple cell selection', () => {
+					setData( model, modelTable( [
+						[ '00', '01', '02', '03' ]
+					], {
+						headingColumns: 1
+					} ) );
+
+					const tableSelection = editor.plugins.get( TableSelection );
+					const modelRoot = model.document.getRoot();
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 0, 2 ] )
+					);
+
+					command.execute( { forceValue: false } );
+
+					assertEqualMarkup( getData( model, {
+						withoutSelection: true
+					} ), modelTable( [
+						[ '00', '01', '02', '03' ]
+					], {
+						headingColumns: 1
+					} ) );
+
+					assertSelectedCells( model, [
+						[ 0, 1, 1, 0 ]
 					] );
 				} );
 			} );
