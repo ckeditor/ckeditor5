@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { findAncestor } from './utils';
-import { getSelectedCells } from '../tableselection/utils';
+import { getTableCellsInSelection } from '../tableselection/utils';
 
 /**
  * The split cell command.
@@ -47,12 +47,9 @@ export default class SplitCellCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const selectedCellsGenerator = getSelectedCells( this.editor, true );
+		const selectedCells = getTableCellsInSelection( this.editor.model.document.selection, true );
 
-		const tableCell = selectedCellsGenerator.next().value;
-		const hasMoreCells = selectedCellsGenerator.next().done == false;
-
-		this.isEnabled = !!tableCell && !hasMoreCells;
+		this.isEnabled = selectedCells.length === 1;
 	}
 
 	/**

@@ -34,9 +34,10 @@ export function clearTableCellsContents( model, tableCells ) {
  * Returns all model cells within the provided model selection.
  *
  * @param {Iterable.<module:engine/model/selection~Selection>} selection
+ * @param {Boolean} [expandSelection=false] If set to `true` expands the selection to entire cell (if possible).
  * @returns {Array.<module:engine/model/element~Element>}
  */
-export function getTableCellsInSelection( selection ) {
+export function getTableCellsInSelection( selection, expandSelection = false ) {
 	const cells = [];
 
 	for ( const range of selection.getRanges() ) {
@@ -47,35 +48,13 @@ export function getTableCellsInSelection( selection ) {
 		}
 	}
 
-	return cells;
-}
-
-/**
- * Yields selected table cells.
- *
- * @private
- * @param {module:core/editor/editor~Editor} editor
- * @param {Boolean} [expandSelection=false] If set to `true` expands the selection to entire cell (if possible).
- * @returns {Iterable.<module:engine/model/element~Element>}
- */
-export function* getSelectedCells( editor, expandSelection = false ) {
-	const plugins = editor.plugins;
-	if ( plugins.has( 'TableSelection' ) ) {
-		const selectedCells = plugins.get( 'TableSelection' ).getSelectedTableCells();
-
-		if ( selectedCells ) {
-			for ( const cell of selectedCells ) {
-				yield cell;
-			}
-
-			return;
-		}
-	}
-
 	if ( expandSelection ) {
-		const cellAncestor = findAncestor( 'tableCell', editor.model.document.selection.getFirstPosition() );
+		const cellAncestor = findAncestor( 'tableCell', selection.getFirstPosition() );
+
 		if ( cellAncestor ) {
-			yield cellAncestor;
+			cells.push( cellAncestor );
 		}
 	}
+
+	return cells;
 }
