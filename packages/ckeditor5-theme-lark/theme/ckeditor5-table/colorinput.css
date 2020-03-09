@@ -65,6 +65,17 @@
 		border-bottom: 1px solid var(--ck-color-input-border);
 		padding: calc(var(--ck-spacing-standard) / 2) var(--ck-spacing-standard);
 
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+
+		@mixin ck-dir ltr {
+			border-top-right-radius: 0;
+		}
+
+		@mixin ck-dir rtl {
+			border-top-left-radius: 0;
+		}
+
 		& .ck.ck-icon {
 			margin-right: var(--ck-spacing-standard);
 
