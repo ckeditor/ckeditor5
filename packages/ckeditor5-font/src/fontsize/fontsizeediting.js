@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import FontSizeCommand from './fontsizecommand';
-import { normalizeOptions } from './utils';
+import { normalizeOptions, FONT_SIZE_PRESET_UNITS } from './utils';
 import { buildDefinition, FONT_SIZE } from '../utils';
 
 /**
@@ -66,12 +66,15 @@ export default class FontSizeEditing extends Plugin {
 			copyOnEnter: true
 		} );
 
+		const disableValueMatching = editor.config.get( 'fontSize.disableValueMatching' );
+
 		// Define view to model conversion.
-		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' ) ).filter( item => item.model );
+		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' ), { disableValueMatching } )
+			.filter( item => item.model );
 		const definition = buildDefinition( FONT_SIZE, options );
 
 		// Set-up the two-way conversion.
-		if ( editor.config.get( 'fontSize.disableValueMatching' ) ) {
+		if ( disableValueMatching ) {
 			this._prepareAnyValueConverters();
 		} else {
 			editor.conversion.attributeToElement( definition );
@@ -121,7 +124,11 @@ export default class FontSizeEditing extends Plugin {
 
 					for ( const className of viewElement.getClassNames() ) {
 						if ( className.startsWith( 'text-' ) ) {
-							return className.replace( /^text-/, '' );
+							const presetName = className.replace( /^text-/, '' );
+
+							if ( FONT_SIZE_PRESET_UNITS[ presetName ] ) {
+								return FONT_SIZE_PRESET_UNITS[ presetName ];
+							}
 						}
 					}
 

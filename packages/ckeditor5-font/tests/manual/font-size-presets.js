@@ -14,7 +14,10 @@ ClassicEditor
 		plugins: [ ArticlePluginSet, FontSize ],
 		toolbar: [
 			'heading', '|', 'fontSize', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
-		]
+		],
+		fontSize: {
+			disableValueMatching: true
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

@@ -68,9 +68,6 @@ describe( 'FontSizeEditing', () => {
 					.create( {
 						plugins: [ FontSizeEditing, Paragraph ],
 						fontSize: {
-							options: [
-								'default',
-							],
 							disableValueMatching: true
 						}
 					} )
@@ -117,13 +114,19 @@ describe( 'FontSizeEditing', () => {
 				} );
 
 				it( 'should convert an element if it has a class that starts with "text-"', () => {
-					const data = '<p>f<span class="text-huge">o</span>o</p>';
+					editor.setData( '<p>f<span class="text-huge">o</span>o</p>' );
 
-					editor.setData( data );
+					expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="1.8em">o</$text>o</paragraph>' );
 
-					expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="huge">o</$text>o</paragraph>' );
+					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:1.8em;">o</span>o</p>' );
+				} );
 
-					expect( editor.getData() ).to.equal( data );
+				it( 'should ignore an element if it has a class starts with "text-" but does not match to any preset', () => {
+					editor.setData( '<p>f<span class="text-default">o</span>o</p>' );
+
+					expect( getModelData( doc ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<p>foo</p>' );
 				} );
 
 				it( 'should ignore an element if does not have a class that starts with "text-"', () => {

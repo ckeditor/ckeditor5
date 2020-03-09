@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { normalizeOptions } from '../../src/fontsize/utils';
+import { normalizeOptions, FONT_SIZE_PRESET_UNITS } from '../../src/fontsize/utils';
 
 describe( 'FontSizeEditing Utils', () => {
 	describe( 'normalizeOptions()', () => {
@@ -35,6 +35,18 @@ describe( 'FontSizeEditing Utils', () => {
 					{ title: 'Huge', model: 'huge', view: { name: 'span', classes: 'text-huge', priority: 7 } }
 				] );
 			} );
+
+			it( 'should return defined presets with units in model values', () => {
+				const options = normalizeOptions( [ 'tiny', 'small', 'default', 'big', 'huge' ], { disableValueMatching: true } );
+
+				expect( options ).to.deep.equal( [
+					{ title: 'Tiny', model: '0.7em', view: { name: 'span', classes: 'text-tiny', priority: 7 } },
+					{ title: 'Small', model: '0.85em', view: { name: 'span', classes: 'text-small', priority: 7 } },
+					{ title: 'Default', model: undefined },
+					{ title: 'Big', model: '1.4em', view: { name: 'span', classes: 'text-big', priority: 7 } },
+					{ title: 'Huge', model: '1.8em', view: { name: 'span', classes: 'text-huge', priority: 7 } }
+				] );
+			} );
 		} );
 
 		describe( 'numerical presets', () => {
@@ -47,6 +59,12 @@ describe( 'FontSizeEditing Utils', () => {
 					{ title: '18.3', model: 18.3, view: { name: 'span', styles: { 'font-size': '18.3px' }, priority: 7 } }
 				] );
 			} );
+		} );
+	} );
+
+	describe( 'FONT_SIZE_PRESET_UNITS', () => {
+		it( 'provides default values', () => {
+			expect( Object.keys( FONT_SIZE_PRESET_UNITS ).length ).to.equal( 4 );
 		} );
 	} );
 } );

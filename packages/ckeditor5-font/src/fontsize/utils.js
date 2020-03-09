@@ -12,15 +12,27 @@
  * to the {@link module:font/fontsize~FontSizeOption} format.
  *
  * @param {Array.<String|Number|Object>} configuredOptions An array of options taken from the configuration.
+ * @param {Object} [options={}]
+ * @param {Boolean} [options.disableValueMatching=false]
  * @returns {Array.<module:font/fontsize~FontSizeOption>}
  */
-export function normalizeOptions( configuredOptions ) {
+export function normalizeOptions( configuredOptions, options = {} ) {
+	const disableValueMatching = options.disableValueMatching || false;
+
 	// Convert options to objects.
 	return configuredOptions
-		.map( getOptionDefinition )
+		.map( item => getOptionDefinition( item, disableValueMatching ) )
 		// Filter out undefined values that `getOptionDefinition` might return.
 		.filter( option => !!option );
 }
+
+// The values should be synchronized with "/theme/fontsize.css" file.
+export const FONT_SIZE_PRESET_UNITS = {
+	tiny: '0.7em',
+	small: '0.85em',
+	big: '1.4em',
+	huge: '1.8em'
+};
 
 // Default named presets map.
 const namedPresets = {
@@ -64,10 +76,12 @@ const namedPresets = {
 
 // Returns an option definition either from preset or creates one from number shortcut.
 // If object is passed then this method will return it without alternating it. Returns undefined for item than cannot be parsed.
+// If disableValueMatching=true, model will be set to a specified unit value instead of text.
 //
 // @param {String|Number|Object} item
+// @param {Boolean} disableValueMatching
 // @returns {undefined|module:font/fontsize~FontSizeOption}
-function getOptionDefinition( option ) {
+function getOptionDefinition( option, disableValueMatching ) {
 	// Treat any object as full item definition provided by user in configuration.
 	if ( typeof option === 'object' ) {
 		return option;
@@ -75,7 +89,13 @@ function getOptionDefinition( option ) {
 
 	// Item is a named preset.
 	if ( namedPresets[ option ] ) {
-		return namedPresets[ option ];
+		const preset = namedPresets[ option ];
+
+		if ( disableValueMatching ) {
+			preset.model = FONT_SIZE_PRESET_UNITS[ option ];
+		}
+
+		return preset;
 	}
 
 	// 'Default' font size. It will be used to remove the fontSize attribute.
