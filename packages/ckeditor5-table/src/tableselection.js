@@ -12,7 +12,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
 import MouseEventsObserver from './tableselection/mouseeventsobserver';
-import { getTableCellsInSelection, clearTableCellsContents } from './tableselection/utils';
+import { getSelectedTableCells } from './utils';
 import { findAncestor } from './commands/utils';
 import cropTable from './tableselection/croptable';
 
@@ -64,7 +64,7 @@ export default class TableSelection extends Plugin {
 	getSelectedTableCells() {
 		const selection = this.editor.model.document.selection;
 
-		const selectedCells = getTableCellsInSelection( selection );
+		const selectedCells = getSelectedTableCells( selection );
 
 		if ( selectedCells.length == 0 ) {
 			return null;
@@ -291,7 +291,7 @@ export default class TableSelection extends Plugin {
 		const [ selection, options ] = args;
 		const model = this.editor.model;
 		const isBackward = !options || options.direction == 'backward';
-		const selectedTableCells = getTableCellsInSelection( selection );
+		const selectedTableCells = getSelectedTableCells( selection );
 
 		if ( !selectedTableCells.length ) {
 			return;
@@ -302,7 +302,11 @@ export default class TableSelection extends Plugin {
 		model.change( writer => {
 			const tableCellToSelect = selectedTableCells[ isBackward ? selectedTableCells.length - 1 : 0 ];
 
-			clearTableCellsContents( model, selectedTableCells );
+			model.change( writer => {
+				for ( const tableCell of selectedTableCells ) {
+					model.deleteContent( writer.createSelection( tableCell, 'in' ) );
+				}
+			} );
 
 			// The insertContent() helper passes the actual DocumentSelection,
 			// while the deleteContent() helper always operates on the abstract clones.
