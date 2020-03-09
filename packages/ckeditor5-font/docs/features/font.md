@@ -47,6 +47,25 @@ ClassicEditor
 
 {@snippet features/custom-font-family-options}
 
+### Prevent removing non-specified values
+
+By default, all not specified values of `font-family` are removing during the conversion. You can disable this behaviour using `disableValueMatching` option.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		fontFamily: {
+			options: [
+				// ...
+			],
+            disableValueMatching: true
+		},
+        // ...
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
 ## Configuring the font size feature
 
 It is possible to configure which font size options are supported by the WYSIWYG editor. Use the {@link module:font/fontsize~FontSizeConfig#options `fontSize.options`} configuration option to do so.
@@ -149,6 +168,25 @@ ClassicEditor
 ```
 
 {@snippet features/custom-font-size-numeric-options}
+
+### Prevent removing non-specified values
+
+By default, all not specified values of `font-size` are removing during the conversion. You can disable this behaviour using `disableValueMatching` option.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		fontSize: {
+			options: [
+				// ...
+			],
+			disableValueMatching: true
+		},
+        // ...
+	} )
+	.then( ... )
+	.catch( ... );
+```
 
 ## Configuring the font color and font background color features
 
