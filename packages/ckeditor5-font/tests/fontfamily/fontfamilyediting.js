@@ -72,6 +72,8 @@ describe( 'FontFamilyEditing', () => {
 		} );
 
 		describe( 'disableValueMatching=true', () => {
+			let editor, doc;
+
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
@@ -88,6 +90,10 @@ describe( 'FontFamilyEditing', () => {
 
 						doc = editor.model;
 					} );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
 			} );
 
 			describe( 'editing pipeline conversion', () => {
