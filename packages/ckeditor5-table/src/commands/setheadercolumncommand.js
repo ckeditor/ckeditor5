@@ -10,6 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import { findAncestor, updateNumericAttribute } from './utils';
+import { getTableCellsInSelection } from '../tableselection/utils';
 
 /**
  * The header column command.
@@ -32,13 +33,8 @@ export default class SetHeaderColumnCommand extends Command {
 	 */
 	refresh() {
 		const model = this.editor.model;
-		const doc = model.document;
-		const selection = doc.selection;
-
-		const position = selection.getFirstPosition();
-		const tableCell = findAncestor( 'tableCell', position );
-
-		const isInTable = !!tableCell;
+		const selectedCells = getTableCellsInSelection( model.document.selection, true );
+		const isInTable = selectedCells.length > 0;
 
 		this.isEnabled = isInTable;
 
@@ -50,7 +46,7 @@ export default class SetHeaderColumnCommand extends Command {
 		 * @readonly
 		 * @member {Boolean} #value
 		 */
-		this.value = isInTable && this._isInHeading( tableCell, tableCell.parent.parent );
+		this.value = isInTable && selectedCells.every( cell => this._isInHeading( cell, cell.parent.parent ) );
 	}
 
 	/**
