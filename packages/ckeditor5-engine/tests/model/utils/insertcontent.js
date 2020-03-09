@@ -697,6 +697,32 @@ describe( 'DataController utils', () => {
 						'<listItem>]o</listItem>'
 					);
 				} );
+
+				// See ckeditor5#2010.
+				it( 'should handle bQ+p over bQ+p insertion', () => {
+					model.schema.register( 'blockQuote', {
+						allowWhere: '$block',
+						allowContentOf: '$root'
+					} );
+
+					setData( model, '<blockQuote><paragraph>[foo</paragraph></blockQuote><paragraph>bar]</paragraph>' );
+
+					const affectedRange = insertHelper( '<blockQuote><paragraph>xxx</paragraph></blockQuote><paragraph>yyy</paragraph>' );
+
+					expect( getData( model ) ).to.equal(
+						'<blockQuote>' +
+							'<paragraph>xxx</paragraph>' +
+						'</blockQuote>' +
+						'<paragraph>yyy[]</paragraph>'
+					);
+
+					expect( stringify( root, affectedRange ) ).to.equal(
+						'[<blockQuote>' +
+							'<paragraph>xxx</paragraph>' +
+						'</blockQuote>' +
+						'<paragraph>yyy</paragraph>]'
+					);
+				} );
 			} );
 
 			describe( 'mixed content to block', () => {
