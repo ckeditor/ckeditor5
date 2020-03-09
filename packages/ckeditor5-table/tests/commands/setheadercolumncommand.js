@@ -7,7 +7,7 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import SetHeaderColumnCommand from '../../src/commands/setheadercolumncommand';
-import { defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
+import { assertSelectedCells, defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
 import TableSelection from '../../src/tableselection';
 import TableUtils from '../../src/tableutils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -151,7 +151,7 @@ describe( 'SetHeaderColumnCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'should set heading columns attribute that cover column in which is selection', () => {
+		it( 'should set heading columns attribute that cover column with collapsed selection', () => {
 			setData( model, modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			] ) );
@@ -161,6 +161,29 @@ describe( 'SetHeaderColumnCommand', () => {
 			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 2 } ) );
+		} );
+
+		it( 'should set heading columns attribute that cover column with entire cell selected', () => {
+			setData( model, modelTable( [
+				[ '00', '01', '02', '03' ]
+			] ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
+			);
+
+			command.execute();
+
+			assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+				[ '00', '01', '02', '03' ]
+			], { headingColumns: 2 } ) );
+
+			assertSelectedCells( model, [
+				[ 0, 1, 0, 0 ]
+			] );
 		} );
 
 		it( 'should set heading columns attribute below current selection column', () => {
@@ -173,6 +196,63 @@ describe( 'SetHeaderColumnCommand', () => {
 			assertEqualMarkup( getData( model ), modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 1 } ) );
+		} );
+
+		describe( 'multi-cell selection', () => {
+			describe( 'setting header', () => {
+				it( 'should set it correctly in a middle of single-row, multiple cell selection ', () => {
+					setData( model, modelTable( [
+						[ '00', '01', '02', '03' ]
+					] ) );
+
+					const tableSelection = editor.plugins.get( TableSelection );
+					const modelRoot = model.document.getRoot();
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 0, 2 ] )
+					);
+
+					command.execute();
+
+					assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '03' ]
+					], {
+						headingColumns: 3
+					} ) );
+
+					assertSelectedCells( model, [
+						[ 0, 1, 1, 0 ]
+					] );
+				} );
+
+				it( 'should set it correctly in a middle of multi-row, multiple cell selection ', () => {
+					setData( model, modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', '11', '12', '13' ]
+					] ) );
+
+					const tableSelection = editor.plugins.get( TableSelection );
+					const modelRoot = model.document.getRoot();
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+					);
+
+					command.execute();
+
+					assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', '11', '12', '13' ]
+					], {
+						headingColumns: 2
+					} ) );
+
+					assertSelectedCells( model, [
+						[ 0, 1, 0, 0 ],
+						[ 0, 1, 0, 0 ]
+					] );
+				} );
+			} );
 		} );
 
 		it( 'should toggle of selected column', () => {

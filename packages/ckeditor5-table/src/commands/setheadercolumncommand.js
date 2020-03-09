@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor, updateNumericAttribute } from './utils';
+import { updateNumericAttribute } from './utils';
 import { getTableCellsInSelection } from '../tableselection/utils';
 
 /**
@@ -63,16 +63,15 @@ export default class SetHeaderColumnCommand extends Command {
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
-		const doc = model.document;
-		const selection = doc.selection;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
-		const position = selection.getFirstPosition();
-		const tableCell = findAncestor( 'tableCell', position );
-		const tableRow = tableCell.parent;
+		const selectedCells = getTableCellsInSelection( model.document.selection, true );
+		const firstCell = selectedCells[ 0 ];
+		const lastCell = selectedCells[ selectedCells.length - 1 ];
+		const tableRow = firstCell.parent;
 		const table = tableRow.parent;
 
-		const { column: selectionColumn } = tableUtils.getCellLocation( tableCell );
+		const selectionColumn = Math.max( tableUtils.getCellLocation( firstCell ).column, tableUtils.getCellLocation( lastCell ).column );
 
 		if ( options.forceValue === this.value ) {
 			return;
