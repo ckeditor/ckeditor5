@@ -48,18 +48,9 @@ export default class FontSizeEditing extends Plugin {
 				'default',
 				'big',
 				'huge'
-			]
+			],
+			disableValueMatching: false
 		} );
-
-		// Define view to model conversion.
-		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' ) ).filter( item => item.model );
-		const definition = buildDefinition( FONT_SIZE, options );
-
-		// Set-up the two-way conversion.
-		editor.conversion.attributeToElement( definition );
-
-		// Add FontSize command.
-		editor.commands.add( FONT_SIZE, new FontSizeCommand( editor ) );
 	}
 
 	/**
@@ -73,6 +64,73 @@ export default class FontSizeEditing extends Plugin {
 		editor.model.schema.setAttributeProperties( FONT_SIZE, {
 			isFormatting: true,
 			copyOnEnter: true
+		} );
+
+		// Define view to model conversion.
+		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' ) ).filter( item => item.model );
+		const definition = buildDefinition( FONT_SIZE, options );
+
+		// Set-up the two-way conversion.
+		if ( editor.config.get( 'fontSize.disableValueMatching' ) ) {
+			this._prepareAnyValueConverters();
+		} else {
+			editor.conversion.attributeToElement( definition );
+		}
+
+		// Add FontSize command.
+		editor.commands.add( FONT_SIZE, new FontSizeCommand( editor ) );
+	}
+
+	/**
+	 * Those converters enable keeping any value found as `style="font-size: *"` as a value of an attribute on a text even
+	 * if it isn't defined in the plugin configuration.
+	 *
+	 * @private
+	 */
+	_prepareAnyValueConverters() {
+		const editor = this.editor;
+
+		editor.conversion.for( 'downcast' ).attributeToElement( {
+			model: FONT_SIZE,
+			view: ( attributeValue, writer ) => {
+				if ( !attributeValue ) {
+					return;
+				}
+
+				if ( String( attributeValue ).match( /^\d+/ ) ) {
+					if ( typeof attributeValue == 'number' ) {
+						attributeValue = `${ attributeValue }px`;
+					}
+
+					return writer.createAttributeElement( 'span', { style: 'font-size:' + attributeValue }, { priority: 7 } );
+				}
+
+				return writer.createAttributeElement( 'span', { class: 'text-' + attributeValue }, { priority: 7 } );
+			}
+		} );
+
+		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+			model: {
+				key: FONT_SIZE,
+				value: viewElement => {
+					const fontSize = viewElement.getStyle( 'font-size' );
+
+					if ( fontSize ) {
+						return fontSize;
+					}
+
+					for ( const className of viewElement.getClassNames() ) {
+						if ( className.startsWith( 'text-' ) ) {
+							return className.replace( /^text-/, '' );
+						}
+					}
+
+					return null;
+				}
+			},
+			view: {
+				name: 'span'
+			}
 		} );
 	}
 }

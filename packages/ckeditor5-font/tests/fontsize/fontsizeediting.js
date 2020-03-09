@@ -56,6 +56,83 @@ describe( 'FontSizeEditing', () => {
 		describe( 'default value', () => {
 			it( 'should be set', () => {
 				expect( editor.config.get( 'fontSize.options' ) ).to.deep.equal( [ 'tiny', 'small', 'default', 'big', 'huge' ] );
+				expect( editor.config.get( 'fontSize.disableValueMatching' ) ).to.equal( false );
+			} );
+		} );
+
+		describe( 'disableValueMatching=true', () => {
+			let editor, doc;
+
+			beforeEach( () => {
+				return VirtualTestEditor
+					.create( {
+						plugins: [ FontSizeEditing, Paragraph ],
+						fontSize: {
+							options: [
+								'default',
+							],
+							disableValueMatching: true
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+
+						doc = editor.model;
+					} );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			describe( 'editing pipeline conversion', () => {
+				it( 'should pass fontSize to data', () => {
+					setModelData( doc, '<paragraph>f<$text fontSize="10px">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:10px;">o</span>o</p>' );
+				} );
+
+				it( 'should add a unit to value if missing', () => {
+					setModelData( doc, '<paragraph>f<$text fontSize="10">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:10px;">o</span>o</p>' );
+				} );
+
+				it( 'should convert a text value as a class', () => {
+					setModelData( doc, '<paragraph>f<$text fontSize="large">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<p>f<span class="text-large">o</span>o</p>' );
+				} );
+			} );
+
+			describe( 'data pipeline conversions', () => {
+				it( 'should convert from an element with defined style when with other styles', () => {
+					const data = '<p>f<span style="font-family: Other;font-size: 18px">o</span>o</p>';
+
+					editor.setData( data );
+
+					expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="18px">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:18px;">o</span>o</p>' );
+				} );
+
+				it( 'should convert an element if it has a class that starts with "text-"', () => {
+					const data = '<p>f<span class="text-huge">o</span>o</p>';
+
+					editor.setData( data );
+
+					expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="huge">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).to.equal( data );
+				} );
+
+				it( 'should ignore an element if does not have a class that starts with "text-"', () => {
+					editor.setData( '<p>f<span class="foo">o</span>o</p>' );
+
+					expect( getModelData( doc ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<p>foo</p>' );
+				} );
 			} );
 		} );
 	} );
