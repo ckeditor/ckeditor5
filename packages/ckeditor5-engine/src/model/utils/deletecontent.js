@@ -48,7 +48,10 @@ import DocumentSelection from '../documentselection';
  * For example `<paragraph>x</paragraph>[<image src="foo.jpg"></image>]` will become:
  *
  * * `<paragraph>x</paragraph><paragraph>[]</paragraph>` with the option disabled (`doNotAutoparagraph == false`)
- * * `<paragraph>x[]</paragraph>` with the option enabled (`doNotAutoparagraph == true`).
+ * * `<paragraph>x</paragraph>[]` with the option enabled (`doNotAutoparagraph == true`).
+ *
+ * If you use this option you need to make sure to handle invalid selections yourself or leave
+ * them to the selection post-fixer (may not always work).
  *
  * **Note:** if there is no valid position for the selection, the paragraph will always be created:
  *
@@ -109,16 +112,9 @@ export default function deleteContent( model, selection, options = {} ) {
 
 		// 4. Add a paragraph to set selection in it.
 		// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
-		if ( shouldAutoparagraph( schema, startPos ) ) {
-			// If auto-paragraphing is off, find the closest valid selection range and collapse the selection there.
-			// If there is no valid selection range, create paragraph anyway and set selection there.
-			const validSelectionRange = schema.getNearestSelectionRange( startPos );
-
-			if ( options.doNotAutoparagraph && validSelectionRange ) {
-				collapseSelectionAt( writer, selection, validSelectionRange );
-			} else {
-				insertParagraph( writer, startPos, selection );
-			}
+		// If autoparagraphing is off, we assume that you know what you do so we leave the selection wherever it was.
+		if ( !options.doNotAutoparagraph && shouldAutoparagraph( schema, startPos ) ) {
+			insertParagraph( writer, startPos, selection );
 		}
 
 		endPos.detach();

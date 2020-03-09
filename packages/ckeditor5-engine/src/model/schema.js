@@ -672,12 +672,22 @@ export default class Schema {
 
 		let backwardWalker, forwardWalker;
 
+		// Never leave a limit element.
+		const limitElement = position.getAncestors().reverse().find( item => this.isLimit( item ) ) || position.root;
+
 		if ( direction == 'both' || direction == 'backward' ) {
-			backwardWalker = new TreeWalker( { startPosition: position, direction: 'backward' } );
+			backwardWalker = new TreeWalker( {
+				boundaries: Range._createIn( limitElement ),
+				startPosition: position,
+				direction: 'backward'
+			} );
 		}
 
 		if ( direction == 'both' || direction == 'forward' ) {
-			forwardWalker = new TreeWalker( { startPosition: position } );
+			forwardWalker = new TreeWalker( {
+				boundaries: Range._createIn( limitElement ),
+				startPosition: position
+			} );
 		}
 
 		for ( const data of combineWalkers( backwardWalker, forwardWalker ) ) {
