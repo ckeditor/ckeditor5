@@ -502,7 +502,7 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an element contained by a range. The element will be returned when it is the **only** node
+	 * Returns an element contained by the range. The element will be returned when it is the **only** node
 	 * within the range and **fully–contained** at the same time.
 	 *
 	 * @returns {module:engine/model/element~Element|null}
