@@ -682,7 +682,7 @@ export default class TableCellPropertiesView extends View {
 		// -- Horizontal ---------------------------------------------------
 
 		const horizontalAlignmentToolbar = new ToolbarView( locale );
-		const isRTLContent = this.locale.contentLanguageDirection === 'rtl';
+		const isContentRTL = this.locale.contentLanguageDirection === 'rtl';
 
 		horizontalAlignmentToolbar.set( {
 			isCompact: true,
@@ -696,7 +696,7 @@ export default class TableCellPropertiesView extends View {
 			labels: this._horizontalAlignmentLabels,
 			propertyName: 'horizontalAlignment',
 			nameToValue: name => {
-				return name === ( isRTLContent ? 'right' : 'left' ) ? '' : name;
+				return name === ( isContentRTL ? 'right' : 'left' ) ? '' : name;
 			}
 		} );
 
