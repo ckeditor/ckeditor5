@@ -19,193 +19,191 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 
-describe( 'table selection', () => {
+describe( 'TableSelection - integration', () => {
 	let editor, model, tableSelection, modelRoot, element, viewDocument;
 
-	describe( 'TableSelection - input integration', () => {
-		afterEach( async () => {
-			element.remove();
-			await editor.destroy();
+	afterEach( async () => {
+		element.remove();
+		await editor.destroy();
+	} );
+
+	describe( 'on delete', () => {
+		beforeEach( async () => {
+			await setupEditor( [ Delete ] );
 		} );
 
-		describe( 'on delete', () => {
-			beforeEach( async () => {
-				await setupEditor( [ Delete ] );
+		it( 'should clear contents of the selected table cells and put selection in last cell on backward delete', () => {
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			const domEventData = new DomEventData( viewDocument, {
+				preventDefault: sinon.spy()
+			}, {
+				direction: 'backward',
+				unit: 'character',
+				sequence: 1
 			} );
+			viewDocument.fire( 'delete', domEventData );
 
-			it( 'should clear contents of the selected table cells and put selection in last cell on backward delete', () => {
-				tableSelection._setCellSelection(
-					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
-					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
-				);
-
-				const domEventData = new DomEventData( viewDocument, {
-					preventDefault: sinon.spy()
-				}, {
-					direction: 'backward',
-					unit: 'character',
-					sequence: 1
-				} );
-				viewDocument.fire( 'delete', domEventData );
-
-				assertEqualMarkup( getModelData( model ), modelTable( [
-					[ '', '', '13' ],
-					[ '', '[]', '23' ],
-					[ '31', '32', '33' ]
-				] ) );
-			} );
-
-			it( 'should clear contents of the selected table cells and put selection in last cell on forward delete', () => {
-				tableSelection._setCellSelection(
-					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
-					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
-				);
-
-				const domEventData = new DomEventData( viewDocument, {
-					preventDefault: sinon.spy()
-				}, {
-					direction: 'forward',
-					unit: 'character',
-					sequence: 1
-				} );
-				viewDocument.fire( 'delete', domEventData );
-
-				assertEqualMarkup( getModelData( model ), modelTable( [
-					[ '[]', '', '13' ],
-					[ '', '', '23' ],
-					[ '31', '32', '33' ]
-				] ) );
-			} );
-
-			it( 'should not interfere with default key handler if no table selection', () => {
-				setModelData( model, modelTable( [
-					[ '11[]', '12', '13' ],
-					[ '21', '22', '23' ],
-					[ '31', '32', '33' ]
-				] ) );
-
-				const domEventData = new DomEventData( viewDocument, {
-					preventDefault: sinon.spy()
-				}, {
-					direction: 'backward',
-					unit: 'character',
-					sequence: 1
-				} );
-				viewDocument.fire( 'delete', domEventData );
-
-				assertEqualMarkup( getModelData( model ), modelTable( [
-					[ '1[]', '12', '13' ],
-					[ '21', '22', '23' ],
-					[ '31', '32', '33' ]
-				] ) );
-			} );
-
-			it( 'should work with any arbitrary selection passed to Model#deleteContent() (delete backwards)', () => {
-				const selection = model.createSelection( [
-					model.createRange(
-						model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ),
-						model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] )
-					),
-					model.createRange(
-						model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] ),
-						model.createPositionFromPath( modelRoot, [ 0, 0, 2 ] )
-					)
-				] );
-
-				model.change( writer => {
-					model.deleteContent( selection );
-					writer.setSelection( selection );
-				} );
-
-				assertEqualMarkup( getModelData( model ), modelTable( [
-					[ '', '[]', '13' ],
-					[ '21', '22', '23' ],
-					[ '31', '32', '33' ]
-				] ) );
-			} );
-
-			it( 'should work with any arbitrary selection passed to Model#deleteContent() (delete forwards)', () => {
-				const selection = model.createSelection( [
-					model.createRange(
-						model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ),
-						model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] )
-					),
-					model.createRange(
-						model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] ),
-						model.createPositionFromPath( modelRoot, [ 0, 0, 2 ] )
-					)
-				] );
-
-				model.change( writer => {
-					model.deleteContent( selection, {
-						direction: 'forward'
-					} );
-					writer.setSelection( selection );
-				} );
-
-				assertEqualMarkup( getModelData( model ), modelTable( [
-					[ '[]', '', '13' ],
-					[ '21', '22', '23' ],
-					[ '31', '32', '33' ]
-				] ) );
-			} );
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ '', '', '13' ],
+				[ '', '[]', '23' ],
+				[ '31', '32', '33' ]
+			] ) );
 		} );
 
-		describe( 'on user input', () => {
-			beforeEach( async () => {
-				await setupEditor( [ Input ] );
+		it( 'should clear contents of the selected table cells and put selection in last cell on forward delete', () => {
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			const domEventData = new DomEventData( viewDocument, {
+				preventDefault: sinon.spy()
+			}, {
+				direction: 'forward',
+				unit: 'character',
+				sequence: 1
+			} );
+			viewDocument.fire( 'delete', domEventData );
+
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ '[]', '', '13' ],
+				[ '', '', '23' ],
+				[ '31', '32', '33' ]
+			] ) );
+		} );
+
+		it( 'should not interfere with default key handler if no table selection', () => {
+			setModelData( model, modelTable( [
+				[ '11[]', '12', '13' ],
+				[ '21', '22', '23' ],
+				[ '31', '32', '33' ]
+			] ) );
+
+			const domEventData = new DomEventData( viewDocument, {
+				preventDefault: sinon.spy()
+			}, {
+				direction: 'backward',
+				unit: 'character',
+				sequence: 1
+			} );
+			viewDocument.fire( 'delete', domEventData );
+
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ '1[]', '12', '13' ],
+				[ '21', '22', '23' ],
+				[ '31', '32', '33' ]
+			] ) );
+		} );
+
+		it( 'should work with any arbitrary selection passed to Model#deleteContent() (delete backwards)', () => {
+			const selection = model.createSelection( [
+				model.createRange(
+					model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ),
+					model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] )
+				),
+				model.createRange(
+					model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] ),
+					model.createPositionFromPath( modelRoot, [ 0, 0, 2 ] )
+				)
+			] );
+
+			model.change( writer => {
+				model.deleteContent( selection );
+				writer.setSelection( selection );
 			} );
 
-			it( 'should clear contents of the selected table cells and put selection in last cell on user input', () => {
-				tableSelection._setCellSelection(
-					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
-					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
-				);
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ '', '[]', '13' ],
+				[ '21', '22', '23' ],
+				[ '31', '32', '33' ]
+			] ) );
+		} );
 
-				viewDocument.fire( 'keydown', { keyCode: getCode( 'x' ) } );
+		it( 'should work with any arbitrary selection passed to Model#deleteContent() (delete forwards)', () => {
+			const selection = model.createSelection( [
+				model.createRange(
+					model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ),
+					model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] )
+				),
+				model.createRange(
+					model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] ),
+					model.createPositionFromPath( modelRoot, [ 0, 0, 2 ] )
+				)
+			] );
 
-				// Mutate at the place where the document selection was put; it's more realistic
-				// than mutating at some arbitrary position.
-				const placeOfMutation = viewDocument.selection.getFirstRange().start.parent;
-
-				viewDocument.fire( 'mutations', [
-					{
-						type: 'children',
-						oldChildren: [],
-						newChildren: [ new ViewText( viewDocument, 'x' ) ],
-						node: placeOfMutation
-					}
-				] );
-
-				assertEqualMarkup( getModelData( model ), modelTable( [
-					[ '', '', '13' ],
-					[ '', 'x[]', '23' ],
-					[ '31', '32', '33' ]
-				] ) );
+			model.change( writer => {
+				model.deleteContent( selection, {
+					direction: 'forward'
+				} );
+				writer.setSelection( selection );
 			} );
 
-			it( 'should not interfere with default key handler if no table selection', () => {
-				viewDocument.fire( 'keydown', { keyCode: getCode( 'x' ) } );
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ '[]', '', '13' ],
+				[ '21', '22', '23' ],
+				[ '31', '32', '33' ]
+			] ) );
+		} );
+	} );
 
-				// Mutate at the place where the document selection was put; it's more realistic
-				// than mutating at some arbitrary position.
-				const placeOfMutation = viewDocument.selection.getFirstRange().start.parent;
+	describe( 'on user input', () => {
+		beforeEach( async () => {
+			await setupEditor( [ Input ] );
+		} );
 
-				viewDocument.fire( 'mutations', [
-					{
-						type: 'children',
-						oldChildren: [],
-						newChildren: [ new ViewText( viewDocument, 'x' ) ],
-						node: placeOfMutation
-					}
-				] );
+		it( 'should clear contents of the selected table cells and put selection in last cell on user input', () => {
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
 
-				assertEqualMarkup( getModelData( model ), modelTable( [
-					[ 'x[]11', '12', '13' ],
-					[ '21', '22', '23' ],
-					[ '31', '32', '33' ]
-				] ) );
-			} );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'x' ) } );
+
+			// Mutate at the place where the document selection was put; it's more realistic
+			// than mutating at some arbitrary position.
+			const placeOfMutation = viewDocument.selection.getFirstRange().start.parent;
+
+			viewDocument.fire( 'mutations', [
+				{
+					type: 'children',
+					oldChildren: [],
+					newChildren: [ new ViewText( viewDocument, 'x' ) ],
+					node: placeOfMutation
+				}
+			] );
+
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ '', '', '13' ],
+				[ '', 'x[]', '23' ],
+				[ '31', '32', '33' ]
+			] ) );
+		} );
+
+		it( 'should not interfere with default key handler if no table selection', () => {
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'x' ) } );
+
+			// Mutate at the place where the document selection was put; it's more realistic
+			// than mutating at some arbitrary position.
+			const placeOfMutation = viewDocument.selection.getFirstRange().start.parent;
+
+			viewDocument.fire( 'mutations', [
+				{
+					type: 'children',
+					oldChildren: [],
+					newChildren: [ new ViewText( viewDocument, 'x' ) ],
+					node: placeOfMutation
+				}
+			] );
+
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ 'x[]11', '12', '13' ],
+				[ '21', '22', '23' ],
+				[ '31', '32', '33' ]
+			] ) );
 		} );
 	} );
 
