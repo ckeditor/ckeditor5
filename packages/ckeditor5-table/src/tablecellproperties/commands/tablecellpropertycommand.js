@@ -9,6 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
+import { getSelectedTableCells } from '../../utils';
 import { findAncestor } from '../../commands/utils';
 
 /**
@@ -36,8 +37,7 @@ export default class TableCellPropertyCommand extends Command {
 	 */
 	refresh() {
 		const editor = this.editor;
-
-		const selectedTableCells = getSelectedTableCells( editor.model );
+		const selectedTableCells = getSelectedOrSelectionContainingTableCells( editor.model.document.selection );
 
 		this.isEnabled = !!selectedTableCells.length;
 		this.value = this._getSingleValue( selectedTableCells );
@@ -54,11 +54,9 @@ export default class TableCellPropertyCommand extends Command {
 	 * for example to allow a single undo step for multiple executions.
 	 */
 	execute( options = {} ) {
-		const model = this.editor.model;
-
 		const { value, batch } = options;
-
-		const tableCells = getSelectedTableCells( model );
+		const model = this.editor.model;
+		const tableCells = getSelectedOrSelectionContainingTableCells( model.document.selection );
 		const valueToSet = this._getValueToSet( value );
 
 		model.enqueueChange( batch || 'default', writer => {
@@ -113,13 +111,23 @@ export default class TableCellPropertyCommand extends Command {
 	}
 }
 
-// Returns all selected table cells.
-// The implementation of this function is incorrect as it may return a single cell twice.
-// See https://github.com/ckeditor/ckeditor5/issues/6358.
-function getSelectedTableCells( model ) {
-	const selection = model.document.selection;
+// For the given selection, it returns an array made of:
+//
+// * table cells selected entirely,
+// * a table cell the selection is anchored to (if no cells are selected entirely).
+//
+// @param {module:engine/model/selection~Selection} selection
+// @returns {Array.<module:engine/model/element~Element>}
+function getSelectedOrSelectionContainingTableCells( selection ) {
+	const tableCells = getSelectedTableCells( selection );
 
-	return Array.from( selection.getSelectedBlocks() )
-		.map( element => findAncestor( 'tableCell', model.createPositionAt( element, 0 ) ) )
-		.filter( tableCell => !!tableCell );
+	if ( !tableCells.length ) {
+		const cellWithSelection = findAncestor( 'tableCell', selection.getFirstPosition() );
+
+		if ( cellWithSelection ) {
+			tableCells.push( cellWithSelection );
+		}
+	}
+
+	return tableCells;
 }
