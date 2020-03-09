@@ -681,13 +681,19 @@ export default class TablePropertiesView extends View {
 	 * @type {Object.<String,String>}
 	 */
 	get _alignmentLabels() {
+		const locale = this.locale;
 		const t = this.t;
 
-		return {
-			left: t( 'Align table to the left' ),
-			center: t( 'Center table' ),
-			right: t( 'Align table to the right' )
-		};
+		const left = t( 'Align table to the left' );
+		const center = t( 'Center table' );
+		const right = t( 'Align table to the right' );
+
+		// Returns object with a proper order of labels.
+		if ( locale.uiLanguageDirection === 'rtl' ) {
+			return { right, center, left };
+		} else {
+			return { left, center, right };
+		}
 	}
 }
 

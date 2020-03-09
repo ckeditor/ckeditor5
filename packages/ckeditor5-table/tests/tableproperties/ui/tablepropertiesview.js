@@ -439,7 +439,7 @@ describe( 'table properties', () => {
 							expect( toolbar.ariaLabel ).to.equal( 'Table alignment toolbar' );
 						} );
 
-						it( 'should bring alignment buttons', () => {
+						it( 'should bring alignment buttons in the right order (left-to-right UI)', () => {
 							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
 								'Align table to the left',
 								'Center table',
@@ -449,6 +449,29 @@ describe( 'table properties', () => {
 							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
 								false, true, false
 							] );
+						} );
+
+						it( 'should bring alignment buttons in the right order (right-to-left UI)', () => {
+							// Creates its own local instances of locale, view and toolbar.
+							const locale = {
+								t: val => val,
+								uiLanguageDirection: 'rtl',
+								contentLanguageDirection: 'rtl'
+							};
+							const view = new TablePropertiesView( locale, VIEW_OPTIONS );
+							const toolbar = view.alignmentToolbar;
+
+							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
+								'Align table to the right',
+								'Center table',
+								'Align table to the left'
+							] );
+
+							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
+								false, true, false
+							] );
+
+							view.destroy();
 						} );
 
 						it( 'should change the #horizontalAlignment value', () => {

@@ -790,7 +790,7 @@ export default class TableCellPropertiesView extends View {
 		const right = t( 'Align cell text to the right' );
 		const justify = t( 'Justify cell text' );
 
-		// Returns object with a proper order of labeles.
+		// Returns object with a proper order of labels.
 		if ( locale.uiLanguageDirection === 'rtl' ) {
 			return { right, center, left, justify };
 		} else {

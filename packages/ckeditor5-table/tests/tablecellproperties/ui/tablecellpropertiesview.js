@@ -474,7 +474,7 @@ describe( 'table cell properties', () => {
 							expect( toolbar.ariaLabel ).to.equal( 'Horizontal text alignment toolbar' );
 						} );
 
-						it( 'should bring alignment buttons in the right order in LTR (default)', () => {
+						it( 'should bring alignment buttons in the right order (left-to-right UI)', () => {
 							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
 								'Align cell text to the left',
 								'Align cell text to the center',
@@ -487,7 +487,7 @@ describe( 'table cell properties', () => {
 							] );
 						} );
 
-						it( 'should bring alignment buttons in the right order in RTL', () => {
+						it( 'should bring alignment buttons in the right order (right-to-left UI)', () => {
 							// Creates its own local instances of locale, view and toolbar.
 							const locale = {
 								t: val => val,
@@ -507,6 +507,8 @@ describe( 'table cell properties', () => {
 							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
 								true, false, false, false
 							] );
+
+							view.destroy();
 						} );
 
 						it( 'should change the #horizontalAlignment value', () => {
