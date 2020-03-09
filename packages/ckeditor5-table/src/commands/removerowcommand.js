@@ -68,6 +68,7 @@ export default class RemoveRowCommand extends Command {
 		let cellToFocus;
 
 		for ( let i = removedRowIndexes.last; i >= removedRowIndexes.first; i-- ) {
+			// Doing model change with multiple calls, to get around ckeditor/ckeditor5#6391.
 			this.editor.model.change( writer => {
 				const removedRowIndex = i;
 				this._removeRow( removedRowIndex, table, writer, tableMap );
