@@ -8,7 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { findAncestor } from './utils';
 import { getTableCellsInSelection } from '../tableselection/utils';
 
 /**
@@ -56,18 +55,11 @@ export default class SplitCellCommand extends Command {
 	 * @inheritDoc
 	 */
 	execute() {
-		const model = this.editor.model;
-		const document = model.document;
-		const selection = document.selection;
-
-		const firstPosition = selection.getFirstPosition();
-		const tableCell = findAncestor( 'tableCell', firstPosition );
-
-		const isHorizontally = this.direction === 'horizontally';
-
+		const tableCell = getTableCellsInSelection( this.editor.model.document.selection, true )[ 0 ];
+		const isHorizontal = this.direction === 'horizontally';
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
-		if ( isHorizontally ) {
+		if ( isHorizontal ) {
 			tableUtils.splitCellHorizontally( tableCell, 2 );
 		} else {
 			tableUtils.splitCellVertically( tableCell, 2 );
