@@ -252,6 +252,31 @@ describe( 'RemoveColumnCommand', () => {
 				] ) );
 			} );
 
+			it( 'should properly remove two middle columns with reversed selection', () => {
+				setData( model, modelTable( [
+					[ '00', '01', '02', '03' ],
+					[ '10', '11', '12', '13' ],
+					[ '20', '21', '22', '23' ],
+					[ '30', '31', '32', '33' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 2, 2 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00', '03' ],
+					[ '10', '13' ],
+					[ '20', '[]23' ],
+					[ '30', '33' ]
+				] ) );
+			} );
+
 			it( 'should properly remove two last columns', () => {
 				// There's no handling for selection in case like that.
 				setData( model, modelTable( [

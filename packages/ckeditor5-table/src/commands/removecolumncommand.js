@@ -52,10 +52,15 @@ export default class RemoveColumnCommand extends Command {
 		const model = this.editor.model;
 
 		const referenceCells = Array.from( this._getReferenceCells() );
-		const firstCell = referenceCells[ 0 ];
-		const lastCell = referenceCells[ referenceCells.length - 1 ];
+		let firstCell = referenceCells[ 0 ];
+		let lastCell = referenceCells[ referenceCells.length - 1 ];
 		const tableRow = firstCell.parent;
 		const table = tableRow.parent;
+
+		if ( firstCell.isAfter( lastCell ) ) {
+			firstCell = lastCell;
+			lastCell = referenceCells[ 0 ];
+		}
 
 		// Cache the table before removing or updating colspans.
 		const tableMap = [ ...new TableWalker( table ) ];

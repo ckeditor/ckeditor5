@@ -54,6 +54,12 @@ export default class RemoveRowCommand extends Command {
 			first: referenceCells[ 0 ].parent.index,
 			last: referenceCells[ referenceCells.length - 1 ].parent.index
 		};
+
+		if ( removedRowIndexes.last < removedRowIndexes.first ) {
+			removedRowIndexes.first = referenceCells[ referenceCells.length - 1 ].parent.index;
+			removedRowIndexes.last = referenceCells[ 0 ].parent.index;
+		}
+
 		const firstCell = referenceCells[ 0 ];
 		const table = firstCell.parent.parent;
 		const tableMap = [ ...new TableWalker( table, { endRow: removedRowIndexes.last } ) ];

@@ -150,6 +150,29 @@ describe( 'RemoveRowCommand', () => {
 				] ) );
 			} );
 
+			it( 'should properly remove middle rows in reversed order', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00', '01' ],
+					[ '[]30', '31' ]
+				] ) );
+			} );
+
 			// This test is blocked by (#6370).
 			//
 			// it( 'should properly remove tailing rows', () => {
