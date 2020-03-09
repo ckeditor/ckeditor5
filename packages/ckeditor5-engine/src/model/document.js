@@ -59,7 +59,6 @@ export default class Document {
 		 * If the {@link module:engine/model/operation/operation~Operation#baseVersion base version} does not match the document version,
 		 * a {@link module:utils/ckeditorerror~CKEditorError model-document-applyOperation-wrong-version} error is thrown.
 		 *
-		 * @readonly
 		 * @type {Number}
 		 */
 		this.version = 0;
