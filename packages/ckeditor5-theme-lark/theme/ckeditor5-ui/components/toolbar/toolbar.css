@@ -106,20 +106,20 @@
  */
 [dir="rtl"] .ck.ck-toolbar,
 .ck.ck-toolbar[dir="rtl"] {
-	& > .ck-toolbar__items > * {
+	& > .ck-toolbar__items > .ck {
 		margin-right: 0;
-
-		&:last-child {
-			margin-left: 0;
-		}
 	}
 
-	&:not(.ck-toolbar_compact) > .ck-toolbar__items > * {
+	&:not(.ck-toolbar_compact) > .ck-toolbar__items > .ck {
 		/* (#11) Separate toolbar items. */
 		margin-left: var(--ck-spacing-small);
 	}
 
-	&.ck-toolbar_compact > .ck-toolbar__items > * {
+	& > .ck-toolbar__items > .ck:last-child {
+		margin-left: 0;
+	}
+
+	&.ck-toolbar_compact > .ck-toolbar__items > .ck {
 		/* No rounded corners on the right side of the first child. */
 		&:first-child {
 			border-top-left-radius: 0;
@@ -152,11 +152,11 @@
  */
 [dir="ltr"] .ck.ck-toolbar,
 .ck.ck-toolbar[dir="ltr"] {
-	& > .ck-toolbar__items > *:last-child {
+	& > .ck-toolbar__items > .ck:last-child {
 		margin-right: 0;
 	}
 
-	&.ck-toolbar_compact > .ck-toolbar__items > * {
+	&.ck-toolbar_compact > .ck-toolbar__items > .ck {
 		/* No rounded corners on the right side of the first child. */
 		&:first-child {
 			border-top-right-radius: 0;
