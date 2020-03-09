@@ -502,6 +502,28 @@ export default class Range {
 	}
 
 	/**
+	 * Returns an {@link module:engine/model/element~Element Element} contained by the range.
+	 * The element will be returned when it is the **only** node within the range and **fully–contained**
+	 * at the same time.
+	 *
+	 * @returns {module:engine/model/element~Element|null}
+	 */
+	getContainedElement() {
+		if ( this.isCollapsed ) {
+			return null;
+		}
+
+		const nodeAfterStart = this.start.nodeAfter;
+		const nodeBeforeEnd = this.end.nodeBefore;
+
+		if ( nodeAfterStart && nodeAfterStart.is( 'element' ) && nodeAfterStart === nodeBeforeEnd ) {
+			return nodeAfterStart;
+		}
+
+		return null;
+	}
+
+	/**
 	 * Converts `Range` to plain object and returns it.
 	 *
 	 * @returns {Object} `Node` converted to plain object.

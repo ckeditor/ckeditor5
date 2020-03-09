@@ -336,6 +336,45 @@ export default class Range {
 	}
 
 	/**
+	 * Returns an {@link module:engine/view/element~Element Element} contained by the range.
+	 * The element will be returned when it is the **only** node within the range and **fully–contained**
+	 * at the same time.
+	 *
+	 * @returns {module:engine/view/element~Element|null}
+	 */
+	getContainedElement() {
+		if ( this.isCollapsed ) {
+			return null;
+		}
+
+		let nodeAfterStart = this.start.nodeAfter;
+		let nodeBeforeEnd = this.end.nodeBefore;
+
+		// Handle the situation when the range position is at the beginning / at the end of a text node.
+		// In such situation `.nodeAfter` and `.nodeBefore` are `null` but the range still might be spanning
+		// over one element.
+		//
+		// <p>Foo{<span class="widget"></span>}bar</p> vs <p>Foo[<span class="widget"></span>]bar</p>
+		//
+		// These are basically the same range, only the difference is if the range position is at
+		// at the end/at the beginning of a text node or just before/just after the text node.
+		//
+		if ( this.start.parent.is( 'text' ) && this.start.isAtEnd && this.start.parent.nextSibling ) {
+			nodeAfterStart = this.start.parent.nextSibling;
+		}
+
+		if ( this.end.parent.is( 'text' ) && this.end.isAtStart && this.end.parent.previousSibling ) {
+			nodeBeforeEnd = this.end.parent.previousSibling;
+		}
+
+		if ( nodeAfterStart && nodeAfterStart.is( 'element' ) && nodeAfterStart === nodeBeforeEnd ) {
+			return nodeAfterStart;
+		}
+
+		return null;
+	}
+
+	/**
 	 * Clones this range.
 	 *
 	 * @returns {module:engine/view/range~Range}

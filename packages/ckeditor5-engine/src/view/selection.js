@@ -13,7 +13,6 @@ import Position from './position';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import Node from './node';
-import Element from './element';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import DocumentSelection from './documentselection';
@@ -413,29 +412,7 @@ export default class Selection {
 			return null;
 		}
 
-		const range = this.getFirstRange();
-
-		let nodeAfterStart = range.start.nodeAfter;
-		let nodeBeforeEnd = range.end.nodeBefore;
-
-		// Handle the situation when selection position is at the beginning / at the end of a text node.
-		// In such situation `.nodeAfter` and `.nodeBefore` are `null` but the selection still might be spanning
-		// over one element.
-		//
-		// <p>Foo{<span class="widget"></span>}bar</p> vs <p>Foo[<span class="widget"></span>]bar</p>
-		//
-		// These are basically the same selections, only the difference is if the selection position is at
-		// at the end/at the beginning of a text node or just before/just after the text node.
-		//
-		if ( range.start.parent.is( 'text' ) && range.start.isAtEnd && range.start.parent.nextSibling ) {
-			nodeAfterStart = range.start.parent.nextSibling;
-		}
-
-		if ( range.end.parent.is( 'text' ) && range.end.isAtStart && range.end.parent.previousSibling ) {
-			nodeBeforeEnd = range.end.parent.previousSibling;
-		}
-
-		return ( nodeAfterStart instanceof Element && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
+		return this.getFirstRange().getContainedElement();
 	}
 
 	/**

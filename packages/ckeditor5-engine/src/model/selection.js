@@ -8,7 +8,6 @@
  */
 
 import Position from './position';
-import Element from './element';
 import Node from './node';
 import Range from './range';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
@@ -615,11 +614,7 @@ export default class Selection {
 			return null;
 		}
 
-		const range = this.getFirstRange();
-		const nodeAfterStart = range.start.nodeAfter;
-		const nodeBeforeEnd = range.end.nodeBefore;
-
-		return ( nodeAfterStart instanceof Element && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
+		return this.getFirstRange().getContainedElement();
 	}
 
 	/**

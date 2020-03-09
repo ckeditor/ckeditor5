@@ -772,4 +772,50 @@ describe( 'Range', () => {
 			expect( range.getCommonAncestor() ).to.equal( ul );
 		} );
 	} );
+
+	describe( 'getContainedElement()', () => {
+		it( 'should return an element when it is fully contained by the range', () => {
+			const { selection, view } = parse( 'foo [<b>bar</b>] baz' );
+			const range = selection.getFirstRange();
+			const element = view.getChild( 1 );
+
+			expect( range.getContainedElement() ).to.equal( element );
+		} );
+
+		it( 'should return selected element if the range is anchored at the end/at the beginning of a text node', () => {
+			const { selection, view } = parse( 'foo {<b>bar</b>} baz' );
+			const range = selection.getFirstRange();
+			const element = view.getChild( 1 );
+
+			expect( range.getContainedElement() ).to.equal( element );
+		} );
+
+		it( 'should return "null" if the selection is collapsed', () => {
+			const { selection } = parse( 'foo []<b>bar</b> baz' );
+			const range = selection.getFirstRange();
+
+			expect( range.getContainedElement() ).to.be.null;
+		} );
+
+		it( 'should return "null" if it contains 2+ elements', () => {
+			const { selection } = parse( 'foo [<b>bar</b><i>qux</i>] baz' );
+			const range = selection.getFirstRange();
+
+			expect( range.getContainedElement() ).to.be.null;
+		} );
+
+		it( 'should return "null" if the range spans over more than a single element', () => {
+			const { selection } = parse( 'foo [<b>bar</b> ba}z' );
+			const range = selection.getFirstRange();
+
+			expect( range.getContainedElement() ).to.be.null;
+		} );
+
+		it( 'should return "null" if the range spans over a single text node', () => {
+			const { selection } = parse( 'foo <b>{bar}</b> baz' );
+			const range = selection.getFirstRange();
+
+			expect( range.getContainedElement() ).to.be.null;
+		} );
+	} );
 } );
