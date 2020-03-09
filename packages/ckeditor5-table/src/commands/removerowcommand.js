@@ -57,7 +57,7 @@ export default class RemoveRowCommand extends Command {
 		const firstCell = referenceCells[ 0 ];
 		const table = firstCell.parent.parent;
 		const tableMap = [ ...new TableWalker( table, { endRow: removedRowIndexes.last } ) ];
-		const batch = this.editor.model.createBatch( 'default' );
+		const batch = this.editor.model.createBatch();
 
 		// Doing multiple model.enqueueChange() calls, to get around ckeditor/ckeditor5#6391.
 		// Ideally we want to do this in a single model.change() block.
