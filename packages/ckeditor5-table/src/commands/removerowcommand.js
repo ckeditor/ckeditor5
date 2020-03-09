@@ -57,9 +57,12 @@ export default class RemoveRowCommand extends Command {
 		const firstCell = referenceCells[ 0 ];
 		const table = firstCell.parent.parent;
 		const tableMap = [ ...new TableWalker( table, { endRow: removedRowIndexes.last } ) ];
+		const batch = this.editor.model.createBatch( 'default' );
 
-		this.editor.model.change( writer => {
-			// Temporary workaround to avoid the "model-selection-range-intersects" error.
+		// Doing multiple model.enqueueChange() calls, to get around ckeditor/ckeditor5#6391.
+		// Ideally we want to do this in a single model.change() block.
+		this.editor.model.enqueueChange( batch, writer => {
+			// This prevents the "model-selection-range-intersects" error, caused by removing row selected cells.
 			writer.setSelection( writer.createSelection( table, 'on' ) );
 		} );
 
@@ -68,8 +71,7 @@ export default class RemoveRowCommand extends Command {
 		let cellToFocus;
 
 		for ( let i = removedRowIndexes.last; i >= removedRowIndexes.first; i-- ) {
-			// Doing model change with multiple calls, to get around ckeditor/ckeditor5#6391.
-			this.editor.model.change( writer => {
+			this.editor.model.enqueueChange( batch, writer => {
 				const removedRowIndex = i;
 				this._removeRow( removedRowIndex, table, writer, tableMap );
 
@@ -77,7 +79,7 @@ export default class RemoveRowCommand extends Command {
 			} );
 		}
 
-		this.editor.model.change( writer => {
+		this.editor.model.enqueueChange( batch, writer => {
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
 	}
