@@ -39,6 +39,13 @@
 		}
 	}
 
+	& > .ck-toolbar__items > *,
+	& > .ck.ck-toolbar__grouped-dropdown {
+		/* Make sure items wrapped to the next line have v-spacing */
+		margin-top: var(--ck-spacing-small);
+		margin-bottom: var(--ck-spacing-small);
+	}
+
 	&.ck-toolbar_vertical {
 		/* Items in a vertical toolbar span the entire width. */
 		padding: 0;
@@ -63,34 +70,15 @@
 		/* No spacing around items. */
 		padding: 0;
 
-		& .ck-toolbar__items > .ck {
-			/* No spacing between items. */
+		& > .ck-toolbar__items > * {
+			/* Compact toolbar items have no spacing between them. */
 			margin: 0;
-
-			/* No rounded corners on the right side of the first child. */
-			&:first-child {
-				border-top-right-radius: 0;
-				border-bottom-right-radius: 0;
-			}
-
-			/* No rounded corners on the left side of the last child. */
-			&:last-child {
-				border-top-left-radius: 0;
-				border-bottom-left-radius: 0;
-			}
 
 			/* "Middle" children should have no rounded corners. */
 			&:not(:first-child):not(:last-child) {
 				border-radius: 0;
 			}
 		}
-	}
-
-	& > .ck-toolbar__items > *,
-	& > .ck.ck-toolbar__grouped-dropdown {
-		/* Make sure items wrapped to the next line have v-spacing */
-		margin-top: var(--ck-spacing-small);
-		margin-bottom: var(--ck-spacing-small);
 	}
 
 	& > .ck.ck-toolbar__grouped-dropdown {
@@ -108,26 +96,44 @@
 	}
 }
 
+/* stylelint-disable */
+
 /*
+ * Styles for RTL toolbars.
+ *
  * Note: In some cases (e.g. a decoupled editor), the toolbar has its own "dir"
  * because its parent is not controlled by the editor framework.
  */
 [dir="rtl"] .ck.ck-toolbar,
 .ck.ck-toolbar[dir="rtl"] {
-	& > .ck.ck-toolbar__items {
-		& > * {
-			/* (#11) Separate toolbar items. */
-			margin-left: var(--ck-spacing-small);
-			margin-right: 0;
+	& > .ck-toolbar__items > .ck {
+		margin-right: 0;
+	}
+
+	&:not(.ck-toolbar_compact) > .ck-toolbar__items > .ck {
+		/* (#11) Separate toolbar items. */
+		margin-left: var(--ck-spacing-small);
+	}
+
+	& > .ck-toolbar__items > .ck:last-child {
+		margin-left: 0;
+	}
+
+	&.ck-toolbar_compact > .ck-toolbar__items > .ck {
+		/* No rounded corners on the right side of the first child. */
+		&:first-child {
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
 		}
 
-		& > *:last-child {
-			margin-left: 0;
+		/* No rounded corners on the left side of the last child. */
+		&:last-child {
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
 		}
 	}
 
 	/* Separate the the separator form the grouping dropdown when some items are grouped. */
-	/* stylelint-disable-next-line no-descending-specificity */
 	& > .ck.ck-toolbar__separator {
 		margin-left: var(--ck-spacing-small);
 	}
@@ -139,19 +145,32 @@
 }
 
 /*
+ * Styles for LTR toolbars.
+ *
  * Note: In some cases (e.g. a decoupled editor), the toolbar has its own "dir"
  * because its parent is not controlled by the editor framework.
  */
 [dir="ltr"] .ck.ck-toolbar,
 .ck.ck-toolbar[dir="ltr"] {
-	& > .ck.ck-toolbar__items {
-		& > *:last-child {
-			margin-right: 0;
+	& > .ck-toolbar__items > .ck:last-child {
+		margin-right: 0;
+	}
+
+	&.ck-toolbar_compact > .ck-toolbar__items > .ck {
+		/* No rounded corners on the right side of the first child. */
+		&:first-child {
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+
+		/* No rounded corners on the left side of the last child. */
+		&:last-child {
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
 		}
 	}
 
 	/* Separate the the separator form the grouping dropdown when some items are grouped. */
-	/* stylelint-disable-next-line no-descending-specificity */
 	& > .ck.ck-toolbar__separator {
 		margin-right: var(--ck-spacing-small);
 	}
@@ -161,3 +180,5 @@
 		margin-right: var(--ck-spacing-small);
 	}
 }
+
+/* stylelint-enable */
