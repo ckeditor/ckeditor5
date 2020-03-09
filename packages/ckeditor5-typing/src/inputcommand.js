@@ -97,6 +97,8 @@ export default class InputCommand extends Command {
 
 			if ( resultRange ) {
 				writer.setSelection( resultRange );
+			} else if ( !selection.is( 'documentSelection' ) ) {
+				writer.setSelection( selection );
 			}
 
 			this._buffer.unlock();
