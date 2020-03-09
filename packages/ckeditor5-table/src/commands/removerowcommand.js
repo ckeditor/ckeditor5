@@ -95,7 +95,7 @@ export default class RemoveRowCommand extends Command {
 		const tableRow = table.getChild( removedRowIndex );
 		const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
-		if ( headingRows && removedRowIndex <= headingRows ) {
+		if ( headingRows && removedRowIndex < headingRows ) {
 			updateNumericAttribute( 'headingRows', headingRows - 1, table, writer, 0 );
 		}
 
