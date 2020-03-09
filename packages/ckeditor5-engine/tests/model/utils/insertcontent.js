@@ -223,6 +223,24 @@ describe( 'DataController utils', () => {
 			expect( doc.getRoot().getChild( 0 ).getChild( 1 ) ).to.equal( content );
 		} );
 
+		it( 'should use the selection set by deleteContent()', () => {
+			model.on( 'deleteContent', evt => {
+				evt.stop();
+
+				model.change( writer => {
+					writer.setSelection( root.getChild( 0 ), 'end' );
+				} );
+			}, { priority: 'high' } );
+
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+			setData( model, '<paragraph>[fo]o</paragraph>' );
+
+			insertHelper( 'xyz' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>fooxyz[]</paragraph>' );
+		} );
+
 		describe( 'in simple scenarios', () => {
 			beforeEach( () => {
 				model = new Model();
