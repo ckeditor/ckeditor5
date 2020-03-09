@@ -81,16 +81,28 @@
 	@mixin ck-rounded-corners;
 	@mixin ck-drop-shadow;
 
-	/* Disabled radius of top-left border to be consistent with .dropdown__button
-	https://github.com/ckeditor/ckeditor5/issues/816 */
-	@mixin ck-rounded-corners {
-		border-top-left-radius: 0;
-	}
-
 	background: var(--ck-color-dropdown-panel-background);
 	border: 1px solid var(--ck-color-dropdown-panel-border);
 	bottom: 0;
 
 	/* Make sure the panel is at least as wide as the drop-down's button. */
 	min-width: 100%;
+
+	/* Disabled radius of top-left border to be consistent with .dropdown__button
+	https://github.com/ckeditor/ckeditor5/issues/816 */
+	&.ck-dropdown__panel_se {
+		border-top-left-radius: 0;
+	}
+
+	&.ck-dropdown__panel_sw {
+		border-top-right-radius: 0;
+	}
+
+	&.ck-dropdown__panel_ne {
+		border-bottom-left-radius: 0;
+	}
+
+	&.ck-dropdown__panel_nw {
+		border-bottom-right-radius: 0;
+	}
 }
