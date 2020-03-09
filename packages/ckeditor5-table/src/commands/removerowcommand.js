@@ -61,18 +61,22 @@ export default class RemoveRowCommand extends Command {
 		this.editor.model.change( writer => {
 			// Temporary workaround to avoid the "model-selection-range-intersects" error.
 			writer.setSelection( writer.createSelection( table, 'on' ) );
+		} );
 
-			const firstCellData = tableMap.find( value => value.cell === firstCell );
-			const columnToFocus = firstCellData.column;
-			let cellToFocus;
+		const firstCellData = tableMap.find( value => value.cell === firstCell );
+		const columnToFocus = firstCellData.column;
+		let cellToFocus;
 
-			for ( let i = removedRowIndexes.last; i >= removedRowIndexes.first; i-- ) {
+		for ( let i = removedRowIndexes.last; i >= removedRowIndexes.first; i-- ) {
+			this.editor.model.change( writer => {
 				const removedRowIndex = i;
 				this._removeRow( removedRowIndex, table, writer, tableMap );
 
 				cellToFocus = getCellToFocus( table, removedRowIndex, columnToFocus );
-			}
+			} );
+		}
 
+		this.editor.model.change( writer => {
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
 	}
