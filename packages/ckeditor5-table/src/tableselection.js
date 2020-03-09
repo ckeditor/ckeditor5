@@ -304,12 +304,14 @@ export default class TableSelection extends Plugin {
 
 			clearTableCellsContents( model, selectedTableCells );
 
-			// The insertContent() helper passes the actual DocumentSelection,
-			// while the deleteContent() helper always operates on the abstract clones.
-			if ( selection.is( 'documentSelection' ) ) {
-				writer.setSelection( tableCellToSelect, 'in' );
-			} else {
-				selection.setTo( tableCellToSelect, 'in' );
+			const rangeToSelect = model.schema.getNearestSelectionRange( writer.createPositionAt( tableCellToSelect, 0 ) );
+
+			if ( rangeToSelect ) {
+				if ( selection.is( 'documentSelection' ) ) {
+					writer.setSelection( rangeToSelect );
+				} else {
+					selection.setTo( rangeToSelect );
+				}
 			}
 		} );
 	}
