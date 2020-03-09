@@ -7,7 +7,7 @@
  * @module table/tableselection/utils
  */
 
-import { getRangeContainedElement } from '../commands/utils';
+import { getRangeContainedElement, findAncestor } from '../commands/utils';
 
 /**
  * Clears contents of the passed table cells.
@@ -48,4 +48,34 @@ export function getTableCellsInSelection( selection ) {
 	}
 
 	return cells;
+}
+
+/**
+ * Yields selected table cells.
+ *
+ * @private
+ * @param {module:core/editor/editor~Editor} editor
+ * @param {Boolean} [expandSelection=false] If set to `true` expands the selection to entire cell (if possible).
+ * @returns {Iterable.<module:engine/model/element~Element>}
+ */
+export function* getSelectedCells( editor, expandSelection = false ) {
+	const plugins = editor.plugins;
+	if ( plugins.has( 'TableSelection' ) ) {
+		const selectedCells = plugins.get( 'TableSelection' ).getSelectedTableCells();
+
+		if ( selectedCells ) {
+			for ( const cell of selectedCells ) {
+				yield cell;
+			}
+
+			return;
+		}
+	}
+
+	if ( expandSelection ) {
+		const cellAncestor = findAncestor( 'tableCell', editor.model.document.selection.getFirstPosition() );
+		if ( cellAncestor ) {
+			yield cellAncestor;
+		}
+	}
 }
