@@ -7,7 +7,7 @@
  * @module table/tableselection/utils
  */
 
-import { getRangeContainedElement, findAncestor } from '../commands/utils';
+import { findAncestor } from '../commands/utils';
 
 /**
  * Clears contents of the passed table cells.
@@ -41,7 +41,7 @@ export function getTableCellsInSelection( selection, expandSelection = false ) {
 	const cells = [];
 
 	for ( const range of selection.getRanges() ) {
-		const element = getRangeContainedElement( range );
+		const element = range.getContainedElement();
 
 		if ( element && element.is( 'tableCell' ) ) {
 			cells.push( element );
