@@ -37,110 +37,107 @@ describe( 'table selection', () => {
 	afterEach( async () => {
 		await editor.destroy();
 	} );
+	describe( 'selection by shift+click', () => {
+		it( 'should...', () => {
+			// tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+			// tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
 
-	describe( 'TableSelection', () => {
-		describe( 'selection by shift+click', () => {
-			it( 'should...', () => {
-				// tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				// tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+			// tableSelection.stopSelection();
 
-				// tableSelection.stopSelection();
+			// assertSelectedCells( model, [
+			// 	[ 1, 1, 0 ],
+			// 	[ 0, 0, 0 ],
+			// 	[ 0, 0, 0 ]
+			// ] );
+		} );
+	} );
 
-				// assertSelectedCells( model, [
-				// 	[ 1, 1, 0 ],
-				// 	[ 0, 0, 0 ],
-				// 	[ 0, 0, 0 ]
-				// ] );
-			} );
+	describe( 'selection by mouse drag', () => {
+		it( 'should...', () => {
+			// tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+			// tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+
+			// tableSelection.stopSelection();
+
+			// assertSelectedCells( model, [
+			// 	[ 1, 1, 0 ],
+			// 	[ 0, 0, 0 ],
+			// 	[ 0, 0, 0 ]
+			// ] );
+		} );
+	} );
+
+	describe( 'getSelectedTableCells()', () => {
+		it( 'should return nothing if selection is not started', () => {
+			expect( tableSelection.getSelectedTableCells() ).to.be.null;
 		} );
 
-		describe( 'selection by mouse drag', () => {
-			it( 'should...', () => {
-				// tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
-				// tableSelection.setSelectingTo( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+		it( 'should return two table cells', () => {
+			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
+			const lastCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
 
-				// tableSelection.stopSelection();
+			tableSelection._setCellSelection(
+				firstCell,
+				lastCell
+			);
 
-				// assertSelectedCells( model, [
-				// 	[ 1, 1, 0 ],
-				// 	[ 0, 0, 0 ],
-				// 	[ 0, 0, 0 ]
-				// ] );
-			} );
+			expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+				firstCell, lastCell
+			] );
 		} );
 
-		describe( 'getSelectedTableCells()', () => {
-			it( 'should return nothing if selection is not started', () => {
-				expect( tableSelection.getSelectedTableCells() ).to.be.null;
-			} );
+		it( 'should return four table cells for diagonal selection', () => {
+			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
+			const lastCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
 
-			it( 'should return two table cells', () => {
-				const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
-				const lastCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
+			tableSelection._setCellSelection(
+				firstCell,
+				lastCell
+			);
 
-				tableSelection._setCellSelection(
-					firstCell,
-					lastCell
-				);
-
-				expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
-					firstCell, lastCell
-				] );
-			} );
-
-			it( 'should return four table cells for diagonal selection', () => {
-				const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
-				const lastCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
-
-				tableSelection._setCellSelection(
-					firstCell,
-					lastCell
-				);
-
-				expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
-					firstCell, modelRoot.getNodeByPath( [ 0, 0, 1 ] ), modelRoot.getNodeByPath( [ 0, 1, 0 ] ), lastCell
-				] );
-			} );
-
-			it( 'should return row table cells', () => {
-				const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
-				const lastCell = modelRoot.getNodeByPath( [ 0, 0, 2 ] );
-
-				tableSelection._setCellSelection(
-					firstCell,
-					lastCell
-				);
-
-				expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
-					firstCell, modelRoot.getNodeByPath( [ 0, 0, 1 ] ), lastCell
-				] );
-			} );
-
-			it( 'should return column table cells', () => {
-				const firstCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
-				const lastCell = modelRoot.getNodeByPath( [ 0, 2, 1 ] );
-
-				tableSelection._setCellSelection( firstCell, lastCell );
-
-				expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
-					firstCell, modelRoot.getNodeByPath( [ 0, 1, 1 ] ), lastCell
-				] );
-			} );
+			expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+				firstCell, modelRoot.getNodeByPath( [ 0, 0, 1 ] ), modelRoot.getNodeByPath( [ 0, 1, 0 ] ), lastCell
+			] );
 		} );
 
-		describe( 'getSelectionAsFragment()', () => {
-			it( 'should return undefined if no table cells are selected', () => {
-				expect( tableSelection.getSelectionAsFragment() ).to.be.null;
-			} );
+		it( 'should return row table cells', () => {
+			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
+			const lastCell = modelRoot.getNodeByPath( [ 0, 0, 2 ] );
 
-			it( 'should return document fragment for selected table cells', () => {
-				tableSelection._setCellSelection(
-					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
-					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
-				);
+			tableSelection._setCellSelection(
+				firstCell,
+				lastCell
+			);
 
-				expect( tableSelection.getSelectionAsFragment() ).to.be.instanceOf( DocumentFragment );
-			} );
+			expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+				firstCell, modelRoot.getNodeByPath( [ 0, 0, 1 ] ), lastCell
+			] );
+		} );
+
+		it( 'should return column table cells', () => {
+			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
+			const lastCell = modelRoot.getNodeByPath( [ 0, 2, 1 ] );
+
+			tableSelection._setCellSelection( firstCell, lastCell );
+
+			expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+				firstCell, modelRoot.getNodeByPath( [ 0, 1, 1 ] ), lastCell
+			] );
+		} );
+	} );
+
+	describe( 'getSelectionAsFragment()', () => {
+		it( 'should return undefined if no table cells are selected', () => {
+			expect( tableSelection.getSelectionAsFragment() ).to.be.null;
+		} );
+
+		it( 'should return document fragment for selected table cells', () => {
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			expect( tableSelection.getSelectionAsFragment() ).to.be.instanceOf( DocumentFragment );
 		} );
 	} );
 } );

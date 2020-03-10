@@ -21,7 +21,7 @@ import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domev
  * Note that this observer is disabled by default. To enable this observer it needs to be added to
  * {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
  *
- * It is registered by {@link module:table/tableselection/mouseselectionhandler~MouseSelectionHandler}.
+ * It is registered by the {@link module:table/tableselection~TableSelection} plugin.
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */

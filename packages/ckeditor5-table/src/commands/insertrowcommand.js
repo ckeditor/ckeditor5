@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { getRangeContainedElement, findAncestor } from './utils';
+import { findAncestor } from './utils';
 
 /**
  * The insert row command.
@@ -74,7 +74,7 @@ export default class InsertRowCommand extends Command {
 		const referencePosition = insertAbove ? selection.getFirstPosition() : selection.getLastPosition();
 		const referenceRange = insertAbove ? selection.getFirstRange() : selection.getLastRange();
 
-		const tableCell = getRangeContainedElement( referenceRange ) || findAncestor( 'tableCell', referencePosition );
+		const tableCell = referenceRange.getContainedElement() || findAncestor( 'tableCell', referencePosition );
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 

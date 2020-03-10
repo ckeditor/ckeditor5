@@ -682,6 +682,7 @@ export default class TableCellPropertiesView extends View {
 		// -- Horizontal ---------------------------------------------------
 
 		const horizontalAlignmentToolbar = new ToolbarView( locale );
+		const isContentRTL = this.locale.contentLanguageDirection === 'rtl';
 
 		horizontalAlignmentToolbar.set( {
 			isCompact: true,
@@ -695,7 +696,7 @@ export default class TableCellPropertiesView extends View {
 			labels: this._horizontalAlignmentLabels,
 			propertyName: 'horizontalAlignment',
 			nameToValue: name => {
-				return name === 'left' ? '' : name;
+				return name === ( isContentRTL ? 'right' : 'left' ) ? '' : name;
 			}
 		} );
 
@@ -781,14 +782,20 @@ export default class TableCellPropertiesView extends View {
 	 * @type {Object.<String,String>}
 	 */
 	get _horizontalAlignmentLabels() {
+		const locale = this.locale;
 		const t = this.t;
 
-		return {
-			left: t( 'Align cell text to the left' ),
-			center: t( 'Align cell text to the center' ),
-			right: t( 'Align cell text to the right' ),
-			justify: t( 'Justify cell text' )
-		};
+		const left = t( 'Align cell text to the left' );
+		const center = t( 'Align cell text to the center' );
+		const right = t( 'Align cell text to the right' );
+		const justify = t( 'Justify cell text' );
+
+		// Returns object with a proper order of labels.
+		if ( locale.uiLanguageDirection === 'rtl' ) {
+			return { right, center, left, justify };
+		} else {
+			return { left, center, right, justify };
+		}
 	}
 
 	/**
