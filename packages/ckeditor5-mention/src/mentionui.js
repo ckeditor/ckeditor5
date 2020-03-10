@@ -637,7 +637,7 @@ export function createRegExp( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
 
 	const openAfterCharacters = env.features.isRegExpUnicodePropertySupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
-	const mentionCharacters = env.features.isRegExpUnicodePropertySupported ? '\\p{L}\\p{N}' : 'a-zA-ZÀ-ž0-9';
+	const mentionCharacters = '\\S';
 
 	// The pattern consists of 3 groups:
 	// - 0 (non-capturing): Opening sequence - start of the line, space or an opening punctuation character like "(" or "\"",
@@ -646,7 +646,7 @@ export function createRegExp( marker, minimumCharacters ) {
 	//
 	// The pattern matches up to the caret (end of string switch - $).
 	//               (0:      opening sequence       )(1:  marker   )(2:                typed mention                 )$
-	const pattern = `(?:^|[ ${ openAfterCharacters }])([${ marker }])([_${ mentionCharacters }]${ numberOfCharacters })$`;
+	const pattern = `(?:^|[ ${ openAfterCharacters }])([${ marker }])([${ mentionCharacters }]${ numberOfCharacters })$`;
 
 	return new RegExp( pattern, 'u' );
 }
