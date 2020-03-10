@@ -26,7 +26,7 @@ export default class TextWatcher {
 	 * Creates a text watcher instance.
 	 *
 	 * @param {module:engine/model/model~Model} model
-	 * @param {module:typing/textwatcher~TextWatcher#testCallback} testCallback
+	 * @param {Function} testCallback See {@link module:typing/textwatcher~TextWatcher#testCallback}.
 	 */
 	constructor( model, testCallback ) {
 		/**
@@ -44,7 +44,7 @@ export default class TextWatcher {
 		 *
 		 * * `false` if there is no match,
 		 * * `true` if there is a match,
-		 * * an object if there is a match and we want to pass some additional information to the {@link #matched:data} event.
+		 * * an object if there is a match and we want to pass some additional information to the {@link #event:matched:data} event.
 		 *
 		 * @member {Function} #testCallback
 		 * @returns {Object} testResult
@@ -175,7 +175,7 @@ mix( TextWatcher, ObservableMixin );
  * @param {Object} data Event data.
  * @param {String} data.text The full text before selection to which the regexp was applied.
  * @param {module:engine/model/range~Range} data.range The range representing the position of the `data.text`.
- * @param {Object} [data.testResult] The additional data returned from the {module:typing/textwatcher~TextWatcher#testCallback}.
+ * @param {Object} [data.testResult] The additional data returned from the {@link module:typing/textwatcher~TextWatcher#testCallback}.
  */
 
 /**
@@ -185,7 +185,7 @@ mix( TextWatcher, ObservableMixin );
  * @param {Object} data Event data.
  * @param {String} data.text The full text before selection.
  * @param {module:engine/model/range~Range} data.range The range representing the position of the `data.text`.
- * @param {Object} [data.testResult] The additional data returned from the {module:typing/textwatcher~TextWatcher#testCallback}.
+ * @param {Object} [data.testResult] The additional data returned from the {@link module:typing/textwatcher~TextWatcher#testCallback}.
  */
 
 /**
