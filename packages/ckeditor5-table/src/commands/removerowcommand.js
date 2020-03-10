@@ -34,13 +34,14 @@ export default class RemoveRowCommand extends Command {
 
 		if ( firstCell ) {
 			const table = firstCell.parent.parent;
-			const tableUtils = this.editor.plugins.get( 'TableUtils' );
-			const tableRowCount = table && tableUtils.getRows( table );
+			const tableRowCount = this.editor.plugins.get( 'TableUtils' ).getRows( table );
 
 			const tableMap = [ ...new TableWalker( table ) ];
 			const rowIndexes = tableMap.filter( entry => selectedCells.includes( entry.cell ) ).map( el => el.row );
+			const minRowIndex = rowIndexes[ 0 ];
+			const maxRowIndex = rowIndexes[ rowIndexes.length - 1 ];
 
-			this.isEnabled = Math.max.apply( null, rowIndexes ) - Math.min.apply( null, rowIndexes ) < ( tableRowCount - 1 );
+			this.isEnabled = maxRowIndex - minRowIndex < ( tableRowCount - 1 );
 		} else {
 			this.isEnabled = false;
 		}

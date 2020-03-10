@@ -34,13 +34,14 @@ export default class RemoveColumnCommand extends Command {
 
 		if ( firstCell ) {
 			const table = firstCell.parent.parent;
-			const tableUtils = this.editor.plugins.get( 'TableUtils' );
-			const tableColumnCount = table && tableUtils.getColumns( table );
+			const tableColumnCount = this.editor.plugins.get( 'TableUtils' ).getColumns( table );
 
 			const tableMap = [ ...new TableWalker( table ) ];
-			const columnIndexes = tableMap.filter( entry => selectedCells.includes( entry.cell ) ).map( el => el.column );
+			const columnIndexes = tableMap.filter( entry => selectedCells.includes( entry.cell ) ).map( el => el.column ).sort();
+			const minColumnIndex = columnIndexes[ 0 ];
+			const maxColumnIndex = columnIndexes[ columnIndexes.length - 1 ];
 
-			this.isEnabled = Math.max.apply( null, columnIndexes ) - Math.min.apply( null, columnIndexes ) < ( tableColumnCount - 1 );
+			this.isEnabled = maxColumnIndex - minColumnIndex < ( tableColumnCount - 1 );
 		} else {
 			this.isEnabled = false;
 		}
