@@ -52,20 +52,13 @@ export default class RemoveRowCommand extends Command {
 	 */
 	execute() {
 		const referenceCells = getSelectionAffectedTableCells( this.editor.model.document.selection );
-		const removedRowIndexes = {
-			first: referenceCells[ 0 ].parent.index,
-			last: referenceCells[ referenceCells.length - 1 ].parent.index
-		};
-
-		if ( removedRowIndexes.last < removedRowIndexes.first ) {
-			removedRowIndexes.first = referenceCells[ referenceCells.length - 1 ].parent.index;
-			removedRowIndexes.last = referenceCells[ 0 ].parent.index;
-		}
+		const removedRowIndexes = getRowIndexes( referenceCells );
 
 		const firstCell = referenceCells[ 0 ];
 		const table = firstCell.parent.parent;
 		const tableMap = [ ...new TableWalker( table, { endRow: removedRowIndexes.last } ) ];
 		const batch = this.editor.model.createBatch();
+		const columnIndexToFocus = getColumnIndexToFocus( tableMap, firstCell );
 
 		// Doing multiple model.enqueueChange() calls, to get around ckeditor/ckeditor5#6391.
 		// Ideally we want to do this in a single model.change() block.
@@ -74,8 +67,6 @@ export default class RemoveRowCommand extends Command {
 			writer.setSelection( writer.createSelection( table, 'on' ) );
 		} );
 
-		const firstCellData = tableMap.find( value => value.cell === firstCell );
-		const columnToFocus = firstCellData.column;
 		let cellToFocus;
 
 		for ( let i = removedRowIndexes.last; i >= removedRowIndexes.first; i-- ) {
@@ -83,7 +74,7 @@ export default class RemoveRowCommand extends Command {
 				const removedRowIndex = i;
 				this._removeRow( removedRowIndex, table, writer, tableMap );
 
-				cellToFocus = getCellToFocus( table, removedRowIndex, columnToFocus );
+				cellToFocus = getCellToFocus( table, removedRowIndex, columnIndexToFocus );
 			} );
 		}
 
@@ -144,6 +135,16 @@ export default class RemoveRowCommand extends Command {
 	}
 }
 
+// Returns a helper object with first and last row index contained in given `referenceCells`.
+function getRowIndexes( referenceCells ) {
+	const allIndexesSorted = referenceCells.map( cell => cell.parent.index ).sort();
+
+	return {
+		first: allIndexesSorted[ 0 ],
+		last: allIndexesSorted[ allIndexesSorted.length - 1 ]
+	};
+}
+
 // Returns a cell that should be focused before removing the row, belonging to the same column as the currently focused cell.
 function getCellToFocus( table, removedRowIndex, columnToFocus ) {
 	const row = table.getChild( removedRowIndex );
@@ -160,4 +161,10 @@ function getCellToFocus( table, removedRowIndex, columnToFocus ) {
 		cellToFocus = tableCell;
 		column += parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
 	}
+}
+
+// Returns the index of column that should be focused after rows are removed.
+function getColumnIndexToFocus( tableMap, firstCell ) {
+	const firstCellData = tableMap.find( value => value.cell === firstCell );
+	return firstCellData.column;
 }
