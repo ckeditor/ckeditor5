@@ -94,12 +94,6 @@ describe( 'FontSizeEditing', () => {
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:10px;">o</span>o</p>' );
 				} );
-
-				it( 'should convert a text value as a class', () => {
-					setModelData( doc, '<paragraph>f<$text fontSize="large">o</$text>o</paragraph>' );
-
-					expect( editor.getData() ).to.equal( '<p>f<span class="text-large">o</span>o</p>' );
-				} );
 			} );
 
 			describe( 'data pipeline conversions', () => {

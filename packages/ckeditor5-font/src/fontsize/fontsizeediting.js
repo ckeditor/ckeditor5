@@ -100,15 +100,11 @@ export default class FontSizeEditing extends Plugin {
 					return;
 				}
 
-				if ( String( attributeValue ).match( /^\d+/ ) ) {
-					if ( typeof attributeValue == 'number' ) {
-						attributeValue = `${ attributeValue }px`;
-					}
-
-					return writer.createAttributeElement( 'span', { style: 'font-size:' + attributeValue }, { priority: 7 } );
+				if ( typeof attributeValue == 'number' ) {
+					attributeValue = `${ attributeValue }px`;
 				}
 
-				return writer.createAttributeElement( 'span', { class: 'text-' + attributeValue }, { priority: 7 } );
+				return writer.createAttributeElement( 'span', { style: 'font-size:' + attributeValue }, { priority: 7 } );
 			}
 		} );
 
