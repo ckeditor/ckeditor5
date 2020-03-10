@@ -29,7 +29,7 @@ export default class FontCommand extends Command {
 		 *
 		 * @observable
 		 * @readonly
-		 * @member {Boolean} module:font/fontcommand~FontCommand#value
+		 * @member {String} module:font/fontcommand~FontCommand#value
 		 */
 
 		/**
