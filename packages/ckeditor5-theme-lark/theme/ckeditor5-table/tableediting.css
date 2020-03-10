@@ -3,23 +3,27 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
-	--ck-color-table-focused-cell-background: hsl(208, 90%, 98%);
-}
-
 .ck-widget.table {
-	& td,
-	& th {
-		&.ck-editor__nested-editable.ck-editor__nested-editable_focused {
-			/* A very slight background to highlight the focused cell */
-			background: var(--ck-color-table-focused-cell-background);
+	& .ck-editor__nested-editable.ck-editor__nested-editable_focused,
+	& .ck-editor__nested-editable:focus {
+		background: inherit;
 
-			/* Fixes the problem where surrounding cells cover the focused cell's border.
-			It does not fix the problem in all places but the UX is improved.
-			See https://github.com/ckeditor/ckeditor5-table/issues/29. */
-			border-style: none;
-			outline: 1px solid var(--ck-color-focus-border);
-			outline-offset: -1px; /* progressive enhancement - no IE support */
+		/* Fixes the problem where surrounding cells cover the focused cell's border.
+		It does not fix the problem in all places but the UX is improved.
+		See https://github.com/ckeditor/ckeditor5-table/issues/29. */
+		border-style: none;
+		outline: 1px solid var(--ck-color-focus-border);
+		outline-offset: -1px; /* progressive enhancement - no IE support */
+	}
+
+	& th {
+		&.ck-editor__nested-editable.ck-editor__nested-editable_focused,
+		&.ck-editor__nested-editable:focus {
+			/* We can't just set `inherit` here as well, because we use `hsla` as an "overlay"
+			to darken the background based on the set table background.
+			This is also a workaround for overriding the styling that comes from the `widget`.
+			See related issue https://github.com/ckeditor/ckeditor5/issues/6228. */
+			background: var(--ck-color-table-focused-th-background);
 		}
 	}
 }
