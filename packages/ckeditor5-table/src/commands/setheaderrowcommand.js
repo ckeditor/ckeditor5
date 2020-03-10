@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { createEmptyTableCell, findAncestor, updateNumericAttribute } from './utils';
+import { createEmptyTableCell, updateNumericAttribute } from './utils';
 import { getTableCellsInSelection } from '../tableselection/utils';
 import TableWalker from '../tablewalker';
 
@@ -63,22 +63,23 @@ export default class SetHeaderRowCommand extends Command {
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
-		const doc = model.document;
-		const selection = doc.selection;
 
-		const position = selection.getFirstPosition();
-		const tableCell = findAncestor( 'tableCell', position );
-		const tableRow = tableCell.parent;
-		const table = tableRow.parent;
+		const selectedCells = getTableCellsInSelection( model.document.selection, true );
+		const firstCell = selectedCells[ 0 ];
+		const lastCell = selectedCells[ selectedCells.length - 1 ];
+		const table = firstCell.parent.parent;
 
 		const currentHeadingRows = table.getAttribute( 'headingRows' ) || 0;
-		const selectionRow = tableRow.index;
+
+		const [ selectedRowMin, selectedRowMax ] =
+			// Returned cells might not necessary be in order, so make sure to sort it.
+			[ firstCell.parent.index, lastCell.parent.index ].sort();
 
 		if ( options.forceValue === this.value ) {
 			return;
 		}
 
-		const headingRowsToSet = this.value ? selectionRow : selectionRow + 1;
+		const headingRowsToSet = this.value ? selectedRowMin : selectedRowMax + 1;
 
 		model.change( writer => {
 			if ( headingRowsToSet ) {
