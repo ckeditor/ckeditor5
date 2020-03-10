@@ -10,7 +10,8 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import TableWalker from '../tablewalker';
-import { findAncestor, updateNumericAttribute } from './utils';
+import { updateNumericAttribute } from './utils';
+import { getSelectionAffectedTableCells } from '../utils';
 
 /**
  * The remove row command.
@@ -28,7 +29,8 @@ export default class RemoveRowCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const firstCell = this._getReferenceCells().next().value;
+		const selectedCells = getSelectionAffectedTableCells( this.editor.model.document.selection );
+		const firstCell = selectedCells[ 0 ];
 
 		if ( firstCell ) {
 			const table = firstCell.parent.parent;
@@ -36,7 +38,6 @@ export default class RemoveRowCommand extends Command {
 			const tableRowCount = table && tableUtils.getRows( table );
 
 			const tableMap = [ ...new TableWalker( table ) ];
-			const selectedCells = Array.from( this._getReferenceCells() );
 			const rowIndexes = tableMap.filter( entry => selectedCells.includes( entry.cell ) ).map( el => el.row );
 
 			this.isEnabled = Math.max.apply( null, rowIndexes ) - Math.min.apply( null, rowIndexes ) < ( tableRowCount - 1 );
@@ -49,7 +50,7 @@ export default class RemoveRowCommand extends Command {
 	 * @inheritDoc
 	 */
 	execute() {
-		const referenceCells = Array.from( this._getReferenceCells() );
+		const referenceCells = getSelectionAffectedTableCells( this.editor.model.document.selection );
 		const removedRowIndexes = {
 			first: referenceCells[ 0 ].parent.index,
 			last: referenceCells[ referenceCells.length - 1 ].parent.index
@@ -139,30 +140,6 @@ export default class RemoveRowCommand extends Command {
 		}
 
 		writer.remove( tableRow );
-	}
-
-	/**
-	 * Returns cells that are selected and are a reference to removing rows.
-	 *
-	 * @private
-	 * @returns {Iterable.<module:engine/model/element~Element>} Generates `tableCell` elements.
-	 */
-	* _getReferenceCells() {
-		const plugins = this.editor.plugins;
-		if ( plugins.has( 'TableSelection' ) ) {
-			const selectedCells = plugins.get( 'TableSelection' ).getSelectedTableCells();
-
-			if ( selectedCells ) {
-				for ( const cell of selectedCells ) {
-					yield cell;
-				}
-
-				return;
-			}
-		}
-
-		const selection = this.editor.model.document.selection;
-		yield findAncestor( 'tableCell', selection.getFirstPosition() );
 	}
 }
 
