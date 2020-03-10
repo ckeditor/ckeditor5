@@ -51,32 +51,21 @@ export default class RemoveColumnCommand extends Command {
 	 * @inheritDoc
 	 */
 	execute() {
-		const model = this.editor.model;
-
-		const referenceCells = getSelectionAffectedTableCells( this.editor.model.document.selection );
-		let firstCell = referenceCells[ 0 ];
-		let lastCell = referenceCells[ referenceCells.length - 1 ];
-		const tableRow = firstCell.parent;
-		const table = tableRow.parent;
-
-		if ( firstCell.isAfter( lastCell ) ) {
-			firstCell = lastCell;
-			lastCell = referenceCells[ 0 ];
-		}
+		const [ firstCell, lastCell ] = getBoundaryCells( this.editor.model.document.selection );
+		const table = firstCell.parent.parent;
 
 		// Cache the table before removing or updating colspans.
 		const tableMap = [ ...new TableWalker( table ) ];
 
-		// Get column index of removed column.
-		const firstCellData = tableMap.find( value => value.cell === firstCell );
-		const cellsToFocus = getCellToFocus( firstCell, lastCell );
-
+		// Store column indexes of removed columns.
 		const removedColumnIndexes = {
-			first: firstCellData.column,
+			first: tableMap.find( value => value.cell === firstCell ).column,
 			last: tableMap.find( value => value.cell === lastCell ).column
 		};
 
-		model.change( writer => {
+		const cellsToFocus = getCellToFocus( firstCell, lastCell );
+
+		this.editor.model.change( writer => {
 			// A temporary workaround to avoid the "model-selection-range-intersects" error.
 			writer.setSelection( writer.createRangeOn( table ) );
 
@@ -127,4 +116,15 @@ function getCellToFocus( firstCell, lastCell ) {
 
 	// return lastCell.nextSibling ? lastCell.nextSibling : lastCell.previousSibling;
 	return [ firstCell.previousSibling, lastCell.nextSibling ];
+}
+
+// Returns helper object returning the first and the last cell contained in given selection, based on DOM order.
+function getBoundaryCells( selection ) {
+	const referenceCells = getSelectionAffectedTableCells( selection );
+	const firstCell = referenceCells[ 0 ];
+	const lastCell = referenceCells.pop();
+
+	const returnValue = [ firstCell, lastCell ];
+
+	return firstCell.isBefore( lastCell ) ? returnValue : returnValue.reverse();
 }
