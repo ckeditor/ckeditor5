@@ -21,6 +21,7 @@
     "@ckeditor/ckeditor5-clipboard": "^17.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^17.0.0",
     "@ckeditor/ckeditor5-engine": "^17.0.0",
+    "@ckeditor/ckeditor5-horizontal-line": "^17.0.0",
     "@ckeditor/ckeditor5-image": "^17.0.0",
     "@ckeditor/ckeditor5-indent": "^17.0.0",
     "@ckeditor/ckeditor5-list": "^17.0.0",

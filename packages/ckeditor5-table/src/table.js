@@ -26,7 +26,7 @@ import '../theme/table.css';
  *
  * * {@link module:table/tableediting~TableEditing editing feature},
  * * {@link module:table/tableselection~TableSelection selection feature},
- * * {@link module:table/tableclipboar~TableClipboard clipboard feature},
+ * * {@link module:table/tableclipboard~TableClipboard clipboard feature},
  * * {@link module:table/tableui~TableUI UI feature}.
  *
  * @extends module:core/plugin~Plugin

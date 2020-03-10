@@ -8,18 +8,21 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
+import TableProperties from '../../src/tableproperties';
+import TableCellProperties from '../../src/tablecellproperties';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet ],
+		plugins: [ ArticlePluginSet, TableProperties, TableCellProperties ],
 		language: {
-			ui: 'en',
-			content: 'ar'
+			ui: 'ar',
+			content: 'en'
 		},
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
 		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
 			tableToolbar: [ 'bold', 'italic' ]
 		}
 	} )
