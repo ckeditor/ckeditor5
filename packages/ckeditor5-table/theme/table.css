@@ -31,7 +31,7 @@
 
 		& th {
 			font-weight: bold;
-			background: hsl(0, 0%, 98%);
+			background: hsla(0, 0%, 0%, 10%);
 		}
 	}
 }
