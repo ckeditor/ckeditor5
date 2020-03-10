@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import { updateNumericAttribute } from './utils';
-import { getTableCellsInSelection } from '../tableselection/utils';
+import { getSelectionAffectedTableCells } from '../utils';
 
 /**
  * The header column command.
@@ -33,7 +33,7 @@ export default class SetHeaderColumnCommand extends Command {
 	 */
 	refresh() {
 		const model = this.editor.model;
-		const selectedCells = getTableCellsInSelection( model.document.selection, true );
+		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
 		const isInTable = selectedCells.length > 0;
 
 		this.isEnabled = isInTable;
@@ -65,7 +65,7 @@ export default class SetHeaderColumnCommand extends Command {
 		const model = this.editor.model;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
-		const selectedCells = getTableCellsInSelection( model.document.selection, true );
+		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
 		const firstCell = selectedCells[ 0 ];
 		const lastCell = selectedCells[ selectedCells.length - 1 ];
 		const tableRow = firstCell.parent;

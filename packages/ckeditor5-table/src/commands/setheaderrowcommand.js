@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import { createEmptyTableCell, updateNumericAttribute } from './utils';
-import { getTableCellsInSelection } from '../tableselection/utils';
+import { getSelectionAffectedTableCells } from '../utils';
 import TableWalker from '../tablewalker';
 
 /**
@@ -33,7 +33,7 @@ export default class SetHeaderRowCommand extends Command {
 	 */
 	refresh() {
 		const model = this.editor.model;
-		const selectedCells = getTableCellsInSelection( model.document.selection, true );
+		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
 		const isInTable = selectedCells.length > 0;
 
 		this.isEnabled = isInTable;
@@ -64,7 +64,7 @@ export default class SetHeaderRowCommand extends Command {
 	execute( options = {} ) {
 		const model = this.editor.model;
 
-		const selectedCells = getTableCellsInSelection( model.document.selection, true );
+		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
 		const firstCell = selectedCells[ 0 ];
 		const lastCell = selectedCells[ selectedCells.length - 1 ];
 		const table = firstCell.parent.parent;
