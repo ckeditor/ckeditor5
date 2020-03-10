@@ -92,8 +92,6 @@ export default class TextTransformation extends Plugin {
 				include: DEFAULT_TRANSFORMATIONS
 			}
 		} );
-
-		this.editor = editor;
 	}
 
 	/**
@@ -112,7 +110,7 @@ export default class TextTransformation extends Plugin {
 	}
 
 	/**
-	 * Create new set of TextWatchers listening to the editor for typing and selection events.
+	 * Create new TextWatcher listening to the editor for typing and selection events.
 	 *
 	 * @private
 	 */
@@ -120,52 +118,59 @@ export default class TextTransformation extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const input = editor.plugins.get( 'Input' );
+		const normalizedTransformations = normalizeTransformations( editor.config.get( 'typing.transformations' ) );
 
-		const configuredTransformations = getConfiguredTransformations( editor.config.get( 'typing.transformations' ) );
+		const testCallback = text => {
+			for ( const normalizedTransformation of normalizedTransformations ) {
+				const from = normalizedTransformation.from;
+				const match = from.test( text );
 
-		for ( const transformation of configuredTransformations ) {
-			const from = normalizeFrom( transformation.from );
-			const to = normalizeTo( transformation.to );
-
-			const watcher = new TextWatcher( editor.model, text => from.test( text ) );
-
-			const watcherCallback = ( evt, data ) => {
-				if ( !input.isInput( data.batch ) ) {
-					return;
+				if ( match ) {
+					return { normalizedTransformation };
 				}
+			}
+		};
 
-				const matches = from.exec( data.text );
-				const replaces = to( matches.slice( 1 ) );
+		const watcherCallback = ( evt, data ) => {
+			if ( !input.isInput( data.batch ) ) {
+				return;
+			}
 
-				const matchedRange = data.range;
+			const { from, to } = data.normalizedTransformation;
 
-				let changeIndex = matches.index;
+			const matches = from.exec( data.text );
+			const replaces = to( matches.slice( 1 ) );
 
-				model.enqueueChange( writer => {
-					for ( let i = 1; i < matches.length; i++ ) {
-						const match = matches[ i ];
-						const replaceWith = replaces[ i - 1 ];
+			const matchedRange = data.range;
 
-						if ( replaceWith == null ) {
-							changeIndex += match.length;
+			let changeIndex = matches.index;
 
-							continue;
-						}
+			model.enqueueChange( writer => {
+				for ( let i = 1; i < matches.length; i++ ) {
+					const match = matches[ i ];
+					const replaceWith = replaces[ i - 1 ];
 
-						const replacePosition = matchedRange.start.getShiftedBy( changeIndex );
-						const replaceRange = model.createRange( replacePosition, replacePosition.getShiftedBy( match.length ) );
-						const attributes = getTextAttributesAfterPosition( replacePosition );
+					if ( replaceWith == null ) {
+						changeIndex += match.length;
 
-						model.insertContent( writer.createText( replaceWith, attributes ), replaceRange );
-
-						changeIndex += replaceWith.length;
+						continue;
 					}
-				} );
-			};
 
-			watcher.on( 'matched:data', watcherCallback );
-			watcher.bind( 'isEnabled' ).to( this );
-		}
+					const replacePosition = matchedRange.start.getShiftedBy( changeIndex );
+					const replaceRange = model.createRange( replacePosition, replacePosition.getShiftedBy( match.length ) );
+					const attributes = getTextAttributesAfterPosition( replacePosition );
+
+					model.insertContent( writer.createText( replaceWith, attributes ), replaceRange );
+
+					changeIndex += replaceWith.length;
+				}
+			} );
+		};
+
+		const watcher = new TextWatcher( editor.model, testCallback );
+
+		watcher.on( 'matched:data', watcherCallback );
+		watcher.bind( 'isEnabled' ).to( this );
 	}
 }
 
@@ -223,8 +228,8 @@ function buildQuotesRegExp( quoteCharacter ) {
 // Reads text transformation config and returns normalized array of transformations objects.
 //
 // @param {module:typing/texttransformation~TextTransformationDescription} config
-// @returns {Array.<module:typing/texttransformation~TextTransformationDescription>}
-function getConfiguredTransformations( config ) {
+// @returns {Array.<{from:String,to:Function}>}
+function normalizeTransformations( config ) {
 	const extra = config.extra || [];
 	const remove = config.remove || [];
 	const isNotRemoved = transformation => !remove.includes( transformation );
@@ -233,7 +238,11 @@ function getConfiguredTransformations( config ) {
 
 	return expandGroupsAndRemoveDuplicates( configured )
 		.filter( isNotRemoved ) // Filter out 'remove' transformations as they might be set in group
-		.map( transformation => TRANSFORMATIONS[ transformation ] || transformation );
+		.map( transformation => TRANSFORMATIONS[ transformation ] || transformation )
+		.map( transformation => ( {
+			from: normalizeFrom( transformation.from ),
+			to: normalizeTo( transformation.to )
+		} ) );
 }
 
 // Reads definitions and expands named groups if needed to transformation names.
