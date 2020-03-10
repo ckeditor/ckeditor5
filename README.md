@@ -449,7 +449,7 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-code-block.svg" alt="@ckeditor/ckeditor5-code-block npm package badge"></a>
 	</td>
 	<td>
-		The clipboard integration.
+		The code block feature.
 	</td>
 </tr>
 
