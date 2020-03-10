@@ -69,7 +69,11 @@ export function getTableWidgetAncestor( selection ) {
 }
 
 /**
- * Returns all model cells within the provided model selection.
+ * Returns all model table cells that are fully selected (from the outside)
+ * within the provided model selection's ranges.
+ *
+ * To obtain the cells selected from the inside, use
+ * {@link module:table/utils~getTableCellsContainingSelection}.
  *
  * @param {module:engine/model/selection~Selection} selection
  * @returns {Array.<module:engine/model/element~Element>}
@@ -86,4 +90,49 @@ export function getSelectedTableCells( selection ) {
 	}
 
 	return cells;
+}
+
+/**
+ * Returns all model table cells the provided model selection's ranges
+ * {@link module:engine/model/range~Range#start} inside.
+ *
+ * To obtain the cells selected from the outside, use
+ * {@link module:table/utils~getSelectedTableCells}.
+ *
+ * @param {module:engine/model/selection~Selection} selection
+ * @returns {Array.<module:engine/model/element~Element>}
+ */
+export function getTableCellsContainingSelection( selection ) {
+	const cells = [];
+
+	for ( const range of selection.getRanges() ) {
+		const cellWithSelection = findAncestor( 'tableCell', range.start );
+
+		if ( cellWithSelection ) {
+			cells.push( cellWithSelection );
+		}
+	}
+
+	return cells;
+}
+
+/**
+ * Returns all model table cells that are either completely selected
+ * by selection ranges or host selection range
+ * {@link module:engine/model/range~Range#start start positions} inside them.
+ *
+ * Combines {@link module:table/utils~getTableCellsContainingSelection} and
+ * {@link module:table/utils~getSelectedTableCells}.
+ *
+ * @param {module:engine/model/selection~Selection} selection
+ * @returns {Array.<module:engine/model/element~Element>}
+ */
+export function getSelectionAffectedTableCells( selection ) {
+	const selectedCells = getSelectedTableCells( selection );
+
+	if ( selectedCells.length ) {
+		return selectedCells;
+	}
+
+	return getTableCellsContainingSelection( selection );
 }

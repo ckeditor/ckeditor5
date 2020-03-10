@@ -8,9 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-
-import { getSelectedTableCells } from '../../utils';
-import { findAncestor } from '../../commands/utils';
+import { getSelectionAffectedTableCells } from '../../utils';
 
 /**
  * The table cell attribute command.
@@ -37,7 +35,7 @@ export default class TableCellPropertyCommand extends Command {
 	 */
 	refresh() {
 		const editor = this.editor;
-		const selectedTableCells = getSelectedOrSelectionContainingTableCells( editor.model.document.selection );
+		const selectedTableCells = getSelectionAffectedTableCells( editor.model.document.selection );
 
 		this.isEnabled = !!selectedTableCells.length;
 		this.value = this._getSingleValue( selectedTableCells );
@@ -56,7 +54,7 @@ export default class TableCellPropertyCommand extends Command {
 	execute( options = {} ) {
 		const { value, batch } = options;
 		const model = this.editor.model;
-		const tableCells = getSelectedOrSelectionContainingTableCells( model.document.selection );
+		const tableCells = getSelectionAffectedTableCells( model.document.selection );
 		const valueToSet = this._getValueToSet( value );
 
 		model.enqueueChange( batch || 'default', writer => {
@@ -109,25 +107,4 @@ export default class TableCellPropertyCommand extends Command {
 
 		return everyCellHasAttribute ? firstCellValue : undefined;
 	}
-}
-
-// For the given selection, it returns an array made of:
-//
-// * table cells selected entirely,
-// * a table cell the selection is anchored to (if no cells are selected entirely).
-//
-// @param {module:engine/model/selection~Selection} selection
-// @returns {Array.<module:engine/model/element~Element>}
-function getSelectedOrSelectionContainingTableCells( selection ) {
-	const tableCells = getSelectedTableCells( selection );
-
-	if ( !tableCells.length ) {
-		const cellWithSelection = findAncestor( 'tableCell', selection.getFirstPosition() );
-
-		if ( cellWithSelection ) {
-			tableCells.push( cellWithSelection );
-		}
-	}
-
-	return tableCells;
 }
