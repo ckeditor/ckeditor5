@@ -184,6 +184,29 @@ describe( 'DeleteCommand', () => {
 			expect( deleteOpts ).to.have.property( 'doNotResetEntireContent', false );
 		} );
 
+		it( 'should pass the "direction" option to Model#deleteContent method', () => {
+			const spy = sinon.spy();
+			const forwardCommand = new DeleteCommand( editor, 'forward' );
+			editor.commands.add( 'forwardDelete', forwardCommand );
+
+			editor.model.on( 'deleteContent', spy );
+			setData( model, '<paragraph>foo[]bar</paragraph>' );
+
+			editor.execute( 'delete' );
+
+			expect( spy.callCount ).to.equal( 1 );
+
+			let deleteOpts = spy.args[ 0 ][ 1 ][ 1 ];
+			expect( deleteOpts ).to.have.property( 'direction', 'backward' );
+
+			editor.execute( 'forwardDelete' );
+
+			expect( spy.callCount ).to.equal( 2 );
+
+			deleteOpts = spy.args[ 1 ][ 1 ][ 1 ];
+			expect( deleteOpts ).to.have.property( 'direction', 'forward' );
+		} );
+
 		it( 'leaves an empty paragraph after removing the whole content from editor', () => {
 			setData( model, '<heading1>[Header 1</heading1><paragraph>Some text.]</paragraph>' );
 

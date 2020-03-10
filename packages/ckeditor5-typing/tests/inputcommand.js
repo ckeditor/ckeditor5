@@ -29,8 +29,8 @@ describe( 'InputCommand', () => {
 				buffer = inputCommand.buffer;
 				buffer.size = 0;
 
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
-				model.schema.register( 'h1', { inheritAllFrom: '$block' } );
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
 			} );
 	} );
 
@@ -63,22 +63,22 @@ describe( 'InputCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'uses enqueueChange', () => {
-			setData( model, '<p>foo[]bar</p>' );
+			setData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			model.enqueueChange( () => {
 				editor.execute( 'input', { text: 'x' } );
 
 				// We expect that command is executed in enqueue changes block. Since we are already in
 				// an enqueued block, the command execution will be postponed. Hence, no changes.
-				expect( getData( model ) ).to.be.equal( '<p>foo[]bar</p>' );
+				expect( getData( model ) ).to.be.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
 
 			// After all enqueued changes are done, the command execution is reflected.
-			expect( getData( model ) ).to.be.equal( '<p>foox[]bar</p>' );
+			expect( getData( model ) ).to.be.equal( '<paragraph>foox[]bar</paragraph>' );
 		} );
 
 		it( 'should lock and unlock buffer', () => {
-			setData( model, '<p>foo[]bar</p>' );
+			setData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			const spyLock = testUtils.sinon.spy( buffer, 'lock' );
 			const spyUnlock = testUtils.sinon.spy( buffer, 'unlock' );
@@ -92,102 +92,102 @@ describe( 'InputCommand', () => {
 		} );
 
 		it( 'inserts text for collapsed range', () => {
-			setData( model, '<p>foo[]</p>' );
+			setData( model, '<paragraph>foo[]</paragraph>' );
 
 			editor.execute( 'input', {
 				text: 'bar',
 				range: doc.selection.getFirstRange()
 			} );
 
-			expect( getData( model, { selection: true } ) ).to.be.equal( '<p>foobar[]</p>' );
+			expect( getData( model ) ).to.be.equal( '<paragraph>foobar[]</paragraph>' );
 			expect( buffer.size ).to.be.equal( 3 );
 		} );
 
 		it( 'replaces text for range within single element on the beginning', () => {
-			setData( model, '<p>[fooba]r</p>' );
+			setData( model, '<paragraph>[fooba]r</paragraph>' );
 
 			editor.execute( 'input', {
 				text: 'rab',
 				range: doc.selection.getFirstRange()
 			} );
 
-			expect( getData( model, { selection: true } ) ).to.be.equal( '<p>rab[]r</p>' );
+			expect( getData( model ) ).to.be.equal( '<paragraph>rab[]r</paragraph>' );
 			expect( buffer.size ).to.be.equal( 3 );
 		} );
 
 		it( 'replaces text for range within single element in the middle', () => {
-			setData( model, '<p>fo[oba]r</p>' );
+			setData( model, '<paragraph>fo[oba]r</paragraph>' );
 
 			editor.execute( 'input', {
 				text: 'bazz',
 				range: doc.selection.getFirstRange()
 			} );
 
-			expect( getData( model, { selection: true } ) ).to.be.equal( '<p>fobazz[]r</p>' );
+			expect( getData( model ) ).to.be.equal( '<paragraph>fobazz[]r</paragraph>' );
 			expect( buffer.size ).to.be.equal( 4 );
 		} );
 
 		it( 'replaces text for range within single element on the end', () => {
-			setData( model, '<p>fooba[r]</p>' );
+			setData( model, '<paragraph>fooba[r]</paragraph>' );
 
 			editor.execute( 'input', {
 				text: 'zzz',
 				range: doc.selection.getFirstRange()
 			} );
 
-			expect( getData( model, { selection: true } ) ).to.be.equal( '<p>foobazzz[]</p>' );
+			expect( getData( model ) ).to.be.equal( '<paragraph>foobazzz[]</paragraph>' );
 			expect( buffer.size ).to.be.equal( 3 );
 		} );
 
 		it( 'replaces text for range within multiple elements', () => {
-			setData( model, '<h1>F[OO</h1><p>b]ar</p>' );
+			setData( model, '<heading1>F[OO</heading1><paragraph>b]ar</paragraph>' );
 
 			editor.execute( 'input', {
 				text: 'unny c',
 				range: doc.selection.getFirstRange()
 			} );
 
-			expect( getData( model, { selection: true } ) ).to.be.equal( '<h1>Funny c[]ar</h1>' );
+			expect( getData( model ) ).to.be.equal( '<heading1>Funny c[]ar</heading1>' );
 			expect( buffer.size ).to.be.equal( 6 );
 		} );
 
 		it( 'uses current selection when range is not given', () => {
-			setData( model, '<p>foob[ar]</p>' );
+			setData( model, '<paragraph>foob[ar]</paragraph>' );
 
 			editor.execute( 'input', {
 				text: 'az'
 			} );
 
-			expect( getData( model, { selection: true } ) ).to.be.equal( '<p>foobaz[]</p>' );
+			expect( getData( model ) ).to.be.equal( '<paragraph>foobaz[]</paragraph>' );
 			expect( buffer.size ).to.be.equal( 2 );
 		} );
 
 		it( 'only removes content when empty text given', () => {
-			setData( model, '<p>[fo]obar</p>' );
+			setData( model, '<paragraph>[fo]obar</paragraph>' );
 
 			editor.execute( 'input', {
 				text: '',
 				range: doc.selection.getFirstRange()
 			} );
 
-			expect( getData( model, { selection: true } ) ).to.be.equal( '<p>[]obar</p>' );
+			expect( getData( model ) ).to.be.equal( '<paragraph>[]obar</paragraph>' );
 			expect( buffer.size ).to.be.equal( 0 );
 		} );
 
 		it( 'should set selection according to passed resultRange (collapsed)', () => {
-			setData( model, '<p>[foo]bar</p>' );
+			setData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			editor.execute( 'input', {
 				text: 'new',
 				resultRange: editor.model.createRange( editor.model.createPositionFromPath( doc.getRoot(), [ 0, 5 ] ) )
 			} );
 
-			expect( getData( model, { selection: true } ) ).to.be.equal( '<p>newba[]r</p>' );
+			expect( getData( model ) ).to.be.equal( '<paragraph>newba[]r</paragraph>' );
 			expect( buffer.size ).to.be.equal( 3 );
 		} );
 
 		it( 'should set selection according to passed resultRange (non-collapsed)', () => {
-			setData( model, '<p>[foo]bar</p>' );
+			setData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			editor.execute( 'input', {
 				text: 'new',
@@ -197,30 +197,30 @@ describe( 'InputCommand', () => {
 				)
 			} );
 
-			expect( getData( model, { selection: true } ) ).to.be.equal( '<p>new[bar]</p>' );
+			expect( getData( model ) ).to.be.equal( '<paragraph>new[bar]</paragraph>' );
 			expect( buffer.size ).to.be.equal( 3 );
 		} );
 
 		it( 'only removes content when no text given (with default non-collapsed range)', () => {
-			setData( model, '<p>[fo]obar</p>' );
+			setData( model, '<paragraph>[fo]obar</paragraph>' );
 
 			editor.execute( 'input' );
 
-			expect( getData( model, { selection: true } ) ).to.be.equal( '<p>[]obar</p>' );
+			expect( getData( model ) ).to.be.equal( '<paragraph>[]obar</paragraph>' );
 			expect( buffer.size ).to.be.equal( 0 );
 		} );
 
 		it( 'does not change selection and content when no text given (with default collapsed range)', () => {
-			setData( model, '<p>fo[]obar</p>' );
+			setData( model, '<paragraph>fo[]obar</paragraph>' );
 
 			editor.execute( 'input' );
 
-			expect( getData( model, { selection: true } ) ).to.be.equal( '<p>fo[]obar</p>' );
+			expect( getData( model ) ).to.be.equal( '<paragraph>fo[]obar</paragraph>' );
 			expect( buffer.size ).to.be.equal( 0 );
 		} );
 
 		it( 'does not create insert delta when no text given', () => {
-			setData( model, '<p>foo[]bar</p>' );
+			setData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			const version = doc.version;
 
@@ -228,9 +228,62 @@ describe( 'InputCommand', () => {
 
 			expect( doc.version ).to.equal( version );
 		} );
+
+		it( 'handles multi-range selection', () => {
+			model.schema.register( 'object', {
+				allowWhere: '$block',
+				allowContentOf: '$block',
+				isObject: true
+			} );
+
+			setData(
+				model,
+				'<paragraph>x</paragraph>' +
+				'[<object>y</object>]' +
+				'<paragraph>y</paragraph>' +
+				'[<object>y</object>]' +
+				'<paragraph>z</paragraph>'
+			);
+
+			// deleteContent() does not support multi-range selections yet, so we need to mock it here.
+			// See https://github.com/ckeditor/ckeditor5/issues/6328.
+			model.on( 'deleteContent', ( evt, args ) => {
+				const [ selection ] = args;
+
+				if ( selection.rangeCount != 2 ) {
+					return;
+				}
+
+				evt.stop();
+
+				model.change( writer => {
+					let rangeSelection;
+
+					for ( const range of selection.getRanges() ) {
+						rangeSelection = writer.createSelection( range );
+
+						model.deleteContent( rangeSelection );
+					}
+
+					writer.setSelection( rangeSelection );
+				} );
+			}, { priority: 'high' } );
+
+			editor.execute( 'input', {
+				text: 'foo'
+			} );
+
+			expect( getData( model ) ).to.be.equal(
+				'<paragraph>x</paragraph>' +
+				'<paragraph></paragraph>' +
+				'<paragraph>y</paragraph>' +
+				'<paragraph>foo[]</paragraph>' +
+				'<paragraph>z</paragraph>'
+			);
+		} );
 	} );
 
-	describe( 'destroy', () => {
+	describe( 'destroy()', () => {
 		it( 'should destroy change buffer', () => {
 			const command = editor.commands.get( 'input' );
 			const destroy = command._buffer.destroy = testUtils.sinon.spy();
