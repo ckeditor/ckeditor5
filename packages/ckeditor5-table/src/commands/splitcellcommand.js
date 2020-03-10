@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { findAncestor } from './utils';
+import { getTableCellsContainingSelection } from '../utils';
 
 /**
  * The split cell command.
@@ -49,7 +49,7 @@ export default class SplitCellCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 
-		const tableCell = findAncestor( 'tableCell', doc.selection.getFirstPosition() );
+		const tableCell = getTableCellsContainingSelection( doc.selection )[ 0 ];
 
 		this.isEnabled = !!tableCell;
 	}
@@ -62,8 +62,7 @@ export default class SplitCellCommand extends Command {
 		const document = model.document;
 		const selection = document.selection;
 
-		const firstPosition = selection.getFirstPosition();
-		const tableCell = findAncestor( 'tableCell', firstPosition );
+		const tableCell = getTableCellsContainingSelection( selection )[ 0 ];
 
 		const isHorizontally = this.direction === 'horizontally';
 
