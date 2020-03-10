@@ -175,7 +175,7 @@ mix( TextWatcher, ObservableMixin );
  * @param {Object} data Event data.
  * @param {String} data.text The full text before selection to which the regexp was applied.
  * @param {module:engine/model/range~Range} data.range The range representing the position of the `data.text`.
- * @param {Object} data.testResult [Optional] The additional data returned from the {module:typing/textwatcher~TextWatcher#testCallback}.
+ * @param {Object} [data.testResult] The additional data returned from the {module:typing/textwatcher~TextWatcher#testCallback}.
  */
 
 /**
@@ -185,7 +185,7 @@ mix( TextWatcher, ObservableMixin );
  * @param {Object} data Event data.
  * @param {String} data.text The full text before selection.
  * @param {module:engine/model/range~Range} data.range The range representing the position of the `data.text`.
- * @param {Object} data.testResult [Optional] The additional data returned from the {module:typing/textwatcher~TextWatcher#testCallback}.
+ * @param {Object} [data.testResult] The additional data returned from the {module:typing/textwatcher~TextWatcher#testCallback}.
  */
 
 /**
