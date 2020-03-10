@@ -7,6 +7,7 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import SetHeaderRowCommand from '../../src/commands/setheaderrowcommand';
 import { defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
+import TableSelection from '../../src/tableselection';
 import TableUtils from '../../src/tableutils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
@@ -16,7 +17,7 @@ describe( 'SetHeaderRowCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ TableUtils ]
+				plugins: [ TableUtils, TableSelection ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -40,6 +41,36 @@ describe( 'SetHeaderRowCommand', () => {
 
 		it( 'should be true if selection is in table', () => {
 			setData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be true if multiple cells are selected', () => {
+			setData( model, modelTable( [
+				[ '01', '02', '03' ]
+			] ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
+			);
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be true if multiple cells in a header row are selected', () => {
+			setData( model, modelTable( [
+				[ '01', '02', '03' ]
+			], { headingRows: 1 } ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
+			);
+
 			expect( command.isEnabled ).to.be.true;
 		} );
 	} );
@@ -77,6 +108,54 @@ describe( 'SetHeaderRowCommand', () => {
 				[ '01', '02' ],
 				[ '11[]', '12' ]
 			], { headingRows: 1, headingColumns: 1 } ) );
+
+			expect( command.value ).to.be.false;
+		} );
+
+		it( 'should be true if multiple header rows are selected', () => {
+			setData( model, modelTable( [
+				[ '01', '02' ],
+				[ '11', '12' ]
+			], { headingRows: 2 } ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			expect( command.value ).to.be.true;
+		} );
+
+		it( 'should be true if multiple header columns are selected in reversed order', () => {
+			setData( model, modelTable( [
+				[ '01', '02' ],
+				[ '11', '12' ]
+			], { headingRows: 2 } ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
+			);
+
+			expect( command.value ).to.be.true;
+		} );
+
+		it( 'should be false if only part of selected columns are headers', () => {
+			setData( model, modelTable( [
+				[ '01', '02' ],
+				[ '11', '12' ]
+			], { headingRows: 1 } ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+			);
 
 			expect( command.value ).to.be.false;
 		} );
