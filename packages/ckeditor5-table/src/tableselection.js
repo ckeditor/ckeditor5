@@ -160,6 +160,10 @@ export default class TableSelection extends Plugin {
 		let blockSelectionChange = false;
 
 		this.listenTo( editor.editing.view.document, 'mousedown', ( evt, domEventData ) => {
+			if ( !this.isEnabled ) {
+				return;
+			}
+
 			if ( !domEventData.domEvent.shiftKey ) {
 				return;
 			}
@@ -226,6 +230,10 @@ export default class TableSelection extends Plugin {
 		let blockSelectionChange = false;
 
 		this.listenTo( editor.editing.view.document, 'mousedown', ( evt, domEventData ) => {
+			if ( !this.isEnabled ) {
+				return;
+			}
+
 			// Make sure to not conflict with the shift+click listener and any other possible handler.
 			if ( domEventData.domEvent.shiftKey || domEventData.domEvent.ctrlKey || domEventData.domEvent.altKey ) {
 				return;
