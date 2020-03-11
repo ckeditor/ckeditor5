@@ -148,6 +148,10 @@ You can test the custom rules defined above in the demo:
 
 ## Installation
 
+<info-box info>
+	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom rich text editor.
+</info-box>
+
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-typing`](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing) package:
 
 ```bash
@@ -170,9 +174,6 @@ ClassicEditor
 <info-box info>
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
-
-The plugin is installed in all {@link builds/guides/overview#available-builds builds} by dafault.
-
 
 ## Contribute
 
