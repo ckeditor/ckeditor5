@@ -28,7 +28,7 @@ import RemoveRowCommand from './commands/removerowcommand';
 import RemoveColumnCommand from './commands/removecolumncommand';
 import SetHeaderRowCommand from './commands/setheaderrowcommand';
 import SetHeaderColumnCommand from './commands/setheadercolumncommand';
-import { findAncestor } from './commands/utils';
+import { getTableCellsContainingSelection } from './utils';
 import TableUtils from '../src/tableutils';
 
 import injectTableLayoutPostFixer from './converters/table-layout-post-fixer';
@@ -195,10 +195,7 @@ export default class TableEditing extends Plugin {
 
 		return ( domEventData, cancel ) => {
 			const selection = editor.model.document.selection;
-
-			const firstPosition = selection.getFirstPosition();
-
-			const tableCell = findAncestor( 'tableCell', firstPosition );
+			const tableCell = getTableCellsContainingSelection( selection )[ 0 ];
 
 			if ( !tableCell ) {
 				return;
