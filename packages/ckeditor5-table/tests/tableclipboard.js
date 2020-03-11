@@ -360,6 +360,30 @@ describe( 'table clipboard', () => {
 					[ '11', '12' ]
 				] ) );
 			} );
+
+			it( 'should be disabled in a readonly mode', () => {
+				editor.isReadOnly = true;
+
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 2 ] )
+				);
+
+				const data = {
+					dataTransfer: createDataTransfer(),
+					preventDefault: sinon.spy()
+				};
+				viewDocument.fire( 'cut', data );
+
+				editor.isReadOnly = false;
+
+				expect( data.dataTransfer.getData( 'text/html' ) ).to.be.undefined;
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ],
+					[ '20', '21', '22' ]
+				] ) );
+			} );
 		} );
 	} );
 
