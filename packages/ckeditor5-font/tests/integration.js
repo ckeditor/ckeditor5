@@ -9,7 +9,6 @@ import Font from '../src/font';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'Integration test Font', () => {
 	let element, editor, model;
@@ -42,28 +41,57 @@ describe( 'Integration test Font', () => {
 				'</paragraph>'
 			);
 
-			if ( !env.isEdge ) {
-				expect( editor.getData() ).to.equal(
-					'<p>' +
-						'<span ' +
-							'class="text-big" ' +
-							'style="background-color:rgb(10,20,30);color:#123456;font-family:Arial, Helvetica, sans-serif;"' +
-						'>foo' +
-						'</span>' +
-					'</p>'
-				);
-			} else {
-				// Edge sorts attributes of an element.
-				expect( editor.getData() ).to.equal(
-					'<p>' +
-						'<span ' +
-							'class="text-big" ' +
-							'style="font-family:Arial, Helvetica, sans-serif;color:#123456;background-color:rgb(10,20,30);"' +
-						'>foo' +
-						'</span>' +
-					'</p>'
-				);
-			}
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span ' +
+						'class="text-big" ' +
+						'style="background-color:rgb(10,20,30);color:#123456;font-family:Arial, Helvetica, sans-serif;"' +
+					'>foo' +
+					'</span>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should render one span element for all types of font features (disableValueMatching=true)', () => {
+			const element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Font, ArticlePluginSet ],
+					fontFamily: {
+						disableValueMatching: true
+					},
+					fontSize: {
+						disableValueMatching: true
+					}
+				} )
+				.then( editor => {
+					const model = editor.model;
+
+					setModelData( model,
+						'<paragraph>' +
+							'<$text fontColor="#123456" fontBackgroundColor="rgb(10,20,30)" ' +
+								'fontSize="48px" fontFamily="docs-Roboto"' +
+								'>foo' +
+							'</$text>' +
+						'</paragraph>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<p>' +
+							'<span ' +
+								'style="background-color:rgb(10,20,30);color:#123456;font-family:docs-Roboto;font-size:48px;"' +
+								'>foo' +
+							'</span>' +
+						'</p>'
+					);
+
+					return editor.destroy();
+				} )
+				.then( () => {
+					element.remove();
+				} );
 		} );
 	} );
 
@@ -84,6 +112,46 @@ describe( 'Integration test Font', () => {
 					'</a>' +
 				'</p>'
 			);
+		} );
+
+		it( 'should render elements wrapped in proper order (disableValueMatching=true)', () => {
+			const element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Font, ArticlePluginSet ],
+					fontFamily: {
+						disableValueMatching: true
+					},
+					fontSize: {
+						disableValueMatching: true
+					}
+				} )
+				.then( editor => {
+					const model = editor.model;
+
+					setModelData( model,
+						'<paragraph>' +
+							'<$text bold="true" linkHref="foo" fontColor="red" fontSize="18px">foo</$text>' +
+						'</paragraph>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<p>' +
+							'<a href="foo">' +
+								'<span style="color:red;font-size:18px;">' +
+									'<strong>foo</strong>' +
+								'</span>' +
+							'</a>' +
+						'</p>'
+					);
+
+					return editor.destroy();
+				} )
+				.then( () => {
+					element.remove();
+				} );
 		} );
 	} );
 } );
