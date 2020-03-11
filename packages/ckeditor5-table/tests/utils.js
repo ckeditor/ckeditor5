@@ -94,7 +94,7 @@ describe( 'table utils', () => {
 
 			tableSelection._setCellSelection( firstCell, lastCell );
 
-			expect( Array.from( getSelectedTableCells( selection ) ) ).to.have.ordered.members( [
+			expect( getSelectedTableCells( selection ) ).to.have.ordered.members( [
 				firstCell, lastCell
 			] );
 		} );
@@ -105,7 +105,7 @@ describe( 'table utils', () => {
 
 			tableSelection._setCellSelection( firstCell, lastCell );
 
-			expect( Array.from( getSelectedTableCells( selection ) ) ).to.have.ordered.members( [
+			expect( getSelectedTableCells( selection ) ).to.have.ordered.members( [
 				firstCell,
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 				modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
@@ -119,7 +119,7 @@ describe( 'table utils', () => {
 
 			tableSelection._setCellSelection( firstCell, lastCell );
 
-			expect( Array.from( getSelectedTableCells( selection ) ) ).to.have.ordered.members( [
+			expect( getSelectedTableCells( selection ) ).to.have.ordered.members( [
 				firstCell,
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 				lastCell
@@ -132,10 +132,74 @@ describe( 'table utils', () => {
 
 			tableSelection._setCellSelection( firstCell, lastCell );
 
-			expect( Array.from( getSelectedTableCells( selection ) ) ).to.have.ordered.members( [
+			expect( getSelectedTableCells( selection ) ).to.have.ordered.members( [
 				firstCell,
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
 				lastCell
+			] );
+		} );
+
+		it( 'should return cells in source order despite backward selection and forward ranges', () => {
+			const leftCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
+			const rightCell = modelRoot.getNodeByPath( [ 0, 0, 2 ] );
+
+			editor.model.change( writer => {
+				writer.setSelection(
+					[ writer.createRangeOn( leftCell ), writer.createRangeOn( rightCell ) ],
+					{ backward: true }
+				);
+			} );
+
+			expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+				leftCell, rightCell
+			] );
+		} );
+
+		it( 'should return cells in source order despite backward selection and backward ranges', () => {
+			const leftCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
+			const rightCell = modelRoot.getNodeByPath( [ 0, 0, 2 ] );
+
+			editor.model.change( writer => {
+				writer.setSelection(
+					[ writer.createRangeOn( rightCell ), writer.createRangeOn( leftCell ) ],
+					{ backward: true }
+				);
+			} );
+
+			expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+				leftCell, rightCell
+			] );
+		} );
+
+		// Backward direction does not have to equal ranges in the reversed order.
+		it( 'should return cells in source order despite forward selection and backward ranges', () => {
+			const leftCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
+			const rightCell = modelRoot.getNodeByPath( [ 0, 0, 2 ] );
+
+			editor.model.change( writer => {
+				writer.setSelection( [ writer.createRangeOn( rightCell ), writer.createRangeOn( leftCell ) ] );
+			} );
+
+			expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+				leftCell, rightCell
+			] );
+		} );
+
+		it( 'should return cells in source order despite selection with mixed range order', () => {
+			const leftCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
+			const midCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
+			const rightCell = modelRoot.getNodeByPath( [ 0, 0, 2 ] );
+
+			editor.model.change( writer => {
+				writer.setSelection( [
+					writer.createRangeOn( rightCell ),
+					writer.createRangeOn( leftCell ),
+					writer.createRangeOn( midCell )
+				] );
+			} );
+
+			expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+				leftCell, midCell, rightCell
 			] );
 		} );
 	} );

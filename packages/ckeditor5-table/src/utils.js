@@ -81,7 +81,7 @@ export function getTableWidgetAncestor( selection ) {
 export function getSelectedTableCells( selection ) {
 	const cells = [];
 
-	for ( const range of selection.getRanges() ) {
+	for ( const range of sortRanges( selection.getRanges() ) ) {
 		const element = range.getContainedElement();
 
 		if ( element && element.is( 'tableCell' ) ) {
@@ -135,4 +135,20 @@ export function getSelectionAffectedTableCells( selection ) {
 	}
 
 	return getTableCellsContainingSelection( selection );
+}
+
+function sortRanges( rangesIterator ) {
+	return Array.from( rangesIterator ).sort( compareRangeOrder );
+}
+
+function compareRangeOrder( rangeA, rangeB ) {
+	// Since table cell ranges are disjoint, it's enough to check their start positions.
+	const posA = rangeA.start;
+	const posB = rangeB.start;
+
+	if ( posA.isEqual( posB ) ) {
+		return 0;
+	}
+
+	return posA.isBefore( posB ) ? -1 : 1;
 }

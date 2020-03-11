@@ -281,7 +281,7 @@ describe( 'RemoveRowCommand', () => {
 				command.execute();
 
 				assertEqualMarkup( getData( model ), modelTable( [
-					[ '10', '[]11' ]
+					[ '[]10', '11' ]
 				] ) );
 			} );
 		} );
