@@ -7,6 +7,7 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import RemoveRowCommand from '../../src/commands/removerowcommand';
+import TableSelection from '../../src/tableselection';
 import { defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
@@ -14,7 +15,7 @@ describe( 'RemoveRowCommand', () => {
 	let editor, model, command;
 
 	beforeEach( () => {
-		return ModelTestEditor.create()
+		return ModelTestEditor.create( { plugins: [ TableSelection ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
@@ -39,10 +40,43 @@ describe( 'RemoveRowCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
+		it( 'should be true if selection contains multiple cells', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ],
+				[ '20', '21' ]
+			] ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
+			);
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
 		it( 'should be false if selection is inside table with one row only', () => {
 			setData( model, modelTable( [
 				[ '00[]', '01' ]
 			] ) );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false if all the rows are selected', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+			);
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -70,6 +104,188 @@ describe( 'RemoveRowCommand', () => {
 			] ) );
 		} );
 
+		describe( 'with multiple rows selected', () => {
+			it( 'should properly remove middle rows', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00', '01' ],
+					[ '[]30', '31' ]
+				] ) );
+			} );
+
+			it( 'should properly remove middle rows in reversed order', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00', '01' ],
+					[ '[]30', '31' ]
+				] ) );
+			} );
+
+			it( 'should properly remove tailing rows', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 3, 0 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00', '01' ],
+					[ '[]10', '11' ]
+				] ) );
+			} );
+
+			it( 'should properly remove beginning rows', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '[]20', '21' ],
+					[ '30', '31' ]
+				] ) );
+			} );
+
+			it( 'should support removing multiple headings', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				], { headingRows: 3 } ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '[]20', '21' ],
+					[ '30', '31' ]
+				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should support removing mixed heading and cell rows', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 1 } ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '[]20', '21' ]
+				] ) );
+			} );
+		} );
+
+		describe( 'with entire row selected', () => {
+			it( 'should remove a row if all its cells are selected', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00', '01' ],
+					[ '[]20', '21' ]
+				] ) );
+			} );
+
+			it( 'should properly remove row if reversed selection is made', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '10', '[]11' ]
+				] ) );
+			} );
+		} );
+
 		it( 'should remove a given row from a table start', () => {
 			setData( model, modelTable( [
 				[ '[]00', '01' ],
@@ -82,6 +298,34 @@ describe( 'RemoveRowCommand', () => {
 			assertEqualMarkup( getData( model ), modelTable( [
 				[ '[]10', '11' ],
 				[ '20', '21' ]
+			] ) );
+		} );
+
+		it( 'should remove a given row from a table start when selection is at the end', () => {
+			setData( model, modelTable( [
+				[ '00', '01[]' ],
+				[ '10', '11' ],
+				[ '20', '21' ]
+			] ) );
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '10', '[]11' ],
+				[ '20', '21' ]
+			] ) );
+		} );
+
+		it( 'should remove last row', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '[]10', '11' ]
+			] ) );
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '[]00', '01' ]
 			] ) );
 		} );
 
