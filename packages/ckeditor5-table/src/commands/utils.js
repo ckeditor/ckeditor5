@@ -114,3 +114,19 @@ export function addDefaultUnitToNumericValue( value, defaultUnit ) {
 
 	return `${ numericValue }${ defaultUnit }`;
 }
+
+/**
+ * Checks if a table cell belongs to the heading column section.
+ *
+ * @param {module:table/tableutils~TableUtils} tableUtils
+ * @param {module:engine/model/element~Element} tableCell
+ * @param {module:engine/model/element~Element} table
+ * @returns {Boolean}
+ */
+export function isHeadingColumnCell( tableUtils, tableCell ) {
+	const table = tableCell.parent.parent;
+	const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
+	const { column } = tableUtils.getCellLocation( tableCell );
+
+	return !!headingColumns && column < headingColumns;
+}
