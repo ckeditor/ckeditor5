@@ -12,7 +12,10 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
 import MouseEventsObserver from './tableselection/mouseeventsobserver';
-import { getSelectedTableCells } from './utils';
+import {
+	getSelectedTableCells,
+	getTableCellsContainingSelection
+} from './utils';
 import { findAncestor } from './commands/utils';
 import cropTable from './tableselection/croptable';
 
@@ -161,7 +164,7 @@ export default class TableSelection extends Plugin {
 				return;
 			}
 
-			const anchorCell = findAncestor( 'tableCell', editor.model.document.selection.anchor.parent );
+			const anchorCell = getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
 
 			if ( !anchorCell ) {
 				return;
