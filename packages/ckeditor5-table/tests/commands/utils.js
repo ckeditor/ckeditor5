@@ -7,10 +7,7 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import TableUtils from '../../src/tableutils';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
-import {
-	findAncestor,
-	isHeadingColumnCell
-} from '../../src/commands/utils';
+import { findAncestor, isHeadingColumnCell } from '../../src/commands/utils';
 
 describe( 'commands utils', () => {
 	let editor, model, modelRoot, tableUtils;
@@ -53,7 +50,7 @@ describe( 'commands utils', () => {
 	} );
 
 	describe( 'isHeadingColumnCell()', () => {
-		it( 'shoud return "true" for heading column cell', () => {
+		it( 'should return "true" for a heading column cell', () => {
 			setData( model, modelTable( [
 				[ '00', '01', '02', '03' ]
 			], { headingColumns: 2 } ) );
@@ -63,7 +60,7 @@ describe( 'commands utils', () => {
 			expect( isHeadingColumnCell( tableUtils, tableCell ) ).to.be.true;
 		} );
 
-		it( 'shoud return "true" for heading column cell with colspan', () => {
+		it( 'should return "true" for a heading column cell with colspan', () => {
 			setData( model, modelTable( [
 				[ { colspan: 2, contents: '00' }, '01', '02', '03' ]
 			], { headingColumns: 2 } ) );
@@ -73,7 +70,7 @@ describe( 'commands utils', () => {
 			expect( isHeadingColumnCell( tableUtils, tableCell ) ).to.be.true;
 		} );
 
-		it( 'shoud return "false" for regular column cell', () => {
+		it( 'should return "false" for a regular column cell', () => {
 			setData( model, modelTable( [
 				[ '00', '01', '02', '03' ]
 			], { headingColumns: 2 } ) );
@@ -83,7 +80,7 @@ describe( 'commands utils', () => {
 			expect( isHeadingColumnCell( tableUtils, tableCell ) ).to.be.false;
 		} );
 
-		it( 'shoud return "false" for regular column cell with colspan', () => {
+		it( 'should return "false" for a regular column cell with colspan', () => {
 			setData( model, modelTable( [
 				[ '00', { colspan: 2, contents: '01' }, '02', '03' ]
 			], { headingColumns: 1 } ) );
