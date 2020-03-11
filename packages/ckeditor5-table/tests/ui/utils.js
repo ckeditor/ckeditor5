@@ -7,6 +7,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import Table from '../../src/table';
 import TableCellProperties from '../../src/tablecellproperties';
 import { findAncestor } from '../../src/commands/utils';
+import { getTableCellsContainingSelection } from '../../src/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import View from '@ckeditor/ckeditor5-ui/src/view';
@@ -75,7 +76,7 @@ describe( 'UI Utils', () => {
 					'</tableRow></table>' );
 				repositionContextualBalloon( editor, 'cell' );
 
-				const modelCell = findAncestor( 'tableCell', editor.model.document.selection.getFirstPosition() );
+				const modelCell = getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
 				const viewCell = editor.editing.mapper.toViewElement( modelCell );
 
 				sinon.assert.calledWithExactly( spy, {
@@ -160,7 +161,7 @@ describe( 'UI Utils', () => {
 			'</tableRow></table>' );
 
 			const data = getBalloonCellPositionData( editor );
-			const modelCell = findAncestor( 'tableCell', editor.model.document.selection.getFirstPosition() );
+			const modelCell = getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
 			const viewCell = editor.editing.mapper.toViewElement( modelCell );
 
 			expect( data ).to.deep.equal( {

@@ -10,10 +10,10 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
 import {
-	findAncestor,
 	updateNumericAttribute,
 	isHeadingColumnCell
 } from './utils';
+import { getTableCellsContainingSelection } from '../utils';
 
 /**
  * The merge cell command.
@@ -82,7 +82,7 @@ export default class MergeCellCommand extends Command {
 	execute() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableCell = findAncestor( 'tableCell', doc.selection.getFirstPosition() );
+		const tableCell = getTableCellsContainingSelection( doc.selection )[ 0 ];
 		const cellToMerge = this.value;
 		const direction = this.direction;
 
@@ -122,7 +122,7 @@ export default class MergeCellCommand extends Command {
 	_getMergeableCell() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableCell = findAncestor( 'tableCell', doc.selection.getFirstPosition() );
+		const tableCell = getTableCellsContainingSelection( doc.selection )[ 0 ];
 
 		if ( !tableCell ) {
 			return;

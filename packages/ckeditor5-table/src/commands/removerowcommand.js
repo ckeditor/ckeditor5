@@ -10,7 +10,8 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import TableWalker from '../tablewalker';
-import { findAncestor, updateNumericAttribute } from './utils';
+import { updateNumericAttribute } from './utils';
+import { getTableCellsContainingSelection } from '../utils';
 
 /**
  * The remove row command.
@@ -30,8 +31,7 @@ export default class RemoveRowCommand extends Command {
 	refresh() {
 		const model = this.editor.model;
 		const doc = model.document;
-
-		const tableCell = findAncestor( 'tableCell', doc.selection.getFirstPosition() );
+		const tableCell = getTableCellsContainingSelection( doc.selection )[ 0 ];
 
 		this.isEnabled = !!tableCell && tableCell.parent.parent.childCount > 1;
 	}
@@ -42,9 +42,7 @@ export default class RemoveRowCommand extends Command {
 	execute() {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-
-		const firstPosition = selection.getFirstPosition();
-		const tableCell = findAncestor( 'tableCell', firstPosition );
+		const tableCell = getTableCellsContainingSelection( selection )[ 0 ];
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 
