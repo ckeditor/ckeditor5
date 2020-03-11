@@ -120,7 +120,6 @@ export function addDefaultUnitToNumericValue( value, defaultUnit ) {
  *
  * @param {module:table/tableutils~TableUtils} tableUtils
  * @param {module:engine/model/element~Element} tableCell
- * @param {module:engine/model/element~Element} table
  * @returns {Boolean}
  */
 export function isHeadingColumnCell( tableUtils, tableCell ) {
