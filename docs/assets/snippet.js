@@ -7,6 +7,11 @@
 
 // Show clipboard input notification when user tries to paste a content from MS Word or Google Docs.
 setTimeout( () => {
+	// Don't show the warning notification in "Paste from Office" and "Paste from Google Docs" demos.
+	if ( window.preventPasteFromOfficeNotification ) {
+		return;
+	}
+
 	const editables = document.querySelectorAll( '.ck-content' );
 	const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
 	const msWordMatch1 = /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i;
@@ -85,14 +90,9 @@ window.createNotification = function( title, message ) {
 	const main = document.querySelector( '.main__content' );
 	main.appendChild( notification );
 
-	// A handler for closing a notification.
-	const onClose = () => {
+	close.addEventListener( 'click', () => {
 		main.removeChild( notification );
-
-		close.removeEventListener( 'click', onClose );
-	};
-
-	close.addEventListener( 'click', onClose );
+	} );
 
 	return notification;
 };
