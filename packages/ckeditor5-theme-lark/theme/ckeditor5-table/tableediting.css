@@ -4,13 +4,14 @@
  */
 
 :root {
-	--ck-color-table-focused-cell-background: hsl(208, 90%, 98%);
+	--ck-color-table-focused-cell-background: hsla(208, 90%, 80%, .3);
 }
 
 .ck-widget.table {
 	& td,
 	& th {
-		&.ck-editor__nested-editable.ck-editor__nested-editable_focused {
+		&.ck-editor__nested-editable.ck-editor__nested-editable_focused,
+		&.ck-editor__nested-editable:focus {
 			/* A very slight background to highlight the focused cell */
 			background: var(--ck-color-table-focused-cell-background);
 
