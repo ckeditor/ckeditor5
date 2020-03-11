@@ -46,9 +46,9 @@ export default class RemoveRowCommand extends Command {
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 
-		const removedRow = table.getChildIndex( tableRow );
+		const removedRowIndex = table.getChildIndex( tableRow );
 
-		const tableMap = [ ...new TableWalker( table, { endRow: removedRow } ) ];
+		const tableMap = [ ...new TableWalker( table, { endRow: removedRowIndex } ) ];
 
 		const cellData = tableMap.find( value => value.cell === tableCell );
 
@@ -57,7 +57,7 @@ export default class RemoveRowCommand extends Command {
 		const columnToFocus = cellData.column;
 
 		model.change( writer => {
-			if ( headingRows && removedRow <= headingRows ) {
+			if ( headingRows && removedRowIndex <= headingRows ) {
 				updateNumericAttribute( 'headingRows', headingRows - 1, table, writer, 0 );
 			}
 
@@ -65,17 +65,17 @@ export default class RemoveRowCommand extends Command {
 
 			// Get cells from removed row that are spanned over multiple rows.
 			tableMap
-				.filter( ( { row, rowspan } ) => row === removedRow && rowspan > 1 )
+				.filter( ( { row, rowspan } ) => row === removedRowIndex && rowspan > 1 )
 				.forEach( ( { column, cell, rowspan } ) => cellsToMove.set( column, { cell, rowspanToSet: rowspan - 1 } ) );
 
 			// Reduce rowspan on cells that are above removed row and overlaps removed row.
 			tableMap
-				.filter( ( { row, rowspan } ) => row <= removedRow - 1 && row + rowspan > removedRow )
+				.filter( ( { row, rowspan } ) => row <= removedRowIndex - 1 && row + rowspan > removedRowIndex )
 				.forEach( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
 
 			// Move cells to another row.
-			const targetRow = removedRow + 1;
-			const tableWalker = new TableWalker( table, { includeSpanned: true, startRow: targetRow, endRow: targetRow } );
+			const targetRowIndex = removedRowIndex + 1;
+			const tableWalker = new TableWalker( table, { includeSpanned: true, startRow: targetRowIndex, endRow: targetRowIndex } );
 
 			let previousCell;
 
@@ -97,15 +97,17 @@ export default class RemoveRowCommand extends Command {
 
 			writer.remove( tableRow );
 
-			const cellToFocus = getCellToFocus( table, removedRow, columnToFocus );
+			const cellToFocus = getCellToFocus( table, removedRowIndex, columnToFocus );
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
 	}
 }
 
 // Returns a cell that should be focused before removing the row, belonging to the same column as the currently focused cell.
-function getCellToFocus( table, removedRow, columnToFocus ) {
-	const row = table.getChild( removedRow );
+// * If the row was not the last one, the cell to focus will be in the row that followed it (before removal).
+// * If the row was the last one, the cell to focus will be in the row that preceded it (before removal).
+function getCellToFocus( table, removedRowIndex, columnToFocus ) {
+	const row = table.getChild( removedRowIndex ) || table.getChild( table.childCount - 1 );
 
 	// Default to first table cell.
 	let cellToFocus = row.getChild( 0 );
