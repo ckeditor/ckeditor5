@@ -57,6 +57,10 @@ export default class TableClipboard extends Plugin {
 			return;
 		}
 
+		if ( evt.name == 'cut' && this.editor.isReadOnly ) {
+			return;
+		}
+
 		data.preventDefault();
 		evt.stop();
 
