@@ -26,7 +26,7 @@ export function normalizeOptions( configuredOptions, options = {} ) {
 		.filter( option => !!option );
 }
 
-// The values should be synchronized with "/theme/fontsize.css" file.
+// The values should be synchronized with values specified in the "/theme/fontsize.css" file.
 export const FONT_SIZE_PRESET_UNITS = {
 	tiny: '0.7em',
 	small: '0.85em',

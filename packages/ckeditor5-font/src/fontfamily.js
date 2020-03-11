@@ -112,3 +112,19 @@ export default class FontFamily extends Plugin {
  *
  * @member {Array.<String|module:font/fontfamily~FontFamilyOption>} module:font/fontfamily~FontFamilyConfig#options
  */
+
+/**
+ * By default the plugin removes any `font-family` value that does not match to the plugin's configuration. It means if you paste a content
+ * with font families that the editor does not understand, the font-family attribute will be removed and the content will be displayed
+ * with the font.
+ *
+ * You can preserve pasted font family values by switching the option:
+ *
+ *		const fontSizeConfig = {
+ *			disableValueMatching: true
+ *		};
+ *
+ * Now, the font families, not specified in the editor's configuration, won't be removed when pasting the content.
+ *
+ * @member {Boolean} module:font/fontfamily~FontFamilyConfig#disableValueMatching
+ */
