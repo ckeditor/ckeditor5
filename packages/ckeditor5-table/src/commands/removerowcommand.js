@@ -161,6 +161,8 @@ function getCellToFocus( table, removedRowIndex, columnToFocus ) {
 		cellToFocus = tableCell;
 		column += parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
 	}
+
+	return cellToFocus;
 }
 
 // Returns the index of column that should be focused after rows are removed.
