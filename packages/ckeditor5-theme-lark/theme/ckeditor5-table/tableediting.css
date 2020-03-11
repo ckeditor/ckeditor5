@@ -21,9 +21,12 @@
 		&.ck-editor__nested-editable:focus {
 			/* We can't just set `inherit` here as well, because we use `hsla` as an "overlay"
 			to darken the background based on the set table background.
-			This is also a workaround for overriding the styling that comes from the `widget`.
-			See related issue https://github.com/ckeditor/ckeditor5/issues/6228. */
-			background: var(--ck-color-table-focused-th-background);
+
+			The value should be the same as for the table header element without focus.
+			See related issue https://github.com/ckeditor/ckeditor5/issues/6228.
+
+			This is also a workaround for overriding the styling that comes from the `widget`. */
+			background: hsla(0, 0%, 0%, 10%);
 		}
 	}
 }
