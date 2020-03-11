@@ -9,7 +9,11 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
-import { findAncestor, updateNumericAttribute } from './utils';
+import {
+	findAncestor,
+	updateNumericAttribute,
+	isHeadingColumnCell
+} from './utils';
 
 /**
  * The merge cell command.
@@ -171,13 +175,13 @@ function getHorizontalCell( tableCell, direction, tableUtils ) {
 	const { column: rightCellColumn } = tableUtils.getCellLocation( cellOnRight );
 
 	const leftCellSpan = parseInt( cellOnLeft.getAttribute( 'colspan' ) || 1 );
-	const rightCellSpan = parseInt( cellOnRight.getAttribute( 'colspan' ) || 1 );
 
-	// We cannot merge cells if the result will extend over heading section.
-	const isMergeWithBodyCell = direction == 'right' && ( rightCellColumn + rightCellSpan > headingColumns );
-	const isMergeWithHeadCell = direction == 'left' && ( leftCellColumn + leftCellSpan > headingColumns - 1 );
+	const isCellOnLeftInHeadingColumn = isHeadingColumnCell( tableUtils, cellOnLeft, table );
+	const isCellOnRightInRegularColumn = !isHeadingColumnCell( tableUtils, cellOnRight, table );
 
-	if ( headingColumns && ( isMergeWithBodyCell || isMergeWithHeadCell ) ) {
+	// We cannot merge heading columns cells with regular cells.
+	// We cannot merge regular cells with heading column cells.
+	if ( headingColumns && isCellOnLeftInHeadingColumn && isCellOnRightInRegularColumn ) {
 		return;
 	}
 
