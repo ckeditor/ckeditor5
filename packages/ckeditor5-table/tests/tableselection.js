@@ -5,7 +5,7 @@
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData, stringify as stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import TableEditing from '../src/tableediting';
 import TableSelection from '../src/tableselection';
@@ -81,7 +81,7 @@ describe( 'table selection', () => {
 				lastCell
 			);
 
-			expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+			expect( tableSelection.getSelectedTableCells() ).to.deep.equal( [
 				firstCell, lastCell
 			] );
 		} );
@@ -95,7 +95,7 @@ describe( 'table selection', () => {
 				lastCell
 			);
 
-			expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+			expect( tableSelection.getSelectedTableCells() ).to.deep.equal( [
 				firstCell, modelRoot.getNodeByPath( [ 0, 0, 1 ] ), modelRoot.getNodeByPath( [ 0, 1, 0 ] ), lastCell
 			] );
 		} );
@@ -109,7 +109,7 @@ describe( 'table selection', () => {
 				lastCell
 			);
 
-			expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+			expect( tableSelection.getSelectedTableCells() ).to.deep.equal( [
 				firstCell, modelRoot.getNodeByPath( [ 0, 0, 1 ] ), lastCell
 			] );
 		} );
@@ -120,8 +120,19 @@ describe( 'table selection', () => {
 
 			tableSelection._setCellSelection( firstCell, lastCell );
 
-			expect( Array.from( tableSelection.getSelectedTableCells() ) ).to.deep.equal( [
+			expect( tableSelection.getSelectedTableCells() ).to.deep.equal( [
 				firstCell, modelRoot.getNodeByPath( [ 0, 1, 1 ] ), lastCell
+			] );
+		} );
+
+		it( 'should return cells in source order despite backward selection', () => {
+			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 2 ] );
+			const lastCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
+
+			tableSelection._setCellSelection( firstCell, lastCell );
+
+			expect( tableSelection.getSelectedTableCells() ).to.deep.equal( [
+				lastCell, firstCell
 			] );
 		} );
 	} );
@@ -138,6 +149,32 @@ describe( 'table selection', () => {
 			);
 
 			expect( tableSelection.getSelectionAsFragment() ).to.be.instanceOf( DocumentFragment );
+		} );
+
+		it( 'should return cells in the source order in case of forward selection', () => {
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			expect( stringifyModel( tableSelection.getSelectionAsFragment() ) ).to.equal( modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ]
+			] ) );
+		} );
+
+		it( 'should return cells in the source order in case of backward selection', () => {
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] )
+			);
+
+			expect( editor.model.document.selection.isBackward ).to.be.true;
+
+			expect( stringifyModel( tableSelection.getSelectionAsFragment() ) ).to.equal( modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ]
+			] ) );
 		} );
 	} );
 } );
