@@ -160,7 +160,7 @@ function getHorizontalCell( tableCell, direction, tableUtils ) {
 	const tableRow = tableCell.parent;
 	const table = tableRow.parent;
 	const horizontalCell = direction == 'right' ? tableCell.nextSibling : tableCell.previousSibling;
-	const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
+	const hasHeadingColumns = ( table.getAttribute( 'headingColumns' ) || 0 ) > 0;
 
 	if ( !horizontalCell ) {
 		return;
@@ -177,11 +177,10 @@ function getHorizontalCell( tableCell, direction, tableUtils ) {
 	const leftCellSpan = parseInt( cellOnLeft.getAttribute( 'colspan' ) || 1 );
 
 	const isCellOnLeftInHeadingColumn = isHeadingColumnCell( tableUtils, cellOnLeft, table );
-	const isCellOnRightInRegularColumn = !isHeadingColumnCell( tableUtils, cellOnRight, table );
+	const isCellOnRightInHeadingColumn = isHeadingColumnCell( tableUtils, cellOnRight, table );
 
 	// We cannot merge heading columns cells with regular cells.
-	// We cannot merge regular cells with heading column cells.
-	if ( headingColumns && isCellOnLeftInHeadingColumn && isCellOnRightInRegularColumn ) {
+	if ( hasHeadingColumns && isCellOnLeftInHeadingColumn != isCellOnRightInHeadingColumn ) {
 		return;
 	}
 
