@@ -92,7 +92,7 @@ describe( 'Collection', () => {
 				expect( collection.remove( 'yy' ) ).to.equal( item2 );
 			} );
 
-			it( 'allow to change the id property used by the collection (initial items)', () => {
+			it( 'should allow to change the id property used by the collection (initial items passed to the constructor)', () => {
 				const item1 = { id: 'foo', name: 'xx' };
 				const item2 = { id: 'foo', name: 'yy' };
 				const collection = new Collection( [ item1, item2 ], { idProperty: 'name' } );
