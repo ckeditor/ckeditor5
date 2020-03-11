@@ -3,10 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
- :root {
-	 --ck-color-table-focused-th-background: hsla(0, 0%, 0%, 10%);
- }
-
 .ck-content .table {
 	/* Give the table widget some air and center it horizontally */
 	margin: 1em auto;
@@ -35,7 +31,7 @@
 
 		& th {
 			font-weight: bold;
-			background: var(--ck-color-table-focused-th-background);
+			background: hsla(0, 0%, 0%, 10%);
 		}
 	}
 }
