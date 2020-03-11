@@ -147,8 +147,11 @@
 	}
 }
 
+/* https://github.com/ckeditor/ckeditor5/issues/6415 */
 .ck-editor__editable.ck-read-only .ck-widget {
-	/* Disable visual effects of hover/active widget when CKEditor is in readOnly mode.
-	See: https://github.com/ckeditor/ckeditor5/issues/1261 */
-	--ck-widget-outline-thickness: 0;
+	&:not(.ck-widget_selected) {
+		/* Disable visual effects of hover/active widget when CKEditor is in readOnly mode.
+		See: https://github.com/ckeditor/ckeditor5/issues/1261 */
+		--ck-widget-outline-thickness: 0;
+	}
 }
