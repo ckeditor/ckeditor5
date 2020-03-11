@@ -39,7 +39,7 @@ describe( 'Collection', () => {
 				expect( collection.get( 'bar' ) ).to.equal( item2 );
 			} );
 
-			it( 'works using an iterable', () => {
+			it( 'should work using an iterable', () => {
 				const item1 = getItem( 'foo' );
 				const item2 = getItem( 'bar' );
 				const itemsSet = new Set( [ item1, item2 ] );
@@ -51,7 +51,7 @@ describe( 'Collection', () => {
 				expect( collection.get( 1 ) ).to.equal( item2 );
 			} );
 
-			it( 'generates id for items that doesn\'t have it', () => {
+			it( 'should generate ids for items that doesn\'t have it', () => {
 				const item = {};
 				const collection = new Collection( [ item ] );
 
@@ -59,7 +59,7 @@ describe( 'Collection', () => {
 				expect( collection.get( 0 ).id ).not.to.be.empty;
 			} );
 
-			it( 'throws an error when invalid item key is provided', () => {
+			it( 'should throw an error when an invalid item key is provided', () => {
 				const badIdItem = getItem( 1 ); // Number id is not supported.
 
 				expectToThrowCKEditorError( () => {
@@ -67,7 +67,7 @@ describe( 'Collection', () => {
 				}, /^collection-add-invalid-id/ );
 			} );
 
-			it( 'throws an error when items have a duplicated key', () => {
+			it( 'should throw an error when two items have the same key', () => {
 				const item1 = getItem( 'foo' );
 				const item2 = getItem( 'foo' );
 
@@ -78,7 +78,7 @@ describe( 'Collection', () => {
 		} );
 
 		describe( 'options', () => {
-			it( 'allow to change the id property used by the collection', () => {
+			it( 'should allow to change the id property used by the collection', () => {
 				const item1 = { id: 'foo', name: 'xx' };
 				const item2 = { id: 'foo', name: 'yy' };
 				const collection = new Collection( { idProperty: 'name' } );
