@@ -151,30 +151,28 @@ describe( 'RemoveRowCommand', () => {
 				] ) );
 			} );
 
-			// This test is blocked by (#6370).
-			//
-			// it( 'should properly remove tailing rows', () => {
-			// 	setData( model, modelTable( [
-			// 		[ '00', '01' ],
-			// 		[ '10', '11' ],
-			// 		[ '20', '21' ],
-			// 		[ '30', '31' ]
-			// 	] ) );
+			it( 'should properly remove tailing rows', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				] ) );
 
-			// 	const tableSelection = editor.plugins.get( TableSelection );
-			// 	const modelRoot = model.document.getRoot();
-			// tableSelection._setCellSelection(
-			// 	modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
-			// 	modelRoot.getNodeByPath( [ 0, 36, 0 ] )
-			// );
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 3, 0 ] )
+				);
 
-			// 	command.execute();
+				command.execute();
 
-			// 	assertEqualMarkup( getData( model ), modelTable( [
-			// 		[ '00', '01' ],
-			// 		[ '10', '11[]' ]
-			// 	] ) );
-			// } );
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00', '01' ],
+					[ '[]10', '11' ]
+				] ) );
+			} );
 
 			it( 'should properly remove beginning rows', () => {
 				setData( model, modelTable( [
