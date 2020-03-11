@@ -58,7 +58,7 @@ ClassicEditor
 			options: [
 				// ...
 			],
-            disableValueMatching: true
+			disableValueMatching: true
 		},
         // ...
 	} )
