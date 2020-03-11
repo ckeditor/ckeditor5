@@ -362,6 +362,8 @@ describe( 'table clipboard', () => {
 			} );
 
 			it( 'should be disabled in a readonly mode', () => {
+				const preventDefaultStub = sinon.stub();
+
 				editor.isReadOnly = true;
 
 				tableSelection._setCellSelection(
@@ -371,7 +373,7 @@ describe( 'table clipboard', () => {
 
 				const data = {
 					dataTransfer: createDataTransfer(),
-					preventDefault: sinon.spy()
+					preventDefault: preventDefaultStub
 				};
 				viewDocument.fire( 'cut', data );
 
@@ -383,6 +385,8 @@ describe( 'table clipboard', () => {
 					[ '10', '11', '12' ],
 					[ '20', '21', '22' ]
 				] ) );
+
+				sinon.assert.calledOnce( preventDefaultStub );
 			} );
 		} );
 	} );
