@@ -193,7 +193,7 @@ To create a server for manual tests use the `manual` task:
 yarn run manual
 ```
 
-It accepts the `--source-map` (`-s`) and `--additionalLanguages="ar,pl,..."` options. Note that it watches for changes in the JavaScript files only (see the [bug](https://github.com/ckeditor/ckeditor5-dev/issues/52)).
+To help test localized editors, the task accepts two optional configurations: `--language="en"` and `--additionalLanguages="ar,pl,..."`. The former sets the main language used by test editors. By default it is `"en"` and it in most scenarios you do not need to change it. The later brings more languages to manual tests, e.g. which is helpful when working with {@link features/ui-language#righttoleft-rtl-languages-support right–to–left languages in the user interface}.
 
 You can read more about the {@link framework/guides/contributing/testing-environment Testing environment}.
 
