@@ -54,6 +54,7 @@ export default class Collection {
 	 *		const nonEmptyCollection = new Collection( [ { name: 'John' } ], { idProperty: 'name' } );
 	 *		nonEmptyCollection.add( { name: 'George' } );
 	 *		console.log( collection.get( 'George' ) ); // -> { name: 'George' }
+	 *		console.log( collection.get( 'John' ) ); // -> { name: 'John' }
 	 *
 	 * @param {Iterable.<Object>|Object} initialItemsOrOptions The initial items of the collection or
 	 * the options object.
