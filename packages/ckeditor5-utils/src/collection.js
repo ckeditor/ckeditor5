@@ -29,7 +29,7 @@ export default class Collection {
 	/**
 	 * Creates a new Collection instance.
 	 *
-	 * You can provide an array of initial items the collection will be created with:
+	 * You can provide an iterable of initial items the collection will be created with:
 	 *
 	 *		const collection = new Collection( [ { id: 'John' }, { id: 'Mike' } ] );
 	 *
