@@ -550,6 +550,22 @@ export default class TableUtils extends Plugin {
 			return columns + columnWidth;
 		}, 0 );
 	}
+
+	/**
+	 * Returns the number of rows for a given table.
+	 *
+	 *		editor.plugins.get( 'TableUtils' ).getRows( table );
+	 *
+	 * @param {module:engine/model/element~Element} table The table to analyze.
+	 * @returns {Number}
+	 */
+	getRows( table ) {
+		return [ ...table.getChildren() ].reduce( ( rows, row ) => {
+			const currentRowCount = parseInt( row.getChild( 0 ).getAttribute( 'rowspan' ) || 1 );
+
+			return rows + currentRowCount;
+		}, 0 );
+	}
 }
 
 // Creates empty rows at the given index in an existing table.
