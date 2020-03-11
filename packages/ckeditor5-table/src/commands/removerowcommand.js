@@ -146,8 +146,10 @@ function getRowIndexes( referenceCells ) {
 }
 
 // Returns a cell that should be focused before removing the row, belonging to the same column as the currently focused cell.
+// * If the row was not the last one, the cell to focus will be in the row that followed it (before removal).
+// * If the row was the last one, the cell to focus will be in the row that preceded it (before removal).
 function getCellToFocus( table, removedRowIndex, columnToFocus ) {
-	const row = table.getChild( removedRowIndex );
+	const row = table.getChild( removedRowIndex ) || table.getChild( table.childCount - 1 );
 
 	// Default to first table cell.
 	let cellToFocus = row.getChild( 0 );
