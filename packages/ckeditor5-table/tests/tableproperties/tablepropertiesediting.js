@@ -210,6 +210,24 @@ describe( 'table properties', () => {
 					assertTRBLAttribute( table, 'borderStyle', null, null, null, 'solid' );
 					assertTRBLAttribute( table, 'borderWidth', null, null, null, '1px' );
 				} );
+
+				// https://github.com/ckeditor/ckeditor5/issues/6177
+				it( 'should upcast tables with nested tables in their cells', () => {
+					editor.setData( '<table style="border:1px solid red">' +
+						'<tr>' +
+							'<td>parent:00</td>' +
+							'<td>' +
+								'<table style="border:1px solid green"><tr><td>child:00</td></tr></table>' +
+							'</td>' +
+						'</tr>' +
+					'</table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					assertTRBLAttribute( table, 'borderColor', 'red' );
+					assertTRBLAttribute( table, 'borderStyle', 'solid' );
+					assertTRBLAttribute( table, 'borderWidth', '1px' );
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {

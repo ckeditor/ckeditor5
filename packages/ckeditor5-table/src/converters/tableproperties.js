@@ -60,6 +60,12 @@ export function upcastBorderStyles( conversion, viewElementName ) {
 			return;
 		}
 
+		// This can happen when the upcasted table is nested table. As to why it happens, it remains a mystery.
+		// Take a look at https://github.com/ckeditor/ckeditor5/issues/6177.
+		if ( !data.modelRange ) {
+			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+		}
+
 		const modelElement = [ ...data.modelRange.getItems( { shallow: true } ) ].pop();
 
 		conversionApi.consumable.consume( data.viewItem, matcherPattern );
