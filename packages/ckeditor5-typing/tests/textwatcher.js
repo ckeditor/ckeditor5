@@ -141,17 +141,36 @@ describe( 'TextWatcher', () => {
 	} );
 
 	describe( 'events', () => {
-		it( 'should fire "matched:data" event when test callback returns true for model data changes', () => {
-			testCallbackStub.returns( true );
+		describe( '"matched:data"', () => {
+			it( 'should be fired when test callback returns true for model data changes', () => {
+				testCallbackStub.returns( true );
 
-			model.change( writer => {
-				writer.insertText( '@', doc.selection.getFirstPosition() );
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				sinon.assert.calledOnce( testCallbackStub );
+				sinon.assert.calledOnce( matchedDataSpy );
+				sinon.assert.notCalled( matchedSelectionSpy );
+				sinon.assert.notCalled( unmatchedSpy );
 			} );
 
-			sinon.assert.calledOnce( testCallbackStub );
-			sinon.assert.calledOnce( matchedDataSpy );
-			sinon.assert.notCalled( matchedSelectionSpy );
-			sinon.assert.notCalled( unmatchedSpy );
+			it( 'should be fired with additional data when test callback returns true for model data changes', () => {
+				const additionalData = { abc: 'xyz' };
+
+				testCallbackStub.returns( additionalData );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				sinon.assert.calledOnce( testCallbackStub );
+				sinon.assert.calledOnce( matchedDataSpy );
+				sinon.assert.notCalled( matchedSelectionSpy );
+				sinon.assert.notCalled( unmatchedSpy );
+
+				expect( matchedDataSpy.firstCall.args[ 1 ] ).to.deep.include( additionalData );
+			} );
 		} );
 
 		it( 'should not fire "matched:data" event when watcher is disabled' +
