@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import TableWalker from '../tablewalker';
 import { updateNumericAttribute } from './utils';
-import { getTableCellsContainingSelection } from '../utils';
+import { getSelectionAffectedTableCells } from '../utils';
 
 /**
  * The remove row command.
@@ -29,78 +29,120 @@ export default class RemoveRowCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const model = this.editor.model;
-		const doc = model.document;
-		const tableCell = getTableCellsContainingSelection( doc.selection )[ 0 ];
+		const selectedCells = getSelectionAffectedTableCells( this.editor.model.document.selection );
+		const firstCell = selectedCells[ 0 ];
 
-		this.isEnabled = !!tableCell && tableCell.parent.parent.childCount > 1;
+		if ( firstCell ) {
+			const table = firstCell.parent.parent;
+			const tableRowCount = this.editor.plugins.get( 'TableUtils' ).getRows( table );
+
+			const tableMap = [ ...new TableWalker( table ) ];
+			const rowIndexes = tableMap.filter( entry => selectedCells.includes( entry.cell ) ).map( el => el.row );
+			const minRowIndex = rowIndexes[ 0 ];
+			const maxRowIndex = rowIndexes[ rowIndexes.length - 1 ];
+
+			this.isEnabled = maxRowIndex - minRowIndex < ( tableRowCount - 1 );
+		} else {
+			this.isEnabled = false;
+		}
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	execute() {
-		const model = this.editor.model;
-		const selection = model.document.selection;
-		const tableCell = getTableCellsContainingSelection( selection )[ 0 ];
-		const tableRow = tableCell.parent;
-		const table = tableRow.parent;
+		const referenceCells = getSelectionAffectedTableCells( this.editor.model.document.selection );
+		const removedRowIndexes = getRowIndexes( referenceCells );
 
-		const removedRowIndex = table.getChildIndex( tableRow );
+		const firstCell = referenceCells[ 0 ];
+		const table = firstCell.parent.parent;
+		const tableMap = [ ...new TableWalker( table, { endRow: removedRowIndexes.last } ) ];
+		const batch = this.editor.model.createBatch();
+		const columnIndexToFocus = getColumnIndexToFocus( tableMap, firstCell );
 
-		const tableMap = [ ...new TableWalker( table, { endRow: removedRowIndex } ) ];
+		// Doing multiple model.enqueueChange() calls, to get around ckeditor/ckeditor5#6391.
+		// Ideally we want to do this in a single model.change() block.
+		this.editor.model.enqueueChange( batch, writer => {
+			// This prevents the "model-selection-range-intersects" error, caused by removing row selected cells.
+			writer.setSelection( writer.createSelection( table, 'on' ) );
+		} );
 
-		const cellData = tableMap.find( value => value.cell === tableCell );
+		let cellToFocus;
 
-		const headingRows = table.getAttribute( 'headingRows' ) || 0;
+		for ( let i = removedRowIndexes.last; i >= removedRowIndexes.first; i-- ) {
+			this.editor.model.enqueueChange( batch, writer => {
+				const removedRowIndex = i;
+				this._removeRow( removedRowIndex, table, writer, tableMap );
 
-		const columnToFocus = cellData.column;
+				cellToFocus = getCellToFocus( table, removedRowIndex, columnIndexToFocus );
+			} );
+		}
 
-		model.change( writer => {
-			if ( headingRows && removedRowIndex <= headingRows ) {
-				updateNumericAttribute( 'headingRows', headingRows - 1, table, writer, 0 );
-			}
-
-			const cellsToMove = new Map();
-
-			// Get cells from removed row that are spanned over multiple rows.
-			tableMap
-				.filter( ( { row, rowspan } ) => row === removedRowIndex && rowspan > 1 )
-				.forEach( ( { column, cell, rowspan } ) => cellsToMove.set( column, { cell, rowspanToSet: rowspan - 1 } ) );
-
-			// Reduce rowspan on cells that are above removed row and overlaps removed row.
-			tableMap
-				.filter( ( { row, rowspan } ) => row <= removedRowIndex - 1 && row + rowspan > removedRowIndex )
-				.forEach( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
-
-			// Move cells to another row.
-			const targetRowIndex = removedRowIndex + 1;
-			const tableWalker = new TableWalker( table, { includeSpanned: true, startRow: targetRowIndex, endRow: targetRowIndex } );
-
-			let previousCell;
-
-			for ( const { row, column, cell } of [ ...tableWalker ] ) {
-				if ( cellsToMove.has( column ) ) {
-					const { cell: cellToMove, rowspanToSet } = cellsToMove.get( column );
-					const targetPosition = previousCell ?
-						writer.createPositionAfter( previousCell ) :
-						writer.createPositionAt( table.getChild( row ), 0 );
-
-					writer.move( writer.createRangeOn( cellToMove ), targetPosition );
-					updateNumericAttribute( 'rowspan', rowspanToSet, cellToMove, writer );
-
-					previousCell = cellToMove;
-				} else {
-					previousCell = cell;
-				}
-			}
-
-			writer.remove( tableRow );
-
-			const cellToFocus = getCellToFocus( table, removedRowIndex, columnToFocus );
+		this.editor.model.enqueueChange( batch, writer => {
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
 	}
+
+	/**
+	 * Removes a row from the given `table`.
+	 *
+	 * @private
+	 * @param {Number} removedRowIndex Index of the row that should be removed.
+	 * @param {module:engine/model/element~Element} table
+	 * @param {module:engine/model/writer~Writer} writer
+	 * @param {module:engine/model/element~Element[]} tableMap Table map retrieved from {@link module:table/tablewalker~TableWalker}.
+	 */
+	_removeRow( removedRowIndex, table, writer, tableMap ) {
+		const cellsToMove = new Map();
+		const tableRow = table.getChild( removedRowIndex );
+		const headingRows = table.getAttribute( 'headingRows' ) || 0;
+
+		if ( headingRows && removedRowIndex < headingRows ) {
+			updateNumericAttribute( 'headingRows', headingRows - 1, table, writer, 0 );
+		}
+
+		// Get cells from removed row that are spanned over multiple rows.
+		tableMap
+			.filter( ( { row, rowspan } ) => row === removedRowIndex && rowspan > 1 )
+			.forEach( ( { column, cell, rowspan } ) => cellsToMove.set( column, { cell, rowspanToSet: rowspan - 1 } ) );
+
+		// Reduce rowspan on cells that are above removed row and overlaps removed row.
+		tableMap
+			.filter( ( { row, rowspan } ) => row <= removedRowIndex - 1 && row + rowspan > removedRowIndex )
+			.forEach( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
+
+		// Move cells to another row.
+		const targetRow = removedRowIndex + 1;
+		const tableWalker = new TableWalker( table, { includeSpanned: true, startRow: targetRow, endRow: targetRow } );
+		let previousCell;
+
+		for ( const { row, column, cell } of [ ...tableWalker ] ) {
+			if ( cellsToMove.has( column ) ) {
+				const { cell: cellToMove, rowspanToSet } = cellsToMove.get( column );
+				const targetPosition = previousCell ?
+					writer.createPositionAfter( previousCell ) :
+					writer.createPositionAt( table.getChild( row ), 0 );
+				writer.move( writer.createRangeOn( cellToMove ), targetPosition );
+				updateNumericAttribute( 'rowspan', rowspanToSet, cellToMove, writer );
+				previousCell = cellToMove;
+			}
+			else {
+				previousCell = cell;
+			}
+		}
+
+		writer.remove( tableRow );
+	}
+}
+
+// Returns a helper object with first and last row index contained in given `referenceCells`.
+function getRowIndexes( referenceCells ) {
+	const allIndexesSorted = referenceCells.map( cell => cell.parent.index ).sort();
+
+	return {
+		first: allIndexesSorted[ 0 ],
+		last: allIndexesSorted[ allIndexesSorted.length - 1 ]
+	};
 }
 
 // Returns a cell that should be focused before removing the row, belonging to the same column as the currently focused cell.
@@ -121,4 +163,12 @@ function getCellToFocus( table, removedRowIndex, columnToFocus ) {
 		cellToFocus = tableCell;
 		column += parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
 	}
+
+	return cellToFocus;
+}
+
+// Returns the index of column that should be focused after rows are removed.
+function getColumnIndexToFocus( tableMap, firstCell ) {
+	const firstCellData = tableMap.find( value => value.cell === firstCell );
+	return firstCellData.column;
 }

@@ -9,11 +9,8 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import {
-	createEmptyTableCell,
-	updateNumericAttribute
-} from './utils';
-import { getTableCellsContainingSelection } from '../utils';
+import { createEmptyTableCell, updateNumericAttribute } from './utils';
+import { getSelectionAffectedTableCells } from '../utils';
 import TableWalker from '../tablewalker';
 
 /**
@@ -36,11 +33,8 @@ export default class SetHeaderRowCommand extends Command {
 	 */
 	refresh() {
 		const model = this.editor.model;
-		const doc = model.document;
-		const selection = doc.selection;
-
-		const tableCell = getTableCellsContainingSelection( selection )[ 0 ];
-		const isInTable = !!tableCell;
+		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
+		const isInTable = selectedCells.length > 0;
 
 		this.isEnabled = isInTable;
 
@@ -52,7 +46,7 @@ export default class SetHeaderRowCommand extends Command {
 		 * @readonly
 		 * @member {Boolean} #value
 		 */
-		this.value = isInTable && this._isInHeading( tableCell, tableCell.parent.parent );
+		this.value = isInTable && selectedCells.every( cell => this._isInHeading( cell, cell.parent.parent ) );
 	}
 
 	/**
@@ -69,21 +63,23 @@ export default class SetHeaderRowCommand extends Command {
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
-		const doc = model.document;
-		const selection = doc.selection;
 
-		const tableCell = getTableCellsContainingSelection( selection )[ 0 ];
-		const tableRow = tableCell.parent;
-		const table = tableRow.parent;
+		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
+		const firstCell = selectedCells[ 0 ];
+		const lastCell = selectedCells[ selectedCells.length - 1 ];
+		const table = firstCell.parent.parent;
 
 		const currentHeadingRows = table.getAttribute( 'headingRows' ) || 0;
-		const selectionRow = tableRow.index;
+
+		const [ selectedRowMin, selectedRowMax ] =
+			// Returned cells might not necessary be in order, so make sure to sort it.
+			[ firstCell.parent.index, lastCell.parent.index ].sort();
 
 		if ( options.forceValue === this.value ) {
 			return;
 		}
 
-		const headingRowsToSet = this.value ? selectionRow : selectionRow + 1;
+		const headingRowsToSet = this.value ? selectedRowMin : selectedRowMax + 1;
 
 		model.change( writer => {
 			if ( headingRowsToSet ) {
