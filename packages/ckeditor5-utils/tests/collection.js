@@ -26,7 +26,7 @@ describe( 'Collection', () => {
 
 	describe( 'constructor()', () => {
 		describe( 'setting initial collection items', () => {
-			it( 'works using an array', () => {
+			it( 'should work using an array', () => {
 				const item1 = getItem( 'foo' );
 				const item2 = getItem( 'bar' );
 				const collection = new Collection( [ item1, item2 ] );
