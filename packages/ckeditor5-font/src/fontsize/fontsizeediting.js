@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import FontSizeCommand from './fontsizecommand';
-import { normalizeOptions, FONT_SIZE_PRESET_UNITS } from './utils';
+import { normalizeOptions } from './utils';
 import { buildDefinition, FONT_SIZE } from '../utils';
 
 /**
@@ -100,10 +100,6 @@ export default class FontSizeEditing extends Plugin {
 					return;
 				}
 
-				if ( typeof attributeValue == 'number' ) {
-					attributeValue = `${ attributeValue }px`;
-				}
-
 				return writer.createAttributeElement( 'span', { style: 'font-size:' + attributeValue }, { priority: 7 } );
 			}
 		} );
@@ -111,25 +107,7 @@ export default class FontSizeEditing extends Plugin {
 		editor.conversion.for( 'upcast' ).attributeToAttribute( {
 			model: {
 				key: FONT_SIZE,
-				value: viewElement => {
-					const fontSize = viewElement.getStyle( 'font-size' );
-
-					if ( fontSize ) {
-						return fontSize;
-					}
-
-					for ( const className of viewElement.getClassNames() ) {
-						if ( className.startsWith( 'text-' ) ) {
-							const presetName = className.replace( /^text-/, '' );
-
-							if ( FONT_SIZE_PRESET_UNITS[ presetName ] ) {
-								return FONT_SIZE_PRESET_UNITS[ presetName ];
-							}
-						}
-					}
-
-					return null;
-				}
+				value: viewElement => viewElement.getStyle( 'font-size' ),
 			},
 			view: {
 				name: 'span'
