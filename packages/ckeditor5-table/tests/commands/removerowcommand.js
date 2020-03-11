@@ -85,6 +85,19 @@ describe( 'RemoveRowCommand', () => {
 			] ) );
 		} );
 
+		it( 'should remove last row', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '[]10', '11' ]
+			] ) );
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '[]00', '01' ]
+			] ) );
+		} );
+
 		it( 'should change heading rows if removing a heading row', () => {
 			setData( model, modelTable( [
 				[ '00', '01' ],
