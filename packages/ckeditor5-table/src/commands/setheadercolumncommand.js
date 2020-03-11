@@ -9,7 +9,11 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor, updateNumericAttribute } from './utils';
+import {
+	findAncestor,
+	updateNumericAttribute,
+	isHeadingColumnCell
+} from './utils';
 
 /**
  * The header column command.
@@ -37,6 +41,7 @@ export default class SetHeaderColumnCommand extends Command {
 
 		const position = selection.getFirstPosition();
 		const tableCell = findAncestor( 'tableCell', position );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
 		const isInTable = !!tableCell;
 
@@ -50,7 +55,7 @@ export default class SetHeaderColumnCommand extends Command {
 		 * @readonly
 		 * @member {Boolean} #value
 		 */
-		this.value = isInTable && this._isInHeading( tableCell, tableCell.parent.parent );
+		this.value = isInTable && isHeadingColumnCell( tableUtils, tableCell );
 	}
 
 	/**
@@ -87,23 +92,5 @@ export default class SetHeaderColumnCommand extends Command {
 		model.change( writer => {
 			updateNumericAttribute( 'headingColumns', headingColumnsToSet, table, writer, 0 );
 		} );
-	}
-
-	/**
-	 * Checks if a table cell is in the heading section.
-	 *
-	 * @param {module:engine/model/element~Element} tableCell
-	 * @param {module:engine/model/element~Element} table
-	 * @returns {Boolean}
-	 * @private
-	 */
-	_isInHeading( tableCell, table ) {
-		const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
-
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
-
-		const { column } = tableUtils.getCellLocation( tableCell );
-
-		return !!headingColumns && column < headingColumns;
 	}
 }
