@@ -303,6 +303,21 @@ describe( 'RemoveRowCommand', () => {
 			] ) );
 		} );
 
+		it( 'should remove a given row from a table start when selection is at the end', () => {
+			setData( model, modelTable( [
+				[ '00', '01[]' ],
+				[ '10', '11' ],
+				[ '20', '21' ]
+			] ) );
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '10', '[]11' ],
+				[ '20', '21' ]
+			] ) );
+		} );
+
 		it( 'should change heading rows if removing a heading row', () => {
 			setData( model, modelTable( [
 				[ '00', '01' ],
