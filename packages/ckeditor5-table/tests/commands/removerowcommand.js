@@ -266,6 +266,28 @@ describe( 'RemoveRowCommand', () => {
 			} );
 		} );
 
+		describe( 'with entire row selected', () => {
+			it( 'should properly remove row if reversed selection is made', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '10', '[]11' ]
+				] ) );
+			} );
+		} );
+
 		it( 'should remove a given row from a table start', () => {
 			setData( model, modelTable( [
 				[ '[]00', '01' ],
