@@ -728,5 +728,14 @@ describe( 'TableUtils', () => {
 
 			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 4 );
 		} );
+
+		it( 'should work correctly with rows containing no cells', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[]
+			] ) );
+
+			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 1 );
+		} );
 	} );
 } );
