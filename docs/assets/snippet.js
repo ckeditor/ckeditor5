@@ -17,9 +17,9 @@ setTimeout( () => {
 	const msWordMatch1 = /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i;
 	const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;
 
-	// A global variable indication if clipboard notification is visible.
-	// We use the variable for displaying only one instance of the clipboard notification.
-	window.isClipboardInputNotificationVisible = false;
+	// A state variable that indicates if the clipboard notification has been seen.
+	// We use the variable for displaying the notification only once per demo.
+	let hasNotificationBeenSeen = false;
 
 	editables.forEach( editable => {
 		const editor = editable.ckeditorInstance;
@@ -34,8 +34,9 @@ setTimeout( () => {
 				msWordMatch2.test( htmlString ) ||
 				googleDocsMatch.test( htmlString );
 
-			if ( match && !window.isClipboardInputNotificationVisible ) {
+			if ( match && !hasNotificationBeenSeen ) {
 				createClipboardInputNotification();
+				hasNotificationBeenSeen = true;
 			}
 		} );
 	} );
@@ -53,11 +54,7 @@ function createClipboardInputNotification() {
 	<a href="/docs/ckeditor5/latest/pasting/paste-from-google-docs.html">Paste from Google Docs</a>
 	demos for the best experience.</p>`;
 
-	window.createNotification( title, message, () => {
-		window.isClipboardInputNotificationVisible = false;
-	} );
-
-	window.isClipboardInputNotificationVisible = true;
+	window.createNotification( title, message );
 }
 
 /**
@@ -65,11 +62,10 @@ function createClipboardInputNotification() {
 *
 * @param {String} title A title of the notification.
 * @param {String} message A message to display in the notification.
-* @param {Function} [onClose] A callback function that executes on closing the notification.
 *
 * @returns {Object} A notification element.
 */
-window.createNotification = function( title, message, onClose ) {
+window.createNotification = function( title, message ) {
 	const notificationTemplate = `
 		<h3 class="main__notification-title">${ title }</h3>
 		<div class="main__notification-body">
@@ -107,10 +103,6 @@ window.createNotification = function( title, message, onClose ) {
 
 	close.addEventListener( 'click', () => {
 		main.removeChild( notification );
-
-		if ( onClose && typeof onClose == 'function' ) {
-			onClose();
-		}
 	} );
 
 	return notification;
