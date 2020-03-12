@@ -156,10 +156,15 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	border: none;
 	box-shadow: none;
 	line-height: 1;
+	transition: background 150ms ease;
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
 	cursor: pointer;
+}
+
+.main__notification-close:hover {
+	background: #eee;
 }
 
 .main__notification-close:active:focus {
