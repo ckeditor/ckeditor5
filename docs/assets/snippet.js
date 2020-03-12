@@ -40,8 +40,14 @@ setTimeout( () => {
 // The notification should contain the links to the demos where user can test rich formatting from.
 function createClipboardInputNotification() {
 	const title = 'Hello!';
-	/* eslint-disable max-len */
-	const message = '<p>We detected that you tried to paste content from <strong>Microsoft Word</strong> or <strong>Google Docs</strong>.</p><p>Please bear in mind that the editor demo to which you try to paste does not have all the features enabled. Due to that, unsupported formatting is being stripped.</p><p>Check out the <a href="/docs/ckeditor5/latest/features/pasting/paste-from-word.html#demo">Paste from Word</a> or <a href="/docs/ckeditor5/latest/pasting/paste-from-google-docs.html#demo">Paste from Google Docs</a> demos for the best experience.</p>';
+	const message = `
+
+	<p>We detected that you tried to paste content from <strong>Microsoft Word</strong> or <strong>Google Docs</strong>.</p>
+	<p>Please bear in mind that the editor demo to which you try to paste does not have all the features enabled.
+		Due to that, unsupported formatting is being stripped.</p>
+	<p>Check out the <a href="/docs/ckeditor5/latest/features/pasting/paste-from-word.html">Paste from Word</a> or
+	<a href="/docs/ckeditor5/latest/pasting/paste-from-google-docs.html">Paste from Google Docs</a>
+	demos for the best experience.</p>`;
 
 	window.createNotification( title, message );
 }
