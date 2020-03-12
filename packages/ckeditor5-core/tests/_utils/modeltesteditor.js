@@ -21,7 +21,7 @@ export default class ModelTestEditor extends Editor {
 		super( config );
 
 		// Use the HTML data processor in this editor.
-		this.data.processor = new HtmlDataProcessor( this.editing.view.document );
+		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		// Disable editing pipeline.
 		this.editing.destroy();
