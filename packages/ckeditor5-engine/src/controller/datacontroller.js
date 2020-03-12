@@ -104,6 +104,24 @@ export default class DataController {
 			schema: model.schema
 		} );
 
+		/**
+		 * The view document used by the data controller.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/document~Document}
+		 */
+		this.viewDocument = new ViewDocument( stylesProcessor );
+
+		/**
+		 * The view downcast writer just for data conversion purposes, i.e. to modify
+		 * the {@link #viewDocument}.
+		 *
+		 * @private
+		 * @readonly
+		 * @member {module:engine/view/downcastwriter~DowncastWriter}
+		 */
+		this._viewWriter = new ViewDowncastWriter( this.viewDocument );
+
 		// Define default converters for text and elements.
 		//
 		// Note that if there is no default converter for the element it will be skipped, for instance `<b>foo</b>` will be
@@ -188,20 +206,19 @@ export default class DataController {
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Output view DocumentFragment.
 	 */
 	toView( modelElementOrFragment ) {
+		const viewDocument = this.viewDocument;
+		const viewWriter = this._viewWriter;
+
 		// Clear bindings so the call to this method gives correct results.
 		this.mapper.clearBindings();
 
 		// First, convert elements.
 		const modelRange = ModelRange._createIn( modelElementOrFragment );
-		const viewDocument = new ViewDocument( this.stylesProcessor );
-
 		const viewDocumentFragment = new ViewDocumentFragment( viewDocument );
 
-		// Create separate ViewDowncastWriter just for data conversion purposes.
-		// We have no view controller and rendering do DOM in DataController so view.change() block is not used here.
-		const viewWriter = new ViewDowncastWriter( viewDocument );
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
+		// We have no view controller and rendering do DOM in DataController so view.change() block is not used here.
 		this.downcastDispatcher.convertInsert( modelRange, viewWriter );
 
 		if ( !modelElementOrFragment.is( 'documentFragment' ) ) {

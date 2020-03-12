@@ -56,6 +56,13 @@ describe( 'DataController', () => {
 			expect( data.model ).to.equal( model );
 			expect( data.stylesProcessor ).to.equal( stylesProcessor );
 		} );
+
+		it( 'should create the #viewDocument property', () => {
+			const stylesProcessor = new StylesProcessor();
+			const data = new DataController( model, stylesProcessor );
+
+			expect( data.viewDocument ).to.be.instanceOf( ViewDocument );
+		} );
 	} );
 
 	describe( 'parse()', () => {
@@ -472,6 +479,13 @@ describe( 'DataController', () => {
 			schema.extend( 'div', { allowIn: '$root' } );
 
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+		} );
+
+		it( 'should use #viewDocument as a parent for returned document fragments', () => {
+			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', schema );
+			const viewDocumentFragment = data.toView( modelElement );
+
+			expect( viewDocumentFragment.document ).to.equal( data.viewDocument );
 		} );
 
 		it( 'should convert a content of an element', () => {
