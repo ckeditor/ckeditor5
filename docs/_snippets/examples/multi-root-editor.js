@@ -67,7 +67,7 @@ class MultirootEditor extends Editor {
 	constructor( sourceElements, config ) {
 		super( config );
 
-		this.data.processor = new HtmlDataProcessor();
+		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		// Create root and UIView element for each editable container.
 		for ( const rootName of Object.keys( sourceElements ) ) {
