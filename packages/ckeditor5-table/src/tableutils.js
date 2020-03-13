@@ -561,8 +561,7 @@ export default class TableUtils extends Plugin {
 	 */
 	getRows( table ) {
 		return [ ...table.getChildren() ].reduce( ( rows, row ) => {
-			const firstCell = row.getChild( 0 );
-			const currentRowCount = firstCell ? parseInt( firstCell.getAttribute( 'rowspan' ) || 1 ) : 0;
+			const currentRowCount = parseInt( row.getChild( 0 ).getAttribute( 'rowspan' ) || 1 );
 
 			return rows + currentRowCount;
 		}, 0 );
