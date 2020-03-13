@@ -9,100 +9,104 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 :root {
-	--ck-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
+  --ck-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
 }
 
 .ck.ck-dropdown {
-	/* Enable font size inheritance, which allows fluid UI scaling. */
-	font-size: inherit;
+  /* Enable font size inheritance, which allows fluid UI scaling. */
+  font-size: inherit;
 
-	& .ck-dropdown__arrow {
-		width: var(--ck-dropdown-arrow-size);
-	}
+  & .ck-dropdown__arrow {
+    width: var(--ck-dropdown-arrow-size);
+  }
 
-	@mixin ck-dir ltr {
-		& .ck-dropdown__arrow {
-			right: var(--ck-spacing-standard);
+  @mixin ck-dir ltr {
+    & .ck-dropdown__arrow {
+      right: var(--ck-spacing-standard);
 
-			/* A space to accommodate the triangle. */
-			margin-left: var(--ck-spacing-small);
-		}
-	}
+      /* A space to accommodate the triangle. */
+      margin-left: var(--ck-spacing-standard);
+    }
+  }
 
-	@mixin ck-dir rtl {
-		& .ck-dropdown__arrow {
-			left: var(--ck-spacing-standard);
+  @mixin ck-dir rtl {
+    & .ck-dropdown__arrow {
+      left: var(--ck-spacing-standard);
 
-			/* A space to accommodate the triangle. */
-			margin-right: var(--ck-spacing-small);
-		}
-	}
+      /* A space to accommodate the triangle. */
+      margin-right: var(--ck-spacing-small);
+    }
+  }
 
-	&.ck-disabled .ck-dropdown__arrow {
-		@mixin ck-disabled;
-	}
+  &.ck-disabled .ck-dropdown__arrow {
+    @mixin ck-disabled;
+  }
 
-	& .ck-button.ck-dropdown__button {
-		@mixin ck-dir ltr {
-			&:not(.ck-button_with-text) {
-				/* Make sure dropdowns with just an icon have the right inner spacing */
-				padding-left: var(--ck-spacing-small);
-			}
-		}
+  & .ck-button.ck-dropdown__button {
+    @mixin ck-dir ltr {
+      &:not(.ck-button_with-text) {
+        /* Make sure dropdowns with just an icon have the right inner spacing */
+        padding-left: var(--ck-spacing-small);
+      }
+    }
 
-		@mixin ck-dir rtl {
-			&:not(.ck-button_with-text) {
-				/* Make sure dropdowns with just an icon have the right inner spacing */
-				padding-right: var(--ck-spacing-small);
-			}
-		}
+    @mixin ck-dir rtl {
+      &:not(.ck-button_with-text) {
+        /* Make sure dropdowns with just an icon have the right inner spacing */
+        padding-right: var(--ck-spacing-small);
+      }
+    }
 
-		/* #23 */
-		& .ck-button__label {
-			width: 7em;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
+    /* #23 */
+    & .ck-button__label {
+      width: 7em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-		/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
-	&.ck-disabled .ck-button__label {
-		@mixin ck-disabled;
-		}
+    /* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
+    &.ck-disabled .ck-button__label {
+      @mixin ck-disabled;
+    }
 
-		/* https://github.com/ckeditor/ckeditor5/issues/816 */
-		&.ck-on {
-			border-bottom-left-radius: 0;
-			border-bottom-right-radius: 0;
-		}
-	}
+    /* https://github.com/ckeditor/ckeditor5/issues/816 */
+    &.ck-on {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    &.ck-dropdown__button_label-width_auto .ck-button__label {
+      width: auto;
+    }
+  }
 }
 
 .ck.ck-dropdown__panel {
-	@mixin ck-rounded-corners;
-	@mixin ck-drop-shadow;
+  @mixin ck-rounded-corners;
+  @mixin ck-drop-shadow;
 
-	background: var(--ck-color-dropdown-panel-background);
-	border: 1px solid var(--ck-color-dropdown-panel-border);
-	bottom: 0;
+  background: var(--ck-color-dropdown-panel-background);
+  border: 1px solid var(--ck-color-dropdown-panel-border);
+  bottom: 0;
 
-	/* Make sure the panel is at least as wide as the drop-down's button. */
-	min-width: 100%;
+  /* Make sure the panel is at least as wide as the drop-down's button. */
+  min-width: 100%;
 
-	/* Disabled corner border radius to be consistent with the .dropdown__button
+  /* Disabled corner border radius to be consistent with the .dropdown__button
 	https://github.com/ckeditor/ckeditor5/issues/816 */
-	&.ck-dropdown__panel_se {
-		border-top-left-radius: 0;
-	}
+  &.ck-dropdown__panel_se {
+    border-top-left-radius: 0;
+  }
 
-	&.ck-dropdown__panel_sw {
-		border-top-right-radius: 0;
-	}
+  &.ck-dropdown__panel_sw {
+    border-top-right-radius: 0;
+  }
 
-	&.ck-dropdown__panel_ne {
-		border-bottom-left-radius: 0;
-	}
+  &.ck-dropdown__panel_ne {
+    border-bottom-left-radius: 0;
+  }
 
-	&.ck-dropdown__panel_nw {
-		border-bottom-right-radius: 0;
-	}
+  &.ck-dropdown__panel_nw {
+    border-bottom-right-radius: 0;
+  }
 }
