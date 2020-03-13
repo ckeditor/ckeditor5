@@ -42,6 +42,7 @@ import RestrictedEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/re
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import TableSelection from '@ckeditor/ckeditor5-table/src/tableselection';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Font from '@ckeditor/ckeditor5-font/src/font';
 import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
@@ -87,6 +88,7 @@ ClassicEditor.builtinPlugins = [
 	Table,
 	TableProperties,
 	TableCellProperties,
+	TableSelection,
 	TableToolbar,
 	Font,
 	Highlight,
