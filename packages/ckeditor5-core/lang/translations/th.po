@@ -23,3 +23,7 @@ msgstr "บันทึก"
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
 msgstr "ยกเลิก"
+
+msgctxt "The label used by a button next to the color palette in the color picker that removes the color (resets it to an empty value, example usages in font color or table properties)."
+msgid "Remove color"
+msgstr "ลบสี"
