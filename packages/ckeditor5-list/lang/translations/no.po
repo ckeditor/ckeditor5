@@ -26,4 +26,4 @@ msgstr "Punktliste"
 
 msgctxt "Toolbar button tooltip for the To-do List feature."
 msgid "To-do List"
-msgstr ""
+msgstr "Oppgaveliste"
