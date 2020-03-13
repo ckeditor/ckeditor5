@@ -62,4 +62,4 @@ msgstr "Kunne ikke laste opp"
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"
-msgstr ""
+msgstr "Verktøylinje for bilde"
