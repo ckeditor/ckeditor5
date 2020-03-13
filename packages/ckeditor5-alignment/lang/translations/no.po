@@ -38,4 +38,4 @@ msgstr "Tekstjustering"
 
 msgctxt "Label used by assistive technologies describing the text alignment feature toolbar."
 msgid "Text alignment toolbar"
-msgstr ""
+msgstr "Verktøylinje for tekstjustering"
