@@ -63,7 +63,7 @@ export default class RemoveColumnCommand extends Command {
 			last: tableMap.find( value => value.cell === lastCell ).column
 		};
 
-		const cellsToFocus = getCellToFocus( firstCell, lastCell );
+		const cellToFocus = getCellToFocus( tableMap, firstCell, lastCell, removedColumnIndexes );
 
 		this.editor.model.change( writer => {
 			// A temporary workaround to avoid the "model-selection-range-intersects" error.
@@ -81,13 +81,21 @@ export default class RemoveColumnCommand extends Command {
 					if ( column <= removedColumnIndex && colspan > 1 && column + colspan > removedColumnIndex ) {
 						updateNumericAttribute( 'colspan', colspan - 1, cell, writer );
 					} else if ( column === removedColumnIndex ) {
+						const cellRow = cell.parent;
+
 						// The cell in removed column has colspan of 1.
 						writer.remove( cell );
+
+						// If the cell was the last one in the row, get rid of the entire row.
+						// https://github.com/ckeditor/ckeditor5/issues/6429
+						if ( !cellRow.childCount ) {
+							writer.remove( cellRow );
+						}
 					}
 				}
 			}
 
-			writer.setSelection( writer.createPositionAt( cellsToFocus.reverse().filter( item => item != null )[ 0 ], 0 ) );
+			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
 	}
 }
@@ -104,18 +112,40 @@ function adjustHeadingColumns( table, removedColumnIndexes, writer ) {
 	}
 }
 
-// Returns a proper table cell to focus after removing a column. It should be a next sibling to selection visually stay in place but:
+// Returns a proper table cell to focus after removing a column.
 // - selection is on last table cell it will return previous cell.
-// - table cell is spanned over 2+ columns - it will be truncated so the selection should stay in that cell.
-function getCellToFocus( firstCell, lastCell ) {
+function getCellToFocus( tableMap, firstCell, lastCell, removedColumnIndexes ) {
 	const colspan = parseInt( lastCell.getAttribute( 'colspan' ) || 1 );
 
+	// If the table cell is spanned over 2+ columns - it will be truncated so the selection should
+	// stay in that cell.
 	if ( colspan > 1 ) {
-		return [ firstCell, lastCell ];
+		return lastCell;
 	}
-
-	// return lastCell.nextSibling ? lastCell.nextSibling : lastCell.previousSibling;
-	return [ firstCell.previousSibling, lastCell.nextSibling ];
+	// Normally, look for the cell in the same row that precedes the first cell to put selection there ("column on the left").
+	// If the deleted column is the first column of the table, there will be no predecessor: use the cell
+	// from the column that follows then (also in the same row).
+	else if ( firstCell.previousSibling || lastCell.nextSibling ) {
+		return lastCell.nextSibling || firstCell.previousSibling;
+	}
+	// It can happen that table cells have no siblings in a row, for instance, when there are row spans
+	// in the table (in the previous row). Then just look for the closest cell that is in a column
+	// that will not be removed to put the selection there.
+	else {
+		// Look for any cell in a column that precedes the first removed column.
+		if ( removedColumnIndexes.first ) {
+			return tableMap.reverse().find( ( { column } ) => {
+				return column < removedColumnIndexes.first;
+			} ).cell;
+		}
+		// If the first removed column is the first column of the table, then
+		// look for any cell that is in a column that follows the last removed column.
+		else {
+			return tableMap.reverse().find( ( { column } ) => {
+				return column > removedColumnIndexes.last;
+			} ).cell;
+		}
+	}
 }
 
 // Returns helper object returning the first and the last cell contained in given selection, based on DOM order.
