@@ -560,11 +560,8 @@ export default class TableUtils extends Plugin {
 	 * @returns {Number}
 	 */
 	getRows( table ) {
-		return [ ...table.getChildren() ].reduce( ( rows, row ) => {
-			const currentRowCount = parseInt( row.getChild( 0 ).getAttribute( 'rowspan' ) || 1 );
-
-			return rows + currentRowCount;
-		}, 0 );
+		// Simple row counting, not including rowspan due to #6427.
+		return table.childCount;
 	}
 }
 
