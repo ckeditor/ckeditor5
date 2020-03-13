@@ -172,6 +172,21 @@ describe( 'transform', () => {
 
 				expectClients( '<paragraph><$text attr="bar">Foo Bar</$text></paragraph>' );
 			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/6265
+			it( 'on elements on different but intersecting "levels"', () => {
+				john.setData( '[<table><tableRow><tableCell><paragraph>Foo</paragraph></tableCell></tableRow></table>]' );
+				kate.setData( '<table><tableRow>[<tableCell><paragraph>Foo</paragraph></tableCell>]</tableRow></table>' );
+
+				john.setAttribute( 'attr', 'foo' );
+				kate.setAttribute( 'attr', 'bar' );
+
+				syncClients();
+
+				expectClients(
+					'<table attr="foo"><tableRow><tableCell attr="bar"><paragraph>Foo</paragraph></tableCell></tableRow></table>'
+				);
+			} );
 		} );
 
 		describe( 'by insert', () => {

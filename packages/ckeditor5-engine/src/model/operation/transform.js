@@ -728,9 +728,14 @@ function padWithNoOps( operations, howMany ) {
 // -----------------------
 
 setTransformation( AttributeOperation, AttributeOperation, ( a, b, context ) => {
-	if ( a.key === b.key ) {
-		// If operations attributes are in conflict, check if their ranges intersect and manage them properly.
-
+	// If operations in conflict, check if their ranges intersect and manage them properly.
+	//
+	// Operations can be in conflict only if:
+	//
+	// * their key is the same (they change the same attribute), and
+	// * they are in the same parent (operations for ranges [ 1 ] - [ 3 ] and [ 2, 0 ] - [ 2, 5 ] change different
+	// elements and can't be in conflict).
+	if ( a.key === b.key && a.range.start.hasSameParentAs( b.range.start ) ) {
 		// First, we want to apply change to the part of a range that has not been changed by the other operation.
 		const operations = a.range.getDifference( b.range ).map( range => {
 			return new AttributeOperation( range, a.key, a.oldValue, a.newValue, 0 );
