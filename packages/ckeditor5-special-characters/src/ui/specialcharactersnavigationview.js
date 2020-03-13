@@ -7,14 +7,14 @@
  * @module special-characters/ui/specialcharactersnavigationview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
-import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
 import {
 	createDropdown,
 	addListToDropdown
 } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+
+import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview';
 
 /**
  * A class representing the navigation part of the special characters UI. It is responsible
@@ -22,7 +22,7 @@ import {
  *
  * @extends module:ui/view~View
  */
-export default class SpecialCharactersNavigationView extends View {
+export default class SpecialCharactersNavigationView extends FormHeaderView {
 	/**
 	 * Creates an instance of the {@link module:special-characters/ui/specialcharactersnavigationview~SpecialCharactersNavigationView}
 	 * class.
@@ -36,14 +36,6 @@ export default class SpecialCharactersNavigationView extends View {
 		const t = locale.t;
 
 		/**
-		 * The label of the navigation view describing its purpose.
-		 *
-		 * @member {module:ui/label/labelview~LabelView}
-		 */
-		this.labelView = new LabelView( locale );
-		this.labelView.text = t( 'Special characters' );
-
-		/**
 		 * A dropdown that allows selecting a group of special characters to be displayed.
 		 *
 		 * @member {module:ui/dropdown/dropdownview~DropdownView}
@@ -51,19 +43,8 @@ export default class SpecialCharactersNavigationView extends View {
 		this.groupDropdownView = this._createGroupDropdown( groupNames );
 		this.groupDropdownView.panelPosition = locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw';
 
-		this.setTemplate( {
-			tag: 'div',
-			attributes: {
-				class: [
-					'ck',
-					'ck-special-characters-navigation'
-				]
-			},
-			children: [
-				this.labelView,
-				this.groupDropdownView
-			]
-		} );
+		this.label = t( 'Special characters' );
+		this.children.add( this.groupDropdownView );
 	}
 
 	/**
@@ -95,7 +76,8 @@ export default class SpecialCharactersNavigationView extends View {
 		dropdown.buttonView.set( {
 			isOn: false,
 			withText: true,
-			tooltip: t( 'Character categories' )
+			tooltip: t( 'Character categories' ),
+			class: [ 'ck-dropdown__button_label-width_auto' ]
 		} );
 
 		dropdown.on( 'execute', evt => {
