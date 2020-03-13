@@ -88,10 +88,12 @@ describe( 'RemoveRowCommand', () => {
 		} );
 
 		it( 'should be false when the first column with rowspan is selected', () => {
-			editor.setData(
-				'<figure class="table"><table><thead><tr><th rowspan="2">☕️ Espresso</th><th>🥛 Milk</th></tr><tr>' +
-				'<th>Steamed</th></tr></thead><tbody><tr><td>✅ yes</td><td>✅ yes</td></tr></tbody></table></figure>'
-			);
+			// (#6427)
+			setData( model, modelTable( [
+				[ { rowspan: 2, contents: '00' }, '01' ],
+				[ '11' ],
+				[ '20', '21' ]
+			] ) );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
