@@ -86,6 +86,16 @@ describe( 'RemoveRowCommand', () => {
 
 			expect( command.isEnabled ).to.be.false;
 		} );
+
+		it( 'should work return a proper value even if there\'s empty row in model', () => {
+			setData( model, modelTable( [
+				[ '00', '01[]' ],
+				[ '10', '11' ],
+				[]
+			] ) );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
 	} );
 
 	describe( 'execute()', () => {
