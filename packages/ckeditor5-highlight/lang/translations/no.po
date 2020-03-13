@@ -50,4 +50,4 @@ msgstr "Utheving"
 
 msgctxt "Label used by assistive technologies describing the highlight feature toolbar."
 msgid "Text highlight toolbar"
-msgstr ""
+msgstr "Verktøylinje for tekstutheving"
