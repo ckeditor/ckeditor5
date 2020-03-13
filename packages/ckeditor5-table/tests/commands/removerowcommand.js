@@ -95,6 +95,13 @@ describe( 'RemoveRowCommand', () => {
 				[ '20', '21' ]
 			] ) );
 
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+			);
+
 			expect( command.isEnabled ).to.be.false;
 		} );
 	} );
