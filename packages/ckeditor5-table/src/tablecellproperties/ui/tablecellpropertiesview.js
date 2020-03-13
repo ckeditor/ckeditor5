@@ -28,7 +28,8 @@ import {
 	getLabeledColorInputCreator
 } from '../../ui/utils';
 import FormRowView from '../../ui/formrowview';
-import FormHeaderView from '../../ui/formheaderview';
+
+import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview';
 
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
