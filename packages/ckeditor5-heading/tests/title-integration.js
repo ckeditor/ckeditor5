@@ -38,7 +38,7 @@ describe( 'Title integration', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'getBody()', () => {
+	describe( 'with basic styles', () => {
 		// See: https://github.com/ckeditor/ckeditor5/issues/6427
 		it( 'does not blow up when applying basic styles', () => {
 			editor.setData( '<h1>Title</h1><p>Foo</p>' );
