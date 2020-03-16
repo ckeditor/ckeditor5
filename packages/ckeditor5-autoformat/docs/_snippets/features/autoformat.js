@@ -20,6 +20,7 @@ ClassicEditor
 				'bold',
 				'italic',
 				'code',
+				'strikethrough',
 				'link',
 				'bulletedList',
 				'numberedList',
