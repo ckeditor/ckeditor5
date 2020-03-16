@@ -12,7 +12,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 import {
 	needsPlaceholder,
@@ -142,13 +141,14 @@ export default class Title extends Plugin {
 	 * @returns {String} The body of the document.
 	 */
 	getBody() {
-		const data = this.editor.data;
-		const model = this.editor.model;
-		const root = this.editor.model.document.getRoot();
-		const viewWriter = new ViewDowncastWriter( new ViewDocument() );
+		const editor = this.editor;
+		const data = editor.data;
+		const model = editor.model;
+		const root = editor.model.document.getRoot();
+		const viewWriter = new ViewDowncastWriter( editor.editing.view.document );
 
 		const rootRange = model.createRangeIn( root );
-		const viewDocumentFragment = new ViewDocumentFragment();
+		const viewDocumentFragment = new ViewDocumentFragment( editor.editing.view.document );
 
 		// Convert the entire root to view.
 		data.mapper.clearBindings();
@@ -171,7 +171,7 @@ export default class Title extends Plugin {
 		viewWriter.remove( viewWriter.createRangeOn( viewDocumentFragment.getChild( 0 ) ) );
 
 		// view -> data
-		return this.editor.data.processor.toData( viewDocumentFragment );
+		return editor.data.processor.toData( viewDocumentFragment );
 	}
 
 	/**
