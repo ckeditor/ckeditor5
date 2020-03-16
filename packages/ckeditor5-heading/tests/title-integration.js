@@ -40,7 +40,7 @@ describe( 'Title integration', () => {
 
 	describe( 'with basic styles', () => {
 		// See: https://github.com/ckeditor/ckeditor5/issues/6427
-		it( 'does not blow up when applying basic styles', () => {
+		it( 'should work when basic styles are applied to the content', () => {
 			editor.setData( '<h1>Title</h1><p>Foo</p>' );
 
 			editor.model.change( writer => {
