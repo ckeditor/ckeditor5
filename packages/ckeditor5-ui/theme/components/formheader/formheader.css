@@ -17,8 +17,4 @@
 	height: var(--ck-table-form-header-height);
 	line-height: var(--ck-table-form-header-height);
 	border-bottom: 1px solid var(--ck-color-base-border);
-
-	& .ck-form__header__label {
-		font-weight: bold;
-	}
 }

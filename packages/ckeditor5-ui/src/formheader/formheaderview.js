@@ -8,6 +8,7 @@
  */
 
 import View from '../view';
+import LabelView from '../label/labelview';
 
 import '../../theme/components/formheader/formheader.css';
 
@@ -41,23 +42,6 @@ export default class FormHeaderView extends View {
 		 */
 		this.children = this.createCollection();
 
-		const label = new View( locale );
-
-		label.setTemplate( {
-			tag: 'span',
-			attributes: {
-				class: [
-					'ck',
-					'ck-form__header__label'
-				]
-			},
-			children: [
-				{ text: bind.to( 'label' ) }
-			]
-		} );
-
-		this.children.add( label );
-
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
@@ -69,5 +53,19 @@ export default class FormHeaderView extends View {
 			},
 			children: this.children
 		} );
+
+		const label = new LabelView( locale );
+
+		label.bind( 'text' ).to( this, 'label' );
+		label.extendTemplate( {
+			attributes: {
+				class: [
+					'ck',
+					'ck-form__header__label'
+				]
+			}
+		} );
+
+		this.children.add( label );
 	}
 }
