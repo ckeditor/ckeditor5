@@ -20,7 +20,7 @@ import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview
  * A class representing the navigation part of the special characters UI. It is responsible
  * for describing the feature and allowing the user to select a particular character group.
  *
- * @extends module:ui/view~View
+ * @extends module:ui/formheader/formheaderview~FormHeaderView
  */
 export default class SpecialCharactersNavigationView extends FormHeaderView {
 	/**
