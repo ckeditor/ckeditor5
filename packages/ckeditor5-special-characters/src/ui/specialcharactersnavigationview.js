@@ -35,6 +35,8 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 
 		const t = locale.t;
 
+		this.set( 'class', 'ck-special-characters-navigation' );
+
 		/**
 		 * A dropdown that allows selecting a group of special characters to be displayed.
 		 *

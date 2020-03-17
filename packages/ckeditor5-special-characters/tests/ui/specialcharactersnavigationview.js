@@ -4,8 +4,10 @@
  */
 
 import SpecialCharactersNavigationView from '../../src/ui/specialcharactersnavigationview';
-import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview';
+import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
+import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 
 describe( 'SpecialCharactersNavigationView', () => {
 	let view, locale;
@@ -26,20 +28,29 @@ describe( 'SpecialCharactersNavigationView', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'creates #labelView', () => {
-			expect( view.labelView ).to.be.instanceOf( LabelView );
-			expect( view.labelView.text ).to.equal( 'Special characters' );
+		it( 'should be an instance of the FormHeaderView', () => {
+			expect( view ).to.be.instanceOf( FormHeaderView );
+		} );
+
+		it( 'should have "Special characters" label', () => {
+			expect( view.label ).to.equal( 'Special characters' );
 		} );
 
 		it( 'creates #groupDropdownView', () => {
+			expect( view.groupDropdownView ).to.be.instanceOf( DropdownView );
 		} );
 
 		it( 'creates #element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-special-characters-navigation' ) ).to.be.true;
 
-			expect( view.element.firstChild ).to.equal( view.labelView.element );
-			expect( view.element.lastChild ).to.equal( view.groupDropdownView.element );
+			expect( view.element.firstChild.classList.contains( 'ck-form__header__label' ) ).to.be.true;
+			expect( view.element.lastChild.classList.contains( 'ck-dropdown' ) ).to.be.true;
+		} );
+
+		it( 'should contain following instances as children: LabelView, Dropdown', () => {
+			expect( view.children.first ).to.be.instanceOf( LabelView );
+			expect( view.children.last ).to.be.instanceOf( DropdownView );
 		} );
 	} );
 
@@ -81,19 +92,6 @@ describe( 'SpecialCharactersNavigationView', () => {
 			view.destroy();
 		} );
 
-		it( 'binds its buttonView#label to #value', () => {
-			expect( groupDropdownView.buttonView.label ).to.equal( 'groupA' );
-
-			groupDropdownView.listView.items.last.children.first.fire( 'execute' );
-			expect( groupDropdownView.buttonView.label ).to.equal( 'groupB' );
-		} );
-
-		it( 'configures the #buttonView', () => {
-			expect( groupDropdownView.buttonView.isOn ).to.be.false;
-			expect( groupDropdownView.buttonView.withText ).to.be.true;
-			expect( groupDropdownView.buttonView.tooltip ).to.equal( 'Character categories' );
-		} );
-
 		it( 'delegates #execute to the naviation view', () => {
 			const spy = sinon.spy();
 
@@ -101,6 +99,27 @@ describe( 'SpecialCharactersNavigationView', () => {
 
 			groupDropdownView.fire( 'execute' );
 			sinon.assert.calledOnce( spy );
+		} );
+
+		describe( 'buttonView', () => {
+			it( 'binds #label to #value', () => {
+				expect( groupDropdownView.buttonView.label ).to.equal( 'groupA' );
+
+				groupDropdownView.listView.items.last.children.first.fire( 'execute' );
+				expect( groupDropdownView.buttonView.label ).to.equal( 'groupB' );
+			} );
+
+			it( 'should be configured by the #groupDropdownView', () => {
+				expect( groupDropdownView.buttonView.isOn ).to.be.false;
+				expect( groupDropdownView.buttonView.withText ).to.be.true;
+				expect( groupDropdownView.buttonView.tooltip ).to.equal( 'Character categories' );
+			} );
+
+			it( 'should have class "ck-dropdown__button_label-width_auto"', () => {
+				const element = groupDropdownView.buttonView.element;
+
+				expect( element.classList.contains( 'ck-dropdown__button_label-width_auto' ) ).to.be.true;
+			} );
 		} );
 
 		describe( 'character group list items', () => {
