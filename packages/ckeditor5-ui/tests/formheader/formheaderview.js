@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
+import View from '../../src/view';
+import ViewCollection from '../../src/viewcollection';
 import FormHeaderView from '../../src/formheader/formheaderview';
 
 describe( 'FormHeaderView', () => {
