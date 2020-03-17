@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/ui/colorinputview
+ * @module ui/formheader/formheaderview
  */
 
 import View from '../view';
