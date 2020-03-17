@@ -18,7 +18,7 @@ When checking how to integrate CKEditor 5 with your framework you can follow the
 
 1. **Check whether an [official integration](#official-wysiwyg-editor-integrations) exists.**
 
-	There are three official integrations so far: for {@link builds/guides/frameworks/react React}, {@link builds/guides/frameworks/angular Angular 2+}, and for {@link builds/guides/frameworks/vuejs Vue.js}.
+	There are three official integrations so far: for {@link builds/guides/frameworks/react React}, {@link builds/guides/frameworks/angular Angular}, and for {@link builds/guides/frameworks/vuejs Vue.js}.
 2. **If not, search for community-driven integrations.** Most of them are available on [npm](https://www.npmjs.com/).
 3. **If none exists, integrate CKEditor 5 with your framework by yourself.**
 
@@ -28,7 +28,7 @@ When checking how to integrate CKEditor 5 with your framework you can follow the
 
 There are three official integrations so far:
 
-* {@link builds/guides/frameworks/angular CKEditor 5 rich-text editor for Angular 2+}
+* {@link builds/guides/frameworks/angular CKEditor 5 rich-text editor for Angular}
 * {@link builds/guides/frameworks/react CKEditor 5 rich-text editor for React}
 * {@link builds/guides/frameworks/vuejs CKEditor 5 rich-text editor for Vue.js}
 
@@ -44,7 +44,7 @@ Check out a [sweet screencast of CKEditor 5 with real-time collaborative editing
 
 ## Compatibility with Ionic and Cordova
 
-CKEditor 5 is compatible with [Ionic framework](https://ionicframework.com/) and [Cordova](https://cordova.apache.org/). However, Ionic disables `user-select` by default, what [blocks typing via the virtual keyboard](https://github.com/ckeditor/ckeditor5/issues/701). It's required to set this property to `text` on the CKEditor component. Just update your stylesheet with the following code:
+CKEditor 5 is compatible with [Ionic framework](https://ionicframework.com/) and [Cordova](https://cordova.apache.org/). However, by default Ionic disables `user-select`, which [blocks typing via the virtual keyboard](https://github.com/ckeditor/ckeditor5/issues/701). It is required to set this property to `text` on the CKEditor component. Just update your stylesheet with the following code:
 
 ```css
 ckeditor {
