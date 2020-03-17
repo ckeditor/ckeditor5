@@ -13,7 +13,7 @@
 	flex-wrap: nowrap;
 	align-items: center;
 	justify-content: space-between;
-	padding: var(--ck-spacing-small) var(--ck-spacing-standard);
+	padding: var(--ck-spacing-small) var(--ck-spacing-large);
 	height: var(--ck-table-form-header-height);
 	line-height: var(--ck-table-form-header-height);
 	border-bottom: 1px solid var(--ck-color-base-border);
