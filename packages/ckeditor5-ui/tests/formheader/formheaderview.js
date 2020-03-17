@@ -4,8 +4,8 @@
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import FormHeaderView from '../../src/formheader/formheaderview';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
+import FormHeaderView from '../../src/formheader/formheaderview';
 
 describe( 'FormHeaderView', () => {
 	let view, locale;
