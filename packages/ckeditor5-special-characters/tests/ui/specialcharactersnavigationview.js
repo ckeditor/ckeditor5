@@ -6,7 +6,7 @@
 import SpecialCharactersNavigationView from '../../src/ui/specialcharactersnavigationview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview';
-import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
+import View from '@ckeditor/ckeditor5-ui/src/view';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 
 describe( 'SpecialCharactersNavigationView', () => {
@@ -48,8 +48,8 @@ describe( 'SpecialCharactersNavigationView', () => {
 			expect( view.element.lastChild.classList.contains( 'ck-dropdown' ) ).to.be.true;
 		} );
 
-		it( 'should contain following instances as children: LabelView, Dropdown', () => {
-			expect( view.children.first ).to.be.instanceOf( LabelView );
+		it( 'should contain following instances as children: View, Dropdown', () => {
+			expect( view.children.first ).to.be.instanceOf( View );
 			expect( view.children.last ).to.be.instanceOf( DropdownView );
 		} );
 	} );
