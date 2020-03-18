@@ -45,7 +45,14 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 		this.groupDropdownView = this._createGroupDropdown( groupNames );
 		this.groupDropdownView.panelPosition = locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw';
 
+		/**
+		 * @inheritDoc
+		 */
 		this.label = t( 'Special characters' );
+
+		/**
+		 * @inheritDoc
+		 */
 		this.children.add( this.groupDropdownView );
 	}
 
