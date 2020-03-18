@@ -11,7 +11,20 @@ import View from '../view';
 
 import '../../theme/components/formheader/formheader.css';
 
+/**
+ * The form header view class.
+ *
+ * @extends module:ui/view~View
+ */
 export default class FormHeaderView extends View {
+	/**
+	 * Creates an instance of the form header class.
+	 *
+	 * @param {module:utils/locale~Locale} locale The locale instance.
+	 * @param {Object} options
+	 * @param {String} [options.label] A label.
+	 * @param {String} [options.class] An additional class.
+	 */
 	constructor( locale, options = {} ) {
 		super( locale );
 
