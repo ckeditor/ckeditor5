@@ -16,6 +16,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget/src/utils';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import Model from '@ckeditor/ckeditor5-ui/src/model';
 
 class InlineWidget extends Plugin {
 	constructor( editor ) {
@@ -106,15 +107,67 @@ class InlineWidget extends Plugin {
 	}
 }
 
+class MentionCommandSwitcher extends Plugin {
+	constructor( editor ) {
+		super( editor );
+
+		this.model = new Model( {
+			isEnabled: true,
+			isInitialized: false
+		} );
+	}
+
+	init() {
+		const editor = this.editor;
+		const command = editor.commands.get( 'mention' );
+
+		editor.ui.componentFactory.add( 'toggleMentionCommand', locale => {
+			const view = new ButtonView( locale );
+
+			view.set( {
+				label: 'Mentions',
+				tooltip: true,
+				withText: true,
+				isToggleable: true
+			} );
+
+			view.bind( 'isOn' ).to( this.model, 'isEnabled' );
+
+			this.listenTo( view, 'execute', () => {
+				this.model.isEnabled = !this.model.isEnabled;
+			} );
+
+			return view;
+		} );
+
+		this.model.on( 'change:isEnabled', ( evt, name, value ) => {
+			command.isEnabled = value;
+		} );
+
+		// block other sources of change
+		command.on( 'change:isEnabled', evt => {
+			if ( !this.model.isInitialized ) {
+				this.model.isInitialized = true;
+				this.model.isEnabled = command.isEnabled;
+			}
+
+			if ( !this.model.isEnabled ) {
+				command.isEnabled = false;
+				evt.stop();
+			}
+		}, { priority: 'lowest' } );
+	}
+}
+
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Underline, Font, Mention, InlineWidget ],
+		plugins: [ ArticlePluginSet, Underline, Font, Mention, InlineWidget, MentionCommandSwitcher ],
 		toolbar: [
 			'heading',
 			'|', 'bulletedList', 'numberedList', 'blockQuote',
 			'|', 'bold', 'italic', 'underline', 'link',
 			'|', 'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor',
-			'|', 'insertTable', 'placeholder',
+			'|', 'insertTable', 'placeholder', 'toggleMentionCommand',
 			'|', 'undo', 'redo'
 		],
 		image: {
