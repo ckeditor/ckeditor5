@@ -227,7 +227,10 @@ Then, add two new elements to the exported object under the `module.rules` array
 		{
 			loader: 'style-loader',
 			options: {
-				injectType: 'singletonStyleTag'
+				injectType: 'singletonStyleTag',
+				attributes: {
+					'data-cke': true
+				}
 			}
 		},
 		{
@@ -472,7 +475,10 @@ Then add two new elements to the exported object under the `module.rules` array 
 		{
 			loader: 'style-loader',
 			options: {
-				injectType: 'singletonStyleTag'
+				injectType: 'singletonStyleTag',
+				attributes: {
+					'data-cke': true
+				}
 			}
 		},
 		{
