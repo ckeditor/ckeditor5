@@ -8,7 +8,6 @@
  */
 
 import View from '../view';
-import LabelView from '../label/labelview';
 
 import '../../theme/components/formheader/formheader.css';
 
@@ -21,7 +20,7 @@ export default class FormHeaderView extends View {
 		/**
 		 * The label of the header.
 		 *
-		 * @readonly
+		 * @observable
 		 * @member {String} #label
 		 */
 		this.set( 'label', options.label || '' );
@@ -54,16 +53,19 @@ export default class FormHeaderView extends View {
 			children: this.children
 		} );
 
-		const label = new LabelView( locale );
+		const label = new View( locale );
 
-		label.bind( 'text' ).to( this, 'label' );
-		label.extendTemplate( {
+		label.setTemplate( {
+			tag: 'span',
 			attributes: {
 				class: [
 					'ck',
 					'ck-form__header__label'
 				]
-			}
+			},
+			children: [
+				{ text: bind.to( 'label' ) }
+			]
 		} );
 
 		this.children.add( label );
