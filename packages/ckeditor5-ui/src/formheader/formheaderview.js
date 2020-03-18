@@ -12,7 +12,9 @@ import View from '../view';
 import '../../theme/components/formheader/formheader.css';
 
 /**
- * The form header view class.
+ * The class representing a form header view, used i.a.
+ * by {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}
+ * and {@link module:special-characters/ui/specialcharactersnavigationview~SpecialCharactersNavigationView}.
  *
  * @extends module:ui/view~View
  */
