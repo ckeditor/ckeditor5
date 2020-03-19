@@ -3,6 +3,28 @@ Changelog
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5/compare/v17.0.0...v18.0.0) (2020-03-19)
 
+We are happy to announce the release of CKEditor 5 v18.0.0. This release introduces support for [selecting multiple table cells, rows or columns](https://github.com/ckeditor/ckeditor5/issues/3202) and it improves [structure retention for lists pasted from Microsoft Word](https://github.com/ckeditor/ckeditor5/issues/2518).
+
+We also modified our builds [to include the text transformation plugin](https://github.com/ckeditor/ckeditor5/issues/6304) and [enabled toolbar item grouping for the inline editor and balloon editor builds](https://github.com/ckeditor/ckeditor5/issues/5597).
+
+As usual, we also fixed a couple of bugs and improved existing features, mostly in the table plugin.
+
+Finally, this release comes with a couple of **important breaking changes**. The most notable ones are:
+
+* Constructor for `EditingController`, `DataController` and `View` classes now require a `StylesProcessor` instance. See https://github.com/ckeditor/ckeditor5-engine/releases/tag/v18.0.0 for more information.
+* Constructor for `DomConverter`, `HtmlDataProcessor` and `XmlDataProcessor` classes and the `createViewElementFromHighlightDescriptor()` function now require an instance of view document. See https://github.com/ckeditor/ckeditor5-engine/releases/tag/v18.0.0 for more information.
+* The `#document` getter was removed from model nodes. See https://github.com/ckeditor/ckeditor5-engine/releases/tag/v18.0.0 for more information.
+* The `GFMDataProcessor()` requires the view document instance as its first parameter. See https://github.com/ckeditor/ckeditor5-markdown-gfm/releases/tag/v18.0.0 for more information.
+* The `BalloonToolbar` plugin now groups the overflowing items by default. See https://github.com/ckeditor/ckeditor5-ui/releases/tag/v18.0.0 for more information.
+
+Check the list of packages below to learn more about other breaking changes.
+
+Blog post coming soon...
+
+### Collaboration features
+
+The CKEditor 5 Collaboration features changelog can be found here: https://ckeditor.com/collaboration/changelog.
+
 ### Dependencies
 
 Major releases (contain major breaking changes):
