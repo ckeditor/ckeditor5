@@ -367,7 +367,7 @@ describe( 'Autoformat', () => {
 			expect( getData( model ) ).to.equal( '<paragraph><$text code="true">foobar</$text>[]</paragraph>' );
 		} );
 
-		it( 'should replace both "~~`" with strikethrough', () => {
+		it( 'should replace both "~~" with strikethrough', () => {
 			setData( model, '<paragraph>~~foobar~[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( '~', doc.selection.getFirstPosition() );
