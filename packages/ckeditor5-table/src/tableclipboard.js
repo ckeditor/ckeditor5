@@ -11,9 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableSelection from './tableselection';
 
 /**
- * The table clipboard integration plugin.
- *
- * It introduces the ability to copy selected table cells.
+ * This plugin adds support for copying/cutting/pasting fragments of tables.
+ * It is loaded automatically by the {@link module:table/table~Table} plugin.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -46,9 +45,9 @@ export default class TableClipboard extends Plugin {
 	/**
 	 * Copies table content to a clipboard on "copy" & "cut" events.
 	 *
+	 * @private
 	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
 	 * @param {Object} data Clipboard event data.
-	 * @private
 	 */
 	_onCopyCut( evt, data ) {
 		const tableSelection = this.editor.plugins.get( 'TableSelection' );
