@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## [18.0.0](https://github.com/ckeditor/ckeditor5-paste-from-office/compare/v17.0.0...v18.0.0) (2020-03-19)
+
+### Features
+
+* Added support for basic list indentation when pasting from Microsoft Word. Closes [ckeditor/ckeditor5#2518](https://github.com/ckeditor/ckeditor5/issues/2518). ([58ae829](https://github.com/ckeditor/ckeditor5-paste-from-office/commit/58ae829))
+
+  Thanks to [gjhenrique](https://github.com/gjhenrique) for the contribution!
+
+
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-paste-from-office/compare/v16.0.0...v17.0.0) (2020-02-19)
 
 Internal changes only (updated dependencies, documentation, etc.).
