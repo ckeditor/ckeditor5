@@ -6,12 +6,12 @@ Changelog
 ### Features
 
 * Brought styles for the new [`BalloonPanelView.defaultPositions`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ui_panel_balloon_balloonpanelview-BalloonPanelView.html#static-member-defaultPositions). Adjusted toolbar styles for better items grouping in different scenarios (see [ckeditor/ckeditor5#5597](https://github.com/ckeditor/ckeditor5/issues/5597)). ([0c17040](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0c17040))
-* Brought the right–to–left UI styles to the table and table cell property forms (see [ckeditor/ckeditor5#6107](https://github.com/ckeditor/ckeditor5/issues/6107)). ([931351c](https://github.com/ckeditor/ckeditor5-theme-lark/commit/931351c))
+* Introduced RTL support to the table and table cell property forms (see [ckeditor/ckeditor5#6107](https://github.com/ckeditor/ckeditor5/issues/6107)). ([931351c](https://github.com/ckeditor/ckeditor5-theme-lark/commit/931351c))
 
 ### Bug fixes
 
-* Background color of a table cell should blend with the background of an entire table. Closes [ckeditor/ckeditor5#6229](https://github.com/ckeditor/ckeditor5/issues/6229). ([f5312ed](https://github.com/ckeditor/ckeditor5-theme-lark/commit/f5312ed))
-* Pointer inside the restricted editing exception should be set to text for all children. Closes [ckeditor/ckeditor5#6272](https://github.com/ckeditor/ckeditor5/issues/6272). ([a20d13b](https://github.com/ckeditor/ckeditor5-theme-lark/commit/a20d13b))
+* The focused table cell background color should blend with the pre-existing cell background rather than completely override it. Closes [ckeditor/ckeditor5#6229](https://github.com/ckeditor/ckeditor5/issues/6229). ([f5312ed](https://github.com/ckeditor/ckeditor5-theme-lark/commit/f5312ed))
+* Pointer inside a restricted editing exception should be set to text for all the children. Closes [ckeditor/ckeditor5#6272](https://github.com/ckeditor/ckeditor5/issues/6272). ([a20d13b](https://github.com/ckeditor/ckeditor5-theme-lark/commit/a20d13b))
 
 
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v16.0.0...v17.0.0) (2020-02-19)
