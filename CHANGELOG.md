@@ -11,13 +11,13 @@ As usual, we also fixed a couple of bugs and improved existing features, mostly 
 
 Finally, this release comes with a couple of **important breaking changes**. The most notable ones are:
 
-* Constructor for `EditingController`, `DataController` and `View` classes now require a `StylesProcessor` instance. See https://github.com/ckeditor/ckeditor5-engine/releases/tag/v18.0.0 for more information.
-* Constructor for `DomConverter`, `HtmlDataProcessor` and `XmlDataProcessor` classes and the `createViewElementFromHighlightDescriptor()` function now require an instance of view document. See https://github.com/ckeditor/ckeditor5-engine/releases/tag/v18.0.0 for more information.
-* The `#document` getter was removed from model nodes. See https://github.com/ckeditor/ckeditor5-engine/releases/tag/v18.0.0 for more information.
-* The `GFMDataProcessor()` requires the view document instance as its first parameter. See https://github.com/ckeditor/ckeditor5-markdown-gfm/releases/tag/v18.0.0 for more information.
-* The `BalloonToolbar` plugin now groups the overflowing items by default. See https://github.com/ckeditor/ckeditor5-ui/releases/tag/v18.0.0 for more information.
+* Constructor for `EditingController`, `DataController` and `View` classes now require a `StylesProcessor` instance.
+* Constructor for `DomConverter`, `HtmlDataProcessor` and `XmlDataProcessor` classes and the `createViewElementFromHighlightDescriptor()` function now require an instance of view document.
+* The `#document` getter was removed from model nodes.
+* The `GFMDataProcessor()` requires the view document instance as its first parameter.
+* The `BalloonToolbar` plugin now groups the overflowing items by default.
 
-Check the list of packages below to learn more about other breaking changes.
+Check the list of packages below to learn more about above and other minor breaking changes.
 
 Blog post coming soon...
 
