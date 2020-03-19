@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/labeledview/utils
+ * @module ui/labeledfieldview/utils
  */
 
 import InputTextView from '../inputtext/inputtextview';
@@ -14,7 +14,7 @@ import { createDropdown } from '../dropdown/utils';
  * A helper for creating labeled inputs.
  *
  * It creates an instance of a {@link module:ui/inputtext/inputtextview~InputTextView input text} that is
- * logically related to a {@link module:ui/labeledview/labeledview~LabeledView labeled view} in DOM.
+ * logically related to a {@link module:ui/labeledfieldview/labeledfieldview~LabeledFieldView labeled view} in DOM.
  *
  * The helper does the following:
  *
@@ -25,31 +25,31 @@ import { createDropdown } from '../dropdown/utils';
  *
  * Usage:
  *
- *		const labeledInputView = new LabeledView( locale, createLabeledDropdown );
+ *		const labeledInputView = new LabeledFieldView( locale, createLabeledDropdown );
  *		console.log( labeledInputView.view ); // An input instance.
  *
- * @param {module:ui/labeledview/labeledview~LabeledView} labeledView The instance of the labeled view.
+ * @param {module:ui/labeledfieldview/labeledfieldview~LabeledFieldView} labeledFieldView The instance of the labeled view.
  * @param {String} viewUid An UID string that allows DOM logical connection between the
- * {@link module:ui/labeledview/labeledview~LabeledView#labelView labeled view's label} and the input.
+ * {@link module:ui/labeledfieldview/labeledfieldview~LabeledFieldView#labelView labeled view's label} and the input.
  * @param {String} statusUid An UID string that allows DOM logical connection between the
- * {@link module:ui/labeledview/labeledview~LabeledView#statusView labeled view's status} and the input.
+ * {@link module:ui/labeledfieldview/labeledfieldview~LabeledFieldView#statusView labeled view's status} and the input.
  * @returns {module:ui/inputtext/inputtextview~InputTextView} The input text view instance.
  */
-export function createLabeledInputText( labeledView, viewUid, statusUid ) {
-	const inputView = new InputTextView( labeledView.locale );
+export function createLabeledInputText( labeledFieldView, viewUid, statusUid ) {
+	const inputView = new InputTextView( labeledFieldView.locale );
 
 	inputView.set( {
 		id: viewUid,
 		ariaDescribedById: statusUid
 	} );
 
-	inputView.bind( 'isReadOnly' ).to( labeledView, 'isEnabled', value => !value );
-	inputView.bind( 'hasError' ).to( labeledView, 'errorText', value => !!value );
+	inputView.bind( 'isReadOnly' ).to( labeledFieldView, 'isEnabled', value => !value );
+	inputView.bind( 'hasError' ).to( labeledFieldView, 'errorText', value => !!value );
 
 	inputView.on( 'input', () => {
 		// UX: Make the error text disappear and disable the error indicator as the user
 		// starts fixing the errors.
-		labeledView.errorText = null;
+		labeledFieldView.errorText = null;
 	} );
 
 	return inputView;
@@ -59,7 +59,7 @@ export function createLabeledInputText( labeledView, viewUid, statusUid ) {
  * A helper for creating labeled dropdowns.
  *
  * It creates an instance of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown} that is
- * logically related to a {@link module:ui/labeledview/labeledview~LabeledView labeled view}.
+ * logically related to a {@link module:ui/labeledfieldview/labeledfieldview~LabeledFieldView labeled view}.
  *
  * The helper does the following:
  *
@@ -68,25 +68,25 @@ export function createLabeledInputText( labeledView, viewUid, statusUid ) {
  *
  * Usage:
  *
- *		const labeledInputView = new LabeledView( locale, createLabeledDropdown );
+ *		const labeledInputView = new LabeledFieldView( locale, createLabeledDropdown );
  *		console.log( labeledInputView.view ); // A dropdown instance.
  *
- * @param {module:ui/labeledview/labeledview~LabeledView} labeledView The instance of the labeled view.
+ * @param {module:ui/labeledfieldview/labeledfieldview~LabeledFieldView} labeledFieldView The instance of the labeled view.
  * @param {String} viewUid An UID string that allows DOM logical connection between the
- * {@link module:ui/labeledview/labeledview~LabeledView#labelView labeled view label} and the dropdown.
+ * {@link module:ui/labeledfieldview/labeledfieldview~LabeledFieldView#labelView labeled view label} and the dropdown.
  * @param {String} statusUid An UID string that allows DOM logical connection between the
- * {@link module:ui/labeledview/labeledview~LabeledView#statusView labeled view status} and the dropdown.
+ * {@link module:ui/labeledfieldview/labeledfieldview~LabeledFieldView#statusView labeled view status} and the dropdown.
  * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
  */
-export function createLabeledDropdown( labeledView, viewUid, statusUid ) {
-	const dropdownView = createDropdown( labeledView.locale );
+export function createLabeledDropdown( labeledFieldView, viewUid, statusUid ) {
+	const dropdownView = createDropdown( labeledFieldView.locale );
 
 	dropdownView.set( {
 		id: viewUid,
 		ariaDescribedById: statusUid
 	} );
 
-	dropdownView.bind( 'isEnabled' ).to( labeledView );
+	dropdownView.bind( 'isEnabled' ).to( labeledFieldView );
 
 	return dropdownView;
 }
