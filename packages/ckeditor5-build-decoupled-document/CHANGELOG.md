@@ -3,6 +3,12 @@ Changelog
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v17.0.0...v18.0.0) (2020-03-19)
 
+We are happy to announce the release of CKEditor 5 v18.0.0.
+
+Refer to the [main changelog](https://github.com/ckeditor/ckeditor5/releases/tag/v18.0.0) to find out about all the new features, improvements and possible breaking changes.
+
+Blog post coming soon...
+
 ### Features
 
 Besides new features introduced by the dependencies, this version also introduces the following features:
