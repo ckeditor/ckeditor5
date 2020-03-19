@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [18.0.0](https://github.com/ckeditor/ckeditor5-horizontal-line/compare/v17.0.0...v18.0.0) (2020-03-19)
+
+### Other changes
+
+* Updated translations. ([ed01f6d](https://github.com/ckeditor/ckeditor5-horizontal-line/commit/ed01f6d)) 
+
+
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-horizontal-line/compare/v16.0.0...v17.0.0) (2020-02-19)
 
 ### Bug fixes
