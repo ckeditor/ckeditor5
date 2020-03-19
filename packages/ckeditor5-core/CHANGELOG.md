@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [18.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v17.0.0...v18.0.0) (2020-03-19)
+
+### Other changes
+
+* Updated translations. ([c898ffc](https://github.com/ckeditor/ckeditor5-core/commit/c898ffc)) 
+
+
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v16.0.0...v17.0.0) (2020-02-19)
 
 ### Features
