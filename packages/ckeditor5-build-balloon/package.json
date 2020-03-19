@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-build-balloon",
-  "version": "17.0.0",
+  "version": "18.0.0",
   "description": "The balloon editor build of CKEditor 5 – the best browser-based rich text editor.",
   "keywords": [
     "wysiwyg",
