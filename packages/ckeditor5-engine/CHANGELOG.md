@@ -5,12 +5,12 @@ Changelog
 
 ### MAJOR BREAKING CHANGES
 
-* `EditingController` requires an instance of StylesProcessor in its constructor.
-* `DataController` requires an instance of StylesProcessor in its constructor.
+* `EditingController` requires an instance of `StylesProcessor` in its constructor.
+* `DataController` requires an instance of `StylesProcessor` in its constructor.
 * `DomConverter`, `HtmlDataProcessor` and `XmlDataProcessor` require an instance of the view document in their constructors.
 * The `View` class requires an instance of `StylesProcessor` as its first argument.
 * The `createViewElementFromHighlightDescriptor()` function that is exported by `src/conversion/downcasthelpers.js` file requires an instance of the view document as its first argument.
-* Method `view.Document#addStyleProcessorRules()` has been moved to DataController class.
+* Method `view.Document#addStyleProcessorRules()` has been moved to the `DataController` class.
 * The `#document` getter was removed from model nodes. Only the root element holds the reference to the model document. For attached nodes, use `node.root.document` to access it.
 
 ### MINOR BREAKING CHANGES
