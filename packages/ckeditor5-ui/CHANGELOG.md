@@ -1,6 +1,25 @@
 Changelog
 =========
 
+## [18.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v17.0.0...v18.0.0) (2020-03-19)
+
+### MAJOR BREAKING CHANGES
+
+* The `BalloonToolbar` plugin groups overflowing items now by default. This can be disabled via the editor configuration by setting `config.balloonToolbar.shouldNotGroupWhenFull = true`.
+
+[`BalloonPanelView.defaultPositions`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ui_panel_balloon_balloonpanelview-BalloonPanelView.html#static-member-defaultPositions) has been extended with additional positions. Please refer to the documentation to learn more.
+
+### Features
+
+* The `BalloonToolbar` plugin should group items when its width is close to related editable's width. Closes [ckeditor/ckeditor5#5597](https://github.com/ckeditor/ckeditor5/issues/5597). Closes [ckeditor/ckeditor5#5501](https://github.com/ckeditor/ckeditor5/issues/5501). ([d36fd23](https://github.com/ckeditor/ckeditor5-ui/commit/d36fd23))
+
+  [`BalloonPanelView.defaultPositions`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ui_panel_balloon_balloonpanelview-BalloonPanelView.html#static-member-defaultPositions) has been extended with additional positions. Please refer to the documentation to learn more.
+
+### Other changes
+
+* Updated translations. ([ace38eb](https://github.com/ckeditor/ckeditor5-ui/commit/ace38eb)) 
+
+
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v16.0.0...v17.0.0) (2020-02-19)
 
 ### Features
