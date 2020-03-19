@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [18.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v17.0.0...v18.0.0) (2020-03-19)
+
+### Other changes
+
+* Updated translations. ([f1beaaa](https://github.com/ckeditor/ckeditor5-alignment/commit/f1beaaa)) 
+
+
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v16.0.0...v17.0.0) (2020-02-18)
 
 ### MAJOR BREAKING CHANGES
