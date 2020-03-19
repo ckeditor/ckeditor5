@@ -5,7 +5,7 @@ Changelog
 
 ### MAJOR BREAKING CHANGES
 
-* From now on, the inline toolbar groups overflowing items by default. This behavior can be disabled via the editor config by setting the [`config.toolbar.shouldNotGroupWhenFull: true`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editorconfig-EditorConfig.html#member-toolbar) option.
+* From now on, the inline toolbar groups overflowing items by default. This behavior can be disabled by setting the [`config.toolbar.shouldNotGroupWhenFull`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ui_toolbar_toolbarview-ToolbarOptions.html#member-shouldGroupWhenFull) configuration option to `true`.
 
 ### Features
 
