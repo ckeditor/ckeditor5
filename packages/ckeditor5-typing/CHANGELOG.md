@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## [18.0.0](https://github.com/ckeditor/ckeditor5-typing/compare/v17.0.0...v18.0.0) (2020-03-19)
+
+### Other changes
+
+* `DeleteCommand` should pass its direction to `Model#deleteContent()`. Closes [ckeditor/ckeditor5#6355](https://github.com/ckeditor/ckeditor5/issues/6355). See [ckeditor/ckeditor5#6356](https://github.com/ckeditor/ckeditor5/issues/6356). ([cb75e45](https://github.com/ckeditor/ckeditor5-typing/commit/cb75e45))
+* Introduced support for multi-range selections. See [ckeditor/ckeditor5#6116](https://github.com/ckeditor/ckeditor5/issues/6116). ([64daf31](https://github.com/ckeditor/ckeditor5-typing/commit/64daf31))
+* Run only one instance of the `TextWatcher` for all text transformations. Closes [ckeditor/ckeditor5#6020](https://github.com/ckeditor/ckeditor5/issues/6020). ([550426d](https://github.com/ckeditor/ckeditor5-typing/commit/550426d))
+
+
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-typing/compare/v16.0.0...v17.0.0) (2020-02-19)
 
 ### Features
