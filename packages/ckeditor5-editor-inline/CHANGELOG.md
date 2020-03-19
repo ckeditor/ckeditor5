@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [18.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v17.0.0...v18.0.0) (2020-03-19)
+
+### MAJOR BREAKING CHANGES
+
+* From now on, the inline toolbar groups overflowing items by default. This behavior can be disabled via the editor config by setting the [`config.toolbar.shouldNotGroupWhenFull: true`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editorconfig-EditorConfig.html#member-toolbar) option.
+
+### Features
+
+* The inline editor toolbar should group items when its width exceeds the editable’s width (see [ckeditor/ckeditor5#5597](https://github.com/ckeditor/ckeditor5/issues/5597)). ([1c5746c](https://github.com/ckeditor/ckeditor5-editor-inline/commit/1c5746c))
+
+
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v16.0.0...v17.0.0) (2020-02-19)
 
 Internal changes only (updated dependencies, documentation, etc.).
