@@ -1,6 +1,30 @@
 Changelog
 =========
 
+## [18.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v17.0.0...v18.0.0) (2020-03-19)
+
+### Features
+
+* Brought the support for right–to–left languages to the table and table cell property forms. Closes [ckeditor/ckeditor5#6107](https://github.com/ckeditor/ckeditor5/issues/6107). ([3a92fc4](https://github.com/ckeditor/ckeditor5-table/commit/3a92fc4))
+* Clear selected table contents (in case of multi-cell selection) on various occasions: when cutting the content, starting typing, when pressing <kbd>Enter</kbd>, etc. Closes [ckeditor/ckeditor5#6119](https://github.com/ckeditor/ckeditor5/issues/6119). Closes [ckeditor/ckeditor5#6284](https://github.com/ckeditor/ckeditor5/issues/6284). Closes [ckeditor/ckeditor5#6301](https://github.com/ckeditor/ckeditor5/issues/6301). ([379c022](https://github.com/ckeditor/ckeditor5-table/commit/379c022))
+* Copy selected table fragment. Closes [ckeditor/ckeditor5#6118](https://github.com/ckeditor/ckeditor5/issues/6118). ([1a4ff35](https://github.com/ckeditor/ckeditor5-table/commit/1a4ff35))
+* Introduced the `TableSelection` plugin. Closes [ckeditor/ckeditor5#6113](https://github.com/ckeditor/ckeditor5/issues/6113). ([281dba5](https://github.com/ckeditor/ckeditor5-table/commit/281dba5))
+* Table cell properties form should handle multi-cell selections. Closes [ckeditor/ckeditor5#6150](https://github.com/ckeditor/ckeditor5/issues/6150). ([52acb0c](https://github.com/ckeditor/ckeditor5-table/commit/52acb0c))
+
+### Bug fixes
+
+* Merge left and right commands should be always enabled if the execution does not cross the heading column boundary. Closes [ckeditor/ckeditor5#6368](https://github.com/ckeditor/ckeditor5/issues/6368). ([c088814](https://github.com/ckeditor/ckeditor5-table/commit/c088814))
+* Remove row command should not leave empty rows when there are `rowspans` in the structure. Closes [[ckeditor/ckeditor5#6429](https://github.com/ckeditor/ckeditor5/issues/6429)](https://github.com/ckeditor/ckeditor5/issues/6429). ([138a4a8](https://github.com/ckeditor/ckeditor5-table/commit/138a4a8))
+* Removing the last table row should not crash the editor. Closes [ckeditor/ckeditor5#6370](https://github.com/ckeditor/ckeditor5/issues/6370). ([df088f7](https://github.com/ckeditor/ckeditor5-table/commit/df088f7))
+* Table border styles conversion handler should not throw when it approaches a nested table. Closes [ckeditor/ckeditor5#6177](https://github.com/ckeditor/ckeditor5/issues/6177). ([a754898](https://github.com/ckeditor/ckeditor5-table/commit/a754898))
+
+### Other changes
+
+* Added a possibility to insert column or row with multiple selected cells. Closes [ckeditor/ckeditor5#6125](https://github.com/ckeditor/ckeditor5/issues/6125). ([f3d1dee](https://github.com/ckeditor/ckeditor5-table/commit/f3d1dee))
+* The default background color for the table headers should blend with the background of the entire table instead of overriding it. Closes [ckeditor/ckeditor5#6228](https://github.com/ckeditor/ckeditor5/issues/6228). ([b53032d](https://github.com/ckeditor/ckeditor5-table/commit/b53032d))
+* Updated translations. ([70b8af5](https://github.com/ckeditor/ckeditor5-table/commit/70b8af5)) 
+
+
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v16.0.0...v17.0.0) (2020-02-19)
 
 ### Features
