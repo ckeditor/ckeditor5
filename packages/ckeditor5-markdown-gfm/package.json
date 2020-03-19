@@ -10,7 +10,7 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-engine": "^17.0.0"
+    "@ckeditor/ckeditor5-engine": "^18.0.0"
   },
   "devDependencies": {
     "eslint": "^5.5.0",
