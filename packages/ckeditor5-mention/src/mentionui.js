@@ -406,8 +406,8 @@ export default class MentionUI extends Plugin {
 			this._hideUIAndRemoveMarker();
 		} );
 
-		const command = editor.commands.get( 'mention' );
-		watcher.bind( 'isEnabled' ).to( command );
+		const mentionCommand = editor.commands.get( 'mention' );
+		watcher.bind( 'isEnabled' ).to( mentionCommand );
 
 		return watcher;
 	}
