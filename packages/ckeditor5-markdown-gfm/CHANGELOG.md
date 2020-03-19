@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [18.0.0](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v17.0.0...v18.0.0) (2020-03-19)
+
+### MAJOR BREAKING CHANGES
+
+* The `GFMDataProcessor()` requires the view document instance as its first parameter.
+
+### Other changes
+
+* Adjusted the data processor implementation to changes in `ckeditor5-engine`. See [ckeditor/ckeditor5#6091](https://github.com/ckeditor/ckeditor5/issues/6091). ([ce2cc01](https://github.com/ckeditor/ckeditor5-markdown-gfm/commit/ce2cc01))
+
+
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v16.0.0...v17.0.0) (2020-02-19)
 
 Internal changes only (updated dependencies, documentation, etc.).
