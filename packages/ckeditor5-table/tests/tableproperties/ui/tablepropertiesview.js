@@ -6,7 +6,7 @@
 /* globals Event */
 
 import TablePropertiesView from '../../../src/tableproperties/ui/tablepropertiesview';
-import LabeledView from '@ckeditor/ckeditor5-ui/src/labeledview/labeledview';
+import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfieldview/labeledfieldview';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
@@ -90,12 +90,12 @@ describe( 'table properties', () => {
 			} );
 
 			it( 'should create child views (and references)', () => {
-				expect( view.borderStyleDropdown ).to.be.instanceOf( LabeledView );
-				expect( view.borderWidthInput ).to.be.instanceOf( LabeledView );
-				expect( view.borderColorInput ).to.be.instanceOf( LabeledView );
-				expect( view.backgroundInput ).to.be.instanceOf( LabeledView );
-				expect( view.widthInput ).to.be.instanceOf( LabeledView );
-				expect( view.heightInput ).to.be.instanceOf( LabeledView );
+				expect( view.borderStyleDropdown ).to.be.instanceOf( LabeledFieldView );
+				expect( view.borderWidthInput ).to.be.instanceOf( LabeledFieldView );
+				expect( view.borderColorInput ).to.be.instanceOf( LabeledFieldView );
+				expect( view.backgroundInput ).to.be.instanceOf( LabeledFieldView );
+				expect( view.widthInput ).to.be.instanceOf( LabeledFieldView );
+				expect( view.heightInput ).to.be.instanceOf( LabeledFieldView );
 				expect( view.alignmentToolbar ).to.be.instanceOf( ToolbarView );
 
 				expect( view.saveButtonView ).to.be.instanceOf( ButtonView );
@@ -136,29 +136,29 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should have a button with properties set', () => {
-							expect(	labeledDropdown.view.buttonView.isOn ).to.be.false;
-							expect(	labeledDropdown.view.buttonView.withText ).to.be.true;
-							expect(	labeledDropdown.view.buttonView.tooltip ).to.equal( 'Style' );
+							expect(	labeledDropdown.field.buttonView.isOn ).to.be.false;
+							expect(	labeledDropdown.field.buttonView.withText ).to.be.true;
+							expect(	labeledDropdown.field.buttonView.tooltip ).to.equal( 'Style' );
 						} );
 
 						it( 'should bind button\'s label to #borderStyle property', () => {
 							view.borderStyle = 'dotted';
-							expect( labeledDropdown.view.buttonView.label ).to.equal( 'Dotted' );
+							expect( labeledDropdown.field.buttonView.label ).to.equal( 'Dotted' );
 
 							view.borderStyle = 'dashed';
-							expect( labeledDropdown.view.buttonView.label ).to.equal( 'Dashed' );
+							expect( labeledDropdown.field.buttonView.label ).to.equal( 'Dashed' );
 						} );
 
 						it( 'should change #borderStyle when executed', () => {
-							labeledDropdown.view.listView.items.first.children.first.fire( 'execute' );
+							labeledDropdown.field.listView.items.first.children.first.fire( 'execute' );
 							expect( view.borderStyle ).to.equal( '' );
 
-							labeledDropdown.view.listView.items.last.children.first.fire( 'execute' );
+							labeledDropdown.field.listView.items.last.children.first.fire( 'execute' );
 							expect( view.borderStyle ).to.equal( 'outset' );
 						} );
 
 						it( 'should come with a set of pre–defined border styles', () => {
-							expect( labeledDropdown.view.listView.items.map( item => {
+							expect( labeledDropdown.field.listView.items.map( item => {
 								return item.children.first.label;
 							} ) ).to.have.ordered.members( [
 								'None', 'Solid', 'Dotted', 'Dashed', 'Double', 'Groove', 'Ridge', 'Inset', 'Outset'
@@ -185,17 +185,17 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should be created', () => {
-							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
+							expect( labeledInput.field ).to.be.instanceOf( InputTextView );
 							expect( labeledInput.label ).to.equal( 'Width' );
 							expect( labeledInput.class ).to.equal( 'ck-table-form__border-width' );
 						} );
 
 						it( 'should reflect #borderWidth property', () => {
 							view.borderWidth = 'foo';
-							expect( labeledInput.view.value ).to.equal( 'foo' );
+							expect( labeledInput.field.value ).to.equal( 'foo' );
 
 							view.borderWidth = 'bar';
-							expect( labeledInput.view.value ).to.equal( 'bar' );
+							expect( labeledInput.field.value ).to.equal( 'bar' );
 						} );
 
 						it( 'should be enabled only when #borderStyle is different than "none"', () => {
@@ -207,12 +207,12 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should update #borderWidth on DOM "input" event', () => {
-							labeledInput.view.element.value = 'foo';
-							labeledInput.view.fire( 'input' );
+							labeledInput.field.element.value = 'foo';
+							labeledInput.field.fire( 'input' );
 							expect( view.borderWidth ).to.equal( 'foo' );
 
-							labeledInput.view.element.value = 'bar';
-							labeledInput.view.fire( 'input' );
+							labeledInput.field.element.value = 'bar';
+							labeledInput.field.fire( 'input' );
 							expect( view.borderWidth ).to.equal( 'bar' );
 						} );
 					} );
@@ -225,12 +225,12 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should be created', () => {
-							expect( labeledInput.view ).to.be.instanceOf( ColorInputView );
+							expect( labeledInput.field ).to.be.instanceOf( ColorInputView );
 							expect( labeledInput.label ).to.equal( 'Color' );
 						} );
 
 						it( 'should get the color configuration', () => {
-							expect( labeledInput.view.options.colorDefinitions ).to.deep.equal( [
+							expect( labeledInput.field.options.colorDefinitions ).to.deep.equal( [
 								{
 									color: 'rgb(255,0,0)',
 									label: 'Red',
@@ -249,15 +249,15 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should obtain the columns configuration', () => {
-							expect( labeledInput.view.options.columns ).to.equal( 5 );
+							expect( labeledInput.field.options.columns ).to.equal( 5 );
 						} );
 
 						it( 'should reflect #borderColor property', () => {
 							view.borderColor = 'foo';
-							expect( labeledInput.view.value ).to.equal( 'foo' );
+							expect( labeledInput.field.value ).to.equal( 'foo' );
 
 							view.borderColor = 'bar';
-							expect( labeledInput.view.value ).to.equal( 'bar' );
+							expect( labeledInput.field.value ).to.equal( 'bar' );
 						} );
 
 						it( 'should be enabled only when #borderStyle is different than "none"', () => {
@@ -269,12 +269,12 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should update #borderColor on DOM "input" event', () => {
-							labeledInput.view.value = 'foo';
-							labeledInput.view.fire( 'input' );
+							labeledInput.field.value = 'foo';
+							labeledInput.field.fire( 'input' );
 							expect( view.borderColor ).to.equal( 'foo' );
 
-							labeledInput.view.value = 'bar';
-							labeledInput.view.fire( 'input' );
+							labeledInput.field.value = 'bar';
+							labeledInput.field.fire( 'input' );
 							expect( view.borderColor ).to.equal( 'bar' );
 						} );
 					} );
@@ -296,13 +296,13 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should be created', () => {
-							expect( labeledInput.view ).to.be.instanceOf( ColorInputView );
+							expect( labeledInput.field ).to.be.instanceOf( ColorInputView );
 							expect( labeledInput.label ).to.equal( 'Background' );
 							expect( labeledInput.class ).to.equal( 'ck-table-properties-form__background' );
 						} );
 
 						it( 'should get the color configuration', () => {
-							expect( labeledInput.view.options.colorDefinitions ).to.deep.equal( [
+							expect( labeledInput.field.options.colorDefinitions ).to.deep.equal( [
 								{
 									color: 'rgb(0,255,0)',
 									label: 'Green',
@@ -314,24 +314,24 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should obtain the columns configuration', () => {
-							expect( labeledInput.view.options.columns ).to.equal( 5 );
+							expect( labeledInput.field.options.columns ).to.equal( 5 );
 						} );
 
 						it( 'should reflect #backgroundColor property', () => {
 							view.backgroundColor = 'foo';
-							expect( labeledInput.view.value ).to.equal( 'foo' );
+							expect( labeledInput.field.value ).to.equal( 'foo' );
 
 							view.backgroundColor = 'bar';
-							expect( labeledInput.view.value ).to.equal( 'bar' );
+							expect( labeledInput.field.value ).to.equal( 'bar' );
 						} );
 
 						it( 'should update #backgroundColor on DOM "input" event', () => {
-							labeledInput.view.value = 'foo';
-							labeledInput.view.fire( 'input' );
+							labeledInput.field.value = 'foo';
+							labeledInput.field.fire( 'input' );
 							expect( view.backgroundColor ).to.equal( 'foo' );
 
-							labeledInput.view.value = 'bar';
-							labeledInput.view.fire( 'input' );
+							labeledInput.field.value = 'bar';
+							labeledInput.field.fire( 'input' );
 							expect( view.backgroundColor ).to.equal( 'bar' );
 						} );
 					} );
@@ -357,26 +357,26 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should be created', () => {
-							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
+							expect( labeledInput.field ).to.be.instanceOf( InputTextView );
 							expect( labeledInput.label ).to.equal( 'Width' );
 							expect( labeledInput.class ).to.equal( 'ck-table-form__dimensions-row__width' );
 						} );
 
 						it( 'should reflect #width property', () => {
 							view.width = 'foo';
-							expect( labeledInput.view.value ).to.equal( 'foo' );
+							expect( labeledInput.field.value ).to.equal( 'foo' );
 
 							view.width = 'bar';
-							expect( labeledInput.view.value ).to.equal( 'bar' );
+							expect( labeledInput.field.value ).to.equal( 'bar' );
 						} );
 
 						it( 'should update #width on DOM "input" event', () => {
-							labeledInput.view.element.value = 'foo';
-							labeledInput.view.fire( 'input' );
+							labeledInput.field.element.value = 'foo';
+							labeledInput.field.fire( 'input' );
 							expect( view.width ).to.equal( 'foo' );
 
-							labeledInput.view.element.value = 'bar';
-							labeledInput.view.fire( 'input' );
+							labeledInput.field.element.value = 'bar';
+							labeledInput.field.fire( 'input' );
 							expect( view.width ).to.equal( 'bar' );
 						} );
 					} );
@@ -389,26 +389,26 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should be created', () => {
-							expect( labeledInput.view ).to.be.instanceOf( InputTextView );
+							expect( labeledInput.field ).to.be.instanceOf( InputTextView );
 							expect( labeledInput.label ).to.equal( 'Height' );
 							expect( labeledInput.class ).to.equal( 'ck-table-form__dimensions-row__height' );
 						} );
 
 						it( 'should reflect #height property', () => {
 							view.height = 'foo';
-							expect( labeledInput.view.value ).to.equal( 'foo' );
+							expect( labeledInput.field.value ).to.equal( 'foo' );
 
 							view.height = 'bar';
-							expect( labeledInput.view.value ).to.equal( 'bar' );
+							expect( labeledInput.field.value ).to.equal( 'bar' );
 						} );
 
 						it( 'should update #height on DOM "input" event', () => {
-							labeledInput.view.element.value = 'foo';
-							labeledInput.view.fire( 'input' );
+							labeledInput.field.element.value = 'foo';
+							labeledInput.field.fire( 'input' );
 							expect( view.height ).to.equal( 'foo' );
 
-							labeledInput.view.element.value = 'bar';
-							labeledInput.view.fire( 'input' );
+							labeledInput.field.element.value = 'bar';
+							labeledInput.field.fire( 'input' );
 							expect( view.height ).to.equal( 'bar' );
 						} );
 					} );

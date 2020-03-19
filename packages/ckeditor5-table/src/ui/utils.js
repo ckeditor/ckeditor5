@@ -397,7 +397,7 @@ export const defaultColors = [
  *
  * For given options, it returns a function that creates an instance of a
  * {@link module:table/ui/colorinputview~ColorInputView color input} logically related to
- * a {@link module:ui/labeledview/labeledview~LabeledView labeled view} in the DOM.
+ * a {@link module:ui/labeledfieldview/labeledfieldview~LabeledFieldView labeled view} in the DOM.
  *
  * The helper does the following:
  *
@@ -413,7 +413,7 @@ export const defaultColors = [
  *			columns: 3,
  *		} );
  *
- *		const labeledInputView = new LabeledView( locale, colorInputCreator );
+ *		const labeledInputView = new LabeledFieldView( locale, colorInputCreator );
  *		console.log( labeledInputView.view ); // A color input instance.
  *
  * @private
