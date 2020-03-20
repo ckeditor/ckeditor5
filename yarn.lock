@@ -1394,17 +1394,6 @@
     "@webassemblyjs/wast-parser" "1.8.5"
     "@xtuc/long" "4.2.2"
 
-"@wiris/mathtype-ckeditor5@7.19.0-beta.0":
-  version "7.19.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@wiris/mathtype-ckeditor5/-/mathtype-ckeditor5-7.19.0-beta.0.tgz#d2108b3a30d9e7d9a1bd4b1151da2989c6c798e0"
-  integrity sha512-VhE4xOxgZvlLfVRdgoG9YPozTIVjApe7NPGbH6UJ7XYXI8ZPLTKTQpSee6X1KgMScC9AOTYjYoASAnUnJeqhMw==
-  dependencies:
-    "@ckeditor/ckeditor5-core" ">=16.0.0"
-    "@ckeditor/ckeditor5-engine" ">=16.0.0"
-    "@ckeditor/ckeditor5-ui" ">=16.0.0"
-    "@ckeditor/ckeditor5-widget" ">=16.0.0"
-    "@wiris/mathtype-html-integration-devkit" "^1.0.0"
-
 "@wiris/mathtype-ckeditor5@^7.17.1":
   version "7.18.1"
   resolved "https://registry.yarnpkg.com/@wiris/mathtype-ckeditor5/-/mathtype-ckeditor5-7.18.1.tgz#9756212fb6ef5380cede10785b091fda9282d16b"
@@ -1414,6 +1403,17 @@
     "@ckeditor/ckeditor5-engine" ">=16.0.0"
     "@ckeditor/ckeditor5-ui" ">=16.0.0"
     "@ckeditor/ckeditor5-widget" ">=16.0.0"
+    "@wiris/mathtype-html-integration-devkit" "^1.0.0"
+
+"@wiris/mathtype-ckeditor5@^7.19.0":
+  version "7.19.0"
+  resolved "https://registry.yarnpkg.com/@wiris/mathtype-ckeditor5/-/mathtype-ckeditor5-7.19.0.tgz#10649b40c4fa57fad461f95e04e86f5d9910126d"
+  integrity sha512-O90kj4cZcFPXsOgS62J6HoOWM2CWJl6G6ajBm2remMlSB3mzUzZ4Ph/Tc7S8zzjfs3MBnrjhb8VpJnWym9Yl4A==
+  dependencies:
+    "@ckeditor/ckeditor5-core" ">=18.0.0"
+    "@ckeditor/ckeditor5-engine" ">=18.0.0"
+    "@ckeditor/ckeditor5-ui" ">=18.0.0"
+    "@ckeditor/ckeditor5-widget" ">=18.0.0"
     "@wiris/mathtype-html-integration-devkit" "^1.0.0"
 
 "@wiris/mathtype-html-integration-devkit@^1.0.0":
