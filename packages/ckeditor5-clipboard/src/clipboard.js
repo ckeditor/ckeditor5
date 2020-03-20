@@ -16,6 +16,7 @@ import normalizeClipboardHtml from './utils/normalizeclipboarddata';
 import viewToPlainText from './utils/viewtoplaintext.js';
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
 /**
  * The clipboard feature. It is responsible for intercepting the `paste` and `drop` events and
@@ -75,7 +76,15 @@ export default class Clipboard extends Plugin {
 
 			content = this._htmlDataProcessor.toView( content );
 
-			this.fire( 'inputTransformation', { content, dataTransfer } );
+			const eventInfo = new EventInfo( this, 'inputTransformation' );
+			this.fire( eventInfo, { content, dataTransfer } );
+
+			// If CKEditor handled the input, do not bubble the original event any further.
+			// This helps external integrations recognize that fact and act accordingly.
+			// https://github.com/ckeditor/ckeditor5-upload/issues/92
+			if ( eventInfo.stop.called ) {
+				evt.stop();
+			}
 
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
@@ -95,6 +104,7 @@ export default class Clipboard extends Plugin {
 				}
 
 				model.insertContent( modelFragment );
+				evt.stop();
 			}
 		}, { priority: 'low' } );
 
