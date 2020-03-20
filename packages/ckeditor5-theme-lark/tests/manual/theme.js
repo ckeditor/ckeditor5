@@ -20,8 +20,9 @@ import { createDropdown, addListToDropdown, addToolbarToDropdown } from '@ckedit
 
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
-import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
-import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinputview';
+
+import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfieldview/labeledfieldview';
+import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfieldview/utils';
 
 import boldIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
 import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
@@ -636,9 +637,9 @@ function input( {
 	isReadOnly = false,
 	value = 'The value of the input'
 } = {} ) {
-	const labeledInput = new LabeledInputView( {}, InputTextView );
+	const labeledInput = new LabeledFieldView( {}, createLabeledInputText );
 
-	labeledInput.set( { isReadOnly, label, value } );
+	labeledInput.field.set( { isReadOnly, label, value } );
 
 	return labeledInput;
 }
