@@ -11,8 +11,9 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinputview';
-import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
+
+import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfieldview/labeledfieldview';
+import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfieldview/utils';
 
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
@@ -59,7 +60,7 @@ export default class MediaFormView extends View {
 		/**
 		 * The URL input view.
 		 *
-		 * @member {module:ui/labeledinput/labeledinputview~LabeledInputView}
+		 * @member {module:ui/labeledfieldview/labeledfieldview~LabeledFieldView}
 		 */
 		this.urlInputView = this._createUrlInput();
 
@@ -212,7 +213,7 @@ export default class MediaFormView extends View {
 	 * @type {Number}
 	 */
 	get url() {
-		return this.urlInputView.inputView.element.value.trim();
+		return this.urlInputView.field.element.value.trim();
 	}
 
 	/**
@@ -224,7 +225,7 @@ export default class MediaFormView extends View {
 	 * @param {String} url
 	 */
 	set url( url ) {
-		this.urlInputView.inputView.element.value = url.trim();
+		this.urlInputView.field.element.value = url.trim();
 	}
 
 	/**
@@ -265,24 +266,24 @@ export default class MediaFormView extends View {
 	 * Creates a labeled input view.
 	 *
 	 * @private
-	 * @returns {module:ui/labeledinput/labeledinputview~LabeledInputView} Labeled input view instance.
+	 * @returns {module:ui/labeledfieldview/labeledfieldview~LabeledFieldView} Labeled input view instance.
 	 */
 	_createUrlInput() {
 		const t = this.locale.t;
 
-		const labeledInput = new LabeledInputView( this.locale, InputTextView );
-		const inputView = labeledInput.inputView;
+		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
+		const inputField = labeledInput.field;
 
 		this._urlInputViewInfoDefault = t( 'Paste the media URL in the input.' );
 		this._urlInputViewInfoTip = t( 'Tip: Paste the URL into the content to embed faster.' );
 
 		labeledInput.label = t( 'Media URL' );
 		labeledInput.infoText = this._urlInputViewInfoDefault;
-		inputView.placeholder = 'https://example.com';
+		inputField.placeholder = 'https://example.com';
 
-		inputView.on( 'input', () => {
+		inputField.on( 'input', () => {
 			// Display the tip text only when there's some value. Otherwise fall back to the default info text.
-			labeledInput.infoText = inputView.element.value ? this._urlInputViewInfoTip : this._urlInputViewInfoDefault;
+			labeledInput.infoText = inputField.element.value ? this._urlInputViewInfoTip : this._urlInputViewInfoDefault;
 		} );
 
 		return labeledInput;
