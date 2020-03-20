@@ -18,6 +18,10 @@ See the {@link features/table Table feature} guide and the documentation for the
 
 * {@link module:table/table~Table}
 * {@link module:table/tabletoolbar~TableToolbar}
+* {@link module:table/tableproperties~TableProperties}
+* {@link module:table/tablecellproperties~TableCellProperties}
+* {@link module:table/tableselection~TableSelection}
+* {@link module:table/tableclipboard~TableClipboard}
 * {@link module:table/tableutils~TableUtils}
 
 ## Installation

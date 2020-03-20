@@ -22,7 +22,8 @@ import cropTable from './tableselection/croptable';
 import '../theme/tableselection.css';
 
 /**
- * TODO
+ * This plugin enables the advanced table cells/rows/columns selection.
+ * It is loaded automatically by the {@link module:table/table~Table} plugin.
  *
  * @extends module:core/plugin~Plugin
  */
