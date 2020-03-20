@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [18.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v17.0.0...v18.0.0) (2020-03-19)
+
+### Bug fixes
+
+* The image converters should not assume that <img> is a first child of a <figure>. Closes [ckeditor/ckeditor5#6294](https://github.com/ckeditor/ckeditor5/issues/6294). ([97450b7](https://github.com/ckeditor/ckeditor5-image/commit/97450b7))
+
+### Other changes
+
+* Updated translations. ([79db6f5](https://github.com/ckeditor/ckeditor5-image/commit/79db6f5)) 
+
+
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v16.0.0...v17.0.0) (2020-02-19)
 
 ### MINOR BREAKING CHANGES
