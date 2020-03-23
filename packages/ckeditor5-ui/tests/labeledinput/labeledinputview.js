@@ -26,6 +26,10 @@ describe( 'LabeledInputView', () => {
 		view.render();
 	} );
 
+	afterEach( () => {
+		sinon.restore();
+	} );
+
 	describe( 'constructor()', () => {
 		describe( 'deprecation warning', () => {
 			it( 'should be shown in the console after component initialization', () => {
