@@ -34,7 +34,7 @@ export default class LabeledInputView extends View {
 
 		// Deprecation warning.
 		console.warn( 'The LabeledInputView component has been marked as deprecated' +
-			'and will be removed in the next major release.' +
+			'and will be removed in the next major release. ' +
 			'Please use LabeledFieldView component instead.' );
 
 		const inputUid = `ck-input-${ uid() }`;
