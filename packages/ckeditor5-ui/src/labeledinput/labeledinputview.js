@@ -17,7 +17,8 @@ import '../../theme/components/labeledinput/labeledinput.css';
 /**
  * The labeled input view class.
  *
- * @deprecated The component has been marked as deprecated since v18.0.0 and will be removed in v19.0.0.
+ * @deprecated The LabeledInputView component has been marked as deprecated and will be removed in the next major release.
+ * Please use {@link module:ui/labeledfieldview/labeledfieldview~LabeledFieldView} component instead.
  *
  * @extends module:ui/view~View
  */
@@ -32,7 +33,9 @@ export default class LabeledInputView extends View {
 		super( locale );
 
 		// Deprecation warning.
-		console.warn( ' The LabeledInputView component has been marked as deprecated since v18.0.0 and will be removed in v19.0.0. ' );
+		console.warn( 'The LabeledInputView component has been marked as deprecated' +
+			'and will be removed in the next major release.' +
+			'Please use LabeledFieldView component instead.' );
 
 		const inputUid = `ck-input-${ uid() }`;
 		const statusUid = `ck-status-${ uid() }`;
