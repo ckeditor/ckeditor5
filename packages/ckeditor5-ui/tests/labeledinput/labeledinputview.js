@@ -10,13 +10,17 @@ import LabeledInputView from '../../src/labeledinput/labeledinputview';
 import InputView from '../../src/inputtext/inputtextview';
 import LabelView from '../../src/label/labelview';
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
 describe( 'LabeledInputView', () => {
 	const locale = {};
+
+	testUtils.createSinonSandbox();
 
 	let view, deprecatedWarning;
 
 	beforeEach( () => {
-		deprecatedWarning = sinon.stub( console, 'warn' );
+		deprecatedWarning = testUtils.sinon.stub( console, 'warn' );
 		view = new LabeledInputView( locale, InputView );
 
 		view.render();
@@ -25,11 +29,12 @@ describe( 'LabeledInputView', () => {
 	describe( 'constructor()', () => {
 		describe( 'deprecation warning', () => {
 			it( 'should be shown in the console after component initialization', () => {
-				sinon.assert.calledOnce( deprecatedWarning );
+				expect( deprecatedWarning.called ).to.be.true;
+				expect( deprecatedWarning.callCount ).to.be.equal( 1 );
 			} );
 
 			it( 'should inform about using LabeledFieldView instead of LabeledInputView', () => {
-				sinon.assert.calledWithMatch( deprecatedWarning, 'Please use LabeledFieldView component instead' );
+				expect( deprecatedWarning.calledWithMatch( 'Please use LabeledFieldView component instead' ) ).to.be.true;
 			} );
 		} );
 
