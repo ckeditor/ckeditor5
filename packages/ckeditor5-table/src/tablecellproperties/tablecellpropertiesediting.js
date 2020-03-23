@@ -69,6 +69,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
+		const locale = editor.locale;
 
 		editor.data.addStyleProcessorRules( addBorderRules );
 		enableBorderProperties( schema, conversion );
@@ -76,7 +77,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 		editor.commands.add( 'tableCellBorderColor', new TableCellBorderColorCommand( editor ) );
 		editor.commands.add( 'tableCellBorderWidth', new TableCellBorderWidthCommand( editor ) );
 
-		enableHorizontalAlignmentProperty( schema, conversion );
+		enableHorizontalAlignmentProperty( schema, conversion, locale );
 		editor.commands.add( 'tableCellHorizontalAlignment', new TableCellHorizontalAlignmentCommand( editor ) );
 
 		enableProperty( schema, conversion, 'width', 'width' );
@@ -117,37 +118,30 @@ function enableBorderProperties( schema, conversion ) {
 //
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion
-function enableHorizontalAlignmentProperty( schema, conversion ) {
+// @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
+function enableHorizontalAlignmentProperty( schema, conversion, locale ) {
 	schema.extend( 'tableCell', {
 		allowAttributes: [ 'horizontalAlignment' ]
 	} );
+
+	const defaultOption = locale.contentLanguageDirection == 'rtl' ? 'right' : 'left';
+	const options = [ 'left', 'right', 'center', 'justify' ].filter( option => option != defaultOption );
 
 	conversion.attributeToAttribute( {
 		model: {
 			name: 'tableCell',
 			key: 'horizontalAlignment',
-			values: [ 'right', 'center', 'justify' ]
+			values: options
 		},
-		view: {
-			right: {
+		view: options.reduce( ( result, option ) => ( {
+			...result,
+			[ option ]: {
 				key: 'style',
 				value: {
-					'text-align': 'right'
-				}
-			},
-			center: {
-				key: 'style',
-				value: {
-					'text-align': 'center'
-				}
-			},
-			justify: {
-				key: 'style',
-				value: {
-					'text-align': 'justify'
+					'text-align': option
 				}
 			}
-		}
+		} ), {} )
 	} );
 }
 
