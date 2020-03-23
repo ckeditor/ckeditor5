@@ -7,8 +7,6 @@
  * @module ui/labeledinput/labeledinputview
  */
 
-/* globals console */
-
 import View from '../view';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
 import LabelView from '../label/labelview';
@@ -16,9 +14,6 @@ import '../../theme/components/labeledinput/labeledinput.css';
 
 /**
  * The labeled input view class.
- *
- * @deprecated The LabeledInputView component has been marked as deprecated and will be removed in the next major release.
- * Please use {@link module:ui/labeledfieldview/labeledfieldview~LabeledFieldView} component instead.
  *
  * @extends module:ui/view~View
  */
@@ -31,11 +26,6 @@ export default class LabeledInputView extends View {
 	 */
 	constructor( locale, InputView ) {
 		super( locale );
-
-		// Deprecation warning.
-		console.warn( 'The LabeledInputView component has been marked as deprecated' +
-			'and will be removed in the next major release. ' +
-			'Please use LabeledFieldView component instead.' );
 
 		const inputUid = `ck-input-${ uid() }`;
 		const statusUid = `ck-status-${ uid() }`;

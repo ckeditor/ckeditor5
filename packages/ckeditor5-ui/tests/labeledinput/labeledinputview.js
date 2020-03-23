@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console */
-
 import View from '../../src/view';
 import LabeledInputView from '../../src/labeledinput/labeledinputview';
 import InputView from '../../src/inputtext/inputtextview';
@@ -13,30 +11,15 @@ import LabelView from '../../src/label/labelview';
 describe( 'LabeledInputView', () => {
 	const locale = {};
 
-	let view, deprecatedWarning;
+	let view;
 
 	beforeEach( () => {
-		deprecatedWarning = sinon.stub( console, 'warn' );
 		view = new LabeledInputView( locale, InputView );
 
 		view.render();
 	} );
 
-	afterEach( () => {
-		sinon.restore();
-	} );
-
 	describe( 'constructor()', () => {
-		describe( 'deprecation warning', () => {
-			it( 'should be shown in the console after component initialization', () => {
-				sinon.assert.calledOnce( deprecatedWarning );
-			} );
-
-			it( 'should inform about using LabeledFieldView instead of LabeledInputView', () => {
-				sinon.assert.calledWithMatch( deprecatedWarning, 'Please use LabeledFieldView component instead' );
-			} );
-		} );
-
 		it( 'should set view#locale', () => {
 			expect( view.locale ).to.deep.equal( locale );
 		} );
