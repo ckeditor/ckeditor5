@@ -58,6 +58,7 @@ export default class TableSelection extends Plugin {
 		this._defineSelectionConverter();
 		this._enableShiftClickSelection();
 		this._enableMouseDragSelection();
+		this._enablePluginDisabling(); // sic!
 	}
 
 	/**
@@ -290,6 +291,34 @@ export default class TableSelection extends Plugin {
 				evt.stop();
 			}
 		}, { priority: 'highest' } );
+	}
+
+	/**
+	 * Creates a listener that reacts to changes in {@link #isEnabled} and, if the plugin was disabled,
+	 * it collapses the multi-cell selection to a regular selection placed inside a table cell.
+	 *
+	 * This listener helps features that disable the table selection plugin bring the selection
+	 * to a clear state they can work with (for instance, because they don't support multiple cell selection).
+	 */
+	_enablePluginDisabling() {
+		const editor = this.editor;
+
+		this.on( 'change:isEnabled', () => {
+			if ( !this.isEnabled ) {
+				const selectedCells = this.getSelectedTableCells();
+
+				if ( !selectedCells ) {
+					return;
+				}
+
+				editor.model.change( writer => {
+					const position = writer.createPositionAt( selectedCells[ 0 ], 0 );
+					const range = editor.model.schema.getNearestSelectionRange( position );
+
+					writer.setSelection( range );
+				} );
+			}
+		} );
 	}
 
 	/**

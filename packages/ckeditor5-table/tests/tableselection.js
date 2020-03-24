@@ -37,6 +37,45 @@ describe( 'table selection', () => {
 	afterEach( async () => {
 		await editor.destroy();
 	} );
+
+	describe( 'init()', () => {
+		describe( 'plugin disabling support', () => {
+			let plugin;
+
+			beforeEach( () => {
+				plugin = editor.plugins.get( TableSelection );
+			} );
+
+			it( 'should collapse multi-cell selection when the plugin gets disabled', () => {
+				const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
+				const lastCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
+
+				tableSelection._setCellSelection(
+					firstCell,
+					lastCell
+				);
+
+				plugin.forceDisabled( 'foo' );
+
+				const ranges = [ ...model.document.selection.getRanges() ];
+
+				expect( ranges ).to.have.length( 1 );
+				expect( ranges[ 0 ].isCollapsed ).to.be.true;
+				expect( ranges[ 0 ].start.path ).to.deep.equal( [ 0, 0, 0, 0, 0 ] );
+			} );
+
+			it( 'should do nothing if there were no multi-cell selections', () => {
+				plugin.forceDisabled( 'foo' );
+
+				const ranges = [ ...model.document.selection.getRanges() ];
+
+				expect( ranges ).to.have.length( 1 );
+				expect( ranges[ 0 ].isCollapsed ).to.be.true;
+				expect( ranges[ 0 ].start.path ).to.deep.equal( [ 0, 0, 0, 0, 2 ] );
+			} );
+		} );
+	} );
+
 	describe( 'selection by shift+click', () => {
 		it( 'should...', () => {
 			// tableSelection.startSelectingFrom( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
