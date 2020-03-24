@@ -12,7 +12,21 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
-				'insertTable', '|', 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo'
+				'insertTable',
+				'|',
+				'fontFamily', 'fontSize',
+				'|',
+				'bold', 'italic',
+				'|',
+				'alignment:left', 'alignment:center', 'alignment:right',	'alignment:justify',
+				'|',
+				'bulletedList', 'numberedList',
+				'|',
+				'indent', 'outdent',
+				'|',
+				'link', 'blockQuote',
+				'|',
+				'undo', 'redo'
 			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},

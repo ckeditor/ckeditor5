@@ -7,13 +7,13 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
+import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 
-ClassicEditor.builtinPlugins.push( Table );
-ClassicEditor.builtinPlugins.push( TableToolbar );
+ClassicEditor.builtinPlugins.push( FontFamily, FontSize, Alignment );
 
 window.ClassicEditor = ClassicEditor;
 window.CKEditorPlugins = {
