@@ -67,4 +67,8 @@ describe( 'diff', () => {
 		diff( getLongText( 10 ), getLongText( 1990 ) );
 		testUtils.sinon.assert.called( fastDiffSpy );
 	} );
+
+	it( 'should diff insertion on the end handle multi-byte unicode properly', () => {
+		expect( diff( '123🙂', '123🙂x' ) ).to.deep.equals( [ 'equal', 'equal', 'equal', 'equal', 'equal', 'insert' ] );
+	} );
 } );

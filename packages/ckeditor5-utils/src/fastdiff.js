@@ -101,12 +101,13 @@ export default function fastDiff( a, b, cmp, atomicChanges = false ) {
 	};
 
 	// Transform text or any iterable into arrays for easier, consistent processing.
+	// Array.from was used here but it generated incorrect results for multi-byte unicode sequences.
 	if ( !Array.isArray( a ) ) {
-		a = Array.from( a );
+		a = Array.prototype.map.call( a, c => c );
 	}
 
 	if ( !Array.isArray( b ) ) {
-		b = Array.from( b );
+		b = Array.prototype.map.call( b, c => c );
 	}
 
 	// Find first and last change.

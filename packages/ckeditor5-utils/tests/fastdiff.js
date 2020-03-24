@@ -120,6 +120,10 @@ describe( 'fastDiff', () => {
 					{ index: 2, type: 'insert', values: [ { text: 'baz' } ] }
 				], true, ( a, b ) => a.text === b.text );
 			} );
+
+			it( 'should diff insertion on the end handle multi-byte unicode properly', () => {
+				expectDiff( '123🙂', '123🙂x', [ { index: 5, type: 'insert', values: [ 'x' ] } ] );
+			} );
 		} );
 
 		describe( 'deletion', () => {
