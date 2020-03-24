@@ -93,7 +93,7 @@ export function getSelectedTableCells( selection ) {
 }
 
 /**
- * Returns all model table cells the provided model selection's ranges
+ * Returns all model table cells that the provided model selection's ranges
  * {@link module:engine/model/range~Range#start} inside.
  *
  * To obtain the cells selected from the outside, use
