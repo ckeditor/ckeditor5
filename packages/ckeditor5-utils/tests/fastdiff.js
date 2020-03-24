@@ -121,8 +121,46 @@ describe( 'fastDiff', () => {
 				], true, ( a, b ) => a.text === b.text );
 			} );
 
-			it( 'should diff insertion on the end handle multi-byte unicode properly', () => {
-				expectDiff( '123🙂', '123🙂x', [ { index: 5, type: 'insert', values: [ 'x' ] } ] );
+			describe( 'with multi-byte unicode', () => {
+				describe( 'simple emoji - single unicode code point', () => {
+					// 🙂 = '\ud83d\ude42' = 2 chars
+
+					it( 'should properly handle emoji insertion', () => {
+						expectDiff( 'abc', 'ab🙂c', [ { index: 2, type: 'insert', values: '🙂'.split( '' ) } ] );
+					} );
+
+					it( 'should properly handle emoji insertion on the end', () => {
+						expectDiff( 'abc', 'abc🙂', [ { index: 3, type: 'insert', values: '🙂'.split( '' ) } ] );
+					} );
+
+					it( 'should properly handle appending to string containing emoji', () => {
+						expectDiff( 'abc🙂', 'abc🙂d', [ { index: 5, type: 'insert', values: [ 'd' ] } ] );
+					} );
+
+					it( 'should properly handle insertion to string containing emoji', () => {
+						expectDiff( 'ab🙂cd', 'ab🙂cde', [ { index: 6, type: 'insert', values: [ 'e' ] } ] );
+					} );
+				} );
+
+				describe( 'combined emoji - unicode ZWJ sequence', () => {
+					// 👩‍🦰 = '\ud83d\udc69\u200d\ud83e\uddB0' = 5 chars
+
+					it( 'should properly handle emoji with ZWJ insertion', () => {
+						expectDiff( 'abc', 'ab👩‍🦰c', [ { index: 2, type: 'insert', values: '👩‍🦰'.split( '' ) } ] );
+					} );
+
+					it( 'should properly handle emoji (with ZWJ) insertion on the end', () => {
+						expectDiff( 'abc', 'abc👩‍🦰', [ { index: 3, type: 'insert', values: '👩‍🦰'.split( '' ) } ] );
+					} );
+
+					it( 'should properly handle appending to string containing emoji (with ZWJ)', () => {
+						expectDiff( 'ab👩‍🦰', 'ab👩‍🦰c', [ { index: 7, type: 'insert', values: [ 'c' ] } ] );
+					} );
+
+					it( 'should properly handle insertion to string containing emoji (with ZWJ)', () => {
+						expectDiff( 'a👩‍🦰b', 'a👩‍🦰bc', [ { index: 7, type: 'insert', values: [ 'c' ] } ] );
+					} );
+				} );
 			} );
 		} );
 
@@ -199,6 +237,42 @@ describe( 'fastDiff', () => {
 				expectDiff( [ { text: 'foo' }, { text: 'bar' } ], [ { text: 'bar' } ], [
 					{ index: 0, type: 'delete', howMany: 1 }
 				], true, ( a, b ) => a.text === b.text );
+			} );
+
+			describe( 'with multi-byte unicode', () => {
+				describe( 'simple emoji - single unicode code point', () => {
+					// 🙂 = '\ud83d\ude42' = 2 chars
+					const emojiLength = '🙂'.split( '' ).length;
+
+					it( 'should properly handle emoji delete', () => {
+						expectDiff( 'ab🙂c', 'abc', [ { index: 2, type: 'delete', howMany: emojiLength } ] );
+					} );
+
+					it( 'should properly handle emoji delete at end', () => {
+						expectDiff( 'ab🙂', 'ab', [ { index: 2, type: 'delete', howMany: emojiLength } ] );
+					} );
+
+					it( 'should properly handle emoji delete at beginning', () => {
+						expectDiff( '🙂ab', 'ab', [ { index: 0, type: 'delete', howMany: emojiLength } ] );
+					} );
+				} );
+
+				describe( 'combined emoji - unicode ZWJ sequence', () => {
+					// 👩‍🦰 = '\ud83d\udc69\u200d\ud83e\uddB0' = 5 chars
+					const emojiLength = '👩‍🦰'.split( '' ).length;
+
+					it( 'should properly handle emoji delete (with ZWJ)', () => {
+						expectDiff( 'ab👩‍🦰c', 'abc', [ { index: 2, type: 'delete', howMany: emojiLength } ] );
+					} );
+
+					it( 'should properly handle emoji delete at end (with ZWJ)', () => {
+						expectDiff( 'ab👩‍🦰', 'ab', [ { index: 2, type: 'delete', howMany: emojiLength } ] );
+					} );
+
+					it( 'should properly handle emoji delete at beginning (with ZWJ)', () => {
+						expectDiff( '👩‍🦰ab', 'ab', [ { index: 0, type: 'delete', howMany: emojiLength } ] );
+					} );
+				} );
 			} );
 		} );
 
@@ -296,6 +370,63 @@ describe( 'fastDiff', () => {
 					{ index: 1, type: 'insert', values: [ { text: 'baz' } ] },
 					{ index: 2, type: 'delete', howMany: 1 }
 				], true, ( a, b ) => a.text === b.text );
+			} );
+
+			describe( 'with multi-byte unicode', () => {
+				// 🙂 = '\ud83d\ude42' = 2 chars
+				const smileEmoji = '🙂'.split( '' );
+
+				// 👩 = '\ud83d\udc69' = 2 chars
+				const womanEmoji = '👩'.split( '' );
+
+				// 👩‍🦰 = '\ud83d\udc69\u200d\ud83e\uddB0' = 5 chars
+				const womanRedHairEmoji = '👩‍🦰'.split( '' );
+
+				// Do not check compatibility with 'diffToChanges' as it generates:
+				// [ { index: 1, type: 'delete', howMany: 2 }, { index: 1, type: 'insert', values: [ 'x' ] } ]
+				it( 'should properly replace emoji with text', () => {
+					expectDiff( 'a🙂b', 'axb', [
+						{ index: 1, type: 'insert', values: [ 'x' ] },
+						{ index: 2, type: 'delete', howMany: smileEmoji.length }
+					], false );
+				} );
+
+				it( 'should properly replace text with emoji', () => {
+					expectDiff( 'abc', 'a👩c', [
+						{ index: 1, type: 'insert', values: womanEmoji },
+						{ index: 3, type: 'delete', howMany: 1 }
+					] );
+				} );
+
+				it( 'should properly replace emoji with emoji', () => {
+					// Note that first char of both emoji is the same.
+					expectDiff( 'a👩b', 'a🙂b', [
+						{ index: 2, type: 'insert', values: smileEmoji.slice( 1 ) },
+						{ index: 3, type: 'delete', howMany: 1 }
+					] );
+				} );
+
+				it( 'should properly replace simple emoji with ZWJ sequence of it', () => {
+					// Note that first 2 chars of both emoji are the same.
+					expectDiff( 'a👩b', 'a👩‍🦰b', [
+						{ index: 3, type: 'insert', values: womanRedHairEmoji.slice( 2 ) }
+					] );
+				} );
+
+				it( 'should properly replace ZWJ sequence with simple emoji (part of sequence)', () => {
+					// Note that first 2 chars of both emoji are the same.
+					expectDiff( 'a👩‍🦰b', 'a👩b', [
+						{ index: 3, type: 'delete', howMany: 3 }
+					] );
+				} );
+
+				it( 'should properly replace simple emoji with other ZWJ sequence', () => {
+					// Note that first char of both emoji is the same.
+					expectDiff( 'a🙂b', 'a👩‍🦰b', [
+						{ index: 2, type: 'insert', values: womanRedHairEmoji.slice( 1 ) },
+						{ index: 6, type: 'delete', howMany: 1 }
+					] );
+				} );
 			} );
 		} );
 	} );

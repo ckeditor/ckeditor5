@@ -68,7 +68,87 @@ describe( 'diff', () => {
 		testUtils.sinon.assert.called( fastDiffSpy );
 	} );
 
-	it( 'should diff insertion on the end handle multi-byte unicode properly', () => {
-		expect( diff( '123🙂', '123🙂x' ) ).to.deep.equals( [ 'equal', 'equal', 'equal', 'equal', 'equal', 'insert' ] );
+	describe( 'with multi-byte unicode', () => {
+		describe( 'simple emoji - single unicode code point', () => {
+			// 🙂 = '\ud83d\ude42' = 2 chars
+			const emojiLength = '🙂'.length;
+			const emojiDiffInsert = new Array( emojiLength ).fill( 'insert' );
+			const emojiDiffEqual = new Array( emojiLength ).fill( 'equal' );
+			const emojiDiffDelete = new Array( emojiLength ).fill( 'delete' );
+
+			it( 'should properly handle emoji insertion', () => {
+				expect( diff( 'abc', 'ab🙂c' ) ).to.deep.equals( [ 'equal', 'equal', ...emojiDiffInsert, 'equal' ] );
+			} );
+
+			it( 'should properly handle emoji insertion on the end', () => {
+				expect( diff( 'abc', 'abc🙂' ) ).to.deep.equals( [ 'equal', 'equal', 'equal', ...emojiDiffInsert ] );
+			} );
+
+			it( 'should properly handle appending to string containing emoji', () => {
+				expect( diff( 'abc🙂', 'abc🙂d' ) ).to.deep.equals( [ 'equal', 'equal', 'equal', ...emojiDiffEqual, 'insert' ] );
+			} );
+
+			it( 'should properly handle insertion to string containing emoji', () => {
+				expect( diff( 'ab🙂cd', 'ab🙂cde' ) ).to.deep.equals( [ 'equal', 'equal', ...emojiDiffEqual, 'equal', 'equal', 'insert' ] );
+			} );
+
+			it( 'should properly remove emoji', () => {
+				expect( diff( 'a🙂b', 'ab' ) ).to.deep.equals( [ 'equal', ...emojiDiffDelete, 'equal' ] );
+			} );
+
+			it( 'should properly replace emoji', () => {
+				expect( diff( 'a🙂b', 'axb' ) ).to.deep.equals( [ 'equal', ...emojiDiffDelete, 'insert', 'equal' ] );
+			} );
+		} );
+
+		describe( 'combined emoji - unicode ZWJ sequence', () => {
+			// 👩‍🦰 = '\ud83d\udc69\u200d\ud83e\uddB0' = 5 chars
+			const emojiLength = '👩‍🦰'.length;
+			const emojiDiffInsert = new Array( emojiLength ).fill( 'insert' );
+			const emojiDiffEqual = new Array( emojiLength ).fill( 'equal' );
+			const emojiDiffDelete = new Array( emojiLength ).fill( 'delete' );
+
+			it( 'should properly handle emoji insertion (with ZWJ)', () => {
+				expect( diff( 'abc', 'ab👩‍🦰c' ) ).to.deep.equals( [ 'equal', 'equal', ...emojiDiffInsert, 'equal' ] );
+			} );
+
+			it( 'should properly handle emoji insertion on the end (with ZWJ)', () => {
+				expect( diff( 'abc', 'abc👩‍🦰' ) ).to.deep.equals( [ 'equal', 'equal', 'equal', ...emojiDiffInsert ] );
+			} );
+
+			it( 'should properly handle appending to string containing emoji (with ZWJ)', () => {
+				expect( diff( 'ab👩‍🦰', 'ab👩‍🦰c' ) ).to.deep.equals( [ 'equal', 'equal', ...emojiDiffEqual, 'insert' ] );
+			} );
+
+			it( 'should properly handle insertion to string containing emoji (with ZWJ)', () => {
+				expect( diff( 'a👩‍🦰b', 'a👩‍🦰bc' ) ).to.deep.equals( [ 'equal', ...emojiDiffEqual, 'equal', 'insert' ] );
+			} );
+
+			it( 'should properly remove emoji (with ZWJ)', () => {
+				expect( diff( 'a👩‍🦰b', 'ab' ) ).to.deep.equals( [ 'equal', ...emojiDiffDelete, 'equal' ] );
+			} );
+
+			it( 'should properly replace emoji (with ZWJ)', () => {
+				expect( diff( 'a👩‍🦰b', 'axb' ) ).to.deep.equals( [ 'equal', ...emojiDiffDelete, 'insert', 'equal' ] );
+			} );
+
+			it( 'should properly replace ZWJ sequence with simple emoji', () => {
+				const simpleEmojiDiffInsert = new Array( '🙂'.length ).fill( 'insert' );
+
+				// Note that first char of both emoji is the same.
+				expect( diff( 'a👩‍🦰b', 'a🙂b' ) ).to.deep.equals( [
+					'equal', 'equal', ...emojiDiffDelete.slice( 1 ), ...simpleEmojiDiffInsert.slice( 1 ), 'equal'
+				] );
+			} );
+
+			it( 'should properly replace simple emoji with ZWJ sequence', () => {
+				const simpleEmojiDiffDelete = new Array( '🙂'.length ).fill( 'delete' );
+
+				// Note that first char of both emoji is the same.
+				expect( diff( 'a🙂b', 'a👩‍🦰b' ) ).to.deep.equals( [
+					'equal', 'equal', ...emojiDiffInsert.slice( 1 ), ...simpleEmojiDiffDelete.slice( 1 ), 'equal'
+				] );
+			} );
+		} );
 	} );
 } );
