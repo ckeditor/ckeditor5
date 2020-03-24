@@ -75,6 +75,7 @@ export default class TableSelection extends Plugin {
 		}
 
 		// This should never happen, but let's know if it ever happens.
+		// @if CK_DEBUG //	/* istanbul ignore next */
 		// @if CK_DEBUG //	if ( selectedCells.length != selection.rangeCount ) {
 		// @if CK_DEBUG //		console.warn( 'Mixed selection warning. The selection contains table cells and some other ranges.' );
 		// @if CK_DEBUG //	}
@@ -365,6 +366,7 @@ export default class TableSelection extends Plugin {
 		const modelPosition = this.editor.editing.mapper.toModelPosition( viewPosition );
 		const modelElement = modelPosition.parent;
 
+		// TODO: Required?
 		if ( !modelElement ) {
 			return;
 		}
