@@ -105,7 +105,7 @@ ClassicEditor
 				'|',
 				'bold', 'italic',
 				'|',
-				'alignment:left', 'alignment:center', 'alignment:right',	'alignment:justify',
+				'alignment:left', 'alignment:center', 'alignment:right', 'alignment:justify',
 				'|',
 				'bulletedList', 'numberedList',
 				'|',
