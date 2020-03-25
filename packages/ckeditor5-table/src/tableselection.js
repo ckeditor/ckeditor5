@@ -76,6 +76,7 @@ export default class TableSelection extends Plugin {
 		}
 
 		// This should never happen, but let's know if it ever happens.
+		// @if CK_DEBUG //	/* istanbul ignore next */
 		// @if CK_DEBUG //	if ( selectedCells.length != selection.rangeCount ) {
 		// @if CK_DEBUG //		console.warn( 'Mixed selection warning. The selection contains table cells and some other ranges.' );
 		// @if CK_DEBUG //	}
@@ -351,12 +352,13 @@ export default class TableSelection extends Plugin {
 
 			const rangeToSelect = model.schema.getNearestSelectionRange( writer.createPositionAt( tableCellToSelect, 0 ) );
 
-			if ( rangeToSelect ) {
-				if ( selection.is( 'documentSelection' ) ) {
-					writer.setSelection( rangeToSelect );
-				} else {
-					selection.setTo( rangeToSelect );
-				}
+			// Note: we ignore the case where rangeToSelect may be null because deleteContent() will always (unless someone broke it)
+			// create an empty paragraph to accommodate the selection.
+
+			if ( selection.is( 'documentSelection' ) ) {
+				writer.setSelection( rangeToSelect );
+			} else {
+				selection.setTo( rangeToSelect );
 			}
 		} );
 	}
@@ -393,10 +395,6 @@ export default class TableSelection extends Plugin {
 		const viewPosition = this.editor.editing.view.createPositionAt( viewTargetElement, 0 );
 		const modelPosition = this.editor.editing.mapper.toModelPosition( viewPosition );
 		const modelElement = modelPosition.parent;
-
-		if ( !modelElement ) {
-			return;
-		}
 
 		if ( modelElement.is( 'tableCell' ) ) {
 			return modelElement;
