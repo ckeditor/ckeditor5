@@ -35,7 +35,7 @@ describe( 'LabeledFieldView', () => {
 			expect( labeledInput.locale ).to.deep.equal( locale );
 		} );
 
-		it( 'should set labeledInput#field', () => {
+		it( 'should set labeledInput#fieldView', () => {
 			expect( labeledInput.fieldView ).to.equal( view );
 		} );
 

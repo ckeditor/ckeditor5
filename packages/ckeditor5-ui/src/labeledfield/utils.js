@@ -28,7 +28,7 @@ import { createDropdown } from '../dropdown/utils';
  *		const labeledInputView = new LabeledFieldView( locale, createLabeledDropdown );
  *		console.log( labeledInputView.view ); // An input instance.
  *
- * @param {module:ui/labeledfield/labeledfieldview~LabeledFieldView} labeledFieldView The instance of the labeled view.
+ * @param {module:ui/labeledfield/labeledfieldview~LabeledFieldView} labeledFieldView The instance of the labeled field view.
  * @param {String} viewUid An UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#labelView labeled view's label} and the input.
  * @param {String} statusUid An UID string that allows DOM logical connection between the
@@ -59,7 +59,7 @@ export function createLabeledInputText( labeledFieldView, viewUid, statusUid ) {
  * A helper for creating labeled dropdowns.
  *
  * It creates an instance of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown} that is
- * logically related to a {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView labeled view}.
+ * logically related to a {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView labeled field view}.
  *
  * The helper does the following:
  *
@@ -71,7 +71,7 @@ export function createLabeledInputText( labeledFieldView, viewUid, statusUid ) {
  *		const labeledInputView = new LabeledFieldView( locale, createLabeledDropdown );
  *		console.log( labeledInputView.view ); // A dropdown instance.
  *
- * @param {module:ui/labeledfield/labeledfieldview~LabeledFieldView} labeledFieldView The instance of the labeled view.
+ * @param {module:ui/labeledfield/labeledfieldview~LabeledFieldView} labeledFieldView The instance of the labeled field view.
  * @param {String} viewUid An UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#labelView labeled view label} and the dropdown.
  * @param {String} statusUid An UID string that allows DOM logical connection between the

@@ -70,9 +70,9 @@ export default class LabeledFieldView extends View {
 		const statusUid = `ck-labeled-view-status-${ uid() }`;
 
 		/**
-		 * The field that gets labeled.
+		 * The field view that gets labeled.
 		 *
-		 * @member {module:ui/view~View} #field
+		 * @member {module:ui/view~View} #fieldView
 		 */
 		this.fieldView = viewCreator( this, viewUid, statusUid );
 
@@ -94,11 +94,11 @@ export default class LabeledFieldView extends View {
 
 		/**
 		 * The validation error text. When set, it will be displayed
-		 * next to the {@link #field} as a typical validation error message.
+		 * next to the {@link #fieldView} as a typical validation error message.
 		 * Set it to `null` to hide the message.
 		 *
 		 * **Note:** Setting this property to anything but `null` will automatically
-		 * make the `hasError` of the {@link #field} `true`.
+		 * make the `hasError` of the {@link #fieldView} `true`.
 		 *
 		 * @observable
 		 * @member {String|null} #errorText
@@ -106,7 +106,7 @@ export default class LabeledFieldView extends View {
 		this.set( 'errorText', null );
 
 		/**
-		 * The additional information text displayed next to the {@link #field} which can
+		 * The additional information text displayed next to the {@link #fieldView} which can
 		 * be used to inform the user about its purpose, provide help or hints.
 		 *
 		 * Set it to `null` to hide the message.
@@ -136,7 +136,7 @@ export default class LabeledFieldView extends View {
 		this.labelView = this._createLabelView( viewUid );
 
 		/**
-		 * The status view for the {@link #field}. It displays {@link #errorText} and
+		 * The status view for the {@link #fieldView}. It displays {@link #errorText} and
 		 * {@link #infoText}.
 		 *
 		 * @member {module:ui/view~View} #statusView
@@ -199,10 +199,10 @@ export default class LabeledFieldView extends View {
 
 	/**
 	 * Creates the status view instance. It displays {@link #errorText} and {@link #infoText}
-	 * next to the {@link #field}. See {@link #_statusText}.
+	 * next to the {@link #fieldView}. See {@link #_statusText}.
 	 *
 	 * @private
-	 * @param {String} statusUid Unique id of the status, shared with the {@link #field view's}
+	 * @param {String} statusUid Unique id of the status, shared with the {@link #fieldView view's}
 	 * `aria-describedby` attribute.
 	 * @returns {module:ui/view~View}
 	 */
@@ -233,7 +233,7 @@ export default class LabeledFieldView extends View {
 	}
 
 	/**
-	 * Focuses the {@link #field}.
+	 * Focuses the {@link #fieldView}.
 	 */
 	focus() {
 		this.fieldView.focus();
