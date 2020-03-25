@@ -143,8 +143,12 @@ export default class SelectionObserver extends Observer {
 		// It means that the DOM selection is in some way incorrect. Ranges that were in the DOM selection could not be
 		// converted to the view. This happens when the DOM selection was moved outside of the editable element.
 		if ( newViewSelection.rangeCount == 0 ) {
+			this.view.hasDomSelection = false;
+
 			return;
 		}
+
+		this.view.hasDomSelection = true;
 
 		if ( this.selection.isEqual( newViewSelection ) && this.domConverter.isDomSelectionCorrect( domSelection ) ) {
 			return;
