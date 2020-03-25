@@ -12,8 +12,8 @@ import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfieldview/labeledfieldview';
-import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfieldview/utils';
+import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
+import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
 
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -57,7 +57,7 @@ export default class TextAlternativeFormView extends View {
 		/**
 		 * An input with a label.
 		 *
-		 * @member {module:ui/labeledfieldview/labeledfieldview~LabeledFieldView} #labeledInput
+		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView} #labeledInput
 		 */
 		this.labeledInput = this._createLabeledInputView();
 
@@ -182,7 +182,7 @@ export default class TextAlternativeFormView extends View {
 	 * Creates an input with a label.
 	 *
 	 * @private
-	 * @returns {module:ui/labeledfieldview/labeledfieldview~LabeledFieldView} Labeled field view instance.
+	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView} Labeled field view instance.
 	 */
 	_createLabeledInputView() {
 		const t = this.locale.t;
