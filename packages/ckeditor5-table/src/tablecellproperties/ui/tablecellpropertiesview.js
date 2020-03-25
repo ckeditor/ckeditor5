@@ -471,21 +471,21 @@ export default class TableCellPropertiesView extends View {
 			class: 'ck-table-form__border-style'
 		} );
 
-		borderStyleDropdown.field.buttonView.set( {
+		borderStyleDropdown.fieldView.buttonView.set( {
 			isOn: false,
 			withText: true,
 			tooltip: t( 'Style' )
 		} );
 
-		borderStyleDropdown.field.buttonView.bind( 'label' ).to( this, 'borderStyle', value => {
+		borderStyleDropdown.fieldView.buttonView.bind( 'label' ).to( this, 'borderStyle', value => {
 			return styleLabels[ value ? value : 'none' ];
 		} );
 
-		borderStyleDropdown.field.on( 'execute', evt => {
+		borderStyleDropdown.fieldView.on( 'execute', evt => {
 			this.borderStyle = evt.source._borderStyleValue;
 		} );
 
-		addListToDropdown( borderStyleDropdown.field, getBorderStyleDefinitions( this ) );
+		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this ) );
 
 		// -- Width ---------------------------------------------------
 
@@ -496,10 +496,10 @@ export default class TableCellPropertiesView extends View {
 			class: 'ck-table-form__border-width'
 		} );
 
-		borderWidthInput.field.bind( 'value' ).to( this, 'borderWidth' );
+		borderWidthInput.fieldView.bind( 'value' ).to( this, 'borderWidth' );
 		borderWidthInput.bind( 'isEnabled' ).to( this, 'borderStyle', isBorderStyleSet );
-		borderWidthInput.field.on( 'input', () => {
-			this.borderWidth = borderWidthInput.field.element.value;
+		borderWidthInput.fieldView.on( 'input', () => {
+			this.borderWidth = borderWidthInput.fieldView.element.value;
 		} );
 
 		// -- Color ---------------------------------------------------
@@ -511,11 +511,11 @@ export default class TableCellPropertiesView extends View {
 			class: 'ck-table-form__border-color'
 		} );
 
-		borderColorInput.field.bind( 'value' ).to( this, 'borderColor' );
+		borderColorInput.fieldView.bind( 'value' ).to( this, 'borderColor' );
 		borderColorInput.bind( 'isEnabled' ).to( this, 'borderStyle', isBorderStyleSet );
 
-		borderColorInput.field.on( 'input', () => {
-			this.borderColor = borderColorInput.field.value;
+		borderColorInput.fieldView.on( 'input', () => {
+			this.borderColor = borderColorInput.fieldView.value;
 		} );
 
 		// Reset the border color and width fields when style is "none".
@@ -558,9 +558,9 @@ export default class TableCellPropertiesView extends View {
 			class: 'ck-table-cell-properties-form__background'
 		} );
 
-		backgroundInput.field.bind( 'value' ).to( this, 'backgroundColor' );
-		backgroundInput.field.on( 'input', () => {
-			this.backgroundColor = backgroundInput.field.value;
+		backgroundInput.fieldView.bind( 'value' ).to( this, 'backgroundColor' );
+		backgroundInput.fieldView.on( 'input', () => {
+			this.backgroundColor = backgroundInput.fieldView.value;
 		} );
 
 		return backgroundInput;
@@ -593,9 +593,9 @@ export default class TableCellPropertiesView extends View {
 			class: 'ck-table-form__dimensions-row__width'
 		} );
 
-		widthInput.field.bind( 'value' ).to( this, 'width' );
-		widthInput.field.on( 'input', () => {
-			this.width = widthInput.field.element.value;
+		widthInput.fieldView.bind( 'value' ).to( this, 'width' );
+		widthInput.fieldView.on( 'input', () => {
+			this.width = widthInput.fieldView.element.value;
 		} );
 
 		// -- Operator ---------------------------------------------------
@@ -622,9 +622,9 @@ export default class TableCellPropertiesView extends View {
 			class: 'ck-table-form__dimensions-row__height'
 		} );
 
-		heightInput.field.bind( 'value' ).to( this, 'height' );
-		heightInput.field.on( 'input', () => {
-			this.height = heightInput.field.element.value;
+		heightInput.fieldView.bind( 'value' ).to( this, 'height' );
+		heightInput.fieldView.on( 'input', () => {
+			this.height = heightInput.fieldView.element.value;
 		} );
 
 		return {
@@ -654,9 +654,9 @@ export default class TableCellPropertiesView extends View {
 			class: 'ck-table-cell-properties-form__padding'
 		} );
 
-		paddingInput.field.bind( 'value' ).to( this, 'padding' );
-		paddingInput.field.on( 'input', () => {
-			this.padding = paddingInput.field.element.value;
+		paddingInput.fieldView.bind( 'value' ).to( this, 'padding' );
+		paddingInput.fieldView.on( 'input', () => {
+			this.padding = paddingInput.fieldView.element.value;
 		} );
 
 		return paddingInput;
