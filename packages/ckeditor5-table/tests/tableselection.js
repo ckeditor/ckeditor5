@@ -34,6 +34,51 @@ describe( 'table selection', () => {
 		await editor.destroy();
 	} );
 
+	describe( 'init()', () => {
+		beforeEach( async () => {
+			editor = await createEditor();
+			model = editor.model;
+			modelRoot = model.document.getRoot();
+			tableSelection = editor.plugins.get( TableSelection );
+
+			setModelData( model, modelTable( [
+				[ '11[]', '12', '13' ],
+				[ '21', '22', '23' ],
+				[ '31', '32', '33' ]
+			] ) );
+		} );
+
+		describe( 'plugin disabling support', () => {
+			it( 'should collapse multi-cell selection when the plugin gets disabled', () => {
+				const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
+				const lastCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
+
+				tableSelection._setCellSelection(
+					firstCell,
+					lastCell
+				);
+
+				tableSelection.forceDisabled( 'foo' );
+
+				const ranges = [ ...model.document.selection.getRanges() ];
+
+				expect( ranges ).to.have.length( 1 );
+				expect( ranges[ 0 ].isCollapsed ).to.be.true;
+				expect( ranges[ 0 ].start.path ).to.deep.equal( [ 0, 0, 0, 0, 0 ] );
+			} );
+
+			it( 'should do nothing if there were no multi-cell selections', () => {
+				tableSelection.forceDisabled( 'foo' );
+
+				const ranges = [ ...model.document.selection.getRanges() ];
+
+				expect( ranges ).to.have.length( 1 );
+				expect( ranges[ 0 ].isCollapsed ).to.be.true;
+				expect( ranges[ 0 ].start.path ).to.deep.equal( [ 0, 0, 0, 0, 2 ] );
+			} );
+		} );
+	} );
+
 	describe( 'selection by shift+click', () => {
 		beforeEach( async () => {
 			// Disables attaching drag mouse events.
