@@ -585,8 +585,8 @@ describe( 'AutoMediaEmbed - integration', () => {
 	function pasteHtml( editor, html ) {
 		editor.editing.view.document.fire( 'paste', {
 			dataTransfer: createDataTransfer( { 'text/html': html } ),
-			preventDefault() {
-			}
+			stopPropagation() {},
+			preventDefault() {}
 		} );
 	}
 
