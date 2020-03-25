@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, console */
+/* globals document, console, setTimeout */
 
 import View from '../../../src/view/view';
 import Observer from '../../../src/view/observer/observer';
@@ -511,6 +511,64 @@ describe( 'view', () => {
 			sinon.assert.calledTwice( spy );
 			sinon.assert.calledWith( spy.firstCall, sinon.match.any, 'isRenderingInProgress', true );
 			sinon.assert.calledWith( spy.secondCall, sinon.match.any, 'isRenderingInProgress', false );
+		} );
+	} );
+
+	describe( 'hasDomSelection', () => {
+		let domElement, domP, domSelection;
+
+		beforeEach( () => {
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			view.attachDomRoot( domRoot );
+
+			viewRoot._appendChild( new ViewElement( viewDocument, 'p' ) );
+			view.forceRender();
+
+			domElement = createElement( document, 'div', { contenteditable: 'true' } );
+			document.body.appendChild( domElement );
+
+			domSelection = document.getSelection();
+			domP = domRoot.childNodes[ 0 ];
+		} );
+
+		afterEach( () => {
+			domElement.remove();
+		} );
+
+		it( 'should be true if selection is inside a DOM root element', done => {
+			domSelection.collapse( domP, 0 );
+
+			// Wait for async selectionchange event on DOM document.
+			setTimeout( () => {
+				expect( view.hasDomSelection ).to.be.true;
+
+				done();
+			}, 100 );
+		} );
+
+		it( 'should be true if selection is inside a DOM root element - no focus', done => {
+			domSelection.collapse( domP, 0 );
+			domRoot.blur();
+
+			// Wait for async selectionchange event on DOM document.
+			setTimeout( () => {
+				expect( view.hasDomSelection ).to.be.true;
+				expect( view.document.isFocused ).to.be.false;
+
+				done();
+			}, 100 );
+		} );
+
+		it( 'should be false if selection is outside DOM root element', done => {
+			domSelection.collapse( domElement, 0 );
+
+			// Wait for async selectionchange event on DOM document.
+			setTimeout( () => {
+				expect( view.hasDomSelection ).to.be.false;
+
+				done();
+			}, 100 );
 		} );
 	} );
 
