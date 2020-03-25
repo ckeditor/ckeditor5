@@ -33,15 +33,16 @@ export default class RemoveRowCommand extends Command {
 		const firstCell = selectedCells[ 0 ];
 
 		if ( firstCell ) {
-			const table = firstCell.parent.parent;
+			const table = findAncestor( 'table', firstCell );
 			const tableRowCount = this.editor.plugins.get( 'TableUtils' ).getRows( table );
+			const lastRowIndex = tableRowCount - 1;
 
-			const tableMap = [ ...new TableWalker( table ) ];
-			const rowIndexes = tableMap.filter( entry => selectedCells.includes( entry.cell ) ).map( el => el.row );
-			const minRowIndex = rowIndexes[ 0 ];
-			const maxRowIndex = rowIndexes[ rowIndexes.length - 1 ];
+			const removedRowIndexes = getRowIndexes( selectedCells );
 
-			this.isEnabled = maxRowIndex - minRowIndex < ( tableRowCount - 1 );
+			const areAllRowsSelected = removedRowIndexes.first === 0 && removedRowIndexes.last === lastRowIndex;
+
+			// Disallow selecting whole table -> delete whole table should be used instead.
+			this.isEnabled = !areAllRowsSelected;
 		} else {
 			this.isEnabled = false;
 		}
