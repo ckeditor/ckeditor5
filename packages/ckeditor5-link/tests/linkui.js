@@ -236,12 +236,12 @@ describe( 'LinkUI', () => {
 			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 			// Mock some leftover value **in DOM**, e.g. after previous editing.
-			formView.urlInputView.field.value = 'leftover';
+			formView.urlInputView.fieldView.value = 'leftover';
 
 			linkUIFeature._showUI();
 			actionsView.fire( 'edit' );
 
-			expect( formView.urlInputView.field.value ).to.equal( 'url' );
+			expect( formView.urlInputView.fieldView.value ).to.equal( 'url' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
@@ -249,7 +249,7 @@ describe( 'LinkUI', () => {
 			setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 
 			linkUIFeature._showUI();
-			expect( formView.urlInputView.field.value ).to.equal( '' );
+			expect( formView.urlInputView.fieldView.value ).to.equal( '' );
 		} );
 
 		it( 'should optionally force `main` stack to be visible', () => {
@@ -823,7 +823,7 @@ describe( 'LinkUI', () => {
 				linkUIFeature._showUI();
 				linkUIFeature._removeFormView();
 
-				const selectSpy = testUtils.sinon.spy( formView.urlInputView.field, 'select' );
+				const selectSpy = testUtils.sinon.spy( formView.urlInputView.fieldView, 'select' );
 				actionsView.fire( 'edit' );
 
 				expect( balloon.visibleView ).to.equal( formView );
@@ -913,19 +913,19 @@ describe( 'LinkUI', () => {
 			it( 'should bind formView.urlInputView#value to link command value', () => {
 				const command = editor.commands.get( 'link' );
 
-				expect( formView.urlInputView.field.value ).to.be.undefined;
+				expect( formView.urlInputView.fieldView.value ).to.be.undefined;
 
 				command.value = 'http://cksource.com';
-				expect( formView.urlInputView.field.value ).to.equal( 'http://cksource.com' );
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://cksource.com' );
 			} );
 
 			it( 'should execute link command on formView#submit event', () => {
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-				formView.urlInputView.field.value = 'http://ckeditor.com';
-				expect( formView.urlInputView.field.value ).to.equal( 'http://ckeditor.com' );
+				formView.urlInputView.fieldView.value = 'http://ckeditor.com';
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://ckeditor.com' );
 
-				formView.urlInputView.field.value = 'http://cksource.com';
+				formView.urlInputView.fieldView.value = 'http://cksource.com';
 				formView.fire( 'submit' );
 
 				expect( executeSpy.calledOnce ).to.be.true;
@@ -1056,7 +1056,7 @@ describe( 'LinkUI', () => {
 					const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
 					setModelData( model, 'f[<$text linkHref="url" linkIsFoo="true">ooba</$text>]r' );
-					expect( formView.urlInputView.field.element.value ).to.equal( 'url' );
+					expect( formView.urlInputView.fieldView.element.value ).to.equal( 'url' );
 					expect( formView.getDecoratorSwitchesState() ).to.deep.equal( { linkIsFoo: true } );
 
 					formView.fire( 'submit' );
