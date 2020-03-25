@@ -8,17 +8,19 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-autoformat' ), {
-		plugins: ClassicEditor.builtinPlugins.concat( [ Code, CodeBlock ] ),
+		plugins: ClassicEditor.builtinPlugins.concat( [ Code, CodeBlock, Strikethrough ] ),
 		toolbar: {
 			items: [
 				'heading',
 				'|',
 				'bold',
 				'italic',
+				'strikethrough',
 				'code',
 				'link',
 				'bulletedList',

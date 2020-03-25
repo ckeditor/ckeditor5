@@ -63,14 +63,16 @@ export default class Autoformat extends Plugin {
 
 	/**
 	 * Adds autoformatting related to the {@link module:basic-styles/bold~Bold},
-	 * {@link module:basic-styles/italic~Italic} and {@link module:basic-styles/code~Code}.
+	 * {@link module:basic-styles/italic~Italic}, {@link module:basic-styles/code~Code}
+	 * and {@link module:basic-styles/strikethrough~Strikethrough}
 	 *
 	 * When typed:
 	 * - `**foobar**` &ndash; `**` characters are removed and `foobar` is set to bold,
 	 * - `__foobar__` &ndash; `__` characters are removed and `foobar` is set to bold,
 	 * - `*foobar*` &ndash; `*` characters are removed and `foobar` is set to italic,
 	 * - `_foobar_` &ndash; `_` characters are removed and `foobar` is set to italic,
-	 * - ``` `foobar` &ndash; ``` ` ``` characters are removed and `foobar` is set to code.
+	 * - ``` `foobar` &ndash; ``` ` ``` characters are removed and `foobar` is set to code,
+	 * - `~~foobar~~` &ndash; `~~` characters are removed and `foobar` is set to strikethrough.
 	 *
 	 * @private
 	 */
@@ -102,6 +104,14 @@ export default class Autoformat extends Plugin {
 			const codeCallback = getCallbackFunctionForInlineAutoformat( this.editor, 'code' );
 
 			new InlineAutoformatEditing( this.editor, /(`)([^`]+)(`)$/g, codeCallback );
+			/* eslint-enable no-new */
+		}
+
+		if ( commands.get( 'strikethrough' ) ) {
+			/* eslint-disable no-new */
+			const strikethroughCallback = getCallbackFunctionForInlineAutoformat( this.editor, 'strikethrough' );
+
+			new InlineAutoformatEditing( this.editor, /(~~)([^~]+)(~~)$/g, strikethroughCallback );
 			/* eslint-enable no-new */
 		}
 	}

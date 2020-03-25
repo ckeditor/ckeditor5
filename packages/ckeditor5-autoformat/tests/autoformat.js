@@ -9,6 +9,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting';
 import CodeEditing from '@ckeditor/ckeditor5-basic-styles/src/code/codeediting';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
@@ -40,6 +41,7 @@ describe( 'Autoformat', () => {
 					BoldEditing,
 					ItalicEditing,
 					CodeEditing,
+					StrikethroughEditing,
 					BlockQuoteEditing,
 					CodeBlockEditing,
 					ShiftEnter
@@ -363,6 +365,15 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( model ) ).to.equal( '<paragraph><$text code="true">foobar</$text>[]</paragraph>' );
+		} );
+
+		it( 'should replace both "~~" with strikethrough', () => {
+			setData( model, '<paragraph>~~foobar~[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '~', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph><$text strikethrough="true">foobar</$text>[]</paragraph>' );
 		} );
 
 		it( 'nothing should be replaces when typing "*"', () => {

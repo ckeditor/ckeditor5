@@ -25,7 +25,8 @@ The following inline formatting options are available:
 
 * Bold &ndash; Type `**text**` or `__text__`,
 * Italic &ndash; Type `*text*` or `_text_`,
-* Code &ndash; Type ``` `text` ```.
+* Code &ndash; Type ``` `text` ```,
+* Strikethrough &ndash; Type `~~text~~`.
 
 ## Autoformatting sample
 

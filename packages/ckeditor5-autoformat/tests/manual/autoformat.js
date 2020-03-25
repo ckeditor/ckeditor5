@@ -16,14 +16,17 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic, Code, Heading, List, Autoformat, BlockQuote, CodeBlock, ShiftEnter ],
-		toolbar: [ 'heading', '|', 'numberedList', 'bulletedList', 'blockQuote', 'codeBlock', 'bold', 'italic', 'code', 'undo', 'redo' ]
+		plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic, Code, Strikethrough, Heading, List, Autoformat, BlockQuote, CodeBlock,
+			ShiftEnter ],
+		toolbar: [ 'heading', '|', 'numberedList', 'bulletedList', 'blockQuote', 'codeBlock', 'bold', 'italic', 'code', 'strikethrough',
+			'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

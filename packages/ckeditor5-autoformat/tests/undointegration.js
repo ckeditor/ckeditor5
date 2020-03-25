@@ -10,6 +10,7 @@ import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import CodeEditing from '@ckeditor/ckeditor5-basic-styles/src/code/codeediting';
+import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -38,6 +39,7 @@ describe( 'Autoformat undo integration', () => {
 					BoldEditing,
 					ItalicEditing,
 					CodeEditing,
+					StrikethroughEditing,
 					BlockQuoteEditing
 				]
 			} )
@@ -106,6 +108,17 @@ describe( 'Autoformat undo integration', () => {
 			expect( getData( model ) ).to.equal( '<paragraph><$text code="true">foobar</$text>[]</paragraph>' );
 			editor.execute( 'undo' );
 			expect( getData( model ) ).to.equal( '<paragraph>`foobar`[]</paragraph>' );
+		} );
+
+		it( 'should undo replacing "~~" with strikethrough', () => {
+			setData( model, '<paragraph>~~foobar~[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '~', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph><$text strikethrough="true">foobar</$text>[]</paragraph>' );
+			editor.execute( 'undo' );
+			expect( getData( model ) ).to.equal( '<paragraph>~~foobar~~[]</paragraph>' );
 		} );
 	} );
 
