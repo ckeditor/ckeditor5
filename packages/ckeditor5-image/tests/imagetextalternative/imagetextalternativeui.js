@@ -78,23 +78,23 @@ describe( 'ImageTextAlternativeUI', () => {
 		} );
 
 		it( 'should set alt attribute value to textarea and select it', () => {
-			const spy = sinon.spy( form.labeledInput.field, 'select' );
+			const spy = sinon.spy( form.labeledInput.fieldView, 'select' );
 
 			setData( model, '[<image src="" alt="foo bar"></image>]' );
 
 			button.fire( 'execute' );
 			sinon.assert.calledOnce( spy );
-			expect( form.labeledInput.field.value ).equals( 'foo bar' );
+			expect( form.labeledInput.fieldView.value ).equals( 'foo bar' );
 		} );
 
 		it( 'should set empty text to textarea and select it when there is no alt attribute', () => {
-			const spy = sinon.spy( form.labeledInput.field, 'select' );
+			const spy = sinon.spy( form.labeledInput.fieldView, 'select' );
 
 			setData( model, '[<image src=""></image>]' );
 
 			button.fire( 'execute' );
 			sinon.assert.calledOnce( spy );
-			expect( form.labeledInput.field.value ).equals( '' );
+			expect( form.labeledInput.fieldView.value ).equals( '' );
 		} );
 	} );
 
@@ -103,17 +103,17 @@ describe( 'ImageTextAlternativeUI', () => {
 		it( 'should make sure the input always stays in sync with the value of the command', () => {
 			const button = editor.ui.componentFactory.create( 'imageTextAlternative' );
 			// Mock the value of the input after some past editing.
-			form.labeledInput.field.value = 'foo';
+			form.labeledInput.fieldView.value = 'foo';
 
 			// Mock the user using the form, changing the value but clicking "Cancel".
 			// so the command's value is not updated.
-			form.labeledInput.field.element.value = 'This value was canceled.';
+			form.labeledInput.fieldView.element.value = 'This value was canceled.';
 
 			// Mock the user editing the same image once again.
 			setData( model, '[<image src="" alt="foo"></image>]' );
 
 			button.fire( 'execute' );
-			expect( form.labeledInput.field.element.value ).to.equal( 'foo' );
+			expect( form.labeledInput.fieldView.element.value ).to.equal( 'foo' );
 		} );
 
 		it( 'should execute command on submit', () => {
@@ -122,7 +122,7 @@ describe( 'ImageTextAlternativeUI', () => {
 
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, 'imageTextAlternative', {
-				newValue: form.labeledInput.field.element.value
+				newValue: form.labeledInput.fieldView.element.value
 			} );
 		} );
 
