@@ -167,11 +167,9 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 				} );
 
 				// data.content might be completely overwritten with a new object, so we need obtain final result for comparison.
-				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
-					evt.return = data.content;
-				}, { priority: 'lowest' } );
-
-				const transformedContent = clipboardPlugin.fire( 'inputTransformation', { content, dataTransfer } );
+				const data = { content, dataTransfer };
+				clipboardPlugin.fire( 'inputTransformation', data );
+				const transformedContent = data.content;
 
 				expectNormalized(
 					transformedContent,
@@ -362,6 +360,7 @@ function extractBase64Srcs( data ) {
 function firePasteEvent( editor, data ) {
 	editor.editing.view.document.fire( 'paste', {
 		dataTransfer: createDataTransfer( data ),
+		stopPropagation() {},
 		preventDefault() {}
 	} );
 }
