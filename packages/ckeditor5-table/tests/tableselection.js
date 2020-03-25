@@ -79,11 +79,8 @@ describe( 'table selection', () => {
 		} );
 	} );
 
-	describe( 'selection by shift+click', () => {
+	describe( 'selection by Shift+click', () => {
 		beforeEach( async () => {
-			// Disables attaching drag mouse events.
-			sinon.stub( TableSelection.prototype, '_enableMouseDragSelection' );
-
 			editor = await createEditor();
 			model = editor.model;
 			modelRoot = model.document.getRoot();
@@ -96,10 +93,6 @@ describe( 'table selection', () => {
 				[ '21', '22', '23' ],
 				[ '31', '32', '33' ]
 			] ) );
-		} );
-
-		afterEach( () => {
-			TableSelection.prototype._enableMouseDragSelection.restore();
 		} );
 
 		it( 'should do nothing if the plugin is disabled', () => {
@@ -116,7 +109,11 @@ describe( 'table selection', () => {
 
 		it( 'should abort if Shift key was not pressed', () => {
 			viewDocument.fire( 'mousedown', new DomEventData( view, {
-				shiftKey: false
+				shiftKey: false,
+				target: view.domConverter.mapViewToDom(
+					// figure > table > tbody > tr > td
+					viewDocument.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 2 )
+				)
 			} ) );
 
 			assertSelectedCells( model, [
@@ -126,7 +123,7 @@ describe( 'table selection', () => {
 			] );
 		} );
 
-		it( 'should abort if started selecting elements outside the table', () => {
+		it( 'should abort if Shift+clicked an element outside a table', () => {
 			const preventDefault = sinon.spy();
 
 			model.change( writer => {
@@ -211,7 +208,7 @@ describe( 'table selection', () => {
 			expect( preventDefault.called ).to.equal( true );
 		} );
 
-		it( 'should ignore `selectionChange` event when selecting cells ', () => {
+		it( 'should ignore `selectionChange` event when selecting cells', () => {
 			const consoleLog = sinon.stub( console, 'log' );
 			const preventDefault = sinon.spy();
 			const selectionChangeCallback = sinon.spy();
@@ -219,10 +216,7 @@ describe( 'table selection', () => {
 			// Adding a new callback to check whether it will be executed (whether `evt.stop()` is being called).
 			viewDocument.on( 'selectionChange', selectionChangeCallback );
 
-			// No changes were made.
-			expect( selectionChangeCallback.called ).to.equal( false );
-
-			// Start selecting a cell. Disables listening to `selectionChange`.
+			// Shift+click a cell to create a selection. Should disable listening to `selectionChange`.
 			viewDocument.fire( 'mousedown', new DomEventData( view, {
 				shiftKey: true,
 				target: view.domConverter.mapViewToDom(
@@ -232,13 +226,16 @@ describe( 'table selection', () => {
 				preventDefault
 			} ) );
 
-			// The callback shouldn't be executed.
+			// Due to browsers "fixing" the selection (e.g. moving it to text nodes), after we set a selection
+			// the browser fill fire native selectionchange, which triggers our selectionChange. We need to ignore it.
+			// See a broader explanation in tableselection.js.
 			viewDocument.fire( 'selectionChange' );
 
-			expect( selectionChangeCallback.called ).to.equal( false );
-
+			// The callback shouldn't be executed because
 			// `selectionChange` event should be canceled.
 			expect( selectionChangeCallback.called ).to.equal( false );
+			expect( consoleLog.called ).to.equal( true );
+			expect( consoleLog.firstCall.args[ 0 ] ).to.equal( 'Blocked selectionChange to avoid breaking table cells selection.' );
 
 			// Enables listening to `selectionChange` event.
 			viewDocument.fire( 'mouseup' );
@@ -248,8 +245,6 @@ describe( 'table selection', () => {
 			} );
 
 			expect( selectionChangeCallback.called ).to.equal( true );
-			expect( consoleLog.called ).to.equal( true );
-			expect( consoleLog.firstCall.args[ 0 ] ).to.equal( 'Blocked selectionChange to avoid breaking table cells selection.' );
 
 			consoleLog.restore();
 		} );
@@ -259,9 +254,6 @@ describe( 'table selection', () => {
 		let preventDefault;
 
 		beforeEach( async () => {
-			// Disables attaching mouse+Shift events.
-			sinon.stub( TableSelection.prototype, '_enableShiftClickSelection' );
-
 			editor = await createEditor();
 			model = editor.model;
 			modelRoot = model.document.getRoot();
@@ -278,28 +270,10 @@ describe( 'table selection', () => {
 			preventDefault = sinon.spy();
 		} );
 
-		afterEach( () => {
-			TableSelection.prototype._enableShiftClickSelection.restore();
-		} );
-
 		it( 'should do nothing if the plugin is disabled', () => {
 			tableSelection.isEnabled = false;
 
 			const domEventDataMock = new DomEventData( view, {} );
-
-			viewDocument.fire( 'mousedown', domEventDataMock );
-
-			assertSelectedCells( model, [
-				[ 0, 0, 0 ],
-				[ 0, 0, 0 ],
-				[ 0, 0, 0 ]
-			] );
-		} );
-
-		it( 'should abort if Shift is pressed', () => {
-			const domEventDataMock = new DomEventData( view, {
-				shiftKey: true
-			} );
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
@@ -529,9 +503,6 @@ describe( 'table selection', () => {
 			// Adding a new callback to check whether it will be executed (whether `evt.stop()` is being called).
 			viewDocument.on( 'selectionChange', selectionChangeCallback );
 
-			// No changes were made.
-			expect( selectionChangeCallback.called ).to.equal( false );
-
 			// Click on a cell.
 			viewDocument.fire( 'mousedown', new DomEventData( view, {
 				target: view.domConverter.mapViewToDom(
@@ -550,11 +521,13 @@ describe( 'table selection', () => {
 				preventDefault
 			} ) );
 
-			// The callback shouldn't be executed.
+			// See explanation why do we fire it in the similar test for Shift+click.
 			viewDocument.fire( 'selectionChange' );
 
 			// `selectionChange` event should be canceled.
 			expect( selectionChangeCallback.called ).to.equal( false );
+			expect( consoleLog.called ).to.equal( true );
+			expect( consoleLog.firstCall.args[ 0 ] ).to.equal( 'Blocked selectionChange to avoid breaking table cells selection.' );
 
 			// Enables listening to `selectionChange` event.
 			viewDocument.fire( 'mouseup' );
@@ -564,8 +537,6 @@ describe( 'table selection', () => {
 			} );
 
 			expect( selectionChangeCallback.called ).to.equal( true );
-			expect( consoleLog.called ).to.equal( true );
-			expect( consoleLog.firstCall.args[ 0 ] ).to.equal( 'Blocked selectionChange to avoid breaking table cells selection.' );
 
 			consoleLog.restore();
 		} );
