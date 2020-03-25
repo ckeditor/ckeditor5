@@ -74,7 +74,7 @@ export default class LabeledFieldView extends View {
 		 *
 		 * @member {module:ui/view~View} #field
 		 */
-		this.field = viewCreator( this, viewUid, statusUid );
+		this.fieldView = viewCreator( this, viewUid, statusUid );
 
 		/**
 		 * The text of the label.
@@ -175,7 +175,7 @@ export default class LabeledFieldView extends View {
 			},
 			children: [
 				this.labelView,
-				this.field,
+				this.fieldView,
 				this.statusView
 			]
 		} );
@@ -236,6 +236,6 @@ export default class LabeledFieldView extends View {
 	 * Focuses the {@link #field}.
 	 */
 	focus() {
-		this.field.focus();
+		this.fieldView.focus();
 	}
 }

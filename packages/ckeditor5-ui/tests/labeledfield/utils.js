@@ -23,86 +23,86 @@ describe( 'LabeledFieldView utils', () => {
 	} );
 
 	describe( 'createLabeledInputText()', () => {
-		let labeledFieldView;
+		let labeledInput;
 
 		beforeEach( () => {
-			labeledFieldView = new LabeledFieldView( locale, createLabeledInputText );
+			labeledInput = new LabeledFieldView( locale, createLabeledInputText );
 		} );
 
 		afterEach( () => {
-			labeledFieldView.destroy();
+			labeledInput.destroy();
 		} );
 
 		it( 'should create an InputTextView instance', () => {
-			expect( labeledFieldView.field ).to.be.instanceOf( InputTextView );
+			expect( labeledInput.fieldView ).to.be.instanceOf( InputTextView );
 		} );
 
 		it( 'should pass the Locale to the input', () => {
-			expect( labeledFieldView.field.locale ).to.equal( locale );
+			expect( labeledInput.fieldView.locale ).to.equal( locale );
 		} );
 
 		it( 'should set input #id and #ariaDescribedById', () => {
-			labeledFieldView.render();
+			labeledInput.render();
 
-			expect( labeledFieldView.field.id ).to.equal( labeledFieldView.labelView.for );
-			expect( labeledFieldView.field.ariaDescribedById ).to.equal( labeledFieldView.statusView.element.id );
+			expect( labeledInput.fieldView.id ).to.equal( labeledInput.labelView.for );
+			expect( labeledInput.fieldView.ariaDescribedById ).to.equal( labeledInput.statusView.element.id );
 		} );
 
-		it( 'should bind input\'s #isReadOnly to LabeledFieldView#isEnabled', () => {
-			labeledFieldView.isEnabled = true;
-			expect( labeledFieldView.field.isReadOnly ).to.be.false;
+		it( 'should bind input\'s #isReadOnly to labeledInput#isEnabled', () => {
+			labeledInput.isEnabled = true;
+			expect( labeledInput.fieldView.isReadOnly ).to.be.false;
 
-			labeledFieldView.isEnabled = false;
-			expect( labeledFieldView.field.isReadOnly ).to.be.true;
+			labeledInput.isEnabled = false;
+			expect( labeledInput.fieldView.isReadOnly ).to.be.true;
 		} );
 
-		it( 'should bind input\'s #hasError to LabeledFieldView#errorText', () => {
-			labeledFieldView.errorText = 'some error';
-			expect( labeledFieldView.field.hasError ).to.be.true;
+		it( 'should bind input\'s #hasError to labeledInput#errorText', () => {
+			labeledInput.errorText = 'some error';
+			expect( labeledInput.fieldView.hasError ).to.be.true;
 
-			labeledFieldView.errorText = null;
-			expect( labeledFieldView.field.hasError ).to.be.false;
+			labeledInput.errorText = null;
+			expect( labeledInput.fieldView.hasError ).to.be.false;
 		} );
 
-		it( 'should clean LabeledFieldView#errorText upon input\'s DOM "update" event', () => {
-			labeledFieldView.errorText = 'some error';
-			labeledFieldView.field.fire( 'input' );
-			expect( labeledFieldView.errorText ).to.be.null;
+		it( 'should clean labeledInput#errorText upon input\'s DOM "update" event', () => {
+			labeledInput.errorText = 'some error';
+			labeledInput.fieldView.fire( 'input' );
+			expect( labeledInput.errorText ).to.be.null;
 		} );
 	} );
 
 	describe( 'createLabeledDropdown', () => {
-		let labeledFieldView;
+		let labeledDropdown;
 
 		beforeEach( () => {
-			labeledFieldView = new LabeledFieldView( locale, createLabeledDropdown );
+			labeledDropdown = new LabeledFieldView( locale, createLabeledDropdown );
 		} );
 
 		afterEach( () => {
-			labeledFieldView.destroy();
+			labeledDropdown.destroy();
 		} );
 
 		it( 'should create a DropdownView', () => {
-			expect( labeledFieldView.field ).to.be.instanceOf( DropdownView );
+			expect( labeledDropdown.fieldView ).to.be.instanceOf( DropdownView );
 		} );
 
 		it( 'should pass the Locale to the dropdown', () => {
-			expect( labeledFieldView.field.locale ).to.equal( locale );
+			expect( labeledDropdown.fieldView.locale ).to.equal( locale );
 		} );
 
 		it( 'should set dropdown\'s #id and #ariaDescribedById', () => {
-			labeledFieldView.render();
+			labeledDropdown.render();
 
-			expect( labeledFieldView.field.id ).to.equal( labeledFieldView.labelView.for );
-			expect( labeledFieldView.field.ariaDescribedById ).to.equal( labeledFieldView.statusView.element.id );
+			expect( labeledDropdown.fieldView.id ).to.equal( labeledDropdown.labelView.for );
+			expect( labeledDropdown.fieldView.ariaDescribedById ).to.equal( labeledDropdown.statusView.element.id );
 		} );
 
 		it( 'should bind dropdown\'s #isEnabled to the labeled view', () => {
-			labeledFieldView.isEnabled = true;
-			expect( labeledFieldView.field.isEnabled ).to.be.true;
+			labeledDropdown.isEnabled = true;
+			expect( labeledDropdown.fieldView.isEnabled ).to.be.true;
 
-			labeledFieldView.isEnabled = false;
-			expect( labeledFieldView.field.isEnabled ).to.be.false;
+			labeledDropdown.isEnabled = false;
+			expect( labeledDropdown.fieldView.isEnabled ).to.be.false;
 		} );
 	} );
 } );
