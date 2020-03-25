@@ -639,7 +639,7 @@ function input( {
 } = {} ) {
 	const labeledInput = new LabeledFieldView( {}, createLabeledInputText );
 
-	labeledInput.field.set( { isReadOnly, label, value } );
+	labeledInput.fieldView.set( { isReadOnly, label, value } );
 
 	return labeledInput;
 }
