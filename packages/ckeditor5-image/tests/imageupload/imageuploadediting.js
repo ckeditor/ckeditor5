@@ -628,15 +628,6 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should upload image with base64 src', done => {
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
-			const id = adapterMocks[ 0 ].loader.id;
-			const expected = '<paragraph>bar</paragraph>' +
-				`[<image src="" uploadId="${ id }" uploadStatus="reading"></image>]` +
-				'<paragraph>foo</paragraph>';
-
-			expectModel( done, getModelData( model ), expected );
-		}, { priority: 'low' } );
-
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const clipboardHtml = `<p>bar</p><img src=${ base64Sample } />`;
@@ -646,17 +637,16 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		const id = adapterMocks[ 0 ].loader.id;
+		const expected = '<paragraph>bar</paragraph>' +
+			`[<image src="" uploadId="${ id }" uploadStatus="reading"></image>]` +
+			'<paragraph>foo</paragraph>';
+
+		expectModel( done, getModelData( model ), expected );
 	} );
 
 	it( 'should upload image with blob src', done => {
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
-			const id = adapterMocks[ 0 ].loader.id;
-			const expected = `[<image src="" uploadId="${ id }" uploadStatus="reading"></image>]` +
-				'<paragraph>foo</paragraph>';
-
-			expectModel( done, getModelData( model ), expected );
-		}, { priority: 'low' } );
-
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } />`;
@@ -666,15 +656,15 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		const id = adapterMocks[ 0 ].loader.id;
+		const expected = `[<image src="" uploadId="${ id }" uploadStatus="reading"></image>]` +
+			'<paragraph>foo</paragraph>';
+
+		expectModel( done, getModelData( model ), expected );
 	} );
 
 	it( 'should not upload image if no loader available', done => {
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
-			const expected = `[<image src="${ base64Sample }"></image>]<paragraph>foo</paragraph>`;
-
-			expectModel( done, getModelData( model ), expected );
-		}, { priority: 'low' } );
-
 		sinon.stub( fileRepository, 'createLoader' ).callsFake( () => null );
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
@@ -686,6 +676,10 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		const expected = `[<image src="${ base64Sample }"></image>]<paragraph>foo</paragraph>`;
+
+		expectModel( done, getModelData( model ), expected );
 	} );
 
 	it( 'should not upload and remove image if fetch failed', done => {
@@ -695,14 +689,6 @@ describe( 'ImageUploadEditing', () => {
 		notification.on( 'show:warning', evt => {
 			evt.stop();
 		}, { priority: 'high' } );
-
-		expectData(
-			'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
-			'[<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>]<paragraph>foo</paragraph>',
-			'<paragraph>[]foo</paragraph>',
-			done,
-			false
-		);
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
@@ -717,7 +703,21 @@ describe( 'ImageUploadEditing', () => {
 			return new Promise( ( res, rej ) => rej( 'could not fetch' ) );
 		} );
 
+		let content = null;
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+			content = data.content;
+		} );
+
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		expectData(
+			'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
+			'[<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>]<paragraph>foo</paragraph>',
+			'<paragraph>[]foo</paragraph>',
+			content,
+			done,
+			false
+		);
 	} );
 
 	it( 'should upload only images which were successfully fetched and remove failed ones', done => {
@@ -737,13 +737,6 @@ describe( 'ImageUploadEditing', () => {
 			'<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>' +
 			'[<image src="" uploadId="#loader2_id" uploadStatus="reading"></image>]' +
 			'<paragraph>foo</paragraph>';
-
-		expectData(
-			'',
-			expectedModel,
-			expectedFinalModel,
-			done
-		);
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
@@ -766,7 +759,20 @@ describe( 'ImageUploadEditing', () => {
 			}
 		} );
 
+		let content = null;
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+			content = data.content;
+		} );
+
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		expectData(
+			'',
+			expectedModel,
+			expectedFinalModel,
+			content,
+			done
+		);
 	} );
 
 	it( 'should not upload and remove image when `File` constructor is not present', done => {
@@ -781,17 +787,6 @@ describe( 'ImageUploadEditing', () => {
 			evt.stop();
 		}, { priority: 'high' } );
 
-		expectData(
-			'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img><p>baz</p>',
-			'<image src="" uploadId="#loader1_id" uploadStatus="reading"></image><paragraph>baz[]foo</paragraph>',
-			'<paragraph>baz[]foo</paragraph>',
-			err => {
-				window.File = fileFn;
-				done( err );
-			},
-			false
-		);
-
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } /><p>baz</p>`;
@@ -800,7 +795,24 @@ describe( 'ImageUploadEditing', () => {
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
+		let content = null;
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+			content = data.content;
+		} );
+
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		expectData(
+			'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img><p>baz</p>',
+			'<image src="" uploadId="#loader1_id" uploadStatus="reading"></image><paragraph>baz[]foo</paragraph>',
+			'<paragraph>baz[]foo</paragraph>',
+			content,
+			err => {
+				window.File = fileFn;
+				done( err );
+			},
+			false
+		);
 	} );
 
 	it( 'should not upload and remove image when `File` constructor is not supported', done => {
@@ -820,14 +832,6 @@ describe( 'ImageUploadEditing', () => {
 			evt.stop();
 		}, { priority: 'high' } );
 
-		expectData(
-			'<p>baz</p><img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
-			'<paragraph>baz</paragraph>[<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>]<paragraph>foo</paragraph>',
-			'<paragraph>baz[]</paragraph><paragraph>foo</paragraph>',
-			done,
-			false
-		);
-
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const clipboardHtml = `<p>baz</p><img src=${ base64ToBlobUrl( base64Sample ) } />`;
@@ -836,17 +840,25 @@ describe( 'ImageUploadEditing', () => {
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
+		let content = null;
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+			content = data.content;
+		} );
+
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		expectData(
+			'<p>baz</p><img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
+			'<paragraph>baz</paragraph>[<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>]<paragraph>foo</paragraph>',
+			'<paragraph>baz[]</paragraph><paragraph>foo</paragraph>',
+			content,
+			done,
+			false
+		);
 	} );
 
 	// Skip this test on Edge as we mock `File` object there so there is no sense in testing it.
 	( isEdgeEnv ? it.skip : it )( 'should get file extension from base64 string', done => {
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
-			tryExpect( done, () => {
-				loader.file.then( file => expect( file.name.split( '.' ).pop() ).to.equal( 'png' ) );
-			} );
-		}, { priority: 'low' } );
-
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const clipboardHtml = `<img src=${ base64Sample } />`;
@@ -865,16 +877,14 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		tryExpect( done, () => {
+			loader.file.then( file => expect( file.name.split( '.' ).pop() ).to.equal( 'png' ) );
+		} );
 	} );
 
 	// Skip this test on Edge as we mock `File` object there so there is no sense in testing it.
 	( isEdgeEnv ? it.skip : it )( 'should use fallback file extension', done => {
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
-			tryExpect( done, () => {
-				loader.file.then( file => expect( file.name.split( '.' ).pop() ).to.equal( 'jpeg' ) );
-			} );
-		}, { priority: 'low' } );
-
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } />`;
@@ -893,6 +903,10 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		tryExpect( done, () => {
+			loader.file.then( file => expect( file.name.split( '.' ).pop() ).to.equal( 'jpeg' ) );
+		} );
 	} );
 
 	it( 'should not show notification when file loader failed with no error', done => {
@@ -904,19 +918,6 @@ describe( 'ImageUploadEditing', () => {
 			notificationsCount++;
 			evt.stop();
 		}, { priority: 'high' } );
-
-		// Check data after paste.
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
-			adapterMocks[ 0 ].loader.file.then( () => {
-				expect.fail( 'Promise should be rejected.' );
-			} ).catch( () => {
-				// Deffer so the promise could be resolved.
-				setTimeout( () => {
-					expect( notificationsCount ).to.equal( 0 );
-					done();
-				} );
-			} );
-		}, { priority: 'low' } );
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
@@ -930,6 +931,16 @@ describe( 'ImageUploadEditing', () => {
 		sinon.stub( window, 'fetch' ).callsFake( () => Promise.reject() );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		adapterMocks[ 0 ].loader.file.then( () => {
+			expect.fail( 'Promise should be rejected.' );
+		} ).catch( () => {
+			// Deffer so the promise could be resolved.
+			setTimeout( () => {
+				expect( notificationsCount ).to.equal( 0 );
+				done();
+			} );
+		} );
 	} );
 
 	// Helper for validating clipboard and model data as a result of a paste operation. This function checks both clipboard
@@ -939,39 +950,37 @@ describe( 'ImageUploadEditing', () => {
 	// @param {String} expectedClipboardData Expected clipboard data on `inputTransformation` event.
 	// @param {String} expectedModel Expected model data on `inputTransformation` event.
 	// @param {String} expectedModelOnFile Expected model data after all `file.loader` promises are fetched.
+	// @param {DocumentFragment} content Content processed in inputTransformation
 	// @param {Function} doneFn Callback function to be called when all assertions are done or error occures.
 	// @param {Boolean} [onSuccess=true] If `expectedModelOnFile` data should be validated
 	// on `loader.file` a promise successful resolution or promise rejection.
-	function expectData( expectedClipboardData, expectedModel, expectedModelOnFile, doneFn, onSuccess ) {
-		// Check data after paste.
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
-			const clipboardData = injectLoaderId( expectedClipboardData || '', adapterMocks );
-			const modelData = injectLoaderId( expectedModel, adapterMocks );
-			const finalModelData = injectLoaderId( expectedModelOnFile, adapterMocks );
+	function expectData( expectedClipboardData, expectedModel, expectedModelOnFile, content, doneFn, onSuccess ) {
+		const clipboardData = injectLoaderId( expectedClipboardData || '', adapterMocks );
+		const modelData = injectLoaderId( expectedModel, adapterMocks );
+		const finalModelData = injectLoaderId( expectedModelOnFile, adapterMocks );
 
-			if ( clipboardData.length ) {
-				expect( stringifyView( data.content ) ).to.equal( clipboardData );
-			}
-			expect( getModelData( model ) ).to.equal( modelData );
+		if ( clipboardData.length ) {
+			expect( stringifyView( content ) ).to.equal( clipboardData );
+		}
+		expect( getModelData( model ) ).to.equal( modelData );
 
-			if ( onSuccess !== false ) {
-				adapterMocks[ 0 ].loader.file.then( () => {
-					// Deffer so the promise could be resolved.
-					setTimeout( () => {
-						expectModel( doneFn, getModelData( model ), finalModelData );
-					} );
+		if ( onSuccess !== false ) {
+			adapterMocks[ 0 ].loader.file.then( () => {
+				// Deffer so the promise could be resolved.
+				setTimeout( () => {
+					expectModel( doneFn, getModelData( model ), finalModelData );
 				} );
-			} else {
-				adapterMocks[ 0 ].loader.file.then( () => {
-					expect.fail( 'The `loader.file` should be rejected.' );
-				} ).catch( () => {
-					// Deffer so the promise could be resolved.
-					setTimeout( () => {
-						expectModel( doneFn, getModelData( model ), finalModelData );
-					} );
+			} );
+		} else {
+			adapterMocks[ 0 ].loader.file.then( () => {
+				expect.fail( 'The `loader.file` should be rejected.' );
+			} ).catch( () => {
+				// Deffer so the promise could be resolved.
+				setTimeout( () => {
+					expectModel( doneFn, getModelData( model ), finalModelData );
 				} );
-			}
-		}, { priority: 'low' } );
+			} );
+		}
 	}
 } );
 
