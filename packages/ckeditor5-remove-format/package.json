@@ -12,8 +12,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^18.0.0",
     "@ckeditor/ckeditor5-ui": "^18.0.0",
-    "@ckeditor/ckeditor5-utils": "^18.0.0",
-    "eslint-plugin-ckeditor5-rules": "^0.0.2"
+    "@ckeditor/ckeditor5-utils": "^18.0.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^18.0.0",
