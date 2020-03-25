@@ -13,8 +13,8 @@ import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview';
 
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfieldview/labeledfieldview';
-import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfieldview/utils';
+import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
+import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
 
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
@@ -66,7 +66,7 @@ export default class LinkFormView extends View {
 		/**
 		 * The URL input view.
 		 *
-		 * @member {module:ui/labeledfieldview/labeledfieldview~LabeledFieldView}
+		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
 		this.urlInputView = this._createUrlInput();
 
@@ -208,7 +208,7 @@ export default class LinkFormView extends View {
 	 * Creates a labeled input view.
 	 *
 	 * @private
-	 * @returns {module:ui/labeledfieldview/labeledfieldview~LabeledFieldView} Labeled field view instance.
+	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView} Labeled field view instance.
 	 */
 	_createUrlInput() {
 		const t = this.locale.t;
