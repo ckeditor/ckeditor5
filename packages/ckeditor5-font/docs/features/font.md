@@ -171,7 +171,7 @@ ClassicEditor
 
 ### Prevent removing non-specified values
 
-By default, all `font-size` values that are not specified in the `config.fontSize.options` are stripped. You can enable support for all font sizes by using the {@link module:font/fontfamily~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} option.
+By default, all `font-size` values that are not specified in the `config.fontSize.options` are stripped. You can enable support for all font sizes by using the {@link module:font/fontfamily~FontFamilyConfig#supportAllValues `config.fontSize.supportAllValues`} option.
 
 
 ```js
