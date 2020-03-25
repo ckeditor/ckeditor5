@@ -83,7 +83,7 @@ export default class MediaEmbedUI extends Plugin {
 			// didn't change the selection), they would see the old value instead of the actual value of the
 			// command.
 			form.url = command.value || '';
-			form.urlInputView.field.select();
+			form.urlInputView.fieldView.select();
 			form.focus();
 		}, { priority: 'low' } );
 

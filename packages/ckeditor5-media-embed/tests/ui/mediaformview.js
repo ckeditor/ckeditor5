@@ -79,7 +79,7 @@ describe( 'MediaFormView', () => {
 
 		describe( 'url input view', () => {
 			it( 'has placeholder', () => {
-				expect( view.urlInputView.field.placeholder ).to.equal( 'https://example.com' );
+				expect( view.urlInputView.fieldView.placeholder ).to.equal( 'https://example.com' );
 			} );
 
 			it( 'has info text', () => {
@@ -87,13 +87,13 @@ describe( 'MediaFormView', () => {
 			} );
 
 			it( 'displays the tip upon #input when the field has a value', () => {
-				view.urlInputView.field.element.value = 'foo';
-				view.urlInputView.field.fire( 'input' );
+				view.urlInputView.fieldView.element.value = 'foo';
+				view.urlInputView.fieldView.fire( 'input' );
 
 				expect( view.urlInputView.infoText ).to.match( /^Tip: Paste the URL into/ );
 
-				view.urlInputView.field.element.value = '';
-				view.urlInputView.field.fire( 'input' );
+				view.urlInputView.fieldView.element.value = '';
+				view.urlInputView.fieldView.fire( 'input' );
 
 				expect( view.urlInputView.infoText ).to.match( /^Paste the media URL/ );
 			} );
@@ -243,19 +243,19 @@ describe( 'MediaFormView', () => {
 
 	describe( 'url()', () => {
 		it( 'returns the #inputView DOM value', () => {
-			view.urlInputView.field.element.value = 'foo';
+			view.urlInputView.fieldView.element.value = 'foo';
 
 			expect( view.url ).to.equal( 'foo' );
 		} );
 
 		it( 'sets the #inputView DOM value', () => {
-			view.urlInputView.field.element.value = 'bar';
+			view.urlInputView.fieldView.element.value = 'bar';
 
 			view.url = 'foo';
-			expect( view.urlInputView.field.element.value ).to.equal( 'foo' );
+			expect( view.urlInputView.fieldView.element.value ).to.equal( 'foo' );
 
 			view.url = ' baz ';
-			expect( view.urlInputView.field.element.value ).to.equal( 'baz' );
+			expect( view.urlInputView.fieldView.element.value ).to.equal( 'baz' );
 		} );
 	} );
 

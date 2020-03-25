@@ -84,7 +84,7 @@ describe( 'MediaEmbedUI', () => {
 			describe( '#open event', () => {
 				it( 'executes the actions with the "low" priority', () => {
 					const spy = sinon.spy();
-					const selectSpy = sinon.spy( form.urlInputView.field, 'select' );
+					const selectSpy = sinon.spy( form.urlInputView.fieldView, 'select' );
 
 					button.on( 'open', () => {
 						spy();
@@ -106,7 +106,7 @@ describe( 'MediaEmbedUI', () => {
 				} );
 
 				it( 'should select the content of the input', () => {
-					const spy = sinon.spy( form.urlInputView.field, 'select' );
+					const spy = sinon.spy( form.urlInputView.fieldView, 'select' );
 
 					button.fire( 'open' );
 					sinon.assert.calledOnce( spy );

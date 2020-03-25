@@ -213,7 +213,7 @@ export default class MediaFormView extends View {
 	 * @type {Number}
 	 */
 	get url() {
-		return this.urlInputView.field.element.value.trim();
+		return this.urlInputView.fieldView.element.value.trim();
 	}
 
 	/**
@@ -225,7 +225,7 @@ export default class MediaFormView extends View {
 	 * @param {String} url
 	 */
 	set url( url ) {
-		this.urlInputView.field.element.value = url.trim();
+		this.urlInputView.fieldView.element.value = url.trim();
 	}
 
 	/**
@@ -272,7 +272,7 @@ export default class MediaFormView extends View {
 		const t = this.locale.t;
 
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
-		const inputField = labeledInput.field;
+		const inputField = labeledInput.fieldView;
 
 		this._urlInputViewInfoDefault = t( 'Paste the media URL in the input.' );
 		this._urlInputViewInfoTip = t( 'Tip: Paste the URL into the content to embed faster.' );
