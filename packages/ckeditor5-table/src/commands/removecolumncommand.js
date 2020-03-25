@@ -76,27 +76,39 @@ export default class RemoveColumnCommand extends Command {
 				removedColumnIndex >= removedColumnIndexes.first;
 				removedColumnIndex--
 			) {
-				for ( const { cell, column, colspan } of new TableWalker( table ) ) {
-					// If colspaned cell overlaps removed column decrease its span.
-					if ( column <= removedColumnIndex && colspan > 1 && column + colspan > removedColumnIndex ) {
-						updateNumericAttribute( 'colspan', colspan - 1, cell, writer );
-					} else if ( column === removedColumnIndex ) {
-						const cellRow = cell.parent;
-
-						// The cell in removed column has colspan of 1.
-						writer.remove( cell );
-
-						// If the cell was the last one in the row, get rid of the entire row.
-						// https://github.com/ckeditor/ckeditor5/issues/6429
-						if ( !cellRow.childCount ) {
-							writer.remove( cellRow );
-						}
-					}
-				}
+				this._removeColumn( removedColumnIndex, table, writer );
 			}
 
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
+	}
+
+	/**
+	 * Removes a column from the given `table`.
+	 *
+	 * @private
+	 * @param {Number} removedColumnIndex Index of the column that should be removed.
+	 * @param {module:engine/model/element~Element} table
+	 * @param {module:engine/model/writer~Writer} writer
+	 */
+	_removeColumn( removedColumnIndex, table, writer ) {
+		for ( const { cell, column, colspan } of new TableWalker( table ) ) {
+			// If colspaned cell overlaps removed column decrease its span.
+			if ( column <= removedColumnIndex && colspan > 1 && column + colspan > removedColumnIndex ) {
+				updateNumericAttribute( 'colspan', colspan - 1, cell, writer );
+			} else if ( column === removedColumnIndex ) {
+				const cellRow = cell.parent;
+
+				// The cell in removed column has colspan of 1.
+				writer.remove( cell );
+
+				// If the cell was the last one in the row, get rid of the entire row.
+				// https://github.com/ckeditor/ckeditor5/issues/6429
+				if ( !cellRow.childCount ) {
+					writer.remove( cellRow );
+				}
+			}
+		}
 	}
 }
 
