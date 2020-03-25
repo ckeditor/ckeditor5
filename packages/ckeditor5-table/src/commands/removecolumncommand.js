@@ -76,7 +76,7 @@ export default class RemoveColumnCommand extends Command {
 				removedColumnIndex >= removedColumnIndexes.first;
 				removedColumnIndex--
 			) {
-				for ( const { cell, column, colspan } of tableMap ) {
+				for ( const { cell, column, colspan } of new TableWalker( table ) ) {
 					// If colspaned cell overlaps removed column decrease its span.
 					if ( column <= removedColumnIndex && colspan > 1 && column + colspan > removedColumnIndex ) {
 						updateNumericAttribute( 'colspan', colspan - 1, cell, writer );
