@@ -15,8 +15,8 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfieldview/labeledfieldview';
-import { createLabeledDropdown, createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfieldview/utils';
+import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
+import { createLabeledDropdown, createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
 import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
 import { addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
@@ -541,7 +541,7 @@ export default class TableCellPropertiesView extends View {
 	 * * {@link #backgroundInput}.
 	 *
 	 * @private
-	 * @returns {module:ui/labeledfieldview/labeledfieldview~LabeledFieldView}
+	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 	 */
 	_createBackgroundField() {
 		const locale = this.locale;
@@ -573,7 +573,7 @@ export default class TableCellPropertiesView extends View {
 	 * * {@link #heightInput}.
 	 *
 	 * @private
-	 * @returns {module:ui/labeledfieldview/labeledfieldview~LabeledFieldView}
+	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 	 */
 	_createDimensionFields() {
 		const locale = this.locale;
@@ -641,7 +641,7 @@ export default class TableCellPropertiesView extends View {
 	 * * {@link #paddingInput}.
 	 *
 	 * @private
-	 * @returns {module:ui/labeledfieldview/labeledfieldview~LabeledFieldView}
+	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 	 */
 	_createPaddingField() {
 		const locale = this.locale;

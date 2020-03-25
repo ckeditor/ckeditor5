@@ -397,7 +397,7 @@ export const defaultColors = [
  *
  * For given options, it returns a function that creates an instance of a
  * {@link module:table/ui/colorinputview~ColorInputView color input} logically related to
- * a {@link module:ui/labeledfieldview/labeledfieldview~LabeledFieldView labeled view} in the DOM.
+ * a {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView labeled view} in the DOM.
  *
  * The helper does the following:
  *
