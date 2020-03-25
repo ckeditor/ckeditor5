@@ -31,6 +31,15 @@ Put the caret anywhere inside the table and click the **"Table properties"** but
 	By default, table styling tools are not included in the {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
 </info-box>
 
+## Table selection
+
+The {@link module:table/tableselection~TableSelection} plugin introduces support for the custom selection system for tables that lets you:
+
+* Select an arbitrary rectangular table fragment &mdash; a few cells from different rows, a column (or a few of them) or a row (or multiple rows).
+* Apply formatting or add a link to all selected cells at once.
+
+The table selection plugin is loaded automatically by the `Table` plugin and can be tested in the [demos above](#demos).
+
 ## Installation
 
 ### Basic table features

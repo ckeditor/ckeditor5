@@ -22,7 +22,7 @@ import cropTable from './tableselection/croptable';
 import '../theme/tableselection.css';
 
 /**
- * This plugin enables the advanced table cells/rows/columns selection.
+ * This plugin enables the advanced table cells, rows and columns selection.
  * It is loaded automatically by the {@link module:table/table~Table} plugin.
  *
  * @extends module:core/plugin~Plugin
@@ -62,7 +62,7 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Returns currently selected table cells or `null` if not a table cells selection.
+	 * Returns the currently selected table cells or `null` if it is not a table cells selection.
 	 *
 	 * @returns {Array.<module:engine/model/element~Element>|null}
 	 */
@@ -76,6 +76,7 @@ export default class TableSelection extends Plugin {
 		}
 
 		// This should never happen, but let's know if it ever happens.
+		// @if CK_DEBUG //	/* istanbul ignore next */
 		// @if CK_DEBUG //	if ( selectedCells.length != selection.rangeCount ) {
 		// @if CK_DEBUG //		console.warn( 'Mixed selection warning. The selection contains table cells and some other ranges.' );
 		// @if CK_DEBUG //	}
@@ -84,7 +85,7 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Returns a selected table fragment as a document fragment.
+	 * Returns the selected table fragment as a document fragment.
 	 *
 	 * @returns {module:engine/model/documentfragment~DocumentFragment|null}
 	 */
@@ -106,10 +107,10 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Defines a selection converter which marks selected cells with a specific class.
+	 * Defines a selection converter which marks the selected cells with a specific class.
 	 *
 	 * The real DOM selection is put in the last cell. Since the order of ranges is dependent on whether the
-	 * selection is backward or not, the last cell with usually be close to the "focus" end of the selection
+	 * selection is backward or not, the last cell will usually be close to the "focus" end of the selection
 	 * (a selection has anchor and focus).
 	 *
 	 * The real DOM selection is then hidden with CSS.
@@ -152,8 +153,8 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Enables making cells selection by Shift+click. Creates a selection from the cell which previously hold
-	 * the selection to the cell which was clicked (can be the same cell, in which case it selects a single cell).
+	 * Enables making cells selection by <kbd>Shift</kbd>+click. Creates a selection from the cell which previously held
+	 * the selection to the cell which was clicked. It can be the same cell, in which case it selects a single cell.
 	 *
 	 * @private
 	 */
@@ -218,7 +219,7 @@ export default class TableSelection extends Plugin {
 	/**
 	 * Enables making cells selection by dragging.
 	 *
-	 * The selection is made only on mousemove. We start tracking the mouse on mousedown.
+	 * The selection is made only on mousemove. Mouse tracking is started on mousedown.
 	 * However, the cells selection is enabled only after the mouse cursor left the anchor cell.
 	 * Thanks to that normal text selection within one cell works just fine. However, you can still select
 	 * just one cell by leaving the anchor cell and moving back to it.
@@ -322,7 +323,7 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * It overrides the default `model.deleteContent()` behavior over a selected table fragment.
+	 * Overrides the default `model.deleteContent()` behavior over a selected table fragment.
 	 *
 	 * @private
 	 * @param {module:utils/eventinfo~EventInfo} event
@@ -351,19 +352,20 @@ export default class TableSelection extends Plugin {
 
 			const rangeToSelect = model.schema.getNearestSelectionRange( writer.createPositionAt( tableCellToSelect, 0 ) );
 
-			if ( rangeToSelect ) {
-				if ( selection.is( 'documentSelection' ) ) {
-					writer.setSelection( rangeToSelect );
-				} else {
-					selection.setTo( rangeToSelect );
-				}
+			// Note: we ignore the case where rangeToSelect may be null because deleteContent() will always (unless someone broke it)
+			// create an empty paragraph to accommodate the selection.
+
+			if ( selection.is( 'documentSelection' ) ) {
+				writer.setSelection( rangeToSelect );
+			} else {
+				selection.setTo( rangeToSelect );
 			}
 		} );
 	}
 
 	/**
 	 * Sets the model selection based on given anchor and target cells (can be the same cell).
-	 * Takes care of setting backward flag.
+	 * Takes care of setting the backward flag.
 	 *
 	 * @protected
 	 * @param {module:engine/model/element~Element} anchorCell
@@ -393,10 +395,6 @@ export default class TableSelection extends Plugin {
 		const viewPosition = this.editor.editing.view.createPositionAt( viewTargetElement, 0 );
 		const modelPosition = this.editor.editing.mapper.toModelPosition( viewPosition );
 		const modelElement = modelPosition.parent;
-
-		if ( !modelElement ) {
-			return;
-		}
 
 		if ( modelElement.is( 'tableCell' ) ) {
 			return modelElement;
