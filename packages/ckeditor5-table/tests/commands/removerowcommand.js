@@ -258,6 +258,27 @@ describe( 'RemoveRowCommand', () => {
 					[ '[]20', '21' ]
 				] ) );
 			} );
+
+			it( 'should properly calculate truncated rowspans', () => {
+				setData( model, modelTable( [
+					[ '00', { contents: '01', rowspan: 3 } ],
+					[ '10' ],
+					[ '20' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '[]20', '01' ]
+				] ) );
+			} );
 		} );
 
 		describe( 'with entire row selected', () => {
