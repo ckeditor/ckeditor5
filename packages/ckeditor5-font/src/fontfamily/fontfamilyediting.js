@@ -50,7 +50,7 @@ export default class FontFamilyEditing extends Plugin {
 				'Trebuchet MS, Helvetica, sans-serif',
 				'Verdana, Geneva, sans-serif'
 			],
-			disableValueMatching: false
+			supportAllValues: false
 		} );
 	}
 
@@ -72,7 +72,7 @@ export default class FontFamilyEditing extends Plugin {
 		const definition = buildDefinition( FONT_FAMILY, options );
 
 		// Set-up the two-way conversion.
-		if ( editor.config.get( 'fontFamily.disableValueMatching' ) ) {
+		if ( editor.config.get( 'fontFamily.supportAllValues' ) ) {
 			this._prepareAnyValueConverters();
 		} else {
 			editor.conversion.attributeToElement( definition );

@@ -67,11 +67,11 @@ describe( 'FontFamilyEditing', () => {
 					'Verdana, Geneva, sans-serif'
 				] );
 
-				expect( editor.config.get( 'fontFamily.disableValueMatching' ) ).to.equal( false );
+				expect( editor.config.get( 'fontFamily.supportAllValues' ) ).to.equal( false );
 			} );
 		} );
 
-		describe( 'disableValueMatching=true', () => {
+		describe( 'supportAllValues=true', () => {
 			let editor, doc;
 
 			beforeEach( () => {
@@ -82,7 +82,7 @@ describe( 'FontFamilyEditing', () => {
 							options: [
 								'Arial'
 							],
-							disableValueMatching: true
+							supportAllValues: true
 						}
 					} )
 					.then( newEditor => {

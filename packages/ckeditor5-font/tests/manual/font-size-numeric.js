@@ -28,7 +28,7 @@ async function startMode( selectedMode ) {
 	if ( selectedMode === 'restricted-values' ) {
 		await reloadEditor();
 	} else {
-		await reloadEditor( { disableValueMatching: true } );
+		await reloadEditor( { supportAllValues: true } );
 	}
 }
 
@@ -45,8 +45,8 @@ async function reloadEditor( options = {} ) {
 		fontSize: { options: [ 10, 12, 14, 'default', 18, 20, 22 ] }
 	};
 
-	if ( options.disableValueMatching ) {
-		config.fontSize.disableValueMatching = true;
+	if ( options.supportAllValues ) {
+		config.fontSize.supportAllValues = true;
 	}
 
 	window.editor = await ClassicEditor.create( document.querySelector( '#editor' ), config );

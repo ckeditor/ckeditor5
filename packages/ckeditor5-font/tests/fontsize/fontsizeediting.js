@@ -56,11 +56,11 @@ describe( 'FontSizeEditing', () => {
 		describe( 'default value', () => {
 			it( 'should be set', () => {
 				expect( editor.config.get( 'fontSize.options' ) ).to.deep.equal( [ 'tiny', 'small', 'default', 'big', 'huge' ] );
-				expect( editor.config.get( 'fontSize.disableValueMatching' ) ).to.equal( false );
+				expect( editor.config.get( 'fontSize.supportAllValues' ) ).to.equal( false );
 			} );
 		} );
 
-		describe( 'disableValueMatching=true', () => {
+		describe( 'supportAllValues=true', () => {
 			let editor, doc;
 
 			beforeEach( () => {
@@ -68,7 +68,7 @@ describe( 'FontSizeEditing', () => {
 					.create( {
 						plugins: [ FontSizeEditing, Paragraph ],
 						fontSize: {
-							disableValueMatching: true
+							supportAllValues: true
 						}
 					} )
 					.then( newEditor => {

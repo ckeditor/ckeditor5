@@ -112,7 +112,7 @@ describe( 'FontFamilyUI', () => {
 				.create( element, {
 					plugins: [ FontFamilyEditing, FontFamilyUI ],
 					fontSize: {
-						disableValueMatching: true
+						supportAllValues: true
 					}
 				} )
 				.then( editor => {

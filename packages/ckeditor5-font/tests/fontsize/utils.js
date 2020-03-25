@@ -37,8 +37,8 @@ describe( 'FontSizeEditing Utils', () => {
 				] );
 			} );
 
-			it( 'should return defined presets with units in model values if disableValueMatching=true', () => {
-				const options = normalizeOptions( [ 'tiny', 'small', 'default', 'big', 'huge' ], { disableValueMatching: true } );
+			it( 'should return defined presets with units in model values if supportAllValues=true', () => {
+				const options = normalizeOptions( [ 'tiny', 'small', 'default', 'big', 'huge' ], { supportAllValues: true } );
 
 				expect( options ).to.deep.equal( [
 					{ title: 'Tiny', model: '0.7em', view: { name: 'span', classes: 'text-tiny', priority: 7 } },

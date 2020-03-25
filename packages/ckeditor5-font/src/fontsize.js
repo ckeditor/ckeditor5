@@ -139,10 +139,10 @@ export default class FontSize extends Plugin {
  * You can preserve pasted font size values by switching the option:
  *
  *		const fontSizeConfig = {
- *			disableValueMatching: true
+ *			supportAllValues: true
  *		};
  *
  * Now, the font sizes, not specified in the editor's configuration, won't be removed when pasting the content.
  *
- * @member {Boolean} module:font/fontsize~FontSizeConfig#disableValueMatching
+ * @member {Boolean} module:font/fontsize~FontSizeConfig#supportAllValues
  */

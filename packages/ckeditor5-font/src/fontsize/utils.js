@@ -15,15 +15,15 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * @param {Array.<String|Number|Object>} configuredOptions An array of options taken from the configuration.
  * @param {Object} [options={}]
- * @param {Boolean} [options.disableValueMatching=false]
+ * @param {Boolean} [options.supportAllValues=false]
  * @returns {Array.<module:font/fontsize~FontSizeOption>}
  */
 export function normalizeOptions( configuredOptions, options = {} ) {
-	const disableValueMatching = options.disableValueMatching || false;
+	const supportAllValues = options.supportAllValues || false;
 
 	// Convert options to objects.
 	return configuredOptions
-		.map( item => getOptionDefinition( item, disableValueMatching ) )
+		.map( item => getOptionDefinition( item, supportAllValues ) )
 		// Filter out undefined values that `getOptionDefinition` might return.
 		.filter( option => !!option );
 }
@@ -86,12 +86,12 @@ const namedPresets = {
 
 // Returns an option definition either from preset or creates one from number shortcut.
 // If object is passed then this method will return it without alternating it. Returns undefined for item than cannot be parsed.
-// If disableValueMatching=true, model will be set to a specified unit value instead of text.
+// If supportAllValues=true, model will be set to a specified unit value instead of text.
 //
 // @param {String|Number|Object} item
-// @param {Boolean} disableValueMatching
+// @param {Boolean} supportAllValues
 // @returns {undefined|module:font/fontsize~FontSizeOption}
-function getOptionDefinition( option, disableValueMatching ) {
+function getOptionDefinition( option, supportAllValues ) {
 	// Check whether passed option is a full item definition provided by user in configuration.
 	if ( isFullItemDefinition( option ) ) {
 		return attachPriority( option );
@@ -101,7 +101,7 @@ function getOptionDefinition( option, disableValueMatching ) {
 
 	// Item is a named preset.
 	if ( preset ) {
-		if ( disableValueMatching ) {
+		if ( supportAllValues ) {
 			preset.model = FONT_SIZE_PRESET_UNITS[ option ];
 		}
 

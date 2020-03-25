@@ -49,7 +49,7 @@ export default class FontSizeEditing extends Plugin {
 				'big',
 				'huge'
 			],
-			disableValueMatching: false
+			supportAllValues: false
 		} );
 	}
 
@@ -66,15 +66,15 @@ export default class FontSizeEditing extends Plugin {
 			copyOnEnter: true
 		} );
 
-		const disableValueMatching = editor.config.get( 'fontSize.disableValueMatching' );
+		const supportAllValues = editor.config.get( 'fontSize.supportAllValues' );
 
 		// Define view to model conversion.
-		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' ), { disableValueMatching } )
+		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' ), { supportAllValues } )
 			.filter( item => item.model );
 		const definition = buildDefinition( FONT_SIZE, options );
 
 		// Set-up the two-way conversion.
-		if ( disableValueMatching ) {
+		if ( supportAllValues ) {
 			this._prepareAnyValueConverters();
 		} else {
 			editor.conversion.attributeToElement( definition );

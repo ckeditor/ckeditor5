@@ -52,7 +52,7 @@ describe( 'Integration test Font', () => {
 			);
 		} );
 
-		it( 'should render one span element for all types of font features (disableValueMatching=true)', () => {
+		it( 'should render one span element for all types of font features (supportAllValues=true)', () => {
 			const element = document.createElement( 'div' );
 			document.body.appendChild( element );
 
@@ -60,10 +60,10 @@ describe( 'Integration test Font', () => {
 				.create( element, {
 					plugins: [ Font, ArticlePluginSet ],
 					fontFamily: {
-						disableValueMatching: true
+						supportAllValues: true
 					},
 					fontSize: {
-						disableValueMatching: true
+						supportAllValues: true
 					}
 				} )
 				.then( editor => {
@@ -114,7 +114,7 @@ describe( 'Integration test Font', () => {
 			);
 		} );
 
-		it( 'should render elements wrapped in proper order (disableValueMatching=true)', () => {
+		it( 'should render elements wrapped in proper order (supportAllValues=true)', () => {
 			const element = document.createElement( 'div' );
 			document.body.appendChild( element );
 
@@ -122,10 +122,10 @@ describe( 'Integration test Font', () => {
 				.create( element, {
 					plugins: [ Font, ArticlePluginSet ],
 					fontFamily: {
-						disableValueMatching: true
+						supportAllValues: true
 					},
 					fontSize: {
-						disableValueMatching: true
+						supportAllValues: true
 					}
 				} )
 				.then( editor => {

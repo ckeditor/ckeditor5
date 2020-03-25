@@ -121,10 +121,10 @@ export default class FontFamily extends Plugin {
  * You can preserve pasted font family values by switching the option:
  *
  *		const fontSizeConfig = {
- *			disableValueMatching: true
+ *			supportAllValues: true
  *		};
  *
  * Now, the font families, not specified in the editor's configuration, won't be removed when pasting the content.
  *
- * @member {Boolean} module:font/fontfamily~FontFamilyConfig#disableValueMatching
+ * @member {Boolean} module:font/fontfamily~FontFamilyConfig#supportAllValues
  */
