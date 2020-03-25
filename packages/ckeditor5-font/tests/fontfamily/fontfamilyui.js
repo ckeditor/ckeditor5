@@ -104,6 +104,42 @@ describe( 'FontFamilyUI', () => {
 				.to.deep.equal( [ false, true, false, false, false, false, false, false, false ] );
 		} );
 
+		it( 'should activate current option in dropdown for full font family definitions', () => {
+			const element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ FontFamilyEditing, FontFamilyUI ],
+					fontSize: {
+						supportAllValues: true
+					}
+				} )
+				.then( editor => {
+					const command = editor.commands.get( 'fontFamily' );
+					const dropdown = editor.ui.componentFactory.create( 'fontFamily' );
+
+					const listView = dropdown.listView;
+
+					command.value = undefined;
+
+					// The first item is 'default' font family.
+					expect( listView.items.map( item => item.children.first.isOn ) )
+						.to.deep.equal( [ true, false, false, false, false, false, false, false, false ] );
+
+					command.value = '\'Courier New\', Courier, monospace';
+
+					// The third item is 'Courier New' font family.
+					expect( listView.items.map( item => item.children.first.isOn ) )
+						.to.deep.equal( [ false, false, true, false, false, false, false, false, false ] );
+
+					return editor.destroy();
+				} )
+				.then( () => {
+					element.remove();
+				} );
+		} );
+
 		describe( 'model to command binding', () => {
 			it( 'isEnabled', () => {
 				command.isEnabled = false;

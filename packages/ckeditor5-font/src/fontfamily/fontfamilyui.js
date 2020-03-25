@@ -109,7 +109,18 @@ function _prepareListOptions( options, command ) {
 			} )
 		};
 
-		def.model.bind( 'isOn' ).to( command, 'value', value => value === option.model );
+		def.model.bind( 'isOn' ).to( command, 'value', value => {
+			// "Default" or check in strict font-family converters mode.
+			if ( value === option.model ) {
+				return true;
+			}
+
+			if ( !value || !option.model ) {
+				return false;
+			}
+
+			return value.split( ',' )[ 0 ].replace( /'/g, '' ).toLowerCase() === option.model.toLowerCase();
+		} );
 
 		// Try to set a dropdown list item style.
 		if ( option.view && option.view.styles ) {

@@ -49,7 +49,8 @@ export default class FontFamilyEditing extends Plugin {
 				'Times New Roman, Times, serif',
 				'Trebuchet MS, Helvetica, sans-serif',
 				'Verdana, Geneva, sans-serif'
-			]
+			],
+			supportAllValues: false
 		} );
 	}
 
@@ -71,8 +72,42 @@ export default class FontFamilyEditing extends Plugin {
 		const definition = buildDefinition( FONT_FAMILY, options );
 
 		// Set-up the two-way conversion.
-		editor.conversion.attributeToElement( definition );
+		if ( editor.config.get( 'fontFamily.supportAllValues' ) ) {
+			this._prepareAnyValueConverters();
+		} else {
+			editor.conversion.attributeToElement( definition );
+		}
 
 		editor.commands.add( FONT_FAMILY, new FontFamilyCommand( editor ) );
+	}
+
+	/**
+	 * Those converters enable keeping any value found as `style="font-family: *"` as a value of an attribute on a text even
+	 * if it isn't defined in the plugin configuration.
+	 *
+	 * @private
+	 */
+	_prepareAnyValueConverters() {
+		const editor = this.editor;
+
+		editor.conversion.for( 'downcast' ).attributeToElement( {
+			model: FONT_FAMILY,
+			view: ( attributeValue, writer ) => {
+				return writer.createAttributeElement( 'span', { style: 'font-family:' + attributeValue }, { priority: 7 } );
+			}
+		} );
+
+		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+			model: {
+				key: FONT_FAMILY,
+				value: viewElement => viewElement.getStyle( 'font-family' )
+			},
+			view: {
+				name: 'span',
+				styles: {
+					'font-family': /.*/
+				}
+			}
+		} );
 	}
 }

@@ -105,6 +105,22 @@ export default class FontSize extends Plugin {
  * 			options: [ 9, 10, 11, 12, 13, 14, 15 ]
  * 		};
  *
+ * Also, you can define a label in the dropdown for numerical values:
+ *
+ *		const fontSizeConfig = {
+ *			options: [
+ *				{
+ * 				 	title: 'Small',
+ * 				 	model: '8px
+ * 				},
+ * 				'default',
+ * 				{
+ * 				 	title: 'Big',
+ * 				 	model: '14px
+ * 				}
+ *			]
+ *		};
+ *
  * Font size can be applied using the command API. To do that, use the `'fontSize'` command and pass the desired font size as a `value`.
  * For example, the following code will apply the `fontSize` attribute with the **tiny** value to the current selection:
  *
@@ -113,4 +129,20 @@ export default class FontSize extends Plugin {
  * Executing the `fontSize` command without value will remove the `fontSize` attribute from the current selection.
  *
  * @member {Array.<String|Number|module:font/fontsize~FontSizeOption>} module:font/fontsize~FontSizeConfig#options
+ */
+
+/**
+ * By default the plugin removes any `font-size` value that does not match to the plugin's configuration. It means if you paste a content
+ * with font sizes that the editor does not understand, the font-size attribute will be removed and the content will be displayed
+ * with the default size.
+ *
+ * You can preserve pasted font size values by switching the option:
+ *
+ *		const fontSizeConfig = {
+ *			supportAllValues: true
+ *		};
+ *
+ * Now, the font sizes, not specified in the editor's configuration, won't be removed when pasting the content.
+ *
+ * @member {Boolean} module:font/fontsize~FontSizeConfig#supportAllValues
  */

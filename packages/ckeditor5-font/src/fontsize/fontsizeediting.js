@@ -48,18 +48,9 @@ export default class FontSizeEditing extends Plugin {
 				'default',
 				'big',
 				'huge'
-			]
+			],
+			supportAllValues: false
 		} );
-
-		// Define view to model conversion.
-		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' ) ).filter( item => item.model );
-		const definition = buildDefinition( FONT_SIZE, options );
-
-		// Set-up the two-way conversion.
-		editor.conversion.attributeToElement( definition );
-
-		// Add FontSize command.
-		editor.commands.add( FONT_SIZE, new FontSizeCommand( editor ) );
 	}
 
 	/**
@@ -73,6 +64,54 @@ export default class FontSizeEditing extends Plugin {
 		editor.model.schema.setAttributeProperties( FONT_SIZE, {
 			isFormatting: true,
 			copyOnEnter: true
+		} );
+
+		const supportAllValues = editor.config.get( 'fontSize.supportAllValues' );
+
+		// Define view to model conversion.
+		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' ), { supportAllValues } )
+			.filter( item => item.model );
+		const definition = buildDefinition( FONT_SIZE, options );
+
+		// Set-up the two-way conversion.
+		if ( supportAllValues ) {
+			this._prepareAnyValueConverters();
+		} else {
+			editor.conversion.attributeToElement( definition );
+		}
+
+		// Add FontSize command.
+		editor.commands.add( FONT_SIZE, new FontSizeCommand( editor ) );
+	}
+
+	/**
+	 * Those converters enable keeping any value found as `style="font-size: *"` as a value of an attribute on a text even
+	 * if it isn't defined in the plugin configuration.
+	 *
+	 * @private
+	 */
+	_prepareAnyValueConverters() {
+		const editor = this.editor;
+
+		editor.conversion.for( 'downcast' ).attributeToElement( {
+			model: FONT_SIZE,
+			view: ( attributeValue, writer ) => {
+				if ( !attributeValue ) {
+					return;
+				}
+
+				return writer.createAttributeElement( 'span', { style: 'font-size:' + attributeValue }, { priority: 7 } );
+			}
+		} );
+
+		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+			model: {
+				key: FONT_SIZE,
+				value: viewElement => viewElement.getStyle( 'font-size' )
+			},
+			view: {
+				name: 'span'
+			}
 		} );
 	}
 }
