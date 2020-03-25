@@ -56,7 +56,7 @@ describe( 'FontSizeEditing Utils', () => {
 				};
 
 				expect( normalizeOptions( [ tinyOption ] ) ).to.deep.equal( [
-					{ title: 'Tiny', model: 'tiny', view: { name: 'span', classes: 'text-tiny', priority: 7 } },
+					{ title: 'Tiny', model: 'tiny', view: { name: 'span', classes: 'text-tiny', priority: 7 } }
 				] );
 			} );
 
@@ -110,7 +110,7 @@ describe( 'FontSizeEditing Utils', () => {
 				};
 
 				expect( normalizeOptions( [ numericOption ] ) ).to.deep.equal( [
-					{ title: '18', model: '18px', view: { name: 'span', styles: { 'font-size': '18px' }, priority: 7 } },
+					{ title: '18', model: '18px', view: { name: 'span', styles: { 'font-size': '18px' }, priority: 7 } }
 				] );
 			} );
 
@@ -129,12 +129,12 @@ describe( 'FontSizeEditing Utils', () => {
 					model: '18px',
 					view: {
 						name: 'span',
-						styles: { 'font-size': '18px' },
+						styles: { 'font-size': '18px' }
 					}
 				};
 
 				expect( normalizeOptions( [ numericOption ] ) ).to.deep.equal( [
-					{ title: '18', model: '18px', view: { name: 'span', styles: { 'font-size': '18px' }, priority: 7 } },
+					{ title: '18', model: '18px', view: { name: 'span', styles: { 'font-size': '18px' }, priority: 7 } }
 				] );
 			} );
 
@@ -150,7 +150,7 @@ describe( 'FontSizeEditing Utils', () => {
 				};
 
 				expect( normalizeOptions( [ numericOption ] ) ).to.deep.equal( [
-					{ title: '18', model: '18px', view: { name: 'span', styles: { 'font-size': '18px' }, priority: 10 } },
+					{ title: '18', model: '18px', view: { name: 'span', styles: { 'font-size': '18px' }, priority: 10 } }
 				] );
 			} );
 
