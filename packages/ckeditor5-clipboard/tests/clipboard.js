@@ -8,6 +8,7 @@ import Clipboard from '../src/clipboard';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import ClipboardObserver from '../src/clipboardobserver';
+import DataTransfer from '../src/datatransfer';
 
 import {
 	stringify as stringifyView,
@@ -176,6 +177,7 @@ describe( 'Clipboard feature', () => {
 
 			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
+				stopPropagation() {},
 				preventDefault() {}
 			} );
 
@@ -243,6 +245,7 @@ describe( 'Clipboard feature', () => {
 
 			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
+				stopPropagation() {},
 				preventDefault() {}
 			} );
 
@@ -292,6 +295,52 @@ describe( 'Clipboard feature', () => {
 			} );
 
 			expect( spy.callCount ).to.equal( 0 );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-upload/issues/92
+		// https://github.com/ckeditor/ckeditor5/issues/6464
+		it( 'should stop propagation of the original event if CKEditor handled the input', () => {
+			const dataTransferMock = createDataTransfer( { 'text/html': 'x' } );
+			const spy = sinon.spy();
+
+			viewDocument.fire( 'paste', {
+				dataTransfer: dataTransferMock,
+				stopPropagation: spy,
+				preventDefault() {}
+			} );
+
+			expect( spy.callCount ).to.equal( 1 );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-upload/issues/92
+		// https://github.com/ckeditor/ckeditor5/issues/6464
+		it( 'should stop propagation of the original event if inputTransformation listener called stop (for file drop)', () => {
+			const fileMock = {
+				type: 'application/zip',
+				size: 1024
+			};
+			const dataTransferMock = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ], getData: () => {} } );
+			const spy = sinon.spy();
+
+			viewDocument.fire( 'drop', {
+				dataTransfer: dataTransferMock,
+				stopPropagation: spy,
+				preventDefault() {}
+			} );
+
+			expect( spy.callCount ).to.equal( 0 );
+
+			clipboardPlugin.on( 'inputTransformation', evt => {
+				evt.stop();
+			} );
+
+			viewDocument.fire( 'paste', {
+				dataTransfer: dataTransferMock,
+				stopPropagation: spy,
+				preventDefault() {}
+			} );
+
+			expect( spy.callCount ).to.equal( 1 );
 		} );
 
 		function createDataTransfer( data ) {
