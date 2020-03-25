@@ -67,6 +67,25 @@ describe( 'table selection', () => {
 				expect( ranges[ 0 ].start.path ).to.deep.equal( [ 0, 0, 0, 0, 0 ] );
 			} );
 
+			it( 'should reenable table selection when reenabling the plugin', () => {
+				tableSelection.forceDisabled( 'foo' );
+				tableSelection.clearForceDisabled( 'foo' );
+
+				const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
+				const lastCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
+
+				tableSelection._setCellSelection(
+					firstCell,
+					lastCell
+				);
+
+				assertSelectedCells( model, [
+					[ 1, 1, 0 ],
+					[ 1, 1, 0 ],
+					[ 0, 0, 0 ]
+				] );
+			} );
+
 			it( 'should do nothing if there were no multi-cell selections', () => {
 				tableSelection.forceDisabled( 'foo' );
 
@@ -739,6 +758,73 @@ describe( 'table selection', () => {
 
 			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '[]', '12', '13' ],
+				[ '21', '22', '23' ],
+				[ '31', '32', '33' ]
+			] ) );
+		} );
+
+		it( 'should work with document selection passed to Model#deleteContent()', () => {
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			model.change( () => {
+				model.deleteContent( model.document.selection );
+			} );
+
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ '', '', '13' ],
+				[ '', '[]', '23' ],
+				[ '31', '32', '33' ]
+			] ) );
+		} );
+
+		it( 'should work with any arbitrary selection passed to Model#deleteContent() (delete backwards)', () => {
+			const selection = model.createSelection( [
+				model.createRange(
+					model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ),
+					model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] )
+				),
+				model.createRange(
+					model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] ),
+					model.createPositionFromPath( modelRoot, [ 0, 0, 2 ] )
+				)
+			] );
+
+			model.change( writer => {
+				model.deleteContent( selection );
+				writer.setSelection( selection );
+			} );
+
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ '', '[]', '13' ],
+				[ '21', '22', '23' ],
+				[ '31', '32', '33' ]
+			] ) );
+		} );
+
+		it( 'should work with any arbitrary selection passed to Model#deleteContent() (delete forwards)', () => {
+			const selection = model.createSelection( [
+				model.createRange(
+					model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ),
+					model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] )
+				),
+				model.createRange(
+					model.createPositionFromPath( modelRoot, [ 0, 0, 1 ] ),
+					model.createPositionFromPath( modelRoot, [ 0, 0, 2 ] )
+				)
+			] );
+
+			model.change( writer => {
+				model.deleteContent( selection, {
+					direction: 'forward'
+				} );
+				writer.setSelection( selection );
+			} );
+
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ '[]', '', '13' ],
 				[ '21', '22', '23' ],
 				[ '31', '32', '33' ]
 			] ) );

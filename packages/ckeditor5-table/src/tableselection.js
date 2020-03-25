@@ -352,12 +352,13 @@ export default class TableSelection extends Plugin {
 
 			const rangeToSelect = model.schema.getNearestSelectionRange( writer.createPositionAt( tableCellToSelect, 0 ) );
 
-			if ( rangeToSelect ) {
-				if ( selection.is( 'documentSelection' ) ) {
-					writer.setSelection( rangeToSelect );
-				} else {
-					selection.setTo( rangeToSelect );
-				}
+			// Note: we ignore the case where rangeToSelect may be null because deleteContent() will always (unless someone broke it)
+			// create an empty paragraph to accommodate the selection.
+
+			if ( selection.is( 'documentSelection' ) ) {
+				writer.setSelection( rangeToSelect );
+			} else {
+				selection.setTo( rangeToSelect );
 			}
 		} );
 	}
@@ -394,11 +395,6 @@ export default class TableSelection extends Plugin {
 		const viewPosition = this.editor.editing.view.createPositionAt( viewTargetElement, 0 );
 		const modelPosition = this.editor.editing.mapper.toModelPosition( viewPosition );
 		const modelElement = modelPosition.parent;
-
-		// TODO: Required?
-		if ( !modelElement ) {
-			return;
-		}
 
 		if ( modelElement.is( 'tableCell' ) ) {
 			return modelElement;
