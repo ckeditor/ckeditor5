@@ -26,7 +26,7 @@ The feeds:
 You can interact with mention panel with keyboard:
 
 - Move arrows up/down to select an item.
-- Use <kbd>enter</kbd> or <kbd>tab</kbd> to insert a mention into the documentation. 
+- Use <kbd>enter</kbd> or <kbd>tab</kbd> to insert a mention into the documentation.
 - The <kbd>esc</kbd> should close the panel.
 
 Mention panel should be closed on:
@@ -41,3 +41,5 @@ The mention should be removed from the text when:
 - removing characters from a mention
 - breaking the mention (<kbd>enter</kbd>)
 - pasting part of a mention
+
+Mention UI should not appear when mention command is disabled (**Mentions** toggle in toolbar).

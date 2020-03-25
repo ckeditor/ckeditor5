@@ -106,15 +106,44 @@ class InlineWidget extends Plugin {
 	}
 }
 
+class MentionCommandSwitcher extends Plugin {
+	init() {
+		const editor = this.editor;
+		const mentionCommand = editor.commands.get( 'mention' );
+
+		editor.ui.componentFactory.add( 'toggleMentionCommand', locale => {
+			const view = new ButtonView( locale );
+
+			view.set( {
+				label: 'Mentions',
+				withText: true,
+				isToggleable: true
+			} );
+
+			view.bind( 'isOn' ).to( mentionCommand, 'isEnabled' );
+
+			this.listenTo( view, 'execute', () => {
+				if ( mentionCommand.isEnabled ) {
+					mentionCommand.forceDisabled( 'mentionCommandSwitcher' );
+				} else {
+					mentionCommand.clearForceDisabled( 'mentionCommandSwitcher' );
+				}
+			} );
+
+			return view;
+		} );
+	}
+}
+
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Underline, Font, Mention, InlineWidget ],
+		plugins: [ ArticlePluginSet, Underline, Font, Mention, InlineWidget, MentionCommandSwitcher ],
 		toolbar: [
 			'heading',
 			'|', 'bulletedList', 'numberedList', 'blockQuote',
 			'|', 'bold', 'italic', 'underline', 'link',
 			'|', 'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor',
-			'|', 'insertTable', 'placeholder',
+			'|', 'insertTable', 'placeholder', 'toggleMentionCommand',
 			'|', 'undo', 'redo'
 		],
 		image: {
