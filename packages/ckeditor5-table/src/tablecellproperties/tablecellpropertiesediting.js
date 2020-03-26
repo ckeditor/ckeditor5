@@ -124,8 +124,7 @@ function enableHorizontalAlignmentProperty( schema, conversion, locale ) {
 		allowAttributes: [ 'horizontalAlignment' ]
 	} );
 
-	const defaultOption = locale.contentLanguageDirection == 'rtl' ? 'right' : 'left';
-	const options = [ 'left', 'right', 'center', 'justify' ].filter( option => option != defaultOption );
+	const options = [ locale.contentLanguageDirection == 'rtl' ? 'left' : 'right', 'center', 'justify' ];
 
 	conversion.attributeToAttribute( {
 		model: {
