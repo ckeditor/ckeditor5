@@ -622,10 +622,10 @@ describe( 'fastDiff', () => {
 function expectDiff( oldText, newText, expected, checkDiffToChangesCompatibility = true, comparator = null ) {
 	const result = fastDiff( oldText, newText, comparator );
 
-	expect( result ).to.deep.equals( expected, 'fastDiff changes failed' );
+	expect( result ).to.deep.equal( expected, 'fastDiff changes failed' );
 
 	if ( checkDiffToChangesCompatibility ) {
-		expect( result ).to.deep.equals(
+		expect( result ).to.deep.equal(
 			diffToChanges( diff( oldText, newText, comparator ), newText ), 'diffToChanges compatibility failed' );
 	}
 }
@@ -635,9 +635,9 @@ function expectDiffLinear( oldText, newText, expected, checkDiffCompatibility = 
 	const expectedArray = expected.split( '' ).map( item => actions[ item ] );
 	const result = fastDiff( oldText, newText, comparator, true );
 
-	expect( result ).to.deep.equals( expectedArray, 'fastDiff linear result failed' );
+	expect( result ).to.deep.equal( expectedArray, 'fastDiff linear result failed' );
 
 	if ( checkDiffCompatibility ) {
-		expect( result ).to.deep.equals( diff( oldText, newText, comparator ), 'diff compatibility failed' );
+		expect( result ).to.deep.equal( diff( oldText, newText, comparator ), 'diff compatibility failed' );
 	}
 }

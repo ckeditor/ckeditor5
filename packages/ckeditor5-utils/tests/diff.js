@@ -18,33 +18,33 @@ describe( 'diff', () => {
 	} );
 
 	it( 'should diff strings', () => {
-		expect( diff( 'aba', 'acca' ) ).to.deep.equals( [ 'equal', 'insert', 'insert', 'delete', 'equal' ] );
+		expect( diff( 'aba', 'acca' ) ).to.deep.equal( [ 'equal', 'insert', 'insert', 'delete', 'equal' ] );
 		testUtils.sinon.assert.notCalled( fastDiffSpy );
 	} );
 
 	it( 'should diff arrays', () => {
-		expect( diff( Array.from( 'aba' ), Array.from( 'acca' ) ) ).to.deep.equals( [ 'equal', 'insert', 'insert', 'delete', 'equal' ] );
+		expect( diff( Array.from( 'aba' ), Array.from( 'acca' ) ) ).to.deep.equal( [ 'equal', 'insert', 'insert', 'delete', 'equal' ] );
 		testUtils.sinon.assert.notCalled( fastDiffSpy );
 	} );
 
 	it( 'should reverse result if the second string is shorter', () => {
-		expect( diff( 'acca', 'aba' ) ).to.deep.equals( [ 'equal', 'delete', 'delete', 'insert', 'equal' ] );
+		expect( diff( 'acca', 'aba' ) ).to.deep.equal( [ 'equal', 'delete', 'delete', 'insert', 'equal' ] );
 		testUtils.sinon.assert.notCalled( fastDiffSpy );
 	} );
 
 	it( 'should diff if strings are same', () => {
-		expect( diff( 'abc', 'abc' ) ).to.deep.equals( [ 'equal', 'equal', 'equal' ] );
+		expect( diff( 'abc', 'abc' ) ).to.deep.equal( [ 'equal', 'equal', 'equal' ] );
 		testUtils.sinon.assert.notCalled( fastDiffSpy );
 	} );
 
 	it( 'should diff if one string is empty', () => {
-		expect( diff( '', 'abc' ) ).to.deep.equals( [ 'insert', 'insert', 'insert' ] );
+		expect( diff( '', 'abc' ) ).to.deep.equal( [ 'insert', 'insert', 'insert' ] );
 		testUtils.sinon.assert.notCalled( fastDiffSpy );
 	} );
 
 	it( 'should use custom comparator', () => {
-		expect( diff( 'aBc', 'abc' ) ).to.deep.equals( [ 'equal', 'insert', 'delete', 'equal' ] );
-		expect( diff( 'aBc', 'abc', ( a, b ) => a.toLowerCase() == b.toLowerCase() ) ).to.deep.equals( [ 'equal', 'equal', 'equal' ] );
+		expect( diff( 'aBc', 'abc' ) ).to.deep.equal( [ 'equal', 'insert', 'delete', 'equal' ] );
+		expect( diff( 'aBc', 'abc', ( a, b ) => a.toLowerCase() == b.toLowerCase() ) ).to.deep.equal( [ 'equal', 'equal', 'equal' ] );
 		testUtils.sinon.assert.notCalled( fastDiffSpy );
 	} );
 
@@ -77,27 +77,27 @@ describe( 'diff', () => {
 			const emojiDiffDelete = new Array( emojiLength ).fill( 'delete' );
 
 			it( 'should properly handle emoji insertion', () => {
-				expect( diff( 'abc', 'ab🙂c' ) ).to.deep.equals( [ 'equal', 'equal', ...emojiDiffInsert, 'equal' ] );
+				expect( diff( 'abc', 'ab🙂c' ) ).to.deep.equal( [ 'equal', 'equal', ...emojiDiffInsert, 'equal' ] );
 			} );
 
 			it( 'should properly handle emoji insertion on the end', () => {
-				expect( diff( 'abc', 'abc🙂' ) ).to.deep.equals( [ 'equal', 'equal', 'equal', ...emojiDiffInsert ] );
+				expect( diff( 'abc', 'abc🙂' ) ).to.deep.equal( [ 'equal', 'equal', 'equal', ...emojiDiffInsert ] );
 			} );
 
 			it( 'should properly handle appending to string containing emoji', () => {
-				expect( diff( 'abc🙂', 'abc🙂d' ) ).to.deep.equals( [ 'equal', 'equal', 'equal', ...emojiDiffEqual, 'insert' ] );
+				expect( diff( 'abc🙂', 'abc🙂d' ) ).to.deep.equal( [ 'equal', 'equal', 'equal', ...emojiDiffEqual, 'insert' ] );
 			} );
 
 			it( 'should properly handle insertion to string containing emoji', () => {
-				expect( diff( 'ab🙂cd', 'ab🙂cde' ) ).to.deep.equals( [ 'equal', 'equal', ...emojiDiffEqual, 'equal', 'equal', 'insert' ] );
+				expect( diff( 'ab🙂cd', 'ab🙂cde' ) ).to.deep.equal( [ 'equal', 'equal', ...emojiDiffEqual, 'equal', 'equal', 'insert' ] );
 			} );
 
 			it( 'should properly remove emoji', () => {
-				expect( diff( 'a🙂b', 'ab' ) ).to.deep.equals( [ 'equal', ...emojiDiffDelete, 'equal' ] );
+				expect( diff( 'a🙂b', 'ab' ) ).to.deep.equal( [ 'equal', ...emojiDiffDelete, 'equal' ] );
 			} );
 
 			it( 'should properly replace emoji', () => {
-				expect( diff( 'a🙂b', 'axb' ) ).to.deep.equals( [ 'equal', ...emojiDiffDelete, 'insert', 'equal' ] );
+				expect( diff( 'a🙂b', 'axb' ) ).to.deep.equal( [ 'equal', ...emojiDiffDelete, 'insert', 'equal' ] );
 			} );
 		} );
 
@@ -109,34 +109,34 @@ describe( 'diff', () => {
 			const emojiDiffDelete = new Array( emojiLength ).fill( 'delete' );
 
 			it( 'should properly handle emoji insertion (with ZWJ)', () => {
-				expect( diff( 'abc', 'ab👩‍🦰c' ) ).to.deep.equals( [ 'equal', 'equal', ...emojiDiffInsert, 'equal' ] );
+				expect( diff( 'abc', 'ab👩‍🦰c' ) ).to.deep.equal( [ 'equal', 'equal', ...emojiDiffInsert, 'equal' ] );
 			} );
 
 			it( 'should properly handle emoji insertion on the end (with ZWJ)', () => {
-				expect( diff( 'abc', 'abc👩‍🦰' ) ).to.deep.equals( [ 'equal', 'equal', 'equal', ...emojiDiffInsert ] );
+				expect( diff( 'abc', 'abc👩‍🦰' ) ).to.deep.equal( [ 'equal', 'equal', 'equal', ...emojiDiffInsert ] );
 			} );
 
 			it( 'should properly handle appending to string containing emoji (with ZWJ)', () => {
-				expect( diff( 'ab👩‍🦰', 'ab👩‍🦰c' ) ).to.deep.equals( [ 'equal', 'equal', ...emojiDiffEqual, 'insert' ] );
+				expect( diff( 'ab👩‍🦰', 'ab👩‍🦰c' ) ).to.deep.equal( [ 'equal', 'equal', ...emojiDiffEqual, 'insert' ] );
 			} );
 
 			it( 'should properly handle insertion to string containing emoji (with ZWJ)', () => {
-				expect( diff( 'a👩‍🦰b', 'a👩‍🦰bc' ) ).to.deep.equals( [ 'equal', ...emojiDiffEqual, 'equal', 'insert' ] );
+				expect( diff( 'a👩‍🦰b', 'a👩‍🦰bc' ) ).to.deep.equal( [ 'equal', ...emojiDiffEqual, 'equal', 'insert' ] );
 			} );
 
 			it( 'should properly remove emoji (with ZWJ)', () => {
-				expect( diff( 'a👩‍🦰b', 'ab' ) ).to.deep.equals( [ 'equal', ...emojiDiffDelete, 'equal' ] );
+				expect( diff( 'a👩‍🦰b', 'ab' ) ).to.deep.equal( [ 'equal', ...emojiDiffDelete, 'equal' ] );
 			} );
 
 			it( 'should properly replace emoji (with ZWJ)', () => {
-				expect( diff( 'a👩‍🦰b', 'axb' ) ).to.deep.equals( [ 'equal', ...emojiDiffDelete, 'insert', 'equal' ] );
+				expect( diff( 'a👩‍🦰b', 'axb' ) ).to.deep.equal( [ 'equal', ...emojiDiffDelete, 'insert', 'equal' ] );
 			} );
 
 			it( 'should properly replace ZWJ sequence with simple emoji', () => {
 				const simpleEmojiDiffInsert = new Array( '🙂'.length ).fill( 'insert' );
 
 				// Note that first char of both emoji is the same.
-				expect( diff( 'a👩‍🦰b', 'a🙂b' ) ).to.deep.equals( [
+				expect( diff( 'a👩‍🦰b', 'a🙂b' ) ).to.deep.equal( [
 					'equal', 'equal', ...emojiDiffDelete.slice( 1 ), ...simpleEmojiDiffInsert.slice( 1 ), 'equal'
 				] );
 			} );
@@ -145,7 +145,7 @@ describe( 'diff', () => {
 				const simpleEmojiDiffDelete = new Array( '🙂'.length ).fill( 'delete' );
 
 				// Note that first char of both emoji is the same.
-				expect( diff( 'a🙂b', 'a👩‍🦰b' ) ).to.deep.equals( [
+				expect( diff( 'a🙂b', 'a👩‍🦰b' ) ).to.deep.equal( [
 					'equal', 'equal', ...emojiDiffInsert.slice( 1 ), ...simpleEmojiDiffDelete.slice( 1 ), 'equal'
 				] );
 			} );
