@@ -51,3 +51,63 @@ msgstr "Barra de herramientas desplegable"
 msgctxt "Label of a toolbar button which reveals more toolbar items."
 msgid "Show more items"
 msgstr "Mostrar más elementos"
+
+msgctxt "Label of a button that applies a black color in color pickers."
+msgid "Black"
+msgstr "Negro"
+
+msgctxt "Label of a button that applies a dim grey color in color pickers."
+msgid "Dim grey"
+msgstr "Gris Oscuro"
+
+msgctxt "Label of a button that applies a grey color in color pickers."
+msgid "Grey"
+msgstr "Gris"
+
+msgctxt "Label of a button that applies a light grey color in color pickers."
+msgid "Light grey"
+msgstr "Gris Claro"
+
+msgctxt "Label of a button that applies a white color in color pickers."
+msgid "White"
+msgstr "Blanco"
+
+msgctxt "Label of a button that applies a red color in color pickers."
+msgid "Red"
+msgstr "Rojo"
+
+msgctxt "Label of a button that applies a orange color in color pickers."
+msgid "Orange"
+msgstr "Anaranjado"
+
+msgctxt "Label of a button that applies a yellow color in color pickers."
+msgid "Yellow"
+msgstr "Amarillo"
+
+msgctxt "Label of a button that applies a light green color in color pickers."
+msgid "Light green"
+msgstr "Verde Claro"
+
+msgctxt "Label of a button that applies a green color in color pickers."
+msgid "Green"
+msgstr "Verde"
+
+msgctxt "Label of a button that applies a aquamarine color in color pickers."
+msgid "Aquamarine"
+msgstr "Aguamarina"
+
+msgctxt "Label of a button that applies a turquoise color in color pickers."
+msgid "Turquoise"
+msgstr "Turquesa"
+
+msgctxt "Label of a button that applies a light blue color in color pickers."
+msgid "Light blue"
+msgstr "Azul Claro"
+
+msgctxt "Label of a button that applies a blue color in color pickers."
+msgid "Blue"
+msgstr "Azul"
+
+msgctxt "Label of a button that applies a purple color in color pickers."
+msgid "Purple"
+msgstr "Morado"

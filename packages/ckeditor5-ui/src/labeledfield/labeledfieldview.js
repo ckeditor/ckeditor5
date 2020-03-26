@@ -4,16 +4,16 @@
  */
 
 /**
- * @module ui/labeledview/labeledview
+ * @module ui/labeledfield/labeledfieldview
  */
 
 import View from '../view';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
 import LabelView from '../label/labelview';
-import '../../theme/components/labeledview/labeledview.css';
+import '../../theme/components/labeledfield/labeledfieldview.css';
 
 /**
- * The labeled view class. It can be used to enhance any view with the following features:
+ * The labeled field view class. It can be used to enhance any view with the following features:
  *
  * * a label,
  * * (optional) an error message,
@@ -25,16 +25,16 @@ import '../../theme/components/labeledview/labeledview.css';
  * The constructor of this class requires a callback that returns a view to be labeled. The callback
  * is called with unique ids that allow binding of DOM properties:
  *
- *		const labeledInputView = new LabeledView( locale, ( labeledView, viewUid, statusUid ) => {
- *			const inputView = new InputTextView( labeledView.locale );
+ *		const labeledInputView = new LabeledFieldView( locale, ( labeledFieldView, viewUid, statusUid ) => {
+ *			const inputView = new InputTextView( labeledFieldView.locale );
  *
  *			inputView.set( {
  *				id: viewUid,
  *				ariaDescribedById: statusUid
  *			} );
  *
- *			inputView.bind( 'isReadOnly' ).to( labeledView, 'isEnabled', value => !value );
- *			inputView.bind( 'hasError' ).to( labeledView, 'errorText', value => !!value );
+ *			inputView.bind( 'isReadOnly' ).to( labeledFieldView, 'isEnabled', value => !value );
+ *			inputView.bind( 'hasError' ).to( labeledFieldView, 'errorText', value => !!value );
  *
  *			return inputView;
  *		} );
@@ -45,23 +45,23 @@ import '../../theme/components/labeledview/labeledview.css';
  *
  *		document.body.append( labeledInputView.element );
  *
- * See {@link module:ui/labeledview/utils} to discover ready–to–use labeled input helpers for common
+ * See {@link module:ui/labeledfield/utils} to discover ready–to–use labeled input helpers for common
  * UI components.
  *
  * @extends module:ui/view~View
  */
-export default class LabeledView extends View {
+export default class LabeledFieldView extends View {
 	/**
-	 * Creates an instance of the labeled view class using a provided creator function
+	 * Creates an instance of the labeled field view class using a provided creator function
 	 * that provides the view to be labeled.
 	 *
 	 * @param {module:utils/locale~Locale} locale The locale instance.
 	 * @param {Function} viewCreator A function that returns a {@link module:ui/view~View}
 	 * that will be labeled. The following arguments are passed to the creator function:
 	 *
-	 * * an instance of the `LabeledView` to allow binding observable properties,
-	 * * an UID string that connects the {@link #labelView label} and the labeled view in DOM,
-	 * * an UID string that connects the {@link #statusView status} and the labeled view in DOM.
+	 * * an instance of the `LabeledFieldView` to allow binding observable properties,
+	 * * an UID string that connects the {@link #labelView label} and the labeled field view in DOM,
+	 * * an UID string that connects the {@link #statusView status} and the labeled field view in DOM.
 	 */
 	constructor( locale, viewCreator ) {
 		super( locale );
@@ -70,11 +70,11 @@ export default class LabeledView extends View {
 		const statusUid = `ck-labeled-view-status-${ uid() }`;
 
 		/**
-		 * The view that gets labeled.
+		 * The field view that gets labeled.
 		 *
-		 * @member {module:ui/view~View} #view
+		 * @member {module:ui/view~View} #fieldView
 		 */
-		this.view = viewCreator( this, viewUid, statusUid );
+		this.fieldView = viewCreator( this, viewUid, statusUid );
 
 		/**
 		 * The text of the label.
@@ -94,11 +94,11 @@ export default class LabeledView extends View {
 
 		/**
 		 * The validation error text. When set, it will be displayed
-		 * next to the {@link #view} as a typical validation error message.
+		 * next to the {@link #fieldView} as a typical validation error message.
 		 * Set it to `null` to hide the message.
 		 *
 		 * **Note:** Setting this property to anything but `null` will automatically
-		 * make the `hasError` of the {@link #view} `true`.
+		 * make the `hasError` of the {@link #fieldView} `true`.
 		 *
 		 * @observable
 		 * @member {String|null} #errorText
@@ -106,7 +106,7 @@ export default class LabeledView extends View {
 		this.set( 'errorText', null );
 
 		/**
-		 * The additional information text displayed next to the {@link #view} which can
+		 * The additional information text displayed next to the {@link #fieldView} which can
 		 * be used to inform the user about its purpose, provide help or hints.
 		 *
 		 * Set it to `null` to hide the message.
@@ -136,7 +136,7 @@ export default class LabeledView extends View {
 		this.labelView = this._createLabelView( viewUid );
 
 		/**
-		 * The status view for the {@link #view}. It displays {@link #errorText} and
+		 * The status view for the {@link #fieldView}. It displays {@link #errorText} and
 		 * {@link #infoText}.
 		 *
 		 * @member {module:ui/view~View} #statusView
@@ -175,7 +175,7 @@ export default class LabeledView extends View {
 			},
 			children: [
 				this.labelView,
-				this.view,
+				this.fieldView,
 				this.statusView
 			]
 		} );
@@ -199,10 +199,10 @@ export default class LabeledView extends View {
 
 	/**
 	 * Creates the status view instance. It displays {@link #errorText} and {@link #infoText}
-	 * next to the {@link #view}. See {@link #_statusText}.
+	 * next to the {@link #fieldView}. See {@link #_statusText}.
 	 *
 	 * @private
-	 * @param {String} statusUid Unique id of the status, shared with the {@link #view view's}
+	 * @param {String} statusUid Unique id of the status, shared with the {@link #fieldView view's}
 	 * `aria-describedby` attribute.
 	 * @returns {module:ui/view~View}
 	 */
@@ -233,9 +233,9 @@ export default class LabeledView extends View {
 	}
 
 	/**
-	 * Focuses the {@link #view}.
+	 * Focuses the {@link #fieldView}.
 	 */
 	focus() {
-		this.view.focus();
+		this.fieldView.focus();
 	}
 }

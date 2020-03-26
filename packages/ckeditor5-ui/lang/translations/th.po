@@ -12,102 +12,102 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Dutch (https://www.transifex.com/ckeditor/teams/11143/nl/)\n"
-"Language: nl\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Thai (https://www.transifex.com/ckeditor/teams/11143/th/)\n"
+"Language: th\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor, %0"
-msgstr "Tekstbewerker, 0%"
+msgstr ""
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
-msgstr "Tekstbewerker"
+msgstr ""
 
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
-msgstr "Blok aanpassen"
+msgstr ""
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
-msgstr "Volgende"
+msgstr ""
 
 msgctxt "Label for a button showing the previous thing (tab, page, etc.)."
 msgid "Previous"
-msgstr "Vorige"
+msgstr ""
 
 msgctxt "Label for a 'page X of Y' status of a typical next/previous page navigation."
 msgid "%0 of %1"
-msgstr "0% van 1%"
+msgstr ""
 
 msgctxt "Label used by assistive technologies describing a generic editor toolbar."
 msgid "Editor toolbar"
-msgstr "Editor welkbalk"
+msgstr ""
 
 msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
 msgid "Dropdown toolbar"
-msgstr "Drop-down werkbalk"
+msgstr ""
 
 msgctxt "Label of a toolbar button which reveals more toolbar items."
 msgid "Show more items"
-msgstr "Meer items weergeven"
+msgstr ""
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"
-msgstr "Zwart"
+msgstr "สีดำ"
 
 msgctxt "Label of a button that applies a dim grey color in color pickers."
 msgid "Dim grey"
-msgstr "Gedimd grijs"
+msgstr "สีเทาเข้ม"
 
 msgctxt "Label of a button that applies a grey color in color pickers."
 msgid "Grey"
-msgstr "Grijs"
+msgstr "สีเทา"
 
 msgctxt "Label of a button that applies a light grey color in color pickers."
 msgid "Light grey"
-msgstr "Lichtgrijs"
+msgstr "สีเทาอ่อน"
 
 msgctxt "Label of a button that applies a white color in color pickers."
 msgid "White"
-msgstr "Wit"
+msgstr "สีขาว"
 
 msgctxt "Label of a button that applies a red color in color pickers."
 msgid "Red"
-msgstr "Rood"
+msgstr "สีแดง"
 
 msgctxt "Label of a button that applies a orange color in color pickers."
 msgid "Orange"
-msgstr "Oranje"
+msgstr "สีส้ม"
 
 msgctxt "Label of a button that applies a yellow color in color pickers."
 msgid "Yellow"
-msgstr "Geel"
+msgstr "สีเหลือง"
 
 msgctxt "Label of a button that applies a light green color in color pickers."
 msgid "Light green"
-msgstr "Lichtgroen"
+msgstr "สีเขียวอ่อน"
 
 msgctxt "Label of a button that applies a green color in color pickers."
 msgid "Green"
-msgstr "Groen"
+msgstr "สีเขียว"
 
 msgctxt "Label of a button that applies a aquamarine color in color pickers."
 msgid "Aquamarine"
-msgstr "Aquamarijn"
+msgstr "พลอยสีฟ้า"
 
 msgctxt "Label of a button that applies a turquoise color in color pickers."
 msgid "Turquoise"
-msgstr "Turquoise"
+msgstr "สีเขียวขุ่น"
 
 msgctxt "Label of a button that applies a light blue color in color pickers."
 msgid "Light blue"
-msgstr "Lichtblauw"
+msgstr "สีฟ้า"
 
 msgctxt "Label of a button that applies a blue color in color pickers."
 msgid "Blue"
-msgstr "Blauw"
+msgstr "สีน้ำเงิน"
 
 msgctxt "Label of a button that applies a purple color in color pickers."
 msgid "Purple"
-msgstr "Paars"
+msgstr "สีม่วง"

@@ -51,3 +51,63 @@ msgstr "Avatav tööriistariba"
 msgctxt "Label of a toolbar button which reveals more toolbar items."
 msgid "Show more items"
 msgstr "Näita veel"
+
+msgctxt "Label of a button that applies a black color in color pickers."
+msgid "Black"
+msgstr "Must"
+
+msgctxt "Label of a button that applies a dim grey color in color pickers."
+msgid "Dim grey"
+msgstr "Tumehall"
+
+msgctxt "Label of a button that applies a grey color in color pickers."
+msgid "Grey"
+msgstr "Hall"
+
+msgctxt "Label of a button that applies a light grey color in color pickers."
+msgid "Light grey"
+msgstr "Helehall"
+
+msgctxt "Label of a button that applies a white color in color pickers."
+msgid "White"
+msgstr "Valge"
+
+msgctxt "Label of a button that applies a red color in color pickers."
+msgid "Red"
+msgstr "Punane"
+
+msgctxt "Label of a button that applies a orange color in color pickers."
+msgid "Orange"
+msgstr "Oranž"
+
+msgctxt "Label of a button that applies a yellow color in color pickers."
+msgid "Yellow"
+msgstr "Kollane"
+
+msgctxt "Label of a button that applies a light green color in color pickers."
+msgid "Light green"
+msgstr "Heleroheline"
+
+msgctxt "Label of a button that applies a green color in color pickers."
+msgid "Green"
+msgstr "Roheline"
+
+msgctxt "Label of a button that applies a aquamarine color in color pickers."
+msgid "Aquamarine"
+msgstr "Akvamariin"
+
+msgctxt "Label of a button that applies a turquoise color in color pickers."
+msgid "Turquoise"
+msgstr "Türkiis"
+
+msgctxt "Label of a button that applies a light blue color in color pickers."
+msgid "Light blue"
+msgstr "Helesinine"
+
+msgctxt "Label of a button that applies a blue color in color pickers."
+msgid "Blue"
+msgstr "Sinine"
+
+msgctxt "Label of a button that applies a purple color in color pickers."
+msgid "Purple"
+msgstr "Lilla"
