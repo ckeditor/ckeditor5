@@ -146,7 +146,7 @@ export default class LinkUI extends Plugin {
 
 		const formView = new LinkFormView( editor.locale, linkCommand.manualDecorators );
 
-		formView.urlInputView.bind( 'value' ).to( linkCommand, 'value' );
+		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
 
 		// Form elements should be read-only when corresponding commands are disabled.
 		formView.urlInputView.bind( 'isReadOnly' ).to( linkCommand, 'isEnabled', value => !value );
@@ -154,7 +154,7 @@ export default class LinkUI extends Plugin {
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
-			editor.execute( 'link', formView.urlInputView.inputView.element.value, formView.getDecoratorSwitchesState() );
+			editor.execute( 'link', formView.urlInputView.fieldView.value, formView.getDecoratorSwitchesState() );
 			this._closeFormView();
 		} );
 
@@ -298,16 +298,16 @@ export default class LinkUI extends Plugin {
 
 		// Select input when form view is currently visible.
 		if ( this._balloon.visibleView === this.formView ) {
-			this.formView.urlInputView.select();
+			this.formView.urlInputView.fieldView.select();
 		}
 
 		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
-		// the command. If the user typed in the input, then canceled the balloon (`urlInputView#value` stays
+		// the command. If the user typed in the input, then canceled the balloon (`urlInputView.fieldView#value` stays
 		// unaltered) and re-opened it without changing the value of the link command (e.g. because they
 		// clicked the same link), they would see the old value instead of the actual value of the command.
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
-		this.formView.urlInputView.inputView.element.value = linkCommand.value || '';
+		this.formView.urlInputView.fieldView.value = linkCommand.value || '';
 	}
 
 	/**
