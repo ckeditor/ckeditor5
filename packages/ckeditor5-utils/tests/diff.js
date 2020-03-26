@@ -99,6 +99,14 @@ describe( 'diff', () => {
 			it( 'should properly replace emoji', () => {
 				expect( diff( 'a🙂b', 'axb' ) ).to.deep.equal( [ 'equal', ...emojiDiffDelete, 'insert', 'equal' ] );
 			} );
+
+			it( 'should properly replace one emoji with another', () => {
+				// 😄 = '\ud83d\ude04' = 2 chars
+				// Note both emoji have same first code unit
+				expect( diff( 'a🙂b', 'a😄b' ) ).to.deep.equal(
+					[ 'equal', 'equal', ...emojiDiffInsert.slice( 1 ), ...emojiDiffDelete.slice( 1 ), 'equal' ]
+				);
+			} );
 		} );
 
 		describe( 'combined emoji - unicode ZWJ sequence', () => {

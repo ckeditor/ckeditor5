@@ -100,8 +100,12 @@ export default function fastDiff( a, b, cmp, atomicChanges = false ) {
 		return a === b;
 	};
 
-	// Transform text or any iterable into arrays for easier, consistent processing.
-	// Array.from was used here but it generated incorrect results for multi-byte unicode sequences.
+	// Convert the string (or any array-like object - eg. NodeList) to an array by using the slice() method because,
+	// unlike Array.from(), it returns array of UTF-16 code units instead of the code points of a string.
+	// One code point might be a surrogate pair of two code units. All text offsets are expected to be in code units.
+	// See ckeditor/ckeditor5#3147.
+	//
+	// We need to make sure here that fastDiff() works identical to diff().
 	if ( !Array.isArray( a ) ) {
 		a = Array.prototype.slice.call( a );
 	}
