@@ -37,9 +37,9 @@ export default class RemoveRowCommand extends Command {
 			const tableRowCount = this.editor.plugins.get( 'TableUtils' ).getRows( table );
 			const lastRowIndex = tableRowCount - 1;
 
-			const removedRowIndexes = getRowIndexes( selectedCells );
+			const selectedRowIndexes = getRowIndexes( selectedCells );
 
-			const areAllRowsSelected = removedRowIndexes.first === 0 && removedRowIndexes.last === lastRowIndex;
+			const areAllRowsSelected = selectedRowIndexes.first === 0 && selectedRowIndexes.last === lastRowIndex;
 
 			// Disallow selecting whole table -> delete whole table should be used instead.
 			this.isEnabled = !areAllRowsSelected;
