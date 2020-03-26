@@ -10,18 +10,18 @@
 import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domeventobserver';
 
 /**
- * The mouse selection events observer.
+ * The mouse selection event observer.
  *
- * It registers listeners for DOM events:
+ * It registers listeners for the following DOM events:
  *
  * - `'mousemove'`
  * - `'mouseup'`
  * - `'mouseleave'`
  *
- * Note that this observer is disabled by default. To enable this observer it needs to be added to
+ * Note that this observer is disabled by default. To enable this observer, it needs to be added to
  * {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
  *
- * It is registered by the {@link module:table/tableselection~TableSelection} plugin.
+ * The observer is registered by the {@link module:table/tableselection~TableSelection} plugin.
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
@@ -48,7 +48,7 @@ export default class MouseEventsObserver extends DomEventObserver {
  *
  * Introduced by {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver}.
  *
- * Note that this event is not available by default. To make it available
+ * Note that this event is not available by default. To make it available,
  * {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver} needs to be added
  * to {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
  *
@@ -62,7 +62,7 @@ export default class MouseEventsObserver extends DomEventObserver {
  *
  * Introduced by {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver}.
  *
- * Note that this event is not available by default. To make it available
+ * Note that this event is not available by default. To make it available,
  * {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver} needs to be added
  * to {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
  *
@@ -76,7 +76,7 @@ export default class MouseEventsObserver extends DomEventObserver {
  *
  * Introduced by {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver}.
  *
- * Note that this event is not available by default. To make it available
+ * Note that this event is not available by default. To make it available,
  * {@link module:table/tableselection/mouseeventsobserver~MouseEventsObserver} needs to be added
  * to {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
  *
