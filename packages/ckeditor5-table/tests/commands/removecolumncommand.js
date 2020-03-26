@@ -394,5 +394,85 @@ describe( 'RemoveColumnCommand', () => {
 				[ '20', '21' ]
 			] ) );
 		} );
+
+		it( 'should work property if the rowspan is in the first column (#1)', () => {
+			setData( model, modelTable( [
+				[ { rowspan: 2, contents: '00' }, '[]01' ],
+				[ '10' ]
+			] ) );
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ { rowspan: 2, contents: '[]00' } ]
+			] ) );
+		} );
+
+		it( 'should work property if the rowspan is in the first column (#2)', () => {
+			setData( model, modelTable( [
+				[ { rowspan: 2, contents: '00' }, '01' ],
+				[ '[]10' ]
+			] ) );
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ { rowspan: 2, contents: '[]00' } ]
+			] ) );
+		} );
+
+		it( 'should work property if the rowspan is in the first column (#3)', () => {
+			setData( model, modelTable( [
+				[ { rowspan: 2, contents: '00[]' }, '01' ],
+				[ '10' ]
+			] ) );
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '[]01' ],
+				[ '10' ]
+			] ) );
+		} );
+
+		it( 'should work property if the rowspan is in the last column (#1)', () => {
+			setData( model, modelTable( [
+				[ '[]00', { rowspan: 2, contents: '01' } ],
+				[ '10' ]
+			] ) );
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ { rowspan: 2, contents: '[]01' } ]
+			] ) );
+		} );
+
+		it( 'should work property if the rowspan is in the last column (#2)', () => {
+			setData( model, modelTable( [
+				[ '00', { rowspan: 2, contents: '01' } ],
+				[ '[]10' ]
+			] ) );
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ { rowspan: 2, contents: '[]01' } ]
+			] ) );
+		} );
+
+		it( 'should work property if the rowspan is in the last column (#3)', () => {
+			setData( model, modelTable( [
+				[ '00', { rowspan: 2, contents: '[]01' } ],
+				[ '10' ]
+			] ) );
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '[]00' ],
+				[ '10' ]
+			] ) );
+		} );
 	} );
 } );

@@ -15,8 +15,8 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 
-import LabeledView from '@ckeditor/ckeditor5-ui/src/labeledview/labeledview';
-import { createLabeledDropdown, createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledview/utils';
+import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
+import { createLabeledDropdown, createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
 import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
 import { addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
@@ -413,57 +413,57 @@ export default class TablePropertiesView extends View {
 		// -- Style ---------------------------------------------------
 
 		const styleLabels = getBorderStyleLabels( this.t );
-		const borderStyleDropdown = new LabeledView( locale, createLabeledDropdown );
+		const borderStyleDropdown = new LabeledFieldView( locale, createLabeledDropdown );
 		borderStyleDropdown.set( {
 			label: t( 'Style' ),
 			class: 'ck-table-form__border-style'
 		} );
 
-		borderStyleDropdown.view.buttonView.set( {
+		borderStyleDropdown.fieldView.buttonView.set( {
 			isOn: false,
 			withText: true,
 			tooltip: t( 'Style' )
 		} );
 
-		borderStyleDropdown.view.buttonView.bind( 'label' ).to( this, 'borderStyle', value => {
+		borderStyleDropdown.fieldView.buttonView.bind( 'label' ).to( this, 'borderStyle', value => {
 			return styleLabels[ value ? value : 'none' ];
 		} );
 
-		borderStyleDropdown.view.on( 'execute', evt => {
+		borderStyleDropdown.fieldView.on( 'execute', evt => {
 			this.borderStyle = evt.source._borderStyleValue;
 		} );
 
-		addListToDropdown( borderStyleDropdown.view, getBorderStyleDefinitions( this ) );
+		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this ) );
 
 		// -- Width ---------------------------------------------------
 
-		const borderWidthInput = new LabeledView( locale, createLabeledInputText );
+		const borderWidthInput = new LabeledFieldView( locale, createLabeledInputText );
 
 		borderWidthInput.set( {
 			label: t( 'Width' ),
 			class: 'ck-table-form__border-width'
 		} );
 
-		borderWidthInput.view.bind( 'value' ).to( this, 'borderWidth' );
+		borderWidthInput.fieldView.bind( 'value' ).to( this, 'borderWidth' );
 		borderWidthInput.bind( 'isEnabled' ).to( this, 'borderStyle', isBorderStyleSet );
-		borderWidthInput.view.on( 'input', () => {
-			this.borderWidth = borderWidthInput.view.element.value;
+		borderWidthInput.fieldView.on( 'input', () => {
+			this.borderWidth = borderWidthInput.fieldView.element.value;
 		} );
 
 		// -- Color ---------------------------------------------------
 
-		const borderColorInput = new LabeledView( locale, colorInputCreator );
+		const borderColorInput = new LabeledFieldView( locale, colorInputCreator );
 
 		borderColorInput.set( {
 			label: t( 'Color' ),
 			class: 'ck-table-form__border-color'
 		} );
 
-		borderColorInput.view.bind( 'value' ).to( this, 'borderColor' );
+		borderColorInput.fieldView.bind( 'value' ).to( this, 'borderColor' );
 		borderColorInput.bind( 'isEnabled' ).to( this, 'borderStyle', isBorderStyleSet );
 
-		borderColorInput.view.on( 'input', () => {
-			this.borderColor = borderColorInput.view.value;
+		borderColorInput.fieldView.on( 'input', () => {
+			this.borderColor = borderColorInput.fieldView.value;
 		} );
 
 		// Reset the border color and width fields when style is "none".
@@ -489,7 +489,7 @@ export default class TablePropertiesView extends View {
 	 * * {@link #backgroundInput}.
 	 *
 	 * @private
-	 * @returns {module:ui/labeledview/labeledview~LabeledView}
+	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 	 */
 	_createBackgroundField() {
 		const backgroundInputCreator = getLabeledColorInputCreator( {
@@ -499,16 +499,16 @@ export default class TablePropertiesView extends View {
 		const locale = this.locale;
 		const t = this.t;
 
-		const backgroundInput = new LabeledView( locale, backgroundInputCreator );
+		const backgroundInput = new LabeledFieldView( locale, backgroundInputCreator );
 
 		backgroundInput.set( {
 			label: t( 'Background' ),
 			class: 'ck-table-properties-form__background'
 		} );
 
-		backgroundInput.view.bind( 'value' ).to( this, 'backgroundColor' );
-		backgroundInput.view.on( 'input', () => {
-			this.backgroundColor = backgroundInput.view.value;
+		backgroundInput.fieldView.bind( 'value' ).to( this, 'backgroundColor' );
+		backgroundInput.fieldView.on( 'input', () => {
+			this.backgroundColor = backgroundInput.fieldView.value;
 		} );
 
 		return backgroundInput;
@@ -521,7 +521,7 @@ export default class TablePropertiesView extends View {
 	 * * {@link #heightInput}.
 	 *
 	 * @private
-	 * @returns {module:ui/labeledview/labeledview~LabeledView}
+	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 	 */
 	_createDimensionFields() {
 		const locale = this.locale;
@@ -534,16 +534,16 @@ export default class TablePropertiesView extends View {
 
 		// -- Width ---------------------------------------------------
 
-		const widthInput = new LabeledView( locale, createLabeledInputText );
+		const widthInput = new LabeledFieldView( locale, createLabeledInputText );
 
 		widthInput.set( {
 			label: t( 'Width' ),
 			class: 'ck-table-form__dimensions-row__width'
 		} );
 
-		widthInput.view.bind( 'value' ).to( this, 'width' );
-		widthInput.view.on( 'input', () => {
-			this.width = widthInput.view.element.value;
+		widthInput.fieldView.bind( 'value' ).to( this, 'width' );
+		widthInput.fieldView.on( 'input', () => {
+			this.width = widthInput.fieldView.element.value;
 		} );
 
 		// -- Operator ---------------------------------------------------
@@ -563,16 +563,16 @@ export default class TablePropertiesView extends View {
 
 		// -- Height ---------------------------------------------------
 
-		const heightInput = new LabeledView( locale, createLabeledInputText );
+		const heightInput = new LabeledFieldView( locale, createLabeledInputText );
 
 		heightInput.set( {
 			label: t( 'Height' ),
 			class: 'ck-table-form__dimensions-row__height'
 		} );
 
-		heightInput.view.bind( 'value' ).to( this, 'height' );
-		heightInput.view.on( 'input', () => {
-			this.height = heightInput.view.element.value;
+		heightInput.fieldView.bind( 'value' ).to( this, 'height' );
+		heightInput.fieldView.on( 'input', () => {
+			this.height = heightInput.fieldView.element.value;
 		} );
 
 		return {

@@ -86,6 +86,24 @@ describe( 'RemoveRowCommand', () => {
 
 			expect( command.isEnabled ).to.be.false;
 		} );
+
+		it( 'should be false when the first column with rowspan is selected', () => {
+			// (#6427)
+			setData( model, modelTable( [
+				[ { rowspan: 2, contents: '00' }, '01' ],
+				[ '11' ],
+				[ '20', '21' ]
+			] ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+			);
+
+			expect( command.isEnabled ).to.be.false;
+		} );
 	} );
 
 	describe( 'execute()', () => {

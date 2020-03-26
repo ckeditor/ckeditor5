@@ -726,7 +726,7 @@ describe( 'TableUtils', () => {
 				[ '21' ]
 			] ) );
 
-			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 4 );
+			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 3 );
 		} );
 	} );
 } );
