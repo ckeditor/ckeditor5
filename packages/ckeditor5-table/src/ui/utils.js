@@ -397,7 +397,7 @@ export const defaultColors = [
  *
  * For given options, it returns a function that creates an instance of a
  * {@link module:table/ui/colorinputview~ColorInputView color input} logically related to
- * a {@link module:ui/labeledview/labeledview~LabeledView labeled view} in the DOM.
+ * a {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView labeled view} in the DOM.
  *
  * The helper does the following:
  *
@@ -413,7 +413,7 @@ export const defaultColors = [
  *			columns: 3,
  *		} );
  *
- *		const labeledInputView = new LabeledView( locale, colorInputCreator );
+ *		const labeledInputView = new LabeledFieldView( locale, colorInputCreator );
  *		console.log( labeledInputView.view ); // A color input instance.
  *
  * @private
@@ -425,8 +425,8 @@ export const defaultColors = [
  * @returns {Function}
  */
 export function getLabeledColorInputCreator( options ) {
-	return ( labeledView, viewUid, statusUid ) => {
-		const inputView = new ColorInputView( labeledView.locale, {
+	return ( labeledFieldView, viewUid, statusUid ) => {
+		const inputView = new ColorInputView( labeledFieldView.locale, {
 			colorDefinitions: colorConfigToColorGridDefinitions( options.colorConfig ),
 			columns: options.columns
 		} );
@@ -436,13 +436,13 @@ export function getLabeledColorInputCreator( options ) {
 			ariaDescribedById: statusUid
 		} );
 
-		inputView.bind( 'isReadOnly' ).to( labeledView, 'isEnabled', value => !value );
-		inputView.bind( 'errorText' ).to( labeledView );
+		inputView.bind( 'isReadOnly' ).to( labeledFieldView, 'isEnabled', value => !value );
+		inputView.bind( 'errorText' ).to( labeledFieldView );
 
 		inputView.on( 'input', () => {
 			// UX: Make the error text disappear and disable the error indicator as the user
 			// starts fixing the errors.
-			labeledView.errorText = null;
+			labeledFieldView.errorText = null;
 		} );
 
 		return inputView;
