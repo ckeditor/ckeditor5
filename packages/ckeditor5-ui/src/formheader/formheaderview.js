@@ -15,8 +15,8 @@ import '../../theme/components/formheader/formheader.css';
  * The class component representing a form header view. It should be used in more advanced forms to
  * describe the main purpose of the form.
  *
- * By default the component contains bolded label view which have to be set. The label is usually a short (at most 3-word) string.
- * The component can also be extended by any other elements, like: icons, dropdowns etc.
+ * By default the component contains a bolded label view that has to be set. The label is usually a short (at most 3-word) string.
+ * The component can also be extended by any other elements, like: icons, dropdowns, etc.
  *
  * It is used i.a.
  * by {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}
