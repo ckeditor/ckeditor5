@@ -228,7 +228,7 @@ export default class TableUtils extends Plugin {
 				const rowspan = parseInt( cell.getAttribute( 'rowspan' ) || 1 );
 				const colspan = parseInt( cell.getAttribute( 'colspan' ) || 1 );
 
-				if ( cell.index !== insertAt && colspan > 1 ) {
+				if ( cellIndex !== insertAt && colspan > 1 ) {
 					// If column is different than `insertAt`, it is a cell that spans over an inserted column (cell "a" & "i").
 					// For such cells expand them by a number of columns inserted.
 					writer.setAttribute( 'colspan', colspan + columnsToInsert, cell );
