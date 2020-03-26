@@ -13,7 +13,7 @@ import { findAncestor } from './utils';
 /**
  * The insert column command.
  *
- * The command is registered by {@link module:table/tableediting~TableEditing} as `'insertTableColumnLeft'` and
+ * The command is registered by {@link module:table/tableediting~TableEditing} as the `'insertTableColumnLeft'` and
  * `'insertTableColumnRight'` editor commands.
  *
  * To insert a column to the left of the selected cell, execute the following command:
@@ -70,15 +70,16 @@ export default class InsertColumnCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const tableUtils = editor.plugins.get( 'TableUtils' );
+		const insertBefore = this.order === 'left';
 
-		const firstPosition = selection.getFirstPosition();
+		const referencePosition = insertBefore ? selection.getFirstPosition() : selection.getLastPosition();
+		const referenceRange = insertBefore ? selection.getFirstRange() : selection.getLastRange();
 
-		const tableCell = findAncestor( 'tableCell', firstPosition );
+		const tableCell = referenceRange.getContainedElement() || findAncestor( 'tableCell', referencePosition );
 		const table = tableCell.parent.parent;
 
 		const { column } = tableUtils.getCellLocation( tableCell );
-		const insertAt = this.order === 'right' ? column + 1 : column;
 
-		tableUtils.insertColumns( table, { columns: 1, at: insertAt } );
+		tableUtils.insertColumns( table, { columns: 1, at: insertBefore ? column : column + 1 } );
 	}
 }

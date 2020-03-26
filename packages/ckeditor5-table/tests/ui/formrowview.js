@@ -74,6 +74,8 @@ describe( 'FormRowView', () => {
 
 				expect( view.element.getAttribute( 'role' ) ).to.equal( 'group' );
 				expect( view.element.getAttribute( 'aria-labelledby' ) ).to.equal( '123' );
+
+				view.destroy();
 			} );
 		} );
 
@@ -90,6 +92,8 @@ describe( 'FormRowView', () => {
 				view.children.add( child );
 
 				expect( view.element.firstChild ).to.equal( child.element );
+
+				view.destroy();
 			} );
 		} );
 	} );

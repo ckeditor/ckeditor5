@@ -11,8 +11,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { addBorderRules } from '@ckeditor/ckeditor5-engine/src/view/styles/border';
 import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
 
-import TableEditing from './../tableediting';
-import { downcastTableAttribute, upcastStyleToAttribute, upcastBorderStyles } from './../converters/tableproperties';
+import TableEditing from '../tableediting';
+import {
+	downcastAttributeToStyle,
+	downcastTableAttribute,
+	upcastBorderStyles,
+	upcastStyleToAttribute
+} from '../converters/tableproperties';
 import TableBackgroundColorCommand from './commands/tablebackgroundcolorcommand';
 import TableBorderColorCommand from './commands/tablebordercolorcommand';
 import TableBorderStyleCommand from './commands/tableborderstylecommand';
@@ -21,9 +26,7 @@ import TableWidthCommand from './commands/tablewidthcommand';
 import TableHeightCommand from './commands/tableheightcommand';
 import TableAlignmentCommand from './commands/tablealignmentcommand';
 
-// RegExp used for matching margin style in converters.
-const MARGIN_REG_EXP = /^(auto|0(%|[a-z]{2,4})?)$/;
-const ALIGN_VALUES_REG_EXP = /^(left|right|center)$/;
+const ALIGN_VALUES_REG_EXP = /^(left|right)$/;
 
 /**
  * The table properties editing feature.
@@ -66,9 +69,8 @@ export default class TablePropertiesEditing extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
-		const viewDoc = editor.editing.view.document;
 
-		viewDoc.addStyleProcessorRules( addBorderRules );
+		editor.data.addStyleProcessorRules( addBorderRules );
 		enableBorderProperties( schema, conversion );
 		editor.commands.add( 'tableBorderColor', new TableBorderColorCommand( editor ) );
 		editor.commands.add( 'tableBorderStyle', new TableBorderStyleCommand( editor ) );
@@ -77,13 +79,13 @@ export default class TablePropertiesEditing extends Plugin {
 		enableAlignmentProperty( schema, conversion );
 		editor.commands.add( 'tableAlignment', new TableAlignmentCommand( editor ) );
 
-		enableProperty( schema, conversion, 'width', 'width' );
+		enableTableToFigureProperty( schema, conversion, 'width', 'width' );
 		editor.commands.add( 'tableWidth', new TableWidthCommand( editor ) );
 
-		enableProperty( schema, conversion, 'height', 'height' );
+		enableTableToFigureProperty( schema, conversion, 'height', 'height' );
 		editor.commands.add( 'tableHeight', new TableHeightCommand( editor ) );
 
-		viewDoc.addStyleProcessorRules( addBackgroundRules );
+		editor.data.addStyleProcessorRules( addBackgroundRules );
 		enableProperty( schema, conversion, 'backgroundColor', 'background-color' );
 		editor.commands.add( 'tableBackgroundColor', new TableBackgroundColorCommand( editor ) );
 	}
@@ -111,31 +113,32 @@ function enableAlignmentProperty( schema, conversion ) {
 	schema.extend( 'table', {
 		allowAttributes: [ 'alignment' ]
 	} );
-	conversion.for( 'upcast' )
+
+	conversion
 		.attributeToAttribute( {
-			view: {
-				styles: {
-					'margin-right': MARGIN_REG_EXP,
-					'margin-left': MARGIN_REG_EXP
-				}
-			},
 			model: {
 				name: 'table',
 				key: 'alignment',
-				value: viewElement => {
-					// At this point we only have auto or 0 value (with a unit).
-					if ( viewElement.getStyle( 'margin-right' ) != 'auto' ) {
-						return 'right';
+				values: [ 'left', 'right' ]
+			},
+			view: {
+				left: {
+					key: 'style',
+					value: {
+						float: 'left'
 					}
-
-					if ( viewElement.getStyle( 'margin-left' ) != 'auto' ) {
-						return 'left';
+				},
+				right: {
+					key: 'style',
+					value: {
+						float: 'right'
 					}
-
-					return 'center';
 				}
-			}
-		} )
+			},
+			converterPriority: 'high'
+		} );
+
+	conversion.for( 'upcast' )
 		// Support for backwards compatibility and pasting from other sources.
 		.attributeToAttribute( {
 			view: {
@@ -149,34 +152,6 @@ function enableAlignmentProperty( schema, conversion ) {
 				value: viewElement => viewElement.getAttribute( 'align' )
 			}
 		} );
-	conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'attribute:alignment:table', ( evt, data, conversionApi ) => {
-		const { item, attributeNewValue } = data;
-		const { mapper, writer } = conversionApi;
-
-		const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
-
-		if ( !attributeNewValue ) {
-			writer.removeStyle( 'margin-left', table );
-			writer.removeStyle( 'margin-right', table );
-
-			return;
-		}
-
-		const styles = {
-			'margin-right': 'auto',
-			'margin-left': 'auto'
-		};
-
-		if ( attributeNewValue == 'left' ) {
-			styles[ 'margin-left' ] = '0';
-		}
-
-		if ( attributeNewValue == 'right' ) {
-			styles[ 'margin-right' ] = '0';
-		}
-
-		writer.setStyle( styles, table );
-	} ) );
 }
 
 // Enables conversion for an attribute for simple view-model mappings.
@@ -191,4 +166,18 @@ function enableProperty( schema, conversion, modelAttribute, styleName ) {
 	} );
 	upcastStyleToAttribute( conversion, 'table', modelAttribute, styleName );
 	downcastTableAttribute( conversion, modelAttribute, styleName );
+}
+
+// Enables conversion for an attribute for simple view (figure) to model (table) mappings.
+//
+// @param {String} modelAttribute
+// @param {String} styleName
+// @param {module:engine/model/schema~Schema} schema
+// @param {module:engine/conversion/conversion~Conversion} conversion
+function enableTableToFigureProperty( schema, conversion, modelAttribute, styleName ) {
+	schema.extend( 'table', {
+		allowAttributes: [ modelAttribute ]
+	} );
+	upcastStyleToAttribute( conversion, 'table', modelAttribute, styleName );
+	downcastAttributeToStyle( conversion, 'table', modelAttribute, styleName );
 }

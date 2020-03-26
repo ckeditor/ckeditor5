@@ -1,6 +1,39 @@
 Changelog
 =========
 
+## [18.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v17.0.0...v18.0.0) (2020-03-19)
+
+### Features
+
+* Introduced the `TableSelection` plugin. Closes [ckeditor/ckeditor5#3202](https://github.com/ckeditor/ckeditor5/issues/3202). ([281dba5](https://github.com/ckeditor/ckeditor5-table/commit/281dba5))
+* Introduced RTL support to the table and table cell property forms. Closes [ckeditor/ckeditor5#6107](https://github.com/ckeditor/ckeditor5/issues/6107). ([3a92fc4](https://github.com/ckeditor/ckeditor5-table/commit/3a92fc4))
+
+### Bug fixes
+
+* Merge left and right commands should be always enabled if the execution does not cross the heading column boundary. Closes [ckeditor/ckeditor5#6368](https://github.com/ckeditor/ckeditor5/issues/6368). ([c088814](https://github.com/ckeditor/ckeditor5-table/commit/c088814))
+* Table border styles conversion handler should not throw when it approaches a nested table. Closes [ckeditor/ckeditor5#6177](https://github.com/ckeditor/ckeditor5/issues/6177). ([a754898](https://github.com/ckeditor/ckeditor5-table/commit/a754898))
+
+### Other changes
+
+* The default background color for the table headers should blend with the background of the entire table instead of overriding it. Closes [ckeditor/ckeditor5#6228](https://github.com/ckeditor/ckeditor5/issues/6228). ([b53032d](https://github.com/ckeditor/ckeditor5-table/commit/b53032d))
+* Updated translations. ([70b8af5](https://github.com/ckeditor/ckeditor5-table/commit/70b8af5))
+
+
+## [17.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v16.0.0...v17.0.0) (2020-02-19)
+
+### Features
+
+* Implemented the table and table cell properties forms. Closes [ckeditor/ckeditor5#3287](https://github.com/ckeditor/ckeditor5/issues/3287).
+
+### Bug fixes
+
+* Fixed a bug with spellchecking or pasting via the context menu into a table cell crashing the editor. Closes [ckeditor/ckeditor5#6062](https://github.com/ckeditor/ckeditor5/issues/6062). ([be0d759](https://github.com/ckeditor/ckeditor5-table/commit/be0d759))
+
+### Other changes
+
+* Implemented lazy loading for the table dropdown. This will reduce editor initialization time. Closes [ckeditor/ckeditor5#6193](https://github.com/ckeditor/ckeditor5/issues/6193). ([5daa487](https://github.com/ckeditor/ckeditor5-table/commit/5daa487))
+
+
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v15.0.0...v16.0.0) (2019-12-04)
 
 ### Bug fixes
@@ -9,7 +42,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([7b2df5c](https://github.com/ckeditor/ckeditor5-table/commit/7b2df5c)) 
+* Updated translations. ([7b2df5c](https://github.com/ckeditor/ckeditor5-table/commit/7b2df5c))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v14.0.0...v15.0.0) (2019-10-23)

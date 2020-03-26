@@ -10,14 +10,15 @@
 import { isObject } from 'lodash-es';
 
 /**
- * Returns the parent element of given name. Returns undefined if position is not inside desired parent.
+ * Returns the parent element of the given name. Returns undefined if the position or the element is not inside the desired parent.
  *
- * @param {String} parentName Name of parent element to find.
- * @param {module:engine/model/position~Position|module:engine/model/position~Position} position Position to start searching.
+ * @param {String} parentName The name of the parent element to find.
+ * @param {module:engine/model/position~Position|module:engine/model/position~Position} positionOrElement The position or
+ * the parentElement to start searching.
  * @returns {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
  */
-export function findAncestor( parentName, position ) {
-	let parent = position.parent;
+export function findAncestor( parentName, positionOrElement ) {
+	let parent = positionOrElement.parent;
 
 	while ( parent ) {
 		if ( parent.name === parentName ) {
@@ -31,11 +32,11 @@ export function findAncestor( parentName, position ) {
 /**
  * A common method to update the numeric value. If a value is the default one, it will be unset.
  *
- * @param {String} key Attribute key.
+ * @param {String} key An attribute key.
  * @param {*} value The new attribute value.
- * @param {module:engine/model/item~Item} item Model item on which the attribute will be set.
+ * @param {module:engine/model/item~Item} item A model item on which the attribute will be set.
  * @param {module:engine/model/writer~Writer} writer
- * @param {*} defaultValue Default attribute value. If a value is lower or equal, it will be unset.
+ * @param {*} defaultValue The default attribute value. If a value is lower or equal, it will be unset.
  */
 export function updateNumericAttribute( key, value, item, writer, defaultValue = 1 ) {
 	if ( value > defaultValue ) {
@@ -46,11 +47,11 @@ export function updateNumericAttribute( key, value, item, writer, defaultValue =
 }
 
 /**
- * Common method to create empty table cell - it will create proper model structure as table cell must have at least one block inside.
+ * A common method to create an empty table cell. It creates a proper model structure as a table cell must have at least one block inside.
  *
- * @param {module:engine/model/writer~Writer} writer Model writer.
- * @param {module:engine/model/position~Position} insertPosition Position at which table cell should be inserted.
- * @param {Object} attributes Element's attributes.
+ * @param {module:engine/model/writer~Writer} writer The model writer.
+ * @param {module:engine/model/position~Position} insertPosition The position at which the table cell should be inserted.
+ * @param {Object} attributes The element attributes.
  */
 export function createEmptyTableCell( writer, insertPosition, attributes = {} ) {
 	const tableCell = writer.createElement( 'tableCell', attributes );
@@ -63,7 +64,7 @@ export function createEmptyTableCell( writer, insertPosition, attributes = {} ) 
  *
  * If a string is passed, it is treated as a single value (pass-through).
  *
- *		// returns 'foo':
+ *		// Returns 'foo':
  *		getSingleValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'foo' } );
  *		getSingleValue( 'foo' );
  *
@@ -84,4 +85,47 @@ export function getSingleValue( objectOrString ) {
 	if ( top == right && right == bottom && bottom == left ) {
 		return top;
 	}
+}
+
+/**
+ * Adds a unit to a value if the value is a number or a string representing a number.
+ *
+ * **Note**: It does nothing to non-numeric values.
+ *
+ *		getSingleValue( 25, 'px' );		// '25px'
+ *		getSingleValue( 25, 'em' );		// '25em'
+ *		getSingleValue( '25em', 'px' );	// '25em'
+ *		getSingleValue( 'foo', 'px' );	// 'foo'
+ *
+ * @param {*} value
+ * @param {String} defaultUnit A default unit added to a numeric value.
+ * @returns {String|*}
+ */
+export function addDefaultUnitToNumericValue( value, defaultUnit ) {
+	const numericValue = parseFloat( value );
+
+	if ( Number.isNaN( numericValue ) ) {
+		return value;
+	}
+
+	if ( String( numericValue ) !== String( value ) ) {
+		return value;
+	}
+
+	return `${ numericValue }${ defaultUnit }`;
+}
+
+/**
+ * Checks if a table cell belongs to the heading column section.
+ *
+ * @param {module:table/tableutils~TableUtils} tableUtils
+ * @param {module:engine/model/element~Element} tableCell
+ * @returns {Boolean}
+ */
+export function isHeadingColumnCell( tableUtils, tableCell ) {
+	const table = tableCell.parent.parent;
+	const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
+	const { column } = tableUtils.getCellLocation( tableCell );
+
+	return !!headingColumns && column < headingColumns;
 }

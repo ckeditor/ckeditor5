@@ -14,7 +14,7 @@ import { getSingleValue } from '../../commands/utils';
  * The table border color command.
  *
  * The command is registered by the {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
- * `'tableBorderColor'` editor command.
+ * the `'tableBorderColor'` editor command.
  *
  * To change the border color of the selected table, execute the command:
  *
@@ -22,7 +22,7 @@ import { getSingleValue } from '../../commands/utils';
  *			value: '#f00'
  *		} );
  *
- * @extends module:table/tableproperties/commands/tablepropertycommand
+ * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
  */
 export default class TableBorderColorCommand extends TablePropertyCommand {
 	/**

@@ -196,7 +196,7 @@ export function defaultSchema( schema, registerParagraph = true ) {
 	schema.register( 'tableCell', {
 		allowIn: 'tableRow',
 		allowAttributes: [ 'colspan', 'rowspan' ],
-		isLimit: true
+		isObject: true
 	} );
 
 	// Allow all $block content inside table cell.
@@ -297,13 +297,19 @@ export function assertTRBLAttribute( element, key, top, right = top, bottom = to
  * An assertion helper for testing the `<table>` style attribute.
  *
  * @param {module:core/editor/editor~Editor} editor
- * @param {String} tableStyle A style to assert on table.
+ * @param {String} [tableStyle=''] A style to assert on <table>.
+ * @param {String} [figureStyle=''] A style to assert on <figure>.
  */
-export function assertTableStyle( editor, tableStyle ) {
-	const styleEntry = tableStyle ? ` style="${ tableStyle }"` : '';
+export function assertTableStyle( editor, tableStyle, figureStyle ) {
+	const tableStyleEntry = tableStyle ? ` style="${ tableStyle }"` : '';
+	const figureStyleEntry = figureStyle ? ` style="${ figureStyle }"` : '';
 
 	assertEqualMarkup( editor.getData(),
-		`<figure class="table"><table${ styleEntry }><tbody><tr><td>foo</td></tr></tbody></table></figure>`
+		`<figure class="table"${ figureStyleEntry }>` +
+			`<table${ tableStyleEntry }>` +
+				'<tbody><tr><td>foo</td></tr></tbody>' +
+			'</table>' +
+		'</figure>'
 	);
 }
 
@@ -311,14 +317,62 @@ export function assertTableStyle( editor, tableStyle ) {
  * An assertion helper for testing the `<td>` style attribute.
  *
  * @param {module:core/editor/editor~Editor} editor
- * @param {String} tableCellStyle A style to assert on td.
+ * @param {String} [tableCellStyle=''] A style to assert on td.
  */
 export function assertTableCellStyle( editor, tableCellStyle ) {
 	assertEqualMarkup( editor.getData(),
 		'<figure class="table"><table><tbody><tr>' +
-			`<td${ tableCellStyle ? ` style="${ tableCellStyle }"` : '' }>foo</td>` +
+		`<td${ tableCellStyle ? ` style="${ tableCellStyle }"` : '' }>foo</td>` +
 		'</tr></tbody></table></figure>'
 	);
+}
+
+/**
+ * A helper method for asserting selected table cells.
+ *
+ * To check if a table has expected cells selected pass two dimensional array of truthy and falsy values:
+ *
+ *		assertSelectedCells( model, [
+ *			[ 0, 1 ],
+ *			[ 0, 1 ]
+ *		] );
+ *
+ * The above call will check if table has second column selected (assuming no spans).
+ *
+ * **Note**: This function operates on child indexes - not rows/columns.
+ */
+export function assertSelectedCells( model, tableMap ) {
+	const tableIndex = 0;
+
+	for ( let rowIndex = 0; rowIndex < tableMap.length; rowIndex++ ) {
+		const row = tableMap[ rowIndex ];
+
+		for ( let cellIndex = 0; cellIndex < row.length; cellIndex++ ) {
+			const expectSelected = row[ cellIndex ];
+
+			if ( expectSelected ) {
+				assertNodeIsSelected( model, [ tableIndex, rowIndex, cellIndex ] );
+			} else {
+				assertNodeIsNotSelected( model, [ tableIndex, rowIndex, cellIndex ] );
+			}
+		}
+	}
+}
+
+function assertNodeIsSelected( model, path ) {
+	const modelRoot = model.document.getRoot();
+	const node = modelRoot.getNodeByPath( path );
+	const selectionRanges = Array.from( model.document.selection.getRanges() );
+
+	expect( selectionRanges.some( range => range.containsItem( node ) ), `Expected node [${ path }] to be selected` ).to.be.true;
+}
+
+function assertNodeIsNotSelected( model, path ) {
+	const modelRoot = model.document.getRoot();
+	const node = modelRoot.getNodeByPath( path );
+	const selectionRanges = Array.from( model.document.selection.getRanges() );
+
+	expect( selectionRanges.every( range => !range.containsItem( node ) ), `Expected node [${ path }] to be not selected` ).to.be.true;
 }
 
 // Formats table cell attributes
@@ -350,33 +404,50 @@ function makeRows( tableData, options ) {
 				let contents = isObject ? tableCellData.contents : tableCellData;
 
 				let resultingCellElement = cellElement;
+				let isSelected = false;
 
 				if ( isObject ) {
 					if ( tableCellData.isHeading ) {
 						resultingCellElement = headingElement;
 					}
 
+					isSelected = !!tableCellData.isSelected;
+
 					delete tableCellData.contents;
 					delete tableCellData.isHeading;
+					delete tableCellData.isSelected;
 				}
 
 				const attributes = isObject ? tableCellData : {};
 
 				if ( asWidget ) {
-					attributes.class = WIDGET_TABLE_CELL_CLASS + ( attributes.class ? ` ${ attributes.class }` : '' );
+					attributes.class = getClassToSet( attributes );
 					attributes.contenteditable = 'true';
 				}
 
 				if ( !( contents.replace( '[', '' ).replace( ']', '' ).startsWith( '<' ) ) && enforceWrapping ) {
-					contents = `<${ wrappingElement }>${ contents }</${ wrappingElement }>`;
+					contents =
+						`<${ wrappingElement == 'span' ? 'span style="display:inline-block"' : wrappingElement }>` +
+							contents +
+						`</${ wrappingElement }>`;
 				}
 
 				const formattedAttributes = formatAttributes( attributes );
-				tableRowString += `<${ resultingCellElement }${ formattedAttributes }>${ contents }</${ resultingCellElement }>`;
+				const tableCell = `<${ resultingCellElement }${ formattedAttributes }>${ contents }</${ resultingCellElement }>`;
+
+				tableRowString += isSelected ? `[${ tableCell }]` : tableCell;
 
 				return tableRowString;
 			}, '' );
 
 			return `${ previousRowsString }<${ rowElement }>${ tableRowString }</${ rowElement }>`;
 		}, '' );
+}
+
+// Properly handles passed CSS class - editor do sort them.
+function getClassToSet( attributes ) {
+	return ( WIDGET_TABLE_CELL_CLASS + ( attributes.class ? ` ${ attributes.class }` : '' ) )
+		.split( ' ' )
+		.sort()
+		.join( ' ' );
 }

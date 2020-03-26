@@ -8,7 +8,7 @@
  */
 
 /**
- * Conversion helper for upcasting attribute using normalized styles.
+ * Conversion helper for upcasting attributes using normalized styles.
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
  * @param {String} modelElement
@@ -31,7 +31,7 @@ export function upcastStyleToAttribute( conversion, modelElement, modelAttribute
 }
 
 /**
- * Conversion helper for upcasting border styles for view element.
+ * Conversion helper for upcasting border styles for view elements.
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
  * @param {String} viewElementName
@@ -60,6 +60,12 @@ export function upcastBorderStyles( conversion, viewElementName ) {
 			return;
 		}
 
+		// This can happen when the upcasted table is nested table. As to why it happens, it remains a mystery.
+		// Take a look at https://github.com/ckeditor/ckeditor5/issues/6177.
+		if ( !data.modelRange ) {
+			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+		}
+
 		const modelElement = [ ...data.modelRange.getItems( { shallow: true } ) ].pop();
 
 		conversionApi.consumable.consume( data.viewItem, matcherPattern );
@@ -71,7 +77,7 @@ export function upcastBorderStyles( conversion, viewElementName ) {
 }
 
 /**
- * Conversion helper for downcasting attribute to a style.
+ * Conversion helper for downcasting an attribute to a style.
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
  * @param {String} modelElement
@@ -94,7 +100,7 @@ export function downcastAttributeToStyle( conversion, modelElement, modelAttribu
 }
 
 /**
- * Conversion helper for downcasting attributes from model's table to a view table (not to figure).
+ * Conversion helper for downcasting attributes from the model table to a view table (not to `<figure>`).
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion
  * @param {String} modelAttribute
@@ -105,12 +111,16 @@ export function downcastTableAttribute( conversion, modelAttribute, styleName ) 
 		const { item, attributeNewValue } = data;
 		const { mapper, writer } = conversionApi;
 
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+			return;
+		}
+
 		const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
 
 		if ( attributeNewValue ) {
 			writer.setStyle( styleName, attributeNewValue, table );
 		} else {
-			writer.removeAttribute( styleName, table );
+			writer.removeStyle( styleName, table );
 		}
 	} ) );
 }

@@ -24,24 +24,26 @@ import TableCellBorderStyleCommand from './commands/tablecellborderstylecommand'
 import TableCellBorderColorCommand from './commands/tablecellbordercolorcommand';
 import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand';
 
+const VALIGN_VALUES_REG_EXP = /^(top|bottom)$/;
+
 /**
  * The table cell properties editing feature.
  *
- * Introduces table cells's model attributes and their conversion:
+ * Introduces table cell model attributes and their conversion:
  *
  * - border: `borderStyle`, `borderColor` and `borderWidth`
  * - background color: `backgroundColor`
  * - cell padding: `padding`
  * - horizontal and vertical alignment: `horizontalAlignment`, `verticalAlignment`
- * - cell width & height: `width` & `height`
+ * - cell width and height: `width`, `height`
  *
  * It also registers commands used to manipulate the above attributes:
  *
- * - border: `'tableCellBorderStyle'`, `'tableCellBorderColor'` and `'tableCellBorderWidth'` commands
- * - background color: `'tableCellBackgroundColor'`
- * - cell padding: `'tableCellPadding'`
- * - horizontal and vertical alignment: `'tableCellHorizontalAlignment'`, `'tableCellVerticalAlignment'`
- * - width & height: `'tableCellWidth'` & `'tableCellHeight'`
+ * - border: the `'tableCellBorderStyle'`, `'tableCellBorderColor'` and `'tableCellBorderWidth'` commands
+ * - background color: the `'tableCellBackgroundColor'` command
+ * - cell padding: the `'tableCellPadding'` command
+ * - horizontal and vertical alignment: the `'tableCellHorizontalAlignment'` and `'tableCellVerticalAlignment'` commands
+ * - width and height: the `'tableCellWidth'` and `'tableCellHeight'` commands
  *
  * @extends module:core/plugin~Plugin
  */
@@ -67,9 +69,8 @@ export default class TableCellPropertiesEditing extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
-		const viewDoc = editor.editing.view.document;
 
-		viewDoc.addStyleProcessorRules( addBorderRules );
+		editor.data.addStyleProcessorRules( addBorderRules );
 		enableBorderProperties( schema, conversion );
 		editor.commands.add( 'tableCellBorderStyle', new TableCellBorderStyleCommand( editor ) );
 		editor.commands.add( 'tableCellBorderColor', new TableCellBorderColorCommand( editor ) );
@@ -84,20 +85,20 @@ export default class TableCellPropertiesEditing extends Plugin {
 		enableProperty( schema, conversion, 'height', 'height' );
 		editor.commands.add( 'tableCellHeight', new TableCellHeightCommand( editor ) );
 
-		viewDoc.addStyleProcessorRules( addPaddingRules );
+		editor.data.addStyleProcessorRules( addPaddingRules );
 		enableProperty( schema, conversion, 'padding', 'padding' );
 		editor.commands.add( 'tableCellPadding', new TableCellPaddingCommand( editor ) );
 
-		viewDoc.addStyleProcessorRules( addBackgroundRules );
+		editor.data.addStyleProcessorRules( addBackgroundRules );
 		enableProperty( schema, conversion, 'backgroundColor', 'background-color' );
 		editor.commands.add( 'tableCellBackgroundColor', new TableCellBackgroundColorCommand( editor ) );
 
-		enableProperty( schema, conversion, 'verticalAlignment', 'vertical-align' );
+		enableVerticalAlignmentProperty( schema, conversion );
 		editor.commands.add( 'tableCellVerticalAlignment', new TableCellVerticalAlignmentCommand( editor ) );
 	}
 }
 
-// Enables `'borderStyle'`, `'borderColor'` and `'borderWidth'` attributes for table cells.
+// Enables the `'borderStyle'`, `'borderColor'` and `'borderWidth'` attributes for table cells.
 //
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion
@@ -125,16 +126,9 @@ function enableHorizontalAlignmentProperty( schema, conversion ) {
 		model: {
 			name: 'tableCell',
 			key: 'horizontalAlignment',
-			values: [ 'left', 'right', 'center', 'justify' ]
+			values: [ 'right', 'center', 'justify' ]
 		},
 		view: {
-			// TODO: controversial one but I don't know if we want "default".
-			left: {
-				key: 'style',
-				value: {
-					'text-align': 'left'
-				}
-			},
 			right: {
 				key: 'style',
 				value: {
@@ -155,6 +149,53 @@ function enableHorizontalAlignmentProperty( schema, conversion ) {
 			}
 		}
 	} );
+}
+
+// Enables the `'verticalAlignment'` attribute for table cells.
+//
+// @param {module:engine/model/schema~Schema} schema
+// @param {module:engine/conversion/conversion~Conversion} conversion
+function enableVerticalAlignmentProperty( schema, conversion ) {
+	schema.extend( 'tableCell', {
+		allowAttributes: [ 'verticalAlignment' ]
+	} );
+
+	conversion.attributeToAttribute( {
+		model: {
+			name: 'tableCell',
+			key: 'verticalAlignment',
+			values: [ 'top', 'bottom' ]
+		},
+		view: {
+			top: {
+				key: 'style',
+				value: {
+					'vertical-align': 'top'
+				}
+			},
+			bottom: {
+				key: 'style',
+				value: {
+					'vertical-align': 'bottom'
+				}
+			}
+		}
+	} );
+
+	conversion.for( 'upcast' )
+		// Support for backwards compatibility and pasting from other sources.
+		.attributeToAttribute( {
+			view: {
+				attributes: {
+					valign: VALIGN_VALUES_REG_EXP
+				}
+			},
+			model: {
+				name: 'tableCell',
+				key: 'verticalAlignment',
+				value: viewElement => viewElement.getAttribute( 'valign' )
+			}
+		} );
 }
 
 // Enables conversion for an attribute for simple view-model mappings.

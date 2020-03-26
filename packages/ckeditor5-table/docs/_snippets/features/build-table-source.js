@@ -7,10 +7,43 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
+import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 
-ClassicEditor.builtinPlugins.push( Table );
-ClassicEditor.builtinPlugins.push( TableToolbar );
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
+ClassicEditor.builtinPlugins.push( FontFamily, FontSize, Alignment, IndentBlock );
+ClassicEditor.defaultConfig = {
+	cloudServices: CS_CONFIG,
+	toolbar: {
+		items: [
+			'insertTable',
+			'|',
+			'fontFamily', 'fontSize',
+			'|',
+			'bold', 'italic',
+			'|',
+			'alignment:left', 'alignment:center', 'alignment:right', 'alignment:justify',
+			'|',
+			'bulletedList', 'numberedList',
+			'|',
+			'indent', 'outdent',
+			'|',
+			'link', 'blockQuote',
+			'|',
+			'undo', 'redo'
+		],
+		viewportTopOffset: window.getViewportTopOffsetConfig()
+	},
+	indentBlock: { offset: 30, unit: 'px' }
+};
 
 window.ClassicEditor = ClassicEditor;
+window.CKEditorPlugins = {
+	TableProperties,
+	TableCellProperties
+};

@@ -7,7 +7,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import TableEditing from '../../src/tableediting';
-import TableProperties from '../../src/tableproperties';
+import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting';
 
 import TableBorderColorCommand from '../../src/tableproperties/commands/tablebordercolorcommand';
 import TableBorderStyleCommand from '../../src/tableproperties/commands/tableborderstylecommand';
@@ -28,7 +28,7 @@ describe( 'table properties', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ TableProperties, Paragraph, TableEditing ]
+					plugins: [ TablePropertiesEditing, Paragraph, TableEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -42,7 +42,7 @@ describe( 'table properties', () => {
 		} );
 
 		it( 'should have pluginName', () => {
-			expect( TableProperties.pluginName ).to.equal( 'TableProperties' );
+			expect( TablePropertiesEditing.pluginName ).to.equal( 'TablePropertiesEditing' );
 		} );
 
 		it( 'adds tableBorderColor command', () => {
@@ -210,6 +210,24 @@ describe( 'table properties', () => {
 					assertTRBLAttribute( table, 'borderStyle', null, null, null, 'solid' );
 					assertTRBLAttribute( table, 'borderWidth', null, null, null, '1px' );
 				} );
+
+				// https://github.com/ckeditor/ckeditor5/issues/6177
+				it( 'should upcast tables with nested tables in their cells', () => {
+					editor.setData( '<table style="border:1px solid red">' +
+						'<tr>' +
+							'<td>parent:00</td>' +
+							'<td>' +
+								'<table style="border:1px solid green"><tr><td>child:00</td></tr></table>' +
+							'</td>' +
+						'</tr>' +
+					'</table>' );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					assertTRBLAttribute( table, 'borderColor', 'red' );
+					assertTRBLAttribute( table, 'borderStyle', 'solid' );
+					assertTRBLAttribute( table, 'borderWidth', '1px' );
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {
@@ -217,6 +235,26 @@ describe( 'table properties', () => {
 
 				beforeEach( () => {
 					table = createEmptyTable();
+				} );
+
+				it( 'should consume converted item borderColor attribute', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:borderColor:table', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+						} ) );
+
+					model.change( writer => writer.setAttribute( 'borderColor', '#f00', table ) );
+				} );
+
+				it( 'should be overridable', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:borderColor:table', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}, { priority: 'high' } ) );
+
+					model.change( writer => writer.setAttribute( 'borderColor', '#f00', table ) );
+
+					assertTableStyle( editor, '' );
 				} );
 
 				it( 'should downcast borderColor attribute (same top, right, bottom, left)', () => {
@@ -246,6 +284,26 @@ describe( 'table properties', () => {
 					);
 				} );
 
+				it( 'should consume converted item borderStyle attribute', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:borderStyle:table', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+						} ) );
+
+					model.change( writer => writer.setAttribute( 'borderStyle', 'solid', table ) );
+				} );
+
+				it( 'should be overridable', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:borderStyle:table', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}, { priority: 'high' } ) );
+
+					model.change( writer => writer.setAttribute( 'borderStyle', 'solid', table ) );
+
+					assertTableStyle( editor, '' );
+				} );
+
 				it( 'should downcast borderStyle attribute (same top, right, bottom, left)', () => {
 					model.change( writer => writer.setAttribute( 'borderStyle', {
 						top: 'solid',
@@ -266,6 +324,26 @@ describe( 'table properties', () => {
 					}, table ) );
 
 					assertTableStyle( editor, 'border-bottom:dotted;border-left:dashed;border-right:ridge;border-top:solid;' );
+				} );
+
+				it( 'should consume converted item borderWidth attribute', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:borderWidth:table', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+						} ) );
+
+					model.change( writer => writer.setAttribute( 'borderWidth', '2px', table ) );
+				} );
+
+				it( 'should be overridable', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:borderWidth:table', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}, { priority: 'high' } ) );
+
+					model.change( writer => writer.setAttribute( 'borderWidth', '2px', table ) );
+
+					assertTableStyle( editor, '' );
 				} );
 
 				it( 'should downcast borderWidth attribute (same top, right, bottom, left)', () => {
@@ -499,6 +577,13 @@ describe( 'table properties', () => {
 
 					expect( table.getAttribute( 'backgroundColor' ) ).to.equal( '#f00' );
 				} );
+
+				it( 'should upcast from background shorthand (rbg color value with spaces)', () => {
+					editor.setData( '<table style="background:rgb(253, 253, 119) center center"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'backgroundColor' ) ).to.equal( 'rgb(253, 253, 119)' );
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {
@@ -508,10 +593,48 @@ describe( 'table properties', () => {
 					table = createEmptyTable();
 				} );
 
+				it( 'should consume converted item', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:backgroundColor:table', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+						} ) );
+
+					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', table ) );
+				} );
+
+				it( 'should be overridable', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:backgroundColor:table', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}, { priority: 'high' } ) );
+
+					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', table ) );
+
+					assertTableStyle( editor, '' );
+				} );
+
 				it( 'should downcast backgroundColor', () => {
 					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', table ) );
 
 					assertTableStyle( editor, 'background-color:#f00;' );
+				} );
+
+				it( 'should downcast backgroundColor removal', () => {
+					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', table ) );
+
+					model.change( writer => writer.removeAttribute( 'backgroundColor', table ) );
+
+					assertTableStyle( editor );
+				} );
+
+				it( 'should downcast backgroundColor change', () => {
+					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', table ) );
+
+					assertTableStyle( editor, 'background-color:#f00;' );
+
+					model.change( writer => writer.setAttribute( 'backgroundColor', '#ba7', table ) );
+
+					assertTableStyle( editor, 'background-color:#ba7;' );
 				} );
 			} );
 		} );
@@ -522,8 +645,15 @@ describe( 'table properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should upcast width', () => {
+				it( 'should upcast width from <table>', () => {
 					editor.setData( '<table style="width:1337px"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'width' ) ).to.equal( '1337px' );
+				} );
+
+				it( 'should upcast width from <figure>', () => {
+					editor.setData( '<figure style="width:1337px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'width' ) ).to.equal( '1337px' );
@@ -537,10 +667,48 @@ describe( 'table properties', () => {
 					table = createEmptyTable();
 				} );
 
+				it( 'should consume converted item', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:width:table', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+						} ) );
+
+					model.change( writer => writer.setAttribute( 'width', '400px', table ) );
+				} );
+
+				it( 'should be overridable', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:width:table', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}, { priority: 'high' } ) );
+
+					model.change( writer => writer.setAttribute( 'width', '400px', table ) );
+
+					assertTableStyle( editor, '' );
+				} );
+
 				it( 'should downcast width', () => {
 					model.change( writer => writer.setAttribute( 'width', '1337px', table ) );
 
-					assertTableStyle( editor, 'width:1337px;' );
+					assertTableStyle( editor, null, 'width:1337px;' );
+				} );
+
+				it( 'should downcast width removal', () => {
+					model.change( writer => writer.setAttribute( 'width', '1337px', table ) );
+
+					model.change( writer => writer.removeAttribute( 'width', table ) );
+
+					assertTableStyle( editor );
+				} );
+
+				it( 'should downcast width change', () => {
+					model.change( writer => writer.setAttribute( 'width', '1337px', table ) );
+
+					assertTableStyle( editor, null, 'width:1337px;' );
+
+					model.change( writer => writer.setAttribute( 'width', '1410em', table ) );
+
+					assertTableStyle( editor, null, 'width:1410em;' );
 				} );
 			} );
 		} );
@@ -551,8 +719,15 @@ describe( 'table properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should upcast height', () => {
+				it( 'should upcast height from <table>', () => {
 					editor.setData( '<table style="height:1337px"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'height' ) ).to.equal( '1337px' );
+				} );
+
+				it( 'should upcast height from <figure>', () => {
+					editor.setData( '<figure style="height:1337px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'height' ) ).to.equal( '1337px' );
@@ -569,7 +744,45 @@ describe( 'table properties', () => {
 				it( 'should downcast height', () => {
 					model.change( writer => writer.setAttribute( 'height', '1337px', table ) );
 
-					assertTableStyle( editor, 'height:1337px;' );
+					assertTableStyle( editor, null, 'height:1337px;' );
+				} );
+
+				it( 'should downcast height removal', () => {
+					model.change( writer => writer.setAttribute( 'height', '1337px', table ) );
+
+					model.change( writer => writer.removeAttribute( 'height', table ) );
+
+					assertTableStyle( editor );
+				} );
+
+				it( 'should downcast height change', () => {
+					model.change( writer => writer.setAttribute( 'height', '1337px', table ) );
+
+					assertTableStyle( editor, null, 'height:1337px;' );
+
+					model.change( writer => writer.setAttribute( 'height', '1410em', table ) );
+
+					assertTableStyle( editor, null, 'height:1410em;' );
+				} );
+
+				it( 'should consume converted item', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:height:table', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+						} ) );
+
+					model.change( writer => writer.setAttribute( 'height', '400px', table ) );
+				} );
+
+				it( 'should be overridable', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:height:table', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}, { priority: 'high' } ) );
+
+					model.change( writer => writer.setAttribute( 'height', '400px', table ) );
+
+					assertTableStyle( editor, '' );
 				} );
 			} );
 		} );
@@ -580,46 +793,18 @@ describe( 'table properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should upcast style="margin-left:auto;margin-right:0" to right value', () => {
-					editor.setData( '<table style="margin-left:auto;margin-right:0"><tr><td>foo</td></tr></table>' );
+				it( 'should upcast style="float:right" to right value', () => {
+					editor.setData( '<table style="float:right"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'alignment' ) ).to.equal( 'right' );
 				} );
 
-				it( 'should upcast style="margin-left:0;margin-right:auto" to left value', () => {
-					editor.setData( '<table style="margin-left:0;margin-right:auto"><tr><td>foo</td></tr></table>' );
+				it( 'should upcast style="float:left;" to left value', () => {
+					editor.setData( '<table style="float:left;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'alignment' ) ).to.equal( 'left' );
-				} );
-
-				it( 'should upcast style="margin-left:auto;margin-right:auto" to center value', () => {
-					editor.setData( '<table style="margin-left:auto;margin-right:auto"><tr><td>foo</td></tr></table>' );
-					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-					expect( table.getAttribute( 'alignment' ) ).to.equal( 'center' );
-				} );
-
-				it( 'should upcast style="margin-left:auto;margin-right:0pt" to right value', () => {
-					editor.setData( '<table style="margin-left:auto;margin-right:0pt"><tr><td>foo</td></tr></table>' );
-					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-					expect( table.getAttribute( 'alignment' ) ).to.equal( 'right' );
-				} );
-
-				it( 'should upcast style="margin-left:auto;margin-right:0%" to right value', () => {
-					editor.setData( '<table style="margin-left:auto;margin-right:0%"><tr><td>foo</td></tr></table>' );
-					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-					expect( table.getAttribute( 'alignment' ) ).to.equal( 'right' );
-				} );
-
-				it( 'should not upcast style="margin-left:auto;margin-right:0.23pt" to right value', () => {
-					editor.setData( '<table style="margin-left:auto;margin-right:0.23pt"><tr><td>foo</td></tr></table>' );
-					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-					expect( table.hasAttribute( 'alignment' ) ).to.be.false;
 				} );
 
 				it( 'should upcast align=right attribute', () => {
@@ -636,11 +821,11 @@ describe( 'table properties', () => {
 					expect( table.getAttribute( 'alignment' ) ).to.equal( 'left' );
 				} );
 
-				it( 'should upcast align=center attribute', () => {
+				it( 'should discard align=center attribute', () => {
 					editor.setData( '<table align="center"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'alignment' ) ).to.equal( 'center' );
+					expect( table.getAttribute( 'alignment' ) ).to.be.undefined;
 				} );
 
 				it( 'should discard align=justify attribute', () => {
@@ -658,38 +843,78 @@ describe( 'table properties', () => {
 					table = createEmptyTable();
 				} );
 
-				it( 'should downcast right alignment', () => {
-					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
+				it( 'should consume converted item', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:alignment:table', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+						} ) );
 
-					assertTableStyle( editor, 'margin-left:auto;margin-right:0;' );
+					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 				} );
 
-				it( 'should downcast left alignment', () => {
+				it( 'should be overridable', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'attribute:alignment:table', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}, { priority: 'highest' } ) );
+
+					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
+
+					assertTableStyle( editor, '' );
+				} );
+
+				it( 'should downcast "right" alignment', () => {
+					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
+
+					assertTableStyle( editor, null, 'float:right;' );
+				} );
+
+				it( 'should downcast "left" alignment', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'left', table ) );
 
-					assertTableStyle( editor, 'margin-left:0;margin-right:auto;' );
+					assertTableStyle( editor, null, 'float:left;' );
 				} );
 
-				it( 'should downcast centered alignment', () => {
+				it( 'should not downcast "center" alignment', () => {
 					model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
 
-					assertTableStyle( editor, 'margin-left:auto;margin-right:auto;' );
+					assertTableStyle( editor, null, null );
 				} );
 
-				it( 'should downcast changed alignment', () => {
-					model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
+				it( 'should downcast changed alignment (left -> right)', () => {
+					model.change( writer => writer.setAttribute( 'alignment', 'left', table ) );
 
-					assertTableStyle( editor, 'margin-left:auto;margin-right:auto;' );
+					assertTableStyle( editor, null, 'float:left;' );
 
 					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
-					assertTableStyle( editor, 'margin-left:auto;margin-right:0;' );
+					assertTableStyle( editor, null, 'float:right;' );
 				} );
 
-				it( 'should downcast removed alignment', () => {
-					model.change( writer => writer.setAttribute( 'alignment', 'center', table ) );
+				it( 'should downcast changed alignment (right -> left)', () => {
+					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
-					assertTableStyle( editor, 'margin-left:auto;margin-right:auto;' );
+					assertTableStyle( editor, null, 'float:right;' );
+
+					model.change( writer => writer.setAttribute( 'alignment', 'left', table ) );
+
+					assertTableStyle( editor, null, 'float:left;' );
+				} );
+
+				it( 'should downcast removed alignment (from left)', () => {
+					model.change( writer => writer.setAttribute( 'alignment', 'left', table ) );
+
+					assertTableStyle( editor, null, 'float:left;' );
+
+					model.change( writer => writer.removeAttribute( 'alignment', table ) );
+
+					assertTableStyle( editor );
+				} );
+
+				it( 'should downcast removed alignment (from right)', () => {
+					model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
+
+					assertTableStyle( editor, null, 'float:right;' );
 
 					model.change( writer => writer.removeAttribute( 'alignment', table ) );
 

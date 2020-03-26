@@ -8,9 +8,10 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { assertTableCellStyle, modelTable } from '../../_utils/utils';
+import { assertTableCellStyle, modelTable, viewTable } from '../../_utils/utils';
 import TableCellPropertiesEditing from '../../../src/tablecellproperties/tablecellpropertiesediting';
 import TableCellWidthCommand from '../../../src/tablecellproperties/commands/tablecellwidthcommand';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
@@ -54,6 +55,17 @@ describe( 'table cell properties', () => {
 						expect( command.isEnabled ).to.be.true;
 					} );
 				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should be true if the selection contains some table cells', () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true }, '01' ],
+							[ '10', { contents: '11', isSelected: true } ]
+						] ) );
+
+						expect( command.isEnabled ).to.be.true;
+					} );
+				} );
 			} );
 
 			describe( 'value', () => {
@@ -84,6 +96,68 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.equal( '100px' );
 					} );
 				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should be undefined if no table cells have the "width" property', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true },
+								{ contents: '01', isSelected: true }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if only some table cells have the "width" property', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, width: '100px' },
+								{ contents: '01', isSelected: true }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, width: '100px' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if one of selected table cells has a different "width" property value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, width: '100px' },
+								{ contents: '01', isSelected: true, width: '25px' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, width: '100px' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be set if all table cells have the same "width" property value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, width: '100px' },
+								{ contents: '01', isSelected: true, width: '100px' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, width: '100px' }
+							]
+						] ) );
+
+						expect( command.value ).to.equal( '100px' );
+					} );
+				} );
 			} );
 
 			describe( 'execute()', () => {
@@ -94,6 +168,62 @@ describe( 'table cell properties', () => {
 
 					command.execute( { value: '25px', batch } );
 					sinon.assert.calledWith( spy, batch );
+				} );
+
+				it( 'should add default unit for numeric values (number passed)', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: 25 } );
+
+					assertTableCellStyle( editor, 'width:25px;' );
+				} );
+
+				it( 'should add default unit for numeric values (string passed)', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: 25 } );
+
+					assertTableCellStyle( editor, 'width:25px;' );
+				} );
+
+				it( 'should not add default unit for numeric values with unit', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: '25pt' } );
+
+					assertTableCellStyle( editor, 'width:25pt;' );
+				} );
+
+				it( 'should add default unit to floats (number passed)', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: 25.1 } );
+
+					assertTableCellStyle( editor, 'width:25.1px;' );
+				} );
+
+				it( 'should add default unit to floats (string passed)', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: '0.1' } );
+
+					assertTableCellStyle( editor, 'width:0.1px;' );
+				} );
+
+				it( 'should pass invalid values', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: 'bar' } );
+
+					assertTableCellStyle( editor, 'width:bar;' );
+				} );
+
+				it( 'should pass invalid value (string passed, CSS float without leading 0)', () => {
+					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+
+					command.execute( { value: '.2' } );
+
+					assertTableCellStyle( editor, 'width:.2;' );
 				} );
 
 				describe( 'collapsed selection', () => {
@@ -145,6 +275,38 @@ describe( 'table cell properties', () => {
 						command.execute();
 
 						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					beforeEach( () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true }, '01' ],
+							[ '10', { contents: '11', isSelected: true } ]
+						] ) );
+					} );
+
+					it( 'should set the "width" attribute value of selected table cells', () => {
+						command.execute( { value: '25px' } );
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[ { contents: '00', style: 'width:25px;' }, '01' ],
+							[ '10', { contents: '11', style: 'width:25px;' } ]
+						] ) );
+					} );
+
+					it( 'should remove "width" from selected table cells if no value is passed', () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true, width: '25px' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, width: '25px' } ]
+						] ) );
+
+						command.execute();
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						] ) );
 					} );
 				} );
 			} );

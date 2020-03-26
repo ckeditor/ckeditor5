@@ -8,20 +8,29 @@
  */
 
 import TablePropertyCommand from './tablepropertycommand';
+import { addDefaultUnitToNumericValue } from '../../commands/utils';
 
 /**
  * The table height command.
  *
  * The command is registered by the {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
- * `'tableHeight'` editor command.
+ * the `'tableHeight'` editor command.
  *
- * To change height of the selected table, execute the command:
+ * To change the height of the selected table, execute the command:
  *
  *		editor.execute( 'tableHeight', {
  *			value: '500px'
  *		} );
  *
- * @extends module:core/command~Command
+ * **Note**: This command adds the default `'px'` unit to numeric values. Executing:
+ *
+ *		editor.execute( 'tableHeight', {
+ *			value: '50'
+ *		} );
+ *
+ * will set the `height` attribute to `'50px'` in the model.
+ *
+ * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
  */
 export default class TableHeightCommand extends TablePropertyCommand {
 	/**
@@ -31,5 +40,12 @@ export default class TableHeightCommand extends TablePropertyCommand {
 	 */
 	constructor( editor ) {
 		super( editor, 'height' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	_getValueToSet( value ) {
+		return addDefaultUnitToNumericValue( value, 'px' );
 	}
 }

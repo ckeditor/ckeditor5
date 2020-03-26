@@ -7,14 +7,14 @@
  * @module table/tablecellproperties/commands/tablecellpaddingcommand
  */
 
+import { addDefaultUnitToNumericValue, getSingleValue } from '../../commands/utils';
 import TableCellPropertyCommand from './tablecellpropertycommand';
-import { getSingleValue } from '../../commands/utils';
 
 /**
  * The table cell padding command.
  *
  * The command is registered by the {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
- * `'tableCellPadding'` editor command.
+ * the `'tableCellPadding'` editor command.
  *
  * To change the padding of selected cells, execute the command:
  *
@@ -22,7 +22,15 @@ import { getSingleValue } from '../../commands/utils';
  *			value: '5px'
  *		} );
  *
- * @extends module:table/tablecellproperties/commands/tablecellpropertycommand
+ * **Note**: This command adds the default `'px'` unit to numeric values. Executing:
+ *
+ *		editor.execute( 'tableCellPadding', {
+ *			value: '5'
+ *		} );
+ *
+ * will set the `padding` attribute to `'5px'` in the model.
+ *
+ * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellPaddingCommand extends TableCellPropertyCommand {
 	/**
@@ -43,5 +51,12 @@ export default class TableCellPaddingCommand extends TableCellPropertyCommand {
 		}
 
 		return getSingleValue( tableCell.getAttribute( this.attributeName ) );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	_getValueToSet( value ) {
+		return addDefaultUnitToNumericValue( value, 'px' );
 	}
 }

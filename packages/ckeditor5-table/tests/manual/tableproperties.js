@@ -26,7 +26,7 @@ ClassicEditor
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
 		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableCellProperties' ],
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
 			tableToolbar: [ 'bold', 'italic' ]
 		}
 	} )
@@ -36,4 +36,3 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
-

@@ -7,13 +7,14 @@
  * @module table/tablecellproperties/commands/tablecellwidthcommand
  */
 
+import { addDefaultUnitToNumericValue } from '../../commands/utils';
 import TableCellPropertyCommand from './tablecellpropertycommand';
 
 /**
  * The table cell width command.
  *
  * The command is registered by the {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing} as
- * `'tableCellWidth'` editor command.
+ * the `'tableCellWidth'` editor command.
  *
  * To change the width of selected cells, execute the command:
  *
@@ -21,7 +22,15 @@ import TableCellPropertyCommand from './tablecellpropertycommand';
  *			value: '50px'
  *		} );
  *
- * @extends module:table/tablecellproperties/commands/tablecellpropertycommand
+ * **Note**: This command adds a default `'px'` unit to numeric values. Executing:
+ *
+ *		editor.execute( 'tableCellWidth', {
+ *			value: '50'
+ *		} );
+ *
+ * will set the `width` attribute to `'50px'` in the model.
+ *
+ * @extends module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand
  */
 export default class TableCellWidthCommand extends TableCellPropertyCommand {
 	/**
@@ -31,5 +40,12 @@ export default class TableCellWidthCommand extends TableCellPropertyCommand {
 	 */
 	constructor( editor ) {
 		super( editor, 'width' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	_getValueToSet( value ) {
+		return addDefaultUnitToNumericValue( value, 'px' );
 	}
 }

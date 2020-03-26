@@ -169,7 +169,7 @@ describe( 'Table cell refresh post-fixer', () => {
 		} );
 
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-			[ '<span>00</span>' ]
+			[ '<span style="display:inline-block">00</span>' ]
 		], { asWidget: true } ) );
 		sinon.assert.calledOnce( refreshItemSpy );
 	} );
@@ -279,7 +279,7 @@ describe( 'Table cell refresh post-fixer', () => {
 		} );
 
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-			[ '<span>00</span>' ]
+			[ '<span style="display:inline-block">00</span>' ]
 		], { asWidget: true } ) );
 		sinon.assert.calledOnce( refreshItemSpy );
 	} );

@@ -699,4 +699,34 @@ describe( 'TableUtils', () => {
 			expect( tableUtils.getColumns( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 5 );
 		} );
 	} );
+
+	describe( 'getRows()', () => {
+		it( 'should return proper number of columns for simple table', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 2 );
+		} );
+
+		it( 'should return proper number of columns for a table with header', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			], { headingRows: 1 } ) );
+
+			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 2 );
+		} );
+
+		it( 'should return proper number of columns for rowspan table', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ { rowspan: 2, contents: '10' }, '11' ],
+				[ '21' ]
+			] ) );
+
+			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 3 );
+		} );
+	} );
 } );

@@ -13,6 +13,11 @@
 		border-collapse: collapse;
 		border-spacing: 0;
 
+		/* Table width and height are set on the parent <figure>. Make sure the table inside stretches
+		to the full dimensions of the container (https://github.com/ckeditor/ckeditor5/issues/6186). */
+		width: 100%;
+		height: 100%;
+
 		/* The outer border of the table should be slightly darker than the inner lines.
 		Also see https://github.com/ckeditor/ckeditor5-table/issues/50. */
 		border: 1px double hsl(0, 0%, 70%);
@@ -21,12 +26,12 @@
 		& th {
 			min-width: 2em;
 			padding: .4em;
-			border-color: hsl(0, 0%, 85%);
+			border-color: hsl(0, 0%, 75%);
 		}
 
 		& th {
 			font-weight: bold;
-			background: hsl(0, 0%, 98%);
+			background: hsla(0, 0%, 0%, 5%);
 		}
 	}
 }

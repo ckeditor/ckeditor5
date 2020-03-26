@@ -7,14 +7,14 @@
  * @module table/tableproperties/commands/tableborderwidthcommand
  */
 
+import { addDefaultUnitToNumericValue, getSingleValue } from '../../commands/utils';
 import TablePropertyCommand from './tablepropertycommand';
-import { getSingleValue } from '../../commands/utils';
 
 /**
  * The table width border command.
  *
  * The command is registered by the {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing} as
- * `'tableBorderWidth'` editor command.
+ * the `'tableBorderWidth'` editor command.
  *
  * To change the border width of the selected table, execute the command:
  *
@@ -22,7 +22,15 @@ import { getSingleValue } from '../../commands/utils';
  *			value: '5px'
  *		} );
  *
- * @extends module:table/tableproperties/commands/tablepropertycommand
+ * **Note**: This command adds the default `'px'` unit to numeric values. Executing:
+ *
+ *		editor.execute( 'tableBorderWidth', {
+ *			value: '5'
+ *		} );
+ *
+ * will set the `borderWidth` attribute to `'5px'` in the model.
+ *
+ * @extends module:table/tableproperties/commands/tablepropertycommand~TablePropertyCommand
  */
 export default class TableBorderWidthCommand extends TablePropertyCommand {
 	/**
@@ -43,5 +51,12 @@ export default class TableBorderWidthCommand extends TablePropertyCommand {
 		}
 
 		return getSingleValue( table.getAttribute( this.attributeName ) );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	_getValueToSet( value ) {
+		return addDefaultUnitToNumericValue( value, 'px' );
 	}
 }

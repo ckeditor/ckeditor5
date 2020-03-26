@@ -169,7 +169,7 @@ export function downcastInsertCell( options = {} ) {
 }
 
 /**
- * Conversion helper that acts on heading rows table attribute change.
+ * Conversion helper that acts on heading row table attribute change.
  *
  * This converter will:
  *
@@ -246,9 +246,9 @@ export function downcastTableHeadingRowsChange( options = {} ) {
 }
 
 /**
- * Conversion helper that acts on heading columns table attribute change.
+ * Conversion helper that acts on heading column table attribute change.
  *
- * Depending on changed attributes this converter will rename `<td` to `<th>` elements or vice versa depending of the cell column index.
+ * Depending on changed attributes this converter will rename `<td` to `<th>` elements or vice versa depending on the cell column index.
  *
  * @returns {Function} Conversion helper.
  */
@@ -317,7 +317,7 @@ export function downcastRemoveRow() {
 
 // Renames an existing table cell in the view to a given element name.
 //
-// **Note** This method will not do anything if a view table cell was not yet converted.
+// **Note** This method will not do anything if a view table cell has not been converted yet.
 //
 // @param {module:engine/model/element~Element} tableCell
 // @param {String} desiredCellElementName
@@ -397,7 +397,9 @@ function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPo
 		conversionApi.consumable.consume( innerParagraph, 'insert' );
 
 		if ( options.asWidget ) {
-			const fakeParagraph = conversionApi.writer.createContainerElement( 'span' );
+			// Use display:inline-block to force Chrome/Safari to limit text mutations to this element.
+			// See #6062.
+			const fakeParagraph = conversionApi.writer.createContainerElement( 'span', { style: 'display:inline-block' } );
 
 			conversionApi.mapper.bindElements( innerParagraph, fakeParagraph );
 			conversionApi.writer.insert( paragraphInsertPosition, fakeParagraph );
@@ -412,7 +414,7 @@ function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPo
 	}
 }
 
-// Creates `<tr>` view element.
+// Creates a `<tr>` view element.
 //
 // @param {module:engine/view/element~Element} tableRow
 // @param {Number} rowIndex
@@ -467,7 +469,7 @@ function getSectionName( row, tableAttributes ) {
 	return row < tableAttributes.headingRows ? 'thead' : 'tbody';
 }
 
-// Creates or returns an existing `<tbody>` or `<thead>` element witch caching.
+// Creates or returns an existing `<tbody>` or `<thead>` element with caching.
 //
 // @param {String} sectionName
 // @param {module:engine/view/element~Element} viewTable
@@ -524,7 +526,7 @@ function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
 
 // Moves view table rows associated with passed model rows to the provided table section element.
 //
-// **Note** This method will skip not converted table rows.
+// **Note**: This method will skip not converted table rows.
 //
 // @param {Array.<module:engine/model/element~Element>} rowsToMove
 // @param {module:engine/view/element~Element} viewTableSection
@@ -544,7 +546,7 @@ function moveViewRowsToTableSection( rowsToMove, viewTableSection, conversionApi
 	}
 }
 
-// Properly finds '<table>' element inside `<figure>` widget.
+// Finds a '<table>' element inside the `<figure>` widget.
 //
 // @param {module:engine/view/element~Element} viewFigure
 function getViewTable( viewFigure ) {
@@ -555,7 +557,7 @@ function getViewTable( viewFigure ) {
 	}
 }
 
-// Checks if element has any attribute set.
+// Checks if an element has any attributes set.
 //
 // @param {module:engine/model/element~Element element
 // @returns {Boolean}

@@ -29,7 +29,7 @@ import RemoveColumnCommand from './commands/removecolumncommand';
 import SetHeaderRowCommand from './commands/setheaderrowcommand';
 import SetHeaderColumnCommand from './commands/setheadercolumncommand';
 import MergeCellsCommand from './commands/mergecellscommand';
-import { findAncestor } from './commands/utils';
+import { getTableCellsContainingSelection } from './utils';
 import TableUtils from '../src/tableutils';
 
 import injectTableLayoutPostFixer from './converters/table-layout-post-fixer';
@@ -76,7 +76,7 @@ export default class TableEditing extends Plugin {
 		schema.register( 'tableCell', {
 			allowIn: 'tableRow',
 			allowAttributes: [ 'colspan', 'rowspan' ],
-			isLimit: true
+			isObject: true
 		} );
 
 		// Allow all $block content inside table cell.
@@ -113,7 +113,7 @@ export default class TableEditing extends Plugin {
 		conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 		conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
 
-		// Table heading rows and cols conversion.
+		// Table heading rows and columns conversion.
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange( { asWidget: true } ) );
 		conversion.for( 'dataDowncast' ).add( downcastTableHeadingColumnsChange() );
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingRowsChange( { asWidget: true } ) );
@@ -146,7 +146,7 @@ export default class TableEditing extends Plugin {
 		injectTableCellRefreshPostFixer( model );
 		injectTableCellParagraphPostFixer( model );
 
-		// Handle tab key navigation.
+		// Handle Tab key navigation.
 		this.editor.keystrokes.set( 'Tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Tab', this._getTabHandler( true ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Shift+Tab', this._getTabHandler( false ), { priority: 'low' } );
@@ -191,17 +191,14 @@ export default class TableEditing extends Plugin {
 	 * inside table cell.
 	 *
 	 * @private
-	 * @param {Boolean} isForward Whether this handler will move selection to the next cell or previous.
+	 * @param {Boolean} isForward Whether this handler will move the selection to the next or the previous cell.
 	 */
 	_getTabHandler( isForward ) {
 		const editor = this.editor;
 
 		return ( domEventData, cancel ) => {
 			const selection = editor.model.document.selection;
-
-			const firstPosition = selection.getFirstPosition();
-
-			const tableCell = findAncestor( 'tableCell', firstPosition );
+			const tableCell = getTableCellsContainingSelection( selection )[ 0 ];
 
 			if ( !tableCell ) {
 				return;
@@ -218,7 +215,7 @@ export default class TableEditing extends Plugin {
 			const isFirstCellInRow = currentCellIndex === 0;
 
 			if ( !isForward && isFirstCellInRow && currentRowIndex === 0 ) {
-				// It's the first cell of a table - don't do anything (stay in current position).
+				// It's the first cell of the table - don't do anything (stay in the current position).
 				return;
 			}
 

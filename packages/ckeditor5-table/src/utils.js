@@ -53,7 +53,7 @@ export function getSelectedTableWidget( selection ) {
 }
 
 /**
- * Returns a table widget editing view element if one is among selection's ancestors.
+ * Returns a table widget editing view element if one is among the selection's ancestors.
  *
  * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
  * @returns {module:engine/view/element~Element|null}
@@ -66,4 +66,89 @@ export function getTableWidgetAncestor( selection ) {
 	}
 
 	return null;
+}
+
+/**
+ * Returns all model table cells that are fully selected (from the outside)
+ * within the provided model selection's ranges.
+ *
+ * To obtain the cells selected from the inside, use
+ * {@link module:table/utils~getTableCellsContainingSelection}.
+ *
+ * @param {module:engine/model/selection~Selection} selection
+ * @returns {Array.<module:engine/model/element~Element>}
+ */
+export function getSelectedTableCells( selection ) {
+	const cells = [];
+
+	for ( const range of sortRanges( selection.getRanges() ) ) {
+		const element = range.getContainedElement();
+
+		if ( element && element.is( 'tableCell' ) ) {
+			cells.push( element );
+		}
+	}
+
+	return cells;
+}
+
+/**
+ * Returns all model table cells that the provided model selection's ranges
+ * {@link module:engine/model/range~Range#start} inside.
+ *
+ * To obtain the cells selected from the outside, use
+ * {@link module:table/utils~getSelectedTableCells}.
+ *
+ * @param {module:engine/model/selection~Selection} selection
+ * @returns {Array.<module:engine/model/element~Element>}
+ */
+export function getTableCellsContainingSelection( selection ) {
+	const cells = [];
+
+	for ( const range of selection.getRanges() ) {
+		const cellWithSelection = findAncestor( 'tableCell', range.start );
+
+		if ( cellWithSelection ) {
+			cells.push( cellWithSelection );
+		}
+	}
+
+	return cells;
+}
+
+/**
+ * Returns all model table cells that are either completely selected
+ * by selection ranges or host selection range
+ * {@link module:engine/model/range~Range#start start positions} inside them.
+ *
+ * Combines {@link module:table/utils~getTableCellsContainingSelection} and
+ * {@link module:table/utils~getSelectedTableCells}.
+ *
+ * @param {module:engine/model/selection~Selection} selection
+ * @returns {Array.<module:engine/model/element~Element>}
+ */
+export function getSelectionAffectedTableCells( selection ) {
+	const selectedCells = getSelectedTableCells( selection );
+
+	if ( selectedCells.length ) {
+		return selectedCells;
+	}
+
+	return getTableCellsContainingSelection( selection );
+}
+
+function sortRanges( rangesIterator ) {
+	return Array.from( rangesIterator ).sort( compareRangeOrder );
+}
+
+function compareRangeOrder( rangeA, rangeB ) {
+	// Since table cell ranges are disjoint, it's enough to check their start positions.
+	const posA = rangeA.start;
+	const posB = rangeB.start;
+
+	if ( posA.isEqual( posB ) ) {
+		return 0;
+	}
+
+	return posA.isBefore( posB ) ? -1 : 1;
 }
