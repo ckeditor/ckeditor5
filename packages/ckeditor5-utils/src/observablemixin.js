@@ -172,7 +172,7 @@ const ObservableMixin = {
 	 */
 	unbind( ...unbindProperties ) {
 		// Nothing to do here if not inited yet.
-		if ( !( observablePropertiesSymbol in this ) ) {
+		if ( !( this[ observablePropertiesSymbol ] ) ) {
 			return;
 		}
 
@@ -271,7 +271,7 @@ export default ObservableMixin;
 // @param {module:utils/observablemixin~ObservableMixin} observable
 function initObservable( observable ) {
 	// Do nothing if already inited.
-	if ( observablePropertiesSymbol in observable ) {
+	if ( observable[ observablePropertiesSymbol ] ) {
 		return;
 	}
 
