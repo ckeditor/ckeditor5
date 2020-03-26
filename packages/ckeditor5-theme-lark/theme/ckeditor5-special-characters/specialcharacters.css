@@ -7,7 +7,7 @@
 
 .ck.ck-special-characters-navigation {
 	border-bottom: 1px solid var(--ck-color-base-border);
-	padding: var(--ck-spacing-standard);
+	padding: var(--ck-spacing-standard) var(--ck-spacing-large);
 
 	@mixin ck-dir ltr {
 		padding-left: var(--ck-spacing-large);
