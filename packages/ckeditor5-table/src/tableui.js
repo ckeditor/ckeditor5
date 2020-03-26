@@ -161,6 +161,35 @@ export default class TableUI extends Plugin {
 				{
 					type: 'button',
 					model: {
+						commandName: 'mergeTableCellUp',
+						label: t( 'Merge cell up' )
+					}
+				},
+				{
+					type: 'button',
+					model: {
+						commandName: isContentLtr ? 'mergeTableCellRight' : 'mergeTableCellLeft',
+						label: t( 'Merge cell right' )
+					}
+				},
+				{
+					type: 'button',
+					model: {
+						commandName: 'mergeTableCellDown',
+						label: t( 'Merge cell down' )
+					}
+				},
+				{
+					type: 'button',
+					model: {
+						commandName: isContentLtr ? 'mergeTableCellLeft' : 'mergeTableCellRight',
+						label: t( 'Merge cell left' )
+					}
+				},
+				{ type: 'separator' },
+				{
+					type: 'button',
+					model: {
 						commandName: 'mergeTableCells',
 						label: t( 'Merge cells' )
 					}
