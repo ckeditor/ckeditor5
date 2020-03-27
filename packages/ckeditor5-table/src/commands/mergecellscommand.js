@@ -16,18 +16,11 @@ import { getRowIndexes, getSelectionAffectedTableCells } from '../utils';
 /**
  * The merge cells command.
  *
- * The command is registered by {@link module:table/tableediting~TableEditing} as `'mergeTableCellRight'`, `'mergeTableCellLeft'`,
- * `'mergeTableCellUp'` and `'mergeTableCellDown'` editor commands.
+ * The command is registered by {@link module:table/tableediting~TableEditing} as `'mergeTableCells'` editor command.
  *
- * To merge a table cell at the current selection with another cell, execute the command corresponding with the preferred direction.
+ * For example, to merge selected table cells:
  *
- * For example, to merge with a cell to the right:
- *
- *        editor.execute( 'mergeTableCellRight' );
- *
- * **Note**: If a table cell has a different [`rowspan`](https://www.w3.org/TR/html50/tabular-data.html#attr-tdth-rowspan)
- * (for `'mergeTableCellRight'` and `'mergeTableCellLeft'`) or [`colspan`](https://www.w3.org/TR/html50/tabular-data.html#attr-tdth-colspan)
- * (for `'mergeTableCellUp'` and `'mergeTableCellDown'`), the command will be disabled.
+ *        editor.execute( 'mergeTableCells' );
  *
  * @extends module:core/command~Command
  */
@@ -42,8 +35,6 @@ export default class MergeCellsCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * Depending on the command's {@link #direction} value, it will merge the cell that is to the `'left'`, `'right'`, `'up'` or `'down'`.
-	 *
 	 * @fires execute
 	 */
 	execute() {
@@ -54,65 +45,39 @@ export default class MergeCellsCommand extends Command {
 		model.change( writer => {
 			const selectedTableCells = getSelectionAffectedTableCells( model.document.selection );
 
+			// All cells will be merge into the first one.
 			const firstTableCell = selectedTableCells.shift();
 
 			// This prevents the "model-selection-range-intersects" error, caused by removing row selected cells.
-			writer.setSelection( firstTableCell, 'in' );
+			writer.setSelection( firstTableCell, 'on' );
 
-			const { row, column } = tableUtils.getCellLocation( firstTableCell );
-
-			const colspan = parseInt( firstTableCell.getAttribute( 'colspan' ) || 1 );
-			const rowspan = parseInt( firstTableCell.getAttribute( 'rowspan' ) || 1 );
-
-			let rightMax = column + colspan;
-			let bottomMax = row + rowspan;
-
-			const rowsToCheck = new Set();
+			// Update target cell dimensions.
+			const { mergeWidth, mergeHeight } = getMergeDimensions( firstTableCell, selectedTableCells, tableUtils );
+			updateNumericAttribute( 'colspan', mergeWidth, firstTableCell, writer );
+			updateNumericAttribute( 'rowspan', mergeHeight, firstTableCell, writer );
 
 			for ( const tableCell of selectedTableCells ) {
-				const { row, column } = tableUtils.getCellLocation( tableCell );
-
-				const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
-				const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
-
-				if ( column + colspan > rightMax ) {
-					rightMax = column + colspan;
-				}
-
-				if ( row + rowspan > bottomMax ) {
-					bottomMax = row + rowspan;
-				}
-			}
-
-			for ( const tableCell of selectedTableCells ) {
-				rowsToCheck.add( tableCell.parent );
+				const tableRow = tableCell.parent;
 				mergeTableCells( tableCell, firstTableCell, writer );
+				removeRowIfEmpty( tableRow, writer );
 			}
-
-			// Update table cell span attribute and merge set selection on merged contents.
-			updateNumericAttribute( 'colspan', rightMax - column, firstTableCell, writer );
-			updateNumericAttribute( 'rowspan', bottomMax - row, firstTableCell, writer );
 
 			writer.setSelection( firstTableCell, 'in' );
-
-			// Remove empty rows after merging table cells.
-			for ( const row of rowsToCheck ) {
-				if ( !row.childCount ) {
-					removeEmptyRow( row, writer );
-				}
-			}
 		} );
 	}
 }
 
 // Properly removes empty row from a table. Will update `rowspan` attribute of cells that overlaps removed row.
 //
-// @param {module:engine/model/element~Element} removedTableCellRow
+// @param {module:engine/model/element~Element} row
 // @param {module:engine/model/writer~Writer} writer
-function removeEmptyRow( removedTableCellRow, writer ) {
-	const table = removedTableCellRow.parent;
+function removeRowIfEmpty( row, writer ) {
+	if ( row.childCount ) {
+		return;
+	}
 
-	const removedRowIndex = table.getChildIndex( removedTableCellRow );
+	const table = row.parent;
+	const removedRowIndex = table.getChildIndex( row );
 
 	for ( const { cell, row, rowspan } of new TableWalker( table, { endRow: removedRowIndex } ) ) {
 		const overlapsRemovedRow = row + rowspan - 1 >= removedRowIndex;
@@ -122,27 +87,27 @@ function removeEmptyRow( removedTableCellRow, writer ) {
 		}
 	}
 
-	writer.remove( removedTableCellRow );
+	writer.remove( row );
 }
 
 // Merges two table cells - will ensure that after merging cells with empty paragraph the result table cell will only have one paragraph.
 // If one of the merged table cell is empty the merged table cell will have contents of the non-empty table cell.
 // If both are empty the merged table cell will have only one empty paragraph.
 //
-// @param {module:engine/model/element~Element} cellToRemove
-// @param {module:engine/model/element~Element} cellToExpand
+// @param {module:engine/model/element~Element} cellBeingMerged
+// @param {module:engine/model/element~Element} targetCell
 // @param {module:engine/model/writer~Writer} writer
-function mergeTableCells( cellToRemove, cellToExpand, writer ) {
-	if ( !isEmpty( cellToRemove ) ) {
-		if ( isEmpty( cellToExpand ) ) {
-			writer.remove( writer.createRangeIn( cellToExpand ) );
+function mergeTableCells( cellBeingMerged, targetCell, writer ) {
+	if ( !isEmpty( cellBeingMerged ) ) {
+		if ( isEmpty( targetCell ) ) {
+			writer.remove( writer.createRangeIn( targetCell ) );
 		}
 
-		writer.move( writer.createRangeIn( cellToRemove ), writer.createPositionAt( cellToExpand, 'end' ) );
+		writer.move( writer.createRangeIn( cellBeingMerged ), writer.createPositionAt( targetCell, 'end' ) );
 	}
 
 	// Remove merged table cell.
-	writer.remove( cellToRemove );
+	writer.remove( cellBeingMerged );
 }
 
 // Checks if passed table cell contains empty paragraph.
@@ -270,4 +235,30 @@ function areCellInTheSameTableSection( tableCells, table ) {
 	const lastCellIsInBody = rowIndexes.last > headingRows - 1;
 
 	return firstCellIsInBody === lastCellIsInBody;
+}
+
+function getMergeDimensions( firstTableCell, selectedTableCells, tableUtils ) {
+	let maxWidthOffset = 0;
+	let maxHeightOffset = 0;
+
+	for ( const tableCell of selectedTableCells ) {
+		const { row, column } = tableUtils.getCellLocation( tableCell );
+
+		maxWidthOffset = getMaxOffset( tableCell, column, maxWidthOffset, 'colspan' );
+		maxHeightOffset = getMaxOffset( tableCell, row, maxHeightOffset, 'rowspan' );
+	}
+
+	// Update table cell span attribute and merge set selection on a merged contents.
+	const { row: firstCellRow, column: firstCellColumn } = tableUtils.getCellLocation( firstTableCell );
+
+	const mergeWidth = maxWidthOffset - firstCellColumn;
+	const mergeHeight = maxHeightOffset - firstCellRow;
+
+	return { mergeWidth, mergeHeight };
+}
+
+function getMaxOffset( tableCell, start, currentMaxOffset, which ) {
+	const dimensionValue = parseInt( tableCell.getAttribute( which ) || 1 );
+
+	return Math.max( currentMaxOffset, start + dimensionValue );
 }

@@ -303,6 +303,33 @@ describe( 'MergeCellsCommand', () => {
 			] ) );
 		} );
 
+		it( 'should merge selection inside a table (properly calculate target rowspan/colspan)', () => {
+			setData( model, modelTable( [
+				[ '[]00', '01', '02', '03' ],
+				[ '10', '11', { contents: '12', rowspan: 2 }, '13' ],
+				[ '20', '21', '23' ],
+				[ '30', '31', '32', '33' ]
+			] ) );
+
+			tableSelection._setCellSelection(
+				root.getNodeByPath( [ 0, 2, 1 ] ),
+				root.getNodeByPath( [ 0, 1, 2 ] )
+			);
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '00', '01', '02', '03' ],
+				[ '10', {
+					colspan: 2,
+					rowspan: 2,
+					contents: '<paragraph>[11</paragraph><paragraph>12</paragraph><paragraph>21]</paragraph>'
+				}, '13' ],
+				[ '20', '23' ],
+				[ '30', '31', '32', '33' ]
+			] ) );
+		} );
+
 		it( 'should merge table cells - extend colspan attribute', () => {
 			setData( model, modelTable( [
 				[ { colspan: 2, contents: '00' }, '02', '03' ],
