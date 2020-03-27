@@ -12,6 +12,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import Input from '../src/input';
+import TextTransformation from '../src/texttransformation';
 
 import Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
 
@@ -39,7 +40,19 @@ describe( 'Input feature', () => {
 		domElement = document.createElement( 'div' );
 		document.body.appendChild( domElement );
 
-		return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, Italic, List, ShiftEnter, Link ] } )
+		const options = {
+			plugins: [ Input, Paragraph, Bold, Italic, List, ShiftEnter, Link, TextTransformation ],
+			typing: {
+				transformations: {
+					extra: [
+						{ from: ':)', to: '🙂' },
+						{ from: ':family:', to: '👨‍👩‍👧' }
+					]
+				}
+			}
+		};
+
+		return ClassicTestEditor.create( domElement, options )
 			.then( newEditor => {
 				// Mock image feature.
 				newEditor.model.schema.register( 'image', { allowWhere: '$text' } );
@@ -701,6 +714,84 @@ describe( 'Input feature', () => {
 			] );
 
 			expect( getViewData( view ) ).to.equal( '<p>Foox{}<strong> </strong> Bar</p>' );
+		} );
+
+		describe( 'emoji', () => {
+			it( 'should properly handle input after multi-byte emoji transformation (in short paragraph)', () => {
+				testEmojiMutations( 'foo', ':)123456', '🙂123456' );
+			} );
+
+			it( 'should properly handle input after multi-byte emoji transformation (in long paragraph)', () => {
+				testEmojiMutations( createTestString( 200 ), ':)123456', '🙂123456' );
+			} );
+
+			it( 'should properly handle input in text with multi-byte emoji (in short paragraph)', () => {
+				testEmojiMutations( 'foo😱bar', '123456' );
+			} );
+
+			it( 'should properly handle input in text with multi-byte emoji (in long paragraph)', () => {
+				const textInParagraph = createTestString( 200, ( v, idx ) => idx == 60 ? '😱' : v );
+				testEmojiMutations( textInParagraph, '123456' );
+			} );
+
+			it( 'should properly handle input in middle of text with multi-byte emoji (in short paragraph)', () => {
+				testEmojiMutations( 'foo😱bar', '123456', 6 );
+			} );
+
+			it( 'should properly handle input in middle of text with multi-byte emoji (in long paragraph)', () => {
+				const textInParagraph = createTestString( 200, ( v, idx ) => idx == 60 ? '😱' : v );
+				testEmojiMutations( textInParagraph, '123456', 100 );
+			} );
+
+			it( 'should properly handle input after multi-byte emoji zwj sequence transformation (in short paragraph)', () => {
+				testEmojiMutations( 'foobar', ':family:123456', '👨‍👩‍👧123456' );
+			} );
+
+			it( 'should properly handle input after multi-byte emoji zwj sequence transformation (in long paragraph)', () => {
+				testEmojiMutations( createTestString( 200 ), ':family:123456', '👨‍👩‍👧123456' );
+			} );
+
+			function createTestString( length, callback = v => v ) {
+				const firstCharCode = 'a'.charCodeAt( 0 );
+				const lettersCount = 'z'.charCodeAt( 0 ) - firstCharCode + 1;
+				return new Array( length )
+					.fill( '' )
+					.map( ( value, idx ) => callback( String.fromCharCode( firstCharCode + idx % lettersCount ), idx ) )
+					.join( '' );
+			}
+
+			function testEmojiMutations( textInParagraph, typing, expectedOrIndex = typing, index = -1 ) {
+				let expected = expectedOrIndex;
+				if ( typeof expectedOrIndex == 'number' ) {
+					index = expectedOrIndex;
+					expected = typing;
+				}
+				setModelData( model, `<paragraph>${ textInParagraph }[]</paragraph>` );
+
+				typing.split( '' ).forEach( ( char, idx ) => simulateMutation( char, index < 0 ? index : index + idx ) );
+
+				const expectedResult = index < 0 ? textInParagraph + expected :
+					textInParagraph.substring( 0, index ) + expected + textInParagraph.substring( index );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( `<paragraph>${ expectedResult }</paragraph>` );
+			}
+
+			function simulateMutation( text, index = -1 ) {
+				const placeOfMutation = viewRoot.getChild( 0 ).getChild( 0 );
+				const oldText = placeOfMutation.data;
+				const newText = index < 0 ? oldText + text :
+					oldText.substring( 0, index ) + text + oldText.substring( index );
+
+				viewDocument.fire( 'mutations', [
+					{
+						type: 'text',
+						oldText,
+						newText,
+						node: placeOfMutation
+					}
+				] );
+			}
 		} );
 	} );
 
