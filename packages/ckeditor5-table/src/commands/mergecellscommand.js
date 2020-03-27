@@ -20,7 +20,7 @@ import { getRowIndexes, getSelectionAffectedTableCells } from '../utils';
  *
  * For example, to merge selected table cells:
  *
- *        editor.execute( 'mergeTableCells' );
+ *		editor.execute( 'mergeTableCells' );
  *
  * @extends module:core/command~Command
  */
