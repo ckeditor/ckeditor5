@@ -11,6 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
 import { findAncestor, updateNumericAttribute } from './utils';
 import TableUtils from '../tableutils';
+import { getSelectionAffectedTableCells } from '../utils';
 
 /**
  * The merge cells command.
@@ -186,8 +187,6 @@ function canMergeCells( selection, tableUtils ) {
 	// All cells must be inside the same table.
 	let firstRangeTable;
 
-	const tableCells = [];
-
 	for ( const range of selection.getRanges() ) {
 		// Selection ranges must be set on whole <tableCell> element.
 		if ( range.isCollapsed || !range.isFlat || !range.start.nodeAfter.is( 'tableCell' ) ) {
@@ -201,9 +200,9 @@ function canMergeCells( selection, tableUtils ) {
 		} else if ( firstRangeTable !== parentTable ) {
 			return false;
 		}
-
-		tableCells.push( range.start.nodeAfter );
 	}
+
+	const selectedTableCells = getSelectionAffectedTableCells( selection );
 
 	// At this point selection contains ranges over table cells in the same table.
 	// The valid selection is a fully occupied rectangle composed of table cells.
@@ -214,7 +213,7 @@ function canMergeCells( selection, tableUtils ) {
 
 	let areaOfSelectedCells = 0;
 
-	for ( const tableCell of tableCells ) {
+	for ( const tableCell of selectedTableCells ) {
 		const { row, column } = tableUtils.getCellLocation( tableCell );
 		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
