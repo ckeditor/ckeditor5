@@ -137,13 +137,14 @@ export default class CodeBlock extends Plugin {
  *			{ language: 'cpp', label: 'C++' },
  *			{ language: 'css', label: 'CSS' },
  *			{ language: 'diff', label: 'Diff' },
- *			{ language: 'xml', label: 'HTML/XML' },
+ *			{ language: 'html', label: 'HTML' },
  *			{ language: 'java', label: 'Java' },
  *			{ language: 'javascript', label: 'JavaScript' },
  *			{ language: 'php', label: 'PHP' },
  *			{ language: 'python', label: 'Python' },
  *			{ language: 'ruby', label: 'Ruby' },
  *			{ language: 'typescript', label: 'TypeScript' },
+ *			{ language: 'xml', label: 'XML' }
  *		]
  *
  * **Note**: The first language defined in the configuration is considered the default one. This means it will be

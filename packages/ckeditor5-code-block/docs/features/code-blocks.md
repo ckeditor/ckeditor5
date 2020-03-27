@@ -24,7 +24,7 @@ Each code block can be assigned a programming language. The language of the code
 <pre><code class="language-javascript">window.alert( 'Hello world!' )</code></pre>
 ```
 
-It is possible to configure which languages are available to the users. You can use the {@link module:code-block/codeblock~CodeBlockConfig#languages `codeBlock.languages`} configuration and define your own languages. For example, the following editor supports only two languages (CSS and XML/HTML):
+It is possible to configure which languages are available to the users. You can use the {@link module:code-block/codeblock~CodeBlockConfig#languages `codeBlock.languages`} configuration and define your own languages. For example, the following editor supports only two languages (CSS and HTML):
 
 ```js
 ClassicEditor
@@ -32,7 +32,7 @@ ClassicEditor
 		codeBlock: {
 			languages: [
 				{ language: 'css', label: 'CSS' },
-				{ language: 'xml', label: 'HTML/XML' }
+				{ language: 'html', label: 'HTML' }
 			]
 		}
 	} )
@@ -166,13 +166,14 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 		{ language: 'cpp', label: 'C++' },
 		{ language: 'css', label: 'CSS' },
 		{ language: 'diff', label: 'Diff' },
-		{ language: 'xml', label: 'HTML/XML' },
+		{ language: 'html', label: 'HTML' },
 		{ language: 'java', label: 'Java' },
 		{ language: 'javascript', label: 'JavaScript' },
 		{ language: 'php', label: 'PHP' },
 		{ language: 'python', label: 'Python' },
 		{ language: 'ruby', label: 'Ruby' },
 		{ language: 'typescript', label: 'TypeScript' },
+		{ language: 'xml', label: 'XML' }
 	]
 	```
 

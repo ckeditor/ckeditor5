@@ -31,7 +31,7 @@ ClassicEditor
 		codeBlock: {
 			languages: [
 				{ language: 'css', label: 'CSS' },
-				{ language: 'xml', label: 'HTML/XML' }
+				{ language: 'html', label: 'HTML' }
 			]
 		}
 	} )
