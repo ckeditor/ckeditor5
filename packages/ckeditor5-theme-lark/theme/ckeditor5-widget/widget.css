@@ -115,16 +115,6 @@
 	}
 }
 
-.ck-editor__editable > .ck-widget.ck-widget_with-selection-handle:first-child,
-.ck-editor__editable blockquote > .ck-widget.ck-widget_with-selection-handle:first-child {
-	/* Do not crop selection handler if a widget is a first-child in the blockquote or in the root editable.
-	In fact, anything with overflow: hidden.
-	https://github.com/ckeditor/ckeditor5-block-quote/issues/28
-	https://github.com/ckeditor/ckeditor5-widget/issues/44
-	https://github.com/ckeditor/ckeditor5-widget/issues/66 */
-	margin-top: calc(1em + var(--ck-widget-handler-icon-size));
-}
-
 /* In a RTL environment, align the selection handler to the right side of the widget */
 /* stylelint-disable-next-line no-descending-specificity */
 .ck[dir="rtl"] .ck-widget.ck-widget_with-selection-handle .ck-widget__selection-handle {
@@ -132,8 +122,28 @@
 	right: calc(0px - var(--ck-widget-outline-thickness));
 }
 
+/* https://github.com/ckeditor/ckeditor5/issues/6415 */
+.ck.ck-editor__editable.ck-read-only .ck-widget {
+	/* Prevent the :hover outline from showing up because of the used outline-color transition. */
+	transition: none;
+
+	&:not(.ck-widget_selected) {
+		/* Disable visual effects of hover/active widget when CKEditor is in readOnly mode.
+		See: https://github.com/ckeditor/ckeditor5/issues/1261 */
+		--ck-widget-outline-thickness: 0;
+	}
+
+	&.ck-widget_with-selection-handle {
+		& .ck-widget__selection-handle,
+		& .ck-widget__selection-handle:hover {
+			background: var(--ck-color-widget-blurred-border);
+		}
+	}
+}
+
 /* Style the widget when it's selected but the editable it belongs to lost focus. */
-.ck-editor__editable.ck-blurred .ck-widget {
+/* stylelint-disable-next-line no-descending-specificity */
+.ck.ck-editor__editable.ck-blurred .ck-widget {
 	&.ck-widget_selected,
 	&.ck-widget_selected:hover {
 		outline-color: var(--ck-color-widget-blurred-border);
@@ -147,8 +157,12 @@
 	}
 }
 
-.ck-editor__editable.ck-read-only .ck-widget {
-	/* Disable visual effects of hover/active widget when CKEditor is in readOnly mode.
-	See: https://github.com/ckeditor/ckeditor5/issues/1261 */
-	--ck-widget-outline-thickness: 0;
+.ck.ck-editor__editable > .ck-widget.ck-widget_with-selection-handle:first-child,
+.ck.ck-editor__editable blockquote > .ck-widget.ck-widget_with-selection-handle:first-child {
+	/* Do not crop selection handler if a widget is a first-child in the blockquote or in the root editable.
+	In fact, anything with overflow: hidden.
+	https://github.com/ckeditor/ckeditor5-block-quote/issues/28
+	https://github.com/ckeditor/ckeditor5-widget/issues/44
+	https://github.com/ckeditor/ckeditor5-widget/issues/66 */
+	margin-top: calc(1em + var(--ck-widget-handler-icon-size));
 }
