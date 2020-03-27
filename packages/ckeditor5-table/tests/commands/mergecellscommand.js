@@ -10,6 +10,7 @@ import MergeCellsCommand from '../../src/commands/mergecellscommand';
 import { defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
 import TableUtils from '../../src/tableutils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import TableSelection from '../../src/tableselection';
 
 describe( 'MergeCellsCommand', () => {
 	let editor, model, command, root;
@@ -17,7 +18,7 @@ describe( 'MergeCellsCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ TableUtils ]
+				plugins: [ TableUtils, TableSelection ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -221,6 +222,23 @@ describe( 'MergeCellsCommand', () => {
 
 		it( 'should be false if not in a cell', () => {
 			setData( model, '<paragraph>11[]</paragraph>' );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false if selection has cells from header and body sections', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01' ],
+				[ '10', '11' ]
+			], { headingRows: 1 } ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+			);
 
 			expect( command.isEnabled ).to.be.false;
 		} );

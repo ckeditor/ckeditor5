@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
 import { findAncestor, updateNumericAttribute } from './utils';
 import TableUtils from '../tableutils';
-import { getSelectionAffectedTableCells } from '../utils';
+import { getRowIndexes, getSelectionAffectedTableCells } from '../utils';
 
 /**
  * The merge cells command.
@@ -204,6 +204,10 @@ function canMergeCells( selection, tableUtils ) {
 
 	const selectedTableCells = getSelectionAffectedTableCells( selection );
 
+	if ( !areCellInTheSameTableSection( selectedTableCells, firstRangeTable ) ) {
+		return false;
+	}
+
 	// At this point selection contains ranges over table cells in the same table.
 	// The valid selection is a fully occupied rectangle composed of table cells.
 	// Below we calculate area of selected cells and the area of valid selection.
@@ -256,4 +260,14 @@ function getBiggestRectangleArea( rows, columns ) {
 	const firstColumn = Math.min( ...columnIndexes );
 
 	return ( lastRow - firstRow + 1 ) * ( lastColumn - firstColumn + 1 );
+}
+
+function areCellInTheSameTableSection( tableCells, table ) {
+	const rowIndexes = getRowIndexes( tableCells );
+	const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
+
+	const firstCellIsInBody = rowIndexes.first > headingRows - 1;
+	const lastCellIsInBody = rowIndexes.last > headingRows - 1;
+
+	return firstCellIsInBody === lastCellIsInBody;
 }

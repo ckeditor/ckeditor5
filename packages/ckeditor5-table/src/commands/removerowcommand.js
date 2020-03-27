@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import TableWalker from '../tablewalker';
 import { findAncestor, updateNumericAttribute } from './utils';
-import { getSelectionAffectedTableCells } from '../utils';
+import { getRowIndexes, getSelectionAffectedTableCells } from '../utils';
 
 /**
  * The remove row command.
@@ -136,16 +136,6 @@ export default class RemoveRowCommand extends Command {
 
 		writer.remove( tableRow );
 	}
-}
-
-// Returns a helper object with first and last row index contained in given `referenceCells`.
-function getRowIndexes( referenceCells ) {
-	const allIndexesSorted = referenceCells.map( cell => cell.parent.index ).sort();
-
-	return {
-		first: allIndexesSorted[ 0 ],
-		last: allIndexesSorted[ allIndexesSorted.length - 1 ]
-	};
 }
 
 // Returns a cell that should be focused before removing the row, belonging to the same column as the currently focused cell.

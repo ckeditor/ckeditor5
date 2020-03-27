@@ -137,6 +137,16 @@ export function getSelectionAffectedTableCells( selection ) {
 	return getTableCellsContainingSelection( selection );
 }
 
+// Returns a helper object with first and last row index contained in given `referenceCells`.
+export function getRowIndexes( referenceCells ) {
+	const allIndexesSorted = referenceCells.map( cell => cell.parent.index ).sort();
+
+	return {
+		first: allIndexesSorted[ 0 ],
+		last: allIndexesSorted[ allIndexesSorted.length - 1 ]
+	};
+}
+
 function sortRanges( rangesIterator ) {
 	return Array.from( rangesIterator ).sort( compareRangeOrder );
 }
