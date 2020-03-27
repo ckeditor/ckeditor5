@@ -1,6 +1,38 @@
 Changelog
 =========
 
+## [18.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v17.0.0...v18.0.0) (2020-03-19)
+
+### MAJOR BREAKING CHANGES
+
+* `EditingController` requires an instance of `StylesProcessor` in its constructor.
+* `DataController` requires an instance of `StylesProcessor` in its constructor.
+* `DomConverter`, `HtmlDataProcessor` and `XmlDataProcessor` require an instance of the view document in their constructors.
+* The `View` class requires an instance of `StylesProcessor` as its first argument.
+* The `createViewElementFromHighlightDescriptor()` function that is exported by `src/conversion/downcasthelpers.js` file requires an instance of the view document as its first argument.
+* Method `view.Document#addStyleProcessorRules()` has been moved to the `DataController` class.
+* The `#document` getter was removed from model nodes. Only the root element holds the reference to the model document. For attached nodes, use `node.root.document` to access it.
+
+### MINOR BREAKING CHANGES
+
+* `DataController` does not accept the data processor instance any more.
+
+### Features
+
+* Implemented the model and view `Range#getContainedElement()` methods. Closes [ckeditor/ckeditor5#6364](https://github.com/ckeditor/ckeditor5/issues/6364). ([8fb1efa](https://github.com/ckeditor/ckeditor5-engine/commit/8fb1efa))
+
+### Bug fixes
+
+* Fixed renderer bug causing editor crash in a range of scenarios involving reusing DOM elements. Closes [ckeditor/ckeditor5#6092](https://github.com/ckeditor/ckeditor5/issues/6092). ([67884da](https://github.com/ckeditor/ckeditor5-engine/commit/67884da))
+
+### Other changes
+
+* `DataController` will now use a single instance of the view document for all its operations (`DataController#viewDocument`). Closes [ckeditor/ckeditor5#6381](https://github.com/ckeditor/ckeditor5/issues/6381). ([851bac6](https://github.com/ckeditor/ckeditor5-engine/commit/851bac6))
+* `Document#version` is no longer read-only. ([968b193](https://github.com/ckeditor/ckeditor5-engine/commit/968b193))
+* `StylesProcessor` rules will not be stored in a singleton, which made them shared between editor instances. In order to allow binding a styles processor instance to a specific view document, we had to replace a dynamic `#document` property in view nodes with a static one, set upon node creation. Closes [ckeditor/ckeditor5#6091](https://github.com/ckeditor/ckeditor5/issues/6091). ([0e2f02e](https://github.com/ckeditor/ckeditor5-engine/commit/0e2f02e))
+* Introduced support for multi-range selections. Closes [ckeditor/ckeditor5#6116](https://github.com/ckeditor/ckeditor5/issues/6116). ([ffce577](https://github.com/ckeditor/ckeditor5-engine/commit/ffce577))
+
+
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v16.0.0...v17.0.0) (2020-02-19)
 
 ### Features

@@ -101,6 +101,14 @@ export default class View {
 		this.set( 'isRenderingInProgress', false );
 
 		/**
+		 * Informs whether the DOM selection is inside any of the DOM roots managed by the view.
+		 *
+		 * @readonly
+		 * @member {Boolean} #hasDomSelection
+		 */
+		this.set( 'hasDomSelection', false );
+
+		/**
 		 * Instance of the {@link module:engine/view/renderer~Renderer renderer}.
 		 *
 		 * @protected
