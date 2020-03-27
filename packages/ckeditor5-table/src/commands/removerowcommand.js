@@ -82,7 +82,7 @@ export default class RemoveRowCommand extends Command {
 
 				// Must be done after the changes in table structure (removing rows).
 				// Otherwise the downcast converter for headingRows attribute will fail. ckeditor/ckeditor5#6391.
-				model.enqueueChange( writer => {
+				model.enqueueChange( writer.batch, writer => {
 					updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
 				} );
 			}

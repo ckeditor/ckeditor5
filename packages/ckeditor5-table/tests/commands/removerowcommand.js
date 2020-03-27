@@ -311,6 +311,34 @@ describe( 'RemoveRowCommand', () => {
 					[ '[]20', '01' ]
 				] ) );
 			} );
+
+			it( 'should create one undo step (1 batch)', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				], { headingRows: 3 } ) );
+
+				const createdBatches = new Set();
+
+				model.on( 'applyOperation', ( evt, args ) => {
+					const operation = args[ 0 ];
+
+					createdBatches.add( operation.batch );
+				} );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+				);
+
+				command.execute();
+
+				expect( createdBatches.size ).to.equal( 1 );
+			} );
 		} );
 
 		describe( 'with entire row selected', () => {
