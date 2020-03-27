@@ -121,33 +121,6 @@ describe( 'MergeCellsCommand', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'should be false if any range is collapsed in selection', () => {
-			setData( model, modelTable( [
-				[ '00', '01', '02' ]
-			] ) );
-
-			selectNodes( [
-				[ 0, 0, 0, 0, 0 ], // The "00" text node
-				[ 0, 0, 1 ]
-			] );
-
-			expect( command.isEnabled ).to.be.false;
-		} );
-
-		it( 'should be false if any ranges are on different tables', () => {
-			setData( model,
-				modelTable( [ [ '00', '01' ] ] ) +
-				modelTable( [ [ 'aa', 'ab' ] ] )
-			);
-
-			selectNodes( [
-				[ 0, 0, 0 ], // first table
-				[ 1, 0, 1 ] // second table
-			] );
-
-			expect( command.isEnabled ).to.be.false;
-		} );
-
 		it( 'should be false if any table cell with colspan attribute extends over selection area', () => {
 			setData( model, modelTable( [
 				[ '00', { colspan: 2, contents: '01' } ],

@@ -39,7 +39,6 @@ export default class MergeCellsCommand extends Command {
 	 */
 	execute() {
 		const model = this.editor.model;
-
 		const tableUtils = this.editor.plugins.get( TableUtils );
 
 		model.change( writer => {
@@ -149,34 +148,15 @@ function canMergeCells( selection, tableUtils ) {
 		return false;
 	}
 
-	// All cells must be inside the same table.
-	let firstRangeTable;
-
-	for ( const range of selection.getRanges() ) {
-		// Selection ranges must be set on whole <tableCell> element.
-		if ( range.isCollapsed || !range.isFlat || !range.start.nodeAfter.is( 'tableCell' ) ) {
-			return false;
-		}
-
-		const parentTable = findAncestor( 'table', range.start );
-
-		if ( !firstRangeTable ) {
-			firstRangeTable = parentTable;
-		} else if ( firstRangeTable !== parentTable ) {
-			return false;
-		}
-	}
-
 	const selectedTableCells = getSelectionAffectedTableCells( selection );
 
-	if ( !areCellInTheSameTableSection( selectedTableCells, firstRangeTable ) ) {
+	if ( !areCellInTheSameTableSection( selectedTableCells ) ) {
 		return false;
 	}
 
-	// At this point selection contains ranges over table cells in the same table.
-	// The valid selection is a fully occupied rectangle composed of table cells.
-	// Below we calculate area of selected cells and the area of valid selection.
-	// The area of valid selection is defined by top-left and bottom-right cells.
+	// A valid selection is a fully occupied rectangle composed of table cells.
+	// Below we will calculate the area of a selected table cells and the area of valid selection.
+	// The area of a valid selection is defined by top-left and bottom-right cells.
 	const rows = new Set();
 	const columns = new Set();
 
@@ -227,7 +207,9 @@ function getBiggestRectangleArea( rows, columns ) {
 	return ( lastRow - firstRow + 1 ) * ( lastColumn - firstColumn + 1 );
 }
 
-function areCellInTheSameTableSection( tableCells, table ) {
+function areCellInTheSameTableSection( tableCells ) {
+	const table = findAncestor( 'table', tableCells[ 0 ] );
+
 	const rowIndexes = getRowIndexes( tableCells );
 	const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
 
