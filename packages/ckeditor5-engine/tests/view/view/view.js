@@ -517,6 +517,11 @@ describe( 'view', () => {
 	describe( 'hasDomSelection', () => {
 		let domElement, domP, domSelection;
 
+		// Focus tests are too unstable on Firefox to run them.
+		if ( env.isGecko ) {
+			return;
+		}
+
 		beforeEach( () => {
 			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 
