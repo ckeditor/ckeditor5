@@ -74,7 +74,7 @@ ClassicEditor
 
 ### Integration with code highlighters
 
-Although live code block highlighting is impossible when editing in CKEditor 5 ([learn more](https://github.com/ckeditor/ckeditor5/issues/436#issuecomment-548399675)), the content can be highlighted when displayed in the frontend (e.g. in blog posts, messages, etc.).
+Although live code block highlighting ***is impossible when editing*** in CKEditor 5 ([learn more](https://github.com/ckeditor/ckeditor5/issues/436#issuecomment-548399675)), the content can be highlighted when displayed in the frontend (e.g. in blog posts, messages, etc.).
 
 The code language {@link module:code-block/codeblock~CodeBlockConfig#languages configuration} helps to integrate with external code highlighters (e.g. [highlight.js](https://highlightjs.org/) or [Prism](https://prismjs.com/)). Please refer to the documentation of the highlighter of your choice and make sure the CSS classes configured in `codeBlock.languages` correspond with the code syntax auto–detection feature of the highlighter.
 

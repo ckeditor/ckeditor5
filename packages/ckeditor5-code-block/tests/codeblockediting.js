@@ -570,6 +570,34 @@ describe( 'CodeBlockEditing', () => {
 					return editor.destroy();
 				} );
 		} );
+
+		// See #5910.
+		it( 'should allow to indent an entire code block with at least two lines', () => {
+			const element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ CodeBlockEditing, AlignmentEditing, IndentEditing ]
+				} )
+				.then( newEditor => {
+					const editor = newEditor;
+
+					editor.setData( '<pre><code class="language-css">\t\tx\n\tx</code></pre>' );
+					editor.model.change( writer => {
+						writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'on' );
+					} );
+					editor.execute( 'indent' );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'<codeBlock language="css">[\t\t\tx<softBreak></softBreak>\t\tx]</codeBlock>'
+					);
+
+					element.remove();
+
+					return editor.destroy();
+				} );
+		} );
 	} );
 
 	describe( 'editing pipeline m -> v', () => {
@@ -661,7 +689,7 @@ describe( 'CodeBlockEditing', () => {
 					plugins: [ CodeBlockEditing, AlignmentEditing, BoldEditing, Enter, Paragraph ],
 					codeBlock: {
 						languages: [
-							{ language: 'cpp', label: 'C++', class: '' },
+							{ language: 'cpp', label: 'C++', class: '' }
 						]
 					}
 				} )
@@ -766,7 +794,7 @@ describe( 'CodeBlockEditing', () => {
 					plugins: [ CodeBlockEditing, AlignmentEditing, BoldEditing, Enter, Paragraph ],
 					codeBlock: {
 						languages: [
-							{ language: 'cpp', label: 'C++', class: '' },
+							{ language: 'cpp', label: 'C++', class: '' }
 						]
 					}
 				} )
@@ -793,7 +821,7 @@ describe( 'CodeBlockEditing', () => {
 					codeBlock: {
 						languages: [
 							{ language: 'javascript', label: 'JavaScript', class: 'language-js' },
-							{ language: 'swift', label: 'Swift', class: 'swift ios-code' },
+							{ language: 'swift', label: 'Swift', class: 'swift ios-code' }
 						]
 					}
 				} )
@@ -957,7 +985,7 @@ describe( 'CodeBlockEditing', () => {
 							languages: [
 								{ language: 'foo', label: 'Foo' },
 								{ language: 'bar', label: 'Bar' },
-								{ language: 'qux', label: 'Qux', class: 'qux' },
+								{ language: 'qux', label: 'Qux', class: 'qux' }
 							]
 						}
 					} )
@@ -985,7 +1013,7 @@ describe( 'CodeBlockEditing', () => {
 							languages: [
 								{ language: 'foo', label: 'Foo' },
 								{ language: 'bar', label: 'Bar' },
-								{ language: 'qux', label: 'Qux', class: '' },
+								{ language: 'qux', label: 'Qux', class: '' }
 							]
 						}
 					} )
@@ -1051,7 +1079,7 @@ describe( 'CodeBlockEditing', () => {
 						languages: [
 							{ language: 'foo', label: 'Foo', class: 'foo' },
 							{ language: 'baz', label: 'Baz', class: 'baz bar' },
-							{ language: 'qux', label: 'Qux', class: 'qux' },
+							{ language: 'qux', label: 'Qux', class: 'qux' }
 						]
 					}
 				} ).then( editor => {
@@ -1072,7 +1100,7 @@ describe( 'CodeBlockEditing', () => {
 						languages: [
 							{ language: 'foo', label: 'Foo', class: 'foo' },
 							{ language: 'baz', label: 'Baz', class: 'baz bar' },
-							{ language: 'qux', label: 'Qux', class: 'qux' },
+							{ language: 'qux', label: 'Qux', class: 'qux' }
 						]
 					}
 				} ).then( editor => {

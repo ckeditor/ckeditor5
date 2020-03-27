@@ -51,7 +51,7 @@ export default class CodeBlockUI extends Plugin {
 
 			splitButtonView.on( 'execute', () => {
 				editor.execute( 'codeBlock', {
-					language: defaultLanguageDefinition.language,
+					language: defaultLanguageDefinition.language
 				} );
 
 				editor.editing.view.focus();
