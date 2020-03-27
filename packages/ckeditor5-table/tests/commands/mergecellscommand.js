@@ -14,7 +14,7 @@ import TableEditing from '../../src/tableediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'MergeCellsCommand', () => {
-	let editor, model, command, root;
+	let editor, model, command, root, tableSelection;
 
 	beforeEach( async () => {
 		editor = await ModelTestEditor.create( {
@@ -23,6 +23,7 @@ describe( 'MergeCellsCommand', () => {
 
 		model = editor.model;
 		root = model.document.getRoot( 'main' );
+		tableSelection = editor.plugins.get( TableSelection );
 
 		command = new MergeCellsCommand( editor );
 	} );
@@ -227,12 +228,9 @@ describe( 'MergeCellsCommand', () => {
 				[ '10', '11' ]
 			], { headingRows: 1 } ) );
 
-			const tableSelection = editor.plugins.get( TableSelection );
-			const modelRoot = model.document.getRoot();
-
 			tableSelection._setCellSelection(
-				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
-				modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 1, 0 ] )
 			);
 
 			expect( command.isEnabled ).to.be.false;
@@ -245,14 +243,63 @@ describe( 'MergeCellsCommand', () => {
 				[ '[]00', '01' ]
 			] ) );
 
-			selectNodes( [
-				[ 0, 0, 0 ], [ 0, 0, 1 ]
-			] );
+			tableSelection._setCellSelection(
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 0, 1 ] )
+			);
 
 			command.execute();
 
 			assertEqualMarkup( getData( model ), modelTable( [
 				[ { colspan: 2, contents: '<paragraph>[00</paragraph><paragraph>01]</paragraph>' } ]
+			] ) );
+		} );
+
+		it( 'should merge selection with a cell with rowspan in the selection', () => {
+			setData( model, modelTable( [
+				[ '[]00', '01', '02' ],
+				[ '10', { contents: '11', rowspan: 2 }, '12' ],
+				[ '20', '22' ]
+			] ) );
+
+			tableSelection._setCellSelection(
+				root.getNodeByPath( [ 0, 1, 0 ] ),
+				root.getNodeByPath( [ 0, 2, 1 ] )
+			);
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '00', '01', '02' ],
+				[ {
+					colspan: 3,
+					contents: '<paragraph>[10</paragraph><paragraph>11</paragraph><paragraph>12</paragraph>' +
+						'<paragraph>20</paragraph><paragraph>22]</paragraph>'
+				} ]
+			] ) );
+		} );
+
+		it( 'should merge selection with a cell with rowspan in the selection (reverse selection)', () => {
+			setData( model, modelTable( [
+				[ '[]00', '01', '02' ],
+				[ '10', { contents: '11', rowspan: 2 }, '12' ],
+				[ '20', '22' ]
+			] ) );
+
+			tableSelection._setCellSelection(
+				root.getNodeByPath( [ 0, 2, 1 ] ),
+				root.getNodeByPath( [ 0, 1, 0 ] )
+			);
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '00', '01', '02' ],
+				[ {
+					colspan: 3,
+					contents: '<paragraph>[10</paragraph><paragraph>11</paragraph><paragraph>12</paragraph>' +
+						'<paragraph>20</paragraph><paragraph>22]</paragraph>'
+				} ]
 			] ) );
 		} );
 

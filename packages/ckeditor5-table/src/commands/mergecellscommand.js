@@ -52,11 +52,11 @@ export default class MergeCellsCommand extends Command {
 		const tableUtils = this.editor.plugins.get( TableUtils );
 
 		model.change( writer => {
-			const selectedTableCells = [ ... this.editor.model.document.selection.getRanges() ].map( range => range.start.nodeAfter );
+			const selectedTableCells = getSelectionAffectedTableCells( model.document.selection );
 
 			const firstTableCell = selectedTableCells.shift();
 
-			// TODO: this shouldn't be necessary (right now the selection could overlap existing.
+			// This prevents the "model-selection-range-intersects" error, caused by removing row selected cells.
 			writer.setSelection( firstTableCell, 'in' );
 
 			const { row, column } = tableUtils.getCellLocation( firstTableCell );
