@@ -7,29 +7,24 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import MergeCellsCommand from '../../src/commands/mergecellscommand';
-import { defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
-import TableUtils from '../../src/tableutils';
+import { modelTable } from '../_utils/utils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import TableSelection from '../../src/tableselection';
+import TableEditing from '../../src/tableediting';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'MergeCellsCommand', () => {
 	let editor, model, command, root;
 
-	beforeEach( () => {
-		return ModelTestEditor
-			.create( {
-				plugins: [ TableUtils, TableSelection ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				root = model.document.getRoot( 'main' );
+	beforeEach( async () => {
+		editor = await ModelTestEditor.create( {
+			plugins: [ Paragraph, TableEditing, TableSelection ]
+		} );
 
-				command = new MergeCellsCommand( editor );
+		model = editor.model;
+		root = model.document.getRoot( 'main' );
 
-				defaultSchema( model.schema );
-				defaultConversion( editor.conversion );
-			} );
+		command = new MergeCellsCommand( editor );
 	} );
 
 	afterEach( () => {
@@ -245,7 +240,7 @@ describe( 'MergeCellsCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'should merge table cells', () => {
+		it( 'should merge simple table cell selection', () => {
 			setData( model, modelTable( [
 				[ '[]00', '01' ]
 			] ) );
