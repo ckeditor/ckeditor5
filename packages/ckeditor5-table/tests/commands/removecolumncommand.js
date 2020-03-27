@@ -324,6 +324,29 @@ describe( 'RemoveColumnCommand', () => {
 					[ '10', '[]14' ]
 				], { headingColumns: 1 } ) );
 			} );
+
+			it( 'should properly calculate truncated colspans', () => {
+				setData( model, modelTable( [
+					[ { contents: '00', colspan: 3 } ],
+					[ '10', '11', '12' ],
+					[ '20', '21', '22' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00' ],
+					[ '[]12' ],
+					[ '22' ]
+				] ) );
+			} );
 		} );
 
 		it( 'should change heading columns if removing a heading column', () => {

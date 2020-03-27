@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import TableWalker from '../tablewalker';
-import { updateNumericAttribute } from './utils';
+import { findAncestor, updateNumericAttribute } from './utils';
 import { getSelectionAffectedTableCells } from '../utils';
 
 /**
@@ -33,15 +33,16 @@ export default class RemoveRowCommand extends Command {
 		const firstCell = selectedCells[ 0 ];
 
 		if ( firstCell ) {
-			const table = firstCell.parent.parent;
+			const table = findAncestor( 'table', firstCell );
 			const tableRowCount = this.editor.plugins.get( 'TableUtils' ).getRows( table );
+			const lastRowIndex = tableRowCount - 1;
 
-			const tableMap = [ ...new TableWalker( table ) ];
-			const rowIndexes = tableMap.filter( entry => selectedCells.includes( entry.cell ) ).map( el => el.row );
-			const minRowIndex = rowIndexes[ 0 ];
-			const maxRowIndex = rowIndexes[ rowIndexes.length - 1 ];
+			const selectedRowIndexes = getRowIndexes( selectedCells );
 
-			this.isEnabled = maxRowIndex - minRowIndex < ( tableRowCount - 1 );
+			const areAllRowsSelected = selectedRowIndexes.first === 0 && selectedRowIndexes.last === lastRowIndex;
+
+			// Disallow selecting whole table -> delete whole table should be used instead.
+			this.isEnabled = !areAllRowsSelected;
 		} else {
 			this.isEnabled = false;
 		}
@@ -51,34 +52,41 @@ export default class RemoveRowCommand extends Command {
 	 * @inheritDoc
 	 */
 	execute() {
-		const referenceCells = getSelectionAffectedTableCells( this.editor.model.document.selection );
+		const model = this.editor.model;
+		const referenceCells = getSelectionAffectedTableCells( model.document.selection );
 		const removedRowIndexes = getRowIndexes( referenceCells );
 
 		const firstCell = referenceCells[ 0 ];
-		const table = firstCell.parent.parent;
-		const tableMap = [ ...new TableWalker( table, { endRow: removedRowIndexes.last } ) ];
-		const batch = this.editor.model.createBatch();
-		const columnIndexToFocus = getColumnIndexToFocus( tableMap, firstCell );
+		const table = findAncestor( 'table', firstCell );
 
-		// Doing multiple model.enqueueChange() calls, to get around ckeditor/ckeditor5#6391.
-		// Ideally we want to do this in a single model.change() block.
-		this.editor.model.enqueueChange( batch, writer => {
+		const columnIndexToFocus = this.editor.plugins.get( 'TableUtils' ).getCellLocation( firstCell ).column;
+
+		model.change( writer => {
 			// This prevents the "model-selection-range-intersects" error, caused by removing row selected cells.
 			writer.setSelection( writer.createSelection( table, 'on' ) );
-		} );
 
-		let cellToFocus;
+			let cellToFocus;
 
-		for ( let i = removedRowIndexes.last; i >= removedRowIndexes.first; i-- ) {
-			this.editor.model.enqueueChange( batch, writer => {
+			for ( let i = removedRowIndexes.last; i >= removedRowIndexes.first; i-- ) {
 				const removedRowIndex = i;
-				this._removeRow( removedRowIndex, table, writer, tableMap );
+				this._removeRow( removedRowIndex, table, writer );
 
 				cellToFocus = getCellToFocus( table, removedRowIndex, columnIndexToFocus );
-			} );
-		}
+			}
 
-		this.editor.model.enqueueChange( batch, writer => {
+			const model = this.editor.model;
+			const headingRows = table.getAttribute( 'headingRows' ) || 0;
+
+			if ( headingRows && removedRowIndexes.first < headingRows ) {
+				const newRows = getNewHeadingRowsValue( removedRowIndexes, headingRows );
+
+				// Must be done after the changes in table structure (removing rows).
+				// Otherwise the downcast converter for headingRows attribute will fail. ckeditor/ckeditor5#6391.
+				model.enqueueChange( writer.batch, writer => {
+					updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
+				} );
+			}
+
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
 	}
@@ -90,16 +98,11 @@ export default class RemoveRowCommand extends Command {
 	 * @param {Number} removedRowIndex Index of the row that should be removed.
 	 * @param {module:engine/model/element~Element} table
 	 * @param {module:engine/model/writer~Writer} writer
-	 * @param {module:engine/model/element~Element[]} tableMap Table map retrieved from {@link module:table/tablewalker~TableWalker}.
 	 */
-	_removeRow( removedRowIndex, table, writer, tableMap ) {
+	_removeRow( removedRowIndex, table, writer ) {
 		const cellsToMove = new Map();
 		const tableRow = table.getChild( removedRowIndex );
-		const headingRows = table.getAttribute( 'headingRows' ) || 0;
-
-		if ( headingRows && removedRowIndex < headingRows ) {
-			updateNumericAttribute( 'headingRows', headingRows - 1, table, writer, 0 );
-		}
+		const tableMap = [ ...new TableWalker( table, { endRow: removedRowIndex } ) ];
 
 		// Get cells from removed row that are spanned over multiple rows.
 		tableMap
@@ -167,8 +170,11 @@ function getCellToFocus( table, removedRowIndex, columnToFocus ) {
 	return cellToFocus;
 }
 
-// Returns the index of column that should be focused after rows are removed.
-function getColumnIndexToFocus( tableMap, firstCell ) {
-	const firstCellData = tableMap.find( value => value.cell === firstCell );
-	return firstCellData.column;
+// Calculates a new heading rows value for removing rows from heading section.
+function getNewHeadingRowsValue( removedRowIndexes, headingRows ) {
+	if ( removedRowIndexes.last < headingRows ) {
+		return headingRows - ( ( removedRowIndexes.last - removedRowIndexes.first ) + 1 );
+	}
+
+	return removedRowIndexes.first;
 }
