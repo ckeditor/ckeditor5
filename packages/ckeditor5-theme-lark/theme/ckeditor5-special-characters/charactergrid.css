@@ -16,7 +16,7 @@
 	max-height: 200px;
 
 	& .ck-character-grid__tiles {
-		margin: var(--ck-spacing-standard);
+		margin: var(--ck-spacing-standard) var(--ck-spacing-large);
 		grid-gap: var(--ck-spacing-standard);
 	}
 

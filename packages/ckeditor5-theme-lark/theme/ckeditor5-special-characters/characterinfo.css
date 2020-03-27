@@ -4,7 +4,7 @@
  */
 
 .ck.ck-character-info {
-	padding: var(--ck-spacing-small) var(--ck-spacing-standard);
+	padding: var(--ck-spacing-small) var(--ck-spacing-large);
 	border-top: 1px solid var(--ck-color-base-border);
 
 	& > * {
@@ -22,4 +22,3 @@
 		opacity: .6;
 	}
 }
-
