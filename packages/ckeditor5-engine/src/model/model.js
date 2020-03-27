@@ -196,6 +196,9 @@ export default class Model {
 	 * 			console.log( 3 );
 	 *		} ); // Will log: 1, 3, 2.
 	 *
+	 * In addition to that, the changes enqueued with `enqueueChange()` will be converted separately from the changes
+	 * done in the outer `change()` block.
+	 *
 	 * Second, it lets you define the {@link module:engine/model/batch~Batch} into which you want to add your changes.
 	 * By default, a new batch is created. In the sample above, `change` and `enqueueChange` blocks use a different
 	 * batch (and different {@link module:engine/model/writer~Writer} since each of them operates on the separate batch).
@@ -206,7 +209,8 @@ export default class Model {
 	 *			writer.insertText( 'foo', paragraph, 'end' );
 	 *		} );
 	 *
-	 * The batch instance can be obtained from {@link module:engine/model/writer~Writer#batch the writer}.
+	 * In order to make a nested `enqueueChange()` create a single undo step together with the changes done in the outer `change()`
+	 * block, you can obtain the batch instance from the  {@link module:engine/model/writer~Writer#batch writer} of the outer block.
 	 *
 	 * @param {module:engine/model/batch~Batch|'transparent'|'default'} batchOrType Batch or batch type should be used in the callback.
 	 * If not defined, a new batch will be created.
