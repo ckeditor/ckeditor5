@@ -124,6 +124,9 @@
 
 /* https://github.com/ckeditor/ckeditor5/issues/6415 */
 .ck.ck-editor__editable.ck-read-only .ck-widget {
+	/* Prevent the :hover outline from showing up because of the used outline-color transition. */
+	transition: none;
+
 	&:not(.ck-widget_selected) {
 		/* Disable visual effects of hover/active widget when CKEditor is in readOnly mode.
 		See: https://github.com/ckeditor/ckeditor5/issues/1261 */
