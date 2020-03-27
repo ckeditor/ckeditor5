@@ -59,28 +59,34 @@ export default class RemoveRowCommand extends Command {
 		const firstCell = referenceCells[ 0 ];
 		const table = findAncestor( 'table', firstCell );
 
-		const batch = model.createBatch();
 		const columnIndexToFocus = this.editor.plugins.get( 'TableUtils' ).getCellLocation( firstCell ).column;
 
-		// Doing multiple model.enqueueChange() calls, to get around ckeditor/ckeditor5#6391.
-		// Ideally we want to do this in a single model.change() block.
-		model.enqueueChange( batch, writer => {
+		model.change( writer => {
 			// This prevents the "model-selection-range-intersects" error, caused by removing row selected cells.
 			writer.setSelection( writer.createSelection( table, 'on' ) );
-		} );
 
-		let cellToFocus;
+			let cellToFocus;
 
-		for ( let i = removedRowIndexes.last; i >= removedRowIndexes.first; i-- ) {
-			model.enqueueChange( batch, writer => {
+			for ( let i = removedRowIndexes.last; i >= removedRowIndexes.first; i-- ) {
 				const removedRowIndex = i;
 				this._removeRow( removedRowIndex, table, writer );
 
 				cellToFocus = getCellToFocus( table, removedRowIndex, columnIndexToFocus );
-			} );
-		}
+			}
 
-		model.enqueueChange( batch, writer => {
+			const model = this.editor.model;
+			const headingRows = table.getAttribute( 'headingRows' ) || 0;
+
+			if ( headingRows && removedRowIndexes.first < headingRows ) {
+				const newRows = getNewHeadingRowsValue( removedRowIndexes, headingRows );
+
+				// Must be done after the changes in table structure (removing rows).
+				// Otherwise the downcast converter for headingRows attribute will fail. ckeditor/ckeditor5#6391.
+				model.enqueueChange( writer.batch, writer => {
+					updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
+				} );
+			}
+
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
 	}
@@ -96,12 +102,7 @@ export default class RemoveRowCommand extends Command {
 	_removeRow( removedRowIndex, table, writer ) {
 		const cellsToMove = new Map();
 		const tableRow = table.getChild( removedRowIndex );
-		const headingRows = table.getAttribute( 'headingRows' ) || 0;
 		const tableMap = [ ...new TableWalker( table, { endRow: removedRowIndex } ) ];
-
-		if ( headingRows && removedRowIndex < headingRows ) {
-			updateNumericAttribute( 'headingRows', headingRows - 1, table, writer, 0 );
-		}
 
 		// Get cells from removed row that are spanned over multiple rows.
 		tableMap
@@ -167,4 +168,13 @@ function getCellToFocus( table, removedRowIndex, columnToFocus ) {
 	}
 
 	return cellToFocus;
+}
+
+// Calculates a new heading rows value for removing rows from heading section.
+function getNewHeadingRowsValue( removedRowIndexes, headingRows ) {
+	if ( removedRowIndexes.last < headingRows ) {
+		return headingRows - ( ( removedRowIndexes.last - removedRowIndexes.first ) + 1 );
+	}
+
+	return removedRowIndexes.first;
 }
