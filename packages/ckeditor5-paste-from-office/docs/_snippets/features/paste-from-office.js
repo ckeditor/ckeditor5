@@ -64,6 +64,12 @@ ClassicEditor
 				'tableCellProperties'
 			]
 		},
+		fontFamily: {
+			supportAllValues: true
+		},
+		fontSize: {
+			supportAllValues: true
+		},
 		placeholder: 'Paste the content here to test the feature.',
 		cloudServices: CS_CONFIG
 	} )
