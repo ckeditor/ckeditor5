@@ -25,18 +25,83 @@ describe( 'Collection', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'allows to change the id property used by the collection', () => {
-			const item1 = { id: 'foo', name: 'xx' };
-			const item2 = { id: 'foo', name: 'yy' };
-			const collection = new Collection( { idProperty: 'name' } );
+		describe( 'setting initial collection items', () => {
+			it( 'should work using an array', () => {
+				const item1 = getItem( 'foo' );
+				const item2 = getItem( 'bar' );
+				const collection = new Collection( [ item1, item2 ] );
 
-			collection.add( item1 );
-			collection.add( item2 );
+				expect( collection ).to.have.length( 2 );
 
-			expect( collection ).to.have.length( 2 );
+				expect( collection.get( 0 ) ).to.equal( item1 );
+				expect( collection.get( 1 ) ).to.equal( item2 );
+				expect( collection.get( 'foo' ) ).to.equal( item1 );
+				expect( collection.get( 'bar' ) ).to.equal( item2 );
+			} );
 
-			expect( collection.get( 'xx' ) ).to.equal( item1 );
-			expect( collection.remove( 'yy' ) ).to.equal( item2 );
+			it( 'should work using an iterable', () => {
+				const item1 = getItem( 'foo' );
+				const item2 = getItem( 'bar' );
+				const itemsSet = new Set( [ item1, item2 ] );
+				const collection = new Collection( itemsSet );
+
+				expect( collection ).to.have.length( 2 );
+
+				expect( collection.get( 0 ) ).to.equal( item1 );
+				expect( collection.get( 1 ) ).to.equal( item2 );
+			} );
+
+			it( 'should generate ids for items that doesn\'t have it', () => {
+				const item = {};
+				const collection = new Collection( [ item ] );
+
+				expect( collection.get( 0 ).id ).to.be.a( 'string' );
+				expect( collection.get( 0 ).id ).not.to.be.empty;
+			} );
+
+			it( 'should throw an error when an invalid item key is provided', () => {
+				const badIdItem = getItem( 1 ); // Number id is not supported.
+
+				expectToThrowCKEditorError( () => {
+					return new Collection( [ badIdItem ] );
+				}, /^collection-add-invalid-id/ );
+			} );
+
+			it( 'should throw an error when two items have the same key', () => {
+				const item1 = getItem( 'foo' );
+				const item2 = getItem( 'foo' );
+
+				expectToThrowCKEditorError( () => {
+					return new Collection( [ item1, item2 ] );
+				}, /^collection-add-item-already-exists/ );
+			} );
+		} );
+
+		describe( 'options', () => {
+			it( 'should allow to change the id property used by the collection', () => {
+				const item1 = { id: 'foo', name: 'xx' };
+				const item2 = { id: 'foo', name: 'yy' };
+				const collection = new Collection( { idProperty: 'name' } );
+
+				collection.add( item1 );
+				collection.add( item2 );
+
+				expect( collection ).to.have.length( 2 );
+
+				expect( collection.get( 'xx' ) ).to.equal( item1 );
+				expect( collection.remove( 'yy' ) ).to.equal( item2 );
+			} );
+
+			it( 'should allow to change the id property used by the collection (initial items passed to the constructor)', () => {
+				const item1 = { id: 'foo', name: 'xx' };
+				const item2 = { id: 'foo', name: 'yy' };
+				const collection = new Collection( [ item1, item2 ], { idProperty: 'name' } );
+
+				expect( collection ).to.have.length( 2 );
+
+				expect( collection.get( 'xx' ) ).to.equal( item1 );
+				expect( collection.remove( 'yy' ) ).to.equal( item2 );
+			} );
 		} );
 	} );
 

@@ -10,6 +10,7 @@
 import EmitterMixin from './emittermixin';
 import CKEditorError from './ckeditorerror';
 import uid from './uid';
+import isIterable from './isiterable';
 import mix from './mix';
 
 /**
@@ -28,10 +29,46 @@ export default class Collection {
 	/**
 	 * Creates a new Collection instance.
 	 *
-	 * @param {Object} [options={}] The options object.
-	 * @param {String} [options.idProperty='id'] The name of the property which is considered to identify an item.
+	 * You can provide an iterable of initial items the collection will be created with:
+	 *
+	 *		const collection = new Collection( [ { id: 'John' }, { id: 'Mike' } ] );
+	 *
+	 *		console.log( collection.get( 0 ) ); // -> { id: 'John' }
+	 *		console.log( collection.get( 1 ) ); // -> { id: 'Mike' }
+	 *		console.log( collection.get( 'Mike' ) ); // -> { id: 'Mike' }
+	 *
+	 * Or you can first create a collection and then add new items using the {@link #add} method:
+	 *
+	 *		const collection = new Collection();
+	 *
+	 *		collection.add( { id: 'John' } );
+	 *		console.log( collection.get( 0 ) ); // -> { id: 'John' }
+	 *
+	 * Whatever option you choose, you can always pass a configuration object as the last argument
+	 * of the constructor:
+	 *
+	 *		const emptyCollection = new Collection( { idProperty: 'name' } );
+	 *		emptyCollection.add( { name: 'John' } );
+	 *		console.log( collection.get( 'John' ) ); // -> { name: 'John' }
+	 *
+	 *		const nonEmptyCollection = new Collection( [ { name: 'John' } ], { idProperty: 'name' } );
+	 *		nonEmptyCollection.add( { name: 'George' } );
+	 *		console.log( collection.get( 'George' ) ); // -> { name: 'George' }
+	 *		console.log( collection.get( 'John' ) ); // -> { name: 'John' }
+	 *
+	 * @param {Iterable.<Object>|Object} initialItemsOrOptions The initial items of the collection or
+	 * the options object.
+	 * @param {Object} [options={}] The options object, when the first argument is an array of initial items.
+	 * @param {String} [options.idProperty='id'] The name of the property which is used to identify an item.
+	 * Items that do not have such a property will be assigned one when added to the collection.
 	 */
-	constructor( options = {} ) {
+	constructor( initialItemsOrOptions = {}, options = {} ) {
+		const hasInitialItems = isIterable( initialItemsOrOptions );
+
+		if ( !hasInitialItems ) {
+			options = initialItemsOrOptions;
+		}
+
 		/**
 		 * The internal list of items in the collection.
 		 *
@@ -88,6 +125,14 @@ export default class Collection {
 		 */
 		this._skippedIndexesFromExternal = [];
 
+		// Set the initial content of the collection (if provided in the constructor).
+		if ( hasInitialItems ) {
+			for ( const item of initialItemsOrOptions ) {
+				this._items.push( item );
+				this._itemMap.set( this._getItemIdBeforeAdding( item ), item );
+			}
+		}
+
 		/**
 		 * A collection instance this collection is bound to as a result
 		 * of calling {@link #bindTo} method.
@@ -136,32 +181,7 @@ export default class Collection {
 	 * @fires add
 	 */
 	add( item, index ) {
-		let itemId;
-		const idProperty = this._idProperty;
-
-		if ( ( idProperty in item ) ) {
-			itemId = item[ idProperty ];
-
-			if ( typeof itemId != 'string' ) {
-				/**
-				 * This item's id should be a string.
-				 *
-				 * @error collection-add-invalid-id
-				 */
-				throw new CKEditorError( 'collection-add-invalid-id', this );
-			}
-
-			if ( this.get( itemId ) ) {
-				/**
-				 * This item already exists in the collection.
-				 *
-				 * @error collection-add-item-already-exists
-				 */
-				throw new CKEditorError( 'collection-add-item-already-exists', this );
-			}
-		} else {
-			item[ idProperty ] = itemId = uid();
-		}
+		const itemId = this._getItemIdBeforeAdding( item );
 
 		// TODO: Use ES6 default function argument.
 		if ( index === undefined ) {
@@ -602,6 +622,46 @@ export default class Collection {
 				return result;
 			}, [] );
 		} );
+	}
+
+	/**
+	 * Returns an unique id property for a given `item`.
+	 *
+	 * The method will generate new id and assign it to the `item` if it doesn't have any.
+	 *
+	 * @private
+	 * @param {Object} item Item to be added.
+	 * @returns {String}
+	 */
+	_getItemIdBeforeAdding( item ) {
+		const idProperty = this._idProperty;
+		let itemId;
+
+		if ( ( idProperty in item ) ) {
+			itemId = item[ idProperty ];
+
+			if ( typeof itemId != 'string' ) {
+				/**
+				 * This item's id should be a string.
+				 *
+				 * @error collection-add-invalid-id
+				 */
+				throw new CKEditorError( 'collection-add-invalid-id', this );
+			}
+
+			if ( this.get( itemId ) ) {
+				/**
+				 * This item already exists in the collection.
+				 *
+				 * @error collection-add-item-already-exists
+				 */
+				throw new CKEditorError( 'collection-add-item-already-exists', this );
+			}
+		} else {
+			item[ idProperty ] = itemId = uid();
+		}
+
+		return itemId;
 	}
 
 	/**
