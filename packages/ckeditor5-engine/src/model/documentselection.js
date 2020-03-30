@@ -1137,7 +1137,7 @@ class LiveSelection extends Selection {
 		liveRange.detach();
 
 		// If nearest valid selection range has been found - add it in the place of old range.
-		if ( selectionRange ) {
+		if ( selectionRange && !isIntersecting( this._ranges, selectionRange ) ) {
 			// Check the range, convert it to live range, bind events, etc.
 			const newRange = this._prepareRange( selectionRange );
 
@@ -1189,4 +1189,16 @@ function clearAttributesStoredInElement( model, batch ) {
 			} );
 		}
 	}
+}
+
+// Checks if range intersects with any given ranges.
+function isIntersecting( ranges, selectionRange ) {
+	for ( let i = 0; i < ranges.length; i++ ) {
+		if ( selectionRange.isIntersecting( ranges[ i ] ) ) {
+			// It is also fine - as we can have multiple ranges in the selection.
+			return true;
+		}
+	}
+
+	return false;
 }
