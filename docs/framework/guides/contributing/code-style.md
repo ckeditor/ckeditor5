@@ -409,7 +409,8 @@ Properties accessibility:
 For instance, a protected property is accessible from its own class in which it was defined, its whole package and from its subclasses (even if not in the same package).
 
 <info-box>
-	Protected properties/methods are often used for testability. Since tests are located in the same package as the code,
+	Protected properties/methods are often used for testability. Since tests are located in the same package as the code they can access these properties.
+</info-box>
 
 ## Getters
 
@@ -471,3 +472,204 @@ There are some special rules for tests.
 * Every test should clean after itself, including destroying all editors and removing all elements that have been added.
 * Avoid using real timeouts. Use [fake timers](https://sinonjs.org/releases/v9.0.1/fake-timers/) instead **when possible**. Timeouts make test really slow.
 * However, thinking about slow – do not overoptimize (especially that performance is not a priority in tests). In most cases it is completely fine (and hence recommended) to create a separate editor for every `it()`.
+
+## Naming
+
+### JavaScript code names
+
+Variable, functions, namespaces, parameters and all undocumented cases must be named in [lowerCamelCase](http://en.wikipedia.org/wiki/CamelCase):
+
+```js
+let a;
+let myLongNamedVariable = true;
+
+function foo() {}
+
+function longNamedFunction( example, longNamedParameter ) {}
+```
+
+Classes must be named in [UpperCamelCase](http://en.wikipedia.org/wiki/CamelCase):
+
+```js
+class MyClass() {}
+
+const a = new MyClass();
+```
+
+Mixins must be named in [UpperCamelCase](http://en.wikipedia.org/wiki/CamelCase), postfixed with "Mixin":
+
+```js
+const SomeMixin = {
+	method1: ...,
+	method2: ...
+};
+```
+
+Global namespacing variables must be named in [ALLCAPS](http://en.wikipedia.org/wiki/All_caps):
+
+```js
+const CKEDITOR_TRANSLATIONS = {};
+```
+
+#### Private properties and methods
+
+Private properties and methods are **prefixed with an underscore**:
+
+```js
+CKEDITOR._counter;
+something._doInternalTask();
+```
+
+#### Methods and functions
+
+Methods and functions are **almost always** verbs/actions:
+
+```js
+// Good
+execute();
+this.getNextNumber()
+
+// Bad
+this.editable();
+this.status();
+```
+
+#### Properties and variables
+
+Properties and variables are **almost always** nouns:
+
+```js
+const editor = this.editor;
+this.name;
+this.editable;
+```
+
+**Boolean properties and variables** are **always** prefixed by an auxiliary verb:
+
+```js
+this.isDirty;
+this.hasChildren;
+this.canObserve;
+this.mustRefresh;
+```
+
+### Shortcuts
+
+For local variables **commonly accepted short versions** for long names are fine:
+
+```js
+const attr, doc, el, fn, deps, err, id, args, uid, evt, env;
+```
+
+The following are **the only short versions accepted for property names**:
+
+```js
+this.lang;
+this.config;
+this.id;
+this.env;
+```
+
+### Acronyms and proper names
+
+Acronyms and, partially, proper names are naturally written in uppercase. This may stand against code style rules described above – especially when there is a need to include acronym or proper name in variable or class name. In such case, one should follow these rules:
+
+* acronyms:
+ * all lowercase if at the beginning of the variable name: `let domError`
+ * default camel case at the beginning of the class name: `class DomError`
+ * default camel case inside variable / class name: `function getDomError()`
+* proper names:
+ * all lowercase if at the beginning of the variable: `let ckeditorError`
+ * original case if at the beginning of the class name: `class CKEditorError`
+ * original case inside variable / class name: `function getCKEditorError()`
+
+However, two letter acronyms and proper names (if originally written uppercase) should be uppercase. So e.g. `getUI` (not `getUi`).
+
+<info-box>
+	Two most frequently used acronyms which cause problems:
+
+	* **DOM** – it should be e.g. `getDomNode()`,
+	* **HTML** – it should be e.g. `toHtml()`.
+</info-box>
+
+### CSS classes
+
+CSS class naming pattern is based on [BEM](https://en.bem.info/) methodology and code-style. All names are in lowercase with optional dash (`-`) between the words.
+
+Top–level building **blocks** begin with mandatory `ck-` prefix:
+
+```CSS
+.ck-dialog
+.ck-toolbar
+.ck-dropdown-menu
+```
+
+**Elements** belonging to the block namespace are delimited by double underscore (`__`):
+
+```CSS
+.ck-dialog__header
+.ck-toolbar__group
+.ck-dropdown-menu__button-collapser
+```
+
+**Modifiers** are delimited by a single underscore (`_`). Key-value modifiers
+follow `block-or-element_key_value` naming pattern:
+
+```CSS
+/* Block modifier */
+.ck-dialog_hidden
+/* Element modifier */
+.ck-toolbar__group_collapsed
+/* Block modifier as key_value  */
+.ck-dropdown-menu_theme_some-theme
+```
+
+In HTML:
+
+```html
+<div class="ck-reset_all ck-dialog ck-dialog_theme_lark ck-dialog_visible">
+	<div class="ck-dialog__top ck-dialog__top_small">
+		<h1 class="ck-dialog__top-title">Title of the dialog</h1>
+		...
+	</div>
+	...
+</div>
+```
+
+### ID attributes
+
+HTML ID attribute naming pattern follows [CSS Classes](#css-classes) naming guidelines. Each ID must begin with `ck-` prefix and consist of dash–separated (`-`) words in lowercase:
+
+```html
+<div id="ck">...</div>
+<div id="ck-unique-div">...</div>
+<div id="ck-a-very-long-unique-identifier">...</div>
+```
+
+### File names
+
+File and directory names must follow a standard that make their syntax easy to predict:
+
+* All lower-cased.
+* Only alphanumeric characters are accepted.
+* Words are separated by dashes (`-`) ([kebab-case](https://en.wikipedia.org/wiki/Letter_case#Special_case_styles)).
+	* Code entities are considered single words, so the `DataProcessor` class is defined in the `dataprocessor.js` file.
+	* However, a test file covering for "mutations in multi-root editors": `mutations-in-multi-root-editors.js`.
+* HTML files have the `.html` extension.
+
+#### Examples
+
+* `ckeditor.js`
+* `tools.js`
+* `editor.js`
+* `dataprocessor.js`
+* `build-all.js` and `build-min.js`
+* `test-core-style-system.html`
+
+#### Standard files
+
+Widely used standard files do not obey the above rules:
+
+* `README.md`, `LICENSE.md`, `CONTRIBUTING.md`, `CHANGES.md`
+* `.gitignore` and all standard "dot-files"
+* `node_modules`
