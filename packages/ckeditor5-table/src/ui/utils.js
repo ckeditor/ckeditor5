@@ -497,9 +497,9 @@ function getTableCellAtPosition( position ) {
 // Returns bounding rect for list of rects.
 //
 // @param {Array.<module:utils/dom/rect~Rect>|Array.<*>} list List of `Rect`s or any list to map by `mapFn`.
-// @param {Function} [mapFn] Mapping function for list elements.
+// @param {Function} mapFn Mapping function for list elements.
 // @returns {module:utils/dom/rect~Rect}
-function createBoundingRect( list, mapFn = null ) {
+function createBoundingRect( list, mapFn ) {
 	const rectData = {
 		left: Number.POSITIVE_INFINITY,
 		top: Number.POSITIVE_INFINITY,
@@ -508,7 +508,7 @@ function createBoundingRect( list, mapFn = null ) {
 	};
 
 	for ( const item of list ) {
-		const rect = mapFn ? mapFn( item ) : item;
+		const rect = mapFn( item );
 
 		rectData.left = Math.min( rectData.left, rect.left );
 		rectData.top = Math.min( rectData.top, rect.top );
