@@ -78,9 +78,15 @@ export default class FormHeaderView extends View {
 			children: this.children
 		} );
 
-		const label = new View( locale );
+		/**
+		 * A label view, which text can be set through `options.label` or {@link #label}.
+		 *
+		 * @readonly
+		 * @member {module:ui/view~View}
+		 */
+		this.labelView = new View( locale );
 
-		label.setTemplate( {
+		this.labelView.setTemplate( {
 			tag: 'span',
 			attributes: {
 				class: [
@@ -93,7 +99,28 @@ export default class FormHeaderView extends View {
 			]
 		} );
 
-		// Append the label view only if label text has been set.
-		this.label && this.children.add( label );
+		this.label && this.children.add( this.labelView );
+
+		this.on( 'set:label', () => {
+			if ( !this.children.has( this.labelView ) ) {
+				this.children.add( this.labelView );
+			}
+		} );
+	}
+
+	render() {
+		super.render();
+
+		this.on( 'change:label', evt => {
+			if ( this.children.has( this.labelView ) ) {
+				if ( !evt.source.label ) {
+					// Remove the label view if it is no longer necessary (eg.: label text is empty).
+					this.children.remove( this.labelView );
+				}
+			} else {
+				// Append label view only if it has not been added while creating the instance, but after render.
+				this.children.add( this.labelView );
+			}
+		} );
 	}
 }
