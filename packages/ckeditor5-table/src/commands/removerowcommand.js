@@ -62,9 +62,6 @@ export default class RemoveRowCommand extends Command {
 		const columnIndexToFocus = this.editor.plugins.get( 'TableUtils' ).getCellLocation( firstCell ).column;
 
 		model.change( writer => {
-			// This prevents the "model-selection-range-intersects" error, caused by removing row selected cells.
-			writer.setSelection( writer.createSelection( table, 'on' ) );
-
 			let cellToFocus;
 
 			for ( let i = removedRowIndexes.last; i >= removedRowIndexes.first; i-- ) {
