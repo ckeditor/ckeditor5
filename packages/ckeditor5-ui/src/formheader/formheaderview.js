@@ -15,7 +15,9 @@ import '../../theme/components/formheader/formheader.css';
  * The class component representing a form header view. It should be used in more advanced forms to
  * describe the main purpose of the form.
  *
- * By default the component contains a bolded label view that has to be set. The label is usually a short (at most 3-word) string.
+ * By default the component contains an optional bolded label view, which text can be set through the options (`[options.label]`),
+ * while creating the component. The label text is usually a short (at most 3-word) string. If the label text isn't defined
+ * the label view will not appear.
  * The component can also be extended by any other elements, like: icons, dropdowns, etc.
  *
  * It is used i.a.
@@ -91,6 +93,7 @@ export default class FormHeaderView extends View {
 			]
 		} );
 
-		this.children.add( label );
+		// Append the label view only if label text has been set.
+		this.label && this.children.add( label );
 	}
 }
