@@ -272,6 +272,24 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
+		it( 'should properly insert column at beginning of row-col-spanned cell', () => {
+			setData( model, modelTable( [
+				[ '11', '12', '13' ],
+				[ '21', { colspan: 2, rowspan: 2, contents: '22[]' } ],
+				[ '31' ],
+				[ '41', '42', '43' ]
+			] ) );
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 1 } );
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '11', '', '12', '13' ],
+				[ '21', '', { colspan: 2, rowspan: 2, contents: '22[]' } ],
+				[ '31', '' ],
+				[ '41', '', '42', '43' ]
+			] ) );
+		} );
+
 		it( 'should update table heading columns attribute when inserting column in headings section', () => {
 			setData( model, modelTable( [
 				[ '11[]', '12' ],
