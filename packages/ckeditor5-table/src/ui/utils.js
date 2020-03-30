@@ -15,6 +15,7 @@ import ColorInputView from './colorinputview';
 import { isColor, isLength, isPercentage } from '@ckeditor/ckeditor5-engine/src/view/styles/utils';
 import { getTableWidgetAncestor } from '../utils';
 import { findAncestor } from '../commands/utils';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 const DEFAULT_BALLOON_POSITIONS = BalloonPanelView.defaultPositions;
 const BALLOON_POSITIONS = [
@@ -81,12 +82,26 @@ export function getBalloonTablePositionData( editor ) {
  * @returns {module:utils/dom/position~Options}
  */
 export function getBalloonCellPositionData( editor ) {
-	// This is a bit naive. See https://github.com/ckeditor/ckeditor5/issues/6357.
-	const modelTableCell = getTableCellAtPosition( editor.model.document.selection.getFirstPosition() );
-	const viewTableCell = editor.editing.mapper.toViewElement( modelTableCell );
+	const mapper = editor.editing.mapper;
+	const domConverter = editor.editing.view.domConverter;
+	const selection = editor.model.document.selection;
+
+	if ( selection.rangeCount > 1 ) {
+		return {
+			target: () => createBoundingRect( selection.getRanges(), modelRange => {
+				const modelTableCell = getTableCellAtPosition( modelRange.start );
+				const viewTableCell = mapper.toViewElement( modelTableCell );
+				return new Rect( domConverter.viewToDom( viewTableCell ) );
+			} ),
+			positions: BALLOON_POSITIONS
+		};
+	}
+
+	const modelTableCell = getTableCellAtPosition( selection.getFirstPosition() );
+	const viewTableCell = mapper.toViewElement( modelTableCell );
 
 	return {
-		target: editor.editing.view.domConverter.viewToDom( viewTableCell ),
+		target: domConverter.viewToDom( viewTableCell ),
 		positions: BALLOON_POSITIONS
 	};
 }
@@ -477,4 +492,32 @@ function getTableCellAtPosition( position ) {
 	const isTableCellSelected = position.nodeAfter && position.nodeAfter.is( 'tableCell' );
 
 	return isTableCellSelected ? position.nodeAfter : findAncestor( 'tableCell', position );
+}
+
+// Returns bounding rect for list of rects.
+//
+// @param {Array.<module:utils/dom/rect~Rect>|Array.<*>} list List of `Rect`s or any list to map by `mapFn`.
+// @param {Function} mapFn Mapping function for list elements.
+// @returns {module:utils/dom/rect~Rect}
+function createBoundingRect( list, mapFn ) {
+	const rectData = {
+		left: Number.POSITIVE_INFINITY,
+		top: Number.POSITIVE_INFINITY,
+		right: Number.NEGATIVE_INFINITY,
+		bottom: Number.NEGATIVE_INFINITY
+	};
+
+	for ( const item of list ) {
+		const rect = mapFn( item );
+
+		rectData.left = Math.min( rectData.left, rect.left );
+		rectData.top = Math.min( rectData.top, rect.top );
+		rectData.right = Math.max( rectData.right, rect.right );
+		rectData.bottom = Math.max( rectData.bottom, rect.bottom );
+	}
+
+	rectData.width = rectData.right - rectData.left;
+	rectData.height = rectData.bottom - rectData.top;
+
+	return new Rect( rectData );
 }
