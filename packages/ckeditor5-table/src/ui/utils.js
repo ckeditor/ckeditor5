@@ -84,26 +84,26 @@ export function getBalloonTablePositionData( editor ) {
 export function getBalloonCellPositionData( editor ) {
 	const mapper = editor.editing.mapper;
 	const domConverter = editor.editing.view.domConverter;
-	const ranges = Array.from( editor.model.document.selection.getRanges() );
+	const selection = editor.model.document.selection;
 
-	if ( ranges.length > 1 ) {
+	if ( selection.rangeCount > 1 ) {
 		return {
-			target: () => createBoundingRect( ranges, modelRange => {
+			target: () => createBoundingRect( selection.getRanges(), modelRange => {
 				const modelTableCell = getTableCellAtPosition( modelRange.start );
 				const viewTableCell = mapper.toViewElement( modelTableCell );
 				return new Rect( domConverter.viewToDom( viewTableCell ) );
 			} ),
 			positions: BALLOON_POSITIONS
 		};
-	} else {
-		const modelTableCell = getTableCellAtPosition( ranges[ 0 ].start );
-		const viewTableCell = mapper.toViewElement( modelTableCell );
-
-		return {
-			target: domConverter.viewToDom( viewTableCell ),
-			positions: BALLOON_POSITIONS
-		};
 	}
+
+	const modelTableCell = getTableCellAtPosition( selection.getFirstPosition() );
+	const viewTableCell = mapper.toViewElement( modelTableCell );
+
+	return {
+		target: domConverter.viewToDom( viewTableCell ),
+		positions: BALLOON_POSITIONS
+	};
 }
 
 /**
