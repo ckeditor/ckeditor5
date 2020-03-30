@@ -137,9 +137,20 @@ export function getSelectionAffectedTableCells( selection ) {
 	return getTableCellsContainingSelection( selection );
 }
 
-// Returns a helper object with first and last row index contained in given `referenceCells`.
-export function getRowIndexes( referenceCells ) {
-	const allIndexesSorted = referenceCells.map( cell => cell.parent.index ).sort();
+/**
+ * Returns a helper object with `first` and `last` row index contained in given `tableCells`.
+ *
+ *		const selectedTableCells = getSelectedTableCells( editor.model.document.selection );
+ *
+ *		const { first, last } = getRowIndexes( selectedTableCells );
+ *
+ *		console.log( `Selected rows ${ first } to ${ last }` );
+ *
+ * @package {Array.<module:engine/model/element~Element>}
+ * @returns {Object} Returns an object with `first` and `last` table row indexes.
+ */
+export function getRowIndexes( tableCells ) {
+	const allIndexesSorted = tableCells.map( cell => cell.parent.index ).sort();
 
 	return {
 		first: allIndexesSorted[ 0 ],
