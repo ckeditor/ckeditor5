@@ -112,42 +112,6 @@ The stylesheet will be saved in the `build/content-styles` folder.
 
 To learn more, refer to the {@link builds/guides/integration/content-styles Content styles} guide.
 
-## Bisecting through a multi-repository
-
-CKEditor 5 is a multi-repository project. It means that [`git bisect`](https://git-scm.com/docs/git-bisect) (which is super handy when tracking which commit introduced a bug) will not work out of the box.
-
-Fortunately, every commit made to any of the `master` branches of all CKEditor 5 subpackages will update this subpackage's hash in `mrgit.json` in the [`master-revisions`](https://github.com/ckeditor/ckeditor5/commits/master-revisions) branch.
-
-Thanks to that, `master-revisions` contains an ordered history of all changes which makes it possible to go back to any point in history:
-
-```bash
-# Make sure to update this branch.
-git co master-revisions
-git pull
-
-# Check out 30 commits back.
-git co master-revisions~30
-
-# Check out subpackages to correct hashes.
-mrgit co
-```
-
-Once you found the point in history which interests you, you can go straight to a commit in a subpackage and PR. For example:
-
-```bash
-(detached:bisect/bad~1 cb2feef ?1) p@m /workspace/ckeditor5> git bisect good
-ab5b5494e5eba7beb4a3bac4ea9c5e6d59a610f5 is the first bad commit
-commit ab5b5494e5eba7beb4a3bac4ea9c5e6d59a610f5
-Author: Travis CI User <travis@example.org>
-Date:   Tue Apr 11 16:45:47 2017 +0000
-
-    Revision: https://github.com/ckeditor/ckeditor5-image/commit/02869eb4478a2f538006c128b30b9727617af665
-
-:100644 100644 611526d5c4beae7046b0a08ec36843cbbe642175 35acdd8ba971d8127dd462a9c8c1162a54f00d58 M	mgit.json
-```
-
-Leads to [`ckeditor/ckeditor5-image@02869eb`](https://github.com/ckeditor/ckeditor5-image/commit/02869eb) which leads to [ckeditor/ckeditor5-image#95](https://github.com/ckeditor/ckeditor5-image/pull/95).
-
 ## Additional information for contributors
 
 ### SVG icons
