@@ -1710,7 +1710,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		describe( 'MoveOperation to graveyard', () => {
-			it( 'fix selection range if it ends up in graveyard #1', () => {
+			it( 'fix selection range if it ends up in graveyard - collapsed selection', () => {
 				selection._setTo( new Position( root, [ 1, 3 ] ) );
 
 				model.applyOperation(
@@ -1725,7 +1725,7 @@ describe( 'DocumentSelection', () => {
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 1, 2 ] );
 			} );
 
-			it( 'fix selection range if it ends up in graveyard #2', () => {
+			it( 'fix selection range if it ends up in graveyard - text from non-collapsed selection is moved', () => {
 				selection._setTo( [ new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 1, 4 ] ) ) ] );
 
 				model.applyOperation(
@@ -1740,7 +1740,7 @@ describe( 'DocumentSelection', () => {
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 1, 2 ] );
 			} );
 
-			it( 'fix selection range if it ends up in graveyard #3', () => {
+			it( 'fix selection range if it ends up in graveyard - parent of non-collapsed selection is moved', () => {
 				selection._setTo( [ new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 2 ] ) ) ] );
 
 				model.applyOperation(
@@ -1755,7 +1755,7 @@ describe( 'DocumentSelection', () => {
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0, 6 ] );
 			} );
 
-			it( 'fix selection range if it ends up in graveyard #4 - whole content removed', () => {
+			it( 'fix selection range if it ends up in graveyard - whole content removed', () => {
 				model.applyOperation(
 					new MoveOperation(
 						new Position( root, [ 0 ] ),
