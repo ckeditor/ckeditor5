@@ -1779,7 +1779,7 @@ describe( 'DocumentSelection', () => {
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0, 0 ] );
 			} );
 
-			it( 'does not break if multi-range selection is moved (inside text nodes - resulting ranges are collapsed)', () => {
+			it( 'does not break if multi-range selection is inside text nodes', () => {
 				const ranges = [
 					new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 2 ] ) ),
 					new Range( new Position( root, [ 1, 3 ] ), new Position( root, [ 1, 4 ] ) )
@@ -1799,6 +1799,41 @@ describe( 'DocumentSelection', () => {
 				expect( selection.rangeCount ).to.equal( 2 );
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 1, 1 ] );
 				expect( selection.getLastPosition().path ).to.deep.equal( [ 1, 1 ] );
+			} );
+
+			it( 'does not break if multi-range selection is set on object nodes and resulting ranges will intersect', () => {
+				model.schema.register( 'outer', {
+					isObject: true
+				} );
+				model.schema.register( 'inner', {
+					isObject: true,
+					allowIn: 'outer'
+				} );
+
+				root._removeChildren( 0, root.childCount );
+				root._insertChild( 0, [
+					new Element( 'outer', [], [ new Element( 'inner' ), new Element( 'inner' ), new Element( 'inner' ) ] )
+				] );
+
+				const ranges = [
+					new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 1 ] ) ),
+					new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 2 ] ) )
+				];
+
+				selection._setTo( ranges );
+
+				model.applyOperation(
+					new MoveOperation(
+						new Position( root, [ 0, 0 ] ),
+						2,
+						new Position( doc.graveyard, [ 0 ] ),
+						doc.version
+					)
+				);
+
+				expect( selection.rangeCount ).to.equal( 1 );
+				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0, 0 ] );
+				expect( selection.getLastPosition().path ).to.deep.equal( [ 0, 1 ] );
 			} );
 		} );
 
