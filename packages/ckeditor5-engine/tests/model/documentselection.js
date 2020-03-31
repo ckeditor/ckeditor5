@@ -1778,6 +1778,28 @@ describe( 'DocumentSelection', () => {
 				// Now it's clear that it's the default range.
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0, 0 ] );
 			} );
+
+			it( 'does not break if multi-range selection is moved (inside text nodes - resulting ranges are collapsed)', () => {
+				const ranges = [
+					new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 2 ] ) ),
+					new Range( new Position( root, [ 1, 3 ] ), new Position( root, [ 1, 4 ] ) )
+				];
+
+				selection._setTo( ranges );
+
+				model.applyOperation(
+					new MoveOperation(
+						new Position( root, [ 1, 1 ] ),
+						4,
+						new Position( doc.graveyard, [ 0 ] ),
+						doc.version
+					)
+				);
+
+				expect( selection.rangeCount ).to.equal( 2 );
+				expect( selection.getFirstPosition().path ).to.deep.equal( [ 1, 1 ] );
+				expect( selection.getLastPosition().path ).to.deep.equal( [ 1, 1 ] );
+			} );
 		} );
 
 		it( '`DocumentSelection#change:range` event should be fire once even if selection contains multi-ranges', () => {
