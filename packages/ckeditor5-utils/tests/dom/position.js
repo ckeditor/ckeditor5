@@ -13,20 +13,42 @@ let element, target, limiter;
 
 //	+--------+-----+
 //	|    E   |  T  |
-//	+--------+-----+
-const attachLeft = ( targetRect, elementRect ) => ( {
+//	|        |-----+
+//  +--------+
+const attachLeftBottom = ( targetRect, elementRect ) => ( {
 	top: targetRect.top,
 	left: targetRect.left - elementRect.width,
-	name: 'left'
+	name: 'left-bottom'
+} );
+
+//	+--------+
+//	|    E   |-----+
+//	|        |  T  |
+//  +--------+-----+
+const attachLeftTop = ( targetRect, elementRect ) => ( {
+	top: targetRect.bottom - elementRect.height,
+	left: targetRect.left - elementRect.width,
+	name: 'left-top'
 } );
 
 //	+-----+--------+
 //	|  T  |    E   |
-//	+-----+--------+
-const attachRight = targetRect => ( {
+//	+-----|        |
+//        +--------+
+const attachRightBottom = targetRect => ( {
 	top: targetRect.top,
-	left: targetRect.left + targetRect.width,
-	name: 'right'
+	left: targetRect.right,
+	name: 'right-bottom'
+} );
+
+//	      +--------+
+//	+-----|    E   |
+//	|  T  |        |
+//  +-----+--------+
+const attachRightTop = ( targetRect, elementRect ) => ( {
+	top: targetRect.bottom - elementRect.height,
+	left: targetRect.right,
+	name: 'right-top'
 } );
 
 //	+-----+
@@ -34,10 +56,21 @@ const attachRight = targetRect => ( {
 //	+-----+--+
 //	|    E   |
 //	+--------+
-const attachBottom = targetRect => ( {
+const attachBottomRight = targetRect => ( {
 	top: targetRect.bottom,
 	left: targetRect.left,
-	name: 'bottom'
+	name: 'bottom-right'
+} );
+
+//	   +-----+
+//	   |  T  |
+//	+--+-----+
+//	|    E   |
+//	+--------+
+const attachBottomLeft = ( targetRect, elementRect ) => ( {
+	top: targetRect.bottom,
+	left: targetRect.right - elementRect.width,
+	name: 'bottom-left'
 } );
 
 //	+--------+
@@ -45,11 +78,33 @@ const attachBottom = targetRect => ( {
 //	+--+-----+
 //	   |  T  |
 //	   +-----+
-const attachTop = ( targetRect, elementRect ) => ( {
+const attachTopLeft = ( targetRect, elementRect ) => ( {
 	top: targetRect.top - elementRect.height,
-	left: targetRect.left - ( elementRect.width - targetRect.width ),
-	name: 'bottom'
+	left: targetRect.right - elementRect.width,
+	name: 'top-left'
 } );
+
+//	+--------+
+//	|   E    |
+//	+-----+--+
+//	|  T  |
+//	+-----+
+const attachTopRight = ( targetRect, elementRect ) => ( {
+	top: targetRect.top - elementRect.height,
+	left: targetRect.left,
+	name: 'top-right'
+} );
+
+const allPositions = [
+	attachLeftBottom,
+	attachLeftTop,
+	attachRightBottom,
+	attachRightTop,
+	attachBottomRight,
+	attachBottomLeft,
+	attachTopLeft,
+	attachTopRight
+];
 
 describe( 'getOptimalPosition()', () => {
 	testUtils.createSinonSandbox();
@@ -71,11 +126,11 @@ describe( 'getOptimalPosition()', () => {
 		assertPosition( {
 			element,
 			target: () => target,
-			positions: [ attachLeft ]
+			positions: [ attachLeftBottom ]
 		}, {
 			top: 100,
 			left: 80,
-			name: 'left'
+			name: 'left-bottom'
 		} );
 	} );
 
@@ -85,11 +140,11 @@ describe( 'getOptimalPosition()', () => {
 		assertPosition( {
 			element,
 			target: new Rect( target ),
-			positions: [ attachLeft ]
+			positions: [ attachLeftBottom ]
 		}, {
 			top: 100,
 			left: 80,
-			name: 'left'
+			name: 'left-bottom'
 		} );
 	} );
 
@@ -97,10 +152,10 @@ describe( 'getOptimalPosition()', () => {
 		beforeEach( setElementTargetPlayground );
 
 		it( 'should return coordinates', () => {
-			assertPosition( { element, target, positions: [ attachLeft ] }, {
+			assertPosition( { element, target, positions: [ attachLeftBottom ] }, {
 				top: 100,
 				left: 80,
-				name: 'left'
+				name: 'left-bottom'
 			} );
 		} );
 
@@ -112,10 +167,10 @@ describe( 'getOptimalPosition()', () => {
 				scrollY: 100
 			} );
 
-			assertPosition( { element, target, positions: [ attachLeft ] }, {
+			assertPosition( { element, target, positions: [ attachLeftBottom ] }, {
 				top: 200,
 				left: 180,
-				name: 'left'
+				name: 'left-bottom'
 			} );
 		} );
 
@@ -143,10 +198,10 @@ describe( 'getOptimalPosition()', () => {
 
 				element.parentElement = parent;
 
-				assertPosition( { element, target, positions: [ attachLeft ] }, {
+				assertPosition( { element, target, positions: [ attachLeftBottom ] }, {
 					top: -900,
 					left: -920,
-					name: 'left'
+					name: 'left-bottom'
 				} );
 			} );
 
@@ -175,10 +230,10 @@ describe( 'getOptimalPosition()', () => {
 
 				element.parentElement = parent;
 
-				assertPosition( { element, target, positions: [ attachLeft ] }, {
+				assertPosition( { element, target, positions: [ attachLeftBottom ] }, {
 					top: 160,
 					left: 260,
-					name: 'left'
+					name: 'left-bottom'
 				} );
 			} );
 		} );
@@ -190,22 +245,22 @@ describe( 'getOptimalPosition()', () => {
 		it( 'should return coordinates', () => {
 			assertPosition( {
 				element, target,
-				positions: [ attachLeft, attachRight ]
+				positions: [ attachLeftBottom, attachRightBottom ]
 			}, {
 				top: 100,
 				left: 80,
-				name: 'left'
+				name: 'left-bottom'
 			} );
 		} );
 
 		it( 'should return coordinates (position preference order)', () => {
 			assertPosition( {
 				element, target,
-				positions: [ attachRight, attachLeft ]
+				positions: [ attachRightBottom, attachLeftBottom ]
 			}, {
 				top: 100,
 				left: 110,
-				name: 'right'
+				name: 'right-bottom'
 			} );
 		} );
 	} );
@@ -217,11 +272,11 @@ describe( 'getOptimalPosition()', () => {
 			assertPosition( {
 				element, target,
 				limiter: () => limiter,
-				positions: [ attachLeft, attachRight ]
+				positions: [ attachLeftBottom, attachRightBottom ]
 			}, {
 				top: 100,
 				left: -20,
-				name: 'left'
+				name: 'left-bottom'
 			} );
 		} );
 
@@ -229,33 +284,33 @@ describe( 'getOptimalPosition()', () => {
 			assertPosition( {
 				element, target,
 				limiter: new Rect( limiter ),
-				positions: [ attachLeft, attachRight ]
+				positions: [ attachLeftBottom, attachRightBottom ]
 			}, {
 				top: 100,
 				left: -20,
-				name: 'left'
+				name: 'left-bottom'
 			} );
 		} );
 
 		it( 'should return coordinates (#1)', () => {
 			assertPosition( {
 				element, target, limiter,
-				positions: [ attachLeft, attachRight ]
+				positions: [ attachLeftBottom, attachRightBottom ]
 			}, {
 				top: 100,
 				left: -20,
-				name: 'left'
+				name: 'left-bottom'
 			} );
 		} );
 
 		it( 'should return coordinates (#2)', () => {
 			assertPosition( {
 				element, target, limiter,
-				positions: [ attachRight, attachLeft ]
+				positions: [ attachRightBottom, attachLeftBottom ]
 			}, {
 				top: 100,
 				left: -20,
-				name: 'left'
+				name: 'left-bottom'
 			} );
 		} );
 
@@ -272,11 +327,30 @@ describe( 'getOptimalPosition()', () => {
 
 			assertPosition( {
 				element, target, limiter,
-				positions: [ attachRight, attachLeft ]
+				positions: [ attachRightBottom, attachLeftBottom ]
 			}, {
 				top: 100,
 				left: 10,
-				name: 'right'
+				name: 'right-bottom'
+			} );
+		} );
+
+		it( 'should return first position that completely fits limiter', () => {
+			element = getElement( {
+				top: 0,
+				right: 5,
+				bottom: 5,
+				left: 0,
+				width: 5,
+				height: 5
+			} );
+			assertPosition( {
+				element, target, limiter,
+				positions: [ attachRightBottom, attachLeftBottom ]
+			}, {
+				top: 100,
+				left: -5,
+				name: 'left-bottom'
 			} );
 		} );
 	} );
@@ -287,36 +361,36 @@ describe( 'getOptimalPosition()', () => {
 		it( 'should return coordinates (#1)', () => {
 			assertPosition( {
 				element, target,
-				positions: [ attachLeft, attachRight ],
+				positions: [ attachLeftBottom, attachRightBottom ],
 				fitInViewport: true
 			}, {
 				top: 100,
 				left: 10,
-				name: 'right'
+				name: 'right-bottom'
 			} );
 		} );
 
 		it( 'should return coordinates (#2)', () => {
 			assertPosition( {
 				element, target,
-				positions: [ attachRight, attachLeft ],
+				positions: [ attachRightBottom, attachLeftBottom ],
 				fitInViewport: true
 			}, {
 				top: 100,
 				left: 10,
-				name: 'right'
+				name: 'right-bottom'
 			} );
 		} );
 
 		it( 'should return coordinates (#3)', () => {
 			assertPosition( {
 				element, target,
-				positions: [ attachLeft, attachBottom, attachRight ],
+				positions: [ attachLeftBottom, attachBottomRight, attachRightBottom ],
 				fitInViewport: true
 			}, {
 				top: 110,
 				left: 0,
-				name: 'bottom'
+				name: 'bottom-right'
 			} );
 		} );
 	} );
@@ -327,48 +401,48 @@ describe( 'getOptimalPosition()', () => {
 		it( 'should return coordinates (#1)', () => {
 			assertPosition( {
 				element, target, limiter,
-				positions: [ attachLeft, attachRight ],
+				positions: [ attachLeftBottom, attachRightBottom ],
 				fitInViewport: true
 			}, {
 				top: 100,
 				left: 10,
-				name: 'right'
+				name: 'right-bottom'
 			} );
 		} );
 
 		it( 'should return coordinates (#2)', () => {
 			assertPosition( {
 				element, target, limiter,
-				positions: [ attachRight, attachLeft ],
+				positions: [ attachRightBottom, attachLeftBottom ],
 				fitInViewport: true
 			}, {
 				top: 100,
 				left: 10,
-				name: 'right'
+				name: 'right-bottom'
 			} );
 		} );
 
 		it( 'should return coordinates (#3)', () => {
 			assertPosition( {
 				element, target, limiter,
-				positions: [ attachRight, attachLeft, attachBottom ],
+				positions: [ attachRightBottom, attachLeftBottom, attachBottomRight ],
 				fitInViewport: true
 			}, {
 				top: 110,
 				left: 0,
-				name: 'bottom'
+				name: 'bottom-right'
 			} );
 		} );
 
 		it( 'should return coordinates (#4)', () => {
 			assertPosition( {
 				element, target, limiter,
-				positions: [ attachTop, attachRight ],
+				positions: [ attachTopLeft, attachRightBottom ],
 				fitInViewport: true
 			}, {
 				top: 100,
 				left: 10,
-				name: 'right'
+				name: 'right-bottom'
 			} );
 		} );
 
@@ -402,13 +476,140 @@ describe( 'getOptimalPosition()', () => {
 
 			assertPosition( {
 				element, target, limiter,
-				positions: [ attachRight, attachTop ],
+				positions: [ attachRightBottom, attachTopLeft ],
 				fitInViewport: true
 			}, {
 				top: 100,
 				left: 10,
-				name: 'right'
+				name: 'right-bottom'
 			} );
+		} );
+
+		it( 'should prefer position fully fitting in viewport', () => {
+			target = getElement( {
+				top: 100,
+				right: 35,
+				bottom: 120,
+				left: 15,
+				width: 20,
+				height: 20
+			} );
+			assertPosition( {
+				element, target, limiter,
+				positions: [ attachLeftBottom, attachRightBottom ],
+				fitInViewport: true
+			}, {
+				top: 100,
+				left: 35,
+				name: 'right-bottom'
+			} );
+		} );
+	} );
+
+	describe( 'maximizes intersection area with both limiter and viewport', () => {
+		beforeEach( setElementTargetBigLimiterPlayground );
+
+		it( 'should prefer position with bigger intersection (#1)', () => {
+			target = getElement( {
+				top: 90,
+				right: -10,
+				bottom: 110,
+				left: -30,
+				width: 20,
+				height: 20
+			} );
+			assertPositionName( {
+				element, target, limiter,
+				positions: allPositions,
+				fitInViewport: true
+			}, 'right-bottom' );
+		} );
+
+		it( 'should prefer position with bigger intersection (#2)', () => {
+			target = getElement( {
+				top: 290,
+				right: -10,
+				bottom: 310,
+				left: -30,
+				width: 20,
+				height: 20
+			} );
+			assertPositionName( {
+				element, target, limiter,
+				positions: allPositions,
+				fitInViewport: true
+			}, 'right-top' );
+		} );
+
+		it( 'should prefer position with bigger intersection (#3)', () => {
+			target = getElement( {
+				top: 90,
+				right: 130,
+				bottom: 110,
+				left: 110,
+				width: 20,
+				height: 20
+			} );
+			assertPositionName( {
+				element, target, limiter,
+				positions: allPositions,
+				fitInViewport: true
+			}, 'left-bottom' );
+		} );
+
+		it( 'should prefer position with bigger intersection (#4)', () => {
+			target = getElement( {
+				top: 290,
+				right: 130,
+				bottom: 310,
+				left: 110,
+				width: 20,
+				height: 20
+			} );
+			assertPositionName( {
+				element, target, limiter,
+				positions: allPositions,
+				fitInViewport: true
+			}, 'left-top' );
+		} );
+
+		it( 'should not stick to first biggest intersection in one area', () => {
+			// First position intersects more with limiter but little with viewport,
+			// second position intersects less with limiter but more with viewport and it should not be ignored.
+			//
+			// Target is outside viewport to force checking all positions, not only those completely fitting in viewport.
+			limiter = getElement( {
+				top: -100,
+				right: 100,
+				bottom: 100,
+				left: -100,
+				width: 200,
+				height: 200
+			} );
+			target = getElement( {
+				top: -30,
+				right: 80,
+				bottom: -10,
+				left: 60,
+				width: 20,
+				height: 20
+			} );
+			element = getElement( {
+				top: 0,
+				right: 200,
+				bottom: 200,
+				left: 0,
+				width: 200,
+				height: 200
+			} );
+			assertPositionName( {
+				element, target, limiter,
+				positions: [
+					attachLeftBottom,
+					attachRightBottom
+				],
+				fitInViewport: true
+			}, 'right-bottom' );
 		} );
 	} );
 } );
@@ -417,6 +618,12 @@ function assertPosition( options, expected ) {
 	const position = getOptimalPosition( options );
 
 	expect( position ).to.deep.equal( expected );
+}
+
+function assertPositionName( options, expected ) {
+	const position = getOptimalPosition( options );
+
+	expect( position.name ).to.equal( expected );
 }
 
 // Returns a synthetic element.
@@ -431,6 +638,9 @@ function getElement( properties = {}, styles = {} ) {
 		scrollTop: 0,
 		ownerDocument: document
 	};
+
+	expect( properties.right - properties.left ).to.equal( properties.width, 'getElement incorrect horizontal values' );
+	expect( properties.bottom - properties.top ).to.equal( properties.height, 'getElement incorrect vertical values' );
 
 	Object.assign( element, properties );
 
@@ -538,5 +748,46 @@ function setElementTargetLimiterPlayground() {
 		left: 0,
 		width: 10,
 		height: 10
+	} );
+}
+
+//
+//
+//     ^                +-----------[ Viewport ]----------------------
+//     |                |
+//   100px              |
+//     |   <--------- 200px ------->
+//	   |               <-- 100px -->
+//	   V                |
+//	       +------------+---------+     ^
+//	       |            |         |     |
+//	       |            |         |     |
+//	       |            |         |     |
+//	       |            |         |    200px
+//	       |            |         |     |
+//	       |            |         |     |
+//	       |            |         |     |
+//         +------[ Limiter ]-----+     V
+//                      |
+//                      |
+//
+//
+function setElementTargetBigLimiterPlayground() {
+	element = getElement( {
+		top: 0,
+		right: 50,
+		bottom: 50,
+		left: 0,
+		width: 50,
+		height: 50
+	} );
+
+	limiter = getElement( {
+		top: 100,
+		right: 100,
+		bottom: 300,
+		left: -100,
+		width: 200,
+		height: 200
 	} );
 }

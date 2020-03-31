@@ -169,18 +169,57 @@ function getPosition( position, targetRect, elementRect ) {
 // @param {utils/dom/rect~Rect} viewportRect A rect of the viewport.
 // @returns {Array} An array containing the name of the position and it's rect.
 function getBestPosition( positions, targetRect, elementRect, limiterRect, viewportRect ) {
-	let maxLimiterIntersectArea = 0;
-	let maxViewportIntersectArea = 0;
-	let bestPositionRect;
-	let bestPositionName;
+	// This is when element is fully visible.
+	const elementRectArea = elementRect.getArea();
+
+	// Let's calculate intersection areas for positions. It will end early if best match is found.
+	const processedPositions = processPositionsToAreas( positions, targetRect, elementRect, limiterRect, viewportRect );
+
+	// First let's check all positions that fully fit in the viewport.
+	if ( viewportRect ) {
+		const processedPositionsInViewport = processedPositions
+			.filter( ( { viewportIntersectArea } ) => viewportIntersectArea === elementRectArea );
+
+		// Try to find best position from those which fit completely in viewport.
+		const bestPositionData = getBestOfProcessedPositions( processedPositionsInViewport, elementRectArea );
+
+		if ( bestPositionData ) {
+			return bestPositionData;
+		}
+	}
+
+	// Either there is no viewportRect or there is no position that fits completely in the viewport.
+	return getBestOfProcessedPositions( processedPositions, elementRectArea );
+}
+
+// For a given array of positioning functions, calculates intersection areas for them.
+//
+// It will return early with only one item on the list if found position that fully fits in `limiterRect`.
+//
+// @private
+// @param {module:utils/dom/position~Options#positions} positions Functions returning
+// {@link module:utils/dom/position~Position} to be checked, in the order of preference.
+// @param {utils/dom/rect~Rect} targetRect A rect of the {@link module:utils/dom/position~Options#target}.
+// @param {utils/dom/rect~Rect} elementRect A rect of positioned {@link module:utils/dom/position~Options#element}.
+// @param {utils/dom/rect~Rect} limiterRect A rect of the {@link module:utils/dom/position~Options#limiter}.
+// @param {utils/dom/rect~Rect} viewportRect A rect of the viewport.
+// @returns {Array.<Object>} Array of positions with calculated intersection areas. Each item is an object containing:
+//
+//		* {module:engine/src/view/element~Element} element List-like element.
+//		* {String} positionName Name of position.
+//		* {utils/dom/rect~Rect} positionRect Rect of position.
+//		* {Number} limiterIntersectArea Area of intersection of the position with limiter part that is in the viewport.
+//		* {Number} viewportIntersectArea Area of intersection of the position with viewport.
+function processPositionsToAreas( positions, targetRect, elementRect, limiterRect, viewportRect ) {
+	const processedPositions = [];
 
 	// This is when element is fully visible.
 	const elementRectArea = elementRect.getArea();
 
-	positions.some( position => {
+	for ( const position of positions ) {
 		const [ positionName, positionRect ] = getPosition( position, targetRect, elementRect );
-		let limiterIntersectArea;
-		let viewportIntersectArea;
+		let limiterIntersectArea = 0;
+		let viewportIntersectArea = 0;
 
 		if ( limiterRect ) {
 			if ( viewportRect ) {
@@ -191,8 +230,6 @@ function getBestPosition( positions, targetRect, elementRect, limiterRect, viewp
 					// If the limiter is within the viewport, then check the intersection between that part of the
 					// limiter and actual position.
 					limiterIntersectArea = limiterViewportIntersectRect.getIntersectionArea( positionRect );
-				} else {
-					limiterIntersectArea = 0;
 				}
 			} else {
 				limiterIntersectArea = limiterRect.getIntersectionArea( positionRect );
@@ -203,30 +240,55 @@ function getBestPosition( positions, targetRect, elementRect, limiterRect, viewp
 			viewportIntersectArea = viewportRect.getIntersectionArea( positionRect );
 		}
 
-		// The only criterion: intersection with the viewport.
-		if ( viewportRect && !limiterRect ) {
-			if ( viewportIntersectArea > maxViewportIntersectArea ) {
-				setBestPosition();
-			}
-		}
-		// The only criterion: intersection with the limiter.
-		else if ( !viewportRect && limiterRect ) {
-			if ( limiterIntersectArea > maxLimiterIntersectArea ) {
-				setBestPosition();
-			}
-		}
-		// Two criteria: intersection with the viewport and the limiter visible in the viewport.
-		else {
-			if ( viewportIntersectArea > maxViewportIntersectArea && limiterIntersectArea >= maxLimiterIntersectArea ) {
-				setBestPosition();
-			} else if ( viewportIntersectArea >= maxViewportIntersectArea && limiterIntersectArea > maxLimiterIntersectArea ) {
-				setBestPosition();
-			}
+		const processedPosition = {
+			positionName,
+			positionRect,
+			limiterIntersectArea,
+			viewportIntersectArea
+		};
+
+		// If a such position is found that element is fully contained by the limiter then, obviously,
+		// there will be no better one, so finishing.
+		if ( limiterIntersectArea === elementRectArea ) {
+			return [ processedPosition ];
 		}
 
-		function setBestPosition() {
-			maxViewportIntersectArea = viewportIntersectArea;
-			maxLimiterIntersectArea = limiterIntersectArea;
+		processedPositions.push( processedPosition );
+	}
+
+	return processedPositions;
+}
+
+// For a given array of processed position data (with calculated Rects for positions and intersection areas)
+// returns such that provides the best fit of the `elementRect` into the `limiterRect` and `viewportRect`.
+//
+// It will return early if found position that fully fits in `limiterRect`.
+//
+// @private
+// @param {Array.<Object>} Array of positions with calculated intersection areas (in order of preference).
+// Each item is an object containing:
+//
+//		* {module:engine/src/view/element~Element} element List-like element.
+//		* {String} positionName Name of position.
+//		* {utils/dom/rect~Rect} positionRect Rect of position.
+//		* {Number} limiterIntersectArea Area of intersection of the position with limiter part that is in the viewport.
+//		* {Number} viewportIntersectArea Area of intersection of the position with viewport.
+//
+//
+// @param {Number} elementRectArea Area of positioned {@link module:utils/dom/position~Options#element}.
+// @returns {Array|null} An array containing the name of the position and it's rect, or null if not found.
+function getBestOfProcessedPositions( processedPositions, elementRectArea ) {
+	let maxFitFactor = 0;
+	let bestPositionRect;
+	let bestPositionName;
+
+	processedPositions.some( ( { positionName, positionRect, limiterIntersectArea, viewportIntersectArea } ) => {
+		// To maximize both viewport and limiter intersection areas we use distance on viewportIntersectArea
+		// and limiterIntersectArea plane (without sqrt because we are looking for max value).
+		const fitFactor = viewportIntersectArea ** 2 + limiterIntersectArea ** 2;
+
+		if ( fitFactor > maxFitFactor ) {
+			maxFitFactor = fitFactor;
 			bestPositionRect = positionRect;
 			bestPositionName = positionName;
 		}
