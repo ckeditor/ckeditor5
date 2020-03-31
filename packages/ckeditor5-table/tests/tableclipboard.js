@@ -3,21 +3,27 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals document */
+
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import TableEditing from '../src/tableediting';
-import { modelTable, viewTable } from './_utils/utils';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import TableClipboard from '../src/tableclipboard';
+import { assertSelectedCells, modelTable, viewTable } from './_utils/utils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
+import TableClipboard from '../src/tableclipboard';
+
 describe( 'table clipboard', () => {
-	let editor, model, modelRoot, tableSelection, viewDocument;
+	let editor, model, modelRoot, tableSelection, viewDocument, element;
 
 	beforeEach( async () => {
-		editor = await VirtualTestEditor.create( {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		editor = await ClassicTestEditor.create( element, {
 			plugins: [ TableEditing, TableClipboard, Paragraph, Clipboard ]
 		} );
 
@@ -35,6 +41,8 @@ describe( 'table clipboard', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
+
+		element.remove();
 	} );
 
 	describe( 'Clipboard integration', () => {
@@ -389,6 +397,121 @@ describe( 'table clipboard', () => {
 				sinon.assert.calledOnce( preventDefaultStub );
 			} );
 		} );
+
+		describe( 'paste', () => {
+			beforeEach( () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01', '02', '03' ],
+					[ '10', '11', '12', '13' ],
+					[ '20', '21', '22', '23' ],
+					[ '30', '31', '32', '33' ]
+				] ) );
+			} );
+
+			describe( 'pasted table is equal ot selected area', () => {
+				it( 'pastes simple table to a simple table fragment - at the beginning of a table', () => {
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ 'aa', 'ab', '02', '03' ],
+						[ 'ba', 'bb', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+					assertSelectedCells( model, [
+						[ 1, 1, 0, 0 ],
+						[ 1, 1, 0, 0 ],
+						[ 0, 0, 0, 0 ],
+						[ 0, 0, 0, 0 ]
+					] );
+				} );
+
+				it( 'pastes simple table to a simple table fragment - at the end of a table', () => {
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 2, 2 ] ),
+						modelRoot.getNodeByPath( [ 0, 3, 3 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', '11', '12', '13' ],
+						[ '20', '21', 'aa', 'ab' ],
+						[ '30', '31', 'ba', 'bb' ]
+					] ) );
+					assertSelectedCells( model, [
+						[ 0, 0, 0, 0 ],
+						[ 0, 0, 0, 0 ],
+						[ 0, 0, 1, 1 ],
+						[ 0, 0, 1, 1 ]
+					] );
+				} );
+
+				it( 'pastes simple table to a simple table fragment - in the middle of a table', () => {
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 2, 2 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', 'aa', 'ab', '13' ],
+						[ '20', 'ba', 'bb', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+					assertSelectedCells( model, [
+						[ 0, 0, 0, 0 ],
+						[ 0, 1, 1, 0 ],
+						[ 0, 1, 1, 0 ],
+						[ 0, 0, 0, 0 ]
+					] );
+				} );
+
+				it( 'pastes simple table to a simple table fragment - whole table selected', () => {
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 3, 3 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab', 'ac', 'ad' ],
+						[ 'ba', 'bb', 'bc', 'bd' ],
+						[ 'ca', 'cb', 'cc', 'cd' ],
+						[ 'da', 'db', 'dc', 'dd' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ 'aa', 'ab', 'ac', 'ad' ],
+						[ 'ba', 'bb', 'bc', 'bd' ],
+						[ 'ca', 'cb', 'cc', 'cd' ],
+						[ 'da', 'db', 'dc', 'dd' ]
+					] ) );
+					assertSelectedCells( model, [
+						[ 1, 1, 1, 1 ],
+						[ 1, 1, 1, 1 ],
+						[ 1, 1, 1, 1 ],
+						[ 1, 1, 1, 1 ]
+					] );
+				} );
+			} );
+		} );
 	} );
 
 	function assertClipboardContentOnMethod( method, expectedViewTable ) {
@@ -399,6 +522,16 @@ describe( 'table clipboard', () => {
 		viewDocument.fire( method, data );
 
 		expect( data.dataTransfer.getData( 'text/html' ) ).to.equal( expectedViewTable );
+	}
+
+	function pasteTable( tableData ) {
+		const data = {
+			dataTransfer: createDataTransfer(),
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		};
+		data.dataTransfer.setData( 'text/html', viewTable( tableData ) );
+		viewDocument.fire( 'paste', data );
 	}
 
 	function createDataTransfer() {
