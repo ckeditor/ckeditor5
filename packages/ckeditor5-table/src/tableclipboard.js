@@ -40,6 +40,7 @@ export default class TableClipboard extends Plugin {
 
 		this.listenTo( viewDocument, 'copy', ( evt, data ) => this._onCopyCut( evt, data ) );
 		this.listenTo( viewDocument, 'cut', ( evt, data ) => this._onCopyCut( evt, data ) );
+		this.listenTo( viewDocument, 'paste', ( evt, data ) => this._onPaste( evt, data ) );
 	}
 
 	/**
@@ -73,5 +74,27 @@ export default class TableClipboard extends Plugin {
 			content,
 			method: evt.name
 		} );
+	}
+
+	/**
+	 * Handles "paste" event over a table.
+	 *
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
+	 * @param {Object} data Clipboard event data.
+	 */
+	_onPaste( evt, data ) {
+		if ( this.editor.isReadOnly ) {
+			return;
+		}
+
+		const tableSelection = this.editor.plugins.get( 'TableSelection' );
+
+		if ( !tableSelection.getSelectedTableCells() ) {
+			return;
+		}
+
+		data.preventDefault();
+		evt.stop();
 	}
 }
