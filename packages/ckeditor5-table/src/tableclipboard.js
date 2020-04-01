@@ -38,9 +38,11 @@ export default class TableClipboard extends Plugin {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
+		const clipboardPlugin = editor.plugins.get( 'Clipboard' );
+
 		this.listenTo( viewDocument, 'copy', ( evt, data ) => this._onCopyCut( evt, data ) );
 		this.listenTo( viewDocument, 'cut', ( evt, data ) => this._onCopyCut( evt, data ) );
-		this.listenTo( viewDocument, 'paste', ( evt, data ) => this._onPaste( evt, data ) );
+		this.listenTo( clipboardPlugin, 'inputTransformation', ( evt, data ) => this._onPaste( evt, data ) );
 	}
 
 	/**
@@ -89,12 +91,15 @@ export default class TableClipboard extends Plugin {
 		}
 
 		const tableSelection = this.editor.plugins.get( 'TableSelection' );
+		const selectedTableCells = tableSelection.getSelectedTableCells();
 
-		if ( !tableSelection.getSelectedTableCells() ) {
+		if ( !selectedTableCells ) {
 			return;
 		}
 
 		data.preventDefault();
 		evt.stop();
+
+		// const pastedTable =
 	}
 }
