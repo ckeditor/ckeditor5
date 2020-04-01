@@ -82,7 +82,7 @@ export default class Position {
 		}
 
 		// Normalize the root and path (if element was passed).
-		path = root.getPath().concat( path );
+		path = [ ...root.getPath(), ...path ];
 		root = root.root;
 
 		/**
