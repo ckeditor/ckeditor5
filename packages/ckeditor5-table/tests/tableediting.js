@@ -16,6 +16,8 @@ import InsertTableCommand from '../src/commands/inserttablecommand';
 import InsertColumnCommand from '../src/commands/insertcolumncommand';
 import RemoveRowCommand from '../src/commands/removerowcommand';
 import RemoveColumnCommand from '../src/commands/removecolumncommand';
+import SelectRowCommand from '../src/commands/selectrowcommand';
+import SelectColumnCommand from '../src/commands/selectcolumncommand';
 import SplitCellCommand from '../src/commands/splitcellcommand';
 import MergeCellCommand from '../src/commands/mergecellcommand';
 import SetHeaderRowCommand from '../src/commands/setheaderrowcommand';
@@ -109,6 +111,14 @@ describe( 'TableEditing', () => {
 
 	it( 'adds removeColumn command', () => {
 		expect( editor.commands.get( 'removeTableColumn' ) ).to.be.instanceOf( RemoveColumnCommand );
+	} );
+
+	it( 'adds selectRow command', () => {
+		expect( editor.commands.get( 'selectTableRow' ) ).to.be.instanceOf( SelectRowCommand );
+	} );
+
+	it( 'adds selectColumn command', () => {
+		expect( editor.commands.get( 'selectTableColumn' ) ).to.be.instanceOf( SelectColumnCommand );
 	} );
 
 	it( 'adds splitCellVertically command', () => {
