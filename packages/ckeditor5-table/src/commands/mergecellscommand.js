@@ -121,13 +121,13 @@ function isEmpty( tableCell ) {
 //
 // In a table below:
 //
-//   +---+---+---+---+
-//   | a | b | c | d |
-//   +---+---+---+   +
-//   | e     | f |   |
-//   +       +---+---+
-//   |       | g | h |
-//   +---+---+---+---+
+//   ┌───┬───┬───┬───┐
+//   │ a │ b │ c │ d │
+//   ├───┴───┼───┤   │
+//   │ e     │ f │   │
+//   ├       ├───┼───┤
+//   │       │ g │ h │
+//   └───────┴───┴───┘
 //
 // Valid selections are these which create a solid rectangle (without gaps), such as:
 //   - a, b (two horizontal cells)
