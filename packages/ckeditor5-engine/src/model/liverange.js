@@ -57,7 +57,7 @@ export default class LiveRange extends Range {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'liveRange' || type == 'model:liveRange' || super.is( type );
+		return type == 'liveRange' || type == 'model:liveRange' || type == 'range' || type == 'model:range';
 	}
 
 	/**

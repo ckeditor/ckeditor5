@@ -95,11 +95,10 @@ export default class EditableElement extends ContainerElement {
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
-		const cutType = type && type.replace( /^view:/, '' );
 		if ( !name ) {
-			return cutType == 'editableElement' || super.is( type );
+			return type == 'editableElement' || type == 'containerElement' || type == 'element' || type == this.name || type == 'node';
 		} else {
-			return ( cutType == 'editableElement' && name == this.name ) || super.is( type, name );
+			return name == this.name && ( type == 'editableElement' || type == 'containerElement' || type == 'element' );
 		}
 	}
 

@@ -157,12 +157,10 @@ export default class AttributeElement extends Element {
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
-		const cutType = type && type.replace( /^view:/, '' );
-
 		if ( !name ) {
-			return cutType == 'attributeElement' || super.is( type );
+			return type == 'attributeElement' || type == 'element' || type == this.name || type == 'node';
 		} else {
-			return ( cutType == 'attributeElement' && name == this.name ) || super.is( type, name );
+			return ( type == 'attributeElement' && name == this.name ) || ( type == 'element' && name == this.name );
 		}
 	}
 

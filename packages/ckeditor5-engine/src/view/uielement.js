@@ -87,11 +87,10 @@ export default class UIElement extends Element {
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
-		const cutType = type.replace( /^view:/, '' );
 		if ( !name ) {
-			return cutType == 'uiElement' || super.is( type );
+			return type == 'uiElement' || type == 'element' || type == this.name || type == 'node';
 		} else {
-			return ( cutType == 'uiElement' && name == this.name ) || super.is( type, name );
+			return ( type == 'uiElement' && name == this.name ) || ( type == 'element' && name == this.name );
 		}
 	}
 

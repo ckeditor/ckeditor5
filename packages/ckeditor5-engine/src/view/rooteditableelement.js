@@ -68,11 +68,12 @@ export default class RootEditableElement extends EditableElement {
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
-		const cutType = type.replace( /^view:/, '' );
 		if ( !name ) {
-			return cutType == 'rootElement' || super.is( type );
+			return type == 'rootElement' || type == 'editableElement' || type == 'containerElement' || type == 'element' ||
+				type == this.name || type == 'node';
 		} else {
-			return ( cutType == 'rootElement' && name == this.name ) || super.is( type, name );
+			return name == this.name &&
+				( type == 'rootElement' || type == 'editableElement' || type == 'containerElement' || type == 'element' );
 		}
 	}
 

@@ -176,11 +176,10 @@ export default class Element extends Node {
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
-		const cutType = type.replace( /^view:/, '' );
 		if ( !name ) {
-			return cutType == 'element' || cutType == this.name || super.is( type );
+			return type == 'element' || type == this.name || type == 'node' || type == 'view:node';
 		} else {
-			return cutType == 'element' && name == this.name;
+			return type == 'element' && name == this.name;
 		}
 	}
 

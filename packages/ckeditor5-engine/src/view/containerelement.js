@@ -83,11 +83,10 @@ export default class ContainerElement extends Element {
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
-		const cutType = type && type.replace( /^view:/, '' );
 		if ( !name ) {
-			return cutType == 'containerElement' || super.is( type );
+			return type == 'containerElement' || type == 'element' || type == this.name || type == 'node';
 		} else {
-			return ( cutType == 'containerElement' && name == this.name ) || super.is( type, name );
+			return ( type == 'containerElement' && name == this.name ) || ( type == 'element' && name == this.name );
 		}
 	}
 }

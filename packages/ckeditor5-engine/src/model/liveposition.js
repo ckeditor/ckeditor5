@@ -80,7 +80,7 @@ export default class LivePosition extends Position {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'livePosition' || type == 'model:livePosition' || super.is( type );
+		return type == 'livePosition' || type == 'model:livePosition' || type == 'position' || type == 'model:position';
 	}
 
 	/**

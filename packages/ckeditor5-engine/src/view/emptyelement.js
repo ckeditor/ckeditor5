@@ -74,11 +74,10 @@ export default class EmptyElement extends Element {
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
-		const cutType = type.replace( /^view:/, '' );
 		if ( !name ) {
-			return cutType == 'emptyElement' || super.is( type );
+			return type == 'emptyElement' || type == 'element' || type == this.name || type == 'node';
 		} else {
-			return ( cutType == 'emptyElement' && name == this.name ) || super.is( type, name );
+			return ( type == 'emptyElement' && name == this.name ) || ( type == 'element' && name == this.name );
 		}
 	}
 
