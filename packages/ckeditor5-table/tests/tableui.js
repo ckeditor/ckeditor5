@@ -372,6 +372,8 @@ describe( 'TableUI', () => {
 				'Merge cell down',
 				'Merge cell left',
 				'|',
+				'Merge cells',
+				'|',
 				'Split cell vertically',
 				'Split cell horizontally'
 			] );
@@ -384,6 +386,7 @@ describe( 'TableUI', () => {
 			const mergeCellRightCommand = editor.commands.get( 'mergeTableCellRight' );
 			const mergeCellDownCommand = editor.commands.get( 'mergeTableCellDown' );
 			const mergeCellLeftCommand = editor.commands.get( 'mergeTableCellLeft' );
+			const mergeCellsCommand = editor.commands.get( 'mergeTableCells' );
 			const splitCellVerticallyCommand = editor.commands.get( 'splitTableCellVertically' );
 			const splitCellHorizontallyCommand = editor.commands.get( 'splitTableCellHorizontally' );
 
@@ -391,38 +394,52 @@ describe( 'TableUI', () => {
 			mergeCellRightCommand.isEnabled = true;
 			mergeCellDownCommand.isEnabled = true;
 			mergeCellLeftCommand.isEnabled = true;
+			mergeCellsCommand.isEnabled = true;
 			splitCellVerticallyCommand.isEnabled = true;
 			splitCellHorizontallyCommand.isEnabled = true;
 
-			expect( items.first.children.first.isEnabled ).to.be.true;
-			expect( items.get( 1 ).children.first.isEnabled ).to.be.true;
-			expect( items.get( 2 ).children.first.isEnabled ).to.be.true;
-			expect( items.get( 3 ).children.first.isEnabled ).to.be.true;
-			expect( items.get( 5 ).children.first.isEnabled ).to.be.true;
-			expect( items.get( 6 ).children.first.isEnabled ).to.be.true;
+			const mergeCellUpButton = items.first;
+			const mergeCellRightButton = items.get( 1 );
+			const mergeCellDownButton = items.get( 2 );
+			const mergeCellLeftButton = items.get( 3 );
+			// separator
+			const mergeCellsButton = items.get( 5 );
+			// separator
+			const splitVerticallyButton = items.get( 7 );
+			const splitHorizontallyButton = items.get( 8 );
+
+			expect( mergeCellUpButton.children.first.isEnabled ).to.be.true;
+			expect( mergeCellRightButton.children.first.isEnabled ).to.be.true;
+			expect( mergeCellDownButton.children.first.isEnabled ).to.be.true;
+			expect( mergeCellLeftButton.children.first.isEnabled ).to.be.true;
+			expect( mergeCellsButton.children.first.isEnabled ).to.be.true;
+			expect( splitVerticallyButton.children.first.isEnabled ).to.be.true;
+			expect( splitHorizontallyButton.children.first.isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			mergeCellUpCommand.isEnabled = false;
-
-			expect( items.first.children.first.isEnabled ).to.be.false;
+			expect( mergeCellUpButton.children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			mergeCellRightCommand.isEnabled = false;
 
-			expect( items.get( 1 ).children.first.isEnabled ).to.be.false;
+			expect( mergeCellRightButton.children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			mergeCellDownCommand.isEnabled = false;
-			expect( items.get( 2 ).children.first.isEnabled ).to.be.false;
+			expect( mergeCellDownButton.children.first.isEnabled ).to.be.false;
 
 			mergeCellLeftCommand.isEnabled = false;
-			expect( items.get( 3 ).children.first.isEnabled ).to.be.false;
+			expect( mergeCellLeftButton.children.first.isEnabled ).to.be.false;
+
+			mergeCellsCommand.isEnabled = false;
+			expect( mergeCellsButton.children.first.isEnabled ).to.be.false;
 
 			splitCellVerticallyCommand.isEnabled = false;
-			expect( items.get( 5 ).children.first.isEnabled ).to.be.false;
+			expect( splitVerticallyButton.children.first.isEnabled ).to.be.false;
 
 			splitCellHorizontallyCommand.isEnabled = false;
-			expect( items.get( 6 ).children.first.isEnabled ).to.be.false;
+			expect( splitHorizontallyButton.children.first.isEnabled ).to.be.false;
 
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );

@@ -28,6 +28,7 @@ import RemoveRowCommand from './commands/removerowcommand';
 import RemoveColumnCommand from './commands/removecolumncommand';
 import SetHeaderRowCommand from './commands/setheaderrowcommand';
 import SetHeaderColumnCommand from './commands/setheadercolumncommand';
+import MergeCellsCommand from './commands/mergecellscommand';
 import { getTableCellsContainingSelection } from './utils';
 import TableUtils from '../src/tableutils';
 
@@ -130,6 +131,8 @@ export default class TableEditing extends Plugin {
 
 		editor.commands.add( 'splitTableCellVertically', new SplitCellCommand( editor, { direction: 'vertically' } ) );
 		editor.commands.add( 'splitTableCellHorizontally', new SplitCellCommand( editor, { direction: 'horizontally' } ) );
+
+		editor.commands.add( 'mergeTableCells', new MergeCellsCommand( editor ) );
 
 		editor.commands.add( 'mergeTableCellRight', new MergeCellCommand( editor, { direction: 'right' } ) );
 		editor.commands.add( 'mergeTableCellLeft', new MergeCellCommand( editor, { direction: 'left' } ) );
