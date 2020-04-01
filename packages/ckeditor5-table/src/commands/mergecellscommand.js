@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
 import { findAncestor, updateNumericAttribute } from './utils';
 import TableUtils from '../tableutils';
-import { getRowIndexes, getSelectionAffectedTableCells } from '../utils';
+import { getRowIndexes, getSelectedTableCells } from '../utils';
 
 /**
  * The merge cells command.
@@ -42,7 +42,7 @@ export default class MergeCellsCommand extends Command {
 		const tableUtils = this.editor.plugins.get( TableUtils );
 
 		model.change( writer => {
-			const selectedTableCells = getSelectionAffectedTableCells( model.document.selection );
+			const selectedTableCells = getSelectedTableCells( model.document.selection );
 
 			// All cells will be merge into the first one.
 			const firstTableCell = selectedTableCells.shift();
@@ -143,14 +143,9 @@ function isEmpty( tableCell ) {
 // @param {module:table/tableUtils~TableUtils} tableUtils
 // @returns {boolean}
 function canMergeCells( selection, tableUtils ) {
-	// Collapsed selection or selection only one range can't contain mergeable table cells.
-	if ( selection.isCollapsed || selection.rangeCount < 2 ) {
-		return false;
-	}
+	const selectedTableCells = getSelectedTableCells( selection );
 
-	const selectedTableCells = getSelectionAffectedTableCells( selection );
-
-	if ( !areCellInTheSameTableSection( selectedTableCells ) ) {
+	if ( selectedTableCells.length < 2 || !areCellInTheSameTableSection( selectedTableCells ) ) {
 		return false;
 	}
 
