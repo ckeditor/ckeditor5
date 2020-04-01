@@ -409,6 +409,31 @@ describe( 'table clipboard', () => {
 			} );
 
 			describe( 'pasted table is equal ot selected area', () => {
+				it( 'should be disabled in a readonly mode', () => {
+					editor.isReadOnly = true;
+
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+					);
+
+					const data = pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					editor.isReadOnly = false;
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', '11', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+
+					sinon.assert.calledOnce( data.preventDefault );
+				} );
+
 				it( 'pastes simple table to a simple table fragment - at the beginning of a table', () => {
 					tableSelection._setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
@@ -532,6 +557,8 @@ describe( 'table clipboard', () => {
 		};
 		data.dataTransfer.setData( 'text/html', viewTable( tableData ) );
 		viewDocument.fire( 'paste', data );
+
+		return data;
 	}
 
 	function createDataTransfer() {
