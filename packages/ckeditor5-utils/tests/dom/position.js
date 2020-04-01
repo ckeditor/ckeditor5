@@ -541,7 +541,7 @@ describe( 'getOptimalPosition()', () => {
 			}, 'right-top' );
 		} );
 
-		it( 'should prefer position with bigger intersection (#3)', () => {
+		it( 'should prefer a position with a bigger intersection area (#3)', () => {
 			target = getElement( {
 				top: 90,
 				right: 130,
