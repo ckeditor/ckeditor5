@@ -434,6 +434,25 @@ describe( 'table clipboard', () => {
 					sinon.assert.calledOnce( data.preventDefault );
 				} );
 
+				it( 'should allow normal paste if no table cells are selected', () => {
+					const data = {
+						dataTransfer: createDataTransfer(),
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+					data.dataTransfer.setData( 'text/html', '<p>foo</p>' );
+					viewDocument.fire( 'paste', data );
+
+					editor.isReadOnly = false;
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00foo[]', '01', '02', '03' ],
+						[ '10', '11', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+				} );
+
 				it( 'pastes simple table to a simple table fragment - at the beginning of a table', () => {
 					tableSelection._setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
