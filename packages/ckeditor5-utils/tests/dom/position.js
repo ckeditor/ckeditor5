@@ -335,7 +335,7 @@ describe( 'getOptimalPosition()', () => {
 			} );
 		} );
 
-		it( 'should return first position that completely fits limiter', () => {
+		it( 'should return the first position that completely fits in the limiter', () => {
 			element = getElement( {
 				top: 0,
 				right: 5,
