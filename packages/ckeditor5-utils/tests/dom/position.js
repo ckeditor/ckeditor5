@@ -506,7 +506,7 @@ describe( 'getOptimalPosition()', () => {
 		} );
 	} );
 
-	describe( 'maximizes intersection area with both limiter and viewport', () => {
+	describe( 'optimisation in the context of both the limiter and the viewport', () => {
 		beforeEach( setElementTargetBigLimiterPlayground );
 
 		it( 'should prefer a position with a bigger intersection area (#1)', () => {
