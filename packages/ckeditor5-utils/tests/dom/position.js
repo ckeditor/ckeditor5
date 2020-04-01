@@ -573,7 +573,7 @@ describe( 'getOptimalPosition()', () => {
 			}, 'left-top' );
 		} );
 
-		it( 'should not stick to first biggest intersection in one area', () => {
+		it( 'should not stick to the first biggest intersection in one area', () => {
 			// First position intersects more with limiter but little with viewport,
 			// second position intersects less with limiter but more with viewport and it should not be ignored.
 			//
