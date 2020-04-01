@@ -82,7 +82,8 @@ export default class Position {
 		}
 
 		// Normalize the root and path (if element was passed).
-		path = [ ...root.getPath(), ...path ];
+		const newPath = concatPaths( root.getPath(), path );
+
 		root = root.root;
 
 		/**
@@ -124,7 +125,7 @@ export default class Position {
 		 * @readonly
 		 * @member {Array.<Number>} module:engine/model/position~Position#path
 		 */
-		this.path = path;
+		this.path = newPath;
 
 		/**
 		 * Position stickiness. See {@link module:engine/model/position~PositionStickiness}.
@@ -840,7 +841,7 @@ export default class Position {
 
 		// Then, add the rest of the path.
 		// If this position is at the same level as `from` position nothing will get added.
-		combined.path = combined.path.concat( this.path.slice( i + 1 ) );
+		combined.path = concatPaths( combined.path, this.path.slice( i + 1 ) );
 
 		return combined;
 	}
@@ -1057,3 +1058,17 @@ export default class Position {
  *
  * @typedef {String} module:engine/model/position~PositionStickiness
  */
+
+function concatPaths( rootPath, path ) {
+	const newPath = [];
+
+	for ( let i = 0; i < rootPath.length; i++ ) {
+		newPath.push( rootPath[ i ] );
+	}
+
+	for ( let i = 0; i < path.length; i++ ) {
+		newPath.push( path[ i ] );
+	}
+
+	return newPath;
+}
