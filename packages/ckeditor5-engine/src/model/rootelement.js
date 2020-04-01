@@ -80,11 +80,10 @@ export default class RootElement extends Element {
 	 * @returns {Boolean}
 	 */
 	is( type, name ) {
-		const cutType = type.replace( 'model:', '' );
 		if ( !name ) {
-			return cutType == 'rootElement' || super.is( type );
+			return type == 'rootElement' || type == 'element' || type == this.name || type == 'node';
 		} else {
-			return ( cutType == 'rootElement' && name == this.name ) || super.is( type, name );
+			return ( type == 'rootElement' && name == this.name ) || ( type === 'element' && name == this.name );
 		}
 	}
 
