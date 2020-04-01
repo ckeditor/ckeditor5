@@ -509,7 +509,7 @@ describe( 'getOptimalPosition()', () => {
 	describe( 'maximizes intersection area with both limiter and viewport', () => {
 		beforeEach( setElementTargetBigLimiterPlayground );
 
-		it( 'should prefer position with bigger intersection (#1)', () => {
+		it( 'should prefer a position with a bigger intersection area (#1)', () => {
 			target = getElement( {
 				top: 90,
 				right: -10,
