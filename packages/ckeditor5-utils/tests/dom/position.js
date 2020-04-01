@@ -485,7 +485,7 @@ describe( 'getOptimalPosition()', () => {
 			} );
 		} );
 
-		it( 'should prefer position fully fitting in viewport', () => {
+		it( 'should prefer positions fitting entirely into the viewport', () => {
 			target = getElement( {
 				top: 100,
 				right: 35,
