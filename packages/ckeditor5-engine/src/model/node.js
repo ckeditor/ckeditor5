@@ -10,7 +10,6 @@
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
-
 // To check if component is loaded more than once.
 import '@ckeditor/ckeditor5-utils/src/version';
 
@@ -500,11 +499,3 @@ export default class Node {
 		this._attrs.clear();
 	}
 }
-
-/**
- * The node's parent does not contain this node.
- *
- * This error may be thrown from corrupted trees.
- *
- * @error model-node-not-found-in-parent
- */
