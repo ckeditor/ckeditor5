@@ -129,11 +129,11 @@ describe( 'Token', () => {
 		} );
 	} );
 
-	describe( '_refreshToken()', () => {
+	describe( 'refreshToken()', () => {
 		it( 'should get a token from the specified address', done => {
 			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
 
-			token._refreshToken()
+			token.refreshToken()
 				.then( newToken => {
 					expect( newToken.value ).to.equal( 'token-value' );
 
@@ -146,7 +146,7 @@ describe( 'Token', () => {
 		it( 'should get a token from the specified callback function', () => {
 			const token = new Token( () => Promise.resolve( 'token-value' ), { initValue: 'initValue', autoRefresh: false } );
 
-			return token._refreshToken()
+			return token.refreshToken()
 				.then( newToken => {
 					expect( newToken.value ).to.equal( 'token-value' );
 				} );
@@ -195,7 +195,7 @@ describe( 'Token', () => {
 		it( 'should throw an error when the callback throws error', () => {
 			const token = new Token( () => Promise.reject( 'Custom error occurred' ), { initValue: 'initValue', autoRefresh: false } );
 
-			token._refreshToken()
+			token.refreshToken()
 				.catch( error => {
 					expect( error ).to.equal( 'Custom error occurred' );
 				} );
