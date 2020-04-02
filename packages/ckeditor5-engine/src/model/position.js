@@ -81,9 +81,8 @@ export default class Position {
 			);
 		}
 
-		// Normalize the root and path (if element was passed).
-		const newPath = concatPaths( root.getPath(), path );
-
+		// Normalize the root and path when element (not root) is passed.
+		path = concatenatePaths( root.getPath(), path );
 		root = root.root;
 
 		/**
@@ -125,7 +124,7 @@ export default class Position {
 		 * @readonly
 		 * @member {Array.<Number>} module:engine/model/position~Position#path
 		 */
-		this.path = newPath;
+		this.path = path;
 
 		/**
 		 * Position stickiness. See {@link module:engine/model/position~PositionStickiness}.
@@ -841,7 +840,7 @@ export default class Position {
 
 		// Then, add the rest of the path.
 		// If this position is at the same level as `from` position nothing will get added.
-		combined.path = concatPaths( combined.path, this.path.slice( i + 1 ) );
+		combined.path = concatenatePaths( combined.path, this.path.slice( i + 1 ) );
 
 		return combined;
 	}
@@ -1059,7 +1058,12 @@ export default class Position {
  * @typedef {String} module:engine/model/position~PositionStickiness
  */
 
-function concatPaths( rootPath, path ) {
+// This helper method concatenate two arrays more efficiently than Array.concat(). See ckeditor/ckeditor5#6528.
+//
+// The problem with Array.concat() is that it is an overloaded method that can concatenate various arguments,
+// like mixed data types with arrays (e.g. [ 0 ].concat( 1, 2, [3, 4])) thus it probably check each argument's types and more.
+// In Position's paths concatenation case there always be two arrays to merge so such general method is not needed.
+function concatenatePaths( rootPath, path ) {
 	const newPath = [];
 
 	for ( let i = 0; i < rootPath.length; i++ ) {
