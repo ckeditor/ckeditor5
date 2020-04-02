@@ -46,7 +46,7 @@ export default class LinkCommand extends Command {
 	 */
 	restoreManualDecoratorStates() {
 		for ( const manualDecorator of this.manualDecorators ) {
-			manualDecorator.value = this._getDecoratorStateFromModel( manualDecorator.id );
+			manualDecorator.value = this._getDecoratorStateFromModel( manualDecorator );
 		}
 	}
 
@@ -60,7 +60,7 @@ export default class LinkCommand extends Command {
 		this.value = doc.selection.getAttribute( 'linkHref' );
 
 		for ( const manualDecorator of this.manualDecorators ) {
-			manualDecorator.value = this._getDecoratorStateFromModel( manualDecorator.id );
+			manualDecorator.value = this._getDecoratorStateFromModel( manualDecorator );
 		}
 
 		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
@@ -132,14 +132,18 @@ export default class LinkCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		// Stores information about manual decorators to turn them on/off when command is applied.
-		const truthyManualDecorators = [];
-		const falsyManualDecorators = [];
+		const setManualDecorators = [];
+		const removeManualDecorators = [];
 
 		for ( const name in manualDecoratorIds ) {
-			if ( manualDecoratorIds[ name ] ) {
-				truthyManualDecorators.push( name );
+			const manualDecorator = this.manualDecorators.get( name );
+			const value = manualDecoratorIds[ name ];
+
+			// We need to set an attribute for the disabled decorator if it's enabled by default (`defaultValue`).
+			if ( value || value != manualDecorator.defaultValue ) {
+				setManualDecorators.push( { name, value } );
 			} else {
-				falsyManualDecorators.push( name );
+				removeManualDecorators.push( name );
 			}
 		}
 
@@ -155,12 +159,12 @@ export default class LinkCommand extends Command {
 
 					writer.setAttribute( 'linkHref', href, linkRange );
 
-					truthyManualDecorators.forEach( item => {
-						writer.setAttribute( item, true, linkRange );
+					setManualDecorators.forEach( ( { name, value } ) => {
+						writer.setAttribute( name, value, linkRange );
 					} );
 
-					falsyManualDecorators.forEach( item => {
-						writer.removeAttribute( item, linkRange );
+					removeManualDecorators.forEach( name => {
+						writer.removeAttribute( name, linkRange );
 					} );
 
 					// Create new range wrapping changed link.
@@ -174,8 +178,8 @@ export default class LinkCommand extends Command {
 
 					attributes.set( 'linkHref', href );
 
-					truthyManualDecorators.forEach( item => {
-						attributes.set( item, true );
+					setManualDecorators.forEach( ( { name, value } ) => {
+						attributes.set( name, value );
 					} );
 
 					const node = writer.createText( href, attributes );
@@ -193,12 +197,12 @@ export default class LinkCommand extends Command {
 				for ( const range of ranges ) {
 					writer.setAttribute( 'linkHref', href, range );
 
-					truthyManualDecorators.forEach( item => {
-						writer.setAttribute( item, true, range );
+					setManualDecorators.forEach( ( { name, value } ) => {
+						writer.setAttribute( name, value, range );
 					} );
 
-					falsyManualDecorators.forEach( item => {
-						writer.removeAttribute( item, range );
+					removeManualDecorators.forEach( name => {
+						writer.removeAttribute( name, range );
 					} );
 				}
 			}
@@ -209,11 +213,16 @@ export default class LinkCommand extends Command {
 	 * Provides information whether a decorator with a given name is present in the currently processed selection.
 	 *
 	 * @private
-	 * @param {String} decoratorName The name of the manual decorator used in the model
+	 * @param {module:link/utils~ManualDecorator} decorator The manual decorator used in the model.
 	 * @returns {Boolean} The information whether a given decorator is currently present in the selection.
 	 */
-	_getDecoratorStateFromModel( decoratorName ) {
+	_getDecoratorStateFromModel( decorator ) {
 		const doc = this.editor.model.document;
-		return doc.selection.getAttribute( decoratorName ) || false;
+
+		if ( doc.selection.hasAttribute( decorator.id ) ) {
+			return doc.selection.getAttribute( decorator.id );
+		}
+
+		return decorator.defaultValue;
 	}
 }

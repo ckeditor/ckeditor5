@@ -284,10 +284,18 @@ describe( 'LinkCommand', () => {
 							target: '_blank'
 						}
 					} ) );
+					command.manualDecorators.add( new ManualDecorator( {
+						id: 'linkIsSth',
+						label: 'Sth',
+						attributes: {
+							class: 'sth'
+						},
+						defaultValue: true
+					} ) );
 
 					model.schema.extend( '$text', {
 						allowIn: '$root',
-						allowAttributes: [ 'linkHref', 'linkIsFoo', 'linkIsBar' ]
+						allowAttributes: [ 'linkHref', 'linkIsFoo', 'linkIsBar', 'linkIsSth' ]
 					} );
 
 					model.schema.register( 'p', { inheritAllFrom: '$block' } );
@@ -302,19 +310,19 @@ describe( 'LinkCommand', () => {
 			it( 'should insert additional attributes to link when it is created', () => {
 				setData( model, 'foo[]bar' );
 
-				command.execute( 'url', { linkIsFoo: true, linkIsBar: true } );
+				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
 
 				expect( getData( model ) ).to
-					.equal( 'foo[<$text linkHref="url" linkIsBar="true" linkIsFoo="true">url</$text>]bar' );
+					.equal( 'foo[<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">url</$text>]bar' );
 			} );
 
 			it( 'should add additional attributes to link when link is modified', () => {
 				setData( model, 'f<$text linkHref="url">o[]oba</$text>r' );
 
-				command.execute( 'url', { linkIsFoo: true, linkIsBar: true } );
+				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
 
 				expect( getData( model ) ).to
-					.equal( 'f[<$text linkHref="url" linkIsBar="true" linkIsFoo="true">ooba</$text>]r' );
+					.equal( 'f[<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">ooba</$text>]r' );
 			} );
 
 			it( 'should remove additional attributes to link if those are falsy', () => {
@@ -324,25 +332,33 @@ describe( 'LinkCommand', () => {
 
 				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
 			} );
+
+			it( 'should add additional attributes to link if those are falsy but decorator\'s defaultValue is set to true', () => {
+				setData( model, 'foo<$text linkHref="url" linkIsBar="true" linkIsFoo="true">u[]rl</$text>bar' );
+
+				command.execute( 'url', { linkIsFoo: false, linkIsBar: false, linkIsSth: false } );
+
+				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url" linkIsSth="false">url</$text>]bar' );
+			} );
 		} );
 
 		describe( 'range selection', () => {
 			it( 'should insert additional attributes to link when it is created', () => {
 				setData( model, 'f[ooba]r' );
 
-				command.execute( 'url', { linkIsFoo: true, linkIsBar: true } );
+				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
 
 				expect( getData( model ) ).to
-					.equal( 'f[<$text linkHref="url" linkIsBar="true" linkIsFoo="true">ooba</$text>]r' );
+					.equal( 'f[<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">ooba</$text>]r' );
 			} );
 
 			it( 'should add additional attributes to link when link is modified', () => {
 				setData( model, 'f[<$text linkHref="foo">ooba</$text>]r' );
 
-				command.execute( 'url', { linkIsFoo: true, linkIsBar: true } );
+				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
 
 				expect( getData( model ) ).to
-					.equal( 'f[<$text linkHref="url" linkIsBar="true" linkIsFoo="true">ooba</$text>]r' );
+					.equal( 'f[<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">ooba</$text>]r' );
 			} );
 
 			it( 'should remove additional attributes to link if those are falsy', () => {
@@ -352,29 +368,66 @@ describe( 'LinkCommand', () => {
 
 				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
 			} );
+
+			it( 'should add additional attributes to link if those are falsy but decorator\'s defaultValue is set to true', () => {
+				setData( model, 'foo[<$text linkHref="url" linkIsBar="true" linkIsFoo="true">url</$text>]bar' );
+
+				command.execute( 'url', { linkIsFoo: false, linkIsBar: false, linkIsSth: false } );
+
+				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url" linkIsSth="false">url</$text>]bar' );
+			} );
 		} );
 
 		describe( 'restoreManualDecoratorStates()', () => {
 			it( 'synchronize values with current model state', () => {
-				setData( model, 'foo<$text linkHref="url" linkIsBar="true" linkIsFoo="true">u[]rl</$text>bar' );
+				setData( model, 'foo<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">u[]rl</$text>bar' );
 
 				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
 					linkIsFoo: true,
-					linkIsBar: true
+					linkIsBar: true,
+					linkIsSth: true
 				} );
 
 				command.manualDecorators.first.value = false;
 
 				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
 					linkIsFoo: false,
-					linkIsBar: true
+					linkIsBar: true,
+					linkIsSth: true
 				} );
 
 				command.restoreManualDecoratorStates();
 
 				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
 					linkIsFoo: true,
-					linkIsBar: true
+					linkIsBar: true,
+					linkIsSth: true
+				} );
+			} );
+
+			it( 'synchronize values with current model state when the decorator that is "on" default is "off"', () => {
+				setData( model, 'foo<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="false">u[]rl</$text>bar' );
+
+				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
+					linkIsFoo: true,
+					linkIsBar: true,
+					linkIsSth: false
+				} );
+
+				command.manualDecorators.last.value = true;
+
+				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
+					linkIsFoo: true,
+					linkIsBar: true,
+					linkIsSth: true
+				} );
+
+				command.restoreManualDecoratorStates();
+
+				expect( decoratorStates( command.manualDecorators ) ).to.deep.equal( {
+					linkIsFoo: true,
+					linkIsBar: true,
+					linkIsSth: false
 				} );
 			} );
 		} );
@@ -383,8 +436,16 @@ describe( 'LinkCommand', () => {
 			it( 'obtain current values from the model', () => {
 				setData( model, 'foo[<$text linkHref="url" linkIsBar="true">url</$text>]bar' );
 
-				expect( command._getDecoratorStateFromModel( 'linkIsFoo' ) ).to.be.false;
-				expect( command._getDecoratorStateFromModel( 'linkIsBar' ) ).to.be.true;
+				expect( command._getDecoratorStateFromModel( command.manualDecorators.get( 'linkIsFoo' ) ) ).to.be.false;
+				expect( command._getDecoratorStateFromModel( command.manualDecorators.get( 'linkIsBar' ) ) ).to.be.true;
+			} );
+
+			it( 'fallbacks to defaultValue if there is no attribute in model', () => {
+				setData( model, 'foo[<$text linkHref="url">url</$text>]bar' );
+
+				expect( command._getDecoratorStateFromModel( command.manualDecorators.get( 'linkIsFoo' ) ) ).to.be.false;
+				expect( command._getDecoratorStateFromModel( command.manualDecorators.get( 'linkIsBar' ) ) ).to.be.false;
+				expect( command._getDecoratorStateFromModel( command.manualDecorators.get( 'linkIsSth' ) ) ).to.be.true;
 			} );
 		} );
 	} );
