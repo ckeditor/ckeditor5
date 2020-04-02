@@ -17,9 +17,7 @@ describe( 'FormHeaderView', () => {
 	} );
 
 	afterEach( () => {
-		if ( view.element ) {
-			view.element.remove();
-		}
+		view.element.remove();
 	} );
 
 	describe( 'constructor()', () => {
@@ -29,24 +27,7 @@ describe( 'FormHeaderView', () => {
 
 		it( 'should create view#children collection', () => {
 			expect( view.children ).to.be.instanceOf( ViewCollection );
-			expect( view.children ).to.have.length( 0 );
-		} );
-
-		it( 'should contain label view only when view#label is defined', () => {
-			view = new FormHeaderView( locale, {
-				label: 'Foo label'
-			} );
-
-			view.render();
-
-			expect( view.children ).to.be.instanceOf( ViewCollection );
 			expect( view.children ).to.have.length( 1 );
-
-			expect( view.children.first.element.classList.contains( 'ck-form__header__label' ) ).to.be.true;
-
-			view.label = '';
-
-			expect( view.children ).to.have.length( 0 );
 		} );
 
 		it( 'should set view#label', () => {
@@ -108,7 +89,7 @@ describe( 'FormHeaderView', () => {
 
 				view.children.add( child );
 
-				expect( view.element.childNodes[ 0 ] ).to.equal( child.element );
+				expect( view.element.childNodes[ 1 ] ).to.equal( child.element );
 
 				view.destroy();
 			} );

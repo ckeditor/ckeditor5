@@ -15,9 +15,7 @@ import '../../theme/components/formheader/formheader.css';
  * The class component representing a form header view. It should be used in more advanced forms to
  * describe the main purpose of the form.
  *
- * By default the component contains an optional bolded label view, which text can be set through the options (`[options.label]`),
- * while creating the component. The label text is usually a short (at most 3-word) string. If the label text isn't defined
- * the label view will not appear.
+ * By default the component contains a bolded label view that has to be set. The label is usually a short (at most 3-word) string.
  * The component can also be extended by any other elements, like: icons, dropdowns, etc.
  *
  * It is used i.a.
@@ -78,15 +76,9 @@ export default class FormHeaderView extends View {
 			children: this.children
 		} );
 
-		/**
-		 * A label view, which text can be set through `options.label` or {@link #label}.
-		 *
-		 * @readonly
-		 * @member {module:ui/view~View}
-		 */
-		this.labelView = new View( locale );
+		const label = new View( locale );
 
-		this.labelView.setTemplate( {
+		label.setTemplate( {
 			tag: 'span',
 			attributes: {
 				class: [
@@ -99,28 +91,6 @@ export default class FormHeaderView extends View {
 			]
 		} );
 
-		this.label && this.children.add( this.labelView );
-
-		this.on( 'set:label', () => {
-			if ( !this.children.has( this.labelView ) ) {
-				this.children.add( this.labelView );
-			}
-		} );
-	}
-
-	render() {
-		super.render();
-
-		this.on( 'change:label', evt => {
-			if ( this.children.has( this.labelView ) ) {
-				if ( !evt.source.label ) {
-					// Remove the label view if it is no longer necessary (eg.: label text is empty).
-					this.children.remove( this.labelView );
-				}
-			} else {
-				// Append label view only if it has not been added while creating the instance, but after render.
-				this.children.add( this.labelView );
-			}
-		} );
+		this.children.add( label );
 	}
 }
