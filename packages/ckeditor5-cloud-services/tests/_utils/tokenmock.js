@@ -9,10 +9,9 @@ export default class TokenMock extends Token {
 	/**
 	 * Overrides request and set the next token
 	 *
-	 * @protected
 	 * @returns {Promise.<Token>}
 	 */
-	_refreshToken() {
+	refreshToken() {
 		this.set( 'value', TokenMock.initialToken );
 
 		return Promise.resolve( this );
