@@ -16,7 +16,7 @@ The CKEditor 5 codebase is divided into multiple [npm](http://npmjs.com/) packag
 You can find all the official packages listed in [CKEditor 5 development repository's README](https://github.com/ckeditor/ckeditor5#packages).
 
 <info-box info>
-After the **19.0.0** release CKEditor 5 moved to the monorepo architecture. If you'd like to work with the older multi-repository release, please refer to {@link https://ckeditor.com/docs/ckeditor5/18.0.0/framework/guides/contributing/development-environment.html older Developer Environment guide} for multi-repository oriented instructions.
+After the **19.0.0** release CKEditor 5 moved to the monorepo architecture. If you'd like to work with the older multi-repository release, please refer to [older Developer Environment guide](/docs/ckeditor5/19.0.0/framework/guides/contributing/development-environment.html) for multi-repository oriented instructions.
 </info-box>
 
 ## Requirements
