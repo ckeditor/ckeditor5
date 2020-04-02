@@ -32,7 +32,7 @@ export default class FormHeaderView extends View {
 	 *
 	 * @param {module:utils/locale~Locale} locale The locale instance.
 	 * @param {Object} options
-	 * @param {String} [options.label] A label.
+	 * @param {String} options.label A label.
 	 * @param {String} [options.class] An additional class.
 	 */
 	constructor( locale, options = {} ) {
