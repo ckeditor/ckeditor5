@@ -26,7 +26,12 @@
 		& th {
 			min-width: 2em;
 			padding: .4em;
-			border-color: hsl(0, 0%, 75%);
+			/* After coping a table from the editor and pasting it somewhere in the document, but outside of the editable,
+			table misses some border styles inherited from `.ck-editor__nested-editable` (when table is placed inside the widget).
+			To prevent this, we should define border-width and border-style here as well as a fallback.
+			To reduce LOC, we use shorthand.
+			See https://github.com/ckeditor/ckeditor5/issues/6314 */
+			border: 1px solid hsl(0, 0%, 75%);
 		}
 
 		& th {
