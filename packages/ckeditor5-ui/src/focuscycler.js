@@ -52,6 +52,8 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
  *				focusPrevious: [ 'arrowup', 'arrowleft' ],
  *			}
  *		} );
+ *
+ * Check out the {@glink framework/guides/deep-dive/focus-tracking "Deep dive into focus tracking" guide} to learn more.
  */
 export default class FocusCycler {
 	/**
