@@ -53,5 +53,6 @@
 	"Center table": "The label used by assistive technologies describing a button that centers the table.",
 	"Align table to the right": "The label used by assistive technologies describing a button that aligns the table to the right.",
 	"The color is invalid. Try \"#FF0000\" or \"rgb(255,0,0)\" or \"red\".": "The localized error string that can be displayed next to color (background, border) fields that have an invalid value",
-	"The value is invalid. Try \"10px\" or \"2em\" or simply \"2\".": "The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value."
+	"The value is invalid. Try \"10px\" or \"2em\" or simply \"2\".": "The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.",
+	"Color picker": "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 }

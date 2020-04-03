@@ -256,7 +256,8 @@ export function fillToolbar( { view, icons, toolbar, labels, propertyName, nameT
 
 		button.set( {
 			label: labels[ name ],
-			icon: icons[ name ]
+			icon: icons[ name ],
+			tooltip: labels[ name ]
 		} );
 
 		button.bind( 'isOn' ).to( view, propertyName, value => {

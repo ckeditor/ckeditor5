@@ -518,6 +518,12 @@ describe( 'UI Utils', () => {
 			expect( toolbar.items.last.icon ).to.equal( icons.third );
 		} );
 
+		it( 'should set button tooltips', () => {
+			expect( toolbar.items.first.tooltip ).to.equal( labels.first );
+			expect( toolbar.items.get( 1 ).tooltip ).to.equal( labels.second );
+			expect( toolbar.items.last.tooltip ).to.equal( labels.third );
+		} );
+
 		it( 'should bind button #isOn to an observable property', () => {
 			expect( toolbar.items.first.isOn ).to.be.false;
 			expect( toolbar.items.get( 1 ).isOn ).to.be.false;
