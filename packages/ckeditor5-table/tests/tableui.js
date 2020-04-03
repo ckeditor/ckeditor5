@@ -138,7 +138,7 @@ describe( 'TableUI', () => {
 			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
 			expect( labels ).to.deep.equal(
-				[ 'Header row', '|', 'Insert row below', 'Insert row above', 'Delete row', 'Select entire row' ]
+				[ 'Header row', '|', 'Insert row below', 'Insert row above', 'Delete row', 'Select row' ]
 			);
 		} );
 
@@ -249,7 +249,7 @@ describe( 'TableUI', () => {
 			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
 			expect( labels ).to.deep.equal(
-				[ 'Header column', '|', 'Insert column left', 'Insert column right', 'Delete column', 'Select entire column' ]
+				[ 'Header column', '|', 'Insert column left', 'Insert column right', 'Delete column', 'Select column' ]
 			);
 		} );
 

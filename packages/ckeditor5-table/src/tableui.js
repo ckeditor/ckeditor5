@@ -118,7 +118,7 @@ export default class TableUI extends Plugin {
 					type: 'button',
 					model: {
 						commandName: 'selectTableColumn',
-						label: t( 'Select entire column' )
+						label: t( 'Select column' )
 					}
 				}
 			];
@@ -162,7 +162,7 @@ export default class TableUI extends Plugin {
 					type: 'button',
 					model: {
 						commandName: 'selectTableRow',
-						label: t( 'Select entire row' )
+						label: t( 'Select row' )
 					}
 				}
 			];
