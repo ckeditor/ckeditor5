@@ -236,12 +236,12 @@ describe( 'LinkUI', () => {
 			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 			// Mock some leftover value **in DOM**, e.g. after previous editing.
-			formView.urlInputView.fieldView.value = 'leftover';
+			formView.urlInputView.fieldView.element.value = 'leftover';
 
 			linkUIFeature._showUI();
 			actionsView.fire( 'edit' );
 
-			expect( formView.urlInputView.fieldView.value ).to.equal( 'url' );
+			expect( formView.urlInputView.fieldView.element.value ).to.equal( 'url' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
@@ -249,7 +249,7 @@ describe( 'LinkUI', () => {
 			setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 
 			linkUIFeature._showUI();
-			expect( formView.urlInputView.fieldView.value ).to.equal( '' );
+			expect( formView.urlInputView.fieldView.element.value ).to.equal( '' );
 		} );
 
 		it( 'should optionally force `main` stack to be visible', () => {
