@@ -80,7 +80,9 @@ export default class LivePosition extends Position {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'livePosition' || type == 'model:livePosition' || type == 'position' || type == 'model:position';
+		return type == 'livePosition' || type == 'model:livePosition' ||
+			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+			type == 'position' || type == 'model:position';
 	}
 
 	/**

@@ -83,6 +83,7 @@ export default class Text extends Node {
 	 */
 	is( type ) {
 		return type === 'text' || type === 'model:text' ||
+			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 			type === 'node' || type === 'model:node';
 	}
 
