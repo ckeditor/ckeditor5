@@ -11,7 +11,6 @@ import TreeWalker from './treewalker';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Text from './text';
-import { last } from 'lodash-es';
 
 // To check if component is loaded more than once.
 import '@ckeditor/ckeditor5-utils/src/version';
@@ -141,7 +140,7 @@ export default class Position {
 	 * @type {Number}
 	 */
 	get offset() {
-		return last( this.path );
+		return this.path[ this.path.length - 1 ];
 	}
 
 	/**
