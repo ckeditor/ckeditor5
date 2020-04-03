@@ -47,7 +47,7 @@ export default class FocusTracker {
 		 *
 		 * @readonly
 		 * @observable
-		 * @member {HTMLElement|null}
+		 * @member {HTMLElement|null} #focusedElement
 		 */
 		this.set( 'focusedElement', null );
 
