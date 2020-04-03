@@ -8,7 +8,6 @@
  */
 
 import View from '../view';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 import '../../theme/components/dropdown/dropdown.css';
@@ -156,14 +155,6 @@ export default class DropdownView extends View {
 		this.set( 'panelPosition', 'auto' );
 
 		/**
-		 * Tracks information about DOM focus in the dropdown.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
-		 */
-		this.focusTracker = new FocusTracker();
-
-		/**
 		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}. It manages
 		 * keystrokes of the dropdown:
 		 *
@@ -276,9 +267,6 @@ export default class DropdownView extends View {
 
 		// Listen for keystrokes coming from within #element.
 		this.keystrokes.listenTo( this.element );
-
-		// Register #element in the focus tracker.
-		this.focusTracker.add( this.element );
 
 		const closeDropdown = ( data, cancel ) => {
 			if ( this.isOpen ) {
