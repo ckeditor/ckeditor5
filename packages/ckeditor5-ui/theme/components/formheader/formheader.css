@@ -3,22 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
-	--ck-table-form-header-height: 38px;
-}
-
 .ck.ck-form__header {
-  display: flex;
+	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
 	align-items: center;
 	justify-content: space-between;
-	padding: var(--ck-spacing-small) var(--ck-spacing-large);
-	height: var(--ck-table-form-header-height);
-	line-height: var(--ck-table-form-header-height);
-	border-bottom: 1px solid var(--ck-color-base-border);
-
-	& .ck-form__header__label {
-		font-weight: bold;
-	}
 }
