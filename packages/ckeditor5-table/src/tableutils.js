@@ -275,7 +275,7 @@ export default class TableUtils extends Plugin {
 	 *		    ├───┼───┼───┤
 	 *		  4 │ k │ l │ m │
 	 *		    └───┴───┴───┘
-	 * @private
+	 *
 	 * @param {module:engine/model/element~Element} table
 	 * @param {Object} options
 	 * @param {Number} options.at The row index at which the removing rows will start.
