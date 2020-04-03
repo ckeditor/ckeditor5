@@ -41,7 +41,7 @@ describe( 'SelectRowCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be true if selection contains multiple cells', () => {
+		it( 'should be true if the selection contains multiple cells', () => {
 			setData( model, modelTable( [
 				[ '00', '01' ],
 				[ '10', '11' ],
