@@ -109,7 +109,7 @@ The focus management lives next to the {@link framework/guides/architecture/ui-l
 
 Here are the focus layers that play a role in the navigation and a brief overview of what happens at each layer:
 
-{@img assets/img/framework-deep-dive-focus-toolbar-nav-layers.jpg 1019 The image showing the focus layers used during navigation.}
+{@img assets/img/framework-deep-dive-focus-toolbar-nav-layers.png 1019 The image showing the focus layers used during navigation.}
 
 1. The root of the focus tree is the {@link module:editor-classic/classiceditorui~ClassicEditorUI} class. It creates a [focus tracker](#using-the-focustracker-class) instance which is **global for the entire editor**. You can access it via {@link module:core/editor/editorui~EditorUI#focusTracker `editor.ui.focusTracker`}.
 	* **All features (floating toolbars, balloons) across the editor listen to this focus tracker to tell if the user is still using the UI of the editor to act accordingly**.
