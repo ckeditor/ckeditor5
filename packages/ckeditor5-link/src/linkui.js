@@ -154,7 +154,7 @@ export default class LinkUI extends Plugin {
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
-			editor.execute( 'link', formView.urlInputView.fieldView.value, formView.getDecoratorSwitchesState() );
+			editor.execute( 'link', formView.urlInputView.fieldView.element.value, formView.getDecoratorSwitchesState() );
 			this._closeFormView();
 		} );
 
@@ -307,7 +307,7 @@ export default class LinkUI extends Plugin {
 		// clicked the same link), they would see the old value instead of the actual value of the command.
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
-		this.formView.urlInputView.fieldView.value = linkCommand.value || '';
+		this.formView.urlInputView.fieldView.element.value = linkCommand.value || '';
 	}
 
 	/**
