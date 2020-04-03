@@ -29,13 +29,13 @@ And when many places accept focus, there must be some systems out there to disco
 In the following chapters of this guide, we will explain how these systems work, what makes CKEditor "focusable", and how to develop new editor features so they fit into existing focus management systems and patterns:
 
 - [**The first section**](#focus-in-the-editor-engine) explains how the editor {@link framework/guides/architecture/editing-engine engine} manages focus and what tools exist there to help you out when developing new features.
-- In [**the second part**](#focus-in-the-editor-UI), we will show you how the {@link framework/guides/architecture/ui-library user interface} of the editor tracks focus and how various UI components take advantage of that, for instance, to provide accessibility.
+- In [**the second part**](#focus-in-the-editor-ui), we will show you how the {@link framework/guides/architecture/ui-library user interface} of the editor tracks focus and how various UI components take advantage of that, for instance, to provide accessibility.
 - In [**the last section**](#focus-state-analysis), we will use the knowledge from previous chapters in a real–life scenario and analyze how all these tools and systems work together.
 
 ## Focus in the editor engine
 
 <info-box>
-	Keep in mind that information in this chapter concern the editor **engine layer only**. To learn about focus in the user interface, check out the [next chapter](TODO) of this guide.
+	Keep in mind that information in this chapter concern the editor **engine layer only**. To learn about focus in the user interface, check out the [next chapter](#focus-in-the-editor-ui) of this guide.
 </info-box>
 
 The main editable area of CKEditor can be focused thanks to the [`contenteditable`](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Editable_content) DOM attribute. This attribute tells the web browser that a web page element can be edited like any other text field, which also means it must be able to receive focus.
@@ -175,7 +175,7 @@ And here is the summary of the tools used by each focus layer (UI component):
 
 Most of components have [focus trackers](#using-the-focustracker-class) to keep up with the focus inside of them. Some components that host more children also use [focus cyclers](#using-the-focuscycler-class) and [keystroke handlers](#using-the-keystrokehandler-class) to allow users to navigate across them. You can learn how to use them in the later chapters of this guide:
 
-- ["Implementing focusable UI components"](#implementing-focusable-UI-components),
+- ["Implementing focusable UI components"](#implementing-focusable-ui-components),
 - ["Using the `FocusTracker` class"](#using-the-focustracker-class),
 - ["Using the `KeystrokeHandler` class"](#using-the-keystrokehandler-class),
 - ["Using the `FocusCycler` class"](#using-the-focuscycler-class).
@@ -579,7 +579,7 @@ Now you can use the keyboard arrows to cycle the focused list items:
 
 ## Focus state analysis
 
-This chapter contains an analysis of a common focus navigation scenario in an {@link examples/builds/inline-editor inline editor}. While the [previous chapter](#focus-in-the-editor-UI) was focused on tools that make up the focus management system, this time we will focus on their state. This should help you better understand how all little pieces work in a bigger picture.
+This chapter contains an analysis of a common focus navigation scenario in an {@link examples/builds/inline-editor inline editor}. While the [previous chapter](#focus-in-the-editor-ui) was focused on tools that make up the focus management system, this time we will focus on their state. This should help you better understand how all little pieces work in a bigger picture.
 
 ### Scenario
 
@@ -593,7 +593,7 @@ And here are the steps of the scenario:
 2. The {@link module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView editable area} gets focused using the mouse. The main toolbar shows up and because the link was clicked, the {@link module:link/ui/linkactionsview~LinkActionsView link actions view} also pops up.
 3. The <kbd>Tab</kbd> key is used to focus the {@link module:link/ui/linkactionsview~LinkActionsView#previewButtonView link preview} in the balloon (a child of {@link module:link/ui/linkactionsview~LinkActionsView}).
 4. The <kbd>Tab</kbd> key is used to focus the {@link module:link/ui/linkactionsview~LinkActionsView#editButtonView "Edit link" button}.
-5. The <kbd>Space</kbd> key is used to execute the "Edit link" button. The focus moves to the {@link module:link/ui/linkformview~LinkFormView#urlInputViewURL input} in the {@link module:link/ui/linkformview~LinkFormView}.
+5. The <kbd>Space</kbd> key is used to execute the "Edit link" button. The focus moves to the {@link module:link/ui/linkformview~LinkFormView#urlInputView input} in the {@link module:link/ui/linkformview~LinkFormView}.
 6. The <kbd>Tab</kbd> key is used to move from the link URL field to the {@link module:link/ui/linkformview~LinkFormView#saveButtonView "Save" button}.
 7. The <kbd>Tab</kbd> key is used to move from the "Save" button to the {@link module:link/ui/linkformview~LinkFormView#cancelButtonView "Cancel" button}.
 8. The <kbd>Space</kbd> key is used to execute the "Cancel" button and close the editing form.
