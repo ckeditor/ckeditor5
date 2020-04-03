@@ -264,8 +264,8 @@ export default class TableUtils extends Plugin {
 	 * Assuming the table on the left, the above code will transform it to the table on the right:
 	 *
 	 *		row index
-	 *		    ┌───┬───┬───┐        `at` = 1,       ┌───┬───┬───┐
-	 *		  0 │ a │ b │ c │        `rows` = 2,     │ a │ b │ c │ 0
+	 *		    ┌───┬───┬───┐        `at` = 1        ┌───┬───┬───┐
+	 *		  0 │ a │ b │ c │        `rows` = 2      │ a │ b │ c │ 0
 	 *		    │   ├───┼───┤                        │   ├───┼───┤
 	 *		  1 │   │ d │ e │  <-- remove from here  │   │ i │ j │ 1
 	 *		    │   ├───┼───┤        will give:      ├───┼───┼───┤
