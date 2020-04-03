@@ -56,7 +56,7 @@ describe( 'SelectColumnCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false if selection is outside a table', () => {
+		it( 'should be false if the selection is outside a table', () => {
 			setData( model, '<paragraph>11[]</paragraph>' );
 
 			expect( command.isEnabled ).to.be.false;
