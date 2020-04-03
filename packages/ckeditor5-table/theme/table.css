@@ -26,7 +26,11 @@
 		& th {
 			min-width: 2em;
 			padding: .4em;
-			border-color: hsl(0, 0%, 75%);
+
+			/* The border is inherited from .ck-editor__nested-editable styles, so theoretically it's not necessary here.
+			However, the border is a content style, so it should use .ck-content (so it works outside the editor).
+			Hence, the duplication. See https://github.com/ckeditor/ckeditor5/issues/6314 */
+			border: 1px solid hsl(0, 0%, 75%);
 		}
 
 		& th {
