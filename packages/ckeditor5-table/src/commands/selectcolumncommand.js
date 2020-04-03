@@ -18,7 +18,7 @@ import { getSelectionAffectedTableCells } from '../utils';
  *
  * The command is registered by {@link module:table/tableediting~TableEditing} as the `'selectTableColumn'` editor command.
  *
- * To select the column containing the selected cell, execute the command:
+ * To select the columns containing the selected cells, execute the command:
  *
  *		editor.execute( 'selectTableColumn' );
  *
@@ -50,16 +50,16 @@ export default class SelectColumnCommand extends Command {
 		const startColumn = Math.min( startLocation.column, endLocation.column );
 		const endColumn = Math.max( startLocation.column, endLocation.column );
 
-		const cellsToSelect = [];
+		const rangesToSelect = [];
 
 		for ( const cellInfo of new TableWalker( findAncestor( 'table', firstCell ) ) ) {
 			if ( cellInfo.column >= startColumn && cellInfo.column <= endColumn ) {
-				cellsToSelect.push( cellInfo.cell );
+				rangesToSelect.push( model.createRangeOn( cellInfo.cell ) );
 			}
 		}
 
 		model.change( writer => {
-			writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
+			writer.setSelection( rangesToSelect );
 		} );
 	}
 }

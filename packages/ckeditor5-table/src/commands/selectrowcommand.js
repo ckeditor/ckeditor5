@@ -9,7 +9,6 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import TableWalker from '../tablewalker';
 import { findAncestor } from './utils';
 import { getRowIndexes, getSelectionAffectedTableCells } from '../utils';
 
@@ -18,7 +17,7 @@ import { getRowIndexes, getSelectionAffectedTableCells } from '../utils';
  *
  * The command is registered by {@link module:table/tableediting~TableEditing} as the `'selectTableRow'` editor command.
  *
- * To select the row containing the selected cell, execute the command:
+ * To select the rows containing the selected cells, execute the command:
  *
  *		editor.execute( 'selectTableRow' );
  *
@@ -43,14 +42,16 @@ export default class SelectRowCommand extends Command {
 		const rowIndexes = getRowIndexes( referenceCells );
 
 		const table = findAncestor( 'table', referenceCells[ 0 ] );
-		const cellsToSelect = [];
+		const rangesToSelect = [];
 
-		for ( const cellInfo of new TableWalker( table, { startRow: rowIndexes.first, endRow: rowIndexes.last } ) ) {
-			cellsToSelect.push( cellInfo.cell );
+		for ( let rowIndex = rowIndexes.first; rowIndex <= rowIndexes.last; rowIndex++ ) {
+			for ( const cell of table.getChild( rowIndex ).getChildren() ) {
+				rangesToSelect.push( model.createRangeOn( cell ) );
+			}
 		}
 
 		model.change( writer => {
-			writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
+			writer.setSelection( rangesToSelect );
 		} );
 	}
 }
