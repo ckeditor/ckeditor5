@@ -64,7 +64,7 @@ describe( 'SelectColumnCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'should select a given column', () => {
+		it( 'should select a column of a table cell with a collapsed selection', () => {
 			setData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '[]11', '12' ],
