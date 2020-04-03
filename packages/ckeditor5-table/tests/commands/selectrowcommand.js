@@ -32,7 +32,7 @@ describe( 'SelectRowCommand', () => {
 	} );
 
 	describe( 'isEnabled', () => {
-		it( 'should be true if selection is inside table cell', () => {
+		it( 'should be true if the selection is inside table cell', () => {
 			setData( model, modelTable( [
 				[ '00[]', '01' ],
 				[ '10', '11' ]
