@@ -256,48 +256,55 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Removes a row from the given `table`.
 	 *
-	 * This method properly re-calculate `rowspan` attribute of any table cell that is overlapping removed row.
+	 * This method properly re-calculate table geometry including `rowspan` attribute of any table cell that is overlapping removed row
+	 * and table headings values.
 	 *
+	 *		editor.plugins.get( 'TableUtils' ).removeRows( table, { at: 1, rows: 2 } );
+	 *
+	 * Assuming the table on the left, the above code will transform it to the table on the right:
+	 *
+	 *		row index
+	 *		    ┌───┬───┬───┐        `at` = 1,       ┌───┬───┬───┐
+	 *		  0 │ a │ b │ c │        `rows` = 2,     │ a │ b │ c │ 0
+	 *		    │   ├───┼───┤                        │   ├───┼───┤
+	 *		  1 │   │ d │ e │  <-- remove from here  │   │ i │ j │ 1
+	 *		    │   ├───┼───┤        will give:      ├───┼───┼───┤
+	 *		  2 │   │ g │ h │                        │ k │ l │ m │ 2
+	 *		    │   ├───┼───┤                        └───┴───┴───┘
+	 *		  3 │   │ i │ j │
+	 *		    ├───┼───┼───┤
+	 *		  4 │ k │ l │ m │
+	 *		    └───┴───┴───┘
 	 * @private
-	 * @param {Number} rowIndex Index of the row that should be removed.
 	 * @param {module:engine/model/element~Element} table
-	 * @param {module:engine/model/writer~Writer} writer
+	 * @param {Object} options
+	 * @param {Number} options.at The row index at which the removing rows will start.
+	 * @param {Number} [options.rows=1] The number of rows to remove.
 	 */
-	removeRow( rowIndex, table, writer ) {
-		const cellsToMove = new Map();
-		const tableRow = table.getChild( rowIndex );
-		const tableMap = [ ...new TableWalker( table, { endRow: rowIndex } ) ];
+	removeRows( table, options ) {
+		const model = this.editor.model;
+		const first = options.at;
+		const rowsToRemove = options.rows || 1;
 
-		// Get cells from removed row that are spanned over multiple rows.
-		tableMap
-			.filter( ( { row, rowspan } ) => row === rowIndex && rowspan > 1 )
-			.forEach( ( { column, cell, rowspan } ) => cellsToMove.set( column, { cell, rowspanToSet: rowspan - 1 } ) );
+		const last = first + rowsToRemove - 1;
 
-		// Reduce rowspan on cells that are above removed row and overlaps removed row.
-		tableMap
-			.filter( ( { row, rowspan } ) => row <= rowIndex - 1 && row + rowspan > rowIndex )
-			.forEach( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
-
-		// Move cells to another row.
-		const targetRow = rowIndex + 1;
-		const tableWalker = new TableWalker( table, { includeSpanned: true, startRow: targetRow, endRow: targetRow } );
-		let previousCell;
-
-		for ( const { row, column, cell } of [ ...tableWalker ] ) {
-			if ( cellsToMove.has( column ) ) {
-				const { cell: cellToMove, rowspanToSet } = cellsToMove.get( column );
-				const targetPosition = previousCell ?
-					writer.createPositionAfter( previousCell ) :
-					writer.createPositionAt( table.getChild( row ), 0 );
-				writer.move( writer.createRangeOn( cellToMove ), targetPosition );
-				updateNumericAttribute( 'rowspan', rowspanToSet, cellToMove, writer );
-				previousCell = cellToMove;
-			} else {
-				previousCell = cell;
+		model.change( writer => {
+			for ( let i = last; i >= first; i-- ) {
+				removeRow( table, i, writer );
 			}
-		}
 
-		writer.remove( tableRow );
+			const headingRows = table.getAttribute( 'headingRows' ) || 0;
+
+			if ( headingRows && first < headingRows ) {
+				const newRows = getNewHeadingRowsValue( first, last, headingRows );
+
+				// Must be done after the changes in table structure (removing rows).
+				// Otherwise the downcast converter for headingRows attribute will fail. ckeditor/ckeditor5#6391.
+				model.enqueueChange( writer.batch, writer => {
+					updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
+				} );
+			}
+		} );
 	}
 
 	/**
@@ -661,4 +668,50 @@ function breakSpanEvenly( span, numberOfCells ) {
 	const updatedSpan = ( span - newCellsSpan * numberOfCells ) + newCellsSpan;
 
 	return { newCellsSpan, updatedSpan };
+}
+
+function removeRow( table, rowIndex, writer ) {
+	const cellsToMove = new Map();
+	const tableRow = table.getChild( rowIndex );
+	const tableMap = [ ...new TableWalker( table, { endRow: rowIndex } ) ];
+
+	// Get cells from removed row that are spanned over multiple rows.
+	tableMap
+		.filter( ( { row, rowspan } ) => row === rowIndex && rowspan > 1 )
+		.forEach( ( { column, cell, rowspan } ) => cellsToMove.set( column, { cell, rowspanToSet: rowspan - 1 } ) );
+
+	// Reduce rowspan on cells that are above removed row and overlaps removed row.
+	tableMap
+		.filter( ( { row, rowspan } ) => row <= rowIndex - 1 && row + rowspan > rowIndex )
+		.forEach( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
+
+	// Move cells to another row.
+	const targetRow = rowIndex + 1;
+	const tableWalker = new TableWalker( table, { includeSpanned: true, startRow: targetRow, endRow: targetRow } );
+	let previousCell;
+
+	for ( const { row, column, cell } of [ ...tableWalker ] ) {
+		if ( cellsToMove.has( column ) ) {
+			const { cell: cellToMove, rowspanToSet } = cellsToMove.get( column );
+			const targetPosition = previousCell ?
+				writer.createPositionAfter( previousCell ) :
+				writer.createPositionAt( table.getChild( row ), 0 );
+			writer.move( writer.createRangeOn( cellToMove ), targetPosition );
+			updateNumericAttribute( 'rowspan', rowspanToSet, cellToMove, writer );
+			previousCell = cellToMove;
+		} else {
+			previousCell = cell;
+		}
+	}
+
+	writer.remove( tableRow );
+}
+
+// Calculates a new heading rows value for removing rows from heading section.
+function getNewHeadingRowsValue( first, last, headingRows ) {
+	if ( last < headingRows ) {
+		return headingRows - ( last - first + 1 );
+	}
+
+	return first;
 }

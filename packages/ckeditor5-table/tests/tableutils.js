@@ -747,4 +747,217 @@ describe( 'TableUtils', () => {
 			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 3 );
 		} );
 	} );
+
+	describe( 'removeRow()', () => {
+		describe( 'single row', () => {
+			it( 'should remove a given row from a table start', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				] ) );
+
+				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 0 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '10', '11' ],
+					[ '20', '21' ]
+				] ) );
+			} );
+
+			it( 'should remove last row', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] ) );
+
+				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', '01' ]
+				] ) );
+			} );
+
+			it( 'should change heading rows if removing a heading row', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 2 } ) );
+
+				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', '01' ],
+					[ '20', '21' ]
+				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should decrease rowspan of table cells from previous rows', () => {
+				setData( model, modelTable( [
+					[ { rowspan: 4, contents: '00' }, { rowspan: 3, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
+					[ { rowspan: 2, contents: '13' }, '14' ],
+					[ '22', '23', '24' ],
+					[ '30', '31', '32', '33', '34' ]
+				] ) );
+
+				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 2 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ { rowspan: 3, contents: '00' }, { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
+					[ '13', '14' ],
+					[ '30', '31', '32', '33', '34' ]
+				] ) );
+			} );
+
+			it( 'should move rowspaned cells to row below removing it\'s row', () => {
+				setData( model, modelTable( [
+					[ { rowspan: 3, contents: '00' }, { rowspan: 2, contents: '01' }, '02' ],
+					[ '12' ],
+					[ '22' ],
+					[ '30', '31', '32' ]
+				] ) );
+
+				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 0 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ { rowspan: 2, contents: '00' }, '01', '12' ],
+					[ '22' ],
+					[ '30', '31', '32' ]
+				] ) );
+			} );
+		} );
+
+		describe( 'many rows', () => {
+			it( 'should properly remove middle rows', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				] ) );
+
+				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 1, rows: 2 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', '01' ],
+					[ '30', '31' ]
+				] ) );
+			} );
+
+			it( 'should properly remove tailing rows', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				] ) );
+
+				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 2 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] ) );
+			} );
+
+			it( 'should properly remove beginning rows', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				] ) );
+
+				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 0, rows: 2 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '20', '21' ],
+					[ '30', '31' ]
+				] ) );
+			} );
+
+			it( 'should support removing multiple headings (removed rows in heading section)', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				], { headingRows: 3 } ) );
+
+				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 0, rows: 2 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '20', '21' ],
+					[ '30', '31' ]
+				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should support removing multiple headings (removed rows in heading and body section)', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ],
+					[ '40', '41' ]
+				], { headingRows: 3 } ) );
+
+				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 1, rows: 3 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', '01' ],
+					[ '40', '41' ]
+				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should support removing mixed heading and cell rows', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 1 } ) );
+
+				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 0, rows: 2 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '20', '21' ]
+				] ) );
+			} );
+
+			it( 'should properly calculate truncated rowspans', () => {
+				setData( model, modelTable( [
+					[ '00', { contents: '01', rowspan: 3 } ],
+					[ '10' ],
+					[ '20' ]
+				] ) );
+
+				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 0, rows: 2 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '20', '01' ]
+				] ) );
+			} );
+
+			it( 'should create one undo step (1 batch)', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				], { headingRows: 3 } ) );
+
+				const createdBatches = new Set();
+
+				model.on( 'applyOperation', ( evt, args ) => {
+					const operation = args[ 0 ];
+
+					createdBatches.add( operation.batch );
+				} );
+
+				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 0, rows: 2 } );
+
+				expect( createdBatches.size ).to.equal( 1 );
+			} );
+		} );
+	} );
 } );

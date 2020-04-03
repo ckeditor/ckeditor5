@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor, updateNumericAttribute } from './utils';
+import { findAncestor } from './utils';
 import { getRowIndexes, getSelectionAffectedTableCells } from '../utils';
 
 /**
@@ -64,27 +64,14 @@ export default class RemoveRowCommand extends Command {
 			// This prevents the "model-selection-range-intersects" error, caused by removing row selected cells.
 			writer.setSelection( writer.createSelection( table, 'on' ) );
 
-			let cellToFocus;
+			const rowsToRemove = removedRowIndexes.last - removedRowIndexes.first + 1;
 
-			for ( let i = removedRowIndexes.last; i >= removedRowIndexes.first; i-- ) {
-				const removedRowIndex = i;
-				this.editor.plugins.get( 'TableUtils' ).removeRow( removedRowIndex, table, writer );
+			this.editor.plugins.get( 'TableUtils' ).removeRows( table, {
+				at: removedRowIndexes.first,
+				rows: rowsToRemove
+			} );
 
-				cellToFocus = getCellToFocus( table, removedRowIndex, columnIndexToFocus );
-			}
-
-			const model = this.editor.model;
-			const headingRows = table.getAttribute( 'headingRows' ) || 0;
-
-			if ( headingRows && removedRowIndexes.first < headingRows ) {
-				const newRows = getNewHeadingRowsValue( removedRowIndexes, headingRows );
-
-				// Must be done after the changes in table structure (removing rows).
-				// Otherwise the downcast converter for headingRows attribute will fail. ckeditor/ckeditor5#6391.
-				model.enqueueChange( writer.batch, writer => {
-					updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
-				} );
-			}
+			const cellToFocus = getCellToFocus( table, removedRowIndexes.first, columnIndexToFocus );
 
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
@@ -111,13 +98,4 @@ function getCellToFocus( table, removedRowIndex, columnToFocus ) {
 	}
 
 	return cellToFocus;
-}
-
-// Calculates a new heading rows value for removing rows from heading section.
-function getNewHeadingRowsValue( removedRowIndexes, headingRows ) {
-	if ( removedRowIndexes.last < headingRows ) {
-		return headingRows - ( ( removedRowIndexes.last - removedRowIndexes.first ) + 1 );
-	}
-
-	return removedRowIndexes.first;
 }
