@@ -224,8 +224,8 @@ class MyListView extends View {
 		this.items = this.createCollection();
 
 		this.setTemplate( {
-				tag: 'ul',
-				children: this.items
+			tag: 'ul',
+			children: this.items
 		} );
 	}
 
@@ -714,9 +714,9 @@ Let's see how they react to the user actions (states were recorded **after** eac
 ### Conclusions
 
 * The global focus tracker (the one you can access via `editor.ui.focusTracker`) is always aware of the focus state, even when the focus is in the farthest regions of the UI.
-  * It does not know which element is focused on deeper layers (for instance the "Edit link" button), though. All it knows is where the focus went (e.g. from editable to the balloon panel).
-  * It lacks precise information about the focus in the link UI because that is the responsibility of the focus tracker of the link UI layer.
-  * All editor features **can always depend on the global focus tracker** when necessary. For instance, the main editor toolbar is displayed as long as the global focus tracker knows the focus is somewhere in the editor.
+	* It does not know which element is focused on deeper layers (for instance the "Edit link" button), though. All it knows is where the focus went (e.g. from editable to the balloon panel).
+	* It lacks precise information about the focus in the link UI because that is the responsibility of the focus tracker of the link UI layer.
+	* All editor features **can always depend on the global focus tracker** when necessary. For instance, the main editor toolbar is displayed as long as the global focus tracker knows the focus is somewhere in the editor.
 * You can see that the focus management is modular: `LinkActionsView` and `LinkFormView` only know about the focus as long as one of their children has it.
 * Focus trackers belonging to `LinkActionsView` and `LinkFormView` know precisely which element has focus. This is their region of interest and, unlike the global focus tracker of the editor, they need that information to allow navigation using the keyboard.
 
