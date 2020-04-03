@@ -177,9 +177,12 @@ export default class Element extends Node {
 	 */
 	is( type, name = null ) {
 		if ( !name ) {
-			return type == 'element' || type == this.name || type == 'node' || type == 'view:node';
+			return type === this.name || type === 'view:' + this.name ||
+				type === 'element' || type === 'view:element' ||
+				// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+				type === 'node' || type === 'view:node';
 		} else {
-			return type == 'element' && name == this.name;
+			return name === this.name && ( type === 'element' || type === 'view:element' );
 		}
 	}
 

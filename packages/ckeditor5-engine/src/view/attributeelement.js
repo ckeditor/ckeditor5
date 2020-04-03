@@ -158,9 +158,17 @@ export default class AttributeElement extends Element {
 	 */
 	is( type, name = null ) {
 		if ( !name ) {
-			return type == 'attributeElement' || type == 'element' || type == this.name || type == 'node';
+			return type === 'attributeElement' || type === 'view:attributeElement' ||
+				// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+				type === this.name || type === 'view:' + this.name ||
+				type === 'element' || type === 'view:element' ||
+				type === 'node' || type === 'view:node';
 		} else {
-			return ( type == 'attributeElement' && name == this.name ) || ( type == 'element' && name == this.name );
+			return name === this.name && (
+				type === 'attributeElement' || type === 'view:attributeElement' ||
+				// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+				type === 'element' || type === 'view:element'
+			);
 		}
 	}
 
