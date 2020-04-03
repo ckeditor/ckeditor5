@@ -64,7 +64,7 @@ describe( 'SelectRowCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'should select a given row', () => {
+		it( 'should select a row of a table cell with a collapsed selection', () => {
 			setData( model, modelTable( [
 				[ '00', '01' ],
 				[ '[]10', '11' ],
@@ -80,7 +80,7 @@ describe( 'SelectRowCommand', () => {
 			] );
 		} );
 
-		it( 'should select a given row from a table start', () => {
+		it( 'should select a row of table cell with a collapsed selection in first table cell', () => {
 			setData( model, modelTable( [
 				[ '[]00', '01' ],
 				[ '10', '11' ],
@@ -96,7 +96,7 @@ describe( 'SelectRowCommand', () => {
 			] );
 		} );
 
-		it( 'should select a given row from a table start when selection is at the end', () => {
+		it( 'should select a row of table cell with a collapsed selection in last cell in the first column', () => {
 			setData( model, modelTable( [
 				[ '00', '01[]' ],
 				[ '10', '11' ],
@@ -112,7 +112,7 @@ describe( 'SelectRowCommand', () => {
 			] );
 		} );
 
-		it( 'should select last row', () => {
+		it( 'should select a row of table cell with collapsed selection in the first cell of the last column', () => {
 			setData( model, modelTable( [
 				[ '00', '01' ],
 				[ '[]10', '11' ]
@@ -126,33 +126,164 @@ describe( 'SelectRowCommand', () => {
 			] );
 		} );
 
-		it( 'should select row-spanned cells', () => {
-			// +----+----+----+----+----+
-			// | 00 | 01 | 02 | 03 | 04 |
-			// +    +    +    +----+----+
-			// |    |    |    | 13 | 14 |
-			// +    +    +----+    +----+
-			// |    |    | 22 |    | 24 |
-			// +    +----+----+----+----+
-			// |    | 31 | 32 | 33 | 34 |
-			// +----+----+----+----+----+
-			setData( model, modelTable( [
-				[ { rowspan: 4, contents: '00' }, { rowspan: 3, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
-				[ { rowspan: 2, contents: '13' }, '14[]' ],
-				[ '22', '23', '24' ],
-				[ '30', '31', '32', '33', '34' ]
-			] ) );
+		describe( 'with row-spanned cells', () => {
+			beforeEach( () => {
+				// +----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 |
+				// +    +    +    +----+----+
+				// |    |    |    | 13 | 14 |
+				// +    +    +----+    +----+
+				// |    |    | 22 |    | 24 |
+				// +    +----+----+----+----+
+				// |    | 31 | 32 | 33 | 34 |
+				// +----+----+----+----+----+
+				setData( model, modelTable( [
+					[ { rowspan: 4, contents: '00' }, { rowspan: 3, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
+					[ { rowspan: 2, contents: '13' }, '14' ],
+					[ '22', '23', '24' ],
+					[ '30', '31', '32', '33', '34' ]
+				] ) );
+			} );
 
-			command.execute();
+			it( 'should select only one row if only one cell is selected', () => {
+				// Selection in cell 01.
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 0, 1 ] )
+				);
 
-			/* eslint-disable no-multi-spaces */
-			assertSelectedCells( model, [
-				[ 0, 0, 0, 0, 0 ],
-				[          1, 1 ],
-				[       0,    0 ],
-				[    0, 0, 0, 0 ]
-			] );
-			/* eslint-enable no-multi-spaces */
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 0, 1, 0, 0, 0 ],
+					[          0, 0 ],
+					[       0,    0 ],
+					[    0, 0, 0, 0 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+
+				command.execute();
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 1, 1, 1, 1, 1 ],
+					[          0, 0 ],
+					[       0,    0 ],
+					[    0, 0, 0, 0 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+			} );
+
+			it( 'should not select row-spanned rows that start in other row', () => {
+				// Selection in cell 24.
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 2, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+				);
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 0, 0, 0, 0, 0 ],
+					[          0, 0 ],
+					[       0,    1 ],
+					[    0, 0, 0, 0 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+
+				command.execute();
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 0, 0, 0, 0, 0 ],
+					[          0, 0 ],
+					[       1,    1 ],
+					[    0, 0, 0, 0 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+			} );
+
+			it( 'should not select row-spanned rows that start in other row but include those that start in selected row', () => {
+				// Selection in cell 14.
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 0, 0, 0, 0, 0 ],
+					[          0, 1 ],
+					[       0,    0 ],
+					[    0, 0, 0, 0 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+
+				command.execute();
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 0, 0, 0, 0, 0 ],
+					[          1, 1 ],
+					[       0,    0 ],
+					[    0, 0, 0, 0 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+			} );
+
+			it( 'should select properly for multiple not spanned cells selected', () => {
+				// Selection in cells 04 - 14.
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 4 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 0, 0, 0, 0, 1 ],
+					[          0, 1 ],
+					[       0,    0 ],
+					[    0, 0, 0, 0 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+
+				command.execute();
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 1, 1, 1, 1, 1 ],
+					[          1, 1 ],
+					[       0,    0 ],
+					[    0, 0, 0, 0 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+			} );
+
+			it( 'should select properly for multiple cells selected including spanned one', () => {
+				// Selection in cells 13 - 33.
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 3, 2 ] )
+				);
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 0, 0, 0, 0, 0 ],
+					[          1, 0 ],
+					[       0,    0 ],
+					[    0, 0, 1, 0 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+
+				command.execute();
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 0, 0, 0, 0, 0 ],
+					[          1, 1 ],
+					[       1,    1 ],
+					[    1, 1, 1, 1 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+			} );
 		} );
 
 		describe( 'with multiple rows selected', () => {
