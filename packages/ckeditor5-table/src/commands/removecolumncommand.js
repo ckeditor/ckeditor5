@@ -92,7 +92,9 @@ export default class RemoveColumnCommand extends Command {
 	 * @param {module:engine/model/writer~Writer} writer
 	 */
 	_removeColumn( removedColumnIndex, table, writer ) {
-		for ( const { cell, column, colspan } of new TableWalker( table ) ) {
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+
+		for ( const { cell, column, colspan } of [ ...new TableWalker( table ) ] ) {
 			// If colspaned cell overlaps removed column decrease its span.
 			if ( column <= removedColumnIndex && colspan > 1 && column + colspan > removedColumnIndex ) {
 				updateNumericAttribute( 'colspan', colspan - 1, cell, writer );
@@ -105,7 +107,7 @@ export default class RemoveColumnCommand extends Command {
 				// If the cell was the last one in the row, get rid of the entire row.
 				// https://github.com/ckeditor/ckeditor5/issues/6429
 				if ( !cellRow.childCount ) {
-					writer.remove( cellRow );
+					tableUtils.removeRow( cellRow.index, table, writer );
 				}
 			}
 		}
