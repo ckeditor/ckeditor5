@@ -9,7 +9,6 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import TableWalker from '../tablewalker';
 import { findAncestor, updateNumericAttribute } from './utils';
 import { getRowIndexes, getSelectionAffectedTableCells } from '../utils';
 
@@ -69,7 +68,7 @@ export default class RemoveRowCommand extends Command {
 
 			for ( let i = removedRowIndexes.last; i >= removedRowIndexes.first; i-- ) {
 				const removedRowIndex = i;
-				this._removeRow( removedRowIndex, table, writer );
+				this.editor.plugins.get( 'TableUtils' ).removeRow( removedRowIndex, table, writer );
 
 				cellToFocus = getCellToFocus( table, removedRowIndex, columnIndexToFocus );
 			}
@@ -89,52 +88,6 @@ export default class RemoveRowCommand extends Command {
 
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
-	}
-
-	/**
-	 * Removes a row from the given `table`.
-	 *
-	 * @private
-	 * @param {Number} removedRowIndex Index of the row that should be removed.
-	 * @param {module:engine/model/element~Element} table
-	 * @param {module:engine/model/writer~Writer} writer
-	 */
-	_removeRow( removedRowIndex, table, writer ) {
-		const cellsToMove = new Map();
-		const tableRow = table.getChild( removedRowIndex );
-		const tableMap = [ ...new TableWalker( table, { endRow: removedRowIndex } ) ];
-
-		// Get cells from removed row that are spanned over multiple rows.
-		tableMap
-			.filter( ( { row, rowspan } ) => row === removedRowIndex && rowspan > 1 )
-			.forEach( ( { column, cell, rowspan } ) => cellsToMove.set( column, { cell, rowspanToSet: rowspan - 1 } ) );
-
-		// Reduce rowspan on cells that are above removed row and overlaps removed row.
-		tableMap
-			.filter( ( { row, rowspan } ) => row <= removedRowIndex - 1 && row + rowspan > removedRowIndex )
-			.forEach( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
-
-		// Move cells to another row.
-		const targetRow = removedRowIndex + 1;
-		const tableWalker = new TableWalker( table, { includeSpanned: true, startRow: targetRow, endRow: targetRow } );
-		let previousCell;
-
-		for ( const { row, column, cell } of [ ...tableWalker ] ) {
-			if ( cellsToMove.has( column ) ) {
-				const { cell: cellToMove, rowspanToSet } = cellsToMove.get( column );
-				const targetPosition = previousCell ?
-					writer.createPositionAfter( previousCell ) :
-					writer.createPositionAt( table.getChild( row ), 0 );
-				writer.move( writer.createRangeOn( cellToMove ), targetPosition );
-				updateNumericAttribute( 'rowspan', rowspanToSet, cellToMove, writer );
-				previousCell = cellToMove;
-			}
-			else {
-				previousCell = cell;
-			}
-		}
-
-		writer.remove( tableRow );
 	}
 }
 
