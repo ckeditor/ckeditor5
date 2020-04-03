@@ -121,7 +121,7 @@ mix( MultirootEditor, DataApiMixin );
 
 ## EditorUI class
 
-The `*EditorUI` class is the main UI class which initializes UI components (the main view and the toolbar) and sets up mechanisms like focus tracker or placeholder management. The custom `*EditorUI` class should extend the {@link module:core/editor/editorui~EditorUI base `EditorUI` class} like below:
+The `*EditorUI` class is the main UI class which initializes UI components (the main view and the toolbar) and sets up mechanisms like {@link framework/guides/deep-dive/focus-tracking#using-the-focustracker-class focus tracker} or placeholder management. The custom `*EditorUI` class should extend the {@link module:core/editor/editorui~EditorUI base `EditorUI` class} like below:
 
 ```js
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
