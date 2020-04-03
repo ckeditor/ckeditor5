@@ -82,7 +82,8 @@ export default class Text extends Node {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'text' || type == 'node';
+		return type === 'text' || type === 'model:text' ||
+			type === 'node' || type === 'model:node';
 	}
 
 	/**

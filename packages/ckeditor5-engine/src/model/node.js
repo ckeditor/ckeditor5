@@ -431,7 +431,7 @@ export default class Node {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'node' || type == 'model:node';
+		return type === 'node' || type === 'model:node';
 	}
 
 	/**
