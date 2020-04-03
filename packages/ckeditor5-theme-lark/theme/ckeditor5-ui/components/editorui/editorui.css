@@ -10,7 +10,7 @@
 @import "../../mixins/_button.css";
 
 :root {
-	--ck-color-editable-blur-selection: hsl(0, 0%, 77%);
+	--ck-color-editable-blur-selection: hsl(0, 0%, 90%);
 }
 
 .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
@@ -45,7 +45,7 @@
 		margin-bottom: var(--ck-spacing-large);
 	}
 
-	&:not(:focus) ::selection {
+	&.ck-blurred ::selection {
 		background: var(--ck-color-editable-blur-selection);
 	}
 }
