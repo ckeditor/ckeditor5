@@ -253,7 +253,8 @@ export default class View {
 	 *			constructor( locale ) {
 	 *				super( locale );
 	 *
-	 *				this.items = this.createCollection();
+	 *				const child = new ChildView( locale );
+	 *				this.items = this.createCollection( [ child ] );
  	 *
 	 *				this.setTemplate( {
 	 *					tag: 'p',
@@ -265,16 +266,10 @@ export default class View {
 	 *		}
 	 *
 	 *		const view = new SampleView( locale );
-	 *		const child = new ChildView( locale );
-	 *
 	 *		view.render();
 	 *
-	 *		// It will append <p></p> to the <body>.
+	 *		// It will append <p><child#element></p> to the <body>.
 	 *		document.body.appendChild( view.element );
-	 *
-	 *		// From now on the child is nested under its parent, which is also reflected in DOM.
-	 *		// <p><child#element></p>
-	 *		view.items.add( child );
 	 *
 	 * @param {Iterable.<module:ui/view~View>} [views] Initial views of the collection.
 	 * @returns {module:ui/viewcollection~ViewCollection} A new collection of view instances.
