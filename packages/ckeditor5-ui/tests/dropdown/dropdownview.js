@@ -5,7 +5,6 @@
 
 import DropdownView from '../../src/dropdown/dropdownview';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ButtonView from '../../src/button/buttonview';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
@@ -70,10 +69,6 @@ describe( 'DropdownView', () => {
 
 		it( 'sets view#panelPosition "auto"', () => {
 			expect( view.panelPosition ).to.equal( 'auto' );
-		} );
-
-		it( 'creates #focusTracker instance', () => {
-			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
 
 		it( 'creates #keystrokeHandler instance', () => {
@@ -206,20 +201,6 @@ describe( 'DropdownView', () => {
 				new DropdownPanelView( locale ) );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
-
-			view.render();
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, view.element );
-
-			view.element.remove();
-		} );
-
-		it( 'adds #element to #focusTracker', () => {
-			const view = new DropdownView( locale,
-				new ButtonView( locale ),
-				new DropdownPanelView( locale ) );
-
-			const spy = sinon.spy( view.focusTracker, 'add' );
 
 			view.render();
 			sinon.assert.calledOnce( spy );
