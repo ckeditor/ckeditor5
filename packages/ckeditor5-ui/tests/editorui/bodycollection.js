@@ -28,6 +28,23 @@ describe( 'BodyCollection', () => {
 		}
 	} );
 
+	describe( 'constructor', () => {
+		it( 'assigns locale', () => {
+			const instance = new BodyCollection( locale );
+
+			expect( instance.locale ).to.be.equal( locale );
+		} );
+
+		it( 'stores pre-initialized collection', () => {
+			const collectionItems = [ new View(), new View() ];
+			const instance = new BodyCollection( locale, collectionItems );
+
+			expect( instance ).to.have.lengthOf( 2 );
+			expect( instance.get( 0 ) ).to.be.equal( collectionItems[ 0 ] );
+			expect( instance.get( 1 ) ).to.be.equal( collectionItems[ 1 ] );
+		} );
+	} );
+
 	describe( 'attachToDom', () => {
 		it( 'should create wrapper and put the collection in that wrapper', () => {
 			const body = new BodyCollection( locale );

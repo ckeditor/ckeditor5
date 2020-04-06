@@ -34,6 +34,24 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
  */
 export default class BodyCollection extends ViewCollection {
 	/**
+	 * Creates a new instance of the {@link module:ui/editorui/bodycollection~BodyCollection}.
+	 *
+	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor editor's locale} instance.
+	 * @param {Iterable.<module:ui/view~View>} [initialItems] The initial items of the collection.
+	 */
+	constructor( locale, initialItems = [] ) {
+		super( initialItems );
+
+		/**
+		 * The {@link module:core/editor/editor~Editor#locale editor's locale} instance.
+		 * See the view {@link module:ui/view~View#locale locale} property.
+		 *
+		 * @member {module:utils/locale~Locale}
+		 */
+		this.locale = locale;
+	}
+
+	/**
 	 * Attaches the body collection to the DOM body element. You need to execute this method to render the content of
 	 * the body collection.
 	 */
