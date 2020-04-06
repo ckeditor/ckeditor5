@@ -109,8 +109,7 @@ Here are the focus layers that play a role in the navigation and a brief overvie
 
 {@img assets/img/framework-deep-dive-focus-toolbar-nav-layers.png 1019 The image showing the focus layers used during navigation.}
 
-1. The root of the focus tree is the {@link module:editor-classic/classiceditorui~ClassicEditorUI} class. It creates a [focus tracker](#using-the-focustracker-class) instance which is **global for the entire editor**. You can access it via {@link module:core/editor/editorui~EditorUI#focusTracker `editor.ui.focusTracker`}.
-	* **All features (floating toolbars, balloons) across the editor listen to this focus tracker to tell if the user is still using the UI of the editor to act accordingly**.
+1. The root of the focus tree is the {@link module:editor-classic/classiceditorui~ClassicEditorUI} class. It creates a [global focus tracker](#a-note-about-the-global-focus-tracker) for the entire editor (you can access it via {@link module:core/editor/editorui~EditorUI#focusTracker `editor.ui.focusTracker`}).
 2. When editing text, you can hit the <kbd>Alt</kbd>+<kbd>F10</kbd> keystroke to focus the main editor toolbar, which is the second "focus layer".
 	* The {@link module:ui/toolbar/toolbarview~ToolbarView} component brings a focus tracker that keeps an eye on its children so that when a user navigates across the toolbar using the keyboard arrows, it is clear which item is focused.
 	* Toolbars also use a [focus cycler](#using-the-focuscycler-class) to provide continuous navigation. For instance, navigating to the item next when the last one is focused, brings the focus back to the beginning of the toolbar.
@@ -257,6 +256,30 @@ Focus trackers listen to DOM `focus` and `blur` events coming from elements they
 <info-box>
 	Keep in mind that simple components that have no focusable children or just a single focusable child may not need a focus tracker.
 </info-box>
+
+#### A note about the global focus tracker
+
+Each editor instance has a **global focus tracker** that can be accessed via {@link module:core/editor/editorui~EditorUI#focusTracker `editor.ui.focusTracker`}. It is a special instance that glues all the pieces of the user interface together (including the editing root) and stores the focus state of the **entire editor instance**.
+
+You can **always** listen to the global focus tracker and tell if the user is using the UI:
+
+```js
+editor.ui.focusTracker.on( 'change:isFocused', ( evt, data, isFocused ) => {
+	console.log( `The editor is focused: ${ isFocused }.` );
+} );
+```
+
+The class responsible for the UI of the editor ({@link module:editor-classic/classiceditorui~ClassicEditorUI}, {@link module:editor-inline/inlineeditorui~InlineEditorUI}, etc.) **must** inform the global focus tracker about the focusable building blocks of the interface, for instance, editable roots of the editor (where the editing takes place) or toolbars.
+
+The same applies to plugins bringing any focusable UI. For instance, the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon} plugin that offers a shared floating balloon used by many features across the project (link editing, image tools, widget toolbars, etc.) also registers the balloon in the global focus tracker. Please keep this in mind when developing your custom editor plugins.
+
+The continuity of editor focus is maintained **only** when the global focus tracker is aware of **all** focusable blocks of the UI. Their location in DOM is not relevant: next to the editable root, in the {@link module:ui/editorui/bodycollection~BodyCollection "body" collection} or even somewhere else – to the global focus tracker they are all pieces of the same editor.
+
+<info-box>
+	Check out the ["Focus state analysis" chapter](#focus-state-analysis) to see the global focus tracker working in a real–life scenario.
+</info-box>
+
+#### A practical example
 
 Take a look at the following example of a list that has multiple items, a classic use–case for a focus tracker:
 
@@ -625,7 +648,7 @@ And here are the steps of the scenario:
 
 There are 3 focus tracker instances at play in the scenario:
 
-1. The {@link module:core/editor/editorui~EditorUI#focusTracker `EditorUI#focusTracker`},
+1. The {@link module:core/editor/editorui~EditorUI#focusTracker `EditorUI#focusTracker`} (the ["global" focus tracker](#a-note-about-the-global-focus-tracker)),
 2. The {@link module:link/ui/linkactionsview~LinkActionsView#focusTracker `LinkActionsView#focusTracker`},
 3. The {@link module:link/ui/linkformview~LinkFormView#focusTracker `LinkFormView#focusTracker`}.
 
@@ -737,7 +760,7 @@ Let's see how they react to the user actions (states were recorded **after** eac
 
 ### Conclusions
 
-* The global focus tracker (the one you can access via `editor.ui.focusTracker`) is always aware of the focus state, even when the focus is in the farthest regions of the UI.
+* The [global focus tracker](#a-note-about-the-global-focus-tracker) (the one you can access via `editor.ui.focusTracker`) is always aware of the focus state, even when the focus is in the farthest regions of the UI.
 	* It does not know which element is focused on deeper layers (for instance the "Edit link" button), though. All it knows is where the focus went (e.g. from editable to the balloon panel).
 	* It lacks precise information about the focus in the link UI because that is the responsibility of the focus tracker of the link UI layer.
 	* All editor features **can always depend on the global focus tracker** when necessary. For instance, the main editor toolbar is displayed as long as the global focus tracker knows the focus is somewhere in the editor.
