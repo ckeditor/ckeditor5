@@ -352,6 +352,11 @@ export default class MyListView extends View {
 		this.keystrokes.listenTo( this.element );
 	}
 
+	destroy() {
+		// Stop listening to all keystrokes when the view is destroyed.
+		this.keystrokes.destroy();
+	}
+
 	// ...
 }
 ```
@@ -439,6 +444,18 @@ class MyListView extends View {
 		this.keystrokes.listenTo( this.element );
 	}
 
+	focus() {
+		if ( this.items.length ) {
+			// This will call MyListItemView#focus().
+			this.items.first.focus();
+		}
+	}
+
+	destroy() {
+		// Stop listening to all keystrokes when the view is destroyed.
+		this.keystrokes.destroy();
+	}
+
 	// ...
 }
 ```
@@ -518,6 +535,11 @@ class MyListView extends View {
 			// This will call MyListItemView#focus().
 			this.items.first.focus();
 		}
+	}
+
+	destroy() {
+		// Stop listening to all keystrokes when the view is destroyed.
+		this.keystrokes.destroy();
 	}
 }
 
