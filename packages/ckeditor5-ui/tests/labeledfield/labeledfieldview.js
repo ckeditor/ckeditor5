@@ -68,7 +68,7 @@ describe( 'LabeledFieldView', () => {
 
 			expect( labeledInput.statusView.element.tagName ).to.equal( 'DIV' );
 			expect( labeledInput.statusView.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( labeledInput.statusView.element.classList.contains( 'ck-labeled-view__status' ) ).to.be.true;
+			expect( labeledInput.statusView.element.classList.contains( 'ck-labeled-field-view__status' ) ).to.be.true;
 		} );
 
 		it( 'should allow pairing #view and #labelView by unique id', () => {
@@ -83,7 +83,7 @@ describe( 'LabeledFieldView', () => {
 	describe( 'template', () => {
 		it( 'should have the CSS class', () => {
 			expect( labeledInput.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( labeledInput.element.classList.contains( 'ck-labeled-view' ) ).to.be.true;
+			expect( labeledInput.element.classList.contains( 'ck-labeled-field-view' ) ).to.be.true;
 		} );
 
 		it( 'should have #labeledInput', () => {
@@ -116,13 +116,13 @@ describe( 'LabeledFieldView', () => {
 
 					labeledInput.errorText = '';
 					expect( statusElement.classList.contains( 'ck-hidden' ) ).to.be.true;
-					expect( statusElement.classList.contains( 'ck-labeled-view__status_error' ) ).to.be.false;
+					expect( statusElement.classList.contains( 'ck-labeled-field-view__status_error' ) ).to.be.false;
 					expect( statusElement.hasAttribute( 'role' ) ).to.be.false;
 					expect( statusElement.innerHTML ).to.equal( '' );
 
 					labeledInput.errorText = 'foo';
 					expect( statusElement.classList.contains( 'ck-hidden' ) ).to.be.false;
-					expect( statusElement.classList.contains( 'ck-labeled-view__status_error' ) ).to.be.true;
+					expect( statusElement.classList.contains( 'ck-labeled-field-view__status_error' ) ).to.be.true;
 					expect( statusElement.getAttribute( 'role' ) ).to.equal( 'alert' );
 					expect( statusElement.innerHTML ).to.equal( 'foo' );
 				} );
@@ -132,13 +132,13 @@ describe( 'LabeledFieldView', () => {
 
 					labeledInput.infoText = '';
 					expect( statusElement.classList.contains( 'ck-hidden' ) ).to.be.true;
-					expect( statusElement.classList.contains( 'ck-labeled-view__status_error' ) ).to.be.false;
+					expect( statusElement.classList.contains( 'ck-labeled-field-view__status_error' ) ).to.be.false;
 					expect( statusElement.hasAttribute( 'role' ) ).to.be.false;
 					expect( statusElement.innerHTML ).to.equal( '' );
 
 					labeledInput.infoText = 'foo';
 					expect( statusElement.classList.contains( 'ck-hidden' ) ).to.be.false;
-					expect( statusElement.classList.contains( 'ck-labeled-view__status_error' ) ).to.be.false;
+					expect( statusElement.classList.contains( 'ck-labeled-field-view__status_error' ) ).to.be.false;
 					expect( statusElement.hasAttribute( 'role' ) ).to.be.false;
 					expect( statusElement.innerHTML ).to.equal( 'foo' );
 				} );
