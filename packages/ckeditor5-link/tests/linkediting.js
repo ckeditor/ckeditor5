@@ -664,6 +664,46 @@ describe( 'LinkEditing', () => {
 					} );
 			} );
 
+			it( 'should upcast attributes from initial data for a manual decorator enabled by default', () => {
+				return VirtualTestEditor
+					.create( {
+						initialData: '<p><a href="url" target="_blank" rel="noopener noreferrer" download="file">Foo</a>' +
+							'<a href="example.com" download="file">Bar</a></p>',
+						plugins: [ Paragraph, LinkEditing, Enter ],
+						link: {
+							decorators: {
+								isExternal: {
+									mode: 'manual',
+									label: 'Open in a new window',
+									attributes: {
+										target: '_blank',
+										rel: 'noopener noreferrer'
+									},
+									defaultValue: true
+								},
+								isDownloadable: {
+									mode: 'manual',
+									label: 'Downloadable',
+									attributes: {
+										download: 'file'
+									}
+								}
+							}
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+
+						expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+							'<paragraph>' +
+							'<$text linkHref="url" linkIsDownloadable="true" linkIsExternal="true">Foo</$text>' +
+							'<$text linkHref="example.com" linkIsDownloadable="true" linkIsExternal="false">Bar</$text>' +
+							'</paragraph>'
+						);
+					} );
+			} );
+
 			it( 'should not upcast partial and incorrect attributes', () => {
 				return VirtualTestEditor
 					.create( {

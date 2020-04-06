@@ -15,6 +15,8 @@ import AutomaticDecorators from './utils/automaticdecorators';
 import ManualDecorator from './utils/manualdecorator';
 import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
 import findLinkRange from './findlinkrange';
+import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
+
 import '../theme/link.css';
 
 const HIGHLIGHT_CLASS = 'ck-link_selected';
@@ -187,6 +189,41 @@ export default class LinkEditing extends Plugin {
 					key: decorator.id
 				}
 			} );
+
+			// For a decorator that is enabled by default we must check if it was applied to reflect that in the model.
+			if ( decorator.defaultValue ) {
+				editor.conversion.for( 'upcast' ).add( dispatcher => {
+					const matcher = new Matcher( {
+						name: 'a',
+						attributes: {
+							href: true
+						}
+					} );
+
+					dispatcher.on( 'element', ( evt, data, conversionApi ) => {
+						const matcherResult = matcher.match( data.viewItem );
+
+						if ( !matcherResult ) {
+							return;
+						}
+
+						// We must check if all decorator values are set on view element.
+						const decoratorValue = Object.entries( decorator.attributes ).every( ( [ key, value ] ) => {
+							return matcherResult.element.getAttribute( key ) == value;
+						} );
+
+						// The decorator is applied, model attribute was already up-casted.
+						if ( decoratorValue ) {
+							return;
+						}
+
+						// Set attribute on each item in range according to Schema.
+						for ( const node of Array.from( data.modelRange.getItems() ) ) {
+							conversionApi.writer.setAttribute( decorator.id, false, node );
+						}
+					}, { priority: 'low' } );
+				} );
+			}
 		} );
 	}
 
