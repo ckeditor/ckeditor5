@@ -48,7 +48,7 @@ Each root of the editing view has the `contenteditable` attribute. The editing v
 
 ### Checking if the view document is focused
 
-You can check if the view document is focused using its {@link framework/guides/deep-dive/observables observable} `isFocused` property. Create an editor instance and execute the following code:
+You can check if the view document is focused using its {@link framework/guides/deep-dive/observables observable} {@link module:engine/view/document~Document#isFocused} property. Create an editor instance and execute the following code:
 
 ```js
 console.log( editor.editing.view.document.isFocused );
