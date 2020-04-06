@@ -163,8 +163,10 @@ export default class InsertTableView extends View {
 				const column = index % 10;
 
 				// As row & column indexes are zero-based transform it to number of selected rows & columns.
-				this.set( 'rows', row + 1 );
-				this.set( 'columns', column + 1 );
+				this.set( {
+					rows: row + 1,
+					columns: column + 1
+				} );
 			} );
 
 			boxes.add( boxView );
