@@ -30,7 +30,7 @@
 		padding: 0;
 		width: calc(.8 * var(--ck-input-text-width));
 
-		& .ck-labeled-input {
+		& .ck-labeled-field-view {
 			margin: var(--ck-spacing-standard) var(--ck-spacing-standard) 0;
 
 			& .ck-input-text {
@@ -74,7 +74,7 @@
 	padding: 0;
 	min-width: var(--ck-input-text-width);
 
-	& .ck-labeled-input {
+	& .ck-labeled-field-view {
 		margin: var(--ck-spacing-standard) var(--ck-spacing-standard) var(--ck-spacing-small);
 
 		& .ck-input-text {
@@ -122,4 +122,3 @@
 		}
 	}
 }
-

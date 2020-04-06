@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-labeled-view .ck-labeled-view__status {
+.ck.ck-labeled-field-view .ck-labeled-field-view__status {
 	font-size: var(--ck-font-size-small);
 	margin-top: var(--ck-spacing-small);
 
@@ -12,11 +12,11 @@
 	white-space: normal;
 }
 
-.ck.ck-labeled-view .ck-labeled-view__status_error {
+.ck.ck-labeled-field-view .ck-labeled-field-view__status_error {
 	color: var(--ck-color-base-error);
 }
 
-.ck.ck-labeled-view > .ck.ck-label {
+.ck.ck-labeled-field-view > .ck.ck-label {
 	width: 100%;
 	text-overflow: ellipsis;
 	overflow: hidden;

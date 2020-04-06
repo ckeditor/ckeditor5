@@ -29,7 +29,7 @@
 		padding: 0;
 		width: calc(.8 * var(--ck-input-text-width));
 
-		& .ck-labeled-input {
+		& .ck-labeled-field-view {
 			margin: var(--ck-spacing-standard) var(--ck-spacing-standard) 0;
 
 			& .ck-input-text {
@@ -38,7 +38,7 @@
 			}
 
 			/* Let the long error messages wrap in the narrow form. */
-			& .ck-labeled-input__error {
+			& .ck-labeled-field-view__error {
 				white-space: normal;
 			}
 		}
