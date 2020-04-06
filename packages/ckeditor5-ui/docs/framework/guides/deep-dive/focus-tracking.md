@@ -82,8 +82,6 @@ This snippet focuses an editable that has the selection. If the editor has not b
 	Focusing an editor does not change its selection. If you want to focus an editor and move the caret to a specific position, you should call `editor.editing.view.focus()` first and then use the {@link module:engine/model/writer~Writer#setSelection} method of the {@link framework/guides/architecture/editing-engine#model model writer} to change the selection.
 </info-box>
 
-If you want to focus a particular editable of your editor (not just the first one), you should take a closer look at the {@link module:engine/view/domconverter~DomConverter#focus `DomConverter#focus()`} method that will do that for you.
-
 ## Focus in the editor UI
 
 If you read the [previous chapter](#focus-in-the-editor-engine) of this guide you should know that there is already a layer responsible for tracking focus working at the engine–level. But while that layer is only concerned by the focus in editor editables, due to the {@link framework/guides/architecture/intro modular nature of the editor framework}, it is oblivious of the user interface. This makes sense, for instance, because it is possible to create a fully–functioning editor without the UI and there should be a minimal API provided by the editor engine that allows that.
