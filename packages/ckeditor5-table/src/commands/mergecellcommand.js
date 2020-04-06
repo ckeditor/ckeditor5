@@ -9,7 +9,11 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
-import { findAncestor, updateNumericAttribute } from './utils';
+import {
+	updateNumericAttribute,
+	isHeadingColumnCell
+} from './utils';
+import { getTableCellsContainingSelection } from '../utils';
 
 /**
  * The merge cell command.
@@ -78,7 +82,7 @@ export default class MergeCellCommand extends Command {
 	execute() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableCell = findAncestor( 'tableCell', doc.selection.getFirstPosition() );
+		const tableCell = getTableCellsContainingSelection( doc.selection )[ 0 ];
 		const cellToMerge = this.value;
 		const direction = this.direction;
 
@@ -118,7 +122,7 @@ export default class MergeCellCommand extends Command {
 	_getMergeableCell() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableCell = findAncestor( 'tableCell', doc.selection.getFirstPosition() );
+		const tableCell = getTableCellsContainingSelection( doc.selection )[ 0 ];
 
 		if ( !tableCell ) {
 			return;
@@ -156,7 +160,7 @@ function getHorizontalCell( tableCell, direction, tableUtils ) {
 	const tableRow = tableCell.parent;
 	const table = tableRow.parent;
 	const horizontalCell = direction == 'right' ? tableCell.nextSibling : tableCell.previousSibling;
-	const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
+	const hasHeadingColumns = ( table.getAttribute( 'headingColumns' ) || 0 ) > 0;
 
 	if ( !horizontalCell ) {
 		return;
@@ -171,13 +175,12 @@ function getHorizontalCell( tableCell, direction, tableUtils ) {
 	const { column: rightCellColumn } = tableUtils.getCellLocation( cellOnRight );
 
 	const leftCellSpan = parseInt( cellOnLeft.getAttribute( 'colspan' ) || 1 );
-	const rightCellSpan = parseInt( cellOnRight.getAttribute( 'colspan' ) || 1 );
 
-	// We cannot merge cells if the result will extend over heading section.
-	const isMergeWithBodyCell = direction == 'right' && ( rightCellColumn + rightCellSpan > headingColumns );
-	const isMergeWithHeadCell = direction == 'left' && ( leftCellColumn + leftCellSpan > headingColumns - 1 );
+	const isCellOnLeftInHeadingColumn = isHeadingColumnCell( tableUtils, cellOnLeft, table );
+	const isCellOnRightInHeadingColumn = isHeadingColumnCell( tableUtils, cellOnRight, table );
 
-	if ( headingColumns && ( isMergeWithBodyCell || isMergeWithHeadCell ) ) {
+	// We cannot merge heading columns cells with regular cells.
+	if ( hasHeadingColumns && isCellOnLeftInHeadingColumn != isCellOnRightInHeadingColumn ) {
 		return;
 	}
 

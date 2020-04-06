@@ -73,7 +73,7 @@ describe( 'ColorInputView', () => {
 			it( 'should be created', () => {
 				expect( view._dropdownView ).to.be.instanceOf( DropdownView );
 				expect( view._dropdownView.buttonView.element.classList.contains( 'ck-input-color__button' ) ).to.be.true;
-				expect( view._dropdownView.panelPosition ).to.equal( 'sw' );
+				expect( view._dropdownView.buttonView.tooltip ).to.equal( 'Color picker' );
 			} );
 
 			it( 'should bind #isEnabled to the view\'s #isReadOnly', () => {
@@ -106,6 +106,30 @@ describe( 'ColorInputView', () => {
 
 			it( 'should have the remove color button', () => {
 				expect( view._dropdownView.panelView.children.first ).to.be.instanceOf( ButtonView );
+			} );
+
+			describe( 'position', () => {
+				it( 'should be SouthWest in LTR', () => {
+					locale.uiLanguageDirection = 'ltr';
+					view = new ColorInputView( locale, {
+						colorDefinitions: DEFAULT_COLORS,
+						columns: 5
+					} );
+					view.render();
+
+					expect( view._dropdownView.panelPosition ).to.equal( 'sw' );
+				} );
+
+				it( 'should be SouthEast in RTL', () => {
+					locale.uiLanguageDirection = 'rtl';
+					view = new ColorInputView( locale, {
+						colorDefinitions: DEFAULT_COLORS,
+						columns: 5
+					} );
+					view.render();
+
+					expect( view._dropdownView.panelPosition ).to.equal( 'se' );
+				} );
 			} );
 		} );
 

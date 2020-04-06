@@ -272,6 +272,24 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
+		it( 'should properly insert column at beginning of row-col-spanned cell', () => {
+			setData( model, modelTable( [
+				[ '11', '12', '13' ],
+				[ '21', { colspan: 2, rowspan: 2, contents: '22[]' } ],
+				[ '31' ],
+				[ '41', '42', '43' ]
+			] ) );
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 1 } );
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '11', '', '12', '13' ],
+				[ '21', '', { colspan: 2, rowspan: 2, contents: '22[]' } ],
+				[ '31', '' ],
+				[ '41', '', '42', '43' ]
+			] ) );
+		} );
+
 		it( 'should update table heading columns attribute when inserting column in headings section', () => {
 			setData( model, modelTable( [
 				[ '11[]', '12' ],
@@ -697,6 +715,36 @@ describe( 'TableUtils', () => {
 			] ) );
 
 			expect( tableUtils.getColumns( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 5 );
+		} );
+	} );
+
+	describe( 'getRows()', () => {
+		it( 'should return proper number of columns for simple table', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 2 );
+		} );
+
+		it( 'should return proper number of columns for a table with header', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			], { headingRows: 1 } ) );
+
+			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 2 );
+		} );
+
+		it( 'should return proper number of columns for rowspan table', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ { rowspan: 2, contents: '10' }, '11' ],
+				[ '21' ]
+			] ) );
+
+			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 3 );
 		} );
 	} );
 } );

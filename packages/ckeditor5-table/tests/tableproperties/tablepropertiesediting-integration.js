@@ -10,7 +10,11 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import TableEditing from '../../src/tableediting';
 import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting';
 
+import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
+
 import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+
 import { assertTableStyle } from '../_utils/utils';
 
 describe( 'table properties', () => {
@@ -36,6 +40,44 @@ describe( 'table properties', () => {
 				model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
 
 				assertTableStyle( editor, null, 'float:right;' );
+			} );
+		} );
+
+		describe( 'Undo', () => {
+			let table;
+
+			beforeEach( async () => {
+				editor = await createEditorWithAdditionalPlugins( [ UndoEditing, TableCellPropertiesEditing ] );
+
+				model = editor.model;
+
+				table = createEmptyTable();
+			} );
+
+			// See https://github.com/ckeditor/ckeditor5/issues/6265.
+			it( 'should correctly undo setting table and then cell style', () => {
+				const firstCell = table.getChild( 0 ).getChild( 0 );
+
+				editor.model.change( writer => {
+					writer.setSelection( firstCell, 0 );
+				} );
+
+				editor.execute( 'tableBackgroundColor', { value: 'red' } );
+
+				editor.execute( 'tableCellBackgroundColor', { value: 'green' } );
+
+				expect( table.getAttribute( 'backgroundColor' ) ).to.equal( 'red' );
+				expect( firstCell.getAttribute( 'backgroundColor' ) ).to.equal( 'green' );
+
+				editor.execute( 'undo' );
+
+				expect( table.getAttribute( 'backgroundColor' ) ).to.equal( 'red' );
+				expect( firstCell.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+
+				editor.execute( 'undo' );
+
+				expect( table.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+				expect( firstCell.getAttribute( 'backgroundColor' ) ).to.be.undefined;
 			} );
 		} );
 

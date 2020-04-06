@@ -11,9 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableSelection from './tableselection';
 
 /**
- * The table clipboard integration plugin.
- *
- * It introduces the ability to copy selected table cells.
+ * This plugin adds support for copying/cutting/pasting fragments of tables.
+ * It is loaded automatically by the {@link module:table/table~Table} plugin.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -39,30 +38,25 @@ export default class TableClipboard extends Plugin {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
-		/**
-		 * A table selection plugin instance.
-		 *
-		 * @private
-		 * @readonly
-		 * @member {module:table/tableselection~TableSelection} module:tableclipboard~TableClipboard#_tableSelection
-		 */
-		this._tableSelection = editor.plugins.get( 'TableSelection' );
-
-		this.listenTo( viewDocument, 'copy', ( evt, data ) => this._onCopy( evt, data ), { priority: 'normal' } );
-		this.listenTo( viewDocument, 'cut', ( evt, data ) => this._onCut( evt, data ), { priority: 'high' } );
+		this.listenTo( viewDocument, 'copy', ( evt, data ) => this._onCopyCut( evt, data ) );
+		this.listenTo( viewDocument, 'cut', ( evt, data ) => this._onCopyCut( evt, data ) );
 	}
 
 	/**
-	 * A clipboard "copy" event handler.
+	 * Copies table content to a clipboard on "copy" & "cut" events.
 	 *
+	 * @private
 	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
 	 * @param {Object} data Clipboard event data.
-	 * @private
 	 */
-	_onCopy( evt, data ) {
-		const tableSelection = this._tableSelection;
+	_onCopyCut( evt, data ) {
+		const tableSelection = this.editor.plugins.get( 'TableSelection' );
 
-		if ( !tableSelection.hasMultiCellSelection ) {
+		if ( !tableSelection.getSelectedTableCells() ) {
+			return;
+		}
+
+		if ( evt.name == 'cut' && this.editor.isReadOnly ) {
 			return;
 		}
 
@@ -79,19 +73,5 @@ export default class TableClipboard extends Plugin {
 			content,
 			method: evt.name
 		} );
-	}
-
-	/**
-	 * A clipboard "cut" event handler.
-	 *
-	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
-	 * @param {Object} data Clipboard event data.
-	 * @private
-	 */
-	_onCut( evt, data ) {
-		if ( this._tableSelection.hasMultiCellSelection ) {
-			data.preventDefault();
-			evt.stop();
-		}
 	}
 }

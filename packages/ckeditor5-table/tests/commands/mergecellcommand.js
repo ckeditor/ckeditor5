@@ -95,44 +95,46 @@ describe( 'MergeCellCommand', () => {
 				expect( command.isEnabled ).to.be.false;
 			} );
 
-			it( 'should be false if mergeable cell is in other table section then current cell', () => {
-				setData( model, modelTable( [
-					[ '00[]', '01' ]
-				], { headingColumns: 1 } ) );
+			describe( 'when the heading section is in the table', () => {
+				it( 'should be false if mergeable cell is in other table section then current cell', () => {
+					setData( model, modelTable( [
+						[ '00[]', '01' ]
+					], { headingColumns: 1 } ) );
 
-				expect( command.isEnabled ).to.be.false;
-			} );
+					expect( command.isEnabled ).to.be.false;
+				} );
 
-			it( 'should be false if merged cell would cross heading section (mergeable cell with colspan)', () => {
-				setData( model, modelTable( [
-					[ '00[]', { colspan: 2, contents: '01' }, '02', '03' ]
-				], { headingColumns: 2 } ) );
+				it( 'should be true if merged cell would not cross heading section (mergeable cell with colspan)', () => {
+					setData( model, modelTable( [
+						[ '00[]', { colspan: 2, contents: '01' }, '02', '03' ]
+					], { headingColumns: 3 } ) );
 
-				expect( command.isEnabled ).to.be.false;
-			} );
+					expect( command.isEnabled ).to.be.true;
+				} );
 
-			it( 'should be true if merged cell would not cross heading section (mergeable cell with colspan)', () => {
-				setData( model, modelTable( [
-					[ '00[]', { colspan: 2, contents: '01' }, '02', '03' ]
-				], { headingColumns: 3 } ) );
+				it( 'should be false if merged cell would cross heading section (current cell with colspan)', () => {
+					setData( model, modelTable( [
+						[ { colspan: 2, contents: '00[]' }, '01', '02', '03' ]
+					], { headingColumns: 2 } ) );
 
-				expect( command.isEnabled ).to.be.true;
-			} );
+					expect( command.isEnabled ).to.be.false;
+				} );
 
-			it( 'should be false if merged cell would cross heading section (current cell with colspan)', () => {
-				setData( model, modelTable( [
-					[ { colspan: 2, contents: '00[]' }, '01', '02', '03' ]
-				], { headingColumns: 2 } ) );
+				it( 'should be true if merged cell would not cross heading section (current cell with colspan)', () => {
+					setData( model, modelTable( [
+						[ { colspan: 2, contents: '00[]' }, '01', '02', '03' ]
+					], { headingColumns: 3 } ) );
 
-				expect( command.isEnabled ).to.be.false;
-			} );
+					expect( command.isEnabled ).to.be.true;
+				} );
 
-			it( 'should be true if merged cell would not cross heading section (current cell with colspan)', () => {
-				setData( model, modelTable( [
-					[ { colspan: 2, contents: '00[]' }, '01', '02', '03' ]
-				], { headingColumns: 3 } ) );
+				it( 'should be true if merged cell would not cross the section boundary (regular section)', () => {
+					setData( model, modelTable( [
+						[ '00', '01', '02[]', '03' ]
+					], { headingColumns: 1 } ) );
 
-				expect( command.isEnabled ).to.be.true;
+					expect( command.isEnabled ).to.be.true;
+				} );
 			} );
 		} );
 
@@ -315,20 +317,38 @@ describe( 'MergeCellCommand', () => {
 				expect( command.isEnabled ).to.be.false;
 			} );
 
-			it( 'should be false if mergeable cell is in other table section then current cell', () => {
-				setData( model, modelTable( [
-					[ '00', '01[]' ]
-				], { headingColumns: 1 } ) );
+			describe( 'when the heading section is in the table', () => {
+				it( 'should be false if mergeable cell is in other table section then current cell', () => {
+					setData( model, modelTable( [
+						[ '00', '01[]' ]
+					], { headingColumns: 1 } ) );
 
-				expect( command.isEnabled ).to.be.false;
-			} );
+					expect( command.isEnabled ).to.be.false;
+				} );
 
-			it( 'should be false if merged cell would cross heading section (mergeable cell with colspan)', () => {
-				setData( model, modelTable( [
-					[ { colspan: 2, contents: '00' }, '02[]', '03' ]
-				], { headingColumns: 2 } ) );
+				it( 'should be false if merged cell would cross heading section (mergeable cell with colspan)', () => {
+					setData( model, modelTable( [
+						[ { colspan: 2, contents: '00' }, '02[]', '03' ]
+					], { headingColumns: 2 } ) );
 
-				expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).to.be.false;
+				} );
+
+				it( 'should be true if merged cell would not cross the section boundary (in regular section)', () => {
+					setData( model, modelTable( [
+						[ '00', '01', '02[]', '03' ]
+					], { headingColumns: 1 } ) );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true if merged cell would not cross the section boundary (in heading section)', () => {
+					setData( model, modelTable( [
+						[ '00', '01[]', '02', '03' ]
+					], { headingColumns: 2 } ) );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
 			} );
 		} );
 

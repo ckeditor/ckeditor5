@@ -9,7 +9,11 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor, updateNumericAttribute } from './utils';
+import {
+	updateNumericAttribute,
+	isHeadingColumnCell
+} from './utils';
+import { getSelectionAffectedTableCells } from '../utils';
 
 /**
  * The header column command.
@@ -32,13 +36,9 @@ export default class SetHeaderColumnCommand extends Command {
 	 */
 	refresh() {
 		const model = this.editor.model;
-		const doc = model.document;
-		const selection = doc.selection;
-
-		const position = selection.getFirstPosition();
-		const tableCell = findAncestor( 'tableCell', position );
-
-		const isInTable = !!tableCell;
+		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const isInTable = selectedCells.length > 0;
 
 		this.isEnabled = isInTable;
 
@@ -50,7 +50,7 @@ export default class SetHeaderColumnCommand extends Command {
 		 * @readonly
 		 * @member {Boolean} #value
 		 */
-		this.value = isInTable && this._isInHeading( tableCell, tableCell.parent.parent );
+		this.value = isInTable && selectedCells.every( cell => isHeadingColumnCell( tableUtils, cell ) );
 	}
 
 	/**
@@ -67,43 +67,26 @@ export default class SetHeaderColumnCommand extends Command {
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
-		const doc = model.document;
-		const selection = doc.selection;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
-		const position = selection.getFirstPosition();
-		const tableCell = findAncestor( 'tableCell', position );
-		const tableRow = tableCell.parent;
+		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
+		const firstCell = selectedCells[ 0 ];
+		const lastCell = selectedCells[ selectedCells.length - 1 ];
+		const tableRow = firstCell.parent;
 		const table = tableRow.parent;
 
-		const { column: selectionColumn } = tableUtils.getCellLocation( tableCell );
+		const [ selectedColumnMin, selectedColumnMax ] =
+			// Returned cells might not necessary be in order, so make sure to sort it.
+			[ tableUtils.getCellLocation( firstCell ).column, tableUtils.getCellLocation( lastCell ).column ].sort();
 
 		if ( options.forceValue === this.value ) {
 			return;
 		}
 
-		const headingColumnsToSet = this.value ? selectionColumn : selectionColumn + 1;
+		const headingColumnsToSet = this.value ? selectedColumnMin : selectedColumnMax + 1;
 
 		model.change( writer => {
 			updateNumericAttribute( 'headingColumns', headingColumnsToSet, table, writer, 0 );
 		} );
-	}
-
-	/**
-	 * Checks if a table cell is in the heading section.
-	 *
-	 * @param {module:engine/model/element~Element} tableCell
-	 * @param {module:engine/model/element~Element} table
-	 * @returns {Boolean}
-	 * @private
-	 */
-	_isInHeading( tableCell, table ) {
-		const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
-
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
-
-		const { column } = tableUtils.getCellLocation( tableCell );
-
-		return !!headingColumns && column < headingColumns;
 	}
 }

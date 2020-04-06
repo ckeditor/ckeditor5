@@ -10,16 +10,16 @@
 import { findAncestor } from '../commands/utils';
 
 /**
- * Returns cropped table from selected table cells.
+ * Returns a cropped table from the selected table cells.
  *
- * This is to be used with table selection
+ * This function is to be used with the table selection.
  *
  *		tableSelection.startSelectingFrom( startCell )
  *		tableSelection.setSelectingFrom( endCell )
  *
- *		const croppedTable = cropTable( tableSelection.getSelectedTableCells );
+ *		const croppedTable = cropTable( tableSelection.getSelectedTableCells() );
  *
- * **Note**: This function is used also by {@link module:table/tableselection~TableSelection#getSelectionAsFragment}
+ * **Note**: This function is also used by {@link module:table/tableselection~TableSelection#getSelectionAsFragment}.
  *
  * @param {Iterable.<module:engine/model/element~Element>} selectedTableCellsIterator
  * @param {module:table/tableutils~TableUtils} tableUtils

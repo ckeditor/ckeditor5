@@ -138,6 +138,7 @@ export default class ColorInputView extends View {
 	 */
 	_createDropdownView() {
 		const locale = this.locale;
+		const t = locale.t;
 		const bind = this.bindTemplate;
 		const colorGrid = this._createColorGrid( locale );
 		const dropdown = createDropdown( locale );
@@ -174,8 +175,9 @@ export default class ColorInputView extends View {
 		} );
 
 		dropdown.buttonView.children.add( colorPreview );
+		dropdown.buttonView.tooltip = t( 'Color picker' );
 
-		dropdown.panelPosition = 'sw';
+		dropdown.panelPosition = locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw';
 		dropdown.panelView.children.add( removeColorButton );
 		dropdown.panelView.children.add( colorGrid );
 		dropdown.bind( 'isEnabled' ).to( this, 'isReadOnly', value => !value );

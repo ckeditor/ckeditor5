@@ -108,7 +108,7 @@ export default class TableUtils extends Plugin {
 	 *		    |   | f | g |                      |   |   |   |
 	 *		  3 +---+---+---+                      +   +---+---+ 3
 	 *		                                       |   | d | e |
-	 *		                                       +---+---+---+ 4
+	 *		                                       +   +---+---+ 4
 	 *		                                       +   + f | g |
 	 *		                                       +---+---+---+ 5
 	 *
@@ -228,7 +228,7 @@ export default class TableUtils extends Plugin {
 				const rowspan = parseInt( cell.getAttribute( 'rowspan' ) || 1 );
 				const colspan = parseInt( cell.getAttribute( 'colspan' ) || 1 );
 
-				if ( cell.index !== insertAt && colspan > 1 ) {
+				if ( cellIndex !== insertAt && colspan > 1 ) {
 					// If column is different than `insertAt`, it is a cell that spans over an inserted column (cell "a" & "i").
 					// For such cells expand them by a number of columns inserted.
 					writer.setAttribute( 'colspan', colspan + columnsToInsert, cell );
@@ -549,6 +549,19 @@ export default class TableUtils extends Plugin {
 
 			return columns + columnWidth;
 		}, 0 );
+	}
+
+	/**
+	 * Returns the number of rows for a given table.
+	 *
+	 *		editor.plugins.get( 'TableUtils' ).getRows( table );
+	 *
+	 * @param {module:engine/model/element~Element} table The table to analyze.
+	 * @returns {Number}
+	 */
+	getRows( table ) {
+		// Simple row counting, not including rowspan due to #6427.
+		return table.childCount;
 	}
 }
 

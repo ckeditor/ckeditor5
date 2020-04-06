@@ -113,6 +113,13 @@ export default class TableUI extends Plugin {
 						commandName: 'removeTableColumn',
 						label: t( 'Delete column' )
 					}
+				},
+				{
+					type: 'button',
+					model: {
+						commandName: 'selectTableColumn',
+						label: t( 'Select column' )
+					}
 				}
 			];
 
@@ -150,6 +157,13 @@ export default class TableUI extends Plugin {
 						commandName: 'removeTableRow',
 						label: t( 'Delete row' )
 					}
+				},
+				{
+					type: 'button',
+					model: {
+						commandName: 'selectTableRow',
+						label: t( 'Select row' )
+					}
 				}
 			];
 
@@ -184,6 +198,14 @@ export default class TableUI extends Plugin {
 					model: {
 						commandName: isContentLtr ? 'mergeTableCellLeft' : 'mergeTableCellRight',
 						label: t( 'Merge cell left' )
+					}
+				},
+				{ type: 'separator' },
+				{
+					type: 'button',
+					model: {
+						commandName: 'mergeTableCells',
+						label: t( 'Merge cells' )
 					}
 				},
 				{ type: 'separator' },

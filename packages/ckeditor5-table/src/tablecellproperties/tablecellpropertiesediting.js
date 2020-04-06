@@ -69,15 +69,15 @@ export default class TableCellPropertiesEditing extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
-		const viewDoc = editor.editing.view.document;
+		const locale = editor.locale;
 
-		viewDoc.addStyleProcessorRules( addBorderRules );
+		editor.data.addStyleProcessorRules( addBorderRules );
 		enableBorderProperties( schema, conversion );
 		editor.commands.add( 'tableCellBorderStyle', new TableCellBorderStyleCommand( editor ) );
 		editor.commands.add( 'tableCellBorderColor', new TableCellBorderColorCommand( editor ) );
 		editor.commands.add( 'tableCellBorderWidth', new TableCellBorderWidthCommand( editor ) );
 
-		enableHorizontalAlignmentProperty( schema, conversion );
+		enableHorizontalAlignmentProperty( schema, conversion, locale );
 		editor.commands.add( 'tableCellHorizontalAlignment', new TableCellHorizontalAlignmentCommand( editor ) );
 
 		enableProperty( schema, conversion, 'width', 'width' );
@@ -86,11 +86,11 @@ export default class TableCellPropertiesEditing extends Plugin {
 		enableProperty( schema, conversion, 'height', 'height' );
 		editor.commands.add( 'tableCellHeight', new TableCellHeightCommand( editor ) );
 
-		viewDoc.addStyleProcessorRules( addPaddingRules );
+		editor.data.addStyleProcessorRules( addPaddingRules );
 		enableProperty( schema, conversion, 'padding', 'padding' );
 		editor.commands.add( 'tableCellPadding', new TableCellPaddingCommand( editor ) );
 
-		viewDoc.addStyleProcessorRules( addBackgroundRules );
+		editor.data.addStyleProcessorRules( addBackgroundRules );
 		enableProperty( schema, conversion, 'backgroundColor', 'background-color' );
 		editor.commands.add( 'tableCellBackgroundColor', new TableCellBackgroundColorCommand( editor ) );
 
@@ -118,37 +118,29 @@ function enableBorderProperties( schema, conversion ) {
 //
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion
-function enableHorizontalAlignmentProperty( schema, conversion ) {
+// @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
+function enableHorizontalAlignmentProperty( schema, conversion, locale ) {
 	schema.extend( 'tableCell', {
 		allowAttributes: [ 'horizontalAlignment' ]
 	} );
+
+	const options = [ locale.contentLanguageDirection == 'rtl' ? 'left' : 'right', 'center', 'justify' ];
 
 	conversion.attributeToAttribute( {
 		model: {
 			name: 'tableCell',
 			key: 'horizontalAlignment',
-			values: [ 'right', 'center', 'justify' ]
+			values: options
 		},
-		view: {
-			right: {
+		view: options.reduce( ( result, option ) => ( {
+			...result,
+			[ option ]: {
 				key: 'style',
 				value: {
-					'text-align': 'right'
-				}
-			},
-			center: {
-				key: 'style',
-				value: {
-					'text-align': 'center'
-				}
-			},
-			justify: {
-				key: 'style',
-				value: {
-					'text-align': 'justify'
+					'text-align': option
 				}
 			}
-		}
+		} ), {} )
 	} );
 }
 

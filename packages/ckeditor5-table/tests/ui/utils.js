@@ -7,6 +7,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import Table from '../../src/table';
 import TableCellProperties from '../../src/tablecellproperties';
 import { findAncestor } from '../../src/commands/utils';
+import { getTableCellsContainingSelection } from '../../src/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import View from '@ckeditor/ckeditor5-ui/src/view';
@@ -27,9 +28,13 @@ import {
 	fillToolbar
 } from '../../src/ui/utils';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { modelTable } from '../_utils/utils';
 
 describe( 'UI Utils', () => {
 	let editor, editingView, balloon, editorElement;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -75,7 +80,7 @@ describe( 'UI Utils', () => {
 					'</tableRow></table>' );
 				repositionContextualBalloon( editor, 'cell' );
 
-				const modelCell = findAncestor( 'tableCell', editor.model.document.selection.getFirstPosition() );
+				const modelCell = getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
 				const viewCell = editor.editing.mapper.toViewElement( modelCell );
 
 				sinon.assert.calledWithExactly( spy, {
@@ -151,16 +156,37 @@ describe( 'UI Utils', () => {
 	} );
 
 	describe( 'getBalloonCellPositionData()', () => {
+		let modelRoot;
+
+		beforeEach( () => {
+			setData( editor.model, modelTable( [
+				[ '11[]', '12', '13' ],
+				[ '21', '22', '23' ],
+				[ '31', '32', '33' ]
+			] ) );
+
+			modelRoot = editor.model.document.getRoot();
+
+			for ( let row = 0; row < 3; row++ ) {
+				for ( let col = 0; col < 3; col++ ) {
+					const modelCell = modelRoot.getNodeByPath( [ 0, row, col ] );
+					const viewCell = editor.editing.mapper.toViewElement( modelCell );
+					const cellDomElement = editingView.domConverter.viewToDom( viewCell );
+
+					mockBoundingBox( cellDomElement, {
+						top: 100 + row * 10,
+						left: 100 + col * 10,
+						height: 10,
+						width: 10
+					} );
+				}
+			}
+		} );
+
 		it( 'returns the position data', () => {
 			const defaultPositions = BalloonPanelView.defaultPositions;
-
-			setData( editor.model, '<table><tableRow>' +
-				'<tableCell><paragraph>foo</paragraph></tableCell>' +
-				'<tableCell><paragraph>[bar]</paragraph></tableCell>' +
-			'</tableRow></table>' );
-
 			const data = getBalloonCellPositionData( editor );
-			const modelCell = findAncestor( 'tableCell', editor.model.document.selection.getFirstPosition() );
+			const modelCell = getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
 			const viewCell = editor.editing.mapper.toViewElement( modelCell );
 
 			expect( data ).to.deep.equal( {
@@ -175,6 +201,78 @@ describe( 'UI Utils', () => {
 				]
 			} );
 		} );
+
+		it( 'returns the position data for multiple cells selected horizontally', () => {
+			selectTableCells( [
+				[ 0, 0 ],
+				[ 0, 1 ]
+			] );
+
+			const data = getBalloonCellPositionData( editor );
+			const targetData = data.target();
+
+			expect( targetData ).to.deep.equal( {
+				top: 100,
+				left: 100,
+				right: 120,
+				bottom: 110,
+				width: 20,
+				height: 10
+			} );
+		} );
+
+		it( 'returns the position data for multiple cells selected vertically', () => {
+			selectTableCells( [
+				[ 0, 1 ],
+				[ 1, 1 ]
+			] );
+
+			const data = getBalloonCellPositionData( editor );
+			const targetData = data.target();
+
+			expect( targetData ).to.deep.equal( {
+				top: 100,
+				left: 110,
+				right: 120,
+				bottom: 120,
+				width: 10,
+				height: 20
+			} );
+		} );
+
+		it( 'returns the position data for multiple cells selected', () => {
+			selectTableCells( [
+				[ 0, 1 ],
+				[ 1, 0 ],
+				[ 1, 1 ]
+			] );
+
+			const data = getBalloonCellPositionData( editor );
+			const targetData = data.target();
+
+			expect( targetData ).to.deep.equal( {
+				top: 100,
+				left: 100,
+				right: 120,
+				bottom: 120,
+				width: 20,
+				height: 20
+			} );
+		} );
+
+		function selectTableCells( paths ) {
+			editor.model.change( writer => {
+				writer.setSelection( paths.map( path => writer.createRangeOn( modelRoot.getNodeByPath( [ 0, ...path ] ) ) ) );
+			} );
+		}
+
+		function mockBoundingBox( element, data ) {
+			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( {
+				...data,
+				right: data.left + data.width,
+				bottom: data.top + data.height
+			} );
+		}
 	} );
 
 	describe( 'getBorderStyleLabels()', () => {
@@ -418,6 +516,12 @@ describe( 'UI Utils', () => {
 			expect( toolbar.items.first.icon ).to.equal( icons.first );
 			expect( toolbar.items.get( 1 ).icon ).to.equal( icons.second );
 			expect( toolbar.items.last.icon ).to.equal( icons.third );
+		} );
+
+		it( 'should set button tooltips', () => {
+			expect( toolbar.items.first.tooltip ).to.equal( labels.first );
+			expect( toolbar.items.get( 1 ).tooltip ).to.equal( labels.second );
+			expect( toolbar.items.last.tooltip ).to.equal( labels.third );
 		} );
 
 		it( 'should bind button #isOn to an observable property', () => {

@@ -31,13 +31,16 @@ function createEditor( target, inspectorName ) {
 				'bulletedList', 'numberedList', 'blockQuote', '|',
 				'undo', 'redo'
 			],
+			image: {
+				toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			},
 			table: {
 				contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ]
 			}
 		} )
 		.then( editor => {
 			window.editors[ inspectorName ] = editor;
-			CKEditorInspector.attach( inspectorName, editor );
+			CKEditorInspector.attach( { [ inspectorName ]: editor } );
 
 			editor.model.document.on( 'change', () => {
 				printModelContents( editor );

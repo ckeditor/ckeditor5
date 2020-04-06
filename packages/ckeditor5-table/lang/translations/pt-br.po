@@ -91,3 +91,147 @@ msgstr "Mesclar células"
 msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
 msgid "Table toolbar"
 msgstr "Ferramentas de Tabela"
+
+msgctxt "The label describing the form allowing to specify the properties of a selected table."
+msgid "Table properties"
+msgstr "Propriedades da tabela"
+
+msgctxt "The label describing the form allowing to specify the properties of a selected table cell."
+msgid "Cell properties"
+msgstr "Propriedades da célula"
+
+msgctxt "The label describing a group of border–related form fields (border style, color, etc.)."
+msgid "Border"
+msgstr "Borda"
+
+msgctxt "The label for the dropdown that allows configuring the border style of a table or a table cell."
+msgid "Style"
+msgstr "Estilo"
+
+msgctxt "The label for the input that allows configuring the width of a table or a table cell or the width of a border."
+msgid "Width"
+msgstr "Largura"
+
+msgctxt "The label for the input that allows configuring the height of a table or a table cell."
+msgid "Height"
+msgstr "Altura"
+
+msgctxt "The label for the input that allows configuring the border color of a table or a table cell."
+msgid "Color"
+msgstr "Cor"
+
+msgctxt "The label for the input that allows configuring the background color of a table or a table cell."
+msgid "Background"
+msgstr "Cor de fundo"
+
+msgctxt "The label for the input that allows configuring the padding of a table cell."
+msgid "Padding"
+msgstr ""
+
+msgctxt "The label describing a group of form fields that allows setting dimensions of a table or a table cell."
+msgid "Dimensions"
+msgstr "Dimensões"
+
+msgctxt "The label for the group of toolbars that allows configuring the text alignment in a table cell."
+msgid "Table cell text alignment"
+msgstr "Alinhamento do texto na célula"
+
+msgctxt "The label for the toolbar that allows configuring the alignment of a table."
+msgid "Alignment"
+msgstr "Alinhamento"
+
+msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the horizontal text alignment in a table cell."
+msgid "Horizontal text alignment toolbar"
+msgstr "Ferramentas de alinhamento horizontal do texto"
+
+msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the vertical text alignment in a table cell."
+msgid "Vertical text alignment toolbar"
+msgstr "Ferramentas de alinhamento vertical do texto"
+
+msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the alignment of a table."
+msgid "Table alignment toolbar"
+msgstr "Ferramentas de alinhamento da tabela"
+
+msgctxt "The label for the border style dropdown when no style is applied to a table or a table cell."
+msgid "None"
+msgstr "Sem borda"
+
+msgctxt "The label for the border style dropdown when the solid border is applied to a table or a table cell."
+msgid "Solid"
+msgstr "Sólida"
+
+msgctxt "The label for the border style dropdown when the dotted border is applied to a table or a table cell."
+msgid "Dotted"
+msgstr "Pontilhada"
+
+msgctxt "The label for the border style dropdown when the dashed border is applied to a table or a table cell."
+msgid "Dashed"
+msgstr "Tracejada"
+
+msgctxt "The label for the border style dropdown when the double border is applied to a table or a table cell."
+msgid "Double"
+msgstr "Dupla"
+
+msgctxt "The label for the border style dropdown when the groove border is applied to a table or a table cell."
+msgid "Groove"
+msgstr ""
+
+msgctxt "The label for the border style dropdown when the ridge border is applied to a table or a table cell."
+msgid "Ridge"
+msgstr ""
+
+msgctxt "The label for the border style dropdown when the inset border is applied to a table or a table cell."
+msgid "Inset"
+msgstr ""
+
+msgctxt "The label for the border style dropdown when the outset border is applied to a table or a table cell."
+msgid "Outset"
+msgstr ""
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the left."
+msgid "Align cell text to the left"
+msgstr "Alinhar texto da célula para a esquerda"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the center."
+msgid "Align cell text to the center"
+msgstr "Alinhar texto da célula centralizado"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the right."
+msgid "Align cell text to the right"
+msgstr "Alinhar texto da célula para a direita"
+
+msgctxt "The label used by assistive technologies describing a button that justifies the table cell text."
+msgid "Justify cell text"
+msgstr "Justificar texto da célula"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the top."
+msgid "Align cell text to the top"
+msgstr "Alinhar texto da célula para o topo"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the middle."
+msgid "Align cell text to the middle"
+msgstr "Alinhar texto da célula para o meio"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the bottom."
+msgid "Align cell text to the bottom"
+msgstr "Alinhar texto da célula para baixo"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the left."
+msgid "Align table to the left"
+msgstr "Alinhar tabela para esquerda"
+
+msgctxt "The label used by assistive technologies describing a button that centers the table."
+msgid "Center table"
+msgstr "Centralizar tabela"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the right."
+msgid "Align table to the right"
+msgstr "Alinhar tabela para direita"
+
+msgctxt "The localized error string that can be displayed next to color (background, border) fields that have an invalid value"
+msgid "The color is invalid. Try \"#FF0000\" or \"rgb(255,0,0)\" or \"red\"."
+msgstr "Cor inválida. Tente \"#FF0000\" ou \"rgb(255,0,0)\" ou \"red\""
+
+msgctxt "The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value."
+msgid "The value is invalid. Try \"10px\" or \"2em\" or simply \"2\"."
+msgstr "Valor inválido. Tente \"10px\" ou \"2em\" ou apenas \"2\""

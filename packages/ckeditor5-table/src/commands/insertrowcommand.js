@@ -69,14 +69,17 @@ export default class InsertRowCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const tableUtils = editor.plugins.get( 'TableUtils' );
+		const insertAbove = this.order === 'above';
 
-		const tableCell = findAncestor( 'tableCell', selection.getFirstPosition() );
+		const referencePosition = insertAbove ? selection.getFirstPosition() : selection.getLastPosition();
+		const referenceRange = insertAbove ? selection.getFirstRange() : selection.getLastRange();
+
+		const tableCell = referenceRange.getContainedElement() || findAncestor( 'tableCell', referencePosition );
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 
 		const row = table.getChildIndex( tableRow );
-		const insertAt = this.order === 'below' ? row + 1 : row;
 
-		tableUtils.insertRows( table, { rows: 1, at: insertAt } );
+		tableUtils.insertRows( table, { rows: 1, at: this.order === 'below' ? row + 1 : row } );
 	}
 }

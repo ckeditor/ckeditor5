@@ -8,8 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-
-import { findAncestor } from '../../commands/utils';
+import { getSelectionAffectedTableCells } from '../../utils';
 
 /**
  * The table cell attribute command.
@@ -36,12 +35,10 @@ export default class TableCellPropertyCommand extends Command {
 	 */
 	refresh() {
 		const editor = this.editor;
-		const selection = editor.model.document.selection;
+		const selectedTableCells = getSelectionAffectedTableCells( editor.model.document.selection );
 
-		const tableCell = findAncestor( 'tableCell', selection.getFirstPosition() );
-
-		this.isEnabled = !!tableCell;
-		this.value = this._getAttribute( tableCell );
+		this.isEnabled = !!selectedTableCells.length;
+		this.value = this._getSingleValue( selectedTableCells );
 	}
 
 	/**
@@ -55,13 +52,9 @@ export default class TableCellPropertyCommand extends Command {
 	 * for example to allow a single undo step for multiple executions.
 	 */
 	execute( options = {} ) {
-		const model = this.editor.model;
-		const selection = model.document.selection;
-
 		const { value, batch } = options;
-
-		const tableCells = Array.from( selection.getSelectedBlocks() )
-			.map( element => findAncestor( 'tableCell', model.createPositionAt( element, 0 ) ) );
+		const model = this.editor.model;
+		const tableCells = getSelectionAffectedTableCells( model.document.selection );
 		const valueToSet = this._getValueToSet( value );
 
 		model.enqueueChange( batch || 'default', writer => {
@@ -97,5 +90,21 @@ export default class TableCellPropertyCommand extends Command {
 	 */
 	_getValueToSet( value ) {
 		return value;
+	}
+
+	/**
+	 * Returns a single value for all selected table cells. If the value is the same for all cells,
+	 * it will be returned (`undefined` otherwise).
+	 *
+	 * @param {Array.<module:engine/model/element~Element>} tableCell
+	 * @returns {*}
+	 * @private
+	 */
+	_getSingleValue( tableCell ) {
+		const firstCellValue = this._getAttribute( tableCell[ 0 ] );
+
+		const everyCellHasAttribute = tableCell.every( tableCell => this._getAttribute( tableCell ) === firstCellValue );
+
+		return everyCellHasAttribute ? firstCellValue : undefined;
 	}
 }

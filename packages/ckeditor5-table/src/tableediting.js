@@ -28,7 +28,10 @@ import RemoveRowCommand from './commands/removerowcommand';
 import RemoveColumnCommand from './commands/removecolumncommand';
 import SetHeaderRowCommand from './commands/setheaderrowcommand';
 import SetHeaderColumnCommand from './commands/setheadercolumncommand';
-import { findAncestor } from './commands/utils';
+import MergeCellsCommand from './commands/mergecellscommand';
+import SelectRowCommand from './commands/selectrowcommand';
+import SelectColumnCommand from './commands/selectcolumncommand';
+import { getTableCellsContainingSelection } from './utils';
 import TableUtils from '../src/tableutils';
 
 import injectTableLayoutPostFixer from './converters/table-layout-post-fixer';
@@ -131,6 +134,8 @@ export default class TableEditing extends Plugin {
 		editor.commands.add( 'splitTableCellVertically', new SplitCellCommand( editor, { direction: 'vertically' } ) );
 		editor.commands.add( 'splitTableCellHorizontally', new SplitCellCommand( editor, { direction: 'horizontally' } ) );
 
+		editor.commands.add( 'mergeTableCells', new MergeCellsCommand( editor ) );
+
 		editor.commands.add( 'mergeTableCellRight', new MergeCellCommand( editor, { direction: 'right' } ) );
 		editor.commands.add( 'mergeTableCellLeft', new MergeCellCommand( editor, { direction: 'left' } ) );
 		editor.commands.add( 'mergeTableCellDown', new MergeCellCommand( editor, { direction: 'down' } ) );
@@ -138,6 +143,9 @@ export default class TableEditing extends Plugin {
 
 		editor.commands.add( 'setTableColumnHeader', new SetHeaderColumnCommand( editor ) );
 		editor.commands.add( 'setTableRowHeader', new SetHeaderRowCommand( editor ) );
+
+		editor.commands.add( 'selectTableRow', new SelectRowCommand( editor ) );
+		editor.commands.add( 'selectTableColumn', new SelectColumnCommand( editor ) );
 
 		injectTableLayoutPostFixer( model );
 		injectTableCellRefreshPostFixer( model );
@@ -195,10 +203,7 @@ export default class TableEditing extends Plugin {
 
 		return ( domEventData, cancel ) => {
 			const selection = editor.model.document.selection;
-
-			const firstPosition = selection.getFirstPosition();
-
-			const tableCell = findAncestor( 'tableCell', firstPosition );
+			const tableCell = getTableCellsContainingSelection( selection )[ 0 ];
 
 			if ( !tableCell ) {
 				return;
