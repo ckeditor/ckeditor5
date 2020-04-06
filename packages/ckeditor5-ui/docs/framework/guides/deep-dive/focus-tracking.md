@@ -182,6 +182,10 @@ Most of components have [focus trackers](#using-the-focustracker-class) to keep 
 
 Any UI {@link framework/guides/architecture/ui-library#views view} can be focusable. To become one, a view must implement the `focus()` method that focuses the DOM {@link module:ui/view~View#element  element} and the `tabindex="-1"` attribute set on the element that prevents the native navigation using the keyboard (which should be handled by the [focus cycler](#using-the-focuscycler-class) on the parent–level):
 
+<info-box>
+	The [`tabindex="-1"`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex) is a native DOM attribute that controls whether a DOM element can be focused (and in which order). Setting its value to `"-1"` tells the web browser that it should exclude it from the native keyboard navigation and allow it only to be focused using JavaScript. Because your component will belong to the editor focus management system, you should do that if you want to avoid collisions with the web browser.
+</info-box>
+
 ```js
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
