@@ -51,10 +51,10 @@ export default class ViewCollection extends Collection {
 	/**
 	 * Creates a new instance of the {@link module:ui/viewcollection~ViewCollection}.
 	 *
-	 * @param {module:utils/locale~Locale} [locale] The {@link module:core/editor/editor~Editor editor's locale} instance.
+	 * @param {Iterable.<module:ui/view~View>} [initialItems] The initial items of the collection.
 	 */
-	constructor( locale ) {
-		super( {
+	constructor( initialItems = [] ) {
+		super( initialItems, {
 			// An #id Number attribute should be legal and not break the `ViewCollection` instance.
 			// https://github.com/ckeditor/ckeditor5-ui/issues/93
 			idProperty: 'viewUid'
@@ -62,13 +62,7 @@ export default class ViewCollection extends Collection {
 
 		// Handle {@link module:ui/view~View#element} in DOM when a new view is added to the collection.
 		this.on( 'add', ( evt, view, index ) => {
-			if ( !view.isRendered ) {
-				view.render();
-			}
-
-			if ( view.element && this._parentElement ) {
-				this._parentElement.insertBefore( view.element, this._parentElement.children[ index ] );
-			}
+			this._renderViewIntoCollectionParent( view, index );
 		} );
 
 		// Handle {@link module:ui/view~View#element} in DOM when a view is removed from the collection.
@@ -77,14 +71,6 @@ export default class ViewCollection extends Collection {
 				view.element.remove();
 			}
 		} );
-
-		/**
-		 * The {@link module:core/editor/editor~Editor#locale editor's locale} instance.
-		 * See the view {@link module:ui/view~View#locale locale} property.
-		 *
-		 * @member {module:utils/locale~Locale}
-		 */
-		this.locale = locale;
 
 		/**
 		 * A parent element within which child views are rendered and managed in DOM.
@@ -112,6 +98,11 @@ export default class ViewCollection extends Collection {
 	 */
 	setParent( elementOrDocFragment ) {
 		this._parentElement = elementOrDocFragment;
+
+		// Take care of the initial collection items passed to the constructor.
+		for ( const view of this ) {
+			this._renderViewIntoCollectionParent( view );
+		}
 	}
 
 	/**
@@ -192,6 +183,30 @@ export default class ViewCollection extends Collection {
 				} );
 			}
 		};
+	}
+
+	/**
+	 * This method {@link module:ui/view~View#render renders} a new view added to the collection.
+	 *
+	 * If the {@link #_parentElement parent element} of the collection is set, this method also adds
+	 * the view's {@link module:ui/view~View#element} as a child of the parent in DOM at a specified index.
+	 *
+	 * **Note**: If index is not specified, the view's element is pushed as the last child
+	 * of the parent element.
+	 *
+	 * @private
+	 * @param {module:ui/view~View} view A new view added to the collection.
+	 * @param {Number} [index] An index the view holds in the collection. When not specified,
+	 * the view is added at the end.
+	 */
+	_renderViewIntoCollectionParent( view, index ) {
+		if ( !view.isRendered ) {
+			view.render();
+		}
+
+		if ( view.element && this._parentElement ) {
+			this._parentElement.insertBefore( view.element, this._parentElement.children[ index ] );
+		}
 	}
 
 	/**

@@ -20,15 +20,18 @@ describe( 'ViewCollection', () => {
 
 	describe( 'constructor()', () => {
 		it( 'sets basic properties and attributes', () => {
-			expect( collection.locale ).to.be.undefined;
 			expect( collection._parentElement ).to.be.null;
 			expect( collection._idProperty ).to.equal( 'viewUid' );
 		} );
 
-		it( 'accepts locale and defines the locale property', () => {
-			const locale = { t() {} };
+		it( 'allows setting initial collection items', () => {
+			const view1 = new View();
+			const view2 = new View();
+			const collection = new ViewCollection( [ view1, view2 ] );
 
-			expect( new ViewCollection( locale ).locale ).to.equal( locale );
+			expect( collection ).to.have.length( 2 );
+			expect( collection.get( 0 ) ).to.equal( view1 );
+			expect( collection.get( 1 ) ).to.equal( view2 );
 		} );
 
 		describe( 'child view management in DOM', () => {
@@ -164,6 +167,28 @@ describe( 'ViewCollection', () => {
 
 			collection.setParent( el );
 			expect( collection._parentElement ).to.equal( el );
+		} );
+
+		it( 'udpates initial collection items in DOM', () => {
+			const view1 = new View();
+			view1.element = document.createElement( 'i' );
+			sinon.spy( view1, 'render' );
+
+			const view2 = new View();
+			view2.element = document.createElement( 'b' );
+			sinon.spy( view2, 'render' );
+
+			const collection = new ViewCollection( [ view1, view2 ] );
+			const parentElement = document.createElement( 'div' );
+
+			expect( collection ).to.have.length( 2 );
+			expect( collection.get( 0 ) ).to.equal( view1 );
+			expect( collection.get( 1 ) ).to.equal( view2 );
+
+			collection.setParent( parentElement );
+			expect( normalizeHtml( parentElement.outerHTML ) ).to.equal( '<div><i></i><b></b></div>' );
+			sinon.assert.calledOnce( view1.render );
+			sinon.assert.calledOnce( view2.render );
 		} );
 	} );
 

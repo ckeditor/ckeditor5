@@ -17,7 +17,14 @@ describe( 'FocusCycler', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		focusables = new ViewCollection();
+		testUtils.sinon.stub( global.window, 'getComputedStyle' );
+		focusables = new ViewCollection( [
+			nonFocusable(),
+			focusable(),
+			focusable(),
+			focusable(),
+			nonFocusable()
+		] );
 		focusTracker = {
 			focusedElement: null
 		};
@@ -25,14 +32,6 @@ describe( 'FocusCycler', () => {
 			focusables,
 			focusTracker
 		} );
-
-		testUtils.sinon.stub( global.window, 'getComputedStyle' );
-
-		focusables.add( nonFocusable() );
-		focusables.add( focusable() );
-		focusables.add( focusable() );
-		focusables.add( focusable() );
-		focusables.add( nonFocusable() );
 	} );
 
 	describe( 'constructor()', () => {
@@ -60,11 +59,8 @@ describe( 'FocusCycler', () => {
 		} );
 
 		it( 'returns null when no focusable items', () => {
-			focusables = new ViewCollection();
+			focusables = new ViewCollection( [ nonFocusable(), nonFocusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
-
-			focusables.add( nonFocusable() );
-			focusables.add( nonFocusable() );
 
 			expect( cycler.first ).to.be.null;
 		} );
@@ -83,11 +79,8 @@ describe( 'FocusCycler', () => {
 		} );
 
 		it( 'returns null when no focusable items', () => {
-			focusables = new ViewCollection();
+			focusables = new ViewCollection( [ nonFocusable(), nonFocusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
-
-			focusables.add( nonFocusable() );
-			focusables.add( nonFocusable() );
 
 			expect( cycler.last ).to.be.null;
 		} );
@@ -126,22 +119,15 @@ describe( 'FocusCycler', () => {
 		} );
 
 		it( 'returns null when no focusable items', () => {
-			focusables = new ViewCollection();
+			focusables = new ViewCollection( [ nonFocusable(), nonFocusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
-
-			focusables.add( nonFocusable() );
-			focusables.add( nonFocusable() );
 
 			expect( cycler.next ).to.be.null;
 		} );
 
 		it( 'returns null if the only focusable in focusables', () => {
-			focusables = new ViewCollection();
+			focusables = new ViewCollection( [ nonFocusable(), focusable(), nonFocusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
-
-			focusables.add( nonFocusable() );
-			focusables.add( focusable() );
-			focusables.add( nonFocusable() );
 
 			focusTracker.focusedElement = focusables.get( 1 ).element;
 
@@ -176,22 +162,15 @@ describe( 'FocusCycler', () => {
 		} );
 
 		it( 'returns null when no focusable items', () => {
-			focusables = new ViewCollection();
+			focusables = new ViewCollection( [ nonFocusable(), nonFocusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
-
-			focusables.add( nonFocusable() );
-			focusables.add( nonFocusable() );
 
 			expect( cycler.previous ).to.be.null;
 		} );
 
 		it( 'returns null if the only focusable in focusables', () => {
-			focusables = new ViewCollection();
+			focusables = new ViewCollection( [ nonFocusable(), focusable(), nonFocusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
-
-			focusables.add( nonFocusable() );
-			focusables.add( focusable() );
-			focusables.add( nonFocusable() );
 
 			focusTracker.focusedElement = focusables.get( 1 ).element;
 
@@ -208,11 +187,8 @@ describe( 'FocusCycler', () => {
 		} );
 
 		it( 'does not throw when no focusable items', () => {
-			focusables = new ViewCollection();
+			focusables = new ViewCollection( [ nonFocusable(), nonFocusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
-
-			focusables.add( nonFocusable() );
-			focusables.add( nonFocusable() );
 
 			expect( () => {
 				cycler.focusFirst();
@@ -231,11 +207,7 @@ describe( 'FocusCycler', () => {
 		it( 'ignores invisible items', () => {
 			const item = focusable();
 
-			focusables = new ViewCollection();
-			focusables.add( nonFocusable() );
-			focusables.add( focusable( true ) );
-			focusables.add( item );
-
+			focusables = new ViewCollection( [ nonFocusable(), focusable( true ), item ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
 			cycler.focusFirst();
@@ -251,11 +223,8 @@ describe( 'FocusCycler', () => {
 		} );
 
 		it( 'does not throw when no focusable items', () => {
-			focusables = new ViewCollection();
+			focusables = new ViewCollection( [ nonFocusable(), nonFocusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
-
-			focusables.add( nonFocusable() );
-			focusables.add( nonFocusable() );
 
 			expect( () => {
 				cycler.focusLast();
@@ -281,11 +250,8 @@ describe( 'FocusCycler', () => {
 		} );
 
 		it( 'does not throw when no focusable items', () => {
-			focusables = new ViewCollection();
+			focusables = new ViewCollection( [ nonFocusable(), nonFocusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
-
-			focusables.add( nonFocusable() );
-			focusables.add( nonFocusable() );
 
 			expect( () => {
 				cycler.focusNext();
@@ -311,11 +277,8 @@ describe( 'FocusCycler', () => {
 		} );
 
 		it( 'does not throw when no focusable items', () => {
-			focusables = new ViewCollection();
+			focusables = new ViewCollection( [ nonFocusable(), nonFocusable() ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
-
-			focusables.add( nonFocusable() );
-			focusables.add( nonFocusable() );
 
 			expect( () => {
 				cycler.focusPrevious();
