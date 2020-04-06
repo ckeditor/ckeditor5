@@ -7,7 +7,7 @@ language: node_js
 services:
 - xvfb
 node_js:
-- '8'
+- '10'
 cache:
   yarn: true
 branches:
@@ -26,3 +26,6 @@ after_success:
 after_script:
 - export END_TIME=$( date +%s )
 - ckeditor5-dev-tests-notify-travis-status
+env:
+  global:
+    secure: Z5GdDEE3oAyM1PjvXYtSv3YXUcwoeFPY5htCic+kITgg0rUiUxU6COkk4tksnCy6HSFr6PB1k2oJAcadLxn+JzBXECIFAZ1ivtxhqMubWks7DSwT4AwHQfkTR2ybvyzOwLIbC2xy9ebmPNoeD12QEek5uFn4MPmcnSm32h+xuGhXN0fwCOZT+PsvVoOYkbW7tF4zWYMUttMWDYajZztBSdpMPe8+Pcx43n9xoH3OnvCJm4bZMRu4oxhOzgsspSHPV3ZagUglFGIzNlL6jLe3/vndc9a4ZU7q1he4NQnlpqGF64E9HmpfnGll4oZIWa9nIb4kGeAVgh4jDxVFnUsQyS5je0ChOFUeFgvKSXmHtCOCuGolLi4N7YlOpfdS8E6IS9SME0YRslSXehCLvIlN65gxuT5DoElF64kuh4TiwyXU8svovXhZnfTZUbd+ESonVNRgXFRR35tY1Rw5O0j7evo6lCDyWAzymJs9pv0Q4y3zWvisIswCubUJwsV70uNSygSnkXg7DzKJCLVdzBSwaPMCfTcLH/jtdUAK6kPlOVH8ECOP0Vm72BaCvEYAsh6WcAcIm1jp1y8md420sS1iNId9Vuo5uF6SlTJebI0wikfNf6tCYR8PoRXp0XwuWCwrzwXcZxcH7AQF1Zg3TYMe3Ds3f1/GVwekSbAYXmETkrM=
