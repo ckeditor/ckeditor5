@@ -73,6 +73,9 @@ export default class InsertTableView extends View {
 					attributes: {
 						class: [ 'ck-insert-table-dropdown__grid' ]
 					},
+					on: {
+						'mouseover@.ck-insert-table-dropdown-grid-box': bind.to( 'boxover' )
+					},
 					children: this.items
 				},
 				{
@@ -97,6 +100,16 @@ export default class InsertTableView extends View {
 					this.fire( 'execute' );
 				} )
 			}
+		} );
+
+		this.on( 'boxover', ( evt, domEvt ) => {
+			const { row, column } = domEvt.target.dataset;
+
+			// As row & column indexes are zero-based transform it to number of selected rows & columns.
+			this.set( {
+				rows: parseInt( row ),
+				columns: parseInt( column )
+			} );
 		} );
 
 		this.on( 'change:columns', () => {
@@ -150,30 +163,24 @@ export default class InsertTableView extends View {
 	 * @returns {module:ui/viewcollection~ViewCollection} A view collection containing boxes to be placed in a table grid.
 	 */
 	_createGridCollection() {
-		const boxes = new Set();
+		const boxes = [];
 
 		// Add grid boxes to table selection view.
 		for ( let index = 0; index < 100; index++ ) {
-			const boxView = new TableSizeGridBoxView();
+			const row = Math.floor( index / 10 );
+			const column = index % 10;
 
-			// Listen to box view 'over' event which indicates that mouse is over this box.
-			boxView.on( 'over', () => {
-				// Translate box index to the row & column index.
-				const row = Math.floor( index / 10 );
-				const column = index % 10;
-
-				// As row & column indexes are zero-based transform it to number of selected rows & columns.
-				this.set( {
-					rows: row + 1,
-					columns: column + 1
-				} );
-			} );
-
-			boxes.add( boxView );
+			boxes.push( new TableSizeGridBoxView( this.locale, row + 1, column + 1 ) );
 		}
 
 		return this.createCollection( boxes );
 	}
+
+	/**
+	 * Fired when the mouse hover over one of the {@link #items child grid boxes}.
+	 *
+	 * @event boxover
+	 */
 }
 
 /**
@@ -187,7 +194,7 @@ class TableSizeGridBoxView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale ) {
+	constructor( locale, row, column ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -206,10 +213,9 @@ class TableSizeGridBoxView extends View {
 				class: [
 					'ck-insert-table-dropdown-grid-box',
 					bind.if( 'isOn', 'ck-on' )
-				]
-			},
-			on: {
-				mouseover: bind.to( 'over' )
+				],
+				'data-row': row,
+				'data-column': column
 			}
 		} );
 	}
