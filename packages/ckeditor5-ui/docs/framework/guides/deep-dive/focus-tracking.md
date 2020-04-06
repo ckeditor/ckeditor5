@@ -84,7 +84,7 @@ This snippet focuses an editable that has the selection. If the editor has not b
 
 ## Focus in the editor UI
 
-If you read the [previous chapter](#focus-in-the-editor-engine) of this guide you should know that there is already a layer responsible for tracking focus working at the engine–level. But while that layer is only concerned by the focus in editor editables, due to the {@link framework/guides/architecture/intro modular nature of the editor framework}, it is oblivious of the user interface. This makes sense, for instance, because it is possible to create a fully–functioning editor without the UI and there should be a minimal API provided by the editor engine that allows that.
+If you read the [previous chapter](#focus-in-the-editor-engine) of this guide you should know that there is already a layer responsible for tracking focus implemented in the {@link framework/guides/architecture/editing-engine editor engine}. But because the {@link framework/guides/architecture/intro editor framework is modular}, that layer is only concerned by the focus in editable roots of the editor and it knows nothing of the user interface. This granularity makes it possible, for instance, to create a fully–functioning editor without the UI.
 
 As for the user interface of CKEditor, it is a composition of multiple components {@link framework/guides/architecture/ui-library#view-collections-and-the-ui-tree organized as a tree}. This tree determines not only the logical structure of the UI (a toolbar has a dropdown, a dropdown has a button, a button has an icon, etc.) but also its behavior, and that includes tracking and maintaining focus as the user navigates and interacts with various pieces of the interface.
 
