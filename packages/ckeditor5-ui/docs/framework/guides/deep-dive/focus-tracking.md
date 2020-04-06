@@ -40,7 +40,7 @@ In the following chapters of this guide, we will explain how these systems work,
 
 The main editable area of CKEditor can be focused thanks to the [`contenteditable`](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Editable_content) DOM attribute. This attribute tells the web browser that a web page element can be edited like any other text field, which also means it must be able to receive focus.
 
-Each root of the editing view has the `contenteditable` attribute. The editing view uses the {@link module:utils/focustracker~FocusTracker `FocusTracker`} (learn more about {@link framework/guides/architecture/editing-engine#observers view observers}) to track focus in editables by listening to native DOM `focus` and `blur` events coming from them.
+Each root of the editing view has the `contenteditable` attribute. The editing view uses the {@link module:engine/view/observer/focusobserver~FocusObserver `FocusObserver`} (learn more about {@link framework/guides/architecture/editing-engine#observers view observers}) to track focus in editables by listening to native DOM `focus` and `blur` events coming from them.
 
 <info-box>
 	Already confused? Take a look at our {@link framework/guides/architecture/editing-engine#observers "Editing engine"} guide that will explain what the editing view, editables and other building blocks of CKEditor are.
