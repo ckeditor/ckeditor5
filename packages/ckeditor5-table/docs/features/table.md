@@ -395,6 +395,14 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 			<td>{@link module:table/commands/removerowcommand~RemoveRowCommand}</td>
 		</tr>
 		<tr>
+			<td><code>'selectTableColumn'</code></td>
+			<td>{@link module:table/commands/selectcolumncommand~SelectColumnCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'selectTableRow'</code></td>
+			<td>{@link module:table/commands/selectrowcommand~SelectRowCommand}</td>
+		</tr>
+		<tr>
 			<td><code>'setTableColumnHeader'</code></td>
 			<td>{@link module:table/commands/setheadercolumncommand~SetHeaderColumnCommand}</td>
 		</tr>
