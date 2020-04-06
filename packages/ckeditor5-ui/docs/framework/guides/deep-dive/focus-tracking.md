@@ -171,7 +171,7 @@ And here is the summary of the tools used by each focus layer (UI component):
 	</table>
 </figure>
 
-Most of components have [focus trackers](#using-the-focustracker-class) to keep up with the focus inside of them. Some components that host more children also use [focus cyclers](#using-the-focuscycler-class) and [keystroke handlers](#using-the-keystrokehandler-class) to allow users to navigate across them. You can learn how to use them in the later chapters of this guide:
+Most of components have [focus trackers](#using-the-focustracker-class) to keep up with the focus inside of them. Some components that host more children also use [focus cyclers](#using-the-focuscycler-class) and [keystroke handlers](#using-the-keystrokehandler-class) to help the user navigate across them. You can learn how to use them in the later chapters of this guide:
 
 - ["Implementing focusable UI components"](#implementing-focusable-ui-components),
 - ["Using the `FocusTracker` class"](#using-the-focustracker-class),
@@ -314,7 +314,7 @@ class MyListView extends View {
 }
 ```
 
-The `MyListView` can now track focused children, and it is time to help users navigate them using the keyboard. In the next chapter, you will create a [keystroke handler](#using-the-keystrokehandler-class) that will bring you closer to the goal.
+The `MyListView` can now track focused children, and it is time to help the user navigate them using the keyboard. In the next chapter, you will create a [keystroke handler](#using-the-keystrokehandler-class) that will bring you closer to the goal.
 
 ### Using the `KeystrokeHandler` class
 
@@ -354,7 +354,7 @@ export default class MyListView extends View {
 
 ### Using the `FocusCycler` class
 
-{@link module:ui/focuscycler~FocusCycler} helps users navigate the user interface using the keystrokes (arrow keys, <kbd>Tab</kbd>, <kbd>Return</kbd>, and <kbd>Esc</kbd>, etc.). This helper class has been created with components hosting multiple children in mind, for instance, lists, toolbars or forms. It *cycles* over their children so, for instance, if the focused is the last child and the user wants to move forwards, the focus is moved back to the first child. It also supports components that have a variable (dynamic) number of focusable children.
+{@link module:ui/focuscycler~FocusCycler} helps the user navigate the user interface using the keystrokes (arrow keys, <kbd>Tab</kbd>, <kbd>Return</kbd>, and <kbd>Esc</kbd>, etc.). This helper class has been created with components hosting multiple children in mind, for instance, lists, toolbars or forms. It *cycles* over their children so, for instance, if the focused is the last child and the user wants to move forwards, the focus is moved back to the first child. It also supports components that have a variable (dynamic) number of focusable children.
 
 Each focus cycler instance works together with a [focus tracker](#using-the-focustracker-class) and a [keystroke handler](#using-the-keystrokehandler-class). The former delivers the current state of the focus, while the latter helps the cycler integrate with keystrokes, for instance, to focus the next item in the list on the down arrow key press.
 
