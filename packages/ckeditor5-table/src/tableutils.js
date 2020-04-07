@@ -307,6 +307,35 @@ export default class TableUtils extends Plugin {
 		} );
 	}
 
+	/**
+	 * Removes columns from the given `table`.
+	 *
+	 * This method re-calculates the table geometry including `colspan` attribute of table cells overlapping removed columns
+	 * and table headings values.
+	 *
+	 *		editor.plugins.get( 'TableUtils' ).removeColumns( table, { at: 1, columns: 2 } );
+	 *
+	 * Executing the above code in the context of the table on the left will transform its structure as presented on the right:
+	 *
+	 *		  0   1   2   3   4                       0   1   2
+	 *		┌───────────────┬───┐                   ┌───────┬───┐
+	 *		│ a             │ b │                   │ a     │ b │
+	 *		│               ├───┤                   │       ├───┤
+	 *		│               │ c │                   │       │ c │
+	 *		├───┬───┬───┬───┼───┤     will give:    ├───┬───┼───┤
+	 *		│ d │ e │ f │ g │ h │                   │ d │ g │ h │
+	 *		├───┼───┼───┤   ├───┤                   ├───┤   ├───┤
+	 *		│ i │ j │ k │   │ l │                   │ i │   │ l │
+	 *		├───┴───┴───┴───┴───┤                   ├───┴───┴───┤
+	 *		│ m                 │                   │ m         │
+	 *		└───────────────────┘                   └───────────┘
+	 *		      ^---- remove from here, `at` = 1, `columns` = 2
+	 *
+	 * @param {module:engine/model/element~Element} table
+	 * @param {Object} options
+	 * @param {Number} options.at The row index at which the removing columns will start.
+	 * @param {Number} [options.columns=1] The number of columns to remove.
+	 */
 	removeColumns( table, options ) {
 		const model = this.editor.model;
 		const first = options.at;
