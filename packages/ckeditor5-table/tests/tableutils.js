@@ -961,7 +961,7 @@ describe( 'TableUtils', () => {
 		} );
 	} );
 
-	describe( 'removeColumn()', () => {
+	describe( 'removeColumns()', () => {
 		describe( 'single row', () => {
 			it( 'should remove a given column', () => {
 				setData( model, modelTable( [
@@ -970,7 +970,7 @@ describe( 'TableUtils', () => {
 					[ '20', '21', '22' ]
 				] ) );
 
-				tableUtils.removeColumn( { at: 1 } );
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '00', '02' ],
@@ -986,7 +986,7 @@ describe( 'TableUtils', () => {
 					[ '20', '21' ]
 				] ) );
 
-				tableUtils.removeColumn( { at: 0 } );
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '01' ],
@@ -1002,7 +1002,7 @@ describe( 'TableUtils', () => {
 					[ '20', '21' ]
 				], { headingColumns: 2 } ) );
 
-				tableUtils.removeColumn( { at: 0 } );
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '01' ],
@@ -1020,7 +1020,7 @@ describe( 'TableUtils', () => {
 					[ '40', '41', '42', '43' ]
 				] ) );
 
-				tableUtils.removeColumn( { at: 2 } );
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 2 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ { colspan: 3, contents: '00' }, '03' ],
@@ -1039,7 +1039,7 @@ describe( 'TableUtils', () => {
 					[ '20', '21', '22', '23' ]
 				] ) );
 
-				tableUtils.removeColumn( { at: 0 } );
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ { colspan: 2, contents: '00' }, '03' ],
@@ -1048,19 +1048,72 @@ describe( 'TableUtils', () => {
 				] ) );
 			} );
 
-			it( 'should move focus to previous column of removed cell if in last column', () => {
+			it( 'should remove column with rowspan (first column)', () => {
 				setData( model, modelTable( [
-					[ '00', '01', '02' ],
-					[ '10', '11', '12' ],
+					[ { rowspan: 2, contents: '00' }, '01' ],
+					[ '10' ]
+				] ) );
+
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '01' ],
+					[ '10' ]
+				] ) );
+			} );
+
+			it( 'should remove column with rowspan (last column)', () => {
+				setData( model, modelTable( [
+					[ '00', { rowspan: 2, contents: '01' } ],
+					[ '10' ]
+				] ) );
+
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00' ],
+					[ '10' ]
+				] ) );
+			} );
+
+			it( 'should remove column if other column is rowspanned (last column)', () => {
+				setData( model, modelTable( [
+					[ '00', { rowspan: 2, contents: '01' } ],
+					[ '10' ]
+				] ) );
+
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '01' ]
+				] ) );
+			} );
+
+			it( 'should remove column if other column is rowspanned (first column)', () => {
+				setData( model, modelTable( [
+					[ { rowspan: 2, contents: '00' }, '01' ],
+					[ '11' ]
+				] ) );
+
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00' ]
+				] ) );
+			} );
+
+			it( 'should remove column if removing row with one column - other columns are spanned', () => {
+				setData( model, modelTable( [
+					[ '00', { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' } ],
+					[ '10' ],
 					[ '20', '21', '22' ]
 				] ) );
 
-				tableUtils.removeColumn( { at: 2 } );
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
-					[ '00', '01' ],
-					[ '10', '11' ],
-					[ '20', '21' ]
+					[ '01', '02' ],
+					[ '21', '22' ]
 				] ) );
 			} );
 		} );
@@ -1074,7 +1127,7 @@ describe( 'TableUtils', () => {
 					[ '30', '31', '32' ]
 				] ) );
 
-				tableUtils.removeColumn( { at: 0, columns: 2 } );
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0, columns: 2 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '02' ],
@@ -1092,7 +1145,7 @@ describe( 'TableUtils', () => {
 					[ '30', '31', '32', '33' ]
 				] ) );
 
-				tableUtils.removeColumn( { at: 1, columns: 2 } );
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 2 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '00', '03' ],
@@ -1110,7 +1163,7 @@ describe( 'TableUtils', () => {
 					[ '30', '31', '32' ]
 				] ) );
 
-				tableUtils.removeColumn( { at: 1, columns: 2 } );
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 2 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '00' ],
@@ -1126,7 +1179,7 @@ describe( 'TableUtils', () => {
 					[ '10', '11', '12', '13', '14' ]
 				], { headingColumns: 3 } ) );
 
-				tableUtils.removeColumn( { at: 1, columns: 3 } );
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 3 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '00', '04' ],
@@ -1141,7 +1194,7 @@ describe( 'TableUtils', () => {
 					[ '20', '21', '22' ]
 				] ) );
 
-				tableUtils.removeColumn( { at: 0, columns: 2 } );
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0, columns: 2 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '00' ],
