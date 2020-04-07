@@ -464,7 +464,7 @@ describe( 'RemoveRowCommand', () => {
 			setData( model, modelTable( [
 				[ { rowspan: 3, contents: '[]00' }, { rowspan: 2, contents: '01' }, '02' ],
 				[ '12' ],
-				[ '22' ],
+				[ '21', '22' ],
 				[ '30', '31', '32' ]
 			] ) );
 
@@ -472,7 +472,7 @@ describe( 'RemoveRowCommand', () => {
 
 			assertEqualMarkup( getData( model ), modelTable( [
 				[ { rowspan: 2, contents: '[]00' }, '01', '12' ],
-				[ '22' ],
+				[ '21', '22' ],
 				[ '30', '31', '32' ]
 			] ) );
 		} );
