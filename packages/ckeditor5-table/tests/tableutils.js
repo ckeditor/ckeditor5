@@ -748,7 +748,7 @@ describe( 'TableUtils', () => {
 		} );
 	} );
 
-	describe( 'removeRow()', () => {
+	describe( 'removeRows()', () => {
 		describe( 'single row', () => {
 			it( 'should remove a given row from a table start', () => {
 				setData( model, modelTable( [
@@ -757,7 +757,7 @@ describe( 'TableUtils', () => {
 					[ '20', '21' ]
 				] ) );
 
-				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 0 } );
+				tableUtils.removeRows( root.getChild( 0 ), { at: 0 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '10', '11' ],
@@ -771,7 +771,7 @@ describe( 'TableUtils', () => {
 					[ '10', '11' ]
 				] ) );
 
-				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
+				tableUtils.removeRows( root.getChild( 0 ), { at: 1 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '00', '01' ]
@@ -785,7 +785,7 @@ describe( 'TableUtils', () => {
 					[ '20', '21' ]
 				], { headingRows: 2 } ) );
 
-				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
+				tableUtils.removeRows( root.getChild( 0 ), { at: 1 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '00', '01' ],
@@ -801,7 +801,7 @@ describe( 'TableUtils', () => {
 					[ '30', '31', '32', '33', '34' ]
 				] ) );
 
-				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 2 } );
+				tableUtils.removeRows( root.getChild( 0 ), { at: 2 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ { rowspan: 3, contents: '00' }, { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
@@ -818,7 +818,7 @@ describe( 'TableUtils', () => {
 					[ '30', '31', '32' ]
 				] ) );
 
-				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 0 } );
+				tableUtils.removeRows( root.getChild( 0 ), { at: 0 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ { rowspan: 2, contents: '00' }, '01', '12' ],
@@ -837,7 +837,7 @@ describe( 'TableUtils', () => {
 					[ '30', '31' ]
 				] ) );
 
-				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 1, rows: 2 } );
+				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '00', '01' ],
@@ -853,7 +853,7 @@ describe( 'TableUtils', () => {
 					[ '30', '31' ]
 				] ) );
 
-				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 2 } );
+				tableUtils.removeRows( root.getChild( 0 ), { at: 2, rows: 2 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '00', '01' ],
@@ -869,7 +869,7 @@ describe( 'TableUtils', () => {
 					[ '30', '31' ]
 				] ) );
 
-				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 0, rows: 2 } );
+				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '20', '21' ],
@@ -885,7 +885,7 @@ describe( 'TableUtils', () => {
 					[ '30', '31' ]
 				], { headingRows: 3 } ) );
 
-				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 0, rows: 2 } );
+				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '20', '21' ],
@@ -902,7 +902,7 @@ describe( 'TableUtils', () => {
 					[ '40', '41' ]
 				], { headingRows: 3 } ) );
 
-				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 1, rows: 3 } );
+				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 3 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '00', '01' ],
@@ -917,7 +917,7 @@ describe( 'TableUtils', () => {
 					[ '20', '21' ]
 				], { headingRows: 1 } ) );
 
-				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 0, rows: 2 } );
+				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '20', '21' ]
@@ -931,7 +931,7 @@ describe( 'TableUtils', () => {
 					[ '20' ]
 				] ) );
 
-				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 0, rows: 2 } );
+				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '20', '01' ]
@@ -954,7 +954,7 @@ describe( 'TableUtils', () => {
 					createdBatches.add( operation.batch );
 				} );
 
-				tableUtils.removeRows( root.getNodeByPath( [ 0 ] ), { at: 0, rows: 2 } );
+				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2 } );
 
 				expect( createdBatches.size ).to.equal( 1 );
 			} );
