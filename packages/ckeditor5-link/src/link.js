@@ -147,8 +147,13 @@ export default class Link extends Plugin {
  */
 
 /**
- * Represents a link decorator definition ({@link module:link/link~LinkDecoratorManualDefinition `'manual'`}
- * or {@link module:link/link~LinkDecoratorAutomaticDefinition `'automatic'`}).
+ * A link decorator definition. Two types implement this defition:
+ *
+ * * {@link module:link/link~LinkDecoratorManualDefinition}
+ * * {@link module:link/link~LinkDecoratorAutomaticDefinition}
+ *
+ * Refer to their document for more information about available options or to the
+ * {@glink features/link#custom-link-attributes-decorators link feature guide} for general information.
  *
  * @interface LinkDecoratorDefinition
  */
@@ -203,6 +208,7 @@ export default class Link extends Plugin {
  *		{
  *			mode: 'manual',
  *			label: 'Open in a new tab',
+ *			defaultValue: true,
  *			attributes: {
  *				target: '_blank',
  *				rel: 'noopener noreferrer'
