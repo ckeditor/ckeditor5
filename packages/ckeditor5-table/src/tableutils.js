@@ -108,7 +108,7 @@ export default class TableUtils extends Plugin {
 	 *		    |   | f | g |                      |   |   |   |
 	 *		  3 +---+---+---+                      +   +---+---+ 3
 	 *		                                       |   | d | e |
-	 *		                                       +---+---+---+ 4
+	 *		                                       +   +---+---+ 4
 	 *		                                       +   + f | g |
 	 *		                                       +---+---+---+ 5
 	 *

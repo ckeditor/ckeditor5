@@ -113,6 +113,13 @@ export default class TableUI extends Plugin {
 						commandName: 'removeTableColumn',
 						label: t( 'Delete column' )
 					}
+				},
+				{
+					type: 'button',
+					model: {
+						commandName: 'selectTableColumn',
+						label: t( 'Select column' )
+					}
 				}
 			];
 
@@ -149,6 +156,13 @@ export default class TableUI extends Plugin {
 					model: {
 						commandName: 'removeTableRow',
 						label: t( 'Delete row' )
+					}
+				},
+				{
+					type: 'button',
+					model: {
+						commandName: 'selectTableRow',
+						label: t( 'Select row' )
 					}
 				}
 			];
