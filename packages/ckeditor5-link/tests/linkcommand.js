@@ -332,14 +332,6 @@ describe( 'LinkCommand', () => {
 
 				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
 			} );
-
-			it( 'should add additional attributes to link if those are falsy but decorator\'s defaultValue is set to true', () => {
-				setData( model, 'foo<$text linkHref="url" linkIsBar="true" linkIsFoo="true">u[]rl</$text>bar' );
-
-				command.execute( 'url', { linkIsFoo: false, linkIsBar: false, linkIsSth: false } );
-
-				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url" linkIsSth="false">url</$text>]bar' );
-			} );
 		} );
 
 		describe( 'range selection', () => {
@@ -367,14 +359,6 @@ describe( 'LinkCommand', () => {
 				command.execute( 'url', { linkIsFoo: false, linkIsBar: false } );
 
 				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
-			} );
-
-			it( 'should add additional attributes to link if those are falsy but decorator\'s defaultValue is set to true', () => {
-				setData( model, 'foo[<$text linkHref="url" linkIsBar="true" linkIsFoo="true">url</$text>]bar' );
-
-				command.execute( 'url', { linkIsFoo: false, linkIsBar: false, linkIsSth: false } );
-
-				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url" linkIsSth="false">url</$text>]bar' );
 			} );
 		} );
 
@@ -436,16 +420,8 @@ describe( 'LinkCommand', () => {
 			it( 'obtain current values from the model', () => {
 				setData( model, 'foo[<$text linkHref="url" linkIsBar="true">url</$text>]bar' );
 
-				expect( command._getDecoratorStateFromModel( command.manualDecorators.get( 'linkIsFoo' ) ) ).to.be.false;
-				expect( command._getDecoratorStateFromModel( command.manualDecorators.get( 'linkIsBar' ) ) ).to.be.true;
-			} );
-
-			it( 'fallbacks to defaultValue if there is no attribute in model', () => {
-				setData( model, 'foo[<$text linkHref="url">url</$text>]bar' );
-
-				expect( command._getDecoratorStateFromModel( command.manualDecorators.get( 'linkIsFoo' ) ) ).to.be.false;
-				expect( command._getDecoratorStateFromModel( command.manualDecorators.get( 'linkIsBar' ) ) ).to.be.false;
-				expect( command._getDecoratorStateFromModel( command.manualDecorators.get( 'linkIsSth' ) ) ).to.be.true;
+				expect( command._getDecoratorStateFromModel( 'linkIsFoo' ) ).to.be.undefined;
+				expect( command._getDecoratorStateFromModel( 'linkIsBar' ) ).to.be.true;
 			} );
 		} );
 	} );

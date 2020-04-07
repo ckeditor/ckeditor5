@@ -215,5 +215,5 @@ export default class Link extends Plugin {
  * @property {Object} attributes Key-value pairs used as link attributes added to the output during the
  * {@glink framework/guides/architecture/editing-engine#conversion downcasting}.
  * Attributes should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
- * @property {Boolean} [defaultValue=false] Controls whether the decorator is "on" by default.
+ * @property {Boolean} [defaultValue] Controls whether the decorator is "on" by default.
  */

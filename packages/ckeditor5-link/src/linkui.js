@@ -144,7 +144,7 @@ export default class LinkUI extends Plugin {
 		const editor = this.editor;
 		const linkCommand = editor.commands.get( 'link' );
 
-		const formView = new LinkFormView( editor.locale, linkCommand.manualDecorators );
+		const formView = new LinkFormView( editor.locale, linkCommand );
 
 		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
 

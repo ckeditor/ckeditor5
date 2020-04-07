@@ -27,7 +27,7 @@ export default class ManualDecorator {
 	 * @param {String} config.label The label used in the user interface to toggle the manual decorator.
 	 * @param {Object} config.attributes A set of attributes added to output data when the decorator is active for a specific link.
 	 * Attributes should keep the format of attributes defined in {@link module:engine/view/elementdefinition~ElementDefinition}.
-	 * @param {Boolean} [config.defaultValue=false] Controls whether the decorator is "on" by default.
+	 * @param {Boolean} [config.defaultValue] Controls whether the decorator is "on" by default.
 	 */
 	constructor( { id, label, attributes, defaultValue } ) {
 		/**
@@ -50,7 +50,7 @@ export default class ManualDecorator {
 		 *
 		 * @type {Boolean}
 		 */
-		this.defaultValue = defaultValue || false;
+		this.defaultValue = defaultValue;
 
 		/**
 		 * The label used in the user interface to toggle the manual decorator.
