@@ -340,6 +340,43 @@ export function assertTableCellStyle( editor, tableCellStyle ) {
  * The above call will check if table has second column selected (assuming no spans).
  *
  * **Note**: This function operates on child indexes - not rows/columns.
+ *
+ * Examples:
+ *
+ * 		+----+----+----+----+
+ * 		| 00 | 01 | 02 | 03 |
+ * 		+----+    +----+----+
+ * 		|[10]|    |[12]|[13]|
+ * 		+----+----+----+----+
+ * 		| 20 | 21 | 22 | 23 |
+ * 		+----+----+----+----+
+ * 		| 30 | 31      | 33 |
+ * 		+----+----+----+----+
+ *
+ * 		assertSelectedCells( model, [
+ *			[ 0, 0, 0, 0 ],
+ * 			[ 1,    1, 1 ],
+ * 			[ 0, 0, 0, 0 ],
+ *			[ 0, 0,    0 ]
+ *		] );
+ *
+ * 		+----+----+----+----+
+ * 		| 00 |[01]| 02 | 03 |
+ * 		+----+    +----+----+
+ * 		| 10 |    | 12 | 13 |
+ * 		+----+----+----+----+
+ * 		| 20 |[21]| 22 | 23 |
+ * 		+----+----+----+----+
+ * 		| 30 |[31]     | 33 |
+ * 		+----+----+----+----+
+ *
+ * 		assertSelectedCells( model, [
+ *			[ 0, 1, 0, 0 ],
+ * 			[ 0,    0, 0 ],
+ * 			[ 0, 1, 0, 0 ],
+ *			[ 0, 1,    0 ]
+ *		] );
+ *
  */
 export function assertSelectedCells( model, tableMap ) {
 	const tableIndex = 0;

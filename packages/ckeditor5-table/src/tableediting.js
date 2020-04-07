@@ -29,6 +29,8 @@ import RemoveColumnCommand from './commands/removecolumncommand';
 import SetHeaderRowCommand from './commands/setheaderrowcommand';
 import SetHeaderColumnCommand from './commands/setheadercolumncommand';
 import MergeCellsCommand from './commands/mergecellscommand';
+import SelectRowCommand from './commands/selectrowcommand';
+import SelectColumnCommand from './commands/selectcolumncommand';
 import { getTableCellsContainingSelection } from './utils';
 import TableUtils from '../src/tableutils';
 
@@ -141,6 +143,9 @@ export default class TableEditing extends Plugin {
 
 		editor.commands.add( 'setTableColumnHeader', new SetHeaderColumnCommand( editor ) );
 		editor.commands.add( 'setTableRowHeader', new SetHeaderRowCommand( editor ) );
+
+		editor.commands.add( 'selectTableRow', new SelectRowCommand( editor ) );
+		editor.commands.add( 'selectTableColumn', new SelectColumnCommand( editor ) );
 
 		injectTableLayoutPostFixer( model );
 		injectTableCellRefreshPostFixer( model );

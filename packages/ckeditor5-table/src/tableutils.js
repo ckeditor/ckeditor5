@@ -108,7 +108,7 @@ export default class TableUtils extends Plugin {
 	 *		    |   | f | g |                      |   |   |   |
 	 *		  3 +---+---+---+                      +   +---+---+ 3
 	 *		                                       |   | d | e |
-	 *		                                       +---+---+---+ 4
+	 *		                                       +   +---+---+ 4
 	 *		                                       +   + f | g |
 	 *		                                       +---+---+---+ 5
 	 *
@@ -254,26 +254,26 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
-	 * Removes a row from the given `table`.
+	 * Removes rows from the given `table`.
 	 *
-	 * This method properly re-calculate table geometry including `rowspan` attribute of any table cell that is overlapping removed row
+	 * This method re-calculates the table geometry including `rowspan` attribute of table cells overlapping removed rows
 	 * and table headings values.
 	 *
 	 *		editor.plugins.get( 'TableUtils' ).removeRows( table, { at: 1, rows: 2 } );
 	 *
-	 * Assuming the table on the left, the above code will transform it to the table on the right:
+	 * Executing the above code in the context of the table on the left will transform its structure as presented on the right:
 	 *
 	 *		row index
 	 *		    ┌───┬───┬───┐        `at` = 1        ┌───┬───┬───┐
 	 *		  0 │ a │ b │ c │        `rows` = 2      │ a │ b │ c │ 0
 	 *		    │   ├───┼───┤                        │   ├───┼───┤
-	 *		  1 │   │ d │ e │  <-- remove from here  │   │ i │ j │ 1
+	 *		  1 │   │ d │ e │  <-- remove from here  │   │ h │ i │ 1
 	 *		    │   ├───┼───┤        will give:      ├───┼───┼───┤
-	 *		  2 │   │ g │ h │                        │ k │ l │ m │ 2
+	 *		  2 │   │ f │ g │                        │ j │ k │ l │ 2
 	 *		    │   ├───┼───┤                        └───┴───┴───┘
-	 *		  3 │   │ i │ j │
+	 *		  3 │   │ h │ i │
 	 *		    ├───┼───┼───┤
-	 *		  4 │ k │ l │ m │
+	 *		  4 │ j │ k │ l │
 	 *		    └───┴───┴───┘
 	 *
 	 * @param {module:engine/model/element~Element} table
