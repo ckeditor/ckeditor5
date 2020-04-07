@@ -10,7 +10,6 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import TableWalker from '../tablewalker';
-import { updateNumericAttribute } from './utils';
 import { getSelectionAffectedTableCells } from '../utils';
 
 /**
@@ -69,60 +68,13 @@ export default class RemoveColumnCommand extends Command {
 			// A temporary workaround to avoid the "model-selection-range-intersects" error.
 			writer.setSelection( writer.createRangeOn( table ) );
 
-			adjustHeadingColumns( table, removedColumnIndexes, writer );
-
-			for (
-				let removedColumnIndex = removedColumnIndexes.last;
-				removedColumnIndex >= removedColumnIndexes.first;
-				removedColumnIndex--
-			) {
-				this._removeColumn( removedColumnIndex, table, writer );
-			}
+			this.editor.plugins.get( 'TableUtils' ).removeColumns( {
+				at: removedColumnIndexes.first,
+				columns: removedColumnIndexes.last - removedColumnIndexes.first
+			} );
 
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
-	}
-
-	/**
-	 * Removes a column from the given `table`.
-	 *
-	 * @private
-	 * @param {Number} removedColumnIndex Index of the column that should be removed.
-	 * @param {module:engine/model/element~Element} table
-	 * @param {module:engine/model/writer~Writer} writer
-	 */
-	_removeColumn( removedColumnIndex, table, writer ) {
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
-
-		for ( const { cell, column, colspan } of [ ...new TableWalker( table ) ] ) {
-			// If colspaned cell overlaps removed column decrease its span.
-			if ( column <= removedColumnIndex && colspan > 1 && column + colspan > removedColumnIndex ) {
-				updateNumericAttribute( 'colspan', colspan - 1, cell, writer );
-			} else if ( column === removedColumnIndex ) {
-				const cellRow = cell.parent;
-
-				// The cell in removed column has colspan of 1.
-				writer.remove( cell );
-
-				// If the cell was the last one in the row, get rid of the entire row.
-				// https://github.com/ckeditor/ckeditor5/issues/6429
-				if ( !cellRow.childCount ) {
-					tableUtils.removeRow( cellRow.index, table, writer );
-				}
-			}
-		}
-	}
-}
-
-// Updates heading columns attribute if removing a row from head section.
-function adjustHeadingColumns( table, removedColumnIndexes, writer ) {
-	const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
-
-	if ( headingColumns && removedColumnIndexes.first <= headingColumns ) {
-		const headingsRemoved = Math.min( headingColumns - 1 /* Other numbers are 0-based */, removedColumnIndexes.last ) -
-			removedColumnIndexes.first + 1;
-
-		writer.setAttribute( 'headingColumns', headingColumns - headingsRemoved, table );
 	}
 }
 

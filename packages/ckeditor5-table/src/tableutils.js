@@ -307,6 +307,37 @@ export default class TableUtils extends Plugin {
 		} );
 	}
 
+	removeColumns( table, options ) {
+		const model = this.editor.model;
+		const first = options.at;
+		const columnsToRemove = options.columns || 1;
+		const last = options.at + columnsToRemove - 1;
+
+		model.change( writer => {
+			adjustHeadingColumns( table, { first, last }, writer );
+
+			for ( let removedColumnIndex = last; removedColumnIndex >= first; removedColumnIndex-- ) {
+				for ( const { cell, column, colspan } of [ ...new TableWalker( table ) ] ) {
+					// If colspaned cell overlaps removed column decrease its span.
+					if ( column <= removedColumnIndex && colspan > 1 && column + colspan > removedColumnIndex ) {
+						updateNumericAttribute( 'colspan', colspan - 1, cell, writer );
+					} else if ( column === removedColumnIndex ) {
+						const cellRow = cell.parent;
+
+						// The cell in removed column has colspan of 1.
+						writer.remove( cell );
+
+						// If the cell was the last one in the row, get rid of the entire row.
+						// https://github.com/ckeditor/ckeditor5/issues/6429
+						if ( !cellRow.childCount ) {
+							this.removeRows( table, { at: cellRow.index } );
+						}
+					}
+				}
+			}
+		} );
+	}
+
 	/**
 	 * Divides a table cell vertically into several ones.
 	 *
@@ -714,4 +745,16 @@ function getNewHeadingRowsValue( first, last, headingRows ) {
 	}
 
 	return first;
+}
+
+// Updates heading columns attribute if removing a row from head section.
+function adjustHeadingColumns( table, removedColumnIndexes, writer ) {
+	const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
+
+	if ( headingColumns && removedColumnIndexes.first <= headingColumns ) {
+		const headingsRemoved = Math.min( headingColumns - 1 /* Other numbers are 0-based */, removedColumnIndexes.last ) -
+			removedColumnIndexes.first + 1;
+
+		writer.setAttribute( 'headingColumns', headingColumns - headingsRemoved, table );
+	}
 }
