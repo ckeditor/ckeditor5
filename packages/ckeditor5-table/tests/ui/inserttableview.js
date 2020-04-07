@@ -60,12 +60,12 @@ describe( 'InsertTableView', () => {
 		} );
 
 		describe( 'view#items bindings', () => {
-			it( 'updates view#height & view#width on "over" event', () => {
+			it( 'updates view#height & view#width on DOM "mouseover" event', () => {
 				const boxView = view.items.get( 0 );
 
 				expect( boxView.isOn ).to.be.false;
 
-				boxView.fire( 'over' );
+				boxView.element.dispatchEvent( new Event( 'mouseover', { bubbles: true } ) );
 
 				expect( boxView.isOn ).to.be.true;
 
@@ -74,7 +74,7 @@ describe( 'InsertTableView', () => {
 
 				const boxViewB = view.items.get( 22 );
 
-				boxViewB.fire( 'over' );
+				boxViewB.element.dispatchEvent( new Event( 'mouseover', { bubbles: true } ) );
 
 				expect( view.rows ).to.equal( 3 );
 				expect( view.columns ).to.equal( 3 );
@@ -107,19 +107,6 @@ describe( 'InsertTableView', () => {
 					dispatchEvent( view.element, 'click' );
 
 					sinon.assert.calledOnce( spy );
-				} );
-
-				describe( 'view#items mousemove event', () => {
-					it( 'fires "over" event', () => {
-						const boxView = view.items.get( 0 );
-						const spy = sinon.spy();
-
-						boxView.on( 'over', spy );
-
-						dispatchEvent( boxView.element, 'mouseover' );
-
-						sinon.assert.calledOnce( spy );
-					} );
 				} );
 			} );
 		} );
