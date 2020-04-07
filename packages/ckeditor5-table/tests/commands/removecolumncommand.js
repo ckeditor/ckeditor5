@@ -418,7 +418,7 @@ describe( 'RemoveColumnCommand', () => {
 			] ) );
 		} );
 
-		it( 'should work property if the rowspan is in the first column (#1)', () => {
+		it( 'should work property if the rowspan is in the first column (the other cell in row is selected)', () => {
 			setData( model, modelTable( [
 				[ { rowspan: 2, contents: '00' }, '[]01' ],
 				[ '10' ]
@@ -427,11 +427,11 @@ describe( 'RemoveColumnCommand', () => {
 			command.execute();
 
 			assertEqualMarkup( getData( model ), modelTable( [
-				[ { rowspan: 2, contents: '[]00' } ]
+				[ '[]00' ]
 			] ) );
 		} );
 
-		it( 'should work property if the rowspan is in the first column (#2)', () => {
+		it( 'should work property if the rowspan is in the first column (the cell in row below is selected)', () => {
 			setData( model, modelTable( [
 				[ { rowspan: 2, contents: '00' }, '01' ],
 				[ '[]10' ]
@@ -440,11 +440,11 @@ describe( 'RemoveColumnCommand', () => {
 			command.execute();
 
 			assertEqualMarkup( getData( model ), modelTable( [
-				[ { rowspan: 2, contents: '[]00' } ]
+				[ '[]00' ]
 			] ) );
 		} );
 
-		it( 'should work property if the rowspan is in the first column (#3)', () => {
+		it( 'should work property if the rowspan is in the first column (the cell with rowspan is selected)', () => {
 			setData( model, modelTable( [
 				[ { rowspan: 2, contents: '00[]' }, '01' ],
 				[ '10' ]
@@ -458,7 +458,7 @@ describe( 'RemoveColumnCommand', () => {
 			] ) );
 		} );
 
-		it( 'should work property if the rowspan is in the last column (#1)', () => {
+		it( 'should work property if the rowspan is in the last column (the other cell in row is selected)', () => {
 			setData( model, modelTable( [
 				[ '[]00', { rowspan: 2, contents: '01' } ],
 				[ '10' ]
@@ -467,11 +467,11 @@ describe( 'RemoveColumnCommand', () => {
 			command.execute();
 
 			assertEqualMarkup( getData( model ), modelTable( [
-				[ { rowspan: 2, contents: '[]01' } ]
+				[ '[]01' ]
 			] ) );
 		} );
 
-		it( 'should work property if the rowspan is in the last column (#2)', () => {
+		it( 'should work property if the rowspan is in the last column (the cell in row below is selected)', () => {
 			setData( model, modelTable( [
 				[ '00', { rowspan: 2, contents: '01' } ],
 				[ '[]10' ]
@@ -480,11 +480,11 @@ describe( 'RemoveColumnCommand', () => {
 			command.execute();
 
 			assertEqualMarkup( getData( model ), modelTable( [
-				[ { rowspan: 2, contents: '[]01' } ]
+				[ '[]01' ]
 			] ) );
 		} );
 
-		it( 'should work property if the rowspan is in the last column (#3)', () => {
+		it( 'should work property if the rowspan is in the last column (the cell with rowspan is selected)', () => {
 			setData( model, modelTable( [
 				[ '00', { rowspan: 2, contents: '[]01' } ],
 				[ '10' ]
@@ -495,6 +495,21 @@ describe( 'RemoveColumnCommand', () => {
 			assertEqualMarkup( getData( model ), modelTable( [
 				[ '[]00' ],
 				[ '10' ]
+			] ) );
+		} );
+
+		it( 'should remove column if removing row with one column - other columns are spanned', () => {
+			setData( model, modelTable( [
+				[ '[]00', { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' } ],
+				[ '10' ],
+				[ '20', '21', '22' ]
+			] ) );
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '[]01', '02' ],
+				[ '21', '22' ]
 			] ) );
 		} );
 	} );
