@@ -363,7 +363,7 @@ describe( 'TableUI', () => {
 		} );
 	} );
 
-	describe( 'mergeTableCell dropdown', () => {
+	describe( 'mergeTableCell split button', () => {
 		let dropdown, command;
 
 		beforeEach( () => {

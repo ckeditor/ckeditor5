@@ -26,7 +26,7 @@ import tableMergeCellIcon from './../theme/icons/table-merge-cell.svg';
  * * The `'insertTable'` dropdown,
  * * The `'tableColumn'` dropdown,
  * * The `'tableRow'` dropdown,
- * * The `'mergeTableCells'` dropdown.
+ * * The `'mergeTableCells'` split button.
  *
  * The `'tableColumn'`, `'tableRow'` and `'mergeTableCells'` dropdowns work best with {@link module:table/tabletoolbar~TableToolbar}.
  *
