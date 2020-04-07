@@ -267,13 +267,13 @@ export default class TableUtils extends Plugin {
 	 *		    ┌───┬───┬───┐        `at` = 1        ┌───┬───┬───┐
 	 *		  0 │ a │ b │ c │        `rows` = 2      │ a │ b │ c │ 0
 	 *		    │   ├───┼───┤                        │   ├───┼───┤
-	 *		  1 │   │ d │ e │  <-- remove from here  │   │ i │ j │ 1
+	 *		  1 │   │ d │ e │  <-- remove from here  │   │ h │ i │ 1
 	 *		    │   ├───┼───┤        will give:      ├───┼───┼───┤
-	 *		  2 │   │ g │ h │                        │ k │ l │ m │ 2
+	 *		  2 │   │ f │ g │                        │ j │ k │ l │ 2
 	 *		    │   ├───┼───┤                        └───┴───┴───┘
-	 *		  3 │   │ i │ j │
+	 *		  3 │   │ h │ i │
 	 *		    ├───┼───┼───┤
-	 *		  4 │ k │ l │ m │
+	 *		  4 │ j │ k │ l │
 	 *		    └───┴───┴───┘
 	 *
 	 * @param {module:engine/model/element~Element} table
