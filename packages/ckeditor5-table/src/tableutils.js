@@ -254,14 +254,14 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
-	 * Removes a row from the given `table`.
+	 * Removes rows from the given `table`.
 	 *
-	 * This method properly re-calculate table geometry including `rowspan` attribute of any table cell that is overlapping removed row
+	 * This method re-calculates the table geometry including `rowspan` attribute of table cells overlapping removed rows
 	 * and table headings values.
 	 *
 	 *		editor.plugins.get( 'TableUtils' ).removeRows( table, { at: 1, rows: 2 } );
 	 *
-	 * Assuming the table on the left, the above code will transform it to the table on the right:
+	 * Executing the above code in the context of the table on the left will transform its structure as presented on the right:
 	 *
 	 *		row index
 	 *		    ┌───┬───┬───┐        `at` = 1        ┌───┬───┬───┐
