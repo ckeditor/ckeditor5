@@ -214,6 +214,6 @@ export default class LinkCommand extends Command {
 	 */
 	_getDecoratorStateFromModel( decoratorName ) {
 		const doc = this.editor.model.document;
-		return doc.selection.getAttribute( decoratorName ) || false;
+		return doc.selection.getAttribute( decoratorName );
 	}
 }

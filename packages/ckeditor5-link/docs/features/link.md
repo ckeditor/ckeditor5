@@ -132,7 +132,7 @@ ClassicEditor
 		// ...
 		link: {
 			decorators: {
-				addTargetToExternalLinks: {
+				openInNewTab: {
 					mode: 'manual',
 					label: 'Open in a new tab',
 					attributes: {
@@ -194,6 +194,15 @@ ClassicEditor
 					label: 'Downloadable',
 					attributes: {
 						download: 'file'
+					}
+				},
+				openInNewTab: {
+					mode: 'manual',
+					label: 'Open in a new tab',
+					defaultValue: true,			// This option will be selected by default.
+					attributes: {
+						target: '_blank',
+						rel: 'noopener noreferrer'
 					}
 				}
 			}

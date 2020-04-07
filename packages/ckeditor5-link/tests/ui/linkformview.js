@@ -18,6 +18,8 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Link from '../../src/link';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 describe( 'LinkFormView', () => {
 	let view;
@@ -25,7 +27,7 @@ describe( 'LinkFormView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new LinkFormView( { t: val => val } );
+		view = new LinkFormView( { t: val => val }, { manualDecorators: [] } );
 		view.render();
 	} );
 
@@ -109,7 +111,7 @@ describe( 'LinkFormView', () => {
 		it( 'should register child views\' #element in #focusTracker', () => {
 			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
 
-			view = new LinkFormView( { t: () => {} } );
+			view = new LinkFormView( { t: () => {} }, { manualDecorators: [] } );
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
@@ -118,7 +120,7 @@ describe( 'LinkFormView', () => {
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			view = new LinkFormView( { t: () => {} } );
+			view = new LinkFormView( { t: () => {} }, { manualDecorators: [] } );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
@@ -193,7 +195,7 @@ describe( 'LinkFormView', () => {
 	} );
 
 	describe( 'manual decorators', () => {
-		let view, collection;
+		let view, collection, linkCommand;
 		beforeEach( () => {
 			collection = new Collection();
 			collection.add( new ManualDecorator( {
@@ -208,7 +210,8 @@ describe( 'LinkFormView', () => {
 				label: 'Download',
 				attributes: {
 					download: 'download'
-				}
+				},
+				defaultValue: true
 			} ) );
 			collection.add( new ManualDecorator( {
 				id: 'decorator3',
@@ -220,7 +223,17 @@ describe( 'LinkFormView', () => {
 				}
 			} ) );
 
-			view = new LinkFormView( { t: val => val }, collection );
+			class LinkCommandMock {
+				constructor( manualDecorators ) {
+					this.manualDecorators = manualDecorators;
+					this.set( 'value' );
+				}
+			}
+			mix( LinkCommandMock, ObservableMixin );
+
+			linkCommand = new LinkCommandMock( collection );
+
+			view = new LinkFormView( { t: val => val }, linkCommand );
 			view.render();
 		} );
 
@@ -234,15 +247,18 @@ describe( 'LinkFormView', () => {
 
 			expect( view._manualDecoratorSwitches.get( 0 ) ).to.deep.include( {
 				name: 'decorator1',
-				label: 'Foo'
+				label: 'Foo',
+				isOn: undefined
 			} );
 			expect( view._manualDecoratorSwitches.get( 1 ) ).to.deep.include( {
 				name: 'decorator2',
-				label: 'Download'
+				label: 'Download',
+				isOn: true
 			} );
 			expect( view._manualDecoratorSwitches.get( 2 ) ).to.deep.include( {
 				name: 'decorator3',
-				label: 'Multi'
+				label: 'Multi',
+				isOn: undefined
 			} );
 		} );
 
@@ -264,11 +280,29 @@ describe( 'LinkFormView', () => {
 			expect( viewItem.isOn ).to.be.false;
 		} );
 
+		it( 'reacts on switch button changes for the decorator with defaultValue', () => {
+			const modelItem = collection.get( 1 );
+			const viewItem = view._manualDecoratorSwitches.get( 1 );
+
+			expect( modelItem.value ).to.be.undefined;
+			expect( viewItem.isOn ).to.be.true;
+
+			viewItem.element.dispatchEvent( new Event( 'click' ) );
+
+			expect( modelItem.value ).to.be.false;
+			expect( viewItem.isOn ).to.be.false;
+
+			viewItem.element.dispatchEvent( new Event( 'click' ) );
+
+			expect( modelItem.value ).to.be.true;
+			expect( viewItem.isOn ).to.be.true;
+		} );
+
 		describe( 'getDecoratorSwitchesState()', () => {
 			it( 'should provide object with decorators states', () => {
 				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
 					decorator1: undefined,
-					decorator2: undefined,
+					decorator2: true,
 					decorator3: undefined
 				} );
 
@@ -280,8 +314,68 @@ describe( 'LinkFormView', () => {
 
 				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
 					decorator1: true,
-					decorator2: true,
+					decorator2: false,
 					decorator3: false
+				} );
+			} );
+
+			it( 'should use decorator default value if command and decorator values are not set', () => {
+				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
+					decorator1: undefined,
+					decorator2: true,
+					decorator3: undefined
+				} );
+			} );
+
+			it( 'should use a decorator value if decorator value is set', () => {
+				for ( const decorator of collection ) {
+					decorator.value = true;
+				}
+
+				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
+					decorator1: true,
+					decorator2: true,
+					decorator3: true
+				} );
+
+				for ( const decorator of collection ) {
+					decorator.value = false;
+				}
+
+				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
+					decorator1: false,
+					decorator2: false,
+					decorator3: false
+				} );
+			} );
+
+			it( 'should use a decorator value if link command value is set', () => {
+				linkCommand.value = '';
+
+				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
+					decorator1: undefined,
+					decorator2: undefined,
+					decorator3: undefined
+				} );
+
+				for ( const decorator of collection ) {
+					decorator.value = false;
+				}
+
+				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
+					decorator1: false,
+					decorator2: false,
+					decorator3: false
+				} );
+
+				for ( const decorator of collection ) {
+					decorator.value = true;
+				}
+
+				expect( view.getDecoratorSwitchesState() ).to.deep.equal( {
+					decorator1: true,
+					decorator2: true,
+					decorator3: true
 				} );
 			} );
 		} );
@@ -322,7 +416,7 @@ describe( 'LinkFormView', () => {
 				} )
 				.then( newEditor => {
 					editor = newEditor;
-					linkFormView = new LinkFormView( editor.locale, editor.commands.get( 'link' ).manualDecorators );
+					linkFormView = new LinkFormView( editor.locale, editor.commands.get( 'link' ) );
 				} );
 		} );
 

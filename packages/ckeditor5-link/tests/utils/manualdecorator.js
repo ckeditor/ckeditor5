@@ -24,6 +24,23 @@ describe( 'Manual Decorator', () => {
 		expect( manualDecorator.id ).to.equal( 'foo' );
 		expect( manualDecorator.label ).to.equal( 'bar' );
 		expect( manualDecorator.attributes ).to.deep.equal( { one: 'two' } );
+		expect( manualDecorator.defaultValue ).to.deep.equal( undefined );
+	} );
+
+	it( 'constructor with defaultValue', () => {
+		manualDecorator = new ManualDecorator( {
+			id: 'foo',
+			label: 'bar',
+			attributes: {
+				one: 'two'
+			},
+			defaultValue: true
+		} );
+
+		expect( manualDecorator.id ).to.equal( 'foo' );
+		expect( manualDecorator.label ).to.equal( 'bar' );
+		expect( manualDecorator.attributes ).to.deep.equal( { one: 'two' } );
+		expect( manualDecorator.defaultValue ).to.deep.equal( true );
 	} );
 
 	it( '#value is observable', () => {
