@@ -72,7 +72,7 @@ Click the <b>"Inspect editor"</b> button below to attach the inspector to the ed
 
 {@snippet framework/development-tools/inspector}
 
-## Compatibility
+### Compatibility
 
 The inspector works with CKEditor 5 [v12.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v12.0.0)+.
 
