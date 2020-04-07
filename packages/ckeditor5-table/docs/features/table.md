@@ -335,7 +335,7 @@ The table plugins register the following UI components:
 			<td>The <code>'tableRow'</code> dropdown</td>
 		</tr>
 		<tr>
-			<td>The <code>'mergeTableCells'</code> dropdown</td>
+			<td>The <code>'mergeTableCells'</code> split button</td>
 		</tr>
 		<tr>
 			<td>The <code>'tableProperties'</code> button</td>
@@ -351,7 +351,7 @@ The table plugins register the following UI components:
 #### Toolbars
 
 The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon toolbars for tables.
-* The content toolbar shows up when a table cell is selected and it is anchored to the table. It is possible to {@link module:table/table~TableConfig#contentToolbar configure} its content. Normally, the toolbar contains the table-related tools such as `'tableColumn'`, `'tableRow'`, and `'mergeTableCells'` dropdowns.
+* The content toolbar shows up when a table cell is selected and it is anchored to the table. It is possible to {@link module:table/table~TableConfig#contentToolbar configure} its content. Normally, the toolbar contains the table-related tools such as `'tableColumn'` and `'tableRow'` dropdowns and `'mergeTableCells'` split button.
 * The table toolbar shows up when the whole table is selected, for instance using the widget handler. It is possible to {@link module:table/table~TableConfig#tableToolbar configure} its content.
 
 ### Editor commands
@@ -393,6 +393,14 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 		<tr>
 			<td><code>'removeTableRow'</code></td>
 			<td>{@link module:table/commands/removerowcommand~RemoveRowCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'selectTableColumn'</code></td>
+			<td>{@link module:table/commands/selectcolumncommand~SelectColumnCommand}</td>
+		</tr>
+		<tr>
+			<td><code>'selectTableRow'</code></td>
+			<td>{@link module:table/commands/selectrowcommand~SelectRowCommand}</td>
 		</tr>
 		<tr>
 			<td><code>'setTableColumnHeader'</code></td>
