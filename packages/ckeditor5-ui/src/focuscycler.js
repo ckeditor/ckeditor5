@@ -53,7 +53,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
  *			}
  *		} );
  *
- * Check out the {@glink framework/guides/deep-dive/focus-tracking "Deep dive into focus tracking" guide} to learn more.
+ * Check out the {@glink framework/guides/deep-dive/ui/focus-tracking "Deep dive into focus tracking" guide} to learn more.
  */
 export default class FocusCycler {
 	/**
