@@ -4,13 +4,15 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import { defaultConversion, defaultSchema, modelTable, viewTable } from '../_utils/utils';
+import TableEditing from '../../src/tableediting';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { defaultConversion, defaultSchema, modelTable, viewTable } from '../_utils/utils';
 
 function paragraphInTableCell() {
 	return dispatcher => dispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
@@ -1200,124 +1202,205 @@ describe( 'downcast converters', () => {
 
 	describe( 'downcastRemoveRow()', () => {
 		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEdting.
-		beforeEach( () => {
+		beforeEach( async () => {
 			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
 			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 
-			return VirtualTestEditor.create()
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.model;
-					doc = model.document;
-					root = doc.getRoot( 'main' );
-					view = editor.editing.view;
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } );
 
-					defaultSchema( model.schema );
-					defaultConversion( editor.conversion );
+			model = editor.model;
+			root = model.document.getRoot( 'main' );
+			view = editor.editing.view;
+		} );
+
+		// The remove row downcast conversion is not executed in data pipeline.
+		describe( 'editing pipeline', () => {
+			it( 'should react to removed row from the beginning of a body rows (no heading rows)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.remove( table.getChild( 1 ) );
 				} );
-		} );
 
-		it( 'should react to removed row from the beginning of a tbody', () => {
-			setModelData( model, modelTable( [
-				[ '00[]', '01' ],
-				[ '10', '11' ]
-			] ) );
-
-			const table = root.getChild( 0 );
-
-			model.change( writer => {
-				writer.remove( table.getChild( 1 ) );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">01</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '00', '01' ]
-			] ) );
-		} );
+			it( 'should react to removed row form the end of a body rows (no heading rows)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				] ) );
 
-		it( 'should react to removed row form the end of a tbody', () => {
-			setModelData( model, modelTable( [
-				[ '00[]', '01' ],
-				[ '10', '11' ]
-			] ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.remove( table.getChild( 0 ) );
+				} );
 
-			model.change( writer => {
-				writer.remove( table.getChild( 0 ) );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">10</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">11</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '10', '11' ]
-			] ) );
-		} );
+			it( 'should react to removed row from the beginning of a heading rows (no body rows)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 2 } ) );
 
-		it( 'should react to removed row from the beginning of a thead', () => {
-			setModelData( model, modelTable( [
-				[ '00[]', '01' ],
-				[ '10', '11' ]
-			], { headingRows: 2 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.remove( table.getChild( 0 ) );
+				} );
 
-			model.change( writer => {
-				writer.remove( table.getChild( 1 ) );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<thead>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">10</span>' +
+									'</th>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">11</span>' +
+									'</th>' +
+								'</tr>' +
+							'</thead>' +
+						'</table>' +
+					'</figure>'
+				);
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '00', '01' ]
-			], { headingRows: 2 } ) );
-		} );
+			it( 'should react to removed row form the end of a heading rows (no body rows)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 2 } ) );
 
-		it( 'should react to removed row form the end of a thead', () => {
-			setModelData( model, modelTable( [
-				[ '00[]', '01' ],
-				[ '10', '11' ]
-			], { headingRows: 2 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.remove( table.getChild( 1 ) );
+				} );
 
-			model.change( writer => {
-				writer.remove( table.getChild( 0 ) );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<thead>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</th>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">01</span>' +
+									'</th>' +
+								'</tr>' +
+							'</thead>' +
+						'</table>' +
+					'</figure>'
+				);
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '10', '11' ]
-			], { headingRows: 2 } ) );
-		} );
+			it( 'should remove empty thead if a last row was removed from a heading rows (has heading and body)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 1 } ) );
 
-		it( 'should remove empty thead section if a last row was removed from thead', () => {
-			setModelData( model, modelTable( [
-				[ '00[]', '01' ],
-				[ '10', '11' ]
-			], { headingRows: 1 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 0, table );
+					writer.remove( table.getChild( 0 ) );
+				} );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 0, table );
-				writer.remove( table.getChild( 0 ) );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">10</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">11</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '10', '11' ]
-			] ) );
-		} );
+			it( 'should remove empty tbody if a last row was removed a body rows (has heading and body)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 1 } ) );
 
-		it( 'should remove empty tbody section if a last row was removed from tbody', () => {
-			setModelData( model, modelTable( [
-				[ '00[]', '01' ],
-				[ '10', '11' ]
-			], { headingRows: 1 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.remove( table.getChild( 1 ) );
+				} );
 
-			model.change( writer => {
-				writer.remove( table.getChild( 1 ) );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<thead>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</th>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">01</span>' +
+									'</th>' +
+								'</tr>' +
+							'</thead>' +
+						'</table>' +
+					'</figure>'
+				);
 			} );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '00', '01' ]
-			], { headingRows: 1 } ) );
 		} );
 	} );
 
