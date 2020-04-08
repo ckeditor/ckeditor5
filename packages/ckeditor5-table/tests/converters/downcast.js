@@ -1286,6 +1286,8 @@ describe( 'downcast converters', () => {
 				const table = root.getChild( 0 );
 
 				model.change( writer => {
+					// Removing row from a heading section changes requires changing heading rows attribute.
+					writer.setAttribute( 'headingRows', 1, table );
 					writer.remove( table.getChild( 0 ) );
 				} );
 
@@ -1317,6 +1319,8 @@ describe( 'downcast converters', () => {
 				const table = root.getChild( 0 );
 
 				model.change( writer => {
+					// Removing row from a heading section changes requires changing heading rows attribute.
+					writer.setAttribute( 'headingRows', 1, table );
 					writer.remove( table.getChild( 1 ) );
 				} );
 
@@ -1348,7 +1352,8 @@ describe( 'downcast converters', () => {
 				const table = root.getChild( 0 );
 
 				model.change( writer => {
-					writer.setAttribute( 'headingRows', 0, table );
+					// Removing row from a heading section changes requires changing heading rows attribute.
+					writer.removeAttribute( 'headingRows', table );
 					writer.remove( table.getChild( 0 ) );
 				} );
 
