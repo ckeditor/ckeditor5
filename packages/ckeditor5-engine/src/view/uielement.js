@@ -87,11 +87,17 @@ export default class UIElement extends Element {
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
-		const cutType = type.replace( /^view:/, '' );
 		if ( !name ) {
-			return cutType == 'uiElement' || super.is( type );
+			return type === 'uiElement' || type === 'view:uiElement' ||
+				// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+				type === this.name || type === 'view:' + this.name ||
+				type === 'element' || type === 'view:element' ||
+				type === 'node' || type === 'view:node';
 		} else {
-			return ( cutType == 'uiElement' && name == this.name ) || super.is( type, name );
+			return name === this.name && (
+				type === 'uiElement' || type === 'view:uiElement' ||
+				type === 'element' || type === 'view:element'
+			);
 		}
 	}
 

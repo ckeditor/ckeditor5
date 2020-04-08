@@ -80,12 +80,19 @@ export default class RootElement extends Element {
 	 * @returns {Boolean}
 	 */
 	is( type, name ) {
-		const cutType = type.replace( 'model:', '' );
 		if ( !name ) {
-			return cutType == 'rootElement' || super.is( type );
-		} else {
-			return ( cutType == 'rootElement' && name == this.name ) || super.is( type, name );
+			return type === 'rootElement' || type === 'model:rootElement' ||
+				// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+				type === 'element' || type === 'model:element' ||
+				type === this.name || type === 'model:' + this.name ||
+				type === 'node' || type === 'model:node';
 		}
+
+		return name === this.name && (
+			type === 'rootElement' || type === 'model:rootElement' ||
+			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+			type === 'element' || type === 'model:element'
+		);
 	}
 
 	/**
@@ -105,3 +112,4 @@ export default class RootElement extends Element {
 	// @if CK_DEBUG_ENGINE // 	console.log( 'ModelRootElement: ' + this );
 	// @if CK_DEBUG_ENGINE // }
 }
+

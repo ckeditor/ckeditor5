@@ -74,11 +74,17 @@ export default class EmptyElement extends Element {
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
-		const cutType = type.replace( /^view:/, '' );
 		if ( !name ) {
-			return cutType == 'emptyElement' || super.is( type );
+			return type === 'emptyElement' || type === 'view:emptyElement' ||
+				// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+				type === this.name || type === 'view:' + this.name ||
+				type === 'element' || type === 'view:element' ||
+				type === 'node' || type === 'view:node';
 		} else {
-			return ( cutType == 'emptyElement' && name == this.name ) || super.is( type, name );
+			return name === this.name && (
+				type === 'emptyElement' || type === 'view:emptyElement' ||
+				type === 'element' || type === 'view:element'
+			);
 		}
 	}
 

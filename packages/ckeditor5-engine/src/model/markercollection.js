@@ -463,7 +463,7 @@ class Marker {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'marker' || type == 'model:marker';
+		return type === 'marker' || type === 'model:marker';
 	}
 
 	/**
