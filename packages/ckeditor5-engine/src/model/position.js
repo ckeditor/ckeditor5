@@ -10,7 +10,6 @@
 import TreeWalker from './treewalker';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import Text from './text';
 import { last } from 'lodash-es';
 
 // To check if component is loaded more than once.
@@ -216,9 +215,7 @@ export default class Position {
 	 * @type {module:engine/model/text~Text|null}
 	 */
 	get textNode() {
-		const node = this.parent.getChild( this.index );
-
-		return ( node instanceof Text && node.startOffset < this.offset ) ? node : null;
+		return getTextNode( this, this.parent );
 	}
 
 	/**
@@ -228,17 +225,23 @@ export default class Position {
 	 * @type {module:engine/model/node~Node|null}
 	 */
 	get nodeAfter() {
-		return this.textNode === null ? this.parent.getChild( this.index ) : null;
+		const parent = this.parent;
+		const textNode = getTextNode( this, parent );
+
+		return textNode === null ? parent.getChild( parent.offsetToIndex( this.offset ) ) : null;
 	}
 
 	/**
 	 * Node directly before this position or `null` if this position is in text node.
 	 *
 	 * @readonly
-	 * @type {Node}
+	 * @type {module:engine/model/node~Node|null}
 	 */
 	get nodeBefore() {
-		return this.textNode === null ? this.parent.getChild( this.index - 1 ) : null;
+		const parent = this.parent;
+		const textNode = getTextNode( this, parent );
+
+		return textNode === null ? parent.getChild( parent.offsetToIndex( this.offset ) - 1 ) : null;
 	}
 
 	/**
@@ -1057,3 +1060,9 @@ export default class Position {
  *
  * @typedef {String} module:engine/model/position~PositionStickiness
  */
+
+function getTextNode( position, positionParent ) {
+	const node = positionParent.getChild( positionParent.offsetToIndex( position.offset ) );
+
+	return ( node && node.is( 'text' ) && node.startOffset < position.offset ) ? node : null;
+}
