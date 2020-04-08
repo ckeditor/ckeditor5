@@ -24,11 +24,11 @@ npm install --save @ckeditor/ckeditor5-indent
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5-indent.
+The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-indent.
 
 ## External links
 
 * [`@ckeditor/ckeditor5-indent` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent)
-* [`ckeditor/ckeditor5-indent` on GitHub](https://github.com/ckeditor/ckeditor5-indent)
+* [`ckeditor/ckeditor5-indent` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-indent)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-indent/blob/master/CHANGELOG.md)
