@@ -2,9 +2,6 @@ CKEditor 5 basic styles feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-basic-styles.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-basic-styles.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-basic-styles)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-basic-styles/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-basic-styles?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-basic-styles/status.svg)](https://david-dm.org/ckeditor/ckeditor5-basic-styles)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-basic-styles/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-basic-styles?type=dev)
 
