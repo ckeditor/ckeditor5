@@ -15,6 +15,7 @@ import InsertTableView from '../src/ui/inserttableview';
 import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import ListSeparatorView from '@ckeditor/ckeditor5-ui/src/list/listseparatorview';
+import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 
 describe( 'TableUI', () => {
 	let editor, element;
@@ -137,7 +138,9 @@ describe( 'TableUI', () => {
 
 			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
-			expect( labels ).to.deep.equal( [ 'Header row', '|', 'Insert row below', 'Insert row above', 'Delete row' ] );
+			expect( labels ).to.deep.equal(
+				[ 'Header row', '|', 'Insert row below', 'Insert row above', 'Delete row', 'Select row' ]
+			);
 		} );
 
 		it( 'should bind items in panel to proper commands', () => {
@@ -147,16 +150,19 @@ describe( 'TableUI', () => {
 			const insertRowBelowCommand = editor.commands.get( 'insertTableRowBelow' );
 			const insertRowAboveCommand = editor.commands.get( 'insertTableRowAbove' );
 			const removeRowCommand = editor.commands.get( 'removeTableRow' );
+			const selectRowCommand = editor.commands.get( 'selectTableRow' );
 
 			setRowHeaderCommand.isEnabled = true;
 			insertRowBelowCommand.isEnabled = true;
 			insertRowAboveCommand.isEnabled = true;
 			removeRowCommand.isEnabled = true;
+			selectRowCommand.isEnabled = true;
 
 			expect( items.first.children.first.isEnabled ).to.be.true;
 			expect( items.get( 2 ).children.first.isEnabled ).to.be.true;
 			expect( items.get( 3 ).children.first.isEnabled ).to.be.true;
 			expect( items.get( 4 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 5 ).children.first.isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			setRowHeaderCommand.isEnabled = false;
@@ -176,6 +182,11 @@ describe( 'TableUI', () => {
 			removeRowCommand.isEnabled = false;
 
 			expect( items.get( 4 ).children.first.isEnabled ).to.be.false;
+			expect( dropdown.buttonView.isEnabled ).to.be.true;
+
+			selectRowCommand.isEnabled = false;
+
+			expect( items.get( 5 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
 
@@ -238,7 +249,9 @@ describe( 'TableUI', () => {
 
 			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
-			expect( labels ).to.deep.equal( [ 'Header column', '|', 'Insert column left', 'Insert column right', 'Delete column' ] );
+			expect( labels ).to.deep.equal(
+				[ 'Header column', '|', 'Insert column left', 'Insert column right', 'Delete column', 'Select column' ]
+			);
 		} );
 
 		it( 'should bind items in panel to proper commands (LTR content)', () => {
@@ -248,16 +261,19 @@ describe( 'TableUI', () => {
 			const insertColumnLeftCommand = editor.commands.get( 'insertTableColumnLeft' );
 			const insertColumnRightCommand = editor.commands.get( 'insertTableColumnRight' );
 			const removeColumnCommand = editor.commands.get( 'removeTableColumn' );
+			const selectColumnCommand = editor.commands.get( 'selectTableColumn' );
 
 			setColumnHeaderCommand.isEnabled = true;
 			insertColumnLeftCommand.isEnabled = true;
 			insertColumnRightCommand.isEnabled = true;
 			removeColumnCommand.isEnabled = true;
+			selectColumnCommand.isEnabled = true;
 
 			expect( items.first.children.first.isEnabled ).to.be.true;
 			expect( items.get( 2 ).children.first.isEnabled ).to.be.true;
 			expect( items.get( 3 ).children.first.isEnabled ).to.be.true;
 			expect( items.get( 4 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 5 ).children.first.isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			setColumnHeaderCommand.isEnabled = false;
@@ -275,6 +291,10 @@ describe( 'TableUI', () => {
 
 			removeColumnCommand.isEnabled = false;
 			expect( items.get( 4 ).children.first.isEnabled ).to.be.false;
+
+			selectColumnCommand.isEnabled = false;
+			expect( items.get( 5 ).children.first.isEnabled ).to.be.false;
+
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
 
@@ -343,11 +363,12 @@ describe( 'TableUI', () => {
 		} );
 	} );
 
-	describe( 'mergeTableCell dropdown', () => {
-		let dropdown;
+	describe( 'mergeTableCell split button', () => {
+		let dropdown, command;
 
 		beforeEach( () => {
 			dropdown = editor.ui.componentFactory.create( 'mergeTableCells' );
+			command = editor.commands.get( 'mergeTableCells' );
 		} );
 
 		it( 'have button with proper properties set', () => {
@@ -361,6 +382,35 @@ describe( 'TableUI', () => {
 			expect( button.icon ).to.match( /<svg / );
 		} );
 
+		it( 'should have a split button', () => {
+			expect( dropdown.buttonView ).to.be.instanceOf( SplitButtonView );
+		} );
+
+		it( 'should bind #isEnabled to the "mergeTableCells" command', () => {
+			command.isEnabled = false;
+			expect( dropdown.isEnabled ).to.be.false;
+
+			command.isEnabled = true;
+			expect( dropdown.isEnabled ).to.be.true;
+		} );
+
+		it( 'should execute the "mergeTableCells" command when the main part of the split button is clicked', () => {
+			const spy = sinon.stub( editor, 'execute' );
+
+			dropdown.buttonView.fire( 'execute' );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, 'mergeTableCells' );
+		} );
+
+		it( 'should have the dropdown part of the split button always enabled no matter the "mergeTableCells" command state', () => {
+			command.isEnabled = true;
+			expect( dropdown.buttonView.arrowView.isEnabled ).to.be.true;
+
+			command.isEnabled = false;
+			expect( dropdown.buttonView.arrowView.isEnabled ).to.be.true;
+		} );
+
 		it( 'should have proper items in panel', () => {
 			const listView = dropdown.listView;
 
@@ -371,8 +421,6 @@ describe( 'TableUI', () => {
 				'Merge cell right',
 				'Merge cell down',
 				'Merge cell left',
-				'|',
-				'Merge cells',
 				'|',
 				'Split cell vertically',
 				'Split cell horizontally'
@@ -386,7 +434,6 @@ describe( 'TableUI', () => {
 			const mergeCellRightCommand = editor.commands.get( 'mergeTableCellRight' );
 			const mergeCellDownCommand = editor.commands.get( 'mergeTableCellDown' );
 			const mergeCellLeftCommand = editor.commands.get( 'mergeTableCellLeft' );
-			const mergeCellsCommand = editor.commands.get( 'mergeTableCells' );
 			const splitCellVerticallyCommand = editor.commands.get( 'splitTableCellVertically' );
 			const splitCellHorizontallyCommand = editor.commands.get( 'splitTableCellHorizontally' );
 
@@ -394,7 +441,6 @@ describe( 'TableUI', () => {
 			mergeCellRightCommand.isEnabled = true;
 			mergeCellDownCommand.isEnabled = true;
 			mergeCellLeftCommand.isEnabled = true;
-			mergeCellsCommand.isEnabled = true;
 			splitCellVerticallyCommand.isEnabled = true;
 			splitCellHorizontallyCommand.isEnabled = true;
 
@@ -403,28 +449,21 @@ describe( 'TableUI', () => {
 			const mergeCellDownButton = items.get( 2 );
 			const mergeCellLeftButton = items.get( 3 );
 			// separator
-			const mergeCellsButton = items.get( 5 );
-			// separator
-			const splitVerticallyButton = items.get( 7 );
-			const splitHorizontallyButton = items.get( 8 );
+			const splitVerticallyButton = items.get( 5 );
+			const splitHorizontallyButton = items.get( 6 );
 
 			expect( mergeCellUpButton.children.first.isEnabled ).to.be.true;
 			expect( mergeCellRightButton.children.first.isEnabled ).to.be.true;
 			expect( mergeCellDownButton.children.first.isEnabled ).to.be.true;
 			expect( mergeCellLeftButton.children.first.isEnabled ).to.be.true;
-			expect( mergeCellsButton.children.first.isEnabled ).to.be.true;
 			expect( splitVerticallyButton.children.first.isEnabled ).to.be.true;
 			expect( splitHorizontallyButton.children.first.isEnabled ).to.be.true;
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			mergeCellUpCommand.isEnabled = false;
 			expect( mergeCellUpButton.children.first.isEnabled ).to.be.false;
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			mergeCellRightCommand.isEnabled = false;
-
 			expect( mergeCellRightButton.children.first.isEnabled ).to.be.false;
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			mergeCellDownCommand.isEnabled = false;
 			expect( mergeCellDownButton.children.first.isEnabled ).to.be.false;
@@ -432,16 +471,11 @@ describe( 'TableUI', () => {
 			mergeCellLeftCommand.isEnabled = false;
 			expect( mergeCellLeftButton.children.first.isEnabled ).to.be.false;
 
-			mergeCellsCommand.isEnabled = false;
-			expect( mergeCellsButton.children.first.isEnabled ).to.be.false;
-
 			splitCellVerticallyCommand.isEnabled = false;
 			expect( splitVerticallyButton.children.first.isEnabled ).to.be.false;
 
 			splitCellHorizontallyCommand.isEnabled = false;
 			expect( splitHorizontallyButton.children.first.isEnabled ).to.be.false;
-
-			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
 
 		it( 'should bind items in panel to proper commands (RTL content)', () => {

@@ -108,7 +108,7 @@ export default class TableUtils extends Plugin {
 	 *		    |   | f | g |                      |   |   |   |
 	 *		  3 +---+---+---+                      +   +---+---+ 3
 	 *		                                       |   | d | e |
-	 *		                                       +---+---+---+ 4
+	 *		                                       +   +---+---+ 4
 	 *		                                       +   + f | g |
 	 *		                                       +---+---+---+ 5
 	 *
@@ -248,6 +248,120 @@ export default class TableUtils extends Plugin {
 					const insertPosition = writer.createPositionAt( table.getChild( row ), cellIndex );
 
 					createCells( columnsToInsert, writer, insertPosition );
+				}
+			}
+		} );
+	}
+
+	/**
+	 * Removes rows from the given `table`.
+	 *
+	 * This method re-calculates the table geometry including `rowspan` attribute of table cells overlapping removed rows
+	 * and table headings values.
+	 *
+	 *		editor.plugins.get( 'TableUtils' ).removeRows( table, { at: 1, rows: 2 } );
+	 *
+	 * Executing the above code in the context of the table on the left will transform its structure as presented on the right:
+	 *
+	 *		row index
+	 *		    ┌───┬───┬───┐        `at` = 1        ┌───┬───┬───┐
+	 *		  0 │ a │ b │ c │        `rows` = 2      │ a │ b │ c │ 0
+	 *		    │   ├───┼───┤                        │   ├───┼───┤
+	 *		  1 │   │ d │ e │  <-- remove from here  │   │ h │ i │ 1
+	 *		    │   ├───┼───┤        will give:      ├───┼───┼───┤
+	 *		  2 │   │ f │ g │                        │ j │ k │ l │ 2
+	 *		    │   ├───┼───┤                        └───┴───┴───┘
+	 *		  3 │   │ h │ i │
+	 *		    ├───┼───┼───┤
+	 *		  4 │ j │ k │ l │
+	 *		    └───┴───┴───┘
+	 *
+	 * @param {module:engine/model/element~Element} table
+	 * @param {Object} options
+	 * @param {Number} options.at The row index at which the removing rows will start.
+	 * @param {Number} [options.rows=1] The number of rows to remove.
+	 */
+	removeRows( table, options ) {
+		const model = this.editor.model;
+		const first = options.at;
+		const rowsToRemove = options.rows || 1;
+
+		const last = first + rowsToRemove - 1;
+
+		model.change( writer => {
+			for ( let i = last; i >= first; i-- ) {
+				removeRow( table, i, writer );
+			}
+
+			const headingRows = table.getAttribute( 'headingRows' ) || 0;
+
+			if ( headingRows && first < headingRows ) {
+				const newRows = getNewHeadingRowsValue( first, last, headingRows );
+
+				// Must be done after the changes in table structure (removing rows).
+				// Otherwise the downcast converter for headingRows attribute will fail. ckeditor/ckeditor5#6391.
+				model.enqueueChange( writer.batch, writer => {
+					updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
+				} );
+			}
+		} );
+	}
+
+	/**
+	 * Removes columns from the given `table`.
+	 *
+	 * This method re-calculates the table geometry including the `colspan` attribute of table cells overlapping removed columns
+	 * and table headings values.
+	 *
+	 *		editor.plugins.get( 'TableUtils' ).removeColumns( table, { at: 1, columns: 2 } );
+	 *
+	 * Executing the above code in the context of the table on the left will transform its structure as presented on the right:
+	 *
+	 *		  0   1   2   3   4                       0   1   2
+	 *		┌───────────────┬───┐                   ┌───────┬───┐
+	 *		│ a             │ b │                   │ a     │ b │
+	 *		│               ├───┤                   │       ├───┤
+	 *		│               │ c │                   │       │ c │
+	 *		├───┬───┬───┬───┼───┤     will give:    ├───┬───┼───┤
+	 *		│ d │ e │ f │ g │ h │                   │ d │ g │ h │
+	 *		├───┼───┼───┤   ├───┤                   ├───┤   ├───┤
+	 *		│ i │ j │ k │   │ l │                   │ i │   │ l │
+	 *		├───┴───┴───┴───┴───┤                   ├───┴───┴───┤
+	 *		│ m                 │                   │ m         │
+	 *		└───────────────────┘                   └───────────┘
+	 *		      ^---- remove from here, `at` = 1, `columns` = 2
+	 *
+	 * @param {module:engine/model/element~Element} table
+	 * @param {Object} options
+	 * @param {Number} options.at The row index at which the removing columns will start.
+	 * @param {Number} [options.columns=1] The number of columns to remove.
+	 */
+	removeColumns( table, options ) {
+		const model = this.editor.model;
+		const first = options.at;
+		const columnsToRemove = options.columns || 1;
+		const last = options.at + columnsToRemove - 1;
+
+		model.change( writer => {
+			adjustHeadingColumns( table, { first, last }, writer );
+
+			for ( let removedColumnIndex = last; removedColumnIndex >= first; removedColumnIndex-- ) {
+				for ( const { cell, column, colspan } of [ ...new TableWalker( table ) ] ) {
+					// If colspaned cell overlaps removed column decrease its span.
+					if ( column <= removedColumnIndex && colspan > 1 && column + colspan > removedColumnIndex ) {
+						updateNumericAttribute( 'colspan', colspan - 1, cell, writer );
+					} else if ( column === removedColumnIndex ) {
+						const cellRow = cell.parent;
+
+						// The cell in removed column has colspan of 1.
+						writer.remove( cell );
+
+						// If the cell was the last one in the row, get rid of the entire row.
+						// https://github.com/ckeditor/ckeditor5/issues/6429
+						if ( !cellRow.childCount ) {
+							this.removeRows( table, { at: cellRow.index } );
+						}
+					}
 				}
 			}
 		} );
@@ -614,4 +728,62 @@ function breakSpanEvenly( span, numberOfCells ) {
 	const updatedSpan = ( span - newCellsSpan * numberOfCells ) + newCellsSpan;
 
 	return { newCellsSpan, updatedSpan };
+}
+
+function removeRow( table, rowIndex, writer ) {
+	const cellsToMove = new Map();
+	const tableRow = table.getChild( rowIndex );
+	const tableMap = [ ...new TableWalker( table, { endRow: rowIndex } ) ];
+
+	// Get cells from removed row that are spanned over multiple rows.
+	tableMap
+		.filter( ( { row, rowspan } ) => row === rowIndex && rowspan > 1 )
+		.forEach( ( { column, cell, rowspan } ) => cellsToMove.set( column, { cell, rowspanToSet: rowspan - 1 } ) );
+
+	// Reduce rowspan on cells that are above removed row and overlaps removed row.
+	tableMap
+		.filter( ( { row, rowspan } ) => row <= rowIndex - 1 && row + rowspan > rowIndex )
+		.forEach( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
+
+	// Move cells to another row.
+	const targetRow = rowIndex + 1;
+	const tableWalker = new TableWalker( table, { includeSpanned: true, startRow: targetRow, endRow: targetRow } );
+	let previousCell;
+
+	for ( const { row, column, cell } of [ ...tableWalker ] ) {
+		if ( cellsToMove.has( column ) ) {
+			const { cell: cellToMove, rowspanToSet } = cellsToMove.get( column );
+			const targetPosition = previousCell ?
+				writer.createPositionAfter( previousCell ) :
+				writer.createPositionAt( table.getChild( row ), 0 );
+			writer.move( writer.createRangeOn( cellToMove ), targetPosition );
+			updateNumericAttribute( 'rowspan', rowspanToSet, cellToMove, writer );
+			previousCell = cellToMove;
+		} else {
+			previousCell = cell;
+		}
+	}
+
+	writer.remove( tableRow );
+}
+
+// Calculates a new heading rows value for removing rows from heading section.
+function getNewHeadingRowsValue( first, last, headingRows ) {
+	if ( last < headingRows ) {
+		return headingRows - ( last - first + 1 );
+	}
+
+	return first;
+}
+
+// Updates heading columns attribute if removing a row from head section.
+function adjustHeadingColumns( table, removedColumnIndexes, writer ) {
+	const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
+
+	if ( headingColumns && removedColumnIndexes.first < headingColumns ) {
+		const headingsRemoved = Math.min( headingColumns - 1 /* Other numbers are 0-based */, removedColumnIndexes.last ) -
+			removedColumnIndexes.first + 1;
+
+		writer.setAttribute( 'headingColumns', headingColumns - headingsRemoved, table );
+	}
 }

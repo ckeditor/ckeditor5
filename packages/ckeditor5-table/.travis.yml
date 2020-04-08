@@ -9,7 +9,7 @@ services:
 cache:
   yarn: true
 node_js:
-- '8'
+- '10'
 branches:
   except:
   - stable
