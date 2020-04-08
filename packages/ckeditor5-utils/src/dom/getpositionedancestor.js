@@ -26,3 +26,19 @@ export default function getPositionedAncestor( element ) {
 
 	return null;
 }
+
+// export default function getPositionedAncestor( element ) {
+// 	if ( !element || !element.parentNode ) {
+// 		return null;
+// 	}
+
+// 	if ( element.style.position && element.style.position !== 'static' ) {
+// 		return element;
+// 	}
+
+// 	if ( element.offsetParent === global.document.body ) {
+// 		return null;
+// 	}
+
+// 	return element.offsetParent;
+// }
