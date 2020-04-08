@@ -285,6 +285,7 @@ export default class TableEditing extends Plugin {
 			const editing = this.editor.editing;
 			const domConverter = editing.view.domConverter;
 
+			// At first let's check if there are some cells that are fully selected (from the outside).
 			const selectedCells = getSelectedTableCells( selection );
 
 			if ( selectedCells.length ) {
@@ -295,6 +296,7 @@ export default class TableEditing extends Plugin {
 				return;
 			}
 
+			// So we fall back to selection inside the table cell.
 			const tableCell = findAncestor( 'tableCell', selection.focus );
 
 			if ( !tableCell ) {
@@ -303,6 +305,7 @@ export default class TableEditing extends Plugin {
 
 			const cellRange = model.createRangeIn( tableCell );
 
+			// First let's handle simplest cases - left and right is allowed only on first/last positions of a table cell.
 			if ( direction == 'left' ) {
 				if ( selection.isCollapsed && selection.focus.isTouching( cellRange.start ) ) {
 					this._navigateFromCellInDirection( tableCell, direction );
@@ -319,6 +322,22 @@ export default class TableEditing extends Plugin {
 				return;
 			}
 
+			// For up and down we could first check if we are on first/last position of a table cell.
+			if ( direction == 'up' && selection.focus.isTouching( cellRange.start ) ) {
+				this._navigateFromCellInDirection( tableCell, direction );
+				cancel();
+				return;
+			}
+
+			// This also solves problem with collapsed selection after text node.
+			if ( direction == 'down' && selection.focus.isTouching( cellRange.end ) ) {
+				this._navigateFromCellInDirection( tableCell, direction );
+				cancel();
+				return;
+			}
+
+			// Ok, so easiest cases didn't solved the problem, let's try finding Rects
+			// of the selection and the first/last row in the table cell.
 			const selectionPosition = direction == 'up' ? selection.getFirstPosition() : selection.getLastPosition();
 			const selectionFocusRange = editing.mapper.toViewRange( model.createRange( selectionPosition ) );
 			const focusRangeRect = Rect.getDomRangeRects( domConverter.viewRangeToDom( selectionFocusRange ) ).pop();
@@ -326,7 +345,7 @@ export default class TableEditing extends Plugin {
 			if ( direction == 'up' ) {
 				const firstLineRect = getRangeLimitLineRect( this.editor, cellRange, true );
 
-				if ( firstLineRect.width === 0 || firstLineRect.contains( focusRangeRect ) ) {
+				if ( firstLineRect.contains( focusRangeRect ) ) {
 					this._navigateFromCellInDirection( tableCell, direction );
 					cancel();
 				}
@@ -337,7 +356,7 @@ export default class TableEditing extends Plugin {
 			if ( direction == 'down' ) {
 				const lastLineRect = getRangeLimitLineRect( this.editor, cellRange, false );
 
-				if ( lastLineRect.width === 0 || lastLineRect.contains( focusRangeRect ) ) {
+				if ( lastLineRect.contains( focusRangeRect ) ) {
 					this._navigateFromCellInDirection( tableCell, direction );
 					cancel();
 				}
