@@ -810,7 +810,7 @@ describe( 'TableUtils', () => {
 				] ) );
 			} );
 
-			it( 'should move rowspaned cells to row below removing it\'s row', () => {
+			it( 'should move rowspaned cells to a row below removing it\'s row', () => {
 				setData( model, modelTable( [
 					[ { rowspan: 3, contents: '00' }, { rowspan: 2, contents: '01' }, '02' ],
 					[ '12' ],
@@ -824,6 +824,21 @@ describe( 'TableUtils', () => {
 					[ { rowspan: 2, contents: '00' }, '01', '12' ],
 					[ '21', '22' ],
 					[ '30', '31', '32' ]
+				] ) );
+			} );
+
+			it( 'should move rowspaned cells to a row below removing it\'s row (other cell is overlapping removed row)', () => {
+				setData( model, modelTable( [
+					[ '00', { rowspan: 3, contents: '01' }, '02', '03', '04' ],
+					[ '10', { rowspan: 2, contents: '12' }, '13', '14' ],
+					[ '20', '23', '24' ]
+				] ) );
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 1 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', { rowspan: 2, contents: '01' }, '02', '03', '04' ],
+					[ '20', '12', '23', '24' ]
 				] ) );
 			} );
 		} );
