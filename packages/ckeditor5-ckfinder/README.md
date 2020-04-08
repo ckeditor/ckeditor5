@@ -2,9 +2,6 @@ CKEditor 5's CKFinder integration
 =========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-ckfinder.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-ckfinder.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-ckfinder)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-ckfinder/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-ckfinder?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-ckfinder/status.svg)](https://david-dm.org/ckeditor/ckeditor5-ckfinder)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-ckfinder/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-ckfinder?type=dev)
 
