@@ -40,11 +40,15 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  *
  * @param {String} language Target language.
  * @param {Object.<String, String>} translations Translations which will be added to the dictionary.
+ * @param {Function} getFormIndex
  */
-export function add( language, translations ) {
-	const dictionary = window.CKEDITOR_TRANSLATIONS[ language ] || ( window.CKEDITOR_TRANSLATIONS[ language ] = {} );
+export function add( language, translations, getFormIndex ) {
+	const languageTranslations = window.CKEDITOR_TRANSLATIONS[ language ] || ( window.CKEDITOR_TRANSLATIONS[ language ] = {} );
 
-	Object.assign( dictionary, translations );
+	languageTranslations.dictionary = languageTranslations.dictionary || {};
+	languageTranslations.getFormIndex = getFormIndex || languageTranslations.getFormIndex || ( () => 0 );
+
+	Object.assign( languageTranslations.dictionary, translations );
 }
 
 /**
@@ -61,10 +65,11 @@ export function add( language, translations ) {
  *		translate( 'pl', 'Cancel [context: reject]' );
  *
  * @param {String} language Target language.
- * @param {String} translationKey String that will be translated.
+ * @param {Object} message A message that will be translated.
+ * @param {Number} amount
  * @returns {String} Translated sentence.
  */
-export function translate( language, translationKey ) {
+export function translate( language, message, amount ) {
 	const numberOfLanguages = getNumberOfLanguages();
 
 	if ( numberOfLanguages === 1 ) {
@@ -73,14 +78,28 @@ export function translate( language, translationKey ) {
 		language = Object.keys( window.CKEDITOR_TRANSLATIONS )[ 0 ];
 	}
 
-	if ( numberOfLanguages === 0 || !hasTranslation( language, translationKey ) ) {
-		return translationKey.replace( / \[context: [^\]]+\]$/, '' );
+	const messageId = message.id || message.string;
+
+	if ( numberOfLanguages === 0 || !hasTranslation( language, messageId ) ) {
+		// return english forms:
+		if ( amount !== 1 ) {
+			return message.plural;
+		}
+
+		return message.string;
 	}
 
-	const dictionary = window.CKEDITOR_TRANSLATIONS[ language ];
+	const dictionary = window.CKEDITOR_TRANSLATIONS[ language ].dictionary;
+	const getFormIndex = window.CKEDITOR_TRANSLATIONS[ language ].getFormIndex;
 
-	// In case of missing translations we still need to cut off the `[context: ]` parts.
-	return dictionary[ translationKey ].replace( / \[context: [^\]]+\]$/, '' );
+	// TODO - maybe a warning could be helpful for some mismatches.
+
+	if ( typeof dictionary[ messageId ] === 'string' ) {
+		return dictionary[ messageId ];
+	}
+
+	// Note: The `translate` function is not responsible for replacing `%0, %1, ...` with values.
+	return dictionary[ messageId ][ getFormIndex( amount ) ];
 }
 
 /**
@@ -93,10 +112,10 @@ export function _clear() {
 }
 
 // Checks whether the dictionary exists and translation in that dictionary exists.
-function hasTranslation( language, translationKey ) {
+function hasTranslation( language, messageId ) {
 	return (
-		( language in window.CKEDITOR_TRANSLATIONS ) &&
-		( translationKey in window.CKEDITOR_TRANSLATIONS[ language ] )
+		window.CKEDITOR_TRANSLATIONS[ language ] &&
+		window.CKEDITOR_TRANSLATIONS[ language ].dictionary[ messageId ]
 	);
 }
 

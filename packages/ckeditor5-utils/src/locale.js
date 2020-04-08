@@ -91,10 +91,10 @@ export default class Locale {
 		 *		t( 'Label' );
 		 *
 		 * @method #t
-		 * @param {String} str The string to translate.
+		 * @param {String} message The string to translate.
 		 * @param {String[]} [values] Values that should be used to interpolate the string.
 		 */
-		this.t = ( ...args ) => this._t( ...args );
+		this.t = ( message, values ) => this._t( message, values );
 	}
 
 	/**
@@ -124,10 +124,19 @@ export default class Locale {
 	/**
 	 * Base for the {@link #t} method.
 	 *
+	 * @param {Object|String} message
+	 * @param {String[]} [values]
 	 * @private
 	 */
-	_t( str, values ) {
-		let translatedString = translate( this.uiLanguage, str );
+	_t( message, values = [] ) {
+		if ( typeof message === 'string' ) {
+			message = { string: message };
+		}
+
+		const hasPluralForm = !!message.plural;
+		const amount = hasPluralForm ? values[ 0 ] : 1;
+
+		let translatedString = translate( this.uiLanguage, message, amount );
 
 		if ( values ) {
 			translatedString = translatedString.replace( /%(\d+)/g, ( match, index ) => {
