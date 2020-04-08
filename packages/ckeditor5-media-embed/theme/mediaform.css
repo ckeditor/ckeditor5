@@ -11,7 +11,7 @@
 	flex-direction: row;
 	flex-wrap: nowrap;
 
-	& .ck-labeled-input {
+	& .ck-labeled-field-view {
 		display: inline-block;
 	}
 
@@ -22,7 +22,7 @@
 	@mixin ck-media-phone {
 		flex-wrap: wrap;
 
-		& .ck-labeled-input {
+		& .ck-labeled-field-view {
 			flex-basis: 100%;
 		}
 
