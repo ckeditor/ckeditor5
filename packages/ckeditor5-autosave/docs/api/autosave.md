@@ -20,11 +20,11 @@ npm install --save @ckeditor/ckeditor5-autosave
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5-autosave.
+The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-autosave.
 
 ## External links
 
 * [`@ckeditor/ckeditor5-autosave` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave)
-* [`ckeditor/ckeditor5-autosave` on GitHub](https://github.com/ckeditor/ckeditor5-autosave)
+* [`ckeditor/ckeditor5-autosave` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-autosave)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-autosave/blob/master/CHANGELOG.md)
