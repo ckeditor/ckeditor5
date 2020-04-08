@@ -367,6 +367,32 @@ export default class BlockToolbar extends Plugin {
 	_showPanel() {
 		const wasVisible = this.panelView.isVisible;
 
+		// So here's the thing: If there was no initial panelView#show() or these two were in different order, the toolbar
+		// positioning will break in RTL editors. Weird, right? What you show know is that the toolbar
+		// grouping works thanks to:
+		//
+		// * the ResizeObserver, which kicks in as soon as the toolbar shows up in DOM (becomes visible again).
+		// * the observable ToolbarView#maxWidth, which triggers re-grouping when changed.
+		//
+		// Here are the possible scenarios:
+		//
+		// 1. (WRONG ❌) If the #maxWidth is set when the toolbar is invisible, it won't affect item grouping (no DOMRects, no grouping).
+		//    Then, when panelView.pin() is called, the position of the toolbar will be calculated for the old
+		//    items grouping state, and when finally ResizeObserver kicks in (hey, the toolbar is visible now, right?)
+		//    it will group/ungroup some items and the length of the toolbar will change. But since in RTL the toolbar
+		//    is attached on the right side and the positioning uses CSS "left", it will result in the toolbar shifting
+		//    to the left and being displayed in the wrong place.
+		// 2. (WRONG ❌) If the panelView.pin() is called first and #maxWidth set next, then basically the story repeats. The balloon
+		//    calculates the position for the old toolbar grouping state, then the toolbar re-groups items and because
+		//    it is positioned using CSS "left" it will move.
+		// 3. (RIGHT ✅) We show the panel first (the toolbar does re-grouping but it does not matter), then the #maxWidth
+		//    is set allowing the toolbar to re-group again and finally panelView.pin() does the positioning when the
+		//    items grouping state is stable and final.
+		//
+		// https://github.com/ckeditor/ckeditor5/issues/6449, https://github.com/ckeditor/ckeditor5/issues/6575
+		this.panelView.show();
+		this.toolbarView.maxWidth = this._getToolbarMaxWidth();
+
 		this.panelView.pin( {
 			target: this.buttonView.element,
 			limiter: this.editor.ui.getEditableElement()
@@ -375,8 +401,6 @@ export default class BlockToolbar extends Plugin {
 		if ( !wasVisible ) {
 			this.toolbarView.items.get( 0 ).focus();
 		}
-
-		this.toolbarView.maxWidth = this._getToolbarMaxWidth();
 	}
 
 	/**

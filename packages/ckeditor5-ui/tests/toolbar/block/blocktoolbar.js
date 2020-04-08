@@ -483,6 +483,27 @@ describe( 'BlockToolbar', () => {
 			expect( blockToolbar.buttonView.left ).to.equal( 600 );
 		} );
 
+		describe( 'toolbarView#maxWidth', () => {
+			it( 'should be set when the panel shows up', () => {
+				expect( blockToolbar.toolbarView.maxWidth ).to.equal( 'auto' );
+
+				blockToolbar.buttonView.fire( 'execute' );
+
+				expect( blockToolbar.panelView.isVisible ).to.be.true;
+				expect( blockToolbar.toolbarView.maxWidth ).to.match( /.+px/ );
+			} );
+
+			it( 'should be set after the toolbar was shown (but before panel#pin()) to let the items grouping do its job', () => {
+				const maxWidthSetSpy = sinon.spy( blockToolbar.toolbarView, 'maxWidth', [ 'set' ] );
+				const panelViewShowSpy = sinon.spy( blockToolbar.panelView, 'show' );
+				const panelViewPinSpy = sinon.spy( blockToolbar.panelView, 'pin' );
+
+				blockToolbar.buttonView.fire( 'execute' );
+
+				sinon.assert.callOrder( panelViewShowSpy, maxWidthSetSpy.set, panelViewPinSpy );
+			} );
+		} );
+
 		it( 'should reposition the #panelView when open on ui#update', () => {
 			blockToolbar.panelView.isVisible = false;
 
