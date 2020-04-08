@@ -458,7 +458,7 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * Sets block {@link #toolbarView} max-width, based on
+	 * Gets the {@link #toolbarView} max-width, based on
 	 * editable width plus distance between furthest edge of the {@link #buttonView} and the editable.
 	 *
 	 * @private
