@@ -310,7 +310,7 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Removes columns from the given `table`.
 	 *
-	 * This method re-calculates the table geometry including `colspan` attribute of table cells overlapping removed columns
+	 * This method re-calculates the table geometry including the `colspan` attribute of table cells overlapping removed columns
 	 * and table headings values.
 	 *
 	 *		editor.plugins.get( 'TableUtils' ).removeColumns( table, { at: 1, columns: 2 } );
