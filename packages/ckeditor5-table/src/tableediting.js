@@ -29,8 +29,11 @@ import RemoveColumnCommand from './commands/removecolumncommand';
 import SetHeaderRowCommand from './commands/setheaderrowcommand';
 import SetHeaderColumnCommand from './commands/setheadercolumncommand';
 import MergeCellsCommand from './commands/mergecellscommand';
-import { getTableCellsContainingSelection } from './utils';
+import { getSelectedTableCells, getTableCellsContainingSelection } from './utils';
 import TableUtils from '../src/tableutils';
+import { findAncestor } from './commands/utils';
+import TableWalker from './tablewalker';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 import injectTableLayoutPostFixer from './converters/table-layout-post-fixer';
 import injectTableCellParagraphPostFixer from './converters/table-cell-paragraph-post-fixer';
@@ -150,6 +153,11 @@ export default class TableEditing extends Plugin {
 		this.editor.keystrokes.set( 'Tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Tab', this._getTabHandler( true ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Shift+Tab', this._getTabHandler( false ), { priority: 'low' } );
+
+		this.editor.keystrokes.set( 'ArrowLeft', this._getArrowHandler( 'left' ), { priority: 'low' } );
+		this.editor.keystrokes.set( 'ArrowRight', this._getArrowHandler( 'right' ), { priority: 'low' } );
+		this.editor.keystrokes.set( 'ArrowUp', this._getArrowHandler( 'up' ), { priority: 'low' } );
+		this.editor.keystrokes.set( 'ArrowDown', this._getArrowHandler( 'down' ), { priority: 'low' } );
 	}
 
 	/**
@@ -256,4 +264,193 @@ export default class TableEditing extends Plugin {
 			} );
 		};
 	}
+
+	/**
+	 * Returns a handler for {@link module:engine/view/document~Document#event:keydown keydown} events for the arrow keys executed
+	 * inside table cell.
+	 *
+	 * @private
+	 * @param {String} direction The direction of navigation relative to the cell in which the caret is located.
+	 * Possible values: `"left"`, `"right"`, `"up"` and `"down"`.
+	 */
+	_getArrowHandler( direction ) {
+		return ( data, cancel ) => {
+			const model = this.editor.model;
+			const selection = model.document.selection;
+			const editing = this.editor.editing;
+			const domConverter = editing.view.domConverter;
+
+			const selectedCells = getSelectedTableCells( selection );
+
+			if ( selectedCells.length ) {
+				const tableCell = [ 'left', 'up' ].includes( direction ) ? selectedCells[ 0 ] : selectedCells.pop();
+
+				this._navigateFromCellInDirection( tableCell, direction );
+				cancel();
+				return;
+			}
+
+			const tableCell = findAncestor( 'tableCell', selection.focus );
+
+			if ( !tableCell ) {
+				return;
+			}
+
+			const cellRange = model.createRangeIn( tableCell );
+
+			if ( direction == 'left' ) {
+				if ( selection.isCollapsed && selection.focus.isTouching( cellRange.start ) ) {
+					this._navigateFromCellInDirection( tableCell, direction );
+					cancel();
+				}
+				return;
+			}
+
+			if ( direction == 'right' ) {
+				if ( selection.isCollapsed && selection.focus.isTouching( cellRange.end ) ) {
+					this._navigateFromCellInDirection( tableCell, direction );
+					cancel();
+				}
+				return;
+			}
+
+			const selectionPosition = direction == 'up' ? selection.getFirstPosition() : selection.getLastPosition();
+			const selectionFocusRange = editing.mapper.toViewRange( model.createRange( selectionPosition ) );
+			const focusRangeRect = Rect.getDomRangeRects( domConverter.viewRangeToDom( selectionFocusRange ) ).pop();
+
+			if ( direction == 'up' ) {
+				const firstLineRect = getRangeLimitLineRect( this.editor, cellRange, true );
+
+				if ( firstLineRect.width === 0 || firstLineRect.contains( focusRangeRect ) ) {
+					this._navigateFromCellInDirection( tableCell, direction );
+					cancel();
+				}
+
+				return;
+			}
+
+			if ( direction == 'down' ) {
+				const lastLineRect = getRangeLimitLineRect( this.editor, cellRange, false );
+
+				if ( lastLineRect.width === 0 || lastLineRect.contains( focusRangeRect ) ) {
+					this._navigateFromCellInDirection( tableCell, direction );
+					cancel();
+				}
+			}
+		};
+	}
+
+	/**
+	 * Moves the selection from given `tableCell` in the specified `direction`.
+	 *
+	 * @private
+	 * @param {module:engine/model/element~Element} tableCell The table cell to start the selection navigation.
+	 * @param {String} direction Direction in which selection should move.
+	 */
+	_navigateFromCellInDirection( tableCell, direction ) {
+		const model = this.editor.model;
+
+		const table = findAncestor( 'table', tableCell );
+		const tableMap = [ ...new TableWalker( table, { includeSpanned: true } ) ];
+		const { row: lastRow, column: lastColumn } = tableMap[ tableMap.length - 1 ];
+
+		const currentCellInfo = tableMap.find( ( { cell } ) => cell == tableCell );
+		let { row, column } = currentCellInfo;
+
+		switch ( direction ) {
+			case 'left':
+				column--;
+				break;
+
+			case 'up':
+				row--;
+				break;
+
+			case 'right':
+				column += currentCellInfo.colspan || 1;
+				break;
+
+			case 'down':
+				row += currentCellInfo.rowspan || 1;
+				break;
+		}
+
+		const isOutsideVertically = row < 0 || row > lastRow;
+		const isBeforeFirstCell = column < 0 && row <= 0;
+		const isAfterLastCell = column > lastColumn && row >= lastRow;
+
+		// Note that if the last table cell is row-spanned then isAfterLastCell will never be true but we don't know
+		// if user was navigating on the last row or not, so let's allow him to stay in the table.
+
+		if ( isOutsideVertically || isBeforeFirstCell || isAfterLastCell ) {
+			model.change( writer => {
+				writer.setSelection( writer.createRangeOn( table ) );
+			} );
+
+			return;
+		}
+
+		if ( column < 0 ) {
+			column = lastColumn;
+			row--;
+		} else if ( column > lastColumn ) {
+			column = 0;
+			row++;
+		}
+
+		const cellToFocus = tableMap.find( cellInfo => cellInfo.row == row && cellInfo.column == column ).cell;
+		const rangeToFocus = model.createRangeIn( cellToFocus );
+		const positionToFocus = [ 'left', 'up' ].includes( direction ) ? rangeToFocus.end : rangeToFocus.start;
+
+		model.change( writer => {
+			writer.setSelection( positionToFocus );
+		} );
+	}
+}
+
+// Returns `Rect` of first or last line of the `range`.
+//
+// @private
+// @param {module:core/editor/editor~Editor} editor The editor instance.
+// @param {module:engine/model/range~Range} range Range of model elements.
+// @param {Boolean} firstLine Whether should find `Rect` of first or last line.
+// @returns {module:utils/dom/rect~Rect}
+function getRangeLimitLineRect( editor, range, firstLine ) {
+	const editing = editor.editing;
+	const domConverter = editing.view.domConverter;
+
+	const viewCellRange = editing.mapper.toViewRange( range );
+	const cellRangeRects = Rect.getDomRangeRects( domConverter.viewRangeToDom( viewCellRange ) );
+
+	const lineRect = {
+		left: Number.POSITIVE_INFINITY,
+		top: Number.POSITIVE_INFINITY,
+		right: Number.NEGATIVE_INFINITY,
+		bottom: Number.NEGATIVE_INFINITY
+	};
+
+	for ( let i = 0; i < cellRangeRects.length; i++ ) {
+		const idx = firstLine ? i : cellRangeRects.length - i - 1;
+		const rect = cellRangeRects[ idx ];
+		const nextRect = idx + 1 < cellRangeRects.length ? cellRangeRects[ idx + 1 ] : null;
+
+		// First let's skip container Rects.
+		if ( !nextRect || !rect.contains( nextRect ) ) {
+			// Let's check if this rect is in new line.
+			if ( firstLine && rect.left < lineRect.right || !firstLine && rect.right > lineRect.left ) {
+				break;
+			}
+
+			lineRect.left = Math.min( lineRect.left, rect.left );
+			lineRect.top = Math.min( lineRect.top, rect.top );
+			lineRect.right = Math.max( lineRect.right, rect.right );
+			lineRect.bottom = Math.max( lineRect.bottom, rect.bottom );
+		}
+	}
+
+	return new Rect( {
+		...lineRect,
+		width: lineRect.right - lineRect.left,
+		height: lineRect.bottom - lineRect.top
+	} );
 }
