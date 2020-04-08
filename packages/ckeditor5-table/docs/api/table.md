@@ -32,11 +32,11 @@ npm install --save @ckeditor/ckeditor5-table
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5-table.
+The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table.
 
 ## External links
 
 * [`@ckeditor/ckeditor5-table` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)
-* [`ckeditor/ckeditor5-table` on GitHub](https://github.com/ckeditor/ckeditor5-table)
+* [`ckeditor/ckeditor5-table` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-table/blob/master/CHANGELOG.md)
