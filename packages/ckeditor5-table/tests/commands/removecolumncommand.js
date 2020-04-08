@@ -368,7 +368,7 @@ describe( 'RemoveColumnCommand', () => {
 		it( 'should decrease colspan of table cells from previous column', () => {
 			setData( model, modelTable( [
 				[ { colspan: 4, contents: '00' }, '04' ],
-				[ { colspan: 3, contents: '10' }, '14' ],
+				[ { colspan: 3, contents: '10' }, '13', '14' ],
 				[ { colspan: 2, contents: '20' }, '22[]', '23', '24' ],
 				[ '30', { colspan: 2, contents: '31' }, '33', '34' ],
 				[ '40', '41', '42', '43', '44' ]
@@ -378,7 +378,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			assertEqualMarkup( getData( model ), modelTable( [
 				[ { colspan: 3, contents: '00' }, '04' ],
-				[ { colspan: 2, contents: '10' }, '14' ],
+				[ { colspan: 2, contents: '10' }, '13', '14' ],
 				[ { colspan: 2, contents: '20' }, '[]23', '24' ],
 				[ '30', '31', '33', '34' ],
 				[ '40', '41', '43', '44' ]
