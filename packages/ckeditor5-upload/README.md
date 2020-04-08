@@ -2,9 +2,6 @@ CKEditor 5 file upload utilities
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-upload.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-upload.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-upload)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-upload/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-upload?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-upload/status.svg)](https://david-dm.org/ckeditor/ckeditor5-upload)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-upload/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-upload?type=dev)
 
