@@ -2,9 +2,6 @@ CKEditor 5 classic editor implementation
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-editor-classic.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-editor-classic.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-editor-classic)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-editor-classic/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-editor-classic?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-classic/status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-classic)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-classic/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-classic?type=dev)
 
