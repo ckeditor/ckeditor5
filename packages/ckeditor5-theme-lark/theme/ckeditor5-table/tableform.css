@@ -13,7 +13,7 @@
 .ck.ck-table-form {
 	& .ck-form__row {
 		&.ck-table-form__border-row {
-			& .ck-labeled-view {
+			& .ck-labeled-field-view {
 				& > .ck-label {
 					font-size: var(--ck-font-size-tiny);
 					text-align: center;
@@ -34,7 +34,7 @@
 		&.ck-table-form__dimensions-row {
 			padding: 0;
 
-			& .ck-labeled-view > .ck-label {
+			& .ck-labeled-field-view > .ck-label {
 				font-size: 10px;
 				text-align: center;
 			}
@@ -54,8 +54,8 @@
 		}
 	}
 
-	& .ck.ck-labeled-view {
-		& .ck.ck-labeled-view__status {
+	& .ck.ck-labeled-field-view {
+		& .ck.ck-labeled-field-view__status {
 			@mixin ck-rounded-corners;
 
 			background: var(--ck-color-base-error);
@@ -75,7 +75,7 @@
 		}
 
 		/* Hide the error balloon when the field is blurred. Makes the experience much more clear. */
-		& .ck-input.ck-error:not(:focus) + .ck.ck-labeled-view__status {
+		& .ck-input.ck-error:not(:focus) + .ck.ck-labeled-field-view__status {
 			display: none;
 		}
 	}
