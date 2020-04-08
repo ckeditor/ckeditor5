@@ -18,11 +18,11 @@ npm install --save @ckeditor/ckeditor-cloud-services-core
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor-cloud-services-core.
+The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor-cloud-services-core.
 
 ## External links
 
 * [`@ckeditor/ckeditor-cloud-services-core` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor-cloud-services-core)
-* [`ckeditor/ckeditor-cloud-services-core` on GitHub](https://github.com/ckeditor/ckeditor-cloud-services-core)
+* [`ckeditor/ckeditor-cloud-services-core` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor-cloud-services-core)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor-cloud-services-core/blob/master/CHANGELOG.md)
