@@ -346,10 +346,12 @@ export default class Position {
 	 * @returns {Array.<module:engine/model/item~Item>} Array with ancestors.
 	 */
 	getAncestors() {
-		if ( this.parent.is( 'documentFragment' ) ) {
-			return [ this.parent ];
+		const parent = this.parent;
+
+		if ( parent.is( 'documentFragment' ) ) {
+			return [ parent ];
 		} else {
-			return this.parent.getAncestors( { includeSelf: true } );
+			return parent.getAncestors( { includeSelf: true } );
 		}
 	}
 
