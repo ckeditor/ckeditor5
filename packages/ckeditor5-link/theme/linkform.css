@@ -15,7 +15,7 @@
 	@mixin ck-media-phone {
 		flex-wrap: wrap;
 
-		& .ck-labeled-input {
+		& .ck-labeled-field-view {
 			flex-basis: 100%;
 		}
 
@@ -32,4 +32,3 @@
 .ck.ck-link-form_layout-vertical {
 	display: block;
 }
-
