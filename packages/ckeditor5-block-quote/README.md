@@ -2,9 +2,6 @@ CKEditor 5 block quote feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-block-quote.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-block-quote.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-block-quote)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-block-quote/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-block-quote?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-block-quote/status.svg)](https://david-dm.org/ckeditor/ckeditor5-block-quote)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-block-quote/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-block-quote?type=dev)
 
