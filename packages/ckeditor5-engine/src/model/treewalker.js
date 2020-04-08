@@ -225,7 +225,9 @@ export default class TreeWalker {
 			return { done: true };
 		}
 
-		const node = position.textNode ? position.textNode : position.nodeAfter;
+		// Get node just after the current position.
+		const textNodeAtPosition = position.textNode;
+		const node = textNodeAtPosition ? textNodeAtPosition : position.nodeAfter;
 
 		if ( node instanceof Element ) {
 			if ( !this.shallow ) {
@@ -299,8 +301,9 @@ export default class TreeWalker {
 			return { done: true };
 		}
 
-		// Get node just before current position
-		const node = position.textNode ? position.textNode : position.nodeBefore;
+		// Get node just before the current position.
+		const textNodeAtPosition = position.textNode;
+		const node = textNodeAtPosition ? textNodeAtPosition : position.nodeBefore;
 
 		if ( node instanceof Element ) {
 			position.offset--;
