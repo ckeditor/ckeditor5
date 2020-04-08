@@ -42,24 +42,25 @@ describe( 'downcast converters', () => {
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
-		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
-
-		return VirtualTestEditor.create()
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				doc = model.document;
-				root = doc.getRoot( 'main' );
-				view = editor.editing.view;
-
-				defaultSchema( model.schema );
-				defaultConversion( editor.conversion );
-			} );
-	} );
-
 	describe( 'downcastInsertTable()', () => {
+		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEdting.
+		beforeEach( () => {
+			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+
+			return VirtualTestEditor.create()
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+					root = doc.getRoot( 'main' );
+					view = editor.editing.view;
+
+					defaultSchema( model.schema );
+					defaultConversion( editor.conversion );
+				} );
+		} );
+
 		it( 'should create table with tbody', () => {
 			setModelData( model, modelTable( [ [ '' ] ] ) );
 
@@ -355,6 +356,24 @@ describe( 'downcast converters', () => {
 	} );
 
 	describe( 'downcastInsertRow()', () => {
+		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEdting.
+		beforeEach( () => {
+			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+
+			return VirtualTestEditor.create()
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+					root = doc.getRoot( 'main' );
+					view = editor.editing.view;
+
+					defaultSchema( model.schema );
+					defaultConversion( editor.conversion );
+				} );
+		} );
+
 		it( 'should react to changed rows', () => {
 			setModelData( model, modelTable( [
 				[ '00', '01' ]
@@ -592,6 +611,24 @@ describe( 'downcast converters', () => {
 	} );
 
 	describe( 'downcastInsertCell()', () => {
+		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEdting.
+		beforeEach( () => {
+			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+
+			return VirtualTestEditor.create()
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+					root = doc.getRoot( 'main' );
+					view = editor.editing.view;
+
+					defaultSchema( model.schema );
+					defaultConversion( editor.conversion );
+				} );
+		} );
+
 		it( 'should add tableCell on proper index in tr', () => {
 			setModelData( model, modelTable( [
 				[ '00', '01' ]
@@ -736,6 +773,24 @@ describe( 'downcast converters', () => {
 	} );
 
 	describe( 'downcastTableHeadingColumnsChange()', () => {
+		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEdting.
+		beforeEach( () => {
+			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+
+			return VirtualTestEditor.create()
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+					root = doc.getRoot( 'main' );
+					view = editor.editing.view;
+
+					defaultSchema( model.schema );
+					defaultConversion( editor.conversion );
+				} );
+		} );
+
 		it( 'should work for adding heading columns', () => {
 			setModelData( model, modelTable( [
 				[ '00', '01' ],
@@ -912,6 +967,24 @@ describe( 'downcast converters', () => {
 	} );
 
 	describe( 'downcastTableHeadingRowsChange()', () => {
+		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEdting.
+		beforeEach( () => {
+			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+
+			return VirtualTestEditor.create()
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+					root = doc.getRoot( 'main' );
+					view = editor.editing.view;
+
+					defaultSchema( model.schema );
+					defaultConversion( editor.conversion );
+				} );
+		} );
+
 		it( 'should work for adding heading rows', () => {
 			setModelData( model, modelTable( [
 				[ '00', '01' ],
@@ -1126,6 +1199,24 @@ describe( 'downcast converters', () => {
 	} );
 
 	describe( 'downcastRemoveRow()', () => {
+		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEdting.
+		beforeEach( () => {
+			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+
+			return VirtualTestEditor.create()
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+					root = doc.getRoot( 'main' );
+					view = editor.editing.view;
+
+					defaultSchema( model.schema );
+					defaultConversion( editor.conversion );
+				} );
+		} );
+
 		it( 'should react to removed row from the beginning of a tbody', () => {
 			setModelData( model, modelTable( [
 				[ '00[]', '01' ],
