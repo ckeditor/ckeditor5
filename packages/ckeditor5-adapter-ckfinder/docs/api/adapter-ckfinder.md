@@ -22,11 +22,11 @@ npm install --save @ckeditor/ckeditor5-adapter-ckfinder
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5-adapter-ckfinder.
+The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-adapter-ckfinder.
 
 ## External links
 
 * [`@ckeditor/ckeditor5-adapter-ckfinder` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder)
-* [`ckeditor/ckeditor5-adapter-ckfinder` on GitHub](https://github.com/ckeditor/ckeditor5-adapter-ckfinder)
+* [`ckeditor/ckeditor5-adapter-ckfinder` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-adapter-ckfinder)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/blob/master/CHANGELOG.md)
