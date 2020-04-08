@@ -462,7 +462,7 @@ export default class BlockToolbar extends Plugin {
 	 * editable width plus distance between furthest edge of the {@link #buttonView} and the editable.
 	 *
 	 * @private
-	 * @returns {String} maxWidth A maximum width that toolbar can have, sets in pixels.
+	 * @returns {String} maxWidth A maximum width that toolbar can have, in pixels.
 	 */
 	_getToolbarMaxWidth() {
 		const editableElement = this.editor.ui.view.editable.element;
