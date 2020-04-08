@@ -2,9 +2,6 @@ CKEditor 5 UI framework
 ===========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-ui.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-ui.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-ui)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-ui/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-ui?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-ui/status.svg)](https://david-dm.org/ckeditor/ckeditor5-ui)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-ui/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-ui?type=dev)
 
