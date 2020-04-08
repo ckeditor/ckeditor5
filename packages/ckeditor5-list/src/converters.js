@@ -649,30 +649,34 @@ export function modelChangePostFixer( model, writer ) {
 	return applied;
 
 	function _addListToFix( position ) {
-		const prev = position.nodeBefore;
+		const previousNode = position.nodeBefore;
 
-		if ( !prev || !prev.is( 'listItem' ) ) {
+		if ( !previousNode || !previousNode.is( 'listItem' ) ) {
 			const item = position.nodeAfter;
 
 			if ( item && item.is( 'listItem' ) ) {
 				itemToListHead.set( item, item );
 			}
 		} else {
-			let listHead = prev;
+			let listHead = previousNode;
 
 			if ( itemToListHead.has( listHead ) ) {
 				return;
 			}
 
-			while ( listHead.previousSibling && listHead.previousSibling.is( 'listItem' ) ) {
-				listHead = listHead.previousSibling;
+			for (
+				let previousSibling = listHead.previousSibling;
+				previousSibling && previousSibling.is( 'listItem' );
+				previousSibling = listHead.previousSibling
+			) {
+				listHead = previousSibling;
 
 				if ( itemToListHead.has( listHead ) ) {
 					return;
 				}
 			}
 
-			itemToListHead.set( position.nodeBefore, listHead );
+			itemToListHead.set( previousNode, listHead );
 		}
 	}
 
