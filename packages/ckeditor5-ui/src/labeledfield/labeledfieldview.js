@@ -66,8 +66,8 @@ export default class LabeledFieldView extends View {
 	constructor( locale, viewCreator ) {
 		super( locale );
 
-		const viewUid = `ck-labeled-view-${ uid() }`;
-		const statusUid = `ck-labeled-view-status-${ uid() }`;
+		const viewUid = `ck-labeled-field-view-${ uid() }`;
+		const statusUid = `ck-labeled-field-view-status-${ uid() }`;
 
 		/**
 		 * The field view that gets labeled.
@@ -168,7 +168,7 @@ export default class LabeledFieldView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-labeled-view',
+					'ck-labeled-field-view',
 					bind.to( 'class' ),
 					bind.if( 'isEnabled', 'ck-disabled', value => !value )
 				]
@@ -215,8 +215,8 @@ export default class LabeledFieldView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-labeled-view__status',
-					bind.if( 'errorText', 'ck-labeled-view__status_error' ),
+					'ck-labeled-field-view__status',
+					bind.if( 'errorText', 'ck-labeled-field-view__status_error' ),
 					bind.if( '_statusText', 'ck-hidden', value => !value )
 				],
 				id: statusUid,
