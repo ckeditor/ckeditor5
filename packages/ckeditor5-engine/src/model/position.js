@@ -540,7 +540,7 @@ export default class Position {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'position' || type == 'model:position';
+		return type === 'position' || type === 'model:position';
 	}
 
 	/**

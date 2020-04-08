@@ -590,7 +590,7 @@ export default class Selection {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'selection' || type == 'view:selection';
+		return type === 'selection' || type === 'view:selection';
 	}
 
 	/**

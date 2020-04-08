@@ -632,7 +632,7 @@ export default class Selection {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'selection' || type == 'model:selection';
+		return type === 'selection' || type === 'model:selection';
 	}
 
 	/**

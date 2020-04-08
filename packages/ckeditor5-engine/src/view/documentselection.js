@@ -292,7 +292,7 @@ export default class DocumentSelection {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'selection' ||
+		return type === 'selection' ||
 			type == 'documentSelection' ||
 			type == 'view:selection' ||
 			type == 'view:documentSelection';

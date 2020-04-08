@@ -60,7 +60,7 @@ export default class Text extends Node {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'text' || type == 'view:text' || super.is( type );
+		return type === 'text' || type === 'view:text' || super.is( type );
 	}
 
 	/**

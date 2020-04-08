@@ -118,7 +118,7 @@ export default class DocumentFragment {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'documentFragment' || type == 'view:documentFragment';
+		return type === 'documentFragment' || type === 'view:documentFragment';
 	}
 
 	/**
