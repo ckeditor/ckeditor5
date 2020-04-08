@@ -2,9 +2,6 @@ CKEditor 5 Enter feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-enter.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-enter.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-enter)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-enter/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-enter?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-enter/status.svg)](https://david-dm.org/ckeditor/ckeditor5-enter)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-enter/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-enter?type=dev)
 
