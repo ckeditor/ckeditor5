@@ -780,7 +780,7 @@ function getNewHeadingRowsValue( first, last, headingRows ) {
 function adjustHeadingColumns( table, removedColumnIndexes, writer ) {
 	const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
 
-	if ( headingColumns && removedColumnIndexes.first <= headingColumns ) {
+	if ( headingColumns && removedColumnIndexes.first < headingColumns ) {
 		const headingsRemoved = Math.min( headingColumns - 1 /* Other numbers are 0-based */, removedColumnIndexes.last ) -
 			removedColumnIndexes.first + 1;
 
