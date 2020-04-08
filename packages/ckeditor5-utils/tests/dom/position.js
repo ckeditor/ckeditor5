@@ -111,6 +111,7 @@ describe( 'getOptimalPosition()', () => {
 
 	beforeEach( () => {
 		testUtils.sinon.stub( window, 'getComputedStyle' );
+		window.getComputedStyle.callThrough();
 
 		stubWindow( {
 			innerWidth: 10000,
@@ -118,6 +119,15 @@ describe( 'getOptimalPosition()', () => {
 			scrollX: 0,
 			scrollY: 0
 		} );
+	} );
+
+	afterEach( () => {
+		element.remove();
+		target.remove();
+
+		if ( limiter ) {
+			limiter.remove();
+		}
 	} );
 
 	it( 'should work when the target is a Function', () => {
@@ -177,6 +187,10 @@ describe( 'getOptimalPosition()', () => {
 		describe( 'positioned element parent', () => {
 			let parent;
 
+			afterEach( () => {
+				parent.remove();
+			} );
+
 			it( 'should return coordinates', () => {
 				stubWindow( {
 					innerWidth: 10000,
@@ -196,7 +210,7 @@ describe( 'getOptimalPosition()', () => {
 					position: 'absolute'
 				} );
 
-				element.parentElement = parent;
+				parent.appendChild( element );
 
 				assertPosition( { element, target, positions: [ attachLeftBottom ] }, {
 					top: -900,
@@ -219,16 +233,31 @@ describe( 'getOptimalPosition()', () => {
 					bottom: 10,
 					left: 0,
 					width: 10,
-					height: 10,
-					scrollTop: 100,
-					scrollLeft: 200
+					height: 10
 				}, {
 					position: 'absolute',
 					borderLeftWidth: '20px',
 					borderTopWidth: '40px'
 				} );
 
-				element.parentElement = parent;
+				Object.assign( element.style, {
+					width: '20px',
+					height: '20px',
+					marginTop: '100px',
+					marginLeft: '200px'
+				} );
+
+				Object.assign( parent.style, {
+					overflow: 'scroll',
+					width: '10px',
+					height: '10px'
+				} );
+
+				parent.appendChild( element );
+				document.body.appendChild( parent );
+
+				parent.scrollLeft = 200;
+				parent.scrollTop = 100;
 
 				assertPosition( { element, target, positions: [ attachLeftBottom ] }, {
 					top: 160,
@@ -267,6 +296,10 @@ describe( 'getOptimalPosition()', () => {
 
 	describe( 'with a limiter', () => {
 		beforeEach( setElementTargetLimiterPlayground );
+
+		afterEach( () => {
+			limiter.remove();
+		} );
 
 		it( 'should work when the limiter is a Function', () => {
 			assertPosition( {
@@ -316,7 +349,7 @@ describe( 'getOptimalPosition()', () => {
 
 		// https://github.com/ckeditor/ckeditor5-utils/issues/148
 		it( 'should return coordinates (#3)', () => {
-			limiter.parentNode = getElement( {
+			const parentNode = getElement( {
 				top: 100,
 				left: 0,
 				bottom: 110,
@@ -324,6 +357,9 @@ describe( 'getOptimalPosition()', () => {
 				width: 10,
 				height: 10
 			} );
+
+			parentNode.appendChild( limiter );
+			document.body.appendChild( parentNode );
 
 			assertPosition( {
 				element, target, limiter,
@@ -333,10 +369,12 @@ describe( 'getOptimalPosition()', () => {
 				left: 10,
 				name: 'right-bottom'
 			} );
+
+			parentNode.remove();
 		} );
 
 		it( 'should return the first position that completely fits in the limiter', () => {
-			element = getElement( {
+			const element = getElement( {
 				top: 0,
 				right: 5,
 				bottom: 5,
@@ -352,6 +390,8 @@ describe( 'getOptimalPosition()', () => {
 				left: -5,
 				name: 'left-bottom'
 			} );
+
+			element.remove();
 		} );
 	} );
 
@@ -465,7 +505,7 @@ describe( 'getOptimalPosition()', () => {
 		} );
 
 		it( 'should return the very first coordinates if limiter does not fit into the viewport', () => {
-			limiter = getElement( {
+			const limiter = getElement( {
 				top: -100,
 				right: -80,
 				bottom: -80,
@@ -483,10 +523,12 @@ describe( 'getOptimalPosition()', () => {
 				left: 10,
 				name: 'right-bottom'
 			} );
+
+			limiter.remove();
 		} );
 
 		it( 'should prefer positions fitting entirely into the viewport', () => {
-			target = getElement( {
+			const target = getElement( {
 				top: 100,
 				right: 35,
 				bottom: 120,
@@ -503,6 +545,8 @@ describe( 'getOptimalPosition()', () => {
 				left: 35,
 				name: 'right-bottom'
 			} );
+
+			target.remove();
 		} );
 	} );
 
@@ -578,7 +622,7 @@ describe( 'getOptimalPosition()', () => {
 			// second position intersects less with limiter but more with viewport and it should not be ignored.
 			//
 			// Target is outside viewport to force checking all positions, not only those completely fitting in viewport.
-			limiter = getElement( {
+			const limiter = getElement( {
 				top: -100,
 				right: 100,
 				bottom: 100,
@@ -586,7 +630,7 @@ describe( 'getOptimalPosition()', () => {
 				width: 200,
 				height: 200
 			} );
-			target = getElement( {
+			const target = getElement( {
 				top: -30,
 				right: 80,
 				bottom: -10,
@@ -594,7 +638,7 @@ describe( 'getOptimalPosition()', () => {
 				width: 20,
 				height: 20
 			} );
-			element = getElement( {
+			const element = getElement( {
 				top: 0,
 				right: 200,
 				bottom: 200,
@@ -610,6 +654,10 @@ describe( 'getOptimalPosition()', () => {
 				],
 				fitInViewport: true
 			}, 'right-bottom' );
+
+			limiter.remove();
+			target.remove();
+			element.remove();
 		} );
 	} );
 } );
@@ -631,18 +679,14 @@ function assertPositionName( options, expected ) {
 // @private
 // @param {Object} properties A set of properties for the element.
 // @param {Object} styles A set of styles in `window.getComputedStyle()` format.
-function getElement( properties = {}, styles = {} ) {
-	const element = {
-		tagName: 'div',
-		scrollLeft: 0,
-		scrollTop: 0,
-		ownerDocument: document
-	};
+function getElement( rect = {}, styles = {} ) {
+	expect( rect.right - rect.left ).to.equal( rect.width, 'getElement incorrect horizontal values' );
+	expect( rect.bottom - rect.top ).to.equal( rect.height, 'getElement incorrect vertical values' );
 
-	expect( properties.right - properties.left ).to.equal( properties.width, 'getElement incorrect horizontal values' );
-	expect( properties.bottom - properties.top ).to.equal( properties.height, 'getElement incorrect vertical values' );
+	const element = document.createElement( 'div' );
+	document.body.appendChild( element );
 
-	Object.assign( element, properties );
+	sinon.stub( element, 'getBoundingClientRect' ).returns( rect );
 
 	if ( !styles.borderLeftWidth ) {
 		styles.borderLeftWidth = '0px';
