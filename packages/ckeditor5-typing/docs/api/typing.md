@@ -22,11 +22,11 @@ npm install --save @ckeditor/ckeditor5-typing
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5-typing.
+The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-typing.
 
 ## External links
 
 * [`@ckeditor/ckeditor5-typing` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing)
-* [`ckeditor/ckeditor5-typing` on GitHub](https://github.com/ckeditor/ckeditor5-typing)
+* [`ckeditor/ckeditor5-typing` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-typing)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-typing/blob/master/CHANGELOG.md)
