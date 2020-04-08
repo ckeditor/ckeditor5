@@ -298,6 +298,7 @@ export function downcastRemoveRow() {
 		const viewStart = mapper.toViewPosition( data.position ).getLastMatchingPosition( value => !value.item.is( 'tr' ) );
 		const viewItem = viewStart.nodeAfter;
 		const tableSection = viewItem.parent;
+		const viewTable = tableSection.parent;
 
 		// Remove associated <tr> from the view.
 		const removeRange = viewWriter.createRangeOn( viewItem );
@@ -307,11 +308,10 @@ export function downcastRemoveRow() {
 			mapper.unbindViewElement( child );
 		}
 
-		// Check if table section has any children left - if not remove it from the view.
-		if ( !tableSection.childCount ) {
-			// No need to unbind anything as table section is not represented in the model.
-			viewWriter.remove( viewWriter.createRangeOn( tableSection ) );
-		}
+		// Cleanup: Ensure that thead & tbody sections are removed if left empty. See ckeditor/ckeditor5#6437.
+		// This happens if removing a row is associated with changing table's headingRows attribute (removing row from a heading section).
+		removeTableSectionIfEmpty( 'thead', viewTable, conversionApi );
+		removeTableSectionIfEmpty( 'tbody', viewTable, conversionApi );
 	}, { priority: 'higher' } );
 }
 
