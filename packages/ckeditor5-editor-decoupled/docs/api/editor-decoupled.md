@@ -22,11 +22,11 @@ npm install --save @ckeditor/ckeditor5-editor-decoupled
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5-editor-decoupled.
+The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-editor-decoupled.
 
 ## External links
 
 * [`@ckeditor/ckeditor5-editor-decoupled` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled)
-* [`ckeditor/ckeditor5-editor-decoupled` on GitHub](https://github.com/ckeditor/ckeditor5-editor-decoupled)
+* [`ckeditor/ckeditor5-editor-decoupled` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-editor-decoupled)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-editor-decoupled/blob/master/CHANGELOG.md)
