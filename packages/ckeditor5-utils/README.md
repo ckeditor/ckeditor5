@@ -2,9 +2,6 @@ CKEditor 5 utilities
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-utils.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-utils.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-utils)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-utils/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-utils?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-utils/status.svg)](https://david-dm.org/ckeditor/ckeditor5-utils)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-utils/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-utils?type=dev)
 
