@@ -19,19 +19,38 @@ import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbutton
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+
 describe( 'BlockToolbar', () => {
 	let editor, element, blockToolbar;
+	let resizeCallback;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
+
+		// Make sure other tests of the editor do not affect tests that follow.
+		// Without it, if an instance of ResizeObserver already exists somewhere undestroyed
+		// in DOM, the following DOM mock will have no effect.
+		ResizeObserver._observerInstance = null;
+
+		testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+			resizeCallback = callback;
+
+			return {
+				observe: sinon.spy(),
+				unobserve: sinon.spy()
+			};
+		} );
 
 		return ClassicTestEditor.create( element, {
 			plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote, Image, ImageCaption ],
@@ -61,6 +80,43 @@ describe( 'BlockToolbar', () => {
 
 		editor = await ClassicTestEditor.create( element, {
 			plugins: [ BlockToolbar ]
+		} );
+	} );
+
+	it( 'should accept the extended format of the toolbar config', () => {
+		return ClassicTestEditor
+			.create( element, {
+				plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote ],
+				blockToolbar: {
+					items: [ 'paragraph', 'heading1', 'heading2', 'blockQuote' ]
+				}
+			} )
+			.then( editor => {
+				blockToolbar = editor.plugins.get( BlockToolbar );
+
+				expect( blockToolbar.toolbarView.items ).to.length( 4 );
+
+				element.remove();
+
+				return editor.destroy();
+			} );
+	} );
+
+	it( 'should not group items when the config.shouldNotGroupWhenFull option is enabled', () => {
+		return ClassicTestEditor.create( element, {
+			plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote ],
+			blockToolbar: {
+				items: [ 'paragraph', 'heading1', 'heading2', 'blockQuote' ],
+				shouldNotGroupWhenFull: true
+			}
+		} ).then( editor => {
+			const blockToolbar = editor.plugins.get( BlockToolbar );
+
+			expect( blockToolbar.toolbarView.options.shouldGroupWhenFull ).to.be.false;
+
+			element.remove();
+
+			return editor.destroy();
 		} );
 	} );
 
@@ -157,6 +213,30 @@ describe( 'BlockToolbar', () => {
 				blockToolbar.toolbarView.focusTracker.isFocused = false;
 
 				expect( blockToolbar.panelView.isVisible ).to.be.false;
+			} );
+
+			it( 'should set a proper toolbar max-width', () => {
+				const viewElement = editor.ui.view.editable.element;
+
+				viewElement.style.width = '400px';
+
+				resizeCallback( [ {
+					target: viewElement,
+					contentRect: new Rect( viewElement )
+				} ] );
+
+				// The expected width should be a sum of the editable width and distance between
+				// block toolbar button and editable.
+				//           ---------------------------
+				//           |                         |
+				//   ___     |                         |
+				//  |__|     |        EDITABLE         |
+				//  button   |                         |
+				//           |                         |
+				//  <--------------max-width------------>
+				const expectedWidth = blockToolbar._getToolbarMaxWidth();
+
+				expect( blockToolbar.toolbarView.maxWidth ).to.be.equal( expectedWidth );
 			} );
 		} );
 

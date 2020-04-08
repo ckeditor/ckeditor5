@@ -19,8 +19,14 @@ import clickOutsideHandler from '../../bindings/clickoutsidehandler';
 
 import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import normalizeToolbarConfig from '../normalizetoolbarconfig';
 
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
+
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 import iconPilcrow from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
+
+const toPx = toUnit( 'px' );
 
 /**
  * The block toolbar plugin.
@@ -78,6 +84,14 @@ export default class BlockToolbar extends Plugin {
 		super( editor );
 
 		/**
+		 * A cached and normalized `config.blockToolbar` object.
+		 *
+		 * @type {module:core/editor/editorconfig~EditorConfig#blockToolbar}
+		 * @private
+		 */
+		this._blockToolbarConfig = normalizeToolbarConfig( this.editor.config.get( 'blockToolbar' ) );
+
+		/**
 		 * The toolbar view.
 		 *
 		 * @type {module:ui/toolbar/toolbarview~ToolbarView}
@@ -97,6 +111,20 @@ export default class BlockToolbar extends Plugin {
 		 * @type {module:ui/toolbar/block/blockbuttonview~BlockButtonView}
 		 */
 		this.buttonView = this._createButtonView();
+
+		/**
+		 * An instance of the resize observer that allows to respond to changes in editable's geometry
+		 * so the toolbar can stay within its boundaries (and group toolbar items that do not fit).
+		 *
+		 * **Note**: Used only when `shouldNotGroupWhenFull` was **not** set in the
+		 * {@link module:core/editor/editorconfig~EditorConfig#blockToolbar configuration}.
+		 *
+		 * **Note:** Created in {@link #afterInit}.
+		 *
+		 * @protected
+		 * @member {module:utils/dom/resizeobserver~ResizeObserver}
+		 */
+		this._resizeObserver = null;
 
 		// Close the #panelView upon clicking outside of the plugin UI.
 		clickOutsideHandler( {
@@ -149,13 +177,24 @@ export default class BlockToolbar extends Plugin {
 	 */
 	afterInit() {
 		const factory = this.editor.ui.componentFactory;
-		const config = this.editor.config.get( 'blockToolbar' ) || [];
+		const config = this._blockToolbarConfig;
 
-		this.toolbarView.fillFromConfig( config, factory );
+		this.toolbarView.fillFromConfig( config.items, factory );
 
 		// Hide panel before executing each button in the panel.
 		for ( const item of this.toolbarView.items ) {
 			item.on( 'execute', () => this._hidePanel( true ), { priority: 'high' } );
+		}
+
+		if ( !config.shouldNotGroupWhenFull ) {
+			this.listenTo( this.editor, 'ready', () => {
+				const editableElement = this.editor.ui.view.editable.element;
+
+				// Set #toolbarView's max-width just after the initialization and update it on the editable resize.
+				this._resizeObserver = new ResizeObserver( editableElement, () => {
+					this.toolbarView.maxWidth = this._getToolbarMaxWidth();
+				} );
+			} );
 		}
 	}
 
@@ -178,7 +217,10 @@ export default class BlockToolbar extends Plugin {
 	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
 	_createToolbarView() {
-		const toolbarView = new ToolbarView( this.editor.locale );
+		const shouldGroupWhenFull = !this._blockToolbarConfig.shouldNotGroupWhenFull;
+		const toolbarView = new ToolbarView( this.editor.locale, {
+			shouldGroupWhenFull
+		} );
 
 		toolbarView.extendTemplate( {
 			attributes: {
@@ -333,6 +375,8 @@ export default class BlockToolbar extends Plugin {
 		if ( !wasVisible ) {
 			this.toolbarView.items.get( 0 ).focus();
 		}
+
+		this.toolbarView.maxWidth = this._getToolbarMaxWidth();
 	}
 
 	/**
@@ -387,6 +431,23 @@ export default class BlockToolbar extends Plugin {
 
 		this.buttonView.top = position.top;
 		this.buttonView.left = position.left;
+	}
+
+	/**
+	 * Sets block {@link #toolbarView} max-width, based on
+	 * editable width plus distance between furthest edge of the {@link #buttonView} and the editable.
+	 *
+	 * @private
+	 * @returns {String} maxWidth A maximum width that toolbar can have, sets in pixels.
+	 */
+	_getToolbarMaxWidth() {
+		const editableElement = this.editor.ui.view.editable.element;
+		const editableRect = new Rect( editableElement );
+		const buttonRect = new Rect( this.buttonView.element );
+		const isRTL = this.editor.locale.uiLanguageDirection === 'rtl';
+		const offset = isRTL ? ( buttonRect.left - editableRect.right ) + buttonRect.width : editableRect.left - buttonRect.left;
+
+		return toPx( editableRect.width + offset );
 	}
 }
 
