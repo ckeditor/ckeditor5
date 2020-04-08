@@ -225,6 +225,8 @@ export default class Position {
 	 * @type {module:engine/model/node~Node|null}
 	 */
 	get nodeAfter() {
+		// Cache parent and reuse for performance reasons. This also means that we cannot use the #index property.
+		// See #6579.
 		const parent = this.parent;
 		const textNode = getTextNode( this, parent );
 
@@ -238,6 +240,8 @@ export default class Position {
 	 * @type {module:engine/model/node~Node|null}
 	 */
 	get nodeBefore() {
+		// Cache parent and reuse for performance reasons. This also means that we cannot use the #index property.
+		// See #6579.
 		const parent = this.parent;
 		const textNode = getTextNode( this, parent );
 
@@ -1061,6 +1065,9 @@ export default class Position {
  * @typedef {String} module:engine/model/position~PositionStickiness
  */
 
+// Helper function used to inline text node access by using a cached parent.
+// Reduces the access to the Position#parent property 3 times (in total, when taken into account what #nodeAfter and #nodeBefore do).
+// See #6579.
 function getTextNode( position, positionParent ) {
 	const node = positionParent.getChild( positionParent.offsetToIndex( position.offset ) );
 
