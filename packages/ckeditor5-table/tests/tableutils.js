@@ -1013,21 +1013,21 @@ describe( 'TableUtils', () => {
 
 			it( 'should decrease colspan of table cells from previous column', () => {
 				setData( model, modelTable( [
-					[ { colspan: 4, contents: '00' }, '03' ],
-					[ { colspan: 3, contents: '10' }, '13' ],
-					[ { colspan: 2, contents: '20' }, '22', '23' ],
-					[ '30', { colspan: 2, contents: '31' }, '33' ],
-					[ '40', '41', '42', '43' ]
+					[ { colspan: 4, contents: '00' }, '04' ],
+					[ { colspan: 3, contents: '10' }, '14' ],
+					[ { colspan: 2, contents: '20' }, '22', '23', '24' ],
+					[ '30', { colspan: 2, contents: '31' }, '33', '34' ],
+					[ '40', '41', '42', '43', '44' ]
 				] ) );
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 2 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
-					[ { colspan: 3, contents: '00' }, '03' ],
-					[ { colspan: 2, contents: '10' }, '13' ],
-					[ { colspan: 2, contents: '20' }, '23' ],
-					[ '30', '31', '33' ],
-					[ '40', '41', '43' ]
+					[ { colspan: 3, contents: '00' }, '04' ],
+					[ { colspan: 2, contents: '10' }, '14' ],
+					[ { colspan: 2, contents: '20' }, '23', '24' ],
+					[ '30', '31', '33', '34' ],
+					[ '40', '41', '43', '44' ]
 
 				] ) );
 			} );
@@ -1035,7 +1035,7 @@ describe( 'TableUtils', () => {
 			it( 'should decrease colspan of cells that are on removed column', () => {
 				setData( model, modelTable( [
 					[ { colspan: 3, contents: '00' }, '03' ],
-					[ { colspan: 2, contents: '10' }, '13' ],
+					[ { colspan: 2, contents: '10' }, '12', '13' ],
 					[ '20', '21', '22', '23' ]
 				] ) );
 
@@ -1043,7 +1043,7 @@ describe( 'TableUtils', () => {
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ { colspan: 2, contents: '00' }, '03' ],
-					[ '10', '13' ],
+					[ '10', '12', '13' ],
 					[ '21', '22', '23' ]
 				] ) );
 			} );
@@ -1051,14 +1051,14 @@ describe( 'TableUtils', () => {
 			it( 'should remove column with rowspan (first column)', () => {
 				setData( model, modelTable( [
 					[ { rowspan: 2, contents: '00' }, '01' ],
-					[ '10' ]
+					[ '11' ]
 				] ) );
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '01' ],
-					[ '10' ]
+					[ '11' ]
 				] ) );
 			} );
 
