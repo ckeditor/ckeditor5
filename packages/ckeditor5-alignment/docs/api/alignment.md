@@ -24,11 +24,11 @@ npm install --save @ckeditor/ckeditor5-alignment
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5-alignment.
+The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-alignment.
 
 ## External links
 
 * [`@ckeditor/ckeditor5-alignment` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment)
-* [`ckeditor/ckeditor5-alignment` on GitHub](https://github.com/ckeditor/ckeditor5-alignment)
+* [`ckeditor/ckeditor5-alignment` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-alignment)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-alignment/blob/master/CHANGELOG.md)
