@@ -19,7 +19,11 @@ import BlockToolbar from '../../../src/toolbar/block/blocktoolbar';
 BalloonEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, List, Paragraph, Heading, Image, ImageCaption, HeadingButtonsUI, ParagraphButtonUI, BlockToolbar ],
-		blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList' ]
+		blockToolbar: [
+			'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList', 'paragraph',
+			'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList', 'paragraph', 'heading1', 'heading2', 'heading3',
+			'bulletedList', 'numberedList'
+		]
 	} )
 	.then( editor => {
 		window.editor = editor;
