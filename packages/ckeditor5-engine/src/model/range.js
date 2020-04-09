@@ -158,7 +158,7 @@ export default class Range {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'range' || type == 'model:range';
+		return type === 'range' || type === 'model:range';
 	}
 
 	/**

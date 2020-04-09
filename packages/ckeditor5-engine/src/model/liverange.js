@@ -57,7 +57,9 @@ export default class LiveRange extends Range {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'liveRange' || type == 'model:liveRange' || super.is( type );
+		return type === 'liveRange' || type === 'model:liveRange' ||
+			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+			type == 'range' || type === 'model:range';
 	}
 
 	/**

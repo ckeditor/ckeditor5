@@ -68,11 +68,22 @@ export default class RootEditableElement extends EditableElement {
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
-		const cutType = type.replace( /^view:/, '' );
 		if ( !name ) {
-			return cutType == 'rootElement' || super.is( type );
+			return type === 'rootElement' || type === 'view:rootElement' ||
+				// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+				type === 'editableElement' || type === 'view:editableElement' ||
+				type === 'containerElement' || type === 'view:containerElement' ||
+				type === this.name || type === 'view:' + this.name ||
+				type === 'element' || type === 'view:element' ||
+				type === 'node' || type === 'view:node';
 		} else {
-			return ( cutType == 'rootElement' && name == this.name ) || super.is( type, name );
+			return name === this.name && (
+				type === 'rootElement' || type === 'view:rootElement' ||
+				// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+				type === 'editableElement' || type === 'view:editableElement' ||
+				type === 'containerElement' || type === 'view:containerElement' ||
+				type === 'element' || type === 'view:element'
+			);
 		}
 	}
 

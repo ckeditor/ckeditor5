@@ -1360,14 +1360,14 @@ export default class Writer {
 			const markerRange = marker.getRange();
 			let isAffected = false;
 
-			if ( type == 'move' ) {
+			if ( type === 'move' ) {
 				isAffected =
 					positionOrRange.containsPosition( markerRange.start ) ||
 					positionOrRange.start.isEqual( markerRange.start ) ||
 					positionOrRange.containsPosition( markerRange.end ) ||
 					positionOrRange.end.isEqual( markerRange.end );
 			} else {
-				// if type == 'merge'.
+				// if type === 'merge'.
 				const elementBefore = positionOrRange.nodeBefore;
 				const elementAfter = positionOrRange.nodeAfter;
 
