@@ -7,11 +7,11 @@
 @import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_shadow.css";
 
 figure {
-	background-color: #f3f3f3;
+	background-color: hsl(0, 0%, 95.3%);
 	padding: 10px;
 
 	& figcaption {
-		background: white;
+		background: hsl(0, 0%, 100%);
 		outline: none;
 
 		&.focused {
