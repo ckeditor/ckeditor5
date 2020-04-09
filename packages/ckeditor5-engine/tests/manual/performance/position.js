@@ -9,10 +9,10 @@ document.getElementById( 'run' ).addEventListener( 'click', () => {
 	log( 'Running tests...' );
 
 	setTimeout( async () => {
-		await runTest( 'concat', concat );
-		await runTest( 'spread operator', spread );
-		await runTest( 'for-loop', forLoop );
-		await runTest( 'ultra-loop', ultraForLoop );
+		await runTest( 'concat', testConcat );
+		await runTest( 'spread operator', testSpread );
+		await runTest( 'for-loop', testForLoop );
+		await runTest( 'ultra-loop', testUltraForLoop );
 
 		log( 'done' );
 	} );
@@ -26,38 +26,22 @@ function log( line ) {
 	output.appendChild( paragraphElement );
 }
 
-const roots = [
-	[ 1, 2, 3, 4 ],
-	[ 1 ],
-	[ 1, 2 ],
-	[ 1 ],
-	[ 7 ],
-	[ 8 ],
-	[ 7 ],
-	[ 4, 2 ],
-	[ 0, 2 ],
-	[ 1, 2, 3, 4 ]
-];
-
-const paths = [
-	[ 0 ],
-	[ 6 ],
-
-	[ 2 ],
-	[ 1 ],
-	[ 0, 1 ],
-	[ 0, 1 ],
-	[ 0, 1 ],
-	[ 0, 1, 3 ],
-	[ 0, 2, 0 ]
-];
-
 function runTest( name, callback ) {
 	return new Promise( resolve => {
 		const start = new Date();
 
-		for ( let i = 0; i < 500000; i++ ) {
-			callback();
+		const repetitions = 10000000;
+		const z = Array( repetitions );
+
+		const root = {
+			root: 'foo',
+			path: [ 0 ]
+		};
+		const path = [ 0, 2 ];
+
+		for ( let i = 0; i < repetitions; i++ ) {
+			const newPath = callback( root, path );
+			z[ i ] = [ newPath.length ];
 		}
 
 		const end = new Date();
@@ -70,51 +54,70 @@ function runTest( name, callback ) {
 	} );
 }
 
-function concat() {
-	for ( const rootPath of roots ) {
-		for ( const path of paths ) {
-			rootPath.concat( path );
+class Position {
+	constructor( root, path, stickiness = 'left', pathMergeMethod ) {
+		if ( !( path instanceof Array ) || path.length === 0 ) {
+			throw new Error( 'model-position-path-incorrect-format' );
 		}
+
+		path = pathMergeMethod( root.path, path );
+		root = root.root;
+
+		this.root = root;
+		this.path = path;
+		this.stickiness = stickiness;
 	}
 }
 
-function spread() {
-	for ( const rootPath of roots ) {
-		for ( const path of paths ) {
-			[ ...rootPath, ...path ];
-		}
-	}
+function testConcat( root, path ) {
+	return new Position( root, path, 'right', concat );
 }
 
-function forLoop() {
-	for ( const rootPath of roots ) {
-		for ( const path of paths ) {
-			const newPath = [];
-
-			for ( let i = 0; i < rootPath.length; i++ ) {
-				newPath.push( rootPath[ i ] );
-			}
-
-			for ( let i = 0; i < path.length; i++ ) {
-				newPath.push( path[ i ] );
-			}
-		}
-	}
+function testSpread( root, path ) {
+	return new Position( root, path, 'right', spread );
 }
 
-function ultraForLoop() {
-	for ( const rootPath of roots ) {
-		for ( const path of paths ) {
-			const fullLength = rootPath.length + path.length;
-			const newPath = new Array( fullLength );
+function testForLoop( root, path ) {
+	return new Position( root, path, 'right', forLoop );
+}
 
-			for ( let i = 0; i < rootPath.length; i++ ) {
-				newPath[ i ] = rootPath[ i ];
-			}
+function testUltraForLoop( root, path ) {
+	return new Position( root, path, 'right', ultraForLoop );
+}
 
-			for ( let i = 0; i < path.length; i++ ) {
-				newPath[ rootPath.length + i ] = path[ i ];
-			}
-		}
+function concat( rootPath, path ) {
+	return rootPath.concat( path );
+}
+
+function spread( rootPath, path ) {
+	return [ ...rootPath, ...path ];
+}
+
+function forLoop( rootPath, path ) {
+	const newPath = [];
+
+	for ( let i = 0; i < rootPath.length; i++ ) {
+		newPath.push( rootPath[ i ] );
 	}
+
+	for ( let i = 0; i < path.length; i++ ) {
+		newPath.push( path[ i ] );
+	}
+
+	return newPath;
+}
+
+function ultraForLoop( rootPath, path ) {
+	const fullLength = rootPath.length + path.length;
+	const newPath = new Array( fullLength );
+
+	for ( let i = 0; i < rootPath.length; i++ ) {
+		newPath[ i ] = rootPath[ i ];
+	}
+
+	for ( let i = 0; i < path.length; i++ ) {
+		newPath[ rootPath.length + i ] = path[ i ];
+	}
+
+	return newPath;
 }
