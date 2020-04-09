@@ -54,13 +54,58 @@ function runTest( name, callback ) {
 	} );
 }
 
-class Position {
-	constructor( root, path, stickiness = 'left', pathMergeMethod ) {
+class PositionConcat {
+	constructor( root, path, stickiness = 'left' ) {
 		if ( !( path instanceof Array ) || path.length === 0 ) {
 			throw new Error( 'model-position-path-incorrect-format' );
 		}
 
-		path = pathMergeMethod( root.path, path );
+		path = root.path.concat( path );
+		root = root.root;
+
+		this.root = root;
+		this.path = path;
+		this.stickiness = stickiness;
+	}
+}
+
+class PositionSpread {
+	constructor( root, path, stickiness = 'left' ) {
+		if ( !( path instanceof Array ) || path.length === 0 ) {
+			throw new Error( 'model-position-path-incorrect-format' );
+		}
+
+		path = [ ...root.path, ...path ];
+		root = root.root;
+
+		this.root = root;
+		this.path = path;
+		this.stickiness = stickiness;
+	}
+}
+
+class PositionForLoop {
+	constructor( root, path, stickiness = 'left' ) {
+		if ( !( path instanceof Array ) || path.length === 0 ) {
+			throw new Error( 'model-position-path-incorrect-format' );
+		}
+
+		path = forLoop( root.path, path );
+		root = root.root;
+
+		this.root = root;
+		this.path = path;
+		this.stickiness = stickiness;
+	}
+}
+
+class PositionUltraForLoop {
+	constructor( root, path, stickiness = 'left' ) {
+		if ( !( path instanceof Array ) || path.length === 0 ) {
+			throw new Error( 'model-position-path-incorrect-format' );
+		}
+
+		path = ultraForLoop( root.path, path );
 		root = root.root;
 
 		this.root = root;
@@ -70,27 +115,19 @@ class Position {
 }
 
 function testConcat( root, path ) {
-	return new Position( root, path, 'right', concat );
+	return new PositionConcat( root, path );
 }
 
 function testSpread( root, path ) {
-	return new Position( root, path, 'right', spread );
+	return new PositionSpread( root, path );
 }
 
 function testForLoop( root, path ) {
-	return new Position( root, path, 'right', forLoop );
+	return new PositionForLoop( root, path );
 }
 
 function testUltraForLoop( root, path ) {
-	return new Position( root, path, 'right', ultraForLoop );
-}
-
-function concat( rootPath, path ) {
-	return rootPath.concat( path );
-}
-
-function spread( rootPath, path ) {
-	return [ ...rootPath, ...path ];
+	return new PositionUltraForLoop( root, path );
 }
 
 function forLoop( rootPath, path ) {
