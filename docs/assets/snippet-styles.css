@@ -93,7 +93,7 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 
 .demo-row__third > div {
 	padding: 2.5rem;
-	border: 1px solid rgba(0, 0, 0, 0.15);
+	border: 1px solid hsla(0, 0%, 0%, 0.15);
 }
 
 .demo-row__third:nth-of-type(2) {
@@ -114,10 +114,10 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 .main__notification.notice {
 	position: fixed;
 	max-width: 650px;
-	border: 1px solid #e4e4e4;
-	border-left-color: #f9c669;
+	border: 1px solid hsl(0, 0%, 89%);
+	border-left-color: hsl(38.8, 92.3%, 69.4%);
 	border-left-width: 3px;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+	box-shadow: 0 2px 6px hsla(0, 0%, 0%, 0.18);
 	/* override .notice class' margins and paddings */
 	padding: 20px 40px 20px 20px;
 	margin: 0;
@@ -164,7 +164,7 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 }
 
 .main__notification-close:hover {
-	background: #eee;
+	background: hsl(0, 0%, 93%);
 }
 
 .main__notification-close:active:focus {
@@ -245,7 +245,7 @@ https://github.com/ckeditor/ckeditor5/issues/1545 */
 #snippet-inline-editor .ck-content:not(.ck-focused),
 #snippet-balloon-editor.ck-content:not(.ck-focused),
 #snippet-balloon-block-editor.ck-content:not(.ck-focused) {
-	border: 1px solid rgba(0, 0, 0, 0.15);
+	border: 1px solid hsla(0, 0%, 0%, 0.15);
 }
 
 #snippet-inline-editor h2, #snippet-inline-editor h3 {
@@ -264,7 +264,7 @@ https://github.com/ckeditor/ckeditor5/issues/1545 */
 }
 
 #snippet-inline-editor header.ck-content h3 {
-	color: rgba(5, 22, 42, 0.59);
+	color: hsla(212, 79%, 9%, 0.59);
 	font-weight: 600;
 	font-size: 1.6rem;
 }
