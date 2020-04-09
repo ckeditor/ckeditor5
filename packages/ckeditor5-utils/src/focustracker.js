@@ -24,6 +24,8 @@ import mix from './mix';
  * which contain other `focusable` elements. But note that this wrapper element has to be focusable too
  * (have e.g. `tabindex="-1"`).
  *
+ * Check out the {@glink framework/guides/deep-dive/ui/focus-tracking "Deep dive into focus tracking" guide} to learn more.
+ *
  * @mixes module:utils/dom/emittermixin~EmitterMixin
  * @mixes module:utils/observablemixin~ObservableMixin
  */
