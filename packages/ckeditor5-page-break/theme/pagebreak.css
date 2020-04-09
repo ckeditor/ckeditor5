@@ -31,7 +31,7 @@
 	font-size: 0.75em;
 	font-weight: bold;
 	color: hsl(0, 0%, 20%);
-	background: #fff;
+	background: hsl(0, 0%, 100%);
 	box-shadow: 2px 2px 1px hsla(0, 0%, 0%, 0.15);
 
 	/* Disable the possibility to select the label text by the user. */
