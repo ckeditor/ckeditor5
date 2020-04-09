@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, setTimeout */
+/* globals window, document, setTimeout */
 
 document.getElementById( 'run' ).addEventListener( 'click', () => {
 	log( 'Running tests...' );
@@ -18,6 +18,8 @@ document.getElementById( 'run' ).addEventListener( 'click', () => {
 	} );
 } );
 
+window.cache = [];
+
 const output = document.getElementById( 'output' );
 
 function log( line ) {
@@ -31,7 +33,6 @@ function runTest( name, callback ) {
 		const start = new Date();
 
 		const repetitions = 10000000;
-		const z = Array( repetitions );
 
 		const root = {
 			root: 'foo',
@@ -41,7 +42,7 @@ function runTest( name, callback ) {
 
 		for ( let i = 0; i < repetitions; i++ ) {
 			const newPath = callback( root, path );
-			z[ i ] = [ newPath.length ];
+			window.cache.push( newPath.length );
 		}
 
 		const end = new Date();
