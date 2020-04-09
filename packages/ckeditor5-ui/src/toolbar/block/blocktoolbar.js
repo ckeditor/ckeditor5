@@ -500,7 +500,6 @@ export default class BlockToolbar extends Plugin {
  *			},
  *		};
  *
- *
  * Read more about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
  *
  * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#blockToolbar
