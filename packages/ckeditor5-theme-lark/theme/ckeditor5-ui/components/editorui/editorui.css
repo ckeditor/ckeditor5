@@ -45,6 +45,7 @@
 		margin-bottom: var(--ck-spacing-large);
 	}
 
+	/* https://github.com/ckeditor/ckeditor5/issues/6517 */
 	&.ck-blurred ::selection {
 		background: var(--ck-color-editable-blur-selection);
 	}
