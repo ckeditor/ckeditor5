@@ -9,6 +9,10 @@
 @import "../../../mixins/_focus.css";
 @import "../../mixins/_button.css";
 
+:root {
+	--ck-color-editable-blur-selection: hsl(0, 0%, 85%);
+}
+
 .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
 	@mixin ck-rounded-corners;
 
@@ -39,6 +43,11 @@
 	/* https://github.com/ckeditor/ckeditor5/issues/847 */
 	& > *:last-child {
 		margin-bottom: var(--ck-spacing-large);
+	}
+
+	/* https://github.com/ckeditor/ckeditor5/issues/6517 */
+	&.ck-blurred ::selection {
+		background: var(--ck-color-editable-blur-selection);
 	}
 }
 
