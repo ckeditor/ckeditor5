@@ -489,6 +489,18 @@ export default class BlockToolbar extends Plugin {
  *			blockToolbar: [ 'paragraph', 'heading1', 'heading2', '|', 'bulletedList', 'numberedList' ]
  *		};
  *
+ * ## Configuring items grouping
+ *
+ * You can prevent automatic items grouping by setting the `shouldNotGroupWhenFull` option:
+ *
+ *		const config = {
+ *			blockToolbar: {
+ *				items: [ 'paragraph', 'heading1', 'heading2', '|', 'bulletedList', 'numberedList' ],
+ *				shouldNotGroupWhenFull: true
+ *			},
+ *		};
+ *
+ *
  * Read more about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
  *
  * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#blockToolbar
