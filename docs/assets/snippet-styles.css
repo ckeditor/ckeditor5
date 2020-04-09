@@ -139,7 +139,7 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 }
 
 .main__notification-body p {
-  margin-bottom: 0.3em;
+	margin-bottom: 0.3em;
 }
 
 .main__notification-body p:last-child {
