@@ -665,6 +665,7 @@ export function modelChangePostFixer( model, writer ) {
 			}
 
 			for (
+				// Cache previousSibling and reuse for performance reasons. See #6581.
 				let previousSibling = listHead.previousSibling;
 				previousSibling && previousSibling.is( 'listItem' );
 				previousSibling = listHead.previousSibling
