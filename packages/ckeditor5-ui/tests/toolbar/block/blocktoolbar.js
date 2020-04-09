@@ -214,30 +214,6 @@ describe( 'BlockToolbar', () => {
 
 				expect( blockToolbar.panelView.isVisible ).to.be.false;
 			} );
-
-			it( 'should set a proper toolbar max-width', () => {
-				const viewElement = editor.ui.view.editable.element;
-
-				viewElement.style.width = '400px';
-
-				resizeCallback( [ {
-					target: viewElement,
-					contentRect: new Rect( viewElement )
-				} ] );
-
-				// The expected width should be a sum of the editable width and distance between
-				// block toolbar button and editable.
-				//           ---------------------------
-				//           |                         |
-				//   ___     |                         |
-				//  |__|     |        EDITABLE         |
-				//  button   |                         |
-				//           |                         |
-				//  <--------------max-width------------>
-				const expectedWidth = blockToolbar._getToolbarMaxWidth();
-
-				expect( blockToolbar.toolbarView.maxWidth ).to.be.equal( expectedWidth );
-			} );
 		} );
 
 		describe( 'buttonView', () => {
@@ -501,6 +477,74 @@ describe( 'BlockToolbar', () => {
 				blockToolbar.buttonView.fire( 'execute' );
 
 				sinon.assert.callOrder( panelViewShowSpy, maxWidthSetSpy.set, panelViewPinSpy );
+			} );
+
+			it( 'should set a proper toolbar max-width', () => {
+				const viewElement = editor.ui.getEditableElement();
+
+				testUtils.sinon.stub( viewElement, 'getBoundingClientRect' ).returns( {
+					left: 100,
+					width: 400
+				} );
+
+				testUtils.sinon.stub( blockToolbar.buttonView.element, 'getBoundingClientRect' ).returns( {
+					left: 60,
+					width: 40
+				} );
+
+				resizeCallback( [ {
+					target: viewElement,
+					contentRect: new Rect( viewElement )
+				} ] );
+
+				blockToolbar.buttonView.fire( 'execute' );
+
+				// The expected width should be equal the distance between
+				// left edge of the block toolbar button and right edge of the editable.
+				//            ---------------------------
+				//            |                         |
+				//  ____      |                         |
+				//  |__|      |        EDITABLE         |
+				//  button    |                         |
+				//            |                         |
+				//  <--------------max-width------------>
+
+				expect( blockToolbar.toolbarView.maxWidth ).to.be.equal( '440px' );
+			} );
+
+			it( 'should set a proper toolbar max-width in RTL', () => {
+				const viewElement = editor.ui.getEditableElement();
+
+				editor.locale.uiLanguageDirection = 'rtl';
+
+				testUtils.sinon.stub( viewElement, 'getBoundingClientRect' ).returns( {
+					right: 450,
+					width: 400
+				} );
+
+				testUtils.sinon.stub( blockToolbar.buttonView.element, 'getBoundingClientRect' ).returns( {
+					left: 450,
+					width: 40
+				} );
+
+				resizeCallback( [ {
+					target: viewElement,
+					contentRect: new Rect( viewElement )
+				} ] );
+
+				blockToolbar.buttonView.fire( 'execute' );
+
+				// The expected width should be equal the distance between
+				// left edge of the editable and right edge of the block toolbar button.
+				//  ---------------------------
+				//  |                         |
+				//  |                         |      ____
+				//  |        EDITABLE         |      |__|
+				//  |                         |    button
+				//  |                         |
+				//  <--------------max-width------------>
+
+				expect( blockToolbar.toolbarView.maxWidth ).to.be.equal( '440px' );
 			} );
 		} );
 
