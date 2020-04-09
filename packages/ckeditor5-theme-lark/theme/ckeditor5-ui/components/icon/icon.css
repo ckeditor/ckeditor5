@@ -30,8 +30,8 @@
 		color: inherit;
 
 		&:not([fill]) {
-				/* Needed by FF. */
-				fill: currentColor;
+			/* Needed by FF. */
+			fill: currentColor;
 		}
 	}
 }

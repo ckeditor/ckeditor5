@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
- @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 .ck.ck-form__row {
 	padding: var(--ck-spacing-standard) var(--ck-spacing-large) 0;

@@ -17,7 +17,7 @@
 	font-size: inherit;
 
 	& .ck-dropdown__arrow {
-	width: var(--ck-dropdown-arrow-size);
+		width: var(--ck-dropdown-arrow-size);
 	}
 
 	@mixin ck-dir ltr {
