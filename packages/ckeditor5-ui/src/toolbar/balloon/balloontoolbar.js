@@ -380,9 +380,9 @@ function getBalloonPositions( isBackward ) {
  *
  *		const config = {
  *			balloonToolbar: {
- *				items: [ 'bold', 'italic', 'undo', 'redo' ]
+ *				items: [ 'bold', 'italic', 'undo', 'redo' ],
+ *				shouldNotGroupWhenFull: true
  *			},
- *			shouldNotGroupWhenFull: true
  *		};
  *
  * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#balloonToolbar

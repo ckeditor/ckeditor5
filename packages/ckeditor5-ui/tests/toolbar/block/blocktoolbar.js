@@ -19,19 +19,38 @@ import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbutton
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+
 describe( 'BlockToolbar', () => {
 	let editor, element, blockToolbar;
+	let resizeCallback;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
+
+		// Make sure other tests of the editor do not affect tests that follow.
+		// Without it, if an instance of ResizeObserver already exists somewhere undestroyed
+		// in DOM, the following DOM mock will have no effect.
+		ResizeObserver._observerInstance = null;
+
+		testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+			resizeCallback = callback;
+
+			return {
+				observe: sinon.spy(),
+				unobserve: sinon.spy()
+			};
+		} );
 
 		return ClassicTestEditor.create( element, {
 			plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote, Image, ImageCaption ],
@@ -61,6 +80,43 @@ describe( 'BlockToolbar', () => {
 
 		editor = await ClassicTestEditor.create( element, {
 			plugins: [ BlockToolbar ]
+		} );
+	} );
+
+	it( 'should accept the extended format of the toolbar config', () => {
+		return ClassicTestEditor
+			.create( element, {
+				plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote ],
+				blockToolbar: {
+					items: [ 'paragraph', 'heading1', 'heading2', 'blockQuote' ]
+				}
+			} )
+			.then( editor => {
+				blockToolbar = editor.plugins.get( BlockToolbar );
+
+				expect( blockToolbar.toolbarView.items ).to.length( 4 );
+
+				element.remove();
+
+				return editor.destroy();
+			} );
+	} );
+
+	it( 'should not group items when the config.shouldNotGroupWhenFull option is enabled', () => {
+		return ClassicTestEditor.create( element, {
+			plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote ],
+			blockToolbar: {
+				items: [ 'paragraph', 'heading1', 'heading2', 'blockQuote' ],
+				shouldNotGroupWhenFull: true
+			}
+		} ).then( editor => {
+			const blockToolbar = editor.plugins.get( BlockToolbar );
+
+			expect( blockToolbar.toolbarView.options.shouldGroupWhenFull ).to.be.false;
+
+			element.remove();
+
+			return editor.destroy();
 		} );
 	} );
 
@@ -401,6 +457,95 @@ describe( 'BlockToolbar', () => {
 
 			expect( blockToolbar.buttonView.top ).to.equal( 472 );
 			expect( blockToolbar.buttonView.left ).to.equal( 600 );
+		} );
+
+		describe( 'toolbarView#maxWidth', () => {
+			it( 'should be set when the panel shows up', () => {
+				expect( blockToolbar.toolbarView.maxWidth ).to.equal( 'auto' );
+
+				blockToolbar.buttonView.fire( 'execute' );
+
+				expect( blockToolbar.panelView.isVisible ).to.be.true;
+				expect( blockToolbar.toolbarView.maxWidth ).to.match( /.+px/ );
+			} );
+
+			it( 'should be set after the toolbar was shown (but before panel#pin()) to let the items grouping do its job', () => {
+				const maxWidthSetSpy = sinon.spy( blockToolbar.toolbarView, 'maxWidth', [ 'set' ] );
+				const panelViewShowSpy = sinon.spy( blockToolbar.panelView, 'show' );
+				const panelViewPinSpy = sinon.spy( blockToolbar.panelView, 'pin' );
+
+				blockToolbar.buttonView.fire( 'execute' );
+
+				sinon.assert.callOrder( panelViewShowSpy, maxWidthSetSpy.set, panelViewPinSpy );
+			} );
+
+			it( 'should set a proper toolbar max-width', () => {
+				const viewElement = editor.ui.getEditableElement();
+
+				testUtils.sinon.stub( viewElement, 'getBoundingClientRect' ).returns( {
+					left: 100,
+					width: 400
+				} );
+
+				testUtils.sinon.stub( blockToolbar.buttonView.element, 'getBoundingClientRect' ).returns( {
+					left: 60,
+					width: 40
+				} );
+
+				resizeCallback( [ {
+					target: viewElement,
+					contentRect: new Rect( viewElement )
+				} ] );
+
+				blockToolbar.buttonView.fire( 'execute' );
+
+				// The expected width should be equal the distance between
+				// left edge of the block toolbar button and right edge of the editable.
+				//            ---------------------------
+				//            |                         |
+				//  ____      |                         |
+				//  |__|      |        EDITABLE         |
+				//  button    |                         |
+				//            |                         |
+				//  <--------------max-width------------>
+
+				expect( blockToolbar.toolbarView.maxWidth ).to.be.equal( '440px' );
+			} );
+
+			it( 'should set a proper toolbar max-width in RTL', () => {
+				const viewElement = editor.ui.getEditableElement();
+
+				editor.locale.uiLanguageDirection = 'rtl';
+
+				testUtils.sinon.stub( viewElement, 'getBoundingClientRect' ).returns( {
+					right: 450,
+					width: 400
+				} );
+
+				testUtils.sinon.stub( blockToolbar.buttonView.element, 'getBoundingClientRect' ).returns( {
+					left: 450,
+					width: 40
+				} );
+
+				resizeCallback( [ {
+					target: viewElement,
+					contentRect: new Rect( viewElement )
+				} ] );
+
+				blockToolbar.buttonView.fire( 'execute' );
+
+				// The expected width should be equal the distance between
+				// left edge of the editable and right edge of the block toolbar button.
+				//  ---------------------------
+				//  |                         |
+				//  |                         |      ____
+				//  |        EDITABLE         |      |__|
+				//  |                         |    button
+				//  |                         |
+				//  <--------------max-width------------>
+
+				expect( blockToolbar.toolbarView.maxWidth ).to.be.equal( '440px' );
+			} );
 		} );
 
 		it( 'should reposition the #panelView when open on ui#update', () => {

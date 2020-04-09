@@ -51,7 +51,7 @@ To add this feature to your editor install the [`@ckeditor/ckeditor5-ui`](https:
 npm install --save @ckeditor/ckeditor5-ui
 ```
 
-And add it to your plugin list:
+Add the `BlockToolbar` to your plugin list and configure the feature using the `blockToolbar` property:
 
 ```js
 import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar';
@@ -68,6 +68,32 @@ BalloonEditor
 			'|',
 			'blockQuote', 'imageUpload'
 		],
+		toolbar: [ ... ]
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+You can also use the `shouldNotGroupWhenFull` option to prevent {@link module:core/editor/editorconfig~EditorConfig#toolbar automatic items grouping} in the block toolbar:
+
+```js
+import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar';
+import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
+import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbuttonui';
+
+BalloonEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI, ... ],
+		blockToolbar: {
+			items: [
+				'paragraph', 'heading1', 'heading2', 'heading3',
+				'|',
+				'bulletedList', 'numberedList',
+				'|',
+				'blockQuote', 'imageUpload'
+			],
+			shouldNotGroupWhenFull: true
+		},
 		toolbar: [ ... ]
 	} )
 	.then( ... )

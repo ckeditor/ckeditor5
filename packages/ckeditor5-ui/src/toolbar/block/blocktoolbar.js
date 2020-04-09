@@ -19,8 +19,14 @@ import clickOutsideHandler from '../../bindings/clickoutsidehandler';
 
 import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import normalizeToolbarConfig from '../normalizetoolbarconfig';
 
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
+
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 import iconPilcrow from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
+
+const toPx = toUnit( 'px' );
 
 /**
  * The block toolbar plugin.
@@ -78,6 +84,14 @@ export default class BlockToolbar extends Plugin {
 		super( editor );
 
 		/**
+		 * A cached and normalized `config.blockToolbar` object.
+		 *
+		 * @type {module:core/editor/editorconfig~EditorConfig#blockToolbar}
+		 * @private
+		 */
+		this._blockToolbarConfig = normalizeToolbarConfig( this.editor.config.get( 'blockToolbar' ) );
+
+		/**
 		 * The toolbar view.
 		 *
 		 * @type {module:ui/toolbar/toolbarview~ToolbarView}
@@ -97,6 +111,20 @@ export default class BlockToolbar extends Plugin {
 		 * @type {module:ui/toolbar/block/blockbuttonview~BlockButtonView}
 		 */
 		this.buttonView = this._createButtonView();
+
+		/**
+		 * An instance of the resize observer that allows to respond to changes in editable's geometry
+		 * so the toolbar can stay within its boundaries (and group toolbar items that do not fit).
+		 *
+		 * **Note**: Used only when `shouldNotGroupWhenFull` was **not** set in the
+		 * {@link module:core/editor/editorconfig~EditorConfig#blockToolbar configuration}.
+		 *
+		 * **Note:** Created in {@link #afterInit}.
+		 *
+		 * @protected
+		 * @member {module:utils/dom/resizeobserver~ResizeObserver}
+		 */
+		this._resizeObserver = null;
 
 		// Close the #panelView upon clicking outside of the plugin UI.
 		clickOutsideHandler( {
@@ -149,13 +177,24 @@ export default class BlockToolbar extends Plugin {
 	 */
 	afterInit() {
 		const factory = this.editor.ui.componentFactory;
-		const config = this.editor.config.get( 'blockToolbar' ) || [];
+		const config = this._blockToolbarConfig;
 
-		this.toolbarView.fillFromConfig( config, factory );
+		this.toolbarView.fillFromConfig( config.items, factory );
 
 		// Hide panel before executing each button in the panel.
 		for ( const item of this.toolbarView.items ) {
 			item.on( 'execute', () => this._hidePanel( true ), { priority: 'high' } );
+		}
+
+		if ( !config.shouldNotGroupWhenFull ) {
+			this.listenTo( this.editor, 'ready', () => {
+				const editableElement = this.editor.ui.view.editable.element;
+
+				// Set #toolbarView's max-width just after the initialization and update it on the editable resize.
+				this._resizeObserver = new ResizeObserver( editableElement, () => {
+					this.toolbarView.maxWidth = this._getToolbarMaxWidth();
+				} );
+			} );
 		}
 	}
 
@@ -178,7 +217,10 @@ export default class BlockToolbar extends Plugin {
 	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
 	_createToolbarView() {
-		const toolbarView = new ToolbarView( this.editor.locale );
+		const shouldGroupWhenFull = !this._blockToolbarConfig.shouldNotGroupWhenFull;
+		const toolbarView = new ToolbarView( this.editor.locale, {
+			shouldGroupWhenFull
+		} );
 
 		toolbarView.extendTemplate( {
 			attributes: {
@@ -325,6 +367,32 @@ export default class BlockToolbar extends Plugin {
 	_showPanel() {
 		const wasVisible = this.panelView.isVisible;
 
+		// So here's the thing: If there was no initial panelView#show() or these two were in different order, the toolbar
+		// positioning will break in RTL editors. Weird, right? What you show know is that the toolbar
+		// grouping works thanks to:
+		//
+		// * the ResizeObserver, which kicks in as soon as the toolbar shows up in DOM (becomes visible again).
+		// * the observable ToolbarView#maxWidth, which triggers re-grouping when changed.
+		//
+		// Here are the possible scenarios:
+		//
+		// 1. (WRONG ❌) If the #maxWidth is set when the toolbar is invisible, it won't affect item grouping (no DOMRects, no grouping).
+		//    Then, when panelView.pin() is called, the position of the toolbar will be calculated for the old
+		//    items grouping state, and when finally ResizeObserver kicks in (hey, the toolbar is visible now, right?)
+		//    it will group/ungroup some items and the length of the toolbar will change. But since in RTL the toolbar
+		//    is attached on the right side and the positioning uses CSS "left", it will result in the toolbar shifting
+		//    to the left and being displayed in the wrong place.
+		// 2. (WRONG ❌) If the panelView.pin() is called first and #maxWidth set next, then basically the story repeats. The balloon
+		//    calculates the position for the old toolbar grouping state, then the toolbar re-groups items and because
+		//    it is positioned using CSS "left" it will move.
+		// 3. (RIGHT ✅) We show the panel first (the toolbar does re-grouping but it does not matter), then the #maxWidth
+		//    is set allowing the toolbar to re-group again and finally panelView.pin() does the positioning when the
+		//    items grouping state is stable and final.
+		//
+		// https://github.com/ckeditor/ckeditor5/issues/6449, https://github.com/ckeditor/ckeditor5/issues/6575
+		this.panelView.show();
+		this.toolbarView.maxWidth = this._getToolbarMaxWidth();
+
 		this.panelView.pin( {
 			target: this.buttonView.element,
 			limiter: this.editor.ui.getEditableElement()
@@ -388,6 +456,23 @@ export default class BlockToolbar extends Plugin {
 		this.buttonView.top = position.top;
 		this.buttonView.left = position.left;
 	}
+
+	/**
+	 * Gets the {@link #toolbarView} max-width, based on
+	 * editable width plus distance between farthest edge of the {@link #buttonView} and the editable.
+	 *
+	 * @private
+	 * @returns {String} maxWidth A maximum width that toolbar can have, in pixels.
+	 */
+	_getToolbarMaxWidth() {
+		const editableElement = this.editor.ui.view.editable.element;
+		const editableRect = new Rect( editableElement );
+		const buttonRect = new Rect( this.buttonView.element );
+		const isRTL = this.editor.locale.uiLanguageDirection === 'rtl';
+		const offset = isRTL ? ( buttonRect.left - editableRect.right ) + buttonRect.width : editableRect.left - buttonRect.left;
+
+		return toPx( editableRect.width + offset );
+	}
 }
 
 /**
@@ -402,6 +487,17 @@ export default class BlockToolbar extends Plugin {
  *
  *		const config = {
  *			blockToolbar: [ 'paragraph', 'heading1', 'heading2', '|', 'bulletedList', 'numberedList' ]
+ *		};
+ *
+ * ## Configuring items grouping
+ *
+ * You can prevent automatic items grouping by setting the `shouldNotGroupWhenFull` option:
+ *
+ *		const config = {
+ *			blockToolbar: {
+ *				items: [ 'paragraph', 'heading1', 'heading2', '|', 'bulletedList', 'numberedList' ],
+ *				shouldNotGroupWhenFull: true
+ *			},
  *		};
  *
  * Read more about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
