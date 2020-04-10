@@ -795,11 +795,13 @@ function moveCellsToRow( table, targetRowIndex, cellsToMove, writer ) {
 		startRow: targetRowIndex,
 		endRow: targetRowIndex
 	} );
+
+	const tableRowMap = [ ...tableWalker ];
 	const row = table.getChild( targetRowIndex );
 
 	let previousCell;
 
-	for ( const { column, cell, isSpanned } of tableWalker ) {
+	for ( const { column, cell, isSpanned } of tableRowMap ) {
 		if ( cellsToMove.has( column ) ) {
 			const { cell: cellToMove, rowspan } = cellsToMove.get( column );
 
