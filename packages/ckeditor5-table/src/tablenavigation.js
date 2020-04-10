@@ -12,6 +12,7 @@ import { getSelectedTableCells, getTableCellsContainingSelection } from './utils
 import { findAncestor } from './commands/utils';
 import TableWalker from './tablewalker';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
 /**
  * This plugin enables a keyboard navigation for tables.
@@ -162,7 +163,8 @@ export default class TableNavigation extends Plugin {
 
 				this._navigateFromCellInDirection( tableCell, direction );
 
-				return cancel();
+				cancel();
+				return;
 			}
 
 			// So we fall back to selection inside the table cell.
@@ -176,73 +178,94 @@ export default class TableNavigation extends Plugin {
 			const cellRange = model.createRangeIn( tableCell );
 
 			// Let's check if the selection is at the beginning/end of the cell.
-			if ( isSelectionAtEdge( cellRange, selection, direction ) ) {
+			if ( isSelectionAtCellEdge( cellRange, selection, direction ) ) {
 				this._navigateFromCellInDirection( tableCell, direction );
 
-				return cancel();
+				cancel();
+				return;
 			}
 
 			// Ok, so easiest cases didn't solved the problem, let's try to find out if we are in the first/last
 			// line of the cell content, and if so we will move the caret to beginning/end.
-			if ( [ 'up', 'down' ].includes( direction ) && this._handleEdgeLineNavigation( direction, cellRange ) ) {
+
+			if ( [ 'up', 'down' ].includes( direction ) && this._isNavigationInEdgeLine( cellRange, direction ) ) {
+				model.change( writer => {
+					writer.setSelection( direction == 'up' ? cellRange.start : cellRange.end );
+				} );
+
 				cancel();
 			}
 		};
 	}
 
 	/**
-	 * Detects if a keyboard navigation is on the first/last row of the table cell and moves selection to the beginning/end.
+	 * Detects if a keyboard navigation is on the first/last row of the table cell.
 	 *
 	 * @private
-	 * @param {String} direction The direction of navigation relative to the cell in which the caret is located.
-	 * Possible values: `"left"`, `"right"`, `"up"` and `"down"`.
 	 * @param {module:engine/model/range~Range} cellRange Current table cell content range.
+	 * @param {String} direction The direction of navigation relative to the cell in which the caret is located.
+	 * Possible values: `"up"` and `"down"`.
 	 * @returns {Boolean} Whether navigation was handled.
 	 */
-	_handleEdgeLineNavigation( direction, cellRange ) {
+	_isNavigationInEdgeLine( cellRange, direction ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const editing = this.editor.editing;
+		const domConverter = editing.view.domConverter;
 
-		const selectionPosition = direction == 'up' ? selection.getFirstPosition() : selection.getLastPosition();
-
-		const focusRangeBefore = createRangeFromPositionAndLength( model, selectionPosition, -1 );
-		const focusRangeAfter = createRangeFromPositionAndLength( model, selectionPosition, 1 );
-
-		const focusRangeRectBefore = focusRangeBefore ? mapModelRangeToViewRect( editing, focusRangeBefore ) : null;
-		const focusRangeRectAfter = focusRangeAfter ? mapModelRangeToViewRect( editing, focusRangeAfter ) : null;
+		let modelRange;
 
 		if ( direction == 'up' ) {
-			const modelRange = model.createRange( cellRange.start, selectionPosition );
-			const firstLineRect = getRangeLimitLineRect( this.editor, modelRange, true );
+			modelRange = new ModelRange( cellRange.start, selection.getFirstPosition() );
+		} else {
+			// Wrapped lines contain exactly the same position at the end of current line
+			// and at the beginning of next line. That position's client rect is at the end
+			// of current line. In case of caret at first position of the last line that 'dual'
+			// position would be detected as it's not the last line.
+			const position = selection.getLastPosition();
+			modelRange = new ModelRange( position.isAtEnd ? position : position.getShiftedBy( 1 ), cellRange.end );
+		}
 
-			if (
-				focusRangeRectBefore && firstLineRect.getIntersectionArea( focusRangeRectBefore ) ||
-				focusRangeRectAfter && firstLineRect.getIntersectionArea( focusRangeRectAfter )
-			) {
-				model.change( writer => {
-					writer.setSelection( cellRange.start );
-				} );
+		const viewRange = editing.mapper.toViewRange( modelRange );
+		const domRange = domConverter.viewRangeToDom( viewRange );
+		const rects = Rect.getDomRangeRects( domRange );
 
-				return true;
+		const isForward = direction == 'up';
+		let boundaryVerticalPosition = undefined;
+
+		for ( let i = 0; i < rects.length; i++ ) {
+			const idx = isForward ? i : rects.length - i - 1;
+			const rect = rects[ idx ];
+
+			const nextRect = rects.find( ( rect, i ) => i > idx && rect.width > 0 );
+
+			// First let's skip container Rects.
+			if ( nextRect && rect.contains( nextRect ) ) {
+				continue;
 			}
-		} else if ( direction == 'down' ) {
-			const modelRange = model.createRange( selectionPosition, cellRange.end );
-			const lastLineRect = getRangeLimitLineRect( this.editor, modelRange, false );
 
-			if (
-				focusRangeRectBefore && lastLineRect.getIntersectionArea( focusRangeRectBefore ) ||
-				focusRangeRectAfter && lastLineRect.getIntersectionArea( focusRangeRectAfter )
-			) {
-				model.change( writer => {
-					writer.setSelection( cellRange.end );
-				} );
+			if ( boundaryVerticalPosition === undefined ) {
+				boundaryVerticalPosition = Math.round( isForward ? rect.bottom : rect.top );
+				continue;
+			}
 
-				return true;
+			// Let's check if this rect is in new line.
+			if ( isForward ) {
+				if ( Math.round( rect.top ) >= boundaryVerticalPosition ) {
+					return false;
+				}
+
+				boundaryVerticalPosition = Math.max( boundaryVerticalPosition, rect.bottom );
+			} else {
+				if ( Math.round( rect.bottom ) <= boundaryVerticalPosition ) {
+					return false;
+				}
+
+				boundaryVerticalPosition = Math.min( boundaryVerticalPosition, rect.top );
 			}
 		}
 
-		return false;
+		return true;
 	}
 
 	/**
@@ -313,105 +336,11 @@ export default class TableNavigation extends Plugin {
 	}
 }
 
-function isSelectionAtEdge( cellRange, selection, direction ) {
+function isSelectionAtCellEdge( cellRange, selection, direction ) {
 	switch ( direction ) {
 		case 'left': return selection.isCollapsed && selection.focus.isTouching( cellRange.start );
 		case 'right': return selection.isCollapsed && selection.focus.isTouching( cellRange.end );
 		case 'up': return selection.focus.isTouching( cellRange.start );
 		case 'down': return selection.focus.isTouching( cellRange.end );
 	}
-
-	return false;
-}
-
-// Returns `Rect` of first or last line of the `range`.
-//
-// Note: This is not handling RTL languages.
-//
-// @private
-// @param {module:core/editor/editor~Editor} editor The editor instance.
-// @param {module:engine/model/range~Range} range Range of model elements.
-// @param {Boolean} findFirstLine Whether should find `Rect` of first or last line.
-// @returns {module:utils/dom/rect~Rect}
-function getRangeLimitLineRect( editor, range, findFirstLine ) {
-	const editing = editor.editing;
-	const domConverter = editing.view.domConverter;
-
-	const viewCellRange = editing.mapper.toViewRange( range );
-	const domRange = domConverter.viewRangeToDom( viewCellRange );
-	const cellRangeRects = Rect.getDomRangeRects( domRange );
-
-	const lineRect = {
-		left: Number.POSITIVE_INFINITY,
-		top: Number.POSITIVE_INFINITY,
-		right: Number.NEGATIVE_INFINITY,
-		bottom: Number.NEGATIVE_INFINITY
-	};
-
-	for ( let i = 0; i < cellRangeRects.length; i++ ) {
-		const idx = findFirstLine ? i : cellRangeRects.length - i - 1;
-		const rect = cellRangeRects[ idx ];
-
-		const nextRect = cellRangeRects.find( ( rect, i ) => i > idx && rect.width > 0 );
-
-		// First let's skip container Rects.
-		if ( nextRect && rect.contains( nextRect ) ) {
-			continue;
-		}
-
-		// Let's check if this rect is in new line.
-		if ( findFirstLine ) {
-			if (
-				Math.round( rect.left ) < Math.round( lineRect.right ) ||
-				Math.round( rect.left ) == Math.round( lineRect.right ) &&
-				Math.round( rect.top ) >= Math.round( lineRect.bottom )
-			) {
-				break;
-			}
-		} else {
-			if (
-				Math.round( lineRect.left ) < Math.round( rect.right ) ||
-				Math.round( lineRect.left ) == Math.round( rect.right ) &&
-				Math.round( lineRect.top ) >= Math.round( rect.bottom )
-			) {
-				break;
-			}
-		}
-
-		lineRect.left = Math.min( lineRect.left, rect.left );
-		lineRect.top = Math.min( lineRect.top, rect.top );
-		lineRect.right = Math.max( lineRect.right, rect.right );
-		lineRect.bottom = Math.max( lineRect.bottom, rect.bottom );
-	}
-
-	return new Rect( {
-		...lineRect,
-		width: lineRect.right - lineRect.left,
-		height: lineRect.bottom - lineRect.top
-	} );
-}
-
-function createRangeFromPositionAndLength( model, position, length ) {
-	const newOffset = position.offset + length;
-
-	if ( newOffset < 0 || newOffset > position.parent.maxOffset ) {
-		return null;
-	}
-
-	const otherPosition = Object.assign( position.clone(), { offset: newOffset } );
-
-	if ( position.isBefore( otherPosition ) ) {
-		return model.createRange( position, otherPosition );
-	}
-
-	return model.createRange( otherPosition, position );
-}
-
-function mapModelRangeToViewRect( editing, modelRange ) {
-	const domConverter = editing.view.domConverter;
-
-	const viewRange = editing.mapper.toViewRange( modelRange );
-	const domRange = domConverter.viewRangeToDom( viewRange );
-
-	return Rect.getDomRangeRects( domRange ).pop();
 }
