@@ -8,37 +8,53 @@ import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 
 import { defaultConversion, defaultSchema, modelTable } from './_utils/utils';
 
+import TableEditing from '../src/tableediting';
 import TableUtils from '../src/tableutils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'TableUtils', () => {
 	let editor, model, root, tableUtils;
-
-	beforeEach( () => {
-		return ModelTestEditor.create( {
-			plugins: [ TableUtils ]
-		} ).then( newEditor => {
-			editor = newEditor;
-			model = editor.model;
-			root = model.document.getRoot( 'main' );
-			tableUtils = editor.plugins.get( TableUtils );
-
-			defaultSchema( model.schema );
-			defaultConversion( editor.conversion );
-		} );
-	} );
 
 	afterEach( () => {
 		return editor.destroy();
 	} );
 
 	describe( '#pluginName', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		it( 'should provide plugin name', () => {
 			expect( TableUtils.pluginName ).to.equal( 'TableUtils' );
 		} );
 	} );
 
 	describe( 'getCellLocation()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		it( 'should return proper table cell location', () => {
 			setData( model, modelTable( [
 				[ { rowspan: 2, colspan: 2, contents: '00[]' }, '02' ],
@@ -52,6 +68,20 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'insertRows()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		it( 'should insert row in given table at given index', () => {
 			setData( model, modelTable( [
 				[ '11[]', '12' ],
@@ -192,6 +222,20 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'insertColumns()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		it( 'should insert column in given table at given index', () => {
 			setData( model, modelTable( [
 				[ '11[]', '12' ],
@@ -390,6 +434,20 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'splitCellVertically()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		it( 'should split table cell to given table cells number', () => {
 			setData( model, modelTable( [
 				[ '00', '01', '02' ],
@@ -534,6 +592,20 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'splitCellHorizontally()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		it( 'should split table cell to default table cells number', () => {
 			setData( model, modelTable( [
 				[ '00', '01', '02' ],
@@ -709,6 +781,20 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'getColumns()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		it( 'should return proper number of columns', () => {
 			setData( model, modelTable( [
 				[ '00', { colspan: 3, contents: '01' }, '04' ]
@@ -719,6 +805,20 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'getRows()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		it( 'should return proper number of columns for simple table', () => {
 			setData( model, modelTable( [
 				[ '00', '01' ],
@@ -749,6 +849,17 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'removeRows()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ Paragraph, TableEditing, TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+			} );
+		} );
+
 		describe( 'single row', () => {
 			it( 'should remove a given row from a table start', () => {
 				setData( model, modelTable( [
@@ -797,7 +908,7 @@ describe( 'TableUtils', () => {
 				setData( model, modelTable( [
 					[ { rowspan: 4, contents: '00' }, { rowspan: 3, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
 					[ { rowspan: 2, contents: '13' }, '14' ],
-					[ '22', '23', '24' ],
+					[ '22', '24' ],
 					[ '31', '32', '33', '34' ]
 				] ) );
 
@@ -997,6 +1108,20 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'removeColumns()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		describe( 'single row', () => {
 			it( 'should remove a given column', () => {
 				setData( model, modelTable( [
