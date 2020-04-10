@@ -27,7 +27,10 @@ import {
  * The engine of the to-do list feature. It handles creating, editing and removing to-do lists and their items.
  *
  * It registers the entire functionality of the {@link module:list/listediting~ListEditing list editing plugin} and extends
- * it with the `'todoList'` command.
+ * it with the commands:
+ *
+ * - `'todoList'`,
+ * - `'todoListCheck'`.
  *
  * @extends module:core/plugin~Plugin
  */
