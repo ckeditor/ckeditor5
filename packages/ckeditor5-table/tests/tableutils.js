@@ -943,17 +943,17 @@ describe( 'TableUtils', () => {
 				setData( model, modelTable( [
 					[ '00', '01', '02', '03' ],
 					[ { rowspan: 4, contents: '10' }, { rowspan: 3, contents: '11' }, { rowspan: 2, contents: '12' }, '13' ],
-					[ '23' ],
-					[ '32', '33' ],
-					[ '41', '42', '43' ]
+					[ { rowspan: 3, contents: '23' } ],
+					[ '32' ],
+					[ '41', '42' ]
 				] ) );
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '00', '01', '02', '03' ],
-					[ { rowspan: 2, contents: '10' }, '11', '32', '33' ],
-					[ '41', '42', '43' ]
+					[ { rowspan: 2, contents: '10' }, '11', '32', { rowspan: 2, contents: '23' } ],
+					[ '41', '42' ]
 				] ) );
 			} );
 
