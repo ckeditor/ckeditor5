@@ -939,33 +939,37 @@ describe( 'TableUtils', () => {
 				] ) );
 			} );
 
-			it( 'should properly calculate truncated rowspans', () => {
+			it( 'should move row-spaned cells to a row after removed rows section', () => {
 				setData( model, modelTable( [
-					[ '00', { contents: '01', rowspan: 3 } ],
-					[ '10' ],
-					[ '20' ]
-				] ) );
-
-				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2 } );
-
-				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
-					[ '20', '01' ]
-				] ) );
-			} );
-
-			it( 'should decrease rowspan of table cells from rows before removed rows section', () => {
-				setData( model, modelTable( [
-					[ { rowspan: 4, contents: '00' }, { rowspan: 3, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
-					[ '13', '14' ],
-					[ '22', '23', '24' ],
-					[ '31', '32', '33', '34' ]
+					[ '00', '01', '02', '03' ],
+					[ { rowspan: 4, contents: '10' }, { rowspan: 3, contents: '11' }, { rowspan: 2, contents: '12' }, '13' ],
+					[ '23' ],
+					[ '32', '33' ],
+					[ '41', '42', '43' ]
 				] ) );
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
-					[ { rowspan: 2, contents: '00' }, '01', '02', '03', '04' ],
-					[ '31', '32', '33', '34' ]
+					[ '00', '01', '02', '03' ],
+					[ { rowspan: 2, contents: '10' }, '11', '32', '33' ],
+					[ '41', '42', '43' ]
+				] ) );
+			} );
+
+			it( 'should decrease rowspan of table cells from rows before removed rows section', () => {
+				setData( model, modelTable( [
+					[ { rowspan: 4, contents: '00' }, { rowspan: 3, contents: '01' }, { rowspan: 2, contents: '02' }, '03' ],
+					[ '13' ],
+					[ '22', '23' ],
+					[ '31', '32', '33' ]
+				] ) );
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ { rowspan: 2, contents: '00' }, '01', '02', '03' ],
+					[ '31', '32', '33' ]
 				] ) );
 			} );
 
