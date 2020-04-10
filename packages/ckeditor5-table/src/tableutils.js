@@ -288,9 +288,13 @@ export default class TableUtils extends Plugin {
 		const first = options.at;
 		const last = first + rowsToRemove - 1;
 
-		// Cells from removed rows section might stick out of. Such cells are moved to a next row after a removed section.
+		// Removing rows from table requires most calculations to be done prior to changing table structure.
+
+		// 1. Preparation
+
+		// 1a. Cells from removed rows section might stick out of. Such cells are moved to a next row after a removed section.
 		const cellsToMove = new Map();
-		// Similarly, if a cell is "above" removed rows sections we must trim their rowspan.
+		// 1b. Similarly, if a cell is "above" removed rows sections we must trim their rowspan.
 		const cellsToTrim = [];
 
 		for ( const { row, column, rowspan, cell } of new TableWalker( table, { endRow: last } ) ) {
@@ -313,19 +317,24 @@ export default class TableUtils extends Plugin {
 			}
 		}
 
+		// 2. Execution
 		model.change( writer => {
+			// 2a. Move cells from removed rows that extends over a removed section - must be done before removing rows.
+			// This will fill any gaps in a rows below that previously were empty because of row-spanned cells.
 			const rowAfterRemovedSection = last + 1;
-
 			moveCellsToRow( table, rowAfterRemovedSection, cellsToMove, writer );
 
+			// 2b. Remove all required rows.
 			for ( let i = last; i >= first; i-- ) {
 				writer.remove( table.getChild( i ) );
 			}
 
+			// 2c. Update cells from rows above that overlaps removed section. Similar to step 2 but does not involve moving cells.
 			for ( const { rowspan, cell } of cellsToTrim ) {
 				updateNumericAttribute( 'rowspan', rowspan, cell, writer );
 			}
 
+			// 2d. Adjust heading rows if removed rows were in a heading section.
 			updateHeadingRows( table, first, last, model, writer.batch );
 		} );
 	}
