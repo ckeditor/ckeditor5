@@ -237,20 +237,19 @@ describe( 'getOptimalPosition()', () => {
 				}, {
 					position: 'absolute',
 					borderLeftWidth: '20px',
-					borderTopWidth: '40px'
+					borderTopWidth: '40px',
+					overflow: 'scroll',
+					width: '10px',
+					height: '10px',
+					background: 'red'
 				} );
 
 				Object.assign( element.style, {
 					width: '20px',
 					height: '20px',
 					marginTop: '100px',
-					marginLeft: '200px'
-				} );
-
-				Object.assign( parent.style, {
-					overflow: 'scroll',
-					width: '10px',
-					height: '10px'
+					marginLeft: '200px',
+					background: 'green'
 				} );
 
 				parent.appendChild( element );
@@ -260,8 +259,8 @@ describe( 'getOptimalPosition()', () => {
 				parent.scrollTop = 100;
 
 				assertPosition( { element, target, positions: [ attachLeftBottom ] }, {
-					top: 160,
-					left: 260,
+					top: 200,
+					left: 280,
 					name: 'left-bottom'
 				} );
 			} );
@@ -696,7 +695,7 @@ function getElement( rect = {}, styles = {} ) {
 		styles.borderTopWidth = '0px';
 	}
 
-	window.getComputedStyle.withArgs( element ).returns( styles );
+	Object.assign( element.style, styles );
 
 	return element;
 }
