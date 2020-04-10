@@ -24,14 +24,14 @@ describe( 'getPositionedAncestor', () => {
 		expect( getPositionedAncestor() ).to.be.null;
 	} );
 
-	it( 'should return null when there is no parent', () => {
+	it( 'should return null when there is no positioned ancestor', () => {
 		expect( getPositionedAncestor( element ) ).to.be.null;
 	} );
 
-	it( 'should consider passed element', () => {
+	it( 'should not consider the passed element', () => {
 		element.style.position = 'relative';
 
-		expect( getPositionedAncestor( element ) ).to.equal( element );
+		expect( getPositionedAncestor( element ) ).to.be.null;
 	} );
 
 	it( 'should find the positioned ancestor (direct parent)', () => {
