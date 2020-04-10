@@ -10,7 +10,6 @@
 import TreeWalker from './treewalker';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import Text from './text';
 import { last } from 'lodash-es';
 
 // To check if component is loaded more than once.
@@ -216,9 +215,7 @@ export default class Position {
 	 * @type {module:engine/model/text~Text|null}
 	 */
 	get textNode() {
-		const node = this.parent.getChild( this.index );
-
-		return ( node instanceof Text && node.startOffset < this.offset ) ? node : null;
+		return getTextNode( this, this.parent );
 	}
 
 	/**
@@ -228,17 +225,35 @@ export default class Position {
 	 * @type {module:engine/model/node~Node|null}
 	 */
 	get nodeAfter() {
-		return this.textNode === null ? this.parent.getChild( this.index ) : null;
+		// Cache parent and reuse for performance reasons. This also means that we cannot use the #index property.
+		// See #6579.
+		const parent = this.parent;
+		const textNode = getTextNode( this, parent );
+
+		if ( textNode !== null ) {
+			return null;
+		}
+
+		return parent.getChild( parent.offsetToIndex( this.offset ) );
 	}
 
 	/**
 	 * Node directly before this position or `null` if this position is in text node.
 	 *
 	 * @readonly
-	 * @type {Node}
+	 * @type {module:engine/model/node~Node|null}
 	 */
 	get nodeBefore() {
-		return this.textNode === null ? this.parent.getChild( this.index - 1 ) : null;
+		// Cache parent and reuse for performance reasons. This also means that we cannot use the #index property.
+		// See #6579.
+		const parent = this.parent;
+		const textNode = getTextNode( this, parent );
+
+		if ( textNode !== null ) {
+			return null;
+		}
+
+		return parent.getChild( parent.offsetToIndex( this.offset ) - 1 );
 	}
 
 	/**
@@ -339,10 +354,12 @@ export default class Position {
 	 * @returns {Array.<module:engine/model/item~Item>} Array with ancestors.
 	 */
 	getAncestors() {
-		if ( this.parent.is( 'documentFragment' ) ) {
-			return [ this.parent ];
+		const parent = this.parent;
+
+		if ( parent.is( 'documentFragment' ) ) {
+			return [ parent ];
 		} else {
-			return this.parent.getAncestors( { includeSelf: true } );
+			return parent.getAncestors( { includeSelf: true } );
 		}
 	}
 
@@ -1057,3 +1074,16 @@ export default class Position {
  *
  * @typedef {String} module:engine/model/position~PositionStickiness
  */
+
+// Helper function used to inline text node access by using a cached parent.
+// Reduces the access to the Position#parent property 3 times (in total, when taken into account what #nodeAfter and #nodeBefore do).
+// See #6579.
+function getTextNode( position, positionParent ) {
+	const node = positionParent.getChild( positionParent.offsetToIndex( position.offset ) );
+
+	if ( node && node.is( 'text' ) && node.startOffset < position.offset ) {
+		return node;
+	}
+
+	return null;
+}
