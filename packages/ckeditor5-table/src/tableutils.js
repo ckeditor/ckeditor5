@@ -283,27 +283,47 @@ export default class TableUtils extends Plugin {
 	 */
 	removeRows( table, options ) {
 		const model = this.editor.model;
-		const first = options.at;
+
 		const rowsToRemove = options.rows || 1;
 
+		const first = options.at;
 		const last = first + rowsToRemove - 1;
 
-		model.change( writer => {
-			for ( let i = last; i >= first; i-- ) {
-				removeRow( table, i, writer );
-			}
+		const cellsToMove = new Map();
+		const cellsToTrim = [];
 
-			const headingRows = table.getAttribute( 'headingRows' ) || 0;
-
-			if ( headingRows && first < headingRows ) {
-				const newRows = getNewHeadingRowsValue( first, last, headingRows );
-
-				// Must be done after the changes in table structure (removing rows).
-				// Otherwise the downcast converter for headingRows attribute will fail. ckeditor/ckeditor5#6391.
-				model.enqueueChange( writer.batch, writer => {
-					updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
+		for ( const { row, column, rowspan, cell } of [ ...new TableWalker( table, { endRow: last } ) ] ) {
+			// Get cells from removed row that are spanned over multiple rows.
+			if ( row >= first && row <= last && ( row + rowspan - 1 > last ) ) {
+				cellsToMove.set( column, {
+					cell,
+					rowspan: rowspan - ( row === first ? rowsToRemove : last - row + 1 )
 				} );
 			}
+
+			// Get cells to reduce rowspan on cells that are above removed row and overlaps removed row.
+			if ( row < first && row + rowspan > last ) {
+				cellsToTrim.push( {
+					cell,
+					rowspan: row + rowspan - 1 >= last ? rowspan - rowsToRemove : rowspan - ( first - row )
+				} );
+			}
+		}
+
+		model.change( writer => {
+			const nextRowIndex = last + 1;
+
+			moveCellsToNextRow( table, nextRowIndex, cellsToMove, writer );
+
+			for ( let i = last; i >= first; i-- ) {
+				writer.remove( table.getChild( i ) );
+			}
+
+			for ( const { rowspan, cell } of cellsToTrim ) {
+				updateNumericAttribute( 'rowspan', rowspan, cell, writer );
+			}
+
+			updateHeadingRows( first, last, model, writer, table );
 		} );
 	}
 
@@ -730,43 +750,6 @@ function breakSpanEvenly( span, numberOfCells ) {
 	return { newCellsSpan, updatedSpan };
 }
 
-function removeRow( table, rowIndex, writer ) {
-	const cellsToMove = new Map();
-	const tableRow = table.getChild( rowIndex );
-	const tableMap = [ ...new TableWalker( table, { endRow: rowIndex } ) ];
-
-	// Get cells from removed row that are spanned over multiple rows.
-	tableMap
-		.filter( ( { row, rowspan } ) => row === rowIndex && rowspan > 1 )
-		.forEach( ( { column, cell, rowspan } ) => cellsToMove.set( column, { cell, rowspanToSet: rowspan - 1 } ) );
-
-	// Reduce rowspan on cells that are above removed row and overlaps removed row.
-	tableMap
-		.filter( ( { row, rowspan } ) => row <= rowIndex - 1 && row + rowspan > rowIndex )
-		.forEach( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
-
-	// Move cells to another row.
-	const targetRow = rowIndex + 1;
-	const tableWalker = new TableWalker( table, { includeSpanned: true, startRow: targetRow, endRow: targetRow } );
-	let previousCell;
-
-	for ( const { row, column, cell } of [ ...tableWalker ] ) {
-		if ( cellsToMove.has( column ) ) {
-			const { cell: cellToMove, rowspanToSet } = cellsToMove.get( column );
-			const targetPosition = previousCell ?
-				writer.createPositionAfter( previousCell ) :
-				writer.createPositionAt( table.getChild( row ), 0 );
-			writer.move( writer.createRangeOn( cellToMove ), targetPosition );
-			updateNumericAttribute( 'rowspan', rowspanToSet, cellToMove, writer );
-			previousCell = cellToMove;
-		} else {
-			previousCell = cell;
-		}
-	}
-
-	writer.remove( tableRow );
-}
-
 // Calculates a new heading rows value for removing rows from heading section.
 function getNewHeadingRowsValue( first, last, headingRows ) {
 	if ( last < headingRows ) {
@@ -785,5 +768,47 @@ function adjustHeadingColumns( table, removedColumnIndexes, writer ) {
 			removedColumnIndexes.first + 1;
 
 		writer.setAttribute( 'headingColumns', headingColumns - headingsRemoved, table );
+	}
+}
+
+function updateHeadingRows( first, last, model, writer, table ) {
+	const headingRows = table.getAttribute( 'headingRows' ) || 0;
+
+	if ( headingRows && first < headingRows ) {
+		const newRows = getNewHeadingRowsValue( first, last, headingRows );
+
+		// Must be done after the changes in table structure (removing rows).
+		// Otherwise the downcast converter for headingRows attribute will fail. ckeditor/ckeditor5#6391.
+		model.enqueueChange( writer.batch, writer => {
+			updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
+		} );
+	}
+}
+
+function moveCellsToNextRow( table, nextRowIndex, cellsToMove, writer ) {
+	const tableWalker = new TableWalker( table, {
+		includeSpanned: true,
+		startRow: nextRowIndex,
+		endRow: nextRowIndex
+	} );
+	const row = table.getChild( nextRowIndex );
+
+	let previousCell;
+
+	for ( const { column, cell, isSpanned } of tableWalker ) {
+		if ( cellsToMove.has( column ) ) {
+			const { cell: cellToMove, rowspan } = cellsToMove.get( column );
+
+			const targetPosition = previousCell ?
+				writer.createPositionAfter( previousCell ) :
+				writer.createPositionAt( row, 0 );
+
+			writer.move( writer.createRangeOn( cellToMove ), targetPosition );
+			updateNumericAttribute( 'rowspan', rowspan, cellToMove, writer );
+
+			previousCell = cellToMove;
+		} else if ( !isSpanned ) {
+			previousCell = cell;
+		}
 	}
 }
