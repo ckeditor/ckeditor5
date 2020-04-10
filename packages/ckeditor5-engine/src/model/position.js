@@ -230,7 +230,11 @@ export default class Position {
 		const parent = this.parent;
 		const textNode = getTextNode( this, parent );
 
-		return textNode === null ? parent.getChild( parent.offsetToIndex( this.offset ) ) : null;
+		if ( textNode !== null ) {
+			return null;
+		}
+
+		return parent.getChild( parent.offsetToIndex( this.offset ) );
 	}
 
 	/**
@@ -245,7 +249,11 @@ export default class Position {
 		const parent = this.parent;
 		const textNode = getTextNode( this, parent );
 
-		return textNode === null ? parent.getChild( parent.offsetToIndex( this.offset ) - 1 ) : null;
+		if ( textNode !== null ) {
+			return null;
+		}
+
+		return parent.getChild( parent.offsetToIndex( this.offset ) - 1 );
 	}
 
 	/**
@@ -1073,5 +1081,9 @@ export default class Position {
 function getTextNode( position, positionParent ) {
 	const node = positionParent.getChild( positionParent.offsetToIndex( position.offset ) );
 
-	return ( node && node.is( 'text' ) && node.startOffset < position.offset ) ? node : null;
+	if ( node && node.is( 'text' ) && node.startOffset < position.offset ) {
+		return node;
+	}
+
+	return null;
 }
