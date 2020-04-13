@@ -12,9 +12,9 @@ import TextProxy from './textproxy';
 import Element from './element';
 import {
 	default as Position,
-	getTextNode as getTextNodeAtPosition,
-	getNodeAfter as getNodeAfterPosition,
-	getNodeBefore as getNodeBeforePosition
+	getTextNodeAtPosition,
+	getNodeAfterPosition,
+	getNodeBeforePosition
 } from './position';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 

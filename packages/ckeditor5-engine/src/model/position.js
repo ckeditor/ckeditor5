@@ -215,7 +215,7 @@ export default class Position {
 	 * @type {module:engine/model/text~Text|null}
 	 */
 	get textNode() {
-		return getTextNode( this, this.parent );
+		return getTextNodeAtPosition( this, this.parent );
 	}
 
 	/**
@@ -228,7 +228,7 @@ export default class Position {
 		// Cache the parent and reuse for performance reasons. See #6579 and #6582.
 		const parent = this.parent;
 
-		return getNodeAfter( this, parent, getTextNode( this, parent ) );
+		return getNodeAfterPosition( this, parent, getTextNodeAtPosition( this, parent ) );
 	}
 
 	/**
@@ -241,7 +241,7 @@ export default class Position {
 		// Cache the parent and reuse for performance reasons. See #6579 and #6582.
 		const parent = this.parent;
 
-		return getNodeBefore( this, parent, getTextNode( this, parent ) );
+		return getNodeBeforePosition( this, parent, getTextNodeAtPosition( this, parent ) );
 	}
 
 	/**
@@ -1076,8 +1076,8 @@ export default class Position {
  *
  * See also:
  *
- * * {@link module:engine/model/position~getNodeAfter}
- * * {@link module:engine/model/position~getNodeBefore}
+ * * {@link module:engine/model/position~getNodeAfterPosition}
+ * * {@link module:engine/model/position~getNodeBeforePosition}
  *
  * @protected
  * @param {module:engine/model/position~Position} position
@@ -1085,7 +1085,7 @@ export default class Position {
  * given position.
  * @returns {module:engine/model/text~Text|null}
  */
-export function getTextNode( position, positionParent ) {
+export function getTextNodeAtPosition( position, positionParent ) {
 	const node = positionParent.getChild( positionParent.offsetToIndex( position.offset ) );
 
 	if ( node && node.is( 'text' ) && node.startOffset < position.offset ) {
@@ -1111,8 +1111,8 @@ export function getTextNode( position, positionParent ) {
  *
  * See also:
  *
- * * {@link module:engine/model/position~getTextNode}
- * * {@link module:engine/model/position~getNodeBefore}
+ * * {@link module:engine/model/position~getTextNodeAtPosition}
+ * * {@link module:engine/model/position~getNodeBeforePosition}
  *
  * @protected
  * @param {module:engine/model/position~Position} position
@@ -1121,7 +1121,7 @@ export function getTextNode( position, positionParent ) {
  * @param {module:engine/model/text~Text|null} textNode Text node at the given position.
  * @returns {module:engine/model/node~Node|null}
  */
-export function getNodeAfter( position, positionParent, textNode ) {
+export function getNodeAfterPosition( position, positionParent, textNode ) {
 	if ( textNode !== null ) {
 		return null;
 	}
@@ -1132,12 +1132,12 @@ export function getNodeAfter( position, positionParent, textNode ) {
 /**
  * Returns the node before the given position.
  *
- * Refer to {@link module:engine/model/position~getNodeBefore} for documentation on when to use this util method.
+ * Refer to {@link module:engine/model/position~getNodeBeforePosition} for documentation on when to use this util method.
  *
  * See also:
  *
- * * {@link module:engine/model/position~getTextNode}
- * * {@link module:engine/model/position~getNodeAfter}
+ * * {@link module:engine/model/position~getTextNodeAtPosition}
+ * * {@link module:engine/model/position~getNodeAfterPosition}
  *
  * @protected
  * @param {module:engine/model/position~Position} position
@@ -1146,7 +1146,7 @@ export function getNodeAfter( position, positionParent, textNode ) {
  * @param {module:engine/model/text~Text|null} textNode Text node at the given position.
  * @returns {module:engine/model/node~Node|null}
  */
-export function getNodeBefore( position, positionParent, textNode ) {
+export function getNodeBeforePosition( position, positionParent, textNode ) {
 	if ( textNode !== null ) {
 		return null;
 	}
