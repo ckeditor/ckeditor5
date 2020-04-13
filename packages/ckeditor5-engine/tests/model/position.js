@@ -8,7 +8,12 @@ import DocumentFragment from '../../src/model/documentfragment';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import TextProxy from '../../src/model/textproxy';
-import Position from '../../src/model/position';
+import {
+	default as Position,
+	getTextNodeAtPosition,
+	getNodeAfterPosition,
+	getNodeBeforePosition
+} from '../../src/model/position';
 import Range from '../../src/model/range';
 import MarkerOperation from '../../src/model/operation/markeroperation';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
@@ -485,10 +490,12 @@ describe( 'Position', () => {
 		} );
 	} );
 
-	it( 'should have proper parent path', () => {
-		const position = new Position( root, [ 1, 2, 3 ] );
+	describe( 'getParentPath()', () => {
+		it( 'should have proper parent path', () => {
+			const position = new Position( root, [ 1, 2, 3 ] );
 
-		expect( position.getParentPath() ).to.deep.equal( [ 1, 2 ] );
+			expect( position.getParentPath() ).to.deep.equal( [ 1, 2 ] );
+		} );
 	} );
 
 	describe( 'isBefore()', () => {
@@ -1274,5 +1281,40 @@ describe( 'Position', () => {
 			expect( positionA.getCommonAncestor( positionB ) ).to.equal( lca );
 			expect( positionB.getCommonAncestor( positionA ) ).to.equal( lca );
 		}
+	} );
+
+	describe( 'getTextNodeAtPosition() util', () => {
+		it( 'returns a text node at the given position', () => {
+			const position = new Position( root, [ 1, 0, 1 ] );
+			const positionParent = position.parent;
+
+			expect( getTextNodeAtPosition( position, positionParent ) ).to.equal( foz );
+		} );
+
+		// This util is covered with tests by Position#textNode tests.
+	} );
+
+	describe( 'getNodeAfterPosition() util', () => {
+		it( 'returns a node after the position', () => {
+			const position = new Position( root, [ 1, 0 ] );
+			const positionParent = position.parent;
+			const textNode = getTextNodeAtPosition( position, positionParent );
+
+			expect( getNodeAfterPosition( position, positionParent, textNode ) ).to.equal( li1 );
+		} );
+
+		// This util is covered with tests by Position#nodeAfter tests.
+	} );
+
+	describe( 'getNodeBeforePosition() util', () => {
+		it( 'returns a node before the position', () => {
+			const position = new Position( root, [ 1, 1 ] );
+			const positionParent = position.parent;
+			const textNode = getTextNodeAtPosition( position, positionParent );
+
+			expect( getNodeBeforePosition( position, positionParent, textNode ) ).to.equal( li1 );
+		} );
+
+		// This util is covered with tests by Position#nodeBefore tests.
 	} );
 } );

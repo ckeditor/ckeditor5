@@ -1079,7 +1079,6 @@ export default class Position {
  * * {@link module:engine/model/position~getNodeAfterPosition}
  * * {@link module:engine/model/position~getNodeBeforePosition}
  *
- * @protected
  * @param {module:engine/model/position~Position} position
  * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} positionParent The parent of the
  * given position.
@@ -1114,7 +1113,6 @@ export function getTextNodeAtPosition( position, positionParent ) {
  * * {@link module:engine/model/position~getTextNodeAtPosition}
  * * {@link module:engine/model/position~getNodeBeforePosition}
  *
- * @protected
  * @param {module:engine/model/position~Position} position
  * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} positionParent The parent of the
  * given position.
@@ -1139,7 +1137,6 @@ export function getNodeAfterPosition( position, positionParent, textNode ) {
  * * {@link module:engine/model/position~getTextNodeAtPosition}
  * * {@link module:engine/model/position~getNodeAfterPosition}
  *
- * @protected
  * @param {module:engine/model/position~Position} position
  * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} positionParent The parent of the
  * given position.
