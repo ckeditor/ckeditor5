@@ -1063,9 +1063,28 @@ export default class Position {
  * @typedef {String} module:engine/model/position~PositionStickiness
  */
 
-// Helper function used to inline text node access by using a cached parent.
-// Reduces the access to the Position#parent property 3 times (in total, when taken into account what #nodeAfter and #nodeBefore do).
-// See #6579.
+/**
+ * Returns a text node at the given position.
+ *
+ * This is a helper function optimized to reuse the position parent instance for performance reasons.
+ *
+ * Normally, you should use {@link module:engine/model/position~Position#textNode `Position#textNode`}.
+ * If you start hitting performance issues with {@link module:engine/model/position~Position#parent `Position#parent`}
+ * check if your algorithm does not access it multiple times (which can happen directly or indirectly via other position properties).
+ *
+ * See https://github.com/ckeditor/ckeditor5/issues/6579.
+ *
+ * See also:
+ *
+ * * {@link module:engine/model/position~getNodeAfter}
+ * * {@link module:engine/model/position~getNodeBefore}
+ *
+ * @protected
+ * @param {module:engine/model/position~Position} position
+ * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} positionParent The parent of the
+ * given position.
+ * @returns {module:engine/model/text~Text|null}
+ */
 export function getTextNode( position, positionParent ) {
 	const node = positionParent.getChild( positionParent.offsetToIndex( position.offset ) );
 
@@ -1076,6 +1095,32 @@ export function getTextNode( position, positionParent ) {
 	return null;
 }
 
+/**
+ * Returns the node after the given position.
+ *
+ * This is a helper function optimized to reuse the position parent instance and the calculation of the text node at the
+ * specific position for performance reasons.
+ *
+ * Normally, you should use {@link module:engine/model/position~Position#nodeAfter `Position#nodeAfter`}.
+ * If you start hitting performance issues with {@link module:engine/model/position~Position#parent `Position#parent`} and/or
+ * {@link module:engine/model/position~Position#textNode `Position#textNode`}
+ * check if your algorithm does not access those properties multiple times
+ * (which can happen directly or indirectly via other position properties).
+ *
+ * See https://github.com/ckeditor/ckeditor5/issues/6579 and https://github.com/ckeditor/ckeditor5/issues/6582.
+ *
+ * See also:
+ *
+ * * {@link module:engine/model/position~getTextNode}
+ * * {@link module:engine/model/position~getNodeBefore}
+ *
+ * @protected
+ * @param {module:engine/model/position~Position} position
+ * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} positionParent The parent of the
+ * given position.
+ * @param {module:engine/model/text~Text|null} textNode Text node at the given position.
+ * @returns {module:engine/model/node~Node|null}
+ */
 export function getNodeAfter( position, positionParent, textNode ) {
 	if ( textNode !== null ) {
 		return null;
@@ -1084,6 +1129,23 @@ export function getNodeAfter( position, positionParent, textNode ) {
 	return positionParent.getChild( positionParent.offsetToIndex( position.offset ) );
 }
 
+/**
+ * Returns the node before the given position.
+ *
+ * Refer to {@link module:engine/model/position~getNodeBefore} for documentation on when to use this util method.
+ *
+ * See also:
+ *
+ * * {@link module:engine/model/position~getTextNode}
+ * * {@link module:engine/model/position~getNodeAfter}
+ *
+ * @protected
+ * @param {module:engine/model/position~Position} position
+ * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} positionParent The parent of the
+ * given position.
+ * @param {module:engine/model/text~Text|null} textNode Text node at the given position.
+ * @returns {module:engine/model/node~Node|null}
+ */
 export function getNodeBefore( position, positionParent, textNode ) {
 	if ( textNode !== null ) {
 		return null;
