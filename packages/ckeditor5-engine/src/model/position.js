@@ -80,8 +80,12 @@ export default class Position {
 		}
 
 		// Normalize the root and path when element (not root) is passed.
-		path = concatenatePaths( root.getPath(), path );
-		root = root.root;
+		if ( root.is( 'rootElement' ) ) {
+			path = path.slice();
+		} else {
+			path = [ ...root.getPath(), ...path ];
+			root = root.root;
+		}
 
 		/**
 		 * Root of the position path.
@@ -856,7 +860,7 @@ export default class Position {
 
 		// Then, add the rest of the path.
 		// If this position is at the same level as `from` position nothing will get added.
-		combined.path = concatenatePaths( combined.path, this.path.slice( i + 1 ) );
+		combined.path = [ ...combined.path, ...this.path.slice( i + 1 ) ];
 
 		return combined;
 	}
@@ -1073,25 +1077,6 @@ export default class Position {
  *
  * @typedef {String} module:engine/model/position~PositionStickiness
  */
-
-// This helper method concatenate two arrays more efficiently than Array.concat(). See ckeditor/ckeditor5#6528.
-//
-// The problem with Array.concat() is that it is an overloaded method that can concatenate various arguments,
-// like mixed data types with arrays (e.g. [ 0 ].concat( 1, 2, [3, 4])) thus it probably check each argument's types and more.
-// In Position's paths concatenation case there always be two arrays to merge so such general method is not needed.
-function concatenatePaths( rootPath, path ) {
-	const newPath = [];
-
-	for ( let i = 0; i < rootPath.length; i++ ) {
-		newPath.push( rootPath[ i ] );
-	}
-
-	for ( let i = 0; i < path.length; i++ ) {
-		newPath.push( path[ i ] );
-	}
-
-	return newPath;
-}
 
 // Helper function used to inline text node access by using a cached parent.
 // Reduces the access to the Position#parent property 3 times (in total, when taken into account what #nodeAfter and #nodeBefore do).
