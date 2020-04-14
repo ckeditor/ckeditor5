@@ -1137,9 +1137,9 @@ class LiveSelection extends Selection {
 		liveRange.detach();
 
 		// If nearest valid selection range has been found - add it in the place of old range.
-		// If range is intersecting with other selection ranges then it is probably due to contents
+		// If range is equal to any other selection ranges then it is probably due to contents
 		// of a multi-range selection being removed. See ckeditor/ckeditor5#6501.
-		if ( selectionRange && !isRangeIntersectingWithSelection( selectionRange, this ) ) {
+		if ( selectionRange && !isRangeCollidingWithSelection( selectionRange, this ) ) {
 			// Check the range, convert it to live range, bind events, etc.
 			const newRange = this._prepareRange( selectionRange );
 
@@ -1192,7 +1192,7 @@ function clearAttributesStoredInElement( model, batch ) {
 	}
 }
 
-// Checks if range intersects with any of selection ranges.
-function isRangeIntersectingWithSelection( range, selection ) {
-	return !selection._ranges.every( selectionRange => !range.isIntersecting( selectionRange ) );
+// Checks if range collides with any of selection ranges.
+function isRangeCollidingWithSelection( range, selection ) {
+	return !selection._ranges.every( selectionRange => !range.isEqual( selectionRange ) );
 }
