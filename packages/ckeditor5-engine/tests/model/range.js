@@ -156,6 +156,13 @@ describe( 'Range', () => {
 			const otherRange = new Range( new Position( otherRoot, [ 0 ] ), new Position( otherRoot, [ 1, 4 ] ) );
 			expect( range.isIntersecting( otherRange ) ).to.be.false;
 		} );
+
+		it( 'should return false if ranges are collapsed and equal', () => {
+			range = new Range( new Position( root, [ 1, 1 ] ) );
+			const otherRange = new Range( new Position( otherRoot, [ 1, 1 ] ) );
+
+			expect( range.isIntersecting( otherRange ) ).to.be.false;
+		} );
 	} );
 
 	describe( 'static constructors', () => {

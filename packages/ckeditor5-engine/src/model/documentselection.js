@@ -1137,14 +1137,16 @@ class LiveSelection extends Selection {
 		liveRange.detach();
 
 		// If nearest valid selection range has been found - add it in the place of old range.
-		if ( selectionRange ) {
+		// If range is equal to any other selection ranges then it is probably due to contents
+		// of a multi-range selection being removed. See ckeditor/ckeditor5#6501.
+		if ( selectionRange && !isRangeCollidingWithSelection( selectionRange, this ) ) {
 			// Check the range, convert it to live range, bind events, etc.
 			const newRange = this._prepareRange( selectionRange );
 
 			// Add new range in the place of old range.
 			this._ranges.splice( index, 0, newRange );
 		}
-		// If nearest valid selection range cannot be found - just removing the old range is fine.
+		// If nearest valid selection range cannot be found or is intersecting with other selection ranges removing the old range is fine.
 	}
 }
 
@@ -1164,7 +1166,6 @@ function getAttrsIfCharacter( node ) {
 
 // Removes selection attributes from element which is not empty anymore.
 //
-// @private
 // @param {module:engine/model/model~Model} model
 // @param {module:engine/model/batch~Batch} batch
 function clearAttributesStoredInElement( model, batch ) {
@@ -1189,4 +1190,9 @@ function clearAttributesStoredInElement( model, batch ) {
 			} );
 		}
 	}
+}
+
+// Checks if range collides with any of selection ranges.
+function isRangeCollidingWithSelection( range, selection ) {
+	return !selection._ranges.every( selectionRange => !range.isEqual( selectionRange ) );
 }

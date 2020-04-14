@@ -1710,7 +1710,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		describe( 'MoveOperation to graveyard', () => {
-			it( 'fix selection range if it ends up in graveyard #1', () => {
+			it( 'fix selection range if it ends up in graveyard - collapsed selection', () => {
 				selection._setTo( new Position( root, [ 1, 3 ] ) );
 
 				model.applyOperation(
@@ -1725,7 +1725,7 @@ describe( 'DocumentSelection', () => {
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 1, 2 ] );
 			} );
 
-			it( 'fix selection range if it ends up in graveyard #2', () => {
+			it( 'fix selection range if it ends up in graveyard - text from non-collapsed selection is moved', () => {
 				selection._setTo( [ new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 1, 4 ] ) ) ] );
 
 				model.applyOperation(
@@ -1740,7 +1740,7 @@ describe( 'DocumentSelection', () => {
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 1, 2 ] );
 			} );
 
-			it( 'fix selection range if it ends up in graveyard #3', () => {
+			it( 'fix selection range if it ends up in graveyard - parent of non-collapsed selection is moved', () => {
 				selection._setTo( [ new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 2 ] ) ) ] );
 
 				model.applyOperation(
@@ -1755,7 +1755,7 @@ describe( 'DocumentSelection', () => {
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0, 6 ] );
 			} );
 
-			it( 'fix selection range if it ends up in graveyard #4 - whole content removed', () => {
+			it( 'fix selection range if it ends up in graveyard - whole content removed', () => {
 				model.applyOperation(
 					new MoveOperation(
 						new Position( root, [ 0 ] ),
@@ -1777,6 +1777,63 @@ describe( 'DocumentSelection', () => {
 
 				// Now it's clear that it's the default range.
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0, 0 ] );
+			} );
+
+			it( 'handles multi-range selection in a text node by merging it into one range (resulting in collapsed ranges)', () => {
+				const ranges = [
+					new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 2 ] ) ),
+					new Range( new Position( root, [ 1, 3 ] ), new Position( root, [ 1, 4 ] ) )
+				];
+
+				selection._setTo( ranges );
+
+				model.applyOperation(
+					new MoveOperation(
+						new Position( root, [ 1, 1 ] ),
+						4,
+						new Position( doc.graveyard, [ 0 ] ),
+						doc.version
+					)
+				);
+
+				expect( selection.rangeCount ).to.equal( 1 );
+				expect( selection.getFirstPosition().path ).to.deep.equal( [ 1, 1 ] );
+				expect( selection.getLastPosition().path ).to.deep.equal( [ 1, 1 ] );
+			} );
+
+			it( 'handles multi-range selection on object nodes by merging it into one range (resulting in non-collapsed ranges)', () => {
+				model.schema.register( 'outer', {
+					isObject: true
+				} );
+				model.schema.register( 'inner', {
+					isObject: true,
+					allowIn: 'outer'
+				} );
+
+				root._removeChildren( 0, root.childCount );
+				root._insertChild( 0, [
+					new Element( 'outer', [], [ new Element( 'inner' ), new Element( 'inner' ), new Element( 'inner' ) ] )
+				] );
+
+				const ranges = [
+					new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 1 ] ) ),
+					new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 2 ] ) )
+				];
+
+				selection._setTo( ranges );
+
+				model.applyOperation(
+					new MoveOperation(
+						new Position( root, [ 0, 0 ] ),
+						2,
+						new Position( doc.graveyard, [ 0 ] ),
+						doc.version
+					)
+				);
+
+				expect( selection.rangeCount ).to.equal( 1 );
+				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0, 0 ] );
+				expect( selection.getLastPosition().path ).to.deep.equal( [ 0, 1 ] );
 			} );
 		} );
 
