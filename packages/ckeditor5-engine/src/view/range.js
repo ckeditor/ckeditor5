@@ -449,7 +449,7 @@ export default class Range {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'range' || type == 'view:range';
+		return type === 'range' || type === 'view:range';
 	}
 
 	/**

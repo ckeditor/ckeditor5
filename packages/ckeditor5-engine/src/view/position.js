@@ -222,7 +222,7 @@ export default class Position {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'position' || type == 'view:position';
+		return type === 'position' || type === 'view:position';
 	}
 
 	/**

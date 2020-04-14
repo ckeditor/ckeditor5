@@ -176,11 +176,13 @@ export default class Element extends Node {
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
-		const cutType = type.replace( /^view:/, '' );
 		if ( !name ) {
-			return cutType == 'element' || cutType == this.name || super.is( type );
+			return type === this.name || type === 'view:' + this.name ||
+				type === 'element' || type === 'view:element' ||
+				// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
+				type === 'node' || type === 'view:node';
 		} else {
-			return cutType == 'element' && name == this.name;
+			return name === this.name && ( type === 'element' || type === 'view:element' );
 		}
 	}
 

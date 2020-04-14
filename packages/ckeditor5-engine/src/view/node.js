@@ -339,7 +339,7 @@ export default class Node {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'node' || type == 'view:node';
+		return type === 'node' || type === 'view:node';
 	}
 
 	/**
