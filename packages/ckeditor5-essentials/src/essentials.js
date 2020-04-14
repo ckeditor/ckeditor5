@@ -12,6 +12,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import SelectAll from '@ckeditor/ckeditor5-select-all/src/selectall';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
@@ -23,6 +24,7 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
  *
  * * {@link module:clipboard/clipboard~Clipboard},
  * * {@link module:enter/enter~Enter},
+ * * {@link module:select-all/selectall~SelectAll},
  * * {@link module:enter/shiftenter~ShiftEnter},
  * * {@link module:typing/typing~Typing},
  * * {@link module:undo/undo~Undo}.
@@ -37,7 +39,7 @@ export default class Essentials extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Clipboard, Enter, ShiftEnter, Typing, Undo ];
+		return [ Clipboard, Enter, SelectAll, ShiftEnter, Typing, Undo ];
 	}
 
 	/**

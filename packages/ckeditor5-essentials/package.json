@@ -13,6 +13,7 @@
     "@ckeditor/ckeditor5-clipboard": "^18.0.0",
     "@ckeditor/ckeditor5-core": "^18.0.0",
     "@ckeditor/ckeditor5-enter": "^18.0.0",
+    "@ckeditor/ckeditor5-select-all": "^0.0.1",
     "@ckeditor/ckeditor5-typing": "^18.0.0",
     "@ckeditor/ckeditor5-undo": "^18.0.0"
   },
