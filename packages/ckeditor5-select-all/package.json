@@ -1,7 +1,7 @@
 {
   "name": "@ckeditor/ckeditor5-select-all",
   "version": "0.0.1",
-  "description": "A feature for selecting entire CKEditor 5 instance contents.",
+  "description": "Select all feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
     "ckeditor5",
