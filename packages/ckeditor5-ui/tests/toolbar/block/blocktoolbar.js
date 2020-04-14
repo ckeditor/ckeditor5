@@ -676,4 +676,18 @@ describe( 'BlockToolbar', () => {
 			sinon.assert.notCalled( spy );
 		} );
 	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy #resizeObserver if is available', () => {
+			const editable = editor.ui.getEditableElement();
+			const resizeObserver = new ResizeObserver( editable, () => {} );
+			const destroySpy = sinon.spy( resizeObserver, 'destroy' );
+
+			blockToolbar._resizeObserver = resizeObserver;
+
+			blockToolbar.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+	} );
 } );

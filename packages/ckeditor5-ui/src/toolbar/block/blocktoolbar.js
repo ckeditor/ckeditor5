@@ -208,6 +208,10 @@ export default class BlockToolbar extends Plugin {
 		this.panelView.destroy();
 		this.buttonView.destroy();
 		this.toolbarView.destroy();
+
+		if ( this._resizeObserver ) {
+			this._resizeObserver.destroy();
+		}
 	}
 
 	/**
