@@ -10,7 +10,12 @@
 import Text from './text';
 import TextProxy from './textproxy';
 import Element from './element';
-import Position from './position';
+import {
+	default as Position,
+	getTextNodeAtPosition,
+	getNodeAfterPosition,
+	getNodeBeforePosition
+} from './position';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
@@ -225,7 +230,11 @@ export default class TreeWalker {
 			return { done: true };
 		}
 
-		const node = position.textNode ? position.textNode : position.nodeAfter;
+		// Get node just after the current position.
+		// Use a highly optimized version instead of checking the text node first and then getting the node after. See #6582.
+		const positionParent = position.parent;
+		const textNodeAtPosition = getTextNodeAtPosition( position, positionParent );
+		const node = textNodeAtPosition ? textNodeAtPosition : getNodeAfterPosition( position, positionParent, textNodeAtPosition );
 
 		if ( node instanceof Element ) {
 			if ( !this.shallow ) {
@@ -299,8 +308,11 @@ export default class TreeWalker {
 			return { done: true };
 		}
 
-		// Get node just before current position
-		const node = position.textNode ? position.textNode : position.nodeBefore;
+		// Get node just before the current position.
+		// Use a highly optimized version instead of checking the text node first and then getting the node before. See #6582.
+		const positionParent = position.parent;
+		const textNodeAtPosition = getTextNodeAtPosition( position, positionParent );
+		const node = textNodeAtPosition ? textNodeAtPosition : getNodeBeforePosition( position, positionParent, textNodeAtPosition );
 
 		if ( node instanceof Element ) {
 			position.offset--;
