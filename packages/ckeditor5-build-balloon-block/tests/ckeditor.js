@@ -9,7 +9,7 @@ import BalloonEditor from '../src/ckeditor';
 import BaseBalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 
-describe( 'BalloonEditor build', () => {
+describe( 'BalloonEditor (block) build', () => {
 	let editor, editorElement;
 
 	beforeEach( () => {
