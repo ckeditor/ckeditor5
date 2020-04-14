@@ -4,7 +4,7 @@
  */
 
 /**
- * @module selectall/selectallcommand
+ * @module select-all/selectallcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -12,14 +12,14 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 /**
  * The select all command.
  *
- * It is used by the {@link module:selectall/selectallediting~SelectAllEditing select all editing feature} to handle
+ * It is used by the {@link module:select-all/selectallediting~SelectAllEditing select all editing feature} to handle
  * the <kbd>Ctrl</kbd>+<kbd>A</kbd> keystroke.
  *
  * Executing this command changes the {@glink framework/guides/architecture/editing-engine#model model}
  * selection so it contains the entire content of the editable root of the editor the selection is
  * {@link module:engine/model/selection~Selection#anchor anchored} in.
  *
- * If the selection was anchored in a {@link framework/guides/tutorials/implementing-a-block-widget nested editable}
+ * If the selection was anchored in a {@glink framework/guides/tutorials/implementing-a-block-widget nested editable}
  * (e.g. a caption of an image), the new selection will contain its entire content.
  *
  * @extends module:core/command~Command

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module selectall/selectallediting
+ * @module select-all/selectallediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -16,7 +16,7 @@ const SELECT_ALL_KEYSTROKE = parseKeystroke( 'Ctrl+A' );
 /**
  * The select all editing feature.
  *
- * It registers the `'selectAll'` {@link module:selectall/selectallcommand~SelectAllCommand command}
+ * It registers the `'selectAll'` {@link module:select-all/selectallcommand~SelectAllCommand command}
  * and the <kbd>Ctrl</kbd>+<kbd>A</kbd> keystroke listener which executes it.
  *
  * @extends module:core/plugin~Plugin

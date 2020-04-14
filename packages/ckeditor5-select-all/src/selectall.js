@@ -4,7 +4,7 @@
  */
 
 /**
- * @module selectall/selectall
+ * @module select-all/selectall
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -14,8 +14,8 @@ import SelectAllUI from './selectallui';
 /**
  * The select all feature.
  *
- * This is a "glue" plugin which loads the {@link module:selectall/selectallediting~SelectAllEditing select all editing feature}
- * and the {@link module:selectall/selectallui~SelectAllUI select all UI feature}.
+ * This is a "glue" plugin which loads the {@link module:select-all/selectallediting~SelectAllEditing select all editing feature}
+ * and the {@link module:select-all/selectallui~SelectAllUI select all UI feature}.
  *
  * Please refer to the documentation of individual features to learn more.
  *
