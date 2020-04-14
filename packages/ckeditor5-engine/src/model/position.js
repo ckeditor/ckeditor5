@@ -10,7 +10,6 @@
 import TreeWalker from './treewalker';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { last } from 'lodash-es';
 
 // To check if component is loaded more than once.
 import '@ckeditor/ckeditor5-utils/src/version';
@@ -80,9 +79,13 @@ export default class Position {
 			);
 		}
 
-		// Normalize the root and path (if element was passed).
-		path = root.getPath().concat( path );
-		root = root.root;
+		// Normalize the root and path when element (not root) is passed.
+		if ( root.is( 'rootElement' ) ) {
+			path = path.slice();
+		} else {
+			path = [ ...root.getPath(), ...path ];
+			root = root.root;
+		}
 
 		/**
 		 * Root of the position path.
@@ -140,7 +143,7 @@ export default class Position {
 	 * @type {Number}
 	 */
 	get offset() {
-		return last( this.path );
+		return this.path[ this.path.length - 1 ];
 	}
 
 	/**
@@ -857,7 +860,7 @@ export default class Position {
 
 		// Then, add the rest of the path.
 		// If this position is at the same level as `from` position nothing will get added.
-		combined.path = combined.path.concat( this.path.slice( i + 1 ) );
+		combined.path = [ ...combined.path, ...this.path.slice( i + 1 ) ];
 
 		return combined;
 	}
