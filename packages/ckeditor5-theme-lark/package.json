@@ -30,6 +30,7 @@
     "@ckeditor/ckeditor5-paragraph": "^18.0.0",
     "@ckeditor/ckeditor5-remove-format": "^18.0.0",
     "@ckeditor/ckeditor5-restricted-editing": "^18.0.0",
+    "@ckeditor/ckeditor5-select-all": "^0.0.1",
     "@ckeditor/ckeditor5-special-characters": "^18.0.0",
     "@ckeditor/ckeditor5-undo": "^18.0.0",
     "@ckeditor/ckeditor5-utils": "^18.0.0",
