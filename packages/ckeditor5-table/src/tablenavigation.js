@@ -184,21 +184,21 @@ export default class TableNavigation extends Plugin {
 		const selection = model.document.selection;
 		const isForward = [ 'right', 'down' ].includes( direction );
 
-		// At first let's check if there are some cells that are fully selected (from the outside).
+		// In case one or more table cells are selected (from outside),
+		// move the selection to a cell adjacent to the selected table fragment.
 		const selectedCells = getSelectedTableCells( selection );
 
 		if ( selectedCells.length ) {
-			const tableCell = isForward ? selectedCells.pop() : selectedCells[ 0 ];
+			const tableCell = isForward ? selectedCells[ selectedCells.length - 1 ] : selectedCells[ 0 ];
 
 			this._navigateFromCellInDirection( tableCell, direction );
 
 			return true;
 		}
 
-		// So we fall back to selection inside the table cell.
+		// Abort if we're not in a table.
 		const tableCell = findAncestor( 'tableCell', selection.focus );
 
-		// But the selection is outside the table.
 		if ( !tableCell ) {
 			return;
 		}
@@ -206,17 +206,13 @@ export default class TableNavigation extends Plugin {
 		const cellRange = model.createRangeIn( tableCell );
 
 		// Let's check if the selection is at the beginning/end of the cell.
-		if ( isSelectionAtCellEdge( cellRange, selection, direction ) ) {
+		if ( this._isSelectionAtCellEdge( cellRange, selection, isForward ) ) {
 			this._navigateFromCellInDirection( tableCell, direction );
 
 			return true;
 		}
 
-		// Ok, so easiest cases didn't solved the problem, let's try to find out if we are in the first/last
-		// line of the cell content, or if an object element is selected at beginning/end of range.
-		//
-		// We try to find a nearest text position that is not before/after the selection. If there is no
-		// such range, there is some object element at the beginning/end of range.
+		// If there isn't any $text position between cell edge and selection then we shall move the selection to next cell.
 		const textRange = this._findTextRangeFromSelection( cellRange, selection, isForward );
 
 		if ( !textRange ) {
@@ -225,14 +221,16 @@ export default class TableNavigation extends Plugin {
 			return true;
 		}
 
-		// There wasn't any object element so let's check if range is a single line. If it's a single line
-		// then move selection to the beginning/end of a cell content.
-		//
-		// We can't move the selection directly to other cell because of dual position at the end/beginning
-		// of wrapped line (it's at the same time at the end of one line and at the start of the next line).
-		const isVertical = [ 'up', 'down' ].includes( direction );
+		// If the navigation is horizontal then we have no more custom cases.
+		if ( [ 'left', 'right' ].includes( direction ) ) {
+			return;
+		}
 
-		if ( isVertical && this._isSingleLineRange( textRange, isForward ) ) {
+		// If the range is a single line then move the selection to the beginning/end of a cell content.
+		//
+		// We can't move the selection directly to the another cell because of dual position at the end/beginning
+		// of wrapped line (it's at the same time at the end of one line and at the start of the next line).
+		if ( this._isSingleLineRange( textRange, isForward ) ) {
 			model.change( writer => {
 				writer.setSelection( isForward ? cellRange.end : cellRange.start );
 			} );
@@ -242,8 +240,37 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Returns a range from beginning/end of `range` up to `selection` or `null` if resulting range can't contain
-	 * text element (according to schema).
+	 * Returns `true` if `selection` is at `cellRange` edge according to navigation `direction`.
+	 *
+	 * @private
+	 * @param {module:engine/model/range~Range} cellRange The bounding cell range.
+	 * @param {module:engine/model/selection~Selection} selection The current selection.
+	 * @param {Boolean} isForward The expected navigation direction.
+	 * @returns {Boolean}
+	 */
+	_isSelectionAtCellEdge( cellRange, selection, isForward ) {
+		const model = this.editor.model;
+		const schema = this.editor.model.schema;
+
+		const focus = isForward ? selection.getLastPosition() : selection.getFirstPosition();
+
+		// If the current limit element is not table cell we are for sure not at the cell edge.
+		// Also `modifySelection` will not let us out of it.
+		if ( !schema.getLimitElement( focus ).is( 'tableCell' ) ) {
+			return false;
+		}
+
+		const probe = model.createSelection( focus );
+
+		model.modifySelection( probe, { direction: isForward ? 'forward' : 'backward' } );
+
+		// If there was no change in the focus position, then it's not possible to move the selection there.
+		return focus.isEqual( probe.focus );
+	}
+
+	/**
+	 * Returns a range from beginning/end of range up to selection closest position.
+	 * Returns `null` if resulting range can't contain text element (according to schema).
 	 *
 	 * @private
 	 * @param {module:engine/model/range~Range} range Current table cell content range.
@@ -260,11 +287,7 @@ export default class TableNavigation extends Plugin {
 				return null;
 			}
 
-			// Wrapped lines contain exactly the same position at the end of current line
-			// and at the beginning of next line. That position's client rect is at the end
-			// of current line. In case of caret at first position of the last line that 'dual'
-			// position would be detected as it's not the last line.
-			return new ModelRange( position.isAtEnd ? position : position.getShiftedBy( 1 ), lastRangePosition );
+			return new ModelRange( position, lastRangePosition );
 		} else {
 			const position = selection.getFirstPosition();
 			const firstRangePosition = this._getNearestTextPosition( range, 'forward' );
@@ -301,7 +324,7 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Checks if `modelRange` is a single line.
+	 * Checks if the `modelRange` renders to a single line in the DOM.
 	 *
 	 * @private
 	 * @param {module:engine/model/range~Range} modelRange Current table cell content range.
@@ -312,11 +335,19 @@ export default class TableNavigation extends Plugin {
 		const editing = this.editor.editing;
 		const domConverter = editing.view.domConverter;
 
+		if ( isForward && !modelRange.start.isAtEnd ) {
+			// Wrapped lines contain exactly the same position at the end of current line
+			// and at the beginning of next line. That position's client rect is at the end
+			// of current line. In case of caret at first position of the last line that 'dual'
+			// position would be detected as it's not the last line.
+			modelRange = new ModelRange( modelRange.start.getShiftedBy( 1 ), modelRange.end );
+		}
+
 		const viewRange = editing.mapper.toViewRange( modelRange );
 		const domRange = domConverter.viewRangeToDom( viewRange );
 		const rects = Rect.getDomRangeRects( domRange );
 
-		let boundaryVerticalPosition = undefined;
+		let boundaryVerticalPosition;
 
 		for ( let i = 0; i < rects.length; i++ ) {
 			const idx = isForward ? rects.length - i - 1 : i;
@@ -354,7 +385,7 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Moves the selection from given `tableCell` in the specified `direction`.
+	 * Moves the selection from the given table cell in the specified direction.
 	 *
 	 * @private
 	 * @param {module:engine/model/element~Element} tableCell The table cell to start the selection navigation.
@@ -411,18 +442,19 @@ export default class TableNavigation extends Plugin {
 			row++;
 		}
 
-		const cellToFocus = tableMap.find( cellInfo => cellInfo.row == row && cellInfo.column == column ).cell;
-		const rangeToFocus = model.createRangeIn( cellToFocus );
-		const positionToFocus = [ 'left', 'up' ].includes( direction ) ? rangeToFocus.end : rangeToFocus.start;
+		const cellToSelect = tableMap.find( cellInfo => cellInfo.row == row && cellInfo.column == column ).cell;
+		const isForward = [ 'right', 'down' ].includes( direction );
+		const positionToSelect = model.createPositionAt( cellToSelect, isForward ? 0 : 'end' );
 
 		model.change( writer => {
-			writer.setSelection( positionToFocus );
+			writer.setSelection( positionToSelect );
 		} );
 	}
 }
 
 // Returns 'true' if provided key code represents one of the arrow keys.
 //
+// @private
 // @param {Number} keyCode
 // @returns {Boolean}
 function isArrowKeyCode( keyCode ) {
@@ -434,6 +466,7 @@ function isArrowKeyCode( keyCode ) {
 
 // Returns direction name from `keyCode`.
 //
+// @private
 // @param {Number} keyCode
 // @param {Boolean} isLtrContent The content language direction.
 // @returns {'left'|'up'|'right'|'down'} Arrow direction.
@@ -443,20 +476,5 @@ function getDirectionFromKeyCode( keyCode, isLtrContent ) {
 		case keyCodes.arrowright: return isLtrContent ? 'right' : 'left';
 		case keyCodes.arrowup: return 'up';
 		case keyCodes.arrowdown: return 'down';
-	}
-}
-
-// Returns `true` if `selection` is at `cellRange` edge according to navigation `direction`.
-//
-// @param {module:engine/model/range~Range} cellRange The bounding cell range.
-// @param {module:engine/model/selection~Selection} selection The current selection.
-// @param {'left'|'up'|'right'|'down'} direction The expected navigation direction.
-// @returns {Boolean}
-function isSelectionAtCellEdge( cellRange, selection, direction ) {
-	switch ( direction ) {
-		case 'left': return selection.isCollapsed && selection.focus.isTouching( cellRange.start );
-		case 'right': return selection.isCollapsed && selection.focus.isTouching( cellRange.end );
-		case 'up': return selection.focus.isTouching( cellRange.start );
-		case 'down': return selection.focus.isTouching( cellRange.end );
 	}
 }
