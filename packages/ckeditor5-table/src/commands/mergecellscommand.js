@@ -47,9 +47,6 @@ export default class MergeCellsCommand extends Command {
 			// All cells will be merge into the first one.
 			const firstTableCell = selectedTableCells.shift();
 
-			// This prevents the "model-selection-range-intersects" error, caused by removing row selected cells.
-			writer.setSelection( firstTableCell, 'on' );
-
 			// Update target cell dimensions.
 			const { mergeWidth, mergeHeight } = getMergeDimensions( firstTableCell, selectedTableCells, tableUtils );
 			updateNumericAttribute( 'colspan', mergeWidth, firstTableCell, writer );
