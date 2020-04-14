@@ -8,11 +8,21 @@
     "ckeditor 5",
     "ckeditor5-lib"
   ],
+  "dependencies": {
+    "@ckeditor/ckeditor5-core": "^18.0.0",
+    "@ckeditor/ckeditor5-ui": "^18.0.0",
+    "@ckeditor/ckeditor5-utils": "^18.0.0"
+  },
   "devDependencies": {
+    "@ckeditor/ckeditor5-engine": "^18.0.0",
+    "@ckeditor/ckeditor5-image": "^18.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^18.0.0",
     "eslint": "^5.5.0",
     "eslint-config-ckeditor5": "^2.0.0",
     "husky": "^2.4.1",
-    "lint-staged": "^8.2.1"
+    "lint-staged": "^8.2.1",
+    "stylelint": "^11.1.1",
+    "stylelint-config-ckeditor5": "^1.0.0"
   },
   "engines": {
     "node": ">=8.0.0",
@@ -32,11 +42,15 @@
     "theme"
   ],
   "scripts": {
-    "lint": "eslint --quiet '**/*.js'"
+    "lint": "eslint --quiet '**/*.js'",
+    "stylelint": "stylelint --quiet --allow-empty-input 'theme/**/*.css' 'docs/**/*.css'"
   },
   "lint-staged": {
     "**/*.js": [
       "eslint --quiet"
+    ],
+    "**/*.css": [
+      "stylelint --quiet --allow-empty-input"
     ]
   },
   "eslintIgnore": [
