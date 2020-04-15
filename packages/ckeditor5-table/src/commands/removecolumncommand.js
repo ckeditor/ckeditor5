@@ -10,7 +10,8 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import TableWalker from '../tablewalker';
-import { getSelectionAffectedTableCells } from '../utils';
+import { getColumnIndexes, getSelectionAffectedTableCells } from '../utils';
+import { findAncestor } from './utils';
 
 /**
  * The remove column command.
@@ -32,15 +33,12 @@ export default class RemoveColumnCommand extends Command {
 		const firstCell = selectedCells[ 0 ];
 
 		if ( firstCell ) {
-			const table = firstCell.parent.parent;
+			const table = findAncestor( 'table', firstCell );
 			const tableColumnCount = this.editor.plugins.get( 'TableUtils' ).getColumns( table );
 
-			const tableMap = [ ...new TableWalker( table ) ];
-			const columnIndexes = tableMap.filter( entry => selectedCells.includes( entry.cell ) ).map( el => el.column ).sort();
-			const minColumnIndex = columnIndexes[ 0 ];
-			const maxColumnIndex = columnIndexes[ columnIndexes.length - 1 ];
+			const { first, last } = getColumnIndexes( selectedCells );
 
-			this.isEnabled = maxColumnIndex - minColumnIndex < ( tableColumnCount - 1 );
+			this.isEnabled = last - first < ( tableColumnCount - 1 );
 		} else {
 			this.isEnabled = false;
 		}

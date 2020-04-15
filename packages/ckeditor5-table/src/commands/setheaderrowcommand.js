@@ -9,8 +9,8 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { createEmptyTableCell, updateNumericAttribute } from './utils';
-import { getSelectionAffectedTableCells } from '../utils';
+import { createEmptyTableCell, findAncestor, updateNumericAttribute } from './utils';
+import { getRowIndexes, getSelectionAffectedTableCells } from '../utils';
 import TableWalker from '../tablewalker';
 
 /**
@@ -62,24 +62,16 @@ export default class SetHeaderRowCommand extends Command {
 	 * the `forceValue` parameter instead of the current model state.
 	 */
 	execute( options = {} ) {
-		const model = this.editor.model;
-
-		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
-		const firstCell = selectedCells[ 0 ];
-		const lastCell = selectedCells[ selectedCells.length - 1 ];
-		const table = firstCell.parent.parent;
-
-		const currentHeadingRows = table.getAttribute( 'headingRows' ) || 0;
-
-		const [ selectedRowMin, selectedRowMax ] =
-			// Returned cells might not necessary be in order, so make sure to sort it.
-			[ firstCell.parent.index, lastCell.parent.index ].sort();
-
 		if ( options.forceValue === this.value ) {
 			return;
 		}
+		const model = this.editor.model;
+		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
+		const table = findAncestor( 'table', selectedCells[ 0 ] );
 
-		const headingRowsToSet = this.value ? selectedRowMin : selectedRowMax + 1;
+		const { first, last } = getRowIndexes( selectedCells );
+		const headingRowsToSet = this.value ? first : last + 1;
+		const currentHeadingRows = table.getAttribute( 'headingRows' ) || 0;
 
 		model.change( writer => {
 			if ( headingRowsToSet ) {
