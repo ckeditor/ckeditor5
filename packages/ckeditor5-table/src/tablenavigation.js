@@ -349,36 +349,18 @@ export default class TableNavigation extends Plugin {
 
 		let boundaryVerticalPosition;
 
-		for ( let i = 0; i < rects.length; i++ ) {
-			const idx = isForward ? rects.length - i - 1 : i;
-			const rect = rects[ idx ];
-
-			// We need to check if current `rect` is container for following Rects.
-			const nextRect = rects.find( ( rect, i ) => i > idx && rect.width > 0 );
-
-			if ( nextRect && rect.contains( nextRect ) ) {
-				continue;
-			}
-
+		for ( const rect of rects ) {
 			if ( boundaryVerticalPosition === undefined ) {
-				boundaryVerticalPosition = Math.round( isForward ? rect.top : rect.bottom );
+				boundaryVerticalPosition = Math.round( rect.bottom );
 				continue;
 			}
 
 			// Let's check if this rect is in new line.
-			if ( isForward ) {
-				if ( Math.round( rect.bottom ) <= boundaryVerticalPosition ) {
-					return false;
-				}
-
-				boundaryVerticalPosition = Math.min( boundaryVerticalPosition, Math.round( rect.top ) );
-			} else {
-				if ( Math.round( rect.top ) >= boundaryVerticalPosition ) {
-					return false;
-				}
-
-				boundaryVerticalPosition = Math.max( boundaryVerticalPosition, Math.round( rect.bottom ) );
+			if ( Math.round( rect.top ) >= boundaryVerticalPosition ) {
+				return false;
 			}
+
+			boundaryVerticalPosition = Math.max( boundaryVerticalPosition, Math.round( rect.bottom ) );
 		}
 
 		return true;
