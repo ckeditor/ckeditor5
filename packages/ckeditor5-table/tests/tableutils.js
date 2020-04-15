@@ -916,7 +916,7 @@ describe( 'TableUtils', () => {
 				// +----+----+----+----+    +
 				// | 40 | 41 | 42 | 43 |    |
 				// +----+----+----+----+----+
-				// | 50 | 51 | 52 | 53 | 44 |
+				// | 50 | 51 | 52 | 53 | 54 |
 				// +----+----+----+----+----+
 				setData( model, modelTable( [
 					[ '00', { contents: '01', rowspan: 2 }, { contents: '02', rowspan: 3 }, { contents: '03', rowspan: 4 },
@@ -939,7 +939,7 @@ describe( 'TableUtils', () => {
 				// +----+----+----+----+    +
 				// | 40 | 41 | 42 | 43 |    |
 				// +----+----+----+----+----+
-				// | 50 | 51 | 52 | 53 | 44 |
+				// | 50 | 51 | 52 | 53 | 54 |
 				// +----+----+----+----+----+
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '00', '01', { contents: '02', rowspan: 2 }, { contents: '03', rowspan: 3 }, { contents: '04', rowspan: 4 } ],
