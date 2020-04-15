@@ -4,12 +4,12 @@
  */
 
 :root {
-	--ck-highlight-marker-yellow: #fdfd77;
-	--ck-highlight-marker-green: #63f963;
-	--ck-highlight-marker-pink: #fc7999;
-	--ck-highlight-marker-blue: #72cdfd;
-	--ck-highlight-pen-red: #e91313;
-	--ck-highlight-pen-green: #118800;
+	--ck-highlight-marker-yellow: hsl(60, 97%, 73%);
+	--ck-highlight-marker-green: hsl(120, 93%, 68%);
+	--ck-highlight-marker-pink: hsl(345, 96%, 73%);
+	--ck-highlight-marker-blue: hsl(201, 97%, 72%);
+	--ck-highlight-pen-red: hsl(0, 85%, 49%);
+	--ck-highlight-pen-green: hsl(112, 100%, 27%);
 }
 
 @define-mixin highlight-marker-color $color {
