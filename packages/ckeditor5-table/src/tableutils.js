@@ -267,9 +267,9 @@ export default class TableUtils extends Plugin {
 	 *		    ┌───┬───┬───┐        `at` = 1        ┌───┬───┬───┐
 	 *		  0 │ a │ b │ c │        `rows` = 2      │ a │ b │ c │ 0
 	 *		    │   ├───┼───┤                        │   ├───┼───┤
-	 *		  1 │   │ d │ e │  <-- remove from here  │   │ d │ i │ 1
+	 *		  1 │   │ d │ e │  <-- remove from here  │   │ d │ g │ 1
 	 *		    │   │   ├───┤        will give:      ├───┼───┼───┤
-	 *		  2 │   │   │ f │                        │ j │ k │ l │ 2
+	 *		  2 │   │   │ f │                        │ h │ i │ j │ 2
 	 *		    │   │   ├───┤                        └───┴───┴───┘
 	 *		  3 │   │   │ g │
 	 *		    ├───┼───┼───┤
