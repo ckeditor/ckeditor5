@@ -36,7 +36,7 @@
 	width: var(--ck-resizer-size);
 	height: var(--ck-resizer-size);
 	background: var(--ck-color-focus-border);
-	border: var(--ck-resizer-border-width) solid #fff;
+	border: var(--ck-resizer-border-width) solid hsl(0, 0%, 100%);
 	border-radius: var(--ck-resizer-border-radius);
 
 	&.ck-widget__resizer__handle-top-left {
