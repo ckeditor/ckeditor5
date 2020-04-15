@@ -905,6 +905,52 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should decrease rowspan of table cells from previous rows', () => {
+				// +----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 |
+				// +----+    +    +    +    +
+				// | 10 |    |    |    |    |
+				// +----+----+    +    +    +
+				// | 20 | 21 |    |    |    |
+				// +----+----+----+    +    +
+				// | 30 | 31 | 32 |    |    |
+				// +----+----+----+----+    +
+				// | 40 | 41 | 42 | 43 |    |
+				// +----+----+----+----+----+
+				// | 50 | 51 | 52 | 53 | 44 |
+				// +----+----+----+----+----+
+				setData( model, modelTable( [
+					[ '00', { contents: '01', rowspan: 2 }, { contents: '02', rowspan: 3 }, { contents: '03', rowspan: 4 },
+						{ contents: '04', rowspan: 5 } ],
+					[ '10' ],
+					[ '20', '21' ],
+					[ '30', '31', '32' ],
+					[ '40', '41', '42', '43' ],
+					[ '50', '51', '52', '53', '54' ]
+				] ) );
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 1 } );
+
+				// +----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 |
+				// +----+----+    +    +    +
+				// | 20 | 21 |    |    |    |
+				// +----+----+----+    +    +
+				// | 30 | 31 | 32 |    |    |
+				// +----+----+----+----+    +
+				// | 40 | 41 | 42 | 43 |    |
+				// +----+----+----+----+----+
+				// | 50 | 51 | 52 | 53 | 44 |
+				// +----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', '01', { contents: '02', rowspan: 2 }, { contents: '03', rowspan: 3 }, { contents: '04', rowspan: 4 } ],
+					[ '20', '21' ],
+					[ '30', '31', '32' ],
+					[ '40', '41', '42', '43' ],
+					[ '50', '51', '52', '53', '54' ]
+				] ) );
+			} );
+
+			it( 'should decrease rowspan of table cells from previous rows (rowspaned cells on different rows)', () => {
 				setData( model, modelTable( [
 					[ { rowspan: 4, contents: '00' }, { rowspan: 3, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
 					[ { rowspan: 2, contents: '13' }, '14' ],
@@ -1081,6 +1127,48 @@ describe( 'TableUtils', () => {
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ { rowspan: 2, contents: '00' }, '01', '02', '03' ],
 					[ '31', '32', '33' ]
+				] ) );
+			} );
+
+			it( 'should decrease rowspan of table cells from previous rows', () => {
+				// +----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 |
+				// +----+    +    +    +    +
+				// | 10 |    |    |    |    |
+				// +----+----+    +    +    +
+				// | 20 | 21 |    |    |    |
+				// +----+----+----+    +    +
+				// | 30 | 31 | 32 |    |    |
+				// +----+----+----+----+    +
+				// | 40 | 41 | 42 | 43 |    |
+				// +----+----+----+----+----+
+				// | 50 | 51 | 52 | 53 | 44 |
+				// +----+----+----+----+----+
+				setData( model, modelTable( [
+					[ '00', { contents: '01', rowspan: 2 }, { contents: '02', rowspan: 3 }, { contents: '03', rowspan: 4 },
+						{ contents: '04', rowspan: 5 } ],
+					[ '10' ],
+					[ '20', '21' ],
+					[ '30', '31', '32' ],
+					[ '40', '41', '42', '43' ],
+					[ '50', '51', '52', '53', '54' ]
+				] ) );
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 2, rows: 2 } );
+
+				// +----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 |
+				// +----+    +    +    +    +
+				// | 10 |    |    |    |    |
+				// +----+----+----+----+    +
+				// | 40 | 41 | 42 | 43 |    |
+				// +----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', { contents: '01', rowspan: 2 }, { contents: '02', rowspan: 2 }, { contents: '03', rowspan: 2 },
+						{ contents: '04', rowspan: 3 } ],
+					[ '10' ],
+					[ '40', '41', '42', '43' ],
+					[ '50', '51', '52', '53', '54' ]
 				] ) );
 			} );
 
