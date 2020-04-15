@@ -371,13 +371,13 @@ export default class TableNavigation extends Plugin {
 					return false;
 				}
 
-				boundaryVerticalPosition = Math.min( boundaryVerticalPosition, rect.top );
+				boundaryVerticalPosition = Math.min( boundaryVerticalPosition, Math.round( rect.top ) );
 			} else {
 				if ( Math.round( rect.top ) >= boundaryVerticalPosition ) {
 					return false;
 				}
 
-				boundaryVerticalPosition = Math.max( boundaryVerticalPosition, rect.bottom );
+				boundaryVerticalPosition = Math.max( boundaryVerticalPosition, Math.round( rect.bottom ) );
 			}
 		}
 
