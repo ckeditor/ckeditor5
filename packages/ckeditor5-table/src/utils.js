@@ -167,9 +167,8 @@ function compareRangeOrder( rangeA, rangeB ) {
 	const posA = rangeA.start;
 	const posB = rangeB.start;
 
-	if ( posA.isEqual( posB ) ) {
-		return 0;
-	}
-
+	// Checking for equal position (returning 0) is not needed because this would be either:
+	// a. Intersecting range (not allowed by model)
+	// b. Collapsed range on the same position (allowed by model but should not happen).
 	return posA.isBefore( posB ) ? -1 : 1;
 }
