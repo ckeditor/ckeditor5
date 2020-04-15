@@ -743,7 +743,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should split rowspanned & colspaned cell', () => {
+		it( 'should split rowspanned & colspanned cell', () => {
 			setData( model, modelTable( [
 				[ '00', { colspan: 2, contents: '01[]' } ],
 				[ '10', '11' ]
@@ -950,7 +950,7 @@ describe( 'TableUtils', () => {
 				] ) );
 			} );
 
-			it( 'should decrease rowspan of table cells from previous rows (rowspaned cells on different rows)', () => {
+			it( 'should decrease rowspan of table cells from previous rows (row-spanned cells on different rows)', () => {
 				setData( model, modelTable( [
 					[ { rowspan: 4, contents: '00' }, { rowspan: 3, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
 					[ { rowspan: 2, contents: '13' }, '14' ],
@@ -967,7 +967,7 @@ describe( 'TableUtils', () => {
 				] ) );
 			} );
 
-			it( 'should move rowspaned cells to a row below removing it\'s row', () => {
+			it( 'should move row-spanned cells to a row below removing it\'s row', () => {
 				setData( model, modelTable( [
 					[ { rowspan: 3, contents: '00' }, { rowspan: 2, contents: '01' }, '02' ],
 					[ '12' ],
@@ -984,7 +984,7 @@ describe( 'TableUtils', () => {
 				] ) );
 			} );
 
-			it( 'should move rowspaned cells to a row below removing it\'s row (other cell is overlapping removed row)', () => {
+			it( 'should move row-spanned cells to a row below removing it\'s row (other cell is overlapping removed row)', () => {
 				setData( model, modelTable( [
 					[ '00', { rowspan: 3, contents: '01' }, '02', '03', '04' ],
 					[ '10', { rowspan: 2, contents: '12' }, '13', '14' ],
@@ -1096,7 +1096,7 @@ describe( 'TableUtils', () => {
 				] ) );
 			} );
 
-			it( 'should move row-spaned cells to a row after removed rows section', () => {
+			it( 'should move row-spanned cells to a row after removed rows section', () => {
 				setData( model, modelTable( [
 					[ '00', '01', '02', '03' ],
 					[ { rowspan: 4, contents: '10' }, { rowspan: 3, contents: '11' }, { rowspan: 2, contents: '12' }, '13' ],
