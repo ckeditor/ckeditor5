@@ -414,7 +414,7 @@ describe( 'TableUtils', () => {
 			], { headingColumns: 4 } ) );
 		} );
 
-		it( 'should properly insert column while table has rowspanned cells', () => {
+		it( 'should properly insert column while table has row-spanned cells', () => {
 			setData( model, modelTable( [
 				[ { rowspan: 4, contents: '00[]' }, { rowspan: 2, contents: '01' }, '02' ],
 				[ '12' ],
@@ -642,7 +642,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should properly update rowspanned cells overlapping selected cell', () => {
+		it( 'should properly update row-spanned cells overlapping selected cell', () => {
 			setData( model, modelTable( [
 				[ { rowspan: 2, contents: '00' }, '01', { rowspan: 3, contents: '02' } ],
 				[ '[]11' ],
@@ -660,7 +660,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should split rowspanned cell', () => {
+		it( 'should split row-spanned cell', () => {
 			setData( model, modelTable( [
 				[ '00', { rowspan: 2, contents: '01[]' } ],
 				[ '10' ],
@@ -678,7 +678,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should copy colspan while splitting rowspanned cell', () => {
+		it( 'should copy colspan while splitting row-spanned cell', () => {
 			setData( model, modelTable( [
 				[ '00', { rowspan: 2, colspan: 2, contents: '01[]' } ],
 				[ '10' ],
@@ -724,7 +724,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should split rowspanned cell and updated other cells rowspan when splitting to bigger number of cells', () => {
+		it( 'should split row-spanned cell and updated other cells rowspan when splitting to bigger number of cells', () => {
 			setData( model, modelTable( [
 				[ '00', { rowspan: 2, contents: '01[]' } ],
 				[ '10' ],
@@ -743,7 +743,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should split rowspanned & colspanned cell', () => {
+		it( 'should split row-spanned & col-spanned cell', () => {
 			setData( model, modelTable( [
 				[ '00', { colspan: 2, contents: '01[]' } ],
 				[ '10', '11' ]
@@ -1324,7 +1324,7 @@ describe( 'TableUtils', () => {
 				] ) );
 			} );
 
-			it( 'should remove column if other column is rowspanned (last column)', () => {
+			it( 'should remove column if other column is row-spanned (last column)', () => {
 				setData( model, modelTable( [
 					[ '00', { rowspan: 2, contents: '01' } ],
 					[ '10' ]
@@ -1337,7 +1337,7 @@ describe( 'TableUtils', () => {
 				] ) );
 			} );
 
-			it( 'should remove column if other column is rowspanned (first column)', () => {
+			it( 'should remove column if other column is row-spanned (first column)', () => {
 				setData( model, modelTable( [
 					[ { rowspan: 2, contents: '00' }, '01' ],
 					[ '11' ]
