@@ -1310,6 +1310,7 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
+			// Might be a misuse of API or other operation - must work either wey. See #6437, #6391.
 			it( 'should react to removed row form the end of a heading rows (no body rows)', () => {
 				setModelData( model, modelTable( [
 					[ '00[]', '01' ],
@@ -1322,6 +1323,43 @@ describe( 'downcast converters', () => {
 					// Removing row from a heading section changes requires changing heading rows attribute.
 					writer.setAttribute( 'headingRows', 1, table );
 					writer.remove( table.getChild( 1 ) );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<thead>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</th>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">01</span>' +
+									'</th>' +
+								'</tr>' +
+							'</thead>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			// Might be a misuse of API or other operation - must work either wey. See #6437, #6391.
+			it( 'should react to removed row form the end of a heading rows (no body rows, using enqueueChange())', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 2 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					// Removing row from a heading section changes requires changing heading rows attribute.
+					writer.remove( table.getChild( 1 ) );
+
+					model.enqueueChange( writer => {
+						writer.setAttribute( 'headingRows', 1, table );
+					} );
 				} );
 
 				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
