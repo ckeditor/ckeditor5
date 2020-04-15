@@ -51,7 +51,7 @@
 					left: 50%;
 					height: 150%;
 					width: 8%;
-					background: red;
+					background: hsl(0, 100%, 50%);
 					border-radius: 2px;
 					transform: rotate(45deg);
 					transform-origin: 50%;
