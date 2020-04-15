@@ -290,32 +290,8 @@ export default class TableUtils extends Plugin {
 
 		// Removing rows from table requires most calculations to be done prior to changing table structure.
 
-		// 1. Preparation
-
-		// 1a. Cells from removed rows section might stick out of. Such cells are moved to a next row after a removed section.
-		const cellsToMove = new Map();
-		// 1b. Similarly, if a cell is "above" removed rows sections we must trim their rowspan.
-		const cellsToTrim = [];
-
-		for ( const { row, column, rowspan, cell } of new TableWalker( table, { endRow: last } ) ) {
-			const rowspanInRemovedSection = last - row + 1;
-			const lastRowOfCell = row + rowspan - 1;
-
-			const isCellStickingOutFromRemovedRows = row >= first && row <= last && lastRowOfCell > last;
-
-			if ( isCellStickingOutFromRemovedRows ) {
-				const rowSpanToSet = rowspan - rowspanInRemovedSection;
-				cellsToMove.set( column, { cell, rowspan: rowSpanToSet } );
-			}
-
-			const isCellOverlappingRemovedRows = row < first && lastRowOfCell >= first;
-
-			if ( isCellOverlappingRemovedRows ) {
-				const rowspanAdjustment = lastRowOfCell >= last ? rowsToRemove : lastRowOfCell - first + 1;
-				const rowSpanToSet = rowspan - rowspanAdjustment;
-				cellsToTrim.push( { cell, rowspan: rowSpanToSet } );
-			}
-		}
+		// 1. Preparation - get row-spanned cells that have to be modified after removing rows.
+		const { cellsToMove, cellsToTrim } = getCellsToMoveAndTrimOnRemoveRow( table, last, first, rowsToRemove );
 
 		// 2. Execution
 		model.change( writer => {
@@ -787,6 +763,69 @@ function updateHeadingRows( table, first, last, model, batch ) {
 			updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
 		} );
 	}
+}
+
+// Finds cells that will be:
+// - trimmed - Cells that are "above" removed rows sections and overlaps removed section - their rowspan must be trimmed.
+// - moved - Cells from removed rows section might stick out of. Such cells are moved to a next row after a removed section.
+//
+// Sample table with overlapping & sticking out cells:
+//
+//      +----+----+----+----+----+
+//      | 00 | 01 | 02 | 03 | 04 |
+//      +----+    +    +    +    +
+//      | 10 |    |    |    |    |
+//      +----+----+    +    +    +
+//      | 20 | 21 |    |    |    | <-- removed row
+//      +    +    +----+    +    +
+//      |    |    | 32 |    |    | <-- removed row
+//      +----+    +    +----+    +
+//      | 40 |    |    | 43 |    |
+//      +----+----+----+----+----+
+//
+// In a table above:
+// - cells to trim: '02', '03' & '04'.
+// - cells to move: '21' & '32'.
+function getCellsToMoveAndTrimOnRemoveRow( table, last, first, rowsToRemove ) {
+	const cellsToMove = new Map();
+	const cellsToTrim = [];
+
+	for ( const { row, column, rowspan, cell } of new TableWalker( table, { endRow: last } ) ) {
+		const lastRowOfCell = row + rowspan - 1;
+
+		const isCellStickingOutFromRemovedRows = row >= first && row <= last && lastRowOfCell > last;
+
+		if ( isCellStickingOutFromRemovedRows ) {
+			const rowspanInRemovedSection = last - row + 1;
+			const rowSpanToSet = rowspan - rowspanInRemovedSection;
+
+			cellsToMove.set( column, {
+				cell,
+				rowspan: rowSpanToSet
+			} );
+		}
+
+		const isCellOverlappingRemovedRows = row < first && lastRowOfCell >= first;
+
+		if ( isCellOverlappingRemovedRows ) {
+			let rowspanAdjustment;
+
+			// Cell fully covers removed section - trim it by removed rows count.
+			if ( lastRowOfCell >= last ) {
+				rowspanAdjustment = rowsToRemove;
+			}
+			// Cell partially overlaps removed section - calculate cell's span that is in removed section.
+			else {
+				rowspanAdjustment = lastRowOfCell - first + 1;
+			}
+
+			cellsToTrim.push( {
+				cell,
+				rowspan: rowspan - rowspanAdjustment
+			} );
+		}
+	}
+	return { cellsToMove, cellsToTrim };
 }
 
 function moveCellsToRow( table, targetRowIndex, cellsToMove, writer ) {
