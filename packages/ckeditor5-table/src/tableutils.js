@@ -311,7 +311,7 @@ export default class TableUtils extends Plugin {
 			const isCellOverlappingRemovedRows = row < first && lastRowOfCell >= first;
 
 			if ( isCellOverlappingRemovedRows ) {
-				const rowspanAdjustment = lastRowOfCell >= last ? rowsToRemove : first - row;
+				const rowspanAdjustment = lastRowOfCell >= last ? rowsToRemove : lastRowOfCell - first + 1;
 				const rowSpanToSet = rowspan - rowspanAdjustment;
 				cellsToTrim.push( { cell, rowspan: rowSpanToSet } );
 			}
