@@ -952,16 +952,16 @@ describe( 'downcast converters', () => {
 
 				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-					'<div class="ck ck-widget__selection-handle"></div>' +
-					'<table>' +
-					'<thead>' +
-					'<tr>' +
-					'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-					'<span style="display:inline-block">00</span>' +
-					'</th>' +
-					'</tr>' +
-					'</thead>' +
-					'</table>' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<thead>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</th>' +
+								'</tr>' +
+							'</thead>' +
+						'</table>' +
 					'</figure>'
 				);
 			} );
