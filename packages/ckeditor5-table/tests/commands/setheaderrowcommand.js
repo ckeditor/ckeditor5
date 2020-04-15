@@ -346,6 +346,100 @@ describe( 'SetHeaderRowCommand', () => {
 				] );
 			} );
 
+			it( 'should set it correctly in table with more than 10 columns (array sort bug)', () => {
+				setData( model, modelTable( [
+					[ '0', 'x' ],
+					[ '1', 'x' ],
+					[ '2', 'x' ],
+					[ '3', 'x' ],
+					[ '4', 'x' ],
+					[ '5', 'x' ],
+					[ '6', 'x' ],
+					[ '7', 'x' ],
+					[ '8', 'x' ],
+					[ '9', 'x' ],
+					[ '10', 'x' ],
+					[ '11', 'x' ],
+					[ '12', 'x' ],
+					[ '13', 'x' ],
+					[ '14', 'x' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 13, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '0', 'x' ],
+					[ '1', 'x' ],
+					[ '2', 'x' ],
+					[ '3', 'x' ],
+					[ '4', 'x' ],
+					[ '5', 'x' ],
+					[ '6', 'x' ],
+					[ '7', 'x' ],
+					[ '8', 'x' ],
+					[ '9', 'x' ],
+					[ '10', 'x' ],
+					[ '11', 'x' ],
+					[ '12', 'x' ],
+					[ '13', 'x' ],
+					[ '14', 'x' ]
+				], { headingRows: 14 } ) );
+			} );
+
+			it( 'should set it correctly in table with more than 10 columns (array sort bug, reversed selection)', () => {
+				setData( model, modelTable( [
+					[ '0', 'x' ],
+					[ '1', 'x' ],
+					[ '2', 'x' ],
+					[ '3', 'x' ],
+					[ '4', 'x' ],
+					[ '5', 'x' ],
+					[ '6', 'x' ],
+					[ '7', 'x' ],
+					[ '8', 'x' ],
+					[ '9', 'x' ],
+					[ '10', 'x' ],
+					[ '11', 'x' ],
+					[ '12', 'x' ],
+					[ '13', 'x' ],
+					[ '14', 'x' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 13, 1 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '0', 'x' ],
+					[ '1', 'x' ],
+					[ '2', 'x' ],
+					[ '3', 'x' ],
+					[ '4', 'x' ],
+					[ '5', 'x' ],
+					[ '6', 'x' ],
+					[ '7', 'x' ],
+					[ '8', 'x' ],
+					[ '9', 'x' ],
+					[ '10', 'x' ],
+					[ '11', 'x' ],
+					[ '12', 'x' ],
+					[ '13', 'x' ],
+					[ '14', 'x' ]
+				], { headingRows: 14 } ) );
+			} );
+
 			it( 'should remove header rows in case of multiple cell selection', () => {
 				setData( model, modelTable( [
 					[ '00' ],
