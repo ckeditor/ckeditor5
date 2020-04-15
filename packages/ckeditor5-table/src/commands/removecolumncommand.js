@@ -63,9 +63,6 @@ export default class RemoveColumnCommand extends Command {
 		const cellToFocus = getCellToFocus( tableMap, firstCell, lastCell, removedColumnIndexes );
 
 		this.editor.model.change( writer => {
-			// A temporary workaround to avoid the "model-selection-range-intersects" error.
-			writer.setSelection( writer.createRangeOn( table ) );
-
 			const columnsToRemove = removedColumnIndexes.last - removedColumnIndexes.first + 1;
 
 			this.editor.plugins.get( 'TableUtils' ).removeColumns( table, {
