@@ -281,7 +281,7 @@ export default class TableNavigation extends Plugin {
 	_findTextRangeFromSelection( range, selection, isForward ) {
 		if ( isForward ) {
 			const position = selection.getLastPosition();
-			const lastRangePosition = this._getNearestTextPosition( range, 'backward' );
+			const lastRangePosition = this._getNearestVisibleTextPosition( range, 'backward' );
 
 			if ( !lastRangePosition || position.compareWith( lastRangePosition ) != 'before' ) {
 				return null;
@@ -290,7 +290,7 @@ export default class TableNavigation extends Plugin {
 			return new ModelRange( position, lastRangePosition );
 		} else {
 			const position = selection.getFirstPosition();
-			const firstRangePosition = this._getNearestTextPosition( range, 'forward' );
+			const firstRangePosition = this._getNearestVisibleTextPosition( range, 'forward' );
 
 			if ( !firstRangePosition || position.compareWith( firstRangePosition ) != 'after' ) {
 				return null;
@@ -302,21 +302,27 @@ export default class TableNavigation extends Plugin {
 
 	/**
 	 * Basing on provided `boundaries` range, finds first/last (depending on `direction`) element
-	 * that can contain `$text` (according to schema).
+	 * that can contain `$text` (according to schema) and is visible in the view.
 	 *
 	 * @param {module:engine/model/range~Range} boundaries The range to find position in.
 	 * @param {'forward'|'backward'} direction Search direction.
 	 * @returns {module:engine/model/position~Position|null} Nearest selection range or `null` if one cannot be found.
 	 */
-	_getNearestTextPosition( boundaries, direction ) {
+	_getNearestVisibleTextPosition( boundaries, direction ) {
 		const schema = this.editor.model.schema;
+		const mapper = this.editor.editing.mapper;
+
 		const startPosition = direction == 'forward' ? boundaries.start : boundaries.end;
 
 		const treeWalker = new TreeWalker( { direction, boundaries, startPosition } );
 
-		for ( const { nextPosition } of treeWalker ) {
+		for ( const { nextPosition, item } of treeWalker ) {
 			if ( schema.checkChild( nextPosition, '$text' ) ) {
-				return nextPosition;
+				const viewElement = mapper.toViewElement( item );
+
+				if ( viewElement && !viewElement.hasClass( 'ck-hidden' ) ) {
+					return nextPosition;
+				}
 			}
 		}
 
