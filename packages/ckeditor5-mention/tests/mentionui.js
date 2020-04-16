@@ -351,6 +351,25 @@ describe( 'MentionUI', () => {
 				} );
 		} );
 
+		it( 'should not show panel when command is disabled', () => {
+			return createClassicTestEditor( staticConfig )
+				.then( () => {
+					setData( model, '<paragraph>foo []</paragraph>' );
+
+					const mentionCommand = editor.commands.get( 'mention' );
+					mentionCommand.forceDisabled( 'mentionCommandDisableTest' );
+
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
+					} );
+				} )
+				.then( waitForDebounce )
+				.then( () => {
+					expect( panelView.isVisible ).to.be.false;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+				} );
+		} );
+
 		describe( 'static list with large set of results', () => {
 			const bigList = {
 				marker: '@',

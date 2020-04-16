@@ -49,3 +49,5 @@ The mention should be removed from the text when:
 - removing characters from a mention
 - breaking the mention (<kbd>enter</kbd>)
 - pasting part of a mention
+
+Mention UI should not appear when mention command is disabled (**Mentions** toggle in toolbar).
