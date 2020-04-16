@@ -168,6 +168,7 @@ export default class TableNavigation extends Plugin {
 
 		if ( wasHandled ) {
 			domEventData.preventDefault();
+			domEventData.stopPropagation();
 			eventInfo.stop();
 		}
 	}
@@ -399,11 +400,11 @@ export default class TableNavigation extends Plugin {
 				break;
 
 			case 'right':
-				column += currentCellInfo.colspan || 1;
+				column += currentCellInfo.colspan;
 				break;
 
 			case 'down':
-				row += currentCellInfo.rowspan || 1;
+				row += currentCellInfo.rowspan;
 				break;
 		}
 

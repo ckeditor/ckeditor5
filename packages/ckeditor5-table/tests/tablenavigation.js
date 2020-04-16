@@ -8,19 +8,22 @@ import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
 import TableNavigation from '../src/tablenavigation';
 import TableEditing from '../src/tableediting';
+import TableSelection from '../src/tableselection';
 
 describe( 'TableNavigation', () => {
-	let editor, model;
+	let editor, model, modelRoot, tableSelection;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TableEditing, TableNavigation, Paragraph, ImageEditing, MediaEmbedEditing ]
+				plugins: [ TableEditing, TableNavigation, TableSelection, Paragraph, ImageEditing, MediaEmbedEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 
 				model = editor.model;
+				modelRoot = model.document.getRoot();
+				tableSelection = editor.plugins.get( TableSelection );
 			} );
 	} );
 
@@ -32,7 +35,7 @@ describe( 'TableNavigation', () => {
 		expect( TableNavigation.pluginName ).to.equal( 'TableNavigation' );
 	} );
 
-	describe( 'caret movement', () => {
+	describe( 'Tab key handling', () => {
 		let domEvtDataStub;
 
 		beforeEach( () => {
@@ -357,6 +360,1011 @@ describe( 'TableNavigation', () => {
 				assertEqualMarkup( getModelData( model ), modelTable( [
 					[ '<paragraph>[foo</paragraph><image></image>]', 'bar' ]
 				] ) );
+			} );
+		} );
+	} );
+
+	describe( 'Arrow keys handling', () => {
+		let arrowLeftDomEvtDataStub, arrowRightDomEvtDataStub, arrowUpDomEvtDataStub, arrowDownDomEvtDataStub;
+
+		beforeEach( () => {
+			arrowLeftDomEvtDataStub = {
+				keyCode: getCode( 'ArrowLeft' ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+			arrowRightDomEvtDataStub = {
+				keyCode: getCode( 'ArrowRight' ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+			arrowUpDomEvtDataStub = {
+				keyCode: getCode( 'ArrowUp' ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+			arrowDownDomEvtDataStub = {
+				keyCode: getCode( 'ArrowDown' ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+		} );
+
+		it( 'should do nothing if not arrow key pressed', () => {
+			setModelData( model, modelTable( [
+				[ '00', '01[]' ]
+			] ) );
+
+			arrowLeftDomEvtDataStub.keyCode = getCode( 'a' );
+
+			editor.editing.view.document.fire( 'keydown', arrowLeftDomEvtDataStub );
+
+			sinon.assert.notCalled( arrowLeftDomEvtDataStub.preventDefault );
+			sinon.assert.notCalled( arrowLeftDomEvtDataStub.stopPropagation );
+
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ '00', '01[]' ]
+			] ) );
+		} );
+
+		it( 'should do nothing if selection is not in a table', () => {
+			const modelData = '<paragraph>[]foobar</paragraph>' + modelTable( [ [ '00', '01' ] ] );
+
+			setModelData( model, modelData );
+
+			editor.editing.view.document.fire( 'keydown', arrowUpDomEvtDataStub );
+
+			sinon.assert.notCalled( arrowUpDomEvtDataStub.preventDefault );
+			sinon.assert.notCalled( arrowUpDomEvtDataStub.stopPropagation );
+
+			assertEqualMarkup( getModelData( model ), modelData );
+		} );
+
+		describe( '#_navigateFromCellInDirection (finding proper cell to move selection to)', () => {
+			let tableNavigation;
+
+			beforeEach( () => {
+				tableNavigation = editor.plugins.get( TableNavigation );
+			} );
+
+			describe( 'with no col/row-spanned cells', () => {
+				beforeEach( () => {
+					setModelData( model, '<paragraph>foo</paragraph>' + modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '12' ],
+						[ '20', '21', '22' ]
+					] ) + '<paragraph>bar</paragraph>' );
+				} );
+
+				describe( 'from the first table cell', () => {
+					let tableCell;
+
+					beforeEach( () => {
+						tableCell = modelRoot.getNodeByPath( [ 1, 0, 0 ] );
+					} );
+
+					it( 'should navigate to the start position of the cell on the right when direction is "right"', () => {
+						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+
+						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
+							[ '00', '[]01', '02' ],
+							[ '10', '11', '12' ],
+							[ '20', '21', '22' ]
+						] ) + '<paragraph>bar</paragraph>' );
+					} );
+
+					it( 'should navigate to the start position the cell below when direction is "down"', () => {
+						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+
+						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
+							[ '00', '01', '02' ],
+							[ '[]10', '11', '12' ],
+							[ '20', '21', '22' ]
+						] ) + '<paragraph>bar</paragraph>' );
+					} );
+
+					it( 'should select a whole table when direction is "up"', () => {
+						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+
+						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>[' + modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '11', '12' ],
+							[ '20', '21', '22' ]
+						] ) + ']<paragraph>bar</paragraph>' );
+					} );
+
+					it( 'should select a whole table when direction is "left"', () => {
+						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+
+						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>[' + modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '11', '12' ],
+							[ '20', '21', '22' ]
+						] ) + ']<paragraph>bar</paragraph>' );
+					} );
+				} );
+
+				describe( 'from the last table cell', () => {
+					let tableCell;
+
+					beforeEach( () => {
+						tableCell = modelRoot.getNodeByPath( [ 1, 2, 2 ] );
+					} );
+
+					it( 'should navigate to the end position of the cell on the left when direction is "left"', () => {
+						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+
+						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '11', '12' ],
+							[ '20', '21[]', '22' ]
+						] ) + '<paragraph>bar</paragraph>' );
+					} );
+
+					it( 'should navigate to the end position of the cell above when direction is "up"', () => {
+						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+
+						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '11', '12[]' ],
+							[ '20', '21', '22' ]
+						] ) + '<paragraph>bar</paragraph>' );
+					} );
+
+					it( 'should select a whole table when direction is "down"', () => {
+						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+
+						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>[' + modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '11', '12' ],
+							[ '20', '21', '22' ]
+						] ) + ']<paragraph>bar</paragraph>' );
+					} );
+
+					it( 'should select a whole table when direction is "right"', () => {
+						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+
+						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>[' + modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '11', '12' ],
+							[ '20', '21', '22' ]
+						] ) + ']<paragraph>bar</paragraph>' );
+					} );
+				} );
+
+				describe( 'from a cell in the first column (but not first row)', () => {
+					let tableCell;
+
+					beforeEach( () => {
+						tableCell = modelRoot.getNodeByPath( [ 1, 1, 0 ] );
+					} );
+
+					it( 'should navigate to start position of the cell on the right when direction is "right"', () => {
+						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+
+						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '[]11', '12' ],
+							[ '20', '21', '22' ]
+						] ) + '<paragraph>bar</paragraph>' );
+					} );
+
+					it( 'should navigate to the end position of the cell above when direction is "up"', () => {
+						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+
+						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
+							[ '00[]', '01', '02' ],
+							[ '10', '11', '12' ],
+							[ '20', '21', '22' ]
+						] ) + '<paragraph>bar</paragraph>' );
+					} );
+
+					it( 'should navigate to the start position of the cell below when direction is "down"', () => {
+						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+
+						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '11', '12' ],
+							[ '[]20', '21', '22' ]
+						] ) + '<paragraph>bar</paragraph>' );
+					} );
+
+					it( 'should navigate to the end position of the last cell in the previous row when direction is "left"', () => {
+						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+
+						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
+							[ '00', '01', '02[]' ],
+							[ '10', '11', '12' ],
+							[ '20', '21', '22' ]
+						] ) + '<paragraph>bar</paragraph>' );
+					} );
+				} );
+
+				describe( 'from a cell in the last column (but not last row)', () => {
+					let tableCell;
+
+					beforeEach( () => {
+						tableCell = modelRoot.getNodeByPath( [ 1, 1, 2 ] );
+					} );
+
+					it( 'should navigate to the end position of the cell on the left when direction is "left"', () => {
+						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+
+						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '11[]', '12' ],
+							[ '20', '21', '22' ]
+						] ) + '<paragraph>bar</paragraph>' );
+					} );
+
+					it( 'should navigate to the end position the cell above when direction is "up"', () => {
+						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+
+						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
+							[ '00', '01', '02[]' ],
+							[ '10', '11', '12' ],
+							[ '20', '21', '22' ]
+						] ) + '<paragraph>bar</paragraph>' );
+					} );
+
+					it( 'should navigate to the start position of the cell below when direction is "down"', () => {
+						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+
+						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '11', '12' ],
+							[ '20', '21', '[]22' ]
+						] ) + '<paragraph>bar</paragraph>' );
+					} );
+
+					it( 'should navigate to the start position of the first cell in the next row when direction is "right"', () => {
+						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+
+						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '11', '12' ],
+							[ '[]20', '21', '22' ]
+						] ) + '<paragraph>bar</paragraph>' );
+					} );
+				} );
+			} );
+
+			describe( 'with col/row-spanned cells', () => {
+				beforeEach( () => {
+					// +----+----+----+----+----+
+					// | 00 | 01 | 02 | 03 | 04 |
+					// +----+----+----+----+----+
+					// | 10 | 11      | 13 | 14 |
+					// +----+         +    +----+
+					// | 20 |         |    | 24 |
+					// +----+----+----+----+----+
+					// | 30 | 31      | 33 | 34 |
+					// +----+----+----+----+----+
+					// | 40 | 41 | 42 | 43 | 44 |
+					// +----+----+----+----+----+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02', '03', '04' ],
+						[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+						[ '20', '24' ],
+						[ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+						[ '40', '41', '42', '43', '44' ]
+					] ) );
+				} );
+
+				describe( 'when navigating to the right', () => {
+					it( 'should navigate to the row-col-spanned cell when approaching from the upper spanned row', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 0 ] );
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '[]11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the row-col-spanned cell when approaching from the lower spanned row', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 2, 0 ] );
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '[]11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the row-spanned cell when approaching from the other row-spanned cell', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '[]13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell in the upper spanned row when approaching from the row-spanned cell', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 2 ] ); // Cell 13.
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '[]14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the col-spanned cell', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 3, 0 ] );
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '[]31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate from the col-spanned cell', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 3, 1 ] );
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '[]33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+				} );
+
+				describe( 'when navigating to the left', () => {
+					it( 'should navigate to the row-spanned cell when approaching from the upper spanned row', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 3 ] ); // Cell 14.
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13[]', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the row-spanned cell when approaching from the lower spanned row', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 2, 1 ] ); // Cell 24.
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13[]', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the row-spanned cell when approaching from the other row-spanned cell', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 2 ] ); // Cell 13.
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11[]', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell in the upper spanned row when approaching from the row-spanned cell', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] ); // Cell 11.
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10[]', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the col-spanned cell', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 3, 2 ] ); // Cell 33.
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31[]', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate from the col-spanned cell', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 3, 1 ] );
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30[]', { contents: '31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+				} );
+
+				describe( 'when navigating down', () => {
+					it( 'should navigate to the row-col-spanned cell when approaching from the first spanned column', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '[]11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the row-col-spanned cell when approaching from the last spanned column', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 0, 2 ] );
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '[]11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the row-spanned cell when approaching from the other col-spanned cell', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '[]31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell in the first spanned column when approaching from the col-spanned cell', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] ); // Cell 11.
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '[]31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the row-spanned cell', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 0, 3 ] );
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '[]13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate from the row-spanned cell', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 2 ] ); // Cell 13.
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '[]33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+				} );
+
+				describe( 'when navigating up', () => {
+					it( 'should navigate to the col-spanned cell when approaching from the first spanned column', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 4, 1 ] );
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31[]', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the col-spanned cell when approaching from the last spanned column', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 4, 2 ] );
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31[]', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the row-col-spanned cell when approaching from the other col-spanned cell', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 3, 1 ] );
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11[]', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell in the first spanned column when approaching from the col-spanned cell', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01[]', '02', '03', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the row-spanned cell', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 3, 2 ] ); // Cell 33.
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13[]', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+
+					it( 'should navigate from the row-spanned cell', () => {
+						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 2 ] ); // Cell 13.
+
+						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02', '03[]', '04' ],
+							[ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+							[ '20', '24' ],
+							[ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+							[ '40', '41', '42', '43', '44' ]
+						] ) );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'with the table cells selected from outside', () => {
+			describe( 'on single table cell selected', () => {
+				beforeEach( () => {
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '12' ],
+						[ '20', '21', '22' ]
+					] ) );
+
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+					);
+				} );
+
+				it( 'should move to the cell on the left', () => {
+					editor.editing.view.document.fire( 'keydown', arrowLeftDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01', '02' ],
+						[ '10[]', '11', '12' ],
+						[ '20', '21', '22' ]
+					] ) );
+				} );
+
+				it( 'should move to the cell on the right', () => {
+					editor.editing.view.document.fire( 'keydown', arrowRightDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowRightDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowRightDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '[]12' ],
+						[ '20', '21', '22' ]
+					] ) );
+				} );
+
+				it( 'should move to the cell above selection', () => {
+					editor.editing.view.document.fire( 'keydown', arrowUpDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowUpDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowUpDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01[]', '02' ],
+						[ '10', '11', '12' ],
+						[ '20', '21', '22' ]
+					] ) );
+				} );
+
+				it( 'should move to the cell below selection', () => {
+					editor.editing.view.document.fire( 'keydown', arrowDownDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowDownDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowDownDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '12' ],
+						[ '20', '[]21', '22' ]
+					] ) );
+				} );
+			} );
+
+			describe( 'on multiple table cell selected vertically', () => {
+				beforeEach( () => {
+					setModelData( model, modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', '11', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+					);
+				} );
+
+				it( 'should move to the cell on the left top of selection', () => {
+					editor.editing.view.document.fire( 'keydown', arrowLeftDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10[]', '11', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+				} );
+
+				it( 'should move to the cell on the right bottom of selection', () => {
+					editor.editing.view.document.fire( 'keydown', arrowRightDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowRightDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowRightDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', '11', '12', '13' ],
+						[ '20', '21', '[]22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+				} );
+
+				it( 'should move to the cell above selection', () => {
+					editor.editing.view.document.fire( 'keydown', arrowUpDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowUpDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowUpDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01[]', '02', '03' ],
+						[ '10', '11', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+				} );
+
+				it( 'should move to the cell below selection', () => {
+					editor.editing.view.document.fire( 'keydown', arrowDownDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowDownDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowDownDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', '11', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '[]31', '32', '33' ]
+					] ) );
+				} );
+			} );
+
+			describe( 'on multiple table cell selected horizontally', () => {
+				beforeEach( () => {
+					setModelData( model, modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', '11', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+
+					// Note that this also tests that selection direction doesn't matter.
+
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 2 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+					);
+				} );
+
+				it( 'should move to the cell on the left top of selection', () => {
+					editor.editing.view.document.fire( 'keydown', arrowLeftDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10[]', '11', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+				} );
+
+				it( 'should move to the cell on the right bottom of selection', () => {
+					editor.editing.view.document.fire( 'keydown', arrowRightDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowRightDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowRightDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', '11', '12', '[]13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+				} );
+
+				it( 'should move to the cell above selection', () => {
+					editor.editing.view.document.fire( 'keydown', arrowUpDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowUpDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowUpDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01[]', '02', '03' ],
+						[ '10', '11', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+				} );
+
+				it( 'should move to the cell below selection', () => {
+					editor.editing.view.document.fire( 'keydown', arrowDownDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowDownDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowDownDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', '11', '12', '13' ],
+						[ '20', '21', '[]22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+				} );
+			} );
+
+			describe( 'on multiple table cell selected diagonally', () => {
+				beforeEach( () => {
+					setModelData( model, modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', '11', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 2, 2 ] )
+					);
+				} );
+
+				it( 'should move to the cell on the left top of selection', () => {
+					editor.editing.view.document.fire( 'keydown', arrowLeftDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10[]', '11', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+				} );
+
+				it( 'should move to the cell on the right bottom of selection', () => {
+					editor.editing.view.document.fire( 'keydown', arrowRightDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowRightDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowRightDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', '11', '12', '13' ],
+						[ '20', '21', '22', '[]23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+				} );
+
+				it( 'should move to the cell above selection', () => {
+					editor.editing.view.document.fire( 'keydown', arrowUpDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowUpDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowUpDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01[]', '02', '03' ],
+						[ '10', '11', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+				} );
+
+				it( 'should move to the cell below selection', () => {
+					editor.editing.view.document.fire( 'keydown', arrowDownDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowDownDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowDownDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', '11', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '[]32', '33' ]
+					] ) );
+				} );
+			} );
+		} );
+
+		describe( 'for right-to-left content language', () => {
+			beforeEach( () => {
+				return VirtualTestEditor
+					.create( {
+						plugins: [ TableEditing, TableNavigation, TableSelection, Paragraph, ImageEditing, MediaEmbedEditing ],
+						language: 'ar'
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+
+						model = editor.model;
+						modelRoot = model.document.getRoot();
+						tableSelection = editor.plugins.get( TableSelection );
+					} );
+			} );
+
+			describe( 'with the table cell selected from outside', () => {
+				beforeEach( () => {
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '12' ],
+						[ '20', '21', '22' ]
+					] ) );
+
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+					);
+				} );
+
+				it( 'should move to the cell on the right (it\'s visually flipped by browser)', () => {
+					editor.editing.view.document.fire( 'keydown', arrowLeftDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '[]12' ],
+						[ '20', '21', '22' ]
+					] ) );
+				} );
+
+				it( 'should move to the cell on the left (it\'s visually flipped by browser)', () => {
+					editor.editing.view.document.fire( 'keydown', arrowRightDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowRightDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowRightDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01', '02' ],
+						[ '10[]', '11', '12' ],
+						[ '20', '21', '22' ]
+					] ) );
+				} );
+
+				it( 'should move to the cell above selection', () => {
+					editor.editing.view.document.fire( 'keydown', arrowUpDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowUpDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowUpDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01[]', '02' ],
+						[ '10', '11', '12' ],
+						[ '20', '21', '22' ]
+					] ) );
+				} );
+
+				it( 'should move to the cell below selection', () => {
+					editor.editing.view.document.fire( 'keydown', arrowDownDomEvtDataStub );
+
+					sinon.assert.calledOnce( arrowDownDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( arrowDownDomEvtDataStub.stopPropagation );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '12' ],
+						[ '20', '[]21', '22' ]
+					] ) );
+				} );
 			} );
 		} );
 	} );
