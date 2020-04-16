@@ -8,6 +8,7 @@ import SelectAllEditing from '../src/selectallediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'SelectAllCommand', () => {
@@ -16,7 +17,7 @@ describe( 'SelectAllCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ SelectAllEditing, Paragraph, ImageEditing, ImageCaptionEditing ]
+				plugins: [ SelectAllEditing, Paragraph, ImageEditing, ImageCaptionEditing, TableEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -74,6 +75,33 @@ describe( 'SelectAllCommand', () => {
 			editor.execute( 'selectAll' );
 
 			expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph><image src="foo.png"><caption>[bar]</caption></image>' );
+		} );
+
+		it( 'should select all in the closest nested editable (nested editable inside another nested editable)', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+							'<image src="foo.png"><caption>b[]ar</caption></image>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			editor.execute( 'selectAll' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph>' +
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+							'<image src="foo.png"><caption>[bar]</caption></image>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
 		} );
 	} );
 } );
