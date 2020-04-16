@@ -766,7 +766,7 @@ function updateHeadingRows( table, first, last, model, batch ) {
 }
 
 // Finds cells that will be:
-// - trimmed - Cells that are "above" removed rows sections and overlaps removed section - their rowspan must be trimmed.
+// - trimmed - Cells that are "above" removed rows sections and overlap the removed section - their rowspan must be trimmed.
 // - moved - Cells from removed rows section might stick out of. Such cells are moved to a next row after a removed section.
 //
 // Sample table with overlapping & sticking out cells:
