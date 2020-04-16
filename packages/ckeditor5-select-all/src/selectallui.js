@@ -29,6 +29,9 @@ export default class SelectAllUI extends Plugin {
 		return 'SelectAllUI';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 

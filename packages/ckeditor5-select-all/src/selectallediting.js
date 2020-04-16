@@ -29,6 +29,9 @@ export default class SelectAllEditing extends Plugin {
 		return 'SelectAllEditing';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const view = editor.editing.view;
