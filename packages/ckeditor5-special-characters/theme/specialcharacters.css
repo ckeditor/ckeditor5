@@ -3,10 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-special-characters-navigation {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	align-items: center;
-	justify-content: space-between;
-}
+/*
+ * Note: This file should contain the wireframe styles only. But since there are no such styles,
+ * it acts as a message to the builder telling that it should look for the corresponding styles
+ * **in the theme** when compiling the editor.
+ */
