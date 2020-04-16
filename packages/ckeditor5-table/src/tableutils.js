@@ -305,7 +305,7 @@ export default class TableUtils extends Plugin {
 				writer.remove( table.getChild( i ) );
 			}
 
-			// 2c. Update cells from rows above that overlaps removed section. Similar to step 2 but does not involve moving cells.
+			// 2c. Update cells from rows above that overlap removed section. Similar to step 2 but does not involve moving cells.
 			for ( const { rowspan, cell } of cellsToTrim ) {
 				updateNumericAttribute( 'rowspan', rowspan, cell, writer );
 			}
