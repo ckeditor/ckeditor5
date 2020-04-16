@@ -15,6 +15,7 @@
 		outline: unset;
 		box-shadow: unset;
 
+		/* https://github.com/ckeditor/ckeditor5/issues/6446 */
 		&:after {
 			content: '';
 			pointer-events: none;
