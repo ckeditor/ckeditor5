@@ -291,7 +291,7 @@ export default class TableUtils extends Plugin {
 		// Removing rows from table requires most calculations to be done prior to changing table structure.
 
 		// 1. Preparation - get row-spanned cells that have to be modified after removing rows.
-		const { cellsToMove, cellsToTrim } = getCellsToMoveAndTrimOnRemoveRow( table, last, first, rowsToRemove );
+		const { cellsToMove, cellsToTrim } = getCellsToMoveAndTrimOnRemoveRow( table, first, last );
 
 		// 2. Execution
 		model.change( writer => {
@@ -786,7 +786,7 @@ function updateHeadingRows( table, first, last, model, batch ) {
 // In a table above:
 // - cells to trim: '02', '03' & '04'.
 // - cells to move: '21' & '32'.
-function getCellsToMoveAndTrimOnRemoveRow( table, last, first, rowsToRemove ) {
+function getCellsToMoveAndTrimOnRemoveRow( table, first, last ) {
 	const cellsToMove = new Map();
 	const cellsToTrim = [];
 
@@ -812,7 +812,7 @@ function getCellsToMoveAndTrimOnRemoveRow( table, last, first, rowsToRemove ) {
 
 			// Cell fully covers removed section - trim it by removed rows count.
 			if ( lastRowOfCell >= last ) {
-				rowspanAdjustment = rowsToRemove;
+				rowspanAdjustment = last - first + 1;
 			}
 			// Cell partially overlaps removed section - calculate cell's span that is in removed section.
 			else {
