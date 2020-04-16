@@ -21,12 +21,20 @@ The feeds:
     - ...
     - a20
 
+3. Static list of "special characters" items (`:` marker)
+
+    - :+1:
+    - :-1:
+    - :@(at-sign):
+    - :$(dollar-sign):
+    - :#(hash-sign):
+
 ### Interaction
 
 You can interact with mention panel with keyboard:
 
 - Move arrows up/down to select an item.
-- Use <kbd>enter</kbd> or <kbd>tab</kbd> to insert a mention into the documentation. 
+- Use <kbd>enter</kbd> or <kbd>tab</kbd> to insert a mention into the documentation.
 - The <kbd>esc</kbd> should close the panel.
 
 Mention panel should be closed on:
