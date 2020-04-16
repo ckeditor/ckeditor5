@@ -4,7 +4,7 @@
  */
 
 :root {
-		--ck-table-selected-cell-background: hsla(208, 90%, 80%, .3);
+	--ck-table-selected-cell-background: hsla(208, 90%, 80%, .3);
 }
 
 .ck.ck-editor__editable .table table {
@@ -17,6 +17,7 @@
 
 		&:after {
 			content: '';
+			pointer-events: none;
 			background-color: var(--ck-table-selected-cell-background);
 			position: absolute;
 			top: 0;
