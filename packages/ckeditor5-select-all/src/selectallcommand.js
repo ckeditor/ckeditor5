@@ -13,7 +13,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  * The select all command.
  *
  * It is used by the {@link module:select-all/selectallediting~SelectAllEditing select all editing feature} to handle
- * the <kbd>Ctrl</kbd>+<kbd>A</kbd> keystroke.
+ * the <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd> keystroke.
  *
  * Executing this command changes the {@glink framework/guides/architecture/editing-engine#model model}
  * selection so it contains the entire content of the editable root of the editor the selection is
