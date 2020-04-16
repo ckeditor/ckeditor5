@@ -21,6 +21,14 @@ The feeds:
     - ...
     - a20
 
+3. Static list of "special characters" items (`:` marker)
+
+    - :+1:
+    - :-1:
+    - :@(at-sign):
+    - :$(dollar-sign):
+    - :#(hash-sign):
+
 ### Interaction
 
 You can interact with mention panel with keyboard:

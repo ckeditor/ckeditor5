@@ -518,14 +518,14 @@ describe( 'MentionUI', () => {
 				env.features.isRegExpUnicodePropertySupported = false;
 				createRegExp( '@', 2 );
 				sinon.assert.calledOnce( regExpStub );
-				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\(\\[{"\'])([@])([_a-zA-ZÀ-ž0-9]{2,})$', 'u' );
+				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\(\\[{"\'])([@])([\\S]{2,})$', 'u' );
 			} );
 
 			it( 'returns a ES2018 RegExp for browsers supporting Unicode punctuation groups', () => {
 				env.features.isRegExpUnicodePropertySupported = true;
 				createRegExp( '@', 2 );
 				sinon.assert.calledOnce( regExpStub );
-				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\p{Ps}\\p{Pi}"\'])([@])([_\\p{L}\\p{N}]{2,})$', 'u' );
+				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\p{Ps}\\p{Pi}"\'])([@])([\\S]{2,})$', 'u' );
 			} );
 		} );
 
@@ -1916,7 +1916,11 @@ describe( 'MentionUI', () => {
 						},
 						{
 							marker: '$',
-							feed: [ '$a1', '$a2', '$a3', '$a4', '$a5' ]
+							feed: [
+								'$a1', '$a2', '$a3', '$a4',
+								// A case of mention with a marker character from other feed. See #6398.
+								'$a@'
+							]
 						}
 					]
 				} );
@@ -1969,6 +1973,43 @@ describe( 'MentionUI', () => {
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 
 						expect( mentionsView.items ).to.have.length( 3 );
+					} );
+			} );
+
+			it( 'should show panel for matched marker if it contains the other configured marker', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 3 );
+
+						mentionsView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+
+						model.change( writer => {
+							writer.insertText( '$a', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 					} );
 			} );
 		} );
