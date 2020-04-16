@@ -26,14 +26,6 @@ const env = {
 	isMac: isMac( userAgent ),
 
 	/**
-	 * Indicates that the application is running in Microsoft Edge.
-	 *
-	 * @static
-	 * @type {Boolean}
-	 */
-	isEdge: isEdge( userAgent ),
-
-	/**
 	 * Indicates that the application is running in Firefox (Gecko).
 	 *
 	 * @static
@@ -88,16 +80,6 @@ export function isMac( userAgent ) {
 }
 
 /**
- * Checks if User Agent represented by the string is Microsoft Edge.
- *
- * @param {String} userAgent **Lowercase** `navigator.userAgent` string.
- * @returns {Boolean} Whether User Agent is Edge or not.
- */
-export function isEdge( userAgent ) {
-	return !!userAgent.match( /edge\/(\d+.?\d*)/ );
-}
-
-/**
  * Checks if User Agent represented by the string is Firefox (Gecko).
  *
  * @param {String} userAgent **Lowercase** `navigator.userAgent` string.
@@ -137,7 +119,7 @@ export function isAndroid( userAgent ) {
 export function isRegExpUnicodePropertySupported() {
 	let isSupported = false;
 
-	// Feature detection for Unicode properties. Added in ES2018. Currently Firefox and Edge do not support it.
+	// Feature detection for Unicode properties. Added in ES2018. Currently Firefox does not support it.
 	// See https://github.com/ckeditor/ckeditor5-mention/issues/44#issuecomment-487002174.
 
 	try {
