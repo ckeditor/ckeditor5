@@ -43,7 +43,7 @@ export default class SelectAllUI extends Plugin {
 			view.set( {
 				label: t( 'Select all' ),
 				icon: selectAllIcon,
-				keystroke: 'CTRL+A',
+				keystroke: 'Ctrl+A',
 				tooltip: true
 			} );
 
