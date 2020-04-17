@@ -10,67 +10,131 @@ describe( 'translation-service', () => {
 		_clear();
 	} );
 
-	it( 'should return english string if no translation exists', () => {
-		const translation = translate( 'pl', 'Bold' );
+	describe( 'add()', () => {
+		it( 'should merge translation added several times', () => {
+			add( 'pl', { 'foo': 'foo_pl' } );
+			add( 'pl', { 'bar': 'bar_pl' } );
 
-		expect( translation ).to.be.equal( 'Bold' );
-	} );
+			const translatedFoo = translate( 'pl', { string: 'foo' } );
+			const translatedBar = translate( 'pl', { string: 'bar' } );
 
-	it( 'should return english string without context if no translation exists', () => {
-		const translation = translate( 'pl', 'Bold [context: bold]' );
-
-		expect( translation ).to.be.equal( 'Bold' );
-	} );
-
-	it( 'should return translation if the translation for the concrete language is defined', () => {
-		add( 'pl', {
-			'OK': 'OK',
-			'Cancel [context: reject]': 'Anuluj'
+			expect( translatedFoo ).to.equal( 'foo_pl' );
+			expect( translatedBar ).to.equal( 'bar_pl' );
 		} );
 
-		const translation = translate( 'pl', 'Cancel [context: reject]' );
+		it( 'should overwrite previously added translations for the same message ids', () => {
+			add( 'pl', { 'foo': 'First' } );
+			add( 'pl', { 'foo': 'Second' } );
 
-		expect( translation ).to.be.equal( 'Anuluj' );
+			const translatedFoo = translate( 'pl', { string: 'foo' } );
+
+			expect( translatedFoo ).to.equal( 'Second' );
+		} );
+
+		it( 'should set the plural form function if it is provided', () => {
+			add( 'pl', {
+				'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ],
+			} );
+
+			add( 'pl', {}, n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2 );
+
+			expect( translate( 'pl', 'Add space', 0 ) ).to.equal( 'Dodaj %0 spacji' );
+			expect( translate( 'pl', 'Add space', 1 ) ).to.equal( 'Dodaj spację' );
+			expect( translate( 'pl', 'Add space', 3 ) ).to.equal( 'Dodaj %0 spacje' );
+			expect( translate( 'pl', 'Add space', 13 ) ).to.equal( 'Dodaj %0 spacji' );
+		} );
 	} );
 
-	it( 'should return english string without context if the translations for the concrete language exist, ' +
-		'but translation doesn\'t', () => {
-		add( 'pl', {
-			'OK': 'OK',
-			'Cancel [context: reject]': 'Anuluj'
+	describe( 'translate()', () => {
+		it( 'should return the message string if no translation exists', () => {
+			const translatedBold = translate( 'pl', { string: 'Bold' } );
+
+			expect( translatedBold ).to.be.equal( 'Bold' );
 		} );
 
-		const translation = translate( 'pl', 'Bold [context: bold]' );
+		it( 'should return a translation if it is defined in the target language dictionary', () => {
+			add( 'pl', {
+				'OK': 'OK',
+				'Cancel': 'Anuluj'
+			} );
 
-		expect( translation ).to.be.equal( 'Bold' );
-	} );
+			const translatedCancel = translate( 'pl', { string: 'Cancel' } );
 
-	it( 'should use provided language if only one is provided', () => {
-		add( 'pl', {
-			'OK': 'OK',
-			'Cancel [context: reject]': 'Anuluj'
+			expect( translatedCancel ).to.be.equal( 'Anuluj' );
 		} );
 
-		const translation = translate( 'de', 'Cancel [context: reject]' );
+		it( 'should return the message string if a translation for the target language does not exist' +
+			'but translation doesn\'t', () => {
+				add( 'pl', {
+					'OK': 'OK',
+					'Cancel': 'Anuluj'
+				} );
 
-		expect( translation ).to.be.equal( 'Anuluj' );
-	} );
+				const translatedBold = translate( 'pl', { string: 'Bold' } );
 
-	it( 'should be able to merge translations', () => {
-		add( 'pl', {
-			'OK': 'OK',
-			'Cancel [context: reject]': 'Anuluj'
+				expect( translatedBold ).to.be.equal( 'Bold' );
+			} );
+
+		it( 'should return a translated message when only one language is provided', () => {
+			add( 'pl', {
+				'OK': 'OK',
+				'Cancel': 'Anuluj'
+			} );
+
+			const translatedCancel = translate( 'de', { string: 'Cancel' } );
+
+			expect( translatedCancel ).to.be.equal( 'Anuluj' );
 		} );
 
-		add( 'en_US', {
-			'OK': 'OK',
-			'Cancel [context: reject]': 'Cancel'
+		it( 'should return translated messages when translations are defined', () => {
+			add( 'pl', {
+				'OK': 'OK',
+				'Cancel': 'Anuluj'
+			} );
+
+			add( 'en_US', {
+				'OK': 'OK',
+				'Cancel': 'Cancel'
+			} );
+
+			const translatedCancelPL = translate( 'pl', { string: 'Cancel' } );
+			const translatedCancelEN = translate( 'en', { string: 'Cancel' } );
+
+			expect( translatedCancelPL ).to.be.equal( 'Anuluj' );
+			expect( translatedCancelEN ).to.be.equal( 'Cancel' );
 		} );
 
-		const translationPL = translate( 'pl', 'Cancel [context: reject]' );
-		const translationEN = translate( 'en', 'Cancel [context: reject]' );
+		it( 'should construct message id from message string and message context when both are provided', () => {
+			add( 'pl', {
+				'foo_bar': 'foo-bar-translation',
+			} );
 
-		expect( translationPL ).to.be.equal( 'Anuluj' );
-		expect( translationEN ).to.be.equal( 'Cancel' );
+			const translatedFooBar = translate( 'pl', { string: 'foo', context: 'bar' } );
+
+			expect( translatedFooBar ).to.equal( 'foo-bar-translation' );
+		} );
+
+		it( 'should support a deprecated form of using translate() function with string as a message', () => {
+			add( 'pl', {
+				'OK': 'OK',
+				'Cancel': 'Anuluj'
+			} );
+
+			const translation = translate( 'pl', 'Cancel' );
+
+			expect( translation ).to.equal( 'Anuluj' );
+		} );
+
+		it( 'should return the correct plural form of the translation', () => {
+			add( 'pl', {
+				'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ],
+				'Cancel': 'Anuluj'
+			}, n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2 );
+
+			expect( translate( 'pl', 'Add space', 0 ) ).to.equal( 'Dodaj %0 spacji' );
+			expect( translate( 'pl', 'Add space', 1 ) ).to.equal( 'Dodaj spację' );
+			expect( translate( 'pl', 'Add space', 3 ) ).to.equal( 'Dodaj %0 spacje' );
+			expect( translate( 'pl', 'Add space', 13 ) ).to.equal( 'Dodaj %0 spacji' );
+		} );
 	} );
 } );
