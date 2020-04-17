@@ -44,6 +44,7 @@
     "@ckeditor/ckeditor5-paste-from-office": "ckeditor/ckeditor5-paste-from-office",
     "@ckeditor/ckeditor5-remove-format": "ckeditor/ckeditor5-remove-format",
     "@ckeditor/ckeditor5-restricted-editing": "ckeditor/ckeditor5-restricted-editing",
+    "@ckeditor/ckeditor5-select-all": "ckeditor/ckeditor5-select-all",
     "@ckeditor/ckeditor5-special-characters": "ckeditor/ckeditor5-special-characters",
     "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark",

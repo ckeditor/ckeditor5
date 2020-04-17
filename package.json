@@ -62,6 +62,7 @@
     "@ckeditor/ckeditor5-paste-from-office": "^18.0.0",
     "@ckeditor/ckeditor5-remove-format": "^18.0.0",
     "@ckeditor/ckeditor5-restricted-editing": "^18.0.0",
+    "@ckeditor/ckeditor5-select-all": "^0.0.1",
     "@ckeditor/ckeditor5-special-characters": "^18.0.0",
     "@ckeditor/ckeditor5-table": "^18.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^18.0.0",
