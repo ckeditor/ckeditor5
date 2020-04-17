@@ -51,7 +51,7 @@ describe( 'SelectAllUI', () => {
 		} );
 
 		it( 'should have a keystroke', () => {
-			expect( button.keystroke ).to.equal( 'CTRL+A' );
+			expect( button.keystroke ).to.equal( 'Ctrl+A' );
 		} );
 
 		it( 'should have a tooltip', () => {
