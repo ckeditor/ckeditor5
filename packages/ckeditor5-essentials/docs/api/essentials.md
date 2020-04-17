@@ -8,7 +8,7 @@ category: api-reference
 
 Essential editing features for CKEditor 5 wrapped in one plugin.
 
-The {@link module:essentials/essentials~Essentials} plugin exposed by this package enables {@link module:clipboard/clipboard~Clipboard clipboard}, {@link module:enter/enter~Enter Enter}, {@link module:enter/shiftenter~ShiftEnter ShiftEnter}, {@link module:typing/typing~Typing typing} and {@link module:undo/undo~Undo undo} support.
+The {@link module:essentials/essentials~Essentials} plugin exposed by this package enables {@link module:clipboard/clipboard~Clipboard clipboard}, {@link module:enter/enter~Enter Enter}, {@link module:select-all/selectall~SelectAll select all}, {@link module:enter/shiftenter~ShiftEnter ShiftEnter}, {@link module:typing/typing~Typing typing} and {@link module:undo/undo~Undo undo} support.
 
 ## Documentation
 
