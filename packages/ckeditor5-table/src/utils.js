@@ -9,6 +9,7 @@
 
 import { isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import { findAncestor } from './commands/utils';
+import TableWalker from './tablewalker';
 
 /**
  * Converts a given {@link module:engine/view/element~Element} to a table widget:
@@ -146,16 +147,46 @@ export function getSelectionAffectedTableCells( selection ) {
  *
  *		console.log( `Selected rows ${ first } to ${ last }` );
  *
- * @package {Array.<module:engine/model/element~Element>}
+ * @param {Array.<module:engine/model/element~Element>}
  * @returns {Object} Returns an object with `first` and `last` table row indexes.
  */
 export function getRowIndexes( tableCells ) {
-	const allIndexesSorted = tableCells.map( cell => cell.parent.index ).sort();
+	const indexes = tableCells.map( cell => cell.parent.index );
 
-	return {
-		first: allIndexesSorted[ 0 ],
-		last: allIndexesSorted[ allIndexesSorted.length - 1 ]
-	};
+	return getFirstLastIndexesObject( indexes );
+}
+
+/**
+ * Returns a helper object with `first` and `last` column index contained in given `tableCells`.
+ *
+ *		const selectedTableCells = getSelectedTableCells( editor.model.document.selection );
+ *
+ *		const { first, last } = getColumnIndexes( selectedTableCells );
+ *
+ *		console.log( `Selected columns ${ first } to ${ last }` );
+ *
+ * @param {Array.<module:engine/model/element~Element>}
+ * @returns {Object} Returns an object with `first` and `last` table column indexes.
+ */
+export function getColumnIndexes( selectedCells ) {
+	const table = findAncestor( 'table', selectedCells[ 0 ] );
+	const tableMap = [ ...new TableWalker( table ) ];
+
+	const indexes = tableMap
+		.filter( entry => selectedCells.includes( entry.cell ) )
+		.map( entry => entry.column );
+
+	return getFirstLastIndexesObject( indexes );
+}
+
+// Helper method to get an object with `first` and `last` indexes from an unsorted array of indexes.
+function getFirstLastIndexesObject( indexes ) {
+	const allIndexesSorted = indexes.sort( ( indexA, indexB ) => indexA - indexB );
+
+	const first = allIndexesSorted[ 0 ];
+	const last = allIndexesSorted[ allIndexesSorted.length - 1 ];
+
+	return { first, last };
 }
 
 function sortRanges( rangesIterator ) {
