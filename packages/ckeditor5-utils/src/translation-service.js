@@ -46,13 +46,13 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  *
  * @param {String} language Target language.
  * @param {Object.<String, String>} translations Translations which will be added to the dictionary.
- * @param {Function} getFormIndex
+ * @param {Function} getPluralForm A function that returns the plural form index.
  */
-export function add( language, translations, getFormIndex ) {
+export function add( language, translations, getPluralForm ) {
 	const languageTranslations = window.CKEDITOR_TRANSLATIONS[ language ] || ( window.CKEDITOR_TRANSLATIONS[ language ] = {} );
 
 	languageTranslations.dictionary = languageTranslations.dictionary || {};
-	languageTranslations.getFormIndex = getFormIndex || languageTranslations.getFormIndex || ( () => 0 );
+	languageTranslations.getPluralForm = getPluralForm || languageTranslations.getPluralForm || ( () => 0 );
 
 	Object.assign( languageTranslations.dictionary, translations );
 }
@@ -106,7 +106,7 @@ export function translate( language, message, amount = 1 ) {
 	}
 
 	const dictionary = window.CKEDITOR_TRANSLATIONS[ language ].dictionary;
-	const getFormIndex = window.CKEDITOR_TRANSLATIONS[ language ].getFormIndex;
+	const getPluralForm = window.CKEDITOR_TRANSLATIONS[ language ].getPluralForm;
 
 	// TODO - maybe a warning could be helpful for some mismatches.
 
@@ -115,7 +115,7 @@ export function translate( language, message, amount = 1 ) {
 	}
 
 	// Note: The `translate` function is not responsible for replacing `%0, %1, ...` with values.
-	return dictionary[ messageId ][ getFormIndex( amount ) ];
+	return dictionary[ messageId ][ getPluralForm( amount ) ];
 }
 
 /**
