@@ -466,6 +466,28 @@ describe( 'WidgetResize', () => {
 		} );
 	} );
 
+	describe( 'cancel()', () => {
+		it( 'restores original view width', () => {
+			const resizer = createResizer();
+
+			const usedHandle = 'bottom-right';
+			const domParts = getWidgetDomParts( editor, widget, usedHandle );
+			const startingPosition = getHandleCenterPoint( domParts.widget, usedHandle ).moveBy( 100, 0 );
+			const domTarget = domParts.resizeHandle;
+
+			resizerMouseSimulator.down( editor, domTarget );
+			resizerMouseSimulator.move( editor, domTarget, {
+				pageX: startingPosition.x,
+				pageY: startingPosition.y
+			} );
+
+			resizer.cancel();
+
+			// Value should be restored to the initial value.
+			expect( widget.getStyle( 'width' ) ).to.be.equal( '25%' );
+		} );
+	} );
+
 	describe( '_getResizerByHandle()', () => {
 		it( 'returns properly in case of invalid handle element', () => {
 			const randomElement = document.createElement( 'span' );
