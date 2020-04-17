@@ -7,7 +7,7 @@ import LinkEditing from '../src/linkediting';
 import LinkCommand from '../src/linkcommand';
 import UnlinkCommand from '../src/unlinkcommand';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -19,22 +19,43 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 /* global document */
 
 describe( 'LinkEditing', () => {
-	let editor, model, view;
+	let element, editor, model, view;
 
-	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
-				plugins: [ Paragraph, LinkEditing, Enter ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				view = editor.editing.view;
-			} );
+	beforeEach( async () => {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		editor = await ClassicTestEditor.create( element, {
+			plugins: [ Paragraph, LinkEditing, Enter ],
+			link: {
+				decorators: {
+					isExternal: {
+						mode: 'manual',
+						label: 'Open in a new window',
+						attributes: {
+							target: '_blank',
+							rel: 'noopener noreferrer'
+						}
+					}
+				}
+			}
+		} );
+
+		editor.model.schema.extend( '$text', { allowAttributes: 'bold' } );
+
+		editor.conversion.attributeToElement( {
+			model: 'bold',
+			view: 'b'
+		} );
+
+		model = editor.model;
+		view = editor.editing.view;
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		element.remove();
+
+		await editor.destroy();
 	} );
 
 	it( 'should have pluginName', () => {
@@ -73,8 +94,8 @@ describe( 'LinkEditing', () => {
 		} );
 
 		it( 'should be bound to th `linkHref` attribute (RTL)', () => {
-			return VirtualTestEditor
-				.create( {
+			return ClassicTestEditor
+				.create( element, {
 					plugins: [ Paragraph, LinkEditing, Enter ],
 					language: {
 						content: 'ar'
@@ -101,6 +122,130 @@ describe( 'LinkEditing', () => {
 
 					return editor.destroy();
 				} );
+		} );
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/6053
+	describe( 'selection attribute management on paste', () => {
+		it( 'should remove link atttributes when pasting a link', () => {
+			setModelData( model, '<paragraph>foo[]</paragraph>' );
+
+			model.change( writer => {
+				model.insertContent( writer.createText( 'INSERTED', { linkHref: 'ckeditor.com' } ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo<$text linkHref="ckeditor.com">INSERTED</$text>[]</paragraph>' );
+
+			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.be.empty;
+		} );
+
+		it( 'should remove all atttributes starting with "link" (e.g. decorator attributes) when pasting a link', () => {
+			setModelData( model, '<paragraph>foo[]</paragraph>' );
+
+			model.change( writer => {
+				model.insertContent( writer.createText( 'INSERTED', { linkHref: 'ckeditor.com', linkIsExternal: true } ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+					'foo<$text linkHref="ckeditor.com" linkIsExternal="true">INSERTED</$text>[]' +
+				'</paragraph>'
+			);
+
+			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.be.empty;
+		} );
+
+		it( 'should not remove link atttributes when pasting a non-link content', () => {
+			setModelData( model, '<paragraph><$text linkHref="ckeditor.com">foo[]</$text></paragraph>' );
+
+			model.change( writer => {
+				model.insertContent( writer.createText( 'INSERTED', { bold: 'true' } ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+					'<$text linkHref="ckeditor.com">foo</$text>' +
+					'<$text bold="true">INSERTED[]</$text>' +
+				'</paragraph>'
+			);
+
+			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.have.members( [ 'bold' ] );
+		} );
+
+		it( 'should not remove link atttributes when pasting in the middle of a link with the same URL', () => {
+			setModelData( model, '<paragraph><$text linkHref="ckeditor.com">fo[]o</$text></paragraph>' );
+
+			model.change( writer => {
+				model.insertContent( writer.createText( 'INSERTED', { linkHref: 'ckeditor.com' } ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph><$text linkHref="ckeditor.com">foINSERTED[]o</$text></paragraph>' );
+			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.have.members( [ 'linkHref' ] );
+		} );
+
+		it( 'should not remove link atttributes from the selection when pasting before a link when the gravity is overridden', () => {
+			setModelData( model, '<paragraph>foo[]<$text linkHref="ckeditor.com">bar</$text></paragraph>' );
+
+			view.document.fire( 'keydown', {
+				keyCode: keyCodes.arrowright,
+				preventDefault: () => {},
+				domTarget: document.body
+			} );
+
+			expect( model.document.selection.isGravityOverridden ).to.be.true;
+
+			model.change( writer => {
+				model.insertContent( writer.createText( 'INSERTED', { bold: true } ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+					'foo' +
+					'<$text bold="true">INSERTED</$text>' +
+					'<$text linkHref="ckeditor.com">[]bar</$text>' +
+				'</paragraph>'
+			);
+
+			expect( model.document.selection.isGravityOverridden ).to.be.true;
+			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.have.members( [ 'linkHref' ] );
+		} );
+
+		it( 'should not remove link atttributes when pasting a link into another link (different URLs, no merge)', () => {
+			setModelData( model, '<paragraph><$text linkHref="ckeditor.com">f[]oo</$text></paragraph>' );
+
+			model.change( writer => {
+				model.insertContent( writer.createText( 'INSERTED', { linkHref: 'http://INSERTED' } ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+					'<$text linkHref="ckeditor.com">f</$text>' +
+					'<$text linkHref="http://INSERTED">INSERTED[]</$text>' +
+					'<$text linkHref="ckeditor.com">oo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.have.members( [ 'linkHref' ] );
+		} );
+
+		it( 'should not remove link atttributes when pasting before another link (different URLs, no merge)', () => {
+			setModelData( model, '<paragraph>[]<$text linkHref="ckeditor.com">foo</$text></paragraph>' );
+
+			expect( model.document.selection.isGravityOverridden ).to.be.false;
+
+			model.change( writer => {
+				model.insertContent( writer.createText( 'INSERTED', { linkHref: 'http://INSERTED' } ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+					'<$text linkHref="http://INSERTED">INSERTED[]</$text>' +
+					'<$text linkHref="ckeditor.com">foo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.have.members( [ 'linkHref' ] );
+			expect( model.document.selection.getAttribute( 'linkHref' ) ).to.equal( 'http://INSERTED' );
 		} );
 	} );
 
@@ -434,23 +579,21 @@ describe( 'LinkEditing', () => {
 
 			describe( 'for link.addTargetToExternalLinks = false', () => {
 				let editor, model;
-				beforeEach( () => {
-					return VirtualTestEditor
-						.create( {
-							plugins: [ Paragraph, LinkEditing, Enter ],
-							link: {
-								addTargetToExternalLinks: true
-							}
-						} )
-						.then( newEditor => {
-							editor = newEditor;
-							model = editor.model;
-							view = editor.editing.view;
-						} );
+
+				beforeEach( async () => {
+					editor = await ClassicTestEditor.create( element, {
+						plugins: [ Paragraph, LinkEditing, Enter ],
+						link: {
+							addTargetToExternalLinks: true
+						}
+					} );
+
+					model = editor.model;
+					view = editor.editing.view;
 				} );
 
-				afterEach( () => {
-					editor.destroy();
+				afterEach( async () => {
+					await editor.destroy();
 				} );
 
 				it( 'link.addTargetToExternalLinks is set as true value', () => {
@@ -510,43 +653,41 @@ describe( 'LinkEditing', () => {
 					}
 				];
 
-				beforeEach( () => {
-					editor.destroy();
-					return VirtualTestEditor
-						.create( {
-							plugins: [ Paragraph, LinkEditing, Enter ],
-							link: {
-								addTargetToExternalLinks: false,
-								decorators: {
-									isExternal: {
-										mode: 'automatic',
-										callback: url => url.startsWith( 'http' ),
-										attributes: {
-											target: '_blank'
-										}
-									},
-									isDownloadable: {
-										mode: 'automatic',
-										callback: url => url.includes( 'download' ),
-										attributes: {
-											download: 'download'
-										}
-									},
-									isMail: {
-										mode: 'automatic',
-										callback: url => url.startsWith( 'mailto:' ),
-										attributes: {
-											class: 'mail-url'
-										}
+				beforeEach( async () => {
+					await editor.destroy();
+
+					editor = await ClassicTestEditor.create( element, {
+						plugins: [ Paragraph, LinkEditing, Enter ],
+						link: {
+							addTargetToExternalLinks: false,
+							decorators: {
+								isExternal: {
+									mode: 'automatic',
+									callback: url => url.startsWith( 'http' ),
+									attributes: {
+										target: '_blank'
+									}
+								},
+								isDownloadable: {
+									mode: 'automatic',
+									callback: url => url.includes( 'download' ),
+									attributes: {
+										download: 'download'
+									}
+								},
+								isMail: {
+									mode: 'automatic',
+									callback: url => url.startsWith( 'mailto:' ),
+									attributes: {
+										class: 'mail-url'
 									}
 								}
 							}
-						} )
-						.then( newEditor => {
-							editor = newEditor;
-							model = editor.model;
-							view = editor.editing.view;
-						} );
+						}
+					} );
+
+					model = editor.model;
+					view = editor.editing.view;
 				} );
 
 				testLinks.forEach( link => {
@@ -574,7 +715,7 @@ describe( 'LinkEditing', () => {
 		} );
 
 		describe( 'custom linkHref converter', () => {
-			beforeEach( () => {
+			beforeEach( async () => {
 				class CustomLinks extends Plugin {
 					init() {
 						const editor = this.editor;
@@ -599,19 +740,18 @@ describe( 'LinkEditing', () => {
 						} );
 					}
 				}
-				editor.destroy();
-				return VirtualTestEditor
-					.create( {
-						plugins: [ Paragraph, LinkEditing, Enter, CustomLinks ],
-						link: {
-							addTargetToExternalLinks: true
-						}
-					} )
-					.then( newEditor => {
-						editor = newEditor;
-						model = editor.model;
-						view = editor.editing.view;
-					} );
+
+				await editor.destroy();
+
+				editor = await ClassicTestEditor.create( element, {
+					plugins: [ Paragraph, LinkEditing, Enter, CustomLinks ],
+					link: {
+						addTargetToExternalLinks: true
+					}
+				} );
+
+				model = editor.model;
+				view = editor.editing.view;
 			} );
 
 			it( 'has possibility to override default one', () => {
@@ -625,9 +765,20 @@ describe( 'LinkEditing', () => {
 		} );
 
 		describe( 'upcast converter', () => {
+			let element, editor;
+
+			beforeEach( () => {
+				element = document.createElement( 'div' );
+				document.body.appendChild( element );
+			} );
+
+			afterEach( () => {
+				element.remove();
+			} );
+
 			it( 'should upcast attributes from initial data', () => {
-				return VirtualTestEditor
-					.create( {
+				return ClassicTestEditor
+					.create( element, {
 						initialData: '<p><a href="url" target="_blank" rel="noopener noreferrer" download="file">Foo</a>' +
 							'<a href="example.com" download="file">Bar</a></p>',
 						plugins: [ Paragraph, LinkEditing, Enter ],
@@ -661,12 +812,14 @@ describe( 'LinkEditing', () => {
 								'<$text linkHref="example.com" linkIsDownloadable="true">Bar</$text>' +
 							'</paragraph>'
 						);
+
+						return editor.destroy();
 					} );
 			} );
 
 			it( 'should not upcast partial and incorrect attributes', () => {
-				return VirtualTestEditor
-					.create( {
+				return ClassicTestEditor
+					.create( element, {
 						initialData: '<p><a href="url" target="_blank" download="something">Foo</a>' +
 							'<a href="example.com" download="test">Bar</a></p>',
 						plugins: [ Paragraph, LinkEditing, Enter ],
@@ -700,6 +853,8 @@ describe( 'LinkEditing', () => {
 								'<$text linkHref="example.com">Bar</$text>' +
 							'</paragraph>'
 						);
+
+						return editor.destroy();
 					} );
 			} );
 		} );
