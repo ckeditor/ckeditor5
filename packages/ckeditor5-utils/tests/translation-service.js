@@ -33,9 +33,10 @@ describe( 'translation-service', () => {
 
 		it( 'should set the plural form function if it is provided', () => {
 			add( 'pl', {
-				'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ],
+				'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ]
 			} );
 
+			// eslint-disable-next-line no-nested-ternary
 			add( 'pl', {}, n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2 );
 
 			expect( translate( 'pl', 'Add space', 0 ) ).to.equal( 'Dodaj %0 spacji' );
@@ -80,15 +81,15 @@ describe( 'translation-service', () => {
 
 		it( 'should return the original message string if a translation for the target language does not exist' +
 			'but translation doesn\'t', () => {
-				add( 'pl', {
-					'OK': 'OK',
-					'Cancel': 'Anuluj'
-				} );
-
-				const translatedBold = translate( 'pl', { string: 'Bold' } );
-
-				expect( translatedBold ).to.be.equal( 'Bold' );
+			add( 'pl', {
+				'OK': 'OK',
+				'Cancel': 'Anuluj'
 			} );
+
+			const translatedBold = translate( 'pl', { string: 'Bold' } );
+
+			expect( translatedBold ).to.be.equal( 'Bold' );
+		} );
 
 		it( 'should return a translated message when only one language is provided', () => {
 			add( 'pl', {
@@ -103,7 +104,7 @@ describe( 'translation-service', () => {
 
 		it( 'should return a translated message based on message string and message context when both are provided', () => {
 			add( 'pl', {
-				'foo_bar': 'foo-bar-translation',
+				'foo_bar': 'foo-bar-translation'
 			} );
 
 			const translatedFooBar = translate( 'pl', { string: 'foo', context: 'bar' } );
@@ -126,6 +127,7 @@ describe( 'translation-service', () => {
 			add( 'pl', {
 				'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ],
 				'Cancel': 'Anuluj'
+				// eslint-disable-next-line no-nested-ternary
 			}, n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2 );
 
 			expect( translate( 'pl', 'Add space', 0 ) ).to.equal( 'Dodaj %0 spacji' );
