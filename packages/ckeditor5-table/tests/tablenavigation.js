@@ -21,6 +21,9 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 describe( 'TableNavigation', () => {
 	let editor, model, modelRoot, tableSelection;
 
+	const imageUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAUCAQAAADRyVAeAAAAKklEQVR42u3PAQ0AAAwCI' +
+		'O0f+u/hoAHNZUJFRERERERERERERERERLYiD9N4FAFj2iK6AAAAAElFTkSuQmCC';
+
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
@@ -1459,7 +1462,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the cell on the left', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '<image src="#"><caption>[]11</caption></image>', '12' ],
+							[ '10', `<image src="${ imageUrl }"><caption>[]11</caption></image>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -1470,7 +1473,7 @@ describe( 'TableNavigation', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
-							[ '10[]', '<image src="#"><caption>11</caption></image>', '12' ],
+							[ '10[]', `<image src="${ imageUrl }"><caption>11</caption></image>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 					} );
@@ -1478,7 +1481,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the cell on the right', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '<image src="#"><caption>11[]</caption></image>', '12' ],
+							[ '10', `<image src="${ imageUrl }"><caption>11[]</caption></image>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -1489,7 +1492,7 @@ describe( 'TableNavigation', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '<image src="#"><caption>11</caption></image>', '[]12' ],
+							[ '10', `<image src="${ imageUrl }"><caption>11</caption></image>`, '[]12' ],
 							[ '20', '21', '22' ]
 						] ) );
 					} );
@@ -1497,7 +1500,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the cell above', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '<image src="#"><caption>[]11</caption></image>', '12' ],
+							[ '10', `<image src="${ imageUrl }"><caption>[]11</caption></image>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -1508,7 +1511,7 @@ describe( 'TableNavigation', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01[]', '02' ],
-							[ '10', '<image src="#"><caption>11</caption></image>', '12' ],
+							[ '10', `<image src="${ imageUrl }"><caption>11</caption></image>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 					} );
@@ -1516,7 +1519,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the cell below', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '<image src="#"><caption>11[]</caption></image>', '12' ],
+							[ '10', `<image src="${ imageUrl }"><caption>11[]</caption></image>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -1527,7 +1530,7 @@ describe( 'TableNavigation', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '<image src="#"><caption>11</caption></image>', '12' ],
+							[ '10', `<image src="${ imageUrl }"><caption>11</caption></image>`, '12' ],
 							[ '20', '[]21', '22' ]
 						] ) );
 					} );
@@ -1808,7 +1811,7 @@ describe( 'TableNavigation', () => {
 					it( 'should not navigate to the cell on the left', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '<paragraph>foo</paragraph><image src="#"><caption>[]11</caption></image>', '12' ],
+							[ '10', `<paragraph>foo</paragraph><image src="${ imageUrl }"><caption>[]11</caption></image>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -1821,7 +1824,7 @@ describe( 'TableNavigation', () => {
 					it( 'should not navigate to the cell on the right', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '<image src="#"><caption>11[]</caption></image><paragraph>foo</paragraph>', '12' ],
+							[ '10', `<image src="${ imageUrl }"><caption>11[]</caption></image><paragraph>foo</paragraph>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -1834,7 +1837,7 @@ describe( 'TableNavigation', () => {
 					it( 'should not navigate to the cell above', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '<paragraph>foo</paragraph><image src="#"><caption>1[]1</caption></image>', '12' ],
+							[ '10', `<paragraph>foo</paragraph><image src="${ imageUrl }"><caption>1[]1</caption></image>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -1847,7 +1850,7 @@ describe( 'TableNavigation', () => {
 					it( 'should not navigate to the cell above but should select image widget', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '<image src="#"><caption>1[]1</caption></image><paragraph>foo</paragraph>', '12' ],
+							[ '10', `<image src="${ imageUrl }"><caption>1[]1</caption></image><paragraph>foo</paragraph>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -1858,7 +1861,7 @@ describe( 'TableNavigation', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '[<image src="#"><caption>11</caption></image>]<paragraph>foo</paragraph>', '12' ],
+							[ '10', `[<image src="${ imageUrl }"><caption>11</caption></image>]<paragraph>foo</paragraph>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 					} );
@@ -1866,7 +1869,7 @@ describe( 'TableNavigation', () => {
 					it( 'should not navigate to the cell below when followed by paragraph', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '<image src="#"><caption>1[]1</caption></image><paragraph>foo</paragraph>', '12' ],
+							[ '10', `<image src="${ imageUrl }"><caption>1[]1</caption></image><paragraph>foo</paragraph>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -1879,7 +1882,7 @@ describe( 'TableNavigation', () => {
 					it( 'should not navigate to the cell below but should select image widget', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '<paragraph>foo</paragraph><image src="#"><caption>1[]1</caption></image>', '12' ],
+							[ '10', `<paragraph>foo</paragraph><image src="${ imageUrl }"><caption>1[]1</caption></image>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -1890,7 +1893,7 @@ describe( 'TableNavigation', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '<paragraph>foo</paragraph>[<image src="#"><caption>11</caption></image>]', '12' ],
+							[ '10', `<paragraph>foo</paragraph>[<image src="${ imageUrl }"><caption>11</caption></image>]`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 					} );
@@ -1898,7 +1901,7 @@ describe( 'TableNavigation', () => {
 					it( 'should not navigate to the cell above but should select image widget without caption', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '<image src="#"><caption></caption></image><paragraph>f[]oo</paragraph>', '12' ],
+							[ '10', `<image src="${ imageUrl }"><caption></caption></image><paragraph>f[]oo</paragraph>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -1909,7 +1912,7 @@ describe( 'TableNavigation', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '[<image src="#"><caption></caption></image>]<paragraph>foo</paragraph>', '12' ],
+							[ '10', `[<image src="${ imageUrl }"><caption></caption></image>]<paragraph>foo</paragraph>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 					} );
@@ -1917,7 +1920,7 @@ describe( 'TableNavigation', () => {
 					it( 'should not navigate to the cell below but should select image widget without caption', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '<paragraph>f[]oo</paragraph><image src="#"><caption></caption></image>', '12' ],
+							[ '10', `<paragraph>f[]oo</paragraph><image src="${ imageUrl }"><caption></caption></image>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -1928,7 +1931,7 @@ describe( 'TableNavigation', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', '<paragraph>foo</paragraph>[<image src="#"><caption></caption></image>]', '12' ],
+							[ '10', `<paragraph>foo</paragraph>[<image src="${ imageUrl }"><caption></caption></image>]`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 					} );
