@@ -46,24 +46,39 @@ describe( 'translation-service', () => {
 	} );
 
 	describe( 'translate()', () => {
-		it( 'should return the message string if no translation exists', () => {
-			const translatedBold = translate( 'pl', { string: 'Bold' } );
-
-			expect( translatedBold ).to.be.equal( 'Bold' );
-		} );
-
-		it( 'should return a translation if it is defined in the target language dictionary', () => {
+		it( 'should return translated messages when translations are defined', () => {
 			add( 'pl', {
 				'OK': 'OK',
 				'Cancel': 'Anuluj'
 			} );
 
-			const translatedCancel = translate( 'pl', { string: 'Cancel' } );
+			add( 'en_US', {
+				'OK': 'OK',
+				'Cancel': 'Cancel'
+			} );
 
-			expect( translatedCancel ).to.be.equal( 'Anuluj' );
+			const translatedCancelPL = translate( 'pl', { string: 'Cancel' } );
+			const translatedCancelEN = translate( 'en', { string: 'Cancel' } );
+
+			expect( translatedCancelPL ).to.be.equal( 'Anuluj' );
+			expect( translatedCancelEN ).to.be.equal( 'Cancel' );
 		} );
 
-		it( 'should return the message string if a translation for the target language does not exist' +
+		it( 'should return the original message string if no translation exists for the given message', () => {
+			const translatedBold = translate( 'pl', { string: 'Bold' } );
+
+			expect( translatedBold ).to.be.equal( 'Bold' );
+		} );
+
+		it( 'should return the correct plural form of english message if no translation exists for the given message', () => {
+			const addSpaces = translate( 'pl', { string: 'Add a space', plural: 'Add %0 spaces' }, 3 );
+			const addASpace = translate( 'pl', { string: 'Add a space', plural: 'Add %0 spaces' }, 1 );
+
+			expect( addSpaces ).to.be.equal( 'Add %0 spaces' );
+			expect( addASpace ).to.be.equal( 'Add a space' );
+		} );
+
+		it( 'should return the original message string if a translation for the target language does not exist' +
 			'but translation doesn\'t', () => {
 				add( 'pl', {
 					'OK': 'OK',
@@ -86,25 +101,7 @@ describe( 'translation-service', () => {
 			expect( translatedCancel ).to.be.equal( 'Anuluj' );
 		} );
 
-		it( 'should return translated messages when translations are defined', () => {
-			add( 'pl', {
-				'OK': 'OK',
-				'Cancel': 'Anuluj'
-			} );
-
-			add( 'en_US', {
-				'OK': 'OK',
-				'Cancel': 'Cancel'
-			} );
-
-			const translatedCancelPL = translate( 'pl', { string: 'Cancel' } );
-			const translatedCancelEN = translate( 'en', { string: 'Cancel' } );
-
-			expect( translatedCancelPL ).to.be.equal( 'Anuluj' );
-			expect( translatedCancelEN ).to.be.equal( 'Cancel' );
-		} );
-
-		it( 'should construct message id from message string and message context when both are provided', () => {
+		it( 'should return a translated message based on message string and message context when both are provided', () => {
 			add( 'pl', {
 				'foo_bar': 'foo-bar-translation',
 			} );
@@ -125,7 +122,7 @@ describe( 'translation-service', () => {
 			expect( translation ).to.equal( 'Anuluj' );
 		} );
 
-		it( 'should return the correct plural form of the translation', () => {
+		it( 'should return the correct plural form of the message based on the provided function', () => {
 			add( 'pl', {
 				'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ],
 				'Cancel': 'Anuluj'
@@ -135,6 +132,18 @@ describe( 'translation-service', () => {
 			expect( translate( 'pl', 'Add space', 1 ) ).to.equal( 'Dodaj spację' );
 			expect( translate( 'pl', 'Add space', 3 ) ).to.equal( 'Dodaj %0 spacje' );
 			expect( translate( 'pl', 'Add space', 13 ) ).to.equal( 'Dodaj %0 spacji' );
+		} );
+
+		it( 'should return a plural form based on rules for English if no function to determine the plural form was provided', () => {
+			add( 'pl', {
+				'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ],
+				'Cancel': 'Anuluj'
+			} );
+
+			expect( translate( 'pl', 'Add space', 0 ) ).to.equal( 'Dodaj %0 spacje' );
+			expect( translate( 'pl', 'Add space', 1 ) ).to.equal( 'Dodaj spację' );
+			expect( translate( 'pl', 'Add space', 3 ) ).to.equal( 'Dodaj %0 spacje' );
+			expect( translate( 'pl', 'Add space', 13 ) ).to.equal( 'Dodaj %0 spacje' );
 		} );
 	} );
 } );

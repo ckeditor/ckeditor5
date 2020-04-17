@@ -52,7 +52,7 @@ export function add( language, translations, getPluralForm ) {
 	const languageTranslations = window.CKEDITOR_TRANSLATIONS[ language ] || ( window.CKEDITOR_TRANSLATIONS[ language ] = {} );
 
 	languageTranslations.dictionary = languageTranslations.dictionary || {};
-	languageTranslations.getPluralForm = getPluralForm || languageTranslations.getPluralForm || ( () => 0 );
+	languageTranslations.getPluralForm = getPluralForm || languageTranslations.getPluralForm;
 
 	Object.assign( languageTranslations.dictionary, translations );
 }
@@ -111,7 +111,7 @@ export function translate( language, message, amount = 1 ) {
 	}
 
 	const dictionary = window.CKEDITOR_TRANSLATIONS[ language ].dictionary;
-	const getPluralForm = window.CKEDITOR_TRANSLATIONS[ language ].getPluralForm;
+	const getPluralForm = window.CKEDITOR_TRANSLATIONS[ language ].getPluralForm || ( n => n === 1 ? 0 : 1 );
 
 	// TODO - maybe a warning could be helpful for some mismatches.
 
