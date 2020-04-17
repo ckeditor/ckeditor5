@@ -9,11 +9,8 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import {
-	updateNumericAttribute,
-	isHeadingColumnCell
-} from './utils';
-import { getSelectionAffectedTableCells } from '../utils';
+import { findAncestor, isHeadingColumnCell, updateNumericAttribute } from './utils';
+import { getColumnIndexes, getSelectionAffectedTableCells } from '../utils';
 
 /**
  * The header column command.
@@ -66,26 +63,19 @@ export default class SetHeaderColumnCommand extends Command {
 	 * the `forceValue` parameter instead of the current model state.
 	 */
 	execute( options = {} ) {
-		const model = this.editor.model;
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
-
-		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
-		const firstCell = selectedCells[ 0 ];
-		const lastCell = selectedCells[ selectedCells.length - 1 ];
-		const tableRow = firstCell.parent;
-		const table = tableRow.parent;
-
-		const [ selectedColumnMin, selectedColumnMax ] =
-			// Returned cells might not necessary be in order, so make sure to sort it.
-			[ tableUtils.getCellLocation( firstCell ).column, tableUtils.getCellLocation( lastCell ).column ].sort();
-
 		if ( options.forceValue === this.value ) {
 			return;
 		}
 
-		const headingColumnsToSet = this.value ? selectedColumnMin : selectedColumnMax + 1;
+		const model = this.editor.model;
+		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
+		const { first, last } = getColumnIndexes( selectedCells );
+
+		const headingColumnsToSet = this.value ? first : last + 1;
 
 		model.change( writer => {
+			const table = findAncestor( 'table', selectedCells[ 0 ] );
+
 			updateNumericAttribute( 'headingColumns', headingColumnsToSet, table, writer, 0 );
 		} );
 	}

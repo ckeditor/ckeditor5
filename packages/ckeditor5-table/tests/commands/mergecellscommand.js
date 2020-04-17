@@ -208,6 +208,35 @@ describe( 'MergeCellsCommand', () => {
 
 			expect( command.isEnabled ).to.be.false;
 		} );
+
+		it( 'should be false if more than 10 rows selected and some are in heading section', () => {
+			setData( model, modelTable( [
+				[ '0' ],
+				[ '1' ],
+				[ '2' ],
+				[ '3' ],
+				[ '4' ],
+				[ '5' ],
+				[ '6' ],
+				[ '7' ],
+				[ '8' ],
+				[ '9' ],
+				[ '10' ],
+				[ '11' ],
+				[ '12' ],
+				[ '13' ],
+				[ '14' ]
+			], { headingRows: 10 } ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 12, 0 ] )
+			);
+
+			expect( command.isEnabled ).to.be.false;
+		} );
 	} );
 
 	describe( 'execute()', () => {
