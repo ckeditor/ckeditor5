@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window */
+/* globals window, console */
 
 /**
  * @module utils/translation-service
@@ -84,7 +84,7 @@ export function add( language, translations, getPluralForm ) {
 export function translate( language, message, amount = 1 ) {
 	if ( typeof message === 'string' ) {
 		// TODO
-		console.warn( 'DEPRECATED' );
+		console.warn( 'deprecated usage' );
 
 		message = { string: message };
 	}
@@ -135,8 +135,8 @@ export function _clear() {
 // Checks whether the dictionary exists and translation in that dictionary exists.
 function hasTranslation( language, messageId ) {
 	return (
-		window.CKEDITOR_TRANSLATIONS[ language ] &&
-		window.CKEDITOR_TRANSLATIONS[ language ].dictionary[ messageId ]
+		!!window.CKEDITOR_TRANSLATIONS[ language ] &&
+		!!window.CKEDITOR_TRANSLATIONS[ language ].dictionary[ messageId ]
 	);
 }
 
