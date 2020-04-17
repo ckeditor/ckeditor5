@@ -368,8 +368,8 @@ describe( 'SetHeaderRowCommand', () => {
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
 				tableSelection._setCellSelection(
-					modelRoot.getNodeByPath( [ 0, 13, 0 ] ),
-					modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 13, 0 ] )
 				);
 
 				command.execute();
@@ -415,8 +415,8 @@ describe( 'SetHeaderRowCommand', () => {
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
 				tableSelection._setCellSelection(
-					modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
-					modelRoot.getNodeByPath( [ 0, 13, 1 ] )
+					modelRoot.getNodeByPath( [ 0, 13, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 1 ] )
 				);
 
 				command.execute();
