@@ -1303,7 +1303,6 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
-			// Might be a misuse of API or other operation - must work either wey. See #6437, #6391.
 			it( 'should react to removed row form the end of a heading rows (no body rows)', () => {
 				setModelData( model, modelTable( [
 					[ '00[]', '01' ],
@@ -1337,38 +1336,47 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
-			// Might be a misuse of API or other operation - must work either wey. See #6437, #6391.
-			it( 'should react to removed row form the end of a heading rows (no body rows, using enqueueChange())', () => {
+			it( 'should react to removed row form the end of a heading rows (first cell in body has colspan)', () => {
 				setModelData( model, modelTable( [
-					[ '00[]', '01' ],
-					[ '10', '11' ]
-				], { headingRows: 2 } ) );
+					[ '00[]', '01', '02', '03' ],
+					[ { rowspan: 2, colspan: 2, contents: '10' }, '12', '13' ],
+					[ '22', '23' ]
+				], { headingRows: 1 } ) );
 
 				const table = root.getChild( 0 );
 
 				model.change( writer => {
 					// Removing row from a heading section changes requires changing heading rows attribute.
-					writer.remove( table.getChild( 1 ) );
-
-					model.enqueueChange( writer => {
-						writer.setAttribute( 'headingRows', 1, table );
-					} );
+					writer.remove( table.getChild( 0 ) );
+					writer.setAttribute( 'headingRows', 0, table );
 				} );
 
 				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
-							'<thead>' +
+							'<tbody>' +
 								'<tr>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
-									'</th>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">01</span>' +
-									'</th>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" ' +
+										'colspan="2" contenteditable="true" rowspan="2">' +
+										'<span style="display:inline-block">10</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">12</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">13</span>' +
+									'</td>' +
 								'</tr>' +
-							'</thead>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">22</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">23</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
 						'</table>' +
 					'</figure>'
 				);
