@@ -183,10 +183,10 @@ export function getColumnIndexes( selectedCells ) {
 function getFirstLastIndexesObject( indexes ) {
 	const allIndexesSorted = indexes.sort( ( indexA, indexB ) => indexA - indexB );
 
-	const minColumnIndex = allIndexesSorted[ 0 ];
-	const maxColumnIndex = allIndexesSorted[ allIndexesSorted.length - 1 ];
+	const first = allIndexesSorted[ 0 ];
+	const last = allIndexesSorted[ allIndexesSorted.length - 1 ];
 
-	return { first: minColumnIndex, last: maxColumnIndex };
+	return { first, last };
 }
 
 function sortRanges( rangesIterator ) {
