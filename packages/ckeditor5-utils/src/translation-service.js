@@ -20,7 +20,7 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  *
  *		add( 'pl', {
  *			'OK': 'OK',
- *			'Cancel [context: reject]': 'Anuluj'
+ *			'Cancel': 'Anuluj'
  *		} );
  *
  * If the message supports plural forms, make sure to provide an array with all plural forms:
@@ -68,20 +68,27 @@ export function add( language, translations, getPluralForm ) {
  * In a single-language mode (when values passed to `t()` were replaced with target language strings) the dictionary
  * is left empty, so this function will return the original strings always.
  *
- *		translate( 'pl', 'Cancel' );
+ *		translate( 'pl', { string: 'Cancel' } );
  *
  * The third optional argument is the number of elements, based on which the single form or one of plural forms
  * should be picked when the message supports plural forms.
  *
- * 		translate( 'en', 'Add a space', 1 ); // 'Add %0 space'
- * 		translate( 'en', 'Add a space', 3 ); // 'Add %0 spaces'
+ * 		translate( 'en', { string: 'Add a space', plural: 'Add %0 spaces }, 1 ); // 'Add %0 space'
+ * 		translate( 'en', { string: 'Add a space', plural: 'Add %0 spaces }, 3 ); // 'Add %0 spaces'
  *
  * @param {String} language Target language.
- * @param {Object} message A message that will be translated.
+ * @param {module:utils/translation-service~Message|string} message A message that will be translated.
  * @param {Number} [amount] A number of elements for which a plural form should be picked from the target language dictionary.
  * @returns {String} Translated sentence.
  */
 export function translate( language, message, amount = 1 ) {
+	if ( typeof message === 'string' ) {
+		// TODO
+		console.warn( 'DEPRECATED' );
+
+		message = { string: message };
+	}
+
 	const numberOfLanguages = getNumberOfLanguages();
 
 	if ( numberOfLanguages === 1 ) {
@@ -90,11 +97,9 @@ export function translate( language, message, amount = 1 ) {
 		language = Object.keys( window.CKEDITOR_TRANSLATIONS )[ 0 ];
 	}
 
-	// TODO
-	// const messageId = message.context ?
-	// 	message.string + '_' + message.context :
-	// 	message.string;
-	const messageId = message.string;
+	const messageId = message.context ?
+		message.string + '_' + message.context :
+		message.string;
 
 	if ( numberOfLanguages === 0 || !hasTranslation( language, messageId ) ) {
 		// return english forms:
@@ -138,3 +143,16 @@ function hasTranslation( language, messageId ) {
 function getNumberOfLanguages() {
 	return Object.keys( window.CKEDITOR_TRANSLATIONS ).length;
 }
+
+/**
+ * The internalization message interface. A translation for the given language can be found.
+ *
+ * TODO
+ *
+ * @typedef {Object} Message
+ *
+ * @property {String} string The message string. It becomes the message id when no context is provided.
+ * @property {String} [context] The message context. If passed then the message id is constructed form both,
+ * the message string and the message string in the following format: `<messageString>_<messageContext>`.
+ * @property {String} [plural] The plural form of the message.
+ */
