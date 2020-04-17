@@ -3661,13 +3661,6 @@ describe( 'Renderer', () => {
 		// However, for larger data sets the difference between using `diff()` and `fastDiff()` (see above issue for context)
 		// is more than 10x in execution time so it is clearly visible in these tests when something goes wrong.
 		describe( 'rendering performance', () => {
-			before( function() {
-				// Ignore on Edge browser where performance is quite poor.
-				if ( env.isEdge ) {
-					this.skip();
-				}
-			} );
-
 			it( 'should not take more than 350ms to render around 300 element nodes (same html)', () => {
 				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 65 ), generateViewData1( 55 ) );
 				expect( renderingTime ).to.be.within( 0, 350 );
