@@ -7,8 +7,16 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
 import TableNavigation from '../src/tablenavigation';
+import Table from '../src/table';
 import TableEditing from '../src/tableediting';
 import TableSelection from '../src/tableselection';
+import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
+import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 describe( 'TableNavigation', () => {
 	let editor, model, modelRoot, tableSelection;
@@ -16,7 +24,8 @@ describe( 'TableNavigation', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TableEditing, TableNavigation, TableSelection, Paragraph, ImageEditing, MediaEmbedEditing ]
+				plugins: [ TableEditing, TableNavigation, TableSelection, Paragraph, ImageEditing, ImageCaptionEditing, MediaEmbedEditing,
+					HorizontalLineEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -166,7 +175,7 @@ describe( 'TableNavigation', () => {
 
 			it( 'should move to next cell with an image', () => {
 				setModelData( model, modelTable( [
-					[ '11[]', '<paragraph>foo</paragraph><image></image>' ]
+					[ '11[]', '<paragraph>foo</paragraph><image><caption></caption></image>' ]
 				] ) );
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
@@ -174,7 +183,7 @@ describe( 'TableNavigation', () => {
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 				assertEqualMarkup( getModelData( model ), modelTable( [
-					[ '11', '<paragraph>[foo</paragraph><image></image>]' ]
+					[ '11', '<paragraph>[foo</paragraph><image><caption></caption></image>]' ]
 				] ) );
 			} );
 
@@ -350,7 +359,7 @@ describe( 'TableNavigation', () => {
 
 			it( 'should move to previous cell with an image', () => {
 				setModelData( model, modelTable( [
-					[ '<paragraph>foo</paragraph><image></image>', 'bar[]' ]
+					[ '<paragraph>foo</paragraph><image><caption></caption></image>', 'bar[]' ]
 				] ) );
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
@@ -358,35 +367,39 @@ describe( 'TableNavigation', () => {
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 				assertEqualMarkup( getModelData( model ), modelTable( [
-					[ '<paragraph>[foo</paragraph><image></image>]', 'bar' ]
+					[ '<paragraph>[foo</paragraph><image><caption></caption></image>]', 'bar' ]
 				] ) );
 			} );
 		} );
 	} );
 
 	describe( 'Arrow keys handling', () => {
-		let arrowLeftDomEvtDataStub, arrowRightDomEvtDataStub, arrowUpDomEvtDataStub, arrowDownDomEvtDataStub;
+		let leftArrowDomEvtDataStub, rightArrowDomEvtDataStub, upArrowDomEvtDataStub, downArrowDomEvtDataStub;
 
 		beforeEach( () => {
-			arrowLeftDomEvtDataStub = {
+			leftArrowDomEvtDataStub = {
 				keyCode: getCode( 'ArrowLeft' ),
 				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				stopPropagation: sinon.spy(),
+				domTarget: global.document.body
 			};
-			arrowRightDomEvtDataStub = {
+			rightArrowDomEvtDataStub = {
 				keyCode: getCode( 'ArrowRight' ),
 				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				stopPropagation: sinon.spy(),
+				domTarget: global.document.body
 			};
-			arrowUpDomEvtDataStub = {
+			upArrowDomEvtDataStub = {
 				keyCode: getCode( 'ArrowUp' ),
 				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				stopPropagation: sinon.spy(),
+				domTarget: global.document.body
 			};
-			arrowDownDomEvtDataStub = {
+			downArrowDomEvtDataStub = {
 				keyCode: getCode( 'ArrowDown' ),
 				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				stopPropagation: sinon.spy(),
+				domTarget: global.document.body
 			};
 		} );
 
@@ -395,12 +408,12 @@ describe( 'TableNavigation', () => {
 				[ '00', '01[]' ]
 			] ) );
 
-			arrowLeftDomEvtDataStub.keyCode = getCode( 'a' );
+			leftArrowDomEvtDataStub.keyCode = getCode( 'a' );
 
-			editor.editing.view.document.fire( 'keydown', arrowLeftDomEvtDataStub );
+			editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-			sinon.assert.notCalled( arrowLeftDomEvtDataStub.preventDefault );
-			sinon.assert.notCalled( arrowLeftDomEvtDataStub.stopPropagation );
+			sinon.assert.notCalled( leftArrowDomEvtDataStub.preventDefault );
+			sinon.assert.notCalled( leftArrowDomEvtDataStub.stopPropagation );
 
 			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '00', '01[]' ]
@@ -412,10 +425,10 @@ describe( 'TableNavigation', () => {
 
 			setModelData( model, modelData );
 
-			editor.editing.view.document.fire( 'keydown', arrowUpDomEvtDataStub );
+			editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-			sinon.assert.notCalled( arrowUpDomEvtDataStub.preventDefault );
-			sinon.assert.notCalled( arrowUpDomEvtDataStub.stopPropagation );
+			sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
+			sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
 
 			assertEqualMarkup( getModelData( model ), modelData );
 		} );
@@ -1013,10 +1026,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell on the left', () => {
-					editor.editing.view.document.fire( 'keydown', arrowLeftDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01', '02' ],
@@ -1026,10 +1039,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell on the right', () => {
-					editor.editing.view.document.fire( 'keydown', arrowRightDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowRightDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowRightDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01', '02' ],
@@ -1039,10 +1052,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell above selection', () => {
-					editor.editing.view.document.fire( 'keydown', arrowUpDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowUpDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowUpDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01[]', '02' ],
@@ -1052,10 +1065,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell below selection', () => {
-					editor.editing.view.document.fire( 'keydown', arrowDownDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowDownDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowDownDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01', '02' ],
@@ -1081,10 +1094,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell on the left top of selection', () => {
-					editor.editing.view.document.fire( 'keydown', arrowLeftDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01', '02', '03' ],
@@ -1095,10 +1108,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell on the right bottom of selection', () => {
-					editor.editing.view.document.fire( 'keydown', arrowRightDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowRightDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowRightDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01', '02', '03' ],
@@ -1109,10 +1122,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell above selection', () => {
-					editor.editing.view.document.fire( 'keydown', arrowUpDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowUpDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowUpDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01[]', '02', '03' ],
@@ -1123,10 +1136,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell below selection', () => {
-					editor.editing.view.document.fire( 'keydown', arrowDownDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowDownDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowDownDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01', '02', '03' ],
@@ -1155,10 +1168,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell on the left top of selection', () => {
-					editor.editing.view.document.fire( 'keydown', arrowLeftDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01', '02', '03' ],
@@ -1169,10 +1182,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell on the right bottom of selection', () => {
-					editor.editing.view.document.fire( 'keydown', arrowRightDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowRightDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowRightDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01', '02', '03' ],
@@ -1183,10 +1196,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell above selection', () => {
-					editor.editing.view.document.fire( 'keydown', arrowUpDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowUpDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowUpDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01[]', '02', '03' ],
@@ -1197,10 +1210,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell below selection', () => {
-					editor.editing.view.document.fire( 'keydown', arrowDownDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowDownDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowDownDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01', '02', '03' ],
@@ -1227,10 +1240,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell on the left top of selection', () => {
-					editor.editing.view.document.fire( 'keydown', arrowLeftDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01', '02', '03' ],
@@ -1241,10 +1254,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell on the right bottom of selection', () => {
-					editor.editing.view.document.fire( 'keydown', arrowRightDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowRightDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowRightDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01', '02', '03' ],
@@ -1255,10 +1268,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell above selection', () => {
-					editor.editing.view.document.fire( 'keydown', arrowUpDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowUpDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowUpDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01[]', '02', '03' ],
@@ -1269,10 +1282,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell below selection', () => {
-					editor.editing.view.document.fire( 'keydown', arrowDownDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowDownDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowDownDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01', '02', '03' ],
@@ -1280,6 +1293,645 @@ describe( 'TableNavigation', () => {
 						[ '20', '21', '22', '23' ],
 						[ '30', '31', '[]32', '33' ]
 					] ) );
+				} );
+			} );
+		} );
+
+		describe( 'with selection inside a table cell', () => {
+			describe( 'with selection at the edge of a cell', () => {
+				describe( 'simple cell text content', () => {
+					it( 'should navigate to the cell on the left', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '[]11', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10[]', '11', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell on the right', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '11[]', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '11', '[]12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell above', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '[]11', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01[]', '02' ],
+							[ '10', '11', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell below', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '11[]', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '11', '12' ],
+							[ '20', '[]21', '22' ]
+						] ) );
+					} );
+				} );
+
+				describe( 'multiple paragraphs in the cell content', () => {
+					it( 'should navigate to the cell on the left', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<paragraph>[]11</paragraph><paragraph>x</paragraph>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10[]', '<paragraph>11</paragraph><paragraph>x</paragraph>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell on the right', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<paragraph>11</paragraph><paragraph>x[]</paragraph>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<paragraph>11</paragraph><paragraph>x</paragraph>', '[]12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell above', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<paragraph>[]11</paragraph><paragraph>x</paragraph>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01[]', '02' ],
+							[ '10', '<paragraph>11</paragraph><paragraph>x</paragraph>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell below', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<paragraph>11</paragraph><paragraph>x[]</paragraph>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<paragraph>11</paragraph><paragraph>x</paragraph>', '12' ],
+							[ '20', '[]21', '22' ]
+						] ) );
+					} );
+				} );
+
+				describe( 'image widget with caption as only cell content', () => {
+					it( 'should navigate to the cell on the left', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<image src="#"><caption>[]11</caption></image>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10[]', '<image src="#"><caption>11</caption></image>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell on the right', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<image src="#"><caption>11[]</caption></image>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<image src="#"><caption>11</caption></image>', '[]12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell above', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<image src="#"><caption>[]11</caption></image>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01[]', '02' ],
+							[ '10', '<image src="#"><caption>11</caption></image>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell below', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<image src="#"><caption>11[]</caption></image>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<image src="#"><caption>11</caption></image>', '12' ],
+							[ '20', '[]21', '22' ]
+						] ) );
+					} );
+				} );
+
+				describe( 'horizontal line as only cell content (widget without $text positions)', () => {
+					beforeEach( () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '[<horizontalLine></horizontalLine>]', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell on the left', () => {
+						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10[]', '<horizontalLine></horizontalLine>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell on the right', () => {
+						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<horizontalLine></horizontalLine>', '[]12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell above', () => {
+						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01[]', '02' ],
+							[ '10', '<horizontalLine></horizontalLine>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell below', () => {
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<horizontalLine></horizontalLine>', '12' ],
+							[ '20', '[]21', '22' ]
+						] ) );
+					} );
+				} );
+
+				describe( 'two horizontal lines as only cell content (widget without $text positions)', () => {
+					beforeEach( () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '[<horizontalLine></horizontalLine>]<horizontalLine></horizontalLine>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell on the left', () => {
+						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10[]', '<horizontalLine></horizontalLine><horizontalLine></horizontalLine>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell on the right', () => {
+						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<horizontalLine></horizontalLine><horizontalLine></horizontalLine>', '[]12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell above', () => {
+						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01[]', '02' ],
+							[ '10', '<horizontalLine></horizontalLine><horizontalLine></horizontalLine>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should navigate to the cell below', () => {
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<horizontalLine></horizontalLine><horizontalLine></horizontalLine>', '12' ],
+							[ '20', '[]21', '22' ]
+						] ) );
+					} );
+				} );
+			} );
+
+			describe( 'with selection not at the edge of a cell', () => {
+				let editorElement, editor, model, styleElement;
+
+				beforeEach( async () => {
+					editorElement = global.document.createElement( 'div' );
+					global.document.body.appendChild( editorElement );
+
+					editor = await ClassicTestEditor.create( editorElement, {
+						plugins: [ Table, Paragraph, Image, ImageCaption, HorizontalLine ]
+					} );
+
+					model = editor.model;
+
+					styleElement = global.document.createElement( 'style' );
+					styleElement.type = 'text/css';
+					styleElement.appendChild( global.document.createTextNode( '.ck-editor { width: 500px !important; }' ) );
+					global.document.querySelector( 'head' ).appendChild( styleElement );
+				} );
+
+				afterEach( async () => {
+					editorElement.remove();
+					styleElement.remove();
+					await editor.destroy();
+				} );
+
+				describe( 'simple cell text content', () => {
+					it( 'should not navigate to the cell on the left', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '1[]1', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+						sinon.assert.notCalled( leftArrowDomEvtDataStub.preventDefault );
+						sinon.assert.notCalled( leftArrowDomEvtDataStub.stopPropagation );
+					} );
+
+					it( 'should not navigate to the cell on the right', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '1[]1', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+						sinon.assert.notCalled( rightArrowDomEvtDataStub.preventDefault );
+						sinon.assert.notCalled( rightArrowDomEvtDataStub.stopPropagation );
+					} );
+
+					it( 'should not navigate to the cell above', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '1[]1', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '[]11', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should not navigate to the cell below', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '1[]1', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '11[]', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+				} );
+
+				describe( 'selection inside paragraph', () => {
+					const text = new Array( 100 ).fill( 0 ).map( () => 'word' ).join( ' ' );
+
+					it( 'should not navigate if caret is in the middle line of a text', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', text + '[] ' + text, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+						sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+					} );
+
+					it( 'should move caret to beginning of cell content if caret is in the first line of a text', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', 'word[] word' + text, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '[]word word' + text, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should move caret to end of cell content if caret is in the last line of a text', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', text + 'word[] word', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', text + 'word word[]', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+				} );
+
+				describe( 'contains image widget with caption and selection inside the caption', () => {
+					it( 'should not navigate to the cell on the left', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<paragraph>foo</paragraph><image src="#"><caption>[]11</caption></image>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+						sinon.assert.notCalled( leftArrowDomEvtDataStub.preventDefault );
+						sinon.assert.notCalled( leftArrowDomEvtDataStub.stopPropagation );
+					} );
+
+					it( 'should not navigate to the cell on the right', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<image src="#"><caption>11[]</caption></image><paragraph>foo</paragraph>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+						sinon.assert.notCalled( rightArrowDomEvtDataStub.preventDefault );
+						sinon.assert.notCalled( rightArrowDomEvtDataStub.stopPropagation );
+					} );
+
+					it( 'should not navigate to the cell above', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<paragraph>foo</paragraph><image src="#"><caption>1[]1</caption></image>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+						sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+					} );
+
+					it( 'should not navigate to the cell above but should select image widget', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<image src="#"><caption>1[]1</caption></image><paragraph>foo</paragraph>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '[<image src="#"><caption>11</caption></image>]<paragraph>foo</paragraph>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should not navigate to the cell below when followed by paragraph', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<image src="#"><caption>1[]1</caption></image><paragraph>foo</paragraph>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						sinon.assert.notCalled( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.notCalled( downArrowDomEvtDataStub.stopPropagation );
+					} );
+
+					it( 'should not navigate to the cell below but should select image widget', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<paragraph>foo</paragraph><image src="#"><caption>1[]1</caption></image>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<paragraph>foo</paragraph>[<image src="#"><caption>11</caption></image>]', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should not navigate to the cell above but should select image widget without caption', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<image src="#"><caption></caption></image><paragraph>f[]oo</paragraph>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '[<image src="#"><caption></caption></image>]<paragraph>foo</paragraph>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should not navigate to the cell below but should select image widget without caption', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<paragraph>f[]oo</paragraph><image src="#"><caption></caption></image>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<paragraph>foo</paragraph>[<image src="#"><caption></caption></image>]', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
 				} );
 			} );
 		} );
@@ -1315,10 +1967,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell on the right (it\'s visually flipped by browser)', () => {
-					editor.editing.view.document.fire( 'keydown', arrowLeftDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowLeftDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01', '02' ],
@@ -1328,10 +1980,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell on the left (it\'s visually flipped by browser)', () => {
-					editor.editing.view.document.fire( 'keydown', arrowRightDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowRightDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowRightDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01', '02' ],
@@ -1341,10 +1993,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell above selection', () => {
-					editor.editing.view.document.fire( 'keydown', arrowUpDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowUpDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowUpDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01[]', '02' ],
@@ -1354,10 +2006,10 @@ describe( 'TableNavigation', () => {
 				} );
 
 				it( 'should move to the cell below selection', () => {
-					editor.editing.view.document.fire( 'keydown', arrowDownDomEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-					sinon.assert.calledOnce( arrowDownDomEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( arrowDownDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
 					assertEqualMarkup( getModelData( model ), modelTable( [
 						[ '00', '01', '02' ],
