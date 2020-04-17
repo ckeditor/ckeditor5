@@ -10,7 +10,6 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { defaultConversion, defaultSchema, viewTable } from '../_utils/utils';
 import injectTableCellRefreshPostFixer from '../../src/converters/table-cell-refresh-post-fixer';
 
-import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
@@ -25,9 +24,6 @@ describe( 'Table cell refresh post-fixer', () => {
 	beforeEach( () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
-
-		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 
 		return ClassicTestEditor.create( element, { extraPlugins: [ Delete ] } )
 			.then( newEditor => {
