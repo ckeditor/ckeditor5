@@ -18,6 +18,7 @@ import { resizerMouseSimulator, focusEditor, getHandleCenterPoint, getWidgetDomP
 
 describe( 'WidgetResize', () => {
 	let editor, editorElement, widget, mouseListenerSpies, commitStub;
+	const INITIAL_WIDGET_WIDTH = '25%';
 
 	beforeEach( async () => {
 		editorElement = createEditorElement();
@@ -497,7 +498,7 @@ describe( 'WidgetResize', () => {
 			resizer.cancel();
 
 			// Value should be restored to the initial value (#6060).
-			expect( widget.getStyle( 'width' ) ).to.be.equal( '25%' );
+			expect( widget.getStyle( 'width' ) ).to.be.equal( INITIAL_WIDGET_WIDTH );
 		} );
 	} );
 
