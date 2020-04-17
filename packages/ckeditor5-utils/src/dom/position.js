@@ -90,7 +90,7 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 		limiter = limiter();
 	}
 
-	const positionedElementAncestor = getPositionedAncestor( element.parentElement );
+	const positionedElementAncestor = getPositionedAncestor( element );
 	const elementRect = new Rect( element );
 	const targetRect = new Rect( target );
 
