@@ -287,22 +287,23 @@ export default class TableUtils extends Plugin {
 		const rowsToRemove = options.rows || 1;
 
 		const last = first + rowsToRemove - 1;
+		const batch = options.batch || 'default';
 
-		model.change( writer => {
+		const headingRows = table.getAttribute( 'headingRows' ) || 0;
+
+		if ( headingRows && first < headingRows ) {
+			const newRows = getNewHeadingRowsValue( first, last, headingRows );
+
+			// Must be done after the changes in table structure (removing rows).
+			// Otherwise the downcast converter for headingRows attribute will fail. ckeditor/ckeditor5#6391.
+			model.enqueueChange( batch, writer => {
+				updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
+			} );
+		}
+
+		model.enqueueChange( batch, writer => {
 			for ( let i = last; i >= first; i-- ) {
 				removeRow( table, i, writer );
-			}
-
-			const headingRows = table.getAttribute( 'headingRows' ) || 0;
-
-			if ( headingRows && first < headingRows ) {
-				const newRows = getNewHeadingRowsValue( first, last, headingRows );
-
-				// Must be done after the changes in table structure (removing rows).
-				// Otherwise the downcast converter for headingRows attribute will fail. ckeditor/ckeditor5#6391.
-				model.enqueueChange( writer.batch, writer => {
-					updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
-				} );
 			}
 		} );
 	}
