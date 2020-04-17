@@ -70,11 +70,11 @@ export function add( language, translations, getFormIndex ) {
  *
  *		translate( 'pl', 'Cancel' );
  *
- * The third optional argument is the number of elements, based on which the plural form should be picked when the message
- * supports plural forms.
+ * The third optional argument is the number of elements, based on which the single form or one of plural forms
+ * should be picked when the message supports plural forms.
  *
- * 		translate( 'en', 'Add a space', 1 ); // 'Add a space'
- * 		translate( 'en', 'Add a space', 3 ); // 'Add 3 spaces'
+ * 		translate( 'en', 'Add a space', 1 ); // 'Add %0 space'
+ * 		translate( 'en', 'Add a space', 3 ); // 'Add %0 spaces'
  *
  * @param {String} language Target language.
  * @param {Object} message A message that will be translated.
