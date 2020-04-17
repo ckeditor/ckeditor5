@@ -10,12 +10,10 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
-import { getCode, keyCodes, parseKeystroke } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../theme/widget.css';
-
-const selectAllKeystrokeCode = parseKeystroke( 'Ctrl+A' );
 
 /**
  * The widget plugin. It enables base support for widgets.
@@ -172,8 +170,6 @@ export default class Widget extends Plugin {
 		// the propagation.
 		if ( isArrowKeyCode( keyCode ) ) {
 			wasHandled = this._handleArrowKeys( isForward );
-		} else if ( isSelectAllKeyCode( domEventData ) ) {
-			wasHandled = this._selectAllNestedEditableContent() || this._selectAllContent();
 		} else if ( keyCode === keyCodes.enter ) {
 			wasHandled = this._handleEnterKey( domEventData.shiftKey );
 		}
@@ -307,60 +303,6 @@ export default class Widget extends Plugin {
 	}
 
 	/**
-	 * Extends the {@link module:engine/model/selection~Selection document's selection} to span the entire
-	 * content of the nested editable if already anchored in one.
-	 *
-	 * See: {@link module:engine/model/schema~Schema#getLimitElement}.
-	 *
-	 * @private
-	 */
-	_selectAllNestedEditableContent() {
-		const model = this.editor.model;
-		const documentSelection = model.document.selection;
-		const limitElement = model.schema.getLimitElement( documentSelection );
-
-		if ( documentSelection.getFirstRange().root == limitElement ) {
-			return false;
-		}
-
-		model.change( writer => {
-			writer.setSelection( writer.createRangeIn( limitElement ) );
-		} );
-
-		return true;
-	}
-
-	/**
-	 * Handles <kbd>CTRL + A</kbd> when widget is selected.
-	 *
-	 * @private
-	 * @returns {Boolean} Returns true if widget was selected and selecting all was handled by this method.
-	 */
-	_selectAllContent() {
-		const model = this.editor.model;
-		const editing = this.editor.editing;
-		const view = editing.view;
-		const viewDocument = view.document;
-		const viewSelection = viewDocument.selection;
-
-		const selectedElement = viewSelection.getSelectedElement();
-
-		// Only widget is selected.
-		// https://github.com/ckeditor/ckeditor5-widget/issues/23
-		if ( selectedElement && isWidget( selectedElement ) ) {
-			const widgetParent = editing.mapper.toModelElement( selectedElement.parent );
-
-			model.change( writer => {
-				writer.setSelection( writer.createRangeIn( widgetParent ) );
-			} );
-
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Sets {@link module:engine/model/selection~Selection document's selection} over given element.
 	 *
 	 * @private
@@ -423,14 +365,6 @@ function isArrowKeyCode( keyCode ) {
 		keyCode == keyCodes.arrowleft ||
 		keyCode == keyCodes.arrowup ||
 		keyCode == keyCodes.arrowdown;
-}
-
-// Returns 'true' if provided (DOM) key event data corresponds with the Ctrl+A keystroke.
-//
-// @param {module:engine/view/observer/keyobserver~KeyEventData} domEventData
-// @returns {Boolean}
-function isSelectAllKeyCode( domEventData ) {
-	return getCode( domEventData ) == selectAllKeystrokeCode;
 }
 
 // Returns `true` when element is a nested editable or is placed inside one.
