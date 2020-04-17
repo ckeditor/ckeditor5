@@ -377,6 +377,19 @@ describe( 'WidgetResize', () => {
 			expect( commitStub.callCount, 'call count' ).to.be.eql( 0 );
 		} );
 
+		it( 'restores the original view width after resize is done', () => {
+			// Note that ultimately width should be changed, but through a model converter, not with direct view changes (#6060).
+			createResizer();
+
+			const usedHandle = 'bottom-right';
+			const domParts = getWidgetDomParts( editor, widget, usedHandle );
+			const finalPointerPosition = getHandleCenterPoint( domParts.widget, usedHandle ).moveBy( 40, 40 );
+
+			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+
+			expect( widget.getStyle( 'width' ) ).to.be.equal( '25%' );
+		} );
+
 		it( 'returns proper value when resize host is different from widget wrapper', () => {
 			createResizer( {
 				unit: undefined,
@@ -483,7 +496,7 @@ describe( 'WidgetResize', () => {
 
 			resizer.cancel();
 
-			// Value should be restored to the initial value.
+			// Value should be restored to the initial value (#6060).
 			expect( widget.getStyle( 'width' ) ).to.be.equal( '25%' );
 		} );
 	} );
