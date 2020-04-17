@@ -139,15 +139,15 @@ export function getSelectionAffectedTableCells( selection ) {
 }
 
 /**
- * Returns a helper object with `first` and `last` row index contained in given `tableCells`.
+ * Returns an object with `first` and `last` row index contained in the given `tableCells`.
  *
  *		const selectedTableCells = getSelectedTableCells( editor.model.document.selection );
  *
  *		const { first, last } = getRowIndexes( selectedTableCells );
  *
- *		console.log( `Selected rows ${ first } to ${ last }` );
+ *		console.log( `Selected rows: ${ first } to ${ last }` );
  *
- * @param {Array.<module:engine/model/element~Element>}
+ * @param {Array.<module:engine/model/element~Element>} tableCells
  * @returns {Object} Returns an object with `first` and `last` table row indexes.
  */
 export function getRowIndexes( tableCells ) {
@@ -157,23 +157,23 @@ export function getRowIndexes( tableCells ) {
 }
 
 /**
- * Returns a helper object with `first` and `last` column index contained in given `tableCells`.
+ * Returns an object with `first` and `last` column index contained in the given `tableCells`.
  *
  *		const selectedTableCells = getSelectedTableCells( editor.model.document.selection );
  *
  *		const { first, last } = getColumnIndexes( selectedTableCells );
  *
- *		console.log( `Selected columns ${ first } to ${ last }` );
+ *		console.log( `Selected columns: ${ first } to ${ last }` );
  *
- * @param {Array.<module:engine/model/element~Element>}
+ * @param {Array.<module:engine/model/element~Element>} tableCells
  * @returns {Object} Returns an object with `first` and `last` table column indexes.
  */
-export function getColumnIndexes( selectedCells ) {
-	const table = findAncestor( 'table', selectedCells[ 0 ] );
+export function getColumnIndexes( tableCells ) {
+	const table = findAncestor( 'table', tableCells[ 0 ] );
 	const tableMap = [ ...new TableWalker( table ) ];
 
 	const indexes = tableMap
-		.filter( entry => selectedCells.includes( entry.cell ) )
+		.filter( entry => tableCells.includes( entry.cell ) )
 		.map( entry => entry.column );
 
 	return getFirstLastIndexesObject( indexes );
