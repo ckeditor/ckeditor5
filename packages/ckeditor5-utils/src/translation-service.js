@@ -23,6 +23,12 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  *			'Cancel [context: reject]': 'Anuluj'
  *		} );
  *
+ * If the message supports plural forms, make sure to provide an array with all plural forms:
+ *
+ *		add( 'pl', {
+ *	 		'Add editor': [ 'Dodaj edytor', 'Dodaj %0 edytory', 'Dodaj %0 edytorów' ]
+ * 		} );
+ *
  * If you cannot import this function from this module (e.g. because you use a CKEditor 5 build), then you can
  * still add translations by extending the global `window.CKEDITOR_TRANSLATIONS` object by using a function like
  * the one below:
@@ -57,19 +63,25 @@ export function add( language, translations, getFormIndex ) {
  * This happens in a multi-language mode were translation modules are created by the bundler.
  *
  * When no translation is defined in the dictionary or the dictionary doesn't exist this function returns
- * the original string without the `'[context: ]'` (happens in development and single-language modes).
+ * the original string.
  *
  * In a single-language mode (when values passed to `t()` were replaced with target language strings) the dictionary
  * is left empty, so this function will return the original strings always.
  *
- *		translate( 'pl', 'Cancel [context: reject]' );
+ *		translate( 'pl', 'Cancel' );
+ *
+ * The third optional argument is the number of elements, based on which the plural form should be picked when the message
+ * supports plural forms.
+ *
+ * 		translate( 'en', 'Add a space', 1 ); // 'Add a space'
+ * 		translate( 'en', 'Add a space', 3 ); // 'Add 3 spaces'
  *
  * @param {String} language Target language.
  * @param {Object} message A message that will be translated.
- * @param {Number} amount
+ * @param {Number} [amount] A number of elements for which a plural form should be picked from the target language dictionary.
  * @returns {String} Translated sentence.
  */
-export function translate( language, message, amount ) {
+export function translate( language, message, amount = 1 ) {
 	const numberOfLanguages = getNumberOfLanguages();
 
 	if ( numberOfLanguages === 1 ) {
@@ -78,7 +90,11 @@ export function translate( language, message, amount ) {
 		language = Object.keys( window.CKEDITOR_TRANSLATIONS )[ 0 ];
 	}
 
-	const messageId = message.id || message.string;
+	// TODO
+	// const messageId = message.context ?
+	// 	message.string + '_' + message.context :
+	// 	message.string;
+	const messageId = message.string;
 
 	if ( numberOfLanguages === 0 || !hasTranslation( language, messageId ) ) {
 		// return english forms:
