@@ -4,13 +4,15 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import { defaultConversion, defaultSchema, modelTable, viewTable } from '../_utils/utils';
+import TableEditing from '../../src/tableediting';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { defaultConversion, defaultSchema, modelTable, viewTable } from '../_utils/utils';
 
 function paragraphInTableCell() {
 	return dispatcher => dispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
@@ -42,24 +44,25 @@ describe( 'downcast converters', () => {
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
-		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
-
-		return VirtualTestEditor.create()
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				doc = model.document;
-				root = doc.getRoot( 'main' );
-				view = editor.editing.view;
-
-				defaultSchema( model.schema );
-				defaultConversion( editor.conversion );
-			} );
-	} );
-
 	describe( 'downcastInsertTable()', () => {
+		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
+		beforeEach( () => {
+			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+
+			return VirtualTestEditor.create()
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+					root = doc.getRoot( 'main' );
+					view = editor.editing.view;
+
+					defaultSchema( model.schema );
+					defaultConversion( editor.conversion );
+				} );
+		} );
+
 		it( 'should create table with tbody', () => {
 			setModelData( model, modelTable( [ [ '' ] ] ) );
 
@@ -355,6 +358,24 @@ describe( 'downcast converters', () => {
 	} );
 
 	describe( 'downcastInsertRow()', () => {
+		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
+		beforeEach( () => {
+			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+
+			return VirtualTestEditor.create()
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+					root = doc.getRoot( 'main' );
+					view = editor.editing.view;
+
+					defaultSchema( model.schema );
+					defaultConversion( editor.conversion );
+				} );
+		} );
+
 		it( 'should react to changed rows', () => {
 			setModelData( model, modelTable( [
 				[ '00', '01' ]
@@ -592,6 +613,24 @@ describe( 'downcast converters', () => {
 	} );
 
 	describe( 'downcastInsertCell()', () => {
+		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
+		beforeEach( () => {
+			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+
+			return VirtualTestEditor.create()
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+					root = doc.getRoot( 'main' );
+					view = editor.editing.view;
+
+					defaultSchema( model.schema );
+					defaultConversion( editor.conversion );
+				} );
+		} );
+
 		it( 'should add tableCell on proper index in tr', () => {
 			setModelData( model, modelTable( [
 				[ '00', '01' ]
@@ -736,6 +775,24 @@ describe( 'downcast converters', () => {
 	} );
 
 	describe( 'downcastTableHeadingColumnsChange()', () => {
+		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
+		beforeEach( () => {
+			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+
+			return VirtualTestEditor.create()
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+					root = doc.getRoot( 'main' );
+					view = editor.editing.view;
+
+					defaultSchema( model.schema );
+					defaultConversion( editor.conversion );
+				} );
+		} );
+
 		it( 'should work for adding heading columns', () => {
 			setModelData( model, modelTable( [
 				[ '00', '01' ],
@@ -895,7 +952,7 @@ describe( 'downcast converters', () => {
 
 				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-					'<div class="ck ck-widget__selection-handle"></div>' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
 							'<thead>' +
 								'<tr>' +
@@ -912,190 +969,201 @@ describe( 'downcast converters', () => {
 	} );
 
 	describe( 'downcastTableHeadingRowsChange()', () => {
-		it( 'should work for adding heading rows', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ],
-				[ '10', '11' ],
-				[ '20', '21' ]
-			] ) );
+		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
+		beforeEach( () => {
+			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 
-			const table = root.getChild( 0 );
-
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 2, table );
-			} );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '00', '01' ],
-				[ '10', '11' ],
-				[ '20', '21' ]
-			], { headingRows: 2 } ) );
+			return VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+					root = doc.getRoot( 'main' );
+					view = editor.editing.view;
+				} );
 		} );
 
-		it( 'should work for changing number of heading rows to a bigger number', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ],
-				[ '10', '11' ],
-				[ '20', '21' ]
-			], { headingRows: 1 } ) );
+		// The heading rows change downcast conversion is not executed in data pipeline.
+		describe( 'editing pipeline', () => {
+			it( 'should work for adding heading rows', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				] ) );
 
-			const table = root.getChild( 0 );
+				const table = root.getChild( 0 );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 2, table );
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 2, table );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 2, asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '00', '01' ],
-				[ '10', '11' ],
-				[ '20', '21' ]
-			], { headingRows: 2 } ) );
-		} );
+			it( 'should work for changing number of heading rows to a bigger number', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 1 } ) );
 
-		it( 'should work for changing number of heading rows to a smaller number', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ],
-				[ '10', '11' ],
-				[ '20', '21' ],
-				[ '30', '31' ]
-			], { headingRows: 3 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 2, table );
+				} );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 2, table );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 2, asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '00', '01' ],
-				[ '10', '11' ],
-				[ '20', '21' ],
-				[ '30', '31' ]
-			], { headingRows: 2 } ) );
-		} );
+			it( 'should work for changing number of heading rows to a smaller number', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				], { headingRows: 3 } ) );
 
-		it( 'should work for removing heading rows', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ],
-				[ '10', '11' ]
-			], { headingRows: 2 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 2, table );
+				} );
 
-			model.change( writer => {
-				writer.removeAttribute( 'headingRows', table );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				], { headingRows: 2, asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '00', '01' ],
-				[ '10', '11' ]
-			] ) );
-		} );
+			it( 'should work for removing heading rows', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 2 } ) );
 
-		it( 'should work for making heading rows without tbody', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ],
-				[ '10', '11' ]
-			] ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.removeAttribute( 'headingRows', table );
+				} );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 2, table );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '00', '01' ],
-				[ '10', '11' ]
-			], { headingRows: 2 } ) );
-		} );
+			it( 'should work for making heading rows without tbody', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] ) );
 
-		it( 'should be possible to overwrite', () => {
-			editor.conversion.attributeToAttribute( { model: 'headingRows', view: 'headingRows', converterPriority: 'high' } );
-			setModelData( model, modelTable( [ [ '00' ] ] ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 2, table );
+				} );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 1, table );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 2, asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-				'<figure class="table" headingRows="1">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr><td>00</td></tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
-		} );
+			it( 'should be possible to overwrite', () => {
+				editor.conversion.attributeToAttribute( {
+					model: 'headingRows',
+					view: 'headingRows',
+					converterPriority: 'high'
+				} );
+				setModelData( model, modelTable( [ [ '00' ] ] ) );
 
-		it( 'should work with adding table rows at the beginning of a table', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ],
-				[ '10', '11' ]
-			], { headingRows: 1 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 1, table );
+				} );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 2, table );
-
-				const tableRow = writer.createElement( 'tableRow' );
-
-				writer.insert( tableRow, table, 0 );
-				writer.insertElement( 'tableCell', tableRow, 'end' );
-				writer.insertElement( 'tableCell', tableRow, 'end' );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false" headingRows="1">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '', '' ],
-				[ '00', '01' ],
-				[ '10', '11' ]
-			], { headingRows: 2 } ) );
-		} );
+			it( 'should work with adding table rows at the beginning of a table', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 1 } ) );
 
-		it( 'should work with adding a table row and expanding heading', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ],
-				[ '10', '11' ],
-				[ '20', '21' ]
-			], { headingRows: 1 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 2, table );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 2, table );
+					const tableRow = writer.createElement( 'tableRow' );
 
-				const tableRow = writer.createElement( 'tableRow' );
+					writer.insert( tableRow, table, 0 );
+					writer.insertElement( 'tableCell', tableRow, 'end' );
+					writer.insertElement( 'tableCell', tableRow, 'end' );
+				} );
 
-				writer.insert( tableRow, table, 1 );
-				writer.insertElement( 'tableCell', tableRow, 'end' );
-				writer.insertElement( 'tableCell', tableRow, 'end' );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '', '' ],
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 2, asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '00', '01' ],
-				[ '', '' ],
-				[ '10', '11' ],
-				[ '20', '21' ]
-			], { headingRows: 2 } ) );
-		} );
+			it( 'should work with adding a table row and expanding heading', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 1 } ) );
 
-		describe( 'options.asWidget=true', () => {
-			beforeEach( () => {
-				return VirtualTestEditor.create()
-					.then( newEditor => {
-						editor = newEditor;
-						model = editor.model;
-						doc = model.document;
-						root = doc.getRoot( 'main' );
-						view = editor.editing.view;
+				const table = root.getChild( 0 );
 
-						defaultSchema( model.schema );
-						defaultConversion( editor.conversion, true );
-					} );
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 2, table );
+
+					const tableRow = writer.createElement( 'tableRow' );
+
+					writer.insert( tableRow, table, 1 );
+					writer.insertElement( 'tableCell', tableRow, 'end' );
+					writer.insertElement( 'tableCell', tableRow, 'end' );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '00', '01' ],
+					[ '', '' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 2, asWidget: true } ) );
 			} );
 
 			it( 'should create renamed cell as a widget', () => {
@@ -1126,107 +1194,257 @@ describe( 'downcast converters', () => {
 	} );
 
 	describe( 'downcastRemoveRow()', () => {
-		it( 'should react to removed row from the beginning of a tbody', () => {
-			setModelData( model, modelTable( [
-				[ '00[]', '01' ],
-				[ '10', '11' ]
-			] ) );
+		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
+		beforeEach( async () => {
+			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 
-			const table = root.getChild( 0 );
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } );
 
-			model.change( writer => {
-				writer.remove( table.getChild( 1 ) );
-			} );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '00', '01' ]
-			] ) );
+			model = editor.model;
+			root = model.document.getRoot( 'main' );
+			view = editor.editing.view;
 		} );
 
-		it( 'should react to removed row form the end of a tbody', () => {
-			setModelData( model, modelTable( [
-				[ '00[]', '01' ],
-				[ '10', '11' ]
-			] ) );
+		// The remove row downcast conversion is not executed in data pipeline.
+		describe( 'editing pipeline', () => {
+			it( 'should react to removed row from the beginning of a body rows (no heading rows)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				] ) );
 
-			const table = root.getChild( 0 );
+				const table = root.getChild( 0 );
 
-			model.change( writer => {
-				writer.remove( table.getChild( 0 ) );
+				model.change( writer => {
+					writer.remove( table.getChild( 1 ) );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">01</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '10', '11' ]
-			] ) );
-		} );
+			it( 'should react to removed row form the end of a body rows (no heading rows)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				] ) );
 
-		it( 'should react to removed row from the beginning of a thead', () => {
-			setModelData( model, modelTable( [
-				[ '00[]', '01' ],
-				[ '10', '11' ]
-			], { headingRows: 2 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.remove( table.getChild( 0 ) );
+				} );
 
-			model.change( writer => {
-				writer.remove( table.getChild( 1 ) );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">10</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">11</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '00', '01' ]
-			], { headingRows: 2 } ) );
-		} );
+			it( 'should react to removed row from the beginning of a heading rows (no body rows)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 2 } ) );
 
-		it( 'should react to removed row form the end of a thead', () => {
-			setModelData( model, modelTable( [
-				[ '00[]', '01' ],
-				[ '10', '11' ]
-			], { headingRows: 2 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					// Removing row from a heading section changes requires changing heading rows attribute.
+					writer.setAttribute( 'headingRows', 1, table );
+					writer.remove( table.getChild( 0 ) );
+				} );
 
-			model.change( writer => {
-				writer.remove( table.getChild( 0 ) );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<thead>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">10</span>' +
+									'</th>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">11</span>' +
+									'</th>' +
+								'</tr>' +
+							'</thead>' +
+						'</table>' +
+					'</figure>'
+				);
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '10', '11' ]
-			], { headingRows: 2 } ) );
-		} );
+			it( 'should react to removed row form the end of a heading rows (no body rows)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 2 } ) );
 
-		it( 'should remove empty thead section if a last row was removed from thead', () => {
-			setModelData( model, modelTable( [
-				[ '00[]', '01' ],
-				[ '10', '11' ]
-			], { headingRows: 1 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					// Removing row from a heading section changes requires changing heading rows attribute.
+					writer.setAttribute( 'headingRows', 1, table );
+					writer.remove( table.getChild( 1 ) );
+				} );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 0, table );
-				writer.remove( table.getChild( 0 ) );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<thead>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</th>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">01</span>' +
+									'</th>' +
+								'</tr>' +
+							'</thead>' +
+						'</table>' +
+					'</figure>'
+				);
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '10', '11' ]
-			] ) );
-		} );
+			it( 'should react to removed row form the end of a heading rows (first cell in body has colspan)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01', '02', '03' ],
+					[ { rowspan: 2, colspan: 2, contents: '10' }, '12', '13' ],
+					[ '22', '23' ]
+				], { headingRows: 1 } ) );
 
-		it( 'should remove empty tbody section if a last row was removed from tbody', () => {
-			setModelData( model, modelTable( [
-				[ '00[]', '01' ],
-				[ '10', '11' ]
-			], { headingRows: 1 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					// Removing row from a heading section changes requires changing heading rows attribute.
+					writer.remove( table.getChild( 0 ) );
+					writer.setAttribute( 'headingRows', 0, table );
+				} );
 
-			model.change( writer => {
-				writer.remove( table.getChild( 1 ) );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" ' +
+										'colspan="2" contenteditable="true" rowspan="2">' +
+										'<span style="display:inline-block">10</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">12</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">13</span>' +
+									'</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">22</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">23</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '00', '01' ]
-			], { headingRows: 1 } ) );
+			it( 'should remove empty thead if a last row was removed from a heading rows (has heading and body)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					// Removing row from a heading section changes requires changing heading rows attribute.
+					writer.removeAttribute( 'headingRows', table );
+					writer.remove( table.getChild( 0 ) );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">10</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">11</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should remove empty tbody if a last row was removed a body rows (has heading and body)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.remove( table.getChild( 1 ) );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<thead>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</th>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">01</span>' +
+									'</th>' +
+								'</tr>' +
+							'</thead>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
 		} );
 	} );
 

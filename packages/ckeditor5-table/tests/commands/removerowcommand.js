@@ -9,22 +9,19 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 
 import RemoveRowCommand from '../../src/commands/removerowcommand';
 import TableSelection from '../../src/tableselection';
-import { defaultConversion, defaultSchema, modelTable, viewTable } from '../_utils/utils';
+import { modelTable, viewTable } from '../_utils/utils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import TableEditing from '../../src/tableediting';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'RemoveRowCommand', () => {
 	let editor, model, command;
 
-	beforeEach( () => {
-		return VirtualTestEditor.create( { plugins: [ TableSelection ] } )
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				command = new RemoveRowCommand( editor );
+	beforeEach( async () => {
+		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing, TableSelection ] } );
 
-				defaultSchema( model.schema );
-				defaultConversion( editor.conversion );
-			} );
+		model = editor.model;
+		command = new RemoveRowCommand( editor );
 	} );
 
 	afterEach( () => {
@@ -290,11 +287,11 @@ describe( 'RemoveRowCommand', () => {
 					[ '[]40', '41' ]
 				], { headingRows: 1 } ) );
 
-				// The view should also be properly downcasted.
+				// The editing view should also be properly downcasted.
 				assertEqualMarkup( getViewData( editor.editing.view, { withoutSelection: true } ), viewTable( [
 					[ '00', '01' ],
 					[ '40', '41' ]
-				], { headingRows: 1 } ) );
+				], { headingRows: 1, asWidget: true } ) );
 			} );
 
 			it( 'should support removing mixed heading and cell rows', () => {
@@ -509,8 +506,8 @@ describe( 'RemoveRowCommand', () => {
 			setData( model, modelTable( [
 				[ { rowspan: 4, contents: '00' }, { rowspan: 3, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
 				[ { rowspan: 2, contents: '13' }, '14' ],
-				[ '22[]', '23', '24' ],
-				[ '30', '31', '32', '33', '34' ]
+				[ '22[]', '24' ],
+				[ '31', '32', '33', '34' ]
 			] ) );
 
 			command.execute();
@@ -518,7 +515,7 @@ describe( 'RemoveRowCommand', () => {
 			assertEqualMarkup( getData( model ), modelTable( [
 				[ { rowspan: 3, contents: '00' }, { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
 				[ '13', '14' ],
-				[ '30', '31', '[]32', '33', '34' ]
+				[ '31', '32', '[]33', '34' ]
 			] ) );
 		} );
 

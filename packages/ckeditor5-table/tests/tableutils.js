@@ -1174,7 +1174,7 @@ describe( 'TableUtils', () => {
 				] ) );
 			} );
 
-			it( 'should create one undo step (1 batch)', () => {
+			it( 'should re-use batch to create one undo step', () => {
 				setData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
@@ -1190,7 +1190,9 @@ describe( 'TableUtils', () => {
 					createdBatches.add( operation.batch );
 				} );
 
-				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2 } );
+				const batch = model.createBatch();
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2, batch } );
 
 				expect( createdBatches.size ).to.equal( 1 );
 			} );

@@ -287,6 +287,7 @@ export default class TableUtils extends Plugin {
 		const rowsToRemove = options.rows || 1;
 		const first = options.at;
 		const last = first + rowsToRemove - 1;
+		const batch = options.batch || 'default';
 
 		// Removing rows from table requires most calculations to be done prior to changing table structure.
 
@@ -294,7 +295,7 @@ export default class TableUtils extends Plugin {
 		const { cellsToMove, cellsToTrim } = getCellsToMoveAndTrimOnRemoveRow( table, first, last );
 
 		// 2. Execution
-		model.change( writer => {
+		model.enqueueChange( batch, writer => {
 			// 2a. Move cells from removed rows that extends over a removed section - must be done before removing rows.
 			// This will fill any gaps in a rows below that previously were empty because of row-spanned cells.
 			const rowAfterRemovedSection = last + 1;
@@ -311,7 +312,7 @@ export default class TableUtils extends Plugin {
 			}
 
 			// 2d. Adjust heading rows if removed rows were in a heading section.
-			updateHeadingRows( table, first, last, model, writer.batch );
+			updateHeadingRows( table, first, last, model, batch );
 		} );
 	}
 
