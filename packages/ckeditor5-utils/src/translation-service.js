@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, console */
+/* globals window */
 
 /**
  * @module utils/translation-service
@@ -80,19 +80,13 @@ export function add( language, translations, getPluralForm ) {
  * 		translate( 'en', { string: 'Add a space', plural: 'Add %0 spaces' }, 1 ); // 'Add a space'
  * 		translate( 'en', { string: 'Add a space', plural: 'Add %0 spaces' }, 3 ); // 'Add %0 spaces'
  *
+ * @protected
  * @param {String} language Target language.
  * @param {module:utils/translation-service~Message|string} message A message that will be translated.
  * @param {Number} [amount] A number of elements for which a plural form should be picked from the target language dictionary.
  * @returns {String} Translated sentence.
  */
-export function translate( language, message, amount = 1 ) {
-	if ( typeof message === 'string' ) {
-		// TODO
-		console.warn( 'deprecated usage' );
-
-		message = { string: message };
-	}
-
+export function _translate( language, message, amount = 1 ) {
 	const numberOfLanguages = getNumberOfLanguages();
 
 	if ( numberOfLanguages === 1 ) {

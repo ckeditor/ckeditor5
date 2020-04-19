@@ -9,7 +9,7 @@
 
 /* globals console */
 
-import { translate } from './translation-service';
+import { _translate } from './translation-service';
 
 const RTL_LANGUAGE_CODES = [ 'ar', 'fa', 'he', 'ku', 'ug' ];
 
@@ -153,7 +153,7 @@ export default class Locale {
 		const hasPluralForm = !!message.plural;
 		const amount = hasPluralForm ? values[ 0 ] : 1;
 
-		let translatedString = translate( this.uiLanguage, message, amount );
+		let translatedString = _translate( this.uiLanguage, message, amount );
 
 		if ( values ) {
 			translatedString = translatedString.replace( /%(\d+)/g, ( match, index ) => {
