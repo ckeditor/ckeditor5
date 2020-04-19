@@ -77,21 +77,32 @@ export default class Locale {
 
 		/**
 		 * Translates the given message to the {@link #uiLanguage}. This method is also available in
-		 * {@link module:core/editor/editor~Editor#t} and {@link module:ui/view~View#t}, however this function needs to be called
-		 * as a function to make the translation mechanism work. [TODO]
+		 * {@link module:core/editor/editor~Editor#t} and {@link module:ui/view~View#t}.
+		 *
+		 * This method's context is statically bound to the `Locale` instance and should be called as a function:
+		 *
+		 *		const t = locale.t;
+		 *		t( 'Label' );
 		 *
 		 * The message can be either a string or an object implementing the {@link module:translation-service~Message} interface.
 		 *
-		 * Messages may contain placeholders (`%<index>`) for values that are passed as the second argument.
+		 * A Message may contain placeholders (`%<index>`) for values that are passed as the second argument.
 		 * `<index>` is the index in the `values` array.
 		 *
 		 *		t( 'Created file "%0" in %1ms.', [ fileName, timeTaken ] );
 		 *
-		 * This method's context is statically bound to the `Locale` instance,
-		 * so it can be called as a function:
+		 * A Message can provide a plural form using the `plural` property and a value - that should be always the first element
+		 * of the `values` array based on which the plural form of the target language should be picked.
 		 *
-		 *		const t = this.t;
-		 *		t( 'Label' );
+		 *		t( { string: 'Add a space', plural: 'Add %0 spaces' }, [ spaces ] );
+		 *		t( { string: '%1 a space', plural: '%1 %0 spaces' }, [ spaces, 'Add' ] );
+		 *
+		 * A Message can provide a context using the `context` property when the message string may be not enough unique
+		 * across all messages. When the `context` property is set the message id will be constructed in
+		 * the following way: `${ message.string }_${ message.context }`. This context will be also used
+		 * by translators later as a context for the message that should be translated.
+		 *
+		 *		t( { string: 'image', context: 'Add/Remove image' } );
 		 *
 		 * @method #t
 		 * @param {String|module:utils/translation-service~Message} message A message that will be localized.
