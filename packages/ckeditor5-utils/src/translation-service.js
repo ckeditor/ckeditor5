@@ -49,7 +49,11 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  * @param {Function} getPluralForm A function that returns the plural form index.
  */
 export function add( language, translations, getPluralForm ) {
-	const languageTranslations = window.CKEDITOR_TRANSLATIONS[ language ] || ( window.CKEDITOR_TRANSLATIONS[ language ] = {} );
+	if ( !window.CKEDITOR_TRANSLATIONS[ language ] ) {
+		window.CKEDITOR_TRANSLATIONS[ language ] = {};
+	}
+
+	const languageTranslations = window.CKEDITOR_TRANSLATIONS[ language ];
 
 	languageTranslations.dictionary = languageTranslations.dictionary || {};
 	languageTranslations.getPluralForm = getPluralForm || languageTranslations.getPluralForm;
@@ -73,8 +77,8 @@ export function add( language, translations, getPluralForm ) {
  * The third optional argument is the number of elements, based on which the single form or one of plural forms
  * should be picked when the message supports plural forms.
  *
- * 		translate( 'en', { string: 'Add a space', plural: 'Add %0 spaces }, 1 ); // 'Add %0 space'
- * 		translate( 'en', { string: 'Add a space', plural: 'Add %0 spaces }, 3 ); // 'Add %0 spaces'
+ * 		translate( 'en', { string: 'Add a space', plural: 'Add %0 spaces' }, 1 ); // 'Add a space'
+ * 		translate( 'en', { string: 'Add a space', plural: 'Add %0 spaces' }, 3 ); // 'Add %0 spaces'
  *
  * @param {String} language Target language.
  * @param {module:utils/translation-service~Message|string} message A message that will be translated.
@@ -97,13 +101,14 @@ export function translate( language, message, amount = 1 ) {
 		language = Object.keys( window.CKEDITOR_TRANSLATIONS )[ 0 ];
 	}
 
+	// Use message context to enhance the message id when passed.
 	const messageId = message.context ?
 		message.string + '_' + message.context :
 		message.string;
 
 	if ( numberOfLanguages === 0 || !hasTranslation( language, messageId ) ) {
-		// return english forms:
 		if ( amount !== 1 ) {
+			// Return the default plural form that was passed in the `message.plural` parameter.
 			return message.plural;
 		}
 
@@ -145,7 +150,7 @@ function getNumberOfLanguages() {
 }
 
 /**
- * The internalization message interface. A translation for the given language can be found.
+ * The internationalization message interface. A translation for the given language can be found.
  *
  * TODO
  *
