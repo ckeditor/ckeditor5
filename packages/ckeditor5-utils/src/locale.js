@@ -76,23 +76,26 @@ export default class Locale {
 		this.contentLanguageDirection = getLanguageDirection( this.contentLanguage );
 
 		/**
-		 * Translates the given string to the {@link #uiLanguage}. This method is also available in
-		 * {@link module:core/editor/editor~Editor#t} and {@link module:ui/view~View#t}.
+		 * Translates the given message to the {@link #uiLanguage}. This method is also available in
+		 * {@link module:core/editor/editor~Editor#t} and {@link module:ui/view~View#t}, however this function needs to be called
+		 * as a function to make the translation mechanism work. [TODO]
 		 *
-		 * The strings may contain placeholders (`%<index>`) for values which are passed as the second argument.
+		 * The message can be either a string or an object implementing the {@link module:translation-service~Message} interface.
+		 *
+		 * Messages may contain placeholders (`%<index>`) for values that are passed as the second argument.
 		 * `<index>` is the index in the `values` array.
 		 *
-		 *		editor.t( 'Created file "%0" in %1ms.', [ fileName, timeTaken ] );
+		 *		t( 'Created file "%0" in %1ms.', [ fileName, timeTaken ] );
 		 *
-		 * This method's context is statically bound to Locale instance,
+		 * This method's context is statically bound to the `Locale` instance,
 		 * so it can be called as a function:
 		 *
 		 *		const t = this.t;
 		 *		t( 'Label' );
 		 *
 		 * @method #t
-		 * @param {String} message The string to translate.
-		 * @param {String[]} [values] Values that should be used to interpolate the string.
+		 * @param {String|module:utils/translation-service~Message} message A message that will be localized.
+		 * @param {Array.<String>} [values] Values that should be used to interpolate the string.
 		 */
 		this.t = ( message, values ) => this._t( message, values );
 	}
@@ -124,8 +127,8 @@ export default class Locale {
 	/**
 	 * Base for the {@link #t} method.
 	 *
-	 * @param {Object|String} message
-	 * @param {String[]} [values]
+	 * @param {module:utils/translation-service~Message|String} message
+	 * @param {Array.<String>} [values]
 	 * @private
 	 */
 	_t( message, values = [] ) {
