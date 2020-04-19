@@ -26,7 +26,7 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  * If the message supports plural forms, make sure to provide an array with all plural forms:
  *
  *		add( 'pl', {
- *	 		'Add editor': [ 'Dodaj edytor', 'Dodaj %0 edytory', 'Dodaj %0 edytorów' ]
+ *	 		'Add spaces': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ]
  * 		} );
  *
  * If you cannot import this function from this module (e.g. because you use a CKEditor 5 build), then you can
