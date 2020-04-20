@@ -94,7 +94,7 @@ describe( 'LinkEditing', () => {
 		} );
 
 		it( 'should be bound to th `linkHref` attribute (RTL)', async () => {
-			editor = await ClassicTestEditor.create( element, {
+			const editor = await ClassicTestEditor.create( element, {
 				plugins: [ Paragraph, LinkEditing, Enter ],
 				language: {
 					content: 'ar'
