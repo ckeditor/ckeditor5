@@ -9,7 +9,6 @@ import HorizontalLineCommand from '../src/horizontallinecommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'HorizontalLineEditing', () => {
@@ -18,9 +17,6 @@ describe( 'HorizontalLineEditing', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
-
 		return VirtualTestEditor
 			.create( {
 				plugins: [ HorizontalLineEditing ]
