@@ -15,38 +15,53 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
 }
 
 /**
- * Adds translations to existing ones.
- * These translations will later be available for the {@link module:utils/translation-service~translate `translate()`} function.
+ * Adds translations to existing ones or overrides the existing translations.
+ *
+ * These translations will later be available for the {@link module:utils/locale~Locale#t `t()`} function.
  *
  *		add( 'pl', {
- *			'OK': 'OK',
- *			'Cancel': 'Anuluj'
- *		} );
+ *			'Cancel': 'Anuluj',
+ *			'Heading': 'Nagłówek'
+ *		}, n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2 );
  *
- * If the message supports plural forms, make sure to provide an array with all plural forms:
+ * If a message is supposed to support various plural forms, make sure to provide an array with the single form and all plural forms:
  *
  *		add( 'pl', {
- *	 		'Add spaces': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ]
+ *	 		'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ]
  * 		} );
+ *
+ * You should also specify the third argument (the `getPluralForm` function) that will be used to determine the plural form if the
+ * language is not supported by CKEditor 5 yet.
+ *
+ * 		add( 'pl', {
+ *	 		'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ]
+ * 		}, n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2 );
  *
  * If you cannot import this function from this module (e.g. because you use a CKEditor 5 build), then you can
  * still add translations by extending the global `window.CKEDITOR_TRANSLATIONS` object by using a function like
  * the one below:
  *
- *		function addTranslations( language, translations ) {
+ *		function addTranslations( language, translations, getPluralForm ) {
  *			if ( !window.CKEDITOR_TRANSLATIONS ) {
  *				window.CKEDITOR_TRANSLATIONS = {};
  *			}
+
+ *			if ( !window.CKEDITOR_TRANSLATIONS[ language ] ) {
+ *				window.CKEDITOR_TRANSLATIONS[ language ] = {};
+ *			}
  *
- *			const dictionary = window.CKEDITOR_TRANSLATIONS[ language ] || ( window.CKEDITOR_TRANSLATIONS[ language ] = {} );
+ *			const languageTranslations = window.CKEDITOR_TRANSLATIONS[ language ];
+ *
+ * 			languageTranslations.dictionary = languageTranslations.dictionary || {};
+ * 			languageTranslations.getPluralForm = getPluralForm || languageTranslations.getPluralForm;
  *
  *			// Extend the dictionary for the given language.
- *			Object.assign( dictionary, translations );
+ *			Object.assign( languageTranslations.dictionary, translations );
  *		}
  *
  * @param {String} language Target language.
- * @param {Object.<String, String>} translations Translations which will be added to the dictionary.
- * @param {Function} getPluralForm A function that returns the plural form index.
+ * @param {Object.<String, String|Array.<String>>} translations Translations which will be added to the dictionary.
+ * @param {Function} getPluralForm A function that returns the plural form index (a number).
  */
 export function add( language, translations, getPluralForm ) {
 	if ( !window.CKEDITOR_TRANSLATIONS[ language ] ) {
@@ -62,23 +77,28 @@ export function add( language, translations, getPluralForm ) {
 }
 
 /**
- * Translates string if the translation of the string was previously added to the dictionary.
- * See {@link module:utils/translation-service Translation Service}.
- * This happens in a multi-language mode were translation modules are created by the bundler.
+ * **Note:** this method is internal, use {@link module:utils/local~Locale#t the `t()` function} instead to translate
+ * editor UI parts.
+ *
+ * This function is responsible for translating messages to the specified language. It uses perviously added translations
+ * by {@link module:utils/translation-service~add} (a translations dictionary and and the `getPluralForm` function
+ * to provide accurate translations of plural forms).
  *
  * When no translation is defined in the dictionary or the dictionary doesn't exist this function returns
- * the original string.
+ * the original message string or message plural depending on the number of elements.
  *
- * In a single-language mode (when values passed to `t()` were replaced with target language strings) the dictionary
- * is left empty, so this function will return the original strings always.
- *
- *		translate( 'pl', { string: 'Cancel' } );
+ *		translate( 'pl', { string: 'Cancel' } ); // 'Cancel'
  *
  * The third optional argument is the number of elements, based on which the single form or one of plural forms
- * should be picked when the message supports plural forms.
+ * should be picked when the message is supposed to support various plural forms.
  *
  * 		translate( 'en', { string: 'Add a space', plural: 'Add %0 spaces' }, 1 ); // 'Add a space'
  * 		translate( 'en', { string: 'Add a space', plural: 'Add %0 spaces' }, 3 ); // 'Add %0 spaces'
+ *
+ * A Message can provide a context using the `context` property when the message string may be not enough unique
+ * across all messages. When the `context` property is set the message id will be constructed in
+ * the following way: `${ message.string }_${ message.context }`. This context will be also used
+ * by translators later as a context for the message that should be translated.
  *
  * @protected
  * @param {String} language Target language.
@@ -118,8 +138,10 @@ export function _translate( language, message, amount = 1 ) {
 		return dictionary[ messageId ];
 	}
 
+	const pluralFormIndex = getPluralForm( amount );
+
 	// Note: The `translate` function is not responsible for replacing `%0, %1, ...` with values.
-	return dictionary[ messageId ][ getPluralForm( amount ) ];
+	return dictionary[ messageId ][ pluralFormIndex ];
 }
 
 /**
