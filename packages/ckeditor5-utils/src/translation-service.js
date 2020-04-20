@@ -132,8 +132,6 @@ export function _translate( language, message, amount = 1 ) {
 	const dictionary = window.CKEDITOR_TRANSLATIONS[ language ].dictionary;
 	const getPluralForm = window.CKEDITOR_TRANSLATIONS[ language ].getPluralForm || ( n => n === 1 ? 0 : 1 );
 
-	// TODO - maybe a warning could be helpful for some mismatches.
-
 	if ( typeof dictionary[ messageId ] === 'string' ) {
 		return dictionary[ messageId ];
 	}
@@ -166,14 +164,16 @@ function getNumberOfLanguages() {
 }
 
 /**
- * The internationalization message interface. A translation for the given language can be found.
- *
- * TODO
+ * The internationalization message interface. A message that implements this interface can be passed to the `t()` function
+ * to be translated to the target ui language.
  *
  * @typedef {Object} Message
  *
- * @property {String} string The message string. It becomes the message id when no context is provided.
+ * @property {String} string The message string. It becomes the message id when no context is provided. When the message is supposed
+ * to support plural forms then the string should be the English singular form of the message.
  * @property {String} [context] The message context. If passed then the message id is constructed form both,
- * the message string and the message string in the following format: `<messageString>_<messageContext>`.
- * @property {String} [plural] The plural form of the message.
+ * the message string and the message string in the following format: `<messageString>_<messageContext>`. This property is useful when
+ * various messages can share the same message string, when omitting a context would result in a broken translation.
+ * @property {String} [plural] The plural form of the message. This property should be skipped when a message is not supposed
+ * to support plural forms. Otherwise it should always be set to a string with the English plural form of the message.
  */
