@@ -14,7 +14,6 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { isImageWidget } from '../../src/image/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
-import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ImageEditing', () => {
@@ -23,9 +22,6 @@ describe( 'ImageEditing', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
-
 		return VirtualTestEditor
 			.create( {
 				plugins: [ ImageEditing ]

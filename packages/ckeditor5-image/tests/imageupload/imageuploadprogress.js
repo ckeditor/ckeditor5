@@ -20,7 +20,6 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import svgPlaceholder from '../../theme/icons/image_placeholder.svg';
-import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'ImageUploadProgress', () => {
 	const imagePlaceholder = encodeURIComponent( svgPlaceholder );
@@ -44,9 +43,6 @@ describe( 'ImageUploadProgress', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
-
 		testUtils.sinon.stub( window, 'FileReader' ).callsFake( () => {
 			nativeReaderMock = new NativeFileReaderMock();
 
@@ -332,32 +328,5 @@ describe( 'ImageUploadProgress', () => {
 				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]'
 		);
-	} );
-
-	it( 'should not create completeIcon element when browser is Microsoft Edge', done => {
-		testUtils.sinon.stub( env, 'isEdge' ).get( () => true );
-
-		setModelData( model, '<paragraph>[]foo</paragraph>' );
-		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
-
-		model.document.once( 'change', () => {
-			model.document.once( 'change', () => {
-				try {
-					expect( getViewData( view ) ).to.equal(
-						'[<figure class="ck-widget image">' +
-						'<img src="image.png"></img>' +
-						'</figure>]<p>foo</p>'
-					);
-
-					done();
-				} catch ( err ) {
-					done( err );
-				}
-			}, { priority: 'lowest' } );
-
-			loader.file.then( () => adapterMock.mockSuccess( { default: 'image.png' } ) );
-		} );
-
-		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
 	} );
 } );

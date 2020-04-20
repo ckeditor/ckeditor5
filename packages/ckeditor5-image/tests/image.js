@@ -11,7 +11,6 @@ import ImageTextAlternative from '../src/imagetextalternative';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'Image', () => {
@@ -20,9 +19,6 @@ describe( 'Image', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
-
 		editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
 

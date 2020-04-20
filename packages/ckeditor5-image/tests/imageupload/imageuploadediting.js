@@ -23,13 +23,11 @@ import { UploadAdapterMock, createNativeFileMock, NativeFileReaderMock } from '@
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import env from '@ckeditor/ckeditor5-utils/src/env';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 
 describe( 'ImageUploadEditing', () => {
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
-	const isEdgeEnv = env.isEdge;
 
 	let adapterMocks = [];
 	let editor, model, view, doc, fileRepository, viewDocument, nativeReaderMock, loader;
@@ -49,15 +47,6 @@ describe( 'ImageUploadEditing', () => {
 	}
 
 	beforeEach( () => {
-		if ( isEdgeEnv ) {
-			sinon.stub( window, 'File' ).callsFake( () => {
-				return { name: 'file.jpg' };
-			} );
-		}
-
-		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		sinon.stub( env, 'isEdge' ).get( () => false );
-
 		sinon.stub( window, 'FileReader' ).callsFake( () => {
 			nativeReaderMock = new NativeFileReaderMock();
 
@@ -816,14 +805,7 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should not upload and remove image when `File` constructor is not supported', done => {
-		if ( isEdgeEnv ) {
-			// Since on Edge `File` is already stubbed, restore it to it native form so that exception will be thrown.
-			sinon.restore();
-			// Since all stubs were restored, re-stub `scrollToTheSelection`.
-			sinon.stub( editor.editing.view, 'scrollToTheSelection' ).callsFake( () => {} );
-		} else {
-			sinon.stub( window, 'File' ).throws( 'Function expected.' );
-		}
+		sinon.stub( window, 'File' ).throws( 'Function expected.' );
 
 		const notification = editor.plugins.get( Notification );
 
@@ -857,8 +839,7 @@ describe( 'ImageUploadEditing', () => {
 		);
 	} );
 
-	// Skip this test on Edge as we mock `File` object there so there is no sense in testing it.
-	( isEdgeEnv ? it.skip : it )( 'should get file extension from base64 string', done => {
+	it( 'should get file extension from base64 string', done => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const clipboardHtml = `<img src=${ base64Sample } />`;
@@ -883,8 +864,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 	} );
 
-	// Skip this test on Edge as we mock `File` object there so there is no sense in testing it.
-	( isEdgeEnv ? it.skip : it )( 'should use fallback file extension', done => {
+	it( 'should use fallback file extension', done => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } />`;
