@@ -84,24 +84,24 @@ export default class Locale {
 		 *		const t = locale.t;
 		 *		t( 'Label' );
 		 *
-		 * The message can be either a string or an object implementing the {@link module:translation-service~Message} interface.
+		 * The message can be either a string or an object implementing the {@link module:utils/translation-service~Message} interface.
 		 *
-		 * A Message may contain placeholders (`%<index>`) for values that are passed as the second argument.
+		 * The message may contain placeholders (`%<index>`) for values that are passed as the second argument.
 		 * `<index>` is the index in the `values` array.
 		 *
 		 *		t( 'Created file "%0" in %1ms.', [ fileName, timeTaken ] );
 		 *
-		 * A Message can provide a plural form using the `plural` property and a value - that should be always the first element
-		 * of the `values` array based on which the plural form of the target language should be picked. That property value will
-		 * be used as a default plural translation when the translation for the target language will be missing.
+		 * The message supports plural forms. To specify a plural form, use the `plural` property. Single or plural form
+		 * will be chosen depending on the first value from the passed `values`. The value of this property is
+		 * used as a default plural translation when the translation for the target language is missing.
 		 *
 		 *		t( { string: 'Add a space', plural: 'Add %0 spaces' }, [ spaces ] );
 		 *		t( { string: '%1 a space', plural: '%1 %0 spaces' }, [ spaces, 'Add' ] );
 		 *
-		 * A Message can provide a context using the `context` property when the message string may be not enough unique
-		 * across all messages. When the `context` property is set the message id will be constructed in
+		 * The message can provide a context using the `context` property when the message ids created from message strings are not unique.
+		 * When the `context` property is set the message id will be constructed in
 		 * the following way: `${ message.string }_${ message.context }`. This context will be also used
-		 * by translators later as a context for the message that should be translated.
+		 * by translators later as an additional context for the translated message.
 		 *
 		 *		t( { string: 'image', context: 'Add/Remove image' } );
 		 *
