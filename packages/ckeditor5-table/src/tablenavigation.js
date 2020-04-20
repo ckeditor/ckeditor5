@@ -342,12 +342,18 @@ export default class TableNavigation extends Plugin {
 		const editing = this.editor.editing;
 		const domConverter = editing.view.domConverter;
 
+		// Wrapped lines contain exactly the same position at the end of current line
+		// and at the beginning of next line. That position's client rect is at the end
+		// of current line. In case of caret at first position of the last line that 'dual'
+		// position would be detected as it's not the last line.
 		if ( isForward && !modelRange.start.isAtEnd ) {
-			// Wrapped lines contain exactly the same position at the end of current line
-			// and at the beginning of next line. That position's client rect is at the end
-			// of current line. In case of caret at first position of the last line that 'dual'
-			// position would be detected as it's not the last line.
-			modelRange = new ModelRange( modelRange.start.getShiftedBy( 1 ), modelRange.end );
+			const shiftedPosition = modelRange.start.getShiftedBy( 1 );
+
+			// If shifted position is at the end of the parent element then we can't skip it
+			// because we could detect a next paragraph as single-line.
+			if ( !shiftedPosition.isAtEnd ) {
+				modelRange = new ModelRange( shiftedPosition, modelRange.end );
+			}
 		}
 
 		const viewRange = editing.mapper.toViewRange( modelRange );
