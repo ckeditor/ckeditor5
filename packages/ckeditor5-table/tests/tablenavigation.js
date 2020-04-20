@@ -1692,7 +1692,18 @@ describe( 'TableNavigation', () => {
 
 					styleElement = global.document.createElement( 'style' );
 					styleElement.type = 'text/css';
-					styleElement.appendChild( global.document.createTextNode( '.ck-editor { width: 500px !important; }' ) );
+					styleElement.appendChild( global.document.createTextNode(
+						`
+						* { 
+							font-size: 12px !important; 
+							font-family: sans-serif !important;
+							margin: 0 !important; 
+							padding: 0 !important; 
+							border: 0 !important 
+						}
+						td { width: 300px !important; }
+						`
+					) );
 					global.document.querySelector( 'head' ).appendChild( styleElement );
 				} );
 
@@ -1820,6 +1831,58 @@ describe( 'TableNavigation', () => {
 							[ '10', text + 'word word[]', '12' ],
 							[ '20', '21', '22' ]
 						] ) );
+					} );
+
+					it( 'should move caret to end if caret is after the last space in the line next to the last one', () => {
+						// This is also first position in the last line.
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', text + ' []word word word', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', text + ' word word word[]', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should move caret to end if caret is at the last space in the line next to last one', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', text + '[] word word word', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', text + ' word word word[]', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should not move caret if it\'s just before the last space in the line next to last one', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', text.substring( 0, text.length - 2 ) + '[]d word word word', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						sinon.assert.notCalled( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.notCalled( downArrowDomEvtDataStub.stopPropagation );
 					} );
 				} );
 
