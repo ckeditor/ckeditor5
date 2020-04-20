@@ -93,35 +93,33 @@ describe( 'LinkEditing', () => {
 			expect( editor.model.document.selection.isGravityOverridden ).to.true;
 		} );
 
-		it( 'should be bound to th `linkHref` attribute (RTL)', () => {
-			return ClassicTestEditor
-				.create( element, {
-					plugins: [ Paragraph, LinkEditing, Enter ],
-					language: {
-						content: 'ar'
-					}
-				} )
-				.then( editor => {
-					model = editor.model;
-					view = editor.editing.view;
+		it( 'should be bound to th `linkHref` attribute (RTL)', async () => {
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, LinkEditing, Enter ],
+				language: {
+					content: 'ar'
+				}
+			} );
 
-					// Put selection before the link element.
-					setModelData( editor.model, '<paragraph>foo[]<$text linkHref="url">b</$text>ar</paragraph>' );
+			model = editor.model;
+			view = editor.editing.view;
 
-					// The selection's gravity is not overridden because selection landed here not because of `keydown`.
-					expect( editor.model.document.selection.isGravityOverridden ).to.false;
+			// Put selection before the link element.
+			setModelData( editor.model, '<paragraph>foo[]<$text linkHref="url">b</$text>ar</paragraph>' );
 
-					// So let's simulate the `keydown` event.
-					editor.editing.view.document.fire( 'keydown', {
-						keyCode: keyCodes.arrowleft,
-						preventDefault: () => {},
-						domTarget: document.body
-					} );
+			// The selection's gravity is not overridden because selection landed here not because of `keydown`.
+			expect( editor.model.document.selection.isGravityOverridden ).to.false;
 
-					expect( editor.model.document.selection.isGravityOverridden ).to.true;
+			// So let's simulate the `keydown` event.
+			editor.editing.view.document.fire( 'keydown', {
+				keyCode: keyCodes.arrowleft,
+				preventDefault: () => {},
+				domTarget: document.body
+			} );
 
-					return editor.destroy();
-				} );
+			expect( editor.model.document.selection.isGravityOverridden ).to.true;
+
+			await editor.destroy();
 		} );
 	} );
 
@@ -776,86 +774,80 @@ describe( 'LinkEditing', () => {
 				element.remove();
 			} );
 
-			it( 'should upcast attributes from initial data', () => {
-				return ClassicTestEditor
-					.create( element, {
-						initialData: '<p><a href="url" target="_blank" rel="noopener noreferrer" download="file">Foo</a>' +
-							'<a href="example.com" download="file">Bar</a></p>',
-						plugins: [ Paragraph, LinkEditing, Enter ],
-						link: {
-							decorators: {
-								isExternal: {
-									mode: 'manual',
-									label: 'Open in a new window',
-									attributes: {
-										target: '_blank',
-										rel: 'noopener noreferrer'
-									}
-								},
-								isDownloadable: {
-									mode: 'manual',
-									label: 'Downloadable',
-									attributes: {
-										download: 'file'
-									}
+			it( 'should upcast attributes from initial data', async () => {
+				editor = await ClassicTestEditor.create( element, {
+					initialData: '<p><a href="url" target="_blank" rel="noopener noreferrer" download="file">Foo</a>' +
+						'<a href="example.com" download="file">Bar</a></p>',
+					plugins: [ Paragraph, LinkEditing, Enter ],
+					link: {
+						decorators: {
+							isExternal: {
+								mode: 'manual',
+								label: 'Open in a new window',
+								attributes: {
+									target: '_blank',
+									rel: 'noopener noreferrer'
+								}
+							},
+							isDownloadable: {
+								mode: 'manual',
+								label: 'Downloadable',
+								attributes: {
+									download: 'file'
 								}
 							}
 						}
-					} )
-					.then( newEditor => {
-						editor = newEditor;
-						model = editor.model;
+					}
+				} );
 
-						expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-							'<paragraph>' +
-								'<$text linkHref="url" linkIsDownloadable="true" linkIsExternal="true">Foo</$text>' +
-								'<$text linkHref="example.com" linkIsDownloadable="true">Bar</$text>' +
-							'</paragraph>'
-						);
+				model = editor.model;
 
-						return editor.destroy();
-					} );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>' +
+						'<$text linkHref="url" linkIsDownloadable="true" linkIsExternal="true">Foo</$text>' +
+						'<$text linkHref="example.com" linkIsDownloadable="true">Bar</$text>' +
+					'</paragraph>'
+				);
+
+				await editor.destroy();
 			} );
 
-			it( 'should not upcast partial and incorrect attributes', () => {
-				return ClassicTestEditor
-					.create( element, {
-						initialData: '<p><a href="url" target="_blank" download="something">Foo</a>' +
-							'<a href="example.com" download="test">Bar</a></p>',
-						plugins: [ Paragraph, LinkEditing, Enter ],
-						link: {
-							decorators: {
-								isExternal: {
-									mode: 'manual',
-									label: 'Open in a new window',
-									attributes: {
-										target: '_blank',
-										rel: 'noopener noreferrer'
-									}
-								},
-								isDownloadable: {
-									mode: 'manual',
-									label: 'Downloadable',
-									attributes: {
-										download: 'file'
-									}
+			it( 'should not upcast partial and incorrect attributes', async () => {
+				editor = await ClassicTestEditor.create( element, {
+					initialData: '<p><a href="url" target="_blank" download="something">Foo</a>' +
+						'<a href="example.com" download="test">Bar</a></p>',
+					plugins: [ Paragraph, LinkEditing, Enter ],
+					link: {
+						decorators: {
+							isExternal: {
+								mode: 'manual',
+								label: 'Open in a new window',
+								attributes: {
+									target: '_blank',
+									rel: 'noopener noreferrer'
+								}
+							},
+							isDownloadable: {
+								mode: 'manual',
+								label: 'Downloadable',
+								attributes: {
+									download: 'file'
 								}
 							}
 						}
-					} )
-					.then( newEditor => {
-						editor = newEditor;
-						model = editor.model;
+					}
+				} );
 
-						expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-							'<paragraph>' +
-								'<$text linkHref="url">Foo</$text>' +
-								'<$text linkHref="example.com">Bar</$text>' +
-							'</paragraph>'
-						);
+				model = editor.model;
 
-						return editor.destroy();
-					} );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>' +
+						'<$text linkHref="url">Foo</$text>' +
+						'<$text linkHref="example.com">Bar</$text>' +
+					'</paragraph>'
+				);
+
+				await editor.destroy();
 			} );
 		} );
 	} );
