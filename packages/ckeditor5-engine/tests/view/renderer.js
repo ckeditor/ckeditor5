@@ -1804,7 +1804,7 @@ describe( 'Renderer', () => {
 				expect( textNode.textContent ).to.equal( label );
 
 				const domSelection = domRoot.ownerDocument.getSelection();
-				assertDomSelectionContents( domSelection, container, /^fake selection label$/ );
+				assertDomSelectionContents( domSelection, container, 'fake selection label' );
 			} );
 
 			describe( 'subsequent call optimization', () => {
@@ -1885,7 +1885,7 @@ describe( 'Renderer', () => {
 				expect( textNode.textContent ).to.equal( '\u00A0' );
 
 				const domSelection = domRoot.ownerDocument.getSelection();
-				assertDomSelectionContents( domSelection, container, /^[ \u00A0]$/ );
+				assertDomSelectionContents( domSelection, container, '\u00A0' );
 			} );
 
 			it( 'should remove fake selection container when selection is no longer fake', () => {
@@ -1902,7 +1902,7 @@ describe( 'Renderer', () => {
 				expect( domParagraph.tagName.toLowerCase() ).to.equal( 'p' );
 
 				const domSelection = domRoot.ownerDocument.getSelection();
-				assertDomSelectionContents( domSelection, domParagraph, /^foo bar$/ );
+				assertDomSelectionContents( domSelection, domParagraph, 'foo bar' );
 			} );
 
 			it( 'should reuse fake selection container #1', () => {
@@ -2051,16 +2051,15 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				const domSelection = domRoot.ownerDocument.getSelection();
-				assertDomSelectionContents( domSelection, container, /^fake selection label$/ );
+				assertDomSelectionContents( domSelection, container, 'fake selection label' );
 			} );
 
 			// Use a forgiving way of checking what the selection contains
 			// because Safari normalizes the selection ranges so precise checking is troublesome.
-			// Also, Edge returns a normal space instead of nbsp so we need to use even more alternatives.
 			function assertDomSelectionContents( domSelection, expectedContainer, expectedText ) {
 				const domSelectionContainer = domSelection.getRangeAt( 0 ).commonAncestorContainer;
 
-				expect( domSelection.toString() ).to.match( expectedText );
+				expect( domSelection.toString() ).to.equal( expectedText );
 				expect(
 					domSelectionContainer == expectedContainer.firstChild || domSelectionContainer == expectedContainer
 				).to.be.true;
