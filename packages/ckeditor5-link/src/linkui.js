@@ -185,7 +185,7 @@ export default class LinkUI extends Plugin {
 
 		// Handle the `Ctrl+K` keystroke and show the panel.
 		editor.keystrokes.set( linkKeystroke, ( keyEvtData, cancel ) => {
-			// Prevent focusing the search bar in FF and opening new tab in Edge. #153, #154.
+			// Prevent focusing the search bar in FF, Chrome and Edge. See https://github.com/ckeditor/ckeditor5/issues/4811.
 			cancel();
 
 			this._showUI( true );
