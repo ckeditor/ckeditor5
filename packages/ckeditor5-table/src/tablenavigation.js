@@ -213,6 +213,19 @@ export default class TableNavigation extends Plugin {
 			return true;
 		}
 
+		// If this is an object selected and it's not at the start or the end of cell content
+		// then let's allow widget handler to take care of it.
+		const objectElement = selection.getSelectedElement();
+
+		if ( objectElement && model.schema.isObject( objectElement ) ) {
+			return;
+		}
+
+		// If next to the selection there is an object then this is not the cell boundary (widget handler should handle this).
+		if ( this._getObjectElementNextToSelection( selection, isForward ) ) {
+			return;
+		}
+
 		// If there isn't any $text position between cell edge and selection then we shall move the selection to next cell.
 		const textRange = this._findTextRangeFromSelection( cellRange, selection, isForward );
 
@@ -270,6 +283,31 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
+	 * Checks if {@link module:engine/model/element~Element element} placed next to the current
+	 * {@link module:engine/model/selection~Selection model selection} exists and is marked in
+	 * {@link module:engine/model/schema~Schema schema} as `object`.
+	 *
+	 * @private
+	 * @param {module:engine/model/selection~Selection} modelSelection The selection.
+	 * @param {Boolean} forward Direction of checking.
+	 * @returns {module:engine/model/element~Element|null}
+	 */
+	_getObjectElementNextToSelection( modelSelection, forward ) {
+		const model = this.editor.model;
+		const schema = model.schema;
+
+		const probe = model.createSelection( modelSelection );
+		model.modifySelection( probe, { direction: forward ? 'forward' : 'backward' } );
+		const objectElement = forward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
+
+		if ( !!objectElement && schema.isObject( objectElement ) ) {
+			return objectElement;
+		}
+
+		return null;
+	}
+
+	/**
 	 * Returns a range from beginning/end of range up to selection closest position.
 	 * Returns `null` if resulting range can't contain text element (according to schema).
 	 *
@@ -307,7 +345,7 @@ export default class TableNavigation extends Plugin {
 	 *
 	 * @param {module:engine/model/range~Range} boundaries The range to find position in.
 	 * @param {'forward'|'backward'} direction Search direction.
-	 * @returns {module:engine/model/position~Position|null} Nearest selection range or `null` if one cannot be found.
+	 * @returns {module:engine/model/position~Position} Nearest selection range.
 	 */
 	_getNearestVisibleTextPosition( boundaries, direction ) {
 		const schema = this.editor.model.schema;
@@ -326,8 +364,6 @@ export default class TableNavigation extends Plugin {
 				}
 			}
 		}
-
-		return null;
 	}
 
 	/**
@@ -339,6 +375,7 @@ export default class TableNavigation extends Plugin {
 	 * @returns {Boolean}
 	 */
 	_isSingleLineRange( modelRange, isForward ) {
+		const model = this.editor.model;
 		const editing = this.editor.editing;
 		const domConverter = editing.view.domConverter;
 
@@ -346,13 +383,16 @@ export default class TableNavigation extends Plugin {
 		// and at the beginning of next line. That position's client rect is at the end
 		// of current line. In case of caret at first position of the last line that 'dual'
 		// position would be detected as it's not the last line.
-		if ( isForward && !modelRange.start.isAtEnd ) {
-			const shiftedPosition = modelRange.start.getShiftedBy( 1 );
+		if ( isForward ) {
+			const probe = model.createSelection( modelRange.start );
 
-			// If shifted position is at the end of the parent element then we can't skip it
-			// because we could detect a next paragraph as single-line.
-			if ( !shiftedPosition.isAtEnd ) {
-				modelRange = new ModelRange( shiftedPosition, modelRange.end );
+			model.modifySelection( probe );
+
+			// If the new position is at the end of the container then we can't use this position
+			// because it would provide incorrect result for eg caption of image and selection
+			// just before end of it. Also in this case there is no "dual" position.
+			if ( !probe.focus.isAtEnd && !modelRange.start.isEqual( probe.focus ) ) {
+				modelRange = new ModelRange( probe.focus, modelRange.end );
 			}
 		}
 

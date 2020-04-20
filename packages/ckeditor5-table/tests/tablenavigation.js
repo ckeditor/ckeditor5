@@ -1599,15 +1599,13 @@ describe( 'TableNavigation', () => {
 				} );
 
 				describe( 'two horizontal lines as only cell content (widget without $text positions)', () => {
-					beforeEach( () => {
+					it( 'should navigate to the cell on the left', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', '[<horizontalLine></horizontalLine>]<horizontalLine></horizontalLine>', '12' ],
 							[ '20', '21', '22' ]
 						] ) );
-					} );
 
-					it( 'should navigate to the cell on the left', () => {
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 
 						sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
@@ -1621,6 +1619,12 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should navigate to the cell on the right', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<horizontalLine></horizontalLine>[<horizontalLine></horizontalLine>]', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
 						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
 
 						sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
@@ -1634,6 +1638,12 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should navigate to the cell above', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '[<horizontalLine></horizontalLine>]<horizontalLine></horizontalLine>', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
 						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
@@ -1647,6 +1657,12 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should navigate to the cell below', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '<horizontalLine></horizontalLine>[<horizontalLine></horizontalLine>]', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
@@ -1802,6 +1818,167 @@ describe( 'TableNavigation', () => {
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
 							[ '10', text + 'word word[]', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+				} );
+
+				describe( 'with multiple paragraphs of text', () => {
+					const text = new Array( 100 ).fill( 0 ).map( () => 'word' ).join( ' ' );
+
+					it( 'should not navigate if caret is in the middle line of a text', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', `<paragraph>${ text }[]${ text }</paragraph><paragraph>foobar</paragraph>`, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+						sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+					} );
+
+					it( 'should move caret to beginning of cell content if caret is in the first line of a text', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', `<paragraph>word[]${ text }</paragraph><paragraph>foobar</paragraph>`, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', `<paragraph>[]word${ text }</paragraph><paragraph>foobar</paragraph>`, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should not move caret to end of cell content if caret is not last line of text', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', `<paragraph>${ text }word []word</paragraph><paragraph>foobar</paragraph>`, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						sinon.assert.notCalled( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.notCalled( downArrowDomEvtDataStub.stopPropagation );
+					} );
+
+					it( 'should move caret to end of cell content if caret is in the last line of a text', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', `<paragraph>foobar</paragraph><paragraph>${ text }word []word</paragraph>`, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', `<paragraph>foobar</paragraph><paragraph>${ text }word word[]</paragraph>`, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+				} );
+
+				describe( 'with horizontal line widget', () => {
+					const text = new Array( 100 ).fill( 0 ).map( () => 'word' ).join( ' ' );
+
+					it( 'should not navigate if caret is in the middle line of a text', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', `<horizontalLine></horizontalLine><paragraph>${ text }[]${ text }</paragraph>`, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+						sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+					} );
+
+					it( 'should move caret to beginning of cell content if caret is in the first line of a text', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', `<horizontalLine></horizontalLine><paragraph>word[] ${ text }</paragraph>`, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', `[<horizontalLine></horizontalLine>]<paragraph>word ${ text }</paragraph>`, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should move caret to end of cell content if caret is in the last line of a text', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', `<paragraph>${ text } word []word</paragraph><horizontalLine></horizontalLine>`, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', `<paragraph>${ text } word word</paragraph>[<horizontalLine></horizontalLine>]`, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should not move caret to end of cell content if widget is selected in middle of cell content', () => {
+						const paragraph = `<paragraph>${ text }</paragraph>`;
+						const hr = '<horizontalLine></horizontalLine>';
+
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', `${ paragraph }[${ hr }]${ paragraph }${ hr }`, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', `${ paragraph }${ hr }<paragraph>[]${ text }</paragraph>${ hr }`, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+					} );
+
+					it( 'should not move caret to end of cell content if widget is next to selection', () => {
+						const paragraph = `<paragraph>${ text }</paragraph>`;
+						const hr = '<horizontalLine></horizontalLine>';
+
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', `${ paragraph }[]${ hr }`, '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', `${ paragraph }[${ hr }]`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 					} );
