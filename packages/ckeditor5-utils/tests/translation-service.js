@@ -46,7 +46,7 @@ describe( 'translation-service', () => {
 		} );
 	} );
 
-	describe( 'translate()', () => {
+	describe( '_translate()', () => {
 		it( 'should return translated messages when translations are defined', () => {
 			add( 'pl', {
 				'OK': 'OK',

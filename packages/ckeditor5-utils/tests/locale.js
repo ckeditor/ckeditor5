@@ -136,10 +136,20 @@ describe( 'Locale', () => {
 			} );
 		} );
 
-		it( 'should translate a string to the target ui language', () => {
+		it( 'should translate a message to the target ui language', () => {
 			const t = locale.t;
 
 			expect( t( 'foo' ) ).to.equal( 'foo_pl' );
+		} );
+
+		it( 'should translate a message including the message string and the message context', () => {
+			const t = locale.t;
+
+			addTranslations( 'pl', {
+				'foo_bar': 'foo_bar_pl'
+			} );
+
+			expect( t( { string: 'foo', context: 'bar' } ) ).to.equal( 'foo_bar_pl' );
 		} );
 
 		it( 'should translate a plural form to the target ui language based on the first value and interpolate the string', () => {
@@ -148,6 +158,22 @@ describe( 'Locale', () => {
 			expect( t( { string: 'bar', plural: '%0 bars' }, [ 1 ] ), 1 ).to.equal( 'bar_pl_0' );
 			expect( t( { string: 'bar', plural: '%0 bars' }, [ 2 ] ), 2 ).to.equal( '2 bar_pl_1' );
 			expect( t( { string: 'bar', plural: '%0 bars' }, [ 5 ] ), 3 ).to.equal( '5 bar_pl_2' );
+		} );
+
+		it( 'should translate a message supporting plural form with a context', () => {
+			const t = locale.t;
+
+			addTranslations( 'pl', {
+				'%1 a space_Add/Remove a space': [ '%1 spację', '%1 %0 spacje', '%1 %0 spacji' ],
+				'Add': 'Dodaj',
+				'Remove': 'Usuń'
+			} );
+
+			const addOrRemoveSpaceMessage = { string: '%1 a space', plural: '%1 %0 spaces', context: 'Add/Remove a space' };
+
+			expect( t( addOrRemoveSpaceMessage, [ 1, t( 'Add' ) ] ), 1 ).to.equal( 'Dodaj spację' );
+			expect( t( addOrRemoveSpaceMessage, [ 2, t( 'Remove' ) ] ), 2 ).to.equal( 'Usuń 2 spacje' );
+			expect( t( addOrRemoveSpaceMessage, [ 5, t( 'Add' ) ] ), 3 ).to.equal( 'Dodaj 5 spacji' );
 		} );
 
 		it( 'should interpolate a message with provided values', () => {
