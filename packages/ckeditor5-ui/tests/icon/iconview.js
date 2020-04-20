@@ -131,7 +131,6 @@ describe( 'IconView', () => {
 } );
 
 function assertIconInnerHTML( icon, expected ) {
-	// Edge adds the xmlns attribute to each node when obtaining from parent's innerHTML.
-	expect( normalizeHtml( icon.element.innerHTML.replace( /xmlns="[^"]+"/, '' ) ) )
+	expect( normalizeHtml( icon.element.innerHTML ) )
 		.to.equal( expected );
 }
