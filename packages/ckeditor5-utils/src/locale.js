@@ -153,15 +153,12 @@ export default class Locale {
 		const hasPluralForm = !!message.plural;
 		const amount = hasPluralForm ? values[ 0 ] : 1;
 
-		let translatedString = _translate( this.uiLanguage, message, amount );
+		const translatedString = _translate( this.uiLanguage, message, amount );
 
-		if ( values ) {
-			translatedString = translatedString.replace( /%(\d+)/g, ( match, index ) => {
+		return translatedString
+			.replace( /%(\d+)/g, ( match, index ) => {
 				return ( index < values.length ) ? values[ index ] : match;
 			} );
-		}
-
-		return translatedString;
 	}
 }
 
