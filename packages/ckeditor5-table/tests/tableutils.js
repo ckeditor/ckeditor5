@@ -8,37 +8,53 @@ import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 
 import { defaultConversion, defaultSchema, modelTable } from './_utils/utils';
 
+import TableEditing from '../src/tableediting';
 import TableUtils from '../src/tableutils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'TableUtils', () => {
 	let editor, model, root, tableUtils;
-
-	beforeEach( () => {
-		return ModelTestEditor.create( {
-			plugins: [ TableUtils ]
-		} ).then( newEditor => {
-			editor = newEditor;
-			model = editor.model;
-			root = model.document.getRoot( 'main' );
-			tableUtils = editor.plugins.get( TableUtils );
-
-			defaultSchema( model.schema );
-			defaultConversion( editor.conversion );
-		} );
-	} );
 
 	afterEach( () => {
 		return editor.destroy();
 	} );
 
 	describe( '#pluginName', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		it( 'should provide plugin name', () => {
 			expect( TableUtils.pluginName ).to.equal( 'TableUtils' );
 		} );
 	} );
 
 	describe( 'getCellLocation()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		it( 'should return proper table cell location', () => {
 			setData( model, modelTable( [
 				[ { rowspan: 2, colspan: 2, contents: '00[]' }, '02' ],
@@ -52,6 +68,20 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'insertRows()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		it( 'should insert row in given table at given index', () => {
 			setData( model, modelTable( [
 				[ '11[]', '12' ],
@@ -192,6 +222,20 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'insertColumns()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		it( 'should insert column in given table at given index', () => {
 			setData( model, modelTable( [
 				[ '11[]', '12' ],
@@ -370,7 +414,7 @@ describe( 'TableUtils', () => {
 			], { headingColumns: 4 } ) );
 		} );
 
-		it( 'should properly insert column while table has rowspanned cells', () => {
+		it( 'should properly insert column while table has row-spanned cells', () => {
 			setData( model, modelTable( [
 				[ { rowspan: 4, contents: '00[]' }, { rowspan: 2, contents: '01' }, '02' ],
 				[ '12' ],
@@ -390,6 +434,20 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'splitCellVertically()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		it( 'should split table cell to given table cells number', () => {
 			setData( model, modelTable( [
 				[ '00', '01', '02' ],
@@ -534,6 +592,20 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'splitCellHorizontally()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		it( 'should split table cell to default table cells number', () => {
 			setData( model, modelTable( [
 				[ '00', '01', '02' ],
@@ -570,7 +642,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should properly update rowspanned cells overlapping selected cell', () => {
+		it( 'should properly update row-spanned cells overlapping selected cell', () => {
 			setData( model, modelTable( [
 				[ { rowspan: 2, contents: '00' }, '01', { rowspan: 3, contents: '02' } ],
 				[ '[]11' ],
@@ -588,7 +660,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should split rowspanned cell', () => {
+		it( 'should split row-spanned cell', () => {
 			setData( model, modelTable( [
 				[ '00', { rowspan: 2, contents: '01[]' } ],
 				[ '10' ],
@@ -606,7 +678,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should copy colspan while splitting rowspanned cell', () => {
+		it( 'should copy colspan while splitting row-spanned cell', () => {
 			setData( model, modelTable( [
 				[ '00', { rowspan: 2, colspan: 2, contents: '01[]' } ],
 				[ '10' ],
@@ -652,7 +724,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should split rowspanned cell and updated other cells rowspan when splitting to bigger number of cells', () => {
+		it( 'should split row-spanned cell and updated other cells rowspan when splitting to bigger number of cells', () => {
 			setData( model, modelTable( [
 				[ '00', { rowspan: 2, contents: '01[]' } ],
 				[ '10' ],
@@ -671,7 +743,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should split rowspanned & colspaned cell', () => {
+		it( 'should split row-spanned & col-spanned cell', () => {
 			setData( model, modelTable( [
 				[ '00', { colspan: 2, contents: '01[]' } ],
 				[ '10', '11' ]
@@ -709,6 +781,20 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'getColumns()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		it( 'should return proper number of columns', () => {
 			setData( model, modelTable( [
 				[ '00', { colspan: 3, contents: '01' }, '04' ]
@@ -719,6 +805,20 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'getRows()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		it( 'should return proper number of columns for simple table', () => {
 			setData( model, modelTable( [
 				[ '00', '01' ],
@@ -749,6 +849,17 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'removeRows()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ Paragraph, TableEditing, TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+			} );
+		} );
+
 		describe( 'single row', () => {
 			it( 'should remove a given row from a table start', () => {
 				setData( model, modelTable( [
@@ -794,11 +905,57 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should decrease rowspan of table cells from previous rows', () => {
+				// +----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 |
+				// +----+    +    +    +    +
+				// | 10 |    |    |    |    |
+				// +----+----+    +    +    +
+				// | 20 | 21 |    |    |    |
+				// +----+----+----+    +    +
+				// | 30 | 31 | 32 |    |    |
+				// +----+----+----+----+    +
+				// | 40 | 41 | 42 | 43 |    |
+				// +----+----+----+----+----+
+				// | 50 | 51 | 52 | 53 | 54 |
+				// +----+----+----+----+----+
+				setData( model, modelTable( [
+					[ '00', { contents: '01', rowspan: 2 }, { contents: '02', rowspan: 3 }, { contents: '03', rowspan: 4 },
+						{ contents: '04', rowspan: 5 } ],
+					[ '10' ],
+					[ '20', '21' ],
+					[ '30', '31', '32' ],
+					[ '40', '41', '42', '43' ],
+					[ '50', '51', '52', '53', '54' ]
+				] ) );
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 1 } );
+
+				// +----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 |
+				// +----+----+    +    +    +
+				// | 20 | 21 |    |    |    |
+				// +----+----+----+    +    +
+				// | 30 | 31 | 32 |    |    |
+				// +----+----+----+----+    +
+				// | 40 | 41 | 42 | 43 |    |
+				// +----+----+----+----+----+
+				// | 50 | 51 | 52 | 53 | 54 |
+				// +----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', '01', { contents: '02', rowspan: 2 }, { contents: '03', rowspan: 3 }, { contents: '04', rowspan: 4 } ],
+					[ '20', '21' ],
+					[ '30', '31', '32' ],
+					[ '40', '41', '42', '43' ],
+					[ '50', '51', '52', '53', '54' ]
+				] ) );
+			} );
+
+			it( 'should decrease rowspan of table cells from previous rows (row-spanned cells on different rows)', () => {
 				setData( model, modelTable( [
 					[ { rowspan: 4, contents: '00' }, { rowspan: 3, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
 					[ { rowspan: 2, contents: '13' }, '14' ],
-					[ '22', '23', '24' ],
-					[ '30', '31', '32', '33', '34' ]
+					[ '22', '24' ],
+					[ '31', '32', '33', '34' ]
 				] ) );
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 2 } );
@@ -806,11 +963,11 @@ describe( 'TableUtils', () => {
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ { rowspan: 3, contents: '00' }, { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
 					[ '13', '14' ],
-					[ '30', '31', '32', '33', '34' ]
+					[ '31', '32', '33', '34' ]
 				] ) );
 			} );
 
-			it( 'should move rowspaned cells to row below removing it\'s row', () => {
+			it( 'should move row-spanned cells to a row below removing it\'s row', () => {
 				setData( model, modelTable( [
 					[ { rowspan: 3, contents: '00' }, { rowspan: 2, contents: '01' }, '02' ],
 					[ '12' ],
@@ -824,6 +981,21 @@ describe( 'TableUtils', () => {
 					[ { rowspan: 2, contents: '00' }, '01', '12' ],
 					[ '21', '22' ],
 					[ '30', '31', '32' ]
+				] ) );
+			} );
+
+			it( 'should move row-spanned cells to a row below removing it\'s row (other cell is overlapping removed row)', () => {
+				setData( model, modelTable( [
+					[ '00', { rowspan: 3, contents: '01' }, '02', '03', '04' ],
+					[ '10', { rowspan: 2, contents: '12' }, '13', '14' ],
+					[ '20', '23', '24' ]
+				] ) );
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 1 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', { rowspan: 2, contents: '01' }, '02', '03', '04' ],
+					[ '20', '12', '23', '24' ]
 				] ) );
 			} );
 		} );
@@ -924,21 +1096,85 @@ describe( 'TableUtils', () => {
 				] ) );
 			} );
 
-			it( 'should properly calculate truncated rowspans', () => {
+			it( 'should move row-spanned cells to a row after removed rows section', () => {
 				setData( model, modelTable( [
-					[ '00', { contents: '01', rowspan: 3 } ],
-					[ '10' ],
-					[ '20' ]
+					[ '00', '01', '02', '03' ],
+					[ { rowspan: 4, contents: '10' }, { rowspan: 3, contents: '11' }, { rowspan: 2, contents: '12' }, '13' ],
+					[ { rowspan: 3, contents: '23' } ],
+					[ '32' ],
+					[ '41', '42' ]
 				] ) );
 
-				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2 } );
+				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } );
 
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
-					[ '20', '01' ]
+					[ '00', '01', '02', '03' ],
+					[ { rowspan: 2, contents: '10' }, '11', '32', { rowspan: 2, contents: '23' } ],
+					[ '41', '42' ]
 				] ) );
 			} );
 
-			it( 'should create one undo step (1 batch)', () => {
+			it( 'should decrease rowspan of table cells from rows before removed rows section', () => {
+				setData( model, modelTable( [
+					[ { rowspan: 4, contents: '00' }, { rowspan: 3, contents: '01' }, { rowspan: 2, contents: '02' }, '03' ],
+					[ '13' ],
+					[ '22', '23' ],
+					[ '31', '32', '33' ]
+				] ) );
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ { rowspan: 2, contents: '00' }, '01', '02', '03' ],
+					[ '31', '32', '33' ]
+				] ) );
+			} );
+
+			it( 'should decrease rowspan of table cells from previous rows', () => {
+				// +----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 |
+				// +----+    +    +    +    +
+				// | 10 |    |    |    |    |
+				// +----+----+    +    +    +
+				// | 20 | 21 |    |    |    |
+				// +----+----+----+    +    +
+				// | 30 | 31 | 32 |    |    |
+				// +----+----+----+----+    +
+				// | 40 | 41 | 42 | 43 |    |
+				// +----+----+----+----+----+
+				// | 50 | 51 | 52 | 53 | 54 |
+				// +----+----+----+----+----+
+				setData( model, modelTable( [
+					[ '00', { contents: '01', rowspan: 2 }, { contents: '02', rowspan: 3 }, { contents: '03', rowspan: 4 },
+						{ contents: '04', rowspan: 5 } ],
+					[ '10' ],
+					[ '20', '21' ],
+					[ '30', '31', '32' ],
+					[ '40', '41', '42', '43' ],
+					[ '50', '51', '52', '53', '54' ]
+				] ) );
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 2, rows: 2 } );
+
+				// +----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 |
+				// +----+    +    +    +    +
+				// | 10 |    |    |    |    |
+				// +----+----+----+----+    +
+				// | 40 | 41 | 42 | 43 |    |
+				// +----+----+----+----+----+
+				// | 50 | 51 | 52 | 53 | 54 |
+				// +----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', { contents: '01', rowspan: 2 }, { contents: '02', rowspan: 2 }, { contents: '03', rowspan: 2 },
+						{ contents: '04', rowspan: 3 } ],
+					[ '10' ],
+					[ '40', '41', '42', '43' ],
+					[ '50', '51', '52', '53', '54' ]
+				] ) );
+			} );
+
+			it( 'should re-use batch to create one undo step', () => {
 				setData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
@@ -954,7 +1190,9 @@ describe( 'TableUtils', () => {
 					createdBatches.add( operation.batch );
 				} );
 
-				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2 } );
+				const batch = model.createBatch();
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2, batch } );
 
 				expect( createdBatches.size ).to.equal( 1 );
 			} );
@@ -962,6 +1200,20 @@ describe( 'TableUtils', () => {
 	} );
 
 	describe( 'removeColumns()', () => {
+		beforeEach( () => {
+			return ModelTestEditor.create( {
+				plugins: [ TableUtils ]
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				tableUtils = editor.plugins.get( TableUtils );
+
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
+			} );
+		} );
+
 		describe( 'single row', () => {
 			it( 'should remove a given column', () => {
 				setData( model, modelTable( [
@@ -1076,7 +1328,7 @@ describe( 'TableUtils', () => {
 				] ) );
 			} );
 
-			it( 'should remove column if other column is rowspanned (last column)', () => {
+			it( 'should remove column if other column is row-spanned (last column)', () => {
 				setData( model, modelTable( [
 					[ '00', { rowspan: 2, contents: '01' } ],
 					[ '10' ]
@@ -1089,7 +1341,7 @@ describe( 'TableUtils', () => {
 				] ) );
 			} );
 
-			it( 'should remove column if other column is rowspanned (first column)', () => {
+			it( 'should remove column if other column is row-spanned (first column)', () => {
 				setData( model, modelTable( [
 					[ { rowspan: 2, contents: '00' }, '01' ],
 					[ '11' ]

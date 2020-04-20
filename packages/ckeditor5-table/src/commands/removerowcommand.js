@@ -60,7 +60,10 @@ export default class RemoveRowCommand extends Command {
 
 		const columnIndexToFocus = this.editor.plugins.get( 'TableUtils' ).getCellLocation( firstCell ).column;
 
-		model.change( writer => {
+		// Use single batch to modify table in steps but in one undo step.
+		const batch = model.createBatch();
+
+		model.enqueueChange( batch, writer => {
 			// This prevents the "model-selection-range-intersects" error, caused by removing row selected cells.
 			writer.setSelection( writer.createSelection( table, 'on' ) );
 
@@ -68,9 +71,12 @@ export default class RemoveRowCommand extends Command {
 
 			this.editor.plugins.get( 'TableUtils' ).removeRows( table, {
 				at: removedRowIndexes.first,
-				rows: rowsToRemove
+				rows: rowsToRemove,
+				batch
 			} );
+		} );
 
+		model.enqueueChange( batch, writer => {
 			const cellToFocus = getCellToFocus( table, removedRowIndexes.first, columnIndexToFocus );
 
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
