@@ -267,13 +267,13 @@ export default class TableUtils extends Plugin {
 	 *		    ┌───┬───┬───┐        `at` = 1        ┌───┬───┬───┐
 	 *		  0 │ a │ b │ c │        `rows` = 2      │ a │ b │ c │ 0
 	 *		    │   ├───┼───┤                        │   ├───┼───┤
-	 *		  1 │   │ d │ e │  <-- remove from here  │   │ h │ i │ 1
-	 *		    │   ├───┼───┤        will give:      ├───┼───┼───┤
-	 *		  2 │   │ f │ g │                        │ j │ k │ l │ 2
-	 *		    │   ├───┼───┤                        └───┴───┴───┘
-	 *		  3 │   │ h │ i │
+	 *		  1 │   │ d │ e │  <-- remove from here  │   │ d │ g │ 1
+	 *		    │   │   ├───┤        will give:      ├───┼───┼───┤
+	 *		  2 │   │   │ f │                        │ h │ i │ j │ 2
+	 *		    │   │   ├───┤                        └───┴───┴───┘
+	 *		  3 │   │   │ g │
 	 *		    ├───┼───┼───┤
-	 *		  4 │ j │ k │ l │
+	 *		  4 │ h │ i │ j │
 	 *		    └───┴───┴───┘
 	 *
 	 * @param {module:engine/model/element~Element} table
@@ -283,27 +283,36 @@ export default class TableUtils extends Plugin {
 	 */
 	removeRows( table, options ) {
 		const model = this.editor.model;
-		const first = options.at;
+
 		const rowsToRemove = options.rows || 1;
-
+		const first = options.at;
 		const last = first + rowsToRemove - 1;
+		const batch = options.batch || 'default';
 
-		model.change( writer => {
+		// Removing rows from table requires most calculations to be done prior to changing table structure.
+
+		// 1. Preparation - get row-spanned cells that have to be modified after removing rows.
+		const { cellsToMove, cellsToTrim } = getCellsToMoveAndTrimOnRemoveRow( table, first, last );
+
+		// 2. Execution
+		model.enqueueChange( batch, writer => {
+			// 2a. Move cells from removed rows that extends over a removed section - must be done before removing rows.
+			// This will fill any gaps in a rows below that previously were empty because of row-spanned cells.
+			const rowAfterRemovedSection = last + 1;
+			moveCellsToRow( table, rowAfterRemovedSection, cellsToMove, writer );
+
+			// 2b. Remove all required rows.
 			for ( let i = last; i >= first; i-- ) {
-				removeRow( table, i, writer );
+				writer.remove( table.getChild( i ) );
 			}
 
-			const headingRows = table.getAttribute( 'headingRows' ) || 0;
-
-			if ( headingRows && first < headingRows ) {
-				const newRows = getNewHeadingRowsValue( first, last, headingRows );
-
-				// Must be done after the changes in table structure (removing rows).
-				// Otherwise the downcast converter for headingRows attribute will fail. ckeditor/ckeditor5#6391.
-				model.enqueueChange( writer.batch, writer => {
-					updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
-				} );
+			// 2c. Update cells from rows above that overlap removed section. Similar to step 2 but does not involve moving cells.
+			for ( const { rowspan, cell } of cellsToTrim ) {
+				updateNumericAttribute( 'rowspan', rowspan, cell, writer );
 			}
+
+			// 2d. Adjust heading rows if removed rows were in a heading section.
+			updateHeadingRows( table, first, last, model, batch );
 		} );
 	}
 
@@ -730,52 +739,6 @@ function breakSpanEvenly( span, numberOfCells ) {
 	return { newCellsSpan, updatedSpan };
 }
 
-function removeRow( table, rowIndex, writer ) {
-	const cellsToMove = new Map();
-	const tableRow = table.getChild( rowIndex );
-	const tableMap = [ ...new TableWalker( table, { endRow: rowIndex } ) ];
-
-	// Get cells from removed row that are spanned over multiple rows.
-	tableMap
-		.filter( ( { row, rowspan } ) => row === rowIndex && rowspan > 1 )
-		.forEach( ( { column, cell, rowspan } ) => cellsToMove.set( column, { cell, rowspanToSet: rowspan - 1 } ) );
-
-	// Reduce rowspan on cells that are above removed row and overlaps removed row.
-	tableMap
-		.filter( ( { row, rowspan } ) => row <= rowIndex - 1 && row + rowspan > rowIndex )
-		.forEach( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
-
-	// Move cells to another row.
-	const targetRow = rowIndex + 1;
-	const tableWalker = new TableWalker( table, { includeSpanned: true, startRow: targetRow, endRow: targetRow } );
-	let previousCell;
-
-	for ( const { row, column, cell } of [ ...tableWalker ] ) {
-		if ( cellsToMove.has( column ) ) {
-			const { cell: cellToMove, rowspanToSet } = cellsToMove.get( column );
-			const targetPosition = previousCell ?
-				writer.createPositionAfter( previousCell ) :
-				writer.createPositionAt( table.getChild( row ), 0 );
-			writer.move( writer.createRangeOn( cellToMove ), targetPosition );
-			updateNumericAttribute( 'rowspan', rowspanToSet, cellToMove, writer );
-			previousCell = cellToMove;
-		} else {
-			previousCell = cell;
-		}
-	}
-
-	writer.remove( tableRow );
-}
-
-// Calculates a new heading rows value for removing rows from heading section.
-function getNewHeadingRowsValue( first, last, headingRows ) {
-	if ( last < headingRows ) {
-		return headingRows - ( last - first + 1 );
-	}
-
-	return first;
-}
-
 // Updates heading columns attribute if removing a row from head section.
 function adjustHeadingColumns( table, removedColumnIndexes, writer ) {
 	const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
@@ -785,5 +748,114 @@ function adjustHeadingColumns( table, removedColumnIndexes, writer ) {
 			removedColumnIndexes.first + 1;
 
 		writer.setAttribute( 'headingColumns', headingColumns - headingsRemoved, table );
+	}
+}
+
+// Calculates a new heading rows value for removing rows from heading section.
+function updateHeadingRows( table, first, last, model, batch ) {
+	const headingRows = table.getAttribute( 'headingRows' ) || 0;
+
+	if ( first < headingRows ) {
+		const newRows = last < headingRows ? headingRows - ( last - first + 1 ) : first;
+
+		// Must be done after the changes in table structure (removing rows).
+		// Otherwise the downcast converter for headingRows attribute will fail. ckeditor/ckeditor5#6391.
+		model.enqueueChange( batch, writer => {
+			updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
+		} );
+	}
+}
+
+// Finds cells that will be:
+// - trimmed - Cells that are "above" removed rows sections and overlap the removed section - their rowspan must be trimmed.
+// - moved - Cells from removed rows section might stick out of. These cells are moved to the next row after a removed section.
+//
+// Sample table with overlapping & sticking out cells:
+//
+//      +----+----+----+----+----+
+//      | 00 | 01 | 02 | 03 | 04 |
+//      +----+    +    +    +    +
+//      | 10 |    |    |    |    |
+//      +----+----+    +    +    +
+//      | 20 | 21 |    |    |    | <-- removed row
+//      +    +    +----+    +    +
+//      |    |    | 32 |    |    | <-- removed row
+//      +----+    +    +----+    +
+//      | 40 |    |    | 43 |    |
+//      +----+----+----+----+----+
+//
+// In a table above:
+// - cells to trim: '02', '03' & '04'.
+// - cells to move: '21' & '32'.
+function getCellsToMoveAndTrimOnRemoveRow( table, first, last ) {
+	const cellsToMove = new Map();
+	const cellsToTrim = [];
+
+	for ( const { row, column, rowspan, cell } of new TableWalker( table, { endRow: last } ) ) {
+		const lastRowOfCell = row + rowspan - 1;
+
+		const isCellStickingOutFromRemovedRows = row >= first && row <= last && lastRowOfCell > last;
+
+		if ( isCellStickingOutFromRemovedRows ) {
+			const rowspanInRemovedSection = last - row + 1;
+			const rowSpanToSet = rowspan - rowspanInRemovedSection;
+
+			cellsToMove.set( column, {
+				cell,
+				rowspan: rowSpanToSet
+			} );
+		}
+
+		const isCellOverlappingRemovedRows = row < first && lastRowOfCell >= first;
+
+		if ( isCellOverlappingRemovedRows ) {
+			let rowspanAdjustment;
+
+			// Cell fully covers removed section - trim it by removed rows count.
+			if ( lastRowOfCell >= last ) {
+				rowspanAdjustment = last - first + 1;
+			}
+			// Cell partially overlaps removed section - calculate cell's span that is in removed section.
+			else {
+				rowspanAdjustment = lastRowOfCell - first + 1;
+			}
+
+			cellsToTrim.push( {
+				cell,
+				rowspan: rowspan - rowspanAdjustment
+			} );
+		}
+	}
+	return { cellsToMove, cellsToTrim };
+}
+
+function moveCellsToRow( table, targetRowIndex, cellsToMove, writer ) {
+	const tableWalker = new TableWalker( table, {
+		includeSpanned: true,
+		startRow: targetRowIndex,
+		endRow: targetRowIndex
+	} );
+
+	const tableRowMap = [ ...tableWalker ];
+	const row = table.getChild( targetRowIndex );
+
+	let previousCell;
+
+	for ( const { column, cell, isSpanned } of tableRowMap ) {
+		if ( cellsToMove.has( column ) ) {
+			const { cell: cellToMove, rowspan } = cellsToMove.get( column );
+
+			const targetPosition = previousCell ?
+				writer.createPositionAfter( previousCell ) :
+				writer.createPositionAt( row, 0 );
+
+			writer.move( writer.createRangeOn( cellToMove ), targetPosition );
+			updateNumericAttribute( 'rowspan', rowspan, cellToMove, writer );
+
+			previousCell = cellToMove;
+		} else if ( !isSpanned ) {
+			// If cell is spanned then `cell` holds reference to overlapping cell. See ckeditor/ckeditor5#6502.
+			previousCell = cell;
+		}
 	}
 }

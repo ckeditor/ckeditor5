@@ -422,6 +422,53 @@ describe( 'SelectRowCommand', () => {
 					[ 0, 0 ]
 				] );
 			} );
+
+			it( 'should properly select more than 10 rows selected (array sort bug)', () => {
+				setData( model, modelTable( [
+					[ '0', 'x' ],
+					[ '1', 'x' ],
+					[ '2', 'x' ],
+					[ '3', 'x' ],
+					[ '4', 'x' ],
+					[ '5', 'x' ],
+					[ '6', 'x' ],
+					[ '7', 'x' ],
+					[ '8', 'x' ],
+					[ '9', 'x' ],
+					[ '10', 'x' ],
+					[ '11', 'x' ],
+					[ '12', 'x' ],
+					[ '13', 'x' ],
+					[ '14', 'x' ]
+				] ) );
+
+				const tableSelection = editor.plugins.get( TableSelection );
+				const modelRoot = model.document.getRoot();
+				tableSelection._setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 12, 0 ] )
+				);
+
+				command.execute();
+
+				assertSelectedCells( model, [
+					[ 0, 0 ], // '0'
+					[ 1, 1 ], // '1'
+					[ 1, 1 ], // '2'
+					[ 1, 1 ], // '3'
+					[ 1, 1 ], // '4'
+					[ 1, 1 ], // '5'
+					[ 1, 1 ], // '6'
+					[ 1, 1 ], // '7'
+					[ 1, 1 ], // '8'
+					[ 1, 1 ], // '9'
+					[ 1, 1 ], // '10'
+					[ 1, 1 ], // '11'
+					[ 1, 1 ], // '12'
+					[ 0, 0 ], // '13'
+					[ 0, 0 ] //  '14
+				] );
+			} );
 		} );
 
 		describe( 'with entire row selected', () => {

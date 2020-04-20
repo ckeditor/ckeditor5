@@ -364,6 +364,25 @@ describe( 'SetHeaderColumnCommand', () => {
 						[ 0, 1, 1, 0 ]
 					] );
 				} );
+
+				it( 'should set it correctly in table with more than 10 columns (array sort bug)', () => {
+					setData( model, modelTable( [
+						[ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14' ]
+					] ) );
+
+					const tableSelection = editor.plugins.get( TableSelection );
+					const modelRoot = model.document.getRoot();
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
+						modelRoot.getNodeByPath( [ 0, 0, 13 ] )
+					);
+
+					command.execute();
+
+					assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+						[ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14' ]
+					], { headingColumns: 14 } ) );
+				} );
 			} );
 		} );
 
