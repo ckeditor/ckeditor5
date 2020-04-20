@@ -9,21 +9,14 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
-import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
 import FileRepository from '../src/filerepository';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import { createNativeFileMock, UploadAdapterMock, NativeFileReaderMock } from './_utils/mocks';
 import FileReader from '../src/filereader';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'FileRepository', () => {
 	let editor, fileRepository, adapterMock;
-
-	// eslint-disable-next-line max-len
-	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
@@ -40,7 +33,7 @@ describe( 'FileRepository', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ FileRepository, UploadAdapterPluginMock, Paragraph, ImageEditing, ImageUploadEditing ]
+				plugins: [ FileRepository, UploadAdapterPluginMock ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -590,35 +583,28 @@ describe( 'FileRepository', () => {
 				return promise;
 			} );
 
-			it( 'should abort upload if image is removed', () => {
-				const model = editor.model;
-				const doc = model.document;
-
-				fileRepository.createUploadAdapter = newLoader => {
-					loader = newLoader;
-
-					return new UploadAdapterMock( loader );
-				};
-
+			it( 'should abort upload if image is removed during the upload process', () => {
 				const file = createNativeFileMock();
-				setModelData( model, '<paragraph>{}foo bar</paragraph>' );
-				editor.execute( 'imageUpload', { file } );
+				const loader = fileRepository.createLoader( file );
 
-				const abortSpy = sinon.spy( loader, 'abort' );
+				sinon.stub( loader._reader, 'read' ).callsFake( () => {
+					expect( loader.status ).to.equal( 'reading' );
 
-				expect( loader.status ).to.equal( 'reading' );
-
-				return loader.file.then( () => {
-					nativeReaderMock.mockSuccess( base64Sample );
-
-					const image = doc.getRoot().getChild( 0 );
-					model.change( writer => {
-						writer.remove( image );
-					} );
-
-					expect( loader.status ).to.equal( 'aborted' );
-					sinon.assert.calledOnce( abortSpy );
+					// Reader is being aborted after file was read.
+					// It can happen if an element (and its file that is being uploaded) will be removed during the upload process.
+					loader.status = 'aborted';
 				} );
+
+				return loader.read()
+					.then(
+						() => {
+							throw new Error( 'Supposed to be rejected.' );
+						},
+						status => {
+							expect( status ).to.equal( 'aborted' );
+							expect( loader.status ).to.equal( 'aborted' );
+						}
+					);
 			} );
 		} );
 
