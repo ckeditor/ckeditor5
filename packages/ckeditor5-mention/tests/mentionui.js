@@ -440,29 +440,20 @@ describe( 'MentionUI', () => {
 						expect( panelView.isVisible ).to.be.true;
 						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
 
-						// Edge browser always tries to scroll in tests environment: See ckeditor5-utils#282.
-						if ( !env.isEdge ) {
-							sinon.assert.callCount( mentionElementSpy.set, 0 );
-						}
+						sinon.assert.callCount( mentionElementSpy.set, 0 );
 
 						fireKeyDownEvent( arrowDownEvtData );
 
 						expectChildViewsIsOnState( [ false, true, false, false, false, false, false, false, false, false ] );
-						// Edge browser always tries to scroll in tests environment: See ckeditor5-utils#282.
-						if ( !env.isEdge ) {
-							expect( mentionsView.element.scrollTop ).to.equal( 0 );
-							sinon.assert.callCount( mentionElementSpy.set, 0 );
-						}
+						expect( mentionsView.element.scrollTop ).to.equal( 0 );
+						sinon.assert.callCount( mentionElementSpy.set, 0 );
 
 						fireKeyDownEvent( arrowUpEvtData );
 
 						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
 						expect( mentionsView.element.scrollTop ).to.equal( 0 );
 
-						// Edge browser always tries to scroll in tests environment: See ckeditor5-utils#282.
-						if ( !env.isEdge ) {
-							sinon.assert.callCount( mentionElementSpy.set, 0 );
-						}
+						sinon.assert.callCount( mentionElementSpy.set, 0 );
 
 						fireKeyDownEvent( arrowUpEvtData );
 
@@ -471,10 +462,7 @@ describe( 'MentionUI', () => {
 						// We want 150, but sometimes we get e.g. 151.
 						expect( mentionsView.element.scrollTop ).to.be.within( 140, 160, 'last item highlighted' );
 
-						// Edge browser always tries to scroll in tests environment: See ckeditor5-utils#282.
-						if ( !env.isEdge ) {
-							sinon.assert.callCount( mentionElementSpy.set, 1 );
-						}
+						sinon.assert.callCount( mentionElementSpy.set, 1 );
 
 						fireKeyDownEvent( arrowDownEvtData );
 
@@ -483,10 +471,7 @@ describe( 'MentionUI', () => {
 						// We want 0, but sometimes we get e.g. 1. (Firefox)
 						expect( mentionsView.element.scrollTop ).to.be.within( 0, 10 );
 
-						// Edge browser always tries to scroll in tests environment: See ckeditor5-utils#282.
-						if ( !env.isEdge ) {
-							sinon.assert.callCount( mentionElementSpy.set, 2 );
-						}
+						sinon.assert.callCount( mentionElementSpy.set, 2 );
 					} );
 			} );
 		} );
