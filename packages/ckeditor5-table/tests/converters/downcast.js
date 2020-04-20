@@ -7,7 +7,6 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import TableEditing from '../../src/tableediting';
-import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -47,9 +46,6 @@ describe( 'downcast converters', () => {
 	describe( 'downcastInsertTable()', () => {
 		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
 		beforeEach( () => {
-			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
-
 			return VirtualTestEditor.create()
 				.then( newEditor => {
 					editor = newEditor;
@@ -360,9 +356,6 @@ describe( 'downcast converters', () => {
 	describe( 'downcastInsertRow()', () => {
 		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
 		beforeEach( () => {
-			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
-
 			return VirtualTestEditor.create()
 				.then( newEditor => {
 					editor = newEditor;
@@ -615,9 +608,6 @@ describe( 'downcast converters', () => {
 	describe( 'downcastInsertCell()', () => {
 		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
 		beforeEach( () => {
-			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
-
 			return VirtualTestEditor.create()
 				.then( newEditor => {
 					editor = newEditor;
@@ -777,9 +767,6 @@ describe( 'downcast converters', () => {
 	describe( 'downcastTableHeadingColumnsChange()', () => {
 		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
 		beforeEach( () => {
-			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
-
 			return VirtualTestEditor.create()
 				.then( newEditor => {
 					editor = newEditor;
@@ -971,9 +958,6 @@ describe( 'downcast converters', () => {
 	describe( 'downcastTableHeadingRowsChange()', () => {
 		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
 		beforeEach( () => {
-			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
-
 			return VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
@@ -1196,9 +1180,6 @@ describe( 'downcast converters', () => {
 	describe( 'downcastRemoveRow()', () => {
 		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
 		beforeEach( async () => {
-			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
-
 			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } );
 
 			model = editor.model;
