@@ -92,14 +92,19 @@ export default class Locale {
 		 *		t( 'Created file "%0" in %1ms.', [ fileName, timeTaken ] );
 		 *
 		 * The message supports plural forms. To specify a plural form, use the `plural` property. Single or plural form
-		 * will be chosen depending on the first value from the passed `values`. The value of this property is
-		 * used as a default plural translation when the translation for the target language is missing.
+		 * will be chosen depending on the first value from the passed `values`. The value of this property is used
+		 * as a default plural translation when the translation for the target language is missing.
 		 *
-		 *		t( { string: 'Add a space', plural: 'Add %0 spaces' }, [ spaces ] );
-		 *		t( { string: '%1 a space', plural: '%1 %0 spaces' }, [ spaces, 'Add' ] );
+		 *		t( { string: 'Add a space', plural: 'Add %0 spaces' }, [ 1 ] ); // 'Add a space' for the English language.
+		 *		t( { string: 'Add a space', plural: 'Add %0 spaces' }, [ 5 ] ); // 'Add 5 spaces' for the English language.
+		 *		t( { string: '%1 a space', plural: '%1 %0 spaces' }, [ 2, 'Add' ] ); // 'Add 2 spaces' for the English language.
 		 *
-		 * The message can provide a context using the `context` property when the message ids created from message strings are not unique.
-		 * When the `context` property is set the message id will be constructed in
+		 * 		t( { string: 'Add a space', plural: 'Add %0 spaces' }, [ 1 ] ); // 'Dodaj spację' for the Polish language.
+		 *		t( { string: 'Add a space', plural: 'Add %0 spaces' }, [ 5 ] ); // 'Dodaj 5 spacji' for the Polish language.
+		 *		t( { string: '%1 a space', plural: '%1 %0 spaces' }, [ 2, 'Add' ] ); // 'Dodaj 2 spacje' for the Polish language.
+		 *
+		 * The message can provide a context using the `context` property when the message ids created from message strings
+		 * are not unique. When the `context` property is set the message id will be constructed in
 		 * the following way: `${ message.string }_${ message.context }`. This context will be also used
 		 * by translators later as an additional context for the translated message.
 		 *
