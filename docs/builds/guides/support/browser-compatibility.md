@@ -20,10 +20,8 @@ CKEditor 5 is currently supported in the following desktop browsers:
 	* Safari (latest stable release).
 	* Opera (latest stable release).
 	* Electron (latest stable release).
-* Good support:
 	* Edge (latest stable release). Known issues:
-		* Minor issues with selection: [1](https://github.com/ckeditor/ckeditor5-engine/issues/974), [2](https://github.com/ckeditor/ckeditor5-engine/issues/928).
-		* The editor becomes unstable when F12 developer tools are enabled.
+		* Minor issue with selection: [1](https://github.com/ckeditor/ckeditor5-engine/issues/974).
 
 Not supported yet:
 
