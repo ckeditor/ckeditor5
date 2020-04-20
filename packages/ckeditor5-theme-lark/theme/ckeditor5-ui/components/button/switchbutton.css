@@ -16,7 +16,11 @@ of the component, floating–point numbers have been used which, for the default
 	/* 14px at 13px font-size */
 	--ck-switch-button-toggle-inner-size: 1.0769230769em;
 	--ck-switch-button-toggle-spacing: 1px;
-	--ck-switch-button-translation: 1.3846153847em;
+	--ck-switch-button-translation: calc(
+		var(--ck-switch-button-toggle-width) -
+		var(--ck-switch-button-toggle-inner-size) -
+		2 * var(--ck-switch-button-toggle-spacing)
+	);
 }
 
 .ck.ck-button.ck-switchbutton {
@@ -89,15 +93,6 @@ of the component, floating–point numbers have been used which, for the default
 		& .ck-button__toggle__inner {
 			/*
 			 * Move the toggle switch to the right. It will be animated.
-			 *
-			 * Edge is not supporting calc() in the transitions and animations, we need to hardcode this value (see ckeditor5-ui#433).
-			 * It boils down to:
-			 *
-			 * 	calc(
-			 * 		var(--ck-switch-button-toggle-width) -
-			 * 		var(--ck-switch-button-toggle-inner-size) -
-			 * 		2 * var(--ck-switch-button-toggle-spacing) )
-			 * 	)
 			 */
 			@mixin ck-dir ltr {
 				transform: translateX( var( --ck-switch-button-translation ) );
