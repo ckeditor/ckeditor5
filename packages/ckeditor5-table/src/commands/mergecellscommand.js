@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
 import { findAncestor, updateNumericAttribute } from './utils';
 import TableUtils from '../tableutils';
-import { getRowIndexes, getSelectedTableCells } from '../utils';
+import { getColumnIndexes, getRowIndexes, getSelectedTableCells } from '../utils';
 
 /**
  * The merge cells command.
@@ -208,7 +208,17 @@ function areCellInTheSameTableSection( tableCells ) {
 	const firstCellIsInBody = rowIndexes.first > headingRows - 1;
 	const lastCellIsInBody = rowIndexes.last > headingRows - 1;
 
-	return firstCellIsInBody === lastCellIsInBody;
+	const cellsInSameHeadingRows = firstCellIsInBody === lastCellIsInBody;
+
+	const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
+	const columnIndexes = getColumnIndexes( tableCells );
+
+	const firstCellIsInColumnBody = columnIndexes.first > headingColumns - 1;
+	const lastCellIsInColumnBody = columnIndexes.last > headingColumns - 1;
+
+	const cellsInSameHeadingColumns = firstCellIsInColumnBody && lastCellIsInColumnBody;
+
+	return cellsInSameHeadingRows && ( !firstCellIsInBody || cellsInSameHeadingColumns );
 }
 
 function getMergeDimensions( firstTableCell, selectedTableCells, tableUtils ) {
