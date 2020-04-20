@@ -199,26 +199,45 @@ function getBiggestRectangleArea( rows, columns ) {
 	return ( lastRow - firstRow + 1 ) * ( lastColumn - firstColumn + 1 );
 }
 
+// Checks if selection does not mix header (column or row) with non-header cells.
+//
+// In the below table a valid selection is such that consist cells with the same letter.
+// So, a-a (same heading row and column) or d-d (body cells) are valid while c-d or a-b are not.
+//
+//    header columns
+//     ↓   ↓
+//   ┌───┬───┬───┬───┐
+//   │ a │ a │ b │ b │  ← header row
+//   ├───┼───┼───┼───│
+//   │ c │ c │ d │ d │
+//   ├───┼───┼───┼───│
+//   │ c │ c │ d │ d │
+//   └───┴───┴───┴───┘
+//
 function areCellInTheSameTableSection( tableCells ) {
 	const table = findAncestor( 'table', tableCells[ 0 ] );
 
 	const rowIndexes = getRowIndexes( tableCells );
 	const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
 
-	const firstCellIsInBody = rowIndexes.first > headingRows - 1;
-	const lastCellIsInBody = rowIndexes.last > headingRows - 1;
-
-	const cellsInSameHeadingRows = firstCellIsInBody === lastCellIsInBody;
+	// Calculating row indexes is a bit cheaper so if this check fails we can't merge.
+	if ( !areIndexesInSameSection( rowIndexes, headingRows ) ) {
+		return false;
+	}
 
 	const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
 	const columnIndexes = getColumnIndexes( tableCells );
 
-	const firstCellIsInColumnBody = columnIndexes.first > headingColumns - 1;
-	const lastCellIsInColumnBody = columnIndexes.last > headingColumns - 1;
+	// Similarly cells must be in same column section.
+	return areIndexesInSameSection( columnIndexes, headingColumns );
+}
 
-	const cellsInSameHeadingColumns = firstCellIsInColumnBody && lastCellIsInColumnBody;
+// Unified check if table rows/columns indexes are in the same heading/body section.
+function areIndexesInSameSection( { first, last }, headingSectionSize ) {
+	const firstCellIsInHeading = first < headingSectionSize;
+	const lastCellIsInHeading = last < headingSectionSize;
 
-	return cellsInSameHeadingRows && ( !firstCellIsInBody || cellsInSameHeadingColumns );
+	return firstCellIsInHeading === lastCellIsInHeading;
 }
 
 function getMergeDimensions( firstTableCell, selectedTableCells, tableUtils ) {
