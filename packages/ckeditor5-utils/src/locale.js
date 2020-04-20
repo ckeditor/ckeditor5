@@ -106,8 +106,9 @@ export default class Locale {
 		 *		t( { string: 'image', context: 'Add/Remove image' } );
 		 *
 		 * @method #t
-		 * @param {String|module:utils/translation-service~Message} message A message that will be localized.
-		 * @param {Array.<String>} [values] Values that should be used to interpolate the string.
+		 * @param {String|module:utils/translation-service~Message} message A message that will be localized (translated).
+		 * @param {Array.<String>} [values] An array of values that will fill message placeholders.
+		 * For messages supporting plural forms the first value will determine the plural form.
 		 * @returns {String}
 		 */
 		this.t = ( message, values ) => this._t( message, values );
@@ -138,12 +139,12 @@ export default class Locale {
 	}
 
 	/**
-	 * Base for the {@link #t} method.
+	 * An unbound version of the {@link #t} method.
 	 *
+	 * @private
 	 * @param {String|module:utils/translation-service~Message} message
 	 * @param {Array.<String>} [values]
 	 * @returns {String}
-	 * @private
 	 */
 	_t( message, values = [] ) {
 		if ( typeof message === 'string' ) {
