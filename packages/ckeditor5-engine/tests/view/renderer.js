@@ -2056,7 +2056,7 @@ describe( 'Renderer', () => {
 
 			// Use a forgiving way of checking what the selection contains
 			// because Safari normalizes the selection ranges so precise checking is troublesome.
-			// Also, Edge returns a normal space instead of nbsp so we need to use even more alternatives.
+			// Also, Firefox returns a normal space instead of nbsp so we need to use even more alternatives.
 			function assertDomSelectionContents( domSelection, expectedContainer, expectedText ) {
 				const domSelectionContainer = domSelection.getRangeAt( 0 ).commonAncestorContainer;
 

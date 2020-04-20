@@ -169,8 +169,7 @@ export default class DomConverter {
 			this._domToViewMapping.delete( domElement );
 			this._viewToDomMapping.delete( viewElement );
 
-			// Use Array.from because of MS Edge (#923).
-			for ( const child of Array.from( domElement.childNodes ) ) {
+			for ( const child of domElement.childNodes ) {
 				this.unbindDomElement( child );
 			}
 		}
