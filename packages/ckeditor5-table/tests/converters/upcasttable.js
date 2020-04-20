@@ -204,7 +204,6 @@ describe( 'upcastTable()', () => {
 	} );
 
 	it( 'should fix if inside other blocks', () => {
-		// Using <div> instead of <p> as it breaks on Edge.
 		editor.model.schema.register( 'div', {
 			inheritAllFrom: '$block'
 		} );
