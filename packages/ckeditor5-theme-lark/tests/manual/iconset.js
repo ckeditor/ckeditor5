@@ -78,6 +78,8 @@ import removeFormat from '@ckeditor/ckeditor5-remove-format/theme/icons/remove-f
 import contentLock from '@ckeditor/ckeditor5-restricted-editing/theme/icons/contentlock.svg';
 import contentUnlock from '@ckeditor/ckeditor5-restricted-editing/theme/icons/contentunlock.svg';
 
+import selectAll from '@ckeditor/ckeditor5-select-all/theme/icons/select-all.svg';
+
 import specialCharacters from '@ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg';
 
 import table from '@ckeditor/ckeditor5-table/theme/icons/table.svg';
@@ -143,6 +145,9 @@ const icons = {
 
 	// restricted-editing
 	contentLock, contentUnlock,
+
+	// select-all
+	selectAll,
 
 	// special-characters
 	specialCharacters,
