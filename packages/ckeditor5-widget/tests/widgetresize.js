@@ -388,7 +388,7 @@ describe( 'WidgetResize', () => {
 
 			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
-			expect( widget.getStyle( 'width' ) ).to.be.equal( '25%' );
+			expect( widget.getStyle( 'width' ) ).to.equal( INITIAL_WIDGET_WIDTH );
 		} );
 
 		it( 'returns proper value when resize host is different from widget wrapper', () => {
