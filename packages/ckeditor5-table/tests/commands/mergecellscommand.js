@@ -237,6 +237,34 @@ describe( 'MergeCellsCommand', () => {
 
 			expect( command.isEnabled ).to.be.false;
 		} );
+
+		it( 'should be false if selection has cells from column headers and other cells - rows in body section', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01' ],
+				[ '10', '11' ]
+			], { headingColumns: 1 } ) );
+
+			tableSelection._setCellSelection(
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 0, 1 ] )
+			);
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be true if selection has cells from column headers and other cells - rows in header section', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01' ],
+				[ '10', '11' ]
+			], { headingColumns: 1, headingRows: 1 } ) );
+
+			tableSelection._setCellSelection(
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 0, 1 ] )
+			);
+
+			expect( command.isEnabled ).to.be.true;
+		} );
 	} );
 
 	describe( 'execute()', () => {
