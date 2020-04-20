@@ -33,6 +33,9 @@ export default class WidgetResize extends Plugin {
 		return 'WidgetResize';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		/**
 		 * The currently visible resizer.
@@ -103,6 +106,9 @@ export default class WidgetResize extends Plugin {
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		this._observer.stopListening();
 
