@@ -101,6 +101,9 @@ export default class LinkEditing extends Plugin {
 
 		// Setup highlight over selected link.
 		this._setupLinkHighlight();
+
+		// Change the attributes of the selection in certain situations after the link was inserted into the document.
+		this._enableInsertContentSelectionAttributesFixer();
 	}
 
 	/**
@@ -249,5 +252,99 @@ export default class LinkEditing extends Plugin {
 				} );
 			}
 		} );
+	}
+
+	/**
+	 * Starts listening to {@link module:engine/model/model~Model#event:insertContent} and corrects the model
+	 * selection attributes if the selection is at the end of a link after inserting the content.
+	 *
+	 * The purpose of this action is to improve the overall UX because the user is no longer "trapped" by the
+	 * `linkHref` attribute of the selection and they can type a "clean" (`linkHref`–less) text right away.
+	 *
+	 * See https://github.com/ckeditor/ckeditor5/issues/6053.
+	 *
+	 * @private
+	 */
+	_enableInsertContentSelectionAttributesFixer() {
+		const editor = this.editor;
+		const model = editor.model;
+		const selection = model.document.selection;
+
+		model.on( 'insertContent', () => {
+			const nodeBefore = selection.anchor.nodeBefore;
+			const nodeAfter = selection.anchor.nodeAfter;
+
+			// NOTE: ↰ and ↱ represent the gravity of the selection.
+
+			// The only truly valid case is:
+			//
+			//		                                 ↰
+			//		...<$text linkHref="foo">INSERTED[]</$text>
+			//
+			// If the selection is not "trapped" by the `linkHref` attribute after inserting, there's nothing
+			// to fix there.
+			if ( !selection.hasAttribute( 'linkHref' ) ) {
+				return;
+			}
+
+			// Filter out the following case where a link with the same href (e.g. <a href="foo">INSERTED</a>) is inserted
+			// in the middle of an existing link:
+			//
+			// Before insertion:
+			//		                       ↰
+			//		<$text linkHref="foo">l[]ink</$text>
+			//
+			// Expected after insertion:
+			//		                               ↰
+			//		<$text linkHref="foo">lINSERTED[]ink</$text>
+			//
+			if ( !nodeBefore ) {
+				return;
+			}
+
+			// Filter out the following case where the selection has the "linkHref" attribute because the
+			// gravity is overridden and some text with another attribute (e.g. <b>INSERTED</b>) is inserted:
+			//
+			// Before insertion:
+			//
+			//		                       ↱
+			//		<$text linkHref="foo">[]link</$text>
+			//
+			// Expected after insertion:
+			//
+			//		                                                          ↱
+			//		<$text bold="true">INSERTED</$text><$text linkHref="foo">[]link</$text>
+			//
+			if ( !nodeBefore.hasAttribute( 'linkHref' ) ) {
+				return;
+			}
+
+			// Filter out the following case where a link is a inserted in the middle (or before) another link
+			// (different URLs, so they will not merge). In this (let's say weird) case, we can leave the selection
+			// attributes as they are because the user will end up writing in one link or another anyway.
+			//
+			// Before insertion:
+			//
+			//		                       ↰
+			//		<$text linkHref="foo">l[]ink</$text>
+			//
+			// Expected after insertion:
+			//
+			//		                                                             ↰
+			//		<$text linkHref="foo">l</$text><$text linkHref="bar">INSERTED[]</$text><$text linkHref="foo">ink</$text>
+			//
+			if ( nodeAfter && nodeAfter.hasAttribute( 'linkHref' ) ) {
+				return;
+			}
+
+			// Make the selection free of link-related model attributes.
+			// All link-related model attributes start with "link". That includes not only "linkHref"
+			// but also all decorator attributes (they have dynamic names).
+			model.change( writer => {
+				[ ...model.document.selection.getAttributeKeys() ]
+					.filter( name => name.startsWith( 'link' ) )
+					.forEach( name => writer.removeSelectionAttribute( name ) );
+			} );
+		}, { priority: 'low' } );
 	}
 }
