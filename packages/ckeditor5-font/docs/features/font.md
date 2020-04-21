@@ -94,19 +94,19 @@ The CSS definition for the classes (presets) must be included in the web page st
 Here is an example of the font size CSS classes:
 
 ```css
-.text-tiny {
+.ck-content .text-tiny {
 	font-size: 0.7em;
 }
 
-.text-small {
+.ck-content .text-small {
 	font-size: 0.85em;
 }
 
-.text-big {
+.ck-content .text-big {
 	font-size: 1.4em;
 }
 
-.text-huge {
+.ck-content .text-huge {
 	font-size: 1.8em;
 }
 ```
