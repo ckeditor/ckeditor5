@@ -17,13 +17,13 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
 }
 
 /**
- * Adds translations to existing ones or overrides the existing translations. these translations will later
+ * Adds translations to existing ones or overrides the existing translations. These translations will later
  * be available for the {@link module:utils/locale~Locale#t `t()`} function.
  *
- * The `translations` is an object which consists of a `message id - translation` pairs. Note that message id can be
- * either constructed either from the message string or from the message string and message context in the following form:
+ * The `translations` is an object which consists of a `messageId: translation` pairs. Note that the message id can be
+ * either constructed either from the message string or from the message string and the message context in the following form:
  * `<messageString>_<messageContext>` (this happens rarely and mostly for short messages or messages with placeholders).
- * Since the editor displays only the message string the message context can be found either in the source code or in the
+ * Since the editor displays only the message string, the message context can be found either in the source code or in the
  * built translations for another language.
  *
  *		add( 'pl', {
@@ -42,7 +42,7 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  * these plural form rules will be reused by other translations added to the registered languages.
  *
  * 		add( 'pl', {
- *	 		// Translations.
+ *	 		// ... Translations.
  * 		}, n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2 );
  *
  * If you cannot import this function from this module (e.g. because you use a CKEditor 5 build), then you can
