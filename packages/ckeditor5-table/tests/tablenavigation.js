@@ -1696,13 +1696,13 @@ describe( 'TableNavigation', () => {
 						`
 						* { 
 							font-size: 12px !important; 
-							font-family: sans-serif !important;
+							font-family: serif !important;
 							margin: 0 !important; 
 							padding: 0 !important; 
 							border: 0 !important 
 						}
 						td { width: 30px !important; }
-						tr:nth-child(2) td:nth-child(2) { width: 305px !important; }
+						tr:nth-child(2) td:nth-child(2) { width: 300px !important; }
 						`
 					) );
 					global.document.querySelector( 'head' ).appendChild( styleElement );
@@ -1781,7 +1781,7 @@ describe( 'TableNavigation', () => {
 				} );
 
 				describe( 'selection inside paragraph', () => {
-					const text = new Array( 100 ).fill( 0 ).map( () => 'word' ).join( ' ' );
+					const text = new Array( 20 ).fill( 0 ).map( () => 'word' ).join( ' ' );
 
 					it( 'should not navigate if caret is in the middle line of a text', () => {
 						setModelData( model, modelTable( [
@@ -1833,6 +1833,10 @@ describe( 'TableNavigation', () => {
 							[ '20', '21', '22' ]
 						] ) );
 					} );
+				} );
+
+				describe( 'with selection in the wrap area', () => {
+					const text = new Array( 10 ).fill( 0 ).map( () => 'word' ).join( ' ' );
 
 					it( 'should move caret to end if caret is after the last space in the line next to the last one', () => {
 						// This is also first position in the last line.
