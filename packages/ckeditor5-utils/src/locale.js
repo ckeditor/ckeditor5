@@ -87,12 +87,10 @@ export default class Locale {
 		 * The message can be either a string or an object implementing the {@link module:utils/translation-service~Message} interface.
 		 *
 		 * The message may contain placeholders (`%<index>`) for value(s) that are passed as the second argument.
-		 * For an array of values the `<index>` will be the index in that array.
+		 * For an array of values the `%<index>` will be changed to an element of that array at the given index.
+		 * For a single value passed as the second argument, only the `%0` placeholders will be changed to the provided value.
 		 *
 		 *		t( 'Created file "%0" in %1ms.', [ fileName, timeTaken ] );
-		 *
-		 * For only one argument that should be interpolated there's a shorthand:
-		 *
 		 * 		t( 'Created file "%0", fileName );
 		 *
 		 * The message supports plural forms. To specify a plural form, use the `plural` property. Single or plural form
