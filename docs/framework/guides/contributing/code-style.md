@@ -5,18 +5,19 @@ order: 30
 
 # Code style
 
-The {@link framework/guides/contributing/development-environment CKEditor 5 development environment} has ESLint enabled both as a pre-commit hook and on CI which means that code style issues are automatically detected. Additionally, `.editorconfig` files are present in every repository to automatically adjust your IDEs settings (if it is configured to read them).
+{@link framework/guides/contributing/development-environment CKEditor 5 development environment} has ESLint enabled both as a pre-commit hook and on CI. This means that code style issues are detected automatically. Additionally, `.editorconfig` files are present in every repository to automatically adjust your IDEs settings (if it is configured to read them).
 
-However, here goes a quick summary of these rules.
+Here comes a quick summary of these rules.
 
 ## General
 
-* **LF for line endings**. Never CRLF.
-* Maximum recommended **line length is 120 chars**, but can't be longer than 140 chars.
+**LF for line endings**. Never use CRLF.
+
+The recommended maximum **line length is 120 characters**. It cannot exceed 140 characters.
 
 ## Whitespace
 
-* **No trailing spaces**. Empty lines should not contain any spaces.
+**No trailing spaces**. Empty lines should not contain any spaces.
 
 Whitespace **inside parenthesis** and **before and after operators**:
 
@@ -30,7 +31,7 @@ function foo( a, b, c, d, e ) {
 foo( bar() );
 ```
 
-No whitespace for **empty parenthesis**:
+No whitespace for an **empty parenthesis**:
 
 ```js
 const a = () => {
@@ -54,8 +55,9 @@ for ( const i = 0; i < 100; i++ ) {
 
 ## Indentation
 
-* Indentation with **TAB**, for both code and comments. Never use spaces.
-* If you want to have the code readable, set **TAB** to **4 spaces** in your IDE.
+Indentation with **tab**, for both code and comments. Never use spaces.
+
+If you want to have the code readable, set **tab** to **4 spaces** in your IDE.
 
 ```js
 class Bar {
@@ -90,7 +92,7 @@ while (
 ```
 
 <info-box>
-	We do our best to avoid complex conditions. As a rule of thumb, we first recommend finding a way to move the complexity out of the condition – e.g. to a separate function with early returns for each "sentence" in such a condition.
+	We do our best to avoid complex conditions. As a rule of thumb, we first recommend finding a way to move the complexity out of the condition, for example, to a separate function with early returns for each "sentence" in such a condition.
 
 	However, overdoing things is not good as well and sometimes such a condition can be perfectly readable (which is the ultimate goal here).
 </info-box>
@@ -123,7 +125,7 @@ try {
 
 The code should read like a book, so put blank lines between "paragraphs" of code. This is an open and contextual rule, but some recommendations would be to separate the following sections:
 
-* variable, classes and function declarations,
+* variable, class and function declarations,
 * `if()`, `for()` and similar blocks,
 * steps of an algorithm,
 * `return` statements,
@@ -138,12 +140,12 @@ class Foo extends Plugin {
 		super( editor );
 
 		/**
-		 * Some docs...
+		 * Some documentation...
 		 */
 		this.foo = new Foo();
 
 		/**
-		 * Some docs...
+		 * Some documentation...
 		 */
 		this.isBar = false;
 	}
@@ -200,15 +202,15 @@ class Foo extends Plugin {
 
 Whenever there is a multi-line function call:
 
-* put the first param in a new line,
-* put every param in a separate line indented by one tab,
-* put the last closing parenthesis in new line, at the same indendation as the call beginning.
+* Put the first parameter in a new line.
+* Put every parameter in a separate line indented by one tab.
+* Put the last closing parenthesis in a new line, at the same indendation level as the beginning of the call.
 
 Examples:
 
 ```js
 const myObj = new MyClass(
-	'Some long params',
+	'Some long parameters',
 	'To make this',
 	'Multi line'
 );
@@ -221,7 +223,7 @@ fooBar(
 
 fooBar(
 	new MyClass(
-		'Some long params',
+		'Some long parameters',
 		'To make this',
 		'Multi line'
 	)
@@ -246,11 +248,11 @@ fooBar(
 ```
 
 <info-box>
-	Note that the above examples are just showcasing how such function calls can be structured. However, it is best to avoid them.
+	Note that the examples above are just showcasing how such function calls can be structured. However, it is best to avoid them.
 
-	It is generally recommended to avoid having functions that accept more than 3 arguments. Instead, it is better to wrap them in an object so all params can be named.
+	It is generally recommended to avoid having functions that accept more than 3 arguments. Instead, it is better to wrap them in an object so all parameters can be named.
 
-	It is also recommended to split such long statements into multiple shorter ones (e.g. extract some longer params to separate variables).
+	It is also recommended to split such long statements into multiple shorter ones, for example, by extracting some longer parameters to separate variables.
 </info-box>
 
 ## Strings
@@ -270,7 +272,7 @@ const html =
 	'Line 3';
 ```
 
-or template strings can be used (note that lines 2nd and 3rd will be indented in this case):
+or template strings can be used (note that the 2nd and 3rd line will be indented in this case):
 
 ```js
 const html =
@@ -294,7 +296,7 @@ const html =
 * Comments start with a **capital first letter** and require a period at the end (since they are sentences).
 * There must be a **single space at the start** of the text, right after the comment token.
 
-**Block comments** (`/** ... */`) are used for **documentation only**. Asterisks aligned with space:
+**Block comments** (`/** ... */`) are used for **documentation only**. Asterisks are aligned with space:
 
 ```js
 /**
@@ -310,7 +312,7 @@ someMethod() {
 All **other comments** use **line comments** (```//```):
 
 ```js
-// Comment about the following statement.
+// A comment about the following statement.
 foo();
 
 // Multiple line comments
@@ -318,7 +320,7 @@ foo();
 // line comments as well.
 ```
 
-**Comments related to tickets/issues**, should not describe the whole issue fully. A short description should be used, together with the ticket number in parenthesis:
+**Comments related to tickets or issues** should not describe the whole issue fully. A short description should be used instead, together with the ticket number in parenthesis:
 
 ```js
 // Do this otherwise because of a Safari bug. (#123)
@@ -332,8 +334,8 @@ CKEditor 5 development environment uses [ESLint](https://eslint.org) and [stylel
 A couple of useful links:
 
 * [Disabling ESLint with inline comments](https://eslint.org/docs/2.13.1/user-guide/configuring#disabling-rules-with-inline-comments).
-* [CKEditor 5's ESLint preset](https://github.com/ckeditor/ckeditor5-dev/blob/master/packages/eslint-config-ckeditor5/.eslintrc.js) (npm: [`eslint-config-ckeditor5`](http://npmjs.com/package/eslint-config-ckeditor5).
-* [CKEditor 5's stylelint preset](https://github.com/ckeditor/ckeditor5-dev/blob/master/packages/stylelint-config-ckeditor5/.stylelintrc) (npm: [`stylelint-config-ckeditor5`](https://www.npmjs.com/package/stylelint-config-ckeditor5)).
+* [CKEditor 5 ESLint preset](https://github.com/ckeditor/ckeditor5-dev/blob/master/packages/eslint-config-ckeditor5/.eslintrc.js) (npm: [`eslint-config-ckeditor5`](http://npmjs.com/package/eslint-config-ckeditor5)).
+* [CKEditor 5 stylelint preset](https://github.com/ckeditor/ckeditor5-dev/blob/master/packages/stylelint-config-ckeditor5/.stylelintrc) (npm: [`stylelint-config-ckeditor5`](https://www.npmjs.com/package/stylelint-config-ckeditor5)).
 
 <info-box>
 	Avoid using automatic code formatters on existing code. It is fine to automatically format code that you are editing, but you should not be changing the formatting of the code that is already written to not pollute your PRs. You should also not rely solely on automatic corrections.
@@ -341,13 +343,13 @@ A couple of useful links:
 
 ## Visibility levels
 
-Each class property (including methods, symbols, getters/setters) can be public, protected or private. The default visibility is public, so you should not (because there is no need) document that a property is public.
+Each class property (including methods, symbols, getters or setters) can be public, protected or private. The default visibility is public, so you should not document that a property is public &mdash; there is no need to do this.
 
 Additional rules apply to private properties:
 
-* names of private and protected properties which are exposed in a class prototype (or in any other way) should be prefixed with an underscore,
-* when documenting a private variable which is not added to a class prototype (or exposed in any other way) then `//` comments should be used and using `@private` is not necessary ,
-* symbol property (e.g. `this[ Symbol( 'symbolName' ) ]`) should be documented as `@property {Type} _symbolName`.
+* The names of private and protected properties that are exposed in a class prototype (or in any other way) should be prefixed with an underscore.
+* When documenting a private variable that is not added to a class prototype (or exposed in any other way), `//` comments should be used and using `@private` is not necessary.
+* A symbol property (e.g. `this[ Symbol( 'symbolName' ) ]`) should be documented as `@property {Type} _symbolName`.
 
 Example:
 
@@ -392,24 +394,49 @@ function doSomething() {
 
 ### Accessibility
 
-Properties accessibility:
+The table below shows the accessibility of properties:
 
-```
-             | Class | Package | Subclass | World
-——————————————————————————————————————————————————
-@public      |   y   |    y    |    y     |   y
-——————————————————————————————————————————————————
-@protected   |   y   |    y    |    y     |   n
-——————————————————————————————————————————————————
-@private     |   y   |    n    |    n     |   n
-```
+<table border="1" cellpadding="1" cellspacing="1" style="width:500px">
+	<thead>
+		<tr>
+			<th scope="row">&nbsp;</th>
+			<th scope="col">Class</th>
+			<th scope="col">Package</th>
+			<th scope="col">Subclass</th>
+			<th scope="col">World</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th scope="row" style="text-align: left;"><code>@public</code></th>
+			<td style="text-align:center">yes</td>
+			<td style="text-align:center">yes</td>
+			<td style="text-align:center">yes</td>
+			<td style="text-align:center">yes</td>
+		</tr>
+		<tr>
+			<th scope="row" style="text-align: left;"><code>@protected</code></th>
+			<td style="text-align:center">yes</td>
+			<td style="text-align:center">yes</td>
+			<td style="text-align:center">yes</td>
+			<td style="text-align:center">no</td>
+		</tr>
+		<tr>
+			<th scope="row" style="text-align: left;"><code>@private</code></th>
+			<td style="text-align:center">yes</td>
+			<td style="text-align:center">no</td>
+			<td style="text-align:center">no</td>
+			<td style="text-align:center">no</td>
+		</tr>
+	</tbody>
+</table>
 
-(y – accessible, n – not accessible)
+(yes – accessible, no – not accessible)
 
-For instance, a protected property is accessible from its own class in which it was defined, its whole package and from its subclasses (even if not in the same package).
+For instance, a protected property is accessible from its own class in which it was defined, from its whole package, and from its subclasses (even if they are not in the same package).
 
 <info-box>
-	Protected properties/methods are often used for testability. Since tests are located in the same package as the code they can access these properties.
+	Protected properties and methods are often used for testability. Since tests are located in the same package as the code, they can access these properties.
 </info-box>
 
 ## Getters
@@ -425,35 +452,35 @@ class Position {
 }
 ```
 
-Getter should feel like a natural property. There are several recommendations to follow when creating getters:
+A getter should feel like a natural property. There are several recommendations to follow when creating getters:
 
-* they should be fast,
-* they should not throw,
-* they should not change object state,
-* they should not return new instances of an object every time (so `foo.bar == foo.bar` is true); it is okay to create a new instance for the first call and cache it if it's possible.
+* They should be fast.
+* They should not throw.
+* They should not change the object state.
+* They should not return new instances of an object every time (so `foo.bar == foo.bar` is true). It is OK to create a new instance for the first call and cache it if it is possible.
 
 ## Order within class definition
 
 Within class definition the methods and properties should be ordered as follows:
 
-1. constructor,
-1. getters/setters,
-1. iterators,
-1. public instance methods,
-1. public static methods,
-1. protected instance methods,
-1. protected static methods,
-1. private instance methods,
-1. private static methods.
+1. Constructor.
+1. Getters and setters.
+1. Iterators.
+1. Public instance methods.
+1. Public static methods.
+1. Protected instance methods.
+1. Protected static methods.
+1. Private instance methods.
+1. Private static methods.
 
-Order within each group is left for the implementor.
+The order within each group is left for the implementor.
 
 ## Tests
 
 There are some special rules for tests.
 
-* Always use an outer describe in a test file - do not allow any globals, especially hooks (`beforeEach()`, `after()`, etc.) outside the outermost `describe()`.
-* The outer most `describe()` calls should create meaningful groups, so when all tests are run together a failing TC can be identified within the code base. For example:
+* Always use an outer `describe()` in a test file. Do not allow any globals, especially hooks (`beforeEach()`, `after()`, etc.) outside the outermost `describe()`.
+* The outermost `describe()` calls should create meaningful groups, so when all tests are run together a failing TC can be identified within the code base. For example:
 
 	```js
 	describe( 'Editor', () => {
@@ -466,18 +493,18 @@ There are some special rules for tests.
 	```
 
 	Using titles like "utils" is not fine as there are multiple utils in the entire project. "Table utils" would be better.
-* Test descriptions (`it()`) should be written like documentation (what do we do and what should happen) – e.g. "the foo dialog closes when the x button is clicked". Also, '...case 1', '...case 2' in test descriptions are not helpful.
-* Avoid covering multiple cases under one `it()`. It is ok to have multiple assertions in one test, but not to test e.g. how method `foo()` works when it is called with 1, then with 2, then 3, etc. There should be a separate test for each case.
-* Most often, using words like "correctly", "works fine" is a code smell. Thing about requirements – when writing them you do not say that feature X should "work fine". You document how it should work.
+* Test descriptions (`it()`) should be written like documentation (what you do and what should happen), e.g. "the foo dialog closes when the X button is clicked". Also, '...case 1', '...case 2' in test descriptions are not helpful.
+* Avoid covering multiple cases under one `it()`. It is OK to have multiple assertions in one test, but not to test e.g. how method `foo()` works when it is called with 1, then with 2, then 3, etc. There should be a separate test for each case.
+* Most often, using words like "correctly", "works fine" is a code smell. Thing about the requirements &mdash; when writing them you do not say that feature X should "work fine". You document how it should work.
 * Every test should clean after itself, including destroying all editors and removing all elements that have been added.
-* Avoid using real timeouts. Use [fake timers](https://sinonjs.org/releases/v9.0.1/fake-timers/) instead **when possible**. Timeouts make test really slow.
-* However, thinking about slow – do not overoptimize (especially that performance is not a priority in tests). In most cases it is completely fine (and hence recommended) to create a separate editor for every `it()`.
+* Avoid using real timeouts. Use [fake timers](https://sinonjs.org/releases/v9.0.1/fake-timers/) instead **when possible**. Timeouts make a test really slow.
+* However, thinking about slow &mdash; do not overoptimize (especially that performance is not a priority in tests). In most cases it is completely fine (and hence recommended) to create a separate editor for every `it()`.
 
 ## Naming
 
 ### JavaScript code names
 
-Variable, functions, namespaces, parameters and all undocumented cases must be named in [lowerCamelCase](http://en.wikipedia.org/wiki/CamelCase):
+Variables, functions, namespaces, parameters and all undocumented cases must be named in [lowerCamelCase](http://en.wikipedia.org/wiki/CamelCase):
 
 ```js
 let a;
@@ -522,7 +549,7 @@ something._doInternalTask();
 
 #### Methods and functions
 
-Methods and functions are **almost always** verbs/actions:
+Methods and functions are **almost always** verbs or actions:
 
 ```js
 // Good
@@ -572,33 +599,33 @@ this.env;
 
 ### Acronyms and proper names
 
-Acronyms and, partially, proper names are naturally written in uppercase. This may stand against code style rules described above – especially when there is a need to include acronym or proper name in variable or class name. In such case, one should follow these rules:
+Acronyms and, partially, proper names are naturally written in uppercase. This may stand against code style rules described above &mdash; especially when there is a need to include an acronym or a proper name in a variable or class name. In such case, one should follow the following rules:
 
-* acronyms:
- * all lowercase if at the beginning of the variable name: `let domError`
- * default camel case at the beginning of the class name: `class DomError`
- * default camel case inside variable / class name: `function getDomError()`
-* proper names:
- * all lowercase if at the beginning of the variable: `let ckeditorError`
- * original case if at the beginning of the class name: `class CKEditorError`
- * original case inside variable / class name: `function getCKEditorError()`
+* Acronyms:
+	* All lowercase if at the beginning of the variable name: `let domError`.
+	* Default camel case at the beginning of the class name: `class DomError`.
+	* Default camel case inside the variable or class name: `function getDomError()`.
+* Proper names:
+	* All lowercase if at the beginning of the variable: `let ckeditorError`.
+	* Original case if at the beginning of the class name: `class CKEditorError`.
+	* Original case inside the variable or class name: `function getCKEditorError()`.
 
-However, two letter acronyms and proper names (if originally written uppercase) should be uppercase. So e.g. `getUI` (not `getUi`).
+However, two-letter acronyms and proper names (if originally written uppercase) should be uppercase. So e.g. `getUI` (not `getUi`).
 
 <info-box>
 	Two most frequently used acronyms which cause problems:
 
-	* **DOM** – it should be e.g. `getDomNode()`,
-	* **HTML** – it should be e.g. `toHtml()`.
+	* **DOM** &ndash; It should be e.g. `getDomNode()`,
+	* **HTML** &ndash; It should be e.g. `toHtml()`.
 </info-box>
 
 ### CSS classes
 
-CSS class naming pattern is based on [BEM](https://en.bem.info/) methodology and code-style. All names are in lowercase with optional dash (`-`) between the words.
+CSS class naming pattern is based on [BEM](https://en.bem.info/) methodology and code style. All names are in lowercase with an optional dash (`-`) between the words.
 
-Top–level building **blocks** begin with mandatory `ck-` prefix:
+Top–level building **blocks** begin with a mandatory `ck-` prefix:
 
-```CSS
+```css
 .ck-dialog
 .ck-toolbar
 .ck-dropdown-menu
@@ -606,16 +633,16 @@ Top–level building **blocks** begin with mandatory `ck-` prefix:
 
 **Elements** belonging to the block namespace are delimited by double underscore (`__`):
 
-```CSS
+```css
 .ck-dialog__header
 .ck-toolbar__group
 .ck-dropdown-menu__button-collapser
 ```
 
 **Modifiers** are delimited by a single underscore (`_`). Key-value modifiers
-follow `block-or-element_key_value` naming pattern:
+follow the `block-or-element_key_value` naming pattern:
 
-```CSS
+```css
 /* Block modifier */
 .ck-dialog_hidden
 /* Element modifier */
@@ -638,7 +665,7 @@ In HTML:
 
 ### ID attributes
 
-HTML ID attribute naming pattern follows [CSS Classes](#css-classes) naming guidelines. Each ID must begin with `ck-` prefix and consist of dash–separated (`-`) words in lowercase:
+HTML ID attribute naming pattern follows [CSS classes](#css-classes) naming guidelines. Each ID must begin with the `ck-` prefix and consist of dash–separated (`-`) words in lowercase:
 
 ```html
 <div id="ck">...</div>
@@ -648,9 +675,9 @@ HTML ID attribute naming pattern follows [CSS Classes](#css-classes) naming guid
 
 ### File names
 
-File and directory names must follow a standard that make their syntax easy to predict:
+File and directory names must follow a standard that makes their syntax easy to predict:
 
-* All lower-cased.
+* All lowercase.
 * Only alphanumeric characters are accepted.
 * Words are separated by dashes (`-`) ([kebab-case](https://en.wikipedia.org/wiki/Letter_case#Special_case_styles)).
 	* Code entities are considered single words, so the `DataProcessor` class is defined in the `dataprocessor.js` file.
