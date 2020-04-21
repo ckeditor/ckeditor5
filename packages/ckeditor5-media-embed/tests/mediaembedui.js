@@ -53,6 +53,12 @@ describe( 'MediaEmbedUI', () => {
 		expect( dropdown ).to.be.instanceOf( DropdownView );
 	} );
 
+	it( 'should allow creating two instances', () => {
+		expect( function createSecondInstance() {
+			editor.ui.componentFactory.create( 'mediaEmbed' );
+		} ).not.to.throw();
+	} );
+
 	describe( 'dropdown', () => {
 		it( 'should bind #isEnabled to the command', () => {
 			const command = editor.commands.get( 'mediaEmbed' );

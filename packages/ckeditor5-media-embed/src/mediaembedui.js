@@ -41,19 +41,15 @@ export default class MediaEmbedUI extends Plugin {
 		const command = editor.commands.get( 'mediaEmbed' );
 		const registry = editor.plugins.get( MediaEmbedEditing ).registry;
 
-		/**
-		 * The form view displayed inside the drop-down.
-		 *
-		 * @member {module:media-embed/ui/mediaformview~MediaFormView}
-		 */
-		this.form = new MediaFormView( getFormValidators( editor.t, registry ), editor.locale );
-
 		// Setup `imageUpload` button.
 		editor.ui.componentFactory.add( 'mediaEmbed', locale => {
 			const dropdown = createDropdown( locale );
 
-			this._setUpDropdown( dropdown, this.form, command, editor );
-			this._setUpForm( this.form, dropdown, command );
+			// Prepare custom view for dropdown's panel.
+			const mediaForm = new MediaFormView( getFormValidators( editor.t, registry ), editor.locale );
+
+			this._setUpDropdown( dropdown, mediaForm, command, editor );
+			this._setUpForm( mediaForm, dropdown, command );
 
 			return dropdown;
 		} );
