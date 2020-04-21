@@ -197,8 +197,11 @@ export default class Resizer {
 		const unit = this._options.unit || '%';
 		const newValue = ( unit === '%' ? this.state.proposedWidthPercents : this.state.proposedWidth ) + unit;
 
-		this._cleanup();
-		this._options.onCommit( newValue );
+		// Both cleanup and onCommit callback are very likely to make view changes. Ensure that it is made in a single step.
+		this._options.editor.editing.view.change( () => {
+			this._cleanup();
+			this._options.onCommit( newValue );
+		} );
 	}
 
 	/**
