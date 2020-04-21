@@ -286,9 +286,9 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 			clock.tick( 100 );
 
-			expect( getData( editor.model ) ).to.equal(
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4 ' +
-				'<$text linkHref="https://www.youtube.com/watch?v=H08tGjXNHO4">https://www.youtube.com/watch?v=H08tGjXNHO4[]</$text>' +
+				'<$text linkHref="https://www.youtube.com/watch?v=H08tGjXNHO4">https://www.youtube.com/watch?v=H08tGjXNHO4</$text>' +
 				'</paragraph>'
 			);
 		} );
