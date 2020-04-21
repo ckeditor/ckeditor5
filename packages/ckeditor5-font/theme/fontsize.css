@@ -5,7 +5,7 @@
 
 /* The values should be synchronized with the "FONT_SIZE_PRESET_UNITS" object in the "/src/fontsize/utils.js" file. */
 
-/* Styles should be prefixed through the `.ck-content` class.
+/* Styles should be prefixed with the `.ck-content` class.
 See https://github.com/ckeditor/ckeditor5/issues/6636 */
 .ck-content {
 	& .text-tiny {
