@@ -139,8 +139,11 @@ export default class FontSize extends Plugin {
  * You can preserve pasted font size values by switching the option:
  *
  *		const fontSizeConfig = {
- *			supportAllValues: true
+ *			options: [ 9, 10, 11, 12, 13, 14, 15 ],
+ *			supportAllValues: true,
  *		};
+ *
+ * You need to also define numerical options for the plugin.
  *
  * Now, the font sizes, not specified in the editor's configuration, won't be removed when pasting the content.
  *

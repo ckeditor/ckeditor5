@@ -63,6 +63,7 @@ describe( 'Integration test Font', () => {
 						supportAllValues: true
 					},
 					fontSize: {
+						options: [ 10, 12, 14 ],
 						supportAllValues: true
 					}
 				} )
@@ -125,6 +126,7 @@ describe( 'Integration test Font', () => {
 						supportAllValues: true
 					},
 					fontSize: {
+						options: [ 10, 12, 14 ],
 						supportAllValues: true
 					}
 				} )
