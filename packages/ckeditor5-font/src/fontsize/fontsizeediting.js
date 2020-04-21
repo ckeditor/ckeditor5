@@ -12,6 +12,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FontSizeCommand from './fontsizecommand';
 import { normalizeOptions } from './utils';
 import { buildDefinition, FONT_SIZE } from '../utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The font size editing feature.
@@ -69,13 +70,13 @@ export default class FontSizeEditing extends Plugin {
 		const supportAllValues = editor.config.get( 'fontSize.supportAllValues' );
 
 		// Define view to model conversion.
-		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' ), { supportAllValues } )
+		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' ) )
 			.filter( item => item.model );
 		const definition = buildDefinition( FONT_SIZE, options );
 
 		// Set-up the two-way conversion.
 		if ( supportAllValues ) {
-			this._prepareAnyValueConverters();
+			this._prepareAnyValueConverters( definition );
 		} else {
 			editor.conversion.attributeToElement( definition );
 		}
@@ -88,10 +89,31 @@ export default class FontSizeEditing extends Plugin {
 	 * Those converters enable keeping any value found as `style="font-size: *"` as a value of an attribute on a text even
 	 * if it isn't defined in the plugin configuration.
 	 *
+	 * @param {Object} definition {@link module:engine/conversion/conversion~ConverterDefinition Converter definition} out of input data.
 	 * @private
 	 */
-	_prepareAnyValueConverters() {
+	_prepareAnyValueConverters( definition ) {
 		const editor = this.editor;
+
+		// If `fontSize.supportAllValues=true`, we do not allow to use named presets in the plugin's configuration.
+		const presets = definition.model.values.filter( value => !String( value ).match( /[\d.]+[\w%]+/ ) );
+
+		if ( presets.length ) {
+			/**
+			 * If {@link module:font/fontsize~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} is `true`,
+			 * you need to use numerical values as font size options.
+			 *
+			 * See valid examples described in the {@link module:font/fontsize~FontSizeConfig#options plugin configuration}.
+			 *
+			 * @error font-size-invalid-use-of-named-presets
+			 * @param {Array.<String>} presets Invalid values.
+			 */
+			throw new CKEditorError(
+				'font-size-invalid-use-of-named-presets: ' +
+				'If config.fontSize.supportAllValues is set to true, you need to use numerical values as font size options.',
+				null, { presets }
+			);
+		}
 
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: FONT_SIZE,

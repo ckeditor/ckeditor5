@@ -9,6 +9,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'FontSizeEditing', () => {
 	let editor, doc;
@@ -68,7 +69,17 @@ describe( 'FontSizeEditing', () => {
 					.create( {
 						plugins: [ FontSizeEditing, Paragraph ],
 						fontSize: {
-							supportAllValues: true
+							supportAllValues: true,
+							options: [
+								'6.25%',
+								'8em',
+								'10px',
+								12,
+								{
+									model: 14,
+									title: '14px'
+								}
+							]
 						}
 					} )
 					.then( newEditor => {
@@ -100,6 +111,26 @@ describe( 'FontSizeEditing', () => {
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:18px;">o</span>o</p>' );
 				} );
+			} );
+
+			it( 'should throw an error if used with default configuration of the plugin', () => {
+				return VirtualTestEditor
+					.create( {
+						plugins: [ FontSizeEditing ],
+						fontSize: {
+							supportAllValues: true
+						}
+					} )
+					.then(
+						() => {
+							throw new Error( 'Supposed to be rejected' );
+						},
+						error => {
+							assertCKEditorError( error, /font-size-invalid-use-of-named-presets/, null, {
+								presets: [ 'tiny', 'small', 'big', 'huge' ]
+							} );
+						}
+					);
 			} );
 		} );
 	} );
