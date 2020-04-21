@@ -26,8 +26,6 @@ describe( 'Widget - integration', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 		testUtils.sinon.stub( env, 'isSafari' ).get( () => true );
 
 		editorElement = document.createElement( 'div' );

@@ -12,7 +12,6 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 /* global document */
@@ -23,9 +22,6 @@ describe( 'Widget', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
-
 		return VirtualTestEditor.create( { plugins: [ Widget, Typing ] } )
 			.then( newEditor => {
 				editor = newEditor;
@@ -695,31 +691,6 @@ describe( 'Widget', () => {
 					'rtl'
 				);
 			} );
-		} );
-
-		describe( 'Ctrl+A', () => {
-			test(
-				'should select the entire content of the nested editable',
-				'<widget><nested>foo[]</nested></widget><paragraph>bar</paragraph>',
-				{ keyCode: keyCodes.a, ctrlKey: true },
-				'<widget><nested>[foo]</nested></widget><paragraph>bar</paragraph>'
-			);
-
-			test(
-				'should not change the selection if outside of the nested editable',
-				'<widget><nested>foo</nested></widget><paragraph>[]bar</paragraph>',
-				{ keyCode: keyCodes.a, ctrlKey: true },
-				'<widget><nested>foo</nested></widget><paragraph>[]bar</paragraph>'
-			);
-
-			test(
-				'should selected whole content when widget is selected',
-				'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
-				{ keyCode: keyCodes.a, ctrlKey: true },
-				'<paragraph>[foo</paragraph><widget></widget><paragraph>bar]</paragraph>',
-				'<p>{foo</p><div class="ck-widget ck-widget_selected" contenteditable="false"><b></b></div><p>bar}</p>'
-
-			);
 		} );
 
 		describe( 'enter', () => {
