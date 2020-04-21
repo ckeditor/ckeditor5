@@ -71,7 +71,7 @@ export default class Resizer {
 		this._viewResizerWrapper = null;
 
 		/**
-		 * The width of resized {@link module:widget/widgetresize~ResizerOptions#viewElement viewElement} before the resizing started.
+		 * The width of the resized {@link module:widget/widgetresize~ResizerOptions#viewElement viewElement} before the resizing started.
 		 *
 		 * @private
 		 * @member {Number|String|undefined} _initialViewWidth
