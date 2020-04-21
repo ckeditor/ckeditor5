@@ -169,7 +169,7 @@ ClassicEditor
 
 {@snippet features/custom-font-size-numeric-options}
 
-### Prevent removing non-specified values
+### Accept all font sizes
 
 By default, all `font-size` values that are not specified in the `config.fontSize.options` are stripped. You can enable support for all font sizes by using the {@link module:font/fontfamily~FontFamilyConfig#supportAllValues `config.fontSize.supportAllValues`} option.
 
