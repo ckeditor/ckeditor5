@@ -4,18 +4,23 @@
  */
 
 /* The values should be synchronized with the "FONT_SIZE_PRESET_UNITS" object in the "/src/fontsize/utils.js" file. */
-.text-tiny {
-	font-size: .7em;
-}
 
-.text-small {
-	font-size: .85em;
-}
+/* Styles should be prefixed through the `.ck-content` class.
+See https://github.com/ckeditor/ckeditor5/issues/6636 */
+.ck-content {
+	& .text-tiny {
+		font-size: .7em;
+	}
 
-.text-big {
-	font-size: 1.4em;
-}
+	& .text-small {
+		font-size: .85em;
+	}
 
-.text-huge {
-	font-size: 1.8em;
+	& .text-big {
+		font-size: 1.4em;
+	}
+
+	& .text-huge {
+		font-size: 1.8em;
+	}
 }
