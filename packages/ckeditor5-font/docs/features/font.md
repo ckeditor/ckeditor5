@@ -173,13 +173,12 @@ ClassicEditor
 
 By default, all `font-size` values that are not specified in the `config.fontSize.options` are stripped. You can enable support for all font sizes by using the {@link module:font/fontfamily~FontFamilyConfig#supportAllValues `config.fontSize.supportAllValues`} option.
 
-
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		fontSize: {
 			options: [
-				// ...
+				// Numerical values.
 			],
 			supportAllValues: true
 		},
@@ -188,6 +187,10 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+
+<info-box info>
+	This option can be used only in combination with [numerical values](#using-numerical-values).
+</info-box>
 
 ## Configuring the font color and font background color features
 

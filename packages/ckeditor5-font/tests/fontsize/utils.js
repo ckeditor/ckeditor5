@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { normalizeOptions, FONT_SIZE_PRESET_UNITS } from '../../src/fontsize/utils';
+import { normalizeOptions } from '../../src/fontsize/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'FontSizeEditing Utils', () => {
@@ -34,18 +34,6 @@ describe( 'FontSizeEditing Utils', () => {
 					{ title: 'Default', model: undefined },
 					{ title: 'Big', model: 'big', view: { name: 'span', classes: 'text-big', priority: 7 } },
 					{ title: 'Huge', model: 'huge', view: { name: 'span', classes: 'text-huge', priority: 7 } }
-				] );
-			} );
-
-			it( 'should return defined presets with units in model values if supportAllValues=true', () => {
-				const options = normalizeOptions( [ 'tiny', 'small', 'default', 'big', 'huge' ], { supportAllValues: true } );
-
-				expect( options ).to.deep.equal( [
-					{ title: 'Tiny', model: '0.7em', view: { name: 'span', classes: 'text-tiny', priority: 7 } },
-					{ title: 'Small', model: '0.85em', view: { name: 'span', classes: 'text-small', priority: 7 } },
-					{ title: 'Default', model: undefined },
-					{ title: 'Big', model: '1.4em', view: { name: 'span', classes: 'text-big', priority: 7 } },
-					{ title: 'Huge', model: '1.8em', view: { name: 'span', classes: 'text-huge', priority: 7 } }
 				] );
 			} );
 
@@ -163,12 +151,6 @@ describe( 'FontSizeEditing Utils', () => {
 					normalizeOptions( [ definition ] );
 				}, /font-size-invalid-definition/, null, definition );
 			} );
-		} );
-	} );
-
-	describe( 'FONT_SIZE_PRESET_UNITS', () => {
-		it( 'provides default values', () => {
-			expect( Object.keys( FONT_SIZE_PRESET_UNITS ).length ).to.equal( 4 );
 		} );
 	} );
 } );
