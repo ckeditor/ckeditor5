@@ -11,6 +11,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 
 import StandardEditingMode from '../../src/standardeditingmode';
 import RestrictedEditingMode from '../../src/restrictededitingmode';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
 const restrictedModeButton = document.getElementById( 'mode-restricted' );
 const standardModeButton = document.getElementById( 'mode-standard' );
@@ -53,10 +54,31 @@ async function startStandardEditingMode() {
 	} );
 }
 
+// Functional form of a plugin - might be a class that extends `Plugin` as well.
+function MyPlugin( editor ) {
+	// This action must be done in the `afterInit()` method of your plugin.
+	this.afterInit = () => {
+		const restrictedEditingModeEditing = editor.plugins.get( 'RestrictedEditingModeEditing' );
+
+		const commandsToEnable = [
+			'insertTableRowAbove', 'insertTableRowBelow',
+			'insertTableColumnRight', 'insertTableColumnLeft',
+			'mergeTableCells'
+		];
+
+		// Enable (always) some commands in restricted editing mode.
+		commandsToEnable.forEach( commandName => restrictedEditingModeEditing.enableCommand( commandName ) );
+	};
+}
+
 async function startRestrictedEditingMode() {
 	await reloadEditor( {
-		plugins: [ ArticlePluginSet, Table, RestrictedEditingMode ],
-		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo' ]
+		plugins: [ ArticlePluginSet, Table, TableToolbar, RestrictedEditingMode, MyPlugin ],
+		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo' ],
+		table: {
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
+			tableToolbar: [ 'bold', 'italic' ]
+		}
 	} );
 }
 
