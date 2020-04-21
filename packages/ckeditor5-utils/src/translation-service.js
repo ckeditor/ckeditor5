@@ -31,7 +31,7 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  *			'image_Insert image': 'obraz', // Note that the `Insert image` comes from the message context.
  *		} );
  *
- * If the message is supposed to support various plural forms, make sure to provide an array with the single form and all plural forms:
+ * If the message is supposed to support various plural forms, make sure to provide an array with the singular form and all plural forms:
  *
  *		add( 'pl', {
  *	 		'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ]

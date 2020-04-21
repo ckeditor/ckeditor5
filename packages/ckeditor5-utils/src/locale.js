@@ -77,7 +77,7 @@ export default class Locale {
 
 		/**
 		 * Translates the given message to the {@link #uiLanguage}. This method is also available in
-		 * {@link module:core/editor/editor~Editor#t} and {@link module:ui/view~View#t}.
+		 * {@link module:core/editor/editor~Editor#t Editor} and {@link module:ui/view~View#t View}.
 		 *
 		 * This method's context is statically bound to the `Locale` instance and **always should be called as a function**:
 		 *
@@ -86,16 +86,16 @@ export default class Locale {
 		 *
 		 * The message can be either a string or an object implementing the {@link module:utils/translation-service~Message} interface.
 		 *
-		 * The message may contain placeholders (`%<index>`) for value(s) that are passed as the second argument.
+		 * The message may contain placeholders (`%<index>`) for value(s) that are passed as a `values` parameter.
 		 * For an array of values the `%<index>` will be changed to an element of that array at the given index.
 		 * For a single value passed as the second argument, only the `%0` placeholders will be changed to the provided value.
 		 *
 		 *		t( 'Created file "%0" in %1ms.', [ fileName, timeTaken ] );
 		 * 		t( 'Created file "%0", fileName );
 		 *
-		 * The message supports plural forms. To specify a plural form, use the `plural` property. Single or plural form
+         * The message supports plural forms. To specify the plural form, use the `plural` property. Singular or plural form
 		 * will be chosen depending on the first value from the passed `values`. The value of this property is used
-		 * as a default plural translation when the translation for the target language is missing. Therefor, it should be a number.
+		 * as a default plural translation when the translation for the target language is missing. Therefore, it should be a number.
 		 *
 		 *		t( { string: 'Add a space', plural: 'Add %0 spaces' }, 1 ); // 'Add a space' for the English language.
 		 *		t( { string: 'Add a space', plural: 'Add %0 spaces' }, 5 ); // 'Add 5 spaces' for the English language.
