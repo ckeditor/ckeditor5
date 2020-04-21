@@ -163,9 +163,9 @@ export default class Locale {
 		}
 
 		const hasPluralForm = !!message.plural;
-		const amount = hasPluralForm ? values[ 0 ] : 1;
+		const quantity = hasPluralForm ? values[ 0 ] : 1;
 
-		const translatedString = _translate( this.uiLanguage, message, amount );
+		const translatedString = _translate( this.uiLanguage, message, quantity );
 
 		return interpolateString( translatedString, values );
 	}

@@ -115,19 +115,19 @@ export function add( language, translations, getPluralForm ) {
  * @protected
  * @param {String} language Target language.
  * @param {module:utils/translation-service~Message|String} message A message that will be translated.
- * @param {Number} [amount] A number of elements for which a plural form should be picked from the target language dictionary.
+ * @param {Number} [quantity] A number of elements for which a plural form should be picked from the target language dictionary.
  * @returns {String} Translated sentence.
  */
-export function _translate( language, message, amount = 1 ) {
-	if ( typeof amount !== 'number' ) {
+export function _translate( language, message, quantity = 1 ) {
+	if ( typeof quantity !== 'number' ) {
 		/**
 		 * The incorrect value has been passed to the `translation` function. This probably was caused
 		 * by the incorrect message interpolation of a plural form. Note that for messages supporting plural forms
 		 * the second argument of the `t()` function should always be a number or an array with number as the first element.
 		 *
-		 * @error translation-service-amount-not-a-number
+		 * @error translation-service-quantity-not-a-number
 		 */
-		throw new CKEditorError( 'translation-service-amount-not-a-number: Expecting `amount` to be a number.', null, { amount } );
+		throw new CKEditorError( 'translation-service-quantity-not-a-number: Expecting `quantity` to be a number.', null, { quantity } );
 	}
 
 	const numberOfLanguages = getNumberOfLanguages();
@@ -144,7 +144,7 @@ export function _translate( language, message, amount = 1 ) {
 		message.string;
 
 	if ( numberOfLanguages === 0 || !hasTranslation( language, messageId ) ) {
-		if ( amount !== 1 ) {
+		if ( quantity !== 1 ) {
 			// Return the default plural form that was passed in the `message.plural` parameter.
 			return message.plural;
 		}
@@ -159,7 +159,7 @@ export function _translate( language, message, amount = 1 ) {
 		return dictionary[ messageId ];
 	}
 
-	const pluralFormIndex = getPluralForm( amount );
+	const pluralFormIndex = getPluralForm( quantity );
 
 	// Note: The `translate` function is not responsible for replacing `%0, %1, ...` with values.
 	return dictionary[ messageId ][ pluralFormIndex ];
