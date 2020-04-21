@@ -1701,7 +1701,8 @@ describe( 'TableNavigation', () => {
 							padding: 0 !important; 
 							border: 0 !important 
 						}
-						td { width: 300px !important; }
+						td { width: 30px !important; }
+						tr:nth-child(2) td:nth-child(2) { width: 305px !important; }
 						`
 					) );
 					global.document.querySelector( 'head' ).appendChild( styleElement );
@@ -1875,7 +1876,7 @@ describe( 'TableNavigation', () => {
 					it( 'should not move caret if it\'s just before the last space in the line next to last one', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', text.substring( 0, text.length - 2 ) + '[]d word word word', '12' ],
+							[ '10', text.substring( 0, text.length - 1 ) + '[]d word word word', '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
