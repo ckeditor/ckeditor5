@@ -62,7 +62,9 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  *		}
  *
  * @param {String} language Target language.
- * @param {Object.<String, String|Array.<String>>} translations Translations which will be added to the dictionary.
+ * @param {Object.<String,*>} translations An object with translations which will be added to the dictionary.
+ * For each message id the value should be either a translation or an array of translations if the message
+ * should support plural forms.
  * @param {Function} getPluralForm A function that returns the plural form index (a number).
  */
 export function add( language, translations, getPluralForm ) {
@@ -79,7 +81,7 @@ export function add( language, translations, getPluralForm ) {
 }
 
 /**
- * **Note:** this method is internal, use {@link module:utils/local~Locale#t the `t()` function} instead to translate
+ * **Note:** this method is internal, use {@link module:utils/locale~Locale#t the `t()` function} instead to translate
  * editor UI parts.
  *
  * This function is responsible for translating messages to the specified language. It uses perviously added translations
@@ -104,7 +106,7 @@ export function add( language, translations, getPluralForm ) {
  *
  * @protected
  * @param {String} language Target language.
- * @param {module:utils/translation-service~Message|string} message A message that will be translated.
+ * @param {module:utils/translation-service~Message|String} message A message that will be translated.
  * @param {Number} [amount] A number of elements for which a plural form should be picked from the target language dictionary.
  * @returns {String} Translated sentence.
  */
