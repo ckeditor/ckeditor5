@@ -189,7 +189,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	When this options is enabled, available options for the {@link module:font/fontsize~FontSize} plugin should be numerical values.
+	This option can be used only in combination with [numerical values](#using-numerical-values).
 </info-box>
 
 ## Configuring the font color and font background color features

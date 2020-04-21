@@ -126,7 +126,7 @@ describe( 'FontSizeEditing', () => {
 							throw new Error( 'Supposed to be rejected' );
 						},
 						error => {
-							assertCKEditorError( error, /font-size-named-presets/, null, {
+							assertCKEditorError( error, /font-size-invalid-use-of-named-presets/, null, {
 								presets: [ 'tiny', 'small', 'big', 'huge' ]
 							} );
 						}

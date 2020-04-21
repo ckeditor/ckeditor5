@@ -100,16 +100,19 @@ export default class FontSizeEditing extends Plugin {
 
 		if ( presets.length ) {
 			/**
-			 * If {@link module:font/fontsize~FontSizeConfig#supportAllValues} is `true`, you need to use numerical values as
-			 * font size options.
+			 * If {@link module:font/fontsize~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} is `true`,
+			 * you need to use numerical values as font size options.
 			 *
 			 * See valid examples described in the {@link module:font/fontsize~FontSizeConfig#options plugin configuration}.
 			 *
-			 * @error font-size-named-presets
+			 * @error font-size-invalid-use-of-named-presets
+			 * @param {Array.<String>} presets Invalid values.
 			 */
-			const message = 'font-size-named-presets: ' +
-				'If set `fontSize.supportAllValues` on `true`, you cannot use named presets as plugin\'s configuration.';
-			throw new CKEditorError( message, null, { presets } );
+			throw new CKEditorError(
+				'font-size-invalid-use-of-named-presets: ' +
+				'If config.fontSize.supportAllValues is set to true, you need to use numerical values as font size options.',
+				null, { presets }
+			);
 		}
 
 		editor.conversion.for( 'downcast' ).attributeToElement( {
