@@ -17,26 +17,32 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
 }
 
 /**
- * Adds translations to existing ones or overrides the existing translations.
+ * Adds translations to existing ones or overrides the existing translations. these translations will later
+ * be available for the {@link module:utils/locale~Locale#t `t()`} function.
  *
- * These translations will later be available for the {@link module:utils/locale~Locale#t `t()`} function.
+ * The `translations` is an object which consists of a `message id - translation` pairs. Note that message id can be
+ * either constructed either from the message string or from the message string and message context in the following form:
+ * `<messageString>_<messageContext>` (this happens rarely and mostly for short messages or messages with placeholders).
+ * Since the editor displays only the message string the message context can be found either in the source code or in the
+ * built translations for another language.
  *
  *		add( 'pl', {
  *			'Cancel': 'Anuluj',
- *			'Heading': 'Nagłówek'
- *		}, n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2 );
+ *			'image_Insert image': 'obraz', // Note that the `Insert image` comes from the message context.
+ *		} );
  *
- * If a message is supposed to support various plural forms, make sure to provide an array with the single form and all plural forms:
+ * If the message is supposed to support various plural forms, make sure to provide an array with the single form and all plural forms:
  *
  *		add( 'pl', {
  *	 		'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ]
  * 		} );
  *
- * You should also specify the third argument (the `getPluralForm` function) that will be used to determine the plural form if the
- * language is not supported by CKEditor 5 yet.
+ * You should also specify the third argument (the `getPluralForm` function) that will be used to determine the plural form if no
+ * language file was loaded for that language. All language files coming from CKEditor 5 sources will have this option set, so
+ * these plural form rules will be reused by other translations added to the registered languages.
  *
  * 		add( 'pl', {
- *	 		'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ]
+ *	 		// Translations.
  * 		}, n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2 );
  *
  * If you cannot import this function from this module (e.g. because you use a CKEditor 5 build), then you can
@@ -99,10 +105,12 @@ export function add( language, translations, getPluralForm ) {
  * 		translate( 'en', { string: 'Add a space', plural: 'Add %0 spaces' }, 1 ); // 'Add a space'
  * 		translate( 'en', { string: 'Add a space', plural: 'Add %0 spaces' }, 3 ); // 'Add %0 spaces'
  *
- * A Message can provide a context using the `context` property when the message string may be not enough unique
- * across all messages. When the `context` property is set the message id will be constructed in
+ * The message can provide a context using the `context` property when the message ids created from message strings
+ * are not unique. When the `context` property is set the message id will be constructed in
  * the following way: `${ message.string }_${ message.context }`. This context will be also used
- * by translators later as a context for the message that should be translated.
+ * by translators later as an additional context for the translated message.
+ *
+ *		translate( 'en', { string: 'image', context: 'Add/Remove image' } );
  *
  * @protected
  * @param {String} language Target language.
@@ -184,8 +192,8 @@ function getNumberOfLanguages() {
  *
  * @typedef {Object} Message
  *
- * @property {String} string The message string. It becomes the message id when no context is provided. When the message is supposed
- * to support plural forms then the string should be the English singular form of the message.
+ * @property {String} string The message string to translate. Acts as a default translation if the translation for given language
+ * is not defined. When the message is supposed to support plural forms then the string should be the English singular form of the message.
  * @property {String} [context] The message context. If passed then the message id is constructed form both,
  * the message string and the message string in the following format: `<messageString>_<messageContext>`. This property is useful when
  * various messages can share the same message string, when omitting a context would result in a broken translation.
