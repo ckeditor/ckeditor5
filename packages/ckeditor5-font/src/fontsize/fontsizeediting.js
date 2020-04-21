@@ -70,7 +70,7 @@ export default class FontSizeEditing extends Plugin {
 		const supportAllValues = editor.config.get( 'fontSize.supportAllValues' );
 
 		// Define view to model conversion.
-		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' ), { supportAllValues } )
+		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' ) )
 			.filter( item => item.model );
 		const definition = buildDefinition( FONT_SIZE, options );
 
