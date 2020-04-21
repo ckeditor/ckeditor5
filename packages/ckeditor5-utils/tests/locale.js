@@ -10,6 +10,7 @@ import {
 	add as addTranslations,
 	_clear as clearTranslations
 } from '../src/translation-service';
+import { expectToThrowCKEditorError } from './_utils/utils';
 
 describe( 'Locale', () => {
 	afterEach( () => {
@@ -152,7 +153,7 @@ describe( 'Locale', () => {
 			expect( t( { string: 'foo', context: 'bar' } ) ).to.equal( 'foo_bar_pl' );
 		} );
 
-		it( 'should translate a plural form to the target ui language based on the first value and interpolate the string', () => {
+		it( 'should translate a message supporting plural forms', () => {
 			const t = locale.t;
 
 			expect( t( { string: 'bar', plural: '%0 bars' }, [ 1 ] ), 1 ).to.equal( 'bar_pl_0' );
@@ -160,7 +161,7 @@ describe( 'Locale', () => {
 			expect( t( { string: 'bar', plural: '%0 bars' }, [ 5 ] ), 3 ).to.equal( '5 bar_pl_2' );
 		} );
 
-		it( 'should translate a message supporting plural form with a context', () => {
+		it( 'should translate a message supporting plural forms with a context', () => {
 			const t = locale.t;
 
 			addTranslations( 'pl', {
@@ -186,6 +187,35 @@ describe( 'Locale', () => {
 			// It'd be a super rare case if one would need to use %0 and at the same time interpolate something.
 			expect( t( '%1 - %0 - %2' ) ).to.equal( '%1 - %0 - %2' );
 			expect( t( '%1 - %0 - %2', [ 'a' ] ) ).to.equal( '%1 - a - %2' );
+		} );
+
+		it( 'should interpolate a message with a provided value (shorthand version)', () => {
+			const t = locale.t;
+
+			expect( t( 'Add %0', 'space' ) ).to.equal( 'Add space' );
+			expect( t( 'Remove %0 %1', 'spaces' ) ).to.equal( 'Remove spaces %1' );
+
+			expect( t( '%0 bar %0', 'foo' ) ).to.equal( 'foo bar foo' );
+		} );
+
+		it( 'should throw an error when a value used to determine the plural version is not a number', () => {
+			const t = locale.t;
+
+			expectToThrowCKEditorError( () => {
+				t( { string: 'Add space', plural: 'Add %0 spaces' }, 'space' );
+			}, /translation-service-amount-not-a-number:/, null, { amount: 'space' } );
+
+			expectToThrowCKEditorError( () => {
+				t( { string: 'Add space', plural: 'Add %0 spaces' }, [ 'space' ] );
+			}, /translation-service-amount-not-a-number:/, null, { amount: 'space' } );
+
+			expect( () => {
+				t( { string: 'Add space', plural: 'Add %0 spaces' }, [ 3 ] );
+				t( { string: 'Add space', plural: 'Add %0 spaces' }, 3 );
+				t( { string: 'Add %1', plural: 'Add %0 %1' }, [ 3, 'spaces' ] );
+				t( { string: 'Add %0' }, [ 'space' ] );
+				t( { string: 'Add %0' }, 'space' );
+			} ).to.not.throw();
 		} );
 	} );
 

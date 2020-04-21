@@ -9,6 +9,8 @@
  * @module utils/translation-service
  */
 
+import CKEditorError from './ckeditorerror';
+
 /* istanbul ignore else */
 if ( !window.CKEDITOR_TRANSLATIONS ) {
 	window.CKEDITOR_TRANSLATIONS = {};
@@ -107,6 +109,17 @@ export function add( language, translations, getPluralForm ) {
  * @returns {String} Translated sentence.
  */
 export function _translate( language, message, amount = 1 ) {
+	if ( typeof amount !== 'number' ) {
+		/**
+		 * The incorrect value has been passed to the `translation` function. This probably was caused
+		 * by the incorrect message interpolation of a plural form. Note that for messages supporting plural forms
+		 * the second argument of the `t()` function should always be a number or an array with number as the first element.
+		 *
+		 * @error translation-service-amount-not-a-number
+		 */
+		throw new CKEditorError( 'translation-service-amount-not-a-number: Expecting `amount` to be a number.', null, { amount } );
+	}
+
 	const numberOfLanguages = getNumberOfLanguages();
 
 	if ( numberOfLanguages === 1 ) {
