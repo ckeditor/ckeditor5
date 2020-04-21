@@ -938,7 +938,10 @@ describe( 'RestrictedEditingModeEditing', () => {
 					} );
 
 					assertEqualMarkup( getModelData( model ),
-						'<paragraph>foo b<$text bold="true" italic="true" linkHref="foo">XXX[]</$text>ar baz</paragraph>'
+						'<paragraph>foo b<$text bold="true" italic="true" linkHref="foo">XXX</$text>' +
+						// The link attribute is removed from selection after pasting.
+						// See https://github.com/ckeditor/ckeditor5/issues/6053.
+						'<$text bold="true" italic="true">[]</$text>ar baz</paragraph>'
 					);
 					assertMarkerRangePaths( [ 0, 4 ], [ 0, 10 ] );
 				} );
