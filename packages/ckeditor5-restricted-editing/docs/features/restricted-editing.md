@@ -53,6 +53,20 @@ ClassicEditor
 
 **Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingModeConfig `config.restrictedEditing`} documentation.
 
+### Enabling commands in the restricted editing mode
+
+The restricted editing mode allows modifying the editor content only in designated regions. Outside these regions most of the editor commands are disabled by default. If you wish to enable some commands outside the restricted editing regions you can use the {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing#enableCommand `RestrictedEditingModeEditing.enableCommand()`} method. This method must be executed in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} callback of an editor plugin.
+
+```js
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
+class MyPlugin extends Plugin {
+	afterInit() {
+		this.editor.plugins.get( 'RestrictedEditingModeEditing' ).enableCommand( 'myCommand' );
+	}
+}
+```
+
 ## Installation
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-restricted-editing`](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing) package:
