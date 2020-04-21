@@ -386,9 +386,9 @@ describe( 'TableUI', () => {
 			expect( dropdown.buttonView ).to.be.instanceOf( SplitButtonView );
 		} );
 
-		it( 'should bind #isEnabled to the "mergeTableCells" command', () => {
+		it( 'should have #isEnabled always true regardless of the "mergeTableCells" command state', () => {
 			command.isEnabled = false;
-			expect( dropdown.isEnabled ).to.be.false;
+			expect( dropdown.isEnabled ).to.be.true;
 
 			command.isEnabled = true;
 			expect( dropdown.isEnabled ).to.be.true;
