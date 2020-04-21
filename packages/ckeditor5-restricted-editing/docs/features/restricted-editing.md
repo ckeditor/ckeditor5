@@ -55,7 +55,7 @@ ClassicEditor
 
 ### Enabling commands in the restricted editing mode
 
-The restricted editing mode allows to modify the editor contents only in designated regions. Outside those regions most of the editor commands are disabled by default. If you wish to enable some commands outside the restricted editing regions you can call the {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing#enableCommand `RestrictedEditingModeEditing.enableCommand()`}. This method must be done in the {@link module:core/plugin~PluginInterface#afterInit} callback of a CKEditor5 plugin.
+The restricted editing mode allows modifying the editor content only in designated regions. Outside these regions most of the editor commands are disabled by default. If you wish to enable some commands outside the restricted editing regions you can use the {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing#enableCommand `RestrictedEditingModeEditing.enableCommand()`} method. This method must be executed in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} callback of an editor plugin.
 
 ```js
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
