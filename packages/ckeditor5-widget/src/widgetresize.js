@@ -233,7 +233,7 @@ mix( WidgetResize, ObservableMixin );
  */
 
 /**
- * A view of an element to be resized. Typically it's the main widget view instance.
+ * A view of an element to be resized. Typically it's the main widget's view instance.
  *
  * @member {module:engine/view/containerelement~ContainerElement} module:widget/widgetresize~ResizerOptions#viewElement
  */
