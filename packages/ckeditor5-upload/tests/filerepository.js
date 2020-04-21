@@ -582,6 +582,30 @@ describe( 'FileRepository', () => {
 
 				return promise;
 			} );
+
+			it( 'should abort upload if image is removed during the upload process', () => {
+				const file = createNativeFileMock();
+				const loader = fileRepository.createLoader( file );
+
+				sinon.stub( loader._reader, 'read' ).callsFake( () => {
+					expect( loader.status ).to.equal( 'reading' );
+
+					// Reader is being aborted after file was read.
+					// It can happen if an element (and its file that is being uploaded) will be removed during the upload process.
+					loader.status = 'aborted';
+				} );
+
+				return loader.read()
+					.then(
+						() => {
+							throw new Error( 'Supposed to be rejected.' );
+						},
+						status => {
+							expect( status ).to.equal( 'aborted' );
+							expect( loader.status ).to.equal( 'aborted' );
+						}
+					);
+			} );
 		} );
 
 		describe( 'upload()', () => {

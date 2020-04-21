@@ -440,6 +440,12 @@ class FileLoader {
 		return this.file
 			.then( file => this._reader.read( file ) )
 			.then( data => {
+				// Edge case: reader was aborted after file was read - double check for proper status.
+				// It can happen when image was deleted during its upload.
+				if ( this.status !== 'reading' ) {
+					throw this.status;
+				}
+
 				this.status = 'idle';
 
 				return data;
