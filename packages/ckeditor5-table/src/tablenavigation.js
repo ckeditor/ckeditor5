@@ -203,7 +203,7 @@ export default class TableNavigation extends Plugin {
 		const cellRange = model.createRangeIn( tableCell );
 
 		// Let's check if the selection is at the beginning/end of the cell.
-		if ( this._isSelectionAtCellEdge( cellRange, selection, isForward ) ) {
+		if ( this._isSelectionAtCellEdge( selection, isForward ) ) {
 			this._navigateFromCellInDirection( tableCell, direction );
 
 			return true;
@@ -250,15 +250,14 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Returns `true` if `selection` is at `cellRange` edge according to navigation `direction`.
+	 * Returns true if the selection is at the boundary of a table cell according to the navigation direction.
 	 *
 	 * @private
-	 * @param {module:engine/model/range~Range} cellRange The bounding cell range.
 	 * @param {module:engine/model/selection~Selection} selection The current selection.
 	 * @param {Boolean} isForward The expected navigation direction.
 	 * @returns {Boolean}
 	 */
-	_isSelectionAtCellEdge( cellRange, selection, isForward ) {
+	_isSelectionAtCellEdge( selection, isForward ) {
 		const model = this.editor.model;
 		const schema = this.editor.model.schema;
 
