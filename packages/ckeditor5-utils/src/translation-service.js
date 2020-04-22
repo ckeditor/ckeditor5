@@ -39,7 +39,8 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  *
  * You should also specify the third argument (the `getPluralForm` function) that will be used to determine the plural form if no
  * language file was loaded for that language. All language files coming from CKEditor 5 sources will have this option set, so
- * these plural form rules will be reused by other translations added to the registered languages.
+ * these plural form rules will be reused by other translations added to the registered languages. The `getPluralForm` function
+ * can return either a boolean or a number.
  *
  * 		add( 'en', {
  *	 		// ... Translations.
