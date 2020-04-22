@@ -21,7 +21,7 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  * be available for the {@link module:utils/locale~Locale#t `t()`} function.
  *
  * The `translations` is an object which consists of a `messageId: translation` pairs. Note that the message id can be
- * either constructed either from the message string or from the message id if it was passed
+ * either constructed from the message string or from the message id if it was passed
  * (this happens rarely and mostly for short messages or messages with placeholders).
  * Since the editor displays only the message string, the message id can be found either in the source code or in the
  * built translations for another language.

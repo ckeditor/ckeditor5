@@ -93,9 +93,9 @@ export default class Locale {
 		 *		t( 'Created file "%0" in %1ms.', [ fileName, timeTaken ] );
 		 * 		t( 'Created file "%0", fileName );
 		 *
-         * The message supports plural forms. To specify the plural form, use the `plural` property. Singular or plural form
+		 * The message supports plural forms. To specify the plural form, use the `plural` property. Singular or plural form
 		 * will be chosen depending on the first value from the passed `values`. The value of the `plural` property is used
-		 * as a default plural translation when the translation for the target language is missing. Therefore, it should be a number.
+		 * as a default plural translation when the translation for the target language is missing.
 		 *
 		 *		t( { string: 'Add a space', plural: 'Add %0 spaces' }, 1 ); // 'Add a space' for the English language.
 		 *		t( { string: 'Add a space', plural: 'Add %0 spaces' }, 5 ); // 'Add 5 spaces' for the English language.
