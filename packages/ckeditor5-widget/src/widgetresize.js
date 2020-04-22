@@ -33,6 +33,9 @@ export default class WidgetResize extends Plugin {
 		return 'WidgetResize';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		/**
 		 * The currently visible resizer.
@@ -103,6 +106,9 @@ export default class WidgetResize extends Plugin {
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		this._observer.stopListening();
 
@@ -227,6 +233,8 @@ mix( WidgetResize, ObservableMixin );
  */
 
 /**
+ * A view of an element to be resized. Typically it's the main widget's view instance.
+ *
  * @member {module:engine/view/containerelement~ContainerElement} module:widget/widgetresize~ResizerOptions#viewElement
  */
 

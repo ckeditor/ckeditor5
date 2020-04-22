@@ -18,6 +18,7 @@ import { resizerMouseSimulator, focusEditor, getHandleCenterPoint, getWidgetDomP
 
 describe( 'WidgetResize', () => {
 	let editor, editorElement, widget, mouseListenerSpies, commitStub;
+	const INITIAL_WIDGET_WIDTH = '25%';
 
 	beforeEach( async () => {
 		editorElement = createEditorElement();
@@ -377,6 +378,24 @@ describe( 'WidgetResize', () => {
 			expect( commitStub.callCount, 'call count' ).to.be.eql( 0 );
 		} );
 
+		it( 'restores the original view width after resize is done', () => {
+			// Note that ultimately width should be changed, but through a model converter, not with direct view changes (#6060).
+			createResizer();
+			const renderListener = sinon.stub();
+
+			const usedHandle = 'bottom-right';
+			const domParts = getWidgetDomParts( editor, widget, usedHandle );
+			const finalPointerPosition = getHandleCenterPoint( domParts.widget, usedHandle ).moveBy( 40, 40 );
+
+			editor.editing.view.on( 'render', renderListener );
+
+			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
+
+			expect( widget.getStyle( 'width' ) ).to.equal( INITIAL_WIDGET_WIDTH );
+			// Verify render count https://github.com/ckeditor/ckeditor5-widget/pull/122#issuecomment-617012777.
+			expect( renderListener.callCount ).to.be.equal( 3 );
+		} );
+
 		it( 'returns proper value when resize host is different from widget wrapper', () => {
 			createResizer( {
 				unit: undefined,
@@ -463,6 +482,28 @@ describe( 'WidgetResize', () => {
 			} );
 
 			expect( redrawSpy.callCount ).to.be.equal( 1 );
+		} );
+	} );
+
+	describe( 'cancel()', () => {
+		it( 'restores original view width', () => {
+			const resizer = createResizer();
+
+			const usedHandle = 'bottom-right';
+			const domParts = getWidgetDomParts( editor, widget, usedHandle );
+			const startingPosition = getHandleCenterPoint( domParts.widget, usedHandle ).moveBy( 100, 0 );
+			const domTarget = domParts.resizeHandle;
+
+			resizerMouseSimulator.down( editor, domTarget );
+			resizerMouseSimulator.move( editor, domTarget, {
+				pageX: startingPosition.x,
+				pageY: startingPosition.y
+			} );
+
+			resizer.cancel();
+
+			// Value should be restored to the initial value (#6060).
+			expect( widget.getStyle( 'width' ) ).to.be.equal( INITIAL_WIDGET_WIDTH );
 		} );
 	} );
 
