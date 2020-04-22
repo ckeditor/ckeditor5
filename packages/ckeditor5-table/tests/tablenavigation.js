@@ -3,24 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { modelTable } from './_utils/utils';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
-import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
 import TableNavigation from '../src/tablenavigation';
 import Table from '../src/table';
 import TableEditing from '../src/tableediting';
 import TableSelection from '../src/tableselection';
+import { modelTable } from './_utils/utils';
+
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
 import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
+
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
