@@ -41,8 +41,7 @@
 }
 
 /* Text alignment of the table header should match the editor settings and override the native browser styling,
-when content is available outside the ediitor.
-See https://github.com/ckeditor/ckeditor5/issues/6638 */
+when content is available outside the ediitor. See https://github.com/ckeditor/ckeditor5/issues/6638 */
 .ck-content[dir="rtl"] .table th {
 	text-align: right;
 }
