@@ -55,10 +55,10 @@ export default class TableNavigation extends Plugin {
 	 * when the table widget is selected.
 	 *
 	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} eventInfo
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
+	 * @param {module:engine/view/observer/keyobserver~KeyEventData} data Key event data.
+	 * @param {Function} cancel The stop/stopPropagation/preventDefault function.
 	 */
-	_handleTabOnSelectedTable( domEventData, cancel ) {
+	_handleTabOnSelectedTable( data, cancel ) {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
@@ -178,7 +178,7 @@ export default class TableNavigation extends Plugin {
 	 *
 	 * @private
 	 * @param {'left'|'up'|'right'|'down'} direction The direction of the arrow key.
-	 * @returns {Boolean|undefined} Returns `true` if key was handled.
+	 * @returns {Boolean} Returns `true` if key was handled.
 	 */
 	_handleArrowKeys( direction ) {
 		const model = this.editor.model;
@@ -197,11 +197,11 @@ export default class TableNavigation extends Plugin {
 			return true;
 		}
 
-		// Abort if we're not in a table.
+		// Abort if we're not in a table cell.
 		const tableCell = findAncestor( 'tableCell', selection.focus );
 
 		if ( !tableCell ) {
-			return;
+			return false;
 		}
 
 		const cellRange = model.createRangeIn( tableCell );
@@ -218,12 +218,12 @@ export default class TableNavigation extends Plugin {
 		const objectElement = selection.getSelectedElement();
 
 		if ( objectElement && model.schema.isObject( objectElement ) ) {
-			return;
+			return false;
 		}
 
 		// If next to the selection there is an object then this is not the cell boundary (widget handler should handle this).
 		if ( this._getObjectElementNextToSelection( selection, isForward ) ) {
-			return;
+			return false;
 		}
 
 		// If there isn't any $text position between cell edge and selection then we shall move the selection to next cell.
@@ -237,7 +237,7 @@ export default class TableNavigation extends Plugin {
 
 		// If the navigation is horizontal then we have no more custom cases.
 		if ( [ 'left', 'right' ].includes( direction ) ) {
-			return;
+			return false;
 		}
 
 		// If the range is a single line then move the selection to the beginning/end of a cell content.
@@ -289,18 +289,18 @@ export default class TableNavigation extends Plugin {
 	 *
 	 * @private
 	 * @param {module:engine/model/selection~Selection} modelSelection The selection.
-	 * @param {Boolean} forward Direction of checking.
+	 * @param {Boolean} isForward Direction of checking.
 	 * @returns {module:engine/model/element~Element|null}
 	 */
-	_getObjectElementNextToSelection( modelSelection, forward ) {
+	_getObjectElementNextToSelection( modelSelection, isForward ) {
 		const model = this.editor.model;
 		const schema = model.schema;
 
 		const probe = model.createSelection( modelSelection );
-		model.modifySelection( probe, { direction: forward ? 'forward' : 'backward' } );
-		const objectElement = forward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
+		model.modifySelection( probe, { direction: isForward ? 'forward' : 'backward' } );
+		const objectElement = isForward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
 
-		if ( !!objectElement && schema.isObject( objectElement ) ) {
+		if ( objectElement && schema.isObject( objectElement ) ) {
 			return objectElement;
 		}
 
@@ -308,8 +308,10 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Returns a range from beginning/end of range up to selection closest position.
-	 * Returns `null` if resulting range can't contain text element (according to schema).
+	 * Truncates the range so that it spans from the last selection position
+	 * to the last allowed $text position (mirrored if isForward is false).
+	 *
+	 * Returns `null` if resulting range can't contain $text element (according to schema).
 	 *
 	 * @private
 	 * @param {module:engine/model/range~Range} range Current table cell content range.
@@ -340,20 +342,20 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Basing on provided `boundaries` range, finds first/last (depending on `direction`) element
+	 * Basing on provided range, finds first/last (depending on `direction`) position
 	 * that can contain `$text` (according to schema) and is visible in the view.
 	 *
-	 * @param {module:engine/model/range~Range} boundaries The range to find position in.
+	 * @param {module:engine/model/range~Range} range The range to find position in.
 	 * @param {'forward'|'backward'} direction Search direction.
 	 * @returns {module:engine/model/position~Position} Nearest selection range.
 	 */
-	_getNearestVisibleTextPosition( boundaries, direction ) {
+	_getNearestVisibleTextPosition( range, direction ) {
 		const schema = this.editor.model.schema;
 		const mapper = this.editor.editing.mapper;
 
-		const startPosition = direction == 'forward' ? boundaries.start : boundaries.end;
+		const startPosition = direction == 'forward' ? range.start : range.end;
 
-		const treeWalker = new TreeWalker( { direction, boundaries, startPosition } );
+		const treeWalker = new TreeWalker( { direction, boundaries: range, startPosition } );
 
 		for ( const { nextPosition, item } of treeWalker ) {
 			if ( schema.checkChild( nextPosition, '$text' ) ) {
@@ -367,7 +369,8 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Checks if the `modelRange` renders to a single line in the DOM.
+	 * Checks if the DOM range corresponding to provided model range renders as a single line by analyzing DOMRects
+	 * (verifying if they visually wrap content to the next line).
 	 *
 	 * @private
 	 * @param {module:engine/model/range~Range} modelRange Current table cell content range.
