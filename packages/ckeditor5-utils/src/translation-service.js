@@ -41,6 +41,9 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  * language file was loaded for that language. All language files coming from CKEditor 5 sources will have this option set, so
  * these plural form rules will be reused by other translations added to the registered languages.
  *
+ * 		add( 'en', {
+ *	 		// ... Translations.
+ * 		}, n => n !== 1 );
  * 		add( 'pl', {
  *	 		// ... Translations.
  * 		}, n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2 );
