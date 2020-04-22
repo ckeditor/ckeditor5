@@ -125,19 +125,19 @@ export default class TableNavigation extends Plugin {
 
 			let cellToFocus;
 
-			// Move to first cell in next row.
+			// Move to the first cell in the next row.
 			if ( isForward && isLastCellInRow ) {
 				const nextRow = table.getChild( currentRowIndex + 1 );
 
 				cellToFocus = nextRow.getChild( 0 );
 			}
-			// Move to last cell in a previous row.
+			// Move to the last cell in the previous row.
 			else if ( !isForward && isFirstCellInRow ) {
 				const previousRow = table.getChild( currentRowIndex - 1 );
 
 				cellToFocus = previousRow.getChild( previousRow.childCount - 1 );
 			}
-			// Move to next/previous cell.
+			// Move to the next/previous cell.
 			else {
 				cellToFocus = tableRow.getChild( currentCellIndex + ( isForward ? 1 : -1 ) );
 			}
@@ -283,9 +283,9 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Checks if {@link module:engine/model/element~Element element} placed next to the current
-	 * {@link module:engine/model/selection~Selection model selection} exists and is marked in
-	 * {@link module:engine/model/schema~Schema schema} as `object`.
+	 * Checks if there is an {@link module:engine/model/element~Element element} next to the current
+	 * {@link module:engine/model/selection~Selection model selection} marked in
+	 * {@link module:engine/model/schema~Schema schema} as an `object`.
 	 *
 	 * @private
 	 * @param {module:engine/model/selection~Selection} modelSelection The selection.
