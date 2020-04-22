@@ -45,11 +45,10 @@ export default class MediaEmbedUI extends Plugin {
 		editor.ui.componentFactory.add( 'mediaEmbed', locale => {
 			const dropdown = createDropdown( locale );
 
-			// Prepare custom view for dropdown's panel.
 			const mediaForm = new MediaFormView( getFormValidators( editor.t, registry ), editor.locale );
 
 			this._setUpDropdown( dropdown, mediaForm, command, editor );
-			this._setUpForm( mediaForm, dropdown, command );
+			this._setUpForm( dropdown, mediaForm, command );
 
 			return dropdown;
 		} );
@@ -99,7 +98,7 @@ export default class MediaEmbedUI extends Plugin {
 		}
 	}
 
-	_setUpForm( form, dropdown, command ) {
+	_setUpForm( dropdown, form, command ) {
 		form.delegate( 'submit', 'cancel' ).to( dropdown );
 		form.urlInputView.bind( 'value' ).to( command, 'value' );
 
