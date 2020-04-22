@@ -381,14 +381,19 @@ describe( 'WidgetResize', () => {
 		it( 'restores the original view width after resize is done', () => {
 			// Note that ultimately width should be changed, but through a model converter, not with direct view changes (#6060).
 			createResizer();
+			const renderListener = sinon.stub();
 
 			const usedHandle = 'bottom-right';
 			const domParts = getWidgetDomParts( editor, widget, usedHandle );
 			const finalPointerPosition = getHandleCenterPoint( domParts.widget, usedHandle ).moveBy( 40, 40 );
 
+			editor.editing.view.on( 'render', renderListener );
+
 			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
 			expect( widget.getStyle( 'width' ) ).to.equal( INITIAL_WIDGET_WIDTH );
+			// Verify render count https://github.com/ckeditor/ckeditor5-widget/pull/122#issuecomment-617012777.
+			expect( renderListener.callCount ).to.be.equal( 3 );
 		} );
 
 		it( 'returns proper value when resize host is different from widget wrapper', () => {
