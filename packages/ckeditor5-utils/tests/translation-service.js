@@ -137,5 +137,18 @@ describe( 'translation-service', () => {
 			expect( _translate( 'pl', { string: 'Add space' }, 3 ) ).to.equal( 'Dodaj %0 spacje' );
 			expect( _translate( 'pl', { string: 'Add space' }, 13 ) ).to.equal( 'Dodaj %0 spacje' );
 		} );
+
+		it( 'should support a plural form rule that returns a boolean', () => {
+			add( 'pl', {
+				'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje' ],
+				'Cancel': 'Anuluj'
+			}, n => n !== 1 );
+
+			expect( _translate( 'pl', { string: 'Add space' }, 1 ) ).to.equal( 'Dodaj spację' );
+
+			expect( _translate( 'pl', { string: 'Add space' }, 0 ) ).to.equal( 'Dodaj %0 spacje' );
+			expect( _translate( 'pl', { string: 'Add space' }, 3 ) ).to.equal( 'Dodaj %0 spacje' );
+			expect( _translate( 'pl', { string: 'Add space' }, 13 ) ).to.equal( 'Dodaj %0 spacje' );
+		} );
 	} );
 } );

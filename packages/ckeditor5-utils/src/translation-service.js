@@ -155,7 +155,7 @@ export function _translate( language, message, quantity = 1 ) {
 		return dictionary[ messageId ];
 	}
 
-	const pluralFormIndex = getPluralForm( quantity );
+	const pluralFormIndex = Number( getPluralForm( quantity ) );
 
 	// Note: The `translate` function is not responsible for replacing `%0, %1, ...` with values.
 	return dictionary[ messageId ][ pluralFormIndex ];
