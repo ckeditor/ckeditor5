@@ -102,14 +102,14 @@ describe( 'translation-service', () => {
 			expect( translatedCancel ).to.be.equal( 'Anuluj' );
 		} );
 
-		it( 'should return a translated message based on message string and message context when both are provided', () => {
+		it( 'should return a translated message based on message id when it was passed', () => {
 			add( 'pl', {
-				'foo_bar': 'foo-bar-translation'
+				'ADD_IMAGE': 'obraz'
 			} );
 
-			const translatedFooBar = _translate( 'pl', { string: 'foo', context: 'bar' } );
+			const translatedFooBar = _translate( 'pl', { string: 'image', id: 'ADD_IMAGE' } );
 
-			expect( translatedFooBar ).to.equal( 'foo-bar-translation' );
+			expect( translatedFooBar ).to.equal( 'obraz' );
 		} );
 
 		it( 'should return the correct plural form of the message based on the provided function', () => {

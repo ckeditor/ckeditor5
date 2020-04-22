@@ -21,14 +21,14 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  * be available for the {@link module:utils/locale~Locale#t `t()`} function.
  *
  * The `translations` is an object which consists of a `messageId: translation` pairs. Note that the message id can be
- * either constructed either from the message string or from the message string and the message context in the following form:
- * `<messageString>_<messageContext>` (this happens rarely and mostly for short messages or messages with placeholders).
- * Since the editor displays only the message string, the message context can be found either in the source code or in the
+ * either constructed either from the message string or from the message id if it was passed
+ * (this happens rarely and mostly for short messages or messages with placeholders).
+ * Since the editor displays only the message string, the message id can be found either in the source code or in the
  * built translations for another language.
  *
  *		add( 'pl', {
  *			'Cancel': 'Anuluj',
- *			'image_Insert image': 'obraz', // Note that the `Insert image` comes from the message context.
+ *			'IMAGE': 'obraz', // Note that the `IMAGE` comes from the message id, while the string can be `image`.
  *		} );
  *
  * If the message is supposed to support various plural forms, make sure to provide an array with the singular form and all plural forms:
@@ -105,12 +105,11 @@ export function add( language, translations, getPluralForm ) {
  * 		translate( 'en', { string: 'Add a space', plural: 'Add %0 spaces' }, 1 ); // 'Add a space'
  * 		translate( 'en', { string: 'Add a space', plural: 'Add %0 spaces' }, 3 ); // 'Add %0 spaces'
  *
- * The message can provide a context using the `context` property when the message ids created from message strings
- * are not unique. When the `context` property is set the message id will be constructed in
- * the following way: `${ message.string }_${ message.context }`. This context will be also used
- * by translators later as an additional context for the translated message.
+ * The message should provide an id using the `id` property when the message strings are not unique and their
+ * translations should be different.
  *
- *		translate( 'en', { string: 'image', context: 'Add/Remove image' } );
+ *		translate( 'en', { string: 'image', id: 'ADD_IMAGE' } );
+ *		translate( 'en', { string: 'image', id: 'AN_IMAGE' } );
  *
  * @protected
  * @param {String} language Target language.
@@ -138,10 +137,7 @@ export function _translate( language, message, quantity = 1 ) {
 		language = Object.keys( window.CKEDITOR_TRANSLATIONS )[ 0 ];
 	}
 
-	// Use message context to enhance the message id when passed.
-	const messageId = message.context ?
-		message.string + '_' + message.context :
-		message.string;
+	const messageId = message.id || message.string;
 
 	if ( numberOfLanguages === 0 || !hasTranslation( language, messageId ) ) {
 		if ( quantity !== 1 ) {
@@ -194,9 +190,9 @@ function getNumberOfLanguages() {
  *
  * @property {String} string The message string to translate. Acts as a default translation if the translation for given language
  * is not defined. When the message is supposed to support plural forms then the string should be the English singular form of the message.
- * @property {String} [context] The message context. If passed then the message id is constructed form both,
- * the message string and the message string in the following format: `<messageString>_<messageContext>`. This property is useful when
- * various messages can share the same message string, when omitting a context would result in a broken translation.
+ * @property {String} [id] The message id. If passed then the message id is taken from this property instead of the `message.string`.
+ * This property is useful when various messages share the same message string. E.g. `editor` string in `in the editor` and `my editor`
+ * sentences.
  * @property {String} [plural] The plural form of the message. This property should be skipped when a message is not supposed
  * to support plural forms. Otherwise it should always be set to a string with the English plural form of the message.
  */

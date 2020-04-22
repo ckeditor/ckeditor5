@@ -143,14 +143,15 @@ describe( 'Locale', () => {
 			expect( t( 'foo' ) ).to.equal( 'foo_pl' );
 		} );
 
-		it( 'should translate a message including the message string and the message context', () => {
+		it( 'should translate a message using the message id if it was passed', () => {
 			const t = locale.t;
 
 			addTranslations( 'pl', {
-				'foo_bar': 'foo_bar_pl'
+				'ADD_IMAGE': 'obrazek',
+				'image': 'foo'
 			} );
 
-			expect( t( { string: 'foo', context: 'bar' } ) ).to.equal( 'foo_bar_pl' );
+			expect( t( { string: 'image', id: 'ADD_IMAGE' } ) ).to.equal( 'obrazek' );
 		} );
 
 		it( 'should translate a message supporting plural forms', () => {
@@ -161,16 +162,16 @@ describe( 'Locale', () => {
 			expect( t( { string: 'bar', plural: '%0 bars' }, [ 5 ] ), 3 ).to.equal( '5 bar_pl_2' );
 		} );
 
-		it( 'should translate a message supporting plural forms with a context', () => {
+		it( 'should translate a message supporting plural forms with a message id if it was passed', () => {
 			const t = locale.t;
 
 			addTranslations( 'pl', {
-				'%1 a space_Add/Remove a space': [ '%1 spację', '%1 %0 spacje', '%1 %0 spacji' ],
+				'ADD_SPACE': [ '%1 spację', '%1 %0 spacje', '%1 %0 spacji' ],
 				'Add': 'Dodaj',
 				'Remove': 'Usuń'
 			} );
 
-			const addOrRemoveSpaceMessage = { string: '%1 a space', plural: '%1 %0 spaces', context: 'Add/Remove a space' };
+			const addOrRemoveSpaceMessage = { string: '%1 a space', plural: '%1 %0 spaces', id: 'ADD_SPACE' };
 
 			expect( t( addOrRemoveSpaceMessage, [ 1, t( 'Add' ) ] ), 1 ).to.equal( 'Dodaj spację' );
 			expect( t( addOrRemoveSpaceMessage, [ 2, t( 'Remove' ) ] ), 2 ).to.equal( 'Usuń 2 spacje' );

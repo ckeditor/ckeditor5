@@ -105,12 +105,11 @@ export default class Locale {
 		 *		t( { string: 'Add a space', plural: 'Add %0 spaces' }, 5 ); // 'Dodaj 5 spacji' for the Polish language.
 		 *		t( { string: '%1 a space', plural: '%1 %0 spaces' }, [ 2, 'Add' ] ); // 'Dodaj 2 spacje' for the Polish language.
 		 *
-		 * The message can provide a context using the `context` property when the message ids created from message strings
-		 * are not unique. When the `context` property is set the message id will be constructed in
-		 * the following way: `${ message.string }_${ message.context }`. This context will be also used
-		 * by translators later as an additional context for the translated message.
+		 *  * The message should provide an id using the `id` property when the message strings are not unique and their
+		 * translations should be different.
 		 *
-		 *		t( { string: 'image', context: 'Add/Remove image' } );
+		 *		translate( 'en', { string: 'image', id: 'ADD_IMAGE' } );
+		 *		translate( 'en', { string: 'image', id: 'AN_IMAGE' } );
 		 *
 		 * @method #t
 		 * @param {String|module:utils/translation-service~Message} message A message that will be localized (translated).
