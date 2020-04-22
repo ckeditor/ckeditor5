@@ -49,6 +49,20 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  *	 		// ... Translations.
  * 		}, n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2 );
  *
+ * All translations extend the global `window.CKEDITOR_TRANSLATIONS` object. An example of this object can be found below:
+ *
+ * 		{
+ * 			pl: {
+ *				dictionary: {
+ *					'Cancel': 'Anuluj',
+ *					'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ]
+ *				},
+ *				// A function that returns the plural form index.
+ *				getPluralForm: n => n !==1
+ *			}
+ *			// other languages.
+ *		}
+ *
  * If you cannot import this function from this module (e.g. because you use a CKEditor 5 build), then you can
  * still add translations by extending the global `window.CKEDITOR_TRANSLATIONS` object by using a function like
  * the one below:
