@@ -201,7 +201,7 @@ function getBiggestRectangleArea( rows, columns ) {
 
 // Checks if the selection does not mix header (column or row) with other cells.
 //
-// In the below table a valid selection is such that consist cells with the same letter.
+// For instance, in the table below valid selections consist of cells with the same letter only.
 // So, a-a (same heading row and column) or d-d (body cells) are valid while c-d or a-b are not.
 //
 //    header columns
