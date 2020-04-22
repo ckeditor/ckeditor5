@@ -278,18 +278,9 @@ export default class TableUI extends Plugin {
 		dropdownView.buttonView.set( {
 			label,
 			icon,
-			tooltip: true
+			tooltip: true,
+			isEnabled: true
 		} );
-
-		// The main part of the split button is bound to the "mergeTableCells" command only.
-		dropdownView.bind( 'isEnabled' ).to( editor.commands.get( mergeCommandName ) );
-
-		// The split button dropdown must be **always** enabled and ready to open no matter the state
-		// of the "mergeTableCells" command. You may not be able to merge multiple cells but you may want
-		// to split them. This is also about mobile devices where multi–cell selection will never work
-		// (that's why "Merge cell right", "Merge cell down", etc. are still there in the first place).
-		dropdownView.buttonView.arrowView.unbind( 'isEnabled' );
-		dropdownView.buttonView.arrowView.isEnabled = true;
 
 		// Merge selected table cells when the main part of the split button is clicked.
 		this.listenTo( dropdownView.buttonView, 'execute', () => {
