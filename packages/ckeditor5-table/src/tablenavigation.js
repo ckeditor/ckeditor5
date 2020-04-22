@@ -12,8 +12,6 @@ import { getSelectedTableCells, getTableCellsContainingSelection } from './utils
 import { findAncestor } from './commands/utils';
 import TableWalker from './tablewalker';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
@@ -172,7 +170,7 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Handles arrow keys.
+	 * Handles arrow keys to move the selection around a table.
 	 *
 	 * @private
 	 * @param {'left'|'up'|'right'|'down'} direction The direction of the arrow key.
@@ -220,7 +218,7 @@ export default class TableNavigation extends Plugin {
 		}
 
 		// If next to the selection there is an object then this is not the cell boundary (widget handler should handle this).
-		if ( this._getObjectElementNextToSelection( selection, isForward ) ) {
+		if ( this._isObjectElementNextToSelection( selection, isForward ) ) {
 			return false;
 		}
 
@@ -288,9 +286,9 @@ export default class TableNavigation extends Plugin {
 	 * @private
 	 * @param {module:engine/model/selection~Selection} modelSelection The selection.
 	 * @param {Boolean} isForward Direction of checking.
-	 * @returns {module:engine/model/element~Element|null}
+	 * @returns {Boolean}
 	 */
-	_getObjectElementNextToSelection( modelSelection, isForward ) {
+	_isObjectElementNextToSelection( modelSelection, isForward ) {
 		const model = this.editor.model;
 		const schema = model.schema;
 
@@ -298,11 +296,7 @@ export default class TableNavigation extends Plugin {
 		model.modifySelection( probe, { direction: isForward ? 'forward' : 'backward' } );
 		const objectElement = isForward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
 
-		if ( objectElement && schema.isObject( objectElement ) ) {
-			return objectElement;
-		}
-
-		return null;
+		return objectElement && schema.isObject( objectElement );
 	}
 
 	/**
@@ -318,24 +312,26 @@ export default class TableNavigation extends Plugin {
 	 * @returns {module:engine/model/range~Range|null}
 	 */
 	_findTextRangeFromSelection( range, selection, isForward ) {
+		const model = this.editor.model;
+
 		if ( isForward ) {
 			const position = selection.getLastPosition();
 			const lastRangePosition = this._getNearestVisibleTextPosition( range, 'backward' );
 
-			if ( !lastRangePosition || position.compareWith( lastRangePosition ) != 'before' ) {
-				return null;
+			if ( lastRangePosition && position.isBefore( lastRangePosition ) ) {
+				return model.createRange( position, lastRangePosition );
 			}
 
-			return new ModelRange( position, lastRangePosition );
+			return null;
 		} else {
 			const position = selection.getFirstPosition();
 			const firstRangePosition = this._getNearestVisibleTextPosition( range, 'forward' );
 
-			if ( !firstRangePosition || position.compareWith( firstRangePosition ) != 'after' ) {
-				return null;
+			if ( firstRangePosition && position.isAfter( firstRangePosition ) ) {
+				return model.createRange( firstRangePosition, position );
 			}
 
-			return new ModelRange( firstRangePosition, position );
+			return null;
 		}
 	}
 
@@ -351,11 +347,7 @@ export default class TableNavigation extends Plugin {
 		const schema = this.editor.model.schema;
 		const mapper = this.editor.editing.mapper;
 
-		const startPosition = direction == 'forward' ? range.start : range.end;
-
-		const treeWalker = new TreeWalker( { direction, boundaries: range, startPosition } );
-
-		for ( const { nextPosition, item } of treeWalker ) {
+		for ( const { nextPosition, item } of range.getWalker( { direction } ) ) {
 			if ( schema.checkChild( nextPosition, '$text' ) ) {
 				const viewElement = mapper.toViewElement( item );
 
@@ -393,7 +385,7 @@ export default class TableNavigation extends Plugin {
 			// because it would provide incorrect result for eg caption of image and selection
 			// just before end of it. Also in this case there is no "dual" position.
 			if ( !probe.focus.isAtEnd && !modelRange.start.isEqual( probe.focus ) ) {
-				modelRange = new ModelRange( probe.focus, modelRange.end );
+				modelRange = model.createRange( probe.focus, modelRange.end );
 			}
 		}
 
@@ -504,13 +496,22 @@ function isArrowKeyCode( keyCode ) {
 //
 // @private
 // @param {Number} keyCode
-// @param {Boolean} isLtrContent The content language direction.
+// @param {String} contentLanguageDirection The content language direction.
 // @returns {'left'|'up'|'right'|'down'} Arrow direction.
-function getDirectionFromKeyCode( keyCode, isLtrContent ) {
+function getDirectionFromKeyCode( keyCode, contentLanguageDirection ) {
+	const isLtrContent = contentLanguageDirection === 'ltr';
+
 	switch ( keyCode ) {
-		case keyCodes.arrowleft: return isLtrContent ? 'left' : 'right';
-		case keyCodes.arrowright: return isLtrContent ? 'right' : 'left';
-		case keyCodes.arrowup: return 'up';
-		case keyCodes.arrowdown: return 'down';
+		case keyCodes.arrowleft:
+			return isLtrContent ? 'left' : 'right';
+
+		case keyCodes.arrowright:
+			return isLtrContent ? 'right' : 'left';
+
+		case keyCodes.arrowup:
+			return 'up';
+
+		case keyCodes.arrowdown:
+			return 'down';
 	}
 }
