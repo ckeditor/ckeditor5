@@ -190,7 +190,7 @@ function getNumberOfLanguages() {
  * The internationalization message interface. A message that implements this interface can be passed to the `t()` function
  * to be translated to the target ui language.
  *
- * @typedef {Object} Message
+ * @typedef {Object} module:utils/translation-service~Message
  *
  * @property {String} string The message string to translate. Acts as a default translation if the translation for given language
  * is not defined. When the message is supposed to support plural forms then the string should be the English singular form of the message.
