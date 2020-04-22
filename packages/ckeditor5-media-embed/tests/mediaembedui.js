@@ -54,9 +54,12 @@ describe( 'MediaEmbedUI', () => {
 	} );
 
 	it( 'should allow creating two instances', () => {
+		let secondInstance;
+
 		expect( function createSecondInstance() {
-			editor.ui.componentFactory.create( 'mediaEmbed' );
+			secondInstance = editor.ui.componentFactory.create( 'mediaEmbed' );
 		} ).not.to.throw();
+		expect( dropdown ).to.be.not.equal( secondInstance );
 	} );
 
 	describe( 'dropdown', () => {
