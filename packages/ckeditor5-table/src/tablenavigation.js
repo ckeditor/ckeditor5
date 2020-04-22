@@ -18,7 +18,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 /**
- * This plugin enables a keyboard navigation for tables.
+ * This plugin enables keyboard navigation for tables.
  * It is loaded automatically by the {@link module:table/table~Table} plugin.
  *
  * @extends module:core/plugin~Plugin
@@ -156,15 +156,13 @@ export default class TableNavigation extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_onKeydown( eventInfo, domEventData ) {
-		const isLtrContent = this.editor.locale.contentLanguageDirection === 'ltr';
 		const keyCode = domEventData.keyCode;
-		let wasHandled = false;
 
-		// Checks if the keys were handled and then prevents the default event behaviour and stops
-		// the propagation.
-		if ( isArrowKeyCode( keyCode ) ) {
-			wasHandled = this._handleArrowKeys( getDirectionFromKeyCode( keyCode, isLtrContent ) );
+		if ( !isArrowKeyCode( keyCode ) ) {
+			return;
 		}
+
+		const wasHandled = this._handleArrowKeys( getDirectionFromKeyCode( keyCode, this.editor.locale.contentLanguageDirection ) );
 
 		if ( wasHandled ) {
 			domEventData.preventDefault();
