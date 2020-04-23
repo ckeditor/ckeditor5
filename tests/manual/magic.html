@@ -1,0 +1,96 @@
+<head>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+
+		.magic-block {
+			height: 8px;
+			cursor: pointer;
+			position: relative;
+		}
+
+		.magic-block::before {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+			border-radius: 100px;
+			display: block;
+			width: 20px;
+			height: 20px;
+			line-height: 20px;
+			text-align: center;
+			font-weight: bold;
+			background: hsl(0,0%,100%);
+			color: hsl(0, 0%, 70%);
+			border: 1px dashed hsl(0,0%,80%);
+			content: "¶";
+			font-family: sans-serif;
+			font-size: 12px;
+			z-index: 2;
+
+			transition: all 150ms;
+		}
+
+		.magic-block::after {
+			position: absolute;
+			top: 50%;
+			width: 100%;
+			content: "";
+			border-top: 1px dashed hsl(0,0%,85%);
+			z-index: 1;
+			transition: all 150ms;
+		}
+
+		.magic-block:hover::before {
+			color: hsl(0,0%,100%);
+			background: var(--ck-color-focus-border);
+			border-color: var(--ck-color-focus-border);
+			border-style: solid;
+		}
+
+		.magic-block:hover::after {
+			border-color: var(--ck-color-focus-border);
+			border-top-style: solid;
+		}
+	</style>
+</head>
+<div id="editor">
+	<figure class="image">
+		<img alt="bar" src="sample.jpg">
+		<figcaption>Caption</figcaption>
+	</figure>
+	<h2>Heading 1</h2>
+	<p>Paragraph</p>
+	<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
+	<ul>
+		<li>UL List item 1</li>
+		<li>UL List item 2</li>
+	</ul>
+	<ol>
+		<li>OL List item 1</li>
+		<li>OL List item 2</li>
+	</ol>
+	<figure class="image">
+		<img alt="bar" src="sample.jpg">
+		<figcaption>Caption</figcaption>
+	</figure>
+	<figure class="image">
+		<img alt="bar" src="sample.jpg">
+		<figcaption>Caption</figcaption>
+	</figure>
+	<blockquote>
+		<p>Quote</p>
+		<ul>
+			<li>Quoted UL List item 1</li>
+			<li>Quoted UL List item 2</li>
+		</ul>
+		<p>Quote</p>
+	</blockquote>
+	<figure class="image">
+		<img alt="bar" src="sample.jpg">
+		<figcaption>Caption</figcaption>
+	</figure>
+</div>
