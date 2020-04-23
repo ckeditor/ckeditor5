@@ -275,7 +275,10 @@ function getWebpackConfig( snippets, config ) {
 		definitions[ definitionKey ] = JSON.stringify( config.definitions[ definitionKey ] );
 	}
 
-	const ckeditorWebpackPluginOptions = {};
+	const ckeditorWebpackPluginOptions = {
+		// All translation files are added to HTML files directly later.
+		buildAllTranslationsToSeparateFiles: true
+	};
 
 	if ( config.language === MULTI_LANGUAGE ) {
 		const additionalLanguages = new Set();
@@ -331,7 +334,7 @@ function getWebpackConfig( snippets, config ) {
 			} ),
 			new webpack.DefinePlugin( definitions ),
 			new ProgressBarPlugin( {
-				format: `Building snippets for language "${ config.language }": :percent (:msg)`,
+				format: `Building snippets for language "${ config.language }": :percent (:msg)`
 			} )
 		],
 
