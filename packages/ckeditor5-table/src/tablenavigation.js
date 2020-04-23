@@ -450,8 +450,8 @@ export default class TableNavigation extends Plugin {
 		const isBeforeFirstCell = column < 0 && row <= 0;
 		const isAfterLastCell = column > lastColumn && row >= lastRow;
 
-		// Note that if the last table cell is row-spanned then isAfterLastCell will never be true but we don't know
-		// if user was navigating on the last row or not, so let's allow him to stay in the table.
+		// Note that if the table cell at the end of a row is row-spanned then isAfterLastCell will never be true.
+		// However, we don't know if user was navigating on the last row or not, so let's stay in the table.
 
 		if ( isOutsideVertically || isBeforeFirstCell || isAfterLastCell ) {
 			model.change( writer => {
