@@ -31,7 +31,6 @@ import SetHeaderColumnCommand from './commands/setheadercolumncommand';
 import MergeCellsCommand from './commands/mergecellscommand';
 import SelectRowCommand from './commands/selectrowcommand';
 import SelectColumnCommand from './commands/selectcolumncommand';
-import { getTableCellsContainingSelection } from './utils';
 import TableUtils from '../src/tableutils';
 
 import injectTableLayoutPostFixer from './converters/table-layout-post-fixer';
@@ -150,11 +149,6 @@ export default class TableEditing extends Plugin {
 		injectTableLayoutPostFixer( model );
 		injectTableCellRefreshPostFixer( model );
 		injectTableCellParagraphPostFixer( model );
-
-		// Handle Tab key navigation.
-		this.editor.keystrokes.set( 'Tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { priority: 'low' } );
-		this.editor.keystrokes.set( 'Tab', this._getTabHandler( true ), { priority: 'low' } );
-		this.editor.keystrokes.set( 'Shift+Tab', this._getTabHandler( false ), { priority: 'low' } );
 	}
 
 	/**
@@ -162,103 +156,5 @@ export default class TableEditing extends Plugin {
 	 */
 	static get requires() {
 		return [ TableUtils ];
-	}
-
-	/**
-	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events for the <kbd>Tab</kbd> key executed
-	 * when the table widget is selected.
-	 *
-	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} eventInfo
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
-	 */
-	_handleTabOnSelectedTable( domEventData, cancel ) {
-		const editor = this.editor;
-		const selection = editor.model.document.selection;
-
-		if ( !selection.isCollapsed && selection.rangeCount === 1 && selection.getFirstRange().isFlat ) {
-			const selectedElement = selection.getSelectedElement();
-
-			if ( !selectedElement || !selectedElement.is( 'table' ) ) {
-				return;
-			}
-
-			cancel();
-
-			editor.model.change( writer => {
-				writer.setSelection( writer.createRangeIn( selectedElement.getChild( 0 ).getChild( 0 ) ) );
-			} );
-		}
-	}
-
-	/**
-	 * Returns a handler for {@link module:engine/view/document~Document#event:keydown keydown} events for the <kbd>Tab</kbd> key executed
-	 * inside table cell.
-	 *
-	 * @private
-	 * @param {Boolean} isForward Whether this handler will move the selection to the next or the previous cell.
-	 */
-	_getTabHandler( isForward ) {
-		const editor = this.editor;
-
-		return ( domEventData, cancel ) => {
-			const selection = editor.model.document.selection;
-			const tableCell = getTableCellsContainingSelection( selection )[ 0 ];
-
-			if ( !tableCell ) {
-				return;
-			}
-
-			cancel();
-
-			const tableRow = tableCell.parent;
-			const table = tableRow.parent;
-
-			const currentRowIndex = table.getChildIndex( tableRow );
-			const currentCellIndex = tableRow.getChildIndex( tableCell );
-
-			const isFirstCellInRow = currentCellIndex === 0;
-
-			if ( !isForward && isFirstCellInRow && currentRowIndex === 0 ) {
-				// It's the first cell of the table - don't do anything (stay in the current position).
-				return;
-			}
-
-			const isLastCellInRow = currentCellIndex === tableRow.childCount - 1;
-			const isLastRow = currentRowIndex === table.childCount - 1;
-
-			if ( isForward && isLastRow && isLastCellInRow ) {
-				editor.execute( 'insertTableRowBelow' );
-
-				// Check if the command actually added a row. If `insertTableRowBelow` execution didn't add a row (because it was disabled
-				// or it got overwritten) do not change the selection.
-				if ( currentRowIndex === table.childCount - 1 ) {
-					return;
-				}
-			}
-
-			let cellToFocus;
-
-			// Move to first cell in next row.
-			if ( isForward && isLastCellInRow ) {
-				const nextRow = table.getChild( currentRowIndex + 1 );
-
-				cellToFocus = nextRow.getChild( 0 );
-			}
-			// Move to last cell in a previous row.
-			else if ( !isForward && isFirstCellInRow ) {
-				const previousRow = table.getChild( currentRowIndex - 1 );
-
-				cellToFocus = previousRow.getChild( previousRow.childCount - 1 );
-			}
-			// Move to next/previous cell.
-			else {
-				cellToFocus = tableRow.getChild( currentCellIndex + ( isForward ? 1 : -1 ) );
-			}
-
-			editor.model.change( writer => {
-				writer.setSelection( writer.createRangeIn( cellToFocus ) );
-			} );
-		};
 	}
 }
