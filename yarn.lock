@@ -874,27 +874,6 @@
     style-loader "^1.0.0"
     webpack "^4.39.1"
 
-"@ckeditor/ckeditor5-dev-utils@^12.0.0", "@ckeditor/ckeditor5-dev-utils@^12.0.9":
-  version "12.0.9"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-utils/-/ckeditor5-dev-utils-12.0.9.tgz#95593570c91dad225320a3d972767fcbe71f7fa7"
-  integrity sha512-ZwylUaCtf3Qb3+FPx3p9JY7SjzC0wGz9GxQgjQNr2Wih3Mvo83DoXEORSp5t/jDEjuouwEhnIej2PEn+1ZxhYw==
-  dependencies:
-    acorn "^6.2.1"
-    acorn-walk "^6.2.0"
-    chalk "^3.0.0"
-    cssnano "^4.0.0"
-    del "^5.0.0"
-    escodegen "^1.9.0"
-    fs-extra "^8.1.0"
-    javascript-stringify "^1.6.0"
-    pofile "^1.0.9"
-    postcss "^7.0.17"
-    postcss-import "^12.0.0"
-    postcss-mixins "^6.2.0"
-    postcss-nesting "^7.0.0"
-    shelljs "^0.8.1"
-    through2 "^3.0.1"
-
 "@ckeditor/ckeditor5-dev-utils@^13.0.0":
   version "13.0.0"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-utils/-/ckeditor5-dev-utils-13.0.0.tgz#d81240dab4c76dbc6a69464ef16c67d3b34fef8b"
@@ -915,16 +894,6 @@
     postcss-nesting "^7.0.0"
     shelljs "^0.8.1"
     through2 "^3.0.1"
-
-"@ckeditor/ckeditor5-dev-webpack-plugin@^8.0.0":
-  version "8.0.9"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-webpack-plugin/-/ckeditor5-dev-webpack-plugin-8.0.9.tgz#82b0be2747c37c2c45ee786b56aee93cb7f85ad6"
-  integrity sha512-0Sw4iSJmMA9qkd6QxdWEzIPS3wXvO19FKvNS0nqQZPjcRvgDbJ/n506A+drwmHhjqElgO3Nl6nAwUDd476SOcg==
-  dependencies:
-    "@ckeditor/ckeditor5-dev-utils" "^12.0.9"
-    chalk "^3.0.0"
-    rimraf "^2.6.2"
-    webpack-sources "^1.1.0"
 
 "@ckeditor/ckeditor5-dev-webpack-plugin@^9.0.0":
   version "9.0.0"
