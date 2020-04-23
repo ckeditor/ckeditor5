@@ -36,6 +36,10 @@ msgctxt "Label for the delete table column button."
 msgid "Delete column"
 msgstr "Slet kolonne"
 
+msgctxt "Label for the select table entire column button."
+msgid "Select column"
+msgstr ""
+
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
 msgstr "Kolonne"
@@ -55,6 +59,10 @@ msgstr "Indsæt header over"
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
 msgstr "Slet række"
+
+msgctxt "Label for the select table entire row button."
+msgid "Select row"
+msgstr ""
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
@@ -235,3 +243,7 @@ msgstr "Farven er ugyldig. Prøv \"#FF0000\" eller \"rgb(255,0,0)\" eller \"red\
 msgctxt "The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value."
 msgid "The value is invalid. Try \"10px\" or \"2em\" or simply \"2\"."
 msgstr "Værdien er ugyldig. Prøv \"10px\" eller \"2em\" eller ganske enkelt \"2\"."
+
+msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
+msgid "Color picker"
+msgstr ""

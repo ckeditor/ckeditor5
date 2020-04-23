@@ -36,6 +36,10 @@ msgctxt "Label for the delete table column button."
 msgid "Delete column"
 msgstr "Usuń kolumnę"
 
+msgctxt "Label for the select table entire column button."
+msgid "Select column"
+msgstr ""
+
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
 msgstr "Kolumna"
@@ -55,6 +59,10 @@ msgstr "Wstaw wiersz ponad"
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
 msgstr "Usuń wiersz"
+
+msgctxt "Label for the select table entire row button."
+msgid "Select row"
+msgstr ""
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
@@ -235,3 +243,7 @@ msgstr "Kolor jest niepoprawny. Spróbuj wpisać \"#FF0000\", \"rgb(255,0,0)\" l
 msgctxt "The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value."
 msgid "The value is invalid. Try \"10px\" or \"2em\" or simply \"2\"."
 msgstr "Wartość jest niepoprawna. Spróbuj  wpisać \"10px\", \"2em\" lub po prostu \"2\"."
+
+msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
+msgid "Color picker"
+msgstr ""
