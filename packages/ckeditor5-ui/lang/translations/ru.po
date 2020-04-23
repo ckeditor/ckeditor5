@@ -30,23 +30,23 @@ msgstr "Редактировать блок"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
-msgstr ""
+msgstr "Следующий"
 
 msgctxt "Label for a button showing the previous thing (tab, page, etc.)."
 msgid "Previous"
-msgstr ""
+msgstr "Предыдущий"
 
 msgctxt "Label for a 'page X of Y' status of a typical next/previous page navigation."
 msgid "%0 of %1"
-msgstr ""
+msgstr "%0 из %1"
 
 msgctxt "Label used by assistive technologies describing a generic editor toolbar."
 msgid "Editor toolbar"
-msgstr ""
+msgstr "Панель инструментов редактора"
 
 msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
 msgid "Dropdown toolbar"
-msgstr ""
+msgstr "Выпадающая панель инструментов"
 
 msgctxt "Label of a toolbar button which reveals more toolbar items."
 msgid "Show more items"
