@@ -237,6 +237,76 @@ describe( 'MergeCellsCommand', () => {
 
 			expect( command.isEnabled ).to.be.false;
 		} );
+
+		it( 'should be true if selection has cells only from column headers - rows in body section', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01', '02', '03' ],
+				[ '10', '11', '12', '13' ]
+			], { headingColumns: 2 } ) );
+
+			tableSelection._setCellSelection(
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be false if selection has cells from column headers and other cells - rows in body section', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01', '02', '03' ],
+				[ '10', '11', '12', '13' ]
+			], { headingColumns: 2 } ) );
+
+			tableSelection._setCellSelection(
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 1, 2 ] )
+			);
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be true if selection has cells only from column headers - rows in header section', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01', '02', '03' ],
+				[ '10', '11', '12', '13' ]
+			], { headingColumns: 2, headingRows: 1 } ) );
+
+			tableSelection._setCellSelection(
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 0, 1 ] )
+			);
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be false if selection has cells only from column headers and other cells - rows in header section', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01', '02', '03' ],
+				[ '10', '11', '12', '13' ]
+			], { headingColumns: 2, headingRows: 1 } ) );
+
+			tableSelection._setCellSelection(
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 0, 2 ] )
+			);
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false if selection has cells from column headers, row headers and body sections', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01', '02', '03' ],
+				[ '10', '11', '12', '13' ]
+			], { headingColumns: 2, headingRows: 1 } ) );
+
+			tableSelection._setCellSelection(
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 1, 2 ] )
+			);
+
+			expect( command.isEnabled ).to.be.false;
+		} );
 	} );
 
 	describe( 'execute()', () => {

@@ -24,6 +24,7 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 describe( 'TableSelection - integration', () => {
 	let editor, model, tableSelection, modelRoot, element, viewDocument;
@@ -218,6 +219,34 @@ describe( 'TableSelection - integration', () => {
 					'</tableRow>' +
 				'</table>'
 			);
+		} );
+	} );
+
+	describe( 'with undo', () => {
+		beforeEach( async () => {
+			await setupEditor( [ UndoEditing ] );
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/6634.
+		it( 'works with merge cells command', () => {
+			setModelData( editor.model, modelTable( [ [ '00', '01' ] ] ) );
+
+			tableSelection._setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
+			);
+
+			editor.execute( 'mergeTableCells' );
+
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ { colspan: 2, contents: '<paragraph>[00</paragraph><paragraph>01]</paragraph>' } ]
+			] ) );
+
+			editor.execute( 'undo' );
+
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ '[]00', '01' ]
+			] ) );
 		} );
 	} );
 
