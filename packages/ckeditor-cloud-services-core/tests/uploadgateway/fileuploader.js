@@ -45,7 +45,7 @@ describe( 'FileUploader', () => {
 
 			fileReader.readAsDataURL( fileUploader.file );
 			fileReader.onloadend = () => {
-				expect( fileReader.result ).to.be.equal( BASE_64_FILE );
+				expect( fileReader.result ).to.equal( BASE_64_FILE );
 
 				done();
 			};
@@ -56,7 +56,7 @@ describe( 'FileUploader', () => {
 
 			const fileUploader = new FileUploader( file, token, API_ADDRESS );
 
-			expect( fileUploader.file.name ).to.be.equal( 'test.jpg' );
+			expect( fileUploader.file.name ).to.equal( 'test.jpg' );
 		} );
 	} );
 
@@ -75,7 +75,7 @@ describe( 'FileUploader', () => {
 		it( 'should register callback for `error` event', done => {
 			fileUploader.onError( data => {
 				expect( data ).to.be.instanceOf( Error );
-				expect( data.message ).to.be.equal( 'TEST' );
+				expect( data.message ).to.equal( 'TEST' );
 
 				done();
 			} );
@@ -113,9 +113,9 @@ describe( 'FileUploader', () => {
 			fileUploader
 				.send()
 				.then( () => {
-					expect( request.url ).to.be.equal( API_ADDRESS );
-					expect( request.method ).to.be.equal( 'POST' );
-					expect( request.responseType ).to.be.equal( 'json' );
+					expect( request.url ).to.equal( API_ADDRESS );
+					expect( request.method ).to.equal( 'POST' );
+					expect( request.responseType ).to.equal( 'json' );
 					expect( request.requestHeaders ).to.be.deep.equal( { Authorization: 'token' } );
 
 					done();
@@ -129,7 +129,7 @@ describe( 'FileUploader', () => {
 		it( 'should fire `error` event with error message when response is failed', done => {
 			fileUploader
 				.onError( error => {
-					expect( error ).to.be.equal( 'Message' );
+					expect( error ).to.equal( 'Message' );
 
 					done();
 				} )
@@ -146,7 +146,7 @@ describe( 'FileUploader', () => {
 		it( 'should fire `error` event with error when response is failed', done => {
 			fileUploader
 				.onError( error => {
-					expect( error ).to.be.equal( 'Error' );
+					expect( error ).to.equal( 'Error' );
 
 					done();
 				} )
@@ -162,7 +162,7 @@ describe( 'FileUploader', () => {
 		it( 'should fire `error` event when response is aborted', done => {
 			fileUploader
 				.onError( error => {
-					expect( error ).to.be.equal( 'Abort' );
+					expect( error ).to.equal( 'Abort' );
 
 					done();
 				} )
@@ -174,7 +174,7 @@ describe( 'FileUploader', () => {
 		it( 'should fire `error` event when network error occurs', done => {
 			fileUploader
 				.onError( error => {
-					expect( error ).to.be.equal( 'Network Error' );
+					expect( error ).to.equal( 'Network Error' );
 
 					done();
 				} )
@@ -186,8 +186,8 @@ describe( 'FileUploader', () => {
 		it( 'should fire `progress` event', done => {
 			fileUploader
 				.onProgress( data => {
-					expect( data.total ).to.be.equal( 1 );
-					expect( data.uploaded ).to.be.equal( 10 );
+					expect( data.total ).to.equal( 1 );
+					expect( data.uploaded ).to.equal( 10 );
 
 					done();
 				} )
