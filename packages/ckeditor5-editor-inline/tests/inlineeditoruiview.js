@@ -148,7 +148,7 @@ describe( 'InlineEditorUIView', () => {
 					} ] );
 
 					// Include paddings.
-					expect( view.toolbar.maxWidth ).to.be.equal( toPx( new Rect( editableElement ).width ) );
+					expect( view.toolbar.maxWidth ).to.equal( toPx( new Rect( editableElement ).width ) );
 
 					editableElement.style.width = '200px';
 
@@ -158,7 +158,7 @@ describe( 'InlineEditorUIView', () => {
 					} ] );
 
 					// Include paddings.
-					expect( view.toolbar.maxWidth ).to.be.equal( toPx( new Rect( editableElement ).width ) );
+					expect( view.toolbar.maxWidth ).to.equal( toPx( new Rect( editableElement ).width ) );
 
 					editableElement.remove();
 					view.destroy();
