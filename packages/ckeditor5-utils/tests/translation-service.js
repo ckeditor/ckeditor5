@@ -61,22 +61,22 @@ describe( 'translation-service', () => {
 			const translatedCancelPL = _translate( 'pl', { string: 'Cancel' } );
 			const translatedCancelEN = _translate( 'en', { string: 'Cancel' } );
 
-			expect( translatedCancelPL ).to.be.equal( 'Anuluj' );
-			expect( translatedCancelEN ).to.be.equal( 'Cancel' );
+			expect( translatedCancelPL ).to.equal( 'Anuluj' );
+			expect( translatedCancelEN ).to.equal( 'Cancel' );
 		} );
 
 		it( 'should return the original message string if no translation exists for the given message', () => {
 			const translatedBold = _translate( 'pl', { string: 'Bold' } );
 
-			expect( translatedBold ).to.be.equal( 'Bold' );
+			expect( translatedBold ).to.equal( 'Bold' );
 		} );
 
 		it( 'should return the correct plural form of english message if no translation exists for the given message', () => {
 			const addSpaces = _translate( 'pl', { string: 'Add a space', plural: 'Add %0 spaces' }, 3 );
 			const addASpace = _translate( 'pl', { string: 'Add a space', plural: 'Add %0 spaces' }, 1 );
 
-			expect( addSpaces ).to.be.equal( 'Add %0 spaces' );
-			expect( addASpace ).to.be.equal( 'Add a space' );
+			expect( addSpaces ).to.equal( 'Add %0 spaces' );
+			expect( addASpace ).to.equal( 'Add a space' );
 		} );
 
 		it( 'should return the original message string if a translation for the target language does not exist' +
@@ -88,7 +88,7 @@ describe( 'translation-service', () => {
 
 			const translatedBold = _translate( 'pl', { string: 'Bold' } );
 
-			expect( translatedBold ).to.be.equal( 'Bold' );
+			expect( translatedBold ).to.equal( 'Bold' );
 		} );
 
 		it( 'should return a translated message when only one language is provided', () => {
@@ -99,7 +99,7 @@ describe( 'translation-service', () => {
 
 			const translatedCancel = _translate( 'de', { string: 'Cancel' } );
 
-			expect( translatedCancel ).to.be.equal( 'Anuluj' );
+			expect( translatedCancel ).to.equal( 'Anuluj' );
 		} );
 
 		it( 'should return a translated message based on message id when it was passed', () => {

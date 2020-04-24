@@ -70,7 +70,7 @@ export function assertBinding( observable, stateBefore, data, stateAfter ) {
 	let key, boundObservable, attrs;
 
 	for ( key in stateBefore ) {
-		expect( observable[ key ] ).to.be.equal( stateBefore[ key ] );
+		expect( observable[ key ] ).to.equal( stateBefore[ key ] );
 	}
 
 	// Change attributes of bound observables.
@@ -85,7 +85,7 @@ export function assertBinding( observable, stateBefore, data, stateAfter ) {
 	}
 
 	for ( key in stateAfter ) {
-		expect( observable[ key ] ).to.be.equal( stateAfter[ key ] );
+		expect( observable[ key ] ).to.equal( stateAfter[ key ] );
 	}
 }
 

@@ -347,7 +347,7 @@ describe( 'Collection', () => {
 			collection.add( item2, 1 );
 			collection.add( item3, 0 );
 
-			expect( collection.length ).to.be.equal( 3 );
+			expect( collection.length ).to.equal( 3 );
 		} );
 
 		it( 'should fire the "add" event with the index argument', () => {

@@ -377,7 +377,7 @@ describe( 'DomEmitterMixin', () => {
 			node.dispatchEvent( mouseEvent );
 
 			sinon.assert.calledOnce( spy );
-			expect( spy.args[ 0 ][ 1 ] ).to.be.equal( mouseEvent );
+			expect( spy.args[ 0 ][ 1 ] ).to.equal( mouseEvent );
 		} );
 
 		it( 'should detach native DOM event listener proxy, specific event', () => {
@@ -404,7 +404,7 @@ describe( 'DomEmitterMixin', () => {
 			domEmitter.listenTo( node, 'test', spy1b );
 			node.dispatchEvent( new Event( 'test' ) );
 
-			expect( proxyEmitter ).to.be.equal( domEmitter._getProxyEmitter( node ) );
+			expect( proxyEmitter ).to.equal( domEmitter._getProxyEmitter( node ) );
 
 			sinon.assert.calledOnce( spy1a );
 			sinon.assert.calledOnce( spy1b );
@@ -446,7 +446,7 @@ describe( 'DomEmitterMixin', () => {
 			domEmitter.listenTo( node, 'test', spy1c );
 			node.dispatchEvent( new Event( 'test' ) );
 
-			expect( proxyEmitter ).to.be.equal( domEmitter._getProxyEmitter( node ) );
+			expect( proxyEmitter ).to.equal( domEmitter._getProxyEmitter( node ) );
 
 			sinon.assert.calledOnce( spy1a );
 			sinon.assert.calledTwice( spy1b );
