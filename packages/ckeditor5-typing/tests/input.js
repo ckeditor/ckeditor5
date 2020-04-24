@@ -944,8 +944,8 @@ describe( 'Input feature', () => {
 			viewDocument.fire( 'keydown', { keyCode: 35 } ); // Home
 			viewDocument.fire( 'keydown', { keyCode: 112 } ); // F1
 
-			expect( lockSpy.callCount ).to.be.equal( 0 );
-			expect( unlockSpy.callCount ).to.be.equal( 0 );
+			expect( lockSpy.callCount ).to.equal( 0 );
+			expect( unlockSpy.callCount ).to.equal( 0 );
 		} );
 
 		it( 'should not lock buffer on collapsed selection', () => {
@@ -957,8 +957,8 @@ describe( 'Input feature', () => {
 			viewDocument.fire( 'keydown', { keyCode: getCode( 'a' ) } );
 			viewDocument.fire( 'keydown', { keyCode: getCode( 'z' ) } );
 
-			expect( lockSpy.callCount ).to.be.equal( 0 );
-			expect( unlockSpy.callCount ).to.be.equal( 0 );
+			expect( lockSpy.callCount ).to.equal( 0 );
+			expect( unlockSpy.callCount ).to.equal( 0 );
 		} );
 
 		it( 'should not modify document when input command is disabled and selection is collapsed', () => {

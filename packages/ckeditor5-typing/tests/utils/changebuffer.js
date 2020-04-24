@@ -158,7 +158,7 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.unlock();
 
-			expect( buffer.batch ).to.be.equal( initialBatch );
+			expect( buffer.batch ).to.equal( initialBatch );
 			expect( buffer.size ).to.equal( 1 );
 		} );
 
@@ -232,7 +232,7 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.unlock();
 
-			expect( buffer.batch ).to.be.equal( initialBatch );
+			expect( buffer.batch ).to.equal( initialBatch );
 			expect( buffer.size ).to.equal( 1 );
 		} );
 
@@ -246,7 +246,7 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.unlock();
 
-			expect( buffer.batch ).to.be.equal( initialBatch );
+			expect( buffer.batch ).to.equal( initialBatch );
 			expect( buffer.size ).to.equal( 1 );
 		} );
 	} );

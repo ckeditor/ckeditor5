@@ -70,11 +70,11 @@ describe( 'InputCommand', () => {
 
 				// We expect that command is executed in enqueue changes block. Since we are already in
 				// an enqueued block, the command execution will be postponed. Hence, no changes.
-				expect( getData( model ) ).to.be.equal( '<paragraph>foo[]bar</paragraph>' );
+				expect( getData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
 
 			// After all enqueued changes are done, the command execution is reflected.
-			expect( getData( model ) ).to.be.equal( '<paragraph>foox[]bar</paragraph>' );
+			expect( getData( model ) ).to.equal( '<paragraph>foox[]bar</paragraph>' );
 		} );
 
 		it( 'should lock and unlock buffer', () => {
@@ -99,8 +99,8 @@ describe( 'InputCommand', () => {
 				range: doc.selection.getFirstRange()
 			} );
 
-			expect( getData( model ) ).to.be.equal( '<paragraph>foobar[]</paragraph>' );
-			expect( buffer.size ).to.be.equal( 3 );
+			expect( getData( model ) ).to.equal( '<paragraph>foobar[]</paragraph>' );
+			expect( buffer.size ).to.equal( 3 );
 		} );
 
 		it( 'replaces text for range within single element on the beginning', () => {
@@ -111,8 +111,8 @@ describe( 'InputCommand', () => {
 				range: doc.selection.getFirstRange()
 			} );
 
-			expect( getData( model ) ).to.be.equal( '<paragraph>rab[]r</paragraph>' );
-			expect( buffer.size ).to.be.equal( 3 );
+			expect( getData( model ) ).to.equal( '<paragraph>rab[]r</paragraph>' );
+			expect( buffer.size ).to.equal( 3 );
 		} );
 
 		it( 'replaces text for range within single element in the middle', () => {
@@ -123,8 +123,8 @@ describe( 'InputCommand', () => {
 				range: doc.selection.getFirstRange()
 			} );
 
-			expect( getData( model ) ).to.be.equal( '<paragraph>fobazz[]r</paragraph>' );
-			expect( buffer.size ).to.be.equal( 4 );
+			expect( getData( model ) ).to.equal( '<paragraph>fobazz[]r</paragraph>' );
+			expect( buffer.size ).to.equal( 4 );
 		} );
 
 		it( 'replaces text for range within single element on the end', () => {
@@ -135,8 +135,8 @@ describe( 'InputCommand', () => {
 				range: doc.selection.getFirstRange()
 			} );
 
-			expect( getData( model ) ).to.be.equal( '<paragraph>foobazzz[]</paragraph>' );
-			expect( buffer.size ).to.be.equal( 3 );
+			expect( getData( model ) ).to.equal( '<paragraph>foobazzz[]</paragraph>' );
+			expect( buffer.size ).to.equal( 3 );
 		} );
 
 		it( 'replaces text for range within multiple elements', () => {
@@ -147,8 +147,8 @@ describe( 'InputCommand', () => {
 				range: doc.selection.getFirstRange()
 			} );
 
-			expect( getData( model ) ).to.be.equal( '<heading1>Funny c[]ar</heading1>' );
-			expect( buffer.size ).to.be.equal( 6 );
+			expect( getData( model ) ).to.equal( '<heading1>Funny c[]ar</heading1>' );
+			expect( buffer.size ).to.equal( 6 );
 		} );
 
 		it( 'uses current selection when range is not given', () => {
@@ -158,8 +158,8 @@ describe( 'InputCommand', () => {
 				text: 'az'
 			} );
 
-			expect( getData( model ) ).to.be.equal( '<paragraph>foobaz[]</paragraph>' );
-			expect( buffer.size ).to.be.equal( 2 );
+			expect( getData( model ) ).to.equal( '<paragraph>foobaz[]</paragraph>' );
+			expect( buffer.size ).to.equal( 2 );
 		} );
 
 		it( 'only removes content when empty text given', () => {
@@ -170,8 +170,8 @@ describe( 'InputCommand', () => {
 				range: doc.selection.getFirstRange()
 			} );
 
-			expect( getData( model ) ).to.be.equal( '<paragraph>[]obar</paragraph>' );
-			expect( buffer.size ).to.be.equal( 0 );
+			expect( getData( model ) ).to.equal( '<paragraph>[]obar</paragraph>' );
+			expect( buffer.size ).to.equal( 0 );
 		} );
 
 		it( 'should set selection according to passed resultRange (collapsed)', () => {
@@ -182,8 +182,8 @@ describe( 'InputCommand', () => {
 				resultRange: editor.model.createRange( editor.model.createPositionFromPath( doc.getRoot(), [ 0, 5 ] ) )
 			} );
 
-			expect( getData( model ) ).to.be.equal( '<paragraph>newba[]r</paragraph>' );
-			expect( buffer.size ).to.be.equal( 3 );
+			expect( getData( model ) ).to.equal( '<paragraph>newba[]r</paragraph>' );
+			expect( buffer.size ).to.equal( 3 );
 		} );
 
 		it( 'should set selection according to passed resultRange (non-collapsed)', () => {
@@ -197,8 +197,8 @@ describe( 'InputCommand', () => {
 				)
 			} );
 
-			expect( getData( model ) ).to.be.equal( '<paragraph>new[bar]</paragraph>' );
-			expect( buffer.size ).to.be.equal( 3 );
+			expect( getData( model ) ).to.equal( '<paragraph>new[bar]</paragraph>' );
+			expect( buffer.size ).to.equal( 3 );
 		} );
 
 		it( 'only removes content when no text given (with default non-collapsed range)', () => {
@@ -206,8 +206,8 @@ describe( 'InputCommand', () => {
 
 			editor.execute( 'input' );
 
-			expect( getData( model ) ).to.be.equal( '<paragraph>[]obar</paragraph>' );
-			expect( buffer.size ).to.be.equal( 0 );
+			expect( getData( model ) ).to.equal( '<paragraph>[]obar</paragraph>' );
+			expect( buffer.size ).to.equal( 0 );
 		} );
 
 		it( 'does not change selection and content when no text given (with default collapsed range)', () => {
@@ -215,8 +215,8 @@ describe( 'InputCommand', () => {
 
 			editor.execute( 'input' );
 
-			expect( getData( model ) ).to.be.equal( '<paragraph>fo[]obar</paragraph>' );
-			expect( buffer.size ).to.be.equal( 0 );
+			expect( getData( model ) ).to.equal( '<paragraph>fo[]obar</paragraph>' );
+			expect( buffer.size ).to.equal( 0 );
 		} );
 
 		it( 'does not create insert delta when no text given', () => {
@@ -273,7 +273,7 @@ describe( 'InputCommand', () => {
 				text: 'foo'
 			} );
 
-			expect( getData( model ) ).to.be.equal(
+			expect( getData( model ) ).to.equal(
 				'<paragraph>x</paragraph>' +
 				'<paragraph></paragraph>' +
 				'<paragraph>y</paragraph>' +
