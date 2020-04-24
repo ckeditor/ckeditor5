@@ -182,7 +182,7 @@ describe( 'SpecialCharacters', () => {
 			it( 'is not fully initialized when not open', () => {
 				// (#6175)
 				const uninitializedDropdown = editor.ui.componentFactory.create( 'specialCharacters' );
-				expect( uninitializedDropdown.panelView.children.length ).to.be.equal( 0 );
+				expect( uninitializedDropdown.panelView.children.length ).to.equal( 0 );
 			} );
 		} );
 	} );

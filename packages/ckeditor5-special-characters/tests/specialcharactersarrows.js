@@ -43,7 +43,7 @@ describe( 'SpecialCharactersArrows', () => {
 	} );
 
 	it( 'properly names the category', () => {
-		expect( addItemsFirstCallArgs[ 0 ] ).to.be.equal( 'Arrows' );
+		expect( addItemsFirstCallArgs[ 0 ] ).to.equal( 'Arrows' );
 	} );
 
 	it( 'adds proper characters', () => {

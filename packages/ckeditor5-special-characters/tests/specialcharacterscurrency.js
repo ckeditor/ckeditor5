@@ -43,7 +43,7 @@ describe( 'SpecialCharactersCurrency', () => {
 	} );
 
 	it( 'properly names the category', () => {
-		expect( addItemsFirstCallArgs[ 0 ] ).to.be.equal( 'Currency' );
+		expect( addItemsFirstCallArgs[ 0 ] ).to.equal( 'Currency' );
 	} );
 
 	it( 'adds proper characters', () => {

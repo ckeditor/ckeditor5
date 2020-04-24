@@ -43,7 +43,7 @@ describe( 'SpecialCharactersText', () => {
 	} );
 
 	it( 'properly names the category', () => {
-		expect( addItemsFirstCallArgs[ 0 ] ).to.be.equal( 'Text' );
+		expect( addItemsFirstCallArgs[ 0 ] ).to.equal( 'Text' );
 	} );
 
 	it( 'adds proper characters', () => {

@@ -43,7 +43,7 @@ describe( 'SpecialCharactersLatin', () => {
 	} );
 
 	it( 'properly names the category', () => {
-		expect( addItemsFirstCallArgs[ 0 ] ).to.be.equal( 'Latin' );
+		expect( addItemsFirstCallArgs[ 0 ] ).to.equal( 'Latin' );
 	} );
 
 	it( 'adds proper characters', () => {
