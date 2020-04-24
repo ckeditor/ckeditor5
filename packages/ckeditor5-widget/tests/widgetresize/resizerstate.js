@@ -67,14 +67,14 @@ describe( 'ResizerState', () => {
 			const state = new ResizerState();
 			state.begin( domResizeHandle, domHandleHost, domResizeHost );
 
-			expect( state.activeHandlePosition, 'activeHandlePosition' ).to.be.equal( 'bottom-right' );
+			expect( state.activeHandlePosition, 'activeHandlePosition' ).to.equal( 'bottom-right' );
 
-			expect( state.originalWidth, 'originalWidth' ).to.be.equal( 400 );
-			expect( state.originalHeight, 'originalHeight' ).to.be.equal( 200 );
+			expect( state.originalWidth, 'originalWidth' ).to.equal( 400 );
+			expect( state.originalHeight, 'originalHeight' ).to.equal( 200 );
 
-			expect( state.aspectRatio, 'aspectRatio' ).to.be.equal( 2 );
+			expect( state.aspectRatio, 'aspectRatio' ).to.equal( 2 );
 
-			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.be.equal( 25 );
+			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.equal( 25 );
 		} );
 	} );
 
@@ -90,11 +90,11 @@ describe( 'ResizerState', () => {
 				handleHostHeight: 160
 			} );
 
-			expect( state.proposedWidthPercents, 'proposedWidthPercents' ).to.be.equal( 25 );
-			expect( state.proposedWidth, 'proposedWidth' ).to.be.equal( 100 );
-			expect( state.proposedHeight, 'proposedHeight' ).to.be.equal( 200 );
-			expect( state.proposedHandleHostWidth, 'proposedHandleHostWidth' ).to.be.equal( 80 );
-			expect( state.proposedHandleHostHeight, 'proposedHandleHostHeight' ).to.be.equal( 160 );
+			expect( state.proposedWidthPercents, 'proposedWidthPercents' ).to.equal( 25 );
+			expect( state.proposedWidth, 'proposedWidth' ).to.equal( 100 );
+			expect( state.proposedHeight, 'proposedHeight' ).to.equal( 200 );
+			expect( state.proposedHandleHostWidth, 'proposedHandleHostWidth' ).to.equal( 80 );
+			expect( state.proposedHandleHostHeight, 'proposedHandleHostHeight' ).to.equal( 160 );
 		} );
 	} );
 } );

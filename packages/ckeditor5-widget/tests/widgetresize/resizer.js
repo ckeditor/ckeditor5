@@ -73,12 +73,12 @@ describe( 'Resizer', () => {
 			];
 
 			for ( const selector of handleSelectors ) {
-				expect( renderedElement.querySelectorAll( selector ).length, `Selector "${ selector }" matches` ).to.be.equal( 1 );
+				expect( renderedElement.querySelectorAll( selector ).length, `Selector "${ selector }" matches` ).to.equal( 1 );
 			}
 		} );
 
 		it( 'renders sizeUi', () => {
-			expect( renderedElement.querySelectorAll( '.ck-size-view' ).length ).to.be.equal( 1 );
+			expect( renderedElement.querySelectorAll( '.ck-size-view' ).length ).to.equal( 1 );
 		} );
 	} );
 
@@ -89,7 +89,7 @@ describe( 'Resizer', () => {
 			resizerInstance.attach();
 
 			const domResizeeWrapper = resizerInstance._viewResizerWrapper.render( document );
-			expect( domResizeeWrapper.style.display ).to.be.equal( 'none' );
+			expect( domResizeeWrapper.style.display ).to.equal( 'none' );
 		} );
 
 		it( 'hides the resizer if it gets disabled at a runtime', () => {
@@ -99,7 +99,7 @@ describe( 'Resizer', () => {
 			const domResizeeWrapper = resizerInstance._viewResizerWrapper.render( document );
 
 			resizerInstance.isEnabled = false;
-			expect( domResizeeWrapper.style.display ).to.be.equal( 'none' );
+			expect( domResizeeWrapper.style.display ).to.equal( 'none' );
 		} );
 
 		it( 'restores the resizer if it gets enabled at a runtime', () => {
@@ -109,7 +109,7 @@ describe( 'Resizer', () => {
 			const domResizeeWrapper = resizerInstance._viewResizerWrapper.render( document );
 
 			resizerInstance.isEnabled = true;
-			expect( domResizeeWrapper.style.display ).to.be.equal( '' );
+			expect( domResizeeWrapper.style.display ).to.equal( '' );
 		} );
 	} );
 
@@ -158,9 +158,9 @@ describe( 'Resizer', () => {
 				pageY: 50
 			} );
 
-			expect( proposedSize.width, 'width' ).to.be.equal( 60 );
-			expect( proposedSize.height, 'height' ).to.be.equal( 60 );
-			expect( proposedSize.widthPercents, 'widthPercents' ).to.be.equal( 15 );
+			expect( proposedSize.width, 'width' ).to.equal( 60 );
+			expect( proposedSize.height, 'height' ).to.equal( 60 );
+			expect( proposedSize.widthPercents, 'widthPercents' ).to.equal( 15 );
 		} );
 
 		it( 'enlarges objects correctly', () => {
@@ -171,9 +171,9 @@ describe( 'Resizer', () => {
 				pageY: 50
 			} );
 
-			expect( proposedSize.width, 'width' ).to.be.equal( 50 );
-			expect( proposedSize.height, 'height' ).to.be.equal( 50 );
-			expect( proposedSize.widthPercents, 'widthPercents' ).to.be.equal( 12.5 );
+			expect( proposedSize.width, 'width' ).to.equal( 50 );
+			expect( proposedSize.height, 'height' ).to.equal( 50 );
+			expect( proposedSize.widthPercents, 'widthPercents' ).to.equal( 12.5 );
 		} );
 
 		it( 'rounds returned width and height properties', () => {
@@ -182,8 +182,8 @@ describe( 'Resizer', () => {
 				pageY: 50.000000000002
 			} );
 
-			expect( proposedSize.width, 'width' ).to.be.equal( 60 );
-			expect( proposedSize.height, 'height' ).to.be.equal( 60 );
+			expect( proposedSize.width, 'width' ).to.equal( 60 );
+			expect( proposedSize.height, 'height' ).to.equal( 60 );
 		} );
 	} );
 

@@ -84,7 +84,7 @@ describe( 'WidgetResize', () => {
 
 			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
-			expect( commitStub.callCount ).to.be.equal( 1 );
+			expect( commitStub.callCount ).to.equal( 1 );
 			sinon.assert.calledWithExactly( commitStub, '120px' );
 		} );
 
@@ -97,7 +97,7 @@ describe( 'WidgetResize', () => {
 			document.body.dispatchEvent( event );
 
 			// Ensure nothing got called.
-			expect( plugin._mouseDownListener.callCount ).to.be.equal( 0 );
+			expect( plugin._mouseDownListener.callCount ).to.equal( 0 );
 		} );
 
 		it( 'nothing bad happens if activeResizer got unset', () => {
@@ -166,7 +166,7 @@ describe( 'WidgetResize', () => {
 				resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 				sinon.assert.calledWithExactly( commitStub.secondCall, '200px' );
 
-				expect( commitStub.callCount ).to.be.equal( 2 );
+				expect( commitStub.callCount ).to.equal( 2 );
 			} );
 
 			it( 'shrinks correctly with left-bottom handler', generateResizeTest( {
@@ -322,7 +322,7 @@ describe( 'WidgetResize', () => {
 				resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 				sinon.assert.calledWithExactly( commitStub.secondCall, '75%' );
 
-				expect( commitStub.callCount ).to.be.equal( 2 );
+				expect( commitStub.callCount ).to.equal( 2 );
 			} );
 
 			it( 'shrinks correctly with bottom-left handler', generateResizeTest( {
@@ -408,7 +408,7 @@ describe( 'WidgetResize', () => {
 
 			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 
-			expect( renderListener.callCount ).to.be.equal( 1 );
+			expect( renderListener.callCount ).to.equal( 1 );
 		} );
 
 		it( 'returns proper value when resize host is different from widget wrapper', () => {
@@ -430,7 +430,7 @@ describe( 'WidgetResize', () => {
 
 			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 			expect( commitStub.callCount, 'call count' ).to.be.eql( 1 );
-			expect( commitStub.args[ 0 ][ 0 ], 'width' ).to.be.equal( expectedWidth );
+			expect( commitStub.args[ 0 ][ 0 ], 'width' ).to.equal( expectedWidth );
 			sinon.assert.calledOnce( commitStub );
 		} );
 
@@ -496,7 +496,7 @@ describe( 'WidgetResize', () => {
 				writer.setSelection( widgetModel, 'on' );
 			} );
 
-			expect( redrawSpy.callCount ).to.be.equal( 1 );
+			expect( redrawSpy.callCount ).to.equal( 1 );
 		} );
 	} );
 
@@ -518,7 +518,7 @@ describe( 'WidgetResize', () => {
 			resizer.cancel();
 
 			// Value should be restored to the initial value (#6060).
-			expect( widget.getStyle( 'width' ) ).to.be.equal( INITIAL_WIDGET_WIDTH );
+			expect( widget.getStyle( 'width' ) ).to.equal( INITIAL_WIDGET_WIDTH );
 		} );
 	} );
 
@@ -551,7 +551,7 @@ describe( 'WidgetResize', () => {
 
 			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, finalPointerPosition );
 			expect( commitStub.callCount, 'call count' ).to.be.eql( 1 );
-			expect( commitStub.args[ 0 ][ 0 ], 'width' ).to.be.equal( options.expectedWidth );
+			expect( commitStub.args[ 0 ][ 0 ], 'width' ).to.equal( options.expectedWidth );
 			sinon.assert.calledOnce( commitStub );
 		};
 	}
