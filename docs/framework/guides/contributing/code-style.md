@@ -477,7 +477,9 @@ The order within each group is left for the implementor.
 
 ## Tests
 
-There are some special rules for tests.
+There are some special rules and tips for tests.
+
+### Test organization
 
 * Always use an outer `describe()` in a test file. Do not allow any globals, especially hooks (`beforeEach()`, `after()`, etc.) outside the outermost `describe()`.
 * The outermost `describe()` calls should create meaningful groups, so when all tests are run together a failing TC can be identified within the code base. For example:
@@ -492,13 +494,22 @@ There are some special rules for tests.
 	} );
 	```
 
-	Using titles like "utils" is not fine as there are multiple utils in the entire project. "Table utils" would be better.
-* Test descriptions (`it()`) should be written like documentation (what you do and what should happen), e.g. "the foo dialog closes when the X button is clicked". Also, '...case 1', '...case 2' in test descriptions are not helpful.
-* Avoid covering multiple cases under one `it()`. It is OK to have multiple assertions in one test, but not to test e.g. how method `foo()` works when it is called with 1, then with 2, then 3, etc. There should be a separate test for each case.
+	Using titles like *"utils"* is not fine as there are multiple utils in the entire project. *"Table utils"* would be better.
+* Test descriptions (`it()`) should be written like documentation (what you do and what should happen), e.g. *"the foo dialog closes when the X button is clicked"*. Also, *"...case 1"*, *"...case 2"* in test descriptions are not helpful.
+* Avoid test descriptions like *"does not crash when two ranges get merged"* &mdash; instead explain what is actually expected to happen. For instance: *"leaves 1 range when two ranges get merged"*.
 * Most often, using words like "correctly", "works fine" is a code smell. Thing about the requirements &mdash; when writing them you do not say that feature X should "work fine". You document how it should work.
+* Ideally, it should be possible to recreate an algorithm just by reading the test descriptions.
+* Avoid covering multiple cases under one `it()`. It is OK to have multiple assertions in one test, but not to test e.g. how method `foo()` works when it is called with 1, then with 2, then 3, etc. There should be a separate test for each case.
 * Every test should clean after itself, including destroying all editors and removing all elements that have been added.
-* Avoid using real timeouts. Use [fake timers](https://sinonjs.org/releases/v9.0.1/fake-timers/) instead **when possible**. Timeouts make a test really slow.
-* However, thinking about slow &mdash; do not overoptimize (especially that performance is not a priority in tests). In most cases it is completely fine (and hence recommended) to create a separate editor for every `it()`.
+
+### Test implementation
+
+* Avoid using real timeouts. Use [fake timers](https://sinonjs.org/releases/v9.0.1/fake-timers/) instead **when possible**. Timeouts make tests really slow.
+* However &mdash; do not overoptimize (especially that performance is not a priority in tests). In most cases it is completely fine (and hence recommended) to create a separate editor for every `it()`.
+* We aim at having 100% coverage of *all distinctive scenarios*. Covering 100% branches in the code is not the goal here &mdash; it is a byproduct of covering real scenarios.
+
+	Think about this &mdash; when you fix a bug by adding a parameter to an existing function call you do not affect code coverage (that line was called anyway). However, you had a bug, meaning that your test suite did not cover it. Therefore, a test must be created for that code change.
+* It should be `expect( x ).to.equal( y )`. **NOT**: ~~`expect( x ).to.be.equal( y )`~~.
 
 ## Naming
 
