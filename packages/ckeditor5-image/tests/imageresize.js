@@ -229,7 +229,7 @@ describe( 'ImageResize', () => {
 
 			resizerMouseSimulator.move( editor, domParts.resizeHandle, null, initialPointerPosition );
 
-			expect( resizeWrapperView.getStyle( 'width' ) ).to.be.equal( '100px' );
+			expect( resizeWrapperView.getStyle( 'width' ) ).to.equal( '100px' );
 
 			resizerMouseSimulator.up( editor );
 		} );
@@ -271,7 +271,7 @@ describe( 'ImageResize', () => {
 				to: finalPointerPosition
 			} );
 
-			expect( '120px' ).to.be.equal( domParts.widget.style.width );
+			expect( '120px' ).to.equal( domParts.widget.style.width );
 
 			editor.commands.get( 'undo' ).execute();
 
@@ -284,8 +284,8 @@ describe( 'ImageResize', () => {
 			const resizerWrapper = document.querySelector( '.ck-widget__resizer' );
 			const shadowBoundingRect = resizerWrapper.getBoundingClientRect();
 
-			expect( shadowBoundingRect.width ).to.be.equal( 100 );
-			expect( shadowBoundingRect.height ).to.be.equal( 50 );
+			expect( shadowBoundingRect.width ).to.equal( 100 );
+			expect( shadowBoundingRect.height ).to.equal( 50 );
 		} );
 	} );
 
@@ -311,7 +311,7 @@ describe( 'ImageResize', () => {
 				to: finalPointerPosition
 			} );
 
-			expect( model.getAttribute( 'width' ) ).to.be.equal( '60px' );
+			expect( model.getAttribute( 'width' ) ).to.equal( '60px' );
 		} );
 	} );
 
@@ -363,7 +363,7 @@ describe( 'ImageResize', () => {
 				to: finalPointerPosition
 			} );
 
-			expect( model.getAttribute( 'width' ) ).to.be.equal( '76px' );
+			expect( model.getAttribute( 'width' ) ).to.equal( '76px' );
 		} );
 
 		it( 'retains width after removing srcset', () => {
@@ -381,7 +381,7 @@ describe( 'ImageResize', () => {
 			} );
 
 			const expectedHtml = '<figure class="image image_resized" style="width:80px;"><img src="/assets/sample.png"></figure>';
-			expect( editor.getData() ).to.be.equal( expectedHtml );
+			expect( editor.getData() ).to.equal( expectedHtml );
 		} );
 
 		async function preloadImage( imageUrl ) {
