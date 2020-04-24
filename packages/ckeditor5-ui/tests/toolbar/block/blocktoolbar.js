@@ -509,7 +509,7 @@ describe( 'BlockToolbar', () => {
 				//            |                         |
 				//  <--------------max-width------------>
 
-				expect( blockToolbar.toolbarView.maxWidth ).to.be.equal( '440px' );
+				expect( blockToolbar.toolbarView.maxWidth ).to.equal( '440px' );
 			} );
 
 			it( 'should set a proper toolbar max-width in RTL', () => {
@@ -544,7 +544,7 @@ describe( 'BlockToolbar', () => {
 				//  |                         |
 				//  <--------------max-width------------>
 
-				expect( blockToolbar.toolbarView.maxWidth ).to.be.equal( '440px' );
+				expect( blockToolbar.toolbarView.maxWidth ).to.equal( '440px' );
 			} );
 		} );
 

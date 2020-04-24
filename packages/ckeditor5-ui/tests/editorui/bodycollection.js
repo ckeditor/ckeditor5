@@ -32,7 +32,7 @@ describe( 'BodyCollection', () => {
 		it( 'assigns locale', () => {
 			const instance = new BodyCollection( locale );
 
-			expect( instance.locale ).to.be.equal( locale );
+			expect( instance.locale ).to.equal( locale );
 		} );
 
 		it( 'stores pre-initialized collection', () => {
@@ -40,8 +40,8 @@ describe( 'BodyCollection', () => {
 			const instance = new BodyCollection( locale, collectionItems );
 
 			expect( instance ).to.have.lengthOf( 2 );
-			expect( instance.get( 0 ) ).to.be.equal( collectionItems[ 0 ] );
-			expect( instance.get( 1 ) ).to.be.equal( collectionItems[ 1 ] );
+			expect( instance.get( 0 ) ).to.equal( collectionItems[ 0 ] );
+			expect( instance.get( 1 ) ).to.equal( collectionItems[ 1 ] );
 		} );
 	} );
 

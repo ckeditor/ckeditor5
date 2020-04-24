@@ -413,7 +413,7 @@ describe( 'BalloonToolbar', () => {
 			// The expected width should be 90% of the editor's editable element's width.
 			const expectedWidth = toPx( new Rect( viewElement ).width * 0.9 );
 
-			expect( balloonToolbar.toolbarView.maxWidth ).to.be.equal( expectedWidth );
+			expect( balloonToolbar.toolbarView.maxWidth ).to.equal( expectedWidth );
 		} );
 	} );
 
