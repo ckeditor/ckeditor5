@@ -75,7 +75,7 @@ describe( 'DOMConverter UIElement integration', () => {
 			const domSpan = domParagraph.childNodes[ 0 ];
 
 			expect( converter.domToView( domParagraph ) ).to.equal( uiElement );
-			expect( converter.domToView( domSpan ) ).to.be.equal( uiElement );
+			expect( converter.domToView( domSpan ) ).to.equal( uiElement );
 			expect( converter.domToView( domParagraph.childNodes[ 0 ] ) ).equal( uiElement );
 			expect( converter.domToView( domSpan.childNodes[ 0 ] ) ).equal( uiElement );
 		} );

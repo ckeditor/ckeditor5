@@ -687,8 +687,8 @@ describe( 'Selection', () => {
 			expect( ranges.length ).to.equal( 2 );
 			expect( ranges[ 0 ].isEqual( liveRange ) ).to.be.true;
 			expect( ranges[ 1 ].isEqual( range ) ).to.be.true;
-			expect( ranges[ 0 ] ).not.to.be.equal( liveRange );
-			expect( ranges[ 1 ] ).not.to.be.equal( range );
+			expect( ranges[ 0 ] ).not.to.equal( liveRange );
+			expect( ranges[ 1 ] ).not.to.equal( range );
 		} );
 
 		it( 'should set anchor and focus to the start and end of the last added range', () => {

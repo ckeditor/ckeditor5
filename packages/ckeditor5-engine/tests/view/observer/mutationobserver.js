@@ -569,7 +569,7 @@ describe( 'MutationObserver', () => {
 
 			mutationObserver.flush();
 
-			expect( renderStub.callCount ).to.be.equal( 0 );
+			expect( renderStub.callCount ).to.equal( 0 );
 		} );
 
 		it( 'should not collect child mutations from UIElement', () => {
@@ -587,7 +587,7 @@ describe( 'MutationObserver', () => {
 
 			mutationObserver.flush();
 
-			expect( renderStub.callCount ).to.be.equal( 0 );
+			expect( renderStub.callCount ).to.equal( 0 );
 		} );
 	} );
 

@@ -247,7 +247,7 @@ describe( 'RootAttributeOperation', () => {
 		const clone = op.clone();
 
 		// New instance rather than a pointer to the old instance.
-		expect( clone ).not.to.be.equal( op );
+		expect( clone ).not.to.equal( op );
 
 		expect( clone ).to.be.instanceof( RootAttributeOperation );
 		expect( clone.root ).to.equal( root );

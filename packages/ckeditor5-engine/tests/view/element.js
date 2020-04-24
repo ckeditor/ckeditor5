@@ -416,7 +416,7 @@ describe( 'Element', () => {
 
 				parent._insertChild( 0, anotherEl );
 
-				expect( anotherEl.document ).to.be.equal( document );
+				expect( anotherEl.document ).to.equal( document );
 			} );
 		} );
 

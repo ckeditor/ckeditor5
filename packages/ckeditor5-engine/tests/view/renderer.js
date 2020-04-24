@@ -1818,7 +1818,7 @@ describe( 'Renderer', () => {
 					selection._setTo( selection.getRanges(), { fake: true, label } );
 					renderer.render();
 
-					expect( createRangeSpy.callCount ).to.be.equal( 1 );
+					expect( createRangeSpy.callCount ).to.equal( 1 );
 				} );
 
 				it( 'different subsequent fake selections sets do change native selection', () => {
@@ -1829,7 +1829,7 @@ describe( 'Renderer', () => {
 					selection._setTo( selection.getRanges(), { fake: true, label: 'selection 2' } );
 					renderer.render();
 
-					expect( createRangeSpy.callCount ).to.be.equal( 2 );
+					expect( createRangeSpy.callCount ).to.equal( 2 );
 				} );
 
 				it( 'rerenders selection if disturbed externally', () => {
@@ -1849,7 +1849,7 @@ describe( 'Renderer', () => {
 					selection._setTo( selection.getRanges(), { fake: true, label } );
 					renderer.render();
 
-					expect( createRangeSpy.callCount ).to.be.equal( 2 );
+					expect( createRangeSpy.callCount ).to.equal( 2 );
 				} );
 
 				it( 'correctly maps fake selection ', () => {
@@ -1868,7 +1868,7 @@ describe( 'Renderer', () => {
 					const fakeSelectionContainer = domRoot.childNodes[ 1 ];
 					const mappedSelection = renderer.domConverter.fakeSelectionToView( fakeSelectionContainer );
 
-					expect( stringify( viewRoot, mappedSelection ) ).to.be.equal( '<div><p>foo bar</p><p>[baz]</p></div>' );
+					expect( stringify( viewRoot, mappedSelection ) ).to.equal( '<div><p>foo bar</p><p>[baz]</p></div>' );
 				} );
 			} );
 

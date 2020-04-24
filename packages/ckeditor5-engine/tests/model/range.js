@@ -211,7 +211,7 @@ describe( 'Range', () => {
 			it( 'should create a new instance of Range that is equal to passed range', () => {
 				const clone = range.clone();
 
-				expect( clone ).not.to.be.equal( range ); // clone is not pointing to the same object as position
+				expect( clone ).not.to.equal( range ); // clone is not pointing to the same object as position
 				expect( clone.isEqual( range ) ).to.be.true; // but they are equal in the position-sense
 			} );
 		} );
@@ -242,7 +242,7 @@ describe( 'Range', () => {
 				const range = Range._createFromRanges( [ original ] );
 
 				expect( range.isEqual( original ) ).to.be.true;
-				expect( range ).not.to.be.equal( original );
+				expect( range ).not.to.equal( original );
 			} );
 
 			it( 'should combine ranges with reference range', () => {
