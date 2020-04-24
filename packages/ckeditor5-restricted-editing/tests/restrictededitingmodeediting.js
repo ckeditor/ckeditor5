@@ -1451,7 +1451,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					sinon.assert.calledOnce( evtData.preventDefault );
 					sinon.assert.calledOnce( evtData.stopPropagation );
-					expect( getModelData( model ) ).to.be.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
 				it( 'should select text only within an exception when selection is at the begining of an exception', () => {
@@ -1466,7 +1466,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					sinon.assert.calledOnce( evtData.preventDefault );
 					sinon.assert.calledOnce( evtData.stopPropagation );
-					expect( getModelData( model ) ).to.be.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
 				it( 'should select text only within an exception when selection is at the end of an exception', () => {
@@ -1481,7 +1481,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					sinon.assert.calledOnce( evtData.preventDefault );
 					sinon.assert.calledOnce( evtData.stopPropagation );
-					expect( getModelData( model ) ).to.be.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
 				it( 'should not change the selection if the caret is not inside an exception', () => {
@@ -1494,7 +1494,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					sinon.assert.notCalled( evtData.preventDefault );
 					sinon.assert.notCalled( evtData.stopPropagation );
-					expect( getModelData( model ) ).to.be.equal( '<paragraph>foo ba[]r baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo ba[]r baz</paragraph>' );
 				} );
 
 				it( 'should not extend the selection outside an exception when press Ctrl+A second time', () => {
@@ -1510,7 +1510,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					sinon.assert.calledTwice( evtData.preventDefault );
 					sinon.assert.calledTwice( evtData.stopPropagation );
-					expect( getModelData( model ) ).to.be.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 			} );
 
@@ -1527,7 +1527,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					sinon.assert.calledOnce( evtData.preventDefault );
 					sinon.assert.calledOnce( evtData.stopPropagation );
-					expect( getModelData( model ) ).to.be.equal( '<paragraph>[foo bar] baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>[foo bar] baz</paragraph>' );
 				} );
 
 				it( 'should select text within an exception when end of selection range is equal exception end', () => {
@@ -1542,7 +1542,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					sinon.assert.calledOnce( evtData.preventDefault );
 					sinon.assert.calledOnce( evtData.stopPropagation );
-					expect( getModelData( model ) ).to.be.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
 				it( 'should select text within an exception when start of selection range is equal exception start', () => {
@@ -1557,7 +1557,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					sinon.assert.calledOnce( evtData.preventDefault );
 					sinon.assert.calledOnce( evtData.stopPropagation );
-					expect( getModelData( model ) ).to.be.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
 				it( 'should not select text within an exception when a part of the selection range is outside an exception', () => {
@@ -1572,7 +1572,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					sinon.assert.notCalled( evtData.preventDefault );
 					sinon.assert.notCalled( evtData.stopPropagation );
-					expect( getModelData( model ) ).to.be.equal( '<paragraph>fo[o ba]r baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>fo[o ba]r baz</paragraph>' );
 				} );
 
 				it( 'should not extend the selection outside an exception when press Ctrl+A second time', () => {
@@ -1588,7 +1588,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 					sinon.assert.calledTwice( evtData.preventDefault );
 					sinon.assert.calledTwice( evtData.stopPropagation );
-					expect( getModelData( model ) ).to.be.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 			} );
 		} );
