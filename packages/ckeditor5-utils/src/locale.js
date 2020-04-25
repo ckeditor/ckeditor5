@@ -18,8 +18,8 @@ const RTL_LANGUAGE_CODES = [ 'ar', 'fa', 'he', 'ku', 'ug' ];
  */
 export default class Locale {
 	/**
-	 * Creates a new instance of the Locale class. Learn more about
-	 * {@glink features/ui-language configuring language of the editor}.
+	 * Creates a new instance of the locale class. Learn more about
+	 * {@glink features/ui-language configuring the language of the editor}.
 	 *
 	 * @param {Object} [options] Locale configuration.
 	 * @param {String} [options.uiLanguage='en'] The editor UI language code in the
@@ -43,7 +43,7 @@ export default class Locale {
 		/**
 		 * The editor content language code in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
 		 *
-		 * Usually the same as {@link #uiLanguage editor language}, it can be customized by passing an optional
+		 * Usually the same as the {@link #uiLanguage editor language}, it can be customized by passing an optional
 		 * argument to the `Locale` constructor.
 		 *
 		 * @readonly
@@ -77,9 +77,9 @@ export default class Locale {
 
 		/**
 		 * Translates the given message to the {@link #uiLanguage}. This method is also available in
-		 * {@link module:core/editor/editor~Editor#t Editor} and {@link module:ui/view~View#t View}.
+		 * {@link module:core/editor/editor~Editor#t `Editor`} and {@link module:ui/view~View#t `View`}.
 		 *
-		 * This method's context is statically bound to the `Locale` instance and **always should be called as a function**:
+		 * This method's context is statically bound to the `Locale` instance and **should always be called as a function**:
 		 *
 		 *		const t = locale.t;
 		 *		t( 'Label' );
@@ -87,7 +87,7 @@ export default class Locale {
 		 * The message can be either a string or an object implementing the {@link module:utils/translation-service~Message} interface.
 		 *
 		 * The message may contain placeholders (`%<index>`) for value(s) that are passed as a `values` parameter.
-		 * For an array of values the `%<index>` will be changed to an element of that array at the given index.
+		 * For an array of values, the `%<index>` will be changed to an element of that array at the given index.
 		 * For a single value passed as the second argument, only the `%0` placeholders will be changed to the provided value.
 		 *
 		 *		t( 'Created file "%0" in %1ms.', [ fileName, timeTaken ] );
@@ -105,7 +105,7 @@ export default class Locale {
 		 *		t( { string: 'Add a space', plural: 'Add %0 spaces' }, 5 ); // 'Dodaj 5 spacji' for the Polish language.
 		 *		t( { string: '%1 a space', plural: '%1 %0 spaces' }, [ 2, 'Add' ] ); // 'Dodaj 2 spacje' for the Polish language.
 		 *
-		 *  * The message should provide an id using the `id` property when the message strings are not unique and their
+		 *  * The message should provide an ID using the `id` property when the message strings are not unique and their
 		 * translations should be different.
 		 *
 		 *		translate( 'en', { string: 'image', id: 'ADD_IMAGE' } );
@@ -123,7 +123,7 @@ export default class Locale {
 	/**
 	 * The editor UI language code in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
 	 *
-	 * **Note**: This property has been deprecated. Please use {@link #uiLanguage} and {@link #contentLanguage}
+	 * **Note**: This property was deprecated. Please use {@link #uiLanguage} and {@link #contentLanguage}
 	 * properties instead.
 	 *
 	 * @deprecated
@@ -131,8 +131,8 @@ export default class Locale {
 	 */
 	get language() {
 		/**
-		 * The {@link module:utils/locale~Locale#language `Locale#language`} property has been deprecated and will
-		 * be removed in the near future. Please use {@link #uiLanguage} and {@link #contentLanguage} properties instead.
+		 * The {@link module:utils/locale~Locale#language `Locale#language`} property was deprecated and will
+		 * be removed in the near future. Please use the {@link #uiLanguage} and {@link #contentLanguage} properties instead.
 		 *
 		 * @error locale-deprecated-language-property
 		 */
