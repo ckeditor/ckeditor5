@@ -223,6 +223,12 @@ Note: These arguments must be passed after additional `--`:
 yarn run docs --skip-api
 ```
 
+After building documentation, you can quickly start an HTTP server to serve them:
+
+```
+yarn run docs:serve
+```
+
 ## Generating content styles
 
 It is possible to generate a stylesheet containing content styles brought by all CKEditor 5 features. In order to do that, execute:
