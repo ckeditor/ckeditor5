@@ -338,6 +338,7 @@ export default class TableNavigation extends Plugin {
 	 * Basing on provided range, finds first/last (depending on `direction`) position inside the range
 	 * that can contain `$text` (according to schema) and is visible in the view.
 	 *
+	 * @private
 	 * @param {module:engine/model/range~Range} range The range to find position in.
 	 * @param {'forward'|'backward'} direction Search direction.
 	 * @returns {module:engine/model/position~Position} Nearest selection range.
