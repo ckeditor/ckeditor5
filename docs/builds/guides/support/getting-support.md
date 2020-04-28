@@ -9,7 +9,7 @@ order: 30
 
 You can report issues and feature requests on [GitHub](https://github.com/ckeditor/ckeditor5). This is also a good place to discuss architecture decisions and things which are not yet covered by the documentation.
 
-[Each CKEditor 5 repository](https://github.com/ckeditor?utf8=%E2%9C%93&q=ckeditor5&type=&language=) handles its issues independently. If you are not sure where your ticket belongs, it is best to report it in the [main repository](https://github.com/ckeditor/ckeditor5).
+[Each CKEditor 5 repository](https://github.com/ckeditor?utf8=%E2%9C%93&q=ckeditor5&type=&language=) handles its issues independently. If you are not sure where your ticket belongs, it is best to report it in the [CKEditor 5 repository](https://github.com/ckeditor/ckeditor5).
 
 Refer to {@link builds/guides/support/reporting-issues Reporting issues} guide for more details.
 

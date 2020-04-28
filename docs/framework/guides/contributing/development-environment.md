@@ -40,7 +40,7 @@ npm install -g yarn
 
 **Note:** [Read how to avoid using `sudo` to install packages globally](https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md) or use [nvm](https://github.com/creationix/nvm).
 
-Then clone the [main repository](https://github.com/ckeditor/ckeditor5):
+Then clone the [CKEditor 5 repository](https://github.com/ckeditor/ckeditor5):
 
 ```bash
 git clone https://github.com/ckeditor/ckeditor5.git

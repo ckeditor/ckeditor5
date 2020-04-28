@@ -39,7 +39,7 @@ The framework was designed to be a highly flexible and universal platform for cr
 
 The framework is made of several [npm packages](https://npmjs.com). Each package is available in the `/packages` directory of the https://github.com/ckeditor/ckeditor5 repository.
 
-A complete list of official packages that constitute the framework is available in the [main repository's README](https://github.com/ckeditor/ckeditor5#packages).
+A complete list of official packages that constitute the framework is available in the [CKEditor 5 repository's README](https://github.com/ckeditor/ckeditor5#packages).
 
 There are a few groups of packages:
 
