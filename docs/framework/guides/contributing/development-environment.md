@@ -5,7 +5,7 @@ order: 10
 
 # Development environment
 
-The CKEditor 5 codebase is divided into multiple [npm](http://npmjs.com/) packages, each developed in a separate Git repository. The main package is [`ckeditor5`](https://github.com/ckeditor/ckeditor5) which installs all project dependencies and various development-related resources such as:
+The CKEditor 5 codebase is divided into multiple [npm](http://npmjs.com/) packages. The main package is [`ckeditor5`](https://github.com/ckeditor/ckeditor5) which installs all project dependencies and various development-related resources such as:
 
 * the testing environment setup,
 * configuration for [Yarn](https://yarnpkg.com/),
@@ -13,10 +13,12 @@ The CKEditor 5 codebase is divided into multiple [npm](http://npmjs.com/) packag
 * documentation generator,
 * and release tools.
 
+The main package's GitHub repository also [hosts all other CKEditor5 sub-packages](https://github.com/ckeditor/ckeditor5/tree/master/packages).
+
 You can find all the official packages listed in [CKEditor 5 development repository's README](https://github.com/ckeditor/ckeditor5#packages).
 
 <info-box info>
-After the **19.0.0** release CKEditor 5 moved to the monorepo architecture. If you'd like to work with the older multi-repository release, please refer to [older Developer Environment guide](/docs/ckeditor5/19.0.0/framework/guides/contributing/development-environment.html) for multi-repository oriented instructions.
+Prior to version **19.0.0** CKEditor 5 was developed in a multi repository architecture. If you'd like to work with the older multi-repository release, please refer to [older Developer Environment guide](/docs/ckeditor5/19.0.0/framework/guides/contributing/development-environment.html) for multi-repository oriented instructions.
 </info-box>
 
 ## Requirements
