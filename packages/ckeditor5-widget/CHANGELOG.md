@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## [19.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v18.0.0...v19.0.0) (2020-04-28)
+
+### MINOR BREAKING CHANGES
+
+* Make sure the latest version of the [`Essentials`](https://ckeditor.com/docs/ckeditor5/latest/api/essentials.html) plugin or the [`SelectAll`](https://ckeditor.com/docs/ckeditor5/latest/api/module_select-all_selectall-SelectAll.html) plugin is installed in your integration. Either is required for proper keystroke handling in editor widgets.
+
+### Bug fixes
+
+* Image resize now cleans up temporary view `width` style changes. Closes [ckeditor/ckeditor5#6060](https://github.com/ckeditor/ckeditor5/issues/6060). ([92226f9](https://github.com/ckeditor/ckeditor5-widget/commit/92226f9))
+
+### Other changes
+
+* Moved the <kbd>Ctrl</kbd>+<kbd>A</kbd> keystroke handling in widgets to the [`SelectAll`](https://ckeditor.com/docs/ckeditor5/latest/api/module_select-all_selectall-SelectAll.html) plugin (see [ckeditor/ckeditor5#6536](https://github.com/ckeditor/ckeditor5/issues/6536)). ([57eb263](https://github.com/ckeditor/ckeditor5-widget/commit/57eb263))
+* Updated translations. ([79d1a21](https://github.com/ckeditor/ckeditor5-widget/commit/79d1a21)) 
+
+
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 Internal changes only (updated dependencies, documentation, etc.).
