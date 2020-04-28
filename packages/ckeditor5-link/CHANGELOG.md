@@ -1,6 +1,25 @@
 Changelog
 =========
 
+## [19.0.0](https://github.com/ckeditor/ckeditor5-link/compare/v18.0.0...v19.0.0) (2020-04-28)
+
+### Features
+
+* Introduced an option to configure a manual decorator to be "on" by default. Closes [ckeditor/ckeditor5#6031](https://github.com/ckeditor/ckeditor5/issues/6031). ([82f966e](https://github.com/ckeditor/ckeditor5-link/commit/82f966e))
+
+### Bug fixes
+
+* Link selection attributes should be cleared after inserting a link via `Model#insertContent()` for better UX. Closes [ckeditor/ckeditor5#6053](https://github.com/ckeditor/ckeditor5/issues/6053). ([afabf03](https://github.com/ckeditor/ckeditor5-link/commit/afabf03))
+
+### Other changes
+
+* Replaced `LabeledInputView` with `LabeledFieldView`. See [ckeditor/ckeditor5#6110](https://github.com/ckeditor/ckeditor5/issues/6110). ([e4e9ba9](https://github.com/ckeditor/ckeditor5-link/commit/e4e9ba9))
+* Update the code comment regarding canceling `Ctrl+K` key stroke.  [ckeditor/ckeditor5#6202](https://github.com/ckeditor/ckeditor5/issues/6202). ([ee88aa1](https://github.com/ckeditor/ckeditor5-link/commit/ee88aa1))
+
+  Agreed at https://github.com/ckeditor/ckeditor5-utils/pull/333#issuecomment-615275702
+* Updated translations. ([00c5a5c](https://github.com/ckeditor/ckeditor5-link/commit/00c5a5c)) 
+
+
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-link/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 Internal changes only (updated dependencies, documentation, etc.).
