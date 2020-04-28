@@ -64,17 +64,35 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 			<td colspan="2"><kbd>Tab</kbd></td>
 		</tr>
 		<tr>
-			<td>Move selection to the next cell (when in a table)</td>
+			<th colspan="3">When a widget is selected (e.g., image, table, horizontal line, etc.)</th>
+		</tr>
+		<tr>
+			<td>Insert paragraph directly after widget</td>
+			<td colspan="2"><kbd>Enter</kbd></td>
+		</tr> 
+		<tr>
+			<td>Insert new paragraph directly before widget</td>
+			<td colspan="2"><kbd>Shift</kbd> + <kbd>Enter</kbd></td>
+		</tr>
+		<tr>
+			<th colspan="3">In a table cell</th>
+		</tr>
+		<tr>
+			<td>Move selection to the next cell</td>
 			<td colspan="2"><kbd>Tab</kbd></td>
 		</tr>
 		<tr>
-			<td>Move selection to the previous cell (when in a table)</td>
+			<td>Move selection to the previous cell</td>
 			<td colspan="2"><kbd>Shift</kbd> + <kbd>Tab</kbd></td>
 		</tr>
 		<tr>
 			<td>Insert a new table row (when in the last cell of a table)</td>
 			<td colspan="2"><kbd>Tab</kbd></td>
 		</tr>
+        <tr>
+            <td>Navigate through the table</td>
+            <td colspan="2"><kbd>↑</kbd> / <kbd>→</kbd> / <kbd>↓</kbd> / <kbd>←</kbd></td>
+        </tr>
 	</tbody>
 </table>
 
