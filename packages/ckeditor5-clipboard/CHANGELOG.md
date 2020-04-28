@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [19.0.0](https://github.com/ckeditor/ckeditor5-clipboard/compare/v18.0.0...v19.0.0) (2020-04-28)
+
+### Other changes
+
+* Handled `paste` and `drop` events no longer propagate up the DOM tree. Closes [ckeditor/ckeditor5#6464](https://github.com/ckeditor/ckeditor5/issues/6464). ([70aa7ba](https://github.com/ckeditor/ckeditor5-clipboard/commit/70aa7ba))
+
+
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-clipboard/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 Internal changes only (updated dependencies, documentation, etc.).
