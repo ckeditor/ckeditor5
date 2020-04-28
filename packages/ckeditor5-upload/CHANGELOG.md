@@ -5,7 +5,7 @@ Changelog
 
 ### Bug fixes
 
-* Restored a condition handling an edge case in upload vs abort promise chains. Closes [ckeditor/ckeditor5#5892](https://github.com/ckeditor/ckeditor5/issues/5892). ([ed7187b](https://github.com/ckeditor/ckeditor5-upload/commit/ed7187b))
+* Restored a condition handling an edge case in upload when promise chains are aborted. Closes [ckeditor/ckeditor5#5892](https://github.com/ckeditor/ckeditor5/issues/5892). ([ed7187b](https://github.com/ckeditor/ckeditor5-upload/commit/ed7187b))
 
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v17.0.0...v18.0.0) (2020-03-19)
