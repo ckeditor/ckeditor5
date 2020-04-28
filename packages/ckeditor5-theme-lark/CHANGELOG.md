@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## [19.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v18.0.0...v19.0.0) (2020-04-28)
+
+### Bug fixes
+
+* The selected widget's outline should be visible when the editor is read-only. Closes [ckeditor/ckeditor5#6415](https://github.com/ckeditor/ckeditor5/issues/6415). ([bb03e9a](https://github.com/ckeditor/ckeditor5-theme-lark/commit/bb03e9a))
+
+### Other changes
+
+* Added a missing file for the `FormHeaderView` styles and removed duplicated styles for `SpecialCharactersNavigation` inherited from the the `FormHeaderView` component. Closes [ckeditor/ckeditor5#6586](https://github.com/ckeditor/ckeditor5/issues/6586). ([06f6ca5](https://github.com/ckeditor/ckeditor5-theme-lark/commit/06f6ca5))
+* Align code to the changes in ckeditor5-ui API. See [ckeditor/ckeditor5#6110](https://github.com/ckeditor/ckeditor5/issues/6110). ([7df8dec](https://github.com/ckeditor/ckeditor5-theme-lark/commit/7df8dec))
+* Changed styles of SpecialCharacters and Dropdown to match FormHeaderView component styles. See [ckeditor/ckeditor5#6109](https://github.com/ckeditor/ckeditor5/issues/6109). ([ceeb767](https://github.com/ckeditor/ckeditor5-theme-lark/commit/ceeb767))
+* Introduced the table cell overlay to improve the rendering of multiple–cell selections and bring compatibility with styled table cells. Closes [ckeditor/ckeditor5#6446](https://github.com/ckeditor/ckeditor5/issues/6446). ([6a1c7b9](https://github.com/ckeditor/ckeditor5-theme-lark/commit/6a1c7b9))
+* The selection inside the `InlineEditableUIView` should be grey when the editor is blurred. Closes [ckeditor/ckeditor5#6517](https://github.com/ckeditor/ckeditor5/issues/6517). ([8ad92eb](https://github.com/ckeditor/ckeditor5-theme-lark/commit/8ad92eb))
+
+
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 ### Features
