@@ -2,9 +2,6 @@ CKEditor 5 font feature
 ============================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-font.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-font)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-font.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-font)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-font/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-font?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-font/status.svg)](https://david-dm.org/ckeditor/ckeditor5-font)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-font/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-font?type=dev)
 
