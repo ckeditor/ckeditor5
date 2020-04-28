@@ -1,6 +1,43 @@
 Changelog
 =========
 
+## [19.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v18.0.0...v19.0.0) (2020-04-28)
+
+### Features
+
+* "Select entire column/row" added to table column and row dropdowns. Closes [ckeditor/ckeditor5#6500](https://github.com/ckeditor/ckeditor5/issues/6500). ([729cc00](https://github.com/ckeditor/ckeditor5-table/commit/729cc00))
+* Implemented a button that merges table cells directly from the table toolbar. Closes [ckeditor/ckeditor5#6486](https://github.com/ckeditor/ckeditor5/issues/6486). ([4fd49a9](https://github.com/ckeditor/ckeditor5-table/commit/4fd49a9))
+* Introduce custom keyboard navigation through tables. Closes [ckeditor/ckeditor5#3267](https://github.com/ckeditor/ckeditor5/issues/3267). Closes [ckeditor/ckeditor5#3286](https://github.com/ckeditor/ckeditor5/issues/3286). ([d480c6d](https://github.com/ckeditor/ckeditor5-table/commit/d480c6d))
+* Introduce the `TableUtils.removeRows()` method. Closes [ckeditor/ckeditor5#6545](https://github.com/ckeditor/ckeditor5/issues/6545). ([c6770ba](https://github.com/ckeditor/ckeditor5-table/commit/c6770ba))
+* Introduced the `MergeCellsCommand`. Closes [ckeditor/ckeditor5#6123](https://github.com/ckeditor/ckeditor5/issues/6123). ([a5a7d3e](https://github.com/ckeditor/ckeditor5-table/commit/a5a7d3e))
+* Introduced the `TableUtils.removeColumns()` method. Closes [ckeditor/ckeditor5#6546](https://github.com/ckeditor/ckeditor5/issues/6546). Closes [ckeditor/ckeditor5#6439](https://github.com/ckeditor/ckeditor5/issues/6439). ([396c6e9](https://github.com/ckeditor/ckeditor5-table/commit/396c6e9))
+
+### Bug fixes
+
+* `TableSelection` plugin should collapse a multi-cell selection when it gets disabled. Closes [ckeditor/ckeditor5#6430](https://github.com/ckeditor/ckeditor5/issues/6430). ([ba852e3](https://github.com/ckeditor/ckeditor5-table/commit/ba852e3))
+* Added missing tooltips to the table and table cell properties buttons. Closes [ckeditor/ckeditor5#6497](https://github.com/ckeditor/ckeditor5/issues/6497). ([a031c9b](https://github.com/ckeditor/ckeditor5-table/commit/a031c9b))
+* Improved spanned cells handling for row and column removals. Closes [ckeditor/ckeditor5#6406](https://github.com/ckeditor/ckeditor5/issues/6406). ([725a861](https://github.com/ckeditor/ckeditor5-table/commit/725a861))
+* Inserting table column at the first col-row spanned cell should work properly. Closes [ckeditor/ckeditor5#5882](https://github.com/ckeditor/ckeditor5/issues/5882). ([d239f69](https://github.com/ckeditor/ckeditor5-table/commit/d239f69))
+* Remove table row command no longer breaks table heading downcast conversion. Closes [ckeditor/ckeditor5#6391](https://github.com/ckeditor/ckeditor5/issues/6391). ([afdbc2d](https://github.com/ckeditor/ckeditor5-table/commit/afdbc2d))
+* Removing rows in complex tables should properly move cells from removed rows. Closes [ckeditor/ckeditor5#6502](https://github.com/ckeditor/ckeditor5/issues/6502). ([c8d8d32](https://github.com/ckeditor/ckeditor5-table/commit/c8d8d32))
+* Removing the last header row no longer breaks the table in the editing view. Closes [ckeditor/ckeditor5#6437](https://github.com/ckeditor/ckeditor5/issues/6437). ([5e1fd28](https://github.com/ckeditor/ckeditor5-table/commit/5e1fd28))
+* Resolved various issues with handling bigger tables (due to sorting by indexes issues). Closes [ckeditor/ckeditor5#6569](https://github.com/ckeditor/ckeditor5/issues/6569). Closes [ckeditor/ckeditor5#6544](https://github.com/ckeditor/ckeditor5/issues/6544). ([99242fb](https://github.com/ckeditor/ckeditor5-table/commit/99242fb))
+* Table border should be present in content styles (should use `.ck-content`). Closes [ckeditor/ckeditor5#6314](https://github.com/ckeditor/ckeditor5/issues/6314). ([0e0e6fe](https://github.com/ckeditor/ckeditor5-table/commit/0e0e6fe))
+* Table feature should specify header text alignment styles for different language directions in the content styles sheet. Closes [ckeditor/ckeditor5#6638](https://github.com/ckeditor/ckeditor5/issues/6638). ([0e25d38](https://github.com/ckeditor/ckeditor5-table/commit/0e25d38))
+
+  Until now, the text alignment was inherited from `EditorUI` styles but they are unavailable outside the editor when the content lives in a `.ck-content` container.
+* The horizontal alignment of the table cell content should work properly with right–to–left languages. Closes [ckeditor/ckeditor5#6371](https://github.com/ckeditor/ckeditor5/issues/6371). ([b6ca42e](https://github.com/ckeditor/ckeditor5-table/commit/b6ca42e))
+
+### Other changes
+
+* Reduced the table insertion grid rendering time. Closes [ckeditor/ckeditor5#6341](https://github.com/ckeditor/ckeditor5/issues/6341). ([fd1d5da](https://github.com/ckeditor/ckeditor5-table/commit/fd1d5da))
+* Removed temporary fixes for `model-selection-range-intersects` errors. See [ckeditor/ckeditor5#6501](https://github.com/ckeditor/ckeditor5/issues/6501). See [ckeditor/ckeditor5#6382](https://github.com/ckeditor/ckeditor5/issues/6382). ([01d23cb](https://github.com/ckeditor/ckeditor5-table/commit/01d23cb))
+* Replaced `LabeledInputView` with `LabeledFieldView`. See [ckeditor/ckeditor5#6110](https://github.com/ckeditor/ckeditor5/issues/6110). ([b905aa5](https://github.com/ckeditor/ckeditor5-table/commit/b905aa5))
+* Replaced custom `FormHeaderView` with the new reusable `FormHeaderView` UI. See [ckeditor/ckeditor5#6109](https://github.com/ckeditor/ckeditor5/issues/6109). ([f5b2faf](https://github.com/ckeditor/ckeditor5-table/commit/f5b2faf))
+* The position of table cell properties balloon should be in relation to multiple selected cells. Closes [ckeditor/ckeditor5#6357](https://github.com/ckeditor/ckeditor5/issues/6357). ([e2dff56](https://github.com/ckeditor/ckeditor5-table/commit/e2dff56))
+* Updated translations. ([1e691d9](https://github.com/ckeditor/ckeditor5-table/commit/1e691d9)) ([5e98a03](https://github.com/ckeditor/ckeditor5-table/commit/5e98a03))
+
+
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 ### Features
