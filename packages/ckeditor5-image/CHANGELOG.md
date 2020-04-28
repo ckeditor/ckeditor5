@@ -6,7 +6,7 @@ Changelog
 ### Other changes
 
 * Replaced `LabeledInputView` with `LabeledFieldView`. See [ckeditor/ckeditor5#6110](https://github.com/ckeditor/ckeditor5/issues/6110). ([3416fb2](https://github.com/ckeditor/ckeditor5-image/commit/3416fb2))
-* Updated translations. ([88300ff](https://github.com/ckeditor/ckeditor5-image/commit/88300ff)) 
+* Updated translations. ([88300ff](https://github.com/ckeditor/ckeditor5-image/commit/88300ff))
 
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v17.0.0...v18.0.0) (2020-03-19)
@@ -17,7 +17,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([79db6f5](https://github.com/ckeditor/ckeditor5-image/commit/79db6f5)) 
+* Updated translations. ([79db6f5](https://github.com/ckeditor/ckeditor5-image/commit/79db6f5))
 
 
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v16.0.0...v17.0.0) (2020-02-19)
