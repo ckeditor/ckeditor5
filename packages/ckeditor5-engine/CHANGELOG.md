@@ -5,19 +5,19 @@ Changelog
 
 ### Features
 
-* Introduced `View#hasDomSelection`. Closes [ckeditor/ckeditor5#6485](https://github.com/ckeditor/ckeditor5/issues/6485). ([152bdab](https://github.com/ckeditor/ckeditor5-engine/commit/152bdab))
+* Introduced the `View#hasDomSelection` property. Closes [ckeditor/ckeditor5#6485](https://github.com/ckeditor/ckeditor5/issues/6485). ([152bdab](https://github.com/ckeditor/ckeditor5-engine/commit/152bdab))
 
 ### Bug fixes
 
 * Fixed a crash that was happening in some scenarios when undoing table background change. Closes [ckeditor/ckeditor5#6265](https://github.com/ckeditor/ckeditor5/issues/6265). ([f0902fb](https://github.com/ckeditor/ckeditor5-engine/commit/f0902fb))
-* Intersecting ranges resulting when fixing graveyard selection no longer break the editor. Closes [ckeditor/ckeditor5#6501](https://github.com/ckeditor/ckeditor5/issues/6501). Closes [ckeditor/ckeditor5#6382](https://github.com/ckeditor/ckeditor5/issues/6382). ([c208ce1](https://github.com/ckeditor/ckeditor5-engine/commit/c208ce1))
+* Graveyard selection fix no longer breaks the editor in case of intersecting ranges. Closes [ckeditor/ckeditor5#6501](https://github.com/ckeditor/ckeditor5/issues/6501). Closes [ckeditor/ckeditor5#6382](https://github.com/ckeditor/ckeditor5/issues/6382). ([c208ce1](https://github.com/ckeditor/ckeditor5-engine/commit/c208ce1))
 
 ### Other changes
 
-* Improved performance of `Position` getters (~60% gain). Reduced time of some common tasks (like loading complex content) by up to 30%. Closes [ckeditor/ckeditor5#6579](https://github.com/ckeditor/ckeditor5/issues/6579). ([670cd7b](https://github.com/ckeditor/ckeditor5-engine/commit/670cd7b))
-* Improved performance of `TreeWalker` by up to 40%. This optimization affects common tasks such as loading editor data. Closes [ckeditor/ckeditor5#6582](https://github.com/ckeditor/ckeditor5/issues/6582). ([08e8294](https://github.com/ckeditor/ckeditor5-engine/commit/08e8294))
-* Improved the performance of the `Position` constructor by optimizing for the fast path where the root element is passed as the position root. Closes [ckeditor/ckeditor5#6528](https://github.com/ckeditor/ckeditor5/issues/6528). ([bfc6c88](https://github.com/ckeditor/ckeditor5-engine/commit/bfc6c88))
-* Inlined calls to parent classes in model and view `is()` checks to improve editor performance. Closes [ckeditor/ckeditor5#6529](https://github.com/ckeditor/ckeditor5/issues/6529). ([ff04509](https://github.com/ckeditor/ckeditor5-engine/commit/ff04509))
+* Improved performance of `Position` getters (~60% gain). Reduced time of some common tasks (like loading complex content) up to 30%. Closes [ckeditor/ckeditor5#6579](https://github.com/ckeditor/ckeditor5/issues/6579). ([670cd7b](https://github.com/ckeditor/ckeditor5-engine/commit/670cd7b))
+* Improved performance of `TreeWalker` up to 40%. This optimization affects common tasks such as loading the editor data. Closes [ckeditor/ckeditor5#6582](https://github.com/ckeditor/ckeditor5/issues/6582). ([08e8294](https://github.com/ckeditor/ckeditor5-engine/commit/08e8294))
+* Improved the performance of the `Position` constructor by optimizing the code path where an element is passed as the position `root` parameter. Closes [ckeditor/ckeditor5#6528](https://github.com/ckeditor/ckeditor5/issues/6528). ([bfc6c88](https://github.com/ckeditor/ckeditor5-engine/commit/bfc6c88))
+* Inlined parent `is()` calls in model and view classes to improve the editor performance. Closes [ckeditor/ckeditor5#6529](https://github.com/ckeditor/ckeditor5/issues/6529). ([ff04509](https://github.com/ckeditor/ckeditor5-engine/commit/ff04509))
 
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v17.0.0...v18.0.0) (2020-03-19)
