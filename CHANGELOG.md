@@ -101,7 +101,7 @@ Finally, this release comes with a couple of **important breaking changes**. The
 
 Check the list of packages below to learn more about above and other minor breaking changes.
 
-Blog post coming soon...
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v18.0.0-with-custom-table-selection-and-pasting-nested-lists-from-Word/
 
 ### Collaboration features
 
