@@ -2,9 +2,6 @@ CKEditor 5 widget API
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-widget.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-widget.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-widget)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-widget/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-widget?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-widget/status.svg)](https://david-dm.org/ckeditor/ckeditor5-widget)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-widget/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-widget?type=dev)
 
