@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-* Introduced an option for both `FontSize` and `FontFamily` plugins that allow preserving any `font-family` and `font-size` values when pasting or loading content. Closes [ckeditor/ckeditor5#6165](https://github.com/ckeditor/ckeditor5/issues/6165). Closes [ckeditor/ckeditor5#2278](https://github.com/ckeditor/ckeditor5/issues/2278). ([b22efec](https://github.com/ckeditor/ckeditor5-font/commit/b22efec))
+* Introduced the `supportAllValues` configuration for both `FontSize` and `FontFamily` plugins that allow preserving any `font-family` and `font-size` values when pasting or loading content. Closes [ckeditor/ckeditor5#6165](https://github.com/ckeditor/ckeditor5/issues/6165). Closes [ckeditor/ckeditor5#2278](https://github.com/ckeditor/ckeditor5/issues/2278). ([b22efec](https://github.com/ckeditor/ckeditor5-font/commit/b22efec))
 
 ### Bug fixes
 
@@ -16,7 +16,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([b0d7c53](https://github.com/ckeditor/ckeditor5-font/commit/b0d7c53)) 
+* Updated translations. ([b0d7c53](https://github.com/ckeditor/ckeditor5-font/commit/b0d7c53))
 
 
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-font/compare/v16.0.0...v17.0.0) (2020-02-19)
