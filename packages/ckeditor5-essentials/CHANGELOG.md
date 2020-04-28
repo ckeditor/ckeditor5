@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [19.0.0](https://github.com/ckeditor/ckeditor5-essentials/compare/v18.0.0...v19.0.0) (2020-04-28)
+
+### Features
+
+* Added the [`SelectAll`](https://ckeditor.com/docs/ckeditor5/latest/api/module_select-all_selectall-SelectAll.html) plugin to the list of essential editor features (see [ckeditor/ckeditor5#6536](https://github.com/ckeditor/ckeditor5/issues/6536)). ([253d4a0](https://github.com/ckeditor/ckeditor5-essentials/commit/253d4a0))
+
+
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-essentials/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 Internal changes only (updated dependencies, documentation, etc.).
