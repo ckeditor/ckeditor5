@@ -1,8 +1,8 @@
 ---
-name: "💅 Enhancement"
+name: "💅 Improvement"
 about: Improve an existing functionality.
 title: ''
-labels: type:enhancement
+labels: type:improvement
 assignees: ''
 
 ---
