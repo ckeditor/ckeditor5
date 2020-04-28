@@ -5,9 +5,7 @@ Changelog
 
 ### Features
 
-* Expose the refreshToken method. ([013b89e](https://github.com/ckeditor/ckeditor-cloud-services-core/commit/013b89e))
-
-  Expose the refreshToken method.
+* Exposed the `refreshToken` method. ([013b89e](https://github.com/ckeditor/ckeditor-cloud-services-core/commit/013b89e))
 
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor-cloud-services-core/compare/v17.0.0...v18.0.0) (2020-03-19)
