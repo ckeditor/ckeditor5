@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [19.0.0](https://github.com/ckeditor/ckeditor5-page-break/compare/v18.0.0...v19.0.0) (2020-04-28)
+
+### Other changes
+
+* Updated translations. ([f9c3375](https://github.com/ckeditor/ckeditor5-page-break/commit/f9c3375)) 
+
+
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-page-break/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 ### Other changes
