@@ -2,9 +2,6 @@ CKEditor Cloud Services Core
 ============================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor-cloud-services-core.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor-cloud-services-core)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor-cloud-services-core.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor-cloud-services-core)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor-cloud-services-core/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor-cloud-services-core?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor-cloud-services-core/status.svg)](https://david-dm.org/ckeditor/ckeditor-cloud-services-core)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor-cloud-services-core/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor-cloud-services-core?type=dev)
 
