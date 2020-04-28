@@ -24,11 +24,11 @@ npm install --save @ckeditor/ckeditor5-special-characters
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5-special-characters.
+The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-special-characters.
 
 ## External links
 
 * [`@ckeditor/ckeditor5-special-characters` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters)
-* [`ckeditor/ckeditor5-special-characters` on GitHub](https://github.com/ckeditor/ckeditor5-special-characters)
+* [`ckeditor/ckeditor5-special-characters` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-special-characters)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-special-characters/blob/master/CHANGELOG.md)
