@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [19.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v18.0.0...v19.0.0) (2020-04-28)
+
+### Bug fixes
+
+* Mention UI is no longer appearing when mention command is disabled. Closes [ckeditor/ckeditor5#5958](https://github.com/ckeditor/ckeditor5/issues/5958). ([eca1e48](https://github.com/ckeditor/ckeditor5-mention/commit/eca1e48))
+
+### Other changes
+
+* Mentions can now be matched by any character typed. Closes [ckeditor/ckeditor5#6398](https://github.com/ckeditor/ckeditor5/issues/6398). ([aa7d04d](https://github.com/ckeditor/ckeditor5-mention/commit/aa7d04d))
+
+
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 Internal changes only (updated dependencies, documentation, etc.).
