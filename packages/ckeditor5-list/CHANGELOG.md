@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [19.0.0](https://github.com/ckeditor/ckeditor5-list/compare/v18.0.0...v19.0.0) (2020-04-28)
+
+### Other changes
+
+* Improved performance of processing (loading) long lists. Closes [ckeditor/ckeditor5#6581](https://github.com/ckeditor/ckeditor5/issues/6581). ([b52db48](https://github.com/ckeditor/ckeditor5-list/commit/b52db48))
+
+
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-list/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 ### Other changes
