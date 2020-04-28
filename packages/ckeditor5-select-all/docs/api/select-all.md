@@ -22,11 +22,11 @@ npm install --save @ckeditor/ckeditor5-select-all
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5-select-all.
+The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-select-all.
 
 ## External links
 
 * [`@ckeditor/ckeditor5-select-all` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-select-all)
-* [`ckeditor/ckeditor5-select-all` on GitHub](https://github.com/ckeditor/ckeditor5-select-all)
+* [`ckeditor/ckeditor5-select-all` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-select-all)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-select-all/blob/master/CHANGELOG.md)
