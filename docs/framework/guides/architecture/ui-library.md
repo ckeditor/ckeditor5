@@ -451,9 +451,11 @@ dropdownView.buttonView.on( 'execute', () => {
 
 ## Keystrokes and focus management
 
-_Coming soon..._
-
 The framework offers built–in classes that help manage keystrokes and focus in the UI. They are particularly useful when it comes to bringing accessibility features to the application.
+
+<info-box>
+	If you want to know how the editor handles focus under the hood and what tools make it possible, check out the {@link framework/guides/deep-dive/focus-tracking **"Deep dive into focus tracking"**} guide.
+</info-box>
 
 ### Focus tracker
 
@@ -487,6 +489,8 @@ focusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => {
 ```
 
 This information is useful when implementing a certain type of UI whose behavior depends on the focus, for example, contextual panels and floating balloons containing forms should hide when the user decides to abandon them.
+
+Learn more about the focus tracker class in the {@link framework/guides/deep-dive/focus-tracking#using-the-focustracker-class "Deep dive into focus tracking"} guide.
 
 ### Keystroke handler
 

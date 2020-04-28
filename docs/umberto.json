@@ -218,6 +218,12 @@
 							"id": "features-real-time-collaboration",
 							"slug": "real-time-collaboration",
 							"order": 300
+						},
+						{
+							"name": "Annotations customization",
+							"id": "features-annotations-customization",
+							"slug": "annotations-customization",
+							"order": 400
 						}
 					]
 				},
