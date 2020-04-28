@@ -1,6 +1,36 @@
 Changelog
 =========
 
+## [19.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v18.0.0...v19.0.0) (2020-04-28)
+
+### MINOR BREAKING CHANGES
+
+* The `translate` function from the `translation-service` was marked as protected. See [#334](https://github.com/ckeditor/ckeditor5-utils/issues/334).
+* The format of translations added to the editor has been changed. If you use `window.CKEDITOR_TRANSLATIONS` please see [#334](https://github.com/ckeditor/ckeditor5-utils/issues/334).
+* The `getPositionedAncestor()` helper will no longer return the passed element when it is positioned. 
+
+### MAJOR BREAKING CHANGES
+
+* `env.isEdge` is no longer available. See [ckeditor/ckeditor5#6202](https://github.com/ckeditor/ckeditor5/issues/6202).
+
+### Features
+
+* Added the support for initializing `Collection` items via the `constructor()`. Closes [ckeditor/ckeditor5#6319](https://github.com/ckeditor/ckeditor5/issues/6319). ([8846e66](https://github.com/ckeditor/ckeditor5-utils/commit/8846e66))
+* Provided support for plural forms internalization. Part of [ckeditor/ckeditor5#6526](https://github.com/ckeditor/ckeditor5/issues/6526). ([5f6ea75](https://github.com/ckeditor/ckeditor5-utils/commit/5f6ea75))
+
+### Bug fixes
+
+* Do not execute `ResizeObserver` callbacks when the resized element is invisible (but still in DOM) (see [ckeditor/ckeditor5#6570](https://github.com/ckeditor/ckeditor5/issues/6570)). ([fb13d9d](https://github.com/ckeditor/ckeditor5-utils/commit/fb13d9d))
+* Editor will now load correctly in environment with Symbol polyfilled. Closes [ckeditor/ckeditor5#6489](https://github.com/ckeditor/ckeditor5/issues/6489). ([7cd1f48](https://github.com/ckeditor/ckeditor5-utils/commit/7cd1f48))
+* Fixed various cases with typing multi-byte unicode sequences (e.g. emojis). Closes [ckeditor/ckeditor5#3147](https://github.com/ckeditor/ckeditor5/issues/3147). Closes [ckeditor/ckeditor5#6495](https://github.com/ckeditor/ckeditor5/issues/6495). ([6dc1ba6](https://github.com/ckeditor/ckeditor5-utils/commit/6dc1ba6))
+* The `getOptimalPosition()` helper should prefer positions that fit inside the viewport even though there are some others that fit better into the limiter. Closes [ckeditor/ckeditor5#6181](https://github.com/ckeditor/ckeditor5/issues/6181). ([7cd1238](https://github.com/ckeditor/ckeditor5-utils/commit/7cd1238))
+
+### Other changes
+
+* Removed `env.isEdge` as Edge is now detected and treated as Chrome. Closes [ckeditor/ckeditor5#6202](https://github.com/ckeditor/ckeditor5/issues/6202). ([2902b30](https://github.com/ckeditor/ckeditor5-utils/commit/2902b30))
+* The `getPositionedAncestor()` helper should use `offsetParent` instead of `getComputedStyle()` for performance reasons. Closes [ckeditor/ckeditor5#6573](https://github.com/ckeditor/ckeditor5/issues/6573). ([7939756](https://github.com/ckeditor/ckeditor5-utils/commit/7939756))
+
+
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 Internal changes only (updated dependencies, documentation, etc.).
