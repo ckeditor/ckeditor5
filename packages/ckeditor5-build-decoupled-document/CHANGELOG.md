@@ -3,9 +3,11 @@ Changelog
 
 ## [19.0.0](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v18.0.0...v19.0.0) (2020-04-28)
 
-### Other changes
+We are happy to announce the release of CKEditor 5 v19.0.0.
 
-* The inline `style` element which is being produced by Webpack and delivers styles for the editor will have the `[data-cke="true"]` attribute in order to help find CKEditor 5 styles. See [ckeditor/ckeditor5#6454](https://github.com/ckeditor/ckeditor5/issues/6454). ([dcfac0f](https://github.com/ckeditor/ckeditor5-build-decoupled-document/commit/dcfac0f))
+Refer to the [main changelog](https://github.com/ckeditor/ckeditor5/releases/tag/v19.0.0) to find out about all the new features, improvements and possible breaking changes.
+
+Blog post coming soon...
 
 ### Dependencies
 
@@ -64,7 +66,7 @@ We are happy to announce the release of CKEditor 5 v18.0.0.
 
 Refer to the [main changelog](https://github.com/ckeditor/ckeditor5/releases/tag/v18.0.0) to find out about all the new features, improvements and possible breaking changes.
 
-Blog post coming soon...
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v18.0.0-with-custom-table-selection-and-pasting-nested-lists-from-Word/
 
 ### Features
 
