@@ -24,11 +24,11 @@ npm install --save @ckeditor/ckeditor5-horizontal-line
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5-horizontal-line.
+The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-horizontal-line.
 
 ## External links
 
 * [`@ckeditor/ckeditor5-horizontal-line` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line)
-* [`ckeditor/ckeditor5-horizontal-line` on GitHub](https://github.com/ckeditor/ckeditor5-horizontal-line)
+* [`ckeditor/ckeditor5-horizontal-line` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-horizontal-line)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-horizontal-line/blob/master/CHANGELOG.md)
