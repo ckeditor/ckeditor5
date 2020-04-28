@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-* Added strikethrough auto format support. Closes [ckeditor/ckeditor5#6412](https://github.com/ckeditor/ckeditor5/issues/6412). ([9c3fd3e](https://github.com/ckeditor/ckeditor5-autoformat/commit/9c3fd3e))
+* Added auto format integration with the strike through using `~~` string. Closes [ckeditor/ckeditor5#6412](https://github.com/ckeditor/ckeditor5/issues/6412). ([9c3fd3e](https://github.com/ckeditor/ckeditor5-autoformat/commit/9c3fd3e))
 
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-autoformat/compare/v17.0.0...v18.0.0) (2020-03-19)
