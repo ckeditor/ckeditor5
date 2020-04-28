@@ -12,7 +12,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([92c4ec0](https://github.com/ckeditor/ckeditor5-list/commit/92c4ec0)) 
+* Updated translations. ([92c4ec0](https://github.com/ckeditor/ckeditor5-list/commit/92c4ec0))
 
 
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-list/compare/v16.0.0...v17.0.0) (2020-02-19)
