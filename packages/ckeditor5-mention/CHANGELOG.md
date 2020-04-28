@@ -6,9 +6,6 @@ Changelog
 ### Bug fixes
 
 * Mention UI is no longer appearing when mention command is disabled. Closes [ckeditor/ckeditor5#5958](https://github.com/ckeditor/ckeditor5/issues/5958). ([eca1e48](https://github.com/ckeditor/ckeditor5-mention/commit/eca1e48))
-
-### Other changes
-
 * Mentions can now be matched by any character typed. Closes [ckeditor/ckeditor5#6398](https://github.com/ckeditor/ckeditor5/issues/6398). ([aa7d04d](https://github.com/ckeditor/ckeditor5-mention/commit/aa7d04d))
 
 
