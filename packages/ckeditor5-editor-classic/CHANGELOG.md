@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## [19.0.0](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v18.0.0...v19.0.0) (2020-04-28)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 Internal changes only (updated dependencies, documentation, etc.).
