@@ -6,8 +6,8 @@ Changelog
 ### MAJOR BREAKING CHANGES
 
 * `ViewCollection` no longer has the `locale` property.
-* The `ViewCollection#constructor()` no longer accepts the `locale` as a parameter.
-* `LabeledView` component was renamed to `LabeledFieldView`. Also, its instance of a labeled component's view is available through `LabeledFieldView#fieldView`. It replaced `LabeledView#view`.
+* The `ViewCollection#constructor()` no longer accepts the `locale` parameter.
+* `LabeledView` component was renamed to `LabeledFieldView`. Also, its instance of a labeled component's view is available through `LabeledFieldView#fieldView`. It replaced the `LabeledView#view`.
 
 ### MINOR BREAKING CHANGES
 
@@ -17,11 +17,11 @@ Changelog
 
 * Allowed defining initial items of `ViewCollection` and `BodyCollection` in the constructor. See [ckeditor/ckeditor5#6319](https://github.com/ckeditor/ckeditor5/issues/6319). ([6cd15de](https://github.com/ckeditor/ckeditor5-ui/commit/6cd15de))
 
-  The `View#createCollection()` method also started accepting an iterator of views.
+  The `View#createCollection()` method now also accepts an iterator of views.
 * Introduce `FormHeaderView` UI component. Closes [ckeditor/ckeditor5#6109](https://github.com/ckeditor/ckeditor5/issues/6109). ([eb1ce18](https://github.com/ckeditor/ckeditor5-ui/commit/eb1ce18))
 * The `BlockToolbar` should group items when there is no place to show them all. Closes [ckeditor/ckeditor5#6449](https://github.com/ckeditor/ckeditor5/issues/6449). Closes [ckeditor/ckeditor5#6575](https://github.com/ckeditor/ckeditor5/issues/6575). Closes [ckeditor/ckeditor5#6570](https://github.com/ckeditor/ckeditor5/issues/6570). ([fcd9c4e](https://github.com/ckeditor/ckeditor5-ui/commit/fcd9c4e))
 
-  Bulletproofed the `ToolbarView#maxWidth` and items grouping when the toolbar is invisible.
+  Improved `ToolbarView#maxWidth` and items grouping when the toolbar is invisible.
 
 ### Bug fixes
 
@@ -29,12 +29,9 @@ Changelog
 
 ### Other changes
 
-* Remove the Edge-specific assertion for SVG content.  [ckeditor/ckeditor5#6202](https://github.com/ckeditor/ckeditor5/issues/6202). ([9427add](https://github.com/ckeditor/ckeditor5-ui/commit/9427add))
-
-  Old versions of Edge were sprouting xmlns attributes for inner elements.
 * Removed the obsolete `DropdownView#focusTracker`. Closes [ckeditor/ckeditor5#6548](https://github.com/ckeditor/ckeditor5/issues/6548). ([ac750c7](https://github.com/ckeditor/ckeditor5-ui/commit/ac750c7))
 * Rename `LabeledView` component to `LabeledFieldView`. See [ckeditor/ckeditor5#6110](https://github.com/ckeditor/ckeditor5/issues/6110). ([5a7aca7](https://github.com/ckeditor/ckeditor5-ui/commit/5a7aca7))
-* Updated translations. ([2a391d6](https://github.com/ckeditor/ckeditor5-ui/commit/2a391d6)) 
+* Updated translations. ([2a391d6](https://github.com/ckeditor/ckeditor5-ui/commit/2a391d6))
 
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v17.0.0...v18.0.0) (2020-03-19)
