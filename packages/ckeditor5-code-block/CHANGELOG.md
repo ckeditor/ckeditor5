@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [19.0.0](https://github.com/ckeditor/ckeditor5-code-block/compare/v18.0.0...v19.0.0) (2020-04-28)
+
+### Other changes
+
+* Updated translations. ([5300e22](https://github.com/ckeditor/ckeditor5-code-block/commit/5300e22)) 
+* XML and HTML will not be treated as the same language. Closes [ckeditor/ckeditor5#5794](https://github.com/ckeditor/ckeditor5/issues/5794). ([58a7009](https://github.com/ckeditor/ckeditor5-code-block/commit/58a7009))
+
+
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-code-block/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 ### Other changes
