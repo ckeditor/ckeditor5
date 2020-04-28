@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [19.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v18.0.0...v19.0.0) (2020-04-28)
+
+### Bug fixes
+
+* Restored a condition handling an edge case in upload vs abort promise chains. Closes [ckeditor/ckeditor5#5892](https://github.com/ckeditor/ckeditor5/issues/5892). ([ed7187b](https://github.com/ckeditor/ckeditor5-upload/commit/ed7187b))
+
+
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 Internal changes only (updated dependencies, documentation, etc.).
