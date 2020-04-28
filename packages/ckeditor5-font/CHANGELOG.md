@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [19.0.0](https://github.com/ckeditor/ckeditor5-font/compare/v18.0.0...v19.0.0) (2020-04-28)
+
+### Features
+
+* Introduced an option for both `FontSize` and `FontFamily` plugins that allow preserving any `font-family` and `font-size` values when pasting or loading content. Closes [ckeditor/ckeditor5#6165](https://github.com/ckeditor/ckeditor5/issues/6165). Closes [ckeditor/ckeditor5#2278](https://github.com/ckeditor/ckeditor5/issues/2278). ([b22efec](https://github.com/ckeditor/ckeditor5-font/commit/b22efec))
+
+### Bug fixes
+
+* Font size styles should be prefixed by the `.ck-content` class. Closes [ckeditor/ckeditor5#6636](https://github.com/ckeditor/ckeditor5/issues/6636). ([b0b06db](https://github.com/ckeditor/ckeditor5-font/commit/b0b06db))
+
+
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-font/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 ### Other changes
