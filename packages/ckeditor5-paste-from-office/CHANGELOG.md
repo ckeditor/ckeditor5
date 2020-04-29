@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-paste-from-office/compare/v18.0.0...v19.0.0) (2020-04-28)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-paste-from-office/compare/v18.0.0...v19.0.0) (2020-04-29)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
