@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v18.0.0...v19.0.0) (2020-04-28)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v18.0.0...v19.0.0) (2020-04-29)
 
 ### MINOR BREAKING CHANGES
 
@@ -14,7 +14,7 @@ Changelog
 ### Other changes
 
 * Moved the <kbd>Ctrl</kbd>+<kbd>A</kbd> keystroke handling in widgets to the [`SelectAll`](https://ckeditor.com/docs/ckeditor5/latest/api/module_select-all_selectall-SelectAll.html) plugin (see [ckeditor/ckeditor5#6536](https://github.com/ckeditor/ckeditor5/issues/6536)). ([57eb263](https://github.com/ckeditor/ckeditor5-widget/commit/57eb263))
-* Updated translations. ([79d1a21](https://github.com/ckeditor/ckeditor5-widget/commit/79d1a21)) 
+* Updated translations. ([79d1a21](https://github.com/ckeditor/ckeditor5-widget/commit/79d1a21))
 
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v17.0.0...v18.0.0) (2020-03-19)
