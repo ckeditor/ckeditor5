@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v18.0.0...v19.0.0) (2020-04-28)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v18.0.0...v19.0.0) (2020-04-29)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
@@ -10,7 +10,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Updated translations. ([c898ffc](https://github.com/ckeditor/ckeditor5-core/commit/c898ffc)) 
+* Updated translations. ([c898ffc](https://github.com/ckeditor/ckeditor5-core/commit/c898ffc))
 
 
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v16.0.0...v17.0.0) (2020-02-19)
