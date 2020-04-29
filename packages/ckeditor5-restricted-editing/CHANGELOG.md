@@ -1,18 +1,18 @@
 Changelog
 =========
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-restricted-editing/compare/v18.0.0...v19.0.0) (2020-04-28)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-restricted-editing/compare/v18.0.0...v19.0.0) (2020-04-29)
 
 ### Other changes
 
-* Updated translations. ([4d7336d](https://github.com/ckeditor/ckeditor5-restricted-editing/commit/4d7336d)) 
+* Updated translations. ([4d7336d](https://github.com/ckeditor/ckeditor5-restricted-editing/commit/4d7336d))
 
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-restricted-editing/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 ### Other changes
 
-* Updated translations. ([e2a6a7d](https://github.com/ckeditor/ckeditor5-restricted-editing/commit/e2a6a7d)) 
+* Updated translations. ([e2a6a7d](https://github.com/ckeditor/ckeditor5-restricted-editing/commit/e2a6a7d))
 
 
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-restricted-editing/compare/v16.0.0...v17.0.0) (2020-02-19)
