@@ -119,6 +119,11 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	 * Such a problem can be resolved by either downgrading CKEditor 5 packages (which we do not recommend) or
 	 * asking the author of the third-party package to upgrade its depdendencies (or forking their project and doing this yourself).
 	 *
+	 * **Note:** All official CKEditor 5 packages (excluding integrations and `ckeditor5-dev-*` packages) are released in the
+	 * same major version. This is &mdash; in the `x.y.z`, the `x` is the same for all packages. This is the simplest way to check
+	 * whether you use packages coming from the same CKEditor 5 version. You can read more about versioning in the
+	 * {@glink framework/guides/support/versioning-policy Versioning policy} guide.
+	 *
 	 * # Packages were duplicated in `node_modules`
 	 *
 	 * In some situations, especially when calling `npm install` multiple times, it may happen
