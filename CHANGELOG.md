@@ -3,15 +3,45 @@ Changelog
 
 ## [19.0.0](https://github.com/ckeditor/ckeditor5/compare/v18.0.0...v19.0.0) (2020-04-29)
 
-### Features
+We are happy to announce the release of CKEditor 5 v19.0.0.
 
-Besides new features introduced by the dependencies, this version also introduces the following features:
+This release is focused on [further improving the table selection plugin](https://github.com/ckeditor/ckeditor5/issues/6285) and includes following the enhancements:
 
-* Introduced the select all feature. ([a17c03c](https://github.com/ckeditor/ckeditor5/commit/a17c03c))
+* [An option to select an entire row or column](https://github.com/ckeditor/ckeditor5/issues/6500).
+* [Custom keyboard handling in tables, allowing for consistent and more convenient navigation using the keyboard](https://github.com/ckeditor/ckeditor5/issues/3267).
+* [Improved removing rows or columns from complex tables](https://github.com/ckeditor/ckeditor5/issues/6406).
+* Fixed a few cases where an editor could be crashed.
 
-### Other changes
+We also introduced support for [plural forms in our translation API](https://github.com/ckeditor/ckeditor5/issues/6406), added the [select all feature](https://github.com/ckeditor/ckeditor5/issues/6536) and created the `supportAllValues` option to preserve any font family or size value.
 
-* The inline `style` element which is being produced by Webpack and delivers styles for the editor will have the `[data-cke="true"]` attribute in order to help find CKEditor 5 styles. Closes [ckeditor/ckeditor5#6454](https://github.com/ckeditor/ckeditor5/issues/6454). ([0cde322](https://github.com/ckeditor/ckeditor5/commit/0cde322))
+We also did several performance tweaks to improve CKEditor 5 data processing and rendering time.
+
+A few bugs have been fixed, most notably:
+
+* [Font retention when pasting from Microsoft Word](https://github.com/ckeditor/ckeditor5/issues/6165).
+* [Support for special characters in mention matching](https://github.com/ckeditor/ckeditor5/issues/6398).
+* [Artifact characters produced when typing  after an emoji with text transformation enabled](https://github.com/ckeditor/ckeditor5/issues/6398).
+
+Finally, this release comes with some **important breaking changes**. The most notable ones are:
+
+* Make sure the latest version of the [`Essentials`](https://ckeditor.com/docs/ckeditor5/latest/api/essentials.html) plugin or the [`SelectAll`](https://ckeditor.com/docs/ckeditor5/latest/api/module_select-all_selectall-SelectAll.html) plugin is installed in your integration. Either is required for proper keystroke handling in editor widgets.
+* The format of stored editor translations changed. If you use `window.CKEDITOR_TRANSLATIONS`, see [#334](https://github.com/ckeditor/ckeditor5-utils/issues/334).
+* The `translate()` function from the `translation-service` was marked as protected. See [#334](https://github.com/ckeditor/ckeditor5-utils/issues/334).
+* The `getPositionedAncestor()` helper will no longer return the passed element when it is positioned.
+* The `ViewCollection` no longer has the `locale` property.
+* The `ViewCollection#constructor()` no longer accepts the `locale` parameter.
+* The `LabeledView` component was renamed to `LabeledFieldView`. Also, its instance of a labeled component's view is available through `LabeledFieldView#fieldView`. It replaced `LabeledView#view`.
+* The `DropdownView#focusTracker` property was removed as it served no purpose.
+* From now on, the `SpecialCharactersNavigationView` is an instance of the `FormHeaderView` and unnecessary `SpecialCharactersNavigationView#labelView` was removed.
+* The `env.isEdge` property was removed. See [ckeditor/ckeditor5#6202](https://github.com/ckeditor/ckeditor5/issues/6202).
+
+Check the list of packages below to learn more about these and other minor breaking changes.
+
+Blog post coming soon...
+
+### Collaboration features
+
+The CKEditor 5 Collaboration features changelog can be found here: https://ckeditor.com/collaboration/changelog.
 
 ### Dependencies
 
