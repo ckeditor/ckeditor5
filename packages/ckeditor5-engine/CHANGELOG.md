@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v18.0.0...v19.0.0) (2020-04-28)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v18.0.0...v19.0.0) (2020-04-29)
 
 ### Features
 
@@ -14,8 +14,8 @@ Changelog
 
 ### Other changes
 
-* Improved performance of `Position` getters (~60% gain). Reduced time of some common tasks (like loading complex content) up to 30%. Closes [ckeditor/ckeditor5#6579](https://github.com/ckeditor/ckeditor5/issues/6579). ([670cd7b](https://github.com/ckeditor/ckeditor5-engine/commit/670cd7b))
-* Improved performance of `TreeWalker` up to 40%. This optimization affects common tasks such as loading the editor data. Closes [ckeditor/ckeditor5#6582](https://github.com/ckeditor/ckeditor5/issues/6582). ([08e8294](https://github.com/ckeditor/ckeditor5-engine/commit/08e8294))
+* Improved performance of `Position` getters (~60% gain). Reduced time of some common tasks (like loading complex content) by up to 30%. Closes [ckeditor/ckeditor5#6579](https://github.com/ckeditor/ckeditor5/issues/6579). ([670cd7b](https://github.com/ckeditor/ckeditor5-engine/commit/670cd7b))
+* Improved performance of `TreeWalker` by up to 40%. This optimization affects common tasks such as loading the editor data. Closes [ckeditor/ckeditor5#6582](https://github.com/ckeditor/ckeditor5/issues/6582). ([08e8294](https://github.com/ckeditor/ckeditor5-engine/commit/08e8294))
 * Improved the performance of the `Position` constructor by optimizing the code path where an element is passed as the position `root` parameter. Closes [ckeditor/ckeditor5#6528](https://github.com/ckeditor/ckeditor5/issues/6528). ([bfc6c88](https://github.com/ckeditor/ckeditor5-engine/commit/bfc6c88))
 * Inlined parent `is()` calls in model and view classes to improve the editor performance. Closes [ckeditor/ckeditor5#6529](https://github.com/ckeditor/ckeditor5/issues/6529). ([ff04509](https://github.com/ckeditor/ckeditor5-engine/commit/ff04509))
 
