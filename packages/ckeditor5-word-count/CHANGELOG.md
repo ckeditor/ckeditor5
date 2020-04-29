@@ -1,11 +1,11 @@
 Changelog
 =========
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-word-count/compare/v18.0.0...v19.0.0) (2020-04-28)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-word-count/compare/v18.0.0...v19.0.0) (2020-04-29)
 
 ### Other changes
 
-* Updated translations. ([091f2e7](https://github.com/ckeditor/ckeditor5-word-count/commit/091f2e7)) 
+* Updated translations. ([091f2e7](https://github.com/ckeditor/ckeditor5-word-count/commit/091f2e7))
 
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-word-count/compare/v17.0.0...v18.0.0) (2020-03-19)
