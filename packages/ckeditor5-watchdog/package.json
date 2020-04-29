@@ -12,11 +12,11 @@
     "lodash-es": "^4.17.10"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-core": "^18.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^18.0.0",
-    "@ckeditor/ckeditor5-engine": "^18.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^18.0.0",
-    "@ckeditor/ckeditor5-utils": "^18.0.0",
+    "@ckeditor/ckeditor5-core": "^19.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^19.0.0",
+    "@ckeditor/ckeditor5-engine": "^19.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^19.0.0",
+    "@ckeditor/ckeditor5-utils": "^19.0.0",
     "eslint": "^5.5.0",
     "eslint-config-ckeditor5": "^2.0.0",
     "husky": "^2.4.1",
