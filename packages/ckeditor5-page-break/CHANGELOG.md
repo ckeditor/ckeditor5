@@ -1,18 +1,18 @@
 Changelog
 =========
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-page-break/compare/v18.0.0...v19.0.0) (2020-04-28)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-page-break/compare/v18.0.0...v19.0.0) (2020-04-29)
 
 ### Other changes
 
-* Updated translations. ([f9c3375](https://github.com/ckeditor/ckeditor5-page-break/commit/f9c3375)) 
+* Updated translations. ([f9c3375](https://github.com/ckeditor/ckeditor5-page-break/commit/f9c3375))
 
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-page-break/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 ### Other changes
 
-* Updated translations. ([081969b](https://github.com/ckeditor/ckeditor5-page-break/commit/081969b)) 
+* Updated translations. ([081969b](https://github.com/ckeditor/ckeditor5-page-break/commit/081969b))
 
 
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-page-break/compare/v16.0.0...v17.0.0) (2020-02-19)
