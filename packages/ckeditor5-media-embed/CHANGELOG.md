@@ -1,12 +1,12 @@
 Changelog
 =========
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v18.0.0...v19.0.0) (2020-04-28)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v18.0.0...v19.0.0) (2020-04-29)
 
 ### Other changes
 
 * Replaced `LabeledInputView` with `LabeledFieldView`. See [ckeditor/ckeditor5#6110](https://github.com/ckeditor/ckeditor5/issues/6110). ([bc00c8b](https://github.com/ckeditor/ckeditor5-media-embed/commit/bc00c8b))
-* Updated translations. ([8ac4d13](https://github.com/ckeditor/ckeditor5-media-embed/commit/8ac4d13)) 
+* Updated translations. ([8ac4d13](https://github.com/ckeditor/ckeditor5-media-embed/commit/8ac4d13))
 
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v17.0.0...v18.0.0) (2020-03-19)
