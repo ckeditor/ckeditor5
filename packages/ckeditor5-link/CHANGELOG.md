@@ -1,11 +1,11 @@
 Changelog
 =========
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-link/compare/v18.0.0...v19.0.0) (2020-04-28)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-link/compare/v18.0.0...v19.0.0) (2020-04-29)
 
 ### Features
 
-* Introduced the `defaultValue` option to allow enabling particular manual decorator by default. Closes [ckeditor/ckeditor5#6031](https://github.com/ckeditor/ckeditor5/issues/6031). ([82f966e](https://github.com/ckeditor/ckeditor5-link/commit/82f966e))
+* Introduced the `defaultValue` option to allow enabling a particular manual decorator by default. Closes [ckeditor/ckeditor5#6031](https://github.com/ckeditor/ckeditor5/issues/6031). ([82f966e](https://github.com/ckeditor/ckeditor5-link/commit/82f966e))
 * After pasting a link the selection is now moved outside of a link to improve UX. This is done by change in the `Model#insertContent()` handling. Closes [ckeditor/ckeditor5#6053](https://github.com/ckeditor/ckeditor5/issues/6053). ([afabf03](https://github.com/ckeditor/ckeditor5-link/commit/afabf03))
 
 ### Other changes
