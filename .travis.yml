@@ -26,6 +26,7 @@ script:
 - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
     travis_wait 30 yarn run docs:build-and-publish-nightly;
   fi'
+
 after_script:
 - export END_TIME=$( date +%s )
 - ckeditor5-dev-tests-notify-travis-status
