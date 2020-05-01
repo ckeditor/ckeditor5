@@ -57,7 +57,7 @@ For reference on how to identify minor or major breaking change see {@link frame
 
 ### Package name
 
-Most commits are related to one or more packages. Each affected package should be listed in parenthesis following the commit type.
+Most commits are related to one or more packages. Each affected package should be listed in parenthesis following the commit type. A package that was most impacted by the change should be listed first.
 
 It is, however, possible to skip this part if five or more packages are affected.
 
