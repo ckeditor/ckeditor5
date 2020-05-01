@@ -47,9 +47,13 @@ Each commit can contain additional notes which will be inserted into the changel
 | Type | Is backward compatible? |
 | --- | --- |
 | `NOTE` | Yes |
-| `BREAKING CHANGES` or `BREAKING CHANGE` | No |
+| `MAJOR BREAKING CHANGE`, `MINOR BREAKING CHANGE` or `BREAKING CHANGE` | No |
 
-If any visible change contains the `BREAKING CHANGE` note, the next release will be marked as `major` automatically.
+The `BREAKING CHANGE` is an alias to a `MAJOR BREAKING CHANGE`.
+
+If any change contains the `MAJOR BREAKING CHANGE` note, the next release will be marked as `major` automatically.
+
+For reference on how to identify minor or major breaking change see {@link framework/guides/support/versioning-policy versioning policy guide}.
 
 ### Package name
 
