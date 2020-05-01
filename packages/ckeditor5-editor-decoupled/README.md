@@ -2,9 +2,6 @@ CKEditor 5 decoupled editor implementation
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-editor-decoupled.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-editor-decoupled.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-editor-decoupled)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-editor-decoupled/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-editor-decoupled?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-decoupled/status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-decoupled)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-decoupled/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-decoupled?type=dev)
 
