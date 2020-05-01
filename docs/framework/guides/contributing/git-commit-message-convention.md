@@ -53,11 +53,11 @@ The `BREAKING CHANGE` is an alias to a `MAJOR BREAKING CHANGE`.
 
 If any change contains the `MAJOR BREAKING CHANGE` note, the next release will be marked as `major` automatically.
 
-For reference on how to identify minor or major breaking change see {@link framework/guides/support/versioning-policy versioning policy guide}.
+For reference on how to identify minor or major breaking change see the {@link framework/guides/support/versioning-policy versioning policy guide}.
 
 ### Package name
 
-Most commits are related to one or more packages. Each affected package should be listed in parenthesis following the commit type. A package that was most impacted by the change should be listed first.
+Most commits are related to one or more packages. Each affected package should be listed in parenthesis following the commit type. A package that was the most impacted by the change should be listed first.
 
 It is, however, possible to skip this part if five or more packages are affected.
 
