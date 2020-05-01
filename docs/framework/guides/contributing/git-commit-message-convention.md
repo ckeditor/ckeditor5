@@ -18,7 +18,7 @@ Every commit made *directly* to the `master` branch must follow the below conven
 Commit message template:
 
 ```
-Type: A short sentence about the commit. Closes #XXX.
+Type (package-name, other-package-name): A short sentence about the commit. Closes #XXX.
 
 Optional description.
 
@@ -50,6 +50,12 @@ Each commit can contain additional notes which will be inserted into the changel
 | `BREAKING CHANGES` or `BREAKING CHANGE` | No |
 
 If any visible change contains the `BREAKING CHANGE` note, the next release will be marked as `major` automatically.
+
+### Package name
+
+Most commits are related to one or more packages. Each affected package should be listed in parenthesis following the commit type.
+
+It is, however, possible to skip this part if five or more packages are affected.
 
 ### Example commits
 
