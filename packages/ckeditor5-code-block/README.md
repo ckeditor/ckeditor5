@@ -3,9 +3,6 @@ CKEditor 5 code block feature
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-code-block.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block)
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-code-block.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-code-block.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-code-block)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-code-block/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-code-block?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-code-block/status.svg)](https://david-dm.org/ckeditor/ckeditor5-code-block)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-code-block/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-code-block?type=dev)
 
