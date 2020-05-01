@@ -61,7 +61,11 @@ For reference on how to identify minor or major breaking change see the {@link f
 
 Most commits are related to one or more packages. Each affected package should be listed in parenthesis following the commit type. A package that was the most impacted by the change should be listed first.
 
-It is, however, possible to skip this part if many packages are affected. This is a typically indication that this is a generic change and listing, all the packages would reduce changelog readability.
+It is, however, possible to skip this part if many packages are affected. This is a typically indication that this is a generic change and listing, having all the packages listed would reduce changelog readability.
+
+The package name is based on npm package name, however it has `@ckeditor/ckeditor(5)-` prefix stripped.
+
+If your change is related to the main package only, use `ckeditor5` as the package name.
 
 ### Example commits
 
