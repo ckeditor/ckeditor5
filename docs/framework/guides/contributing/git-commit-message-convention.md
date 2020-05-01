@@ -66,7 +66,7 @@ It is, however, possible to skip this part if five or more packages are affected
 A new feature without any breaking changes.
 
 ```
-Feature: Added support for RTL languages. Closes #1.
+Feature (ui, theme-lark): Added support for RTL languages. Closes #1.
 
 RTL content will now be rendered correctly.
 
@@ -82,19 +82,19 @@ Fix: The editor will be great again. Closes #3. Closes #4.
 Commit with updated documentation:
 
 ```
-Docs: Updated the README.
+Docs (link): Updated the README.
 ```
 
 Commit which provides or changes the tests:
 
 ```
-Tests: Introduced missing tests. Closes #5.
+Tests (widget): Introduced missing tests. Closes #5.
 ```
 
 An enhancement which is not backward compatible. Public API was changed:
 
 ```
-Other: Extracted `utils.moo()` to a separate package. Closes #9.
+Other (utils, moo): Extracted `utils.moo()` to a separate package. Closes #9.
 
 BREAKING CHANGE: The `util.moo()` method is now available in the `moo` package. See #9.
 ```
@@ -105,25 +105,25 @@ For the commits shown above the changelog will look like this:
 Changelog
 =========
 
-## [1.0.0](https://github.com/ckeditor/ckeditor5-dev/compare/v1.0.0...v0.0.1) (2017-01-04)
+## [1.0.0](https://github.com/ckeditor/ckeditor5/compare/v1.0.0...v0.0.1) (2017-01-04)
 
-### Bug fixes
+### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* The editor will be great again. Closes [#3](https://github.com/ckeditor/ckeditor5-dev/issue/3). Closes [#4](https://github.com/ckeditor/ckeditor5-dev/issue/4). ([a0b4ce8](https://github.com/ckeditor/ckeditor5-dev/commit/a0b4ce8))
-
-### Other changes
-
-* Extracted `utils.moo()` to a separate package. Thanks to [@CKEditor](https://github.com/CKEditor). ([e8cc04f](https://github.com/ckeditor/ckeditor5-dev/commit/e8cc04f))
+* The `util.moo()` method is now available in the `moo` package. See [#9](https://github.com/ckeditor/ckeditor5/issue/9).
 
 ### Features
 
-* Added support for RTL languages. Closes [#1](https://github.com/ckeditor/ckeditor5-dev/issue/1). ([adc59ed](https://github.com/ckeditor/ckeditor5-dev/commit/adc59ed))
+* [ui](http://npmjs.com/package/@ckeditor/ckeditor5-ui), [theme-lark](http://npmjs.com/package/@ckeditor/ckeditor5-theme-lark): Added support for RTL languages. Closes [#1](https://github.com/ckeditor/ckeditor5/issue/1). ([adc59ed](https://github.com/ckeditor/ckeditor5/commit/adc59ed))
 
    RTL content will now be rendered correctly.
 
-### BREAKING CHANGES
+### Bug fixes
 
-* The `util.moo()` method is now available in the `moo` package. See [#9](https://github.com/ckeditor/ckeditor5-dev/issue/9).
+* The editor will be great again. Closes [#3](https://github.com/ckeditor/ckeditor5/issue/3). Closes [#4](https://github.com/ckeditor/ckeditor5/issue/4). ([a0b4ce8](https://github.com/ckeditor/ckeditor5/commit/a0b4ce8))
+
+### Other changes
+
+* [utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils), [moo](http://npmjs.com/package/@ckeditor/ckeditor5-moo): Extracted `utils.moo()` to a separate package. Thanks to [@CKEditor](https://github.com/CKEditor). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
 
 ### NOTE
 
