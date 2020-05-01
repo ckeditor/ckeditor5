@@ -7,6 +7,9 @@ packages=$(ls packages -1 | sed -e 's#^ckeditor5\?-\(.\+\)$#\1#')
 
 errorOccured=0
 
+rm -r -f .nyc_output
+mkdir .nyc_output
+
 failedTestsPackages=""
 failedCoveragePackages=""
 
@@ -67,6 +70,8 @@ for package in $packages; do
     failedTestsPackages="$failedTestsPackages $package"
     errorOccured=1
   fi
+
+  cp coverage/*/coverage-final.json .nyc_output
 
   npx nyc check-coverage --branches 100 --functions 100 --lines 100 --statements 100
 
