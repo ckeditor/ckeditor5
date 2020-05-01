@@ -1,7 +1,7 @@
 node_modules/
 build/
 coverage/
-packages/
+packages/*/node_modules/
 docs/api/output.json
 lerna-debug.log
 .idea
