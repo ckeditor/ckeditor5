@@ -22,11 +22,11 @@ npm install --save @ckeditor/ckeditor5-editor-classic
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5-editor-classic.
+The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-editor-classic.
 
 ## External links
 
 * [`@ckeditor/ckeditor5-editor-classic` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic)
-* [`ckeditor/ckeditor5-editor-classic` on GitHub](https://github.com/ckeditor/ckeditor5-editor-classic)
+* [`ckeditor/ckeditor5-editor-classic` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-editor-classic)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-editor-classic/blob/master/CHANGELOG.md)
