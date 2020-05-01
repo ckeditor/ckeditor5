@@ -16,7 +16,7 @@ before_install:
 install:
 - yarn install
 script:
-- ./scripts/codecov-run-tests.sh
+- ./scripts/continuous-integration-run-tests.sh
 - yarn run docs:api --validate-only
 - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
     travis_wait 30 yarn run docs:build-and-publish-nightly;
