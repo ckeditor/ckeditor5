@@ -98,6 +98,7 @@
     "mini-css-extract-plugin": "^0.4.0",
     "minimatch": "^3.0.4",
     "mrgit": "^1.0.0",
+    "nyc": "^15.0.1",
     "postcss-loader": "^3.0.0",
     "progress-bar-webpack-plugin": "^1.12.1",
     "raw-loader": "^3.1.0",
