@@ -2,9 +2,6 @@ CKEditor 5 balloon editor implementation
 =========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-editor-balloon.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-editor-balloon.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-editor-balloon)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-editor-balloon/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-editor-balloon?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-balloon/status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-balloon)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-balloon/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-balloon?type=dev)
 
