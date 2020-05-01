@@ -2,9 +2,6 @@ CKEditor 5 typing feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-typing.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-typing.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-typing)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-typing/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-typing?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-typing/status.svg)](https://david-dm.org/ckeditor/ckeditor5-typing)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-typing/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-typing?type=dev)
 
