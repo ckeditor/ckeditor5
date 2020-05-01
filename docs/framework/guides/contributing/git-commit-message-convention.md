@@ -73,7 +73,7 @@ RTL content will now be rendered correctly.
 NOTE: Make sure to set `config.contentDirection` correctly.
 ```
 
-A bug fix for an existing feature (closes two tickets):
+A generic bug fix for an existing feature that affects many packages (closes two tickets):
 
 ```
 Fix: The editor will be great again. Closes #3. Closes #4.
@@ -157,7 +157,7 @@ When closing a PR remember to copy the source of the message to the textarea wit
 When closing a non-core contributor's PR make sure to add information about the contributor to the commit message. For example:
 
 ```
-Feature: Added support for RTL languages. Closes #1.
+Feature (ui): Added support for RTL languages. Closes #1.
 
 Thanks to @someone!
 ```
