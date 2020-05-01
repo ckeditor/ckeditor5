@@ -2,9 +2,6 @@ CKEditor 5 page break feature
 ===========================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-page-break.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-page-break.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-page-break)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-page-break/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-page-break?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-page-break/status.svg)](https://david-dm.org/ckeditor/ckeditor5-page-break)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-page-break/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-page-break?type=dev)
 

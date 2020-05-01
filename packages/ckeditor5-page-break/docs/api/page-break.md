@@ -24,11 +24,11 @@ npm install --save @ckeditor/ckeditor5-page-break
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5-page-break.
+The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-page-break.
 
 ## External links
 
 * [`@ckeditor/ckeditor5-page-break` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break)
-* [`ckeditor/ckeditor5-page-break` on GitHub](https://github.com/ckeditor/ckeditor5-page-break)
+* [`ckeditor/ckeditor5-page-break` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-page-break)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-page-break/blob/master/CHANGELOG.md)
