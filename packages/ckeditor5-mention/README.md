@@ -2,9 +2,6 @@ CKEditor 5 mention feature
 ===========================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-mention.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-mention.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-mention)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-mention/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-mention?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-mention/status.svg)](https://david-dm.org/ckeditor/ckeditor5-mention)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-mention/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-mention?type=dev)
 
