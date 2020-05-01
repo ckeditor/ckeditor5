@@ -68,6 +68,8 @@ for package in $packages; do
     errorOccured=1
   fi
 
+  npx nyc check-coverage --branches 100 --functions 100 --lines 100 --statements 100
+
   if [ "$?" -ne "0" ]; then
     echo -e "💥 ${RED}$package${NC} doesn't have required code coverage 💥"
     failedCoveragePackages="$failedCoveragePackages $package"
