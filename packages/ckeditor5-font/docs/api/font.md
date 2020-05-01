@@ -28,11 +28,11 @@ npm install --save @ckeditor/ckeditor5-font
 
 ## Contribute
 
-The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5-font.
+The source code of this package is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-font.
 
 ## External links
 
 * [`@ckeditor/ckeditor5-font` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-font)
-* [`ckeditor/ckeditor5-font` on GitHub](https://github.com/ckeditor/ckeditor5-font)
+* [`ckeditor/ckeditor5-font` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-font)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
 * [Changelog](https://github.com/ckeditor/ckeditor5-font/blob/master/CHANGELOG.md)
