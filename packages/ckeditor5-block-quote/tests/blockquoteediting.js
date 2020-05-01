@@ -32,7 +32,7 @@ describe( 'BlockQuoteEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( BlockQuoteEditing.pluginName ).to.equal( 'BlockQuoteEditing' );
+		expect( BlockQuoteEditing.pluginName + '_bad' ).to.equal( 'BlockQuoteEditing' );
 	} );
 
 	it( 'adds a blockQuote command', () => {

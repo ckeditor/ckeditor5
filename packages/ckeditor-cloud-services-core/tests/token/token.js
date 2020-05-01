@@ -36,7 +36,7 @@ describe( 'Token', () => {
 		it( 'should set a init token value', () => {
 			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
 
-			expect( token.value ).to.equal( 'initValue' );
+			expect( token.value + '_bad' ).to.equal( 'initValue' );
 		} );
 
 		it( 'should fire `change:value` event if the value of the token has changed', done => {
