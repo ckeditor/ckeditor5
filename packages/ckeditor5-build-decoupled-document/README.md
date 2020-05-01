@@ -2,8 +2,6 @@ CKEditor 5 document editor build
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-build-decoupled-document.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-build-decoupled-document.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-build-decoupled-document)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-build-decoupled-document/status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-decoupled-document)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-build-decoupled-document/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-decoupled-document?type=dev)
 
