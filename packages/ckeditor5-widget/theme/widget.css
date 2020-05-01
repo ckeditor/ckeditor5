@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-color-resizer: var(--ck-color-focus-border);
+	--ck-resizer-size: 10px;
+	--ck-resizer-border-width: 1px;
+	--ck-resizer-border-radius: 2px;
+
+	/* Set the resizer with a 50% offset. */
+	--ck-resizer-offset: calc( ( var(--ck-resizer-size) / -2 ) - 2px);
+
+	--ck-resizer-tooltip-offset: 10px;
+	--ck-color-resizer-tooltip-background: hsl(0, 0%, 15%);
+	--ck-color-resizer-tooltip-text: hsl(0, 0%, 95%);
+}
+
+.ck .ck-widget.ck-widget_with-selection-handle {
+	/* Make the widget wrapper a relative positioning container for the drag handle. */
+	position: relative;
+
+	& .ck-widget__selection-handle {
+		position: absolute;
+
+		& .ck-icon {
+			/* Make sure the icon in not a subject to font-size or line-height to avoid
+			unnecessary spacing around it. */
+			display: block;
+		}
+	}
+
+	/* Show the selection handle on mouse hover over the widget. */
+	&:hover {
+		& .ck-widget__selection-handle {
+			visibility: visible;
+		}
+	}
+
+	/* Show the selection handle when the widget is selected. */
+	&.ck-widget_selected .ck-widget__selection-handle {
+		visibility: visible;
+	}
+}
+
+.ck .ck-size-view {
+	background: var(--ck-color-resizer-tooltip-background);
+	color: var(--ck-color-resizer-tooltip-text);
+	border: 1px solid var(--ck-color-resizer-tooltip-text);
+	border-radius: var(--ck-resizer-border-radius);
+	font-size: var(--ck-font-size-tiny);
+	display: block;
+	padding: var(--ck-spacing-small);
+
+	&.ck-orientation-top-left,
+	&.ck-orientation-top-right,
+	&.ck-orientation-bottom-right,
+	&.ck-orientation-bottom-left {
+		position: absolute;
+	}
+
+	&.ck-orientation-top-left {
+		top: var( --ck-resizer-tooltip-offset );
+		left: var( --ck-resizer-tooltip-offset );
+	}
+
+	&.ck-orientation-top-right {
+		top: var( --ck-resizer-tooltip-offset );
+		right: var( --ck-resizer-tooltip-offset );
+	}
+
+	&.ck-orientation-bottom-right {
+		bottom: var( --ck-resizer-tooltip-offset );
+		right: var( --ck-resizer-tooltip-offset );
+	}
+
+	&.ck-orientation-bottom-left {
+		bottom: var( --ck-resizer-tooltip-offset );
+		left: var( --ck-resizer-tooltip-offset );
+	}
+}

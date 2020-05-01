@@ -1,0 +1,84 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../mixins/_disabled.css";
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_shadow.css";
+
+.ck.ck-list {
+	@mixin ck-rounded-corners;
+
+	list-style-type: none;
+	background: var(--ck-color-list-background);
+}
+
+.ck.ck-list__item {
+	cursor: default;
+	min-width: 12em;
+
+	& .ck-button {
+		min-height: unset;
+		width: 100%;
+		text-align: left;
+		border-radius: 0;
+
+		/* List items should have the same height. Use absolute units to make sure it is so
+		   because e.g. different heading styles may have different height
+		   https://github.com/ckeditor/ckeditor5-heading/issues/63 */
+		padding:
+			calc(.2 * var(--ck-line-height-base) * var(--ck-font-size-base))
+			calc(.4 * var(--ck-line-height-base) * var(--ck-font-size-base));
+
+		& .ck-button__label {
+			/* https://github.com/ckeditor/ckeditor5-heading/issues/63 */
+			line-height: calc(1.2 * var(--ck-line-height-base) * var(--ck-font-size-base));
+		}
+
+		&:active {
+			box-shadow: none;
+		}
+
+		&.ck-on {
+			background: var(--ck-color-list-button-on-background);
+			color: var(--ck-color-list-button-on-text);
+
+			&:active {
+				box-shadow: none;
+			}
+
+			&:hover:not(.ck-disabled) {
+				background: var(--ck-color-list-button-on-background-focus);
+			}
+
+			&:focus:not(.ck-disabled) {
+				border-color: var(--ck-color-base-background);
+			}
+		}
+
+		&:hover:not(.ck-disabled) {
+			background: var(--ck-color-list-button-hover-background);
+		}
+	}
+
+	/* It's unnecessary to change the background/text of a switch toggle; it has different ways
+	of conveying its state (like the switcher) */
+	& .ck-switchbutton {
+		&.ck-on {
+			background: var(--ck-color-list-background);
+			color: inherit;
+
+			&:hover:not(.ck-disabled) {
+				background: var(--ck-color-list-button-hover-background);
+				color: inherit;
+			}
+		}
+	}
+}
+
+.ck.ck-list__separator {
+	height: 1px;
+	width: 100%;
+	background: var(--ck-color-base-border);
+}

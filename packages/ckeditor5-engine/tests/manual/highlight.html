@@ -1,0 +1,54 @@
+<style>
+	span.highlight-yellow {
+		background-color: rgba( 255, 255, 0, 0.5 );
+	}
+
+	span.highlight-blue {
+		background-color: rgba( 0, 0, 255, 0.5 );
+	}
+
+	span.highlight-red {
+		background-color: rgba( 255, 0, 0, 0.5 );
+	}
+
+	.ck-widget.fancy-widget {
+		background-color: black;
+		color: white;
+		text-align: center;
+		height: 40px;
+		line-height: 40px;
+	}
+
+	.ck-widget.fancy-widget.highlight-yellow {
+		background-color: yellow;
+		color: black;
+	}
+
+	.ck-widget.fancy-widget.highlight-blue {
+		background-color: blue;
+		color: black;
+	}
+
+	.ck-widget.fancy-widget.highlight-red {
+		background-color: red;
+		color: black;
+	}
+
+	button {
+		width: 200px;
+	}
+</style>
+
+<div id="editor">
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at diam quis justo imperdiet posuere non eu tortor. Mauris vel magna eu sem hendrerit varius. Ut imperdiet velit ut ante interdum convallis. Vestibulum vitae lacinia mi. </p>
+	<figure></figure>
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at diam quis justo imperdiet posuere non eu tortor. Mauris vel magna eu sem hendrerit varius. Ut imperdiet velit ut ante interdum convallis. Vestibulum vitae lacinia mi. </p>
+</div>
+<h2>Markers</h2>
+<button id="add-marker-yellow">Set yellow highlight</button><button id="remove-marker-yellow">Remove yellow highlight</button>
+<br />
+<button id="add-marker-red">Set red highlight</button><button id="remove-marker-red">Remove red highlight</button>
+<br />
+<button id="add-marker-blue">Set blue highlight</button><button id="remove-marker-blue">Remove blue highlight</button>
+<br />
+<button id="remove-markers">Remove all highlights</button>

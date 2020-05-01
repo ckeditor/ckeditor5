@@ -1,0 +1,91 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../mixins/_rounded.css";
+
+:root {
+	--ck-color-split-button-hover-background: hsl(0, 0%, 92%);
+	--ck-color-split-button-hover-border: hsl(0, 0%, 70%);
+}
+
+.ck.ck-splitbutton {
+	/*
+	 * Note: ck-rounded and ck-dir mixins don't go together (because they both use @nest).
+	 */
+	& > .ck-splitbutton__action {
+		@nest [dir="ltr"] & {
+			/* Don't round the action button on the right side */
+			border-top-right-radius: unset;
+			border-bottom-right-radius: unset;
+		}
+
+		@nest [dir="rtl"] & {
+			/* Don't round the action button on the left side */
+			border-top-left-radius: unset;
+			border-bottom-left-radius: unset;
+		}
+	}
+
+	& > .ck-splitbutton__arrow {
+		/* It's a text-less button and since the icon is positioned absolutely in such situation,
+		it must get some arbitrary min-width. */
+		min-width: unset;
+
+		@nest [dir="ltr"] & {
+			/* Don't round the arrow button on the left side */
+			@mixin ck-rounded-corners {
+				border-top-left-radius: unset;
+				border-bottom-left-radius: unset;
+			}
+		}
+
+		@nest [dir="rtl"] & {
+			/* Don't round the arrow button on the right side */
+			border-top-right-radius: unset;
+			border-bottom-right-radius: unset;
+		}
+
+		& svg {
+			width: var(--ck-dropdown-arrow-size);
+		}
+	}
+
+	/* When the split button is "open" (the arrow is on) or being hovered, it should get some styling
+	as a whole. The background of both buttons should stand out and there should be a visual
+	separation between both buttons. */
+	&.ck-splitbutton_open,
+	&:hover {
+		/* When the split button hovered as a whole, not as individual buttons. */
+		& > .ck-button:not(.ck-on):not(.ck-disabled):not(:hover) {
+			background: var(--ck-color-split-button-hover-background);
+		}
+
+		@nest [dir="ltr"] & {
+			& > .ck-splitbutton__arrow:not(.ck-disabled) {
+				border-left-color: var(--ck-color-split-button-hover-border);
+			}
+		}
+
+		@nest [dir="rtl"] & {
+			& > .ck-splitbutton__arrow:not(.ck-disabled) {
+				border-right-color: var(--ck-color-split-button-hover-border);
+			}
+		}
+	}
+
+	/* Don't round the bottom left and right corners of the buttons when "open"
+	https://github.com/ckeditor/ckeditor5/issues/816 */
+	&.ck-splitbutton_open {
+		@mixin ck-rounded-corners {
+			& > .ck-splitbutton__action {
+				border-bottom-left-radius: 0;
+			}
+
+			& > .ck-splitbutton__arrow {
+				border-bottom-right-radius: 0;
+			}
+		}
+	}
+}

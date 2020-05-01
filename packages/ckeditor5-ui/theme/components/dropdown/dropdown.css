@@ -1,0 +1,67 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../tooltip/mixins/_tooltip.css";
+
+.ck.ck-dropdown {
+	display: inline-block;
+	position: relative;
+
+	& .ck-dropdown__arrow {
+		pointer-events: none;
+		z-index: var(--ck-z-default);
+	}
+
+	/* Dropdown button should span horizontally, e.g. in vertical toolbars */
+	& .ck-button.ck-dropdown__button {
+		width: 100%;
+
+		/* Disable main button's tooltip when the dropdown is open. Otherwise the panel may
+		partially cover the tooltip */
+		&.ck-on {
+			@mixin ck-tooltip_disabled;
+		}
+	}
+
+	& .ck-dropdown__panel {
+		/* This is to get rid of flickering when the tooltip is shown under the panel,
+		which looks like the panel moves vertically a pixel down and up. */
+		-webkit-backface-visibility: hidden;
+
+		display: none;
+		z-index: var(--ck-z-modal);
+
+		position: absolute;
+
+		&.ck-dropdown__panel-visible {
+			display: inline-block;
+		}
+
+		&.ck-dropdown__panel_ne,
+		&.ck-dropdown__panel_nw {
+			bottom: 100%;
+		}
+
+		&.ck-dropdown__panel_se,
+		&.ck-dropdown__panel_sw {
+			/*
+			 * Using transform: translate3d( 0, 100%, 0 ) causes blurry dropdown on Chrome 67-78+ on non-retina displays.
+			 * See https://github.com/ckeditor/ckeditor5/issues/1053.
+			 */
+			top: 100%;
+			bottom: auto;
+		}
+
+		&.ck-dropdown__panel_ne,
+		&.ck-dropdown__panel_se {
+			left: 0px;
+		}
+
+		&.ck-dropdown__panel_nw,
+		&.ck-dropdown__panel_sw {
+			right: 0px;
+		}
+	}
+}

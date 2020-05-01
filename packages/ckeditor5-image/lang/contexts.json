@@ -1,0 +1,14 @@
+{
+	"image widget": "Label for the image widget.",
+	"Side image": "Label for the Side image option.",
+	"Full size image": "Label for the Full size image option.",
+	"Left aligned image": "Label for the Left aligned image option",
+	"Centered image": "Label for the Centered image option",
+	"Right aligned image": "Label for the Right aligned image option",
+	"Change image text alternative": "Label for the Change image text alternative button.",
+	"Text alternative": "Label for the image text alternative input.",
+	"Enter image caption": "Placeholder text for image caption displayed when caption is empty.",
+	"Insert image": "Label for the insert image toolbar button.",
+	"Upload failed": "Title of the notification displayed when upload fails.",
+	"Image toolbar": "The label used by assistive technologies describing an image toolbar attached to an image widget."
+}

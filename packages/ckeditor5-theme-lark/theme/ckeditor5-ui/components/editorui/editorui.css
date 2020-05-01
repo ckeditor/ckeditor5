@@ -1,0 +1,65 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_disabled.css";
+@import "../../../mixins/_shadow.css";
+@import "../../../mixins/_focus.css";
+@import "../../mixins/_button.css";
+
+:root {
+	--ck-color-editable-blur-selection: hsl(0, 0%, 85%);
+}
+
+.ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+	@mixin ck-rounded-corners;
+
+	&.ck-focused {
+		@mixin ck-focus-ring;
+		@mixin ck-box-shadow var(--ck-inner-shadow);
+	}
+}
+
+.ck.ck-editor__editable_inline {
+	overflow: auto;
+	padding: 0 var(--ck-spacing-standard);
+	border: 1px solid transparent;
+
+	&[dir="ltr"] {
+		text-align: left;
+	}
+
+	&[dir="rtl"] {
+		text-align: right;
+	}
+
+	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/116 */
+	& > *:first-child {
+		margin-top: var(--ck-spacing-large);
+	}
+
+	/* https://github.com/ckeditor/ckeditor5/issues/847 */
+	& > *:last-child {
+		margin-bottom: var(--ck-spacing-large);
+	}
+
+	/* https://github.com/ckeditor/ckeditor5/issues/6517 */
+	&.ck-blurred ::selection {
+		background: var(--ck-color-editable-blur-selection);
+	}
+}
+
+/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/111 */
+.ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_n"] {
+	&::after {
+		border-bottom-color: var(--ck-color-base-foreground);
+	}
+}
+
+.ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_s"] {
+	&::after {
+		border-top-color: var(--ck-color-base-foreground);
+	}
+}

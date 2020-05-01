@@ -1,0 +1,14 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck .ck-button.ck-color-table__remove-color {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+label.ck.ck-color-grid__label {
+	font-weight: unset;
+}

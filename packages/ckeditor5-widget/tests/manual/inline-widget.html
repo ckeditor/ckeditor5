@@ -1,0 +1,42 @@
+<div id="editor">
+	<h1>Hello <placeholder>{name}</placeholder>!</h1>
+
+	<p>We would like to invite you to <placeholder>{place}</placeholder> that will take place on <placeholder>{date}</placeholder>.</p>
+</div>
+
+<h2>Model contents:</h2>
+
+<pre id="model"></pre>
+
+<style>
+	placeholder {
+		background: #ffff00;
+		padding: 4px 2px;
+		outline-offset: -2px;
+		line-height: 1em;
+		/* Set margins before and after the inline widget so the cursor between two instances is visible when one of them is focused.
+		   Optimized for Firefox due to bug in rendering selection in ZWS on Chrome. See ckeditor5#1607. */
+		margin-right: 1px;
+		margin-left: 3px;
+	}
+
+	placeholder::selection {
+		display: none;
+	}
+
+	/* This will show box when the fake selection is active. */
+	.ck.ck-content div[style*="left: -9999px;"]::before {
+		background: hsla(9,100%,56%,.3);
+		border: 1px dotted hsl(15, 100%, 43%);
+		color: #333;
+		content: 'fake selection set';
+		display: block;
+		height: 20px;
+		left: calc(50% - 60px);
+		line-height: 20px;
+		padding: 2px 5px;
+		position: fixed;
+		top: 5px;
+		z-index: 1;
+	}
+</style>

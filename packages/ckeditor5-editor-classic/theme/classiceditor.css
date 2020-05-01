@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-editor {
+	/* All the elements within `.ck-editor` are positioned relatively to it.
+	 If any element needs to be positioned with respect to the <body>, etc.,
+	 it must land outside of the `.ck-editor` in DOM. */
+	position: relative;
+
+	& .ck-editor__top .ck-sticky-panel .ck-toolbar {
+		/* https://github.com/ckeditor/ckeditor5-editor-classic/issues/62 */
+		z-index: var(--ck-z-modal);
+	}
+}

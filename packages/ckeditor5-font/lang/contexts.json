@@ -1,0 +1,12 @@
+{
+	"Font Size": "Tooltip for the font size dropdown.",
+	"Tiny": "Dropdown option label for the 'tiny' font size preset.",
+	"Small": "Dropdown option label for the 'small' font size preset.",
+	"Big": "Dropdown option label for the 'big' font size preset.",
+	"Huge": "Dropdown option label for the 'huge' font size preset.",
+	"Font Family": "Tooltip for the font family dropdown.",
+	"Default": "Dropdown option label for the default font family.",
+	"Font Color": "Label of a button that allows selecting a font color.",
+	"Font Background Color": "Label of a button that allows selecting a font background color.",
+	"Document colors": "Title of a color picker section containing the colors currently used in the document."
+}

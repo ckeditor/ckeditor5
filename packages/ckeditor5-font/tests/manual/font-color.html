@@ -1,0 +1,25 @@
+<div id="editor">
+	<p><span>01. no-color; no-color</span></p>
+	<p><span style="color:hsl(0, 0%, 100%);background-color:hsl(0, 0%, 0%);">02. color:hsl(0, 0%, 100%);background-color:hsl(0, 0%, 0%);</span></p>
+	<p><span style="color:hsl(0, 75%, 60%);">03. color:hsl(0, 75%, 60%); no-color;</span></p>
+	<p><span style="background-color:hsl(90, 75%, 60%);">04. no-color; background-color:hsl(90, 75%, 60%);</span></p>
+	<p><span style="color:hsl(30, 75%, 60%);background-color:hsl(0, 0%, 30%);">05. color:hsl(30, 75%, 60%); background-color:hsl(0, 0%, 30%);</span></p>
+	<p><span style="color:#00FFFF;background-color:rgb(255, 0, 0);">06. color:#00FFFF;background-color:rgb(255, 0, 0);</span></p>
+	<p><span style="color:hsla( 0, 0%, 0%, .7);background-color:gold;">07. color:hsla( 0, 0%, 0%, .7); background-color:gold;</span></p>
+	<p><span style="color:rgba( 0, 120, 250, 0.8);background-color:hsla(270, 100%, 50%, 0.3);">08. color:;background-color:hsla(270, 100%, 50%, 0.3);</span></p>
+	<p><span style="color:#ddd;background-color:hsl(150, 75%, 60%);">09. color:#ddd;background-color:hsl(150, 75%, 60%);</span></p>
+	<p><span style="color:hsl(270, 75%, 60%);background-color:#d82;">10. color:hsl(270, 75%, 60%);background-color:#d82;</span></p>
+</div>
+
+<div id="color-box" style="margin-top: 10px; border: 1px solid black; padding: 5px">
+	<p>You can use this helper to generate text with a particular color / background applied. Change inputs and accept it with enter key.</p>
+	<label>
+		Color:
+		<input type="text" name="color" id="color" placeholder="#3d3d3d">
+	</label>
+	<label>
+		Background Color:
+		<input type="text" name="bgcolor" id="bgcolor" placeholder="pink">
+	</label>
+	<p contenteditable="true"><span>Text for copying.</span></p>
+</div>

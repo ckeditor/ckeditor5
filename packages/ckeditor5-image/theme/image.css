@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck-content .image {
+	display: table;
+	clear: both;
+	text-align: center;
+
+	/* Make sure there is some space between the content and the image. Center image by default. */
+	margin: 1em auto;
+
+	& > img {
+		/* Prevent unnecessary margins caused by line-height (see #44). */
+		display: block;
+
+		/* Center the image if its width is smaller than the content's width. */
+		margin: 0 auto;
+
+		/* Make sure the image never exceeds the size of the parent container (ckeditor/ckeditor5-ui#67). */
+		max-width: 100%;
+
+		/* Make sure the caption will be displayed properly (See: https://github.com/ckeditor/ckeditor5/issues/1870). */
+		min-width: 50px;
+	}
+}

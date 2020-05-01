@@ -1,0 +1,22 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/* See ckeditor/ckeditor5#936. */
+.ck.ck-placeholder,
+.ck .ck-placeholder {
+	&::before {
+		content: attr(data-placeholder);
+
+		/* See ckeditor/ckeditor5#469. */
+		pointer-events: none;
+	}
+}
+
+/* See ckeditor/ckeditor5#1987. */
+.ck.ck-read-only .ck-placeholder {
+	&::before {
+		display: none;
+	}
+}
