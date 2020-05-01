@@ -2,9 +2,6 @@ CKEditor 5 text alignment feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-alignment.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-alignment.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-alignment)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5-alignment/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5-alignment?branch=master)
-<br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-alignment/status.svg)](https://david-dm.org/ckeditor/ckeditor5-alignment)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-alignment/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-alignment?type=dev)
 
