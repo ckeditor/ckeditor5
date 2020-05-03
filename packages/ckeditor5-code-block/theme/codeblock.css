@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck-content pre {
+	padding: 1em;
+	color: hsl(0, 0%, 20.8%);
+	background: hsla(0, 0%, 78%, 0.3);
+	border: 1px solid hsl(0, 0%, 77%);
+	border-radius: 2px;
+
+	/* Code block are language direction–agnostic. */
+	text-align: left;
+	direction: ltr;
+
+	tab-size: 4;
+	white-space: pre-wrap;
+
+	/* Don't inherit the style, e.g. when in a block quote. */
+	font-style: normal;
+
+	/* Don't let the code be squashed e.g. when in a table cell. */
+	min-width: 200px;
+
+	& code {
+		background: unset;
+		padding: 0;
+		border-radius: 0;
+	}
+}
+
+.ck.ck-editor__editable pre {
+	position: relative;
+
+	&[data-language]::after {
+		content: attr(data-language);
+		position: absolute;
+	}
+}

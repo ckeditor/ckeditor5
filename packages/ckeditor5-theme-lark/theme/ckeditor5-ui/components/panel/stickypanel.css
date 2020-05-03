@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../mixins/_shadow.css";
+
+.ck.ck-sticky-panel {
+	& .ck-sticky-panel__content_sticky {
+		@mixin ck-drop-shadow;
+
+		border-width: 0 1px 1px;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+}

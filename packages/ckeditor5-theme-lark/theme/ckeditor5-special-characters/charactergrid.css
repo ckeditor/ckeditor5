@@ -1,0 +1,47 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../mixins/_rounded.css";
+
+:root {
+	--ck-character-grid-tile-size: 24px;
+}
+
+.ck.ck-character-grid {
+	overflow-y: auto;
+	overflow-x: hidden;
+	width: 350px;
+	max-height: 200px;
+
+	& .ck-character-grid__tiles {
+		margin: var(--ck-spacing-standard) var(--ck-spacing-large);
+		grid-gap: var(--ck-spacing-standard);
+	}
+
+	& .ck-character-grid__tile {
+		width: var(--ck-character-grid-tile-size);
+		height: var(--ck-character-grid-tile-size);
+		min-width: var(--ck-character-grid-tile-size);
+		min-height: var(--ck-character-grid-tile-size);
+		font-size: 1.2em;
+		padding: 0;
+		transition: .2s ease box-shadow;
+		border: 0;
+
+		&:focus:not( .ck-disabled ),
+		&:hover:not( .ck-disabled ) {
+			/* Disable the default .ck-button's border ring. */
+			border: 0;
+			box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-focus-border);
+		}
+
+		/* Make sure the glyph is rendered in the center of the button */
+		& .ck-button__label {
+			line-height: var(--ck-character-grid-tile-size);
+			width: 100%;
+			text-align: center;
+		}
+	}
+}

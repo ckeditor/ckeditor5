@@ -1,0 +1,150 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_shadow.css";
+
+:root {
+	--ck-balloon-arrow-offset: 2px;
+	--ck-balloon-arrow-height: 10px;
+	--ck-balloon-arrow-half-width: 8px;
+}
+
+.ck.ck-balloon-panel {
+	@mixin ck-rounded-corners;
+	@mixin ck-drop-shadow;
+
+	min-height: 15px;
+
+	background: var(--ck-color-panel-background);
+	border: 1px solid var(--ck-color-panel-border);
+
+	&.ck-balloon-panel_with-arrow {
+		&::before,
+		&::after {
+			width: 0;
+			height: 0;
+			border-style: solid;
+		}
+	}
+
+	&[class*="arrow_n"] {
+		&::before,
+		&::after {
+			border-width: 0 var(--ck-balloon-arrow-half-width) var(--ck-balloon-arrow-height) var(--ck-balloon-arrow-half-width);
+		}
+
+		&::before {
+			border-color: transparent transparent var(--ck-color-panel-border) transparent;
+		}
+
+		&::after {
+			border-color: transparent transparent var(--ck-color-panel-background) transparent;
+			margin-top: var(--ck-balloon-arrow-offset);
+		}
+	}
+
+	&[class*="arrow_s"] {
+		&::before,
+		&::after {
+			border-width: var(--ck-balloon-arrow-height) var(--ck-balloon-arrow-half-width) 0 var(--ck-balloon-arrow-half-width);
+		}
+
+		&::before {
+			border-color: var(--ck-color-panel-border) transparent  transparent;
+		}
+
+		&::after {
+			border-color: var(--ck-color-panel-background) transparent transparent transparent;
+			margin-bottom: var(--ck-balloon-arrow-offset);
+		}
+	}
+
+	&.ck-balloon-panel_arrow_n {
+		&::before,
+		&::after {
+			left: 50%;
+			margin-left: calc(-1 * var(--ck-balloon-arrow-half-width));
+			top: calc(-1 * var(--ck-balloon-arrow-height));
+		}
+	}
+
+	&.ck-balloon-panel_arrow_nw {
+		&::before,
+		&::after {
+			left: calc(2 * var(--ck-balloon-arrow-half-width));
+			top: calc(-1 * var(--ck-balloon-arrow-height));
+		}
+	}
+
+	&.ck-balloon-panel_arrow_ne {
+		&::before,
+		&::after {
+			right: calc(2 * var(--ck-balloon-arrow-half-width));
+			top: calc(-1 * var(--ck-balloon-arrow-height));
+		}
+	}
+
+	&.ck-balloon-panel_arrow_s {
+		&::before,
+		&::after {
+			left: 50%;
+			margin-left: calc(-1 * var(--ck-balloon-arrow-half-width));
+			bottom: calc(-1 * var(--ck-balloon-arrow-height));
+		}
+	}
+
+	&.ck-balloon-panel_arrow_sw {
+		&::before,
+		&::after {
+			left: calc(2 * var(--ck-balloon-arrow-half-width));
+			bottom: calc(-1 * var(--ck-balloon-arrow-height));
+		}
+	}
+
+	&.ck-balloon-panel_arrow_se {
+		&::before,
+		&::after {
+			right: calc(2 * var(--ck-balloon-arrow-half-width));
+			bottom: calc(-1 * var(--ck-balloon-arrow-height));
+		}
+	}
+
+	&.ck-balloon-panel_arrow_sme {
+		&::before,
+		&::after {
+			right: 25%;
+			margin-right: calc(2 * var(--ck-balloon-arrow-half-width));
+			bottom: calc(-1 * var(--ck-balloon-arrow-height));
+		}
+	}
+
+	&.ck-balloon-panel_arrow_smw {
+		&::before,
+		&::after {
+			left: 25%;
+			margin-left: calc(2 * var(--ck-balloon-arrow-half-width));
+			bottom: calc(-1 * var(--ck-balloon-arrow-height));
+		}
+	}
+
+	&.ck-balloon-panel_arrow_nme {
+		&::before,
+		&::after {
+			right: 25%;
+			margin-right: calc(2 * var(--ck-balloon-arrow-half-width));
+			top: calc(-1 * var(--ck-balloon-arrow-height));
+		}
+	}
+
+	&.ck-balloon-panel_arrow_nmw {
+		&::before,
+		&::after {
+			left: 25%;
+			margin-left: calc(2 * var(--ck-balloon-arrow-half-width));
+			top: calc(-1 * var(--ck-balloon-arrow-height));
+		}
+	}
+}

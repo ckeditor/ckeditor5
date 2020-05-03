@@ -1,0 +1,26 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/* The values should be synchronized with the "FONT_SIZE_PRESET_UNITS" object in the "/src/fontsize/utils.js" file. */
+
+/* Styles should be prefixed with the `.ck-content` class.
+See https://github.com/ckeditor/ckeditor5/issues/6636 */
+.ck-content {
+	& .text-tiny {
+		font-size: .7em;
+	}
+
+	& .text-small {
+		font-size: .85em;
+	}
+
+	& .text-big {
+		font-size: 1.4em;
+	}
+
+	& .text-huge {
+		font-size: 1.8em;
+	}
+}

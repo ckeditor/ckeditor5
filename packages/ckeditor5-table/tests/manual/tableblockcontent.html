@@ -1,0 +1,81 @@
+<style>
+	body {
+		font-family: Helvetica, Arial, sans-serif;
+		font-size: 14px;
+	}
+</style>
+
+<div id="editor">
+
+	<p>Table with block contents:</p>
+
+	<table>
+		<tbody>
+		<tr>
+			<td>$text</td>
+			<td>Foo</td>
+			<td>Brownie carrot cake soufflé jelly-o lemon drops cupcake tart.</td>
+		</tr>
+		<tr>
+			<td>paragraph</td>
+			<td><p>Foo</p></td>
+			<td>
+				<p>A paragraph with default alignment</p>
+				<p style="text-align: right">A paragraph with right alignment</p>
+				<p style="text-align: center">A paragraph with center alignment</p>
+				<p style="text-align: justify">A paragraph with justify alignment</p>
+			</td>
+		</tr>
+		<tr>
+			<td>list</td>
+			<td>
+				<ul>
+					<li>Foo</li>
+					<li>Bar</li>
+				</ul>
+			</td>
+			<td>
+				<ul>
+					<li>A list item with default alignment</li>
+					<li style="text-align: right">A list item with right alignment</li>
+					<li style="text-align: center">A list item with center alignment</li>
+					<li style="text-align: justify">A list item with justify alignment</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>heading</td>
+			<td>
+				<h2>An h2 title.</h2>
+				<h3>An h3 title.</h3>
+				<h4>An h4 title.</h4>
+			</td>
+			<td>
+				<h2>An h2 with default alignment.</h2>
+				<h2 style="text-align: right">An h2 with right alignment.</h2>
+				<h2 style="text-align: center">An h2 with center alignment.</h2>
+				<h2 style="text-align: justify">An h2 with justify alignment.</h2>
+			</td>
+		</tr>
+		<tr>
+			<td>block quote</td>
+			<td>
+				<blockquote><p>A quote</p></blockquote>
+			</td>
+			<td><blockquote><p style="text-align: right">A quote with paragraph with right alignment</p></blockquote></td>
+		</tr>
+		<tr>
+			<td>image</td>
+			<td>
+				<img alt="sample image" src="sample.jpg">
+			</td>
+			<td>
+				<p>An image aligned to right:</p>
+				<figure class="image image-style-side" contenteditable="false">
+					<img src="sample.jpg" alt="sample image">
+				</figure>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>

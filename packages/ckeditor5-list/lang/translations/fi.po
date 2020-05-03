@@ -1,0 +1,29 @@
+# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Finnish (https://www.transifex.com/ckeditor/teams/11143/fi/)\n"
+"Language: fi\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Toolbar button tooltip for the Numbered List feature."
+msgid "Numbered List"
+msgstr "Numeroitu lista"
+
+msgctxt "Toolbar button tooltip for the Bulleted List feature."
+msgid "Bulleted List"
+msgstr "Lista"
+
+msgctxt "Toolbar button tooltip for the To-do List feature."
+msgid "To-do List"
+msgstr ""

@@ -1,0 +1,168 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../mixins/_focus.css";
+@import "../mixins/_shadow.css";
+
+:root {
+	--ck-widget-outline-thickness: 3px;
+	--ck-widget-handler-icon-size: 16px;
+	--ck-widget-handler-animation-duration: 200ms;
+	--ck-widget-handler-animation-curve: ease;
+
+	--ck-color-widget-blurred-border: hsl(0, 0%, 87%);
+	--ck-color-widget-hover-border: hsl(43, 100%, 62%);
+	--ck-color-widget-editable-focus-background: var(--ck-color-base-background);
+	--ck-color-widget-drag-handler-icon-color: var(--ck-color-base-background);
+}
+
+.ck .ck-widget {
+	outline-width: var(--ck-widget-outline-thickness);
+	outline-style: solid;
+	outline-color: transparent;
+	transition: outline-color var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
+
+	&.ck-widget_selected,
+	&.ck-widget_selected:hover {
+		outline: var(--ck-widget-outline-thickness) solid var(--ck-color-focus-border);
+	}
+
+	&:hover {
+		outline-color: var(--ck-color-widget-hover-border);
+	}
+}
+
+.ck .ck-editor__nested-editable {
+	border: 1px solid transparent;
+
+	/* The :focus style is applied before .ck-editor__nested-editable_focused class is rendered in the view.
+	These styles show a different border for a blink of an eye, so `:focus` need to have same styles applied. */
+	&.ck-editor__nested-editable_focused,
+	&:focus {
+		@mixin ck-focus-ring;
+		@mixin ck-box-shadow var(--ck-inner-shadow);
+
+		background-color: var(--ck-color-widget-editable-focus-background);
+	}
+}
+
+.ck .ck-widget.ck-widget_with-selection-handle {
+	& .ck-widget__selection-handle {
+		padding: 4px;
+		box-sizing: border-box;
+
+		/* Background and opacity will be animated as the handler shows up or the widget gets selected. */
+		background-color: transparent;
+		opacity: 0;
+
+		/* Transition:
+		   * background-color for the .ck-widget_selected state change,
+		   * visibility for hiding the handler,
+		   * opacity for the proper look of the icon when the handler disappears. */
+		transition:
+			background-color var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve),
+			visibility var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve),
+			opacity var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
+
+		/* Make only top corners round. */
+		border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
+
+		/* Place the drag handler outside the widget wrapper. */
+		transform: translateY(-100%);
+		left: calc(0px - var(--ck-widget-outline-thickness));
+
+		& .ck-icon {
+			/* Make sure the dimensions of the icon are independent of the fon-size of the content. */
+			width: var(--ck-widget-handler-icon-size);
+			height: var(--ck-widget-handler-icon-size);
+			color: var(--ck-color-widget-drag-handler-icon-color);
+
+			/* The "selected" part of the icon is invisible by default */
+			& .ck-icon__selected-indicator {
+				opacity: 0;
+
+				/* Note: The animation is longer on purpose. Simply feels better. */
+				transition: opacity 300ms var(--ck-widget-handler-animation-curve);
+			}
+		}
+
+		/* Advertise using the look of the icon that once clicked the handler, the widget will be selected. */
+		&:hover .ck-icon .ck-icon__selected-indicator {
+			opacity: 1;
+		}
+	}
+
+	/* Show the selection handler on mouse hover over the widget. */
+	&:hover .ck-widget__selection-handle {
+		opacity: 1;
+		background-color: var(--ck-color-widget-hover-border);
+	}
+
+	/* Show the selection handler when the widget is selected. */
+	&.ck-widget_selected,
+	&.ck-widget_selected:hover {
+		& .ck-widget__selection-handle {
+			opacity: 1;
+			background-color: var(--ck-color-focus-border);
+
+			/* When the widget is selected, notify the user using the proper look of the icon. */
+			& .ck-icon .ck-icon__selected-indicator {
+				opacity: 1;
+			}
+		}
+	}
+}
+
+/* In a RTL environment, align the selection handler to the right side of the widget */
+/* stylelint-disable-next-line no-descending-specificity */
+.ck[dir="rtl"] .ck-widget.ck-widget_with-selection-handle .ck-widget__selection-handle {
+	left: auto;
+	right: calc(0px - var(--ck-widget-outline-thickness));
+}
+
+/* https://github.com/ckeditor/ckeditor5/issues/6415 */
+.ck.ck-editor__editable.ck-read-only .ck-widget {
+	/* Prevent the :hover outline from showing up because of the used outline-color transition. */
+	transition: none;
+
+	&:not(.ck-widget_selected) {
+		/* Disable visual effects of hover/active widget when CKEditor is in readOnly mode.
+		See: https://github.com/ckeditor/ckeditor5/issues/1261 */
+		--ck-widget-outline-thickness: 0;
+	}
+
+	&.ck-widget_with-selection-handle {
+		& .ck-widget__selection-handle,
+		& .ck-widget__selection-handle:hover {
+			background: var(--ck-color-widget-blurred-border);
+		}
+	}
+}
+
+/* Style the widget when it's selected but the editable it belongs to lost focus. */
+/* stylelint-disable-next-line no-descending-specificity */
+.ck.ck-editor__editable.ck-blurred .ck-widget {
+	&.ck-widget_selected,
+	&.ck-widget_selected:hover {
+		outline-color: var(--ck-color-widget-blurred-border);
+
+		&.ck-widget_with-selection-handle {
+			& .ck-widget__selection-handle,
+			& .ck-widget__selection-handle:hover {
+				background: var(--ck-color-widget-blurred-border);
+			}
+		}
+	}
+}
+
+.ck.ck-editor__editable > .ck-widget.ck-widget_with-selection-handle:first-child,
+.ck.ck-editor__editable blockquote > .ck-widget.ck-widget_with-selection-handle:first-child {
+	/* Do not crop selection handler if a widget is a first-child in the blockquote or in the root editable.
+	In fact, anything with overflow: hidden.
+	https://github.com/ckeditor/ckeditor5-block-quote/issues/28
+	https://github.com/ckeditor/ckeditor5-widget/issues/44
+	https://github.com/ckeditor/ckeditor5-widget/issues/66 */
+	margin-top: calc(1em + var(--ck-widget-handler-icon-size));
+}

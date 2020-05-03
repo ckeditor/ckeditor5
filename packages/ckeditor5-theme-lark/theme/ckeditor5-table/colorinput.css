@@ -1,0 +1,88 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+@import "../mixins/_rounded.css";
+
+.ck.ck-input-color {
+	& > .ck.ck-input-text {
+		@mixin ck-dir ltr {
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+
+		@mixin ck-dir rtl {
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+		}
+	}
+
+	& > .ck.ck-dropdown {
+		& > .ck.ck-input-color__button {
+			padding: 0;
+
+			@mixin ck-dir ltr {
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+				margin-left: -1px;
+			}
+
+			@mixin ck-dir rtl {
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+				margin-right: -1px;
+			}
+
+			&.ck-disabled {
+				background: var(--ck-color-input-disabled-background);
+			}
+
+			& > .ck.ck-input-color__button__preview {
+				@mixin ck-rounded-corners;
+
+				width: 20px;
+				height: 20px;
+				border: 1px solid var(--ck-color-input-border);
+
+				& > .ck.ck-input-color__button__preview__no-color-indicator {
+					top: -30%;
+					left: 50%;
+					height: 150%;
+					width: 8%;
+					background: hsl(0, 100%, 50%);
+					border-radius: 2px;
+					transform: rotate(45deg);
+					transform-origin: 50%;
+				}
+			}
+		}
+	}
+
+	& .ck.ck-input-color__remove-color {
+		width: 100%;
+		border-bottom: 1px solid var(--ck-color-input-border);
+		padding: calc(var(--ck-spacing-standard) / 2) var(--ck-spacing-standard);
+
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+
+		@mixin ck-dir ltr {
+			border-top-right-radius: 0;
+		}
+
+		@mixin ck-dir rtl {
+			border-top-left-radius: 0;
+		}
+
+		& .ck.ck-icon {
+			margin-right: var(--ck-spacing-standard);
+
+			@mixin ck-dir rtl {
+				margin-right: 0;
+				margin-left: var(--ck-spacing-standard);
+			}
+		}
+	}
+}

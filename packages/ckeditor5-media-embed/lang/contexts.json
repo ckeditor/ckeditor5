@@ -1,0 +1,10 @@
+{
+	"media widget": "Label for the media widget.",
+	"Media URL": "Label for the URL input in the Media Embed URL editing balloon.",
+	"Paste the media URL in the input.": "The help text displayed under the media URL input helping users to discover the interface.",
+	"Tip: Paste the URL into the content to embed faster.": "The tip displayed next to the media URL input informing about an easier way of embedding.",
+	"The URL must not be empty.": "An error message that informs about an empty value in the URL input.",
+	"This media URL is not supported.": "An error message that informs about unsupported media URL.",
+	"Insert media": "Toolbar button tooltip for the Media Embed feature.",
+	"Media toolbar": "The label used by assistive technologies describing an image toolbar attached to an image widget."
+}

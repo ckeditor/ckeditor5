@@ -1,0 +1,24 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-editor__editable .image {
+	/* Showing animation. */
+	&.ck-appear {
+		animation: fadeIn 700ms;
+	}
+}
+
+/* Upload progress bar. */
+.ck.ck-editor__editable .image .ck-progress-bar {
+	height: 2px;
+	width: 0;
+	background: var(--ck-color-upload-bar-background);
+	transition: width 100ms;
+}
+
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}

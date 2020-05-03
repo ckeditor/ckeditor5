@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	/**
+	 * A visual style of element's inner shadow (i.e. input).
+	 */
+	--ck-inner-shadow: 2px 2px 3px var(--ck-color-shadow-inner) inset;
+
+	/**
+	 * A visual style of element's drop shadow (i.e. panel).
+	 */
+	--ck-drop-shadow: 0 1px 2px 1px var(--ck-color-shadow-drop);
+
+	/**
+	 * A visual style of element's active shadow (i.e. comment or suggestion).
+	 */
+	--ck-drop-shadow-active: 0 3px 6px 1px var(--ck-color-shadow-drop-active);
+}

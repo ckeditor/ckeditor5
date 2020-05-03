@@ -1,0 +1,65 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck .ck-widget_with-resizer {
+	/* Make the widget wrapper a relative positioning container for the drag handle. */
+	position: relative;
+}
+
+.ck .ck-widget__resizer {
+	display: none;
+	position: absolute;
+
+	/* The wrapper itself should not interfere with the pointer device, only the handles should. */
+	pointer-events: none;
+
+	left: 0;
+	top: 0;
+
+	outline: 1px solid var(--ck-color-resizer);
+}
+
+.ck-focused .ck-widget_with-resizer.ck-widget_selected {
+	& > .ck-widget__resizer {
+		display: block;
+	}
+}
+
+.ck .ck-widget__resizer__handle {
+	position: absolute;
+
+	/* Resizers are the only UI elements that should interfere with a pointer device. */
+	pointer-events: all;
+
+	width: var(--ck-resizer-size);
+	height: var(--ck-resizer-size);
+	background: var(--ck-color-focus-border);
+	border: var(--ck-resizer-border-width) solid hsl(0, 0%, 100%);
+	border-radius: var(--ck-resizer-border-radius);
+
+	&.ck-widget__resizer__handle-top-left {
+		top: var( --ck-resizer-offset );
+		left: var( --ck-resizer-offset );
+		cursor: nwse-resize;
+	}
+
+	&.ck-widget__resizer__handle-top-right {
+		top: var( --ck-resizer-offset );
+		right: var( --ck-resizer-offset );
+		cursor: nesw-resize;
+	}
+
+	&.ck-widget__resizer__handle-bottom-right {
+		bottom: var( --ck-resizer-offset );
+		right: var( --ck-resizer-offset );
+		cursor: nwse-resize;
+	}
+
+	&.ck-widget__resizer__handle-bottom-left {
+		bottom: var( --ck-resizer-offset );
+		left: var( --ck-resizer-offset );
+		cursor: nesw-resize;
+	}
+}

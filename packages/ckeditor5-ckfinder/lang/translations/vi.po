@@ -1,0 +1,37 @@
+# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Vietnamese (https://www.transifex.com/ckeditor/teams/11143/vi/)\n"
+"Language: vi\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Toolbar button tooltip for inserting an image or file via a CKFinder file browser."
+msgid "Insert image or file"
+msgstr "Chèn ảnh hoặc file"
+
+msgctxt "Error message displayed when inserting a resized version of an image failed."
+msgid "Could not obtain resized image URL."
+msgstr "Không thể lấy được đường dẫn ảnh đã đổi kích thước"
+
+msgctxt "Title of a notification displayed when inserting a resized version of an image failed."
+msgid "Selecting resized image failed"
+msgstr "Chọn ảnh đã đổi kích thước thất bại"
+
+msgctxt "Error message displayed when an image cannot be inserted at the current position."
+msgid "Could not insert image at the current position."
+msgstr "Không thể chèn ảnh ở vị trí hiện tại"
+
+msgctxt "Title of a notification displayed when an image cannot be inserted at the current position."
+msgid "Inserting image failed"
+msgstr "Chèn ảnh thất bại"

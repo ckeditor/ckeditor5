@@ -1,0 +1,89 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-color-image-upload-icon: hsl(0, 0%, 100%);
+	--ck-color-image-upload-icon-background: hsl(120, 100%, 27%);
+
+	--ck-image-upload-icon-size: 20px;
+	--ck-image-upload-icon-width: 2px;
+}
+
+.ck-image-upload-complete-icon {
+	width: var(--ck-image-upload-icon-size);
+	height: var(--ck-image-upload-icon-size);
+	opacity: 0;
+	background: var(--ck-color-image-upload-icon-background);
+	animation-name: ck-upload-complete-icon-show, ck-upload-complete-icon-hide;
+	animation-fill-mode: forwards, forwards;
+	animation-duration: 500ms, 500ms;
+
+	/* To make animation scalable. */
+	font-size: var(--ck-image-upload-icon-size);
+
+	/* Hide completed upload icon after 3 seconds. */
+	animation-delay: 0ms, 3000ms;
+
+	/* This is check icon element made from border-width mixed with animations. */
+	&::after {
+		/* Because of border transformation we need to "hard code" left position. */
+		left: 25%;
+
+		top: 50%;
+		opacity: 0;
+		height: 0;
+		width: 0;
+
+		transform: scaleX(-1) rotate(135deg);
+		transform-origin: left top;
+		border-top: var(--ck-image-upload-icon-width) solid var(--ck-color-image-upload-icon);
+		border-right: var(--ck-image-upload-icon-width) solid var(--ck-color-image-upload-icon);
+
+		animation-name: ck-upload-complete-icon-check;
+		animation-duration: 500ms;
+		animation-delay: 500ms;
+		animation-fill-mode: forwards;
+
+		/* #1095. While reset is not providing proper box-sizing for pseudoelements, we need to handle it. */
+		box-sizing: border-box;
+	}
+}
+
+@keyframes ck-upload-complete-icon-show {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes ck-upload-complete-icon-hide {
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes ck-upload-complete-icon-check {
+	0% {
+		opacity: 1;
+		width: 0;
+		height: 0;
+	}
+	33% {
+		width: 0.3em;
+		height: 0;
+	}
+	100% {
+		opacity: 1;
+		width: 0.3em;
+		height: 0.45em;
+	}
+}

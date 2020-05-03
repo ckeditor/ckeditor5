@@ -1,0 +1,9 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck-editor__editable .ck-horizontal-line {
+	/* Helps selecting the horizontal rule widget by giving it some space. */
+	padding: 5px 0;
+}

@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "@ckeditor/ckeditor5-ui/theme/components/tooltip/mixins/_tooltip.css";
+
+.ck-media__wrapper {
+	& .ck-media__placeholder {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		& .ck-media__placeholder__url {
+			@mixin ck-tooltip_enabled;
+
+			/* Otherwise the URL will overflow when the content is very narrow. */
+			max-width: 100%;
+
+			position: relative;
+
+			&:hover {
+				@mixin ck-tooltip_visible;
+			}
+
+			& .ck-media__placeholder__url__text {
+				overflow: hidden;
+				display: block;
+			}
+		}
+	}
+
+	&[data-oembed-url*="twitter.com"],
+	&[data-oembed-url*="google.com/maps"],
+	&[data-oembed-url*="facebook.com"],
+	&[data-oembed-url*="instagram.com"] {
+		& .ck-media__placeholder__icon * {
+			display: none;
+		}
+	}
+}
+
+/* Disable all mouse interaction as long as the editor is not read–only.
+   https://github.com/ckeditor/ckeditor5-media-embed/issues/58 */
+.ck-editor__editable:not(.ck-read-only) .ck-media__wrapper > *:not(.ck-media__placeholder) {
+	pointer-events: none;
+}
+
+/* Disable all mouse interaction when the widget is not selected (e.g. to avoid opening links by accident).
+   https://github.com/ckeditor/ckeditor5-media-embed/issues/18 */
+.ck-editor__editable:not(.ck-read-only) .ck-widget:not(.ck-widget_selected) .ck-media__placeholder {
+	pointer-events: none;
+}

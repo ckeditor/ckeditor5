@@ -1,0 +1,49 @@
+# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Hungarian (https://www.transifex.com/ckeditor/teams/11143/hu/)\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Label for the media widget."
+msgid "media widget"
+msgstr "Média widget"
+
+msgctxt "Label for the URL input in the Media Embed URL editing balloon."
+msgid "Media URL"
+msgstr "Média URL"
+
+msgctxt "The help text displayed under the media URL input helping users to discover the interface."
+msgid "Paste the media URL in the input."
+msgstr "Illessze be a média URL-jét."
+
+msgctxt "The tip displayed next to the media URL input informing about an easier way of embedding."
+msgid "Tip: Paste the URL into the content to embed faster."
+msgstr "Tipp: Illessze be a média URL-jét a tartalomba."
+
+msgctxt "An error message that informs about an empty value in the URL input."
+msgid "The URL must not be empty."
+msgstr "Az URL nem lehet üres."
+
+msgctxt "An error message that informs about unsupported media URL."
+msgid "This media URL is not supported."
+msgstr "Ez a média URL típus nem támogatott."
+
+msgctxt "Toolbar button tooltip for the Media Embed feature."
+msgid "Insert media"
+msgstr "Média beszúrása"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Media toolbar"
+msgstr "Média eszköztár"

@@ -1,0 +1,36 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+
+.ck.ck-form__row {
+	padding: var(--ck-spacing-standard) var(--ck-spacing-large) 0;
+
+	/* Ignore labels that work as fieldset legends */
+	& > *:not(.ck-label) {
+		& + * {
+			@mixin ck-dir ltr {
+				margin-left: var(--ck-spacing-large);
+			}
+
+			@mixin ck-dir rtl {
+				margin-right: var(--ck-spacing-large);
+			}
+		}
+	}
+
+	& > .ck-label {
+		width: 100%;
+		min-width: 100%;
+	}
+
+	&.ck-table-form__action-row {
+		margin-top: var(--ck-spacing-large);
+
+		& .ck-button .ck-button__label {
+			color: var(--ck-color-text);
+		}
+	}
+}

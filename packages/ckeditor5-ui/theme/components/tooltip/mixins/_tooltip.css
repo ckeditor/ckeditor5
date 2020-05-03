@@ -1,0 +1,54 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+ * Enables the tooltip, which is the tooltip is in DOM but
+ * not yet displayed.
+ */
+@define-mixin ck-tooltip_enabled {
+	& .ck-tooltip {
+		display: block;
+
+		/*
+		 * Don't display tooltips in devices which don't support :hover.
+		 * In fact, it's all about iOS, which forces user to click UI elements twice to execute
+		 * the primary action, when tooltips are enabled.
+		 *
+		 * Q: OK, but why not the following query?
+		 *
+		 *   @media (hover) {
+		 *       display: block;
+		 *   }
+		 *
+		 * A: Because FF does not support it and it would completely disable tooltips
+		 * in that browser.
+		 *
+		 * More in https://github.com/ckeditor/ckeditor5/issues/920.
+		 */
+		@media (hover:none) {
+			display: none;
+		}
+	}
+}
+
+/**
+ * Disables the tooltip making it disappear from DOM.
+ */
+@define-mixin ck-tooltip_disabled {
+	& .ck-tooltip {
+		display: none;
+	}
+}
+
+/**
+ * Shows the tooltip, which is already in DOM.
+ * Requires `ck-tooltip_enabled` first.
+ */
+@define-mixin ck-tooltip_visible {
+	& .ck-tooltip {
+		visibility: visible;
+		opacity: 1;
+	}
+}
