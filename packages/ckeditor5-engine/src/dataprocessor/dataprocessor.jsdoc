@@ -1,0 +1,40 @@
+/**
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+ * @module engine/dataprocessor/dataprocessor
+ */
+
+/**
+ * The data processor interface. It should be implemented by actual data processors.
+ *
+ * Each data processor implements a certain format of the data. For example, {@glink features/markdown Markdown data processor}
+ * will convert the data (a Markdown string) to a {@link module:engine/view/documentfragment~DocumentFragment document fragment} and back.
+ *
+ * **Note:** While the CKEditor 5 architecture supports changing the data format, in most scenarios we do recommend sticking to
+ * the default format which is HTML (supported by the {@link module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}).
+ * HTML remains [the best standard for rich-text data](https://medium.com/content-uneditable/a-standard-for-rich-text-data-4b3a507af552).
+ *
+ * And please do remember – using Markdown [does not automatically make your
+ * application/website secure](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues/16#issuecomment-375752994).
+ *
+ * @interface DataProcessor
+ */
+
+/**
+ * Converts a {@link module:engine/view/documentfragment~DocumentFragment document fragment} to data.
+ *
+ * @method #toData
+ * @param {module:engine/view/documentfragment~DocumentFragment} fragment The document fragment to be processed.
+ * @returns {*}
+ */
+
+/**
+ * Converts the data to a {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
+ *
+ * @method #toView
+ * @param {*} data The data to be processed.
+ * @returns {module:engine/view/documentfragment~DocumentFragment}
+ */

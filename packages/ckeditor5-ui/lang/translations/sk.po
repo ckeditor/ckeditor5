@@ -1,0 +1,113 @@
+# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Slovak (https://www.transifex.com/ckeditor/teams/11143/sk/)\n"
+"Language: sk\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);\n"
+
+msgctxt "Title of the CKEditor5 editor."
+msgid "Rich Text Editor, %0"
+msgstr "Editor s formátovaním, %0"
+
+msgctxt "Title of the CKEditor5 editor."
+msgid "Rich Text Editor"
+msgstr "Editor s formátovaním"
+
+msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Edit block"
+msgstr "Upraviť odsek"
+
+msgctxt "Label for a button showing the next thing (tab, page, etc.)."
+msgid "Next"
+msgstr "Ďalšie"
+
+msgctxt "Label for a button showing the previous thing (tab, page, etc.)."
+msgid "Previous"
+msgstr "Predchádzajúce"
+
+msgctxt "Label for a 'page X of Y' status of a typical next/previous page navigation."
+msgid "%0 of %1"
+msgstr "%0 z %1"
+
+msgctxt "Label used by assistive technologies describing a generic editor toolbar."
+msgid "Editor toolbar"
+msgstr "Panel nástrojov editora"
+
+msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
+msgid "Dropdown toolbar"
+msgstr "Panel nástrojov roletového menu"
+
+msgctxt "Label of a toolbar button which reveals more toolbar items."
+msgid "Show more items"
+msgstr ""
+
+msgctxt "Label of a button that applies a black color in color pickers."
+msgid "Black"
+msgstr "Čierna"
+
+msgctxt "Label of a button that applies a dim grey color in color pickers."
+msgid "Dim grey"
+msgstr "Tmavosivá"
+
+msgctxt "Label of a button that applies a grey color in color pickers."
+msgid "Grey"
+msgstr "Sivá"
+
+msgctxt "Label of a button that applies a light grey color in color pickers."
+msgid "Light grey"
+msgstr "Bledosivá"
+
+msgctxt "Label of a button that applies a white color in color pickers."
+msgid "White"
+msgstr "Biela"
+
+msgctxt "Label of a button that applies a red color in color pickers."
+msgid "Red"
+msgstr "Červená"
+
+msgctxt "Label of a button that applies a orange color in color pickers."
+msgid "Orange"
+msgstr "Oranžová"
+
+msgctxt "Label of a button that applies a yellow color in color pickers."
+msgid "Yellow"
+msgstr "Žltá"
+
+msgctxt "Label of a button that applies a light green color in color pickers."
+msgid "Light green"
+msgstr "Bledozelená"
+
+msgctxt "Label of a button that applies a green color in color pickers."
+msgid "Green"
+msgstr "Zelená"
+
+msgctxt "Label of a button that applies a aquamarine color in color pickers."
+msgid "Aquamarine"
+msgstr "Akvamarínová"
+
+msgctxt "Label of a button that applies a turquoise color in color pickers."
+msgid "Turquoise"
+msgstr "Tyrkysová"
+
+msgctxt "Label of a button that applies a light blue color in color pickers."
+msgid "Light blue"
+msgstr "Bledomodrá"
+
+msgctxt "Label of a button that applies a blue color in color pickers."
+msgid "Blue"
+msgstr "Modrá"
+
+msgctxt "Label of a button that applies a purple color in color pickers."
+msgid "Purple"
+msgstr "Fialová"

@@ -1,0 +1,99 @@
+<div id="columns">
+	<div class="column">
+		<h2>Sticky to the top of the viewport</h2>
+
+		<div class="ck-reset ck-editor ck-sticky_to-the-top">
+			<div class="ck-reset_all ck-editor__top"></div>
+			<p class="ck-reset">
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+			</p>
+			<div class="ck-reset_all offset-visualizer"></div>
+		</div>
+	</div>
+	<div class="column">
+		<h2>Sticky to the green box</h2>
+
+		<div class="ck-reset ck-editor ck-sticky_to-the-box">
+			<div class="ck-reset_all ck-editor__top "></div>
+			<p class="ck-reset">
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+				An editable content mock–up.
+			</p>
+			<div class="ck-reset_all offset-visualizer"></div>
+		</div>
+
+		<div id="fixed">The panel should stick to me instead of the viewport.</div>
+	</div>
+</div>
+
+<style>
+	body {
+		width: 3000px;
+		height: 3000px;
+		padding-top: 150px;
+	}
+
+	#columns {
+		overflow: hidden;
+	}
+
+	.column {
+		float: left;
+		width: 350px;
+		padding: 1em;
+	}
+
+	.ck-editor {
+		height: 200px;
+		background: #ccc;
+		position: relative;
+	}
+
+	.ck-sticky-panel__content {
+		background: yellow !important;
+		padding: 1em;
+	}
+
+	.ck-sticky-panel__content:after {
+		content: "A sticky panel mock–up.";
+	}
+
+	.offset-visualizer {
+		height: 50px;
+		width: 100%;
+		position: absolute;
+		bottom: 0;
+		background: red;
+		color: #fff;
+	}
+
+	.offset-visualizer:after {
+		content: "An offset mock–up. Toolbar should *never* cover the red area.";
+	}
+
+	#fixed {
+		height: 100px;
+		width: 350px;
+		position: fixed;
+		top: 0;
+		z-index: 9999;
+		background: green;
+		opacity: .8;
+		color: #fff;
+		box-sizing: border-box;
+		padding: 30px;
+	}
+</style>

@@ -1,0 +1,32 @@
+<head>
+	<style>
+		.h-red { display: inline-block; background: #FF0000; }
+		.h-yellow { display: inline-block; background: #FFFF00; }
+	</style>
+</head>
+
+<div id="editor">
+	<p>Lorem ipsum dolor sit amet.</p>
+	<p>Foobar.</p>
+</div>
+<br/>
+<div class="buttons">
+	<button id="add-yellow">Add yellow</button>
+	<button id="add-red">Add red</button>
+	<button id="remove-marker">Remove marker</button>
+	<br />
+	<button id="move-to-start">Move selection to start</button>
+	<button id="move-left">Move selection one char left</button>
+	<button id="move-right">Move selection one char right</button>
+</div>
+<br /><br />
+<small>
+	<em>
+		Keep in mind that this is just a simple demo.<br />
+		Highlighted markers do not merge (in model), remove button removes the first marker range which contains selection anchor.<br />
+		Once highlighted, highlight cannot be overwritten.<br />
+		Multi-element ranges are not supported<br />
+		Moving to the start button works only for flat ranges<br />
+		These are all known limitations of the demo.
+	</em>
+</small>

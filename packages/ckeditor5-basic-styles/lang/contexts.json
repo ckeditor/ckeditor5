@@ -1,0 +1,9 @@
+{
+	"Bold": "Toolbar button tooltip for the Bold feature.",
+	"Italic": "Toolbar button tooltip for the Italic feature.",
+	"Underline": "Toolbar button tooltip for the Underline feature.",
+	"Code": "Toolbar button tooltip for the Code feature.",
+	"Strikethrough": "Toolbar button tooltip for the Strikethrough feature.",
+	"Subscript": "Toolbar button tooltip for the Subscript feature.",
+	"Superscript": "Toolbar button tooltip for the Superscript feature."
+}

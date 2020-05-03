@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../tooltip/mixins/_tooltip.css";
+
+.ck.ck-splitbutton {
+	/* Enable font size inheritance, which allows fluid UI scaling. */
+	font-size: inherit;
+
+	& .ck-splitbutton__action:focus {
+		z-index: calc(var(--ck-z-default) + 1);
+	}
+
+	/* Disable tooltips for the buttons when the button is "open" */
+	&.ck-splitbutton_open > .ck-button {
+		@mixin ck-tooltip_disabled;
+	}
+}
+

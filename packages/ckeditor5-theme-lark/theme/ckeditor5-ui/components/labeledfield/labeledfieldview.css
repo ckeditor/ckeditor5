@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-labeled-field-view .ck-labeled-field-view__status {
+	font-size: var(--ck-font-size-small);
+	margin-top: var(--ck-spacing-small);
+
+	/* Let the info wrap to the next line to avoid stretching the layout horizontally.
+	The status could be very long. */
+	white-space: normal;
+}
+
+.ck.ck-labeled-field-view .ck-labeled-field-view__status_error {
+	color: var(--ck-color-base-error);
+}
+
+.ck.ck-labeled-field-view > .ck.ck-label {
+	width: 100%;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}

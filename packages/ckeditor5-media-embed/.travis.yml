@@ -1,0 +1,31 @@
+sudo: required
+dist: xenial
+addons:
+  chrome: stable
+  firefox: latest
+language: node_js
+services:
+- xvfb
+node_js:
+- '10'
+cache:
+  yarn: true
+branches:
+  except:
+  - stable
+before_install:
+- export START_TIME=$( date +%s )
+- npm i -g yarn
+install:
+- yarn add @ckeditor/ckeditor5-dev-tests
+- ckeditor5-dev-tests-install-dependencies
+script:
+- ckeditor5-dev-tests-travis
+after_success:
+- ckeditor5-dev-tests-save-revision
+after_script:
+- export END_TIME=$( date +%s )
+- ckeditor5-dev-tests-notify-travis-status
+env:
+  global:
+  - secure: uCkkoCAR+TZLZ6sacwF/uintsbEv7q6xqZb/hImXcJIcUG5qEqO2QgJCLpEjGcH2+th8hTlUf6XrZu3DI+gm6BAWjNH+osRPfihhQlprktnyqzDa0ut1TJQvgJNGya0iJFdsLbT6YOga4uuN5ALqAMksxBZGp6OioZQULDPNqPoGp/9UaGd5N8m0YiyV3TMsqH5MageS7XcqKV4FDf3IiMLBZuSeoCBxRoKNDrIj2SPtD8p8QbLsU9hLUp1Xs96ctWT7Yo6640DpjtS4fBivHgMa1IhzDJqutN/6hGx6q2+hxtqMFxPg0y9X6r6tuwCsaCbUILzjzPkOjpYiop/Xy04sxZfkfzLzrRk/V1FXbc9fJvRLv8uZuEuxMAkrTcf+78ywr88rqF5rRalwct9PTLXDAlxthR1xHGOcTJS2ebKslogq5KAEGX2CTLFkH2UHU/ZSozDyJPF0qkMPXSkgOINgZlN2aL4FhbPyRNdwWreVVGhIAP0/qw9ZZLbskKuMkzHGfd/xulQgVwSiOrnekvDq8U32trweZwQmbfDjKAWQUSYE70jhihNKiYiUiEWECXAk47Y5ephZH+hdiGM/5rK4ugacm04zrkskOfoBZee2dSKsWatG8TZaJv5W7/xHI1IblpugSALc8zZfNY885tRJYGWISxHdfs0Ju/ZknN4=

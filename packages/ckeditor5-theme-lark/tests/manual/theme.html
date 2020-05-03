@@ -1,0 +1,132 @@
+<head>
+	<style>
+		.test-settings {
+			background: #eee;
+			border: 2px solid #ccc;
+			padding: 1em;
+		}
+
+		.test-settings h2 {
+			margin-top: .3em;
+		}
+
+		.wrappable {
+			white-space: initial;
+			line-height: 3em;
+		}
+
+		*:not(.ck-toolbar) > .ck-icon + .ck-icon,
+		*:not(.ck-toolbar) > .ck-button + .ck-button:not(.ck-splitbutton__arrow),
+		*:not(.ck-toolbar) > .ck-dropdown + .ck-dropdown {
+			margin-left: 0.3em;
+		}
+
+		.icon-color {
+			color: red;
+		}
+
+		.button-responsive > div {
+			font-size: 1.5em;
+			line-height: 2.8em;
+		}
+
+		.button-responsive div .ck-button {
+			font-size: inherit;
+		}
+	</style>
+</head>
+
+<section class="test-settings">
+	<h2>Test settings</h2>
+	<label for="direcion-selector">Language direction:</label>
+	<select id="direcion-selector">
+		<option value="ltr">Left–to–right (LTR)</option>
+		<option value="rtl">Right-to-left (RTL)</option>
+	</select>
+</section>
+
+<h2>Icon</h2>
+
+	<h3>Icon: In–text</h3>
+
+	<p>Icons <span id="icon-plain-1"></span> and <span id="icon-plain-2"></span> in a plain paragraph.</p>
+	<p class="icon-color">
+		Icons <span id="icon-color-1"></span> follow the <span id="icon-color-2"></span> color of text.
+	</p>
+
+<hr/>
+
+<h2>Button</h2>
+
+	<h3>Button: States</h3>
+	<div id="button-states" class="ck ck-reset_all"></div>
+
+	<h3>Button: Types</h3>
+	<div id="button-types" class="ck ck-reset_all"></div>
+
+	<h3>Button: Icon</h3>
+	<div class="ck ck-reset_all" >
+		<div id="button-icon" class="wrappable"></div>
+
+		<br/>
+
+		<div id="button-icon-custom"></div>
+
+		<br/>
+
+		<div id="button-icon-states"></div>
+	</div>
+
+	<h3>Button: Keystrokes</h3>
+	<div class="ck ck-reset_all">
+		<div id="button-keystroke" class="wrappable"></div>
+	</div>
+
+	<h3>Button: Responsiveness</h3>
+	<div id="button-responsive-1" class="button-responsive ck-reset_all">
+		<div id="button-responsive-2" class="button-responsive">
+			<div id="button-responsive-3" class="button-responsive"></div>
+		</div>
+	</div>
+
+	<h3>Button: Tooltip</h3>
+	<div id="button-tooltip" class="ck ck-reset_all"></div>
+
+<h2>Dropdown</h2>
+
+	<h3>ListDropdown</h3>
+	<div id="list-dropdown" class="ck ck-reset_all"></div>
+
+	<h3>ButtonDropdown</h3>
+	<div id="button-dropdown" class="ck ck-reset_all"></div>
+
+<h2>Toolbar</h2>
+
+	<h3>Toolbar: Text</h3>
+	<div id="toolbar-text" class="ck ck-reset_all"></div>
+
+	<h3>Toolbar: Button</h3>
+	<div id="toolbar-button" class="ck ck-reset_all"></div>
+
+	<h3>Toolbar: Rounded</h3>
+	<div id="toolbar-rounded" class="ck ck-reset_all ck-rounded-corners"></div>
+
+	<h3>Toolbar: Wrapping content</h3>
+	<div id="toolbar-wrap" class="ck ck-reset_all"></div>
+
+	<h3>Toolbar: Item separators</h3>
+	<div id="toolbar-separator" class="ck ck-reset_all"></div>
+
+	<h3>Toolbar: Multi-row</h3>
+	<div id="toolbar-multi-row" class="ck ck-reset_all"></div>
+
+	<h3>Toolbar: Compact</h3>
+	<div id="toolbar-compact" class="ck ck-reset_all"></div>
+
+<h2>Inputs</h2>
+
+	<h3>Labeled</h3>
+	<div id="input-labeled" class="ck ck-reset_all"></div>
+
+	<h3>Read–only</h3>
+	<div id="input-read-only" class="ck ck-reset_all"></div>

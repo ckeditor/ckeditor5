@@ -1,0 +1,51 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck-content .table {
+	/* Give the table widget some air and center it horizontally */
+	margin: 1em auto;
+	display: table;
+
+	& table {
+		/* The table cells should have slight borders */
+		border-collapse: collapse;
+		border-spacing: 0;
+
+		/* Table width and height are set on the parent <figure>. Make sure the table inside stretches
+		to the full dimensions of the container (https://github.com/ckeditor/ckeditor5/issues/6186). */
+		width: 100%;
+		height: 100%;
+
+		/* The outer border of the table should be slightly darker than the inner lines.
+		Also see https://github.com/ckeditor/ckeditor5-table/issues/50. */
+		border: 1px double hsl(0, 0%, 70%);
+
+		& td,
+		& th {
+			min-width: 2em;
+			padding: .4em;
+
+			/* The border is inherited from .ck-editor__nested-editable styles, so theoretically it's not necessary here.
+			However, the border is a content style, so it should use .ck-content (so it works outside the editor).
+			Hence, the duplication. See https://github.com/ckeditor/ckeditor5/issues/6314 */
+			border: 1px solid hsl(0, 0%, 75%);
+		}
+
+		& th {
+			font-weight: bold;
+			background: hsla(0, 0%, 0%, 5%);
+		}
+	}
+}
+
+/* Text alignment of the table header should match the editor settings and override the native browser styling,
+when content is available outside the ediitor. See https://github.com/ckeditor/ckeditor5/issues/6638 */
+.ck-content[dir="rtl"] .table th {
+	text-align: right;
+}
+
+.ck-content[dir="ltr"] .table th {
+	text-align: left;
+}

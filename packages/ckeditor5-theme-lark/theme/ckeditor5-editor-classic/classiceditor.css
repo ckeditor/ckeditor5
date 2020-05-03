@@ -1,0 +1,42 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../mixins/_rounded.css";
+
+.ck.ck-editor__top {
+	& .ck-sticky-panel {
+		& .ck-toolbar {
+			@mixin ck-rounded-corners {
+				border-bottom-left-radius: 0;
+				border-bottom-right-radius: 0;
+			}
+
+			border-bottom-width: 0;
+		}
+
+		& .ck-sticky-panel__content_sticky .ck-toolbar {
+			border-bottom-width: 1px;
+
+			@mixin ck-rounded-corners {
+				border-radius: 0;
+			}
+		}
+	}
+}
+
+/* Note: Use ck-editor__main to make sure these styles don't apply to other editor types */
+.ck.ck-editor__main > .ck-editor__editable {
+	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/113 */
+	background: var(--ck-color-base-background);
+
+	@mixin ck-rounded-corners {
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+
+	&:not(.ck-focused) {
+		border-color: var(--ck-color-base-border);
+	}
+}

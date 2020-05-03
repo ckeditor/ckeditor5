@@ -1,0 +1,36 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-highlight-marker-yellow: hsl(60, 97%, 73%);
+	--ck-highlight-marker-green: hsl(120, 93%, 68%);
+	--ck-highlight-marker-pink: hsl(345, 96%, 73%);
+	--ck-highlight-marker-blue: hsl(201, 97%, 72%);
+	--ck-highlight-pen-red: hsl(0, 85%, 49%);
+	--ck-highlight-pen-green: hsl(112, 100%, 27%);
+}
+
+@define-mixin highlight-marker-color $color {
+	.ck-content .marker-$color {
+		background-color: var(--ck-highlight-marker-$color);
+	}
+}
+
+@define-mixin highlight-pen-color $color {
+	.ck-content .pen-$color {
+		color: var(--ck-highlight-pen-$color);
+
+		/* Override default yellow background of `<mark>` from user agent stylesheet */
+		background-color: transparent;
+	}
+}
+
+@mixin highlight-marker-color yellow;
+@mixin highlight-marker-color green;
+@mixin highlight-marker-color pink;
+@mixin highlight-marker-color blue;
+
+@mixin highlight-pen-color red;
+@mixin highlight-pen-color green;

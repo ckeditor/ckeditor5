@@ -1,0 +1,22 @@
+/**
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+ * @module ui/dropdown/button/dropdownbutton
+ */
+
+/**
+ * The dropdown button interface.
+ *
+ * @interface module:ui/dropdown/button/dropdownbutton~DropdownButton
+ * @extends module:ui/button/button~Button
+ */
+
+/**
+ * Fired when the dropdown should be opened.
+ * It will not be fired when the button {@link #isEnabled is disabled}.
+ *
+ * @event open
+ */

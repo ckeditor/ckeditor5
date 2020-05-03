@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck-content .image > figcaption {
+	display: table-caption;
+	caption-side: bottom;
+	word-break: break-word;
+	color: hsl(0, 0%, 20%);
+	background-color: hsl(0, 0%, 97%);
+	padding: .6em;
+	font-size: .75em;
+	outline-offset: -1px;
+}

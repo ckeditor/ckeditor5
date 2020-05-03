@@ -1,0 +1,33 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../mixins/_rounded.css";
+
+.ck.ck-dropdown .ck-dropdown__panel .ck-list {
+	/* Disabled radius of top-left border to be consistent with .dropdown__button
+	https://github.com/ckeditor/ckeditor5/issues/816 */
+	@mixin ck-rounded-corners {
+		border-top-left-radius: 0;
+	}
+
+	/* Make sure the button belonging to the first/last child of the list goes well with the
+	border radius of the entire panel. */
+	& .ck-list__item {
+		&:first-child .ck-button {
+			@mixin ck-rounded-corners {
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+				border-bottom-right-radius: 0;
+			}
+		}
+
+		&:last-child .ck-button {
+			@mixin ck-rounded-corners {
+				border-top-left-radius: 0;
+				border-top-right-radius: 0;
+			}
+		}
+	}
+}

@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+ * A helper to combine multiple shadows.
+ */
+@define-mixin ck-box-shadow $shadowA, $shadowB: 0 0 {
+	box-shadow: $shadowA, $shadowB;
+}
+
+/**
+ * Gives an element a drop shadow so it looks like a floating panel.
+ */
+@define-mixin ck-drop-shadow {
+	@mixin ck-box-shadow var(--ck-drop-shadow);
+}

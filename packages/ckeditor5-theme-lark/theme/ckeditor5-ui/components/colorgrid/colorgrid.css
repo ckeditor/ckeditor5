@@ -1,0 +1,68 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../mixins/_rounded.css";
+
+:root {
+	--ck-color-grid-tile-size: 24px;
+
+	/* Not using global colors here because these may change but some colors in a pallette
+	 * require special treatment. For instance, this ensures no matter what the UI text color is,
+	 * the check icon will look good on the black color tile. */
+	--ck-color-color-grid-check-icon: hsl(0, 0%, 0%);
+}
+
+.ck.ck-color-grid {
+	grid-gap: 5px;
+	padding: 8px;
+}
+
+.ck.ck-color-grid__tile {
+	width: var(--ck-color-grid-tile-size);
+	height: var(--ck-color-grid-tile-size);
+	min-width: var(--ck-color-grid-tile-size);
+	min-height: var(--ck-color-grid-tile-size);
+	padding: 0;
+	transition: .2s ease box-shadow;
+	border: 0;
+
+	&.ck-disabled {
+		cursor: unset;
+		transition: unset;
+	}
+
+	&.ck-color-table__color-tile_bordered {
+		box-shadow: 0 0 0 1px var(--ck-color-base-border);
+	}
+
+	& .ck.ck-icon {
+		display: none;
+		color: var(--ck-color-color-grid-check-icon);
+	}
+
+	&.ck-on {
+		box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-base-text);
+
+		& .ck.ck-icon {
+			display: block;
+		}
+	}
+
+	&.ck-on,
+	&:focus:not( .ck-disabled ),
+	&:hover:not( .ck-disabled ) {
+		/* Disable the default .ck-button's border ring. */
+		border: 0;
+	}
+
+	&:focus:not( .ck-disabled ),
+	&:hover:not( .ck-disabled ) {
+		box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-focus-border);
+	}
+}
+
+.ck.ck-color-grid__label {
+	padding: 0 var(--ck-spacing-standard);
+}

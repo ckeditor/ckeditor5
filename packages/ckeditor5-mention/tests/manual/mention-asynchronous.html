@@ -1,0 +1,52 @@
+<head>
+	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self' http://localhost:3000 https://cksource.com http://*.cke-cs.com; script-src 'self' https://cksource.com; img-src * data:; style-src 'self' 'unsafe-inline'; frame-src *" />
+</head>
+
+<p>
+	<label>Use cache: <input id="cache-control" type="checkbox"></label>
+</p>
+
+<div id="editor">
+	<p>Hello @</p>
+
+	<figure class="image">
+		<img src="sample.jpg" />
+		<figcaption>CKEditor logo - caption</figcaption>
+	</figure>
+</div>
+
+<style>
+	.ck-mentions .custom.mention__item {
+		display: flex;
+		flex-direction: row;
+		width: 220px;
+	}
+
+	.mention__item .mention__item__thumbnail {
+		/* Prevent images re-draw */
+		width: 48px;
+		height: 48px;
+		border-radius: 100%;
+		border: 2px solid #fff;
+	}
+
+	.mention__item .mention__item__body {
+		flex: 1;
+		margin-left: 1em;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.mention__item .mention__item__username {
+		float: left;
+		color: #666;
+	}
+
+	.mention__item.ck-on .mention__item__username {
+		color: #ddd;
+	}
+
+	.mention__item.ck-on .mention__item__full-name {
+		float: left;
+	}
+</style>

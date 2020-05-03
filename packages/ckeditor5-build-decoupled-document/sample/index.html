@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>CKEditor 5 – document editor build – development sample</title>
+	<style>
+		body {
+			max-width: 1000px;
+			margin: 20px auto;
+		}
+	</style>
+</head>
+<body>
+
+<h1>CKEditor 5 – document editor build – development sample</h1>
+
+<h2>The toolbar</h2>
+<div class="toolbar-container"></div>
+
+<h2>The editable</h2>
+<div class="editable-container"></div>
+
+<style>
+	.editable-container,
+	.toolbar-container {
+		position: relative;
+		border: 1px solid #ddd;
+		background: #eee;
+	}
+
+	.toolbar-container {
+		padding: 1em;
+	}
+
+	.editable-container {
+		padding: 3em;
+		overflow-y: scroll;
+		max-height: 500px;
+	}
+
+	.editable-container .document-editor__editable.ck-editor__editable {
+		min-height: 21cm;
+		padding: 2em;
+		border: 1px #D3D3D3 solid;
+		border-radius: var(--ck-border-radius);
+		background: white;
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+	}
+</style>
+
+<script src="../build/ckeditor.js"></script>
+<script>
+	const editorData = `<h2>Sample</h2>
+		<p>This is an instance of the <a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#document-editor">document editor build</a>.</p>
+		<figure class="image">
+			<img src="../tests/manual/sample.jpg" alt="Autumn fields" />
+		</figure>
+		<p>You can use this sample to validate whether your <a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html">custom build</a> works fine.</p>`;
+
+	DecoupledEditor.create( editorData )
+		.then( editor => {
+			window.editor = editor;
+
+			document.querySelector( '.toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
+			document.querySelector( '.editable-container' ).appendChild( editor.ui.view.editable.element );
+		} )
+		.catch( error => {
+			console.error( 'There was a problem initializing the editor.', error );
+		} );
+</script>
+
+</body>
+</html>

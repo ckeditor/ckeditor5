@@ -1,0 +1,23 @@
+<head>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+</head>
+
+<script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
+
+<style>
+	/* Override default test sidebar z-index because CKFinder's modal base z-index is 9000.
+	 */
+	.manual-test-sidebar {
+		z-index: 8999 !important;
+	}
+</style>
+
+<div id="editor">
+	<h2>CKFinder sample</h2>
+	<p>Use the toolbar icon to insert an image or link to a file to the content.</p>
+</div>
+
+<div style="margin-top:1em;">
+	CKFinder opener method: <span id="opener-method-label" style="font-weight:bold;">modal</span> -
+	<button id="opener-method">Switch to popup</button>
+</div>

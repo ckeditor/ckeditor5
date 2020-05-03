@@ -1,0 +1,73 @@
+<div id="snippet-title">
+	<h1></h1>
+	<p></p>
+</div>
+
+<h3>Console</h3>
+
+<p>You can check the content of the title and body elements below.</p>
+
+<pre><code class="plaintext title-console title-console__title">''</code></pre>
+<pre><code class="plaintext title-console title-console__body">'&lt;p>&amp;nbsp;&lt;/p>'</code></pre>
+<pre><code class="plaintext title-console title-console__data">''</code></pre>
+
+<style>
+	.ck.ck-editor__editable_inline {
+		border-color: hsl(0, 0%, 77%);
+	}
+
+	/* Let's move pilcrow icon inside the editor space. */
+	.ck.ck-block-toolbar-button {
+		transform: translateX( 40px );
+	}
+
+	#snippet-title {
+		min-height: 300px;
+		max-width: 450px;
+		padding: 50px;
+		margin: 50px auto 0;
+		box-shadow: 5px 5px 1px 0px hsla( 0, 0%, 0%, 0.1);
+	}
+
+	#snippet-title h1 {
+		padding-top: 0;
+	}
+
+	#title-console {
+		max-height: 300px;
+		overflow: auto;
+		white-space: normal;
+		background: #2b2c26;
+		margin-top: 20px;
+		transition: background-color 500ms;
+	}
+
+	#title-console.updated {
+		background: green;
+	}
+
+	.title-console__title,
+	.title-console__body {
+		margin-bottom: 10px;
+	}
+
+	.title-console__title::before,
+	.title-console__body::before,
+	.title-console__data::before {
+		display: inline-block;
+		margin-right: 5px;
+		opacity: 0.5;
+	}
+
+	.title-console__title::before {
+		content: 'Title:'
+	}
+
+	.title-console__body::before {
+		content: 'Body:'
+	}
+
+	.title-console__data::before {
+		content: 'Data:';
+	}
+</style>

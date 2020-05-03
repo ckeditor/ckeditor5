@@ -1,0 +1,51 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	border-color: hsl(0,0%,87%);
+}
+
+table, th, td {
+	padding: 5px;
+	border: 1px inset hsl(0,0%,87%);
+}
+
+table th,
+table td {
+	min-width: 1em;
+}
+
+table th {
+	background: hsl(0,0%,96%);
+	font-weight: bold;
+}
+
+table thead th {
+	background: hsl(0,0%,90%);
+}
+
+.ck table.ck-widget th.ck-editor__nested-editable {
+	border-color: inherit;
+	border-style: inset;
+}
+
+.ck table.ck-widget td.ck-editor__nested-editable {
+	border-color: inherit;
+	border-style: inset;
+}
+
+.ck table.ck-widget td.ck-editor__nested-editable.ck-editor__nested-editable_focused,
+.ck table.ck-widget td.ck-editor__nested-editable:focus {
+	background-color: inherit;
+	color: inherit;
+}
+
+.ck table.ck-widget th.ck-editor__nested-editable.ck-editor__nested-editable_focused,
+.ck table.ck-widget th.ck-editor__nested-editable:focus {
+	background-color: inherit;
+	color: inherit;
+}

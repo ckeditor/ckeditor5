@@ -1,0 +1,3 @@
+## `diff()`
+
+Checks `diff()` performance.

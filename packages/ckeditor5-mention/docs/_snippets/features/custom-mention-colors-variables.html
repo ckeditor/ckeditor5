@@ -1,0 +1,14 @@
+<style>
+	/* We are not using :root here because of many instances of the editor. */
+	#snippet-mention-custom-colors + .ck-editor {
+		/* Make the mention background blue. */
+		--ck-color-mention-background: hsla(220, 100%, 54%, 0.4);
+
+		/* Make the mention text dark grey. */
+		--ck-color-mention-text: hsl(0, 0%, 15%);
+	}
+</style>
+
+<div id="snippet-mention-custom-colors">
+	<p>Hello <span class="mention" data-mention="@Ted">@Ted</span>.</p>
+</div>
