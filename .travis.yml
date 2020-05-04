@@ -12,6 +12,7 @@ node_js:
 cache:
 - node_modules
 before_install:
+- export START_TIME=$( date +%s )
 - npm i -g yarn
 install:
 - yarn install
