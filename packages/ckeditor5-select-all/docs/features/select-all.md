@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-select-all-source}
 
-The {@link module:select-all/selectall~SelectAll} feature allows selecting the entire content of the editor using the <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd> keystroke or a toolbar button.
+The {@link module:select-all/selectall~SelectAll} feature allows selecting the entire content of the WYSIWYG editor using the <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd> keystroke or the toolbar button.
 
 ## Demo
 
@@ -21,7 +21,7 @@ Press <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd> or use the toolbar button to select the e
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-select-all`](https://www.npmjs.com/package/@ckeditor/ckeditor5-select-all) package:
 
-```bash
+```
 npm install --save @ckeditor/ckeditor5-select-all
 ```
 
