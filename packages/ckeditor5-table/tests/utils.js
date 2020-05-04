@@ -92,7 +92,7 @@ describe( 'table utils', () => {
 			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
 			const lastCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
 
-			tableSelection._setCellSelection( firstCell, lastCell );
+			tableSelection.setCellSelection( firstCell, lastCell );
 
 			expect( getSelectedTableCells( selection ) ).to.have.ordered.members( [
 				firstCell, lastCell
@@ -103,7 +103,7 @@ describe( 'table utils', () => {
 			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
 			const lastCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
 
-			tableSelection._setCellSelection( firstCell, lastCell );
+			tableSelection.setCellSelection( firstCell, lastCell );
 
 			expect( getSelectedTableCells( selection ) ).to.have.ordered.members( [
 				firstCell,
@@ -117,7 +117,7 @@ describe( 'table utils', () => {
 			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
 			const lastCell = modelRoot.getNodeByPath( [ 0, 0, 2 ] );
 
-			tableSelection._setCellSelection( firstCell, lastCell );
+			tableSelection.setCellSelection( firstCell, lastCell );
 
 			expect( getSelectedTableCells( selection ) ).to.have.ordered.members( [
 				firstCell,
@@ -130,7 +130,7 @@ describe( 'table utils', () => {
 			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
 			const lastCell = modelRoot.getNodeByPath( [ 0, 2, 1 ] );
 
-			tableSelection._setCellSelection( firstCell, lastCell );
+			tableSelection.setCellSelection( firstCell, lastCell );
 
 			expect( getSelectedTableCells( selection ) ).to.have.ordered.members( [
 				firstCell,
@@ -315,7 +315,7 @@ describe( 'table utils', () => {
 			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
 			const lastCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
 
-			tableSelection._setCellSelection( firstCell, lastCell );
+			tableSelection.setCellSelection( firstCell, lastCell );
 
 			expect( Array.from( getSelectionAffectedTableCells( selection ) ) ).to.have.ordered.members( [
 				firstCell, lastCell

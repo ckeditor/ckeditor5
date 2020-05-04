@@ -8,6 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import first from '@ckeditor/ckeditor5-utils/src/first';
 
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
@@ -181,7 +182,7 @@ export default class TableSelection extends Plugin {
 
 			if ( targetCell && haveSameTableParent( anchorCell, targetCell ) ) {
 				blockSelectionChange = true;
-				this._setCellSelection( anchorCell, targetCell );
+				this.setCellSelection( anchorCell, targetCell );
 
 				domEventData.preventDefault();
 			}
@@ -272,7 +273,7 @@ export default class TableSelection extends Plugin {
 			}
 
 			blockSelectionChange = true;
-			this._setCellSelection( anchorCell, targetCell );
+			this.setCellSelection( anchorCell, targetCell );
 
 			domEventData.preventDefault();
 		} );
@@ -367,11 +368,10 @@ export default class TableSelection extends Plugin {
 	 * Sets the model selection based on given anchor and target cells (can be the same cell).
 	 * Takes care of setting the backward flag.
 	 *
-	 * @protected
 	 * @param {module:engine/model/element~Element} anchorCell
 	 * @param {module:engine/model/element~Element} targetCell
 	 */
-	_setCellSelection( anchorCell, targetCell ) {
+	setCellSelection( anchorCell, targetCell ) {
 		const cellsToSelect = this._getCellsToSelect( anchorCell, targetCell );
 
 		this.editor.model.change( writer => {
@@ -380,6 +380,40 @@ export default class TableSelection extends Plugin {
 				{ backward: cellsToSelect.backward }
 			);
 		} );
+	}
+
+	/**
+	 * Returns the focus cell from the current selection.
+	 *
+	 * @returns {module:engine/model/element~Element}
+	 */
+	getFocusCell() {
+		const selection = this.editor.model.document.selection;
+		const focusCellRange = [ ...selection.getRanges() ].pop();
+		const element = focusCellRange.getContainedElement();
+
+		if ( element && element.is( 'tableCell' ) ) {
+			return element;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the anchor cell from the current selection.
+	 *
+	 * @returns {module:engine/model/element~Element} anchorCell
+	 */
+	getAnchorCell() {
+		const selection = this.editor.model.document.selection;
+		const anchorCellRange = first( selection.getRanges() );
+		const element = anchorCellRange.getContainedElement();
+
+		if ( element && element.is( 'tableCell' ) ) {
+			return element;
+		}
+
+		return null;
 	}
 
 	/**
@@ -425,39 +459,30 @@ export default class TableSelection extends Plugin {
 		const startColumn = Math.min( startLocation.column, endLocation.column );
 		const endColumn = Math.max( startLocation.column, endLocation.column );
 
-		const cells = [];
+		const selectionMap = new Array( endRow - startRow + 1 ).fill( null ).map( () => [] );
 
 		for ( const cellInfo of new TableWalker( findAncestor( 'table', anchorCell ), { startRow, endRow } ) ) {
 			if ( cellInfo.column >= startColumn && cellInfo.column <= endColumn ) {
-				cells.push( cellInfo.cell );
+				selectionMap[ cellInfo.row - startRow ].push( cellInfo.cell );
 			}
 		}
 
-		// A selection started in the bottom right corner and finished in the upper left corner
-		// should have it ranges returned in the reverse order.
-		// However, this is only half of the story because the selection could be made to the left (then the left cell is a focus)
-		// or to the right (then the right cell is a focus), while being a forward selection in both cases
-		// (because it was made from top to bottom). This isn't handled.
-		// This method would need to be smarter, but the ROI is microscopic, so I skip this.
-		if ( checkIsBackward( startLocation, endLocation ) ) {
-			return { cells: cells.reverse(), backward: true };
+		const flipVertically = endLocation.row < startLocation.row;
+		const flipHorizontally = endLocation.column < startLocation.column;
+
+		if ( flipVertically ) {
+			selectionMap.reverse();
 		}
 
-		return { cells, backward: false };
-	}
-}
+		if ( flipHorizontally ) {
+			selectionMap.forEach( row => row.reverse() );
+		}
 
-// Naively check whether the selection should be backward or not. See the longer explanation where this function is used.
-function checkIsBackward( startLocation, endLocation ) {
-	if ( startLocation.row > endLocation.row ) {
-		return true;
+		return {
+			cells: selectionMap.flat(),
+			backward: flipVertically || flipHorizontally
+		};
 	}
-
-	if ( startLocation.row == endLocation.row && startLocation.column > endLocation.column ) {
-		return true;
-	}
-
-	return false;
 }
 
 function haveSameTableParent( cellA, cellB ) {

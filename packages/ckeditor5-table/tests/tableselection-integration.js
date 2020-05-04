@@ -40,7 +40,7 @@ describe( 'TableSelection - integration', () => {
 		} );
 
 		it( 'should clear contents of the selected table cells and put selection in last cell on backward delete', () => {
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
@@ -62,7 +62,7 @@ describe( 'TableSelection - integration', () => {
 		} );
 
 		it( 'should clear contents of the selected table cells and put selection in last cell on forward delete', () => {
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
@@ -113,7 +113,7 @@ describe( 'TableSelection - integration', () => {
 		} );
 
 		it( 'should clear contents of the selected table cells and put selection in last cell on user input', () => {
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
@@ -170,7 +170,7 @@ describe( 'TableSelection - integration', () => {
 		} );
 
 		it( 'allows pasting over multi-cell selection', () => {
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
@@ -192,7 +192,7 @@ describe( 'TableSelection - integration', () => {
 		} );
 
 		it( 'allows inserting a horizontal line over a multi-range selection', () => {
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
@@ -231,7 +231,7 @@ describe( 'TableSelection - integration', () => {
 		it( 'works with merge cells command', () => {
 			setModelData( editor.model, modelTable( [ [ '00', '01' ] ] ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 			);
