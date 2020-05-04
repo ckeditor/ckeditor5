@@ -172,7 +172,7 @@ export default class TableSelection extends Plugin {
 				return;
 			}
 
-			const anchorCell = getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
+			const anchorCell = this.getAnchorCell() || getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
 
 			if ( !anchorCell ) {
 				return;
