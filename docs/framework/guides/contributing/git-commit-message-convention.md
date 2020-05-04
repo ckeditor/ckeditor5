@@ -24,8 +24,6 @@ Type (other-package-name): If the change affects more than one package, it's pos
 
 Optional description.
 
-NOTE: Special note to be marked in the changelog.
-
 BREAKING CHANGE: If any breaking changes were done, they need to be listed here.
 BREAKING CHANGE: Another breaking change if needed. Closes #ZZZ.
 ```
@@ -37,7 +35,6 @@ BREAKING CHANGE: Another breaking change if needed. Closes #ZZZ.
 | Feature | `minor` | A new feature. | Visible |
 | Fix | `patch` | A bug fix. Should also be used for enhancements if they do not introduce new features at the same time. | Visible |
 | Other | `patch` | An enhancement &mdash; when it is neither a bug fix nor a feature. Example: public API refactoring. Use it also if you do not want to admit that it was a bug ;). | Visible |
-| Code style | `patch` | Our beloved code style improvements (used in the broad meaning of general code quality). | Hidden |
 | Docs | `patch` | Updated documentation. | Hidden |
 | Internal | `patch` | Other kinds of internal changes. | Hidden |
 | Tests | `patch` | Changes in test files. | Hidden |
@@ -46,12 +43,8 @@ BREAKING CHANGE: Another breaking change if needed. Closes #ZZZ.
 
 Each commit can contain additional notes which will be inserted into the changelog:
 
-| Type | Is backward compatible? |
-| --- | --- |
-| `NOTE` | Yes |
-| `MAJOR BREAKING CHANGE`, `MINOR BREAKING CHANGE` or `BREAKING CHANGE` | No |
-
-The `BREAKING CHANGE` is an alias to a `MAJOR BREAKING CHANGE`.
+* `MAJOR BREAKING CHANGE` (alias: `BREAKING CHANGE`),
+* `MINOR BREAKING CHANGE`.
 
 If any change contains the `MAJOR BREAKING CHANGE` note, the next release will be marked as `major` automatically.
 
@@ -61,9 +54,9 @@ For reference on how to identify minor or major breaking change see the {@link f
 
 Most commits are related to one or more packages. Each affected package should be listed in parenthesis following the commit type. A package that was the most impacted by the change should be listed first.
 
-It is, however, possible to skip this part if many packages are affected. This is a typically indication that this is a generic change and listing, having all the packages listed would reduce changelog readability.
+It is, however, possible to skip this part if many packages are affected. This is a typically indication that this is a generic change and having all the packages listed would reduce changelog readability.
 
-The package name is based on npm package name, however it has `@ckeditor/ckeditor(5)-` prefix stripped.
+The package name is based on npm package name, however it has the `@ckeditor/ckeditor(5)-` prefix stripped.
 
 If your change is related to the main package only, use `ckeditor5` as the package name.
 
@@ -75,8 +68,6 @@ A new feature without any breaking changes.
 Feature (ui): Added support for RTL languages. Closes #1.
 
 RTL content will now be rendered correctly.
-
-NOTE: Make sure to set `config.contentDirection` correctly.
 ```
 
 A generic bug fix for an existing feature that affects many packages (closes two tickets):
@@ -91,20 +82,20 @@ Commit with updated documentation:
 Docs (link): Updated the README.
 ```
 
-Commit which provides or changes the tests:
+Commit that provides or changes the tests:
 
 ```
 Tests (widget): Introduced missing tests. Closes #5.
 ```
 
-An enhancement which is not backward compatible and sent by a non-core contributor. Public API was changed:
+An improvement that is not backward compatible and sent by a non-core contributor. Public API was changed:
 
 ```
 Other (utils): Extracted the `utils.foo()` to a separate package. Closes #9.
 
 Feature (engine): Introduced the `engine.foo()` method. Closes #9.
 
-BREAKING CHANGE: The `utils.foo()` method was moved to the `engine` package. See #9.
+MAJOR BREAKING CHANGE: The `utils.foo()` method was moved to the `engine` package. See #9.
 ```
 
 For the commits shown above the changelog will look like this:
@@ -133,10 +124,6 @@ Changelog
 ### Other changes
 
 * **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: Extracted the `utils.foo()` to a separate package. Thanks to [@CKEditor](https://github.com/CKEditor). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
-
-### NOTE
-
-* Make sure to set `config.contentDirection` correctly.
 ```
 
 ## Handling pull requests
