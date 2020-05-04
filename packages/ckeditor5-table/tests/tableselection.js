@@ -227,6 +227,39 @@ describe( 'table selection', () => {
 			expect( preventDefault.called ).to.equal( true );
 		} );
 
+		it( 'should use the anchor cell from the selection if possible', () => {
+			const preventDefault = sinon.spy();
+
+			const domEventDataMock = new DomEventData( view, {
+				shiftKey: true,
+				target: view.domConverter.mapViewToDom(
+					// figure > table > tbody > tr > td
+					viewDocument.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 2 )
+				),
+				preventDefault
+			} );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+			);
+			assertSelectedCells( model, [
+				[ 0, 0, 0 ],
+				[ 1, 1, 0 ],
+				[ 1, 1, 0 ]
+			] );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			assertSelectedCells( model, [
+				[ 1, 1, 1 ],
+				[ 1, 1, 1 ],
+				[ 0, 0, 0 ]
+			] );
+
+			expect( preventDefault.called ).to.equal( true );
+		} );
+
 		it( 'should ignore `selectionChange` event when selecting cells', () => {
 			const consoleLog = sinon.stub( console, 'log' );
 			const preventDefault = sinon.spy();
