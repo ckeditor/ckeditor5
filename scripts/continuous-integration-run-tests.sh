@@ -59,7 +59,7 @@ fold_end() {
 
 for package in $packages; do
 
-  fold_start "pkg-$package" "Testing $package${NC}"
+  fold_start "package:$package" "Testing $package${NC}"
 
   yarn run test -f $package --reporter=dots --production --coverage
 
@@ -81,7 +81,7 @@ for package in $packages; do
     errorOccured=1
   fi
 
-  fold_end "pkg-$package"
+  fold_end "package:$package"
 done;
 
 if [ "$errorOccured" -eq "1" ]; then
