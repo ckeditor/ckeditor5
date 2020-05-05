@@ -197,7 +197,10 @@ describe( 'MentionEditing', () => {
 						class: 'mention',
 						'data-mention': modelAttributeValue.id,
 						'href': modelAttributeValue.link
-					}, { id: modelAttributeValue._uid } );
+					}, {
+						priority: 20,
+						id: modelAttributeValue._uid
+					} );
 				},
 				converterPriority: 'high'
 			} );
@@ -677,7 +680,10 @@ function addCustomMentionConverters( editor ) {
 			return viewWriter.createAttributeElement( 'b', {
 				class: 'mention',
 				'data-mention': modelAttributeValue.id
-			}, { id: modelAttributeValue._uid } );
+			}, {
+				priority: 20,
+				id: modelAttributeValue._uid
+			} );
 		},
 		converterPriority: 'high'
 	} );

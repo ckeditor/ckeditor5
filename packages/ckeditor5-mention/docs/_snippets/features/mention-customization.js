@@ -52,7 +52,7 @@ function MentionCustomization( editor ) {
 			value: viewItem => {
 				// The mention feature expects that the mention attribute value
 				// in the model is a plain object with a set of additional attributes.
-				// In order to create a proper object, use the toMentionAttribute() helper method:
+				// In order to create a proper object use the toMentionAttribute() helper method:
 				const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewItem, {
 					// Add any other properties that you need.
 					link: viewItem.getAttribute( 'href' ),
@@ -79,6 +79,11 @@ function MentionCustomization( editor ) {
 				'data-mention': modelAttributeValue.id,
 				'data-user-id': modelAttributeValue.userId,
 				'href': modelAttributeValue.link
+			}, {
+				// Make mention attribute to be wrapped by other attribute elements.
+				priority: 20,
+				// Prevent merging mentions together.
+				id: modelAttributeValue._uid
 			} );
 		},
 		converterPriority: 'high'

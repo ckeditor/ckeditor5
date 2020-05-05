@@ -327,6 +327,11 @@ function MentionLinks( editor ) {
 				class: 'mention',
 				'data-mention': modelAttributeValue.id,
 				href
+			}, {
+				// Make mention attribute to be wrapped by other attribute elements.
+				priority: 20,
+				// Prevent merging mentions together.
+				id: modelAttributeValue._uid
 			} );
 		},
 		converterPriority: 'high'
