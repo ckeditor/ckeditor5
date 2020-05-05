@@ -1,0 +1,92 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	/* This is super-important. This is **manually** adjusted so a button without an icon
+	is never smaller than a button with icon, additionally making sure that text-less buttons
+	are perfect squares. The value is also shared by other components which should stay "in-line"
+	with buttons. */
+	--ck-ui-component-min-height: 2.3em;
+}
+
+/**
+ * Resets an element, ignoring its children.
+ */
+.ck.ck-reset,
+.ck.ck-reset_all,
+.ck.ck-reset_all * {
+	/* Do not include inheritable rules here. */
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	text-decoration: none;
+	vertical-align: middle;
+	transition: none;
+
+	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/105 */
+	word-wrap: break-word;
+}
+
+/**
+ * Resets an element AND its children.
+ */
+.ck.ck-reset_all,
+.ck.ck-reset_all * {
+	/* These are rule inherited by all children elements. */
+	border-collapse: collapse;
+	font: normal normal normal var(--ck-font-size-base)/var(--ck-line-height-base) var(--ck-font-face);
+	color: var(--ck-color-text);
+	text-align: left;
+	white-space: nowrap;
+	cursor: auto;
+	float: none;
+}
+
+.ck.ck-reset_all {
+	& .ck-rtl * {
+		text-align: right;
+	}
+
+	& iframe {
+		/* For IE */
+		vertical-align: inherit;
+	}
+
+	& textarea {
+		white-space: pre-wrap;
+	}
+
+	& textarea,
+	& input[type="text"],
+	& input[type="password"] {
+		cursor: text;
+	}
+
+	& textarea[disabled],
+	& input[type="text"][disabled],
+	& input[type="password"][disabled] {
+		cursor: default;
+	}
+
+	& fieldset {
+		padding: 10px;
+		border: 2px groove hsl(255, 7%, 88%);
+	}
+
+	& button::-moz-focus-inner {
+		/* See http://stackoverflow.com/questions/5517744/remove-extra-button-spacing-padding-in-firefox */
+		padding: 0;
+		border: 0
+	}
+}
+
+/**
+ * Default UI rules for RTL languages.
+ */
+.ck[dir="rtl"],
+.ck[dir="rtl"] .ck {
+	text-align: right;
+}

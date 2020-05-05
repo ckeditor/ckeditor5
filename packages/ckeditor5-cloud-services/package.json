@@ -1,0 +1,36 @@
+{
+  "name": "@ckeditor/ckeditor5-cloud-services",
+  "version": "19.0.0",
+  "description": "CKEditor 5's Cloud Services integration layer.",
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-lib"
+  ],
+  "dependencies": {
+    "@ckeditor/ckeditor-cloud-services-core": "^19.0.0",
+    "@ckeditor/ckeditor5-core": "^19.0.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-editor-classic": "^19.0.0"
+  },
+  "engines": {
+    "node": ">=8.0.0",
+    "npm": ">=5.7.1"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-cloud-services"
+  },
+  "files": [
+    "lang",
+    "src",
+    "theme"
+  ]
+}

@@ -1,0 +1,113 @@
+# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Japanese (https://www.transifex.com/ckeditor/teams/11143/ja/)\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Title of the CKEditor5 editor."
+msgid "Rich Text Editor, %0"
+msgstr "リッチテキストエディター, %0"
+
+msgctxt "Title of the CKEditor5 editor."
+msgid "Rich Text Editor"
+msgstr "リッチテキストエディター"
+
+msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Edit block"
+msgstr ""
+
+msgctxt "Label for a button showing the next thing (tab, page, etc.)."
+msgid "Next"
+msgstr ""
+
+msgctxt "Label for a button showing the previous thing (tab, page, etc.)."
+msgid "Previous"
+msgstr ""
+
+msgctxt "Label for a 'page X of Y' status of a typical next/previous page navigation."
+msgid "%0 of %1"
+msgstr ""
+
+msgctxt "Label used by assistive technologies describing a generic editor toolbar."
+msgid "Editor toolbar"
+msgstr ""
+
+msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
+msgid "Dropdown toolbar"
+msgstr ""
+
+msgctxt "Label of a toolbar button which reveals more toolbar items."
+msgid "Show more items"
+msgstr ""
+
+msgctxt "Label of a button that applies a black color in color pickers."
+msgid "Black"
+msgstr ""
+
+msgctxt "Label of a button that applies a dim grey color in color pickers."
+msgid "Dim grey"
+msgstr ""
+
+msgctxt "Label of a button that applies a grey color in color pickers."
+msgid "Grey"
+msgstr ""
+
+msgctxt "Label of a button that applies a light grey color in color pickers."
+msgid "Light grey"
+msgstr ""
+
+msgctxt "Label of a button that applies a white color in color pickers."
+msgid "White"
+msgstr ""
+
+msgctxt "Label of a button that applies a red color in color pickers."
+msgid "Red"
+msgstr ""
+
+msgctxt "Label of a button that applies a orange color in color pickers."
+msgid "Orange"
+msgstr ""
+
+msgctxt "Label of a button that applies a yellow color in color pickers."
+msgid "Yellow"
+msgstr ""
+
+msgctxt "Label of a button that applies a light green color in color pickers."
+msgid "Light green"
+msgstr ""
+
+msgctxt "Label of a button that applies a green color in color pickers."
+msgid "Green"
+msgstr ""
+
+msgctxt "Label of a button that applies a aquamarine color in color pickers."
+msgid "Aquamarine"
+msgstr ""
+
+msgctxt "Label of a button that applies a turquoise color in color pickers."
+msgid "Turquoise"
+msgstr ""
+
+msgctxt "Label of a button that applies a light blue color in color pickers."
+msgid "Light blue"
+msgstr ""
+
+msgctxt "Label of a button that applies a blue color in color pickers."
+msgid "Blue"
+msgstr ""
+
+msgctxt "Label of a button that applies a purple color in color pickers."
+msgid "Purple"
+msgstr ""

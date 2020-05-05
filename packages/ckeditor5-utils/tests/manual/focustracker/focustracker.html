@@ -1,0 +1,42 @@
+<head>
+	<meta charset="utf-8">
+
+	<style>
+		div[contenteditable],
+		div[tabindex] {
+			padding: 10px;
+			border: solid 1px #888;
+		}
+
+		span {
+			padding-left: 10px;
+		}
+
+		.status {
+			font-weight: normal;
+		}
+	</style>
+</head>
+
+
+<h2 class="status">Status <span>focus: <b>0</b></span> <span>blur: <b>0</b></span></h2>
+<hr>
+
+<h2>Tracked by Focus Tracker:</h2>
+
+<h3>Input:</h3>
+<input type="text" class="track">
+
+<h3>Content editable:</h3>
+<div contenteditable="true" class="track">Some editable content</div>
+
+<h3>HTML Wrapper (uses event capturing):</h3>
+<div tabindex="-1" class="track">
+	<input type="text">
+	<input type="text">
+</div>
+
+<h2>Not tracked by Focus Tracker:</h2>
+
+<h3>Input:</h3>
+<input type="text">

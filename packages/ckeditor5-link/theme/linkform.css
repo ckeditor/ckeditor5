@@ -1,0 +1,34 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
+
+.ck.ck-link-form {
+	display: flex;
+
+	& .ck-label {
+		display: none;
+	}
+
+	@mixin ck-media-phone {
+		flex-wrap: wrap;
+
+		& .ck-labeled-field-view {
+			flex-basis: 100%;
+		}
+
+		& .ck-button {
+			flex-basis: 50%;
+		}
+	}
+}
+
+/*
+ * Style link form differently when manual decorators are available.
+ * See: https://github.com/ckeditor/ckeditor5-link/issues/186.
+ */
+.ck.ck-link-form_layout-vertical {
+	display: block;
+}

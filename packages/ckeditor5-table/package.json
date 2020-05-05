@@ -1,0 +1,53 @@
+{
+  "name": "@ckeditor/ckeditor5-table",
+  "version": "19.0.0",
+  "description": "Table feature for CKEditor 5.",
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-feature",
+    "ckeditor5-plugin"
+  ],
+  "dependencies": {
+    "@ckeditor/ckeditor5-core": "^19.0.0",
+    "@ckeditor/ckeditor5-ui": "^19.0.0",
+    "@ckeditor/ckeditor5-widget": "^19.0.0",
+    "lodash-es": "^4.17.10"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-alignment": "^19.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^19.0.0",
+    "@ckeditor/ckeditor5-clipboard": "^19.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^19.0.0",
+    "@ckeditor/ckeditor5-engine": "^19.0.0",
+    "@ckeditor/ckeditor5-horizontal-line": "^19.0.0",
+    "@ckeditor/ckeditor5-image": "^19.0.0",
+    "@ckeditor/ckeditor5-indent": "^19.0.0",
+    "@ckeditor/ckeditor5-list": "^19.0.0",
+    "@ckeditor/ckeditor5-media-embed": "^19.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^19.0.0",
+    "@ckeditor/ckeditor5-typing": "^19.0.0",
+    "@ckeditor/ckeditor5-undo": "^19.0.0",
+    "@ckeditor/ckeditor5-utils": "^19.0.0",
+    "json-diff": "^0.5.4"
+  },
+  "engines": {
+    "node": ">=8.0.0",
+    "npm": ">=5.7.1"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-table"
+  },
+  "files": [
+    "lang",
+    "src",
+    "theme"
+  ]
+}

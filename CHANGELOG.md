@@ -1,6 +1,118 @@
 Changelog
 =========
 
+## [19.0.0](https://github.com/ckeditor/ckeditor5/compare/v18.0.0...v19.0.0) (2020-04-29)
+
+We are happy to announce the release of CKEditor 5 v19.0.0.
+
+This release is focused on [further improving the table selection plugin](https://github.com/ckeditor/ckeditor5/issues/6285) and includes following the enhancements:
+
+* [An option to select an entire row or column](https://github.com/ckeditor/ckeditor5/issues/6500).
+* [Custom keyboard handling in tables, allowing for consistent and more convenient navigation using the keyboard](https://github.com/ckeditor/ckeditor5/issues/3267).
+* [Improved removing rows or columns from complex tables](https://github.com/ckeditor/ckeditor5/issues/6406).
+* Fixed a few cases where an editor could be crashed.
+
+We also introduced support for [plural forms in our translation API](https://github.com/ckeditor/ckeditor5/issues/6406), added the [select all feature](https://github.com/ckeditor/ckeditor5/issues/6536) and created the `supportAllValues` option to preserve any font family or size value.
+
+We also did several performance tweaks to improve CKEditor 5 data processing and rendering time.
+
+A few bugs have been fixed, most notably:
+
+* [Font retention when pasting from Microsoft Word](https://github.com/ckeditor/ckeditor5/issues/6165).
+* [Support for special characters in mention matching](https://github.com/ckeditor/ckeditor5/issues/6398).
+* [Artifact characters produced when typing  after an emoji with text transformation enabled](https://github.com/ckeditor/ckeditor5/issues/6398).
+
+Finally, this release comes with some **important breaking changes**. The most notable ones are:
+
+* Make sure the latest version of the [`Essentials`](https://ckeditor.com/docs/ckeditor5/latest/api/essentials.html) plugin or the [`SelectAll`](https://ckeditor.com/docs/ckeditor5/latest/api/module_select-all_selectall-SelectAll.html) plugin is installed in your integration. Either is required for proper keystroke handling in editor widgets.
+* The format of stored editor translations changed. If you use `window.CKEDITOR_TRANSLATIONS`, see [#334](https://github.com/ckeditor/ckeditor5-utils/issues/334).
+* The `translate()` function from the `translation-service` was marked as protected. See [#334](https://github.com/ckeditor/ckeditor5-utils/issues/334).
+* The `getPositionedAncestor()` helper will no longer return the passed element when it is positioned.
+* The `ViewCollection` no longer has the `locale` property.
+* The `ViewCollection#constructor()` no longer accepts the `locale` parameter.
+* The `LabeledView` component was renamed to `LabeledFieldView`. Also, its instance of a labeled component's view is available through `LabeledFieldView#fieldView`. It replaced `LabeledView#view`.
+* The `DropdownView#focusTracker` property was removed as it served no purpose.
+* From now on, the `SpecialCharactersNavigationView` is an instance of the `FormHeaderView` and unnecessary `SpecialCharactersNavigationView#labelView` was removed.
+* The `env.isEdge` property was removed. See [ckeditor/ckeditor5#6202](https://github.com/ckeditor/ckeditor5/issues/6202).
+
+Check the list of packages below to learn more about these and other minor breaking changes.
+
+Blog post coming soon...
+
+### Collaboration features
+
+The CKEditor 5 Collaboration features changelog can be found here: https://ckeditor.com/collaboration/changelog.
+
+### Dependencies
+
+New packages:
+
+* [@ckeditor/ckeditor5-select-all](https://www.npmjs.com/package/@ckeditor/ckeditor5-select-all): [v19.0.0](https://github.com/ckeditor/ckeditor5-select-all/releases/tag/v19.0.0)
+
+Major releases (contain major breaking changes):
+
+* [@ckeditor/ckeditor5-special-characters](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-special-characters/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-ui/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-utils/releases/tag/v19.0.0)
+
+Major releases (contain minor breaking changes):
+
+* [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-ui/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-utils/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v19.0.0)
+
+Major releases (dependencies of those packages have breaking changes):
+
+* [@ckeditor/ckeditor-cloud-services-core](https://www.npmjs.com/package/@ckeditor/ckeditor-cloud-services-core): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor-cloud-services-core/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-adapter-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-alignment](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-alignment/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-autoformat](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-autoformat/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-autosave](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-autosave/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-basic-styles/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-block-quote](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-block-quote/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-build-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-build-balloon/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-build-balloon-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon-block): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-build-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-build-classic/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-build-decoupled-document](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-build-decoupled-document/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-build-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-build-inline/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-ckfinder/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-clipboard/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-cloud-services](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-cloud-services/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-code-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-code-block/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-core/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-easy-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-easy-image/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-editor-balloon/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-editor-classic/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-engine/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-enter/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-essentials](https://www.npmjs.com/package/@ckeditor/ckeditor5-essentials): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-essentials/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-font/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-heading/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-highlight](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-highlight/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-horizontal-line](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-horizontal-line/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-image/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-indent](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-indent/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-link/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-list/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-markdown-gfm/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-media-embed/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-mention/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-page-break](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-page-break/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-paragraph/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-paste-from-office/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-remove-format](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-remove-format/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-restricted-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-restricted-editing/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-table/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-typing/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-undo/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-upload/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-watchdog](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-watchdog/releases/tag/v19.0.0)
+* [@ckeditor/ckeditor5-word-count](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-word-count/releases/tag/v19.0.0)
+
+
 ## [18.0.0](https://github.com/ckeditor/ckeditor5/compare/v17.0.0...v18.0.0) (2020-03-19)
 
 We are happy to announce the release of CKEditor 5 v18.0.0. This release introduces support for [selecting multiple table cells, rows or columns](https://github.com/ckeditor/ckeditor5/issues/3202) and it improves [structure retention for lists pasted from Microsoft Word](https://github.com/ckeditor/ckeditor5/issues/2518).
@@ -19,7 +131,7 @@ Finally, this release comes with a couple of **important breaking changes**. The
 
 Check the list of packages below to learn more about above and other minor breaking changes.
 
-Blog post coming soon...
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v18.0.0-with-custom-table-selection-and-pasting-nested-lists-from-Word/
 
 ### Collaboration features
 

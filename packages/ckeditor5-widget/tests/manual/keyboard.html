@@ -1,0 +1,46 @@
+<head>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+
+		.ck-content .widget {
+			background: rgba( 0, 0, 0, 0.1 );
+			min-height: 50px;
+		}
+
+		.ck-content placeholder {
+			background: #ffff00;
+			padding: 4px 2px;
+			outline-offset: -2px;
+			line-height: 1em;
+			/* Set margins before and after the inline widget so the cursor between two instances is visible when one of them is focused.
+			Optimized for Firefox due to bug in rendering selection in ZWS on Chrome. See ckeditor5#1607. */
+			margin-right: 1px;
+			margin-left: 3px;
+		}
+
+		.ck-content placeholder::selection {
+			display: none;
+		}
+	</style>
+</head>
+
+<h2>LTR content</h2>
+
+<div id="editor-ltr">
+	<h2>Heading 1</h2>
+	<p>Para<placeholder>inline widget</placeholder>graph</p>
+	<div class="widget"></div>
+	<p>Paragraph</p>
+</div>
+
+<h2>RTL content</h2>
+
+<div id="editor-rtl">
+	<h2>مرحبا</h2>
+	<p>مرحبا<placeholder>inline widget</placeholder>مرحبا</p>
+	<div class="widget"></div>
+	<p>مرحبا</p>
+</div>

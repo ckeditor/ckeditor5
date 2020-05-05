@@ -1,0 +1,75 @@
+{
+  "name": "@ckeditor/ckeditor5-build-balloon-block",
+  "version": "19.0.0",
+  "description": "The balloon editor build of CKEditor 5 with a block toolbar – the best browser-based rich text editor.",
+  "keywords": [
+    "wysiwyg",
+    "rich text",
+    "editor",
+    "html",
+    "contentEditable",
+    "editing",
+    "operational transformation",
+    "ot",
+    "collaboration",
+    "collaborative",
+    "real-time",
+    "framework",
+    "ckeditor5-build",
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5"
+  ],
+  "main": "./build/ckeditor.js",
+  "files": [
+    "build"
+  ],
+  "devDependencies": {
+    "@ckeditor/ckeditor5-adapter-ckfinder": "^19.0.0",
+    "@ckeditor/ckeditor5-autoformat": "^19.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "^19.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^19.0.0",
+    "@ckeditor/ckeditor5-ckfinder": "^19.0.0",
+    "@ckeditor/ckeditor5-core": "^19.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^13.0.0",
+    "@ckeditor/ckeditor5-dev-webpack-plugin": "^9.0.0",
+    "@ckeditor/ckeditor5-easy-image": "^19.0.0",
+    "@ckeditor/ckeditor5-editor-balloon": "^19.0.0",
+    "@ckeditor/ckeditor5-essentials": "^19.0.0",
+    "@ckeditor/ckeditor5-heading": "^19.0.0",
+    "@ckeditor/ckeditor5-image": "^19.0.0",
+    "@ckeditor/ckeditor5-indent": "^19.0.0",
+    "@ckeditor/ckeditor5-link": "^19.0.0",
+    "@ckeditor/ckeditor5-list": "^19.0.0",
+    "@ckeditor/ckeditor5-media-embed": "^19.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^19.0.0",
+    "@ckeditor/ckeditor5-paste-from-office": "^19.0.0",
+    "@ckeditor/ckeditor5-table": "^19.0.0",
+    "@ckeditor/ckeditor5-typing": "^19.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^19.0.0",
+    "@ckeditor/ckeditor5-ui": "^19.0.0",
+    "postcss-loader": "^3.0.0",
+    "raw-loader": "^3.1.0",
+    "style-loader": "^1.0.0",
+    "terser-webpack-plugin": "^2.2.1",
+    "webpack": "^4.39.1",
+    "webpack-cli": "^3.3.6"
+  },
+  "engines": {
+    "node": ">=8.0.0",
+    "npm": ">=5.7.1"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-build-balloon-block"
+  },
+  "scripts": {
+    "build": "webpack --mode production",
+    "preversion": "npm run build"
+  }
+}

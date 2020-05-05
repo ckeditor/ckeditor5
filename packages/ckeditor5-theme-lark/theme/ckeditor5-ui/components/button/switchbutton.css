@@ -1,0 +1,106 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_disabled.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+
+/* Note: To avoid rendering issues (aliasing) but to preserve the responsive nature
+of the component, floating–point numbers have been used which, for the default font size
+(see: --ck-font-size-base), will generate simple integers. */
+:root {
+	/* 34px at 13px font-size */
+	--ck-switch-button-toggle-width: 2.6153846154em;
+	/* 14px at 13px font-size */
+	--ck-switch-button-toggle-inner-size: 1.0769230769em;
+	--ck-switch-button-toggle-spacing: 1px;
+	--ck-switch-button-translation: calc(
+		var(--ck-switch-button-toggle-width) -
+		var(--ck-switch-button-toggle-inner-size) -
+		2 * var(--ck-switch-button-toggle-spacing)
+	);
+}
+
+.ck.ck-button.ck-switchbutton {
+	& .ck-button__label {
+		@mixin ck-dir ltr {
+			/* Separate the label from the switch */
+			margin-right: calc(2 * var(--ck-spacing-large));
+		}
+
+		@mixin ck-dir rtl {
+			/* Separate the label from the switch */
+			margin-left: calc(2 * var(--ck-spacing-large));
+		}
+	}
+
+	& .ck-button__toggle {
+		@mixin ck-rounded-corners;
+
+		@mixin ck-dir ltr {
+			/* Make sure the toggle is always to the right as far as possible. */
+			margin-left: auto;
+		}
+
+		@mixin ck-dir rtl {
+			/* Make sure the toggle is always to the left as far as possible. */
+			margin-right: auto;
+		}
+
+		/* Gently animate the background color of the toggle switch */
+		transition: background 400ms ease;
+
+		width: var(--ck-switch-button-toggle-width);
+		background: var(--ck-color-switch-button-off-background);
+
+		& .ck-button__toggle__inner {
+			@mixin ck-rounded-corners {
+				border-radius: calc(.5 * var(--ck-border-radius));
+			}
+
+			/* Leave some tiny bit of space around the inner part of the switch */
+			margin: var(--ck-switch-button-toggle-spacing);
+			width: var(--ck-switch-button-toggle-inner-size);
+			height: var(--ck-switch-button-toggle-inner-size);
+			background: var(--ck-color-switch-button-inner-background);
+
+			/* Gently animate the inner part of the toggle switch */
+			transition: all 300ms ease;
+		}
+
+		&:hover {
+			background: var(--ck-color-switch-button-off-hover-background);
+
+			& .ck-button__toggle__inner {
+				box-shadow: 0 0 0 5px var(--ck-color-switch-button-inner-shadow);
+			}
+		}
+	}
+
+	&.ck-disabled .ck-button__toggle {
+		@mixin ck-disabled;
+	}
+
+	&.ck-on .ck-button__toggle {
+		background: var(--ck-color-switch-button-on-background);
+
+		&:hover {
+			background: var(--ck-color-switch-button-on-hover-background);
+		}
+
+		& .ck-button__toggle__inner {
+			/*
+			 * Move the toggle switch to the right. It will be animated.
+			 */
+			@mixin ck-dir ltr {
+				transform: translateX( var( --ck-switch-button-translation ) );
+			}
+
+			@mixin ck-dir rtl {
+				transform: translateX( calc( -1 * var( --ck-switch-button-translation ) ) );
+			}
+		}
+	}
+}

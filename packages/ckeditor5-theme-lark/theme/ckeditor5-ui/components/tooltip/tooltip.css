@@ -1,0 +1,92 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../mixins/_rounded.css";
+
+:root {
+	--ck-tooltip-arrow-size: 5px;
+}
+
+.ck.ck-tooltip {
+	left: 50%;
+
+	/*
+	 * Prevent blurry tooltips in LoDPI environments.
+	 * See https://github.com/ckeditor/ckeditor5/issues/1802.
+	 */
+	top: 0;
+
+	/*
+	 * For the transition to work, the tooltip must be controlled
+	 * using visibility+opacity. A delay prevents a "tooltip avalanche"
+	 * i.e. when scanning the toolbar with mouse cursor.
+	 */
+	transition: opacity .2s ease-in-out .2s;
+
+	& .ck-tooltip__text {
+		@mixin ck-rounded-corners;
+
+		font-size: .9em;
+		line-height: 1.5;
+		color: var(--ck-color-tooltip-text);
+		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
+		background: var(--ck-color-tooltip-background);
+		position: relative;
+		left: -50%;
+
+		&::after {
+			/*
+			 * For the transition to work, the tooltip must be controlled
+			 * using visibility+opacity. A delay prevents a "tooltip avalanche"
+			 * i.e. when scanning the toolbar with mouse cursor.
+			 */
+			transition: opacity .2s ease-in-out .2s;
+			border-style: solid;
+			left: 50%;
+		}
+	}
+
+	/**
+	 * A class once applied displays the tooltip south of the element.
+	 *
+	 *       [element]
+	 *           ^
+	 *     +-----------+
+	 *     |  Tooltip  |
+	 *     +-----------+
+	 */
+	&.ck-tooltip_s {
+		bottom: calc(-1 * var(--ck-tooltip-arrow-size));
+		transform: translateY( 100% );
+
+		& .ck-tooltip__text::after {
+			top: calc(-1 * var(--ck-tooltip-arrow-size));
+			transform: translateX( -50% );
+			border-color: transparent transparent var(--ck-color-tooltip-background) transparent;
+			border-width: 0 var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size);
+		}
+	}
+
+	/**
+	 * A class once applied displays the tooltip north of the element.
+	 *
+	 *     +-----------+
+	 *     |  Tooltip  |
+	 *     +-----------+
+	 *           V
+	 *       [element]
+	 */
+	&.ck-tooltip_n {
+		top: calc(-1 * var(--ck-tooltip-arrow-size));
+		transform: translateY( -100% );
+
+		& .ck-tooltip__text::after {
+			bottom: calc(-1 * var(--ck-tooltip-arrow-size));
+			transform: translateX( -50% );
+			border-color: var(--ck-color-tooltip-background) transparent transparent transparent;
+			border-width: var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size) 0 var(--ck-tooltip-arrow-size);
+		}
+	}
+}

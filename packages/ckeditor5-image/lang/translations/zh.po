@@ -1,0 +1,65 @@
+# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/ckeditor/teams/11143/zh_TW/)\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Label for the image widget."
+msgid "image widget"
+msgstr "圖片小工具"
+
+msgctxt "Label for the Side image option."
+msgid "Side image"
+msgstr "側邊圖片"
+
+msgctxt "Label for the Full size image option."
+msgid "Full size image"
+msgstr "完整尺寸圖片"
+
+msgctxt "Label for the Left aligned image option"
+msgid "Left aligned image"
+msgstr "向左對齊圖片"
+
+msgctxt "Label for the Centered image option"
+msgid "Centered image"
+msgstr "置中圖片"
+
+msgctxt "Label for the Right aligned image option"
+msgid "Right aligned image"
+msgstr "向右對齊圖片"
+
+msgctxt "Label for the Change image text alternative button."
+msgid "Change image text alternative"
+msgstr "修改圖片的替代文字"
+
+msgctxt "Label for the image text alternative input."
+msgid "Text alternative"
+msgstr "替代文字"
+
+msgctxt "Placeholder text for image caption displayed when caption is empty."
+msgid "Enter image caption"
+msgstr "輸入圖片說明"
+
+msgctxt "Label for the insert image toolbar button."
+msgid "Insert image"
+msgstr "插入圖片"
+
+msgctxt "Title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr "上傳失敗"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Image toolbar"
+msgstr ""

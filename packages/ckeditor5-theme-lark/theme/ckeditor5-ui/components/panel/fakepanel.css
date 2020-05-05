@@ -1,0 +1,46 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "../../../mixins/_shadow.css";
+
+:root {
+	--ck-balloon-fake-panel-offset-horizontal: 6px;
+	--ck-balloon-fake-panel-offset-vertical: 6px;
+}
+
+/* Let's use `.ck-balloon-panel` appearance. See: balloonpanel.css. */
+.ck .ck-fake-panel div {
+	@mixin ck-drop-shadow;
+
+	min-height: 15px;
+
+	background: var(--ck-color-panel-background);
+	border: 1px solid var(--ck-color-panel-border);
+	border-radius: var(--ck-border-radius);
+
+	width: 100%;
+	height: 100%;
+}
+
+.ck .ck-fake-panel div:nth-child( 1 ) {
+	margin-left: var(--ck-balloon-fake-panel-offset-horizontal);
+	margin-top: var(--ck-balloon-fake-panel-offset-vertical);
+}
+
+.ck .ck-fake-panel div:nth-child( 2 ) {
+	margin-left: calc(var(--ck-balloon-fake-panel-offset-horizontal) * 2);
+	margin-top: calc(var(--ck-balloon-fake-panel-offset-vertical) * 2);
+}
+.ck .ck-fake-panel div:nth-child( 3 ) {
+	margin-left: calc(var(--ck-balloon-fake-panel-offset-horizontal) * 3);
+	margin-top: calc(var(--ck-balloon-fake-panel-offset-vertical) * 3);
+}
+
+/* If balloon is positioned above element, we need to move fake panel to the top. */
+.ck .ck-balloon-panel_arrow_s + .ck-fake-panel,
+.ck .ck-balloon-panel_arrow_se + .ck-fake-panel,
+.ck .ck-balloon-panel_arrow_sw + .ck-fake-panel {
+	--ck-balloon-fake-panel-offset-vertical: -6px;
+}

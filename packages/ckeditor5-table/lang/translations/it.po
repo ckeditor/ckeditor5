@@ -1,0 +1,249 @@
+# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Italian (https://www.transifex.com/ckeditor/teams/11143/it/)\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Label for the insert table toolbar button."
+msgid "Insert table"
+msgstr "Inserisci tabella"
+
+msgctxt "Label for the set/unset table header column button."
+msgid "Header column"
+msgstr "Intestazione colonna"
+
+msgctxt "Label for the insert table column to the left of the current one button."
+msgid "Insert column left"
+msgstr "Inserisci colonna a sinistra"
+
+msgctxt "Label for the insert table column to the right of the current one button."
+msgid "Insert column right"
+msgstr "Inserisci colonna a destra"
+
+msgctxt "Label for the delete table column button."
+msgid "Delete column"
+msgstr "Elimina colonna"
+
+msgctxt "Label for the select table entire column button."
+msgid "Select column"
+msgstr ""
+
+msgctxt "Label for the table column dropdown button."
+msgid "Column"
+msgstr "Colonna"
+
+msgctxt "Label for the set/unset table header row button."
+msgid "Header row"
+msgstr "Riga d'intestazione"
+
+msgctxt "Label for the insert row below button."
+msgid "Insert row below"
+msgstr "Inserisci riga sotto"
+
+msgctxt "Label for the insert row above button."
+msgid "Insert row above"
+msgstr "Inserisci riga sopra"
+
+msgctxt "Label for the delete table row button."
+msgid "Delete row"
+msgstr "Elimina riga"
+
+msgctxt "Label for the select table entire row button."
+msgid "Select row"
+msgstr ""
+
+msgctxt "Label for the table row dropdown button."
+msgid "Row"
+msgstr "Riga"
+
+msgctxt "Label for the merge table cell up button."
+msgid "Merge cell up"
+msgstr "Unisci cella sopra"
+
+msgctxt "Label for the merge table cell right button."
+msgid "Merge cell right"
+msgstr "Unisci cella a destra"
+
+msgctxt "Label for the merge table cell down button."
+msgid "Merge cell down"
+msgstr "Unisci cella sotto"
+
+msgctxt "Label for the merge table cell left button."
+msgid "Merge cell left"
+msgstr "Unisci cella a sinistra"
+
+msgctxt "Label for the split table cell vertically button."
+msgid "Split cell vertically"
+msgstr "Dividi cella verticalmente"
+
+msgctxt "Label for the split table cell horizontally button."
+msgid "Split cell horizontally"
+msgstr "Dividi cella orizzontalmente"
+
+msgctxt "Label for the merge table cells button."
+msgid "Merge cells"
+msgstr "Unisci celle"
+
+msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
+msgid "Table toolbar"
+msgstr "Barra degli strumenti della tabella"
+
+msgctxt "The label describing the form allowing to specify the properties of a selected table."
+msgid "Table properties"
+msgstr "Proprietà tabella"
+
+msgctxt "The label describing the form allowing to specify the properties of a selected table cell."
+msgid "Cell properties"
+msgstr "Proprietà cella"
+
+msgctxt "The label describing a group of border–related form fields (border style, color, etc.)."
+msgid "Border"
+msgstr "Bordo"
+
+msgctxt "The label for the dropdown that allows configuring the border style of a table or a table cell."
+msgid "Style"
+msgstr "Stile"
+
+msgctxt "The label for the input that allows configuring the width of a table or a table cell or the width of a border."
+msgid "Width"
+msgstr "Larghezza"
+
+msgctxt "The label for the input that allows configuring the height of a table or a table cell."
+msgid "Height"
+msgstr "Altezza"
+
+msgctxt "The label for the input that allows configuring the border color of a table or a table cell."
+msgid "Color"
+msgstr "Colore"
+
+msgctxt "The label for the input that allows configuring the background color of a table or a table cell."
+msgid "Background"
+msgstr "Sfondo"
+
+msgctxt "The label for the input that allows configuring the padding of a table cell."
+msgid "Padding"
+msgstr "Spaziatura interna"
+
+msgctxt "The label describing a group of form fields that allows setting dimensions of a table or a table cell."
+msgid "Dimensions"
+msgstr "Dimensioni"
+
+msgctxt "The label for the group of toolbars that allows configuring the text alignment in a table cell."
+msgid "Table cell text alignment"
+msgstr "Allineamento del testo nella cella della tabella"
+
+msgctxt "The label for the toolbar that allows configuring the alignment of a table."
+msgid "Alignment"
+msgstr "Allineamento"
+
+msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the horizontal text alignment in a table cell."
+msgid "Horizontal text alignment toolbar"
+msgstr "Barra degli strumenti dell'allineamento orizzontale del testo"
+
+msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the vertical text alignment in a table cell."
+msgid "Vertical text alignment toolbar"
+msgstr "Barra degli strumenti dell'allineamento verticale del testo"
+
+msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the alignment of a table."
+msgid "Table alignment toolbar"
+msgstr "Barra degli strumenti dell'allineamento della tabella"
+
+msgctxt "The label for the border style dropdown when no style is applied to a table or a table cell."
+msgid "None"
+msgstr "Nessuno"
+
+msgctxt "The label for the border style dropdown when the solid border is applied to a table or a table cell."
+msgid "Solid"
+msgstr "Solido"
+
+msgctxt "The label for the border style dropdown when the dotted border is applied to a table or a table cell."
+msgid "Dotted"
+msgstr "Punteggiato"
+
+msgctxt "The label for the border style dropdown when the dashed border is applied to a table or a table cell."
+msgid "Dashed"
+msgstr "Tratteggiato"
+
+msgctxt "The label for the border style dropdown when the double border is applied to a table or a table cell."
+msgid "Double"
+msgstr "Doppio"
+
+msgctxt "The label for the border style dropdown when the groove border is applied to a table or a table cell."
+msgid "Groove"
+msgstr "Scanalatura"
+
+msgctxt "The label for the border style dropdown when the ridge border is applied to a table or a table cell."
+msgid "Ridge"
+msgstr "Rilievo"
+
+msgctxt "The label for the border style dropdown when the inset border is applied to a table or a table cell."
+msgid "Inset"
+msgstr "Incassato"
+
+msgctxt "The label for the border style dropdown when the outset border is applied to a table or a table cell."
+msgid "Outset"
+msgstr "Rialzato"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the left."
+msgid "Align cell text to the left"
+msgstr "Allinea il testo della cella a sinistra"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the center."
+msgid "Align cell text to the center"
+msgstr "Allinea il testo della cella al centro"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the right."
+msgid "Align cell text to the right"
+msgstr "Allinea il testo della cella a destra"
+
+msgctxt "The label used by assistive technologies describing a button that justifies the table cell text."
+msgid "Justify cell text"
+msgstr "Testo della cella giustificato"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the top."
+msgid "Align cell text to the top"
+msgstr "Allinea il testo della cella in alto"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the middle."
+msgid "Align cell text to the middle"
+msgstr "Allinea il testo della cella in mezzo"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the bottom."
+msgid "Align cell text to the bottom"
+msgstr "Allinea il testo della cella in basso"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the left."
+msgid "Align table to the left"
+msgstr "Allinea tabella a sinistra"
+
+msgctxt "The label used by assistive technologies describing a button that centers the table."
+msgid "Center table"
+msgstr "Allinea tabella al centro"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the right."
+msgid "Align table to the right"
+msgstr "Allinea tabella a destra"
+
+msgctxt "The localized error string that can be displayed next to color (background, border) fields that have an invalid value"
+msgid "The color is invalid. Try \"#FF0000\" or \"rgb(255,0,0)\" or \"red\"."
+msgstr "Il colore non è valido. Provare \"#FF0000\" o \"rgb(255,0,0)\" o \"red\"."
+
+msgctxt "The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value."
+msgid "The value is invalid. Try \"10px\" or \"2em\" or simply \"2\"."
+msgstr "Il valore non è valido. Provare \"10px\" o \"2em\" o semplicemente \"2\"."
+
+msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
+msgid "Color picker"
+msgstr ""

@@ -1,0 +1,57 @@
+# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Nepali (Nepal) (https://www.transifex.com/ckeditor/teams/11143/ne_NP/)\n"
+"Language: ne_NP\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Tooltip for the font size dropdown."
+msgid "Font Size"
+msgstr "फन्ट आकार"
+
+msgctxt "Dropdown option label for the 'tiny' font size preset."
+msgid "Tiny"
+msgstr "सानो"
+
+msgctxt "Dropdown option label for the 'small' font size preset."
+msgid "Small"
+msgstr "सानो"
+
+msgctxt "Dropdown option label for the 'big' font size preset."
+msgid "Big"
+msgstr "ठूलो"
+
+msgctxt "Dropdown option label for the 'huge' font size preset."
+msgid "Huge"
+msgstr "विशाल"
+
+msgctxt "Tooltip for the font family dropdown."
+msgid "Font Family"
+msgstr "फन्ट परिवार"
+
+msgctxt "Dropdown option label for the default font family."
+msgid "Default"
+msgstr "पूर्वनिर्धारित"
+
+msgctxt "Label of a button that allows selecting a font color."
+msgid "Font Color"
+msgstr "फन्ट रंग"
+
+msgctxt "Label of a button that allows selecting a font background color."
+msgid "Font Background Color"
+msgstr "पृष्ठभूमिको फन्ट रंग"
+
+msgctxt "Title of a color picker section containing the colors currently used in the document."
+msgid "Document colors"
+msgstr "कागजात रंग"

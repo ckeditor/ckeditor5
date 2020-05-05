@@ -1,0 +1,105 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-todo-list-checkmark-size: 16px;
+}
+
+.ck-content .todo-list {
+	list-style: none;
+
+	& li {
+		margin-bottom: 5px;
+
+		& .todo-list {
+			margin-top: 5px;
+		}
+	}
+
+	& .todo-list__label {
+		& > input {
+			-webkit-appearance: none;
+			display: inline-block;
+			position: relative;
+			width: var(--ck-todo-list-checkmark-size);
+			height: var(--ck-todo-list-checkmark-size);
+			vertical-align: middle;
+
+			/* Needed on iOS */
+			border: 0;
+
+			/* LTR styles */
+			left: -25px;
+			margin-right: -15px;
+			right: 0;
+			margin-left: 0;
+
+			&::before {
+				display: block;
+				position: absolute;
+				box-sizing: border-box;
+				content: '';
+				width: 100%;
+				height: 100%;
+				border: 1px solid hsl(0, 0%, 20%);
+				border-radius: 2px;
+				transition: 250ms ease-in-out box-shadow, 250ms ease-in-out background, 250ms ease-in-out border;
+			}
+
+			&::after {
+				display: block;
+				position: absolute;
+				box-sizing: content-box;
+				pointer-events: none;
+				content: '';
+
+				/* Calculate tick position, size and border-width proportional to the checkmark size. */
+				left: calc( var(--ck-todo-list-checkmark-size) / 3 );
+				top: calc( var(--ck-todo-list-checkmark-size) / 5.3 );
+				width: calc( var(--ck-todo-list-checkmark-size) / 5.3 );
+				height: calc( var(--ck-todo-list-checkmark-size) / 2.6 );
+				border-style: solid;
+				border-color: transparent;
+				border-width: 0 calc( var(--ck-todo-list-checkmark-size) / 8 ) calc( var(--ck-todo-list-checkmark-size) / 8 ) 0;
+				transform: rotate(45deg);
+			}
+
+			&[checked] {
+				&::before {
+					background: hsl(126, 64%, 41%);
+					border-color: hsl(126, 64%, 41%);
+				}
+
+				&::after {
+					border-color: hsl(0, 0%, 100%);
+				}
+			}
+		}
+
+		& .todo-list__label__description {
+			vertical-align: middle;
+		}
+	}
+}
+
+/* RTL styles */
+[dir="rtl"] .todo-list .todo-list__label > input {
+	left: 0;
+	margin-right: 0;
+	right: -25px;
+	margin-left: -15px;
+}
+
+/*
+ * To-do list should be interactive only during the editing
+ * (https://github.com/ckeditor/ckeditor5/issues/2090).
+ */
+.ck-editor__editable .todo-list .todo-list__label > input {
+	cursor: pointer;
+
+	&:hover::before {
+		box-shadow: 0 0 0 5px hsla(0, 0%, 0%, 0.1);
+	}
+}

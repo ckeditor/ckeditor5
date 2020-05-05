@@ -1,0 +1,80 @@
+<style>
+	.demo-update {
+		border: 1px solid var(--ck-color-base-border);
+		border-radius: var(--ck-border-radius);
+		box-shadow: 2px 2px 0px hsla( 0, 0%, 0%, 0.1 );
+		margin: 1.5em 0;
+		padding: 1em;
+	}
+
+	.demo-update h3 {
+		font-size: 18px;
+		font-weight: bold;
+		margin: 0 0 .5em;
+		padding: 0;
+	}
+
+	.demo-update .ck.ck-editor__editable_inline {
+		border: 1px solid hsla( 0, 0%, 0%, 0.15 );
+		transition: background .5s ease-out;
+		min-height: 6em;
+		margin-bottom: 1em;
+	}
+
+	.demo-update__controls {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.demo-update__chart {
+		margin-right: 1em;
+	}
+
+	.demo-update__chart__circle {
+		transform: rotate(-90deg);
+		transform-origin: center;
+	}
+
+	.demo-update__chart__characters {
+		font-size: 13px;
+		font-weight: bold;
+	}
+
+	.demo-update__words {
+		flex-grow: 1;
+		opacity: .5;
+	}
+
+	.demo-update__limit-close .demo-update__chart__circle {
+		stroke: hsl( 30, 100%, 52% );
+	}
+
+	.demo-update__limit-exceeded .ck.ck-editor__editable_inline {
+		background: hsl( 0, 100%, 97% );
+	}
+
+	.demo-update__limit-exceeded .demo-update__chart__circle {
+		stroke: hsl( 0, 100%, 52% );
+	}
+
+	.demo-update__limit-exceeded .demo-update__chart__characters {
+		fill: hsl( 0, 100%, 52% );
+	}
+</style>
+
+<div class="demo-update">
+	<h3>Post editor with word count</h3>
+	<div id="demo-update__editor">
+		<p>Tourists frequently admit that <a href="https://en.wikipedia.org/wiki/Taj_Mahal">Taj Mahal</a> “simply cannot be described with words”.</p>
+	</div>
+	<div class="demo-update__controls">
+		<span class="demo-update__words"></span>
+		<svg class="demo-update__chart" viewbox="0 0 40 40" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
+			<circle stroke="hsl(0, 0%, 93%)" stroke-width="3" fill="none" cx="20" cy="20" r="17" />
+			<circle class="demo-update__chart__circle" stroke="hsl(202, 92%, 59%)" stroke-width="3" stroke-dasharray="134,534" stroke-linecap="round" fill="none" cx="20" cy="20" r="17" />
+			<text class="demo-update__chart__characters" x="50%" y="50%" dominant-baseline="central" text-anchor="middle"></text>
+		</svg>
+		<button type="button" class="demo-update__send">Send post</button>
+	</div>
+</div>

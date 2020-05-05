@@ -15,13 +15,9 @@ before_install:
 - export START_TIME=$( date +%s )
 - npm i -g yarn
 install:
-- yarn add mrgit --ignore-workspace-root-check
-- mrgit sync --resolver-url-template="https://github.com/\${ path }.git"
-- git checkout package.json yarn.lock
-- rm -rf node_modules
 - yarn install
 script:
-- yarn run test --reporter=dots --production
+- ./scripts/continuous-integration-run-tests.sh
 - yarn run docs:api --validate-only
 - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
     travis_wait 30 yarn run docs:build-and-publish-nightly;
