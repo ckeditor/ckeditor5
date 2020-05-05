@@ -14,12 +14,6 @@ A set of ready-to-use rich text editors created with a powerful framework. Made 
 
 ![CKEditor 5 Classic rich text editor build screenshot](https://c.cksource.com/a/1/img/npm/ckeditor5-build-classic.png)
 
-## ⚠ This package does not contain any source code
-
-CKEditor 5 is distributed as [several ready-to-use rich text editor builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#available-builds) which you can [install from npm](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html#npm).
-
-You can also [customize the existing builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html) or build your own editors and features by using the [CKEditor 5 Framework](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/overview.html).
-
 ## Table of contents
 
 * [Quick start](#quick-start)
