@@ -259,5 +259,18 @@ describe( 'Token', () => {
 
 			requests[ 0 ].respond( 200, '', 'token-value' );
 		} );
+
+		it( 'should use default options when none passed', done => {
+			const intervalSpy = sinon.spy( window, 'setInterval' );
+
+			Token.create( 'http://token-endpoint' )
+				.then( () => {
+					expect( intervalSpy.args[ 0 ][ 1 ] ).to.equal( 3600000 );
+
+					done();
+				} );
+
+			requests[ 0 ].respond( 200, '', 'token-value' );
+		} );
 	} );
 } );

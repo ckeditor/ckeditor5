@@ -10,14 +10,13 @@
 /*
 
 Usage:
-mrgit exec 'node ../../scripts/bump-year.js'
 node scripts/bump-year.js
 
 Full command to update the entire project:
-git pull && mrgit sync && mrgit exec 'node ../../scripts/bump-year.js' && node scripts/bump-year.js
+git pull && node scripts/bump-year.js
 
 And after reviewing the changes:
-mrgit commit -m "Internal: Bumped the year. [skip ci]" && mrgit push && git commit -am "Internal: Bumped the year." && git push
+git commit -am "Internal: Bumped the year." && git push
 
 */
 
