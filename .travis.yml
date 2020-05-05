@@ -17,6 +17,8 @@ before_install:
 install:
 - yarn install
 script:
+- yarn run lint
+- yarn run stylelint
 - ./scripts/continuous-integration-run-tests.sh
 - yarn run docs:api --validate-only
 - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
