@@ -160,7 +160,8 @@ export default class TableNavigation extends Plugin {
 			return;
 		}
 
-		const wasHandled = this._handleArrowKeys( getDirectionFromKeyCode( keyCode, this.editor.locale.contentLanguageDirection ) );
+		const direction = getDirectionFromKeyCode( keyCode, this.editor.locale.contentLanguageDirection );
+		const wasHandled = this._handleArrowKeys( direction, domEventData.shiftKey );
 
 		if ( wasHandled ) {
 			domEventData.preventDefault();
@@ -174,9 +175,10 @@ export default class TableNavigation extends Plugin {
 	 *
 	 * @private
 	 * @param {'left'|'up'|'right'|'down'} direction The direction of the arrow key.
+	 * @param {Boolean} expandSelection If the current selection should be expanded.
 	 * @returns {Boolean} Returns `true` if key was handled.
 	 */
-	_handleArrowKeys( direction ) {
+	_handleArrowKeys( direction, expandSelection ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const isForward = [ 'right', 'down' ].includes( direction );
@@ -242,7 +244,16 @@ export default class TableNavigation extends Plugin {
 		// of wrapped line (it's at the same time at the end of one line and at the start of the next line).
 		if ( this._isSingleLineRange( textRange, isForward ) ) {
 			model.change( writer => {
-				writer.setSelection( isForward ? cellRange.end : cellRange.start );
+				const newPosition = isForward ? cellRange.end : cellRange.start;
+
+				if ( expandSelection ) {
+					const newSelection = model.createSelection( selection.anchor );
+					newSelection.setFocus( newPosition );
+
+					writer.setSelection( newSelection );
+				} else {
+					writer.setSelection( newPosition );
+				}
 			} );
 
 			return true;
