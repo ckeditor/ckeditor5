@@ -80,6 +80,6 @@ export default class InsertRowCommand extends Command {
 
 		const row = table.getChildIndex( tableRow );
 
-		tableUtils.insertRows( table, { rows: 1, at: this.order === 'below' ? row + 1 : row } );
+		tableUtils.insertRows( table, { rows: 1, at: this.order === 'below' ? row + 1 : row, copyStructureFrom: row } );
 	}
 }

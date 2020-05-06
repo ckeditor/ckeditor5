@@ -116,12 +116,17 @@ export default class TableUtils extends Plugin {
 	 * @param {Object} options
 	 * @param {Number} [options.at=0] The row index at which the rows will be inserted.
 	 * @param {Number} [options.rows=1] The number of rows to insert.
+	 * @param {Number} [options.copyStructureFrom=-1] The row index used as structure reference.
 	 */
 	insertRows( table, options = {} ) {
 		const model = this.editor.model;
 
 		const insertAt = options.at || 0;
 		const rowsToInsert = options.rows || 1;
+		const copyStructureFrom = options.copyStructureFrom !== undefined ? options.copyStructureFrom : -1;
+
+		const rows = this.getRows( table );
+		const columns = this.getColumns( table );
 
 		model.change( writer => {
 			const headingRows = table.getAttribute( 'headingRows' ) || 0;
@@ -132,37 +137,52 @@ export default class TableUtils extends Plugin {
 			}
 
 			// Inserting at the end and at the beginning of a table doesn't require to calculate anything special.
-			if ( insertAt === 0 || insertAt === table.childCount ) {
-				createEmptyRows( writer, table, insertAt, rowsToInsert, this.getColumns( table ) );
+			if ( copyStructureFrom < 0 && ( insertAt === 0 || insertAt === rows ) ) {
+				createEmptyRows( writer, table, insertAt, rowsToInsert, columns );
 
 				return;
 			}
 
-			// Iterate over all rows above inserted rows in order to check for rowspanned cells.
-			const tableIterator = new TableWalker( table, { endRow: insertAt } );
+			// Iterate over all rows above inserted rows in order to check for row-spanned cells.
+			const tableIterator = new TableWalker( table, { endRow: Math.max( insertAt, copyStructureFrom ) } );
 
 			// Will hold number of cells needed to insert in created rows.
-			// The number might be different then table cell width when there are rowspanned cells.
-			let cellsToInsert = 0;
+			// The number might be different then table cell width when there are row-spanned cells.
+			let cellsToInsert = columns;
 
-			for ( const { row, rowspan, colspan, cell } of tableIterator ) {
-				const isBeforeInsertedRow = row < insertAt;
-				const overlapsInsertedRow = row + rowspan > insertAt;
+			// Store spans of the reference row to reproduce it's structure. This array is column number indexed.
+			const columnsSpans = new Array( columns ).fill( 1 );
 
-				if ( isBeforeInsertedRow && overlapsInsertedRow ) {
+			for ( const { row, column, rowspan, colspan, cell } of tableIterator ) {
+				const lastCellRow = row + rowspan - 1;
+
+				if ( row < insertAt && insertAt <= lastCellRow ) {
 					// This cell overlaps inserted rows so we need to expand it further.
 					writer.setAttribute( 'rowspan', rowspan + rowsToInsert, cell );
-				}
 
-				// Calculate how many cells to insert based on the width of cells in a row at insert position.
-				// It might be lower then table width as some cells might overlaps inserted row.
-				// In the table above the cell 'a' overlaps inserted row so only two empty cells are need to be created.
-				if ( row === insertAt ) {
-					cellsToInsert += colspan;
+					// Mark this column as spanned from the rows above so no new cell will be needed.
+					columnsSpans[ column ] = -colspan;
+					cellsToInsert -= colspan;
+				} else if ( row <= copyStructureFrom && copyStructureFrom <= lastCellRow ) {
+					columnsSpans[ column ] = colspan;
+					cellsToInsert -= colspan - 1;
 				}
 			}
 
-			createEmptyRows( writer, table, insertAt, rowsToInsert, cellsToInsert );
+			const cellsAttributes = [];
+
+			// Prepare array of the new cells' attributes.
+			for ( let i = 0; i < columnsSpans.length; i++ ) {
+				const colspan = columnsSpans[ i ];
+
+				if ( colspan > 0 ) {
+					cellsAttributes.push( colspan > 1 ? { colspan } : null );
+				}
+
+				i += Math.abs( colspan ) - 1;
+			}
+
+			createEmptyRows( writer, table, insertAt, rowsToInsert, cellsToInsert, cellsAttributes );
 		} );
 	}
 
@@ -712,7 +732,8 @@ function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attr
 // @param {module:engine/model/position~Position} insertPosition
 function createCells( cells, writer, insertPosition, attributes = {} ) {
 	for ( let i = 0; i < cells; i++ ) {
-		createEmptyTableCell( writer, insertPosition, attributes );
+		const cellAttributes = Array.isArray( attributes ) ? attributes[ attributes.length - i - 1 ] : attributes;
+		createEmptyTableCell( writer, insertPosition, cellAttributes );
 	}
 }
 

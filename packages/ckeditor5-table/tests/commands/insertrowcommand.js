@@ -214,6 +214,33 @@ describe( 'InsertRowCommand', () => {
 					[ 0, 0 ]
 				] );
 			} );
+
+			it( 'should copy the row structure from the selected row', () => {
+				// +----+----+----+
+				// | 00 | 01      |
+				// +----+----+----+
+				// | 10 | 11 | 12 |
+				// +----+----+----+
+				setData( model, modelTable( [
+					[ '[]00', { contents: '01', colspan: 2 } ],
+					[ '10', '11', '12' ]
+				] ) );
+
+				command.execute();
+
+				// +----+----+----+
+				// | 00 | 01      |
+				// +----+----+----+
+				// |    |         |
+				// +----+----+----+
+				// | 10 | 11 | 12 |
+				// +----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', { contents: '01', colspan: 2 } ],
+					[ '', { contents: '', colspan: 2 } ],
+					[ '10', '11', '12' ]
+				] ) );
+			} );
 		} );
 	} );
 
@@ -348,6 +375,33 @@ describe( 'InsertRowCommand', () => {
 					[ 1, 1 ],
 					[ 0, 0 ]
 				] );
+			} );
+
+			it( 'should copy the row structure from the selected row', () => {
+				// +----+----+----+
+				// | 00 | 01      |
+				// +----+----+----+
+				// | 10 | 11 | 12 |
+				// +----+----+----+
+				setData( model, modelTable( [
+					[ '[]00', { contents: '01', colspan: 2 } ],
+					[ '10', '11', '12' ]
+				] ) );
+
+				command.execute();
+
+				// +----+----+----+
+				// |    |         |
+				// +----+----+----+
+				// | 00 | 01      |
+				// +----+----+----+
+				// | 10 | 11 | 12 |
+				// +----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '', { contents: '', colspan: 2 } ],
+					[ '00', { contents: '01', colspan: 2 } ],
+					[ '10', '11', '12' ]
+				] ) );
 			} );
 		} );
 	} );
