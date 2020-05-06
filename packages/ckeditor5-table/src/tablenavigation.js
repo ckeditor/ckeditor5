@@ -197,16 +197,15 @@ export default class TableNavigation extends Plugin {
 		const selectedCells = getSelectedTableCells( selection );
 
 		if ( selectedCells.length ) {
+			let focusCell = null;
+
 			if ( expandSelection ) {
-				const tableSelection = this.editor.plugins.get( 'TableSelection' );
-				const focusCell = tableSelection.getFocusCell();
-
-				this._navigateFromCellInDirection( focusCell, direction, expandSelection );
+				focusCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
 			} else {
-				const tableCell = isForward ? selectedCells[ selectedCells.length - 1 ] : selectedCells[ 0 ];
-
-				this._navigateFromCellInDirection( tableCell, direction, expandSelection );
+				focusCell = isForward ? selectedCells[ selectedCells.length - 1 ] : selectedCells[ 0 ];
 			}
+
+			this._navigateFromCellInDirection( focusCell, direction, expandSelection );
 
 			return true;
 		}
@@ -445,9 +444,9 @@ export default class TableNavigation extends Plugin {
 	 * @protected
 	 * @param {module:engine/model/element~Element} focusCell The table cell that is current multi-cell selection focus.
 	 * @param {'left'|'up'|'right'|'down'} direction Direction in which selection should move.
-	 * @param {Boolean} expandSelection If the current selection should be expanded.
+	 * @param {Boolean} [expandSelection=false] If the current selection should be expanded.
 	 */
-	_navigateFromCellInDirection( focusCell, direction, expandSelection ) {
+	_navigateFromCellInDirection( focusCell, direction, expandSelection = false ) {
 		const model = this.editor.model;
 
 		const table = findAncestor( 'table', focusCell );
