@@ -74,7 +74,10 @@ export default class InsertRowCommand extends Command {
 		const referencePosition = insertAbove ? selection.getFirstPosition() : selection.getLastPosition();
 		const referenceRange = insertAbove ? selection.getFirstRange() : selection.getLastRange();
 
-		const tableCell = referenceRange.getContainedElement() || findAncestor( 'tableCell', referencePosition );
+		const containedElement = referenceRange.getContainedElement();
+		const isTableCell = containedElement && containedElement.is( 'tableCell' );
+		const tableCell = isTableCell ? containedElement : findAncestor( 'tableCell', referencePosition );
+
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 

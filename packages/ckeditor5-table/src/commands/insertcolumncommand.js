@@ -75,8 +75,11 @@ export default class InsertColumnCommand extends Command {
 		const referencePosition = insertBefore ? selection.getFirstPosition() : selection.getLastPosition();
 		const referenceRange = insertBefore ? selection.getFirstRange() : selection.getLastRange();
 
-		const tableCell = referenceRange.getContainedElement() || findAncestor( 'tableCell', referencePosition );
-		const table = tableCell.parent.parent;
+		const containedElement = referenceRange.getContainedElement();
+		const isTableCell = containedElement && containedElement.is( 'tableCell' );
+
+		const tableCell = isTableCell ? containedElement : findAncestor( 'tableCell', referencePosition );
+		const table = findAncestor( 'table', tableCell );
 
 		const { column } = tableUtils.getCellLocation( tableCell );
 
