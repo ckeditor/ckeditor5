@@ -17,9 +17,9 @@ before_install:
 install:
 - yarn install
 script:
+- node ./scripts/continuous-integration-run-script.js
 - yarn run lint
 - yarn run stylelint
-- ./scripts/continuous-integration-run-tests.sh
 - yarn run docs:api --validate-only
 - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
     travis_wait 30 yarn run docs:build-and-publish-nightly;
