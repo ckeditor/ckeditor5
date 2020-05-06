@@ -408,7 +408,7 @@ describe( 'table clipboard', () => {
 				] ) );
 			} );
 
-			describe( 'pasted table is equal ot selected area', () => {
+			describe( 'pasted table is equal to the selected area', () => {
 				it( 'should be disabled in a readonly mode', () => {
 					editor.isReadOnly = true;
 
@@ -453,7 +453,7 @@ describe( 'table clipboard', () => {
 					] ) );
 				} );
 
-				it( 'pastes simple table to a simple table fragment - at the beginning of a table', () => {
+				it( 'inserts simple table to a simple table fragment - at the beginning of a table', () => {
 					tableSelection._setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
@@ -470,6 +470,7 @@ describe( 'table clipboard', () => {
 						[ '20', '21', '22', '23' ],
 						[ '30', '31', '32', '33' ]
 					] ) );
+
 					assertSelectedCells( model, [
 						[ 1, 1, 0, 0 ],
 						[ 1, 1, 0, 0 ],
@@ -478,7 +479,7 @@ describe( 'table clipboard', () => {
 					] );
 				} );
 
-				it( 'pastes simple table to a simple table fragment - at the end of a table', () => {
+				it( 'inserts simple table to a simple table fragment - at the end of a table', () => {
 					tableSelection._setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 2, 2 ] ),
 						modelRoot.getNodeByPath( [ 0, 3, 3 ] )
@@ -503,7 +504,7 @@ describe( 'table clipboard', () => {
 					] );
 				} );
 
-				it( 'pastes simple table to a simple table fragment - in the middle of a table', () => {
+				it( 'inserts simple table to a simple table fragment - in the middle of a table', () => {
 					tableSelection._setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
 						modelRoot.getNodeByPath( [ 0, 2, 2 ] )
@@ -528,7 +529,7 @@ describe( 'table clipboard', () => {
 					] );
 				} );
 
-				it( 'pastes simple table to a simple table fragment - whole table selected', () => {
+				it( 'inserts simple table to a simple table fragment - whole table selected', () => {
 					tableSelection._setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 						modelRoot.getNodeByPath( [ 0, 3, 3 ] )

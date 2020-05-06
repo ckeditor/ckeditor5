@@ -10,6 +10,8 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableSelection from './tableselection';
 import { getColumnIndexes, getRowIndexes } from './utils';
+import TableWalker from './tablewalker';
+import { findAncestor } from './commands/utils';
 
 /**
  * This plugin adds support for copying/cutting/pasting fragments of tables.
@@ -120,9 +122,36 @@ export default class TableClipboard extends Plugin {
 			const insertHeight = tableUtils.getRows( table );
 			const insertWidth = tableUtils.getColumns( table );
 
-			if ( selectionHeight === insertHeight && selectionWidth === insertHeight ) {
-				// @if CK_DEBUG // console.log( 'Pasted table and selection area are the same.' );
+			const contentTable = findAncestor( 'table', selectedTableCells[ 0 ] );
 
+			if ( selectionHeight === insertHeight && selectionWidth === insertWidth ) {
+				const model = this.editor.model;
+
+				model.change( writer => {
+					const insertionMap = new Map();
+
+					for ( const { column, row, cell } of new TableWalker( table ) ) {
+						insertionMap.set( `${ row }x${ column }`, cell );
+					}
+
+					for ( const { column, row, cell } of new TableWalker( contentTable, {
+						startRow: rowIndexes.first,
+						endRow: rowIndexes.last
+					} ) ) {
+						if ( column < columnIndexes.first || column > columnIndexes.last ) {
+							continue;
+						}
+
+						const toGet = `${ row - rowIndexes.first }x${ column - columnIndexes.first }`;
+
+						const cellToInsert = insertionMap.get( toGet );
+						writer.remove( writer.createRangeIn( cell ) );
+
+						for ( const child of cellToInsert.getChildren() ) {
+							writer.insert( child, cell, 'end' );
+						}
+					}
+				} );
 				return;
 			}
 
@@ -136,7 +165,7 @@ export default class TableClipboard extends Plugin {
 }
 
 function getTable( content ) {
-	for ( const child of content ) {
+	for ( const child of Array.from( content ) ) {
 		if ( child.is( 'table' ) ) {
 			return child;
 		}
