@@ -186,25 +186,26 @@ export default class ColorInputView extends View {
 	}
 
 	/**
-	 * Creates and configures the {@link #_inputView}.
+	 * Creates and configures an instance of {@link module:ui/inputtext/inputtextview~InputTextView}.
 	 *
 	 * @private
+	 * @returns {module:ui/inputtext/inputtextview~InputTextView} A configured instance to be set as {@link #_inputView}.
 	 */
 	_createInputTextView() {
 		const locale = this.locale;
-		const input = new InputTextView( locale );
+		const inputView = new InputTextView( locale );
 
-		input.bind( 'value' ).to( this );
-		input.bind( 'isReadOnly' ).to( this );
-		input.bind( 'hasError' ).to( this );
+		inputView.bind( 'value' ).to( this );
+		inputView.bind( 'isReadOnly' ).to( this );
+		inputView.bind( 'hasError' ).to( this );
 
-		input.on( 'input', () => {
-			this.value = input.element.value;
+		inputView.on( 'input', () => {
+			this.value = inputView.element.value;
 		} );
 
-		input.delegate( 'input' ).to( this );
+		inputView.delegate( 'input' ).to( this );
 
-		return input;
+		return inputView;
 	}
 
 	/**
