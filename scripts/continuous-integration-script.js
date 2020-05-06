@@ -89,7 +89,7 @@ if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
 	showFailedCheck( 'unitTests', 'The following packages did not pass unit tests' );
 	showFailedCheck( 'codeCoverage', 'The following packages did not provide required code coverage' );
 
-	process.exit( 1 ); // Exit code 1 will break the CI bThe following packages did not provide required codeuild
+	process.exit( 1 ); // Exit code 1 will break the CI build.
 }
 
 /*
@@ -122,6 +122,6 @@ function showFailedCheck( checkKey, errorMessage ) {
 	const failedPackages = failedChecks[ checkKey ];
 
 	if ( failedPackages.size ) {
-		console.log( `${ errorMessage }: ${ RED }${ Array.from( failedPackages.entries() ).join( ', ' ) }${ NO_COLOR }` );
+		console.log( `${ errorMessage }: ${ RED }${ Array.from( failedPackages.values() ).join( ', ' ) }${ NO_COLOR }` );
 	}
 }
