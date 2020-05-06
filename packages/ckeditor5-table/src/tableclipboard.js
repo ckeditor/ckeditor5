@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableSelection from './tableselection';
+import { getColumnIndexes, getRowIndexes } from './utils';
 
 /**
  * This plugin adds support for copying/cutting/pasting fragments of tables.
@@ -99,20 +100,47 @@ export default class TableClipboard extends Plugin {
 			return;
 		}
 
-		if ( containsTable( content ) ) {
-			// console.log( 'contains table' );
+		const table = getTable( content );
 
+		if ( table ) {
 			evt.stop();
+
+			if ( selectedTableCells.length === 1 ) {
+				// @if CK_DEBUG // console.log( 'Single table cell is selected. Not handled.' );
+
+				return;
+			}
+
+			const tableUtils = this.editor.plugins.get( 'TableUtils' );
+
+			const rowIndexes = getRowIndexes( selectedTableCells );
+			const columnIndexes = getColumnIndexes( selectedTableCells );
+			const selectionHeight = rowIndexes.last - rowIndexes.first + 1;
+			const selectionWidth = columnIndexes.last - columnIndexes.first + 1;
+			const insertHeight = tableUtils.getRows( table );
+			const insertWidth = tableUtils.getColumns( table );
+
+			if ( selectionHeight === insertHeight && selectionWidth === insertHeight ) {
+				// @if CK_DEBUG // console.log( 'Pasted table and selection area are the same.' );
+
+				return;
+			}
+
+			if ( selectionHeight > insertHeight || selectionWidth > insertWidth ) {
+				// @if CK_DEBUG // console.log( 'Pasted table extends selection area.' );
+			} else {
+				// @if CK_DEBUG // console.log( 'Pasted table is smaller than selection area.' );
+			}
 		}
 	}
 }
 
-function containsTable( content ) {
+function getTable( content ) {
 	for ( const child of content ) {
 		if ( child.is( 'table' ) ) {
-			return true;
+			return child;
 		}
 	}
 
-	return false;
+	return null;
 }
