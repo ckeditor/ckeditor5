@@ -101,7 +101,7 @@ export default class ColorInputView extends View {
 		 * An instance of the input allowing the user to type a color value.
 		 *
 		 * @protected
-		 * @member {module:ui/dropdown/dropdown~DropdownView}
+		 * @member {module:ui/inputtext/inputtextview~InputTextView}
 		 */
 		this._inputView = this._createInputTextView( locale );
 
