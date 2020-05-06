@@ -146,6 +146,14 @@ describe( 'ColorInputView', () => {
 				expect( view.value ).to.equal( 'rgb(0,0,255)' );
 			} );
 
+			it( 'should set input text #value to the selected color\'s label upon #execute', () => {
+				expect( inputView.value ).to.equal( '' );
+
+				colorGridView.items.last.fire( 'execute' );
+
+				expect( inputView.value ).to.equal( 'Blue' );
+			} );
+
 			it( 'should close the dropdown upon #execute', () => {
 				view._dropdownView.isOpen = true;
 
@@ -208,6 +216,15 @@ describe( 'ColorInputView', () => {
 				expect( inputView.value ).to.equal( 'bar' );
 			} );
 
+			it( `when the color input value is set to one of defined colors, 
+			should use its label as the text input value`, () => {
+				view.value = 'rgb(0,255,0)';
+				expect( inputView.value ).to.equal( 'Green' );
+
+				view.value = 'rgb(255,0,0)';
+				expect( inputView.value ).to.equal( 'Red' );
+			} );
+
 			it( 'should have #isReadOnly bound to the color input', () => {
 				view.isReadOnly = true;
 				expect( inputView.isReadOnly ).to.equal( true );
@@ -234,6 +251,60 @@ describe( 'ColorInputView', () => {
 				inputView.fire( 'input' );
 
 				expect( view.value ).to.equal( 'bar' );
+			} );
+
+			it( `when any defined color label is given as the text input #value (case-sensitive),
+			should set the color as #value on #input event`, () => {
+				inputView.element.value = 'Red';
+				inputView.fire( 'input' );
+
+				expect( view.value ).to.equal( 'rgb(255,0,0)' );
+
+				inputView.element.value = 'Green';
+				inputView.fire( 'input' );
+
+				expect( view.value ).to.equal( 'rgb(0,255,0)' );
+
+				inputView.element.value = 'blue';
+				inputView.fire( 'input' );
+
+				expect( view.value ).to.equal( 'blue' );
+			} );
+
+			it( `when any defined color label is given as the text input #value (case-sensitive),
+			then a non-defined value is set to the color input, 
+			the latter value should be set to text input`, () => {
+				inputView.element.value = 'Red';
+				inputView.fire( 'input' );
+
+				expect( view.value ).to.equal( 'rgb(255,0,0)' );
+
+				
+				view.value = 'rgb(0,0,255)';
+
+				expect( view.value ).to.equal( 'rgb(0,0,255)' );
+			} );
+
+			it( `when any defined color value is given as the text input #value (case-sensitive),
+			its value should be set to color and text inputs after input event`, () => {
+				inputView.element.value = 'rgb(255,0,0)';
+				inputView.fire( 'input' );
+
+				expect( view.value ).to.equal( 'rgb(255,0,0)' );
+				expect( inputView.element.value ).to.equal( 'rgb(255,0,0)' );
+			} );
+
+			it( `when any defined color value is given as the text input #value (case-sensitive),
+			its label should be set to text inputs after blur event on input view input element`, () => {
+				inputView.element.value = 'rgb(255,0,0)';
+
+				inputView.fire( 'input' );
+
+				expect( inputView.element.value ).to.equal( 'rgb(255,0,0)' );
+
+				inputView.element.dispatchEvent( new Event( 'blur' ) );
+
+				expect( inputView.element.value ).to.equal( 'Red' );
 			} );
 
 			it( 'should have #input event delegated to the color input', () => {
