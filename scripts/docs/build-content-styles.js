@@ -103,7 +103,7 @@ runWebpack( webpackConfig )
 			` * CKEditor 5 (v${ version }) content styles.`,
 			` * Generated on ${ new Date().toUTCString() }.`,
 			` * For more information, check out ${ DOCUMENTATION_URL }`,
-			' */\n\n',
+			' */\n\n'
 		].join( '\n' );
 
 		data += ':root {\n';
