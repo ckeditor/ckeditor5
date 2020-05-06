@@ -453,161 +453,223 @@ describe( 'table clipboard', () => {
 					] ) );
 				} );
 
-				it( 'inserts simple table to a simple table fragment - at the beginning of a table', () => {
-					tableSelection._setCellSelection(
-						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
-						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
-					);
+				describe( 'no spans', () => {
+					it( 'handles simple table paste to a simple table fragment - at the beginning of a table', () => {
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+							modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+						);
 
-					pasteTable( [
-						[ 'aa', 'ab' ],
-						[ 'ba', 'bb' ]
-					] );
+						pasteTable( [
+							[ 'aa', 'ab' ],
+							[ 'ba', 'bb' ]
+						] );
 
-					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-						[ 'aa', 'ab', '02', '03' ],
-						[ 'ba', 'bb', '12', '13' ],
-						[ '20', '21', '22', '23' ],
-						[ '30', '31', '32', '33' ]
-					] ) );
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ 'aa', 'ab', '02', '03' ],
+							[ 'ba', 'bb', '12', '13' ],
+							[ '20', '21', '22', '23' ],
+							[ '30', '31', '32', '33' ]
+						] ) );
 
-					assertSelectedCells( model, [
-						[ 1, 1, 0, 0 ],
-						[ 1, 1, 0, 0 ],
-						[ 0, 0, 0, 0 ],
-						[ 0, 0, 0, 0 ]
-					] );
+						assertSelectedCells( model, [
+							[ 1, 1, 0, 0 ],
+							[ 1, 1, 0, 0 ],
+							[ 0, 0, 0, 0 ],
+							[ 0, 0, 0, 0 ]
+						] );
+					} );
+
+					it( 'handles simple table paste to a simple table fragment - at the end of a table', () => {
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 2, 2 ] ),
+							modelRoot.getNodeByPath( [ 0, 3, 3 ] )
+						);
+
+						pasteTable( [
+							[ 'aa', 'ab' ],
+							[ 'ba', 'bb' ]
+						] );
+
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ '00', '01', '02', '03' ],
+							[ '10', '11', '12', '13' ],
+							[ '20', '21', 'aa', 'ab' ],
+							[ '30', '31', 'ba', 'bb' ]
+						] ) );
+
+						assertSelectedCells( model, [
+							[ 0, 0, 0, 0 ],
+							[ 0, 0, 0, 0 ],
+							[ 0, 0, 1, 1 ],
+							[ 0, 0, 1, 1 ]
+						] );
+					} );
+
+					it( 'handles simple table paste to a simple table fragment - in the middle of a table', () => {
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+							modelRoot.getNodeByPath( [ 0, 2, 2 ] )
+						);
+
+						pasteTable( [
+							[ 'aa', 'ab' ],
+							[ 'ba', 'bb' ]
+						] );
+
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ '00', '01', '02', '03' ],
+							[ '10', 'aa', 'ab', '13' ],
+							[ '20', 'ba', 'bb', '23' ],
+							[ '30', '31', '32', '33' ]
+						] ) );
+
+						assertSelectedCells( model, [
+							[ 0, 0, 0, 0 ],
+							[ 0, 1, 1, 0 ],
+							[ 0, 1, 1, 0 ],
+							[ 0, 0, 0, 0 ]
+						] );
+					} );
+
+					it( 'handles simple row paste to a simple row fragment - in the middle of a table', () => {
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+							modelRoot.getNodeByPath( [ 0, 1, 2 ] )
+						);
+
+						pasteTable( [
+							[ 'aa', 'ab' ]
+						] );
+
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ '00', '01', '02', '03' ],
+							[ '10', 'aa', 'ab', '13' ],
+							[ '20', '21', '22', '23' ],
+							[ '30', '31', '32', '33' ]
+						] ) );
+
+						assertSelectedCells( model, [
+							[ 0, 0, 0, 0 ],
+							[ 0, 1, 1, 0 ],
+							[ 0, 0, 0, 0 ],
+							[ 0, 0, 0, 0 ]
+						] );
+					} );
+
+					it( 'handles simple column paste to a simple column fragment - in the middle of a table', () => {
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+							modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+						);
+
+						pasteTable( [
+							[ 'aa' ],
+							[ 'ba' ]
+						] );
+
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ '00', '01', '02', '03' ],
+							[ '10', 'aa', '12', '13' ],
+							[ '20', 'ba', '22', '23' ],
+							[ '30', '31', '32', '33' ]
+						] ) );
+
+						assertSelectedCells( model, [
+							[ 0, 0, 0, 0 ],
+							[ 0, 1, 0, 0 ],
+							[ 0, 1, 0, 0 ],
+							[ 0, 0, 0, 0 ]
+						] );
+					} );
+
+					it( 'handles simple table paste to a simple table fragment - whole table selected', () => {
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+							modelRoot.getNodeByPath( [ 0, 3, 3 ] )
+						);
+
+						pasteTable( [
+							[ 'aa', 'ab', 'ac', 'ad' ],
+							[ 'ba', 'bb', 'bc', 'bd' ],
+							[ 'ca', 'cb', 'cc', 'cd' ],
+							[ 'da', 'db', 'dc', 'dd' ]
+						] );
+
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ 'aa', 'ab', 'ac', 'ad' ],
+							[ 'ba', 'bb', 'bc', 'bd' ],
+							[ 'ca', 'cb', 'cc', 'cd' ],
+							[ 'da', 'db', 'dc', 'dd' ]
+						] ) );
+
+						assertSelectedCells( model, [
+							[ 1, 1, 1, 1 ],
+							[ 1, 1, 1, 1 ],
+							[ 1, 1, 1, 1 ],
+							[ 1, 1, 1, 1 ]
+						] );
+					} );
 				} );
 
-				it( 'inserts simple table to a simple table fragment - at the end of a table', () => {
-					tableSelection._setCellSelection(
-						modelRoot.getNodeByPath( [ 0, 2, 2 ] ),
-						modelRoot.getNodeByPath( [ 0, 3, 3 ] )
-					);
+				describe( 'pasted table has spans', () => {
+					it( 'handles pasting table that has cell with colspan', () => {
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+							modelRoot.getNodeByPath( [ 0, 2, 2 ] )
+						);
 
-					pasteTable( [
-						[ 'aa', 'ab' ],
-						[ 'ba', 'bb' ]
-					] );
+						pasteTable( [
+							[ { colspan: 2, contents: 'aa' } ],
+							[ 'ba', 'bb' ]
+						] );
 
-					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-						[ '00', '01', '02', '03' ],
-						[ '10', '11', '12', '13' ],
-						[ '20', '21', 'aa', 'ab' ],
-						[ '30', '31', 'ba', 'bb' ]
-					] ) );
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ '00', '01', '02', '03' ],
+							[ '10', { colspan: 2, contents: 'aa' }, '13' ],
+							[ '20', 'ba', 'bb', '23' ],
+							[ '30', '31', '32', '33' ]
+						] ) );
 
-					assertSelectedCells( model, [
-						[ 0, 0, 0, 0 ],
-						[ 0, 0, 0, 0 ],
-						[ 0, 0, 1, 1 ],
-						[ 0, 0, 1, 1 ]
-					] );
-				} );
+						/* eslint-disable no-multi-spaces */
+						assertSelectedCells( model, [
+							[ 0, 0, 0, 0 ],
+							[ 0, 1,    0 ],
+							[ 0, 1, 1, 0 ],
+							[ 0, 0, 0, 0 ]
+						] );
+						/* eslint-enable no-multi-spaces */
+					} );
 
-				it( 'inserts simple table to a simple table fragment - in the middle of a table', () => {
-					tableSelection._setCellSelection(
-						modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
-						modelRoot.getNodeByPath( [ 0, 2, 2 ] )
-					);
+					it( 'handles pasting table that has many cells with various colspan', () => {
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+							modelRoot.getNodeByPath( [ 0, 3, 2 ] )
+						);
 
-					pasteTable( [
-						[ 'aa', 'ab' ],
-						[ 'ba', 'bb' ]
-					] );
+						pasteTable( [
+							[ 'aa', { colspan: 2, contents: 'ab' } ],
+							[ { colspan: 3, contents: 'ba' } ],
+							[ 'ca', 'cb', 'cc' ],
+							[ { colspan: 2, contents: 'da' }, 'dc' ]
+						] );
 
-					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-						[ '00', '01', '02', '03' ],
-						[ '10', 'aa', 'ab', '13' ],
-						[ '20', 'ba', 'bb', '23' ],
-						[ '30', '31', '32', '33' ]
-					] ) );
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ 'aa', { colspan: 2, contents: 'ab' }, '03' ],
+							[ { colspan: 3, contents: 'ba' }, '13' ],
+							[ 'ca', 'cb', 'cc', '23' ],
+							[ { colspan: 2, contents: 'da' }, 'dc', '33' ]
+						] ) );
 
-					assertSelectedCells( model, [
-						[ 0, 0, 0, 0 ],
-						[ 0, 1, 1, 0 ],
-						[ 0, 1, 1, 0 ],
-						[ 0, 0, 0, 0 ]
-					] );
-				} );
-
-				it( 'inserts simple row to a simple row fragment - in the middle of a table', () => {
-					tableSelection._setCellSelection(
-						modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
-						modelRoot.getNodeByPath( [ 0, 1, 2 ] )
-					);
-
-					pasteTable( [
-						[ 'aa', 'ab' ]
-					] );
-
-					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-						[ '00', '01', '02', '03' ],
-						[ '10', 'aa', 'ab', '13' ],
-						[ '20', '21', '22', '23' ],
-						[ '30', '31', '32', '33' ]
-					] ) );
-
-					assertSelectedCells( model, [
-						[ 0, 0, 0, 0 ],
-						[ 0, 1, 1, 0 ],
-						[ 0, 0, 0, 0 ],
-						[ 0, 0, 0, 0 ]
-					] );
-				} );
-
-				it( 'inserts simple column to a simple column fragment - in the middle of a table', () => {
-					tableSelection._setCellSelection(
-						modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
-						modelRoot.getNodeByPath( [ 0, 2, 1 ] )
-					);
-
-					pasteTable( [
-						[ 'aa' ],
-						[ 'ba' ]
-					] );
-
-					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-						[ '00', '01', '02', '03' ],
-						[ '10', 'aa', '12', '13' ],
-						[ '20', 'ba', '22', '23' ],
-						[ '30', '31', '32', '33' ]
-					] ) );
-
-					assertSelectedCells( model, [
-						[ 0, 0, 0, 0 ],
-						[ 0, 1, 0, 0 ],
-						[ 0, 1, 0, 0 ],
-						[ 0, 0, 0, 0 ]
-					] );
-				} );
-
-				it( 'inserts simple table to a simple table fragment - whole table selected', () => {
-					tableSelection._setCellSelection(
-						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
-						modelRoot.getNodeByPath( [ 0, 3, 3 ] )
-					);
-
-					pasteTable( [
-						[ 'aa', 'ab', 'ac', 'ad' ],
-						[ 'ba', 'bb', 'bc', 'bd' ],
-						[ 'ca', 'cb', 'cc', 'cd' ],
-						[ 'da', 'db', 'dc', 'dd' ]
-					] );
-
-					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-						[ 'aa', 'ab', 'ac', 'ad' ],
-						[ 'ba', 'bb', 'bc', 'bd' ],
-						[ 'ca', 'cb', 'cc', 'cd' ],
-						[ 'da', 'db', 'dc', 'dd' ]
-					] ) );
-
-					assertSelectedCells( model, [
-						[ 1, 1, 1, 1 ],
-						[ 1, 1, 1, 1 ],
-						[ 1, 1, 1, 1 ],
-						[ 1, 1, 1, 1 ]
-					] );
+						/* eslint-disable no-multi-spaces */
+						assertSelectedCells( model, [
+							[ 1, 1,    0 ],
+							[ 1,       0 ],
+							[ 1, 1, 1, 0 ],
+							[ 1,    1, 0 ]
+						] );
+						/* eslint-enable no-multi-spaces */
+					} );
 				} );
 			} );
 		} );

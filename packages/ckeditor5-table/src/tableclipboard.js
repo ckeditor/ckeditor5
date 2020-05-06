@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableSelection from './tableselection';
 import { getColumnIndexes, getRowIndexes } from './utils';
 import TableWalker from './tablewalker';
-import { findAncestor } from './commands/utils';
+import { findAncestor, updateNumericAttribute } from './commands/utils';
 
 /**
  * This plugin adds support for copying/cutting/pasting fragments of tables.
@@ -134,18 +134,26 @@ export default class TableClipboard extends Plugin {
 						insertionMap.set( `${ row }x${ column }`, cell );
 					}
 
-					for ( const { column, row, cell } of new TableWalker( contentTable, {
-						startRow: rowIndexes.first,
-						endRow: rowIndexes.last
-					} ) ) {
+					const tableMap = [ ...new TableWalker( contentTable, { startRow: rowIndexes.first, endRow: rowIndexes.last } ) ];
+
+					for ( const { column, row, cell } of tableMap ) {
+						// TODO: crete issue for table walker startColumn, endColumn.
 						if ( column < columnIndexes.first || column > columnIndexes.last ) {
 							continue;
 						}
 
 						const toGet = `${ row - rowIndexes.first }x${ column - columnIndexes.first }`;
-
 						const cellToInsert = insertionMap.get( toGet );
+
+						if ( !cellToInsert ) {
+							writer.remove( writer.createRangeOn( cell ) );
+
+							continue;
+						}
+
 						writer.remove( writer.createRangeIn( cell ) );
+
+						updateNumericAttribute( 'colspan', cellToInsert.getAttribute( 'colspan' ), cell, writer, 1 );
 
 						for ( const child of cellToInsert.getChildren() ) {
 							writer.insert( child, cell, 'end' );
