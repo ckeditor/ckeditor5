@@ -18,8 +18,9 @@ import '../../theme/components/inputtext/inputtext.css';
 export default class InputTextView extends View {
 	/**
 	 * @inheritDoc
+	 * @param {Object} listeners Map of additional listeners to be attached on template
 	 */
-	constructor( locale ) {
+	constructor( locale, listeners ) {
 		super( locale );
 
 		/**
@@ -91,7 +92,8 @@ export default class InputTextView extends View {
 				'aria-describedby': bind.to( 'ariaDescribedById' )
 			},
 			on: {
-				input: bind.to( 'input' )
+				input: bind.to( 'input' ),
+				...listeners
 			}
 		} );
 

@@ -105,6 +105,16 @@ export default class ColorInputView extends View {
 		 */
 		this._inputView = this._createInputTextView( locale );
 
+		/**
+		 * The flag that indicates whether the user is still typing.
+		 * If set to true, it means that the text input field ({@link #_inputView}) still has the focus.
+		 * So, we should interrupt the user by replacing the input's value.
+		 * 
+		 * @protected
+		 * @member {Boolean}
+		 */
+		this._stillTyping = false;
+
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
@@ -122,6 +132,31 @@ export default class ColorInputView extends View {
 				this._dropdownView
 			]
 		} );
+
+		this.on( 
+			'change:value',
+			( ev, n, inputValue ) => this._setInputValue( inputValue ),
+			{ priority: 'high' }
+		);
+	}
+
+	/**
+	 * Sets {@link #_inputView}'s value property to the color value or color label,
+	 * if there is one and the user is not typing.
+	 * 
+	 * @private
+	 * @param {String} inputValue Color value to be set.
+	 */
+	_setInputValue( inputValue ){
+		if( !this._stillTyping ){
+			// Check if the value matches one of our defined colors.
+			const mappedColor = this.options.colorDefinitions.find( def => inputValue === def.color );
+			if ( mappedColor ) {
+				this._inputView.value = mappedColor.label;
+			} else {
+				this._inputView.value = inputValue || '';
+			}
+		}
 	}
 
 	/**
@@ -193,14 +228,25 @@ export default class ColorInputView extends View {
 	 */
 	_createInputTextView() {
 		const locale = this.locale;
-		const inputView = new InputTextView( locale );
+		const inputView = new InputTextView( locale, {
+			blur: this.bindTemplate.to('blur')
+		} );
 
-		inputView.bind( 'value' ).to( this );
+		inputView.value = this.value;
 		inputView.bind( 'isReadOnly' ).to( this );
 		inputView.bind( 'hasError' ).to( this );
 
 		inputView.on( 'input', () => {
-			this.value = inputView.element.value;
+			const inputValue = inputView.element.value;
+			// Check if the value matches one of our defined colors' label.
+			const mappedColor = this.options.colorDefinitions.find( def => inputValue === def.label );
+
+			this._stillTyping = true;
+			this.value = mappedColor && mappedColor.color || inputValue;
+		} );
+		this.on( 'blur', () => {
+			this._stillTyping = false;
+			this._setInputValue( inputView.element.value );
 		} );
 
 		inputView.delegate( 'input' ).to( this );
@@ -247,7 +293,6 @@ export default class ColorInputView extends View {
 			this._dropdownView.isOpen = false;
 			this.fire( 'input' );
 		} );
-
 		colorGrid.bind( 'selectedColor' ).to( this, 'value' );
 
 		return colorGrid;
