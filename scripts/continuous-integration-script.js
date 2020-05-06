@@ -68,8 +68,8 @@ for ( const fullPackageName of packages ) {
 
 	travis.foldStart( 'package:' + simplePackageName, `Testing ${ fullPackageName }${ NO_COLOR }` );
 
-	runSubprocess( 'npx', [ 'ckeditor5-dev-tests-check-dependencies' ], simplePackageName, 'dependency',
-		'have a dependency problem', 'packages/' + fullPackageName );
+	runSubprocess( 'npx', [ 'ckeditor5-dev-tests-check-dependencies', `packages/${ fullPackageName }` ], simplePackageName, 'dependency',
+		'have a dependency problem' );
 
 	const testArguments = [ 'run', 'test', '-f', simplePackageName, '--reporter=dots', '--production', '--coverage' ];
 	runSubprocess( 'yarn', testArguments, simplePackageName, 'unitTests', 'failed to pass unit tests' );
@@ -98,13 +98,11 @@ if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
  * @param {String} packageName - Checked package name.
  * @param {String} checkName - A key associated with the problem in the `failedChecks` dictionary.
  * @param {String} failMessage - Message to be shown if check failed.
- * @param {String} [cwd]
  */
-function runSubprocess( binaryName, cliArguments, packageName, checkName, failMessage, cwd ) {
+function runSubprocess( binaryName, cliArguments, packageName, checkName, failMessage ) {
 	const subprocess = childProcess.spawnSync( binaryName, cliArguments, {
 		encoding: 'utf8',
-		shell: true,
-		cwd
+		shell: true
 	} );
 
 	console.log( subprocess.stdout );
