@@ -13,7 +13,7 @@ const childProcess = require( 'child_process' );
 const crypto = require( 'crypto' );
 
 const failedChecks = {
-	dependencyCheck: new Set(),
+	dependency: new Set(),
 	unitTests: new Set(),
 	codeCoverage: new Set()
 };
@@ -68,26 +68,16 @@ for ( const fullPackageName of packages ) {
 
 	travis.foldStart( 'package:' + simplePackageName, `Testing ${ fullPackageName }${ NO_COLOR }` );
 
-	runSubprocess( 'npx', [ 'ckeditor5-dev-tests-check-dependencies' ], simplePackageName, 'dependencyCheck',
-		`💥 ${ RED }${ fullPackageName }${ NO_COLOR } have a dependency problem 💥`, 'packages/' + fullPackageName );
+	runSubprocess( 'npx', [ 'ckeditor5-dev-tests-check-dependencies' ], simplePackageName, 'dependency',
+		'have a dependency problem', 'packages/' + fullPackageName );
 
 	const testArguments = [ 'run', 'test', '-f', simplePackageName, '--reporter=dots', '--production', '--coverage' ];
-	runSubprocess( 'yarn', testArguments, simplePackageName, 'unitTests', `💥 ${ RED }$package${ NO_COLOR } failed to pass unit tests 💥` );
+	runSubprocess( 'yarn', testArguments, simplePackageName, 'unitTests', 'failed to pass unit tests' );
 
 	childProcess.execSync( 'cp coverage/*/coverage-final.json .nyc_output' );
 
 	const nyc = [ 'nyc', 'check-coverage', '--branches', '100', '--functions', '100', '--lines', '100', '--statements', '100' ];
-	const nycProcess = childProcess.spawnSync( 'npx', nyc, {
-		encoding: 'utf8',
-		shell: true
-	} );
-
-	console.log( nycProcess.stdout );
-
-	if ( nycProcess.status !== 0 ) {
-		failedChecks.codeCoverage.add( simplePackageName );
-		console.log( `💥 ${ RED }$package${ NO_COLOR } doesn't have required code coverage 💥` );
-	}
+	runSubprocess( 'npx', nyc, simplePackageName, 'codeCoverage', 'doesn\'t have required code coverage' );
 
 	travis.foldEnd( 'package:' + simplePackageName );
 }
@@ -95,6 +85,7 @@ for ( const fullPackageName of packages ) {
 if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
 	console.log( '\n---\n' );
 
+	showFailedCheck( 'dependency', 'The following packages have dependencies that are not included in its package.json' );
 	showFailedCheck( 'unitTests', 'The following packages did not pass unit tests' );
 	showFailedCheck( 'codeCoverage', 'The following packages did not provide required code coverage' );
 
@@ -117,9 +108,13 @@ function runSubprocess( binaryName, cliArguments, packageName, checkName, failMe
 
 	console.log( subprocess.stdout );
 
+	if ( subprocess.stderr ) {
+		console.log( subprocess.stderr );
+	}
+
 	if ( subprocess.status !== 0 ) {
 		failedChecks.unitTests.add( packageName );
-		console.log( failMessage );
+		console.log( `💥 ${ RED }${ packageName }${ NO_COLOR } ` + failMessage + ' 💥' );
 	}
 }
 
@@ -127,6 +122,6 @@ function showFailedCheck( checkKey, errorMessage ) {
 	const failedPackages = failedChecks[ checkKey ];
 
 	if ( failedPackages.size ) {
-		console.log( `${ errorMessage }:${ RED }${ failedPackages.entries() }${ NO_COLOR }` );
+		console.log( `${ errorMessage }: ${ RED }${ Array.from( failedPackages.entries() ).join( ', ' ) }${ NO_COLOR }` );
 	}
 }
