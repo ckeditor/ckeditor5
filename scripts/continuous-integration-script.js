@@ -12,90 +12,67 @@
 const childProcess = require( 'child_process' );
 const crypto = require( 'crypto' );
 
-// var child = child_process.spawnSync("ls", ["-l", "/home"], { encoding : 'utf8' });
-// console.log("Process finished.");
-// if(child.error) {
-//     console.log("ERROR: ",child.error);
-// }
-// console.log("stdout: ",child.stdout);
-// console.log("stderr: ",child.stderr);
-// console.log("exist code: ",child.status);
-
-const packages = childProcess.execSync( 'ls packages -1', {
-	encoding: 'utf8'
-} ).toString().split( '\n' ).splice( 0, 3 );
-
-// console.log( packages );
-
-// packages=$(ls packages -1 | sed -e 's#^ckeditor5\?-\(.\+\)$#\1#')
-
-// errorOccured=0
-
 const failedChecks = {
 	dependencyCheck: new Set(),
 	unitTests: new Set(),
 	codeCoverage: new Set()
 };
 
-childProcess.execSync( 'rm -r -f .nyc_output' );
-childProcess.execSync( 'mkdir .nyc_output' );
-
-// failedTestsPackages=""
-// failedCoveragePackages=""
-
 const RED = '\x1B[0;31m';
 const YELLOW = '\x1B[33;1m';
 const NO_COLOR = '\x1B[0m';
 
-let travisStartTime;
-let timerId;
+const travis = {
+	_lastTimerId: null,
+	_lastStartTime: null,
 
-function travisTimeStart() {
-	const nanoSeconds = process.hrtime.bigint();
+	foldStart( packageName, foldLabel ) {
+		console.log( `travis_fold:start:${ packageName }${ YELLOW }${ foldLabel }${ NO_COLOR }` );
+		this._timeStart();
+	},
 
-	timerId = crypto.createHash( 'md5' ).update( nanoSeconds.toString() ).digest( 'hex' );
-	travisStartTime = nanoSeconds;
+	foldEnd( packageName ) {
+		this._timeFinish();
+		console.log( `\ntravis_fold:end:${ packageName }\n` );
+	},
 
-	// Intentional direct write to stdout, to manually control EOL.
-	process.stdout.write( `travis_time:start:${ timerId }\r\n` );
-}
+	_timeStart() {
+		const nanoSeconds = process.hrtime.bigint();
 
-function travisTimeFinish() {
-	const travisEndTime = process.hrtime.bigint();
-	const duration = travisEndTime - travisStartTime;
+		this._lastTimerId = crypto.createHash( 'md5' ).update( nanoSeconds.toString() ).digest( 'hex' );
+		this._lastStartTime = nanoSeconds;
 
-	// Intentional direct write to stdout, to manually control EOL.
-	process.stdout.write(
-		`\ntravis_time:end:${ timerId }:start=${ travisStartTime },finish=${ travisEndTime },duration=${ duration }\r\n` );
-}
+		// Intentional direct write to stdout, to manually control EOL.
+		process.stdout.write( `travis_time:start:${ this._lastTimerId }\r\n` );
+	},
 
-function foldStart( packageName, foldLabel ) {
-	console.log( `travis_fold:start:${ packageName }${ YELLOW }${ foldLabel }${ NO_COLOR }` );
-	travisTimeStart();
-}
+	_timeFinish() {
+		const travisEndTime = process.hrtime.bigint();
+		const duration = travisEndTime - this._lastStartTime;
 
-function foldEnd( packageName ) {
-	travisTimeFinish();
-	console.log( `\ntravis_fold:end:${ packageName }\n` );
-}
+		// Intentional direct write to stdout, to manually control EOL.
+		process.stdout.write( `\ntravis_time:end:${ this._lastTimerId }:start=${ this._lastStartTime },` +
+			`finish=${ travisEndTime },duration=${ duration }\r\n` );
+	}
+};
+
+childProcess.execSync( 'rm -r -f .nyc_output' );
+childProcess.execSync( 'mkdir .nyc_output' );
+
+const packages = childProcess.execSync( 'ls packages -1', {
+	encoding: 'utf8'
+} ).toString().split( '\n' ).splice( 0, 3 );
 
 for ( const fullPackageName of packages ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
 
-	foldStart( 'package:' + simplePackageName, `Testing ${ fullPackageName }${ NO_COLOR }` );
+	travis.foldStart( 'package:' + simplePackageName, `Testing ${ fullPackageName }${ NO_COLOR }` );
+
+	runSubprocess( 'npx', [ 'ckeditor5-dev-tests-check-dependencies' ], simplePackageName, 'dependencyCheck',
+		`💥 ${ RED }${ fullPackageName }${ NO_COLOR } have a dependency problem 💥`, 'packages/' + fullPackageName );
 
 	const testArguments = [ 'run', 'test', '-f', simplePackageName, '--reporter=dots', '--production', '--coverage' ];
-	const testProcess = childProcess.spawnSync( 'yarn', testArguments, {
-		encoding: 'utf8',
-		shell: true
-	} );
-
-	console.log( testProcess.stdout );
-
-	if ( testProcess.status !== 0 ) {
-		failedChecks.unitTests.add( simplePackageName );
-		console.log( `💥 ${ RED }$package${ NO_COLOR } failed to pass unit tests 💥` );
-	}
+	runSubprocess( 'yarn', testArguments, simplePackageName, 'unitTests', `💥 ${ RED }$package${ NO_COLOR } failed to pass unit tests 💥` );
 
 	childProcess.execSync( 'cp coverage/*/coverage-final.json .nyc_output' );
 
@@ -112,15 +89,7 @@ for ( const fullPackageName of packages ) {
 		console.log( `💥 ${ RED }$package${ NO_COLOR } doesn't have required code coverage 💥` );
 	}
 
-	foldEnd( 'package:' + simplePackageName );
-}
-
-function showFailedCheck( checkKey, errorMessage ) {
-	const failedPackages = failedChecks[ checkKey ];
-
-	if ( failedPackages.size ) {
-		console.log( `${ errorMessage }:${ RED }${ failedPackages.entries() }${ NO_COLOR }` );
-	}
+	travis.foldEnd( 'package:' + simplePackageName );
 }
 
 if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
@@ -130,4 +99,34 @@ if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
 	showFailedCheck( 'codeCoverage', 'The following packages did not provide required code coverage' );
 
 	process.exit( 1 ); // Exit code 1 will break the CI bThe following packages did not provide required codeuild
+}
+
+/*
+ * @param {String} binaryName - Name of a CLI binary to be called.
+ * @param {String[]} cliArguments - An array of arguments to be passed to the `binaryName`.
+ * @param {String} packageName - Checked package name.
+ * @param {String} checkName - A key associated with the problem in the `failedChecks` dictionary.
+ * @param {String} failMessage - Message to be shown if check failed.
+ */
+function runSubprocess( binaryName, cliArguments, packageName, checkName, failMessage, cwd ) {
+	const subprocess = childProcess.spawnSync( binaryName, cliArguments, {
+		encoding: 'utf8',
+		shell: true,
+		cwd
+	} );
+
+	console.log( subprocess.stdout );
+
+	if ( subprocess.status !== 0 ) {
+		failedChecks.unitTests.add( packageName );
+		console.log( failMessage );
+	}
+}
+
+function showFailedCheck( checkKey, errorMessage ) {
+	const failedPackages = failedChecks[ checkKey ];
+
+	if ( failedPackages.size ) {
+		console.log( `${ errorMessage }:${ RED }${ failedPackages.entries() }${ NO_COLOR }` );
+	}
 }
