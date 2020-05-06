@@ -139,7 +139,7 @@ describe( 'TableUI', () => {
 			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
 			expect( labels ).to.deep.equal(
-				[ 'Header row', '|', 'Insert row below', 'Insert row above', 'Delete row', 'Select row' ]
+				[ 'Header row', '|', 'Insert row above', 'Insert row below', 'Delete row', 'Select row' ]
 			);
 		} );
 
@@ -170,12 +170,12 @@ describe( 'TableUI', () => {
 			expect( items.first.children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
-			insertRowBelowCommand.isEnabled = false;
+			insertRowAboveCommand.isEnabled = false;
 
 			expect( items.get( 2 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
-			insertRowAboveCommand.isEnabled = false;
+			insertRowBelowCommand.isEnabled = false;
 			expect( items.get( 3 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
