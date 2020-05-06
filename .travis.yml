@@ -17,7 +17,7 @@ before_install:
 install:
 - yarn install
 script:
-- node ./scripts/continuous-integration-run-script.js
+- node ./scripts/continuous-integration-script.js
 - yarn run lint
 - yarn run stylelint
 - yarn run docs:api --validate-only
