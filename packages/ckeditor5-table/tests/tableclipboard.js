@@ -496,6 +496,7 @@ describe( 'table clipboard', () => {
 						[ '20', '21', 'aa', 'ab' ],
 						[ '30', '31', 'ba', 'bb' ]
 					] ) );
+
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0 ],
 						[ 0, 0, 0, 0 ],
@@ -521,10 +522,62 @@ describe( 'table clipboard', () => {
 						[ '20', 'ba', 'bb', '23' ],
 						[ '30', '31', '32', '33' ]
 					] ) );
+
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0 ],
 						[ 0, 1, 1, 0 ],
 						[ 0, 1, 1, 0 ],
+						[ 0, 0, 0, 0 ]
+					] );
+				} );
+
+				it( 'inserts simple row to a simple row fragment - in the middle of a table', () => {
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 2 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', 'aa', 'ab', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+
+					assertSelectedCells( model, [
+						[ 0, 0, 0, 0 ],
+						[ 0, 1, 1, 0 ],
+						[ 0, 0, 0, 0 ],
+						[ 0, 0, 0, 0 ]
+					] );
+				} );
+
+				it( 'inserts simple column to a simple column fragment - in the middle of a table', () => {
+					tableSelection._setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+					);
+
+					pasteTable( [
+						[ 'aa' ],
+						[ 'ba' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', 'aa', '12', '13' ],
+						[ '20', 'ba', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+
+					assertSelectedCells( model, [
+						[ 0, 0, 0, 0 ],
+						[ 0, 1, 0, 0 ],
+						[ 0, 1, 0, 0 ],
 						[ 0, 0, 0, 0 ]
 					] );
 				} );
@@ -548,6 +601,7 @@ describe( 'table clipboard', () => {
 						[ 'ca', 'cb', 'cc', 'cd' ],
 						[ 'da', 'db', 'dc', 'dd' ]
 					] ) );
+
 					assertSelectedCells( model, [
 						[ 1, 1, 1, 1 ],
 						[ 1, 1, 1, 1 ],

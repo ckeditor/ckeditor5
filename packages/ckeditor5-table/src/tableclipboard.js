@@ -152,6 +152,7 @@ export default class TableClipboard extends Plugin {
 						}
 					}
 				} );
+
 				return;
 			}
 
