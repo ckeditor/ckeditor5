@@ -38,11 +38,9 @@ export default class TableClipboard extends Plugin {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
-		const clipboardPlugin = editor.plugins.get( 'Clipboard' );
-
 		this.listenTo( viewDocument, 'copy', ( evt, data ) => this._onCopyCut( evt, data ) );
 		this.listenTo( viewDocument, 'cut', ( evt, data ) => this._onCopyCut( evt, data ) );
-		this.listenTo( clipboardPlugin, 'inputTransformation', ( evt, data ) => this._onPaste( evt, data ) );
+		this.listenTo( editor.model, 'insertContent', ( evt, args ) => this._onInsertContent( evt, ...args ), { priority: 'high' } );
 	}
 
 	/**
@@ -79,13 +77,17 @@ export default class TableClipboard extends Plugin {
 	}
 
 	/**
-	 * Handles "paste" event over a table.
+	 * Handles...
 	 *
 	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the handled event.
-	 * @param {Object} data Clipboard event data.
+	 * @param evt
+	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
+	 * @param {module:engine/model/selection~Selectable} [selectable=model.document.selection]
+	 * The selection into which the content should be inserted. If not provided the current model document selection will be used.
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] To be used when a model item was passed as `selectable`.
+	 * This param defines a position in relation to that item.
 	 */
-	_onPaste( evt, data ) {
+	_onInsertContent( evt, content ) {
 		if ( this.editor.isReadOnly ) {
 			return;
 		}
@@ -97,9 +99,20 @@ export default class TableClipboard extends Plugin {
 			return;
 		}
 
-		data.preventDefault();
-		evt.stop();
+		if ( containsTable( content ) ) {
+			// console.log( 'contains table' );
 
-		// const pastedTable =
+			evt.stop();
+		}
 	}
+}
+
+function containsTable( content ) {
+	for ( const child of content ) {
+		if ( child.is( 'table' ) ) {
+			return true;
+		}
+	}
+
+	return false;
 }
