@@ -159,6 +159,7 @@
   },
   "eslintIgnore": [
     "build/**",
+    "packages/*/build/**",
     "coverage/**"
   ],
   "workspaces": {
