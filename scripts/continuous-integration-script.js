@@ -31,7 +31,11 @@ const packages = childProcess.execSync( 'ls packages -1', {
 
 // errorOccured=0
 
-// const errors = {};
+const failedChecks = {
+	dependencyCheck: new Set(),
+	unitTests: new Set(),
+	codeCoverage: new Set()
+};
 
 childProcess.execSync( 'rm -r -f .nyc_output' );
 childProcess.execSync( 'mkdir .nyc_output' );
@@ -39,23 +43,9 @@ childProcess.execSync( 'mkdir .nyc_output' );
 // failedTestsPackages=""
 // failedCoveragePackages=""
 
-// RED='\x1B[0;31m'
-const NC = '\x1B[0m';
-
-// # Travis functions inspired by https://github.com/travis-ci/travis-rubies/blob/a10ba31e3f508650204017332a608ef9bce2c733/build.sh.
-// function travis_nanoseconds() {
-//   local cmd="date"
-//   local format="+%s%N"
-//   local os=$(uname)
-
-//   if hash gdate > /dev/null 2>&1; then
-//     cmd="gdate" # use gdate if available
-//   elif [[ "$os" = Darwin ]]; then
-//     format="+%s000000000" # fallback to second precision on darwin (does not support %N)
-//   fi
-
-//   $cmd -u $format
-// }
+const RED = '\x1B[0;31m';
+const YELLOW = '\x1B[33;1m';
+const NO_COLOR = '\x1B[0m';
 
 let travisStartTime;
 let timerId;
@@ -65,93 +55,79 @@ function travisTimeStart() {
 
 	timerId = crypto.createHash( 'md5' ).update( nanoSeconds.toString() ).digest( 'hex' );
 	travisStartTime = nanoSeconds;
-	// @TODO: ANSI_CLEAR
+
 	// Intentional direct write to stdout, to manually control EOL.
-	// process.stdout.write( `travis_time:start:${ timerId }\r${ANSI_CLEAR}` );
 	process.stdout.write( `travis_time:start:${ timerId }\r\n` );
 }
 
 function travisTimeFinish() {
-	//	local result=$?
-	//	travis_end_time=$(travis_nanoseconds)
 	const travisEndTime = process.hrtime.bigint();
-	//	travis_end_time=$(travis_nanoseconds)
-	//	local duration=$(($travis_end_time-$travis_start_time))
 	const duration = travisEndTime - travisStartTime;
 
-	console.log( `Duration ${ duration } nanoseconds.` );
-
-	//	echo -en "\ntravis_time:end:$travis_timer_id:start=$travis_start_time,finish=$travis_end_time,duration=$duration\r\n"
+	// Intentional direct write to stdout, to manually control EOL.
 	process.stdout.write(
 		`\ntravis_time:end:${ timerId }:start=${ travisStartTime },finish=${ travisEndTime },duration=${ duration }\r\n` );
-	//	return $result
 }
 
 function foldStart( packageName, foldLabel ) {
-	// echo -e "travis_fold:start:$1\x1B[33;1m$2\x1B[0m"
-	const hexPrefix = '\x1B';
-	console.log( `travis_fold:start:${ packageName }${ hexPrefix }[33;1m${ foldLabel }${ hexPrefix }[0m` );
+	console.log( `travis_fold:start:${ packageName }${ YELLOW }${ foldLabel }${ NO_COLOR }` );
 	travisTimeStart();
 }
 
 function foldEnd( packageName ) {
 	travisTimeFinish();
-	// echo -e "\ntravis_fold:end:${ packageName }\n"
 	console.log( `\ntravis_fold:end:${ packageName }\n` );
 }
 
-for ( const currentPackage of packages ) {
-	foldStart( 'package:' + currentPackage, `Testing ${ currentPackage }${ NC }` );
+for ( const fullPackageName of packages ) {
+	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
 
-	// yarn run test - f $package--reporter = dots--production--coverage
+	foldStart( 'package:' + simplePackageName, `Testing ${ fullPackageName }${ NO_COLOR }` );
 
-	console.log( 'test output would be shown here' );
+	const testArguments = [ 'run', 'test', '-f', simplePackageName, '--reporter=dots', '--production', '--coverage' ];
+	const testProcess = childProcess.spawnSync( 'yarn', testArguments, {
+		encoding: 'utf8',
+		shell: true
+	} );
 
-	console.log( currentPackage );
+	console.log( testProcess.stdout );
 
-	foldEnd( 'package:' + currentPackage );
+	if ( testProcess.status !== 0 ) {
+		failedChecks.unitTests.add( simplePackageName );
+		console.log( `💥 ${ RED }$package${ NO_COLOR } failed to pass unit tests 💥` );
+	}
+
+	childProcess.execSync( 'cp coverage/*/coverage-final.json .nyc_output' );
+
+	const nyc = [ 'nyc', 'check-coverage', '--branches', '100', '--functions', '100', '--lines', '100', '--statements', '100' ];
+	const nycProcess = childProcess.spawnSync( 'npx', nyc, {
+		encoding: 'utf8',
+		shell: true
+	} );
+
+	console.log( nycProcess.stdout );
+
+	if ( nycProcess.status !== 0 ) {
+		failedChecks.codeCoverage.add( simplePackageName );
+		console.log( `💥 ${ RED }$package${ NO_COLOR } doesn't have required code coverage 💥` );
+	}
+
+	foldEnd( 'package:' + simplePackageName );
 }
 
-// for package in $packages; do
+function showFailedCheck( checkKey, errorMessage ) {
+	const failedPackages = failedChecks[ checkKey ];
 
-//   fold_start "package:$package" "Testing $package${NC}"
+	if ( failedPackages.size ) {
+		console.log( `${ errorMessage }:${ RED }${ failedPackages.entries() }${ NO_COLOR }` );
+	}
+}
 
-//   yarn run test -f $package --reporter=dots --production --coverage
+if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
+	console.log( '\n---\n' );
 
-//   if [ "$?" -ne "0" ]; then
-//     echo
+	showFailedCheck( 'unitTests', 'The following packages did not pass unit tests' );
+	showFailedCheck( 'codeCoverage', 'The following packages did not provide required code coverage' );
 
-//     echo -e "💥 ${RED}$package${NC} failed to pass unit tests 💥"
-//     failedTestsPackages="$failedTestsPackages $package"
-//     errorOccured=1
-//   fi
-
-//   cp coverage/*/coverage-final.json .nyc_output
-
-//   npx nyc check-coverage --branches 100 --functions 100 --lines 100 --statements 100
-
-//   if [ "$?" -ne "0" ]; then
-//     echo -e "💥 ${RED}$package${NC} doesn't have required code coverage 💥"
-//     failedCoveragePackages="$failedCoveragePackages $package"
-//     errorOccured=1
-//   fi
-
-//   fold_end "package:$package"
-// done;
-
-// if [ "$errorOccured" -eq "1" ]; then
-//   echo
-//   echo "---"
-//   echo
-
-//   if ! [[ -z $failedTestsPackages ]]; then
-//     echo -e "Following packages did not pass unit tests:${RED}$failedTestsPackages${NC}"
-//   fi
-
-//   if ! [[ -z $failedCoveragePackages ]]; then
-//     echo -e "Following packages did not provide required code coverage:${RED}$failedCoveragePackages${NC}"
-//   fi
-
-//   echo
-//   exit 1 # Will break the CI build
-// fi
+	process.exit( 1 ); // Exit code 1 will break the CI bThe following packages did not provide required codeuild
+}
