@@ -671,6 +671,82 @@ describe( 'table clipboard', () => {
 						/* eslint-enable no-multi-spaces */
 					} );
 				} );
+
+				describe( 'content table has spans', () => {
+					it( 'handles pasting simple table over table with colspans (no colspan exceeds selection)', () => {
+						setModelData( model, modelTable( [
+							[ '00[]', '01', '02', '03' ],
+							[ { colspan: 3, contents: '10' }, '13' ],
+							[ { colspan: 2, contents: '20' }, '22', '23' ],
+							[ '30', '31', { colspan: 2, contents: '31' } ]
+						] ) );
+
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+							modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+						);
+
+						pasteTable( [
+							[ 'aa', 'ab', 'ac' ],
+							[ 'ba', 'bb', 'bc' ],
+							[ 'ca', 'cb', 'cc' ]
+						] );
+
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ 'aa', 'ab', 'ac', '03' ],
+							[ 'ba', 'bb', 'bc', '13' ],
+							[ 'ca', 'cb', 'cc', '23' ],
+							[ '30', '31', { colspan: 2, contents: '31' } ]
+						] ) );
+
+						/* eslint-disable no-multi-spaces */
+						assertSelectedCells( model, [
+							[ 1, 1, 1, 0 ],
+							[ 1, 1, 1, 0 ],
+							[ 1, 1, 1, 0 ],
+							[ 0, 0, 0    ]
+						] );
+						/* eslint-enable no-multi-spaces */
+					} );
+				} );
+
+				describe( 'content and paste tables have spans', () => {
+					it( 'handles pasting simple table over table with colspans (no colspan exceeds selection)', () => {
+						setModelData( model, modelTable( [
+							[ '00[]', '01', '02', '03' ],
+							[ { colspan: 3, contents: '10' }, '13' ],
+							[ { colspan: 2, contents: '20' }, '22', '23' ],
+							[ '30', '31', { colspan: 2, contents: '31' } ]
+						] ) );
+
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+							modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+						);
+
+						pasteTable( [
+							[ 'aa', { colspan: 2, contents: 'ab' } ],
+							[ { colspan: 3, contents: 'ba' } ],
+							[ 'ca', 'cb', 'cc' ]
+						] );
+
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ 'aa', { colspan: 2, contents: 'ab' }, '03' ],
+							[ { colspan: 3, contents: 'ba' }, '13' ],
+							[ 'ca', 'cb', 'cc', '23' ],
+							[ '30', '31', { colspan: 2, contents: '31' } ]
+						] ) );
+
+						/* eslint-disable no-multi-spaces */
+						assertSelectedCells( model, [
+							[ 1, 1,    0 ],
+							[ 1,       0 ],
+							[ 1, 1, 1, 0 ],
+							[ 0, 0, 0    ]
+						] );
+						/* eslint-enable no-multi-spaces */
+					} );
+				} );
 			} );
 		} );
 	} );

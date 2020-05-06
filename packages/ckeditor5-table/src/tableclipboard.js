@@ -134,11 +134,21 @@ export default class TableClipboard extends Plugin {
 						insertionMap.set( `${ row }x${ column }`, cell );
 					}
 
-					const tableMap = [ ...new TableWalker( contentTable, { startRow: rowIndexes.first, endRow: rowIndexes.last } ) ];
+					const tableMap = [ ...new TableWalker( contentTable, {
+						startRow: rowIndexes.first,
+						endRow: rowIndexes.last,
+						includeSpanned: true
+					} ) ];
 
-					for ( const { column, row, cell } of tableMap ) {
+					let previousCell;
+
+					const cellsToSelect = [];
+
+					for ( const { column, row, cell, isSpanned } of tableMap ) {
 						// TODO: crete issue for table walker startColumn, endColumn.
 						if ( column < columnIndexes.first || column > columnIndexes.last ) {
+							previousCell = cell;
+
 							continue;
 						}
 
@@ -146,19 +156,33 @@ export default class TableClipboard extends Plugin {
 						const cellToInsert = insertionMap.get( toGet );
 
 						if ( !cellToInsert ) {
-							writer.remove( writer.createRangeOn( cell ) );
+							if ( !isSpanned ) {
+								writer.remove( writer.createRangeOn( cell ) );
+							}
 
 							continue;
 						}
 
-						writer.remove( writer.createRangeIn( cell ) );
+						let targetCell = cell;
 
-						updateNumericAttribute( 'colspan', cellToInsert.getAttribute( 'colspan' ), cell, writer, 1 );
+						if ( isSpanned ) {
+							targetCell = writer.createElement( 'tableCell' );
+							writer.insert( targetCell, writer.createPositionAfter( previousCell ) );
+						} else {
+							writer.remove( writer.createRangeIn( cell ) );
+						}
+
+						updateNumericAttribute( 'colspan', cellToInsert.getAttribute( 'colspan' ), targetCell, writer, 1 );
 
 						for ( const child of cellToInsert.getChildren() ) {
-							writer.insert( child, cell, 'end' );
+							writer.insert( child, targetCell, 'end' );
 						}
+
+						cellsToSelect.push( targetCell );
+						previousCell = targetCell;
 					}
+
+					writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
 				} );
 
 				return;
