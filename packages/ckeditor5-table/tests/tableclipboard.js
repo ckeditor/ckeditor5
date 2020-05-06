@@ -670,10 +670,67 @@ describe( 'table clipboard', () => {
 						] );
 						/* eslint-enable no-multi-spaces */
 					} );
+
+					it( 'handles pasting table that has cell with rowspan', () => {
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+							modelRoot.getNodeByPath( [ 0, 2, 2 ] )
+						);
+
+						pasteTable( [
+							[ { rowspan: 2, contents: 'aa' }, 'ab' ],
+							[ 'bb' ]
+						] );
+
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ '00', '01', '02', '03' ],
+							[ '10', { rowspan: 2, contents: 'aa' }, 'ab', '13' ],
+							[ '20', 'bb', '23' ],
+							[ '30', '31', '32', '33' ]
+						] ) );
+
+						/* eslint-disable no-multi-spaces */
+						assertSelectedCells( model, [
+							[ 0, 0, 0, 0 ],
+							[ 0, 1, 1, 0 ],
+							[ 0,    1, 0 ],
+							[ 0, 0, 0, 0 ]
+						] );
+						/* eslint-enable no-multi-spaces */
+					} );
+
+					it( 'handles pasting table that has many cells with various rowspan', () => {
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+							modelRoot.getNodeByPath( [ 0, 2, 3 ] )
+						);
+
+						pasteTable( [
+							[ 'aa', { rowspan: 3, contents: 'ab' }, { rowspan: 2, contents: 'ac' }, 'ad' ],
+							[ { rowspan: 2, contents: 'ba' }, 'bd' ],
+							[ 'cc', 'cd' ]
+						] );
+
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ 'aa', { rowspan: 3, contents: 'ab' }, { rowspan: 2, contents: 'ac' }, 'ad' ],
+							[ { rowspan: 2, contents: 'ba' }, 'bd' ],
+							[ 'cc', 'cd' ],
+							[ '30', '31', '32', '33' ]
+						] ) );
+
+						/* eslint-disable no-multi-spaces */
+						assertSelectedCells( model, [
+							[ 1, 1, 1, 1 ],
+							[ 1,       1 ],
+							[       1, 1 ],
+							[ 0,    0, 0 ]
+						] );
+						/* eslint-enable no-multi-spaces */
+					} );
 				} );
 
 				describe( 'content table has spans', () => {
-					it( 'handles pasting simple table over table with colspans (no colspan exceeds selection)', () => {
+					it( 'handles pasting simple table over a table with colspans (no colspan exceeds selection)', () => {
 						setModelData( model, modelTable( [
 							[ '00[]', '01', '02', '03' ],
 							[ { colspan: 3, contents: '10' }, '13' ],
@@ -708,10 +765,46 @@ describe( 'table clipboard', () => {
 						] );
 						/* eslint-enable no-multi-spaces */
 					} );
+
+					it( 'handles pasting simple table over a table with rowspans (no rowspan exceeds selection)', () => {
+						setModelData( model, modelTable( [
+							[ '00', { rowspan: 3, contents: '01' }, { rowspan: 2, contents: '02' }, '03' ],
+							[ { rowspan: 2, contents: '10' }, '13' ],
+							[ '22', '23' ],
+							[ '30', '31', '32', '33' ]
+						] ) );
+
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+							modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+						);
+
+						pasteTable( [
+							[ 'aa', 'ab', 'ac' ],
+							[ 'ba', 'bb', 'bc' ],
+							[ 'ca', 'cb', 'cc' ]
+						] );
+
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ 'aa', 'ab', 'ac', '03' ],
+							[ 'ba', 'bb', 'bc', '13' ],
+							[ 'ca', 'cb', 'cc', '23' ],
+							[ '30', '31', '32', '33' ]
+						] ) );
+
+						/* eslint-disable no-multi-spaces */
+						assertSelectedCells( model, [
+							[ 1, 1, 1, 0 ],
+							[ 1, 1, 1, 0 ],
+							[ 1, 1, 1, 0 ],
+							[ 0, 0, 0    ]
+						] );
+						/* eslint-enable no-multi-spaces */
+					} );
 				} );
 
 				describe( 'content and paste tables have spans', () => {
-					it( 'handles pasting simple table over table with colspans (no colspan exceeds selection)', () => {
+					it( 'handles pasting colspanned table over table with colspans (no colspan exceeds selection)', () => {
 						setModelData( model, modelTable( [
 							[ '00[]', '01', '02', '03' ],
 							[ { colspan: 3, contents: '10' }, '13' ],
@@ -743,6 +836,42 @@ describe( 'table clipboard', () => {
 							[ 1,       0 ],
 							[ 1, 1, 1, 0 ],
 							[ 0, 0, 0    ]
+						] );
+						/* eslint-enable no-multi-spaces */
+					} );
+
+					it( 'handles pasting rowspanned table over table with rowspans (no rowspan exceeds selection)', () => {
+						setModelData( model, modelTable( [
+							[ { rowspan: 3, contents: '00' }, { rowspan: 2, contents: '01' }, '02', '03' ],
+							[ { rowspan: 2, contents: '12' }, '13' ],
+							[ '21', '23' ],
+							[ '30', '31', '32', '33' ]
+						] ) );
+
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+							modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+						);
+
+						pasteTable( [
+							[ 'aa', { rowspan: 3, contents: 'ab' }, { rowspan: 2, contents: 'ac' }, 'ad' ],
+							[ { rowspan: 2, contents: 'ba' }, 'bd' ],
+							[ 'cc', 'cd' ]
+						] );
+
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ 'aa', { rowspan: 3, contents: 'ab' }, { rowspan: 2, contents: 'ac' }, 'ad' ],
+							[ { rowspan: 2, contents: 'ba' }, 'bd' ],
+							[ 'cc', 'cd' ],
+							[ '30', '31', '32', '33' ]
+						] ) );
+
+						/* eslint-disable no-multi-spaces */
+						assertSelectedCells( model, [
+							[ 1, 1, 1, 1 ],
+							[ 1,       1 ],
+							[       1, 1 ],
+							[ 0, 0, 0, 0 ]
 						] );
 						/* eslint-enable no-multi-spaces */
 					} );

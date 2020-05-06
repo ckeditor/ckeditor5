@@ -166,13 +166,23 @@ export default class TableClipboard extends Plugin {
 						let targetCell = cell;
 
 						if ( isSpanned ) {
+							let insertPosition;
+
+							if ( column === 0 || !previousCell || previousCell.parent.index !== row ) {
+								insertPosition = writer.createPositionAt( contentTable.getChild( row ), 0 );
+							} else {
+								insertPosition = writer.createPositionAfter( previousCell );
+							}
+
 							targetCell = writer.createElement( 'tableCell' );
-							writer.insert( targetCell, writer.createPositionAfter( previousCell ) );
+
+							writer.insert( targetCell, insertPosition );
 						} else {
 							writer.remove( writer.createRangeIn( cell ) );
 						}
 
 						updateNumericAttribute( 'colspan', cellToInsert.getAttribute( 'colspan' ), targetCell, writer, 1 );
+						updateNumericAttribute( 'rowspan', cellToInsert.getAttribute( 'rowspan' ), targetCell, writer, 1 );
 
 						for ( const child of cellToInsert.getChildren() ) {
 							writer.insert( child, targetCell, 'end' );
