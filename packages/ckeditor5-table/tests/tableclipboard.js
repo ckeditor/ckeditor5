@@ -727,6 +727,66 @@ describe( 'table clipboard', () => {
 						] );
 						/* eslint-enable no-multi-spaces */
 					} );
+
+					it( 'handles pasting multi-spanned table', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02', '03', '04', '05' ],
+							[ '10', '11', '12', '13', '14', '15' ],
+							[ '20', '21', '22', '23', '24', '25' ],
+							[ '30', '31', '32', '33', '34', '35' ],
+							[ '40', '41', '42', '43', '44', '45' ]
+						] ) );
+
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+							modelRoot.getNodeByPath( [ 0, 3, 4 ] )
+						);
+
+						// +----+----+----+----+----+
+						// | aa      | ac | ad | ae |
+						// +----+----+----+----+    +
+						// | ba | bb           |    |
+						// +----+              +----+
+						// | ca |              | ce |
+						// +    +----+----+----+----+
+						// |    | db | dc | dd      |
+						// +----+----+----+----+----+
+						pasteTable( [
+							[ { contents: 'aa', colspan: 2 }, 'ac', 'ad', { contents: 'ae', rowspan: 2 } ],
+							[ 'ba', { contents: 'bb', colspan: 3, rowspan: 2 } ],
+							[ { contents: 'ca', rowspan: 2 }, 'ce' ],
+							[ 'db', 'dc', { contents: 'dd', colspan: 2 } ]
+						] );
+
+						// +----+----+----+----+----+----+
+						// | aa      | ac | ad | ae | 05 |
+						// +----+----+----+----+    +----+
+						// | ba | bb           |    | 15 |
+						// +----+              +----+----+
+						// | ca |              | ce | 25 |
+						// +    +----+----+----+----+----+
+						// |    | db | dc | dd      | 35 |
+						// +----+----+----+----+----+----+
+						// | 40 | 41 | 42 | 43 | 44 | 45 |
+						// +----+----+----+----+----+----+
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ { contents: 'aa', colspan: 2 }, 'ac', 'ad', { contents: 'ae', rowspan: 2 }, '05' ],
+							[ 'ba', { contents: 'bb', colspan: 3, rowspan: 2 }, '15' ],
+							[ { contents: 'ca', rowspan: 2 }, 'ce', '25' ],
+							[ 'db', 'dc', { contents: 'dd', colspan: 2 }, '35' ],
+							[ '40', '41', '42', '43', '44', '45' ]
+						] ) );
+
+						/* eslint-disable no-multi-spaces */
+						assertSelectedCells( model, [
+							[ 1,    1, 1, 1, 0 ],
+							[ 1, 1,          0 ],
+							[ 1,          1, 0 ],
+							[    1, 1, 1,    0 ],
+							[ 0, 0, 0, 0, 0, 0 ]
+						] );
+						/* eslint-enable no-multi-spaces */
+					} );
 				} );
 
 				describe( 'content table has spans', () => {
@@ -801,6 +861,62 @@ describe( 'table clipboard', () => {
 						] );
 						/* eslint-enable no-multi-spaces */
 					} );
+
+					it( 'handles pasting simple table over table with multi-spans (no span exceeds selection)', () => {
+						// +----+----+----+----+----+----+
+						// | 00      | 02 | 03      | 05 |
+						// +         +    +         +----+
+						// |         |    |         | 15 |
+						// +----+----+----+         +----+
+						// | 20 | 21      |         | 25 |
+						// +    +----+----+----+----+----+
+						// |    | 31 | 32      | 34 | 35 |
+						// +----+----+----+----+----+----+
+						// | 40 | 41 | 42 | 43 | 44 | 45 |
+						// +----+----+----+----+----+----+
+						setModelData( model, modelTable( [
+							[
+								{ contents: '00', colspan: 2, rowspan: 2 },
+								{ contents: '02', rowspan: 2 },
+								{ contents: '03', colspan: 2, rowspan: 3 },
+								'05'
+							],
+							[ '15' ],
+							[ { contents: '20', rowspan: 2 }, { contents: '21', colspan: 2 }, '25' ],
+							[ '31', { contents: '32', colspan: 2 }, '34', '35' ],
+							[ '40', '41', '42', '43', '44', '45' ]
+						] ) );
+
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+							modelRoot.getNodeByPath( [ 0, 3, 2 ] )
+						);
+
+						pasteTable( [
+							[ 'aa', 'ab', 'ac', 'ad', 'ae' ],
+							[ 'ba', 'bb', 'bc', 'bd', 'be' ],
+							[ 'ca', 'cb', 'cc', 'cd', 'ce' ],
+							[ 'da', 'db', 'dc', 'dd', 'de' ]
+						] );
+
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ 'aa', 'ab', 'ac', 'ad', 'ae', '05' ],
+							[ 'ba', 'bb', 'bc', 'bd', 'be', '15' ],
+							[ 'ca', 'cb', 'cc', 'cd', 'ce', '25' ],
+							[ 'da', 'db', 'dc', 'dd', 'de', '35' ],
+							[ '40', '41', '42', '43', '44', '45' ]
+						] ) );
+
+						/* eslint-disable no-multi-spaces */
+						assertSelectedCells( model, [
+							[ 1, 1, 1, 1, 1, 0 ],
+							[ 1, 1, 1, 1, 1, 0 ],
+							[ 1, 1, 1, 1, 1, 0 ],
+							[ 1, 1, 1, 1, 1, 0 ],
+							[ 0, 0, 0, 0, 0, 0 ]
+						] );
+						/* eslint-enable no-multi-spaces */
+					} );
 				} );
 
 				describe( 'content and paste tables have spans', () => {
@@ -872,6 +988,82 @@ describe( 'table clipboard', () => {
 							[ 1,       1 ],
 							[       1, 1 ],
 							[ 0, 0, 0, 0 ]
+						] );
+						/* eslint-enable no-multi-spaces */
+					} );
+
+					it( 'handles pasting multi-spanned table over table with multi-spans (no span exceeds selection)', () => {
+						// +----+----+----+----+----+----+
+						// | 00      | 02 | 03      | 05 |
+						// +         +    +         +----+
+						// |         |    |         | 15 |
+						// +----+----+----+         +----+
+						// | 20 | 21      |         | 25 |
+						// +    +----+----+----+----+----+
+						// |    | 31 | 32      | 34 | 35 |
+						// +----+----+----+----+----+----+
+						// | 40 | 41 | 42 | 43 | 44 | 45 |
+						// +----+----+----+----+----+----+
+						setModelData( model, modelTable( [
+							[
+								{ contents: '00', colspan: 2, rowspan: 2 },
+								{ contents: '02', rowspan: 2 },
+								{ contents: '03', colspan: 2, rowspan: 3 },
+								'05'
+							],
+							[ '15' ],
+							[ { contents: '20', rowspan: 2 }, { contents: '21', colspan: 2 }, '25' ],
+							[ '31', { contents: '32', colspan: 2 }, '34', '35' ],
+							[ '40', '41', '42', '43', '44', '45' ]
+						] ) );
+
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+							modelRoot.getNodeByPath( [ 0, 3, 2 ] )
+						);
+
+						// +----+----+----+----+----+
+						// | aa      | ac | ad | ae |
+						// +----+----+----+----+    +
+						// | ba | bb           |    |
+						// +----+              +----+
+						// | ca |              | ce |
+						// +    +----+----+----+----+
+						// |    | db | dc | dd      |
+						// +----+----+----+----+----+
+						pasteTable( [
+							[ { contents: 'aa', colspan: 2 }, 'ac', 'ad', { contents: 'ae', rowspan: 2 } ],
+							[ 'ba', { contents: 'bb', colspan: 3, rowspan: 2 } ],
+							[ { contents: 'ca', rowspan: 2 }, 'ce' ],
+							[ 'db', 'dc', { contents: 'dd', colspan: 2 } ]
+						] );
+
+						// +----+----+----+----+----+----+
+						// | aa      | ac | ad | ae | 05 |
+						// +----+----+----+----+    +----+
+						// | ba | bb           |    | 15 |
+						// +----+              +----+----+
+						// | ca |              | ce | 25 |
+						// +    +----+----+----+----+----+
+						// |    | db | dc | dd      | 35 |
+						// +----+----+----+----+----+----+
+						// | 40 | 41 | 42 | 43 | 44 | 45 |
+						// +----+----+----+----+----+----+
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ { contents: 'aa', colspan: 2 }, 'ac', 'ad', { contents: 'ae', rowspan: 2 }, '05' ],
+							[ 'ba', { contents: 'bb', colspan: 3, rowspan: 2 }, '15' ],
+							[ { contents: 'ca', rowspan: 2 }, 'ce', '25' ],
+							[ 'db', 'dc', { contents: 'dd', colspan: 2 }, '35' ],
+							[ '40', '41', '42', '43', '44', '45' ]
+						] ) );
+
+						/* eslint-disable no-multi-spaces */
+						assertSelectedCells( model, [
+							[ 1,    1, 1, 1, 0 ],
+							[ 1, 1,          0 ],
+							[ 1,          1, 0 ],
+							[    1, 1, 1,    0 ],
+							[ 0, 0, 0, 0, 0, 0 ]
 						] );
 						/* eslint-enable no-multi-spaces */
 					} );
