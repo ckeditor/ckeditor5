@@ -6,7 +6,7 @@
 
 .ck-editor__editable .ck-horizontal-line {
 	/* Necessary to render properly next to floated objects, e.g. side image case. */
-	overflow: hidden;
+	display: flow-root;
 }
 
 .ck-content hr {
