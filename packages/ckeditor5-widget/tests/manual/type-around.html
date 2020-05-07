@@ -1,0 +1,93 @@
+<head>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+
+		/* stylelint-disable-next-line */
+		placeholder {
+			display: inline-block;
+			background: hsla(100,100%,50%);
+			padding: 4px 2px;
+			outline-offset: -2px;
+			margin-right: 1px;
+			margin-left: 3px;
+		}
+
+		/* stylelint-disable-next-line */
+		placeholder::selection {
+			display: none;
+		}
+	</style>
+</head>
+<div id="editor">
+	<figure class="image"><img src="sample.jpg" alt="bar">
+		<figcaption>Caption</figcaption>
+	</figure>
+	<h2>Heading 1</h2>
+	<hr>
+	<hr>
+	<p><placeholder></placeholder> some text <placeholder></placeholder></p>
+	<figure class="table">
+		<table>
+			<tbody>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>
+						<p>&nbsp;</p>
+						<figure class="image"><img src="sample.jpg" alt="bar">
+							<figcaption>Caption</figcaption>
+						</figure>
+					</td>
+					<td>
+						<figure class="image"><img src="sample.jpg" alt="bar">
+							<figcaption>Caption</figcaption>
+						</figure>
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>e&nbsp;</td>
+					<td>
+						<figure class="image"><img src="sample.jpg" alt="bar">
+							<figcaption>Caption</figcaption>
+						</figure>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+	<hr>
+	<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
+	<ul>
+		<li>UL List <placeholder></placeholder> item 1</li>
+		<li>UL List item 2</li>
+	</ul>
+	<ol>
+		<li>OL List item 1</li>
+		<li>OL List item 2</li>
+	</ol>
+	<figure class="image"><img src="sample.jpg" alt="bar">
+		<figcaption>Caption</figcaption>
+	</figure>
+	<figure class="image"><img src="sample.jpg" alt="bar">
+		<figcaption>Caption</figcaption>
+	</figure>
+	<blockquote>
+		<p>Quote</p>
+		<ul>
+			<li>Quoted UL List item 1</li>
+			<li>Quoted UL List item 2</li>
+		</ul>
+		<p>Quote</p>
+	</blockquote>
+	<figure class="image"><img src="sample.jpg" alt="bar">
+		<figcaption>Caption</figcaption>
+	</figure>
+</div>
