@@ -26,13 +26,7 @@
     "@ckeditor/ckeditor5-list": "^19.0.0",
     "@ckeditor/ckeditor5-paragraph": "^19.0.0",
     "@ckeditor/ckeditor5-table": "^19.0.0",
-    "@ckeditor/ckeditor5-utils": "^19.0.0",
-    "eslint": "^5.5.0",
-    "eslint-config-ckeditor5": "^2.0.0",
-    "husky": "^1.3.1",
-    "lint-staged": "^7.0.0",
-    "stylelint": "^11.1.1",
-    "stylelint-config-ckeditor5": "^1.0.0"
+    "@ckeditor/ckeditor5-utils": "^19.0.0"
   },
   "engines": {
     "node": ">=8.0.0",
@@ -44,32 +38,12 @@
   "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5-paste-from-office.git"
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-paste-from-office"
   },
   "files": [
     "lang",
     "src",
     "theme"
-  ],
-  "scripts": {
-    "lint": "eslint --quiet '**/*.js'",
-    "stylelint": "stylelint --quiet --allow-empty-input 'theme/**/*.css' 'docs/**/*.css'"
-  },
-  "lint-staged": {
-    "**/*.js": [
-      "eslint --quiet"
-    ],
-    "**/*.css": [
-      "stylelint --quiet --allow-empty-input"
-    ]
-  },
-  "eslintIgnore": [
-    "src/lib/**",
-    "packages/**"
-  ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  }
+  ]
 }

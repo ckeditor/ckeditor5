@@ -14,6 +14,7 @@ import {
 import upcastTable, { upcastTableCell } from '../../src/converters/upcasttable';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import TableWalker from '../../src/tablewalker';
 
 const WIDGET_TABLE_CELL_CLASS = 'ck-editor__editable ck-editor__nested-editable';
 const BORDER_REG_EXP = /[\s\S]+/;
@@ -487,4 +488,135 @@ function getClassToSet( attributes ) {
 		.split( ' ' )
 		.sort()
 		.join( ' ' );
+}
+
+/**
+ * Returns ascii-art visualization of the table.
+ *
+ * @param {module:engine/model/model~Model} model The editor model.
+ * @param {module:engine/model/element~Element} table The table model element.
+ * @returns {String}
+ */
+export function createTableAsciiArt( model, table ) {
+	const tableMap = [ ...new TableWalker( table, { includeSpanned: true } ) ];
+
+	const { row: lastRow, column: lastColumn } = tableMap[ tableMap.length - 1 ];
+	const columns = lastColumn + 1;
+
+	let result = '';
+
+	for ( let row = 0; row <= lastRow; row++ ) {
+		let gridLine = '';
+		let contentLine = '';
+
+		for ( let column = 0; column <= lastColumn; column++ ) {
+			const cellInfo = tableMap[ row * columns + column ];
+
+			if ( cellInfo.rowspan > 1 || cellInfo.colspan > 1 ) {
+				for ( let subRow = row; subRow < row + cellInfo.rowspan; subRow++ ) {
+					for ( let subColumn = column; subColumn < column + cellInfo.colspan; subColumn++ ) {
+						const subCellInfo = tableMap[ subRow * columns + subColumn ];
+
+						subCellInfo.isColSpan = subColumn > column;
+						subCellInfo.isRowSpan = subRow > row;
+					}
+				}
+			}
+
+			gridLine += !cellInfo.isColSpan || !cellInfo.isRowSpan ? '+' : ' ';
+			gridLine += !cellInfo.isRowSpan ? '----' : '    ';
+
+			let contents = getElementPlainText( model, cellInfo.cell ).substring( 0, 2 );
+			contents += ' '.repeat( 2 - contents.length );
+
+			contentLine += !cellInfo.isColSpan ? '|' : ' ';
+			contentLine += !cellInfo.isColSpan && !cellInfo.isRowSpan ? ` ${ contents } ` : '    ';
+
+			if ( column == lastColumn ) {
+				gridLine += '+';
+				contentLine += '|';
+			}
+		}
+		result += gridLine + '\n';
+		result += contentLine + '\n';
+
+		if ( row == lastRow ) {
+			result += `+${ '----+'.repeat( columns ) }`;
+		}
+	}
+
+	return result;
+}
+
+/**
+ * Generates input data for `modelTable` helper method.
+ *
+ * @param {module:engine/model/model~Model} model The editor model.
+ * @param {module:engine/model/element~Element} table The table model element.
+ * @returns {Array.<Array.<String|Object>>}
+ */
+export function prepareModelTableInput( model, table ) {
+	const result = [];
+	let row = [];
+
+	for ( const cellInfo of new TableWalker( table, { includeSpanned: true } ) ) {
+		if ( cellInfo.column == 0 && cellInfo.row > 0 ) {
+			result.push( row );
+			row = [];
+		}
+
+		if ( cellInfo.isSpanned ) {
+			continue;
+		}
+
+		const contents = getElementPlainText( model, cellInfo.cell );
+
+		if ( cellInfo.colspan > 1 || cellInfo.rowspan > 1 ) {
+			row.push( {
+				contents,
+				...( cellInfo.colspan > 1 ? { colspan: cellInfo.colspan } : null ),
+				...( cellInfo.rowspan > 1 ? { rowspan: cellInfo.rowspan } : null )
+			} );
+		} else {
+			row.push( contents );
+		}
+	}
+
+	result.push( row );
+
+	return result;
+}
+
+/**
+ * Pretty formats `modelTable` input data.
+ *
+ * @param {Array.<Array.<String|Object>>} data
+ * @returns {String}
+ */
+export function prettyFormatModelTableInput( data ) {
+	const rowsStringified = data.map( row => {
+		const cellsStringified = row.map( cell => {
+			if ( typeof cell == 'string' ) {
+				return `'${ cell }'`;
+			}
+
+			const fieldsStringified = Object.entries( cell ).map( ( [ key, value ] ) => {
+				return `${ key }: ${ typeof value == 'string' ? `'${ value }'` : value }`;
+			} );
+
+			return `{ ${ fieldsStringified.join( ', ' ) } }`;
+		} );
+
+		return '\t[ ' + cellsStringified.join( ', ' ) + ' ]';
+	} );
+
+	return `[\n${ rowsStringified.join( ',\n' ) }\n]`;
+}
+
+// Returns all the text content from element.
+function getElementPlainText( model, element ) {
+	return [ ...model.createRangeIn( element ).getWalker() ]
+		.filter( ( { type } ) => type == 'text' )
+		.map( ( { item: { data } } ) => data )
+		.join( '' );
 }

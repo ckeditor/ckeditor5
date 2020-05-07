@@ -49,7 +49,7 @@ export default class SelectAllUI extends Plugin {
 
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
-			// Execute command.
+			// Execute the command.
 			this.listenTo( view, 'execute', () => {
 				editor.execute( 'selectAll' );
 				editor.editing.view.focus();

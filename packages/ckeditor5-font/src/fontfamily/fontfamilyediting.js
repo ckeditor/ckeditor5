@@ -82,8 +82,8 @@ export default class FontFamilyEditing extends Plugin {
 	}
 
 	/**
-	 * Those converters enable keeping any value found as `style="font-family: *"` as a value of an attribute on a text even
-	 * if it isn't defined in the plugin configuration.
+	 * These converters enable keeping any value found as `style="font-family: *"` as a value of an attribute on a text even
+	 * if it is not defined in the plugin configuration.
 	 *
 	 * @private
 	 */

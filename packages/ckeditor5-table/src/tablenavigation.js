@@ -86,7 +86,7 @@ export default class TableNavigation extends Plugin {
 
 	/**
 	 * Returns a handler for {@link module:engine/view/document~Document#event:keydown keydown} events for the <kbd>Tab</kbd> key executed
-	 * inside table cell.
+	 * inside table cells.
 	 *
 	 * @private
 	 * @param {Boolean} isForward Whether this handler will move the selection to the next or the previous cell.
@@ -180,7 +180,7 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Handles arrow keys to move the selection around a table.
+	 * Handles arrow keys to move the selection around the table.
 	 *
 	 * @private
 	 * @param {'left'|'up'|'right'|'down'} direction The direction of the arrow key.
@@ -197,16 +197,15 @@ export default class TableNavigation extends Plugin {
 		const selectedCells = getSelectedTableCells( selection );
 
 		if ( selectedCells.length ) {
+			let focusCell;
+
 			if ( expandSelection ) {
-				const tableSelection = this.editor.plugins.get( 'TableSelection' );
-				const focusCell = tableSelection.getFocusCell();
-
-				this._navigateFromCellInDirection( focusCell, direction, expandSelection );
+				focusCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
 			} else {
-				const tableCell = isForward ? selectedCells[ selectedCells.length - 1 ] : selectedCells[ 0 ];
-
-				this._navigateFromCellInDirection( tableCell, direction, expandSelection );
+				focusCell = isForward ? selectedCells[ selectedCells.length - 1 ] : selectedCells[ 0 ];
 			}
+
+			this._navigateFromCellInDirection( focusCell, direction, expandSelection );
 
 			return true;
 		}
@@ -277,7 +276,7 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Returns true if the selection is at the boundary of a table cell according to the navigation direction.
+	 * Returns `true` if the selection is at the boundary of a table cell according to the navigation direction.
 	 *
 	 * @private
 	 * @param {module:engine/model/selection~Selection} selection The current selection.
@@ -306,12 +305,12 @@ export default class TableNavigation extends Plugin {
 
 	/**
 	 * Checks if there is an {@link module:engine/model/element~Element element} next to the current
-	 * {@link module:engine/model/selection~Selection model selection} marked in
+	 * {@link module:engine/model/selection~Selection model selection} marked in the
 	 * {@link module:engine/model/schema~Schema schema} as an `object`.
 	 *
 	 * @private
 	 * @param {module:engine/model/selection~Selection} modelSelection The selection.
-	 * @param {Boolean} isForward Direction of checking.
+	 * @param {Boolean} isForward The direction of checking.
 	 * @returns {Boolean}
 	 */
 	_isObjectElementNextToSelection( modelSelection, isForward ) {
@@ -327,12 +326,12 @@ export default class TableNavigation extends Plugin {
 
 	/**
 	 * Truncates the range so that it spans from the last selection position
-	 * to the last allowed $text position (mirrored if isForward is false).
+	 * to the last allowed `$text` position (mirrored if `isForward` is false).
 	 *
-	 * Returns `null` if resulting range can't contain $text element (according to schema).
+	 * Returns `null` if, according to the schema, the resulting range cannot contain a `$text` element.
 	 *
 	 * @private
-	 * @param {module:engine/model/range~Range} range Current table cell content range.
+	 * @param {module:engine/model/range~Range} range The current table cell content range.
 	 * @param {module:engine/model/selection~Selection} selection The current selection.
 	 * @param {Boolean} isForward The expected navigation direction.
 	 * @returns {module:engine/model/range~Range|null}
@@ -362,13 +361,13 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Basing on provided range, finds first/last (depending on `direction`) position inside the range
+	 * Basing on the provided range, finds the first or last (depending on `direction`) position inside the range
 	 * that can contain `$text` (according to schema) and is visible in the view.
 	 *
 	 * @private
-	 * @param {module:engine/model/range~Range} range The range to find position in.
+	 * @param {module:engine/model/range~Range} range The range to find the position in.
 	 * @param {'forward'|'backward'} direction Search direction.
-	 * @returns {module:engine/model/position~Position} Nearest selection range.
+	 * @returns {module:engine/model/position~Position} The nearest selection range.
 	 */
 	_getNearestVisibleTextPosition( range, direction ) {
 		const schema = this.editor.model.schema;
@@ -386,11 +385,11 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Checks if the DOM range corresponding to provided model range renders as a single line by analyzing DOMRects
+	 * Checks if the DOM range corresponding to the provided model range renders as a single line by analyzing DOMRects
 	 * (verifying if they visually wrap content to the next line).
 	 *
 	 * @private
-	 * @param {module:engine/model/range~Range} modelRange Current table cell content range.
+	 * @param {module:engine/model/range~Range} modelRange The current table cell content range.
 	 * @param {Boolean} isForward The expected navigation direction.
 	 * @returns {Boolean}
 	 */
@@ -445,9 +444,9 @@ export default class TableNavigation extends Plugin {
 	 * @protected
 	 * @param {module:engine/model/element~Element} focusCell The table cell that is current multi-cell selection focus.
 	 * @param {'left'|'up'|'right'|'down'} direction Direction in which selection should move.
-	 * @param {Boolean} expandSelection If the current selection should be expanded.
+	 * @param {Boolean} [expandSelection=false] If the current selection should be expanded.
 	 */
-	_navigateFromCellInDirection( focusCell, direction, expandSelection ) {
+	_navigateFromCellInDirection( focusCell, direction, expandSelection = false ) {
 		const model = this.editor.model;
 
 		const table = findAncestor( 'table', focusCell );
@@ -516,7 +515,7 @@ export default class TableNavigation extends Plugin {
 	}
 }
 
-// Returns 'true' if provided key code represents one of the arrow keys.
+// Returns `true` if the provided key code represents one of the arrow keys.
 //
 // @private
 // @param {Number} keyCode
@@ -528,7 +527,7 @@ function isArrowKeyCode( keyCode ) {
 		keyCode == keyCodes.arrowdown;
 }
 
-// Returns direction name from `keyCode`.
+// Returns the direction name from `keyCode`.
 //
 // @private
 // @param {Number} keyCode

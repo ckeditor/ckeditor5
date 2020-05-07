@@ -878,7 +878,7 @@ describe( 'table selection', () => {
 			] ) );
 		} );
 
-		it( 'should not return element if the table cell is not selected', () => {
+		it( 'should return null if no table cell is selected', () => {
 			expect( tableSelection.getAnchorCell() ).to.be.null;
 			expect( tableSelection.getFocusCell() ).to.be.null;
 		} );

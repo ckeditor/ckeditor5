@@ -86,8 +86,8 @@ export default class FontSizeEditing extends Plugin {
 	}
 
 	/**
-	 * Those converters enable keeping any value found as `style="font-size: *"` as a value of an attribute on a text even
-	 * if it isn't defined in the plugin configuration.
+	 * These converters enable keeping any value found as `style="font-size: *"` as a value of an attribute on a text even
+	 * if it is not defined in the plugin configuration.
 	 *
 	 * @param {Object} definition {@link module:engine/conversion/conversion~ConverterDefinition Converter definition} out of input data.
 	 * @private

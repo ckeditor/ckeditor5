@@ -108,6 +108,65 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
+	 * Sets the model selection based on given anchor and target cells (can be the same cell).
+	 * Takes care of setting the backward flag.
+	 *
+	 *		const modelRoot = editor.model.document.getRoot();
+	 *		const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
+	 *		const lastCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
+	 *
+	 *		const tableSelection = editor.plugins.get( 'TableSelection' );
+	 *		tableSelection.setCellSelection( firstCell, lastCell );
+	 *
+	 * @param {module:engine/model/element~Element} anchorCell
+	 * @param {module:engine/model/element~Element} targetCell
+	 */
+	setCellSelection( anchorCell, targetCell ) {
+		const cellsToSelect = this._getCellsToSelect( anchorCell, targetCell );
+
+		this.editor.model.change( writer => {
+			writer.setSelection(
+				cellsToSelect.cells.map( cell => writer.createRangeOn( cell ) ),
+				{ backward: cellsToSelect.backward }
+			);
+		} );
+	}
+
+	/**
+	 * Returns the focus cell from the current selection.
+	 *
+	 * @returns {module:engine/model/element~Element}
+	 */
+	getFocusCell() {
+		const selection = this.editor.model.document.selection;
+		const focusCellRange = [ ...selection.getRanges() ].pop();
+		const element = focusCellRange.getContainedElement();
+
+		if ( element && element.is( 'tableCell' ) ) {
+			return element;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the anchor cell from the current selection.
+	 *
+	 * @returns {module:engine/model/element~Element} anchorCell
+	 */
+	getAnchorCell() {
+		const selection = this.editor.model.document.selection;
+		const anchorCellRange = first( selection.getRanges() );
+		const element = anchorCellRange.getContainedElement();
+
+		if ( element && element.is( 'tableCell' ) ) {
+			return element;
+		}
+
+		return null;
+	}
+
+	/**
 	 * Defines a selection converter which marks the selected cells with a specific class.
 	 *
 	 * The real DOM selection is put in the last cell. Since the order of ranges is dependent on whether the
@@ -365,58 +424,6 @@ export default class TableSelection extends Plugin {
 	}
 
 	/**
-	 * Sets the model selection based on given anchor and target cells (can be the same cell).
-	 * Takes care of setting the backward flag.
-	 *
-	 * @param {module:engine/model/element~Element} anchorCell
-	 * @param {module:engine/model/element~Element} targetCell
-	 */
-	setCellSelection( anchorCell, targetCell ) {
-		const cellsToSelect = this._getCellsToSelect( anchorCell, targetCell );
-
-		this.editor.model.change( writer => {
-			writer.setSelection(
-				cellsToSelect.cells.map( cell => writer.createRangeOn( cell ) ),
-				{ backward: cellsToSelect.backward }
-			);
-		} );
-	}
-
-	/**
-	 * Returns the focus cell from the current selection.
-	 *
-	 * @returns {module:engine/model/element~Element}
-	 */
-	getFocusCell() {
-		const selection = this.editor.model.document.selection;
-		const focusCellRange = [ ...selection.getRanges() ].pop();
-		const element = focusCellRange.getContainedElement();
-
-		if ( element && element.is( 'tableCell' ) ) {
-			return element;
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns the anchor cell from the current selection.
-	 *
-	 * @returns {module:engine/model/element~Element} anchorCell
-	 */
-	getAnchorCell() {
-		const selection = this.editor.model.document.selection;
-		const anchorCellRange = first( selection.getRanges() );
-		const element = anchorCellRange.getContainedElement();
-
-		if ( element && element.is( 'tableCell' ) ) {
-			return element;
-		}
-
-		return null;
-	}
-
-	/**
 	 * Returns the model table cell element based on the target element of the passed DOM event.
 	 *
 	 * @private
@@ -459,6 +466,7 @@ export default class TableSelection extends Plugin {
 		const startColumn = Math.min( startLocation.column, endLocation.column );
 		const endColumn = Math.max( startLocation.column, endLocation.column );
 
+		// 2-dimensional array of the selected cells to ease flipping the order of cells for backward selections.
 		const selectionMap = new Array( endRow - startRow + 1 ).fill( null ).map( () => [] );
 
 		for ( const cellInfo of new TableWalker( findAncestor( 'table', anchorCell ), { startRow, endRow } ) ) {
