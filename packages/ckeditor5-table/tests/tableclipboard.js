@@ -634,7 +634,7 @@ describe( 'table clipboard', () => {
 						/* eslint-disable no-multi-spaces */
 						assertSelectedCells( model, [
 							[ 0, 0, 0, 0 ],
-							[ 0, 1,    0 ],
+							[ 0, 1, 0 ],
 							[ 0, 1, 1, 0 ],
 							[ 0, 0, 0, 0 ]
 						] );
@@ -852,14 +852,12 @@ describe( 'table clipboard', () => {
 							[ '30', '31', '32', '33' ]
 						] ) );
 
-						/* eslint-disable no-multi-spaces */
 						assertSelectedCells( model, [
 							[ 1, 1, 1, 0 ],
 							[ 1, 1, 1, 0 ],
 							[ 1, 1, 1, 0 ],
-							[ 0, 0, 0    ]
+							[ 0, 0, 0, 0 ]
 						] );
-						/* eslint-enable no-multi-spaces */
 					} );
 
 					it( 'handles pasting simple table over table with multi-spans (no span exceeds selection)', () => {
@@ -907,7 +905,6 @@ describe( 'table clipboard', () => {
 							[ '40', '41', '42', '43', '44', '45' ]
 						] ) );
 
-						/* eslint-disable no-multi-spaces */
 						assertSelectedCells( model, [
 							[ 1, 1, 1, 1, 1, 0 ],
 							[ 1, 1, 1, 1, 1, 0 ],
@@ -915,7 +912,49 @@ describe( 'table clipboard', () => {
 							[ 1, 1, 1, 1, 1, 0 ],
 							[ 0, 0, 0, 0, 0, 0 ]
 						] );
-						/* eslint-enable no-multi-spaces */
+					} );
+
+					it( 'handles pasting table that has cell with colspan (last row in selection is spanned)', () => {
+						// +----+----+----+----+
+						// | 00 | 01 | 02 | 03 |
+						// +----+----+----+----+
+						// | 10 | 11      | 13 |
+						// +    +         +----+
+						// |    |         | 23 |
+						// +----+----+----+----+
+						// | 30 | 31 | 32 | 33 |
+						// +----+----+----+----+
+						setModelData( model, [
+							[ '00', '01', '02', '03' ],
+							[ { contents: '10', rowspan: 2 }, { contents: '11', colspan: 2, rowspan: 2 }, '13' ],
+							[ '23' ],
+							[ '30', '31', '32', '33' ]
+						] );
+
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
+							modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+						);
+
+						pasteTable( [
+							[ 'aa', 'ab', 'ac' ],
+							[ 'ba', 'bb', 'bc' ],
+							[ 'ca', 'cb', 'cc' ]
+						] );
+
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ 'aa', 'ab', 'ac', '03' ],
+							[ 'ba', 'bb', 'bc', '13' ],
+							[ 'ca', 'cb', 'cc', '23' ],
+							[ '30', '31', '32', '33' ]
+						] ) );
+
+						assertSelectedCells( model, [
+							[ 1, 1, 1, 0 ],
+							[ 1, 1, 1, 0 ],
+							[ 1, 1, 1, 0 ],
+							[ 0, 0, 0, 0 ]
+						] );
 					} );
 				} );
 
@@ -1064,6 +1103,58 @@ describe( 'table clipboard', () => {
 							[ 1,          1, 0 ],
 							[    1, 1, 1,    0 ],
 							[ 0, 0, 0, 0, 0, 0 ]
+						] );
+						/* eslint-enable no-multi-spaces */
+					} );
+
+					it( 'handles pasting table that has cell with colspan (last row in selection is spanned)', () => {
+						// +----+----+----+----+
+						// | 00 | 01 | 02 | 03 |
+						// +----+----+----+----+
+						// | 10 | 11      | 13 |
+						// +    +         +----+
+						// |    |         | 23 |
+						// +----+----+----+----+
+						// | 30 | 31 | 32 | 33 |
+						// +----+----+----+----+
+						setModelData( model, [
+							[ '00', '01', '02', '03' ],
+							[ { contents: '10', rowspan: 2 }, { contents: '11', colspan: 2, rowspan: 2 }, '13' ],
+							[ '23' ],
+							[ '30', '31', '32', '33' ]
+						] );
+
+						tableSelection._setCellSelection(
+							modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
+							modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+						);
+
+						// +----+----+----+
+						// | aa | ab | ac |
+						// +----+----+----+
+						// | ba      | bc |
+						// +         +----+
+						// |         | cc |
+						// +----+----+----+
+						pasteTable( [
+							[ 'aa', 'ab', 'ac' ],
+							[ { contents: 'ba', colspan: 2, rowspan: 2 }, 'bc' ],
+							[ 'cc' ]
+						] );
+
+						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+							[ '00', '01', '02', '03' ],
+							[ '10', { colspan: 2, contents: 'aa' }, '13' ],
+							[ '20', 'ba', 'bb', '23' ],
+							[ '30', '31', '32', '33' ]
+						] ) );
+
+						/* eslint-disable no-multi-spaces */
+						assertSelectedCells( model, [
+							[ 0, 0, 0, 0 ],
+							[ 0, 1,    0 ],
+							[ 0, 1, 1, 0 ],
+							[ 0, 0, 0, 0 ]
 						] );
 						/* eslint-enable no-multi-spaces */
 					} );
