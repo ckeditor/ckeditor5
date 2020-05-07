@@ -412,7 +412,7 @@ describe( 'table clipboard', () => {
 				it( 'should be disabled in a readonly mode', () => {
 					editor.isReadOnly = true;
 
-					tableSelection._setCellSelection(
+					tableSelection.setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 					);
@@ -455,7 +455,7 @@ describe( 'table clipboard', () => {
 
 				describe( 'no spans', () => {
 					it( 'handles simple table paste to a simple table fragment - at the beginning of a table', () => {
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 							modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 						);
@@ -481,7 +481,7 @@ describe( 'table clipboard', () => {
 					} );
 
 					it( 'handles simple table paste to a simple table fragment - at the end of a table', () => {
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 2, 2 ] ),
 							modelRoot.getNodeByPath( [ 0, 3, 3 ] )
 						);
@@ -507,7 +507,7 @@ describe( 'table clipboard', () => {
 					} );
 
 					it( 'handles simple table paste to a simple table fragment - in the middle of a table', () => {
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
 							modelRoot.getNodeByPath( [ 0, 2, 2 ] )
 						);
@@ -533,7 +533,7 @@ describe( 'table clipboard', () => {
 					} );
 
 					it( 'handles simple row paste to a simple row fragment - in the middle of a table', () => {
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
 							modelRoot.getNodeByPath( [ 0, 1, 2 ] )
 						);
@@ -558,7 +558,7 @@ describe( 'table clipboard', () => {
 					} );
 
 					it( 'handles simple column paste to a simple column fragment - in the middle of a table', () => {
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
 							modelRoot.getNodeByPath( [ 0, 2, 1 ] )
 						);
@@ -584,7 +584,7 @@ describe( 'table clipboard', () => {
 					} );
 
 					it( 'handles simple table paste to a simple table fragment - whole table selected', () => {
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 							modelRoot.getNodeByPath( [ 0, 3, 3 ] )
 						);
@@ -614,7 +614,7 @@ describe( 'table clipboard', () => {
 
 				describe( 'pasted table has spans', () => {
 					it( 'handles pasting table that has cell with colspan', () => {
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
 							modelRoot.getNodeByPath( [ 0, 2, 2 ] )
 						);
@@ -642,7 +642,7 @@ describe( 'table clipboard', () => {
 					} );
 
 					it( 'handles pasting table that has many cells with various colspan', () => {
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 							modelRoot.getNodeByPath( [ 0, 3, 2 ] )
 						);
@@ -672,7 +672,7 @@ describe( 'table clipboard', () => {
 					} );
 
 					it( 'handles pasting table that has cell with rowspan', () => {
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
 							modelRoot.getNodeByPath( [ 0, 2, 2 ] )
 						);
@@ -700,7 +700,7 @@ describe( 'table clipboard', () => {
 					} );
 
 					it( 'handles pasting table that has many cells with various rowspan', () => {
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 							modelRoot.getNodeByPath( [ 0, 2, 3 ] )
 						);
@@ -737,7 +737,7 @@ describe( 'table clipboard', () => {
 							[ '40', '41', '42', '43', '44', '45' ]
 						] ) );
 
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 							modelRoot.getNodeByPath( [ 0, 3, 4 ] )
 						);
@@ -798,7 +798,7 @@ describe( 'table clipboard', () => {
 							[ '30', '31', { colspan: 2, contents: '31' } ]
 						] ) );
 
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 							modelRoot.getNodeByPath( [ 0, 2, 1 ] )
 						);
@@ -834,7 +834,7 @@ describe( 'table clipboard', () => {
 							[ '30', '31', '32', '33' ]
 						] ) );
 
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 							modelRoot.getNodeByPath( [ 0, 2, 0 ] )
 						);
@@ -885,7 +885,7 @@ describe( 'table clipboard', () => {
 							[ '40', '41', '42', '43', '44', '45' ]
 						] ) );
 
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 							modelRoot.getNodeByPath( [ 0, 3, 2 ] )
 						);
@@ -931,7 +931,7 @@ describe( 'table clipboard', () => {
 							[ '30', '31', '32', '33' ]
 						] );
 
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
 							modelRoot.getNodeByPath( [ 0, 1, 0 ] )
 						);
@@ -967,7 +967,7 @@ describe( 'table clipboard', () => {
 							[ '30', '31', { colspan: 2, contents: '31' } ]
 						] ) );
 
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 							modelRoot.getNodeByPath( [ 0, 2, 1 ] )
 						);
@@ -1003,7 +1003,7 @@ describe( 'table clipboard', () => {
 							[ '30', '31', '32', '33' ]
 						] ) );
 
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 							modelRoot.getNodeByPath( [ 0, 2, 1 ] )
 						);
@@ -1056,7 +1056,7 @@ describe( 'table clipboard', () => {
 							[ '40', '41', '42', '43', '44', '45' ]
 						] ) );
 
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 							modelRoot.getNodeByPath( [ 0, 3, 2 ] )
 						);
@@ -1124,7 +1124,7 @@ describe( 'table clipboard', () => {
 							[ '30', '31', '32', '33' ]
 						] );
 
-						tableSelection._setCellSelection(
+						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
 							modelRoot.getNodeByPath( [ 0, 1, 0 ] )
 						);
