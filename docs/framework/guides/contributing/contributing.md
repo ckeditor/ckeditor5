@@ -41,21 +41,25 @@ Read more about our {@link framework/guides/contributing/testing-environment tes
 	GitHub provides an [excellent documentation about pull requests](https://help.github.com/categories/collaborating-with-issues-and-pull-requests/). If you are not sure what to do, this is the right place to start.
 </info-box>
 
-Assuming that you would like to propose some changes in the [Link](https://github.com/ckeditor/ckeditor5-link) feature, these are the steps you should take to create a pull request:
+<info-box>
+	[Angular](https://github.com/ckeditor/ckeditor5-angular), [React](https://github.com/ckeditor/ckeditor5-react) and [Vue](https://github.com/ckeditor/ckeditor5-vue) integrations as well as [CKEditor 5 inspector](https://github.com/ckeditor/ckeditor5-inspector) and [dev packages](https://github.com/ckeditor/ckeditor5-dev) are kept in separate repositories. The below steps assume that you want to propose a change in the [main CKEditor 5 repository](https://github.com/ckeditor/ckeditor5).
+</info-box>
 
-1. Make sure to open a ticket describing the issue/feature/problem that you want to solve in your pull request. This can be skipped in case of obvious and trivial changes (typos, documentation, etc.). You can report this ticket in the specific repository in which you will make a pull request or in https://github.com/ckeditor/ckeditor5.
+Assuming that you would like to propose some changes, these are the steps you should take to create a pull request:
+
+1. Make sure to open a ticket in https://github.com/ckeditor/ckeditor5 describing the issue/feature/problem that you want to solve in your pull request. This can be skipped in case of obvious and trivial changes (typos, documentation, etc.).
 1. Make sure your {@link framework/guides/contributing/development-environment development environment} is ready.
-1. Go to GitHub and [fork the repository](https://help.github.com/articles/fork-a-repo) ([ckeditor5-link](https://github.com/ckeditor/ckeditor5-link) in this particular case). The forked repository will appear in your GitHub account as `https://github.com/YOUR-USERNAME/ckeditor5-link`.
+1. Go to GitHub and [fork the repository](https://help.github.com/articles/fork-a-repo). The forked repository will appear in your GitHub account as `https://github.com/YOUR-USERNAME/ckeditor5`.
 1. Open your terminal, then go to the package ("repository") folder in your development environment:
 
 	```shell
-	$ cd path/to/ckeditor5/packages/ckeditor5-link
+	$ cd path/to/ckeditor5
 	```
 
-1. Start a new branch for your code. We use the `t/GITHUB-ISSUE-NUMBER` convention for branch names:
+1. Start a new branch for your code. We use the `i/GITHUB-ISSUE-NUMBER` convention for branch names:
 
 	```shell
-	$ git checkout -b t/GITHUB-ISSUE-NUMBER
+	$ git checkout -b i/GITHUB-ISSUE-NUMBER
 	```
 
 1. Make the changes. Stick to the [code-style guidelines](#code-style) and remember about [tests and 100% code coverage](#tests)!
@@ -68,13 +72,13 @@ Assuming that you would like to propose some changes in the [Link](https://githu
 1. Now it is time to make your changes public. First, you need to let `git` know about the fork you created by adding the remote:
 
 	```shell
-	$ git remote add my-fork https://github.com/YOUR-USERNAME/ckeditor5-link
+	$ git remote add my-fork https://github.com/YOUR-USERNAME/ckeditor5
 	```
 
 1. Push your changes to your forked repository:
 
 	```shell
-	$ git push my-fork t/GITHUB-ISSUE-NUMBER
+	$ git push my-fork i/GITHUB-ISSUE-NUMBER
 	```
 
 1. Go to your forked repository on GitHub. Use the [pull request button](https://help.github.com/articles/about-pull-requests/) and follow the instructions. Make sure to include a merge commit message text matches the {@link framework/guides/contributing/git-commit-message-convention convention}
@@ -85,10 +89,6 @@ Some additional things you should keep in mind:
 * Your pull request should be minimal &mdash; i.e. change only things described in the ticket. Do not squeeze unrelated changes into your pull request.
 * When making a pull request on GitHub, make sure to specify which ticket(s) your pull request resolves. It is also recommended to provide more information, like how to test the patch, issues that you encountered, decisions you had to make, known problems, etc.
 * Make sure you signed the [Contributor License Agreement (CLA)](#contributor-license-agreement-cla) and that tests pass. Test your changes!
-
-<info-box>
-	If want your changes to be permanent in your development environment, make sure your `mrgit.json` file {@link framework/guides/contributing/development-environment#using-mrgit-for-custom-packages points to your forked version of the repository} so next time you execute `mrgit sync` to refresh the project, the utility will use your fork.
-</info-box>
 
 ## Translating
 

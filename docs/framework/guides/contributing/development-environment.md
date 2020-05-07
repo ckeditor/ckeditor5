@@ -25,7 +25,7 @@ Prior to version **19.0.0** CKEditor 5 was developed in a multi repository archi
 
 In order to start developing CKEditor 5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 6.9.0+
+* [Node.js](https://nodejs.org/en/) 8.0.0+
 * [Git](https://git-scm.com/)
 
 ## Setting up the CKEditor development environment
