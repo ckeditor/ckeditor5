@@ -547,31 +547,39 @@ describe( 'view', () => {
 
 		it( 'should be true if selection is inside a DOM root element', done => {
 			domRoot.focus();
-			domSelection.collapse( domP, 0 );
 
-			// Wait for async selectionchange event on DOM document.
 			setTimeout( () => {
-				expect( view.hasDomSelection ).to.be.true;
+				domSelection.collapse( domP, 0 );
 
-				done();
-			}, 100 );
+				// Wait for async selectionchange event on DOM document.
+				setTimeout( () => {
+					expect( view.hasDomSelection ).to.be.true;
+
+					done();
+				}, 10 );
+			}, 10 );
 		} );
 
 		it( 'should be true if selection is inside a DOM root element - no focus', done => {
 			domRoot.focus();
-			domSelection.collapse( domP, 0 );
 
-			// We could also do domRoot.blur() here but it's always better to know where the focus went.
-			// E.g. if it went to some <input>, the selection would disappear from the editor and the test would fail.
-			document.body.focus();
-
-			// Wait for async selectionchange event on DOM document.
 			setTimeout( () => {
-				expect( view.hasDomSelection ).to.be.true;
-				expect( view.document.isFocused ).to.be.false;
+				domSelection.collapse( domP, 0 );
 
-				done();
-			}, 100 );
+				setTimeout( () => {
+					// We could also do domRoot.blur() here but it's always better to know where the focus went.
+					// E.g. if it went to some <input>, the selection would disappear from the editor and the test would fail.
+					domRoot.blur();
+
+					// Wait for async selectionchange event on DOM document.
+					setTimeout( () => {
+						expect( view.hasDomSelection ).to.be.true;
+						expect( view.document.isFocused ).to.be.false;
+
+						done();
+					}, 10 );
+				}, 10 );
+			}, 10 );
 		} );
 
 		it( 'should be false if selection is outside DOM root element', done => {
