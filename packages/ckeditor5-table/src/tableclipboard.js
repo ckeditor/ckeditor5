@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableSelection from './tableselection';
-import { getColumnIndexes, getRowIndexes } from './utils';
+import { getColumnIndexes, getRowIndexes, isSelectionRectangular } from './utils';
 import TableWalker from './tablewalker';
 import { findAncestor, updateNumericAttribute } from './commands/utils';
 
@@ -123,6 +123,13 @@ export default class TableClipboard extends Plugin {
 			const insertWidth = tableUtils.getColumns( table );
 
 			const contentTable = findAncestor( 'table', selectedTableCells[ 0 ] );
+
+			// TODO: Temporally block non-rectangular selection.
+			if ( isSelectionRectangular( this.editor.model.document.selection, tableUtils ) ) {
+				// @if CK_DEBUG // console.log( 'Selection is not rectangular (non-mergeable) - pasting disabled.' );
+
+				return;
+			}
 
 			if ( selectionHeight === insertHeight && selectionWidth === insertWidth ) {
 				const model = this.editor.model;

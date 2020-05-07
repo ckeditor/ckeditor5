@@ -9,9 +9,9 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
-import { findAncestor, updateNumericAttribute } from './utils';
+import { updateNumericAttribute } from './utils';
 import TableUtils from '../tableutils';
-import { getColumnIndexes, getRowIndexes, getSelectedTableCells } from '../utils';
+import { isSelectionRectangular, getSelectedTableCells } from '../utils';
 
 /**
  * The merge cells command.
@@ -29,7 +29,7 @@ export default class MergeCellsCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = canMergeCells( this.editor.model.document.selection, this.editor.plugins.get( TableUtils ) );
+		this.isEnabled = isSelectionRectangular( this.editor.model.document.selection, this.editor.plugins.get( TableUtils ) );
 	}
 
 	/**
@@ -117,132 +117,6 @@ function mergeTableCells( cellBeingMerged, targetCell, writer ) {
 // @returns {Boolean}
 function isEmpty( tableCell ) {
 	return tableCell.childCount == 1 && tableCell.getChild( 0 ).is( 'paragraph' ) && tableCell.getChild( 0 ).isEmpty;
-}
-
-// Checks if the selection contains cells that can be merged.
-//
-// In a table below:
-//
-//   ┌───┬───┬───┬───┐
-//   │ a │ b │ c │ d │
-//   ├───┴───┼───┤   │
-//   │ e     │ f │   │
-//   ├       ├───┼───┤
-//   │       │ g │ h │
-//   └───────┴───┴───┘
-//
-// Valid selections are these which create a solid rectangle (without gaps), such as:
-//   - a, b (two horizontal cells)
-//   - c, f (two vertical cells)
-//   - a, b, e (cell "e" spans over four cells)
-//   - c, d, f (cell d spans over a cell in the row below)
-//
-// While an invalid selection would be:
-//   - a, c (the unselected cell "b" creates a gap)
-//   - f, g, h (cell "d" spans over a cell from the row of "f" cell - thus creates a gap)
-//
-// @param {module:engine/model/selection~Selection} selection
-// @param {module:table/tableUtils~TableUtils} tableUtils
-// @returns {boolean}
-function canMergeCells( selection, tableUtils ) {
-	const selectedTableCells = getSelectedTableCells( selection );
-
-	if ( selectedTableCells.length < 2 || !areCellInTheSameTableSection( selectedTableCells ) ) {
-		return false;
-	}
-
-	// A valid selection is a fully occupied rectangle composed of table cells.
-	// Below we will calculate the area of a selected table cells and the area of valid selection.
-	// The area of a valid selection is defined by top-left and bottom-right cells.
-	const rows = new Set();
-	const columns = new Set();
-
-	let areaOfSelectedCells = 0;
-
-	for ( const tableCell of selectedTableCells ) {
-		const { row, column } = tableUtils.getCellLocation( tableCell );
-		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
-		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
-
-		// Record row & column indexes of current cell.
-		rows.add( row );
-		columns.add( column );
-
-		// For cells that spans over multiple rows add also the last row that this cell spans over.
-		if ( rowspan > 1 ) {
-			rows.add( row + rowspan - 1 );
-		}
-
-		// For cells that spans over multiple columns add also the last column that this cell spans over.
-		if ( colspan > 1 ) {
-			columns.add( column + colspan - 1 );
-		}
-
-		areaOfSelectedCells += ( rowspan * colspan );
-	}
-
-	// We can only merge table cells that are in adjacent rows...
-	const areaOfValidSelection = getBiggestRectangleArea( rows, columns );
-
-	return areaOfValidSelection == areaOfSelectedCells;
-}
-
-// Calculates the area of a maximum rectangle that can span over the provided row & column indexes.
-//
-// @param {Array.<Number>} rows
-// @param {Array.<Number>} columns
-// @returns {Number}
-function getBiggestRectangleArea( rows, columns ) {
-	const rowsIndexes = Array.from( rows.values() );
-	const columnIndexes = Array.from( columns.values() );
-
-	const lastRow = Math.max( ...rowsIndexes );
-	const firstRow = Math.min( ...rowsIndexes );
-	const lastColumn = Math.max( ...columnIndexes );
-	const firstColumn = Math.min( ...columnIndexes );
-
-	return ( lastRow - firstRow + 1 ) * ( lastColumn - firstColumn + 1 );
-}
-
-// Checks if the selection does not mix a header (column or row) with other cells.
-//
-// For instance, in the table below valid selections consist of cells with the same letter only.
-// So, a-a (same heading row and column) or d-d (body cells) are valid while c-d or a-b are not.
-//
-//    header columns
-//     ↓   ↓
-//   ┌───┬───┬───┬───┐
-//   │ a │ a │ b │ b │  ← header row
-//   ├───┼───┼───┼───┤
-//   │ c │ c │ d │ d │
-//   ├───┼───┼───┼───┤
-//   │ c │ c │ d │ d │
-//   └───┴───┴───┴───┘
-//
-function areCellInTheSameTableSection( tableCells ) {
-	const table = findAncestor( 'table', tableCells[ 0 ] );
-
-	const rowIndexes = getRowIndexes( tableCells );
-	const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
-
-	// Calculating row indexes is a bit cheaper so if this check fails we can't merge.
-	if ( !areIndexesInSameSection( rowIndexes, headingRows ) ) {
-		return false;
-	}
-
-	const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
-	const columnIndexes = getColumnIndexes( tableCells );
-
-	// Similarly cells must be in same column section.
-	return areIndexesInSameSection( columnIndexes, headingColumns );
-}
-
-// Unified check if table rows/columns indexes are in the same heading/body section.
-function areIndexesInSameSection( { first, last }, headingSectionSize ) {
-	const firstCellIsInHeading = first < headingSectionSize;
-	const lastCellIsInHeading = last < headingSectionSize;
-
-	return firstCellIsInHeading === lastCellIsInHeading;
 }
 
 function getMergeDimensions( firstTableCell, selectedTableCells, tableUtils ) {
