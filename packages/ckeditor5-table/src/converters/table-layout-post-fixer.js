@@ -290,14 +290,16 @@ function fixTableRowsSizes( table, writer ) {
 	let wasFixed = false;
 
 	const rowsLengths = getRowsLengths( table );
+
+	// Verify if all the rows have the same number of columns.
 	const tableSize = rowsLengths[ 0 ];
+	const isValid = rowsLengths.every( length => length === tableSize );
 
-	const isValid = Object.values( rowsLengths ).every( length => length === tableSize );
+	if ( !isValid || !tableSize ) {
+		// Find the maximum number of columns (but it can't be less than one).
+		const maxColumns = rowsLengths.reduce( ( prev, current ) => current > prev ? current : prev, 1 );
 
-	if ( !isValid ) {
-		const maxColumns = Object.values( rowsLengths ).reduce( ( prev, current ) => current > prev ? current : prev, 0 );
-
-		for ( const [ rowIndex, size ] of Object.entries( rowsLengths ) ) {
+		for ( const [ rowIndex, size ] of rowsLengths.entries() ) {
 			const columnsToInsert = maxColumns - size;
 
 			if ( columnsToInsert ) {
@@ -346,12 +348,13 @@ function findCellsToTrim( table ) {
 	return cellsToTrim;
 }
 
-// Returns an object with lengths of rows assigned to the corresponding row index.
+// Returns an array with lengths of rows assigned to the corresponding row index.
 //
 // @param {module:engine/model/element~Element} table
-// @returns {Object}
+// @returns {Array.<Number>}
 function getRowsLengths( table ) {
-	const lengths = {};
+	// TableWalker will not provide items for the empty rows, we need to pre-fill this array.
+	const lengths = new Array( table.childCount ).fill( 0 );
 
 	for ( const { row } of new TableWalker( table, { includeSpanned: true } ) ) {
 		if ( !lengths[ row ] ) {
