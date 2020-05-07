@@ -53,7 +53,7 @@ describe( 'table selection', () => {
 				const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
 				const lastCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					firstCell,
 					lastCell
 				);
@@ -74,7 +74,7 @@ describe( 'table selection', () => {
 				const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
 				const lastCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					firstCell,
 					lastCell
 				);
@@ -585,7 +585,7 @@ describe( 'table selection', () => {
 			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
 			const lastCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				firstCell,
 				lastCell
 			);
@@ -599,7 +599,7 @@ describe( 'table selection', () => {
 			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
 			const lastCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				firstCell,
 				lastCell
 			);
@@ -613,7 +613,7 @@ describe( 'table selection', () => {
 			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
 			const lastCell = modelRoot.getNodeByPath( [ 0, 0, 2 ] );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				firstCell,
 				lastCell
 			);
@@ -627,7 +627,7 @@ describe( 'table selection', () => {
 			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
 			const lastCell = modelRoot.getNodeByPath( [ 0, 2, 1 ] );
 
-			tableSelection._setCellSelection( firstCell, lastCell );
+			tableSelection.setCellSelection( firstCell, lastCell );
 
 			expect( tableSelection.getSelectedTableCells() ).to.deep.equal( [
 				firstCell, modelRoot.getNodeByPath( [ 0, 1, 1 ] ), lastCell
@@ -638,7 +638,7 @@ describe( 'table selection', () => {
 			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 2 ] );
 			const lastCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
 
-			tableSelection._setCellSelection( firstCell, lastCell );
+			tableSelection.setCellSelection( firstCell, lastCell );
 
 			expect( tableSelection.getSelectedTableCells() ).to.deep.equal( [
 				lastCell, firstCell
@@ -667,7 +667,7 @@ describe( 'table selection', () => {
 		} );
 
 		it( 'should return document fragment for selected table cells', () => {
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
@@ -676,7 +676,7 @@ describe( 'table selection', () => {
 		} );
 
 		it( 'should return cells in the source order in case of forward selection', () => {
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
@@ -688,7 +688,7 @@ describe( 'table selection', () => {
 		} );
 
 		it( 'should return cells in the source order in case of backward selection', () => {
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] )
 			);
@@ -719,7 +719,7 @@ describe( 'table selection', () => {
 		} );
 
 		it( 'should put selection in the last selected cell after removing content (backward delete)', () => {
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ),
 				modelRoot.getChild( 0 ).getChild( 1 ).getChild( 1 )
 			);
@@ -734,7 +734,7 @@ describe( 'table selection', () => {
 		} );
 
 		it( 'should put selection in the last selected cell after removing content (forward delete)', () => {
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ),
 				modelRoot.getChild( 0 ).getChild( 1 ).getChild( 1 )
 			);
@@ -749,7 +749,7 @@ describe( 'table selection', () => {
 		} );
 
 		it( 'should clear single cell if selected', () => {
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ),
 				modelRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ),
 			);
@@ -764,7 +764,7 @@ describe( 'table selection', () => {
 		} );
 
 		it( 'should work with document selection passed to Model#deleteContent()', () => {
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
@@ -829,6 +829,120 @@ describe( 'table selection', () => {
 				[ '31', '32', '33' ]
 			] ) );
 		} );
+	} );
+
+	describe( 'getAnchorCell() and getFocusCell()', () => {
+		beforeEach( async () => {
+			editor = await createEditor();
+			model = editor.model;
+			modelRoot = model.document.getRoot();
+			tableSelection = editor.plugins.get( TableSelection );
+
+			setModelData( model, modelTable( [
+				[ '[]00', '01', '02' ],
+				[ '10', '11', '12' ],
+				[ '20', '21', '22' ]
+			] ) );
+		} );
+
+		it( 'should return null if no table cell is selected', () => {
+			expect( tableSelection.getAnchorCell() ).to.be.null;
+			expect( tableSelection.getFocusCell() ).to.be.null;
+		} );
+
+		it( 'getAnchorCell() should return the table cell from the first range in the selection', () => {
+			const anchorCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
+			const focusCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
+
+			tableSelection.setCellSelection( anchorCell, focusCell );
+
+			expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
+		} );
+
+		it( 'getFocusCell() should return the table cell from the last range in the selection', () => {
+			const anchorCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
+			const focusCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
+
+			tableSelection.setCellSelection( anchorCell, focusCell );
+
+			expect( tableSelection.getFocusCell() ).to.equal( focusCell );
+		} );
+	} );
+
+	describe( 'the selection ranges order', () => {
+		let selection, table;
+
+		beforeEach( async () => {
+			editor = await createEditor();
+			model = editor.model;
+			selection = model.document.selection;
+			modelRoot = model.document.getRoot();
+			tableSelection = editor.plugins.get( TableSelection );
+
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ],
+				[ '20', '21', '22' ]
+			] ) );
+
+			table = modelRoot.getChild( 0 );
+		} );
+
+		it( 'should be to below right', () => {
+			const anchorCell = table.getChild( 1 ).getChild( 1 );
+			const focusCell = table.getChild( 2 ).getChild( 2 );
+
+			tableSelection.setCellSelection( anchorCell, focusCell );
+
+			assertSelection( anchorCell, focusCell, 4 );
+			expect( tableSelection.getFocusCell() ).to.equal( focusCell );
+			expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
+			expect( selection.isBackward ).to.be.false;
+		} );
+
+		it( 'should be to below left', () => {
+			const anchorCell = table.getChild( 1 ).getChild( 1 );
+			const focusCell = table.getChild( 2 ).getChild( 0 );
+
+			tableSelection.setCellSelection( anchorCell, focusCell );
+
+			assertSelection( anchorCell, focusCell, 4 );
+			expect( tableSelection.getFocusCell() ).to.equal( focusCell );
+			expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
+			expect( selection.isBackward ).to.be.true;
+		} );
+
+		it( 'should be to above left', () => {
+			const anchorCell = table.getChild( 1 ).getChild( 1 );
+			const focusCell = table.getChild( 0 ).getChild( 0 );
+
+			tableSelection.setCellSelection( anchorCell, focusCell );
+
+			assertSelection( anchorCell, focusCell, 4 );
+			expect( tableSelection.getFocusCell() ).to.equal( focusCell );
+			expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
+			expect( selection.isBackward ).to.be.true;
+		} );
+
+		it( 'should be to above right', () => {
+			const anchorCell = table.getChild( 1 ).getChild( 1 );
+			const focusCell = table.getChild( 0 ).getChild( 2 );
+
+			tableSelection.setCellSelection( anchorCell, focusCell );
+
+			assertSelection( anchorCell, focusCell, 4 );
+			expect( tableSelection.getFocusCell() ).to.equal( focusCell );
+			expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
+			expect( selection.isBackward ).to.be.true;
+		} );
+
+		function assertSelection( anchorCell, focusCell, count ) {
+			const cells = [ ...selection.getRanges() ].map( range => range.getContainedElement() );
+
+			expect( selection.rangeCount ).to.equal( count );
+			expect( cells[ 0 ] ).to.equal( anchorCell );
+			expect( cells[ cells.length - 1 ] ).to.equal( focusCell );
+		}
 	} );
 
 	function createEditor() {
