@@ -12,7 +12,16 @@
 # To optimize the entire project:
 #	yarn clean-up-svg-icons packages/**/theme/icons
 
+# A list of icons that should not NOT be cleaned up. Their internal structure should not be changed
+# because, for instance, CSS animations may depend on it.
+BLACKLIST=("return-arrow.svg")
+
 for i in "$@"
 do
-	svgo --config=./scripts/svgo.config.json -i $i
+	if [[ " ${BLACKLIST[@]} " =~ " $(basename $i) " ]]
+	then
+		echo "\x1B[33m[clean-up-svg-icons]\x1B[0m Note: \"$i\" is blacklisted, skipping."
+	else
+		svgo --config=./scripts/svgo.config.json -i $i
+	fi
 done
