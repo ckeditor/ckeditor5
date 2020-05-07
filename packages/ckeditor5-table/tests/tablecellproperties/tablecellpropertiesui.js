@@ -121,6 +121,28 @@ describe( 'table cell properties', () => {
 					tableCellPropertiesButton.fire( 'execute' );
 					sinon.assert.calledOnce( spy );
 				} );
+
+				it( 'should be disabled if all of the table properties commands are disabled', () => {
+					[
+						'tableCellBorderStyle',
+						'tableCellBorderColor',
+						'tableCellBorderWidth',
+						'tableCellWidth',
+						'tableCellHeight',
+						'tableCellPadding',
+						'tableCellBackgroundColor',
+						'tableCellHorizontalAlignment',
+						'tableCellVerticalAlignment'
+					].forEach( command => {
+						editor.commands.get( command ).isEnabled = false;
+					} );
+
+					expect( tableCellPropertiesButton.isEnabled ).to.be.false;
+
+					editor.commands.get( 'tableCellBackgroundColor' ).isEnabled = true;
+
+					expect( tableCellPropertiesButton.isEnabled ).to.be.true;
+				} );
 			} );
 		} );
 
