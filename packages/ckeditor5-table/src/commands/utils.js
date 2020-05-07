@@ -50,13 +50,14 @@ export function updateNumericAttribute( key, value, item, writer, defaultValue =
  * A common method to create an empty table cell. It creates a proper model structure as a table cell must have at least one block inside.
  *
  * @param {module:engine/model/writer~Writer} writer The model writer.
- * @param {module:engine/model/position~Position} insertPosition The position at which the table cell should be inserted.
+ * @param {module:engine/model/position~Position|module:engine/model/element~Element} insertPositionOrParentElement The position at which
+ * the table cell should be inserted. If the element is provided then it's end position is used.
  * @param {Object} attributes The element attributes.
  */
-export function createEmptyTableCell( writer, insertPosition, attributes = {} ) {
+export function createEmptyTableCell( writer, insertPositionOrParentElement, attributes = {} ) {
 	const tableCell = writer.createElement( 'tableCell', attributes );
 	writer.insertElement( 'paragraph', tableCell );
-	writer.insert( tableCell, insertPosition );
+	writer.insert( tableCell, insertPositionOrParentElement, 'end' );
 }
 
 /**

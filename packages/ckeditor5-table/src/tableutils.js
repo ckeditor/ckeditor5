@@ -721,7 +721,7 @@ function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attr
 
 		writer.insert( tableRow, table, insertAt );
 
-		createCells( tableCellToInsert, writer, writer.createPositionAt( tableRow, 'end' ), attributes );
+		createCells( tableCellToInsert, writer, tableRow, attributes );
 	}
 }
 
@@ -729,11 +729,12 @@ function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attr
 //
 // @param {Number} columns The number of columns to create
 // @param {module:engine/model/writer~Writer} writer
-// @param {module:engine/model/position~Position} insertPosition
-function createCells( cells, writer, insertPosition, attributes = {} ) {
+// @param {module:engine/model/position~Position|module:engine/model/element~Element} insertPositionOrParentElement
+// @param {Object|Array.<Object>} attributes
+function createCells( cells, writer, insertPositionOrParentElement, attributes = {} ) {
 	for ( let i = 0; i < cells; i++ ) {
-		const cellAttributes = Array.isArray( attributes ) ? attributes[ attributes.length - i - 1 ] : attributes;
-		createEmptyTableCell( writer, insertPosition, cellAttributes );
+		const cellAttributes = Array.isArray( attributes ) ? attributes[ i ] : attributes;
+		createEmptyTableCell( writer, insertPositionOrParentElement, cellAttributes );
 	}
 }
 
