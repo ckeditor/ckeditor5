@@ -111,6 +111,13 @@ export default class TableSelection extends Plugin {
 	 * Sets the model selection based on given anchor and target cells (can be the same cell).
 	 * Takes care of setting the backward flag.
 	 *
+	 *		const modelRoot = editor.model.document.getRoot();
+	 *		const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
+	 *		const lastCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
+	 *
+	 *		const tableSelection = editor.plugins.get( 'TableSelection' );
+	 *		tableSelection.setCellSelection( firstCell, lastCell );
+	 *
 	 * @param {module:engine/model/element~Element} anchorCell
 	 * @param {module:engine/model/element~Element} targetCell
 	 */

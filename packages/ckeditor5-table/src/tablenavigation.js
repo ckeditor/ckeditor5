@@ -197,7 +197,7 @@ export default class TableNavigation extends Plugin {
 		const selectedCells = getSelectedTableCells( selection );
 
 		if ( selectedCells.length ) {
-			let focusCell = null;
+			let focusCell;
 
 			if ( expandSelection ) {
 				focusCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
