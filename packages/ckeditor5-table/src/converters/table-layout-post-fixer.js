@@ -357,11 +357,7 @@ function getRowsLengths( table ) {
 	const lengths = new Array( table.childCount ).fill( 0 );
 
 	for ( const { row } of new TableWalker( table, { includeSpanned: true } ) ) {
-		if ( !lengths[ row ] ) {
-			lengths[ row ] = 0;
-		}
-
-		lengths[ row ] += 1;
+		lengths[ row ]++;
 	}
 
 	return lengths;
