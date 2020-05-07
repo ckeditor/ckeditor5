@@ -1,0 +1,295 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/*
+ * !!! TODO: Lots of these styles should go to ckeditor5-theme-lark before production.
+ */
+
+:root {
+	--ck-color-widget-type-around-button-active: var(--ck-color-focus-border);
+	--ck-color-widget-type-around-button-hover: var(--ck-color-widget-hover-border);
+	--ck-color-widget-type-around-button-blurred-editable: var(--ck-color-widget-blurred-border);
+	--ck-color-widget-type-around-button-radar-start-alpha: 0;
+	--ck-color-widget-type-around-button-radar-end-alpha: .3;
+	--ck-color-widget-type-around-button-icon: var(--ck-color-base-background);
+	--ck-color-widget-type-around-activated-outline-alpha: .3;
+	--ck-color-widget-type-around-hover-outline-alpha: .6;
+	--ck-color-widget-type-around-line: var(--ck-color-focus-border);
+}
+
+.ck .ck-widget {
+	/*
+	 * Styles of the type around buttons
+	 */
+	& .ck-widget__type-around__button {
+		cursor: pointer;
+		display: none;
+		position: absolute;
+		overflow: hidden;
+		width: 20px;
+		height: 20px;
+
+		z-index: var(--ck-z-default);
+		background: var(--ck-color-widget-type-around-button);
+		border-radius: 100px;
+		animation: fadein linear 300ms 1 normal forwards;
+		transition: opacity 100ms linear;
+
+		& .ck-icon {
+			width: 10px;
+			height: 8px;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+
+			z-index: calc(var(--ck-z-default) + 2);
+			transform: translate(-50%,-50%);
+			transition: transform .5s ease;
+			margin-top: 1px;
+
+			& line,
+			& polyline {
+				stroke-dasharray: 10;
+				stroke-dashoffset: 0;
+
+				fill: none;
+				stroke: var(--ck-color-widget-type-around-button-icon);
+				stroke-width: 1.5px;
+				stroke-linecap: round;
+				stroke-linejoin: round;
+			}
+
+			& line {
+				stroke-dasharray: 7;
+			}
+		}
+
+		&.ck-widget__type-around__button_before {
+			top: -1.5px;
+			left: min(10%, 30px);
+
+			transform: translate(0,-50%);
+		}
+
+		&.ck-widget__type-around__button_after {
+			bottom: -1.5px;
+			right: min(10%, 30px);
+
+			transform: translate(50%,50%);
+		}
+	}
+
+	/*
+	 * Styles of the type around lines.
+	 */
+	& .ck-widget__type-around__line {
+		height: 3px;
+		left: -3px;
+		right: -3px;
+		display: none;
+		position: absolute;
+
+		background: var(--ck-color-widget-type-around-line);
+		animation: ck-widget-type-around-line-blink 1s linear infinite;
+
+		&.ck-widget__type-around__line_before {
+			top: -3px;
+		}
+
+		&.ck-widget__type-around__line_after {
+			bottom: -3px;
+		}
+	}
+
+	/*
+	 * Show type around buttons when the widget gets selected or being hovered.
+	 */
+	&.ck-widget_selected,
+	&:hover {
+		& > .ck-widget__type-around > .ck-widget__type-around__button {
+			display: block;
+		}
+	}
+
+	/*
+	 * Hide the type around buttons depending on which directions the widget supports.
+	 */
+	&:not(.ck-widget_can-type-around_before) > .ck-widget__type-around > .ck-widget__type-around__button_before {
+		display: none;
+	}
+
+	&:not(.ck-widget_can-type-around_after) > .ck-widget__type-around > .ck-widget__type-around__button_after {
+		display: none;
+	}
+
+	/*
+	 * Styles for the buttons when the widget is NOT selected (but, for instance, hovered).
+	 */
+	&:not(.ck-widget_selected) {
+		& > .ck-widget__type-around > .ck-widget__type-around__button {
+			background: var(--ck-color-widget-type-around-button-hover);
+		}
+	}
+
+	/*
+	 * Styles for the buttons when the widget is selected or the button was activated.
+	 */
+	&.ck-widget_selected,
+	&.ck-widget_type-around_activated {
+		& > .ck-widget__type-around > .ck-widget__type-around__button {
+			background: var(--ck-color-widget-type-around-button-active);
+
+			&::after {
+				content: "";
+				width: 18px;
+				height: 18px;
+				display: block;
+				position: absolute;
+				top: 1px;
+				left: 1px;
+
+				border-radius: 100px;
+				z-index: calc(var(--ck-z-default) + 1);
+				background: linear-gradient(135deg, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,.3) 100%);
+			}
+		}
+	}
+
+	/*
+	 * Styles when the type around becomes activated in a widget.
+	 */
+	&.ck-widget_type-around_activated {
+		/*
+		 * Highlight the type around button when the feature is activated in the widget.
+		 */
+		& > .ck-widget__type-around > .ck-widget__type-around__button {
+			animation: ck-widget-type-around-button-sonar 1s ease infinite;
+
+			/*
+			 * Animate active button's icon.
+			 */
+			& .ck-icon {
+				& polyline {
+					animation: ck-widget-type-around-arrow-dash 2s linear infinite;
+				}
+
+				& line {
+					animation: ck-widget-type-around-arrow-tip-dash 2s linear infinite;
+				}
+			}
+		}
+
+		/*
+		 * Show the "upper" button if the type around is "before" the widget.
+		 * Show the "upper" blinking line if the type around is "before" the widget.
+		 */
+		&.ck-widget_type-around_activated_before > .ck-widget__type-around {
+			& > .ck-widget__type-around__button_before {
+				opacity: 1;
+			}
+
+			& > .ck-widget__type-around__button_after {
+				opacity: 0;
+			}
+
+			& > .ck-widget__type-around__line_before {
+				display: block;
+			}
+		}
+
+		/*
+		 * Show the "lower" button if the type around is "after" the widget.
+		 * Show the "lower" blinking line if the type around is "after" the widget.
+		 */
+		&.ck-widget_type-around_activated_after > .ck-widget__type-around {
+			& > .ck-widget__type-around__button_after {
+				opacity: 1;
+			}
+
+			& > .ck-widget__type-around__button_before {
+				opacity: 0;
+			}
+
+			& > .ck-widget__type-around__line_after {
+				display: block;
+			}
+		}
+	}
+
+	/*
+	 * Widget outline style when the widget is selected.
+	 */
+	&.ck-widget_type-around_activated,
+	&.ck-widget_type-around_activated:hover,
+	&.ck-widget_selected.ck-widget_type-around_activated,
+	&.ck-widget_selected.ck-widget_type-around_activated:hover {
+		outline-color: hsla(var(--ck-color-focus-border-coordinates),var(--ck-color-widget-type-around-activated-outline-alpha));
+	}
+
+	&:not(.ck-widget_selected).ck-widget_type-around_activated,
+	&:not(.ck-widget_selected).ck-widget_type-around_activated:hover {
+		outline-color: hsla(var(--ck-color-widget-hover-border-coordinates),var(--ck-color-widget-type-around-hover-outline-alpha));
+	}
+
+	&.ck-widget_with-selection-handle {
+		&.ck-widget_type-around_activated,
+		&.ck-widget_type-around_activated:hover,
+		&.ck-widget_selected.ck-widget_type-around_activated,
+		&.ck-widget_selected.ck-widget_type-around_activated:hover {
+			& > .ck-widget__selection-handle {
+				background: hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-activated-outline-alpha));
+			}
+		}
+	}
+}
+
+/*
+ * Styles for the buttons when the widget is selected but the user clicked outside of the editor (blurred the editor).
+ */
+.ck-editor__editable.ck-blurred .ck-widget.ck-widget_selected > .ck-widget__type-around > .ck-widget__type-around__button:not(:hover) {
+	background: var(--ck-color-widget-type-around-button-blurred-editable);
+}
+
+@keyframes ck-widget-type-around-line-blink {
+	0% {
+		opacity: 0;
+	}
+	30%, 50%, 70% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+@keyframes ck-widget-type-around-arrow-dash {
+	0% {
+		stroke-dashoffset: 10;
+	}
+	20%, 100% {
+		stroke-dashoffset: 0;
+	}
+}
+
+@keyframes ck-widget-type-around-arrow-tip-dash {
+	0%, 20% {
+		stroke-dashoffset: 7;
+	}
+	40%, 100% {
+		stroke-dashoffset: 0;
+	}
+}
+
+@keyframes ck-widget-type-around-button-sonar {
+	0% {
+		box-shadow: 0 0 0 0 hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-start-alpha));
+	}
+	50% {
+		box-shadow: 0 0 0 5px hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-end-alpha));
+	}
+	100% {
+		box-shadow: 0 0 0 5px hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-start-alpha));
+	}
+}
