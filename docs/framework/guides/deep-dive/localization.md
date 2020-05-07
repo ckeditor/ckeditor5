@@ -180,7 +180,7 @@ msgstr "Alinear a la izquierda"
 
 To build the localized editor follow the steps from {@link features/ui-language building the editor using a specific language guide}.
 
-### Known limitations
+## Known limitations
 
-- It's impossible to change the chosen language at runtime without destroying the editor.
-- It's impossible to add more than one language to the bundle using the `CKEditorWebpackPlugin`.
+- Currently it is impossible to change the chosen language at runtime without destroying the editor.
+- Currently it is impossible to add more than one language to the bundle using the `CKEditorWebpackPlugin`. In case where multiple *translation assets* should be added to the application, they should be added using the `<script>` tags or imports to the generated *translation assets*
