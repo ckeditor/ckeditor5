@@ -36,7 +36,8 @@ describe( 'Table layout post-fixer', () => {
 			const parsed = parse( modelTable( [
 				[ '00' ],
 				[ '10', '11', '12' ],
-				[ '20', '21' ]
+				[ '20', '21' ],
+				[]
 			] ), model.schema );
 
 			model.change( writer => {
@@ -47,7 +48,8 @@ describe( 'Table layout post-fixer', () => {
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
 				[ '00', '', '' ],
 				[ '10', '11', '12' ],
-				[ '20', '21', '' ]
+				[ '20', '21', '' ],
+				[ '', '', '' ]
 			] ) );
 		} );
 
