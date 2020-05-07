@@ -49,9 +49,9 @@ t( 'insert %0 emoji', [ emojiName ] );
 For more advanced scenarios use plain objects forms:
 
 ```js
-t( { string: '%0 emoji', id: 'INSERT_EMOJI' } );
-t( { string: '%0 emoji', plural: '%0 emojis' }, quantity );
-t( { string: '%0 emoji', plural: '%0 emojis', 'INSERT_EMOJI' } );
+t( { string: '%0 emoji', id: 'INSERT_EMOJI' }, 'insert' );
+t( { string: '%0 emoji', plural: '%0 emojis', id: 'EMOJI' }, quantity );
+t( { string: '%1 %0 emoji', plural: '%1 %0 emojis', id: 'INSERT_EMOJIS' }, [ quantity, 'Insert' ] );
 ```
 
 ### Examples
