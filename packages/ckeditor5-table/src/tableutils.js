@@ -116,7 +116,7 @@ export default class TableUtils extends Plugin {
 	 * @param {Object} options
 	 * @param {Number} [options.at=0] The row index at which the rows will be inserted.
 	 * @param {Number} [options.rows=1] The number of rows to insert.
-	 * @param {Number} [options.copyStructureFrom=-1] The row index used as structure reference.
+	 * @param {Number} [options.copyStructureFrom] The row index used as structure reference.
 	 */
 	insertRows( table, options = {} ) {
 		const model = this.editor.model;
