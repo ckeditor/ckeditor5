@@ -914,7 +914,8 @@ describe( 'table clipboard', () => {
 						] );
 					} );
 
-					it( 'handles pasting table that has cell with colspan (last row in selection is spanned)', () => {
+					// TODO: Skipped case - should allow pasting but no tools to compare areas (like in MergeCellsCommand).
+					it.skip( 'handles pasting table that has cell with colspan (last row in selection is spanned)', () => {
 						// +----+----+----+----+
 						// | 00 | 01 | 02 | 03 |
 						// +----+----+----+----+
@@ -924,12 +925,12 @@ describe( 'table clipboard', () => {
 						// +----+----+----+----+
 						// | 30 | 31 | 32 | 33 |
 						// +----+----+----+----+
-						setModelData( model, [
+						setModelData( model, modelTable( [
 							[ '00', '01', '02', '03' ],
 							[ { contents: '10', rowspan: 2 }, { contents: '11', colspan: 2, rowspan: 2 }, '13' ],
 							[ '23' ],
 							[ '30', '31', '32', '33' ]
-						] );
+						] ) );
 
 						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
@@ -1107,7 +1108,8 @@ describe( 'table clipboard', () => {
 						/* eslint-enable no-multi-spaces */
 					} );
 
-					it( 'handles pasting table that has cell with colspan (last row in selection is spanned)', () => {
+					// TODO: Skipped case - should allow pasting but no tools to compare areas (like in MergeCellsCommand).
+					it.skip( 'handles pasting table that has cell with colspan (last row in selection is spanned)', () => {
 						// +----+----+----+----+
 						// | 00 | 01 | 02 | 03 |
 						// +----+----+----+----+
@@ -1117,12 +1119,12 @@ describe( 'table clipboard', () => {
 						// +----+----+----+----+
 						// | 30 | 31 | 32 | 33 |
 						// +----+----+----+----+
-						setModelData( model, [
+						setModelData( model, modelTable( [
 							[ '00', '01', '02', '03' ],
 							[ { contents: '10', rowspan: 2 }, { contents: '11', colspan: 2, rowspan: 2 }, '13' ],
 							[ '23' ],
 							[ '30', '31', '32', '33' ]
-						] );
+						] ) );
 
 						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
