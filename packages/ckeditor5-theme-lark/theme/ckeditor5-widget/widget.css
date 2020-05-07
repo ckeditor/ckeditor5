@@ -13,7 +13,8 @@
 	--ck-widget-handler-animation-curve: ease;
 
 	--ck-color-widget-blurred-border: hsl(0, 0%, 87%);
-	--ck-color-widget-hover-border: hsl(43, 100%, 62%);
+	--ck-color-widget-hover-border-coordinates: 43, 100%, 62%;
+	--ck-color-widget-hover-border: hsl(var(--ck-color-widget-hover-border-coordinates));
 	--ck-color-widget-editable-focus-background: var(--ck-color-base-background);
 	--ck-color-widget-drag-handler-icon-color: var(--ck-color-base-background);
 }
