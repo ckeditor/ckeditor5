@@ -514,6 +514,28 @@ describe( 'MergeCellsCommand', () => {
 				] ) );
 			} );
 
+			it( 'should decrease heading rows if some heading rows were removed', () => {
+				setData( model, modelTable( [
+					[ '00' ],
+					[ '10' ],
+					[ '20' ]
+				], { headingRows: 2 } ) );
+
+				selectNodes( [
+					[ 0, 0, 0 ],
+					[ 0, 1, 0 ]
+				] );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[
+						'<paragraph>[00</paragraph><paragraph>10]</paragraph>'
+					],
+					[ '20' ]
+				], { headingRows: 1 } ) );
+			} );
+
 			it( 'should decrease rowspan if cell overlaps removed row', () => {
 				setData( model, modelTable( [
 					[ '00', { rowspan: 2, contents: '01' }, { rowspan: 3, contents: '02' } ],
