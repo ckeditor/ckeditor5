@@ -17,6 +17,11 @@
 	--ck-color-resizer-tooltip-text: hsl(0, 0%, 95%);
 }
 
+.ck .ck-widget {
+	/* This is neccessary for type around UI to be positioned properly. */
+	position: relative;
+}
+
 .ck .ck-widget.ck-widget_with-selection-handle {
 	/* Make the widget wrapper a relative positioning container for the drag handle. */
 	position: relative;
