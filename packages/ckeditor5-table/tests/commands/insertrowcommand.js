@@ -4,6 +4,7 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import InsertRowCommand from '../../src/commands/insertrowcommand';
@@ -18,7 +19,7 @@ describe( 'InsertRowCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ TableUtils, TableSelection ]
+				plugins: [ TableUtils, TableSelection, HorizontalLineEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -213,6 +214,23 @@ describe( 'InsertRowCommand', () => {
 					[ 0, 0 ],
 					[ 0, 0 ]
 				] );
+			} );
+
+			it( 'should insert a row when a widget in the table cell is selected', () => {
+				setData( model, modelTable( [
+					[ '11', '12' ],
+					[ '21', '22' ],
+					[ '31', '[<horizontalLine></horizontalLine>]' ]
+				] ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '11', '12' ],
+					[ '21', '22' ],
+					[ '31', '<horizontalLine></horizontalLine>' ],
+					[ '', '' ]
+				] ) );
 			} );
 		} );
 	} );

@@ -4,6 +4,7 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import InsertColumnCommand from '../../src/commands/insertcolumncommand';
@@ -18,7 +19,7 @@ describe( 'InsertColumnCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ TableUtils, TableSelection ]
+				plugins: [ TableUtils, TableSelection, HorizontalLineEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -180,6 +181,22 @@ describe( 'InsertColumnCommand', () => {
 					[ '21', '22', '', { colspan: 2, contents: '23' }, '25' ],
 					[ { colspan: 5, contents: '31' }, { colspan: 2, contents: '34' } ]
 				], { headingColumns: 5 } ) );
+			} );
+
+			it( 'should insert a column when a widget in the table cell is selected', () => {
+				setData( model, modelTable( [
+					[ '11', '12' ],
+					[ '21', '22' ],
+					[ '31', '[<horizontalLine></horizontalLine>]' ]
+				] ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '11', '12', '' ],
+					[ '21', '22', '' ],
+					[ '31', '<horizontalLine></horizontalLine>', '' ]
+				] ) );
 			} );
 		} );
 	} );
