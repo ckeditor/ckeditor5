@@ -9,10 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
-import {
-	updateNumericAttribute,
-	isHeadingColumnCell
-} from './utils';
+import { isHeadingColumnCell, findAncestor } from './utils';
 import { getTableCellsContainingSelection } from '../utils';
 
 /**
@@ -85,6 +82,7 @@ export default class MergeCellCommand extends Command {
 		const tableCell = getTableCellsContainingSelection( doc.selection )[ 0 ];
 		const cellToMerge = this.value;
 		const direction = this.direction;
+		const table = findAncestor( 'table', tableCell );
 
 		model.change( writer => {
 			const isMergeNext = direction == 'right' || direction == 'down';
@@ -108,7 +106,8 @@ export default class MergeCellCommand extends Command {
 
 			// Remove empty row after merging.
 			if ( !removedTableCellRow.childCount ) {
-				removeEmptyRow( removedTableCellRow, writer );
+				const tableUtils = this.editor.plugins.get( 'TableUtils' );
+				tableUtils.removeRows( table, { at: table.getChildIndex( removedTableCellRow ) } );
 			}
 		} );
 	}
@@ -241,26 +240,6 @@ function getVerticalCell( tableCell, direction ) {
 	} );
 
 	return cellToMergeData && cellToMergeData.cell;
-}
-
-// Properly removes an empty row from a table. It will update the `rowspan` attribute of cells that overlap the removed row.
-//
-// @param {module:engine/model/element~Element} removedTableCellRow
-// @param {module:engine/model/writer~Writer} writer
-function removeEmptyRow( removedTableCellRow, writer ) {
-	const table = removedTableCellRow.parent;
-
-	const removedRowIndex = table.getChildIndex( removedTableCellRow );
-
-	for ( const { cell, row, rowspan } of new TableWalker( table, { endRow: removedRowIndex } ) ) {
-		const overlapsRemovedRow = row + rowspan - 1 >= removedRowIndex;
-
-		if ( overlapsRemovedRow ) {
-			updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer );
-		}
-	}
-
-	writer.remove( removedTableCellRow );
 }
 
 // Merges two table cells. It will ensure that after merging cells with an empty paragraph, the resulting table cell will only have one
