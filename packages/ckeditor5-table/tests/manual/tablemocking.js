@@ -12,6 +12,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 
 import { diffString } from 'json-diff';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import TableWalker from '../../src/tablewalker';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -44,7 +45,24 @@ ClassicEditor
 			updateInputStatus();
 
 			const table = findTable( editor );
-			modelData.value = table ? prettyFormatModelTableInput( prepareModelTableInput( table ) ) : '';
+			modelData.value = table ? prettyFormatModelTableInput( prepareModelTableInput( editor.model, table ) ) : '';
+
+			updateAsciiAndDiff();
+		} );
+
+		document.getElementById( 'renumber-cells' ).addEventListener( 'click', () => {
+			const table = findTable( editor );
+
+			if ( !table ) {
+				return;
+			}
+
+			editor.model.change( writer => {
+				for ( const { row, column, cell } of new TableWalker( table ) ) {
+					const selection = editor.model.createSelection( cell, 'in' );
+					editor.model.insertContent( writer.createText( `${ row }${ column }` ), selection );
+				}
+			} );
 
 			updateAsciiAndDiff();
 		} );
@@ -61,7 +79,7 @@ ClassicEditor
 			}
 
 			const inputModelData = parseModelData( modelData.value );
-			const currentModelData = prepareModelTableInput( table );
+			const currentModelData = prepareModelTableInput( editor.model, table );
 
 			const diffOutput = inputModelData ? diffString( inputModelData, currentModelData, {
 				theme: {
@@ -71,7 +89,7 @@ ClassicEditor
 				}
 			} ) : '-- no input --';
 
-			asciiOut.innerHTML = createTableAsciiArt( table ) + '\n\n' +
+			asciiOut.innerHTML = createTableAsciiArt( editor.model, table ) + '\n\n' +
 				'Diff: input vs post-fixed model:\n' + ( diffOutput ? diffOutput : '-- no differences --' );
 		}
 
