@@ -9,7 +9,7 @@ The {@link module:select-all/selectall~SelectAll} feature allows selecting the e
 
 ## Demo
 
-Press <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd> or use the toolbar button to select the entire content of the editor. Note that when editing an image caption, the selection will only expand to the boundaries of the caption.
+Press <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd> or use the toolbar button to select the entire content of the editor. Note that when editing an {@link features/image#image-captions image caption}, the selection will only expand to the boundaries of the caption.
 
 {@snippet features/select-all}
 

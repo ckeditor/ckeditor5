@@ -139,7 +139,7 @@ export function getSelectionAffectedTableCells( selection ) {
 }
 
 /**
- * Returns an object with `first` and `last` row index contained in the given `tableCells`.
+ * Returns an object with the `first` and `last` row index contained in the given `tableCells`.
  *
  *		const selectedTableCells = getSelectedTableCells( editor.model.document.selection );
  *
@@ -148,7 +148,7 @@ export function getSelectionAffectedTableCells( selection ) {
  *		console.log( `Selected rows: ${ first } to ${ last }` );
  *
  * @param {Array.<module:engine/model/element~Element>} tableCells
- * @returns {Object} Returns an object with `first` and `last` table row indexes.
+ * @returns {Object} Returns an object with the `first` and `last` table row indexes.
  */
 export function getRowIndexes( tableCells ) {
 	const indexes = tableCells.map( cell => cell.parent.index );
@@ -157,7 +157,7 @@ export function getRowIndexes( tableCells ) {
 }
 
 /**
- * Returns an object with `first` and `last` column index contained in the given `tableCells`.
+ * Returns an object with the `first` and `last` column index contained in the given `tableCells`.
  *
  *		const selectedTableCells = getSelectedTableCells( editor.model.document.selection );
  *
@@ -166,7 +166,7 @@ export function getRowIndexes( tableCells ) {
  *		console.log( `Selected columns: ${ first } to ${ last }` );
  *
  * @param {Array.<module:engine/model/element~Element>} tableCells
- * @returns {Object} Returns an object with `first` and `last` table column indexes.
+ * @returns {Object} Returns an object with the `first` and `last` table column indexes.
  */
 export function getColumnIndexes( tableCells ) {
 	const table = findAncestor( 'table', tableCells[ 0 ] );
