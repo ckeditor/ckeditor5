@@ -15,10 +15,10 @@ The CKEditor 5 codebase is divided into multiple [npm](http://npmjs.com/) packag
 
 The main package's GitHub repository also [hosts all other CKEditor5 sub-packages](https://github.com/ckeditor/ckeditor5/tree/master/packages).
 
-You can find all the official packages listed in [CKEditor 5 development repository's README](https://github.com/ckeditor/ckeditor5#packages).
+You can find all the official packages listed in the [CKEditor 5 repository's README](https://github.com/ckeditor/ckeditor5#packages).
 
 <info-box info>
-Prior to version **19.0.0** CKEditor 5 was developed in a multi repository architecture. If you'd like to work with the older multi-repository release, please refer to [older Developer Environment guide](/docs/ckeditor5/19.0.0/framework/guides/contributing/development-environment.html) for multi-repository oriented instructions.
+	Prior to version **19.0.0** CKEditor 5 was developed in a multi-repository architecture. If you would like to work with an older multi-repository release, please refer to the [older Development environment guide](/docs/ckeditor5/19.0.0/framework/guides/contributing/development-environment.html) for multi-repository oriented instructions.
 </info-box>
 
 ## Requirements
@@ -34,7 +34,7 @@ First, you need to install  [Yarn](https://yarnpkg.com/) that will be used for d
 
 It is best to install it globally in your system for an easier use later on:
 
-```bash
+```
 npm install -g yarn
 ```
 
@@ -42,28 +42,28 @@ npm install -g yarn
 
 Then clone the [CKEditor 5 repository](https://github.com/ckeditor/ckeditor5):
 
-```bash
+```
 git clone https://github.com/ckeditor/ckeditor5.git
 cd ckeditor5
 ```
 
 And install all CKEditor 5 packages from the [npm registry](http://npmjs.com/).
 
-```bash
+```
 yarn install
 ```
 
 ## Running tests
 
-In order to run tests you need to use the `test` and `manual` tasks.
+In order to run tests, you need to use the `test` and `manual` tasks.
 
-```bash
+```
 yarn run test --watch --coverage --source-map --files=engine
 ```
 
 or, shorter:
 
-```bash
+```
 yarn run test -- -wcs --files=engine
 ```
 
@@ -73,19 +73,19 @@ This command will run the [`ckeditor5-engine`](https://github.com/ckeditor/ckedi
 
 To create a server for manual tests use the `manual` task:
 
-```bash
+```
 yarn run manual
 ```
 
-To help test localized editors, the task accepts two optional configurations: `--language="en"` and `--additionalLanguages="ar,pl,..."`. The former sets the main language used by test editors. By default it is `"en"` and it in most scenarios you do not need to change it. The later brings more languages to manual tests, e.g. which is helpful when working with {@link features/ui-language#righttoleft-rtl-languages-support right–to–left languages in the user interface}.
+To help test localized editors, the task accepts two optional configurations: `--language="en"` and `--additionalLanguages="ar,pl,..."`. The former sets the main language used by test editors. By default it is `"en"` and in most scenarios you do not need to change it. The latter brings more languages to manual tests, which is helpful e.g. when working with {@link features/ui-language#righttoleft-rtl-languages-support right–to–left languages in the user interface}.
 
 You can read more about the {@link framework/guides/contributing/testing-environment Testing environment}.
 
 ## Generating documentation
 
-To build the documentation you need to run the `docs` task:
+To build the documentation, you need to run the `docs` task:
 
-```bash
+```
 yarn run docs
 ```
 
@@ -93,13 +93,13 @@ The documentation will be available in `build/docs/`.
 
 This task accepts the following arguments:
 
-* `--skip-api` &mdash; Skips building the API documentation (which takes the majority of the total time).
-* `--skip-snippets` &mdash; Skips building live snippets.
-* `--snippets=snippet-name` &mdash; Whitelist snippets to build (accepts glob patterns).
-* `--skip-validation` &mdash; Skips the final link validation.
-* `--watch` &mdash; Runs the documentation generator in a watch mode. It covers guides (it does not cover API docs).
-* `--production` &mdash; Minifies the assets and performs other actions which are unnecessary during CKEditor 5 development.
-* `--verbose` &mdash; Prints out more information.
+* `--skip-api` &ndash; Skips building the API documentation (which takes the majority of the total time).
+* `--skip-snippets` &ndash; Skips building live snippets.
+* `--snippets=snippet-name` &ndash; Whitelists snippets to build (accepts glob patterns).
+* `--skip-validation` &ndash; Skips the final link validation.
+* `--watch` &ndash; Runs the documentation generator in a watch mode. It covers guides but it does not cover API docs.
+* `--production` &ndash; Minifies the assets and performs other actions which are unnecessary during CKEditor 5 development.
+* `--verbose` &ndash; Prints out more information.
 
 Note: These arguments must be passed after additional `--`:
 
@@ -117,9 +117,10 @@ yarn run docs:serve
 
 It is possible to generate a stylesheet containing content styles brought by all CKEditor 5 features. In order to do that, execute:
 
-```bash
+```
 yarn docs:content-styles
 ```
+
 The stylesheet will be saved in the `build/content-styles` folder.
 
 To learn more, refer to the {@link builds/guides/integration/content-styles Content styles} guide.
@@ -132,7 +133,7 @@ By default, CKEditor 5 supports SVG icons found in the `ckeditor5-*/theme/icons`
 
 To remove the excess data and prevent [certain issues](https://github.com/ckeditor/ckeditor5-ui/issues/245), **all new icons should be optimized before joining the code base**. To do that, you can use the `clean-up-svg-icons` script in the [root of the project](#setting-up-the-ckeditor-development-environment), a wrapper for the [SVGO](https://github.com/svg/svgo) tool:
 
-```bash
+```
 cd path/to/ckeditor5
 
 # Optimize all SVG files in the folder.
