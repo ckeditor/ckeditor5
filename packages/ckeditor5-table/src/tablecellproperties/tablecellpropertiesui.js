@@ -32,6 +32,19 @@ import { debounce } from 'lodash-es';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
+// Map of view properties and related commands.
+const propertyToCommandMap = {
+	borderStyle: 'tableCellBorderStyle',
+	borderColor: 'tableCellBorderColor',
+	borderWidth: 'tableCellBorderWidth',
+	width: 'tableCellWidth',
+	height: 'tableCellHeight',
+	padding: 'tableCellPadding',
+	backgroundColor: 'tableCellBackgroundColor',
+	horizontalAlignment: 'tableCellHorizontalAlignment',
+	verticalAlignment: 'tableCellVerticalAlignment'
+};
+
 /**
  * The table cell properties UI plugin. It introduces the `'tableCellProperties'` button
  * that opens a form allowing to specify the visual styling of a table cell.
@@ -109,6 +122,13 @@ export default class TableCellPropertiesUI extends Plugin {
 			} );
 
 			this.listenTo( view, 'execute', () => this._showView() );
+
+			const commands = Object.values( propertyToCommandMap )
+				.map( commandName => editor.commands.get( commandName ) );
+
+			view.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => (
+				areEnabled.some( isCommandEnabled => isCommandEnabled )
+			) );
 
 			return view;
 		} );
@@ -256,17 +276,9 @@ export default class TableCellPropertiesUI extends Plugin {
 	_fillViewFormFromCommandValues() {
 		const commands = this.editor.commands;
 
-		this.view.set( {
-			borderStyle: commands.get( 'tableCellBorderStyle' ).value || '',
-			borderColor: commands.get( 'tableCellBorderColor' ).value || '',
-			borderWidth: commands.get( 'tableCellBorderWidth' ).value || '',
-			width: commands.get( 'tableCellWidth' ).value || '',
-			height: commands.get( 'tableCellHeight' ).value || '',
-			padding: commands.get( 'tableCellPadding' ).value || '',
-			backgroundColor: commands.get( 'tableCellBackgroundColor' ).value || '',
-			horizontalAlignment: commands.get( 'tableCellHorizontalAlignment' ).value || '',
-			verticalAlignment: commands.get( 'tableCellVerticalAlignment' ).value || ''
-		} );
+		Object.entries( propertyToCommandMap )
+			.map( ( [ property, commandName ] ) => [ property, commands.get( commandName ).value || '' ] )
+			.forEach( ( [ property, value ] ) => this.view.set( property, value ) );
 	}
 
 	/**
