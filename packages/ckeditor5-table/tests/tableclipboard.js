@@ -1154,7 +1154,7 @@ describe( 'table clipboard', () => {
 						/* eslint-disable no-multi-spaces */
 						assertSelectedCells( model, [
 							[ 0, 0, 0, 0 ],
-							[ 0, 1,    0 ],
+							[ 0, 1, 0 ],
 							[ 0, 1, 1, 0 ],
 							[ 0, 0, 0, 0 ]
 						] );
@@ -1163,7 +1163,7 @@ describe( 'table clipboard', () => {
 				} );
 			} );
 
-			describe( 'pasted table is smaller than the selected area', () => {
+			describe( 'pasted table is bigger than the selected area', () => {
 				describe( 'no spans', () => {
 					it( 'handles simple table paste to a simple table fragment - at the beginning of a table', () => {
 						tableSelection.setCellSelection(
@@ -1872,12 +1872,40 @@ describe( 'table clipboard', () => {
 						/* eslint-disable no-multi-spaces */
 						assertSelectedCells( model, [
 							[ 0, 0, 0, 0 ],
-							[ 0, 1,    0 ],
+							[ 0, 1, 0 ],
 							[ 0, 1, 1, 0 ],
 							[ 0, 0, 0, 0 ]
 						] );
 						/* eslint-enable no-multi-spaces */
 					} );
+				} );
+			} );
+
+			describe( 'pasted table is smaller than the selected area', () => {
+				it( 'blocks this case', () => {
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 3, 3 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ '10', '11', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+
+					assertSelectedCells( model, [
+						[ 1, 1, 1, 1 ],
+						[ 1, 1, 1, 1 ],
+						[ 1, 1, 1, 1 ],
+						[ 1, 1, 1, 1 ]
+					] );
 				} );
 			} );
 		} );
