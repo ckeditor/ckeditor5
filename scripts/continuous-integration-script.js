@@ -61,7 +61,7 @@ childProcess.execSync( 'mkdir .nyc_output' );
 
 const packages = childProcess.execSync( 'ls packages -1', {
 	encoding: 'utf8'
-} ).toString().split( '\n' );
+} ).toString().trim().split( '\n' );
 
 for ( const fullPackageName of packages ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
