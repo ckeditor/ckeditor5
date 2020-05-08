@@ -8,6 +8,7 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
+import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
@@ -91,7 +92,7 @@ class InlineWidget extends Plugin {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, HorizontalLine, InlineWidget ],
+		plugins: [ ArticlePluginSet, HorizontalLine, InlineWidget, MediaEmbed ],
 		toolbar: [
 			'heading',
 			'|',
