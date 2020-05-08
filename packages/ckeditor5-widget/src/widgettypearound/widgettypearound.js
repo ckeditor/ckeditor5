@@ -63,13 +63,18 @@ export default class WidgetTypeAround extends Plugin {
 	_enableTypeAroundUIInjection() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
+		const t = editor.locale.t;
+		const labels = {
+			before: t( 'Insert paragraph before widget' ),
+			after: t( 'Insert paragraph after widget' )
+		};
 
 		editor.editing.downcastDispatcher.on( 'insert', ( evt, data, conversionApi ) => {
 			const viewElement = conversionApi.mapper.toViewElement( data.item );
 
 			// Filter out non-widgets and inline widgets.
 			if ( isTypeAroundWidget( viewElement, data.item, schema ) ) {
-				injectUIIntoWidget( editor.editing.view, viewElement );
+				injectUIIntoWidget( editor.editing.view, labels, viewElement );
 			}
 		}, { priority: 'low' } );
 	}
@@ -147,14 +152,14 @@ export default class WidgetTypeAround extends Plugin {
 	}
 }
 
-function injectUIIntoWidget( editingView, widgetViewElement ) {
+function injectUIIntoWidget( editingView, labels, widgetViewElement ) {
 	editingView.change( writer => {
 		const typeAroundWrapper = writer.createUIElement( 'div', {
 			class: 'ck ck-reset_all ck-widget__type-around'
 		}, function( domDocument ) {
 			const wrapperDomElement = this.toDomElement( domDocument );
 
-			injectButtons( wrapperDomElement );
+			injectButtons( wrapperDomElement, labels );
 
 			return wrapperDomElement;
 		} );
@@ -167,7 +172,7 @@ function injectUIIntoWidget( editingView, widgetViewElement ) {
 // FYI: Not using the IconView class because each instance would need to be destroyed to avoid memory leaks
 // and it's pretty hard to figure out when a view (widget) is gone for good so it's cheaper to use raw
 // <svg> here.
-function injectButtons( wrapperDomElement ) {
+function injectButtons( wrapperDomElement, labels ) {
 	// Do the SVG parsing once and then clone the result <svg> DOM element for each new
 	// button. There could be dozens of them during editor's lifetime.
 	if ( !CACHED_RETURN_ARROW_ICON ) {
@@ -181,7 +186,8 @@ function injectButtons( wrapperDomElement ) {
 				class: [
 					'ck',
 					`ck-widget__type-around__button ck-widget__type-around__button_${ direction }`
-				]
+				],
+				title: labels[ direction ]
 			},
 			children: [
 				wrapperDomElement.ownerDocument.importNode( CACHED_RETURN_ARROW_ICON, true )
