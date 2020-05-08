@@ -1199,8 +1199,9 @@ describe( 'table clipboard', () => {
 						);
 
 						pasteTable( [
-							[ 'aa', 'ab' ],
-							[ 'ba', 'bb' ]
+							[ 'aa', 'ab', 'ac' ],
+							[ 'ba', 'bb', 'bc' ],
+							[ 'ca', 'cb', 'cc' ]
 						] );
 
 						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
@@ -1225,8 +1226,9 @@ describe( 'table clipboard', () => {
 						);
 
 						pasteTable( [
-							[ 'aa', 'ab' ],
-							[ 'ba', 'bb' ]
+							[ 'aa', 'ab', 'ac' ],
+							[ 'ba', 'bb', 'bc' ],
+							[ 'ca', 'cb', 'cc' ]
 						] );
 
 						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
@@ -1244,14 +1246,16 @@ describe( 'table clipboard', () => {
 						] );
 					} );
 
-					it( 'handles simple row paste to a simple row fragment - in the middle of a table', () => {
+					it( 'handles paste to a simple row fragment - in the middle of a table', () => {
 						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
 							modelRoot.getNodeByPath( [ 0, 1, 2 ] )
 						);
 
 						pasteTable( [
-							[ 'aa', 'ab' ]
+							[ 'aa', 'ab', 'ac' ],
+							[ 'ba', 'bb', 'bc' ],
+							[ 'ca', 'cb', 'cc' ]
 						] );
 
 						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
@@ -1269,15 +1273,16 @@ describe( 'table clipboard', () => {
 						] );
 					} );
 
-					it( 'handles simple column paste to a simple column fragment - in the middle of a table', () => {
+					it( 'handles paste to a simple column fragment - in the middle of a table', () => {
 						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
 							modelRoot.getNodeByPath( [ 0, 2, 1 ] )
 						);
 
 						pasteTable( [
-							[ 'aa' ],
-							[ 'ba' ]
+							[ 'aa', 'ab', 'ac' ],
+							[ 'ba', 'bb', 'bc' ],
+							[ 'ca', 'cb', 'cc' ]
 						] );
 
 						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
@@ -1302,10 +1307,11 @@ describe( 'table clipboard', () => {
 						);
 
 						pasteTable( [
-							[ 'aa', 'ab', 'ac', 'ad' ],
-							[ 'ba', 'bb', 'bc', 'bd' ],
-							[ 'ca', 'cb', 'cc', 'cd' ],
-							[ 'da', 'db', 'dc', 'dd' ]
+							[ 'aa', 'ab', 'ac', 'ad', 'ae' ],
+							[ 'ba', 'bb', 'bc', 'bd', 'be' ],
+							[ 'ca', 'cb', 'cc', 'cd', 'ce' ],
+							[ 'da', 'db', 'dc', 'dd', 'de' ],
+							[ 'ea', 'eb', 'ec', 'ed', 'ee' ]
 						] );
 
 						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [

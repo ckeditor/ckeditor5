@@ -12,6 +12,7 @@ import TableSelection from './tableselection';
 import { getColumnIndexes, getRowIndexes, isSelectionRectangular } from './utils';
 import TableWalker from './tablewalker';
 import { findAncestor, updateNumericAttribute } from './commands/utils';
+import { cropTableToDimensions } from './tableselection/croptable';
 
 /**
  * This plugin adds support for copying/cutting/pasting fragments of tables.
@@ -102,7 +103,8 @@ export default class TableClipboard extends Plugin {
 			return;
 		}
 
-		const table = getTable( content );
+		// We might need to crop table before inserting.
+		let table = getTable( content );
 
 		if ( !table ) {
 			return;
@@ -124,6 +126,7 @@ export default class TableClipboard extends Plugin {
 		const insertHeight = tableUtils.getRows( table );
 		const insertWidth = tableUtils.getColumns( table );
 		const contentTable = findAncestor( 'table', selectedTableCells[ 0 ] );
+
 		if ( !isSelectionRectangular( this.editor.model.document.selection, tableUtils ) ) {
 			// @if CK_DEBUG // console.log( 'Selection is not rectangular (non-mergeable) - pasting disabled.' );
 
@@ -136,15 +139,15 @@ export default class TableClipboard extends Plugin {
 			return;
 		}
 
-		if ( selectionHeight < insertHeight || selectionWidth < insertWidth ) {
-			// @if CK_DEBUG // console.log( 'Pasted table extends selection area.' );
-
-			return;
-		}
-
 		const model = this.editor.model;
 
 		model.change( writer => {
+			if ( selectionHeight < insertHeight || selectionWidth < insertWidth ) {
+				// @if CK_DEBUG // console.log( 'Pasted table extends selection area.' );
+
+				table = cropTableToDimensions( table, 0, 0, selectionHeight - 1, selectionWidth - 1, tableUtils, writer );
+			}
+
 			const insertionMap = new Map();
 
 			for ( const { column, row, cell } of new TableWalker( table ) ) {
