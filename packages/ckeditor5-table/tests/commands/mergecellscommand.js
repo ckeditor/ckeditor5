@@ -536,6 +536,29 @@ describe( 'MergeCellsCommand', () => {
 				], { headingRows: 1 } ) );
 			} );
 
+			it( 'should create one undo step (1 batch)', () => {
+				setData( model, modelTable( [
+					[ '00' ],
+					[ '10' ],
+					[ '20' ]
+				], { headingRows: 2 } ) );
+
+				selectNodes( [
+					[ 0, 0, 0 ],
+					[ 0, 1, 0 ]
+				] );
+
+				const createdBatches = new Set();
+
+				model.on( 'applyOperation', ( evt, [ operation ] ) => {
+					createdBatches.add( operation.batch );
+				} );
+
+				command.execute();
+
+				expect( createdBatches.size ).to.equal( 1 );
+			} );
+
 			it( 'should decrease rowspan if cell overlaps removed row', () => {
 				setData( model, modelTable( [
 					[ '00', { rowspan: 2, contents: '01' }, { rowspan: 3, contents: '02' } ],
