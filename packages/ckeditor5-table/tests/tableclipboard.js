@@ -452,6 +452,30 @@ describe( 'table clipboard', () => {
 				] ) );
 			} );
 
+			it( 'should block non-rectangular selection', () => {
+				setModelData( model, modelTable( [
+					[ { contents: '00', colspan: 3 } ],
+					[ '10', '11', '12' ],
+					[ '20', '21', '22' ]
+				] ) );
+
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
+
+				pasteTable( [
+					[ 'aa', 'ab' ],
+					[ 'ba', 'bb' ]
+				] );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ { contents: '00', colspan: 3 } ],
+					[ '10', '11', '12' ],
+					[ '20', '21', '22' ]
+				] ) );
+			} );
+
 			describe( 'pasted table is equal to the selected area', () => {
 				describe( 'no spans', () => {
 					it( 'handles simple table paste to a simple table fragment - at the beginning of a table', () => {
