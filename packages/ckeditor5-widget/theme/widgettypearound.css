@@ -221,7 +221,7 @@
 	}
 
 	/*
-	 * Widget outline style when the widget is selected.
+	 * Widget outline style when the widget is selected (and the type around UI activate).
 	 */
 	&.ck-widget_type-around_activated,
 	&.ck-widget_type-around_activated:hover,
@@ -230,12 +230,18 @@
 		outline-color: hsla(var(--ck-color-focus-border-coordinates),var(--ck-color-widget-type-around-activated-outline-alpha));
 	}
 
+	/*
+	 * Widget outline style when the widget is NOT selected (but the type around UI activate).
+	 */
 	&:not(.ck-widget_selected).ck-widget_type-around_activated,
 	&:not(.ck-widget_selected).ck-widget_type-around_activated:hover {
 		outline-color: hsla(var(--ck-color-widget-hover-border-coordinates),var(--ck-color-widget-type-around-hover-outline-alpha));
 	}
 
 	&.ck-widget_with-selection-handle {
+		/*
+		 * Widget selection handler style when the widget is NOT selected (but the type around UI activate).
+		 */
 		&.ck-widget_type-around_activated,
 		&.ck-widget_type-around_activated:hover {
 			& > .ck-widget__selection-handle {
@@ -243,6 +249,9 @@
 			}
 		}
 
+		/*
+		 * Widget outline style when the widget is selected (and the type around UI activate).
+		 */
 		&.ck-widget_selected.ck-widget_type-around_activated,
 		&.ck-widget_selected.ck-widget_type-around_activated:hover {
 			& > .ck-widget__selection-handle {
