@@ -290,14 +290,28 @@ function fixTableRowsSizes( table, writer ) {
 	let wasFixed = false;
 
 	const rowsLengths = getRowsLengths( table );
+	const rowsToRemove = [];
+
+	// Find empty rows.
+	for ( const [ rowIndex, size ] of rowsLengths.entries() ) {
+		if ( !size ) {
+			rowsToRemove.push( rowIndex );
+		}
+	}
+
+	// Remove empty rows.
+	for ( const rowIndex of rowsToRemove.reverse() ) {
+		writer.remove( table.getChild( rowIndex ) );
+		rowsLengths.splice( rowIndex, 1 );
+	}
 
 	// Verify if all the rows have the same number of columns.
 	const tableSize = rowsLengths[ 0 ];
 	const isValid = rowsLengths.every( length => length === tableSize );
 
-	if ( !isValid || !tableSize ) {
-		// Find the maximum number of columns (but it can't be less than one).
-		const maxColumns = rowsLengths.reduce( ( prev, current ) => current > prev ? current : prev, 1 );
+	if ( !isValid ) {
+		// Find the maximum number of columns.
+		const maxColumns = rowsLengths.reduce( ( prev, current ) => current > prev ? current : prev, 0 );
 
 		for ( const [ rowIndex, size ] of rowsLengths.entries() ) {
 			const columnsToInsert = maxColumns - size;
