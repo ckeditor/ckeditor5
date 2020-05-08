@@ -237,7 +237,12 @@
 
 	&.ck-widget_with-selection-handle {
 		&.ck-widget_type-around_activated,
-		&.ck-widget_type-around_activated:hover,
+		&.ck-widget_type-around_activated:hover {
+			& > .ck-widget__selection-handle {
+				background: hsla(var(--ck-color-widget-hover-border-coordinates),var(--ck-color-widget-type-around-hover-outline-alpha));
+			}
+		}
+
 		&.ck-widget_selected.ck-widget_type-around_activated,
 		&.ck-widget_selected.ck-widget_type-around_activated:hover {
 			& > .ck-widget__selection-handle {
