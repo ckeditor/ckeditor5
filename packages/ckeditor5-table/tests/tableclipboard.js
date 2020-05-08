@@ -476,6 +476,32 @@ describe( 'table clipboard', () => {
 				] ) );
 			} );
 
+			describe( 'single cell selected', () => {
+				it( 'blocks this case', () => {
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '12' ],
+						[ '20', '21', '22' ]
+					] ) );
+
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 0, 0 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '12' ],
+						[ '20', '21', '22' ]
+					] ) );
+				} );
+			} );
+
 			describe( 'pasted table is equal to the selected area', () => {
 				describe( 'no spans', () => {
 					it( 'handles simple table paste to a simple table fragment - at the beginning of a table', () => {

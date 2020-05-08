@@ -92,10 +92,6 @@ export default class TableClipboard extends Plugin {
 	 * This param defines a position in relation to that item.
 	 */
 	_onInsertContent( evt, content ) {
-		if ( this.editor.isReadOnly ) {
-			return;
-		}
-
 		const tableSelection = this.editor.plugins.get( 'TableSelection' );
 		const selectedTableCells = tableSelection.getSelectedTableCells();
 
