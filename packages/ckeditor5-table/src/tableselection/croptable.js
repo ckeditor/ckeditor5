@@ -47,7 +47,7 @@ export function cropTableToDimensions( sourceTable, startRow, startColumn, endRo
  *		tableSelection.startSelectingFrom( startCell )
  *		tableSelection.setSelectingFrom( endCell )
  *
- *		const croppedTable = cropTable( tableSelection.getSelectedTableCells() );
+ *		const croppedTable = cropTable( tableSelection.getSelectedTableCells(), tableUtils, writer );
  *
  * **Note**: This function is also used by {@link module:table/tableselection~TableSelection#getSelectionAsFragment}.
  *
