@@ -125,7 +125,7 @@ export default class TableClipboard extends Plugin {
 			const contentTable = findAncestor( 'table', selectedTableCells[ 0 ] );
 
 			// TODO: Temporally block non-rectangular selection.
-			if ( isSelectionRectangular( this.editor.model.document.selection, tableUtils ) ) {
+			if ( !isSelectionRectangular( this.editor.model.document.selection, tableUtils ) ) {
 				// @if CK_DEBUG // console.log( 'Selection is not rectangular (non-mergeable) - pasting disabled.' );
 
 				return;
