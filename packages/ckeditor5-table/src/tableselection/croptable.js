@@ -8,6 +8,36 @@
  */
 
 import { findAncestor } from '../commands/utils';
+import TableWalker from '../tablewalker';
+
+/**
+ * Returns a cropped table according to given dimensions.
+ *
+ * This function is to be used with the table selection.
+ *
+ *		const croppedTable = cropTable( table, 1, 1, 3, 3, tableUtils, writer );
+ *
+ * @param {Number} sourceTable
+ * @param {Number} startRow
+ * @param {Number} startColumn
+ * @param {Number} endRow
+ * @param {Number} endColumn
+ * @param {module:table/tableutils~TableUtils} tableUtils
+ * @param {module:engine/model/writer~Writer} writer
+ * @returns {module:engine/model/element~Element}
+ */
+export function cropTableToDimensions( sourceTable, startRow, startColumn, endRow, endColumn, tableUtils, writer ) {
+	const tableCopy = makeTableCopy( sourceTable, startRow, startColumn, endRow, endColumn, writer, tableUtils );
+
+	const selectionWidth = endColumn - startColumn + 1;
+	const selectionHeight = endRow - startRow + 1;
+
+	trimTable( tableCopy, selectionWidth, selectionHeight, writer, tableUtils );
+
+	addHeadingsToTableCopy( tableCopy, sourceTable, startRow, startColumn, writer );
+
+	return tableCopy;
+}
 
 /**
  * Returns a cropped table from the selected table cells.
@@ -26,37 +56,33 @@ import { findAncestor } from '../commands/utils';
  * @param {module:engine/model/writer~Writer} writer
  * @returns {module:engine/model/element~Element}
  */
-export default function cropTable( selectedTableCellsIterator, tableUtils, writer ) {
+export function cropTableToSelection( selectedTableCellsIterator, tableUtils, writer ) {
 	const selectedTableCells = Array.from( selectedTableCellsIterator );
 	const startElement = selectedTableCells[ 0 ];
 	const endElement = selectedTableCells[ selectedTableCells.length - 1 ];
 
 	const { row: startRow, column: startColumn } = tableUtils.getCellLocation( startElement );
-
-	const tableCopy = makeTableCopy( selectedTableCells, startColumn, writer, tableUtils );
-
 	const { row: endRow, column: endColumn } = tableUtils.getCellLocation( endElement );
-	const selectionWidth = endColumn - startColumn + 1;
-	const selectionHeight = endRow - startRow + 1;
-
-	trimTable( tableCopy, selectionWidth, selectionHeight, writer, tableUtils );
 
 	const sourceTable = findAncestor( 'table', startElement );
-	addHeadingsToTableCopy( tableCopy, sourceTable, startRow, startColumn, writer );
 
-	return tableCopy;
+	return cropTableToDimensions( sourceTable, startRow, startColumn, endRow, endColumn, tableUtils, writer );
 }
 
 // Creates a table copy from a selected table cells.
 //
 // It fills "gaps" in copied table - ie when cell outside copied range was spanning over selection.
-function makeTableCopy( selectedTableCells, startColumn, writer, tableUtils ) {
+function makeTableCopy( sourceTable, startRow, startColumn, endRow, endColumn, writer, tableUtils ) {
 	const tableCopy = writer.createElement( 'table' );
 
 	const rowToCopyMap = new Map();
 	const copyToOriginalColumnMap = new Map();
 
-	for ( const tableCell of selectedTableCells ) {
+	for ( const { column, cell: tableCell } of [ ...new TableWalker( sourceTable, { startRow, endRow } ) ] ) {
+		if ( column < startColumn || column > endColumn ) {
+			continue;
+		}
+
 		const row = findAncestor( 'tableRow', tableCell );
 
 		if ( !rowToCopyMap.has( row ) ) {
@@ -66,7 +92,6 @@ function makeTableCopy( selectedTableCells, startColumn, writer, tableUtils ) {
 		}
 
 		const tableCellCopy = tableCell._clone( true );
-		const { column } = tableUtils.getCellLocation( tableCell );
 
 		copyToOriginalColumnMap.set( tableCellCopy, column );
 

@@ -18,7 +18,7 @@ import {
 	getTableCellsContainingSelection
 } from './utils';
 import { findAncestor } from './commands/utils';
-import cropTable from './tableselection/croptable';
+import { cropTableToSelection } from './tableselection/croptable';
 
 import '../theme/tableselection.css';
 
@@ -99,7 +99,7 @@ export default class TableSelection extends Plugin {
 
 		return this.editor.model.change( writer => {
 			const documentFragment = writer.createDocumentFragment();
-			const table = cropTable( selectedCells, this.editor.plugins.get( 'TableUtils' ), writer );
+			const table = cropTableToSelection( selectedCells, this.editor.plugins.get( 'TableUtils' ), writer );
 
 			writer.insert( table, documentFragment, 0 );
 
