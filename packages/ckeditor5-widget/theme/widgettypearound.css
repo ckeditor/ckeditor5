@@ -8,6 +8,7 @@
  */
 
 :root {
+	--ck-widget-type-around-button-size: 20px;
 	--ck-color-widget-type-around-button-active: var(--ck-color-focus-border);
 	--ck-color-widget-type-around-button-hover: var(--ck-color-widget-hover-border);
 	--ck-color-widget-type-around-button-blurred-editable: var(--ck-color-widget-blurred-border);
@@ -28,8 +29,8 @@
 		display: none;
 		position: absolute;
 		overflow: hidden;
-		width: 20px;
-		height: 20px;
+		width: var(--ck-widget-type-around-button-size);
+		height: var(--ck-widget-type-around-button-size);
 
 		z-index: var(--ck-z-default);
 		background: var(--ck-color-widget-type-around-button);
@@ -49,8 +50,7 @@
 			transition: transform .5s ease;
 			margin-top: 1px;
 
-			& line,
-			& polyline {
+			& * {
 				stroke-dasharray: 10;
 				stroke-dashoffset: 0;
 
@@ -67,14 +67,16 @@
 		}
 
 		&.ck-widget__type-around__button_before {
-			top: -1.5px;
+			/* Place it in the middle of the outline */
+			top: calc(-0.5 * var(--ck-widget-outline-thickness));
 			left: min(10%, 30px);
 
 			transform: translate(0,-50%);
 		}
 
 		&.ck-widget__type-around__button_after {
-			bottom: -1.5px;
+			/* Place it in the middle of the outline */
+			bottom: calc(-0.5 * var(--ck-widget-outline-thickness));
 			right: min(10%, 30px);
 
 			transform: translate(50%,50%);
@@ -85,9 +87,9 @@
 	 * Styles of the type around lines.
 	 */
 	& .ck-widget__type-around__line {
-		height: 3px;
-		left: -3px;
-		right: -3px;
+		height: var(--ck-widget-outline-thickness);
+		left: calc(-1 * var(--ck-widget-outline-thickness));
+		right: calc(-1 * var(--ck-widget-outline-thickness));
 		display: none;
 		position: absolute;
 
@@ -95,11 +97,11 @@
 		animation: ck-widget-type-around-line-blink 1s linear infinite;
 
 		&.ck-widget__type-around__line_before {
-			top: -3px;
+			top: calc(-1 * var(--ck-widget-outline-thickness));
 		}
 
 		&.ck-widget__type-around__line_after {
-			bottom: -3px;
+			bottom: calc(-1 * var(--ck-widget-outline-thickness));
 		}
 	}
 
@@ -143,8 +145,8 @@
 
 			&::after {
 				content: "";
-				width: 18px;
-				height: 18px;
+				width: calc(var(--ck-widget-type-around-button-size) - 2px);
+				height: calc(var(--ck-widget-type-around-button-size) - 2px);
 				display: block;
 				position: absolute;
 				top: 1px;
@@ -250,6 +252,10 @@
  */
 .ck-editor__editable.ck-blurred .ck-widget.ck-widget_selected > .ck-widget__type-around > .ck-widget__type-around__button:not(:hover) {
 	background: var(--ck-color-widget-type-around-button-blurred-editable);
+
+	& .ck-icon * {
+		stroke: hsl(0,0%,60%);
+	}
 }
 
 @keyframes ck-widget-type-around-line-blink {
