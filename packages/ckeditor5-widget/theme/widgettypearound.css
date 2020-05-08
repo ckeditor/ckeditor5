@@ -71,7 +71,7 @@
 			top: calc(-0.5 * var(--ck-widget-outline-thickness));
 			left: min(10%, 30px);
 
-			transform: translate(0,-50%);
+			transform: translateY(-50%);
 		}
 
 		&.ck-widget__type-around__button_after {
@@ -79,7 +79,7 @@
 			bottom: calc(-0.5 * var(--ck-widget-outline-thickness));
 			right: min(10%, 30px);
 
-			transform: translate(50%,50%);
+			transform: translateY(50%);
 		}
 	}
 
