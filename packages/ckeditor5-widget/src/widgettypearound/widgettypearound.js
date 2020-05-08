@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global DOMParser */
+
 /**
  * @module widget/widgettypearound/widgettypearound
  */
@@ -10,7 +12,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
-import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 
 import { isWidget } from '../utils';
 import {
@@ -25,6 +26,7 @@ import returnIcon from '../../theme/icons/return-arrow.svg';
 import '../../theme/widgettypearound.css';
 
 const POSSIBLE_INSERTION_DIRECTIONS = [ 'before', 'after' ];
+let CACHED_RETURN_ARROW_ICON;
 
 /**
  * TODO
@@ -158,12 +160,17 @@ function injectUIIntoWidget( editingView, widgetViewElement ) {
 	} );
 }
 
+// FYI: Not using the IconView class because each instance would need to be destroyed to avoid memory leaks
+// and it's pretty hard to figure out when a view (widget) is gone for good so it's cheaper to use raw
+// <svg> here.
 function injectButtons( wrapperDomElement ) {
-	for ( const direction of POSSIBLE_INSERTION_DIRECTIONS ) {
-		const returnIconView = new IconView();
-		returnIconView.viewBox = '0 0 10 8';
-		returnIconView.content = returnIcon;
+	// Do the SVG parsing once and then clone the result <svg> DOM element for each new
+	// button. There could be dozens of them during editor's lifetime.
+	if ( !CACHED_RETURN_ARROW_ICON ) {
+		CACHED_RETURN_ARROW_ICON = new DOMParser().parseFromString( returnIcon, 'image/svg+xml' ).firstChild;
+	}
 
+	for ( const direction of POSSIBLE_INSERTION_DIRECTIONS ) {
 		const buttonTemplate = new Template( {
 			tag: 'div',
 			attributes: {
@@ -173,7 +180,7 @@ function injectButtons( wrapperDomElement ) {
 				]
 			},
 			children: [
-				returnIconView
+				wrapperDomElement.ownerDocument.importNode( CACHED_RETURN_ARROW_ICON, true )
 			]
 		} );
 

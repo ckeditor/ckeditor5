@@ -35,7 +35,7 @@
 		animation: fadein linear 300ms 1 normal forwards;
 		transition: opacity 100ms linear;
 
-		& .ck-icon {
+		& svg {
 			width: 10px;
 			height: 8px;
 			position: absolute;
@@ -88,7 +88,7 @@
 			/*
 			 * Animate active button's icon.
 			 */
-			& .ck-icon {
+			& svg {
 				& polyline {
 					animation: ck-widget-type-around-arrow-dash 2s linear;
 				}
@@ -160,7 +160,7 @@
 .ck-editor__editable.ck-blurred .ck-widget.ck-widget_selected > .ck-widget__type-around > .ck-widget__type-around__button:not(:hover) {
 	background: var(--ck-color-widget-type-around-button-blurred-editable);
 
-	& .ck-icon * {
+	& svg * {
 		stroke: hsl(0,0%,60%);
 	}
 }

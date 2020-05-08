@@ -1,5 +1,1 @@
-<svg viewBox="0 0 10 8" xmlns="http://www.w3.org/2000/svg">
-	<polyline points="8.05541992 0.263427734 8.05541992 4.23461914 1.28417969 4.23461914" transform="translate(1,0)"></polyline>
-	<line x1="0" y1="4.21581031" x2="2" y2="2.17810059" transform="translate(1, 0)"></line>
-	<line x1="0" y1="6.21581031" x2="2" y2="4.17810059" transform="translate(2, 5.196955) scale(1, -1) translate(-1, -5.196955)"></line>
-</svg>
+<svg viewBox="0 0 10 8" xmlns="http://www.w3.org/2000/svg"><polyline points="8.05541992 0.263427734 8.05541992 4.23461914 1.28417969 4.23461914" transform="translate(1,0)"></polyline><line x1="0" y1="4.21581031" x2="2" y2="2.17810059" transform="translate(1, 0)"></line><line x1="0" y1="6.21581031" x2="2" y2="4.17810059" transform="translate(2, 5.196955) scale(1, -1) translate(-1, -5.196955)"></line></svg>
