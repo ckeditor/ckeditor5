@@ -701,6 +701,53 @@ describe( 'MergeCellCommand', () => {
 					[ '40', '41' ]
 				] ) );
 			} );
+
+			it( 'should adjust heading rows if empty row was removed ', () => {
+				// +----+----+
+				// | 00 | 01 |
+				// +    +----+
+				// |    | 11 |
+				// +----+----+ <-- heading rows
+				// | 20 | 21 |
+				// +----+----+
+				setData( model, modelTable( [
+					[ { contents: '00', rowspan: 2 }, '[]01' ],
+					[ '11' ],
+					[ '20', '21' ]
+				], { headingRows: 2 } ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00', '<paragraph>[01</paragraph><paragraph>11]</paragraph>' ],
+					[ '20', '21' ]
+				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should create one undo step (1 batch)', () => {
+				// +----+----+
+				// | 00 | 01 |
+				// +    +----+
+				// |    | 11 |
+				// +----+----+ <-- heading rows
+				// | 20 | 21 |
+				// +----+----+
+				setData( model, modelTable( [
+					[ { contents: '00', rowspan: 2 }, '[]01' ],
+					[ '11' ],
+					[ '20', '21' ]
+				], { headingRows: 2 } ) );
+
+				const createdBatches = new Set();
+
+				model.on( 'applyOperation', ( evt, [ operation ] ) => {
+					createdBatches.add( operation.batch );
+				} );
+
+				command.execute();
+
+				expect( createdBatches.size ).to.equal( 1 );
+			} );
 		} );
 	} );
 
@@ -958,6 +1005,53 @@ describe( 'MergeCellCommand', () => {
 					[ '20', '<paragraph>[21</paragraph><paragraph>31]</paragraph>', { rowspan: 2, contents: '22' } ],
 					[ '40', '41' ]
 				] ) );
+			} );
+
+			it( 'should adjust heading rows if empty row was removed ', () => {
+				// +----+----+
+				// | 00 | 01 |
+				// +    +----+
+				// |    | 11 |
+				// +----+----+ <-- heading rows
+				// | 20 | 21 |
+				// +----+----+
+				setData( model, modelTable( [
+					[ { contents: '00', rowspan: 2 }, '01' ],
+					[ '[]11' ],
+					[ '20', '21' ]
+				], { headingRows: 2 } ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00', '<paragraph>[01</paragraph><paragraph>11]</paragraph>' ],
+					[ '20', '21' ]
+				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should create one undo step (1 batch)', () => {
+				// +----+----+
+				// | 00 | 01 |
+				// +    +----+
+				// |    | 11 |
+				// +----+----+ <-- heading rows
+				// | 20 | 21 |
+				// +----+----+
+				setData( model, modelTable( [
+					[ { contents: '00', rowspan: 2 }, '01' ],
+					[ '[]11' ],
+					[ '20', '21' ]
+				], { headingRows: 2 } ) );
+
+				const createdBatches = new Set();
+
+				model.on( 'applyOperation', ( evt, [ operation ] ) => {
+					createdBatches.add( operation.batch );
+				} );
+
+				command.execute();
+
+				expect( createdBatches.size ).to.equal( 1 );
 			} );
 		} );
 	} );
