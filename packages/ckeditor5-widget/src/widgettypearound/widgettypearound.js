@@ -169,7 +169,7 @@ export default class WidgetTypeAround extends Plugin {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
-		editingView.document.on( 'click', ( evt, domEventData ) => {
+		editingView.document.on( 'mousedown', ( evt, domEventData ) => {
 			const button = getClosestTypeAroundDomButton( domEventData.domTarget );
 
 			if ( !button ) {
@@ -197,6 +197,9 @@ export default class WidgetTypeAround extends Plugin {
 
 			editingView.focus();
 			editingView.scrollToTheSelection();
+
+			domEventData.preventDefault();
+			evt.stop();
 		} );
 	}
 }
