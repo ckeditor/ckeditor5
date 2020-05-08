@@ -36,8 +36,7 @@ describe( 'Table layout post-fixer', () => {
 			const parsed = parse( modelTable( [
 				[ '00' ],
 				[ '10', '11', '12' ],
-				[ '20', '21' ],
-				[]
+				[ '20', '21' ]
 			] ), model.schema );
 
 			model.change( writer => {
@@ -48,8 +47,7 @@ describe( 'Table layout post-fixer', () => {
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
 				[ '00', '', '' ],
 				[ '10', '11', '12' ],
-				[ '20', '21', '' ],
-				[ '', '', '' ]
+				[ '20', '21', '' ]
 			] ) );
 		} );
 
@@ -88,6 +86,25 @@ describe( 'Table layout post-fixer', () => {
 				[ { colspan: 6, contents: '00' } ],
 				[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' }, '' ],
 				[ '21', '22', '', '', '' ]
+			] ) );
+		} );
+
+		it( 'should remove empty rows', () => {
+			const parsed = parse( modelTable( [
+				[ '00', '01' ],
+				[ ],
+				[ '20', '21', '22' ],
+				[ ]
+			] ), model.schema );
+
+			model.change( writer => {
+				writer.remove( writer.createRangeIn( root ) );
+				writer.insert( parsed, root );
+			} );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ '00', '01', '' ],
+				[ '20', '21', '22' ]
 			] ) );
 		} );
 
