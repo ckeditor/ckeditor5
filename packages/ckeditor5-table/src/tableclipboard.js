@@ -131,85 +131,88 @@ export default class TableClipboard extends Plugin {
 				return;
 			}
 
-			if ( selectionHeight === insertHeight && selectionWidth === insertWidth ) {
-				const model = this.editor.model;
-
-				model.change( writer => {
-					const insertionMap = new Map();
-
-					for ( const { column, row, cell } of new TableWalker( table ) ) {
-						insertionMap.set( `${ row }x${ column }`, cell );
-					}
-
-					const tableMap = [ ...new TableWalker( contentTable, {
-						startRow: rowIndexes.first,
-						endRow: rowIndexes.last,
-						includeSpanned: true
-					} ) ];
-
-					let previousCell;
-
-					const cellsToSelect = [];
-
-					for ( const { column, row, cell, isSpanned } of tableMap ) {
-						// TODO: crete issue for table walker startColumn, endColumn.
-						if ( column < columnIndexes.first || column > columnIndexes.last ) {
-							previousCell = cell;
-
-							continue;
-						}
-
-						const toGet = `${ row - rowIndexes.first }x${ column - columnIndexes.first }`;
-						const cellToInsert = insertionMap.get( toGet );
-
-						if ( !cellToInsert ) {
-							if ( !isSpanned ) {
-								writer.remove( writer.createRangeOn( cell ) );
-							}
-
-							continue;
-						}
-
-						let targetCell = cell;
-
-						if ( isSpanned ) {
-							let insertPosition;
-
-							if ( column === 0 || !previousCell || previousCell.parent.index !== row ) {
-								insertPosition = writer.createPositionAt( contentTable.getChild( row ), 0 );
-							} else {
-								insertPosition = writer.createPositionAfter( previousCell );
-							}
-
-							targetCell = writer.createElement( 'tableCell' );
-
-							writer.insert( targetCell, insertPosition );
-						} else {
-							writer.remove( writer.createRangeIn( cell ) );
-						}
-
-						updateNumericAttribute( 'colspan', cellToInsert.getAttribute( 'colspan' ), targetCell, writer, 1 );
-						updateNumericAttribute( 'rowspan', cellToInsert.getAttribute( 'rowspan' ), targetCell, writer, 1 );
-
-						for ( const child of cellToInsert.getChildren() ) {
-							writer.insert( child, targetCell, 'end' );
-						}
-
-						cellsToSelect.push( targetCell );
-						previousCell = targetCell;
-					}
-
-					writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
-				} );
+			// TODO: Temporally block block tables that are smaller than selection area.
+			if ( selectionHeight > insertHeight || selectionWidth > insertWidth ) {
+				// @if CK_DEBUG // console.log( 'Pasted table is smaller than selection area.' );
 
 				return;
 			}
 
-			if ( selectionHeight > insertHeight || selectionWidth > insertWidth ) {
+			if ( selectionHeight < insertHeight || selectionWidth < insertWidth ) {
 				// @if CK_DEBUG // console.log( 'Pasted table extends selection area.' );
-			} else {
-				// @if CK_DEBUG // console.log( 'Pasted table is smaller than selection area.' );
+
+				return;
 			}
+
+			const model = this.editor.model;
+
+			model.change( writer => {
+				const insertionMap = new Map();
+
+				for ( const { column, row, cell } of new TableWalker( table ) ) {
+					insertionMap.set( `${ row }x${ column }`, cell );
+				}
+
+				const tableMap = [ ...new TableWalker( contentTable, {
+					startRow: rowIndexes.first,
+					endRow: rowIndexes.last,
+					includeSpanned: true
+				} ) ];
+
+				let previousCell;
+
+				const cellsToSelect = [];
+
+				for ( const { column, row, cell, isSpanned } of tableMap ) {
+					// TODO: crete issue for table walker startColumn, endColumn.
+					if ( column < columnIndexes.first || column > columnIndexes.last ) {
+						previousCell = cell;
+
+						continue;
+					}
+
+					const toGet = `${ row - rowIndexes.first }x${ column - columnIndexes.first }`;
+					const cellToInsert = insertionMap.get( toGet );
+
+					if ( !cellToInsert ) {
+						if ( !isSpanned ) {
+							writer.remove( writer.createRangeOn( cell ) );
+						}
+
+						continue;
+					}
+
+					let targetCell = cell;
+
+					if ( isSpanned ) {
+						let insertPosition;
+
+						if ( column === 0 || !previousCell || previousCell.parent.index !== row ) {
+							insertPosition = writer.createPositionAt( contentTable.getChild( row ), 0 );
+						} else {
+							insertPosition = writer.createPositionAfter( previousCell );
+						}
+
+						targetCell = writer.createElement( 'tableCell' );
+
+						writer.insert( targetCell, insertPosition );
+					} else {
+						writer.remove( writer.createRangeIn( cell ) );
+					}
+
+					updateNumericAttribute( 'colspan', cellToInsert.getAttribute( 'colspan' ), targetCell, writer, 1 );
+					updateNumericAttribute( 'rowspan', cellToInsert.getAttribute( 'rowspan' ), targetCell, writer, 1 );
+
+					for ( const child of cellToInsert.getChildren() ) {
+						writer.insert( child, targetCell, 'end' );
+					}
+
+					cellsToSelect.push( targetCell );
+					previousCell = targetCell;
+				}
+
+				writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
+			} );
 		}
 	}
 }
