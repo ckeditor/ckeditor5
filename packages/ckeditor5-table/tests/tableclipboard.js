@@ -1380,7 +1380,7 @@ describe( 'table clipboard', () => {
 					} );
 				} );
 
-				describe.skip( 'pasted table has spans', () => {
+				describe( 'pasted table has spans', () => {
 					it( 'handles pasting table that has cell with colspan', () => {
 						tableSelection.setCellSelection(
 							modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
@@ -1388,8 +1388,8 @@ describe( 'table clipboard', () => {
 						);
 
 						pasteTable( [
-							[ { colspan: 2, contents: 'aa' } ],
-							[ 'ba', 'bb' ]
+							[ { colspan: 3, contents: 'aa' } ],
+							[ 'ba', 'bb', 'bc' ]
 						] );
 
 						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
@@ -1416,10 +1416,10 @@ describe( 'table clipboard', () => {
 						);
 
 						pasteTable( [
-							[ 'aa', { colspan: 2, contents: 'ab' } ],
-							[ { colspan: 3, contents: 'ba' } ],
-							[ 'ca', 'cb', 'cc' ],
-							[ { colspan: 2, contents: 'da' }, 'dc' ]
+							[ 'aa', { colspan: 3, contents: 'ab' } ],
+							[ { colspan: 4, contents: 'ba' } ],
+							[ 'ca', 'cb', 'cc', 'cd' ],
+							[ { colspan: 2, contents: 'da' }, 'dc', 'dd' ]
 						] );
 
 						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
@@ -1446,8 +1446,9 @@ describe( 'table clipboard', () => {
 						);
 
 						pasteTable( [
-							[ { rowspan: 2, contents: 'aa' }, 'ab' ],
-							[ 'bb' ]
+							[ { rowspan: 3, contents: 'aa' }, 'ab' ],
+							[ 'bb' ],
+							[ 'cb' ]
 						] );
 
 						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
@@ -1474,9 +1475,10 @@ describe( 'table clipboard', () => {
 						);
 
 						pasteTable( [
-							[ 'aa', { rowspan: 3, contents: 'ab' }, { rowspan: 2, contents: 'ac' }, 'ad' ],
-							[ { rowspan: 2, contents: 'ba' }, 'bd' ],
-							[ 'cc', 'cd' ]
+							[ 'aa', { rowspan: 3, contents: 'ab' }, { rowspan: 2, contents: 'ac' }, 'ad', 'ae' ],
+							[ { rowspan: 3, contents: 'ba' }, 'bd', 'be' ],
+							[ 'cc', 'cd', 'ce' ],
+							[ 'da', 'db', 'dc', 'dd' ]
 						] );
 
 						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
@@ -1506,8 +1508,8 @@ describe( 'table clipboard', () => {
 						] ) );
 
 						tableSelection.setCellSelection(
-							modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
-							modelRoot.getNodeByPath( [ 0, 3, 4 ] )
+							modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+							modelRoot.getNodeByPath( [ 0, 3, 3 ] )
 						);
 
 						// +----+----+----+----+----+
@@ -1527,30 +1529,30 @@ describe( 'table clipboard', () => {
 						] );
 
 						// +----+----+----+----+----+----+
-						// | aa      | ac | ad | ae | 05 |
-						// +----+----+----+----+    +----+
-						// | ba | bb           |    | 15 |
-						// +----+              +----+----+
-						// | ca |              | ce | 25 |
-						// +    +----+----+----+----+----+
-						// |    | db | dc | dd      | 35 |
+						// | 00 | 01 | 02 | 03 | 04 | 05 |
+						// +----+----+----+----+----+----+
+						// | 10 | aa      | ac | 14 | 15 |
+						// +----+----+----+----+----+----+
+						// | 20 | ba | bb      | 24 | 25 |
+						// +----+----+         +----+----+
+						// | 30 | ca |         | 34 | 35 |
 						// +----+----+----+----+----+----+
 						// | 40 | 41 | 42 | 43 | 44 | 45 |
 						// +----+----+----+----+----+----+
 						assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-							[ { contents: 'aa', colspan: 2 }, 'ac', 'ad', { contents: 'ae', rowspan: 2 }, '05' ],
-							[ 'ba', { contents: 'bb', colspan: 3, rowspan: 2 }, '15' ],
-							[ { contents: 'ca', rowspan: 2 }, 'ce', '25' ],
-							[ 'db', 'dc', { contents: 'dd', colspan: 2 }, '35' ],
+							[ '00', '01', '02', '03', '04', '05' ],
+							[ '10', { contents: 'aa', colspan: 2 }, 'ac', '14', '15' ],
+							[ '20', 'ba', { contents: 'bb', colspan: 2, rowspan: 2 }, '24', '25' ],
+							[ '30', 'ca', '34', '35' ],
 							[ '40', '41', '42', '43', '44', '45' ]
 						] ) );
 
 						/* eslint-disable no-multi-spaces */
 						assertSelectedCells( model, [
-							[ 1,    1, 1, 1, 0 ],
-							[ 1, 1,          0 ],
-							[ 1,          1, 0 ],
-							[    1, 1, 1,    0 ],
+							[ 0, 0, 0, 0, 0, 0 ],
+							[ 0, 1,    1,    0 ],
+							[ 0, 1, 1,       0 ],
+							[ 0, 1,          0 ],
 							[ 0, 0, 0, 0, 0, 0 ]
 						] );
 						/* eslint-enable no-multi-spaces */
