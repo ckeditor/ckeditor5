@@ -15,9 +15,6 @@
 	--ck-color-widget-type-around-button-radar-start-alpha: 0;
 	--ck-color-widget-type-around-button-radar-end-alpha: .3;
 	--ck-color-widget-type-around-button-icon: var(--ck-color-base-background);
-	--ck-color-widget-type-around-activated-outline-alpha: .3;
-	--ck-color-widget-type-around-hover-outline-alpha: .6;
-	--ck-color-widget-type-around-line: var(--ck-color-focus-border);
 }
 
 .ck .ck-widget {
@@ -81,27 +78,25 @@
 
 			transform: translateY(50%);
 		}
-	}
 
-	/*
-	 * Styles of the type around lines.
-	 */
-	& .ck-widget__type-around__line {
-		height: var(--ck-widget-outline-thickness);
-		left: calc(-1 * var(--ck-widget-outline-thickness));
-		right: calc(-1 * var(--ck-widget-outline-thickness));
-		display: none;
-		position: absolute;
+		&:hover {
+			/*
+			 * Display the "sonar" around the button when hovered.
+			 */
+			animation: ck-widget-type-around-button-sonar 1s ease infinite;
 
-		background: var(--ck-color-widget-type-around-line);
-		animation: ck-widget-type-around-line-blink 1s linear infinite;
+			/*
+			 * Animate active button's icon.
+			 */
+			& .ck-icon {
+				& polyline {
+					animation: ck-widget-type-around-arrow-dash 2s linear;
+				}
 
-		&.ck-widget__type-around__line_before {
-			top: calc(-1 * var(--ck-widget-outline-thickness));
-		}
-
-		&.ck-widget__type-around__line_after {
-			bottom: calc(-1 * var(--ck-widget-outline-thickness));
+				& line {
+					animation: ck-widget-type-around-arrow-tip-dash 2s linear;
+				}
+			}
 		}
 	}
 
@@ -127,136 +122,34 @@
 	}
 
 	/*
-	 * Styles for the buttons when the widget is NOT selected (but, for instance, hovered).
+	 * Styles for the buttons when the widget is NOT selected (but the buttons are visible
+	 * and still can be hovered).
 	 */
-	&:not(.ck-widget_selected) {
-		& > .ck-widget__type-around > .ck-widget__type-around__button {
-			background: var(--ck-color-widget-type-around-button-hover);
-		}
+	&:not(.ck-widget_selected) > .ck-widget__type-around > .ck-widget__type-around__button {
+		background: var(--ck-color-widget-type-around-button-hover);
 	}
 
 	/*
-	 * Styles for the buttons when the widget is selected or the button was activated.
+	 * Styles for the buttons when:
+	 * - the widget is selected,
+	 * - or the button is being hovered (regardless of the widget state).
 	 */
-	&.ck-widget_selected,
-	&.ck-widget_type-around_activated {
-		& > .ck-widget__type-around > .ck-widget__type-around__button {
-			background: var(--ck-color-widget-type-around-button-active);
+	&.ck-widget_selected > .ck-widget__type-around > .ck-widget__type-around__button,
+	& > .ck-widget__type-around > .ck-widget__type-around__button:hover {
+		background: var(--ck-color-widget-type-around-button-active);
 
-			&::after {
-				content: "";
-				width: calc(var(--ck-widget-type-around-button-size) - 2px);
-				height: calc(var(--ck-widget-type-around-button-size) - 2px);
-				display: block;
-				position: absolute;
-				top: 1px;
-				left: 1px;
+		&::after {
+			content: "";
+			width: calc(var(--ck-widget-type-around-button-size) - 2px);
+			height: calc(var(--ck-widget-type-around-button-size) - 2px);
+			display: block;
+			position: absolute;
+			top: 1px;
+			left: 1px;
 
-				border-radius: 100px;
-				z-index: calc(var(--ck-z-default) + 1);
-				background: linear-gradient(135deg, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,.3) 100%);
-			}
-		}
-	}
-
-	/*
-	 * Styles when the type around becomes activated in a widget.
-	 */
-	&.ck-widget_type-around_activated {
-		/*
-		 * Highlight the type around button when the feature is activated in the widget.
-		 */
-		& > .ck-widget__type-around > .ck-widget__type-around__button {
-			animation: ck-widget-type-around-button-sonar 1s ease infinite;
-
-			/*
-			 * Animate active button's icon.
-			 */
-			& .ck-icon {
-				& polyline {
-					animation: ck-widget-type-around-arrow-dash 2s linear infinite;
-				}
-
-				& line {
-					animation: ck-widget-type-around-arrow-tip-dash 2s linear infinite;
-				}
-			}
-		}
-
-		/*
-		 * Show the "upper" button if the type around is "before" the widget.
-		 * Show the "upper" blinking line if the type around is "before" the widget.
-		 */
-		&.ck-widget_type-around_activated_before > .ck-widget__type-around {
-			& > .ck-widget__type-around__button_before {
-				opacity: 1;
-			}
-
-			& > .ck-widget__type-around__button_after {
-				opacity: 0;
-			}
-
-			& > .ck-widget__type-around__line_before {
-				display: block;
-			}
-		}
-
-		/*
-		 * Show the "lower" button if the type around is "after" the widget.
-		 * Show the "lower" blinking line if the type around is "after" the widget.
-		 */
-		&.ck-widget_type-around_activated_after > .ck-widget__type-around {
-			& > .ck-widget__type-around__button_after {
-				opacity: 1;
-			}
-
-			& > .ck-widget__type-around__button_before {
-				opacity: 0;
-			}
-
-			& > .ck-widget__type-around__line_after {
-				display: block;
-			}
-		}
-	}
-
-	/*
-	 * Widget outline style when the widget is selected (and the type around UI activate).
-	 */
-	&.ck-widget_type-around_activated,
-	&.ck-widget_type-around_activated:hover,
-	&.ck-widget_selected.ck-widget_type-around_activated,
-	&.ck-widget_selected.ck-widget_type-around_activated:hover {
-		outline-color: hsla(var(--ck-color-focus-border-coordinates),var(--ck-color-widget-type-around-activated-outline-alpha));
-	}
-
-	/*
-	 * Widget outline style when the widget is NOT selected (but the type around UI activate).
-	 */
-	&:not(.ck-widget_selected).ck-widget_type-around_activated,
-	&:not(.ck-widget_selected).ck-widget_type-around_activated:hover {
-		outline-color: hsla(var(--ck-color-widget-hover-border-coordinates),var(--ck-color-widget-type-around-hover-outline-alpha));
-	}
-
-	&.ck-widget_with-selection-handle {
-		/*
-		 * Widget selection handler style when the widget is NOT selected (but the type around UI activate).
-		 */
-		&.ck-widget_type-around_activated,
-		&.ck-widget_type-around_activated:hover {
-			& > .ck-widget__selection-handle {
-				background: hsla(var(--ck-color-widget-hover-border-coordinates),var(--ck-color-widget-type-around-hover-outline-alpha));
-			}
-		}
-
-		/*
-		 * Widget outline style when the widget is selected (and the type around UI activate).
-		 */
-		&.ck-widget_selected.ck-widget_type-around_activated,
-		&.ck-widget_selected.ck-widget_type-around_activated:hover {
-			& > .ck-widget__selection-handle {
-				background: hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-activated-outline-alpha));
-			}
+			border-radius: 100px;
+			z-index: calc(var(--ck-z-default) + 1);
+			background: linear-gradient(135deg, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,.3) 100%);
 		}
 	}
 }
@@ -269,18 +162,6 @@
 
 	& .ck-icon * {
 		stroke: hsl(0,0%,60%);
-	}
-}
-
-@keyframes ck-widget-type-around-line-blink {
-	0% {
-		opacity: 0;
-	}
-	30%, 50%, 70% {
-		opacity: 1;
-	}
-	100% {
-		opacity: 0;
 	}
 }
 

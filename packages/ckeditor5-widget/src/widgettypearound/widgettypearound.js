@@ -13,7 +13,6 @@ import Template from '@ckeditor/ckeditor5-ui/src/template';
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 
 import { isWidget } from '../utils';
-import MouseOverOutObserver from './mouseoveroutobserver';
 import {
 	getWidgetTypeAroundDirections,
 	getClosestTypeAroundDomButton,
@@ -53,8 +52,6 @@ export default class WidgetTypeAround extends Plugin {
 	init() {
 		this._enableTypeAroundUIInjection();
 		this._enableDetectionOfTypeAroundWidgets();
-		this._enableUIActivationUsingMouseCursor();
-		// this._enableUIActivationUsingKeyboardArrows(); TODO
 		this._enableInsertingParagraphsOnButtonClick();
 	}
 
@@ -98,67 +95,7 @@ export default class WidgetTypeAround extends Plugin {
 					// Set CSS classes related to possible directions. They are used so the UI knows
 					// which buttons and lines to display.
 					writer.addClass( newDirections.map( directionToWidgetCssClass ), widgetViewElement );
-
-					// This is needed for the keyboard navigation.
-					writer.setCustomProperty( 'widgetTypeAroundDirections', newDirections, widgetViewElement );
 				} );
-		} );
-	}
-
-	/**
-	 * TODO
-	 */
-	_enableUIActivationUsingMouseCursor() {
-		const editor = this.editor;
-		const editingView = editor.editing.view;
-
-		editingView.addObserver( MouseOverOutObserver );
-
-		editingView.document.on( 'mouseover', ( evt, domEventData ) => {
-			const button = getClosestTypeAroundDomButton( domEventData.domTarget );
-
-			if ( !button ) {
-				return;
-			}
-
-			const buttonDirection = getTypeAroundButtonDirection( button );
-			const widgetViewElement = getClosestWidgetViewElement( button, editingView.domConverter );
-
-			if ( widgetViewElement.hasClass( 'ck-widget_type-around_activated' ) ) {
-				return;
-			}
-
-			editingView.change( writer => {
-				writer.addClass( [
-					'ck-widget_type-around_activated',
-					`ck-widget_type-around_activated_${ buttonDirection }`
-				], widgetViewElement );
-			} );
-		} );
-
-		editingView.document.on( 'mouseout', ( evt, { domEvent } ) => {
-			const fromButton = getClosestTypeAroundDomButton( domEvent.target );
-
-			// Happens when blurring the browser window.
-			if ( !domEvent.relatedTarget ) {
-				return;
-			}
-
-			const toButton = getClosestTypeAroundDomButton( domEvent.relatedTarget );
-
-			if ( !fromButton || toButton ) {
-				return;
-			}
-
-			const widgetViewElement = getClosestWidgetViewElement( fromButton, editingView.domConverter );
-
-			editingView.change( writer => {
-				writer.removeClass( [
-					'ck-widget_type-around_activated',
-					'ck-widget_type-around_activated_before',
-					'ck-widget_type-around_activated_after'
-				], widgetViewElement );
-			} );
 		} );
 	}
 
@@ -212,7 +149,6 @@ function injectUIIntoWidget( editingView, widgetViewElement ) {
 			const wrapperDomElement = this.toDomElement( domDocument );
 
 			injectButtons( wrapperDomElement );
-			injectLines( wrapperDomElement );
 
 			return wrapperDomElement;
 		} );
@@ -244,17 +180,3 @@ function injectButtons( wrapperDomElement ) {
 		wrapperDomElement.appendChild( buttonTemplate.render() );
 	}
 }
-
-function injectLines( wrapperDomElement ) {
-	for ( const direction of POSSIBLE_INSERTION_DIRECTIONS ) {
-		const buttonTemplate = new Template( {
-			tag: 'div',
-			attributes: {
-				class: `ck ck-widget__type-around__line ck-widget__type-around__line_${ direction }`
-			}
-		} );
-
-		wrapperDomElement.appendChild( buttonTemplate.render() );
-	}
-}
-
