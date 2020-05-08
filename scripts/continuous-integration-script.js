@@ -65,8 +65,9 @@ const packages = childProcess.execSync( 'ls packages -1', {
 
 for ( const fullPackageName of packages ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
+	const foldLabelName = 'pkg-' + simplePackageName;
 
-	travis.foldStart( 'package:' + simplePackageName, `Testing ${ fullPackageName }${ NO_COLOR }` );
+	travis.foldStart( foldLabelName, `Testing ${ fullPackageName }${ NO_COLOR }` );
 
 	runSubprocess( 'npx', [ 'ckeditor5-dev-tests-check-dependencies', `packages/${ fullPackageName }` ], simplePackageName, 'dependency',
 		'have a dependency problem' );
@@ -79,7 +80,7 @@ for ( const fullPackageName of packages ) {
 	const nyc = [ 'nyc', 'check-coverage', '--branches', '100', '--functions', '100', '--lines', '100', '--statements', '100' ];
 	runSubprocess( 'npx', nyc, simplePackageName, 'codeCoverage', 'doesn\'t have required code coverage' );
 
-	travis.foldEnd( 'package:' + simplePackageName );
+	travis.foldEnd( foldLabelName );
 }
 
 if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
