@@ -9,6 +9,10 @@
 
 import { isWidget } from '../utils';
 
+export function isTypeAroundWidget( viewElement, modelElement, schema ) {
+	return viewElement && isWidget( viewElement ) && !schema.isInline( modelElement );
+}
+
 export function getClosestTypeAroundDomButton( domElement ) {
 	return domElement.closest( '.ck-widget__type-around__button' );
 }

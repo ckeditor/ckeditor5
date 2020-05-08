@@ -13,8 +13,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
-import { isWidget } from '../utils';
 import {
+	isTypeAroundWidget,
 	getWidgetTypeAroundDirections,
 	getClosestTypeAroundDomButton,
 	getTypeAroundButtonDirection,
@@ -68,7 +68,7 @@ export default class WidgetTypeAround extends Plugin {
 			const viewElement = conversionApi.mapper.toViewElement( data.item );
 
 			// Filter out non-widgets and inline widgets.
-			if ( viewElement && isWidget( viewElement ) && !schema.isInline( data.item ) ) {
+			if ( isTypeAroundWidget( viewElement, data.item, schema ) ) {
 				injectUIIntoWidget( editor.editing.view, viewElement );
 			}
 		}, { priority: 'low' } );
@@ -79,24 +79,28 @@ export default class WidgetTypeAround extends Plugin {
 	 */
 	_enableDetectionOfTypeAroundWidgets() {
 		const editor = this.editor;
+		const schema = editor.model.schema;
 		const editingView = editor.editing.view;
 
 		editingView.document.registerPostFixer( writer => {
-			// Find all widget view elements in the editing root.
+			// Find all view elements in the editing root.
 			[ ...editingView.createRangeIn( editingView.document.getRoot() ) ]
-				.filter( ( { item } ) => isWidget( item ) )
+				// ...then filter only the widgets that may need the type around feature.
+				.filter( ( { item: widgetViewElement } ) => {
+					const modelElement = editor.editing.mapper.toModelElement( widgetViewElement );
+
+					return isTypeAroundWidget( widgetViewElement, modelElement, schema );
+				} )
+				// ...and update widgets' classes depending on possible directions for paragraph insertion.
 				.forEach( ( { item: widgetViewElement } ) => {
-					const newDirections = getWidgetTypeAroundDirections( widgetViewElement );
-					const directionClassesToRemove = POSSIBLE_INSERTION_DIRECTIONS
-						.filter( direction => !newDirections.includes( direction ) )
-						.map( directionToWidgetCssClass );
+					const directions = getWidgetTypeAroundDirections( widgetViewElement );
 
-					// Remove classes that do not make sense any more.
-					writer.removeClass( directionClassesToRemove, widgetViewElement );
+					// Remove all classes. In theory we could remove only these that will not be added a few lines later,
+					// but since there are only two... KISS.
+					writer.removeClass( POSSIBLE_INSERTION_DIRECTIONS.map( directionToWidgetCssClass ), widgetViewElement );
 
-					// Set CSS classes related to possible directions. They are used so the UI knows
-					// which buttons and lines to display.
-					writer.addClass( newDirections.map( directionToWidgetCssClass ), widgetViewElement );
+					// Set CSS classes related to possible directions. They are used so the UI knows which buttons to display.
+					writer.addClass( directions.map( directionToWidgetCssClass ), widgetViewElement );
 				} );
 		} );
 	}
