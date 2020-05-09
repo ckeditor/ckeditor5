@@ -271,6 +271,8 @@ function fixTableCellsRowspan( table, writer ) {
 	const cellsToTrim = findCellsToTrim( table );
 
 	if ( cellsToTrim.length ) {
+		// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: trimming cells row-spans (${ cellsToTrim.length }).` );
+
 		wasFixed = true;
 
 		for ( const data of cellsToTrim ) {
@@ -300,9 +302,15 @@ function fixTableRowsSizes( table, writer ) {
 	}
 
 	// Remove empty rows.
-	for ( const rowIndex of rowsToRemove.reverse() ) {
-		writer.remove( table.getChild( rowIndex ) );
-		rowsLengths.splice( rowIndex, 1 );
+	if ( rowsToRemove.length ) {
+		// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: remove empty rows (${ rowsToRemove.length }).` );
+
+		wasFixed = true;
+
+		for ( const rowIndex of rowsToRemove.reverse() ) {
+			writer.remove( table.getChild( rowIndex ) );
+			rowsLengths.splice( rowIndex, 1 );
+		}
 	}
 
 	// Verify if all the rows have the same number of columns.
@@ -310,6 +318,8 @@ function fixTableRowsSizes( table, writer ) {
 	const isValid = rowsLengths.every( length => length === tableSize );
 
 	if ( !isValid ) {
+		// @if CK_DEBUG_TABLE // console.log( 'Post-fixing table: adding missing cells.' );
+
 		// Find the maximum number of columns.
 		const maxColumns = rowsLengths.reduce( ( prev, current ) => current > prev ? current : prev, 0 );
 
