@@ -48,6 +48,8 @@ function tableCellRefreshPostFixer( model ) {
 	}
 
 	if ( cellsToRefresh.size ) {
+		// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: refreshing cells (${ cellsToRefresh.size }).` );
+
 		for ( const tableCell of cellsToRefresh.values() ) {
 			differ.refreshItem( tableCell );
 		}
