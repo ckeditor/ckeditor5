@@ -135,28 +135,9 @@ export default class ColorInputView extends View {
 
 		this.on(
 			'change:value',
-			( ev, n, inputValue ) => this._setInputValue( inputValue ),
+			( evt, name, inputValue ) => this._setInputValue( inputValue ),
 			{ priority: 'high' }
 		);
-	}
-
-	/**
-	 * Sets {@link #_inputView}'s value property to the color value or color label,
-	 * if there is one and the user is not typing.
-	 *
-	 * @private
-	 * @param {String} inputValue Color value to be set.
-	 */
-	_setInputValue( inputValue ) {
-		if ( !this._stillTyping ) {
-			// Check if the value matches one of our defined colors.
-			const mappedColor = this.options.colorDefinitions.find( def => inputValue === def.color );
-			if ( mappedColor ) {
-				this._inputView.value = mappedColor.label;
-			} else {
-				this._inputView.value = inputValue || '';
-			}
-		}
 	}
 
 	/**
@@ -299,5 +280,30 @@ export default class ColorInputView extends View {
 		colorGrid.bind( 'selectedColor' ).to( this, 'value' );
 
 		return colorGrid;
+	}
+
+	/**
+	 * Sets {@link #_inputView}'s value property to the color value or color label,
+	 * if there is one and the user is not typing.
+	 *
+	 * Handles cases like:
+	 *
+	 * * Someone picks the color in the grid.
+	 * * The color is set from the plugin level.
+	 *
+	 * @private
+	 * @param {String} inputValue Color value to be set.
+	 */
+	_setInputValue( inputValue ) {
+		if ( !this._stillTyping ) {
+			// Check if the value matches one of our defined colors.
+			const mappedColor = this.options.colorDefinitions.find( def => inputValue === def.color );
+
+			if ( mappedColor ) {
+				this._inputView.value = mappedColor.label;
+			} else {
+				this._inputView.value = inputValue || '';
+			}
+		}
 	}
 }
