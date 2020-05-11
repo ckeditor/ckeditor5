@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableSelection from './tableselection';
 import { getColumnIndexes, getRowIndexes, isSelectionRectangular } from './utils';
 import TableWalker from './tablewalker';
-import { findAncestor, updateNumericAttribute } from './commands/utils';
+import { findAncestor } from './commands/utils';
 import { cropTableToDimensions } from './tableselection/croptable';
 
 /**
@@ -99,15 +99,16 @@ export default class TableClipboard extends Plugin {
 			return;
 		}
 
-		// We might need to crop table before inserting.
-		let table = getTable( content );
+		// We might need to crop table before inserting so reference might change.
+		let insertedTable = getTableFromContent( content );
 
-		if ( !table ) {
+		if ( !insertedTable ) {
 			return;
 		}
 
 		evt.stop();
 
+		// Currently not handled. See: https://github.com/ckeditor/ckeditor5/issues/6121.
 		if ( selectedTableCells.length === 1 ) {
 			// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Single table cell is selected.' );
 
@@ -115,20 +116,26 @@ export default class TableClipboard extends Plugin {
 		}
 
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
-		const rowIndexes = getRowIndexes( selectedTableCells );
-		const columnIndexes = getColumnIndexes( selectedTableCells );
-		const selectionHeight = rowIndexes.last - rowIndexes.first + 1;
-		const selectionWidth = columnIndexes.last - columnIndexes.first + 1;
-		const insertHeight = tableUtils.getRows( table );
-		const insertWidth = tableUtils.getColumns( table );
-		const contentTable = findAncestor( 'table', selectedTableCells[ 0 ] );
 
+		// Currently not handled. The selected table content should be trimmed to a rectangular selection.
+		// See: https://github.com/ckeditor/ckeditor5/issues/6122.
 		if ( !isSelectionRectangular( this.editor.model.document.selection, tableUtils ) ) {
 			// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Selection is not rectangular (non-mergeable).' );
 
 			return;
 		}
 
+		const { last: lastColumnOfSelection, first: firstColumnOfSelection } = getColumnIndexes( selectedTableCells );
+		const { first: firstRowOfSelection, last: lastRowOfSelection } = getRowIndexes( selectedTableCells );
+
+		const selectionHeight = lastRowOfSelection - firstRowOfSelection + 1;
+		const selectionWidth = lastColumnOfSelection - firstColumnOfSelection + 1;
+
+		const insertHeight = tableUtils.getRows( insertedTable );
+		const insertWidth = tableUtils.getColumns( insertedTable );
+
+		// The if below is temporal and will be removed when handling this case.
+		// See: https://github.com/ckeditor/ckeditor5/issues/6769.
 		if ( selectionHeight > insertHeight || selectionWidth > insertWidth ) {
 			// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Pasted table is smaller than selection area.' );
 
@@ -138,81 +145,82 @@ export default class TableClipboard extends Plugin {
 		const model = this.editor.model;
 
 		model.change( writer => {
-			// Pasted table extends selection area.
+			// Crop pasted table if it extends selection area.
 			if ( selectionHeight < insertHeight || selectionWidth < insertWidth ) {
-				table = cropTableToDimensions( table, 0, 0, selectionHeight - 1, selectionWidth - 1, tableUtils, writer );
+				insertedTable = cropTableToDimensions( insertedTable, 0, 0, selectionHeight - 1, selectionWidth - 1, tableUtils, writer );
 			}
 
+			// Stores cells anchors map of inserted table cell as '"row"x"column"' index.
 			const insertionMap = new Map();
 
-			for ( const { column, row, cell } of new TableWalker( table ) ) {
+			for ( const { column, row, cell } of new TableWalker( insertedTable ) ) {
 				insertionMap.set( `${ row }x${ column }`, cell );
 			}
 
+			// Content table to which we insert a table.
+			const contentTable = findAncestor( 'table', selectedTableCells[ 0 ] );
+
+			// Selection must be set to pasted cells (some might be removed or new created).
+			const cellsToSelect = [];
+
+			// Store previous cell in order to insert a new table cells after it if required.
+			let previousCellInRow;
+
 			const tableMap = [ ...new TableWalker( contentTable, {
-				startRow: rowIndexes.first,
-				endRow: rowIndexes.last,
+				startRow: firstRowOfSelection,
+				endRow: lastRowOfSelection,
 				includeSpanned: true
 			} ) ];
 
-			let previousCell;
-
-			const cellsToSelect = [];
-
 			for ( const { column, row, cell, isSpanned } of tableMap ) {
-				// TODO: crete issue for table walker startColumn, endColumn.
-				if ( column < columnIndexes.first || column > columnIndexes.last ) {
-					previousCell = cell;
+				if ( column === 0 ) {
+					previousCellInRow = null;
+				}
+
+				// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
+				if ( column < firstColumnOfSelection || column > lastColumnOfSelection ) {
+					previousCellInRow = cell;
 
 					continue;
 				}
 
-				const toGet = `${ row - rowIndexes.first }x${ column - columnIndexes.first }`;
-				const cellToInsert = insertionMap.get( toGet );
+				// Map current table location to inserted table location.
+				const cellLocationToInsert = `${ row - firstRowOfSelection }x${ column - firstColumnOfSelection }`;
+				const cellToInsert = insertionMap.get( cellLocationToInsert );
 
+				// There is no cell to insert (might be spanned by other cell in a pasted table) so...
 				if ( !cellToInsert ) {
+					// ...if the cell is anchored in current location (not-spanned slot) then remove that cell from content table...
 					if ( !isSpanned ) {
 						writer.remove( writer.createRangeOn( cell ) );
 					}
 
+					// ...and advance to next content table slot.
 					continue;
 				}
 
 				let targetCell = cell;
 
-				if ( isSpanned ) {
-					let insertPosition;
+				// Remove cells from anchor slots (not spanned by other cells).
+				if ( !isSpanned ) {
+					writer.remove( writer.createRangeOn( cell ) );
+				}
 
-					if ( column === 0 || !previousCell || previousCell.parent.index !== row ) {
-						insertPosition = writer.createPositionAt( contentTable.getChild( row ), 0 );
-					} else {
-						insertPosition = writer.createPositionAfter( previousCell );
-					}
+				// Clone cell to insert (to duplicate its attributes and children).
+				// Cloning is required to support repeating pasted table content when inserting to a bigger selection.
+				targetCell = cellToInsert._clone( true );
 
-					targetCell = writer.createElement( 'tableCell' );
+				let insertPosition;
 
-					writer.insert( targetCell, insertPosition );
+				if ( !previousCellInRow ) {
+					insertPosition = writer.createPositionAt( contentTable.getChild( row ), 0 );
 				} else {
-					writer.remove( writer.createRangeIn( cell ) );
+					insertPosition = writer.createPositionAfter( previousCellInRow );
 				}
 
-				updateNumericAttribute( 'colspan', cellToInsert.getAttribute( 'colspan' ), targetCell, writer, 1 );
-				updateNumericAttribute( 'rowspan', cellToInsert.getAttribute( 'rowspan' ), targetCell, writer, 1 );
-
-				const attributesToCopy = Array.from( cellToInsert.getAttributeKeys() )
-					.filter( attribute => attribute !== 'colspan' || attribute !== 'rowspan' );
-
-				for ( const attribute of attributesToCopy ) {
-					writer.setAttribute( attribute, cellToInsert.getAttribute( attribute ), targetCell );
-				}
-
-				// TODO: use Element._clone to copy full structure.
-				for ( const child of Array.from( cellToInsert.getChildren() ) ) {
-					writer.insert( child, targetCell, 'end' );
-				}
-
+				writer.insert( targetCell, insertPosition );
 				cellsToSelect.push( targetCell );
-				previousCell = targetCell;
+				previousCellInRow = targetCell;
 			}
 
 			writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
@@ -220,7 +228,7 @@ export default class TableClipboard extends Plugin {
 	}
 }
 
-function getTable( content ) {
+function getTableFromContent( content ) {
 	for ( const child of Array.from( content ) ) {
 		if ( child.is( 'table' ) ) {
 			return child;
