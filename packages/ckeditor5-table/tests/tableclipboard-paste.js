@@ -6,20 +6,19 @@
 /* globals document */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
+import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
+import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { assertSelectedCells, modelTable, viewTable } from './_utils/utils';
 
 import TableEditing from '../src/tableediting';
-import { assertSelectedCells, modelTable, viewTable } from './_utils/utils';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-
 import TableClipboard from '../src/tableclipboard';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
-import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
-import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 
 describe( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument, element;

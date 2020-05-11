@@ -6,14 +6,13 @@
 /* globals document */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { modelTable, viewTable } from './_utils/utils';
 
 import TableEditing from '../src/tableediting';
-import { modelTable, viewTable } from './_utils/utils';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-
 import TableClipboard from '../src/tableclipboard';
 
 describe( 'table clipboard', () => {
