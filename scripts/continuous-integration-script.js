@@ -11,6 +11,9 @@
 
 const childProcess = require( 'child_process' );
 const crypto = require( 'crypto' );
+const fs = require( 'fs' );
+const path = require( 'path' );
+const glob = require( 'glob' );
 
 const failedChecks = {
 	dependency: new Set(),
@@ -58,6 +61,8 @@ const travis = {
 
 childProcess.execSync( 'rm -r -f .nyc_output' );
 childProcess.execSync( 'mkdir .nyc_output' );
+childProcess.execSync( 'rm -r -f .out' );
+childProcess.execSync( 'mkdir .out' );
 
 const packages = childProcess.execSync( 'ls packages -1', {
 	encoding: 'utf8'
@@ -68,6 +73,8 @@ for ( const fullPackageName of packages ) {
 	const foldLabelName = 'pkg-' + simplePackageName;
 
 	travis.foldStart( foldLabelName, `Testing ${ fullPackageName }${ NO_COLOR }` );
+
+	appendCoverageReport();
 
 	runSubprocess( 'npx', [ 'ckeditor5-dev-tests-check-dependencies', `packages/${ fullPackageName }` ], simplePackageName, 'dependency',
 		'have a dependency problem' );
@@ -82,6 +89,10 @@ for ( const fullPackageName of packages ) {
 
 	travis.foldEnd( foldLabelName );
 }
+
+console.log( 'Uploading combined code coverage report…' );
+childProcess.execSync( 'npx coveralls < .out/combined_lcov.info' );
+console.log( 'Done' );
 
 if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
 	console.log( '\n---\n' );
@@ -124,4 +135,18 @@ function showFailedCheck( checkKey, errorMessage ) {
 	if ( failedPackages.size ) {
 		console.log( `${ errorMessage }: ${ RED }${ Array.from( failedPackages.values() ).join( ', ' ) }${ NO_COLOR }` );
 	}
+}
+
+function appendCoverageReport() {
+	// Appends coverage data to the combined code coverage info file. It's used because all the results
+	// needs to be uploaded at once (#6742).
+	const matches = glob.sync( 'coverage/*/lcov.info' );
+
+	matches.forEach( filePath => {
+		const buffer = fs.readFileSync( filePath );
+
+		fs.writeFileSync( [ '.out', 'combined_lcov.info' ].join( path.sep ), buffer, {
+			flag: 'as'
+		} );
+	} );
 }
