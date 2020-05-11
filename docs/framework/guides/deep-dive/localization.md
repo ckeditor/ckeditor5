@@ -142,8 +142,8 @@ First of all, if you have found a missing or an incorrect translation in the CKE
 
 Adding translations to the editor can be done in three ways to satisfy various needs.
 
-- by adding translations via {@link module:utils/translation-service.add the translation-service's `add()` function} - this function can be used at runtime before the editor starts
-- by extending the global `window.CKEDITOR_TRANSLATIONS` object - this object can be modified before and after the build step. CKEditor 5 translations assets operate on this object.
+- by adding translations via {@link module:utils/translation-service.add the translation-service's `add()` function} - it can be done before initiating the CKEditor 5 editor instance, but requires importing a CKEditor 5 utility function,
+- by extending the global `window.CKEDITOR_TRANSLATIONS` object - it can be done before initiating the CKEditor 5 editor instance,
 - by creating `.po` files with translations in the `lang/translations/` directory of the published package like other CKEditor 5 packages do - this option will be useful for 3rd-party plugin creators as this allows bundling translations only for needed languages during the webpack compilation.
 
 The first option of adding translations is via the {@link module:utils/translation-service.add the translation-service's `add()` helper}. This utility adds translations to the `window.CKEDITOR_TRANSLATIONS` object by extending it. Since it needs to be imported It works only before building the editor. Starting with the 19.0.0 release, it started accepting the `getPluralForm` function as the third argument and started accepting an array of translations for a *message* if the *message* should support singular and plural forms.
