@@ -48,14 +48,10 @@ export function getTypeAroundButtonPosition( domElement ) {
  *
  * @param {HTMLElement} domElement
  * @param {module:engine/view/domconverter~DomConverter} domConverter
- * @returns {module:engine/view/element~Element|null}
+ * @returns {module:engine/view/element~Element}
  */
 export function getClosestWidgetViewElement( domElement, domConverter ) {
 	const widgetDomElement = domElement.closest( '.ck-widget' );
-
-	if ( !widgetDomElement ) {
-		return null;
-	}
 
 	return domConverter.mapDomToView( widgetDomElement );
 }
