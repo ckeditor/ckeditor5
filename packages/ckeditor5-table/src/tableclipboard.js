@@ -199,6 +199,13 @@ export default class TableClipboard extends Plugin {
 				updateNumericAttribute( 'colspan', cellToInsert.getAttribute( 'colspan' ), targetCell, writer, 1 );
 				updateNumericAttribute( 'rowspan', cellToInsert.getAttribute( 'rowspan' ), targetCell, writer, 1 );
 
+				const attributesToCopy = Array.from( cellToInsert.getAttributeKeys() )
+					.filter( attribute => attribute !== 'colspan' || attribute !== 'rowspan' );
+
+				for ( const attribute of attributesToCopy ) {
+					writer.setAttribute( attribute, cellToInsert.getAttribute( attribute ), targetCell );
+				}
+
 				// TODO: use Element._clone to copy full structure.
 				for ( const child of Array.from( cellToInsert.getChildren() ) ) {
 					writer.insert( child, targetCell, 'end' );

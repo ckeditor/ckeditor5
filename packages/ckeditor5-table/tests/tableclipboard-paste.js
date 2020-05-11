@@ -18,6 +18,7 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 import { assertSelectedCells, modelTable, viewTable } from './_utils/utils';
 
 import TableEditing from '../src/tableediting';
+import TableCellPropertiesEditing from '../src/tablecellproperties/tablecellpropertiesediting';
 import TableClipboard from '../src/tableclipboard';
 
 describe( 'table clipboard', () => {
@@ -1309,15 +1310,58 @@ describe( 'table clipboard', () => {
 					'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
 					'<listItem listIndent="0" listType="bulleted">bar</listItem>' +
 					'<blockQuote>' +
-						'<paragraph>baz</paragraph>' +
-						'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
-						'<listItem listIndent="0" listType="bulleted">bar</listItem>' +
+					'<paragraph>baz</paragraph>' +
+					'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">bar</listItem>' +
 					'</blockQuote>',
 					'ab',
 					'02' ],
 				[ 'ba', 'bb', '12' ],
 				[ '02', '21', '22' ]
 			] ) );
+		} );
+
+		it( 'handles table cell properties handling', async () => {
+			await createEditor( [ TableCellPropertiesEditing ] );
+
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '01', '11', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			pasteTable( [
+				[ { contents: 'aa', style: 'border:1px solid #f00;background:#ba7;width:1337px' }, 'ab' ],
+				[ 'ba', 'bb' ]
+			] );
+
+			const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+			expect( tableCell.getAttribute( 'borderColor' ) ).to.deep.equal( {
+				top: '#f00',
+				right: '#f00',
+				bottom: '#f00',
+				left: '#f00'
+			} );
+			expect( tableCell.getAttribute( 'borderStyle' ) ).to.deep.equal( {
+				top: 'solid',
+				right: 'solid',
+				bottom: 'solid',
+				left: 'solid'
+			} );
+			expect( tableCell.getAttribute( 'borderWidth' ) ).to.deep.equal( {
+				top: '1px',
+				right: '1px',
+				bottom: '1px',
+				left: '1px'
+			} );
+			expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( '#ba7' );
+			expect( tableCell.getAttribute( 'width' ) ).to.equal( '1337px' );
 		} );
 	} );
 
