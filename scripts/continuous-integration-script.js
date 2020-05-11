@@ -69,11 +69,12 @@ for ( const fullPackageName of packages ) {
 
 	travis.foldStart( foldLabelName, `Testing ${ fullPackageName }${ NO_COLOR }` );
 
-	console.log( 'Job id: ' + process.env.COVERALLS_SERVICE_JOB_ID );
-
 	// Service job id needs to be unique for each run (#6733). I know that this will not make the env variable to change in OS, but only
 	// locally in this process, and processes spawned by this process - but that's enough for what we want.
 	process.env.COVERALLS_SERVICE_JOB_ID = parseInt( process.env.COVERALLS_SERVICE_JOB_ID || 1 ) + 1;
+
+	console.log( 'Job id: ' + process.env.COVERALLS_SERVICE_JOB_ID );
+	console.log( 'Parallel: ' + process.env.COVERALLS_PARALLEL );
 
 	runSubprocess( 'npx', [ 'ckeditor5-dev-tests-check-dependencies', `packages/${ fullPackageName }` ], simplePackageName, 'dependency',
 		'have a dependency problem' );
