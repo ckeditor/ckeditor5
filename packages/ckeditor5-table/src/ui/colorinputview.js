@@ -206,9 +206,10 @@ export default class ColorInputView extends View {
 	_createInputTextView() {
 		const locale = this.locale;
 		const inputView = new InputTextView( locale );
+
 		inputView.extendTemplate( {
 			on: {
-				blur: this.bindTemplate.to( 'blur' )
+				blur: inputView.bindTemplate.to( 'blur' )
 			}
 		} );
 
@@ -224,7 +225,8 @@ export default class ColorInputView extends View {
 			this._stillTyping = true;
 			this.value = mappedColor && mappedColor.color || inputValue;
 		} );
-		this.on( 'blur', () => {
+
+		inputView.on( 'blur', () => {
 			this._stillTyping = false;
 			this._setInputValue( inputView.element.value );
 		} );
