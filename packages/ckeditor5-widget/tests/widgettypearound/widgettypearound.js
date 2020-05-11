@@ -54,7 +54,7 @@ describe( 'WidgetTypeAround', () => {
 	} );
 
 	describe( 'typeAround()', () => {
-		it( 'should insert a paragraph with a selection before a widget when direction is "before"', () => {
+		it( 'should insert a paragraph with a selection before a widget when position is "before"', () => {
 			setModelData( editor.model, '<blockWidget></blockWidget>' );
 
 			plugin.typeAround( viewRoot.getChild( 0 ), 'before' );
@@ -62,7 +62,7 @@ describe( 'WidgetTypeAround', () => {
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph><blockWidget></blockWidget>' );
 		} );
 
-		it( 'should insert a paragraph with a selection after a widget when direction is "after"', () => {
+		it( 'should insert a paragraph with a selection after a widget when position is "after"', () => {
 			setModelData( editor.model, '<blockWidget></blockWidget>' );
 
 			plugin.typeAround( viewRoot.getChild( 0 ), 'after' );
