@@ -133,11 +133,7 @@ export default class ColorInputView extends View {
 			]
 		} );
 
-		this.on(
-			'change:value',
-			( evt, name, inputValue ) => this._setInputValue( inputValue ),
-			{ priority: 'high' }
-		);
+		this.on( 'change:value', ( evt, name, inputValue ) => this._setInputValue( inputValue ) );
 	}
 
 	/**
