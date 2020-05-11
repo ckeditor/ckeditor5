@@ -19,6 +19,10 @@ The plugin that you will write will use a part of the {@link features/image imag
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
+<info-box hint>
+	For simplicity reasons this guide does not describe how to localize the created plugin. To see how plugins should be localized check {@link framework/guides/deep-dive/localization the localization guide}.
+</info-box>
+
 ## Step 1. Installing dependencies
 
 Start from installing the necessary dependencies:
@@ -113,10 +117,9 @@ class InsertImage extends Plugin {
 
 		editor.ui.componentFactory.add( 'insertImage', locale => {
 			const view = new ButtonView( locale );
-			const { t } = locale.t;
 
 			view.set( {
-				label: t( 'Insert image' ),
+				label: 'Insert image',
 				icon: imageIcon,
 				tooltip: true
 			} );
@@ -146,10 +149,6 @@ ClassicEditor
 
 Rebuild the application and refresh the page. You should see a new button in the toolbar. Clicking the button should open a prompt window asking you for the image URL.
 
-<info-box hint>
-	The `t()` function call used in the snippet above was used for providing the localized version of the message. It will not work without attaching translations. To see how the plugin should be localized correctly check {@link framework/guides/deep-dive/localization the localization guide}.
-</info-box>
-
 ## Step 4. Inserting a new image
 
 Now, expand the button's `#execute` event listener, so it will actually insert the new image into the content:
@@ -161,17 +160,16 @@ class InsertImage extends Plugin {
 
 		editor.ui.componentFactory.add( 'insertImage', locale => {
 			const view = new ButtonView( locale );
-			const { t } = locale;
 
 			view.set( {
-				label: t( 'Insert image' ),
+				label: 'Insert image',
 				icon: imageIcon,
 				tooltip: true
 			} );
 
 			// Callback executed once the image is clicked.
 			view.on( 'execute', () => {
-				const imageUrl = prompt( t( 'Image URL' ) );
+				const imageUrl = prompt( 'Image URL' );
 
 				editor.model.change( writer => {
 					const imageElement = writer.createElement( 'image', {
@@ -251,17 +249,16 @@ class InsertImage extends Plugin {
 
 		editor.ui.componentFactory.add( 'insertImage', locale => {
 			const view = new ButtonView( locale );
-			const { t } = locale;
 
 			view.set( {
-				label: t( 'Insert image' ),
+				label: 'Insert image',
 				icon: imageIcon,
 				tooltip: true
 			} );
 
 			// Callback executed once the image is clicked.
 			view.on( 'execute', () => {
-				const imageUrl = prompt( t( 'Image URL' ) );
+				const imageUrl = prompt( 'Image URL' );
 
 				editor.model.change( writer => {
 					const imageElement = writer.createElement( 'image', {
