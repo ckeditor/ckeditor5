@@ -8,7 +8,7 @@ category: framework-deep-dive
 
 The CKEditor 5 ecosystem support message localization. It means that the UI of any feature can be translated for various languages and regions depending on the user's preferences. Starting with the 19.0.0 release of the CKEditor 5 packages and CKEditor 5 dev tools we opened the translation system for 3rd-party plugins, provided a way for adding missing or fixing invalid translations to the editor and we introduced support for translating plural forms.
 
-<info-box>
+<info-box warning>
 	Make sure to use up-to-date CKEditor 5 dev-tool packages. Older versions of developer tools do not provide support for features described in this guide.
 </info-box>
 
@@ -47,17 +47,23 @@ When using the `t()` function, you can create your own *localizable messages* or
 For simple *localizable messages* use the string form for simplicity:
 
 ```js
-t( 'insert emoji' );
-t( 'insert %0 emoji', emojiName );
-t( 'insert %0 emoji', [ emojiName ] );
+const emojiName = 'cat';
+
+// Let's assume that the English language was picked:
+t( 'insert emoji' ); // "insert emoji"
+t( 'insert %0 emoji', emojiName ); // "insert cat emoji"
+t( 'insert %0 emoji', [ emojiName ] ); // "insert cat emoji"
 ```
 
 For more advanced scenarios use plain objects forms:
 
 ```js
-t( { string: '%0 emoji', id: 'INSERT_EMOJI' }, 'insert' );
-t( { string: '%0 emoji', plural: '%0 emojis', id: 'EMOJI' }, quantity );
-t( { string: '%1 %0 emoji', plural: '%1 %0 emojis', id: 'INSERT_EMOJIS' }, [ quantity, 'Insert' ] );
+const quantity = 3;
+
+// Let's assume that the English language was picked:
+t( { string: '%0 emoji', id: 'INSERT_EMOJI' }, 'insert' ); // "insert emoji"
+t( { string: '%0 emoji', plural: '%0 emojis', id: 'EMOJI' }, quantity ); // "3 emojis"
+t( { string: '%1 %0 emoji', plural: '%1 %0 emojis', id: 'INSERT_EMOJIS' }, [ quantity, 'Insert' ] ); // "Insert 3 emojis"
 ```
 
 ### Examples
@@ -90,8 +96,6 @@ editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 // ...
 ```
 
-Note that this sample lacks a few parts. To check how to create a complete plugin, for example, check the {@link framework/guides/creating-simple-plugin Creating a simple plugin guide}.
-
 #### Localizing aria attributes:
 
 ```js
@@ -109,21 +113,28 @@ editingView.change( writer => {
 
 #### Localizing pending actions
 
-Pending actions are used to inform the user that the action is in progress and we will lost data while exiting the editor - see {@link module:core/pendingactions~PendingActions the `PendingActions` class}
+Pending actions are used to inform the user that the action is in progress and we will lost data while exiting the editor - see {@link module:core/pendingactions~PendingActions the `PendingActions` class}.
 
 ```js
-_updatePendingAction() {
+class FileRepository {
 	// ...
-	const pendingActions = this.editor.plugins.get( PendingActions );
+	updatePendingAction() {
+		// ...
+		const pendingActions = this.editor.plugins.get( PendingActions );
 
-	// ...
-	const t = this.editor.t;
-	const getMessage = value => `${ t( 'Upload in progress' ) } ${ parseInt( value ) }%.`;
+		// ...
+		const t = this.editor.t;
+		const getMessage = value => t( 'Upload in progress (%0%).', value ); // Upload in progress (12%).
 
-	this._pendingAction = pendingActions.add( getMessage( this.uploadedPercent ) );
-	this._pendingAction.bind( 'message' ).to( this, 'uploadedPercent', getMessage );
+		this._pendingAction = pendingActions.add( getMessage( this.uploadedPercent ) );
+		this._pendingAction.bind( 'message' ).to( this, 'uploadedPercent', getMessage );
+	}
 }
 ```
+
+<info-box warning>
+	Note that these samples lacks a few parts. Check {@link framework/guides/creating-simple-plugin how to create a complete plugin} to have a better understanding about creating CKEditor 5 plugins.
+</info-box>
 
 ## Adding translations and localizing the editor UI
 
@@ -141,6 +152,11 @@ The first option of adding translations is via the {@link module:utils/translati
 add( 'pl', {
 	'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ]
 } );
+
+// Let's assume that the Polish language was picked:
+t( { string: 'Add space', plural: 'Add %0 spaces' }, 1 ) // "Dodaj spację"
+t( { string: 'Add space', plural: 'Add %0 spaces' }, 2 ) // "Dodaj 2 spacje"
+t( { string: 'Add space', plural: 'Add %0 spaces' }, 5 ) // "Dodaj 5 spacji"
 ```
 
 The second option is adding translations via the `window.CKEDITOR_TRANSLATIONS` object. For each language that should be supported, the `dictionary` property of this object should be extended and the `getPluralForm` function should be provided if missing. The `dictionary` property is a `message ID ⇒ translations` map, where the `translations` can be either one sentence (a string) or an array of translations with plural forms for the given language if the message should support plural forms as well. The `getPluralForm` property should be a function that for given quantity returns the plural form index. Note that while using CKEditor 5 translations this property will be defined by *CKEditor5 translation assets*.
@@ -180,11 +196,11 @@ msgid "Align left"
 msgstr "Alinear a la izquierda"
 ```
 
-<info-box>
+<info-box warning>
 	Note that the [CKEditorWebpackPlugin](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-webpack-plugin) is configured to parse by default only the CKEditor 5 source code when looking for *localizable messages* and generating *translation assets*. If you develop your own plugin outside of CKEditor 5 ecosystem and localize it via creating *PO files*, you should override both, the `sourceFilesPattern` and the `packageNamePattern` options to allow `CKEditorWebpackPlugin` analyzing the code and finding *messages* with corresponding translations. You should also mention these webpack plugin changes in your package README to make other users build the localized CKEditor 5 editor with your plugin correctly. This obstacle may be simplified in the future when the localization feature gets more popular.
 </info-box>
 
-To build the localized editor follow the steps from {@link features/ui-language building the editor using a specific language guide}.
+To build and configure the localized editor follow the steps from the {@link features/ui-language Setting UI language guide}.
 
 ## Known limitations
 
