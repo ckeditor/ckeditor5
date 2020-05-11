@@ -95,21 +95,21 @@ export default class ColorGridView extends View {
 			colorTile.isOn = colorTile.color === this.selectedColor;
 		} );
 
-		colorDefinitions.forEach( item => {
+		colorDefinitions.forEach( color => {
 			const colorTile = new ColorTileView();
 
 			colorTile.set( {
-				color: item.color,
-				label: item.label,
+				color: color.color,
+				label: color.label,
 				tooltip: true,
-				hasBorder: item.options.hasBorder
+				hasBorder: color.options.hasBorder
 			} );
 
 			colorTile.on( 'execute', () => {
 				this.fire( 'execute', {
-					value: item.color,
-					hasBorder: item.options.hasBorder,
-					label: item.label
+					value: color.color,
+					hasBorder: color.options.hasBorder,
+					label: color.label
 				} );
 			} );
 
@@ -175,13 +175,26 @@ export default class ColorGridView extends View {
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
 	}
+
+	/**
+	 * Fired when the `ColorTileView` for the picked item is executed.
+	 *
+	 * @event execute
+	 * @param {Object} data Additional information about the event.
+	 * @param {String} data.value The value of the selected color
+	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#color `color.color`}).
+	 * @param {Boolean} data.hasBorder The `hasBorder` property of the selected color
+	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#options.hasBorder `color.options.hasBorder`}).
+	 * @param {String} data.Label The label of the selected color
+	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#label `color.label`})
+	 */
 }
 
 /**
  * A color definition used to create a {@link module:ui/colorgrid/colortile~ColorTileView}.
  *
  *		{
- *			color: hsl(0, 0%, 75%),
+ *			color: 'hsl(0, 0%, 75%)',
  *			label: 'Light Grey',
  *			options: {
  *				hasBorder: true
