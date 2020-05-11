@@ -1321,7 +1321,7 @@ describe( 'table clipboard', () => {
 			] ) );
 		} );
 
-		it( 'handles table cell properties handling', async () => {
+		it( 'handles table cell properties', async () => {
 			await createEditor( [ TableCellPropertiesEditing ] );
 
 			setModelData( model, modelTable( [
@@ -1362,6 +1362,37 @@ describe( 'table clipboard', () => {
 			} );
 			expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( '#ba7' );
 			expect( tableCell.getAttribute( 'width' ) ).to.equal( '1337px' );
+		} );
+
+		it( 'discards table properties', async () => {
+			await createEditor( [ TableCellPropertiesEditing ] );
+
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '01', '11', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			const tableStyle = 'border:1px solid #f00;background:#ba7;width:1337px';
+			const pastedTable = `<table style="${ tableStyle }"><tr><td>aa</td><td>ab</td></tr><tr><td>ba</td><td>bb</td></tr></table>`;
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+			data.dataTransfer.setData( 'text/html', pastedTable );
+			viewDocument.fire( 'paste', data );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ 'aa', 'ab', '02' ],
+				[ 'ba', 'bb', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
 		} );
 	} );
 
