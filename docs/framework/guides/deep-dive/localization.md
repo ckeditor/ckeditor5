@@ -36,9 +36,9 @@ Before we start, let's explain the meaning of terms that are crucial for the tra
 
 ## Writing localizable UI
 
-All *messages* needing localization should be passed to the special CKEditor 5's `t()` function. This function can be retrieved from the editor's `locale` instance: `const { t } = editor.locale;` or from any view method `const t = this.t;` Note that this function should not be used as the `Locale` class method because during the translation process a static code analyzer catches *localizable messages* only from function forms.
+All *messages* needing localization should be passed to the special CKEditor 5's `t()` function. This function can be retrieved from the editor's `locale` instance: `const { t } = editor.locale;` or from any view method `const t = this.t;`
 
-The `t()` function as the first argument accepts either a string literal, which will be at the same time the *message ID* and the message string or an object literal containing `id`, `string`, and optional `plural` property. This function can't be called on variables or other expressions for the same reason as above.
+The `t()` function as the first argument accepts either a string literal, which will be at the same time the *message ID* and the message string or an object literal containing `id`, `string`, and optional `plural` property.
 
 As the second argument, the translation function accepts a value or an array of values. These "values" will be used to fill the placeholders in the more advanced translation scenarios. And if the `plural` property is specified then the first value will be used as quantity determining the plural form.
 
@@ -65,6 +65,10 @@ t( { string: '%0 emoji', id: 'INSERT_EMOJI' }, 'insert' ); // "insert emoji"
 t( { string: '%0 emoji', plural: '%0 emojis', id: 'EMOJI' }, quantity ); // "3 emojis"
 t( { string: '%1 %0 emoji', plural: '%1 %0 emojis', id: 'INSERT_EMOJIS' }, [ quantity, 'Insert' ] ); // "Insert 3 emojis"
 ```
+
+<info-box warning>
+	Note that the `t()` function should not be used as the `Locale` class method because during the translation process a static code analyzer catches *localizable messages* only from function forms. For the same reason its first argument accepts only a string literal or an object literal. `Locale#t()` method calls and incompatible expressions passed to the `t()` calls will produce build-time warnings.
+</info-box>
 
 ### Examples
 
