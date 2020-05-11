@@ -48,7 +48,7 @@ describe( 'SelectRowCommand', () => {
 				[ '20', '21' ]
 			] ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 			);
@@ -147,7 +147,7 @@ describe( 'SelectRowCommand', () => {
 
 			it( 'should select only one row if only one cell is selected', () => {
 				// Selection in cell 01.
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 				);
@@ -175,7 +175,7 @@ describe( 'SelectRowCommand', () => {
 
 			it( 'should not select row-spanned rows that start in other row', () => {
 				// Selection in cell 24.
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 2, 1 ] ),
 					modelRoot.getNodeByPath( [ 0, 2, 1 ] )
 				);
@@ -203,7 +203,7 @@ describe( 'SelectRowCommand', () => {
 
 			it( 'should not select row-spanned rows that start in other row but include those that start in selected row', () => {
 				// Selection in cell 14.
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 				);
@@ -231,7 +231,7 @@ describe( 'SelectRowCommand', () => {
 
 			it( 'should select properly for multiple not spanned cells selected', () => {
 				// Selection in cells 04 - 14.
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 4 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 				);
@@ -259,7 +259,7 @@ describe( 'SelectRowCommand', () => {
 
 			it( 'should select properly for multiple cells selected including spanned one', () => {
 				// Selection in cells 13 - 33.
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 3, 2 ] )
 				);
@@ -295,7 +295,7 @@ describe( 'SelectRowCommand', () => {
 					[ '30', '31' ]
 				] ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 2, 0 ] )
 				);
@@ -318,7 +318,7 @@ describe( 'SelectRowCommand', () => {
 					[ '30', '31' ]
 				] ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 0 ] )
 				);
@@ -341,7 +341,7 @@ describe( 'SelectRowCommand', () => {
 					[ '30', '31' ]
 				] ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 3, 0 ] )
 				);
@@ -364,7 +364,7 @@ describe( 'SelectRowCommand', () => {
 					[ '30', '31' ]
 				] ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 0 ] )
 				);
@@ -387,7 +387,7 @@ describe( 'SelectRowCommand', () => {
 					[ '30', '31', '32' ]
 				] ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 2, 1 ] )
 				);
@@ -409,7 +409,7 @@ describe( 'SelectRowCommand', () => {
 					[ '20', '21' ]
 				], { headingColumns: 1 } ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 0 ] )
 				);
@@ -444,7 +444,7 @@ describe( 'SelectRowCommand', () => {
 
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 12, 0 ] )
 				);
@@ -479,7 +479,7 @@ describe( 'SelectRowCommand', () => {
 					[ '20', '21' ]
 				] ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 				);
@@ -499,7 +499,7 @@ describe( 'SelectRowCommand', () => {
 					[ '10', '11' ]
 				] ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] )
 				);

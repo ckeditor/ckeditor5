@@ -56,7 +56,7 @@ describe( 'table clipboard', () => {
 			it( 'should copy selected table cells as a standalone table', () => {
 				const preventDefaultSpy = sinon.spy();
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 2 ] )
 				);
@@ -81,7 +81,7 @@ describe( 'table clipboard', () => {
 					[ '20', '21', '22' ]
 				] ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 2, 1 ] )
 				);
@@ -100,7 +100,7 @@ describe( 'table clipboard', () => {
 					[ '20', '21', '22' ]
 				] ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 2, 1 ] )
 				);
@@ -119,7 +119,7 @@ describe( 'table clipboard', () => {
 					[ '20', '21', '22' ]
 				] ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 2 ] )
 				);
@@ -137,7 +137,7 @@ describe( 'table clipboard', () => {
 					[ '20', '22' ]
 				] ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 				);
@@ -155,7 +155,7 @@ describe( 'table clipboard', () => {
 					[ '20', '21', '22' ]
 				] ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 					modelRoot.getNodeByPath( [ 0, 2, 2 ] )
 				);
@@ -174,7 +174,7 @@ describe( 'table clipboard', () => {
 					[ '20', '21', '22' ]
 				] ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 2, 2 ] )
 				);
@@ -223,7 +223,7 @@ describe( 'table clipboard', () => {
 					[ '80', '82', '83', '84', '85', '87', '88' ]
 				] ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 2, 1 ] ),
 					modelRoot.getNodeByPath( [ 0, 7, 6 ] )
 				);
@@ -247,7 +247,7 @@ describe( 'table clipboard', () => {
 					[ '40', '41', '42', '43', '44' ]
 				], { headingRows: 3, headingColumns: 2 } ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
 					modelRoot.getNodeByPath( [ 0, 3, 3 ] )
 				);
@@ -268,7 +268,7 @@ describe( 'table clipboard', () => {
 					[ '40', '41', '42', '43', '44' ]
 				], { headingRows: 3, headingColumns: 2 } ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 3, 2 ] ),
 					modelRoot.getNodeByPath( [ 0, 4, 4 ] )
 				);
@@ -299,7 +299,7 @@ describe( 'table clipboard', () => {
 			} );
 
 			it( 'should be preventable', () => {
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 				);
@@ -323,7 +323,7 @@ describe( 'table clipboard', () => {
 
 				viewDocument.on( 'clipboardOutput', spy );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 				);
@@ -343,7 +343,7 @@ describe( 'table clipboard', () => {
 			it( 'should copy selected table cells as a standalone table', () => {
 				const preventDefaultSpy = sinon.spy();
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 2 ] )
 				);
@@ -366,7 +366,7 @@ describe( 'table clipboard', () => {
 
 				editor.isReadOnly = true;
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 2 ] )
 				);

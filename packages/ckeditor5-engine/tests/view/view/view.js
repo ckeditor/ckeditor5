@@ -16,6 +16,7 @@ import FocusObserver from '../../../src/view/observer/focusobserver';
 import CompositionObserver from '../../../src/view/observer/compositionobserver';
 import ViewRange from '../../../src/view/range';
 import ViewElement from '../../../src/view/element';
+import ViewContainerElement from '../../../src/view/containerelement';
 import ViewPosition from '../../../src/view/position';
 import ViewSelection from '../../../src/view/selection';
 import { StylesProcessor } from '../../../src/view/stylesmap';
@@ -527,7 +528,10 @@ describe( 'view', () => {
 
 			view.attachDomRoot( domRoot );
 
-			viewRoot._appendChild( new ViewElement( viewDocument, 'p' ) );
+			// It must be a container element to be rendered with the bogus <br> inside which ensures
+			// that the browser sees a selection position inside (empty <p> may not be selectable).
+			// May help resolving https://github.com/ckeditor/ckeditor5/issues/6655.
+			viewRoot._appendChild( new ViewContainerElement( viewDocument, 'p' ) );
 			view.forceRender();
 
 			domElement = createElement( document, 'div', { contenteditable: 'true' } );
@@ -542,27 +546,40 @@ describe( 'view', () => {
 		} );
 
 		it( 'should be true if selection is inside a DOM root element', done => {
-			domSelection.collapse( domP, 0 );
+			domRoot.focus();
 
-			// Wait for async selectionchange event on DOM document.
 			setTimeout( () => {
-				expect( view.hasDomSelection ).to.be.true;
+				domSelection.collapse( domP, 0 );
 
-				done();
-			}, 100 );
+				// Wait for async selectionchange event on DOM document.
+				setTimeout( () => {
+					expect( view.hasDomSelection ).to.be.true;
+
+					done();
+				}, 10 );
+			}, 10 );
 		} );
 
 		it( 'should be true if selection is inside a DOM root element - no focus', done => {
-			domSelection.collapse( domP, 0 );
-			domRoot.blur();
+			domRoot.focus();
 
-			// Wait for async selectionchange event on DOM document.
 			setTimeout( () => {
-				expect( view.hasDomSelection ).to.be.true;
-				expect( view.document.isFocused ).to.be.false;
+				domSelection.collapse( domP, 0 );
 
-				done();
-			}, 100 );
+				setTimeout( () => {
+					// We could also do domRoot.blur() here but it's always better to know where the focus went.
+					// E.g. if it went to some <input>, the selection would disappear from the editor and the test would fail.
+					domRoot.blur();
+
+					// Wait for async selectionchange event on DOM document.
+					setTimeout( () => {
+						expect( view.hasDomSelection ).to.be.true;
+						expect( view.document.isFocused ).to.be.false;
+
+						done();
+					}, 10 );
+				}, 10 );
+			}, 10 );
 		} );
 
 		it( 'should be false if selection is outside DOM root element', done => {

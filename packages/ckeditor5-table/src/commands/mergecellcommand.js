@@ -264,7 +264,7 @@ function removeEmptyRow( removedTableCellRow, writer ) {
 }
 
 // Merges two table cells. It will ensure that after merging cells with an empty paragraph, the resulting table cell will only have one
-// paragraph. If one of the merged table cell is empty, the merged table cell will have the contents of the non-empty table cell.
+// paragraph. If one of the merged table cells is empty, the merged table cell will have the contents of the non-empty table cell.
 // If both are empty, the merged table cell will have only one empty paragraph.
 //
 // @param {module:engine/model/element~Element} cellToRemove

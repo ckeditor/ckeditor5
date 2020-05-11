@@ -201,7 +201,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '10', '11' ]
 			], { headingRows: 1 } ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 0, 0 ] ),
 				root.getNodeByPath( [ 0, 1, 0 ] )
 			);
@@ -230,7 +230,7 @@ describe( 'MergeCellsCommand', () => {
 
 			const tableSelection = editor.plugins.get( TableSelection );
 			const modelRoot = model.document.getRoot();
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 12, 0 ] )
 			);
@@ -244,7 +244,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '10', '11', '12', '13' ]
 			], { headingColumns: 2 } ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 0, 0 ] ),
 				root.getNodeByPath( [ 0, 1, 1 ] )
 			);
@@ -258,7 +258,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '10', '11', '12', '13' ]
 			], { headingColumns: 2 } ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 0, 0 ] ),
 				root.getNodeByPath( [ 0, 1, 2 ] )
 			);
@@ -272,7 +272,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '10', '11', '12', '13' ]
 			], { headingColumns: 2, headingRows: 1 } ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 0, 0 ] ),
 				root.getNodeByPath( [ 0, 0, 1 ] )
 			);
@@ -286,7 +286,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '10', '11', '12', '13' ]
 			], { headingColumns: 2, headingRows: 1 } ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 0, 0 ] ),
 				root.getNodeByPath( [ 0, 0, 2 ] )
 			);
@@ -300,7 +300,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '10', '11', '12', '13' ]
 			], { headingColumns: 2, headingRows: 1 } ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 0, 0 ] ),
 				root.getNodeByPath( [ 0, 1, 2 ] )
 			);
@@ -315,7 +315,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '[]00', '01' ]
 			] ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 0, 0 ] ),
 				root.getNodeByPath( [ 0, 0, 1 ] )
 			);
@@ -334,7 +334,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '20', '22' ]
 			] ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 1, 0 ] ),
 				root.getNodeByPath( [ 0, 2, 1 ] )
 			);
@@ -358,7 +358,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '20', '22' ]
 			] ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 2, 1 ] ),
 				root.getNodeByPath( [ 0, 1, 0 ] )
 			);
@@ -383,7 +383,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '30', '31', '32', '33' ]
 			] ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 2, 1 ] ),
 				root.getNodeByPath( [ 0, 1, 2 ] )
 			);
