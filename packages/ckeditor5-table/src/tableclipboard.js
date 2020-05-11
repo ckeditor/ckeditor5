@@ -8,9 +8,10 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
 import TableSelection from './tableselection';
-import { getColumnIndexes, getRowIndexes, isSelectionRectangular } from './utils';
 import TableWalker from './tablewalker';
+import { getColumnIndexes, getRowIndexes, isSelectionRectangular } from './utils';
 import { findAncestor } from './commands/utils';
 import { cropTableToDimensions } from './tableselection/croptable';
 
