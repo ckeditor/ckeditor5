@@ -304,6 +304,21 @@ describe( 'Table cell refresh post-fixer', () => {
 		sinon.assert.notCalled( refreshItemSpy );
 	} );
 
+	it( 'should do nothing on adding <paragraph> to existing paragraphs', () => {
+		editor.setData( viewTable( [ [ '<p>a</p><p>b</p>' ] ] ) );
+
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			writer.insertElement( 'paragraph', table.getNodeByPath( [ 0, 0, 1 ] ), 'after' );
+		} );
+
+		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+			[ '<p>a</p><p>b</p><p></p>' ]
+		], { asWidget: true } ) );
+		sinon.assert.notCalled( refreshItemSpy );
+	} );
+
 	it( 'should do nothing when setting attribute on block item other then <paragraph>', () => {
 		editor.setData( viewTable( [ [ '<div>foo</div>' ] ] ) );
 
