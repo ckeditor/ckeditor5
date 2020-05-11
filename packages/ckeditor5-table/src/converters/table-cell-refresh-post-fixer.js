@@ -96,6 +96,6 @@ function checkRefresh( tableCell, type, insertCount ) {
 	// - another element is added to a single paragraph (childCount becomes >= 2)
 	// - another element is removed and a single paragraph is left (childCount == 1)
 	//
-	// Change is not needed if there was multiple blocks before change.
+	// Change is not needed if there were multiple blocks before change.
 	return tableCell.childCount <= ( type == 'insert' ? insertCount + 1 : 1 );
 }
