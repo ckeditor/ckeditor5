@@ -138,9 +138,8 @@ export default class TableClipboard extends Plugin {
 		const model = this.editor.model;
 
 		model.change( writer => {
+			// Pasted table extends selection area.
 			if ( selectionHeight < insertHeight || selectionWidth < insertWidth ) {
-				// @if CK_DEBUG // console.log( 'Pasted table extends selection area.' );
-
 				table = cropTableToDimensions( table, 0, 0, selectionHeight - 1, selectionWidth - 1, tableUtils, writer );
 			}
 
@@ -200,7 +199,8 @@ export default class TableClipboard extends Plugin {
 				updateNumericAttribute( 'colspan', cellToInsert.getAttribute( 'colspan' ), targetCell, writer, 1 );
 				updateNumericAttribute( 'rowspan', cellToInsert.getAttribute( 'rowspan' ), targetCell, writer, 1 );
 
-				for ( const child of cellToInsert.getChildren() ) {
+				// TODO: use Element._clone to copy full structure.
+				for ( const child of Array.from( cellToInsert.getChildren() ) ) {
 					writer.insert( child, targetCell, 'end' );
 				}
 

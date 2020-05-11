@@ -15,23 +15,26 @@ import { assertSelectedCells, modelTable, viewTable } from './_utils/utils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 import TableClipboard from '../src/tableclipboard';
+import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
 
 describe( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument, element;
 
+	beforeEach( () => {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+	} );
+
+	afterEach( async () => {
+		await editor.destroy();
+
+		element.remove();
+	} );
+
 	describe( 'Clipboard integration - paste (selection scenarios)', () => {
 		beforeEach( async () => {
-			element = document.createElement( 'div' );
-			document.body.appendChild( element );
-
-			editor = await ClassicTestEditor.create( element, {
-				plugins: [ TableEditing, TableClipboard, Paragraph, Clipboard ]
-			} );
-
-			model = editor.model;
-			modelRoot = model.document.getRoot();
-			viewDocument = editor.editing.view.document;
-			tableSelection = editor.plugins.get( 'TableSelection' );
+			await createEditor();
 
 			setModelData( model, modelTable( [
 				[ '00[]', '01', '02', '03' ],
@@ -39,12 +42,6 @@ describe( 'table clipboard', () => {
 				[ '20', '21', '22', '23' ],
 				[ '30', '31', '32', '33' ]
 			] ) );
-		} );
-
-		afterEach( async () => {
-			await editor.destroy();
-
-			element.remove();
 		} );
 
 		it( 'should be disabled in a readonly mode', () => {
@@ -1227,6 +1224,71 @@ describe( 'table clipboard', () => {
 			} );
 		} );
 	} );
+
+	describe( 'Clipboard integration - paste (content scenarios)', () => {
+		it( 'handles multiple paragraphs', async () => {
+			await createEditor();
+
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '01', '11', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			pasteTable( [
+				[ '<p>a</p><p>a</p><p>a</p>', 'ab' ],
+				[ 'ba', 'bb' ]
+			] );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ '<paragraph>a</paragraph><paragraph>a</paragraph><paragraph>a</paragraph>', 'ab', '02' ],
+				[ 'ba', 'bb', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
+		} );
+
+		it( 'handles image in table cell', async () => {
+			await createEditor( [ ImageEditing, ImageCaptionEditing ] );
+
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '01', '11', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			pasteTable( [
+				[ '<img src="/assets/sample.jpg">', 'ab' ],
+				[ 'ba', 'bb' ]
+			] );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ '<image src="/assets/sample.jpg"><caption></caption></image>', 'ab', '02' ],
+				[ 'ba', 'bb', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
+		} );
+	} );
+
+	async function createEditor( extraPlugins = [] ) {
+		editor = await ClassicTestEditor.create( element, {
+			plugins: [ TableEditing, TableClipboard, Paragraph, Clipboard, ...extraPlugins ]
+		} );
+
+		model = editor.model;
+		modelRoot = model.document.getRoot();
+		viewDocument = editor.editing.view.document;
+		tableSelection = editor.plugins.get( 'TableSelection' );
+	}
 
 	function pasteTable( tableData ) {
 		const data = {
