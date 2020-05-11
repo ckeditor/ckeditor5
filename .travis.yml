@@ -13,6 +13,7 @@ cache:
 - node_modules
 before_install:
 - export START_TIME=$( date +%s )
+- export COVERALLS_PARALLEL=true
 - npm i -g yarn
 install:
 - yarn install
@@ -30,3 +31,5 @@ after_script:
 env:
   global:
   - secure: RO140EQDHmEOPJPikk8eCY5IdHpnEKGm41p5U1ewAbeZv1DpCG+rSumR2JdYl75kFAaZvCSm1NuVMM+kmYd+/z+LQbKj7QH5G/UHNho3H89blIU6WlJhT0YR5vclm9rvnEvOtxnfODca1Qrw+CaCoJks2o4VYbJB7mOBVNsh7Bc=
+notifications:
+  webhooks: https://coveralls.io/webhook
