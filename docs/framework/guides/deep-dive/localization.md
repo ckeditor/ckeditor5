@@ -100,6 +100,10 @@ editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 // ...
 ```
 
+<info-box warning>
+	Note that this sample lacks a few parts. Check {@link framework/guides/creating-simple-plugin how to create a complete plugin} to have a better understanding about creating CKEditor 5 plugins.
+</info-box>
+
 #### Localizing aria attributes:
 
 ```js
@@ -135,10 +139,6 @@ class FileRepository {
 	}
 }
 ```
-
-<info-box warning>
-	Note that these samples lacks a few parts. Check {@link framework/guides/creating-simple-plugin how to create a complete plugin} to have a better understanding about creating CKEditor 5 plugins.
-</info-box>
 
 ## Adding translations and localizing the editor UI
 
