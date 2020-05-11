@@ -3,6 +3,7 @@ build/
 coverage/
 packages/*/node_modules/
 docs/api/output.json
+external/
 lerna-debug.log
 .idea
 .vscode
