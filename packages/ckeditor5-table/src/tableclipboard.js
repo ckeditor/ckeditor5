@@ -82,7 +82,7 @@ export default class TableClipboard extends Plugin {
 	}
 
 	/**
-	 * Overrides default {@link module:engine/model~Model.insertContent `model.insertContent()`} method to handle pasting table inside
+	 * Overrides default {@link module:engine/model/model~Model#insertContent `model.insertContent()`} method to handle pasting table inside
 	 * selected table fragment.
 	 *
 	 * Depending on selected table fragment:
@@ -92,7 +92,7 @@ export default class TableClipboard extends Plugin {
 	 * @private
 	 * @param evt
 	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
-s     */
+	 */
 	_onInsertContent( evt, content ) {
 		const tableSelection = this.editor.plugins.get( 'TableSelection' );
 		const selectedTableCells = tableSelection.getSelectedTableCells();
