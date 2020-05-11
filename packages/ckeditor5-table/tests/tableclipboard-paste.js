@@ -17,6 +17,9 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 import TableClipboard from '../src/tableclipboard';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
+import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 
 describe( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument, element;
@@ -1273,6 +1276,46 @@ describe( 'table clipboard', () => {
 
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
 				[ '<image src="/assets/sample.jpg"><caption></caption></image>', 'ab', '02' ],
+				[ 'ba', 'bb', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
+		} );
+
+		it( 'handles mixed nested content in table cell', async () => {
+			await createEditor( [ ImageEditing, ImageCaptionEditing, BlockQuoteEditing, HorizontalLineEditing, ListEditing ] );
+
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '01', '11', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			const img = '<img src="/assets/sample.jpg">';
+			const list = '<ul><li>foo</li><li>bar</li></ul>';
+			const blockquote = `<blockquote><p>baz</p>${ list }</blockquote>`;
+
+			pasteTable( [
+				[ `${ img }${ list }${ blockquote }`, 'ab' ],
+				[ 'ba', 'bb' ]
+			] );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[
+					'<image src="/assets/sample.jpg"><caption></caption></image>' +
+					'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">bar</listItem>' +
+					'<blockQuote>' +
+						'<paragraph>baz</paragraph>' +
+						'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">bar</listItem>' +
+					'</blockQuote>',
+					'ab',
+					'02' ],
 				[ 'ba', 'bb', '12' ],
 				[ '02', '21', '22' ]
 			] ) );
