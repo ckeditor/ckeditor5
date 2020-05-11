@@ -40,10 +40,7 @@ export default class MergeCellsCommand extends Command {
 		const model = this.editor.model;
 		const tableUtils = this.editor.plugins.get( TableUtils );
 
-		// Use single batch to modify table in steps but in one undo step.
-		const batch = model.createBatch();
-
-		model.enqueueChange( batch, writer => {
+		model.change( writer => {
 			const selectedTableCells = getSelectedTableCells( model.document.selection );
 
 			// All cells will be merged into the first one.
@@ -72,7 +69,7 @@ export default class MergeCellsCommand extends Command {
 				}
 			}
 
-			emptyRows.reverse().forEach( row => tableUtils.removeRows( table, { at: row, batch } ) );
+			emptyRows.reverse().forEach( row => tableUtils.removeRows( table, { at: row, batch: writer.batch } ) );
 
 			writer.setSelection( firstTableCell, 'in' );
 		} );

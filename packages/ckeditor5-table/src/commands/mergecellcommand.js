@@ -85,10 +85,7 @@ export default class MergeCellCommand extends Command {
 		const cellToMerge = this.value;
 		const direction = this.direction;
 
-		// Use single batch to modify table in steps but in one undo step.
-		const batch = model.createBatch();
-
-		model.enqueueChange( batch, writer => {
+		model.change( writer => {
 			const isMergeNext = direction == 'right' || direction == 'down';
 
 			// The merge mechanism is always the same so sort cells to be merged.
@@ -111,7 +108,8 @@ export default class MergeCellCommand extends Command {
 			// Remove empty row after merging.
 			if ( !removedTableCellRow.childCount ) {
 				const tableUtils = this.editor.plugins.get( 'TableUtils' );
-				tableUtils.removeRows( table, { at: table.getChildIndex( removedTableCellRow ), batch } );
+
+				tableUtils.removeRows( table, { at: table.getChildIndex( removedTableCellRow ), batch: writer.batch } );
 			}
 		} );
 	}

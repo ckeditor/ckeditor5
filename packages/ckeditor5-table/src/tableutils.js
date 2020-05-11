@@ -289,17 +289,21 @@ export default class TableUtils extends Plugin {
 		const last = first + rowsToRemove - 1;
 		const batch = options.batch || 'default';
 
-		// Removing rows from table requires most calculations to be done prior to changing table structure.
-
-		// 1. Preparation - get row-spanned cells that have to be modified after removing rows.
-		const { cellsToMove, cellsToTrim } = getCellsToMoveAndTrimOnRemoveRow( table, first, last );
-
-		// 2. Execution
 		model.enqueueChange( batch, writer => {
+			// Removing rows from table requires most calculations to be done prior to changing table structure.
+			// Preparations must be done in enqueueChange callback to use the current table structure.
+
+			// 1. Preparation - get row-spanned cells that have to be modified after removing rows.
+			const { cellsToMove, cellsToTrim } = getCellsToMoveAndTrimOnRemoveRow( table, first, last );
+
+			// 2. Execution
+
 			// 2a. Move cells from removed rows that extends over a removed section - must be done before removing rows.
 			// This will fill any gaps in a rows below that previously were empty because of row-spanned cells.
-			const rowAfterRemovedSection = last + 1;
-			moveCellsToRow( table, rowAfterRemovedSection, cellsToMove, writer );
+			if ( cellsToMove.size ) {
+				const rowAfterRemovedSection = last + 1;
+				moveCellsToRow( table, rowAfterRemovedSection, cellsToMove, writer );
+			}
 
 			// 2b. Remove all required rows.
 			for ( let i = last; i >= first; i-- ) {
@@ -753,17 +757,19 @@ function adjustHeadingColumns( table, removedColumnIndexes, writer ) {
 
 // Calculates a new heading rows value for removing rows from heading section.
 function updateHeadingRows( table, first, last, model, batch ) {
-	const headingRows = table.getAttribute( 'headingRows' ) || 0;
+	// Must be done after the changes in table structure (removing rows).
+	// Otherwise the downcast converter for headingRows attribute will fail. ckeditor/ckeditor5#6391.
+	//
+	// Must be completely wrapped in enqueueChange to get the current table state (after applying other enqueued changes).
+	model.enqueueChange( batch, writer => {
+		const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
-	if ( first < headingRows ) {
-		const newRows = last < headingRows ? headingRows - ( last - first + 1 ) : first;
+		if ( first < headingRows ) {
+			const newRows = last < headingRows ? headingRows - ( last - first + 1 ) : first;
 
-		// Must be done after the changes in table structure (removing rows).
-		// Otherwise the downcast converter for headingRows attribute will fail. ckeditor/ckeditor5#6391.
-		model.enqueueChange( batch, writer => {
 			updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
-		} );
-	}
+		}
+	} );
 }
 
 // Finds cells that will be:
