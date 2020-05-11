@@ -109,7 +109,7 @@ export default class ColorInputView extends View {
 		 * The flag that indicates whether the user is still typing.
 		 * If set to true, it means that the text input field ({@link #_inputView}) still has the focus.
 		 * So, we should interrupt the user by replacing the input's value.
-		 * 
+		 *
 		 * @protected
 		 * @member {Boolean}
 		 */
@@ -133,7 +133,7 @@ export default class ColorInputView extends View {
 			]
 		} );
 
-		this.on( 
+		this.on(
 			'change:value',
 			( ev, n, inputValue ) => this._setInputValue( inputValue ),
 			{ priority: 'high' }
@@ -143,12 +143,12 @@ export default class ColorInputView extends View {
 	/**
 	 * Sets {@link #_inputView}'s value property to the color value or color label,
 	 * if there is one and the user is not typing.
-	 * 
+	 *
 	 * @private
 	 * @param {String} inputValue Color value to be set.
 	 */
-	_setInputValue( inputValue ){
-		if( !this._stillTyping ){
+	_setInputValue( inputValue ) {
+		if ( !this._stillTyping ) {
 			// Check if the value matches one of our defined colors.
 			const mappedColor = this.options.colorDefinitions.find( def => inputValue === def.color );
 			if ( mappedColor ) {
@@ -228,8 +228,11 @@ export default class ColorInputView extends View {
 	 */
 	_createInputTextView() {
 		const locale = this.locale;
-		const inputView = new InputTextView( locale, {
-			blur: this.bindTemplate.to('blur')
+		const inputView = new InputTextView( locale );
+		inputView.extendTemplate( {
+			on: {
+				blur: this.bindTemplate.to( 'blur' )
+			}
 		} );
 
 		inputView.value = this.value;
