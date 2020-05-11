@@ -11,6 +11,9 @@
 
 const childProcess = require( 'child_process' );
 const crypto = require( 'crypto' );
+const fs = require( 'fs' );
+const path = require( 'path' );
+const glob = require( 'glob' );
 
 const failedChecks = {
 	dependency: new Set(),
@@ -58,6 +61,8 @@ const travis = {
 
 childProcess.execSync( 'rm -r -f .nyc_output' );
 childProcess.execSync( 'mkdir .nyc_output' );
+childProcess.execSync( 'rm -r -f .out' );
+childProcess.execSync( 'mkdir .out' );
 
 const packages = childProcess.execSync( 'ls packages -1', {
 	encoding: 'utf8'
@@ -69,12 +74,9 @@ for ( const fullPackageName of packages ) {
 
 	travis.foldStart( foldLabelName, `Testing ${ fullPackageName }${ NO_COLOR }` );
 
-	// Service job id needs to be unique for each run (#6733). I know that this will not make the env variable to change in OS, but only
-	// locally in this process, and processes spawned by this process - but that's enough for what we want.
-	process.env.COVERALLS_SERVICE_JOB_ID = parseInt( process.env.COVERALLS_SERVICE_JOB_ID || 1 ) + 1;
+	appendCoverageReport();
 
-	console.log( 'Job id: ' + process.env.COVERALLS_SERVICE_JOB_ID );
-	console.log( 'Parallel: ' + process.env.COVERALLS_PARALLEL );
+	console.log( `COVERALLS_SERVICE_NUMBER: ${ process.env.COVERALLS_SERVICE_NUMBER }` );
 
 	runSubprocess( 'npx', [ 'ckeditor5-dev-tests-check-dependencies', `packages/${ fullPackageName }` ], simplePackageName, 'dependency',
 		'have a dependency problem' );
@@ -131,4 +133,18 @@ function showFailedCheck( checkKey, errorMessage ) {
 	if ( failedPackages.size ) {
 		console.log( `${ errorMessage }: ${ RED }${ Array.from( failedPackages.values() ).join( ', ' ) }${ NO_COLOR }` );
 	}
+}
+
+function appendCoverageReport() {
+	// Appends coverage data to the combined code coverage info file. It's used because all the results
+	// needs to be uploaded at once (#6742).
+	const matches = glob.sync( 'coverage/*/lcov.info' );
+
+	matches.forEach( filePath => {
+		const buffer = fs.readFileSync( filePath );
+
+		fs.writeFileSync( [ '.out', 'combined_lcov.info' ].join( path.sep ), buffer, {
+			flag: 'as'
+		} );
+	} );
 }
