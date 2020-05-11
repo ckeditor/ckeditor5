@@ -109,7 +109,7 @@ export default class TableClipboard extends Plugin {
 		evt.stop();
 
 		if ( selectedTableCells.length === 1 ) {
-			// @if CK_DEBUG // console.log( 'Single table cell is selected. Not handled.' );
+			// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Single table cell is selected.' );
 
 			return;
 		}
@@ -124,13 +124,13 @@ export default class TableClipboard extends Plugin {
 		const contentTable = findAncestor( 'table', selectedTableCells[ 0 ] );
 
 		if ( !isSelectionRectangular( this.editor.model.document.selection, tableUtils ) ) {
-			// @if CK_DEBUG // console.log( 'Selection is not rectangular (non-mergeable) - pasting disabled.' );
+			// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Selection is not rectangular (non-mergeable).' );
 
 			return;
 		}
 
 		if ( selectionHeight > insertHeight || selectionWidth > insertWidth ) {
-			// @if CK_DEBUG // console.log( 'Pasted table is smaller than selection area.' );
+			// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Pasted table is smaller than selection area.' );
 
 			return;
 		}
