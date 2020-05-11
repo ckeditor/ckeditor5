@@ -82,16 +82,17 @@ export default class TableClipboard extends Plugin {
 	}
 
 	/**
-	 * Handles...
+	 * Overrides default {@link module:engine/model~Model.insertContent `model.insertContent()`} method to handle pasting table inside
+	 * selected table fragment.
+	 *
+	 * Depending on selected table fragment:
+	 * - If a selected table fragment is smaller than paste table it will crop pasted table to match dimensions.
+	 * - If dimensions are equal it will replace selected table fragment with a pasted table contents.
 	 *
 	 * @private
 	 * @param evt
 	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
-	 * @param {module:engine/model/selection~Selectable} [selectable=model.document.selection]
-	 * The selection into which the content should be inserted. If not provided the current model document selection will be used.
-	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] To be used when a model item was passed as `selectable`.
-	 * This param defines a position in relation to that item.
-	 */
+s     */
 	_onInsertContent( evt, content ) {
 		const tableSelection = this.editor.plugins.get( 'TableSelection' );
 		const selectedTableCells = tableSelection.getSelectedTableCells();
@@ -107,6 +108,7 @@ export default class TableClipboard extends Plugin {
 			return;
 		}
 
+		// Override default model.insertContent() handling at this point.
 		evt.stop();
 
 		// Currently not handled. See: https://github.com/ckeditor/ckeditor5/issues/6121.
