@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals document console */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
@@ -13,6 +13,7 @@ import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imag
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { assertSelectedCells, modelTable, viewTable } from './_utils/utils';
@@ -23,6 +24,8 @@ import TableClipboard from '../src/tableclipboard';
 
 describe( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument, element;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -103,6 +106,9 @@ describe( 'table clipboard', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
+			// Catches the temporary console log in the CK_DEBUG mode.
+			sinon.stub( console, 'log' );
+
 			pasteTable( [
 				[ 'aa', 'ab' ],
 				[ 'ba', 'bb' ]
@@ -127,6 +133,9 @@ describe( 'table clipboard', () => {
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] )
 				);
+
+				// Catches the temporary console log in the CK_DEBUG mode.
+				sinon.stub( console, 'log' );
 
 				pasteTable( [
 					[ 'aa', 'ab' ],
@@ -1205,6 +1214,9 @@ describe( 'table clipboard', () => {
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 3, 3 ] )
 				);
+
+				// Catches the temporary console log in the CK_DEBUG mode.
+				sinon.stub( console, 'log' );
 
 				pasteTable( [
 					[ 'aa', 'ab' ],
