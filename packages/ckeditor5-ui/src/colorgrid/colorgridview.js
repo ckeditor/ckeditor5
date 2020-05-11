@@ -181,12 +181,12 @@ export default class ColorGridView extends View {
 	 *
 	 * @event execute
 	 * @param {Object} data Additional information about the event.
-	 * @param {String} data.value The value of the selected color 
-	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#member-color `color.color`}).
-	 * @param {Boolean} data.hasBorder The `hasBorder` property of the selected color 
-	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#member-options.hasBorder `color.options.hasBorder`}).
-	 * @param {String} data.Label The label of the selected color 
-	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#member-label `color.label`})
+	 * @param {String} data.value The value of the selected color
+	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#color `color.color`}).
+	 * @param {Boolean} data.hasBorder The `hasBorder` property of the selected color
+	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#options.hasBorder `color.options.hasBorder`}).
+	 * @param {String} data.Label The label of the selected color
+	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#label `color.label`})
 	 */
 }
 
