@@ -61,13 +61,15 @@ childProcess.execSync( 'mkdir .nyc_output' );
 
 const packages = childProcess.execSync( 'ls packages -1', {
 	encoding: 'utf8'
-} ).toString().trim().split( '\n' );
+} ).toString().trim().split( '\n' ).splice( 0, 3 );
 
 for ( const fullPackageName of packages ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
 	const foldLabelName = 'pkg-' + simplePackageName;
 
 	travis.foldStart( foldLabelName, `Testing ${ fullPackageName }${ NO_COLOR }` );
+
+	console.log( 'Job id: ' + process.env.COVERALLS_SERVICE_JOB_ID );
 
 	runSubprocess( 'npx', [ 'ckeditor5-dev-tests-check-dependencies', `packages/${ fullPackageName }` ], simplePackageName, 'dependency',
 		'have a dependency problem' );
