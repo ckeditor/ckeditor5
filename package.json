@@ -130,7 +130,7 @@
     "manual": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test-manual.js",
     "bootstrap": "yarn install",
     "clean": "rm -rf node_modules",
-    "reset": "rm -rf ./packages ./node_modules && yarn run bootstrap",
+    "reset": "rm -rf ./node_modules && yarn run bootstrap",
     "reinstall": "yarn run clean && yarn run bootstrap",
     "docs": "node --max-old-space-size=4096 ./scripts/docs/build-docs.js",
     "docs:api": "node ./scripts/docs/build-api-docs.js",
