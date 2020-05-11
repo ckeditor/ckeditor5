@@ -57,6 +57,30 @@ export default class WidgetTypeAround extends Plugin {
 		this._enableInsertingParagraphsOnButtonClick();
 	}
 
+	typeAround( widgetViewElement, direction ) {
+		const editor = this.editor;
+		const editingView = editor.editing.view;
+		let viewPosition;
+
+		if ( direction === 'before' ) {
+			viewPosition = editingView.createPositionBefore( widgetViewElement );
+		} else {
+			viewPosition = editingView.createPositionAfter( widgetViewElement );
+		}
+
+		const modelPosition = editor.editing.mapper.toModelPosition( viewPosition );
+
+		editor.model.change( writer => {
+			const paragraph = writer.createElement( 'paragraph' );
+
+			writer.insert( paragraph, modelPosition );
+			writer.setSelection( paragraph, 0 );
+		} );
+
+		editingView.focus();
+		editingView.scrollToTheSelection();
+	}
+
 	/**
 	 * TODO
 	 */
@@ -126,25 +150,8 @@ export default class WidgetTypeAround extends Plugin {
 
 			const buttonDirection = getTypeAroundButtonDirection( button );
 			const widgetViewElement = getClosestWidgetViewElement( button, editingView.domConverter );
-			let viewPosition;
 
-			if ( buttonDirection === 'before' ) {
-				viewPosition = editingView.createPositionBefore( widgetViewElement );
-			} else {
-				viewPosition = editingView.createPositionAfter( widgetViewElement );
-			}
-
-			const modelPosition = editor.editing.mapper.toModelPosition( viewPosition );
-
-			editor.model.change( writer => {
-				const paragraph = writer.createElement( 'paragraph' );
-
-				writer.insert( paragraph, modelPosition );
-				writer.setSelection( paragraph, 0 );
-			} );
-
-			editingView.focus();
-			editingView.scrollToTheSelection();
+			this.typeAround( widgetViewElement, buttonDirection );
 
 			domEventData.preventDefault();
 			evt.stop();
@@ -185,7 +192,8 @@ function injectButtons( wrapperDomElement, labels ) {
 			attributes: {
 				class: [
 					'ck',
-					`ck-widget__type-around__button ck-widget__type-around__button_${ direction }`
+					'ck-widget__type-around__button',
+					`ck-widget__type-around__button_${ direction }`
 				],
 				title: labels[ direction ]
 			},
