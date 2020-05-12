@@ -18,7 +18,7 @@ See the demo of the editor in Spanish:
 {@snippet features/ui-language}
 
 <info-box>
-	If you are interested in creating localizable features check out {@link framework/guides/deep-dive/localization the localization guide}.
+	If you are interested in creating features that can be localized, check out the {@link framework/guides/deep-dive/localization localization guide}.
 </info-box>
 
 ## Right–to–left (RTL) languages support
@@ -106,7 +106,7 @@ If you build CKEditor 5 from scratch or integrate it directly into your applicat
 
 1. Install the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) package:
 
-	```bash
+	```
 	npm install --save @ckeditor/ckeditor5-dev-webpack-plugin
 	```
 
@@ -146,7 +146,7 @@ If you build CKEditor 5 from scratch or integrate it directly into your applicat
 	// ...
 	```
 
-3. Run webpack. The CKEditor 5 plugin for webpack will emit additional files for each language specified in the `additionalLanguages` option with translations for messages from {@link module:utils/locale~Locale#t the `t()` function} calls to the `'translations'` directory (or different, if the `outputDirectory` option is specified). Translations from the language specified in the `language` option will be automatically included in the build.
+3. Run webpack. The CKEditor 5 plugin for webpack will emit additional files for each language specified in the `additionalLanguages` option. They will contain translations for messages from the {@link module:utils/locale~Locale#t `t()` function} calls. The files will be created in the `'translations'` directory (or another one if the `outputDirectory` option is specified). Translations from the language specified in the `language` option will be automatically included in the build.
 
 4. If you want to change the language after the build ends, you will need to edit the `index.html` file, add the translation file, and set the UI language to the target one.
 
