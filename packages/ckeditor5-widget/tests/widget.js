@@ -7,6 +7,7 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Widget from '../src/widget';
+import WidgetTypeAround from '../src/widgettypearound/widgettypearound';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import { toWidget } from '../src/utils';
@@ -127,6 +128,10 @@ describe( 'Widget', () => {
 
 	it( 'should add MouseObserver', () => {
 		expect( view.getObserver( MouseObserver ) ).to.be.instanceof( MouseObserver );
+	} );
+
+	it( 'should require the WidgetTypeAround plugin', () => {
+		expect( Widget.requires ).to.have.members( [ WidgetTypeAround ] );
 	} );
 
 	it( 'should create selection over clicked widget', () => {
