@@ -122,7 +122,7 @@ describe( 'table cell properties', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 
-				it( 'should be disabled if all of the table properties commands are disabled', () => {
+				it( 'should be disabled if all of the table cell properties commands are disabled', () => {
 					[
 						'tableCellBorderStyle',
 						'tableCellBorderColor',
