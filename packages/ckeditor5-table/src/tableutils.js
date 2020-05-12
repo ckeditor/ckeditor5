@@ -290,8 +290,8 @@ export default class TableUtils extends Plugin {
 		const batch = options.batch || 'default';
 
 		model.enqueueChange( batch, writer => {
-			// Removing rows from table requires most calculations to be done prior to changing table structure.
-			// Preparations must be done in enqueueChange callback to use the current table structure.
+			// Removing rows from the table require that most calculations to be done prior to changing table structure.
+			// Preparations must be done in the same enqueueChange callback to use the current table structure.
 
 			// 1. Preparation - get row-spanned cells that have to be modified after removing rows.
 			const { cellsToMove, cellsToTrim } = getCellsToMoveAndTrimOnRemoveRow( table, first, last );
@@ -758,7 +758,8 @@ function adjustHeadingColumns( table, removedColumnIndexes, writer ) {
 // Calculates a new heading rows value for removing rows from heading section.
 function updateHeadingRows( table, first, last, model, batch ) {
 	// Must be done after the changes in table structure (removing rows).
-	// Otherwise the downcast converter for headingRows attribute will fail. ckeditor/ckeditor5#6391.
+	// Otherwise the downcast converter for headingRows attribute will fail.
+	// See https://github.com/ckeditor/ckeditor5/issues/6391.
 	//
 	// Must be completely wrapped in enqueueChange to get the current table state (after applying other enqueued changes).
 	model.enqueueChange( batch, writer => {
