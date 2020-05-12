@@ -92,7 +92,7 @@ for ( const fullPackageName of packages ) {
 
 // Upload the **combined** coverage results.
 console.log( 'Uploading combined code coverage report…' );
-childProcess.execSync( 'coveralls < .out/combined_lcov.info' );
+childProcess.execSync( 'npx coveralls < .out/combined_lcov.info' );
 console.log( 'Done' );
 
 if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
