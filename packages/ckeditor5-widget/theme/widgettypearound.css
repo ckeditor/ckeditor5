@@ -3,64 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/*
- * !!! TODO: Lots of these styles should go to ckeditor5-theme-lark before production.
- */
-
-:root {
-	--ck-widget-type-around-button-size: 20px;
-	--ck-color-widget-type-around-button-active: var(--ck-color-focus-border);
-	--ck-color-widget-type-around-button-hover: var(--ck-color-widget-hover-border);
-	--ck-color-widget-type-around-button-blurred-editable: var(--ck-color-widget-blurred-border);
-	--ck-color-widget-type-around-button-radar-start-alpha: 0;
-	--ck-color-widget-type-around-button-radar-end-alpha: .3;
-	--ck-color-widget-type-around-button-icon: var(--ck-color-base-background);
-}
-
 .ck .ck-widget {
 	/*
 	 * Styles of the type around buttons
 	 */
 	& .ck-widget__type-around__button {
-		cursor: pointer;
 		display: none;
 		position: absolute;
 		overflow: hidden;
-		width: var(--ck-widget-type-around-button-size);
-		height: var(--ck-widget-type-around-button-size);
-
 		z-index: var(--ck-z-default);
-		background: var(--ck-color-widget-type-around-button);
-		border-radius: 100px;
-		animation: fadein linear 300ms 1 normal forwards;
-		transition: opacity 100ms linear;
 
 		& svg {
-			width: 10px;
-			height: 8px;
 			position: absolute;
 			top: 50%;
 			left: 50%;
-
 			z-index: calc(var(--ck-z-default) + 2);
-			transform: translate(-50%,-50%);
-			transition: transform .5s ease;
-			margin-top: 1px;
-
-			& * {
-				stroke-dasharray: 10;
-				stroke-dashoffset: 0;
-
-				fill: none;
-				stroke: var(--ck-color-widget-type-around-button-icon);
-				stroke-width: 1.5px;
-				stroke-linecap: round;
-				stroke-linejoin: round;
-			}
-
-			& line {
-				stroke-dasharray: 7;
-			}
 		}
 
 		&.ck-widget__type-around__button_before {
@@ -77,26 +34,6 @@
 			right: min(10%, 30px);
 
 			transform: translateY(50%);
-		}
-
-		&:hover {
-			/*
-			 * Display the "sonar" around the button when hovered.
-			 */
-			animation: ck-widget-type-around-button-sonar 1s ease infinite;
-
-			/*
-			 * Animate active button's icon.
-			 */
-			& svg {
-				& polyline {
-					animation: ck-widget-type-around-arrow-dash 2s linear;
-				}
-
-				& line {
-					animation: ck-widget-type-around-arrow-tip-dash 2s linear;
-				}
-			}
 		}
 	}
 
@@ -122,75 +59,19 @@
 	}
 
 	/*
-	 * Styles for the buttons when the widget is NOT selected (but the buttons are visible
-	 * and still can be hovered).
-	 */
-	&:not(.ck-widget_selected) > .ck-widget__type-around > .ck-widget__type-around__button {
-		background: var(--ck-color-widget-type-around-button-hover);
-	}
-
-	/*
 	 * Styles for the buttons when:
 	 * - the widget is selected,
 	 * - or the button is being hovered (regardless of the widget state).
 	 */
 	&.ck-widget_selected > .ck-widget__type-around > .ck-widget__type-around__button,
 	& > .ck-widget__type-around > .ck-widget__type-around__button:hover {
-		background: var(--ck-color-widget-type-around-button-active);
-
 		&::after {
 			content: "";
-			width: calc(var(--ck-widget-type-around-button-size) - 2px);
-			height: calc(var(--ck-widget-type-around-button-size) - 2px);
 			display: block;
 			position: absolute;
 			top: 1px;
 			left: 1px;
-
-			border-radius: 100px;
 			z-index: calc(var(--ck-z-default) + 1);
-			background: linear-gradient(135deg, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,.3) 100%);
 		}
-	}
-}
-
-/*
- * Styles for the buttons when the widget is selected but the user clicked outside of the editor (blurred the editor).
- */
-.ck-editor__editable.ck-blurred .ck-widget.ck-widget_selected > .ck-widget__type-around > .ck-widget__type-around__button:not(:hover) {
-	background: var(--ck-color-widget-type-around-button-blurred-editable);
-
-	& svg * {
-		stroke: hsl(0,0%,60%);
-	}
-}
-
-@keyframes ck-widget-type-around-arrow-dash {
-	0% {
-		stroke-dashoffset: 10;
-	}
-	20%, 100% {
-		stroke-dashoffset: 0;
-	}
-}
-
-@keyframes ck-widget-type-around-arrow-tip-dash {
-	0%, 20% {
-		stroke-dashoffset: 7;
-	}
-	40%, 100% {
-		stroke-dashoffset: 0;
-	}
-}
-
-@keyframes ck-widget-type-around-button-sonar {
-	0% {
-		box-shadow: 0 0 0 0 hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-start-alpha));
-	}
-	50% {
-		box-shadow: 0 0 0 5px hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-end-alpha));
-	}
-	100% {
-		box-shadow: 0 0 0 5px hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-start-alpha));
 	}
 }
