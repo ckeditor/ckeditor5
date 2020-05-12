@@ -94,6 +94,14 @@
 			background: linear-gradient(135deg, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,.3) 100%);
 		}
 	}
+
+	/*
+	 * Styles for the "before" button when the widget has a selection handle. Because some space
+	 * is consumed by the handle, the button must be moved slightly to the right to let it breathe.
+	 */
+	&.ck-widget_with-selection-handle > .ck-widget__type-around > .ck-widget__type-around__button_before {
+		margin-left: 20px;
+	}
 }
 
 /*
