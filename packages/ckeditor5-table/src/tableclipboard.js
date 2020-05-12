@@ -14,6 +14,7 @@ import TableWalker from './tablewalker';
 import { getColumnIndexes, getRowIndexes, isSelectionRectangular } from './utils';
 import { findAncestor } from './commands/utils';
 import { cropTableToDimensions } from './tableselection/croptable';
+import TableUtils from './tableutils';
 
 /**
  * This plugin adds support for copying/cutting/pasting fragments of tables.
@@ -33,7 +34,7 @@ export default class TableClipboard extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableSelection ];
+		return [ TableSelection, TableUtils ];
 	}
 
 	/**
@@ -56,7 +57,7 @@ export default class TableClipboard extends Plugin {
 	 * @param {Object} data Clipboard event data.
 	 */
 	_onCopyCut( evt, data ) {
-		const tableSelection = this.editor.plugins.get( 'TableSelection' );
+		const tableSelection = this.editor.plugins.get( TableSelection );
 
 		if ( !tableSelection.getSelectedTableCells() ) {
 			return;
@@ -94,7 +95,7 @@ export default class TableClipboard extends Plugin {
 	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
 	 */
 	_onInsertContent( evt, content ) {
-		const tableSelection = this.editor.plugins.get( 'TableSelection' );
+		const tableSelection = this.editor.plugins.get( TableSelection );
 		const selectedTableCells = tableSelection.getSelectedTableCells();
 
 		if ( !selectedTableCells ) {
@@ -118,7 +119,7 @@ export default class TableClipboard extends Plugin {
 			return;
 		}
 
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableUtils = this.editor.plugins.get( TableUtils );
 
 		// Currently not handled. The selected table content should be trimmed to a rectangular selection.
 		// See: https://github.com/ckeditor/ckeditor5/issues/6122.
