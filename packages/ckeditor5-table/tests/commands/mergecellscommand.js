@@ -536,6 +536,58 @@ describe( 'MergeCellsCommand', () => {
 				], { headingRows: 1 } ) );
 			} );
 
+			it( 'should decrease heading rows if multiple heading rows were removed', () => {
+				// +----+----+
+				// | 00 | 01 |
+				// +    +----+
+				// |    | 11 |
+				// +----+----+
+				// | 20 | 21 |
+				// +----+----+
+				// | 30 | 31 |
+				// +    +----+
+				// |    | 41 |
+				// +----+----+ <-- heading rows
+				// | 50 | 51 |
+				// +----+----+
+				setData( model, modelTable( [
+					[ { contents: '00', rowspan: 2 }, '01' ],
+					[ '11' ],
+					[ '20', '21' ],
+					[ { contents: '30', rowspan: 2 }, '31' ],
+					[ '41' ],
+					[ '50', '51' ]
+				], { headingRows: 5 } ) );
+
+				selectNodes( [
+					[ 0, 0, 1 ],
+					[ 0, 1, 0 ],
+					[ 0, 2, 1 ],
+					[ 0, 3, 1 ],
+					[ 0, 4, 0 ]
+				] );
+
+				command.execute();
+
+				const contents = [ '[01', '11', '21', '31', '41]' ].map( content => `<paragraph>${ content }</paragraph>` ).join( '' );
+
+				// +----+----+
+				// | 00 | 01 |
+				// +----+    +
+				// | 20 |    |
+				// +----+    +
+				// | 30 |    |
+				// +----+----+ <-- heading rows
+				// | 50 | 51 |
+				// +----+----+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00', { contents, rowspan: 3 } ],
+					[ '20' ],
+					[ '30' ],
+					[ '50', '51' ]
+				], { headingRows: 3 } ) );
+			} );
+
 			it( 'should create one undo step (1 batch)', () => {
 				setData( model, modelTable( [
 					[ '00' ],
