@@ -11,6 +11,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import { diffString } from 'json-diff';
+import { debounce } from 'lodash-es';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import TableWalker from '../../src/tablewalker';
 
@@ -67,7 +68,7 @@ ClassicEditor
 			updateAsciiAndDiff();
 		} );
 
-		editor.model.document.on( 'change:data', updateAsciiAndDiff );
+		editor.model.document.on( 'change:data', debounce( () => updateAsciiAndDiff(), 100 ) );
 		updateAsciiAndDiff();
 
 		function updateAsciiAndDiff() {

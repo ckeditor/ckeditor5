@@ -80,7 +80,6 @@ export default class MergeCellCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 		const tableCell = getTableCellsContainingSelection( doc.selection )[ 0 ];
-		const table = findAncestor( 'table', tableCell );
 
 		const cellToMerge = this.value;
 		const direction = this.direction;
@@ -108,6 +107,7 @@ export default class MergeCellCommand extends Command {
 			// Remove empty row after merging.
 			if ( !removedTableCellRow.childCount ) {
 				const tableUtils = this.editor.plugins.get( 'TableUtils' );
+				const table = findAncestor( 'table', removedTableCellRow );
 
 				tableUtils.removeRows( table, { at: removedTableCellRow.index, batch: writer.batch } );
 			}

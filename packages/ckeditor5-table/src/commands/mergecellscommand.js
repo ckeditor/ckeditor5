@@ -45,7 +45,6 @@ export default class MergeCellsCommand extends Command {
 
 			// All cells will be merged into the first one.
 			const firstTableCell = selectedTableCells.shift();
-			const table = findAncestor( 'table', firstTableCell );
 
 			// Set the selection in cell that other cells are being merged to prevent model-selection-range-intersects error in undo.
 			// See https://github.com/ckeditor/ckeditor5/issues/6634.
@@ -57,7 +56,7 @@ export default class MergeCellsCommand extends Command {
 			updateNumericAttribute( 'colspan', mergeWidth, firstTableCell, writer );
 			updateNumericAttribute( 'rowspan', mergeHeight, firstTableCell, writer );
 
-			const emptyRows = [];
+			const emptyRowsIndexes = [];
 
 			for ( const tableCell of selectedTableCells ) {
 				const tableRow = tableCell.parent;
@@ -65,11 +64,15 @@ export default class MergeCellsCommand extends Command {
 				mergeTableCells( tableCell, firstTableCell, writer );
 
 				if ( !tableRow.childCount ) {
-					emptyRows.push( tableRow.index );
+					emptyRowsIndexes.push( tableRow.index );
 				}
 			}
 
-			emptyRows.reverse().forEach( row => tableUtils.removeRows( table, { at: row, batch: writer.batch } ) );
+			if ( emptyRowsIndexes.length ) {
+				const table = findAncestor( 'table', firstTableCell );
+
+				emptyRowsIndexes.reverse().forEach( row => tableUtils.removeRows( table, { at: row, batch: writer.batch } ) );
+			}
 
 			writer.setSelection( firstTableCell, 'in' );
 		} );
