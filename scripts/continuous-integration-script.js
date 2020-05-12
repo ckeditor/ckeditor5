@@ -66,7 +66,7 @@ childProcess.execSync( 'mkdir .out' );
 
 const packages = childProcess.execSync( 'ls packages -1', {
 	encoding: 'utf8'
-} ).toString().trim().split( '\n' ).splice( 0, 3 );
+} ).toString().trim().split( '\n' );
 
 for ( const fullPackageName of packages ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );
@@ -90,7 +90,6 @@ for ( const fullPackageName of packages ) {
 	travis.foldEnd( foldLabelName );
 }
 
-// Upload the **combined** coverage results.
 console.log( 'Uploading combined code coverage report…' );
 childProcess.execSync( 'npx coveralls < .out/combined_lcov.info' );
 console.log( 'Done' );
