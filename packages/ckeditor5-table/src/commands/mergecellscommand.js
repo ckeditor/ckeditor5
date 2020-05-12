@@ -65,7 +65,7 @@ export default class MergeCellsCommand extends Command {
 				mergeTableCells( tableCell, firstTableCell, writer );
 
 				if ( !tableRow.childCount ) {
-					emptyRows.push( table.getChildIndex( tableRow ) );
+					emptyRows.push( tableRow.index );
 				}
 			}
 

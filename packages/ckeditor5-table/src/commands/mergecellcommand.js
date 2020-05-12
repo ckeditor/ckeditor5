@@ -109,7 +109,7 @@ export default class MergeCellCommand extends Command {
 			if ( !removedTableCellRow.childCount ) {
 				const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
-				tableUtils.removeRows( table, { at: table.getChildIndex( removedTableCellRow ), batch: writer.batch } );
+				tableUtils.removeRows( table, { at: removedTableCellRow.index, batch: writer.batch } );
 			}
 		} );
 	}
