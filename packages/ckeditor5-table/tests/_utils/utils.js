@@ -11,7 +11,7 @@ import {
 	downcastTableHeadingColumnsChange,
 	downcastTableHeadingRowsChange
 } from '../../src/converters/downcast';
-import upcastTable, { upcastTableCell } from '../../src/converters/upcasttable';
+import upcastTable, { ensureParagraphInTableCell } from '../../src/converters/upcasttable';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import TableWalker from '../../src/tablewalker';
@@ -233,8 +233,10 @@ export function defaultConversion( conversion, asWidget = false ) {
 	conversion.for( 'downcast' ).add( downcastRemoveRow( { asWidget } ) );
 
 	// Table cell conversion.
-	conversion.for( 'upcast' ).add( upcastTableCell( 'td' ) );
-	conversion.for( 'upcast' ).add( upcastTableCell( 'th' ) );
+	conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'td' } );
+	conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'th' } );
+	conversion.for( 'upcast' ).add( ensureParagraphInTableCell( 'td' ) );
+	conversion.for( 'upcast' ).add( ensureParagraphInTableCell( 'th' ) );
 	conversion.for( 'downcast' ).add( downcastInsertCell( { asWidget } ) );
 
 	// Table attributes conversion.
