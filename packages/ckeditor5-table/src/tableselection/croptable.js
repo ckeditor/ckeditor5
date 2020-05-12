@@ -7,7 +7,7 @@
  * @module table/tableselection/croptable
  */
 
-import { findAncestor } from '../commands/utils';
+import { findAncestor, updateNumericAttribute } from '../commands/utils';
 import TableWalker from '../tablewalker';
 
 /**
@@ -27,16 +27,48 @@ import TableWalker from '../tablewalker';
  * @returns {module:engine/model/element~Element}
  */
 export function cropTableToDimensions( sourceTable, startRow, startColumn, endRow, endColumn, tableUtils, writer ) {
-	const tableCopy = makeTableCopy( sourceTable, startRow, startColumn, endRow, endColumn, writer, tableUtils );
+	const croppedTable = writer.createElement( 'table' );
 
-	const selectionWidth = endColumn - startColumn + 1;
-	const selectionHeight = endRow - startRow + 1;
+	// Create needed rows.
+	for ( let i = 0; i < endRow - startRow + 1; i++ ) {
+		writer.insertElement( 'tableRow', croppedTable, 'end' );
+	}
 
-	trimTable( tableCopy, selectionWidth, selectionHeight, writer, tableUtils );
+	const tableMap = [ ...new TableWalker( sourceTable, { startRow, endRow, includeSpanned: true } ) ];
 
-	addHeadingsToTableCopy( tableCopy, sourceTable, startRow, startColumn, writer );
+	for ( const { row: sourceRow, column: sourceColumn, cell: tableCell, isSpanned } of tableMap ) {
+		if ( sourceColumn < startColumn || sourceColumn > endColumn ) {
+			continue;
+		}
 
-	return tableCopy;
+		const insertRow = sourceRow - startRow;
+		const insertColumn = sourceColumn - startColumn;
+
+		const row = croppedTable.getChild( insertRow );
+
+		if ( isSpanned ) {
+			const { row: anchorRow, column: anchorColumn } = tableUtils.getCellLocation( tableCell );
+
+			if ( anchorRow < startRow || anchorColumn < startColumn ) {
+				const tableCell = writer.createElement( 'tableCell' );
+				const paragraph = writer.createElement( 'paragraph' );
+
+				writer.insert( paragraph, tableCell, 0 );
+				writer.insertText( '', paragraph, 0 );
+
+				writer.append( tableCell, row );
+			}
+		} else {
+			const tableCellCopy = tableCell._clone( true );
+
+			writer.append( tableCellCopy, row );
+
+			trimTableCell( tableCellCopy, tableUtils, writer, insertRow, insertColumn, startRow, startColumn, endRow, endColumn );
+		}
+	}
+	addHeadingsToTableCopy( croppedTable, sourceTable, startRow, startColumn, writer );
+
+	return croppedTable;
 }
 
 /**
@@ -69,93 +101,23 @@ export function cropTableToSelection( selectedTableCellsIterator, tableUtils, wr
 	return cropTableToDimensions( sourceTable, startRow, startColumn, endRow, endColumn, tableUtils, writer );
 }
 
-// Creates a table copy from a selected table cells.
-//
-// It fills "gaps" in copied table - ie when cell outside copied range was spanning over selection.
-function makeTableCopy( sourceTable, startRow, startColumn, endRow, endColumn, writer, tableUtils ) {
-	const tableCopy = writer.createElement( 'table' );
+function trimTableCell( tableCell, tableUtils, writer, row, column, startRow, startColumn, endRow, endColumn ) {
+	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 
-	const rowToCopyMap = new Map();
-	const copyToOriginalColumnMap = new Map();
+	const width = endColumn - startColumn + 1;
+	const height = endRow - startRow + 1;
 
-	for ( const { column, cell: tableCell } of [ ...new TableWalker( sourceTable, { startRow, endRow } ) ] ) {
-		if ( column < startColumn || column > endColumn ) {
-			continue;
-		}
+	if ( column + colspan > width ) {
+		const newSpan = width - column;
 
-		const row = findAncestor( 'tableRow', tableCell );
-
-		if ( !rowToCopyMap.has( row ) ) {
-			const rowCopy = row._clone();
-			writer.append( rowCopy, tableCopy );
-			rowToCopyMap.set( row, rowCopy );
-		}
-
-		const tableCellCopy = tableCell._clone( true );
-
-		copyToOriginalColumnMap.set( tableCellCopy, column );
-
-		writer.append( tableCellCopy, rowToCopyMap.get( row ) );
+		updateNumericAttribute( 'colspan', newSpan, tableCell, writer, 1 );
 	}
 
-	addMissingTableCells( tableCopy, startColumn, copyToOriginalColumnMap, writer, tableUtils );
+	if ( row + rowspan > height ) {
+		const newSpan = height - row;
 
-	return tableCopy;
-}
-
-// Fills gaps for spanned cell from outside the selection range.
-function addMissingTableCells( tableCopy, startColumn, copyToOriginalColumnMap, writer, tableUtils ) {
-	for ( const row of tableCopy.getChildren() ) {
-		for ( const tableCell of Array.from( row.getChildren() ) ) {
-			const { column } = tableUtils.getCellLocation( tableCell );
-
-			const originalColumn = copyToOriginalColumnMap.get( tableCell );
-			const shiftedColumn = originalColumn - startColumn;
-
-			if ( column !== shiftedColumn ) {
-				for ( let i = 0; i < shiftedColumn - column; i++ ) {
-					const prepCell = writer.createElement( 'tableCell' );
-					writer.insert( prepCell, writer.createPositionBefore( tableCell ) );
-
-					const paragraph = writer.createElement( 'paragraph' );
-
-					writer.insert( paragraph, prepCell, 0 );
-					writer.insertText( '', paragraph, 0 );
-				}
-			}
-		}
-	}
-}
-
-// Trims table to a given dimensions.
-function trimTable( table, width, height, writer, tableUtils ) {
-	for ( const row of table.getChildren() ) {
-		for ( const tableCell of row.getChildren() ) {
-			const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
-			const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
-
-			const { row, column } = tableUtils.getCellLocation( tableCell );
-
-			if ( column + colspan > width ) {
-				const newSpan = width - column;
-
-				if ( newSpan > 1 ) {
-					writer.setAttribute( 'colspan', newSpan, tableCell );
-				} else {
-					writer.removeAttribute( 'colspan', tableCell );
-				}
-			}
-
-			if ( row + rowspan > height ) {
-				const newSpan = height - row;
-
-				if ( newSpan > 1 ) {
-					writer.setAttribute( 'rowspan', newSpan, tableCell );
-				} else {
-					writer.removeAttribute( 'rowspan', tableCell );
-				}
-			}
-		}
+		updateNumericAttribute( 'rowspan', newSpan, tableCell, writer, 1 );
 	}
 }
 
