@@ -32,6 +32,17 @@ import { debounce } from 'lodash-es';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
+// Map of view properties and related commands.
+const propertyToCommandMap = {
+	borderStyle: 'tableBorderStyle',
+	borderColor: 'tableBorderColor',
+	borderWidth: 'tableBorderWidth',
+	backgroundColor: 'tableBackgroundColor',
+	width: 'tableWidth',
+	height: 'tableHeight',
+	alignment: 'tableAlignment'
+};
+
 /**
  * The table properties UI plugin. It introduces the `'tableProperties'` button
  * that opens a form allowing to specify visual styling of an entire table.
@@ -109,6 +120,13 @@ export default class TablePropertiesUI extends Plugin {
 			} );
 
 			this.listenTo( view, 'execute', () => this._showView() );
+
+			const commands = Object.values( propertyToCommandMap )
+				.map( commandName => editor.commands.get( commandName ) );
+
+			view.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => (
+				areEnabled.some( isCommandEnabled => isCommandEnabled )
+			) );
 
 			return view;
 		} );
@@ -248,15 +266,9 @@ export default class TablePropertiesUI extends Plugin {
 	_fillViewFormFromCommandValues() {
 		const commands = this.editor.commands;
 
-		this.view.set( {
-			borderStyle: commands.get( 'tableBorderStyle' ).value || '',
-			borderColor: commands.get( 'tableBorderColor' ).value || '',
-			borderWidth: commands.get( 'tableBorderWidth' ).value || '',
-			backgroundColor: commands.get( 'tableBackgroundColor' ).value || '',
-			width: commands.get( 'tableWidth' ).value || '',
-			height: commands.get( 'tableHeight' ).value || '',
-			alignment: commands.get( 'tableAlignment' ).value || ''
-		} );
+		Object.entries( propertyToCommandMap )
+			.map( ( [ property, commandName ] ) => [ property, commands.get( commandName ).value || '' ] )
+			.forEach( ( [ property, value ] ) => this.view.set( property, value ) );
 	}
 
 	/**
