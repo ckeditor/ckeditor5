@@ -70,10 +70,11 @@ export default class WidgetTypeAround extends Plugin {
 	 * **Note**: This method is heavily user-oriented and will both focus the editing view and scroll
 	 * the viewport to the selection in the inserted paragraph.
 	 *
+	 * @private
 	 * @param {module:engine/view/element~Element} widgetViewElement The view widget element next to which a paragraph is inserted.
 	 * @param {String} position The position where the paragraph is inserted. Either `'before'` or `'after'` the widget.
 	 */
-	typeAround( widgetViewElement, position ) {
+	_insertParagraph( widgetViewElement, position ) {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 		let viewPosition;
@@ -185,7 +186,7 @@ export default class WidgetTypeAround extends Plugin {
 			const buttonPosition = getTypeAroundButtonPosition( button );
 			const widgetViewElement = getClosestWidgetViewElement( button, editingView.domConverter );
 
-			this.typeAround( widgetViewElement, buttonPosition );
+			this._insertParagraph( widgetViewElement, buttonPosition );
 
 			domEventData.preventDefault();
 			evt.stop();

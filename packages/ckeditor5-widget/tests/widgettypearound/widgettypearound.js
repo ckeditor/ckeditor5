@@ -53,11 +53,11 @@ describe( 'WidgetTypeAround', () => {
 		} );
 	} );
 
-	describe( 'typeAround()', () => {
+	describe( '_insertParagraph()', () => {
 		it( 'should insert a paragraph with a selection before a widget when position is "before"', () => {
 			setModelData( editor.model, '<blockWidget></blockWidget>' );
 
-			plugin.typeAround( viewRoot.getChild( 0 ), 'before' );
+			plugin._insertParagraph( viewRoot.getChild( 0 ), 'before' );
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph><blockWidget></blockWidget>' );
 		} );
@@ -65,7 +65,7 @@ describe( 'WidgetTypeAround', () => {
 		it( 'should insert a paragraph with a selection after a widget when position is "after"', () => {
 			setModelData( editor.model, '<blockWidget></blockWidget>' );
 
-			plugin.typeAround( viewRoot.getChild( 0 ), 'after' );
+			plugin._insertParagraph( viewRoot.getChild( 0 ), 'after' );
 
 			expect( getModelData( editor.model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]</paragraph>' );
 		} );
@@ -75,7 +75,7 @@ describe( 'WidgetTypeAround', () => {
 
 			setModelData( editor.model, '<blockWidget></blockWidget>' );
 
-			plugin.typeAround( viewRoot.getChild( 0 ), 'after' );
+			plugin._insertParagraph( viewRoot.getChild( 0 ), 'after' );
 
 			sinon.assert.calledOnce( spy );
 		} );
@@ -85,7 +85,7 @@ describe( 'WidgetTypeAround', () => {
 
 			setModelData( editor.model, '<blockWidget></blockWidget>' );
 
-			plugin.typeAround( viewRoot.getChild( 0 ), 'after' );
+			plugin._insertParagraph( viewRoot.getChild( 0 ), 'after' );
 
 			sinon.assert.calledOnce( spy );
 		} );
@@ -170,9 +170,9 @@ describe( 'WidgetTypeAround', () => {
 					expect( buttonBefore.getAttribute( 'title' ) ).to.equal( 'Insert paragraph before widget' );
 				} );
 
-				it( 'should execute WidgetTypeAround#typeAround() when clicked', () => {
+				it( 'should execute WidgetTypeAround#_insertParagraph() when clicked', () => {
 					const preventDefaultSpy = sinon.spy();
-					const typeAroundSpy = sinon.spy( plugin, 'typeAround' );
+					const typeAroundSpy = sinon.spy( plugin, '_insertParagraph' );
 
 					const eventInfo = new EventInfo( viewDocument, 'mousedown' );
 					const stopSpy = sinon.stub( eventInfo, 'stop' );
@@ -199,9 +199,9 @@ describe( 'WidgetTypeAround', () => {
 					expect( buttonAfter.getAttribute( 'title' ) ).to.equal( 'Insert paragraph after widget' );
 				} );
 
-				it( 'should execute WidgetTypeAround#typeAround() when clicked', () => {
+				it( 'should execute WidgetTypeAround#_insertParagraph() when clicked', () => {
 					const preventDefaultSpy = sinon.spy();
-					const typeAroundSpy = sinon.spy( plugin, 'typeAround' );
+					const typeAroundSpy = sinon.spy( plugin, '_insertParagraph' );
 
 					const eventInfo = new EventInfo( viewDocument, 'mousedown' );
 					const stopSpy = sinon.stub( eventInfo, 'stop' );
