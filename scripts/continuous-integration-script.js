@@ -90,6 +90,9 @@ for ( const fullPackageName of packages ) {
 	travis.foldEnd( foldLabelName );
 }
 
+// Upload the **combined** coverage results.
+childProcess.execSync( 'coveralls < .out/combined_lcov.info' );
+
 if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
 	console.log( '\n---\n' );
 
