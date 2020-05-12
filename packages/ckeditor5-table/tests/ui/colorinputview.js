@@ -218,6 +218,23 @@ describe( 'ColorInputView', () => {
 				expect( inputView.value ).to.equal( 'bar' );
 			} );
 
+			it( `when the color input value is set to one of defined colors, but with few additional white spaces,
+			should use its label as the text input value`, () => {
+				view.value = 'rgb(0,    255, 0)';
+				expect( inputView.value ).to.equal( 'Green' );
+
+				view.value = '   rgb( 255 0  0)    ';
+				expect( inputView.value ).to.equal( 'Red' );
+
+				view.value = ' 		  rgb(0,  0,  255 )';
+				expect( inputView.value ).to.equal( 'Blue' );
+
+				// Blindly stripping spaces may not work.
+				// rgb(25 50 0) != rgb(255 0 0)
+				view.value = ' 		  rgb(25 50  0)';
+				expect( inputView.value ).to.equal( ' 		  rgb(25 50  0)' );
+			} );
+
 			it( `when the color input value is set to one of defined colors,
 			should use its label as the text input value`, () => {
 				view.value = 'rgb(0,255,0)';
