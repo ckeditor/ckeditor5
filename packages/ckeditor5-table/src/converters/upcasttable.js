@@ -90,7 +90,14 @@ export default function upcastTable() {
 	};
 }
 
-export function upcastTableRow() {
+/**
+ * Conversion helper that skips empty <tr> from upcasting.
+ *
+ * Empty row is considered a table model error.
+ *
+ * @returns {Function} Conversion helper.
+ */
+export function skipEmptyTableRow() {
 	return dispatcher => {
 		dispatcher.on( 'element:tr', ( evt, data ) => {
 			if ( data.viewItem.isEmpty ) {
