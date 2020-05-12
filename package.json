@@ -79,7 +79,7 @@
     "@ckeditor/ckeditor5-comments": "^19.0.1",
     "@ckeditor/ckeditor5-dev-docs": "^11.1.0",
     "@ckeditor/ckeditor5-dev-env": "^18.0.0",
-    "@ckeditor/ckeditor5-dev-tests": "^19.0.0",
+    "@ckeditor/ckeditor5-dev-tests": "mlewand/tmp-ckeditor5-dev-tests",
     "@ckeditor/ckeditor5-dev-utils": "^13.0.0",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^9.0.0",
     "@ckeditor/ckeditor5-inspector": "^2.0.0",

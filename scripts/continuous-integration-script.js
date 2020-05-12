@@ -76,8 +76,6 @@ for ( const fullPackageName of packages ) {
 
 	appendCoverageReport();
 
-	console.log( `COVERALLS_SERVICE_NUMBER: ${ process.env.COVERALLS_SERVICE_NUMBER }` );
-
 	runSubprocess( 'npx', [ 'ckeditor5-dev-tests-check-dependencies', `packages/${ fullPackageName }` ], simplePackageName, 'dependency',
 		'have a dependency problem' );
 
