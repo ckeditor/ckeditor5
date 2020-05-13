@@ -146,7 +146,7 @@ Adding translations to the editor can be done in three ways to satisfy various n
 
 ### Using the `add()` function
 
-The first option for adding translations is via the {@link module:utils/translation-service.add the translation-service's `add()` helper}. This utility adds translations to the `window.CKEDITOR_TRANSLATIONS` object by extending it. Since it needs to be imported, it works only before building the editor.
+The first option for adding translations is via {@link module:utils/translation-service.add the translation-service's `add()` helper}. This utility adds translations to the `window.CKEDITOR_TRANSLATIONS` object by extending it. Since it needs to be imported, it works only before building the editor.
 
 Starting with the CKEditor 5 v19.0.0 release, it now accepts the `getPluralForm()` function as the third argument. It also accepts an array of translations for a *message* if the *message* should support singular and plural forms.
 
