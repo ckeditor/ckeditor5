@@ -92,7 +92,7 @@ describe( 'WidgetTypeAround', () => {
 	} );
 
 	describe( 'UI to type around view widgets', () => {
-		it( 'should be injected the UI in block widgets', () => {
+		it( 'should be injected in block widgets', () => {
 			setModelData( editor.model,
 				'<paragraph>foo</paragraph>' +
 				'<blockWidget></blockWidget>' +
