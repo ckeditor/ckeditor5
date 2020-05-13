@@ -141,15 +141,15 @@ export default class TableUI extends Plugin {
 				{
 					type: 'button',
 					model: {
-						commandName: 'insertTableRowBelow',
-						label: t( 'Insert row below' )
+						commandName: 'insertTableRowAbove',
+						label: t( 'Insert row above' )
 					}
 				},
 				{
 					type: 'button',
 					model: {
-						commandName: 'insertTableRowAbove',
-						label: t( 'Insert row above' )
+						commandName: 'insertTableRowBelow',
+						label: t( 'Insert row below' )
 					}
 				},
 				{

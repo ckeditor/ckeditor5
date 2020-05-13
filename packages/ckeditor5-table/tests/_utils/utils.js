@@ -493,11 +493,16 @@ function getClassToSet( attributes ) {
 /**
  * Returns ascii-art visualization of the table.
  *
+ * @param {module:engine/model/model~Model} model The editor model.
  * @param {module:engine/model/element~Element} table The table model element.
  * @returns {String}
  */
-export function createTableAsciiArt( table ) {
+export function createTableAsciiArt( model, table ) {
 	const tableMap = [ ...new TableWalker( table, { includeSpanned: true } ) ];
+
+	if ( !tableMap.length ) {
+		return '';
+	}
 
 	const { row: lastRow, column: lastColumn } = tableMap[ tableMap.length - 1 ];
 	const columns = lastColumn + 1;
@@ -525,8 +530,11 @@ export function createTableAsciiArt( table ) {
 			gridLine += !cellInfo.isColSpan || !cellInfo.isRowSpan ? '+' : ' ';
 			gridLine += !cellInfo.isRowSpan ? '----' : '    ';
 
+			let contents = getElementPlainText( model, cellInfo.cell ).substring( 0, 2 );
+			contents += ' '.repeat( 2 - contents.length );
+
 			contentLine += !cellInfo.isColSpan ? '|' : ' ';
-			contentLine += !cellInfo.isColSpan && !cellInfo.isRowSpan ? ` ${ cellInfo.row }${ cellInfo.column } ` : '    ';
+			contentLine += !cellInfo.isColSpan && !cellInfo.isRowSpan ? ` ${ contents } ` : '    ';
 
 			if ( column == lastColumn ) {
 				gridLine += '+';
@@ -547,10 +555,11 @@ export function createTableAsciiArt( table ) {
 /**
  * Generates input data for `modelTable` helper method.
  *
+ * @param {module:engine/model/model~Model} model The editor model.
  * @param {module:engine/model/element~Element} table The table model element.
  * @returns {Array.<Array.<String|Object>>}
  */
-export function prepareModelTableInput( table ) {
+export function prepareModelTableInput( model, table ) {
 	const result = [];
 	let row = [];
 
@@ -564,7 +573,7 @@ export function prepareModelTableInput( table ) {
 			continue;
 		}
 
-		const contents = `${ cellInfo.row }${ cellInfo.column }`;
+		const contents = getElementPlainText( model, cellInfo.cell );
 
 		if ( cellInfo.colspan > 1 || cellInfo.rowspan > 1 ) {
 			row.push( {
@@ -606,4 +615,12 @@ export function prettyFormatModelTableInput( data ) {
 	} );
 
 	return `[\n${ rowsStringified.join( ',\n' ) }\n]`;
+}
+
+// Returns all the text content from element.
+function getElementPlainText( model, element ) {
+	return [ ...model.createRangeIn( element ).getWalker() ]
+		.filter( ( { type } ) => type == 'text' )
+		.map( ( { item: { data } } ) => data )
+		.join( '' );
 }

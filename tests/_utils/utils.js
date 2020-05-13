@@ -37,7 +37,7 @@ export function renderPerformanceDataButtons( container, extraLabels ) {
 		'medium': 'medium (semantic)',
 		'large': 'long (semantic)',
 		'smallInlineCss': 'short (styled)',
-		'fullWebsitesStyled': 'full websites (styled)',
+		'fullWebsitesStyled': 'full websites (styled)'
 	};
 
 	if ( extraLabels ) {
@@ -66,7 +66,7 @@ export function getPerformanceData() {
 		medium: mediumFixture,
 		large: largeFixture,
 		smallInlineCss: smallInlineCssFixture,
-		fullWebsitesStyled: fullWebsitesStyledFixture,
+		fullWebsitesStyled: fullWebsitesStyledFixture
 	};
 }
 
