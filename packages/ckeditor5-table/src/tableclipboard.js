@@ -283,9 +283,7 @@ function getTableFromContent( content ) {
 function createLocationMap( table, width, height ) {
 	// Create height x width (row x column) two-dimensional table to store cells.
 	const map = new Array( height ).fill( null )
-		.map( () => {
-			return new Array( width ).fill( null );
-		} );
+		.map( () => new Array( width ).fill( null ) );
 
 	for ( const { column, row, cell } of new TableWalker( table ) ) {
 		map[ row ][ column ] = cell;
