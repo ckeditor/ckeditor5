@@ -166,18 +166,24 @@ export default class TableClipboard extends Plugin {
 			// Content table to which we insert a table.
 			const contentTable = findAncestor( 'table', selectedTableCells[ 0 ] );
 
-			// Selection must be set to pasted cells (some might be removed or new created).
-			const cellsToSelect = [];
-
-			// Store previous cell in order to insert a new table cells after it if required.
-			let previousCellInRow;
-
 			const tableMap = [ ...new TableWalker( contentTable, {
 				startRow: firstRowOfSelection,
 				endRow: lastRowOfSelection,
 				includeSpanned: true
 			} ) ];
 
+			// Selection must be set to pasted cells (some might be removed or new created).
+			const cellsToSelect = [];
+
+			// Store previous cell in order to insert a new table cells after it if required.
+			let previousCellInRow;
+
+			// Content table replace cells algorithm iterates over a selected table fragment and:
+			//
+			// - Removes existing table cells at current slot (location).
+			// - Inserts cell from a pasted table for a matched slots.
+			//
+			// This ensures proper table geometry after the paste
 			for ( const { row, column, cell, isSpanned } of tableMap ) {
 				if ( column === 0 ) {
 					previousCellInRow = null;
