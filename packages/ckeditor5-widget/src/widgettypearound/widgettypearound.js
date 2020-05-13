@@ -70,7 +70,7 @@ export default class WidgetTypeAround extends Plugin {
 	 * **Note**: This method is heavily user-oriented and will both focus the editing view and scroll
 	 * the viewport to the selection in the inserted paragraph.
 	 *
-	 * @private
+	 * @protected
 	 * @param {module:engine/view/element~Element} widgetViewElement The view widget element next to which a paragraph is inserted.
 	 * @param {'before'|'after'} position The position where the paragraph is inserted. Either `'before'` or `'after'` the widget.
 	 */
