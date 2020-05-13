@@ -8,7 +8,7 @@ category: framework-deep-dive
 
 All CKEditor 5 WYSIWYG editor features support message localization. It means that the user interface of any feature can be translated into various languages and regions depending on the user's preferences.
 
-Starting with the release of CKEditor 5 v19.0.0 as well as CKEditor 5 development tools we opened the translation system to third-party plugins. We also provided a way for adding missing or fixing invalid translations to the editor and introduced support for translating plural forms.
+CKEditor 5 translation system is opened to third-party plugins. Any custom features that you might introduce can be localized. We also provided a way for adding missing or overwriting existing translations and we support translating plural forms.
 
 <info-box warning>
 	Make sure to use up-to-date CKEditor 5 development tool packages. Older versions of the tools do not provide support for features described in this guide.
@@ -49,7 +49,7 @@ As the first argument, the `t()` function accepts either a string literal or an 
 
 As the second argument, the translation function accepts a value or an array of values. These values will be used to fill the placeholders in more advanced translation scenarios. If the `plural` property is specified, the first value will be used as the quantity determining the plural form.
 
-When using the `t()` function, you can create your own *localizable messages* or reuse *messages* created in CKEditor 5 packages that your project depends on. In case of reusing *messages*, you will not need to worry about translating them as all work will be done by the CKEditor 5 team and [Transifex translators](https://www.transifex.com/ckeditor/ckeditor5/) anyway. Obviously, your help in translating will still be appreciated!
+When using the `t()` function, you can create your own *localizable messages* or reuse *messages* created in CKEditor 5 packages that your project depends on. In case of reusing *messages*, you will not need to worry about translating them as all work will be done by the CKEditor 5 team and [Transifex translators](https://www.transifex.com/ckeditor/ckeditor5/). Obviously, your help in translating will still be appreciated!
 
 For simple *localizable messages*, use the string form for simplicity:
 
