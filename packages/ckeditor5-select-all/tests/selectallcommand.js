@@ -70,11 +70,19 @@ describe( 'SelectAllCommand', () => {
 		} );
 
 		it( 'should select all (selection in a nested editable)', () => {
-			setData( model, '<paragraph>foo</paragraph><image src="foo.png"><caption>[bar]</caption></image>' );
+			setData( model, '<paragraph>foo</paragraph><image src="foo.png"><caption>b[ar]</caption></image>' );
 
 			editor.execute( 'selectAll' );
 
 			expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph><image src="foo.png"><caption>[bar]</caption></image>' );
+		} );
+
+		it( 'when entire editable is selected, should select all in parent limit element', () => {
+			setData( model, '<paragraph>foo</paragraph><image src="foo.png"><caption>[bar]</caption></image>' );
+
+			editor.execute( 'selectAll' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph>[<image src="foo.png"><caption>bar</caption></image>]' );
 		} );
 
 		it( 'should select all in the closest nested editable (nested editable inside another nested editable)', () => {
@@ -101,6 +109,60 @@ describe( 'SelectAllCommand', () => {
 						'</tableCell>' +
 					'</tableRow>' +
 				'</table>'
+			);
+		} );
+
+		it( 'consecutive execute() on nested editable, should select all in the parent limit element', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+							'<image src="foo.png"><caption>b[]ar</caption></image>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			editor.execute( 'selectAll' );
+			editor.execute( 'selectAll' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph>' +
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+							'[<image src="foo.png"><caption>bar</caption></image>]' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			editor.execute( 'selectAll' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph>' +
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>[foo</paragraph>' +
+							'<image src="foo.png"><caption>bar</caption></image>]' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			editor.execute( 'selectAll' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph>' +
+				'[<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+							'<image src="foo.png"><caption>bar</caption></image>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>]'
 			);
 		} );
 	} );

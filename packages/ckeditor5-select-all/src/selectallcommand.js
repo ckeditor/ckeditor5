@@ -21,6 +21,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  *
  * If the selection was anchored in a {@glink framework/guides/tutorials/implementing-a-block-widget nested editable}
  * (e.g. a caption of an image), the new selection will contain its entire content.
+ * Successive execution - selecting all if entire content is selected - expands selection to the parent editable.
  *
  * @extends module:core/command~Command
  */
@@ -30,10 +31,22 @@ export default class SelectAllCommand extends Command {
 	 */
 	execute() {
 		const model = this.editor.model;
-		const limitElement = model.schema.getLimitElement( model.document.selection );
+		const selection = model.document.selection;
+		let limitElement = model.schema.getLimitElement( selection );
+
+		let place = 'in';
+		// If entire element was already selected, try selecting all in a parent limit element (if any).
+		if ( selection.containsEntireContent( limitElement ) && limitElement.root !== limitElement ) {
+			do {
+				if ( limitElement.parent ) {
+					limitElement = limitElement.parent;
+				}
+			} while ( !model.schema.isLimit( limitElement ) );
+			place = 'on';
+		}
 
 		model.change( writer => {
-			writer.setSelection( limitElement, 'in' );
+			writer.setSelection( limitElement, place );
 		} );
 	}
 }
