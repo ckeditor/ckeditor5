@@ -65,8 +65,8 @@ export function cropTableToDimensions( sourceTable, cropDimensions, writer, tabl
 		}
 
 		// Row index in cropped table.
-		const cropRow = sourceRow - startRow;
-		const row = croppedTable.getChild( cropRow );
+		const rowInCroppedTable = sourceRow - startRow;
+		const row = croppedTable.getChild( rowInCroppedTable );
 
 		// For empty slots: fill the gap with empty table cell.
 		if ( isSpanned ) {
@@ -85,16 +85,9 @@ export function cropTableToDimensions( sourceTable, cropDimensions, writer, tabl
 
 			writer.append( tableCellCopy, row );
 
-			// Crop end column/row is equal to crop width/height.
-			const cropEndColumn = endColumn - startColumn + 1;
-			const cropEndRow = cropHeight;
-
-			// Column index in cropped table.
-			const cropColumn = sourceColumn - startColumn;
-
 			// Trim table if it exceeds cropped area.
 			// In the table from method jsdoc those cells are: "g" & "m".
-			trimTableCellIfNeeded( tableCellCopy, cropRow, cropColumn, cropEndColumn, cropEndRow, writer );
+			trimTableCellIfNeeded( tableCellCopy, sourceRow, sourceColumn, endRow, endColumn, writer );
 		}
 	}
 
@@ -138,19 +131,26 @@ export function cropTableToSelection( selectedTableCellsIterator, writer, tableU
 	return cropTableToDimensions( sourceTable, cropDimensions, writer, tableUtils );
 }
 
-// Adjusts table cell dimensions to not exceed last row and last column.
-function trimTableCellIfNeeded( tableCell, cellRow, cellColumn, lastColumn, lastRow, writer ) {
+// Adjusts table cell dimensions to not exceed limit row and column.
+//
+// If table cell span to a column (or row) that is after a limit column (or row) trim colspan (or rowspan)
+// so the table cell will fit in a cropped area.
+function trimTableCellIfNeeded( tableCell, cellRow, cellColumn, limitRow, limitColumn, writer ) {
 	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
 	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 
-	if ( cellColumn + colspan > lastColumn ) {
-		const trimmedSpan = lastColumn - cellColumn;
+	const endColumn = cellColumn + colspan - 1;
+
+	if ( endColumn > limitColumn ) {
+		const trimmedSpan = limitColumn - cellColumn + 1;
 
 		updateNumericAttribute( 'colspan', trimmedSpan, tableCell, writer, 1 );
 	}
 
-	if ( cellRow + rowspan > lastRow ) {
-		const trimmedSpan = lastRow - cellRow;
+	const endRow = cellRow + rowspan - 1;
+
+	if ( endRow > limitRow ) {
+		const trimmedSpan = limitRow - cellRow + 1;
 
 		updateNumericAttribute( 'rowspan', trimmedSpan, tableCell, writer, 1 );
 	}
