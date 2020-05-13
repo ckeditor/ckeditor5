@@ -17,6 +17,6 @@
 ## Exceptions
 
 1. Inline widgets should **never** display the UI (buttons) regardless of their position in the document and their surroundings.
-2. Blocks widgets should display the UI only when theres a "tight spot" next to them. If you can type freely before/after a widget, the UI (buttons) related to that position should never appear.
+2. Blocks widgets should display the UI only when there's a "tight spot" next to them. If you can type freely before/after a widget, the UI (buttons) related to that position should never appear.
 	* If you can type before the widget (e.g. preceded by a paragraph), the top button should never appear.
 	* If you can type after the widget (e.g. followed by a paragraph), the bottom button should never appear.
