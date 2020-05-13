@@ -9,6 +9,7 @@
 
 import { createEmptyTableCell, findAncestor, updateNumericAttribute } from '../commands/utils';
 import TableWalker from '../tablewalker';
+import { getColumnIndexes, getRowIndexes } from '../utils';
 
 /**
  * Returns a cropped table according to given dimensions.
@@ -32,16 +33,19 @@ import TableWalker from '../tablewalker';
  *		 4  │ n │ o │ p │   │ q │
  *		    └───┴───┴───┴───┴───┘
  *
- * @param {Number} sourceTable
- * @param {Number} startRow
- * @param {Number} startColumn
- * @param {Number} endRow
- * @param {Number} endColumn
- * @param {module:table/tableutils~TableUtils} tableUtils
+ * @param {module:engine/model/element~Element} sourceTable
+ * @param {Object} cropDimensions
+ * @param {Number} cropDimensions.startRow
+ * @param {Number} cropDimensions.startColumn
+ * @param {Number} cropDimensions.endRow
+ * @param {Number} cropDimensions.endColumn
  * @param {module:engine/model/writer~Writer} writer
+ * @param {module:table/tableutils~TableUtils} tableUtils
  * @returns {module:engine/model/element~Element}
  */
-export function cropTableToDimensions( sourceTable, startRow, startColumn, endRow, endColumn, tableUtils, writer ) {
+export function cropTableToDimensions( sourceTable, cropDimensions, writer, tableUtils ) {
+	const { startRow, startColumn, endRow, endColumn } = cropDimensions;
+
 	// Create empty table with empty rows equal to crop height.
 	const croppedTable = writer.createElement( 'table' );
 	const cropHeight = endRow - startRow + 1;
@@ -66,6 +70,7 @@ export function cropTableToDimensions( sourceTable, startRow, startColumn, endRo
 
 		// For empty slots: fill the gap with empty table cell.
 		if ( isSpanned ) {
+			// TODO: Remove table utils usage. See: https://github.com/ckeditor/ckeditor5/issues/6785.
 			const { row: anchorRow, column: anchorColumn } = tableUtils.getCellLocation( tableCell );
 
 			// But fill the gap only if the spanning cell is anchored outside cropped area.
@@ -81,15 +86,15 @@ export function cropTableToDimensions( sourceTable, startRow, startColumn, endRo
 			writer.append( tableCellCopy, row );
 
 			// Crop end column/row is equal to crop width/height.
-			const cropEndRow = endColumn - startColumn + 1;
-			const cropEndColumn = cropHeight;
+			const cropEndColumn = endColumn - startColumn + 1;
+			const cropEndRow = cropHeight;
 
 			// Column index in cropped table.
 			const cropColumn = sourceColumn - startColumn;
 
 			// Trim table if it exceeds cropped area.
 			// In the table from method jsdoc those cells are: "g" & "m".
-			trimTableCellIfNeeded( tableCellCopy, cropRow, cropColumn, cropEndRow, cropEndColumn, tableUtils, writer );
+			trimTableCellIfNeeded( tableCellCopy, cropRow, cropColumn, cropEndColumn, cropEndRow, writer );
 		}
 	}
 
@@ -104,8 +109,7 @@ export function cropTableToDimensions( sourceTable, startRow, startColumn, endRo
  *
  * This function is to be used with the table selection.
  *
- *		tableSelection.startSelectingFrom( startCell )
- *		tableSelection.setSelectingFrom( endCell )
+ *		tableSelection.setCellSelection( startCell, endCell );
  *
  *		const croppedTable = cropTable( tableSelection.getSelectedTableCells(), tableUtils, writer );
  *
@@ -118,30 +122,35 @@ export function cropTableToDimensions( sourceTable, startRow, startColumn, endRo
  */
 export function cropTableToSelection( selectedTableCellsIterator, tableUtils, writer ) {
 	const selectedTableCells = Array.from( selectedTableCellsIterator );
-	const startElement = selectedTableCells[ 0 ];
-	const endElement = selectedTableCells[ selectedTableCells.length - 1 ];
 
-	const { row: startRow, column: startColumn } = tableUtils.getCellLocation( startElement );
-	const { row: endRow, column: endColumn } = tableUtils.getCellLocation( endElement );
+	const { first: startColumn, last: endColumn } = getColumnIndexes( selectedTableCells );
+	const { first: startRow, last: endRow } = getRowIndexes( selectedTableCells );
 
-	const sourceTable = findAncestor( 'table', startElement );
+	const sourceTable = findAncestor( 'table', selectedTableCells[ 0 ] );
 
-	return cropTableToDimensions( sourceTable, startRow, startColumn, endRow, endColumn, tableUtils, writer );
+	const cropDimensions = {
+		startRow,
+		startColumn,
+		endRow,
+		endColumn
+	};
+
+	return cropTableToDimensions( sourceTable, cropDimensions, writer, tableUtils );
 }
 
 // Adjusts table cell dimensions to not exceed last row and last column.
-function trimTableCellIfNeeded( tableCell, cellRow, cellColumn, lastRow, lastColumn, tableUtils, writer ) {
+function trimTableCellIfNeeded( tableCell, cellRow, cellColumn, lastColumn, lastRow, writer ) {
 	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
 	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 
-	if ( cellColumn + colspan > lastRow ) {
-		const trimmedSpan = lastRow - cellColumn;
+	if ( cellColumn + colspan > lastColumn ) {
+		const trimmedSpan = lastColumn - cellColumn;
 
 		updateNumericAttribute( 'colspan', trimmedSpan, tableCell, writer, 1 );
 	}
 
-	if ( cellRow + rowspan > lastColumn ) {
-		const trimmedSpan = lastColumn - cellRow;
+	if ( cellRow + rowspan > lastRow ) {
+		const trimmedSpan = lastRow - cellRow;
 
 		updateNumericAttribute( 'rowspan', trimmedSpan, tableCell, writer, 1 );
 	}

@@ -157,7 +157,14 @@ export default class TableClipboard extends Plugin {
 		model.change( writer => {
 			// Crop pasted table if it extends selection area.
 			if ( selectionHeight < pasteHeight || selectionWidth < pasteWidth ) {
-				pastedTable = cropTableToDimensions( pastedTable, 0, 0, selectionHeight - 1, selectionWidth - 1, tableUtils, writer );
+				const cropDimensions = {
+					startRow: 0,
+					startColumn: 0,
+					endRow: selectionHeight - 1,
+					endColumn: selectionWidth - 1
+				};
+
+				pastedTable = cropTableToDimensions( pastedTable, cropDimensions, writer, tableUtils );
 			}
 
 			const pastedTableMap = createLocationMap( pastedTable, selectionWidth, selectionHeight );
