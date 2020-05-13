@@ -7,15 +7,30 @@
  * @module table/tableselection/croptable
  */
 
-import { findAncestor, updateNumericAttribute } from '../commands/utils';
+import { createEmptyTableCell, findAncestor, updateNumericAttribute } from '../commands/utils';
 import TableWalker from '../tablewalker';
 
 /**
  * Returns a cropped table according to given dimensions.
- *
- * This function is to be used with the table selection.
+
+ * To return a cropped table that starts at first row and first column and end in third row and column:
  *
  *		const croppedTable = cropTable( table, 1, 1, 3, 3, tableUtils, writer );
+ *
+ * Calling the code above for the table below:
+ *
+ *		      0   1   2   3   4                      0   1   2
+ *		    ┌───┬───┬───┬───┬───┐
+ *		 0  │ a │ b │ c │ d │ e │
+ *		    ├───┴───┤   ├───┴───┤                  ┌───┬───┬───┐
+ *		 1  │ f     │   │ g     │                  │   │   │ g │  0
+ *		    ├───┬───┴───┼───┬───┤   will return:   ├───┴───┼───┤
+ *		 2  │ h │ i     │ j │ k │                  │ i     │ j │  1
+ *		    ├───┤       ├───┤   │                  │       ├───┤
+ *		 3  │ l │       │ m │   │                  │       │ m │  2
+ *		    ├───┼───┬───┤   ├───┤                  └───────┴───┘
+ *		 4  │ n │ o │ p │   │ q │
+ *		    └───┴───┴───┴───┴───┘
  *
  * @param {Number} sourceTable
  * @param {Number} startRow
@@ -27,46 +42,58 @@ import TableWalker from '../tablewalker';
  * @returns {module:engine/model/element~Element}
  */
 export function cropTableToDimensions( sourceTable, startRow, startColumn, endRow, endColumn, tableUtils, writer ) {
+	// Create empty table with empty rows equal to crop height.
 	const croppedTable = writer.createElement( 'table' );
+	const cropHeight = endRow - startRow + 1;
 
-	// Create needed rows.
-	for ( let i = 0; i < endRow - startRow + 1; i++ ) {
+	for ( let i = 0; i < cropHeight; i++ ) {
 		writer.insertElement( 'tableRow', croppedTable, 'end' );
 	}
 
 	const tableMap = [ ...new TableWalker( sourceTable, { startRow, endRow, includeSpanned: true } ) ];
 
+	// Iterate over source table slots (including empty - spanned - ones).
 	for ( const { row: sourceRow, column: sourceColumn, cell: tableCell, isSpanned } of tableMap ) {
+		// Skip slots outside the cropped area.
 		if ( sourceColumn < startColumn || sourceColumn > endColumn ) {
 			continue;
 		}
 
-		const insertRow = sourceRow - startRow;
-		const insertColumn = sourceColumn - startColumn;
+		// Row index in cropped table.
+		const cropRow = sourceRow - startRow;
+		const row = croppedTable.getChild( cropRow );
 
-		const row = croppedTable.getChild( insertRow );
-
+		// For empty slots: fill the gap with empty table cell.
 		if ( isSpanned ) {
 			const { row: anchorRow, column: anchorColumn } = tableUtils.getCellLocation( tableCell );
 
+			// But fill the gap only if the spanning cell is anchored outside cropped area.
+			// In the table from method jsdoc those cells are: "c" & "f".
 			if ( anchorRow < startRow || anchorColumn < startColumn ) {
-				const tableCell = writer.createElement( 'tableCell' );
-				const paragraph = writer.createElement( 'paragraph' );
-
-				writer.insert( paragraph, tableCell, 0 );
-				writer.insertText( '', paragraph, 0 );
-
-				writer.append( tableCell, row );
+				createEmptyTableCell( writer, writer.createPositionAt( row, 'end' ) );
 			}
-		} else {
+		}
+		// Otherwise clone the cell with all children and trim if it exceeds cropped area.
+		else {
 			const tableCellCopy = tableCell._clone( true );
 
 			writer.append( tableCellCopy, row );
 
-			trimTableCell( tableCellCopy, tableUtils, writer, insertRow, insertColumn, startRow, startColumn, endRow, endColumn );
+			// Crop end column/row is equal to crop width/height.
+			const cropEndRow = endColumn - startColumn + 1;
+			const cropEndColumn = cropHeight;
+
+			// Column index in cropped table.
+			const cropColumn = sourceColumn - startColumn;
+
+			// Trim table if it exceeds cropped area.
+			// In the table from method jsdoc those cells are: "g" & "m".
+			trimTableCellIfNeeded( tableCellCopy, cropRow, cropColumn, cropEndRow, cropEndColumn, tableUtils, writer );
 		}
 	}
-	addHeadingsToTableCopy( croppedTable, sourceTable, startRow, startColumn, writer );
+
+	// Adjust heading rows & columns in cropped table if crop selection includes headings parts.
+	addHeadingsToCroppedTable( croppedTable, sourceTable, startRow, startColumn, writer );
 
 	return croppedTable;
 }
@@ -101,39 +128,37 @@ export function cropTableToSelection( selectedTableCellsIterator, tableUtils, wr
 	return cropTableToDimensions( sourceTable, startRow, startColumn, endRow, endColumn, tableUtils, writer );
 }
 
-function trimTableCell( tableCell, tableUtils, writer, row, column, startRow, startColumn, endRow, endColumn ) {
+// Adjusts table cell dimensions to not exceed last row and last column.
+function trimTableCellIfNeeded( tableCell, cellRow, cellColumn, lastRow, lastColumn, tableUtils, writer ) {
 	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
 	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 
-	const width = endColumn - startColumn + 1;
-	const height = endRow - startRow + 1;
+	if ( cellColumn + colspan > lastRow ) {
+		const trimmedSpan = lastRow - cellColumn;
 
-	if ( column + colspan > width ) {
-		const newSpan = width - column;
-
-		updateNumericAttribute( 'colspan', newSpan, tableCell, writer, 1 );
+		updateNumericAttribute( 'colspan', trimmedSpan, tableCell, writer, 1 );
 	}
 
-	if ( row + rowspan > height ) {
-		const newSpan = height - row;
+	if ( cellRow + rowspan > lastColumn ) {
+		const trimmedSpan = lastColumn - cellRow;
 
-		updateNumericAttribute( 'rowspan', newSpan, tableCell, writer, 1 );
+		updateNumericAttribute( 'rowspan', trimmedSpan, tableCell, writer, 1 );
 	}
 }
 
-// Sets proper heading attributes to copied table.
-function addHeadingsToTableCopy( tableCopy, sourceTable, startRow, startColumn, writer ) {
+// Sets proper heading attributes to a cropped table.
+function addHeadingsToCroppedTable( croppedTable, sourceTable, startRow, startColumn, writer ) {
 	const headingRows = parseInt( sourceTable.getAttribute( 'headingRows' ) || 0 );
 
 	if ( headingRows > 0 ) {
-		const copiedRows = headingRows - startRow;
-		writer.setAttribute( 'headingRows', copiedRows, tableCopy );
+		const headingRowsInCrop = headingRows - startRow;
+		updateNumericAttribute( 'headingRows', headingRowsInCrop, croppedTable, writer, 0 );
 	}
 
 	const headingColumns = parseInt( sourceTable.getAttribute( 'headingColumns' ) || 0 );
 
 	if ( headingColumns > 0 ) {
-		const copiedColumns = headingColumns - startColumn;
-		writer.setAttribute( 'headingColumns', copiedColumns, tableCopy );
+		const headingColumnsInCrop = headingColumns - startColumn;
+		updateNumericAttribute( 'headingColumns', headingColumnsInCrop, croppedTable, writer, 0 );
 	}
 }
