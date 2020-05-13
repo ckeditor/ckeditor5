@@ -125,7 +125,7 @@
   },
   "scripts": {
     "lint": "eslint --quiet '**/*.js'",
-    "stylelint": "stylelint --quiet --allow-empty-input 'packages/**/*.css' 'external/**/packages/**/*.css' 'docs/**/*.css'",
+    "stylelint": "stylelint --quiet --allow-empty-input 'packages/**/*.css' 'external/*/packages/**/*.css' 'docs/**/*.css'",
     "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test.js",
     "manual": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test-manual.js",
     "bootstrap": "yarn install",
@@ -164,7 +164,7 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "external/**/packages/*",
+      "external/*/packages/*",
       "."
     ],
     "nohoist": [

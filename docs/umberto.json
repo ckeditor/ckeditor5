@@ -3,7 +3,7 @@
 	"slug": "ckeditor5",
 	"hexo-config": "docs/hexo-custom-config.json",
 	"extraStyles": "assets/styles.css",
-	"packagesDirs": ["packages", "external/**/packages"],
+	"packagesDirs": ["packages", "external/*/packages"],
 	"path": "docs",
 	"observablesdocs": "module:utils/observablemixin~ObservableMixin",
 	"redirects": {
