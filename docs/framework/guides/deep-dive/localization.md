@@ -110,19 +110,6 @@ editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 	Note that this code sample lacks a few parts. See {@link framework/guides/creating-simple-plugin how to create a complete plugin} to have a better understanding about creating CKEditor 5 plugins.
 </info-box>
 
-### Example: Localizing `aria` attributes
-
-For better accessibility support, do not forget about making `aria` attributes localizable:
-
-```js
-editingView.change( writer => {
-	const t = this.t;
-	const viewRoot = editingView.document.getRoot( this.name );
-
-	writer.setAttribute( 'aria-label', t( 'Rich Text Editor, %0', [ this.name ] ), viewRoot );
-} );
-```
-
 ### Example: Localizing pending actions
 
 {@link module:core/pendingactions~PendingActions Pending actions} are used to inform the user that an action is in progress and they will lose data if they exit the editor at the given moment. Here is how you can localize them:
