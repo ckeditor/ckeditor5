@@ -8,10 +8,10 @@ category: framework-deep-dive
 
 All CKEditor 5 WYSIWYG editor features support message localization. It means that the user interface of any feature can be translated into various languages and regions depending on the user's preferences.
 
-CKEditor 5 translation system is opened to third-party plugins. Any custom features that you might introduce can be localized. We also provided a way for adding missing or overwriting existing translations and we support translating plural forms.
+CKEditor 5 translation system is open to third-party plugins. Any custom features that you introduce can be localized. The system also provides a way to add missing or overwrite existing translations and supports translating plural forms.
 
 <info-box warning>
-	Make sure to use up-to-date CKEditor 5 development tool packages. Older versions of the tools do not provide support for features described in this guide.
+	Make sure to use up-to-date CKEditor 5 development tool packages. Versions of the tools older than v19.0.1 do not provide support for features described in this guide.
 </info-box>
 
 ### Open API
