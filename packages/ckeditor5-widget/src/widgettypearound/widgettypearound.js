@@ -72,7 +72,7 @@ export default class WidgetTypeAround extends Plugin {
 	 *
 	 * @private
 	 * @param {module:engine/view/element~Element} widgetViewElement The view widget element next to which a paragraph is inserted.
-	 * @param {String} position The position where the paragraph is inserted. Either `'before'` or `'after'` the widget.
+	 * @param {'before'|'after'} position The position where the paragraph is inserted. Either `'before'` or `'after'` the widget.
 	 */
 	_insertParagraph( widgetViewElement, position ) {
 		const editor = this.editor;
