@@ -82,7 +82,6 @@ describe( 'Widget', () => {
 				} );
 
 				editor.conversion.for( 'downcast' )
-					// .elementToElement( { model: 'paragraph', view: 'p' } )
 					.elementToElement( { model: 'inline', view: 'figure' } )
 					.elementToElement( { model: 'image', view: 'img' } )
 					.elementToElement( { model: 'blockQuote', view: 'blockquote' } )
