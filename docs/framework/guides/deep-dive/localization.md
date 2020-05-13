@@ -72,9 +72,9 @@ For more advanced scenarios, use plain object forms:
 const quantity = 3;
 
 // Assuming that the English language was picked:
-t( { string: '%0 emoji', id: 'INSERT_EMOJI' }, 'insert' ); // "insert emoji"
-t( { string: '%0 emoji', plural: '%0 emojis', id: 'EMOJI' }, quantity ); // "3 emojis"
-t( { string: '%1 %0 emoji', plural: '%1 %0 emojis', id: 'INSERT_EMOJIS' }, [ quantity, 'Insert' ] ); // "Insert 3 emojis"
+t( { string: '%0 emoji', id: 'ACTION_EMOJI' }, 'insert' ); // "insert emoji"
+t( { string: '%0 emoji', plural: '%0 emojis', id: 'N_EMOJIS' }, quantity ); // "3 emojis"
+t( { string: '%1 %0 emoji', plural: '%1 %0 emojis', id: 'ACTION_N_EMOJIS' }, [ quantity, 'Insert' ] ); // "Insert 3 emojis"
 ```
 
 ### Example: Localizing the plugin UI
