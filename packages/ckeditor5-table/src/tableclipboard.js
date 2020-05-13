@@ -155,11 +155,7 @@ export default class TableClipboard extends Plugin {
 			}
 
 			// Stores cells as a map of inserted table cell as 'row * column' index.
-			const insertionMap = new Array( selectionHeight * selectionWidth ).fill( null );
-
-			for ( const { column, row, cell } of new TableWalker( insertedTable ) ) {
-				insertionMap[ row * insertWidth + column ] = cell;
-			}
+			const pastedTableMap = createLocationMap( insertedTable, selectionWidth, selectionHeight );
 
 			// Content table to which we insert a table.
 			const contentTable = findAncestor( 'table', selectedTableCells[ 0 ] );
@@ -189,8 +185,7 @@ export default class TableClipboard extends Plugin {
 				}
 
 				// Map current table location to inserted table location.
-				const cellLocationToInsert = ( row - firstRowOfSelection ) * insertWidth + ( column - firstColumnOfSelection );
-				const pastedCell = insertionMap[ cellLocationToInsert ];
+				const pastedCell = pastedTableMap[ row - firstRowOfSelection ][ column - firstColumnOfSelection ];
 
 				// There is no cell to insert (might be spanned by other cell in a pasted table) so...
 				if ( !pastedCell ) {
@@ -238,4 +233,47 @@ function getTableFromContent( content ) {
 	}
 
 	return null;
+}
+
+// Returns two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
+//
+// At given row & column location it might be one of:
+//
+// * cell - cell from pasted table anchored at this location.
+// * null - if no cell is anchored at this location.
+//
+// For instance, from a table below:
+//
+//		+----+----+----+----+
+//		| 00 | 01 | 02 | 03 |
+//		+    +----+----+----+
+//		|    | 11      | 13 |
+//		+----+         +----+
+//		| 20 |         | 23 |
+//		+----+----+----+----+
+//
+// The method will return an array (numbers represents cell element):
+//
+//	const map = [
+//		[ '00', '01', '02', '03' ],
+//		[ null, '11', null, '13' ],
+//		[ '20', null, null, '23' ]
+//	]
+//
+// This allows for a quick access to table at give row & column. For instance to access table cell "13" from pasted table call:
+//
+//		const cell = map[ 1 ][ 3 ]
+//
+function createLocationMap( table, width, height ) {
+	// Create height x width (row x column) two-dimensional table to store cells.
+	const map = new Array( height ).fill( null )
+		.map( () => {
+			return new Array( width ).fill( null );
+		} );
+
+	for ( const { column, row, cell } of new TableWalker( table ) ) {
+		map[ row ][ column ] = cell;
+	}
+
+	return map;
 }
