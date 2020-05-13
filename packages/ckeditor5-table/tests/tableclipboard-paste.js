@@ -20,6 +20,8 @@ import { assertSelectedCells, modelTable, viewTable } from './_utils/utils';
 
 import TableEditing from '../src/tableediting';
 import TableCellPropertiesEditing from '../src/tablecellproperties/tablecellpropertiesediting';
+import TableWalker from '../src/tablewalker';
+
 import TableClipboard from '../src/tableclipboard';
 
 describe( 'table clipboard', () => {
@@ -89,6 +91,58 @@ describe( 'table clipboard', () => {
 			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ '00foo[]', '01', '02', '03' ],
 				[ '10', '11', '12', '13' ],
+				[ '20', '21', '22', '23' ],
+				[ '30', '31', '32', '33' ]
+			] ) );
+		} );
+
+		it( 'should not alter model.insertContent if selectable is different from document selection', () => {
+			model.change( writer => {
+				writer.setSelection( modelRoot.getNodeByPath( [ 0, 0, 0 ] ), 0 );
+
+				const selectedTableCells = model.createSelection( [
+					model.createRangeOn( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) ),
+					model.createRangeOn( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) ),
+					model.createRangeOn( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) ),
+					model.createRangeOn( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) )
+				] );
+
+				const tableToInsert = editor.plugins.get( 'TableUtils' ).createTable( writer, 2, 2 );
+
+				for ( const { cell } of new TableWalker( tableToInsert ) ) {
+					writer.insertText( 'foo', cell.getChild( 0 ), 0 );
+				}
+
+				model.insertContent( tableToInsert, selectedTableCells );
+			} );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ '', '', '02', '03' ],
+				[ '', '', '12', '13' ],
+				[ '20', '21', '22', '23' ],
+				[ '30', '31', '32', '33' ]
+			] ) );
+		} );
+
+		it( 'should alter model.insertContent if selectable is  document selection', () => {
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			model.change( writer => {
+				const tableToInsert = editor.plugins.get( 'TableUtils' ).createTable( writer, 2, 2 );
+
+				for ( const { cell } of new TableWalker( tableToInsert ) ) {
+					writer.insertText( 'foo', cell.getChild( 0 ), 0 );
+				}
+
+				model.insertContent( tableToInsert, editor.model.document.selection );
+			} );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ 'foo', 'foo', '02', '03' ],
+				[ 'foo', 'foo', '12', '13' ],
 				[ '20', '21', '22', '23' ],
 				[ '30', '31', '32', '33' ]
 			] ) );

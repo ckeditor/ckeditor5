@@ -93,8 +93,14 @@ export default class TableClipboard extends Plugin {
 	 * @private
 	 * @param evt
 	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
+	 * @param {module:engine/model/selection~Selectable} [selectable=model.document.selection]
+	 * The selection into which the content should be inserted. If not provided the current model document selection will be used.
 	 */
-	_onInsertContent( evt, content ) {
+	_onInsertContent( evt, content, selectable ) {
+		if ( selectable && !selectable.is( 'documentSelection' ) ) {
+			return;
+		}
+
 		const tableSelection = this.editor.plugins.get( TableSelection );
 		const selectedTableCells = tableSelection.getSelectedTableCells();
 
@@ -226,6 +232,10 @@ export default class TableClipboard extends Plugin {
 }
 
 function getTableFromContent( content ) {
+	if ( content.is( 'table' ) ) {
+		return content;
+	}
+
 	for ( const child of Array.from( content ) ) {
 		if ( child.is( 'table' ) ) {
 			return child;
