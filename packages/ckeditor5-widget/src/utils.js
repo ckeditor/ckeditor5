@@ -9,6 +9,9 @@
 
 import HighlightStack from './highlightstack';
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import dragHandleIcon from '../theme/icons/drag-handle.svg';
 
@@ -337,6 +340,76 @@ export function viewToModelPositionOutsideModelElement( model, viewElementMatche
 
 		data.modelPosition = model.createPositionAt( modelParent, viewPosition.isAtStart ? 'before' : 'after' );
 	};
+}
+
+/**
+ * A positioning function passed to the {@link module:utils/dom/position~getOptimalPosition} helper as a last resort
+ * when attaching {@link  module:ui/panel/balloon/balloonpanelview~BalloonPanelView balloon UI} to widgets.
+ * It comes in handy when a widget is longer than the visual viewport of the web browser and/or upper/lower boundaries
+ * of a widget are off screen because of the web page scroll.
+ *
+ *	                (A)                                 (B)                                 (C)
+ *
+ *	                                                                            ┌─┄┄┄┄┄┄┄┄Widget┄┄┄┄┄┄┄┄┄┄┐
+ *	                                                                            ┊                         ┊
+ *	                                        ┌─┄┄┄┄┄┄┄┄┄Widget┄┄┄┄┄┄┄┄┄┐         ┊                         ┊
+ *                                          ┊                         ┊         ┊                         ┊
+ *	 ┌────────────Viewport───────────┐   ┌──╁─────────Viewport────────╁──┐   ┌──╁────────Viewport─────────╁──┐
+ *	 │  ┏━━━━━━━━━━Widget━━━━━━━━━┓  │   │  ┃            ^            ┃  │   │  ┃                         ┃  │
+ *	 │  ┃            ^            ┃  │   │  ┃   ╭───────/ \───────╮   ┃  │   │  ┃                         ┃  │
+ *	 │  ┃   ╭───────/ \───────╮   ┃  │   │  ┃   │     Balloon     │   ┃  │   │  ┃                         ┃  │
+ *	 │  ┃   │     Balloon     │   ┃  │   │  ┃   ╰─────────────────╯   ┃  │   │  ┃                         ┃  │
+ *	 │  ┃   ╰─────────────────╯   ┃  │   │  ┃                         ┃  │   │  ┃                         ┃  │
+ *	 │  ┃                         ┃  │   │  ┃                         ┃  │   │  ┃                         ┃  │
+ *	 │  ┃                         ┃  │   │  ┃                         ┃  │   │  ┃   ╭─────────────────╮   ┃  │
+ *	 │  ┃                         ┃  │   │  ┃                         ┃  │   │  ┃   │     Balloon     │   ┃  │
+ *	 │  ┃                         ┃  │   │  ┃                         ┃  │   │  ┃   ╰───────\ /───────╯   ┃  │
+ *	 │  ┃                         ┃  │   │  ┃                         ┃  │   │  ┃            V            ┃  │
+ *	 │  ┃                         ┃  │   │  ┃                         ┃  │   │  ┗━━━━━━━━━━━━━━━━━━━━━━━━━┛  │
+ *	 └──╀─────────────────────────╀──┘   └──╀─────────────────────────╀──┘   └───────────────────────────────┘
+ *	    ┊                         ┊         ┊                         ┊
+ *	    ┊                         ┊         └┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘
+ *	    ┊                         ┊
+ *	    └┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘
+ *
+ *
+ * **Note**: Works best if used together with
+ * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions default `BalloonPanelView` positions}
+ * like `northArrowSouth` and `southArrowNorth`; the transition between these two and this position is smooth.
+ *
+ * @param {utils/dom/rect~Rect} widgetRect A rect of the widget.
+ * @param {utils/dom/rect~Rect} balloonRect A rect of the balloon.
+ * @returns {module:utils/dom/position~Position}
+ */
+export function centeredBalloonPositionForLongWidgets( widgetRect, balloonRect ) {
+	const viewportRect = new Rect( global.window );
+	const viewportWidgetInsersectionRect = viewportRect.getIntersection( widgetRect );
+	const isUpperTargetEdgeOffViewport = widgetRect.top < viewportRect.top;
+	const isLowerTargetEdgeOffViewport = widgetRect.bottom > viewportRect.bottom;
+
+	// Because this is a last resort positioning, to keep things simple we're not playing with positions of the arrow
+	// like, for instance, "south west" or whatever. Just try to keep the balloon in the middle of the visible area of
+	// the widget for as long as it is possible. If the widgets becomes invisible (because cropped by the viewport),
+	// just... place the balloon in the middle of it (because why not?).
+	const targetRect = viewportWidgetInsersectionRect.width > 0 ? viewportWidgetInsersectionRect : widgetRect;
+	const left = targetRect.left + targetRect.width / 2 - balloonRect.width / 2;
+
+	// Case (C).
+	if ( isUpperTargetEdgeOffViewport && !isLowerTargetEdgeOffViewport ) {
+		return {
+			top: Math.min( widgetRect.bottom, viewportRect.bottom ) - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
+			left,
+			name: 'arrow_s'
+		};
+	}
+	// Cases (A) and (B).
+	else {
+		return {
+			top: Math.max( widgetRect.top, 0 ) + BalloonPanelView.arrowVerticalOffset,
+			left,
+			name: 'arrow_n'
+		};
+	}
 }
 
 // Default filler offset function applied to all widget elements.
