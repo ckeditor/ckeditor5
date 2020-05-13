@@ -2,7 +2,7 @@
 
 ## General idea
 
-1. Mouse the mouse cursor over various block widgets.
+1. Move the mouse cursor over various block widgets.
 2. There should be buttons appearing at the top/bottom boundaries of a widget when there is no way to put the caret before/after.
 3. Clicking an individual button should insert a paragraph before/after the widget.
 
