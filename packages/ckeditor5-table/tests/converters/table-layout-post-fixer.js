@@ -89,6 +89,25 @@ describe( 'Table layout post-fixer', () => {
 			] ) );
 		} );
 
+		it( 'should remove empty rows', () => {
+			const parsed = parse( modelTable( [
+				[ '00', '01' ],
+				[ ],
+				[ '20', '21', '22' ],
+				[ ]
+			] ), model.schema );
+
+			model.change( writer => {
+				writer.remove( writer.createRangeIn( root ) );
+				writer.insert( parsed, root );
+			} );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ '00', '01', '' ],
+				[ '20', '21', '22' ]
+			] ) );
+		} );
+
 		it( 'should fix the wrong rowspan attribute of a table cell inside the header', () => {
 			const parsed = parse( modelTable( [
 				[ { rowspan: 2, contents: '00' }, { rowspan: 3, contents: '01' }, '02' ],

@@ -55,6 +55,25 @@ describe( 'Table cell refresh post-fixer', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should rename <span> to <p> when adding <paragraph> element to the same table cell', () => {
+		editor.setData( viewTable( [ [ '<p>00</p>' ] ] ) );
+
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			const nodeByPath = table.getNodeByPath( [ 0, 0, 0 ] );
+			const paragraph = writer.createElement( 'paragraph' );
+
+			writer.insert( paragraph, nodeByPath, 'after' );
+			writer.setSelection( nodeByPath.nextSibling, 0 );
+		} );
+
+		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+			[ '<p>00</p><p></p>' ]
+		], { asWidget: true } ) );
+		sinon.assert.calledOnce( refreshItemSpy );
+	} );
+
 	it( 'should rename <span> to <p> when adding more <paragraph> elements to the same table cell', () => {
 		editor.setData( viewTable( [ [ '<p>00</p>' ] ] ) );
 
@@ -62,16 +81,16 @@ describe( 'Table cell refresh post-fixer', () => {
 
 		model.change( writer => {
 			const nodeByPath = table.getNodeByPath( [ 0, 0, 0 ] );
+			const paragraph1 = writer.createElement( 'paragraph' );
+			const paragraph2 = writer.createElement( 'paragraph' );
 
-			const paragraph = writer.createElement( 'paragraph' );
-
-			writer.insert( paragraph, nodeByPath, 'after' );
-
+			writer.insert( paragraph1, nodeByPath, 'after' );
+			writer.insert( paragraph2, nodeByPath, 'after' );
 			writer.setSelection( nodeByPath.nextSibling, 0 );
 		} );
 
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-			[ '<p>00</p><p></p>' ]
+			[ '<p>00</p><p></p><p></p>' ]
 		], { asWidget: true } ) );
 		sinon.assert.calledOnce( refreshItemSpy );
 	} );
@@ -83,16 +102,35 @@ describe( 'Table cell refresh post-fixer', () => {
 
 		model.change( writer => {
 			const nodeByPath = table.getNodeByPath( [ 0, 0, 0 ] );
+			const block = writer.createElement( 'block' );
 
-			const paragraph = writer.createElement( 'block' );
-
-			writer.insert( paragraph, nodeByPath, 'after' );
-
+			writer.insert( block, nodeByPath, 'after' );
 			writer.setSelection( nodeByPath.nextSibling, 0 );
 		} );
 
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p>00</p><div></div>' ]
+		], { asWidget: true } ) );
+		sinon.assert.calledOnce( refreshItemSpy );
+	} );
+
+	it( 'should rename <span> to <p> on adding multiple other block elements to the same table cell', () => {
+		editor.setData( viewTable( [ [ '<p>00</p>' ] ] ) );
+
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			const nodeByPath = table.getNodeByPath( [ 0, 0, 0 ] );
+			const block1 = writer.createElement( 'block' );
+			const block2 = writer.createElement( 'block' );
+
+			writer.insert( block1, nodeByPath, 'after' );
+			writer.insert( block2, nodeByPath, 'after' );
+			writer.setSelection( nodeByPath.nextSibling, 0 );
+		} );
+
+		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+			[ '<p>00</p><div></div><div></div>' ]
 		], { asWidget: true } ) );
 		sinon.assert.calledOnce( refreshItemSpy );
 	} );
@@ -140,12 +178,28 @@ describe( 'Table cell refresh post-fixer', () => {
 		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
-	it( 'should rename <p> to <span> when removing all but one paragraph inside table cell', () => {
+	it( 'should rename <p> to <span> when removing one of two paragraphs inside table cell', () => {
 		editor.setData( viewTable( [ [ '<p>00</p><p>foo</p>' ] ] ) );
 
 		const table = root.getChild( 0 );
 
 		model.change( writer => {
+			writer.remove( table.getNodeByPath( [ 0, 0, 1 ] ) );
+		} );
+
+		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+			[ '00' ]
+		], { asWidget: true } ) );
+		sinon.assert.calledOnce( refreshItemSpy );
+	} );
+
+	it( 'should rename <p> to <span> when removing all but one paragraph inside table cell', () => {
+		editor.setData( viewTable( [ [ '<p>00</p><p>foo</p><p>bar</p>' ] ] ) );
+
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			writer.remove( table.getNodeByPath( [ 0, 0, 1 ] ) );
 			writer.remove( table.getNodeByPath( [ 0, 0, 1 ] ) );
 		} );
 
@@ -246,6 +300,21 @@ describe( 'Table cell refresh post-fixer', () => {
 
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<div>00</div>' ]
+		], { asWidget: true } ) );
+		sinon.assert.notCalled( refreshItemSpy );
+	} );
+
+	it( 'should do nothing on adding <paragraph> to existing paragraphs', () => {
+		editor.setData( viewTable( [ [ '<p>a</p><p>b</p>' ] ] ) );
+
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			writer.insertElement( 'paragraph', table.getNodeByPath( [ 0, 0, 1 ] ), 'after' );
+		} );
+
+		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+			[ '<p>a</p><p>b</p><p></p>' ]
 		], { asWidget: true } ) );
 		sinon.assert.notCalled( refreshItemSpy );
 	} );

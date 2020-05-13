@@ -500,8 +500,15 @@ function getClassToSet( attributes ) {
 export function createTableAsciiArt( model, table ) {
 	const tableMap = [ ...new TableWalker( table, { includeSpanned: true } ) ];
 
+	if ( !tableMap.length ) {
+		return '';
+	}
+
 	const { row: lastRow, column: lastColumn } = tableMap[ tableMap.length - 1 ];
 	const columns = lastColumn + 1;
+
+	const headingRows = parseInt( table.getAttribute( 'headingRows' ) ) || 0;
+	const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) ) || 0;
 
 	let result = '';
 
@@ -535,6 +542,10 @@ export function createTableAsciiArt( model, table ) {
 			if ( column == lastColumn ) {
 				gridLine += '+';
 				contentLine += '|';
+
+				if ( headingRows && row == headingRows ) {
+					gridLine += ' <-- heading rows';
+				}
 			}
 		}
 		result += gridLine + '\n';
@@ -542,6 +553,14 @@ export function createTableAsciiArt( model, table ) {
 
 		if ( row == lastRow ) {
 			result += `+${ '----+'.repeat( columns ) }`;
+
+			if ( headingRows && row == headingRows - 1 ) {
+				result += ' <-- heading rows';
+			}
+
+			if ( headingColumns > 0 ) {
+				result += `\n${ '     '.repeat( headingColumns ) }^-- heading columns`;
+			}
 		}
 	}
 

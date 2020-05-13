@@ -8,9 +8,8 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import TableWalker from '../tablewalker';
-import { updateNumericAttribute } from './utils';
 import TableUtils from '../tableutils';
+import { findAncestor, updateNumericAttribute } from './utils';
 import { isSelectionRectangular, getSelectedTableCells } from '../utils';
 
 /**
@@ -58,38 +57,27 @@ export default class MergeCellsCommand extends Command {
 			updateNumericAttribute( 'colspan', mergeWidth, firstTableCell, writer );
 			updateNumericAttribute( 'rowspan', mergeHeight, firstTableCell, writer );
 
+			const emptyRowsIndexes = [];
+
 			for ( const tableCell of selectedTableCells ) {
 				const tableRow = tableCell.parent;
+
 				mergeTableCells( tableCell, firstTableCell, writer );
-				removeRowIfEmpty( tableRow, writer );
+
+				if ( !tableRow.childCount ) {
+					emptyRowsIndexes.push( tableRow.index );
+				}
+			}
+
+			if ( emptyRowsIndexes.length ) {
+				const table = findAncestor( 'table', firstTableCell );
+
+				emptyRowsIndexes.reverse().forEach( row => tableUtils.removeRows( table, { at: row, batch: writer.batch } ) );
 			}
 
 			writer.setSelection( firstTableCell, 'in' );
 		} );
 	}
-}
-
-// Properly removes an empty row from a table. Updates the `rowspan` attribute of cells that overlap the removed row.
-//
-// @param {module:engine/model/element~Element} row
-// @param {module:engine/model/writer~Writer} writer
-function removeRowIfEmpty( row, writer ) {
-	if ( row.childCount ) {
-		return;
-	}
-
-	const table = row.parent;
-	const removedRowIndex = table.getChildIndex( row );
-
-	for ( const { cell, row, rowspan } of new TableWalker( table, { endRow: removedRowIndex } ) ) {
-		const overlapsRemovedRow = row + rowspan - 1 >= removedRowIndex;
-
-		if ( overlapsRemovedRow ) {
-			updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer );
-		}
-	}
-
-	writer.remove( row );
 }
 
 // Merges two table cells. It will ensure that after merging cells with empty paragraphs the resulting table cell will only have one
