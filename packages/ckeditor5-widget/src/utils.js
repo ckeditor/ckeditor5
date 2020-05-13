@@ -377,8 +377,8 @@ export function viewToModelPositionOutsideModelElement( model, viewElementMatche
  * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions default `BalloonPanelView` positions}
  * like `northArrowSouth` and `southArrowNorth`; the transition between these two and this position is smooth.
  *
- * @param {utils/dom/rect~Rect} widgetRect A rect of the widget.
- * @param {utils/dom/rect~Rect} balloonRect A rect of the balloon.
+ * @param {module:utils/dom/rect~Rect} widgetRect A rect of the widget.
+ * @param {module:utils/dom/rect~Rect} balloonRect A rect of the balloon.
  * @returns {module:utils/dom/position~Position}
  */
 export function centeredBalloonPositionForLongWidgets( widgetRect, balloonRect ) {
