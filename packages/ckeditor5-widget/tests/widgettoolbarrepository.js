@@ -7,13 +7,18 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Widget from '../src/widget';
 import WidgetToolbarRepository from '../src/widgettoolbarrepository';
-import { isWidget, toWidget } from '../src/utils';
+import {
+	isWidget,
+	toWidget,
+	centeredBalloonPositionForLongWidgets
+} from '../src/utils';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
@@ -469,6 +474,40 @@ describe( 'WidgetToolbarRepository', () => {
 			const newFakeDomElement = editor.editing.view.domConverter.mapViewToDom( newFakeViewElement );
 
 			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( newFakeDomElement );
+		} );
+
+		it( 'toolbar should use one of pre-defined positions when attaching to a widget', () => {
+			const editingView = editor.editing.view;
+			const balloonAddSpy = sinon.spy( balloon, 'add' );
+			const defaultPositions = BalloonPanelView.defaultPositions;
+
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: getSelectedFakeWidget
+			} );
+
+			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
+			const widgetViewElement = editingView.document.getRoot().getChild( 1 );
+
+			sinon.assert.calledOnce( balloonAddSpy );
+			sinon.assert.calledWithExactly( balloonAddSpy, {
+				view: fakeWidgetToolbarView,
+				position: {
+					target: editingView.domConverter.mapViewToDom( widgetViewElement ),
+					positions: [
+						defaultPositions.northArrowSouth,
+						defaultPositions.northArrowSouthWest,
+						defaultPositions.northArrowSouthEast,
+						defaultPositions.southArrowNorth,
+						defaultPositions.southArrowNorthWest,
+						defaultPositions.southArrowNorthEast,
+						centeredBalloonPositionForLongWidgets
+					]
+				},
+				balloonClassName: 'ck-toolbar-container'
+			} );
 		} );
 	} );
 } );
