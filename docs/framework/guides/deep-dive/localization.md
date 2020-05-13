@@ -148,7 +148,7 @@ Adding translations to the editor can be done in three ways to satisfy various n
 
 The first option for adding translations is via {@link module:utils/translation-service.add the translation-service's `add()` helper}. This utility adds translations to the `window.CKEDITOR_TRANSLATIONS` object by extending it. Since it needs to be imported, it works only before building the editor.
 
-Starting with the CKEditor 5 v19.0.0 release, it now accepts the `getPluralForm()` function as the third argument. It also accepts an array of translations for a *message* if the *message* should support singular and plural forms.
+Starting with the CKEditor 5 v19.0.0 release, it now accepts the optional `getPluralForm()` function as the third argument. This function is only needed for defining translations for not supported languages. It also accepts an array of translations for a *message* if the *message* should support singular and plural forms.
 
 ```js
 add( 'pl', {
@@ -189,6 +189,22 @@ Check an example below that demonstrates a part of the `window.CKEDITOR_TRANSLAT
 	}
 	// Other languages...
 }
+```
+
+It is important to extend the existing properties in the `window.CKEDITOR_TRANSLATIONS` object to not lose other translations. This can be achieved easily using `Object.assign()` and the `||` operator.
+
+```js
+// Make sure that the global object is defined. If not, define it.
+window.CKEDITOR_TRANSLATIONS = window.CKEDITOR_TRANSLATIONS || {};
+
+// Make sure that the dictionary for Polish translations exist.
+window.CKEDITOR_TRANSLATIONS[ 'pl' ] = window.CKEDITOR_TRANSLATIONS[ 'pl' ] || {};
+window.CKEDITOR_TRANSLATIONS[ 'pl' ].dictionary =  window.CKEDITOR_TRANSLATIONS[ 'pl' ].dictionary || {};
+
+// Extend the dictionary for Polish translations with your translations:
+Object.assign( window.CKEDITOR_TRANSLATIONS[ 'pl' ].dictionary, {
+	'Save': 'Zapisz'
+} );
 ```
 
 If you add a new language, remember to set the `getPluralForm` function which should return a number (or a Boolean for languages with simple plural rules like English) that indicates which form should be used for which value.
