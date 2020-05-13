@@ -591,5 +591,25 @@ describe( 'widget utils', () => {
 				name: 'arrow_n'
 			} );
 		} );
+
+		it( 'should horizontally center the balloon in the widget when the widget is completely off the viewport', () => {
+			// Widget is a 50x150 rect, translated (0,-100) from viewport's beginning (0,0).
+			const widgetRect = new Rect( {
+				top: 0,
+				left: -100,
+				right: -50,
+				bottom: 150,
+				width: 50,
+				height: 150
+			} );
+
+			const position = centeredBalloonPositionForLongWidgets( widgetRect, balloonRect );
+
+			expect( position ).to.deep.equal( {
+				top: 0 + arrowVerticalOffset,
+				left: -80,
+				name: 'arrow_n'
+			} );
+		} );
 	} );
 } );
