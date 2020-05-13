@@ -242,7 +242,7 @@ function getTableFromContent( content ) {
 		return content;
 	}
 
-	for ( const child of Array.from( content ) ) {
+	for ( const child of content.getChildren() ) {
 		if ( child.is( 'table' ) ) {
 			return child;
 		}
