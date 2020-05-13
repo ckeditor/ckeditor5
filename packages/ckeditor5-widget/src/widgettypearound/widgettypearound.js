@@ -196,9 +196,9 @@ export default class WidgetTypeAround extends Plugin {
 
 // Injects the type around UI into a view widget instance.
 //
-// @param {module:engine/view/element~Element}
 // @param {module:engine/view/view} editingView
 // @param {Object.<String,String>} buttonTitles
+// @param {module:engine/view/element~Element} widgetViewElement
 function injectUIIntoWidget( editingView, buttonTitles, widgetViewElement ) {
 	editingView.change( writer => {
 		const typeAroundWrapper = writer.createUIElement( 'div', {
