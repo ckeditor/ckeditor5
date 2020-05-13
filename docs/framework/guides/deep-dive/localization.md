@@ -167,7 +167,7 @@ The second option is adding translations via the global `window.CKEDITOR_TRANSLA
 
 For each language that should be supported, the `dictionary` property of this object should be extended and the `getPluralForm` function should be provided if missing.
 
-The `dictionary` property is a `message ID ⇒ translations` map, where the `translations` can be either one sentence (a string) or an array of translations with plural forms for the given language if the message should support plural forms as well.
+The `dictionary` property is a `message ID ⇒ translations` map, where the `translations` can be either a string or an array of translations with plural forms for the given language if the message should support plural forms as well.
 
 The `getPluralForm` property should be a function that returns the plural form index for a given quantity. Note that when using CKEditor 5 translations, this property will be defined by *CKEditor 5 translation assets*.
 
