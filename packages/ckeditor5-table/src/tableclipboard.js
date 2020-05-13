@@ -109,9 +109,9 @@ export default class TableClipboard extends Plugin {
 		}
 
 		// We might need to crop table before inserting so reference might change.
-		let insertedTable = getTableFromContent( content );
+		let pastedTable = getTableFromContent( content );
 
-		if ( !insertedTable ) {
+		if ( !pastedTable ) {
 			return;
 		}
 
@@ -141,12 +141,12 @@ export default class TableClipboard extends Plugin {
 		const selectionHeight = lastRowOfSelection - firstRowOfSelection + 1;
 		const selectionWidth = lastColumnOfSelection - firstColumnOfSelection + 1;
 
-		const insertHeight = tableUtils.getRows( insertedTable );
-		const insertWidth = tableUtils.getColumns( insertedTable );
+		const pasteHeight = tableUtils.getRows( pastedTable );
+		const pasteWidth = tableUtils.getColumns( pastedTable );
 
 		// The if below is temporal and will be removed when handling this case.
 		// See: https://github.com/ckeditor/ckeditor5/issues/6769.
-		if ( selectionHeight > insertHeight || selectionWidth > insertWidth ) {
+		if ( selectionHeight > pasteHeight || selectionWidth > pasteWidth ) {
 			// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Pasted table is smaller than selection area.' );
 
 			return;
@@ -156,17 +156,17 @@ export default class TableClipboard extends Plugin {
 
 		model.change( writer => {
 			// Crop pasted table if it extends selection area.
-			if ( selectionHeight < insertHeight || selectionWidth < insertWidth ) {
-				insertedTable = cropTableToDimensions( insertedTable, 0, 0, selectionHeight - 1, selectionWidth - 1, tableUtils, writer );
+			if ( selectionHeight < pasteHeight || selectionWidth < pasteWidth ) {
+				pastedTable = cropTableToDimensions( pastedTable, 0, 0, selectionHeight - 1, selectionWidth - 1, tableUtils, writer );
 			}
 
-			// Stores cells as a map of inserted table cell as 'row * column' index.
-			const pastedTableMap = createLocationMap( insertedTable, selectionWidth, selectionHeight );
+			// Stores cells as a map of pasted table cell as 'row * column' index.
+			const pastedTableMap = createLocationMap( pastedTable, selectionWidth, selectionHeight );
 
-			// Content table to which we insert a table.
-			const contentTable = findAncestor( 'table', selectedTableCells[ 0 ] );
+			// Content table to which we insert a pasted table.
+			const selectedTable = findAncestor( 'table', selectedTableCells[ 0 ] );
 
-			const tableMap = [ ...new TableWalker( contentTable, {
+			const tableMap = [ ...new TableWalker( selectedTable, {
 				startRow: firstRowOfSelection,
 				endRow: lastRowOfSelection,
 				includeSpanned: true
@@ -175,7 +175,7 @@ export default class TableClipboard extends Plugin {
 			// Selection must be set to pasted cells (some might be removed or new created).
 			const cellsToSelect = [];
 
-			// Store previous cell in order to insert a new table cells after it if required.
+			// Store previous cell in order to insert a new table cells after it (if required).
 			let previousCellInRow;
 
 			// Content table replace cells algorithm iterates over a selected table fragment and:
@@ -207,7 +207,7 @@ export default class TableClipboard extends Plugin {
 					writer.remove( cell );
 				}
 
-				// Map current table slot location to an inserted table slot location.
+				// Map current table slot location to an pasted table slot location.
 				const pastedCell = pastedTableMap[ row - firstRowOfSelection ][ column - firstColumnOfSelection ];
 
 				// There is no cell to insert (might be spanned by other cell in a pasted table) - advance to the next content table slot.
@@ -222,7 +222,7 @@ export default class TableClipboard extends Plugin {
 				let insertPosition;
 
 				if ( !previousCellInRow ) {
-					insertPosition = writer.createPositionAt( contentTable.getChild( row ), 0 );
+					insertPosition = writer.createPositionAt( selectedTable.getChild( row ), 0 );
 				} else {
 					insertPosition = writer.createPositionAfter( previousCellInRow );
 				}
