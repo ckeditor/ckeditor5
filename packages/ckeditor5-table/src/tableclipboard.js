@@ -165,7 +165,7 @@ export default class TableClipboard extends Plugin {
 			// Content table to which we insert a pasted table.
 			const selectedTable = findAncestor( 'table', selectedTableCells[ 0 ] );
 
-			const tableMap = [ ...new TableWalker( selectedTable, {
+			const selectedTableMap = [ ...new TableWalker( selectedTable, {
 				startRow: firstRowOfSelection,
 				endRow: lastRowOfSelection,
 				includeSpanned: true
@@ -183,7 +183,7 @@ export default class TableClipboard extends Plugin {
 			// - Inserts cell from a pasted table for a matched slots.
 			//
 			// This ensures proper table geometry after the paste
-			for ( const { row, column, cell, isSpanned } of tableMap ) {
+			for ( const { row, column, cell, isSpanned } of selectedTableMap ) {
 				if ( column === 0 ) {
 					previousCellInRow = null;
 				}
