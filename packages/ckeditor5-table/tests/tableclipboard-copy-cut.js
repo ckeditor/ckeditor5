@@ -175,7 +175,7 @@ describe( 'table clipboard', () => {
 
 		it( 'should prepend spanned columns with empty cells (outside cell with rowspan)', () => {
 			setModelData( model, modelTable( [
-				[ '00[]', { contents: '01', rowspan: 2 }, '02' ],
+				[ '00', { contents: '01', rowspan: 2 }, '02' ],
 				[ '10', '12' ],
 				[ '20', '21', '22' ]
 			] ) );
@@ -239,7 +239,7 @@ describe( 'table clipboard', () => {
 				[ '31', '&nbsp;', '33', '&nbsp;', '&nbsp;', '37', '37' ],
 				[ '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '&nbsp;', '47', '47' ],
 				[ '51', '52', '53', '&nbsp;', '&nbsp;', { contents: '57', rowspan: 3 }, '57' ],
-				[ { contents: '61', colspan: 3 }, '&nbsp;', '&nbsp;', '&nbsp;', '67' ],
+				[ { contents: '61', colspan: 3 }, '&nbsp;', '&nbsp;', '67' ],
 				[ '71', '72', '73', '74', '75', '77' ]
 			] ) );
 		} );
