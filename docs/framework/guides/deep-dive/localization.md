@@ -84,7 +84,6 @@ This example shows how to create a localizable user interface of a plugin.
 ```js
 // ...
 editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
-	const command = editor.commands.get( 'insertSmilingFaceEmoji' );
 	const buttonView = new ButtonView( locale );
 
 	// The translation function.
@@ -117,14 +116,10 @@ For better accessibility support, do not forget about making `aria` attributes l
 
 ```js
 editingView.change( writer => {
-	const editingView = this._editingView;
 	const t = this.t;
+	const viewRoot = editingView.document.getRoot( this.name );
 
-	editingView.change( writer => {
-		const viewRoot = editingView.document.getRoot( this.name );
-
-		writer.setAttribute( 'aria-label', t( 'Rich Text Editor, %0', [ this.name ] ), viewRoot );
-	} );
+	writer.setAttribute( 'aria-label', t( 'Rich Text Editor, %0', [ this.name ] ), viewRoot );
 } );
 ```
 
