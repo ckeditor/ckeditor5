@@ -190,29 +190,27 @@ export default class TableClipboard extends Plugin {
 
 				// Map current table location to inserted table location.
 				const cellLocationToInsert = `${ row - firstRowOfSelection }x${ column - firstColumnOfSelection }`;
-				const cellToInsert = insertionMap.get( cellLocationToInsert );
+				const pastedCell = insertionMap.get( cellLocationToInsert );
 
 				// There is no cell to insert (might be spanned by other cell in a pasted table) so...
-				if ( !cellToInsert ) {
+				if ( !pastedCell ) {
 					// ...if the cell is anchored in current location (not-spanned slot) then remove that cell from content table...
 					if ( !isSpanned ) {
-						writer.remove( writer.createRangeOn( cell ) );
+						writer.remove( cell );
 					}
 
 					// ...and advance to next content table slot.
 					continue;
 				}
 
-				let targetCell = cell;
-
 				// Remove cells from anchor slots (not spanned by other cells).
 				if ( !isSpanned ) {
-					writer.remove( writer.createRangeOn( cell ) );
+					writer.remove( cell );
 				}
 
 				// Clone cell to insert (to duplicate its attributes and children).
 				// Cloning is required to support repeating pasted table content when inserting to a bigger selection.
-				targetCell = cellToInsert._clone( true );
+				const cellToInsert = pastedCell._clone( true );
 
 				let insertPosition;
 
@@ -222,9 +220,9 @@ export default class TableClipboard extends Plugin {
 					insertPosition = writer.createPositionAfter( previousCellInRow );
 				}
 
-				writer.insert( targetCell, insertPosition );
-				cellsToSelect.push( targetCell );
-				previousCellInRow = targetCell;
+				writer.insert( cellToInsert, insertPosition );
+				cellsToSelect.push( cellToInsert );
+				previousCellInRow = cellToInsert;
 			}
 
 			writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
