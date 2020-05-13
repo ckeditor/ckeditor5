@@ -207,7 +207,7 @@ Object.assign( window.CKEDITOR_TRANSLATIONS[ 'pl' ].dictionary, {
 } );
 ```
 
-If you add a new language, remember to set the `getPluralForm` function which should return a number (or a Boolean for languages with simple plural rules like English) that indicates which form should be used for which value.
+If you add a new language, remember to set the `getPluralForm` function which should return a number (or a Boolean for languages with simple plural rules like English) that indicates which form should be used for the given value.
 
 ### Creating `.po` files
 
