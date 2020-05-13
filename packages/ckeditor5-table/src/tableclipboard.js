@@ -154,11 +154,11 @@ export default class TableClipboard extends Plugin {
 				insertedTable = cropTableToDimensions( insertedTable, 0, 0, selectionHeight - 1, selectionWidth - 1, tableUtils, writer );
 			}
 
-			// Stores cells anchors map of inserted table cell as '"row"x"column"' index.
-			const insertionMap = new Map();
+			// Stores cells as a map of inserted table cell as 'row * column' index.
+			const insertionMap = new Array( selectionHeight * selectionWidth ).fill( null );
 
 			for ( const { column, row, cell } of new TableWalker( insertedTable ) ) {
-				insertionMap.set( `${ row }x${ column }`, cell );
+				insertionMap[ row * insertWidth + column ] = cell;
 			}
 
 			// Content table to which we insert a table.
@@ -189,8 +189,8 @@ export default class TableClipboard extends Plugin {
 				}
 
 				// Map current table location to inserted table location.
-				const cellLocationToInsert = `${ row - firstRowOfSelection }x${ column - firstColumnOfSelection }`;
-				const pastedCell = insertionMap.get( cellLocationToInsert );
+				const cellLocationToInsert = ( row - firstRowOfSelection ) * insertWidth + ( column - firstColumnOfSelection );
+				const pastedCell = insertionMap[ cellLocationToInsert ];
 
 				// There is no cell to insert (might be spanned by other cell in a pasted table) so...
 				if ( !pastedCell ) {
