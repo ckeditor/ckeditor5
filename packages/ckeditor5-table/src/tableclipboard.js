@@ -167,6 +167,7 @@ export default class TableClipboard extends Plugin {
 				pastedTable = cropTableToDimensions( pastedTable, cropDimensions, writer, tableUtils );
 			}
 
+			// Holds two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
 			const pastedTableLocationMap = createLocationMap( pastedTable, selectionWidth, selectionHeight );
 
 			// Content table to which we insert a pasted table.
