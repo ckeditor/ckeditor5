@@ -191,7 +191,10 @@ export default class TableClipboard extends Plugin {
 
 				// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
 				if ( column < firstColumnOfSelection || column > lastColumnOfSelection ) {
-					previousCellInRow = cell;
+					// Only update the previousCellInRow for non-spanned slots.
+					if ( !isSpanned ) {
+						previousCellInRow = cell;
+					}
 
 					continue;
 				}

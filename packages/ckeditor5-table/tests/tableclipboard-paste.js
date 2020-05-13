@@ -666,6 +666,120 @@ describe( 'table clipboard', () => {
 					] );
 				} );
 
+				it( 'handles pasting simple table over a table with rowspan (rowspan before selection)', () => {
+					// +----+----+----+----+----+
+					// | 00 | 01 | 02 | 03 | 04 |
+					// +----+----+----+----+----+
+					// | 10 | 11 | 12 | 13 | 14 |
+					// +----+    +----+----+----+
+					// | 20 |    | 22 | 23 | 24 |
+					// +----+    +----+----+----+
+					// | 30 |    | 32 | 33 | 34 |
+					// +----+----+----+----+----+
+					// | 40 | 41 | 42 | 43 | 44 |
+					// +----+----+----+----+----+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02', '03', '04' ],
+						[ '10', { contents: '11', rowspan: 3 }, '12', '13', '14' ],
+						[ '20', '22', '23', '24' ],
+						[ '30', '32', '33', '34' ],
+						[ '40', '41', '42', '43', '44' ]
+					] ) );
+
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 2 ] ),
+						modelRoot.getNodeByPath( [ 0, 3, 2 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ],
+						[ 'ca', 'cb' ]
+					] );
+
+					// +----+----+----+----+----+
+					// | 00 | 01 | 02 | 03 | 04 |
+					// +----+----+----+----+----+
+					// | 10 | 11 | aa | ab | 14 |
+					// +----+    +----+----+----+
+					// | 20 |    | ba | bb | 24 |
+					// +----+    +----+----+----+
+					// | 30 |    | ca | cb | 34 |
+					// +----+----+----+----+----+
+					// | 40 | 41 | 42 | 43 | 44 |
+					// +----+----+----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '03', '04' ],
+						[ '10', { contents: '11', rowspan: 3 }, 'aa', 'ab', '14' ],
+						[ '20', 'ba', 'bb', '24' ],
+						[ '30', 'ca', 'cb', '34' ],
+						[ '40', '41', '42', '43', '44' ]
+					] ) );
+
+					/* eslint-disable no-multi-spaces */
+					assertSelectedCells( model, [
+						[ 0, 0, 0, 0, 0 ],
+						[ 0, 0, 1, 1, 0 ],
+						[ 0,    1, 1, 0 ],
+						[ 0,    1, 1, 0 ],
+						[ 0, 0, 0, 0, 0 ]
+					] );
+					/* eslint-enable no-multi-spaces */
+				} );
+
+				it( 'handles pasting simple table over a table with rowspans (rowspan before selection)', () => {
+					// +----+----+----+----+----+----+
+					// | 00 | 01 | 02 | 03 | 04 | 05 |
+					// +----+----+----+----+----+----+
+					// | 10      | 12 | 13 | 14 | 15 |
+					// +----+----+----+----+----+----+
+					// | 20           | 23 | 24 | 25 |
+					// +----+----+----+----+----+----+
+					// | 30 | 31 | 32 | 33 | 34 | 35 |
+					// +----+----+----+----+----+----+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02', '03', '04', '05' ],
+						[ { contents: '10', colspan: 2 }, '12', '13', '14', '15' ],
+						[ { contents: '20', colspan: 3 }, '23', '24', '25' ],
+						[ '30', '31', '32', '33', '34', '35' ]
+					] ) );
+
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 2 ] ),
+						modelRoot.getNodeByPath( [ 0, 2, 2 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					// +----+----+----+----+----+----+
+					// | 00 | 01 | 02 | 03 | 04 | 05 |
+					// +----+----+----+----+----+----+
+					// | 10      | 12 | aa | ab | 15 |
+					// +----+----+----+----+----+----+
+					// | 20           | ba | bb | 25 |
+					// +----+----+----+----+----+----+
+					// | 30 | 31 | 32 | 33 | 34 | 35 |
+					// +----+----+----+----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '03', '04', '05' ],
+						[ { contents: '10', colspan: 2 }, '12', 'aa', 'ab', '15' ],
+						[ { contents: '20', colspan: 3 }, 'ba', 'bb', '25' ],
+						[ '30', '31', '32', '33', '34', '35' ]
+					] ) );
+
+					/* eslint-disable no-multi-spaces */
+					assertSelectedCells( model, [
+						[ 0, 0, 0, 0, 0, 0 ],
+						[ 0,    0, 1, 1, 0 ],
+						[ 0,       1, 1, 0 ],
+						[ 0, 0, 0, 0, 0, 0 ]
+					] );
+					/* eslint-enable no-multi-spaces */
+				} );
+
 				// TODO: Skipped case - should allow pasting but no tools to compare areas (like in MergeCellsCommand).
 				it.skip( 'handles pasting table that has cell with colspan (last row in selection is spanned)', () => {
 					// +----+----+----+----+
