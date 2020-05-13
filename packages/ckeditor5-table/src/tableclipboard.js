@@ -167,7 +167,7 @@ export default class TableClipboard extends Plugin {
 				pastedTable = cropTableToDimensions( pastedTable, cropDimensions, writer, tableUtils );
 			}
 
-			const pastedTableMap = createLocationMap( pastedTable, selectionWidth, selectionHeight );
+			const pastedTableLocationMap = createLocationMap( pastedTable, selectionWidth, selectionHeight );
 
 			// Content table to which we insert a pasted table.
 			const selectedTable = findAncestor( 'table', selectedTableCells[ 0 ] );
@@ -214,7 +214,7 @@ export default class TableClipboard extends Plugin {
 				}
 
 				// Map current table slot location to an pasted table slot location.
-				const pastedCell = pastedTableMap[ row - firstRowOfSelection ][ column - firstColumnOfSelection ];
+				const pastedCell = pastedTableLocationMap[ row - firstRowOfSelection ][ column - firstColumnOfSelection ];
 
 				// There is no cell to insert (might be spanned by other cell in a pasted table) - advance to the next content table slot.
 				if ( !pastedCell ) {
