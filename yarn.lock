@@ -827,7 +827,7 @@
     request "^2.83.0"
     semver "^6.2.0"
 
-"@ckeditor/ckeditor5-dev-tests@^19.0.0":
+"@ckeditor/ckeditor5-dev-tests@^19.1.0":
   version "19.1.0"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-19.1.0.tgz#0ab130a89c7e9c3c37a87ee4e138db096c9021ae"
   integrity sha512-J/M58BefbA2GuYtj6U/gZVqNKbvh1YWZeyEeEmPFOeiVhudLry54XgRgw5wtZTLXjXabl37RilLZ/URXifXSFQ==
