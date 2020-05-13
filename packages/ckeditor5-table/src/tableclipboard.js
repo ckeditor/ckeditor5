@@ -178,7 +178,7 @@ export default class TableClipboard extends Plugin {
 				includeSpanned: true
 			} ) ];
 
-			for ( const { column, row, cell, isSpanned } of tableMap ) {
+			for ( const { row, column, cell, isSpanned } of tableMap ) {
 				if ( column === 0 ) {
 					previousCellInRow = null;
 				}
@@ -190,23 +190,20 @@ export default class TableClipboard extends Plugin {
 					continue;
 				}
 
-				// Map current table location to inserted table location.
-				const pastedCell = pastedTableMap[ row - firstRowOfSelection ][ column - firstColumnOfSelection ];
-
-				// There is no cell to insert (might be spanned by other cell in a pasted table) so...
-				if ( !pastedCell ) {
-					// ...if the cell is anchored in current location (not-spanned slot) then remove that cell from content table...
-					if ( !isSpanned ) {
-						writer.remove( cell );
-					}
-
-					// ...and advance to next content table slot.
-					continue;
-				}
-
-				// Remove cells from anchor slots (not spanned by other cells).
+				// If the slot is occupied by a cell in a selected table - remove it.
+				// The slot of this cell will be either:
+				// - Replaced by a pasted table cell.
+				// - Spanned by a previously pasted table cell.
 				if ( !isSpanned ) {
 					writer.remove( cell );
+				}
+
+				// Map current table slot location to an inserted table slot location.
+				const pastedCell = pastedTableMap[ row - firstRowOfSelection ][ column - firstColumnOfSelection ];
+
+				// There is no cell to insert (might be spanned by other cell in a pasted table) - advance to the next content table slot.
+				if ( !pastedCell ) {
+					continue;
 				}
 
 				// Clone cell to insert (to duplicate its attributes and children).

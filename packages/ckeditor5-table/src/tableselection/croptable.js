@@ -55,6 +55,7 @@ export function cropTableToDimensions( sourceTable, startRow, startColumn, endRo
 	// Iterate over source table slots (including empty - spanned - ones).
 	for ( const { row: sourceRow, column: sourceColumn, cell: tableCell, isSpanned } of tableMap ) {
 		// Skip slots outside the cropped area.
+		// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
 		if ( sourceColumn < startColumn || sourceColumn > endColumn ) {
 			continue;
 		}
