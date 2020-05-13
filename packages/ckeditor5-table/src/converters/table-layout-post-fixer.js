@@ -271,6 +271,8 @@ function fixTableCellsRowspan( table, writer ) {
 	const cellsToTrim = findCellsToTrim( table );
 
 	if ( cellsToTrim.length ) {
+		// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: trimming cells row-spans (${ cellsToTrim.length }).` );
+
 		wasFixed = true;
 
 		for ( const data of cellsToTrim ) {
@@ -290,14 +292,38 @@ function fixTableRowsSizes( table, writer ) {
 	let wasFixed = false;
 
 	const rowsLengths = getRowsLengths( table );
-	const tableSize = rowsLengths[ 0 ];
+	const rowsToRemove = [];
 
-	const isValid = Object.values( rowsLengths ).every( length => length === tableSize );
+	// Find empty rows.
+	for ( const [ rowIndex, size ] of rowsLengths.entries() ) {
+		if ( !size ) {
+			rowsToRemove.push( rowIndex );
+		}
+	}
+
+	// Remove empty rows.
+	if ( rowsToRemove.length ) {
+		// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: remove empty rows (${ rowsToRemove.length }).` );
+
+		wasFixed = true;
+
+		for ( const rowIndex of rowsToRemove.reverse() ) {
+			writer.remove( table.getChild( rowIndex ) );
+			rowsLengths.splice( rowIndex, 1 );
+		}
+	}
+
+	// Verify if all the rows have the same number of columns.
+	const tableSize = rowsLengths[ 0 ];
+	const isValid = rowsLengths.every( length => length === tableSize );
 
 	if ( !isValid ) {
-		const maxColumns = Object.values( rowsLengths ).reduce( ( prev, current ) => current > prev ? current : prev, 0 );
+		// @if CK_DEBUG_TABLE // console.log( 'Post-fixing table: adding missing cells.' );
 
-		for ( const [ rowIndex, size ] of Object.entries( rowsLengths ) ) {
+		// Find the maximum number of columns.
+		const maxColumns = rowsLengths.reduce( ( prev, current ) => current > prev ? current : prev, 0 );
+
+		for ( const [ rowIndex, size ] of rowsLengths.entries() ) {
 			const columnsToInsert = maxColumns - size;
 
 			if ( columnsToInsert ) {
@@ -346,19 +372,16 @@ function findCellsToTrim( table ) {
 	return cellsToTrim;
 }
 
-// Returns an object with lengths of rows assigned to the corresponding row index.
+// Returns an array with lengths of rows assigned to the corresponding row index.
 //
 // @param {module:engine/model/element~Element} table
-// @returns {Object}
+// @returns {Array.<Number>}
 function getRowsLengths( table ) {
-	const lengths = {};
+	// TableWalker will not provide items for the empty rows, we need to pre-fill this array.
+	const lengths = new Array( table.childCount ).fill( 0 );
 
 	for ( const { row } of new TableWalker( table, { includeSpanned: true } ) ) {
-		if ( !lengths[ row ] ) {
-			lengths[ row ] = 0;
-		}
-
-		lengths[ row ] += 1;
+		lengths[ row ]++;
 	}
 
 	return lengths;
