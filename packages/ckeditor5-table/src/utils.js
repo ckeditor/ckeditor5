@@ -203,8 +203,8 @@ export function getColumnIndexes( tableCells ) {
  *   - f, g, h (cell "d" spans over a cell from the row of "f" cell - thus creates a gap)
  *
  * @param {Array.<module:engine/model/element~Element>} selectedTableCells
- * @param {module:table/tableUtils~TableUtils} tableUtils
- * @returns {boolean}
+ * @param {module:table/tableutils~TableUtils} tableUtils
+ * @returns {Boolean}
  */
 export function isSelectionRectangular( selectedTableCells, tableUtils ) {
 	if ( selectedTableCells.length < 2 || !areCellInTheSameTableSection( selectedTableCells ) ) {
