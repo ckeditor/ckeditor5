@@ -29,7 +29,8 @@ export default class MergeCellsCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = isSelectionRectangular( this.editor.model.document.selection, this.editor.plugins.get( TableUtils ) );
+		const selectedTableCells = getSelectedTableCells( this.editor.model.document.selection );
+		this.isEnabled = isSelectionRectangular( selectedTableCells, this.editor.plugins.get( TableUtils ) );
 	}
 
 	/**

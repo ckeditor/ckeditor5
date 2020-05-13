@@ -129,7 +129,7 @@ export default class TableClipboard extends Plugin {
 
 		// Currently not handled. The selected table content should be trimmed to a rectangular selection.
 		// See: https://github.com/ckeditor/ckeditor5/issues/6122.
-		if ( !isSelectionRectangular( this.editor.model.document.selection, tableUtils ) ) {
+		if ( !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
 			// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Selection is not rectangular (non-mergeable).' );
 
 			return;

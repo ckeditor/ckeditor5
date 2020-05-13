@@ -179,34 +179,34 @@ export function getColumnIndexes( tableCells ) {
 	return getFirstLastIndexesObject( indexes );
 }
 
-// Checks if the selection contains cells that do not exceed rectangular selection.
-//
-// In a table below:
-//
-//   ┌───┬───┬───┬───┐
-//   │ a │ b │ c │ d │
-//   ├───┴───┼───┤   │
-//   │ e     │ f │   │
-//   ├       ├───┼───┤
-//   │       │ g │ h │
-//   └───────┴───┴───┘
-//
-// Valid selections are these which create a solid rectangle (without gaps), such as:
-//   - a, b (two horizontal cells)
-//   - c, f (two vertical cells)
-//   - a, b, e (cell "e" spans over four cells)
-//   - c, d, f (cell d spans over a cell in the row below)
-//
-// While an invalid selection would be:
-//   - a, c (the unselected cell "b" creates a gap)
-//   - f, g, h (cell "d" spans over a cell from the row of "f" cell - thus creates a gap)
-//
-// @param {module:engine/model/selection~Selection} selection
-// @param {module:table/tableUtils~TableUtils} tableUtils
-// @returns {boolean}
-export function isSelectionRectangular( selection, tableUtils ) {
-	const selectedTableCells = getSelectedTableCells( selection );
-
+/**
+ * Checks if the selection contains cells that do not exceed rectangular selection.
+ *
+ * In a table below:
+ *
+ *   ┌───┬───┬───┬───┐
+ *   │ a │ b │ c │ d │
+ *   ├───┴───┼───┤   │
+ *   │ e     │ f │   │
+ *   ├       ├───┼───┤
+ *   │       │ g │ h │
+ *   └───────┴───┴───┘
+ *
+ * Valid selections are these which create a solid rectangle (without gaps), such as:
+ *   - a, b (two horizontal cells)
+ *   - c, f (two vertical cells)
+ *   - a, b, e (cell "e" spans over four cells)
+ *   - c, d, f (cell d spans over a cell in the row below)
+ *
+ * While an invalid selection would be:
+ *   - a, c (the unselected cell "b" creates a gap)
+ *   - f, g, h (cell "d" spans over a cell from the row of "f" cell - thus creates a gap)
+ *
+ * @param {Array.<module:engine/model/element~Element>} selectedTableCells
+ * @param {module:table/tableUtils~TableUtils} tableUtils
+ * @returns {boolean}
+ */
+export function isSelectionRectangular( selectedTableCells, tableUtils ) {
 	if ( selectedTableCells.length < 2 || !areCellInTheSameTableSection( selectedTableCells ) ) {
 		return false;
 	}
