@@ -79,7 +79,7 @@ t( { string: '%1 %0 emoji', plural: '%1 %0 emojis', id: 'INSERT_EMOJIS' }, [ qua
 
 ### Example: Localizing the plugin UI
 
-This example shows how to create a localizable user interface of a plugin.
+This example shows how to create a localizable user interface of a plugin. Let's create a button that will insert smiling face emoji. The button will have a localizable tooltip.
 
 ```js
 // ...
@@ -107,7 +107,7 @@ editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 ```
 
 <info-box warning>
-	Note that this code sample lacks a few parts. See {@link framework/guides/creating-simple-plugin how to create a complete plugin} to have a better understanding about creating CKEditor 5 plugins.
+	See {@link framework/guides/creating-simple-plugin how to create a complete plugin} to have a better understanding about creating CKEditor 5 plugins.
 </info-box>
 
 ### Example: Localizing pending actions
