@@ -391,7 +391,7 @@ export function centeredBalloonPositionForLongWidgets( widgetRect, balloonRect )
 	// like, for instance, "south west" or whatever. Just try to keep the balloon in the middle of the visible area of
 	// the widget for as long as it is possible. If the widgets becomes invisible (because cropped by the viewport),
 	// just... place the balloon in the middle of it (because why not?).
-	const targetRect = viewportWidgetInsersectionRect.width > 0 ? viewportWidgetInsersectionRect : widgetRect;
+	const targetRect = viewportWidgetInsersectionRect || widgetRect;
 	const left = targetRect.left + targetRect.width / 2 - balloonRect.width / 2;
 
 	// Case (C).
