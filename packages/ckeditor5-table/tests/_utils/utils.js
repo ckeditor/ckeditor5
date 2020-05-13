@@ -500,6 +500,10 @@ function getClassToSet( attributes ) {
 export function createTableAsciiArt( model, table ) {
 	const tableMap = [ ...new TableWalker( table, { includeSpanned: true } ) ];
 
+	if ( !tableMap.length ) {
+		return '';
+	}
+
 	const { row: lastRow, column: lastColumn } = tableMap[ tableMap.length - 1 ];
 	const columns = lastColumn + 1;
 
