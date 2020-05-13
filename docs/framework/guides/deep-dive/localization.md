@@ -49,6 +49,10 @@ As the first argument, the `t()` function accepts either a string literal or an 
 
 As the second argument, the translation function accepts a value or an array of values. These values will be used to fill the placeholders in more advanced translation scenarios. If the `plural` property is specified, the first value will be used as the quantity determining the plural form.
 
+<info-box warning>
+	Note that the `t()` function should not be used as a method of the `Locale` class because during the translation process a static code analyzer catches *localizable messages* only from function forms. For the same reason its first argument accepts only a string literal or an object literal. `Locale#t()` method calls and incompatible expressions passed to the `t()` calls will produce build-time warnings.
+</info-box>
+
 When using the `t()` function, you can create your own *localizable messages* or reuse *messages* created in CKEditor 5 packages that your project depends on. In case of reusing *messages*, you will not need to worry about translating them as all work will be done by the CKEditor 5 team and [Transifex translators](https://www.transifex.com/ckeditor/ckeditor5/). Obviously, your help in translating will still be appreciated!
 
 For simple *localizable messages*, use the string form for simplicity:
@@ -72,10 +76,6 @@ t( { string: '%0 emoji', id: 'INSERT_EMOJI' }, 'insert' ); // "insert emoji"
 t( { string: '%0 emoji', plural: '%0 emojis', id: 'EMOJI' }, quantity ); // "3 emojis"
 t( { string: '%1 %0 emoji', plural: '%1 %0 emojis', id: 'INSERT_EMOJIS' }, [ quantity, 'Insert' ] ); // "Insert 3 emojis"
 ```
-
-<info-box warning>
-	Note that the `t()` function should not be used as a method of the `Locale` class because during the translation process a static code analyzer catches *localizable messages* only from function forms. For the same reason its first argument accepts only a string literal or an object literal. `Locale#t()` method calls and incompatible expressions passed to the `t()` calls will produce build-time warnings.
-</info-box>
 
 ### Example: Localizing the plugin UI
 
