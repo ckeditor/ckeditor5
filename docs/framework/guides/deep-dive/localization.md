@@ -184,7 +184,8 @@ Check an example below that demonstrates a part of the `window.CKEDITOR_TRANSLAT
 		},
 
 		// A function that returns the plural form index for the given language.
-		// getPluralForm: n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2
+		// Note that you only need to pass this function when you add translations for new language.
+		getPluralForm: n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2
 	}
 	// Other languages...
 }
