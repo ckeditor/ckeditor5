@@ -99,7 +99,7 @@ export default class TableSelection extends Plugin {
 
 		return this.editor.model.change( writer => {
 			const documentFragment = writer.createDocumentFragment();
-			const table = cropTableToSelection( selectedCells, this.editor.plugins.get( 'TableUtils' ), writer );
+			const table = cropTableToSelection( selectedCells, writer, this.editor.plugins.get( 'TableUtils' ) );
 
 			writer.insert( table, documentFragment, 0 );
 

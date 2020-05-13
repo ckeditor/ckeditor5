@@ -116,11 +116,11 @@ export function cropTableToDimensions( sourceTable, cropDimensions, writer, tabl
  * **Note**: This function is also used by {@link module:table/tableselection~TableSelection#getSelectionAsFragment}.
  *
  * @param {Iterable.<module:engine/model/element~Element>} selectedTableCellsIterator
- * @param {module:table/tableutils~TableUtils} tableUtils
  * @param {module:engine/model/writer~Writer} writer
+ * @param {module:table/tableutils~TableUtils} tableUtils
  * @returns {module:engine/model/element~Element}
  */
-export function cropTableToSelection( selectedTableCellsIterator, tableUtils, writer ) {
+export function cropTableToSelection( selectedTableCellsIterator, writer, tableUtils ) {
 	const selectedTableCells = Array.from( selectedTableCellsIterator );
 
 	const { first: startColumn, last: endColumn } = getColumnIndexes( selectedTableCells );
