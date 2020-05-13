@@ -353,7 +353,7 @@ export function viewToModelPositionOutsideModelElement( model, viewElementMatche
  *	                                                                            ┌─┄┄┄┄┄┄┄┄Widget┄┄┄┄┄┄┄┄┄┄┐
  *	                                                                            ┊                         ┊
  *	                                        ┌─┄┄┄┄┄┄┄┄┄Widget┄┄┄┄┄┄┄┄┄┐         ┊                         ┊
- *                                          ┊                         ┊         ┊                         ┊
+ *	                                        ┊                         ┊         ┊                         ┊
  *	 ┌────────────Viewport───────────┐   ┌──╁─────────Viewport────────╁──┐   ┌──╁────────Viewport─────────╁──┐
  *	 │  ┏━━━━━━━━━━Widget━━━━━━━━━┓  │   │  ┃            ^            ┃  │   │  ┃                         ┃  │
  *	 │  ┃            ^            ┃  │   │  ┃   ╭───────/ \───────╮   ┃  │   │  ┃                         ┃  │
