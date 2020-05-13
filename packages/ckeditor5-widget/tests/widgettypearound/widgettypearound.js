@@ -110,7 +110,7 @@ describe( 'WidgetTypeAround', () => {
 			expect( lastViewWidget.getChild( 1 ).hasClass( 'ck-widget__type-around' ) ).to.be.true;
 		} );
 
-		it( 'should not be injected the UI in inline widgets', () => {
+		it( 'should not be injected in inline widgets', () => {
 			setModelData( editor.model,
 				'<paragraph>foo<inlineWidget></inlineWidget></paragraph>' +
 				'<paragraph><inlineWidget></inlineWidget>bar</paragraph>'
