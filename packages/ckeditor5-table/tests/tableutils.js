@@ -1368,6 +1368,20 @@ describe( 'TableUtils', () => {
 					[ '21', '22' ]
 				] ) );
 			} );
+
+			it( 'should remove the column properly when multiple rows should be removed (because of to row-spans)', () => {
+				setData( model, modelTable( [
+					[ '00', { contents: '01', rowspan: 3 }, { contents: '02', rowspan: 3 } ],
+					[ '10' ],
+					[ '20' ]
+				] ) );
+
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '01', '02' ]
+				] ) );
+			} );
 		} );
 
 		describe( 'multiple columns', () => {

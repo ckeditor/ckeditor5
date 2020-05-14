@@ -358,6 +358,8 @@ export default class TableUtils extends Plugin {
 		model.change( writer => {
 			adjustHeadingColumns( table, { first, last }, writer );
 
+			const emptyRowsIndexes = [];
+
 			for ( let removedColumnIndex = last; removedColumnIndex >= first; removedColumnIndex-- ) {
 				for ( const { cell, column, colspan } of [ ...new TableWalker( table ) ] ) {
 					// If colspaned cell overlaps removed column decrease its span.
@@ -372,11 +374,13 @@ export default class TableUtils extends Plugin {
 						// If the cell was the last one in the row, get rid of the entire row.
 						// https://github.com/ckeditor/ckeditor5/issues/6429
 						if ( !cellRow.childCount ) {
-							this.removeRows( table, { at: cellRow.index } );
+							emptyRowsIndexes.push( cellRow.index );
 						}
 					}
 				}
 			}
+
+			emptyRowsIndexes.reverse().forEach( row => this.removeRows( table, { at: row, batch: writer.batch } ) );
 		} );
 	}
 
