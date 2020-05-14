@@ -32,7 +32,7 @@ let CACHED_RETURN_ARROW_ICON;
  * to limitations of web browsers. These "tight spots" occur, for instance, before (or after) a widget being
  * the first (or last) child of its parent or between two block widgets.
  *
- * This plugin extends the {@link module:widget/widget~Widget `Widget`} plugin and inject a user interface
+ * This plugin extends the {@link module:widget/widget~Widget `Widget`} plugin and injects a user interface
  * with two buttons into each widget instance in the editor. Each of the buttons can be clicked by the
  * user if the widget is next to the "tight spot". Once clicked, a paragraph is created with the selection anchored
  * in it so that users can type (or insert content, paste, etc.) straight away.
