@@ -60,6 +60,32 @@ export default class WidgetTypeAround extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		/**
+		 * A set containing all widgets in all editor roots that have the type around UI injected in
+		 * {@link #_enableTypeAroundUIInjection}.
+		 *
+		 * Keeping track of them saves time, for instance, when updating their CSS classes.
+		 *
+		 * @private
+		 * @readonly
+		 * @member {Set} #_widgetsWithTypeAroundUI
+		 */
+		this._widgetsWithTypeAroundUI = new Set();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		this._widgetsWithTypeAroundUI.clear();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		this._enableTypeAroundUIInjection();
 		this._enableDetectionOfTypeAroundWidgets();
@@ -124,6 +150,11 @@ export default class WidgetTypeAround extends Plugin {
 			// Filter out non-widgets and inline widgets.
 			if ( isTypeAroundWidget( viewElement, data.item, schema ) ) {
 				injectUIIntoWidget( conversionApi.writer, buttonTitles, viewElement );
+
+				// Keep track of widgets that have the type around UI injected.
+				// In the #_enableDetectionOfTypeAroundWidgets() we will iterate only over these
+				// widgets instead of all children of the root. This should improve the performance.
+				this._widgetsWithTypeAroundUI.add( viewElement );
 			}
 		}, { priority: 'low' } );
 	}
@@ -137,7 +168,6 @@ export default class WidgetTypeAround extends Plugin {
 	 */
 	_enableDetectionOfTypeAroundWidgets() {
 		const editor = this.editor;
-		const schema = editor.model.schema;
 		const editingView = editor.editing.view;
 
 		function positionToWidgetCssClass( position ) {
@@ -145,16 +175,13 @@ export default class WidgetTypeAround extends Plugin {
 		}
 
 		editingView.document.registerPostFixer( writer => {
-			// Find all view elements in the editing root.
-			[ ...editingView.createRangeIn( editingView.document.getRoot() ) ]
-				// ...then filter only the widgets that may need the type around feature.
-				.filter( ( { item: widgetViewElement } ) => {
-					const modelElement = editor.editing.mapper.toModelElement( widgetViewElement );
-
-					return isTypeAroundWidget( widgetViewElement, modelElement, schema );
-				} )
-				// ...and update widgets' classes depending on possible positions for paragraph insertion.
-				.forEach( ( { item: widgetViewElement } ) => {
+			for ( const widgetViewElement of this._widgetsWithTypeAroundUI ) {
+				// If the widget is no longer attached to the root (for instance, because it was removed),
+				// there is no need to update its classes and we can safely forget about it.
+				if ( !widgetViewElement.isAttached() ) {
+					this._widgetsWithTypeAroundUI.delete( widgetViewElement );
+				} else {
+					// Update widgets' classes depending on possible positions for paragraph insertion.
 					const positions = getWidgetTypeAroundPositions( widgetViewElement );
 
 					// Remove all classes. In theory we could remove only these that will not be added a few lines later,
@@ -163,7 +190,8 @@ export default class WidgetTypeAround extends Plugin {
 
 					// Set CSS classes related to possible positions. They are used so the UI knows which buttons to display.
 					writer.addClass( positions.map( positionToWidgetCssClass ), widgetViewElement );
-				} );
+				}
+			}
 		} );
 	}
 
