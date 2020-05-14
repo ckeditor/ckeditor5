@@ -123,7 +123,7 @@ export default class WidgetTypeAround extends Plugin {
 
 			// Filter out non-widgets and inline widgets.
 			if ( isTypeAroundWidget( viewElement, data.item, schema ) ) {
-				injectUIIntoWidget( editor.editing.view, buttonTitles, viewElement );
+				injectUIIntoWidget( conversionApi.writer, buttonTitles, viewElement );
 			}
 		}, { priority: 'low' } );
 	}
@@ -198,24 +198,22 @@ export default class WidgetTypeAround extends Plugin {
 
 // Injects the type around UI into a view widget instance.
 //
-// @param {module:engine/view/view} editingView
+// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
 // @param {Object.<String,String>} buttonTitles
 // @param {module:engine/view/element~Element} widgetViewElement
-function injectUIIntoWidget( editingView, buttonTitles, widgetViewElement ) {
-	editingView.change( writer => {
-		const typeAroundWrapper = writer.createUIElement( 'div', {
-			class: 'ck ck-reset_all ck-widget__type-around'
-		}, function( domDocument ) {
-			const wrapperDomElement = this.toDomElement( domDocument );
+function injectUIIntoWidget( viewWriter, buttonTitles, widgetViewElement ) {
+	const typeAroundWrapper = viewWriter.createUIElement( 'div', {
+		class: 'ck ck-reset_all ck-widget__type-around'
+	}, function( domDocument ) {
+		const wrapperDomElement = this.toDomElement( domDocument );
 
-			injectButtons( wrapperDomElement, buttonTitles );
+		injectButtons( wrapperDomElement, buttonTitles );
 
-			return wrapperDomElement;
-		} );
-
-		// Inject the type around wrapper into the widget's wrapper.
-		writer.insert( writer.createPositionAt( widgetViewElement, 'end' ), typeAroundWrapper );
+		return wrapperDomElement;
 	} );
+
+	// Inject the type around wrapper into the widget's wrapper.
+	viewWriter.insert( viewWriter.createPositionAt( widgetViewElement, 'end' ), typeAroundWrapper );
 }
 
 // FYI: Not using the IconView class because each instance would need to be destroyed to avoid memory leaks
