@@ -28,7 +28,7 @@ const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ];
 let CACHED_RETURN_ARROW_ICON;
 
 /**
- * A plugin which allows users to type around widgets where normally it is impossible to place the caret due
+ * A plugin that allows users to type around widgets where normally it is impossible to place the caret due
  * to limitations of web browsers. These "tight spots" occur, for instance, before (or after) a widget being
  * the first (or last) child of its parent or between two block widgets.
  *
