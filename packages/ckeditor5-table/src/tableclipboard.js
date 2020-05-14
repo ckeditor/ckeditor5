@@ -109,7 +109,7 @@ export default class TableClipboard extends Plugin {
 		}
 
 		// We might need to crop table before inserting so reference might change.
-		let pastedTable = getTableFromContent( content );
+		let pastedTable = getTableIfOnlyTableInContent( content );
 
 		if ( !pastedTable ) {
 			return;
@@ -244,18 +244,19 @@ export default class TableClipboard extends Plugin {
 	}
 }
 
-function getTableFromContent( content ) {
+function getTableIfOnlyTableInContent( content ) {
+	// Table passed directly.
 	if ( content.is( 'table' ) ) {
 		return content;
 	}
 
-	for ( const child of content.getChildren() ) {
-		if ( child.is( 'table' ) ) {
-			return child;
-		}
+	// We do not support mixed content when pasting table into table.
+	// See: https://github.com/ckeditor/ckeditor5/issues/6817.
+	if ( content.childCount > 1 || !content.getChild( 0 ).is( 'table' ) ) {
+		return null;
 	}
 
-	return null;
+	return content.getChild( 0 );
 }
 
 // Returns two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.

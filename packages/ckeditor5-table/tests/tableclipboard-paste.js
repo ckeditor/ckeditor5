@@ -124,7 +124,85 @@ describe( 'table clipboard', () => {
 			] ) );
 		} );
 
-		it( 'should alter model.insertContent if selectable is  document selection', () => {
+		it( 'should not alter model.insertContent if mixed content is pasted (table + paragraph)', () => {
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			const table = viewTable( [
+				[ 'aa', 'ab' ],
+				[ 'ba', 'bb' ] ] );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+			data.dataTransfer.setData( 'text/html', `${ table }<p>foo</p>` );
+			viewDocument.fire( 'paste', data );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ 'foo', '', '02', '03' ],
+				[ '', '', '12', '13' ],
+				[ '20', '21', '22', '23' ],
+				[ '30', '31', '32', '33' ]
+			] ) );
+		} );
+
+		it( 'should not alter model.insertContent if mixed content is pasted (paragraph + table)', () => {
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			const table = viewTable( [
+				[ 'aa', 'ab' ],
+				[ 'ba', 'bb' ] ] );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+			data.dataTransfer.setData( 'text/html', `<p>foo</p>${ table }` );
+			viewDocument.fire( 'paste', data );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ 'foo', '', '02', '03' ],
+				[ '', '', '12', '13' ],
+				[ '20', '21', '22', '23' ],
+				[ '30', '31', '32', '33' ]
+			] ) );
+		} );
+
+		it( 'should not alter model.insertContent if mixed content is pasted (table + table)', () => {
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			const table = viewTable( [
+				[ 'aa', 'ab' ],
+				[ 'ba', 'bb' ] ] );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+			data.dataTransfer.setData( 'text/html', `${ table }${ table }` );
+			viewDocument.fire( 'paste', data );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ '', '', '02', '03' ],
+				[ '', '', '12', '13' ],
+				[ '20', '21', '22', '23' ],
+				[ '30', '31', '32', '33' ]
+			] ) );
+		} );
+
+		it( 'should alter model.insertContent if selectable is a document selection', () => {
 			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
@@ -1409,7 +1487,7 @@ describe( 'table clipboard', () => {
 	} );
 
 	describe( 'Clipboard integration - paste (content scenarios)', () => {
-		it( 'handles multiple paragraphs', async () => {
+		it( 'handles multiple paragraphs in table cell', async () => {
 			await createEditor();
 
 			setModelData( model, modelTable( [
