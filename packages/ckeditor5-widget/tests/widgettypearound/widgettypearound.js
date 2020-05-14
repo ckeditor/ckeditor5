@@ -167,7 +167,7 @@ describe( 'WidgetTypeAround', () => {
 				} );
 
 				it( 'should have a specific "title"', () => {
-					expect( buttonBefore.getAttribute( 'title' ) ).to.equal( 'Insert paragraph before widget' );
+					expect( buttonBefore.getAttribute( 'title' ) ).to.equal( 'Insert paragraph before block' );
 				} );
 
 				it( 'should execute WidgetTypeAround#_insertParagraph() when clicked', () => {
@@ -196,7 +196,7 @@ describe( 'WidgetTypeAround', () => {
 				} );
 
 				it( 'should have a specific "title"', () => {
-					expect( buttonAfter.getAttribute( 'title' ) ).to.equal( 'Insert paragraph after widget' );
+					expect( buttonAfter.getAttribute( 'title' ) ).to.equal( 'Insert paragraph after block' );
 				} );
 
 				it( 'should execute WidgetTypeAround#_insertParagraph() when clicked', () => {
