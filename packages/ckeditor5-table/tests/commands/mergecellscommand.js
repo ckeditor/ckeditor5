@@ -514,6 +514,103 @@ describe( 'MergeCellsCommand', () => {
 				] ) );
 			} );
 
+			it( 'should decrease heading rows if some heading rows were removed', () => {
+				setData( model, modelTable( [
+					[ '00' ],
+					[ '10' ],
+					[ '20' ]
+				], { headingRows: 2 } ) );
+
+				selectNodes( [
+					[ 0, 0, 0 ],
+					[ 0, 1, 0 ]
+				] );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[
+						'<paragraph>[00</paragraph><paragraph>10]</paragraph>'
+					],
+					[ '20' ]
+				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should decrease heading rows if multiple heading rows were removed', () => {
+				// +----+----+
+				// | 00 | 01 |
+				// +    +----+
+				// |    | 11 |
+				// +----+----+
+				// | 20 | 21 |
+				// +----+----+
+				// | 30 | 31 |
+				// +    +----+
+				// |    | 41 |
+				// +----+----+ <-- heading rows
+				// | 50 | 51 |
+				// +----+----+
+				setData( model, modelTable( [
+					[ { contents: '00', rowspan: 2 }, '01' ],
+					[ '11' ],
+					[ '20', '21' ],
+					[ { contents: '30', rowspan: 2 }, '31' ],
+					[ '41' ],
+					[ '50', '51' ]
+				], { headingRows: 5 } ) );
+
+				selectNodes( [
+					[ 0, 0, 1 ],
+					[ 0, 1, 0 ],
+					[ 0, 2, 1 ],
+					[ 0, 3, 1 ],
+					[ 0, 4, 0 ]
+				] );
+
+				command.execute();
+
+				const contents = [ '[01', '11', '21', '31', '41]' ].map( content => `<paragraph>${ content }</paragraph>` ).join( '' );
+
+				// +----+----+
+				// | 00 | 01 |
+				// +----+    +
+				// | 20 |    |
+				// +----+    +
+				// | 30 |    |
+				// +----+----+ <-- heading rows
+				// | 50 | 51 |
+				// +----+----+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00', { contents, rowspan: 3 } ],
+					[ '20' ],
+					[ '30' ],
+					[ '50', '51' ]
+				], { headingRows: 3 } ) );
+			} );
+
+			it( 'should create one undo step (1 batch)', () => {
+				setData( model, modelTable( [
+					[ '00' ],
+					[ '10' ],
+					[ '20' ]
+				], { headingRows: 2 } ) );
+
+				selectNodes( [
+					[ 0, 0, 0 ],
+					[ 0, 1, 0 ]
+				] );
+
+				const createdBatches = new Set();
+
+				model.on( 'applyOperation', ( evt, [ operation ] ) => {
+					createdBatches.add( operation.batch );
+				} );
+
+				command.execute();
+
+				expect( createdBatches.size ).to.equal( 1 );
+			} );
+
 			it( 'should decrease rowspan if cell overlaps removed row', () => {
 				setData( model, modelTable( [
 					[ '00', { rowspan: 2, contents: '01' }, { rowspan: 3, contents: '02' } ],
