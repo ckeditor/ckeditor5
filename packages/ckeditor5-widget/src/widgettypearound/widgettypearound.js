@@ -112,8 +112,8 @@ export default class WidgetTypeAround extends Plugin {
 		const schema = editor.model.schema;
 		const t = editor.locale.t;
 		const buttonTitles = {
-			before: t( 'Insert paragraph before widget' ),
-			after: t( 'Insert paragraph after widget' )
+			before: t( 'Insert paragraph before block' ),
+			after: t( 'Insert paragraph after block' )
 		};
 
 		editor.editing.downcastDispatcher.on( 'insert', ( evt, data, conversionApi ) => {

@@ -1,5 +1,5 @@
 {
 	"Widget toolbar": "The label used by assistive technologies describing a toolbar attached to a widget.",
-	"Insert paragraph before widget": "The title displayed when a mouse is over a button that inserts a paragraph before a widget.",
-	"Insert paragraph after widget": "The title displayed when a mouse is over a button that inserts a paragraph after a widget."
+	"Insert paragraph before block": "The title displayed when a mouse is over a button that inserts a paragraph before a block.",
+	"Insert paragraph after block": "The title displayed when a mouse is over a button that inserts a paragraph after a block."
 }
