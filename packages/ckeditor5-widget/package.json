@@ -24,6 +24,8 @@
     "@ckeditor/ckeditor5-enter": "^19.0.0",
     "@ckeditor/ckeditor5-essentials": "^19.0.0",
     "@ckeditor/ckeditor5-heading": "^19.0.0",
+    "@ckeditor/ckeditor5-horizontal-line": "^19.0.0",
+    "@ckeditor/ckeditor5-media-embed": "^19.0.0",
     "@ckeditor/ckeditor5-paragraph": "^19.0.0",
     "@ckeditor/ckeditor5-table": "^19.0.0",
     "@ckeditor/ckeditor5-typing": "^19.0.0",

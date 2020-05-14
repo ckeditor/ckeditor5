@@ -46,9 +46,11 @@ export function modelToViewUrlAttributeConverter( registry, options ) {
 		const url = data.attributeNewValue;
 		const viewWriter = conversionApi.writer;
 		const figure = conversionApi.mapper.toViewElement( data.item );
+		const mediaContentElement = [ ...figure.getChildren() ]
+			.find( child => child.getCustomProperty( 'media-content' ) );
 
-		// TODO: removing it and creating it from scratch is a hack. We can do better than that.
-		viewWriter.remove( viewWriter.createRangeIn( figure ) );
+		// TODO: removing the wrapper and creating it from scratch is a hack. We can do better than that.
+		viewWriter.remove( mediaContentElement );
 
 		const mediaViewElement = registry.getMediaViewElement( viewWriter, url, options );
 

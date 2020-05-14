@@ -221,6 +221,7 @@ class Media {
 	 */
 	getViewElement( writer, options ) {
 		const attributes = {};
+		let viewElement;
 
 		if ( options.renderForEditingView || ( options.renderMediaPreview && this.url && this._previewRenderer ) ) {
 			if ( this.url ) {
@@ -233,7 +234,7 @@ class Media {
 
 			const mediaHtml = this._getPreviewHtml( options );
 
-			return writer.createUIElement( 'div', attributes, function( domDocument ) {
+			viewElement = writer.createUIElement( 'div', attributes, function( domDocument ) {
 				const domElement = this.toDomElement( domDocument );
 
 				domElement.innerHTML = mediaHtml;
@@ -245,8 +246,12 @@ class Media {
 				attributes.url = this.url;
 			}
 
-			return writer.createEmptyElement( 'oembed', attributes );
+			viewElement = writer.createEmptyElement( 'oembed', attributes );
 		}
+
+		writer.setCustomProperty( 'media-content', true, viewElement );
+
+		return viewElement;
 	}
 
 	/**

@@ -896,6 +896,48 @@ describe( 'MediaEmbedEditing', () => {
 							'</figure>'
 						);
 					} );
+
+					// Related to https://github.com/ckeditor/ckeditor5/issues/407.
+					it( 'should not discard internals (e.g. UI) injected by other features when converting the url attribute', () => {
+						setModelData( model, '<media url="https://ckeditor.com"></media>' );
+						const media = doc.getRoot().getChild( 0 );
+
+						editor.editing.view.change( writer => {
+							const widgetViewElement = editor.editing.mapper.toViewElement( media );
+
+							const externalUIElement = writer.createUIElement( 'div', null, function( domDocument ) {
+								const domElement = this.toDomElement( domDocument );
+
+								domElement.innerHTML = 'external UI';
+
+								return domElement;
+							} );
+
+							writer.insert( writer.createPositionAt( widgetViewElement, 'end' ), externalUIElement );
+						} );
+
+						expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
+							'<figure class="ck-widget media" contenteditable="false">' +
+								'<div class="ck-media__wrapper" data-oembed-url="https://ckeditor.com">' +
+									'allow-everything, id=https://ckeditor.com' +
+								'</div>' +
+								'<div>external UI</div>' +
+							'</figure>'
+						);
+
+						model.change( writer => {
+							writer.setAttribute( 'url', 'https://cksource.com', media );
+						} );
+
+						expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
+							'<figure class="ck-widget media" contenteditable="false">' +
+								'<div class="ck-media__wrapper" data-oembed-url="https://cksource.com">' +
+									'allow-everything, id=https://cksource.com' +
+								'</div>' +
+								'<div>external UI</div>' +
+							'</figure>'
+						);
+					} );
 				} );
 			}
 		} );

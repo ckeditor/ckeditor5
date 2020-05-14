@@ -3,8 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+/* global document */
+
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Widget from '../src/widget';
+import WidgetTypeAround from '../src/widgettypearound/widgettypearound';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import { toWidget } from '../src/utils';
@@ -14,15 +17,19 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-/* global document */
-
 describe( 'Widget', () => {
-	let editor, model, view, viewDocument;
+	let element, editor, model, view, viewDocument;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( { plugins: [ Widget, Typing ] } )
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		return ClassicTestEditor
+			.create( element, {
+				plugins: [ Widget, Typing ]
+			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
@@ -33,8 +40,7 @@ describe( 'Widget', () => {
 					inheritAllFrom: '$block',
 					isObject: true
 				} );
-				model.schema.register( 'paragraph', {
-					inheritAllFrom: '$block',
+				model.schema.extend( 'paragraph', {
 					allowIn: 'div'
 				} );
 				model.schema.register( 'inline', {
@@ -76,7 +82,6 @@ describe( 'Widget', () => {
 				} );
 
 				editor.conversion.for( 'downcast' )
-					.elementToElement( { model: 'paragraph', view: 'p' } )
 					.elementToElement( { model: 'inline', view: 'figure' } )
 					.elementToElement( { model: 'image', view: 'img' } )
 					.elementToElement( { model: 'blockQuote', view: 'blockquote' } )
@@ -110,6 +115,12 @@ describe( 'Widget', () => {
 			} );
 	} );
 
+	afterEach( () => {
+		element.remove();
+
+		return editor.destroy();
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( Widget ) ).to.be.instanceOf( Widget );
 	} );
@@ -118,63 +129,67 @@ describe( 'Widget', () => {
 		expect( view.getObserver( MouseObserver ) ).to.be.instanceof( MouseObserver );
 	} );
 
+	it( 'should require the WidgetTypeAround plugin', () => {
+		expect( Widget.requires ).to.have.members( [ WidgetTypeAround ] );
+	} );
+
 	it( 'should create selection over clicked widget', () => {
 		setModelData( model, '[]<widget></widget>' );
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = {
-			target: viewDiv,
+		const domEventDataMock = new DomEventData( view, {
+			target: view.domConverter.mapViewToDom( viewDiv ),
 			preventDefault: sinon.spy()
-		};
+		} );
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
 		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
-		sinon.assert.calledOnce( domEventDataMock.preventDefault );
+		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
 	} );
 
 	it( 'should create selection when clicked in nested element', () => {
 		setModelData( model, '[]<widget></widget>' );
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewB = viewDiv.getChild( 0 );
-		const domEventDataMock = {
-			target: viewB,
+		const domEventDataMock = new DomEventData( view, {
+			target: view.domConverter.mapViewToDom( viewB ),
 			preventDefault: sinon.spy()
-		};
+		} );
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
 		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
-		sinon.assert.calledOnce( domEventDataMock.preventDefault );
+		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
 	} );
 
 	it( 'should do nothing if clicked in non-widget element', () => {
 		setModelData( model, '<paragraph>[]foo bar</paragraph><widget></widget>' );
 		const viewP = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = {
-			target: viewP,
+		const domEventDataMock = new DomEventData( view, {
+			target: view.domConverter.mapViewToDom( viewP ),
 			preventDefault: sinon.spy()
-		};
+		} );
 
 		view.focus();
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
 		expect( getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph><widget></widget>' );
-		sinon.assert.notCalled( domEventDataMock.preventDefault );
+		sinon.assert.notCalled( domEventDataMock.domEvent.preventDefault );
 	} );
 
 	it( 'should not focus editable if already is focused', () => {
 		setModelData( model, '<widget></widget>' );
 		const widget = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = {
-			target: widget,
+		const domEventDataMock = new DomEventData( view, {
+			target: view.domConverter.mapViewToDom( widget ),
 			preventDefault: sinon.spy()
-		};
+		} );
 		const focusSpy = sinon.spy( view, 'focus' );
 
 		viewDocument.isFocused = true;
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.calledOnce( domEventDataMock.preventDefault );
+		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
 		sinon.assert.notCalled( focusSpy );
 		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
 	} );
@@ -183,7 +198,12 @@ describe( 'Widget', () => {
 		setModelData( model, '[<widget>foo bar</widget>]' );
 
 		expect( getViewData( view ) ).to.equal(
-			'[<div class="ck-widget ck-widget_selected" contenteditable="false">foo bar<b></b></div>]'
+			'[<div class="ck-widget ck-widget_can-type-around_after ck-widget_can-type-around_before ck-widget_selected" ' +
+			'contenteditable="false">' +
+				'foo bar' +
+				'<b></b>' +
+				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+			'</div>]'
 		);
 		expect( viewDocument.selection.isFake ).to.be.true;
 	} );
@@ -201,9 +221,15 @@ describe( 'Widget', () => {
 		expect( getViewData( view ) ).to.equal(
 
 			'<p>{foo</p>' +
-			'<div class="ck-widget ck-widget_selected" contenteditable="false"><b></b></div>' +
-			'<div class="ck-widget ck-widget_selected" contenteditable="false"><b></b></div>' +
-			']'
+			'<div class="ck-widget ck-widget_can-type-around_after ck-widget_selected" contenteditable="false">' +
+				'<b></b>' +
+				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+			'</div>' +
+			'<div class="ck-widget ck-widget_can-type-around_after ck-widget_can-type-around_before ck-widget_selected" ' +
+			'contenteditable="false">' +
+				'<b></b>' +
+				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+			'</div>]'
 		);
 	} );
 
@@ -217,7 +243,12 @@ describe( 'Widget', () => {
 		setModelData( model, '<paragraph>foo</paragraph>[<widget>foo</widget>]' );
 
 		expect( getViewData( view ) ).to.equal(
-			'<p>foo</p>[<div class="ck-widget ck-widget_selected" contenteditable="false">foo<b></b></div>]'
+			'<p>foo</p>' +
+			'[<div class="ck-widget ck-widget_can-type-around_after ck-widget_selected" contenteditable="false">' +
+				'foo' +
+				'<b></b>' +
+				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+			'</div>]'
 		);
 
 		model.change( writer => {
@@ -225,7 +256,12 @@ describe( 'Widget', () => {
 		} );
 
 		expect( getViewData( view ) ).to.equal(
-			'<p>{}foo</p><div class="ck-widget" contenteditable="false">foo<b></b></div>'
+			'<p>{}foo</p>' +
+			'<div class="ck-widget ck-widget_can-type-around_after" contenteditable="false">' +
+				'foo' +
+				'<b></b>' +
+				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+			'</div>'
 		);
 	} );
 
@@ -233,9 +269,10 @@ describe( 'Widget', () => {
 		setModelData( model, '<widget><editable>foo bar</editable></widget><editable>[baz]</editable>' );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget" contenteditable="false">' +
+			'<div class="ck-widget ck-widget_can-type-around_before" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo bar</figcaption>' +
 				'<b></b>' +
+				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 			'</div>' +
 			'<figcaption contenteditable="true">{baz}</figcaption>'
 		);
@@ -1229,8 +1266,16 @@ describe( 'Widget', () => {
 	} );
 
 	describe( 'selection handle', () => {
+		let element, editor;
+
 		beforeEach( () => {
-			return VirtualTestEditor.create( { plugins: [ Widget, Typing ] } )
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Widget, Typing ]
+				} )
 				.then( newEditor => {
 					editor = newEditor;
 					model = editor.model;
@@ -1241,9 +1286,6 @@ describe( 'Widget', () => {
 						inheritAllFrom: '$block',
 						allowIn: 'widget',
 						isObject: true
-					} );
-					model.schema.register( 'paragraph', {
-						inheritAllFrom: '$block'
 					} );
 					model.schema.register( 'nested', {
 						allowIn: 'widget',
@@ -1270,15 +1312,21 @@ describe( 'Widget', () => {
 				} );
 		} );
 
+		afterEach( () => {
+			element.remove();
+
+			return editor.destroy();
+		} );
+
 		it( 'should select a widget on mouse click', () => {
 			setModelData( model, '<paragraph>bar</paragraph><widget></widget><paragraph>foo[]</paragraph>' );
 
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 
-			const domEventDataMock = {
-				target: viewWidgetSelectionHandle,
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				preventDefault: sinon.spy()
-			};
+			} );
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
@@ -1291,22 +1339,33 @@ describe( 'Widget', () => {
 			// The top-outer widget.
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 );
 
-			const domEventDataMock = {
-				target: viewWidgetSelectionHandle,
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				preventDefault: sinon.spy()
-			};
+			} );
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handle" contenteditable="false">' +
-					'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+				'[<div class="' +
+					'ck-widget ' +
+					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
+					'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
+				'>' +
+					'<div class="' +
+						'ck-widget ' +
+						'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
+						'ck-widget_with-selection-handle" contenteditable="false"' +
+					'>' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 					'</div>' +
-					'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+					'<div class="ck-widget ck-widget_can-type-around_before ck-widget_with-selection-handle" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 					'</div>' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</div>]'
 			);
 		} );
@@ -1323,28 +1382,43 @@ describe( 'Widget', () => {
 
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 1 );
 
-			const domEventDataMock = {
-				target: viewWidgetSelectionHandle,
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				preventDefault: sinon.spy()
-			};
+			} );
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+				'<div class="ck-widget ck-widget_can-type-around_after ck-widget_can-type-around_before ck-widget_with-selection-handle" ' +
+				'contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</div>' +
-				'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handle" contenteditable="false">' +
-					'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-					'</div>' +
-					'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-					'</div>' +
+				'[<div class="' +
+					'ck-widget ' +
+					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
+					'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
+				'>' +
+					'<div ' +
+					'class="ck-widget ck-widget_can-type-around_after ck-widget_can-type-around_before ck-widget_with-selection-handle" ' +
+					'contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'</div>' +
+					'<div class="ck-widget ck-widget_can-type-around_before ck-widget_with-selection-handle" ' +
+					'contenteditable="false">' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+				'</div>' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</div>]' +
-				'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+					'<div ' +
+					'class="ck-widget ck-widget_can-type-around_after ck-widget_can-type-around_before ck-widget_with-selection-handle" ' +
+					'contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</div>'
 			);
 		} );
@@ -1359,20 +1433,26 @@ describe( 'Widget', () => {
 
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 );
 
-			const domEventDataMock = {
-				target: viewWidgetSelectionHandle,
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				preventDefault: sinon.spy()
-			};
+			} );
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handle" contenteditable="false">' +
+				'[<div class="' +
+					'ck-widget ' +
+					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
+					'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
+				'>' +
 					'<figcaption contenteditable="true">foo bar</figcaption>' +
 					'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 					'</div>' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</div>]'
 			);
 		} );
@@ -1389,25 +1469,41 @@ describe( 'Widget', () => {
 
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 ).getChild( 1 );
 
-			const domEventDataMock = {
-				target: viewWidgetSelectionHandle,
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				preventDefault: sinon.spy()
-			};
+			} );
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
-					'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+				'<div class="' +
+					'ck-widget ' +
+					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
+					'ck-widget_with-selection-handle" contenteditable="false"' +
+				'>' +
+					'<div class="' +
+						'ck-widget ' +
+						'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
+						'ck-widget_with-selection-handle" contenteditable="false"' +
+					'>' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 					'</div>' +
-					'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handle" contenteditable="false">' +
-						'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
+					'[<div class="' +
+						'ck-widget ' +
+						'ck-widget_can-type-around_before ' +
+						'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
+					'>' +
+						'<div class="ck-widget ck-widget_can-type-around_before ck-widget_with-selection-handle" contenteditable="false">' +
 							'<div class="ck ck-widget__selection-handle"></div>' +
+							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 						'</div>' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 					'</div>]' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</div>'
 			);
 		} );
@@ -1419,21 +1515,31 @@ describe( 'Widget', () => {
 
 			const widgetInEditable = viewDocument.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 );
 
-			const domEventDataMock = {
-				target: widgetInEditable,
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( widgetInEditable ),
 				preventDefault: sinon.spy()
-			};
+			} );
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'<div class="ck-widget ck-widget_with-selection-handle" contenteditable="false">' +
-					'<figcaption contenteditable="true">' +
-						'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handle" contenteditable="false">' +
+				'<div class="' +
+					'ck-widget ' +
+					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
+					'ck-widget_with-selection-handle" contenteditable="false"' +
+				'>' +
+					'<figcaption contenteditable="true">[' +
+						'<div class="' +
+							'ck-widget ' +
+							'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
+							'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
+						'>' +
 							'<div class="ck ck-widget__selection-handle"></div>' +
+							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 						'</div>]' +
 					'</figcaption>' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</div>'
 			);
 		} );
