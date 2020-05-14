@@ -25,7 +25,9 @@ import returnIcon from '../../theme/icons/return-arrow.svg';
 import '../../theme/widgettypearound.css';
 
 const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ];
-let CACHED_RETURN_ARROW_ICON;
+
+// Do the SVG parsing once and then clone the result <svg> DOM element for each new button.
+const RETURN_ARROW_ICON_ELEMENT = new DOMParser().parseFromString( returnIcon, 'image/svg+xml' ).firstChild;
 
 /**
  * A plugin that allows users to type around widgets where normally it is impossible to place the caret due
@@ -223,12 +225,6 @@ function injectUIIntoWidget( editingView, buttonTitles, widgetViewElement ) {
 // @param {HTMLElement} wrapperDomElement
 // @param {Object.<String,String>} buttonTitles
 function injectButtons( wrapperDomElement, buttonTitles ) {
-	// Do the SVG parsing once and then clone the result <svg> DOM element for each new
-	// button. There could be dozens of them during editor's lifetime.
-	if ( !CACHED_RETURN_ARROW_ICON ) {
-		CACHED_RETURN_ARROW_ICON = new DOMParser().parseFromString( returnIcon, 'image/svg+xml' ).firstChild;
-	}
-
 	for ( const position of POSSIBLE_INSERTION_POSITIONS ) {
 		const buttonTemplate = new Template( {
 			tag: 'div',
@@ -241,7 +237,7 @@ function injectButtons( wrapperDomElement, buttonTitles ) {
 				title: buttonTitles[ position ]
 			},
 			children: [
-				wrapperDomElement.ownerDocument.importNode( CACHED_RETURN_ARROW_ICON, true )
+				wrapperDomElement.ownerDocument.importNode( RETURN_ARROW_ICON_ELEMENT, true )
 			]
 		} );
 
