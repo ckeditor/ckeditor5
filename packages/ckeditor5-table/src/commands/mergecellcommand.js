@@ -9,10 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
-import {
-	updateNumericAttribute,
-	isHeadingColumnCell
-} from './utils';
+import { isHeadingColumnCell, findAncestor } from './utils';
 import { getTableCellsContainingSelection } from '../utils';
 
 /**
@@ -83,6 +80,7 @@ export default class MergeCellCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 		const tableCell = getTableCellsContainingSelection( doc.selection )[ 0 ];
+
 		const cellToMerge = this.value;
 		const direction = this.direction;
 
@@ -108,7 +106,10 @@ export default class MergeCellCommand extends Command {
 
 			// Remove empty row after merging.
 			if ( !removedTableCellRow.childCount ) {
-				removeEmptyRow( removedTableCellRow, writer );
+				const tableUtils = this.editor.plugins.get( 'TableUtils' );
+				const table = findAncestor( 'table', removedTableCellRow );
+
+				tableUtils.removeRows( table, { at: removedTableCellRow.index, batch: writer.batch } );
 			}
 		} );
 	}
@@ -243,28 +244,8 @@ function getVerticalCell( tableCell, direction ) {
 	return cellToMergeData && cellToMergeData.cell;
 }
 
-// Properly removes an empty row from a table. It will update the `rowspan` attribute of cells that overlap the removed row.
-//
-// @param {module:engine/model/element~Element} removedTableCellRow
-// @param {module:engine/model/writer~Writer} writer
-function removeEmptyRow( removedTableCellRow, writer ) {
-	const table = removedTableCellRow.parent;
-
-	const removedRowIndex = table.getChildIndex( removedTableCellRow );
-
-	for ( const { cell, row, rowspan } of new TableWalker( table, { endRow: removedRowIndex } ) ) {
-		const overlapsRemovedRow = row + rowspan - 1 >= removedRowIndex;
-
-		if ( overlapsRemovedRow ) {
-			updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer );
-		}
-	}
-
-	writer.remove( removedTableCellRow );
-}
-
 // Merges two table cells. It will ensure that after merging cells with an empty paragraph, the resulting table cell will only have one
-// paragraph. If one of the merged table cell is empty, the merged table cell will have the contents of the non-empty table cell.
+// paragraph. If one of the merged table cells is empty, the merged table cell will have the contents of the non-empty table cell.
 // If both are empty, the merged table cell will have only one empty paragraph.
 //
 // @param {module:engine/model/element~Element} cellToRemove

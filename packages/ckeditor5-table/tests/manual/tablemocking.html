@@ -1,0 +1,53 @@
+<style>
+	body {
+		font-family: Helvetica, Arial, sans-serif;
+		font-size: 14px;
+	}
+	textarea#model-data {
+		white-space: pre;
+		font-family: monospace;
+		display: block;
+		width: 100%;
+		height: 100px;
+		box-sizing: border-box;
+		margin: 10px 0;
+	}
+	pre,code {
+		font-size: 11px;
+		font-family: Menlo, Consolas, Lucida Console, Courier New, dejavu sans mono, monospace;
+	}
+	.diff-add {
+		color: hsl( 120, 70%, 35% );
+	}
+	.diff-del {
+		color: hsl( 0, 80%, 45% );
+	}
+	#input-status {
+		color: hsl( 0, 90%, 50% );
+	}
+</style>
+
+<div style="margin-bottom: 10px;">
+	<label for="model-data">Table data as expected by <a href="https://github.com/ckeditor/ckeditor5-table/blob/1004f9106110be9de125825afd491a1618b71271/tests/_utils/utils.js#L48">modelTable</a> helper function:</label>
+	<textarea id="model-data">
+[
+	[ '00', '01', '02', '03', '04' ],
+	[ '10', '11', '12', '13', '14' ],
+	[ '20', '21', '22', '23', '24' ],
+	[ '30', '31', '32', '33', '34' ],
+	[ '40', '41', '42', '43', '44' ]
+]
+	</textarea>
+
+	<button type="button" id="clear-content">Clear editor</button>
+	<button type="button" id="set-model-data">↓ Set model data ↓</button>
+	<button type="button" id="get-model-data">↑ Get model data ↑</button>
+	<button type="button" id="renumber-cells">Renumber cells</button>
+
+	<span id="input-status"></span>
+</div>
+
+<div id="editor">
+</div>
+
+<pre id="ascii-art"></pre>

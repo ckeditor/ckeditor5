@@ -52,7 +52,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 			const tableSelection = editor.plugins.get( TableSelection );
 			const modelRoot = model.document.getRoot();
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 			);
@@ -67,7 +67,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 			const tableSelection = editor.plugins.get( TableSelection );
 			const modelRoot = model.document.getRoot();
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 			);
@@ -102,7 +102,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 			const tableSelection = editor.plugins.get( TableSelection );
 			const modelRoot = model.document.getRoot();
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 			);
@@ -117,7 +117,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 			const tableSelection = editor.plugins.get( TableSelection );
 			const modelRoot = model.document.getRoot();
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] )
 			);
@@ -141,7 +141,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 			const tableSelection = editor.plugins.get( TableSelection );
 			const modelRoot = model.document.getRoot();
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 				modelRoot.getNodeByPath( [ 0, 0, 2 ] )
 			);
@@ -170,7 +170,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 			const tableSelection = editor.plugins.get( TableSelection );
 			const modelRoot = model.document.getRoot();
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 			);
@@ -207,7 +207,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 					const tableSelection = editor.plugins.get( TableSelection );
 					const modelRoot = model.document.getRoot();
-					tableSelection._setCellSelection(
+					tableSelection.setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 						modelRoot.getNodeByPath( [ 0, 0, 2 ] )
 					);
@@ -233,7 +233,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 					const tableSelection = editor.plugins.get( TableSelection );
 					const modelRoot = model.document.getRoot();
-					tableSelection._setCellSelection(
+					tableSelection.setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 					);
@@ -260,7 +260,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 					const tableSelection = editor.plugins.get( TableSelection );
 					const modelRoot = model.document.getRoot();
-					tableSelection._setCellSelection(
+					tableSelection.setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 						modelRoot.getNodeByPath( [ 0, 0, 2 ] )
 					);
@@ -287,7 +287,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 					const tableSelection = editor.plugins.get( TableSelection );
 					const modelRoot = model.document.getRoot();
-					tableSelection._setCellSelection(
+					tableSelection.setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
 						modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 					);
@@ -316,7 +316,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 					const tableSelection = editor.plugins.get( TableSelection );
 					const modelRoot = model.document.getRoot();
-					tableSelection._setCellSelection(
+					tableSelection.setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 						modelRoot.getNodeByPath( [ 0, 0, 2 ] )
 					);
@@ -345,7 +345,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 					const tableSelection = editor.plugins.get( TableSelection );
 					const modelRoot = model.document.getRoot();
-					tableSelection._setCellSelection(
+					tableSelection.setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 						modelRoot.getNodeByPath( [ 0, 0, 2 ] )
 					);
@@ -372,7 +372,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 					const tableSelection = editor.plugins.get( TableSelection );
 					const modelRoot = model.document.getRoot();
-					tableSelection._setCellSelection(
+					tableSelection.setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
 						modelRoot.getNodeByPath( [ 0, 0, 13 ] )
 					);

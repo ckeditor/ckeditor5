@@ -29,7 +29,9 @@
     "@ckeditor/ckeditor5-paragraph": "^19.0.0",
     "@ckeditor/ckeditor5-typing": "^19.0.0",
     "@ckeditor/ckeditor5-undo": "^19.0.0",
-    "@ckeditor/ckeditor5-utils": "^19.0.0"
+    "@ckeditor/ckeditor5-utils": "^19.0.0",
+    "json-diff": "^0.5.4",
+    "lodash-es": "^4.17.10"
   },
   "engines": {
     "node": ">=8.0.0",

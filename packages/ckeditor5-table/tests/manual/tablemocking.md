@@ -1,0 +1,26 @@
+### Table mocking tools
+
+Helper tools for preparing test cases like this:
+ 
+```javascript
+// +----+----+----+----+----+
+// | 00 | 01 | 02 | 03 | 04 |
+// +----+----+----+----+----+
+// | 10 | 11      | 13 | 14 |
+// +----+         +    +----+
+// | 20 |         |    | 24 |
+// +----+----+----+----+----+
+// | 30 | 31      | 33 | 34 |
+// +----+----+----+----+----+
+// | 40 | 41 | 42 | 43 | 44 |
+// +----+----+----+----+----+
+setModelData( model, modelTable( [
+    [ '00', '01', '02', '03', '04' ],
+    [ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
+    [ '20', '24' ],
+    [ '30', { contents: '31', colspan: 2 }, '33', '34' ],
+    [ '40', '41', '42', '43', '44' ]
+] ) );
+```
+
+**Note:** Cell content is ignored while generating ASCII-art and `modelTableData`.  

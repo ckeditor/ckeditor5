@@ -8,7 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import TableWalker from '../tablewalker';
 import { findAncestor, updateNumericAttribute } from './utils';
 import TableUtils from '../tableutils';
 import { getColumnIndexes, getRowIndexes, getSelectedTableCells } from '../utils';
@@ -16,7 +15,7 @@ import { getColumnIndexes, getRowIndexes, getSelectedTableCells } from '../utils
 /**
  * The merge cells command.
  *
- * The command is registered by the {@link module:table/tableediting~TableEditing} as `'mergeTableCells'` editor command.
+ * The command is registered by {@link module:table/tableediting~TableEditing} as the `'mergeTableCells'` editor command.
  *
  * For example, to merge selected table cells:
  *
@@ -44,7 +43,7 @@ export default class MergeCellsCommand extends Command {
 		model.change( writer => {
 			const selectedTableCells = getSelectedTableCells( model.document.selection );
 
-			// All cells will be merge into the first one.
+			// All cells will be merged into the first one.
 			const firstTableCell = selectedTableCells.shift();
 
 			// Set the selection in cell that other cells are being merged to prevent model-selection-range-intersects error in undo.
@@ -57,10 +56,22 @@ export default class MergeCellsCommand extends Command {
 			updateNumericAttribute( 'colspan', mergeWidth, firstTableCell, writer );
 			updateNumericAttribute( 'rowspan', mergeHeight, firstTableCell, writer );
 
+			const emptyRowsIndexes = [];
+
 			for ( const tableCell of selectedTableCells ) {
 				const tableRow = tableCell.parent;
+
 				mergeTableCells( tableCell, firstTableCell, writer );
-				removeRowIfEmpty( tableRow, writer );
+
+				if ( !tableRow.childCount ) {
+					emptyRowsIndexes.push( tableRow.index );
+				}
+			}
+
+			if ( emptyRowsIndexes.length ) {
+				const table = findAncestor( 'table', firstTableCell );
+
+				emptyRowsIndexes.reverse().forEach( row => tableUtils.removeRows( table, { at: row, batch: writer.batch } ) );
 			}
 
 			writer.setSelection( firstTableCell, 'in' );
@@ -68,31 +79,8 @@ export default class MergeCellsCommand extends Command {
 	}
 }
 
-// Properly removes the empty row from a table. Updates the `rowspan` attribute of cells that overlap the removed row.
-//
-// @param {module:engine/model/element~Element} row
-// @param {module:engine/model/writer~Writer} writer
-function removeRowIfEmpty( row, writer ) {
-	if ( row.childCount ) {
-		return;
-	}
-
-	const table = row.parent;
-	const removedRowIndex = table.getChildIndex( row );
-
-	for ( const { cell, row, rowspan } of new TableWalker( table, { endRow: removedRowIndex } ) ) {
-		const overlapsRemovedRow = row + rowspan - 1 >= removedRowIndex;
-
-		if ( overlapsRemovedRow ) {
-			updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer );
-		}
-	}
-
-	writer.remove( row );
-}
-
-// Merges two table cells - will ensure that after merging cells with empty paragraphs the result table cell will only have one paragraph.
-// If one of the merged table cells is empty, the merged table cell will have contents of the non-empty table cell.
+// Merges two table cells. It will ensure that after merging cells with empty paragraphs the resulting table cell will only have one
+// paragraph. If one of the merged table cells is empty, the merged table cell will have contents of the non-empty table cell.
 // If both are empty, the merged table cell will have only one empty paragraph.
 //
 // @param {module:engine/model/element~Element} cellBeingMerged
@@ -119,7 +107,7 @@ function isEmpty( tableCell ) {
 	return tableCell.childCount == 1 && tableCell.getChild( 0 ).is( 'paragraph' ) && tableCell.getChild( 0 ).isEmpty;
 }
 
-// Checks if the selection contains mergeable cells.
+// Checks if the selection contains cells that can be merged.
 //
 // In a table below:
 //
@@ -138,8 +126,8 @@ function isEmpty( tableCell ) {
 //   - c, d, f (cell d spans over a cell in the row below)
 //
 // While an invalid selection would be:
-//   - a, c (cell "b" not selected creates a gap)
-//   - f, g, h (cell "d" spans over a cell from row of "f" cell - thus creates a gap)
+//   - a, c (the unselected cell "b" creates a gap)
+//   - f, g, h (cell "d" spans over a cell from the row of "f" cell - thus creates a gap)
 //
 // @param {module:engine/model/selection~Selection} selection
 // @param {module:table/tableUtils~TableUtils} tableUtils
@@ -187,7 +175,7 @@ function canMergeCells( selection, tableUtils ) {
 	return areaOfValidSelection == areaOfSelectedCells;
 }
 
-// Calculates the area of a maximum rectangle that can span over provided row & column indexes.
+// Calculates the area of a maximum rectangle that can span over the provided row & column indexes.
 //
 // @param {Array.<Number>} rows
 // @param {Array.<Number>} columns
@@ -204,7 +192,7 @@ function getBiggestRectangleArea( rows, columns ) {
 	return ( lastRow - firstRow + 1 ) * ( lastColumn - firstColumn + 1 );
 }
 
-// Checks if the selection does not mix header (column or row) with other cells.
+// Checks if the selection does not mix a header (column or row) with other cells.
 //
 // For instance, in the table below valid selections consist of cells with the same letter only.
 // So, a-a (same heading row and column) or d-d (body cells) are valid while c-d or a-b are not.

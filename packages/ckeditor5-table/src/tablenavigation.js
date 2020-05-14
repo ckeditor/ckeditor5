@@ -7,13 +7,15 @@
  * @module table/tablenavigation
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { getSelectedTableCells, getTableCellsContainingSelection } from './utils';
-import { findAncestor } from './commands/utils';
+import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
+import { findAncestor } from './commands/utils';
+import { getSelectedTableCells, getTableCellsContainingSelection } from './utils';
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * This plugin enables keyboard navigation for tables.
@@ -27,6 +29,13 @@ export default class TableNavigation extends Plugin {
 	 */
 	static get pluginName() {
 		return 'TableNavigation';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ TableSelection ];
 	}
 
 	/**
@@ -77,7 +86,7 @@ export default class TableNavigation extends Plugin {
 
 	/**
 	 * Returns a handler for {@link module:engine/view/document~Document#event:keydown keydown} events for the <kbd>Tab</kbd> key executed
-	 * inside table cell.
+	 * inside table cells.
 	 *
 	 * @private
 	 * @param {Boolean} isForward Whether this handler will move the selection to the next or the previous cell.
@@ -160,7 +169,8 @@ export default class TableNavigation extends Plugin {
 			return;
 		}
 
-		const wasHandled = this._handleArrowKeys( getDirectionFromKeyCode( keyCode, this.editor.locale.contentLanguageDirection ) );
+		const direction = getDirectionFromKeyCode( keyCode, this.editor.locale.contentLanguageDirection );
+		const wasHandled = this._handleArrowKeys( direction, domEventData.shiftKey );
 
 		if ( wasHandled ) {
 			domEventData.preventDefault();
@@ -170,13 +180,14 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Handles arrow keys to move the selection around a table.
+	 * Handles arrow keys to move the selection around the table.
 	 *
 	 * @private
 	 * @param {'left'|'up'|'right'|'down'} direction The direction of the arrow key.
+	 * @param {Boolean} expandSelection If the current selection should be expanded.
 	 * @returns {Boolean} Returns `true` if key was handled.
 	 */
-	_handleArrowKeys( direction ) {
+	_handleArrowKeys( direction, expandSelection ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const isForward = [ 'right', 'down' ].includes( direction );
@@ -186,9 +197,15 @@ export default class TableNavigation extends Plugin {
 		const selectedCells = getSelectedTableCells( selection );
 
 		if ( selectedCells.length ) {
-			const tableCell = isForward ? selectedCells[ selectedCells.length - 1 ] : selectedCells[ 0 ];
+			let focusCell;
 
-			this._navigateFromCellInDirection( tableCell, direction );
+			if ( expandSelection ) {
+				focusCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
+			} else {
+				focusCell = isForward ? selectedCells[ selectedCells.length - 1 ] : selectedCells[ 0 ];
+			}
+
+			this._navigateFromCellInDirection( focusCell, direction, expandSelection );
 
 			return true;
 		}
@@ -204,7 +221,7 @@ export default class TableNavigation extends Plugin {
 
 		// Let's check if the selection is at the beginning/end of the cell.
 		if ( this._isSelectionAtCellEdge( selection, isForward ) ) {
-			this._navigateFromCellInDirection( tableCell, direction );
+			this._navigateFromCellInDirection( tableCell, direction, expandSelection );
 
 			return true;
 		}
@@ -226,7 +243,7 @@ export default class TableNavigation extends Plugin {
 		const textRange = this._findTextRangeFromSelection( cellRange, selection, isForward );
 
 		if ( !textRange ) {
-			this._navigateFromCellInDirection( tableCell, direction );
+			this._navigateFromCellInDirection( tableCell, direction, expandSelection );
 
 			return true;
 		}
@@ -242,7 +259,16 @@ export default class TableNavigation extends Plugin {
 		// of wrapped line (it's at the same time at the end of one line and at the start of the next line).
 		if ( this._isSingleLineRange( textRange, isForward ) ) {
 			model.change( writer => {
-				writer.setSelection( isForward ? cellRange.end : cellRange.start );
+				const newPosition = isForward ? cellRange.end : cellRange.start;
+
+				if ( expandSelection ) {
+					const newSelection = model.createSelection( selection.anchor );
+					newSelection.setFocus( newPosition );
+
+					writer.setSelection( newSelection );
+				} else {
+					writer.setSelection( newPosition );
+				}
 			} );
 
 			return true;
@@ -250,7 +276,7 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Returns true if the selection is at the boundary of a table cell according to the navigation direction.
+	 * Returns `true` if the selection is at the boundary of a table cell according to the navigation direction.
 	 *
 	 * @private
 	 * @param {module:engine/model/selection~Selection} selection The current selection.
@@ -279,12 +305,12 @@ export default class TableNavigation extends Plugin {
 
 	/**
 	 * Checks if there is an {@link module:engine/model/element~Element element} next to the current
-	 * {@link module:engine/model/selection~Selection model selection} marked in
+	 * {@link module:engine/model/selection~Selection model selection} marked in the
 	 * {@link module:engine/model/schema~Schema schema} as an `object`.
 	 *
 	 * @private
 	 * @param {module:engine/model/selection~Selection} modelSelection The selection.
-	 * @param {Boolean} isForward Direction of checking.
+	 * @param {Boolean} isForward The direction of checking.
 	 * @returns {Boolean}
 	 */
 	_isObjectElementNextToSelection( modelSelection, isForward ) {
@@ -300,12 +326,12 @@ export default class TableNavigation extends Plugin {
 
 	/**
 	 * Truncates the range so that it spans from the last selection position
-	 * to the last allowed $text position (mirrored if isForward is false).
+	 * to the last allowed `$text` position (mirrored if `isForward` is false).
 	 *
-	 * Returns `null` if resulting range can't contain $text element (according to schema).
+	 * Returns `null` if, according to the schema, the resulting range cannot contain a `$text` element.
 	 *
 	 * @private
-	 * @param {module:engine/model/range~Range} range Current table cell content range.
+	 * @param {module:engine/model/range~Range} range The current table cell content range.
 	 * @param {module:engine/model/selection~Selection} selection The current selection.
 	 * @param {Boolean} isForward The expected navigation direction.
 	 * @returns {module:engine/model/range~Range|null}
@@ -335,13 +361,13 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Basing on provided range, finds first/last (depending on `direction`) position inside the range
+	 * Basing on the provided range, finds the first or last (depending on `direction`) position inside the range
 	 * that can contain `$text` (according to schema) and is visible in the view.
 	 *
 	 * @private
-	 * @param {module:engine/model/range~Range} range The range to find position in.
+	 * @param {module:engine/model/range~Range} range The range to find the position in.
 	 * @param {'forward'|'backward'} direction Search direction.
-	 * @returns {module:engine/model/position~Position} Nearest selection range.
+	 * @returns {module:engine/model/position~Position} The nearest selection range.
 	 */
 	_getNearestVisibleTextPosition( range, direction ) {
 		const schema = this.editor.model.schema;
@@ -359,11 +385,11 @@ export default class TableNavigation extends Plugin {
 	}
 
 	/**
-	 * Checks if the DOM range corresponding to provided model range renders as a single line by analyzing DOMRects
+	 * Checks if the DOM range corresponding to the provided model range renders as a single line by analyzing DOMRects
 	 * (verifying if they visually wrap content to the next line).
 	 *
 	 * @private
-	 * @param {module:engine/model/range~Range} modelRange Current table cell content range.
+	 * @param {module:engine/model/range~Range} modelRange The current table cell content range.
 	 * @param {Boolean} isForward The expected navigation direction.
 	 * @returns {Boolean}
 	 */
@@ -415,18 +441,19 @@ export default class TableNavigation extends Plugin {
 	/**
 	 * Moves the selection from the given table cell in the specified direction.
 	 *
-	 * @private
-	 * @param {module:engine/model/element~Element} tableCell The table cell to start the selection navigation.
+	 * @protected
+	 * @param {module:engine/model/element~Element} focusCell The table cell that is current multi-cell selection focus.
 	 * @param {'left'|'up'|'right'|'down'} direction Direction in which selection should move.
+	 * @param {Boolean} [expandSelection=false] If the current selection should be expanded.
 	 */
-	_navigateFromCellInDirection( tableCell, direction ) {
+	_navigateFromCellInDirection( focusCell, direction, expandSelection = false ) {
 		const model = this.editor.model;
 
-		const table = findAncestor( 'table', tableCell );
+		const table = findAncestor( 'table', focusCell );
 		const tableMap = [ ...new TableWalker( table, { includeSpanned: true } ) ];
 		const { row: lastRow, column: lastColumn } = tableMap[ tableMap.length - 1 ];
 
-		const currentCellInfo = tableMap.find( ( { cell } ) => cell == tableCell );
+		const currentCellInfo = tableMap.find( ( { cell } ) => cell == focusCell );
 		let { row, column } = currentCellInfo;
 
 		switch ( direction ) {
@@ -463,24 +490,32 @@ export default class TableNavigation extends Plugin {
 		}
 
 		if ( column < 0 ) {
-			column = lastColumn;
+			column = expandSelection ? 0 : lastColumn;
 			row--;
 		} else if ( column > lastColumn ) {
-			column = 0;
+			column = expandSelection ? lastColumn : 0;
 			row++;
 		}
 
 		const cellToSelect = tableMap.find( cellInfo => cellInfo.row == row && cellInfo.column == column ).cell;
 		const isForward = [ 'right', 'down' ].includes( direction );
-		const positionToSelect = model.createPositionAt( cellToSelect, isForward ? 0 : 'end' );
 
-		model.change( writer => {
-			writer.setSelection( positionToSelect );
-		} );
+		if ( expandSelection ) {
+			const tableSelection = this.editor.plugins.get( 'TableSelection' );
+			const anchorCell = tableSelection.getAnchorCell() || focusCell;
+
+			tableSelection.setCellSelection( anchorCell, cellToSelect );
+		} else {
+			const positionToSelect = model.createPositionAt( cellToSelect, isForward ? 0 : 'end' );
+
+			model.change( writer => {
+				writer.setSelection( positionToSelect );
+			} );
+		}
 	}
 }
 
-// Returns 'true' if provided key code represents one of the arrow keys.
+// Returns `true` if the provided key code represents one of the arrow keys.
 //
 // @private
 // @param {Number} keyCode
@@ -492,7 +527,7 @@ function isArrowKeyCode( keyCode ) {
 		keyCode == keyCodes.arrowdown;
 }
 
-// Returns direction name from `keyCode`.
+// Returns the direction name from `keyCode`.
 //
 // @private
 // @param {Number} keyCode

@@ -48,7 +48,7 @@ describe( 'SelectColumnCommand', () => {
 				[ '20', '21' ]
 			] ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 			);
@@ -150,7 +150,7 @@ describe( 'SelectColumnCommand', () => {
 
 			it( 'should select only one column if only one cell is selected', () => {
 				// Selection in cell 10.
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 0 ] )
 				);
@@ -180,7 +180,7 @@ describe( 'SelectColumnCommand', () => {
 
 			it( 'should not select col-spanned columns that start in other column', () => {
 				// Selection in cell 42.
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 4, 2 ] ),
 					modelRoot.getNodeByPath( [ 0, 4, 2 ] )
 				);
@@ -210,7 +210,7 @@ describe( 'SelectColumnCommand', () => {
 
 			it( 'should not select col-spanned columns that start in other column but include those that start in selected column', () => {
 				// Selection in cell 41.
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 4, 1 ] ),
 					modelRoot.getNodeByPath( [ 0, 4, 1 ] )
 				);
@@ -240,7 +240,7 @@ describe( 'SelectColumnCommand', () => {
 
 			it( 'should select properly for multiple not spanned cells selected', () => {
 				// Selection in cells 40 - 41.
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 4, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 4, 1 ] )
 				);
@@ -270,7 +270,7 @@ describe( 'SelectColumnCommand', () => {
 
 			it( 'should select properly for multiple cells selected including spanned one', () => {
 				// Selection in cells 31 - 33.
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 3, 1 ] ),
 					modelRoot.getNodeByPath( [ 0, 3, 2 ] )
 				);
@@ -309,7 +309,7 @@ describe( 'SelectColumnCommand', () => {
 			} );
 
 			it( 'should properly select middle columns', () => {
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 					modelRoot.getNodeByPath( [ 0, 0, 2 ] )
 				);
@@ -324,7 +324,7 @@ describe( 'SelectColumnCommand', () => {
 			} );
 
 			it( 'should properly select middle columns in reversed order', () => {
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 				);
@@ -339,7 +339,7 @@ describe( 'SelectColumnCommand', () => {
 			} );
 
 			it( 'should properly select tailing columns', () => {
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
 					modelRoot.getNodeByPath( [ 0, 0, 3 ] )
 				);
@@ -354,7 +354,7 @@ describe( 'SelectColumnCommand', () => {
 			} );
 
 			it( 'should properly select beginning columns', () => {
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 				);
@@ -369,7 +369,7 @@ describe( 'SelectColumnCommand', () => {
 			} );
 
 			it( 'should properly select multiple columns from square selection', () => {
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 2 ] )
 				);
@@ -390,7 +390,7 @@ describe( 'SelectColumnCommand', () => {
 					[ '20', '21', '22', '23' ]
 				], { headingRows: 1 } ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 				);
@@ -413,7 +413,7 @@ describe( 'SelectColumnCommand', () => {
 					[ '20', '21', '22' ]
 				] ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
 					modelRoot.getNodeByPath( [ 0, 2, 1 ] )
 				);
@@ -433,7 +433,7 @@ describe( 'SelectColumnCommand', () => {
 					[ '10', '11' ]
 				] ) );
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] )
 				);
