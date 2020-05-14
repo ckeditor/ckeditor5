@@ -79,7 +79,7 @@
     "@ckeditor/ckeditor5-comments": "^19.0.1",
     "@ckeditor/ckeditor5-dev-docs": "^11.1.0",
     "@ckeditor/ckeditor5-dev-env": "^18.0.0",
-    "@ckeditor/ckeditor5-dev-tests": "^19.0.0",
+    "@ckeditor/ckeditor5-dev-tests": "^19.1.0",
     "@ckeditor/ckeditor5-dev-utils": "^13.0.0",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^9.0.0",
     "@ckeditor/ckeditor5-inspector": "^2.0.0",
@@ -88,6 +88,7 @@
     "@ckeditor/ckeditor5-track-changes": "^19.0.1",
     "@wiris/mathtype-ckeditor5": "^7.19.0",
     "babel-standalone": "^6.26.0",
+    "coveralls": "^3.1.0",
     "css-loader": "^1.0.0",
     "eslint": "^5.5.0",
     "eslint-config-ckeditor5": "^2.0.0",
@@ -159,6 +160,8 @@
   },
   "eslintIgnore": [
     "build/**",
+    "packages/*/build/**",
+    "packages/*/src/lib/**",
     "coverage/**"
   ],
   "workspaces": {
