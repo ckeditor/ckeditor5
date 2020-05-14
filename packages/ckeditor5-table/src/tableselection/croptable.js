@@ -15,7 +15,12 @@ import TableWalker from '../tablewalker';
 
  * To return a cropped table that starts at first row and first column and end in third row and column:
  *
- *		const croppedTable = cropTable( table, 1, 1, 3, 3, tableUtils, writer );
+ *		const croppedTable = cropTableToDimensions( table, {
+ *			startRow: 1,
+ *			endRow: 1,
+ *			startColumn: 3,
+ *			endColumn: 3
+ *		}, tableUtils, writer );
  *
  * Calling the code above for the table below:
  *
