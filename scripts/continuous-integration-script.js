@@ -91,8 +91,7 @@ for ( const fullPackageName of packages ) {
 }
 
 console.log( 'Uploading combined code coverage report…' );
-childProcess.execSync( 'npx coveralls < .out/combined_lcov.info' );
-console.log( 'Done' );
+childProcess.execSync( 'npx coveralls -v < .out/combined_lcov.info' );
 
 if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
 	console.log( '\n---\n' );
