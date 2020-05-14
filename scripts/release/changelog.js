@@ -12,7 +12,7 @@
 const devEnv = require( '@ckeditor/ckeditor5-dev-env' );
 
 Promise.resolve()
-	.then( () => devEnv.generateChangelogForSubRepositories( {
+	.then( () => devEnv.generateChangelogForMonoRepository( {
 		cwd: process.cwd(),
 		packages: 'packages',
 		highlightsPlaceholder: true,
