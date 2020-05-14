@@ -234,7 +234,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should copy structure from the first row', () => {
-				tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 0, rows: 1, copyStructureFrom: 0 } );
+				tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 0, rows: 1, copyStructureFromAbove: false } );
 
 				// +----+----+----+----+----+----+
 				// |    |         |    |    |    |
@@ -251,7 +251,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should copy structure from the first row and properly handle row-spanned cells', () => {
-				tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1, rows: 1, copyStructureFrom: 0 } );
+				tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1, rows: 1, copyStructureFromAbove: true } );
 
 				// +----+----+----+----+----+----+
 				// | 00 | 01      | 03 | 04 | 05 |
@@ -268,7 +268,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should copy structure from the last row', () => {
-				tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 1, copyStructureFrom: 1 } );
+				tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 1, copyStructureFromAbove: true } );
 
 				// +----+----+----+----+----+----+
 				// | 00 | 01      | 03 | 04 | 05 |
@@ -285,7 +285,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should copy structure from the last row and properly handle row-spanned cells', () => {
-				tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1, rows: 1, copyStructureFrom: 1 } );
+				tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1, rows: 1, copyStructureFromAbove: false } );
 
 				// +----+----+----+----+----+----+
 				// | 00 | 01      | 03 | 04 | 05 |
