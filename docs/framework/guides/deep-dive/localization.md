@@ -50,7 +50,9 @@ As the first argument, the `t()` function accepts either a string literal or an 
 As the second argument, the translation function accepts a value or an array of values. These values will be used to fill the placeholders in more advanced translation scenarios. If the `plural` property is specified, the first value will be used as the quantity determining the plural form.
 
 <info-box warning>
-	Note that the `t()` function should not be used as a method of the `Locale` class because during the translation process a static code analyzer catches *localizable messages* only from function forms. For the same reason its first argument accepts only a string literal or an object literal. `Locale#t()` method calls and incompatible expressions passed to the `t()` calls will produce build-time warnings.
+    Due to static code analyzer used in the translation process it is required that you use a function named exactly `t()`. It shouldn't be called on `Locale` instance and it cannot have a different name. The code analyzer looks for *localizable messages* only in `t()` function calls.
+
+    For the same reason, the first argument can only be a string literal or an object literal. Variables cannot be passed.
 </info-box>
 
 When using the `t()` function, you can create your own *localizable messages* or reuse *messages* created in CKEditor 5 packages that your project depends on. In case of reusing *messages*, you will not need to worry about translating them as all work will be done by the CKEditor 5 team and [Transifex translators](https://www.transifex.com/ckeditor/ckeditor5/). Obviously, your help in translating will still be appreciated!
@@ -79,7 +81,7 @@ t( { string: '%1 %0 emoji', plural: '%1 %0 emojis', id: 'ACTION_N_EMOJIS' }, [ q
 
 ### Example: Localizing the plugin UI
 
-This example shows how to create a localizable user interface of a plugin. Let's create a button that will insert smiling face emoji. The button will have a localizable tooltip.
+This example shows how to create a localizable user interface of a plugin. Let's create a button that will insert a smiling face emoji. The button will have a localizable tooltip.
 
 ```js
 // ...
