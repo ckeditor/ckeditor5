@@ -33,14 +33,12 @@ export default class SelectAllCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		let limitElement = model.schema.getLimitElement( selection );
-
 		let place = 'in';
 		// If entire element was already selected, try selecting all in a parent limit element (if any).
 		if ( selection.containsEntireContent( limitElement ) && limitElement.root !== limitElement ) {
 			do {
-				if ( limitElement.parent ) {
-					limitElement = limitElement.parent;
-				}
+				// Eventually, the $root (limitElement.root === limitElement) will be a limit.
+				limitElement = limitElement.parent;
 			} while ( !model.schema.isLimit( limitElement ) );
 			place = 'on';
 		}
