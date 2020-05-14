@@ -6,7 +6,7 @@
 /* global DOMParser */
 
 /**
- * @module widget/widgettypearound/widgettypearound
+ * @module widget/widgettypearound
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
