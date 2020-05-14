@@ -7,9 +7,8 @@
  * @module table/tableselection/croptable
  */
 
-import { createEmptyTableCell, findAncestor, updateNumericAttribute } from '../commands/utils';
+import { createEmptyTableCell, updateNumericAttribute } from '../commands/utils';
 import TableWalker from '../tablewalker';
-import { getColumnIndexes, getRowIndexes } from '../utils';
 
 /**
  * Returns a cropped table according to given dimensions.
@@ -95,40 +94,6 @@ export function cropTableToDimensions( sourceTable, cropDimensions, writer, tabl
 	addHeadingsToCroppedTable( croppedTable, sourceTable, startRow, startColumn, writer );
 
 	return croppedTable;
-}
-
-/**
- * Returns a cropped table from the selected table cells.
- *
- * This function is to be used with the table selection.
- *
- *		tableSelection.setCellSelection( startCell, endCell );
- *
- *		const croppedTable = cropTable( tableSelection.getSelectedTableCells(), tableUtils, writer );
- *
- * **Note**: This function is also used by {@link module:table/tableselection~TableSelection#getSelectionAsFragment}.
- *
- * @param {Iterable.<module:engine/model/element~Element>} selectedTableCellsIterator
- * @param {module:engine/model/writer~Writer} writer
- * @param {module:table/tableutils~TableUtils} tableUtils
- * @returns {module:engine/model/element~Element}
- */
-export function cropTableToSelection( selectedTableCellsIterator, writer, tableUtils ) {
-	const selectedTableCells = Array.from( selectedTableCellsIterator );
-
-	const { first: startColumn, last: endColumn } = getColumnIndexes( selectedTableCells );
-	const { first: startRow, last: endRow } = getRowIndexes( selectedTableCells );
-
-	const sourceTable = findAncestor( 'table', selectedTableCells[ 0 ] );
-
-	const cropDimensions = {
-		startRow,
-		startColumn,
-		endRow,
-		endColumn
-	};
-
-	return cropTableToDimensions( sourceTable, cropDimensions, writer, tableUtils );
 }
 
 // Adjusts table cell dimensions to not exceed limit row and column.
