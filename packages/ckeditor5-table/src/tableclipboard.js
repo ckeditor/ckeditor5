@@ -252,7 +252,7 @@ function getTableIfOnlyTableInContent( content ) {
 
 	// We do not support mixed content when pasting table into table.
 	// See: https://github.com/ckeditor/ckeditor5/issues/6817.
-	if ( content.childCount > 1 || !content.getChild( 0 ).is( 'table' ) ) {
+	if ( content.childCount != 1 || !content.getChild( 0 ).is( 'table' ) ) {
 		return null;
 	}
 
