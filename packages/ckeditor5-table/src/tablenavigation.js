@@ -16,8 +16,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 import {
-	keyCodes,
-	isArrowKeyCode
+	isArrowKeyCode,
+	getLocalizedArrowKeyCodeDirection
 } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
@@ -166,13 +166,14 @@ export default class TableNavigation extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_onKeydown( eventInfo, domEventData ) {
+		const editor = this.editor;
 		const keyCode = domEventData.keyCode;
 
 		if ( !isArrowKeyCode( keyCode ) ) {
 			return;
 		}
 
-		const direction = getDirectionFromKeyCode( keyCode, this.editor.locale.contentLanguageDirection );
+		const direction = getLocalizedArrowKeyCodeDirection( keyCode, editor.locale.contentLanguageDirection );
 		const wasHandled = this._handleArrowKeys( direction, domEventData.shiftKey );
 
 		if ( wasHandled ) {
@@ -518,26 +519,3 @@ export default class TableNavigation extends Plugin {
 	}
 }
 
-// Returns the direction name from `keyCode`.
-//
-// @private
-// @param {Number} keyCode
-// @param {String} contentLanguageDirection The content language direction.
-// @returns {'left'|'up'|'right'|'down'} Arrow direction.
-function getDirectionFromKeyCode( keyCode, contentLanguageDirection ) {
-	const isLtrContent = contentLanguageDirection === 'ltr';
-
-	switch ( keyCode ) {
-		case keyCodes.arrowleft:
-			return isLtrContent ? 'left' : 'right';
-
-		case keyCodes.arrowright:
-			return isLtrContent ? 'right' : 'left';
-
-		case keyCodes.arrowup:
-			return 'up';
-
-		case keyCodes.arrowdown:
-			return 'down';
-	}
-}

@@ -142,6 +142,54 @@ export function isArrowKeyCode( keyCode ) {
 		keyCode == keyCodes.arrowdown;
 }
 
+/**
+ * Returns the direction from the provided key code considering the language direction of the
+ * editor content.
+ *
+ * For instance, in right–to–left (RTL) languages, pressing the left arrow means moving selection right (forward)
+ * in the model structure. Similarly, pressing the right arrow moves the selection left (backward).
+ *
+ * @param {Number} keyCode
+ * @param {String} contentLanguageDirection The content language direction, corresponding to
+ * {@link module:utils/locale~Locale#contentLanguageDirection}.
+ * @returns {'left'|'up'|'right'|'down'} Arrow direction.
+ */
+export function getLocalizedArrowKeyCodeDirection( keyCode, contentLanguageDirection ) {
+	const isLtrContent = contentLanguageDirection === 'ltr';
+
+	switch ( keyCode ) {
+		case keyCodes.arrowleft:
+			return isLtrContent ? 'left' : 'right';
+
+		case keyCodes.arrowright:
+			return isLtrContent ? 'right' : 'left';
+
+		case keyCodes.arrowup:
+			return 'up';
+
+		case keyCodes.arrowdown:
+			return 'down';
+	}
+}
+
+/**
+ * Determines if the provided key code moves the selection forward or backward considering
+ * the language direction of the editor content.
+ *
+ * For instance, in right–to–left (RTL) languages, pressing the left arrow means moving forward
+ * in the model structure. Similarly, pressing the right arrow moves the selection backward.
+ *
+ * @param {Number} keyCode
+ * @param {String} contentLanguageDirection The content language direction, corresponding to
+ * {@link module:utils/locale~Locale#contentLanguageDirection}.
+ * @returns {Boolean}
+ */
+export function isForwardArrowKeyCode( keyCode, contentLanguageDirection ) {
+	const localizedKeyCodeDirection = getLocalizedArrowKeyCodeDirection( keyCode, contentLanguageDirection );
+
+	return localizedKeyCodeDirection === 'down' || localizedKeyCodeDirection === 'right';
+}
+
 function generateKnownKeyCodes() {
 	const keyCodes = {
 		arrowleft: 37,

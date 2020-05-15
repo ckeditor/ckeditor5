@@ -13,7 +13,8 @@ import WidgetTypeAround from './widgettypearound/widgettypearound';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
 import {
 	keyCodes,
-	isArrowKeyCode
+	isArrowKeyCode,
+	isForwardArrowKeyCode
 } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
@@ -173,13 +174,13 @@ export default class Widget extends Plugin {
 	 */
 	_onKeydown( eventInfo, domEventData ) {
 		const keyCode = domEventData.keyCode;
-		const isLtrContent = this.editor.locale.contentLanguageDirection === 'ltr';
-		const isForward = keyCode == keyCodes.arrowdown || keyCode == keyCodes[ isLtrContent ? 'arrowright' : 'arrowleft' ];
 		let wasHandled = false;
 
 		// Checks if the keys were handled and then prevents the default event behaviour and stops
 		// the propagation.
 		if ( isArrowKeyCode( keyCode ) ) {
+			const isForward = isForwardArrowKeyCode( keyCode, this.editor.locale.contentLanguageDirection );
+
 			wasHandled = this._handleArrowKeys( isForward );
 		} else if ( keyCode === keyCodes.enter ) {
 			wasHandled = this._handleEnterKey( domEventData.shiftKey );
