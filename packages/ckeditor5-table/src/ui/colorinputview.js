@@ -315,10 +315,11 @@ export default class ColorInputView extends View {
 // @param {String} colorString The value to be normalized.
 // @returns {String}
 function normalizeColor( colorString ) {
-	// Remove any whitespace right after `(` or `,`.
-	// Remove any whitespace at the beginning or right before the end, `)`, `,`, or another whitespace.
-	// Then, replace `,` or whitespace with single space.
-	return colorString.replace( /([(,])\s+/g, '$1' )
+	return colorString
+		// Remove any whitespace right after `(` or `,`.
+		.replace( /([(,])\s+/g, '$1' )
+		// Remove any whitespace at the beginning or right before the end, `)`, `,`, or another whitespace.
 		.replace( /^\s+|\s+(?=[),\s]|$)/g, '' )
+		// Then, replace `,` or whitespace with a single space.
 		.replace( /,|\s/g, ' ' );
 }
