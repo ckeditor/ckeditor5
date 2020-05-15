@@ -20,7 +20,8 @@ import {
 	setHighlightHandling,
 	findOptimalInsertionPosition,
 	viewToModelPositionOutsideModelElement,
-	WIDGET_CLASS_NAME
+	WIDGET_CLASS_NAME,
+	centeredBalloonPositionForLongWidgets
 } from '../src/utils';
 import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -29,6 +30,9 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Mapper from '@ckeditor/ckeditor5-engine/src/conversion/mapper';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 describe( 'widget utils', () => {
 	let element, writer, viewDocument;
@@ -487,6 +491,105 @@ describe( 'widget utils', () => {
 			const modelPosition = mapper.toModelPosition( viewPosition );
 
 			expect( modelPosition.path ).to.deep.equal( [ 3, 1 ] );
+		} );
+	} );
+
+	describe( 'centeredBalloonPositionForLongWidgets()', () => {
+		const arrowVerticalOffset = BalloonPanelView.arrowVerticalOffset;
+
+		// Balloon is a 10x10 rect.
+		const balloonRect = new Rect( {
+			top: 0,
+			left: 0,
+			right: 10,
+			bottom: 10,
+			width: 10,
+			height: 10
+		} );
+
+		beforeEach( () => {
+			testUtils.sinon.stub( global.window, 'innerWidth' ).value( 100 );
+			testUtils.sinon.stub( global.window, 'innerHeight' ).value( 100 );
+		} );
+
+		it( 'should position the balloon inside a widget – at the top + in the middle', () => {
+			// Widget is a 50x150 rect, translated (25,25) from viewport's beginning (0,0).
+			const widgetRect = new Rect( {
+				top: 25,
+				left: 25,
+				right: 75,
+				bottom: 175,
+				width: 50,
+				height: 150
+			} );
+
+			const position = centeredBalloonPositionForLongWidgets( widgetRect, balloonRect );
+
+			expect( position ).to.deep.equal( {
+				top: 25 + arrowVerticalOffset,
+				left: 45,
+				name: 'arrow_n'
+			} );
+		} );
+
+		it( 'should stick the balloon to the top of the viewport when the top of a widget is off-screen', () => {
+			// Widget is a 50x150 rect, translated (25,-25) from viewport's beginning (0,0).
+			const widgetRect = new Rect( {
+				top: -25,
+				left: 25,
+				right: 75,
+				bottom: 150,
+				width: 50,
+				height: 150
+			} );
+
+			const position = centeredBalloonPositionForLongWidgets( widgetRect, balloonRect );
+
+			expect( position ).to.deep.equal( {
+				top: arrowVerticalOffset,
+				left: 45,
+				name: 'arrow_n'
+			} );
+		} );
+
+		it( 'should horizontally center the balloon in the visible area when the widget is cropped by the viewport', () => {
+			// Widget is a 50x150 rect, translated (25,-25) from viewport's beginning (0,0).
+			const widgetRect = new Rect( {
+				top: 25,
+				left: -25,
+				right: 25,
+				bottom: 175,
+				width: 50,
+				height: 150
+			} );
+
+			const position = centeredBalloonPositionForLongWidgets( widgetRect, balloonRect );
+
+			expect( position ).to.deep.equal( {
+				top: 25 + arrowVerticalOffset,
+				left: 7.5,
+				name: 'arrow_n'
+			} );
+		} );
+
+		it( 'should horizontally center the balloon in the widget when the widget is completely off the viewport', () => {
+			// Widget is a 50x150 rect, translated (0,-100) from viewport's beginning (0,0).
+			const widgetRect = new Rect( {
+				top: 0,
+				left: -100,
+				right: -50,
+				bottom: 150,
+				width: 50,
+				height: 150
+			} );
+
+			const position = centeredBalloonPositionForLongWidgets( widgetRect, balloonRect );
+
+			expect( position ).to.deep.equal( {
+				top: 0 + arrowVerticalOffset,
+				left: -80,
+				name: 'arrow_n'
+			} );
 		} );
 	} );
 } );
