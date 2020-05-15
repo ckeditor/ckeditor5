@@ -248,33 +248,6 @@ describe( 'table clipboard', () => {
 			] ) );
 		} );
 
-		it( 'should block non-rectangular selection', () => {
-			setModelData( model, modelTable( [
-				[ { contents: '00', colspan: 3 } ],
-				[ '10', '11', '12' ],
-				[ '20', '21', '22' ]
-			] ) );
-
-			tableSelection.setCellSelection(
-				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
-				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
-			);
-
-			// Catches the temporary console log in the CK_DEBUG mode.
-			sinon.stub( console, 'log' );
-
-			pasteTable( [
-				[ 'aa', 'ab' ],
-				[ 'ba', 'bb' ]
-			] );
-
-			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ { contents: '00', colspan: 3 } ],
-				[ '10', '11', '12' ],
-				[ '20', '21', '22' ]
-			] ) );
-		} );
-
 		describe( 'single cell selected', () => {
 			it( 'blocks this case', () => {
 				setModelData( model, modelTable( [
@@ -1120,11 +1093,40 @@ describe( 'table clipboard', () => {
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0 ],
-						[ 0, 1,    0 ],
+						[ 0, 1, 0 ],
 						[ 0, 1, 1, 0 ],
 						[ 0, 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
+				} );
+			} );
+
+			describe( 'non-rectangular content table', () => {
+				it( 'should block non-rectangular selection', () => {
+					setModelData( model, modelTable( [
+						[ { contents: '00', colspan: 3 } ],
+						[ '10', '11', '12' ],
+						[ '20', '21', '22' ]
+					] ) );
+
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+					);
+
+					// Catches the temporary console log in the CK_DEBUG mode.
+					sinon.stub( console, 'log' );
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ { contents: '00', colspan: 3 } ],
+						[ '10', '11', '12' ],
+						[ '20', '21', '22' ]
+					] ) );
 				} );
 			} );
 		} );
