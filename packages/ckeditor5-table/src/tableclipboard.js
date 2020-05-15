@@ -14,7 +14,7 @@ import TableWalker from './tablewalker';
 import { getColumnIndexes, getRowIndexes, isSelectionRectangular } from './utils';
 import { findAncestor } from './commands/utils';
 import { cropTableToDimensions } from './tableselection/croptable';
-import { getOverlappingCells, splitHorizontally } from './commands/setheaderrowcommand';
+import { cutCellsHorizontallyAt } from './commands/setheaderrowcommand';
 import TableUtils from './tableutils';
 
 /**
@@ -309,16 +309,8 @@ function prepareLandingPlace( selectedTableCells, writer ) {
 	const { first: firstRow, last: lastRow } = getRowIndexes( selectedTableCells );
 
 	if ( firstRow > 0 ) {
-		const cellsToSplitHorizontallyAtFirstRow = getOverlappingCells( table, firstRow, 0 );
-
-		for ( const cell of cellsToSplitHorizontallyAtFirstRow ) {
-			splitHorizontally( cell, firstRow, writer );
-		}
+		cutCellsHorizontallyAt( table, firstRow, 0, writer );
 	}
 
-	const cellsToSplitHorizontallyAtLastRow = getOverlappingCells( table, lastRow + 1, firstRow );
-
-	for ( const cell of cellsToSplitHorizontallyAtLastRow ) {
-		splitHorizontally( cell, lastRow + 1, writer );
-	}
+	cutCellsHorizontallyAt( table, lastRow + 1, firstRow, writer );
 }

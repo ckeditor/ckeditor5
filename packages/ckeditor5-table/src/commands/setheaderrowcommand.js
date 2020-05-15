@@ -77,11 +77,7 @@ export default class SetHeaderRowCommand extends Command {
 			if ( headingRowsToSet ) {
 				// Changing heading rows requires to check if any of a heading cell is overlapping vertically the table head.
 				// Any table cell that has a rowspan attribute > 1 will not exceed the table head so we need to fix it in rows below.
-				const cellsToSplit = getOverlappingCells( table, headingRowsToSet, currentHeadingRows );
-
-				for ( const cell of cellsToSplit ) {
-					splitHorizontally( cell, headingRowsToSet, writer );
-				}
+				cutCellsHorizontallyAt( table, headingRowsToSet, currentHeadingRows, writer );
 			}
 
 			updateNumericAttribute( 'headingRows', headingRowsToSet, table, writer, 0 );
@@ -103,13 +99,21 @@ export default class SetHeaderRowCommand extends Command {
 	}
 }
 
+export function cutCellsHorizontallyAt( table, headingRowsToSet, currentHeadingRows, writer ) {
+	const cellsToSplit = getOverlappingCells( table, headingRowsToSet, currentHeadingRows );
+
+	for ( const cell of cellsToSplit ) {
+		splitHorizontally( cell, headingRowsToSet, writer );
+	}
+}
+
 // Returns cells that span beyond the new heading section.
 //
 // @param {module:engine/model/element~Element} table The table to check.
 // @param {Number} headingRowsToSet New heading rows attribute.
 // @param {Number} currentHeadingRows Current heading rows attribute.
 // @returns {Array.<module:engine/model/element~Element>}
-export function getOverlappingCells( table, headingRowsToSet, currentHeadingRows ) {
+function getOverlappingCells( table, headingRowsToSet, currentHeadingRows ) {
 	const cellsToSplit = [];
 
 	const startAnalysisRow = headingRowsToSet > currentHeadingRows ? currentHeadingRows : 0;
@@ -132,7 +136,7 @@ export function getOverlappingCells( table, headingRowsToSet, currentHeadingRows
 // @param {module:engine/model/element~Element} tableCell
 // @param {Number} headingRows
 // @param {module:engine/model/writer~Writer} writer
-export function splitHorizontally( tableCell, headingRows, writer ) {
+function splitHorizontally( tableCell, headingRows, writer ) {
 	const tableRow = tableCell.parent;
 	const table = tableRow.parent;
 	const rowIndex = tableRow.index;
