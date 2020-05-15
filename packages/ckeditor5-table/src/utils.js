@@ -256,6 +256,15 @@ export function cutCellsHorizontallyAt( table, headingRowsToSet, currentHeadingR
 	}
 }
 
+// TODO: refactor it to a better, general util.
+export function cutCellsVerticallyAt( table, headingColumnsToSet, currentHeadingColumns, writer ) {
+	const cellsToSplit = getVerticallyOverlappingCells( table, headingColumnsToSet, currentHeadingColumns );
+
+	for ( const { cell, column } of cellsToSplit ) {
+		splitVertically( cell, column, headingColumnsToSet, writer );
+	}
+}
+
 // Returns cells that span beyond the new heading section.
 //
 // @param {module:engine/model/element~Element} table The table to check.
@@ -328,6 +337,64 @@ function splitHorizontally( tableCell, headingRows, writer ) {
 
 	// Update the rowspan attribute after updating table.
 	updateNumericAttribute( 'rowspan', newRowspan, tableCell, writer );
+}
+
+// Returns cells that span beyond the new heading section.
+//
+// @param {module:engine/model/element~Element} table The table to check.
+// @param {Number} headingColumnsToSet New heading columns attribute.
+// @param {Number} currentHeadingColumns Current heading columns attribute.
+// @returns {Array.<module:engine/model/element~Element>}
+function getVerticallyOverlappingCells( table, headingColumnsToSet, currentHeadingColumns ) {
+	const cellsToSplit = [];
+
+	const startAnalysisColumn = headingColumnsToSet > currentHeadingColumns ? currentHeadingColumns : 0;
+	// We're analyzing only when headingColumnsToSet > 0.
+	const endAnalysisColumn = headingColumnsToSet - 1;
+
+	// todo: end/start column
+	const tableWalker = new TableWalker( table );
+
+	for ( const { column, colspan, cell } of tableWalker ) {
+		// Skip slots outside the cropped area.
+		// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
+		if ( startAnalysisColumn > column || column > endAnalysisColumn ) {
+			continue;
+		}
+		if ( colspan > 1 && column + colspan > headingColumnsToSet ) {
+			cellsToSplit.push( { cell, column } );
+		}
+	}
+
+	return cellsToSplit;
+}
+
+// Splits the table cell vertically.
+//
+// @param {module:engine/model/element~Element} tableCell
+// @param {Number} headingColumns
+// @param {module:engine/model/writer~Writer} writer
+function splitVertically( tableCell, columnIndex, headingColumns, writer ) {
+	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) );
+	const newColspan = headingColumns - columnIndex;
+
+	const attributes = {};
+
+	const spanToSet = colspan - newColspan;
+
+	if ( spanToSet > 1 ) {
+		attributes.colspan = spanToSet;
+	}
+
+	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
+
+	if ( rowspan > 1 ) {
+		attributes.rowspan = rowspan;
+	}
+
+	createEmptyTableCell( writer, writer.createPositionAfter( tableCell ), attributes );
+	// Update the colspan attribute after updating table.
+	updateNumericAttribute( 'colspan', newColspan, tableCell, writer );
 }
 
 // Helper method to get an object with `first` and `last` indexes from an unsorted array of indexes.

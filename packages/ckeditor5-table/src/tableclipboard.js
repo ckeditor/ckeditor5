@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
-import { cutCellsHorizontallyAt, getColumnIndexes, getRowIndexes, isSelectionRectangular } from './utils';
+import { cutCellsHorizontallyAt, cutCellsVerticallyAt, getColumnIndexes, getRowIndexes, isSelectionRectangular } from './utils';
 import { findAncestor } from './commands/utils';
 import { cropTableToDimensions } from './tableselection/croptable';
 import TableUtils from './tableutils';
@@ -306,10 +306,17 @@ function prepareLandingPlace( selectedTableCells, writer ) {
 	const table = findAncestor( 'table', selectedTableCells[ 0 ] );
 
 	const { first: firstRow, last: lastRow } = getRowIndexes( selectedTableCells );
+	const { first: firstColumn, last: lastColumn } = getColumnIndexes( selectedTableCells );
 
 	if ( firstRow > 0 ) {
 		cutCellsHorizontallyAt( table, firstRow, 0, writer );
 	}
 
 	cutCellsHorizontallyAt( table, lastRow + 1, firstRow, writer );
+
+	if ( firstColumn > 0 ) {
+		cutCellsVerticallyAt( table, firstColumn, 0, writer );
+	}
+
+	cutCellsVerticallyAt( table, lastColumn + 1, firstColumn, writer );
 }
