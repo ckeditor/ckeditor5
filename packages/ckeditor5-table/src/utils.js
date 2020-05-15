@@ -248,21 +248,46 @@ export function isSelectionRectangular( selectedTableCells, tableUtils ) {
 }
 
 // TODO: refactor it to a better, general util.
-export function cutCellsHorizontallyAt( table, headingRowsToSet, currentHeadingRows, writer ) {
-	const cellsToSplit = getHorizontallyOverlappingCells( table, headingRowsToSet, currentHeadingRows );
+export function cutCellsHorizontallyAt( table, headingRowsToSet, currentHeadingRows, writer, boundingBox ) {
+	const overlappingCells = getHorizontallyOverlappingCells( table, headingRowsToSet, currentHeadingRows );
 
-	for ( const cell of cellsToSplit ) {
+	let cellsToSplit;
+
+	if ( boundingBox === undefined ) {
+		cellsToSplit = overlappingCells;
+	} else {
+		cellsToSplit = overlappingCells.filter( filterToBoundingBox( boundingBox ) );
+	}
+
+	for ( const { cell } of cellsToSplit ) {
 		splitHorizontally( cell, headingRowsToSet, writer );
 	}
 }
 
 // TODO: refactor it to a better, general util.
-export function cutCellsVerticallyAt( table, headingColumnsToSet, currentHeadingColumns, writer ) {
-	const cellsToSplit = getVerticallyOverlappingCells( table, headingColumnsToSet, currentHeadingColumns );
+export function cutCellsVerticallyAt( table, headingColumnsToSet, currentHeadingColumns, writer, boundingBox ) {
+	const overlappingCells = getVerticallyOverlappingCells( table, headingColumnsToSet, currentHeadingColumns );
+
+	let cellsToSplit;
+
+	if ( boundingBox === undefined ) {
+		cellsToSplit = overlappingCells;
+	} else {
+		cellsToSplit = overlappingCells.filter( filterToBoundingBox( boundingBox ) );
+	}
 
 	for ( const { cell, column } of cellsToSplit ) {
 		splitVertically( cell, column, headingColumnsToSet, writer );
 	}
+}
+
+// TODO: better fit to bounding box to match criteria.. should check also spans because sometimes we need to split them.
+function filterToBoundingBox( boundingBox ) {
+	const { firstRow, firstColumn, lastRow, lastColumn } = boundingBox;
+
+	return ( { row, column } ) => {
+		return ( ( firstRow <= row ) && ( row <= lastRow ) ) && ( firstColumn <= column && column <= lastColumn );
+	};
 }
 
 // Returns cells that span beyond the new heading section.
@@ -280,9 +305,11 @@ function getHorizontallyOverlappingCells( table, headingRowsToSet, currentHeadin
 
 	const tableWalker = new TableWalker( table, { startRow: startAnalysisRow, endRow: endAnalysisRow } );
 
-	for ( const { row, rowspan, cell } of tableWalker ) {
+	for ( const twv of tableWalker ) {
+		const { row, rowspan } = twv;
+
 		if ( rowspan > 1 && row + rowspan > headingRowsToSet ) {
-			cellsToSplit.push( cell );
+			cellsToSplit.push( twv );
 		}
 	}
 
@@ -355,14 +382,15 @@ function getVerticallyOverlappingCells( table, headingColumnsToSet, currentHeadi
 	// todo: end/start column
 	const tableWalker = new TableWalker( table );
 
-	for ( const { column, colspan, cell } of tableWalker ) {
+	for ( const twv of tableWalker ) {
+		const { column, colspan } = twv;
 		// Skip slots outside the cropped area.
 		// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
 		if ( startAnalysisColumn > column || column > endAnalysisColumn ) {
 			continue;
 		}
 		if ( colspan > 1 && column + colspan > headingColumnsToSet ) {
-			cellsToSplit.push( { cell, column } );
+			cellsToSplit.push( twv );
 		}
 	}
 

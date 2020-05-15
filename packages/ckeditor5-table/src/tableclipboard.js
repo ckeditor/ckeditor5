@@ -309,14 +309,14 @@ function prepareLandingPlace( selectedTableCells, writer ) {
 	const { first: firstColumn, last: lastColumn } = getColumnIndexes( selectedTableCells );
 
 	if ( firstRow > 0 ) {
-		cutCellsHorizontallyAt( table, firstRow, 0, writer );
+		cutCellsHorizontallyAt( table, firstRow, 0, writer, { firstRow: 0, firstColumn, lastRow: 1000, lastColumn } );
 	}
 
-	cutCellsHorizontallyAt( table, lastRow + 1, firstRow, writer );
+	cutCellsHorizontallyAt( table, lastRow + 1, firstRow, writer, { firstRow: 0, firstColumn, lastRow: 1000, lastColumn } );
 
 	if ( firstColumn > 0 ) {
-		cutCellsVerticallyAt( table, firstColumn, 0, writer );
+		cutCellsVerticallyAt( table, firstColumn, 0, writer, { firstRow, firstColumn: 0, lastRow, lastColumn: 1000 } );
 	}
 
-	cutCellsVerticallyAt( table, lastColumn + 1, firstColumn, writer );
+	cutCellsVerticallyAt( table, lastColumn + 1, firstColumn, writer, { firstRow, firstColumn: 0, lastRow, lastColumn: 1000 } );
 }
