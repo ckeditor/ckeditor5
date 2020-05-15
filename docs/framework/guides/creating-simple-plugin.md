@@ -19,6 +19,10 @@ The plugin that you will write will use a part of the {@link features/image imag
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
+<info-box hint>
+	For simplicity reasons this guide does not describe how to localize the created plugin. To see how to localize plugins, refer to the {@link framework/guides/deep-dive/localization localization guide}.
+</info-box>
+
 ## Step 1. Installing dependencies
 
 Start from installing the necessary dependencies:
@@ -27,7 +31,7 @@ Start from installing the necessary dependencies:
 * The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package which contains the {@link module:core/plugin~Plugin} and {@link module:core/command~Command} classes.
 * The [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package which contains the UI library and framework.
 
-```bash
+```
 npm install --save @ckeditor/ckeditor5-image \
 	@ckeditor/ckeditor5-core \
 	@ckeditor/ckeditor5-ui

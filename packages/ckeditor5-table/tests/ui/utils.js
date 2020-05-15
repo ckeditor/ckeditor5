@@ -29,6 +29,7 @@ import {
 } from '../../src/ui/utils';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { centeredBalloonPositionForLongWidgets } from '@ckeditor/ckeditor5-widget/src/utils';
 import { modelTable } from '../_utils/utils';
 
 describe( 'UI Utils', () => {
@@ -139,7 +140,8 @@ describe( 'UI Utils', () => {
 						defaultPositions.northArrowSouthEast,
 						defaultPositions.southArrowNorth,
 						defaultPositions.southArrowNorthWest,
-						defaultPositions.southArrowNorthEast
+						defaultPositions.southArrowNorthEast,
+						centeredBalloonPositionForLongWidgets
 					]
 				} );
 			} );
