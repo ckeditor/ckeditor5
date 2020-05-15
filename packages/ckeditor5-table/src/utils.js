@@ -8,7 +8,7 @@
  */
 
 import { isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import { findAncestor } from './commands/utils';
+import { createEmptyTableCell, findAncestor, updateNumericAttribute } from './commands/utils';
 import TableWalker from './tablewalker';
 
 /**
@@ -245,6 +245,89 @@ export function isSelectionRectangular( selectedTableCells, tableUtils ) {
 	const areaOfValidSelection = getBiggestRectangleArea( rows, columns );
 
 	return areaOfValidSelection == areaOfSelectedCells;
+}
+
+// TODO: refactor it to a better, general util.
+export function cutCellsHorizontallyAt( table, headingRowsToSet, currentHeadingRows, writer ) {
+	const cellsToSplit = getHorizontallyOverlappingCells( table, headingRowsToSet, currentHeadingRows );
+
+	for ( const cell of cellsToSplit ) {
+		splitHorizontally( cell, headingRowsToSet, writer );
+	}
+}
+
+// Returns cells that span beyond the new heading section.
+//
+// @param {module:engine/model/element~Element} table The table to check.
+// @param {Number} headingRowsToSet New heading rows attribute.
+// @param {Number} currentHeadingRows Current heading rows attribute.
+// @returns {Array.<module:engine/model/element~Element>}
+function getHorizontallyOverlappingCells( table, headingRowsToSet, currentHeadingRows ) {
+	const cellsToSplit = [];
+
+	const startAnalysisRow = headingRowsToSet > currentHeadingRows ? currentHeadingRows : 0;
+	// We're analyzing only when headingRowsToSet > 0.
+	const endAnalysisRow = headingRowsToSet - 1;
+
+	const tableWalker = new TableWalker( table, { startRow: startAnalysisRow, endRow: endAnalysisRow } );
+
+	for ( const { row, rowspan, cell } of tableWalker ) {
+		if ( rowspan > 1 && row + rowspan > headingRowsToSet ) {
+			cellsToSplit.push( cell );
+		}
+	}
+
+	return cellsToSplit;
+}
+
+// Splits the table cell horizontally.
+//
+// @param {module:engine/model/element~Element} tableCell
+// @param {Number} headingRows
+// @param {module:engine/model/writer~Writer} writer
+function splitHorizontally( tableCell, headingRows, writer ) {
+	const tableRow = tableCell.parent;
+	const table = tableRow.parent;
+	const rowIndex = tableRow.index;
+
+	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) );
+	const newRowspan = headingRows - rowIndex;
+
+	const attributes = {};
+
+	const spanToSet = rowspan - newRowspan;
+
+	if ( spanToSet > 1 ) {
+		attributes.rowspan = spanToSet;
+	}
+
+	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+
+	if ( colspan > 1 ) {
+		attributes.colspan = colspan;
+	}
+
+	const startRow = table.getChildIndex( tableRow );
+	const endRow = startRow + newRowspan;
+	const tableMap = [ ...new TableWalker( table, { startRow, endRow, includeSpanned: true } ) ];
+
+	let columnIndex;
+
+	for ( const { row, column, cell, cellIndex } of tableMap ) {
+		if ( cell === tableCell && columnIndex === undefined ) {
+			columnIndex = column;
+		}
+
+		if ( columnIndex !== undefined && columnIndex === column && row === endRow ) {
+			const tableRow = table.getChild( row );
+			const tableCellPosition = writer.createPositionAt( tableRow, cellIndex );
+
+			createEmptyTableCell( writer, tableCellPosition, attributes );
+		}
+	}
+
+	// Update the rowspan attribute after updating table.
+	updateNumericAttribute( 'rowspan', newRowspan, tableCell, writer );
 }
 
 // Helper method to get an object with `first` and `last` indexes from an unsorted array of indexes.

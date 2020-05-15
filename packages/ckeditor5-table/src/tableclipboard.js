@@ -11,10 +11,9 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
-import { getColumnIndexes, getRowIndexes, isSelectionRectangular } from './utils';
+import { cutCellsHorizontallyAt, getColumnIndexes, getRowIndexes, isSelectionRectangular } from './utils';
 import { findAncestor } from './commands/utils';
 import { cropTableToDimensions } from './tableselection/croptable';
-import { cutCellsHorizontallyAt } from './commands/setheaderrowcommand';
 import TableUtils from './tableutils';
 
 /**
