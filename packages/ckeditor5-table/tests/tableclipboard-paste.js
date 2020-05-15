@@ -1101,31 +1101,351 @@ describe( 'table clipboard', () => {
 				} );
 			} );
 
-			describe( 'non-rectangular content table', () => {
-				it( 'should block non-rectangular selection', () => {
+			describe( 'non-rectangular content table selection', () => {
+				it( 'should split cells outside the selected area before pasting (rowspan ends in selection)', () => {
+					// +----+----+----+
+					// | 00 | 01 | 02 |
+					// +----+    +----+
+					// | 10 |    | 12 |
+					// +----+    +----+
+					// | 20 |    | 22 |
+					// +----+    +----+
+					// | 30 |    | 32 |
+					// +----+----+----+
+					// | 40 | 41 | 42 |
+					// +----+----+----+
 					setModelData( model, modelTable( [
-						[ { contents: '00', colspan: 3 } ],
-						[ '10', '11', '12' ],
-						[ '20', '21', '22' ]
+						[ '00', { contents: '01', rowspan: 4 }, '02' ],
+						[ '10', '12' ],
+						[ '20', '22' ],
+						[ '30', '32' ],
+						[ '40', '41', '42' ]
 					] ) );
 
+					// Select 20 -> 32
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 3, 1 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab', 'ac' ],
+						[ 'ba', 'bb', 'bc' ]
+					] );
+
+					// +----+----+----+
+					// | 00 | 01 | 02 |
+					// +----+    +----+
+					// | 10 |    | 12 |
+					// +----+----+----+
+					// | aa | ab | ac |
+					// +----+----+----+
+					// | ba | bb | bc |
+					// +----+----+----+
+					// | 40 | 41 | 42 |
+					// +----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', { contents: '01', rowspan: 2 }, '02' ],
+						[ '10', '12' ],
+						[ 'aa', 'ab', 'ac' ],
+						[ 'ba', 'bb', 'bc' ],
+						[ '40', '41', '42' ]
+					] ) );
+				} );
+
+				it( 'should split cells outside the selected area before pasting (rowspan ends after the selection)', () => {
+					// +----+----+----+
+					// | 00 | 01 | 02 |
+					// +----+    +----+
+					// | 10 |    | 12 |
+					// +----+    +----+
+					// | 20 |    | 22 |
+					// +----+    +----+
+					// | 30 |    | 32 |
+					// +----+----+----+
+					// | 40 | 41 | 42 |
+					// +----+----+----+
+					setModelData( model, modelTable( [
+						[ '00', { contents: '01', rowspan: 4 }, '02' ],
+						[ '10', '12' ],
+						[ '20', '22' ],
+						[ '30', '32' ],
+						[ '40', '41', '42' ]
+					] ) );
+
+					// Select 10 -> 22
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab', 'ac' ],
+						[ 'ba', 'bb', 'bc' ]
+					] );
+
+					// +----+----+----+
+					// | 00 | 01 | 02 |
+					// +----+----+----+
+					// | aa | ab | ac |
+					// +----+----+----+
+					// | ba | bb | bc |
+					// +----+----+----+
+					// | 30 |    | 32 |
+					// +----+----+----+
+					// | 40 | 41 | 42 |
+					// +----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02' ],
+						[ 'aa', 'ab', 'ac' ],
+						[ 'ba', 'bb', 'bc' ],
+						[ '30', '', '32' ],
+						[ '40', '41', '42' ]
+					] ) );
+				} );
+
+				it( 'should split cells inside the selected area before pasting (rowspan ends after the selection)', () => {
+					// +----+----+----+
+					// | 00 | 01 | 02 |
+					// +----+    +----+
+					// | 10 |    | 12 |
+					// +----+    +----+
+					// | 20 |    | 22 |
+					// +----+    +----+
+					// | 30 |    | 32 |
+					// +----+----+----+
+					// | 40 | 41 | 42 |
+					// +----+----+----+
+					setModelData( model, modelTable( [
+						[ '00', { contents: '01', rowspan: 4 }, '02' ],
+						[ '10', '12' ],
+						[ '20', '22' ],
+						[ '30', '32' ],
+						[ '40', '41', '42' ]
+					] ) );
+
+					// Select 00 -> 12
 					tableSelection.setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 					);
 
-					// Catches the temporary console log in the CK_DEBUG mode.
-					sinon.stub( console, 'log' );
+					pasteTable( [
+						[ 'aa', 'ab', 'ac' ],
+						[ 'ba', 'bb', 'bc' ]
+					] );
+
+					// +----+----+----+
+					// | aa | ab | ac |
+					// +----+----+----+
+					// | ba | bb | bc |
+					// +----+----+----+
+					// | 20 |    | 22 |
+					// +----+    +----+
+					// | 30 |    | 32 |
+					// +----+----+----+
+					// | 40 | 41 | 42 |
+					// +----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ 'aa', 'ab', 'ac' ],
+						[ 'ba', 'bb', 'bc' ],
+						[ '20', { rowspan: 2, contents: '' }, '22' ],
+						[ '30', '32' ],
+						[ '40', '41', '42' ]
+					] ) );
+				} );
+
+				it( 'should split cells outside the selected area before pasting (colspan ends in selection)', () => {
+					// +----+----+----+----+----+
+					// | 00 | 01 | 02 | 03 | 04 |
+					// +----+----+----+----+----+
+					// | 10                | 14 |
+					// +----+----+----+----+----+
+					// | 20 | 21 | 22 | 23 | 24 |
+					// +----+----+----+----+----+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02', '03', '04' ],
+						[ { contents: '10', colspan: 4 }, '14' ],
+						[ '20', '21', '22', '23', '24' ]
+					] ) );
+
+					// Select 02 -> 23
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 3, 1 ] )
+					);
 
 					pasteTable( [
 						[ 'aa', 'ab' ],
-						[ 'ba', 'bb' ]
+						[ 'ba', 'bb' ],
+						[ 'ca', 'cb' ]
 					] );
 
+					// +----+----+----+----+----+
+					// | 00 | 01 | aa | ab | 04 |
+					// +----+----+----+----+----+
+					// | 10      | ba | bb | 14 |
+					// +----+----+----+----+----+
+					// | 20 | 21 | ca | cb | 24 |
+					// +----+----+----+----+----+
 					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-						[ { contents: '00', colspan: 3 } ],
-						[ '10', '11', '12' ],
-						[ '20', '21', '22' ]
+						[ '00', '01', 'aa', 'ab', '04' ],
+						[ { contents: '10', colspan: 2 }, 'ba', 'bb', '14' ],
+						[ '20', '21', 'ca', 'cb', '24' ]
+					] ) );
+				} );
+
+				it( 'should split cells outside the selected area before pasting (colspan ends after the selection)', () => {
+					// +----+----+----+----+----+
+					// | 00 | 01 | 02 | 03 | 04 |
+					// +----+----+----+----+----+
+					// | 10                | 14 |
+					// +----+----+----+----+----+
+					// | 20 | 21 | 22 | 23 | 24 |
+					// +----+----+----+----+----+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02', '03', '04' ],
+						[ { contents: '10', colspan: 4 }, '14' ],
+						[ '20', '21', '22', '23', '24' ]
+					] ) );
+
+					// Select 01 -> 22
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ],
+						[ 'ca', 'cb' ]
+					] );
+
+					// +----+----+----+----+----+
+					// | 00 | aa | ab | 03 | 04 |
+					// +----+----+----+----+----+
+					// | 10 | ba | bb |    | 14 |
+					// +----+----+----+----+----+
+					// | 20 | ca | cb | 23 | 24 |
+					// +----+----+----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', 'aa', 'ab', '04' ],
+						[ { contents: '10', colspan: 2 }, 'ba', 'bb', '14' ],
+						[ '20', '21', 'ca', 'cb', '24' ]
+					] ) );
+				} );
+
+				it( 'should split cells inside the selected area before pasting (colspan ends after the selection)', () => {
+					// +----+----+----+----+----+
+					// | 00 | 01 | 02 | 03 | 04 |
+					// +----+----+----+----+----+
+					// | 10                | 14 |
+					// +----+----+----+----+----+
+					// | 20 | 21 | 22 | 23 | 24 |
+					// +----+----+----+----+----+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02', '03', '04' ],
+						[ { contents: '10', colspan: 4 }, '14' ],
+						[ '20', '21', '22', '23', '24' ]
+					] ) );
+
+					// Select 00 -> 21
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ],
+						[ 'ca', 'cb' ]
+					] );
+
+					// +----+----+----+----+----+
+					// | aa | ab | 02 | 03 | 04 |
+					// +----+----+----+----+----+
+					// | ba | bb |    |    | 14 |
+					// +----+----+----+----+----+
+					// | ca | cb | 22 | 23 | 24 |
+					// +----+----+----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', 'aa', 'ab', '04' ],
+						[ { contents: '10', colspan: 2 }, 'ba', 'bb', '14' ],
+						[ '20', '21', 'ca', 'cb', '24' ]
+					] ) );
+				} );
+
+				it( 'should properly handle complex case', () => {
+					// +----+----+----+----+----+----+----+
+					// | 00           | 03 | 04 | 05 | 06 |
+					// +              +    +----+----+----+
+					// |              |    | 14 | 15 | 16 |
+					// +              +    +----+----+----+
+					// |              |    | 24           |
+					// +----+----+----+----+----+----+----+
+					// | 30 | 31      | 33 | 34 | 35 | 36 |
+					// +    +----+----+    +----+----+----+
+					// |    | 41 | 42 |    | 44 | 45      |
+					// +    +----+----+    +----+         +
+					// |    | 51 | 52 |    | 54 |         |
+					// +----+----+----+    +----+         +
+					// | 60 | 61 | 62 |    | 64 |         |
+					// +----+----+----+----+----+----+----+
+					setModelData( model, modelTable( [
+						[ { contents: '00', colspan: 3, rowspan: 3 }, { contents: '03', rowspan: 3 }, '04', '05', '06' ],
+						[ '14', '15', '16' ],
+						[ { contents: '24', colspan: 3 } ],
+						[
+							{ contents: '30', rowspan: 3 },
+							{ contents: '31', colspan: 2 },
+							{ contents: '33', rowspan: 4 },
+							'34', '35', '36'
+						],
+						[ '41', '42', '44', { contents: '45', colspan: 2, rowspan: 3 } ],
+						[ '51', '52', '54' ],
+						[ '60', '61', '62', '64' ]
+					] ) );
+
+					// Select 42 -> 24 (3x3 selection)
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 4, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab', 'ac' ],
+						[ 'ba', 'bb', 'bc' ],
+						[ 'ca', 'cb', 'cc' ]
+					] );
+
+					// +----+----+----+----+----+----+----+
+					// | 00      |    | 03 | 04 | 05 | 06 |
+					// +         +    +    +----+----+----+
+					// |         |    |    | 14 | 15 | 16 |
+					// +----+----+----+----+----+----+----+
+					// |         | aa | ab | ac |         |
+					// +----+----+----+----+----+----+----+
+					// | 30 | 31 | ba | bb | bc | 35 | 36 |
+					// +    +----+----+----+----+----+----+
+					// |    | 41 | ca | cb | cc | 45      |
+					// +    +----+----+----+----+         +
+					// |    | 51 | 52 | 53 | 54 |         |
+					// +----+----+----+    +----+         +
+					// | 60 | 61 | 62 |    | 64 |         |
+					// +----+----+----+----+----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[
+							{ contents: '00', colspan: 2, rowspan: 2 },
+							{ contents: '', rowspan: 2 },
+							{ contents: '03', rowspan: 2 },
+							'04', '05', '06'
+						],
+						[ '14', '15', '16' ],
+						[ { contents: '', colspan: 2 }, 'aa', 'ab', 'ac', { contents: '', colspan: 2 } ],
+						[ { contents: '30', rowspan: 3 }, '31', 'ba', 'bb', 'bc', '35', '36' ],
+						[ '41', 'ca', 'cb', 'cc', { contents: '45', colspan: 2, rowspan: 3 } ],
+						[ '51', '52', { contents: '53', rowspan: 2 }, '54' ],
+						[ '60', '61', '62', '64' ]
 					] ) );
 				} );
 			} );
