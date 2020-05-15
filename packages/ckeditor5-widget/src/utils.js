@@ -348,25 +348,21 @@ export function viewToModelPositionOutsideModelElement( model, viewElementMatche
  * It comes in handy when a widget is longer than the visual viewport of the web browser and/or upper/lower boundaries
  * of a widget are off screen because of the web page scroll.
  *
- *	               (A)                                 (B)                                 (C)
- *
- *	                                                                           ┌─┄┄┄┄┄┄┄┄Widget┄┄┄┄┄┄┄┄┄┄┐
- *	                                                                           ┊                         ┊
- *	                                       ┌─┄┄┄┄┄┄┄┄┄Widget┄┄┄┄┄┄┄┄┄┐         ┊                         ┊
- *	                                       ┊                         ┊         ┊                         ┊
- *	┌────────────Viewport───────────┐   ┌──╁─────────Viewport────────╁──┐   ┌──╁────────Viewport─────────╁──┐
- *	│  ┏━━━━━━━━━━Widget━━━━━━━━━┓  │   │  ┃            ^            ┃  │   │  ┃                         ┃  │
- *	│  ┃            ^            ┃  │   │  ┃   ╭───────/ \───────╮   ┃  │   │  ┃                         ┃  │
- *	│  ┃   ╭───────/ \───────╮   ┃  │   │  ┃   │     Balloon     │   ┃  │   │  ┃                         ┃  │
- *	│  ┃   │     Balloon     │   ┃  │   │  ┃   ╰─────────────────╯   ┃  │   │  ┃                         ┃  │
- *	│  ┃   ╰─────────────────╯   ┃  │   │  ┃                         ┃  │   │  ┃                         ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │   │  ┃                         ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │   │  ┃   ╭─────────────────╮   ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │   │  ┃   │     Balloon     │   ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │   │  ┃   ╰───────\ /───────╯   ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │   │  ┃            V            ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │   │  ┗━━━━━━━━━━━━━━━━━━━━━━━━━┛  │
- *	└──╀─────────────────────────╀──┘   └──╀─────────────────────────╀──┘   └───────────────────────────────┘
+ *	                                       ┌─┄┄┄┄┄┄┄┄┄Widget┄┄┄┄┄┄┄┄┄┐
+ *	                                       ┊                         ┊
+ *	┌────────────Viewport───────────┐   ┌──╁─────────Viewport────────╁──┐
+ *	│  ┏━━━━━━━━━━Widget━━━━━━━━━┓  │   │  ┃            ^            ┃  │
+ *	│  ┃            ^            ┃  │   │  ┃   ╭───────/ \───────╮   ┃  │
+ *	│  ┃   ╭───────/ \───────╮   ┃  │   │  ┃   │     Balloon     │   ┃  │
+ *	│  ┃   │     Balloon     │   ┃  │   │  ┃   ╰─────────────────╯   ┃  │
+ *	│  ┃   ╰─────────────────╯   ┃  │   │  ┃                         ┃  │
+ *	│  ┃                         ┃  │   │  ┃                         ┃  │
+ *	│  ┃                         ┃  │   │  ┃                         ┃  │
+ *	│  ┃                         ┃  │   │  ┃                         ┃  │
+ *	│  ┃                         ┃  │   │  ┃                         ┃  │
+ *	│  ┃                         ┃  │   │  ┃                         ┃  │
+ *	│  ┃                         ┃  │   │  ┃                         ┃  │
+ *	└──╀─────────────────────────╀──┘   └──╀─────────────────────────╀──┘
  *	   ┊                         ┊         ┊                         ┊
  *	   ┊                         ┊         └┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘
  *	   ┊                         ┊
@@ -383,8 +379,6 @@ export function viewToModelPositionOutsideModelElement( model, viewElementMatche
 export function centeredBalloonPositionForLongWidgets( widgetRect, balloonRect ) {
 	const viewportRect = new Rect( global.window );
 	const viewportWidgetInsersectionRect = viewportRect.getIntersection( widgetRect );
-	const isUpperTargetEdgeOffViewport = widgetRect.top < viewportRect.top;
-	const isLowerTargetEdgeOffViewport = widgetRect.bottom > viewportRect.bottom;
 
 	// Because this is a last resort positioning, to keep things simple we're not playing with positions of the arrow
 	// like, for instance, "south west" or whatever. Just try to keep the balloon in the middle of the visible area of
@@ -393,22 +387,11 @@ export function centeredBalloonPositionForLongWidgets( widgetRect, balloonRect )
 	const targetRect = viewportWidgetInsersectionRect || widgetRect;
 	const left = targetRect.left + targetRect.width / 2 - balloonRect.width / 2;
 
-	// Case (C).
-	if ( isUpperTargetEdgeOffViewport && !isLowerTargetEdgeOffViewport ) {
-		return {
-			top: Math.min( widgetRect.bottom, viewportRect.bottom ) - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
-			left,
-			name: 'arrow_s'
-		};
-	}
-	// Cases (A) and (B).
-	else {
-		return {
-			top: Math.max( widgetRect.top, 0 ) + BalloonPanelView.arrowVerticalOffset,
-			left,
-			name: 'arrow_n'
-		};
-	}
+	return {
+		top: Math.max( widgetRect.top, 0 ) + BalloonPanelView.arrowVerticalOffset,
+		left,
+		name: 'arrow_n'
+	};
 }
 
 // Default filler offset function applied to all widget elements.

@@ -532,7 +532,7 @@ describe( 'widget utils', () => {
 			} );
 		} );
 
-		it( 'should stick the balloon to the top of the viewport when the top (just as the bottom) of a widget is off-screen', () => {
+		it( 'should stick the balloon to the top of the viewport when the top of a widget is off-screen', () => {
 			// Widget is a 50x150 rect, translated (25,-25) from viewport's beginning (0,0).
 			const widgetRect = new Rect( {
 				top: -25,
@@ -549,26 +549,6 @@ describe( 'widget utils', () => {
 				top: arrowVerticalOffset,
 				left: 45,
 				name: 'arrow_n'
-			} );
-		} );
-
-		it( 'should position the balloon inside a widget at the bottom if the top of a widget is off-screen (but bottom is not)', () => {
-			// Widget is a 50x150 rect, translated (25,-100) from viewport's beginning (0,0).
-			const widgetRect = new Rect( {
-				top: -100,
-				left: 25,
-				right: 75,
-				bottom: 50,
-				width: 50,
-				height: 150
-			} );
-
-			const position = centeredBalloonPositionForLongWidgets( widgetRect, balloonRect );
-
-			expect( position ).to.deep.equal( {
-				top: 50 - balloonRect.height - arrowVerticalOffset,
-				left: 45,
-				name: 'arrow_s'
 			} );
 		} );
 
