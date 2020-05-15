@@ -219,6 +219,88 @@ describe( 'TableUtils', () => {
 				[ '', '' ]
 			] ) );
 		} );
+
+		describe( 'with copyStructureFrom enabled', () => {
+			beforeEach( () => {
+				// +----+----+----+----+----+----+
+				// | 00 | 01      | 03 | 04 | 05 |
+				// +----+         +    +----+----+
+				// | 10 |         |    | 14      |
+				// +----+----+----+----+----+----+
+				setData( model, modelTable( [
+					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04', '05' ],
+					[ '10', { contents: '14', colspan: 2 } ]
+				] ) );
+			} );
+
+			it( 'should copy structure from the first row', () => {
+				tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 0, rows: 1, copyStructureFromAbove: false } );
+
+				// +----+----+----+----+----+----+
+				// |    |         |    |    |    |
+				// +----+----+----+----+----+----+
+				// | 00 | 01      | 03 | 04 | 05 |
+				// +----+         +    +----+----+
+				// | 10 |         |    | 14      |
+				// +----+----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '', { contents: '', colspan: 2 }, '', '', '' ],
+					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04', '05' ],
+					[ '10', { contents: '14', colspan: 2 } ]
+				] ) );
+			} );
+
+			it( 'should copy structure from the first row and properly handle row-spanned cells', () => {
+				tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1, rows: 1, copyStructureFromAbove: true } );
+
+				// +----+----+----+----+----+----+
+				// | 00 | 01      | 03 | 04 | 05 |
+				// +----+         +    +----+----+
+				// |    |         |    |    |    |
+				// +----+         +    +----+----+
+				// | 10 |         |    | 14      |
+				// +----+----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', { contents: '01', colspan: 2, rowspan: 3 }, { contents: '03', rowspan: 3 }, '04', '05' ],
+					[ '', '', '' ],
+					[ '10', { contents: '14', colspan: 2 } ]
+				] ) );
+			} );
+
+			it( 'should copy structure from the last row', () => {
+				tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 1, copyStructureFromAbove: true } );
+
+				// +----+----+----+----+----+----+
+				// | 00 | 01      | 03 | 04 | 05 |
+				// +----+         +    +----+----+
+				// | 10 |         |    | 14      |
+				// +----+----+----+----+----+----+
+				// |    |         |    |         |
+				// +----+----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04', '05' ],
+					[ '10', { contents: '14', colspan: 2 } ],
+					[ '', { contents: '', colspan: 2 }, '', { contents: '', colspan: 2 } ]
+				] ) );
+			} );
+
+			it( 'should copy structure from the last row and properly handle row-spanned cells', () => {
+				tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1, rows: 1, copyStructureFromAbove: false } );
+
+				// +----+----+----+----+----+----+
+				// | 00 | 01      | 03 | 04 | 05 |
+				// +----+         +    +----+----+
+				// |    |         |    |         |
+				// +----+         +    +----+----+
+				// | 10 |         |    | 14      |
+				// +----+----+----+----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', { contents: '01', colspan: 2, rowspan: 3 }, { contents: '03', rowspan: 3 }, '04', '05' ],
+					[ '', { contents: '', colspan: 2 } ],
+					[ '10', { contents: '14', colspan: 2 } ]
+				] ) );
+			} );
+		} );
 	} );
 
 	describe( 'insertColumns()', () => {
@@ -1366,6 +1448,20 @@ describe( 'TableUtils', () => {
 				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
 					[ '01', '02' ],
 					[ '21', '22' ]
+				] ) );
+			} );
+
+			it( 'should remove the column properly when multiple rows should be removed (because of to row-spans)', () => {
+				setData( model, modelTable( [
+					[ '00', { contents: '01', rowspan: 3 }, { contents: '02', rowspan: 3 } ],
+					[ '10' ],
+					[ '20' ]
+				] ) );
+
+				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '01', '02' ]
 				] ) );
 			} );
 		} );
