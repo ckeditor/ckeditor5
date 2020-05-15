@@ -58,10 +58,13 @@ ClassicEditor
 				return;
 			}
 
+			const useLetters = document.getElementById( 'use-letters' ).checked;
+
 			editor.model.change( writer => {
 				for ( const { row, column, cell } of new TableWalker( table ) ) {
 					const selection = editor.model.createSelection( cell, 'in' );
-					editor.model.insertContent( writer.createText( `${ row }${ column }` ), selection );
+
+					editor.model.insertContent( writer.createText( createCellText( row, column, useLetters ) ), selection );
 				}
 			} );
 
@@ -126,6 +129,13 @@ ClassicEditor
 
 		function updateInputStatus( message = '' ) {
 			document.getElementById( 'input-status' ).innerText = message;
+		}
+
+		function createCellText( row, column, useLetters ) {
+			const rowLabel = useLetters ? String.fromCharCode( row + 'a'.charCodeAt( 0 ) ) : row;
+			const columnLabel = useLetters ? String.fromCharCode( column + 'a'.charCodeAt( 0 ) ) : column;
+
+			return `${ rowLabel }${ columnLabel }`;
 		}
 	} )
 	.catch( err => {

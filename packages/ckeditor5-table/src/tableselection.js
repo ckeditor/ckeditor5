@@ -13,12 +13,9 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
 import MouseEventsObserver from './tableselection/mouseeventsobserver';
-import {
-	getSelectedTableCells,
-	getTableCellsContainingSelection
-} from './utils';
+import { getColumnIndexes, getRowIndexes, getSelectedTableCells, getTableCellsContainingSelection } from './utils';
 import { findAncestor } from './commands/utils';
-import cropTable from './tableselection/croptable';
+import { cropTableToDimensions } from './tableselection/croptable';
 
 import '../theme/tableselection.css';
 
@@ -99,7 +96,20 @@ export default class TableSelection extends Plugin {
 
 		return this.editor.model.change( writer => {
 			const documentFragment = writer.createDocumentFragment();
-			const table = cropTable( selectedCells, this.editor.plugins.get( 'TableUtils' ), writer );
+
+			const { first: startColumn, last: endColumn } = getColumnIndexes( selectedCells );
+			const { first: startRow, last: endRow } = getRowIndexes( selectedCells );
+
+			const sourceTable = findAncestor( 'table', selectedCells[ 0 ] );
+
+			const cropDimensions = {
+				startRow,
+				startColumn,
+				endRow,
+				endColumn
+			};
+
+			const table = cropTableToDimensions( sourceTable, cropDimensions, writer, this.editor.plugins.get( 'TableUtils' ) );
 
 			writer.insert( table, documentFragment, 0 );
 

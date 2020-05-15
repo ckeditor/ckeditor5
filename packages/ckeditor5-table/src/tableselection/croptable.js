@@ -7,146 +7,138 @@
  * @module table/tableselection/croptable
  */
 
-import { findAncestor } from '../commands/utils';
+import { createEmptyTableCell, updateNumericAttribute } from '../commands/utils';
+import TableWalker from '../tablewalker';
 
 /**
- * Returns a cropped table from the selected table cells.
+ * Returns a cropped table according to given dimensions.
+
+ * To return a cropped table that starts at first row and first column and end in third row and column:
  *
- * This function is to be used with the table selection.
+ *		const croppedTable = cropTableToDimensions( table, {
+ *			startRow: 1,
+ *			endRow: 1,
+ *			startColumn: 3,
+ *			endColumn: 3
+ *		}, tableUtils, writer );
  *
- *		tableSelection.startSelectingFrom( startCell )
- *		tableSelection.setSelectingFrom( endCell )
+ * Calling the code above for the table below:
  *
- *		const croppedTable = cropTable( tableSelection.getSelectedTableCells() );
+ *		      0   1   2   3   4                      0   1   2
+ *		    ┌───┬───┬───┬───┬───┐
+ *		 0  │ a │ b │ c │ d │ e │
+ *		    ├───┴───┤   ├───┴───┤                  ┌───┬───┬───┐
+ *		 1  │ f     │   │ g     │                  │   │   │ g │  0
+ *		    ├───┬───┴───┼───┬───┤   will return:   ├───┴───┼───┤
+ *		 2  │ h │ i     │ j │ k │                  │ i     │ j │  1
+ *		    ├───┤       ├───┤   │                  │       ├───┤
+ *		 3  │ l │       │ m │   │                  │       │ m │  2
+ *		    ├───┼───┬───┤   ├───┤                  └───────┴───┘
+ *		 4  │ n │ o │ p │   │ q │
+ *		    └───┴───┴───┴───┴───┘
  *
- * **Note**: This function is also used by {@link module:table/tableselection~TableSelection#getSelectionAsFragment}.
- *
- * @param {Iterable.<module:engine/model/element~Element>} selectedTableCellsIterator
- * @param {module:table/tableutils~TableUtils} tableUtils
+ * @param {module:engine/model/element~Element} sourceTable
+ * @param {Object} cropDimensions
+ * @param {Number} cropDimensions.startRow
+ * @param {Number} cropDimensions.startColumn
+ * @param {Number} cropDimensions.endRow
+ * @param {Number} cropDimensions.endColumn
  * @param {module:engine/model/writer~Writer} writer
+ * @param {module:table/tableutils~TableUtils} tableUtils
  * @returns {module:engine/model/element~Element}
  */
-export default function cropTable( selectedTableCellsIterator, tableUtils, writer ) {
-	const selectedTableCells = Array.from( selectedTableCellsIterator );
-	const startElement = selectedTableCells[ 0 ];
-	const endElement = selectedTableCells[ selectedTableCells.length - 1 ];
+export function cropTableToDimensions( sourceTable, cropDimensions, writer, tableUtils ) {
+	const { startRow, startColumn, endRow, endColumn } = cropDimensions;
 
-	const { row: startRow, column: startColumn } = tableUtils.getCellLocation( startElement );
+	// Create empty table with empty rows equal to crop height.
+	const croppedTable = writer.createElement( 'table' );
+	const cropHeight = endRow - startRow + 1;
 
-	const tableCopy = makeTableCopy( selectedTableCells, startColumn, writer, tableUtils );
+	for ( let i = 0; i < cropHeight; i++ ) {
+		writer.insertElement( 'tableRow', croppedTable, 'end' );
+	}
 
-	const { row: endRow, column: endColumn } = tableUtils.getCellLocation( endElement );
-	const selectionWidth = endColumn - startColumn + 1;
-	const selectionHeight = endRow - startRow + 1;
+	const tableMap = [ ...new TableWalker( sourceTable, { startRow, endRow, includeSpanned: true } ) ];
 
-	trimTable( tableCopy, selectionWidth, selectionHeight, writer, tableUtils );
+	// Iterate over source table slots (including empty - spanned - ones).
+	for ( const { row: sourceRow, column: sourceColumn, cell: tableCell, isSpanned } of tableMap ) {
+		// Skip slots outside the cropped area.
+		// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
+		if ( sourceColumn < startColumn || sourceColumn > endColumn ) {
+			continue;
+		}
 
-	const sourceTable = findAncestor( 'table', startElement );
-	addHeadingsToTableCopy( tableCopy, sourceTable, startRow, startColumn, writer );
+		// Row index in cropped table.
+		const rowInCroppedTable = sourceRow - startRow;
+		const row = croppedTable.getChild( rowInCroppedTable );
 
-	return tableCopy;
+		// For empty slots: fill the gap with empty table cell.
+		if ( isSpanned ) {
+			// TODO: Remove table utils usage. See: https://github.com/ckeditor/ckeditor5/issues/6785.
+			const { row: anchorRow, column: anchorColumn } = tableUtils.getCellLocation( tableCell );
+
+			// But fill the gap only if the spanning cell is anchored outside cropped area.
+			// In the table from method jsdoc those cells are: "c" & "f".
+			if ( anchorRow < startRow || anchorColumn < startColumn ) {
+				createEmptyTableCell( writer, writer.createPositionAt( row, 'end' ) );
+			}
+		}
+		// Otherwise clone the cell with all children and trim if it exceeds cropped area.
+		else {
+			const tableCellCopy = tableCell._clone( true );
+
+			writer.append( tableCellCopy, row );
+
+			// Trim table if it exceeds cropped area.
+			// In the table from method jsdoc those cells are: "g" & "m".
+			trimTableCellIfNeeded( tableCellCopy, sourceRow, sourceColumn, endRow, endColumn, writer );
+		}
+	}
+
+	// Adjust heading rows & columns in cropped table if crop selection includes headings parts.
+	addHeadingsToCroppedTable( croppedTable, sourceTable, startRow, startColumn, writer );
+
+	return croppedTable;
 }
 
-// Creates a table copy from a selected table cells.
+// Adjusts table cell dimensions to not exceed limit row and column.
 //
-// It fills "gaps" in copied table - ie when cell outside copied range was spanning over selection.
-function makeTableCopy( selectedTableCells, startColumn, writer, tableUtils ) {
-	const tableCopy = writer.createElement( 'table' );
+// If table cell span to a column (or row) that is after a limit column (or row) trim colspan (or rowspan)
+// so the table cell will fit in a cropped area.
+function trimTableCellIfNeeded( tableCell, cellRow, cellColumn, limitRow, limitColumn, writer ) {
+	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 
-	const rowToCopyMap = new Map();
-	const copyToOriginalColumnMap = new Map();
+	const endColumn = cellColumn + colspan - 1;
 
-	for ( const tableCell of selectedTableCells ) {
-		const row = findAncestor( 'tableRow', tableCell );
+	if ( endColumn > limitColumn ) {
+		const trimmedSpan = limitColumn - cellColumn + 1;
 
-		if ( !rowToCopyMap.has( row ) ) {
-			const rowCopy = row._clone();
-			writer.append( rowCopy, tableCopy );
-			rowToCopyMap.set( row, rowCopy );
-		}
-
-		const tableCellCopy = tableCell._clone( true );
-		const { column } = tableUtils.getCellLocation( tableCell );
-
-		copyToOriginalColumnMap.set( tableCellCopy, column );
-
-		writer.append( tableCellCopy, rowToCopyMap.get( row ) );
+		updateNumericAttribute( 'colspan', trimmedSpan, tableCell, writer, 1 );
 	}
 
-	addMissingTableCells( tableCopy, startColumn, copyToOriginalColumnMap, writer, tableUtils );
+	const endRow = cellRow + rowspan - 1;
 
-	return tableCopy;
-}
+	if ( endRow > limitRow ) {
+		const trimmedSpan = limitRow - cellRow + 1;
 
-// Fills gaps for spanned cell from outside the selection range.
-function addMissingTableCells( tableCopy, startColumn, copyToOriginalColumnMap, writer, tableUtils ) {
-	for ( const row of tableCopy.getChildren() ) {
-		for ( const tableCell of Array.from( row.getChildren() ) ) {
-			const { column } = tableUtils.getCellLocation( tableCell );
-
-			const originalColumn = copyToOriginalColumnMap.get( tableCell );
-			const shiftedColumn = originalColumn - startColumn;
-
-			if ( column !== shiftedColumn ) {
-				for ( let i = 0; i < shiftedColumn - column; i++ ) {
-					const prepCell = writer.createElement( 'tableCell' );
-					writer.insert( prepCell, writer.createPositionBefore( tableCell ) );
-
-					const paragraph = writer.createElement( 'paragraph' );
-
-					writer.insert( paragraph, prepCell, 0 );
-					writer.insertText( '', paragraph, 0 );
-				}
-			}
-		}
+		updateNumericAttribute( 'rowspan', trimmedSpan, tableCell, writer, 1 );
 	}
 }
 
-// Trims table to a given dimensions.
-function trimTable( table, width, height, writer, tableUtils ) {
-	for ( const row of table.getChildren() ) {
-		for ( const tableCell of row.getChildren() ) {
-			const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
-			const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
-
-			const { row, column } = tableUtils.getCellLocation( tableCell );
-
-			if ( column + colspan > width ) {
-				const newSpan = width - column;
-
-				if ( newSpan > 1 ) {
-					writer.setAttribute( 'colspan', newSpan, tableCell );
-				} else {
-					writer.removeAttribute( 'colspan', tableCell );
-				}
-			}
-
-			if ( row + rowspan > height ) {
-				const newSpan = height - row;
-
-				if ( newSpan > 1 ) {
-					writer.setAttribute( 'rowspan', newSpan, tableCell );
-				} else {
-					writer.removeAttribute( 'rowspan', tableCell );
-				}
-			}
-		}
-	}
-}
-
-// Sets proper heading attributes to copied table.
-function addHeadingsToTableCopy( tableCopy, sourceTable, startRow, startColumn, writer ) {
+// Sets proper heading attributes to a cropped table.
+function addHeadingsToCroppedTable( croppedTable, sourceTable, startRow, startColumn, writer ) {
 	const headingRows = parseInt( sourceTable.getAttribute( 'headingRows' ) || 0 );
 
 	if ( headingRows > 0 ) {
-		const copiedRows = headingRows - startRow;
-		writer.setAttribute( 'headingRows', copiedRows, tableCopy );
+		const headingRowsInCrop = headingRows - startRow;
+		updateNumericAttribute( 'headingRows', headingRowsInCrop, croppedTable, writer, 0 );
 	}
 
 	const headingColumns = parseInt( sourceTable.getAttribute( 'headingColumns' ) || 0 );
 
 	if ( headingColumns > 0 ) {
-		const copiedColumns = headingColumns - startColumn;
-		writer.setAttribute( 'headingColumns', copiedColumns, tableCopy );
+		const headingColumnsInCrop = headingColumns - startColumn;
+		updateNumericAttribute( 'headingColumns', headingColumnsInCrop, croppedTable, writer, 0 );
 	}
 }
