@@ -5,6 +5,7 @@
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import { defaultConversion, defaultSchema, modelTable } from './_utils/utils';
 
@@ -258,5 +259,25 @@ describe( 'TableWalker', () => {
 				{ row: 3, column: 1, index: 1, data: '31' }
 			], { column: 1, includeSpanned: true } );
 		} );
+	} );
+
+	it( 'should return deprecated column option value', () => {
+		setData( model, modelTable( [
+			[ 'a' ]
+		] ) );
+
+		const walker = new TableWalker( root.getChild( 0 ), { column: 7 } );
+
+		expect( walker.column ).to.equal( 7 );
+	} );
+
+	it( 'should throw error if deprecated api used improperly', () => {
+		setData( model, modelTable( [
+			[ 'a' ]
+		] ) );
+
+		const walker = new TableWalker( root.getChild( 0 ), { startColumn: 1, endColumn: 2 } );
+
+		expect( () => walker.column ).to.throw( CKEditorError, 'improper-use-of-deprecated-api' );
 	} );
 } );
