@@ -129,6 +129,19 @@ export function getEnvKeystrokeText( keystroke ) {
 		} );
 }
 
+/**
+ * Returns `true` if the provided key code represents one of the arrow keys.
+ *
+ * @param {Number} keyCode
+ * @returns {Boolean}
+ */
+export function isArrowKeyCode( keyCode ) {
+	return keyCode == keyCodes.arrowright ||
+		keyCode == keyCodes.arrowleft ||
+		keyCode == keyCodes.arrowup ||
+		keyCode == keyCodes.arrowdown;
+}
+
 function generateKnownKeyCodes() {
 	const keyCodes = {
 		arrowleft: 37,

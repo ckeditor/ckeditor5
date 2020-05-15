@@ -11,7 +11,10 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import WidgetTypeAround from './widgettypearound/widgettypearound';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import {
+	keyCodes,
+	isArrowKeyCode
+} from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../theme/widget.css';
@@ -362,17 +365,6 @@ export default class Widget extends Plugin {
 
 		this._previouslySelected.clear();
 	}
-}
-
-// Returns 'true' if provided key code represents one of the arrow keys.
-//
-// @param {Number} keyCode
-// @returns {Boolean}
-function isArrowKeyCode( keyCode ) {
-	return keyCode == keyCodes.arrowright ||
-		keyCode == keyCodes.arrowleft ||
-		keyCode == keyCodes.arrowup ||
-		keyCode == keyCodes.arrowdown;
 }
 
 // Returns `true` when element is a nested editable or is placed inside one.

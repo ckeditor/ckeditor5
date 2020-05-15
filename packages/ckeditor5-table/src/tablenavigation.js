@@ -15,7 +15,10 @@ import { getSelectedTableCells, getTableCellsContainingSelection } from './utils
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import {
+	keyCodes,
+	isArrowKeyCode
+} from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * This plugin enables keyboard navigation for tables.
@@ -513,18 +516,6 @@ export default class TableNavigation extends Plugin {
 			} );
 		}
 	}
-}
-
-// Returns `true` if the provided key code represents one of the arrow keys.
-//
-// @private
-// @param {Number} keyCode
-// @returns {Boolean}
-function isArrowKeyCode( keyCode ) {
-	return keyCode == keyCodes.arrowright ||
-		keyCode == keyCodes.arrowleft ||
-		keyCode == keyCodes.arrowup ||
-		keyCode == keyCodes.arrowdown;
 }
 
 // Returns the direction name from `keyCode`.
