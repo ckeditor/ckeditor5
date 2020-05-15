@@ -12,6 +12,11 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
+import {
+	isArrowKeyCode,
+	isForwardArrowKeyCode
+} from '@ckeditor/ckeditor5-utils/src/keyboard';
+import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 import {
 	isTypeAroundWidget,
@@ -28,6 +33,8 @@ const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ];
 
 // Do the SVG parsing once and then clone the result <svg> DOM element for each new button.
 const RETURN_ARROW_ICON_ELEMENT = new DOMParser().parseFromString( returnIcon, 'image/svg+xml' ).firstChild;
+
+const TYPE_AROUND_SELECTION_ATTRIBUTE = 'widget-type-around';
 
 /**
  * A plugin that allows users to type around widgets where normally it is impossible to place the caret due
@@ -90,6 +97,7 @@ export default class WidgetTypeAround extends Plugin {
 		this._enableTypeAroundUIInjection();
 		this._enableDetectionOfTypeAroundWidgets();
 		this._enableInsertingParagraphsOnButtonClick();
+		this._enableTypeAroundActivationUsingKeyboardArrows();
 
 		// TODO: This is a quick fix and it should be removed the proper integration arrives.
 		this._enableTemporaryTrackChangesIntegration();
@@ -243,6 +251,105 @@ export default class WidgetTypeAround extends Plugin {
 			} );
 		} );
 	}
+
+	/**
+	 * @private
+	 */
+	_enableTypeAroundActivationUsingKeyboardArrows() {
+		const editor = this.editor;
+		const model = editor.model;
+		const modelSelection = model.document.selection;
+		const schema = model.schema;
+		const editingView = editor.editing.view;
+
+		// Note: The priority must precede the default Widget class keydown handler.
+		editingView.document.on( 'keydown', ( evt, domEventData ) => {
+			const keyCode = domEventData.keyCode;
+
+			if ( !isArrowKeyCode( keyCode ) ) {
+				return;
+			}
+
+			const selectedViewElement = editingView.document.selection.getSelectedElement();
+			const selectedModelElement = editor.editing.mapper.toModelElement( selectedViewElement );
+
+			if ( !isTypeAroundWidget( selectedViewElement, selectedModelElement, schema ) ) {
+				return;
+			}
+
+			const isForward = isForwardArrowKeyCode( keyCode, editor.locale.contentLanguageDirection );
+			const typeAroundSelectionAttribute = modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+
+			editor.model.change( writer => {
+				let shouldStopAndPreventDefault;
+
+				// If the selection already has the attribute...
+				if ( typeAroundSelectionAttribute ) {
+					const selectionPosition = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
+					const nearestSelectionRange = schema.getNearestSelectionRange( selectionPosition, isForward ? 'forward' : 'backward' );
+					const isLeavingWidget = typeAroundSelectionAttribute === ( isForward ? 'after' : 'before' );
+
+					// ...and the keyboard arrow matches the value of the selection attribute...
+					if ( isLeavingWidget ) {
+						// ...and if there is some place for the selection to go to...
+						if ( nearestSelectionRange ) {
+							// ...then just remove the attribute and let the default Widget plugin listener handle moving the selection.
+							writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+						}
+
+						// If the selection had nowhere to go, let's leave the attribute as it was and pass through
+						// to the Widget plugin listener which will... in fact also do nothing. But this is no longer
+						// the problem of the WidgetTypeAround plugin.
+					}
+					// ...and the keyboard arrow works against the value of the selection attribute...
+					else {
+						// ...then remove the selection attribute but prevent default DOM actions
+						// and do not let the Widget plugin listener move the selection. This brings
+						// the widget back to the state, for instance, like if was selected using the mouse.
+						writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+						shouldStopAndPreventDefault = true;
+					}
+				}
+				// If the selection didn't have the attribute, let's set it now according to the direction of the arrow
+				// key press. This also means we cannot let the Widget plugin listener move the selection.
+				else {
+					writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, isForward ? 'after' : 'before' );
+					shouldStopAndPreventDefault = true;
+				}
+
+				if ( shouldStopAndPreventDefault ) {
+					domEventData.preventDefault();
+					evt.stop();
+				}
+			} );
+		}, { priority: priorities.get( 'high' ) + 1 } );
+
+		modelSelection.on( 'change:range', () => {
+			// TODO clean the selection attribute? It's weird because it looks like it is cleared automatically.
+		} );
+
+		editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+			const selectedModelElement = data.selection.getSelectedElement();
+			const selectedViewElement = conversionApi.mapper.toViewElement( selectedModelElement );
+
+			if ( !isTypeAroundWidget( selectedViewElement, selectedModelElement, schema ) ) {
+				return;
+			}
+
+			const typeAroundSelectionAttribute = data.selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+			const writer = conversionApi.writer;
+
+			if ( typeAroundSelectionAttribute ) {
+				writer.addClass( positionToWidgetCssClass( typeAroundSelectionAttribute ), selectedViewElement );
+			} else {
+				writer.removeClass( POSSIBLE_INSERTION_POSITIONS.map( positionToWidgetCssClass ), selectedViewElement );
+			}
+		} );
+
+		function positionToWidgetCssClass( position ) {
+			return `ck-widget_type-around_active_${ position }`;
+		}
+	}
 }
 
 // Injects the type around UI into a view widget instance.
@@ -257,6 +364,7 @@ function injectUIIntoWidget( viewWriter, buttonTitles, widgetViewElement ) {
 		const wrapperDomElement = this.toDomElement( domDocument );
 
 		injectButtons( wrapperDomElement, buttonTitles );
+		injectLines( wrapperDomElement );
 
 		return wrapperDomElement;
 	} );
@@ -289,5 +397,23 @@ function injectButtons( wrapperDomElement, buttonTitles ) {
 		} );
 
 		wrapperDomElement.appendChild( buttonTemplate.render() );
+	}
+}
+
+// @param {HTMLElement} wrapperDomElement
+function injectLines( wrapperDomElement ) {
+	for ( const position of POSSIBLE_INSERTION_POSITIONS ) {
+		const lineTemplate = new Template( {
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck',
+					'ck-widget__type-around__line',
+					`ck-widget__type-around__line_${ position }`
+				]
+			}
+		} );
+
+		wrapperDomElement.appendChild( lineTemplate.render() );
 	}
 }

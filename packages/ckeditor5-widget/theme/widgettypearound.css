@@ -74,6 +74,29 @@
 			z-index: calc(var(--ck-z-default) + 1);
 		}
 	}
+
+	& .ck-widget__type-around__line {
+		display: none;
+		position: absolute;
+		left: 0;
+		right: 0;
+
+		&.ck-widget__type-around__line_before {
+			top: calc(-1 * var(--ck-widget-outline-thickness));
+		}
+
+		&.ck-widget__type-around__line_after {
+			bottom: calc(-1 * var(--ck-widget-outline-thickness));
+		}
+	}
+
+	&.ck-widget_type-around_active_before > .ck-widget__type-around > .ck-widget__type-around__line_before {
+		display: block;
+	}
+
+	&.ck-widget_type-around_active_after > .ck-widget__type-around > .ck-widget__type-around__line_after {
+		display: block;
+	}
 }
 
 /*

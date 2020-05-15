@@ -101,6 +101,20 @@
 	&.ck-widget_with-selection-handle > .ck-widget__type-around > .ck-widget__type-around__button_before {
 		margin-left: 20px;
 	}
+
+	& .ck-widget__type-around__line {
+		pointer-events: none;
+		height: var(--ck-widget-outline-thickness);
+		animation: ck-widget-type-around-line-pulse linear 1s infinite normal forwards;
+	}
+
+	&.ck-widget_selected,
+	&.ck-widget.ck-widget_selected:hover {
+		&.ck-widget_type-around_active_before,
+		&.ck-widget_type-around_active_after {
+			outline-color: transparent;
+		}
+	}
 }
 
 /*
@@ -141,5 +155,23 @@
 	}
 	100% {
 		box-shadow: 0 0 0 5px hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-start-alpha));
+	}
+}
+
+@keyframes ck-widget-type-around-line-pulse {
+	0% {
+		background: hsla(var(--ck-color-focus-border-coordinates), 0);
+	}
+	40% {
+		background: hsla(var(--ck-color-focus-border-coordinates), 0);
+	}
+	50% {
+		background: hsla(var(--ck-color-focus-border-coordinates), 1);
+	}
+	90% {
+		background: hsla(var(--ck-color-focus-border-coordinates), 1);
+	}
+	100% {
+		background: hsla(var(--ck-color-focus-border-coordinates), 0);
 	}
 }
