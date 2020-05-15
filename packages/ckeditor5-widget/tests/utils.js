@@ -512,7 +512,7 @@ describe( 'widget utils', () => {
 			testUtils.sinon.stub( global.window, 'innerHeight' ).value( 100 );
 		} );
 
-		it( 'should position the balloon inside a widget – at the top + in the middla', () => {
+		it( 'should position the balloon inside a widget – at the top + in the middle', () => {
 			// Widget is a 50x150 rect, translated (25,25) from viewport's beginning (0,0).
 			const widgetRect = new Rect( {
 				top: 25,
