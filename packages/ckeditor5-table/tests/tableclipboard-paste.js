@@ -124,6 +124,30 @@ describe( 'table clipboard', () => {
 			] ) );
 		} );
 
+		it( 'should not alter model.insertContent if no table cells are selected', () => {
+			model.change( writer => {
+				writer.insertElement( 'paragraph', modelRoot.getChild( 0 ), 'before' );
+				writer.setSelection( modelRoot.getChild( 0 ), 'before' );
+			} );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+			data.dataTransfer.setData( 'text/html', '<p>foo</p>' );
+			viewDocument.fire( 'paste', data );
+
+			editor.isReadOnly = false;
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo[]</paragraph>' + modelTable( [
+				[ '00', '01', '02', '03' ],
+				[ '10', '11', '12', '13' ],
+				[ '20', '21', '22', '23' ],
+				[ '30', '31', '32', '33' ]
+			] ) );
+		} );
+
 		it( 'should not alter model.insertContent if no table pasted', () => {
 			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
@@ -276,20 +300,104 @@ describe( 'table clipboard', () => {
 		} );
 
 		describe( 'single cell selected', () => {
-			it( 'blocks this case', () => {
+			beforeEach( () => {
 				setModelData( model, modelTable( [
-					[ '00', '01', '02' ],
+					[ '00[]', '01', '02' ],
 					[ '10', '11', '12' ],
 					[ '20', '21', '22' ]
 				] ) );
+			} );
 
+			it( 'with selection on the first cell', () => {
 				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] )
 				);
 
-				// Catches the temporary console log in the CK_DEBUG mode.
-				sinon.stub( console, 'log' );
+				pasteTable( [
+					[ 'aa', 'ab' ],
+					[ 'ba', 'bb' ]
+				] );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ 'aa', 'ab', '02' ],
+					[ 'ba', 'bb', '12' ],
+					[ '20', '21', '22' ]
+				] ) );
+			} );
+
+			it( 'with selection in the first cell', () => {
+				pasteTable( [
+					[ 'aa', 'ab' ],
+					[ 'ba', 'bb' ]
+				] );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ 'aa', 'ab', '02' ],
+					[ 'ba', 'bb', '12' ],
+					[ '20', '21', '22' ]
+				] ) );
+			} );
+
+			it( 'with selection on the middle cell of the first row', () => {
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 0, 1 ] )
+				);
+
+				pasteTable( [
+					[ 'aa', 'ab' ],
+					[ 'ba', 'bb' ]
+				] );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', 'aa', 'ab' ],
+					[ '10', 'ba', 'bb' ],
+					[ '20', '21', '22' ]
+				] ) );
+			} );
+
+			it( 'with selection on the last cell of the first row', () => {
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
+					modelRoot.getNodeByPath( [ 0, 0, 2 ] )
+				);
+
+				pasteTable( [
+					[ 'aa', 'ab' ],
+					[ 'ba', 'bb' ]
+				] );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', '01', 'aa', 'ab' ],
+					[ '10', '11', 'ba', 'bb' ],
+					[ '20', '21', '22', '' ]
+				] ) );
+			} );
+
+			it( 'with selection on the middle cell of the first column', () => {
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+				);
+
+				pasteTable( [
+					[ 'aa', 'ab' ],
+					[ 'ba', 'bb' ]
+				] );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', '01', '02' ],
+					[ 'aa', 'ab', '12' ],
+					[ 'ba', 'bb', '22' ]
+				] ) );
+			} );
+
+			it( 'with selection on the last cell of the first column', () => {
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+				);
 
 				pasteTable( [
 					[ 'aa', 'ab' ],
@@ -299,7 +407,27 @@ describe( 'table clipboard', () => {
 				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ],
-					[ '20', '21', '22' ]
+					[ 'aa', 'ab', '22' ],
+					[ 'ba', 'bb', '' ]
+				] ) );
+			} );
+
+			it( 'with selection on the last cell of the last column', () => {
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 2, 2 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 2 ] )
+				);
+
+				pasteTable( [
+					[ 'aa', 'ab' ],
+					[ 'ba', 'bb' ]
+				] );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', '01', '02', '' ],
+					[ '10', '11', '12', '' ],
+					[ '20', '21', 'aa', 'ab' ],
+					[ '', '', 'ba', 'bb' ]
 				] ) );
 			} );
 		} );
