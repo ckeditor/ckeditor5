@@ -270,12 +270,7 @@ export function downcastTableHeadingColumnsChange( options = {} ) {
 
 		const lastColumnToCheck = ( oldColumns > newColumns ? oldColumns : newColumns ) - 1;
 
-		for ( const tableWalkerValue of new TableWalker( table ) ) {
-			// Skip cells that were not in heading section before and after the change.
-			if ( tableWalkerValue.column > lastColumnToCheck ) {
-				continue;
-			}
-
+		for ( const tableWalkerValue of new TableWalker( table, { endColumn: lastColumnToCheck } ) ) {
 			renameViewTableCellIfRequired( tableWalkerValue, tableAttributes, conversionApi, asWidget );
 		}
 	} );

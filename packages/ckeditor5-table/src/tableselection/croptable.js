@@ -58,16 +58,10 @@ export function cropTableToDimensions( sourceTable, cropDimensions, writer, tabl
 		writer.insertElement( 'tableRow', croppedTable, 'end' );
 	}
 
-	const tableMap = [ ...new TableWalker( sourceTable, { startRow, endRow, includeSpanned: true } ) ];
+	const tableMap = [ ...new TableWalker( sourceTable, { startRow, endRow, startColumn, endColumn, includeSpanned: true } ) ];
 
 	// Iterate over source table slots (including empty - spanned - ones).
 	for ( const { row: sourceRow, column: sourceColumn, cell: tableCell, isSpanned } of tableMap ) {
-		// Skip slots outside the cropped area.
-		// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
-		if ( sourceColumn < startColumn || sourceColumn > endColumn ) {
-			continue;
-		}
-
 		// Row index in cropped table.
 		const rowInCroppedTable = sourceRow - startRow;
 		const row = croppedTable.getChild( rowInCroppedTable );
