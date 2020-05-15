@@ -258,11 +258,11 @@ export default class TableWalker {
 				this._recordSpans( rowspan, colspan, cell );
 			}
 
-			this._nextCellAtColumn = this._column + colspan;
-			this._previousCellInRow = cell;
-
 			skipCurrentValue = this._shouldSkipRow() || this._shouldSkipColumn();
 			outValue = this._formatOutValue( cell, null, rowspan, colspan );
+
+			this._nextCellAtColumn = this._column + colspan;
+			this._previousCellInRow = cell;
 		}
 
 		// Advance to the next column before returning value.
