@@ -1271,8 +1271,8 @@ describe( 'table clipboard', () => {
 
 					// Select 02 -> 23
 					tableSelection.setCellSelection(
-						modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
-						modelRoot.getNodeByPath( [ 0, 3, 1 ] )
+						modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
+						modelRoot.getNodeByPath( [ 0, 2, 3 ] )
 					);
 
 					pasteTable( [
@@ -1311,8 +1311,8 @@ describe( 'table clipboard', () => {
 
 					// Select 01 -> 22
 					tableSelection.setCellSelection(
-						modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
-						modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+						modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 2, 2 ] )
 					);
 
 					pasteTable( [
@@ -1329,9 +1329,9 @@ describe( 'table clipboard', () => {
 					// | 20 | ca | cb | 23 | 24 |
 					// +----+----+----+----+----+
 					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-						[ '00', '01', 'aa', 'ab', '04' ],
-						[ { contents: '10', colspan: 2 }, 'ba', 'bb', '14' ],
-						[ '20', '21', 'ca', 'cb', '24' ]
+						[ '00', 'aa', 'ab', '03', '04' ],
+						[ '10', 'ba', 'bb', '', '14' ],
+						[ '20', 'ca', 'cb', '23', '24' ]
 					] ) );
 				} );
 
@@ -1352,7 +1352,7 @@ describe( 'table clipboard', () => {
 					// Select 00 -> 21
 					tableSelection.setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
-						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+						modelRoot.getNodeByPath( [ 0, 2, 1 ] )
 					);
 
 					pasteTable( [
@@ -1364,20 +1364,20 @@ describe( 'table clipboard', () => {
 					// +----+----+----+----+----+
 					// | aa | ab | 02 | 03 | 04 |
 					// +----+----+----+----+----+
-					// | ba | bb |    |    | 14 |
+					// | ba | bb |         | 14 |
 					// +----+----+----+----+----+
 					// | ca | cb | 22 | 23 | 24 |
 					// +----+----+----+----+----+
 					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-						[ '00', '01', 'aa', 'ab', '04' ],
-						[ { contents: '10', colspan: 2 }, 'ba', 'bb', '14' ],
-						[ '20', '21', 'ca', 'cb', '24' ]
+						[ 'aa', 'ab', '02', '03', '04' ],
+						[ 'ba', 'bb', { colspan: 2, contents: '' }, '14' ],
+						[ 'ca', 'cb', '22', '23', '24' ]
 					] ) );
 				} );
 
 				it( 'should properly handle complex case', () => {
 					// +----+----+----+----+----+----+----+
-					// | 00           | 03 | 04 | 05 | 06 |
+					// | 00           | 03 | 04           |
 					// +              +    +----+----+----+
 					// |              |    | 14 | 15 | 16 |
 					// +              +    +----+----+----+
@@ -1392,7 +1392,7 @@ describe( 'table clipboard', () => {
 					// | 60 | 61 | 62 |    | 64 |         |
 					// +----+----+----+----+----+----+----+
 					setModelData( model, modelTable( [
-						[ { contents: '00', colspan: 3, rowspan: 3 }, { contents: '03', rowspan: 3 }, '04', '05', '06' ],
+						[ { contents: '00', colspan: 3, rowspan: 3 }, { contents: '03', rowspan: 3 }, { colspan: 3, contents: '04' } ],
 						[ '14', '15', '16' ],
 						[ { contents: '24', colspan: 3 } ],
 						[
@@ -1419,7 +1419,7 @@ describe( 'table clipboard', () => {
 					] );
 
 					// +----+----+----+----+----+----+----+
-					// | 00      |    | 03 | 04 | 05 | 06 |
+					// | 00      |    | 03 | 04           |
 					// +         +    +    +----+----+----+
 					// |         |    |    | 14 | 15 | 16 |
 					// +----+----+----+----+----+----+----+
