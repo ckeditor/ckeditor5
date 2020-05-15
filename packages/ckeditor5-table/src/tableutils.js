@@ -116,12 +116,19 @@ export default class TableUtils extends Plugin {
 	 * @param {Object} options
 	 * @param {Number} [options.at=0] The row index at which the rows will be inserted.
 	 * @param {Number} [options.rows=1] The number of rows to insert.
+	 * @param {Boolean|undefined} [options.copyStructureFromAbove] The flag for copying row structure. Note that
+	 * the row structure will not be copied if this option is not provided.
 	 */
 	insertRows( table, options = {} ) {
 		const model = this.editor.model;
 
 		const insertAt = options.at || 0;
 		const rowsToInsert = options.rows || 1;
+		const isCopyStructure = options.copyStructureFromAbove !== undefined;
+		const copyStructureFrom = options.copyStructureFromAbove ? insertAt - 1 : insertAt;
+
+		const rows = this.getRows( table );
+		const columns = this.getColumns( table );
 
 		model.change( writer => {
 			const headingRows = table.getAttribute( 'headingRows' ) || 0;
@@ -131,38 +138,58 @@ export default class TableUtils extends Plugin {
 				writer.setAttribute( 'headingRows', headingRows + rowsToInsert, table );
 			}
 
-			// Inserting at the end and at the beginning of a table doesn't require to calculate anything special.
-			if ( insertAt === 0 || insertAt === table.childCount ) {
-				createEmptyRows( writer, table, insertAt, rowsToInsert, this.getColumns( table ) );
+			// Inserting at the end or at the beginning of a table doesn't require to calculate anything special.
+			if ( !isCopyStructure && ( insertAt === 0 || insertAt === rows ) ) {
+				createEmptyRows( writer, table, insertAt, rowsToInsert, columns );
 
 				return;
 			}
 
-			// Iterate over all rows above inserted rows in order to check for rowspanned cells.
-			const tableIterator = new TableWalker( table, { endRow: insertAt } );
+			// Iterate over all the rows above the inserted rows in order to check for the row-spanned cells.
+			const walkerEndRow = isCopyStructure ? Math.max( insertAt, copyStructureFrom ) : insertAt;
+			const tableIterator = new TableWalker( table, { endRow: walkerEndRow } );
 
-			// Will hold number of cells needed to insert in created rows.
-			// The number might be different then table cell width when there are rowspanned cells.
-			let cellsToInsert = 0;
+			// Store spans of the reference row to reproduce it's structure. This array is column number indexed.
+			const rowColSpansMap = new Array( columns ).fill( 1 );
 
-			for ( const { row, rowspan, colspan, cell } of tableIterator ) {
-				const isBeforeInsertedRow = row < insertAt;
-				const overlapsInsertedRow = row + rowspan > insertAt;
+			for ( const { row, column, rowspan, colspan, cell } of tableIterator ) {
+				const lastCellRow = row + rowspan - 1;
 
-				if ( isBeforeInsertedRow && overlapsInsertedRow ) {
-					// This cell overlaps inserted rows so we need to expand it further.
+				const isOverlappingInsertedRow = row < insertAt && insertAt <= lastCellRow;
+				const isReferenceRow = row <= copyStructureFrom && copyStructureFrom <= lastCellRow;
+
+				// If the cell is row-spanned and overlaps the inserted row, then reserve space for it in the row map.
+				if ( isOverlappingInsertedRow ) {
+					// This cell overlaps the inserted rows so we need to expand it further.
 					writer.setAttribute( 'rowspan', rowspan + rowsToInsert, cell );
-				}
 
-				// Calculate how many cells to insert based on the width of cells in a row at insert position.
-				// It might be lower then table width as some cells might overlaps inserted row.
-				// In the table above the cell 'a' overlaps inserted row so only two empty cells are need to be created.
-				if ( row === insertAt ) {
-					cellsToInsert += colspan;
+					// Mark this cell with negative number to indicate how many cells should be skipped when adding the new cells.
+					rowColSpansMap[ column ] = -colspan;
+				}
+				// Store the colspan from reference row.
+				else if ( isCopyStructure && isReferenceRow ) {
+					rowColSpansMap[ column ] = colspan;
 				}
 			}
 
-			createEmptyRows( writer, table, insertAt, rowsToInsert, cellsToInsert );
+			for ( let rowIndex = 0; rowIndex < rowsToInsert; rowIndex++ ) {
+				const tableRow = writer.createElement( 'tableRow' );
+
+				writer.insert( tableRow, table, insertAt );
+
+				for ( let cellIndex = 0; cellIndex < rowColSpansMap.length; cellIndex++ ) {
+					const colspan = rowColSpansMap[ cellIndex ];
+					const insertPosition = writer.createPositionAt( tableRow, 'end' );
+
+					// Insert the empty cell only if this slot is not row-spanned from any other cell.
+					if ( colspan > 0 ) {
+						createEmptyTableCell( writer, insertPosition, colspan > 1 ? { colspan } : null );
+					}
+
+					// Skip the col-spanned slots, there won't be any cells.
+					cellIndex += Math.abs( colspan ) - 1;
+				}
+			}
 		} );
 	}
 
