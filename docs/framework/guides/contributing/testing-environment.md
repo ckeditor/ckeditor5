@@ -32,19 +32,19 @@ It accepts the following arguments that must be passed after the `--` option:
 
 Run all tests with the code coverage check of the [`ckeditor5-core`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests) package:
 
-```bash
+```
 yarn run test -c --files=core
 ```
 
 Run and watch the [engine's `view` namespace tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests/view) and all the tests in [`ckeditor5-typing`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-typing/tests):
 
-```bash
+```
 yarn run test -cw --files=engine/view,typing
 ```
 
 Run the `bold*.js` tests in the [`ckeditor5-basic-styles`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests) package:
 
-```bash
+```
 yarn run test -cw --files=basic-styles/bold*.js
 ```
 

@@ -11,6 +11,10 @@ The standard UI library of CKEditor 5 is [`@ckeditor/ckeditor5-ui`](https://www.
 
 Views use [templates](#templates) to build the UI. They also provide observable interfaces that other features (e.g. {@link framework/guides/architecture/core-editor-architecture#plugins plugins}, {@link framework/guides/architecture/core-editor-architecture#commands commands}, etc.) can use to change the DOM without any actual interaction with the native API.
 
+<info-box>
+	All views can be localized using the `locale` instance with which they were created. Check the {@link framework/guides/deep-dive/localization localization guide} to see how to use the `t()` function available in the `locale` instance.
+</info-box>
+
 ### Definition
 
 A simple input view class can be defined as follows:
