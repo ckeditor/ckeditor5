@@ -221,7 +221,7 @@ describe( 'ImageResize', () => {
 			const resizerPosition = 'bottom-left';
 			const domParts = getWidgetDomParts( editor, widget, resizerPosition );
 			const initialPointerPosition = getHandleCenterPoint( domParts.widget, resizerPosition );
-			const resizeWrapperView = widget.getChild( 1 );
+			const resizeWrapperView = widget.getChild( 2 );
 
 			resizerMouseSimulator.down( editor, domParts.resizeHandle );
 

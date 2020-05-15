@@ -42,10 +42,6 @@ describe( 'Widget - integration', () => {
 					inheritAllFrom: '$block',
 					isObject: true
 				} );
-				model.schema.register( 'paragraph', {
-					inheritAllFrom: '$block',
-					allowIn: '$root'
-				} );
 				model.schema.register( 'nested', {
 					allowIn: 'widget',
 					isLimit: true
@@ -63,7 +59,6 @@ describe( 'Widget - integration', () => {
 				} );
 
 				editor.conversion.for( 'downcast' )
-					.elementToElement( { model: 'paragraph', view: 'p' } )
 					.elementToElement( { model: 'inline', view: 'figure' } )
 					.elementToElement( { model: 'image', view: 'img' } )
 					.elementToElement( {
@@ -117,7 +112,11 @@ describe( 'Widget - integration', () => {
 		sinon.assert.notCalled( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<p>[]</p><div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">foo bar</figcaption></div>'
+			'<p>[]</p>' +
+			'<div class="ck-widget ck-widget_can-type-around_after" contenteditable="false">' +
+				'<figcaption contenteditable="true">foo bar</figcaption>' +
+				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+			'</div>'
 		);
 
 		expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><widget><nested>foo bar</nested></widget>' );
@@ -140,7 +139,10 @@ describe( 'Widget - integration', () => {
 		sinon.assert.called( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">{foo bar}</figcaption></div>'
+			'<div class="ck-widget ck-widget_can-type-around_after ck-widget_can-type-around_before" contenteditable="false">' +
+				'<figcaption contenteditable="true">{foo bar}</figcaption>' +
+				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+			'</div>'
 		);
 		expect( getModelData( model ) ).to.equal( '<widget><nested>[foo bar]</nested></widget>' );
 	} );
@@ -162,9 +164,10 @@ describe( 'Widget - integration', () => {
 		sinon.assert.called( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget" contenteditable="false">' +
+			'<div class="ck-widget ck-widget_can-type-around_after ck-widget_can-type-around_before" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo</figcaption>' +
 				'<figcaption contenteditable="true">{bar}</figcaption>' +
+				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 			'</div>'
 		);
 
@@ -188,7 +191,10 @@ describe( 'Widget - integration', () => {
 		sinon.assert.called( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">{foo bar}</figcaption></div>'
+			'<div class="ck-widget ck-widget_can-type-around_after ck-widget_can-type-around_before" contenteditable="false">' +
+				'<figcaption contenteditable="true">{foo bar}</figcaption>' +
+				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+			'</div>'
 		);
 
 		expect( getModelData( model ) ).to.equal( '<widget><nested>[foo bar]</nested></widget>' );
@@ -217,7 +223,7 @@ describe( 'Widget - integration', () => {
 		expect( getModelData( model ) ).to.equal( '<paragraph>Foo[<inline-widget>foo bar</inline-widget>]Bar</paragraph>' );
 	} );
 
-	it( 'should does nothing for non-Safari browser', () => {
+	it( 'should do nothing for non-Safari browser', () => {
 		testUtils.sinon.stub( env, 'isSafari' ).get( () => false );
 
 		setModelData( model, '<paragraph>[]</paragraph><widget><nested>foo bar</nested></widget>' );
@@ -236,7 +242,11 @@ describe( 'Widget - integration', () => {
 		sinon.assert.notCalled( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<p>[]</p><div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">foo bar</figcaption></div>'
+			'<p>[]</p>' +
+			'<div class="ck-widget ck-widget_can-type-around_after" contenteditable="false">' +
+				'<figcaption contenteditable="true">foo bar</figcaption>' +
+				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+			'</div>'
 		);
 
 		expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><widget><nested>foo bar</nested></widget>' );

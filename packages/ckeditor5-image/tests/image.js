@@ -62,8 +62,13 @@ describe( 'Image', () => {
 			setModelData( model, '[<image alt="alt text" src="/assets/sample.png"></image>]' );
 
 			expect( getViewData( view ) ).to.equal(
-				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
+				'[<figure class="' +
+					'ck-widget ' +
+					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
+					'ck-widget_selected image" contenteditable="false"' +
+				'>' +
 					'<img alt="alt text" src="/assets/sample.png"></img>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>]'
 			);
 
@@ -75,8 +80,13 @@ describe( 'Image', () => {
 			setModelData( model, '[<image src="/assets/sample.png" alt=""></image>]' );
 
 			expect( getViewData( view ) ).to.equal(
-				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
-				'<img alt="" src="/assets/sample.png"></img>' +
+				'[<figure class="' +
+					'ck-widget ' +
+					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
+					'ck-widget_selected image" contenteditable="false"' +
+				'>' +
+					'<img alt="" src="/assets/sample.png"></img>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>]'
 			);
 
@@ -91,11 +101,21 @@ describe( 'Image', () => {
 			);
 
 			expect( getViewData( view ) ).to.equal(
-				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
-				'<img alt="alt text" src="/assets/sample.png"></img>' +
+				'[<figure class="' +
+					'ck-widget ' +
+					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
+					'ck-widget_selected image" contenteditable="false"' +
+				'>' +
+					'<img alt="alt text" src="/assets/sample.png"></img>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>]' +
-				'<figure class="ck-widget image" contenteditable="false">' +
-				'<img alt="alt text" src="/assets/sample.png"></img>' +
+				'<figure class="' +
+					'ck-widget ' +
+					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
+					'image" contenteditable="false"' +
+				'>' +
+					'<img alt="alt text" src="/assets/sample.png"></img>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>'
 			);
 
@@ -105,11 +125,21 @@ describe( 'Image', () => {
 			} );
 
 			expect( getViewData( view ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false">' +
-				'<img alt="alt text" src="/assets/sample.png"></img>' +
+				'<figure class="' +
+					'ck-widget ' +
+					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
+					'image" contenteditable="false"' +
+				'>' +
+					'<img alt="alt text" src="/assets/sample.png"></img>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>' +
-				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
-				'<img alt="alt text" src="/assets/sample.png"></img>' +
+				'[<figure class="' +
+					'ck-widget ' +
+					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
+					'ck-widget_selected image" contenteditable="false"' +
+				'>' +
+					'<img alt="alt text" src="/assets/sample.png"></img>' +
+					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 				'</figure>]'
 			);
 		} );
