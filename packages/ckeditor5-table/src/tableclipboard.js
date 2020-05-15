@@ -14,6 +14,7 @@ import TableWalker from './tablewalker';
 import { getColumnIndexes, getRowIndexes, isSelectionRectangular } from './utils';
 import { findAncestor } from './commands/utils';
 import { cropTableToDimensions } from './tableselection/croptable';
+import { getOverlappingCells, splitHorizontally } from './commands/setheaderrowcommand';
 import TableUtils from './tableutils';
 
 /**
@@ -127,34 +128,36 @@ export default class TableClipboard extends Plugin {
 
 		const tableUtils = this.editor.plugins.get( TableUtils );
 
-		// Currently not handled. The selected table content should be trimmed to a rectangular selection.
-		// See: https://github.com/ckeditor/ckeditor5/issues/6122.
-		if ( !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
-			// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Selection is not rectangular (non-mergeable).' );
-
-			return;
-		}
-
-		const { last: lastColumnOfSelection, first: firstColumnOfSelection } = getColumnIndexes( selectedTableCells );
-		const { first: firstRowOfSelection, last: lastRowOfSelection } = getRowIndexes( selectedTableCells );
-
-		const selectionHeight = lastRowOfSelection - firstRowOfSelection + 1;
-		const selectionWidth = lastColumnOfSelection - firstColumnOfSelection + 1;
-
-		const pasteHeight = tableUtils.getRows( pastedTable );
-		const pasteWidth = tableUtils.getColumns( pastedTable );
-
-		// The if below is temporal and will be removed when handling this case.
-		// See: https://github.com/ckeditor/ckeditor5/issues/6769.
-		if ( selectionHeight > pasteHeight || selectionWidth > pasteWidth ) {
-			// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Pasted table is smaller than selection area.' );
-
-			return;
-		}
-
 		const model = this.editor.model;
 
 		model.change( writer => {
+			// Currently not handled. The selected table content should be trimmed to a rectangular selection.
+			// See: https://github.com/ckeditor/ckeditor5/issues/6122.
+			if ( !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
+				// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Selection is not rectangular (non-mergeable).' );
+
+				prepareLandingPlace( selectedTableCells, writer );
+
+				// return;
+			}
+
+			const { last: lastColumnOfSelection, first: firstColumnOfSelection } = getColumnIndexes( selectedTableCells );
+			const { first: firstRowOfSelection, last: lastRowOfSelection } = getRowIndexes( selectedTableCells );
+
+			const selectionHeight = lastRowOfSelection - firstRowOfSelection + 1;
+			const selectionWidth = lastColumnOfSelection - firstColumnOfSelection + 1;
+
+			const pasteHeight = tableUtils.getRows( pastedTable );
+			const pasteWidth = tableUtils.getColumns( pastedTable );
+
+			// The if below is temporal and will be removed when handling this case.
+			// See: https://github.com/ckeditor/ckeditor5/issues/6769.
+			if ( selectionHeight > pasteHeight || selectionWidth > pasteWidth ) {
+				// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Pasted table is smaller than selection area.' );
+
+				return;
+			}
+
 			// Crop pasted table if it extends selection area.
 			if ( selectionHeight < pasteHeight || selectionWidth < pasteWidth ) {
 				const cropDimensions = {
@@ -298,4 +301,24 @@ function createLocationMap( table, width, height ) {
 	}
 
 	return map;
+}
+
+function prepareLandingPlace( selectedTableCells, writer ) {
+	const table = findAncestor( 'table', selectedTableCells[ 0 ] );
+
+	const { first: firstRow, last: lastRow } = getRowIndexes( selectedTableCells );
+
+	if ( firstRow > 0 ) {
+		const cellsToSplitHorizontallyAtFirstRow = getOverlappingCells( table, firstRow, 0 );
+
+		for ( const cell of cellsToSplitHorizontallyAtFirstRow ) {
+			splitHorizontally( cell, firstRow, writer );
+		}
+	}
+
+	const cellsToSplitHorizontallyAtLastRow = getOverlappingCells( table, lastRow + 1, firstRow );
+
+	for ( const cell of cellsToSplitHorizontallyAtLastRow ) {
+		splitHorizontally( cell, lastRow + 1, writer );
+	}
 }

@@ -109,7 +109,7 @@ export default class SetHeaderRowCommand extends Command {
 // @param {Number} headingRowsToSet New heading rows attribute.
 // @param {Number} currentHeadingRows Current heading rows attribute.
 // @returns {Array.<module:engine/model/element~Element>}
-function getOverlappingCells( table, headingRowsToSet, currentHeadingRows ) {
+export function getOverlappingCells( table, headingRowsToSet, currentHeadingRows ) {
 	const cellsToSplit = [];
 
 	const startAnalysisRow = headingRowsToSet > currentHeadingRows ? currentHeadingRows : 0;
@@ -132,7 +132,7 @@ function getOverlappingCells( table, headingRowsToSet, currentHeadingRows ) {
 // @param {module:engine/model/element~Element} tableCell
 // @param {Number} headingRows
 // @param {module:engine/model/writer~Writer} writer
-function splitHorizontally( tableCell, headingRows, writer ) {
+export function splitHorizontally( tableCell, headingRows, writer ) {
 	const tableRow = tableCell.parent;
 	const table = tableRow.parent;
 	const rowIndex = tableRow.index;
