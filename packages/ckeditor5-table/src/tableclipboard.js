@@ -324,25 +324,25 @@ function createLocationMap( table, width, height ) {
 //                                                      ^          ^
 //                                                     first & last columns
 //
+// Will update table to:
+//
+//                       +----+----+----+----+----+
+//                       | 00 | 01 | 02 | 03      |
+//                       +    +----+----+----+----+
+//                       |    | 11 |    | 13 | 14 |
+//                       +----+----+    +    +----+
+//                       | 20 | 21 |    |    | 24 |
+//                       +----+----+    +----+----+
+//                       | 30 |    |    | 33 | 34 |
+//                       +    +----+----+----+    +
+//                       |    |    |    | 43 |    |
+//                       +----+----+----+----+----+
+//
 // In th example above:
 // - Cell "02" which have `rowspan = 4` must be trimmed at first and at after last row.
 // - Cell "03" which have `rowspan = 2` and `colspan = 2` must be trimmed at first column and after last row.
 // - Cells "00", "03" & "30" which cannot be cut by this algorithm as they are outside the trimmed area.
 // - Cell "13" cannot be cut as it is inside the trimmed area.
-//
-// Will update table to:
-//
-// +----+----+----+----+----+
-// | 00 | 01 | 02 | 03      |
-// +    +----+----+----+----+
-// |    | 11 |    | 13 | 14 |
-// +----+----+    +    +----+
-// | 20 | 21 |    |    | 24 |
-// +----+----+    +----+----+
-// | 30 |    |    | 33 | 34 |
-// +    +----+----+----+    +
-// |    |    |    | 43 |    |
-// +----+----+----+----+----+
 function trimCellsToRectangularSelection( selectedTableCells, writer ) {
 	const table = findAncestor( 'table', selectedTableCells[ 0 ] );
 
