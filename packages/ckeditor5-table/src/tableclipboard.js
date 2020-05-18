@@ -13,8 +13,8 @@ import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
 import {
 	getColumnIndexes,
-	getRowIndexes,
 	getHorizontallyOverlappingCells,
+	getRowIndexes,
 	getVerticallyOverlappingCells,
 	isSelectionRectangular,
 	splitHorizontally,
@@ -352,51 +352,56 @@ function trimCellsToRectangularSelection( selectedTableCells, writer ) {
 	const { first: firstColumn, last: lastColumn } = columnIndexes;
 
 	// 1. Split cells vertically in two steps as first step might create cells that needs to split again.
-	doVerticalSplit( table, firstColumn, rowIndexes, writer ); // TODO: Could use startColumn = 0.
-	doVerticalSplit( table, lastColumn + 1, rowIndexes, writer ); // TODO: Could use startColumn = firstColumn.
+	doVerticalSplit( table, firstColumn, rowIndexes, writer );
+	doVerticalSplit( table, lastColumn + 1, rowIndexes, writer );
 
 	// 2. Split cells horizontally in two steps as first step might create cells that needs to split again.
 	doHorizontalSplit( table, firstRow, columnIndexes, writer, 0 );
 	doHorizontalSplit( table, lastRow + 1, columnIndexes, writer, firstRow );
 }
 
-function doHorizontalSplit( table, splitRow, columnIndexes, writer, startRow ) {
+function doHorizontalSplit( table, splitRow, limitColumns, writer, startRow ) {
+	// If selection starts at first row then no split is needed.
 	if ( splitRow < 1 ) {
 		return;
 	}
 
 	const overlappingCells = getHorizontallyOverlappingCells( table, splitRow, startRow );
 
-	const { first, last } = columnIndexes;
-	const cellsToSplit = overlappingCells.filter( ( { column, colspan } ) => isBetweenColumns( column, colspan, first, last ) );
+	// Filter out cells that are not touching insides of the rectangular selection.
+	const { first, last } = limitColumns;
+	const cellsToSplit = overlappingCells.filter( ( { column, colspan } ) => isAffectedBySelection( column, colspan, first, last ) );
 
 	for ( const { cell } of cellsToSplit ) {
 		splitHorizontally( cell, splitRow, writer );
 	}
 }
 
-function doVerticalSplit( table, splitColumn, rowIndexes, writer ) {
+function doVerticalSplit( table, splitColumn, limitRows, writer ) {
+	// If selection starts at first column then no split is needed.
 	if ( splitColumn < 1 ) {
 		return;
 	}
 
 	const overlappingCells = getVerticallyOverlappingCells( table, splitColumn );
 
-	const { first, last } = rowIndexes;
-	const cellsToSplit = overlappingCells.filter( ( { row, rowspan } ) => isBetweenRows( row, rowspan, first, last ) );
+	// Filter out cells that are not touching insides of the rectangular selection.
+	const { first, last } = limitRows;
+	const cellsToSplit = overlappingCells.filter( ( { row, rowspan } ) => isAffectedBySelection( row, rowspan, first, last ) );
 
 	for ( const { cell, column } of cellsToSplit ) {
 		splitVertically( cell, column, splitColumn, writer );
 	}
 }
 
-function isBetweenRows( row, rowspan, first, last ) {
-	const endRowOfCell = row + rowspan - 1;
-	return first <= endRowOfCell && endRowOfCell <= last;
-}
+// Checks if cell at given row (column) is affected by a rectangular selection defined by first/last column (row).
+//
+// The same check is used for row as for column.
+function isAffectedBySelection( rowOrColumn, rowOrColumnSpan, first, last ) {
+	const endIndexOfCell = rowOrColumn + rowOrColumnSpan - 1;
 
-function isBetweenColumns( column, colspan, first, last ) {
-	const endColumnOfCell = column + colspan - 1;
+	const isInsideSelection = rowOrColumn >= first && rowOrColumn <= last;
+	const overlapsSelectionFromOutside = rowOrColumn < first && endIndexOfCell >= first;
 
-	return first <= endColumnOfCell && endColumnOfCell <= last;
+	return isInsideSelection || overlapsSelectionFromOutside;
 }
