@@ -140,51 +140,23 @@ export default class TableClipboard extends Plugin {
 		model.change( writer => {
 			// Content table to which we insert a pasted table.
 			const selectedTable = findAncestor( 'table', selectedTableCells[ 0 ] );
-			const { last: lastColumnOfSelection, first: firstColumnOfSelection } = getColumnIndexes( selectedTableCells );
-			const { first: firstRowOfSelection, last: lastRowOfSelection } = getRowIndexes( selectedTableCells );
+			const columnIndexes = getColumnIndexes( selectedTableCells );
+			const { last: lastColumnOfSelection, first: firstColumnOfSelection } = columnIndexes;
+			const rowIndexes = getRowIndexes( selectedTableCells );
+			const { first: firstRowOfSelection, last: lastRowOfSelection } = rowIndexes;
 
-			let lastRowOfAffectedSelection = lastRowOfSelection;
-			let lastColumnOfAffectedSelection = lastColumnOfSelection;
-
-			let selectionHeight = lastRowOfAffectedSelection - firstRowOfSelection + 1;
-			let selectionWidth = lastColumnOfAffectedSelection - firstColumnOfSelection + 1;
+			let lastRowOfSelectionArea = lastRowOfSelection;
+			let lastColumnOfSelectionArea = lastColumnOfSelection;
 
 			if ( !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
 				trimCellsToRectangularSelection( selectedTableCells, writer );
 			} else {
-				// Corner case...
-				let rs;
-
-				const ahaRow = Array.from( new TableWalker( selectedTable, {
-					startRow: lastRowOfAffectedSelection,
-					endRow: lastRowOfAffectedSelection
-				} ) ).every( ( { rowspan } ) => {
-					rs = rowspan;
-					return rowspan === 1;
-				} );
-
-				if ( !ahaRow ) {
-					selectionHeight += rs - 1;
-					lastRowOfAffectedSelection = firstRowOfSelection + selectionHeight - 1;
-				}
-
-				let cs;
-
-				const ahaColumn = Array.from( new TableWalker( selectedTable, {
-					startRow: firstRowOfSelection,
-					endRow: lastRowOfAffectedSelection,
-					column: lastColumnOfAffectedSelection
-				} ) ).every( ( { colspan } ) => {
-					cs = colspan;
-
-					return colspan === 1;
-				} );
-
-				if ( !ahaColumn ) {
-					selectionWidth += cs - 1;
-					lastColumnOfAffectedSelection = firstColumnOfSelection + selectionWidth - 1;
-				}
+				lastRowOfSelectionArea = adjustLastRowOfSelection( selectedTable, rowIndexes, columnIndexes );
+				lastColumnOfSelectionArea = adjustLastColumnOfSelection( selectedTable, rowIndexes, columnIndexes );
 			}
+
+			const selectionHeight = lastRowOfSelectionArea - firstRowOfSelection + 1;
+			const selectionWidth = lastColumnOfSelectionArea - firstColumnOfSelection + 1;
 
 			const pasteHeight = tableUtils.getRows( pastedTable );
 			const pasteWidth = tableUtils.getColumns( pastedTable );
@@ -236,7 +208,7 @@ export default class TableClipboard extends Plugin {
 				}
 
 				// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
-				if ( column < firstColumnOfSelection || column > lastColumnOfAffectedSelection ) {
+				if ( column < firstColumnOfSelection || column > lastColumnOfSelectionArea ) {
 					// Only update the previousCellInRow for non-spanned slots.
 					if ( !isSpanned ) {
 						previousCellInRow = cell;
@@ -437,4 +409,38 @@ function isAffectedBySelection( rowOrColumn, rowOrColumnSpan, first, last ) {
 	const overlapsSelectionFromOutside = rowOrColumn < first && endIndexOfCell >= first;
 
 	return isInsideSelection || overlapsSelectionFromOutside;
+}
+
+function adjustLastRowOfSelection( selectedTable, rowIndexes, columnIndexes ) {
+	// Corner case...
+	const lastRowMap = Array.from( new TableWalker( selectedTable, {
+		startRow: rowIndexes.last,
+		endRow: rowIndexes.last
+	} ) ).filter( ( { column } ) => columnIndexes.first <= column && column <= columnIndexes.last );
+
+	const everyCellHasSingleRowspan = lastRowMap.every( ( { rowspan } ) => rowspan === 1 );
+
+	if ( !everyCellHasSingleRowspan ) {
+		const rowspanAdjustment = lastRowMap.pop().rowspan - 1;
+		return rowIndexes.last + rowspanAdjustment;
+	}
+
+	return rowIndexes.last;
+}
+
+function adjustLastColumnOfSelection( selectedTable, rowIndexes, columnIndexes ) {
+	const lastColumnMap = Array.from( new TableWalker( selectedTable, {
+		startRow: rowIndexes.first,
+		endRow: rowIndexes.last,
+		column: columnIndexes.last
+	} ) );
+
+	const everyCellHasSingleColspan = lastColumnMap.every( ( { colspan } ) => colspan === 1 );
+
+	if ( !everyCellHasSingleColspan ) {
+		const colspanAdjustment = lastColumnMap.pop().colspan - 1;
+		return columnIndexes.last + colspanAdjustment;
+	}
+
+	return columnIndexes.last;
 }
