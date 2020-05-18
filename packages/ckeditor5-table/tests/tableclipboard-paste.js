@@ -1422,29 +1422,29 @@ describe( 'table clipboard', () => {
 					// | 00      |    | 03 | 04           |
 					// +         +    +    +----+----+----+
 					// |         |    |    | 14 | 15 | 16 |
-					// +----+----+----+----+----+----+----+
+					// +         +----+----+----+----+----+
 					// |         | aa | ab | ac |         |
 					// +----+----+----+----+----+----+----+
 					// | 30 | 31 | ba | bb | bc | 35 | 36 |
 					// +    +----+----+----+----+----+----+
 					// |    | 41 | ca | cb | cc | 45      |
 					// +    +----+----+----+----+         +
-					// |    | 51 | 52 | 53 | 54 |         |
+					// |    | 51 | 52 |    | 54 |         |
 					// +----+----+----+    +----+         +
 					// | 60 | 61 | 62 |    | 64 |         |
 					// +----+----+----+----+----+----+----+
 					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
 						[
-							{ contents: '00', colspan: 2, rowspan: 2 },
+							{ contents: '00', colspan: 2, rowspan: 3 },
 							{ contents: '', rowspan: 2 },
 							{ contents: '03', rowspan: 2 },
-							'04', '05', '06'
+							{ contents: '04', colspan: 3 }
 						],
 						[ '14', '15', '16' ],
-						[ { contents: '', colspan: 2 }, 'aa', 'ab', 'ac', { contents: '', colspan: 2 } ],
+						[ 'aa', 'ab', 'ac', { contents: '', colspan: 2 } ],
 						[ { contents: '30', rowspan: 3 }, '31', 'ba', 'bb', 'bc', '35', '36' ],
 						[ '41', 'ca', 'cb', 'cc', { contents: '45', colspan: 2, rowspan: 3 } ],
-						[ '51', '52', { contents: '53', rowspan: 2 }, '54' ],
+						[ '51', '52', { contents: '', rowspan: 2 }, '54' ],
 						[ '60', '61', '62', '64' ]
 					] ) );
 				} );

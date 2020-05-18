@@ -133,11 +133,7 @@ export default class TableClipboard extends Plugin {
 			// Currently not handled. The selected table content should be trimmed to a rectangular selection.
 			// See: https://github.com/ckeditor/ckeditor5/issues/6122.
 			if ( !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
-				// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Selection is not rectangular (non-mergeable).' );
-
 				prepareLandingPlace( selectedTableCells, writer );
-
-				// return;
 			}
 
 			const { last: lastColumnOfSelection, first: firstColumnOfSelection } = getColumnIndexes( selectedTableCells );
@@ -308,15 +304,15 @@ function prepareLandingPlace( selectedTableCells, writer ) {
 	const { first: firstRow, last: lastRow } = getRowIndexes( selectedTableCells );
 	const { first: firstColumn, last: lastColumn } = getColumnIndexes( selectedTableCells );
 
-	if ( firstRow > 0 ) {
-		cutCellsHorizontallyAt( table, firstRow, 0, writer, { firstRow: 0, firstColumn, lastRow: 1000, lastColumn } );
-	}
-
-	cutCellsHorizontallyAt( table, lastRow + 1, firstRow, writer, { firstRow: 0, firstColumn, lastRow: 1000, lastColumn } );
-
 	if ( firstColumn > 0 ) {
 		cutCellsVerticallyAt( table, firstColumn, 0, writer, { firstRow, firstColumn: 0, lastRow, lastColumn: 1000 } );
 	}
 
 	cutCellsVerticallyAt( table, lastColumn + 1, firstColumn, writer, { firstRow, firstColumn: 0, lastRow, lastColumn: 1000 } );
+
+	if ( firstRow > 0 ) {
+		cutCellsHorizontallyAt( table, firstRow, 0, writer, { firstRow: 0, firstColumn, lastRow: 1000, lastColumn } );
+	}
+
+	cutCellsHorizontallyAt( table, lastRow + 1, firstRow, writer, { firstRow: 0, firstColumn, lastRow: 1000, lastColumn } );
 }

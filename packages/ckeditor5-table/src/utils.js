@@ -285,8 +285,9 @@ export function cutCellsVerticallyAt( table, headingColumnsToSet, currentHeading
 function filterToBoundingBox( boundingBox ) {
 	const { firstRow, firstColumn, lastRow, lastColumn } = boundingBox;
 
-	return ( { row, column } ) => {
-		return ( ( firstRow <= row ) && ( row <= lastRow ) ) && ( firstColumn <= column && column <= lastColumn );
+	return ( { row, column, colspan, rowspan } ) => {
+		return ( ( firstRow <= row + rowspan - 1 ) && ( row + rowspan - 1 <= lastRow ) ) &&
+			( firstColumn <= column + colspan - 1 && column + colspan - 1 <= lastColumn );
 	};
 }
 
