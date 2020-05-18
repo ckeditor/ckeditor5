@@ -25,7 +25,7 @@ jobs:
         if: (steps.merge_action.outputs.status != 201) && (steps.merge_action.outputs.status != 204)
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_CHANNEL: "cke5-code"
+          SLACK_CHANNEL: "cke5-ci"
           SLACK_ICON: https://github.com/ckeditor.png?size=48
           SLACK_USERNAME: "stable auto merge action"
           SLACK_MESSAGE: ${{ format('💥 Error, merge call returned code {0}, see {1} for a list of codes with explanation. 💥', steps.merge_action.outputs.status, 'https://developer.github.com/v3/repos/merging/#perform-a-merge' ) }}
