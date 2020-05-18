@@ -138,17 +138,53 @@ export default class TableClipboard extends Plugin {
 		const model = this.editor.model;
 
 		model.change( writer => {
-			// Currently not handled. The selected table content should be trimmed to a rectangular selection.
-			// See: https://github.com/ckeditor/ckeditor5/issues/6122.
-			if ( !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
-				trimCellsToRectangularSelection( selectedTableCells, writer );
-			}
-
+			// Content table to which we insert a pasted table.
+			const selectedTable = findAncestor( 'table', selectedTableCells[ 0 ] );
 			const { last: lastColumnOfSelection, first: firstColumnOfSelection } = getColumnIndexes( selectedTableCells );
 			const { first: firstRowOfSelection, last: lastRowOfSelection } = getRowIndexes( selectedTableCells );
 
-			const selectionHeight = lastRowOfSelection - firstRowOfSelection + 1;
-			const selectionWidth = lastColumnOfSelection - firstColumnOfSelection + 1;
+			let lastRowOfAffectedSelection = lastRowOfSelection;
+			let lastColumnOfAffectedSelection = lastColumnOfSelection;
+
+			let selectionHeight = lastRowOfAffectedSelection - firstRowOfSelection + 1;
+			let selectionWidth = lastColumnOfAffectedSelection - firstColumnOfSelection + 1;
+
+			if ( !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
+				trimCellsToRectangularSelection( selectedTableCells, writer );
+			} else {
+				// Corner case...
+				let rs;
+
+				const ahaRow = Array.from( new TableWalker( selectedTable, {
+					startRow: lastRowOfAffectedSelection,
+					endRow: lastRowOfAffectedSelection
+				} ) ).every( ( { rowspan } ) => {
+					rs = rowspan;
+					return rowspan === 1;
+				} );
+
+				if ( !ahaRow ) {
+					selectionHeight += rs - 1;
+					lastRowOfAffectedSelection = firstRowOfSelection + selectionHeight - 1;
+				}
+
+				let cs;
+
+				const ahaColumn = Array.from( new TableWalker( selectedTable, {
+					startRow: firstRowOfSelection,
+					endRow: lastRowOfAffectedSelection,
+					column: lastColumnOfAffectedSelection
+				} ) ).every( ( { colspan } ) => {
+					cs = colspan;
+
+					return colspan === 1;
+				} );
+
+				if ( !ahaColumn ) {
+					selectionWidth += cs - 1;
+					lastColumnOfAffectedSelection = firstColumnOfSelection + selectionWidth - 1;
+				}
+			}
 
 			const pasteHeight = tableUtils.getRows( pastedTable );
 			const pasteWidth = tableUtils.getColumns( pastedTable );
@@ -176,12 +212,9 @@ export default class TableClipboard extends Plugin {
 			// Holds two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
 			const pastedTableLocationMap = createLocationMap( pastedTable, selectionWidth, selectionHeight );
 
-			// Content table to which we insert a pasted table.
-			const selectedTable = findAncestor( 'table', selectedTableCells[ 0 ] );
-
 			const selectedTableMap = [ ...new TableWalker( selectedTable, {
 				startRow: firstRowOfSelection,
-				endRow: lastRowOfSelection,
+				endRow: firstRowOfSelection + selectionHeight - 1,
 				includeSpanned: true
 			} ) ];
 
@@ -203,7 +236,7 @@ export default class TableClipboard extends Plugin {
 				}
 
 				// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
-				if ( column < firstColumnOfSelection || column > lastColumnOfSelection ) {
+				if ( column < firstColumnOfSelection || column > lastColumnOfAffectedSelection ) {
 					// Only update the previousCellInRow for non-spanned slots.
 					if ( !isSpanned ) {
 						previousCellInRow = cell;
