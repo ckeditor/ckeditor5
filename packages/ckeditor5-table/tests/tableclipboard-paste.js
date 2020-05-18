@@ -1375,6 +1375,84 @@ describe( 'table clipboard', () => {
 					] ) );
 				} );
 
+				it( 'should split cells anchored outside selection rectangle that overlaps selection (above selection)', () => {
+					// +----+----+----+
+					// | 00      | 02 |
+					// +         +----+
+					// |         | 12 |
+					// +----+----+----+
+					// | 20 | 21 | 22 |
+					// +----+----+----+
+					setModelData( model, modelTable( [
+						[ { contents: '00', colspan: 2, rowspan: 2 }, '02' ],
+						[ '12' ],
+						[ '20', '21', '22' ]
+					] ) );
+
+					// Select 21 -> 12
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 2, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					// +----+----+----+
+					// | 00 |    | 02 |
+					// +    +----+----+
+					// |    | aa | ab |
+					// +----+----+----+
+					// | 20 | ba | bb |
+					// +----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ { contents: '00', rowspan: 2 }, '', '02' ],
+						[ 'aa', 'ab' ],
+						[ '20', 'ba', 'bb' ]
+					] ) );
+				} );
+
+				it( 'should split cells anchored outside selection rectangle that overlaps selection (below selection)', () => {
+					// +----+----+----+
+					// | 00 | 01 | 02 |
+					// +----+----+----+
+					// | 10      | 12 |
+					// +         +----+
+					// |         | 22 |
+					// +----+----+----+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ],
+						[ { contents: '10', colspan: 2, rowspan: 2 }, '12' ],
+						[ '22' ]
+					] ) );
+
+					// Select 01 -> 12
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					// +----+----+----+
+					// | 00 | aa | ab |
+					// +----+----+----+
+					// | 10 | ba | bb |
+					// +    +----+----+
+					// |    |    | 22 |
+					// +----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', 'aa', 'ab' ],
+						[ { contents: '10', rowspan: 2 }, 'ba', 'bb' ],
+						[ '', '22' ]
+					] ) );
+				} );
+
 				it( 'should properly handle complex case', () => {
 					// +----+----+----+----+----+----+----+
 					// | 00           | 03 | 04           |
