@@ -1392,7 +1392,7 @@ describe( 'table clipboard', () => {
 					// Select 21 -> 12
 					tableSelection.setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 2, 1 ] ),
-						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+						modelRoot.getNodeByPath( [ 0, 1, 0 ] )
 					);
 
 					pasteTable( [
