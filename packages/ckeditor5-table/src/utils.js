@@ -188,7 +188,7 @@ export function getColumnIndexes( tableCells ) {
  *   │ a │ b │ c │ d │
  *   ├───┴───┼───┤   │
  *   │ e     │ f │   │
- *   ├       ├───┼───┤
+ *   │       ├───┼───┤
  *   │       │ g │ h │
  *   └───────┴───┴───┘
  *
@@ -247,88 +247,63 @@ export function isSelectionRectangular( selectedTableCells, tableUtils ) {
 	return areaOfValidSelection == areaOfSelectedCells;
 }
 
-// TODO: refactor it to a better, general util.
-export function cutCellsHorizontallyAt( table, headingRowsToSet, currentHeadingRows, writer, boundingBox ) {
-	const overlappingCells = getHorizontallyOverlappingCells( table, headingRowsToSet, currentHeadingRows );
-
-	let cellsToSplit;
-
-	if ( boundingBox === undefined ) {
-		cellsToSplit = overlappingCells;
-	} else {
-		cellsToSplit = overlappingCells.filter( filterToBoundingBox( boundingBox ) );
-	}
-
-	for ( const { cell } of cellsToSplit ) {
-		splitHorizontally( cell, headingRowsToSet, writer );
-	}
-}
-
-// TODO: refactor it to a better, general util.
-export function cutCellsVerticallyAt( table, headingColumnsToSet, currentHeadingColumns, writer, boundingBox ) {
-	const overlappingCells = getVerticallyOverlappingCells( table, headingColumnsToSet, currentHeadingColumns );
-
-	let cellsToSplit;
-
-	if ( boundingBox === undefined ) {
-		cellsToSplit = overlappingCells;
-	} else {
-		cellsToSplit = overlappingCells.filter( filterToBoundingBox( boundingBox ) );
-	}
-
-	for ( const { cell, column } of cellsToSplit ) {
-		splitVertically( cell, column, headingColumnsToSet, writer );
-	}
-}
-
-// TODO: better fit to bounding box to match criteria.. should check also spans because sometimes we need to split them.
-function filterToBoundingBox( boundingBox ) {
-	const { firstRow, firstColumn, lastRow, lastColumn } = boundingBox;
-
-	return ( { row, column, colspan, rowspan } ) => {
-		return ( ( firstRow <= row + rowspan - 1 ) && ( row + rowspan - 1 <= lastRow ) ) &&
-			( firstColumn <= column + colspan - 1 && column + colspan - 1 <= lastColumn );
-	};
-}
-
-// Returns cells that span beyond the new heading section.
-//
-// @param {module:engine/model/element~Element} table The table to check.
-// @param {Number} headingRowsToSet New heading rows attribute.
-// @param {Number} currentHeadingRows Current heading rows attribute.
-// @returns {Array.<module:engine/model/element~Element>}
-function getHorizontallyOverlappingCells( table, headingRowsToSet, currentHeadingRows ) {
+/**
+ * Returns cells that starts below and overlaps a given row.
+ *
+ * In a table below, passing `overlapRow = 3`
+ *
+ *       ┌───┬───┬───┬───┬───┐
+ *    0  │ a │ b │ c │ d │ e │
+ *       │   ├───┼───┼───┼───┤
+ *    1  │   │ f │ g │ h │ i │
+ *       ├───┤   ├───┼───┤   │
+ *    2  │ j │   │ k │ l │   │
+ *       │   │   │   ├───┼───┤
+ *    3  │   │   │   │ m │ n │  <- overlap row to check
+ *       ├───┼───┤   │   ├───│
+ *    4  │ o │ p │   │   │ q │
+ *       └───┴───┴───┴───┴───┘
+ *
+ * will return cells: "j", "f", "k".
+ *
+ * @param {module:engine/model/element~Element} table The table to check.
+ * @param {Number} overlapRow
+ * @param {Number} [startRow=0] A row to start analysis if it is known where.
+ * @returns {Array.<module:table/tablewalker~TableWalkerValue>}
+ */
+export function getHorizontallyOverlappingCells( table, overlapRow, startRow = 0 ) {
 	const cellsToSplit = [];
 
-	const startAnalysisRow = headingRowsToSet > currentHeadingRows ? currentHeadingRows : 0;
 	// We're analyzing only when headingRowsToSet > 0.
-	const endAnalysisRow = headingRowsToSet - 1;
+	const endAnalysisRow = overlapRow - 1;
 
-	const tableWalker = new TableWalker( table, { startRow: startAnalysisRow, endRow: endAnalysisRow } );
+	const tableWalker = new TableWalker( table, { startRow, endRow: endAnalysisRow } );
 
-	for ( const twv of tableWalker ) {
-		const { row, rowspan } = twv;
+	for ( const slotInfo of tableWalker ) {
+		const { row, rowspan } = slotInfo;
 
-		if ( rowspan > 1 && row + rowspan > headingRowsToSet ) {
-			cellsToSplit.push( twv );
+		if ( rowspan > 1 && row + rowspan > overlapRow ) {
+			cellsToSplit.push( slotInfo );
 		}
 	}
 
 	return cellsToSplit;
 }
 
-// Splits the table cell horizontally.
-//
-// @param {module:engine/model/element~Element} tableCell
-// @param {Number} headingRows
-// @param {module:engine/model/writer~Writer} writer
-function splitHorizontally( tableCell, headingRows, writer ) {
+/**
+ * Splits the table cell horizontally.
+ *
+ * @param {module:engine/model/element~Element} tableCell
+ * @param {Number} splitRow
+ * @param {module:engine/model/writer~Writer} writer
+ */
+export function splitHorizontally( tableCell, splitRow, writer ) {
 	const tableRow = tableCell.parent;
 	const table = tableRow.parent;
 	const rowIndex = tableRow.index;
 
 	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) );
-	const newRowspan = headingRows - rowIndex;
+	const newRowspan = splitRow - rowIndex;
 
 	const attributes = {};
 
@@ -367,45 +342,59 @@ function splitHorizontally( tableCell, headingRows, writer ) {
 	updateNumericAttribute( 'rowspan', newRowspan, tableCell, writer );
 }
 
-// Returns cells that span beyond the new heading section.
-//
-// @param {module:engine/model/element~Element} table The table to check.
-// @param {Number} headingColumnsToSet New heading columns attribute.
-// @param {Number} currentHeadingColumns Current heading columns attribute.
-// @returns {Array.<module:engine/model/element~Element>}
-function getVerticallyOverlappingCells( table, headingColumnsToSet, currentHeadingColumns ) {
+/**
+ * Returns cells that starts before and overlaps a given column.
+ *
+ * In a table below, passing `overlapColumn = 3`
+ *
+ *      0   1   2   3   4
+ *    ┌───────┬───────┬───┐
+ *    │ a     │ b     │ c │
+ *    │───┬───┴───────┼───┤
+ *    │ d │ e         │ f │
+ *    ├───┼───┬───────┴───┤
+ *    │ g │ h │ i         │
+ *    ├───┼───┼───┬───────┤
+ *    │ j │ k │ l │ m     │
+ *    ├───┼───┴───┼───┬───┤
+ *    │ n │ o     │ p │ q │
+ *    └───┴───────┴───┴───┘
+ *                  ^
+ *                  Overlap column to check
+ *
+ * will return cells: "b", "e", "i".
+ *
+ * @param {module:engine/model/element~Element} table The table to check.
+ * @param {Number} overlapColumn New heading columns attribute.
+ * @returns {Array.<module:table/tablewalker~TableWalkerValue>}
+ */
+export function getVerticallyOverlappingCells( table, overlapColumn ) {
 	const cellsToSplit = [];
 
-	const startAnalysisColumn = headingColumnsToSet > currentHeadingColumns ? currentHeadingColumns : 0;
-	// We're analyzing only when headingColumnsToSet > 0.
-	const endAnalysisColumn = headingColumnsToSet - 1;
-
-	// todo: end/start column
 	const tableWalker = new TableWalker( table );
 
-	for ( const twv of tableWalker ) {
-		const { column, colspan } = twv;
-		// Skip slots outside the cropped area.
-		// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
-		if ( startAnalysisColumn > column || column > endAnalysisColumn ) {
-			continue;
-		}
-		if ( colspan > 1 && column + colspan > headingColumnsToSet ) {
-			cellsToSplit.push( twv );
+	for ( const slotInfo of tableWalker ) {
+		const { column, colspan } = slotInfo;
+		const endColumn = column + colspan;
+
+		if ( column < overlapColumn && overlapColumn < endColumn ) {
+			cellsToSplit.push( slotInfo );
 		}
 	}
 
 	return cellsToSplit;
 }
 
-// Splits the table cell vertically.
-//
-// @param {module:engine/model/element~Element} tableCell
-// @param {Number} headingColumns
-// @param {module:engine/model/writer~Writer} writer
-function splitVertically( tableCell, columnIndex, headingColumns, writer ) {
+/**
+ * Splits the table cell vertically.
+ *
+ * @param {module:engine/model/element~Element} tableCell
+ * @param {Number} splitColumn
+ * @param {module:engine/model/writer~Writer} writer
+ */
+export function splitVertically( tableCell, columnIndex, splitColumn, writer ) {
 	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) );
-	const newColspan = headingColumns - columnIndex;
+	const newColspan = splitColumn - columnIndex;
 
 	const attributes = {};
 

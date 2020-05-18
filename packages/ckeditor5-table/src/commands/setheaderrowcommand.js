@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import { findAncestor, updateNumericAttribute } from './utils';
-import { cutCellsHorizontallyAt, getRowIndexes, getSelectionAffectedTableCells } from '../utils';
+import { getHorizontallyOverlappingCells, getRowIndexes, getSelectionAffectedTableCells, splitHorizontally } from '../utils';
 
 /**
  * The header row command.
@@ -76,7 +76,12 @@ export default class SetHeaderRowCommand extends Command {
 			if ( headingRowsToSet ) {
 				// Changing heading rows requires to check if any of a heading cell is overlapping vertically the table head.
 				// Any table cell that has a rowspan attribute > 1 will not exceed the table head so we need to fix it in rows below.
-				cutCellsHorizontallyAt( table, headingRowsToSet, currentHeadingRows, writer );
+				const startRow = headingRowsToSet > currentHeadingRows ? currentHeadingRows : 0;
+				const overlappingCells = getHorizontallyOverlappingCells( table, headingRowsToSet, startRow );
+
+				for ( const { cell } of overlappingCells ) {
+					splitHorizontally( cell, headingRowsToSet, writer );
+				}
 			}
 
 			updateNumericAttribute( 'headingRows', headingRowsToSet, table, writer, 0 );

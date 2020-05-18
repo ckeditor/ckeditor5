@@ -11,7 +11,15 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
-import { cutCellsHorizontallyAt, cutCellsVerticallyAt, getColumnIndexes, getRowIndexes, isSelectionRectangular } from './utils';
+import {
+	getColumnIndexes,
+	getRowIndexes,
+	getHorizontallyOverlappingCells,
+	getVerticallyOverlappingCells,
+	isSelectionRectangular,
+	splitHorizontally,
+	splitVertically
+} from './utils';
 import { findAncestor } from './commands/utils';
 import { cropTableToDimensions } from './tableselection/croptable';
 import TableUtils from './tableutils';
@@ -133,7 +141,7 @@ export default class TableClipboard extends Plugin {
 			// Currently not handled. The selected table content should be trimmed to a rectangular selection.
 			// See: https://github.com/ckeditor/ckeditor5/issues/6122.
 			if ( !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
-				prepareLandingPlace( selectedTableCells, writer );
+				makeSelectedCellsRectangular( selectedTableCells, writer );
 			}
 
 			const { last: lastColumnOfSelection, first: firstColumnOfSelection } = getColumnIndexes( selectedTableCells );
@@ -298,21 +306,59 @@ function createLocationMap( table, width, height ) {
 	return map;
 }
 
-function prepareLandingPlace( selectedTableCells, writer ) {
+// Make selected cell rectangular by splitting the cells that stand out from a rectangular selection.
+function makeSelectedCellsRectangular( selectedTableCells, writer ) {
 	const table = findAncestor( 'table', selectedTableCells[ 0 ] );
 
-	const { first: firstRow, last: lastRow } = getRowIndexes( selectedTableCells );
-	const { first: firstColumn, last: lastColumn } = getColumnIndexes( selectedTableCells );
+	const rowIndexes = getRowIndexes( selectedTableCells );
+	const columnIndexes = getColumnIndexes( selectedTableCells );
+	const { first: firstRow, last: lastRow } = rowIndexes;
+	const { first: firstColumn, last: lastColumn } = columnIndexes;
 
-	if ( firstColumn > 0 ) {
-		cutCellsVerticallyAt( table, firstColumn, 0, writer, { firstRow, firstColumn: 0, lastRow, lastColumn: 1000 } );
+	doVerticalSplit( table, firstColumn, rowIndexes, writer ); // TODO: Could use startColumn = 0.
+	doVerticalSplit( table, lastColumn + 1, rowIndexes, writer ); // TODO: Could use startColumn = firstColumn.
+
+	doHorizontalSplit( table, firstRow, columnIndexes, writer, 0 );
+	doHorizontalSplit( table, lastRow + 1, columnIndexes, writer, firstRow );
+}
+
+function doHorizontalSplit( table, splitRow, columnIndexes, writer, startRow ) {
+	if ( splitRow < 1 ) {
+		return;
 	}
 
-	cutCellsVerticallyAt( table, lastColumn + 1, firstColumn, writer, { firstRow, firstColumn: 0, lastRow, lastColumn: 1000 } );
+	const overlappingCells = getHorizontallyOverlappingCells( table, splitRow, startRow );
 
-	if ( firstRow > 0 ) {
-		cutCellsHorizontallyAt( table, firstRow, 0, writer, { firstRow: 0, firstColumn, lastRow: 1000, lastColumn } );
+	const { first, last } = columnIndexes;
+	const cellsToSplit = overlappingCells.filter( ( { column, colspan } ) => isBetweenColumns( column, colspan, first, last ) );
+
+	for ( const { cell } of cellsToSplit ) {
+		splitHorizontally( cell, splitRow, writer );
+	}
+}
+
+function doVerticalSplit( table, splitColumn, rowIndexes, writer ) {
+	if ( splitColumn < 1 ) {
+		return;
 	}
 
-	cutCellsHorizontallyAt( table, lastRow + 1, firstRow, writer, { firstRow: 0, firstColumn, lastRow: 1000, lastColumn } );
+	const overlappingCells = getVerticallyOverlappingCells( table, splitColumn );
+
+	const { first, last } = rowIndexes;
+	const cellsToSplit = overlappingCells.filter( ( { row, rowspan } ) => isBetweenRows( row, rowspan, first, last ) );
+
+	for ( const { cell, column } of cellsToSplit ) {
+		splitVertically( cell, column, splitColumn, writer );
+	}
+}
+
+function isBetweenRows( row, rowspan, first, last ) {
+	const endRowOfCell = row + rowspan - 1;
+	return first <= endRowOfCell && endRowOfCell <= last;
+}
+
+function isBetweenColumns( column, colspan, first, last ) {
+	const endColumnOfCell = column + colspan - 1;
+
+	return first <= endColumnOfCell && endColumnOfCell <= last;
 }
