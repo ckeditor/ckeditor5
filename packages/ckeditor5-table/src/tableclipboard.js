@@ -141,7 +141,7 @@ export default class TableClipboard extends Plugin {
 			// Currently not handled. The selected table content should be trimmed to a rectangular selection.
 			// See: https://github.com/ckeditor/ckeditor5/issues/6122.
 			if ( !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
-				makeSelectedCellsRectangular( selectedTableCells, writer );
+				trimCellsToRectangularSelection( selectedTableCells, writer );
 			}
 
 			const { last: lastColumnOfSelection, first: firstColumnOfSelection } = getColumnIndexes( selectedTableCells );
@@ -307,7 +307,43 @@ function createLocationMap( table, width, height ) {
 }
 
 // Make selected cell rectangular by splitting the cells that stand out from a rectangular selection.
-function makeSelectedCellsRectangular( selectedTableCells, writer ) {
+//
+// In the table below a selection is shown with "::" and slots with anchor cells are named.
+//
+// +----+----+----+----+----+                    +----+----+----+----+----+
+// | 00 | 01 | 02 | 03      |                    | 00 | 01 | 02 | 03      |
+// +    +----+    +----+----+                    |    ::::::::::::::::----+
+// |    | 11 |    | 13 | 14 |                    |    ::11 |    | 13:: 14 |    <- first row
+// +----+----+    +    +----+                    +----::---|    |   ::----+
+// | 20 | 21 |    |    | 24 |   select cells:    | 20 ::21 |    |   :: 24 |
+// +----+----+    +----+----+     11 -> 33       +----::---|    |---::----+
+// | 30      |    | 33 | 34 |                    | 30 ::   |    | 33:: 34 |    <- last row
+// +         +    +----+    +                    |    ::::::::::::::::    +
+// |         |    | 43 |    |                    |         |    | 43 |    |
+// +----+----+----+----+----+                    +----+----+----+----+----+
+//                                                      ^          ^
+//                                                     first & last columns
+//
+// In th example above:
+// - Cell "02" which have `rowspan = 4` must be trimmed at first and at after last row.
+// - Cell "03" which have `rowspan = 2` and `colspan = 2` must be trimmed at first column and after last row.
+// - Cells "00", "03" & "30" which cannot be cut by this algorithm as they are outside the trimmed area.
+// - Cell "13" cannot be cut as it is inside the trimmed area.
+//
+// Will update table to:
+//
+// +----+----+----+----+----+
+// | 00 | 01 | 02 | 03      |
+// +    +----+----+----+----+
+// |    | 11 |    | 13 | 14 |
+// +----+----+    +    +----+
+// | 20 | 21 |    |    | 24 |
+// +----+----+    +----+----+
+// | 30 |    |    | 33 | 34 |
+// +    +----+----+----+    +
+// |    |    |    | 43 |    |
+// +----+----+----+----+----+
+function trimCellsToRectangularSelection( selectedTableCells, writer ) {
 	const table = findAncestor( 'table', selectedTableCells[ 0 ] );
 
 	const rowIndexes = getRowIndexes( selectedTableCells );
@@ -315,9 +351,11 @@ function makeSelectedCellsRectangular( selectedTableCells, writer ) {
 	const { first: firstRow, last: lastRow } = rowIndexes;
 	const { first: firstColumn, last: lastColumn } = columnIndexes;
 
+	// 1. Split cells vertically in two steps as first step might create cells that needs to split again.
 	doVerticalSplit( table, firstColumn, rowIndexes, writer ); // TODO: Could use startColumn = 0.
 	doVerticalSplit( table, lastColumn + 1, rowIndexes, writer ); // TODO: Could use startColumn = firstColumn.
 
+	// 2. Split cells horizontally in two steps as first step might create cells that needs to split again.
 	doHorizontalSplit( table, firstRow, columnIndexes, writer, 0 );
 	doHorizontalSplit( table, lastRow + 1, columnIndexes, writer, firstRow );
 }
