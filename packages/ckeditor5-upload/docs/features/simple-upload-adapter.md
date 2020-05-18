@@ -62,6 +62,9 @@ ClassicEditor
 			// The URL that the images are uploaded to.
 			uploadUrl: 'http://example.com',
 
+			// Enable XMLHttpRequest.withCredentials property
+			withCredentials: true,
+
 			// Headers sent along with the XMLHttpRequest to the upload server.
 			headers: {
 				'X-CSRF-TOKEN': 'CSFR-Token',

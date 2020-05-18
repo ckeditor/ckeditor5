@@ -329,6 +329,45 @@ describe( 'SimpleUploadAdapter', () => {
 					expect( loader.uploaded ).to.equal( 4 );
 				} );
 			} );
+
+			it( 'should use withCredentials in the request (when specified)', () => {
+				const editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				return ClassicTestEditor
+					.create( editorElement, {
+						plugins: [ SimpleUploadAdapter ],
+						simpleUpload: {
+							uploadUrl: 'http://example.com',
+							withCredentials: true
+						}
+					} )
+					.then( editor => {
+						const adapter = editor.plugins.get( FileRepository ).createUploadAdapter( loader );
+						const validResponse = {
+							url: 'http://example.com/images/image.jpeg'
+						};
+
+						const uploadPromise = adapter.upload();
+
+						return loader.file
+							.then( () => {
+								const request = sinonXHR.requests[ 0 ];
+								request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
+
+								expect( request ).to.have.property( 'withCredentials', true );
+
+								return uploadPromise;
+							} )
+							.then( uploadResponse => {
+								expect( uploadResponse ).to.be.a( 'object' );
+								expect( uploadResponse ).to.have.property( 'default', 'http://example.com/images/image.jpeg' );
+
+								editorElement.remove();
+							} )
+							.then( () => editor.destroy() );
+					} );
+			} );
 		} );
 	} );
 } );

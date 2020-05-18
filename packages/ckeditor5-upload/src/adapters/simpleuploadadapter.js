@@ -205,6 +205,12 @@ class Adapter {
 			this.xhr.setRequestHeader( headerName, headers[ headerName ] );
 		}
 
+		// Set withCredentials if specified
+		const withCredentials = this.options.withCredentials || false;
+		if ( withCredentials ) {
+			this.xhr.withCredentials = true;
+		}
+
 		// Prepare the form data.
 		const data = new FormData();
 
