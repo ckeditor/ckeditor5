@@ -110,6 +110,9 @@ export default class TableClipboard extends Plugin {
 			return;
 		}
 
+		// Content table to which we insert a pasted table.
+		const selectedTable = findAncestor( 'table', selectedTableCells[ 0 ] );
+
 		// We might need to crop table before inserting so reference might change.
 		let pastedTable = getTableIfOnlyTableInContent( content );
 
@@ -124,15 +127,26 @@ export default class TableClipboard extends Plugin {
 		const pasteHeight = tableUtils.getRows( pastedTable );
 
 		model.change( writer => {
-			const selectionDimensions = this._prepareTableSelectionForPasting( selectedTableCells, pasteWidth, pasteHeight, writer );
-			const { selectionWidth, selectionHeight } = selectionDimensions;
+			let { first: firstColumnOfSelection, last: lastColumnOfSelection } = getColumnIndexes( selectedTableCells );
+			let { first: firstRowOfSelection, last: lastRowOfSelection } = getRowIndexes( selectedTableCells );
 
-			// This paste scenario is not handled for now, this will be removed.
+			if ( selectedTableCells.length == 1 ) {
+				lastRowOfSelection += pasteHeight - 1;
+				lastColumnOfSelection += pasteWidth - 1;
+
+				expandTableSize( selectedTable, lastRowOfSelection + 1, lastColumnOfSelection + 1, writer, tableUtils );
+			}
+
+			// Currently not handled. The selected table content should be trimmed to a rectangular selection.
 			// See: https://github.com/ckeditor/ckeditor5/issues/6122.
-			// TODO temporary to remove after https://github.com/ckeditor/ckeditor5/issues/6122.
-			if ( selectionDimensions.stop ) {
+			else if ( !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
+				// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Selection is not rectangular (non-mergeable).' );
+
 				return;
 			}
+
+			const selectionHeight = lastRowOfSelection - firstRowOfSelection + 1;
+			const selectionWidth = lastColumnOfSelection - firstColumnOfSelection + 1;
 
 			// The if below is temporal and will be removed when handling this case.
 			// See: https://github.com/ckeditor/ckeditor5/issues/6769.
@@ -154,126 +168,108 @@ export default class TableClipboard extends Plugin {
 				pastedTable = cropTableToDimensions( pastedTable, cropDimensions, writer, tableUtils );
 			}
 
-			// Content table to which we insert a pasted table.
-			const selectedTable = findAncestor( 'table', selectedTableCells[ 0 ] );
+			const selectionDimensions = {
+				firstColumnOfSelection,
+				firstRowOfSelection,
+				lastColumnOfSelection,
+				lastRowOfSelection,
+				selectionHeight,
+				selectionWidth
+			};
 
-			this._replaceSelectedCellsWithPasted( selectedTable, pastedTable, selectionDimensions, writer );
+			replaceSelectedCellsWithPasted( pastedTable, selectedTable, selectionDimensions, writer );
 		} );
 	}
+}
 
-	_prepareTableSelectionForPasting( selectedTableCells, pasteWidth, pasteHeight, writer ) {
-		const tableUtils = this.editor.plugins.get( TableUtils );
-		const selectedTable = findAncestor( 'table', selectedTableCells[ 0 ] );
+// Replaces the part of selectedTable with pastedTable.
+//
+// @param {module:engine/model/element~Element} pastedTable
+// @param {module:engine/model/element~Element} selectedTable
+// @param {Object} selectionDimensions
+// @param {Number} selectionDimensions.firstColumnOfSelection
+// @param {Number} selectionDimensions.firstRowOfSelection
+// @param {Number} selectionDimensions.lastColumnOfSelection
+// @param {Number} selectionDimensions.lastRowOfSelection
+// @param {Number} selectionDimensions.selectionHeight
+// @param {Number} selectionDimensions.selectionWidth
+// @param {module:engine/model/writer~Writer} writer
+function replaceSelectedCellsWithPasted( pastedTable, selectedTable, selectionDimensions, writer ) {
+	const {
+		firstColumnOfSelection, lastColumnOfSelection, selectionWidth,
+		firstRowOfSelection, lastRowOfSelection, selectionHeight
+	} = selectionDimensions;
 
-		let { first: firstColumnOfSelection, last: lastColumnOfSelection } = getColumnIndexes( selectedTableCells );
-		let { first: firstRowOfSelection, last: lastRowOfSelection } = getRowIndexes( selectedTableCells );
+	// Holds two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
+	const pastedTableLocationMap = createLocationMap( pastedTable, selectionWidth, selectionHeight );
 
-		if ( selectedTableCells.length == 1 ) {
-			lastRowOfSelection += pasteHeight - 1;
-			lastColumnOfSelection += pasteWidth - 1;
+	const selectedTableMap = [ ...new TableWalker( selectedTable, {
+		startRow: firstRowOfSelection,
+		endRow: lastRowOfSelection,
+		includeSpanned: true
+	} ) ];
 
-			expandTableSize( selectedTable, lastRowOfSelection + 1, lastColumnOfSelection + 1, writer, tableUtils );
+	// Selection must be set to pasted cells (some might be removed or new created).
+	const cellsToSelect = [];
+
+	// Store previous cell in order to insert a new table cells after it (if required).
+	let previousCellInRow;
+
+	// Content table replace cells algorithm iterates over a selected table fragment and:
+	//
+	// - Removes existing table cells at current slot (location).
+	// - Inserts cell from a pasted table for a matched slots.
+	//
+	// This ensures proper table geometry after the paste
+	for ( const { row, column, cell, isSpanned } of selectedTableMap ) {
+		if ( column === 0 ) {
+			previousCellInRow = null;
 		}
 
-		// Currently not handled. The selected table content should be trimmed to a rectangular selection.
-		// See: https://github.com/ckeditor/ckeditor5/issues/6122.
-		else if ( !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
-			// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Selection is not rectangular (non-mergeable).' );
-
-			// TODO this is temporary - https://github.com/ckeditor/ckeditor5/issues/6122
-			prepareLandingPlace();
-
-			// TODO this is temporary stop marker for currently unhandled scenario
-			return { stop: true };
-		}
-
-		return {
-			firstColumnOfSelection,
-			firstRowOfSelection,
-			lastColumnOfSelection,
-			lastRowOfSelection,
-			selectionHeight: lastRowOfSelection - firstRowOfSelection + 1,
-			selectionWidth: lastColumnOfSelection - firstColumnOfSelection + 1
-		};
-	}
-
-	_replaceSelectedCellsWithPasted( selectedTable, pastedTable, selectionDimensions, writer ) {
-		const {
-			firstColumnOfSelection, lastColumnOfSelection, selectionWidth,
-			firstRowOfSelection, lastRowOfSelection, selectionHeight
-		} = selectionDimensions;
-
-		// Holds two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
-		const pastedTableLocationMap = createLocationMap( pastedTable, selectionWidth, selectionHeight );
-
-		const selectedTableMap = [ ...new TableWalker( selectedTable, {
-			startRow: firstRowOfSelection,
-			endRow: lastRowOfSelection,
-			includeSpanned: true
-		} ) ];
-
-		// Selection must be set to pasted cells (some might be removed or new created).
-		const cellsToSelect = [];
-
-		// Store previous cell in order to insert a new table cells after it (if required).
-		let previousCellInRow;
-
-		// Content table replace cells algorithm iterates over a selected table fragment and:
-		//
-		// - Removes existing table cells at current slot (location).
-		// - Inserts cell from a pasted table for a matched slots.
-		//
-		// This ensures proper table geometry after the paste
-		for ( const { row, column, cell, isSpanned } of selectedTableMap ) {
-			if ( column === 0 ) {
-				previousCellInRow = null;
-			}
-
-			// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
-			if ( column < firstColumnOfSelection || column > lastColumnOfSelection ) {
-				// Only update the previousCellInRow for non-spanned slots.
-				if ( !isSpanned ) {
-					previousCellInRow = cell;
-				}
-
-				continue;
-			}
-
-			// If the slot is occupied by a cell in a selected table - remove it.
-			// The slot of this cell will be either:
-			// - Replaced by a pasted table cell.
-			// - Spanned by a previously pasted table cell.
+		// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
+		if ( column < firstColumnOfSelection || column > lastColumnOfSelection ) {
+			// Only update the previousCellInRow for non-spanned slots.
 			if ( !isSpanned ) {
-				writer.remove( cell );
+				previousCellInRow = cell;
 			}
 
-			// Map current table slot location to an pasted table slot location.
-			const pastedCell = pastedTableLocationMap[ row - firstRowOfSelection ][ column - firstColumnOfSelection ];
-
-			// There is no cell to insert (might be spanned by other cell in a pasted table) - advance to the next content table slot.
-			if ( !pastedCell ) {
-				continue;
-			}
-
-			// Clone cell to insert (to duplicate its attributes and children).
-			// Cloning is required to support repeating pasted table content when inserting to a bigger selection.
-			const cellToInsert = pastedCell._clone( true );
-
-			let insertPosition;
-
-			if ( !previousCellInRow ) {
-				insertPosition = writer.createPositionAt( selectedTable.getChild( row ), 0 );
-			} else {
-				insertPosition = writer.createPositionAfter( previousCellInRow );
-			}
-
-			writer.insert( cellToInsert, insertPosition );
-			cellsToSelect.push( cellToInsert );
-			previousCellInRow = cellToInsert;
+			continue;
 		}
 
-		writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
+		// If the slot is occupied by a cell in a selected table - remove it.
+		// The slot of this cell will be either:
+		// - Replaced by a pasted table cell.
+		// - Spanned by a previously pasted table cell.
+		if ( !isSpanned ) {
+			writer.remove( cell );
+		}
+
+		// Map current table slot location to an pasted table slot location.
+		const pastedCell = pastedTableLocationMap[ row - firstRowOfSelection ][ column - firstColumnOfSelection ];
+
+		// There is no cell to insert (might be spanned by other cell in a pasted table) - advance to the next content table slot.
+		if ( !pastedCell ) {
+			continue;
+		}
+
+		// Clone cell to insert (to duplicate its attributes and children).
+		// Cloning is required to support repeating pasted table content when inserting to a bigger selection.
+		const cellToInsert = pastedCell._clone( true );
+
+		let insertPosition;
+
+		if ( !previousCellInRow ) {
+			insertPosition = writer.createPositionAt( selectedTable.getChild( row ), 0 );
+		} else {
+			insertPosition = writer.createPositionAfter( previousCellInRow );
+		}
+
+		writer.insert( cellToInsert, insertPosition );
+		cellsToSelect.push( cellToInsert );
+		previousCellInRow = cellToInsert;
 	}
+
+	writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
 }
 
 // Expand table (in place) to expected size (rows and columns).
@@ -296,10 +292,6 @@ function expandTableSize( table, rows, columns, writer, tableUtils ) {
 			rows: rows - tableHeight
 		} );
 	}
-}
-
-// TODO rename to reflect that it's splitting cells to make selection rectangular
-function prepareLandingPlace( ) {
 }
 
 function getTableIfOnlyTableInContent( content ) {
