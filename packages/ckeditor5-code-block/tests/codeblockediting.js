@@ -889,29 +889,39 @@ describe( 'CodeBlockEditing', () => {
 			);
 		} );
 
+		// Undesired by expected. There is an issue with identifying the correct filler type.
+		// <code> is inline, so dom-to-view converter expects an inline filler.
+		it( 'should convert pre > code with only &nbsp; inside to a codeBlock with &nbsp;', () => {
+			editor.setData( '<pre><code>&nbsp;</code></pre>' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<codeBlock language="plaintext">[]\u00a0</codeBlock>'
+			);
+		} );
+
 		it( 'should convert pre > code with HTML inside', () => {
 			editor.setData( '<pre><code><p>Foo</p>\n<p>Bar</p></code></pre>' );
 
 			expect( getModelData( model ) ).to.equal(
 				'<codeBlock language="plaintext">[]' +
-					'<p>Foo</p>' +
+					'Foo' +
 					'<softBreak></softBreak>' +
-					'<p>Bar</p>' +
+					'Bar' +
 				'</codeBlock>'
 			);
 		} );
 
-		it( 'should convert pre > code tag with HTML and nested pre > code tag', () => {
-			editor.setData( '<pre><code><p>Foo</p><pre>Bar</pre><p>Biz</p></code></pre>' );
+		it( 'should convert pre > code tag with HTML and nested pre > code tag and use only the text content of invalid HTML tags', () => {
+			editor.setData( '<pre><code><p>Foo</p><pre><code>Bar</code></pre><p>Biz</p></code></pre>' );
 
 			expect( getModelData( model ) ).to.equal(
-				'<codeBlock language="plaintext">[]<p>Foo</p><pre>Bar</pre><p>Biz</p></codeBlock>' );
+				'<codeBlock language="plaintext">[]FooBarBiz</codeBlock>' );
 		} );
 
 		it( 'should convert pre > code tag with escaped html content', () => {
-			editor.setData( '<pre><code>&lt;div&gt;&lt;p&gt;Foo&lt;/p&gt;&lt;/div&gt;</code></pre>' );
+			editor.setData( '<pre><code>&lt;div&gt;&lt;p&gt;Foo&apos;s&amp;&quot;bar&quot;&lt;/p&gt;&lt;/div&gt;</code></pre>' );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]<div><p>Foo</p></div></codeBlock>' );
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]<div><p>Foo\'s&"bar"</p></div></codeBlock>' );
 		} );
 
 		it( 'should be overridable', () => {
