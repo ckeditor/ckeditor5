@@ -75,3 +75,10 @@
 		}
 	}
 }
+
+/*
+ * Integration with the read-only mode of the editor
+ */
+.ck.ck-editor__editable.ck-read-only .ck-widget__type-around {
+	display: none;
+}
