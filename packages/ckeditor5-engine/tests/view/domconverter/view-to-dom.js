@@ -95,6 +95,15 @@ describe( 'DomConverter', () => {
 			expect( converter.findCorrespondingViewText( domP.childNodes[ 0 ] ) ).to.equal( viewP.getChild( 0 ) );
 		} );
 
+		it( 'should preserve attribute letter casing', () => {
+			const viewP = new ViewElement( viewDocument, 'p', { fooBar: 'bAz' } );
+
+			const domP = converter.viewToDom( viewP, document, { bind: true } );
+
+			const attributeNames = Array.from( domP.attributes ).map( attr => attr.name );
+			expect( attributeNames ).to.include( 'fooBar' );
+		} );
+
 		it( 'should create tree of DOM elements from view element without children', () => {
 			const viewImg = new ViewElement( viewDocument, 'img' );
 			const viewText = new ViewText( viewDocument, 'foo' );
