@@ -721,6 +721,78 @@ describe( 'table clipboard', () => {
 					] ) );
 				} );
 			} );
+
+			describe( 'with spanned cells', () => {
+				it( 'should replace the table structure', () => {
+					// +----+----+----+----+----+----+
+					// | 00 | 01 | 02           | 05 |
+					// +----+----+----+----+----+----+
+					// | 10 | 11      | 13 | 14 | 15 |
+					// +----+         +----+----+----+
+					// | 20 |         | 23      | 25 |
+					// +----+         +----+----+    +
+					// | 30 |         | 33      |    |
+					// +----+----+----+----+----+----+
+					// | 40      | 42 | 43 | 44      |
+					// +----+----+----+----+----+----+
+					setModelData( model, modelTable( [
+						[ '00', '01', { contents: '02', colspan: 3 }, '05' ],
+						[ '10', { contents: '11', colspan: 2, rowspan: 3 }, '13', '14', '15' ],
+						[ '20', { contents: '23', colspan: 2 }, { contents: '25', rowspan: 2 } ],
+						[ '30', { contents: '33', colspan: 2 } ],
+						[ { contents: '40', colspan: 2 }, '42', '43', { contents: '44', colspan: 2 } ]
+					] ) );
+
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 2, 1 ] ), // Cell 23.
+						modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+					);
+
+					// +----+----+----+----+----+
+					// | aa      | ac | ad | ae |
+					// +         +    +----+----+
+					// |         |    | bd | be |
+					// +----+----+----+----+----+
+					// | ca      | cc | cd | ce |
+					// +----+----+----+----+----+
+					// | da           | dd | de |
+					// +----+----+----+----+    +
+					// | ea | eb | ec | ed |    |
+					// +----+----+----+----+----+
+					pasteTable( [
+						[ { contents: 'aa', colspan: 2, rowspan: 2 }, { contents: 'ac', rowspan: 2 }, 'ad', 'ae' ],
+						[ 'bd', 'be' ],
+						[ { contents: 'ca', colspan: 2 }, 'cc', 'cd', 'ce' ],
+						[ { contents: 'da', colspan: 3 }, 'dd', { contents: 'de', rowspan: 2 } ],
+						[ 'ea', 'eb', 'ec', 'ed' ]
+					] );
+
+					// +----+----+----+----+----+----+----+----+
+					// | 00 | 01 | 02           | 05 |    |    |
+					// +----+----+----+----+----+----+----+----+
+					// | 10 | 11      | 13 | 14 | 15 |    |    |
+					// +----+         +----+----+----+----+----+
+					// | 20 |         | aa      | ac | ad | ae |
+					// +----+         +         +    +----+----+
+					// | 30 |         |         |    | bd | be |
+					// +----+----+----+----+----+----+----+----+
+					// | 40      | 42 | ca      | cc | cd | ce |
+					// +----+----+----+----+----+----+----+----+
+					// |    |    |    | da           | dd | de |
+					// +----+----+----+----+----+----+----+    +
+					// |    |    |    | ea | eb | ec | ed |    |
+					// +----+----+----+----+----+----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', { contents: '02', colspan: 3 }, '05', '', '' ],
+						[ '10', { contents: '11', colspan: 2, rowspan: 3 }, '13', '14', '15', '', '' ],
+						[ '20', { contents: 'aa', colspan: 2, rowspan: 2 }, { contents: 'ac', rowspan: 2 }, 'ad', 'ae' ],
+						[ '30', 'bd', 'be' ],
+						[ { contents: '40', colspan: 2 }, '42', { contents: 'ca', colspan: 2 }, 'cc', 'cd', 'ce' ],
+						[ '', '', '', { contents: 'da', colspan: 3 }, 'dd', { contents: 'de', rowspan: 2 } ],
+						[ '', '', '', 'ea', 'eb', 'ec', 'ed' ]
+					] ) );
+				} );
+			} );
 		} );
 
 		describe( 'pasted table is equal to the selected area', () => {
