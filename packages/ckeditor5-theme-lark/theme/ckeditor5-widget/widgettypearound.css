@@ -18,7 +18,6 @@
 	 * Styles of the type around buttons
 	 */
 	& .ck-widget__type-around__button {
-		cursor: pointer;
 		width: var(--ck-widget-type-around-button-size);
 		height: var(--ck-widget-type-around-button-size);
 		background: var(--ck-color-widget-type-around-button);
