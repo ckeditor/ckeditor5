@@ -169,24 +169,17 @@ export default class TableClipboard extends Plugin {
 				return;
 			}
 
-			pastedTable = cropTableToDimensions( pastedTable, {
+			// Crop pasted table if:
+			// - Pasted table dimensions exceeds selection area.
+			// - Pasted table has broken layout (ie some cells sticks out by the table dimensions established by the first and last row).
+			const cropDimensions = {
 				startRow: 0,
-				endRow: pasteHeight - 1,
 				startColumn: 0,
-				endColumn: pasteWidth - 1
-			}, writer, tableUtils );
+				endRow: Math.min( selectionHeight - 1, pasteHeight - 1 ),
+				endColumn: Math.min( selectionWidth - 1, pasteWidth - 1 )
+			};
 
-			// Crop pasted table if it extends selection area.
-			if ( selectionHeight < pasteHeight || selectionWidth < pasteWidth ) {
-				const cropDimensions = {
-					startRow: 0,
-					startColumn: 0,
-					endRow: selectionHeight - 1,
-					endColumn: selectionWidth - 1
-				};
-
-				pastedTable = cropTableToDimensions( pastedTable, cropDimensions, writer, tableUtils );
-			}
+			pastedTable = cropTableToDimensions( pastedTable, cropDimensions, writer, tableUtils );
 
 			// Holds two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
 			const pastedTableLocationMap = createLocationMap( pastedTable, selectionWidth, selectionHeight );
