@@ -97,10 +97,9 @@ describe( 'DomConverter', () => {
 
 		it( 'should preserve attribute letter casing', () => {
 			const viewP = new ViewElement( viewDocument, 'p', { fooBar: 'bAz' } );
-
-			const domP = converter.viewToDom( viewP, document, { bind: true } );
-
+			const domP = converter.viewToDom( viewP, document );
 			const attributeNames = Array.from( domP.attributes ).map( attr => attr.name );
+
 			expect( attributeNames ).to.include( 'fooBar' );
 		} );
 
