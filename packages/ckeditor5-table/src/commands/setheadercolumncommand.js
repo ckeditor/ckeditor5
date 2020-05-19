@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import { findAncestor, isHeadingColumnCell, updateNumericAttribute } from './utils';
-import { getColumnIndexes, getSelectionAffectedTableCells, getVerticallyOverlappingCells, splitVertically } from '../utils';
+import { getColumnIndexes, getSelectionAffectedTableCells, getHorizontallyOverlappingCells, splitVertically } from '../utils';
 
 /**
  * The header column command.
@@ -76,9 +76,9 @@ export default class SetHeaderColumnCommand extends Command {
 
 		model.change( writer => {
 			if ( headingColumnsToSet ) {
-				// Changing heading columns requires to check if any of a heading cell is overlapping vertically the table head.
+				// Changing heading columns requires to check if any of a heading cell is overlapping horizontally the table head.
 				// Any table cell that has a colspan attribute > 1 will not exceed the table head so we need to fix it in columns before.
-				const overlappingCells = getVerticallyOverlappingCells( table, headingColumnsToSet );
+				const overlappingCells = getHorizontallyOverlappingCells( table, headingColumnsToSet );
 
 				for ( const { cell, column } of overlappingCells ) {
 					splitVertically( cell, column, headingColumnsToSet, writer );

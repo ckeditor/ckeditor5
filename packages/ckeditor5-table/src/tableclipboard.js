@@ -13,10 +13,10 @@ import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
 import {
 	getColumnIndexes,
-	getHorizontallyOverlappingCells,
+	getVerticallyOverlappingCells,
 	getRowIndexes,
 	getSelectionAffectedTableCells,
-	getVerticallyOverlappingCells,
+	getHorizontallyOverlappingCells,
 	isSelectionRectangular,
 	splitHorizontally,
 	splitVertically
@@ -133,7 +133,7 @@ export default class TableClipboard extends Plugin {
 			const columnIndexes = getColumnIndexes( selectedTableCells );
 			const rowIndexes = getRowIndexes( selectedTableCells );
 
-			let { last: lastColumnOfSelection, first: firstColumnOfSelection } = columnIndexes;
+			let { first: firstColumnOfSelection, last: lastColumnOfSelection } = columnIndexes;
 			let { first: firstRowOfSelection, last: lastRowOfSelection } = rowIndexes;
 
 			const pasteHeight = tableUtils.getRows( pastedTable );
@@ -149,14 +149,19 @@ export default class TableClipboard extends Plugin {
 				expandTableSize( selectedTable, lastRowOfSelection + 1, lastColumnOfSelection + 1, writer, tableUtils );
 			}
 
-			let lastRowOfSelectionArea = lastRowOfSelection;
-			let lastColumnOfSelectionArea = lastColumnOfSelection;
-
-			// For a non- rectangular selection (ie in which some cells sticks out from a virtual selection rectangle) we need to create
-			// a table layout that has a rectangular selection. This will split cells so the selection become rectangular.
 			// Beyond this point we will operate on fixed content table.
-			if ( !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
-				splitCellsToRectangularSelection( selectedTableCells, writer );
+			if ( selectedTableCells.length === 1 || !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
+				const splitDimensions = {
+					firstRow: firstRowOfSelection,
+					lastRow: lastRowOfSelection,
+					firstColumn: firstColumnOfSelection,
+					lastColumn: lastColumnOfSelection
+				};
+
+				// For a non-rectangular selection (ie in which some cells sticks out from a virtual selection rectangle) we need to create
+				// a table layout that has a rectangular selection. This will split cells so the selection become rectangular.
+				// Beyond this point we will operate on fixed content table.
+				splitCellsToRectangularSelection( selectedTable, splitDimensions, writer );
 			}
 			// However a rectangular selection might consist an invalid sub-table (if the selected cell would be moved outside the table).
 			// This happens in a table which has:
@@ -164,12 +169,12 @@ export default class TableClipboard extends Plugin {
 			// - last column has empty slots (are covered by cells from previous columns)
 			// This case needs only adjusting the selection dimension as the rest of the algorithm operates on empty slots also.
 			else {
-				lastRowOfSelectionArea = adjustLastRowOfSelection( selectedTable, rowIndexes, columnIndexes );
-				lastColumnOfSelectionArea = adjustLastColumnOfSelection( selectedTable, rowIndexes, columnIndexes );
+				lastRowOfSelection = adjustLastRowIndex( selectedTable, rowIndexes, columnIndexes );
+				lastColumnOfSelection = adjustLastColumnIndex( selectedTable, rowIndexes, columnIndexes );
 			}
 
-			const selectionHeight = lastRowOfSelectionArea - firstRowOfSelection + 1;
-			const selectionWidth = lastColumnOfSelectionArea - firstColumnOfSelection + 1;
+			const selectionHeight = lastRowOfSelection - firstRowOfSelection + 1;
+			const selectionWidth = lastColumnOfSelection - firstColumnOfSelection + 1;
 
 			// The if below is temporal and will be removed when handling this case.
 			// This if to be removed as handling of replicating cells should be done in replaceSelectedCellsWithPasted().
@@ -199,8 +204,8 @@ export default class TableClipboard extends Plugin {
 			const selectionDimensions = {
 				firstColumnOfSelection,
 				firstRowOfSelection,
-				lastColumnOfSelection: lastColumnOfSelectionArea,
-				lastRowOfSelection: lastRowOfSelectionArea,
+				lastColumnOfSelection,
+				lastRowOfSelection,
 				selectionHeight,
 				selectionWidth
 			};
@@ -225,8 +230,8 @@ export default class TableClipboard extends Plugin {
 function replaceSelectedCellsWithPasted( pastedTable, selectedTable, selectionDimensions, writer ) {
 	const {
 		firstColumnOfSelection, lastColumnOfSelection,
-		selectionWidth, selectionHeight,
-		firstRowOfSelection, lastRowOfSelection
+		firstRowOfSelection, lastRowOfSelection,
+		selectionWidth, selectionHeight
 	} = selectionDimensions;
 
 	// Holds two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
@@ -416,13 +421,11 @@ function createLocationMap( table, width, height ) {
 // - Cell "03" which have `rowspan = 2` and `colspan = 2` must be trimmed at first column and after last row.
 // - Cells "00", "03" & "30" which cannot be cut by this algorithm as they are outside the trimmed area.
 // - Cell "13" cannot be cut as it is inside the trimmed area.
-function splitCellsToRectangularSelection( selectedTableCells, writer ) {
-	const table = findAncestor( 'table', selectedTableCells[ 0 ] );
+function splitCellsToRectangularSelection( table, dimensions, writer ) {
+	const { firstRow, lastRow, firstColumn, lastColumn } = dimensions;
 
-	const rowIndexes = getRowIndexes( selectedTableCells );
-	const columnIndexes = getColumnIndexes( selectedTableCells );
-	const { first: firstRow, last: lastRow } = rowIndexes;
-	const { first: firstColumn, last: lastColumn } = columnIndexes;
+	const rowIndexes = { first: firstRow, last: lastRow };
+	const columnIndexes = { first: firstColumn, last: lastColumn };
 
 	// 1. Split cells vertically in two steps as first step might create cells that needs to split again.
 	doVerticalSplit( table, firstColumn, rowIndexes, writer );
@@ -439,11 +442,10 @@ function doHorizontalSplit( table, splitRow, limitColumns, writer, startRow = 0 
 		return;
 	}
 
-	const overlappingCells = getHorizontallyOverlappingCells( table, splitRow, startRow );
+	const overlappingCells = getVerticallyOverlappingCells( table, splitRow, startRow );
 
 	// Filter out cells that are not touching insides of the rectangular selection.
-	const { first, last } = limitColumns;
-	const cellsToSplit = overlappingCells.filter( ( { column, colspan } ) => isAffectedBySelection( column, colspan, first, last ) );
+	const cellsToSplit = overlappingCells.filter( ( { column, colspan } ) => isAffectedBySelection( column, colspan, limitColumns ) );
 
 	for ( const { cell } of cellsToSplit ) {
 		splitHorizontally( cell, splitRow, writer );
@@ -456,11 +458,10 @@ function doVerticalSplit( table, splitColumn, limitRows, writer ) {
 		return;
 	}
 
-	const overlappingCells = getVerticallyOverlappingCells( table, splitColumn );
+	const overlappingCells = getHorizontallyOverlappingCells( table, splitColumn );
 
 	// Filter out cells that are not touching insides of the rectangular selection.
-	const { first, last } = limitRows;
-	const cellsToSplit = overlappingCells.filter( ( { row, rowspan } ) => isAffectedBySelection( row, rowspan, first, last ) );
+	const cellsToSplit = overlappingCells.filter( ( { row, rowspan } ) => isAffectedBySelection( row, rowspan, limitRows ) );
 
 	for ( const { cell, column } of cellsToSplit ) {
 		splitVertically( cell, column, splitColumn, writer );
@@ -470,51 +471,38 @@ function doVerticalSplit( table, splitColumn, limitRows, writer ) {
 // Checks if cell at given row (column) is affected by a rectangular selection defined by first/last column (row).
 //
 // The same check is used for row as for column.
-function isAffectedBySelection( rowOrColumn, rowOrColumnSpan, first, last ) {
-	const endIndexOfCell = rowOrColumn + rowOrColumnSpan - 1;
+function isAffectedBySelection( index, span, limit ) {
+	const endIndex = index + span - 1;
+	const { first, last } = limit;
 
-	const isInsideSelection = rowOrColumn >= first && rowOrColumn <= last;
-	const overlapsSelectionFromOutside = rowOrColumn < first && endIndexOfCell >= first;
+	const isInsideSelection = index >= first && index <= last;
+	const overlapsSelectionFromOutside = index < first && endIndex >= first;
 
 	return isInsideSelection || overlapsSelectionFromOutside;
 }
 
 // Returns adjusted last row index if selection covers part of a row with empty slots (spanned by other cells).
-function adjustLastRowOfSelection( selectedTable, rowIndexes, columnIndexes ) {
-	const lastRowMap = Array.from( new TableWalker( selectedTable, {
+function adjustLastRowIndex( table, rowIndexes, columnIndexes ) {
+	const tableIterator = new TableWalker( table, {
 		startRow: rowIndexes.last,
 		endRow: rowIndexes.last
-	} ) ).filter( ( { column } ) => {
+	} );
+
+	const lastRowMap = Array.from( tableIterator ).filter( ( { column } ) => {
 		// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
 		return columnIndexes.first <= column && column <= columnIndexes.last;
 	} );
 
-	const everyCellHasSingleRowspan = lastRowMap.every( ( { rowspan } ) => rowspan === 1 );
-
-	if ( !everyCellHasSingleRowspan ) {
-		const rowspanAdjustment = lastRowMap.pop().rowspan - 1;
-		return rowIndexes.last + rowspanAdjustment;
-	}
-
-	// Default to the last row index.
-	return rowIndexes.last;
+	return rowIndexes.last + Math.max( 1, ...lastRowMap.map( ( { rowspan } ) => rowspan ) ) - 1;
 }
 
 // Returns adjusted last column index if selection covers part of a column with empty slots (spanned by other cells).
-function adjustLastColumnOfSelection( selectedTable, rowIndexes, columnIndexes ) {
-	const lastColumnMap = Array.from( new TableWalker( selectedTable, {
+function adjustLastColumnIndex( table, rowIndexes, columnIndexes ) {
+	const lastColumnMap = Array.from( new TableWalker( table, {
 		startRow: rowIndexes.first,
 		endRow: rowIndexes.last,
 		column: columnIndexes.last
 	} ) );
 
-	const everyCellHasSingleColspan = lastColumnMap.every( ( { colspan } ) => colspan === 1 );
-
-	if ( !everyCellHasSingleColspan ) {
-		const colspanAdjustment = lastColumnMap.pop().colspan - 1;
-		return columnIndexes.last + colspanAdjustment;
-	}
-
-	// Default to the last column index.
-	return columnIndexes.last;
+	return columnIndexes.last + Math.max( 1, ...lastColumnMap.map( ( { colspan } ) => colspan ) ) - 1;
 }

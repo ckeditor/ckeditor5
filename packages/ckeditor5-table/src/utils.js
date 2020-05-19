@@ -248,7 +248,7 @@ export function isSelectionRectangular( selectedTableCells, tableUtils ) {
 }
 
 /**
- * Returns cells that starts below and overlaps a given row.
+ * Returns cells that starts above and overlaps a given row.
  *
  * In a table below, passing `overlapRow = 3`
  *
@@ -267,27 +267,24 @@ export function isSelectionRectangular( selectedTableCells, tableUtils ) {
  * will return cells: "j", "f", "k".
  *
  * @param {module:engine/model/element~Element} table The table to check.
- * @param {Number} overlapRow
+ * @param {Number} overlapRow The index of the row to check.
  * @param {Number} [startRow=0] A row to start analysis if it is known where.
  * @returns {Array.<module:table/tablewalker~TableWalkerValue>}
  */
-export function getHorizontallyOverlappingCells( table, overlapRow, startRow = 0 ) {
-	const cellsToSplit = [];
+export function getVerticallyOverlappingCells( table, overlapRow, startRow = 0 ) {
+	const cells = [];
 
-	// We're analyzing only when headingRowsToSet > 0.
-	const endAnalysisRow = overlapRow - 1;
-
-	const tableWalker = new TableWalker( table, { startRow, endRow: endAnalysisRow } );
+	const tableWalker = new TableWalker( table, { startRow, endRow: overlapRow - 1 } );
 
 	for ( const slotInfo of tableWalker ) {
 		const { row, rowspan } = slotInfo;
 
 		if ( rowspan > 1 && row + rowspan > overlapRow ) {
-			cellsToSplit.push( slotInfo );
+			cells.push( slotInfo );
 		}
 	}
 
-	return cellsToSplit;
+	return cells;
 }
 
 /**
@@ -305,21 +302,20 @@ export function splitHorizontally( tableCell, splitRow, writer ) {
 	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) );
 	const newRowspan = splitRow - rowIndex;
 
-	const attributes = {};
+	const newCellAttributes = {};
+	const newCellRowSpan = rowspan - newRowspan;
 
-	const spanToSet = rowspan - newRowspan;
-
-	if ( spanToSet > 1 ) {
-		attributes.rowspan = spanToSet;
+	if ( newCellRowSpan > 1 ) {
+		newCellAttributes.rowspan = newCellRowSpan;
 	}
 
 	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
 
 	if ( colspan > 1 ) {
-		attributes.colspan = colspan;
+		newCellAttributes.colspan = colspan;
 	}
 
-	const startRow = table.getChildIndex( tableRow );
+	const startRow = rowIndex;
 	const endRow = startRow + newRowspan;
 	const tableMap = [ ...new TableWalker( table, { startRow, endRow, includeSpanned: true } ) ];
 
@@ -334,7 +330,7 @@ export function splitHorizontally( tableCell, splitRow, writer ) {
 			const tableRow = table.getChild( row );
 			const tableCellPosition = writer.createPositionAt( tableRow, cellIndex );
 
-			createEmptyTableCell( writer, tableCellPosition, attributes );
+			createEmptyTableCell( writer, tableCellPosition, newCellAttributes );
 		}
 	}
 
@@ -365,19 +361,19 @@ export function splitHorizontally( tableCell, splitRow, writer ) {
  * will return cells: "b", "e", "i".
  *
  * @param {module:engine/model/element~Element} table The table to check.
- * @param {Number} overlapColumn New heading columns attribute.
+ * @param {Number} overlapColumn The index of the column to check.
  * @returns {Array.<module:table/tablewalker~TableWalkerValue>}
  */
-export function getVerticallyOverlappingCells( table, overlapColumn ) {
+export function getHorizontallyOverlappingCells( table, overlapColumn ) {
 	const cellsToSplit = [];
 
 	const tableWalker = new TableWalker( table );
 
 	for ( const slotInfo of tableWalker ) {
 		const { column, colspan } = slotInfo;
-		const endColumn = column + colspan;
+		const endColumn = column + colspan - 1;
 
-		if ( column < overlapColumn && overlapColumn < endColumn ) {
+		if ( column < overlapColumn && overlapColumn <= endColumn ) {
 			cellsToSplit.push( slotInfo );
 		}
 	}
@@ -389,28 +385,28 @@ export function getVerticallyOverlappingCells( table, overlapColumn ) {
  * Splits the table cell vertically.
  *
  * @param {module:engine/model/element~Element} tableCell
- * @param {Number} splitColumn
+ * @param {Number} columnIndex The table cell column index.
+ * @param {Number} splitColumn The index of column to split cell on.
  * @param {module:engine/model/writer~Writer} writer
  */
 export function splitVertically( tableCell, columnIndex, splitColumn, writer ) {
 	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) );
 	const newColspan = splitColumn - columnIndex;
 
-	const attributes = {};
+	const newCellAttributes = {};
+	const newCellColSpan = colspan - newColspan;
 
-	const spanToSet = colspan - newColspan;
-
-	if ( spanToSet > 1 ) {
-		attributes.colspan = spanToSet;
+	if ( newCellColSpan > 1 ) {
+		newCellAttributes.colspan = newCellColSpan;
 	}
 
 	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 
 	if ( rowspan > 1 ) {
-		attributes.rowspan = rowspan;
+		newCellAttributes.rowspan = rowspan;
 	}
 
-	createEmptyTableCell( writer, writer.createPositionAfter( tableCell ), attributes );
+	createEmptyTableCell( writer, writer.createPositionAfter( tableCell ), newCellAttributes );
 	// Update the colspan attribute after updating table.
 	updateNumericAttribute( 'colspan', newColspan, tableCell, writer );
 }
