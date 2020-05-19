@@ -242,7 +242,7 @@ export default class DomConverter {
 
 				// Copy element's attributes.
 				for ( const key of viewNode.getAttributeKeys() ) {
-					domElement.setAttribute( key, viewNode.getAttribute( key ) );
+					domElement.setAttributeNS( null, key, viewNode.getAttribute( key ) );
 				}
 			}
 
