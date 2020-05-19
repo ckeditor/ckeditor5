@@ -478,6 +478,21 @@ describe( 'Renderer', () => {
 			expect( domP.childNodes[ 1 ].childNodes.length ).to.equal( 0 );
 		} );
 
+		it( 'should preserve attribute casing', () => {
+			const viewP = new ViewElement( viewDocument, 'p', {
+				fooBar: 'bazBom'
+			} );
+
+			viewRoot._appendChild( viewP );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			const attributeNames = Array.from( domRoot.childNodes[ 0 ].attributes ).map( attr => attr.name );
+			expect( attributeNames ).to.include( 'fooBar' );
+		} );
+
 		it( 'should add and remove inline filler in case <p>foo<b>[]</b>bar</p>', () => {
 			const domSelection = document.getSelection();
 
