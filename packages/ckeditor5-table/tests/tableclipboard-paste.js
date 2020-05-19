@@ -124,7 +124,7 @@ describe( 'table clipboard', () => {
 			] ) );
 		} );
 
-		it( 'should not alter model.insertContent if no table cells are selected', () => {
+		it( 'should not alter model.insertContent if selection is outside table', () => {
 			model.change( writer => {
 				writer.insertElement( 'paragraph', modelRoot.getChild( 0 ), 'before' );
 				writer.setSelection( modelRoot.getChild( 0 ), 'before' );
