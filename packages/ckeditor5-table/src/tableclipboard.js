@@ -179,6 +179,13 @@ export default class TableClipboard extends Plugin {
 				};
 
 				pastedTable = cropTableToDimensions( pastedTable, cropDimensions, writer, tableUtils );
+			} else {
+				pastedTable = cropTableToDimensions( pastedTable, {
+					startRow: 0,
+					endRow: pasteHeight - 1,
+					startColumn: 0,
+					endColumn: pasteWidth - 1
+				}, writer, tableUtils );
 			}
 
 			// Holds two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
