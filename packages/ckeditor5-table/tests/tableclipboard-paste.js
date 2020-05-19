@@ -124,6 +124,30 @@ describe( 'table clipboard', () => {
 			] ) );
 		} );
 
+		it( 'should not alter model.insertContent if selection is outside table', () => {
+			model.change( writer => {
+				writer.insertElement( 'paragraph', modelRoot.getChild( 0 ), 'before' );
+				writer.setSelection( modelRoot.getChild( 0 ), 'before' );
+			} );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+			data.dataTransfer.setData( 'text/html', '<p>foo</p>' );
+			viewDocument.fire( 'paste', data );
+
+			editor.isReadOnly = false;
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo[]</paragraph>' + modelTable( [
+				[ '00', '01', '02', '03' ],
+				[ '10', '11', '12', '13' ],
+				[ '20', '21', '22', '23' ],
+				[ '30', '31', '32', '33' ]
+			] ) );
+		} );
+
 		it( 'should not alter model.insertContent if no table pasted', () => {
 			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
@@ -249,31 +273,498 @@ describe( 'table clipboard', () => {
 		} );
 
 		describe( 'single cell selected', () => {
-			it( 'blocks this case', () => {
+			beforeEach( () => {
 				setModelData( model, modelTable( [
-					[ '00', '01', '02' ],
+					[ '00[]', '01', '02' ],
 					[ '10', '11', '12' ],
 					[ '20', '21', '22' ]
 				] ) );
+			} );
 
-				tableSelection.setCellSelection(
-					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
-					modelRoot.getNodeByPath( [ 0, 0, 0 ] )
-				);
+			describe( 'with the selection on the middle cell', () => {
+				beforeEach( () => {
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+					);
+				} );
 
-				// Catches the temporary console log in the CK_DEBUG mode.
-				sinon.stub( console, 'log' );
+				it( 'should replace the table cells (with single undo step)', () => {
+					const batches = setupBatchWatch();
 
-				pasteTable( [
-					[ 'aa', 'ab' ],
-					[ 'ba', 'bb' ]
-				] );
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
 
-				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-					[ '00', '01', '02' ],
-					[ '10', '11', '12' ],
-					[ '20', '21', '22' ]
-				] ) );
+					expect( batches.size ).to.equal( 1 );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', 'aa', 'ab' ],
+						[ '20', 'ba', 'bb' ]
+					] ) );
+				} );
+
+				it( 'should expand the table width and replace the table cells (with single undo step)', () => {
+					const batches = setupBatchWatch();
+
+					pasteTable( [
+						[ 'aa', 'ab', 'ac', 'ad', 'ae' ],
+						[ 'ba', 'bb', 'bc', 'bd', 'be' ]
+					] );
+
+					expect( batches.size ).to.equal( 1 );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '', '', '' ],
+						[ '10', 'aa', 'ab', 'ac', 'ad', 'ae' ],
+						[ '20', 'ba', 'bb', 'bc', 'bd', 'be' ]
+					] ) );
+				} );
+
+				it( 'should expand the table height and replace the table cells (with single undo step)', () => {
+					const batches = setupBatchWatch();
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ],
+						[ 'ca', 'cb' ],
+						[ 'da', 'db' ],
+						[ 'ea', 'eb' ]
+					] );
+
+					expect( batches.size ).to.equal( 1 );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', 'aa', 'ab' ],
+						[ '20', 'ba', 'bb' ],
+						[ '', 'ca', 'cb' ],
+						[ '', 'da', 'db' ],
+						[ '', 'ea', 'eb' ]
+					] ) );
+				} );
+
+				it( 'should expand the table width, height and replace the table cells (with single undo step)', () => {
+					const batches = setupBatchWatch();
+
+					pasteTable( [
+						[ 'aa', 'ab', 'ac', 'ad', 'ae' ],
+						[ 'ba', 'bb', 'bc', 'bd', 'be' ],
+						[ 'ca', 'cb', 'cc', 'cd', 'ce' ],
+						[ 'da', 'db', 'dc', 'dd', 'de' ],
+						[ 'ea', 'eb', 'ec', 'ed', 'ee' ]
+					] );
+
+					expect( batches.size ).to.equal( 1 );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '', '', '' ],
+						[ '10', 'aa', 'ab', 'ac', 'ad', 'ae' ],
+						[ '20', 'ba', 'bb', 'bc', 'bd', 'be' ],
+						[ '', 'ca', 'cb', 'cc', 'cd', 'ce' ],
+						[ '', 'da', 'db', 'dc', 'dd', 'de' ],
+						[ '', 'ea', 'eb', 'ec', 'ed', 'ee' ]
+					] ) );
+				} );
+			} );
+
+			describe( 'with the selection on the first cell', () => {
+				beforeEach( () => {
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 0, 0 ] )
+					);
+				} );
+
+				it( 'should replace the table cells', () => {
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ 'aa', 'ab', '02' ],
+						[ 'ba', 'bb', '12' ],
+						[ '20', '21', '22' ]
+					] ) );
+				} );
+
+				it( 'should expand the table and replace the table cells', () => {
+					pasteTable( [
+						[ 'aa', 'ab', 'ac', 'ad', 'ae' ],
+						[ 'ba', 'bb', 'bc', 'bd', 'be' ],
+						[ 'ca', 'cb', 'cc', 'cd', 'ce' ],
+						[ 'da', 'db', 'dc', 'dd', 'de' ],
+						[ 'ea', 'eb', 'ec', 'ed', 'ee' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ 'aa', 'ab', 'ac', 'ad', 'ae' ],
+						[ 'ba', 'bb', 'bc', 'bd', 'be' ],
+						[ 'ca', 'cb', 'cc', 'cd', 'ce' ],
+						[ 'da', 'db', 'dc', 'dd', 'de' ],
+						[ 'ea', 'eb', 'ec', 'ed', 'ee' ]
+					] ) );
+				} );
+			} );
+
+			describe( 'with the selection on the middle cell of the first row', () => {
+				beforeEach( () => {
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 0, 1 ] )
+					);
+				} );
+
+				it( 'should replace the table cells', () => {
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', 'aa', 'ab' ],
+						[ '10', 'ba', 'bb' ],
+						[ '20', '21', '22' ]
+					] ) );
+				} );
+
+				it( 'should expand the table and replace the table cells', () => {
+					pasteTable( [
+						[ 'aa', 'ab', 'ac', 'ad', 'ae' ],
+						[ 'ba', 'bb', 'bc', 'bd', 'be' ],
+						[ 'ca', 'cb', 'cc', 'cd', 'ce' ],
+						[ 'da', 'db', 'dc', 'dd', 'de' ],
+						[ 'ea', 'eb', 'ec', 'ed', 'ee' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', 'aa', 'ab', 'ac', 'ad', 'ae' ],
+						[ '10', 'ba', 'bb', 'bc', 'bd', 'be' ],
+						[ '20', 'ca', 'cb', 'cc', 'cd', 'ce' ],
+						[ '', 'da', 'db', 'dc', 'dd', 'de' ],
+						[ '', 'ea', 'eb', 'ec', 'ed', 'ee' ]
+					] ) );
+				} );
+			} );
+
+			describe( 'with the selection on the last cell of the first row', () => {
+				beforeEach( () => {
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
+						modelRoot.getNodeByPath( [ 0, 0, 2 ] )
+					);
+				} );
+
+				it( 'should replace the table cells', () => {
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', 'aa', 'ab' ],
+						[ '10', '11', 'ba', 'bb' ],
+						[ '20', '21', '22', '' ]
+					] ) );
+				} );
+
+				it( 'should expand the table and replace the table cells', () => {
+					pasteTable( [
+						[ 'aa', 'ab', 'ac', 'ad', 'ae' ],
+						[ 'ba', 'bb', 'bc', 'bd', 'be' ],
+						[ 'ca', 'cb', 'cc', 'cd', 'ce' ],
+						[ 'da', 'db', 'dc', 'dd', 'de' ],
+						[ 'ea', 'eb', 'ec', 'ed', 'ee' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', 'aa', 'ab', 'ac', 'ad', 'ae' ],
+						[ '10', '11', 'ba', 'bb', 'bc', 'bd', 'be' ],
+						[ '20', '21', 'ca', 'cb', 'cc', 'cd', 'ce' ],
+						[ '', '', 'da', 'db', 'dc', 'dd', 'de' ],
+						[ '', '', 'ea', 'eb', 'ec', 'ed', 'ee' ]
+					] ) );
+				} );
+			} );
+
+			describe( 'with the selection is on the middle cell of the first column', () => {
+				beforeEach( () => {
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 0 ] )
+					);
+				} );
+
+				it( 'should replace the table cells', () => {
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02' ],
+						[ 'aa', 'ab', '12' ],
+						[ 'ba', 'bb', '22' ]
+					] ) );
+				} );
+
+				it( 'should expand the table and replace the table cells', () => {
+					pasteTable( [
+						[ 'aa', 'ab', 'ac', 'ad', 'ae' ],
+						[ 'ba', 'bb', 'bc', 'bd', 'be' ],
+						[ 'ca', 'cb', 'cc', 'cd', 'ce' ],
+						[ 'da', 'db', 'dc', 'dd', 'de' ],
+						[ 'ea', 'eb', 'ec', 'ed', 'ee' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '', '' ],
+						[ 'aa', 'ab', 'ac', 'ad', 'ae' ],
+						[ 'ba', 'bb', 'bc', 'bd', 'be' ],
+						[ 'ca', 'cb', 'cc', 'cd', 'ce' ],
+						[ 'da', 'db', 'dc', 'dd', 'de' ],
+						[ 'ea', 'eb', 'ec', 'ed', 'ee' ]
+					] ) );
+				} );
+			} );
+
+			describe( 'with the selection is on the last cell of the first column', () => {
+				beforeEach( () => {
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+					);
+				} );
+
+				it( 'should replace the table cells', () => {
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '12' ],
+						[ 'aa', 'ab', '22' ],
+						[ 'ba', 'bb', '' ]
+					] ) );
+				} );
+
+				it( 'should expand the table and replace the table cells', () => {
+					pasteTable( [
+						[ 'aa', 'ab', 'ac', 'ad', 'ae' ],
+						[ 'ba', 'bb', 'bc', 'bd', 'be' ],
+						[ 'ca', 'cb', 'cc', 'cd', 'ce' ],
+						[ 'da', 'db', 'dc', 'dd', 'de' ],
+						[ 'ea', 'eb', 'ec', 'ed', 'ee' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '', '' ],
+						[ '10', '11', '12', '', '' ],
+						[ 'aa', 'ab', 'ac', 'ad', 'ae' ],
+						[ 'ba', 'bb', 'bc', 'bd', 'be' ],
+						[ 'ca', 'cb', 'cc', 'cd', 'ce' ],
+						[ 'da', 'db', 'dc', 'dd', 'de' ],
+						[ 'ea', 'eb', 'ec', 'ed', 'ee' ]
+					] ) );
+				} );
+			} );
+
+			describe( 'with the selection is on the last cell of the last column', () => {
+				beforeEach( () => {
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 2, 2 ] ),
+						modelRoot.getNodeByPath( [ 0, 2, 2 ] )
+					);
+				} );
+
+				it( 'should replace the table cells', () => {
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '' ],
+						[ '10', '11', '12', '' ],
+						[ '20', '21', 'aa', 'ab' ],
+						[ '', '', 'ba', 'bb' ]
+					] ) );
+				} );
+
+				it( 'should expand the table and replace the table cells', () => {
+					pasteTable( [
+						[ 'aa', 'ab', 'ac', 'ad', 'ae' ],
+						[ 'ba', 'bb', 'bc', 'bd', 'be' ],
+						[ 'ca', 'cb', 'cc', 'cd', 'ce' ],
+						[ 'da', 'db', 'dc', 'dd', 'de' ],
+						[ 'ea', 'eb', 'ec', 'ed', 'ee' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '', '', '', '' ],
+						[ '10', '11', '12', '', '', '', '' ],
+						[ '20', '21', 'aa', 'ab', 'ac', 'ad', 'ae' ],
+						[ '', '', 'ba', 'bb', 'bc', 'bd', 'be' ],
+						[ '', '', 'ca', 'cb', 'cc', 'cd', 'ce' ],
+						[ '', '', 'da', 'db', 'dc', 'dd', 'de' ],
+						[ '', '', 'ea', 'eb', 'ec', 'ed', 'ee' ]
+					] ) );
+				} );
+			} );
+
+			describe( 'the selection inside the table cell', () => {
+				it( 'should replace the table cells when the collapsed selection is in the first cell', () => {
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ 'aa', 'ab', '02' ],
+						[ 'ba', 'bb', '12' ],
+						[ '20', '21', '22' ]
+					] ) );
+				} );
+
+				it( 'should replace the table cells when the expanded selection is in the first cell', () => {
+					model.change( writer => {
+						writer.setSelection( modelRoot.getNodeByPath( [ 0, 0, 0 ] ), 'in' );
+					} );
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ 'aa', 'ab', '02' ],
+						[ 'ba', 'bb', '12' ],
+						[ '20', '21', '22' ]
+					] ) );
+				} );
+
+				it( 'should replace the table cells when selection is on the image inside the table cell', async () => {
+					await editor.destroy();
+					await createEditor( [ ImageEditing, ImageCaptionEditing ] );
+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '12' ],
+						[ '20', '21', '[<image src="/assets/sample.jpg"><caption></caption></image>]' ]
+					] ) );
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '' ],
+						[ '10', '11', '12', '' ],
+						[ '20', '21', 'aa', 'ab' ],
+						[ '', '', 'ba', 'bb' ]
+					] ) );
+				} );
+
+				it( 'should replace the table cells when selection is in the image caption inside the table cell', async () => {
+					await editor.destroy();
+					await createEditor( [ ImageEditing, ImageCaptionEditing ] );
+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '12' ],
+						[ '20', '21', '<image src="/assets/sample.jpg"><caption>fo[]o</caption></image>' ]
+					] ) );
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '' ],
+						[ '10', '11', '12', '' ],
+						[ '20', '21', 'aa', 'ab' ],
+						[ '', '', 'ba', 'bb' ]
+					] ) );
+				} );
+			} );
+
+			describe( 'with spanned cells', () => {
+				it( 'should replace the table structure', () => {
+					// +----+----+----+----+----+----+
+					// | 00 | 01 | 02           | 05 |
+					// +----+----+----+----+----+----+
+					// | 10 | 11      | 13 | 14 | 15 |
+					// +----+         +----+----+----+
+					// | 20 |         | 23      | 25 |
+					// +----+         +----+----+    +
+					// | 30 |         | 33      |    |
+					// +----+----+----+----+----+----+
+					// | 40      | 42 | 43 | 44      |
+					// +----+----+----+----+----+----+
+					setModelData( model, modelTable( [
+						[ '00', '01', { contents: '02', colspan: 3 }, '05' ],
+						[ '10', { contents: '11', colspan: 2, rowspan: 3 }, '13', '14', '15' ],
+						[ '20', { contents: '23', colspan: 2 }, { contents: '25', rowspan: 2 } ],
+						[ '30', { contents: '33', colspan: 2 } ],
+						[ { contents: '40', colspan: 2 }, '42', '43', { contents: '44', colspan: 2 } ]
+					] ) );
+
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 2, 1 ] ), // Cell 23.
+						modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+					);
+
+					// +----+----+----+----+----+
+					// | aa      | ac | ad | ae |
+					// +         +    +----+----+
+					// |         |    | bd | be |
+					// +----+----+----+----+----+
+					// | ca      | cc | cd | ce |
+					// +----+----+----+----+----+
+					// | da           | dd | de |
+					// +----+----+----+----+    +
+					// | ea | eb | ec | ed |    |
+					// +----+----+----+----+----+
+					pasteTable( [
+						[ { contents: 'aa', colspan: 2, rowspan: 2 }, { contents: 'ac', rowspan: 2 }, 'ad', 'ae' ],
+						[ 'bd', 'be' ],
+						[ { contents: 'ca', colspan: 2 }, 'cc', 'cd', 'ce' ],
+						[ { contents: 'da', colspan: 3 }, 'dd', { contents: 'de', rowspan: 2 } ],
+						[ 'ea', 'eb', 'ec', 'ed' ]
+					] );
+
+					// +----+----+----+----+----+----+----+----+
+					// | 00 | 01 | 02           | 05 |    |    |
+					// +----+----+----+----+----+----+----+----+
+					// | 10 | 11      | 13 | 14 | 15 |    |    |
+					// +----+         +----+----+----+----+----+
+					// | 20 |         | aa      | ac | ad | ae |
+					// +----+         +         +    +----+----+
+					// | 30 |         |         |    | bd | be |
+					// +----+----+----+----+----+----+----+----+
+					// | 40      | 42 | ca      | cc | cd | ce |
+					// +----+----+----+----+----+----+----+----+
+					// |    |    |    | da           | dd | de |
+					// +----+----+----+----+----+----+----+    +
+					// |    |    |    | ea | eb | ec | ed |    |
+					// +----+----+----+----+----+----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', { contents: '02', colspan: 3 }, '05', '', '' ],
+						[ '10', { contents: '11', colspan: 2, rowspan: 3 }, '13', '14', '15', '', '' ],
+						[ '20', { contents: 'aa', colspan: 2, rowspan: 2 }, { contents: 'ac', rowspan: 2 }, 'ad', 'ae' ],
+						[ '30', 'bd', 'be' ],
+						[ { contents: '40', colspan: 2 }, '42', { contents: 'ca', colspan: 2 }, 'cc', 'cd', 'ce' ],
+						[ '', '', '', { contents: 'da', colspan: 3 }, 'dd', { contents: 'de', rowspan: 2 } ],
+						[ '', '', '', 'ea', 'eb', 'ec', 'ed' ]
+					] ) );
+				} );
 			} );
 		} );
 
@@ -2578,5 +3069,17 @@ describe( 'table clipboard', () => {
 				return store.get( type );
 			}
 		};
+	}
+
+	function setupBatchWatch() {
+		const createdBatches = new Set();
+
+		model.on( 'applyOperation', ( evt, [ operation ] ) => {
+			if ( operation.isDocumentOperation ) {
+				createdBatches.add( operation.batch );
+			}
+		} );
+
+		return createdBatches;
 	}
 } );
