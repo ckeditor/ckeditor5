@@ -140,17 +140,28 @@ export default class TableClipboard extends Plugin {
 		model.change( writer => {
 			// Content table to which we insert a pasted table.
 			const selectedTable = findAncestor( 'table', selectedTableCells[ 0 ] );
+
 			const columnIndexes = getColumnIndexes( selectedTableCells );
-			const { last: lastColumnOfSelection, first: firstColumnOfSelection } = columnIndexes;
 			const rowIndexes = getRowIndexes( selectedTableCells );
+
+			const { last: lastColumnOfSelection, first: firstColumnOfSelection } = columnIndexes;
 			const { first: firstRowOfSelection, last: lastRowOfSelection } = rowIndexes;
 
 			let lastRowOfSelectionArea = lastRowOfSelection;
 			let lastColumnOfSelectionArea = lastColumnOfSelection;
 
+			// For a non- rectangular selection (ie in which some cells sticks out from a virtual selection rectangle) we need to create
+			// a table layout that has a rectangular selection. This will split cells so the selection become rectangular.
+			// Beyond this point we will operate on fixed content table.
 			if ( !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
-				trimCellsToRectangularSelection( selectedTableCells, writer );
-			} else {
+				splitCellsToRectangularSelection( selectedTableCells, writer );
+			}
+			// However a rectangular selection might consist an invalid sub-table (if the selected cell would be moved outside the table).
+			// This happens in a table which has:
+			// - last row has empty slots (so are covered by cells from rows above) and/or
+			// - last column has empty slots (are covered by cells from previous columns)
+			// This case needs only adjusting the selection dimension as the rest of the algorithm operates on empty slots also.
+			else {
 				lastRowOfSelectionArea = adjustLastRowOfSelection( selectedTable, rowIndexes, columnIndexes );
 				lastColumnOfSelectionArea = adjustLastColumnOfSelection( selectedTable, rowIndexes, columnIndexes );
 			}
@@ -172,6 +183,10 @@ export default class TableClipboard extends Plugin {
 			// Crop pasted table if:
 			// - Pasted table dimensions exceeds selection area.
 			// - Pasted table has broken layout (ie some cells sticks out by the table dimensions established by the first and last row).
+			//
+			// Note: The table dimensions are established by the width of the first row and the total number of rows.
+			// It is possible to programmatically create a table that has rows which would have cells anchored beyond first row width but
+			// such table will not be created by other editing solutions.
 			const cropDimensions = {
 				startRow: 0,
 				startColumn: 0,
@@ -181,7 +196,7 @@ export default class TableClipboard extends Plugin {
 
 			pastedTable = cropTableToDimensions( pastedTable, cropDimensions, writer, tableUtils );
 
-			// Holds two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
+			// Holds a two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
 			const pastedTableLocationMap = createLocationMap( pastedTable, selectionWidth, selectionHeight );
 
 			const selectedTableMap = [ ...new TableWalker( selectedTable, {
@@ -348,7 +363,7 @@ function createLocationMap( table, width, height ) {
 // - Cell "03" which have `rowspan = 2` and `colspan = 2` must be trimmed at first column and after last row.
 // - Cells "00", "03" & "30" which cannot be cut by this algorithm as they are outside the trimmed area.
 // - Cell "13" cannot be cut as it is inside the trimmed area.
-function trimCellsToRectangularSelection( selectedTableCells, writer ) {
+function splitCellsToRectangularSelection( selectedTableCells, writer ) {
 	const table = findAncestor( 'table', selectedTableCells[ 0 ] );
 
 	const rowIndexes = getRowIndexes( selectedTableCells );
