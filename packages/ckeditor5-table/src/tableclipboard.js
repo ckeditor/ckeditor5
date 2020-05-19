@@ -119,9 +119,6 @@ export default class TableClipboard extends Plugin {
 			return;
 		}
 
-		// Content table to which we insert a pasted table.
-		const selectedTable = findAncestor( 'table', selectedTableCells[ 0 ] );
-
 		// We might need to crop table before inserting so reference might change.
 		let pastedTable = getTableIfOnlyTableInContent( content );
 
@@ -142,7 +139,10 @@ export default class TableClipboard extends Plugin {
 			const pasteHeight = tableUtils.getRows( pastedTable );
 			const pasteWidth = tableUtils.getColumns( pastedTable );
 
-			if ( selectedTableCells.length == 1 ) {
+			// Content table to which we insert a pasted table.
+			const selectedTable = findAncestor( 'table', selectedTableCells[ 0 ] );
+
+			if ( selectedTableCells.length === 1 ) {
 				lastRowOfSelection += pasteHeight - 1;
 				lastColumnOfSelection += pasteWidth - 1;
 
@@ -172,6 +172,7 @@ export default class TableClipboard extends Plugin {
 			const selectionWidth = lastColumnOfSelectionArea - firstColumnOfSelection + 1;
 
 			// The if below is temporal and will be removed when handling this case.
+			// This if to be removed as handling of replicating cells should be done in replaceSelectedCellsWithPasted().
 			// See: https://github.com/ckeditor/ckeditor5/issues/6769.
 			if ( selectionHeight > pasteHeight || selectionWidth > pasteWidth ) {
 				// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Pasted table is smaller than selection area.' );
@@ -223,8 +224,9 @@ export default class TableClipboard extends Plugin {
 // @param {module:engine/model/writer~Writer} writer
 function replaceSelectedCellsWithPasted( pastedTable, selectedTable, selectionDimensions, writer ) {
 	const {
-		firstColumnOfSelection, lastColumnOfSelection, selectionWidth,
-		firstRowOfSelection, lastRowOfSelection, selectionHeight
+		firstColumnOfSelection, lastColumnOfSelection,
+		selectionWidth, selectionHeight,
+		firstRowOfSelection, lastRowOfSelection
 	} = selectionDimensions;
 
 	// Holds two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
@@ -377,7 +379,7 @@ function createLocationMap( table, width, height ) {
 	return map;
 }
 
-// Make selected cell rectangular by splitting the cells that stand out from a rectangular selection.
+// Make selected cells rectangular by splitting the cells that stand out from a rectangular selection.
 //
 // In the table below a selection is shown with "::" and slots with anchor cells are named.
 //
@@ -477,12 +479,15 @@ function isAffectedBySelection( rowOrColumn, rowOrColumnSpan, first, last ) {
 	return isInsideSelection || overlapsSelectionFromOutside;
 }
 
+// Returns adjusted last row index if selection covers part of a row with empty slots (spanned by other cells).
 function adjustLastRowOfSelection( selectedTable, rowIndexes, columnIndexes ) {
-	// Corner case...
 	const lastRowMap = Array.from( new TableWalker( selectedTable, {
 		startRow: rowIndexes.last,
 		endRow: rowIndexes.last
-	} ) ).filter( ( { column } ) => columnIndexes.first <= column && column <= columnIndexes.last );
+	} ) ).filter( ( { column } ) => {
+		// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
+		return columnIndexes.first <= column && column <= columnIndexes.last;
+	} );
 
 	const everyCellHasSingleRowspan = lastRowMap.every( ( { rowspan } ) => rowspan === 1 );
 
@@ -491,9 +496,11 @@ function adjustLastRowOfSelection( selectedTable, rowIndexes, columnIndexes ) {
 		return rowIndexes.last + rowspanAdjustment;
 	}
 
+	// Default to the last row index.
 	return rowIndexes.last;
 }
 
+// Returns adjusted last column index if selection covers part of a column with empty slots (spanned by other cells).
 function adjustLastColumnOfSelection( selectedTable, rowIndexes, columnIndexes ) {
 	const lastColumnMap = Array.from( new TableWalker( selectedTable, {
 		startRow: rowIndexes.first,
@@ -508,5 +515,6 @@ function adjustLastColumnOfSelection( selectedTable, rowIndexes, columnIndexes )
 		return columnIndexes.last + colspanAdjustment;
 	}
 
+	// Default to the last column index.
 	return columnIndexes.last;
 }
