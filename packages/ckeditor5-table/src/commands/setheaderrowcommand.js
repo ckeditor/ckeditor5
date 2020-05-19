@@ -74,7 +74,7 @@ export default class SetHeaderRowCommand extends Command {
 
 		model.change( writer => {
 			if ( headingRowsToSet ) {
-				// Changing heading rows requires to check if any of a heading cell is overlapping vertically the table head.
+				// Changing heading rows requires to check if any of a heading cell is overlapping horizontally the table head.
 				// Any table cell that has a rowspan attribute > 1 will not exceed the table head so we need to fix it in rows below.
 				const startRow = headingRowsToSet > currentHeadingRows ? currentHeadingRows : 0;
 				const overlappingCells = getHorizontallyOverlappingCells( table, headingRowsToSet, startRow );

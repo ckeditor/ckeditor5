@@ -427,5 +427,95 @@ describe( 'SetHeaderColumnCommand', () => {
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 1 } ) );
 		} );
+
+		it( 'should fix col-spanned cells on the edge of an table heading columns section', () => {
+			// +----+----+----+
+			// | 00 | 01      |
+			// +----+         +
+			// | 10 |         |
+			// +----+----+----+
+			// | 20 | 21 | 22 |
+			// +----+----+----+
+			//      ^-- heading columns
+			setData( model, modelTable( [
+				[ '00', { contents: '[]01', colspan: 2, rowspan: 2 } ],
+				[ '10' ],
+				[ '20', '21', '22' ]
+			], { headingColumns: 1 } ) );
+
+			command.execute();
+
+			// +----+----+----+
+			// | 00 | 01 |    |
+			// +----+    +    +
+			// | 10 |    |    |
+			// +----+----+----+
+			// | 20 | 21 | 22 |
+			// +----+----+----+
+			//           ^-- heading columns
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '00', { contents: '[]01', rowspan: 2 }, { contents: '', rowspan: 2 } ],
+				[ '10' ],
+				[ '20', '21', '22' ]
+			], { headingColumns: 2 } ) );
+		} );
+
+		it( 'should split to at most 2 table cells when fixing col-spanned cells on the edge of an table heading columns section', () => {
+			// +----+----+----+----+----+----+
+			// | 00 | 01                     |
+			// +----+                        +
+			// | 10 |                        |
+			// +----+----+----+----+----+----+
+			// | 20 | 21 | 22 | 23 | 24 | 25 |
+			// +----+----+----+----+----+----+
+			//      ^-- heading columns
+			setData( model, modelTable( [
+				[ '00', { contents: '01', colspan: 5, rowspan: 2 } ],
+				[ '10' ],
+				[ '20', '21', '22[]', '23', '24', '25' ]
+			], { headingColumns: 1 } ) );
+
+			command.execute();
+
+			// +----+----+----+----+----+----+
+			// | 00 | 01      |              |
+			// +----+         +              +
+			// | 10 |         |              |
+			// +----+----+----+----+----+----+
+			// | 20 | 21 | 22 | 23 | 24 | 25 |
+			// +----+----+----+----+----+----+
+			//                ^-- heading columns
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '', colspan: 3, rowspan: 2 } ],
+				[ '10' ],
+				[ '20', '21', '22[]', '23', '24', '25' ]
+			], { headingColumns: 3 } ) );
+		} );
+
+		it( 'should fix col-spanned cells on the edge of an table heading columns section when creating section', () => {
+			// +----+----+
+			// | 00      |
+			// +----+----+
+			// | 10 | 11 |
+			// +----+----+
+			//           ^-- heading columns
+			setData( model, modelTable( [
+				[ { contents: '00', colspan: 2 } ],
+				[ '10', '[]11' ]
+			], { headingColumns: 2 } ) );
+
+			command.execute();
+
+			// +----+----+
+			// | 00 |    |
+			// +----+----+
+			// | 10 | 11 |
+			// +----+----+
+			//      ^-- heading columns
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '00', '' ],
+				[ '10', '[]11' ]
+			], { headingColumns: 1 } ) );
+		} );
 	} );
 } );
