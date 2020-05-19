@@ -2142,6 +2142,154 @@ describe( 'table clipboard', () => {
 				] );
 				/* eslint-enable no-multi-spaces */
 			} );
+
+			it(
+				'should trim pasted cells\' width if they exceeds pasted table width (pasted height is bigger then selection height)',
+				() => {
+					// Select 00 -> 11 (selection 2x2 - smaller by height than the expected fixed table)
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+					);
+
+					// +----+----+
+					// | aa | ab |             <- First row establish table width=2.
+					// +----+----+----+----+
+					// | ba | bb           |   <- Cell "bb" sticks out by 2 slots.
+					// +----+----+----+----+
+					// | ca           |        <- Cell "ca" sticks out by 1 slot.
+					// +----+----+----+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', { colspan: 3, contents: 'bb' } ],
+						[ { colspan: 3, contents: 'ca' } ]
+					] );
+
+					// +----+----+----+----+
+					// | aa | ab | 02 | 03 |
+					// +----+----+----+----+
+					// | ba | bb | 12 | 13 |
+					// +----+----+----+----+
+					// | 20 | 21 | 22 | 23 |
+					// +----+----+----+----+
+					// | 30 | 31 | 32 | 33 |
+					// +----+----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ 'aa', 'ab', '02', '03' ],
+						[ 'ba', 'bb', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+
+					assertSelectedCells( model, [
+						[ 1, 1, 0, 0 ],
+						[ 1, 1, 0, 0 ],
+						[ 0, 0, 0, 0 ],
+						[ 0, 0, 0, 0 ]
+					] );
+				}
+			);
+
+			it(
+				'should trim pasted cells\' height if they exceeds pasted table height (pasted width is bigger then selection width)',
+				() => {
+					// Select 00 -> 11 (selection 2x2 - smaller by width than the expected fixed table)
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+					);
+
+					// +----+----+----+
+					// | aa | ab | ac |
+					// +----+----+    +
+					// | ba | bb |    |   <- Last row establish table height=2.
+					// +----+    +    +
+					//      |    |    |   <- Cell "ac" sticks out by 1 slot.
+					//      +    +----+
+					//      |    |        <- Cell "bb" sticks out by 2 slots.
+					//      +----+
+					pasteTable( [
+						[ 'aa', 'ab', { contents: 'ac', rowspan: 3 } ],
+						[ 'ba', { contents: 'bb', rowspan: 3 } ]
+					] );
+
+					// +----+----+----+----+
+					// | aa | ab | 02 | 03 |
+					// +----+----+----+----+
+					// | ba | bb | 12 | 13 |
+					// +----+----+----+----+
+					// | 20 | 21 | 22 | 23 |
+					// +----+----+----+----+
+					// | 30 | 31 | 32 | 33 |
+					// +----+----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ 'aa', 'ab', '02', '03' ],
+						[ 'ba', 'bb', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+
+					/* eslint-disable no-multi-spaces */
+					assertSelectedCells( model, [
+						[ 1, 1, 0, 0 ],
+						[ 1, 1, 0, 0 ],
+						[ 0, 0, 0, 0 ],
+						[ 0, 0, 0, 0 ]
+					] );
+					/* eslint-enable no-multi-spaces */
+				}
+			);
+
+			it(
+				`should trim pasted pasted cells' height and width if they exceeds pasted table dimensions
+				(pasted table is bigger then selection width)`,
+				() => {
+					// Select 00 -> 11 (selection 2x2 - smaller than the expected fixed table)
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+					);
+
+					// +----+----+----+
+					// | aa | ab | ac |
+					// +----+----+----+----+
+					// | ba | bb           | <- Cell "bb" sticks out by 1 slots in width and by 1 slot in height.
+					// +----+              +
+					// | ca |              |
+					// +----+              +
+					//      |              |
+					//      +----+----+----+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', { contents: 'bb', colspan: 3, rowspan: 2 } ]
+					] );
+
+					// +----+----+----+----+
+					// | aa | ab | 02 | 03 |
+					// +----+----+----+----+
+					// | ba | bb | 12 | 13 |
+					// +----+----+----+----+
+					// | 20 | 21 | 22 | 23 |
+					// +----+----+----+----+
+					// | 30 | 31 | 32 | 33 |
+					// +----+----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ 'aa', 'ab', '02', '03' ],
+						[ 'ba', 'bb', '12', '13' ],
+						[ '20', '21', '22', '23' ],
+						[ '30', '31', '32', '33' ]
+					] ) );
+
+					/* eslint-disable no-multi-spaces */
+					assertSelectedCells( model, [
+						[ 1, 1, 0, 0 ],
+						[ 1, 1, 0, 0 ],
+						[ 0, 0, 0, 0 ],
+						[ 0, 0, 0, 0 ]
+					] );
+					/* eslint-enable no-multi-spaces */
+				}
+			);
 		} );
 	} );
 
