@@ -185,13 +185,31 @@ describe( 'DomConverter', () => {
 			expect( domTextNode.data ).to.equal( 'foo' );
 		} );
 
-		it( 'should create namespaced elements', () => {
+		it( 'should create namespaced attributes', () => {
 			const namespace = 'http://www.w3.org/2000/svg';
 			const viewSvg = new ViewElement( viewDocument, 'svg', { xmlns: namespace } );
 
 			const domSvg = converter.viewToDom( viewSvg, document );
 
 			expect( domSvg.createSVGRect ).to.be.a( 'function' );
+		} );
+
+		it( 'should handle attributes with xml: prefix', () => {
+			const viewSvg = new ViewElement( viewDocument, 'foo', { 'xml:fooBar': 'baz' } );
+
+			const domElement = converter.viewToDom( viewSvg, document );
+			const attributeNames = Array.from( domElement.attributes ).map( attr => attr.name );
+
+			expect( attributeNames ).to.include( 'xml:fooBar' );
+		} );
+
+		it( 'should handle attributes with custom namespace prefix', () => {
+			const viewSvg = new ViewElement( viewDocument, 'foo', { 'myPrefix:fooBar': 'baz' } );
+
+			const domElement = converter.viewToDom( viewSvg, document );
+			const attributeNames = Array.from( domElement.attributes ).map( attr => attr.name );
+
+			expect( attributeNames ).to.include( 'myPrefix:fooBar' );
 		} );
 
 		describe( 'it should convert spaces to &nbsp;', () => {

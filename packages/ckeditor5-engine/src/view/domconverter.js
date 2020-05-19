@@ -242,7 +242,21 @@ export default class DomConverter {
 
 				// Copy element's attributes.
 				for ( const key of viewNode.getAttributeKeys() ) {
-					domElement.setAttributeNS( null, key, viewNode.getAttribute( key ) );
+					let namespaceUri = null;
+
+					// There are certain cases where namespace URI needs to be carefully maintained, otherwise
+					// it will throw an exception. See the specification for more details:
+					// https://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-ElSetAttrNS
+					if ( key.startsWith( 'xml:' ) ) {
+						namespaceUri = 'http://www.w3.org/XML/1998/namespace';
+					} else if ( key == 'xmlns' ) {
+						namespaceUri = 'http://www.w3.org/2000/xmlns/';
+					} else if ( key.includes( ':' ) ) {
+						// Workaround for custom namespaces. Verified to work with Firefox, Chrome.
+						namespaceUri = ' ';
+					}
+
+					domElement.setAttributeNS( namespaceUri, key, viewNode.getAttribute( key ) );
 				}
 			}
 
