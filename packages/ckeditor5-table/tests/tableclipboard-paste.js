@@ -2068,10 +2068,8 @@ describe( 'table clipboard', () => {
 				//      |    |        <- Cell "bb" sticks out by 2 slots.
 				//      +----+
 				pasteTable( [
-					[
-						[ 'aa', 'ab', { contents: 'ac', rowspan: 3 } ],
-						[ 'ba', { contents: 'bb', rowspan: 3 } ]
-					]
+					[ 'aa', 'ab', { contents: 'ac', rowspan: 3 } ],
+					[ 'ba', { contents: 'bb', rowspan: 3 } ]
 				] );
 
 				// +----+----+----+----+
@@ -2084,9 +2082,9 @@ describe( 'table clipboard', () => {
 				// | 30 | 31 | 32 | 33 |
 				// +----+----+----+----+
 				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-					[ 'aa', 'ab', '02', '03' ],
-					[ 'ba', 'bb', '12', '13' ],
-					[ { contents: 'ca', colspan: 2 }, '22', '23' ],
+					[ 'aa', 'ab', { rowspan: 2, contents: 'ac' }, '03' ],
+					[ 'ba', 'bb', '13' ],
+					[ '20', '21', '22', '23' ],
 					[ '30', '31', '32', '33' ]
 				] ) );
 
