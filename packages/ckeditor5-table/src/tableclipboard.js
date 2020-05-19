@@ -361,11 +361,11 @@ function trimCellsToRectangularSelection( selectedTableCells, writer ) {
 	doVerticalSplit( table, lastColumn + 1, rowIndexes, writer );
 
 	// 2. Split cells horizontally in two steps as first step might create cells that needs to split again.
-	doHorizontalSplit( table, firstRow, columnIndexes, writer, 0 );
+	doHorizontalSplit( table, firstRow, columnIndexes, writer );
 	doHorizontalSplit( table, lastRow + 1, columnIndexes, writer, firstRow );
 }
 
-function doHorizontalSplit( table, splitRow, limitColumns, writer, startRow ) {
+function doHorizontalSplit( table, splitRow, limitColumns, writer, startRow = 0 ) {
 	// If selection starts at first row then no split is needed.
 	if ( splitRow < 1 ) {
 		return;
