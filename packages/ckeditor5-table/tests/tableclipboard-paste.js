@@ -604,10 +604,10 @@ describe( 'table clipboard', () => {
 
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
-						[ 1,    1, 1, 1, 0 ],
-						[ 1, 1,          0 ],
-						[ 1,          1, 0 ],
-						[    1, 1, 1,    0 ],
+						[ 1, 1, 1, 1, 0 ],
+						[ 1, 1, 0 ],
+						[ 1, 1, 0 ],
+						[ 1, 1, 1, 0 ],
 						[ 0, 0, 0, 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
@@ -897,6 +897,50 @@ describe( 'table clipboard', () => {
 					] );
 				} );
 
+				it( 'handles pasting table that has cell with colspan (multiple ending rows in the selection are spanned)', () => {
+					// +----+----+----+
+					// | 00 | 01 | 02 |
+					// +----+    +    +
+					// | 10 |    |    |
+					// +----+    +    +
+					// | 20 |    |    |
+					// +----+----+----+
+					// | 30 | 31 | 32 |
+					// +----+----+----+
+					setModelData( model, modelTable( [
+						[ '00', { contents: '01', rowspan: 3 }, { contents: '02', rowspan: 3 } ],
+						[ '10' ],
+						[ '20' ],
+						[ '30', '31', '32' ]
+					] ) );
+
+					// Select 01 -> 02 (selection 2x2)
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 0, 2 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ],
+						[ 'ca', 'cb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', 'aa', 'ab' ],
+						[ '10', 'ba', 'bb' ],
+						[ '20', 'ca', 'cb' ],
+						[ '30', '31', '32' ]
+					] ) );
+
+					assertSelectedCells( model, [
+						[ 0, 1, 1 ],
+						[ 0, 1, 1 ],
+						[ 0, 1, 1 ],
+						[ 0, 0, 0 ]
+					] );
+				} );
+
 				it( 'handles pasting table that has cell with colspan (last column in selection is spanned)', () => {
 					// +----+----+----+----+
 					// | 00 | 01      | 03 |
@@ -938,6 +982,44 @@ describe( 'table clipboard', () => {
 						[ 1, 1, 1, 0 ],
 						[ 1, 1, 1, 0 ],
 						[ 0, 0, 0, 0 ]
+					] );
+				} );
+
+				it( 'handles pasting table that has cell with colspan (multiple ending columns in the selection are spanned)', () => {
+					// +----+----+----+----+
+					// | 00 | 01 | 02 | 03 |
+					// +----+----+----+----+
+					// | 10           | 13 |
+					// +----+----+----+----+
+					// | 20           | 23 |
+					// +----+----+----+----+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ { contents: '10', colspan: 3 }, '13' ],
+						[ { contents: '20', colspan: 3 }, '23' ]
+					] ) );
+
+					// Select 10 -> 20 (selection 3x2)
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 2, 0 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab', 'ac' ],
+						[ 'ba', 'bb', 'bc' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ 'aa', 'ab', 'ac', '13' ],
+						[ 'ba', 'bb', 'bc', '23' ]
+					] ) );
+
+					assertSelectedCells( model, [
+						[ 0, 0, 0, 0 ],
+						[ 1, 1, 1, 0 ],
+						[ 1, 1, 1, 0 ]
 					] );
 				} );
 			} );
