@@ -129,7 +129,11 @@
 
 	&:not(.ck-widget_selected) {
 		/* Disable visual effects of hover/active widget when CKEditor is in readOnly mode.
-		See: https://github.com/ckeditor/ckeditor5/issues/1261 */
+		 * See: https://github.com/ckeditor/ckeditor5/issues/1261
+		 *
+		 * Leave the unit because this custom property is used in calc() by other features.
+		 * See: https://github.com/ckeditor/ckeditor5/issues/6775
+		 */
 		--ck-widget-outline-thickness: 0px;
 	}
 
