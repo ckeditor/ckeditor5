@@ -54,18 +54,36 @@ describe( 'WidgetTypeAround', () => {
 	} );
 
 	describe( '_insertParagraph()', () => {
-		it( 'should insert a paragraph with a selection before a widget when position is "before"', () => {
+		let executeSpy;
+
+		beforeEach( () => {
+			executeSpy = sinon.spy( editor, 'execute' );
+		} );
+
+		it( 'should execute the "insertParagraph" command when inserting a paragraph before the widget', () => {
 			setModelData( editor.model, '<blockWidget></blockWidget>' );
 
 			plugin._insertParagraph( viewRoot.getChild( 0 ), 'before' );
 
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithExactly( executeSpy, 'insertParagraph', {
+				position: 'before',
+				element: editor.model.document.getRoot().getChild( 1 )
+			} );
+
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph><blockWidget></blockWidget>' );
 		} );
 
-		it( 'should insert a paragraph with a selection after a widget when position is "after"', () => {
+		it( 'should execute the "insertParagraph" command when inserting a paragraph after the widget', () => {
 			setModelData( editor.model, '<blockWidget></blockWidget>' );
 
 			plugin._insertParagraph( viewRoot.getChild( 0 ), 'after' );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithExactly( executeSpy, 'insertParagraph', {
+				position: 'after',
+				element: editor.model.document.getRoot().getChild( 0 )
+			} );
 
 			expect( getModelData( editor.model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]</paragraph>' );
 		} );
