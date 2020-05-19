@@ -380,6 +380,13 @@ export function centeredBalloonPositionForLongWidgets( widgetRect, balloonRect )
 	const viewportRect = new Rect( global.window );
 	const viewportWidgetInsersectionRect = viewportRect.getIntersection( widgetRect );
 
+	const balloonTotalHeight = balloonRect.height + BalloonPanelView.arrowVerticalOffset;
+
+	// If there is enough space above or below the widget then this position should not be used.
+	if ( widgetRect.top - balloonTotalHeight > viewportRect.top || widgetRect.bottom + balloonTotalHeight < viewportRect.bottom ) {
+		return null;
+	}
+
 	// Because this is a last resort positioning, to keep things simple we're not playing with positions of the arrow
 	// like, for instance, "south west" or whatever. Just try to keep the balloon in the middle of the visible area of
 	// the widget for as long as it is possible. If the widgets becomes invisible (because cropped by the viewport),

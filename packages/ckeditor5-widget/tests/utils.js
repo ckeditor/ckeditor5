@@ -512,7 +512,7 @@ describe( 'widget utils', () => {
 			testUtils.sinon.stub( global.window, 'innerHeight' ).value( 100 );
 		} );
 
-		it( 'should position the balloon inside a widget – at the top + in the middle', () => {
+		it( 'should return null if there is enough space above the widget', () => {
 			// Widget is a 50x150 rect, translated (25,25) from viewport's beginning (0,0).
 			const widgetRect = new Rect( {
 				top: 25,
@@ -525,8 +525,40 @@ describe( 'widget utils', () => {
 
 			const position = centeredBalloonPositionForLongWidgets( widgetRect, balloonRect );
 
+			expect( position ).to.equal( null );
+		} );
+
+		it( 'should return null if there is enough space below the widget', () => {
+			// Widget is a 50x150 rect, translated (25,-125) from viewport's beginning (0,0).
+			const widgetRect = new Rect( {
+				top: -125,
+				left: 25,
+				right: 75,
+				bottom: 25,
+				width: 50,
+				height: 150
+			} );
+
+			const position = centeredBalloonPositionForLongWidgets( widgetRect, balloonRect );
+
+			expect( position ).to.equal( null );
+		} );
+
+		it( 'should position the balloon inside a widget – at the top + in the middle', () => {
+			// Widget is a 50x150 rect, translated (25,5) from viewport's beginning (0,0).
+			const widgetRect = new Rect( {
+				top: 5,
+				left: 25,
+				right: 75,
+				bottom: 155,
+				width: 50,
+				height: 150
+			} );
+
+			const position = centeredBalloonPositionForLongWidgets( widgetRect, balloonRect );
+
 			expect( position ).to.deep.equal( {
-				top: 25 + arrowVerticalOffset,
+				top: 5 + arrowVerticalOffset,
 				left: 45,
 				name: 'arrow_n'
 			} );
@@ -553,12 +585,12 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should horizontally center the balloon in the visible area when the widget is cropped by the viewport', () => {
-			// Widget is a 50x150 rect, translated (25,-25) from viewport's beginning (0,0).
+			// Widget is a 50x150 rect, translated (-25,5) from viewport's beginning (0,0).
 			const widgetRect = new Rect( {
-				top: 25,
+				top: 5,
 				left: -25,
 				right: 25,
-				bottom: 175,
+				bottom: 155,
 				width: 50,
 				height: 150
 			} );
@@ -566,7 +598,7 @@ describe( 'widget utils', () => {
 			const position = centeredBalloonPositionForLongWidgets( widgetRect, balloonRect );
 
 			expect( position ).to.deep.equal( {
-				top: 25 + arrowVerticalOffset,
+				top: 5 + arrowVerticalOffset,
 				left: 7.5,
 				name: 'arrow_n'
 			} );

@@ -129,11 +129,11 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 // @param {Function} position A function returning {@link module:utils/dom/position~Position}.
 // @param {utils/dom/rect~Rect} targetRect A rect of the target.
 // @param {utils/dom/rect~Rect} elementRect A rect of positioned element.
-// @returns {Array} An array containing position name and its Rect.
+// @returns {Array|null} An array containing position name and its Rect (or null if position should be ignored).
 function getPositionNameAndRect( position, targetRect, elementRect ) {
-	const { left, top, name } = position( targetRect, elementRect );
+	const { left, top, name } = position( targetRect, elementRect ) || {};
 
-	return [ name, elementRect.clone().moveTo( left, top ) ];
+	return name ? [ name, elementRect.clone().moveTo( left, top ) ] : null;
 }
 
 // For a given array of positioning functions, returns such that provides the best
@@ -205,7 +205,12 @@ function processPositionsToAreas( positions, { targetRect, elementRect, limiterR
 	const elementRectArea = elementRect.getArea();
 
 	for ( const position of positions ) {
-		const [ positionName, positionRect ] = getPositionNameAndRect( position, targetRect, elementRect );
+		const [ positionName, positionRect ] = getPositionNameAndRect( position, targetRect, elementRect ) || [];
+
+		if ( !positionName ) {
+			continue;
+		}
+
 		let limiterIntersectArea = 0;
 		let viewportIntersectArea = 0;
 
