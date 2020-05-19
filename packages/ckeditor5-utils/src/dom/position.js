@@ -131,9 +131,15 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 // @param {utils/dom/rect~Rect} elementRect A rect of positioned element.
 // @returns {Array|null} An array containing position name and its Rect (or null if position should be ignored).
 function getPositionNameAndRect( position, targetRect, elementRect ) {
-	const { left, top, name } = position( targetRect, elementRect ) || {};
+	const positionData = position( targetRect, elementRect );
 
-	return name ? [ name, elementRect.clone().moveTo( left, top ) ] : null;
+	if ( !positionData ) {
+		return null;
+	}
+
+	const { left, top, name } = positionData;
+
+	return [ name, elementRect.clone().moveTo( left, top ) ];
 }
 
 // For a given array of positioning functions, returns such that provides the best

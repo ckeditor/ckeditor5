@@ -374,7 +374,7 @@ export function viewToModelPositionOutsideModelElement( model, viewElementMatche
  *
  * @param {module:utils/dom/rect~Rect} widgetRect A rect of the widget.
  * @param {module:utils/dom/rect~Rect} balloonRect A rect of the balloon.
- * @returns {module:utils/dom/position~Position}
+ * @returns {module:utils/dom/position~Position|null}
  */
 export function centeredBalloonPositionForLongWidgets( widgetRect, balloonRect ) {
 	const viewportRect = new Rect( global.window );
