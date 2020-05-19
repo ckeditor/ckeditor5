@@ -17,6 +17,7 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -571,6 +572,39 @@ describe( 'AutoMediaEmbed - integration', () => {
 				done();
 			}, 100 );
 		} );
+	} );
+
+	it( 'should detach LiveRange', async () => {
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ MediaEmbed, AutoMediaEmbed, Link, List, Bold, Typing, Image, ImageCaption, Table ]
+		} );
+
+		setData(
+			editor.model,
+			'<table>' +
+				'<tableRow>' +
+					'[<tableCell><paragraph>foo</paragraph></tableCell>]' +
+					'[<tableCell><paragraph>bar</paragraph></tableCell>]' +
+				'</tableRow>' +
+			'</table>'
+		);
+
+		pasteHtml( editor, '<table><tr><td>one</td><td>two</td></tr></table>' );
+
+		expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell><paragraph>one</paragraph></tableCell>' +
+					'<tableCell><paragraph>two</paragraph></tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		);
+
+		expect( () => {
+			editor.setData( '' );
+		} ).not.to.throw();
+
+		editor.destroy();
 	} );
 
 	function simulateTyping( text ) {
