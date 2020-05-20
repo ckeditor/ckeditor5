@@ -149,7 +149,7 @@ export default class TableClipboard extends Plugin {
 				expandTableSize( selectedTable, lastRowOfSelection + 1, lastColumnOfSelection + 1, writer, tableUtils );
 			}
 
-			// Beyond this point we will operate on fixed content table.
+			// Beyond this point we will operate on a fixed content table.
 			if ( selectedTableCells.length === 1 || !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
 				const splitDimensions = {
 					firstRow: firstRowOfSelection,
@@ -306,24 +306,24 @@ function replaceSelectedCellsWithPasted( pastedTable, selectedTable, selectionDi
 	writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
 }
 
-// Expand table (in place) to expected size (rows and columns).
-function expandTableSize( table, rows, columns, writer, tableUtils ) {
+// Expand table (in place) to expected size.
+function expandTableSize( table, expectedHeight, expectedWidth, writer, tableUtils ) {
 	const tableWidth = tableUtils.getColumns( table );
 	const tableHeight = tableUtils.getRows( table );
 
-	if ( columns > tableWidth ) {
+	if ( expectedWidth > tableWidth ) {
 		tableUtils.insertColumns( table, {
 			batch: writer.batch,
 			at: tableWidth,
-			columns: columns - tableWidth
+			columns: expectedWidth - tableWidth
 		} );
 	}
 
-	if ( rows > tableHeight ) {
+	if ( expectedHeight > tableHeight ) {
 		tableUtils.insertRows( table, {
 			batch: writer.batch,
 			at: tableHeight,
-			rows: rows - tableHeight
+			rows: expectedHeight - tableHeight
 		} );
 	}
 }
