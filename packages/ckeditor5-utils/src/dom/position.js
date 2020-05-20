@@ -129,9 +129,15 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 // @param {Function} position A function returning {@link module:utils/dom/position~Position}.
 // @param {utils/dom/rect~Rect} targetRect A rect of the target.
 // @param {utils/dom/rect~Rect} elementRect A rect of positioned element.
-// @returns {Array} An array containing position name and its Rect.
+// @returns {Array|null} An array containing position name and its Rect (or null if position should be ignored).
 function getPositionNameAndRect( position, targetRect, elementRect ) {
-	const { left, top, name } = position( targetRect, elementRect );
+	const positionData = position( targetRect, elementRect );
+
+	if ( !positionData ) {
+		return null;
+	}
+
+	const { left, top, name } = positionData;
 
 	return [ name, elementRect.clone().moveTo( left, top ) ];
 }
@@ -205,7 +211,13 @@ function processPositionsToAreas( positions, { targetRect, elementRect, limiterR
 	const elementRectArea = elementRect.getArea();
 
 	for ( const position of positions ) {
-		const [ positionName, positionRect ] = getPositionNameAndRect( position, targetRect, elementRect );
+		const positionData = getPositionNameAndRect( position, targetRect, elementRect );
+
+		if ( !positionData ) {
+			continue;
+		}
+
+		const [ positionName, positionRect ] = positionData;
 		let limiterIntersectArea = 0;
 		let viewportIntersectArea = 0;
 
@@ -351,7 +363,7 @@ function getAbsoluteRectCoordinates( { left, top } ) {
 }
 
 /**
- * The `getOptimalPosition` helper options.
+ * The `getOptimalPosition()` helper options.
  *
  * @interface module:utils/dom/position~Options
  */
@@ -371,6 +383,8 @@ function getAbsoluteRectCoordinates( { left, top } ) {
 /**
  * An array of functions which return {@link module:utils/dom/position~Position} relative
  * to the `target`, in the order of preference.
+ *
+ * **Note**: If a function returns `null`, it is ignored by the `getOptimalPosition()`.
  *
  * @member {Array.<Function>} #positions
  */
