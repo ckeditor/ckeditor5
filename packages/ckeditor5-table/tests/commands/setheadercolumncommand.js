@@ -404,7 +404,7 @@ describe( 'SetHeaderColumnCommand', () => {
 			], { headingColumns: 2 } ) );
 		} );
 
-		it( 'should respect forceValue parameter #1', () => {
+		it( 'should respect forceValue parameter (forceValue=true)', () => {
 			setData( model, modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 3 } ) );
@@ -416,7 +416,7 @@ describe( 'SetHeaderColumnCommand', () => {
 			], { headingColumns: 3 } ) );
 		} );
 
-		it( 'should respect forceValue parameter #2', () => {
+		it( 'should respect forceValue parameter (forceValue=false)', () => {
 			setData( model, modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 1 } ) );

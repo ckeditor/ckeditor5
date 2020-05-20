@@ -551,7 +551,7 @@ describe( 'SetHeaderRowCommand', () => {
 			} );
 		} );
 
-		it( 'should respect forceValue parameter #1', () => {
+		it( 'should respect forceValue parameter (forceValue=true)', () => {
 			setData( model, modelTable( [
 				[ '00' ],
 				[ '[]10' ],
@@ -569,7 +569,7 @@ describe( 'SetHeaderRowCommand', () => {
 			], { headingRows: 3 } ) );
 		} );
 
-		it( 'should respect forceValue parameter #2', () => {
+		it( 'should respect forceValue parameter (forceValue=false)', () => {
 			setData( model, modelTable( [
 				[ '00' ],
 				[ '[]10' ],
