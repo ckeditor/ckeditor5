@@ -34,7 +34,7 @@ export default class InsertParagraphCommand extends Command {
 	 * the new paragraph will be inserted.
 	 * @fires execute
 	 */
-	execute( options = {} ) {
+	execute( options ) {
 		const editor = this.editor;
 		const model = this.editor.model;
 		let modelPosition;
