@@ -604,7 +604,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			editor.setData( '' );
 		} ).not.to.throw();
 
-		editor.destroy();
+		await editor.destroy();
 	} );
 
 	function simulateTyping( text ) {
