@@ -578,7 +578,7 @@ export default class Renderer {
 		}
 
 		// Unbind removed nodes. When node does not have a parent it means that it was removed from DOM tree during
-		// comparision with the expected DOM. We don't need to check child nodes, because if child node was reinserted,
+		// comparison with the expected DOM. We don't need to check child nodes, because if child node was reinserted,
 		// it was moved to DOM tree out of the removed node.
 		for ( const node of nodesToUnbind ) {
 			if ( !node.parentNode ) {
