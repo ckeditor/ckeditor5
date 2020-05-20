@@ -89,3 +89,12 @@
 .ck.ck-editor__editable.ck-restricted-editing_mode_restricted .ck-widget__type-around {
 	display: none;
 }
+
+/*
+ * A quick fix for integration with track changes.
+ *
+ * TODO: To be removed when the proper integration arrives.
+ */
+.ck.ck-editor__editable.ck-widget_type-around_temp-disabled .ck-widget__type-around {
+	display: none;
+}
