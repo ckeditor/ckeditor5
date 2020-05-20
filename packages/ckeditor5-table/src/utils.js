@@ -268,7 +268,7 @@ export function isSelectionRectangular( selectedTableCells, tableUtils ) {
  *
  * @param {module:engine/model/element~Element} table The table to check.
  * @param {Number} overlapRow The index of the row to check.
- * @param {Number} [startRow=0] A row to start analysis. Use it when it is known that cells below that row will not overlap.
+ * @param {Number} [startRow=0] A row to start analysis. Use it when it is known that the cells above that row will not overlap.
  * @returns {Array.<module:table/tablewalker~TableWalkerValue>}
  */
 export function getVerticallyOverlappingCells( table, overlapRow, startRow = 0 ) {
