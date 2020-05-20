@@ -765,6 +765,39 @@ describe( 'table clipboard', () => {
 						[ '', '', '', 'ea', 'eb', 'ec', 'ed' ]
 					] ) );
 				} );
+
+				it( 'should fix non-rectangular are on matched table fragment', () => {
+					// +----+----+----+
+					// | 00 | 01 | 02 |
+					// +----+----+    +
+					// | 10 | 11 |    |
+					// +----+----+----+
+					// | 20      | 22 |
+					// +----+----+----+
+					setModelData( model, modelTable( [
+						[ '00', '01', { contents: '02', rowspan: 2 } ],
+						[ '10', '11[]' ],
+						[ { contents: '20', colspan: 2 }, '22' ]
+					] ) );
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					// +----+----+----+
+					// | 00 | 01 | 02 |
+					// +----+----+----+
+					// | 10 | aa | ab |
+					// +----+----+----+
+					// | 20 | ba | bb |
+					// +----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', 'aa', 'ab' ],
+						[ '20', 'ba', 'bb' ]
+					] ) );
+				} );
 			} );
 		} );
 
