@@ -529,7 +529,7 @@ function adjustLastRowIndex( table, rowIndexes, columnIndexes ) {
 	}
 
 	// Otherwise get any cell's rowspan and adjust the last row index.
-	const rowspanAdjustment = lastRowMap.pop().rowspan - 1;
+	const rowspanAdjustment = lastRowMap[ 0 ].rowspan - 1;
 	return rowIndexes.last + rowspanAdjustment;
 }
 
@@ -565,6 +565,6 @@ function adjustLastColumnIndex( table, rowIndexes, columnIndexes ) {
 	}
 
 	// Otherwise get any cell's colspan and adjust the last column index.
-	const colspanAdjustment = lastColumnMap.pop().colspan - 1;
+	const colspanAdjustment = lastColumnMap[ 0 ].colspan - 1;
 	return columnIndexes.last + colspanAdjustment;
 }

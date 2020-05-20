@@ -278,9 +278,9 @@ export function getVerticallyOverlappingCells( table, overlapRow, startRow = 0 )
 
 	for ( const slotInfo of tableWalker ) {
 		const { row, rowspan } = slotInfo;
-		const slotEndRow = row + rowspan - 1;
+		const cellEndRow = row + rowspan - 1;
 
-		if ( row < overlapRow && overlapRow <= slotEndRow ) {
+		if ( row < overlapRow && overlapRow <= cellEndRow ) {
 			cells.push( slotInfo );
 		}
 	}
@@ -372,9 +372,9 @@ export function getHorizontallyOverlappingCells( table, overlapColumn ) {
 
 	for ( const slotInfo of tableWalker ) {
 		const { column, colspan } = slotInfo;
-		const slotEndColumn = column + colspan - 1;
+		const cellEndColumn = column + colspan - 1;
 
-		if ( column < overlapColumn && overlapColumn <= slotEndColumn ) {
+		if ( column < overlapColumn && overlapColumn <= cellEndColumn ) {
 			cellsToSplit.push( slotInfo );
 		}
 	}
