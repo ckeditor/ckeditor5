@@ -248,7 +248,7 @@ export function isSelectionRectangular( selectedTableCells, tableUtils ) {
 }
 
 /**
- * Returns cells that starts above and overlaps a given row.
+ * Returns slot info of cells that starts above and overlaps a given row.
  *
  * In a table below, passing `overlapRow = 3`
  *
@@ -264,11 +264,11 @@ export function isSelectionRectangular( selectedTableCells, tableUtils ) {
  *    4  │ o │ p │   │   │ q │
  *       └───┴───┴───┴───┴───┘
  *
- * will return cells: "j", "f", "k".
+ * will return slot info for cells: "j", "f", "k".
  *
  * @param {module:engine/model/element~Element} table The table to check.
  * @param {Number} overlapRow The index of the row to check.
- * @param {Number} [startRow=0] A row to start analysis if it is known where.
+ * @param {Number} [startRow=0] A row to start analysis. Use it when it is known that cells below that row will not overlap.
  * @returns {Array.<module:table/tablewalker~TableWalkerValue>}
  */
 export function getVerticallyOverlappingCells( table, overlapRow, startRow = 0 ) {
@@ -278,8 +278,9 @@ export function getVerticallyOverlappingCells( table, overlapRow, startRow = 0 )
 
 	for ( const slotInfo of tableWalker ) {
 		const { row, rowspan } = slotInfo;
+		const slotEndRow = row + rowspan - 1;
 
-		if ( rowspan > 1 && row + rowspan > overlapRow ) {
+		if ( row < overlapRow && overlapRow <= slotEndRow ) {
 			cells.push( slotInfo );
 		}
 	}
@@ -339,7 +340,7 @@ export function splitHorizontally( tableCell, splitRow, writer ) {
 }
 
 /**
- * Returns cells that starts before and overlaps a given column.
+ * Returns slot info of cells that starts before and overlaps a given column.
  *
  * In a table below, passing `overlapColumn = 3`
  *
@@ -358,7 +359,7 @@ export function splitHorizontally( tableCell, splitRow, writer ) {
  *                  ^
  *                  Overlap column to check
  *
- * will return cells: "b", "e", "i".
+ * will return slot info for cells: "b", "e", "i".
  *
  * @param {module:engine/model/element~Element} table The table to check.
  * @param {Number} overlapColumn The index of the column to check.
@@ -371,9 +372,9 @@ export function getHorizontallyOverlappingCells( table, overlapColumn ) {
 
 	for ( const slotInfo of tableWalker ) {
 		const { column, colspan } = slotInfo;
-		const endColumn = column + colspan - 1;
+		const slotEndColumn = column + colspan - 1;
 
-		if ( column < overlapColumn && overlapColumn <= endColumn ) {
+		if ( column < overlapColumn && overlapColumn <= slotEndColumn ) {
 			cellsToSplit.push( slotInfo );
 		}
 	}
