@@ -198,6 +198,18 @@ describe( 'SetHeaderColumnCommand', () => {
 			], { headingColumns: 1 } ) );
 		} );
 
+		it( 'should remove "headingColumns" attribute from table if no value was given', () => {
+			setData( model, modelTable( [
+				[ '[]00', '01', '02', '03' ]
+			], { headingColumns: 3 } ) );
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '[]00', '01', '02', '03' ]
+			] ) );
+		} );
+
 		describe( 'multi-cell selection', () => {
 			describe( 'setting header', () => {
 				it( 'should set it correctly in a middle of single-row, multiple cell selection', () => {

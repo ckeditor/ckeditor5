@@ -225,7 +225,7 @@ describe( 'SetHeaderRowCommand', () => {
 			], { headingRows: 1 } ) );
 		} );
 
-		it( 'should unsetset heading rows attribute', () => {
+		it( 'should remove "headingRows" attribute from table if no value was given', () => {
 			setData( model, modelTable( [
 				[ '[]00' ],
 				[ '10' ],
