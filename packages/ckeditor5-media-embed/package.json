@@ -26,7 +26,8 @@
     "@ckeditor/ckeditor5-link": "^19.0.0",
     "@ckeditor/ckeditor5-list": "^19.0.0",
     "@ckeditor/ckeditor5-paragraph": "^19.0.0",
-    "@ckeditor/ckeditor5-typing": "^19.0.0"
+    "@ckeditor/ckeditor5-typing": "^19.0.0",
+    "@ckeditor/ckeditor5-table": "^19.0.0"
   },
   "engines": {
     "node": ">=8.0.0",
