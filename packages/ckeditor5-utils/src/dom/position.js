@@ -363,7 +363,7 @@ function getAbsoluteRectCoordinates( { left, top } ) {
 }
 
 /**
- * The `getOptimalPosition` helper options.
+ * The `getOptimalPosition()` helper options.
  *
  * @interface module:utils/dom/position~Options
  */
@@ -383,6 +383,8 @@ function getAbsoluteRectCoordinates( { left, top } ) {
 /**
  * An array of functions which return {@link module:utils/dom/position~Position} relative
  * to the `target`, in the order of preference.
+ *
+ * **Note**: If a function returns `null`, it is ignored by the `getOptimalPosition()`.
  *
  * @member {Array.<Function>} #positions
  */
