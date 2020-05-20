@@ -26,7 +26,6 @@ export default class InsertParagraphCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * @protected
 	 * @param {Object} options Options for the executed command.
 	 * @param {module:engine/model/element~Element} options.element The model element next to which
 	 * the new paragraph will be inserted.
