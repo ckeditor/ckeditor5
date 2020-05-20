@@ -211,12 +211,13 @@ function processPositionsToAreas( positions, { targetRect, elementRect, limiterR
 	const elementRectArea = elementRect.getArea();
 
 	for ( const position of positions ) {
-		const [ positionName, positionRect ] = getPositionNameAndRect( position, targetRect, elementRect ) || [];
+		const positionData = getPositionNameAndRect( position, targetRect, elementRect );
 
-		if ( !positionName ) {
+		if ( !positionData ) {
 			continue;
 		}
 
+		const [ positionName, positionRect ] = positionData;
 		let limiterIntersectArea = 0;
 		let viewportIntersectArea = 0;
 
