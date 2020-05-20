@@ -999,32 +999,33 @@ mix( Schema, ObservableMixin );
  *
  * You can define the following rules:
  *
- * * `allowIn` &ndash; A string or an array of strings. Defines in which other items this item will be allowed.
- * * `allowAttributes` &ndash; A string or an array of strings. Defines allowed attributes of the given item.
- * * `allowContentOf` &ndash; A string or an array of strings. Inherits "allowed children" from other items.
- * * `allowWhere` &ndash; A string or an array of strings. Inherits "allowed in" from other items.
- * * `allowAttributesOf` &ndash; A string or an array of strings. Inherits attributes from other items.
- * * `inheritTypesFrom` &ndash; A string or an array of strings. Inherits `is*` properties of other items.
- * * `inheritAllFrom` &ndash; A string. A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
+ * * {@link #allowIn `allowIn`} &ndash; Defines in which other items this item will be allowed.
+ * * {@link #allowAttributes `allowAttributes`} &ndash; Defines allowed attributes of the given item.
+ * * {@link #allowContentOf `allowContentOf`} &ndash; Inherits "allowed children" from other items.
+ * * {@link #allowWhere `allowWhere`} &ndash; Inherits "allowed in" from other items.
+ * * {@link #allowAttributesOf `allowAttributesOf`} &ndash; Inherits attributes from other items.
+ * * {@link #inheritTypesFrom `inheritTypesFrom`} &ndash; Inherits `is*` properties of other items.
+ * * {@link #inheritAllFrom `inheritAllFrom`} &ndash; A shorthand for `allowContentOf`, `allowWhere`,
+ * `allowAttributesOf`, `inheritTypesFrom`.
  * * Additionally, you can define the following `is*` properties: `isBlock`, `isLimit`, `isObject`, `isInline`. Read about them below.
  *
  * # The is* properties
  *
- * There are 3 commonly used `is*` properties. Their role is to assign additional semantics to schema items.
+ * There are 4 commonly used `is*` properties. Their role is to assign additional semantics to schema items.
  * You can define more properties but you will also need to implement support for them in the existing editor features.
  *
- * * `isBlock` &ndash; Whether this item is paragraph-like. Generally speaking, content is usually made out of blocks
+ * * {@link #isBlock `isBlock`} &ndash; Whether this item is paragraph-like. Generally speaking, content is usually made out of blocks
  * like paragraphs, list items, images, headings, etc. All these elements are marked as blocks. A block
  * should not allow another block inside. Note: There is also the `$block` generic item which has `isBlock` set to `true`.
  * Most block type items will inherit from `$block` (through `inheritAllFrom`).
- * * `isLimit` &ndash; It can be understood as whether this element should not be split by <kbd>Enter</kbd>.
+ * * {@link #isInline `isInline`} &ndash; Whether an item is "text-like" and should be treated as an inline node.
+ * Examples of inline elements: `$text`, `softBreak` (`<br>`), etc.
+ * * {@link #isLimit `isLimit`} &ndash; It can be understood as whether this element should not be split by <kbd>Enter</kbd>.
  * Examples of limit elements: `$root`, table cell, image caption, etc. In other words, all actions that happen inside
  * a limit element are limited to its content. **Note:** All objects (`isObject`) are treated as limit elements, too.
- * * `isObject` &ndash; Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
+ * * {@link #isObject `isObject`} &ndash; Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
  * `image`, `table`, `video`, etc. **Note:** An object is also a limit, so
  * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
- * * `isInline` &ndash; Whether an item is "text-like" and should be treated as an inline node. Examples of inline elements:
- * `$text`, `softBreak` (`<br>`), etc.
  *
  * # Generic items
  *
@@ -1111,6 +1112,27 @@ mix( Schema, ObservableMixin );
  * affect how the editor features treat your elements.
  *
  * @typedef {Object} module:engine/model/schema~SchemaItemDefinition
+ *
+ * @property {String|Array.<String>} allowIn Defines in which other items this item will be allowed.
+ * @property {String|Array.<String>} allowAttributes Defines allowed attributes of the given item.
+ * @property {String|Array.<String>} allowContentOf Inherits "allowed children" from other items.
+ * @property {String|Array.<String>} allowWhere Inherits "allowed in" from other items.
+ * @property {String|Array.<String>} allowAttributesOf Inherits attributes from other items.
+ * @property {String|Array.<String>} inheritTypesFrom Inherits `is*` properties of other items.
+ * @property {String} inheritAllFrom A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
+ *
+ * @property {Boolean} isBlock Whether this item is paragraph-like. Generally speaking, content is usually made out of blocks
+ * like paragraphs, list items, images, headings, etc. All these elements are marked as blocks. A block
+ * should not allow another block inside. Note: There is also the `$block` generic item which has `isBlock` set to `true`.
+ * Most block type items will inherit from `$block` (through `inheritAllFrom`).
+ * @property {Boolean} isInline Whether an item is "text-like" and should be treated as an inline node. Examples of inline elements:
+ * `$text`, `softBreak` (`<br>`), etc.
+ * @property {Boolean} isLimit It can be understood as whether this element should not be split by <kbd>Enter</kbd>.
+ * Examples of limit elements: `$root`, table cell, image caption, etc. In other words, all actions that happen inside
+ * a limit element are limited to its content. **Note:** All objects (`isObject`) are treated as limit elements, too.
+ * @property {Boolean} isObject Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
+ * `image`, `table`, `video`, etc. **Note:** An object is also a limit, so
+ * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
  */
 
 /**
