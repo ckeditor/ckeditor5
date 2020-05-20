@@ -219,11 +219,13 @@ export default class Schema {
 	}
 
 	/**
-	 * Returns `true` if the given item is defined to be
-	 * a limit element by {@link module:engine/model/schema~SchemaItemDefinition}'s
+	 * Returns `true` if the given item is should be treated as a limit element.
+	 * If it should act as a boundary between actions inside and outside.
+	 * It considers the item to be a limit element if its
+	 * {@link module:engine/model/schema~SchemaItemDefinition}'s
 	 * {@link module:engine/model/schema~SchemaItemDefinition#isLimit `isLimit`} or
 	 * {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} property
-	 * (all objects are also limits).
+	 * were set to `true`.
 	 *
 	 *		schema.isLimit( 'paragraph' ); // -> false
 	 *		schema.isLimit( '$root' ); // -> true
@@ -231,6 +233,13 @@ export default class Schema {
 	 *		schema.isLimit( 'image' ); // -> true
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema "Schema" deep dive} guide.
+	 *
+	 * It considers `isObject` with higher priority than `isLimit`. Meaning, even if
+	 * `isLimit` was explicitly  set to `false` in `SchemaItemDefinition`, but `isObject` was set to `true`,
+	 * `isLimit()` will return `true`.
+	 *
+	 * **Note**: In the above scenario {@link module:engine/model/schema~Schema#getDefinition `schema.getDefinition( item ).isLimit`}
+	 * will be `false`, to match the exact definition given.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
@@ -245,14 +254,20 @@ export default class Schema {
 	}
 
 	/**
-	 * Returns `true` if the given item is defined to be
-	 * an object element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isObject` property.
+	 * Returns `true` if the given item is should be treated as an object element.
+	 * If it should act as a self-sufficient element.
+	 * It considers the item to be an object element if its
+	 * {@link module:engine/model/schema~SchemaItemDefinition}'s
+	 * {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} property
+	 * were set to `true`.
 	 *
 	 *		schema.isObject( 'paragraph' ); // -> false
 	 *		schema.isObject( 'image' ); // -> true
 	 *
 	 *		const imageElement = writer.createElement( 'image' );
 	 *		schema.isObject( imageElement ); // -> true
+	 *
+	 * See the {@glink framework/guides/deep-dive/schema "Schema" deep dive} guide.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
