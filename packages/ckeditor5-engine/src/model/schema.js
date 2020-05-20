@@ -220,13 +220,17 @@ export default class Schema {
 
 	/**
 	 * Returns `true` if the given item is defined to be
-	 * a limit element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isLimit` or `isObject` property
+	 * a limit element by {@link module:engine/model/schema~SchemaItemDefinition}'s
+	 * {@link module:engine/model/schema~SchemaItemDefinition#isLimit `isLimit`} or
+	 * {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} property
 	 * (all objects are also limits).
 	 *
 	 *		schema.isLimit( 'paragraph' ); // -> false
 	 *		schema.isLimit( '$root' ); // -> true
 	 *		schema.isLimit( editor.model.document.getRoot() ); // -> true
 	 *		schema.isLimit( 'image' ); // -> true
+	 *
+	 * See the {@glink framework/guides/deep-dive/schema "Schema" deep dive} guide.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
@@ -1023,8 +1027,8 @@ mix( Schema, ObservableMixin );
  * * {@link #isLimit `isLimit`} &ndash; It can be understood as whether this element should not be split by <kbd>Enter</kbd>.
  * Examples of limit elements: `$root`, table cell, image caption, etc. In other words, all actions that happen inside
  * a limit element are limited to its content. **Note:** All objects (`isObject`) are treated as limit elements, too.
- * * {@link #isObject `isObject`} &ndash; Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
- * `image`, `table`, `video`, etc. **Note:** An object is also a limit, so
+ * * {@link #isObject `isObject`} &ndash; Whether an item is "self-contained" and should be treated as a whole.
+ * Examples of object elements: `image`, `table`, `video`, etc. **Note:** An object is also a limit, so
  * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
  *
  * # Generic items
@@ -1121,18 +1125,30 @@ mix( Schema, ObservableMixin );
  * @property {String|Array.<String>} inheritTypesFrom Inherits `is*` properties of other items.
  * @property {String} inheritAllFrom A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
  *
- * @property {Boolean} isBlock Whether this item is paragraph-like. Generally speaking, content is usually made out of blocks
+ * @property {Boolean} isBlock
+ * Whether this item is paragraph-like. Generally speaking, content is usually made out of blocks
  * like paragraphs, list items, images, headings, etc. All these elements are marked as blocks. A block
  * should not allow another block inside. Note: There is also the `$block` generic item which has `isBlock` set to `true`.
  * Most block type items will inherit from `$block` (through `inheritAllFrom`).
- * @property {Boolean} isInline Whether an item is "text-like" and should be treated as an inline node. Examples of inline elements:
+ * @property {Boolean} isInline
+ * Whether an item is "text-like" and should be treated as an inline node. Examples of inline elements:
  * `$text`, `softBreak` (`<br>`), etc.
- * @property {Boolean} isLimit It can be understood as whether this element should not be split by <kbd>Enter</kbd>.
+ * @property {Boolean} isLimit
+ * It can be understood as whether this element should not be split by <kbd>Enter</kbd>.
  * Examples of limit elements: `$root`, table cell, image caption, etc. In other words, all actions that happen inside
- * a limit element are limited to its content. **Note:** All objects (`isObject`) are treated as limit elements, too.
- * @property {Boolean} isObject Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
- * `image`, `table`, `video`, etc. **Note:** An object is also a limit, so
+ * a limit element are limited to its content.
+ *
+ * **Note:** All objects (`isObject`) are treated as limit elements, too.
+ *
+ * See the {@glink framework/guides/deep-dive/schema#declaring-as-a-limit-element Dedicated section in "Schema" deep dive} guide.
+ * @property {Boolean} isObject
+ * Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
+ * `image`, `table`, `video`, etc.
+ *
+ * **Note:** An object is also a limit, so
  * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
+ *
+ * See the {@glink framework/guides/deep-dive/schema#declaring-as-a-self-sufficient-object Dedicated section in "Schema" deep dive} guide.
  */
 
 /**

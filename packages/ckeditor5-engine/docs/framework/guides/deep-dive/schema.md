@@ -8,7 +8,7 @@ This article assumes that you have already read the {@link framework/guides/arch
 
 ## Quick recap
 
-The editor's schema is available in the {@link module:engine/model/model~Model#schema `editor.model.schema`} property. It defines allowed model structures (how model elements can be nested) and allowed attributes (of both elements and text nodes). This information is later used by editing features and the editing engine to decide how to process the model, where to enable features, etc.
+The editor's schema is available in the {@link module:engine/model/model~Model#schema `editor.model.schema`} property. It defines allowed model structures (how model elements can be nested), allowed attributes (of both elements and text nodes), and other characteristics (inline vs. block, atomicity in regards of external actions). This information is later used by editing features and the editing engine to decide how to process the model, where to enable features, etc.
 
 Schema rules can be defined by using the {@link module:engine/model/schema~Schema#register `Schema#register()`} or {@link module:engine/model/schema~Schema#extend `Schema#extend()`} methods. The former can be used only once for a given item name which ensures that only a single editing feature can introduce this item. Similarly, `extend()` can only be used for defined items.
 
@@ -43,6 +43,48 @@ While this would be incorrect:
 	</foo>
 </$root>
 ```
+
+## Declaring as a limit element
+
+Consider a feature like an image caption. The caption text area should construct a boundary to some internal actions.
+
+ - A selection that starts inside should not end outside.
+ - Pressing <kbd>Backspace</kbd> or <kbd>Delete</kbd> should not delete the area. Pressing <kbd>Enter</kbd> should not split the area.
+
+ It should also act as a boundary for external actions:
+
+ - A selection that starts outside, should not end inside.
+
+```js
+schema.register( 'myCaption', {
+    isLimit: true
+} );
+```
+
+{@link module:engine/model/schema~SchemaItemDefinition#isLimit `isLimit`} makes the engine construct such boundaries, and let {@link module:engine/model/utils/selection-post-fixer `selection-post-fixer`} update the user's selection if needed.
+
+<info-box>
+    "Limit element" does not mean "editable element". The concept of "editability" is reserved for the view and expressed by {@link module:engine/view/editableelement~EditableElement `EditableElement` class}.
+</info-box>
+
+## Declaring as a self-sufficient object
+
+For the image caption as in the example above it does not make much sense to select the caption box, then copy or drag it somewhere else.
+A caption without the image it describes does not make much sense. However, the image is more self-sufficient. Most likely users should be able to select the entire image (with all its internals), then copy or move it around. {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} should be used to mark such behavior.
+
+```js
+schema.register( 'myImage', {
+    isObject: true
+} );
+```
+
+Every "object" is also a "limit" element. 
+
+<info-box>
+    It means for every element with `isObject` set to `true`, {@link module:engine/model/schema~Schema#isLimit `schema.isLimit( element )`} will always return `true`. 
+
+    However, {@link module:engine/model/schema~Schema#getDefinition `schema.getDefinition( 'element' )`} may return `false` in a case when `{ isLimit: true, isObject: true}` was registered.
+</info-box>
 
 ## Generic items
 
