@@ -5,7 +5,6 @@
 
 :root {
 	--ck-widget-type-around-button-size: 20px;
-	--ck-widget-type-around-button-fade-in-animation: ck-widget-type-around-button-fade-in var(--ck-widget-handler-animation-curve) var(--ck-widget-handler-animation-duration) 1 normal forwards;
 	--ck-color-widget-type-around-button-active: var(--ck-color-focus-border);
 	--ck-color-widget-type-around-button-hover: var(--ck-color-widget-hover-border);
 	--ck-color-widget-type-around-button-blurred-editable: var(--ck-color-widget-blurred-border);
@@ -23,7 +22,10 @@
 		height: var(--ck-widget-type-around-button-size);
 		background: var(--ck-color-widget-type-around-button);
 		border-radius: 100px;
-		animation: var(--ck-widget-type-around-button-fade-in-animation);
+
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve), background var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
 
 		& svg {
 			width: 10px;
@@ -52,7 +54,7 @@
 			/*
 			 * Display the "sonar" around the button when hovered.
 			 */
-			animation: var(--ck-widget-type-around-button-fade-in-animation), ck-widget-type-around-button-sonar 1s ease infinite;
+			animation: ck-widget-type-around-button-sonar 1s ease infinite;
 
 			/*
 			 * Animate active button's icon.
@@ -66,6 +68,17 @@
 					animation: ck-widget-type-around-arrow-tip-dash 2s linear;
 				}
 			}
+		}
+	}
+
+	/*
+	 * Show type around buttons when the widget gets selected or being hovered.
+	 */
+	&.ck-widget_selected,
+	&:hover {
+		& > .ck-widget__type-around > .ck-widget__type-around__button {
+			pointer-events: auto;
+			opacity: 1;
 		}
 	}
 
@@ -141,15 +154,5 @@
 	}
 	100% {
 		box-shadow: 0 0 0 5px hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-start-alpha));
-	}
-}
-
-@keyframes ck-widget-type-around-button-fade-in {
-	from {
-		opacity: 0;
-	}
-
-	to {
-		opacity: 1;
 	}
 }
