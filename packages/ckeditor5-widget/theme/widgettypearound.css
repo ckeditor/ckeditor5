@@ -8,7 +8,7 @@
 	 * Styles of the type around buttons
 	 */
 	& .ck-widget__type-around__button {
-		display: none;
+		display: block;
 		position: absolute;
 		overflow: hidden;
 		z-index: var(--ck-z-default);
@@ -34,16 +34,6 @@
 			right: min(10%, 30px);
 
 			transform: translateY(50%);
-		}
-	}
-
-	/*
-	 * Show type around buttons when the widget gets selected or being hovered.
-	 */
-	&.ck-widget_selected,
-	&:hover {
-		& > .ck-widget__type-around > .ck-widget__type-around__button {
-			display: block;
 		}
 	}
 
