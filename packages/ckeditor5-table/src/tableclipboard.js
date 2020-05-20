@@ -482,6 +482,19 @@ function isAffectedBySelection( index, span, limit ) {
 }
 
 // Returns adjusted last row index if selection covers part of a row with empty slots (spanned by other cells).
+// The rowIndexes.last is equal to last row index but selection might be bigger.
+//
+// This happens *only* on rectangular selection so we analyze a case like this:
+//
+//    +---+---+---+---+
+//  0 | a | b | c | d |
+//    +   +   +---+---+
+//  1 |   | e | f | g |
+//    +   +---+   +---+
+//  2 |   | h |   | i | <- last row, each cell has rowspan = 2,
+//    +   +   +   +   +    so we need to return 3, not 2
+//  3 |   |   |   |   |
+//    +---+---+---+---+
 function adjustLastRowIndex( table, rowIndexes, columnIndexes ) {
 	const tableIterator = new TableWalker( table, {
 		startRow: rowIndexes.last,
@@ -493,10 +506,35 @@ function adjustLastRowIndex( table, rowIndexes, columnIndexes ) {
 		return columnIndexes.first <= column && column <= columnIndexes.last;
 	} );
 
-	return rowIndexes.last + Math.max( 1, ...lastRowMap.map( ( { rowspan } ) => rowspan ) ) - 1;
+	const everyCellHasSingleRowspan = lastRowMap.every( ( { rowspan } ) => rowspan === 1 );
+
+	// It is a "flat" row, so the last row index is OK.
+	if ( everyCellHasSingleRowspan ) {
+		return rowIndexes.last;
+	}
+
+	// Otherwise get any cell's rowspan and adjust the last row index.
+	const rowspanAdjustment = lastRowMap.pop().rowspan - 1;
+	return rowIndexes.last + rowspanAdjustment;
 }
 
 // Returns adjusted last column index if selection covers part of a column with empty slots (spanned by other cells).
+// The columnIndexes.last is equal to last column index but selection might be bigger.
+//
+// This happens *only* on rectangular selection so we analyze a case like this:
+//
+//   0   1   2   3
+// +---+---+---+---+
+// | a             |
+// +---+---+---+---+
+// | b | c | d     |
+// +---+---+---+---+
+// | e     | f     |
+// +---+---+---+---+
+// | g | h         |
+// +---+---+---+---+
+//           ^
+//          last column, each cell has colspan = 2, so we need to return 3, not 2
 function adjustLastColumnIndex( table, rowIndexes, columnIndexes ) {
 	const lastColumnMap = Array.from( new TableWalker( table, {
 		startRow: rowIndexes.first,
@@ -504,5 +542,14 @@ function adjustLastColumnIndex( table, rowIndexes, columnIndexes ) {
 		column: columnIndexes.last
 	} ) );
 
-	return columnIndexes.last + Math.max( 1, ...lastColumnMap.map( ( { colspan } ) => colspan ) ) - 1;
+	const everyCellHasSingleColspan = lastColumnMap.every( ( { colspan } ) => colspan === 1 );
+
+	// It is a "flat" column, so the last column index is OK.
+	if ( everyCellHasSingleColspan ) {
+		return columnIndexes.last;
+	}
+
+	// Otherwise get any cell's colspan and adjust the last column index.
+	const colspanAdjustment = lastColumnMap.pop().colspan - 1;
+	return columnIndexes.last + colspanAdjustment;
 }
