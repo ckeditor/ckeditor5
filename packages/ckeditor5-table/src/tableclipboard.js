@@ -167,10 +167,19 @@ export default class TableClipboard extends Plugin {
 				// Beyond this point we will operate on fixed content table.
 				splitCellsToRectangularSelection( selectedTable, splitDimensions, writer );
 			}
-			// However a rectangular selection might consist an invalid sub-table (if the selected cell would be moved outside the table).
-			// This happens in a table which has:
-			// - last row has empty slots (so are covered by cells from rows above) and/or
-			// - last column has empty slots (are covered by cells from previous columns)
+			// However a selected table fragment might be invalid if examined alone. Ie such table fragment:
+			//
+			//    +---+---+---+---+
+			//  0 | a | b | c | d |
+			//    +   +   +---+---+
+			//  1 |   | e | f | g |
+			//    +   +---+   +---+
+			//  2 |   | h |   | i | <- last row, each cell has rowspan = 2,
+			//    +   +   +   +   +    so we need to return 3, not 2
+			//  3 |   |   |   |   |
+			//    +---+---+---+---+
+			//
+			// is invalid as the cells "h" and "i" have rowspans.
 			// This case needs only adjusting the selection dimension as the rest of the algorithm operates on empty slots also.
 			else {
 				lastRowOfSelection = adjustLastRowIndex( selectedTable, rowIndexes, columnIndexes );
