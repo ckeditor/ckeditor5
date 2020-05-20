@@ -142,15 +142,19 @@ export default class TableClipboard extends Plugin {
 			// Content table to which we insert a pasted table.
 			const selectedTable = findAncestor( 'table', selectedTableCells[ 0 ] );
 
-			if ( selectedTableCells.length === 1 ) {
+			// Single cell selected - expand selection to pasted table dimensions.
+			const shouldExpandSelection = selectedTableCells.length === 1;
+
+			if ( shouldExpandSelection ) {
 				lastRowOfSelection += pasteHeight - 1;
 				lastColumnOfSelection += pasteWidth - 1;
 
 				expandTableSize( selectedTable, lastRowOfSelection + 1, lastColumnOfSelection + 1, writer, tableUtils );
 			}
 
-			// Beyond this point we will operate on a fixed content table.
-			if ( selectedTableCells.length === 1 || !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
+			// In case of expanding selection we do not reset the selection so in this case we will always try to fix selection
+			// like in the case of a non-rectangular area. This might be fixed by re-setting selected cells array but this shortcut is safe.
+			if ( shouldExpandSelection || !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
 				const splitDimensions = {
 					firstRow: firstRowOfSelection,
 					lastRow: lastRowOfSelection,
@@ -172,6 +176,8 @@ export default class TableClipboard extends Plugin {
 				lastRowOfSelection = adjustLastRowIndex( selectedTable, rowIndexes, columnIndexes );
 				lastColumnOfSelection = adjustLastColumnIndex( selectedTable, rowIndexes, columnIndexes );
 			}
+
+			// Beyond this point we operate on a fixed content table with rectangular selection and proper last row/column values.
 
 			const selectionHeight = lastRowOfSelection - firstRowOfSelection + 1;
 			const selectionWidth = lastColumnOfSelection - firstColumnOfSelection + 1;
