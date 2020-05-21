@@ -97,6 +97,7 @@ export default class WidgetTypeAround extends Plugin {
 		this._enableTypeAroundUIInjection();
 		this._enableDetectionOfTypeAroundWidgets();
 		this._enableInsertingParagraphsOnButtonClick();
+		this._enableInsertingParagraphsOnEnterKeypress();
 		this._enableTypeAroundActivationUsingKeyboardArrows();
 
 		// TODO: This is a quick fix and it should be removed the proper integration arrives.
@@ -334,36 +335,50 @@ export default class WidgetTypeAround extends Plugin {
 
 				if ( shouldStopAndPreventDefault ) {
 					domEventData.preventDefault();
-					domEventData.stopPropagation();
 					evt.stop();
 				}
 			} );
 		}, { priority: priorities.get( 'high' ) + 1 } );
 
 		modelSelection.on( 'change:range', () => {
-			const editor = this.editor;
-			const model = editor.model;
-			const modelSelection = model.document.selection;
-
 			if ( !modelSelection.hasAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ) {
 				return;
 			}
 
+			// Get rid of the widget type around attribute of the selection on every change:range.
+			// If the range changes, it means for sure, the user is no longer in the active ("blinking line") mode.
 			editor.model.change( writer => {
 				// TODO: use data.directChange to not break collaboration?
 				writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 			} );
+
+			// Also, if the range changes, get rid of CSS classes associated with the active ("blinking line") mode.
+			// There's no way to do that in the "selection" downcast dispatcher because it is executed too late.
+			editingView.change( writer => {
+				const selectedViewElement = editingView.document.selection.getSelectedElement();
+
+				writer.removeClass( POSSIBLE_INSERTION_POSITIONS.map( positionToWidgetCssClass ), selectedViewElement );
+			} );
 		} );
 
+		// React to changes of the mode selection attribute made by the arrow keys listener.
+		// If the block widget is selected and the attribute changes, downcast the attribute to special
+		// CSS classes associated with the active ("blinking line") mode of the widget.
 		editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
 			const writer = conversionApi.writer;
 			const selectedModelElement = data.selection.getSelectedElement();
+
+			if ( !selectedModelElement ) {
+				return;
+			}
+
 			const selectedViewElement = conversionApi.mapper.toViewElement( selectedModelElement );
-			const typeAroundSelectionAttribute = data.selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 
 			if ( !isTypeAroundWidget( selectedViewElement, selectedModelElement, schema ) ) {
 				return;
 			}
+
+			const typeAroundSelectionAttribute = data.selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 
 			if ( typeAroundSelectionAttribute ) {
 				writer.addClass( positionToWidgetCssClass( typeAroundSelectionAttribute ), selectedViewElement );
@@ -375,6 +390,33 @@ export default class WidgetTypeAround extends Plugin {
 		function positionToWidgetCssClass( position ) {
 			return `ck-widget_type-around_active_${ position }`;
 		}
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
+	_enableInsertingParagraphsOnEnterKeypress() {
+		const editor = this.editor;
+		const model = editor.model;
+		const modelSelection = model.document.selection;
+		const editingView = editor.editing.view;
+
+		this.listenTo( editingView.document, 'enter', ( evt, domEventData ) => {
+			const typeAroundSelectionAttribute = modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+
+			if ( !typeAroundSelectionAttribute ) {
+				return;
+			}
+
+			const selectedViewElement = editingView.document.selection.getSelectedElement();
+
+			this._insertParagraph( selectedViewElement, typeAroundSelectionAttribute );
+
+			domEventData.preventDefault();
+			evt.stop();
+		} );
 	}
 }
 

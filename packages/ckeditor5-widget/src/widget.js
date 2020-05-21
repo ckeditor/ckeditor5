@@ -12,7 +12,6 @@ import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobs
 import WidgetTypeAround from './widgettypearound/widgettypearound';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
 import {
-	keyCodes,
 	isArrowKeyCode,
 	isForwardArrowKeyCode
 } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -182,8 +181,6 @@ export default class Widget extends Plugin {
 			const isForward = isForwardArrowKeyCode( keyCode, this.editor.locale.contentLanguageDirection );
 
 			wasHandled = this._handleArrowKeys( isForward );
-		} else if ( keyCode === keyCodes.enter ) {
-			wasHandled = this._handleEnterKey( domEventData.shiftKey );
 		}
 
 		if ( wasHandled ) {
@@ -278,43 +275,6 @@ export default class Widget extends Plugin {
 	}
 
 	/**
-	 * Handles the enter key, giving users and access to positions in the editable directly before
-	 * (<kbd>Shift</kbd>+<kbd>Enter</kbd>) or after (<kbd>Enter</kbd>) the selected widget.
-	 * It improves the UX, mainly when the widget is the first or last child of the root editable
-	 * and there's no other way to type after or before it.
-	 *
-	 * @private
-	 * @param {Boolean} isBackwards Set to true if the new paragraph is to be inserted before
-	 * the selected widget (<kbd>Shift</kbd>+<kbd>Enter</kbd>).
-	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
-	 */
-	_handleEnterKey( isBackwards ) {
-		const model = this.editor.model;
-		const modelSelection = model.document.selection;
-		const selectedElement = modelSelection.getSelectedElement();
-
-		if ( shouldInsertParagraph( selectedElement, model.schema ) ) {
-			model.change( writer => {
-				let position = writer.createPositionAt( selectedElement, isBackwards ? 'before' : 'after' );
-				const paragraph = writer.createElement( 'paragraph' );
-
-				// Split the parent when inside a block element.
-				// https://github.com/ckeditor/ckeditor5/issues/1529
-				if ( model.schema.isBlock( selectedElement.parent ) ) {
-					const paragraphLimit = model.schema.findAllowedParent( position, paragraph );
-
-					position = writer.split( position, paragraphLimit ).position;
-				}
-
-				writer.insert( paragraph, position );
-				writer.setSelection( paragraph, 'in' );
-			} );
-
-			return true;
-		}
-	}
-
-	/**
 	 * Sets {@link module:engine/model/selection~Selection document's selection} over given element.
 	 *
 	 * @private
@@ -400,12 +360,4 @@ function isChild( element, parent ) {
 	}
 
 	return Array.from( element.getAncestors() ).includes( parent );
-}
-
-// Checks if enter key should insert paragraph. This should be done only on elements of type object (excluding inline objects).
-//
-// @param {module:engine/model/element~Element} element And element to check.
-// @param {module:engine/model/schema~Schema} schema
-function shouldInsertParagraph( element, schema ) {
-	return element && schema.isObject( element ) && !schema.isInline( element );
 }
