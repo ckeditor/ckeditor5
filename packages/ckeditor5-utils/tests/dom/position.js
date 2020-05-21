@@ -95,6 +95,8 @@ const attachTopRight = ( targetRect, elementRect ) => ( {
 	name: 'top-right'
 } );
 
+const attachNone = () => null;
+
 const allPositions = [
 	attachLeftBottom,
 	attachLeftTop,
@@ -103,7 +105,8 @@ const allPositions = [
 	attachBottomRight,
 	attachBottomLeft,
 	attachTopLeft,
-	attachTopRight
+	attachTopRight,
+	attachNone
 ];
 
 describe( 'getOptimalPosition()', () => {
@@ -291,6 +294,17 @@ describe( 'getOptimalPosition()', () => {
 				name: 'right-bottom'
 			} );
 		} );
+
+		it( 'should allow position function to return null to be ignored', () => {
+			assertPosition( {
+				element, target,
+				positions: [ attachRightBottom, attachNone ]
+			}, {
+				top: 100,
+				left: 110,
+				name: 'right-bottom'
+			} );
+		} );
 	} );
 
 	describe( 'with a limiter', () => {
@@ -391,6 +405,17 @@ describe( 'getOptimalPosition()', () => {
 			} );
 
 			element.remove();
+		} );
+
+		it( 'should allow position function to return null to be ignored', () => {
+			assertPosition( {
+				element, target, limiter,
+				positions: [ attachLeftBottom, attachNone ]
+			}, {
+				top: 100,
+				left: -20,
+				name: 'left-bottom'
+			} );
 		} );
 	} );
 

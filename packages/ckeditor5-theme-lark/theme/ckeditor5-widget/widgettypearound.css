@@ -22,8 +22,10 @@
 		height: var(--ck-widget-type-around-button-size);
 		background: var(--ck-color-widget-type-around-button);
 		border-radius: 100px;
-		animation: fadein linear 300ms 1 normal forwards;
-		transition: opacity 100ms linear;
+
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve), background var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
 
 		& svg {
 			width: 10px;
@@ -66,6 +68,17 @@
 					animation: ck-widget-type-around-arrow-tip-dash 2s linear;
 				}
 			}
+		}
+	}
+
+	/*
+	 * Show type around buttons when the widget gets selected or being hovered.
+	 */
+	&.ck-widget_selected,
+	&:hover {
+		& > .ck-widget__type-around > .ck-widget__type-around__button {
+			pointer-events: auto;
+			opacity: 1;
 		}
 	}
 
