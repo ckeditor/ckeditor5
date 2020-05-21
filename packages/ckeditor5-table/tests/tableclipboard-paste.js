@@ -2652,7 +2652,7 @@ describe( 'table clipboard', () => {
 					] );
 				} );
 
-				it( 'should repeat pasted cells in the both directions', () => {
+				it( 'should repeat pasted cells in both directions', () => {
 					tableSelection.setCellSelection(
 						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 						modelRoot.getNodeByPath( [ 0, 4, 4 ] )

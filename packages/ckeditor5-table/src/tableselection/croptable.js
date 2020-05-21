@@ -104,8 +104,8 @@ export function cropTableToDimensions( sourceTable, cropDimensions, writer, tabl
 /**
  * Adjusts table cell dimensions to not exceed limit row and column.
  *
- * If table cell span to a column (or row) that is after a limit column (or row) trim colspan (or rowspan)
- * so the table cell will fit in a cropped area.
+ * If table cell width (or height) covers a column (or row) that is after a limit column (or row)
+ * this method will trim "colspan" (or "rowspan") attribute so the table cell will fit in a defined limits.
  *
  * @param {module:engine/model/element~Element} tableCell
  * @param {Number} cellRow
