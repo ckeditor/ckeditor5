@@ -71,6 +71,17 @@ export default class CloudServices extends ContextPlugin {
 
 		return this.token.init();
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		if ( this.token ) {
+			this.token.destroy();
+		}
+	}
 }
 
 CloudServices.Token = Token;

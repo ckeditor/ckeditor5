@@ -17,6 +17,7 @@ import CompositionObserver from '../../../src/view/observer/compositionobserver'
 import ViewRange from '../../../src/view/range';
 import ViewElement from '../../../src/view/element';
 import ViewContainerElement from '../../../src/view/containerelement';
+import ViewText from '../../../src/view/text';
 import ViewPosition from '../../../src/view/position';
 import ViewSelection from '../../../src/view/selection';
 import { StylesProcessor } from '../../../src/view/stylesmap';
@@ -516,7 +517,7 @@ describe( 'view', () => {
 	} );
 
 	describe( 'hasDomSelection', () => {
-		let domElement, domP, domSelection;
+		let domElement, domP, domText, viewP, viewText, domSelection;
 
 		// Focus tests are too unstable on Firefox to run them.
 		if ( env.isGecko ) {
@@ -528,10 +529,12 @@ describe( 'view', () => {
 
 			view.attachDomRoot( domRoot );
 
-			// It must be a container element to be rendered with the bogus <br> inside which ensures
-			// that the browser sees a selection position inside (empty <p> may not be selectable).
-			// May help resolving https://github.com/ckeditor/ckeditor5/issues/6655.
-			viewRoot._appendChild( new ViewContainerElement( viewDocument, 'p' ) );
+			viewP = new ViewContainerElement( viewDocument, 'p' );
+			viewText = new ViewText( viewDocument, 'ab' );
+
+			viewRoot._appendChild( viewP );
+			viewP._appendChild( viewText );
+
 			view.forceRender();
 
 			domElement = createElement( document, 'div', { contenteditable: 'true' } );
@@ -539,6 +542,7 @@ describe( 'view', () => {
 
 			domSelection = document.getSelection();
 			domP = domRoot.childNodes[ 0 ];
+			domText = domP.childNodes[ 0 ];
 		} );
 
 		afterEach( () => {
@@ -548,38 +552,40 @@ describe( 'view', () => {
 		it( 'should be true if selection is inside a DOM root element', done => {
 			domRoot.focus();
 
+			// Both selection need to stay in sync to avoid inf selection loops
+			// as there's no editing pipeline that would ensure that the view selection
+			// gets changed based on the selectionChange event. See https://github.com/ckeditor/ckeditor5/issues/6655.
+			viewDocument.selection._setTo( viewText, 1 );
+			domSelection.collapse( domText, 1 );
+
+			// Wait for async selectionchange event on DOM document.
 			setTimeout( () => {
-				domSelection.collapse( domP, 0 );
+				expect( view.hasDomSelection ).to.be.true;
 
-				// Wait for async selectionchange event on DOM document.
-				setTimeout( () => {
-					expect( view.hasDomSelection ).to.be.true;
-
-					done();
-				}, 10 );
-			}, 10 );
+				done();
+			}, 1000 );
 		} );
 
 		it( 'should be true if selection is inside a DOM root element - no focus', done => {
 			domRoot.focus();
 
+			// See the previous test.
+			viewDocument.selection._setTo( viewText, 1 );
+			domSelection.collapse( domText, 1 );
+
 			setTimeout( () => {
-				domSelection.collapse( domP, 0 );
+				// We could also do domRoot.blur() here but it's always better to know where the focus went.
+				// E.g. if it went to some <input>, the selection would disappear from the editor and the test would fail.
+				domRoot.blur();
 
+				// Wait for async selectionchange event on DOM document.
 				setTimeout( () => {
-					// We could also do domRoot.blur() here but it's always better to know where the focus went.
-					// E.g. if it went to some <input>, the selection would disappear from the editor and the test would fail.
-					domRoot.blur();
+					expect( view.hasDomSelection ).to.be.true;
+					expect( view.document.isFocused ).to.be.false;
 
-					// Wait for async selectionchange event on DOM document.
-					setTimeout( () => {
-						expect( view.hasDomSelection ).to.be.true;
-						expect( view.document.isFocused ).to.be.false;
-
-						done();
-					}, 10 );
-				}, 10 );
-			}, 10 );
+					done();
+				}, 100 );
+			}, 100 );
 		} );
 
 		it( 'should be false if selection is outside DOM root element', done => {

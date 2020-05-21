@@ -101,11 +101,20 @@ export function cropTableToDimensions( sourceTable, cropDimensions, writer, tabl
 	return croppedTable;
 }
 
-// Adjusts table cell dimensions to not exceed limit row and column.
-//
-// If table cell span to a column (or row) that is after a limit column (or row) trim colspan (or rowspan)
-// so the table cell will fit in a cropped area.
-function trimTableCellIfNeeded( tableCell, cellRow, cellColumn, limitRow, limitColumn, writer ) {
+/**
+ * Adjusts table cell dimensions to not exceed limit row and column.
+ *
+ * If table cell width (or height) covers a column (or row) that is after a limit column (or row)
+ * this method will trim "colspan" (or "rowspan") attribute so the table cell will fit in a defined limits.
+ *
+ * @param {module:engine/model/element~Element} tableCell
+ * @param {Number} cellRow
+ * @param {Number} cellColumn
+ * @param {Number} limitRow
+ * @param {Number} limitColumn
+ * @param {module:engine/model/writer~Writer} writer
+ */
+export function trimTableCellIfNeeded( tableCell, cellRow, cellColumn, limitRow, limitColumn, writer ) {
 	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
 	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 

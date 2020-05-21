@@ -24,8 +24,8 @@ Type (another-package-name): If the change affects more than one package, it's p
 
 Optional description.
 
-BREAKING CHANGE: If any breaking changes were done, they need to be listed here.
-BREAKING CHANGE: Another breaking change if needed. Closes #ZZZ.
+BREAKING CHANGE (scope): If any breaking changes were done, they need to be listed here.
+BREAKING CHANGE (scope): Another breaking change if needed. Closes #ZZZ.
 ```
 
 ### Commit types
@@ -49,6 +49,8 @@ Each commit can contain additional notes that will be inserted into the changelo
 If any change contains the `MAJOR BREAKING CHANGE` note, the next release will be marked as `major` automatically.
 
 For reference on how to identify minor or major breaking change see the {@link framework/guides/support/versioning-policy versioning policy guide}.
+
+Each `BREAKING CHANGE` note must be followed by the scope of changes.
 
 ### Package name
 
@@ -95,7 +97,7 @@ Other (utils): Extracted the `utils.foo()` to a separate package. Closes #9.
 
 Feature (engine): Introduced the `engine.foo()` method. Closes #9.
 
-MAJOR BREAKING CHANGE: The `utils.foo()` method was moved to the `engine` package. See #9.
+MAJOR BREAKING CHANGE (utils): The `utils.foo()` method was moved to the `engine` package. See #9.
 ```
 
 For the commits shown above the changelog will look like this:
@@ -108,7 +110,7 @@ Changelog
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* The `utils.foo()` method was moved to the `engine` package. See #9. See [#9](https://github.com/ckeditor/ckeditor5/issue/9).
+* **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `utils.foo()` method was moved to the `engine` package. See [#9](https://github.com/ckeditor/ckeditor5/issue/9).
 
 ### Features
 
