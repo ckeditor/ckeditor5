@@ -109,10 +109,16 @@ export default class WidgetTypeAround extends Plugin {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 		const widgetModelElement = editor.editing.mapper.toModelElement( widgetViewElement );
+		let modelPosition;
+
+		if ( position === 'before' ) {
+			modelPosition = editor.model.createPositionBefore( widgetModelElement );
+		} else {
+			modelPosition = editor.model.createPositionAfter( widgetModelElement );
+		}
 
 		editor.execute( 'insertParagraph', {
-			element: widgetModelElement,
-			position
+			position: modelPosition
 		} );
 
 		editingView.focus();
