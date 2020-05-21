@@ -44,47 +44,72 @@ While this would be incorrect:
 </$root>
 ```
 
-## Declaring as a limit element
+## Defining additional semantics
 
-Consider a feature like an image caption. The caption text area should construct a boundary to some internal actions.
+In addition to setting allowed structures, the schema can also define additional traits of model elements. By using the `is*` properties a feature author may declare how a certain element should be treated by other features and the engine.
 
- - A selection that starts inside should not end outside.
- - Pressing <kbd>Backspace</kbd> or <kbd>Delete</kbd> should not delete the area. Pressing <kbd>Enter</kbd> should not split the area.
+### Limit elements
 
- It should also act as a boundary for external actions:
+Consider a feature like an image caption. The caption text area should construct a boundary to some internal actions:
 
- - A selection that starts outside, should not end inside.
+* A selection that starts inside should not end outside.
+* Pressing <kbd>Backspace</kbd> or <kbd>Delete</kbd> should not delete the area. Pressing <kbd>Enter</kbd> should not split the area.
+
+It should also act as a boundary for external actions. This is mostly enforced by a selection post-fixer that ensures that a selection that starts outside, should not end inside. That means that most actions will either apply to the "outside" of such an element or to a content inside it.
+
+Taken these characteristics, the image caption should be defined as limit element by using the {@link module:engine/model/schema~SchemaItemDefinition#isLimit `isLimit`} property.
 
 ```js
 schema.register( 'myCaption', {
-    isLimit: true
+	isLimit: true
 } );
 ```
 
-{@link module:engine/model/schema~SchemaItemDefinition#isLimit `isLimit`} makes the engine construct such boundaries, and let {@link module:engine/model/utils/selection-post-fixer `selection-post-fixer`} update the user's selection if needed.
+The engine and various features then check it via {@link module:engine/model/schema~Schema#isLimit `Schema#isLimit()`} and can act accordingly.
 
 <info-box>
-    "Limit element" does not mean "editable element". The concept of "editability" is reserved for the view and expressed by {@link module:engine/view/editableelement~EditableElement `EditableElement` class}.
+	"Limit element" does not mean "editable element". The concept of "editability" is reserved for the view and expressed by the {@link module:engine/view/editableelement~EditableElement `EditableElement` class}.
 </info-box>
 
-## Declaring as a self-sufficient object
+### Object elements
 
 For the image caption as in the example above it does not make much sense to select the caption box, then copy or drag it somewhere else.
-A caption without the image it describes does not make much sense. However, the image is more self-sufficient. Most likely users should be able to select the entire image (with all its internals), then copy or move it around. {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} should be used to mark such behavior.
+
+A caption without the image that it describes does not make much sense. However, the image is more self-sufficient. Most likely users should be able to select the entire image (with all its internals), then copy or move it around. {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} should be used to mark such behavior.
 
 ```js
 schema.register( 'myImage', {
-    isObject: true
+	isObject: true
 } );
 ```
 
-Every "object" is also a "limit" element. 
+The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can later be used to check this property.
 
 <info-box>
-    It means for every element with `isObject` set to `true`, {@link module:engine/model/schema~Schema#isLimit `schema.isLimit( element )`} will always return `true`. 
+	Every "object" is also a "limit" element.
 
-    However, {@link module:engine/model/schema~Schema#getDefinition `schema.getDefinition( 'element' )`} may return `false` in a case when `{ isLimit: true, isObject: true}` was registered.
+	It means that for every element with `isObject` set to `true`, {@link module:engine/model/schema~Schema#isLimit `Schema#isLimit( element )`} will always return `true`.
+
+	However, {@link module:engine/model/schema~Schema#getDefinition `Schema#getDefinition( 'element' )`} may return `false` in a case when `{ isLimit: true, isObject: true}` was registered.
 </info-box>
+
+### Block elements
+
+Generally speaking, content is usually made out of blocks like paragraphs, list items, images, headings, etc. All these elements should be marked as blocks by using {@link module:engine/model/schema~SchemaItemDefinition#isBlock `isBlock`}.
+
+It is important to remember that a block should not allow another block inside. Container elements like `<blockQuote>` which can contain other block elements should not be marked as blocks.
+
+<info-box>
+	There is also the `$block` generic item which has `isBlock` set to `true`. Most block type items will inherit from `$block` (through `inheritAllFrom`).
+</info-box>
+
+### Inline elements
+
+In the editor, all HTML formatting elements such as `<strong>` or `<code>` are represented by text attributes. Therefore, inline model elements are not to be used for this scenarios.
+
+Currently, the {@link module:engine/model/schema~SchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>` or placeholder elements such as in the {@link framework/guides/tutorials/implementing-an-inline-widget Implementing an inline widget} tutorial.
+
+The support for inline elements in CKEditor 5 is so far limited to self-contained elements. This is &mdash; all elements marked with `isInline` should also be marked with `isObject`.
 
 ## Generic items
 
