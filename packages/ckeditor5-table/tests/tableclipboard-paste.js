@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document console */
+/* globals document */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
@@ -2580,33 +2580,315 @@ describe( 'table clipboard', () => {
 		} );
 
 		describe( 'pasted table is smaller than the selected area', () => {
-			it( 'blocks this case', () => {
-				tableSelection.setCellSelection(
-					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
-					modelRoot.getNodeByPath( [ 0, 3, 3 ] )
-				);
+			describe( 'no spans', () => {
+				beforeEach( () => {
+					setModelData( model, modelTable( [
+						[ '00', '01', '02', '03', '04', '05' ],
+						[ '10', '11', '12', '13', '14', '15' ],
+						[ '20', '21', '22', '23', '24', '25' ],
+						[ '30', '31', '32', '33', '34', '35' ],
+						[ '40', '41', '42', '43', '44', '45' ],
+						[ '50', '51', '52', '53', '54', '55' ]
+					] ) );
+				} );
 
-				// Catches the temporary console log in the CK_DEBUG mode.
-				sinon.stub( console, 'log' );
+				it( 'should repeat pasted cells horizontally', () => {
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 1, 4 ] )
+					);
 
-				pasteTable( [
-					[ 'aa', 'ab' ],
-					[ 'ba', 'bb' ]
-				] );
+					pasteTable( [
+						[ 'aa', 'ab', 'ac' ],
+						[ 'ba', 'bb', 'bc' ],
+						[ 'ca', 'cb', 'cc' ]
+					] );
 
-				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-					[ '00', '01', '02', '03' ],
-					[ '10', '11', '12', '13' ],
-					[ '20', '21', '22', '23' ],
-					[ '30', '31', '32', '33' ]
-				] ) );
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ 'aa', 'ab', 'ac', 'aa', 'ab', '05' ],
+						[ 'ba', 'bb', 'bc', 'ba', 'bb', '15' ],
+						[ '20', '21', '22', '23', '24', '25' ],
+						[ '30', '31', '32', '33', '34', '35' ],
+						[ '40', '41', '42', '43', '44', '45' ],
+						[ '50', '51', '52', '53', '54', '55' ]
+					] ) );
 
-				assertSelectedCells( model, [
-					[ 1, 1, 1, 1 ],
-					[ 1, 1, 1, 1 ],
-					[ 1, 1, 1, 1 ],
-					[ 1, 1, 1, 1 ]
-				] );
+					assertSelectedCells( model, [
+						[ 1, 1, 1, 1, 1, 0 ],
+						[ 1, 1, 1, 1, 1, 0 ],
+						[ 0, 0, 0, 0, 0, 0 ],
+						[ 0, 0, 0, 0, 0, 0 ]
+					] );
+				} );
+
+				it( 'should repeat pasted cells vertically', () => {
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 4, 1 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab', 'ac' ],
+						[ 'ba', 'bb', 'bc' ],
+						[ 'ca', 'cb', 'cc' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ 'aa', 'ab', '02', '03', '04', '05' ],
+						[ 'ba', 'bb', '12', '13', '14', '15' ],
+						[ 'ca', 'cb', '22', '23', '24', '25' ],
+						[ 'aa', 'ab', '32', '33', '34', '35' ],
+						[ 'ba', 'bb', '42', '43', '44', '45' ],
+						[ '50', '51', '52', '53', '54', '55' ]
+					] ) );
+
+					assertSelectedCells( model, [
+						[ 1, 1, 0, 0, 0, 0 ],
+						[ 1, 1, 0, 0, 0, 0 ],
+						[ 1, 1, 0, 0, 0, 0 ],
+						[ 1, 1, 0, 0, 0, 0 ],
+						[ 1, 1, 0, 0, 0, 0 ],
+						[ 0, 0, 0, 0, 0, 0 ]
+					] );
+				} );
+
+				it( 'should repeat pasted cells in both directions', () => {
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 4, 4 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab', 'ac' ],
+						[ 'ba', 'bb', 'bc' ],
+						[ 'ca', 'cb', 'cc' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ 'aa', 'ab', 'ac', 'aa', 'ab', '05' ],
+						[ 'ba', 'bb', 'bc', 'ba', 'bb', '15' ],
+						[ 'ca', 'cb', 'cc', 'ca', 'cb', '25' ],
+						[ 'aa', 'ab', 'ac', 'aa', 'ab', '35' ],
+						[ 'ba', 'bb', 'bc', 'ba', 'bb', '45' ],
+						[ '50', '51', '52', '53', '54', '55' ]
+					] ) );
+
+					assertSelectedCells( model, [
+						[ 1, 1, 1, 1, 1, 0 ],
+						[ 1, 1, 1, 1, 1, 0 ],
+						[ 1, 1, 1, 1, 1, 0 ],
+						[ 1, 1, 1, 1, 1, 0 ],
+						[ 1, 1, 1, 1, 1, 0 ],
+						[ 0, 0, 0, 0, 0, 0 ]
+					] );
+				} );
+
+				it( 'should repeat pasted cells in the both directions when pasted on table end', () => {
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 5, 5 ] )
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab', 'ac' ],
+						[ 'ba', 'bb', 'bc' ],
+						[ 'ca', 'cb', 'cc' ]
+					] );
+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '03', '04', '05' ],
+						[ '10', 'aa', 'ab', 'ac', 'aa', 'ab' ],
+						[ '20', 'ba', 'bb', 'bc', 'ba', 'bb' ],
+						[ '30', 'ca', 'cb', 'cc', 'ca', 'cb' ],
+						[ '40', 'aa', 'ab', 'ac', 'aa', 'ab' ],
+						[ '50', 'ba', 'bb', 'bc', 'ba', 'bb' ]
+					] ) );
+
+					assertSelectedCells( model, [
+						[ 0, 0, 0, 0, 0, 0 ],
+						[ 0, 1, 1, 1, 1, 1 ],
+						[ 0, 1, 1, 1, 1, 1 ],
+						[ 0, 1, 1, 1, 1, 1 ],
+						[ 0, 1, 1, 1, 1, 1 ],
+						[ 0, 1, 1, 1, 1, 1 ]
+					] );
+				} );
+			} );
+
+			describe( 'content table has spans', () => {
+				beforeEach( () => {
+					// +----+----+----+----+----+----+
+					// | 00 | 01 | 02 | 03 | 04 | 05 |
+					// +----+----+----+    +----+----+
+					// | 10 | 11 | 12 |    | 14 | 15 |
+					// +----+----+    +    +----+----+
+					// | 20 | 21 |    |    | 24 | 25 |
+					// +----+----+----+    +    +----+
+					// | 30 | 31      |    |    | 35 |
+					// +----+----+----+----+----+----+
+					// | 40                | 44      |
+					// +----+----+----+----+         +
+					// | 50 | 51 | 52      |         |
+					// +----+----+----+----+----+----+
+					// | 60 | 61 | 62 | 63 | 64 | 65 |
+					// +----+----+----+----+----+----+
+					setModelData( model, modelTable( [
+						[ '00', '01', '02', { contents: '03', rowspan: 4 }, '04', '05' ],
+						[ '10', '11', { contents: '12', rowspan: 2 }, '14', '15' ],
+						[ '20', '21', { contents: '24', rowspan: 2 }, '25' ],
+						[ '30', { contents: '31', colspan: 2 }, '35' ],
+						[ { contents: '40', colspan: 4 }, { contents: '44', colspan: 2, rowspan: 2 } ],
+						[ '50', '51', { contents: '52', colspan: 2 } ],
+						[ '60', '61', '62', '63', '64', '65' ]
+					] ) );
+				} );
+
+				it( 'should split spanned cells on the selection edges (vertical spans)', () => {
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 2, 0 ] ),
+						modelRoot.getNodeByPath( [ 0, 4, 1 ] ) // Cell 44.
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					// +----+----+----+----+----+----+
+					// | 00 | 01 | 02 | 03 | 04 | 05 |
+					// +----+----+----+    +----+----+
+					// | 10 | 11 | 12 |    | 14 | 15 |
+					// +----+----+----+----+----+----+
+					// | aa | ab | aa | ab | aa | 25 |
+					// +----+----+----+----+----+----+
+					// | ba | bb | ba | bb | ba | 35 |
+					// +----+----+----+----+----+----+
+					// | aa | ab | aa | ab | aa |    |
+					// +----+----+----+----+----+    +
+					// | 50 | 51 | 52      |    |    |
+					// +----+----+----+----+----+----+
+					// | 60 | 61 | 62 | 63 | 64 | 65 |
+					// +----+----+----+----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', { contents: '03', rowspan: 2 }, '04', '05' ],
+						[ '10', '11', '12', '14', '15' ],
+						[ 'aa', 'ab', 'aa', 'ab', 'aa', '25' ],
+						[ 'ba', 'bb', 'ba', 'bb', 'ba', '35' ],
+						[ 'aa', 'ab', 'aa', 'ab', 'aa', { contents: '', rowspan: 2 } ],
+						[ '50', '51', { contents: '52', colspan: 2 }, '' ],
+						[ '60', '61', '62', '63', '64', '65' ]
+					] ) );
+				} );
+
+				it( 'should split spanned cells on the selection edges (horizontal spans)', () => {
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 0, 2 ] ),
+						modelRoot.getNodeByPath( [ 0, 4, 1 ] ) // Cell 44.
+					);
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					// +----+----+----+----+----+----+
+					// | 00 | 01 | aa | ab | aa | 05 |
+					// +----+----+----+----+----+----+
+					// | 10 | 11 | ba | bb | ba | 15 |
+					// +----+----+----+----+----+----+
+					// | 20 | 21 | aa | ab | aa | 25 |
+					// +----+----+----+----+----+----+
+					// | 30 | 31 | ba | bb | ba | 35 |
+					// +----+----+----+----+----+----+
+					// | 40      | aa | ab | aa |    |
+					// +----+----+----+----+----+    +
+					// | 50 | 51 | 52      |    |    |
+					// +----+----+----+----+----+----+
+					// | 60 | 61 | 62 | 63 | 64 | 65 |
+					// +----+----+----+----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', 'aa', 'ab', 'aa', '05' ],
+						[ '10', '11', 'ba', 'bb', 'ba', '15' ],
+						[ '20', '21', 'aa', 'ab', 'aa', '25' ],
+						[ '30', '31', 'ba', 'bb', 'ba', '35' ],
+						[ { contents: '40', colspan: 2 }, 'aa', 'ab', 'aa', { contents: '', rowspan: 2 } ],
+						[ '50', '51', { contents: '52', colspan: 2 }, '' ],
+						[ '60', '61', '62', '63', '64', '65' ]
+					] ) );
+				} );
+			} );
+
+			describe( 'pasted table has spans', () => {
+				beforeEach( () => {
+					setModelData( model, modelTable( [
+						[ '00', '01', '02', '03', '04', '05', '06' ],
+						[ '10', '11', '12', '13', '14', '15', '16' ],
+						[ '20', '21', '22', '23', '24', '25', '26' ],
+						[ '30', '31', '32', '33', '34', '35', '36' ],
+						[ '40', '41', '42', '43', '44', '45', '46' ],
+						[ '50', '51', '52', '53', '54', '55', '56' ],
+						[ '60', '61', '62', '63', '64', '65', '66' ],
+						[ '70', '71', '72', '73', '74', '75', '76' ],
+						[ '80', '81', '82', '83', '84', '85', '86' ]
+					] ) );
+				} );
+
+				it( 'should trim overlapping cells', () => {
+					tableSelection.setCellSelection(
+						modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+						modelRoot.getNodeByPath( [ 0, 8, 6 ] )
+					);
+
+					// +----+----+----+----+
+					// | aa                |
+					// +----+----+----+----+
+					// | ba | bb           |
+					// +    +----+----+----+
+					// |    | cb | cc      |
+					// +    +    +----+----+
+					// |    |    | dc | dd |
+					// +    +    +    +----+
+					// |    |    |    | ed |
+					// +----+----+----+----+
+					pasteTable( [
+						[ { contents: 'aa', colspan: 4 } ],
+						[ { contents: 'ba', rowspan: 4 }, { contents: 'bb', colspan: 3 } ],
+						[ { contents: 'cb', rowspan: 3 }, { contents: 'cc', colspan: 2 } ],
+						[ { contents: 'dc', rowspan: 2 }, 'dd' ],
+						[ 'ed' ]
+					] );
+
+					// +----+----+----+----+----+----+----+
+					// | 00 | 01 | 02 | 03 | 04 | 05 | 06 |
+					// +----+----+----+----+----+----+----+
+					// | 10 | aa                | aa      |
+					// +----+----+----+----+----+----+----+
+					// | 20 | ba | bb           | ba | bb |
+					// +----+    +----+----+----+    +----+
+					// | 30 |    | cb | cc      |    | cb |
+					// +----+    +    +----+----+    +    +
+					// | 40 |    |    | dc | dd |    |    |
+					// +----+    +    +    +----+    +    +
+					// | 50 |    |    |    | ed |    |    |
+					// +----+----+----+----+----+----+----+
+					// | 60 | aa                | aa      |
+					// +----+----+----+----+----+----+----+
+					// | 70 | ba | bb           | ba | bb |
+					// +----+    +----+----+----+    +----+
+					// | 80 |    | cb | cc      |    | cb |
+					// +----+----+----+----+----+----+----+
+					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+						[ '00', '01', '02', '03', '04', '05', '06' ],
+						[ '10', { contents: 'aa', colspan: 4 }, { contents: 'aa', colspan: 2 } ],
+						[ '20', { contents: 'ba', rowspan: 4 }, { contents: 'bb', colspan: 3 }, { contents: 'ba', rowspan: 4 }, 'bb' ],
+						[ '30', { contents: 'cb', rowspan: 3 }, { contents: 'cc', colspan: 2 }, { contents: 'cb', rowspan: 3 } ],
+						[ '40', { contents: 'dc', rowspan: 2 }, 'dd' ],
+						[ '50', 'ed' ],
+						[ '60', { contents: 'aa', colspan: 4 }, { contents: 'aa', colspan: 2 } ],
+						[ '70', { contents: 'ba', rowspan: 2 }, { contents: 'bb', colspan: 3 }, { contents: 'ba', rowspan: 2 }, 'bb' ],
+						[ '80', 'cb', { contents: 'cc', colspan: 2 }, 'cb' ]
+					] ) );
+				} );
 			} );
 		} );
 
