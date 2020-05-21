@@ -313,38 +313,58 @@ export default class WidgetTypeAround extends Plugin {
 				// If the selection didn't have the attribute, let's set it now according to the direction of the arrow
 				// key press. This also means we cannot let the Widget plugin listener move the selection.
 				else {
-					writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, isForward ? 'after' : 'before' );
-					shouldStopAndPreventDefault = true;
+					const widgetTypeAroundPositions = getWidgetTypeAroundPositions( selectedViewElement );
+
+					// Set the selection attribute only if the keystroke direction matches the type around position
+					// of the widget.
+					if ( isForward && widgetTypeAroundPositions.includes( 'after' ) ) {
+						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
+						shouldStopAndPreventDefault = true;
+					} else if ( !isForward && widgetTypeAroundPositions.includes( 'before' ) ) {
+						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+						shouldStopAndPreventDefault = true;
+					}
 				}
 
 				if ( shouldStopAndPreventDefault ) {
 					domEventData.preventDefault();
+					domEventData.stopPropagation();
 					evt.stop();
 				}
 			} );
 		}, { priority: priorities.get( 'high' ) + 1 } );
 
 		modelSelection.on( 'change:range', () => {
-			// TODO clean the selection attribute? It's weird because it looks like it is cleared automatically.
+			const editor = this.editor;
+			const model = editor.model;
+			const modelSelection = model.document.selection;
+
+			if ( !modelSelection.hasAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ) {
+				return;
+			}
+
+			editor.model.change( writer => {
+				// TODO: use data.directChange to not break collaboration?
+				writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+			} );
 		} );
 
 		editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+			const writer = conversionApi.writer;
 			const selectedModelElement = data.selection.getSelectedElement();
 			const selectedViewElement = conversionApi.mapper.toViewElement( selectedModelElement );
+			const typeAroundSelectionAttribute = data.selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 
 			if ( !isTypeAroundWidget( selectedViewElement, selectedModelElement, schema ) ) {
 				return;
 			}
-
-			const typeAroundSelectionAttribute = data.selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
-			const writer = conversionApi.writer;
 
 			if ( typeAroundSelectionAttribute ) {
 				writer.addClass( positionToWidgetCssClass( typeAroundSelectionAttribute ), selectedViewElement );
 			} else {
 				writer.removeClass( POSSIBLE_INSERTION_POSITIONS.map( positionToWidgetCssClass ), selectedViewElement );
 			}
-		} );
+		}, { priority: 'highest' } );
 
 		function positionToWidgetCssClass( position ) {
 			return `ck-widget_type-around_active_${ position }`;
