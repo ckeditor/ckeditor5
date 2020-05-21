@@ -90,6 +90,9 @@ export default class WidgetTypeAround extends Plugin {
 		this._enableTypeAroundUIInjection();
 		this._enableDetectionOfTypeAroundWidgets();
 		this._enableInsertingParagraphsOnButtonClick();
+
+		// TODO: This is a quick fix and it should be removed the proper integration arrives.
+		this._enableTemporaryTrackChangesIntegration();
 	}
 
 	/**
@@ -105,21 +108,17 @@ export default class WidgetTypeAround extends Plugin {
 	_insertParagraph( widgetViewElement, position ) {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
-		let viewPosition;
+		const widgetModelElement = editor.editing.mapper.toModelElement( widgetViewElement );
+		let modelPosition;
 
 		if ( position === 'before' ) {
-			viewPosition = editingView.createPositionBefore( widgetViewElement );
+			modelPosition = editor.model.createPositionBefore( widgetModelElement );
 		} else {
-			viewPosition = editingView.createPositionAfter( widgetViewElement );
+			modelPosition = editor.model.createPositionAfter( widgetModelElement );
 		}
 
-		const modelPosition = editor.editing.mapper.toModelPosition( viewPosition );
-
-		editor.model.change( writer => {
-			const paragraph = writer.createElement( 'paragraph' );
-
-			writer.insert( paragraph, modelPosition );
-			writer.setSelection( paragraph, 0 );
+		editor.execute( 'insertParagraph', {
+			position: modelPosition
 		} );
 
 		editingView.focus();
@@ -220,6 +219,34 @@ export default class WidgetTypeAround extends Plugin {
 
 			domEventData.preventDefault();
 			evt.stop();
+		} );
+	}
+
+	/**
+	 * A quick fix for the integration with features requiring custom handling of the `insertParagraph`
+	 * command such as Track Changes. When the `insertParagraph` command is disabled, this fix adds
+	 * a CSS class to editor roots that makes the UI disappear.
+	 *
+	 * TODO: This is a quick fix and it should be replaced by a proper integration.
+	 *
+	 * @private
+	 */
+	_enableTemporaryTrackChangesIntegration() {
+		const editor = this.editor;
+		const editingView = editor.editing.view;
+		const insertParagraphCommand = this.editor.commands.get( 'insertParagraph' );
+		const className = 'ck-widget_type-around_temp-disabled';
+
+		this.listenTo( insertParagraphCommand, 'change:isEnabled', ( evt, name, isEnabled ) => {
+			editingView.change( writer => {
+				for ( const root of editingView.document.roots ) {
+					if ( isEnabled ) {
+						writer.removeClass( className, root );
+					} else {
+						writer.addClass( className, root );
+					}
+				}
+			} );
 		} );
 	}
 }
