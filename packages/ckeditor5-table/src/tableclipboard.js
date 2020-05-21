@@ -22,7 +22,7 @@ import {
 	splitVertically
 } from './utils';
 import { findAncestor } from './commands/utils';
-import { cropTableToDimensions } from './tableselection/croptable';
+import { cropTableToDimensions, trimTableCellIfNeeded } from './tableselection/croptable';
 import TableUtils from './tableutils';
 
 /**
@@ -191,15 +191,6 @@ export default class TableClipboard extends Plugin {
 			const selectionHeight = lastRowOfSelection - firstRowOfSelection + 1;
 			const selectionWidth = lastColumnOfSelection - firstColumnOfSelection + 1;
 
-			// The if below is temporal and will be removed when handling this case.
-			// This if to be removed as handling of replicating cells should be done in replaceSelectedCellsWithPasted().
-			// See: https://github.com/ckeditor/ckeditor5/issues/6769.
-			if ( selectionHeight > pasteHeight || selectionWidth > pasteWidth ) {
-				// @if CK_DEBUG // console.log( 'NOT IMPLEMENTED YET: Pasted table is smaller than selection area.' );
-
-				return;
-			}
-
 			// Crop pasted table if:
 			// - Pasted table dimensions exceeds selection area.
 			// - Pasted table has broken layout (ie some cells sticks out by the table dimensions established by the first and last row).
@@ -216,16 +207,18 @@ export default class TableClipboard extends Plugin {
 
 			pastedTable = cropTableToDimensions( pastedTable, cropDimensions, writer, tableUtils );
 
+			const pastedDimensions = {
+				width: pasteWidth,
+				height: pasteHeight
+			};
 			const selectionDimensions = {
 				firstColumnOfSelection,
 				firstRowOfSelection,
 				lastColumnOfSelection,
-				lastRowOfSelection,
-				selectionHeight,
-				selectionWidth
+				lastRowOfSelection
 			};
 
-			replaceSelectedCellsWithPasted( pastedTable, selectedTable, selectionDimensions, writer );
+			replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selectedTable, selectionDimensions, writer );
 		} );
 	}
 }
@@ -233,24 +226,26 @@ export default class TableClipboard extends Plugin {
 // Replaces the part of selectedTable with pastedTable.
 //
 // @param {module:engine/model/element~Element} pastedTable
+// @param {Object} pastedDimensions
+// @param {Number} pastedDimensions.height
+// @param {Number} pastedDimensions.width
 // @param {module:engine/model/element~Element} selectedTable
 // @param {Object} selectionDimensions
 // @param {Number} selectionDimensions.firstColumnOfSelection
 // @param {Number} selectionDimensions.firstRowOfSelection
 // @param {Number} selectionDimensions.lastColumnOfSelection
 // @param {Number} selectionDimensions.lastRowOfSelection
-// @param {Number} selectionDimensions.selectionHeight
-// @param {Number} selectionDimensions.selectionWidth
 // @param {module:engine/model/writer~Writer} writer
-function replaceSelectedCellsWithPasted( pastedTable, selectedTable, selectionDimensions, writer ) {
+function replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selectedTable, selectionDimensions, writer ) {
 	const {
 		firstColumnOfSelection, lastColumnOfSelection,
-		firstRowOfSelection, lastRowOfSelection,
-		selectionWidth, selectionHeight
+		firstRowOfSelection, lastRowOfSelection
 	} = selectionDimensions;
 
+	const { width: pastedWidth, height: pastedHeight } = pastedDimensions;
+
 	// Holds two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
-	const pastedTableLocationMap = createLocationMap( pastedTable, selectionWidth, selectionHeight );
+	const pastedTableLocationMap = createLocationMap( pastedTable, pastedWidth, pastedHeight );
 
 	const selectedTableMap = [ ...new TableWalker( selectedTable, {
 		startRow: firstRowOfSelection,
@@ -294,7 +289,9 @@ function replaceSelectedCellsWithPasted( pastedTable, selectedTable, selectionDi
 		}
 
 		// Map current table slot location to an pasted table slot location.
-		const pastedCell = pastedTableLocationMap[ row - firstRowOfSelection ][ column - firstColumnOfSelection ];
+		const pastedRow = row - firstRowOfSelection;
+		const pastedColumn = column - firstColumnOfSelection;
+		const pastedCell = pastedTableLocationMap[ pastedRow % pastedHeight ][ pastedColumn % pastedWidth ];
 
 		// There is no cell to insert (might be spanned by other cell in a pasted table) - advance to the next content table slot.
 		if ( !pastedCell ) {
@@ -304,6 +301,9 @@ function replaceSelectedCellsWithPasted( pastedTable, selectedTable, selectionDi
 		// Clone cell to insert (to duplicate its attributes and children).
 		// Cloning is required to support repeating pasted table content when inserting to a bigger selection.
 		const cellToInsert = pastedCell._clone( true );
+
+		// Trim the cell if it's row/col-spans would exceed selection area.
+		trimTableCellIfNeeded( cellToInsert, row, column, lastRowOfSelection, lastColumnOfSelection, writer );
 
 		let insertPosition;
 

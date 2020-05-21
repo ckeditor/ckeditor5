@@ -14,6 +14,8 @@ import { diffString } from 'json-diff';
 import { debounce } from 'lodash-es';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import TableWalker from '../../src/tablewalker';
+import { getSelectionAffectedTableCells } from '../../src/utils';
+import { findAncestor } from '../../src/commands/utils';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -38,21 +40,32 @@ ClassicEditor
 		document.getElementById( 'set-model-data' ).addEventListener( 'click', () => {
 			updateInputStatus();
 
+			const table = findTable( editor );
 			const inputModelData = parseModelData( modelData.value );
-			setModelData( editor.model, inputModelData ? modelTable( inputModelData ) : '' );
+
+			if ( inputModelData ) {
+				const element = setModelData._parse( modelTable( inputModelData ), editor.model.schema );
+
+				editor.model.change( writer => {
+					editor.model.insertContent( element, table ? editor.model.createRangeOn( table ) : null );
+					writer.setSelection( element, 'on' );
+				} );
+
+				editor.editing.view.focus();
+			}
 		} );
 
 		document.getElementById( 'get-model-data' ).addEventListener( 'click', () => {
 			updateInputStatus();
 
-			const table = findTable( editor );
+			const table = findTable( editor, true );
 			modelData.value = table ? prettyFormatModelTableInput( prepareModelTableInput( editor.model, table ) ) : '';
 
 			updateAsciiAndDiff();
 		} );
 
 		document.getElementById( 'renumber-cells' ).addEventListener( 'click', () => {
-			const table = findTable( editor );
+			const table = findTable( editor, true );
 
 			if ( !table ) {
 				return;
@@ -75,15 +88,15 @@ ClassicEditor
 		updateAsciiAndDiff();
 
 		function updateAsciiAndDiff() {
-			const table = findTable( editor );
+			const tables = getAllTables( editor );
 
-			if ( !table ) {
+			if ( !tables.length ) {
 				asciiOut.innerText = '-- table not found --';
 				return;
 			}
 
 			const inputModelData = parseModelData( modelData.value );
-			const currentModelData = prepareModelTableInput( editor.model, table );
+			const currentModelData = prepareModelTableInput( editor.model, tables[ 0 ] );
 
 			const diffOutput = inputModelData ? diffString( inputModelData, currentModelData, {
 				theme: {
@@ -93,20 +106,53 @@ ClassicEditor
 				}
 			} ) : '-- no input --';
 
-			asciiOut.innerHTML = createTableAsciiArt( editor.model, table ) + '\n\n' +
-				'Diff: input vs post-fixed model:\n' + ( diffOutput ? diffOutput : '-- no differences --' );
+			const asciiArt = tables
+				.map( table => createTableAsciiArt( editor.model, table ) )
+				.join( '\n\n' );
+
+			asciiOut.innerHTML = asciiArt + '\n\n' +
+				'Diff: input vs post-fixed model (only first table):\n' + ( diffOutput ? diffOutput : '-- no differences --' );
 		}
 
-		function findTable( editor ) {
-			const range = editor.model.createRangeIn( editor.model.document.getRoot() );
+		function findTable( editor, useAnyTable = false ) {
+			const selection = editor.model.document.selection;
 
-			for ( const element of range.getItems() ) {
-				if ( element.is( 'table' ) ) {
-					return element;
+			const tableCells = getSelectionAffectedTableCells( selection );
+
+			if ( tableCells.length ) {
+				return findAncestor( 'table', tableCells[ 0 ] );
+			}
+
+			const element = selection.getSelectedElement();
+
+			if ( element && element.is( 'table' ) ) {
+				return element;
+			}
+
+			if ( useAnyTable ) {
+				const range = editor.model.createRangeIn( editor.model.document.getRoot() );
+
+				for ( const element of range.getItems() ) {
+					if ( element.is( 'table' ) ) {
+						return element;
+					}
 				}
 			}
 
 			return null;
+		}
+
+		function getAllTables( editor ) {
+			const range = editor.model.createRangeIn( editor.model.document.getRoot() );
+			const tables = [];
+
+			for ( const element of range.getItems() ) {
+				if ( element.is( 'table' ) ) {
+					tables.push( element );
+				}
+			}
+
+			return tables;
 		}
 
 		function parseModelData( string ) {
