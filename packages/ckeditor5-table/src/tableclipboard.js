@@ -207,15 +207,15 @@ export default class TableClipboard extends Plugin {
 
 			pastedTable = cropTableToDimensions( pastedTable, cropDimensions, writer, tableUtils );
 
+			const pastedDimensions = {
+				width: pasteWidth,
+				height: pasteHeight
+			};
 			const selectionDimensions = {
 				firstColumnOfSelection,
 				firstRowOfSelection,
 				lastColumnOfSelection,
 				lastRowOfSelection
-			};
-			const pastedDimensions = {
-				width: pasteWidth,
-				height: pasteHeight
 			};
 
 			replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selectedTable, selectionDimensions, writer );
