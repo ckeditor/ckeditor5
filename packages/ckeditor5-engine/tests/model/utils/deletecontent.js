@@ -270,9 +270,9 @@ describe( 'DataController utils', () => {
 			);
 
 			test(
-				'merges second element to an empty first element',
+				'removes empty first element',
 				'<paragraph>x</paragraph><heading1>[</heading1><paragraph>fo]o</paragraph><paragraph>y</paragraph>',
-				'<paragraph>x</paragraph><heading1>[]o</heading1><paragraph>y</paragraph>'
+				'<paragraph>x</paragraph><paragraph>[]o</paragraph><paragraph>y</paragraph>'
 			);
 
 			test(
@@ -284,7 +284,7 @@ describe( 'DataController utils', () => {
 			test(
 				'leaves just one element when all selected',
 				'<heading1>[x</heading1><paragraph>foo</paragraph><paragraph>y]bar</paragraph>',
-				'<heading1>[]bar</heading1>'
+				'<paragraph>[]bar</paragraph>'
 			);
 
 			it( 'uses merge operation even if merged element is empty', () => {
