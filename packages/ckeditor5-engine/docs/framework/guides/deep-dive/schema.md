@@ -89,8 +89,6 @@ The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can l
 	Every "object" is also a "limit" element.
 
 	It means that for every element with `isObject` set to `true`, {@link module:engine/model/schema~Schema#isLimit `Schema#isLimit( element )`} will always return `true`.
-
-	However, {@link module:engine/model/schema~Schema#getDefinition `Schema#getDefinition( 'element' )`} may return `false` in a case when `{ isLimit: true, isObject: true}` was registered.
 </info-box>
 
 ### Block elements

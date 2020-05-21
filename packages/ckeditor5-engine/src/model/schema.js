@@ -153,7 +153,12 @@ export default class Schema {
 	}
 
 	/**
-	 * Returns all registered items.
+	 * Returns data of all registered items.
+	 *
+	 * This method should normally be used for reflection purposes (e.g. defining a clone of a certain element,
+	 * checking a list of all block elements, etc).
+	 * Use specific methods (such as {@link #checkChild `checkChild()`} or {@link #isLimit `isLimit()`})
+	 * in other cases.
 	 *
 	 * @returns {Object.<String,module:engine/model/schema~SchemaCompiledItemDefinition>}
 	 */
@@ -167,6 +172,11 @@ export default class Schema {
 
 	/**
 	 * Returns a definition of the given item or `undefined` if item is not registered.
+	 *
+	 * This method should normally be used for reflection purposes (e.g. defining a clone of a certain element,
+	 * checking a list of all block elements, etc).
+	 * Use specific methods (such as {@link #checkChild `checkChild()`} or {@link #isLimit `isLimit()`})
+	 * in other cases.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 * @returns {module:engine/model/schema~SchemaCompiledItemDefinition}
@@ -732,8 +742,8 @@ export default class Schema {
 	 * as long as {@link module:engine/model/schema~Schema#isLimit limit element},
 	 * {@link module:engine/model/schema~Schema#isObject object element} or top-most ancestor won't be reached.
 	 *
-	 * @params {module:engine/model/position~Position} position Position from searching will start.
-	 * @params {module:engine/model/node~Node|String} node Node for which allowed parent should be found or its name.
+	 * @param {module:engine/model/position~Position} position Position from searching will start.
+	 * @param {module:engine/model/node~Node|String} node Node for which allowed parent should be found or its name.
 	 * @returns {module:engine/model/element~Element|null} element Allowed parent or null if nothing was found.
 	 */
 	findAllowedParent( position, node ) {
