@@ -32,39 +32,25 @@ describe( 'InsertParagraphCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'should insert a paragraph before the provided model element and anchor the selection inside of it', () => {
+		it( 'should insert a paragraph at a specific document position and anchor the selection inside of it', () => {
 			setData( model, '<heading1>foo[]</heading1>' );
 
 			command.execute( {
-				element: root.getChild( 0 ),
-				position: 'before'
+				position: model.createPositionBefore( root.getChild( 0 ) )
 			} );
 
 			expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph><heading1>foo</heading1>' );
 		} );
 
-		it( 'should insert a paragraph after the provided model element and anchor the selection inside of it', () => {
-			setData( model, '<heading1>foo[]</heading1>' );
-
-			command.execute( {
-				element: root.getChild( 0 ),
-				position: 'after'
-			} );
-
-			expect( getData( model ) ).to.equal( '<heading1>foo</heading1><paragraph>[]</paragraph>' );
-		} );
-
-		it( 'should do nothing if the paragraph is not allowed in the provided context', () => {
+		it( 'should do nothing if the paragraph is not allowed at the provided position', () => {
 			setData( model, '<headersOnly><heading1>foo[]</heading1></headersOnly>' );
 
 			command.execute( {
-				element: root.getChild( 0 ).getChild( 0 ),
-				position: 'before'
+				position: model.createPositionBefore( root.getChild( 0 ).getChild( 0 ) )
 			} );
 
 			command.execute( {
-				element: root.getChild( 0 ).getChild( 0 ),
-				position: 'after'
+				position: model.createPositionAfter( root.getChild( 0 ).getChild( 0 ) )
 			} );
 
 			expect( getData( model ) ).to.equal( '<headersOnly><heading1>foo[]</heading1></headersOnly>' );
@@ -75,8 +61,7 @@ describe( 'InsertParagraphCommand', () => {
 				setData( model, '<paragraph>foo[]</paragraph>' );
 
 				command.execute( {
-					element: root.getChild( 0 ),
-					position: 'before'
+					position: model.createPositionBefore( root.getChild( 0 ) )
 				} );
 
 				expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
@@ -86,30 +71,27 @@ describe( 'InsertParagraphCommand', () => {
 				setData( model, '<paragraph>foo[]</paragraph>' );
 
 				command.execute( {
-					element: root.getChild( 0 ),
-					position: 'after'
+					position: model.createPositionAfter( root.getChild( 0 ) )
 				} );
 
 				expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[]</paragraph>' );
 			} );
 
-			it( 'should not merge with a paragraph that precedes the model element before which a new paragraph is inserted', () => {
+			it( 'should not merge with a paragraph that precedes the position at which a new paragraph is inserted', () => {
 				setData( model, '<paragraph>bar</paragraph><heading1>foo[]</heading1>' );
 
 				command.execute( {
-					element: root.getChild( 1 ),
-					position: 'before'
+					position: model.createPositionBefore( root.getChild( 1 ) )
 				} );
 
 				expect( getData( model ) ).to.equal( '<paragraph>bar</paragraph><paragraph>[]</paragraph><heading1>foo</heading1>' );
 			} );
 
-			it( 'should not merge with a paragraph that follows the model element before which a new paragraph is inserted', () => {
+			it( 'should not merge with a paragraph that follows the position at which a new paragraph is inserted', () => {
 				setData( model, '<heading1>foo[]</heading1><paragraph>bar</paragraph>' );
 
 				command.execute( {
-					element: root.getChild( 0 ),
-					position: 'after'
+					position: model.createPositionAfter( root.getChild( 0 ) )
 				} );
 
 				expect( getData( model ) ).to.equal( '<heading1>foo</heading1><paragraph>[]</paragraph><paragraph>bar</paragraph>' );

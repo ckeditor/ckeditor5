@@ -65,11 +65,13 @@ describe( 'WidgetTypeAround', () => {
 
 			plugin._insertParagraph( viewRoot.getChild( 0 ), 'before' );
 
+			const spyExecutePosition = executeSpy.firstCall.args[ 1 ].position;
+			const positionBeforeWidget = editor.model.createPositionBefore( editor.model.document.getRoot().getChild( 0 ) );
+
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'insertParagraph', {
-				position: 'before',
-				element: editor.model.document.getRoot().getChild( 1 )
-			} );
+			sinon.assert.calledWith( executeSpy, 'insertParagraph' );
+
+			expect( spyExecutePosition.isEqual( positionBeforeWidget ) ).to.be.true;
 
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph><blockWidget></blockWidget>' );
 		} );
@@ -79,11 +81,13 @@ describe( 'WidgetTypeAround', () => {
 
 			plugin._insertParagraph( viewRoot.getChild( 0 ), 'after' );
 
+			const spyExecutePosition = executeSpy.firstCall.args[ 1 ].position;
+			const positionAfterWidget = editor.model.createPositionAfter( editor.model.document.getRoot().getChild( 0 ) );
+
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'insertParagraph', {
-				position: 'after',
-				element: editor.model.document.getRoot().getChild( 0 )
-			} );
+			sinon.assert.calledWith( executeSpy, 'insertParagraph' );
+
+			expect( spyExecutePosition.isEqual( positionAfterWidget ) ).to.be.true;
 
 			expect( getModelData( editor.model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]</paragraph>' );
 		} );
