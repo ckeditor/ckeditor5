@@ -42,20 +42,20 @@ msgstr "제목3"
 
 msgctxt "Dropdown option label for the heading level 4 format."
 msgid "Heading 4"
-msgstr ""
+msgstr "제목4"
 
 msgctxt "Dropdown option label for the heading level 5 format."
 msgid "Heading 5"
-msgstr ""
+msgstr "제목5"
 
 msgctxt "Dropdown option label for the heading level 6 format."
 msgid "Heading 6"
-msgstr ""
+msgstr "제목6"
 
 msgctxt "A default value of the placeholder for the content title."
 msgid "Type your title"
-msgstr ""
+msgstr "제목 입력"
 
 msgctxt "A default value of the placeholder for the content body."
 msgid "Type or paste your content here."
-msgstr ""
+msgstr "여기에 내용을 입력하거나 붙여넣기 하세요."

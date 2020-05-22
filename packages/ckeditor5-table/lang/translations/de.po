@@ -36,9 +36,9 @@ msgctxt "Label for the delete table column button."
 msgid "Delete column"
 msgstr "Spalte löschen"
 
-msgctxt "Label for the select table entire column button."
+msgctxt "Label for the select the entire table column button."
 msgid "Select column"
-msgstr ""
+msgstr "Spalte auswählen"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
@@ -60,9 +60,9 @@ msgctxt "Label for the delete table row button."
 msgid "Delete row"
 msgstr "Zeile löschen"
 
-msgctxt "Label for the select table entire row button."
+msgctxt "Label for the select the entire table row button."
 msgid "Select row"
-msgstr ""
+msgstr "Zeile auswählen"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
@@ -246,4 +246,4 @@ msgstr "Der Wert ist ungültig. Probieren Sie „10px“ oder „2em“ oder „
 
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"
-msgstr ""
+msgstr "Farbwähler"
