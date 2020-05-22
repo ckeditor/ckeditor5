@@ -105,21 +105,17 @@ export default class WidgetTypeAround extends Plugin {
 	_insertParagraph( widgetViewElement, position ) {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
-		let viewPosition;
+		const widgetModelElement = editor.editing.mapper.toModelElement( widgetViewElement );
+		let modelPosition;
 
 		if ( position === 'before' ) {
-			viewPosition = editingView.createPositionBefore( widgetViewElement );
+			modelPosition = editor.model.createPositionBefore( widgetModelElement );
 		} else {
-			viewPosition = editingView.createPositionAfter( widgetViewElement );
+			modelPosition = editor.model.createPositionAfter( widgetModelElement );
 		}
 
-		const modelPosition = editor.editing.mapper.toModelPosition( viewPosition );
-
-		editor.model.change( writer => {
-			const paragraph = writer.createElement( 'paragraph' );
-
-			writer.insert( paragraph, modelPosition );
-			writer.setSelection( paragraph, 0 );
+		editor.execute( 'insertParagraph', {
+			position: modelPosition
 		} );
 
 		editingView.focus();

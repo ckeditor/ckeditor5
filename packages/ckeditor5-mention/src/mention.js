@@ -29,7 +29,7 @@ export default class Mention extends Plugin {
 	 *
 	 *		// For a view element: <span data-mention="@joe">@John Doe</span>
 	 *		// it will return:
-	 *		// { id: '@joe', userId: '1234', _uid: '7a7bc7...', _text: '@John Doe' }
+	 *		// { id: '@joe', userId: '1234', uid: '7a7bc7...', _text: '@John Doe' }
 	 *
 	 * @param {module:engine/view/element~Element} viewElement
 	 * @param {String|Object} [data] Additional data to be stored in the mention attribute.
@@ -225,8 +225,9 @@ export default class Mention extends Plugin {
  * See {@link module:mention/mention~Mention#toMentionAttribute `Mention#toMentionAttribute()`}.
  *
  * @interface module:mention/mention~MentionAttribute
- * @property {String} id The ID of a mention. It identifies the mention item in the mention feed.
- * @property {String} _uid An internal mention view item ID. Should be passed as an `option.id` when using
+ * @property {String} id The ID of a mention. It identifies the mention item in the mention feed. There can be multiple mentions
+ * in the document with the same ID (e.g. the same hashtag being mentioned).
+ * @property {String} uid A unique ID of this mention instance. Should be passed as an `option.id` when using
  * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement writer.createAttributeElement()}.
  * @property {String} _text Helper property that stores the text of the inserted mention. Used for detecting a broken mention
  * in the editing area.

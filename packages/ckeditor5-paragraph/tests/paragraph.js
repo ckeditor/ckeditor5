@@ -5,6 +5,7 @@
 
 import Paragraph from '../src/paragraph';
 import ParagraphCommand from '../src/paragraphcommand';
+import InsertParagraphCommand from '../src/insertparagraphcommand';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import {
 	getData as getModelData,
@@ -437,9 +438,13 @@ describe( 'Paragraph feature', () => {
 		} );
 	} );
 
-	describe( 'command', () => {
-		it( 'should be set in the editor', () => {
+	describe( 'commands', () => {
+		it( '"paragraph" command should be registered in the editor', () => {
 			expect( editor.commands.get( 'paragraph' ) ).to.be.instanceof( ParagraphCommand );
+		} );
+
+		it( '"insertParagraph" command should be registered in the editor', () => {
+			expect( editor.commands.get( 'insertParagraph' ) ).to.be.instanceof( InsertParagraphCommand );
 		} );
 	} );
 } );

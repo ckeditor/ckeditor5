@@ -117,6 +117,24 @@
 }
 
 /*
+ * Hide type around buttons when the widget is selected as a child of a selected
+ * nested editable (e.g. mulit-cell table selection).
+ *
+ * See https://github.com/ckeditor/ckeditor5/issues/7263.
+ */
+.ck-editor__nested-editable.ck-editor__editable_selected {
+	& .ck-widget {
+		&.ck-widget_selected,
+		&:hover {
+			& > .ck-widget__type-around > .ck-widget__type-around__button {
+				pointer-events: none;
+				opacity: 0;
+			}
+		}
+	}
+}
+
+/*
  * Styles for the buttons when the widget is selected but the user clicked outside of the editor (blurred the editor).
  */
 .ck-editor__editable.ck-blurred .ck-widget.ck-widget_selected > .ck-widget__type-around > .ck-widget__type-around__button:not(:hover) {
