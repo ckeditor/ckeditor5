@@ -80,7 +80,7 @@ export default function deleteContent( model, selection, options = {} ) {
 			return;
 		}
 
-		const startPos = selRange.start;
+		let startPos = selRange.start;
 		const endPos = LivePosition.fromPosition( selRange.end, 'toNext' );
 
 		// 2. Remove the content if there is any.
@@ -97,7 +97,7 @@ export default function deleteContent( model, selection, options = {} ) {
 		// as it's hard to imagine what should actually be the default behavior. Usually, specific features will
 		// want to override that behavior anyway.
 		if ( !options.leaveUnmerged ) {
-			mergeBranches( writer, startPos, endPos );
+			startPos = mergeBranches( writer, startPos, endPos ) || startPos;
 
 			// TMP this will be replaced with a postfixer.
 			// We need to check and strip disallowed attributes in all nested nodes because after merge
@@ -145,14 +145,16 @@ function mergeBranches( writer, startPos, endPos ) {
 		return;
 	}
 
-	// If first block element is empty then override it's name to make merging more user friendly.
-	// Example:
+	// If the start element on the common ancestor level is empty, and the end element on the same level is not empty
+	// then remove former one and merging is done.
 	// <heading1>[</heading1><paragraph>]foo</paragraph> -> <paragraph>[]foo</paragraph>
-	const startBlock = getParentBlock( startPos );
-	const endBlock = getParentBlock( endPos );
+	// <blockQuote><heading1>[</heading1><paragraph>]foo</paragraph> -> <blockQuote><paragraph>[]foo</paragraph></blockQuote>
+	const [ startAncestor, endAncestor ] = getElementsNextToCommonAncestor( startPos, endPos );
 
-	if ( startBlock && endBlock && startBlock.isEmpty && !endBlock.isEmpty && startBlock.name != endBlock.name ) {
-		writer.rename( startBlock, endBlock.name );
+	if ( !hasContent( startAncestor ) && hasContent( endAncestor ) ) {
+		writer.remove( startAncestor );
+
+		return endPos;
 	}
 
 	// Remember next positions to merge. For example:
@@ -192,22 +194,30 @@ function mergeBranches( writer, startPos, endPos ) {
 	mergeBranches( writer, startPos, endPos );
 }
 
-// Finds the lowest element in position's ancestors which is a block.
-// It will search until first ancestor that is a limit element.
-function getParentBlock( position ) {
-	const element = position.parent;
+function getElementsNextToCommonAncestor( positionA, positionB ) {
+	const ancestorsA = positionA.getAncestors();
+	const ancestorsB = positionB.getAncestors();
+
+	let i = 0;
+
+	while ( ancestorsA[ i ] && ancestorsA[ i ] == ancestorsB[ i ] ) {
+		i++;
+	}
+
+	return [ ancestorsA[ i ], ancestorsB[ i ] ];
+}
+
+function hasContent( element ) {
 	const schema = element.root.document.model.schema;
-	const ancestors = element.getAncestors( { parentFirst: true, includeSelf: true } );
+	const range = Range._createIn( element );
 
-	for ( const element of ancestors ) {
-		if ( schema.isLimit( element ) ) {
-			return null;
-		}
-
-		if ( schema.isBlock( element ) ) {
-			return element;
+	for ( const item of range.getItems() ) {
+		if ( item.is( 'textProxy' ) || schema.isObject( item ) ) {
+			return true;
 		}
 	}
+
+	return false;
 }
 
 function shouldAutoparagraph( schema, position ) {

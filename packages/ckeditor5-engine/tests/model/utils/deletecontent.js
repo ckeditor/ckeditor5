@@ -220,7 +220,8 @@ describe( 'DataController utils', () => {
 				schema.register( 'image', { inheritAllFrom: '$text' } );
 				schema.register( 'pchild', { allowIn: 'paragraph' } );
 				schema.register( 'pparent', { allowIn: '$root' } );
-				schema.extend( '$text', { allowIn: [ 'pchild', 'pparent' ] } );
+				schema.register( 'hchild', { allowIn: 'heading1' } );
+				schema.extend( '$text', { allowIn: [ 'pchild', 'pparent', 'hchild' ] } );
 			} );
 
 			test(
@@ -344,47 +345,24 @@ describe( 'DataController utils', () => {
 					'<paragraph>x<pchild>fo[]ar</pchild>y</paragraph>'
 				);
 
-				it( 'merges elements when deep nested (3rd level)', () => {
-					const root = doc.getRoot();
+				test(
+					'removes block element with nested element',
+					'<paragraph><pchild>[foo</pchild></paragraph><paragraph><pchild>b]ar</pchild></paragraph>',
+					'<paragraph><pchild>[]ar</pchild></paragraph>'
+				);
 
-					// We need to use the raw API due to https://github.com/ckeditor/ckeditor5-engine/issues/905.
-					// <pparent>x<paragraph>x<pchild>fo[o</pchild></paragraph></pparent>
-					// <pparent><paragraph><pchild>b]ar</pchild>y</paragraph>y</pparent>
+				test(
+					'removes heading element',
+					'<heading1><hchild>[foo</hchild></heading1><paragraph><pchild>b]ar</pchild></paragraph>',
+					'<paragraph><pchild>[]ar</pchild></paragraph>'
+				);
 
-					root._appendChild(
-						new Element( 'pparent', null, [
-							'x',
-							new Element( 'paragraph', null, [
-								'x',
-								new Element( 'pchild', null, 'foo' )
-							] )
-						] )
-					);
-
-					root._appendChild(
-						new Element( 'pparent', null, [
-							new Element( 'paragraph', null, [
-								new Element( 'pchild', null, 'bar' ),
-								'y'
-							] ),
-							'y'
-						] )
-					);
-
-					const range = new Range(
-						new Position( doc.getRoot(), [ 0, 1, 1, 2 ] ), // fo[o
-						new Position( doc.getRoot(), [ 1, 0, 0, 1 ] ) // b]ar
-					);
-
-					model.change( writer => {
-						writer.setSelection( range );
-					} );
-
-					deleteContent( model, doc.selection );
-
-					expect( getData( model ) )
-						.to.equal( '<pparent>x<paragraph>x<pchild>fo[]ar</pchild>y</paragraph>y</pparent>' );
-				} );
+				test(
+					'merges elements when deep nested (3rd level)',
+					'<pparent>x<paragraph>x<pchild>fo[o</pchild></paragraph></pparent>' +
+					'<pparent><paragraph><pchild>b]ar</pchild>y</paragraph>y</pparent>',
+					'<pparent>x<paragraph>x<pchild>fo[]ar</pchild>y</paragraph>y</pparent>'
+				);
 
 				test(
 					'merges elements when left end deep nested',
@@ -398,40 +376,11 @@ describe( 'DataController utils', () => {
 					'<paragraph>x</paragraph><paragraph>fo[]ar</paragraph><paragraph>x</paragraph>'
 				);
 
-				it( 'merges elements when left end deep nested (3rd level)', () => {
-					const root = doc.getRoot();
-
-					// We need to use the raw API due to https://github.com/ckeditor/ckeditor5-engine/issues/905.
-					// <pparent>x<paragraph>foo<pchild>ba[r</pchild></paragraph></pparent><paragraph>b]om</paragraph>
-
-					root._appendChild(
-						new Element( 'pparent', null, [
-							'x',
-							new Element( 'paragraph', null, [
-								'foo',
-								new Element( 'pchild', null, 'bar' )
-							] )
-						] )
-					);
-
-					root._appendChild(
-						new Element( 'paragraph', null, 'bom' )
-					);
-
-					const range = new Range(
-						new Position( doc.getRoot(), [ 0, 1, 3, 2 ] ), // ba[r
-						new Position( doc.getRoot(), [ 1, 1 ] ) // b]om
-					);
-
-					model.change( writer => {
-						writer.setSelection( range );
-					} );
-
-					deleteContent( model, doc.selection );
-
-					expect( getData( model ) )
-						.to.equal( '<pparent>x<paragraph>foo<pchild>ba[]om</pchild></paragraph></pparent>' );
-				} );
+				test(
+					'merges elements when left end deep nested (3rd level)',
+					'<pparent>x<paragraph>foo<pchild>ba[r</pchild></paragraph></pparent><paragraph>b]om</paragraph>',
+					'<pparent>x<paragraph>foo<pchild>ba[]om</pchild></paragraph></pparent>'
+				);
 
 				test(
 					'merges elements when right end deep nested (in an empty container)',
@@ -442,41 +391,14 @@ describe( 'DataController utils', () => {
 				test(
 					'merges elements when left end deep nested (in an empty container)',
 					'<paragraph><pchild>[foo</pchild></paragraph><paragraph>b]ar</paragraph><paragraph>x</paragraph>',
-					'<paragraph><pchild>[]ar</pchild></paragraph><paragraph>x</paragraph>'
+					'<paragraph>[]ar</paragraph><paragraph>x</paragraph>'
 				);
 
-				it( 'merges elements when right end deep nested (3rd level)', () => {
-					const root = doc.getRoot();
-
-					// We need to use the raw API due to https://github.com/ckeditor/ckeditor5-engine/issues/905.
-					// <paragraph>fo[o</paragraph><pparent><paragraph><pchild>bar]</pchild></paragraph></pparent>
-
-					root._appendChild(
-						new Element( 'paragraph', null, 'foo' )
-					);
-
-					root._appendChild(
-						new Element( 'pparent', null, [
-							new Element( 'paragraph', null, [
-								new Element( 'pchild', null, 'bar' )
-							] )
-						] )
-					);
-
-					const range = new Range(
-						new Position( doc.getRoot(), [ 0, 2 ] ), // f[oo
-						new Position( doc.getRoot(), [ 1, 0, 0, 3 ] ) // bar]
-					);
-
-					model.change( writer => {
-						writer.setSelection( range );
-					} );
-
-					deleteContent( model, doc.selection );
-
-					expect( getData( model ) )
-						.to.equal( '<paragraph>fo[]</paragraph>' );
-				} );
+				test(
+					'merges elements when right end deep nested (3rd level)',
+					'<paragraph>fo[o</paragraph><pparent><paragraph><pchild>bar]</pchild></paragraph></pparent>',
+					'<paragraph>fo[]</paragraph>'
+				);
 			} );
 
 			describe( 'with object elements', () => {
