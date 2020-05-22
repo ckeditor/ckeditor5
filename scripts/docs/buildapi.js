@@ -18,7 +18,10 @@ module.exports = function buildApiDocs() {
 			sourceFiles: [
 				process.cwd() + '/packages/@(ckeditor|ckeditor5)-*/src/**/*.@(js|jsdoc)',
 				'!' + process.cwd() + '/packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.js',
-				'!' + process.cwd() + '/packages/ckeditor5-build-*/src/**/*.js'
+				'!' + process.cwd() + '/packages/ckeditor5-build-*/src/**/*.js',
+				process.cwd() + '/external/*/packages/@(ckeditor|ckeditor5)-*/src/**/*.@(js|jsdoc)',
+				'!' + process.cwd() + '/external/*/packages/@(ckeditor|ckeditor5)-*/src/lib/**/*.js',
+				'!' + process.cwd() + '/external/*/packages/ckeditor5-build-*/src/**/*.js'
 			],
 			validateOnly: process.argv.includes( '--validate-only' )
 		} );

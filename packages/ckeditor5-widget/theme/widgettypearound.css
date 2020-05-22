@@ -1,0 +1,90 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck .ck-widget {
+	/*
+	 * Styles of the type around buttons
+	 */
+	& .ck-widget__type-around__button {
+		display: block;
+		position: absolute;
+		overflow: hidden;
+		z-index: var(--ck-z-default);
+
+		& svg {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			z-index: calc(var(--ck-z-default) + 2);
+		}
+
+		&.ck-widget__type-around__button_before {
+			/* Place it in the middle of the outline */
+			top: calc(-0.5 * var(--ck-widget-outline-thickness));
+			left: min(10%, 30px);
+
+			transform: translateY(-50%);
+		}
+
+		&.ck-widget__type-around__button_after {
+			/* Place it in the middle of the outline */
+			bottom: calc(-0.5 * var(--ck-widget-outline-thickness));
+			right: min(10%, 30px);
+
+			transform: translateY(50%);
+		}
+	}
+
+	/*
+	 * Hide the type around buttons depending on which directions the widget supports.
+	 */
+	&:not(.ck-widget_can-type-around_before) > .ck-widget__type-around > .ck-widget__type-around__button_before {
+		display: none;
+	}
+
+	&:not(.ck-widget_can-type-around_after) > .ck-widget__type-around > .ck-widget__type-around__button_after {
+		display: none;
+	}
+
+	/*
+	 * Styles for the buttons when:
+	 * - the widget is selected,
+	 * - or the button is being hovered (regardless of the widget state).
+	 */
+	&.ck-widget_selected > .ck-widget__type-around > .ck-widget__type-around__button,
+	& > .ck-widget__type-around > .ck-widget__type-around__button:hover {
+		&::after {
+			content: "";
+			display: block;
+			position: absolute;
+			top: 1px;
+			left: 1px;
+			z-index: calc(var(--ck-z-default) + 1);
+		}
+	}
+}
+
+/*
+ * Integration with the read-only mode of the editor.
+ */
+.ck.ck-editor__editable.ck-read-only .ck-widget__type-around {
+	display: none;
+}
+
+/*
+ * Integration with the restricted editing mode (feature) of the editor.
+ */
+.ck.ck-editor__editable.ck-restricted-editing_mode_restricted .ck-widget__type-around {
+	display: none;
+}
+
+/*
+ * A quick fix for integration with track changes.
+ *
+ * TODO: To be removed when the proper integration arrives.
+ */
+.ck.ck-editor__editable.ck-widget_type-around_temp-disabled .ck-widget__type-around {
+	display: none;
+}

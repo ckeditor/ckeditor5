@@ -294,8 +294,9 @@ export default class ColorInputView extends View {
 	 */
 	_setInputValue( inputValue ) {
 		if ( !this._stillTyping ) {
+			const normalizedInputValue = normalizeColor( inputValue );
 			// Check if the value matches one of our defined colors.
-			const mappedColor = this.options.colorDefinitions.find( def => inputValue === def.color );
+			const mappedColor = this.options.colorDefinitions.find( def => normalizedInputValue === normalizeColor( def.color ) );
 
 			if ( mappedColor ) {
 				this._inputView.value = mappedColor.label;
@@ -304,4 +305,21 @@ export default class ColorInputView extends View {
 			}
 		}
 	}
+}
+
+// Normalizes color value, by stripping extensive whitespace.
+// For example., transforms:
+// * `   rgb(  25 50    0 )` to `rgb(25 50 0)`,
+// * "\t  rgb(  25 ,  50,0 )		" to `rgb(25 50 0)`.
+//
+// @param {String} colorString The value to be normalized.
+// @returns {String}
+function normalizeColor( colorString ) {
+	return colorString
+		// Remove any whitespace right after `(` or `,`.
+		.replace( /([(,])\s+/g, '$1' )
+		// Remove any whitespace at the beginning or right before the end, `)`, `,`, or another whitespace.
+		.replace( /^\s+|\s+(?=[),\s]|$)/g, '' )
+		// Then, replace `,` or whitespace with a single space.
+		.replace( /,|\s/g, ' ' );
 }

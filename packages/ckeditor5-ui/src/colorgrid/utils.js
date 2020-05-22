@@ -64,13 +64,16 @@ export function normalizeColorOptions( options ) {
 }
 
 // Creates a normalized color definition from the user-defined configuration.
+// The "normalization" means it will create full
+// {@link module:ui/colorgrid/colorgrid~ColorDefinition `ColorDefinition-like`}
+// object for string values, and add a `view` property, for each definition.
 //
 // @param {String|module:ui/colorgrid/colorgrid~ColorDefinition}
 // @returns {module:ui/colorgrid/colorgrid~ColorDefinition}
 export function normalizeSingleColorDefinition( color ) {
 	if ( typeof color === 'string' ) {
 		return {
-			model: color.replace( / /g, '' ),
+			model: color,
 			label: color,
 			hasBorder: false,
 			view: {
@@ -82,7 +85,7 @@ export function normalizeSingleColorDefinition( color ) {
 		};
 	} else {
 		return {
-			model: color.color.replace( / /g, '' ),
+			model: color.color,
 			label: color.label || color.color,
 			hasBorder: color.hasBorder === undefined ? false : color.hasBorder,
 			view: {

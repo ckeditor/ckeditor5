@@ -5,7 +5,7 @@ order: 40
 
 # Git commit message convention
 
-Every commit made *directly* to the `master` branch must follow the below convention. Based on commits in the `master` branch CKEditor 5 release tools will generate changelog entries for the current release.
+Every commit made *directly* to the `master` branch must follow the convention below. Based on commits in the `master` branch CKEditor 5 release tools will generate changelog entries for the current release.
 
 <info-box>
 	Commits in the ticket branches are not analyzed for the changelog and do not have to follow any specific convention (other than finishing sentences with periods). In case of ticket branches, **only merge commits are analyzed**.
@@ -20,12 +20,12 @@ Commit message template:
 ```
 Type (package-name): A short sentence about the commit. Closes #XXX.
 
-Type (other-package-name): If the change affects more than one package, it's possible to put multiple entries at once. Closes #YYY.
+Type (another-package-name): If the change affects more than one package, it's possible to put multiple entries at once. Closes #YYY.
 
 Optional description.
 
-BREAKING CHANGE: If any breaking changes were done, they need to be listed here.
-BREAKING CHANGE: Another breaking change if needed. Closes #ZZZ.
+BREAKING CHANGE (scope): If any breaking changes were done, they need to be listed here.
+BREAKING CHANGE (scope): Another breaking change if needed. Closes #ZZZ.
 ```
 
 ### Commit types
@@ -41,7 +41,7 @@ BREAKING CHANGE: Another breaking change if needed. Closes #ZZZ.
 | Revert | `patch` | Revert of some commit. | Hidden |
 | Release | `patch` | A special type of commit used by the release tools. | Hidden |
 
-Each commit can contain additional notes which will be inserted into the changelog:
+Each commit can contain additional notes that will be inserted into the changelog:
 
 * `MAJOR BREAKING CHANGE` (alias: `BREAKING CHANGE`),
 * `MINOR BREAKING CHANGE`.
@@ -50,13 +50,15 @@ If any change contains the `MAJOR BREAKING CHANGE` note, the next release will b
 
 For reference on how to identify minor or major breaking change see the {@link framework/guides/support/versioning-policy versioning policy guide}.
 
+Each `BREAKING CHANGE` note must be followed by the scope of changes.
+
 ### Package name
 
 Most commits are related to one or more packages. Each affected package should be listed in parenthesis following the commit type. A package that was the most impacted by the change should be listed first.
 
-It is, however, possible to skip this part if many packages are affected. This is a typically indication that this is a generic change and having all the packages listed would reduce changelog readability.
+It is, however, possible to skip this part if many packages are affected. This usually indicates a generic change. In this case having all the packages listed would reduce the changelog readability.
 
-The package name is based on npm package name, however it has the `@ckeditor/ckeditor(5)-` prefix stripped.
+The package name is based on the npm package name, however, it has the `@ckeditor/ckeditor(5)-` prefix stripped.
 
 If your change is related to the main package only, use `ckeditor5` as the package name.
 
@@ -76,13 +78,13 @@ A generic bug fix for an existing feature that affects many packages (closes two
 Fix: The editor will be great again. Closes #3. Closes #4.
 ```
 
-Commit with updated documentation:
+A commit with updated documentation:
 
 ```
 Docs (link): Updated the README.
 ```
 
-Commit that provides or changes the tests:
+A commit that provides or changes the tests:
 
 ```
 Tests (widget): Introduced missing tests. Closes #5.
@@ -95,7 +97,7 @@ Other (utils): Extracted the `utils.foo()` to a separate package. Closes #9.
 
 Feature (engine): Introduced the `engine.foo()` method. Closes #9.
 
-MAJOR BREAKING CHANGE: The `utils.foo()` method was moved to the `engine` package. See #9.
+MAJOR BREAKING CHANGE (utils): The `utils.foo()` method was moved to the `engine` package. See #9.
 ```
 
 For the commits shown above the changelog will look like this:
@@ -108,7 +110,7 @@ Changelog
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* The `utils.foo()` method was moved to the `engine` package. See #9. See [#9](https://github.com/ckeditor/ckeditor5/issue/9).
+* **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `utils.foo()` method was moved to the `engine` package. See [#9](https://github.com/ckeditor/ckeditor5/issue/9).
 
 ### Features
 
@@ -128,9 +130,9 @@ Changelog
 
 ## Handling pull requests
 
-When making a pull request its author may (it is recommended in the pull request template) propose a merge commit message.
+When creating a pull request, its author may (it is recommended in the pull request template) propose a merge commit message.
 
-The reviewer's duty is to validate the proposed message and apply necessary changes (the PR description can be edited).
+The reviewer's duty is to validate the proposed message and apply necessary changes. The PR description can be edited.
 
 Things like:
 
@@ -144,7 +146,7 @@ should be checked and added if missing.
 
 As a reviewer, remember that the message will end up in the changelog and must be understandable in a broad context of the entire editor. It is not for you &mdash; it is for other developers.
 
-When closing a PR remember to copy the source of the message to the textarea with the merge commit message:
+When closing a PR, remember to copy the source of the message to the textarea with the merge commit message:
 
 {@img assets/img/closing-a-pr.gif Screencast how to copy a source version of the suggested commit message when closing a PR.}
 
