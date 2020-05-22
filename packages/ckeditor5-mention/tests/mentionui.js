@@ -621,7 +621,7 @@ describe( 'MentionUI', () => {
 						writer.createPositionAt( doc.getRoot().getChild( 0 ), 9 )
 					);
 
-					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, range );
+					writer.setAttribute( 'mention', { id: '@Lily', uid: 1234 }, range );
 				} );
 
 				return waitForDebounce()
@@ -651,7 +651,7 @@ describe( 'MentionUI', () => {
 						writer.createPositionAt( doc.getRoot().getChild( 0 ), 9 )
 					);
 
-					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, range );
+					writer.setAttribute( 'mention', { id: '@Lily', uid: 1234 }, range );
 				} );
 
 				return waitForDebounce()
@@ -725,7 +725,7 @@ describe( 'MentionUI', () => {
 			it( 'should not show panel when selection is after existing mention', () => {
 				setData( model, '<paragraph>foo [@Lily] bar[]</paragraph>' );
 				model.change( writer => {
-					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, doc.selection.getFirstRange() );
+					writer.setAttribute( 'mention', { id: '@Lily', uid: 1234 }, doc.selection.getFirstRange() );
 				} );
 
 				return waitForDebounce()
@@ -750,7 +750,7 @@ describe( 'MentionUI', () => {
 						writer.createPositionAt( doc.getRoot().getChild( 0 ), 4 ),
 						writer.createPositionAt( doc.getRoot().getChild( 0 ), 9 )
 					);
-					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, range );
+					writer.setAttribute( 'mention', { id: '@Lily', uid: 1234 }, range );
 				} );
 
 				return waitForDebounce()
@@ -1295,7 +1295,7 @@ describe( 'MentionUI', () => {
 				setData( model, '<paragraph>foo [#101] bar</paragraph><paragraph></paragraph>' );
 
 				model.change( writer => {
-					writer.setAttribute( 'mention', { id: '#101', _uid: 1234 }, doc.selection.getFirstRange() );
+					writer.setAttribute( 'mention', { id: '#101', uid: 1234 }, doc.selection.getFirstRange() );
 				} );
 
 				// Increase the response time to extend the debounce time out.
