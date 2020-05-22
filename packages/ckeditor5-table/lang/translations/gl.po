@@ -38,7 +38,7 @@ msgstr "Eliminar columna"
 
 msgctxt "Label for the select table entire column button."
 msgid "Select column"
-msgstr ""
+msgstr "Seleccionar columna"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
@@ -62,7 +62,7 @@ msgstr "Eliminar fila"
 
 msgctxt "Label for the select table entire row button."
 msgid "Select row"
-msgstr ""
+msgstr "Seleccionar fila"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
@@ -246,4 +246,4 @@ msgstr "O valor non é válido. Probe «10px» ou «2em» ou simplemente «2»."
 
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"
-msgstr ""
+msgstr "Selector de cores"

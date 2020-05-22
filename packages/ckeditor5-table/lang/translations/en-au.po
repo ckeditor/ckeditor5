@@ -38,7 +38,7 @@ msgstr "Delete column"
 
 msgctxt "Label for the select table entire column button."
 msgid "Select column"
-msgstr ""
+msgstr "Select column"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
@@ -62,7 +62,7 @@ msgstr "Delete row"
 
 msgctxt "Label for the select table entire row button."
 msgid "Select row"
-msgstr ""
+msgstr "Select row"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
@@ -246,4 +246,4 @@ msgstr "The value is invalid. Try \"10px\" or \"2em\" or simply \"2\"."
 
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"
-msgstr ""
+msgstr "Colour picker"

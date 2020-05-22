@@ -26,4 +26,4 @@ msgstr "글머리기호"
 
 msgctxt "Toolbar button tooltip for the To-do List feature."
 msgid "To-do List"
-msgstr ""
+msgstr "할일 목록"

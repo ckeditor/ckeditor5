@@ -38,7 +38,7 @@ msgstr "Excluir coluna"
 
 msgctxt "Label for the select table entire column button."
 msgid "Select column"
-msgstr ""
+msgstr "Selecionar coluna"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
@@ -62,7 +62,7 @@ msgstr "Excluir linha"
 
 msgctxt "Label for the select table entire row button."
 msgid "Select row"
-msgstr ""
+msgstr "Selecionar linha"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
@@ -134,7 +134,7 @@ msgstr "Cor de fundo"
 
 msgctxt "The label for the input that allows configuring the padding of a table cell."
 msgid "Padding"
-msgstr ""
+msgstr "Margem interna"
 
 msgctxt "The label describing a group of form fields that allows setting dimensions of a table or a table cell."
 msgid "Dimensions"
@@ -182,19 +182,19 @@ msgstr "Dupla"
 
 msgctxt "The label for the border style dropdown when the groove border is applied to a table or a table cell."
 msgid "Groove"
-msgstr ""
+msgstr "Ranhura"
 
 msgctxt "The label for the border style dropdown when the ridge border is applied to a table or a table cell."
 msgid "Ridge"
-msgstr ""
+msgstr "Crista"
 
 msgctxt "The label for the border style dropdown when the inset border is applied to a table or a table cell."
 msgid "Inset"
-msgstr ""
+msgstr "Baixo relevo"
 
 msgctxt "The label for the border style dropdown when the outset border is applied to a table or a table cell."
 msgid "Outset"
-msgstr ""
+msgstr "Alto relevo"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the left."
 msgid "Align cell text to the left"
@@ -246,4 +246,4 @@ msgstr "Valor inválido. Tente \"10px\" ou \"2em\" ou apenas \"2\""
 
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"
-msgstr ""
+msgstr "Seletor de cor"
