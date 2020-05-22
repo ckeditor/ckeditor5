@@ -160,6 +160,7 @@
   },
   "eslintIgnore": [
     "build/**",
+    "packages/*/node_modules/**",
     "packages/*/build/**",
     "packages/*/src/lib/**",
     "coverage/**"
