@@ -331,7 +331,7 @@ function MentionLinks( editor ) {
 				// Make mention attribute to be wrapped by other attribute elements.
 				priority: 20,
 				// Prevent merging mentions together.
-				id: modelAttributeValue._uid
+				id: modelAttributeValue.uid
 			} );
 		},
 		converterPriority: 'high'

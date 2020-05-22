@@ -62,7 +62,7 @@ describe( 'Mention', () => {
 			const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement );
 
 			expect( mentionAttribute ).to.have.property( 'id', '@John' );
-			expect( mentionAttribute ).to.have.property( '_uid' );
+			expect( mentionAttribute ).to.have.property( 'uid' );
 			expect( mentionAttribute ).to.have.property( '_text', 'John Doe' );
 		} );
 
@@ -77,7 +77,7 @@ describe( 'Mention', () => {
 
 			expect( mentionAttribute ).to.have.property( 'id', '@John' );
 			expect( mentionAttribute ).to.have.property( 'foo', 'bar' );
-			expect( mentionAttribute ).to.have.property( '_uid' );
+			expect( mentionAttribute ).to.have.property( 'uid' );
 			expect( mentionAttribute ).to.have.property( '_text', 'John Doe' );
 		} );
 

@@ -52,7 +52,7 @@ class CustomMentionAttributeView extends Plugin {
 					'href': modelAttributeValue.link
 				}, {
 					priority: 20,
-					id: modelAttributeValue._uid
+					id: modelAttributeValue.uid
 				} );
 			},
 			converterPriority: 'high'

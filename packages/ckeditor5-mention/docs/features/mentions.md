@@ -198,7 +198,7 @@ The converters must be defined with a `'high'` priority to be executed before th
 
 To control how the mention element is wrapped by other attribute elements (like bold, italic, etc) set its {@link module:engine/view/attributeelement~AttributeElement#priority}. To replicate default plugin behavior and make mention to be wrapped by other elements set priority to `20`.
 
-By default, attribute elements that are next to each other and have the same value will be rendered as single HTML element. To prevent this the model attribute value object expose a unique id of each inserted mention to the model as `_uid`. To prevent merging subsequent mentions set it as {@link module:engine/view/attributeelement~AttributeElement#id}.
+By default, attribute elements that are next to each other and have the same value will be rendered as single HTML element. To prevent this the model attribute value object expose a unique id of each inserted mention to the model as `uid`. To prevent merging subsequent mentions set it as {@link module:engine/view/attributeelement~AttributeElement#id}.
 
 **Note:** The feature prevents copying fragments of existing mentions. If only a part of a mention is selected, it will be copied as plain text. The internal converter with the {@link module:engine/conversion/conversion~ConverterDefinition `'highest'` priority} controls this behaviour; thus, we do not recommend adding mention converters with the `'highest'` priority to avoid collisions and quirky results.
 
@@ -262,7 +262,7 @@ function MentionCustomization( editor ) {
 				// Make mention attribute to be wrapped by other attribute elements.
 				priority: 20,
 				// Prevent merging mentions together.
-				id: modelAttributeValue._uid
+				id: modelAttributeValue.uid
 			} );
 		},
 		converterPriority: 'high'
@@ -354,7 +354,7 @@ function MentionCustomization( editor ) {
 				// Make mention attribute to be wrapped by other attribute elements.
 				priority: 20,
 				// Prevent merging mentions together.
-				id: modelAttributeValue._uid
+				id: modelAttributeValue.uid
 			} );
 		},
 		converterPriority: 'high'
