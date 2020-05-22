@@ -82,7 +82,6 @@ export default function deleteContent( model, selection, options = {} ) {
 
 		const startPos = selRange.start;
 		const endPos = LivePosition.fromPosition( selRange.end, 'toNext' );
-		let finalPos = startPos;
 
 		// 2. Remove the content if there is any.
 		if ( !selRange.start.isTouching( selRange.end ) ) {
@@ -97,8 +96,8 @@ export default function deleteContent( model, selection, options = {} ) {
 		// However, the algorithm supports also merging deeper structures (up to the depth of the shallower branch),
 		// as it's hard to imagine what should actually be the default behavior. Usually, specific features will
 		// want to override that behavior anyway.
-		if ( !options.leaveUnmerged && mergeBranches( writer, startPos, endPos ) ) {
-			finalPos = endPos;
+		if ( !options.leaveUnmerged ) {
+			mergeBranches( writer, startPos, endPos );
 
 			// TMP this will be replaced with a postfixer.
 			// We need to check and strip disallowed attributes in all nested nodes because after merge
@@ -106,16 +105,16 @@ export default function deleteContent( model, selection, options = {} ) {
 			//
 			// e.g. bold is disallowed for <H1>
 			// <h1>Fo{o</h1><p>b}a<b>r</b><p> -> <h1>Fo{}a<b>r</b><h1> -> <h1>Fo{}ar<h1>.
-			schema.removeDisallowedAttributes( finalPos.parent.getChildren(), writer );
+			schema.removeDisallowedAttributes( startPos.parent.getChildren(), writer );
 		}
 
-		collapseSelectionAt( writer, selection, finalPos );
+		collapseSelectionAt( writer, selection, startPos );
 
 		// 4. Add a paragraph to set selection in it.
 		// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
 		// If autoparagraphing is off, we assume that you know what you do so we leave the selection wherever it was.
-		if ( !options.doNotAutoparagraph && shouldAutoparagraph( schema, finalPos ) ) {
-			insertParagraph( writer, finalPos, selection );
+		if ( !options.doNotAutoparagraph && shouldAutoparagraph( schema, startPos ) ) {
+			insertParagraph( writer, startPos, selection );
 		}
 
 		endPos.detach();
@@ -131,31 +130,29 @@ function mergeBranches( writer, startPos, endPos ) {
 	// If both positions ended up in the same parent, then there's nothing more to merge:
 	// <$root><p>x[]</p><p>{}y</p></$root> => <$root><p>xy</p>[]{}</$root>
 	if ( startParent == endParent ) {
-		return false;
+		return;
 	}
 
 	// If one of the positions is a limit element, then there's nothing to merge because we don't want to cross the limit boundaries.
 	if ( writer.model.schema.isLimit( startParent ) || writer.model.schema.isLimit( endParent ) ) {
-		return false;
+		return;
 	}
 
 	// Check if operations we'll need to do won't need to cross object or limit boundaries.
 	// E.g., we can't merge endParent into startParent in this case:
 	// <limit><startParent>x[]</startParent></limit><endParent>{}</endParent>
 	if ( !checkCanBeMerged( startPos, endPos, writer.model.schema ) ) {
-		return false;
+		return;
 	}
 
-	// Check start and end blocks if we should merge or just remove start block.
+	// If first block element is empty then override it's name to make merging more user friendly.
 	// Example:
-	// <heading1>[</heading1><paragraph>]foo</paragraph> -> <<paragraph>[]foo</paragraph>
+	// <heading1>[</heading1><paragraph>]foo</paragraph> -> <paragraph>[]foo</paragraph>
 	const startBlock = getParentBlock( startPos );
 	const endBlock = getParentBlock( endPos );
 
-	if ( startBlock && endBlock && startBlock.isEmpty && !endBlock.isEmpty && startBlock.parent == endBlock.parent ) {
-		writer.remove( startBlock );
-
-		return true;
+	if ( startBlock && endBlock && startBlock.isEmpty && !endBlock.isEmpty && startBlock.name != endBlock.name ) {
+		writer.rename( startBlock, endBlock.name );
 	}
 
 	// Remember next positions to merge. For example:
@@ -193,8 +190,6 @@ function mergeBranches( writer, startPos, endPos ) {
 
 	// Continue merging next level.
 	mergeBranches( writer, startPos, endPos );
-
-	return true;
 }
 
 // Finds the lowest element in position's ancestors which is a block.
