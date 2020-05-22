@@ -994,7 +994,7 @@ mix( Schema, ObservableMixin );
  *
  *		schema.on( 'checkAttribute', ( evt, args ) => {
  *			const context = args[ 0 ];
- *			const atributeName = args[ 1 ];
+ *			const attributeName = args[ 1 ];
  *
  *			if ( context.endsWith( 'heading1 $text' ) && attributeName == 'bold' ) {
  *				// Prevent next listeners from being called.
@@ -1010,7 +1010,7 @@ mix( Schema, ObservableMixin );
  *
  *		schema.on( 'checkAttribute', ( evt, args ) => {
  *			const context = args[ 0 ];
- *			const atributeName = args[ 1 ];
+ *			const attributeName = args[ 1 ];
  *
  *			if ( context.endsWith( 'bar foo $text' ) && attributeName == 'bold' ) {
  *				// Prevent next listeners from being called.
@@ -1193,7 +1193,7 @@ mix( Schema, ObservableMixin );
  * Rules fed to the schema by {@link module:engine/model/schema~Schema#register}
  * and {@link module:engine/model/schema~Schema#extend} methods are defined in the
  * {@link module:engine/model/schema~SchemaItemDefinition} format.
- * Later on, they are compiled to `SchemaCompiledItemDefition` so when you use e.g.
+ * Later on, they are compiled to `SchemaCompiledItemDefinition` so when you use e.g.
  * the {@link module:engine/model/schema~Schema#getDefinition} method you get the compiled version.
  *
  * The compiled version contains only the following properties:
@@ -1431,7 +1431,7 @@ export class SchemaContext {
  *		schema.checkAttribute( textNode, 'bold' );
  *
  * But sometimes you want to check whether a text at a given position might've had some attribute,
- * in which case you can create a context by mising an array of elements with a `'$text'` string:
+ * in which case you can create a context by missing an array of elements with a `'$text'` string:
  *
  *		// Check in [ rootElement, paragraphElement, textNode ].
  *		schema.checkChild( [ ...positionInParagraph.getAncestors(), '$text' ], 'bold' );

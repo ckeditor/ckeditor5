@@ -108,7 +108,7 @@ export default class Selection {
 
 	/**
 	 * Selection anchor. Anchor is the position from which the selection was started. If a user is making a selection
-	 * by dragging the mouse, the anchor is where the user pressed the mouse button (the beggining of the selection).
+	 * by dragging the mouse, the anchor is where the user pressed the mouse button (the beginning of the selection).
 	 *
 	 * Anchor and {@link #focus} define the direction of the selection, which is important
 	 * when expanding/shrinking selection. The focus moves, while the anchor should remain in the same place.
@@ -863,7 +863,7 @@ function getParentBlock( position, visited ) {
 
 // Checks if the blocks is not nested in other block inside a range.
 //
-// @param {module:engine/model/elmenent~Element} block Block to check.
+// @param {module:engine/model/element~Element} block Block to check.
 // @param {module:engine/model/range~Range} range Range to check.
 function isTopBlockInRange( block, range ) {
 	const parentBlock = findAncestorBlock( block );
