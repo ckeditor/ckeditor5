@@ -312,21 +312,6 @@ describe( 'WidgetTypeAround', () => {
 		} );
 	} );
 
-	describe( '(TEMP) "Integration" with Track Changes using CSS class on roots', () => {
-		it( 'should toggle the CSS class when the InsertParagraphCommand#isEnabled changes', () => {
-			const command = editor.commands.get( 'insertParagraph' );
-
-			expect( command.isEnabled ).to.be.true;
-			expect( viewRoot.hasClass( 'ck-widget_type-around_temp-disabled' ) ).to.be.false;
-
-			command.isEnabled = false;
-			expect( viewRoot.hasClass( 'ck-widget_type-around_temp-disabled' ) ).to.be.true;
-
-			command.isEnabled = true;
-			expect( viewRoot.hasClass( 'ck-widget_type-around_temp-disabled' ) ).to.be.false;
-		} );
-	} );
-
 	function assertIsTypeAroundBefore( viewWidget, expected ) {
 		expect( viewWidget.hasClass( 'ck-widget_can-type-around_before' ) ).to.equal( expected );
 	}
