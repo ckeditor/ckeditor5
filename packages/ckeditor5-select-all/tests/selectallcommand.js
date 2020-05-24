@@ -77,7 +77,7 @@ describe( 'SelectAllCommand', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph><image src="foo.png"><caption>[bar]</caption></image>' );
 		} );
 
-		it( 'should select all (within limit element selected)', () => {
+		it( 'should select all (selection within limit element)', () => {
 			setData( model,
 				'<paragraph>foo</paragraph>' +
 				'<table>' +
@@ -115,14 +115,6 @@ describe( 'SelectAllCommand', () => {
 			);
 		} );
 
-		it( 'when entire editable is selected, should select all in parent select-all-limit element', () => {
-			setData( model, '<paragraph>foo</paragraph><image src="foo.png"><caption>[bar]</caption></image>' );
-
-			editor.execute( 'selectAll' );
-
-			expect( getData( model ) ).to.equal( '<paragraph>[foo</paragraph><image src="foo.png"><caption>bar</caption></image>]' );
-		} );
-
 		it( 'should select all in the closest nested editable (nested editable inside another nested editable)', () => {
 			setData( model,
 				'<paragraph>foo</paragraph>' +
@@ -150,7 +142,15 @@ describe( 'SelectAllCommand', () => {
 			);
 		} );
 
-		it( 'consecutive execute() on nested editable, should select all in the parent sellect-all-limit element', () => {
+		it( 'should select all in the parent select-all-limit element (the entire editable is selected)', () => {
+			setData( model, '<paragraph>foo</paragraph><image src="foo.png"><caption>[bar]</caption></image>' );
+
+			editor.execute( 'selectAll' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>[foo</paragraph><image src="foo.png"><caption>bar</caption></image>]' );
+		} );
+
+		it( 'should select all in the parent sellect-all-limit element (consecutive execute() on a nested editable)', () => {
 			setData( model,
 				'<paragraph>foo</paragraph>' +
 				'<table>' +
@@ -193,7 +193,7 @@ describe( 'SelectAllCommand', () => {
 			// editor.execute( 'selectAll' );
 		} );
 
-		it( 'when entire editor is selected, should not change the selection', () => {
+		it( 'should not change the selection (the entire editor is selected)', () => {
 			setData( model,
 				'<paragraph>[foo</paragraph>' +
 				'<table>' +
