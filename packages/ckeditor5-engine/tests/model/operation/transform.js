@@ -20,6 +20,7 @@ import MarkerOperation from '../../../src/model/operation/markeroperation';
 import MoveOperation from '../../../src/model/operation/moveoperation';
 import RenameOperation from '../../../src/model/operation/renameoperation';
 import NoOperation from '../../../src/model/operation/nooperation';
+import SplitOperation from '../../../src/model/operation/splitoperation';
 
 describe( 'transform', () => {
 	let model, doc, root, op, nodeA, nodeB, expected;
@@ -720,6 +721,22 @@ describe( 'transform', () => {
 				expected.range.end.path = [ 0, 2, 3 ];
 
 				expectOperation( transOp[ 2 ], expected );
+			} );
+		} );
+
+		describe( 'by SplitOperation', () => {
+			it( 'stays the same if split of end node and has graveyardPosition', () => {
+				const transformBy = new SplitOperation(
+					new Position( root, [ 0, 2, 3, 1 ] ),
+					1,
+					new Position( doc.graveyard, [ 0 ] ),
+					0
+				);
+
+				const transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
 	} );

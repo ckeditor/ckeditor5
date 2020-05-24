@@ -216,11 +216,12 @@ describe( 'DataController utils', () => {
 					allowIn: 'pparent',
 					allowAttributes: 'align'
 				} );
-				schema.register( 'heading1', { inheritAllFrom: '$block' } );
+				schema.register( 'heading1', { inheritAllFrom: '$block', allowIn: 'pparent' } );
 				schema.register( 'image', { inheritAllFrom: '$text' } );
 				schema.register( 'pchild', { allowIn: 'paragraph' } );
 				schema.register( 'pparent', { allowIn: '$root' } );
 				schema.register( 'hchild', { allowIn: 'heading1' } );
+				schema.register( 'widget', { isObject: true, allowWhere: '$text', isInline: true } );
 				schema.extend( '$text', { allowIn: [ 'pchild', 'pparent', 'hchild' ] } );
 			} );
 
@@ -237,6 +238,18 @@ describe( 'DataController utils', () => {
 			);
 
 			test(
+				'removes first element when it\'s empty but second element is not empty (same name)',
+				'<paragraph>x</paragraph><paragraph>[foo</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
+				'<paragraph>x</paragraph><paragraph>[]ar</paragraph><paragraph>y</paragraph>'
+			);
+
+			test(
+				'does not remove first element when first element contains object (same name)',
+				'<paragraph>x</paragraph><paragraph><widget></widget>[foo</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
+				'<paragraph>x</paragraph><paragraph><widget></widget>[]ar</paragraph><paragraph>y</paragraph>'
+			);
+
+			test(
 				'does not merge second element into the first one (same name, !option.merge)',
 				'<paragraph>x</paragraph><paragraph>fo[o</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
 				'<paragraph>x</paragraph><paragraph>fo[]</paragraph><paragraph>ar</paragraph><paragraph>y</paragraph>',
@@ -244,9 +257,22 @@ describe( 'DataController utils', () => {
 			);
 
 			test(
+				'does not remove first empty element when it\'s empty but second element is not empty (same name, !option.merge)',
+				'<paragraph>x</paragraph><paragraph>[foo</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
+				'<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>ar</paragraph><paragraph>y</paragraph>',
+				{ leaveUnmerged: true }
+			);
+
+			test(
 				'merges second element into the first one (different name)',
 				'<paragraph>x</paragraph><heading1>fo[o</heading1><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
 				'<paragraph>x</paragraph><heading1>fo[]ar</heading1><paragraph>y</paragraph>'
+			);
+
+			test(
+				'removes first element when it\'s empty but second element is not empty (different name)',
+				'<paragraph>x</paragraph><heading1>[foo</heading1><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
+				'<paragraph>x</paragraph><paragraph>[]ar</paragraph><paragraph>y</paragraph>'
 			);
 
 			// Note: in all these cases we ignore the direction of merge.
@@ -284,8 +310,20 @@ describe( 'DataController utils', () => {
 
 			test(
 				'leaves just one element when all selected',
+				'<paragraph>[x</paragraph><paragraph>foo</paragraph><paragraph>y]bar</paragraph>',
+				'<paragraph>[]bar</paragraph>'
+			);
+
+			test(
+				'leaves just one element when all selected (different name)',
 				'<heading1>[x</heading1><paragraph>foo</paragraph><paragraph>y]bar</paragraph>',
 				'<paragraph>[]bar</paragraph>'
+			);
+
+			test(
+				'leaves just one (first) element when all selected (different name)',
+				'<heading1>foo[x</heading1><paragraph>bar</paragraph><paragraph>y]</paragraph>',
+				'<heading1>foo[]</heading1>'
 			);
 
 			it( 'uses merge operation even if merged element is empty', () => {
@@ -316,6 +354,42 @@ describe( 'DataController utils', () => {
 				expect( getData( model ) ).to.equal( '<paragraph>ab[]</paragraph>' );
 
 				expect( mergeSpy.called ).to.be.true;
+			} );
+
+			it( 'uses remove operation if first element is empty (because of content delete) and last is not', () => {
+				let mergeSpy;
+				let removeSpy;
+
+				setData( model, '<paragraph>[abcd</paragraph><paragraph>ef]gh</paragraph>' );
+
+				model.change( writer => {
+					mergeSpy = sinon.spy( writer, 'merge' );
+					removeSpy = sinon.spy( writer, 'remove' );
+					deleteContent( model, doc.selection );
+				} );
+
+				expect( getData( model ) ).to.equal( '<paragraph>[]gh</paragraph>' );
+
+				expect( mergeSpy.called ).to.be.false;
+				expect( removeSpy.called ).to.be.true;
+			} );
+
+			it( 'uses remove operation if first element is empty and last is not', () => {
+				let mergeSpy;
+				let removeSpy;
+
+				setData( model, '<paragraph>[</paragraph><paragraph>ef]gh</paragraph>' );
+
+				model.change( writer => {
+					mergeSpy = sinon.spy( writer, 'merge' );
+					removeSpy = sinon.spy( writer, 'remove' );
+					deleteContent( model, doc.selection );
+				} );
+
+				expect( getData( model ) ).to.equal( '<paragraph>[]gh</paragraph>' );
+
+				expect( mergeSpy.called ).to.be.false;
+				expect( removeSpy.called ).to.be.true;
 			} );
 
 			it( 'does not try to move the second block if not needed', () => {
@@ -352,16 +426,27 @@ describe( 'DataController utils', () => {
 				);
 
 				test(
+					'does not remove block element with nested element and object',
+					'<paragraph><pchild><widget></widget>[foo</pchild></paragraph><paragraph><pchild>b]ar</pchild></paragraph>',
+					'<paragraph><pchild><widget></widget>[]ar</pchild></paragraph>'
+				);
+
+				test(
+					'merges heading element',
+					'<heading1><hchild>x[foo</hchild></heading1><paragraph><pchild>b]ar</pchild></paragraph>',
+					'<heading1><hchild>x[]ar</hchild></heading1>'
+				);
+
+				test(
 					'removes heading element',
 					'<heading1><hchild>[foo</hchild></heading1><paragraph><pchild>b]ar</pchild></paragraph>',
 					'<paragraph><pchild>[]ar</pchild></paragraph>'
 				);
 
 				test(
-					'merges elements when deep nested (3rd level)',
-					'<pparent>x<paragraph>x<pchild>fo[o</pchild></paragraph></pparent>' +
-					'<pparent><paragraph><pchild>b]ar</pchild>y</paragraph>y</pparent>',
-					'<pparent>x<paragraph>x<pchild>fo[]ar</pchild>y</paragraph>y</pparent>'
+					'does not remove heading element if contains object',
+					'<heading1><hchild><widget></widget>[foo</hchild></heading1><paragraph><pchild>b]ar</pchild></paragraph>',
+					'<heading1><hchild><widget></widget>[]ar</hchild></heading1>'
 				);
 
 				test(
@@ -371,15 +456,21 @@ describe( 'DataController utils', () => {
 				);
 
 				test(
+					'removes elements when left end deep nested and will be empty',
+					'<paragraph><pchild>[foo</pchild></paragraph><paragraph>b]ar</paragraph><paragraph>x</paragraph>',
+					'<paragraph>[]ar</paragraph><paragraph>x</paragraph>'
+				);
+
+				test(
 					'merges elements when right end deep nested',
 					'<paragraph>x</paragraph><paragraph>fo[o</paragraph><paragraph><pchild>b]ar</pchild>x</paragraph>',
 					'<paragraph>x</paragraph><paragraph>fo[]ar</paragraph><paragraph>x</paragraph>'
 				);
 
 				test(
-					'merges elements when left end deep nested (3rd level)',
-					'<pparent>x<paragraph>foo<pchild>ba[r</pchild></paragraph></pparent><paragraph>b]om</paragraph>',
-					'<pparent>x<paragraph>foo<pchild>ba[]om</pchild></paragraph></pparent>'
+					'removes element when right end deep nested but left end would be empty',
+					'<paragraph>x</paragraph><paragraph>[foo</paragraph><paragraph><pchild>b]ar</pchild></paragraph>',
+					'<paragraph>x</paragraph><paragraph><pchild>[]ar</pchild></paragraph>'
 				);
 
 				test(
@@ -389,16 +480,128 @@ describe( 'DataController utils', () => {
 				);
 
 				test(
-					'merges elements when left end deep nested (in an empty container)',
+					'removes elements when left end deep nested (in an empty container)',
 					'<paragraph><pchild>[foo</pchild></paragraph><paragraph>b]ar</paragraph><paragraph>x</paragraph>',
 					'<paragraph>[]ar</paragraph><paragraph>x</paragraph>'
 				);
 
-				test(
-					'merges elements when right end deep nested (3rd level)',
-					'<paragraph>fo[o</paragraph><pparent><paragraph><pchild>bar]</pchild></paragraph></pparent>',
-					'<paragraph>fo[]</paragraph>'
-				);
+				describe( 'with 3rd level of nesting', () => {
+					test(
+						'merges elements when deep nested (same name)',
+						'<pparent>x<paragraph>x<pchild>fo[o</pchild></paragraph></pparent>' +
+						'<pparent><paragraph><pchild>b]ar</pchild>y</paragraph>y</pparent>',
+						'<pparent>x<paragraph>x<pchild>fo[]ar</pchild>y</paragraph>y</pparent>'
+					);
+
+					test(
+						'removes elements when deep nested (same name)',
+						'<pparent><paragraph><pchild>[foo</pchild></paragraph></pparent>' +
+						'<pparent><paragraph><pchild>b]ar</pchild>y</paragraph>y</pparent>',
+						'<pparent><paragraph><pchild>[]ar</pchild>y</paragraph>y</pparent>'
+					);
+
+					test(
+						'removes elements up to common ancestor when deep nested (same name)',
+						'<pparent>' +
+							'<paragraph><pchild>[foo</pchild></paragraph>' +
+							'<paragraph><pchild>b]ar</pchild>y</paragraph>y' +
+						'</pparent>',
+						'<pparent><paragraph><pchild>[]ar</pchild>y</paragraph>y</pparent>'
+					);
+
+					test(
+						'merges elements when deep nested (different name)',
+						'<pparent>x<heading1>x<hchild>fo[o</hchild></heading1></pparent>' +
+						'<pparent><paragraph><pchild>b]ar</pchild>y</paragraph>y</pparent>',
+						'<pparent>x<heading1>x<hchild>fo[]ar</hchild>y</heading1>y</pparent>'
+					);
+
+					test(
+						'removes elements when deep nested (different name)',
+						'<pparent><heading1><hchild>[foo</hchild></heading1></pparent>' +
+						'<pparent><paragraph><pchild>b]ar</pchild>y</paragraph>y</pparent>',
+						'<pparent><paragraph><pchild>[]ar</pchild>y</paragraph>y</pparent>'
+					);
+
+					test(
+						'removes elements up to common ancestor when deep nested (different names)',
+						'<pparent>' +
+							'<heading1><hchild>[foo</hchild></heading1>' +
+							'<paragraph><pchild>b]ar</pchild>y</paragraph>y' +
+						'</pparent>',
+						'<pparent><paragraph><pchild>[]ar</pchild>y</paragraph>y</pparent>'
+					);
+				} );
+
+				describe( 'with 3rd level of nesting o the left end', () => {
+					test(
+						'merges elements',
+						'<pparent>x<paragraph>foo<pchild>ba[r</pchild></paragraph></pparent>' +
+						'<paragraph>b]om</paragraph>',
+						'<pparent>x<paragraph>foo<pchild>ba[]om</pchild></paragraph></pparent>'
+					);
+
+					test(
+						'merges elements (different names)',
+						'<pparent>x<heading1>foo<hchild>ba[r</hchild></heading1></pparent>' +
+						'<paragraph>b]om</paragraph>',
+						'<pparent>x<heading1>foo<hchild>ba[]om</hchild></heading1></pparent>'
+					);
+
+					test(
+						'removes elements',
+						'<pparent><paragraph><pchild>[bar</pchild></paragraph></pparent>' +
+						'<paragraph>b]om</paragraph>',
+						'<paragraph>[]om</paragraph>'
+					);
+
+					test(
+						'removes elements up to common ancestor (different names)',
+						'<pparent>' +
+							'<heading1><hchild>[foo</hchild></heading1>' +
+							'<paragraph>b]ar</paragraph>y' +
+						'</pparent>',
+						'<pparent><paragraph>[]ar</paragraph>y</pparent>'
+					);
+				} );
+
+				describe( 'with 3rd level of nesting o the right end', () => {
+					test(
+						'merges elements',
+						'<paragraph>b[om</paragraph>' +
+						'<pparent><paragraph><pchild>ba]r</pchild></paragraph></pparent>',
+						'<paragraph>b[]r</paragraph>'
+					);
+
+					test(
+						'merges elements (different names)',
+						'<paragraph>bo[m</paragraph>' +
+						'<pparent><heading1><hchild>b]ar</hchild></heading1></pparent>',
+						'<paragraph>bo[]ar</paragraph>'
+					);
+					test(
+						'merges elements (different names, reversed)',
+						'<heading1>bo[m</heading1>' +
+						'<pparent><paragraph><pchild>b]ar</pchild></paragraph></pparent>',
+						'<heading1>bo[]ar</heading1>'
+					);
+
+					test(
+						'removes elements',
+						'<paragraph>[bom</paragraph>' +
+						'<pparent><paragraph><pchild>b]ar</pchild></paragraph></pparent>',
+						'<pparent><paragraph><pchild>[]ar</pchild></paragraph></pparent>'
+					);
+
+					test(
+						'removes elements up to common ancestor (different names)',
+						'<pparent>' +
+							'<heading1>[bar</heading1>y' +
+							'<paragraph><pchild>f]oo</pchild></paragraph>' +
+						'</pparent>',
+						'<pparent><paragraph><pchild>[]oo</pchild></paragraph></pparent>'
+					);
+				} );
 			} );
 
 			describe( 'with object elements', () => {
