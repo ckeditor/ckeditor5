@@ -16,6 +16,7 @@ import { isColor, isLength, isPercentage } from '@ckeditor/ckeditor5-engine/src/
 import { getTableWidgetAncestor } from '../utils';
 import { findAncestor } from '../commands/utils';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import { centeredBalloonPositionForLongWidgets } from '@ckeditor/ckeditor5-widget/src/utils';
 
 const DEFAULT_BALLOON_POSITIONS = BalloonPanelView.defaultPositions;
 const BALLOON_POSITIONS = [
@@ -25,6 +26,10 @@ const BALLOON_POSITIONS = [
 	DEFAULT_BALLOON_POSITIONS.southArrowNorth,
 	DEFAULT_BALLOON_POSITIONS.southArrowNorthWest,
 	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast
+];
+const TABLE_PROPERTRIES_BALLOON_POSITIONS = [
+	...BALLOON_POSITIONS,
+	centeredBalloonPositionForLongWidgets
 ];
 
 const isEmpty = val => val === '';
@@ -69,7 +74,7 @@ export function getBalloonTablePositionData( editor ) {
 
 	return {
 		target: editor.editing.view.domConverter.viewToDom( viewTable ),
-		positions: BALLOON_POSITIONS
+		positions: TABLE_PROPERTRIES_BALLOON_POSITIONS
 	};
 }
 

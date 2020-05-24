@@ -36,9 +36,9 @@ msgctxt "Label for the delete table column button."
 msgid "Delete column"
 msgstr "Slett kolonne"
 
-msgctxt "Label for the select table entire column button."
+msgctxt "Label for the select the entire table column button."
 msgid "Select column"
-msgstr ""
+msgstr "Velg kolonne "
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
@@ -60,9 +60,9 @@ msgctxt "Label for the delete table row button."
 msgid "Delete row"
 msgstr "Slett rad"
 
-msgctxt "Label for the select table entire row button."
+msgctxt "Label for the select the entire table row button."
 msgid "Select row"
-msgstr ""
+msgstr "Velg rad"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
@@ -98,7 +98,7 @@ msgstr "Slå sammen celler"
 
 msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
 msgid "Table toolbar"
-msgstr ""
+msgstr "Tabell verktøylinje "
 
 msgctxt "The label describing the form allowing to specify the properties of a selected table."
 msgid "Table properties"
@@ -110,7 +110,7 @@ msgstr "Celleegenskaper "
 
 msgctxt "The label describing a group of border–related form fields (border style, color, etc.)."
 msgid "Border"
-msgstr ""
+msgstr "Kantlinje "
 
 msgctxt "The label for the dropdown that allows configuring the border style of a table or a table cell."
 msgid "Style"
@@ -134,7 +134,7 @@ msgstr "Bakgrunn "
 
 msgctxt "The label for the input that allows configuring the padding of a table cell."
 msgid "Padding"
-msgstr ""
+msgstr "Fylling"
 
 msgctxt "The label describing a group of form fields that allows setting dimensions of a table or a table cell."
 msgid "Dimensions"
@@ -150,100 +150,100 @@ msgstr "Justering"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the horizontal text alignment in a table cell."
 msgid "Horizontal text alignment toolbar"
-msgstr ""
+msgstr "Verktøylinje for justering av tekst horisontalt "
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the vertical text alignment in a table cell."
 msgid "Vertical text alignment toolbar"
-msgstr ""
+msgstr "Verktøylinje for justering av tekst vertikalt "
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the alignment of a table."
 msgid "Table alignment toolbar"
-msgstr ""
+msgstr "Verktøylinje for justering av tabell "
 
 msgctxt "The label for the border style dropdown when no style is applied to a table or a table cell."
 msgid "None"
-msgstr ""
+msgstr "Ingen"
 
 msgctxt "The label for the border style dropdown when the solid border is applied to a table or a table cell."
 msgid "Solid"
-msgstr ""
+msgstr "Hel"
 
 msgctxt "The label for the border style dropdown when the dotted border is applied to a table or a table cell."
 msgid "Dotted"
-msgstr ""
+msgstr "Stiplede"
 
 msgctxt "The label for the border style dropdown when the dashed border is applied to a table or a table cell."
 msgid "Dashed"
-msgstr ""
+msgstr "Stiplet"
 
 msgctxt "The label for the border style dropdown when the double border is applied to a table or a table cell."
 msgid "Double"
-msgstr ""
+msgstr "Dobbel "
 
 msgctxt "The label for the border style dropdown when the groove border is applied to a table or a table cell."
 msgid "Groove"
-msgstr ""
+msgstr "Grov"
 
 msgctxt "The label for the border style dropdown when the ridge border is applied to a table or a table cell."
 msgid "Ridge"
-msgstr ""
+msgstr "Kjede"
 
 msgctxt "The label for the border style dropdown when the inset border is applied to a table or a table cell."
 msgid "Inset"
-msgstr ""
+msgstr "Innover"
 
 msgctxt "The label for the border style dropdown when the outset border is applied to a table or a table cell."
 msgid "Outset"
-msgstr ""
+msgstr "Utover"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the left."
 msgid "Align cell text to the left"
-msgstr ""
+msgstr "Juster celletekst til venstre "
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the center."
 msgid "Align cell text to the center"
-msgstr ""
+msgstr "Juster celletekst til midten "
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the right."
 msgid "Align cell text to the right"
-msgstr ""
+msgstr "Juster celletekst til høyre "
 
 msgctxt "The label used by assistive technologies describing a button that justifies the table cell text."
 msgid "Justify cell text"
-msgstr ""
+msgstr "Rett celletekst "
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the top."
 msgid "Align cell text to the top"
-msgstr ""
+msgstr "Juster celletekst til topp"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the middle."
 msgid "Align cell text to the middle"
-msgstr ""
+msgstr "Juster celletekst til midten"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the bottom."
 msgid "Align cell text to the bottom"
-msgstr ""
+msgstr "Juster celletekst til bunn "
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the left."
 msgid "Align table to the left"
-msgstr ""
+msgstr "Juster tabell til venstre "
 
 msgctxt "The label used by assistive technologies describing a button that centers the table."
 msgid "Center table"
-msgstr ""
+msgstr "Sentrer tabell "
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the right."
 msgid "Align table to the right"
-msgstr ""
+msgstr "Juster tabell til høyre "
 
 msgctxt "The localized error string that can be displayed next to color (background, border) fields that have an invalid value"
 msgid "The color is invalid. Try \"#FF0000\" or \"rgb(255,0,0)\" or \"red\"."
-msgstr ""
+msgstr "Ugyldig farge "
 
 msgctxt "The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value."
 msgid "The value is invalid. Try \"10px\" or \"2em\" or simply \"2\"."
-msgstr ""
+msgstr "Ugyldig verdi "
 
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"
-msgstr ""
+msgstr "Fargevalg "

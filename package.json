@@ -77,11 +77,11 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-comments": "^19.0.1",
-    "@ckeditor/ckeditor5-dev-docs": "^11.1.0",
-    "@ckeditor/ckeditor5-dev-env": "^18.0.0",
-    "@ckeditor/ckeditor5-dev-tests": "^19.2.0",
-    "@ckeditor/ckeditor5-dev-utils": "^13.0.0",
-    "@ckeditor/ckeditor5-dev-webpack-plugin": "^9.0.0",
+    "@ckeditor/ckeditor5-dev-docs": "^20.0.0",
+    "@ckeditor/ckeditor5-dev-env": "^20.0.0",
+    "@ckeditor/ckeditor5-dev-tests": "^20.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^20.0.0",
+    "@ckeditor/ckeditor5-dev-webpack-plugin": "^20.0.0",
     "@ckeditor/ckeditor5-inspector": "^2.0.0",
     "@ckeditor/ckeditor5-react": "^1.1.3",
     "@ckeditor/ckeditor5-real-time-collaboration": "^19.0.1",
@@ -130,7 +130,7 @@
     "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test.js",
     "manual": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test-manual.js",
     "bootstrap": "yarn install",
-    "clean": "rm -rf node_modules",
+    "clean": "rm -rf ./node_modules && rm -rf ./external/*/node_modules",
     "reset": "rm -rf ./node_modules && yarn run bootstrap",
     "reinstall": "yarn run clean && yarn run bootstrap",
     "docs": "node --max-old-space-size=4096 ./scripts/docs/build-docs.js",
@@ -160,13 +160,16 @@
   },
   "eslintIgnore": [
     "build/**",
+    "packages/*/node_modules/**",
     "packages/*/build/**",
     "packages/*/src/lib/**",
-    "coverage/**"
+    "coverage/**",
+    "external/**"
   ],
   "workspaces": {
     "packages": [
       "packages/*",
+      "external/*",
       "external/*/packages/*",
       "."
     ],

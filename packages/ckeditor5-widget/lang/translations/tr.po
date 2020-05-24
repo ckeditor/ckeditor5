@@ -19,3 +19,11 @@ msgstr ""
 msgctxt "The label used by assistive technologies describing a toolbar attached to a widget."
 msgid "Widget toolbar"
 msgstr "Bileşen araç çubuğu"
+
+msgctxt "The title displayed when a mouse is over a button that inserts a paragraph before a block."
+msgid "Insert paragraph before block"
+msgstr ""
+
+msgctxt "The title displayed when a mouse is over a button that inserts a paragraph after a block."
+msgid "Insert paragraph after block"
+msgstr ""

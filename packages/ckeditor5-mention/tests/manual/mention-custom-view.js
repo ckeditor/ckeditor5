@@ -50,7 +50,10 @@ class CustomMentionAttributeView extends Plugin {
 					class: 'mention',
 					'data-mention': modelAttributeValue.id,
 					'href': modelAttributeValue.link
-				}, { id: modelAttributeValue._uid } );
+				}, {
+					priority: 20,
+					id: modelAttributeValue.uid
+				} );
 			},
 			converterPriority: 'high'
 		} );

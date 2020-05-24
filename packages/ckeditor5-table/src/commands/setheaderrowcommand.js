@@ -9,9 +9,8 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { createEmptyTableCell, findAncestor, updateNumericAttribute } from './utils';
-import { getRowIndexes, getSelectionAffectedTableCells } from '../utils';
-import TableWalker from '../tablewalker';
+import { findAncestor, updateNumericAttribute } from './utils';
+import { getVerticallyOverlappingCells, getRowIndexes, getSelectionAffectedTableCells, splitHorizontally } from '../utils';
 
 /**
  * The header row command.
@@ -77,9 +76,10 @@ export default class SetHeaderRowCommand extends Command {
 			if ( headingRowsToSet ) {
 				// Changing heading rows requires to check if any of a heading cell is overlapping vertically the table head.
 				// Any table cell that has a rowspan attribute > 1 will not exceed the table head so we need to fix it in rows below.
-				const cellsToSplit = getOverlappingCells( table, headingRowsToSet, currentHeadingRows );
+				const startRow = headingRowsToSet > currentHeadingRows ? currentHeadingRows : 0;
+				const overlappingCells = getVerticallyOverlappingCells( table, headingRowsToSet, startRow );
 
-				for ( const cell of cellsToSplit ) {
+				for ( const { cell } of overlappingCells ) {
 					splitHorizontally( cell, headingRowsToSet, writer );
 				}
 			}
@@ -101,78 +101,4 @@ export default class SetHeaderRowCommand extends Command {
 
 		return !!headingRows && tableCell.parent.index < headingRows;
 	}
-}
-
-// Returns cells that span beyond the new heading section.
-//
-// @param {module:engine/model/element~Element} table The table to check.
-// @param {Number} headingRowsToSet New heading rows attribute.
-// @param {Number} currentHeadingRows Current heading rows attribute.
-// @returns {Array.<module:engine/model/element~Element>}
-function getOverlappingCells( table, headingRowsToSet, currentHeadingRows ) {
-	const cellsToSplit = [];
-
-	const startAnalysisRow = headingRowsToSet > currentHeadingRows ? currentHeadingRows : 0;
-	// We're analyzing only when headingRowsToSet > 0.
-	const endAnalysisRow = headingRowsToSet - 1;
-
-	const tableWalker = new TableWalker( table, { startRow: startAnalysisRow, endRow: endAnalysisRow } );
-
-	for ( const { row, rowspan, cell } of tableWalker ) {
-		if ( rowspan > 1 && row + rowspan > headingRowsToSet ) {
-			cellsToSplit.push( cell );
-		}
-	}
-
-	return cellsToSplit;
-}
-
-// Splits the table cell horizontally.
-//
-// @param {module:engine/model/element~Element} tableCell
-// @param {Number} headingRows
-// @param {module:engine/model/writer~Writer} writer
-function splitHorizontally( tableCell, headingRows, writer ) {
-	const tableRow = tableCell.parent;
-	const table = tableRow.parent;
-	const rowIndex = tableRow.index;
-
-	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) );
-	const newRowspan = headingRows - rowIndex;
-
-	const attributes = {};
-
-	const spanToSet = rowspan - newRowspan;
-
-	if ( spanToSet > 1 ) {
-		attributes.rowspan = spanToSet;
-	}
-
-	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
-
-	if ( colspan > 1 ) {
-		attributes.colspan = colspan;
-	}
-
-	const startRow = table.getChildIndex( tableRow );
-	const endRow = startRow + newRowspan;
-	const tableMap = [ ...new TableWalker( table, { startRow, endRow, includeSpanned: true } ) ];
-
-	let columnIndex;
-
-	for ( const { row, column, cell, cellIndex } of tableMap ) {
-		if ( cell === tableCell && columnIndex === undefined ) {
-			columnIndex = column;
-		}
-
-		if ( columnIndex !== undefined && columnIndex === column && row === endRow ) {
-			const tableRow = table.getChild( row );
-			const tableCellPosition = writer.createPositionAt( tableRow, cellIndex );
-
-			createEmptyTableCell( writer, tableCellPosition, attributes );
-		}
-	}
-
-	// Update the rowspan attribute after updating table.
-	updateNumericAttribute( 'rowspan', newRowspan, tableCell, writer );
 }

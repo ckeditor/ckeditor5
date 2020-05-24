@@ -69,7 +69,7 @@ export default class MentionEditing extends Plugin {
 }
 
 export function _addMentionAttributes( baseMentionData, data ) {
-	return Object.assign( { _uid: uid() }, baseMentionData, data || {} );
+	return Object.assign( { uid: uid() }, baseMentionData, data || {} );
 }
 
 /**
@@ -142,7 +142,7 @@ function createViewMentionElement( mention, viewWriter ) {
 	};
 
 	const options = {
-		id: mention._uid,
+		id: mention.uid,
 		priority: 20
 	};
 

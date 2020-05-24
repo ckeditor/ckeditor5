@@ -126,12 +126,12 @@ export function modelToDataViewSoftBreakInsertion( model ) {
  *
  *		<codeBlock language="javascript">foo();<softBreak></softBreak>bar();</codeBlock>
  *
- * @param {module:engine/controller/datacontroller~DataController} dataController
+ * @param {module:engine/view/view~View} editingView
  * @param {Array.<module:code-block/codeblock~CodeBlockLanguageDefinition>} languageDefs The normalized language
  * configuration passed to the feature.
  * @returns {Function} Returns a conversion callback.
  */
-export function dataViewToModelCodeBlockInsertion( dataController, languageDefs ) {
+export function dataViewToModelCodeBlockInsertion( editingView, languageDefs ) {
 	// Language names associated with CSS classes:
 	//
 	//		{
@@ -183,8 +183,12 @@ export function dataViewToModelCodeBlockInsertion( dataController, languageDefs 
 			writer.setAttribute( 'language', defaultLanguageName, codeBlock );
 		}
 
-		const stringifiedElement = dataController.processor.toData( viewChild );
-		const textData = extractDataFromCodeElement( stringifiedElement );
+		// HTML elements are invalid content for `<code>`.
+		// Read only text nodes.
+		const textData = [ ...editingView.createRangeIn( viewChild ) ]
+			.filter( current => current.type === 'text' )
+			.map( ( { item } ) => item.data )
+			.join( '' );
 		const fragment = rawSnippetTextToModelDocumentFragment( writer, textData );
 
 		writer.append( fragment, codeBlock );
@@ -233,15 +237,4 @@ export function dataViewToModelCodeBlockInsertion( dataController, languageDefs 
 			data.modelCursor = data.modelRange.end;
 		}
 	};
-}
-
-// Returns content of `<pre></pre>` with unescaped html inside.
-//
-// @param {String} stringifiedElement
-function extractDataFromCodeElement( stringifiedElement ) {
-	const data = new RegExp( /^<code[^>]*>([\S\s]*)<\/code>$/ ).exec( stringifiedElement )[ 1 ];
-
-	return data
-		.replace( /&lt;/g, '<' )
-		.replace( /&gt;/g, '>' );
 }

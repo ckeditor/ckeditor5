@@ -8,6 +8,7 @@
  */
 
 import ParagraphCommand from './paragraphcommand';
+import InsertParagraphCommand from './insertparagraphcommand';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
@@ -15,6 +16,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
  * The paragraph feature for the editor.
  *
  * It introduces the `<paragraph>` element in the model which renders as a `<p>` element in the DOM and data.
+ *
+ * It also brings two editors commands:
+ *
+ * * The {@link module:paragraph/paragraphcommand~ParagraphCommand `'paragraph'`} command that converts all
+ * blocks in the model selection into paragraphs.
+ * * The {@link module:paragraph/insertparagraphcommand~InsertParagraphCommand `'insertParagraph'`} command
+ * that inserts a new paragraph at a specified location in the model.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -35,6 +43,7 @@ export default class Paragraph extends Plugin {
 		const data = editor.data;
 
 		editor.commands.add( 'paragraph', new ParagraphCommand( editor ) );
+		editor.commands.add( 'insertParagraph', new InsertParagraphCommand( editor ) );
 
 		// Schema.
 		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );

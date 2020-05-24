@@ -22,7 +22,7 @@ Most of the issues are reproducible on the demo. If you have a different case th
 
 ## Reporting issues
 
-All issues should be reported in the [CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues) on GitHub, except ones that are related to one of the following projects (which have their own issue pages):
+All issues should be reported in the [CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues) on GitHub, except ones that are related to one of the following projects (that have their own issue pages):
 
 * [Angular integration](https://github.com/ckeditor/ckeditor5-angular),
 * [React integration](https://github.com/ckeditor/ckeditor5-react),
