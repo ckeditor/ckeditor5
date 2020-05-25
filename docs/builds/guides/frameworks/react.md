@@ -295,6 +295,57 @@ Finally, exclude CKEditor 5 SVG and CSS files from `file-loader` . Find the last
 }
 ```
 
+If you are using plugins like [@wiris/mathtype-ckeditor5](https://github.com/wiris/mathtype-ckeditor5) that don't use the package name conventions:`ckeditor-my-plugin-name`, you have to make more two changes to your custom config.
+- Change your `raw-loader` config from:
+```js
+{
+	test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+	use: [ 'raw-loader' ]
+},
+...
+```
+to:
+
+```js
+{
+   	test: /theme[/\\]icons[/\\][^/\\]+\.svg$/
+	use: [ 'raw-loader' ]
+}
+...
+```
+- Change your `file-loader` config from:
+```js
+{
+	loader: require.resolve( 'file-loader' ),
+	exclude: [
+		/\.(js|mjs|jsx|ts|tsx)$/,
+		/\.html$/,
+		/\.json$/,
+		/ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/
+	],
+	options: {
+		name: 'static/media/[name].[hash:8].[ext]',
+	}
+}
+```
+to:
+```js
+{
+	exclude: [
+		/\.(js|mjs|jsx|ts|tsx)$/,
+		/\.html$/,
+		/\.json$/,
+		// Making the CRA file-loader ignore all svg icons from the plugin
+		/[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/
+	],
+	options: {
+		name: 'static/media/[name].[hash:8].[ext]',
+	}
+}
+```
+
 #### Using CKEditor 5 source
 
 Once your configuration is updated, you can now use CKEditor 5 directly from source. Test it by editing `src/App.js`:
