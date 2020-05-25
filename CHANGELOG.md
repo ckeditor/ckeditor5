@@ -155,7 +155,7 @@ Finally, this release comes with some **important breaking changes**. The most n
 
 Check the list of packages below to learn more about these and other minor breaking changes.
 
-Blog post coming soon...
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v19.0.0-with-table-enhancements-improved-performance-and-select-all-feature/.
 
 ### Collaboration features
 
