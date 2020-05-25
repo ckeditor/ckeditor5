@@ -356,40 +356,34 @@ describe( 'DataController utils', () => {
 				expect( mergeSpy.called ).to.be.true;
 			} );
 
-			it( 'uses remove operation if first element is empty (because of content delete) and last is not', () => {
+			it( 'uses merge operation if first element is empty (because of content delete) and last is not', () => {
 				let mergeSpy;
-				let removeSpy;
 
 				setData( model, '<paragraph>[abcd</paragraph><paragraph>ef]gh</paragraph>' );
 
 				model.change( writer => {
 					mergeSpy = sinon.spy( writer, 'merge' );
-					removeSpy = sinon.spy( writer, 'remove' );
 					deleteContent( model, doc.selection );
 				} );
 
 				expect( getData( model ) ).to.equal( '<paragraph>[]gh</paragraph>' );
 
-				expect( mergeSpy.called ).to.be.false;
-				expect( removeSpy.called ).to.be.true;
+				expect( mergeSpy.called ).to.be.true;
 			} );
 
-			it( 'uses remove operation if first element is empty and last is not', () => {
+			it( 'uses merge operation if first element is empty and last is not', () => {
 				let mergeSpy;
-				let removeSpy;
 
 				setData( model, '<paragraph>[</paragraph><paragraph>ef]gh</paragraph>' );
 
 				model.change( writer => {
 					mergeSpy = sinon.spy( writer, 'merge' );
-					removeSpy = sinon.spy( writer, 'remove' );
 					deleteContent( model, doc.selection );
 				} );
 
 				expect( getData( model ) ).to.equal( '<paragraph>[]gh</paragraph>' );
 
-				expect( mergeSpy.called ).to.be.false;
-				expect( removeSpy.called ).to.be.true;
+				expect( mergeSpy.called ).to.be.true;
 			} );
 
 			it( 'does not try to move the second block if not needed', () => {
@@ -521,6 +515,15 @@ describe( 'DataController utils', () => {
 						'<pparent><heading1><hchild>[foo</hchild></heading1></pparent>' +
 						'<pparent><paragraph><pchild>b]ar</pchild>y</paragraph>y</pparent>',
 						'<pparent><paragraph><pchild>[]ar</pchild>y</paragraph>y</pparent>'
+					);
+
+					test(
+						'merges elements up to common ancestor when deep nested (different names)',
+						'<pparent>' +
+							'<heading1><hchild>fo[o</hchild></heading1>' +
+							'<paragraph><pchild>b]ar</pchild></paragraph>' +
+						'</pparent>',
+						'<pparent><heading1><hchild>fo[]ar</hchild></heading1></pparent>'
 					);
 
 					test(

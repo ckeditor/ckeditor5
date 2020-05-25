@@ -123,25 +123,9 @@ export default function deleteContent( model, selection, options = {} ) {
 
 // This function is a result of reaching the Ballmer's peak for just the right amount of time.
 // Even I had troubles documenting it after a while and after reading it again I couldn't believe that it really works.
-function mergeBranches( writer, startPos, endPos ) {
-	const startParent = startPos.parent;
-	const endParent = endPos.parent;
-
-	// If both positions ended up in the same parent, then there's nothing more to merge:
-	// <$root><p>x[]</p><p>{}y</p></$root> => <$root><p>xy</p>[]{}</$root>
-	if ( startParent == endParent ) {
-		return;
-	}
-
-	// If one of the positions is a limit element, then there's nothing to merge because we don't want to cross the limit boundaries.
-	if ( writer.model.schema.isLimit( startParent ) || writer.model.schema.isLimit( endParent ) ) {
-		return;
-	}
-
-	// Check if operations we'll need to do won't need to cross object or limit boundaries.
-	// E.g., we can't merge endParent into startParent in this case:
-	// <limit><startParent>x[]</startParent></limit><endParent>{}</endParent>
-	if ( !checkCanBeMerged( startPos, endPos, writer.model.schema ) ) {
+function mergeBranches( writer, startPosition, endPosition ) {
+	// Verify if there is a need and possibility to merge.
+	if ( !checkShouldMerge( writer.model.schema, startPosition, endPosition ) ) {
 		return;
 	}
 
@@ -149,51 +133,160 @@ function mergeBranches( writer, startPos, endPos ) {
 	// then remove former one and merging is done.
 	// <heading1>[</heading1><paragraph>]foo</paragraph> -> <paragraph>[]foo</paragraph>
 	// <blockQuote><heading1>[</heading1><paragraph>]foo</paragraph> -> <blockQuote><paragraph>[]foo</paragraph></blockQuote>
-	const [ startAncestor, endAncestor ] = getElementsNextToCommonAncestor( startPos, endPos );
+	const [ startAncestor, endAncestor ] = getElementsNextToCommonAncestor( startPosition, endPosition );
 
 	if ( !hasContent( startAncestor ) && hasContent( endAncestor ) ) {
-		writer.remove( startAncestor );
+		mergeBranchesRight( writer, startPosition, endPosition, startAncestor.parent );
+	} else {
+		mergeBranchesLeft( writer, startPosition, endPosition, startAncestor.parent );
+	}
 
-		return endPos;
+	// The new start position will be equal to end position (this is a LivePosition so it's up to date).
+	return endPosition;
+}
+
+function mergeBranchesLeft( writer, startPosition, endPosition, commonAncestor ) {
+	const startElement = startPosition.parent;
+	const endElement = endPosition.parent;
+
+	// Merging reached the common ancestor element, stop here.
+	if ( startElement == commonAncestor || endElement == commonAncestor ) {
+		return;
 	}
 
 	// Remember next positions to merge. For example:
-	// <a><b>x[]</b></a><c><d>{}y</d></c>
+	// <a><b>x[</b></a><c><d>]y</d></c>
 	// will become:
-	// <a><b>xy</b>[]</a><c>{}</c>
-	startPos = writer.createPositionAfter( startParent );
-	endPos = writer.createPositionBefore( endParent );
+	// <a><b>xy</b>[</a><c>]</c>
+	startPosition = writer.createPositionAfter( startElement );
+	endPosition = writer.createPositionBefore( endElement );
 
-	if ( !endPos.isEqual( startPos ) ) {
-		// In this case, before we merge, we need to move `endParent` to the `startPos`:
-		// <a><b>x[]</b></a><c><d>{}y</d></c>
+	if ( !endPosition.isEqual( startPosition ) ) {
+		// In this case, before we merge, we need to move `endElement` to the `startPosition`:
+		// <a><b>x[</b></a><c><d>]y</d></c>
 		// becomes:
-		// <a><b>x</b>[]<d>y</d></a><c>{}</c>
-		writer.insert( endParent, startPos );
+		// <a><b>x</b>[<d>y</d></a><c>]</c>
+		writer.insert( endElement, startPosition );
 	}
 
 	// Merge two siblings:
 	// <a>x</a>[]<b>y</b> -> <a>xy</a> (the usual case)
 	// <a><b>x</b>[]<d>y</d></a><c></c> -> <a><b>xy</b>[]</a><c></c> (this is the "move parent" case shown above)
-	writer.merge( startPos );
+	writer.merge( startPosition );
 
 	// Remove empty end ancestors:
 	// <a>fo[o</a><b><a><c>bar]</c></a></b>
 	// becomes:
-	// <a>fo[]</a><b><a>{}</a></b>
+	// <a>fo[</a><b><a>]</a></b>
 	// So we can remove <a> and <b>.
-	while ( endPos.parent.isEmpty ) {
-		const parentToRemove = endPos.parent;
+	while ( endPosition.parent.isEmpty ) {
+		const parentToRemove = endPosition.parent;
 
-		endPos = writer.createPositionBefore( parentToRemove );
+		endPosition = writer.createPositionBefore( parentToRemove );
 
 		writer.remove( parentToRemove );
 	}
 
+	// Verify if there is a need and possibility to merge next level.
+	if ( !checkShouldMerge( writer.model.schema, startPosition, endPosition ) ) {
+		return;
+	}
+
 	// Continue merging next level.
-	mergeBranches( writer, startPos, endPos );
+	mergeBranchesLeft( writer, startPosition, endPosition, commonAncestor );
 }
 
+function mergeBranchesRight( writer, startPosition, endPosition, commonAncestor ) {
+	const startElement = startPosition.parent;
+	const endElement = endPosition.parent;
+
+	// Merging reached the common ancestor element, stop here.
+	if ( startElement == commonAncestor || endElement == commonAncestor ) {
+		return;
+	}
+
+	// Remember next positions to merge. For example:
+	// <a><b>x[</b></a><c><d>]y</d></c>
+	// will become:
+	// <a>[</a><c>]<d>xy</d></c>
+	startPosition = writer.createPositionAfter( startElement );
+	endPosition = writer.createPositionBefore( endElement );
+
+	if ( !endPosition.isEqual( startPosition ) ) {
+		// In this case, before we merge, we need to move `startElement` to the `endPosition`:
+		// <a><b>x[</b></a><c><d>]y</d></c>
+		// becomes:
+		// <a>[</a><c><b>x</b>]<d>y</d></c>
+		writer.insert( startElement, endPosition );
+	}
+
+	// Remove empty start ancestors:
+	// <x><a><b>x[</b></a></x><c><d>]y</d></c>
+	// becomes:
+	// <x><a>[</a></x><c><b>x</b>]<d>y</d></c>
+	// So we can remove <a> and <x>.
+	while ( startPosition.parent.isEmpty ) {
+		const parentToRemove = startPosition.parent;
+
+		startPosition = writer.createPositionBefore( parentToRemove );
+
+		writer.remove( parentToRemove );
+	}
+
+	// Update endPosition after inserting and removing elements.
+	endPosition = writer.createPositionBefore( endElement );
+
+	// Merge two siblings:
+	// <a>x</a>[]<b>y</b> -> <b>xy</b>
+	mergeRight( writer, endPosition );
+
+	// Verify if there is a need and possibility to merge next level.
+	if ( !checkShouldMerge( writer.model.schema, startPosition, endPosition ) ) {
+		return;
+	}
+
+	// Continue merging next level.
+	mergeBranchesRight( writer, startPosition, endPosition, commonAncestor );
+}
+
+// There is no right merge operation so we need to simulate it.
+function mergeRight( writer, position ) {
+	const startElement = position.nodeBefore;
+	const endElement = position.nodeAfter;
+
+	if ( startElement.name != endElement.name ) {
+		writer.rename( startElement, endElement.name );
+	}
+
+	writer.clearAttributes( startElement );
+	writer.setAttributes( Object.fromEntries( endElement.getAttributes() ), startElement );
+
+	writer.merge( position );
+}
+
+// Verifies if merging is needed and possible.
+function checkShouldMerge( schema, startPosition, endPosition ) {
+	const startElement = startPosition.parent;
+	const endElement = endPosition.parent;
+
+	// If both positions ended up in the same parent, then there's nothing more to merge:
+	// <$root><p>x[</p><p>]y</p></$root> => <$root><p>xy</p>[]</$root>
+	if ( startElement == endElement ) {
+		return false;
+	}
+
+	// If one of the positions is a limit element, then there's nothing to merge because we don't want to cross the limit boundaries.
+	if ( schema.isLimit( startElement ) || schema.isLimit( endElement ) ) {
+		return false;
+	}
+
+	// Check if operations we'll need to do won't need to cross object or limit boundaries.
+	// E.g., we can't merge endElement into startElement in this case:
+	// <limit><startElement>x[</startElement></limit><endElement>]</endElement>
+	return checkCanBeMerged( startPosition, endPosition, schema );
+}
+
+// Returns the elements that are the ancestors of the provided positions that are direct children of the common ancestor.
 function getElementsNextToCommonAncestor( positionA, positionB ) {
 	const ancestorsA = positionA.getAncestors();
 	const ancestorsB = positionB.getAncestors();
@@ -207,6 +300,7 @@ function getElementsNextToCommonAncestor( positionA, positionB ) {
 	return [ ancestorsA[ i ], ancestorsB[ i ] ];
 }
 
+// Returns true if element contains any text.
 function hasContent( element ) {
 	const schema = element.root.document.model.schema;
 	const range = Range._createIn( element );
