@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Label for the image widget."
 msgid "image widget"
-msgstr "Görsel Bileşeni"
+msgstr "resim aracı"
 
 msgctxt "Label for the Side image option."
 msgid "Side image"

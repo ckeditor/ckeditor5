@@ -77,11 +77,11 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-comments": "^19.0.1",
-    "@ckeditor/ckeditor5-dev-docs": "^11.1.0",
-    "@ckeditor/ckeditor5-dev-env": "^18.0.0",
-    "@ckeditor/ckeditor5-dev-tests": "^19.2.0",
-    "@ckeditor/ckeditor5-dev-utils": "^13.0.0",
-    "@ckeditor/ckeditor5-dev-webpack-plugin": "^9.0.0",
+    "@ckeditor/ckeditor5-dev-docs": "^20.0.0",
+    "@ckeditor/ckeditor5-dev-env": "^20.0.0",
+    "@ckeditor/ckeditor5-dev-tests": "^20.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^20.0.0",
+    "@ckeditor/ckeditor5-dev-webpack-plugin": "^20.0.0",
     "@ckeditor/ckeditor5-inspector": "^2.0.0",
     "@ckeditor/ckeditor5-react": "^1.1.3",
     "@ckeditor/ckeditor5-real-time-collaboration": "^19.0.1",
@@ -160,9 +160,11 @@
   },
   "eslintIgnore": [
     "build/**",
+    "packages/*/node_modules/**",
     "packages/*/build/**",
     "packages/*/src/lib/**",
-    "coverage/**"
+    "coverage/**",
+    "external/**"
   ],
   "workspaces": {
     "packages": [

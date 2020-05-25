@@ -36,9 +36,9 @@ msgctxt "Label for the delete table column button."
 msgid "Delete column"
 msgstr "Briši kolonu"
 
-msgctxt "Label for the select table entire column button."
+msgctxt "Label for the select the entire table column button."
 msgid "Select column"
-msgstr ""
+msgstr "Odaberi kolonu"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
@@ -60,9 +60,9 @@ msgctxt "Label for the delete table row button."
 msgid "Delete row"
 msgstr "Briši red"
 
-msgctxt "Label for the select table entire row button."
+msgctxt "Label for the select the entire table row button."
 msgid "Select row"
-msgstr ""
+msgstr "Odaberi red"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
@@ -246,4 +246,4 @@ msgstr "Vrednost je nevažeća. Pokušajte sa „10pk“ ili „2em“ ili jedn
 
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"
-msgstr ""
+msgstr "Birač boja"
