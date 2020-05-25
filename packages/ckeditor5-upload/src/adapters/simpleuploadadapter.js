@@ -201,15 +201,14 @@ class Adapter {
 		// Set headers if specified.
 		const headers = this.options.headers || {};
 
+		// Use the withCredentials flag if specified.
+		const withCredentials = this.options.withCredentials || false;
+
 		for ( const headerName of Object.keys( headers ) ) {
 			this.xhr.setRequestHeader( headerName, headers[ headerName ] );
 		}
 
-		// Set withCredentials if specified
-		const withCredentials = this.options.withCredentials || false;
-		if ( withCredentials ) {
-			this.xhr.withCredentials = true;
-		}
+		this.xhr.withCredentials = withCredentials;
 
 		// Prepare the form data.
 		const data = new FormData();
@@ -287,4 +286,26 @@ class Adapter {
  * of the feature guide.
  *
  * @member {Object.<String, String>} module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#headers
+ */
+
+/**
+ * This flag enables the
+ * [`withCredentials`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials)
+ * property of the request sent to the server during the upload. It affects cross-site requests only and, for instance,
+ * allows credentials such as cookies to be sent along with the request.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				simpleUpload: {
+ *					withCredentials: true
+ *				}
+ *			} );
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * Learn more about the server application requirements in the
+ * {@glink features/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
+ * of the feature guide.
+ *
+ * @member {Boolean} [module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#withCredentials=false]
  */
