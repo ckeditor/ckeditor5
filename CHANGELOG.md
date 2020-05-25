@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [19.1.0](https://github.com/ckeditor/ckeditor5/compare/v19.0.0...v19.1.0) (2020-05-25)
+## [19.1.0](https://github.com/ckeditor/ckeditor5/compare/v19.0.0...v19.1.0) (2020-05-27)
 
 ### Release highlights
 
