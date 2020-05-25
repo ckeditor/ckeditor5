@@ -5,7 +5,23 @@ Changelog
 
 ### Release highlights
 
-TODO: Add a link to the blog post.
+We are happy to announce the release of CKEditor 5 v19.1.0.
+
+This release further refines the table plugin, brings a helper for convenient typing in tight places before or after widgets and brings a major change in our code infrastructure. Most notable enhancements are:
+
+* Pasting within a table, with different table selection &mdash; which marks an end of our [Table selection stage III](https://github.com/ckeditor/ckeditor5/issues/6297) task.
+* New ["magic block" feature, allowing to type before or after a widget](https://github.com/ckeditor/ckeditor5/issues/6689) in case there's no space around it.
+* [Project migration to a monorepo architecture](https://github.com/ckeditor/ckeditor5/issues/6466).
+
+But we did not stop there, as the release comes with several bug fixes too:
+
+@TODO
+
+* [Font retention when pasting from Microsoft Word](https://github.com/ckeditor/ckeditor5/issues/6165).
+* [Support for special characters in mention matching](https://github.com/ckeditor/ckeditor5/issues/6398).
+* [Artifact characters produced when typing  after an emoji with text transformation enabled](https://github.com/ckeditor/ckeditor5/issues/6398).
+
+Blog post coming soon...
 
 ### Collaboration features
 
@@ -13,9 +29,9 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* The `cropTable()` utility method was removed. Use `cropTableToDimensions()` instead.
-* The new --ck-color-focus-border-coordinates CSS custom property has been added and the existing --ck-color-focus-border property now uses it internally. If your integration overrides the latter, we recommend you update the former to avoid compatibility issues with various editor UI features.
-* `MediaEmbedUI#form` was removed from the API.
+* The `cropTable()` utility method was removed. Use the `cropTableToDimensions()` instead.
+* A new `--ck-color-focus-border-coordinates` CSS custom property has been added and the existing `--ck-color-focus-border` property now uses it internally. If your integration overrides the latter, we recommend you update the former to avoid compatibility issues with various editor UI features.
+* The `MediaEmbedUI#form` property was removed from the API.
 
 ### Features
 
