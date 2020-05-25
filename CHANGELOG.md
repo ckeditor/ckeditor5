@@ -49,7 +49,6 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Adding a new row in the table copies the structure of the selected row. Closes [#6549](https://github.com/ckeditor/ckeditor5/issues/6549). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f2091158ed8bfaba5ddf91f89308023a345351c))
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Display a human readable color label in the text input field. Closes [#6241](https://github.com/ckeditor/ckeditor5/issues/6241). ([commit](https://github.com/ckeditor/ckeditor5/commit/af7928f1febebeef1f4b0243169dd01415531c1d))
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Changed insert row above/below buttons order in the table dropdown. Closes [#6702](https://github.com/ckeditor/ckeditor5/issues/6702). ([commit](https://github.com/ckeditor/ckeditor5/commit/a78bca8806064ca7acdd969222bb11b853ca4f0c))
-* Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/0208690470be1ac148098274615dedeb6c39b689), [commit](https://github.com/ckeditor/ckeditor5/commit/e20e5d41620372ac3256eefd2a406f5070f33da2))
 
 ### Released packages
 
