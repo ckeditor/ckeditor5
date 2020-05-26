@@ -22,16 +22,16 @@ msgstr "画像やファイルの挿入"
 
 msgctxt "Error message displayed when inserting a resized version of an image failed."
 msgid "Could not obtain resized image URL."
-msgstr ""
+msgstr "リサイズした画像のURLの取得に失敗しました。"
 
 msgctxt "Title of a notification displayed when inserting a resized version of an image failed."
 msgid "Selecting resized image failed"
-msgstr ""
+msgstr "リサイズした画像の選択ができませんでした。"
 
 msgctxt "Error message displayed when an image cannot be inserted at the current position."
 msgid "Could not insert image at the current position."
-msgstr ""
+msgstr "現在のカーソルの場所への画像の挿入に失敗しました。"
 
 msgctxt "Title of a notification displayed when an image cannot be inserted at the current position."
 msgid "Inserting image failed"
-msgstr ""
+msgstr "画像の挿入に失敗しました。"

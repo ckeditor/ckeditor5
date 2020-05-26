@@ -99,9 +99,6 @@ export default class WidgetTypeAround extends Plugin {
 		this._enableInsertingParagraphsOnButtonClick();
 		this._enableInsertingParagraphsOnEnterKeypress();
 		this._enableTypeAroundActivationUsingKeyboardArrows();
-
-		// TODO: This is a quick fix and it should be removed the proper integration arrives.
-		this._enableTemporaryTrackChangesIntegration();
 	}
 
 	/**
@@ -228,34 +225,6 @@ export default class WidgetTypeAround extends Plugin {
 
 			domEventData.preventDefault();
 			evt.stop();
-		} );
-	}
-
-	/**
-	 * A quick fix for the integration with features requiring custom handling of the `insertParagraph`
-	 * command such as Track Changes. When the `insertParagraph` command is disabled, this fix adds
-	 * a CSS class to editor roots that makes the UI disappear.
-	 *
-	 * TODO: This is a quick fix and it should be replaced by a proper integration.
-	 *
-	 * @private
-	 */
-	_enableTemporaryTrackChangesIntegration() {
-		const editor = this.editor;
-		const editingView = editor.editing.view;
-		const insertParagraphCommand = this.editor.commands.get( 'insertParagraph' );
-		const className = 'ck-widget_type-around_temp-disabled';
-
-		this.listenTo( insertParagraphCommand, 'change:isEnabled', ( evt, name, isEnabled ) => {
-			editingView.change( writer => {
-				for ( const root of editingView.document.roots ) {
-					if ( isEnabled ) {
-						writer.removeClass( className, root );
-					} else {
-						writer.addClass( className, root );
-					}
-				}
-			} );
 		} );
 	}
 

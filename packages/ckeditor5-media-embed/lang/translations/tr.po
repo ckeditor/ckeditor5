@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Label for the media widget."
 msgid "media widget"
-msgstr "Medya Aracı"
+msgstr "medya aracı"
 
 msgctxt "Label for the URL input in the Media Embed URL editing balloon."
 msgid "Media URL"

@@ -36,9 +36,9 @@ msgctxt "Label for the delete table column button."
 msgid "Delete column"
 msgstr "Smazat sloupec"
 
-msgctxt "Label for the select table entire column button."
+msgctxt "Label for the select the entire table column button."
 msgid "Select column"
-msgstr ""
+msgstr "Vybrat sloupec"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
@@ -60,9 +60,9 @@ msgctxt "Label for the delete table row button."
 msgid "Delete row"
 msgstr "Smazat řádek"
 
-msgctxt "Label for the select table entire row button."
+msgctxt "Label for the select the entire table row button."
 msgid "Select row"
-msgstr ""
+msgstr "Vybrat řádek"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
@@ -102,35 +102,35 @@ msgstr "Panel nástrojů tabulky"
 
 msgctxt "The label describing the form allowing to specify the properties of a selected table."
 msgid "Table properties"
-msgstr ""
+msgstr "Vlastnosti tabulky"
 
 msgctxt "The label describing the form allowing to specify the properties of a selected table cell."
 msgid "Cell properties"
-msgstr ""
+msgstr "Vlastnosti buňky"
 
 msgctxt "The label describing a group of border–related form fields (border style, color, etc.)."
 msgid "Border"
-msgstr ""
+msgstr "Okraj"
 
 msgctxt "The label for the dropdown that allows configuring the border style of a table or a table cell."
 msgid "Style"
-msgstr ""
+msgstr "Styl"
 
 msgctxt "The label for the input that allows configuring the width of a table or a table cell or the width of a border."
 msgid "Width"
-msgstr ""
+msgstr "Šířka"
 
 msgctxt "The label for the input that allows configuring the height of a table or a table cell."
 msgid "Height"
-msgstr ""
+msgstr "Výška"
 
 msgctxt "The label for the input that allows configuring the border color of a table or a table cell."
 msgid "Color"
-msgstr ""
+msgstr "Barva"
 
 msgctxt "The label for the input that allows configuring the background color of a table or a table cell."
 msgid "Background"
-msgstr ""
+msgstr "Pozadí"
 
 msgctxt "The label for the input that allows configuring the padding of a table cell."
 msgid "Padding"
@@ -138,15 +138,15 @@ msgstr ""
 
 msgctxt "The label describing a group of form fields that allows setting dimensions of a table or a table cell."
 msgid "Dimensions"
-msgstr ""
+msgstr "Rozměry"
 
 msgctxt "The label for the group of toolbars that allows configuring the text alignment in a table cell."
 msgid "Table cell text alignment"
-msgstr ""
+msgstr "Zarovnání textu buňky tabulky"
 
 msgctxt "The label for the toolbar that allows configuring the alignment of a table."
 msgid "Alignment"
-msgstr ""
+msgstr "Zarovnání"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the horizontal text alignment in a table cell."
 msgid "Horizontal text alignment toolbar"

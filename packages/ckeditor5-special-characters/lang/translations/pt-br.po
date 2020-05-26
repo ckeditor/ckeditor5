@@ -22,35 +22,35 @@ msgstr "Caracteres especiais"
 
 msgctxt "A label for the \"leftwards double arrow\" symbol."
 msgid "leftwards double arrow"
-msgstr ""
+msgstr "Seta dupla para esquerda"
 
 msgctxt "A label for the \"rightwards double arrow\" symbol."
 msgid "rightwards double arrow"
-msgstr ""
+msgstr "Seta dupla para direita"
 
 msgctxt "A label for the \"upwards double arrow\" symbol."
 msgid "upwards double arrow"
-msgstr ""
+msgstr "Seta dupla para cima"
 
 msgctxt "A label for the \"downwards double arrow\" symbol."
 msgid "downwards double arrow"
-msgstr ""
+msgstr "Seta dupla para baixo"
 
 msgctxt "A label for the \"leftwards dashed arrow\" symbol."
 msgid "leftwards dashed arrow"
-msgstr ""
+msgstr "Seta tracejada para esquerda"
 
 msgctxt "A label for the \"rightwards dashed arrow\" symbol."
 msgid "rightwards dashed arrow"
-msgstr ""
+msgstr "Seta tracejada para direita"
 
 msgctxt "A label for the \"upwards dashed arrow\" symbol."
 msgid "upwards dashed arrow"
-msgstr ""
+msgstr "Seta tracejada para cima"
 
 msgctxt "A label for the \"downwards dashed arrow\" symbol."
 msgid "downwards dashed arrow"
-msgstr ""
+msgstr "Seta tracejada para baixo"
 
 msgctxt "A label for the \"leftwards arrow to bar\" symbol."
 msgid "leftwards arrow to bar"
@@ -94,15 +94,15 @@ msgstr ""
 
 msgctxt "A label for the \"dollar sign\" symbol."
 msgid "Dollar sign"
-msgstr ""
+msgstr "Símbolo do dólar"
 
 msgctxt "A label for the \"euro sign\" symbol."
 msgid "Euro sign"
-msgstr ""
+msgstr "Símbolo do Euro"
 
 msgctxt "A label for the \"yen sign\" symbol."
 msgid "Yen sign"
-msgstr ""
+msgstr "Símbolo do Yen"
 
 msgctxt "A label for the \"pound sign\" symbol."
 msgid "Pound sign"
@@ -134,11 +134,11 @@ msgstr ""
 
 msgctxt "A label for the \"currency sign\" symbol."
 msgid "Currency sign"
-msgstr ""
+msgstr "Símbolo de moeda"
 
 msgctxt "A label for the \"bitcoin sign\" symbol."
 msgid "Bitcoin sign"
-msgstr ""
+msgstr "Símbolo do Bitcoin"
 
 msgctxt "A label for the \"mill sign\" symbol."
 msgid "Mill sign"
@@ -1034,4 +1034,4 @@ msgstr ""
 
 msgctxt "A label for a tooltip showing when the user hovers over the plugin icon."
 msgid "Character categories"
-msgstr ""
+msgstr "Categoria de caracteres"
