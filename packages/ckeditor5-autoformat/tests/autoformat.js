@@ -410,6 +410,18 @@ describe( 'Autoformat', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
 		} );
 
+		it( 'should not format if the plugin is not enabled', () => {
+			editor.plugins.get( 'Autoformat' ).forceDisabled( 'Test' );
+
+			setData( model, '<paragraph>**foobar*[]</paragraph>' );
+
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
+		} );
+
 		it( 'should work with <softBreak>s in paragraph', () => {
 			setData( model, '<paragraph>foo<softBreak></softBreak>**barbaz*[]</paragraph>' );
 			model.change( writer => {

@@ -52,12 +52,12 @@ export default class Autoformat extends Plugin {
 
 		if ( commands.get( 'bulletedList' ) ) {
 			// eslint-disable-next-line no-new
-			new BlockAutoformatEditing( this.editor, /^[*-]\s$/, 'bulletedList' );
+			new BlockAutoformatEditing( this.editor, this, /^[*-]\s$/, 'bulletedList' );
 		}
 
 		if ( commands.get( 'numberedList' ) ) {
 			// eslint-disable-next-line no-new
-			new BlockAutoformatEditing( this.editor, /^1[.|)]\s$/, 'numberedList' );
+			new BlockAutoformatEditing( this.editor, this, /^1[.|)]\s$/, 'numberedList' );
 		}
 	}
 
@@ -83,8 +83,8 @@ export default class Autoformat extends Plugin {
 			/* eslint-disable no-new */
 			const boldCallback = getCallbackFunctionForInlineAutoformat( this.editor, 'bold' );
 
-			new InlineAutoformatEditing( this.editor, /(\*\*)([^*]+)(\*\*)$/g, boldCallback );
-			new InlineAutoformatEditing( this.editor, /(__)([^_]+)(__)$/g, boldCallback );
+			new InlineAutoformatEditing( this.editor, this, /(\*\*)([^*]+)(\*\*)$/g, boldCallback );
+			new InlineAutoformatEditing( this.editor, this, /(__)([^_]+)(__)$/g, boldCallback );
 			/* eslint-enable no-new */
 		}
 
@@ -94,8 +94,8 @@ export default class Autoformat extends Plugin {
 
 			// The italic autoformatter cannot be triggered by the bold markers, so we need to check the
 			// text before the pattern (e.g. `(?:^|[^\*])`).
-			new InlineAutoformatEditing( this.editor, /(?:^|[^*])(\*)([^*_]+)(\*)$/g, italicCallback );
-			new InlineAutoformatEditing( this.editor, /(?:^|[^_])(_)([^_]+)(_)$/g, italicCallback );
+			new InlineAutoformatEditing( this.editor, this, /(?:^|[^*])(\*)([^*_]+)(\*)$/g, italicCallback );
+			new InlineAutoformatEditing( this.editor, this, /(?:^|[^_])(_)([^_]+)(_)$/g, italicCallback );
 			/* eslint-enable no-new */
 		}
 
@@ -103,7 +103,7 @@ export default class Autoformat extends Plugin {
 			/* eslint-disable no-new */
 			const codeCallback = getCallbackFunctionForInlineAutoformat( this.editor, 'code' );
 
-			new InlineAutoformatEditing( this.editor, /(`)([^`]+)(`)$/g, codeCallback );
+			new InlineAutoformatEditing( this.editor, this, /(`)([^`]+)(`)$/g, codeCallback );
 			/* eslint-enable no-new */
 		}
 
@@ -111,7 +111,7 @@ export default class Autoformat extends Plugin {
 			/* eslint-disable no-new */
 			const strikethroughCallback = getCallbackFunctionForInlineAutoformat( this.editor, 'strikethrough' );
 
-			new InlineAutoformatEditing( this.editor, /(~~)([^~]+)(~~)$/g, strikethroughCallback );
+			new InlineAutoformatEditing( this.editor, this, /(~~)([^~]+)(~~)$/g, strikethroughCallback );
 			/* eslint-enable no-new */
 		}
 	}
@@ -138,7 +138,7 @@ export default class Autoformat extends Plugin {
 					const pattern = new RegExp( `^(#{${ level }})\\s$` );
 
 					// eslint-disable-next-line no-new
-					new BlockAutoformatEditing( this.editor, pattern, () => {
+					new BlockAutoformatEditing( this.editor, this, pattern, () => {
 						if ( !command.isEnabled ) {
 							return false;
 						}
@@ -160,7 +160,7 @@ export default class Autoformat extends Plugin {
 	_addBlockQuoteAutoformats() {
 		if ( this.editor.commands.get( 'blockQuote' ) ) {
 			// eslint-disable-next-line no-new
-			new BlockAutoformatEditing( this.editor, /^>\s$/, 'blockQuote' );
+			new BlockAutoformatEditing( this.editor, this, /^>\s$/, 'blockQuote' );
 		}
 	}
 
@@ -175,7 +175,7 @@ export default class Autoformat extends Plugin {
 	_addCodeBlockAutoformats() {
 		if ( this.editor.commands.get( 'codeBlock' ) ) {
 			// eslint-disable-next-line no-new
-			new BlockAutoformatEditing( this.editor, /^```$/, 'codeBlock' );
+			new BlockAutoformatEditing( this.editor, this, /^```$/, 'codeBlock' );
 		}
 	}
 }

@@ -30,11 +30,11 @@ export default class BlockAutoformatEditing {
 	 *
 	 * To convert a paragraph to heading 1 when `- ` is typed, using just the command name:
 	 *
-	 *		new BlockAutoformatEditing( editor, /^\- $/, 'heading1' );
+	 *		new BlockAutoformatEditing( editor, plugin, /^\- $/, 'heading1' );
 	 *
 	 * To convert a paragraph to heading 1 when `- ` is typed, using just the callback:
 	 *
-	 *		new BlockAutoformatEditing( editor, /^\- $/, ( context ) => {
+	 *		new BlockAutoformatEditing( editor, plugin, /^\- $/, ( context ) => {
 	 *			const { match } = context;
 	 *			const headingLevel = match[ 1 ].length;
 	 *
@@ -44,12 +44,13 @@ export default class BlockAutoformatEditing {
 	 * 		} );
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param {module:autoformat/autoformat~Autoformat} plugin The autoformat plugin instance.
 	 * @param {RegExp} pattern The regular expression to execute on just inserted text.
 	 * @param {Function|String} callbackOrCommand The callback to execute or the command to run when the text is matched.
 	 * In case of providing the callback, it receives the following parameter:
 	 * * {Object} match RegExp.exec() result of matching the pattern to inserted text.
 	 */
-	constructor( editor, pattern, callbackOrCommand ) {
+	constructor( editor, plugin, pattern, callbackOrCommand ) {
 		let callback;
 		let command = null;
 
@@ -65,7 +66,7 @@ export default class BlockAutoformatEditing {
 		}
 
 		editor.model.document.on( 'change', ( evt, batch ) => {
-			if ( command && !command.isEnabled ) {
+			if ( command && !command.isEnabled || !plugin.isEnabled ) {
 				return;
 			}
 

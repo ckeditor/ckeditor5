@@ -29,6 +29,7 @@ export default class InlineAutoformatEditing {
 	 * and executes the provided action if the text matches given criteria (regular expression or callback).
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param {module:autoformat/autoformat~Autoformat} plugin The autoformat plugin instance.
 	 * @param {Function|RegExp} testRegexpOrCallback The regular expression or callback to execute on text.
 	 * Provided regular expression *must* have three capture groups. The first and the third capture group
 	 * should match opening and closing delimiters. The second capture group should match the text to format.
@@ -38,7 +39,7 @@ export default class InlineAutoformatEditing {
 	 *		// - The first to match the starting `**` delimiter.
 	 *		// - The second to match the text to format.
 	 *		// - The third to match the ending `**` delimiter.
-	 *		new InlineAutoformatEditing( editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
+	 *		new InlineAutoformatEditing( editor, plugin, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
 	 *
 	 * When a function is provided instead of the regular expression, it will be executed with the text to match as a parameter.
 	 * The function should return proper "ranges" to delete and format.
@@ -57,10 +58,10 @@ export default class InlineAutoformatEditing {
 	 * formatting. If callback is passed it should return `false` if changes should not be applied (e.g. if a command is disabled).
 	 *
 	 *		// Use attribute name:
-	 *		new InlineAutoformatEditing( editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
+	 *		new InlineAutoformatEditing( editor, plugin, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
 	 *
 	 *		// Use formatting callback:
-	 *		new InlineAutoformatEditing( editor, /(\*\*)([^\*]+?)(\*\*)$/g, ( writer, rangesToFormat ) => {
+	 *		new InlineAutoformatEditing( editor, plugin, /(\*\*)([^\*]+?)(\*\*)$/g, ( writer, rangesToFormat ) => {
 	 *			const command = editor.commands.get( 'bold' );
 	 *
 	 *			if ( !command.isEnabled ) {
@@ -74,7 +75,7 @@ export default class InlineAutoformatEditing {
 	 *			}
 	 *		} );
 	 */
-	constructor( editor, testRegexpOrCallback, attributeOrCallback ) {
+	constructor( editor, plugin, testRegexpOrCallback, attributeOrCallback ) {
 		let regExp;
 		let attributeKey;
 		let testCallback;
@@ -151,7 +152,7 @@ export default class InlineAutoformatEditing {
 		} );
 
 		editor.model.document.on( 'change', ( evt, batch ) => {
-			if ( batch.type == 'transparent' ) {
+			if ( batch.type == 'transparent' || !plugin.isEnabled ) {
 				return;
 			}
 
