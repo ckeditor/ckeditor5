@@ -14,3 +14,9 @@ export default function markdown2html( markdown ) {
 		headerIds: false
 	} );
 }
+
+// Overrides.
+
+// Disable the autolink rule in the lexer (point it to a regex that always fail).
+marked.InlineLexer.rules.breaks.autolink = /^\b$/;
+marked.InlineLexer.rules.breaks.url = /^\b$/;

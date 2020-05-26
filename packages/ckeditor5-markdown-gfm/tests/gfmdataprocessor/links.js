@@ -7,57 +7,34 @@ import { testDataProcessor } from '../_utils/utils';
 
 describe( 'GFMDataProcessor', () => {
 	describe( 'links', () => {
-		it( 'should autolink', () => {
-			testDataProcessor(
-				'Link: <http://example.com/>.',
-				'<p>Link: <a href="http://example.com/">http://example.com/</a>.</p>',
-
-				// When converting back it will be represented as standard markdown link.
-				'Link: [http://example.com/](http://example.com/).'
-			);
-		} );
-
-		it( 'should autolink #2', () => {
+		it( 'should not autolink', () => {
 			testDataProcessor(
 				'Link: http://example.com/.',
-				'<p>Link: <a href="http://example.com/">http://example.com/</a>.</p>',
-
-				// When converting back it will be represented as standard markdown link.
-				'Link: [http://example.com/](http://example.com/).'
+				'<p>Link: http://example.com/.</p>'
 			);
 		} );
 
-		it( 'should autolink with params', () => {
+		it( 'should not autolink with params', () => {
 			testDataProcessor(
-				'Link: <http://example.com/?foo=1&bar=2>.',
-				'<p>Link: <a href="http://example.com/?foo=1&bar=2">http://example.com/?foo=1&bar=2</a>.</p>',
-
-				// When converting back it will be represented as standard markdown link.
-				'Link: [http://example.com/?foo=1&bar=2](http://example.com/?foo=1&bar=2).'
+				'Link: http://example.com/?foo=1&bar=2.',
+				'<p>Link: http://example.com/?foo=1&bar=2.</p>'
 			);
 		} );
 
-		it( 'should autolink inside list', () => {
+		it( 'should not autolink inside list', () => {
 			testDataProcessor(
-				'* <http://example.com/>',
-
-				'<ul><li><a href="http://example.com/">http://example.com/</a></li></ul>',
-
-				// When converting back it will be represented as standard markdown link.
-				'*   [http://example.com/](http://example.com/)'
+				'*   http://example.com/',
+				'<ul><li>http://example.com/</li></ul>',
 			);
 		} );
 
-		it( 'should autolink inside blockquote', () => {
+		it( 'should not autolink inside blockquote', () => {
 			testDataProcessor(
-				'> Blockquoted: <http://example.com/>',
+				'> Blockquoted: http://example.com/',
 
 				'<blockquote>' +
-				'<p>Blockquoted: <a href="http://example.com/">http://example.com/</a></p>' +
+				'<p>Blockquoted: http://example.com/</p>' +
 				'</blockquote>',
-
-				// When converting back it will be represented as standard markdown link.
-				'> Blockquoted: [http://example.com/](http://example.com/)'
 			);
 		} );
 
