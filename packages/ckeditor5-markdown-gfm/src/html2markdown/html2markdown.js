@@ -11,7 +11,9 @@ import { gfm } from 'turndown-plugin-gfm';
 // import converters from './lib/to-markdown/converters';
 
 const turndownService = new TurndownService( {
-	codeBlockStyle: 'fenced'
+	codeBlockStyle: 'fenced',
+	hr: '---',
+	headingStyle: 'atx'
 } );
 turndownService.use( [
 	gfm,
