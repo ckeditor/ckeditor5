@@ -8,10 +8,13 @@
  */
 
 import marked from './lib/marked/marked';
-import toMarkdown from './lib/to-markdown/to-markdown';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import GFMRenderer from './lib/marked/renderer';
-import converters from './lib/to-markdown/converters';
+
+// import toMarkdown from './lib/to-markdown/to-markdown';
+// import converters from './lib/to-markdown/converters';
+
+import html2markdown from './html2markdown/html2markdown';
 
 /**
  * This data processor implementation uses GitHub Flavored Markdown as input/output data.
@@ -64,6 +67,7 @@ export default class GFMDataProcessor {
 	toData( viewFragment ) {
 		const html = this._htmlDP.toData( viewFragment );
 
-		return toMarkdown( html, { gfm: true, converters } );
+		return html2markdown( html );
+		// return toMarkdown( html, { gfm: true, converters } );
 	}
 }
