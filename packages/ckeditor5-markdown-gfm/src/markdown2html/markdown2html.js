@@ -5,10 +5,6 @@
 
 import marked from 'marked';
 
-// TODO: Implement the Renderer (if necessary).
-// TODO: Delete the legacy lib/marked directory..
-// import GFMRenderer from './lib/marked/renderer';
-
 export default function markdown2html( markdown ) {
 	return marked.parse( markdown, {
 		gfm: true,
