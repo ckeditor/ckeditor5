@@ -20,8 +20,8 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  * {@link module:engine/model/selection~Selection#anchor anchored} in.
  *
  * If the selection was anchored in a {@glink framework/guides/tutorials/implementing-a-block-widget nested editable}
- * (e.g. a caption of an image), the new selection will contain its entire content.
- * Successive execution - selecting all if entire content is selected - expands selection to the parent editable.
+ * (e.g. a caption of an image), the new selection will contain its entire content. Successive executions of this command
+ * will expand the selection to encompass more and more content up to the entire editable root of the editor.
  *
  * @extends module:core/command~Command
  */
