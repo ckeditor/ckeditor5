@@ -340,4 +340,17 @@ describe( 'GFMDataProcessor', () => {
 			);
 		} );
 	} );
+
+	describe( 'todo lists', () => {
+		it( 'should process todo lists', () => {
+			testDataProcessor(
+				'*   [ ] List 1\n' +
+				'*   [x] Item 2',
+
+				'<ul>' +
+					'<li><input disabled="" type="checkbox"></input>List 1</li>' +
+					'<li><input checked="" disabled="" type="checkbox"></input>Item 2</li>' +
+				'</ul>' );
+		} );
+	} );
 } );
