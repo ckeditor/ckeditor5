@@ -10,7 +10,9 @@ import { gfm } from 'turndown-plugin-gfm';
 // TODO: Delete the legacy lib/to-markdown directory.
 // import converters from './lib/to-markdown/converters';
 
-const turndownService = new TurndownService();
+const turndownService = new TurndownService( {
+	codeBlockStyle: 'fenced'
+} );
 turndownService.use( [
 	gfm,
 	todoList
