@@ -40,8 +40,8 @@ function cleanHtml( html ) {
 
 function cleanMarkdown( markdown ) {
 	// Trim spaces at the end of the lines.
-	markdown = markdown.replace( /\s+$/gm, '' );
+	markdown = markdown.replace( / +$/gm, '' );
 	// Trim linebreak at the very beginning.
-	markdown = markdown.replace( /^\n/g, '' );
+	markdown = markdown.replace( /^\s+/g, '' );
 	return markdown;
 }
