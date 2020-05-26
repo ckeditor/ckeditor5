@@ -7,13 +7,9 @@
  * @module markdown-gfm/gfmdataprocessor
  */
 
-import marked from './lib/marked/marked';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import GFMRenderer from './lib/marked/renderer';
 
-// import toMarkdown from './lib/to-markdown/to-markdown';
-// import converters from './lib/to-markdown/converters';
-
+import markdown2html from './markdown2html/markdown2html';
 import html2markdown from './html2markdown/html2markdown';
 
 /**
@@ -46,14 +42,7 @@ export default class GFMDataProcessor {
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} The converted view element.
 	 */
 	toView( data ) {
-		const html = marked.parse( data, {
-			gfm: true,
-			breaks: true,
-			tables: true,
-			xhtml: true,
-			renderer: new GFMRenderer()
-		} );
-
+		const html = markdown2html( data );
 		return this._htmlDP.toView( html );
 	}
 
@@ -66,8 +55,6 @@ export default class GFMDataProcessor {
 	 */
 	toData( viewFragment ) {
 		const html = this._htmlDP.toData( viewFragment );
-
 		return html2markdown( html );
-		// return toMarkdown( html, { gfm: true, converters } );
 	}
 }
