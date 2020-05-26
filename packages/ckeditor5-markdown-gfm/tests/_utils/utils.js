@@ -21,11 +21,27 @@ export function testDataProcessor( markdown, viewString, normalizedMarkdown ) {
 	const dataProcessor = new MarkdownDataProcessor( viewDocument );
 	const viewFragment = dataProcessor.toView( markdown );
 
+	const html = cleanHtml( stringify( viewFragment ) );
+
 	// Check if view has correct data.
-	expect( stringify( viewFragment ) ).to.equal( viewString );
+	expect( html ).to.equal( viewString );
 
 	// Check if converting back gives the same result.
 	const normalized = typeof normalizedMarkdown !== 'undefined' ? normalizedMarkdown : markdown;
 
-	expect( dataProcessor.toData( viewFragment ) ).to.equal( normalized );
+	expect( cleanMarkdown( dataProcessor.toData( viewFragment ) ) ).to.equal( normalized );
+}
+
+function cleanHtml( html ) {
+	// Space between table elements.
+	html = html.replace( /(th|td|tr)>\s+<(\/?(?:th|td|tr))/g, '$1><$2' );
+	return html;
+}
+
+function cleanMarkdown( markdown ) {
+	// Trim spaces at the end of the lines.
+	markdown = markdown.replace( /\s+$/gm, '' );
+	// Trim linebreak at the very beginning.
+	markdown = markdown.replace( /^\n/g, '' );
+	return markdown;
 }

@@ -14,6 +14,7 @@ export default function markdown2html( markdown ) {
 		gfm: true,
 		breaks: true,
 		tables: true,
-		xhtml: true
+		xhtml: true,
+		headerIds: false
 	} );
 }

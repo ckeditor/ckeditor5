@@ -38,11 +38,7 @@ describe( 'GFMDataProcessor', () => {
 				// <p>single line</p>
 				//
 				// <h1>header</h1>
-				'<p>single line</p><h1>header</h1>',
-
-				// To-markdown always put 2 empty lines after paragraph.
-				'single line\n\n' +
-				'# header'
+				'<p>single line</p><h1>header</h1>'
 			);
 		} );
 
@@ -56,12 +52,7 @@ describe( 'GFMDataProcessor', () => {
 				// <p>single line</p>
 				//
 				// <h1>header</h1>
-				'<p>single line</p><h1>header</h1>',
-
-				// To-markdown always put 2 empty lines after paragraph and normalize header to #.
-				'single line\n' +
-				'\n' +
-				'# header'
+				'<p>single line</p><h1>header</h1>'
 			);
 		} );
 
@@ -76,19 +67,14 @@ describe( 'GFMDataProcessor', () => {
 				// <blockquote>
 				// <p>quote</p>
 				// </blockquote>
-				'<p>single line</p><blockquote><p>quote</p></blockquote>',
-
-				// To-markdown always put 2 empty lines after paragraph.
-				'single line\n' +
-				'\n' +
-				'> quote'
+				'<p>single line</p><blockquote><p>quote</p></blockquote>'
 			);
 		} );
 
 		it( 'with list after', () => {
 			testDataProcessor(
 				'single line\n' +
-				'* item',
+				'*   item',
 
 				// GitHub is rendering as:
 				// <p>single line</p>
@@ -96,12 +82,7 @@ describe( 'GFMDataProcessor', () => {
 				// <ul>
 				// <li>item</li>
 				// </ul>
-				'<p>single line</p><ul><li>item</li></ul>',
-
-				// To-markdown always put 2 empty lines after paragraph.
-				'single line\n' +
-				'\n' +
-				'*   item'
+				'<p>single line</p><ul><li>item</li></ul>'
 			);
 		} );
 
