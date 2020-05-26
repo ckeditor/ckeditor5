@@ -39,6 +39,7 @@ export default class SelectAllCommand extends Command {
 		if ( selection.containsEntireContent( scopeElement ) || !isSelectAllScope( model.schema, scopeElement ) ) {
 			do {
 				scopeElement = scopeElement.parent;
+
 				// Do nothing, if the entire `root` is already selected.
 				if ( !scopeElement ) {
 					return;
@@ -53,9 +54,10 @@ export default class SelectAllCommand extends Command {
 }
 
 // Checks whether the element is a valid select-all scope.
-// Returns true, it the element {@link module:engine/model/schema~Schema#isLimit `isLimit()`},
+// Returns true, if the element is a {@link module:engine/model/schema~Schema#isLimit limit},
 // and can contain any text or paragraph.
-// @param {module:engine/model/schema~Schema} schema The schema to cheng against.
+//
+// @param {module:engine/model/schema~Schema} schema The schema to check against.
 // @param {module:engine/model/element~Element} element
 // @return {Boolean}
 function isSelectAllScope( schema, element ) {
