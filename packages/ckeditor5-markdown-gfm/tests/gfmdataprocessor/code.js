@@ -276,5 +276,41 @@ describe( 'GFMDataProcessor', () => {
 				'`code `` code ``` `'
 			);
 		} );
+
+		it( 'should handle triple ticks inside code', () => {
+			testDataProcessor(
+				'````\n' +
+				'```\n' +
+				'Code\n' +
+				'```\n' +
+				'````',
+
+				'<pre><code>' +
+				'```\n' +
+				'Code\n' +
+				'```' +
+				'</code></pre>'
+			);
+		} );
+
+		it( 'should handle triple and quatruple ticks inside code', () => {
+			testDataProcessor(
+				'`````\n' +
+				'````\n' +
+				'```\n' +
+				'Code\n' +
+				'```\n' +
+				'````\n' +
+				'`````',
+
+				'<pre><code>' +
+				'````\n' +
+				'```\n' +
+				'Code\n' +
+				'```\n' +
+				'````' +
+				'</code></pre>'
+			);
+		} );
 	} );
 } );
