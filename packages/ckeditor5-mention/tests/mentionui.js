@@ -1572,8 +1572,6 @@ describe( 'MentionUI', () => {
 				testExecuteKey( 'enter', keyCodes.enter, feedItems );
 
 				testExecuteKey( 'tab', keyCodes.tab, feedItems );
-
-				testExecuteKey( 'space', keyCodes.space, feedItems );
 			} );
 		} );
 
@@ -1724,8 +1722,6 @@ describe( 'MentionUI', () => {
 					testExecuteKey( 'enter', keyCodes.enter, issues );
 
 					testExecuteKey( 'tab', keyCodes.tab, issues );
-
-					testExecuteKey( 'space', keyCodes.space, issues );
 				} );
 			} );
 		} );
@@ -1849,8 +1845,6 @@ describe( 'MentionUI', () => {
 					testExecuteKey( 'enter', keyCodes.enter, issues );
 
 					testExecuteKey( 'tab', keyCodes.tab, issues );
-
-					testExecuteKey( 'space', keyCodes.space, issues );
 				} );
 
 				describe( 'mouse', () => {
