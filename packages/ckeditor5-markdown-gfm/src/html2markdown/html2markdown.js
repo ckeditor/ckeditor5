@@ -11,8 +11,25 @@ import { gfm } from 'turndown-plugin-gfm';
 // import converters from './lib/to-markdown/converters';
 
 const turndownService = new TurndownService();
-turndownService.use( gfm );
+turndownService.use( [
+	gfm,
+	todoList
+] );
 
 export default function html2markdown( html ) {
 	return turndownService.turndown( html );
+}
+
+// This is a copy of the original from turdown-plugin-gfm, with minor changes.
+function todoList( turndownService ) {
+	turndownService.addRule( 'taskListItems', {
+		filter( node ) {
+			return node.type === 'checkbox' &&
+				// Changes here as CKEditor outputs a deeper structure.
+				( node.parentNode.nodeName === 'LI' || node.parentNode.parentNode.nodeName === 'LI' );
+		},
+		replacement( content, node ) {
+			return ( node.checked ? '[x]' : '[ ]' ) + ' ';
+		}
+	} );
 }
