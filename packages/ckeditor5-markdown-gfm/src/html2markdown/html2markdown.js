@@ -22,7 +22,7 @@ export default function html2markdown( html ) {
 	return turndownService.turndown( html );
 }
 
-// This is a copy of the original from turdown-plugin-gfm, with minor changes.
+// This is a copy of the original taskListItems rule from turdown-plugin-gfm, with minor changes.
 function todoList( turndownService ) {
 	turndownService.addRule( 'taskListItems', {
 		filter( node ) {
