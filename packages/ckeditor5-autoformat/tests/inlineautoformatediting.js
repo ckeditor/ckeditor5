@@ -30,10 +30,6 @@ describe( 'InlineAutoformatEditing', () => {
 			} );
 	} );
 
-	it( 'should have pluginName', () => {
-		expect( InlineAutoformatEditing.pluginName ).to.equal( 'InlineAutoformatEditing' );
-	} );
-
 	describe( 'attribute', () => {
 		it( 'should stop early if there are less than 3 capture groups', () => {
 			new InlineAutoformatEditing( editor, /(\*)(.+?)\*/g, 'testAttribute' ); // eslint-disable-line no-new

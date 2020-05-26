@@ -22,13 +22,6 @@ import getLastTextLine from '@ckeditor/ckeditor5-typing/src/utils/getlasttextlin
  */
 export default class InlineAutoformatEditing {
 	/**
-	 * @inheritDoc
-	 */
-	static get pluginName() {
-		return 'InlineAutoformatEditing';
-	}
-
-	/**
 	 * Enables autoformatting mechanism for a given {@link module:core/editor/editor~Editor}.
 	 *
 	 * It formats the matched text by applying the given model attribute or by running the provided formatting callback.

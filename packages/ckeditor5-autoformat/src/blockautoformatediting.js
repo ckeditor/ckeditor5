@@ -22,13 +22,6 @@ import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
  */
 export default class BlockAutoformatEditing {
 	/**
-	 * @inheritDoc
-	 */
-	static get pluginName() {
-		return 'BlockAutoformatEditing';
-	}
-
-	/**
 	 * Creates a listener triggered on `change` event in the document.
 	 * Calls the callback when inserted text matches the regular expression or the command name
 	 * if provided instead of the callback.

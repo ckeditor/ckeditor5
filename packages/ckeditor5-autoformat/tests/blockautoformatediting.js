@@ -29,10 +29,6 @@ describe( 'BlockAutoformatEditing', () => {
 			} );
 	} );
 
-	it( 'should have pluginName', () => {
-		expect( BlockAutoformatEditing.pluginName ).to.equal( 'BlockAutoformatEditing' );
-	} );
-
 	describe( 'command name', () => {
 		it( 'should run a command when the pattern is matched', () => {
 			const spy = testUtils.sinon.spy();
