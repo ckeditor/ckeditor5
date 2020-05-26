@@ -6,6 +6,8 @@
 import { testDataProcessor } from '../_utils/utils';
 import MarkdownDataProcessor from '../../src/gfmdataprocessor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 describe( 'GFMDataProcessor', () => {
 	describe( 'lists', () => {
@@ -356,8 +358,10 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		it( 'should process the HTML produced by the todo list feature', () => {
-			const htmlDataProcessor = new HtmlDataProcessor();
-			const mdDataProcessor = new MarkdownDataProcessor();
+			const viewDocument = new ViewDocument( new StylesProcessor() );
+
+			const htmlDataProcessor = new HtmlDataProcessor( viewDocument );
+			const mdDataProcessor = new MarkdownDataProcessor( viewDocument );
 
 			const viewFragment = htmlDataProcessor.toView(
 				'<ul class="todo-list">' +
