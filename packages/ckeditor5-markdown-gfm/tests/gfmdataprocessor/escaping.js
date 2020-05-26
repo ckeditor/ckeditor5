@@ -5,6 +5,7 @@
 
 import MarkdownDataProcessor from '../../src/gfmdataprocessor';
 import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { testDataProcessor } from '../../tests/_utils/utils';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
@@ -26,15 +27,15 @@ const testCases = {
 };
 
 describe( 'GFMDataProcessor', () => {
-	let dataProcessor;
-
-	beforeEach( () => {
-		const viewDocument = new ViewDocument( new StylesProcessor() );
-		dataProcessor = new MarkdownDataProcessor( viewDocument );
-	} );
-
 	describe( 'escaping', () => {
 		describe( 'toView', () => {
+			let dataProcessor;
+
+			beforeEach( () => {
+				const viewDocument = new ViewDocument( new StylesProcessor() );
+				dataProcessor = new MarkdownDataProcessor( viewDocument );
+			} );
+
 			for ( const key in testCases ) {
 				const test = testCases[ key ].test;
 				const result = testCases[ key ].result;
@@ -68,6 +69,39 @@ describe( 'GFMDataProcessor', () => {
 				const documentFragment = dataProcessor.toView( '	\\`' );
 
 				expect( stringify( documentFragment ) ).to.equal( '<pre><code>\\`</code></pre>' );
+			} );
+		} );
+
+		describe( 'HTML', () => {
+			// To note that the test util inlines entities in text nodes, hence the expected HTML in these tests
+			// contain the raw characters but we "know" that those are text nodes and therefore should be converted
+			// back to entities when outputting markdown.
+
+			it( 'should escape <', () => {
+				testDataProcessor( '\\<', '<p><</p>' );
+			} );
+
+			it( 'should escape HTML as text', () => {
+				testDataProcessor( '\\<h1>Test\\</h1>', '<p><h1>Test</h1></p>' );
+			} );
+
+			it( 'should not escape \\< inside inline code', () => {
+				testDataProcessor( '`\\<`', '<p><code>\\<</code></p>' );
+			} );
+
+			it( 'should not touch escape-like HTML inside code blocks', () => {
+				testDataProcessor(
+					'```\n' +
+					'\\<h1>Test\\</h1>\n' +
+					'```',
+					'<pre><code>' +
+					'\\<h1>Test\\</h1>' +
+					'</code></pre>' );
+			} );
+
+			// Necessary test as we're overriding Turndown's escape(). Just to be sure.
+			it( 'should still escape markdown characters', () => {
+				testDataProcessor( '\\* \\_', '<p>* _</p>' );
 			} );
 		} );
 	} );

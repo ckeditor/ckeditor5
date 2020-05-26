@@ -6,11 +6,25 @@
 import TurndownService from 'turndown';
 import { gfm } from 'turndown-plugin-gfm';
 
+// Overrides the escape() method, enlarging it.
+{
+	const originalEscape = TurndownService.prototype.escape;
+	TurndownService.prototype.escape = function( string ) {
+		string = originalEscape( string );
+
+		// Escape "<".
+		string = string.replace( /</g, '\\<' );
+
+		return string;
+	};
+}
+
 const turndownService = new TurndownService( {
 	codeBlockStyle: 'fenced',
 	hr: '---',
 	headingStyle: 'atx'
 } );
+
 turndownService.use( [
 	gfm,
 	todoList
