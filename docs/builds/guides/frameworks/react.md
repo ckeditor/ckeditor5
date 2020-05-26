@@ -295,7 +295,7 @@ Finally, exclude CKEditor 5 SVG and CSS files from `file-loader` . Find the last
 }
 ```
 
-If you are using plugins like [@wiris/mathtype-ckeditor5](https://github.com/wiris/mathtype-ckeditor5) that don't use the package name conventions:`ckeditor-my-plugin-name`, you have to make more two changes to your custom config.
+If you are using plugins like [@wiris/mathtype-ckeditor5](https://github.com/wiris/mathtype-ckeditor5) that don't use the package name conventions:`ckeditor-my-plugin-name`, you have to make more two changes in your custom config.
 - Change your `raw-loader` config from:
 ```js
 {
