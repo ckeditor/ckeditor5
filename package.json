@@ -163,7 +163,8 @@
     "packages/*/node_modules/**",
     "packages/*/build/**",
     "packages/*/src/lib/**",
-    "coverage/**"
+    "coverage/**",
+    "external/**"
   ],
   "workspaces": {
     "packages": [
