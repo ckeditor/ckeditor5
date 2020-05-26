@@ -15,6 +15,8 @@ export default function markdown2html( markdown ) {
 	} );
 }
 
+export { marked };
+
 // Overrides.
 
 // Disable the autolink rule in the lexer (point it to a regex that always fail).

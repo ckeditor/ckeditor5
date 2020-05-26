@@ -14,11 +14,16 @@ import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
  * @param {String} markdown Markdown to be processed to view.
  * @param {String} viewString Expected view structure.
  * @param {String} [normalizedMarkdown] When converting back to the markdown it might be different than provided input
+ * @param {Object} [options] Additional options.
+ * @param {Function} [options.setup] A function that receives the data processor instance before its execution.
  * markdown string (which will be used if this parameter is not provided).
  */
-export function testDataProcessor( markdown, viewString, normalizedMarkdown ) {
+export function testDataProcessor( markdown, viewString, normalizedMarkdown, options ) {
 	const viewDocument = new ViewDocument( new StylesProcessor() );
+
 	const dataProcessor = new MarkdownDataProcessor( viewDocument );
+	options && options.setup && options.setup( dataProcessor );
+
 	const viewFragment = dataProcessor.toView( markdown );
 
 	const html = cleanHtml( stringify( viewFragment ) );
