@@ -74,7 +74,7 @@ Check out the [Versioning policy](https://ckeditor.com/docs/ckeditor5/latest/fra
 
 Minor releases (contain minor breaking changes):
 
-* [@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed): v19.0.0 => v19.0.1
+* [@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed): v19.0.0 => v19.1.0
 * [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table): v19.0.0 => v19.1.0
 * [@ckeditor/ckeditor5-theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark): v19.0.0 => v19.1.0
 
