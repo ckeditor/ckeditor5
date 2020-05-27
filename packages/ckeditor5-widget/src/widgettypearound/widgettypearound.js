@@ -20,7 +20,6 @@ import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 import {
 	isTypeAroundWidget,
-	getWidgetTypeAroundPositions,
 	getClosestTypeAroundDomButton,
 	getTypeAroundButtonPosition,
 	getClosestWidgetViewElement
@@ -67,35 +66,8 @@ export default class WidgetTypeAround extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
-		super( editor );
-
-		/**
-		 * A set containing all widgets in all editor roots that have the type around UI injected in
-		 * {@link #_enableTypeAroundUIInjection}.
-		 *
-		 * Keeping track of them saves time, for instance, when updating their CSS classes.
-		 *
-		 * @private
-		 * @readonly
-		 * @member {Set} #_widgetsWithTypeAroundUI
-		 */
-		this._widgetsWithTypeAroundUI = new Set();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	destroy() {
-		this._widgetsWithTypeAroundUI.clear();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	init() {
 		this._enableTypeAroundUIInjection();
-		this._enableDetectionOfTypeAroundWidgets();
 		this._enableInsertingParagraphsOnButtonClick();
 		this._enableInsertingParagraphsOnEnterKeypress();
 		this._enableTypeAroundActivationUsingKeyboardArrows();
@@ -155,49 +127,8 @@ export default class WidgetTypeAround extends Plugin {
 			// Filter out non-widgets and inline widgets.
 			if ( isTypeAroundWidget( viewElement, data.item, schema ) ) {
 				injectUIIntoWidget( conversionApi.writer, buttonTitles, viewElement );
-
-				// Keep track of widgets that have the type around UI injected.
-				// In the #_enableDetectionOfTypeAroundWidgets() we will iterate only over these
-				// widgets instead of all children of the root. This should improve the performance.
-				this._widgetsWithTypeAroundUI.add( viewElement );
 			}
 		}, { priority: 'low' } );
-	}
-
-	/**
-	 * Registers an editing view post-fixer which checks all block widgets in the content
-	 * and adds CSS classes to these which should have the typing around (UI) enabled
-	 * and visible for the users.
-	 *
-	 * @private
-	 */
-	_enableDetectionOfTypeAroundWidgets() {
-		const editor = this.editor;
-		const editingView = editor.editing.view;
-
-		function positionToWidgetCssClass( position ) {
-			return `ck-widget_can-type-around_${ position }`;
-		}
-
-		editingView.document.registerPostFixer( writer => {
-			for ( const widgetViewElement of this._widgetsWithTypeAroundUI ) {
-				// If the widget is no longer attached to the root (for instance, because it was removed),
-				// there is no need to update its classes and we can safely forget about it.
-				if ( !widgetViewElement.isAttached() ) {
-					this._widgetsWithTypeAroundUI.delete( widgetViewElement );
-				} else {
-					// Update widgets' classes depending on possible positions for paragraph insertion.
-					const positions = getWidgetTypeAroundPositions( widgetViewElement );
-
-					// Remove all classes. In theory we could remove only these that will not be added a few lines later,
-					// but since there are only two... KISS.
-					writer.removeClass( POSSIBLE_INSERTION_POSITIONS.map( positionToWidgetCssClass ), widgetViewElement );
-
-					// Set CSS classes related to possible positions. They are used so the UI knows which buttons to display.
-					writer.addClass( positions.map( positionToWidgetCssClass ), widgetViewElement );
-				}
-			}
-		} );
 	}
 
 	/**
@@ -289,14 +220,10 @@ export default class WidgetTypeAround extends Plugin {
 				// If the selection didn't have the attribute, let's set it now according to the direction of the arrow
 				// key press. This also means we cannot let the Widget plugin listener move the selection.
 				else {
-					const widgetTypeAroundPositions = getWidgetTypeAroundPositions( selectedViewElement );
-
-					// Set the selection attribute only if the keystroke direction matches the type around position
-					// of the widget.
-					if ( isForward && widgetTypeAroundPositions.includes( 'after' ) ) {
+					if ( isForward ) {
 						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
 						shouldStopAndPreventDefault = true;
-					} else if ( !isForward && widgetTypeAroundPositions.includes( 'before' ) ) {
+					} else {
 						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
 						shouldStopAndPreventDefault = true;
 					}

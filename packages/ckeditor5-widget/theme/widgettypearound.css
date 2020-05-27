@@ -38,17 +38,6 @@
 	}
 
 	/*
-	 * Hide the type around buttons depending on which directions the widget supports.
-	 */
-	&:not(.ck-widget_can-type-around_before) > .ck-widget__type-around > .ck-widget__type-around__button_before {
-		display: none;
-	}
-
-	&:not(.ck-widget_can-type-around_after) > .ck-widget__type-around > .ck-widget__type-around__button_after {
-		display: none;
-	}
-
-	/*
 	 * Styles for the buttons when:
 	 * - the widget is selected,
 	 * - or the button is being hovered (regardless of the widget state).
