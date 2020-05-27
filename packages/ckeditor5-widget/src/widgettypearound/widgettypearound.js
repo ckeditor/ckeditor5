@@ -14,7 +14,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 import {
 	isArrowKeyCode,
-	isForwardArrowKeyCode
+	isForwardArrowKeyCode,
+	keyCodes
 } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
@@ -120,7 +121,7 @@ export default class WidgetTypeAround extends Plugin {
 		const typeAroundSelectionAttributeValue = model.document.selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 
 		if ( !typeAroundSelectionAttributeValue ) {
-			return null;
+			return false;
 		}
 
 		const selectedViewElement = editingView.document.selection.getSelectedElement();
@@ -368,7 +369,8 @@ export default class WidgetTypeAround extends Plugin {
 
 		// Note: The priority must precede the default Widget class keydown handler.
 		editingView.document.on( 'keydown', ( evt, domEventData ) => {
-			if ( !isSafeKeystroke( domEventData ) ) {
+			// Don't handle enter here. It's handled in a separate listener.
+			if ( domEventData.keyCode !== keyCodes.enter && !isSafeKeystroke( domEventData ) ) {
 				// TODO: Extra undo step problem.
 				this._insertParagraphAccordingToSelectionAttribute();
 			}
