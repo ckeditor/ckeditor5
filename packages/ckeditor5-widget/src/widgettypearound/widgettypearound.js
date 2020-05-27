@@ -254,6 +254,15 @@ export default class WidgetTypeAround extends Plugin {
 			}
 		}, { priority: 'highest' } );
 
+		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
+			if ( !isFocused ) {
+				editor.model.change( writer => {
+					// TODO: use data.directChange to not break collaboration?
+					writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+				} );
+			}
+		} );
+
 		function positionToWidgetCssClass( position ) {
 			return `ck-widget_type-around_active_${ position }`;
 		}
