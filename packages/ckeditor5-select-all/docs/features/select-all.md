@@ -9,9 +9,19 @@ The {@link module:select-all/selectall~SelectAll} feature allows selecting the e
 
 ## Demo
 
-Press <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd> or use the toolbar button to select the entire content of the editor. Note that when editing an {@link features/image#image-captions image caption}, the selection will only expand to the boundaries of the caption.
+Press <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd> or use the toolbar button to select the entire content of the editor.
 
 {@snippet features/select-all}
+
+### Boundaries
+
+Note that when editing an {@link features/image#image-captions image caption}, the selection will only expand to the boundaries of the caption. Successive use will expand the selection beyond these boundaries to encompass more and more content up to the entire editable root of the editor. This is to allow the user to do more focused editing and select only related content.
+
+<info-box>
+	The Select All boundaries are created by any {@link framework/guides/deep-dive/schema#limit-elements limit element} which can contain a text or paragraph.
+</info-box>
+
+
 
 ## Installation
 
