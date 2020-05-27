@@ -71,27 +71,6 @@ export default function deleteContent( model, selection, options = {} ) {
 
 	const schema = model.schema;
 
-	let startPosition = selRange.start;
-	let endPosition = selRange.end;
-
-	// If the end of selection is at the start position of last block in the selection, then
-	// shrink it to not include that trailing block. Note that this should happen only for not empty selection.
-	if ( hasContent( selRange ) ) {
-		const endBlock = getParentBlock( endPosition );
-
-		if ( endBlock && endPosition.isTouching( model.createPositionAt( endBlock, 0 ) ) ) {
-			// Create forward selection from range.
-			const selection = model.createSelection( selRange );
-
-			// Modify the selection in backward direction to shrink it and remove first position of following block from it.
-			model.modifySelection( selection, { direction: 'backward' } );
-
-			endPosition = selection.getLastPosition();
-		}
-	}
-
-	endPosition = LivePosition.fromPosition( endPosition, 'toNext' );
-
 	model.change( writer => {
 		// 1. Replace the entire content with paragraph.
 		// See: https://github.com/ckeditor/ckeditor5-engine/issues/1012#issuecomment-315017594.
@@ -100,6 +79,9 @@ export default function deleteContent( model, selection, options = {} ) {
 
 			return;
 		}
+
+		// Get the live positions for the range adjusted to span only blocks selected from the user perspective.
+		const [ startPosition, endPosition ] = getLivePositionsForSelectedBlocks( selRange );
 
 		// 2. Remove the content if there is any.
 		if ( !selRange.start.isTouching( selRange.end ) ) {
@@ -115,7 +97,7 @@ export default function deleteContent( model, selection, options = {} ) {
 		// as it's hard to imagine what should actually be the default behavior. Usually, specific features will
 		// want to override that behavior anyway.
 		if ( !options.leaveUnmerged ) {
-			startPosition = mergeBranches( writer, startPosition, endPosition ) || startPosition;
+			mergeBranches( writer, startPosition, endPosition );
 
 			// TMP this will be replaced with a postfixer.
 			// We need to check and strip disallowed attributes in all nested nodes because after merge
@@ -135,8 +117,38 @@ export default function deleteContent( model, selection, options = {} ) {
 			insertParagraph( writer, startPosition, selection );
 		}
 
+		startPosition.detach();
 		endPosition.detach();
 	} );
+}
+
+// Returns the live positions for the range adjusted to span only blocks selected from the user perspective.
+function getLivePositionsForSelectedBlocks( range ) {
+	const model = range.root.document.model;
+
+	const startPosition = range.start;
+	let endPosition = range.end;
+
+	// If the end of selection is at the start position of last block in the selection, then
+	// shrink it to not include that trailing block. Note that this should happen only for not empty selection.
+	if ( hasContent( range ) ) {
+		const endBlock = getParentBlock( endPosition );
+
+		if ( endBlock && endPosition.isTouching( model.createPositionAt( endBlock, 0 ) ) ) {
+			// Create forward selection from range.
+			const selection = model.createSelection( range );
+
+			// Modify the selection in backward direction to shrink it and remove first position of following block from it.
+			model.modifySelection( selection, { direction: 'backward' } );
+
+			endPosition = selection.getLastPosition();
+		}
+	}
+
+	return [
+		LivePosition.fromPosition( startPosition, 'toPrevious' ),
+		LivePosition.fromPosition( endPosition, 'toNext' )
+	];
 }
 
 // Finds the lowest element in position's ancestors which is a block.
@@ -176,9 +188,6 @@ function mergeBranches( writer, startPosition, endPosition ) {
 	} else {
 		mergeBranchesLeft( writer, startPosition, endPosition, startAncestor.parent );
 	}
-
-	// The new start position will be equal to end position (this is a LivePosition so it's up to date).
-	return endPosition;
 }
 
 function mergeBranchesLeft( writer, startPosition, endPosition, commonAncestor ) {
