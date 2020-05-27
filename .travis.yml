@@ -13,11 +13,15 @@ cache:
 - node_modules
 before_install:
 - export START_TIME=$( date +%s )
+- export COVERALLS_SERVICE_JOB_ID=$( TRAVIS_JOB_ID )
+- export COVERALLS_SERVICE_NAME="CKEditor5 code coverage"
 - npm i -g yarn
 install:
 - yarn install
 script:
-- ./scripts/continuous-integration-run-tests.sh
+- node ./scripts/continuous-integration-script.js
+- yarn run lint
+- yarn run stylelint
 - yarn run docs:api --validate-only
 - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
     travis_wait 30 yarn run docs:build-and-publish-nightly;

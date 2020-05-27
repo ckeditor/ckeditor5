@@ -40,7 +40,7 @@ ClassicEditor
 			Indent,
 			Mention,
 			PasteFromOffice,
-			RemoveFormat,
+			RemoveFormat
 		],
 		toolbar: [
 			'heading', 'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor', 'highlight', 'alignment', '|',

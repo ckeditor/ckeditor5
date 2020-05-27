@@ -16,6 +16,8 @@ import FocusObserver from '../../../src/view/observer/focusobserver';
 import CompositionObserver from '../../../src/view/observer/compositionobserver';
 import ViewRange from '../../../src/view/range';
 import ViewElement from '../../../src/view/element';
+import ViewContainerElement from '../../../src/view/containerelement';
+import ViewText from '../../../src/view/text';
 import ViewPosition from '../../../src/view/position';
 import ViewSelection from '../../../src/view/selection';
 import { StylesProcessor } from '../../../src/view/stylesmap';
@@ -515,7 +517,7 @@ describe( 'view', () => {
 	} );
 
 	describe( 'hasDomSelection', () => {
-		let domElement, domP, domSelection;
+		let domElement, domP, domText, viewP, viewText, domSelection;
 
 		// Focus tests are too unstable on Firefox to run them.
 		if ( env.isGecko ) {
@@ -527,7 +529,12 @@ describe( 'view', () => {
 
 			view.attachDomRoot( domRoot );
 
-			viewRoot._appendChild( new ViewElement( viewDocument, 'p' ) );
+			viewP = new ViewContainerElement( viewDocument, 'p' );
+			viewText = new ViewText( viewDocument, 'ab' );
+
+			viewRoot._appendChild( viewP );
+			viewP._appendChild( viewText );
+
 			view.forceRender();
 
 			domElement = createElement( document, 'div', { contenteditable: 'true' } );
@@ -535,6 +542,7 @@ describe( 'view', () => {
 
 			domSelection = document.getSelection();
 			domP = domRoot.childNodes[ 0 ];
+			domText = domP.childNodes[ 0 ];
 		} );
 
 		afterEach( () => {
@@ -542,26 +550,41 @@ describe( 'view', () => {
 		} );
 
 		it( 'should be true if selection is inside a DOM root element', done => {
-			domSelection.collapse( domP, 0 );
+			domRoot.focus();
+
+			// Both selection need to stay in sync to avoid inf selection loops
+			// as there's no editing pipeline that would ensure that the view selection
+			// gets changed based on the selectionChange event. See https://github.com/ckeditor/ckeditor5/issues/6655.
+			viewDocument.selection._setTo( viewText, 1 );
+			domSelection.collapse( domText, 1 );
 
 			// Wait for async selectionchange event on DOM document.
 			setTimeout( () => {
 				expect( view.hasDomSelection ).to.be.true;
 
 				done();
-			}, 100 );
+			}, 1000 );
 		} );
 
 		it( 'should be true if selection is inside a DOM root element - no focus', done => {
-			domSelection.collapse( domP, 0 );
-			domRoot.blur();
+			domRoot.focus();
 
-			// Wait for async selectionchange event on DOM document.
+			// See the previous test.
+			viewDocument.selection._setTo( viewText, 1 );
+			domSelection.collapse( domText, 1 );
+
 			setTimeout( () => {
-				expect( view.hasDomSelection ).to.be.true;
-				expect( view.document.isFocused ).to.be.false;
+				// We could also do domRoot.blur() here but it's always better to know where the focus went.
+				// E.g. if it went to some <input>, the selection would disappear from the editor and the test would fail.
+				domRoot.blur();
 
-				done();
+				// Wait for async selectionchange event on DOM document.
+				setTimeout( () => {
+					expect( view.hasDomSelection ).to.be.true;
+					expect( view.document.isFocused ).to.be.false;
+
+					done();
+				}, 100 );
 			}, 100 );
 		} );
 

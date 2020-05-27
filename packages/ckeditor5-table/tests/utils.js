@@ -13,7 +13,7 @@ import { modelTable } from './_utils/utils';
 import {
 	getSelectedTableCells,
 	getTableCellsContainingSelection,
-	getSelectionAffectedTableCells
+	getSelectionAffectedTableCells, getVerticallyOverlappingCells, getHorizontallyOverlappingCells
 } from '../src/utils';
 
 describe( 'table utils', () => {
@@ -92,7 +92,7 @@ describe( 'table utils', () => {
 			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
 			const lastCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
 
-			tableSelection._setCellSelection( firstCell, lastCell );
+			tableSelection.setCellSelection( firstCell, lastCell );
 
 			expect( getSelectedTableCells( selection ) ).to.have.ordered.members( [
 				firstCell, lastCell
@@ -103,7 +103,7 @@ describe( 'table utils', () => {
 			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
 			const lastCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
 
-			tableSelection._setCellSelection( firstCell, lastCell );
+			tableSelection.setCellSelection( firstCell, lastCell );
 
 			expect( getSelectedTableCells( selection ) ).to.have.ordered.members( [
 				firstCell,
@@ -117,7 +117,7 @@ describe( 'table utils', () => {
 			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
 			const lastCell = modelRoot.getNodeByPath( [ 0, 0, 2 ] );
 
-			tableSelection._setCellSelection( firstCell, lastCell );
+			tableSelection.setCellSelection( firstCell, lastCell );
 
 			expect( getSelectedTableCells( selection ) ).to.have.ordered.members( [
 				firstCell,
@@ -130,7 +130,7 @@ describe( 'table utils', () => {
 			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
 			const lastCell = modelRoot.getNodeByPath( [ 0, 2, 1 ] );
 
-			tableSelection._setCellSelection( firstCell, lastCell );
+			tableSelection.setCellSelection( firstCell, lastCell );
 
 			expect( getSelectedTableCells( selection ) ).to.have.ordered.members( [
 				firstCell,
@@ -315,7 +315,7 @@ describe( 'table utils', () => {
 			const firstCell = modelRoot.getNodeByPath( [ 0, 0, 0 ] );
 			const lastCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
 
-			tableSelection._setCellSelection( firstCell, lastCell );
+			tableSelection.setCellSelection( firstCell, lastCell );
 
 			expect( Array.from( getSelectionAffectedTableCells( selection ) ) ).to.have.ordered.members( [
 				firstCell, lastCell
@@ -357,6 +357,94 @@ describe( 'table utils', () => {
 			} );
 
 			expect( getSelectionAffectedTableCells( selection ) ).to.be.empty;
+		} );
+	} );
+
+	describe( 'getVerticallyOverlappingCells()', () => {
+		let table;
+
+		beforeEach( () => {
+			// +----+----+----+----+----+
+			// | 00 | 01 | 02 | 03 | 04 |
+			// +    +    +----+    +----+
+			// |    |    | 12 |    | 14 |
+			// +    +    +    +----+----+
+			// |    |    |    | 23 | 24 |
+			// +    +----+    +    +----+
+			// |    | 31 |    |    | 34 |
+			// +    +    +----+----+----+
+			// |    |    | 42 | 43 | 44 |
+			// +----+----+----+----+----+
+			setModelData( model, modelTable( [
+				[ { contents: '00', rowspan: 5 }, { contents: '01', rowspan: 3 }, '02', { contents: '03', rowspan: 2 }, '04' ],
+				[ { contents: '12', rowspan: 3 }, '14' ],
+				[ { contents: '23', rowspan: 2 }, '24' ],
+				[ { contents: '31', rowspan: 2 }, '34' ],
+				[ '42', '43', '44' ]
+			] ) );
+
+			table = modelRoot.getChild( 0 );
+		} );
+
+		it( 'should return empty array for no overlapping cells', () => {
+			const cellsInfo = getVerticallyOverlappingCells( table, 0 );
+
+			expect( cellsInfo ).to.be.empty;
+		} );
+
+		it( 'should return overlapping cells info for given overlapRow', () => {
+			const cellsInfo = getVerticallyOverlappingCells( table, 2 );
+
+			expect( cellsInfo[ 0 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) ); // Cell 00
+			expect( cellsInfo[ 1 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) ); // Cell 01
+			expect( cellsInfo[ 2 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) ); // Cell 12
+		} );
+
+		it( 'should ignore rows below startRow', () => {
+			const cellsInfo = getVerticallyOverlappingCells( table, 2, 1 );
+
+			expect( cellsInfo[ 0 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) ); // Cell 12
+		} );
+	} );
+
+	describe( 'getHorizontallyOverlappingCells()', () => {
+		let table;
+
+		beforeEach( () => {
+			// +----+----+----+----+----+
+			// | 00                     |
+			// +----+----+----+----+----+
+			// | 10           | 13      |
+			// +----+----+----+----+----+
+			// | 20 | 21           | 24 |
+			// +----+----+----+----+----+
+			// | 30      | 32      | 34 |
+			// +----+----+----+----+----+
+			// | 40 | 41 | 42 | 43 | 44 |
+			// +----+----+----+----+----+
+			setModelData( model, modelTable( [
+				[ { contents: '00', colspan: 5 } ],
+				[ { contents: '10', colspan: 3 }, { contents: '13', colspan: 2 } ],
+				[ '20', { contents: '21', colspan: 3 }, '24' ],
+				[ { contents: '30', colspan: 2 }, { contents: '32', colspan: 2 }, '34' ],
+				[ '40', '41', '42', '43', '44' ]
+			] ) );
+
+			table = modelRoot.getChild( 0 );
+		} );
+
+		it( 'should return empty array for no overlapping cells', () => {
+			const cellsInfo = getHorizontallyOverlappingCells( table, 0 );
+
+			expect( cellsInfo ).to.be.empty;
+		} );
+
+		it( 'should return overlapping cells info for given overlapColumn', () => {
+			const cellsInfo = getHorizontallyOverlappingCells( table, 2 );
+
+			expect( cellsInfo[ 0 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) ); // Cell 00
+			expect( cellsInfo[ 1 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) ); // Cell 10
+			expect( cellsInfo[ 2 ].cell ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) ); // Cell 21
 		} );
 	} );
 } );

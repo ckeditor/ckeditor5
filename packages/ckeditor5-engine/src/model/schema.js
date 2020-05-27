@@ -153,7 +153,12 @@ export default class Schema {
 	}
 
 	/**
-	 * Returns all registered items.
+	 * Returns data of all registered items.
+	 *
+	 * This method should normally be used for reflection purposes (e.g. defining a clone of a certain element,
+	 * checking a list of all block elements, etc).
+	 * Use specific methods (such as {@link #checkChild `checkChild()`} or {@link #isLimit `isLimit()`})
+	 * in other cases.
 	 *
 	 * @returns {Object.<String,module:engine/model/schema~SchemaCompiledItemDefinition>}
 	 */
@@ -167,6 +172,11 @@ export default class Schema {
 
 	/**
 	 * Returns a definition of the given item or `undefined` if item is not registered.
+	 *
+	 * This method should normally be used for reflection purposes (e.g. defining a clone of a certain element,
+	 * checking a list of all block elements, etc).
+	 * Use specific methods (such as {@link #checkChild `checkChild()`} or {@link #isLimit `isLimit()`})
+	 * in other cases.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 * @returns {module:engine/model/schema~SchemaCompiledItemDefinition}
@@ -210,6 +220,9 @@ export default class Schema {
 	 *		const paragraphElement = writer.createElement( 'paragraph' );
 	 *		schema.isBlock( paragraphElement ); // -> true
 	 *
+	 * See the {@glink framework/guides/deep-dive/schema#block-elements Block elements} section of the "Schema" deep dive}
+	 * guide for more details.
+	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
 	isBlock( item ) {
@@ -219,14 +232,21 @@ export default class Schema {
 	}
 
 	/**
-	 * Returns `true` if the given item is defined to be
-	 * a limit element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isLimit` or `isObject` property
-	 * (all objects are also limits).
+	 * Returns `true` if the given item should be treated as a limit element.
+	 *
+	 * It considers the item to be a limit element if its
+	 * {@link module:engine/model/schema~SchemaItemDefinition}'s
+	 * {@link module:engine/model/schema~SchemaItemDefinition#isLimit `isLimit`} or
+	 * {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} property
+	 * were set to `true`.
 	 *
 	 *		schema.isLimit( 'paragraph' ); // -> false
 	 *		schema.isLimit( '$root' ); // -> true
 	 *		schema.isLimit( editor.model.document.getRoot() ); // -> true
 	 *		schema.isLimit( 'image' ); // -> true
+	 *
+	 * See the {@glink framework/guides/deep-dive/schema#limit-elements Limit elements} section of the "Schema" deep dive}
+	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
@@ -241,14 +261,21 @@ export default class Schema {
 	}
 
 	/**
-	 * Returns `true` if the given item is defined to be
-	 * an object element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isObject` property.
+	 * Returns `true` if the given item is should be treated as an object element.
+	 *
+	 * It considers the item to be an object element if its
+	 * {@link module:engine/model/schema~SchemaItemDefinition}'s
+	 * {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} property
+	 * were set to `true`.
 	 *
 	 *		schema.isObject( 'paragraph' ); // -> false
 	 *		schema.isObject( 'image' ); // -> true
 	 *
 	 *		const imageElement = writer.createElement( 'image' );
 	 *		schema.isObject( imageElement ); // -> true
+	 *
+	 * See the {@glink framework/guides/deep-dive/schema#object-elements Object elements} section of the "Schema" deep dive}
+	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
@@ -267,6 +294,9 @@ export default class Schema {
 	 *
 	 *		const text = writer.createText('foo' );
 	 *		schema.isInline( text ); // -> true
+	 *
+	 * See the {@glink framework/guides/deep-dive/schema#inline-elements Inline elements} section of the "Schema" deep dive}
+	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
@@ -712,8 +742,8 @@ export default class Schema {
 	 * as long as {@link module:engine/model/schema~Schema#isLimit limit element},
 	 * {@link module:engine/model/schema~Schema#isObject object element} or top-most ancestor won't be reached.
 	 *
-	 * @params {module:engine/model/position~Position} position Position from searching will start.
-	 * @params {module:engine/model/node~Node|String} node Node for which allowed parent should be found or its name.
+	 * @param {module:engine/model/position~Position} position Position from searching will start.
+	 * @param {module:engine/model/node~Node|String} node Node for which allowed parent should be found or its name.
 	 * @returns {module:engine/model/element~Element|null} element Allowed parent or null if nothing was found.
 	 */
 	findAllowedParent( position, node ) {
@@ -999,32 +1029,34 @@ mix( Schema, ObservableMixin );
  *
  * You can define the following rules:
  *
- * * `allowIn` &ndash; A string or an array of strings. Defines in which other items this item will be allowed.
- * * `allowAttributes` &ndash; A string or an array of strings. Defines allowed attributes of the given item.
- * * `allowContentOf` &ndash; A string or an array of strings. Inherits "allowed children" from other items.
- * * `allowWhere` &ndash; A string or an array of strings. Inherits "allowed in" from other items.
- * * `allowAttributesOf` &ndash; A string or an array of strings. Inherits attributes from other items.
- * * `inheritTypesFrom` &ndash; A string or an array of strings. Inherits `is*` properties of other items.
- * * `inheritAllFrom` &ndash; A string. A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
- * * Additionally, you can define the following `is*` properties: `isBlock`, `isLimit`, `isObject`, `isInline`. Read about them below.
+ * * {@link ~SchemaItemDefinition#allowIn `allowIn`} &ndash; Defines in which other items this item will be allowed.
+ * * {@link ~SchemaItemDefinition#allowAttributes `allowAttributes`} &ndash; Defines allowed attributes of the given item.
+ * * {@link ~SchemaItemDefinition#allowContentOf `allowContentOf`} &ndash; Inherits "allowed children" from other items.
+ * * {@link ~SchemaItemDefinition#allowWhere `allowWhere`} &ndash; Inherits "allowed in" from other items.
+ * * {@link ~SchemaItemDefinition#allowAttributesOf `allowAttributesOf`} &ndash; Inherits attributes from other items.
+ * * {@link ~SchemaItemDefinition#inheritTypesFrom `inheritTypesFrom`} &ndash; Inherits `is*` properties of other items.
+ * * {@link ~SchemaItemDefinition#inheritAllFrom `inheritAllFrom`} &ndash;
+ * A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
  *
- * # The is* properties
+ * # The `is*` properties
  *
- * There are 3 commonly used `is*` properties. Their role is to assign additional semantics to schema items.
+ * There are a couple commonly used `is*` properties. Their role is to assign additional semantics to schema items.
  * You can define more properties but you will also need to implement support for them in the existing editor features.
  *
- * * `isBlock` &ndash; Whether this item is paragraph-like. Generally speaking, content is usually made out of blocks
- * like paragraphs, list items, images, headings, etc. All these elements are marked as blocks. A block
- * should not allow another block inside. Note: There is also the `$block` generic item which has `isBlock` set to `true`.
- * Most block type items will inherit from `$block` (through `inheritAllFrom`).
- * * `isLimit` &ndash; It can be understood as whether this element should not be split by <kbd>Enter</kbd>.
- * Examples of limit elements: `$root`, table cell, image caption, etc. In other words, all actions that happen inside
- * a limit element are limited to its content. **Note:** All objects (`isObject`) are treated as limit elements, too.
- * * `isObject` &ndash; Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
- * `image`, `table`, `video`, etc. **Note:** An object is also a limit, so
+ * * {@link ~SchemaItemDefinition#isBlock `isBlock`} &ndash; Whether this item is paragraph-like.
+ * Generally speaking, content is usually made out of blocks like paragraphs, list items, images, headings, etc.
+ * * {@link ~SchemaItemDefinition#isInline `isInline`} &ndash; Whether an item is "text-like" and should be treated as an inline node.
+ * Examples of inline elements: `$text`, `softBreak` (`<br>`), etc.
+ * * {@link ~SchemaItemDefinition#isLimit `isLimit`} &ndash; It can be understood as whether this element
+ * should not be split by <kbd>Enter</kbd>. Examples of limit elements: `$root`, table cell, image caption, etc.
+ * In other words, all actions that happen inside a limit element are limited to its content.
+ * All objects are treated as limit elements, too.
+ * * {@link ~SchemaItemDefinition#isObject `isObject`} &ndash; Whether an item is "self-contained" and should be treated as a whole.
+ * Examples of object elements: `image`, `table`, `video`, etc. An object is also a limit, so
  * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
- * * `isInline` &ndash; Whether an item is "text-like" and should be treated as an inline node. Examples of inline elements:
- * `$text`, `softBreak` (`<br>`), etc.
+ *
+ * Read more about the meaning of these types in the
+ * {@glink framework/guides/deep-dive/schema#defining-additional-semantics Dedicated section of the "Schema" deep dive} guide.
  *
  * # Generic items
  *
@@ -1047,7 +1079,7 @@ mix( Schema, ObservableMixin );
  * (paragraphs, lists items, headings, images) which, in turn, may contain text inside.
  *
  * By inheriting from the generic items you can define new items which will get extended by other editor features.
- * Read more about generic types in the {@glink framework/guides/deep-dive/schema Defining schema} guide.
+ * Read more about generic types in the {@glink framework/guides/deep-dive/schema Schema deep dive} guide.
  *
  * # Example definitions
  *
@@ -1111,6 +1143,48 @@ mix( Schema, ObservableMixin );
  * affect how the editor features treat your elements.
  *
  * @typedef {Object} module:engine/model/schema~SchemaItemDefinition
+ *
+ * @property {String|Array.<String>} allowIn Defines in which other items this item will be allowed.
+ * @property {String|Array.<String>} allowAttributes Defines allowed attributes of the given item.
+ * @property {String|Array.<String>} allowContentOf Inherits "allowed children" from other items.
+ * @property {String|Array.<String>} allowWhere Inherits "allowed in" from other items.
+ * @property {String|Array.<String>} allowAttributesOf Inherits attributes from other items.
+ * @property {String|Array.<String>} inheritTypesFrom Inherits `is*` properties of other items.
+ * @property {String} inheritAllFrom A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
+ *
+ * @property {Boolean} isBlock
+ * Whether this item is paragraph-like. Generally speaking, content is usually made out of blocks
+ * like paragraphs, list items, images, headings, etc. All these elements are marked as blocks. A block
+ * should not allow another block inside. Note: There is also the `$block` generic item which has `isBlock` set to `true`.
+ * Most block type items will inherit from `$block` (through `inheritAllFrom`).
+ *
+ * Read more about the block elements in the
+ * {@glink framework/guides/deep-dive/schema#block-elements Block elements} section of the "Schema" deep dive} guide.
+ *
+ * @property {Boolean} isInline
+ * Whether an item is "text-like" and should be treated as an inline node. Examples of inline elements:
+ * `$text`, `softBreak` (`<br>`), etc.
+ *
+ * Read more about the inline elements in the
+ * {@glink framework/guides/deep-dive/schema#inline-elements Inline elements} section of the "Schema" deep dive} guide.
+ *
+ * @property {Boolean} isLimit
+ * It can be understood as whether this element should not be split by <kbd>Enter</kbd>.
+ * Examples of limit elements: `$root`, table cell, image caption, etc. In other words, all actions that happen inside
+ * a limit element are limited to its content.
+ *
+ * Read more about the limit elements in the
+ * {@glink framework/guides/deep-dive/schema#limit-elements Limit elements} section of the "Schema" deep dive} guide.
+ *
+ * @property {Boolean} isObject
+ * Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
+ * `image`, `table`, `video`, etc.
+ *
+ * **Note:** An object is also a limit, so
+ * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
+ *
+ * Read more about the object elements in the
+ * {@glink framework/guides/deep-dive/schema#object-elements Object elements} section of the "Schema" deep dive} guide.
  */
 
 /**

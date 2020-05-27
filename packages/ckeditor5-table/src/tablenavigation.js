@@ -7,13 +7,15 @@
  * @module table/tablenavigation
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { getSelectedTableCells, getTableCellsContainingSelection } from './utils';
-import { findAncestor } from './commands/utils';
+import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
+import { findAncestor } from './commands/utils';
+import { getSelectedTableCells, getTableCellsContainingSelection } from './utils';
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * This plugin enables keyboard navigation for tables.
@@ -27,6 +29,13 @@ export default class TableNavigation extends Plugin {
 	 */
 	static get pluginName() {
 		return 'TableNavigation';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ TableSelection ];
 	}
 
 	/**
@@ -160,7 +169,8 @@ export default class TableNavigation extends Plugin {
 			return;
 		}
 
-		const wasHandled = this._handleArrowKeys( getDirectionFromKeyCode( keyCode, this.editor.locale.contentLanguageDirection ) );
+		const direction = getDirectionFromKeyCode( keyCode, this.editor.locale.contentLanguageDirection );
+		const wasHandled = this._handleArrowKeys( direction, domEventData.shiftKey );
 
 		if ( wasHandled ) {
 			domEventData.preventDefault();
@@ -174,9 +184,10 @@ export default class TableNavigation extends Plugin {
 	 *
 	 * @private
 	 * @param {'left'|'up'|'right'|'down'} direction The direction of the arrow key.
-	 * @returns {Boolean} Returns `true` if the key was handled.
+	 * @param {Boolean} expandSelection If the current selection should be expanded.
+	 * @returns {Boolean} Returns `true` if key was handled.
 	 */
-	_handleArrowKeys( direction ) {
+	_handleArrowKeys( direction, expandSelection ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const isForward = [ 'right', 'down' ].includes( direction );
@@ -186,9 +197,15 @@ export default class TableNavigation extends Plugin {
 		const selectedCells = getSelectedTableCells( selection );
 
 		if ( selectedCells.length ) {
-			const tableCell = isForward ? selectedCells[ selectedCells.length - 1 ] : selectedCells[ 0 ];
+			let focusCell;
 
-			this._navigateFromCellInDirection( tableCell, direction );
+			if ( expandSelection ) {
+				focusCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
+			} else {
+				focusCell = isForward ? selectedCells[ selectedCells.length - 1 ] : selectedCells[ 0 ];
+			}
+
+			this._navigateFromCellInDirection( focusCell, direction, expandSelection );
 
 			return true;
 		}
@@ -204,7 +221,7 @@ export default class TableNavigation extends Plugin {
 
 		// Let's check if the selection is at the beginning/end of the cell.
 		if ( this._isSelectionAtCellEdge( selection, isForward ) ) {
-			this._navigateFromCellInDirection( tableCell, direction );
+			this._navigateFromCellInDirection( tableCell, direction, expandSelection );
 
 			return true;
 		}
@@ -226,7 +243,7 @@ export default class TableNavigation extends Plugin {
 		const textRange = this._findTextRangeFromSelection( cellRange, selection, isForward );
 
 		if ( !textRange ) {
-			this._navigateFromCellInDirection( tableCell, direction );
+			this._navigateFromCellInDirection( tableCell, direction, expandSelection );
 
 			return true;
 		}
@@ -242,7 +259,16 @@ export default class TableNavigation extends Plugin {
 		// of wrapped line (it's at the same time at the end of one line and at the start of the next line).
 		if ( this._isSingleLineRange( textRange, isForward ) ) {
 			model.change( writer => {
-				writer.setSelection( isForward ? cellRange.end : cellRange.start );
+				const newPosition = isForward ? cellRange.end : cellRange.start;
+
+				if ( expandSelection ) {
+					const newSelection = model.createSelection( selection.anchor );
+					newSelection.setFocus( newPosition );
+
+					writer.setSelection( newSelection );
+				} else {
+					writer.setSelection( newPosition );
+				}
 			} );
 
 			return true;
@@ -415,18 +441,19 @@ export default class TableNavigation extends Plugin {
 	/**
 	 * Moves the selection from the given table cell in the specified direction.
 	 *
-	 * @private
-	 * @param {module:engine/model/element~Element} tableCell The table cell to start the selection navigation.
-	 * @param {'left'|'up'|'right'|'down'} direction The direction in which selection should move.
+	 * @protected
+	 * @param {module:engine/model/element~Element} focusCell The table cell that is current multi-cell selection focus.
+	 * @param {'left'|'up'|'right'|'down'} direction Direction in which selection should move.
+	 * @param {Boolean} [expandSelection=false] If the current selection should be expanded.
 	 */
-	_navigateFromCellInDirection( tableCell, direction ) {
+	_navigateFromCellInDirection( focusCell, direction, expandSelection = false ) {
 		const model = this.editor.model;
 
-		const table = findAncestor( 'table', tableCell );
+		const table = findAncestor( 'table', focusCell );
 		const tableMap = [ ...new TableWalker( table, { includeSpanned: true } ) ];
 		const { row: lastRow, column: lastColumn } = tableMap[ tableMap.length - 1 ];
 
-		const currentCellInfo = tableMap.find( ( { cell } ) => cell == tableCell );
+		const currentCellInfo = tableMap.find( ( { cell } ) => cell == focusCell );
 		let { row, column } = currentCellInfo;
 
 		switch ( direction ) {
@@ -463,20 +490,28 @@ export default class TableNavigation extends Plugin {
 		}
 
 		if ( column < 0 ) {
-			column = lastColumn;
+			column = expandSelection ? 0 : lastColumn;
 			row--;
 		} else if ( column > lastColumn ) {
-			column = 0;
+			column = expandSelection ? lastColumn : 0;
 			row++;
 		}
 
 		const cellToSelect = tableMap.find( cellInfo => cellInfo.row == row && cellInfo.column == column ).cell;
 		const isForward = [ 'right', 'down' ].includes( direction );
-		const positionToSelect = model.createPositionAt( cellToSelect, isForward ? 0 : 'end' );
 
-		model.change( writer => {
-			writer.setSelection( positionToSelect );
-		} );
+		if ( expandSelection ) {
+			const tableSelection = this.editor.plugins.get( 'TableSelection' );
+			const anchorCell = tableSelection.getAnchorCell() || focusCell;
+
+			tableSelection.setCellSelection( anchorCell, cellToSelect );
+		} else {
+			const positionToSelect = model.createPositionAt( cellToSelect, isForward ? 0 : 'end' );
+
+			model.change( writer => {
+				writer.setSelection( positionToSelect );
+			} );
+		}
 	}
 }
 

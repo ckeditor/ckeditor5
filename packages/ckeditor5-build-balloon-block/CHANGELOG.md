@@ -1,13 +1,17 @@
 Changelog
 =========
 
+All changes in the package are documented in the main repository. See: https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md.
+
+Changes for the past releases are available below.
+
 ## [19.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v18.0.0...v19.0.0) (2020-04-29)
 
 We are happy to announce the release of CKEditor 5 v19.0.0.
 
 Refer to the [main changelog](https://github.com/ckeditor/ckeditor5/releases/tag/v19.0.0) to find out about all the new features, improvements and possible breaking changes.
 
-Blog post coming soon...
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v19.0.0-with-table-enhancements-improved-performance-and-select-all-feature/
 
 ### Dependencies
 

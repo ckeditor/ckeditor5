@@ -28,15 +28,28 @@ function tableCellRefreshPostFixer( model ) {
 	// Stores cells to be refreshed so the table cell will be refreshed once for multiple changes.
 	const cellsToRefresh = new Set();
 
+	// Counting the paragraph inserts to verify if it increased to more than one paragraph in the current differ.
+	let insertCount = 0;
+
 	for ( const change of differ.getChanges() ) {
 		const parent = change.type == 'insert' || change.type == 'remove' ? change.position.parent : change.range.start.parent;
 
-		if ( parent.is( 'tableCell' ) && checkRefresh( parent, change.type ) ) {
+		if ( !parent.is( 'tableCell' ) ) {
+			continue;
+		}
+
+		if ( change.type == 'insert' ) {
+			insertCount++;
+		}
+
+		if ( checkRefresh( parent, change.type, insertCount ) ) {
 			cellsToRefresh.add( parent );
 		}
 	}
 
 	if ( cellsToRefresh.size ) {
+		// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: refreshing cells (${ cellsToRefresh.size }).` );
+
 		for ( const tableCell of cellsToRefresh.values() ) {
 			differ.refreshItem( tableCell );
 		}
@@ -60,7 +73,8 @@ function tableCellRefreshPostFixer( model ) {
 //
 // @param {module:engine/model/element~Element} tableCell The table cell to check.
 // @param {String} type Type of change.
-function checkRefresh( tableCell, type ) {
+// @param {Number} insertCount The number of inserts in differ.
+function checkRefresh( tableCell, type, insertCount ) {
 	const hasInnerParagraph = Array.from( tableCell.getChildren() ).some( child => child.is( 'paragraph' ) );
 
 	// If there is no paragraph in table cell then the view doesn't require refreshing.
@@ -83,5 +97,7 @@ function checkRefresh( tableCell, type ) {
 	//
 	// - another element is added to a single paragraph (childCount becomes >= 2)
 	// - another element is removed and a single paragraph is left (childCount == 1)
-	return tableCell.childCount <= ( type == 'insert' ? 2 : 1 );
+	//
+	// Change is not needed if there were multiple blocks before change.
+	return tableCell.childCount <= ( type == 'insert' ? insertCount + 1 : 1 );
 }

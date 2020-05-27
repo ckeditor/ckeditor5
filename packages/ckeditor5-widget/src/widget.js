@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
+import WidgetTypeAround from './widgettypearound/widgettypearound';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
@@ -36,6 +37,13 @@ export default class Widget extends Plugin {
 	 */
 	static get pluginName() {
 		return 'Widget';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ WidgetTypeAround ];
 	}
 
 	/**

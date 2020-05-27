@@ -4,6 +4,7 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import InsertRowCommand from '../../src/commands/insertrowcommand';
@@ -18,7 +19,7 @@ describe( 'InsertRowCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ TableUtils, TableSelection ]
+				plugins: [ TableUtils, TableSelection, HorizontalLineEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -193,7 +194,7 @@ describe( 'InsertRowCommand', () => {
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 				);
@@ -213,6 +214,50 @@ describe( 'InsertRowCommand', () => {
 					[ 0, 0 ],
 					[ 0, 0 ]
 				] );
+			} );
+
+			it( 'should insert a row when a widget in the table cell is selected', () => {
+				setData( model, modelTable( [
+					[ '11', '12' ],
+					[ '21', '22' ],
+					[ '31', '[<horizontalLine></horizontalLine>]' ]
+				] ) );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '11', '12' ],
+					[ '21', '22' ],
+					[ '31', '<horizontalLine></horizontalLine>' ],
+					[ '', '' ]
+				] ) );
+			} );
+
+			it( 'should copy the row structure from the selected row', () => {
+				// +----+----+----+
+				// | 00 | 01      |
+				// +----+----+----+
+				// | 10 | 11 | 12 |
+				// +----+----+----+
+				setData( model, modelTable( [
+					[ '[]00', { contents: '01', colspan: 2 } ],
+					[ '10', '11', '12' ]
+				] ) );
+
+				command.execute();
+
+				// +----+----+----+
+				// | 00 | 01      |
+				// +----+----+----+
+				// |    |         |
+				// +----+----+----+
+				// | 10 | 11 | 12 |
+				// +----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', { contents: '01', colspan: 2 } ],
+					[ '', { contents: '', colspan: 2 } ],
+					[ '10', '11', '12' ]
+				] ) );
 			} );
 		} );
 	} );
@@ -328,7 +373,7 @@ describe( 'InsertRowCommand', () => {
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
 
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 				);
@@ -348,6 +393,33 @@ describe( 'InsertRowCommand', () => {
 					[ 1, 1 ],
 					[ 0, 0 ]
 				] );
+			} );
+
+			it( 'should copy the row structure from the selected row', () => {
+				// +----+----+----+
+				// | 00 | 01      |
+				// +----+----+----+
+				// | 10 | 11 | 12 |
+				// +----+----+----+
+				setData( model, modelTable( [
+					[ '[]00', { contents: '01', colspan: 2 } ],
+					[ '10', '11', '12' ]
+				] ) );
+
+				command.execute();
+
+				// +----+----+----+
+				// |    |         |
+				// +----+----+----+
+				// | 00 | 01      |
+				// +----+----+----+
+				// | 10 | 11 | 12 |
+				// +----+----+----+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '', { contents: '', colspan: 2 } ],
+					[ '00', { contents: '01', colspan: 2 } ],
+					[ '10', '11', '12' ]
+				] ) );
 			} );
 		} );
 	} );

@@ -136,4 +136,35 @@ describe( 'CloudServices', () => {
 			} );
 		} );
 	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy created token when tokenUrl was provided', async () => {
+			CloudServices.Token.initialToken = 'initial-token';
+
+			const context = await Context.create( {
+				plugins: [ CloudServices ],
+				cloudServices: {
+					tokenUrl: 'http://token-endpoint'
+				}
+			} );
+
+			const cloudServicesPlugin = context.plugins.get( CloudServices );
+
+			const destroySpy = sinon.spy( cloudServicesPlugin.token, 'destroy' );
+
+			await context.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should not crash when tokenUrl was not provided', async () => {
+			const context = await Context.create( { plugins: [ CloudServices ] } );
+
+			try {
+				await context.destroy();
+			} catch ( error ) {
+				expect.fail( 'Error should not be thrown.' );
+			}
+		} );
+	} );
 } );

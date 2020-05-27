@@ -27,4 +27,4 @@ The source code of this package is available on GitHub in https://github.com/cke
 * [`@ckeditor/ckeditor5-paragraph` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph)
 * [`ckeditor/ckeditor5-paragraph` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-paragraph)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
-* [Changelog](https://github.com/ckeditor/ckeditor5-paragraph/blob/master/CHANGELOG.md)
+* [Changelog](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md)

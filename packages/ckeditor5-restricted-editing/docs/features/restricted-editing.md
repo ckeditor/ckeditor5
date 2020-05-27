@@ -133,4 +133,4 @@ When using [real-time collaboration](https://ckeditor.com/collaboration/real-tim
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5-restricted-editing.
+The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-restricted-editing.

@@ -55,7 +55,7 @@ describe( 'SplitCellCommand', () => {
 
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] )
 				);
@@ -70,7 +70,7 @@ describe( 'SplitCellCommand', () => {
 
 				const tableSelection = editor.plugins.get( TableSelection );
 				const modelRoot = model.document.getRoot();
-				tableSelection._setCellSelection(
+				tableSelection.setCellSelection(
 					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 				);

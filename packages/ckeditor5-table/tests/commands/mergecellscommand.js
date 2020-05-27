@@ -201,7 +201,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '10', '11' ]
 			], { headingRows: 1 } ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 0, 0 ] ),
 				root.getNodeByPath( [ 0, 1, 0 ] )
 			);
@@ -230,7 +230,7 @@ describe( 'MergeCellsCommand', () => {
 
 			const tableSelection = editor.plugins.get( TableSelection );
 			const modelRoot = model.document.getRoot();
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 12, 0 ] )
 			);
@@ -244,7 +244,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '10', '11', '12', '13' ]
 			], { headingColumns: 2 } ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 0, 0 ] ),
 				root.getNodeByPath( [ 0, 1, 1 ] )
 			);
@@ -258,7 +258,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '10', '11', '12', '13' ]
 			], { headingColumns: 2 } ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 0, 0 ] ),
 				root.getNodeByPath( [ 0, 1, 2 ] )
 			);
@@ -272,7 +272,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '10', '11', '12', '13' ]
 			], { headingColumns: 2, headingRows: 1 } ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 0, 0 ] ),
 				root.getNodeByPath( [ 0, 0, 1 ] )
 			);
@@ -286,7 +286,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '10', '11', '12', '13' ]
 			], { headingColumns: 2, headingRows: 1 } ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 0, 0 ] ),
 				root.getNodeByPath( [ 0, 0, 2 ] )
 			);
@@ -300,7 +300,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '10', '11', '12', '13' ]
 			], { headingColumns: 2, headingRows: 1 } ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 0, 0 ] ),
 				root.getNodeByPath( [ 0, 1, 2 ] )
 			);
@@ -315,7 +315,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '[]00', '01' ]
 			] ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 0, 0 ] ),
 				root.getNodeByPath( [ 0, 0, 1 ] )
 			);
@@ -334,7 +334,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '20', '22' ]
 			] ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 1, 0 ] ),
 				root.getNodeByPath( [ 0, 2, 1 ] )
 			);
@@ -358,7 +358,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '20', '22' ]
 			] ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 2, 1 ] ),
 				root.getNodeByPath( [ 0, 1, 0 ] )
 			);
@@ -383,7 +383,7 @@ describe( 'MergeCellsCommand', () => {
 				[ '30', '31', '32', '33' ]
 			] ) );
 
-			tableSelection._setCellSelection(
+			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 2, 1 ] ),
 				root.getNodeByPath( [ 0, 1, 2 ] )
 			);
@@ -512,6 +512,103 @@ describe( 'MergeCellsCommand', () => {
 						'<paragraph>[00</paragraph><paragraph>10</paragraph><paragraph>20]</paragraph>'
 					]
 				] ) );
+			} );
+
+			it( 'should decrease heading rows if some heading rows were removed', () => {
+				setData( model, modelTable( [
+					[ '00' ],
+					[ '10' ],
+					[ '20' ]
+				], { headingRows: 2 } ) );
+
+				selectNodes( [
+					[ 0, 0, 0 ],
+					[ 0, 1, 0 ]
+				] );
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[
+						'<paragraph>[00</paragraph><paragraph>10]</paragraph>'
+					],
+					[ '20' ]
+				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should decrease heading rows if multiple heading rows were removed', () => {
+				// +----+----+
+				// | 00 | 01 |
+				// +    +----+
+				// |    | 11 |
+				// +----+----+
+				// | 20 | 21 |
+				// +----+----+
+				// | 30 | 31 |
+				// +    +----+
+				// |    | 41 |
+				// +----+----+ <-- heading rows
+				// | 50 | 51 |
+				// +----+----+
+				setData( model, modelTable( [
+					[ { contents: '00', rowspan: 2 }, '01' ],
+					[ '11' ],
+					[ '20', '21' ],
+					[ { contents: '30', rowspan: 2 }, '31' ],
+					[ '41' ],
+					[ '50', '51' ]
+				], { headingRows: 5 } ) );
+
+				selectNodes( [
+					[ 0, 0, 1 ],
+					[ 0, 1, 0 ],
+					[ 0, 2, 1 ],
+					[ 0, 3, 1 ],
+					[ 0, 4, 0 ]
+				] );
+
+				command.execute();
+
+				const contents = [ '[01', '11', '21', '31', '41]' ].map( content => `<paragraph>${ content }</paragraph>` ).join( '' );
+
+				// +----+----+
+				// | 00 | 01 |
+				// +----+    +
+				// | 20 |    |
+				// +----+    +
+				// | 30 |    |
+				// +----+----+ <-- heading rows
+				// | 50 | 51 |
+				// +----+----+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[ '00', { contents, rowspan: 3 } ],
+					[ '20' ],
+					[ '30' ],
+					[ '50', '51' ]
+				], { headingRows: 3 } ) );
+			} );
+
+			it( 'should create one undo step (1 batch)', () => {
+				setData( model, modelTable( [
+					[ '00' ],
+					[ '10' ],
+					[ '20' ]
+				], { headingRows: 2 } ) );
+
+				selectNodes( [
+					[ 0, 0, 0 ],
+					[ 0, 1, 0 ]
+				] );
+
+				const createdBatches = new Set();
+
+				model.on( 'applyOperation', ( evt, [ operation ] ) => {
+					createdBatches.add( operation.batch );
+				} );
+
+				command.execute();
+
+				expect( createdBatches.size ).to.equal( 1 );
 			} );
 
 			it( 'should decrease rowspan if cell overlaps removed row', () => {
