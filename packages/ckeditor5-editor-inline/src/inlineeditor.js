@@ -8,18 +8,13 @@
  */
 
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
-import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
-import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import EditorFactory from '@ckeditor/ckeditor5-core/src/editor/editorfactory';
 import InlineEditorUI from './inlineeditorui';
 import InlineEditorUIView from './inlineeditoruiview';
-import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
-import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
+import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
+import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import { isElement } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import secureSourceElement from '@ckeditor/ckeditor5-core/src/editor/utils/securesourceelement';
 
 /**
  * The {@glink builds/guides/overview#inline-editor inline editor} implementation.
@@ -64,23 +59,12 @@ export default class InlineEditor extends Editor {
 	constructor( sourceElementOrData, config ) {
 		super( config );
 
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
-
-		this.model.document.createRoot();
-
-		if ( isElement( sourceElementOrData ) ) {
-			this.sourceElement = sourceElementOrData;
-			secureSourceElement( this );
-		}
-
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 
 		const view = new InlineEditorUIView( this.locale, this.editing.view, this.sourceElement, {
 			shouldToolbarGroupWhenFull
 		} );
 		this.ui = new InlineEditorUI( this, view );
-
-		attachToForm( this );
 	}
 
 	/**
@@ -91,18 +75,9 @@ export default class InlineEditor extends Editor {
 	 * @returns {Promise}
 	 */
 	destroy() {
-		// Cache the data, then destroy.
-		// It's safe to assume that the model->view conversion will not work after super.destroy().
-		const data = this.getData();
-
-		this.ui.destroy();
-
-		return super.destroy()
-			.then( () => {
-				if ( this.sourceElement ) {
-					setDataInElement( this.sourceElement, data );
-				}
-			} );
+		return new EditorFactory()
+			.destroy( this )
+			.then( () => super.destroy() );
 	}
 
 	/**
@@ -194,43 +169,17 @@ export default class InlineEditor extends Editor {
 	 * @returns {Promise} A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
 	static create( sourceElementOrData, config = {} ) {
-		return new Promise( resolve => {
-			const isHTMLElement = isElement( sourceElementOrData );
-
-			if ( isHTMLElement && sourceElementOrData.tagName === 'TEXTAREA' ) {
-				// Documented in core/editor/editor.js
-				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-				throw new CKEditorError( 'editor-wrong-element', null );
-			}
-
-			const editor = new this( sourceElementOrData, config );
-
-			resolve(
-				editor.initPlugins()
-					.then( () => {
-						editor.ui.init();
-					} )
-					.then( () => {
-						if ( !isHTMLElement && config.initialData ) {
-							// Documented in core/editor/editorconfig.jdoc.
-							// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-							throw new CKEditorError( 'editor-create-initial-data', null );
-						}
-
-						const initialData = config.initialData || getInitialData( sourceElementOrData );
-
-						return editor.data.init( initialData );
-					} )
-					.then( () => editor.fire( 'ready' ) )
-					.then( () => editor )
-			);
-		} );
+		return Promise.resolve()
+			.then( () => {
+				if ( sourceElementOrData && sourceElementOrData.tagName && sourceElementOrData.tagName === 'TEXTAREA' ) {
+					// Documented in core/editor/editor.js
+					// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+					throw new CKEditorError( 'editor-wrong-element', null );
+				}
+			} )
+			.then( () => new EditorFactory().create( this, sourceElementOrData, config ) );
 	}
 }
 
 mix( InlineEditor, DataApiMixin );
 mix( InlineEditor, ElementApiMixin );
-
-function getInitialData( sourceElementOrData ) {
-	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
-}

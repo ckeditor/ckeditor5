@@ -8,15 +8,12 @@
 import InlineEditorUI from '../src/inlineeditorui';
 import InlineEditorUIView from '../src/inlineeditoruiview';
 
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-
 import InlineEditor from '../src/inlineeditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
 import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
-import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -53,20 +50,12 @@ describe( 'InlineEditor', () => {
 			expect( editor.ui.view ).to.be.instanceof( InlineEditorUIView );
 		} );
 
-		it( 'uses HTMLDataProcessor', () => {
-			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
-		} );
-
 		it( 'has a Data Interface', () => {
 			expect( testUtils.isMixed( InlineEditor, DataApiMixin ) ).to.be.true;
 		} );
 
 		it( 'has a Element Interface', () => {
 			expect( testUtils.isMixed( InlineEditor, ElementApiMixin ) ).to.be.true;
-		} );
-
-		it( 'creates main root element', () => {
-			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
 		} );
 
 		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {
@@ -87,21 +76,6 @@ describe( 'InlineEditor', () => {
 
 				return editor.destroy();
 			} );
-		} );
-
-		// See: https://github.com/ckeditor/ckeditor5/issues/746
-		it( 'should throw when trying to create the editor using the same source element more than once', done => {
-			InlineEditor.create( editorElement )
-				.then(
-					() => {
-						expect.fail( 'Inline editor should not initialize on an element already used by other instance.' );
-					},
-					err => {
-						assertCKEditorError( err, 'editor-source-element-already-used' );
-					}
-				)
-				.then( done )
-				.catch( done );
 		} );
 	} );
 
@@ -252,6 +226,23 @@ describe( 'InlineEditor', () => {
 					},
 					err => {
 						assertCKEditorError( err, 'editor-wrong-element', null );
+					}
+				)
+				.then( done )
+				.catch( done );
+		} );
+
+		// See: https://github.com/ckeditor/ckeditor5/issues/746
+		it( 'should throw when trying to create the editor using the same source element more than once', done => {
+			InlineEditor.create( editorElement )
+				.then(
+					() => {
+						expect.fail( 'Inline editor should not initialize on an element already used by other instance.' );
+					},
+					err => {
+						assertCKEditorError( err,
+							/^editor-source-element-already-used/
+						);
 					}
 				)
 				.then( done )
