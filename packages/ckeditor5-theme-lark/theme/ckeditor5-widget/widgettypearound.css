@@ -199,18 +199,18 @@
 
 @keyframes ck-widget-type-around-line-pulse {
 	0% {
-		background: hsla(0, 0%, 0%, 0);
+		background: hsla(0, 0%, 0%, 1);
 	}
 	49% {
-		background: hsla(0, 0%, 0%, 0);
+		background: hsla(0, 0%, 0%, 1);
 	}
 	50% {
-		background: hsla(0, 0%, 0%, 1);
+		background: hsla(0, 0%, 0%, 0);
 	}
 	99% {
-		background: hsla(0, 0%, 0%, 1);
+		background: hsla(0, 0%, 0%, 0);
 	}
 	100% {
-		background: hsla(0, 0%, 0%, 0);
+		background: hsla(0, 0%, 0%, 1);
 	}
 }
