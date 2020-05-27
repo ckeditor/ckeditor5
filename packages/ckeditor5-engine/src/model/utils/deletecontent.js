@@ -71,6 +71,27 @@ export default function deleteContent( model, selection, options = {} ) {
 
 	const schema = model.schema;
 
+	let startPosition = selRange.start;
+	let endPosition = selRange.end;
+
+	// If the end of selection is at the start position of last block in the selection, then
+	// shrink it to not include that trailing block. Note that this should happen only for not empty selection.
+	if ( hasContent( selRange ) ) {
+		const endBlock = getParentBlock( endPosition );
+
+		if ( endBlock && endPosition.isTouching( model.createPositionAt( endBlock, 0 ) ) ) {
+			// Create forward selection from range.
+			const selection = model.createSelection( selRange );
+
+			// Modify the selection in backward direction to shrink it and remove first position of following block from it.
+			model.modifySelection( selection, { direction: 'backward' } );
+
+			endPosition = selection.getLastPosition();
+		}
+	}
+
+	endPosition = LivePosition.fromPosition( endPosition, 'toNext' );
+
 	model.change( writer => {
 		// 1. Replace the entire content with paragraph.
 		// See: https://github.com/ckeditor/ckeditor5-engine/issues/1012#issuecomment-315017594.
@@ -79,9 +100,6 @@ export default function deleteContent( model, selection, options = {} ) {
 
 			return;
 		}
-
-		let startPos = selRange.start;
-		const endPos = LivePosition.fromPosition( selRange.end, 'toNext' );
 
 		// 2. Remove the content if there is any.
 		if ( !selRange.start.isTouching( selRange.end ) ) {
@@ -97,7 +115,7 @@ export default function deleteContent( model, selection, options = {} ) {
 		// as it's hard to imagine what should actually be the default behavior. Usually, specific features will
 		// want to override that behavior anyway.
 		if ( !options.leaveUnmerged ) {
-			startPos = mergeBranches( writer, startPos, endPos ) || startPos;
+			startPosition = mergeBranches( writer, startPosition, endPosition ) || startPosition;
 
 			// TMP this will be replaced with a postfixer.
 			// We need to check and strip disallowed attributes in all nested nodes because after merge
@@ -105,20 +123,38 @@ export default function deleteContent( model, selection, options = {} ) {
 			//
 			// e.g. bold is disallowed for <H1>
 			// <h1>Fo{o</h1><p>b}a<b>r</b><p> -> <h1>Fo{}a<b>r</b><h1> -> <h1>Fo{}ar<h1>.
-			schema.removeDisallowedAttributes( startPos.parent.getChildren(), writer );
+			schema.removeDisallowedAttributes( startPosition.parent.getChildren(), writer );
 		}
 
-		collapseSelectionAt( writer, selection, startPos );
+		collapseSelectionAt( writer, selection, startPosition );
 
 		// 4. Add a paragraph to set selection in it.
 		// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
 		// If autoparagraphing is off, we assume that you know what you do so we leave the selection wherever it was.
-		if ( !options.doNotAutoparagraph && shouldAutoparagraph( schema, startPos ) ) {
-			insertParagraph( writer, startPos, selection );
+		if ( !options.doNotAutoparagraph && shouldAutoparagraph( schema, startPosition ) ) {
+			insertParagraph( writer, startPosition, selection );
 		}
 
-		endPos.detach();
+		endPosition.detach();
 	} );
+}
+
+// Finds the lowest element in position's ancestors which is a block.
+// It will search until first ancestor that is a limit element.
+function getParentBlock( position ) {
+	const element = position.parent;
+	const schema = element.root.document.model.schema;
+	const ancestors = element.getAncestors( { parentFirst: true, includeSelf: true } );
+
+	for ( const element of ancestors ) {
+		if ( schema.isLimit( element ) ) {
+			return null;
+		}
+
+		if ( schema.isBlock( element ) ) {
+			return element;
+		}
+	}
 }
 
 // This function is a result of reaching the Ballmer's peak for just the right amount of time.
@@ -300,10 +336,11 @@ function getElementsNextToCommonAncestor( positionA, positionB ) {
 	return [ ancestorsA[ i ], ancestorsB[ i ] ];
 }
 
-// Returns true if element contains any text.
-function hasContent( element ) {
-	const schema = element.root.document.model.schema;
-	const range = Range._createIn( element );
+// Returns true if element or range contains any text.
+function hasContent( elementOrRange ) {
+	const model = elementOrRange.root.document.model;
+	const schema = model.schema;
+	const range = elementOrRange.is( 'range' ) ? elementOrRange : model.createRangeIn( elementOrRange );
 
 	for ( const item of range.getItems() ) {
 		if ( item.is( 'textProxy' ) || schema.isObject( item ) ) {
