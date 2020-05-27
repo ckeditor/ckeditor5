@@ -161,7 +161,7 @@ for ( let code = 112; code <= 135; code++ ) {
 // @private
 // @param {engine.view.observer.keyObserver.KeyEventData} keyData
 // @returns {Boolean}
-function isSafeKeystroke( keyData ) {
+export function isSafeKeystroke( keyData ) {
 	// Keystrokes which contain Ctrl don't represent typing.
 	if ( keyData.ctrlKey ) {
 		return true;

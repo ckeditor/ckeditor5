@@ -25,6 +25,10 @@ import {
 	getClosestWidgetViewElement
 } from './utils';
 
+import {
+	isSafeKeystroke
+} from '@ckeditor/ckeditor5-typing/src/utils/injectunsafekeystrokeshandling';
+
 import returnIcon from '../../theme/icons/return-arrow.svg';
 import '../../theme/widgettypearound.css';
 
@@ -103,6 +107,21 @@ export default class WidgetTypeAround extends Plugin {
 		editingView.scrollToTheSelection();
 	}
 
+	_insertParagraphAccordingToSelectionAttribute() {
+		const editor = this.editor;
+		const model = editor.model;
+		const editingView = editor.editing.view;
+		const typeAroundSelectionAttributeValue = model.document.selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+
+		if ( !typeAroundSelectionAttributeValue ) {
+			return;
+		}
+
+		const selectedViewElement = editingView.document.selection.getSelectedElement();
+
+		this._insertParagraph( selectedViewElement, typeAroundSelectionAttributeValue );
+	}
+
 	/**
 	 * Creates a listener in the editing conversion pipeline that injects the type around
 	 * UI into every single widget instance created in the editor.
@@ -171,84 +190,30 @@ export default class WidgetTypeAround extends Plugin {
 
 		// Note: The priority must precede the default Widget class keydown handler.
 		editingView.document.on( 'keydown', ( evt, domEventData ) => {
-			const keyCode = domEventData.keyCode;
-
-			if ( !isArrowKeyCode( keyCode ) ) {
-				return;
+			if ( !isSafeKeystroke( domEventData ) ) {
+				this._insertParagraphAccordingToSelectionAttribute();
+			} else if ( isArrowKeyCode( domEventData.keyCode ) ) {
+				this._handleArrowKeyPress( evt, domEventData );
 			}
-
-			const selectedViewElement = editingView.document.selection.getSelectedElement();
-			const selectedModelElement = editor.editing.mapper.toModelElement( selectedViewElement );
-
-			if ( !isTypeAroundWidget( selectedViewElement, selectedModelElement, schema ) ) {
-				return;
-			}
-
-			const isForward = isForwardArrowKeyCode( keyCode, editor.locale.contentLanguageDirection );
-			const typeAroundSelectionAttribute = modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
-
-			editor.model.change( writer => {
-				let shouldStopAndPreventDefault;
-
-				// If the selection already has the attribute...
-				if ( typeAroundSelectionAttribute ) {
-					const selectionPosition = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
-					const nearestSelectionRange = schema.getNearestSelectionRange( selectionPosition, isForward ? 'forward' : 'backward' );
-					const isLeavingWidget = typeAroundSelectionAttribute === ( isForward ? 'after' : 'before' );
-
-					// ...and the keyboard arrow matches the value of the selection attribute...
-					if ( isLeavingWidget ) {
-						// ...and if there is some place for the selection to go to...
-						if ( nearestSelectionRange ) {
-							// ...then just remove the attribute and let the default Widget plugin listener handle moving the selection.
-							writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
-						}
-
-						// If the selection had nowhere to go, let's leave the attribute as it was and pass through
-						// to the Widget plugin listener which will... in fact also do nothing. But this is no longer
-						// the problem of the WidgetTypeAround plugin.
-					}
-					// ...and the keyboard arrow works against the value of the selection attribute...
-					else {
-						// ...then remove the selection attribute but prevent default DOM actions
-						// and do not let the Widget plugin listener move the selection. This brings
-						// the widget back to the state, for instance, like if was selected using the mouse.
-						writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
-						shouldStopAndPreventDefault = true;
-					}
-				}
-				// If the selection didn't have the attribute, let's set it now according to the direction of the arrow
-				// key press. This also means we cannot let the Widget plugin listener move the selection.
-				else {
-					if ( isForward ) {
-						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
-						shouldStopAndPreventDefault = true;
-					} else {
-						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
-						shouldStopAndPreventDefault = true;
-					}
-				}
-
-				if ( shouldStopAndPreventDefault ) {
-					domEventData.preventDefault();
-					evt.stop();
-				}
-			} );
 		}, { priority: priorities.get( 'high' ) + 1 } );
 
+		// This listener makes sure the widget type around selection attribute will be gone from the model
+		// selection as soon as the model range changes. This attribute only makes sense when a widget is selected
+		// (and the "fake horizontal caret" is visible) so whenever the range changes (e.g. selection moved somewhere else),
+		// let's get rid of the attribute so that the selection downcast dispatcher isn't even bothered.
 		modelSelection.on( 'change:range', () => {
 			if ( !modelSelection.hasAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ) {
 				return;
 			}
 
 			// Get rid of the widget type around attribute of the selection on every change:range.
-			// If the range changes, it means for sure, the user is no longer in the active ("blinking line") mode.
+			// If the range changes, it means for sure, the user is no longer in the active ("fake horizontal caret") mode.
 			editor.model.change( writer => {
 				// TODO: use data.directChange to not break collaboration?
 				writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 			} );
 
-			// Also, if the range changes, get rid of CSS classes associated with the active ("blinking line") mode.
+			// Also, if the range changes, get rid of CSS classes associated with the active ("fake horizontal caret") mode.
 			// There's no way to do that in the "selection" downcast dispatcher because it is executed too late.
 			editingView.change( writer => {
 				const selectedViewElement = editingView.document.selection.getSelectedElement();
@@ -259,7 +224,7 @@ export default class WidgetTypeAround extends Plugin {
 
 		// React to changes of the mode selection attribute made by the arrow keys listener.
 		// If the block widget is selected and the attribute changes, downcast the attribute to special
-		// CSS classes associated with the active ("blinking line") mode of the widget.
+		// CSS classes associated with the active ("fake horizontal caret") mode of the widget.
 		editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
 			const writer = conversionApi.writer;
 			const selectedModelElement = data.selection.getSelectedElement();
@@ -288,6 +253,73 @@ export default class WidgetTypeAround extends Plugin {
 		}
 	}
 
+	_handleArrowKeyPress( evt, domEventData ) {
+		const editor = this.editor;
+		const model = editor.model;
+		const modelSelection = model.document.selection;
+		const schema = model.schema;
+		const editingView = editor.editing.view;
+
+		const keyCode = domEventData.keyCode;
+		const selectedViewElement = editingView.document.selection.getSelectedElement();
+		const selectedModelElement = editor.editing.mapper.toModelElement( selectedViewElement );
+
+		if ( !isTypeAroundWidget( selectedViewElement, selectedModelElement, schema ) ) {
+			return;
+		}
+
+		const isForward = isForwardArrowKeyCode( keyCode, editor.locale.contentLanguageDirection );
+		const typeAroundSelectionAttribute = modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+
+		editor.model.change( writer => {
+			let shouldStopAndPreventDefault;
+
+			// If the selection already has the attribute...
+			if ( typeAroundSelectionAttribute ) {
+				const selectionPosition = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
+				const nearestSelectionRange = schema.getNearestSelectionRange( selectionPosition, isForward ? 'forward' : 'backward' );
+				const isLeavingWidget = typeAroundSelectionAttribute === ( isForward ? 'after' : 'before' );
+
+				// ...and the keyboard arrow matches the value of the selection attribute...
+				if ( isLeavingWidget ) {
+					// ...and if there is some place for the selection to go to...
+					if ( nearestSelectionRange ) {
+						// ...then just remove the attribute and let the default Widget plugin listener handle moving the selection.
+						writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+					}
+
+					// If the selection had nowhere to go, let's leave the attribute as it was and pass through
+					// to the Widget plugin listener which will... in fact also do nothing. But this is no longer
+					// the problem of the WidgetTypeAround plugin.
+				}
+				// ...and the keyboard arrow works against the value of the selection attribute...
+				else {
+					// ...then remove the selection attribute but prevent default DOM actions
+					// and do not let the Widget plugin listener move the selection. This brings
+					// the widget back to the state, for instance, like if was selected using the mouse.
+					writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+					shouldStopAndPreventDefault = true;
+				}
+			}
+			// If the selection didn't have the attribute, let's set it now according to the direction of the arrow
+			// key press. This also means we cannot let the Widget plugin listener move the selection.
+			else {
+				if ( isForward ) {
+					writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
+					shouldStopAndPreventDefault = true;
+				} else {
+					writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+					shouldStopAndPreventDefault = true;
+				}
+			}
+
+			if ( shouldStopAndPreventDefault ) {
+				domEventData.preventDefault();
+				evt.stop();
+			}
+		} );
+	}
+
 	/**
 	 * TODO
 	 *
@@ -295,21 +327,10 @@ export default class WidgetTypeAround extends Plugin {
 	 */
 	_enableInsertingParagraphsOnEnterKeypress() {
 		const editor = this.editor;
-		const model = editor.model;
-		const modelSelection = model.document.selection;
 		const editingView = editor.editing.view;
 
 		this.listenTo( editingView.document, 'enter', ( evt, domEventData ) => {
-			const typeAroundSelectionAttribute = modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
-
-			if ( !typeAroundSelectionAttribute ) {
-				return;
-			}
-
-			const selectedViewElement = editingView.document.selection.getSelectedElement();
-
-			this._insertParagraph( selectedViewElement, typeAroundSelectionAttribute );
-
+			this._insertParagraphAccordingToSelectionAttribute();
 			domEventData.preventDefault();
 			evt.stop();
 		} );
