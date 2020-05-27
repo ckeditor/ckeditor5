@@ -117,7 +117,7 @@
 
 	& .ck-widget__type-around__line {
 		pointer-events: none;
-		height: var(--ck-widget-outline-thickness);
+		height: 1px;
 		animation: ck-widget-type-around-line-pulse linear 1s infinite normal forwards;
 	}
 
@@ -126,6 +126,14 @@
 		&.ck-widget_type-around_active_before,
 		&.ck-widget_type-around_active_after {
 			outline-color: transparent;
+		}
+	}
+
+	&.ck-widget_type-around_active_before,
+	&.ck-widget_type-around_active_after {
+		& > .ck-widget__type-around > .ck-widget__type-around__button {
+			pointer-events: none;
+			opacity: 0;
 		}
 	}
 }
@@ -191,18 +199,18 @@
 
 @keyframes ck-widget-type-around-line-pulse {
 	0% {
-		background: hsla(var(--ck-color-focus-border-coordinates), 0);
+		background: hsla(0, 0%, 0%, 0);
 	}
-	40% {
-		background: hsla(var(--ck-color-focus-border-coordinates), 0);
+	49% {
+		background: hsla(0, 0%, 0%, 0);
 	}
 	50% {
-		background: hsla(var(--ck-color-focus-border-coordinates), 1);
+		background: hsla(0, 0%, 0%, 1);
 	}
-	90% {
-		background: hsla(var(--ck-color-focus-border-coordinates), 1);
+	99% {
+		background: hsla(0, 0%, 0%, 1);
 	}
 	100% {
-		background: hsla(var(--ck-color-focus-border-coordinates), 0);
+		background: hsla(0, 0%, 0%, 0);
 	}
 }

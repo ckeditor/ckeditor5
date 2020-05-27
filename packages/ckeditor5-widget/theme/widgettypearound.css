@@ -72,11 +72,11 @@
 		right: 0;
 
 		&.ck-widget__type-around__line_before {
-			top: calc(-1 * var(--ck-widget-outline-thickness));
+			top: -1px;
 		}
 
 		&.ck-widget__type-around__line_after {
-			bottom: calc(-1 * var(--ck-widget-outline-thickness));
+			bottom: -1px;
 		}
 	}
 
