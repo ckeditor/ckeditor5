@@ -3,6 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
+// JSDoc validation fails without the following line for an unknown reason.
+/** @module */
+
 import TurndownService from 'turndown';
 import { gfm } from 'turndown-plugin-gfm';
 
