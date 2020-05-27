@@ -74,6 +74,7 @@ export default class WidgetTypeAround extends Plugin {
 		this._enableTypeAroundUIInjection();
 		this._enableInsertingParagraphsOnButtonClick();
 		this._enableInsertingParagraphsOnEnterKeypress();
+		this._enableInsertingParagraphsOnUnsafeKeystroke();
 		this._enableTypeAroundActivationUsingKeyboardArrows();
 	}
 
@@ -107,6 +108,11 @@ export default class WidgetTypeAround extends Plugin {
 		editingView.scrollToTheSelection();
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
 	_insertParagraphAccordingToSelectionAttribute() {
 		const editor = this.editor;
 		const model = editor.model;
@@ -190,9 +196,7 @@ export default class WidgetTypeAround extends Plugin {
 
 		// Note: The priority must precede the default Widget class keydown handler.
 		editingView.document.on( 'keydown', ( evt, domEventData ) => {
-			if ( !isSafeKeystroke( domEventData ) ) {
-				this._insertParagraphAccordingToSelectionAttribute();
-			} else if ( isArrowKeyCode( domEventData.keyCode ) ) {
+			if ( isArrowKeyCode( domEventData.keyCode ) ) {
 				this._handleArrowKeyPress( evt, domEventData );
 			}
 		}, { priority: priorities.get( 'high' ) + 1 } );
@@ -253,6 +257,11 @@ export default class WidgetTypeAround extends Plugin {
 		}
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
 	_handleArrowKeyPress( evt, domEventData ) {
 		const editor = this.editor;
 		const model = editor.model;
@@ -334,6 +343,24 @@ export default class WidgetTypeAround extends Plugin {
 			domEventData.preventDefault();
 			evt.stop();
 		} );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
+	_enableInsertingParagraphsOnUnsafeKeystroke() {
+		const editor = this.editor;
+		const editingView = editor.editing.view;
+
+		// Note: The priority must precede the default Widget class keydown handler.
+		editingView.document.on( 'keydown', ( evt, domEventData ) => {
+			if ( !isSafeKeystroke( domEventData ) ) {
+				// TODO: Extra undo step problem.
+				this._insertParagraphAccordingToSelectionAttribute();
+			}
+		}, { priority: priorities.get( 'high' ) + 1 } );
 	}
 }
 
