@@ -16,10 +16,10 @@
 //
 // Note: This task based on versions published on NPM and GitHub. If something went wrong, you can call this script one more time.
 //
-// This task should be executed after: `yarn run release:bump-version`.
+// This task should be executed after: `npm run release:bump-version`.
 //
 // Use:
-// yarn run release:publish --dry-run
+// npm run release:publish --dry-run
 
 /* eslint-disable max-len */
 

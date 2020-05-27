@@ -17,7 +17,6 @@ Promise.resolve()
 		packages: 'packages',
 		highlightsPlaceholder: true,
 		collaborationFeatures: true,
-		from: '87c56114028c00b1e45b6ecba3bead575c6c1afe', // TODO: Remove the line after the nearest release.
 		transformScope: name => {
 			if ( name === 'ckeditor5' ) {
 				return 'https://www.npmjs.com/package/ckeditor5';
