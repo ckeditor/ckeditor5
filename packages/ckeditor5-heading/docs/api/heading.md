@@ -31,4 +31,4 @@ The source code of this package is available on GitHub in https://github.com/cke
 * [`@ckeditor/ckeditor5-heading` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading)
 * [`ckeditor/ckeditor5-heading` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-heading)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
-* [Changelog](https://github.com/ckeditor/ckeditor5-heading/blob/master/CHANGELOG.md)
+* [Changelog](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md)

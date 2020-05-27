@@ -29,4 +29,4 @@ The source code of this package is available on GitHub in https://github.com/cke
 * [`@ckeditor/ckeditor5-editor-inline` on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline)
 * [`ckeditor/ckeditor5-editor-inline` on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-editor-inline)
 * [Issue tracker](https://github.com/ckeditor/ckeditor5/issues)
-* [Changelog](https://github.com/ckeditor/ckeditor5-editor-inline/blob/master/CHANGELOG.md)
+* [Changelog](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md)

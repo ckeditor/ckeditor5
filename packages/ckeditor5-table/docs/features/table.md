@@ -509,4 +509,4 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5-table.
+The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table.
