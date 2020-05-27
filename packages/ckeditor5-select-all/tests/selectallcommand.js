@@ -189,8 +189,6 @@ describe( 'SelectAllCommand', () => {
 					'</tableRow>' +
 				'</table>]'
 			);
-
-			// editor.execute( 'selectAll' );
 		} );
 
 		it( 'should not change the selection (the entire editor is selected)', () => {
