@@ -57,6 +57,7 @@
   "files": [
     "lang",
     "src",
-    "theme"
+    "theme",
+    "tests/_utils"
   ]
 }
