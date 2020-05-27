@@ -151,7 +151,7 @@ export default class InlineAutoformatEditing {
 			writer.removeSelectionAttribute( attributeKey );
 		} );
 
-		editor.model.document.on( 'change', ( evt, batch ) => {
+		editor.model.document.on( 'change:data', ( evt, batch ) => {
 			if ( batch.type == 'transparent' || !plugin.isEnabled ) {
 				return;
 			}

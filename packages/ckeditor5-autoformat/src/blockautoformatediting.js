@@ -65,7 +65,7 @@ export default class BlockAutoformatEditing {
 			};
 		}
 
-		editor.model.document.on( 'change', ( evt, batch ) => {
+		editor.model.document.on( 'change:data', ( evt, batch ) => {
 			if ( command && !command.isEnabled || !plugin.isEnabled ) {
 				return;
 			}
