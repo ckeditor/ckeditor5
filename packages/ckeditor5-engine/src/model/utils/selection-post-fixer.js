@@ -82,7 +82,10 @@ function selectionPostFixer( writer, model ) {
 		// Those ranges might overlap but will be corrected later.
 		const correctedRange = tryFixingRange( modelRange, schema );
 
-		if ( correctedRange ) {
+		// It may happen that a new range is returned but in fact it has the same positions as the original
+		// range anyway. If this branch was not discarded, a new selection would be set and that, for instance,
+		// would destroy the selection' attributes.
+		if ( correctedRange && !correctedRange.isEqual( modelRange ) ) {
 			ranges.push( correctedRange );
 			wasFixed = true;
 		} else {
