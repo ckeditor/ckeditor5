@@ -120,12 +120,14 @@ export default class WidgetTypeAround extends Plugin {
 		const typeAroundSelectionAttributeValue = model.document.selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 
 		if ( !typeAroundSelectionAttributeValue ) {
-			return;
+			return null;
 		}
 
 		const selectedViewElement = editingView.document.selection.getSelectedElement();
 
 		this._insertParagraph( selectedViewElement, typeAroundSelectionAttributeValue );
+
+		return true;
 	}
 
 	/**
@@ -339,9 +341,10 @@ export default class WidgetTypeAround extends Plugin {
 		const editingView = editor.editing.view;
 
 		this.listenTo( editingView.document, 'enter', ( evt, domEventData ) => {
-			this._insertParagraphAccordingToSelectionAttribute();
-			domEventData.preventDefault();
-			evt.stop();
+			if ( this._insertParagraphAccordingToSelectionAttribute() ) {
+				domEventData.preventDefault();
+				evt.stop();
+			}
 		} );
 	}
 
