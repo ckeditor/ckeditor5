@@ -10,17 +10,17 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor-cloud-services-core": "^19.0.0",
-    "@ckeditor/ckeditor5-cloud-services": "^19.0.0",
-    "@ckeditor/ckeditor5-core": "^19.0.0",
-    "@ckeditor/ckeditor5-image": "^19.0.0",
-    "@ckeditor/ckeditor5-upload": "^19.0.0"
+    "@ckeditor/ckeditor-cloud-services-core": "^19.0.1",
+    "@ckeditor/ckeditor5-cloud-services": "^19.0.1",
+    "@ckeditor/ckeditor5-core": "^19.0.1",
+    "@ckeditor/ckeditor5-image": "^19.0.1",
+    "@ckeditor/ckeditor5-upload": "^19.0.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-clipboard": "^19.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^19.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^19.0.0",
-    "@ckeditor/ckeditor5-utils": "^19.0.0"
+    "@ckeditor/ckeditor5-clipboard": "^19.0.1",
+    "@ckeditor/ckeditor5-editor-classic": "^19.0.1",
+    "@ckeditor/ckeditor5-paragraph": "^19.1.0",
+    "@ckeditor/ckeditor5-utils": "^19.0.1"
   },
   "engines": {
     "node": ">=8.0.0",

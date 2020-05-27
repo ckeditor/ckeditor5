@@ -21,25 +21,25 @@
     "framework"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-engine": "^19.0.0",
-    "@ckeditor/ckeditor5-utils": "^19.0.0",
+    "@ckeditor/ckeditor5-engine": "^19.0.1",
+    "@ckeditor/ckeditor5-utils": "^19.0.1",
     "lodash-es": "^4.17.10"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-autoformat": "^19.0.0",
-    "@ckeditor/ckeditor5-basic-styles": "^19.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^19.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^19.0.0",
-    "@ckeditor/ckeditor5-essentials": "^19.0.0",
-    "@ckeditor/ckeditor5-heading": "^19.0.0",
-    "@ckeditor/ckeditor5-image": "^19.0.0",
-    "@ckeditor/ckeditor5-indent": "^19.0.0",
-    "@ckeditor/ckeditor5-link": "^19.0.0",
-    "@ckeditor/ckeditor5-list": "^19.0.0",
-    "@ckeditor/ckeditor5-media-embed": "^19.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^19.0.0",
-    "@ckeditor/ckeditor5-table": "^19.0.0",
-    "@ckeditor/ckeditor5-ui": "^19.0.0"
+    "@ckeditor/ckeditor5-autoformat": "^19.0.1",
+    "@ckeditor/ckeditor5-basic-styles": "^19.0.1",
+    "@ckeditor/ckeditor5-block-quote": "^19.0.1",
+    "@ckeditor/ckeditor5-editor-classic": "^19.0.1",
+    "@ckeditor/ckeditor5-essentials": "^19.0.1",
+    "@ckeditor/ckeditor5-heading": "^19.0.1",
+    "@ckeditor/ckeditor5-image": "^19.0.1",
+    "@ckeditor/ckeditor5-indent": "^19.0.1",
+    "@ckeditor/ckeditor5-link": "^19.0.1",
+    "@ckeditor/ckeditor5-list": "^19.0.1",
+    "@ckeditor/ckeditor5-media-embed": "^19.1.0",
+    "@ckeditor/ckeditor5-paragraph": "^19.1.0",
+    "@ckeditor/ckeditor5-table": "^19.1.0",
+    "@ckeditor/ckeditor5-ui": "^19.0.1"
   },
   "engines": {
     "node": ">=8.0.0",

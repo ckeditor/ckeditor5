@@ -10,24 +10,24 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-clipboard": "^19.0.0",
-    "@ckeditor/ckeditor5-core": "^19.0.0",
-    "@ckeditor/ckeditor5-engine": "^19.0.0",
-    "@ckeditor/ckeditor5-image": "^19.0.0",
-    "@ckeditor/ckeditor5-ui": "^19.0.0",
-    "@ckeditor/ckeditor5-undo": "^19.0.0",
-    "@ckeditor/ckeditor5-utils": "^19.0.0",
-    "@ckeditor/ckeditor5-widget": "^19.0.0"
+    "@ckeditor/ckeditor5-clipboard": "^19.0.1",
+    "@ckeditor/ckeditor5-core": "^19.0.1",
+    "@ckeditor/ckeditor5-engine": "^19.0.1",
+    "@ckeditor/ckeditor5-image": "^19.0.1",
+    "@ckeditor/ckeditor5-ui": "^19.0.1",
+    "@ckeditor/ckeditor5-undo": "^19.0.1",
+    "@ckeditor/ckeditor5-utils": "^19.0.1",
+    "@ckeditor/ckeditor5-widget": "^19.1.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^19.0.0",
-    "@ckeditor/ckeditor5-editor-balloon": "^19.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^19.0.0",
-    "@ckeditor/ckeditor5-link": "^19.0.0",
-    "@ckeditor/ckeditor5-list": "^19.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^19.0.0",
-    "@ckeditor/ckeditor5-typing": "^19.0.0",
-    "@ckeditor/ckeditor5-table": "^19.0.0"
+    "@ckeditor/ckeditor5-basic-styles": "^19.0.1",
+    "@ckeditor/ckeditor5-editor-balloon": "^19.0.1",
+    "@ckeditor/ckeditor5-editor-classic": "^19.0.1",
+    "@ckeditor/ckeditor5-link": "^19.0.1",
+    "@ckeditor/ckeditor5-list": "^19.0.1",
+    "@ckeditor/ckeditor5-paragraph": "^19.1.0",
+    "@ckeditor/ckeditor5-typing": "^19.0.1",
+    "@ckeditor/ckeditor5-table": "^19.1.0"
   },
   "engines": {
     "node": ">=8.0.0",
