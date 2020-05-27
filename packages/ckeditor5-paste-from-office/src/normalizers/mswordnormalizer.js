@@ -20,6 +20,14 @@ const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;
  * @implements module:paste-from-office/normalizer~Normalizer
  */
 export default class MSWordNormalizer {
+	constructor( document ) {
+		/**
+		 * @readonly
+		 * @type {module:engine/view/document~Document}
+		 */
+		this.document = document;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -31,7 +39,7 @@ export default class MSWordNormalizer {
 	 * @inheritDoc
 	 */
 	execute( data ) {
-		const { body, stylesString } = parseHtml( data.dataTransfer.getData( 'text/html' ) );
+		const { body, stylesString } = parseHtml( data.dataTransfer.getData( 'text/html' ), this.document.stylesProcessor );
 
 		transformListItemLikeElementsIntoLists( body, stylesString );
 		replaceImagesSourceWithBase64( body, data.dataTransfer.getData( 'text/rtf' ) );

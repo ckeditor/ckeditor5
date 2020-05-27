@@ -19,6 +19,7 @@ import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-u
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 
 const htmlDiv = document.querySelector( '#html' );
 const textDiv = document.querySelector( '#text' );
@@ -27,7 +28,7 @@ const dataDiv = document.querySelector( '#data' );
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet, Strikethrough, Underline, Table, TableToolbar,
-			TableProperties, TableProperties, EasyImage, PasteFromOffice ],
+			TableProperties, TableCellProperties, EasyImage, PasteFromOffice ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'strikethrough', 'underline', 'link',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo' ],
 		table: {
