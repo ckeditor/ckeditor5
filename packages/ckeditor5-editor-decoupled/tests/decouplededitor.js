@@ -5,17 +5,11 @@
 
 /* globals document, setTimeout, console */
 
-import DecoupledEditorUI from '../src/decouplededitorui';
-import DecoupledEditorUIView from '../src/decouplededitoruiview';
-
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-
 import DecoupledEditor from '../src/decouplededitor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
-import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -40,28 +34,11 @@ describe( 'DecoupledEditor', () => {
 			editor = new DecoupledEditor();
 		} );
 
-		it( 'uses HTMLDataProcessor', () => {
-			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
-		} );
-
 		it( 'has a Data Interface', () => {
 			expect( testUtils.isMixed( DecoupledEditor, DataApiMixin ) ).to.be.true;
 		} );
 
-		it( 'creates main root element', () => {
-			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
-		} );
-
 		describe( 'ui', () => {
-			it( 'is created', () => {
-				editor.ui.init();
-
-				expect( editor.ui ).to.be.instanceof( DecoupledEditorUI );
-				expect( editor.ui.view ).to.be.instanceof( DecoupledEditorUIView );
-
-				editor.ui.destroy();
-			} );
-
 			describe( 'automatic toolbar items groupping', () => {
 				it( 'should be on by default', () => {
 					const editorElement = document.createElement( 'div' );
@@ -117,7 +94,7 @@ describe( 'DecoupledEditor', () => {
 				sinon.assert.calledWith( spy.firstCall, 'asyncInit' );
 				sinon.assert.calledWith( spy.secondCall, 'ready' );
 
-				editor.destroy().then( done );
+				editor.destroy().then( () => done() );
 			} );
 
 			// Resolve init promise in next cycle to hold data initialization.
@@ -154,20 +131,20 @@ describe( 'DecoupledEditor', () => {
 		it( 'should throw when trying to create the editor using the same source element more than once', done => {
 			const sourceElement = document.createElement( 'div' );
 
-			// eslint-disable-next-line no-new
-			new DecoupledEditor( sourceElement );
-
-			DecoupledEditor.create( sourceElement )
-				.then(
-					() => {
-						expect.fail( 'Decoupled editor should not initialize on an element already used by other instance.' );
-					},
-					err => {
-						assertCKEditorError( err, 'editor-source-element-already-used' );
-					}
-				)
-				.then( done )
-				.catch( done );
+			DecoupledEditor.create( sourceElement ).then( editor => {
+				DecoupledEditor.create( sourceElement )
+					.then(
+						() => {
+							expect.fail( 'Decoupled editor should not initialize on an element already used by other instance.' );
+						},
+						err => {
+							assertCKEditorError( err, 'editor-source-element-already-used' );
+						}
+					)
+					.then( () => editor.destroy() )
+					.then( () => done() )
+					.catch( () => done() );
+			} );
 		} );
 
 		it( 'throws if initial data is passed in Editor#create and config.initialData is also used', done => {
