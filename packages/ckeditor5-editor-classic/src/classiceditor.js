@@ -8,16 +8,13 @@
  */
 
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
-import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
-import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import EditorFactory from '@ckeditor/ckeditor5-core/src/editor/editorfactory';
 import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
-import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
+import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
+import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isElement } from 'lodash-es';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The {@glink builds/guides/overview#classic-editor classic editor} implementation.
@@ -62,22 +59,12 @@ export default class ClassicEditor extends Editor {
 	constructor( sourceElementOrData, config ) {
 		super( config );
 
-		if ( isElement( sourceElementOrData ) ) {
-			this.sourceElement = sourceElementOrData;
-		}
-
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
-
-		this.model.document.createRoot();
-
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 		const view = new ClassicEditorUIView( this.locale, this.editing.view, {
 			shouldToolbarGroupWhenFull
 		} );
 
 		this.ui = new ClassicEditorUI( this, view );
-
-		attachToForm( this );
 	}
 
 	/**
@@ -88,13 +75,9 @@ export default class ClassicEditor extends Editor {
 	 * @returns {Promise}
 	 */
 	destroy() {
-		if ( this.sourceElement ) {
-			this.updateSourceElement();
-		}
-
-		this.ui.destroy();
-
-		return super.destroy();
+		return new ClassicEditorFactory()
+			.destroy( this )
+			.then( () => super.destroy() );
 	}
 
 	/**
@@ -191,33 +174,15 @@ export default class ClassicEditor extends Editor {
 	 * @returns {Promise} A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
 	static create( sourceElementOrData, config = {} ) {
-		return new Promise( resolve => {
-			const editor = new this( sourceElementOrData, config );
-
-			resolve(
-				editor.initPlugins()
-					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
-					.then( () => {
-						if ( !isElement( sourceElementOrData ) && config.initialData ) {
-							// Documented in core/editor/editorconfig.jdoc.
-							// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-							throw new CKEditorError( 'editor-create-initial-data', null );
-						}
-
-						const initialData = config.initialData || getInitialData( sourceElementOrData );
-
-						return editor.data.init( initialData );
-					} )
-					.then( () => editor.fire( 'ready' ) )
-					.then( () => editor )
-			);
-		} );
+		return new ClassicEditorFactory().create( this, sourceElementOrData, config );
 	}
 }
 
 mix( ClassicEditor, DataApiMixin );
 mix( ClassicEditor, ElementApiMixin );
 
-function getInitialData( sourceElementOrData ) {
-	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
+class ClassicEditorFactory extends EditorFactory {
+	initUI( editor, sourceElementOrData ) {
+		return editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null );
+	}
 }
