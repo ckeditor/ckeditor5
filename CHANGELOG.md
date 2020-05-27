@@ -27,13 +27,13 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* The `cropTable()` utility method was removed. Use the `cropTableToDimensions()` instead.
-* A new `--ck-color-focus-border-coordinates` CSS custom property has been added and the existing `--ck-color-focus-border` property now uses it internally. If your integration overrides the latter, we recommend you update the former to avoid compatibility issues with various editor UI features.
-* The `MediaEmbedUI#form` property was removed from the API.
+* **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: The `MediaEmbedUI#form` property was removed from the API.
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `cropTable()` utility method was removed. Use the `cropTableToDimensions()` instead.
+* **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: A new `--ck-color-focus-border-coordinates` CSS custom property has been added and the existing `--ck-color-focus-border` property now uses it internally. If your integration overrides the latter, we recommend you update the former to avoid compatibility issues with various editor UI features.
 
 ### Features
 
-* **[paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph)**: Implemented the `InsertParagraphCommand` registered as `'insertParagraph'` in the editor. Closes [#6823](https://github.com/ckeditor/ckeditor5/issues/6823). Closes [#7229](https://github.com/ckeditor/ckeditor5/issues/7229). ([commit](https://github.com/ckeditor/ckeditor5/commit/126701895d2bff8fb0ded7b4f4bf5e26d36ba7d7))
+* **[paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph)**: Implemented the `InsertParagraphCommand` registered as `'insertParagraph'` in the editor. Closes [#6823](https://github.com/ckeditor/ckeditor5/issues/6823), [#7229](https://github.com/ckeditor/ckeditor5/issues/7229). ([commit](https://github.com/ckeditor/ckeditor5/commit/126701895d2bff8fb0ded7b4f4bf5e26d36ba7d7))
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Introduced support for pasting tables into a selected table fragment. Closes [#6120](https://github.com/ckeditor/ckeditor5/issues/6120). ([commit](https://github.com/ckeditor/ckeditor5/commit/1b426397f9e2d6762681abdef5e99e6e101e25fa))
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Introduced table cells selection using keyboard. Closes [#6115](https://github.com/ckeditor/ckeditor5/issues/6115), [#3203](https://github.com/ckeditor/ckeditor5/issues/3203). ([commit](https://github.com/ckeditor/ckeditor5/commit/b567de402d1438790c3e7314d5b7ed330b308d9d))
 * **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Brought styles for the feature allowing users to type in tight spots around block widgets (see [#407](https://github.com/ckeditor/ckeditor5/issues/407)). ([commit](https://github.com/ckeditor/ckeditor5/commit/dbf24a29ac64f52bceb2efc106b50c736c16f1c3))
@@ -72,16 +72,19 @@ Check out the [Versioning policy](https://ckeditor.com/docs/ckeditor5/latest/fra
 <details>
 <summary>Released packages (summary)</summary>
 
+Minor releases (contain minor breaking changes):
+
+* [@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed): v19.0.0 => v19.0.1
+* [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table): v19.0.0 => v19.1.0
+* [@ckeditor/ckeditor5-theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark): v19.0.0 => v19.1.0
+
 Releases containing new features:
 
 * [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine): v19.0.0 => v19.0.1
 * [@ckeditor/ckeditor5-highlight](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight): v19.0.0 => v19.0.1
 * [@ckeditor/ckeditor5-horizontal-line](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line): v19.0.0 => v19.0.1
 * [@ckeditor/ckeditor5-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image): v19.0.0 => v19.0.1
-* [@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed): v19.0.0 => v19.0.1
 * [@ckeditor/ckeditor5-paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph): v19.0.0 => v19.1.0
-* [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table): v19.0.0 => v19.1.0
-* [@ckeditor/ckeditor5-theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark): v19.0.0 => v19.1.0
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v19.0.0 => v19.1.0
 
 Other releases:
