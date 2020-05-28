@@ -9,9 +9,13 @@ The {@link module:select-all/selectall~SelectAll} feature allows selecting the e
 
 ## Demo
 
-Press <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd> or use the toolbar button to select the entire content of the editor. Note that when editing an {@link features/image#image-captions image caption}, the selection will only expand to the boundaries of the caption.
+Press <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd> or use the toolbar button to select the entire content of the editor.
 
 {@snippet features/select-all}
+
+<info-box>
+	When the selection is inside the {@link features/image#image-captions image caption}, it will only expand to the boundaries of the caption. Use the keystroke or the toolbar button again to include more content until the entire content of the editor is selected. The same rule applies, for instance, when the selection is inside a table cell or any self–contained (nested) editable region in the content.
+</info-box>
 
 ## Installation
 
