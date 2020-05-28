@@ -27,7 +27,7 @@ const BALLOON_POSITIONS = [
 	DEFAULT_BALLOON_POSITIONS.southArrowNorthWest,
 	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast
 ];
-const TABLE_PROPERTRIES_BALLOON_POSITIONS = [
+const TABLE_PROPERTIES_BALLOON_POSITIONS = [
 	...BALLOON_POSITIONS,
 	centeredBalloonPositionForLongWidgets
 ];
@@ -74,7 +74,7 @@ export function getBalloonTablePositionData( editor ) {
 
 	return {
 		target: editor.editing.view.domConverter.viewToDom( viewTable ),
-		positions: TABLE_PROPERTRIES_BALLOON_POSITIONS
+		positions: TABLE_PROPERTIES_BALLOON_POSITIONS
 	};
 }
 
