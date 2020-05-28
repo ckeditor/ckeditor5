@@ -20,7 +20,7 @@ export default class TableWalker {
 	 * The table walker iterates internally by traversing the table from row index = 0 and column index = 0.
 	 * It walks row by row and column by column in order to output values defined in the constructor.
 	 * By default it will output only the locations that are occupied by a cell. To include also spanned rows and columns,
-	 * pass the `includeSpanned` option to the constructor.
+	 * pass the `includeAllSlots` option to the constructor.
 	 *
 	 * The most important values of the iterator are column and row indexes of a cell.
 	 *
@@ -55,10 +55,10 @@ export default class TableWalker {
 	 *
 	 * To also iterate over spanned cells:
 	 *
-	 *		const tableWalker = new TableWalker( table, { startRow: 1, endRow: 1, includeSpanned: true } );
+	 *		const tableWalker = new TableWalker( table, { row: 1, includeAllSlots: true } );
 	 *
 	 *		for ( const value of tableWalker ) {
-	 *			console.log( 'Cell at ' + value.row + ' x ' + value.column + ' : ' + ( value.isSpanned ? 'is spanned' : 'has data' ) );
+	 *			console.log( 'Cell at ' + value.row + ' x ' + value.column + ' : ' + ( !value.isAnchor ? 'is spanned' : 'has data' ) );
 	 *		}
 	 *
 	 * will log in the console for the table from the previous example:
@@ -76,7 +76,7 @@ export default class TableWalker {
 	 * @param {Number} [options.column] A column index for which this iterator will output cells.
 	 * @param {Number} [options.startRow=0] A row index from which this iterator should start.
 	 * @param {Number} [options.endRow] A row index at which this iterator should end.
-	 * @param {Boolean} [options.includeSpanned=false] Also return values for spanned cells.
+	 * @param {Boolean} [options.includeAllSlots=false] Also return values for spanned cells.
 	 */
 	constructor( table, options = {} ) {
 		/**
@@ -104,12 +104,20 @@ export default class TableWalker {
 		this.endRow = typeof options.endRow == 'number' ? options.endRow : undefined;
 
 		/**
+		 * If set, the table walker will only output cells of a given row or cells that overlap it.
+		 *
+		 * @readonly
+		 * @member {Number}
+		 */
+		this.row = typeof options.row == 'number' ? options.row : undefined;
+
+		/**
 		 * Enables output of spanned cells that are normally not yielded.
 		 *
 		 * @readonly
 		 * @member {Boolean}
 		 */
-		this.includeSpanned = !!options.includeSpanned;
+		this.includeAllSlots = !!options.includeAllSlots;
 
 		/**
 		 * If set, the table walker will only output cells from a given column and following ones or cells that overlap them.
@@ -131,7 +139,6 @@ export default class TableWalker {
 		 * If set, the table walker will only output cells of a given column or cells that overlap it.
 		 *
 		 * @readonly
-		 * @deprecated
 		 * @member {Number}
 		 */
 		this.column = typeof options.column == 'number' ? options.column : undefined;
@@ -164,7 +171,7 @@ export default class TableWalker {
 		this._column = 0;
 
 		/**
-		 * The cell index in a parent row. For spanned cells when {@link #includeSpanned} is set to `true`,
+		 * The cell index in a parent row. For spanned cells when {@link #includeAllSlots} is set to `true`,
 		 * this represents the index of the next table cell.
 		 *
 		 * @readonly
@@ -172,14 +179,6 @@ export default class TableWalker {
 		 * @private
 		 */
 		this._cellIndex = 0;
-
-		/**
-		 * The previous cell in the current row.
-		 *
-		 * @member {module:engine/model/element~Element}
-		 * @private
-		 */
-		this._previousCellInRow = null;
 
 		/**
 		 * Holds a map of spanned cells in a table.
@@ -204,6 +203,20 @@ export default class TableWalker {
 		return this;
 	}
 
+	set row( value ) {
+		if ( typeof value == 'number' ) {
+			this.startRow = this.endRow = value;
+		}
+	}
+
+	get row() {
+		if ( this.startRow === this.endRow ) {
+			return this.startRow;
+		}
+
+		throw new CKEditorError( 'improper-api-usage', this );
+	}
+
 	set column( value ) {
 		if ( typeof value == 'number' ) {
 			this.startColumn = this.endColumn = value;
@@ -215,7 +228,7 @@ export default class TableWalker {
 			return this.startColumn;
 		}
 
-		throw new CKEditorError( 'improper-use-of-deprecated-api', this );
+		throw new CKEditorError( 'improper-api-usage', this );
 	}
 
 	/**
@@ -235,15 +248,16 @@ export default class TableWalker {
 			return this._advanceToNextRow();
 		}
 
-		let cell, skipCurrentValue, outValue;
+		let outValue = null;
 
 		const spanData = this._getSpanned();
 
 		if ( spanData ) {
-			skipCurrentValue = !this.includeSpanned || this._shouldSkipRow() || this._shouldSkipColumn();
-			outValue = this._formatOutValue( spanData.cell, spanData );
+			if ( this.includeAllSlots && !this._shouldSkipSlot() ) {
+				outValue = this._formatOutValue( spanData.cell, spanData.row, spanData.column );
+			}
 		} else {
-			cell = row.getChild( this._cellIndex );
+			const cell = row.getChild( this._cellIndex );
 
 			if ( !cell ) {
 				// If there are no more cells left in row advance to the next row.
@@ -255,14 +269,14 @@ export default class TableWalker {
 
 			// Record this cell spans if it's not 1x1 cell.
 			if ( colspan > 1 || rowspan > 1 ) {
-				this._recordSpans( rowspan, colspan, cell );
+				this._recordSpans( cell, rowspan, colspan );
 			}
 
-			skipCurrentValue = this._shouldSkipRow() || this._shouldSkipColumn();
-			outValue = this._formatOutValue( cell, null, rowspan, colspan );
+			if ( !this._shouldSkipSlot() ) {
+				outValue = this._formatOutValue( cell );
+			}
 
 			this._nextCellAtColumn = this._column + colspan;
-			this._previousCellInRow = cell;
 		}
 
 		// Advance to the next column before returning value.
@@ -273,7 +287,7 @@ export default class TableWalker {
 		}
 
 		// The current value will be returned only if current row and column are not skipped.
-		return skipCurrentValue ? this.next() : outValue;
+		return outValue || this.next();
 	}
 
 	/**
@@ -314,7 +328,6 @@ export default class TableWalker {
 		this._column = 0;
 		this._cellIndex = 0;
 		this._nextCellAtColumn = -1;
-		this._previousCellInRow = null;
 
 		return this.next();
 	}
@@ -324,53 +337,37 @@ export default class TableWalker {
 	 *
 	 * @private
 	 * @param {module:engine/model/element~Element} cell The table cell to output.
-	 * @param {Boolean} isSpanned Whether the value is returned for a spanned cell location or an actual cell.
-	 * @param {Number} rowspan The rowspan of the current cell.
-	 * @param {Number} colspan The colspan of the current cell.
+	 * @param {Number} [anchorRow] The row index of a cell anchor slot.
+	 * @param {Number} [anchorColumn] The column index of a cell anchor slot.
 	 * @returns {{done: Boolean, value: {cell: *, row: Number, column: *, rowspan: *, colspan: *, cellIndex: Number}}}
 	 */
-	_formatOutValue( cell, spanData, rowspan = 1, colspan = 1 ) {
+	_formatOutValue( cell, anchorRow = this._row, anchorColumn = this._column ) {
 		return {
 			done: false,
-			value: {
-				cell,
+			value: new TableWalkerValue( cell, {
 				row: this._row,
 				column: this._column,
-				anchorRow: spanData ? spanData.row : this._row,
-				anchorColumn: spanData ? spanData.column : this._column,
-				isSpanned: Boolean( spanData ),
-				rowspan,
-				colspan,
-				cellIndex: this._cellIndex,
-				previousCellInRow: this._previousCellInRow
-			}
+				anchorRow,
+				anchorColumn,
+				cellIndex: this._cellIndex
+			} )
 		};
 	}
 
 	/**
-	 * Checks if the current row should be skipped.
+	 * Checks if the current slot should be skipped.
 	 *
 	 * @private
 	 * @returns {Boolean}
 	 */
-	_shouldSkipRow() {
+	_shouldSkipSlot() {
 		const rowIsBelowStartRow = this._row < this.startRow;
 		const rowIsMarkedAsSkipped = this._skipRows.has( this._row );
 
-		return rowIsBelowStartRow || rowIsMarkedAsSkipped;
-	}
-
-	/**
-	 * Checks if the current column should be skipped.
-	 *
-	 * @private
-	 * @returns {Boolean}
-	 */
-	_shouldSkipColumn() {
 		const columnIsBeforeStartColumn = this.startColumn !== undefined && this._column < this.startColumn;
 		const columnIsAfterEndColumn = this.endColumn !== undefined && this._column > this.endColumn;
 
-		return columnIsBeforeStartColumn || columnIsAfterEndColumn;
+		return rowIsBelowStartRow || rowIsMarkedAsSkipped || columnIsBeforeStartColumn || columnIsAfterEndColumn;
 	}
 
 	/**
@@ -395,11 +392,11 @@ export default class TableWalker {
 	 * Updates spanned cells map relative to the current cell location and its span dimensions.
 	 *
 	 * @private
+	 * @param {module:engine/model/element~Element} cell A cell that is spanned.
 	 * @param {Number} rowspan Cell height.
 	 * @param {Number} colspan Cell width.
-	 * @param {module:engine/model/element~Element} cell A cell that is spanned.
 	 */
-	_recordSpans( rowspan, colspan, cell ) {
+	_recordSpans( cell, rowspan, colspan ) {
 		const data = {
 			cell,
 			row: this._row,
@@ -436,15 +433,105 @@ export default class TableWalker {
 
 /**
  * An object returned by {@link module:table/tablewalker~TableWalker} when traversing table cells.
- *
- * @typedef {Object} module:table/tablewalker~TableWalkerValue
- * @property {module:engine/model/element~Element} cell The current table cell.
- * @property {Number} row The row index of a cell.
- * @property {Number} column The column index of a cell. Column index is adjusted to widths and heights of previous cells.
- * @param {Boolean} isSpanned Whether the value is returned for a spanned cell location or an actual cell.
- * @property {Number} colspan The `colspan` attribute of a cell. If the model attribute is not present, it is set to `1`. For spanned
- * table locations, it is set to `1`.
- * @property {Number} rowspan The `rowspan` attribute of a cell. If the model attribute is not present, it is set to `1`. For spanned
- * table locations, it is set to `1`.
- * @property {Number} cellIndex The index of the current cell in the parent row.
  */
+class TableWalkerValue {
+	/**
+	 * Creates an instance of the table walker value.
+	 *
+	 * @param {module:engine/model/element~Element} cell The current table cell.
+	 * @param {Object} data
+	 * @param {Number} data.row The row index of a table slot.
+	 * @param {Number} data.column The column index of a table slot.
+	 * @param {Number} data.anchorRow The row index of a cell anchor slot.
+	 * @param {Number} data.anchorColumn The column index of a cell anchor slot.
+	 * @param {Number} data.cellIndex The index of the current cell in the parent row.
+	 */
+	constructor( cell, data ) {
+		/**
+		 * The current table cell.
+		 *
+		 * @readonly
+		 * @member {module:engine/model/element~Element}
+		 */
+		this.cell = cell;
+
+		/**
+		 * The row index of a table slot.
+		 *
+		 * @readonly
+		 * @member {Number}
+		 */
+		this.row = data.row;
+
+		/**
+		 * The column index of a table slot.
+		 *
+		 * @readonly
+		 * @member {Number}
+		 */
+		this.column = data.column;
+
+		/**
+		 * The row index of a cell anchor slot.
+		 *
+		 * @readonly
+		 * @member {Number}
+		 */
+		this.cellAnchorRow = data.anchorRow;
+
+		/**
+		 * The column index of a cell anchor slot.
+		 *
+		 * @readonly
+		 * @member {Number}
+		 */
+		this.cellAnchorColumn = data.anchorColumn;
+
+		/**
+		 * The index of the current cell in the parent row.
+		 *
+		 * @readonly
+		 * @member {Number}
+		 */
+		this.cellIndex = data.cellIndex;
+	}
+
+	/**
+	 * Whether the cell is anchored in the current slot.
+	 *
+	 * @returns {Boolean}
+	 */
+	get isAnchor() {
+		return this.row === this.cellAnchorRow && this.column === this.cellAnchorColumn;
+	}
+
+	/**
+	 * The `colspan` attribute of a cell. If the model attribute is not present, it is set to `1`.
+	 *
+	 * @returns {Number}
+	 */
+	get cellWidth() {
+		return parseInt( this.cell.getAttribute( 'colspan' ) || 1 );
+	}
+
+	/**
+	 * The `rowspan` attribute of a cell. If the model attribute is not present, it is set to `1`.
+	 *
+	 * @returns {Number}
+	 */
+	get cellHeight() {
+		return parseInt( this.cell.getAttribute( 'rowspan' ) || 1 );
+	}
+
+	get isSpanned() {
+		throw new CKEditorError( 'improper-api-usage', this );
+	}
+
+	get colspan() {
+		throw new CKEditorError( 'improper-api-usage', this );
+	}
+
+	get rowspan() {
+		throw new CKEditorError( 'improper-api-usage', this );
+	}
+}

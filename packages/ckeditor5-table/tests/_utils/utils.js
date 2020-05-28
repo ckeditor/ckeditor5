@@ -498,7 +498,7 @@ function getClassToSet( attributes ) {
  * @returns {String}
  */
 export function createTableAsciiArt( model, table ) {
-	const tableMap = [ ...new TableWalker( table, { includeSpanned: true } ) ];
+	const tableMap = [ ...new TableWalker( table, { includeAllSlots: true } ) ];
 
 	if ( !tableMap.length ) {
 		return '';
@@ -519,8 +519,8 @@ export function createTableAsciiArt( model, table ) {
 		for ( let column = 0; column <= lastColumn; column++ ) {
 			const cellInfo = tableMap[ row * columns + column ];
 
-			const isColSpan = cellInfo.anchorColumn != cellInfo.column;
-			const isRowSpan = cellInfo.anchorRow != cellInfo.row;
+			const isColSpan = cellInfo.cellAnchorColumn != cellInfo.column;
+			const isRowSpan = cellInfo.cellAnchorRow != cellInfo.row;
 
 			gridLine += !isColSpan || !isRowSpan ? '+' : ' ';
 			gridLine += !isRowSpan ? '----' : '    ';
@@ -570,23 +570,23 @@ export function prepareModelTableInput( model, table ) {
 	const result = [];
 	let row = [];
 
-	for ( const cellInfo of new TableWalker( table, { includeSpanned: true } ) ) {
+	for ( const cellInfo of new TableWalker( table, { includeAllSlots: true } ) ) {
 		if ( cellInfo.column == 0 && cellInfo.row > 0 ) {
 			result.push( row );
 			row = [];
 		}
 
-		if ( cellInfo.isSpanned ) {
+		if ( !cellInfo.isAnchor ) {
 			continue;
 		}
 
 		const contents = getElementPlainText( model, cellInfo.cell );
 
-		if ( cellInfo.colspan > 1 || cellInfo.rowspan > 1 ) {
+		if ( cellInfo.cellWidth > 1 || cellInfo.cellHeight > 1 ) {
 			row.push( {
 				contents,
-				...( cellInfo.colspan > 1 ? { colspan: cellInfo.colspan } : null ),
-				...( cellInfo.rowspan > 1 ? { rowspan: cellInfo.rowspan } : null )
+				...( cellInfo.cellWidth > 1 ? { colspan: cellInfo.cellWidth } : null ),
+				...( cellInfo.cellHeight > 1 ? { rowspan: cellInfo.cellHeight } : null )
 			} );
 		} else {
 			row.push( contents );

@@ -58,16 +58,16 @@ export function cropTableToDimensions( sourceTable, cropDimensions, writer, tabl
 		writer.insertElement( 'tableRow', croppedTable, 'end' );
 	}
 
-	const tableMap = [ ...new TableWalker( sourceTable, { startRow, endRow, startColumn, endColumn, includeSpanned: true } ) ];
+	const tableMap = [ ...new TableWalker( sourceTable, { startRow, endRow, startColumn, endColumn, includeAllSlots: true } ) ];
 
 	// Iterate over source table slots (including empty - spanned - ones).
-	for ( const { row: sourceRow, column: sourceColumn, cell: tableCell, isSpanned } of tableMap ) {
+	for ( const { row: sourceRow, column: sourceColumn, cell: tableCell, isAnchor } of tableMap ) {
 		// Row index in cropped table.
 		const rowInCroppedTable = sourceRow - startRow;
 		const row = croppedTable.getChild( rowInCroppedTable );
 
 		// For empty slots: fill the gap with empty table cell.
-		if ( isSpanned ) {
+		if ( !isAnchor ) {
 			// TODO: Remove table utils usage. See: https://github.com/ckeditor/ckeditor5/issues/6785.
 			const { row: anchorRow, column: anchorColumn } = tableUtils.getCellLocation( tableCell );
 

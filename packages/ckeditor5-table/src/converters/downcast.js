@@ -100,7 +100,7 @@ export function downcastInsertRow( options = {} ) {
 
 		const row = table.getChildIndex( tableRow );
 
-		const tableWalker = new TableWalker( table, { startRow: row, endRow: row } );
+		const tableWalker = new TableWalker( table, { row } );
 
 		const tableAttributes = {
 			headingRows: table.getAttribute( 'headingRows' ) || 0,
@@ -146,7 +146,7 @@ export function downcastInsertCell( options = {} ) {
 		const table = tableRow.parent;
 		const rowIndex = table.getChildIndex( tableRow );
 
-		const tableWalker = new TableWalker( table, { startRow: rowIndex, endRow: rowIndex } );
+		const tableWalker = new TableWalker( table, { row: rowIndex } );
 
 		const tableAttributes = {
 			headingRows: table.getAttribute( 'headingRows' ) || 0,
