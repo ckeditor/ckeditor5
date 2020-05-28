@@ -192,7 +192,7 @@ export default class TableClipboard extends Plugin {
 			//
 			// This ensures proper table geometry after the paste
 			for ( const { row, column, cell, isSpanned } of selectedTableMap ) {
-				if ( column == 0 ) {
+				if ( column === 0 ) {
 					previousCellInRow = null;
 				}
 
