@@ -9,6 +9,8 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
@@ -96,7 +98,7 @@ document.querySelector( '#toggleReadOnly' ).addEventListener( 'click', () => {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, HorizontalLine, InlineWidget, MediaEmbed ],
+		plugins: [ ArticlePluginSet, HorizontalLine, InlineWidget, MediaEmbed, TableProperties, TableCellProperties ],
 		toolbar: [
 			'heading',
 			'|',
@@ -123,7 +125,9 @@ ClassicEditor
 			contentToolbar: [
 				'tableColumn',
 				'tableRow',
-				'mergeTableCells'
+				'mergeTableCells',
+				'tableProperties',
+				'tableCellProperties'
 			]
 		}
 	} )
