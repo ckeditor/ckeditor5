@@ -20,6 +20,11 @@ const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;
  * @implements module:paste-from-office/normalizer~Normalizer
  */
 export default class MSWordNormalizer {
+	/**
+	 * Creates a new `MSWordNormalizer` instance.
+	 *
+	 * @param {module:engine/view/document~Document} document View document.
+	 */
 	constructor( document ) {
 		/**
 		 * @readonly
