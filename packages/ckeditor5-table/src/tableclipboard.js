@@ -176,8 +176,6 @@ export default class TableClipboard extends Plugin {
 			const selectedTableMap = [ ...new TableWalker( selectedTable, {
 				startRow: firstRowOfSelection,
 				endRow: lastRowOfSelection,
-				startColumn: firstColumnOfSelection,
-				endColumn: lastColumnOfSelection,
 				includeSpanned: true
 			} ) ];
 
@@ -193,9 +191,19 @@ export default class TableClipboard extends Plugin {
 			// - Inserts cell from a pasted table for a matched slots.
 			//
 			// This ensures proper table geometry after the paste
-			for ( const { row, column, cell, isSpanned, previousCellInRow: previousCell } of selectedTableMap ) {
-				if ( column == firstColumnOfSelection ) {
-					previousCellInRow = previousCell;
+			for ( const { row, column, cell, isSpanned } of selectedTableMap ) {
+				if ( column == 0 ) {
+					previousCellInRow = null;
+				}
+
+				// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
+				if ( column < firstColumnOfSelection || column > lastColumnOfSelection ) {
+					// Only update the previousCellInRow for non-spanned slots.
+					if ( !isSpanned ) {
+						previousCellInRow = cell;
+					}
+
+					continue;
 				}
 
 				// If the slot is occupied by a cell in a selected table - remove it.
