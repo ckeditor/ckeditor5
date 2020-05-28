@@ -13,15 +13,9 @@ Press <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd> or use the toolbar button to select the e
 
 {@snippet features/select-all}
 
-### Boundaries
-
-Note that when editing an {@link features/image#image-captions image caption}, the selection will only expand to the boundaries of the caption. Successive use will expand the selection beyond these boundaries to encompass more and more content up to the entire editable root of the editor. This is to allow the user to do more focused editing and select only related content.
-
 <info-box>
-	The Select All boundaries are created by any {@link framework/guides/deep-dive/schema#limit-elements limit element} which can contain a text or paragraph.
+	When the selection is inside the {@link features/image#image-captions image caption}, it will only expand to the boundaries of the caption. Use the keystroke or the toolbar button again to include more content until the entire content of the editor is selected. The same rule applies, for instance, when the selection is inside a table cell or any self–contained (nested) editable region in the content.
 </info-box>
-
-
 
 ## Installation
 
