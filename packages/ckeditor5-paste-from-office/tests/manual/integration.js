@@ -13,13 +13,16 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
+import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+
 import PasteFromOffice from '../../src/pastefromoffice';
 
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
-import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 
 const htmlDiv = document.querySelector( '#html' );
 const textDiv = document.querySelector( '#text' );
@@ -28,7 +31,7 @@ const dataDiv = document.querySelector( '#data' );
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet, Strikethrough, Underline, Table, TableToolbar,
-			TableProperties, TableCellProperties, EasyImage, PasteFromOffice ],
+			TableProperties, TableCellProperties, EasyImage, PasteFromOffice, FontColor, FontBackgroundColor ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'strikethrough', 'underline', 'link',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo' ],
 		table: {
