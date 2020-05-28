@@ -119,6 +119,8 @@
 		pointer-events: none;
 		height: 1px;
 		animation: ck-widget-type-around-line-pulse linear 1s infinite normal forwards;
+		outline: solid 1px hsla(0, 0%, 100%, .5);
+		background: var(--ck-color-base-text);
 	}
 
 	&.ck-widget_selected,
@@ -199,18 +201,18 @@
 
 @keyframes ck-widget-type-around-line-pulse {
 	0% {
-		background: hsla(0, 0%, 0%, 1);
+		opacity: 1;
 	}
 	49% {
-		background: hsla(0, 0%, 0%, 1);
+		opacity: 1;
 	}
 	50% {
-		background: hsla(0, 0%, 0%, 0);
+		opacity: 0;
 	}
 	99% {
-		background: hsla(0, 0%, 0%, 0);
+		opacity: 0;
 	}
 	100% {
-		background: hsla(0, 0%, 0%, 1);
+		opacity: 1;
 	}
 }
