@@ -73,9 +73,12 @@ export default class TableWalker {
 	 * @constructor
 	 * @param {module:engine/model/element~Element} table A table over which the walker iterates.
 	 * @param {Object} [options={}] An object with configuration.
-	 * @param {Number} [options.column] A column index for which this iterator will output cells.
+	 * @param {Number} [options.row] A row index for which this iterator will output cells.
 	 * @param {Number} [options.startRow=0] A row index from which this iterator should start.
 	 * @param {Number} [options.endRow] A row index at which this iterator should end.
+	 * @param {Number} [options.column] A column index for which this iterator will output cells.
+	 * @param {Number} [options.startColumn=0] A column index from which this iterator should start.
+	 * @param {Number} [options.endColumn] A column index at which this iterator should end.
 	 * @param {Boolean} [options.includeAllSlots=false] Also return values for spanned cells.
 	 */
 	constructor( table, options = {} ) {
@@ -125,7 +128,7 @@ export default class TableWalker {
 		 * @readonly
 		 * @member {Number}
 		 */
-		this.startColumn = typeof options.startColumn == 'number' ? options.startColumn : undefined;
+		this.startColumn = options.startColumn || 0;
 
 		/**
 		 * If set, the table walker will only output cells up to a given column.
