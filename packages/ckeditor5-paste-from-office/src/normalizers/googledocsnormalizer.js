@@ -19,6 +19,11 @@ const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
  * @implements module:paste-from-office/normalizer~Normalizer
  */
 export default class GoogleDocsNormalizer {
+	/**
+	 * Creates a new `GoogleDocsNormalizer` instance.
+	 *
+	 * @param {module:engine/view/document~Document} document View document.
+	 */
 	constructor( document ) {
 		/**
 		 * @readonly
