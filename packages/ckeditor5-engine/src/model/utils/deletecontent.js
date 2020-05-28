@@ -131,7 +131,7 @@ function getLivePositionsForSelectedBlocks( range ) {
 
 	// If the end of selection is at the start position of last block in the selection, then
 	// shrink it to not include that trailing block. Note that this should happen only for not empty selection.
-	if ( hasContent( range ) ) {
+	if ( model.hasContent( range ) ) {
 		const endBlock = getParentBlock( endPosition );
 
 		if ( endBlock && endPosition.isTouching( model.createPositionAt( endBlock, 0 ) ) ) {
@@ -172,6 +172,8 @@ function getParentBlock( position ) {
 // This function is a result of reaching the Ballmer's peak for just the right amount of time.
 // Even I had troubles documenting it after a while and after reading it again I couldn't believe that it really works.
 function mergeBranches( writer, startPosition, endPosition ) {
+	const model = writer.model;
+
 	// Verify if there is a need and possibility to merge.
 	if ( !checkShouldMerge( writer.model.schema, startPosition, endPosition ) ) {
 		return;
@@ -183,7 +185,7 @@ function mergeBranches( writer, startPosition, endPosition ) {
 	// <blockQuote><heading1>[</heading1><paragraph>]foo</paragraph> -> <blockQuote><paragraph>[]foo</paragraph></blockQuote>
 	const [ startAncestor, endAncestor ] = getElementsNextToCommonAncestor( startPosition, endPosition );
 
-	if ( !hasContent( startAncestor ) && hasContent( endAncestor ) ) {
+	if ( !model.hasContent( startAncestor ) && model.hasContent( endAncestor ) ) {
 		mergeBranchesRight( writer, startPosition, endPosition, startAncestor.parent );
 	} else {
 		mergeBranchesLeft( writer, startPosition, endPosition, startAncestor.parent );
@@ -343,21 +345,6 @@ function getElementsNextToCommonAncestor( positionA, positionB ) {
 	}
 
 	return [ ancestorsA[ i ], ancestorsB[ i ] ];
-}
-
-// Returns true if element or range contains any text.
-function hasContent( elementOrRange ) {
-	const model = elementOrRange.root.document.model;
-	const schema = model.schema;
-	const range = elementOrRange.is( 'range' ) ? elementOrRange : model.createRangeIn( elementOrRange );
-
-	for ( const item of range.getItems() ) {
-		if ( item.is( 'textProxy' ) || schema.isObject( item ) ) {
-			return true;
-		}
-	}
-
-	return false;
 }
 
 function shouldAutoparagraph( schema, position ) {
