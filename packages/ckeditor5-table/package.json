@@ -13,7 +13,7 @@
     "@ckeditor/ckeditor5-core": "^19.0.1",
     "@ckeditor/ckeditor5-ui": "^19.0.1",
     "@ckeditor/ckeditor5-widget": "^19.1.0",
-    "lodash-es": "^4.17.10"
+    "lodash-es": "^4.17.15"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "^19.0.1",
@@ -31,7 +31,7 @@
     "@ckeditor/ckeditor5-undo": "^19.0.1",
     "@ckeditor/ckeditor5-utils": "^19.0.1",
     "json-diff": "^0.5.4",
-    "lodash-es": "^4.17.10"
+    "lodash-es": "^4.17.15"
   },
   "engines": {
     "node": ">=8.0.0",
