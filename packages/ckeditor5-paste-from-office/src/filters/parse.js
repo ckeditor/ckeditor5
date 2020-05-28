@@ -13,12 +13,12 @@ import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 
 import { normalizeSpacing, normalizeSpacerunSpans } from './space';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 /**
  * Parses provided HTML extracting contents of `<body>` and `<style>` tags.
  *
  * @param {String} htmlString HTML string to be parsed.
+ * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
  * @returns {Object} result
  * @returns {module:engine/view/documentfragment~DocumentFragment} result.body Parsed body
  * content as a traversable structure.
@@ -27,7 +27,7 @@ import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
  * separate `style` tag from the source HTML.
  * @returns {String} result.stylesString All `style` tags contents combined in the order of occurrence into one string.
  */
-export function parseHtml( htmlString ) {
+export function parseHtml( htmlString, stylesProcessor ) {
 	const domParser = new DOMParser();
 
 	// Remove Word specific "if comments" so content inside is not omitted by the parser.
@@ -44,7 +44,7 @@ export function parseHtml( htmlString ) {
 	const bodyString = htmlDocument.body.innerHTML;
 
 	// Transform document.body to View.
-	const bodyView = documentToView( htmlDocument );
+	const bodyView = documentToView( htmlDocument, stylesProcessor );
 
 	// Extract stylesheets.
 	const stylesObject = extractStyles( htmlDocument );
@@ -60,9 +60,10 @@ export function parseHtml( htmlString ) {
 // Transforms native `Document` object into {@link module:engine/view/documentfragment~DocumentFragment}.
 //
 // @param {Document} htmlDocument Native `Document` object to be transformed.
+// @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
 // @returns {module:engine/view/documentfragment~DocumentFragment}
-function documentToView( htmlDocument ) {
-	const viewDocument = new ViewDocument( new StylesProcessor() );
+function documentToView( htmlDocument, stylesProcessor ) {
+	const viewDocument = new ViewDocument( stylesProcessor );
 	const domConverter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
 	const fragment = htmlDocument.createDocumentFragment();
 	const nodes = htmlDocument.body.childNodes;
