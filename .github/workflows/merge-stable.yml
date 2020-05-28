@@ -1,0 +1,31 @@
+name: Stable branch auto merge
+
+on:
+  push:
+    branches: [ stable ]
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      # First: merge
+      - uses: octokit/request-action@v2.x
+        id: merge_action
+        with:
+          route: POST /repos/:repository/merges
+          repository: ${{ github.repository }}
+          base: master
+          head: stable
+        env:
+          GITHUB_TOKEN: ${{ secrets.STABLE_MERGE_GITHUB_TOKEN }}
+      # Report errors if any
+      - uses: rtCamp/action-slack-notify@v2.0.2
+        id: error_message_slack
+        name: Slack notification
+        if: (steps.merge_action.outputs.status != 201) && (steps.merge_action.outputs.status != 204)
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: "cke5-ci"
+          SLACK_ICON: https://github.com/ckeditor.png?size=48
+          SLACK_USERNAME: "stable auto merge action"
+          SLACK_MESSAGE: ${{ format('💥 Error, merge call returned code {0}, see {1} for a list of codes with explanation. 💥', steps.merge_action.outputs.status, 'https://developer.github.com/v3/repos/merging/#perform-a-merge' ) }}

@@ -22,11 +22,11 @@ msgstr "Параграф"
 
 msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
-msgstr "Заголовок"
+msgstr "Стиль"
 
 msgctxt "Default label for the heading dropdown."
 msgid "Choose heading"
-msgstr "Выбрать заголовок"
+msgstr "Выбор стиля"
 
 msgctxt "Dropdown option label for the heading level 1 format."
 msgid "Heading 1"

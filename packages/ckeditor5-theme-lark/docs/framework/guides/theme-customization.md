@@ -63,7 +63,7 @@ The entire process of building and managing the styles boils down to three steps
 Having {@link builds/guides/development/custom-builds#forking-an-existing-build cloned} an existing build of CKEditor for a quick start, let's use the full potential of CSS variables (custom properties). The customization explained in this guide will make the theme dark, with slightly bigger text and more rounded corners.
 
 <info-box hint>
-	Check out the [color sheet](https://github.com/ckeditor/ckeditor5-theme-lark/blob/master/theme/ckeditor5-ui/globals/_colors.css) for a full list of customizable colors. You can also browse [other files](https://github.com/ckeditor/ckeditor5-theme-lark/blob/master/theme/ckeditor5-ui/globals) to learn about other useful tools.
+	Check out the [color sheet](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals/_colors.css) for a full list of customizable colors. You can also browse [other files](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals) to learn about other useful tools.
 </info-box>
 
 The file containing custom variables will be named `custom.css` and it will look as below:

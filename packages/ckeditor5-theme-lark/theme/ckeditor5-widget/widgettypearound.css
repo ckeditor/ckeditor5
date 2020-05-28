@@ -18,13 +18,14 @@
 	 * Styles of the type around buttons
 	 */
 	& .ck-widget__type-around__button {
-		cursor: pointer;
 		width: var(--ck-widget-type-around-button-size);
 		height: var(--ck-widget-type-around-button-size);
 		background: var(--ck-color-widget-type-around-button);
 		border-radius: 100px;
-		animation: fadein linear 300ms 1 normal forwards;
-		transition: opacity 100ms linear;
+
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve), background var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
 
 		& svg {
 			width: 10px;
@@ -71,6 +72,17 @@
 	}
 
 	/*
+	 * Show type around buttons when the widget gets selected or being hovered.
+	 */
+	&.ck-widget_selected,
+	&:hover {
+		& > .ck-widget__type-around > .ck-widget__type-around__button {
+			pointer-events: auto;
+			opacity: 1;
+		}
+	}
+
+	/*
 	 * Styles for the buttons when the widget is NOT selected (but the buttons are visible
 	 * and still can be hovered).
 	 */
@@ -101,6 +113,24 @@
 	 */
 	&.ck-widget_with-selection-handle > .ck-widget__type-around > .ck-widget__type-around__button_before {
 		margin-left: 20px;
+	}
+}
+
+/*
+ * Hide type around buttons when the widget is selected as a child of a selected
+ * nested editable (e.g. mulit-cell table selection).
+ *
+ * See https://github.com/ckeditor/ckeditor5/issues/7263.
+ */
+.ck-editor__nested-editable.ck-editor__editable_selected {
+	& .ck-widget {
+		&.ck-widget_selected,
+		&:hover {
+			& > .ck-widget__type-around > .ck-widget__type-around__button {
+				pointer-events: none;
+				opacity: 0;
+			}
+		}
 	}
 }
 

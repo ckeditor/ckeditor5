@@ -43,7 +43,7 @@ ClassicEditor
 
 The {@link module:horizontal-line/horizontalline~HorizontalLine} plugin registers:
 * the UI button component (`'horizontalLine'`),
-* the `'horizontalLine'` command implemented by {@link module:horizontal-line/horizontallinecommand~HorizontalLineCommand}. 
+* the `'horizontalLine'` command implemented by {@link module:horizontal-line/horizontallinecommand~HorizontalLineCommand}.
 
 The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
@@ -58,4 +58,4 @@ editor.execute( 'horizontalLine' );
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5-horizontal-line.
+The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-horizontal-line.

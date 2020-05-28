@@ -9,28 +9,30 @@
 
 'use strict';
 
-// In order to use the same version for all packages (including builds and ckeditor5 itself), you can call:
-// yarn run changelog [newVersion]
-
 const devEnv = require( '@ckeditor/ckeditor5-dev-env' );
-const commonOptions = {
-	cwd: process.cwd(),
-	packages: 'packages'
-};
-const editorBuildsGlob = '@ckeditor/ckeditor5-build-*';
-
-const optionsForDependencies = Object.assign( {}, commonOptions, {
-	skipPackages: editorBuildsGlob,
-	skipMainRepository: true
-} );
-
-const optionsForBuilds = Object.assign( {}, commonOptions, {
-	scope: editorBuildsGlob
-} );
 
 Promise.resolve()
-	.then( () => devEnv.generateChangelogForSubRepositories( optionsForDependencies ) )
-	.then( response => devEnv.generateSummaryChangelog( Object.assign( optionsForBuilds, response ) ) )
+	.then( () => devEnv.generateChangelogForMonoRepository( {
+		cwd: process.cwd(),
+		packages: 'packages',
+		highlightsPlaceholder: true,
+		collaborationFeatures: true,
+		transformScope: name => {
+			if ( name === 'ckeditor5' ) {
+				return 'https://www.npmjs.com/package/ckeditor5';
+			}
+
+			if ( name === 'build-*' ) {
+				return 'https://www.npmjs.com/search?q=keywords%3Ackeditor5-build%20maintainer%3Ackeditor';
+			}
+
+			if ( name === 'cloud-services-core' ) {
+				return 'https://www.npmjs.com/package/@ckeditor/ckeditor-cloud-services-core';
+			}
+
+			return 'https://www.npmjs.com/package/@ckeditor/ckeditor5-' + name;
+		}
+	} ) )
 	.then( () => {
 		console.log( 'Done!' );
 	} )

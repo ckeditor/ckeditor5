@@ -36,7 +36,7 @@ msgctxt "Label for the delete table column button."
 msgid "Delete column"
 msgstr "Gris kolonën"
 
-msgctxt "Label for the select table entire column button."
+msgctxt "Label for the select the entire table column button."
 msgid "Select column"
 msgstr ""
 
@@ -60,7 +60,7 @@ msgctxt "Label for the delete table row button."
 msgid "Delete row"
 msgstr "Grish rreshtin"
 
-msgctxt "Label for the select table entire row button."
+msgctxt "Label for the select the entire table row button."
 msgid "Select row"
 msgstr ""
 

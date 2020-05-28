@@ -167,7 +167,7 @@ describe( 'MentionCommand', () => {
 
 	function assertMention( textNode, id ) {
 		expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
-		expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_uid' );
+		expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'uid' );
 		expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_text', textNode.data );
 		expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'id', id );
 	}
