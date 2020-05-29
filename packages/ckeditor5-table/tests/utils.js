@@ -10,10 +10,8 @@ import TableEditing from '../src/tableediting';
 
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { modelTable } from './_utils/utils';
-import {
-	getVerticallyOverlappingCells, getHorizontallyOverlappingCells
-} from '../src/utils/common';
 import { getSelectedTableCells, getSelectionAffectedTableCells, getTableCellsContainingSelection } from '../src/utils/selection';
+import { getHorizontallyOverlappingCells, getVerticallyOverlappingCells } from '../src/utils/structure';
 
 describe( 'table utils', () => {
 	let editor, model, tableSelection, modelRoot;
