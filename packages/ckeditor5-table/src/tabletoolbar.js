@@ -8,8 +8,8 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { getSelectedTableWidget, getTableWidgetAncestor } from './utils/common';
 import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
+import { getSelectedTableWidget, getTableWidgetAncestor } from './utils/ui/widget';
 
 /**
  * The table toolbar class. It creates toolbars for the table feature and its content (for now only for the table cell content).

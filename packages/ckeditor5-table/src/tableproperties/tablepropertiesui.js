@@ -9,7 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { getTableWidgetAncestor } from '../utils/common';
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import TablePropertiesView from './ui/tablepropertiesview';
@@ -29,6 +28,7 @@ import {
 	normalizeColorOptions
 } from '@ckeditor/ckeditor5-ui/src/colorgrid/utils';
 import { debounce } from 'lodash-es';
+import { getTableWidgetAncestor } from '../utils/ui/widget';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
