@@ -228,7 +228,7 @@ describe( 'table utils', () => {
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
 					writer.createPositionAt( paragraph, 0 ),
-					writer.createPositionAt( paragraph, 1 ),
+					writer.createPositionAt( paragraph, 1 )
 				) );
 			} );
 

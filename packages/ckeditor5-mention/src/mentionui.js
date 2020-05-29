@@ -614,7 +614,7 @@ function getBalloonPanelPositions( preferredPosition ) {
 	};
 
 	// Returns only the last position if it was matched to prevent the panel from jumping after the first match.
-	if ( positions.hasOwnProperty( preferredPosition ) ) {
+	if ( Object.prototype.hasOwnProperty.call( positions, preferredPosition ) ) {
 		return [
 			positions[ preferredPosition ]
 		];
