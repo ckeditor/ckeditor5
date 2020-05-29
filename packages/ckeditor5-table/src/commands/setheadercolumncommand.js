@@ -10,7 +10,8 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import { findAncestor, isHeadingColumnCell, updateNumericAttribute } from './utils';
-import { getColumnIndexes, getSelectionAffectedTableCells, getHorizontallyOverlappingCells, splitVertically } from '../utils/common';
+import { getHorizontallyOverlappingCells, splitVertically } from '../utils/common';
+import { getColumnIndexes, getSelectionAffectedTableCells } from '../utils/selection';
 
 /**
  * The header column command.

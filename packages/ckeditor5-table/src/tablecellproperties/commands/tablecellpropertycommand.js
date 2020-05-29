@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { getSelectionAffectedTableCells } from '../../utils/common';
+import { getSelectionAffectedTableCells } from '../../utils/selection';
 
 /**
  * The table cell attribute command.

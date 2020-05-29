@@ -7,7 +7,6 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import Table from '../../src/table';
 import TableCellProperties from '../../src/tablecellproperties';
 import { findAncestor } from '../../src/commands/utils';
-import { getTableCellsContainingSelection } from '../../src/utils/common';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import View from '@ckeditor/ckeditor5-ui/src/view';
@@ -31,6 +30,7 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { centeredBalloonPositionForLongWidgets } from '@ckeditor/ckeditor5-widget/src/utils';
 import { modelTable } from '../_utils/utils';
+import { getTableCellsContainingSelection } from '../../src/utils/selection';
 
 describe( 'UI Utils', () => {
 	let editor, editingView, balloon, editorElement;

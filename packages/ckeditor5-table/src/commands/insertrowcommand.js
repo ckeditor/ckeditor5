@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { findAncestor } from './utils';
-import { getRowIndexes, getSelectionAffectedTableCells } from '../utils/common';
+import { getRowIndexes, getSelectionAffectedTableCells } from '../utils/selection';
 
 /**
  * The insert row command.
