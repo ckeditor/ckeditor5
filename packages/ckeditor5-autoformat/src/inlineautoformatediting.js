@@ -7,8 +7,6 @@
  * @module autoformat/inlineautoformatediting
  */
 
-import getLastTextLine from '@ckeditor/ckeditor5-typing/src/utils/getlasttextline';
-
 /**
  * The inline autoformatting engine. It allows to format various inline patterns. For example,
  * it can be configured to make "foo" bold when typed `**foo**` (the `**` markers will be removed).
@@ -174,7 +172,7 @@ export default class InlineAutoformatEditing {
 
 			const focus = selection.focus;
 			const block = focus.parent;
-			const { text, range } = getLastTextLine( model.createRange( model.createPositionAt( block, 0 ), focus ), model );
+			const { text, range } = getTextAfterCode( model.createRange( model.createPositionAt( block, 0 ), focus ), model );
 			const testOutput = testCallback( text );
 			const rangesToFormat = testOutputToRanges( range.start, testOutput.format, model );
 			const rangesToRemove = testOutputToRanges( range.start, testOutput.remove, model );
@@ -215,4 +213,28 @@ function testOutputToRanges( start, arrays, model ) {
 		.map( array => {
 			return model.createRange( start.getShiftedBy( array[ 0 ] ), start.getShiftedBy( array[ 1 ] ) );
 		} );
+}
+
+// Returns the last text line after the last code element from the given range.
+// It is similar to {@link module:typing/utils/getlasttextline.getLastTextLine `getLastTextLine()`},
+// but it ignores any text before the last `code`.
+//
+// @param {module:engine/model/range~Range} range
+// @param {module:engine/model/model~Model} model
+// @returns {module:typing/utils/getlasttextline~LastTextLineData}
+function getTextAfterCode( range, model ) {
+	let start = range.start;
+
+	const text = Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
+		// Trim text to a last occurrence of an inline element and update range start.
+		if ( !( node.is( 'text' ) || node.is( 'textProxy' ) ) || node.getAttribute( 'code' ) ) {
+			start = model.createPositionAfter( node );
+
+			return '';
+		}
+
+		return rangeText + node.data;
+	}, '' );
+
+	return { text, range: model.createRange( start, range.end ) };
 }
