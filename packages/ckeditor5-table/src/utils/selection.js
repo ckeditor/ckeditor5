@@ -15,7 +15,7 @@ import { findAncestor } from './common';
  * within the provided model selection's ranges.
  *
  * To obtain the cells selected from the inside, use
- * {@link module:table/utils~getTableCellsContainingSelection}.
+ * {@link module:table/utils/selection~getTableCellsContainingSelection}.
  *
  * @param {module:engine/model/selection~Selection} selection
  * @returns {Array.<module:engine/model/element~Element>}
@@ -39,7 +39,7 @@ export function getSelectedTableCells( selection ) {
  * {@link module:engine/model/range~Range#start} inside.
  *
  * To obtain the cells selected from the outside, use
- * {@link module:table/utils~getSelectedTableCells}.
+ * {@link module:table/utils/selection~getSelectedTableCells}.
  *
  * @param {module:engine/model/selection~Selection} selection
  * @returns {Array.<module:engine/model/element~Element>}
@@ -63,8 +63,8 @@ export function getTableCellsContainingSelection( selection ) {
  * by selection ranges or host selection range
  * {@link module:engine/model/range~Range#start start positions} inside them.
  *
- * Combines {@link module:table/utils~getTableCellsContainingSelection} and
- * {@link module:table/utils~getSelectedTableCells}.
+ * Combines {@link module:table/utils/selection~getTableCellsContainingSelection} and
+ * {@link module:table/utils/selection~getSelectedTableCells}.
  *
  * @param {module:engine/model/selection~Selection} selection
  * @returns {Array.<module:engine/model/element~Element>}
