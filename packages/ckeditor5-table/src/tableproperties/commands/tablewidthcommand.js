@@ -7,8 +7,8 @@
  * @module table/tableproperties/commands/tablewidthcommand
  */
 
-import { addDefaultUnitToNumericValue } from '../../commands/utils';
 import TablePropertyCommand from './tablepropertycommand';
+import { addDefaultUnitToNumericValue } from '../../utils/table-properties';
 
 /**
  * The table width command.

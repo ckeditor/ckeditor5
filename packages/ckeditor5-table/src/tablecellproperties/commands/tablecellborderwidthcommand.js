@@ -7,8 +7,8 @@
  * @module table/tablecellproperties/commands/tablecellborderwidthcommand
  */
 
-import { addDefaultUnitToNumericValue, getSingleValue } from '../../commands/utils';
 import TableCellPropertyCommand from './tablecellpropertycommand';
+import { addDefaultUnitToNumericValue, getSingleValue } from '../../utils/table-properties';
 
 /**
  * The table cell border width command.
