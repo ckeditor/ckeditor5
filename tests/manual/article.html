@@ -4,9 +4,23 @@
 			max-width: 800px;
 			margin: 20px auto;
 		}
+
+		div.raw-html {
+			display: block;
+			background: #EEE;
+			padding: 5px;
+		}
 	</style>
 </head>
 <div id="editor">
+	<raw-html>
+		<raw-html-content>
+			<p>I'm some external content.</p>
+			<p>I can even use HTML features that the editor does not support. For instance, I can use iframes!</p>
+			<iframe width="560" height="315" src="https://www.youtube.com/embed/1bIUKFnwUbw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+			<p>Yup...</p>
+		</raw-html-content>
+	</raw-html>
 	<h2>Heading 1</h2>
 	<p>Paragraph</p>
 	<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
