@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import TableWalker from '../tablewalker';
 import { findAncestor } from './utils';
-import { getSelectionAffectedTableCells } from '../utils/utils';
+import { getSelectionAffectedTableCells } from '../utils/common';
 
 /**
  * The select column command.

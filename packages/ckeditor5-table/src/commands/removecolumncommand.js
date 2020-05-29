@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import TableWalker from '../tablewalker';
-import { getColumnIndexes, getSelectionAffectedTableCells } from '../utils/utils';
+import { getColumnIndexes, getSelectionAffectedTableCells } from '../utils/common';
 import { findAncestor } from './utils';
 
 /**

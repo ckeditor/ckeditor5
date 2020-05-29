@@ -14,7 +14,7 @@ import {
 	getSelectedTableCells,
 	getTableCellsContainingSelection,
 	getSelectionAffectedTableCells, getVerticallyOverlappingCells, getHorizontallyOverlappingCells
-} from '../src/utils/utils';
+} from '../src/utils/common';
 
 describe( 'table utils', () => {
 	let editor, model, tableSelection, modelRoot;

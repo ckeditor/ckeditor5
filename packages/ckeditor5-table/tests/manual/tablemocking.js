@@ -14,7 +14,7 @@ import { diffString } from 'json-diff';
 import { debounce } from 'lodash-es';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import TableWalker from '../../src/tablewalker';
-import { getSelectionAffectedTableCells } from '../../src/utils/utils';
+import { getSelectionAffectedTableCells } from '../../src/utils/common';
 import { findAncestor } from '../../src/commands/utils';
 
 ClassicEditor

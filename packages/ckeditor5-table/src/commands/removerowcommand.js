@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import { findAncestor } from './utils';
-import { getRowIndexes, getSelectionAffectedTableCells } from '../utils/utils';
+import { getRowIndexes, getSelectionAffectedTableCells } from '../utils/common';
 
 /**
  * The remove row command.

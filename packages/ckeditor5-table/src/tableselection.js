@@ -13,7 +13,7 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
 import MouseEventsObserver from './tableselection/mouseeventsobserver';
-import { getColumnIndexes, getRowIndexes, getSelectedTableCells, getTableCellsContainingSelection } from './utils/utils';
+import { getColumnIndexes, getRowIndexes, getSelectedTableCells, getTableCellsContainingSelection } from './utils/common';
 import { findAncestor } from './commands/utils';
 import { cropTableToDimensions } from './tableselection/croptable';
 

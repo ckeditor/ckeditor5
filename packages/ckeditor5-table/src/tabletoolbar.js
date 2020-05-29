@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { getSelectedTableWidget, getTableWidgetAncestor } from './utils/utils';
+import { getSelectedTableWidget, getTableWidgetAncestor } from './utils/common';
 import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
 
 /**
