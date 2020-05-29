@@ -630,8 +630,9 @@ describe( 'TableWalker', () => {
 
 		const { value } = walker.next();
 
-		expect( () => value.isSpanned ).to.throw( CKEditorError, 'improper-api-usage' );
-		expect( () => value.colspan ).to.throw( CKEditorError, 'improper-api-usage' );
-		expect( () => value.rowspan ).to.throw( CKEditorError, 'improper-api-usage' );
+		expect( () => value.isSpanned ).to.throw( CKEditorError, 'tablewalker-improper-api-usage' );
+		expect( () => value.colspan ).to.throw( CKEditorError, 'tablewalker-improper-api-usage' );
+		expect( () => value.rowspan ).to.throw( CKEditorError, 'tablewalker-improper-api-usage' );
+		expect( () => value.cellIndex ).to.throw( CKEditorError, 'tablewalker-improper-api-usage' );
 	} );
 } );
