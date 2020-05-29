@@ -27,13 +27,11 @@ export function toTableWidget( viewElement, writer ) {
 	return toWidget( viewElement, writer, { hasSelectionHandle: true } );
 }
 
-/**
- * Checks if a given view element is a table widget.
- *
- * @param {module:engine/view/element~Element} viewElement
- * @returns {Boolean}
- */
-export function isTableWidget( viewElement ) {
+// Checks if a given view element is a table widget.
+//
+// @param {module:engine/view/element~Element} viewElement
+// @returns {Boolean}
+function isTableWidget( viewElement ) {
 	return !!viewElement.getCustomProperty( 'table' ) && isWidget( viewElement );
 }
 
