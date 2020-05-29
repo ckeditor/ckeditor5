@@ -20,7 +20,7 @@ import {
 	lengthFieldValidator,
 	lineWidthFieldValidator,
 	defaultColors
-} from '../ui/utils';
+} from '../utils/ui/table-properties';
 import {
 	getLocalizedColorOptions,
 	normalizeColorOptions

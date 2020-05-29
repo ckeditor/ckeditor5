@@ -22,7 +22,7 @@ import {
 	lineWidthFieldValidator,
 	colorFieldValidator,
 	fillToolbar
-} from '../../src/ui/utils';
+} from '../../src/utils/ui/table-properties';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { centeredBalloonPositionForLongWidgets } from '@ckeditor/ckeditor5-widget/src/utils';

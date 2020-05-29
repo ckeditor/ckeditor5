@@ -4,13 +4,13 @@
  */
 
 /**
- * @module table/ui/utils
+ * @module table/utils/ui/table-properties
  */
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
-import ColorInputView from './colorinputview';
+import ColorInputView from '../../ui/colorinputview';
 import { isColor, isLength, isPercentage } from '@ckeditor/ckeditor5-engine/src/view/styles/utils';
 
 const isEmpty = val => val === '';
