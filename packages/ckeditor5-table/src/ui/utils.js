@@ -13,7 +13,7 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import ColorInputView from './colorinputview';
 import { isColor, isLength, isPercentage } from '@ckeditor/ckeditor5-engine/src/view/styles/utils';
-import { getTableWidgetAncestor } from '../utils';
+import { getTableWidgetAncestor } from '../utils/utils';
 import { findAncestor } from '../commands/utils';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { centeredBalloonPositionForLongWidgets } from '@ckeditor/ckeditor5-widget/src/utils';

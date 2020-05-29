@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
 import { isHeadingColumnCell, findAncestor } from './utils';
-import { getTableCellsContainingSelection } from '../utils';
+import { getTableCellsContainingSelection } from '../utils/utils';
 
 /**
  * The merge cell command.

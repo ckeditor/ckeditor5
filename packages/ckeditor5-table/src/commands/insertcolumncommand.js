@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { findAncestor } from './utils';
-import { getColumnIndexes, getSelectionAffectedTableCells } from '../utils';
+import { getColumnIndexes, getSelectionAffectedTableCells } from '../utils/utils';
 
 /**
  * The insert column command.

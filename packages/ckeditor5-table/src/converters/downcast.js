@@ -9,7 +9,7 @@
 
 import TableWalker from './../tablewalker';
 import { toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
-import { toTableWidget } from '../utils';
+import { toTableWidget } from '../utils/utils';
 
 /**
  * Model table element to view table element conversion helper.

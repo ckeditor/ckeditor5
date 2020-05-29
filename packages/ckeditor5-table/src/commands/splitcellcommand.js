@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { getSelectionAffectedTableCells } from '../utils';
+import { getSelectionAffectedTableCells } from '../utils/utils';
 
 /**
  * The split cell command.

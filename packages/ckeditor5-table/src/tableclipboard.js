@@ -20,7 +20,7 @@ import {
 	isSelectionRectangular,
 	splitHorizontally,
 	splitVertically
-} from './utils';
+} from './utils/utils';
 import { findAncestor } from './commands/utils';
 import { cropTableToDimensions, trimTableCellIfNeeded } from './tableselection/croptable';
 import TableUtils from './tableutils';

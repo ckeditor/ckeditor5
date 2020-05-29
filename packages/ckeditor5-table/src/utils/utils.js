@@ -8,8 +8,8 @@
  */
 
 import { isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import { createEmptyTableCell, findAncestor, updateNumericAttribute } from './commands/utils';
-import TableWalker from './tablewalker';
+import { createEmptyTableCell, findAncestor, updateNumericAttribute } from '../commands/utils';
+import TableWalker from '../tablewalker';
 
 /**
  * Converts a given {@link module:engine/view/element~Element} to a table widget:

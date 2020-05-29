@@ -10,7 +10,7 @@
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
 import { findAncestor } from './commands/utils';
-import { getSelectedTableCells, getTableCellsContainingSelection } from './utils';
+import { getSelectedTableCells, getTableCellsContainingSelection } from './utils/utils';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
