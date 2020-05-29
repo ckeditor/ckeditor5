@@ -125,13 +125,13 @@ export function getColumnIndexes( tableCells ) {
  *
  * In a table below:
  *
- *   ┌───┬───┬───┬───┐
- *   │ a │ b │ c │ d │
- *   ├───┴───┼───┤   │
- *   │ e     │ f │   │
- *   │       ├───┼───┤
- *   │       │ g │ h │
- *   └───────┴───┴───┘
+ *		┌───┬───┬───┬───┐
+ *		│ a │ b │ c │ d │
+ *		├───┴───┼───┤   │
+ *		│ e     │ f │   │
+ *		│       ├───┼───┤
+ *		│       │ g │ h │
+ *		└───────┴───┴───┘
  *
  * Valid selections are these which create a solid rectangle (without gaps), such as:
  *   - a, b (two horizontal cells)
@@ -235,15 +235,15 @@ function getBiggestRectangleArea( rows, columns ) {
 // For instance, in the table below valid selections consist of cells with the same letter only.
 // So, a-a (same heading row and column) or d-d (body cells) are valid while c-d or a-b are not.
 //
-//    header columns
-//     ↓   ↓
-//   ┌───┬───┬───┬───┐
-//   │ a │ a │ b │ b │  ← header row
-//   ├───┼───┼───┼───┤
-//   │ c │ c │ d │ d │
-//   ├───┼───┼───┼───┤
-//   │ c │ c │ d │ d │
-//   └───┴───┴───┴───┘
+//		 header columns
+//		  ↓   ↓
+//		┌───┬───┬───┬───┐
+//		│ a │ a │ b │ b │  ← header row
+//		├───┼───┼───┼───┤
+//		│ c │ c │ d │ d │
+//		├───┼───┼───┼───┤
+//		│ c │ c │ d │ d │
+//		└───┴───┴───┴───┘
 function areCellInTheSameTableSection( tableCells ) {
 	const table = findAncestor( 'table', tableCells[ 0 ] );
 

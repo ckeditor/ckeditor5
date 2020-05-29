@@ -106,17 +106,17 @@ export function cropTableToDimensions( sourceTable, cropDimensions, writer, tabl
  *
  * In a table below, passing `overlapRow = 3`
  *
- *       ┌───┬───┬───┬───┬───┐
- *    0  │ a │ b │ c │ d │ e │
- *       │   ├───┼───┼───┼───┤
- *    1  │   │ f │ g │ h │ i │
- *       ├───┤   ├───┼───┤   │
- *    2  │ j │   │ k │ l │   │
- *       │   │   │   ├───┼───┤
- *    3  │   │   │   │ m │ n │  <- overlap row to check
- *       ├───┼───┤   │   ├───│
- *    4  │ o │ p │   │   │ q │
- *       └───┴───┴───┴───┴───┘
+ *		   ┌───┬───┬───┬───┬───┐
+ *		0  │ a │ b │ c │ d │ e │
+ *		   │   ├───┼───┼───┼───┤
+ *		1  │   │ f │ g │ h │ i │
+ *		   ├───┤   ├───┼───┤   │
+ *		2  │ j │   │ k │ l │   │
+ *		   │   │   │   ├───┼───┤
+ *		3  │   │   │   │ m │ n │  <- overlap row to check
+ *		   ├───┼───┤   │   ├───│
+ *		4  │ o │ p │   │   │ q │
+ *		   └───┴───┴───┴───┴───┘
  *
  * will return slot info for cells: "j", "f", "k".
  *
@@ -198,20 +198,20 @@ export function splitHorizontally( tableCell, splitRow, writer ) {
  *
  * In a table below, passing `overlapColumn = 3`
  *
- *      0   1   2   3   4
- *    ┌───────┬───────┬───┐
- *    │ a     │ b     │ c │
- *    │───┬───┴───────┼───┤
- *    │ d │ e         │ f │
- *    ├───┼───┬───────┴───┤
- *    │ g │ h │ i         │
- *    ├───┼───┼───┬───────┤
- *    │ j │ k │ l │ m     │
- *    ├───┼───┴───┼───┬───┤
- *    │ n │ o     │ p │ q │
- *    └───┴───────┴───┴───┘
- *                  ^
- *                  Overlap column to check
+ *		  0   1   2   3   4
+ *		┌───────┬───────┬───┐
+ *		│ a     │ b     │ c │
+ *		│───┬───┴───────┼───┤
+ *		│ d │ e         │ f │
+ *		├───┼───┬───────┴───┤
+ *		│ g │ h │ i         │
+ *		├───┼───┼───┬───────┤
+ *		│ j │ k │ l │ m     │
+ *		├───┼───┴───┼───┬───┤
+ *		│ n │ o     │ p │ q │
+ *		└───┴───────┴───┴───┘
+ *		              ^
+ *		              Overlap column to check
  *
  * will return slot info for cells: "b", "e", "i".
  *
