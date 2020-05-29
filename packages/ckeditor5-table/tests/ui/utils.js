@@ -14,8 +14,6 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import {
-	repositionContextualBalloon,
-	getBalloonCellPositionData,
 	getBorderStyleDefinitions,
 	getBorderStyleLabels,
 	getLocalizedColorErrorText,
@@ -31,6 +29,7 @@ import { centeredBalloonPositionForLongWidgets } from '@ckeditor/ckeditor5-widge
 import { modelTable } from '../_utils/utils';
 import { getTableCellsContainingSelection } from '../../src/utils/selection';
 import { findAncestor } from '../../src/utils/common';
+import { getBalloonCellPositionData, repositionContextualBalloon } from '../../src/utils/ui/contextualballoon';
 
 describe( 'UI Utils', () => {
 	let editor, editingView, balloon, editorElement;

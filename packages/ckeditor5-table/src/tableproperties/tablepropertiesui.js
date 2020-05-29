@@ -15,12 +15,10 @@ import TablePropertiesView from './ui/tablepropertiesview';
 import tableProperties from './../../theme/icons/table-properties.svg';
 import {
 	colorFieldValidator,
-	getBalloonTablePositionData,
 	getLocalizedColorErrorText,
 	getLocalizedLengthErrorText,
 	lengthFieldValidator,
 	lineWidthFieldValidator,
-	repositionContextualBalloon,
 	defaultColors
 } from '../ui/utils';
 import {
@@ -29,6 +27,7 @@ import {
 } from '@ckeditor/ckeditor5-ui/src/colorgrid/utils';
 import { debounce } from 'lodash-es';
 import { getTableWidgetAncestor } from '../utils/ui/widget';
+import { getBalloonTablePositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
