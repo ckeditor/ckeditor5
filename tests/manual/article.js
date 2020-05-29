@@ -24,8 +24,8 @@ class RawHtml extends Plugin {
 			isObject: true
 		} );
 
-		// We need to use an event-based converter to be able to consume the content
-		// of that element (so nothing tries to convert it).
+		// We need to use an event-based converter to be able to stop conversion of this element
+		// children. That's not possible by using `elementToElement()`.
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
 			dispatcher.on( 'element:raw-html', ( evt, data, conversionApi ) => {
 				const writer = conversionApi.writer;
