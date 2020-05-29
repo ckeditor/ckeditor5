@@ -68,7 +68,7 @@ describe( 'TableWalker', () => {
 		] );
 	} );
 
-	it( 'should properly output column indexes of a table that has colspans', () => {
+	it( 'should properly output column indexes of a table that has col-spans', () => {
 		// +----+----+----+
 		// | 00      | 13 |
 		// +----+----+----+
@@ -80,7 +80,7 @@ describe( 'TableWalker', () => {
 		] );
 	} );
 
-	it( 'should properly output column indexes of a table that has rowspans', () => {
+	it( 'should properly output column indexes of a table that has row-spans', () => {
 		// +----+----+----+
 		// | 00      | 02 |
 		// +         +----+
@@ -106,7 +106,7 @@ describe( 'TableWalker', () => {
 		] );
 	} );
 
-	it( 'should properly output column indexes of a table that has multiple rowspans', () => {
+	it( 'should properly output column indexes of a table that has multiple row-spans', () => {
 		// +----+----+----+
 		// | 11 | 12 | 13 |
 		// +    +----+----+
@@ -157,6 +157,31 @@ describe( 'TableWalker', () => {
 				{ row: 3, column: 2, index: 2, data: '43', isAnchor: true }
 			], { startRow: 2 } );
 		} );
+
+		it( 'should start iterating from given row, includeAllSlots = true', () => {
+			// +----+----+----+
+			// | 11      | 13 |
+			// +         +----+
+			// |         | 23 |
+			// +         +----+
+			// |         | 33 |
+			// +----+----+----+
+			// | 41 | 42 | 43 |
+			// +----+----+----+
+			testWalker( [
+				[ { colspan: 2, rowspan: 3, contents: '11' }, '13' ],
+				[ '23' ],
+				[ '33' ],
+				[ '41', '42', '43' ]
+			], [
+				{ row: 2, column: 0, index: 0, data: '11', width: 2, height: 3, anchorRow: 0 },
+				{ row: 2, column: 1, index: 0, data: '11', width: 2, height: 3, anchorRow: 0, anchorColumn: 0 },
+				{ row: 2, column: 2, index: 0, data: '33', isAnchor: true },
+				{ row: 3, column: 0, index: 0, data: '41', isAnchor: true },
+				{ row: 3, column: 1, index: 1, data: '42', isAnchor: true },
+				{ row: 3, column: 2, index: 2, data: '43', isAnchor: true }
+			], { startRow: 2, includeAllSlots: true } );
+		} );
 	} );
 
 	describe( 'option.endRow', () => {
@@ -202,6 +227,75 @@ describe( 'TableWalker', () => {
 				{ row: 0, column: 0, index: 0, data: '11', isAnchor: true, width: 2, height: 3 },
 				{ row: 0, column: 2, index: 1, data: '13', isAnchor: true }
 			], { endRow: 0 } );
+		} );
+
+		it( 'should stop iterating after given row, includeAllSlots = true', () => {
+			// +----+----+----+
+			// | 11      | 13 |
+			// +         +----+
+			// |         | 23 |
+			// +         +----+
+			// |         | 33 |
+			// +----+----+----+
+			// | 41 | 42 | 43 |
+			// +----+----+----+
+			testWalker( [
+				[ { colspan: 2, rowspan: 3, contents: '11' }, '13' ],
+				[ '23' ],
+				[ '33' ],
+				[ '41', '42', '43' ]
+			], [
+				{ row: 0, column: 0, index: 0, data: '11', width: 2, height: 3, isAnchor: true },
+				{ row: 0, column: 1, index: 0, data: '11', width: 2, height: 3, anchorColumn: 0 },
+				{ row: 0, column: 2, index: 1, data: '13', isAnchor: true },
+				{ row: 1, column: 0, index: 0, data: '11', width: 2, height: 3, anchorRow: 0 },
+				{ row: 1, column: 1, index: 0, data: '11', width: 2, height: 3, anchorRow: 0, anchorColumn: 0 },
+				{ row: 1, column: 2, index: 0, data: '23', isAnchor: true }
+			], { endRow: 1, includeAllSlots: true } );
+		} );
+	} );
+
+	describe( 'options.row', () => {
+		it( 'should iterate given row', () => {
+			// +----+----+----+
+			// | 00      | 02 |
+			// +         +----+
+			// |         | 12 |
+			// +         +----+
+			// |         | 22 |
+			// +----+----+----+
+			// | 30 | 31 | 32 |
+			// +----+----+----+
+			testWalker( [
+				[ { colspan: 2, rowspan: 3, contents: '00' }, '02' ],
+				[ '12' ],
+				[ '22' ],
+				[ '30', '31', '32' ]
+			], [
+				{ row: 1, column: 2, index: 0, data: '12', isAnchor: true }
+			], { row: 1 } );
+		} );
+
+		it( 'should iterate given row, includeAllSlots = true', () => {
+			// +----+----+----+
+			// | 00      | 02 |
+			// +         +----+
+			// |         | 12 |
+			// +         +----+
+			// |         | 22 |
+			// +----+----+----+
+			// | 30 | 31 | 32 |
+			// +----+----+----+
+			testWalker( [
+				[ { colspan: 2, rowspan: 3, contents: '00' }, '02' ],
+				[ '12' ],
+				[ '22' ],
+				[ '30', '31', '32' ]
+			], [
+				{ row: 1, column: 0, index: 0, data: '00', width: 2, height: 3, anchorRow: 0 },
+				{ row: 1, column: 1, index: 0, data: '00', width: 2, height: 3, anchorRow: 0, anchorColumn: 0 },
+				{ row: 1, column: 2, index: 0, data: '12', isAnchor: true }
+			], { row: 1, includeAllSlots: true } );
 		} );
 	} );
 
@@ -309,6 +403,51 @@ describe( 'TableWalker', () => {
 		} );
 	} );
 
+	describe( 'options.column', () => {
+		it( 'should return the slots from given column', () => {
+			// +----+----+----+
+			// | 00      | 02 |
+			// +         +----+
+			// |         | 12 |
+			// +         +----+
+			// |         | 22 |
+			// +----+----+----+
+			// | 30 | 31 | 32 |
+			// +----+----+----+
+			testWalker( [
+				[ { colspan: 2, rowspan: 3, contents: '00' }, '02' ],
+				[ '12' ],
+				[ '22' ],
+				[ '30', '31', '32' ]
+			], [
+				{ row: 3, column: 1, index: 1, data: '31', isAnchor: true }
+			], { column: 1 } );
+		} );
+
+		it( 'should return the slots from given column, includeAllSlots = true', () => {
+			// +----+----+----+
+			// | 00      | 02 |
+			// +         +----+
+			// |         | 12 |
+			// +         +----+
+			// |         | 22 |
+			// +----+----+----+
+			// | 30 | 31 | 32 |
+			// +----+----+----+
+			testWalker( [
+				[ { colspan: 2, rowspan: 3, contents: '00' }, '02' ],
+				[ '12' ],
+				[ '22' ],
+				[ '30', '31', '32' ]
+			], [
+				{ row: 0, column: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0 },
+				{ row: 1, column: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0, anchorRow: 0 },
+				{ row: 2, column: 1, index: 0, data: '00', width: 2, height: 3, anchorColumn: 0, anchorRow: 0 },
+				{ row: 3, column: 1, index: 1, data: '31', isAnchor: true }
+			], { column: 1, includeAllSlots: true } );
+		} );
+	} );
+
 	describe( 'option.includeAllSlots', () => {
 		it( 'should output spanned cells at the end of a table', () => {
 			// +----+----+
@@ -400,7 +539,7 @@ describe( 'TableWalker', () => {
 			], { includeAllSlots: true, startRow: 1, endRow: 2 } );
 		} );
 
-		it( 'should output rowspanned cells at the end of a table row with startRow & endRow options', () => {
+		it( 'should output row-spanned cells at the end of a table row with startRow & endRow options', () => {
 			// +----+----+
 			// | 00 | 01 |
 			// +----+    +
