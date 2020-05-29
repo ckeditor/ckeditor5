@@ -205,7 +205,7 @@ export default class TableClipboard extends Plugin {
 				endColumn: Math.min( selectionWidth - 1, pasteWidth - 1 )
 			};
 
-			pastedTable = cropTableToDimensions( pastedTable, cropDimensions, writer, tableUtils );
+			pastedTable = cropTableToDimensions( pastedTable, cropDimensions, writer );
 
 			const pastedDimensions = {
 				width: pasteWidth,
@@ -250,14 +250,16 @@ function replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selected
 	const selectedTableMap = [ ...new TableWalker( selectedTable, {
 		startRow: firstRowOfSelection,
 		endRow: lastRowOfSelection,
+		startColumn: firstColumnOfSelection,
+		endColumn: lastColumnOfSelection,
 		includeAllSlots: true
 	} ) ];
 
 	// Selection must be set to pasted cells (some might be removed or new created).
 	const cellsToSelect = [];
 
-	// Store previous cell in order to insert a new table cells after it (if required).
-	let previousCellInRow;
+	// Store next cell insert position.
+	let insertPosition;
 
 	// Content table replace cells algorithm iterates over a selected table fragment and:
 	//
@@ -265,19 +267,12 @@ function replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selected
 	// - Inserts cell from a pasted table for a matched slots.
 	//
 	// This ensures proper table geometry after the paste
-	for ( const { row, column, cell, isAnchor } of selectedTableMap ) {
-		if ( column === 0 ) {
-			previousCellInRow = null;
-		}
+	for ( const tableSlot of selectedTableMap ) {
+		const { row, column, cell, isAnchor } = tableSlot;
 
-		// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
-		if ( column < firstColumnOfSelection || column > lastColumnOfSelection ) {
-			// Only update the previousCellInRow for non-spanned slots.
-			if ( isAnchor ) {
-				previousCellInRow = cell;
-			}
-
-			continue;
+		// Save the insert position for current row start.
+		if ( column === firstColumnOfSelection ) {
+			insertPosition = tableSlot.getPositionBefore();
 		}
 
 		// If the slot is occupied by a cell in a selected table - remove it.
@@ -305,17 +300,10 @@ function replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selected
 		// Trim the cell if it's row/col-spans would exceed selection area.
 		trimTableCellIfNeeded( cellToInsert, row, column, lastRowOfSelection, lastColumnOfSelection, writer );
 
-		let insertPosition;
-
-		if ( !previousCellInRow ) {
-			insertPosition = writer.createPositionAt( selectedTable.getChild( row ), 0 );
-		} else {
-			insertPosition = writer.createPositionAfter( previousCellInRow );
-		}
-
 		writer.insert( cellToInsert, insertPosition );
 		cellsToSelect.push( cellToInsert );
-		previousCellInRow = cellToInsert;
+
+		insertPosition = writer.createPositionAfter( cellToInsert );
 	}
 
 	writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
@@ -511,14 +499,11 @@ function isAffectedBySelection( index, span, limit ) {
 //  3 |   |   |   |   |
 //    +---+---+---+---+
 function adjustLastRowIndex( table, rowIndexes, columnIndexes ) {
-	const tableIterator = new TableWalker( table, {
+	const lastRowMap = Array.from( new TableWalker( table, {
+		startColumn: columnIndexes.first,
+		endColumn: columnIndexes.last,
 		row: rowIndexes.last
-	} );
-
-	const lastRowMap = Array.from( tableIterator ).filter( ( { column } ) => {
-		// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
-		return columnIndexes.first <= column && column <= columnIndexes.last;
-	} );
+	} ) );
 
 	const everyCellHasSingleRowspan = lastRowMap.every( ( { cellHeight } ) => cellHeight === 1 );
 

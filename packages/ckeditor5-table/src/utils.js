@@ -322,16 +322,15 @@ export function splitHorizontally( tableCell, splitRow, writer ) {
 
 	let columnIndex;
 
-	for ( const { row, column, cell, cellIndex } of tableMap ) {
+	for ( const tableSlot of tableMap ) {
+		const { row, column, cell } = tableSlot;
+
 		if ( cell === tableCell && columnIndex === undefined ) {
 			columnIndex = column;
 		}
 
 		if ( columnIndex !== undefined && columnIndex === column && row === endRow ) {
-			const tableRow = table.getChild( row );
-			const tableCellPosition = writer.createPositionAt( tableRow, cellIndex );
-
-			createEmptyTableCell( writer, tableCellPosition, newCellAttributes );
+			createEmptyTableCell( writer, tableSlot.getPositionBefore(), newCellAttributes );
 		}
 	}
 

@@ -109,7 +109,7 @@ export default class TableSelection extends Plugin {
 				endColumn
 			};
 
-			const table = cropTableToDimensions( sourceTable, cropDimensions, writer, this.editor.plugins.get( 'TableUtils' ) );
+			const table = cropTableToDimensions( sourceTable, cropDimensions, writer );
 
 			writer.insert( table, documentFragment, 0 );
 

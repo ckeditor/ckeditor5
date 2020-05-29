@@ -31,22 +31,28 @@ describe( 'TableWalker', () => {
 		setData( model, modelTable( tableData ) );
 
 		const walker = new TableWalker( root.getChild( 0 ), options );
+
 		if ( skip !== undefined ) {
 			walker.skipRow( skip );
 		}
+
 		const result = [ ...walker ];
 
-		const formattedResult = result.map( ( { cell, row, column, isAnchor, cellWidth, cellHeight, cellIndex, ...anchor } ) => ( {
-			row,
-			column,
-			data: cell && cell.getChild( 0 ).getChild( 0 ).data,
-			index: cellIndex,
-			...( anchor.cellAnchorRow != row ? { anchorRow: anchor.cellAnchorRow } : null ),
-			...( anchor.cellAnchorColumn != column ? { anchorColumn: anchor.cellAnchorColumn } : null ),
-			...( isAnchor ? { isAnchor } : null ),
-			...( cellWidth > 1 ? { width: cellWidth } : null ),
-			...( cellHeight > 1 ? { height: cellHeight } : null )
-		} ) );
+		const formattedResult = result.map( tableSlot => {
+			const { cell, row, column, isAnchor, cellWidth, cellHeight, cellAnchorRow, cellAnchorColumn } = tableSlot;
+
+			return {
+				row,
+				column,
+				data: cell && cell.getChild( 0 ).getChild( 0 ).data,
+				index: tableSlot.getPositionBefore().offset,
+				...( cellAnchorRow != row ? { anchorRow: cellAnchorRow } : null ),
+				...( cellAnchorColumn != column ? { anchorColumn: cellAnchorColumn } : null ),
+				...( isAnchor ? { isAnchor } : null ),
+				...( cellWidth > 1 ? { width: cellWidth } : null ),
+				...( cellHeight > 1 ? { height: cellHeight } : null )
+			};
+		} );
 
 		expect( formattedResult ).to.deep.equal( expected );
 	}

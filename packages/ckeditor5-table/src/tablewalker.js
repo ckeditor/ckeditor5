@@ -92,7 +92,7 @@ export default class TableWalker {
 		 *
 		 * @readonly
 		 * @member {module:engine/model/element~Element}
-		 * @private
+		 * @protected
 		 */
 		this._table = table;
 
@@ -154,7 +154,7 @@ export default class TableWalker {
 		 * The current row index.
 		 *
 		 * @member {Number}
-		 * @private
+		 * @protected
 		 */
 		this._row = 0;
 
@@ -162,7 +162,7 @@ export default class TableWalker {
 		 * The current column index.
 		 *
 		 * @member {Number}
-		 * @private
+		 * @protected
 		 */
 		this._column = 0;
 
@@ -171,7 +171,7 @@ export default class TableWalker {
 		 * this represents the index of the next table cell.
 		 *
 		 * @member {Number}
-		 * @private
+		 * @protected
 		 */
 		this._cellIndex = 0;
 
@@ -320,13 +320,7 @@ export default class TableWalker {
 	_formatOutValue( cell, anchorRow = this._row, anchorColumn = this._column ) {
 		return {
 			done: false,
-			value: new TableSlot( cell, {
-				row: this._row,
-				column: this._column,
-				anchorRow,
-				anchorColumn,
-				cellIndex: this._cellIndex
-			} )
+			value: new TableSlot( this, cell, anchorRow, anchorColumn )
 		};
 	}
 
@@ -414,16 +408,13 @@ class TableSlot {
 	/**
 	 * Creates an instance of the table walker value.
 	 *
-	 * @private
+	 * @protected
+	 * @param {module:table/tablewalker~TableWalker} tableWalker The table walker instance.
 	 * @param {module:engine/model/element~Element} cell The current table cell.
-	 * @param {Object} data
-	 * @param {Number} data.row The row index of a table slot.
-	 * @param {Number} data.column The column index of a table slot.
-	 * @param {Number} data.anchorRow The row index of a cell anchor slot.
-	 * @param {Number} data.anchorColumn The column index of a cell anchor slot.
-	 * @param {Number} data.cellIndex The index of the current cell in the parent row.
+	 * @param {Number} anchorRow The row index of a cell anchor slot.
+	 * @param {Number} anchorColumn The column index of a cell anchor slot.
 	 */
-	constructor( cell, data ) {
+	constructor( tableWalker, cell, anchorRow, anchorColumn ) {
 		/**
 		 * The current table cell.
 		 *
@@ -438,7 +429,7 @@ class TableSlot {
 		 * @readonly
 		 * @member {Number}
 		 */
-		this.row = data.row;
+		this.row = tableWalker._row;
 
 		/**
 		 * The column index of a table slot.
@@ -446,7 +437,7 @@ class TableSlot {
 		 * @readonly
 		 * @member {Number}
 		 */
-		this.column = data.column;
+		this.column = tableWalker._column;
 
 		/**
 		 * The row index of a cell anchor slot.
@@ -454,7 +445,7 @@ class TableSlot {
 		 * @readonly
 		 * @member {Number}
 		 */
-		this.cellAnchorRow = data.anchorRow;
+		this.cellAnchorRow = anchorRow;
 
 		/**
 		 * The column index of a cell anchor slot.
@@ -462,15 +453,25 @@ class TableSlot {
 		 * @readonly
 		 * @member {Number}
 		 */
-		this.cellAnchorColumn = data.anchorColumn;
+		this.cellAnchorColumn = anchorColumn;
 
 		/**
 		 * The index of the current cell in the parent row.
 		 *
 		 * @readonly
 		 * @member {Number}
+		 * @private
 		 */
-		this.cellIndex = data.cellIndex;
+		this._cellIndex = tableWalker._cellIndex;
+
+		/**
+		 * The table element.
+		 *
+		 * @readonly
+		 * @member {module:engine/model/element~Element}
+		 * @private
+		 */
+		this._table = tableWalker._table;
 	}
 
 	/**
@@ -503,7 +504,19 @@ class TableSlot {
 		return parseInt( this.cell.getAttribute( 'rowspan' ) || 1 );
 	}
 
+	/**
+	 * Returns the {@link module:engine/model/position~Position} before the table slot.
+	 *
+	 * @returns {module:engine/model/position~Position}
+	 */
+	getPositionBefore() {
+		const model = this._table.root.document.model;
+
+		return model.createPositionAt( this._table.getChild( this.row ), this._cellIndex );
+	}
+
 	// @if CK_DEBUG // get isSpanned() { throw new CKEditorError( 'tablewalker-improper-api-usage', this ); }
 	// @if CK_DEBUG // get colspan() { throw new CKEditorError( 'tablewalker-improper-api-usage', this ); }
 	// @if CK_DEBUG // get rowspan() { throw new CKEditorError( 'tablewalker-improper-api-usage', this ); }
+	// @if CK_DEBUG // get cellIndex() { throw new CKEditorError( 'tablewalker-improper-api-usage', this ); }
 }

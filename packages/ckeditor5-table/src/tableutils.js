@@ -246,35 +246,29 @@ export default class TableUtils extends Plugin {
 
 			const tableWalker = new TableWalker( table, { column: insertAt, includeAllSlots: true } );
 
-			for ( const { row, cell, cellIndex } of tableWalker ) {
+			for ( const tableSlot of tableWalker ) {
+				const { row, cell, cellAnchorColumn, cellAnchorRow, cellWidth, cellHeight } = tableSlot;
+
 				// When iterating over column the table walker outputs either:
 				// - cells at given column index (cell "e" from method docs),
 				// - spanned columns (spanned cell from row between cells "g" and "h" - spanned by "e", only if `includeAllSlots: true`),
 				// - or a cell from the same row which spans over this column (cell "a").
 
-				const rowspan = parseInt( cell.getAttribute( 'rowspan' ) || 1 );
-				const colspan = parseInt( cell.getAttribute( 'colspan' ) || 1 );
-
-				if ( cellIndex !== insertAt && colspan > 1 ) {
-					// If column is different than `insertAt`, it is a cell that spans over an inserted column (cell "a" & "i").
+				if ( cellAnchorColumn < insertAt ) {
+					// If cell is anchored in previous column, it is a cell that spans over an inserted column (cell "a" & "i").
 					// For such cells expand them by a number of columns inserted.
-					writer.setAttribute( 'colspan', colspan + columnsToInsert, cell );
+					writer.setAttribute( 'colspan', cellWidth + columnsToInsert, cell );
 
-					// The `includeAllSlots` option will output the "empty"/spanned column so skip this row already.
-					tableWalker.skipRow( row );
+					// This cell will overlap cells in rows below so skip them (because of `includeAllSlots` option) - (cell "a")
+					const lastCellRow = cellAnchorRow + cellHeight - 1;
 
-					// This cell will overlap cells in rows below so skip them also (because of `includeAllSlots` option) - (cell "a")
-					if ( rowspan > 1 ) {
-						for ( let i = row + 1; i < row + rowspan; i++ ) {
-							tableWalker.skipRow( i );
-						}
+					for ( let i = row; i <= lastCellRow; i++ ) {
+						tableWalker.skipRow( i );
 					}
 				} else {
-					// It's either cell at this column index or spanned cell by a rowspanned cell from row above.
+					// It's either cell at this column index or spanned cell by a row-spanned cell from row above.
 					// In table above it's cell "e" and a spanned position from row below (empty cell between cells "g" and "h")
-					const insertPosition = writer.createPositionAt( table.getChild( row ), cellIndex );
-
-					createCells( columnsToInsert, writer, insertPosition );
+					createCells( columnsToInsert, writer, tableSlot.getPositionBefore() );
 				}
 			}
 		} );
@@ -631,7 +625,9 @@ export default class TableUtils extends Plugin {
 					newCellsAttributes.colspan = colspan;
 				}
 
-				for ( const { column, row, cellIndex } of tableMap ) {
+				for ( const tableSlot of tableMap ) {
+					const { column, row } = tableSlot;
+
 					// As both newly created cells and the split cell might have rowspan,
 					// the insertion of new cells must go to appropriate rows:
 					//
@@ -643,9 +639,7 @@ export default class TableUtils extends Plugin {
 					const isInEvenlySplitRow = ( row + splitCellRow + updatedSpan ) % newCellsSpan === 0;
 
 					if ( isAfterSplitCell && isOnSameColumn && isInEvenlySplitRow ) {
-						const position = writer.createPositionAt( table.getChild( row ), cellIndex );
-
-						createCells( 1, writer, position, newCellsAttributes );
+						createCells( 1, writer, tableSlot.getPositionBefore(), newCellsAttributes );
 					}
 				}
 			}
