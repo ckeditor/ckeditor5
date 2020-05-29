@@ -7,8 +7,8 @@
  * @module table/utils/selection
  */
 
-import { findAncestor } from '../commands/utils';
 import TableWalker from '../tablewalker';
+import { findAncestor } from './common';
 
 /**
  * Returns all model table cells that are fully selected (from the outside)

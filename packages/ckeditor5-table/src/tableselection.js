@@ -13,11 +13,11 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
 import MouseEventsObserver from './tableselection/mouseeventsobserver';
-import { findAncestor } from './commands/utils';
 import { cropTableToDimensions } from './tableselection/croptable';
 
 import '../theme/tableselection.css';
 import { getColumnIndexes, getRowIndexes, getSelectedTableCells, getTableCellsContainingSelection } from './utils/selection';
+import { findAncestor } from './utils/common';
 
 /**
  * This plugin enables the advanced table cells, rows and columns selection.

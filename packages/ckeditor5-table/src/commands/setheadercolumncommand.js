@@ -9,8 +9,13 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor, isHeadingColumnCell, updateNumericAttribute } from './utils';
-import { getHorizontallyOverlappingCells, splitVertically } from '../utils/common';
+import {
+	findAncestor,
+	getHorizontallyOverlappingCells,
+	isHeadingColumnCell,
+	splitVertically,
+	updateNumericAttribute
+} from '../utils/common';
 import { getColumnIndexes, getSelectionAffectedTableCells } from '../utils/selection';
 
 /**

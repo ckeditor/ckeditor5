@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import TableWalker from './tablewalker';
-import { createEmptyTableCell, updateNumericAttribute } from './commands/utils';
+import { createEmptyTableCell, updateNumericAttribute } from './utils/common';
 
 /**
  * The table utilities plugin.

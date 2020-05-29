@@ -7,8 +7,8 @@
  * @module table/utils/ui/widget
  */
 
-import { findAncestor } from '../../commands/utils';
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { findAncestor } from '../common';
 
 /**
  * Returns a table widget editing view element if one is selected.

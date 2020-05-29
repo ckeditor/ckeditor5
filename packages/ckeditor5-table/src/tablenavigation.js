@@ -9,13 +9,13 @@
 
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
-import { findAncestor } from './commands/utils';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getSelectedTableCells, getTableCellsContainingSelection } from './utils/selection';
+import { findAncestor } from './utils/common';
 
 /**
  * This plugin enables keyboard navigation for tables.

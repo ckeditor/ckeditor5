@@ -7,7 +7,7 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import TableUtils from '../../src/tableutils';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
-import { findAncestor, isHeadingColumnCell } from '../../src/commands/utils';
+import { findAncestor, isHeadingColumnCell } from '../../src/utils/common';
 
 describe( 'commands utils', () => {
 	let editor, model, modelRoot, tableUtils;

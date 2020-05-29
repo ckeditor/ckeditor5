@@ -15,9 +15,8 @@ import {
 	getVerticallyOverlappingCells,
 	getHorizontallyOverlappingCells,
 	splitHorizontally,
-	splitVertically
+	splitVertically, findAncestor
 } from './utils/common';
-import { findAncestor } from './commands/utils';
 import { cropTableToDimensions, trimTableCellIfNeeded } from './tableselection/croptable';
 import TableUtils from './tableutils';
 import { getColumnIndexes, getRowIndexes, getSelectionAffectedTableCells, isSelectionRectangular } from './utils/selection';

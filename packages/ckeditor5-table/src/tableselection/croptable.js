@@ -7,8 +7,8 @@
  * @module table/tableselection/croptable
  */
 
-import { createEmptyTableCell, updateNumericAttribute } from '../commands/utils';
 import TableWalker from '../tablewalker';
+import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
 
 /**
  * Returns a cropped table according to given dimensions.
