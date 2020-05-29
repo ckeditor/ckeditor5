@@ -476,50 +476,6 @@ describe( 'TableWalker', () => {
 		} );
 	} );
 
-	it( 'should return column option value', () => {
-		setData( model, modelTable( [
-			[ 'a' ]
-		] ) );
-
-		const walker = new TableWalker( root.getChild( 0 ), { column: 7 } );
-
-		expect( walker.column ).to.equal( 7 );
-		expect( walker.startColumn ).to.equal( 7 );
-		expect( walker.endColumn ).to.equal( 7 );
-	} );
-
-	it( 'should throw error if column api used improperly', () => {
-		setData( model, modelTable( [
-			[ 'a' ]
-		] ) );
-
-		const walker = new TableWalker( root.getChild( 0 ), { startColumn: 1, endColumn: 2 } );
-
-		expect( () => walker.column ).to.throw( CKEditorError, 'improper-api-usage' );
-	} );
-
-	it( 'should return row option value', () => {
-		setData( model, modelTable( [
-			[ 'a' ]
-		] ) );
-
-		const walker = new TableWalker( root.getChild( 0 ), { row: 7 } );
-
-		expect( walker.row ).to.equal( 7 );
-		expect( walker.startRow ).to.equal( 7 );
-		expect( walker.endRow ).to.equal( 7 );
-	} );
-
-	it( 'should throw error if row api used improperly', () => {
-		setData( model, modelTable( [
-			[ 'a' ]
-		] ) );
-
-		const walker = new TableWalker( root.getChild( 0 ), { startRow: 1, endRow: 2 } );
-
-		expect( () => walker.row ).to.throw( CKEditorError, 'improper-api-usage' );
-	} );
-
 	it( 'should throw error if walker value old api used', () => {
 		setData( model, modelTable( [
 			[ 'a' ]
