@@ -12,11 +12,13 @@ import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'inlineAutoformatEditing', () => {
-	let editor, model, doc, plugin;
+	let editor, model, doc, plugin, formatSpy;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
+		formatSpy = testUtils.sinon.spy().named( 'formatCallback' );
+
 		return VirtualTestEditor
 			.create( {
 				plugins: [ Enter, Paragraph, Autoformat ]
@@ -68,7 +70,6 @@ describe( 'inlineAutoformatEditing', () => {
 
 	describe( 'callback', () => {
 		it( 'should stop when there are no format ranges returned from testCallback', () => {
-			const formatSpy = testUtils.sinon.spy();
 			const testStub = testUtils.sinon.stub().returns( {
 				format: [ [] ],
 				remove: []
@@ -85,7 +86,6 @@ describe( 'inlineAutoformatEditing', () => {
 		} );
 
 		it( 'should stop when there are no remove ranges returned from testCallback', () => {
-			const formatSpy = testUtils.sinon.spy();
 			const testStub = testUtils.sinon.stub().returns( {
 				format: [],
 				remove: [ [] ]
@@ -102,7 +102,6 @@ describe( 'inlineAutoformatEditing', () => {
 		} );
 
 		it( 'should stop early when there is no text', () => {
-			const formatSpy = testUtils.sinon.spy();
 			const testStub = testUtils.sinon.stub().returns( {
 				format: [],
 				remove: [ [] ]
@@ -118,9 +117,8 @@ describe( 'inlineAutoformatEditing', () => {
 			sinon.assert.notCalled( formatSpy );
 		} );
 
-		it( 'should not run callback when the pattern is matched and plugin is disabled', () => {
-			const callbackSpy = testUtils.sinon.spy().named( 'callback' );
-			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, callbackSpy );
+		it( 'should not run formatCallback when the pattern is matched and plugin is disabled', () => {
+			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, formatSpy );
 
 			plugin.isEnabled = false;
 
@@ -129,7 +127,7 @@ describe( 'inlineAutoformatEditing', () => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			sinon.assert.notCalled( callbackSpy );
+			sinon.assert.notCalled( formatSpy );
 		} );
 
 		it( 'should not autoformat if callback returned false', () => {
