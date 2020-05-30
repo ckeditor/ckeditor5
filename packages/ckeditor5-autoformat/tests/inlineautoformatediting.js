@@ -33,38 +33,38 @@ describe( 'inlineAutoformatEditing', () => {
 			} );
 	} );
 
-	describe( 'attribute', () => {
-		it( 'should stop early if there are less than 3 capture groups', () => {
-			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)\*/g, 'testAttribute' );
+	describe( 'regExp', () => {
+		it( 'should not call formatCallback if there are less than 3 capture groups', () => {
+			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)\*/g, formatSpy );
 
 			setData( model, '<paragraph>*foobar[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
+			sinon.assert.notCalled( formatSpy );
 		} );
 
-		it( 'should apply an attribute when the pattern is matched', () => {
-			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, 'testAttribute' );
+		it( 'should call formatCallback when the pattern is matched', () => {
+			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, formatSpy );
 
 			setData( model, '<paragraph>*foobar[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<paragraph><$text testAttribute="true">foobar</$text>[]</paragraph>' );
+			sinon.assert.calledOnce( formatSpy );
 		} );
 
-		it( 'should stop early if selection is not collapsed', () => {
-			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)\*/g, 'testAttribute' );
+		it( 'should not call formatCallback if selection is not collapsed', () => {
+			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)\*/g, formatSpy );
 
 			setData( model, '<paragraph>*foob[ar]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<paragraph>*foob*[ar]</paragraph>' );
+			sinon.assert.notCalled( formatSpy );
 		} );
 	} );
 
@@ -153,13 +153,14 @@ describe( 'inlineAutoformatEditing', () => {
 	} );
 
 	it( 'should ignore transparent batches', () => {
-		inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, 'testAttribute' );
+		inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, formatSpy );
 
 		setData( model, '<paragraph>*foobar[]</paragraph>' );
 		model.enqueueChange( 'transparent', writer => {
 			writer.insertText( '*', doc.selection.getFirstPosition() );
 		} );
 
+		sinon.assert.notCalled( formatSpy );
 		expect( getData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
 	} );
 } );

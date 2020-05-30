@@ -34,7 +34,7 @@
  *		// - The first to match the starting `**` delimiter.
  *		// - The second to match the text to format.
  *		// - The third to match the ending `**` delimiter.
- *		inlineAutoformatEditing( editor, plugin, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
+ *		inlineAutoformatEditing( editor, plugin, /(\*\*)([^\*]+?)(\*\*)$/g, formatCallback );
  *
  * When a function is provided instead of the regular expression, it will be executed with the text to match as a parameter.
  * The function should return proper "ranges" to delete and format.
@@ -49,13 +49,9 @@
  *			]
  *		}
  *
- * @param {Function|String} attributeOrCallback The name of attribute to apply on matching text or a callback for manual
- * formatting. If callback is passed it should return `false` if changes should not be applied (e.g. if a command is disabled).
+ * @param {Function} formatCallback A callback to apply actual formatting.
+ * It should return `false` if changes should not be applied (e.g. if a command is disabled).
  *
- *		// Use attribute name:
- *		inlineAutoformatEditing( editor, plugin, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
- *
- *		// Use formatting callback:
  *		inlineAutoformatEditing( editor, plugin, /(\*\*)([^\*]+?)(\*\*)$/g, ( writer, rangesToFormat ) => {
  *			const command = editor.commands.get( 'bold' );
  *
@@ -70,22 +66,14 @@
  *			}
  *		} );
  */
-export default function inlineAutoformatEditing( editor, plugin, testRegexpOrCallback, attributeOrCallback ) {
+export default function inlineAutoformatEditing( editor, plugin, testRegexpOrCallback, formatCallback ) {
 	let regExp;
-	let attributeKey;
 	let testCallback;
-	let formatCallback;
 
 	if ( testRegexpOrCallback instanceof RegExp ) {
 		regExp = testRegexpOrCallback;
 	} else {
 		testCallback = testRegexpOrCallback;
-	}
-
-	if ( typeof attributeOrCallback == 'string' ) {
-		attributeKey = attributeOrCallback;
-	} else {
-		formatCallback = attributeOrCallback;
 	}
 
 	// A test callback run on changed text.
@@ -131,19 +119,6 @@ export default function inlineAutoformatEditing( editor, plugin, testRegexpOrCal
 			remove,
 			format
 		};
-	} );
-
-	// A format callback run on matched text.
-	formatCallback = formatCallback || ( ( writer, rangesToFormat ) => {
-		const validRanges = editor.model.schema.getValidRanges( rangesToFormat, attributeKey );
-
-		for ( const range of validRanges ) {
-			writer.setAttribute( attributeKey, true, range );
-		}
-
-		// After applying attribute to the text, remove given attribute from the selection.
-		// This way user is able to type a text without attribute used by auto formatter.
-		writer.removeSelectionAttribute( attributeKey );
 	} );
 
 	editor.model.document.on( 'change:data', ( evt, batch ) => {
