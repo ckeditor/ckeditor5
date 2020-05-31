@@ -48,10 +48,11 @@ export default class PasteFromOffice extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const viewDocument = editor.editing.view.document;
 		const normalizers = [];
 
-		normalizers.push( new MSWordNormalizer() );
-		normalizers.push( new GoogleDocsNormalizer( editor.editing.view.document ) );
+		normalizers.push( new MSWordNormalizer( viewDocument ) );
+		normalizers.push( new GoogleDocsNormalizer( viewDocument ) );
 
 		editor.plugins.get( 'Clipboard' ).on(
 			'inputTransformation',

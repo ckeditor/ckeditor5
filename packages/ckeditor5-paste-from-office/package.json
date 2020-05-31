@@ -20,6 +20,7 @@
     "@ckeditor/ckeditor5-easy-image": "^19.0.1",
     "@ckeditor/ckeditor5-editor-classic": "^19.0.1",
     "@ckeditor/ckeditor5-enter": "^19.0.1",
+    "@ckeditor/ckeditor5-font": "^19.0.1",
     "@ckeditor/ckeditor5-heading": "^19.0.1",
     "@ckeditor/ckeditor5-image": "^19.0.1",
     "@ckeditor/ckeditor5-link": "^19.0.1",
