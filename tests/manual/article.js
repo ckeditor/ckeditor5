@@ -136,7 +136,73 @@ class RawHtml extends Plugin {
 
 			return editor.data.processor.toData( new UpcastWriter().createDocumentFragment( contentContainer.getChildren() ) );
 		}
+
+		// Setup content delete restrictions. Either as:
+
+		// a) Restricting what is allowed to be removed (using model.deleteContent() decorator).
+		this.listenTo( editor.model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
+
+		// b) Restoring removed items from the $graveyard (using model post-fixer).
+		// editor.model.document.registerPostFixer( writer => restoreRemovedRawHtml( writer, editor.model ) );
 	}
+}
+
+// Naive example of blocking `model.deleteContent()` if it contains
+function restrictDeleteContent() {
+	return ( evt, args ) => {
+		const [ selection ] = args;
+
+		for ( const { item } of selection.getFirstRange() ) {
+			// Prevent delete content if it contains rawHtml element.
+			if ( item.is( 'rawHtml' ) ) {
+				// Block the delete content.
+				evt.stop();
+
+				return;
+
+				// However if anything more than a `rawHtml` is selected you might want to set selection to a range
+				// that excludes that element (to remove part of content before or after it) and allow `model.deleteContent()
+				// operate on that modified selection.
+			}
+		}
+	};
+}
+
+// Restore a removed rawHtml.
+function restoreRemovedRawHtml( writer, model ) {
+	// Differ offers a simplified list of changes and is not optimize for this kind of operations.
+	// However we could extract pairs of removed RawHtml element in the graveyard and location from where it was removed.
+	const changes = model.document.differ.getChanges( { includeChangesInGraveyard: true } );
+
+	const removedRawHtmlElements = [];
+	const removePositions = [];
+
+	let wasFixed = false;
+
+	for ( const entry of changes ) {
+		// The "insert" to "$graveyard" hold information about element removed from "main" content.
+		if ( entry.name == 'rawHtml' && entry.type == 'insert' && entry.position.root.rootName == '$graveyard' ) {
+			removedRawHtmlElements.push( entry.position.nodeAfter );
+		}
+
+		// The "insert" to "$graveyard" hold information about element removed from "main" content.
+		if ( entry.name == 'rawHtml' && entry.type == 'remove' ) {
+			removePositions.push( entry.position );
+		}
+	}
+
+	if ( removedRawHtmlElements.length ) {
+		wasFixed = true;
+
+		for ( let i = 0; i < removedRawHtmlElements.length; i++ ) {
+			const removedRawHtmlElement = removedRawHtmlElements[ i ];
+			const removePosition = removePositions[ i ];
+
+			writer.move( writer.createRangeOn( removedRawHtmlElement ), removePosition );
+		}
+	}
+
+	return wasFixed;
 }
 
 ClassicEditor
