@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import AttributeCommand from '../attributecommand';
+import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
 
 const CODE = 'code';
 
@@ -49,6 +50,15 @@ export default class CodeEditing extends Plugin {
 					'word-wrap': 'break-word'
 				}
 			}
+		} );
+
+		// Enable two-step caret movement for `code` attribute.
+		bindTwoStepCaretToAttribute( {
+			view: editor.editing.view,
+			model: editor.model,
+			emitter: this,
+			attribute: CODE,
+			locale: editor.locale
 		} );
 
 		// Create code command.

@@ -11,6 +11,9 @@ import AttributeCommand from '../../src/attributecommand';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+
+/* global document */
 
 describe( 'CodeEditing', () => {
 	let editor, model;
@@ -98,6 +101,54 @@ describe( 'CodeEditing', () => {
 			setModelData( model, '<paragraph><$text code="true">foo</$text>bar</paragraph>' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><code>foo</code>bar</p>' );
+		} );
+	} );
+
+	// Let's check only the minimum to not duplicate `bindTwoStepCaretToAttribute()` tests.
+	describe( 'two-step caret movement', () => {
+		it( 'should be bound to the `code` attribute (LTR)', () => {
+			// Put selection before the link element.
+			setModelData( editor.model, '<paragraph>foo[]<$text code="true">b</$text>ar</paragraph>' );
+
+			// The selection's gravity is not overridden because selection landed here not because of `keydown`.
+			expect( model.document.selection ).to.have.property( 'isGravityOverridden', false );
+
+			// So let's simulate the `keydown` event.
+			editor.editing.view.document.fire( 'keydown', {
+				keyCode: keyCodes.arrowright,
+				preventDefault: () => {},
+				domTarget: document.body
+			} );
+
+			expect( model.document.selection ).to.have.property( 'isGravityOverridden', true );
+		} );
+
+		it( 'should be bound to th `code` attribute (RTL)', async () => {
+			const editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, CodeEditing ],
+				language: {
+					content: 'ar'
+				}
+			} );
+
+			model = editor.model;
+
+			// Put selection before the link element.
+			setModelData( model, '<paragraph>foo[]<$text code="true">b</$text>ar</paragraph>' );
+
+			// The selection's gravity is not overridden because selection landed here not because of `keydown`.
+			expect( model.document.selection ).to.have.property( 'isGravityOverridden', false );
+
+			// So let's simulate the `keydown` event.
+			editor.editing.view.document.fire( 'keydown', {
+				keyCode: keyCodes.arrowleft,
+				preventDefault: () => {},
+				domTarget: document.body
+			} );
+
+			expect( model.document.selection ).to.have.property( 'isGravityOverridden', true );
+
+			await editor.destroy();
 		} );
 	} );
 } );
