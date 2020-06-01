@@ -70,8 +70,9 @@ export default class TableWalker {
 	 *		'Cell at 1 x 4 : is anchored'
 	 *		'Cell at 1 x 5 : is anchored'
 	 *
-	 * **Note**: Option `row` excludes `startRow` and `endRow` (use `row` or `startRow` and `endRow` but never together).
-	 * Option `column` excludes `startColumn` and `endColumn` (use `column` or `startColumn` and `endColumn` but never together).
+	 * **Note**: Option `row` is a shortcut that sets both `startRow` and `endRow` to the same row.
+	 * (Use either `row` or `startRow` and `endRow` but never together). Similarly the `column` option sets both `startColumn`
+	 * and `endColumn` to the same column (Use either `column` or `startColumn` and `endColumn` but never together).
 	 *
 	 * @constructor
 	 * @param {module:engine/model/element~Element} table A table over which the walker iterates.
@@ -485,7 +486,7 @@ class TableSlot {
 	}
 
 	/**
-	 * The `colspan` attribute of a cell. If the model attribute is not present, it is set to `1`.
+	 * The widht of a cell defined by a `colspan` attribute. If the model attribute is not present, it is set to `1`.
 	 *
 	 * @readonly
 	 * @returns {Number}
@@ -495,7 +496,7 @@ class TableSlot {
 	}
 
 	/**
-	 * The `rowspan` attribute of a cell. If the model attribute is not present, it is set to `1`.
+	 * The height of a cell defined by a `rowspan` attribute. If the model attribute is not present, it is set to `1`.
 	 *
 	 * @readonly
 	 * @returns {Number}
