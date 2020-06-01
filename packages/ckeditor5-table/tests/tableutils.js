@@ -481,6 +481,13 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should skip row & column spanned cells', () => {
+			// +----+----+----+
+			// | 00      | 02 |
+			// +         +----+
+			// |         | 12 |
+			// +----+----+----+
+			// | 20 | 21 | 22 |
+			// +----+----+----+
 			setData( model, modelTable( [
 				[ { colspan: 2, rowspan: 2, contents: '00[]' }, '02' ],
 				[ '12' ],

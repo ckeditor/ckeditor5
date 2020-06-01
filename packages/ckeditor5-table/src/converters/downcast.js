@@ -54,8 +54,8 @@ export function downcastInsertTable( options = {} ) {
 		// Cache for created table rows.
 		const viewRows = new Map();
 
-		for ( const tableWalkerValue of tableWalker ) {
-			const { row, cell } = tableWalkerValue;
+		for ( const tableSlot of tableWalker ) {
+			const { row, cell } = tableSlot;
 
 			const tableSection = getOrCreateTableSection( getSectionName( row, tableAttributes ), tableElement, conversionApi );
 			const tableRow = table.getChild( row );
@@ -68,7 +68,7 @@ export function downcastInsertTable( options = {} ) {
 
 			const insertPosition = conversionApi.writer.createPositionAt( trElement, 'end' );
 
-			createViewTableCellElement( tableWalkerValue, tableAttributes, insertPosition, conversionApi, options );
+			createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, options );
 		}
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
@@ -100,7 +100,7 @@ export function downcastInsertRow( options = {} ) {
 
 		const row = table.getChildIndex( tableRow );
 
-		const tableWalker = new TableWalker( table, { startRow: row, endRow: row } );
+		const tableWalker = new TableWalker( table, { row } );
 
 		const tableAttributes = {
 			headingRows: table.getAttribute( 'headingRows' ) || 0,
@@ -110,18 +110,18 @@ export function downcastInsertRow( options = {} ) {
 		// Cache for created table rows.
 		const viewRows = new Map();
 
-		for ( const tableWalkerValue of tableWalker ) {
+		for ( const tableSlot of tableWalker ) {
 			const tableSection = getOrCreateTableSection( getSectionName( row, tableAttributes ), tableElement, conversionApi );
 
 			const trElement = viewRows.get( row ) || createTr( tableRow, row, tableSection, conversionApi );
 			viewRows.set( row, trElement );
 
 			// Consume table cell - it will be always consumed as we convert whole row at once.
-			conversionApi.consumable.consume( tableWalkerValue.cell, 'insert' );
+			conversionApi.consumable.consume( tableSlot.cell, 'insert' );
 
 			const insertPosition = conversionApi.writer.createPositionAt( trElement, 'end' );
 
-			createViewTableCellElement( tableWalkerValue, tableAttributes, insertPosition, conversionApi, options );
+			createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, options );
 		}
 	} );
 }
@@ -146,7 +146,7 @@ export function downcastInsertCell( options = {} ) {
 		const table = tableRow.parent;
 		const rowIndex = table.getChildIndex( tableRow );
 
-		const tableWalker = new TableWalker( table, { startRow: rowIndex, endRow: rowIndex } );
+		const tableWalker = new TableWalker( table, { row: rowIndex } );
 
 		const tableAttributes = {
 			headingRows: table.getAttribute( 'headingRows' ) || 0,
@@ -154,12 +154,12 @@ export function downcastInsertCell( options = {} ) {
 		};
 
 		// We need to iterate over a table in order to get proper row & column values from a walker
-		for ( const tableWalkerValue of tableWalker ) {
-			if ( tableWalkerValue.cell === tableCell ) {
+		for ( const tableSlot of tableWalker ) {
+			if ( tableSlot.cell === tableCell ) {
 				const trElement = conversionApi.mapper.toViewElement( tableRow );
 				const insertPosition = conversionApi.writer.createPositionAt( trElement, tableRow.getChildIndex( tableCell ) );
 
-				createViewTableCellElement( tableWalkerValue, tableAttributes, insertPosition, conversionApi, options );
+				createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, options );
 
 				// No need to iterate further.
 				return;
@@ -228,8 +228,8 @@ export function downcastTableHeadingRowsChange( options = {} ) {
 				headingColumns: table.getAttribute( 'headingColumns' ) || 0
 			};
 
-			for ( const tableWalkerValue of tableWalker ) {
-				renameViewTableCellIfRequired( tableWalkerValue, tableAttributes, conversionApi, asWidget );
+			for ( const tableSlot of tableWalker ) {
+				renameViewTableCellIfRequired( tableSlot, tableAttributes, conversionApi, asWidget );
 			}
 		}
 
@@ -270,13 +270,8 @@ export function downcastTableHeadingColumnsChange( options = {} ) {
 
 		const lastColumnToCheck = ( oldColumns > newColumns ? oldColumns : newColumns ) - 1;
 
-		for ( const tableWalkerValue of new TableWalker( table ) ) {
-			// Skip cells that were not in heading section before and after the change.
-			if ( tableWalkerValue.column > lastColumnToCheck ) {
-				continue;
-			}
-
-			renameViewTableCellIfRequired( tableWalkerValue, tableAttributes, conversionApi, asWidget );
+		for ( const tableSlot of new TableWalker( table, { endColumn: lastColumnToCheck } ) ) {
+			renameViewTableCellIfRequired( tableSlot, tableAttributes, conversionApi, asWidget );
 		}
 	} );
 }
@@ -348,15 +343,15 @@ function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, 
 
 // Renames a table cell element in the view according to its location in the table.
 //
-// @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue
+// @param {module:table/tablewalker~TableSlot} tableSlot
 // @param {{headingColumns, headingRows}} tableAttributes
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @param {Boolean} asWidget
-function renameViewTableCellIfRequired( tableWalkerValue, tableAttributes, conversionApi, asWidget ) {
-	const { cell } = tableWalkerValue;
+function renameViewTableCellIfRequired( tableSlot, tableAttributes, conversionApi, asWidget ) {
+	const { cell } = tableSlot;
 
 	// Check whether current columnIndex is overlapped by table cells from previous rows.
-	const desiredCellElementName = getCellElementName( tableWalkerValue, tableAttributes );
+	const desiredCellElementName = getCellElementName( tableSlot, tableAttributes );
 
 	const viewCell = conversionApi.mapper.toViewElement( cell );
 
@@ -369,18 +364,18 @@ function renameViewTableCellIfRequired( tableWalkerValue, tableAttributes, conve
 
 // Creates a table cell element in the view.
 //
-// @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue
+// @param {module:table/tablewalker~TableSlot} tableSlot
 // @param {module:engine/view/position~Position} insertPosition
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPosition, conversionApi, options ) {
+function createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, options ) {
 	const asWidget = options && options.asWidget;
-	const cellElementName = getCellElementName( tableWalkerValue, tableAttributes );
+	const cellElementName = getCellElementName( tableSlot, tableAttributes );
 
 	const cellElement = asWidget ?
 		toWidgetEditable( conversionApi.writer.createEditableElement( cellElementName ), conversionApi.writer ) :
 		conversionApi.writer.createContainerElement( cellElementName );
 
-	const tableCell = tableWalkerValue.cell;
+	const tableCell = tableSlot.cell;
 
 	const firstChild = tableCell.getChild( 0 );
 	const isSingleParagraph = tableCell.childCount === 1 && firstChild.name === 'paragraph';
@@ -436,11 +431,11 @@ function createTr( tableRow, rowIndex, tableSection, conversionApi ) {
 
 // Returns `th` for heading cells and `td` for other cells for the current table walker value.
 //
-// @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue
+// @param {module:table/tablewalker~TableSlot} tableSlot
 // @param {{headingColumns, headingRows}} tableAttributes
 // @returns {String}
-function getCellElementName( tableWalkerValue, tableAttributes ) {
-	const { row, column } = tableWalkerValue;
+function getCellElementName( tableSlot, tableAttributes ) {
+	const { row, column } = tableSlot;
 	const { headingColumns, headingRows } = tableAttributes;
 
 	// Column heading are all tableCells in the first `columnHeading` rows.

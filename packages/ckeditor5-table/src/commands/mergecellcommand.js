@@ -227,7 +227,7 @@ function getVerticalCell( tableCell, direction ) {
 	const currentCellData = tableMap.find( value => value.cell === tableCell );
 	const mergeColumn = currentCellData.column;
 
-	const cellToMergeData = tableMap.find( ( { row, rowspan, column } ) => {
+	const cellToMergeData = tableMap.find( ( { row, cellHeight, column } ) => {
 		if ( column !== mergeColumn ) {
 			return false;
 		}
@@ -237,7 +237,7 @@ function getVerticalCell( tableCell, direction ) {
 			return row === rowOfCellToMerge;
 		} else {
 			// If merging a cell above calculate if it spans to mergeRow.
-			return rowOfCellToMerge === row + rowspan;
+			return rowOfCellToMerge === row + cellHeight;
 		}
 	} );
 

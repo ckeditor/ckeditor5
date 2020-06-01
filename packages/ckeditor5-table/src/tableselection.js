@@ -109,7 +109,7 @@ export default class TableSelection extends Plugin {
 				endColumn
 			};
 
-			const table = cropTableToDimensions( sourceTable, cropDimensions, writer, this.editor.plugins.get( 'TableUtils' ) );
+			const table = cropTableToDimensions( sourceTable, cropDimensions, writer );
 
 			writer.insert( table, documentFragment, 0 );
 
@@ -479,10 +479,15 @@ export default class TableSelection extends Plugin {
 		// 2-dimensional array of the selected cells to ease flipping the order of cells for backward selections.
 		const selectionMap = new Array( endRow - startRow + 1 ).fill( null ).map( () => [] );
 
-		for ( const cellInfo of new TableWalker( findAncestor( 'table', anchorCell ), { startRow, endRow } ) ) {
-			if ( cellInfo.column >= startColumn && cellInfo.column <= endColumn ) {
-				selectionMap[ cellInfo.row - startRow ].push( cellInfo.cell );
-			}
+		const walkerOptions = {
+			startRow,
+			endRow,
+			startColumn,
+			endColumn
+		};
+
+		for ( const { row, cell } of new TableWalker( findAncestor( 'table', anchorCell ), walkerOptions ) ) {
+			selectionMap[ row - startRow ].push( cell );
 		}
 
 		const flipVertically = endLocation.row < startLocation.row;
