@@ -2035,7 +2035,7 @@ describe( 'Differ', () => {
 
 		for ( let i = 0; i < expected.length; i++ ) {
 			for ( const key in expected[ i ] ) {
-				if ( expected[ i ].hasOwnProperty( key ) ) {
+				if ( Object.prototype.hasOwnProperty.call( expected[ i ], key ) ) {
 					if ( key == 'position' || key == 'range' ) {
 						expect( changes[ i ][ key ].isEqual( expected[ i ][ key ] ), `item ${ i }, key "${ key }"` ).to.be.true;
 					} else {

@@ -42,6 +42,7 @@ export default class SelectColumnCommand extends Command {
 		const referenceCells = getSelectionAffectedTableCells( model.document.selection );
 		const firstCell = referenceCells[ 0 ];
 		const lastCell = referenceCells.pop();
+		const table = findAncestor( 'table', firstCell );
 
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const startLocation = tableUtils.getCellLocation( firstCell );
@@ -52,10 +53,8 @@ export default class SelectColumnCommand extends Command {
 
 		const rangesToSelect = [];
 
-		for ( const cellInfo of new TableWalker( findAncestor( 'table', firstCell ) ) ) {
-			if ( cellInfo.column >= startColumn && cellInfo.column <= endColumn ) {
-				rangesToSelect.push( model.createRangeOn( cellInfo.cell ) );
-			}
+		for ( const cellInfo of new TableWalker( table, { startColumn, endColumn } ) ) {
+			rangesToSelect.push( model.createRangeOn( cellInfo.cell ) );
 		}
 
 		model.change( writer => {

@@ -76,7 +76,7 @@ export function assertBinding( observable, stateBefore, data, stateAfter ) {
 	// Change attributes of bound observables.
 	for ( [ boundObservable, attrs ] of data ) {
 		for ( key in attrs ) {
-			if ( !boundObservable.hasOwnProperty( key ) ) {
+			if ( !Object.prototype.hasOwnProperty.call( boundObservable, key ) ) {
 				boundObservable.set( key, attrs[ key ] );
 			} else {
 				boundObservable[ key ] = attrs[ key ];

@@ -39,11 +39,10 @@ describe( 'transform', () => {
 
 	function expectOperation( op, params ) {
 		for ( const i in params ) {
-			if ( params.hasOwnProperty( i ) ) {
+			if ( Object.prototype.hasOwnProperty.call( params, i ) ) {
 				if ( i == 'type' ) {
 					expect( op, 'type' ).to.be.instanceof( params[ i ] );
-				}
-				else if ( params[ i ] instanceof Array ) {
+				} else if ( params[ i ] instanceof Array ) {
 					expect( op[ i ].length, i ).to.equal( params[ i ].length );
 
 					for ( let j = 0; j < params[ i ].length; j++ ) {

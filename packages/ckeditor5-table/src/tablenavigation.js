@@ -450,7 +450,7 @@ export default class TableNavigation extends Plugin {
 		const model = this.editor.model;
 
 		const table = findAncestor( 'table', focusCell );
-		const tableMap = [ ...new TableWalker( table, { includeSpanned: true } ) ];
+		const tableMap = [ ...new TableWalker( table, { includeAllSlots: true } ) ];
 		const { row: lastRow, column: lastColumn } = tableMap[ tableMap.length - 1 ];
 
 		const currentCellInfo = tableMap.find( ( { cell } ) => cell == focusCell );
@@ -466,11 +466,11 @@ export default class TableNavigation extends Plugin {
 				break;
 
 			case 'right':
-				column += currentCellInfo.colspan;
+				column += currentCellInfo.cellWidth;
 				break;
 
 			case 'down':
-				row += currentCellInfo.rowspan;
+				row += currentCellInfo.cellHeight;
 				break;
 		}
 
