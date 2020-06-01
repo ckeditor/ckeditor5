@@ -9,8 +9,8 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableUtils from '../tableutils';
-import { findAncestor, updateNumericAttribute } from './utils';
-import { isSelectionRectangular, getSelectedTableCells } from '../utils';
+import { getSelectedTableCells, isSelectionRectangular } from '../utils/selection';
+import { findAncestor, updateNumericAttribute } from '../utils/common';
 
 /**
  * The merge cells command.

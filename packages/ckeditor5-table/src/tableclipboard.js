@@ -12,18 +12,18 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
 import {
-	getColumnIndexes,
-	getVerticallyOverlappingCells,
-	getRowIndexes,
-	getSelectionAffectedTableCells,
-	getHorizontallyOverlappingCells,
-	isSelectionRectangular,
-	splitHorizontally,
-	splitVertically
-} from './utils';
-import { findAncestor } from './commands/utils';
-import { cropTableToDimensions, trimTableCellIfNeeded } from './tableselection/croptable';
+	findAncestor
+} from './utils/common';
 import TableUtils from './tableutils';
+import { getColumnIndexes, getRowIndexes, getSelectionAffectedTableCells, isSelectionRectangular } from './utils/selection';
+import {
+	cropTableToDimensions,
+	getHorizontallyOverlappingCells,
+	getVerticallyOverlappingCells,
+	splitHorizontally,
+	splitVertically,
+	trimTableCellIfNeeded
+} from './utils/structure';
 
 /**
  * This plugin adds support for copying/cutting/pasting fragments of tables.

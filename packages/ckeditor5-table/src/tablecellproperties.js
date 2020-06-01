@@ -69,7 +69,7 @@ export default class TableCellProperties extends Plugin {
  * allowing users to pick colors in a more convenient way.
  *
  * The default color palettes for the cell background and the cell border are the same
- * ({@link module:table/ui/utils~defaultColors check out their content}).
+ * ({@link module:table/utils/ui/table-properties~defaultColors check out their content}).
  *
  * Both color palette configurations must follow the
  * {@link module:table/table~TableColorConfig table color configuration format}.
