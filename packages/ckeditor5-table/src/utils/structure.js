@@ -113,7 +113,7 @@ export function cropTableToDimensions( sourceTable, cropDimensions, writer ) {
  * @param {module:engine/model/element~Element} table The table to check.
  * @param {Number} overlapRow The index of the row to check.
  * @param {Number} [startRow=0] A row to start analysis. Use it when it is known that the cells above that row will not overlap.
- * * @returns {Array.<module:table/tablewalker~TableSlot>}
+ * @returns {Array.<module:table/tablewalker~TableSlot>}
  */
 export function getVerticallyOverlappingCells( table, overlapRow, startRow = 0 ) {
 	const cells = [];
@@ -206,7 +206,7 @@ export function splitHorizontally( tableCell, splitRow, writer ) {
  *
  * @param {module:engine/model/element~Element} table The table to check.
  * @param {Number} overlapColumn The index of the column to check.
- * * @returns {Array.<module:table/tablewalker~TableSlot>}
+ * @returns {Array.<module:table/tablewalker~TableSlot>}
  */
 export function getHorizontallyOverlappingCells( table, overlapColumn ) {
 	const cellsToSplit = [];
