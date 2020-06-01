@@ -123,6 +123,13 @@ export default function deleteContent( model, selection, options = {} ) {
 }
 
 // Returns the live positions for the range adjusted to span only blocks selected from the user perspective.
+//
+// Examples:
+//     <heading1>[foo</heading1>
+//     <paragraph>bar</paragraph>
+//     <heading1>]abc</heading1>  <-- this block is not considered as selected
+//
+// This is the same behavior as in Selection#getSelectedBlocks() "special case".
 function getLivePositionsForSelectedBlocks( range ) {
 	const model = range.root.document.model;
 
@@ -135,10 +142,11 @@ function getLivePositionsForSelectedBlocks( range ) {
 		const endBlock = getParentBlock( endPosition );
 
 		if ( endBlock && endPosition.isTouching( model.createPositionAt( endBlock, 0 ) ) ) {
-			// Create forward selection from range.
+			// Create forward selection as a probe to find a valid position after excluding last block from the range.
 			const selection = model.createSelection( range );
 
-			// Modify the selection in backward direction to shrink it and remove first position of following block from it.
+			// Modify the forward selection in backward direction to shrink it and remove first position of following block from it.
+			// This is how modifySelection works and here we are making use of it.
 			model.modifySelection( selection, { direction: 'backward' } );
 
 			endPosition = selection.getLastPosition();
@@ -152,7 +160,7 @@ function getLivePositionsForSelectedBlocks( range ) {
 }
 
 // Finds the lowest element in position's ancestors which is a block.
-// It will search until first ancestor that is a limit element.
+// Returns null if a limit element is encountered before reaching a block element.
 function getParentBlock( position ) {
 	const element = position.parent;
 	const schema = element.root.document.model.schema;
@@ -180,10 +188,31 @@ function mergeBranches( writer, startPosition, endPosition ) {
 	}
 
 	// If the start element on the common ancestor level is empty, and the end element on the same level is not empty
-	// then remove former one and merging is done.
-	// <heading1>[</heading1><paragraph>]foo</paragraph> -> <paragraph>[]foo</paragraph>
-	// <blockQuote><heading1>[</heading1><paragraph>]foo</paragraph> -> <blockQuote><paragraph>[]foo</paragraph></blockQuote>
-	const [ startAncestor, endAncestor ] = getElementsNextToCommonAncestor( startPosition, endPosition );
+	// then merge those to the right element so that it's properties are preserved (name, attributes).
+	// Because of OT merging is used instead of removing elements.
+	//
+	// Merge left:
+	//     <heading1>foo[</heading1>    ->  <heading1>foo[]bar</heading1>
+	//     <paragraph>]bar</paragraph>  ->               --^
+	//
+	// Merge right:
+	//     <heading1>[</heading1>       ->
+	//     <paragraph>]bar</paragraph>  ->  <paragraph>[]bar</paragraph>
+	//
+	// Merge left:
+	//     <blockQuote>                     ->  <blockQuote>
+	//         <heading1>foo[</heading1>    ->      <heading1>foo[]bar</heading1>
+	//         <paragraph>]bar</paragraph>  ->                   --^
+	//     </blockQuote>                    ->  </blockQuote>
+	//
+	// Merge right:
+	//     <blockQuote>                     ->  <blockQuote>
+	//         <heading1>[</heading1>       ->
+	//         <paragraph>]bar</paragraph>  ->      <paragraph>[]bar</paragraph>
+	//     </blockQuote>                    ->  </blockQuote>
+
+	// Merging should not go deeper than common ancestor.
+	const [ startAncestor, endAncestor ] = getAncestorsJustBelowCommonAncestor( startPosition, endPosition );
 
 	if ( !model.hasContent( startAncestor ) && model.hasContent( endAncestor ) ) {
 		mergeBranchesRight( writer, startPosition, endPosition, startAncestor.parent );
@@ -192,6 +221,18 @@ function mergeBranches( writer, startPosition, endPosition ) {
 	}
 }
 
+// Merging blocks to the left (properties of the left block are preserved).
+// Simple example:
+//     <heading1>foo[</heading1>    ->  <heading1>foo[bar</heading1>]
+//     <paragraph>]bar</paragraph>  ->              --^
+//
+// Nested example:
+//     <blockQuote>                     ->  <blockQuote>
+//         <heading1>foo[</heading1>    ->      <heading1>foo[bar</heading1>
+//     </blockQuote>                    ->  </blockQuote>]    ^
+//     <blockBlock>                     ->                    |
+//         <paragraph>]bar</paragraph>  ->                 ---
+//     </blockBlock>                    ->
 function mergeBranchesLeft( writer, startPosition, endPosition, commonAncestor ) {
 	const startElement = startPosition.parent;
 	const endElement = endPosition.parent;
@@ -201,31 +242,41 @@ function mergeBranchesLeft( writer, startPosition, endPosition, commonAncestor )
 		return;
 	}
 
-	// Remember next positions to merge. For example:
-	// <a><b>x[</b></a><c><d>]y</d></c>
-	// will become:
-	// <a><b>xy</b>[</a><c>]</c>
+	// Remember next positions to merge in next recursive step (also used as modification points pointers).
 	startPosition = writer.createPositionAfter( startElement );
 	endPosition = writer.createPositionBefore( endElement );
 
+	// Move endElement just after startElement if they aren't siblings.
 	if ( !endPosition.isEqual( startPosition ) ) {
-		// In this case, before we merge, we need to move `endElement` to the `startPosition`:
-		// <a><b>x[</b></a><c><d>]y</d></c>
-		// becomes:
-		// <a><b>x</b>[<d>y</d></a><c>]</c>
+		//     <blockQuote>                     ->  <blockQuote>
+		//         <heading1>foo[</heading1>    ->      <heading1>foo</heading1>[<paragraph>bar</paragraph>
+		//     </blockQuote>                    ->  </blockQuote>                ^
+		//     <blockBlock>                     ->  <blockBlock>                 |
+		//         <paragraph>]bar</paragraph>  ->      ]                     ---
+		//     </blockBlock>                    ->  </blockBlock>
 		writer.insert( endElement, startPosition );
 	}
 
-	// Merge two siblings:
-	// <a>x</a>[]<b>y</b> -> <a>xy</a> (the usual case)
-	// <a><b>x</b>[]<d>y</d></a><c></c> -> <a><b>xy</b>[]</a><c></c> (this is the "move parent" case shown above)
+	// Merge two siblings (nodes on sides of startPosition):
+	//     <blockQuote>                                             ->  <blockQuote>
+	//         <heading1>foo</heading1>[<paragraph>bar</paragraph>  ->      <heading1>foo[bar</heading1>
+	//     </blockQuote>                                            ->  </blockQuote>
+	//     <blockBlock>                                             ->  <blockBlock>
+	//         ]                                                    ->      ]
+	//     </blockBlock>                                            ->  </blockBlock>
+	//
+	// Or in simple case (without moving elements in above if):
+	//     <heading1>foo</heading1>[<paragraph>bar</paragraph>]  ->  <heading1>foo[bar</heading1>]
+	//
 	writer.merge( startPosition );
 
 	// Remove empty end ancestors:
-	// <a>fo[o</a><b><a><c>bar]</c></a></b>
-	// becomes:
-	// <a>fo[</a><b><a>]</a></b>
-	// So we can remove <a> and <b>.
+	//     <blockQuote>                      ->  <blockQuote>
+	//         <heading1>foo[bar</heading1>  ->      <heading1>foo[bar</heading1>
+	//     </blockQuote>                     ->  </blockQuote>
+	//     <blockBlock>                      ->
+	//         ]                             ->  ]
+	//     </blockBlock>                     ->
 	while ( endPosition.parent.isEmpty ) {
 		const parentToRemove = endPosition.parent;
 
@@ -239,10 +290,22 @@ function mergeBranchesLeft( writer, startPosition, endPosition, commonAncestor )
 		return;
 	}
 
-	// Continue merging next level.
+	// Continue merging next level (blockQuote with blockBlock in the examples above if it would not be empty and got removed).
 	mergeBranchesLeft( writer, startPosition, endPosition, commonAncestor );
 }
 
+// Merging blocks to the right (properties of the right block are preserved).
+// Simple example:
+//     <heading1>foo[</heading1>    ->            --v
+//     <paragraph>]bar</paragraph>  ->  [<paragraph>foo]bar</paragraph>
+//
+// Nested example:
+//     <blockQuote>                     ->
+//         <heading1>foo[</heading1>    ->              ---
+//     </blockQuote>                    ->                 |
+//     <blockBlock>                     ->  [<blockBlock>  v
+//         <paragraph>]bar</paragraph>  ->      <paragraph>foo]bar</paragraph>
+//     </blockBlock>                    ->  </blockBlock>
 function mergeBranchesRight( writer, startPosition, endPosition, commonAncestor ) {
 	const startElement = startPosition.parent;
 	const endElement = endPosition.parent;
@@ -252,26 +315,28 @@ function mergeBranchesRight( writer, startPosition, endPosition, commonAncestor 
 		return;
 	}
 
-	// Remember next positions to merge. For example:
-	// <a><b>x[</b></a><c><d>]y</d></c>
-	// will become:
-	// <a>[</a><c>]<d>xy</d></c>
+	// Remember next positions to merge in next recursive step (also used as modification points pointers).
 	startPosition = writer.createPositionAfter( startElement );
 	endPosition = writer.createPositionBefore( endElement );
 
+	// Move startElement just before endElement if they aren't siblings.
 	if ( !endPosition.isEqual( startPosition ) ) {
-		// In this case, before we merge, we need to move `startElement` to the `endPosition`:
-		// <a><b>x[</b></a><c><d>]y</d></c>
-		// becomes:
-		// <a>[</a><c><b>x</b>]<d>y</d></c>
+		//     <blockQuote>                     ->  <blockQuote>
+		//         <heading1>foo[</heading1>    ->      [                   ---
+		//     </blockQuote>                    ->  </blockQuote>              |
+		//     <blockBlock>                     ->  <blockBlock>               v
+		//         <paragraph>]bar</paragraph>  ->      <heading1>foo</heading1>]<paragraph>bar</paragraph>
+		//     </blockBlock>                    ->  </blockBlock>
 		writer.insert( startElement, endPosition );
 	}
 
-	// Remove empty start ancestors:
-	// <x><a><b>x[</b></a></x><c><d>]y</d></c>
-	// becomes:
-	// <x><a>[</a></x><c><b>x</b>]<d>y</d></c>
-	// So we can remove <a> and <x>.
+	// Remove empty end ancestors:
+	//     <blockQuote>                                             ->
+	//         [                                                    ->  [
+	//     </blockQuote>                                            ->
+	//     <blockBlock>                                             ->  <blockBlock>
+	//         <heading1>foo</heading1>]<paragraph>bar</paragraph>  ->      <heading1>foo</heading1>]<paragraph>bar</paragraph>
+	//     </blockBlock>                                            ->  </blockBlock>
 	while ( startPosition.parent.isEmpty ) {
 		const parentToRemove = startPosition.parent;
 
@@ -283,8 +348,17 @@ function mergeBranchesRight( writer, startPosition, endPosition, commonAncestor 
 	// Update endPosition after inserting and removing elements.
 	endPosition = writer.createPositionBefore( endElement );
 
-	// Merge two siblings:
-	// <a>x</a>[]<b>y</b> -> <b>xy</b>
+	// Merge right two siblings (nodes on sides of endPosition):
+	//                                                              ->
+	//     [                                                        ->  [
+	//                                                              ->
+	//     <blockBlock>                                             ->  <blockBlock>
+	//         <heading1>foo</heading1>]<paragraph>bar</paragraph>  ->      <paragraph>foo]bar</paragraph>
+	//     </blockBlock>                                            ->  </blockBlock>
+	//
+	// Or in simple case (without moving elements in above if):
+	//     [<heading1>foo</heading1>]<paragraph>bar</paragraph>  ->  [<heading1>foo]bar</heading1>
+	//
 	mergeRight( writer, endPosition );
 
 	// Verify if there is a need and possibility to merge next level.
@@ -292,7 +366,7 @@ function mergeBranchesRight( writer, startPosition, endPosition, commonAncestor 
 		return;
 	}
 
-	// Continue merging next level.
+	// Continue merging next level (blockQuote with blockBlock in the examples above if it would not be empty and got removed).
 	mergeBranchesRight( writer, startPosition, endPosition, commonAncestor );
 }
 
@@ -311,7 +385,8 @@ function mergeRight( writer, position ) {
 	writer.merge( position );
 }
 
-// Verifies if merging is needed and possible.
+// Verifies if merging is needed and possible. It's not needed if both positions are in the same element
+// and it's not possible if some element is a limit or the range crosses a limit element.
 function checkShouldMerge( schema, startPosition, endPosition ) {
 	const startElement = startPosition.parent;
 	const endElement = endPosition.parent;
@@ -330,11 +405,11 @@ function checkShouldMerge( schema, startPosition, endPosition ) {
 	// Check if operations we'll need to do won't need to cross object or limit boundaries.
 	// E.g., we can't merge endElement into startElement in this case:
 	// <limit><startElement>x[</startElement></limit><endElement>]</endElement>
-	return checkCanBeMerged( startPosition, endPosition, schema );
+	return isCrossingLimitElement( startPosition, endPosition, schema );
 }
 
 // Returns the elements that are the ancestors of the provided positions that are direct children of the common ancestor.
-function getElementsNextToCommonAncestor( positionA, positionB ) {
+function getAncestorsJustBelowCommonAncestor( positionA, positionB ) {
 	const ancestorsA = positionA.getAncestors();
 	const ancestorsB = positionB.getAncestors();
 
@@ -360,7 +435,7 @@ function shouldAutoparagraph( schema, position ) {
 // E.g. in <bQ><p>x[]</p></bQ><widget><caption>{}</caption></widget>
 // we'll check <p>, <bQ>, <widget> and <caption>.
 // Usually, widget and caption are marked as objects/limits in the schema, so in this case merging will be blocked.
-function checkCanBeMerged( leftPos, rightPos, schema ) {
+function isCrossingLimitElement( leftPos, rightPos, schema ) {
 	const rangeToCheck = new Range( leftPos, rightPos );
 
 	for ( const value of rangeToCheck.getWalker() ) {
