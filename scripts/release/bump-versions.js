@@ -20,7 +20,7 @@
 // This task must be called before: `npm run release:publish`.
 //
 // Use:
-// npm run release:bump-version --dry-run
+// npm run release:bump-version -- --dry-run
 
 require( '@ckeditor/ckeditor5-dev-env' )
 	.bumpVersions( {

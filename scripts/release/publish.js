@@ -19,7 +19,7 @@
 // This task should be executed after: `npm run release:bump-version`.
 //
 // Use:
-// npm run release:publish --dry-run
+// npm run release:publish -- --dry-run
 
 /* eslint-disable max-len */
 
@@ -27,6 +27,7 @@ require( '@ckeditor/ckeditor5-dev-env' )
 	.releaseSubRepositories( {
 		cwd: process.cwd(),
 		packages: 'packages',
+		releaseBranch: 'release',
 		emptyReleases: [
 			'ckeditor5'
 		],
