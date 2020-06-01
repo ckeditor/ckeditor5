@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-utils",
-  "version": "19.0.1",
+  "version": "19.0.2",
   "description": "Miscellaneous utils used by CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -12,7 +12,7 @@
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^19.0.1",
+    "@ckeditor/ckeditor5-build-classic": "^19.0.2",
     "@ckeditor/ckeditor5-editor-classic": "^19.0.1",
     "@ckeditor/ckeditor5-core": "^19.0.1",
     "@ckeditor/ckeditor5-engine": "^19.0.1",

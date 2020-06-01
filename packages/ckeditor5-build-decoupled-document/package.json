@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-build-decoupled-document",
-  "version": "19.0.1",
+  "version": "19.0.2",
   "description": "The document editor build of CKEditor 5 – the best browser-based rich text editor.",
   "keywords": [
     "ckeditor5-build",
@@ -46,7 +46,7 @@
     "@ckeditor/ckeditor5-list": "^19.0.1",
     "@ckeditor/ckeditor5-media-embed": "^19.1.0",
     "@ckeditor/ckeditor5-paragraph": "^19.1.0",
-    "@ckeditor/ckeditor5-paste-from-office": "^19.0.1",
+    "@ckeditor/ckeditor5-paste-from-office": "^19.0.2",
     "@ckeditor/ckeditor5-table": "^19.1.0",
     "@ckeditor/ckeditor5-typing": "^19.0.1",
     "@ckeditor/ckeditor5-theme-lark": "^19.1.0",

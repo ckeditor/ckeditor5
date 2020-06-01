@@ -486,7 +486,7 @@ class TableSlot {
 	}
 
 	/**
-	 * The widht of a cell defined by a `colspan` attribute. If the model attribute is not present, it is set to `1`.
+	 * The width of a cell defined by a `colspan` attribute. If the model attribute is not present, it is set to `1`.
 	 *
 	 * @readonly
 	 * @returns {Number}
