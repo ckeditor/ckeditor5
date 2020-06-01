@@ -875,14 +875,14 @@
     semver "^6.2.0"
 
 "@ckeditor/ckeditor5-dev-tests@^20.0.1":
-  version "20.0.1"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-20.0.1.tgz#be5a4853e23852cffd09cfee75f1917714cfa9e2"
-  integrity sha512-icc2528hxcDqXdd4BLaxEciaib8esaLRRcj9Hr4gq0g6kQsoOq6pbfJVXbKJJ/nR+DFkIUt1BCJAjeLoCnRj0Q==
+  version "20.0.2"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-20.0.2.tgz#a1414c89e177f49e738f83b41b7aef3d19c4abd6"
+  integrity sha512-5y86t9tHrdsc3oekB1fS/kXMv/eISE0i/n+/nprsu+KlLBw10E7BQ9t1gvIFgMeNW/2jqLeT/kDSkIpX+929ag==
   dependencies:
     "@babel/core" "^7.0.0"
     "@ckeditor/ckeditor5-dev-utils" "^20.0.0"
     "@ckeditor/ckeditor5-dev-webpack-plugin" "^20.0.0"
-    "@ckeditor/ckeditor5-inspector" "^2.0.0"
+    "@ckeditor/ckeditor5-inspector" "^2.1.0"
     babel-core "^6.26.0"
     babel-loader "^8.0.2"
     babel-plugin-transform-es2015-modules-commonjs "^6.26.0"
@@ -949,11 +949,6 @@
     chalk "^3.0.0"
     rimraf "^2.6.2"
     webpack-sources "^1.1.0"
-
-"@ckeditor/ckeditor5-inspector@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-inspector/-/ckeditor5-inspector-2.0.0.tgz#378ef4ca5dbdf652b04b50ca9455b3f5b00aa899"
-  integrity sha512-o446mgCwat0NLXZdE7w+h/Vu6Slh2e4I050Y3jN/ZF6qmh/MKlwknpUF1jBYYfVWCqlcn9JjpK1f9CnBIyB/KA==
 
 "@ckeditor/ckeditor5-inspector@^2.1.0":
   version "2.1.0"
@@ -6904,7 +6899,7 @@ jsbn@~0.1.0:
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
   integrity sha1-peZUwuWi3rXyAdls77yoDA7y9RM=
 
-jsdoc@ckeditor/jsdoc#node12:
+"jsdoc@github:ckeditor/jsdoc#node12":
   version "3.4.3"
   resolved "https://codeload.github.com/ckeditor/jsdoc/tar.gz/e6c213ab53c20457d2778953a6d3fc54311f9a67"
   dependencies:
