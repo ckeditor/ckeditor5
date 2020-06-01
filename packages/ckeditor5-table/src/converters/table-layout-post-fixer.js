@@ -7,8 +7,8 @@
  * @module table/converters/table-layout-post-fixer
  */
 
-import { createEmptyTableCell, findAncestor, updateNumericAttribute } from './../commands/utils';
 import TableWalker from './../tablewalker';
+import { createEmptyTableCell, findAncestor, updateNumericAttribute } from '../utils/common';
 
 /**
  * Injects a table layout post-fixer into the model.

@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor } from '../../commands/utils';
+import { findAncestor } from '../../utils/common';
 
 /**
  * The table cell attribute command.

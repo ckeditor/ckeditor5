@@ -8,7 +8,7 @@ import Table from '../src/table';
 import TableEditing from '../src/tableediting';
 import TableSelection from '../src/tableselection';
 import { modelTable } from './_utils/utils';
-import { getTableCellsContainingSelection } from '../src/utils';
+import { getTableCellsContainingSelection } from '../src/utils/selection';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';

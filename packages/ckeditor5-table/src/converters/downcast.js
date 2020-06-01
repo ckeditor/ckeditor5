@@ -8,8 +8,7 @@
  */
 
 import TableWalker from './../tablewalker';
-import { toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
-import { toTableWidget } from '../utils';
+import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
  * Model table element to view table element conversion helper.
@@ -305,6 +304,20 @@ export function downcastRemoveRow() {
 		removeTableSectionIfEmpty( 'thead', viewTable, conversionApi );
 		removeTableSectionIfEmpty( 'tbody', viewTable, conversionApi );
 	}, { priority: 'higher' } );
+}
+
+// Converts a given {@link module:engine/view/element~Element} to a table widget:
+// * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the table widget element.
+// * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
+//
+// @param {module:engine/view/element~Element} viewElement
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
+// @param {String} label The element's label. It will be concatenated with the table `alt` attribute if one is present.
+// @returns {module:engine/view/element~Element}
+function toTableWidget( viewElement, writer ) {
+	writer.setCustomProperty( 'table', true, viewElement );
+
+	return toWidget( viewElement, writer, { hasSelectionHandle: true } );
 }
 
 // Renames an existing table cell in the view to a given element name.
