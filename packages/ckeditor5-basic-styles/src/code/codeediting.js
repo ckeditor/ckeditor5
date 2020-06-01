@@ -10,8 +10,10 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import AttributeCommand from '../attributecommand';
 import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
+import setupHighlight from './inlinehighlight';
 
 const CODE = 'code';
+const HIGHLIGHT_CLASS = 'ck-code_selected';
 
 /**
  * The code editing feature.
@@ -60,6 +62,9 @@ export default class CodeEditing extends Plugin {
 			attribute: CODE,
 			locale: editor.locale
 		} );
+
+		// Setup highlight over selected link.
+		setupHighlight( editor, editor.editing.view, CODE, 'code', HIGHLIGHT_CLASS );
 
 		// Create code command.
 		editor.commands.add( CODE, new AttributeCommand( editor, CODE ) );
