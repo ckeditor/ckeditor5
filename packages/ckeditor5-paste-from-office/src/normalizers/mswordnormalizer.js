@@ -21,6 +21,19 @@ const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;
  */
 export default class MSWordNormalizer {
 	/**
+	 * Creates a new `MSWordNormalizer` instance.
+	 *
+	 * @param {module:engine/view/document~Document} document View document.
+	 */
+	constructor( document ) {
+		/**
+		 * @readonly
+		 * @type {module:engine/view/document~Document}
+		 */
+		this.document = document;
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	isActive( htmlString ) {
@@ -31,7 +44,7 @@ export default class MSWordNormalizer {
 	 * @inheritDoc
 	 */
 	execute( data ) {
-		const { body, stylesString } = parseHtml( data.dataTransfer.getData( 'text/html' ) );
+		const { body, stylesString } = parseHtml( data.dataTransfer.getData( 'text/html' ), this.document.stylesProcessor );
 
 		transformListItemLikeElementsIntoLists( body, stylesString );
 		replaceImagesSourceWithBase64( body, data.dataTransfer.getData( 'text/rtf' ) );
