@@ -93,7 +93,7 @@ const utils = {
 		let isValid = true;
 
 		for ( const property in mixin ) {
-			if ( mixin.hasOwnProperty( property ) ) {
+			if ( Object.prototype.hasOwnProperty.call( mixin, property ) ) {
 				if ( targetClass.prototype[ property ] !== mixin[ property ] ) {
 					isValid = false;
 				}
