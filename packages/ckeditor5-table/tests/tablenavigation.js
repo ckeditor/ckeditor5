@@ -8,6 +8,7 @@ import Table from '../src/table';
 import TableEditing from '../src/tableediting';
 import TableSelection from '../src/tableselection';
 import { modelTable } from './_utils/utils';
+import { getTableCellsContainingSelection } from '../src/utils/selection';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -25,7 +26,6 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import env from '@ckeditor/ckeditor5-utils/src/env';
-import { getTableCellsContainingSelection } from '../src/utils/selection';
 
 describe( 'TableNavigation', () => {
 	let editor, model, modelRoot, tableSelection, tableNavigation, selection;
