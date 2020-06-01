@@ -784,7 +784,7 @@ describe( 'table selection', () => {
 		it( 'should clear single cell if selected', () => {
 			tableSelection.setCellSelection(
 				modelRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ),
-				modelRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ),
+				modelRoot.getChild( 0 ).getChild( 0 ).getChild( 0 )
 			);
 
 			editor.execute( 'forwardDelete' );

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window */
+/* globals window, console */
 
 import Model from '../../../src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -67,7 +67,6 @@ function testList() {
 	addListToDropdown( dropdownView, collection );
 
 	dropdownView.on( 'execute', evt => {
-		/* global console */
 		console.log( 'List#execute:', evt.source.label );
 	} );
 
@@ -151,12 +150,10 @@ function testSplitButton() {
 	dropdownView.panelView.element.innerHTML = 'Empty panel. There is no child view in this DropdownPanelView.';
 
 	dropdownView.buttonView.on( 'execute', () => {
-		/* global console */
 		console.log( 'SplitButton#execute' );
 	} );
 
 	dropdownView.buttonView.on( 'open', () => {
-		/* global console */
 		console.log( 'SplitButton#open' );
 	} );
 }

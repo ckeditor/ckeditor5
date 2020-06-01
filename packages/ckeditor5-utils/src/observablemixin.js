@@ -633,7 +633,7 @@ function updateBoundObservableProperty( observable, propertyName ) {
 		propertyValue = propertyValue[ 0 ][ propertyValue[ 1 ] ];
 	}
 
-	if ( observable.hasOwnProperty( propertyName ) ) {
+	if ( Object.prototype.hasOwnProperty.call( observable, propertyName ) ) {
 		observable[ propertyName ] = propertyValue;
 	} else {
 		observable.set( propertyName, propertyValue );
