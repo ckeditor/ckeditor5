@@ -14,10 +14,11 @@ import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
 import MouseEventsObserver from './tableselection/mouseeventsobserver';
 
-import '../theme/tableselection.css';
-import { getColumnIndexes, getRowIndexes, getSelectedTableCells, getTableCellsContainingSelection } from './utils/selection';
 import { findAncestor } from './utils/common';
 import { cropTableToDimensions } from './utils/structure';
+import { getColumnIndexes, getRowIndexes, getSelectedTableCells, getTableCellsContainingSelection } from './utils/selection';
+
+import '../theme/tableselection.css';
 
 /**
  * This plugin enables the advanced table cells, rows and columns selection.
