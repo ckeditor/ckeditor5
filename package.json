@@ -82,7 +82,7 @@
     "@ckeditor/ckeditor5-dev-tests": "^20.0.1",
     "@ckeditor/ckeditor5-dev-utils": "^20.0.0",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^20.0.0",
-    "@ckeditor/ckeditor5-inspector": "^2.0.0",
+    "@ckeditor/ckeditor5-inspector": "^2.1.0",
     "@ckeditor/ckeditor5-react": "^2.1.0",
     "@ckeditor/ckeditor5-real-time-collaboration": "^19.0.2",
     "@ckeditor/ckeditor5-track-changes": "^19.1.0",
