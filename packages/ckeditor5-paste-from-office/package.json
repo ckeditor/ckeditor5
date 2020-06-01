@@ -27,7 +27,7 @@
     "@ckeditor/ckeditor5-list": "^19.0.1",
     "@ckeditor/ckeditor5-paragraph": "^19.1.0",
     "@ckeditor/ckeditor5-table": "^19.1.0",
-    "@ckeditor/ckeditor5-utils": "^19.0.1"
+    "@ckeditor/ckeditor5-utils": "^19.0.2"
   },
   "engines": {
     "node": ">=8.0.0",
