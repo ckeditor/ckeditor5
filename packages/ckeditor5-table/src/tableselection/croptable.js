@@ -20,7 +20,7 @@ import TableWalker from '../tablewalker';
  *			endRow: 1,
  *			startColumn: 3,
  *			endColumn: 3
- *		}, tableUtils, writer );
+ *		}, writer );
  *
  * Calling the code above for the table below:
  *
@@ -44,10 +44,9 @@ import TableWalker from '../tablewalker';
  * @param {Number} cropDimensions.endRow
  * @param {Number} cropDimensions.endColumn
  * @param {module:engine/model/writer~Writer} writer
- * @param {module:table/tableutils~TableUtils} tableUtils
  * @returns {module:engine/model/element~Element}
  */
-export function cropTableToDimensions( sourceTable, cropDimensions, writer, tableUtils ) {
+export function cropTableToDimensions( sourceTable, cropDimensions, writer ) {
 	const { startRow, startColumn, endRow, endColumn } = cropDimensions;
 
 	// Create empty table with empty rows equal to crop height.
@@ -58,28 +57,19 @@ export function cropTableToDimensions( sourceTable, cropDimensions, writer, tabl
 		writer.insertElement( 'tableRow', croppedTable, 'end' );
 	}
 
-	const tableMap = [ ...new TableWalker( sourceTable, { startRow, endRow, includeSpanned: true } ) ];
+	const tableMap = [ ...new TableWalker( sourceTable, { startRow, endRow, startColumn, endColumn, includeAllSlots: true } ) ];
 
 	// Iterate over source table slots (including empty - spanned - ones).
-	for ( const { row: sourceRow, column: sourceColumn, cell: tableCell, isSpanned } of tableMap ) {
-		// Skip slots outside the cropped area.
-		// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
-		if ( sourceColumn < startColumn || sourceColumn > endColumn ) {
-			continue;
-		}
-
+	for ( const { row: sourceRow, column: sourceColumn, cell: tableCell, isAnchor, cellAnchorRow, cellAnchorColumn } of tableMap ) {
 		// Row index in cropped table.
 		const rowInCroppedTable = sourceRow - startRow;
 		const row = croppedTable.getChild( rowInCroppedTable );
 
 		// For empty slots: fill the gap with empty table cell.
-		if ( isSpanned ) {
-			// TODO: Remove table utils usage. See: https://github.com/ckeditor/ckeditor5/issues/6785.
-			const { row: anchorRow, column: anchorColumn } = tableUtils.getCellLocation( tableCell );
-
+		if ( !isAnchor ) {
 			// But fill the gap only if the spanning cell is anchored outside cropped area.
 			// In the table from method jsdoc those cells are: "c" & "f".
-			if ( anchorRow < startRow || anchorColumn < startColumn ) {
+			if ( cellAnchorRow < startRow || cellAnchorColumn < startColumn ) {
 				createEmptyTableCell( writer, writer.createPositionAt( row, 'end' ) );
 			}
 		}

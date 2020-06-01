@@ -269,7 +269,7 @@ export function isSelectionRectangular( selectedTableCells, tableUtils ) {
  * @param {module:engine/model/element~Element} table The table to check.
  * @param {Number} overlapRow The index of the row to check.
  * @param {Number} [startRow=0] A row to start analysis. Use it when it is known that the cells above that row will not overlap.
- * @returns {Array.<module:table/tablewalker~TableWalkerValue>}
+ * @returns {Array.<module:table/tablewalker~TableSlot>}
  */
 export function getVerticallyOverlappingCells( table, overlapRow, startRow = 0 ) {
 	const cells = [];
@@ -277,8 +277,8 @@ export function getVerticallyOverlappingCells( table, overlapRow, startRow = 0 )
 	const tableWalker = new TableWalker( table, { startRow, endRow: overlapRow - 1 } );
 
 	for ( const slotInfo of tableWalker ) {
-		const { row, rowspan } = slotInfo;
-		const cellEndRow = row + rowspan - 1;
+		const { row, cellHeight } = slotInfo;
+		const cellEndRow = row + cellHeight - 1;
 
 		if ( row < overlapRow && overlapRow <= cellEndRow ) {
 			cells.push( slotInfo );
@@ -318,20 +318,19 @@ export function splitHorizontally( tableCell, splitRow, writer ) {
 
 	const startRow = rowIndex;
 	const endRow = startRow + newRowspan;
-	const tableMap = [ ...new TableWalker( table, { startRow, endRow, includeSpanned: true } ) ];
+	const tableMap = [ ...new TableWalker( table, { startRow, endRow, includeAllSlots: true } ) ];
 
 	let columnIndex;
 
-	for ( const { row, column, cell, cellIndex } of tableMap ) {
+	for ( const tableSlot of tableMap ) {
+		const { row, column, cell } = tableSlot;
+
 		if ( cell === tableCell && columnIndex === undefined ) {
 			columnIndex = column;
 		}
 
 		if ( columnIndex !== undefined && columnIndex === column && row === endRow ) {
-			const tableRow = table.getChild( row );
-			const tableCellPosition = writer.createPositionAt( tableRow, cellIndex );
-
-			createEmptyTableCell( writer, tableCellPosition, newCellAttributes );
+			createEmptyTableCell( writer, tableSlot.getPositionBefore(), newCellAttributes );
 		}
 	}
 
@@ -363,7 +362,7 @@ export function splitHorizontally( tableCell, splitRow, writer ) {
  *
  * @param {module:engine/model/element~Element} table The table to check.
  * @param {Number} overlapColumn The index of the column to check.
- * @returns {Array.<module:table/tablewalker~TableWalkerValue>}
+ * @returns {Array.<module:table/tablewalker~TableSlot>}
  */
 export function getHorizontallyOverlappingCells( table, overlapColumn ) {
 	const cellsToSplit = [];
@@ -371,8 +370,8 @@ export function getHorizontallyOverlappingCells( table, overlapColumn ) {
 	const tableWalker = new TableWalker( table );
 
 	for ( const slotInfo of tableWalker ) {
-		const { column, colspan } = slotInfo;
-		const cellEndColumn = column + colspan - 1;
+		const { column, cellWidth } = slotInfo;
+		const cellEndColumn = column + cellWidth - 1;
 
 		if ( column < overlapColumn && overlapColumn <= cellEndColumn ) {
 			cellsToSplit.push( slotInfo );
