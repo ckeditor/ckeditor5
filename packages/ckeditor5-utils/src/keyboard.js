@@ -143,16 +143,16 @@ export function isArrowKeyCode( keyCode ) {
 }
 
 /**
- * Returns the direction from the provided key code considering the language direction of the
- * editor content.
+ * Returns the direction in which the {@link module:engine/model/documentselection~DocumentSelection selection}
+ * will move when a provided arrow key code is pressed considering the language direction of the editor content.
  *
- * For instance, in right–to–left (RTL) languages, pressing the left arrow means moving selection right (forward)
+ * For instance, in right–to–left (RTL) content languages, pressing the left arrow means moving selection right (forward)
  * in the model structure. Similarly, pressing the right arrow moves the selection left (backward).
  *
  * @param {Number} keyCode
- * @param {String} contentLanguageDirection The content language direction, corresponding to
+ * @param {'ltr'|'rtl'} contentLanguageDirection The content language direction, corresponding to
  * {@link module:utils/locale~Locale#contentLanguageDirection}.
- * @returns {'left'|'up'|'right'|'down'} Arrow direction.
+ * @returns {'left'|'up'|'right'|'down'} Localized arrow direction.
  */
 export function getLocalizedArrowKeyCodeDirection( keyCode, contentLanguageDirection ) {
 	const isLtrContent = contentLanguageDirection === 'ltr';
@@ -173,14 +173,14 @@ export function getLocalizedArrowKeyCodeDirection( keyCode, contentLanguageDirec
 }
 
 /**
- * Determines if the provided key code moves the selection forward or backward considering
- * the language direction of the editor content.
+ * Determines if the provided key code moves the {@link module:engine/model/documentselection~DocumentSelection selection}
+ * forward or backward considering the language direction of the editor content.
  *
  * For instance, in right–to–left (RTL) languages, pressing the left arrow means moving forward
  * in the model structure. Similarly, pressing the right arrow moves the selection backward.
  *
  * @param {Number} keyCode
- * @param {String} contentLanguageDirection The content language direction, corresponding to
+ * @param {'ltr'|'rtl'} contentLanguageDirection The content language direction, corresponding to
  * {@link module:utils/locale~Locale#contentLanguageDirection}.
  * @returns {Boolean}
  */
