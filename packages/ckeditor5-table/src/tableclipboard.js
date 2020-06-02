@@ -12,18 +12,18 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
 import {
-	getColumnIndexes,
-	getVerticallyOverlappingCells,
-	getRowIndexes,
-	getSelectionAffectedTableCells,
-	getHorizontallyOverlappingCells,
-	isSelectionRectangular,
-	splitHorizontally,
-	splitVertically
-} from './utils';
-import { findAncestor } from './commands/utils';
-import { cropTableToDimensions, trimTableCellIfNeeded } from './tableselection/croptable';
+	findAncestor
+} from './utils/common';
 import TableUtils from './tableutils';
+import { getColumnIndexes, getRowIndexes, getSelectionAffectedTableCells, isSelectionRectangular } from './utils/selection';
+import {
+	cropTableToDimensions,
+	getHorizontallyOverlappingCells,
+	getVerticallyOverlappingCells,
+	splitHorizontally,
+	splitVertically,
+	trimTableCellIfNeeded
+} from './utils/structure';
 
 /**
  * This plugin adds support for copying/cutting/pasting fragments of tables.
@@ -205,7 +205,7 @@ export default class TableClipboard extends Plugin {
 				endColumn: Math.min( selectionWidth - 1, pasteWidth - 1 )
 			};
 
-			pastedTable = cropTableToDimensions( pastedTable, cropDimensions, writer, tableUtils );
+			pastedTable = cropTableToDimensions( pastedTable, cropDimensions, writer );
 
 			const pastedDimensions = {
 				width: pasteWidth,
@@ -250,14 +250,16 @@ function replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selected
 	const selectedTableMap = [ ...new TableWalker( selectedTable, {
 		startRow: firstRowOfSelection,
 		endRow: lastRowOfSelection,
-		includeSpanned: true
+		startColumn: firstColumnOfSelection,
+		endColumn: lastColumnOfSelection,
+		includeAllSlots: true
 	} ) ];
 
 	// Selection must be set to pasted cells (some might be removed or new created).
 	const cellsToSelect = [];
 
-	// Store previous cell in order to insert a new table cells after it (if required).
-	let previousCellInRow;
+	// Store next cell insert position.
+	let insertPosition;
 
 	// Content table replace cells algorithm iterates over a selected table fragment and:
 	//
@@ -265,26 +267,19 @@ function replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selected
 	// - Inserts cell from a pasted table for a matched slots.
 	//
 	// This ensures proper table geometry after the paste
-	for ( const { row, column, cell, isSpanned } of selectedTableMap ) {
-		if ( column === 0 ) {
-			previousCellInRow = null;
-		}
+	for ( const tableSlot of selectedTableMap ) {
+		const { row, column, cell, isAnchor } = tableSlot;
 
-		// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
-		if ( column < firstColumnOfSelection || column > lastColumnOfSelection ) {
-			// Only update the previousCellInRow for non-spanned slots.
-			if ( !isSpanned ) {
-				previousCellInRow = cell;
-			}
-
-			continue;
+		// Save the insert position for current row start.
+		if ( column === firstColumnOfSelection ) {
+			insertPosition = tableSlot.getPositionBefore();
 		}
 
 		// If the slot is occupied by a cell in a selected table - remove it.
 		// The slot of this cell will be either:
 		// - Replaced by a pasted table cell.
 		// - Spanned by a previously pasted table cell.
-		if ( !isSpanned ) {
+		if ( isAnchor ) {
 			writer.remove( cell );
 		}
 
@@ -305,17 +300,10 @@ function replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selected
 		// Trim the cell if it's row/col-spans would exceed selection area.
 		trimTableCellIfNeeded( cellToInsert, row, column, lastRowOfSelection, lastColumnOfSelection, writer );
 
-		let insertPosition;
-
-		if ( !previousCellInRow ) {
-			insertPosition = writer.createPositionAt( selectedTable.getChild( row ), 0 );
-		} else {
-			insertPosition = writer.createPositionAfter( previousCellInRow );
-		}
-
 		writer.insert( cellToInsert, insertPosition );
 		cellsToSelect.push( cellToInsert );
-		previousCellInRow = cellToInsert;
+
+		insertPosition = writer.createPositionAfter( cellToInsert );
 	}
 
 	writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
@@ -460,7 +448,7 @@ function doHorizontalSplit( table, splitRow, limitColumns, writer, startRow = 0 
 	const overlappingCells = getVerticallyOverlappingCells( table, splitRow, startRow );
 
 	// Filter out cells that are not touching insides of the rectangular selection.
-	const cellsToSplit = overlappingCells.filter( ( { column, colspan } ) => isAffectedBySelection( column, colspan, limitColumns ) );
+	const cellsToSplit = overlappingCells.filter( ( { column, cellWidth } ) => isAffectedBySelection( column, cellWidth, limitColumns ) );
 
 	for ( const { cell } of cellsToSplit ) {
 		splitHorizontally( cell, splitRow, writer );
@@ -476,7 +464,7 @@ function doVerticalSplit( table, splitColumn, limitRows, writer ) {
 	const overlappingCells = getHorizontallyOverlappingCells( table, splitColumn );
 
 	// Filter out cells that are not touching insides of the rectangular selection.
-	const cellsToSplit = overlappingCells.filter( ( { row, rowspan } ) => isAffectedBySelection( row, rowspan, limitRows ) );
+	const cellsToSplit = overlappingCells.filter( ( { row, cellHeight } ) => isAffectedBySelection( row, cellHeight, limitRows ) );
 
 	for ( const { cell, column } of cellsToSplit ) {
 		splitVertically( cell, column, splitColumn, writer );
@@ -511,17 +499,13 @@ function isAffectedBySelection( index, span, limit ) {
 //  3 |   |   |   |   |
 //    +---+---+---+---+
 function adjustLastRowIndex( table, rowIndexes, columnIndexes ) {
-	const tableIterator = new TableWalker( table, {
-		startRow: rowIndexes.last,
-		endRow: rowIndexes.last
-	} );
+	const lastRowMap = Array.from( new TableWalker( table, {
+		startColumn: columnIndexes.first,
+		endColumn: columnIndexes.last,
+		row: rowIndexes.last
+	} ) );
 
-	const lastRowMap = Array.from( tableIterator ).filter( ( { column } ) => {
-		// Could use startColumn, endColumn. See: https://github.com/ckeditor/ckeditor5/issues/6785.
-		return columnIndexes.first <= column && column <= columnIndexes.last;
-	} );
-
-	const everyCellHasSingleRowspan = lastRowMap.every( ( { rowspan } ) => rowspan === 1 );
+	const everyCellHasSingleRowspan = lastRowMap.every( ( { cellHeight } ) => cellHeight === 1 );
 
 	// It is a "flat" row, so the last row index is OK.
 	if ( everyCellHasSingleRowspan ) {
@@ -529,7 +513,7 @@ function adjustLastRowIndex( table, rowIndexes, columnIndexes ) {
 	}
 
 	// Otherwise get any cell's rowspan and adjust the last row index.
-	const rowspanAdjustment = lastRowMap[ 0 ].rowspan - 1;
+	const rowspanAdjustment = lastRowMap[ 0 ].cellHeight - 1;
 	return rowIndexes.last + rowspanAdjustment;
 }
 
@@ -557,7 +541,7 @@ function adjustLastColumnIndex( table, rowIndexes, columnIndexes ) {
 		column: columnIndexes.last
 	} ) );
 
-	const everyCellHasSingleColspan = lastColumnMap.every( ( { colspan } ) => colspan === 1 );
+	const everyCellHasSingleColspan = lastColumnMap.every( ( { cellWidth } ) => cellWidth === 1 );
 
 	// It is a "flat" column, so the last column index is OK.
 	if ( everyCellHasSingleColspan ) {
@@ -565,6 +549,6 @@ function adjustLastColumnIndex( table, rowIndexes, columnIndexes ) {
 	}
 
 	// Otherwise get any cell's colspan and adjust the last column index.
-	const colspanAdjustment = lastColumnMap[ 0 ].colspan - 1;
+	const colspanAdjustment = lastColumnMap[ 0 ].cellWidth - 1;
 	return columnIndexes.last + colspanAdjustment;
 }

@@ -47,7 +47,7 @@ ClassicEditor
 
 ### Using CSS classes
 
-If you want more semantics in your content, use CSS classes instead of fixed indentation units. You can then adjust the levels in the style sheets of your application whenever you want. 
+If you want more semantics in your content, use CSS classes instead of fixed indentation units. You can then adjust the levels in the style sheets of your application whenever you want.
 
 Here is how you can configure the block indentation feature to set indentation by applying one of the defined CSS classes:
 
@@ -179,4 +179,4 @@ The {@link module:indent/indentblock~IndentBlock} plugin registers the following
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5-font.
+The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-font.

@@ -7,8 +7,8 @@
  * @module table/converters/table-layout-post-fixer
  */
 
-import { createEmptyTableCell, findAncestor, updateNumericAttribute } from './../commands/utils';
 import TableWalker from './../tablewalker';
+import { createEmptyTableCell, findAncestor, updateNumericAttribute } from '../utils/common';
 
 /**
  * Injects a table layout post-fixer into the model.
@@ -350,9 +350,9 @@ function findCellsToTrim( table ) {
 
 	const cellsToTrim = [];
 
-	for ( const { row, rowspan, cell } of new TableWalker( table ) ) {
+	for ( const { row, cell, cellHeight } of new TableWalker( table ) ) {
 		// Skip cells that do not expand over its row.
-		if ( rowspan < 2 ) {
+		if ( cellHeight < 2 ) {
 			continue;
 		}
 
@@ -362,7 +362,7 @@ function findCellsToTrim( table ) {
 		const rowLimit = isInHeader ? headingRows : maxRows;
 
 		// If table cell expands over its limit reduce it height to proper value.
-		if ( row + rowspan > rowLimit ) {
+		if ( row + cellHeight > rowLimit ) {
 			const newRowspan = rowLimit - row;
 
 			cellsToTrim.push( { cell, rowspan: newRowspan } );
@@ -380,7 +380,7 @@ function getRowsLengths( table ) {
 	// TableWalker will not provide items for the empty rows, we need to pre-fill this array.
 	const lengths = new Array( table.childCount ).fill( 0 );
 
-	for ( const { row } of new TableWalker( table, { includeSpanned: true } ) ) {
+	for ( const { row } of new TableWalker( table, { includeAllSlots: true } ) ) {
 		lengths[ row ]++;
 	}
 

@@ -135,7 +135,7 @@ function _normalizeStyle( style ) {
 		const extendedStyle = Object.assign( {}, style );
 
 		for ( const prop in defaultStyle ) {
-			if ( !style.hasOwnProperty( prop ) ) {
+			if ( !Object.prototype.hasOwnProperty.call( style, prop ) ) {
 				extendedStyle[ prop ] = defaultStyle[ prop ];
 			}
 		}

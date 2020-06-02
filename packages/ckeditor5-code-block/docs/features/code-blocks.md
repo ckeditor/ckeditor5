@@ -197,4 +197,4 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5-code-block.
+The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-code-block.

@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import TableWalker from './tablewalker';
-import { createEmptyTableCell, updateNumericAttribute } from './commands/utils';
+import { createEmptyTableCell, updateNumericAttribute } from './utils/common';
 
 /**
  * The table utilities plugin.
@@ -58,7 +58,7 @@ export default class TableUtils extends Plugin {
 
 		const rowIndex = table.getChildIndex( tableRow );
 
-		const tableWalker = new TableWalker( table, { startRow: rowIndex, endRow: rowIndex } );
+		const tableWalker = new TableWalker( table, { row: rowIndex } );
 
 		for ( const { cell, row, column } of tableWalker ) {
 			if ( cell === tableCell ) {
@@ -152,8 +152,8 @@ export default class TableUtils extends Plugin {
 			// Store spans of the reference row to reproduce it's structure. This array is column number indexed.
 			const rowColSpansMap = new Array( columns ).fill( 1 );
 
-			for ( const { row, column, rowspan, colspan, cell } of tableIterator ) {
-				const lastCellRow = row + rowspan - 1;
+			for ( const { row, column, cellHeight, cellWidth, cell } of tableIterator ) {
+				const lastCellRow = row + cellHeight - 1;
 
 				const isOverlappingInsertedRow = row < insertAt && insertAt <= lastCellRow;
 				const isReferenceRow = row <= copyStructureFrom && copyStructureFrom <= lastCellRow;
@@ -161,14 +161,14 @@ export default class TableUtils extends Plugin {
 				// If the cell is row-spanned and overlaps the inserted row, then reserve space for it in the row map.
 				if ( isOverlappingInsertedRow ) {
 					// This cell overlaps the inserted rows so we need to expand it further.
-					writer.setAttribute( 'rowspan', rowspan + rowsToInsert, cell );
+					writer.setAttribute( 'rowspan', cellHeight + rowsToInsert, cell );
 
 					// Mark this cell with negative number to indicate how many cells should be skipped when adding the new cells.
-					rowColSpansMap[ column ] = -colspan;
+					rowColSpansMap[ column ] = -cellWidth;
 				}
 				// Store the colspan from reference row.
 				else if ( isCopyStructure && isReferenceRow ) {
-					rowColSpansMap[ column ] = colspan;
+					rowColSpansMap[ column ] = cellWidth;
 				}
 			}
 
@@ -244,37 +244,31 @@ export default class TableUtils extends Plugin {
 				return;
 			}
 
-			const tableWalker = new TableWalker( table, { column: insertAt, includeSpanned: true } );
+			const tableWalker = new TableWalker( table, { column: insertAt, includeAllSlots: true } );
 
-			for ( const { row, cell, cellIndex } of tableWalker ) {
+			for ( const tableSlot of tableWalker ) {
+				const { row, cell, cellAnchorColumn, cellAnchorRow, cellWidth, cellHeight } = tableSlot;
+
 				// When iterating over column the table walker outputs either:
 				// - cells at given column index (cell "e" from method docs),
-				// - spanned columns (spanned cell from row between cells "g" and "h" - spanned by "e", only if `includeSpanned: true`),
+				// - spanned columns (spanned cell from row between cells "g" and "h" - spanned by "e", only if `includeAllSlots: true`),
 				// - or a cell from the same row which spans over this column (cell "a").
 
-				const rowspan = parseInt( cell.getAttribute( 'rowspan' ) || 1 );
-				const colspan = parseInt( cell.getAttribute( 'colspan' ) || 1 );
-
-				if ( cellIndex !== insertAt && colspan > 1 ) {
-					// If column is different than `insertAt`, it is a cell that spans over an inserted column (cell "a" & "i").
+				if ( cellAnchorColumn < insertAt ) {
+					// If cell is anchored in previous column, it is a cell that spans over an inserted column (cell "a" & "i").
 					// For such cells expand them by a number of columns inserted.
-					writer.setAttribute( 'colspan', colspan + columnsToInsert, cell );
+					writer.setAttribute( 'colspan', cellWidth + columnsToInsert, cell );
 
-					// The `includeSpanned` option will output the "empty"/spanned column so skip this row already.
-					tableWalker.skipRow( row );
+					// This cell will overlap cells in rows below so skip them (because of `includeAllSlots` option) - (cell "a")
+					const lastCellRow = cellAnchorRow + cellHeight - 1;
 
-					// This cell will overlap cells in rows below so skip them also (because of `includeSpanned` option) - (cell "a")
-					if ( rowspan > 1 ) {
-						for ( let i = row + 1; i < row + rowspan; i++ ) {
-							tableWalker.skipRow( i );
-						}
+					for ( let i = row; i <= lastCellRow; i++ ) {
+						tableWalker.skipRow( i );
 					}
 				} else {
-					// It's either cell at this column index or spanned cell by a rowspanned cell from row above.
+					// It's either cell at this column index or spanned cell by a row-spanned cell from row above.
 					// In table above it's cell "e" and a spanned position from row below (empty cell between cells "g" and "h")
-					const insertPosition = writer.createPositionAt( table.getChild( row ), cellIndex );
-
-					createCells( columnsToInsert, writer, insertPosition );
+					createCells( columnsToInsert, writer, tableSlot.getPositionBefore() );
 				}
 			}
 		} );
@@ -388,10 +382,10 @@ export default class TableUtils extends Plugin {
 			const emptyRowsIndexes = [];
 
 			for ( let removedColumnIndex = last; removedColumnIndex >= first; removedColumnIndex-- ) {
-				for ( const { cell, column, colspan } of [ ...new TableWalker( table ) ] ) {
+				for ( const { cell, column, cellWidth } of [ ...new TableWalker( table ) ] ) {
 					// If colspaned cell overlaps removed column decrease its span.
-					if ( column <= removedColumnIndex && colspan > 1 && column + colspan > removedColumnIndex ) {
-						updateNumericAttribute( 'colspan', colspan - 1, cell, writer );
+					if ( column <= removedColumnIndex && cellWidth > 1 && column + cellWidth > removedColumnIndex ) {
+						updateNumericAttribute( 'colspan', cellWidth - 1, cell, writer );
 					} else if ( column === removedColumnIndex ) {
 						const cellRow = cell.parent;
 
@@ -499,16 +493,16 @@ export default class TableUtils extends Plugin {
 				const { column: splitCellColumn } = tableMap.find( ( { cell } ) => cell === tableCell );
 
 				// Find cells which needs to be expanded vertically - those on the same column or those that spans over split cell's column.
-				const cellsToUpdate = tableMap.filter( ( { cell, colspan, column } ) => {
+				const cellsToUpdate = tableMap.filter( ( { cell, cellWidth, column } ) => {
 					const isOnSameColumn = cell !== tableCell && column === splitCellColumn;
-					const spansOverColumn = ( column < splitCellColumn && column + colspan > splitCellColumn );
+					const spansOverColumn = ( column < splitCellColumn && column + cellWidth > splitCellColumn );
 
 					return isOnSameColumn || spansOverColumn;
 				} );
 
 				// Expand cells vertically.
-				for ( const { cell, colspan } of cellsToUpdate ) {
-					writer.setAttribute( 'colspan', colspan + cellsToInsert, cell );
+				for ( const { cell, cellWidth } of cellsToUpdate ) {
+					writer.setAttribute( 'colspan', cellWidth + cellsToInsert, cell );
 				}
 
 				// Second step: create columns after split cell.
@@ -608,7 +602,7 @@ export default class TableUtils extends Plugin {
 				const tableMap = [ ...new TableWalker( table, {
 					startRow: splitCellRow,
 					endRow: splitCellRow + rowspan - 1,
-					includeSpanned: true
+					includeAllSlots: true
 				} ) ];
 
 				// Get spans of new (inserted) cells and span to update of split cell.
@@ -631,7 +625,9 @@ export default class TableUtils extends Plugin {
 					newCellsAttributes.colspan = colspan;
 				}
 
-				for ( const { column, row, cellIndex } of tableMap ) {
+				for ( const tableSlot of tableMap ) {
+					const { column, row } = tableSlot;
+
 					// As both newly created cells and the split cell might have rowspan,
 					// the insertion of new cells must go to appropriate rows:
 					//
@@ -643,9 +639,7 @@ export default class TableUtils extends Plugin {
 					const isInEvenlySplitRow = ( row + splitCellRow + updatedSpan ) % newCellsSpan === 0;
 
 					if ( isAfterSplitCell && isOnSameColumn && isInEvenlySplitRow ) {
-						const position = writer.createPositionAt( table.getChild( row ), cellIndex );
-
-						createCells( 1, writer, position, newCellsAttributes );
+						createCells( 1, writer, tableSlot.getPositionBefore(), newCellsAttributes );
 					}
 				}
 			}
@@ -659,12 +653,12 @@ export default class TableUtils extends Plugin {
 				const tableMap = [ ...new TableWalker( table, { startRow: 0, endRow: splitCellRow } ) ];
 
 				// First step: expand cells.
-				for ( const { cell, rowspan, row } of tableMap ) {
+				for ( const { cell, cellHeight, row } of tableMap ) {
 					// Expand rowspan of cells that are either:
 					// - on the same row as current cell,
 					// - or are below split cell row and overlaps that row.
-					if ( cell !== tableCell && row + rowspan > splitCellRow ) {
-						const rowspanToSet = rowspan + cellsToInsert;
+					if ( cell !== tableCell && row + cellHeight > splitCellRow ) {
+						const rowspanToSet = cellHeight + cellsToInsert;
 
 						writer.setAttribute( 'rowspan', rowspanToSet, cell );
 					}
@@ -829,14 +823,14 @@ function getCellsToMoveAndTrimOnRemoveRow( table, first, last ) {
 	const cellsToMove = new Map();
 	const cellsToTrim = [];
 
-	for ( const { row, column, rowspan, cell } of new TableWalker( table, { endRow: last } ) ) {
-		const lastRowOfCell = row + rowspan - 1;
+	for ( const { row, column, cellHeight, cell } of new TableWalker( table, { endRow: last } ) ) {
+		const lastRowOfCell = row + cellHeight - 1;
 
 		const isCellStickingOutFromRemovedRows = row >= first && row <= last && lastRowOfCell > last;
 
 		if ( isCellStickingOutFromRemovedRows ) {
 			const rowspanInRemovedSection = last - row + 1;
-			const rowSpanToSet = rowspan - rowspanInRemovedSection;
+			const rowSpanToSet = cellHeight - rowspanInRemovedSection;
 
 			cellsToMove.set( column, {
 				cell,
@@ -860,7 +854,7 @@ function getCellsToMoveAndTrimOnRemoveRow( table, first, last ) {
 
 			cellsToTrim.push( {
 				cell,
-				rowspan: rowspan - rowspanAdjustment
+				rowspan: cellHeight - rowspanAdjustment
 			} );
 		}
 	}
@@ -869,9 +863,8 @@ function getCellsToMoveAndTrimOnRemoveRow( table, first, last ) {
 
 function moveCellsToRow( table, targetRowIndex, cellsToMove, writer ) {
 	const tableWalker = new TableWalker( table, {
-		includeSpanned: true,
-		startRow: targetRowIndex,
-		endRow: targetRowIndex
+		includeAllSlots: true,
+		row: targetRowIndex
 	} );
 
 	const tableRowMap = [ ...tableWalker ];
@@ -879,7 +872,7 @@ function moveCellsToRow( table, targetRowIndex, cellsToMove, writer ) {
 
 	let previousCell;
 
-	for ( const { column, cell, isSpanned } of tableRowMap ) {
+	for ( const { column, cell, isAnchor } of tableRowMap ) {
 		if ( cellsToMove.has( column ) ) {
 			const { cell: cellToMove, rowspan } = cellsToMove.get( column );
 
@@ -891,7 +884,7 @@ function moveCellsToRow( table, targetRowIndex, cellsToMove, writer ) {
 			updateNumericAttribute( 'rowspan', rowspan, cellToMove, writer );
 
 			previousCell = cellToMove;
-		} else if ( !isSpanned ) {
+		} else if ( isAnchor ) {
 			// If cell is spanned then `cell` holds reference to overlapping cell. See ckeditor/ckeditor5#6502.
 			previousCell = cell;
 		}

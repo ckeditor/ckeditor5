@@ -20,7 +20,8 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  * {@link module:engine/model/selection~Selection#anchor anchored} in.
  *
  * If the selection was anchored in a {@glink framework/guides/tutorials/implementing-a-block-widget nested editable}
- * (e.g. a caption of an image), the new selection will contain its entire content.
+ * (e.g. a caption of an image), the new selection will contain its entire content. Successive executions of this command
+ * will expand the selection to encompass more and more content up to the entire editable root of the editor.
  *
  * @extends module:core/command~Command
  */
@@ -30,10 +31,35 @@ export default class SelectAllCommand extends Command {
 	 */
 	execute() {
 		const model = this.editor.model;
-		const limitElement = model.schema.getLimitElement( model.document.selection );
+		const selection = model.document.selection;
+		let scopeElement = model.schema.getLimitElement( selection );
+
+		// If an entire scope is selected, or the selection's ancestor is not a scope yet,
+		// browse through ancestors to find the enclosing parent scope.
+		if ( selection.containsEntireContent( scopeElement ) || !isSelectAllScope( model.schema, scopeElement ) ) {
+			do {
+				scopeElement = scopeElement.parent;
+
+				// Do nothing, if the entire `root` is already selected.
+				if ( !scopeElement ) {
+					return;
+				}
+			} while ( !isSelectAllScope( model.schema, scopeElement ) );
+		}
 
 		model.change( writer => {
-			writer.setSelection( limitElement, 'in' );
+			writer.setSelection( scopeElement, 'in' );
 		} );
 	}
+}
+
+// Checks whether the element is a valid select-all scope.
+// Returns true, if the element is a {@link module:engine/model/schema~Schema#isLimit limit},
+// and can contain any text or paragraph.
+//
+// @param {module:engine/model/schema~Schema} schema The schema to check against.
+// @param {module:engine/model/element~Element} element
+// @return {Boolean}
+function isSelectAllScope( schema, element ) {
+	return schema.isLimit( element ) && ( schema.checkChild( element, '$text' ) || schema.checkChild( element, 'paragraph' ) );
 }

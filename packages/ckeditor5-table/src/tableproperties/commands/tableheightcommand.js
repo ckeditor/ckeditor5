@@ -8,7 +8,7 @@
  */
 
 import TablePropertyCommand from './tablepropertycommand';
-import { addDefaultUnitToNumericValue } from '../../commands/utils';
+import { addDefaultUnitToNumericValue } from '../../utils/table-properties';
 
 /**
  * The table height command.

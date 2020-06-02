@@ -1421,7 +1421,7 @@ describe( 'table clipboard', () => {
 					] );
 				} );
 
-				it( 'handles pasting table that has cell with colspan (multiple ending rows in the selection are spanned)', () => {
+				it( 'handles pasting table that has cell with rowspan (multiple ending rows in the selection are spanned)', () => {
 					// +----+----+----+
 					// | 00 | 01 | 02 |
 					// +----+    +    +

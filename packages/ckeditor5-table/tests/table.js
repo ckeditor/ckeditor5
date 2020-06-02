@@ -8,12 +8,15 @@ import TableEditing from '../src/tableediting';
 import TableUI from '../src/tableui';
 import TableSelection from '../src/tableselection';
 import TableClipboard from '../src/tableclipboard';
-import TableNavigation from '../src/tablenavigation';
+import TableKeyboard from '../src/tablekeyboard';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import TableMouse from '../src/tablemouse';
 
 describe( 'Table', () => {
-	it( 'requires TableEditing, TableUI, TableSelection, TableClipboard, TableNavigation and Widget', () => {
-		expect( Table.requires ).to.deep.equal( [ TableEditing, TableUI, TableSelection, TableClipboard, TableNavigation, Widget ] );
+	it( 'requires TableEditing, TableUI, TableSelection, TableMouse, TableKeyboard, TableClipboard and Widget', () => {
+		expect( Table.requires ).to.deep.equal( [
+			TableEditing, TableUI, TableSelection, TableMouse, TableKeyboard, TableClipboard, Widget
+		] );
 	} );
 
 	it( 'has proper name', () => {
