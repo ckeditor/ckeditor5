@@ -407,6 +407,11 @@ describe( 'LinkEditing', () => {
 			);
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo <a href="url">li</a></p>' +
+				'<p><a class="ck-link_selected" href="url">{}nk</a> baz</p>'
+			);
 		} );
 
 		it( 'should remove classes when selection is moved out from the link', () => {
