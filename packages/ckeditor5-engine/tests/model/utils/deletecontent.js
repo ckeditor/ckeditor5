@@ -244,7 +244,7 @@ describe( 'DataController utils', () => {
 			);
 
 			test(
-				'excludes end block from deletion if selection ends at start position of it',
+				'do not remove end block if selection ends at start position of it',
 				'<paragraph>x</paragraph><paragraph>[foo</paragraph><paragraph>]bar</paragraph><paragraph>y</paragraph>',
 				'<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>bar</paragraph><paragraph>y</paragraph>'
 			);
