@@ -277,7 +277,7 @@ export default class Widget extends Plugin {
 	/**
 	 * Sets {@link module:engine/model/selection~Selection document's selection} over given element.
 	 *
-	 * @private
+	 * @protected
 	 * @param {module:engine/model/element~Element} element
 	 */
 	_setSelectionOverElement( element ) {
@@ -291,7 +291,7 @@ export default class Widget extends Plugin {
 	 * {@link module:engine/model/selection~Selection model selection} exists and is marked in
 	 * {@link module:engine/model/schema~Schema schema} as `object`.
 	 *
-	 * @private
+	 * @protected
 	 * @param {Boolean} forward Direction of checking.
 	 * @returns {module:engine/model/element~Element|null}
 	 */
