@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import findLinkRange from '../src/findlinkrange';
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { findLinkRange } from '../../src/utils/inlinehighlight';
+import Model from '../../src/model/model';
+import Range from '../../src/model/range';
+import { setData } from '../../src/dev-utils/model';
 
 describe( 'findLinkRange', () => {
 	let model, document, root;

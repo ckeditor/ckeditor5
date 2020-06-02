@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import findLinkRange from './findlinkrange';
+import { findLinkRange } from '@ckeditor/ckeditor5-engine/src/utils/inlinehighlight';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 

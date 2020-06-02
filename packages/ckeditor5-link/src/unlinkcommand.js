@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import findLinkRange from './findlinkrange';
+import { findLinkRange } from '@ckeditor/ckeditor5-engine/src/utils/inlinehighlight';
 
 /**
  * The unlink command. It is used by the {@link module:link/link~Link link plugin}.

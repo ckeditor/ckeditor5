@@ -14,7 +14,7 @@ import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, normalizeDeco
 import AutomaticDecorators from './utils/automaticdecorators';
 import ManualDecorator from './utils/manualdecorator';
 import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
-import findLinkRange from './findlinkrange';
+import setupHighlight from '@ckeditor/ckeditor5-engine/src/utils/inlinehighlight';
 import '../theme/link.css';
 
 const HIGHLIGHT_CLASS = 'ck-link_selected';
@@ -100,7 +100,7 @@ export default class LinkEditing extends Plugin {
 		} );
 
 		// Setup highlight over selected link.
-		this._setupLinkHighlight();
+		setupHighlight( editor, editor.editing.view, HIGHLIGHT_CLASS );
 
 		// Change the attributes of the selection in certain situations after the link was inserted into the document.
 		this._enableInsertContentSelectionAttributesFixer();
@@ -190,67 +190,6 @@ export default class LinkEditing extends Plugin {
 					key: decorator.id
 				}
 			} );
-		} );
-	}
-
-	/**
-	 * Adds a visual highlight style to a link in which the selection is anchored.
-	 * Together with two-step caret movement, they indicate that the user is typing inside the link.
-	 *
-	 * Highlight is turned on by adding the `.ck-link_selected` class to the link in the view:
-	 *
-	 * * The class is removed before the conversion has started, as callbacks added with the `'highest'` priority
-	 * to {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} events.
-	 * * The class is added in the view post fixer, after other changes in the model tree were converted to the view.
-	 *
-	 * This way, adding and removing the highlight does not interfere with conversion.
-	 *
-	 * @private
-	 */
-	_setupLinkHighlight() {
-		const editor = this.editor;
-		const view = editor.editing.view;
-		const highlightedLinks = new Set();
-
-		// Adding the class.
-		view.document.registerPostFixer( writer => {
-			const selection = editor.model.document.selection;
-			let changed = false;
-
-			if ( selection.hasAttribute( 'linkHref' ) ) {
-				const modelRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ), editor.model );
-				const viewRange = editor.editing.mapper.toViewRange( modelRange );
-
-				// There might be multiple `a` elements in the `viewRange`, for example, when the `a` element is
-				// broken by a UIElement.
-				for ( const item of viewRange.getItems() ) {
-					if ( item.is( 'a' ) && !item.hasClass( HIGHLIGHT_CLASS ) ) {
-						writer.addClass( HIGHLIGHT_CLASS, item );
-						highlightedLinks.add( item );
-						changed = true;
-					}
-				}
-			}
-
-			return changed;
-		} );
-
-		// Removing the class.
-		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-			// Make sure the highlight is removed on every possible event, before conversion is started.
-			dispatcher.on( 'insert', removeHighlight, { priority: 'highest' } );
-			dispatcher.on( 'remove', removeHighlight, { priority: 'highest' } );
-			dispatcher.on( 'attribute', removeHighlight, { priority: 'highest' } );
-			dispatcher.on( 'selection', removeHighlight, { priority: 'highest' } );
-
-			function removeHighlight() {
-				view.change( writer => {
-					for ( const item of highlightedLinks.values() ) {
-						writer.removeClass( HIGHLIGHT_CLASS, item );
-						highlightedLinks.delete( item );
-					}
-				} );
-			}
 		} );
 	}
 
