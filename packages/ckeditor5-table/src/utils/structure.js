@@ -305,3 +305,36 @@ function addHeadingsToCroppedTable( croppedTable, sourceTable, startRow, startCo
 		updateNumericAttribute( 'headingColumns', headingColumnsInCrop, croppedTable, writer, 0 );
 	}
 }
+
+/**
+ * Returns array of column indexes that have no cells anchored.
+ *
+ * For this table:
+ *
+ *     +----+----+----+----+----+----+----+
+ *     | 00 | 01      | 03 | 04      | 06 |
+ *     +----+----+----+----+         +----+
+ *     | 10 | 11      | 13 |         | 16 |
+ *     +----+----+----+----+----+----+----+
+ *     | 20 | 21      | 23 | 24      | 26 |
+ *     +----+----+----+----+----+----+----+
+ *                  ^--- empty ---^
+ *
+ * Will return: [ 2, 5 ]
+ */
+export function getEmptyColumnsIndexes( table ) {
+	const tableMap = Array.from( new TableWalker( table, { includeAllSlots: true } ) );
+	const lastColumn = tableMap[ tableMap.length - 1 ].column;
+
+	const columns = new Array( lastColumn + 1 ).fill( 0 );
+
+	for ( const { column, isAnchor } of tableMap ) {
+		if ( isAnchor ) {
+			columns[ column ]++;
+		}
+	}
+
+	return columns.reduce( ( result, cellsCount, column ) => {
+		return cellsCount ? result : [ ...result, column ];
+	}, [] );
+}

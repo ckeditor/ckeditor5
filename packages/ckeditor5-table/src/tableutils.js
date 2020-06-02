@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import TableWalker from './tablewalker';
 import { createEmptyTableCell, updateNumericAttribute } from './utils/common';
+import { getEmptyColumnsIndexes } from './utils/structure';
 
 /**
  * The table utilities plugin.
@@ -336,7 +337,16 @@ export default class TableUtils extends Plugin {
 				updateNumericAttribute( 'rowspan', rowspan, cell, writer );
 			}
 
-			// 2d. Adjust heading rows if removed rows were in a heading section.
+			// 2d. Check if there are any empty columns (no anchored cells).
+			const emptyColumnsIndexes = getEmptyColumnsIndexes( table );
+
+			if ( emptyColumnsIndexes.length ) {
+				emptyColumnsIndexes.reverse().forEach( column => {
+					this.removeColumns( table, { at: column, batch: writer.batch } );
+				} );
+			}
+
+			// 2e. Adjust heading rows if removed rows were in a heading section.
 			updateHeadingRows( table, first, last, model, batch );
 		} );
 	}
@@ -401,7 +411,9 @@ export default class TableUtils extends Plugin {
 				}
 			}
 
-			emptyRowsIndexes.reverse().forEach( row => this.removeRows( table, { at: row, batch: writer.batch } ) );
+			emptyRowsIndexes.reverse().forEach( row => {
+				this.removeRows( table, { at: row, batch: writer.batch } );
+			} );
 		} );
 	}
 

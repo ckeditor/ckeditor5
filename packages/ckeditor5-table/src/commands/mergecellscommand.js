@@ -11,6 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableUtils from '../tableutils';
 import { getSelectedTableCells, isSelectionRectangular } from '../utils/selection';
 import { findAncestor, updateNumericAttribute } from '../utils/common';
+import { getEmptyColumnsIndexes } from '../utils/structure';
 
 /**
  * The merge cells command.
@@ -69,10 +70,21 @@ export default class MergeCellsCommand extends Command {
 				}
 			}
 
-			if ( emptyRowsIndexes.length ) {
-				const table = findAncestor( 'table', firstTableCell );
+			const table = findAncestor( 'table', firstTableCell );
 
-				emptyRowsIndexes.reverse().forEach( row => tableUtils.removeRows( table, { at: row, batch: writer.batch } ) );
+			if ( emptyRowsIndexes.length ) {
+				emptyRowsIndexes.reverse().forEach( row => {
+					tableUtils.removeRows( table, { at: row, batch: writer.batch } );
+				} );
+			} else {
+				// If there were some rows removed then empty columns were already verified.
+				const emptyColumnsIndexes = getEmptyColumnsIndexes( table );
+
+				if ( emptyColumnsIndexes.length ) {
+					emptyColumnsIndexes.reverse().forEach( column => {
+						tableUtils.removeColumns( table, { at: column, batch: writer.batch } );
+					} );
+				}
 			}
 
 			writer.setSelection( firstTableCell, 'in' );
