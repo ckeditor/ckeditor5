@@ -82,9 +82,13 @@ function selectionPostFixer( writer, model ) {
 		// Those ranges might overlap but will be corrected later.
 		const correctedRange = tryFixingRange( modelRange, schema );
 
-		// It may happen that a new range is returned but in fact it has the same positions as the original
-		// range anyway. If this branch was not discarded, a new selection would be set and that, for instance,
-		// would destroy the selection' attributes.
+		// "Selection fixing" algorithms sometimes get lost. In consequence, it may happen
+		// that a new range is returned but, in fact, it has the same positions as the original
+		// range anyway. If this range is not discarded, a new selection will be set and that,
+		// for instance, would destroy the selection attributes. Let's make sure that the post-fixer
+		// actually worked first before setting a new selection.
+		//
+		// https://github.com/ckeditor/ckeditor5/issues/6693
 		if ( correctedRange && !correctedRange.isEqual( modelRange ) ) {
 			ranges.push( correctedRange );
 			wasFixed = true;
