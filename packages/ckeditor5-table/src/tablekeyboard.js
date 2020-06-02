@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/tablenavigation
+ * @module table/tablekeyboard
  */
 
 import TableSelection from './tableselection';
@@ -23,12 +23,12 @@ import { findAncestor } from './utils/common';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class TableNavigation extends Plugin {
+export default class TableKeyboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'TableNavigation';
+		return 'TableKeyboard';
 	}
 
 	/**
