@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-heading",
-  "version": "19.0.0",
+  "version": "19.0.1",
   "description": "Headings feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -10,26 +10,26 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^19.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^19.0.0",
-    "@ckeditor/ckeditor5-ui": "^19.0.0",
-    "@ckeditor/ckeditor5-utils": "^19.0.0"
+    "@ckeditor/ckeditor5-core": "^19.0.1",
+    "@ckeditor/ckeditor5-paragraph": "^19.1.0",
+    "@ckeditor/ckeditor5-ui": "^19.0.1",
+    "@ckeditor/ckeditor5-utils": "^19.0.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-alignment": "^19.0.0",
-    "@ckeditor/ckeditor5-basic-styles": "^19.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^19.0.0",
-    "@ckeditor/ckeditor5-clipboard": "^19.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^19.0.0",
-    "@ckeditor/ckeditor5-engine": "^19.0.0",
-    "@ckeditor/ckeditor5-enter": "^19.0.0",
-    "@ckeditor/ckeditor5-image": "^19.0.0",
-    "@ckeditor/ckeditor5-typing": "^19.0.0",
-    "@ckeditor/ckeditor5-undo": "^19.0.0",
-    "@ckeditor/ckeditor5-upload": "^19.0.0"
+    "@ckeditor/ckeditor5-alignment": "^19.0.1",
+    "@ckeditor/ckeditor5-basic-styles": "^19.0.1",
+    "@ckeditor/ckeditor5-block-quote": "^19.0.1",
+    "@ckeditor/ckeditor5-clipboard": "^19.0.1",
+    "@ckeditor/ckeditor5-editor-classic": "^19.0.1",
+    "@ckeditor/ckeditor5-engine": "^19.0.1",
+    "@ckeditor/ckeditor5-enter": "^19.0.1",
+    "@ckeditor/ckeditor5-image": "^19.0.1",
+    "@ckeditor/ckeditor5-typing": "^19.0.1",
+    "@ckeditor/ckeditor5-undo": "^19.0.1",
+    "@ckeditor/ckeditor5-upload": "^19.0.1"
   },
   "engines": {
-    "node": ">=8.0.0",
+    "node": ">=12.0.0",
     "npm": ">=5.7.1"
   },
   "author": "CKSource (http://cksource.com/)",

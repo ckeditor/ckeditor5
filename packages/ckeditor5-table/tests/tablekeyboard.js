@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import TableNavigation from '../src/tablenavigation';
+import TableKeyboard from '../src/tablekeyboard';
 import Table from '../src/table';
 import TableEditing from '../src/tableediting';
 import TableSelection from '../src/tableselection';
 import { modelTable } from './_utils/utils';
-import { getTableCellsContainingSelection } from '../src/utils';
+import { getTableCellsContainingSelection } from '../src/utils/selection';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -27,8 +27,8 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
-describe( 'TableNavigation', () => {
-	let editor, model, modelRoot, tableSelection, tableNavigation, selection;
+describe( 'TableKeyboard', () => {
+	let editor, model, modelRoot, tableSelection, tableKeyboard, selection;
 
 	const imageUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAUCAQAAADRyVAeAAAAKklEQVR42u3PAQ0AAAwCI' +
 		'O0f+u/hoAHNZUJFRERERERERERERERERLYiD9N4FAFj2iK6AAAAAElFTkSuQmCC';
@@ -36,7 +36,7 @@ describe( 'TableNavigation', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TableEditing, TableNavigation, TableSelection, Paragraph, ImageEditing, ImageCaptionEditing, MediaEmbedEditing,
+				plugins: [ TableEditing, TableKeyboard, TableSelection, Paragraph, ImageEditing, ImageCaptionEditing, MediaEmbedEditing,
 					HorizontalLineEditing ]
 			} )
 			.then( newEditor => {
@@ -46,7 +46,7 @@ describe( 'TableNavigation', () => {
 				selection = model.document.selection;
 				modelRoot = model.document.getRoot();
 				tableSelection = editor.plugins.get( TableSelection );
-				tableNavigation = editor.plugins.get( TableNavigation );
+				tableKeyboard = editor.plugins.get( TableKeyboard );
 			} );
 	} );
 
@@ -55,7 +55,7 @@ describe( 'TableNavigation', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( TableNavigation.pluginName ).to.equal( 'TableNavigation' );
+		expect( TableKeyboard.pluginName ).to.equal( 'TableKeyboard' );
 	} );
 
 	describe( 'Tab key handling', () => {
@@ -465,7 +465,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should navigate to the start position of the cell on the right when the direction is "right"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
 						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '[]01', '02' ],
@@ -475,7 +475,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should navigate to the start position of the cell below when the direction is "down"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
 						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02' ],
@@ -485,7 +485,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should select a whole table when the direction is "up"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
 						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>[' + modelTable( [
 							[ '00', '01', '02' ],
@@ -495,7 +495,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should select a whole table when the direction is "left"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
 						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>[' + modelTable( [
 							[ '00', '01', '02' ],
@@ -513,7 +513,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should navigate to the end position of the cell on the left when the direction is "left"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
 						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02' ],
@@ -523,7 +523,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should navigate to the end position of the cell above when the direction is "up"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
 						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02' ],
@@ -533,7 +533,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should select a whole table when the direction is "down"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
 						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>[' + modelTable( [
 							[ '00', '01', '02' ],
@@ -543,7 +543,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should select a whole table when the direction is "right"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
 						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>[' + modelTable( [
 							[ '00', '01', '02' ],
@@ -561,7 +561,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should navigate to start position of the cell on the right when the direction is "right"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
 						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02' ],
@@ -571,7 +571,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should navigate to the end position of the cell above when the direction is "up"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
 						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00[]', '01', '02' ],
@@ -581,7 +581,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should navigate to the start position of the cell below when the direction is "down"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
 						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02' ],
@@ -591,7 +591,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should navigate to the end position of the last cell in the previous row when the direction is "left"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
 						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02[]' ],
@@ -609,7 +609,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should navigate to the end position of the cell on the left when the direction is "left"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
 						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02' ],
@@ -619,7 +619,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should navigate to the end position the cell above when the direction is "up"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
 						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02[]' ],
@@ -629,7 +629,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should navigate to the start position of the cell below when the direction is "down"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
 						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02' ],
@@ -639,7 +639,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should navigate to the start position of the first cell in the next row when the direction is "right"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
 						assertEqualMarkup( getModelData( model ), '<paragraph>foo</paragraph>' + modelTable( [
 							[ '00', '01', '02' ],
@@ -676,7 +676,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the row-col-spanned cell when approaching from the upper-spanned row', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 0 ] );
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -690,7 +690,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the row-col-spanned cell when approaching from the lower-spanned row', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 2, 0 ] );
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -704,7 +704,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the row-spanned cell when approaching from the other row-spanned cell', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -718,7 +718,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the cell in the upper-spanned row when approaching from the row-spanned cell', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 2 ] ); // Cell 13.
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -732,7 +732,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the col-spanned cell', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 3, 0 ] );
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -746,7 +746,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate from the col-spanned cell', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 3, 1 ] );
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'right' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'right' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -762,7 +762,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the row-spanned cell when approaching from the upper-spanned row', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 3 ] ); // Cell 14.
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -776,7 +776,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the row-spanned cell when approaching from the lower-spanned row', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 2, 1 ] ); // Cell 24.
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -790,7 +790,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the row-spanned cell when approaching from the other row-spanned cell', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 2 ] ); // Cell 13.
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -804,7 +804,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the cell in the upper-spanned row when approaching from the row-spanned cell', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] ); // Cell 11.
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -818,7 +818,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the col-spanned cell', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 3, 2 ] ); // Cell 33.
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -832,7 +832,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate from the col-spanned cell', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 3, 1 ] );
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'left' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'left' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -848,7 +848,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the row-col-spanned cell when approaching from the first spanned column', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 0, 1 ] );
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -862,7 +862,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the row-col-spanned cell when approaching from the last spanned column', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 0, 2 ] );
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -876,7 +876,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the row-spanned cell when approaching from the other col-spanned cell', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -890,7 +890,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the cell in the first spanned column when approaching from the col-spanned cell', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] ); // Cell 11.
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -904,7 +904,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the row-spanned cell', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 0, 3 ] );
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -918,7 +918,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate from the row-spanned cell', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 2 ] ); // Cell 13.
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'down' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'down' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -934,7 +934,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the col-spanned cell when approaching from the first spanned column', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 4, 1 ] );
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -948,7 +948,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the col-spanned cell when approaching from the last spanned column', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 4, 2 ] );
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -962,7 +962,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the row-col-spanned cell when approaching from the other col-spanned cell', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 3, 1 ] );
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -976,7 +976,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the cell in the first spanned column when approaching from the col-spanned cell', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 1 ] );
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01[]', '02', '03', '04' ],
@@ -990,7 +990,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate to the row-spanned cell', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 3, 2 ] ); // Cell 33.
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03', '04' ],
@@ -1004,7 +1004,7 @@ describe( 'TableNavigation', () => {
 					it( 'should navigate from the row-spanned cell', () => {
 						const tableCell = modelRoot.getNodeByPath( [ 0, 1, 2 ] ); // Cell 13.
 
-						tableNavigation._navigateFromCellInDirection( tableCell, 'up' );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'up' );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02', '03[]', '04' ],
@@ -1034,7 +1034,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should expand the selection to the cell on the right when the direction is "right"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'right', true );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'right', true );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
@@ -1042,7 +1042,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should expand the selection to the cell below when the direction is "down"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'down', true );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'down', true );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
@@ -1050,7 +1050,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should select a whole table when the direction is "up"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'up', true );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'up', true );
 
 						assertEqualMarkup( getModelData( model ), '[' + modelTable( [
 							[ '00', '01', '02' ],
@@ -1060,7 +1060,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should select a whole table when the direction is "left"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'left', true );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'left', true );
 
 						assertEqualMarkup( getModelData( model ), '[' + modelTable( [
 							[ '00', '01', '02' ],
@@ -1079,7 +1079,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should expand the selection to the cell on the left when the direction is "left"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'left', true );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'left', true );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 1 ] ) );
@@ -1087,7 +1087,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should expand the selection to the cell above when the direction is "up"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'up', true );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'up', true );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
@@ -1095,7 +1095,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should select a whole table when the direction is "down"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'down', true );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'down', true );
 
 						assertEqualMarkup( getModelData( model ), '[' + modelTable( [
 							[ '00', '01', '02' ],
@@ -1105,7 +1105,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should select a whole table when the direction is "right"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'right', true );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'right', true );
 
 						assertEqualMarkup( getModelData( model ), '[' + modelTable( [
 							[ '00', '01', '02' ],
@@ -1124,7 +1124,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should expand the selection to the cell on the right when the direction is "right"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'right', true );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'right', true );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
@@ -1132,7 +1132,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should expand the selection to the cell above when the direction is "up"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'up', true );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'up', true );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
@@ -1140,7 +1140,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should expand the selection to the cell below when the direction is "down"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'down', true );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'down', true );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 0 ] ) );
@@ -1148,7 +1148,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should expand the selection to the cell above when the direction is "left"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'left', true );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'left', true );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
@@ -1165,7 +1165,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should expand the selection to the cell on the left when the direction is "left"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'left', true );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'left', true );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
@@ -1173,7 +1173,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should expand the selection to the cell above when the direction is "up"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'up', true );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'up', true );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 2 ] ) );
@@ -1181,7 +1181,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should expand the selection to the cell below when the direction is "down"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'down', true );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'down', true );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
@@ -1189,7 +1189,7 @@ describe( 'TableNavigation', () => {
 					} );
 
 					it( 'should expand the selection to the cell below when the direction is "right"', () => {
-						tableNavigation._navigateFromCellInDirection( tableCell, 'right', true );
+						tableKeyboard._navigateFromCellInDirection( tableCell, 'right', true );
 
 						expect( tableSelection.getAnchorCell() ).to.equal( tableCell );
 						expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 2, 2 ] ) );
@@ -2979,7 +2979,7 @@ describe( 'TableNavigation', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ TableEditing, TableNavigation, TableSelection, Paragraph, ImageEditing, MediaEmbedEditing ],
+						plugins: [ TableEditing, TableKeyboard, TableSelection, Paragraph, ImageEditing, MediaEmbedEditing ],
 						language: 'ar'
 					} )
 					.then( newEditor => {

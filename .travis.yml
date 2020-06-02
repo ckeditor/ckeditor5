@@ -8,11 +8,13 @@ services:
 cache:
   yarn: true
 node_js:
-- "10"
+- "12"
 cache:
 - node_modules
 before_install:
 - export START_TIME=$( date +%s )
+- export COVERALLS_SERVICE_JOB_ID=$( TRAVIS_JOB_ID )
+- export COVERALLS_SERVICE_NAME="CKEditor5 code coverage"
 - npm i -g yarn
 install:
 - yarn install

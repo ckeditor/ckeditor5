@@ -44,7 +44,6 @@ export default class HighlightCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * @protected
 	 * @param {Object} [options] Options for the executed command.
 	 * @param {String} [options.value] The value to apply.
 	 *

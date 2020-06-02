@@ -1954,7 +1954,7 @@ describe( 'ListEditing', () => {
 								'f' +
 								'</li>' +
 							'<li>g</li>' +
-						'</ul>',
+						'</ul>'
 					);
 
 					const expectedModelData =

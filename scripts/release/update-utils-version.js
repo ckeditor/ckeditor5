@@ -32,7 +32,7 @@ process.chdir( UTILS_PACKAGE_PATH );
 
 if ( exec( 'git status -s' ).trim().length ) {
 	exec( 'git add src/version.js' );
-	exec( 'git commit -m "Internal: Updated version of CKEditor 5."' );
+	exec( 'git commit -m "Internal (utils): Updated version of CKEditor 5."' );
 
 	console.log( `The hardcoded version in ckeditor5-utils has been updated to ${ version }.` );
 } else {

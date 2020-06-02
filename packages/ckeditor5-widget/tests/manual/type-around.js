@@ -90,6 +90,10 @@ class InlineWidget extends Plugin {
 	}
 }
 
+document.querySelector( '#toggleReadOnly' ).addEventListener( 'click', () => {
+	window.editor.isReadOnly = !window.editor.isReadOnly;
+} );
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet, HorizontalLine, InlineWidget, MediaEmbed ],

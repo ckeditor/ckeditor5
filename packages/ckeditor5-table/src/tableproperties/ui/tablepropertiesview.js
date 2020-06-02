@@ -26,7 +26,7 @@ import {
 	getBorderStyleDefinitions,
 	getBorderStyleLabels,
 	getLabeledColorInputCreator
-} from '../../ui/utils';
+} from '../../utils/ui/table-properties';
 import FormRowView from '../../ui/formrowview';
 
 import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview';

@@ -34,7 +34,7 @@ The {@link module:engine/view/document~Document#event:clipboardInput `view.Docum
 
 * Handle pasted or droppped files (that you can retrieve from the `dataTransfer`).
 
-	Handling file upload requires, however, a lot more than reading {@link module:clipboard/datatransfer~DataTransfer#files `dataTransfer.files`} so for a complete code example we recommend checking the source code of plugins like [`ImageUploadEditing`](https://github.com/ckeditor/ckeditor5-image/blob/master/src/imageupload/imageuploadediting.js).
+	Handling file upload requires, however, a lot more than reading {@link module:clipboard/datatransfer~DataTransfer#files `dataTransfer.files`} so for a complete code example we recommend checking the source code of plugins like [`ImageUploadEditing`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/src/imageupload/imageuploadediting.js).
 * Change the type of data that the clipboard feature reads from the clipboard. For instance, you may want to use `application/rtf` if it is present in the `dataTransfer` (and ignore `text/html` in that case).
 
 	```js

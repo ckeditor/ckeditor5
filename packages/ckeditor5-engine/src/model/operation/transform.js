@@ -96,6 +96,7 @@ function noUpdateTransformation( a ) {
 export function transform( a, b, context = {} ) {
 	const transformationFunction = getTransformation( a.constructor, b.constructor );
 
+	/* eslint-disable no-useless-catch */
 	try {
 		a = a.clone();
 
@@ -112,6 +113,7 @@ export function transform( a, b, context = {} ) {
 
 		throw e;
 	}
+	/* eslint-enable no-useless-catch */
 }
 
 /**
