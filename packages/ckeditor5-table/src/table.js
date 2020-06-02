@@ -29,6 +29,7 @@ import '../theme/table.css';
  * * {@link module:table/tableediting~TableEditing editing feature},
  * * {@link module:table/tableselection~TableSelection selection feature},
  * * {@link module:table/tablekeyboard~TableKeyboard keyboard navigation feature},
+ * * {@link module:table/tablemouse~TableMouse mouse selection feature},
  * * {@link module:table/tableclipboard~TableClipboard clipboard feature},
  * * {@link module:table/tableui~TableUI UI feature}.
  *
