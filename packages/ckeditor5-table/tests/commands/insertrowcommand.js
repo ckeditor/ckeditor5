@@ -5,11 +5,13 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import InsertRowCommand from '../../src/commands/insertrowcommand';
+import TableEditing from '../../src/tableediting';
 import TableSelection from '../../src/tableselection';
-import { assertSelectedCells, defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
+import { assertSelectedCells, modelTable } from '../_utils/utils';
 import TableUtils from '../../src/tableutils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
@@ -19,14 +21,11 @@ describe( 'InsertRowCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ TableUtils, TableSelection, HorizontalLineEditing ]
+				plugins: [ Paragraph, TableEditing, TableUtils, TableSelection, HorizontalLineEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-
-				defaultSchema( model.schema );
-				defaultConversion( editor.conversion );
 			} );
 	} );
 
@@ -119,54 +118,104 @@ describe( 'InsertRowCommand', () => {
 			} );
 
 			it( 'should expand rowspan of a cell that overlaps inserted rows', () => {
+				// +----+----+----+----+
+				// | 00      | 02 | 03 |
+				// +----+----+----+----+ <-- heading rows
+				// | 10      | 12 | 13 |
+				// +         +----+----+
+				// |         | 22 | 23 |
+				// +----+----+----+----+
+				//                     ^-- heading columns
 				setData( model, modelTable( [
-					[ { colspan: 2, contents: '00' }, '02', '03' ],
-					[ { colspan: 2, rowspan: 4, contents: '10[]' }, '12', '13' ],
+					[ { contents: '00', colspan: 2 }, '02', '03' ],
+					[ { contents: '10[]', colspan: 2, rowspan: 2 }, '12', '13' ],
 					[ '22', '23' ]
 				], { headingColumns: 3, headingRows: 1 } ) );
 
 				command.execute();
 
+				// +----+----+----+----+
+				// | 00      | 02 | 03 |
+				// +----+----+----+----+ <-- heading rows
+				// | 10      | 12 | 13 |
+				// +         +----+----+
+				// |         |    |    |
+				// +         +----+----+
+				// |         | 22 | 23 |
+				// +----+----+----+----+
+				//                     ^-- heading columns
 				assertEqualMarkup( getData( model ), modelTable( [
-					[ { colspan: 2, contents: '00' }, '02', '03' ],
-					[ { colspan: 2, rowspan: 5, contents: '10[]' }, '12', '13' ],
+					[ { contents: '00', colspan: 2 }, '02', '03' ],
+					[ { contents: '10[]', colspan: 2, rowspan: 3 }, '12', '13' ],
 					[ '', '' ],
 					[ '22', '23' ]
 				], { headingColumns: 3, headingRows: 1 } ) );
 			} );
 
 			it( 'should not expand rowspan of a cell that does not overlaps inserted rows', () => {
+				// +----+----+----+
+				// | 00 | 01 | 02 |
+				// +    +----+----+
+				// |    | 11 | 12 |
+				// +----+----+----+ <-- heading rows
+				// | 20 | 21 | 22 |
+				// +----+----+----+
 				setData( model, modelTable( [
-					[ { rowspan: 2, contents: '00' }, '01', '02' ],
+					[ { contents: '00', rowspan: 2 }, '01', '02' ],
 					[ '11[]', '12' ],
 					[ '20', '21', '22' ]
-				], { headingColumns: 3, headingRows: 1 } ) );
+				], { headingRows: 2 } ) );
 
 				command.execute();
 
+				// +----+----+----+
+				// | 00 | 01 | 02 |
+				// +    +----+----+
+				// |    | 11 | 12 |
+				// +----+----+----+ <-- heading rows
+				// |    |    |    |
+				// +----+----+----+
+				// | 20 | 21 | 22 |
+				// +----+----+----+
 				assertEqualMarkup( getData( model ), modelTable( [
-					[ { rowspan: 2, contents: '00' }, '01', '02' ],
+					[ { contents: '00', rowspan: 2 }, '01', '02' ],
 					[ '11[]', '12' ],
 					[ '', '', '' ],
 					[ '20', '21', '22' ]
-				], { headingColumns: 3, headingRows: 1 } ) );
+				], { headingRows: 2 } ) );
 			} );
 
 			it( 'should properly calculate columns if next row has colspans', () => {
+				// +----+----+----+
+				// | 00 | 01 | 02 |
+				// +    +----+----+
+				// |    | 11 | 12 |
+				// +----+----+----+ <-- heading rows
+				// | 20           |
+				// +----+----+----+
 				setData( model, modelTable( [
-					[ { rowspan: 2, contents: '00' }, '01', '02' ],
+					[ { contents: '00', rowspan: 2 }, '01', '02' ],
 					[ '11[]', '12' ],
-					[ { colspan: 3, contents: '20' } ]
-				], { headingColumns: 3, headingRows: 1 } ) );
+					[ { contents: '20', colspan: 3 } ]
+				], { headingRows: 2 } ) );
 
 				command.execute();
 
+				// +----+----+----+
+				// | 00 | 01 | 02 |
+				// +    +----+----+
+				// |    | 11 | 12 |
+				// +----+----+----+ <-- heading rows
+				// |    |    |    |
+				// +----+----+----+
+				// | 20           |
+				// +----+----+----+
 				assertEqualMarkup( getData( model ), modelTable( [
-					[ { rowspan: 2, contents: '00' }, '01', '02' ],
+					[ { contents: '00', rowspan: 2 }, '01', '02' ],
 					[ '11[]', '12' ],
 					[ '', '', '' ],
-					[ { colspan: 3, contents: '20' } ]
-				], { headingColumns: 3, headingRows: 1 } ) );
+					[ { contents: '20', colspan: 3 } ]
+				], { headingRows: 2 } ) );
 			} );
 
 			it( 'should insert rows at the end of a table', () => {
