@@ -6,7 +6,7 @@
 /* globals document */
 
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
-import MouseEventsObserver from '../../src/tableselection/mouseeventsobserver';
+import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver';
 
 describe( 'table selection', () => {
 	describe( 'MouseEventsObserver', () => {
