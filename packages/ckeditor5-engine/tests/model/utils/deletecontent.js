@@ -238,7 +238,7 @@ describe( 'DataController utils', () => {
 			);
 
 			test(
-				'removes first element when it\'s empty but second element is not empty (same name)',
+				'merges first element into the second element (it would become empty but second element would not) (same name)',
 				'<paragraph>x</paragraph><paragraph>[foo</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
 				'<paragraph>x</paragraph><paragraph>[]ar</paragraph><paragraph>y</paragraph>'
 			);
@@ -250,13 +250,13 @@ describe( 'DataController utils', () => {
 			);
 
 			test(
-				'removes empty element',
+				'removes empty element (merges it into second element)',
 				'<paragraph>x</paragraph><paragraph>[</paragraph><paragraph>]bar</paragraph><paragraph>y</paragraph>',
 				'<paragraph>x</paragraph><paragraph>[]bar</paragraph><paragraph>y</paragraph>'
 			);
 
 			test(
-				'does not remove first element when first element contains object (same name)',
+				'treats inline widget elements as content so parent element is not considered as empty after merging (same name)',
 				'<paragraph>x</paragraph><paragraph><widget></widget>[foo</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
 				'<paragraph>x</paragraph><paragraph><widget></widget>[]ar</paragraph><paragraph>y</paragraph>'
 			);
@@ -327,13 +327,13 @@ describe( 'DataController utils', () => {
 			);
 
 			test(
-				'leaves just one element when all selected (different name)',
+				'leaves just one (last) element when all selected (first block would become empty) (different name)',
 				'<heading1>[x</heading1><paragraph>foo</paragraph><paragraph>y]bar</paragraph>',
 				'<paragraph>[]bar</paragraph>'
 			);
 
 			test(
-				'leaves just one (first) element when all selected (different name)',
+				'leaves just one (first) element when all selected (first block would not become empty) (different name)',
 				'<heading1>foo[x</heading1><paragraph>bar</paragraph><paragraph>y]</paragraph>',
 				'<heading1>foo[]</heading1>'
 			);
@@ -368,7 +368,7 @@ describe( 'DataController utils', () => {
 				expect( mergeSpy.called ).to.be.true;
 			} );
 
-			it( 'uses merge operation if first element is empty (because of content delete) and last is not', () => {
+			it( 'uses "merge" operation (from OT) if first element is empty (because of content delete) and last is not', () => {
 				let mergeSpy;
 
 				setData( model, '<paragraph>[abcd</paragraph><paragraph>ef]gh</paragraph>' );
@@ -426,7 +426,7 @@ describe( 'DataController utils', () => {
 				);
 
 				test(
-					'removes block element with nested element',
+					'merges block element to the right (with nested element)',
 					'<paragraph><pchild>[foo</pchild></paragraph><paragraph><pchild>b]ar</pchild></paragraph>',
 					'<paragraph><pchild>[]ar</pchild></paragraph>'
 				);
@@ -438,19 +438,25 @@ describe( 'DataController utils', () => {
 				);
 
 				test(
-					'merges heading element',
+					'merges nested elements',
 					'<heading1><hchild>x[foo</hchild></heading1><paragraph><pchild>b]ar</pchild></paragraph>',
 					'<heading1><hchild>x[]ar</hchild></heading1>'
 				);
 
 				test(
-					'removes heading element',
+					'merges nested elements on multiple levels',
+					'<heading1><hchild>x[foo</hchild></heading1><paragraph><pchild>b]ar</pchild>abc</paragraph>',
+					'<heading1><hchild>x[]ar</hchild>abc</heading1>'
+				);
+
+				test(
+					'merges nested elements to the right if left side element would become empty',
 					'<heading1><hchild>[foo</hchild></heading1><paragraph><pchild>b]ar</pchild></paragraph>',
 					'<paragraph><pchild>[]ar</pchild></paragraph>'
 				);
 
 				test(
-					'does not remove heading element if contains object',
+					'merges to the left if first element contains object (considers it as a content of that element)',
 					'<heading1><hchild><widget></widget>[foo</hchild></heading1><paragraph><pchild>b]ar</pchild></paragraph>',
 					'<heading1><hchild><widget></widget>[]ar</hchild></heading1>'
 				);
@@ -462,7 +468,13 @@ describe( 'DataController utils', () => {
 				);
 
 				test(
-					'removes elements when left end deep nested and will be empty',
+					'merges nested elements to the right (on multiple levels) if left side element would become empty',
+					'<heading1><hchild>[foo</hchild></heading1><paragraph><pchild>b]ar</pchild>abc</paragraph>',
+					'<paragraph><pchild>[]ar</pchild>abc</paragraph>'
+				);
+
+				test(
+					'merges to the right element when left end deep nested and will be empty',
 					'<paragraph><pchild>[foo</pchild></paragraph><paragraph>b]ar</paragraph><paragraph>x</paragraph>',
 					'<paragraph>[]ar</paragraph><paragraph>x</paragraph>'
 				);

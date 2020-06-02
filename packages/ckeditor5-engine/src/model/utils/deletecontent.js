@@ -122,9 +122,8 @@ export default function deleteContent( model, selection, options = {} ) {
 	} );
 }
 
-// Returns the live positions for the range adjusted to span only blocks selected from the user perspective.
+// Returns the live positions for the range adjusted to span only blocks selected from the user perspective. Example:
 //
-// Examples:
 //     <heading1>[foo</heading1>
 //     <paragraph>bar</paragraph>
 //     <heading1>]abc</heading1>  <-- this block is not considered as selected
@@ -233,6 +232,7 @@ function mergeBranches( writer, startPosition, endPosition ) {
 //     <blockBlock>                     ->                    |
 //         <paragraph>]bar</paragraph>  ->                 ---
 //     </blockBlock>                    ->
+//
 function mergeBranchesLeft( writer, startPosition, endPosition, commonAncestor ) {
 	const startElement = startPosition.parent;
 	const endElement = endPosition.parent;
@@ -248,16 +248,19 @@ function mergeBranchesLeft( writer, startPosition, endPosition, commonAncestor )
 
 	// Move endElement just after startElement if they aren't siblings.
 	if ( !endPosition.isEqual( startPosition ) ) {
+		//
 		//     <blockQuote>                     ->  <blockQuote>
 		//         <heading1>foo[</heading1>    ->      <heading1>foo</heading1>[<paragraph>bar</paragraph>
 		//     </blockQuote>                    ->  </blockQuote>                ^
 		//     <blockBlock>                     ->  <blockBlock>                 |
 		//         <paragraph>]bar</paragraph>  ->      ]                     ---
 		//     </blockBlock>                    ->  </blockBlock>
+		//
 		writer.insert( endElement, startPosition );
 	}
 
 	// Merge two siblings (nodes on sides of startPosition):
+	//
 	//     <blockQuote>                                             ->  <blockQuote>
 	//         <heading1>foo</heading1>[<paragraph>bar</paragraph>  ->      <heading1>foo[bar</heading1>
 	//     </blockQuote>                                            ->  </blockQuote>
@@ -271,12 +274,14 @@ function mergeBranchesLeft( writer, startPosition, endPosition, commonAncestor )
 	writer.merge( startPosition );
 
 	// Remove empty end ancestors:
+	//
 	//     <blockQuote>                      ->  <blockQuote>
 	//         <heading1>foo[bar</heading1>  ->      <heading1>foo[bar</heading1>
 	//     </blockQuote>                     ->  </blockQuote>
 	//     <blockBlock>                      ->
 	//         ]                             ->  ]
 	//     </blockBlock>                     ->
+	//
 	while ( endPosition.parent.isEmpty ) {
 		const parentToRemove = endPosition.parent;
 
@@ -306,6 +311,7 @@ function mergeBranchesLeft( writer, startPosition, endPosition, commonAncestor )
 //     <blockBlock>                     ->  [<blockBlock>  v
 //         <paragraph>]bar</paragraph>  ->      <paragraph>foo]bar</paragraph>
 //     </blockBlock>                    ->  </blockBlock>
+//
 function mergeBranchesRight( writer, startPosition, endPosition, commonAncestor ) {
 	const startElement = startPosition.parent;
 	const endElement = endPosition.parent;
@@ -321,22 +327,26 @@ function mergeBranchesRight( writer, startPosition, endPosition, commonAncestor 
 
 	// Move startElement just before endElement if they aren't siblings.
 	if ( !endPosition.isEqual( startPosition ) ) {
+		//
 		//     <blockQuote>                     ->  <blockQuote>
 		//         <heading1>foo[</heading1>    ->      [                   ---
 		//     </blockQuote>                    ->  </blockQuote>              |
 		//     <blockBlock>                     ->  <blockBlock>               v
 		//         <paragraph>]bar</paragraph>  ->      <heading1>foo</heading1>]<paragraph>bar</paragraph>
 		//     </blockBlock>                    ->  </blockBlock>
+		//
 		writer.insert( startElement, endPosition );
 	}
 
 	// Remove empty end ancestors:
+	//
 	//     <blockQuote>                                             ->
 	//         [                                                    ->  [
 	//     </blockQuote>                                            ->
 	//     <blockBlock>                                             ->  <blockBlock>
 	//         <heading1>foo</heading1>]<paragraph>bar</paragraph>  ->      <heading1>foo</heading1>]<paragraph>bar</paragraph>
 	//     </blockBlock>                                            ->  </blockBlock>
+	//
 	while ( startPosition.parent.isEmpty ) {
 		const parentToRemove = startPosition.parent;
 
