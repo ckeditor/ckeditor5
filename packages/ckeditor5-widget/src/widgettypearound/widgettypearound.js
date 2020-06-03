@@ -374,7 +374,25 @@ export default class WidgetTypeAround extends Plugin {
 		const editingView = editor.editing.view;
 
 		this.listenTo( editingView.document, 'enter', ( evt, domEventData ) => {
+			const selectedViewElement = editingView.document.selection.getSelectedElement();
+			const selectedModelElement = editor.editing.mapper.toModelElement( selectedViewElement );
+			const schema = editor.model.schema;
+			let wasHandled;
+
+			// First check if the widget is selected and there's a type around selection attribute associated
+			// with the "fake caret" that would tell where to insert a new paragraph.
 			if ( this._insertParagraphAccordingToSelectionAttribute() ) {
+				wasHandled = true;
+			}
+			// Then, if there is no selection attribute associated with the "fake caret", check if the widget
+			// simply is selected and create a new paragraph according to the keystroke (Shift+)Enter.
+			else if ( isTypeAroundWidget( selectedViewElement, selectedModelElement, schema ) ) {
+				this._insertParagraph( selectedViewElement, domEventData.isSoft ? 'before' : 'after' );
+
+				wasHandled = true;
+			}
+
+			if ( wasHandled ) {
 				domEventData.preventDefault();
 				evt.stop();
 			}
