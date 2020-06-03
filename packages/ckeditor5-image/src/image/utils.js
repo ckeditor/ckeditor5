@@ -113,11 +113,28 @@ export function isImageAllowed( model ) {
  * Assuming that image is always a first child of a widget (ie. `figureView.getChild( 0 )`) is unsafe as other features might
  * inject their own elements to the widget.
  *
+ * The `<img>` can be wrapped to other elements, e.g. `<a>`. Nested check required.
+ *
  * @param {module:engine/view/element~Element} figureView
  * @returns {module:engine/view/element~Element}
  */
 export function getViewImgFromWidget( figureView ) {
-	return Array.from( figureView.getChildren() ).find( viewChild => viewChild.is( 'img' ) );
+	// TODO: Add a test for that change.
+	const figureChildren = [];
+
+	for ( const figureChild of figureView.getChildren() ) {
+		figureChildren.push( figureChild );
+
+		for ( const nestedChild of figureChild.getChildren() ) {
+			figureChildren.push( nestedChild );
+		}
+	}
+
+	return figureChildren.find( viewChild => {
+		if ( viewChild.is( 'img' ) ) {
+			return true;
+		}
+	} );
 }
 
 // Checks if image is allowed by schema in optimal insertion parent.
