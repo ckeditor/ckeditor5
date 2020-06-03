@@ -1,0 +1,52 @@
+<style>
+	code {
+		background: hsl(0, 0%, 90%);
+	}
+
+	sup {
+		position: relative;
+	}
+
+	.ck-editor__editable sup:after {
+		content: '';
+		display: inline-block;
+		position: absolute;
+		width: 14px;
+		height: 14px;
+		left: 1px;
+    top: 1px;
+		background: hsla(207, 87%, 55%, 0.5);
+		border-radius: 50px;
+		animation: pulse 2s linear infinite;
+	}
+
+	@keyframes pulse {
+		0% {
+			transform: scale(1);
+		}
+
+		50% {
+			transform: scale(2);
+		}
+
+		100% {
+			transform: scale(1);
+		}
+	}
+</style>
+
+<h2>The default configuration for the link protocol has been set to <code id="default-protocol"></code>.</h2>
+
+<h3>...but you can change it:</h3>
+<form id="protocol-settings" style="margin: 20px 0;">
+	<label for="http"><input type="radio" name="option" id="http" value="http://" />HTTP</label>
+	<label for="https"><input type="radio" name="option" id="https" value="https://" />HTTPS</label>
+	<label for="mailto"><input type="radio" name="option" id="mailto" value="mailto:" />MAILTO</label>
+	<label for="file"><input type="radio" name="option" id="file" value="file://" />FILE</label>
+</form>
+
+<div id="editor">
+	<p>This is <a href="http://ckeditor.com">CKEditor5</a> from <a href="http://cksource.com">CKSource</a>. If you need more information please contact us at support@example.com <sup class="indicator">[1]</sup>.</p>
+</div>
+
+<p><sup>[1]</sup> Copy the email address and create a link with it (<code>mailto:</code> protocol will be added automatically).</p>
