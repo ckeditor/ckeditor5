@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
 import { getTableCellsContainingSelection } from '../utils/selection';
 import { findAncestor, isHeadingColumnCell } from '../utils/common';
-import { getEmptyColumnsIndexes } from '../utils/structure';
+import { removeEmptyRowsColumns } from '../utils/structure';
 
 /**
  * The merge cell command.
@@ -108,19 +108,8 @@ export default class MergeCellCommand extends Command {
 			const tableUtils = this.editor.plugins.get( 'TableUtils' );
 			const table = findAncestor( 'table', removedTableCellRow );
 
-			// Remove empty row after merging.
-			if ( !removedTableCellRow.childCount ) {
-				tableUtils.removeRows( table, { at: removedTableCellRow.index, batch: writer.batch } );
-			} else {
-				// If there were some rows removed then empty columns were already verified.
-				const emptyColumnsIndexes = getEmptyColumnsIndexes( table );
-
-				if ( emptyColumnsIndexes.length ) {
-					emptyColumnsIndexes.reverse().forEach( column => {
-						tableUtils.removeColumns( table, { at: column, batch: writer.batch } );
-					} );
-				}
-			}
+			// Remove empty rows and columns after merging.
+			removeEmptyRowsColumns( table, tableUtils, writer.batch );
 		} );
 	}
 

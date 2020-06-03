@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableUtils from '../tableutils';
 import { getSelectedTableCells, isSelectionRectangular } from '../utils/selection';
 import { findAncestor, updateNumericAttribute } from '../utils/common';
-import { getEmptyColumnsIndexes } from '../utils/structure';
+import { removeEmptyRowsColumns } from '../utils/structure';
 
 /**
  * The merge cells command.
@@ -58,34 +58,14 @@ export default class MergeCellsCommand extends Command {
 			updateNumericAttribute( 'colspan', mergeWidth, firstTableCell, writer );
 			updateNumericAttribute( 'rowspan', mergeHeight, firstTableCell, writer );
 
-			const emptyRowsIndexes = [];
-
 			for ( const tableCell of selectedTableCells ) {
-				const tableRow = tableCell.parent;
-
 				mergeTableCells( tableCell, firstTableCell, writer );
-
-				if ( !tableRow.childCount ) {
-					emptyRowsIndexes.push( tableRow.index );
-				}
 			}
 
 			const table = findAncestor( 'table', firstTableCell );
 
-			if ( emptyRowsIndexes.length ) {
-				emptyRowsIndexes.reverse().forEach( row => {
-					tableUtils.removeRows( table, { at: row, batch: writer.batch } );
-				} );
-			} else {
-				// If there were some rows removed then empty columns were already verified.
-				const emptyColumnsIndexes = getEmptyColumnsIndexes( table );
-
-				if ( emptyColumnsIndexes.length ) {
-					emptyColumnsIndexes.reverse().forEach( column => {
-						tableUtils.removeColumns( table, { at: column, batch: writer.batch } );
-					} );
-				}
-			}
+			// Remove rows and columns that become empty (have no anchored cells).
+			removeEmptyRowsColumns( table, tableUtils, writer.batch );
 
 			writer.setSelection( firstTableCell, 'in' );
 		} );
