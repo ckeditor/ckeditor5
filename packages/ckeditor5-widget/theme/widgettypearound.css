@@ -54,26 +54,29 @@
 		}
 	}
 
-	& .ck-widget__type-around__line {
+	/*
+	 * Styles for the horizontal "fake caret" which is displayed when the user navigates using the keyboard.
+	 */
+	& .ck-widget__type-around__fake-caret {
 		display: none;
 		position: absolute;
 		left: 0;
 		right: 0;
-
-		&.ck-widget__type-around__line_before {
-			top: -1px;
-		}
-
-		&.ck-widget__type-around__line_after {
-			bottom: -1px;
-		}
 	}
 
-	&.ck-widget_type-around_active_before > .ck-widget__type-around > .ck-widget__type-around__line_before {
+	/*
+	 * Styles for the horizontal "fake caret" when it should be displayed before the widget (backward keyboard navigation).
+	 */
+	&.ck-widget_type-around_show-fake-caret_before > .ck-widget__type-around > .ck-widget__type-around__fake-caret {
+		top: -1px;
 		display: block;
 	}
 
-	&.ck-widget_type-around_active_after > .ck-widget__type-around > .ck-widget__type-around__line_after {
+	/*
+	 * Styles for the horizontal "fake caret" when it should be displayed after the widget (forward keyboard navigation).
+	 */
+	&.ck-widget_type-around_show-fake-caret_after > .ck-widget__type-around > .ck-widget__type-around__fake-caret {
+		bottom: -1px;
 		display: block;
 	}
 }

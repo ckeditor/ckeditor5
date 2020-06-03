@@ -265,7 +265,7 @@ export default class WidgetTypeAround extends Plugin {
 		} );
 
 		function positionToWidgetCssClass( position ) {
-			return `ck-widget_type-around_active_${ position }`;
+			return `ck-widget_type-around_show-fake-caret_${ position }`;
 		}
 	}
 
@@ -413,7 +413,7 @@ function injectUIIntoWidget( viewWriter, buttonTitles, widgetViewElement ) {
 		const wrapperDomElement = this.toDomElement( domDocument );
 
 		injectButtons( wrapperDomElement, buttonTitles );
-		injectLines( wrapperDomElement );
+		injectFakeCaret( wrapperDomElement );
 
 		return wrapperDomElement;
 	} );
@@ -450,19 +450,16 @@ function injectButtons( wrapperDomElement, buttonTitles ) {
 }
 
 // @param {HTMLElement} wrapperDomElement
-function injectLines( wrapperDomElement ) {
-	for ( const position of POSSIBLE_INSERTION_POSITIONS ) {
-		const lineTemplate = new Template( {
-			tag: 'div',
-			attributes: {
-				class: [
-					'ck',
-					'ck-widget__type-around__line',
-					`ck-widget__type-around__line_${ position }`
-				]
-			}
-		} );
+function injectFakeCaret( wrapperDomElement ) {
+	const caretTemplate = new Template( {
+		tag: 'div',
+		attributes: {
+			class: [
+				'ck',
+				'ck-widget__type-around__fake-caret'
+			]
+		}
+	} );
 
-		wrapperDomElement.appendChild( lineTemplate.render() );
-	}
+	wrapperDomElement.appendChild( caretTemplate.render() );
 }
