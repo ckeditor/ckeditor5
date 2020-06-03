@@ -87,7 +87,7 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'cloneElement()', () => {
-		it( 'should make deep clone of element', () => {
+		it( 'should make deep copy of element', () => {
 			const element = createElement( 'foo', { 'abc': '123' } );
 
 			insertElement( createElement( 'bar', { 'xyz': '789' } ), element );
@@ -2931,7 +2931,7 @@ describe( 'Writer', () => {
 		} );
 	}
 
-	function cloneElement( element, deep = true ) {
+	function cloneElement( element, deep ) {
 		return model.change( writer => {
 			return writer.cloneElement( element, deep );
 		} );
