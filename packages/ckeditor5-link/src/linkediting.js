@@ -100,7 +100,7 @@ export default class LinkEditing extends Plugin {
 		} );
 
 		// Setup highlight over selected link.
-		setupHighlight( editor, editor.editing.view, HIGHLIGHT_CLASS );
+		setupHighlight( editor, editor.editing.view, 'linkHref', 'a', HIGHLIGHT_CLASS );
 
 		// Change the attributes of the selection in certain situations after the link was inserted into the document.
 		this._enableInsertContentSelectionAttributesFixer();

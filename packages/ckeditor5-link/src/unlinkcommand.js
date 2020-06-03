@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { findLinkRange } from '@ckeditor/ckeditor5-engine/src/utils/inlinehighlight';
+import { findElementRange } from '@ckeditor/ckeditor5-engine/src/utils/inlinehighlight';
 
 /**
  * The unlink command. It is used by the {@link module:link/link~Link link plugin}.
@@ -45,7 +45,13 @@ export default class UnlinkCommand extends Command {
 		model.change( writer => {
 			// Get ranges to unlink.
 			const rangesToUnlink = selection.isCollapsed ?
-				[ findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ), model ) ] : selection.getRanges();
+				[ findElementRange(
+					selection.getFirstPosition(),
+					'linkHref',
+					selection.getAttribute( 'linkHref' ),
+					model
+				) ] :
+				selection.getRanges();
 
 			// Remove `linkHref` attribute from specified ranges.
 			for ( const range of rangesToUnlink ) {

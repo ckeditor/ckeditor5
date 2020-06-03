@@ -21,9 +21,11 @@
  *
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
+ * @param {String} attribute The attribute name to check.
+ * @param {String} tagName The tagName of a view item.
  * @param {String} className The class name to apply in the view.
  */
-export default function setupHighlight( editor, view, className ) {
+export default function setupHighlight( editor, view, attributeName, tagName, className ) {
 	const highlightedLinks = new Set();
 
 	// Adding the class.
@@ -31,14 +33,19 @@ export default function setupHighlight( editor, view, className ) {
 		const selection = editor.model.document.selection;
 		let changed = false;
 
-		if ( selection.hasAttribute( 'linkHref' ) ) {
-			const modelRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ), editor.model );
+		if ( selection.hasAttribute( attributeName ) ) {
+			const modelRange = findElementRange(
+				selection.getFirstPosition(),
+				attributeName,
+				selection.getAttribute( attributeName ),
+				editor.model
+			);
 			const viewRange = editor.editing.mapper.toViewRange( modelRange );
 
 			// There might be multiple `a` elements in the `viewRange`, for example, when the `a` element is
 			// broken by a UIElement.
 			for ( const item of viewRange.getItems() ) {
-				if ( item.is( 'a' ) && !item.hasClass( className ) ) {
+				if ( item.is( tagName ) && !item.hasClass( className ) ) {
 					writer.addClass( className, item );
 					highlightedLinks.add( item );
 					changed = true;
@@ -68,35 +75,40 @@ export default function setupHighlight( editor, view, className ) {
 	} );
 }
 
-/**
- * Returns a range containing the entire link in which the given `position` is placed.
+/*
+ * Returns a range containing the entire element in which the given `position` is placed.
  *
  * It can be used e.g. to get the entire range on which the `linkHref` attribute needs to be changed when having a
  * selection inside a link.
  *
  * @param {module:engine/model/position~Position} position The start position.
- * @param {String} value The `linkHref` attribute value.
+ * @param {String} attributeName The attribute name.
+ * @param {String} value The attribute value.
  * @returns {module:engine/model/range~Range} The link range.
  */
-export function findLinkRange( position, value, model ) {
-	return model.createRange( _findBound( position, value, true, model ), _findBound( position, value, false, model ) );
+export function findElementRange( position, attributeName, value, model ) {
+	return model.createRange(
+		_findBound( position, attributeName, value, true, model ),
+		_findBound( position, attributeName, value, false, model )
+	);
 }
 
-// Walks forward or backward (depends on the `lookBack` flag), node by node, as long as they have the same `linkHref` attribute value
+// Walks forward or backward (depends on the `lookBack` flag), node by node, as long as they have the same attribute value
 // and returns a position just before or after (depends on the `lookBack` flag) the last matched node.
 //
 // @param {module:engine/model/position~Position} position The start position.
-// @param {String} value The `linkHref` attribute value.
+// @param {String} attributeName The attribute name.
+// @param {String} value The attribute value.
 // @param {Boolean} lookBack Whether the walk direction is forward (`false`) or backward (`true`).
 // @returns {module:engine/model/position~Position} The position just before the last matched node.
-function _findBound( position, value, lookBack, model ) {
+function _findBound( position, attributeName, value, lookBack, model ) {
 	// Get node before or after position (depends on `lookBack` flag).
 	// When position is inside text node then start searching from text node.
 	let node = position.textNode || ( lookBack ? position.nodeBefore : position.nodeAfter );
 
 	let lastNode = null;
 
-	while ( node && node.getAttribute( 'linkHref' ) == value ) {
+	while ( node && node.getAttribute( attributeName ) == value ) {
 		lastNode = node;
 		node = lookBack ? node.previousSibling : node.nextSibling;
 	}

@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { findLinkRange } from '@ckeditor/ckeditor5-engine/src/utils/inlinehighlight';
+import { findElementRange } from '@ckeditor/ckeditor5-engine/src/utils/inlinehighlight';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
@@ -151,7 +151,7 @@ export default class LinkCommand extends Command {
 				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'linkHref' ) ) {
 					// Then update `linkHref` value.
-					const linkRange = findLinkRange( position, selection.getAttribute( 'linkHref' ), model );
+					const linkRange = findElementRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
 
 					writer.setAttribute( 'linkHref', href, linkRange );
 

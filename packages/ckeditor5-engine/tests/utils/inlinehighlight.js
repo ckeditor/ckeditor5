@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import setupHighlight, { findLinkRange } from '../../src/utils/inlinehighlight';
+import setupHighlight, { findElementRange } from '../../src/utils/inlinehighlight';
 
 import Model from '../../src/model/model';
 import Range from '../../src/model/range';
@@ -36,7 +36,7 @@ describe( 'setupHighlight', () => {
 			} } );
 
 		// Setup highlight over selected link.
-		setupHighlight( editor, editor.editing.view, 'ck-link_selected' );
+		setupHighlight( editor, editor.editing.view, 'linkHref', 'a', 'ck-link_selected' );
 	} );
 
 	afterEach( async () => {
@@ -240,7 +240,7 @@ describe( 'setupHighlight', () => {
 	} );
 } );
 
-describe( 'findLinkRange', () => {
+describe( 'findElementRange', () => {
 	let model, document, root;
 
 	beforeEach( () => {
@@ -255,7 +255,7 @@ describe( 'findLinkRange', () => {
 		setData( model, '<$text linkHref="url">foobar</$text>' );
 
 		const startPosition = model.createPositionAt( root, [ 3 ] );
-		const result = findLinkRange( startPosition, 'url', model );
+		const result = findElementRange( startPosition, 'linkHref', 'url', model );
 
 		expect( result ).to.instanceOf( Range );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 6 ) ) ) ).to.true;
@@ -265,7 +265,7 @@ describe( 'findLinkRange', () => {
 		setData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
 
 		const startPosition = model.createPositionAt( root, [ 7 ] );
-		const result = findLinkRange( startPosition, 'url', model );
+		const result = findElementRange( startPosition, 'linkHref', 'url', model );
 
 		expect( result ).to.instanceOf( Range );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 4 ), model.createPositionAt( root, 10 ) ) ) ).to.true;
@@ -275,7 +275,7 @@ describe( 'findLinkRange', () => {
 		setData( model, '<$text linkHref="url">foobar</$text>' );
 
 		const startPosition = model.createPositionAt( root, [ 0 ] );
-		const result = findLinkRange( startPosition, 'url', model );
+		const result = findElementRange( startPosition, 'linkHref', 'url', model );
 
 		expect( result ).to.instanceOf( Range );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 6 ) ) ) ).to.true;
@@ -285,7 +285,7 @@ describe( 'findLinkRange', () => {
 		setData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
 
 		const startPosition = model.createPositionAt( root, [ 4 ] );
-		const result = findLinkRange( startPosition, 'url', model );
+		const result = findElementRange( startPosition, 'linkHref', 'url', model );
 
 		expect( result ).to.instanceOf( Range );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 4 ), model.createPositionAt( root, 10 ) ) ) ).to.true;
@@ -295,7 +295,7 @@ describe( 'findLinkRange', () => {
 		setData( model, '<$text linkHref="url">foobar</$text>' );
 
 		const startPosition = model.createPositionAt( root, [ 6 ] );
-		const result = findLinkRange( startPosition, 'url', model );
+		const result = findElementRange( startPosition, 'linkHref', 'url', model );
 
 		expect( result ).to.instanceOf( Range );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 6 ) ) ) ).to.true;
@@ -305,7 +305,7 @@ describe( 'findLinkRange', () => {
 		setData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
 
 		const startPosition = model.createPositionAt( root, [ 10 ] );
-		const result = findLinkRange( startPosition, 'url', model );
+		const result = findElementRange( startPosition, 'linkHref', 'url', model );
 
 		expect( result ).to.instanceOf( Range );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 4 ), model.createPositionAt( root, 10 ) ) ) ).to.true;
@@ -315,7 +315,7 @@ describe( 'findLinkRange', () => {
 		setData( model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
 
 		const startPosition = model.createPositionAt( root, [ 6 ] );
-		const result = findLinkRange( startPosition, 'url', model );
+		const result = findElementRange( startPosition, 'linkHref', 'url', model );
 
 		expect( result ).to.instanceOf( Range );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 9 ) ) ) ).to.true;
@@ -325,7 +325,7 @@ describe( 'findLinkRange', () => {
 		setData( model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
 
 		const startPosition = model.createPositionAt( root, [ 3 ] );
-		const result = findLinkRange( startPosition, 'url', model );
+		const result = findElementRange( startPosition, 'linkHref', 'url', model );
 
 		expect( result ).to.instanceOf( Range );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 9 ) ) ) ).to.true;
@@ -335,7 +335,7 @@ describe( 'findLinkRange', () => {
 		setData( model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
 
 		const startPosition = model.createPositionAt( root, [ 9 ] );
-		const result = findLinkRange( startPosition, 'url', model );
+		const result = findElementRange( startPosition, 'linkHref', 'url', model );
 
 		expect( result ).to.instanceOf( Range );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 9 ) ) ) ).to.true;
@@ -350,7 +350,7 @@ describe( 'findLinkRange', () => {
 		);
 
 		const startPosition = model.createPositionAt( root.getNodeByPath( [ 1 ] ), 3 );
-		const result = findLinkRange( startPosition, 'url', model );
+		const result = findElementRange( startPosition, 'linkHref', 'url', model );
 
 		expect( result ).to.instanceOf( Range );
 		const expectedRange = model.createRange(
