@@ -8,7 +8,7 @@ import priorities from '../src/priorities';
 describe( 'get', () => {
 	it( 'should return correct value for string priority', () => {
 		for ( const name in priorities ) {
-			if ( priorities.hasOwnProperty( name ) && name != 'get' ) {
+			if ( Object.prototype.hasOwnProperty.call( priorities, name ) && name != 'get' ) {
 				expect( priorities.get( name ) ).to.equal( priorities[ name ] );
 			}
 		}

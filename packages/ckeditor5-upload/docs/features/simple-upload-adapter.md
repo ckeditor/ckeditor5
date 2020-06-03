@@ -62,6 +62,9 @@ ClassicEditor
 			// The URL that the images are uploaded to.
 			uploadUrl: 'http://example.com',
 
+			// Enable the XMLHttpRequest.withCredentials property.
+			withCredentials: true,
+
 			// Headers sent along with the XMLHttpRequest to the upload server.
 			headers: {
 				'X-CSRF-TOKEN': 'CSFR-Token',
@@ -99,6 +102,8 @@ To use this upload adapter, you must provide a server–side application that wi
 When the image upload process is initiated, the adapter sends a [`POST`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST) request under {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `config.simpleUpload.uploadUrl`}.
 
 You can send additional [headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) along with the `XMLHttpRequest` to the upload server, e.g. to authenticate the user, using the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl `config.simpleUpload.headers`} object.
+
+If you use the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#withCredentials `config.simpleUpload.withCredentials`} configuration, you may need some [extra HTTP headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) for the cross–site request to work properly.
 
 The [`responseType`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType) of the request is always `json`. See the [Successful upload](#successful-upload) and [Error handling](#error-handling) sections to learn more.
 
@@ -162,4 +167,4 @@ See the {@link features/image Image feature} guide to find out more about handli
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5-upload.
+The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-upload.

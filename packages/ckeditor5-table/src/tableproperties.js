@@ -70,7 +70,7 @@ export default class TableProperties extends Plugin {
  * allowing users to pick colors in a more convenient way.
  *
  * The default color palettes for the table background and the table border are the same
- * ({@link module:table/ui/utils~defaultColors check out their content}).
+ * ({@link module:table/utils/ui/table-properties~defaultColors check out their content}).
  *
  * Both color palette configurations must follow the
  * {@link module:table/table~TableColorConfig table color configuration format}.

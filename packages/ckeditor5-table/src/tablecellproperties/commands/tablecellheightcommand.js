@@ -7,8 +7,8 @@
  * @module table/tablecellproperties/commands/tablecellheightcommand
  */
 
-import { addDefaultUnitToNumericValue } from '../../commands/utils';
 import TableCellPropertyCommand from './tablecellpropertycommand';
+import { addDefaultUnitToNumericValue } from '../../utils/table-properties';
 
 /**
  * The table cell height command.

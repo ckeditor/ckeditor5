@@ -498,7 +498,7 @@ function getClassToSet( attributes ) {
  * @returns {String}
  */
 export function createTableAsciiArt( model, table ) {
-	const tableMap = [ ...new TableWalker( table, { includeSpanned: true } ) ];
+	const tableMap = [ ...new TableWalker( table, { includeAllSlots: true } ) ];
 
 	if ( !tableMap.length ) {
 		return '';
@@ -519,25 +519,17 @@ export function createTableAsciiArt( model, table ) {
 		for ( let column = 0; column <= lastColumn; column++ ) {
 			const cellInfo = tableMap[ row * columns + column ];
 
-			if ( cellInfo.rowspan > 1 || cellInfo.colspan > 1 ) {
-				for ( let subRow = row; subRow < row + cellInfo.rowspan; subRow++ ) {
-					for ( let subColumn = column; subColumn < column + cellInfo.colspan; subColumn++ ) {
-						const subCellInfo = tableMap[ subRow * columns + subColumn ];
+			const isColSpan = cellInfo.cellAnchorColumn != cellInfo.column;
+			const isRowSpan = cellInfo.cellAnchorRow != cellInfo.row;
 
-						subCellInfo.isColSpan = subColumn > column;
-						subCellInfo.isRowSpan = subRow > row;
-					}
-				}
-			}
-
-			gridLine += !cellInfo.isColSpan || !cellInfo.isRowSpan ? '+' : ' ';
-			gridLine += !cellInfo.isRowSpan ? '----' : '    ';
+			gridLine += !isColSpan || !isRowSpan ? '+' : ' ';
+			gridLine += !isRowSpan ? '----' : '    ';
 
 			let contents = getElementPlainText( model, cellInfo.cell ).substring( 0, 2 );
 			contents += ' '.repeat( 2 - contents.length );
 
-			contentLine += !cellInfo.isColSpan ? '|' : ' ';
-			contentLine += !cellInfo.isColSpan && !cellInfo.isRowSpan ? ` ${ contents } ` : '    ';
+			contentLine += !isColSpan ? '|' : ' ';
+			contentLine += !isColSpan && !isRowSpan ? ` ${ contents } ` : '    ';
 
 			if ( column == lastColumn ) {
 				gridLine += '+';
@@ -578,23 +570,23 @@ export function prepareModelTableInput( model, table ) {
 	const result = [];
 	let row = [];
 
-	for ( const cellInfo of new TableWalker( table, { includeSpanned: true } ) ) {
+	for ( const cellInfo of new TableWalker( table, { includeAllSlots: true } ) ) {
 		if ( cellInfo.column == 0 && cellInfo.row > 0 ) {
 			result.push( row );
 			row = [];
 		}
 
-		if ( cellInfo.isSpanned ) {
+		if ( !cellInfo.isAnchor ) {
 			continue;
 		}
 
 		const contents = getElementPlainText( model, cellInfo.cell );
 
-		if ( cellInfo.colspan > 1 || cellInfo.rowspan > 1 ) {
+		if ( cellInfo.cellWidth > 1 || cellInfo.cellHeight > 1 ) {
 			row.push( {
 				contents,
-				...( cellInfo.colspan > 1 ? { colspan: cellInfo.colspan } : null ),
-				...( cellInfo.rowspan > 1 ? { rowspan: cellInfo.rowspan } : null )
+				...( cellInfo.cellWidth > 1 ? { colspan: cellInfo.cellWidth } : null ),
+				...( cellInfo.cellHeight > 1 ? { rowspan: cellInfo.cellHeight } : null )
 			} );
 		} else {
 			row.push( contents );

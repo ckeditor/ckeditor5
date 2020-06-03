@@ -44,7 +44,7 @@ ClassicEditor
 The {@link module:page-break/pagebreak~PageBreak} plugin registers:
 
 * the UI button component (`'pageBreak'`),
-* the `'pageBreak'` command implemented by {@link module:page-break/pagebreakcommand~PageBreakCommand}. 
+* the `'pageBreak'` command implemented by {@link module:page-break/pagebreakcommand~PageBreakCommand}.
 
 The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
@@ -59,4 +59,4 @@ editor.execute( 'pageBreak' );
 
 ## Contribute
 
-The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5-page-break.
+The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-page-break.
