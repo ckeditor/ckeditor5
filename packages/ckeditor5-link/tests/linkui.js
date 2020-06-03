@@ -8,7 +8,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -20,6 +20,8 @@ import LinkActionsView from '../src/ui/linkactionsview';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
+
+import { DEFAULT_PROTOCOL } from '../src/utils';
 
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 
@@ -905,6 +907,62 @@ describe( 'LinkUI', () => {
 			expect( editor.ui.focusTracker.isFocused ).to.be.true;
 		} );
 
+		describe( 'link protocol', () => {
+			beforeEach( () => {
+				editor.model.schema.extend( '$text', {
+					allowIn: '$root',
+					allowAttributes: 'linkHref'
+				} );
+			} );
+
+			it( 'should use a default link protocol from the `config.link.defaultProtocol` when provided', () => {
+				return ClassicTestEditor
+					.create( editorElement, {
+						link: {
+							defaultProtocol: 'https://'
+						}
+					} )
+					.then( editor => {
+						const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
+
+						expect( defaultProtocol ).to.equal( 'https://' );
+
+						editorElement.remove();
+						editor.destroy();
+					} );
+			} );
+
+			it( 'should use `http://` as a default link protocol without any configuration', () => {
+				formView.urlInputView.fieldView.value = 'ckeditor.com';
+				formView.fire( 'submit' );
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://ckeditor.com' );
+			} );
+
+			it( 'should propagate the protocol to the link\'s `linkHref` attribute in model', () => {
+				setModelData( editor.model, '[ckeditor.com]' );
+
+				formView.urlInputView.fieldView.value = 'ckeditor.com';
+				formView.fire( 'submit' );
+
+				expect( getModelData( editor.model ) ).to.equal(
+					'[<$text linkHref="http://ckeditor.com">ckeditor.com</$text>]'
+				);
+			} );
+
+			it( 'should detect an email on submitting the form and add "mailto:" protocol automatically to the provided value', () => {
+				setModelData( editor.model, '[email@example.com]' );
+
+				formView.urlInputView.fieldView.value = 'email@example.com';
+				formView.fire( 'submit' );
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:email@example.com' );
+				expect( getModelData( editor.model ) ).to.equal(
+					'[<$text linkHref="mailto:email@example.com">email@example.com</$text>]'
+				);
+			} );
+		} );
+
 		describe( 'binding', () => {
 			beforeEach( () => {
 				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
@@ -1062,7 +1120,7 @@ describe( 'LinkUI', () => {
 					formView.fire( 'submit' );
 
 					expect( executeSpy.calledOnce ).to.be.true;
-					expect( executeSpy.calledWithExactly( 'link', 'url', { linkIsFoo: true } ) ).to.be.true;
+					expect( executeSpy.calledWithExactly( 'link', DEFAULT_PROTOCOL + 'url', { linkIsFoo: true } ) ).to.be.true;
 				} );
 
 				it( 'should reset switch state when form view is closed', () => {
