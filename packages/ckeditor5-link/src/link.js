@@ -58,6 +58,25 @@ export default class Link extends Plugin {
  */
 
 /**
+ * When set, the editor will add the given protocol to the link when the user creates a link without one.
+ * In case no configuration is provided, the value defaults to `http://`.
+ * For example, when the user is creating a link and types `ckeditor.com` in the link form input — during link submission —
+ * the editor will automatically add the `http://` protocol, so the link will be as follows: `http://ckeditor.com`.
+ *
+ * 		ClassicEditor
+ *			.create( editorElement, {
+ * 				link: {
+ * 					defaultProtocol: 'http://'
+ * 				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @default 'http://'
+ * @member {String} module:link/link~LinkConfig#defaultProtocol
+ */
+
+/**
  * When set to `true`, the `target="blank"` and `rel="noopener noreferrer"` attributes are automatically added to all external links
  * in the editor. "External links" are all links in the editor content starting with `http`, `https`, or `//`.
  *
