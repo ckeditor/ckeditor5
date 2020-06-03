@@ -21,6 +21,8 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
+import { DEFAULT_PROTOCOL } from '../utils';
+
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import '../../theme/linkform.css';
@@ -40,8 +42,9 @@ export default class LinkFormView extends View {
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 * @param {module:link/linkcommand~LinkCommand} linkCommand Reference to {@link module:link/linkcommand~LinkCommand}.
+	 * @param {String} [protocol] A value of a protocol to be displayed in the input's placeholder.
 	 */
-	constructor( locale, linkCommand ) {
+	constructor( locale, linkCommand, protocol ) {
 		super( locale );
 
 		const t = locale.t;
@@ -67,7 +70,7 @@ export default class LinkFormView extends View {
 		 *
 		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
-		this.urlInputView = this._createUrlInput();
+		this.urlInputView = this._createUrlInput( protocol );
 
 		/**
 		 * The Save button view.
@@ -207,15 +210,15 @@ export default class LinkFormView extends View {
 	 * Creates a labeled input view.
 	 *
 	 * @private
+	 * @param {module:link/utils~DefaultProtocol} [protocol=http://] A value of a protocol to be displayed in the input's placeholder.
 	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView} Labeled field view instance.
 	 */
-	_createUrlInput() {
+	_createUrlInput( protocol = DEFAULT_PROTOCOL ) {
 		const t = this.locale.t;
-
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
 		labeledInput.label = t( 'Link URL' );
-		labeledInput.fieldView.placeholder = 'https://example.com';
+		labeledInput.fieldView.placeholder = protocol + 'example.com';
 
 		return labeledInput;
 	}
