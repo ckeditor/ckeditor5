@@ -295,7 +295,7 @@ function replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selected
 
 		// Clone cell to insert (to duplicate its attributes and children).
 		// Cloning is required to support repeating pasted table content when inserting to a bigger selection.
-		const cellToInsert = pastedCell._clone( true );
+		const cellToInsert = writer.cloneElement( pastedCell );
 
 		// Trim the cell if it's row/col-spans would exceed selection area.
 		trimTableCellIfNeeded( cellToInsert, row, column, lastRowOfSelection, lastColumnOfSelection, writer );
