@@ -161,7 +161,8 @@ export default class LinkUI extends Plugin {
 			// This will cover more dynamic cases, when protocol might change after the element has been rendered.
 			const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
 
-			// The regex checks for the protocol syntax ('xxxx://') or non-word charecters at the begining of the link ('/', '#' etc.).
+			// The regex checks for the protocol syntax ('xxxx://' or 'xxxx:')
+			// or non-word charecters at the begining of the link ('/', '#' etc.).
 			const isProtocolNeeded = !!defaultProtocol && !( /^((\w+:(\/{2,})?)|(\W))/gmi ).test( value );
 			const isEmail = ( /[\w-]+@[\w-]+\.+[\w-]+/gmi ).test( value );
 
