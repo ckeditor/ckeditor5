@@ -305,3 +305,136 @@ function addHeadingsToCroppedTable( croppedTable, sourceTable, startRow, startCo
 		updateNumericAttribute( 'headingColumns', headingColumnsInCrop, croppedTable, writer, 0 );
 	}
 }
+
+/**
+ * Removes columns that have no cells anchored.
+ *
+ * In table below:
+ *
+ *     +----+----+----+----+----+----+----+
+ *     | 00 | 01      | 03 | 04      | 06 |
+ *     +----+----+----+----+         +----+
+ *     | 10 | 11      | 13 |         | 16 |
+ *     +----+----+----+----+----+----+----+
+ *     | 20 | 21      | 23 | 24      | 26 |
+ *     +----+----+----+----+----+----+----+
+ *                  ^--- empty ---^
+ *
+ * Will remove columns 2 and 5.
+ *
+ * **Note:** This is a low-level helper method for clearing invalid model state when doing table modifications.
+ * To remove a column from a table use {@link module:table/tableutils~TableUtils#removeColumns `TableUtils.removeColumns()`}.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} table
+ * @param {module:table/tableutils~TableUtils} tableUtils
+ * @return {Boolean} True if removed some columns.
+ */
+export function removeEmptyColumns( table, tableUtils ) {
+	const width = tableUtils.getColumns( table );
+	const columnsMap = new Array( width ).fill( 0 );
+
+	for ( const { column } of new TableWalker( table ) ) {
+		columnsMap[ column ]++;
+	}
+
+	const emptyColumns = columnsMap.reduce( ( result, cellsCount, column ) => {
+		return cellsCount ? result : [ ...result, column ];
+	}, [] );
+
+	// @if CK_DEBUG_TABLE // emptyColumns.length > 0 && console.log( `Removing empty columns: ${ emptyColumns.join( ', ' ) }.` );
+
+	emptyColumns.reverse().forEach( column => {
+		tableUtils.removeColumns( table, { at: column } );
+	} );
+
+	return emptyColumns.length > 0;
+}
+
+/**
+ * Removes rows that have no cells anchored.
+ *
+ * In table below:
+ *
+ *     +----+----+----+
+ *     | 00 | 01 | 02 |
+ *     +----+----+----+
+ *     | 10 | 11 | 12 |
+ *     +    +    +    +
+ *     |    |    |    | <-- empty
+ *     +----+----+----+
+ *     | 30 | 31 | 32 |
+ *     +----+----+----+
+ *     | 40      | 42 |
+ *     +         +    +
+ *     |         |    | <-- empty
+ *     +----+----+----+
+ *     | 60 | 61 | 62 |
+ *     +----+----+----+
+ *
+ * Will remove rows 2 and 5.
+ *
+ * **Note:** This is a low-level helper method for clearing invalid model state when doing table modifications.
+ * To remove a row from a table use {@link module:table/tableutils~TableUtils#removeRows `TableUtils.removeRows()`}.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} table
+ * @param {module:table/tableutils~TableUtils} tableUtils
+ * @param {module:engine/model/batch~Batch|null} [batch] Batch that should be used for removing empty rows.
+ * @return {Boolean} True if removed some rows.
+ */
+export function removeEmptyRows( table, tableUtils, batch ) {
+	const emptyRows = [];
+
+	for ( let rowIndex = 0; rowIndex < table.childCount; rowIndex++ ) {
+		const tableRow = table.getChild( rowIndex );
+
+		if ( tableRow.isEmpty ) {
+			emptyRows.push( rowIndex );
+		}
+	}
+
+	// @if CK_DEBUG_TABLE // emptyRows.length > 0 && console.log( `Removing empty rows: ${ emptyRows.join( ', ' ) }.` );
+
+	emptyRows.reverse().forEach( row => {
+		tableUtils.removeRows( table, { at: row, batch } );
+	} );
+
+	return emptyRows.length > 0;
+}
+
+/**
+ * Removes rows and columns that have no cells anchored.
+ *
+ * In table below:
+ *
+ *     +----+----+----+----+
+ *     | 00      | 02      |
+ *     +----+----+         +
+ *     | 10      |         |
+ *     +----+----+----+----+
+ *     | 20      | 22 | 23 |
+ *     +         +    +    +
+ *     |         |    |    | <-- empty row
+ *     +----+----+----+----+
+ *             ^--- empty column
+ *
+ * Will remove row 3 and column 1.
+ *
+ * **Note:** This is a low-level helper method for clearing invalid model state when doing table modifications.
+ * To remove a rows from a table use {@link module:table/tableutils~TableUtils#removeRows `TableUtils.removeRows()`} and
+ * {@link module:table/tableutils~TableUtils#removeColumns `TableUtils.removeColumns()`} to remove a column.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} table
+ * @param {module:table/tableutils~TableUtils} tableUtils
+ * @param {module:engine/model/batch~Batch|null} [batch] Batch that should be used for removing empty rows.
+ */
+export function removeEmptyRowsColumns( table, tableUtils, batch ) {
+	const removedColumns = removeEmptyColumns( table, tableUtils );
+
+	// If there was some columns removed then cleaning empty rows was already triggered.
+	if ( !removedColumns ) {
+		removeEmptyRows( table, tableUtils, batch );
+	}
+}
