@@ -10,9 +10,11 @@
  * The autoformatting operation is integrated with the undo manager,
  * so the autoformatting step can be undone if the user's intention was not to format the text.
  *
- * See the functions documentation to learn how to create custom inline autoformatters. You can also use
+ * See the {@link module:autoformat/inlineautoformatediting~inlineAutoformatEditing `inlineAutoformatEditing`} documentation
+ * to learn how to create custom inline autoformatters. You can also use
  * the {@link module:autoformat/autoformat~Autoformat} feature which enables a set of default autoformatters
  * (lists, headings, bold and italic).
+ *
  * @module autoformat/inlineautoformatediting
  */
 
@@ -20,7 +22,8 @@
  * Enables autoformatting mechanism for a given {@link module:core/editor/editor~Editor}.
  *
  * It formats the matched text by applying the given model attribute or by running the provided formatting callback.
- * On every change applied to the model the autoformatting engine checks the text on the left of the selection
+ * On every {@link module:engine/model/document~Document#event:change:data data change} in the model document
+ * the autoformatting engine checks the text on the left of the selection
  * and executes the provided action if the text matches given criteria (regular expression or callback).
  *
  * @param {module:core/editor/editor~Editor} editor The editor instance.
