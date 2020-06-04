@@ -37,10 +37,10 @@ ClassicEditor
 			radio.addEventListener( 'click', ( {
 				target: { value: protocol }
 			} ) => {
-				editor.config.set( 'link.defaultProtocol', protocol );
+				editor.config.set( 'link.defaultProtocol', protocol === 'none' ? undefined : protocol );
 
 				// Change input placeholder just for manual test's case to provide more dynamic behavior.
-				formView.urlInputView.fieldView.placeholder = protocol + 'example.com';
+				formView.urlInputView.fieldView.placeholder = protocol === 'none' ? 'https://example.com' : protocol + 'example.com';
 			} );
 		} );
 	} )
