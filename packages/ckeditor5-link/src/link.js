@@ -59,9 +59,11 @@ export default class Link extends Plugin {
 
 /**
  * When set, the editor will add the given protocol to the link when the user creates a link without one.
- * In case no configuration is provided, the value defaults to `http://`.
  * For example, when the user is creating a link and types `ckeditor.com` in the link form input — during link submission —
  * the editor will automatically add the `http://` protocol, so the link will be as follows: `http://ckeditor.com`.
+ *
+ * The feature also comes with an email auto-detection. When you submit `hello@example.com`
+ * the plugin will automatically change it to `mailto:hello@example.com`.
  *
  * 		ClassicEditor
  *			.create( editorElement, {
@@ -72,7 +74,8 @@ export default class Link extends Plugin {
  *			.then( ... )
  *			.catch( ... );
  *
- * @default 'http://'
+ * **NOTE:** In case no configuration is provided, the editor won't auto-fix the links.
+ *
  * @member {String} module:link/link~LinkConfig#defaultProtocol
  */
 
