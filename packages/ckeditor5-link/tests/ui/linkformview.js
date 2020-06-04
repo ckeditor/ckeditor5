@@ -21,8 +21,6 @@ import Link from '../../src/link';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
-import { DEFAULT_PROTOCOL } from '../../src/utils';
-
 describe( 'LinkFormView', () => {
 	let view;
 
@@ -85,7 +83,7 @@ describe( 'LinkFormView', () => {
 
 		describe( 'url input view', () => {
 			it( 'has placeholder', () => {
-				expect( view.urlInputView.fieldView.placeholder ).to.equal( DEFAULT_PROTOCOL + 'example.com' );
+				expect( view.urlInputView.fieldView.placeholder ).to.equal( 'https://example.com' );
 			} );
 		} );
 

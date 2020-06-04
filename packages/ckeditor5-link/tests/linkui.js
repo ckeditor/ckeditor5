@@ -21,8 +21,6 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
-import { DEFAULT_PROTOCOL } from '../src/utils';
-
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 
 describe( 'LinkUI', () => {
@@ -932,14 +930,61 @@ describe( 'LinkUI', () => {
 					} );
 			} );
 
-			it( 'should use `http://` as a default link protocol without any configuration', () => {
+			it( 'should not add a protocol without the configuration', () => {
+				formView.urlInputView.fieldView.value = 'ckeditor.com';
+				formView.fire( 'submit' );
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'ckeditor.com' );
+			} );
+
+			it( 'should not add a protocol to the local links even when `config.link.defaultProtocol` configured', () => {
+				editor.config.set( 'link.defaultProtocol', 'http://' );
+
+				formView.urlInputView.fieldView.value = '#test';
+				formView.fire( 'submit' );
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( '#test' );
+			} );
+
+			it( 'should not add a protocol to the relative links even when `config.link.defaultProtocol` configured', () => {
+				editor.config.set( 'link.defaultProtocol', 'http://' );
+
+				formView.urlInputView.fieldView.value = '/test.html';
+				formView.fire( 'submit' );
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( '/test.html' );
+			} );
+
+			it( 'should not add a protocol when given provided wihitn the value even when `config.link.defaultProtocol` configured', () => {
+				editor.config.set( 'link.defaultProtocol', 'http://' );
+
+				formView.urlInputView.fieldView.value = 'http://example.com';
+				formView.fire( 'submit' );
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://example.com' );
+			} );
+
+			it( 'should use the "http://" protocol when it\'s configured', () => {
+				editor.config.set( 'link.defaultProtocol', 'http://' );
+
 				formView.urlInputView.fieldView.value = 'ckeditor.com';
 				formView.fire( 'submit' );
 
 				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://ckeditor.com' );
 			} );
 
+			it( 'should use the "http://" protocol when it\'s configured and form input value contains "www."', () => {
+				editor.config.set( 'link.defaultProtocol', 'http://' );
+
+				formView.urlInputView.fieldView.value = 'www.ckeditor.com';
+				formView.fire( 'submit' );
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://www.ckeditor.com' );
+			} );
+
 			it( 'should propagate the protocol to the link\'s `linkHref` attribute in model', () => {
+				editor.config.set( 'link.defaultProtocol', 'http://' );
+
 				setModelData( editor.model, '[ckeditor.com]' );
 
 				formView.urlInputView.fieldView.value = 'ckeditor.com';
@@ -951,6 +996,8 @@ describe( 'LinkUI', () => {
 			} );
 
 			it( 'should detect an email on submitting the form and add "mailto:" protocol automatically to the provided value', () => {
+				editor.config.set( 'link.defaultProtocol', 'http://' );
+
 				setModelData( editor.model, '[email@example.com]' );
 
 				formView.urlInputView.fieldView.value = 'email@example.com';
@@ -960,6 +1007,16 @@ describe( 'LinkUI', () => {
 				expect( getModelData( editor.model ) ).to.equal(
 					'[<$text linkHref="mailto:email@example.com">email@example.com</$text>]'
 				);
+			} );
+
+			it( 'should not add an email protocol when given provided wihitn the value' +
+				'even when `config.link.defaultProtocol` configured', () => {
+				editor.config.set( 'link.defaultProtocol', 'mailto:' );
+
+				formView.urlInputView.fieldView.value = 'mailto:test@example.com';
+				formView.fire( 'submit' );
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:test@example.com' );
 			} );
 		} );
 
@@ -1120,7 +1177,7 @@ describe( 'LinkUI', () => {
 					formView.fire( 'submit' );
 
 					expect( executeSpy.calledOnce ).to.be.true;
-					expect( executeSpy.calledWithExactly( 'link', DEFAULT_PROTOCOL + 'url', { linkIsFoo: true } ) ).to.be.true;
+					expect( executeSpy.calledWithExactly( 'link', 'url', { linkIsFoo: true } ) ).to.be.true;
 				} );
 
 				it( 'should reset switch state when form view is closed', () => {

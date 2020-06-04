@@ -13,13 +13,6 @@ const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u20
 const SAFE_URL = /^(?:(?:https?|ftps?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.:-]|$))/i;
 
 /**
- * A default link protocol value.
- * @typedef {String} module:link/utils~DefaultProtocol
- * @default 'http://'
- */
-export const DEFAULT_PROTOCOL = 'http://';
-
-/**
  * Returns `true` if a given view node is the link element.
  *
  * @param {module:engine/view/node~Node} node

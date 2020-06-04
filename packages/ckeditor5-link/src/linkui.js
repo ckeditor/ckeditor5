@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
-import { isLinkElement, DEFAULT_PROTOCOL } from './utils';
+import { isLinkElement } from './utils';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
@@ -143,7 +143,7 @@ export default class LinkUI extends Plugin {
 	_createFormView() {
 		const editor = this.editor;
 		const linkCommand = editor.commands.get( 'link' );
-		const defaultProtocol = editor.config.get( 'link.defaultProtocol' ) || DEFAULT_PROTOCOL;
+		const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
 
 		const formView = new LinkFormView( editor.locale, linkCommand, defaultProtocol );
 
@@ -156,13 +156,16 @@ export default class LinkUI extends Plugin {
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
 			const { value } = formView.urlInputView.fieldView.element;
-			const hasProtocol = ( /\w+:\/\//gmi ).test( value );
+
+			const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
+
+			const isProtocolNeeded = !!defaultProtocol && !( /^((\w+:(\/{2,})?)|(\W))/gmi ).test( value );
 			const isEmail = ( /[\w-]+@[\w-]+\.+[\w-]+/gmi ).test( value );
 
 			// It's good to check config second time on submit for more dynamic cases
 			// when protocol might change after the element rendered.
-			const protocol = isEmail && 'mailto:' || editor.config.get( 'link.defaultProtocol' ) || defaultProtocol;
-			const parsedValue = !hasProtocol && value ? protocol + value : value;
+			const protocol = isEmail && 'mailto:' || defaultProtocol;
+			const parsedValue = value && isProtocolNeeded ? protocol + value : value;
 
 			editor.execute( 'link', parsedValue, formView.getDecoratorSwitchesState() );
 			this._closeFormView();

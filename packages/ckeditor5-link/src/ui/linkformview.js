@@ -21,8 +21,6 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
-import { DEFAULT_PROTOCOL } from '../utils';
-
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import '../../theme/linkform.css';
@@ -210,10 +208,10 @@ export default class LinkFormView extends View {
 	 * Creates a labeled input view.
 	 *
 	 * @private
-	 * @param {module:link/utils~DefaultProtocol} [protocol=http://] A value of a protocol to be displayed in the input's placeholder.
+	 * @param {String} [protocol=http://] A value of a protocol to be displayed in the input's placeholder.
 	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView} Labeled field view instance.
 	 */
-	_createUrlInput( protocol = DEFAULT_PROTOCOL ) {
+	_createUrlInput( protocol = 'https://' ) {
 		const t = this.locale.t;
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
