@@ -322,6 +322,10 @@ function addHeadingsToCroppedTable( croppedTable, sourceTable, startRow, startCo
  *
  * Will remove columns 2 and 5.
  *
+ * **Note:** This is a low-level helper method for clearing invalid model state when doing table modifications.
+ * To remove a column from a table use {@link module:table/tableutils~TableUtils#removeColumns `TableUtils.removeColumns()`}.
+ *
+ * @protected
  * @param {module:engine/model/element~Element} table
  * @param {module:table/tableutils~TableUtils} tableUtils
  * @return {Boolean} True if removed some columns.
@@ -370,6 +374,10 @@ export function removeEmptyColumns( table, tableUtils ) {
  *
  * Will remove rows 2 and 5.
  *
+ * **Note:** This is a low-level helper method for clearing invalid model state when doing table modifications.
+ * To remove a row from a table use {@link module:table/tableutils~TableUtils#removeRows `TableUtils.removeRows()`}.
+ *
+ * @protected
  * @param {module:engine/model/element~Element} table
  * @param {module:table/tableutils~TableUtils} tableUtils
  * @param {module:engine/model/batch~Batch|null} [batch] Batch that should be used for removing empty rows.
@@ -413,6 +421,11 @@ export function removeEmptyRows( table, tableUtils, batch ) {
  *
  * Will remove row 3 and column 1.
  *
+ * **Note:** This is a low-level helper method for clearing invalid model state when doing table modifications.
+ * To remove a rows from a table use {@link module:table/tableutils~TableUtils#removeRows `TableUtils.removeRows()`} and
+ * {@link module:table/tableutils~TableUtils#removeColumns `TableUtils.removeColumns()`} to remove a column.
+ *
+ * @protected
  * @param {module:engine/model/element~Element} table
  * @param {module:table/tableutils~TableUtils} tableUtils
  * @param {module:engine/model/batch~Batch|null} [batch] Batch that should be used for removing empty rows.
