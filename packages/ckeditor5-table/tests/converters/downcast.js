@@ -44,300 +44,24 @@ describe( 'downcast converters', () => {
 	testUtils.createSinonSandbox();
 
 	describe( 'downcastInsertTable()', () => {
-		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
 		beforeEach( () => {
-			return VirtualTestEditor.create()
+			return VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					model = editor.model;
 					doc = model.document;
 					root = doc.getRoot( 'main' );
 					view = editor.editing.view;
-
-					defaultSchema( model.schema );
-					defaultConversion( editor.conversion );
 				} );
 		} );
 
-		it( 'should create table with tbody', () => {
-			setModelData( model, modelTable( [ [ '' ] ] ) );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-				'<figure class="table">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr><td></td></tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
-		} );
-
-		it( 'should create table with tbody and thead', () => {
-			setModelData( model, modelTable( [
-				[ '00' ],
-				[ '10' ]
-			], { headingRows: 1 } ) );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-				'<figure class="table">' +
-					'<table>' +
-						'<thead>' +
-							'<tr><th>00</th></tr>' +
-						'</thead>' +
-						'<tbody>' +
-							'<tr><td>10</td></tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
-		} );
-
-		it( 'should create table with thead', () => {
-			setModelData( model, modelTable( [
-				[ '00' ],
-				[ '10' ]
-			], { headingRows: 2 } ) );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-				'<figure class="table">' +
-					'<table>' +
-						'<thead>' +
-							'<tr><th>00</th></tr>' +
-							'<tr><th>10</th></tr>' +
-						'</thead>' +
-					'</table>' +
-				'</figure>'
-			);
-		} );
-
-		it( 'should create table with heading columns and rows', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01', '02', '03' ],
-				[ '10', '11', '12', '13' ]
-			], { headingColumns: 3, headingRows: 1 } ) );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-				'<figure class="table">' +
-					'<table>' +
-						'<thead>' +
-							'<tr><th>00</th><th>01</th><th>02</th><th>03</th></tr>' +
-						'</thead>' +
-						'<tbody>' +
-							'<tr><th>10</th><th>11</th><th>12</th><td>13</td></tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
-		} );
-
-		it( 'should create table with block content', () => {
-			setModelData( model, modelTable( [
-				[ '<paragraph>00</paragraph><paragraph>foo</paragraph>', '01' ]
-			] ) );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-				'<figure class="table">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr>' +
-								'<td><p>00</p><p>foo</p></td>' +
-								'<td>01</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
-		} );
-
-		it( 'should create table with block content (attribute on paragraph)', () => {
-			editor.conversion.attributeToAttribute(
-				{
-					model: { key: 'alignment', values: [ 'right', 'center', 'justify' ] },
-					view: {
-						right: { key: 'style', value: { 'text-align': 'right' } },
-						center: { key: 'style', value: { 'text-align': 'center' } },
-						justify: { key: 'style', value: { 'text-align': 'justify' } }
-					}
-				}
-			);
-
-			setModelData( model, modelTable( [
-				[ '<paragraph alignment="right">00</paragraph>' ]
-			] ) );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-				'<figure class="table">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr>' +
-								'<td><p style="text-align:right">00</p></td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
-		} );
-
-		it( 'should be possible to overwrite', () => {
-			editor.conversion.elementToElement( { model: 'tableRow', view: 'tr', converterPriority: 'high' } );
-			editor.conversion.elementToElement( { model: 'tableCell', view: 'td', converterPriority: 'high' } );
-			editor.conversion.for( 'downcast' ).add( dispatcher => {
-				dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
-					conversionApi.consumable.consume( data.item, 'insert' );
-
-					const tableElement = conversionApi.writer.createContainerElement( 'table', { foo: 'bar' } );
-					const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-
-					conversionApi.mapper.bindElements( data.item, tableElement );
-					conversionApi.writer.insert( viewPosition, tableElement );
-				}, { priority: 'high' } );
-			} );
-
-			setModelData( model, modelTable( [ [ '' ] ] ) );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-				'<table foo="bar">' +
-					'<tr><td><p></p></td></tr>' +
-				'</table>'
-			);
-		} );
-
-		it( 'should re-create table on reinsert', () => {
-			model.schema.register( 'wrapper', {
-				allowWhere: '$block',
-				allowContentOf: '$root'
-			} );
-			editor.conversion.elementToElement( { model: 'wrapper', view: 'div' } );
-
-			setModelData( model, modelTable( [ [ '[]' ] ] ) );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-				'<figure class="table">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr><td></td></tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
-
-			model.change( writer => {
-				const table = model.document.getRoot().getChild( 0 );
-				const range = writer.createRange( writer.createPositionBefore( table ), writer.createPositionAfter( table ) );
-				const wrapper = writer.createElement( 'wrapper' );
-
-				writer.wrap( range, wrapper );
-			} );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-				'<div>' +
-					'<figure class="table">' +
-						'<table>' +
-							'<tbody>' +
-								'<tr><td></td></tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>' +
-				'</div>'
-			);
-		} );
-
-		describe( 'headingColumns attribute', () => {
-			it( 'should mark heading columns table cells', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01', '02' ],
-					[ '10', '11', '12' ]
-				], { headingColumns: 2 } ) );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-					'<figure class="table">' +
-						'<table>' +
-							'<tbody>' +
-								'<tr><th>00</th><th>01</th><td>02</td></tr>' +
-								'<tr><th>10</th><th>11</th><td>12</td></tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-
-			it( 'should mark heading columns table cells when one has colspan attribute', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01', '02', '03' ],
-					[ { colspan: 2, contents: '10' }, '12', '13' ]
-				], { headingColumns: 3 } ) );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-					'<figure class="table">' +
-						'<table>' +
-							'<tbody>' +
-								'<tr><th>00</th><th>01</th><th>02</th><td>03</td></tr>' +
-								'<tr><th colspan="2">10</th><th>12</th><td>13</td></tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-
-			it( 'should work with colspan and rowspan attributes on table cells', () => {
-				// The table in this test looks like a table below:
-				//
-				//   Row headings | Normal cells
-				//                |
-				// +----+----+----+----+
-				// | 00 | 01 | 02 | 03 |
-				// |    +----+    +----+
-				// |    | 11 |    | 13 |
-				// |----+----+    +----+
-				// | 20      |    | 23 |
-				// |         +----+----+
-				// |         | 32 | 33 |
-				// +----+----+----+----+
-
-				setModelData( model, modelTable( [
-					[ { rowspan: 2, contents: '00' }, '01', { rowspan: 3, contents: '02' }, '03' ],
-					[ '11', '13' ],
-					[ { colspan: 2, rowspan: 2, contents: '20' }, '23' ],
-					[ '32', '33' ]
-				], { headingColumns: 3 } ) );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-					'<figure class="table">' +
-						'<table>' +
-							'<tbody>' +
-								'<tr><th rowspan="2">00</th><th>01</th><th rowspan="3">02</th><td>03</td></tr>' +
-								'<tr><th>11</th><td>13</td></tr>' +
-								'<tr><th colspan="2" rowspan="2">20</th><td>23</td></tr>' +
-								'<tr><th>32</th><td>33</td></tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-		} );
-
-		describe( 'options.asWidget=true', () => {
-			beforeEach( () => {
-				return VirtualTestEditor.create()
-					.then( newEditor => {
-						editor = newEditor;
-						model = editor.model;
-						doc = model.document;
-						root = doc.getRoot( 'main' );
-						view = editor.editing.view;
-
-						defaultSchema( model.schema );
-						defaultConversion( editor.conversion, true );
-					} );
-			} );
-
+		describe( 'editing pipeline', () => {
 			it( 'should create table as a widget', () => {
 				setModelData( model, modelTable( [ [ '' ] ] ) );
 
 				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-					'<div class="ck ck-widget__selection-handle"></div>' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
@@ -345,6 +69,265 @@ describe( 'downcast converters', () => {
 										'<span style="display:inline-block"></span>' +
 									'</td>' +
 								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+		} );
+
+		describe( 'data pipeline', () => {
+			it( 'should create table with tbody and thead', () => {
+				setModelData( model, modelTable( [
+					[ '00' ],
+					[ '10' ]
+				], { headingRows: 1 } ) );
+
+				assertEqualMarkup( editor.getData(),
+					'<figure class="table">' +
+						'<table>' +
+							'<thead>' +
+								'<tr><th>00</th></tr>' +
+							'</thead>' +
+							'<tbody>' +
+								'<tr><td>10</td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should create table with thead', () => {
+				setModelData( model, modelTable( [
+					[ '00' ],
+					[ '10' ]
+				], { headingRows: 2 } ) );
+
+				assertEqualMarkup( editor.getData(),
+					'<figure class="table">' +
+						'<table>' +
+							'<thead>' +
+								'<tr><th>00</th></tr>' +
+								'<tr><th>10</th></tr>' +
+							'</thead>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should create table with heading columns and rows', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02', '03' ],
+					[ '10', '11', '12', '13' ]
+				], { headingColumns: 3, headingRows: 1 } ) );
+
+				assertEqualMarkup( editor.getData(),
+					'<figure class="table">' +
+						'<table>' +
+							'<thead>' +
+								'<tr><th>00</th><th>01</th><th>02</th><th>03</th></tr>' +
+							'</thead>' +
+							'<tbody>' +
+								'<tr><th>10</th><th>11</th><th>12</th><td>13</td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should create table with block content', () => {
+				setModelData( model, modelTable( [
+					[ '<paragraph>00</paragraph><paragraph>foo</paragraph>', '01' ]
+				] ) );
+
+				assertEqualMarkup( editor.getData(),
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td><p>00</p><p>foo</p></td>' +
+									'<td>01</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should create table with block content (attribute on paragraph)', () => {
+				editor.conversion.attributeToAttribute(
+					{
+						model: { key: 'alignment', values: [ 'right', 'center', 'justify' ] },
+						view: {
+							right: { key: 'style', value: { 'text-align': 'right' } },
+							center: { key: 'style', value: { 'text-align': 'center' } },
+							justify: { key: 'style', value: { 'text-align': 'justify' } }
+						}
+					}
+				);
+
+				setModelData( model, modelTable( [
+					[ '<paragraph alignment="right">00</paragraph>' ]
+				] ) );
+
+				assertEqualMarkup( editor.getData(),
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td><p style="text-align:right;">00</p></td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should be possible to overwrite', () => {
+				editor.conversion.elementToElement( { model: 'tableRow', view: 'tr', converterPriority: 'high' } );
+				editor.conversion.elementToElement( { model: 'tableCell', view: 'td', converterPriority: 'high' } );
+				editor.conversion.for( 'downcast' ).add( dispatcher => {
+					dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, 'insert' );
+
+						const tableElement = conversionApi.writer.createContainerElement( 'table', { foo: 'bar' } );
+						const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+
+						conversionApi.mapper.bindElements( data.item, tableElement );
+						conversionApi.writer.insert( viewPosition, tableElement );
+					}, { priority: 'high' } );
+				} );
+
+				setModelData( model, modelTable( [ [ '' ] ] ) );
+
+				assertEqualMarkup( editor.getData(),
+					'<table foo="bar">' +
+						'<tr><td><p>&nbsp;</p></td></tr>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should re-create table on reinsert', () => {
+				model.schema.register( 'wrapper', {
+					allowWhere: '$block',
+					allowContentOf: '$root'
+				} );
+				editor.conversion.elementToElement( { model: 'wrapper', view: 'div' } );
+
+				setModelData( model, modelTable( [ [ '[]' ] ] ) );
+
+				assertEqualMarkup( editor.getData(),
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td>&nbsp;</td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				model.change( writer => {
+					const table = model.document.getRoot().getChild( 0 );
+					const range = writer.createRange( writer.createPositionBefore( table ), writer.createPositionAfter( table ) );
+					const wrapper = writer.createElement( 'wrapper' );
+
+					writer.wrap( range, wrapper );
+				} );
+
+				assertEqualMarkup( editor.getData(),
+					'<div>' +
+						'<figure class="table">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr><td>&nbsp;</td></tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>' +
+					'</div>'
+				);
+			} );
+
+			describe( 'headingColumns attribute', () => {
+				it( 'should mark heading columns table cells', () => {
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '12' ]
+					], { headingColumns: 2 } ) );
+
+					assertEqualMarkup( editor.getData(),
+						'<figure class="table">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr><th>00</th><th>01</th><td>02</td></tr>' +
+									'<tr><th>10</th><th>11</th><td>12</td></tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>'
+					);
+				} );
+
+				it( 'should mark heading columns table cells when one has colspan attribute', () => {
+					setModelData( model, modelTable( [
+						[ '00', '01', '02', '03' ],
+						[ { colspan: 2, contents: '10' }, '12', '13' ]
+					], { headingColumns: 3 } ) );
+
+					assertEqualMarkup( editor.getData(),
+						'<figure class="table">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr><th>00</th><th>01</th><th>02</th><td>03</td></tr>' +
+									'<tr><th colspan="2">10</th><th>12</th><td>13</td></tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>'
+					);
+				} );
+
+				it( 'should work with colspan and rowspan attributes on table cells', () => {
+					// The table in this test looks like a table below:
+					//
+					//   Row headings | Normal cells
+					//                |
+					// +----+----+----+----+
+					// | 00 | 01 | 02 | 03 |
+					// |    +----+    +----+
+					// |    | 11 |    | 13 |
+					// |----+----+    +----+
+					// | 20      |    | 23 |
+					// |         +----+----+
+					// |         | 32 | 33 |
+					// +----+----+----+----+
+					setModelData( model, modelTable( [
+						[ { rowspan: 2, contents: '00' }, '01', { rowspan: 3, contents: '02' }, '03' ],
+						[ '11', '13' ],
+						[ { colspan: 2, rowspan: 2, contents: '20' }, '23' ],
+						[ '32', '33' ]
+					], { headingColumns: 3 } ) );
+
+					assertEqualMarkup( editor.getData(),
+						'<figure class="table">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr><th rowspan="2">00</th><th>01</th><th rowspan="3">02</th><td>03</td></tr>' +
+									'<tr><th>11</th><td>13</td></tr>' +
+									'<tr><th rowspan="2" colspan="2">20</th><td>23</td></tr>' +
+									'<tr><th>32</th><td>33</td></tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>'
+					);
+				} );
+			} );
+
+			it( 'should create table with tbody', () => {
+				setModelData( model, modelTable( [ [ '' ] ] ) );
+
+				assertEqualMarkup( editor.getData(),
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td>&nbsp;</td></tr>' +
 							'</tbody>' +
 						'</table>' +
 					'</figure>'
@@ -385,7 +368,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( editor.getData(), viewTable( [
 				[ '00', '01' ],
 				[ '', '' ]
 			] ) );
@@ -407,7 +390,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( editor.getData(), viewTable( [
 				[ '00', '01' ],
 				[ '', '' ]
 			] ) );
@@ -421,7 +404,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( editor.getData(), viewTable( [
 				[ '00', '01' ],
 				[ '', '' ],
 				[ '', '' ]
@@ -446,7 +429,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( editor.getData(), viewTable( [
 				[ '00', '01' ],
 				[ '', '' ],
 				[ '21', '22' ],
@@ -472,7 +455,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( editor.getData(), viewTable( [
 				[ '00', '01' ],
 				[ '', '' ],
 				[ '21', '22' ],
@@ -498,7 +481,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( editor.getData(), viewTable( [
 				[ '00', '01' ],
 				[ '', '' ],
 				[ '21', '22' ],
@@ -521,7 +504,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( editor.getData(), viewTable( [
 				[ { rowspan: 3, contents: '00' }, '01' ],
 				[ '22' ],
 				[ '' ]
@@ -549,7 +532,7 @@ describe( 'downcast converters', () => {
 				writer.insert( writer.createElement( 'tableCell' ), secondRow, 'end' );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+			assertEqualMarkup( editor.getData(), viewTable( [
 				[ { rowspan: 3, contents: '00', isHeading: true }, '01' ],
 				[ '22' ],
 				[ '' ],
