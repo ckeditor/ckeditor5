@@ -229,7 +229,10 @@ describe( 'TableSelection - integration', () => {
 
 		// See https://github.com/ckeditor/ckeditor5/issues/6634.
 		it( 'works with merge cells command', () => {
-			setModelData( editor.model, modelTable( [ [ '00', '01' ] ] ) );
+			setModelData( editor.model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) );
 
 			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
@@ -239,13 +242,15 @@ describe( 'TableSelection - integration', () => {
 			editor.execute( 'mergeTableCells' );
 
 			assertEqualMarkup( getModelData( model ), modelTable( [
-				[ { colspan: 2, contents: '<paragraph>[00</paragraph><paragraph>01]</paragraph>' } ]
+				[ { colspan: 2, contents: '<paragraph>[00</paragraph><paragraph>01]</paragraph>' } ],
+				[ '10', '11' ]
 			] ) );
 
 			editor.execute( 'undo' );
 
 			assertEqualMarkup( getModelData( model ), modelTable( [
-				[ '[]00', '01' ]
+				[ '[]00', '01' ],
+				[ '10', '11' ]
 			] ) );
 		} );
 	} );
