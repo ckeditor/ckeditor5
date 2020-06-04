@@ -748,167 +748,155 @@ describe( 'downcast converters', () => {
 	} );
 
 	describe( 'downcastTableHeadingColumnsChange()', () => {
-		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
 		beforeEach( () => {
-			return VirtualTestEditor.create()
+			return VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					model = editor.model;
 					doc = model.document;
 					root = doc.getRoot( 'main' );
 					view = editor.editing.view;
-
-					defaultSchema( model.schema );
-					defaultConversion( editor.conversion );
 				} );
 		} );
 
-		it( 'should work for adding heading columns', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ],
-				[ '10', '11' ]
-			] ) );
+		// The heading columns change downcast conversion is not executed in data pipeline.
+		describe( 'editing pipeline', () => {
+			it( 'should work for adding heading columns', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] ) );
 
-			const table = root.getChild( 0 );
+				const table = root.getChild( 0 );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingColumns', 1, table );
+				model.change( writer => {
+					writer.setAttribute( 'headingColumns', 1, table );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ { isHeading: true, contents: '00' }, '01' ],
+					[ { isHeading: true, contents: '10' }, '11' ]
+				], { headingColumns: 1, asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ { isHeading: true, contents: '00' }, '01' ],
-				[ { isHeading: true, contents: '10' }, '11' ]
-			], { headingColumns: 1 } ) );
-		} );
+			it( 'should work for changing heading columns to a bigger number', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02', '03' ],
+					[ '10', '11', '12', '13' ]
+				], { headingColumns: 1 } ) );
 
-		it( 'should work for changing heading columns to a bigger number', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01', '02', '03' ],
-				[ '10', '11', '12', '13' ]
-			], { headingColumns: 1 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.setAttribute( 'headingColumns', 3, table );
+				} );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingColumns', 3, table );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ { isHeading: true, contents: '00' }, { isHeading: true, contents: '01' }, { isHeading: true, contents: '02' }, '03' ],
+					[ { isHeading: true, contents: '10' }, { isHeading: true, contents: '11' }, { isHeading: true, contents: '12' }, '13' ]
+				], { asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ { isHeading: true, contents: '00' }, { isHeading: true, contents: '01' }, { isHeading: true, contents: '02' }, '03' ],
-				[ { isHeading: true, contents: '10' }, { isHeading: true, contents: '11' }, { isHeading: true, contents: '12' }, '13' ]
-			] ) );
-		} );
+			it( 'should work for changing heading columns to a smaller number', () => {
+				setModelData( model, modelTable( [
+					[ { isHeading: true, contents: '00' }, { isHeading: true, contents: '01' }, { isHeading: true, contents: '02' }, '03' ],
+					[ { isHeading: true, contents: '10' }, { isHeading: true, contents: '11' }, { isHeading: true, contents: '12' }, '13' ]
+				], { headingColumns: 3 } ) );
 
-		it( 'should work for changing heading columns to a smaller number', () => {
-			setModelData( model, modelTable( [
-				[ { isHeading: true, contents: '00' }, { isHeading: true, contents: '01' }, { isHeading: true, contents: '02' }, '03' ],
-				[ { isHeading: true, contents: '10' }, { isHeading: true, contents: '11' }, { isHeading: true, contents: '12' }, '13' ]
-			], { headingColumns: 3 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.setAttribute( 'headingColumns', 1, table );
+				} );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingColumns', 1, table );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ { isHeading: true, contents: '00' }, '01', '02', '03' ],
+					[ { isHeading: true, contents: '10' }, '11', '12', '13' ]
+				], { headingColumns: 3, asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ { isHeading: true, contents: '00' }, '01', '02', '03' ],
-				[ { isHeading: true, contents: '10' }, '11', '12', '13' ]
-			], { headingColumns: 3 } ) );
-		} );
+			it( 'should work for removing heading columns', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { headingColumns: 1 } ) );
+				const table = root.getChild( 0 );
 
-		it( 'should work for removing heading columns', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ],
-				[ '10', '11' ]
-			], { headingColumns: 1 } ) );
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.removeAttribute( 'headingColumns', table );
+				} );
 
-			model.change( writer => {
-				writer.removeAttribute( 'headingColumns', table );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '00', '01' ],
-				[ '10', '11' ]
-			] ) );
-		} );
+			it( 'should be possible to overwrite', () => {
+				editor.conversion.attributeToAttribute( { model: 'headingColumns', view: 'headingColumns', converterPriority: 'high' } );
+				setModelData( model, modelTable( [ [ '00[] ' ] ] ) );
 
-		it( 'should be possible to overwrite', () => {
-			editor.conversion.attributeToAttribute( { model: 'headingColumns', view: 'headingColumns', converterPriority: 'high' } );
-			setModelData( model, modelTable( [ [ '00' ] ] ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.setAttribute( 'headingColumns', 1, table );
+				} );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingColumns', 1, table );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false" headingColumns="1">' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-				'<figure class="table" headingColumns="1">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr><td>00</td></tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
-		} );
+			it( 'should work with adding table cells', () => {
+				setModelData( model, modelTable( [
+					[ { rowspan: 2, contents: '00' }, '01', '13', '14' ],
+					[ '11', '12', '13' ],
+					[ { colspan: 2, contents: '20' }, '22', '23' ]
+				], { headingColumns: 2 } ) );
 
-		it( 'should work with adding table cells', () => {
-			setModelData( model, modelTable( [
-				[ { rowspan: 2, contents: '00' }, '01', '13', '14' ],
-				[ '11', '12', '13' ],
-				[ { colspan: 2, contents: '20' }, '22', '23' ]
-			], { headingColumns: 2 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					// Inserting column in heading columns so update table's attribute also
+					writer.setAttribute( 'headingColumns', 3, table );
 
-			model.change( writer => {
-				// Inserting column in heading columns so update table's attribute also
-				writer.setAttribute( 'headingColumns', 3, table );
+					writer.insertElement( 'tableCell', table.getChild( 0 ), 2 );
+					writer.insertElement( 'tableCell', table.getChild( 1 ), 1 );
+					writer.insertElement( 'tableCell', table.getChild( 2 ), 1 );
+				} );
 
-				writer.insertElement( 'tableCell', table.getChild( 0 ), 2 );
-				writer.insertElement( 'tableCell', table.getChild( 1 ), 1 );
-				writer.insertElement( 'tableCell', table.getChild( 2 ), 1 );
-			} );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[
-					{ isHeading: true, rowspan: 2, contents: '00' },
-					{ isHeading: true, contents: '01' },
-					{ isHeading: true, contents: '' },
-					'13',
-					'14'
-				],
-				[
-					{ isHeading: true, contents: '11' },
-					{ isHeading: true, contents: '' },
-					'12',
-					'13'
-				],
-				[
-					{ isHeading: true, colspan: 2, contents: '20' },
-					{ isHeading: true, contents: '' },
-					'22',
-					'23'
-				]
-			] ) );
-		} );
-
-		describe( 'options.asWidget=true', () => {
-			beforeEach( () => {
-				return VirtualTestEditor.create()
-					.then( newEditor => {
-						editor = newEditor;
-						model = editor.model;
-						doc = model.document;
-						root = doc.getRoot( 'main' );
-						view = editor.editing.view;
-
-						defaultSchema( model.schema );
-						defaultConversion( editor.conversion, true );
-					} );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[
+						{ isHeading: true, rowspan: 2, contents: '00' },
+						{ isHeading: true, contents: '01' },
+						{ isHeading: true, contents: '' },
+						'13',
+						'14'
+					],
+					[
+						{ isHeading: true, contents: '11' },
+						{ isHeading: true, contents: '' },
+						'12',
+						'13'
+					],
+					[
+						{ isHeading: true, colspan: 2, contents: '20' },
+						{ isHeading: true, contents: '' },
+						'22',
+						'23'
+					]
+				], { asWidget: true } ) );
 			} );
 
 			it( 'should create renamed cell as a widget', () => {
