@@ -209,6 +209,8 @@ export default class BalloonToolbar extends Plugin {
 	 */
 	show() {
 		const editor = this.editor;
+		const selection = editor.model.document.selection;
+		const schema = editor.model.schema;
 
 		// Do not add the toolbar to the balloon stack twice.
 		if ( this._balloon.hasView( this.toolbarView ) ) {
@@ -216,7 +218,13 @@ export default class BalloonToolbar extends Plugin {
 		}
 
 		// Do not show the toolbar when the selection is collapsed.
-		if ( editor.model.document.selection.isCollapsed ) {
+		if ( selection.isCollapsed ) {
+			return;
+		}
+
+		// Do not show the toolbar when there is more than one range in the selection and they fully contain object elements.
+		// See https://github.com/ckeditor/ckeditor5/issues/6443.
+		if ( selectionContainsOnlyMultipleObjects( selection, schema ) ) {
 			return;
 		}
 
@@ -354,6 +362,23 @@ function getBalloonPositions( isBackward ) {
 		defaultPositions.northEastArrowSouthMiddleEast,
 		defaultPositions.northEastArrowSouthMiddleWest
 	];
+}
+
+function selectionContainsOnlyMultipleObjects( selection, schema ) {
+	// It doesn't contain multiple objects if there is only one range.
+	if ( selection.rangeCount <= 1 ) {
+		return false;
+	}
+
+	for ( const range of selection.getRanges() ) {
+		const element = range.getContainedElement();
+
+		if ( !element || !schema.isObject( element ) ) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 /**
