@@ -76,7 +76,7 @@ export default class WidgetTypeAround extends Plugin {
 		this._enableInsertingParagraphsOnButtonClick();
 		this._enableInsertingParagraphsOnEnterKeypress();
 		this._enableInsertingParagraphsOnUnsafeKeystroke();
-		this._enableTypeAroundActivationUsingKeyboardArrows();
+		this._enableTypeAroundFakeCaretActivationUsingKeyboardArrows();
 	}
 
 	/**
@@ -110,7 +110,13 @@ export default class WidgetTypeAround extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Similar to {@link #_insertParagraph}, this method inserts a paragraph except that it
+	 * does not expect a position but it performs the insertion next to a selected widget
+	 * according to the "widget-type-around" model selection attribute value.
+	 *
+	 * Because this method requires the "widget-type-around" attribute to be set,
+	 * the insertion can only happen when the widget "fake caret" is active (e.g. activated
+	 * using the keyboard).
 	 *
 	 * @private
 	 */
@@ -188,15 +194,40 @@ export default class WidgetTypeAround extends Plugin {
 	}
 
 	/**
+	 * Brings support for the "fake caret" that appears when either:
+	 *
+	 * * the selection moves from a position next to a widget (to a widget) using arrow keys,
+	 * * the arrow key is pressed when the widget is already selected.
+	 *
+	 * The "fake caret" lets the user know that they can start typing or just press
+	 * enter to insert a paragraph at the position next to a widget as suggested by the "fake caret".
+	 *
+	 * The "fake caret" disappears when the user changes the selection or the editor
+	 * gets blurred.
+	 *
+	 * The whole idea is as follows:
+	 *
+	 * 1. A user does one of the 2 scenarios described at the beginning.
+	 * 2. The "keydown" listener is executed and the decision is made whether to show or hide the "fake caret".
+	 * 3. If it should show up, the "widget-type-around" model selection attribute is set indicating
+	 *    on which side of the widget it should appear.
+	 * 4. The selection dispatcher reacts to the selection attribute and sets CSS classes responsible for the
+	 *    "fake caret" on the view widget.
+	 * 5. If the "fake caret" should disappear, the selection attribute is removed and the dispatcher
+	 *    does the CSS class clean-up in the view.
+	 * 6. Additionally, "change:range" and FocusTracker#isFocused listeners also remove the selection
+	 *    attribute (the former also removes widget CSS classes).
+	 *
 	 * @private
 	 */
-	_enableTypeAroundActivationUsingKeyboardArrows() {
+	_enableTypeAroundFakeCaretActivationUsingKeyboardArrows() {
 		const editor = this.editor;
 		const model = editor.model;
 		const modelSelection = model.document.selection;
 		const schema = model.schema;
 		const editingView = editor.editing.view;
 
+		// This is the main listener responsible for the "fake caret".
 		// Note: The priority must precede the default Widget class keydown handler.
 		editingView.document.on( 'keydown', ( evt, domEventData ) => {
 			if ( isArrowKeyCode( domEventData.keyCode ) ) {
@@ -221,7 +252,6 @@ export default class WidgetTypeAround extends Plugin {
 			// Get rid of the widget type around attribute of the selection on every change:range.
 			// If the range changes, it means for sure, the user is no longer in the active ("fake horizontal caret") mode.
 			editor.model.change( writer => {
-				// TODO: use data.directChange to not break collaboration?
 				writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 			} );
 
@@ -258,12 +288,11 @@ export default class WidgetTypeAround extends Plugin {
 			} else {
 				writer.removeClass( POSSIBLE_INSERTION_POSITIONS.map( positionToWidgetCssClass ), selectedViewElement );
 			}
-		}, { priority: 'highest' } );
+		} );
 
 		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
 			if ( !isFocused ) {
 				editor.model.change( writer => {
-					// TODO: use data.directChange to not break collaboration?
 					writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 				} );
 			}
@@ -275,7 +304,16 @@ export default class WidgetTypeAround extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * A listener executed on each "keydown" in the view document, a part of
+	 * {@link #_enableTypeAroundFakeCaretActivationUsingKeyboardArrows}.
+	 *
+	 * It decides whether the arrow key press should activate the "fake caret" or not (also whether it should
+	 * be deactivated).
+	 *
+	 * The "fake caret" activation is done by setting the "widget-type-around" model selection attribute
+	 * in this listener and stopping&preventing the event that would normally be handled by the Widget
+	 * plugin that is responsible for the regular keyboard navigation near/across all widgets (that
+	 * includes inline widgets, which are ignored by the WidgetTypeAround plugin).
 	 *
 	 * @private
 	 */
@@ -370,7 +408,17 @@ export default class WidgetTypeAround extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Creates the "enter" key listener on the view document that allows the user to insert a paragraph
+	 * near the widget when either:
+	 *
+	 * * The "fake caret" was first activated using the arrow keys,
+	 * * The entire widget is selected in the model.
+	 *
+	 * In the first case, the new paragraph is inserted according to the "widget-type-around" selection
+	 * attribute (see {@link #_handleArrowKeyPress}).
+	 *
+	 * It the second case, the new paragraph is inserted based on whether a soft (Shift+Enter) keystroke
+	 * was pressed or not.
 	 *
 	 * @private
 	 */
@@ -405,7 +453,21 @@ export default class WidgetTypeAround extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Similar to the {@link #_enableInsertingParagraphsOnEnterKeypress}, it allows the user
+	 * to insert a paragraph next to a widget when the "fake caret" was activated using arrow
+	 * keys but it responds to "unsafe keystrokes" instead of "enter".
+	 *
+	 * "Unsafe keystrokes" are keystrokes that insert new content into the document
+	 * like, for instance, letters ("a") or numbers ("4"). The "keydown" listener enabled by this method
+	 * will insert a new paragraph according to the "widget-type-around" model selection attribute
+	 * as the user simply starts typing, which creates the impression that the "fake caret"
+	 * behaves like a "real one" rendered by the browser (AKA your text appears where the caret was).
+	 *
+	 * **Note**: ATM this listener creates 2 undo steps: one for the "insertParagraph" command
+	 * and the second for the actual typing. It's not a disaster but this may need to be fixed
+	 * sooner or later.
+	 *
+	 * Learn more in {@link module:typing/utils/injectunsafekeystrokeshandling}.
 	 *
 	 * @private
 	 */
@@ -417,7 +479,6 @@ export default class WidgetTypeAround extends Plugin {
 		editingView.document.on( 'keydown', ( evt, domEventData ) => {
 			// Don't handle enter here. It's handled in a separate listener.
 			if ( domEventData.keyCode !== keyCodes.enter && !isSafeKeystroke( domEventData ) ) {
-				// TODO: Extra undo step problem.
 				this._insertParagraphAccordingToSelectionAttribute();
 			}
 		}, { priority: priorities.get( 'high' ) + 1 } );
