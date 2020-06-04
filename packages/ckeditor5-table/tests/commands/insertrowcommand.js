@@ -7,13 +7,13 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-import InsertRowCommand from '../../src/commands/insertrowcommand';
 import TableEditing from '../../src/tableediting';
 import TableSelection from '../../src/tableselection';
 import { assertSelectedCells, modelTable } from '../_utils/utils';
-import TableUtils from '../../src/tableutils';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+
+import InsertRowCommand from '../../src/commands/insertrowcommand';
 
 describe( 'InsertRowCommand', () => {
 	let editor, model, command;
@@ -21,7 +21,7 @@ describe( 'InsertRowCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ Paragraph, TableEditing, TableUtils, TableSelection, HorizontalLineEditing ]
+				plugins: [ Paragraph, TableEditing, TableSelection, HorizontalLineEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
