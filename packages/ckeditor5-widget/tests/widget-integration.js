@@ -113,7 +113,7 @@ describe( 'Widget - integration', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'<p>[]</p>' +
-			'<div class="ck-widget ck-widget_can-type-around_after" contenteditable="false">' +
+			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo bar</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 			'</div>'
@@ -139,7 +139,7 @@ describe( 'Widget - integration', () => {
 		sinon.assert.called( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget ck-widget_can-type-around_after ck-widget_can-type-around_before" contenteditable="false">' +
+			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">{foo bar}</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 			'</div>'
@@ -164,7 +164,7 @@ describe( 'Widget - integration', () => {
 		sinon.assert.called( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget ck-widget_can-type-around_after ck-widget_can-type-around_before" contenteditable="false">' +
+			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo</figcaption>' +
 				'<figcaption contenteditable="true">{bar}</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
@@ -191,7 +191,7 @@ describe( 'Widget - integration', () => {
 		sinon.assert.called( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget ck-widget_can-type-around_after ck-widget_can-type-around_before" contenteditable="false">' +
+			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">{foo bar}</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 			'</div>'
@@ -243,7 +243,7 @@ describe( 'Widget - integration', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'<p>[]</p>' +
-			'<div class="ck-widget ck-widget_can-type-around_after" contenteditable="false">' +
+			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo bar</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 			'</div>'
