@@ -150,5 +150,37 @@ describe( 'CodeEditing', () => {
 
 			await editor.destroy();
 		} );
+
+		it( 'should add `ck-code_selected` class when caret enetrs the element', () => {
+			// Put selection before the link element.
+			setModelData( editor.model, '<paragraph>foo[]<$text code="true">ba</$text>r</paragraph>' );
+
+			// So let's simulate the `keydown` event.
+			editor.editing.view.document.fire( 'keydown', {
+				keyCode: keyCodes.arrowright,
+				preventDefault: () => {},
+				domTarget: document.body
+			} );
+
+			expect( getViewData( editor.editing.view ) ).to.equal(
+				'<p>foo<code class="ck-code_selected">{}ba</code>r</p>'
+			);
+		} );
+
+		it( 'should remove `ck-code_selected` class when caret leaves the element', () => {
+			// Put selection before the link element.
+			setModelData( editor.model, '<paragraph>foo<$text code="true">ba[]</$text>r</paragraph>' );
+
+			// So let's simulate the `keydown` event.
+			editor.editing.view.document.fire( 'keydown', {
+				keyCode: keyCodes.arrowright,
+				preventDefault: () => {},
+				domTarget: document.body
+			} );
+
+			expect( getViewData( editor.editing.view ) ).to.equal(
+				'<p>foo<code>ba</code>{}r</p>'
+			);
+		} );
 	} );
 } );
