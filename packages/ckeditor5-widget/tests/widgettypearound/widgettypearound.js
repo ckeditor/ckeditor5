@@ -733,6 +733,61 @@ describe( 'WidgetTypeAround', () => {
 					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
 				} );
 
+				it( 'should insert a new paragraph only if an entire widget is selected (selected nested editable content)', () => {
+					setModelData( editor.model, '<blockWidget><nested>[foo] bar</nested></blockWidget>' );
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+
+					fireKeyboardEvent( 'enter' );
+
+					expect( getModelData( model ) ).to.equal( '<blockWidget><nested>[] bar</nested></blockWidget>' );
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+				} );
+
+				it( 'should insert a new paragraph only if an entire widget is selected (selected widget siblings)', () => {
+					setModelData( editor.model, '<paragraph>f[oo</paragraph><blockWidget></blockWidget><paragraph>o]o</paragraph>' );
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+
+					fireKeyboardEvent( 'enter' );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>f</paragraph><paragraph>[]o</paragraph>' );
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+				} );
+
+				it( 'should split ancestors to find a place that allows a widget', () => {
+					model.schema.register( 'allowP', {
+						inheritAllFrom: '$block'
+					} );
+					model.schema.register( 'disallowP', {
+						inheritAllFrom: '$block',
+						allowIn: [ 'allowP' ]
+					} );
+					model.schema.extend( 'blockWidget', {
+						allowIn: [ 'allowP', 'disallowP' ]
+					} );
+					model.schema.extend( 'paragraph', {
+						allowIn: [ 'allowP' ]
+					} );
+
+					editor.conversion.for( 'downcast' ).elementToElement( { model: 'allowP', view: 'allowP' } );
+					editor.conversion.for( 'downcast' ).elementToElement( { model: 'disallowP', view: 'disallowP' } );
+
+					setModelData( model,
+						'<allowP>' +
+							'<disallowP>[<blockWidget></blockWidget>]</disallowP>' +
+						'</allowP>'
+					);
+
+					fireKeyboardEvent( 'enter' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<allowP>' +
+							'<disallowP><blockWidget></blockWidget></disallowP>' +
+							'<paragraph>[]</paragraph>' +
+							'<disallowP></disallowP>' +
+						'</allowP>'
+					);
+				} );
+
 				it( 'should integrate with the undo feature', () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
@@ -865,6 +920,15 @@ describe( 'WidgetTypeAround', () => {
 			isObject: true
 		} );
 
+		editor.model.schema.register( 'nested', {
+			allowIn: 'blockWidget',
+			isLimit: true
+		} );
+
+		editor.model.schema.extend( '$text', {
+			allowIn: [ 'nested' ]
+		} );
+
 		editor.conversion.for( 'downcast' )
 			.elementToElement( {
 				model: 'blockWidget',
@@ -878,6 +942,10 @@ describe( 'WidgetTypeAround', () => {
 						label: 'block widget'
 					} );
 				}
+			} )
+			.elementToElement( {
+				model: 'nested',
+				view: ( modelItem, viewWriter ) => viewWriter.createEditableElement( 'nested', { contenteditable: true } )
 			} );
 	}
 
