@@ -101,7 +101,7 @@ describe( 'blockAutoformatEditing', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'should not call callback when the pattern is matched and plugin is disabled', () => {
+		it( 'should not call the callback when the pattern is matched but the plugin is disabled', () => {
 			const callbackSpy = testUtils.sinon.spy().named( 'callback' );
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, callbackSpy );
 

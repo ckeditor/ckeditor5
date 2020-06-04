@@ -410,7 +410,7 @@ describe( 'Autoformat', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
 		} );
 
-		it( 'should not format if the plugin is not enabled', () => {
+		it( 'should not format if the plugin is disabled', () => {
 			editor.plugins.get( 'Autoformat' ).forceDisabled( 'Test' );
 
 			setData( model, '<paragraph>**foobar*[]</paragraph>' );

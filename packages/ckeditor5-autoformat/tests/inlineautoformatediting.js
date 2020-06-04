@@ -34,7 +34,7 @@ describe( 'inlineAutoformatEditing', () => {
 	} );
 
 	describe( 'regExp', () => {
-		it( 'should not call formatCallback if there are less than 3 capture groups', () => {
+		it( 'should not call the formatCallback if there are less than 3 capture groups', () => {
 			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)\*/g, formatSpy );
 
 			setData( model, '<paragraph>*foobar[]</paragraph>' );
@@ -45,7 +45,7 @@ describe( 'inlineAutoformatEditing', () => {
 			sinon.assert.notCalled( formatSpy );
 		} );
 
-		it( 'should call formatCallback when the pattern is matched', () => {
+		it( 'should call the formatCallback when the pattern is matched', () => {
 			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, formatSpy );
 
 			setData( model, '<paragraph>*foobar[]</paragraph>' );
@@ -56,7 +56,7 @@ describe( 'inlineAutoformatEditing', () => {
 			sinon.assert.calledOnce( formatSpy );
 		} );
 
-		it( 'should not call formatCallback if selection is not collapsed', () => {
+		it( 'should not call the formatCallback if the selection is not collapsed', () => {
 			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)\*/g, formatSpy );
 
 			setData( model, '<paragraph>*foob[ar]</paragraph>' );
@@ -117,7 +117,7 @@ describe( 'inlineAutoformatEditing', () => {
 			sinon.assert.notCalled( formatSpy );
 		} );
 
-		it( 'should not run formatCallback when the pattern is matched and plugin is disabled', () => {
+		it( 'should not run the formatCallback when the pattern is matched but the plugin is disabled', () => {
 			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, formatSpy );
 
 			plugin.isEnabled = false;
