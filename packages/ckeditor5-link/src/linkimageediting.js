@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import LinkEditing from './linkediting';
 
 export default class LinkImageEditing extends Plugin {
@@ -16,7 +16,7 @@ export default class LinkImageEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Image, LinkEditing ];
+		return [ ImageEditing, LinkEditing ];
 	}
 
 	/**
@@ -32,8 +32,6 @@ export default class LinkImageEditing extends Plugin {
 		editor.model.schema.extend( 'image', { allowAttributes: [ 'linkHref' ] } );
 
 		editor.conversion.for( 'upcast' ).add( this._upcastLink() );
-		editor.conversion.for( 'upcast' ).add( this._upcastImageLink( 'img' ) );
-		editor.conversion.for( 'upcast' ).add( this._upcastImageLink( 'figure' ) );
 		editor.conversion.for( 'downcast' ).add( this._downcastImageLink() );
 	}
 
@@ -49,47 +47,48 @@ export default class LinkImageEditing extends Plugin {
 				const viewLink = data.viewItem;
 				const imageInLink = Array.from( viewLink.getChildren() ).find( child => child.name === 'img' );
 
-				if ( imageInLink ) {
-					// There's an image inside an <a> element - we consume it so it won't be picked up by the Link plugin.
-					const consumableAttributes = { attributes: [ 'href' ] };
+				if ( !imageInLink ) {
+					return;
+				}
 
-					// Consume the link so the default one will not convert it to $text attribute.
-					if ( !conversionApi.consumable.test( viewLink, consumableAttributes ) ) {
-						// Might be consumed by something else - i.e. other converter with priority=highest - a standard check.
-						return;
-					}
+				// There's an image inside an <a> element - we consume it so it won't be picked up by the Link plugin.
+				const consumableAttributes = { attributes: [ 'href' ] };
 
-					// Consume 'linkHref' attribute from link element.
-					conversionApi.consumable.consume( viewLink, consumableAttributes );
+				// Consume the `href` attribute so the default one will not convert it to $text attribute.
+				if ( !conversionApi.consumable.consume( viewLink, consumableAttributes ) ) {
+					// Might be consumed by something else - i.e. other converter with priority=highest - a standard check.
+					return;
+				}
+
+				const linkHref = viewLink.getAttribute( 'href' );
+
+				// Missing the 'href' attribute.
+				if ( !linkHref ) {
+					return;
+				}
+
+				// A full definition of the image feature.
+				// figure > a > img: parent of the link element is an image element.
+				let modelElement = data.modelCursor.parent;
+
+				if ( !modelElement.is( 'image' ) ) {
+					// a > img: parent of the link is not the image element. We need to convert it manually.
+					const conversionResult = conversionApi.convertItem( imageInLink, data.modelCursor );
+
+					// Set image range as conversion result.
+					data.modelRange = conversionResult.modelRange;
+
+					// Continue conversion where image conversion ends.
+					data.modelCursor = conversionResult.modelCursor;
+
+					modelElement = data.modelCursor.nodeBefore;
+				}
+
+				if ( modelElement && modelElement.is( 'image' ) ) {
+					// Set the linkHref attribute from link element on model image element.
+					conversionApi.writer.setAttribute( 'linkHref', linkHref, modelElement );
 				}
 			}, { priority: 'high' } );
-		};
-	}
-
-	/**
-	 * Returns a converter for links that wraps the `<img>` element.
-	 *
-	 * @private
-	 * @param {String} elementName Name of the element to upcast.
-	 * @returns {Function}
-	 */
-	_upcastImageLink( elementName ) {
-		return dispatcher => {
-			dispatcher.on( `element:${ elementName }`, ( evt, data, conversionApi ) => {
-				const viewImage = data.viewItem;
-				const parent = viewImage.parent;
-
-				// Check only <img>/<figure> that are direct children of a link.
-				if ( parent.name === 'a' ) {
-					const modelImage = data.modelCursor.nodeBefore;
-					const linkHref = parent.getAttribute( 'href' );
-
-					if ( modelImage && linkHref ) {
-						// Set the linkHref attribute from link element on model image element.
-						conversionApi.writer.setAttribute( 'linkHref', linkHref, modelImage );
-					}
-				}
-			} );
 		};
 	}
 
@@ -103,19 +102,33 @@ export default class LinkImageEditing extends Plugin {
 		return dispatcher => {
 			dispatcher.on( 'attribute:linkHref:image', ( evt, data, conversionApi ) => {
 				// The image will be already converted - so it will be present in the view.
-				const viewImage = conversionApi.mapper.toViewElement( data.item );
-
-				// Below will wrap already converted image by newly created link element.
+				const viewFigure = conversionApi.mapper.toViewElement( data.item );
 				const writer = conversionApi.writer;
 
-				// 1. Create an empty link element.
-				const linkElement = writer.createContainerElement( 'a', { href: data.attributeNewValue } );
+				// But we need to check whether the link element exist.
+				const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
 
-				// 2. Insert link inside the associated image.
-				writer.insert( writer.createPositionAt( viewImage, 0 ), linkElement );
+				// If so, update the attribute if it's defined or remove the entire link if the attribute is empty.
+				if ( linkInImage ) {
+					if ( data.attributeNewValue ) {
+						writer.setAttribute( 'href', data.attributeNewValue, linkInImage );
+					} else {
+						const viewImage = Array.from( linkInImage.getChildren() ).find( child => child.name === 'img' );
 
-				// 3. Move the image to the link.
-				writer.move( writer.createRangeOn( viewImage.getChild( 1 ) ), writer.createPositionAt( linkElement, 0 ) );
+						writer.move( writer.createRangeOn( viewImage ), writer.createPositionAt( viewFigure, 0 ) );
+						writer.remove( linkInImage );
+					}
+				} else {
+					// But if it does not exist. Let's wrap already converted image by newly created link element.
+					// 1. Create an empty link element.
+					const linkElement = writer.createContainerElement( 'a', { href: data.attributeNewValue } );
+
+					// 2. Insert link inside the associated image.
+					writer.insert( writer.createPositionAt( viewFigure, 0 ), linkElement );
+
+					// 3. Move the image to the link.
+					writer.move( writer.createRangeOn( viewFigure.getChild( 1 ) ), writer.createPositionAt( linkElement, 0 ) );
+				}
 			} );
 		};
 	}
