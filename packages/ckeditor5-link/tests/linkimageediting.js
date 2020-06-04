@@ -301,5 +301,34 @@ describe( 'LinkImageEditing', () => {
 				);
 			} );
 		} );
+
+		describe( 'figure > a > img + figcaption', () => {
+			it( 'should convert a link and the caption element', () => {
+				return VirtualTestEditor
+					.create( {
+						plugins: [ Paragraph, LinkImageEditing, ImageCaptionEditing ]
+					} )
+					.then( editor => {
+						setModelData( editor.model,
+							'<image linkHref="http://ckeditor.com" src="/assets/sample.png" alt="alt text">' +
+								'<caption>Foo Bar.</caption>' +
+							'</image>'
+						);
+
+						expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+							'<figure class="ck-widget image" contenteditable="false">' +
+								'<a href="http://ckeditor.com">' +
+									'<img alt="alt text" src="/assets/sample.png"></img>' +
+								'</a>' +
+								'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
+									'contenteditable="true" data-placeholder="Enter image caption">' +
+										'Foo Bar.' +
+								'</figcaption>' +
+							'</figure>'
+						);
+						return editor.destroy();
+					} );
+			} );
+		} );
 	} );
 } );
