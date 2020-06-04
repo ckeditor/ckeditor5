@@ -420,10 +420,10 @@ function formatAttributes( attributes ) {
 	let attributesString = '';
 
 	if ( attributes ) {
-		const entries = Object.entries( attributes );
+		const sortedKeys = Object.keys( attributes ).sort();
 
-		if ( entries.length ) {
-			attributesString = ' ' + entries.map( entry => `${ entry[ 0 ] }="${ entry[ 1 ] }"` ).join( ' ' );
+		if ( sortedKeys.length ) {
+			attributesString = ' ' + sortedKeys.map( key => `${ key }="${ attributes[ key ] }"` ).join( ' ' );
 		}
 	}
 
@@ -456,17 +456,24 @@ function makeRows( tableData, options ) {
 					delete tableCellData.isSelected;
 				}
 
-				const attributes = isObject ? tableCellData : {};
+				let attributes = {};
 
 				if ( asWidget ) {
 					attributes.class = getClassToSet( attributes );
 					attributes.contenteditable = 'true';
 				}
 
+				if ( isObject ) {
+					attributes = {
+						...attributes,
+						...tableCellData
+					};
+				}
+
 				if ( !( contents.replace( '[', '' ).replace( ']', '' ).startsWith( '<' ) ) && enforceWrapping ) {
 					contents =
 						`<${ wrappingElement == 'span' ? 'span style="display:inline-block"' : wrappingElement }>` +
-							contents +
+						contents +
 						`</${ wrappingElement }>`;
 				}
 
