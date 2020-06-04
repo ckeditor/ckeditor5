@@ -4,15 +4,14 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+
+import TableEditing from '../../src/tableediting';
+import { modelTable } from '../_utils/utils';
 
 import InsertTableCommand from '../../src/commands/inserttablecommand';
-import TableUtils from '../../src/tableutils';
-
-import { modelTable } from '../_utils/utils';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import TableEditing from '../../src/tableediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'InsertTableCommand', () => {
 	let editor, model, command;
@@ -20,7 +19,7 @@ describe( 'InsertTableCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ Paragraph, TableEditing, TableUtils ]
+				plugins: [ Paragraph, TableEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

@@ -5,15 +5,15 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+
+import TableSelection from '../../src/tableselection';
+import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
+import { assertSelectedCells, modelTable } from '../_utils/utils';
 
 import InsertColumnCommand from '../../src/commands/insertcolumncommand';
-import TableSelection from '../../src/tableselection';
-import { assertSelectedCells, modelTable } from '../_utils/utils';
-import TableUtils from '../../src/tableutils';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'InsertColumnCommand', () => {
 	let editor, model, command;
@@ -21,7 +21,7 @@ describe( 'InsertColumnCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ Paragraph, TableCellPropertiesEditing, TableUtils, TableSelection, HorizontalLineEditing ]
+				plugins: [ Paragraph, TableCellPropertiesEditing, TableSelection, HorizontalLineEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
