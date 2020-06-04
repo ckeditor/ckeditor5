@@ -75,7 +75,7 @@ export function cropTableToDimensions( sourceTable, cropDimensions, writer ) {
 		}
 		// Otherwise clone the cell with all children and trim if it exceeds cropped area.
 		else {
-			const tableCellCopy = tableCell._clone( true );
+			const tableCellCopy = writer.cloneElement( tableCell );
 
 			writer.append( tableCellCopy, row );
 
