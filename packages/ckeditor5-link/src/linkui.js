@@ -157,13 +157,13 @@ export default class LinkUI extends Plugin {
 		this.listenTo( formView, 'submit', () => {
 			const { value } = formView.urlInputView.fieldView.element;
 
+			// It's good to check the config for the second time on submit.
+			// This will cover more dynamic cases, when protocol might change after the element has been rendered.
 			const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
 
 			const isProtocolNeeded = !!defaultProtocol && !( /^((\w+:(\/{2,})?)|(\W))/gmi ).test( value );
 			const isEmail = ( /[\w-]+@[\w-]+\.+[\w-]+/gmi ).test( value );
 
-			// It's good to check config second time on submit for more dynamic cases
-			// when protocol might change after the element rendered.
 			const protocol = isEmail && 'mailto:' || defaultProtocol;
 			const parsedValue = value && isProtocolNeeded ? protocol + value : value;
 
