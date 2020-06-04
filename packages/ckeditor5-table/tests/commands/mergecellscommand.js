@@ -312,6 +312,25 @@ describe( 'MergeCellsCommand', () => {
 	describe( 'execute()', () => {
 		it( 'should merge simple table cell selection', () => {
 			setData( model, modelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 0, 1 ] )
+			);
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ { colspan: 2, contents: '<paragraph>[00</paragraph><paragraph>01]</paragraph>' } ],
+				[ '10', '11' ]
+			] ) );
+		} );
+
+		it( 'should merge simple table cell selection and remove empty columns', () => {
+			setData( model, modelTable( [
 				[ '[]00', '01' ]
 			] ) );
 
@@ -323,7 +342,7 @@ describe( 'MergeCellsCommand', () => {
 			command.execute();
 
 			assertEqualMarkup( getData( model ), modelTable( [
-				[ { colspan: 2, contents: '<paragraph>[00</paragraph><paragraph>01]</paragraph>' } ]
+				[ '<paragraph>[00</paragraph><paragraph>01]</paragraph>' ]
 			] ) );
 		} );
 
@@ -403,9 +422,17 @@ describe( 'MergeCellsCommand', () => {
 		} );
 
 		it( 'should merge table cells - extend colspan attribute', () => {
+			// +----+----+----+----+
+			// | 00      | 02 | 03 |
+			// +----+----+----+----+
+			// | 10 | 11 | 12 | 13 |
+			// +----+----+----+----+
+			// | 20 | 21 | 22 | 23 |
+			// +----+----+----+----+
 			setData( model, modelTable( [
 				[ { colspan: 2, contents: '00' }, '02', '03' ],
-				[ '10', '11', '12', '13' ]
+				[ '10', '11', '12', '13' ],
+				[ '20', '21', '22', '23' ]
 			] ) );
 
 			selectNodes( [
@@ -415,6 +442,13 @@ describe( 'MergeCellsCommand', () => {
 
 			command.execute();
 
+			// +----+----+----+----+
+			// |              | 03 |
+			// +   (merged)   +----+
+			// |              | 13 |
+			// +----+----+----+----+
+			// | 20 | 21 | 22 | 23 |
+			// +----+----+----+----+
 			assertEqualMarkup( getData( model ), modelTable( [
 				[ {
 					colspan: 3,
@@ -425,13 +459,15 @@ describe( 'MergeCellsCommand', () => {
 						'<paragraph>11</paragraph>' +
 						'<paragraph>12]</paragraph>'
 				}, '03' ],
-				[ '13' ]
+				[ '13' ],
+				[ '20', '21', '22', '23' ]
 			] ) );
 		} );
 
 		it( 'should merge to a single paragraph - every cell is empty', () => {
 			setData( model, modelTable( [
-				[ '[]', '' ]
+				[ '[]', '' ],
+				[ '10', '11' ]
 			] ) );
 
 			selectNodes( [ [ 0, 0, 0 ], [ 0, 0, 1 ] ] );
@@ -439,13 +475,15 @@ describe( 'MergeCellsCommand', () => {
 			command.execute();
 
 			assertEqualMarkup( getData( model ), modelTable( [
-				[ { colspan: 2, contents: '<paragraph>[]</paragraph>' } ]
+				[ { colspan: 2, contents: '<paragraph>[]</paragraph>' } ],
+				[ '10', '11' ]
 			] ) );
 		} );
 
 		it( 'should merge to a single paragraph - merged cell is empty', () => {
 			setData( model, modelTable( [
-				[ 'foo', '' ]
+				[ 'foo', '' ],
+				[ '10', '11' ]
 			] ) );
 
 			selectNodes( [ [ 0, 0, 0 ], [ 0, 0, 1 ] ] );
@@ -453,13 +491,15 @@ describe( 'MergeCellsCommand', () => {
 			command.execute();
 
 			assertEqualMarkup( getData( model ), modelTable( [
-				[ { colspan: 2, contents: '<paragraph>[foo]</paragraph>' } ]
+				[ { colspan: 2, contents: '<paragraph>[foo]</paragraph>' } ],
+				[ '10', '11' ]
 			] ) );
 		} );
 
 		it( 'should merge to a single paragraph - cell to which others are merged is empty', () => {
 			setData( model, modelTable( [
-				[ '', 'foo' ]
+				[ '', 'foo' ],
+				[ '10', '11' ]
 			] ) );
 
 			selectNodes( [ [ 0, 0, 0 ], [ 0, 0, 1 ] ] );
@@ -467,7 +507,8 @@ describe( 'MergeCellsCommand', () => {
 			command.execute();
 
 			assertEqualMarkup( getData( model ), modelTable( [
-				[ { colspan: 2, contents: '<paragraph>[foo]</paragraph>' } ]
+				[ { colspan: 2, contents: '<paragraph>[foo]</paragraph>' } ],
+				[ '10', '11' ]
 			] ) );
 		} );
 
@@ -479,7 +520,8 @@ describe( 'MergeCellsCommand', () => {
 			} );
 
 			setData( model, modelTable( [
-				[ '<block>[]</block>', '<block></block>' ]
+				[ '<block>[]</block>', '<block></block>' ],
+				[ '10', '11' ]
 			] ) );
 
 			selectNodes( [ [ 0, 0, 0 ], [ 0, 0, 1 ] ] );
@@ -487,7 +529,8 @@ describe( 'MergeCellsCommand', () => {
 			command.execute();
 
 			assertEqualMarkup( getData( model ), modelTable( [
-				[ { colspan: 2, contents: '<block>[</block><block>]</block>' } ]
+				[ { colspan: 2, contents: '<block>[</block><block>]</block>' } ],
+				[ '10', '11' ]
 			] ) );
 		} );
 

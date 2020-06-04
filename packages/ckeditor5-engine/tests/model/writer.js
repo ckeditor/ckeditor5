@@ -86,6 +86,35 @@ describe( 'Writer', () => {
 		} );
 	} );
 
+	describe( 'cloneElement()', () => {
+		it( 'should make deep copy of element', () => {
+			const element = createElement( 'foo', { 'abc': '123' } );
+
+			insertElement( createElement( 'bar', { 'xyz': '789' } ), element );
+
+			const clonedElement = cloneElement( element );
+
+			expect( clonedElement ).to.not.equal( element );
+			expect( clonedElement.getChild( 0 ) ).to.not.equal( element.getChild( 0 ) );
+			expect( clonedElement.toJSON() ).to.deep.equal( element.toJSON() );
+		} );
+
+		it( 'should make shallow copy of element', () => {
+			const element = createElement( 'foo', { 'abc': '123' } );
+
+			insertElement( createElement( 'bar', { 'xyz': '789' } ), element );
+
+			const elementJson = element.toJSON();
+			delete elementJson.children;
+
+			const clonedElement = cloneElement( element, false );
+
+			expect( clonedElement ).to.not.equal( element );
+			expect( clonedElement.childCount ).to.equal( 0 );
+			expect( clonedElement.toJSON() ).to.deep.equal( elementJson );
+		} );
+	} );
+
 	describe( 'insert()', () => {
 		it( 'should insert node at given position', () => {
 			const parent = createDocumentFragment();
@@ -2899,6 +2928,12 @@ describe( 'Writer', () => {
 	function createDocumentFragment() {
 		return model.change( writer => {
 			return writer.createDocumentFragment();
+		} );
+	}
+
+	function cloneElement( element, deep ) {
+		return model.change( writer => {
+			return writer.cloneElement( element, deep );
 		} );
 	}
 
