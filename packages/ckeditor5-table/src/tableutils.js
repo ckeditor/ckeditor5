@@ -10,7 +10,8 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import TableWalker from './tablewalker';
-import { createEmptyTableCell, updateNumericAttribute } from './commands/utils';
+import { createEmptyTableCell, updateNumericAttribute } from './utils/common';
+import { removeEmptyColumns, removeEmptyRows } from './utils/structure';
 
 /**
  * The table utilities plugin.
@@ -336,7 +337,10 @@ export default class TableUtils extends Plugin {
 				updateNumericAttribute( 'rowspan', rowspan, cell, writer );
 			}
 
-			// 2d. Adjust heading rows if removed rows were in a heading section.
+			// 2d. Remove empty columns (without anchored cells) if there are any.
+			removeEmptyColumns( table, this );
+
+			// 2e. Adjust heading rows if removed rows were in a heading section.
 			updateHeadingRows( table, first, last, model, batch );
 		} );
 	}
@@ -379,29 +383,20 @@ export default class TableUtils extends Plugin {
 		model.change( writer => {
 			adjustHeadingColumns( table, { first, last }, writer );
 
-			const emptyRowsIndexes = [];
-
 			for ( let removedColumnIndex = last; removedColumnIndex >= first; removedColumnIndex-- ) {
 				for ( const { cell, column, cellWidth } of [ ...new TableWalker( table ) ] ) {
 					// If colspaned cell overlaps removed column decrease its span.
 					if ( column <= removedColumnIndex && cellWidth > 1 && column + cellWidth > removedColumnIndex ) {
 						updateNumericAttribute( 'colspan', cellWidth - 1, cell, writer );
 					} else if ( column === removedColumnIndex ) {
-						const cellRow = cell.parent;
-
 						// The cell in removed column has colspan of 1.
 						writer.remove( cell );
-
-						// If the cell was the last one in the row, get rid of the entire row.
-						// https://github.com/ckeditor/ckeditor5/issues/6429
-						if ( !cellRow.childCount ) {
-							emptyRowsIndexes.push( cellRow.index );
-						}
 					}
 				}
 			}
 
-			emptyRowsIndexes.reverse().forEach( row => this.removeRows( table, { at: row, batch: writer.batch } ) );
+			// Remove empty rows that could appear after removing columns.
+			removeEmptyRows( table, this, writer.batch );
 		} );
 	}
 

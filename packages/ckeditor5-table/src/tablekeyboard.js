@@ -4,18 +4,18 @@
  */
 
 /**
- * @module table/tablenavigation
+ * @module table/tablekeyboard
  */
 
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
-import { findAncestor } from './commands/utils';
-import { getSelectedTableCells, getTableCellsContainingSelection } from './utils';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { getSelectedTableCells, getTableCellsContainingSelection } from './utils/selection';
+import { findAncestor } from './utils/common';
 
 /**
  * This plugin enables keyboard navigation for tables.
@@ -23,12 +23,12 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class TableNavigation extends Plugin {
+export default class TableKeyboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'TableNavigation';
+		return 'TableKeyboard';
 	}
 
 	/**

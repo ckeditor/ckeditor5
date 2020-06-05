@@ -20,7 +20,7 @@ import Table from '../../src/table';
 import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting';
 import TablePropertiesUI from '../../src/tableproperties/tablepropertiesui';
 import TablePropertiesUIView from '../../src/tableproperties/ui/tablepropertiesview';
-import { defaultColors } from '../../src/ui/utils';
+import { defaultColors } from '../../src/utils/ui/table-properties';
 
 describe( 'table properties', () => {
 	describe( 'TablePropertiesUI', () => {

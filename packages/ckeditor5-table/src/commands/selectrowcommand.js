@@ -9,8 +9,8 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor } from './utils';
-import { getRowIndexes, getSelectionAffectedTableCells } from '../utils';
+import { getRowIndexes, getSelectionAffectedTableCells } from '../utils/selection';
+import { findAncestor } from '../utils/common';
 
 /**
  * The select row command.

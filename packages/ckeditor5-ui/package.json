@@ -27,6 +27,7 @@
     "@ckeditor/ckeditor5-list": "^19.0.1",
     "@ckeditor/ckeditor5-mention": "^19.0.1",
     "@ckeditor/ckeditor5-paragraph": "^19.1.0",
+    "@ckeditor/ckeditor5-horizontal-line": "^19.0.1",
     "@ckeditor/ckeditor5-typing": "^19.0.1"
   },
   "engines": {
