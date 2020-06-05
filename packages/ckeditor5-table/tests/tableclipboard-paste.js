@@ -178,7 +178,8 @@ describe( 'table clipboard', () => {
 
 			const table = viewTable( [
 				[ 'aa', 'ab' ],
-				[ 'ba', 'bb' ] ] );
+				[ 'ba', 'bb' ]
+			] );
 
 			const data = {
 				dataTransfer: createDataTransfer(),
@@ -204,7 +205,8 @@ describe( 'table clipboard', () => {
 
 			const table = viewTable( [
 				[ 'aa', 'ab' ],
-				[ 'ba', 'bb' ] ] );
+				[ 'ba', 'bb' ]
+			] );
 
 			const data = {
 				dataTransfer: createDataTransfer(),
@@ -230,7 +232,8 @@ describe( 'table clipboard', () => {
 
 			const table = viewTable( [
 				[ 'aa', 'ab' ],
-				[ 'ba', 'bb' ] ] );
+				[ 'ba', 'bb' ]
+			] );
 
 			const data = {
 				dataTransfer: createDataTransfer(),
@@ -256,7 +259,8 @@ describe( 'table clipboard', () => {
 
 			const table = viewTable( [
 				[ 'aa', 'ab' ],
-				[ 'ba', 'bb' ] ] );
+				[ 'ba', 'bb' ]
+			] );
 
 			const data = {
 				dataTransfer: createDataTransfer(),
@@ -282,7 +286,8 @@ describe( 'table clipboard', () => {
 
 			const table = viewTable( [
 				[ 'aa', 'ab' ],
-				[ 'ba', 'bb' ] ] );
+				[ 'ba', 'bb' ]
+			] );
 
 			const data = {
 				dataTransfer: createDataTransfer(),
@@ -308,7 +313,8 @@ describe( 'table clipboard', () => {
 
 			const table = viewTable( [
 				[ 'aa', 'ab' ],
-				[ 'ba', 'bb' ] ] );
+				[ 'ba', 'bb' ]
+			] );
 
 			const data = {
 				dataTransfer: createDataTransfer(),
@@ -334,7 +340,8 @@ describe( 'table clipboard', () => {
 
 			const table = viewTable( [
 				[ 'aa', 'ab' ],
-				[ 'ba', 'bb' ] ] );
+				[ 'ba', 'bb' ]
+			] );
 
 			const data = {
 				dataTransfer: createDataTransfer(),
