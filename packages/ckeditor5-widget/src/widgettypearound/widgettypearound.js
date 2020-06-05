@@ -77,6 +77,7 @@ export default class WidgetTypeAround extends Plugin {
 		this._enableInsertingParagraphsOnEnterKeypress();
 		this._enableInsertingParagraphsOnUnsafeKeystroke();
 		this._enableTypeAroundFakeCaretActivationUsingKeyboardArrows();
+		this._enableDeleteIntegration();
 	}
 
 	/**
@@ -474,13 +475,85 @@ export default class WidgetTypeAround extends Plugin {
 	_enableInsertingParagraphsOnUnsafeKeystroke() {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
+		const keyCodesHandledSomewhereElse = [
+			keyCodes.enter,
+			keyCodes.delete,
+			keyCodes.backspace
+		];
 
 		// Note: The priority must precede the default Widget class keydown handler.
 		editingView.document.on( 'keydown', ( evt, domEventData ) => {
-			// Don't handle enter here. It's handled in a separate listener.
-			if ( domEventData.keyCode !== keyCodes.enter && !isSafeKeystroke( domEventData ) ) {
+			// Don't handle enter/backspace/delete here. They are handled in dedicated listeners.
+			if ( !keyCodesHandledSomewhereElse.includes( domEventData.keyCode ) && !isSafeKeystroke( domEventData ) ) {
 				this._insertParagraphAccordingToSelectionAttribute();
 			}
+		}, { priority: priorities.get( 'high' ) + 1 } );
+	}
+
+	/**
+	 * It creates a "delete" event listener on the view document to handle cases when delete/backspace
+	 * is pressed and the "fake caret" is currently active.
+	 *
+	 * The "fake caret" should create an illusion of a "real browser caret" so that when it appears
+	 * before/after a widget, pressing delete/backspace should remove a widget or delete a content
+	 * before/after a widget (depending on the content surrounding the widget).
+	 *
+	 * @private
+	 */
+	_enableDeleteIntegration() {
+		const editor = this.editor;
+		const editingView = editor.editing.view;
+		const model = editor.model;
+		const schema = model.schema;
+
+		// Note: The priority must precede the default Widget class delete handler.
+		this.listenTo( editingView.document, 'delete', ( evt, domEventData ) => {
+			const typeAroundSelectionAttributeValue = model.document.selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+
+			// This listener handles only these cases when the "fake caret" is active.
+			if ( !typeAroundSelectionAttributeValue ) {
+				return false;
+			}
+
+			const direction = domEventData.direction;
+			const selectedModelWidget = model.document.selection.getSelectedElement();
+
+			if ( typeAroundSelectionAttributeValue === 'before' ) {
+				if ( direction === 'backward' ) {
+					const range = schema.getNearestSelectionRange( model.createPositionBefore( selectedModelWidget ), direction );
+
+					if ( range ) {
+						model.change( writer => {
+							writer.setSelection( range );
+							editor.execute( 'delete' );
+						} );
+					}
+				} else {
+					editor.execute( 'delete', {
+						selection: model.createSelection( selectedModelWidget, 'on' )
+					} );
+				}
+			} else {
+				if ( direction === 'backward' ) {
+					editor.execute( 'delete', {
+						selection: model.createSelection( selectedModelWidget, 'on' )
+					} );
+				} else {
+					const range = schema.getNearestSelectionRange( model.createPositionAfter( selectedModelWidget ), direction );
+
+					if ( range ) {
+						model.change( writer => {
+							writer.setSelection( range );
+							editor.execute( 'forwardDelete' );
+						} );
+					}
+				}
+			}
+
+			// If some content was deleted, don't let the handler from the Widget plugin kick in.
+			// If nothing was deleted, then the default handler will have nothing to do anyway.
+			domEventData.preventDefault();
+			evt.stop();
 		}, { priority: priorities.get( 'high' ) + 1 } );
 	}
 }
