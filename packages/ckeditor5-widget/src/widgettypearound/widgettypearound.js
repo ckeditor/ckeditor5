@@ -166,34 +166,6 @@ export default class WidgetTypeAround extends Plugin {
 	}
 
 	/**
-	 * Registers a `mousedown` listener for the view document which intercepts events
-	 * coming from the type around UI, which happens when a user clicks one of the buttons
-	 * that insert a paragraph next to a widget.
-	 *
-	 * @private
-	 */
-	_enableInsertingParagraphsOnButtonClick() {
-		const editor = this.editor;
-		const editingView = editor.editing.view;
-
-		editingView.document.on( 'mousedown', ( evt, domEventData ) => {
-			const button = getClosestTypeAroundDomButton( domEventData.domTarget );
-
-			if ( !button ) {
-				return;
-			}
-
-			const buttonPosition = getTypeAroundButtonPosition( button );
-			const widgetViewElement = getClosestWidgetViewElement( button, editingView.domConverter );
-
-			this._insertParagraph( widgetViewElement, buttonPosition );
-
-			domEventData.preventDefault();
-			evt.stop();
-		} );
-	}
-
-	/**
 	 * Brings support for the "fake caret" that appears when either:
 	 *
 	 * * the selection moves from a position next to a widget (to a widget) using arrow keys,
@@ -405,6 +377,34 @@ export default class WidgetTypeAround extends Plugin {
 			domEventData.preventDefault();
 			evt.stop();
 		}
+	}
+
+	/**
+	 * Registers a `mousedown` listener for the view document which intercepts events
+	 * coming from the type around UI, which happens when a user clicks one of the buttons
+	 * that insert a paragraph next to a widget.
+	 *
+	 * @private
+	 */
+	_enableInsertingParagraphsOnButtonClick() {
+		const editor = this.editor;
+		const editingView = editor.editing.view;
+
+		editingView.document.on( 'mousedown', ( evt, domEventData ) => {
+			const button = getClosestTypeAroundDomButton( domEventData.domTarget );
+
+			if ( !button ) {
+				return;
+			}
+
+			const buttonPosition = getTypeAroundButtonPosition( button );
+			const widgetViewElement = getClosestWidgetViewElement( button, editingView.domConverter );
+
+			this._insertParagraph( widgetViewElement, buttonPosition );
+
+			domEventData.preventDefault();
+			evt.stop();
+		} );
 	}
 
 	/**
