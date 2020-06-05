@@ -1,3 +1,3 @@
 # Linking Image
 
-TODO.
+Both images should have defined the `linkHref` attribute.
