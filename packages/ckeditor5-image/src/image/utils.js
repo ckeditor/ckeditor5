@@ -119,22 +119,17 @@ export function isImageAllowed( model ) {
  * @returns {module:engine/view/element~Element}
  */
 export function getViewImgFromWidget( figureView ) {
-	// TODO: Add a test for that change.
 	const figureChildren = [];
 
 	for ( const figureChild of figureView.getChildren() ) {
 		figureChildren.push( figureChild );
 
-		for ( const nestedChild of figureChild.getChildren() ) {
-			figureChildren.push( nestedChild );
+		if ( figureChild.is( 'element' ) ) {
+			figureChildren.push( ...figureChild.getChildren() );
 		}
 	}
 
-	return figureChildren.find( viewChild => {
-		if ( viewChild.is( 'img' ) ) {
-			return true;
-		}
-	} );
+	return figureChildren.find( viewChild => viewChild.is( 'img' ) );
 }
 
 // Checks if image is allowed by schema in optimal insertion parent.
