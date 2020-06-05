@@ -376,7 +376,7 @@ describe( 'BalloonToolbar', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/6443
-		it( 'should not add the #toolbarView to the #_balloon when the selection contains more than one fully contained objects', () => {
+		it( 'should not add the #toolbarView to the #_balloon when the selection contains more than one fully contained object', () => {
 			// This is for multi cell selection in tables.
 			setData( model, '[<horizontalLine></horizontalLine>]<paragraph>foo</paragraph>[<horizontalLine></horizontalLine>]' );
 
