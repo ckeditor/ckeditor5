@@ -120,7 +120,7 @@ export default class FontFamily extends Plugin {
  *
  * You can preserve pasted font family values by switching the `supportAllValues` option to `true`:
  *
- *		const fontSizeConfig = {
+ *		const fontFamilyConfig = {
  *			supportAllValues: true
  *		};
  *
