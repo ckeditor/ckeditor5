@@ -10,13 +10,21 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import LinkUI from './linkui';
+import LinkEditing from './linkediting';
 
+/**
+ * The link image UI plugin.
+ *
+ * TODO: Docs.
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class LinkImageUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Image, LinkUI ];
+		return [ Image, LinkEditing, LinkUI ];
 	}
 
 	/**

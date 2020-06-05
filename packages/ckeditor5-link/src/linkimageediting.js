@@ -11,6 +11,14 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import LinkEditing from './linkediting';
 
+/**
+ * The link image engine feature.
+ *
+ * It accepts the `linkHref="url"` attribute in the model for the {@link module:image/image~Image `<image>`} element
+ * which allows linking images.
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class LinkImageEditing extends Plugin {
 	/**
 	 * @inheritDoc
@@ -105,7 +113,7 @@ export default class LinkImageEditing extends Plugin {
 				const viewFigure = conversionApi.mapper.toViewElement( data.item );
 				const writer = conversionApi.writer;
 
-				// But we need to check whether the link element exist.
+				// But we need to check whether the link element exists.
 				const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
 
 				// If so, update the attribute if it's defined or remove the entire link if the attribute is empty.

@@ -32,4 +32,10 @@ describe( 'LinkImageUI', () => {
 
 		return editor.destroy();
 	} );
+
+	describe( 'init()', () => {
+		it( 'does nothing', () => {
+			expect( editor.plugins.get( LinkImageUI ).init() ).to.equal( undefined );
+		} );
+	} );
 } );

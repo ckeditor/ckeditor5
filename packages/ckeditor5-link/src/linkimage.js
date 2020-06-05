@@ -11,6 +11,14 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import LinkImageEditing from './linkimageediting';
 import LinkImageUI from './linkimageui';
 
+/**
+ * The `LinkImage` plugin.
+ *
+ * This is a "glue" plugin that loads the {@link module:link/linkimageediting~LinkImageEditing link image editing feature}
+ * and {@link module:link/linkimageui~LinkImageUI linkimage UI feature}.
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class LinkImage extends Plugin {
 	/**
 	 * @inheritDoc
