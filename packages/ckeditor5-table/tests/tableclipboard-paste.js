@@ -359,6 +359,33 @@ describe( 'table clipboard', () => {
 			] ) );
 		} );
 
+		it( 'should alter model.insertContent if mixed content is pasted (p + p + table + p + br)', () => {
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			const table = viewTable( [
+				[ 'aa', 'ab' ],
+				[ 'ba', 'bb' ]
+			] );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+			data.dataTransfer.setData( 'text/html', `<p>&nbsp;</p><p>&nbsp;</p>${ table }<p>&nbsp;</p><br>` );
+			viewDocument.fire( 'paste', data );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ 'aa', 'ab', '02', '03' ],
+				[ 'ba', 'bb', '12', '13' ],
+				[ '20', '21', '22', '23' ],
+				[ '30', '31', '32', '33' ]
+			] ) );
+		} );
+
 		it( 'should not alter model.insertContent if element other than a table is passed directly', () => {
 			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
