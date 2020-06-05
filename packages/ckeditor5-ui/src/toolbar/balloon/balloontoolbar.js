@@ -364,21 +364,24 @@ function getBalloonPositions( isBackward ) {
 	];
 }
 
+// Returns "true" when the selection has multiple ranges and each range contains an object
+// and nothing else.
+//
+// @private
+// @param {module:engine/model/selection~Selection} selection
+// @param {module:engine/model/schema~Schema} schema
+// @returns {Boolean}
 function selectionContainsOnlyMultipleObjects( selection, schema ) {
 	// It doesn't contain multiple objects if there is only one range.
-	if ( selection.rangeCount <= 1 ) {
+	if ( selection.rangeCount === 1 ) {
 		return false;
 	}
 
-	for ( const range of selection.getRanges() ) {
+	return [ ...selection.getRanges() ].every( range => {
 		const element = range.getContainedElement();
 
-		if ( !element || !schema.isObject( element ) ) {
-			return false;
-		}
-	}
-
-	return true;
+		return element && schema.isObject( element );
+	} );
 }
 
 /**
