@@ -130,7 +130,7 @@ describe( 'FontFamilyUI', () => {
 				element.remove();
 			} );
 
-			it( 'should activate current option in dropdown for full font family definitions', () => {
+			it( 'should activate the current option in the dropdown for full font family definitions', () => {
 				const listView = dropdown.listView;
 
 				command.value = undefined;
