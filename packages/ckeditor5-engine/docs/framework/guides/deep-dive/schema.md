@@ -46,7 +46,7 @@ While this would be incorrect:
 
 ## Defining additional semantics
 
-In addition to setting allowed structures, the schema can also define additional traits of model elements. By using the `is*` properties a feature author may declare how a certain element should be treated by other features and the engine.
+In addition to setting allowed structures, the schema can also define additional traits of model elements. By using the `is*` properties, a feature author may declare how a certain element should be treated by other features and the engine.
 
 ### Limit elements
 
@@ -55,9 +55,9 @@ Consider a feature like an image caption. The caption text area should construct
 * A selection that starts inside should not end outside.
 * Pressing <kbd>Backspace</kbd> or <kbd>Delete</kbd> should not delete the area. Pressing <kbd>Enter</kbd> should not split the area.
 
-It should also act as a boundary for external actions. This is mostly enforced by a selection post-fixer that ensures that a selection that starts outside, should not end inside. That means that most actions will either apply to the "outside" of such an element or to a content inside it.
+It should also act as a boundary for external actions. This is mostly enforced by a selection post-fixer that ensures that a selection that starts outside, should not end inside. It means that most actions will either apply to the "outside" of such an element or to the content inside it.
 
-Taken these characteristics, the image caption should be defined as limit element by using the {@link module:engine/model/schema~SchemaItemDefinition#isLimit `isLimit`} property.
+Taken these characteristics, the image caption should be defined as a limit element by using the {@link module:engine/model/schema~SchemaItemDefinition#isLimit `isLimit`} property.
 
 ```js
 schema.register( 'myCaption', {
@@ -73,9 +73,9 @@ The engine and various features then check it via {@link module:engine/model/sch
 
 ### Object elements
 
-For the image caption as in the example above it does not make much sense to select the caption box, then copy or drag it somewhere else.
+For an image caption like in the example above it does not make much sense to select the caption box, then copy or drag it somewhere else.
 
-A caption without the image that it describes does not make much sense. However, the image is more self-sufficient. Most likely users should be able to select the entire image (with all its internals), then copy or move it around. {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} should be used to mark such behavior.
+A caption without the image that it describes makes little sense. However, the image is more self-sufficient. Most likely users should be able to select the entire image (with all its internals), then copy or move it around. The {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} property should be used to mark such behavior.
 
 ```js
 schema.register( 'myImage', {
@@ -95,7 +95,7 @@ The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can l
 
 Generally speaking, content is usually made out of blocks like paragraphs, list items, images, headings, etc. All these elements should be marked as blocks by using {@link module:engine/model/schema~SchemaItemDefinition#isBlock `isBlock`}.
 
-It is important to remember that a block should not allow another block inside. Container elements like `<blockQuote>` which can contain other block elements should not be marked as blocks.
+It is important to remember that a block should not allow another block inside. Container elements like `<blockQuote>`, which can contain other block elements, should not be marked as blocks.
 
 <info-box>
 	There is also the `$block` generic item which has `isBlock` set to `true`. Most block type items will inherit from `$block` (through `inheritAllFrom`).
@@ -103,11 +103,11 @@ It is important to remember that a block should not allow another block inside. 
 
 ### Inline elements
 
-In the editor, all HTML formatting elements such as `<strong>` or `<code>` are represented by text attributes. Therefore, inline model elements are not to be used for this scenarios.
+In the editor, all HTML formatting elements such as `<strong>` or `<code>` are represented by text attributes. Therefore, inline model elements are not supposed to be used for these scenarios.
 
 Currently, the {@link module:engine/model/schema~SchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>` or placeholder elements such as in the {@link framework/guides/tutorials/implementing-an-inline-widget Implementing an inline widget} tutorial.
 
-The support for inline elements in CKEditor 5 is so far limited to self-contained elements. This is &mdash; all elements marked with `isInline` should also be marked with `isObject`.
+The support for inline elements in CKEditor 5 is so far limited to self-contained elements. Because of this, all elements marked with `isInline` should also be marked with `isObject`.
 
 ## Generic items
 
