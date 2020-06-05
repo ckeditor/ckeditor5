@@ -146,7 +146,7 @@ describe( 'FontFamilyUI', () => {
 					.to.deep.equal( [ false, false, true, false, false, false, false, false, false ] );
 			} );
 
-			it( 'should apply complete font-family value (list of font-families)', () => {
+			it( 'should apply the complete font-family value (list of font-families)', () => {
 				const listView = dropdown.listView;
 				const fontFamilyArialButton = listView.items.get( 1 ).children.first;
 
