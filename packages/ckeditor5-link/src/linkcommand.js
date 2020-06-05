@@ -187,18 +187,49 @@ export default class LinkCommand extends Command {
 				}
 			} else {
 				// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges
-				// omitting nodes where `linkHref` attribute is disallowed.
+				// omitting nodes where the `linkHref` attribute is disallowed.
 				const ranges = model.schema.getValidRanges( selection.getRanges(), 'linkHref' );
 
+				// But for the first, check whether the `linkHref` attribute is allowed on selected blocks (e.g. the "image" element).
+				const allowedRanges = [];
+
+				for ( const element of selection.getSelectedBlocks() ) {
+					if ( model.schema.checkAttribute( element, 'linkHref' ) ) {
+						allowedRanges.push( writer.createRangeOn( element ) );
+					}
+				}
+
+				// Ranges that accept the `linkHref` attribute. Since we will iterate over `allowedRanges`, let's clone it.
+				const rangesToUpdate = allowedRanges.slice();
+
+				// For all ranges we want to check whether given range is inside an element that accepts the `linkHref` attribute.
+				// If so, we don't want to propagate applying the attribute to its children.
 				for ( const range of ranges ) {
-					writer.setAttribute( 'linkHref', href, range );
+					let isRangeToUpdate = true;
+
+					for ( const allowedRange of allowedRanges ) {
+						// A range is inside an element that will have the attribute. Do not modify its nodes.
+						if ( allowedRange.containsRange( range ) ) {
+							isRangeToUpdate = false;
+							break;
+						}
+					}
+
+					if ( isRangeToUpdate ) {
+						rangesToUpdate.push( range );
+					}
+				}
+
+				// And finally we can set the attribute.
+				for ( const elementOrRange of rangesToUpdate ) {
+					writer.setAttribute( 'linkHref', href, elementOrRange );
 
 					truthyManualDecorators.forEach( item => {
-						writer.setAttribute( item, true, range );
+						writer.setAttribute( item, true, elementOrRange );
 					} );
 
 					falsyManualDecorators.forEach( item => {
-						writer.removeAttribute( item, range );
+						writer.removeAttribute( item, elementOrRange );
 					} );
 				}
 			}
