@@ -104,9 +104,9 @@ describe( 'FontFamilyEditing', () => {
 				} );
 
 				it( 'should convert defined fontFamily attribute values', () => {
-					setModelData( doc, '<paragraph>f<$text fontFamily="Arial">o</$text>o</paragraph>' );
+					setModelData( doc, '<paragraph>f<$text fontFamily="Arial, Helvetica, sans-serif">o</$text>o</paragraph>' );
 
-					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial;">o</span>o</p>' );
+					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial, Helvetica, sans-serif;">o</span>o</p>' );
 				} );
 			} );
 
@@ -174,10 +174,12 @@ describe( 'FontFamilyEditing', () => {
 		} );
 
 		it( 'should convert fontFamily attribute to configured complex preset', () => {
-			setModelData( doc, '<paragraph>f<$text fontFamily="Lucida Sans Unicode">o</$text>o</paragraph>' );
+			const fontFamily = '\'Lucida Sans Unicode\', \'Lucida Grande\', sans-serif';
+
+			setModelData( doc, `<paragraph>f<$text fontFamily="${ fontFamily }">o</$text>o</paragraph>` );
 
 			expect( editor.getData() )
-				.to.equal( '<p>f<span style="font-family:\'Lucida Sans Unicode\', \'Lucida Grande\', sans-serif;">o</span>o</p>' );
+				.to.equal( `<p>f<span style="font-family:${ fontFamily };">o</span>o</p>` );
 		} );
 
 		it( 'should convert fontFamily attribute from user defined settings', () => {
