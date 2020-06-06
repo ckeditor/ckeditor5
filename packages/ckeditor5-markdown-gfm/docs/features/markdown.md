@@ -71,4 +71,4 @@ ClassicEditor
 
 ## Contribute
 
-The source code of this feature is available on GitHub in https://github.com/ckeditor/ckeditor5-markdown-gfm.
+The source code of this feature is available on GitHub in https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-markdown-gfm.
