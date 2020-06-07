@@ -76,7 +76,7 @@ describe( 'LinkEditing', () => {
 	// Let's check only the minimum to not duplicate `bindTwoStepCaretToAttribute()` tests.
 	// Testing minimum is better than testing using spies that might give false positive results.
 	describe( 'two-step caret movement', () => {
-		it( 'should be bound to th `linkHref` attribute (LTR)', () => {
+		it( 'should be bound to the `linkHref` attribute (LTR)', () => {
 			// Put selection before the link element.
 			setModelData( editor.model, '<paragraph>foo[]<$text linkHref="url">b</$text>ar</paragraph>' );
 
@@ -93,7 +93,7 @@ describe( 'LinkEditing', () => {
 			expect( editor.model.document.selection.isGravityOverridden ).to.true;
 		} );
 
-		it( 'should be bound to th `linkHref` attribute (RTL)', async () => {
+		it( 'should be bound to the `linkHref` attribute (RTL)', async () => {
 			const editor = await ClassicTestEditor.create( element, {
 				plugins: [ Paragraph, LinkEditing, Enter ],
 				language: {

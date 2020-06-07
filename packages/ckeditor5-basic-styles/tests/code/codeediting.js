@@ -123,7 +123,7 @@ describe( 'CodeEditing', () => {
 			expect( model.document.selection ).to.have.property( 'isGravityOverridden', true );
 		} );
 
-		it( 'should be bound to th `code` attribute (RTL)', async () => {
+		it( 'should be bound to the `code` attribute (RTL)', async () => {
 			const editor = await VirtualTestEditor.create( {
 				plugins: [ Paragraph, CodeEditing ],
 				language: {
