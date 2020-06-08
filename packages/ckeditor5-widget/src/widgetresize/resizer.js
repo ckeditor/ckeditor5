@@ -116,12 +116,6 @@ export default class Resizer {
 
 				that._domResizerWrapper = domElement;
 
-				that.on( 'change:isEnabled', ( evt, propName, newValue ) => {
-					domElement.style.display = newValue ? '' : 'none';
-				} );
-
-				domElement.style.display = that.isEnabled ? '' : 'none';
-
 				return domElement;
 			} );
 
@@ -130,6 +124,14 @@ export default class Resizer {
 			writer.addClass( 'ck-widget_with-resizer', widgetElement );
 
 			this._viewResizerWrapper = viewResizerWrapper;
+
+			if ( !this.isEnabled ) {
+				writer.setStyle( 'display', 'none', this._viewResizerWrapper );
+			}
+
+			this.on( 'change:isEnabled', ( evt, propName, newValue ) => {
+				writer.setStyle( 'display', newValue ? '' : 'none', this._viewResizerWrapper );
+			} );
 		} );
 	}
 

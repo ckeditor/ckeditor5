@@ -95,21 +95,25 @@ describe( 'Resizer', () => {
 		it( 'hides the resizer if it gets disabled at a runtime', () => {
 			const resizerInstance = createResizer();
 			resizerInstance.isEnabled = true;
+
 			resizerInstance.attach();
-			const domResizeeWrapper = resizerInstance._viewResizerWrapper.render( document );
+			resizerInstance._viewResizerWrapper.render( document );
 
 			resizerInstance.isEnabled = false;
-			expect( domResizeeWrapper.style.display ).to.equal( 'none' );
+
+			expect( resizerInstance._viewResizerWrapper.getStyle( 'display' ) ).to.equal( 'none' );
 		} );
 
 		it( 'restores the resizer if it gets enabled at a runtime', () => {
 			const resizerInstance = createResizer();
 			resizerInstance.isEnabled = false;
+
 			resizerInstance.attach();
-			const domResizeeWrapper = resizerInstance._viewResizerWrapper.render( document );
+			resizerInstance._viewResizerWrapper.render( document );
 
 			resizerInstance.isEnabled = true;
-			expect( domResizeeWrapper.style.display ).to.equal( '' );
+
+			expect( resizerInstance._viewResizerWrapper.getStyle( 'display' ) ).to.equal( '' );
 		} );
 	} );
 
