@@ -7,7 +7,7 @@
  * @module table/converters/upcasttable
  */
 
-import { createEmptyTableCell } from '../commands/utils';
+import { createEmptyTableCell } from '../utils/common';
 
 /**
  * View table element to model table element conversion helper.

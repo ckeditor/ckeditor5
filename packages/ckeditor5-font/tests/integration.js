@@ -37,7 +37,8 @@ describe( 'Integration test Font', () => {
 		it( 'should render one span element for all types of font features', () => {
 			setModelData( model,
 				'<paragraph>' +
-					'<$text fontColor="#123456" fontBackgroundColor="rgb(10,20,30)" fontSize="big" fontFamily="Arial">foo</$text>' +
+					'<$text fontColor="#123456" fontBackgroundColor="rgb(10,20,30)" fontSize="big" ' +
+						'fontFamily="Arial, Helvetica, sans-serif">foo</$text>' +
 				'</paragraph>'
 			);
 

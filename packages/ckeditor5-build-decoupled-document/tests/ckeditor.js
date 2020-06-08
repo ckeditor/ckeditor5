@@ -200,7 +200,7 @@ describe( 'DecoupledEditor build', () => {
 
 				editor.setData( data );
 				expect( editor.getData() ).to.equal( data );
-				expect( editor.model.document.selection.getAttribute( 'fontFamily' ) ).to.equal( 'Georgia' );
+				expect( editor.model.document.selection.getAttribute( 'fontFamily' ) ).to.equal( 'Georgia, serif' );
 			} );
 
 			it( 'font background color works', () => {

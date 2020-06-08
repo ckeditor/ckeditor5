@@ -44,7 +44,7 @@ But we did not stop there, as the release comes with several bug fixes, too:
 * [Potential editor crash when removing a column](https://github.com/ckeditor/ckeditor5/issues/6789).
 * [Editor crash when inserting a table row or column with another widget selected in the cell](https://github.com/ckeditor/ckeditor5/issues/6607).
 
-Blog post coming soon...
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v19.1.1-with-table-enhancements-typing-around-widgets-and-print-to-PDF-feature/
 
 ### Collaboration features
 

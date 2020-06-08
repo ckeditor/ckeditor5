@@ -9,26 +9,25 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { getTableWidgetAncestor } from '../utils';
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import TableCellPropertiesView from './ui/tablecellpropertiesview';
 import tableCellProperties from './../../theme/icons/table-cell-properties.svg';
 import {
 	colorFieldValidator,
-	getBalloonCellPositionData,
 	getLocalizedColorErrorText,
 	getLocalizedLengthErrorText,
 	defaultColors,
 	lengthFieldValidator,
-	lineWidthFieldValidator,
-	repositionContextualBalloon
-} from '../ui/utils';
+	lineWidthFieldValidator
+} from '../utils/ui/table-properties';
 import {
 	getLocalizedColorOptions,
 	normalizeColorOptions
 } from '@ckeditor/ckeditor5-ui/src/colorgrid/utils';
 import { debounce } from 'lodash-es';
+import { getTableWidgetAncestor } from '../utils/ui/widget';
+import { getBalloonCellPositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
