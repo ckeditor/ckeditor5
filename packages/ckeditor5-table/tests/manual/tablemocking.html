@@ -25,9 +25,19 @@
 	#input-status {
 		color: hsl( 0, 90%, 50% );
 	}
+	#tools {
+		margin-bottom: 10px;
+	}
+	#tools input[type="checkbox"] {
+		vertical-align: middle;
+	}
+	#tools label > span {
+		vertical-align: middle;
+		display: inline-block;
+	}
 </style>
 
-<div style="margin-bottom: 10px;">
+<div id="tools">
 	<label for="model-data">Table data as expected by <a href="https://github.com/ckeditor/ckeditor5-table/blob/1004f9106110be9de125825afd491a1618b71271/tests/_utils/utils.js#L48">modelTable</a> helper function:</label>
 	<textarea id="model-data">
 [
@@ -43,7 +53,7 @@
 	<button type="button" id="set-model-data">↓ Set model data ↓</button>
 	<button type="button" id="get-model-data">↑ Get model data ↑</button>
 	<button type="button" id="renumber-cells">Renumber cells</button>
-	<label><input type="checkbox" id="use-letters" checked="false">Use letters</label>
+	<label><input type="checkbox" id="use-letters" checked="false"><span>Use letters</span></label>
 
 	<span id="input-status"></span>
 </div>
