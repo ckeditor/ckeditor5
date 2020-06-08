@@ -4,7 +4,7 @@
  */
 
 import Autoformat from '../src/autoformat';
-import BlockAutoformatEditing from '../src/blockautoformatediting';
+import blockAutoformatEditing from '../src/blockautoformatediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -12,8 +12,8 @@ import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-describe( 'BlockAutoformatEditing', () => {
-	let editor, model, doc;
+describe( 'blockAutoformatEditing', () => {
+	let editor, model, doc, plugin;
 
 	testUtils.createSinonSandbox();
 
@@ -26,11 +26,8 @@ describe( 'BlockAutoformatEditing', () => {
 				editor = newEditor;
 				model = editor.model;
 				doc = model.document;
+				plugin = editor.plugins.get( 'Autoformat' );
 			} );
-	} );
-
-	it( 'should have pluginName', () => {
-		expect( BlockAutoformatEditing.pluginName ).to.equal( 'BlockAutoformatEditing' );
 	} );
 
 	describe( 'command name', () => {
@@ -40,7 +37,7 @@ describe( 'BlockAutoformatEditing', () => {
 
 			editor.commands.add( 'testCommand', testCommand );
 
-			new BlockAutoformatEditing( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
+			blockAutoformatEditing( editor, plugin, /^[*]\s$/, 'testCommand' );
 
 			setData( model, '<paragraph>*[]</paragraph>' );
 
@@ -57,7 +54,7 @@ describe( 'BlockAutoformatEditing', () => {
 
 			editor.commands.add( 'testCommand', testCommand );
 
-			new BlockAutoformatEditing( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
+			blockAutoformatEditing( editor, plugin, /^[*]\s$/, 'testCommand' );
 
 			setData( model, '<paragraph>*[]</paragraph>' );
 
@@ -79,7 +76,7 @@ describe( 'BlockAutoformatEditing', () => {
 
 			editor.commands.add( 'testCommand', testCommand );
 
-			new BlockAutoformatEditing( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
+			blockAutoformatEditing( editor, plugin, /^[*]\s$/, 'testCommand' );
 
 			setData( model, '<paragraph>*[]</paragraph>' );
 
@@ -94,7 +91,7 @@ describe( 'BlockAutoformatEditing', () => {
 	describe( 'callback', () => {
 		it( 'should run callback when the pattern is matched', () => {
 			const spy = testUtils.sinon.spy();
-			new BlockAutoformatEditing( editor, /^[*]\s$/, spy ); // eslint-disable-line no-new
+			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 			setData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
@@ -104,9 +101,23 @@ describe( 'BlockAutoformatEditing', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
+		it( 'should not call the callback when the pattern is matched but the plugin is disabled', () => {
+			const callbackSpy = testUtils.sinon.spy().named( 'callback' );
+			blockAutoformatEditing( editor, plugin, /^[*]\s$/, callbackSpy );
+
+			plugin.isEnabled = false;
+
+			setData( model, '<paragraph>*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			sinon.assert.notCalled( callbackSpy );
+		} );
+
 		it( 'should ignore other delta operations', () => {
 			const spy = testUtils.sinon.spy();
-			new BlockAutoformatEditing( editor, /^[*]\s/, spy ); // eslint-disable-line no-new
+			blockAutoformatEditing( editor, plugin, /^[*]\s/, spy );
 
 			setData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
@@ -118,7 +129,7 @@ describe( 'BlockAutoformatEditing', () => {
 
 		it( 'should stop if there is no text to run matching on', () => {
 			const spy = testUtils.sinon.spy();
-			new BlockAutoformatEditing( editor, /^[*]\s/, spy ); // eslint-disable-line no-new
+			blockAutoformatEditing( editor, plugin, /^[*]\s/, spy );
 
 			setData( model, '<paragraph>[]</paragraph>' );
 			model.change( writer => {
@@ -146,7 +157,7 @@ describe( 'BlockAutoformatEditing', () => {
 				} );
 
 			const spy = testUtils.sinon.spy();
-			new BlockAutoformatEditing( editor, /^[*]\s/, spy ); // eslint-disable-line no-new
+			blockAutoformatEditing( editor, plugin, /^[*]\s/, spy );
 
 			setData( model, '<paragraph>*<softBreak></softBreak>[]</paragraph>' );
 			model.change( writer => {
@@ -174,7 +185,7 @@ describe( 'BlockAutoformatEditing', () => {
 				} );
 
 			const spy = testUtils.sinon.spy();
-			new BlockAutoformatEditing( editor, /^[*]\s/, spy ); // eslint-disable-line no-new
+			blockAutoformatEditing( editor, plugin, /^[*]\s/, spy );
 
 			setData( model, '<paragraph>* <softBreak></softBreak>[]</paragraph>' );
 
@@ -186,7 +197,7 @@ describe( 'BlockAutoformatEditing', () => {
 		} );
 
 		it( 'should stop if callback returned false', () => {
-			new BlockAutoformatEditing( editor, /^[*]\s$/, () => false ); // eslint-disable-line no-new
+			blockAutoformatEditing( editor, plugin, /^[*]\s$/, () => false );
 
 			setData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
@@ -199,7 +210,7 @@ describe( 'BlockAutoformatEditing', () => {
 
 	it( 'should ignore transparent batches', () => {
 		const spy = testUtils.sinon.spy();
-		new BlockAutoformatEditing( editor, /^[*]\s$/, spy ); // eslint-disable-line no-new
+		blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 		setData( model, '<paragraph>*[]</paragraph>' );
 		model.enqueueChange( 'transparent', writer => {
