@@ -930,6 +930,7 @@ function addInlineFiller( domDocument, domParentOrArray, offset ) {
 function areSimilar( node1, node2 ) {
 	return isNode( node1 ) && isNode( node2 ) &&
 		!isText( node1 ) && !isText( node2 ) &&
+		node1.nodeType !== 8 && node2.nodeType !== 8 &&
 		node1.tagName.toLowerCase() === node2.tagName.toLowerCase();
 }
 

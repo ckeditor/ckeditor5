@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, window, NodeFilter, MutationObserver */
+/* globals document, window, NodeFilter, MutationObserver, HTMLImageElement */
 
 import View from '../../src/view/view';
 import ViewElement from '../../src/view/element';
@@ -303,6 +303,33 @@ describe( 'Renderer', () => {
 
 			expect( domRoot.childNodes.length ).to.equal( 1 );
 			expect( domRoot.childNodes[ 0 ] ).to.equal( domImg );
+		} );
+
+		it( 'should remove any comment from the DOM element', () => {
+			// This comment should be cleared during render.
+			const domComment = document.createComment( 'some comment from the user-land' );
+			domRoot.appendChild( domComment );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 0 );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/5734
+		it( 'should replace a comment with the added element', () => {
+			const viewImg = new ViewElement( viewDocument, 'img' );
+			viewRoot._appendChild( viewImg );
+
+			// This comment should be cleared during render.
+			const domComment = document.createComment( 'some comment from the user-land' );
+			domRoot.appendChild( domComment );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ] ).to.be.an.instanceof( HTMLImageElement );
 		} );
 
 		it( 'should change element if it is different', () => {
@@ -2693,6 +2720,78 @@ describe( 'Renderer', () => {
 				expect( domRoot.childNodes[ 1 ] ).to.equal( domP );
 				expect( domP.childNodes[ 0 ] ).to.equal( domPT );
 				expect( domP.childNodes[ 2 ].childNodes[ 0 ].childNodes[ 1 ] ).to.equal( domPABI );
+				expect( domRoot.childNodes[ 2 ] ).to.equal( domQ );
+				expect( domQ.childNodes[ 0 ].childNodes[ 0 ].childNodes[ 1 ] ).to.equal( domQULB );
+
+				// Assert mappings.
+				const mappings = renderer.domConverter._domToViewMapping;
+				expect( mappings.get( domH ) ).to.equal( viewH );
+				expect( mappings.get( domHI ) ).to.equal( viewH.getChild( 1 ) );
+				expect( mappings.get( domP ) ).to.equal( viewP );
+				expect( mappings.get( domPABI ) ).to.equal( viewP.getChild( 2 ).getChild( 0 ).getChild( 1 ) );
+				expect( mappings.get( domQ ) ).to.equal( viewQ );
+				expect( mappings.get( domQULB ) ).to.equal( viewQ.getChild( 0 ).getChild( 0 ).getChild( 1 ) );
+			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/5734
+			it( 'should not rerender DOM when view replaced with the same structure without a comment', () => {
+				const domContent = '' +
+					'<h2>He<i>ading 1</i></h2>' +
+					'<p>Ph <strong>Bold</strong>' +
+						'<a href="https://ckeditor.com"><strong>Lin<i>k</i></strong></a>' +
+					'</p>' +
+					'<!-- A comment to be ignored -->' +
+					'<blockquote><ul><li>Quoted <strong>item 1</strong></li></ul></blockquote>';
+				const content = '' +
+					'<container:h2>He' +
+						'<attribute:i>ading 1</attribute:i>' +
+					'</container:h2>' +
+					'<container:p>Ph ' +
+						'<attribute:strong>Bold</attribute:strong>' +
+						'<attribute:a href="https://ckeditor.com">' +
+							'<attribute:strong>Lin<attribute:i>k</attribute:i></attribute:strong>' +
+						'</attribute:a>' +
+					'</container:p>' +
+					'<container:blockquote>' +
+						'<container:ul>' +
+							'<container:li>Quoted <attribute:strong>item 1</attribute:strong></container:li>' +
+						'</container:ul>' +
+					'</container:blockquote>';
+
+				domRoot.innerHTML = domContent;
+				viewRoot._appendChild( parse( content ) );
+
+				const viewH = viewRoot.getChild( 0 );
+				const viewP = viewRoot.getChild( 1 );
+				const viewQ = viewRoot.getChild( 2 );
+
+				const domH = domRoot.childNodes[ 0 ];
+				const domHI = domH.childNodes[ 1 ];
+				const domP = domRoot.childNodes[ 1 ];
+				const domPT = domP.childNodes[ 0 ];
+				const domPABI = domP.childNodes[ 2 ].childNodes[ 0 ].childNodes[ 1 ];
+				const domC = domRoot.childNodes[ 2 ];
+				const domQ = domRoot.childNodes[ 3 ];
+				const domQULB = domQ.childNodes[ 0 ].childNodes[ 0 ].childNodes[ 1 ];
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				// Assert the comment is no longer in the content.
+				expect( domRoot.contains( domC ), 'domRoot should not contain the comment' ).to.be.false;
+
+				// Assert content, without the comment.
+				expect( domRoot.innerHTML ).to.equal( '<h2>He<i>ading 1</i></h2><p>Ph <strong>Bold</strong>' +
+					'<a href="https://ckeditor.com"><strong>Lin<i>k</i></strong></a></p><blockquote><ul><li>' +
+					'Quoted <strong>item 1</strong></li></ul></blockquote>' );
+
+				// Assert if other DOM elements did not change.
+				expect( domRoot.childNodes[ 0 ] ).to.equal( domH );
+				expect( domH.childNodes[ 1 ] ).to.equal( domHI );
+				expect( domRoot.childNodes[ 1 ] ).to.equal( domP );
+				expect( domP.childNodes[ 0 ] ).to.equal( domPT );
+				expect( domP.childNodes[ 2 ].childNodes[ 0 ].childNodes[ 1 ] ).to.equal( domPABI );
+				// Note the shifted index of domQ, from 3 to 2.
 				expect( domRoot.childNodes[ 2 ] ).to.equal( domQ );
 				expect( domQ.childNodes[ 0 ].childNodes[ 0 ].childNodes[ 1 ] ).to.equal( domQULB );
 
