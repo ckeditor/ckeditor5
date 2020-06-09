@@ -78,7 +78,7 @@ describe( 'unsafe keystroke handling utils', () => {
 
 		it( 'should return "false" for the keystrokes that result in typing', () => {
 			expect( isSafeKeystroke( { keyCode: keyCodes.a } ), 'a' ).to.be.false;
-			expect( isSafeKeystroke( { keyCode: keyCodes[ 48 ] } ), '0' ).to.be.false;
+			expect( isSafeKeystroke( { keyCode: keyCodes[ 0 ] } ), '0' ).to.be.false;
 			expect( isSafeKeystroke( { keyCode: keyCodes.a, altKey: true } ), 'Alt+a' ).to.be.false;
 		} );
 	} );
