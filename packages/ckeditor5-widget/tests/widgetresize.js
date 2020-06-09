@@ -561,7 +561,10 @@ describe( 'WidgetResize', () => {
 			.create( element, {
 				plugins: [
 					ArticlePluginSet, WidgetResize, simpleWidgetPlugin
-				]
+				],
+				image: {
+					toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+				}
 			} );
 	}
 

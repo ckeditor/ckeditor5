@@ -186,7 +186,7 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 		return BalloonEditor.create( element, {
 			plugins: [ Paragraph, MediaEmbed, MediaEmbedToolbar, FakeButton, Bold ],
 			balloonToolbar: [ 'bold' ],
-			media: {
+			mediaEmbed: {
 				toolbar: [ 'fake_button' ]
 			}
 		} ).then( _editor => {

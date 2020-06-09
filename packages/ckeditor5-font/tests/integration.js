@@ -19,7 +19,10 @@ describe( 'Integration test Font', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ Font, ArticlePluginSet ]
+				plugins: [ Font, ArticlePluginSet ],
+				image: {
+					toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+				}
 			} )
 			.then( newEditor => {
 				editor = newEditor;
