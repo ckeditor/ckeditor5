@@ -11,7 +11,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { defaultConversion, defaultSchema, modelTable, viewTable } from '../_utils/utils';
+import { modelTable, viewTable } from '../_utils/utils';
 
 function paragraphInTableCell() {
 	return dispatcher => dispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
@@ -43,16 +43,26 @@ describe( 'downcast converters', () => {
 
 	testUtils.createSinonSandbox();
 
+	beforeEach( async () => {
+		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } );
+
+		model = editor.model;
+		root = model.document.getRoot( 'main' );
+		view = editor.editing.view;
+	} );
+
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
 	describe( 'downcastInsertTable()', () => {
-		beforeEach( () => {
-			return VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } )
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.model;
-					doc = model.document;
-					root = doc.getRoot( 'main' );
-					view = editor.editing.view;
-				} );
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } );
+
+			model = editor.model;
+			doc = model.document;
+			root = doc.getRoot( 'main' );
+			view = editor.editing.view;
 		} );
 
 		describe( 'editing pipeline', () => {
@@ -337,18 +347,6 @@ describe( 'downcast converters', () => {
 	} );
 
 	describe( 'downcastInsertRow()', () => {
-		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
-		beforeEach( () => {
-			return VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } )
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.model;
-					doc = model.document;
-					root = doc.getRoot( 'main' );
-					view = editor.editing.view;
-				} );
-		} );
-
 		// The insert row downcast conversion is not executed in data pipeline.
 		describe( 'editing pipeline', () => {
 			it( 'should react to changed rows', () => {
@@ -576,18 +574,6 @@ describe( 'downcast converters', () => {
 	} );
 
 	describe( 'downcastInsertCell()', () => {
-		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
-		beforeEach( () => {
-			return VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } )
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.model;
-					doc = model.document;
-					root = doc.getRoot( 'main' );
-					view = editor.editing.view;
-				} );
-		} );
-
 		// The insert table cell downcast conversion is not executed in data pipeline.
 		describe( 'editing pipeline', () => {
 			it( 'should add tableCell on proper index in tr', () => {
@@ -900,18 +886,6 @@ describe( 'downcast converters', () => {
 	} );
 
 	describe( 'downcastTableHeadingRowsChange()', () => {
-		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
-		beforeEach( () => {
-			return VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } )
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.model;
-					doc = model.document;
-					root = doc.getRoot( 'main' );
-					view = editor.editing.view;
-				} );
-		} );
-
 		// The heading rows change downcast conversion is not executed in data pipeline.
 		describe( 'editing pipeline', () => {
 			it( 'should work for adding heading rows', () => {
@@ -1122,15 +1096,6 @@ describe( 'downcast converters', () => {
 	} );
 
 	describe( 'downcastRemoveRow()', () => {
-		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
-		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } );
-
-			model = editor.model;
-			root = model.document.getRoot( 'main' );
-			view = editor.editing.view;
-		} );
-
 		// The remove row downcast conversion is not executed in data pipeline.
 		describe( 'editing pipeline', () => {
 			it( 'should react to removed row from the beginning of a body rows (no heading rows)', () => {
@@ -1374,20 +1339,21 @@ describe( 'downcast converters', () => {
 	} );
 
 	describe( 'options.asWidget=true', () => {
-		beforeEach( () => {
-			return VirtualTestEditor.create()
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.model;
-					doc = model.document;
-					root = doc.getRoot( 'main' );
-					view = editor.editing.view;
+		let editor;
 
-					defaultSchema( model.schema );
-					defaultConversion( editor.conversion, true );
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } )
 
-					editor.conversion.for( 'downcast' ).add( paragraphInTableCell() );
-				} );
+			model = editor.model;
+			doc = model.document;
+			root = doc.getRoot( 'main' );
+			view = editor.editing.view;
+
+			editor.conversion.for( 'downcast' ).add( paragraphInTableCell() );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
 		} );
 
 		it( 'should rename <span> to <p> when more then one block content inside table cell', () => {
