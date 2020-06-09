@@ -580,30 +580,69 @@ export default class WidgetTypeAround extends Plugin {
 			const direction = domEventData.direction;
 			const selectedModelWidget = model.document.selection.getSelectedElement();
 
-			if ( typeAroundSelectionAttributeValue === 'before' ) {
-				if ( direction === 'backward' ) {
-					const range = schema.getNearestSelectionRange( model.createPositionBefore( selectedModelWidget ), direction );
+			const isFakeCaretBefore = typeAroundSelectionAttributeValue === 'before';
+			const isForwardDelete = direction == 'forward';
 
-					if ( range ) {
+			const shouldDeleteEntireWidget = ( isFakeCaretBefore && isForwardDelete ) || ( !isFakeCaretBefore && !isForwardDelete );
+			const shouldTryDeleteContentBeforeWidget = isFakeCaretBefore && !isForwardDelete;
+			const shouldTryDeleteContentAfterWidget = !isFakeCaretBefore && isForwardDelete;
+
+			if ( shouldDeleteEntireWidget ) {
+				editor.execute( 'delete', {
+					selection: model.createSelection( selectedModelWidget, 'on' )
+				} );
+			}
+
+			if ( shouldTryDeleteContentBeforeWidget ) {
+				const range = schema.getNearestSelectionRange( model.createPositionBefore( selectedModelWidget ), direction );
+
+				if ( range ) {
+					const deepestEmptyRangeAncestor = getDeepestEmptyPositionAncestor( range.start );
+
+					// Handle a case when there's an empty document tree branch before the widget that should be deleted.
+					//
+					//		<foo><bar></bar></foo>[<widget></widget>]
+					//
+					// Note: Range is collapsed, so it does not matter if this is start or end.
+					if ( deepestEmptyRangeAncestor ) {
+						model.deleteContent( model.createSelection( deepestEmptyRangeAncestor, 'on' ), {
+							doNotAutoparagraph: true
+						} );
+					}
+					// Handle a case when there's a non-empty document tree branch before the widget.
+					//
+					//		<foo>bar</foo>[<widget></widget>] -> <foo>ba[]</foo><widget></widget>
+					//
+					else {
 						model.change( writer => {
 							writer.setSelection( range );
 							editor.execute( 'delete' );
 						} );
 					}
-				} else {
-					editor.execute( 'delete', {
-						selection: model.createSelection( selectedModelWidget, 'on' )
-					} );
 				}
-			} else {
-				if ( direction === 'backward' ) {
-					editor.execute( 'delete', {
-						selection: model.createSelection( selectedModelWidget, 'on' )
-					} );
-				} else {
-					const range = schema.getNearestSelectionRange( model.createPositionAfter( selectedModelWidget ), direction );
+			}
 
-					if ( range ) {
+			if ( shouldTryDeleteContentAfterWidget ) {
+				const range = schema.getNearestSelectionRange( model.createPositionAfter( selectedModelWidget ), direction );
+
+				if ( range ) {
+					const deepestEmptyRangeAncestor = getDeepestEmptyPositionAncestor( range.start );
+
+					// Handle a case when there's an empty document tree branch after the widget that should be deleted.
+					//
+					//		[<widget></widget>]<foo><bar></bar></foo>
+					//
+					// Note: Range is collapsed, so it does not matter if this is start or end.
+					if ( deepestEmptyRangeAncestor ) {
+						model.deleteContent( model.createSelection( deepestEmptyRangeAncestor, 'on' ), {
+							doNotAutoparagraph: true
+						} );
+					}
+					// Handle a case when there's a non-empty document tree branch after the widget.
+					//
+					//		[<widget></widget>]<foo>bar</foo> -> <widget></widget><foo>[]ar</foo>
+					//
+					else {
 						model.change( writer => {
 							writer.setSelection( range );
 							editor.execute( 'forwardDelete' );
@@ -681,4 +720,33 @@ function injectFakeCaret( wrapperDomElement ) {
 	} );
 
 	wrapperDomElement.appendChild( caretTemplate.render() );
+}
+
+// Returns the ancestor of a position closest to the root which is empty. For instance,
+// for a position in `<baz>`:
+//
+//		<foo>abc<bar><baz>[]</baz></bar></foo>
+//
+// it returns `<bar>`.
+//
+// @param {module:engine/model/position~Position} position
+// @returns {module:engine/model/element~Element|null}
+function getDeepestEmptyPositionAncestor( position ) {
+	const firstPositionParent = position.parent;
+
+	if ( !firstPositionParent.isEmpty ) {
+		return null;
+	}
+
+	let deepestEmptyAncestor = firstPositionParent;
+
+	for ( const ancestor of firstPositionParent.getAncestors().reverse() ) {
+		if ( ancestor.childCount > 1 || ancestor.is( 'rootElement' ) ) {
+			break;
+		}
+
+		deepestEmptyAncestor = ancestor;
+	}
+
+	return deepestEmptyAncestor;
 }

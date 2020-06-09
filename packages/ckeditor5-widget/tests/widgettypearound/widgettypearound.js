@@ -894,6 +894,76 @@ describe( 'WidgetTypeAround', () => {
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
 				} );
 
+				it( 'should delete an empty paragraph before a widget if the "fake caret" is also before the widget', () => {
+					setModelData( editor.model, '<paragraph></paragraph>[<blockWidget></blockWidget>]' );
+
+					fireKeyboardEvent( 'arrowleft' );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph></paragraph>[<blockWidget></blockWidget>]' );
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+
+					fireDeleteEvent();
+					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+
+					sinon.assert.calledOnce( eventInfoStub.stop );
+					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				} );
+
+				it( 'should delete an empty document tree branch before a widget if the "fake caret" is also before the widget', () => {
+					setModelData( editor.model, '<blockQuote><paragraph></paragraph></blockQuote>[<blockWidget></blockWidget>]' );
+
+					fireKeyboardEvent( 'arrowleft' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<blockQuote>' +
+							'<paragraph></paragraph>' +
+						'</blockQuote>' +
+						'[<blockWidget></blockWidget>]'
+					);
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+
+					fireDeleteEvent();
+					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+
+					sinon.assert.calledOnce( eventInfoStub.stop );
+					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				} );
+
+				it( 'should delete an empty document tree sub-branch before a widget if the "fake caret" is also before the widget', () => {
+					setModelData( editor.model,
+						'<blockQuote>' +
+							'<paragraph>foo</paragraph>' +
+							'<paragraph></paragraph>' +
+						'</blockQuote>' +
+						'[<blockWidget></blockWidget>]'
+					);
+
+					fireKeyboardEvent( 'arrowleft' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<blockQuote>' +
+							'<paragraph>foo</paragraph>' +
+							'<paragraph></paragraph>' +
+						'</blockQuote>' +
+						'[<blockWidget></blockWidget>]'
+					);
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+
+					fireDeleteEvent();
+					expect( getModelData( model ) ).to.equal(
+						'<blockQuote>' +
+							'<paragraph>foo</paragraph>' +
+						'</blockQuote>' +
+						'[<blockWidget></blockWidget>]'
+					);
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+
+					sinon.assert.calledOnce( eventInfoStub.stop );
+					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				} );
+
 				it( 'should do nothing if the "fake caret" is before the widget but there is nothing to delete there', () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
@@ -974,6 +1044,74 @@ describe( 'WidgetTypeAround', () => {
 					fireDeleteEvent( true );
 					expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]oo</paragraph>' );
 					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+
+					sinon.assert.calledOnce( eventInfoStub.stop );
+					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				} );
+
+				it( 'should delete an empty paragraph after a widget if the "fake caret" is also after the widget', () => {
+					setModelData( editor.model, '[<blockWidget></blockWidget>]<paragraph></paragraph>' );
+
+					fireKeyboardEvent( 'arrowright' );
+
+					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]<paragraph></paragraph>' );
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+
+					fireDeleteEvent( true );
+					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+
+					sinon.assert.calledOnce( eventInfoStub.stop );
+					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				} );
+
+				it( 'should delete an empty document tree branch after a widget if the "fake caret" is also after the widget', () => {
+					setModelData( editor.model, '[<blockWidget></blockWidget>]<blockQuote><paragraph></paragraph></blockQuote>' );
+
+					fireKeyboardEvent( 'arrowright' );
+
+					expect( getModelData( model ) ).to.equal(
+						'[<blockWidget></blockWidget>]' +
+						'<blockQuote><paragraph></paragraph></blockQuote>'
+					);
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+
+					fireDeleteEvent( true );
+					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+
+					sinon.assert.calledOnce( eventInfoStub.stop );
+					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				} );
+
+				it( 'should delete an empty document tree sub-branch after a widget if the "fake caret" is also after the widget', () => {
+					setModelData( editor.model,
+						'[<blockWidget></blockWidget>]' +
+						'<blockQuote>' +
+							'<paragraph></paragraph>' +
+							'<paragraph>foo</paragraph>' +
+						'</blockQuote>'
+					);
+
+					fireKeyboardEvent( 'arrowright' );
+
+					expect( getModelData( model ) ).to.equal(
+						'[<blockWidget></blockWidget>]' +
+						'<blockQuote>' +
+							'<paragraph></paragraph>' +
+							'<paragraph>foo</paragraph>' +
+						'</blockQuote>'
+					);
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+
+					fireDeleteEvent( true );
+					expect( getModelData( model ) ).to.equal(
+						'[<blockWidget></blockWidget>]' +
+						'<blockQuote>' +
+							'<paragraph>foo</paragraph>' +
+						'</blockQuote>'
+					);
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
