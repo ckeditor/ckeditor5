@@ -361,11 +361,7 @@ export default class WidgetTypeAround extends Plugin {
 				// If the selection didn't have the attribute, let's set it now according to the direction of the arrow
 				// key press. This also means we cannot let the Widget plugin listener move the selection.
 				else {
-					if ( isForward ) {
-						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
-					} else {
-						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
-					}
+					writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, isForward ? 'after' : 'before' );
 
 					shouldStopAndPreventDefault = true;
 				}
