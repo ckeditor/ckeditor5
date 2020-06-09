@@ -23,18 +23,18 @@ describe( 'unsafe keystroke handling utils', () => {
 		} );
 
 		it( 'should return "true" for function (Fn) keystrokes', () => {
-			expect( isNonTypingKeystroke( { keyCode: 112 } ), 'F1' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: 113 } ), 'F2' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: 114 } ), 'F3' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: 115 } ), 'F4' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: 116 } ), 'F5' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: 117 } ), 'F6' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: 118 } ), 'F7' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: 119 } ), 'F8' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: 120 } ), 'F9' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: 121 } ), 'F10' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: 122 } ), 'F11' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: 123 } ), 'F12' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.f1 } ), 'F1' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.f2 } ), 'F2' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.f3 } ), 'F3' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.f4 } ), 'F4' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.f5 } ), 'F5' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.f6 } ), 'F6' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.f7 } ), 'F7' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.f8 } ), 'F8' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.f9 } ), 'F9' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.f10 } ), 'F10' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.f11 } ), 'F11' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.f12 } ), 'F12' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: 124 } ), 'F13' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: 125 } ), 'F14' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: 126 } ), 'F15' ).to.be.true;
@@ -50,17 +50,17 @@ describe( 'unsafe keystroke handling utils', () => {
 		} );
 
 		it( 'should return "true" for other safe keystrokes', () => {
-			expect( isNonTypingKeystroke( { keyCode: 9 } ), 'Tab' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: 16 } ), 'Shift' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: 17 } ), 'Ctrl' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: 18 } ), 'Alt' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.tab } ), 'Tab' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.shift } ), 'Shift' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.ctrl } ), 'Ctrl' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.alt } ), 'Alt' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: 19 } ), 'Pause' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: 20 } ), 'CapsLock' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: 27 } ), 'Escape' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.esc } ), 'Escape' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: 33 } ), 'PageUp' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: 34 } ), 'PageDown' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: 35 } ), 'Home' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: 36 } ), 'End,' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: 36 } ), 'End' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: 45 } ), 'Insert' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: 91 } ), 'Windows' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: 93 } ), 'Menu key' ).to.be.true;
