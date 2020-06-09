@@ -27,7 +27,7 @@ import {
 } from './utils';
 
 import {
-	isSafeKeystroke
+	isNonTypingKeystroke
 } from '@ckeditor/ckeditor5-typing/src/utils/injectunsafekeystrokeshandling';
 
 import returnIcon from '../../theme/icons/return-arrow.svg';
@@ -484,7 +484,7 @@ export default class WidgetTypeAround extends Plugin {
 		// Note: The priority must precede the default Widget class keydown handler.
 		editingView.document.on( 'keydown', ( evt, domEventData ) => {
 			// Don't handle enter/backspace/delete here. They are handled in dedicated listeners.
-			if ( !keyCodesHandledSomewhereElse.includes( domEventData.keyCode ) && !isSafeKeystroke( domEventData ) ) {
+			if ( !keyCodesHandledSomewhereElse.includes( domEventData.keyCode ) && !isNonTypingKeystroke( domEventData ) ) {
 				this._insertParagraphAccordingToSelectionAttribute();
 			}
 		}, { priority: priorities.get( 'high' ) + 1 } );
