@@ -10,5 +10,10 @@ applied.
 1. Red highlight should be visible on the whole content, including the widget.
 1. Play with highlights, add and remove them, check if they are applied correctly.
 
-NOTE: Yellow highlight should be visible over red and blue one. Red highlight should be visible over blue one. 
+### Highlighting table cells
+
+1. You can select the entire table cell and apply a highlight to it.
+1. The highlight should change the background of an **entire cell** (not only its content).
+
+NOTE: Yellow highlight should be visible over red and blue one. Red highlight should be visible over blue one.
 

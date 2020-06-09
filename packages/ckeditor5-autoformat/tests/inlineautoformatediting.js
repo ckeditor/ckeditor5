@@ -4,19 +4,21 @@
  */
 
 import Autoformat from '../src/autoformat';
-import InlineAutoformatEditing from '../src/inlineautoformatediting';
+import inlineAutoformatEditing from '../src/inlineautoformatediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-describe( 'InlineAutoformatEditing', () => {
-	let editor, model, doc;
+describe( 'inlineAutoformatEditing', () => {
+	let editor, model, doc, plugin, formatSpy;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
+		formatSpy = testUtils.sinon.spy().named( 'formatCallback' );
+
 		return VirtualTestEditor
 			.create( {
 				plugins: [ Enter, Paragraph, Autoformat ]
@@ -25,59 +27,55 @@ describe( 'InlineAutoformatEditing', () => {
 				editor = newEditor;
 				model = editor.model;
 				doc = model.document;
+				plugin = editor.plugins.get( 'Autoformat' );
 
 				model.schema.extend( '$text', { allowAttributes: 'testAttribute' } );
 			} );
 	} );
 
-	it( 'should have pluginName', () => {
-		expect( InlineAutoformatEditing.pluginName ).to.equal( 'InlineAutoformatEditing' );
-	} );
-
-	describe( 'attribute', () => {
-		it( 'should stop early if there are less than 3 capture groups', () => {
-			new InlineAutoformatEditing( editor, /(\*)(.+?)\*/g, 'testAttribute' ); // eslint-disable-line no-new
+	describe( 'regExp', () => {
+		it( 'should not call the formatCallback if there are less than 3 capture groups', () => {
+			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)\*/g, formatSpy );
 
 			setData( model, '<paragraph>*foobar[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
+			sinon.assert.notCalled( formatSpy );
 		} );
 
-		it( 'should apply an attribute when the pattern is matched', () => {
-			new InlineAutoformatEditing( editor, /(\*)(.+?)(\*)/g, 'testAttribute' ); // eslint-disable-line no-new
+		it( 'should call the formatCallback when the pattern is matched', () => {
+			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, formatSpy );
 
 			setData( model, '<paragraph>*foobar[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<paragraph><$text testAttribute="true">foobar</$text>[]</paragraph>' );
+			sinon.assert.calledOnce( formatSpy );
 		} );
 
-		it( 'should stop early if selection is not collapsed', () => {
-			new InlineAutoformatEditing( editor, /(\*)(.+?)\*/g, 'testAttribute' ); // eslint-disable-line no-new
+		it( 'should not call the formatCallback if the selection is not collapsed', () => {
+			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)\*/g, formatSpy );
 
 			setData( model, '<paragraph>*foob[ar]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<paragraph>*foob*[ar]</paragraph>' );
+			sinon.assert.notCalled( formatSpy );
 		} );
 	} );
 
 	describe( 'callback', () => {
 		it( 'should stop when there are no format ranges returned from testCallback', () => {
-			const formatSpy = testUtils.sinon.spy();
 			const testStub = testUtils.sinon.stub().returns( {
 				format: [ [] ],
 				remove: []
 			} );
 
-			new InlineAutoformatEditing( editor, testStub, formatSpy ); // eslint-disable-line no-new
+			inlineAutoformatEditing( editor, plugin, testStub, formatSpy );
 
 			setData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
@@ -88,13 +86,12 @@ describe( 'InlineAutoformatEditing', () => {
 		} );
 
 		it( 'should stop when there are no remove ranges returned from testCallback', () => {
-			const formatSpy = testUtils.sinon.spy();
 			const testStub = testUtils.sinon.stub().returns( {
 				format: [],
 				remove: [ [] ]
 			} );
 
-			new InlineAutoformatEditing( editor, testStub, formatSpy ); // eslint-disable-line no-new
+			inlineAutoformatEditing( editor, plugin, testStub, formatSpy );
 
 			setData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
@@ -105,17 +102,29 @@ describe( 'InlineAutoformatEditing', () => {
 		} );
 
 		it( 'should stop early when there is no text', () => {
-			const formatSpy = testUtils.sinon.spy();
 			const testStub = testUtils.sinon.stub().returns( {
 				format: [],
 				remove: [ [] ]
 			} );
 
-			new InlineAutoformatEditing( editor, testStub, formatSpy ); // eslint-disable-line no-new
+			inlineAutoformatEditing( editor, plugin, testStub, formatSpy );
 
 			setData( model, '<paragraph>[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			sinon.assert.notCalled( formatSpy );
+		} );
+
+		it( 'should not run the formatCallback when the pattern is matched but the plugin is disabled', () => {
+			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, formatSpy );
+
+			plugin.isEnabled = false;
+
+			setData( model, '<paragraph>*foobar[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.notCalled( formatSpy );
@@ -133,7 +142,7 @@ describe( 'InlineAutoformatEditing', () => {
 
 			const formatCallback = () => false;
 
-			new InlineAutoformatEditing( editor, testCallback, formatCallback ); // eslint-disable-line no-new
+			inlineAutoformatEditing( editor, plugin, testCallback, formatCallback );
 
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
@@ -144,13 +153,14 @@ describe( 'InlineAutoformatEditing', () => {
 	} );
 
 	it( 'should ignore transparent batches', () => {
-		new InlineAutoformatEditing( editor, /(\*)(.+?)(\*)/g, 'testAttribute' ); // eslint-disable-line no-new
+		inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, formatSpy );
 
 		setData( model, '<paragraph>*foobar[]</paragraph>' );
 		model.enqueueChange( 'transparent', writer => {
 			writer.insertText( '*', doc.selection.getFirstPosition() );
 		} );
 
+		sinon.assert.notCalled( formatSpy );
 		expect( getData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
 	} );
 } );
