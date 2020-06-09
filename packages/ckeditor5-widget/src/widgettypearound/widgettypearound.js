@@ -345,8 +345,8 @@ export default class WidgetTypeAround extends Plugin {
 						}
 
 						// If the selection had nowhere to go, let's leave the attribute as it was and pass through
-						// to the Widget plugin listener which will... in fact also do nothing. But this is no longer
-						// the problem of the WidgetTypeAround plugin.
+						// to the Widget plugin listener which will... in fact also do nothing. Other listeners like in the TableKeyboard
+						// plugin may want to handle it, though. But this is no longer the problem of the WidgetTypeAround plugin.
 					}
 					// ...and the keyboard arrow works against the value of the selection attribute...
 					else {
