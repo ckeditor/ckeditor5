@@ -333,13 +333,14 @@ export default class WidgetTypeAround extends Plugin {
 				// If the selection already has the attribute...
 				if ( typeAroundSelectionAttribute ) {
 					const selectionPosition = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
-					const nearestSelectionRange = schema.getNearestSelectionRange( selectionPosition, isForward ? 'forward' : 'backward' );
 					const isLeavingWidget = typeAroundSelectionAttribute === ( isForward ? 'after' : 'before' );
 
 					// ...and the keyboard arrow matches the value of the selection attribute...
 					if ( isLeavingWidget ) {
+						const nearestRange = schema.getNearestSelectionRange( selectionPosition, isForward ? 'forward' : 'backward' );
+
 						// ...and if there is some place for the selection to go to...
-						if ( nearestSelectionRange ) {
+						if ( nearestRange ) {
 							// ...then just remove the attribute and let the default Widget plugin listener handle moving the selection.
 							writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 						}
