@@ -11,7 +11,24 @@ import { setData, getData as getModelData } from '../../src/dev-utils/model';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { getData as getViewData } from '../../src/dev-utils/view';
 
-/* global document */
+/* globals document, chai */
+
+chai.Assertion.addMethod( 'attribute', function attributeAssertion( type ) {
+	const obj = this._obj;
+
+	// Check if it has the method at all.
+	new chai.Assertion( obj ).to.respondTo( 'hasAttribute' );
+
+	// Check if it has the attribute.
+	const hasAttribute = obj.hasAttribute( type );
+	this.assert(
+		hasAttribute === true,
+		`expected #{this} to have '${ type }' attribute`,
+		`expected #{this} to not have the '${ type }' attribute`,
+		!chai.util.flag( this, 'negate' ),
+		hasAttribute
+	);
+} );
 
 describe( 'setupHighlight', () => {
 	let element, editor, model, view;
@@ -51,7 +68,7 @@ describe( 'setupHighlight', () => {
 				'<paragraph>foo <$text linkHref="url">b{}ar</$text> baz</paragraph>'
 			);
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+			expect( model.document.selection ).to.have.an.attribute( 'linkHref' );
 			expect( getViewData( view ) ).to.equal(
 				'<p>foo <a class="ck-link_selected" href="url">b{}ar</a> baz</p>'
 			);
@@ -62,13 +79,13 @@ describe( 'setupHighlight', () => {
 				'<paragraph>foo {}<$text linkHref="url">bar</$text> baz</paragraph>'
 			);
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.false;
+			expect( model.document.selection ).not.to.have.an.attribute( 'linkHref' );
 
 			model.change( writer => {
 				writer.setSelectionAttribute( 'linkHref', 'url' );
 			} );
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+			expect( model.document.selection ).to.have.an.attribute( 'linkHref' );
 			expect( getViewData( view ) ).to.equal(
 				'<p>foo <a class="ck-link_selected" href="url">{}bar</a> baz</p>'
 			);
@@ -79,7 +96,7 @@ describe( 'setupHighlight', () => {
 				'<paragraph>foo <$text linkHref="url">bar</$text>{} baz</paragraph>'
 			);
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+			expect( model.document.selection ).to.have.an.attribute( 'linkHref' );
 			expect( getViewData( view ) ).to.equal(
 				'<p>foo <a class="ck-link_selected" href="url">bar{}</a> baz</p>'
 			);
@@ -104,7 +121,7 @@ describe( 'setupHighlight', () => {
 				'<paragraph><$text linkHref="url">[]nk</$text> baz</paragraph>'
 			);
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+			expect( model.document.selection ).to.have.an.attribute( 'linkHref' );
 
 			expect( getViewData( view ) ).to.equal(
 				'<p>foo <a href="url">li</a></p>' +
