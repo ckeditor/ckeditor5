@@ -143,8 +143,7 @@
 	 * Styles of the widget when the "fake caret" is blinking (e.g. upon keyboard navigation).
 	 * Despite the widget being physically selected in the model, its outline should disappear.
 	 */
-	&.ck-widget_selected,
-	&.ck-widget.ck-widget_selected:hover {
+	&.ck-widget_selected {
 		&.ck-widget_type-around_show-fake-caret_before,
 		&.ck-widget_type-around_show-fake-caret_after {
 			outline-color: transparent;
