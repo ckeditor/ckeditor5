@@ -325,11 +325,11 @@ describe( 'downcast converters', () => {
 
 				assertEqualMarkup( editor.getData(),
 					'<figure class="table">' +
-						'<table>' +
-							'<tbody>' +
-								'<tr><td>&nbsp;</td></tr>' +
-							'</tbody>' +
-						'</table>' +
+					'<table>' +
+					'<tbody>' +
+					'<tr><td>&nbsp;</td></tr>' +
+					'</tbody>' +
+					'</table>' +
 					'</figure>'
 				);
 			} );
@@ -339,220 +339,205 @@ describe( 'downcast converters', () => {
 	describe( 'downcastInsertRow()', () => {
 		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
 		beforeEach( () => {
-			return VirtualTestEditor.create()
+			return VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					model = editor.model;
 					doc = model.document;
 					root = doc.getRoot( 'main' );
 					view = editor.editing.view;
-
-					defaultSchema( model.schema );
-					defaultConversion( editor.conversion );
 				} );
 		} );
 
-		it( 'should react to changed rows', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ]
-			] ) );
+		// The insert row downcast conversion is not executed in data pipeline.
+		describe( 'editing pipeline', () => {
+			it( 'should react to changed rows', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ]
+				] ) );
 
-			const table = root.getChild( 0 );
+				const table = root.getChild( 0 );
 
-			model.change( writer => {
-				const row = writer.createElement( 'tableRow' );
+				model.change( writer => {
+					const row = writer.createElement( 'tableRow' );
 
-				writer.insert( row, table, 1 );
+					writer.insert( row, table, 1 );
 
-				writer.insertElement( 'tableCell', row, 'end' );
-				writer.insertElement( 'tableCell', row, 'end' );
+					writer.insertElement( 'tableCell', row, 'end' );
+					writer.insertElement( 'tableCell', row, 'end' );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '00', '01' ],
+					[ '', '' ]
+				], { asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( editor.getData(), viewTable( [
-				[ '00', '01' ],
-				[ '', '' ]
-			] ) );
-		} );
+			it( 'should properly consume already added rows', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ]
+				] ) );
 
-		it( 'should properly consume already added rows', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ]
-			] ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					const row = writer.createElement( 'tableRow' );
 
-			model.change( writer => {
-				const row = writer.createElement( 'tableRow' );
+					writer.insert( row, table, 1 );
 
-				writer.insert( row, table, 1 );
+					writer.insertElement( 'tableCell', row, 'end' );
+					writer.insertElement( 'tableCell', row, 'end' );
+				} );
 
-				writer.insertElement( 'tableCell', row, 'end' );
-				writer.insertElement( 'tableCell', row, 'end' );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '00', '01' ],
+					[ '', '' ]
+				], { asWidget: true } ) );
+
+				model.change( writer => {
+					const row = writer.createElement( 'tableRow' );
+
+					writer.insert( row, table, 2 );
+
+					writer.insertElement( 'tableCell', row, 'end' );
+					writer.insertElement( 'tableCell', row, 'end' );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '00', '01' ],
+					[ '', '' ],
+					[ '', '' ]
+				], { asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( editor.getData(), viewTable( [
-				[ '00', '01' ],
-				[ '', '' ]
-			] ) );
+			it( 'should insert row on proper index', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '21', '22' ],
+					[ '31', '32' ]
+				] ) );
 
-			model.change( writer => {
-				const row = writer.createElement( 'tableRow' );
+				const table = root.getChild( 0 );
 
-				writer.insert( row, table, 2 );
+				model.change( writer => {
+					const row = writer.createElement( 'tableRow' );
 
-				writer.insertElement( 'tableCell', row, 'end' );
-				writer.insertElement( 'tableCell', row, 'end' );
+					writer.insert( row, table, 1 );
+
+					writer.insertElement( 'tableCell', row, 'end' );
+					writer.insertElement( 'tableCell', row, 'end' );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '00', '01' ],
+					[ '', '' ],
+					[ '21', '22' ],
+					[ '31', '32' ]
+				], { asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( editor.getData(), viewTable( [
-				[ '00', '01' ],
-				[ '', '' ],
-				[ '', '' ]
-			] ) );
-		} );
+			it( 'should insert row on proper index when table has heading rows defined - insert in body', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '21', '22' ],
+					[ '31', '32' ]
+				], { headingRows: 1, asWidget: true } ) );
 
-		it( 'should insert row on proper index', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ],
-				[ '21', '22' ],
-				[ '31', '32' ]
-			] ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					const row = writer.createElement( 'tableRow' );
 
-			model.change( writer => {
-				const row = writer.createElement( 'tableRow' );
+					writer.insert( row, table, 1 );
 
-				writer.insert( row, table, 1 );
+					writer.insertElement( 'tableCell', row, 'end' );
+					writer.insertElement( 'tableCell', row, 'end' );
+				} );
 
-				writer.insertElement( 'tableCell', row, 'end' );
-				writer.insertElement( 'tableCell', row, 'end' );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '00', '01' ],
+					[ '', '' ],
+					[ '21', '22' ],
+					[ '31', '32' ]
+				], { headingRows: 1, asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( editor.getData(), viewTable( [
-				[ '00', '01' ],
-				[ '', '' ],
-				[ '21', '22' ],
-				[ '31', '32' ]
-			] ) );
-		} );
+			it( 'should insert row on proper index when table has heading rows defined - insert in heading', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '21', '22' ],
+					[ '31', '32' ]
+				], { headingRows: 2 } ) );
 
-		it( 'should insert row on proper index when table has heading rows defined - insert in body', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ],
-				[ '21', '22' ],
-				[ '31', '32' ]
-			], { headingRows: 1 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					const row = writer.createElement( 'tableRow' );
 
-			model.change( writer => {
-				const row = writer.createElement( 'tableRow' );
+					writer.insert( row, table, 1 );
 
-				writer.insert( row, table, 1 );
+					writer.insertElement( 'tableCell', row, 'end' );
+					writer.insertElement( 'tableCell', row, 'end' );
+				} );
 
-				writer.insertElement( 'tableCell', row, 'end' );
-				writer.insertElement( 'tableCell', row, 'end' );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '00', '01' ],
+					[ '', '' ],
+					[ '21', '22' ],
+					[ '31', '32' ]
+				], { headingRows: 3, asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( editor.getData(), viewTable( [
-				[ '00', '01' ],
-				[ '', '' ],
-				[ '21', '22' ],
-				[ '31', '32' ]
-			], { headingRows: 1 } ) );
-		} );
+			it( 'should react to changed rows when previous rows\' cells has rowspans', () => {
+				setModelData( model, modelTable( [
+					[ { rowspan: 2, contents: '00' }, '01' ],
+					[ '22' ]
+				] ) );
 
-		it( 'should insert row on proper index when table has heading rows defined - insert in heading', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ],
-				[ '21', '22' ],
-				[ '31', '32' ]
-			], { headingRows: 2 } ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					const row = writer.createElement( 'tableRow' );
 
-			model.change( writer => {
-				const row = writer.createElement( 'tableRow' );
+					writer.insert( row, table, 2 );
+					writer.insertElement( 'tableCell', row, 'end' );
+					writer.insertElement( 'tableCell', row, 'end' );
+				} );
 
-				writer.insert( row, table, 1 );
-
-				writer.insertElement( 'tableCell', row, 'end' );
-				writer.insertElement( 'tableCell', row, 'end' );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ { rowspan: 2, contents: '00' }, '01' ],
+					[ '22' ],
+					[ '', '' ]
+				], { asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( editor.getData(), viewTable( [
-				[ '00', '01' ],
-				[ '', '' ],
-				[ '21', '22' ],
-				[ '31', '32' ]
-			], { headingRows: 3 } ) );
-		} );
+			it( 'should properly create row headings', () => {
+				setModelData( model, modelTable( [
+					[ { rowspan: 2, contents: '00' }, '01' ],
+					[ '22' ]
+				], { headingColumns: 1 } ) );
 
-		it( 'should react to changed rows when previous rows\' cells has rowspans', () => {
-			setModelData( model, modelTable( [
-				[ { rowspan: 3, contents: '00' }, '01' ],
-				[ '22' ]
-			] ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					const firstRow = writer.createElement( 'tableRow' );
 
-			model.change( writer => {
-				const row = writer.createElement( 'tableRow' );
+					writer.insert( firstRow, table, 2 );
+					writer.insert( writer.createElement( 'tableCell' ), firstRow, 'end' );
 
-				writer.insert( row, table, 2 );
-				writer.insertElement( 'tableCell', row, 'end' );
-			} );
+					const secondRow = writer.createElement( 'tableRow' );
 
-			assertEqualMarkup( editor.getData(), viewTable( [
-				[ { rowspan: 3, contents: '00' }, '01' ],
-				[ '22' ],
-				[ '' ]
-			] ) );
-		} );
+					writer.insert( secondRow, table, 3 );
+					writer.insert( writer.createElement( 'tableCell' ), secondRow, 'end' );
+					writer.insert( writer.createElement( 'tableCell' ), secondRow, 'end' );
+				} );
 
-		it( 'should properly create row headings', () => {
-			setModelData( model, modelTable( [
-				[ { rowspan: 3, contents: '00' }, '01' ],
-				[ '22' ]
-			], { headingColumns: 1 } ) );
-
-			const table = root.getChild( 0 );
-
-			model.change( writer => {
-				const firstRow = writer.createElement( 'tableRow' );
-
-				writer.insert( firstRow, table, 2 );
-				writer.insert( writer.createElement( 'tableCell' ), firstRow, 'end' );
-
-				const secondRow = writer.createElement( 'tableRow' );
-
-				writer.insert( secondRow, table, 3 );
-				writer.insert( writer.createElement( 'tableCell' ), secondRow, 'end' );
-				writer.insert( writer.createElement( 'tableCell' ), secondRow, 'end' );
-			} );
-
-			assertEqualMarkup( editor.getData(), viewTable( [
-				[ { rowspan: 3, contents: '00', isHeading: true }, '01' ],
-				[ '22' ],
-				[ '' ],
-				[ { contents: '', isHeading: true }, '' ]
-			] ) );
-		} );
-
-		describe( 'options.asWidget=true', () => {
-			beforeEach( () => {
-				return VirtualTestEditor.create()
-					.then( newEditor => {
-						editor = newEditor;
-						model = editor.model;
-						doc = model.document;
-						root = doc.getRoot( 'main' );
-						view = editor.editing.view;
-
-						defaultSchema( model.schema );
-						defaultConversion( editor.conversion, true );
-					} );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ { rowspan: 2, contents: '00', isHeading: true }, '01' ],
+					[ '22' ],
+					[ { contents: '', isHeading: true }, '' ],
+					[ { contents: '', isHeading: true }, '' ]
+				], { asWidget: true } ) );
 			} );
 
 			it( 'should create table cell inside inserted row as a widget', () => {
@@ -578,7 +563,9 @@ describe( 'downcast converters', () => {
 									'</td>' +
 								'</tr>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block"></span>' +
+									'</td>' +
 								'</tr>' +
 							'</tbody>' +
 						'</table>' +
