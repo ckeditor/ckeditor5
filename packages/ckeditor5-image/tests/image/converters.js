@@ -218,7 +218,7 @@ describe( 'Image converters', () => {
 			);
 		} );
 
-		it( 'should convert removing attribute from image', () => {
+		it( 'should convert an empty "alt" attribute from image even if removed', () => {
 			setModelData( model, '<image src="" alt="foo bar"></image>' );
 			const image = document.getRoot().getChild( 0 );
 
@@ -227,7 +227,7 @@ describe( 'Image converters', () => {
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img src=""></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img alt="" src=""></img></figure>'
 			);
 		} );
 

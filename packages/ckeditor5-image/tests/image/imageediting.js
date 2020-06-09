@@ -458,7 +458,7 @@ describe( 'ImageEditing', () => {
 				);
 			} );
 
-			it( 'should convert attribute removal', () => {
+			it( 'should convert attribute removal (but keeps an empty "alt" to the data)', () => {
 				setModelData( model, '<image src="/assets/sample.png" alt="alt text"></image>' );
 				const image = doc.getRoot().getChild( 0 );
 
@@ -466,8 +466,9 @@ describe( 'ImageEditing', () => {
 					writer.removeAttribute( 'alt', image );
 				} );
 
-				expect( getViewData( view, { withoutSelection: true } ) )
-					.to.equal( '<figure class="ck-widget image" contenteditable="false"><img src="/assets/sample.png"></img></figure>' );
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false"><img alt="" src="/assets/sample.png"></img></figure>'
+				);
 			} );
 
 			it( 'should not convert change if is already consumed', () => {
