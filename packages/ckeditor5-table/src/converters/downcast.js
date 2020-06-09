@@ -84,7 +84,7 @@ export function downcastInsertTable( options = {} ) {
  *
  * @returns {Function} Conversion helper.
  */
-export function downcastInsertRow( options = {} ) {
+export function downcastInsertRow() {
 	return dispatcher => dispatcher.on( 'insert:tableRow', ( evt, data, conversionApi ) => {
 		const tableRow = data.item;
 
@@ -120,7 +120,7 @@ export function downcastInsertRow( options = {} ) {
 
 			const insertPosition = conversionApi.writer.createPositionAt( trElement, 'end' );
 
-			createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, options );
+			createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, { asWidget: true } );
 		}
 	} );
 }
@@ -133,7 +133,7 @@ export function downcastInsertRow( options = {} ) {
  *
  * @returns {Function} Conversion helper.
  */
-export function downcastInsertCell( options = {} ) {
+export function downcastInsertCell() {
 	return dispatcher => dispatcher.on( 'insert:tableCell', ( evt, data, conversionApi ) => {
 		const tableCell = data.item;
 
@@ -158,7 +158,7 @@ export function downcastInsertCell( options = {} ) {
 				const trElement = conversionApi.mapper.toViewElement( tableRow );
 				const insertPosition = conversionApi.writer.createPositionAt( trElement, tableRow.getChildIndex( tableCell ) );
 
-				createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, options );
+				createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, { asWidget: true } );
 
 				// No need to iterate further.
 				return;
@@ -178,9 +178,7 @@ export function downcastInsertCell( options = {} ) {
  *
  * @returns {Function} Conversion helper.
  */
-export function downcastTableHeadingRowsChange( options = {} ) {
-	const asWidget = !!options.asWidget;
-
+export function downcastTableHeadingRowsChange() {
 	return dispatcher => dispatcher.on( 'attribute:headingRows:table', ( evt, data, conversionApi ) => {
 		const table = data.item;
 
@@ -205,7 +203,7 @@ export function downcastTableHeadingRowsChange( options = {} ) {
 			// Rename all table cells from moved rows to 'th' as they lands in <thead>.
 			for ( const tableRow of rowsToMove ) {
 				for ( const tableCell of tableRow.getChildren() ) {
-					renameViewTableCell( tableCell, 'th', conversionApi, asWidget );
+					renameViewTableCell( tableCell, 'th', conversionApi );
 				}
 			}
 		}
@@ -228,7 +226,7 @@ export function downcastTableHeadingRowsChange( options = {} ) {
 			};
 
 			for ( const tableSlot of tableWalker ) {
-				renameViewTableCellIfRequired( tableSlot, tableAttributes, conversionApi, asWidget );
+				renameViewTableCellIfRequired( tableSlot, tableAttributes, conversionApi );
 			}
 		}
 
@@ -249,9 +247,7 @@ export function downcastTableHeadingRowsChange( options = {} ) {
  *
  * @returns {Function} Conversion helper.
  */
-export function downcastTableHeadingColumnsChange( options = {} ) {
-	const asWidget = !!options.asWidget;
-
+export function downcastTableHeadingColumnsChange() {
 	return dispatcher => dispatcher.on( 'attribute:headingColumns:table', ( evt, data, conversionApi ) => {
 		const table = data.item;
 
@@ -270,7 +266,7 @@ export function downcastTableHeadingColumnsChange( options = {} ) {
 		const lastColumnToCheck = ( oldColumns > newColumns ? oldColumns : newColumns ) - 1;
 
 		for ( const tableSlot of new TableWalker( table, { endColumn: lastColumnToCheck } ) ) {
-			renameViewTableCellIfRequired( tableSlot, tableAttributes, conversionApi, asWidget );
+			renameViewTableCellIfRequired( tableSlot, tableAttributes, conversionApi );
 		}
 	} );
 }
@@ -327,8 +323,7 @@ function toTableWidget( viewElement, writer ) {
 // @param {module:engine/model/element~Element} tableCell
 // @param {String} desiredCellElementName
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-// @param {Boolean} asWidget
-function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, asWidget ) {
+function renameViewTableCell( tableCell, desiredCellElementName, conversionApi ) {
 	const viewWriter = conversionApi.writer;
 	const viewCell = conversionApi.mapper.toViewElement( tableCell );
 
@@ -337,18 +332,12 @@ function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, 
 		return;
 	}
 
-	let renamedCell;
+	const editable = viewWriter.createEditableElement( desiredCellElementName, viewCell.getAttributes() );
+	const renamedCell = toWidgetEditable( editable, viewWriter );
 
-	if ( asWidget ) {
-		const editable = viewWriter.createEditableElement( desiredCellElementName, viewCell.getAttributes() );
-		renamedCell = toWidgetEditable( editable, viewWriter );
-
-		viewWriter.insert( viewWriter.createPositionAfter( viewCell ), renamedCell );
-		viewWriter.move( viewWriter.createRangeIn( viewCell ), viewWriter.createPositionAt( renamedCell, 0 ) );
-		viewWriter.remove( viewWriter.createRangeOn( viewCell ) );
-	} else {
-		renamedCell = viewWriter.rename( desiredCellElementName, viewCell );
-	}
+	viewWriter.insert( viewWriter.createPositionAfter( viewCell ), renamedCell );
+	viewWriter.move( viewWriter.createRangeIn( viewCell ), viewWriter.createPositionAt( renamedCell, 0 ) );
+	viewWriter.remove( viewWriter.createRangeOn( viewCell ) );
 
 	conversionApi.mapper.unbindViewElement( viewCell );
 	conversionApi.mapper.bindElements( tableCell, renamedCell );
@@ -359,8 +348,7 @@ function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, 
 // @param {module:table/tablewalker~TableSlot} tableSlot
 // @param {{headingColumns, headingRows}} tableAttributes
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-// @param {Boolean} asWidget
-function renameViewTableCellIfRequired( tableSlot, tableAttributes, conversionApi, asWidget ) {
+function renameViewTableCellIfRequired( tableSlot, tableAttributes, conversionApi ) {
 	const { cell } = tableSlot;
 
 	// Check whether current columnIndex is overlapped by table cells from previous rows.
@@ -371,7 +359,7 @@ function renameViewTableCellIfRequired( tableSlot, tableAttributes, conversionAp
 	// If in single change we're converting attribute changes and inserting cell the table cell might not be inserted into view
 	// because of child conversion is done after parent.
 	if ( viewCell && viewCell.name !== desiredCellElementName ) {
-		renameViewTableCell( cell, desiredCellElementName, conversionApi, asWidget );
+		renameViewTableCell( cell, desiredCellElementName, conversionApi );
 	}
 }
 
@@ -401,7 +389,7 @@ function createViewTableCellElement( tableSlot, tableAttributes, insertPosition,
 
 		conversionApi.consumable.consume( innerParagraph, 'insert' );
 
-		if ( options.asWidget ) {
+		if ( asWidget ) {
 			// Use display:inline-block to force Chrome/Safari to limit text mutations to this element.
 			// See #6062.
 			const fakeParagraph = conversionApi.writer.createContainerElement( 'span', { style: 'display:inline-block' } );
