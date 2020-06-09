@@ -67,7 +67,7 @@ export default class WidgetTypeAround extends Plugin {
 		this._enableTypeAroundUIInjection();
 		this._enableInsertingParagraphsOnButtonClick();
 		this._enableInsertingParagraphsOnEnterKeypress();
-		this._enableInsertingParagraphsOnUnsafeKeystroke();
+		this._enableInsertingParagraphsOnTypingKeystroke();
 		this._enableTypeAroundFakeCaretActivationUsingKeyboardArrows();
 		this._enableDeleteIntegration();
 	}
@@ -194,12 +194,13 @@ export default class WidgetTypeAround extends Plugin {
 		const editingView = editor.editing.view;
 
 		// This is the main listener responsible for the "fake caret".
-		// Note: The priority must precede the default Widget class keydown handler.
+		// Note: The priority must precede the default Widget class keydown handler ("high") and the
+		// TableKeyboard keydown handler ("high + 1").
 		editingView.document.on( 'keydown', ( evt, domEventData ) => {
 			if ( isArrowKeyCode( domEventData.keyCode ) ) {
 				this._handleArrowKeyPress( evt, domEventData );
 			}
-		}, { priority: priorities.get( 'high' ) + 1 } );
+		}, { priority: priorities.get( 'high' ) + 10 } );
 
 		// This listener makes sure the widget type around selection attribute will be gone from the model
 		// selection as soon as the model range changes. This attribute only makes sense when a widget is selected
@@ -449,9 +450,9 @@ export default class WidgetTypeAround extends Plugin {
 	/**
 	 * Similar to the {@link #_enableInsertingParagraphsOnEnterKeypress}, it allows the user
 	 * to insert a paragraph next to a widget when the "fake caret" was activated using arrow
-	 * keys but it responds to "unsafe keystrokes" instead of "enter".
+	 * keys but it responds to "typing keystrokes" instead of "enter".
 	 *
-	 * "Unsafe keystrokes" are keystrokes that insert new content into the document
+	 * "Typing keystrokes" are keystrokes that insert new content into the document
 	 * like, for instance, letters ("a") or numbers ("4"). The "keydown" listener enabled by this method
 	 * will insert a new paragraph according to the "widget-type-around" model selection attribute
 	 * as the user simply starts typing, which creates the impression that the "fake caret"
@@ -465,7 +466,7 @@ export default class WidgetTypeAround extends Plugin {
 	 *
 	 * @private
 	 */
-	_enableInsertingParagraphsOnUnsafeKeystroke() {
+	_enableInsertingParagraphsOnTypingKeystroke() {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 		const keyCodesHandledSomewhereElse = [
@@ -474,7 +475,8 @@ export default class WidgetTypeAround extends Plugin {
 			keyCodes.backspace
 		];
 
-		// Note: The priority must precede the default Widget class keydown handler.
+		// Note: The priority must precede the default Widget class keydown handler ("high") and the
+		// TableKeyboard keydown handler ("high + 1").
 		editingView.document.on( 'keydown', ( evt, domEventData ) => {
 			// Don't handle enter/backspace/delete here. They are handled in dedicated listeners.
 			if ( !keyCodesHandledSomewhereElse.includes( domEventData.keyCode ) && !isNonTypingKeystroke( domEventData ) ) {
