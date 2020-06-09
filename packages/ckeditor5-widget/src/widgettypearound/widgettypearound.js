@@ -112,6 +112,7 @@ export default class WidgetTypeAround extends Plugin {
 	 * using the keyboard).
 	 *
 	 * @private
+	 * @returns {Boolean} Returns `true` when the paragraph was inserted (the attribute was present) and `false` otherwise.
 	 */
 	_insertParagraphAccordingToSelectionAttribute() {
 		const editor = this.editor;
