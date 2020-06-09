@@ -13,31 +13,6 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { modelTable, viewTable } from '../_utils/utils';
 
-function paragraphInTableCell() {
-	return dispatcher => dispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
-		const tableCell = data.item.parent;
-
-		if ( tableCell.is( 'tableCell' ) && tableCell.childCount > 1 ) {
-			for ( const child of tableCell.getChildren() ) {
-				if ( child.name != 'paragraph' ) {
-					continue;
-				}
-
-				const viewElement = conversionApi.mapper.toViewElement( child );
-
-				if ( viewElement && viewElement.name === 'span' ) {
-					conversionApi.mapper.unbindModelElement( tableCell );
-
-					conversionApi.writer.removeStyle( 'display', viewElement );
-					conversionApi.writer.rename( 'p', viewElement );
-
-					conversionApi.mapper.bindElements( child, viewElement );
-				}
-			}
-		}
-	}, { converterPriority: 'highest' } );
-}
-
 describe( 'downcast converters', () => {
 	let editor, model, doc, root, view;
 
@@ -1335,64 +1310,6 @@ describe( 'downcast converters', () => {
 					'</figure>'
 				);
 			} );
-		} );
-	} );
-
-	describe( 'options.asWidget=true', () => {
-		let editor;
-
-		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } )
-
-			model = editor.model;
-			doc = model.document;
-			root = doc.getRoot( 'main' );
-			view = editor.editing.view;
-
-			editor.conversion.for( 'downcast' ).add( paragraphInTableCell() );
-		} );
-
-		afterEach( () => {
-			return editor.destroy();
-		} );
-
-		it( 'should rename <span> to <p> when more then one block content inside table cell', () => {
-			setModelData( model, modelTable( [
-				[ '00[]' ]
-			] ) );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '00' ]
-			], { asWidget: true } ) );
-
-			const table = root.getChild( 0 );
-
-			model.change( writer => {
-				const nodeByPath = table.getNodeByPath( [ 0, 0, 0 ] );
-
-				const paragraph = writer.createElement( 'paragraph' );
-
-				writer.insert( paragraph, nodeByPath, 'after' );
-
-				writer.setSelection( nodeByPath.nextSibling, 0 );
-			} );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '<p>00</p><p></p>' ]
-			], { asWidget: true } ) );
-		} );
-
-		it( 'should rename <span> to <p> for single paragraph with attribute', () => {
-			model.schema.extend( '$block', { allowAttributes: 'foo' } );
-			editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
-
-			setModelData( model, modelTable( [
-				[ '<paragraph foo="bar">00[]</paragraph>' ]
-			] ) );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '<p foo="bar">00</p>' ]
-			], { asWidget: true } ) );
 		} );
 	} );
 } );
