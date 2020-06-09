@@ -574,7 +574,7 @@ export default class WidgetTypeAround extends Plugin {
 
 			// This listener handles only these cases when the "fake caret" is active.
 			if ( !typeAroundSelectionAttributeValue ) {
-				return false;
+				return;
 			}
 
 			const direction = domEventData.direction;
