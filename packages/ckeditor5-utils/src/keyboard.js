@@ -132,7 +132,7 @@ export function getEnvKeystrokeText( keystroke ) {
 /**
  * Returns `true` if the provided key code represents one of the arrow keys.
  *
- * @param {Number} keyCode
+ * @param {Number} keyCode A key code as in {@link module:utils/keyboard~KeystrokeInfo#keyCode}.
  * @returns {Boolean}
  */
 export function isArrowKeyCode( keyCode ) {
@@ -149,7 +149,7 @@ export function isArrowKeyCode( keyCode ) {
  * For instance, in right–to–left (RTL) content languages, pressing the left arrow means moving selection right (forward)
  * in the model structure. Similarly, pressing the right arrow moves the selection left (backward).
  *
- * @param {Number} keyCode
+ * @param {Number} keyCode A key code as in {@link module:utils/keyboard~KeystrokeInfo#keyCode}.
  * @param {'ltr'|'rtl'} contentLanguageDirection The content language direction, corresponding to
  * {@link module:utils/locale~Locale#contentLanguageDirection}.
  * @returns {'left'|'up'|'right'|'down'} Localized arrow direction.
@@ -179,7 +179,7 @@ export function getLocalizedArrowKeyCodeDirection( keyCode, contentLanguageDirec
  * For instance, in right–to–left (RTL) languages, pressing the left arrow means moving forward
  * in the model structure. Similarly, pressing the right arrow moves the selection backward.
  *
- * @param {Number} keyCode
+ * @param {Number} keyCode A key code as in {@link module:utils/keyboard~KeystrokeInfo#keyCode}.
  * @param {'ltr'|'rtl'} contentLanguageDirection The content language direction, corresponding to
  * {@link module:utils/locale~Locale#contentLanguageDirection}.
  * @returns {Boolean}
