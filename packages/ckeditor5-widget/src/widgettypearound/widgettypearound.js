@@ -255,7 +255,7 @@ export default class WidgetTypeAround extends Plugin {
 			} );
 		} );
 
-		// React to changes of the mode selection attribute made by the arrow keys listener.
+		// React to changes of the model selection attribute made by the arrow keys listener.
 		// If the block widget is selected and the attribute changes, downcast the attribute to special
 		// CSS classes associated with the active ("fake horizontal caret") mode of the widget.
 		editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
