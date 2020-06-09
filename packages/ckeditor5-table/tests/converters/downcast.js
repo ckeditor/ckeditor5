@@ -578,130 +578,114 @@ describe( 'downcast converters', () => {
 	describe( 'downcastInsertCell()', () => {
 		// The beforeEach is duplicated due to ckeditor/ckeditor5#6574. New test are written using TableEditing.
 		beforeEach( () => {
-			return VirtualTestEditor.create()
+			return VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					model = editor.model;
 					doc = model.document;
 					root = doc.getRoot( 'main' );
 					view = editor.editing.view;
-
-					defaultSchema( model.schema );
-					defaultConversion( editor.conversion );
 				} );
 		} );
 
-		it( 'should add tableCell on proper index in tr', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ]
-			] ) );
+		// The insert table cell downcast conversion is not executed in data pipeline.
+		describe( 'editing pipeline', () => {
+			it( 'should add tableCell on proper index in tr', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ]
+				] ) );
 
-			const table = root.getChild( 0 );
+				const table = root.getChild( 0 );
 
-			model.change( writer => {
-				const row = table.getChild( 0 );
+				model.change( writer => {
+					const row = table.getChild( 0 );
 
-				writer.insertElement( 'tableCell', row, 1 );
+					writer.insertElement( 'tableCell', row, 1 );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '00', '', '01' ]
+				], { asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '00', '', '01' ]
-			] ) );
-		} );
+			it( 'should add tableCell on proper index in tr when previous have colspans', () => {
+				setModelData( model, modelTable( [
+					[ { colspan: 2, contents: '00' }, '13' ]
+				] ) );
 
-		it( 'should add tableCell on proper index in tr when previous have colspans', () => {
-			setModelData( model, modelTable( [
-				[ { colspan: 2, contents: '00' }, '13' ]
-			] ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					const row = table.getChild( 0 );
 
-			model.change( writer => {
-				const row = table.getChild( 0 );
+					writer.insertElement( 'tableCell', row, 1 );
+				} );
 
-				writer.insertElement( 'tableCell', row, 1 );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ { colspan: 2, contents: '00' }, '', '13' ]
+				], { asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ { colspan: 2, contents: '00' }, '', '13' ]
-			] ) );
-		} );
+			it( 'should add tableCell on proper index in tr when previous row have rowspans', () => {
+				setModelData( model, modelTable( [
+					[ { rowspan: 2, contents: '00' }, '01', '02' ],
+					[ '11', '12' ]
+				] ) );
 
-		it( 'should add tableCell on proper index in tr when previous row have rowspans', () => {
-			setModelData( model, modelTable( [
-				[ { rowspan: 2, contents: '00' }, '13' ],
-				[ '11', '12' ]
-			] ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					writer.insertElement( 'tableCell', table.getChild( 0 ), 1 );
+					writer.insertElement( 'tableCell', table.getChild( 1 ), 0 );
+				} );
 
-			model.change( writer => {
-				writer.insertElement( 'tableCell', table.getChild( 0 ), 1 );
-				writer.insertElement( 'tableCell', table.getChild( 1 ), 0 );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ { rowspan: 2, contents: '00' }, '', '01', '02' ],
+					[ '', '11', '12' ]
+				], { asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ { rowspan: 2, contents: '00' }, '', '13' ],
-				[ '', '11', '12' ]
-			] ) );
-		} );
+			it( 'split cell simulation - simple', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] ) );
 
-		it( 'split cell simulation - simple', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ],
-				[ '10', '11' ]
-			] ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					const firstRow = table.getChild( 0 );
+					const secondRow = table.getChild( 1 );
 
-			model.change( writer => {
-				const firstRow = table.getChild( 0 );
-				const secondRow = table.getChild( 1 );
+					writer.insertElement( 'tableCell', firstRow, 1 );
+					writer.setAttribute( 'colspan', 2, secondRow.getChild( 0 ) );
+				} );
 
-				writer.insertElement( 'tableCell', firstRow, 1 );
-				writer.setAttribute( 'colspan', 2, secondRow.getChild( 0 ) );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '00', '', '01' ],
+					[ { colspan: 2, contents: '10' }, '11' ]
+				], { asWidget: true } ) );
 			} );
 
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ '00', '', '01' ],
-				[ { colspan: 2, contents: '10' }, '11' ]
-			] ) );
-		} );
+			it( 'merge simulation - simple', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] ) );
 
-		it( 'merge simulation - simple', () => {
-			setModelData( model, modelTable( [
-				[ '00', '01' ],
-				[ '10', '11' ]
-			] ) );
+				const table = root.getChild( 0 );
 
-			const table = root.getChild( 0 );
+				model.change( writer => {
+					const firstRow = table.getChild( 0 );
 
-			model.change( writer => {
-				const firstRow = table.getChild( 0 );
+					writer.setAttribute( 'colspan', 2, firstRow.getChild( 0 ) );
+					writer.remove( firstRow.getChild( 1 ) );
+				} );
 
-				writer.setAttribute( 'colspan', 2, firstRow.getChild( 0 ) );
-				writer.remove( firstRow.getChild( 1 ) );
-			} );
-
-			assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-				[ { colspan: 2, contents: '00' } ],
-				[ '10', '11' ]
-			] ) );
-		} );
-
-		describe( 'options.asWidget=true', () => {
-			beforeEach( () => {
-				return VirtualTestEditor.create()
-					.then( newEditor => {
-						editor = newEditor;
-						model = editor.model;
-						doc = model.document;
-						root = doc.getRoot( 'main' );
-						view = editor.editing.view;
-
-						defaultSchema( model.schema );
-						defaultConversion( editor.conversion, true );
-					} );
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ { colspan: 2, contents: '00' } ],
+					[ '10', '11' ]
+				], { asWidget: true } ) );
 			} );
 
 			it( 'should create inserted table cell as a widget', () => {
@@ -724,7 +708,9 @@ describe( 'downcast converters', () => {
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
 										'<span style="display:inline-block">00</span>' +
 									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block"></span>' +
+									'</td>' +
 								'</tr>' +
 							'</tbody>' +
 						'</table>' +
