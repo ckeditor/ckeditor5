@@ -51,9 +51,9 @@ describe( 'unsafe keystroke handling utils', () => {
 
 		it( 'should return "true" for other safe keystrokes', () => {
 			expect( isNonTypingKeystroke( { keyCode: keyCodes.tab } ), 'Tab' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: keyCodes.shift } ), 'Shift' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: keyCodes.ctrl } ), 'Ctrl' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: keyCodes.alt } ), 'Alt' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: 16 } ), 'Shift' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: 17 } ), 'Ctrl' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: 18 } ), 'Alt' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: 19 } ), 'Pause' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: 20 } ), 'CapsLock' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: keyCodes.esc } ), 'Escape' ).to.be.true;
