@@ -5,7 +5,6 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -46,12 +45,12 @@ describe( 'WidgetTypeAround', () => {
 	} );
 
 	describe( 'plugin', () => {
-		it( 'is loaded', () => {
+		it( 'should be loaded', () => {
 			expect( editor.plugins.get( WidgetTypeAround ) ).to.be.instanceOf( WidgetTypeAround );
 		} );
 
-		it( 'requires the Paragraph plugin', () => {
-			expect( WidgetTypeAround.requires ).to.deep.equal( [ Paragraph ] );
+		it( 'should have a name', () => {
+			expect( WidgetTypeAround.pluginName ).to.equal( 'WidgetTypeAround' );
 		} );
 	} );
 

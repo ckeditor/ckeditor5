@@ -10,7 +10,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 import {
 	isArrowKeyCode,
@@ -54,13 +53,6 @@ const TYPE_AROUND_SELECTION_ATTRIBUTE = 'widget-type-around';
  * @private
  */
 export default class WidgetTypeAround extends Plugin {
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ Paragraph ];
-	}
-
 	/**
 	 * @inheritDoc
 	 */

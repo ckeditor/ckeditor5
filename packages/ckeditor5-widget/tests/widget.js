@@ -7,6 +7,7 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Widget from '../src/widget';
 import WidgetTypeAround from '../src/widgettypearound/widgettypearound';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
@@ -29,7 +30,7 @@ describe( 'Widget', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ Widget, Typing, Enter ]
+				plugins: [ Paragraph, Widget, Typing, Enter ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -1262,7 +1263,7 @@ describe( 'Widget', () => {
 
 			return ClassicTestEditor
 				.create( element, {
-					plugins: [ Widget, Typing ]
+					plugins: [ Paragraph, Widget, Typing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
