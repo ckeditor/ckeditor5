@@ -164,8 +164,8 @@
 		 * Fake horizontal caret integration with the selection handle. When the caret is visible, simply
 		 * hide the handle because it intersects with the caret (and does not make much sense anyway).
 		 */
-		&.ck-widget_with-selection-handle > .ck-widget__selection-handle {
-			display: none;
+		&.ck-widget_selected.ck-widget_with-selection-handle > .ck-widget__selection-handle {
+			opacity: 0
 		}
 	}
 }
