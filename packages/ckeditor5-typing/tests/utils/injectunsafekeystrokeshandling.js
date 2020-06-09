@@ -12,7 +12,7 @@ describe( 'unsafe keystroke handling utils', () => {
 	describe( 'isNonTypingKeystroke()', () => {
 		it( 'should return "true" for any keystroke with the Ctrl key', () => {
 			expect( isNonTypingKeystroke( { keyCode: keyCodes.a, ctrlKey: true } ), 'Ctrl+a' ).to.be.true;
-			expect( isNonTypingKeystroke( { keyCode: keyCodes[ 0 ], ctrlKey: true } ), 'Ctrk+0' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes[ 0 ], ctrlKey: true } ), 'Ctrl+0' ).to.be.true;
 		} );
 
 		it( 'should return "true" for all arrow keys', () => {
