@@ -357,6 +357,18 @@ describe( 'WidgetTypeAround', () => {
 				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
 			} );
 
+			it( 'should activate if an arrow key is pressed along with Shift', () => {
+				setModelData( editor.model, '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
+
+				fireKeyboardEvent( 'arrowright', { shiftKey: true } );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
+				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+
+				sinon.assert.calledOnce( eventInfoStub.stop );
+				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+			} );
+
 			it( 'should not activate when the selection is before the widget but the non-arrow key was pressed', () => {
 				setModelData( editor.model, '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
 
@@ -503,6 +515,26 @@ describe( 'WidgetTypeAround', () => {
 
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
+
+				sinon.assert.calledOnce( eventInfoStub.stop );
+				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+			} );
+
+			it( 'should deactivate if an arrow key is pressed along with Shift', () => {
+				setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
+
+				fireKeyboardEvent( 'arrowleft', { shiftKey: true } );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
+				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+
+				sinon.assert.calledOnce( eventInfoStub.stop );
+				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+
+				fireKeyboardEvent( 'arrowleft', { shiftKey: true } );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
+				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
 				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
