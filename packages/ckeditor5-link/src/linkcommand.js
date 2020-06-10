@@ -172,8 +172,8 @@ export default class LinkCommand extends Command {
 						writer.removeAttribute( item, linkRange );
 					} );
 
-					// Create new range wrapping changed link.
-					writer.setSelection( linkRange );
+					// Put the selection at the end of the updated link.
+					writer.setSelection( writer.createPositionAfter( linkRange.end.nodeBefore ) );
 				}
 				// If not then insert text node with `linkHref` attribute in place of caret.
 				// However, since selection in collapsed, attribute value will be used as data for text node.
@@ -191,9 +191,15 @@ export default class LinkCommand extends Command {
 
 					model.insertContent( node, position );
 
-					// Create new range wrapping created node.
-					writer.setSelection( writer.createRangeOn( node ) );
+					// Put the selection at the end of the inserted link.
+					writer.setSelection( writer.createPositionAfter( node ) );
 				}
+
+				// Remove the `linkHref` attribute and all link decorators from the selection.
+				// It stops adding a new content into the link element.
+				[ 'linkHref', ...truthyManualDecorators, ...falsyManualDecorators ].forEach( item => {
+					writer.removeSelectionAttribute( item );
+				} );
 			} else {
 				// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges
 				// omitting nodes where the `linkHref` attribute is disallowed.
