@@ -580,7 +580,7 @@ export default class WidgetTypeAround extends Plugin {
 				const range = schema.getNearestSelectionRange( model.createPositionBefore( selectedModelWidget ), direction );
 
 				if ( range ) {
-					const deepestEmptyRangeAncestor = getDeepestEmptyPositionAncestor( range.start );
+					const deepestEmptyRangeAncestor = getDeepestEmptyPositionAncestor( schema, range.start );
 
 					// Handle a case when there's an empty document tree branch before the widget that should be deleted.
 					//
@@ -607,7 +607,7 @@ export default class WidgetTypeAround extends Plugin {
 				const range = schema.getNearestSelectionRange( model.createPositionAfter( selectedModelWidget ), direction );
 
 				if ( range ) {
-					const deepestEmptyRangeAncestor = getDeepestEmptyPositionAncestor( range.start );
+					const deepestEmptyRangeAncestor = getDeepestEmptyPositionAncestor( schema, range.start );
 
 					// Handle a case when there's an empty document tree branch after the widget that should be deleted.
 					//
@@ -710,9 +710,10 @@ function injectFakeCaret( wrapperDomElement ) {
 //
 // it returns `<bar>`.
 //
+// @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/model/position~Position} position
 // @returns {module:engine/model/element~Element|null}
-function getDeepestEmptyPositionAncestor( position ) {
+function getDeepestEmptyPositionAncestor( schema, position ) {
 	const firstPositionParent = position.parent;
 
 	if ( !firstPositionParent.isEmpty ) {
@@ -721,8 +722,8 @@ function getDeepestEmptyPositionAncestor( position ) {
 
 	let deepestEmptyAncestor = firstPositionParent;
 
-	for ( const ancestor of firstPositionParent.getAncestors().reverse() ) {
-		if ( ancestor.childCount > 1 || ancestor.is( 'rootElement' ) ) {
+	for ( const ancestor of firstPositionParent.getAncestors( { parentFirst: true } ) ) {
+		if ( ancestor.childCount > 1 || schema.isLimit( ancestor ) ) {
 			break;
 		}
 
