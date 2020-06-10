@@ -570,18 +570,13 @@ export default class WidgetTypeAround extends Plugin {
 
 			const isFakeCaretBefore = typeAroundSelectionAttributeValue === 'before';
 			const isForwardDelete = direction == 'forward';
-
-			const shouldDeleteEntireWidget = ( isFakeCaretBefore && isForwardDelete ) || ( !isFakeCaretBefore && !isForwardDelete );
-			const shouldTryDeleteContentBeforeWidget = isFakeCaretBefore && !isForwardDelete;
-			const shouldTryDeleteContentAfterWidget = !isFakeCaretBefore && isForwardDelete;
+			const shouldDeleteEntireWidget = isFakeCaretBefore === isForwardDelete;
 
 			if ( shouldDeleteEntireWidget ) {
 				editor.execute( 'delete', {
 					selection: model.createSelection( selectedModelWidget, 'on' )
 				} );
-			}
-
-			if ( shouldTryDeleteContentBeforeWidget ) {
+			} else if ( !isForwardDelete ) {
 				const range = schema.getNearestSelectionRange( model.createPositionBefore( selectedModelWidget ), direction );
 
 				if ( range ) {
@@ -608,9 +603,7 @@ export default class WidgetTypeAround extends Plugin {
 						} );
 					}
 				}
-			}
-
-			if ( shouldTryDeleteContentAfterWidget ) {
+			} else {
 				const range = schema.getNearestSelectionRange( model.createPositionAfter( selectedModelWidget ), direction );
 
 				if ( range ) {
