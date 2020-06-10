@@ -167,6 +167,15 @@
 		&.ck-widget_selected.ck-widget_with-selection-handle > .ck-widget__selection-handle {
 			opacity: 0
 		}
+
+		/*
+		 * Fake horizontal caret integration with the resize UI. When the caret is visible, simply
+		 * hide the resize UI because it creates too much noise. It can be visible when the user
+		 * hovers the widget, though.
+		 */
+		&.ck-widget_selected.ck-widget_with-resizer:not(:hover) > .ck-widget__resizer {
+			opacity: 0
+		}
 	}
 }
 
