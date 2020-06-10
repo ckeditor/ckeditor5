@@ -103,13 +103,12 @@ export default class WidgetTypeAround extends Plugin {
 	 * the viewport to the selection in the inserted paragraph.
 	 *
 	 * @protected
-	 * @param {module:engine/view/element~Element} widgetViewElement The view widget element next to which a paragraph is inserted.
+	 * @param {module:engine/model/element~Element} widgetModelElement The model widget element next to which a paragraph is inserted.
 	 * @param {'before'|'after'} position The position where the paragraph is inserted. Either `'before'` or `'after'` the widget.
 	 */
-	_insertParagraph( widgetViewElement, position ) {
+	_insertParagraph( widgetModelElement, position ) {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
-		const widgetModelElement = editor.editing.mapper.toModelElement( widgetViewElement );
 		let modelPosition;
 
 		if ( position === 'before' ) {
@@ -141,16 +140,16 @@ export default class WidgetTypeAround extends Plugin {
 	_insertParagraphAccordingToSelectionAttribute() {
 		const editor = this.editor;
 		const model = editor.model;
-		const editingView = editor.editing.view;
-		const typeAroundSelectionAttributeValue = model.document.selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+		const modelSelection = model.document.selection;
+		const typeAroundSelectionAttributeValue = modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 
 		if ( !typeAroundSelectionAttributeValue ) {
 			return false;
 		}
 
-		const selectedViewElement = editingView.document.selection.getSelectedElement();
+		const selectedModelElement = modelSelection.getSelectedElement();
 
-		this._insertParagraph( selectedViewElement, typeAroundSelectionAttributeValue );
+		this._insertParagraph( selectedModelElement, typeAroundSelectionAttributeValue );
 
 		return true;
 	}
@@ -461,8 +460,9 @@ export default class WidgetTypeAround extends Plugin {
 
 			const buttonPosition = getTypeAroundButtonPosition( button );
 			const widgetViewElement = getClosestWidgetViewElement( button, editingView.domConverter );
+			const widgetModelElement = editor.editing.mapper.toModelElement( widgetViewElement );
 
-			this._insertParagraph( widgetViewElement, buttonPosition );
+			this._insertParagraph( widgetModelElement, buttonPosition );
 
 			domEventData.preventDefault();
 			evt.stop();
@@ -502,7 +502,7 @@ export default class WidgetTypeAround extends Plugin {
 			// Then, if there is no selection attribute associated with the "fake caret", check if the widget
 			// simply is selected and create a new paragraph according to the keystroke (Shift+)Enter.
 			else if ( isTypeAroundWidget( selectedViewElement, selectedModelElement, schema ) ) {
-				this._insertParagraph( selectedViewElement, domEventData.isSoft ? 'before' : 'after' );
+				this._insertParagraph( selectedModelElement, domEventData.isSoft ? 'before' : 'after' );
 
 				wasHandled = true;
 			}

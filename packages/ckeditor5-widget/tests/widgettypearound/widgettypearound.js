@@ -18,7 +18,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'WidgetTypeAround', () => {
-	let element, plugin, editor, editingView, viewDocument, viewRoot;
+	let element, plugin, editor, editingView, viewDocument, modelRoot, viewRoot;
 
 	beforeEach( async () => {
 		element = global.document.createElement( 'div' );
@@ -35,6 +35,7 @@ describe( 'WidgetTypeAround', () => {
 		editingView = editor.editing.view;
 		viewDocument = editingView.document;
 		viewRoot = viewDocument.getRoot();
+		modelRoot = editor.model.document.getRoot();
 		plugin = editor.plugins.get( WidgetTypeAround );
 	} );
 
@@ -64,10 +65,10 @@ describe( 'WidgetTypeAround', () => {
 		it( 'should execute the "insertParagraph" command when inserting a paragraph before the widget', () => {
 			setModelData( editor.model, '<blockWidget></blockWidget>' );
 
-			plugin._insertParagraph( viewRoot.getChild( 0 ), 'before' );
+			plugin._insertParagraph( modelRoot.getChild( 0 ), 'before' );
 
 			const spyExecutePosition = executeSpy.firstCall.args[ 1 ].position;
-			const positionBeforeWidget = editor.model.createPositionBefore( editor.model.document.getRoot().getChild( 0 ) );
+			const positionBeforeWidget = editor.model.createPositionBefore( modelRoot.getChild( 0 ) );
 
 			sinon.assert.calledOnce( executeSpy );
 			sinon.assert.calledWith( executeSpy, 'insertParagraph' );
@@ -80,10 +81,10 @@ describe( 'WidgetTypeAround', () => {
 		it( 'should execute the "insertParagraph" command when inserting a paragraph after the widget', () => {
 			setModelData( editor.model, '<blockWidget></blockWidget>' );
 
-			plugin._insertParagraph( viewRoot.getChild( 0 ), 'after' );
+			plugin._insertParagraph( modelRoot.getChild( 0 ), 'after' );
 
 			const spyExecutePosition = executeSpy.firstCall.args[ 1 ].position;
-			const positionAfterWidget = editor.model.createPositionAfter( editor.model.document.getRoot().getChild( 0 ) );
+			const positionAfterWidget = editor.model.createPositionAfter( modelRoot.getChild( 0 ) );
 
 			sinon.assert.calledOnce( executeSpy );
 			sinon.assert.calledWith( executeSpy, 'insertParagraph' );
@@ -98,7 +99,7 @@ describe( 'WidgetTypeAround', () => {
 
 			setModelData( editor.model, '<blockWidget></blockWidget>' );
 
-			plugin._insertParagraph( viewRoot.getChild( 0 ), 'after' );
+			plugin._insertParagraph( modelRoot.getChild( 0 ), 'after' );
 
 			sinon.assert.calledOnce( spy );
 		} );
@@ -108,7 +109,7 @@ describe( 'WidgetTypeAround', () => {
 
 			setModelData( editor.model, '<blockWidget></blockWidget>' );
 
-			plugin._insertParagraph( viewRoot.getChild( 0 ), 'after' );
+			plugin._insertParagraph( modelRoot.getChild( 0 ), 'after' );
 
 			sinon.assert.calledOnce( spy );
 		} );
@@ -222,7 +223,7 @@ describe( 'WidgetTypeAround', () => {
 					viewDocument.fire( eventInfo, domEventDataMock );
 
 					sinon.assert.calledOnce( typeAroundSpy );
-					sinon.assert.calledWithExactly( typeAroundSpy, viewRoot.getChild( 1 ), 'before' );
+					sinon.assert.calledWithExactly( typeAroundSpy, modelRoot.getChild( 1 ), 'before' );
 					sinon.assert.calledOnce( preventDefaultSpy );
 					sinon.assert.calledOnce( stopSpy );
 				} );
@@ -265,7 +266,7 @@ describe( 'WidgetTypeAround', () => {
 					viewDocument.fire( eventInfo, domEventDataMock );
 
 					sinon.assert.calledOnce( typeAroundSpy );
-					sinon.assert.calledWithExactly( typeAroundSpy, viewRoot.getChild( 0 ), 'after' );
+					sinon.assert.calledWithExactly( typeAroundSpy, modelRoot.getChild( 0 ), 'after' );
 					sinon.assert.calledOnce( preventDefaultSpy );
 					sinon.assert.calledOnce( stopSpy );
 				} );
