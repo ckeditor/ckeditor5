@@ -10,7 +10,7 @@ import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 import TableSelection from '../../src/tableselection';
-import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
+import TableEditing from '../../src/tableediting';
 import { assertSelectedCells, modelTable } from '../_utils/utils';
 
 import InsertColumnCommand from '../../src/commands/insertcolumncommand';
@@ -21,7 +21,7 @@ describe( 'InsertColumnCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ Paragraph, TableCellPropertiesEditing, TableSelection, HorizontalLineEditing ]
+				plugins: [ Paragraph, TableEditing, TableSelection, HorizontalLineEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
