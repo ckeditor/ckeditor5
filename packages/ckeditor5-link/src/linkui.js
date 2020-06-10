@@ -21,6 +21,8 @@ import LinkActionsView from './ui/linkactionsview';
 import linkIcon from '../theme/icons/link.svg';
 
 const linkKeystroke = 'Ctrl+K';
+const protocolRegExp = /^((\w+:(\/{2,})?)|(\W))/i;
+const emailRegExp = /[\w-]+@[\w-]+\.+[\w-]+/i;
 
 /**
  * The link UI plugin. It introduces the `'link'` and `'unlink'` buttons and support for the <kbd>Ctrl+K</kbd> keystroke.
@@ -157,16 +159,12 @@ export default class LinkUI extends Plugin {
 		this.listenTo( formView, 'submit', () => {
 			const { value } = formView.urlInputView.fieldView.element;
 
-			// It's good to check the config for the second time on submit.
-			// This will cover more dynamic cases, when protocol might change after the element has been rendered.
-			const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
-
 			// The regex checks for the protocol syntax ('xxxx://' or 'xxxx:')
 			// or non-word charecters at the begining of the link ('/', '#' etc.).
-			const isProtocolNeeded = !!defaultProtocol && !( /^((\w+:(\/{2,})?)|(\W))/gmi ).test( value );
-			const isEmail = ( /[\w-]+@[\w-]+\.+[\w-]+/gmi ).test( value );
+			const isProtocolNeeded = !!defaultProtocol && !protocolRegExp.test( value );
+			const isEmail = emailRegExp.test( value );
 
-			const protocol = isEmail && 'mailto:' || defaultProtocol;
+			const protocol = isEmail ? 'mailto:' : defaultProtocol;
 			const parsedValue = value && isProtocolNeeded ? protocol + value : value;
 
 			editor.execute( 'link', parsedValue, formView.getDecoratorSwitchesState() );

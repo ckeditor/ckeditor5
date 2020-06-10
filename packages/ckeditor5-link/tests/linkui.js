@@ -891,6 +891,27 @@ describe( 'LinkUI', () => {
 	describe( 'link form view', () => {
 		let focusEditableSpy;
 
+		const createEditorWithDefaultProtocol = defaultProtocol => {
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ LinkEditing, LinkUI, Paragraph, BlockQuote ],
+					link: { defaultProtocol }
+				} )
+				.then( editor => {
+					const linkUIFeature = editor.plugins.get( LinkUI );
+					const formView = linkUIFeature.formView;
+
+					formView.render();
+
+					editor.model.schema.extend( '$text', {
+						allowIn: '$root',
+						allowAttributes: 'linkHref'
+					} );
+
+					return { editor, formView };
+				} );
+		};
+
 		beforeEach( () => {
 			focusEditableSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 		} );
@@ -906,13 +927,6 @@ describe( 'LinkUI', () => {
 		} );
 
 		describe( 'link protocol', () => {
-			beforeEach( () => {
-				editor.model.schema.extend( '$text', {
-					allowIn: '$root',
-					allowAttributes: 'linkHref'
-				} );
-			} );
-
 			it( 'should use a default link protocol from the `config.link.defaultProtocol` when provided', () => {
 				return ClassicTestEditor
 					.create( editorElement, {
@@ -925,7 +939,6 @@ describe( 'LinkUI', () => {
 
 						expect( defaultProtocol ).to.equal( 'https://' );
 
-						editorElement.remove();
 						editor.destroy();
 					} );
 			} );
@@ -938,85 +951,101 @@ describe( 'LinkUI', () => {
 			} );
 
 			it( 'should not add a protocol to the local links even when `config.link.defaultProtocol` configured', () => {
-				editor.config.set( 'link.defaultProtocol', 'http://' );
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					formView.urlInputView.fieldView.value = '#test';
+					formView.fire( 'submit' );
 
-				formView.urlInputView.fieldView.value = '#test';
-				formView.fire( 'submit' );
+					expect( formView.urlInputView.fieldView.value ).to.equal( '#test' );
 
-				expect( formView.urlInputView.fieldView.value ).to.equal( '#test' );
+					editor.destroy();
+				} );
 			} );
 
 			it( 'should not add a protocol to the relative links even when `config.link.defaultProtocol` configured', () => {
-				editor.config.set( 'link.defaultProtocol', 'http://' );
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					formView.urlInputView.fieldView.value = '/test.html';
+					formView.fire( 'submit' );
 
-				formView.urlInputView.fieldView.value = '/test.html';
-				formView.fire( 'submit' );
+					expect( formView.urlInputView.fieldView.value ).to.equal( '/test.html' );
 
-				expect( formView.urlInputView.fieldView.value ).to.equal( '/test.html' );
+					editor.destroy();
+				} );
 			} );
 
 			it( 'should not add a protocol when given provided wihitn the value even when `config.link.defaultProtocol` configured', () => {
-				editor.config.set( 'link.defaultProtocol', 'http://' );
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					formView.urlInputView.fieldView.value = 'http://example.com';
+					formView.fire( 'submit' );
 
-				formView.urlInputView.fieldView.value = 'http://example.com';
-				formView.fire( 'submit' );
+					expect( formView.urlInputView.fieldView.value ).to.equal( 'http://example.com' );
 
-				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://example.com' );
+					editor.destroy();
+				} );
 			} );
 
 			it( 'should use the "http://" protocol when it\'s configured', () => {
-				editor.config.set( 'link.defaultProtocol', 'http://' );
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					formView.urlInputView.fieldView.value = 'ckeditor.com';
+					formView.fire( 'submit' );
 
-				formView.urlInputView.fieldView.value = 'ckeditor.com';
-				formView.fire( 'submit' );
+					expect( formView.urlInputView.fieldView.value ).to.equal( 'http://ckeditor.com' );
 
-				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://ckeditor.com' );
+					editor.destroy();
+				} );
 			} );
 
 			it( 'should use the "http://" protocol when it\'s configured and form input value contains "www."', () => {
-				editor.config.set( 'link.defaultProtocol', 'http://' );
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					formView.urlInputView.fieldView.value = 'www.ckeditor.com';
+					formView.fire( 'submit' );
 
-				formView.urlInputView.fieldView.value = 'www.ckeditor.com';
-				formView.fire( 'submit' );
+					expect( formView.urlInputView.fieldView.value ).to.equal( 'http://www.ckeditor.com' );
 
-				expect( formView.urlInputView.fieldView.value ).to.equal( 'http://www.ckeditor.com' );
+					editor.destroy();
+				} );
 			} );
 
 			it( 'should propagate the protocol to the link\'s `linkHref` attribute in model', () => {
-				editor.config.set( 'link.defaultProtocol', 'http://' );
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					setModelData( editor.model, '[ckeditor.com]' );
 
-				setModelData( editor.model, '[ckeditor.com]' );
+					formView.urlInputView.fieldView.value = 'ckeditor.com';
+					formView.fire( 'submit' );
 
-				formView.urlInputView.fieldView.value = 'ckeditor.com';
-				formView.fire( 'submit' );
+					expect( getModelData( editor.model ) ).to.equal(
+						'[<$text linkHref="http://ckeditor.com">ckeditor.com</$text>]'
+					);
 
-				expect( getModelData( editor.model ) ).to.equal(
-					'[<$text linkHref="http://ckeditor.com">ckeditor.com</$text>]'
-				);
+					editor.destroy();
+				} );
 			} );
 
 			it( 'should detect an email on submitting the form and add "mailto:" protocol automatically to the provided value', () => {
-				editor.config.set( 'link.defaultProtocol', 'http://' );
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					setModelData( editor.model, '[email@example.com]' );
 
-				setModelData( editor.model, '[email@example.com]' );
+					formView.urlInputView.fieldView.value = 'email@example.com';
+					formView.fire( 'submit' );
 
-				formView.urlInputView.fieldView.value = 'email@example.com';
-				formView.fire( 'submit' );
+					expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:email@example.com' );
+					expect( getModelData( editor.model ) ).to.equal(
+						'[<$text linkHref="mailto:email@example.com">email@example.com</$text>]'
+					);
 
-				expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:email@example.com' );
-				expect( getModelData( editor.model ) ).to.equal(
-					'[<$text linkHref="mailto:email@example.com">email@example.com</$text>]'
-				);
+					editor.destroy();
+				} );
 			} );
 
 			it( 'should not add an email protocol when given provided wihitn the value' +
 				'even when `config.link.defaultProtocol` configured', () => {
-				editor.config.set( 'link.defaultProtocol', 'mailto:' );
+				return createEditorWithDefaultProtocol( 'mailto:' ).then( ( { editor, formView } ) => {
+					formView.urlInputView.fieldView.value = 'mailto:test@example.com';
+					formView.fire( 'submit' );
 
-				formView.urlInputView.fieldView.value = 'mailto:test@example.com';
-				formView.fire( 'submit' );
+					expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:test@example.com' );
 
-				expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:test@example.com' );
+					editor.destroy();
+				} );
 			} );
 		} );
 
