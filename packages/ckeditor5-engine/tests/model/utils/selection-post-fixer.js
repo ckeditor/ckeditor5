@@ -835,6 +835,35 @@ describe( 'Selection post-fixer', () => {
 					'</table>]'
 				);
 			} );
+
+			it( 'should not reset the selection if the final range is the same as the initial one', () => {
+				setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>[<image></image>]</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				// Setting a selection attribute will trigger the post-fixer. However, because this
+				// action does not affect ranges, the post-fixer should not set a new selection and,
+				// in consequence, should not clear the selection attribute (like it normally would when
+				// a new selection is set).
+				// https://github.com/ckeditor/ckeditor5/issues/6693
+				model.change( writer => {
+					writer.setSelectionAttribute( 'foo', 'bar' );
+				} );
+
+				assertEqualMarkup( getModelData( model ),
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>[<image></image>]</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				expect( model.document.selection.hasAttribute( 'foo' ) ).to.be.true;
+			} );
 		} );
 
 		describe( 'non-collapsed selection - image scenarios', () => {
