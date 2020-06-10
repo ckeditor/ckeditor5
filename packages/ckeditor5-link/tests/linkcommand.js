@@ -193,8 +193,8 @@ describe( 'LinkCommand', () => {
 				expect( command.value ).to.equal( 'url' );
 			} );
 
-			it( 'should set `linkHref` attribute only to allowed elements and omit disallowed', () => {
-				model.schema.register( 'img', { allowWhere: '$text' } );
+			it( 'should set `linkHref` attribute to allowed elements', () => {
+				model.schema.register( 'img', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
 
 				setData( model, '<p>f[oo<img></img>ba]r</p>' );
 
@@ -203,8 +203,67 @@ describe( 'LinkCommand', () => {
 				command.execute( 'url' );
 
 				expect( getData( model ) )
-					.to.equal( '<p>f[<$text linkHref="url">oo</$text><img></img><$text linkHref="url">ba</$text>]r</p>' );
+					.to.equal( '<p>f[<$text linkHref="url">oo</$text><img linkHref="url"></img><$text linkHref="url">ba</$text>]r</p>' );
 				expect( command.value ).to.equal( 'url' );
+			} );
+
+			it( 'should set `linkHref` attribute to nested allowed elements', () => {
+				model.schema.register( 'img', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
+				model.schema.register( 'blockQuote', { allowWhere: '$block', allowContentOf: '$root' } );
+
+				setData( model, '<p>foo</p>[<blockQuote><img></img></blockQuote>]<p>bar</p>' );
+
+				command.execute( 'url' );
+
+				expect( getData( model ) )
+					.to.equal( '<p>foo</p>[<blockQuote><img linkHref="url"></img></blockQuote>]<p>bar</p>' );
+			} );
+
+			it( 'should set `linkHref` attribute to allowed elements on multi-selection', () => {
+				model.schema.register( 'img', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
+
+				setData( model, '<p>[<img></img>][<img></img>]</p>' );
+
+				command.execute( 'url' );
+
+				expect( getData( model ) )
+					.to.equal( '<p>[<img linkHref="url"></img>][<img linkHref="url"></img>]</p>' );
+			} );
+
+			it( 'should set `linkHref` attribute to allowed elements and omit disallowed', () => {
+				model.schema.register( 'img', { isBlock: true, allowWhere: '$text' } );
+				model.schema.register( 'caption', { allowIn: 'img' } );
+				model.schema.extend( '$text', { allowIn: 'caption' } );
+
+				setData( model, '<p>f[oo<img><caption>xxx</caption></img>ba]r</p>' );
+
+				command.execute( 'url' );
+
+				expect( getData( model ) ).to.equal(
+					'<p>' +
+						'f[<$text linkHref="url">oo</$text>' +
+						'<img><caption><$text linkHref="url">xxx</$text></caption></img>' +
+						'<$text linkHref="url">ba</$text>]r' +
+					'</p>'
+				);
+			} );
+
+			it( 'should set `linkHref` attribute to allowed elements and omit their children even if they accept the attribute', () => {
+				model.schema.register( 'img', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
+				model.schema.register( 'caption', { allowIn: 'img' } );
+				model.schema.extend( '$text', { allowIn: 'caption' } );
+
+				setData( model, '<p>f[oo<img><caption>xxx</caption></img>ba]r</p>' );
+
+				command.execute( 'url' );
+
+				expect( getData( model ) ).to.equal(
+					'<p>' +
+						'f[<$text linkHref="url">oo</$text>' +
+						'<img linkHref="url"><caption>xxx</caption></img>' +
+						'<$text linkHref="url">ba</$text>]r' +
+					'</p>'
+				);
 			} );
 		} );
 
