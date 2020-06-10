@@ -20,6 +20,7 @@
     "@ckeditor/ckeditor5-clipboard": "^19.0.1",
     "@ckeditor/ckeditor5-editor-classic": "^19.0.1",
     "@ckeditor/ckeditor5-enter": "^19.0.1",
+    "@ckeditor/ckeditor5-image": "^19.0.1",
     "@ckeditor/ckeditor5-paragraph": "^19.1.0",
     "@ckeditor/ckeditor5-theme-lark": "^19.1.0",
     "@ckeditor/ckeditor5-typing": "^19.0.1",
