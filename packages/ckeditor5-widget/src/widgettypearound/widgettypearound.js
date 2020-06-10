@@ -67,14 +67,14 @@ export default class WidgetTypeAround extends Plugin {
 		super( editor );
 
 		/**
-		 * A reference to the editing view widget element that has the "fake caret" active
+		 * A reference to the editing model widget element that has the "fake caret" active
 		 * on either side of it. It is later used to remove CSS classes associated with the "fake caret"
 		 * when the widget no longer it.
 		 *
 		 * @private
-		 * @member {module:engine/view/element~Element|null}
+		 * @member {module:engine/model/element~Element|null}
 		 */
-		this._currentFakeCaretViewWidget = null;
+		this._currentFakeCaretModelWidget = null;
 	}
 
 	/**
@@ -93,7 +93,7 @@ export default class WidgetTypeAround extends Plugin {
 	 * @inheritDoc
 	 */
 	destroy() {
-		this._currentFakeCaretViewWidget = null;
+		this._currentFakeCaretModelWidget = null;
 	}
 
 	/**
@@ -246,12 +246,6 @@ export default class WidgetTypeAround extends Plugin {
 			editor.model.change( writer => {
 				writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 			} );
-
-			// Also, if the range changes, get rid of CSS classes associated with the active ("fake horizontal caret") mode
-			// from the view widget.
-			editingView.change( writer => {
-				writer.removeClass( positionToWidgetCssClass( typeAroundSelectionAttribute ), this._currentFakeCaretViewWidget );
-			} );
 		} );
 
 		// React to changes of the model selection attribute made by the arrow keys listener.
@@ -259,6 +253,18 @@ export default class WidgetTypeAround extends Plugin {
 		// CSS classes associated with the active ("fake horizontal caret") mode of the widget.
 		editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
 			const writer = conversionApi.writer;
+
+			if ( this._currentFakeCaretModelWidget ) {
+				const selectedViewElement = conversionApi.mapper.toViewElement( this._currentFakeCaretModelWidget );
+
+				if ( selectedViewElement ) {
+					// Get rid of CSS classes associated with the active ("fake horizontal caret") mode from the view widget.
+					writer.removeClass( POSSIBLE_INSERTION_POSITIONS.map( positionToWidgetCssClass ), selectedViewElement );
+
+					this._currentFakeCaretModelWidget = null;
+				}
+			}
+
 			const selectedModelElement = data.selection.getSelectedElement();
 
 			if ( !selectedModelElement ) {
@@ -273,15 +279,15 @@ export default class WidgetTypeAround extends Plugin {
 
 			const typeAroundSelectionAttribute = data.selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 
-			if ( typeAroundSelectionAttribute ) {
-				writer.addClass( positionToWidgetCssClass( typeAroundSelectionAttribute ), selectedViewElement );
-			} else {
-				writer.removeClass( POSSIBLE_INSERTION_POSITIONS.map( positionToWidgetCssClass ), selectedViewElement );
+			if ( !typeAroundSelectionAttribute ) {
+				return;
 			}
+
+			writer.addClass( positionToWidgetCssClass( typeAroundSelectionAttribute ), selectedViewElement );
 
 			// Remember the view widget that got the "fake-caret" CSS class. This class should be removed ASAP when the
 			// selection changes
-			this._currentFakeCaretViewWidget = selectedViewElement;
+			this._currentFakeCaretModelWidget = selectedModelElement;
 		} );
 
 		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
