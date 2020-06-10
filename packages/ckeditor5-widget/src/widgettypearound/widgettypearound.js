@@ -354,7 +354,6 @@ export default class WidgetTypeAround extends Plugin {
 	_handleArrowKeyPressOnSelectedWidget( isForward ) {
 		const editor = this.editor;
 		const model = editor.model;
-		const schema = model.schema;
 		const modelSelection = model.document.selection;
 		const typeAroundSelectionAttribute = modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 		let shouldStopAndPreventDefault = false;
@@ -362,28 +361,17 @@ export default class WidgetTypeAround extends Plugin {
 		model.change( writer => {
 			// If the selection already has the attribute...
 			if ( typeAroundSelectionAttribute ) {
-				const selectionPosition = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
 				const isLeavingWidget = typeAroundSelectionAttribute === ( isForward ? 'after' : 'before' );
 
-				// ...and the keyboard arrow matches the value of the selection attribute...
-				if ( isLeavingWidget ) {
-					const nearestRange = schema.getNearestSelectionRange( selectionPosition, isForward ? 'forward' : 'backward' );
-
-					// ...and if there is some place for the selection to go to...
-					if ( nearestRange ) {
-						// ...then just remove the attribute and let the default Widget plugin listener handle moving the selection.
-						writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
-					}
-
-					// If the selection had nowhere to go, let's leave the attribute as it was and pass through
-					// to the Widget plugin listener which will... in fact also do nothing. Other listeners like in the TableKeyboard
-					// plugin may want to handle it, though. But this is no longer the problem of the WidgetTypeAround plugin.
-				}
-				// ...and the keyboard arrow works against the value of the selection attribute...
-				else {
-					// ...then remove the selection attribute but prevent default DOM actions
-					// and do not let the Widget plugin listener move the selection. This brings
-					// the widget back to the state, for instance, like if was selected using the mouse.
+				// If the keyboard arrow works against the value of the selection attribute...
+				// then remove the selection attribute but prevent default DOM actions
+				// and do not let the Widget plugin listener move the selection. This brings
+				// the widget back to the state, for instance, like if was selected using the mouse.
+				//
+				// **Note**: If leaving the widget when the "fake caret" is active, then the default
+				// Widget handler will change the selection and, in turn, this will automatically discard
+				// the selection attribute.
+				if ( !isLeavingWidget ) {
 					writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 
 					shouldStopAndPreventDefault = true;
