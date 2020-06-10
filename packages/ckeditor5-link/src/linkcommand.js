@@ -202,34 +202,23 @@ export default class LinkCommand extends Command {
 				// Ranges that accept the `linkHref` attribute. Since we will iterate over `allowedRanges`, let's clone it.
 				const rangesToUpdate = allowedRanges.slice();
 
-				// For all ranges we want to check whether given range is inside an element that accepts the `linkHref` attribute.
+				// For all selection ranges we want to check whether given range is inside an element that accepts the `linkHref` attribute.
 				// If so, we don't want to propagate applying the attribute to its children.
 				for ( const range of ranges ) {
-					let isRangeToUpdate = true;
-
-					for ( const allowedRange of allowedRanges ) {
-						// A range is inside an element that will have the attribute. Do not modify its nodes.
-						if ( allowedRange.containsRange( range ) ) {
-							isRangeToUpdate = false;
-							break;
-						}
-					}
-
-					if ( isRangeToUpdate ) {
+					if ( this._isRangeToUpdate( range, allowedRanges ) ) {
 						rangesToUpdate.push( range );
 					}
 				}
 
-				// And finally we can set the attribute.
-				for ( const elementOrRange of rangesToUpdate ) {
-					writer.setAttribute( 'linkHref', href, elementOrRange );
+				for ( const range of rangesToUpdate ) {
+					writer.setAttribute( 'linkHref', href, range );
 
 					truthyManualDecorators.forEach( item => {
-						writer.setAttribute( item, true, elementOrRange );
+						writer.setAttribute( item, true, range );
 					} );
 
 					falsyManualDecorators.forEach( item => {
-						writer.removeAttribute( item, elementOrRange );
+						writer.removeAttribute( item, range );
 					} );
 				}
 			}
@@ -246,5 +235,24 @@ export default class LinkCommand extends Command {
 	_getDecoratorStateFromModel( decoratorName ) {
 		const doc = this.editor.model.document;
 		return doc.selection.getAttribute( decoratorName );
+	}
+
+	/**
+	 * Checks whether specified `range` is inside an element that accepts the `linkHref` attribute.
+	 *
+	 * @private
+	 * @param {module:engine/view/range~Range} range A range to check.
+	 * @param {Array.<module:engine/view/range~Range>} allowedRanges An array of ranges created on elements where the attribute is accepted.
+	 * @returns {Boolean}
+	 */
+	_isRangeToUpdate( range, allowedRanges ) {
+		for ( const allowedRange of allowedRanges ) {
+			// A range is inside an element that will have the `linkHref` attribute. Do not modify its nodes.
+			if ( allowedRange.containsRange( range ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
