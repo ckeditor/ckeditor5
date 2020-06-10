@@ -57,7 +57,7 @@ export default class TableKeyboard extends Plugin {
 		// (like Widgets), which take over the keydown events with the "high" priority. Table navigation takes precedence
 		// over Widgets in that matter (widget arrow handler stops propagation of event if object element was selected
 		// but getNearestSelectionRange didn't returned any range).
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( ...args ), { priority: priorities.get( 'high' ) + 1 } );
+		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( ...args ), { priority: priorities.get( 'high' ) - 10 } );
 	}
 
 	/**
@@ -230,19 +230,6 @@ export default class TableKeyboard extends Plugin {
 			return true;
 		}
 
-		// If this is an object selected and it's not at the start or the end of cell content
-		// then let's allow widget handler to take care of it.
-		const objectElement = selection.getSelectedElement();
-
-		if ( objectElement && model.schema.isObject( objectElement ) ) {
-			return false;
-		}
-
-		// If next to the selection there is an object then this is not the cell boundary (widget handler should handle this).
-		if ( this._isObjectElementNextToSelection( selection, isForward ) ) {
-			return false;
-		}
-
 		// If there isn't any $text position between cell edge and selection then we shall move the selection to next cell.
 		const textRange = this._findTextRangeFromSelection( cellRange, selection, isForward );
 
@@ -305,27 +292,6 @@ export default class TableKeyboard extends Plugin {
 
 		// If there was no change in the focus position, then it's not possible to move the selection there.
 		return focus.isEqual( probe.focus );
-	}
-
-	/**
-	 * Checks if there is an {@link module:engine/model/element~Element element} next to the current
-	 * {@link module:engine/model/selection~Selection model selection} marked in the
-	 * {@link module:engine/model/schema~Schema schema} as an `object`.
-	 *
-	 * @private
-	 * @param {module:engine/model/selection~Selection} modelSelection The selection.
-	 * @param {Boolean} isForward The direction of checking.
-	 * @returns {Boolean}
-	 */
-	_isObjectElementNextToSelection( modelSelection, isForward ) {
-		const model = this.editor.model;
-		const schema = model.schema;
-
-		const probe = model.createSelection( modelSelection );
-		model.modifySelection( probe, { direction: isForward ? 'forward' : 'backward' } );
-		const objectElement = isForward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
-
-		return objectElement && schema.isObject( objectElement );
 	}
 
 	/**
