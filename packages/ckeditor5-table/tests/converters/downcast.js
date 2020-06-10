@@ -1293,8 +1293,8 @@ describe.only( 'downcast converters', () => {
 		} );
 	} );
 
-	describe( 'highlight conversion', () => {
-		describe( 'single class', () => {
+	describe( 'marker highlight conversion on table cell', () => {
+		describe( 'single class in highlight descriptor', () => {
 			beforeEach( async () => {
 				editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } );
 
@@ -1302,7 +1302,7 @@ describe.only( 'downcast converters', () => {
 				root = model.document.getRoot( 'main' );
 				view = editor.editing.view;
 
-				markerConversion( editor.converstion );
+				markerConversion( editor.conversion );
 			} );
 
 			it( 'should apply marker class on tableCell - on inserting a table', () => {
@@ -1549,26 +1549,88 @@ describe.only( 'downcast converters', () => {
 				expect( viewElement.hasClass( 'highlight-yellow' ) ).to.be.false;
 			} );
 		} );
-	} );
 
-	function markerConversion( conversion, extraClasses = null ) {
-		conversion.for( 'editingDowncast' ).markerToHighlight( {
-			model: 'marker',
-			view: data => {
-				const className = 'highlight-' + data.markerName.split( ':' )[ 1 ];
+		describe( 'multiple classes in highlight descriptor', () => {
+			beforeEach( async () => {
+				editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } );
 
-				return {
-					classes: extraClasses ? [ ...extraClasses, className ] : className
-				};
-			}
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				view = editor.editing.view;
+
+				markerConversion( editor.conversion, [ 'marker', 'user-marker' ] );
+			} );
+
+			it( 'should apply marker class on tableCell - on inserting a table', () => {
+				setModelData( model, modelTable( [ [ '00' ] ] ) );
+
+				model.change( writer => {
+					const cell = root.getNodeByPath( [ 0, 0, 0 ] );
+
+					writer.addMarker( 'marker:yellow', {
+						range: writer.createRangeOn( cell ),
+						usingOperation: false
+					} );
+
+					checkCustomPropertyForHighlight( editor.editing.mapper.toViewElement( cell ) );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow marker user-marker"' +
+										' contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				model.change( writer => {
+					writer.removeMarker( 'marker:yellow' );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
 		} );
-	}
 
-	function checkCustomPropertyForHighlight( viewElement ) {
-		const set = viewElement.getCustomProperty( 'addHighlight' );
-		const remove = viewElement.getCustomProperty( 'removeHighlight' );
+		function markerConversion( conversion, extraClasses = null ) {
+			conversion.for( 'editingDowncast' ).markerToHighlight( {
+				model: 'marker',
+				view: data => {
+					const className = 'highlight-' + data.markerName.split( ':' )[ 1 ];
 
-		expect( typeof set ).to.equal( 'function' );
-		expect( typeof remove ).to.equal( 'function' );
-	}
+					return {
+						classes: extraClasses ? [ ...extraClasses, className ] : className
+					};
+				}
+			} );
+		}
+
+		function checkCustomPropertyForHighlight( viewElement ) {
+			const set = viewElement.getCustomProperty( 'addHighlight' );
+			const remove = viewElement.getCustomProperty( 'removeHighlight' );
+
+			expect( typeof set ).to.equal( 'function' );
+			expect( typeof remove ).to.equal( 'function' );
+		}
+	} );
 } );
