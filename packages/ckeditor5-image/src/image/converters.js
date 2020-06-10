@@ -125,13 +125,6 @@ export function modelToViewAttributeConverter( attributeKey ) {
 		const figure = conversionApi.mapper.toViewElement( data.item );
 		const img = getViewImgFromWidget( figure );
 
-		if ( data.attributeNewValue !== null ) {
-			viewWriter.setAttribute( data.attributeKey, data.attributeNewValue, img );
-		} else if ( attributeKey === 'alt' && !data.attributeNewValue ) {
-			// The `alt` attribute should always be added. Even empty. See #5033.
-			viewWriter.setAttribute( data.attributeKey, '', img );
-		} else {
-			viewWriter.removeAttribute( data.attributeKey, img );
-		}
+		viewWriter.setAttribute( data.attributeKey, data.attributeNewValue || '', img );
 	}
 }

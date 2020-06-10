@@ -218,6 +218,19 @@ describe( 'Image converters', () => {
 			);
 		} );
 
+		it( 'should convert an empty "src" attribute from image even if removed', () => {
+			setModelData( model, '<image src="" alt="foo bar"></image>' );
+			const image = document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.removeAttribute( 'src', image );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				'<figure class="ck-widget image" contenteditable="false"><img alt="foo bar" src=""></img></figure>'
+			);
+		} );
+
 		it( 'should convert an empty "alt" attribute from image even if removed', () => {
 			setModelData( model, '<image src="" alt="foo bar"></image>' );
 			const image = document.getRoot().getChild( 0 );
@@ -228,24 +241,6 @@ describe( 'Image converters', () => {
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false"><img alt="" src=""></img></figure>'
-			);
-		} );
-
-		it( 'should convert attribute removal', () => {
-			model.schema.extend( 'image', { allowAttributes: 'foo' } );
-
-			editor.conversion.for( 'downcast' )
-				.add( modelToViewAttributeConverter( 'foo' ) );
-
-			setModelData( model, '<image src="" alt="bar" foo="bar"></image>' );
-			const image = document.getRoot().getChild( 0 );
-
-			model.change( writer => {
-				writer.removeAttribute( 'foo', image );
-			} );
-
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><img alt="bar" src=""></img></figure>'
 			);
 		} );
 
