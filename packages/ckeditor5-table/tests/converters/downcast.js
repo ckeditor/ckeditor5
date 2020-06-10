@@ -13,7 +13,7 @@ import { modelTable, viewTable } from '../_utils/utils';
 
 import TableEditing from '../../src/tableediting';
 
-describe( 'downcast converters', () => {
+describe.only( 'downcast converters', () => {
 	let editor, model, root, view;
 
 	testUtils.createSinonSandbox();
@@ -24,8 +24,6 @@ describe( 'downcast converters', () => {
 		model = editor.model;
 		root = model.document.getRoot( 'main' );
 		view = editor.editing.view;
-
-		markerConversion( editor.conversion );
 	} );
 
 	afterEach( () => {
@@ -45,55 +43,6 @@ describe( 'downcast converters', () => {
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
 										'<span style="display:inline-block"></span>' +
-									'</td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-
-			it( 'should apply marker class on tableCell', () => {
-				setModelData( model, modelTable( [ [ '00' ] ] ) );
-
-				model.change( writer => {
-					const cell = root.getNodeByPath( [ 0, 0, 0 ] );
-
-					writer.addMarker( 'marker:yellow', {
-						range: writer.createRangeOn( cell ),
-						usingOperation: false
-					} );
-
-					checkCustomPropertyForHighlight( editor.editing.mapper.toViewElement( cell ) );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<tbody>' +
-							'<tr>' +
-								'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow" contenteditable="true">' +
-									'<span style="display:inline-block">00</span>' +
-								'</td>' +
-							'</tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-
-				model.change( writer => {
-					writer.removeMarker( 'marker:yellow' );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -587,72 +536,6 @@ describe( 'downcast converters', () => {
 					'</figure>'
 				);
 			} );
-
-			it( 'should apply marker class on tableCell', () => {
-				setModelData( model, modelTable( [ [ '00' ] ] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					const firstRow = writer.createElement( 'tableRow' );
-					const cell = writer.createElement( 'tableCell' );
-
-					writer.insert( firstRow, table, 1 );
-					writer.insert( cell, firstRow, 'end' );
-
-					writer.addMarker( 'marker:yellow', {
-						range: writer.createRangeOn( cell ),
-						usingOperation: false
-					} );
-				} );
-
-				const cell = root.getNodeByPath( [ 0, 1, 0 ] );
-				checkCustomPropertyForHighlight( editor.editing.mapper.toViewElement( cell ) );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
-									'</td>' +
-								'</tr>' +
-								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow" contenteditable="true">' +
-										'<span style="display:inline-block"></span>' +
-									'</td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-
-				model.change( writer => {
-					writer.removeMarker( 'marker:yellow' );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
-									'</td>' +
-								'</tr>' +
-								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block"></span>' +
-									'</td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
 		} );
 	} );
 
@@ -766,66 +649,6 @@ describe( 'downcast converters', () => {
 					const row = table.getChild( 0 );
 
 					writer.insert( writer.createElement( 'tableCell' ), row, 'end' );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
-									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block"></span>' +
-									'</td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-
-			it( 'should apply marker class on tableCell', () => {
-				setModelData( model, modelTable( [ [ '00' ] ] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					const row = table.getChild( 0 );
-					const cell = writer.createElement( 'tableCell' );
-
-					writer.insert( cell, row, 'end' );
-					writer.addMarker( 'marker:yellow', {
-						range: writer.createRangeOn( cell ),
-						usingOperation: false
-					} );
-				} );
-
-				const cell = root.getNodeByPath( [ 0, 0, 1 ] );
-				checkCustomPropertyForHighlight( editor.editing.mapper.toViewElement( cell ) );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
-									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow" contenteditable="true">' +
-										'<span style="display:inline-block"></span>' +
-									'</td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-
-				model.change( writer => {
-					writer.removeMarker( 'marker:yellow' );
 				} );
 
 				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
@@ -1013,40 +836,6 @@ describe( 'downcast converters', () => {
 						'</table>' +
 					'</figure>'
 				);
-			} );
-
-			it( 'should preserve marker class on tableCell', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01', '02', '03' ],
-					[ '10', '11', '12', '13' ]
-				], { headingColumns: 1 } ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					const cell = root.getNodeByPath( [ 0, 0, 1 ] );
-
-					writer.addMarker( 'marker:yellow', {
-						range: writer.createRangeOn( cell ),
-						usingOperation: false
-					} );
-				} );
-
-				model.change( writer => {
-					writer.setAttribute( 'headingColumns', 3, table );
-				} );
-
-				const cell = root.getNodeByPath( [ 0, 0, 1 ] );
-				const viewElement = editor.editing.mapper.toViewElement( cell );
-
-				checkCustomPropertyForHighlight( viewElement );
-				expect( viewElement.hasClass( 'highlight-yellow' ) ).to.be.true;
-
-				model.change( writer => {
-					writer.removeMarker( 'marker:yellow' );
-				} );
-
-				expect( viewElement.hasClass( 'highlight-yellow' ) ).to.be.false;
 			} );
 		} );
 	} );
@@ -1257,41 +1046,6 @@ describe( 'downcast converters', () => {
 						'</table>' +
 					'</figure>'
 				);
-			} );
-
-			it( 'should preserve marker class on tableCell', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01' ],
-					[ '10', '11' ],
-					[ '20', '21' ]
-				], { headingRows: 1 } ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					const cell = root.getNodeByPath( [ 0, 1, 0 ] );
-
-					writer.addMarker( 'marker:yellow', {
-						range: writer.createRangeOn( cell ),
-						usingOperation: false
-					} );
-				} );
-
-				model.change( writer => {
-					writer.setAttribute( 'headingRows', 2, table );
-				} );
-
-				const cell = root.getNodeByPath( [ 0, 1, 0 ] );
-				const viewElement = editor.editing.mapper.toViewElement( cell );
-
-				checkCustomPropertyForHighlight( viewElement );
-				expect( viewElement.hasClass( 'highlight-yellow' ) ).to.be.true;
-
-				model.change( writer => {
-					writer.removeMarker( 'marker:yellow' );
-				} );
-
-				expect( viewElement.hasClass( 'highlight-yellow' ) ).to.be.false;
 			} );
 		} );
 	} );
@@ -1528,13 +1282,271 @@ describe( 'downcast converters', () => {
 										'<span style="display:inline-block">00</span>' +
 									'</th>' +
 									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">01</span>' +
-									'</th>' +
+					'<span style="display:inline-block">01</span>' +
+					'</th>' +
+					'</tr>' +
+					'</thead>' +
+					'</table>' +
+					'</figure>'
+				);
+			} );
+		} );
+	} );
+
+	describe( 'highlight conversion', () => {
+		describe( 'single class', () => {
+			beforeEach( async () => {
+				editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } );
+
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				view = editor.editing.view;
+
+				markerConversion( editor.converstion );
+			} );
+
+			it( 'should apply marker class on tableCell - on inserting a table', () => {
+				setModelData( model, modelTable( [ [ '00' ] ] ) );
+
+				model.change( writer => {
+					const cell = root.getNodeByPath( [ 0, 0, 0 ] );
+
+					writer.addMarker( 'marker:yellow', {
+						range: writer.createRangeOn( cell ),
+						usingOperation: false
+					} );
+
+					checkCustomPropertyForHighlight( editor.editing.mapper.toViewElement( cell ) );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow" contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</td>' +
 								'</tr>' +
-							'</thead>' +
+							'</tbody>' +
 						'</table>' +
 					'</figure>'
 				);
+
+				model.change( writer => {
+					writer.removeMarker( 'marker:yellow' );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should apply marker class on tableCell - on inserting a row', () => {
+				setModelData( model, modelTable( [ [ '00' ] ] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					const firstRow = writer.createElement( 'tableRow' );
+					const cell = writer.createElement( 'tableCell' );
+
+					writer.insert( firstRow, table, 1 );
+					writer.insert( cell, firstRow, 'end' );
+
+					writer.addMarker( 'marker:yellow', {
+						range: writer.createRangeOn( cell ),
+						usingOperation: false
+					} );
+				} );
+
+				const cell = root.getNodeByPath( [ 0, 1, 0 ] );
+				checkCustomPropertyForHighlight( editor.editing.mapper.toViewElement( cell ) );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+									'<span style="display:inline-block">00</span>' +
+								'</td>' +
+							'</tr>' +
+							'<tr>' +
+								'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow" contenteditable="true">' +
+									'<span style="display:inline-block"></span>' +
+								'</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+					'</figure>'
+				);
+
+				model.change( writer => {
+					writer.removeMarker( 'marker:yellow' );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block"></span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should apply marker class on tableCell - on inserting a table cell', () => {
+				setModelData( model, modelTable( [ [ '00' ] ] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					const row = table.getChild( 0 );
+					const cell = writer.createElement( 'tableCell' );
+
+					writer.insert( cell, row, 'end' );
+					writer.addMarker( 'marker:yellow', {
+						range: writer.createRangeOn( cell ),
+						usingOperation: false
+					} );
+				} );
+
+				const cell = root.getNodeByPath( [ 0, 0, 1 ] );
+				checkCustomPropertyForHighlight( editor.editing.mapper.toViewElement( cell ) );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow" contenteditable="true">' +
+										'<span style="display:inline-block"></span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				model.change( writer => {
+					writer.removeMarker( 'marker:yellow' );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block">00</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span style="display:inline-block"></span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should preserve marker class on tableCell - when changing heading columns', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02', '03' ],
+					[ '10', '11', '12', '13' ]
+				], { headingColumns: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					const cell = root.getNodeByPath( [ 0, 0, 1 ] );
+
+					writer.addMarker( 'marker:yellow', {
+						range: writer.createRangeOn( cell ),
+						usingOperation: false
+					} );
+				} );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingColumns', 3, table );
+				} );
+
+				const cell = root.getNodeByPath( [ 0, 0, 1 ] );
+				const viewElement = editor.editing.mapper.toViewElement( cell );
+
+				checkCustomPropertyForHighlight( viewElement );
+				expect( viewElement.hasClass( 'highlight-yellow' ) ).to.be.true;
+
+				model.change( writer => {
+					writer.removeMarker( 'marker:yellow' );
+				} );
+
+				expect( viewElement.hasClass( 'highlight-yellow' ) ).to.be.false;
+			} );
+
+			it( 'should preserve marker class on tableCell - when changing heading rows', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					const cell = root.getNodeByPath( [ 0, 1, 0 ] );
+
+					writer.addMarker( 'marker:yellow', {
+						range: writer.createRangeOn( cell ),
+						usingOperation: false
+					} );
+				} );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 2, table );
+				} );
+
+				const cell = root.getNodeByPath( [ 0, 1, 0 ] );
+				const viewElement = editor.editing.mapper.toViewElement( cell );
+
+				checkCustomPropertyForHighlight( viewElement );
+				expect( viewElement.hasClass( 'highlight-yellow' ) ).to.be.true;
+
+				model.change( writer => {
+					writer.removeMarker( 'marker:yellow' );
+				} );
+
+				expect( viewElement.hasClass( 'highlight-yellow' ) ).to.be.false;
 			} );
 		} );
 	} );
