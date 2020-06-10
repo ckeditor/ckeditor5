@@ -350,10 +350,6 @@ function renameViewTableCell( tableCell, desiredCellElementName, conversionApi )
 	conversionApi.mapper.bindElements( tableCell, renamedCell );
 }
 
-function normalizeToArray( classes ) {
-	return Array.isArray( classes ) ? classes : [ classes ];
-}
-
 // Renames a table cell element in the view according to its location in the table.
 //
 // @param {module:table/tablewalker~TableSlot} tableSlot
@@ -576,4 +572,8 @@ function getViewTable( viewFigure ) {
 // @returns {Boolean}
 function hasAnyAttribute( element ) {
 	return !![ ...element.getAttributeKeys() ].length;
+}
+
+function normalizeToArray( classes ) {
+	return Array.isArray( classes ) ? classes : [ classes ];
 }

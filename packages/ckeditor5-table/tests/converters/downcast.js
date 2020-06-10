@@ -13,7 +13,7 @@ import { modelTable, viewTable } from '../_utils/utils';
 
 import TableEditing from '../../src/tableediting';
 
-describe.only( 'downcast converters', () => {
+describe( 'downcast converters', () => {
 	let editor, model, root, view;
 
 	testUtils.createSinonSandbox();
