@@ -57,7 +57,7 @@
 	/*
 	 * Styles for the horizontal "fake caret" which is displayed when the user navigates using the keyboard.
 	 */
-	& .ck-widget__type-around__fake-caret {
+	& > .ck-widget__type-around > .ck-widget__type-around__fake-caret {
 		display: none;
 		position: absolute;
 		left: 0;
@@ -65,10 +65,20 @@
 	}
 
 	/*
+	 * When the widget is hovered the "fake caret" would normally be narrower than the
+	 * extra outline displayed around the widget. Let's extend the "fake caret" to match
+	 * the full width of the widget.
+	 */
+	&:hover > .ck-widget__type-around > .ck-widget__type-around__fake-caret {
+		left: calc( -1 * var(--ck-widget-outline-thickness) );
+		right: calc( -1 * var(--ck-widget-outline-thickness) );
+	}
+
+	/*
 	 * Styles for the horizontal "fake caret" when it should be displayed before the widget (backward keyboard navigation).
 	 */
 	&.ck-widget_type-around_show-fake-caret_before > .ck-widget__type-around > .ck-widget__type-around__fake-caret {
-		top: -1px;
+		top: calc( -1 * var(--ck-widget-outline-thickness) - 1px );
 		display: block;
 	}
 
@@ -76,7 +86,7 @@
 	 * Styles for the horizontal "fake caret" when it should be displayed after the widget (forward keyboard navigation).
 	 */
 	&.ck-widget_type-around_show-fake-caret_after > .ck-widget__type-around > .ck-widget__type-around__fake-caret {
-		bottom: -1px;
+		bottom: calc( -1 * var(--ck-widget-outline-thickness) - 1px );
 		display: block;
 	}
 }

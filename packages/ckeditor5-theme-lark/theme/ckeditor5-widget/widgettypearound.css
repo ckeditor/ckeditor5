@@ -153,6 +153,15 @@
 	&.ck-widget_type-around_show-fake-caret_before,
 	&.ck-widget_type-around_show-fake-caret_after {
 		/*
+		 * When the "fake caret" is visible we simulate that the widget is not selected
+		 * (despite being physically selected), so the outline color should be for the
+		 * unselected widget.
+		 */
+		&.ck-widget_selected:hover {
+			outline-color: var(--ck-color-widget-hover-border);
+		}
+
+		/*
 		 * Styles of the type around buttons when the "fake caret" is blinking (e.g. upon keyboard navigation).
 		 * In this state, the type around buttons would collide with the fake carets so they should disappear.
 		 */
@@ -164,8 +173,13 @@
 		 * Fake horizontal caret integration with the selection handle. When the caret is visible, simply
 		 * hide the handle because it intersects with the caret (and does not make much sense anyway).
 		 */
-		&.ck-widget_selected.ck-widget_with-selection-handle > .ck-widget__selection-handle {
-			opacity: 0
+		&.ck-widget_with-selection-handle {
+			&.ck-widget_selected,
+			&.ck-widget_selected:hover {
+				& > .ck-widget__selection-handle {
+					opacity: 0
+				}
+			}
 		}
 
 		/*
@@ -173,7 +187,7 @@
 		 * hide the resize UI because it creates too much noise. It can be visible when the user
 		 * hovers the widget, though.
 		 */
-		&.ck-widget_selected.ck-widget_with-resizer:not(:hover) > .ck-widget__resizer {
+		&.ck-widget_selected.ck-widget_with-resizer > .ck-widget__resizer {
 			opacity: 0
 		}
 	}
