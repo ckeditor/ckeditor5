@@ -8,7 +8,7 @@
  */
 
 import TableWalker from './../tablewalker';
-import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
+import { toWidget, toWidgetEditable, setHighlightHandling } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
  * Model table element to view table element conversion helper.
@@ -335,12 +335,23 @@ function renameViewTableCell( tableCell, desiredCellElementName, conversionApi )
 	const editable = viewWriter.createEditableElement( desiredCellElementName, viewCell.getAttributes() );
 	const renamedCell = toWidgetEditable( editable, viewWriter );
 
+	setHighlightHandling(
+		renamedCell,
+		viewWriter,
+		( element, descriptor, writer ) => writer.addClass( normalizeToArray( descriptor.classes ), element ),
+		( element, descriptor, writer ) => writer.removeClass( normalizeToArray( descriptor.classes ), element )
+	);
+
 	viewWriter.insert( viewWriter.createPositionAfter( viewCell ), renamedCell );
 	viewWriter.move( viewWriter.createRangeIn( viewCell ), viewWriter.createPositionAt( renamedCell, 0 ) );
 	viewWriter.remove( viewWriter.createRangeOn( viewCell ) );
 
 	conversionApi.mapper.unbindViewElement( viewCell );
 	conversionApi.mapper.bindElements( tableCell, renamedCell );
+}
+
+function normalizeToArray( classes ) {
+	return Array.isArray( classes ) ? classes : [ classes ];
 }
 
 // Renames a table cell element in the view according to its location in the table.
@@ -375,6 +386,15 @@ function createViewTableCellElement( tableSlot, tableAttributes, insertPosition,
 	const cellElement = asWidget ?
 		toWidgetEditable( conversionApi.writer.createEditableElement( cellElementName ), conversionApi.writer ) :
 		conversionApi.writer.createContainerElement( cellElementName );
+
+	if ( asWidget ) {
+		setHighlightHandling(
+			cellElement,
+			conversionApi.writer,
+			( element, descriptor, writer ) => writer.addClass( normalizeToArray( descriptor.classes ), element ),
+			( element, descriptor, writer ) => writer.removeClass( normalizeToArray( descriptor.classes ), element )
+		);
+	}
 
 	const tableCell = tableSlot.cell;
 

@@ -187,10 +187,30 @@ export default class LinkCommand extends Command {
 				}
 			} else {
 				// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges
-				// omitting nodes where `linkHref` attribute is disallowed.
+				// omitting nodes where the `linkHref` attribute is disallowed.
 				const ranges = model.schema.getValidRanges( selection.getRanges(), 'linkHref' );
 
+				// But for the first, check whether the `linkHref` attribute is allowed on selected blocks (e.g. the "image" element).
+				const allowedRanges = [];
+
+				for ( const element of selection.getSelectedBlocks() ) {
+					if ( model.schema.checkAttribute( element, 'linkHref' ) ) {
+						allowedRanges.push( writer.createRangeOn( element ) );
+					}
+				}
+
+				// Ranges that accept the `linkHref` attribute. Since we will iterate over `allowedRanges`, let's clone it.
+				const rangesToUpdate = allowedRanges.slice();
+
+				// For all selection ranges we want to check whether given range is inside an element that accepts the `linkHref` attribute.
+				// If so, we don't want to propagate applying the attribute to its children.
 				for ( const range of ranges ) {
+					if ( this._isRangeToUpdate( range, allowedRanges ) ) {
+						rangesToUpdate.push( range );
+					}
+				}
+
+				for ( const range of rangesToUpdate ) {
 					writer.setAttribute( 'linkHref', href, range );
 
 					truthyManualDecorators.forEach( item => {
@@ -215,5 +235,24 @@ export default class LinkCommand extends Command {
 	_getDecoratorStateFromModel( decoratorName ) {
 		const doc = this.editor.model.document;
 		return doc.selection.getAttribute( decoratorName );
+	}
+
+	/**
+	 * Checks whether specified `range` is inside an element that accepts the `linkHref` attribute.
+	 *
+	 * @private
+	 * @param {module:engine/view/range~Range} range A range to check.
+	 * @param {Array.<module:engine/view/range~Range>} allowedRanges An array of ranges created on elements where the attribute is accepted.
+	 * @returns {Boolean}
+	 */
+	_isRangeToUpdate( range, allowedRanges ) {
+		for ( const allowedRange of allowedRanges ) {
+			// A range is inside an element that will have the `linkHref` attribute. Do not modify its nodes.
+			if ( allowedRange.containsRange( range ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

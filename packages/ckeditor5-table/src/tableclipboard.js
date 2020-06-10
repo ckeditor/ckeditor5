@@ -120,7 +120,7 @@ export default class TableClipboard extends Plugin {
 		}
 
 		// We might need to crop table before inserting so reference might change.
-		let pastedTable = getTableIfOnlyTableInContent( content );
+		let pastedTable = getTableIfOnlyTableInContent( content, model );
 
 		if ( !pastedTable ) {
 			return;
@@ -336,7 +336,7 @@ function expandTableSize( table, expectedHeight, expectedWidth, writer, tableUti
 	}
 }
 
-function getTableIfOnlyTableInContent( content ) {
+function getTableIfOnlyTableInContent( content, model ) {
 	// Table passed directly.
 	if ( content.is( 'table' ) ) {
 		return content;
@@ -344,11 +344,36 @@ function getTableIfOnlyTableInContent( content ) {
 
 	// We do not support mixed content when pasting table into table.
 	// See: https://github.com/ckeditor/ckeditor5/issues/6817.
-	if ( content.childCount != 1 || !content.getChild( 0 ).is( 'table' ) ) {
-		return null;
+	if ( content.childCount == 1 && content.getChild( 0 ).is( 'table' ) ) {
+		return content.getChild( 0 );
 	}
 
-	return content.getChild( 0 );
+	// If there are only whitespaces around a table then use that table for pasting.
+
+	const contentRange = model.createRangeIn( content );
+
+	for ( const element of contentRange.getItems() ) {
+		if ( element.is( 'table' ) ) {
+			// Stop checking if there is some content before table.
+			const rangeBefore = model.createRange( contentRange.start, model.createPositionBefore( element ) );
+
+			if ( model.hasContent( rangeBefore, { ignoreWhitespaces: true } ) ) {
+				return null;
+			}
+
+			// Stop checking if there is some content after table.
+			const rangeAfter = model.createRange( model.createPositionAfter( element ), contentRange.end );
+
+			if ( model.hasContent( rangeAfter, { ignoreWhitespaces: true } ) ) {
+				return null;
+			}
+
+			// There wasn't any content neither before nor after.
+			return element;
+		}
+	}
+
+	return null;
 }
 
 // Returns two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
