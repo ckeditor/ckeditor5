@@ -1,37 +1,61 @@
 <style>
+	:root {
+		--ck-manual-test-highlight-yellow: hsla(60, 100%, 50%, 0.5);
+		--ck-manual-test-highlight-red: hsla(0, 100%, 50%, 0.5);
+		--ck-manual-test-highlight-blue: hsla(240, 100%, 50%, 0.5);
+	}
+
 	span.highlight-yellow {
-		background-color: rgba( 255, 255, 0, 0.5 );
+		background-color: var(--ck-manual-test-highlight-yellow);
 	}
 
 	span.highlight-blue {
-		background-color: rgba( 0, 0, 255, 0.5 );
+		background-color: var(--ck-manual-test-highlight-blue);
 	}
 
 	span.highlight-red {
-		background-color: rgba( 255, 0, 0, 0.5 );
+		background-color: var(--ck-manual-test-highlight-red);
 	}
 
 	.ck-widget.fancy-widget {
-		background-color: black;
-		color: white;
+		background-color: hsl(0, 0%, 0%);
+		color: hsl(0, 0%, 100%);
 		text-align: center;
 		height: 40px;
 		line-height: 40px;
 	}
 
 	.ck-widget.fancy-widget.highlight-yellow {
-		background-color: yellow;
-		color: black;
+		background-color: var(--ck-manual-test-highlight-yellow);
+		color: hsl(0, 0%, 0%);
 	}
 
 	.ck-widget.fancy-widget.highlight-blue {
-		background-color: blue;
-		color: black;
+		background-color: var(--ck-manual-test-highlight-blue);
+		color: hsl(0, 0%, 0%);
 	}
 
 	.ck-widget.fancy-widget.highlight-red {
-		background-color: red;
-		color: black;
+		background-color: var(--ck-manual-test-highlight-red);
+		color: hsl(0, 0%, 0%);
+	}
+
+	.table td.highlight-yellow,
+	.table th.highlight-yellow {
+		/* !important to override selected editable styles. */
+		background-color: var(--ck-manual-test-highlight-yellow) !important;
+	}
+
+	.table td.highlight-blue,
+	.table th.highlight-blue {
+		/* !important to override selected editable styles. */
+		background-color: var(--ck-manual-test-highlight-blue) !important;
+	}
+
+	.table td.highlight-red,
+	.table th.highlight-red {
+		/* !important to override selected editable styles. */
+		background-color: var(--ck-manual-test-highlight-red) !important;
 	}
 
 	button {
@@ -43,6 +67,16 @@
 	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at diam quis justo imperdiet posuere non eu tortor. Mauris vel magna eu sem hendrerit varius. Ut imperdiet velit ut ante interdum convallis. Vestibulum vitae lacinia mi. </p>
 	<figure></figure>
 	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas at diam quis justo imperdiet posuere non eu tortor. Mauris vel magna eu sem hendrerit varius. Ut imperdiet velit ut ante interdum convallis. Vestibulum vitae lacinia mi. </p>
+	<table>
+		<tr>
+			<td>foo</td>
+			<td>bar</td>
+		</tr>
+		<tr>
+			<td>baz</td>
+			<td>qux</td>
+		</tr>
+	</table>
 </div>
 <h2>Markers</h2>
 <button id="add-marker-yellow">Set yellow highlight</button><button id="remove-marker-yellow">Remove yellow highlight</button>
