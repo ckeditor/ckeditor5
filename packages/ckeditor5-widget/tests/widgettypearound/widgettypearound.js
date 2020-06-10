@@ -615,6 +615,30 @@ describe( 'WidgetTypeAround', () => {
 			} );
 		} );
 
+		it( 'should activate and deactivate the "fake caret" using all 4 arrow keys', () => {
+			setModelData( editor.model, '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
+
+			fireKeyboardEvent( 'arrowright' );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+
+			fireKeyboardEvent( 'arrowdown' );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+
+			fireKeyboardEvent( 'arrowup' );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+
+			fireKeyboardEvent( 'arrowleft' );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+		} );
+
 		it( 'should quit the "fake caret" mode when the editor loses focus', () => {
 			editor.ui.focusTracker.isFocused = true;
 
@@ -813,7 +837,7 @@ describe( 'WidgetTypeAround', () => {
 				} );
 			} );
 
-			describe( 'on typing an "unsafe" character when the "fake caret" is activated ', () => {
+			describe( 'on keydown of a "typing" character when the "fake caret" is activated ', () => {
 				it( 'should insert a character inside a new paragraph before a widget if the caret was "before" it', () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
