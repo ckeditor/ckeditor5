@@ -29,7 +29,10 @@ describe( 'WidgetTypeAround', () => {
 				ArticlePluginSet, Widget,
 
 				blockWidgetPlugin, inlineWidgetPlugin
-			]
+			],
+			image: {
+				toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+			}
 		} );
 
 		editingView = editor.editing.view;

@@ -24,7 +24,10 @@ describe( 'Resizer', () => {
 			.create( editorElement, {
 				plugins: [
 					ArticlePluginSet
-				]
+				],
+				image: {
+					toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+				}
 			} )
 			.then( newEditor => {
 				editor = newEditor;

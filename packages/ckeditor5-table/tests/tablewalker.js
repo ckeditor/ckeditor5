@@ -3,11 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { defaultConversion, defaultSchema, modelTable } from './_utils/utils';
+import TableEditing from '../src/tableediting';
+import { modelTable } from './_utils/utils';
 
 import TableWalker from '../src/tablewalker';
 
@@ -15,15 +17,12 @@ describe( 'TableWalker', () => {
 	let editor, model, doc, root;
 
 	beforeEach( () => {
-		return ModelTestEditor.create()
+		return ModelTestEditor.create( { plugins: [ Paragraph, TableEditing ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
 				doc = model.document;
 				root = doc.getRoot( 'main' );
-
-				defaultSchema( model.schema );
-				defaultConversion( editor.conversion );
 			} );
 	} );
 

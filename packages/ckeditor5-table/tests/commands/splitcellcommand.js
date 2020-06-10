@@ -4,13 +4,15 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+
+import TableEditing from '../../src/tableediting';
+import TableSelection from '../../src/tableselection';
+import { modelTable } from '../_utils/utils';
 
 import SplitCellCommand from '../../src/commands/splitcellcommand';
-import { defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
-import TableSelection from '../../src/tableselection';
-import TableUtils from '../../src/tableutils';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'SplitCellCommand', () => {
 	let editor, model, command;
@@ -18,15 +20,12 @@ describe( 'SplitCellCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ TableUtils, TableSelection ]
+				plugins: [ Paragraph, TableEditing, TableSelection ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
 				command = new SplitCellCommand( editor );
-
-				defaultSchema( model.schema );
-				defaultConversion( editor.conversion );
 			} );
 	} );
 

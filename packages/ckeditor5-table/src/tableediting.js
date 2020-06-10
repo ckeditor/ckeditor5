@@ -100,26 +100,22 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'upcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
 		conversion.for( 'upcast' ).add( skipEmptyTableRow() );
 
-		conversion.for( 'editingDowncast' ).add( downcastInsertRow( { asWidget: true } ) );
-		conversion.for( 'dataDowncast' ).add( downcastInsertRow() );
-		conversion.for( 'downcast' ).add( downcastRemoveRow() );
+		conversion.for( 'editingDowncast' ).add( downcastInsertRow() );
+		conversion.for( 'editingDowncast' ).add( downcastRemoveRow() );
 
 		// Table cell conversion.
 		conversion.for( 'upcast' ).add( upcastTableCell( 'td' ) );
 		conversion.for( 'upcast' ).add( upcastTableCell( 'th' ) );
 
-		conversion.for( 'editingDowncast' ).add( downcastInsertCell( { asWidget: true } ) );
-		conversion.for( 'dataDowncast' ).add( downcastInsertCell() );
+		conversion.for( 'editingDowncast' ).add( downcastInsertCell() );
 
 		// Table attributes conversion.
 		conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 		conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
 
 		// Table heading rows and columns conversion.
-		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange( { asWidget: true } ) );
-		conversion.for( 'dataDowncast' ).add( downcastTableHeadingColumnsChange() );
-		conversion.for( 'editingDowncast' ).add( downcastTableHeadingRowsChange( { asWidget: true } ) );
-		conversion.for( 'dataDowncast' ).add( downcastTableHeadingRowsChange() );
+		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange() );
+		conversion.for( 'editingDowncast' ).add( downcastTableHeadingRowsChange() );
 
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );

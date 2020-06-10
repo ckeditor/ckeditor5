@@ -1,0 +1,59 @@
+<style>
+	code {
+		background: hsl(0, 0%, 90%);
+	}
+
+	sup {
+		position: relative;
+	}
+
+	.ck-editor__editable sup:after {
+		content: '';
+		display: inline-block;
+		position: absolute;
+		width: 14px;
+		height: 14px;
+		left: 1px;
+		top: 1px;
+		background: hsla(207, 87%, 55%, 0.5);
+		border-radius: 50px;
+		animation: pulse 2s linear infinite;
+	}
+
+	@keyframes pulse {
+		0% {
+			transform: scale(1);
+		}
+
+		50% {
+			transform: scale(2);
+		}
+
+		100% {
+			transform: scale(1);
+		}
+	}
+</style>
+
+
+<h2><code>Feature is disabled</code></h2>
+<div id="editor0">
+	<p>This is <a href="http://ckeditor.com">CKEditor5</a> from <a href="http://cksource.com">CKSource</a>. If you need more information please contact us at support@example.com.</p>
+</div>
+
+<h2><code>http://</code></h2>
+<div id="editor1">
+	<p>This is <a href="http://ckeditor.com">CKEditor5</a> from <a href="http://cksource.com">CKSource</a>. If you need more information please contact us at support@example.com <sup class="indicator">[1]</sup>.</p>
+</div>
+
+<p><sup>[1]</sup><strong>When feature enabled:</strong> copy the email address and create a link with it (<code>mailto:</code> protocol will be added automatically).</p>
+
+<h2><code>https://</code></h2>
+<div id="editor2">
+	<p>This is <a href="http://ckeditor.com">CKEditor5</a> from <a href="http://cksource.com">CKSource</a>. If you need more information please contact us at support@example.com.</p>
+</div>
+
+<h2><code>mailto:</code></h2>
+<div id="editor3">
+	<p>This is <a href="http://ckeditor.com">CKEditor5</a> from <a href="http://cksource.com">CKSource</a>. If you need more information please contact us at support@example.com.</p>
+</div>

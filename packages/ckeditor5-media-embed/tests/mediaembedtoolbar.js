@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, console */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
@@ -186,7 +186,7 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 		return BalloonEditor.create( element, {
 			plugins: [ Paragraph, MediaEmbed, MediaEmbedToolbar, FakeButton, Bold ],
 			balloonToolbar: [ 'bold' ],
-			media: {
+			mediaEmbed: {
 				toolbar: [ 'fake_button' ]
 			}
 		} ).then( _editor => {
@@ -238,6 +238,24 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 		clock.tick( 200 );
 
 		expect( balloon.visibleView ).to.equal( balloonToolbar.toolbarView );
+	} );
+
+	it( 'does not create the toolbar if its items are not specified', () => {
+		const consoleWarnStub = sinon.stub( console, 'warn' );
+		const element = document.createElement( 'div' );
+
+		return BalloonEditor.create( element, {
+			plugins: [ Paragraph, MediaEmbed, MediaEmbedToolbar, Bold ]
+		} ).then( editor => {
+			widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+
+			expect( widgetToolbarRepository._toolbarDefinitions.get( 'mediaEmbed' ) ).to.be.undefined;
+			expect( consoleWarnStub.calledOnce ).to.equal( true );
+			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^widget-toolbar-no-items:/ );
+
+			element.remove();
+			return editor.destroy();
+		} );
 	} );
 } );
 

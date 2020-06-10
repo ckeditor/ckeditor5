@@ -125,10 +125,6 @@ export function modelToViewAttributeConverter( attributeKey ) {
 		const figure = conversionApi.mapper.toViewElement( data.item );
 		const img = getViewImgFromWidget( figure );
 
-		if ( data.attributeNewValue !== null ) {
-			viewWriter.setAttribute( data.attributeKey, data.attributeNewValue, img );
-		} else {
-			viewWriter.removeAttribute( data.attributeKey, img );
-		}
+		viewWriter.setAttribute( data.attributeKey, data.attributeNewValue || '', img );
 	}
 }

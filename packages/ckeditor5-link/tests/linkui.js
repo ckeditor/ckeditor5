@@ -8,7 +8,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -891,6 +891,27 @@ describe( 'LinkUI', () => {
 	describe( 'link form view', () => {
 		let focusEditableSpy;
 
+		const createEditorWithDefaultProtocol = defaultProtocol => {
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ LinkEditing, LinkUI, Paragraph, BlockQuote ],
+					link: { defaultProtocol }
+				} )
+				.then( editor => {
+					const linkUIFeature = editor.plugins.get( LinkUI );
+					const formView = linkUIFeature.formView;
+
+					formView.render();
+
+					editor.model.schema.extend( '$text', {
+						allowIn: '$root',
+						allowAttributes: 'linkHref'
+					} );
+
+					return { editor, formView };
+				} );
+		};
+
 		beforeEach( () => {
 			focusEditableSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 		} );
@@ -903,6 +924,129 @@ describe( 'LinkUI', () => {
 			formView.element.dispatchEvent( new Event( 'focus' ) );
 
 			expect( editor.ui.focusTracker.isFocused ).to.be.true;
+		} );
+
+		describe( 'link protocol', () => {
+			it( 'should use a default link protocol from the `config.link.defaultProtocol` when provided', () => {
+				return ClassicTestEditor
+					.create( editorElement, {
+						link: {
+							defaultProtocol: 'https://'
+						}
+					} )
+					.then( editor => {
+						const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
+
+						expect( defaultProtocol ).to.equal( 'https://' );
+
+						editor.destroy();
+					} );
+			} );
+
+			it( 'should not add a protocol without the configuration', () => {
+				formView.urlInputView.fieldView.value = 'ckeditor.com';
+				formView.fire( 'submit' );
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'ckeditor.com' );
+			} );
+
+			it( 'should not add a protocol to the local links even when `config.link.defaultProtocol` configured', () => {
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					formView.urlInputView.fieldView.value = '#test';
+					formView.fire( 'submit' );
+
+					expect( formView.urlInputView.fieldView.value ).to.equal( '#test' );
+
+					editor.destroy();
+				} );
+			} );
+
+			it( 'should not add a protocol to the relative links even when `config.link.defaultProtocol` configured', () => {
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					formView.urlInputView.fieldView.value = '/test.html';
+					formView.fire( 'submit' );
+
+					expect( formView.urlInputView.fieldView.value ).to.equal( '/test.html' );
+
+					editor.destroy();
+				} );
+			} );
+
+			it( 'should not add a protocol when given provided within the value even when `config.link.defaultProtocol` configured', () => {
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					formView.urlInputView.fieldView.value = 'http://example.com';
+					formView.fire( 'submit' );
+
+					expect( formView.urlInputView.fieldView.value ).to.equal( 'http://example.com' );
+
+					editor.destroy();
+				} );
+			} );
+
+			it( 'should use the "http://" protocol when it\'s configured', () => {
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					formView.urlInputView.fieldView.value = 'ckeditor.com';
+					formView.fire( 'submit' );
+
+					expect( formView.urlInputView.fieldView.value ).to.equal( 'http://ckeditor.com' );
+
+					editor.destroy();
+				} );
+			} );
+
+			it( 'should use the "http://" protocol when it\'s configured and form input value contains "www."', () => {
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					formView.urlInputView.fieldView.value = 'www.ckeditor.com';
+					formView.fire( 'submit' );
+
+					expect( formView.urlInputView.fieldView.value ).to.equal( 'http://www.ckeditor.com' );
+
+					editor.destroy();
+				} );
+			} );
+
+			it( 'should propagate the protocol to the link\'s `linkHref` attribute in model', () => {
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					setModelData( editor.model, '[ckeditor.com]' );
+
+					formView.urlInputView.fieldView.value = 'ckeditor.com';
+					formView.fire( 'submit' );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'[<$text linkHref="http://ckeditor.com">ckeditor.com</$text>]'
+					);
+
+					editor.destroy();
+				} );
+			} );
+
+			it( 'should detect an email on submitting the form and add "mailto:" protocol automatically to the provided value', () => {
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					setModelData( editor.model, '[email@example.com]' );
+
+					formView.urlInputView.fieldView.value = 'email@example.com';
+					formView.fire( 'submit' );
+
+					expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:email@example.com' );
+					expect( getModelData( editor.model ) ).to.equal(
+						'[<$text linkHref="mailto:email@example.com">email@example.com</$text>]'
+					);
+
+					editor.destroy();
+				} );
+			} );
+
+			it( 'should not add an email protocol when given provided within the value' +
+				'even when `config.link.defaultProtocol` configured', () => {
+				return createEditorWithDefaultProtocol( 'mailto:' ).then( ( { editor, formView } ) => {
+					formView.urlInputView.fieldView.value = 'mailto:test@example.com';
+					formView.fire( 'submit' );
+
+					expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:test@example.com' );
+
+					editor.destroy();
+				} );
+			} );
 		} );
 
 		describe( 'binding', () => {
