@@ -53,10 +53,9 @@ export default class TableKeyboard extends Plugin {
 		this.editor.keystrokes.set( 'Tab', this._getTabHandler( true ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Shift+Tab', this._getTabHandler( false ), { priority: 'low' } );
 
-		// Note: This listener has the "high+1" priority because we would like to avoid collisions with other features
-		// (like Widgets), which take over the keydown events with the "high" priority. Table navigation takes precedence
-		// over Widgets in that matter (widget arrow handler stops propagation of event if object element was selected
-		// but getNearestSelectionRange didn't returned any range).
+		// Note: This listener has the "high-10" priority because it should allow the Widget plugin to handle the default
+		// behavior first ("high") but it should not be "prevent–defaulted" by the Widget plugin ("high-20") because of
+		// the fake selection retention on the fully selected widget.
 		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( ...args ), { priority: priorities.get( 'high' ) - 10 } );
 	}
 

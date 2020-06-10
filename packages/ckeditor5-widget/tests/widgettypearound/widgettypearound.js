@@ -989,6 +989,8 @@ describe( 'WidgetTypeAround', () => {
 				} );
 
 				it( 'should delete an empty document tree sub-branch before a widget if the "fake caret" is also before the widget', () => {
+					let operationType;
+
 					setModelData( editor.model,
 						'<blockQuote>' +
 							'<paragraph>foo</paragraph>' +
@@ -1008,14 +1010,21 @@ describe( 'WidgetTypeAround', () => {
 					);
 					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
 
+					// Assert that the paragraph is merged rather than deleted because
+					// it is safer for collaboration.
+					model.on( 'applyOperation', ( evt, [ operation ] ) => {
+						operationType = operation.type;
+					} );
+
 					fireDeleteEvent();
 					expect( getModelData( model ) ).to.equal(
 						'<blockQuote>' +
-							'<paragraph>foo</paragraph>' +
+							'<paragraph>foo[]</paragraph>' +
 						'</blockQuote>' +
-						'[<blockWidget></blockWidget>]'
+						'<blockWidget></blockWidget>'
 					);
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( operationType ).to.equal( 'merge' );
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -1142,6 +1151,8 @@ describe( 'WidgetTypeAround', () => {
 				} );
 
 				it( 'should delete an empty document tree sub-branch after a widget if the "fake caret" is also after the widget', () => {
+					let operationType;
+
 					setModelData( editor.model,
 						'[<blockWidget></blockWidget>]' +
 						'<blockQuote>' +
@@ -1161,14 +1172,21 @@ describe( 'WidgetTypeAround', () => {
 					);
 					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
 
+					// Assert that the paragraph is merged rather than deleted because
+					// it is safer for collaboration.
+					model.on( 'applyOperation', ( evt, [ operation ] ) => {
+						operationType = operation.type;
+					} );
+
 					fireDeleteEvent( true );
 					expect( getModelData( model ) ).to.equal(
-						'[<blockWidget></blockWidget>]' +
+						'<blockWidget></blockWidget>' +
 						'<blockQuote>' +
-							'<paragraph>foo</paragraph>' +
+							'<paragraph>[]foo</paragraph>' +
 						'</blockQuote>'
 					);
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( operationType ).to.equal( 'merge' );
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );

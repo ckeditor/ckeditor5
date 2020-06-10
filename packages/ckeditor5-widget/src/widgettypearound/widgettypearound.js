@@ -67,14 +67,14 @@ export default class WidgetTypeAround extends Plugin {
 		super( editor );
 
 		/**
-		 * A reference to the editing model widget element that has the "fake caret" active
+		 * A reference to the model widget element that has the "fake caret" active
 		 * on either side of it. It is later used to remove CSS classes associated with the "fake caret"
-		 * when the widget no longer it.
+		 * when the widget no longer needs it.
 		 *
 		 * @private
 		 * @member {module:engine/model/element~Element|null}
 		 */
-		this._currentFakeCaretModelWidget = null;
+		this._currentFakeCaretModelElement = null;
 	}
 
 	/**
@@ -93,7 +93,7 @@ export default class WidgetTypeAround extends Plugin {
 	 * @inheritDoc
 	 */
 	destroy() {
-		this._currentFakeCaretModelWidget = null;
+		this._currentFakeCaretModelElement = null;
 	}
 
 	/**
@@ -218,7 +218,7 @@ export default class WidgetTypeAround extends Plugin {
 
 		// This is the main listener responsible for the "fake caret".
 		// Note: The priority must precede the default Widget class keydown handler ("high") and the
-		// TableKeyboard keydown handler ("high + 1").
+		// TableKeyboard keydown handler ("high-10").
 		editingView.document.on( 'keydown', ( evt, domEventData ) => {
 			if ( isArrowKeyCode( domEventData.keyCode ) ) {
 				this._handleArrowKeyPress( evt, domEventData );
@@ -254,14 +254,14 @@ export default class WidgetTypeAround extends Plugin {
 		editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
 			const writer = conversionApi.writer;
 
-			if ( this._currentFakeCaretModelWidget ) {
-				const selectedViewElement = conversionApi.mapper.toViewElement( this._currentFakeCaretModelWidget );
+			if ( this._currentFakeCaretModelElement ) {
+				const selectedViewElement = conversionApi.mapper.toViewElement( this._currentFakeCaretModelElement );
 
 				if ( selectedViewElement ) {
 					// Get rid of CSS classes associated with the active ("fake horizontal caret") mode from the view widget.
 					writer.removeClass( POSSIBLE_INSERTION_POSITIONS.map( positionToWidgetCssClass ), selectedViewElement );
 
-					this._currentFakeCaretModelWidget = null;
+					this._currentFakeCaretModelElement = null;
 				}
 			}
 
@@ -287,7 +287,7 @@ export default class WidgetTypeAround extends Plugin {
 
 			// Remember the view widget that got the "fake-caret" CSS class. This class should be removed ASAP when the
 			// selection changes
-			this._currentFakeCaretModelWidget = selectedModelElement;
+			this._currentFakeCaretModelElement = selectedModelElement;
 		} );
 
 		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
@@ -582,58 +582,42 @@ export default class WidgetTypeAround extends Plugin {
 				editor.execute( 'delete', {
 					selection: model.createSelection( selectedModelWidget, 'on' )
 				} );
-			} else if ( !isForwardDelete ) {
-				const range = schema.getNearestSelectionRange( model.createPositionBefore( selectedModelWidget ), direction );
-
-				if ( range ) {
-					const deepestEmptyRangeAncestor = getDeepestEmptyPositionAncestor( schema, range.start );
-
-					// Handle a case when there's an empty document tree branch before the widget that should be deleted.
-					//
-					//		<foo><bar></bar></foo>[<widget></widget>]
-					//
-					// Note: Range is collapsed, so it does not matter if this is start or end.
-					if ( deepestEmptyRangeAncestor ) {
-						model.deleteContent( model.createSelection( deepestEmptyRangeAncestor, 'on' ), {
-							doNotAutoparagraph: true
-						} );
-					}
-					// Handle a case when there's a non-empty document tree branch before the widget.
-					//
-					//		<foo>bar</foo>[<widget></widget>] -> <foo>ba[]</foo><widget></widget>
-					//
-					else {
-						model.change( writer => {
-							writer.setSelection( range );
-							editor.execute( 'delete' );
-						} );
-					}
-				}
 			} else {
-				const range = schema.getNearestSelectionRange( model.createPositionAfter( selectedModelWidget ), direction );
+				const range = schema.getNearestSelectionRange(
+					model.createPositionAt( selectedModelWidget, typeAroundSelectionAttributeValue ),
+					direction
+				);
 
+				// If there is somewhere to move selection to, then there will be something to delete.
 				if ( range ) {
-					const deepestEmptyRangeAncestor = getDeepestEmptyPositionAncestor( schema, range.start );
-
-					// Handle a case when there's an empty document tree branch after the widget that should be deleted.
-					//
-					//		[<widget></widget>]<foo><bar></bar></foo>
-					//
-					// Note: Range is collapsed, so it does not matter if this is start or end.
-					if ( deepestEmptyRangeAncestor ) {
-						model.deleteContent( model.createSelection( deepestEmptyRangeAncestor, 'on' ), {
-							doNotAutoparagraph: true
-						} );
-					}
-					// Handle a case when there's a non-empty document tree branch after the widget.
-					//
-					//		[<widget></widget>]<foo>bar</foo> -> <widget></widget><foo>[]ar</foo>
-					//
-					else {
+					// If the range is NOT collapsed, then we know that the range contains an object (see getNearestSelectionRange() docs).
+					if ( !range.isCollapsed ) {
 						model.change( writer => {
 							writer.setSelection( range );
-							editor.execute( 'forwardDelete' );
+							editor.execute( isForwardDelete ? 'forwardDelete' : 'delete' );
 						} );
+					} else {
+						const probe = model.createSelection( range.start );
+						model.modifySelection( probe, { direction } );
+
+						// If the range is collapsed, let's see if a non-collapsed range exists that can could be deleted.
+						// If such range exists, use the editor command because it it safe for collaboration (it merges where it can).
+						if ( !probe.focus.isEqual( range.start ) ) {
+							model.change( writer => {
+								writer.setSelection( range );
+								editor.execute( isForwardDelete ? 'forwardDelete' : 'delete' );
+							} );
+						}
+						// If there is no non-collapsed range to be deleted then we are sure that there is an empty element
+						// next to a widget that should be removed. "delete" and "forwardDelete" commands cannot get rid of it
+						// so calling Model#deleteContent here manually.
+						else {
+							const deepestEmptyRangeAncestor = getDeepestEmptyElementAncestor( schema, range.start.parent );
+
+							model.deleteContent( model.createSelection( deepestEmptyRangeAncestor, 'on' ), {
+								doNotAutoparagraph: true
+							} );
+						}
 					}
 				}
 			}
@@ -709,26 +693,20 @@ function injectFakeCaret( wrapperDomElement ) {
 	wrapperDomElement.appendChild( caretTemplate.render() );
 }
 
-// Returns the ancestor of a position closest to the root which is empty. For instance,
-// for a position in `<baz>`:
+// Returns the ancestor of an element closest to the root which is empty. For instance,
+// for `<baz>`:
 //
-//		<foo>abc<bar><baz>[]</baz></bar></foo>
+//		<foo>abc<bar><baz></baz></bar></foo>
 //
 // it returns `<bar>`.
 //
 // @param {module:engine/model/schema~Schema} schema
-// @param {module:engine/model/position~Position} position
+// @param {module:engine/model/element~Element} element
 // @returns {module:engine/model/element~Element|null}
-function getDeepestEmptyPositionAncestor( schema, position ) {
-	const firstPositionParent = position.parent;
+function getDeepestEmptyElementAncestor( schema, element ) {
+	let deepestEmptyAncestor = element;
 
-	if ( !firstPositionParent.isEmpty ) {
-		return null;
-	}
-
-	let deepestEmptyAncestor = firstPositionParent;
-
-	for ( const ancestor of firstPositionParent.getAncestors( { parentFirst: true } ) ) {
+	for ( const ancestor of element.getAncestors( { parentFirst: true } ) ) {
 		if ( ancestor.childCount > 1 || schema.isLimit( ancestor ) ) {
 			break;
 		}

@@ -221,9 +221,9 @@ export default class Widget extends Plugin {
 
 				domEventData.preventDefault();
 				eventInfo.stop();
-
-				return;
 			}
+
+			return;
 		}
 
 		// If selection is next to object element.
@@ -232,10 +232,10 @@ export default class Widget extends Plugin {
 			return;
 		}
 
-		const objectElement2 = this._getObjectElementNextToSelection( isForward );
+		const objectElementNextToSelection = this._getObjectElementNextToSelection( isForward );
 
-		if ( !!objectElement2 && schema.isObject( objectElement2 ) ) {
-			this._setSelectionOverElement( objectElement2 );
+		if ( objectElementNextToSelection && schema.isObject( objectElementNextToSelection ) ) {
+			this._setSelectionOverElement( objectElementNextToSelection );
 
 			domEventData.preventDefault();
 			eventInfo.stop();
