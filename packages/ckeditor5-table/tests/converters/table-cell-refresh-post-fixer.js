@@ -5,16 +5,15 @@
 
 /* globals document */
 
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-
-import { defaultConversion, defaultSchema, viewTable } from '../_utils/utils';
-import injectTableCellRefreshPostFixer from '../../src/converters/table-cell-refresh-post-fixer';
-
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+import TableEditing from '../../src/tableediting';
+import { viewTable } from '../_utils/utils';
 
 describe( 'Table cell refresh post-fixer', () => {
 	let editor, model, doc, root, view, refreshItemSpy, element;
@@ -25,16 +24,13 @@ describe( 'Table cell refresh post-fixer', () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
-		return ClassicTestEditor.create( element, { extraPlugins: [ Delete ] } )
+		return ClassicTestEditor.create( element, { plugins: [ Paragraph, TableEditing, Delete ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
 				doc = model.document;
 				root = doc.getRoot( 'main' );
 				view = editor.editing.view;
-
-				defaultSchema( model.schema );
-				defaultConversion( editor.conversion, true );
 
 				editor.model.schema.register( 'block', {
 					inheritAllFrom: '$block'
@@ -45,7 +41,6 @@ describe( 'Table cell refresh post-fixer', () => {
 				editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
 				editor.conversion.attributeToAttribute( { model: 'bar', view: 'bar' } );
 
-				injectTableCellRefreshPostFixer( model );
 				refreshItemSpy = sinon.spy( model.document.differ, 'refreshItem' );
 			} );
 	} );

@@ -4,26 +4,26 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import SelectColumnCommand from '../../src/commands/selectcolumncommand';
+import TableEditing from '../../src/tableediting';
 import TableSelection from '../../src/tableselection';
-import { assertSelectedCells, defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
+import { assertSelectedCells, modelTable } from '../_utils/utils';
+
+import SelectColumnCommand from '../../src/commands/selectcolumncommand';
 
 describe( 'SelectColumnCommand', () => {
 	let editor, model, modelRoot, command, tableSelection;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( { plugins: [ TableSelection ] } )
+		return VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing, TableSelection ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
 				modelRoot = model.document.getRoot();
 				command = new SelectColumnCommand( editor );
 				tableSelection = editor.plugins.get( TableSelection );
-
-				defaultSchema( model.schema );
-				defaultConversion( editor.conversion );
 			} );
 	} );
 

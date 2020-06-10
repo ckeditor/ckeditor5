@@ -4,9 +4,12 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import TableUtils from '../../src/tableutils';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
+
+import TableEditing from '../../src/tableediting';
+import { modelTable } from '../_utils/utils';
+
 import { findAncestor, isHeadingColumnCell } from '../../src/utils/common';
 
 describe( 'table utils', () => {
@@ -14,16 +17,13 @@ describe( 'table utils', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ TableUtils ]
+				plugins: [ Paragraph, TableEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
 				modelRoot = model.document.getRoot();
-				tableUtils = editor.plugins.get( TableUtils );
-
-				defaultSchema( model.schema );
-				defaultConversion( editor.conversion );
+				tableUtils = editor.plugins.get( 'TableUtils' );
 			} );
 	} );
 
