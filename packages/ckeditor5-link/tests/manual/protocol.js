@@ -13,37 +13,25 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Link, Typing, Paragraph, Undo, Enter, Superscript ],
-		toolbar: [ 'link', 'undo', 'redo' ],
-		link: {
-			addTargetToExternalLinks: true,
-			defaultProtocol: 'http://'
-		}
-	} )
-	.then( editor => {
-		window.editor = editor;
+createEditorWithDefaultProtocol( '#editor0' );
+createEditorWithDefaultProtocol( '#editor1', 'http://' );
+createEditorWithDefaultProtocol( '#editor2', 'https://' );
+createEditorWithDefaultProtocol( '#editor3', 'mailto:' );
 
-		const LinkUIPlugin = editor.plugins.get( 'LinkUI' );
-		const formView = LinkUIPlugin.formView;
-		const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
-
-		document.getElementById( 'default-protocol' ).innerText = defaultProtocol;
-
-		document.querySelectorAll( '#protocol-settings input[type="radio"]' ).forEach( radio => {
-			radio.checked = radio.value === defaultProtocol;
-
-			radio.addEventListener( 'click', ( {
-				target: { value: protocol }
-			} ) => {
-				editor.config.set( 'link.defaultProtocol', protocol === 'none' ? undefined : protocol );
-
-				// Change input placeholder just for manual test's case to provide more dynamic behavior.
-				formView.urlInputView.fieldView.placeholder = protocol === 'none' ? 'https://example.com' : protocol + 'example.com';
-			} );
+function createEditorWithDefaultProtocol( editor, defaultProtocol ) {
+	return ClassicEditor
+		.create( document.querySelector( editor ), {
+			plugins: [ Link, Typing, Paragraph, Undo, Enter, Superscript ],
+			toolbar: [ 'link', 'undo', 'redo' ],
+			link: {
+				addTargetToExternalLinks: true,
+				...defaultProtocol && { defaultProtocol }
+			}
+		} )
+		.then( editor => {
+			window.editor = editor;
+		} )
+		.catch( err => {
+			console.error( err.stack );
 		} );
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+}
