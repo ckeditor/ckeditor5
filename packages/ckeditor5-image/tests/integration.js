@@ -12,6 +12,7 @@ import Image from '../src/image';
 import ImageToolbar from '../src/imagetoolbar';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ImageTextAlternative from '../src/imagetextalternative';
 
 describe( 'ImageToolbar integration', () => {
 	describe( 'with the BalloonToolbar', () => {
@@ -25,7 +26,10 @@ describe( 'ImageToolbar integration', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Image, ImageToolbar, BalloonToolbar, Paragraph ]
+					plugins: [ Image, ImageTextAlternative, ImageToolbar, BalloonToolbar, Paragraph ],
+					image: {
+						toolbar: [ 'imageTextAlternative' ]
+					}
 				} )
 				.then( editor => {
 					newEditor = editor;

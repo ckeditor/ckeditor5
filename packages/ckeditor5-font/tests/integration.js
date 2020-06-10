@@ -19,7 +19,10 @@ describe( 'Integration test Font', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ Font, ArticlePluginSet ]
+				plugins: [ Font, ArticlePluginSet ],
+				image: {
+					toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+				}
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -66,6 +69,9 @@ describe( 'Integration test Font', () => {
 					fontSize: {
 						options: [ 10, 12, 14 ],
 						supportAllValues: true
+					},
+					image: {
+						toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
 					}
 				} )
 				.then( editor => {
@@ -129,6 +135,9 @@ describe( 'Integration test Font', () => {
 					fontSize: {
 						options: [ 10, 12, 14 ],
 						supportAllValues: true
+					},
+					image: {
+						toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
 					}
 				} )
 				.then( editor => {
