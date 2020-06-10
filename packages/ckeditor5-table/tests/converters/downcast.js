@@ -1282,11 +1282,11 @@ describe( 'downcast converters', () => {
 										'<span style="display:inline-block">00</span>' +
 									'</th>' +
 									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-					'<span style="display:inline-block">01</span>' +
-					'</th>' +
-					'</tr>' +
-					'</thead>' +
-					'</table>' +
+										'<span style="display:inline-block">01</span>' +
+									'</th>' +
+								'</tr>' +
+							'</thead>' +
+						'</table>' +
 					'</figure>'
 				);
 			} );
