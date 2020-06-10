@@ -972,7 +972,7 @@ describe( 'LinkUI', () => {
 				} );
 			} );
 
-			it( 'should not add a protocol when given provided wihitn the value even when `config.link.defaultProtocol` configured', () => {
+			it( 'should not add a protocol when given provided within the value even when `config.link.defaultProtocol` configured', () => {
 				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
 					formView.urlInputView.fieldView.value = 'http://example.com';
 					formView.fire( 'submit' );
@@ -1036,7 +1036,7 @@ describe( 'LinkUI', () => {
 				} );
 			} );
 
-			it( 'should not add an email protocol when given provided wihitn the value' +
+			it( 'should not add an email protocol when given provided within the value' +
 				'even when `config.link.defaultProtocol` configured', () => {
 				return createEditorWithDefaultProtocol( 'mailto:' ).then( ( { editor, formView } ) => {
 					formView.urlInputView.fieldView.value = 'mailto:test@example.com';
