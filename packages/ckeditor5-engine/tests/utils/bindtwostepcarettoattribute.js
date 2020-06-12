@@ -517,7 +517,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			} );
 
 			// <$text a="1">x</$text><$text b="1">[]</$text>
-			expect( selection.isGravityOverridden ).to.be.true;
+			expect( selection ).to.have.property( 'isGravityOverridden', true );
 			expect( getSelectionAttributesArray( selection ) ).to.have.members( [ 'b' ] );
 
 			model.change( writer => {
@@ -525,7 +525,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			} );
 
 			// <$text a="1">x</$text><$text b="1">yz[]</$text>
-			expect( selection.isGravityOverridden ).to.be.false;
+			expect( selection ).to.have.property( 'isGravityOverridden', false );
 			expect( getSelectionAttributesArray( selection ) ).to.have.members( [ 'b' ] );
 		} );
 
@@ -545,7 +545,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			} );
 
 			// <$text b="1">[]</$text><$text a="1">x</$text>
-			expect( selection.isGravityOverridden ).to.be.false;
+			expect( selection ).to.have.property( 'isGravityOverridden', false );
 			expect( getSelectionAttributesArray( selection ) ).to.have.members( [ 'b' ] );
 
 			model.change( writer => {
@@ -553,7 +553,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			} );
 
 			// <$text b="1">yz[]</$text><$text a="1">x</$text>
-			expect( selection.isGravityOverridden ).to.be.false;
+			expect( selection ).to.have.property( 'isGravityOverridden', false );
 			expect( getSelectionAttributesArray( selection ) ).to.have.members( [ 'b' ] );
 		} );
 	} );
@@ -658,13 +658,13 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 		it( 'should not override gravity when selection is placed at the beginning of text', () => {
 			setData( model, '<$text a="true">[]foo</$text>' );
 
-			expect( selection.isGravityOverridden ).to.be.false;
+			expect( selection ).to.have.property( 'isGravityOverridden', false );
 		} );
 
 		it( 'should not override gravity when selection is placed at the end of text', () => {
 			setData( model, '<$text a="true">foo[]</$text>' );
 
-			expect( selection.isGravityOverridden ).to.be.false;
+			expect( selection ).to.have.property( 'isGravityOverridden', false );
 		} );
 	} );
 
@@ -705,7 +705,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 
 		fireKeyDownEvent( { keyCode: keyCodes.arrowright } );
 
-		expect( selection.isGravityOverridden ).to.be.false;
+		expect( selection ).to.have.property( 'isGravityOverridden', false );
 	} );
 
 	it( 'should do nothing when shift key is pressed', () => {
@@ -716,7 +716,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			shiftKey: true
 		} );
 
-		expect( selection.isGravityOverridden ).to.be.false;
+		expect( selection ).to.have.property( 'isGravityOverridden', false );
 	} );
 
 	it( 'should do nothing when alt key is pressed', () => {
@@ -727,7 +727,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			altKey: true
 		} );
 
-		expect( selection.isGravityOverridden ).to.be.false;
+		expect( selection ).to.have.property( 'isGravityOverridden', false );
 	} );
 
 	it( 'should do nothing when ctrl key is pressed', () => {
@@ -738,7 +738,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			ctrlKey: true
 		} );
 
-		expect( selection.isGravityOverridden ).to.be.false;
+		expect( selection ).to.have.property( 'isGravityOverridden', false );
 	} );
 
 	it( 'should do nothing when the not a direct selection change but at the attribute boundary', () => {
@@ -755,7 +755,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			writer.insertText( 'x', selection.getFirstPosition().getShiftedBy( -2 ) );
 		} );
 
-		expect( selection.isGravityOverridden ).to.be.true;
+		expect( selection ).to.have.property( 'isGravityOverridden', true );
 		expect( getSelectionAttributesArray( selection ) ).to.have.members( [] );
 	} );
 
