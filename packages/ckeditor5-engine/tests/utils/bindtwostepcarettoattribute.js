@@ -529,6 +529,24 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			expect( getSelectionAttributesArray( selection ) ).to.have.members( [ 'b' ] );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/pull/7356#pullrequestreview-426103170
+		it( 'when typing the same character at the end should preserve the position', () => {
+			setData( model, '<$text a="1">x[]</$text>a' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 }
+			] );
+
+			model.change( writer => {
+				writer.insertText( 'a', selection.getAttributes(), selection.getFirstPosition() );
+			} );
+
+			// <$text a="1" b="2">xa[]</$text>a
+			expect( selection ).to.have.property( 'isGravityOverridden', false );
+			expect( getSelectionAttributesArray( selection ) ).to.have.members( [ 'a' ] );
+			expect( selection.anchor.path ).to.deep.equal( [ 2 ] );
+		} );
+
 		// https://github.com/ckeditor/ckeditor5/issues/922
 		it( 'should not lose the new attribute when typing (before)', () => {
 			setData( model, '<$text a="1">[]x</$text>' );
@@ -651,6 +669,24 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 				// fo[]o<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
 				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 4, evtStopCalled: 4 }
 			] );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/pull/7356#pullrequestreview-426103170
+		it( 'when typing the same character at the end should preserve the position', () => {
+			setData( model, '<$text a="1" b="2">x[]</$text>a' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 }
+			] );
+
+			model.change( writer => {
+				writer.insertText( 'a', selection.getAttributes(), selection.getFirstPosition() );
+			} );
+
+			// <$text a="1" b="2">xa[]</$text>a
+			expect( selection ).to.have.property( 'isGravityOverridden', false );
+			expect( getSelectionAttributesArray( selection ) ).to.have.members( [ 'a', 'b' ] );
+			expect( selection.anchor.path ).to.deep.equal( [ 2 ] );
 		} );
 	} );
 
