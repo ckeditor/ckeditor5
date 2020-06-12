@@ -317,7 +317,7 @@ describe( 'Renderer', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/5734
-		it( 'should replace a comment with the added element', () => {
+		it( 'should remove the comment and add a child element', () => {
 			const viewImg = new ViewElement( viewDocument, 'img' );
 			viewRoot._appendChild( viewImg );
 
