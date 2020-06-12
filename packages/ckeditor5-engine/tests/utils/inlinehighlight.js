@@ -161,6 +161,37 @@ describe( 'setupHighlight', () => {
 			);
 		} );
 
+		describe( 'nested highlights', () => {
+			beforeEach( async () => {
+				model.schema.extend( '$text', { allowAttributes: 'inlineCode' } );
+
+				editor.conversion.for( 'editingDowncast' )
+					.attributeToElement( { model: 'inlineCode', view: ( val, writer ) => {
+						return writer.createAttributeElement( 'code', { val } );
+					} } );
+
+				// Setup highlight over selected code.
+				setupHighlight( editor, editor.editing.view, 'inlineCode', 'code', 'ck-code_selected' );
+			} );
+
+			// https://github.com/ckeditor/ckeditor5/pull/7356#pullrequestreview-426103170
+			it( 'when selection is in a nested element, should highligh both', () => {
+				setData( model,
+					'<paragraph>outside<$text linkHref="url">' +
+						'outer</$text><$text inlineCode="true" linkHref="url">inn{}er</$text><$text linkHref="url">outer' +
+					'</$text></paragraph>'
+				);
+
+				expect( model.document.selection ).to.have.an.attribute( 'linkHref' );
+				expect( model.document.selection ).to.have.an.attribute( 'inlineCode' );
+				expect( getViewData( view ) ).to.equal(
+					'<p>outside<a class="ck-link_selected" href="url">outer' +
+						'<code class="ck-code_selected" val="true">inn{}er</code>' +
+					'outer</a></p>'
+				);
+			} );
+		} );
+
 		describe( 'downcast conversion integration', () => {
 			it( 'works for the #insert event', () => {
 				setData( model,
