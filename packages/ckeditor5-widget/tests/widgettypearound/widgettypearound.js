@@ -1317,6 +1317,130 @@ describe( 'WidgetTypeAround', () => {
 		}
 	} );
 
+	describe( 'insertContent integration', () => {
+		let model, modelSelection;
+
+		beforeEach( () => {
+			model = editor.model;
+			modelSelection = model.document.selection;
+		} );
+
+		it( 'should not alter insertContent for the selection other than the document selection', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+
+			const batchSet = setupBatchWatch();
+			const selection = model.createSelection( modelSelection );
+
+			model.change( writer => {
+				writer.setSelectionAttribute( 'widget-type-around', 'before' );
+				model.insertContent( createParagraph( 'bar' ), selection );
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>bar</paragraph><paragraph>baz</paragraph>' );
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should not alter insertContent when "fake caret" is not active', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+
+			const batchSet = setupBatchWatch();
+
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+
+			model.insertContent( createParagraph( 'bar' ) );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar[]</paragraph><paragraph>baz</paragraph>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should handle insertContent before widget when it\'s the first element', () => {
+			setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+			const batchSet = setupBatchWatch();
+
+			model.change( writer => {
+				writer.setSelectionAttribute( 'widget-type-around', 'before' );
+			} );
+
+			model.insertContent( createParagraph( 'bar' ) );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>bar[]</paragraph><blockWidget></blockWidget>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should handle insertContent after widget when it\'s the last element', () => {
+			setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+			const batchSet = setupBatchWatch();
+
+			model.change( writer => {
+				writer.setSelectionAttribute( 'widget-type-around', 'after' );
+			} );
+
+			model.insertContent( createParagraph( 'bar' ) );
+
+			expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>bar[]</paragraph>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should handle insertContent before widget when it\'s not the first element', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
+
+			const batchSet = setupBatchWatch();
+
+			model.change( writer => {
+				writer.setSelectionAttribute( 'widget-type-around', 'before' );
+			} );
+
+			model.insertContent( createParagraph( 'bar' ) );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar[]</paragraph><blockWidget></blockWidget>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should handle insertContent after widget when it\'s not the last element', () => {
+			setModelData( editor.model, '[<blockWidget></blockWidget>]<paragraph>foo</paragraph>' );
+
+			const batchSet = setupBatchWatch();
+
+			model.change( writer => {
+				writer.setSelectionAttribute( 'widget-type-around', 'after' );
+			} );
+
+			model.insertContent( createParagraph( 'bar' ) );
+
+			expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>bar[]</paragraph><paragraph>foo</paragraph>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		function createParagraph( text ) {
+			return model.change( writer => {
+				const paragraph = writer.createElement( 'paragraph' );
+
+				writer.insertText( text, paragraph );
+
+				return paragraph;
+			} );
+		}
+
+		function setupBatchWatch() {
+			const createdBatches = new Set();
+
+			model.on( 'applyOperation', ( evt, [ operation ] ) => {
+				if ( operation.isDocumentOperation ) {
+					createdBatches.add( operation.batch );
+				}
+			} );
+
+			return createdBatches;
+		}
+	} );
+
 	function blockWidgetPlugin( editor ) {
 		editor.model.schema.register( 'blockWidget', {
 			inheritAllFrom: '$block',
