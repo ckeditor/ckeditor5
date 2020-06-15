@@ -23,6 +23,7 @@ import linkIcon from '../theme/icons/link.svg';
 const linkKeystroke = 'Ctrl+K';
 const protocolRegExp = /^((\w+:(\/{2,})?)|(\W))/i;
 const emailRegExp = /[\w-]+@[\w-]+\.+[\w-]+/i;
+const VISUAL_SELECTION_MARKER_NAME = 'link-ui';
 
 /**
  * The link UI plugin. It introduces the `'link'` and `'unlink'` buttons and support for the <kbd>Ctrl+K</kbd> keystroke.
@@ -83,15 +84,17 @@ export default class LinkUI extends Plugin {
 		// Attach lifecycle actions to the the balloon.
 		this._enableUserBalloonInteractions();
 
+		// Renders a fake visual selection marker on expanded selection.
 		editor.conversion.for( 'downcast' ).markerToHighlight( {
-			model: 'link-ui',
+			model: VISUAL_SELECTION_MARKER_NAME,
 			view: {
 				classes: [ 'ck-link_selected' ]
 			}
 		} );
 
+		// Renders a fake visual selection marker on collapsed selection.
 		editor.conversion.for( 'downcast' ).markerToElement( {
-			model: 'link-ui',
+			model: VISUAL_SELECTION_MARKER_NAME,
 			view: {
 				name: 'span',
 				classes: [ 'ck-link-text-selection', 'ck-link-text-selection_collapsed' ]
@@ -378,11 +381,7 @@ export default class LinkUI extends Plugin {
 			// to the editor. Otherwise, it would be lost.
 			this.editor.editing.view.focus();
 
-			if ( this.editor.model.markers.has( 'link-ui' ) ) {
-				this.editor.model.change( writer => {
-					writer.removeMarker( 'link-ui' );
-				} );
-			}
+			this._hideFakeVisualSelection();
 		}
 	}
 
@@ -403,14 +402,9 @@ export default class LinkUI extends Plugin {
 			}
 
 			this._addFormView();
-
-			this.editor.model.change( writer => {
-				writer.addMarker( 'link-ui', {
-					usingOperation: false,
-					affectsData: false,
-					range: this.editor.model.document.selection.getFirstRange()
-				} );
-			} );
+			// Show visual selection on text without link when contextual balloon is displayed.
+			// See https://github.com/ckeditor/ckeditor5/issues/4721.
+			this._showFakeVisualSelection();
 		}
 		// If there's a link under the selection...
 		else {
@@ -460,11 +454,7 @@ export default class LinkUI extends Plugin {
 		// Then remove the actions view because it's beneath the form.
 		this._balloon.remove( this.actionsView );
 
-		if ( editor.model.markers.has( 'link-ui' ) ) {
-			editor.model.change( writer => {
-				writer.removeMarker( 'link-ui' );
-			} );
-		}
+		this._hideFakeVisualSelection();
 	}
 
 	/**
@@ -642,6 +632,46 @@ export default class LinkUI extends Plugin {
 			} else {
 				return null;
 			}
+		}
+	}
+
+	/**
+	 * Displays a fake visual selection when contextual balloon is displayed.
+	 *
+	 * This adds a 'link-ui' marker into the document that is rendered as a highlight on selected text fragment.
+	 *
+	 * @private
+	 */
+	_showFakeVisualSelection() {
+		const model = this.editor.model;
+
+		model.change( writer => {
+			if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
+				writer.updateMarker( VISUAL_SELECTION_MARKER_NAME, {
+					range: model.document.selection.getFirstRange()
+				} );
+			} else {
+				writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+					usingOperation: false,
+					affectsData: false,
+					range: model.document.selection.getFirstRange()
+				} );
+			}
+		} );
+	}
+
+	/**
+	 * Hides fake visual selection created with {@link #_showFakeVisualSelection}
+	 *
+	 * @private
+	 */
+	_hideFakeVisualSelection() {
+		const model = this.editor.model;
+
+		if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
+			model.change( writer => {
+				writer.removeMarker( VISUAL_SELECTION_MARKER_NAME );
+			} );
 		}
 	}
 }
