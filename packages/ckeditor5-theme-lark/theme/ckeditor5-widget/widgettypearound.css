@@ -132,7 +132,7 @@
 		animation: ck-widget-type-around-fake-caret-pulse linear 1s infinite normal forwards;
 
 		/*
-		 * The semit-transparent-outline+background combo improves the contrast
+		 * The semi-transparent-outline+background combo improves the contrast
 		 * when the background underneath the fake caret is dark.
 		 */
 		outline: solid 1px hsla(0, 0%, 100%, .5);
