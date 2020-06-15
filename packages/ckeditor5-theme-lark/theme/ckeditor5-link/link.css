@@ -4,14 +4,21 @@
  */
 
 /* Class added to span element surrounding currently selected link. */
-.ck .ck-link-text-selection {
-	background: var(--ck-color-link-default);
-}
-
-.ck .ck-link-text-selection_collapsed {
-	border: 1px solid var(--ck-color-link-text-selection);
-}
-
 .ck .ck-link_selected {
-	background: var(--ck-color-link-text-selection);
+	background: var(--ck-color-link-selected-background);
+}
+
+/* Classes for fake visual selection displayed on text when LinkUI has focus. */
+.ck .ck-link_fake-selection {
+	background: var(--ck-color-link-fake-selection);
+}
+
+/* Collapsed fake visual selection. */
+.ck .ck-link_fake-selection_collapsed {
+	display: inline-block;
+	height: .8em;
+	border-left: 1px solid var(--ck-color-base-text);
+	margin-left: -1px;
+	outline: solid 1px hsla(0, 0%, 100%, .5);
+	animation: ck-widget-type-around-fake-caret-pulse linear 1s infinite normal forwards;
 }
