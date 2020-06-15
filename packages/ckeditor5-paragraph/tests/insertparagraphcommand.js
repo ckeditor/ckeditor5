@@ -23,7 +23,9 @@ describe( 'InsertParagraphCommand', () => {
 			editor.commands.add( 'insertParagraph', command );
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			schema.register( 'heading1', { inheritAllFrom: '$block', allowIn: 'headersOnly' } );
-			schema.register( 'headersOnly', { inheritAllFrom: '$block' } );
+			schema.register( 'allowP', { inheritAllFrom: '$block' } );
+			schema.register( 'disallowP', { inheritAllFrom: '$block', allowIn: [ 'allowP' ] } );
+			model.schema.extend( 'paragraph', { allowIn: [ 'allowP' ] } );
 		} );
 	} );
 
@@ -42,18 +44,38 @@ describe( 'InsertParagraphCommand', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph><heading1>foo</heading1>' );
 		} );
 
+		it( 'should split ancestors down to a limit where a paragraph is allowed', () => {
+			setData( model, '<allowP><disallowP>foo</disallowP></allowP>' );
+
+			command.execute( {
+				// fo[]o
+				position: model.createPositionAt( root.getChild( 0 ).getChild( 0 ), 2 )
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<allowP>' +
+					'<disallowP>fo</disallowP>' +
+					'<paragraph>[]</paragraph>' +
+					'<disallowP>o</disallowP>' +
+				'</allowP>'
+			);
+		} );
+
 		it( 'should do nothing if the paragraph is not allowed at the provided position', () => {
-			setData( model, '<headersOnly><heading1>foo[]</heading1></headersOnly>' );
-
-			command.execute( {
-				position: model.createPositionBefore( root.getChild( 0 ).getChild( 0 ) )
+			// Create a situation where "paragraph" is disallowed even in the "root".
+			schema.addChildCheck( ( context, childDefinition ) => {
+				if ( context.endsWith( '$root' ) && childDefinition.name == 'paragraph' ) {
+					return false;
+				}
 			} );
 
+			setData( model, '<heading1>foo[]</heading1>' );
+
 			command.execute( {
-				position: model.createPositionAfter( root.getChild( 0 ).getChild( 0 ) )
+				position: model.createPositionBefore( root.getChild( 0 ) )
 			} );
 
-			expect( getData( model ) ).to.equal( '<headersOnly><heading1>foo[]</heading1></headersOnly>' );
+			expect( getData( model ) ).to.equal( '<heading1>foo[]</heading1>' );
 		} );
 
 		describe( 'interation with existing paragraphs in the content', () => {
