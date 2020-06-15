@@ -648,13 +648,13 @@ export default class WidgetTypeAround extends Plugin {
 		const documentSelection = model.document.selection;
 
 		this.listenTo( editor.model, 'insertContent', ( evt, [ content, selectable ] ) => {
-			const typeAroundSelectionAttributeValue = documentSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
-
-			if ( !typeAroundSelectionAttributeValue ) {
+			if ( selectable && !selectable.is( 'documentSelection' ) ) {
 				return;
 			}
 
-			if ( selectable && !selectable.is( 'documentSelection' ) ) {
+			const typeAroundSelectionAttributeValue = documentSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+
+			if ( !typeAroundSelectionAttributeValue ) {
 				return;
 			}
 
