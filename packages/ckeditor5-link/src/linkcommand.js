@@ -11,6 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import findLinkRange from './findlinkrange';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
  * The link command. It is used by the {@link module:link/link~Link link feature}.
@@ -57,13 +58,21 @@ export default class LinkCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 
-		this.value = doc.selection.getAttribute( 'linkHref' );
+		const selectedElement = first( doc.selection.getSelectedBlocks() );
+
+		// A check for the `LinkImage` plugin. If the selection contains an element, get values from the element.
+		// Currently the selection reads attributes from text nodes only. See #7429.
+		if ( selectedElement && selectedElement.name === 'image' ) {
+			this.value = selectedElement.getAttribute( 'linkHref' );
+			this.isEnabled = model.schema.checkAttribute( selectedElement, 'linkHref' );
+		} else {
+			this.value = doc.selection.getAttribute( 'linkHref' );
+			this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
+		}
 
 		for ( const manualDecorator of this.manualDecorators ) {
 			manualDecorator.value = this._getDecoratorStateFromModel( manualDecorator.id );
 		}
-
-		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
 	}
 
 	/**
