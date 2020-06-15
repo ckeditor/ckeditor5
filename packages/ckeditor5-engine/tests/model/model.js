@@ -659,6 +659,8 @@ describe( 'Model', () => {
 
 			expect( model.hasContent( pEmpty ) ).to.be.false;
 			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).to.be.false;
 		} );
 
 		it( 'should return false for empty element with marker (usingOperation=true, affectsData=false)', () => {
@@ -672,6 +674,8 @@ describe( 'Model', () => {
 
 			expect( model.hasContent( pEmpty ) ).to.be.false;
 			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).to.be.false;
 		} );
 
 		it( 'should return false (ignoreWhitespaces) for empty text with marker (usingOperation=false, affectsData=false)', () => {
@@ -688,6 +692,7 @@ describe( 'Model', () => {
 			} );
 
 			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true, ignoreMarkers: true } ) ).to.be.false;
 		} );
 
 		it( 'should return true for empty text with marker (usingOperation=false, affectsData=false)', () => {
@@ -704,6 +709,8 @@ describe( 'Model', () => {
 			} );
 
 			expect( model.hasContent( pEmpty ) ).to.be.true;
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).to.be.true;
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).to.be.false;
 		} );
 
 		it( 'should return false for empty element with marker (usingOperation=false, affectsData=true)', () => {
@@ -717,6 +724,8 @@ describe( 'Model', () => {
 
 			expect( model.hasContent( pEmpty ) ).to.be.false;
 			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).to.be.false;
 		} );
 
 		it( 'should return false for empty element with marker (usingOperation=true, affectsData=true)', () => {
@@ -730,6 +739,8 @@ describe( 'Model', () => {
 
 			expect( model.hasContent( pEmpty ) ).to.be.false;
 			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).to.be.false;
 		} );
 
 		it( 'should return true (ignoreWhitespaces) for empty text with marker (usingOperation=false, affectsData=true)', () => {
@@ -747,6 +758,8 @@ describe( 'Model', () => {
 
 			expect( model.hasContent( pEmpty ) ).to.be.true;
 			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.true;
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).to.be.true;
+			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).to.be.false;
 		} );
 	} );
 

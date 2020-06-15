@@ -661,6 +661,59 @@ describe( 'DataController utils', () => {
 				);
 			} );
 
+			describe( 'with markers', () => {
+				it( 'should merge left if first element is not empty', () => {
+					setData( model, '<heading1>foo[</heading1><paragraph>]bar</paragraph>' );
+
+					model.enqueueChange( 'transparent', writer => {
+						const root = doc.getRoot( );
+						const range = writer.createRange(
+							writer.createPositionFromPath( root, [ 0, 3 ] ),
+							writer.createPositionFromPath( root, [ 1, 0 ] )
+						);
+						writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: true } );
+					} );
+
+					deleteContent( model, doc.selection );
+
+					expect( getData( model ) ).to.equal( '<heading1>foo[]bar</heading1>' );
+				} );
+
+				it( 'should merge right if first element is empty', () => {
+					setData( model, '<heading1>[</heading1><paragraph>]bar</paragraph>' );
+
+					model.enqueueChange( 'transparent', writer => {
+						const root = doc.getRoot( );
+						const range = writer.createRange(
+							writer.createPositionFromPath( root, [ 0, 0 ] ),
+							writer.createPositionFromPath( root, [ 1, 0 ] )
+						);
+						writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: true } );
+					} );
+
+					deleteContent( model, doc.selection );
+
+					expect( getData( model ) ).to.equal( '<paragraph>[]bar</paragraph>' );
+				} );
+
+				it( 'should merge left if last element is empty', () => {
+					setData( model, '<heading1>foo[</heading1><paragraph>]</paragraph>' );
+
+					model.enqueueChange( 'transparent', writer => {
+						const root = doc.getRoot( );
+						const range = writer.createRange(
+							writer.createPositionFromPath( root, [ 0, 3 ] ),
+							writer.createPositionFromPath( root, [ 1, 0 ] )
+						);
+						writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: true } );
+					} );
+
+					deleteContent( model, doc.selection );
+
+					expect( getData( model ) ).to.equal( '<heading1>foo[]</heading1>' );
+				} );
+			} );
+
 			describe( 'filtering out', () => {
 				beforeEach( () => {
 					const schema = model.schema;
