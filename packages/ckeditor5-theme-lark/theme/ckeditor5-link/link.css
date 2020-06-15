@@ -4,6 +4,14 @@
  */
 
 /* Class added to span element surrounding currently selected link. */
+.ck .ck-link-text-selection {
+	background: var(--ck-color-link-default);
+}
+
+.ck .ck-link-text-selection_collapsed {
+	border: 1px solid var(--ck-color-link-selected-background);
+}
+
 .ck .ck-link_selected {
 	background: var(--ck-color-link-selected-background);
 }

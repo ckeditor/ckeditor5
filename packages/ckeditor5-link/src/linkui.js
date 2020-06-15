@@ -82,6 +82,21 @@ export default class LinkUI extends Plugin {
 
 		// Attach lifecycle actions to the the balloon.
 		this._enableUserBalloonInteractions();
+
+		editor.conversion.for( 'downcast' ).markerToHighlight( {
+			model: 'link-ui',
+			view: {
+				classes: [ 'ck-link_selected' ]
+			}
+		} );
+
+		editor.conversion.for( 'downcast' ).markerToElement( {
+			model: 'link-ui',
+			view: {
+				name: 'span',
+				classes: [ 'ck-link-text-selection', 'ck-link-text-selection_collapsed' ]
+			}
+		} );
 	}
 
 	/**
@@ -382,6 +397,14 @@ export default class LinkUI extends Plugin {
 			}
 
 			this._addFormView();
+
+			this.editor.model.change( writer => {
+				writer.addMarker( 'link-ui', {
+					usingOperation: false,
+					affectsData: false,
+					range: this.editor.model.document.selection.getFirstRange()
+				} );
+			} );
 		}
 		// If there's a link under the selection...
 		else {
@@ -430,6 +453,10 @@ export default class LinkUI extends Plugin {
 
 		// Then remove the actions view because it's beneath the form.
 		this._balloon.remove( this.actionsView );
+
+		editor.model.change( writer => {
+			writer.removeMarker( 'link-ui' );
+		} );
 	}
 
 	/**
