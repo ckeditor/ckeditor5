@@ -734,6 +734,36 @@ describe( 'WidgetTypeAround', () => {
 			expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 		} );
 
+		it( 'should quit the "fake caret" mode when model was changed (model.deleteContent)', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+
+			const selection = model.createSelection( modelSelection );
+
+			model.change( writer => {
+				writer.setSelectionAttribute( 'widget-type-around', 'before' );
+				model.deleteContent( selection );
+			} );
+
+			const viewWidget = viewRoot.getChild( 1 );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph></paragraph><paragraph>baz</paragraph>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
+			expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
+		} );
+
+		it( 'should quit the "fake caret" mode when model was changed (writer.remove)', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+
+			model.change( writer => {
+				writer.setSelectionAttribute( 'widget-type-around', 'before' );
+				writer.remove( editor.model.document.getRoot().getChild( 1 ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>baz</paragraph>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+		} );
+
 		describe( 'inserting a new paragraph', () => {
 			describe( 'on Enter key press when the "fake caret" is activated', () => {
 				it( 'should insert a paragraph before a widget if the caret was "before" it', () => {

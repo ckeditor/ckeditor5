@@ -229,14 +229,26 @@ export default class WidgetTypeAround extends Plugin {
 				return;
 			}
 
-			const typeAroundSelectionAttribute = modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
-
-			if ( !typeAroundSelectionAttribute ) {
-				return;
-			}
-
 			// Get rid of the widget type around attribute of the selection on every change:range.
 			// If the range changes, it means for sure, the user is no longer in the active ("fake horizontal caret") mode.
+			editor.model.change( writer => {
+				writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+			} );
+		} );
+
+		// Get rid of the widget type around attribute of the selection on every document change
+		// that makes widget not selected any more (i.e. widget was removed).
+		model.document.on( 'change:data', () => {
+			const selectedModelElement = modelSelection.getSelectedElement();
+
+			if ( selectedModelElement ) {
+				const selectedViewElement = editor.editing.mapper.toViewElement( selectedModelElement );
+
+				if ( isTypeAroundWidget( selectedViewElement, selectedModelElement, schema ) ) {
+					return;
+				}
+			}
+
 			editor.model.change( writer => {
 				writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 			} );
@@ -643,10 +655,6 @@ export default class WidgetTypeAround extends Plugin {
 			}
 
 			if ( selectable && !selectable.is( 'documentSelection' ) ) {
-				model.change( writer => {
-					writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
-				} );
-
 				return;
 			}
 
