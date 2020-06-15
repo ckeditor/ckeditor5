@@ -377,6 +377,12 @@ export default class LinkUI extends Plugin {
 			// Because the form has an input which has focus, the focus must be brought back
 			// to the editor. Otherwise, it would be lost.
 			this.editor.editing.view.focus();
+
+			if ( this.editor.model.markers.has( 'link-ui' ) ) {
+				this.editor.model.change( writer => {
+					writer.removeMarker( 'link-ui' );
+				} );
+			}
 		}
 	}
 
@@ -454,9 +460,11 @@ export default class LinkUI extends Plugin {
 		// Then remove the actions view because it's beneath the form.
 		this._balloon.remove( this.actionsView );
 
-		editor.model.change( writer => {
-			writer.removeMarker( 'link-ui' );
-		} );
+		if ( editor.model.markers.has( 'link-ui' ) ) {
+			editor.model.change( writer => {
+				writer.removeMarker( 'link-ui' );
+			} );
+		}
 	}
 
 	/**

@@ -9,9 +9,9 @@
 }
 
 .ck .ck-link-text-selection_collapsed {
-	border: 1px solid var(--ck-color-link-selected-background);
+	border: 1px solid var(--ck-color-link-text-selection);
 }
 
 .ck .ck-link_selected {
-	background: var(--ck-color-link-selected-background);
+	background: var(--ck-color-link-text-selection);
 }
