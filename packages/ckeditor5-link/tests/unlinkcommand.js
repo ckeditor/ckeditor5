@@ -51,6 +51,56 @@ describe( 'UnlinkCommand', () => {
 
 			expect( command.isEnabled ).to.false;
 		} );
+
+		describe( 'for images', () => {
+			beforeEach( () => {
+				model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
+			} );
+
+			it( 'should be true when an image is selected', () => {
+				setData( model, '[<image linkHref="foo"></image>]' );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true when an image and a text are selected', () => {
+				setData( model, '[<image linkHref="foo"></image>Foo]' );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true when a text and an image are selected', () => {
+				setData( model, '[Foo<image linkHref="foo"></image>]' );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true when two images are selected', () => {
+				setData( model, '[<image linkHref="foo"></image><image linkHref="foo"></image>]' );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be false when a fake image is selected', () => {
+				model.schema.register( 'fake', { isBlock: true, allowWhere: '$text' } );
+
+				setData( model, '[<fake></fake>]' );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false if an image does not accept the `linkHref` attribute in given context', () => {
+				model.schema.addAttributeCheck( ( ctx, attributeName ) => {
+					if ( ctx.endsWith( '$root image' ) && attributeName == 'linkHref' ) {
+						return false;
+					}
+				} );
+
+				setData( model, '[<image></image>]' );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+		} );
 	} );
 
 	describe( 'execute()', () => {
