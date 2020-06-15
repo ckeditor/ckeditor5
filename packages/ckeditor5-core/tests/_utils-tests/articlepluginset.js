@@ -33,7 +33,12 @@ describe( 'ArticlePluginSet', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		editor = await ClassicTestEditor.create( editorElement, { plugins: [ ArticlePluginSet ] } );
+		editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ ArticlePluginSet ],
+			image: {
+				toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+			}
+		} );
 	} );
 
 	afterEach( async () => {

@@ -2769,6 +2769,9 @@ describe( 'TableKeyboard', () => {
 							[ '20', '21', '22' ]
 						] ) );
 
+						// Note: Two keydowns are necessary because the first one is handled by the WidgetTypeAround plugin
+						// to activate the "fake caret".
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
 						assertEqualMarkup( getModelData( model ), modelTable( [

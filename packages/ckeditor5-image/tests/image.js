@@ -64,7 +64,6 @@ describe( 'Image', () => {
 			expect( getViewData( view ) ).to.equal(
 				'[<figure class="' +
 					'ck-widget ' +
-					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
 					'ck-widget_selected image" contenteditable="false"' +
 				'>' +
 					'<img alt="alt text" src="/assets/sample.png"></img>' +
@@ -82,7 +81,6 @@ describe( 'Image', () => {
 			expect( getViewData( view ) ).to.equal(
 				'[<figure class="' +
 					'ck-widget ' +
-					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
 					'ck-widget_selected image" contenteditable="false"' +
 				'>' +
 					'<img alt="" src="/assets/sample.png"></img>' +
@@ -103,7 +101,6 @@ describe( 'Image', () => {
 			expect( getViewData( view ) ).to.equal(
 				'[<figure class="' +
 					'ck-widget ' +
-					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
 					'ck-widget_selected image" contenteditable="false"' +
 				'>' +
 					'<img alt="alt text" src="/assets/sample.png"></img>' +
@@ -111,7 +108,6 @@ describe( 'Image', () => {
 				'</figure>]' +
 				'<figure class="' +
 					'ck-widget ' +
-					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
 					'image" contenteditable="false"' +
 				'>' +
 					'<img alt="alt text" src="/assets/sample.png"></img>' +
@@ -127,7 +123,6 @@ describe( 'Image', () => {
 			expect( getViewData( view ) ).to.equal(
 				'<figure class="' +
 					'ck-widget ' +
-					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
 					'image" contenteditable="false"' +
 				'>' +
 					'<img alt="alt text" src="/assets/sample.png"></img>' +
@@ -135,7 +130,6 @@ describe( 'Image', () => {
 				'</figure>' +
 				'[<figure class="' +
 					'ck-widget ' +
-					'ck-widget_can-type-around_after ck-widget_can-type-around_before ' +
 					'ck-widget_selected image" contenteditable="false"' +
 				'>' +
 					'<img alt="alt text" src="/assets/sample.png"></img>' +

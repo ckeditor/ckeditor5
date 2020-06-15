@@ -11,7 +11,7 @@ import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import {
 	getData as getModelData,
 	setData as setModelData
@@ -27,12 +27,16 @@ describe( 'Table feature – integration', () => {
 		let editor, clipboard;
 
 		beforeEach( () => {
-			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, TableEditing, ListEditing, BlockQuoteEditing, Widget, Clipboard ] } )
+			return ClassicTestEditor
+				.create( '', { plugins: [ Paragraph, TableEditing, ListEditing, BlockQuoteEditing, Widget, Clipboard ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					clipboard = editor.plugins.get( 'Clipboard' );
 				} );
+		} );
+
+		afterEach( () => {
+			editor.destroy();
 		} );
 
 		it( 'pastes td as p when pasting into the table', () => {
@@ -86,13 +90,17 @@ describe( 'Table feature – integration', () => {
 		let editor, doc, root;
 
 		beforeEach( () => {
-			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, TableEditing, Widget, UndoEditing ] } )
+			return ClassicTestEditor
+				.create( '', { plugins: [ Paragraph, TableEditing, Widget, UndoEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					doc = editor.model.document;
 					root = doc.getRoot();
 				} );
+		} );
+
+		afterEach( () => {
+			editor.destroy();
 		} );
 
 		it( 'fixing empty roots should be transparent to undo', () => {
@@ -155,11 +163,15 @@ describe( 'Table feature – integration', () => {
 		let editor;
 
 		beforeEach( () => {
-			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, TableEditing, ListEditing, BlockQuoteEditing, Widget, Typing ] } )
+			return ClassicTestEditor
+				.create( '', { plugins: [ Paragraph, TableEditing, ListEditing, BlockQuoteEditing, Widget, Typing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
+		} );
+
+		afterEach( () => {
+			editor.destroy();
 		} );
 
 		it( 'merges elements without throwing errors', () => {

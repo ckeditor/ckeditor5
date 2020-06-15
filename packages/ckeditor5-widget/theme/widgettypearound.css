@@ -38,17 +38,6 @@
 	}
 
 	/*
-	 * Hide the type around buttons depending on which directions the widget supports.
-	 */
-	&:not(.ck-widget_can-type-around_before) > .ck-widget__type-around > .ck-widget__type-around__button_before {
-		display: none;
-	}
-
-	&:not(.ck-widget_can-type-around_after) > .ck-widget__type-around > .ck-widget__type-around__button_after {
-		display: none;
-	}
-
-	/*
 	 * Styles for the buttons when:
 	 * - the widget is selected,
 	 * - or the button is being hovered (regardless of the widget state).
@@ -63,6 +52,42 @@
 			left: 1px;
 			z-index: calc(var(--ck-z-default) + 1);
 		}
+	}
+
+	/*
+	 * Styles for the horizontal "fake caret" which is displayed when the user navigates using the keyboard.
+	 */
+	& > .ck-widget__type-around > .ck-widget__type-around__fake-caret {
+		display: none;
+		position: absolute;
+		left: 0;
+		right: 0;
+	}
+
+	/*
+	 * When the widget is hovered the "fake caret" would normally be narrower than the
+	 * extra outline displayed around the widget. Let's extend the "fake caret" to match
+	 * the full width of the widget.
+	 */
+	&:hover > .ck-widget__type-around > .ck-widget__type-around__fake-caret {
+		left: calc( -1 * var(--ck-widget-outline-thickness) );
+		right: calc( -1 * var(--ck-widget-outline-thickness) );
+	}
+
+	/*
+	 * Styles for the horizontal "fake caret" when it should be displayed before the widget (backward keyboard navigation).
+	 */
+	&.ck-widget_type-around_show-fake-caret_before > .ck-widget__type-around > .ck-widget__type-around__fake-caret {
+		top: calc( -1 * var(--ck-widget-outline-thickness) - 1px );
+		display: block;
+	}
+
+	/*
+	 * Styles for the horizontal "fake caret" when it should be displayed after the widget (forward keyboard navigation).
+	 */
+	&.ck-widget_type-around_show-fake-caret_after > .ck-widget__type-around > .ck-widget__type-around__fake-caret {
+		bottom: calc( -1 * var(--ck-widget-outline-thickness) - 1px );
+		display: block;
 	}
 }
 

@@ -11,10 +11,14 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import WidgetTypeAround from './widgettypearound/widgettypearound';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import {
+	isArrowKeyCode,
+	isForwardArrowKeyCode
+} from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../theme/widget.css';
+import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 /**
  * The widget plugin. It enables base support for widgets.
@@ -96,8 +100,24 @@ export default class Widget extends Plugin {
 		view.addObserver( MouseObserver );
 		this.listenTo( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
 
-		// Handle custom keydown behaviour.
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( ...args ), { priority: 'high' } );
+		// There are two keydown listeners working on different priorities. This allows other
+		// features such as WidgetTypeAround or TableKeyboard to attach their listeners in between
+		// and customize the behavior even further in different content/selection scenarios.
+		//
+		// * The first listener handles changing the selection on arrow key press
+		// if the widget is selected or if the selection is next to a widget and the widget
+		// should become selected upon the arrow key press.
+		//
+		// * The second (late) listener makes sure the default browser action on arrow key press is
+		// prevented when a widget is selected. This prevents the selection from being moved
+		// from a fake selection container.
+		this.listenTo( viewDocument, 'keydown', ( ...args ) => {
+			this._handleSelectionChangeOnArrowKeyPress( ...args );
+		}, { priority: 'high' } );
+
+		this.listenTo( viewDocument, 'keydown', ( ...args ) => {
+			this._preventDefaultOnArrowKeyPress( ...args );
+		}, { priority: priorities.get( 'high' ) - 20 } );
 
 		// Handle custom delete behaviour.
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
@@ -162,27 +182,92 @@ export default class Widget extends Plugin {
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events.
+	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events and changes
+	 * the model selection when:
+	 *
+	 * * arrow key is pressed when the widget is selected,
+	 * * the selection is next to a widget and the widget should become selected upon the arrow key press.
+	 *
+	 * See {@link #_preventDefaultOnArrowKeyPress}.
 	 *
 	 * @private
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_onKeydown( eventInfo, domEventData ) {
+	_handleSelectionChangeOnArrowKeyPress( eventInfo, domEventData ) {
 		const keyCode = domEventData.keyCode;
-		const isLtrContent = this.editor.locale.contentLanguageDirection === 'ltr';
-		const isForward = keyCode == keyCodes.arrowdown || keyCode == keyCodes[ isLtrContent ? 'arrowright' : 'arrowleft' ];
-		let wasHandled = false;
 
 		// Checks if the keys were handled and then prevents the default event behaviour and stops
 		// the propagation.
-		if ( isArrowKeyCode( keyCode ) ) {
-			wasHandled = this._handleArrowKeys( isForward );
-		} else if ( keyCode === keyCodes.enter ) {
-			wasHandled = this._handleEnterKey( domEventData.shiftKey );
+		if ( !isArrowKeyCode( keyCode ) ) {
+			return;
 		}
 
-		if ( wasHandled ) {
+		const model = this.editor.model;
+		const schema = model.schema;
+		const modelSelection = model.document.selection;
+		const objectElement = modelSelection.getSelectedElement();
+		const isForward = isForwardArrowKeyCode( keyCode, this.editor.locale.contentLanguageDirection );
+
+		// If object element is selected.
+		if ( objectElement && schema.isObject( objectElement ) ) {
+			const position = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
+			const newRange = schema.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
+
+			if ( newRange ) {
+				model.change( writer => {
+					writer.setSelection( newRange );
+				} );
+
+				domEventData.preventDefault();
+				eventInfo.stop();
+			}
+
+			return;
+		}
+
+		// If selection is next to object element.
+		// Return if not collapsed.
+		if ( !modelSelection.isCollapsed ) {
+			return;
+		}
+
+		const objectElementNextToSelection = this._getObjectElementNextToSelection( isForward );
+
+		if ( objectElementNextToSelection && schema.isObject( objectElementNextToSelection ) ) {
+			this._setSelectionOverElement( objectElementNextToSelection );
+
+			domEventData.preventDefault();
+			eventInfo.stop();
+		}
+	}
+
+	/**
+	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events and prevents
+	 * the default browser behavior to make sure the fake selection is not being moved from a fake selection
+	 * container.
+	 *
+	 * See {@link #_handleSelectionChangeOnArrowKeyPress}.
+	 *
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
+	 */
+	_preventDefaultOnArrowKeyPress( eventInfo, domEventData ) {
+		const keyCode = domEventData.keyCode;
+
+		// Checks if the keys were handled and then prevents the default event behaviour and stops
+		// the propagation.
+		if ( !isArrowKeyCode( keyCode ) ) {
+			return;
+		}
+
+		const model = this.editor.model;
+		const schema = model.schema;
+		const objectElement = model.document.selection.getSelectedElement();
+
+		// If object element is selected.
+		if ( objectElement && schema.isObject( objectElement ) ) {
 			domEventData.preventDefault();
 			eventInfo.stop();
 		}
@@ -231,89 +316,9 @@ export default class Widget extends Plugin {
 	}
 
 	/**
-	 * Handles arrow keys.
-	 *
-	 * @private
-	 * @param {Boolean} isForward Set to true if arrow key should be handled in forward direction.
-	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
-	 */
-	_handleArrowKeys( isForward ) {
-		const model = this.editor.model;
-		const schema = model.schema;
-		const modelDocument = model.document;
-		const modelSelection = modelDocument.selection;
-		const objectElement = modelSelection.getSelectedElement();
-
-		// If object element is selected.
-		if ( objectElement && schema.isObject( objectElement ) ) {
-			const position = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
-			const newRange = schema.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
-
-			if ( newRange ) {
-				model.change( writer => {
-					writer.setSelection( newRange );
-				} );
-			}
-
-			return true;
-		}
-
-		// If selection is next to object element.
-		// Return if not collapsed.
-		if ( !modelSelection.isCollapsed ) {
-			return;
-		}
-
-		const objectElement2 = this._getObjectElementNextToSelection( isForward );
-
-		if ( !!objectElement2 && schema.isObject( objectElement2 ) ) {
-			this._setSelectionOverElement( objectElement2 );
-
-			return true;
-		}
-	}
-
-	/**
-	 * Handles the enter key, giving users and access to positions in the editable directly before
-	 * (<kbd>Shift</kbd>+<kbd>Enter</kbd>) or after (<kbd>Enter</kbd>) the selected widget.
-	 * It improves the UX, mainly when the widget is the first or last child of the root editable
-	 * and there's no other way to type after or before it.
-	 *
-	 * @private
-	 * @param {Boolean} isBackwards Set to true if the new paragraph is to be inserted before
-	 * the selected widget (<kbd>Shift</kbd>+<kbd>Enter</kbd>).
-	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
-	 */
-	_handleEnterKey( isBackwards ) {
-		const model = this.editor.model;
-		const modelSelection = model.document.selection;
-		const selectedElement = modelSelection.getSelectedElement();
-
-		if ( shouldInsertParagraph( selectedElement, model.schema ) ) {
-			model.change( writer => {
-				let position = writer.createPositionAt( selectedElement, isBackwards ? 'before' : 'after' );
-				const paragraph = writer.createElement( 'paragraph' );
-
-				// Split the parent when inside a block element.
-				// https://github.com/ckeditor/ckeditor5/issues/1529
-				if ( model.schema.isBlock( selectedElement.parent ) ) {
-					const paragraphLimit = model.schema.findAllowedParent( position, paragraph );
-
-					position = writer.split( position, paragraphLimit ).position;
-				}
-
-				writer.insert( paragraph, position );
-				writer.setSelection( paragraph, 'in' );
-			} );
-
-			return true;
-		}
-	}
-
-	/**
 	 * Sets {@link module:engine/model/selection~Selection document's selection} over given element.
 	 *
-	 * @private
+	 * @protected
 	 * @param {module:engine/model/element~Element} element
 	 */
 	_setSelectionOverElement( element ) {
@@ -327,7 +332,7 @@ export default class Widget extends Plugin {
 	 * {@link module:engine/model/selection~Selection model selection} exists and is marked in
 	 * {@link module:engine/model/schema~Schema schema} as `object`.
 	 *
-	 * @private
+	 * @protected
 	 * @param {Boolean} forward Direction of checking.
 	 * @returns {module:engine/model/element~Element|null}
 	 */
@@ -364,17 +369,6 @@ export default class Widget extends Plugin {
 	}
 }
 
-// Returns 'true' if provided key code represents one of the arrow keys.
-//
-// @param {Number} keyCode
-// @returns {Boolean}
-function isArrowKeyCode( keyCode ) {
-	return keyCode == keyCodes.arrowright ||
-		keyCode == keyCodes.arrowleft ||
-		keyCode == keyCodes.arrowup ||
-		keyCode == keyCodes.arrowdown;
-}
-
 // Returns `true` when element is a nested editable or is placed inside one.
 //
 // @param {module:engine/view/element~Element}
@@ -407,12 +401,4 @@ function isChild( element, parent ) {
 	}
 
 	return Array.from( element.getAncestors() ).includes( parent );
-}
-
-// Checks if enter key should insert paragraph. This should be done only on elements of type object (excluding inline objects).
-//
-// @param {module:engine/model/element~Element} element And element to check.
-// @param {module:engine/model/schema~Schema} schema
-function shouldInsertParagraph( element, schema ) {
-	return element && schema.isObject( element ) && !schema.isInline( element );
 }

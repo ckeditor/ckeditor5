@@ -4,7 +4,15 @@
  */
 
 import env from '../src/env';
-import { keyCodes, getCode, parseKeystroke, getEnvKeystrokeText } from '../src/keyboard';
+import {
+	keyCodes,
+	getCode,
+	parseKeystroke,
+	getEnvKeystrokeText,
+	isArrowKeyCode,
+	isForwardArrowKeyCode,
+	getLocalizedArrowKeyCodeDirection
+} from '../src/keyboard';
 import { expectToThrowCKEditorError } from './_utils/utils';
 
 describe( 'Keyboard', () => {
@@ -157,6 +165,105 @@ describe( 'Keyboard', () => {
 				expect( getEnvKeystrokeText( 'alt+A' ) ).to.equal( 'alt+A' );
 				expect( getEnvKeystrokeText( 'CTRL+SHIFT+A' ) ).to.equal( 'CTRL+SHIFT+A' );
 				expect( getEnvKeystrokeText( 'A' ) ).to.equal( 'A' );
+			} );
+		} );
+	} );
+
+	describe( 'isArrowKeyCode()', () => {
+		it( 'should return "true" for right arrow', () => {
+			expect( isArrowKeyCode( keyCodes.arrowright ) ).to.be.true;
+		} );
+
+		it( 'should return "true" for left arrow', () => {
+			expect( isArrowKeyCode( keyCodes.arrowleft ) ).to.be.true;
+		} );
+
+		it( 'should return "true" for up arrow', () => {
+			expect( isArrowKeyCode( keyCodes.arrowup ) ).to.be.true;
+		} );
+
+		it( 'should return "true" for down arrow', () => {
+			expect( isArrowKeyCode( keyCodes.arrowdown ) ).to.be.true;
+		} );
+
+		it( 'should return "false" for non-arrow keystrokes', () => {
+			expect( isArrowKeyCode( keyCodes.a ) ).to.be.false;
+			expect( isArrowKeyCode( keyCodes.ctrl ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'getLocalizedArrowKeyCodeDirection()', () => {
+		describe( 'for a left–to–right content language direction', () => {
+			it( 'should return "left" for left arrow', () => {
+				expect( getLocalizedArrowKeyCodeDirection( keyCodes.arrowleft, 'ltr' ) ).to.equal( 'left' );
+			} );
+
+			it( 'should return "right" for right arrow', () => {
+				expect( getLocalizedArrowKeyCodeDirection( keyCodes.arrowright, 'ltr' ) ).to.equal( 'right' );
+			} );
+
+			it( 'should return "up" for up arrow', () => {
+				expect( getLocalizedArrowKeyCodeDirection( keyCodes.arrowup, 'ltr' ) ).to.equal( 'up' );
+			} );
+
+			it( 'should return "down" for down arrow', () => {
+				expect( getLocalizedArrowKeyCodeDirection( keyCodes.arrowdown, 'ltr' ) ).to.equal( 'down' );
+			} );
+		} );
+
+		describe( 'for a right-to-left content language direction', () => {
+			it( 'should return "right" for left arrow', () => {
+				expect( getLocalizedArrowKeyCodeDirection( keyCodes.arrowleft, 'rtl' ) ).to.equal( 'right' );
+			} );
+
+			it( 'should return "left" for right arrow', () => {
+				expect( getLocalizedArrowKeyCodeDirection( keyCodes.arrowright, 'rtl' ) ).to.equal( 'left' );
+			} );
+
+			it( 'should return "up" for up arrow', () => {
+				expect( getLocalizedArrowKeyCodeDirection( keyCodes.arrowup, 'rtl' ) ).to.equal( 'up' );
+			} );
+
+			it( 'should return "down" for down arrow', () => {
+				expect( getLocalizedArrowKeyCodeDirection( keyCodes.arrowdown, 'rtl' ) ).to.equal( 'down' );
+			} );
+		} );
+	} );
+
+	describe( 'isForwardArrowKeyCode()', () => {
+		describe( 'for a left–to–right content language direction', () => {
+			it( 'should return "true" for down arrow', () => {
+				expect( isForwardArrowKeyCode( keyCodes.arrowdown, 'ltr' ) ).to.be.true;
+			} );
+
+			it( 'should return "true" for right arrow', () => {
+				expect( isForwardArrowKeyCode( keyCodes.arrowright, 'ltr' ) ).to.be.true;
+			} );
+
+			it( 'should return "false" for up arrow', () => {
+				expect( isForwardArrowKeyCode( keyCodes.arrowup, 'ltr' ) ).to.be.false;
+			} );
+
+			it( 'should return "false" for left arrow', () => {
+				expect( isForwardArrowKeyCode( keyCodes.arrowleft, 'ltr' ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'for a right-to-left content language direction', () => {
+			it( 'should return "true" for down arrow', () => {
+				expect( isForwardArrowKeyCode( keyCodes.arrowdown, 'rtl' ) ).to.be.true;
+			} );
+
+			it( 'should return "true" for left arrow', () => {
+				expect( isForwardArrowKeyCode( keyCodes.arrowleft, 'rtl' ) ).to.be.true;
+			} );
+
+			it( 'should return "false" for up arrow', () => {
+				expect( isForwardArrowKeyCode( keyCodes.arrowup, 'rtl' ) ).to.be.false;
+			} );
+
+			it( 'should return "false" for right arrow', () => {
+				expect( isForwardArrowKeyCode( keyCodes.arrowright, 'rtl' ) ).to.be.false;
 			} );
 		} );
 	} );

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, console */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
@@ -125,6 +125,20 @@ describe( 'WidgetToolbarRepository', () => {
 			expect( toolbarView.element.getAttribute( 'aria-label' ) ).to.equal( 'Custom label' );
 
 			toolbarView.destroy();
+		} );
+
+		it( 'should not register a toolbar when passed an empty collection of the items', () => {
+			const consoleWarnStub = sinon.stub( console, 'warn' );
+
+			widgetToolbarRepository.register( 'fake', {
+				items: [],
+				getRelatedElement: () => null
+			} );
+
+			expect( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ) ).to.be.undefined;
+
+			expect( consoleWarnStub.calledOnce ).to.equal( true );
+			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^widget-toolbar-no-items:/ );
 		} );
 	} );
 

@@ -5,13 +5,15 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+
+import TableSelection from '../../src/tableselection';
+import TableEditing from '../../src/tableediting';
+import { assertSelectedCells, modelTable } from '../_utils/utils';
 
 import InsertColumnCommand from '../../src/commands/insertcolumncommand';
-import TableSelection from '../../src/tableselection';
-import { assertSelectedCells, defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
-import TableUtils from '../../src/tableutils';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'InsertColumnCommand', () => {
 	let editor, model, command;
@@ -19,14 +21,11 @@ describe( 'InsertColumnCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ TableUtils, TableSelection, HorizontalLineEditing ]
+				plugins: [ Paragraph, TableEditing, TableSelection, HorizontalLineEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-
-				defaultSchema( model.schema );
-				defaultConversion( editor.conversion );
 			} );
 	} );
 
@@ -168,18 +167,34 @@ describe( 'InsertColumnCommand', () => {
 			} );
 
 			it( 'should skip wide spanned columns', () => {
+				// +----+----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 | 05 |
+				// +----+----+----+----+----+----+
+				// | 10 | 11 | 12      | 14 | 15 |
+				// +----+----+----+----+----+----+
+				// | 20                | 24      |
+				// +----+----+----+----+----+----+
+				//                     ^-- heading columns
 				setData( model, modelTable( [
-					[ '11', '12[]', '13', '14', '15' ],
-					[ '21', '22', { colspan: 2, contents: '23' }, '25' ],
-					[ { colspan: 4, contents: '31' }, { colspan: 2, contents: '34' } ]
+					[ '00', '01[]', '02', '03', '04', '05' ],
+					[ '10', '11', { contents: '12', colspan: 2 }, '14', '15' ],
+					[ { contents: '20', colspan: 4 }, { contents: '24', colspan: 2 } ]
 				], { headingColumns: 4 } ) );
 
 				command.execute();
 
+				// +----+----+----+----+----+----+----+
+				// | 00 | 01 |    | 02 | 03 | 04 | 05 |
+				// +----+----+----+----+----+----+----+
+				// | 10 | 11 |    | 12      | 14 | 15 |
+				// +----+----+----+----+----+----+----+
+				// | 20                     | 24      |
+				// +----+----+----+----+----+----+----+
+				//                          ^-- heading columns
 				assertEqualMarkup( getData( model ), modelTable( [
-					[ '11', '12[]', '', '13', '14', '15' ],
-					[ '21', '22', '', { colspan: 2, contents: '23' }, '25' ],
-					[ { colspan: 5, contents: '31' }, { colspan: 2, contents: '34' } ]
+					[ '00', '01[]', '', '02', '03', '04', '05' ],
+					[ '10', '11', '', { contents: '12', colspan: 2 }, '14', '15' ],
+					[ { contents: '20', colspan: 5 }, { contents: '24', colspan: 2 } ]
 				], { headingColumns: 5 } ) );
 			} );
 
@@ -335,18 +350,34 @@ describe( 'InsertColumnCommand', () => {
 			} );
 
 			it( 'should skip wide spanned columns', () => {
+				// +----+----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 | 05 |
+				// +----+----+----+----+----+----+
+				// | 10 | 11 | 12      | 14 | 15 |
+				// +----+----+----+----+----+----+
+				// | 20                | 24      |
+				// +----+----+----+----+----+----+
+				//                     ^-- heading columns
 				setData( model, modelTable( [
-					[ '11', '12', '13[]', '14', '15' ],
-					[ '21', '22', { colspan: 2, contents: '23' }, '25' ],
-					[ { colspan: 4, contents: '31' }, { colspan: 2, contents: '34' } ]
+					[ '00', '01', '[]02', '03', '04', '05' ],
+					[ '10', '11', { contents: '12', colspan: 2 }, '14', '15' ],
+					[ { contents: '20', colspan: 4 }, { contents: '24', colspan: 2 } ]
 				], { headingColumns: 4 } ) );
 
 				command.execute();
 
+				// +----+----+----+----+----+----+----+
+				// | 00 | 01 |    | 02 | 03 | 04 | 05 |
+				// +----+----+----+----+----+----+----+
+				// | 10 | 11 |    | 12      | 14 | 15 |
+				// +----+----+----+----+----+----+----+
+				// | 20                     | 24      |
+				// +----+----+----+----+----+----+----+
+				//                          ^-- heading columns
 				assertEqualMarkup( getData( model ), modelTable( [
-					[ '11', '12', '', '13[]', '14', '15' ],
-					[ '21', '22', '', { colspan: 2, contents: '23' }, '25' ],
-					[ { colspan: 5, contents: '31' }, { colspan: 2, contents: '34' } ]
+					[ '00', '01', '', '[]02', '03', '04', '05' ],
+					[ '10', '11', '', { contents: '12', colspan: 2 }, '14', '15' ],
+					[ { contents: '20', colspan: 5 }, { contents: '24', colspan: 2 } ]
 				], { headingColumns: 5 } ) );
 			} );
 		} );
