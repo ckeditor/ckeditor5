@@ -160,7 +160,7 @@ export default class LinkUI extends Plugin {
 			const { value } = formView.urlInputView.fieldView.element;
 
 			// The regex checks for the protocol syntax ('xxxx://' or 'xxxx:')
-			// or non-word charecters at the begining of the link ('/', '#' etc.).
+			// or non-word characters at the beginning of the link ('/', '#' etc.).
 			const isProtocolNeeded = !!defaultProtocol && !protocolRegExp.test( value );
 			const isEmail = emailRegExp.test( value );
 
