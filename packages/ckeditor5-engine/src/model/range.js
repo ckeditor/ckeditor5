@@ -807,7 +807,12 @@ export default class Range {
 			result = [];
 		}
 
-		if ( common ) {
+		const containsMoveRange = this.containsRange( moveRange );
+		const startNotAffected = containsMoveRange && this.start._getTransformedByDeletion( sourcePosition, howMany ).isEqual( this.start );
+		const endNotAffected = containsMoveRange && this.end._getTransformedByDeletion( sourcePosition, howMany ).isEqual( this.end );
+		const moveFromInternals = startNotAffected && endNotAffected;
+
+		if ( common && !moveFromInternals ) {
 			const transformedCommon = new Range(
 				common.start._getCombined( moveRange.start, insertPosition ),
 				common.end._getCombined( moveRange.start, insertPosition )

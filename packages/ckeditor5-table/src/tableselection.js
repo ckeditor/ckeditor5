@@ -47,7 +47,7 @@ export default class TableSelection extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		this.listenTo( model, 'deleteContent', ( evt, args ) => this._handleDeleteContent( evt, args ), { priority: 'high' } );
+		this.listenTo( model, 'deleteContent', ( evt, args ) => this._handleDeleteContent( evt, args ), { priority: 'highest' } );
 
 		this._defineSelectionConverter();
 		this._enablePluginDisabling(); // sic!
@@ -266,16 +266,18 @@ export default class TableSelection extends Plugin {
 		model.change( writer => {
 			const tableCellToSelect = selectedTableCells[ isBackward ? selectedTableCells.length - 1 : 0 ];
 
-			model.change( writer => {
-				for ( const tableCell of selectedTableCells ) {
-					model.deleteContent( writer.createSelection( tableCell, 'in' ) );
-				}
-			} );
+			for ( const tableCell of selectedTableCells ) {
+				model.deleteContent( writer.createSelection( tableCell, 'in' ) );
+			}
 
 			const rangeToSelect = model.schema.getNearestSelectionRange( writer.createPositionAt( tableCellToSelect, 0 ) );
 
 			// Note: we ignore the case where rangeToSelect may be null because deleteContent() will always (unless someone broke it)
 			// create an empty paragraph to accommodate the selection.
+
+			// if ( !rangeToSelect ) {
+			// 	return;
+			// }
 
 			if ( selection.is( 'documentSelection' ) ) {
 				writer.setSelection( rangeToSelect );
