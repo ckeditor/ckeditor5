@@ -137,7 +137,7 @@ function getLivePositionsForSelectedBlocks( range ) {
 
 	// If the end of selection is at the start position of last block in the selection, then
 	// shrink it to not include that trailing block. Note that this should happen only for not empty selection.
-	if ( model.hasContent( range ) ) {
+	if ( model.hasContent( range, { ignoreMarkers: true } ) ) {
 		const endBlock = getParentBlock( endPosition );
 
 		if ( endBlock && endPosition.isTouching( model.createPositionAt( endBlock, 0 ) ) ) {
@@ -213,7 +213,7 @@ function mergeBranches( writer, startPosition, endPosition ) {
 	// Merging should not go deeper than common ancestor.
 	const [ startAncestor, endAncestor ] = getAncestorsJustBelowCommonAncestor( startPosition, endPosition );
 
-	if ( !model.hasContent( startAncestor ) && model.hasContent( endAncestor ) ) {
+	if ( !model.hasContent( startAncestor, { ignoreMarkers: true } ) && model.hasContent( endAncestor, { ignoreMarkers: true } ) ) {
 		mergeBranchesRight( writer, startPosition, endPosition, startAncestor.parent );
 	} else {
 		mergeBranchesLeft( writer, startPosition, endPosition, startAncestor.parent );

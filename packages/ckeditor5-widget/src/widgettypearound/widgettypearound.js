@@ -87,6 +87,7 @@ export default class WidgetTypeAround extends Plugin {
 		this._enableInsertingParagraphsOnTypingKeystroke();
 		this._enableTypeAroundFakeCaretActivationUsingKeyboardArrows();
 		this._enableDeleteIntegration();
+		this._enableInsertContentIntegration();
 	}
 
 	/**
@@ -109,16 +110,9 @@ export default class WidgetTypeAround extends Plugin {
 	_insertParagraph( widgetModelElement, position ) {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
-		let modelPosition;
-
-		if ( position === 'before' ) {
-			modelPosition = editor.model.createPositionBefore( widgetModelElement );
-		} else {
-			modelPosition = editor.model.createPositionAfter( widgetModelElement );
-		}
 
 		editor.execute( 'insertParagraph', {
-			position: modelPosition
+			position: editor.model.createPositionAt( widgetModelElement, position )
 		} );
 
 		editingView.focus();
@@ -235,14 +229,26 @@ export default class WidgetTypeAround extends Plugin {
 				return;
 			}
 
-			const typeAroundSelectionAttribute = modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
-
-			if ( !typeAroundSelectionAttribute ) {
-				return;
-			}
-
 			// Get rid of the widget type around attribute of the selection on every change:range.
 			// If the range changes, it means for sure, the user is no longer in the active ("fake horizontal caret") mode.
+			editor.model.change( writer => {
+				writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+			} );
+		} );
+
+		// Get rid of the widget type around attribute of the selection on every document change
+		// that makes widget not selected any more (i.e. widget was removed).
+		model.document.on( 'change:data', () => {
+			const selectedModelElement = modelSelection.getSelectedElement();
+
+			if ( selectedModelElement ) {
+				const selectedViewElement = editor.editing.mapper.toViewElement( selectedModelElement );
+
+				if ( isTypeAroundWidget( selectedViewElement, selectedModelElement, schema ) ) {
+					return;
+				}
+			}
+
 			editor.model.change( writer => {
 				writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 			} );
@@ -362,9 +368,8 @@ export default class WidgetTypeAround extends Plugin {
 		const model = editor.model;
 		const modelSelection = model.document.selection;
 		const typeAroundSelectionAttribute = modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
-		let shouldStopAndPreventDefault = false;
 
-		model.change( writer => {
+		return model.change( writer => {
 			// If the selection already has the attribute...
 			if ( typeAroundSelectionAttribute ) {
 				const isLeavingWidget = typeAroundSelectionAttribute === ( isForward ? 'after' : 'before' );
@@ -380,7 +385,7 @@ export default class WidgetTypeAround extends Plugin {
 				if ( !isLeavingWidget ) {
 					writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 
-					shouldStopAndPreventDefault = true;
+					return true;
 				}
 			}
 			// If the selection didn't have the attribute, let's set it now according to the direction of the arrow
@@ -388,11 +393,11 @@ export default class WidgetTypeAround extends Plugin {
 			else {
 				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, isForward ? 'after' : 'before' );
 
-				shouldStopAndPreventDefault = true;
+				return true;
 			}
-		} );
 
-		return shouldStopAndPreventDefault;
+			return false;
+		} );
 	}
 
 	/**
@@ -627,6 +632,46 @@ export default class WidgetTypeAround extends Plugin {
 			domEventData.preventDefault();
 			evt.stop();
 		}, { priority: priorities.get( 'high' ) + 1 } );
+	}
+
+	/**
+	 * Attaches the {@link module:engine/model/model~Model#event:insertContent} event listener that, for instance, allows the user to paste
+	 * content near a widget when the "fake caret" was first activated using the arrow keys.
+	 *
+	 * The content is inserted according to the "widget-type-around" selection attribute (see {@link #_handleArrowKeyPress}).
+	 *
+	 * @private
+	 */
+	_enableInsertContentIntegration() {
+		const editor = this.editor;
+		const model = this.editor.model;
+		const documentSelection = model.document.selection;
+
+		this.listenTo( editor.model, 'insertContent', ( evt, [ content, selectable ] ) => {
+			if ( selectable && !selectable.is( 'documentSelection' ) ) {
+				return;
+			}
+
+			const typeAroundSelectionAttributeValue = documentSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+
+			if ( !typeAroundSelectionAttributeValue ) {
+				return;
+			}
+
+			evt.stop();
+
+			return model.change( writer => {
+				const selectedElement = documentSelection.getSelectedElement();
+				const position = model.createPositionAt( selectedElement, typeAroundSelectionAttributeValue );
+				const selection = writer.createSelection( position );
+
+				const result = model.insertContent( content, selection );
+
+				writer.setSelection( selection );
+
+				return result;
+			} );
+		}, { priority: 'high' } );
 	}
 }
 

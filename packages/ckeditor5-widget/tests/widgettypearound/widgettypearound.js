@@ -734,6 +734,36 @@ describe( 'WidgetTypeAround', () => {
 			expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 		} );
 
+		it( 'should quit the "fake caret" mode when model was changed (model.deleteContent())', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+
+			const selection = model.createSelection( modelSelection );
+
+			model.change( writer => {
+				writer.setSelectionAttribute( 'widget-type-around', 'before' );
+				model.deleteContent( selection );
+			} );
+
+			const viewWidget = viewRoot.getChild( 1 );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph></paragraph><paragraph>baz</paragraph>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
+			expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
+		} );
+
+		it( 'should quit the "fake caret" mode when model was changed (writer.remove())', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+
+			model.change( writer => {
+				writer.setSelectionAttribute( 'widget-type-around', 'before' );
+				writer.remove( editor.model.document.getRoot().getChild( 1 ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>baz</paragraph>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+		} );
+
 		describe( 'inserting a new paragraph', () => {
 			describe( 'on Enter key press when the "fake caret" is activated', () => {
 				it( 'should insert a paragraph before a widget if the caret was "before" it', () => {
@@ -1314,6 +1344,130 @@ describe( 'WidgetTypeAround', () => {
 					node: placeOfMutation
 				}
 			] );
+		}
+	} );
+
+	describe( 'Model#insertContent() integration', () => {
+		let model, modelSelection;
+
+		beforeEach( () => {
+			model = editor.model;
+			modelSelection = model.document.selection;
+		} );
+
+		it( 'should not alter insertContent for the selection other than the document selection', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+
+			const batchSet = setupBatchWatch();
+			const selection = model.createSelection( modelSelection );
+
+			model.change( writer => {
+				writer.setSelectionAttribute( 'widget-type-around', 'before' );
+				model.insertContent( createParagraph( 'bar' ), selection );
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>bar</paragraph><paragraph>baz</paragraph>' );
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should not alter insertContent when the "fake caret" is not active', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+
+			const batchSet = setupBatchWatch();
+
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+
+			model.insertContent( createParagraph( 'bar' ) );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar[]</paragraph><paragraph>baz</paragraph>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should handle insertContent before a widget when it\'s the first element of the root', () => {
+			setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+			const batchSet = setupBatchWatch();
+
+			model.change( writer => {
+				writer.setSelectionAttribute( 'widget-type-around', 'before' );
+			} );
+
+			model.insertContent( createParagraph( 'bar' ) );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>bar[]</paragraph><blockWidget></blockWidget>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should handle insertContent after a widget when it\'s the last element of the root', () => {
+			setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+			const batchSet = setupBatchWatch();
+
+			model.change( writer => {
+				writer.setSelectionAttribute( 'widget-type-around', 'after' );
+			} );
+
+			model.insertContent( createParagraph( 'bar' ) );
+
+			expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>bar[]</paragraph>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should handle insertContent before a widget when it\'s not the first element of the root', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
+
+			const batchSet = setupBatchWatch();
+
+			model.change( writer => {
+				writer.setSelectionAttribute( 'widget-type-around', 'before' );
+			} );
+
+			model.insertContent( createParagraph( 'bar' ) );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar[]</paragraph><blockWidget></blockWidget>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should handle insertContent after a widget when it\'s not the last element of the root', () => {
+			setModelData( editor.model, '[<blockWidget></blockWidget>]<paragraph>foo</paragraph>' );
+
+			const batchSet = setupBatchWatch();
+
+			model.change( writer => {
+				writer.setSelectionAttribute( 'widget-type-around', 'after' );
+			} );
+
+			model.insertContent( createParagraph( 'bar' ) );
+
+			expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>bar[]</paragraph><paragraph>foo</paragraph>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		function createParagraph( text ) {
+			return model.change( writer => {
+				const paragraph = writer.createElement( 'paragraph' );
+
+				writer.insertText( text, paragraph );
+
+				return paragraph;
+			} );
+		}
+
+		function setupBatchWatch() {
+			const createdBatches = new Set();
+
+			model.on( 'applyOperation', ( evt, [ operation ] ) => {
+				if ( operation.isDocumentOperation ) {
+					createdBatches.add( operation.batch );
+				}
+			} );
+
+			return createdBatches;
 		}
 	} );
 

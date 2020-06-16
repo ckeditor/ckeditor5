@@ -551,23 +551,26 @@ export default class Model {
 	 * @param {module:engine/model/range~Range|module:engine/model/element~Element} rangeOrElement Range or element to check.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.ignoreWhitespaces] Whether text node with whitespaces only should be considered empty.
+	 * @param {Boolean} [options.ignoreMarkers] Whether markers should be ignored.
 	 * @returns {Boolean}
 	 */
-	hasContent( rangeOrElement, options ) {
+	hasContent( rangeOrElement, options = {} ) {
 		const range = rangeOrElement instanceof ModelElement ? ModelRange._createIn( rangeOrElement ) : rangeOrElement;
 
 		if ( range.isCollapsed ) {
 			return false;
 		}
 
+		const { ignoreWhitespaces = false, ignoreMarkers = false } = options;
+
 		// Check if there are any markers which affects data in this given range.
-		for ( const intersectingMarker of this.markers.getMarkersIntersectingRange( range ) ) {
-			if ( intersectingMarker.affectsData ) {
-				return true;
+		if ( !ignoreMarkers ) {
+			for ( const intersectingMarker of this.markers.getMarkersIntersectingRange( range ) ) {
+				if ( intersectingMarker.affectsData ) {
+					return true;
+				}
 			}
 		}
-
-		const { ignoreWhitespaces = false } = options || {};
 
 		for ( const item of range.getItems() ) {
 			if ( item.is( 'textProxy' ) ) {
