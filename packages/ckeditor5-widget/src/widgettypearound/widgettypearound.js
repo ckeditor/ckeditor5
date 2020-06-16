@@ -22,7 +22,9 @@ import {
 	isTypeAroundWidget,
 	getClosestTypeAroundDomButton,
 	getTypeAroundButtonPosition,
-	getClosestWidgetViewElement
+	getClosestWidgetViewElement,
+	getTypeAroundFakeCaretPosition,
+	TYPE_AROUND_SELECTION_ATTRIBUTE
 } from './utils';
 
 import {
@@ -36,8 +38,6 @@ const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ];
 
 // Do the SVG parsing once and then clone the result <svg> DOM element for each new button.
 const RETURN_ARROW_ICON_ELEMENT = new DOMParser().parseFromString( returnIcon, 'image/svg+xml' ).firstChild;
-
-const TYPE_AROUND_SELECTION_ATTRIBUTE = 'widget-type-around';
 
 /**
  * A plugin that allows users to type around widgets where normally it is impossible to place the caret due
@@ -122,7 +122,7 @@ export default class WidgetTypeAround extends Plugin {
 	/**
 	 * Similar to {@link #_insertParagraph}, this method inserts a paragraph except that it
 	 * does not expect a position but it performs the insertion next to a selected widget
-	 * according to the "widget-type-around" model selection attribute value.
+	 * according to the "widget-type-around" model selection attribute value ("fake caret" position).
 	 *
 	 * Because this method requires the "widget-type-around" attribute to be set,
 	 * the insertion can only happen when the widget "fake caret" is active (e.g. activated
@@ -131,19 +131,19 @@ export default class WidgetTypeAround extends Plugin {
 	 * @private
 	 * @returns {Boolean} Returns `true` when the paragraph was inserted (the attribute was present) and `false` otherwise.
 	 */
-	_insertParagraphAccordingToSelectionAttribute() {
+	_insertParagraphAccordingToFakeCaretPosition() {
 		const editor = this.editor;
 		const model = editor.model;
 		const modelSelection = model.document.selection;
-		const typeAroundSelectionAttributeValue = modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+		const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( modelSelection );
 
-		if ( !typeAroundSelectionAttributeValue ) {
+		if ( !typeAroundFakeCaretPosition ) {
 			return false;
 		}
 
 		const selectedModelElement = modelSelection.getSelectedElement();
 
-		this._insertParagraph( selectedModelElement, typeAroundSelectionAttributeValue );
+		this._insertParagraph( selectedModelElement, typeAroundFakeCaretPosition );
 
 		return true;
 	}
@@ -283,13 +283,13 @@ export default class WidgetTypeAround extends Plugin {
 				return;
 			}
 
-			const typeAroundSelectionAttribute = data.selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( data.selection );
 
-			if ( !typeAroundSelectionAttribute ) {
+			if ( !typeAroundFakeCaretPosition ) {
 				return;
 			}
 
-			writer.addClass( positionToWidgetCssClass( typeAroundSelectionAttribute ), selectedViewElement );
+			writer.addClass( positionToWidgetCssClass( typeAroundFakeCaretPosition ), selectedViewElement );
 
 			// Remember the view widget that got the "fake-caret" CSS class. This class should be removed ASAP when the
 			// selection changes
@@ -367,12 +367,12 @@ export default class WidgetTypeAround extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const modelSelection = model.document.selection;
-		const typeAroundSelectionAttribute = modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+		const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( modelSelection );
 
 		return model.change( writer => {
-			// If the selection already has the attribute...
-			if ( typeAroundSelectionAttribute ) {
-				const isLeavingWidget = typeAroundSelectionAttribute === ( isForward ? 'after' : 'before' );
+			// If the fake caret is displayed...
+			if ( typeAroundFakeCaretPosition ) {
+				const isLeavingWidget = typeAroundFakeCaretPosition === ( isForward ? 'after' : 'before' );
 
 				// If the keyboard arrow works against the value of the selection attribute...
 				// then remove the selection attribute but prevent default DOM actions
@@ -388,7 +388,7 @@ export default class WidgetTypeAround extends Plugin {
 					return true;
 				}
 			}
-			// If the selection didn't have the attribute, let's set it now according to the direction of the arrow
+			// If the fake caret wasn't displayed, let's set it now according to the direction of the arrow
 			// key press. This also means we cannot let the Widget plugin listener move the selection.
 			else {
 				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, isForward ? 'after' : 'before' );
@@ -495,7 +495,7 @@ export default class WidgetTypeAround extends Plugin {
 
 			// First check if the widget is selected and there's a type around selection attribute associated
 			// with the "fake caret" that would tell where to insert a new paragraph.
-			if ( this._insertParagraphAccordingToSelectionAttribute() ) {
+			if ( this._insertParagraphAccordingToFakeCaretPosition() ) {
 				wasHandled = true;
 			}
 			// Then, if there is no selection attribute associated with the "fake caret", check if the widget
@@ -546,7 +546,7 @@ export default class WidgetTypeAround extends Plugin {
 		editingView.document.on( 'keydown', ( evt, domEventData ) => {
 			// Don't handle enter/backspace/delete here. They are handled in dedicated listeners.
 			if ( !keyCodesHandledSomewhereElse.includes( domEventData.keyCode ) && !isNonTypingKeystroke( domEventData ) ) {
-				this._insertParagraphAccordingToSelectionAttribute();
+				this._insertParagraphAccordingToFakeCaretPosition();
 			}
 		}, { priority: priorities.get( 'high' ) + 1 } );
 	}
@@ -569,17 +569,17 @@ export default class WidgetTypeAround extends Plugin {
 
 		// Note: The priority must precede the default Widget class delete handler.
 		this.listenTo( editingView.document, 'delete', ( evt, domEventData ) => {
-			const typeAroundSelectionAttributeValue = model.document.selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( model.document.selection );
 
 			// This listener handles only these cases when the "fake caret" is active.
-			if ( !typeAroundSelectionAttributeValue ) {
+			if ( !typeAroundFakeCaretPosition ) {
 				return;
 			}
 
 			const direction = domEventData.direction;
 			const selectedModelWidget = model.document.selection.getSelectedElement();
 
-			const isFakeCaretBefore = typeAroundSelectionAttributeValue === 'before';
+			const isFakeCaretBefore = typeAroundFakeCaretPosition === 'before';
 			const isForwardDelete = direction == 'forward';
 			const shouldDeleteEntireWidget = isFakeCaretBefore === isForwardDelete;
 
@@ -589,7 +589,7 @@ export default class WidgetTypeAround extends Plugin {
 				} );
 			} else {
 				const range = schema.getNearestSelectionRange(
-					model.createPositionAt( selectedModelWidget, typeAroundSelectionAttributeValue ),
+					model.createPositionAt( selectedModelWidget, typeAroundFakeCaretPosition ),
 					direction
 				);
 
@@ -652,9 +652,9 @@ export default class WidgetTypeAround extends Plugin {
 				return;
 			}
 
-			const typeAroundSelectionAttributeValue = documentSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( documentSelection );
 
-			if ( !typeAroundSelectionAttributeValue ) {
+			if ( !typeAroundFakeCaretPosition ) {
 				return;
 			}
 
@@ -662,7 +662,7 @@ export default class WidgetTypeAround extends Plugin {
 
 			return model.change( writer => {
 				const selectedElement = documentSelection.getSelectedElement();
-				const position = model.createPositionAt( selectedElement, typeAroundSelectionAttributeValue );
+				const position = model.createPositionAt( selectedElement, typeAroundFakeCaretPosition );
 				const selection = writer.createSelection( position );
 
 				const result = model.insertContent( content, selection );
