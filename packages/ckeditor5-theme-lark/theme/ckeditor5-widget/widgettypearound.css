@@ -129,7 +129,7 @@
 	& .ck-widget__type-around__fake-caret {
 		pointer-events: none;
 		height: 1px;
-		animation: ck-widget-type-around-fake-caret-pulse linear 1s infinite normal forwards;
+		animation: ck-fake-caret-pulse linear 1s infinite normal forwards;
 
 		/*
 		 * The semi-transparent-outline+background combo improves the contrast
@@ -248,23 +248,5 @@
 	}
 	100% {
 		box-shadow: 0 0 0 5px hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-start-alpha));
-	}
-}
-
-@keyframes ck-widget-type-around-fake-caret-pulse {
-	0% {
-		opacity: 1;
-	}
-	49% {
-		opacity: 1;
-	}
-	50% {
-		opacity: 0;
-	}
-	99% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
 	}
 }

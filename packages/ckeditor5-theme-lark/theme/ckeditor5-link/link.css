@@ -20,5 +20,5 @@
 	border-left: 1px solid var(--ck-color-base-text);
 	margin-left: -1px;
 	outline: solid 1px hsla(0, 0%, 100%, .5);
-	animation: ck-widget-type-around-fake-caret-pulse linear 1s infinite normal forwards;
+	animation: ck-fake-caret-pulse linear 1s infinite normal forwards;
 }
