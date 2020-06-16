@@ -84,7 +84,7 @@ export default class LinkUI extends Plugin {
 		// Attach lifecycle actions to the the balloon.
 		this._enableUserBalloonInteractions();
 
-		// Renders a fake visual selection marker on expanded selection.
+		// Renders a fake visual selection marker on an expanded selection.
 		editor.conversion.for( 'downcast' ).markerToHighlight( {
 			model: VISUAL_SELECTION_MARKER_NAME,
 			view: {
@@ -92,7 +92,7 @@ export default class LinkUI extends Plugin {
 			}
 		} );
 
-		// Renders a fake visual selection marker on collapsed selection.
+		// Renders a fake visual selection marker on a collapsed selection.
 		editor.conversion.for( 'downcast' ).markerToElement( {
 			model: VISUAL_SELECTION_MARKER_NAME,
 			view: {
@@ -402,7 +402,7 @@ export default class LinkUI extends Plugin {
 			}
 
 			this._addFormView();
-			// Show visual selection on text without link when contextual balloon is displayed.
+			// Show visual selection on a text without a link when the contextual balloon is displayed.
 			// See https://github.com/ckeditor/ckeditor5/issues/4721.
 			this._showFakeVisualSelection();
 		}
@@ -636,7 +636,7 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Displays a fake visual selection when contextual balloon is displayed.
+	 * Displays a fake visual selection when the contextual balloon is displayed.
 	 *
 	 * This adds a 'link-ui' marker into the document that is rendered as a highlight on selected text fragment.
 	 *
@@ -661,7 +661,7 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-	 * Hides fake visual selection created with {@link #_showFakeVisualSelection}
+     * Hides the fake visual selection created in {@link #_showFakeVisualSelection}.
 	 *
 	 * @private
 	 */
