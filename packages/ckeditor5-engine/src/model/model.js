@@ -554,14 +554,14 @@ export default class Model {
 	 * @param {Boolean} [options.ignoreMarkers] Whether markers should be ignored.
 	 * @returns {Boolean}
 	 */
-	hasContent( rangeOrElement, options ) {
+	hasContent( rangeOrElement, options = {} ) {
 		const range = rangeOrElement instanceof ModelElement ? ModelRange._createIn( rangeOrElement ) : rangeOrElement;
 
 		if ( range.isCollapsed ) {
 			return false;
 		}
 
-		const { ignoreWhitespaces = false, ignoreMarkers = false } = options || {};
+		const { ignoreWhitespaces = false, ignoreMarkers = false } = options;
 
 		// Check if there are any markers which affects data in this given range.
 		if ( !ignoreMarkers ) {

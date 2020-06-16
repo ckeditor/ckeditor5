@@ -662,7 +662,7 @@ describe( 'DataController utils', () => {
 			} );
 
 			describe( 'with markers', () => {
-				it( 'should merge left if first element is not empty', () => {
+				it( 'should merge left if the first element is not empty', () => {
 					setData( model, '<heading1>foo[</heading1><paragraph>]bar</paragraph>' );
 
 					model.enqueueChange( 'transparent', writer => {
@@ -679,7 +679,7 @@ describe( 'DataController utils', () => {
 					expect( getData( model ) ).to.equal( '<heading1>foo[]bar</heading1>' );
 				} );
 
-				it( 'should merge right if first element is empty', () => {
+				it( 'should merge right if the first element is empty', () => {
 					setData( model, '<heading1>[</heading1><paragraph>]bar</paragraph>' );
 
 					model.enqueueChange( 'transparent', writer => {
@@ -696,7 +696,7 @@ describe( 'DataController utils', () => {
 					expect( getData( model ) ).to.equal( '<paragraph>[]bar</paragraph>' );
 				} );
 
-				it( 'should merge left if last element is empty', () => {
+				it( 'should merge left if the last element is empty', () => {
 					setData( model, '<heading1>foo[</heading1><paragraph>]</paragraph>' );
 
 					model.enqueueChange( 'transparent', writer => {
