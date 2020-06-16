@@ -734,7 +734,7 @@ describe( 'WidgetTypeAround', () => {
 			expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 		} );
 
-		it( 'should quit the "fake caret" mode when model was changed (model.deleteContent)', () => {
+		it( 'should quit the "fake caret" mode when model was changed (model.deleteContent())', () => {
 			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
 
 			const selection = model.createSelection( modelSelection );
@@ -752,7 +752,7 @@ describe( 'WidgetTypeAround', () => {
 			expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 		} );
 
-		it( 'should quit the "fake caret" mode when model was changed (writer.remove)', () => {
+		it( 'should quit the "fake caret" mode when model was changed (writer.remove())', () => {
 			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
 
 			model.change( writer => {
@@ -1347,7 +1347,7 @@ describe( 'WidgetTypeAround', () => {
 		}
 	} );
 
-	describe( 'insertContent integration', () => {
+	describe( 'Model#insertContent() integration', () => {
 		let model, modelSelection;
 
 		beforeEach( () => {
@@ -1370,7 +1370,7 @@ describe( 'WidgetTypeAround', () => {
 			expect( batchSet.size ).to.be.equal( 1 );
 		} );
 
-		it( 'should not alter insertContent when "fake caret" is not active', () => {
+		it( 'should not alter insertContent when the "fake caret" is not active', () => {
 			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
 
 			const batchSet = setupBatchWatch();
@@ -1384,7 +1384,7 @@ describe( 'WidgetTypeAround', () => {
 			expect( batchSet.size ).to.be.equal( 1 );
 		} );
 
-		it( 'should handle insertContent before widget when it\'s the first element', () => {
+		it( 'should handle insertContent before a widget when it\'s the first element of the root', () => {
 			setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
 			const batchSet = setupBatchWatch();
@@ -1400,7 +1400,7 @@ describe( 'WidgetTypeAround', () => {
 			expect( batchSet.size ).to.be.equal( 1 );
 		} );
 
-		it( 'should handle insertContent after widget when it\'s the last element', () => {
+		it( 'should handle insertContent after a widget when it\'s the last element of the root', () => {
 			setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
 			const batchSet = setupBatchWatch();
@@ -1416,7 +1416,7 @@ describe( 'WidgetTypeAround', () => {
 			expect( batchSet.size ).to.be.equal( 1 );
 		} );
 
-		it( 'should handle insertContent before widget when it\'s not the first element', () => {
+		it( 'should handle insertContent before a widget when it\'s not the first element of the root', () => {
 			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
 
 			const batchSet = setupBatchWatch();
@@ -1432,7 +1432,7 @@ describe( 'WidgetTypeAround', () => {
 			expect( batchSet.size ).to.be.equal( 1 );
 		} );
 
-		it( 'should handle insertContent after widget when it\'s not the last element', () => {
+		it( 'should handle insertContent after a widget when it\'s not the last element of the root', () => {
 			setModelData( editor.model, '[<blockWidget></blockWidget>]<paragraph>foo</paragraph>' );
 
 			const batchSet = setupBatchWatch();

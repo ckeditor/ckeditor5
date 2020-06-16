@@ -635,8 +635,8 @@ export default class WidgetTypeAround extends Plugin {
 	}
 
 	/**
-	 * Attaches the "insertContent" model event listener that allows the user to paste a content near the widget
-	 * when the "fake caret" was first activated using the arrow keys.
+	 * Attaches the {@link module:engine/model/model~Model#event:insertContent} event listener that, for instance, allows the user to paste
+	 * content near a widget when the "fake caret" was first activated using the arrow keys.
 	 *
 	 * The content is inserted according to the "widget-type-around" selection attribute (see {@link #_handleArrowKeyPress}).
 	 *
