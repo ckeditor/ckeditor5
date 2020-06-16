@@ -16,8 +16,8 @@
 /* Collapsed fake visual selection. */
 .ck .ck-fake-link-selection_collapsed {
 	height: 100%;
-	border-left: 1px solid var(--ck-color-base-text);
-	margin-left: -1px;
+	border-right: 1px solid var(--ck-color-base-text);
+	margin-right: -1px;
 	outline: solid 1px hsla(0, 0%, 100%, .5);
 	animation: ck-fake-caret-pulse linear 1s infinite normal forwards;
 }
