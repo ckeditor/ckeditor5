@@ -146,7 +146,6 @@
     "postchangelog": "node ./scripts/release/update-utils-version.js",
     "release:bump-version": "node ./scripts/release/bump-versions.js",
     "release:publish": "node ./scripts/release/publish.js",
-    "release:stable-branches": "bash ./scripts/update-stable-branches.sh",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
     "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh"
   },
