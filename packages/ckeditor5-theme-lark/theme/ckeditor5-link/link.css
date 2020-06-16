@@ -15,8 +15,7 @@
 
 /* Collapsed fake visual selection. */
 .ck .ck-fake-link-selection_collapsed {
-	display: inline-block;
-	height: .8em;
+	height: 100%;
 	border-left: 1px solid var(--ck-color-base-text);
 	margin-left: -1px;
 	outline: solid 1px hsla(0, 0%, 100%, .5);
