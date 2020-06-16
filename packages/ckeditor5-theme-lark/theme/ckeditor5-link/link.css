@@ -7,3 +7,19 @@
 .ck .ck-link_selected {
 	background: var(--ck-color-link-selected-background);
 }
+
+/*
+ * Classes used by the "fake visual selection" displayed in the content when an input
+ * in the link UI has focus (the browser does not render the native selection in this state).
+ */
+.ck .ck-fake-link-selection {
+	background: var(--ck-color-link-fake-selection);
+}
+
+/* A collapsed fake visual selection. */
+.ck .ck-fake-link-selection_collapsed {
+	height: 100%;
+	border-right: 1px solid var(--ck-color-base-text);
+	margin-right: -1px;
+	outline: solid 1px hsla(0, 0%, 100%, .5);
+}

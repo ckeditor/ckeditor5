@@ -8,7 +8,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -351,16 +351,16 @@ describe( 'LinkUI', () => {
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'updates the position of the panel – creating a new link, then the selection moved', () => {
-				setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
+				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 				linkUIFeature._showUI();
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 
 				const root = viewDocument.getRoot();
-				const text = root.getChild( 0 ).getChild( 0 );
+				const text = root.getChild( 0 ).getChild( 2 );
 
 				view.change( writer => {
-					writer.setSelection( text, 3, true );
+					writer.setSelection( text, 1, true );
 				} );
 
 				sinon.assert.calledOnce( spy );
@@ -465,6 +465,40 @@ describe( 'LinkUI', () => {
 				sinon.assert.notCalled( spyUpdate );
 			} );
 		} );
+
+		it( 'should display a fake visual selection when a text fragment is selected', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+
+			expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+			const paragraph = editor.model.document.getRoot().getChild( 0 );
+			const expectedRange = editor.model.createRange(
+				editor.model.createPositionAt( paragraph, 1 ),
+				editor.model.createPositionAt( paragraph, 2 )
+			);
+			const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+
+		it( 'should display a fake visual selection on a collapsed selection', () => {
+			setModelData( editor.model, '<paragraph>f[]o</paragraph>' );
+
+			linkUIFeature._showUI();
+
+			expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+			const paragraph = editor.model.document.getRoot().getChild( 0 );
+			const expectedRange = editor.model.createRange(
+				editor.model.createPositionAt( paragraph, 1 ),
+				editor.model.createPositionAt( paragraph, 1 )
+			);
+			const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
 	} );
 
 	describe( '_hideUI()', () => {
@@ -517,6 +551,14 @@ describe( 'LinkUI', () => {
 			editor.ui.fire( 'update' );
 
 			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should clear the fake visual selection from a selected text fragment', () => {
+			expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+			linkUIFeature._hideUI();
+
+			expect( editor.model.markers.has( 'link-ui' ) ).to.be.false;
 		} );
 	} );
 
@@ -1074,6 +1116,16 @@ describe( 'LinkUI', () => {
 
 				expect( executeSpy.calledOnce ).to.be.true;
 				expect( executeSpy.calledWithExactly( 'link', 'http://cksource.com', {} ) ).to.be.true;
+			} );
+
+			it( 'should should clear the fake visual selection on formView#submit event', () => {
+				linkUIFeature._showUI();
+				expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+				formView.urlInputView.fieldView.value = 'http://cksource.com';
+				formView.fire( 'submit' );
+
+				expect( editor.model.markers.has( 'link-ui' ) ).to.be.false;
 			} );
 
 			it( 'should hide and reveal the #actionsView on formView#submit event', () => {
