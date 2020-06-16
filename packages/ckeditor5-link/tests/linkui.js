@@ -466,7 +466,7 @@ describe( 'LinkUI', () => {
 			} );
 		} );
 
-		it( 'should add fake visual selection when text fragment is selected', () => {
+		it( 'should display a fake visual selection when a text fragment is selected', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._showUI();
@@ -483,7 +483,7 @@ describe( 'LinkUI', () => {
 			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 		} );
 
-		it( 'should add fake visual selection on collapsed selection', () => {
+		it( 'should display a fake visual selection on a collapsed selection', () => {
 			setModelData( editor.model, '<paragraph>f[]o</paragraph>' );
 
 			linkUIFeature._showUI();
@@ -553,7 +553,7 @@ describe( 'LinkUI', () => {
 			sinon.assert.notCalled( spy );
 		} );
 
-		it( 'should clear fake visual selection from selected text fragment', () => {
+		it( 'should clear the fake visual selection from a selected text fragment', () => {
 			expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
 
 			linkUIFeature._hideUI();
@@ -1118,7 +1118,7 @@ describe( 'LinkUI', () => {
 				expect( executeSpy.calledWithExactly( 'link', 'http://cksource.com', {} ) ).to.be.true;
 			} );
 
-			it( 'should should clear fake visual selection on formView#submit event', () => {
+			it( 'should should clear the fake visual selection on formView#submit event', () => {
 				linkUIFeature._showUI();
 				expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
 
