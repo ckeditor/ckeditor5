@@ -23,7 +23,7 @@
         --disable-extensions \
         --disable-plugins \
         --incognito \
-        http://localhost:8125 
+        http://localhost:8125
     ```
 
     The above will run Chrome without extensions or plugins in incognito mode and open manual tests page.
