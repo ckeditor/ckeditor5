@@ -15,7 +15,7 @@
 
 ## Notes:
 
-* Browser extensions might attach event listeners to the DOM so the safest way to run this test is by running Chrome from command line:
+* Browser extensions might attach event listeners to the DOM, so the safest way to run this test is by running Chrome from command line:
 
     ```
     google-chrome \
@@ -23,7 +23,7 @@
         --disable-extensions \
         --disable-plugins \
         --incognito \
-        http://localhost:8125 
+        http://localhost:8125/ckeditor5/tests/manual/memory/memory.html
     ```
 
     The above will run Chrome without extensions or plugins in incognito mode and open manual tests page.
