@@ -88,7 +88,7 @@ export default class LinkUI extends Plugin {
 		editor.conversion.for( 'downcast' ).markerToHighlight( {
 			model: VISUAL_SELECTION_MARKER_NAME,
 			view: {
-				classes: [ 'ck-link_fake-selection' ]
+				classes: [ 'ck-fake-link-selection' ]
 			}
 		} );
 
@@ -97,7 +97,7 @@ export default class LinkUI extends Plugin {
 			model: VISUAL_SELECTION_MARKER_NAME,
 			view: {
 				name: 'span',
-				classes: [ 'ck-link_fake-selection', 'ck-link_fake-selection_collapsed' ]
+				classes: [ 'ck-fake-link-selection', 'ck-fake-link-selection_collapsed' ]
 			}
 		} );
 	}

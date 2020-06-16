@@ -9,12 +9,12 @@
 }
 
 /* Classes for fake visual selection displayed on text when LinkUI has focus. */
-.ck .ck-link_fake-selection {
+.ck .ck-fake-link-selection {
 	background: var(--ck-color-link-fake-selection);
 }
 
 /* Collapsed fake visual selection. */
-.ck .ck-link_fake-selection_collapsed {
+.ck .ck-fake-link-selection_collapsed {
 	display: inline-block;
 	height: .8em;
 	border-left: 1px solid var(--ck-color-base-text);
