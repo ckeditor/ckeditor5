@@ -661,7 +661,7 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
-     * Hides the fake visual selection created in {@link #_showFakeVisualSelection}.
+	 * Hides the fake visual selection created in {@link #_showFakeVisualSelection}.
 	 *
 	 * @private
 	 */
