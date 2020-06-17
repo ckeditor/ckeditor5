@@ -304,12 +304,18 @@ describe( 'Mention feature - integration', () => {
 
 			return new Promise( resolve => setTimeout( resolve, 200 ) )
 				.then( () => {
+					const model = editor.model;
+
 					// Show link UI
 					editor.execute( 'link', '@' );
+					// The link is not being selected after inserting it. We need to put the selection manually. See #1016.
+					model.change( writer => {
+						writer.setSelection( writer.createRangeOn( model.document.getRoot().getChild( 0 ).getChild( 0 ) ) );
+					} );
+
 					editor.editing.view.document.fire( 'click' );
 
-					// The selection is after the link node. See #1016.
-					expect( panelView.isVisible ).to.be.false;
+					expect( panelView.isVisible ).to.be.true;
 					expect( balloon.visibleView === mentionsView ).to.be.false; // LinkUI
 
 					model.change( writer => {
