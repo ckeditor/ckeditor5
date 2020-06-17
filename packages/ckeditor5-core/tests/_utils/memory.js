@@ -32,7 +32,7 @@ const GARBAGE_COLLECTOR_TIMEOUT = 500;
 export function describeMemoryUsage( callback ) {
 	// Skip all memory tests due to https://github.com/ckeditor/ckeditor5/issues/1731.
 	describe( 'memory usage', () => {
-		skipIfNoGarbageCollector();
+		skipIfIncompatibleEnvironment();
 
 		beforeEach( createEditorElement );
 
@@ -141,16 +141,26 @@ function collectMemoryStats() {
 	} );
 }
 
-// Will skip test suite if not in compatible browser.
+// Will skip test suite if tests are run inside incompatible environment:
+// - No window.gc (only Google Chrome).
+// - Chrome on Windows (tests heavily break).
+//
 // Currently on Google Chrome supports this method and must be run with proper flags:
 //
 // 		google-chrome -js-flags="--expose-gc"
 //
-function skipIfNoGarbageCollector() {
+function skipIfIncompatibleEnvironment() {
 	// eslint-disable-next-line mocha/no-top-level-hooks
 	before( function() {
-		if ( !window.gc ) {
+		if ( !window.gc || isWindows() ) {
 			this.skip();
 		}
 	} );
+}
+
+// The windows environment does not cooperate with this tests.
+function isWindows() {
+	const userAgent = window.navigator.userAgent.toLowerCase();
+
+	return userAgent.indexOf( 'windows' ) > -1;
 }
