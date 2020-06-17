@@ -8,7 +8,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import LinkImageUI from '../src/linkimageui';
-import View from '@ckeditor/ckeditor5-ui/src/view';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -17,7 +17,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 
 describe( 'LinkImageUI', () => {
 	let editor, viewDocument, editorElement;
-	let plugin, linkImageComponent, linkButton;
+	let plugin, linkButtonComponent, linkButton;
 
 	testUtils.createSinonSandbox();
 
@@ -32,7 +32,7 @@ describe( 'LinkImageUI', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				viewDocument = editor.editing.view.document;
-				linkImageComponent = editor.ui.componentFactory.create( 'linkImage' );
+				linkButtonComponent = editor.ui.componentFactory.create( 'linkImage' );
 
 				plugin = editor.plugins.get( 'LinkImageUI' );
 				linkButton = plugin.linkButtonView;
@@ -64,7 +64,7 @@ describe( 'LinkImageUI', () => {
 
 	describe( 'link toolbar UI component', () => {
 		it( 'should be registered', () => {
-			expect( linkImageComponent ).to.be.instanceOf( View );
+			expect( linkButtonComponent ).to.be.instanceOf( ButtonView );
 		} );
 
 		describe( 'link button', () => {
