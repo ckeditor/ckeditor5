@@ -8,20 +8,16 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import LinkImageUI from '../src/linkimageui';
-import LinkUI from '../src/linkui';
-import LinkCommand from '../src/linkcommand';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 describe( 'LinkImageUI', () => {
 	let editor, viewDocument, editorElement;
-	let linkImageComponent, linkButton, actionsView;
-	let plugin;
+	let plugin, linkImageComponent, linkButton;
 
 	testUtils.createSinonSandbox();
 
@@ -39,12 +35,7 @@ describe( 'LinkImageUI', () => {
 				linkImageComponent = editor.ui.componentFactory.create( 'linkImage' );
 
 				plugin = editor.plugins.get( 'LinkImageUI' );
-
 				linkButton = plugin.linkButtonView;
-				actionsView = plugin.actionsView;
-
-				linkButton.render();
-				actionsView.render();
 			} );
 	} );
 
@@ -59,14 +50,6 @@ describe( 'LinkImageUI', () => {
 	} );
 
 	describe( 'init()', () => {
-		it( 'should create #_linkUIPlugin instance of LinkUI', () => {
-			expect( plugin._linkUIPlugin ).to.be.instanceOf( LinkUI );
-		} );
-
-		it( 'should create #_linkCommand instance of LinkCommand', () => {
-			expect( plugin._linkCommand ).to.be.instanceOf( LinkCommand );
-		} );
-
 		it( 'should listen to the click event on the images', () => {
 			const linkPlugin = editor.plugins.get( 'LinkUI' );
 			const listenToSpy = sinon.stub( linkPlugin, 'listenTo' );
@@ -84,29 +67,13 @@ describe( 'LinkImageUI', () => {
 			expect( linkImageComponent ).to.be.instanceOf( View );
 		} );
 
-		it( 'should have "ck-link-image-options" class', () => {
-			linkImageComponent.render();
-
-			expect( linkImageComponent.element.classList.contains( 'ck-link-image-options' ) ).to.be.true;
-		} );
-
-		it( 'should contain #linkButton and #actionsView', () => {
-			expect( linkImageComponent.template.children.length ).to.equal( 2 );
-
-			expect( linkImageComponent.template.children[ 0 ] ).to.be.instanceOf( ButtonView );
-			expect( linkImageComponent.template.children[ 0 ] ).equals( linkButton );
-
-			expect( linkImageComponent.template.children[ 1 ] ).to.be.instanceOf( View );
-			expect( linkImageComponent.template.children[ 1 ] ).equals( actionsView );
-		} );
-
 		describe( 'link button', () => {
 			it( 'should have a toggleable button', () => {
 				expect( linkButton.isToggleable ).to.be.true;
 			} );
 
 			it( 'should be bound to the link command', () => {
-				const command = plugin._linkCommand;
+				const command = editor.commands.get( 'link' );
 
 				command.isEnabled = true;
 				command.value = 'http://ckeditor.com';
@@ -122,20 +89,10 @@ describe( 'LinkImageUI', () => {
 			} );
 
 			it( 'should call #_showUI upon #execute', () => {
-				const spy = testUtils.sinon.stub( plugin._linkUIPlugin, '_showUI' );
+				const spy = testUtils.sinon.stub( editor.plugins.get( 'LinkUI' ), '_showUI' );
 
 				linkButton.fire( 'execute' );
 				sinon.assert.calledWithExactly( spy, true );
-			} );
-		} );
-
-		describe( 'actions view', () => {
-			it( 'should bound "ck-hidden" class to the "isVisible" state', () => {
-				actionsView.isVisible = true;
-				expect( actionsView.element.classList.contains( 'ck-hidden' ) ).to.be.false;
-
-				actionsView.isVisible = false;
-				expect( actionsView.element.classList.contains( 'ck-hidden' ) ).to.be.true;
 			} );
 		} );
 	} );
@@ -187,29 +144,24 @@ describe( 'LinkImageUI', () => {
 	} );
 
 	describe( 'event handling', () => {
-		it( 'should show #actionsView after "submit"', () => {
+		it( 'should show plugin#actionsView after "execute" if image is already linked', () => {
 			const linkUIPlugin = editor.plugins.get( 'LinkUI' );
 
-			linkUIPlugin.formView.fire( 'submit' );
+			setModelData( editor.model, '[<image src="" linkHref="https://example.com"></image>]' );
 
-			expect( linkButton.isVisible ).to.be.false;
-			expect( actionsView.isVisible ).to.be.true;
+			linkButton.fire( 'execute' );
+
+			expect( linkUIPlugin._balloon.visibleView ).to.equals( linkUIPlugin.actionsView );
 		} );
 
-		it( 'should show #actionsView after "cancel"', () => {
+		it( 'should show plugin#formView after "execute" if image is not linked', () => {
 			const linkUIPlugin = editor.plugins.get( 'LinkUI' );
 
-			linkUIPlugin.formView.fire( 'cancel' );
+			setModelData( editor.model, '[<image src=""></image>]' );
 
-			expect( linkButton.isVisible ).to.be.false;
-			expect( actionsView.isVisible ).to.be.true;
-		} );
+			linkButton.fire( 'execute' );
 
-		it( 'should show #linkButton after "unlink"', () => {
-			actionsView.fire( 'unlink' );
-
-			expect( linkButton.isVisible ).to.be.true;
-			expect( actionsView.isVisible ).to.be.false;
+			expect( linkUIPlugin._balloon.visibleView ).to.equals( linkUIPlugin.formView );
 		} );
 	} );
 } );

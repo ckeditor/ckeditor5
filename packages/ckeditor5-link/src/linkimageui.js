@@ -12,7 +12,6 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import LinkUI from './linkui';
 import LinkEditing from './linkediting';
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 const linkKeystroke = 'Ctrl+K';
@@ -23,7 +22,7 @@ import '../theme/linkimageui.css';
 /**
  * The link image UI plugin.
  *
- * TODO: Docs.
+ * The feature simply allows to link an image.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -46,15 +45,12 @@ export default class LinkImageUI extends Plugin {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
-		// TODO
+		/**
+		 * The plugin button view.
+		 *
+		 * @member {module:ui/button/buttonview~Button}
+		 */
 		this.linkButtonView = null;
-		// TODO
-		this.actionsView = null;
-
-		// TODO
-		this._linkCommand = editor.commands.get( 'link' );
-		// TODO
-		this._linkUIPlugin = editor.plugins.get( 'LinkUI' );
 
 		this.listenTo( viewDocument, 'click', ( evt, data ) => {
 			const hasLink = this._isImageLinked( editor.model.document.selection.getSelectedElement() );
@@ -68,9 +64,10 @@ export default class LinkImageUI extends Plugin {
 	}
 
 	/**
-	 * Creates a LinkImageUI view containing {@link #linkButtonView} and {@link #actionsView}.
-	 * Clicking on {@link #linkButtonView} will show a {@link module:link/linkui~LinkUI#_balloon} attached to the selection.
-	 * When image is already linked, the view shows {@link #actionsView} instead.
+	 * Creates a LinkImageUI button view.
+	 * Clicking on the button shows a {@link module:link/linkui~LinkUI#_balloon} attached to the selection.
+	 * When image is already linked, the view shows {@link module:link/linkui~LinkUI#actionsView} or
+	 * {@link module:link/linkui~LinkUI#formView} if it's not.
 	 *
 	 * @private
 	 */
@@ -79,9 +76,9 @@ export default class LinkImageUI extends Plugin {
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( 'linkImage', locale => {
-			const view = new View( locale );
 			const button = new ButtonView( locale );
-			const actionsView = this._linkUIPlugin._createActionsView();
+			const plugin = editor.plugins.get( 'LinkUI' );
+			const linkCommand = editor.commands.get( 'link' );
 
 			button.isEnabled = true;
 			button.label = t( 'Link image' );
@@ -91,71 +88,31 @@ export default class LinkImageUI extends Plugin {
 			button.isToggleable = true;
 
 			// Bind button to the command.
-			button.bind( 'isEnabled' ).to( this._linkCommand, 'isEnabled' );
-			button.bind( 'isOn' ).to( this._linkCommand, 'value', value => !!value );
+			button.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
+			button.bind( 'isOn' ).to( linkCommand, 'value', value => !!value );
 			button.bind( 'hasLink' ).to( this, 'hasLink' );
 
-			actionsView.bind( 'isVisible' ).to( actionsView, 'href' );
-			actionsView.extendTemplate( {
-				attributes: {
-					class: [ actionsView.bindTemplate.if( 'isVisible', 'ck-hidden', value => !value ) ]
-				}
-			} );
-
-			// Show the panel on button click.
-			this.listenTo( button, 'execute', () => this._linkUIPlugin._showUI( true ) );
-
-			view.setTemplate( {
-				tag: 'div',
-				attributes: {
-					class: 'ck-link-image-options'
-				},
-				children: [
-					button,
-					actionsView
-				]
-			} );
-
-			// EVENT HIJACK ALLEY.
-			// Listen to the selection change for the proper UI state handling before toolbar is visible.
-			this.listenTo( editor.model.document.selection, 'change:range', () => {
+			// Show the actionsView or formView (both from LinkUI) on button click depending on whether the image is linked already.
+			this.listenTo( button, 'execute', () => {
 				const hasLink = this._isImageLinked( editor.model.document.selection.getSelectedElement() );
 
-				button.isVisible = !hasLink;
-				actionsView.isVisible = hasLink;
-			} );
-
-			// Toggle the proper state of the plugin UI after clicking the "Save" button.
-			this.listenTo( this._linkUIPlugin.formView, 'submit', () => {
-				this._linkUIPlugin._hideUI();
-
-				actionsView.isVisible = true;
-				button.isVisible = false;
-			} );
-
-			// Toggle the proper state of the plugin UI after clicking the "Cancel" button.
-			this.listenTo( this._linkUIPlugin.formView, 'cancel', () => {
-				this._linkUIPlugin._hideUI();
-
-				actionsView.isVisible = true;
-				button.isVisible = false;
-			} );
-
-			// Toggle the proper state of the plugin UI after clicking the "Unlink" button.
-			this.listenTo( actionsView, 'unlink', () => {
-				this._linkUIPlugin._hideUI();
-
-				actionsView.isVisible = false;
-				button.isVisible = true;
+				hasLink ? plugin._addActionsView() : plugin._showUI( true );
 			} );
 
 			this.linkButtonView = button;
-			this.actionsView = actionsView;
 
-			return view;
+			return button;
 		} );
 	}
 
+	/**
+	 * A helper function that checks whether the element is a linked image.
+	 *
+	 * @private
+	 *
+	 * @param {module:engine/model/element~Element} element
+	 * @returns {Boolean}
+	 */
 	_isImageLinked( element ) {
 		if ( !( element && element.is( 'image' ) ) ) {
 			return false;
