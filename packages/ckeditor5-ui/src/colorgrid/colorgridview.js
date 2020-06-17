@@ -184,7 +184,7 @@ export default class ColorGridView extends View {
 	 * @param {String} data.value The value of the selected color
 	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#color `color.color`}).
 	 * @param {Boolean} data.hasBorder The `hasBorder` property of the selected color
-	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#options `color.options.hasBorder`}).
+	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#options.hasBorder `color.options.hasBorder`}).
 	 * @param {String} data.Label The label of the selected color
 	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#label `color.label`})
 	 */
