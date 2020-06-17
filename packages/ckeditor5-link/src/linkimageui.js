@@ -17,8 +17,6 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 const linkKeystroke = 'Ctrl+K';
 import linkIcon from '../theme/icons/link.svg';
 
-import '../theme/linkimageui.css';
-
 /**
  * The link image UI plugin.
  *
