@@ -236,6 +236,99 @@ describe( 'TableSelection', () => {
 				[ '21', '22' ]
 			] ) );
 		} );
+
+		it( 'should adjust the selection dimensions if it\'s rectangular but last row has only row-spanned cells', () => {
+			// +----+----+----+
+			// | 00 | 01 | 02 |
+			// +----+----+----+
+			// | 10 | 11 | 12 |
+			// +    +    +----+
+			// |    |    | 22 |
+			// +----+----+----+
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ { contents: '10', rowspan: 2 }, { contents: '11', rowspan: 2 }, '12' ],
+				[ '22' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			// +----+----+
+			// | 00 | 01 |
+			// +----+----+
+			// | 10 | 11 |
+			// +    +    +
+			// |    |    |
+			// +----+----+
+			expect( stringifyModel( tableSelection.getSelectionAsFragment() ) ).to.equal( modelTable( [
+				[ '00', '01' ],
+				[ { contents: '10', rowspan: 2 }, { contents: '11', rowspan: 2 } ],
+				[] // This is an empty row that should be here to properly handle pasting of this table fragment.
+			] ) );
+		} );
+
+		it( 'should adjust the selection dimensions if it\'s rectangular but last column has only col-spanned cells', () => {
+			// +----+----+----+
+			// | 00 | 01      |
+			// +----+----+----+
+			// | 10 | 11      |
+			// +----+----+----+
+			// | 20 | 21 | 22 |
+			// +----+----+----+
+			setModelData( model, modelTable( [
+				[ '00', { contents: '01', colspan: 2 } ],
+				[ '10', { contents: '11', colspan: 2 } ],
+				[ '20', '21', '22' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			// +----+----+----+
+			// | 00 | 01      |
+			// +----+----+----+
+			// | 10 | 11      |
+			// +----+----+----+
+			expect( stringifyModel( tableSelection.getSelectionAsFragment() ) ).to.equal( modelTable( [
+				[ '00', { contents: '01', colspan: 2 } ],
+				[ '10', { contents: '11', colspan: 2 } ]
+			] ) );
+		} );
+
+		it( 'should crop table fragment to rectangular selection', () => {
+			// +----+----+----+
+			// | 00 | 01      |
+			// +----+----+----+
+			// | 10 | 11 | 12 |
+			// +    +----+----+
+			// |    | 21 | 22 |
+			// +----+----+----+
+			setModelData( model, modelTable( [
+				[ '00', { contents: '01', colspan: 2 } ],
+				[ { contents: '10', rowspan: 2 }, '11', '12' ],
+				[ '21', '22' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			// +----+----+
+			// | 00 | 01 |
+			// +----+----+
+			// | 10 | 11 |
+			// +----+----+
+			expect( stringifyModel( tableSelection.getSelectionAsFragment() ) ).to.equal( modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) );
+		} );
 	} );
 
 	describe( 'delete content', () => {

@@ -14,8 +14,8 @@ import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
 
 import { findAncestor } from './utils/common';
-import { cropTableToDimensions } from './utils/structure';
-import { getColumnIndexes, getRowIndexes, getSelectedTableCells } from './utils/selection';
+import { cropTableToDimensions, adjustLastRowIndex, adjustLastColumnIndex } from './utils/structure';
+import { getColumnIndexes, getRowIndexes, getSelectedTableCells, isSelectionRectangular } from './utils/selection';
 
 import '../theme/tableselection.css';
 
@@ -90,17 +90,35 @@ export default class TableSelection extends Plugin {
 
 		return this.editor.model.change( writer => {
 			const documentFragment = writer.createDocumentFragment();
+			const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
-			const { first: startColumn, last: endColumn } = getColumnIndexes( selectedCells );
-			const { first: startRow, last: endRow } = getRowIndexes( selectedCells );
+			const { first: firstColumn, last: lastColumn } = getColumnIndexes( selectedCells );
+			const { first: firstRow, last: lastRow } = getRowIndexes( selectedCells );
 
 			const sourceTable = findAncestor( 'table', selectedCells[ 0 ] );
 
+			let adjustedLastRow = lastRow;
+			let adjustedLastColumn = lastColumn;
+
+			// If the selection is rectangular there could be a case of all cells in the last row/column spanned over
+			// next row/column so the real lastRow/lastColumn should be updated.
+			if ( isSelectionRectangular( selectedCells, tableUtils ) ) {
+				const dimensions = {
+					firstColumn,
+					lastColumn,
+					firstRow,
+					lastRow
+				};
+
+				adjustedLastRow = adjustLastRowIndex( sourceTable, dimensions );
+				adjustedLastColumn = adjustLastColumnIndex( sourceTable, dimensions );
+			}
+
 			const cropDimensions = {
-				startRow,
-				startColumn,
-				endRow,
-				endColumn
+				startRow: firstRow,
+				startColumn: firstColumn,
+				endRow: adjustedLastRow,
+				endColumn: adjustedLastColumn
 			};
 
 			const table = cropTableToDimensions( sourceTable, cropDimensions, writer );

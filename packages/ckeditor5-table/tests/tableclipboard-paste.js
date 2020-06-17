@@ -124,28 +124,39 @@ describe( 'table clipboard', () => {
 			] ) );
 		} );
 
-		it( 'should not alter model.insertContent if selection is outside table', () => {
+		it( 'should normalize pasted table if selection is outside table', () => {
 			model.change( writer => {
 				writer.insertElement( 'paragraph', modelRoot.getChild( 0 ), 'before' );
 				writer.setSelection( modelRoot.getChild( 0 ), 'before' );
 			} );
+
+			const table = viewTable( [
+				[ 'aa', 'ab', { contents: 'ac', rowspan: 3 } ],
+				[ { contents: 'ba', rowspan: 2 }, { contents: 'bb', rowspan: 2 } ]
+			] );
 
 			const data = {
 				dataTransfer: createDataTransfer(),
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			};
-			data.dataTransfer.setData( 'text/html', '<p>foo</p>' );
+			data.dataTransfer.setData( 'text/html', table );
 			viewDocument.fire( 'paste', data );
 
 			editor.isReadOnly = false;
 
-			assertEqualMarkup( getModelData( model ), '<paragraph>foo[]</paragraph>' + modelTable( [
-				[ '00', '01', '02', '03' ],
-				[ '10', '11', '12', '13' ],
-				[ '20', '21', '22', '23' ],
-				[ '30', '31', '32', '33' ]
-			] ) );
+			assertEqualMarkup( getModelData( model ),
+				'[' + modelTable( [
+					[ 'aa', 'ab', { contents: 'ac', rowspan: 2 } ],
+					[ 'ba', 'bb' ]
+				] ) + ']' +
+				modelTable( [
+					[ '00', '01', '02', '03' ],
+					[ '10', '11', '12', '13' ],
+					[ '20', '21', '22', '23' ],
+					[ '30', '31', '32', '33' ]
+				] )
+			);
 		} );
 
 		it( 'should not alter model.insertContent if no table pasted', () => {
