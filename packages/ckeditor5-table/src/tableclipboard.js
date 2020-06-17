@@ -19,11 +19,13 @@ import { getColumnIndexes, getRowIndexes, getSelectionAffectedTableCells, isSele
 import {
 	cropTableToDimensions,
 	getHorizontallyOverlappingCells,
-	getVerticallyOverlappingCells, removeEmptyRowsColumns,
+	getVerticallyOverlappingCells,
+	removeEmptyRowsColumns,
 	splitHorizontally,
 	splitVertically,
 	trimTableCellIfNeeded,
-	adjustLastRowIndex, adjustLastColumnIndex
+	adjustLastRowIndex,
+	adjustLastColumnIndex
 } from './utils/structure';
 
 /**
