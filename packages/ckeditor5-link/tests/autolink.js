@@ -4,10 +4,11 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import Input from '@ckeditor/ckeditor5-typing/src/input';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import Link from '../src/link';
+import LinkEditing from '../src/linkediting';
 import AutoLink from '../src/autolink';
 
 describe( 'AutoLink', () => {
@@ -19,13 +20,13 @@ describe( 'AutoLink', () => {
 		let editor;
 
 		beforeEach( async () => {
-			editor = ModelTestEditor.create( { plugins: [ Paragraph, Link, AutoLink ] } );
+			editor = await ModelTestEditor.create( { plugins: [ Paragraph, Input, LinkEditing, AutoLink ] } );
 
 			setData( editor.model, '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'does not add linkHref attribute to a text link while typing', () => {
-			simulateTyping( editor, 'https://www.cksource.com' );
+			simulateTyping( 'https://www.cksource.com' );
 
 			expect( getData( editor.model ) ).to.equal(
 				'<paragraph>https://www.cksource.com[]</paragraph>'
@@ -33,7 +34,7 @@ describe( 'AutoLink', () => {
 		} );
 
 		it( 'adds linkHref attribute to a text link after space', () => {
-			simulateTyping( editor, 'https://www.cksource.com ' );
+			simulateTyping( 'https://www.cksource.com ' );
 
 			expect( getData( editor.model ) ).to.equal(
 				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.com</$text> []</paragraph>'
@@ -41,7 +42,7 @@ describe( 'AutoLink', () => {
 		} );
 
 		it( 'can undo auto-linking', () => {
-			simulateTyping( editor, 'https://www.cksource.com ' );
+			simulateTyping( 'https://www.cksource.com ' );
 
 			editor.commands.execute( 'undo' );
 
