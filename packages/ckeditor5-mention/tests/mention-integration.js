@@ -308,7 +308,8 @@ describe( 'Mention feature - integration', () => {
 					editor.execute( 'link', '@' );
 					editor.editing.view.document.fire( 'click' );
 
-					expect( panelView.isVisible ).to.be.true;
+					// The selection is after the link node.
+					expect( panelView.isVisible ).to.be.false;
 					expect( balloon.visibleView === mentionsView ).to.be.false; // LinkUI
 
 					model.change( writer => {
