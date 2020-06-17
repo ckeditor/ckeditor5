@@ -214,6 +214,8 @@ export default class DowncastWriter {
 	 *		writer.createEditableElement( 'div' );
 	 *		writer.createEditableElement( 'div', { id: 'foo-1234' } );
 	 *
+	 * Note: There is no reason to use createEditableElement in the data view; the properties it adds are only used in the editing view.
+	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
 	 * @returns {module:engine/view/editableelement~EditableElement} Created element.
