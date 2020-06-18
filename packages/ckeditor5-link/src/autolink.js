@@ -32,6 +32,9 @@ export default class AutoLink extends Plugin {
 		const editor = this.editor;
 
 		const watcher = new TextWatcher( editor.model, text => {
+			// TODO - should be 2-step:
+			// 1. Detect "space" or "enter".
+			// 2. Check text before "space" or "enter".
 			const match = regexp.exec( text );
 
 			if ( match ) {
@@ -52,10 +55,13 @@ export default class AutoLink extends Plugin {
 
 			// Enqueue change to make undo step.
 			editor.model.enqueueChange( writer => {
-				writer.setAttribute( 'linkHref', url, writer.createRange(
-					range.start,
+				const linkRange = writer.createRange(
+					range.end.getShiftedBy( -( 1 + url.length ) ),
 					range.end.getShiftedBy( -1 )
-				) );
+				);
+
+				// TODO: use command for decorators support.
+				writer.setAttribute( 'linkHref', url, linkRange );
 			} );
 		} );
 	}

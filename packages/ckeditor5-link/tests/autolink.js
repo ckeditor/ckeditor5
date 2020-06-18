@@ -18,18 +18,20 @@ describe( 'AutoLink', () => {
 	} );
 
 	describe( 'auto link behavior', () => {
-		let editor;
+		let editor, model;
 
 		beforeEach( async () => {
 			editor = await ModelTestEditor.create( { plugins: [ Paragraph, Input, LinkEditing, AutoLink, UndoEditing ] } );
 
-			setData( editor.model, '<paragraph>[]</paragraph>' );
+			model = editor.model;
+
+			setData( model, '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'does not add linkHref attribute to a text link while typing', () => {
 			simulateTyping( 'https://www.cksource.com' );
 
-			expect( getData( editor.model ) ).to.equal(
+			expect( getData( model ) ).to.equal(
 				'<paragraph>https://www.cksource.com[]</paragraph>'
 			);
 		} );
@@ -37,8 +39,18 @@ describe( 'AutoLink', () => {
 		it( 'adds linkHref attribute to a text link after space', () => {
 			simulateTyping( 'https://www.cksource.com ' );
 
-			expect( getData( editor.model ) ).to.equal(
+			expect( getData( model ) ).to.equal(
 				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.com</$text> []</paragraph>'
+			);
+		} );
+
+		it( 'adds linkHref attribute to a text link after space (inside paragraph)', () => {
+			setData( model, '<paragraph>Foo Bar [] Baz</paragraph>' );
+
+			simulateTyping( 'https://www.cksource.com ' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>Foo Bar <$text linkHref="https://www.cksource.com">https://www.cksource.com</$text> [] Baz</paragraph>'
 			);
 		} );
 
@@ -47,7 +59,7 @@ describe( 'AutoLink', () => {
 
 			editor.commands.execute( 'undo' );
 
-			expect( getData( editor.model ) ).to.equal(
+			expect( getData( model ) ).to.equal(
 				'<paragraph>https://www.cksource.com []</paragraph>'
 			);
 		} );
