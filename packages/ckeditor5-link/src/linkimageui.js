@@ -43,20 +43,6 @@ export default class LinkImageUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
-		super( editor );
-
-		/**
-		 * The plugin button view.
-		 *
-		 * @member {module:ui/button/buttonview~Button}
-		 */
-		this.linkButtonView = null;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	init() {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
@@ -113,8 +99,6 @@ export default class LinkImageUI extends Plugin {
 					plugin._showUI( true );
 				}
 			} );
-
-			this.linkButtonView = button;
 
 			return button;
 		} );

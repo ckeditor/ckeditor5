@@ -17,7 +17,7 @@ import LinkImageUI from '../src/linkimageui';
 
 describe( 'LinkImageUI', () => {
 	let editor, viewDocument, editorElement;
-	let plugin, linkButtonComponent, linkButton;
+	let plugin, linkButton;
 
 	testUtils.createSinonSandbox();
 
@@ -32,10 +32,9 @@ describe( 'LinkImageUI', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				viewDocument = editor.editing.view.document;
-				linkButtonComponent = editor.ui.componentFactory.create( 'linkImage' );
+				linkButton = editor.ui.componentFactory.create( 'linkImage' );
 
 				plugin = editor.plugins.get( 'LinkImageUI' );
-				linkButton = plugin.linkButtonView;
 			} );
 	} );
 
@@ -63,7 +62,7 @@ describe( 'LinkImageUI', () => {
 
 	describe( 'link toolbar UI component', () => {
 		it( 'should be registered', () => {
-			expect( linkButtonComponent ).to.be.instanceOf( ButtonView );
+			expect( linkButton ).to.be.instanceOf( ButtonView );
 		} );
 
 		describe( 'link button', () => {
