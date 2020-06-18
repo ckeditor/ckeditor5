@@ -10,6 +10,7 @@ import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 
 import LinkEditing from '../src/linkediting';
 import AutoLink from '../src/autolink';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 describe( 'AutoLink', () => {
 	it( 'should be named', () => {
@@ -20,7 +21,7 @@ describe( 'AutoLink', () => {
 		let editor;
 
 		beforeEach( async () => {
-			editor = await ModelTestEditor.create( { plugins: [ Paragraph, Input, LinkEditing, AutoLink ] } );
+			editor = await ModelTestEditor.create( { plugins: [ Paragraph, Input, LinkEditing, AutoLink, UndoEditing ] } );
 
 			setData( editor.model, '<paragraph>[]</paragraph>' );
 		} );
