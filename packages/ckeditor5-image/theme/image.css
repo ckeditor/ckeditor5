@@ -11,7 +11,7 @@
 	/* Make sure there is some space between the content and the image. Center image by default. */
 	margin: 1em auto;
 
-	& > img {
+	& img {
 		/* Prevent unnecessary margins caused by line-height (see #44). */
 		display: block;
 
@@ -23,11 +23,5 @@
 
 		/* Make sure the caption will be displayed properly (See: https://github.com/ckeditor/ckeditor5/issues/1870). */
 		min-width: 50px;
-	}
-
-	/* Reduces unnecessary margin under the linked image. */
-	& > a {
-		display: block;
-		line-height: 0;
 	}
 }
