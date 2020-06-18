@@ -10,9 +10,9 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
+import LinkImage from '../src/linkimage';
 import LinkImageUI from '../src/linkimageui';
 
 describe( 'LinkImageUI', () => {
@@ -27,7 +27,7 @@ describe( 'LinkImageUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ LinkImageUI, Paragraph ]
+				plugins: [ LinkImageUI, LinkImage, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -51,8 +51,7 @@ describe( 'LinkImageUI', () => {
 
 	describe( 'init()', () => {
 		it( 'should listen to the click event on the images', () => {
-			const linkPlugin = editor.plugins.get( 'LinkUI' );
-			const listenToSpy = sinon.stub( linkPlugin, 'listenTo' );
+			const listenToSpy = sinon.stub( plugin, 'listenTo' );
 
 			listenToSpy( viewDocument, 'click' );
 
@@ -98,18 +97,22 @@ describe( 'LinkImageUI', () => {
 	} );
 
 	describe( 'click', () => {
-		it( 'should prevent default behavior if image has "linkHref" attribute', () => {
-			setModelData( editor.model, '[<image src="" linkHref="https://example.com"></image>]' );
+		it( 'should prevent default behavior if image is wrapped with a link', () => {
+			editor.setData( '<figure class="image"><a href="https://example.com"><img src="" /></a></figure>' );
 
-			const img = editor.model.document.selection.getSelectedElement();
+			editor.editing.view.change( writer => {
+				writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'on' );
+			} );
+
+			const img = viewDocument.selection.getSelectedElement();
 			const data = fakeEventData();
 			const eventInfo = new EventInfo( img, 'click' );
 			const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
 
 			viewDocument.fire( 'click', domEventDataMock );
 
+			expect( img.getChild( 0 ).name ).to.equal( 'a' );
 			expect( data.preventDefault.called ).to.be.true;
-			expect( eventInfo.source.name ).to.equal( 'image' );
 		} );
 	} );
 
@@ -117,7 +120,11 @@ describe( 'LinkImageUI', () => {
 		it( 'should show plugin#actionsView after "execute" if image is already linked', () => {
 			const linkUIPlugin = editor.plugins.get( 'LinkUI' );
 
-			setModelData( editor.model, '[<image src="" linkHref="https://example.com"></image>]' );
+			editor.setData( '<figure class="image"><a href="https://example.com"><img src="" /></a></figure>' );
+
+			editor.editing.view.change( writer => {
+				writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'on' );
+			} );
 
 			linkButton.fire( 'execute' );
 
@@ -127,7 +134,11 @@ describe( 'LinkImageUI', () => {
 		it( 'should show plugin#formView after "execute" if image is not linked', () => {
 			const linkUIPlugin = editor.plugins.get( 'LinkUI' );
 
-			setModelData( editor.model, '[<image src=""></image>]' );
+			editor.setData( '<figure class="image"><img src="" /></a>' );
+
+			editor.editing.view.change( writer => {
+				writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'on' );
+			} );
 
 			linkButton.fire( 'execute' );
 

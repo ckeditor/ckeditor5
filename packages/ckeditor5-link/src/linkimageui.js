@@ -7,16 +7,15 @@
  * @module link/linkimageui
  */
 
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import LinkUI from './linkui';
 import LinkEditing from './linkediting';
-
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { isImageWidget } from '@ckeditor/ckeditor5-image/src/image/utils';
+import { LINK_KEYSTROKE } from './utils';
 
 import linkIcon from '../theme/icons/link.svg';
-
-const linkKeystroke = 'Ctrl+K';
 
 /**
  * The link image UI plugin.
@@ -62,7 +61,7 @@ export default class LinkImageUI extends Plugin {
 		const viewDocument = editor.editing.view.document;
 
 		this.listenTo( viewDocument, 'click', ( evt, data ) => {
-			const hasLink = isImageLinked( editor.model.document.selection.getSelectedElement() );
+			const hasLink = isImageLinked( viewDocument.selection.getSelectedElement() );
 
 			if ( hasLink ) {
 				data.preventDefault();
@@ -73,9 +72,9 @@ export default class LinkImageUI extends Plugin {
 	}
 
 	/**
-	 * Creates a LinkImageUI button view.
-	 * Clicking on the button shows a {@link module:link/linkui~LinkUI#_balloon} attached to the selection.
-	 * When image is already linked, the view shows {@link module:link/linkui~LinkUI#actionsView} or
+	 * Creates a `LinkImageUI` button view.
+	 * Clicking this button shows a {@link module:link/linkui~LinkUI#_balloon} attached to the selection.
+	 * When an image is already linked, the view shows {@link module:link/linkui~LinkUI#actionsView} or
 	 * {@link module:link/linkui~LinkUI#formView} if it's not.
 	 *
 	 * @private
@@ -93,7 +92,7 @@ export default class LinkImageUI extends Plugin {
 				isEnabled: true,
 				label: t( 'Link image' ),
 				icon: linkIcon,
-				keystroke: linkKeystroke,
+				keystroke: LINK_KEYSTROKE,
 				tooltip: true,
 				isToggleable: true
 			} );
@@ -101,13 +100,16 @@ export default class LinkImageUI extends Plugin {
 			// Bind button to the command.
 			button.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 			button.bind( 'isOn' ).to( linkCommand, 'value', value => !!value );
-			button.bind( 'hasLink' ).to( this, 'hasLink' );
 
 			// Show the actionsView or formView (both from LinkUI) on button click depending on whether the image is linked already.
 			this.listenTo( button, 'execute', () => {
-				const hasLink = isImageLinked( editor.model.document.selection.getSelectedElement() );
+				const hasLink = isImageLinked( editor.editing.view.document.selection.getSelectedElement() );
 
-				hasLink ? plugin._addActionsView() : plugin._showUI( true );
+				if ( hasLink ) {
+					plugin._addActionsView();
+				} else {
+					plugin._showUI( true );
+				}
 			} );
 
 			this.linkButtonView = button;
@@ -122,9 +124,11 @@ export default class LinkImageUI extends Plugin {
 // @param {module:engine/model/element~Element} element
 // @returns {Boolean}
 function isImageLinked( element ) {
-	if ( !( element && element.is( 'image' ) ) ) {
+	const isImage = element && isImageWidget( element );
+
+	if ( !isImage ) {
 		return false;
 	}
 
-	return element && element.hasAttribute( 'linkHref' );
+	return element.getChild( 0 ).is( 'a' );
 }
