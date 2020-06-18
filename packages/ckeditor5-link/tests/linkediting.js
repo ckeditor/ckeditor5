@@ -78,12 +78,14 @@ describe( 'LinkEditing', () => {
 	// Let's check only the minimum to not duplicate `bindTwoStepCaretToAttribute()` tests.
 	// Testing minimum is better than testing using spies that might give false positive results.
 	describe( 'two-step caret movement', () => {
-		it( 'should be bound to th `linkHref` attribute (LTR)', () => {
+		it( 'should be bound to the `linkHref` attribute (LTR)', () => {
+			const selection = editor.model.document.selection;
+
 			// Put selection before the link element.
 			setModelData( editor.model, '<paragraph>foo[]<$text linkHref="url">b</$text>ar</paragraph>' );
 
-			// The selection's gravity is not overridden because selection landed here not because of `keydown`.
-			expect( editor.model.document.selection.isGravityOverridden ).to.false;
+			// The selection's gravity should read attributes from the left.
+			expect( selection.hasAttribute( 'linkHref' ), 'hasAttribute( \'linkHref\' )' ).to.be.false;
 
 			// So let's simulate the `keydown` event.
 			editor.editing.view.document.fire( 'keydown', {
@@ -92,10 +94,13 @@ describe( 'LinkEditing', () => {
 				domTarget: document.body
 			} );
 
-			expect( editor.model.document.selection.isGravityOverridden ).to.true;
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo<$text linkHref="url">[]b</$text>ar</paragraph>' );
+			// Selection should get the attributes from the right.
+			expect( selection.hasAttribute( 'linkHref' ), 'hasAttribute( \'linkHref\' )' ).to.be.true;
+			expect( selection.getAttribute( 'linkHref' ), 'linkHref attribute' ).to.equal( 'url' );
 		} );
 
-		it( 'should be bound to th `linkHref` attribute (RTL)', async () => {
+		it( 'should be bound to the `linkHref` attribute (RTL)', async () => {
 			const editor = await ClassicTestEditor.create( element, {
 				plugins: [ Paragraph, LinkEditing, Enter ],
 				language: {
@@ -105,12 +110,13 @@ describe( 'LinkEditing', () => {
 
 			model = editor.model;
 			view = editor.editing.view;
+			const selection = editor.model.document.selection;
 
 			// Put selection before the link element.
 			setModelData( editor.model, '<paragraph>foo[]<$text linkHref="url">b</$text>ar</paragraph>' );
 
-			// The selection's gravity is not overridden because selection landed here not because of `keydown`.
-			expect( editor.model.document.selection.isGravityOverridden ).to.false;
+			// The selection's gravity should read attributes from the left.
+			expect( selection.hasAttribute( 'linkHref' ), 'hasAttribute( \'linkHref\' )' ).to.be.false;
 
 			// So let's simulate the `keydown` event.
 			editor.editing.view.document.fire( 'keydown', {
@@ -119,7 +125,10 @@ describe( 'LinkEditing', () => {
 				domTarget: document.body
 			} );
 
-			expect( editor.model.document.selection.isGravityOverridden ).to.true;
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo<$text linkHref="url">[]b</$text>ar</paragraph>' );
+			// Selection should get the attributes from the right.
+			expect( selection.hasAttribute( 'linkHref' ), 'hasAttribute( \'linkHref\' )' ).to.be.true;
+			expect( selection.getAttribute( 'linkHref' ), 'linkHref attribute' ).to.equal( 'url' );
 
 			await editor.destroy();
 		} );
