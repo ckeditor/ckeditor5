@@ -113,36 +113,6 @@ describe( 'LinkImageUI', () => {
 		} );
 	} );
 
-	describe( '#_isImageLinked', () => {
-		it( 'should return "true" when selected link has "linkHref" attribute', () => {
-			setModelData( editor.model, '[<image src="" linkHref="https://example.com"></image>]' );
-
-			const img = editor.model.document.selection.getSelectedElement();
-			const spy = sinon.spy( plugin, '_isImageLinked' );
-
-			expect( spy( img ) ).to.be.true;
-		} );
-
-		it( 'should return "false" when selected link hasn\'t "linkHref" attribute', () => {
-			setModelData( editor.model, '[<image src=""></image>]' );
-
-			const img = editor.model.document.selection.getSelectedElement();
-			const spy = sinon.spy( plugin, '_isImageLinked' );
-
-			expect( spy( img ) ).to.be.false;
-		} );
-
-		it( 'should return "false" when selected element isn\'t an image', () => {
-			setModelData( editor.model, '<paragraph>foo</paragraph>' );
-
-			const el = editor.model.document.getRoot().getChild( 0 );
-			const spy = sinon.spy( plugin, '_isImageLinked' );
-
-			expect( spy( el ) ).to.be.false;
-			expect( el.name ).to.not.equal( 'image' );
-		} );
-	} );
-
 	describe( 'event handling', () => {
 		it( 'should show plugin#actionsView after "execute" if image is already linked', () => {
 			const linkUIPlugin = editor.plugins.get( 'LinkUI' );

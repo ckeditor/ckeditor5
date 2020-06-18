@@ -43,9 +43,8 @@ export default class LinkImageUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
-		const editor = this.editor;
-		const viewDocument = editor.editing.view.document;
+	constructor( editor ) {
+		super( editor );
 
 		/**
 		 * The plugin button view.
@@ -53,9 +52,17 @@ export default class LinkImageUI extends Plugin {
 		 * @member {module:ui/button/buttonview~Button}
 		 */
 		this.linkButtonView = null;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		const editor = this.editor;
+		const viewDocument = editor.editing.view.document;
 
 		this.listenTo( viewDocument, 'click', ( evt, data ) => {
-			const hasLink = this._isImageLinked( editor.model.document.selection.getSelectedElement() );
+			const hasLink = isImageLinked( editor.model.document.selection.getSelectedElement() );
 
 			if ( hasLink ) {
 				data.preventDefault();
@@ -98,7 +105,7 @@ export default class LinkImageUI extends Plugin {
 
 			// Show the actionsView or formView (both from LinkUI) on button click depending on whether the image is linked already.
 			this.listenTo( button, 'execute', () => {
-				const hasLink = this._isImageLinked( editor.model.document.selection.getSelectedElement() );
+				const hasLink = isImageLinked( editor.model.document.selection.getSelectedElement() );
 
 				hasLink ? plugin._addActionsView() : plugin._showUI( true );
 			} );
@@ -108,20 +115,16 @@ export default class LinkImageUI extends Plugin {
 			return button;
 		} );
 	}
+}
 
-	/**
-	 * A helper function that checks whether the element is a linked image.
-	 *
-	 * @private
-	 *
-	 * @param {module:engine/model/element~Element} element
-	 * @returns {Boolean}
-	 */
-	_isImageLinked( element ) {
-		if ( !( element && element.is( 'image' ) ) ) {
-			return false;
-		}
-
-		return element && element.hasAttribute( 'linkHref' );
+// A helper function that checks whether the element is a linked image.
+//
+// @param {module:engine/model/element~Element} element
+// @returns {Boolean}
+function isImageLinked( element ) {
+	if ( !( element && element.is( 'image' ) ) ) {
+		return false;
 	}
+
+	return element && element.hasAttribute( 'linkHref' );
 }
