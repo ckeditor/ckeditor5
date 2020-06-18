@@ -146,6 +146,8 @@ export default class ColorGridView extends View {
 
 	/**
 	 * Focuses the last focusable in {@link #items}.
+	 *
+	 * ({@link module:ui/colorgrid/colorgrid~ColorDefinition#options.hasBorder another bad link})
 	 */
 	focusLast() {
 		if ( this.items.length ) {
