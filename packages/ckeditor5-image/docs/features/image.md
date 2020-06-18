@@ -191,6 +191,8 @@ The {@link module:link/linkimage~LinkImage} plugin adds support for linking imag
 </figure>
 ```
 
+Enabling linking images brings support for link editing to the rich-text editor. See the {@link features/link Link guide} to read more about the feature.
+
 {@snippet features/image-link}
 
 <info-box info>
