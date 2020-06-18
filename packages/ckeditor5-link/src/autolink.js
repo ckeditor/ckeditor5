@@ -11,8 +11,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TextWatcher from '@ckeditor/ckeditor5-typing/src/textwatcher';
 import getLastTextLine from '@ckeditor/ckeditor5-typing/src/utils/getlasttextline';
 
-const regexp = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)) $/;
-const regExpII = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*))$/;
+const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
+
+const urlRegExp = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*))$/;
+
+function isSingleSpaceAtTheEnd( text ) {
+	return text.length > MIN_LINK_LENGTH_WITH_SPACE_AT_END && text[ text.length - 1 ] === ' ' && text[ text.length - 2 ] !== ' ';
+}
 
 /**
  * The auto link plugin.
@@ -34,10 +39,13 @@ export default class AutoLink extends Plugin {
 		const editor = this.editor;
 
 		const watcher = new TextWatcher( editor.model, text => {
-			// TODO - should be 2-step:
-			// 1. Detect "space" or "enter".
+			// 1. Detect "space" after a text with a potential link.
+			if ( !isSingleSpaceAtTheEnd( text ) ) {
+				return;
+			}
+
 			// 2. Check text before "space" or "enter".
-			const match = regexp.exec( text );
+			const match = urlRegExp.exec( text.substr( 0, text.length - 1 ) );
 
 			if ( match ) {
 				return { match };
@@ -105,7 +113,7 @@ function applyAutoLink( linkHref, range, editor, additionalOffset = 1 ) {
 function checkAndApplyAutoLinkOnRange( rangeToCheck, editor ) {
 	const { text, range } = getLastTextLine( rangeToCheck, editor.model );
 
-	const match = regExpII.exec( text );
+	const match = urlRegExp.exec( text );
 
 	if ( match ) {
 		applyAutoLink( match[ 1 ], range, editor, 0 );
