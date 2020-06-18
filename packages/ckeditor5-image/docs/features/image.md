@@ -14,6 +14,7 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link module:image/imagetextalternative~ImageTextAlternative} adds support for adding text alternative.
 * {@link module:image/imageupload~ImageUpload} adds support for uploading dropped or pasted images (see: {@link features/image-upload Image upload}).
 * {@link module:image/imageresize~ImageResize} adds support for resizing images.
+* {@link module:link/linkimage~LinkImage} adds support for linking images.
 
 <info-box info>
 	All features listed above except the image resize are enabled by default in all WYSIWYG editor builds.
@@ -177,6 +178,24 @@ See the {@link features/image-upload Image upload} guide.
 ## Responsive images
 
 Support for responsive images in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Learn more how to use the feature in your project in the {@link features/easy-image#responsive-images Easy Image integration} guide.
+
+## Linking images
+
+The {@link module:link/linkimage~LinkImage} plugin adds support for linking images:
+
+```html
+<figure class="image">
+	<a href="...">
+	    <img src="..." alt="...">
+    </a>
+</figure>
+```
+
+{@snippet features/image-link}
+
+<info-box info>
+	The {@link module:link/linkimage~LinkImage} plugin is available in the [@ckeditor/ckeditor5-link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package.
+</info-box>
 
 ## Resizing images
 
