@@ -109,7 +109,7 @@
     "stylelint-config-ckeditor5": "^1.0.3",
     "svgo": "^1.3.2",
     "terser-webpack-plugin": "^3.0.2",
-    "umberto": "https://github.com/cksource/umberto.git#i/865",
+    "umberto": "cksource/umberto#i/865",
     "webpack": "^4.43.0"
   },
   "engines": {
