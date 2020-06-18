@@ -91,16 +91,20 @@ export default function upcastTable() {
 }
 
 /**
- * Conversion helper that skips empty <tr> from upcasting.
+ * Conversion helper that skips empty <tr> from upcasting at the beginning of the table.
  *
- * Empty row is considered a table model error.
+ * Empty row is considered a table model error but when handling clipboard data there could be rows that contain only row-spanned cells
+ * and empty TR-s are used to maintain table structure (also {@link module:table/tablewalker~TableWalker} assumes that there are only rows
+ * that have related tableRow elements).
+ *
+ * *Note:* Only first empty rows are removed because those have no meaning and solves issue of improper table with all empty rows.
  *
  * @returns {Function} Conversion helper.
  */
 export function skipEmptyTableRow() {
 	return dispatcher => {
 		dispatcher.on( 'element:tr', ( evt, data ) => {
-			if ( data.viewItem.isEmpty ) {
+			if ( data.viewItem.isEmpty && data.modelCursor.index == 0 ) {
 				evt.stop();
 			}
 		}, { priority: 'high' } );

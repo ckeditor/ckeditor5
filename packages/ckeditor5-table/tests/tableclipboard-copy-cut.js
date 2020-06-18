@@ -191,6 +191,32 @@ describe( 'table clipboard', () => {
 			] ) );
 		} );
 
+		it( 'should output empty tr elements if needed by row-spanned cells', () => {
+			// +----+----+----+
+			// | 00 | 01 | 02 |
+			// +----+----+----+
+			// | 10 | 11 | 12 |
+			// +    +    +----+
+			// |    |    | 22 |
+			// +----+----+----+
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ { contents: '10', rowspan: 2 }, { contents: '11', rowspan: 2 }, '12' ],
+				[ '22' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			assertClipboardContentOnMethod( 'copy', viewTable( [
+				[ '00', '01' ],
+				[ { contents: '10', rowspan: 2 }, { contents: '11', rowspan: 2 } ],
+				[] // The empty tr
+			] ) );
+		} );
+
 		it( 'should fix selected table to a selection rectangle (hardcore case)', () => {
 			// This test check how previous simple rules run together (mixed prepending and trimming).
 			// In the example below a selection is set from cell "21" to "77"
