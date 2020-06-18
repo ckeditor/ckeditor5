@@ -20,7 +20,8 @@ import linkIcon from '../theme/icons/link.svg';
 /**
  * The link image UI plugin.
  *
- * The feature simply allows to link an image.
+ * This plugin brings a `'linkImage'` button that can be displayed in the {@link module:image/imagetoolbar~ImageToolbar}
+ * and used to wrap images in links.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -73,6 +74,7 @@ export default class LinkImageUI extends Plugin {
 
 	/**
 	 * Creates a `LinkImageUI` button view.
+	 *
 	 * Clicking this button shows a {@link module:link/linkui~LinkUI#_balloon} attached to the selection.
 	 * When an image is already linked, the view shows {@link module:link/linkui~LinkUI#actionsView} or
 	 * {@link module:link/linkui~LinkUI#formView} if it's not.
