@@ -17,6 +17,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import linkIcon from '../theme/icons/link.svg';
 
 const linkKeystroke = 'Ctrl+K';
+
 /**
  * The link image UI plugin.
  *
@@ -39,6 +40,9 @@ export default class LinkImageUI extends Plugin {
 		return 'LinkImageUI';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
@@ -58,7 +62,7 @@ export default class LinkImageUI extends Plugin {
 			}
 		} );
 
-		this.linkButtonView = this._createToolbarLinkImageButton();
+		this._createToolbarLinkImageButton();
 	}
 
 	/**
@@ -98,6 +102,8 @@ export default class LinkImageUI extends Plugin {
 
 				hasLink ? plugin._addActionsView() : plugin._showUI( true );
 			} );
+
+			this.linkButtonView = button;
 
 			return button;
 		} );
