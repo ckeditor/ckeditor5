@@ -4,13 +4,15 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import LinkEditing from '../src/linkediting';
 import AutoLink from '../src/autolink';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 describe( 'AutoLink', () => {
 	it( 'should be named', () => {
@@ -21,7 +23,9 @@ describe( 'AutoLink', () => {
 		let editor, model;
 
 		beforeEach( async () => {
-			editor = await ModelTestEditor.create( { plugins: [ Paragraph, Input, LinkEditing, AutoLink, UndoEditing ] } );
+			editor = await ModelTestEditor.create( {
+				plugins: [ Paragraph, Input, LinkEditing, AutoLink, UndoEditing, Enter, ShiftEnter ]
+			} );
 
 			model = editor.model;
 
@@ -51,6 +55,42 @@ describe( 'AutoLink', () => {
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>Foo Bar <$text linkHref="https://www.cksource.com">https://www.cksource.com</$text> [] Baz</paragraph>'
+			);
+		} );
+
+		it( 'adds linkHref attribute to a text link after a soft break', () => {
+			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
+
+			editor.execute( 'shiftEnter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>' +
+					'<$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>' +
+					'<softBreak></softBreak>[]' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'does not add linkHref attribute to a text link after double soft break', () => {
+			setData( model, '<paragraph>https://www.cksource.com<softBreak></softBreak>[]</paragraph>' );
+
+			editor.execute( 'shiftEnter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>https://www.cksource.com<softBreak></softBreak><softBreak></softBreak>[]</paragraph>'
+			);
+		} );
+
+		it( 'adds linkHref attribute to a text link on enter', () => {
+			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
+
+			editor.execute( 'enter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>' +
+					'<$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>' +
+				'</paragraph>' +
+				'<paragraph>[]</paragraph>'
 			);
 		} );
 
