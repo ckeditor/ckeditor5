@@ -24,4 +24,10 @@
 		/* Make sure the caption will be displayed properly (See: https://github.com/ckeditor/ckeditor5/issues/1870). */
 		min-width: 50px;
 	}
+
+	/* Reduces unnecessary margin under the linked image. */
+	& > a {
+		display: block;
+		line-height: 0;
+	}
 }
