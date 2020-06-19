@@ -283,6 +283,8 @@ editor.execute( 'link', 'http://example.com', { linkIsExternal: true } );
 editor.execute( 'unlink' );
 ```
 
+The package provides a plugin for {@link module:link/linkimage~LinkImage linking images}. See the {@link features/image#linking-images Linking images} section in the {@link features/image feature guide}.
+
 Links are represented in the {@link module:engine/model/model~Model model} using the `linkHref` attribute. [Manual link decorators](#adding-attributes-to-links-using-the-ui-manual-decorators) are represented in the model using text attributes corresponding to their names, as configured in {@link module:link/link~LinkConfig#decorators `config.link.decorators`}.
 
 <info-box>

@@ -9,6 +9,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-resize-px' ), {
+		removePlugins: [ 'LinkImage' ],
 		image: {
 			resizeUnit: 'px'
 		},
