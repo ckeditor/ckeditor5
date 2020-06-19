@@ -12,6 +12,16 @@ ClassicEditor
 		toolbar: {
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
+		image: {
+			toolbar: [
+				'imageStyle:full',
+				'imageStyle:side',
+				'|',
+				'imageTextAlternative',
+				'|',
+				'linkImage'
+			]
+		},
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
