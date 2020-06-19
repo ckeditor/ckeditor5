@@ -179,26 +179,6 @@ See the {@link features/image-upload Image upload} guide.
 
 Support for responsive images in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Learn more how to use the feature in your project in the {@link features/easy-image#responsive-images Easy Image integration} guide.
 
-## Linking images
-
-The {@link module:link/linkimage~LinkImage} plugin adds support for linking images:
-
-```html
-<figure class="image">
-	<a href="...">
-	    <img src="..." alt="...">
-    </a>
-</figure>
-```
-
-Enabling linking images brings support for link editing to the rich-text editor. See the {@link features/link Link guide} to read more about the feature.
-
-{@snippet features/image-link}
-
-<info-box info>
-	The {@link module:link/linkimage~LinkImage} plugin is available in the [@ckeditor/ckeditor5-link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package.
-</info-box>
-
 ## Resizing images
 
 The [image styles](#image-styles) feature is meant to give the user the choice between a set of styling options provided by the system (so by the developer or administrator who created it). There are also scenarios where the user should be able to freely set the width of an image. And that is where the image resize feature comes to play.
@@ -276,6 +256,26 @@ ClassicEditor
 ```
 
 {@snippet features/image-resize-px}
+
+## Linking images
+
+The {@link module:link/linkimage~LinkImage} plugin adds support for linking images:
+
+```html
+<figure class="image">
+	<a href="...">
+	    <img src="..." alt="...">
+    </a>
+</figure>
+```
+
+Enabling linking images brings support for link editing to the rich-text editor. See the {@link features/link Link guide} to read more about the feature.
+
+{@snippet features/image-link}
+
+<info-box info>
+	The {@link module:link/linkimage~LinkImage} plugin is available in the [@ckeditor/ckeditor5-link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package.
+</info-box>
 
 ### Future development
 
