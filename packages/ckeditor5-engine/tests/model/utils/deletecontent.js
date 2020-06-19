@@ -216,11 +216,13 @@ describe( 'DataController utils', () => {
 					allowIn: 'pparent',
 					allowAttributes: 'align'
 				} );
-				schema.register( 'heading1', { inheritAllFrom: '$block' } );
+				schema.register( 'heading1', { inheritAllFrom: '$block', allowIn: 'pparent' } );
 				schema.register( 'image', { inheritAllFrom: '$text' } );
 				schema.register( 'pchild', { allowIn: 'paragraph' } );
 				schema.register( 'pparent', { allowIn: '$root' } );
-				schema.extend( '$text', { allowIn: [ 'pchild', 'pparent' ] } );
+				schema.register( 'hchild', { allowIn: 'heading1' } );
+				schema.register( 'widget', { isObject: true, allowWhere: '$text', isInline: true } );
+				schema.extend( '$text', { allowIn: [ 'pchild', 'pparent', 'hchild' ] } );
 			} );
 
 			test(
@@ -236,6 +238,30 @@ describe( 'DataController utils', () => {
 			);
 
 			test(
+				'merges first element into the second element (it would become empty but second element would not) (same name)',
+				'<paragraph>x</paragraph><paragraph>[foo</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
+				'<paragraph>x</paragraph><paragraph>[]ar</paragraph><paragraph>y</paragraph>'
+			);
+
+			test(
+				'do not remove end block if selection ends at start position of it',
+				'<paragraph>x</paragraph><paragraph>[foo</paragraph><paragraph>]bar</paragraph><paragraph>y</paragraph>',
+				'<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>bar</paragraph><paragraph>y</paragraph>'
+			);
+
+			test(
+				'removes empty element (merges it into second element)',
+				'<paragraph>x</paragraph><paragraph>[</paragraph><paragraph>]bar</paragraph><paragraph>y</paragraph>',
+				'<paragraph>x</paragraph><paragraph>[]bar</paragraph><paragraph>y</paragraph>'
+			);
+
+			test(
+				'treats inline widget elements as content so parent element is not considered as empty after merging (same name)',
+				'<paragraph>x</paragraph><paragraph><widget></widget>[foo</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
+				'<paragraph>x</paragraph><paragraph><widget></widget>[]ar</paragraph><paragraph>y</paragraph>'
+			);
+
+			test(
 				'does not merge second element into the first one (same name, !option.merge)',
 				'<paragraph>x</paragraph><paragraph>fo[o</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
 				'<paragraph>x</paragraph><paragraph>fo[]</paragraph><paragraph>ar</paragraph><paragraph>y</paragraph>',
@@ -243,9 +269,22 @@ describe( 'DataController utils', () => {
 			);
 
 			test(
+				'does not remove first empty element when it\'s empty but second element is not empty (same name, !option.merge)',
+				'<paragraph>x</paragraph><paragraph>[foo</paragraph><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
+				'<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>ar</paragraph><paragraph>y</paragraph>',
+				{ leaveUnmerged: true }
+			);
+
+			test(
 				'merges second element into the first one (different name)',
 				'<paragraph>x</paragraph><heading1>fo[o</heading1><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
 				'<paragraph>x</paragraph><heading1>fo[]ar</heading1><paragraph>y</paragraph>'
+			);
+
+			test(
+				'removes first element when it\'s empty but second element is not empty (different name)',
+				'<paragraph>x</paragraph><heading1>[foo</heading1><paragraph>b]ar</paragraph><paragraph>y</paragraph>',
+				'<paragraph>x</paragraph><paragraph>[]ar</paragraph><paragraph>y</paragraph>'
 			);
 
 			// Note: in all these cases we ignore the direction of merge.
@@ -270,9 +309,9 @@ describe( 'DataController utils', () => {
 			);
 
 			test(
-				'merges second element to an empty first element',
+				'removes empty first element',
 				'<paragraph>x</paragraph><heading1>[</heading1><paragraph>fo]o</paragraph><paragraph>y</paragraph>',
-				'<paragraph>x</paragraph><heading1>[]o</heading1><paragraph>y</paragraph>'
+				'<paragraph>x</paragraph><paragraph>[]o</paragraph><paragraph>y</paragraph>'
 			);
 
 			test(
@@ -283,8 +322,20 @@ describe( 'DataController utils', () => {
 
 			test(
 				'leaves just one element when all selected',
+				'<paragraph>[x</paragraph><paragraph>foo</paragraph><paragraph>y]bar</paragraph>',
+				'<paragraph>[]bar</paragraph>'
+			);
+
+			test(
+				'leaves just one (last) element when all selected (first block would become empty) (different name)',
 				'<heading1>[x</heading1><paragraph>foo</paragraph><paragraph>y]bar</paragraph>',
-				'<heading1>[]bar</heading1>'
+				'<paragraph>[]bar</paragraph>'
+			);
+
+			test(
+				'leaves just one (first) element when all selected (first block would not become empty) (different name)',
+				'<heading1>foo[x</heading1><paragraph>bar</paragraph><paragraph>y]</paragraph>',
+				'<heading1>foo[]</heading1>'
 			);
 
 			it( 'uses merge operation even if merged element is empty', () => {
@@ -317,6 +368,36 @@ describe( 'DataController utils', () => {
 				expect( mergeSpy.called ).to.be.true;
 			} );
 
+			it( 'uses "merge" operation (from OT) if first element is empty (because of content delete) and last is not', () => {
+				let mergeSpy;
+
+				setData( model, '<paragraph>[abcd</paragraph><paragraph>ef]gh</paragraph>' );
+
+				model.change( writer => {
+					mergeSpy = sinon.spy( writer, 'merge' );
+					deleteContent( model, doc.selection );
+				} );
+
+				expect( getData( model ) ).to.equal( '<paragraph>[]gh</paragraph>' );
+
+				expect( mergeSpy.called ).to.be.true;
+			} );
+
+			it( 'uses merge operation if first element is empty and last is not', () => {
+				let mergeSpy;
+
+				setData( model, '<paragraph>[</paragraph><paragraph>ef]gh</paragraph>' );
+
+				model.change( writer => {
+					mergeSpy = sinon.spy( writer, 'merge' );
+					deleteContent( model, doc.selection );
+				} );
+
+				expect( getData( model ) ).to.equal( '<paragraph>[]gh</paragraph>' );
+
+				expect( mergeSpy.called ).to.be.true;
+			} );
+
 			it( 'does not try to move the second block if not needed', () => {
 				let mergeSpy, moveSpy;
 
@@ -344,47 +425,41 @@ describe( 'DataController utils', () => {
 					'<paragraph>x<pchild>fo[]ar</pchild>y</paragraph>'
 				);
 
-				it( 'merges elements when deep nested (3rd level)', () => {
-					const root = doc.getRoot();
+				test(
+					'merges block element to the right (with nested element)',
+					'<paragraph><pchild>[foo</pchild></paragraph><paragraph><pchild>b]ar</pchild></paragraph>',
+					'<paragraph><pchild>[]ar</pchild></paragraph>'
+				);
 
-					// We need to use the raw API due to https://github.com/ckeditor/ckeditor5-engine/issues/905.
-					// <pparent>x<paragraph>x<pchild>fo[o</pchild></paragraph></pparent>
-					// <pparent><paragraph><pchild>b]ar</pchild>y</paragraph>y</pparent>
+				test(
+					'does not remove block element with nested element and object',
+					'<paragraph><pchild><widget></widget>[foo</pchild></paragraph><paragraph><pchild>b]ar</pchild></paragraph>',
+					'<paragraph><pchild><widget></widget>[]ar</pchild></paragraph>'
+				);
 
-					root._appendChild(
-						new Element( 'pparent', null, [
-							'x',
-							new Element( 'paragraph', null, [
-								'x',
-								new Element( 'pchild', null, 'foo' )
-							] )
-						] )
-					);
+				test(
+					'merges nested elements',
+					'<heading1><hchild>x[foo</hchild></heading1><paragraph><pchild>b]ar</pchild></paragraph>',
+					'<heading1><hchild>x[]ar</hchild></heading1>'
+				);
 
-					root._appendChild(
-						new Element( 'pparent', null, [
-							new Element( 'paragraph', null, [
-								new Element( 'pchild', null, 'bar' ),
-								'y'
-							] ),
-							'y'
-						] )
-					);
+				test(
+					'merges nested elements on multiple levels',
+					'<heading1><hchild>x[foo</hchild></heading1><paragraph><pchild>b]ar</pchild>abc</paragraph>',
+					'<heading1><hchild>x[]ar</hchild>abc</heading1>'
+				);
 
-					const range = new Range(
-						new Position( doc.getRoot(), [ 0, 1, 1, 2 ] ), // fo[o
-						new Position( doc.getRoot(), [ 1, 0, 0, 1 ] ) // b]ar
-					);
+				test(
+					'merges nested elements to the right if left side element would become empty',
+					'<heading1><hchild>[foo</hchild></heading1><paragraph><pchild>b]ar</pchild></paragraph>',
+					'<paragraph><pchild>[]ar</pchild></paragraph>'
+				);
 
-					model.change( writer => {
-						writer.setSelection( range );
-					} );
-
-					deleteContent( model, doc.selection );
-
-					expect( getData( model ) )
-						.to.equal( '<pparent>x<paragraph>x<pchild>fo[]ar</pchild>y</paragraph>y</pparent>' );
-				} );
+				test(
+					'merges to the left if first element contains object (considers it as a content of that element)',
+					'<heading1><hchild><widget></widget>[foo</hchild></heading1><paragraph><pchild>b]ar</pchild></paragraph>',
+					'<heading1><hchild><widget></widget>[]ar</hchild></heading1>'
+				);
 
 				test(
 					'merges elements when left end deep nested',
@@ -393,45 +468,28 @@ describe( 'DataController utils', () => {
 				);
 
 				test(
+					'merges nested elements to the right (on multiple levels) if left side element would become empty',
+					'<heading1><hchild>[foo</hchild></heading1><paragraph><pchild>b]ar</pchild>abc</paragraph>',
+					'<paragraph><pchild>[]ar</pchild>abc</paragraph>'
+				);
+
+				test(
+					'merges to the right element when left end deep nested and will be empty',
+					'<paragraph><pchild>[foo</pchild></paragraph><paragraph>b]ar</paragraph><paragraph>x</paragraph>',
+					'<paragraph>[]ar</paragraph><paragraph>x</paragraph>'
+				);
+
+				test(
 					'merges elements when right end deep nested',
 					'<paragraph>x</paragraph><paragraph>fo[o</paragraph><paragraph><pchild>b]ar</pchild>x</paragraph>',
 					'<paragraph>x</paragraph><paragraph>fo[]ar</paragraph><paragraph>x</paragraph>'
 				);
 
-				it( 'merges elements when left end deep nested (3rd level)', () => {
-					const root = doc.getRoot();
-
-					// We need to use the raw API due to https://github.com/ckeditor/ckeditor5-engine/issues/905.
-					// <pparent>x<paragraph>foo<pchild>ba[r</pchild></paragraph></pparent><paragraph>b]om</paragraph>
-
-					root._appendChild(
-						new Element( 'pparent', null, [
-							'x',
-							new Element( 'paragraph', null, [
-								'foo',
-								new Element( 'pchild', null, 'bar' )
-							] )
-						] )
-					);
-
-					root._appendChild(
-						new Element( 'paragraph', null, 'bom' )
-					);
-
-					const range = new Range(
-						new Position( doc.getRoot(), [ 0, 1, 3, 2 ] ), // ba[r
-						new Position( doc.getRoot(), [ 1, 1 ] ) // b]om
-					);
-
-					model.change( writer => {
-						writer.setSelection( range );
-					} );
-
-					deleteContent( model, doc.selection );
-
-					expect( getData( model ) )
-						.to.equal( '<pparent>x<paragraph>foo<pchild>ba[]om</pchild></paragraph></pparent>' );
-				} );
+				test(
+					'removes element when right end deep nested but left end would be empty',
+					'<paragraph>x</paragraph><paragraph>[foo</paragraph><paragraph><pchild>b]ar</pchild></paragraph>',
+					'<paragraph>x</paragraph><paragraph><pchild>[]ar</pchild></paragraph>'
+				);
 
 				test(
 					'merges elements when right end deep nested (in an empty container)',
@@ -440,42 +498,136 @@ describe( 'DataController utils', () => {
 				);
 
 				test(
-					'merges elements when left end deep nested (in an empty container)',
+					'removes elements when left end deep nested (in an empty container)',
 					'<paragraph><pchild>[foo</pchild></paragraph><paragraph>b]ar</paragraph><paragraph>x</paragraph>',
-					'<paragraph><pchild>[]ar</pchild></paragraph><paragraph>x</paragraph>'
+					'<paragraph>[]ar</paragraph><paragraph>x</paragraph>'
 				);
 
-				it( 'merges elements when right end deep nested (3rd level)', () => {
-					const root = doc.getRoot();
-
-					// We need to use the raw API due to https://github.com/ckeditor/ckeditor5-engine/issues/905.
-					// <paragraph>fo[o</paragraph><pparent><paragraph><pchild>bar]</pchild></paragraph></pparent>
-
-					root._appendChild(
-						new Element( 'paragraph', null, 'foo' )
+				describe( 'with 3rd level of nesting', () => {
+					test(
+						'merges elements when deep nested (same name)',
+						'<pparent>x<paragraph>x<pchild>fo[o</pchild></paragraph></pparent>' +
+						'<pparent><paragraph><pchild>b]ar</pchild>y</paragraph>y</pparent>',
+						'<pparent>x<paragraph>x<pchild>fo[]ar</pchild>y</paragraph>y</pparent>'
 					);
 
-					root._appendChild(
-						new Element( 'pparent', null, [
-							new Element( 'paragraph', null, [
-								new Element( 'pchild', null, 'bar' )
-							] )
-						] )
+					test(
+						'removes elements when deep nested (same name)',
+						'<pparent><paragraph><pchild>[foo</pchild></paragraph></pparent>' +
+						'<pparent><paragraph><pchild>b]ar</pchild>y</paragraph>y</pparent>',
+						'<pparent><paragraph><pchild>[]ar</pchild>y</paragraph>y</pparent>'
 					);
 
-					const range = new Range(
-						new Position( doc.getRoot(), [ 0, 2 ] ), // f[oo
-						new Position( doc.getRoot(), [ 1, 0, 0, 3 ] ) // bar]
+					test(
+						'removes elements up to common ancestor when deep nested (same name)',
+						'<pparent>' +
+							'<paragraph><pchild>[foo</pchild></paragraph>' +
+							'<paragraph><pchild>b]ar</pchild>y</paragraph>y' +
+						'</pparent>',
+						'<pparent><paragraph><pchild>[]ar</pchild>y</paragraph>y</pparent>'
 					);
 
-					model.change( writer => {
-						writer.setSelection( range );
-					} );
+					test(
+						'merges elements when deep nested (different name)',
+						'<pparent>x<heading1>x<hchild>fo[o</hchild></heading1></pparent>' +
+						'<pparent><paragraph><pchild>b]ar</pchild>y</paragraph>y</pparent>',
+						'<pparent>x<heading1>x<hchild>fo[]ar</hchild>y</heading1>y</pparent>'
+					);
 
-					deleteContent( model, doc.selection );
+					test(
+						'removes elements when deep nested (different name)',
+						'<pparent><heading1><hchild>[foo</hchild></heading1></pparent>' +
+						'<pparent><paragraph><pchild>b]ar</pchild>y</paragraph>y</pparent>',
+						'<pparent><paragraph><pchild>[]ar</pchild>y</paragraph>y</pparent>'
+					);
 
-					expect( getData( model ) )
-						.to.equal( '<paragraph>fo[]</paragraph>' );
+					test(
+						'merges elements up to common ancestor when deep nested (different names)',
+						'<pparent>' +
+							'<heading1><hchild>fo[o</hchild></heading1>' +
+							'<paragraph><pchild>b]ar</pchild></paragraph>' +
+						'</pparent>',
+						'<pparent><heading1><hchild>fo[]ar</hchild></heading1></pparent>'
+					);
+
+					test(
+						'removes elements up to common ancestor when deep nested (different names)',
+						'<pparent>' +
+							'<heading1><hchild>[foo</hchild></heading1>' +
+							'<paragraph><pchild>b]ar</pchild>y</paragraph>y' +
+						'</pparent>',
+						'<pparent><paragraph><pchild>[]ar</pchild>y</paragraph>y</pparent>'
+					);
+				} );
+
+				describe( 'with 3rd level of nesting o the left end', () => {
+					test(
+						'merges elements',
+						'<pparent>x<paragraph>foo<pchild>ba[r</pchild></paragraph></pparent>' +
+						'<paragraph>b]om</paragraph>',
+						'<pparent>x<paragraph>foo<pchild>ba[]om</pchild></paragraph></pparent>'
+					);
+
+					test(
+						'merges elements (different names)',
+						'<pparent>x<heading1>foo<hchild>ba[r</hchild></heading1></pparent>' +
+						'<paragraph>b]om</paragraph>',
+						'<pparent>x<heading1>foo<hchild>ba[]om</hchild></heading1></pparent>'
+					);
+
+					test(
+						'removes elements',
+						'<pparent><paragraph><pchild>[bar</pchild></paragraph></pparent>' +
+						'<paragraph>b]om</paragraph>',
+						'<paragraph>[]om</paragraph>'
+					);
+
+					test(
+						'removes elements up to common ancestor (different names)',
+						'<pparent>' +
+							'<heading1><hchild>[foo</hchild></heading1>' +
+							'<paragraph>b]ar</paragraph>y' +
+						'</pparent>',
+						'<pparent><paragraph>[]ar</paragraph>y</pparent>'
+					);
+				} );
+
+				describe( 'with 3rd level of nesting o the right end', () => {
+					test(
+						'merges elements',
+						'<paragraph>b[om</paragraph>' +
+						'<pparent><paragraph><pchild>ba]r</pchild></paragraph></pparent>',
+						'<paragraph>b[]r</paragraph>'
+					);
+
+					test(
+						'merges elements (different names)',
+						'<paragraph>bo[m</paragraph>' +
+						'<pparent><heading1><hchild>b]ar</hchild></heading1></pparent>',
+						'<paragraph>bo[]ar</paragraph>'
+					);
+					test(
+						'merges elements (different names, reversed)',
+						'<heading1>bo[m</heading1>' +
+						'<pparent><paragraph><pchild>b]ar</pchild></paragraph></pparent>',
+						'<heading1>bo[]ar</heading1>'
+					);
+
+					test(
+						'removes elements',
+						'<paragraph>[bom</paragraph>' +
+						'<pparent><paragraph><pchild>b]ar</pchild></paragraph></pparent>',
+						'<pparent><paragraph><pchild>[]ar</pchild></paragraph></pparent>'
+					);
+
+					test(
+						'removes elements up to common ancestor (different names)',
+						'<pparent>' +
+							'<heading1>[bar</heading1>y' +
+							'<paragraph><pchild>f]oo</pchild></paragraph>' +
+						'</pparent>',
+						'<pparent><paragraph><pchild>[]oo</pchild></paragraph></pparent>'
+					);
 				} );
 			} );
 
@@ -507,6 +659,59 @@ describe( 'DataController utils', () => {
 					'<paragraph>ba[r</paragraph><blockWidget><nestedEditable>f]oo</nestedEditable></blockWidget>',
 					'<paragraph>ba[]</paragraph><blockWidget><nestedEditable>oo</nestedEditable></blockWidget>'
 				);
+			} );
+
+			describe( 'with markers', () => {
+				it( 'should merge left if the first element is not empty', () => {
+					setData( model, '<heading1>foo[</heading1><paragraph>]bar</paragraph>' );
+
+					model.enqueueChange( 'transparent', writer => {
+						const root = doc.getRoot( );
+						const range = writer.createRange(
+							writer.createPositionFromPath( root, [ 0, 3 ] ),
+							writer.createPositionFromPath( root, [ 1, 0 ] )
+						);
+						writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: true } );
+					} );
+
+					deleteContent( model, doc.selection );
+
+					expect( getData( model ) ).to.equal( '<heading1>foo[]bar</heading1>' );
+				} );
+
+				it( 'should merge right if the first element is empty', () => {
+					setData( model, '<heading1>[</heading1><paragraph>]bar</paragraph>' );
+
+					model.enqueueChange( 'transparent', writer => {
+						const root = doc.getRoot( );
+						const range = writer.createRange(
+							writer.createPositionFromPath( root, [ 0, 0 ] ),
+							writer.createPositionFromPath( root, [ 1, 0 ] )
+						);
+						writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: true } );
+					} );
+
+					deleteContent( model, doc.selection );
+
+					expect( getData( model ) ).to.equal( '<paragraph>[]bar</paragraph>' );
+				} );
+
+				it( 'should merge left if the last element is empty', () => {
+					setData( model, '<heading1>foo[</heading1><paragraph>]</paragraph>' );
+
+					model.enqueueChange( 'transparent', writer => {
+						const root = doc.getRoot( );
+						const range = writer.createRange(
+							writer.createPositionFromPath( root, [ 0, 3 ] ),
+							writer.createPositionFromPath( root, [ 1, 0 ] )
+						);
+						writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: true } );
+					} );
+
+					deleteContent( model, doc.selection );
+
+					expect( getData( model ) ).to.equal( '<heading1>foo[]</heading1>' );
+				} );
 			} );
 
 			describe( 'filtering out', () => {

@@ -66,7 +66,7 @@ function generateFontPreset( fontDefinition ) {
 
 	return {
 		title: firstFontName,
-		model: firstFontName,
+		model: cssFontNames,
 		view: {
 			name: 'span',
 			styles: {

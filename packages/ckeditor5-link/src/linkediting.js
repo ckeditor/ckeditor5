@@ -8,13 +8,15 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
+import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
-import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators } from './utils';
 import AutomaticDecorators from './utils/automaticdecorators';
 import ManualDecorator from './utils/manualdecorator';
-import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
 import findLinkRange from './findlinkrange';
+import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators } from './utils';
+
 import '../theme/link.css';
 
 const HIGHLIGHT_CLASS = 'ck-link_selected';
@@ -104,6 +106,9 @@ export default class LinkEditing extends Plugin {
 
 		// Change the attributes of the selection in certain situations after the link was inserted into the document.
 		this._enableInsertContentSelectionAttributesFixer();
+
+		// Handle a click at the beginning/end of a link element.
+		this._enableClickingAfterLink();
 	}
 
 	/**
@@ -346,5 +351,66 @@ export default class LinkEditing extends Plugin {
 					.forEach( name => writer.removeSelectionAttribute( name ) );
 			} );
 		}, { priority: 'low' } );
+	}
+
+	/**
+	 * Starts listening to {@link module:engine/view/document~Document#event:mousedown} and
+	 * {@link module:engine/view/document~Document#event:selectionChange} and puts the selection before/after a link node
+	 * if clicked at the beginning/ending of the link.
+	 *
+	 * The purpose of this action is to allow typing around the link node directly after a click.
+	 *
+	 * See https://github.com/ckeditor/ckeditor5/issues/1016.
+	 *
+	 * @private
+	 */
+	_enableClickingAfterLink() {
+		const editor = this.editor;
+
+		editor.editing.view.addObserver( MouseObserver );
+
+		let clicked = false;
+
+		// Detect the click.
+		this.listenTo( editor.editing.view.document, 'mousedown', () => {
+			clicked = true;
+		} );
+
+		// When the selection has changed...
+		this.listenTo( editor.editing.view.document, 'selectionChange', () => {
+			if ( !clicked ) {
+				return;
+			}
+
+			// ...and it was caused by the click...
+			clicked = false;
+
+			const selection = editor.model.document.selection;
+
+			// ...and no text is selected...
+			if ( !selection.isCollapsed ) {
+				return;
+			}
+
+			// ...and clicked text is the link...
+			if ( !selection.hasAttribute( 'linkHref' ) ) {
+				return;
+			}
+
+			const position = selection.getFirstPosition();
+			const linkRange = findLinkRange( position, selection.getAttribute( 'linkHref' ), editor.model );
+
+			// ...check whether clicked start/end boundary of the link.
+			// If so, remove the `linkHref` attribute.
+			if ( position.isTouching( linkRange.start ) || position.isTouching( linkRange.end ) ) {
+				editor.model.change( writer => {
+					writer.removeSelectionAttribute( 'linkHref' );
+
+					for ( const manualDecorator of editor.commands.get( 'link' ).manualDecorators ) {
+						writer.removeSelectionAttribute( manualDecorator.id );
+					}
+				} );
+			}
+		} );
 	}
 }

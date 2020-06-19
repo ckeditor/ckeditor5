@@ -4,18 +4,21 @@
  */
 
 /**
- * @module table/tablenavigation
+ * @module table/tablekeyboard
  */
 
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
-import { findAncestor } from './commands/utils';
-import { getSelectedTableCells, getTableCellsContainingSelection } from './utils';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import {
+	isArrowKeyCode,
+	getLocalizedArrowKeyCodeDirection
+} from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { getSelectedTableCells, getTableCellsContainingSelection } from './utils/selection';
+import { findAncestor } from './utils/common';
 
 /**
  * This plugin enables keyboard navigation for tables.
@@ -23,12 +26,12 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class TableNavigation extends Plugin {
+export default class TableKeyboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'TableNavigation';
+		return 'TableKeyboard';
 	}
 
 	/**
@@ -50,11 +53,10 @@ export default class TableNavigation extends Plugin {
 		this.editor.keystrokes.set( 'Tab', this._getTabHandler( true ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Shift+Tab', this._getTabHandler( false ), { priority: 'low' } );
 
-		// Note: This listener has the "high+1" priority because we would like to avoid collisions with other features
-		// (like Widgets), which take over the keydown events with the "high" priority. Table navigation takes precedence
-		// over Widgets in that matter (widget arrow handler stops propagation of event if object element was selected
-		// but getNearestSelectionRange didn't returned any range).
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( ...args ), { priority: priorities.get( 'high' ) + 1 } );
+		// Note: This listener has the "high-10" priority because it should allow the Widget plugin to handle the default
+		// behavior first ("high") but it should not be "prevent–defaulted" by the Widget plugin ("high-20") because of
+		// the fake selection retention on the fully selected widget.
+		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( ...args ), { priority: priorities.get( 'high' ) - 10 } );
 	}
 
 	/**
@@ -163,13 +165,14 @@ export default class TableNavigation extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_onKeydown( eventInfo, domEventData ) {
+		const editor = this.editor;
 		const keyCode = domEventData.keyCode;
 
 		if ( !isArrowKeyCode( keyCode ) ) {
 			return;
 		}
 
-		const direction = getDirectionFromKeyCode( keyCode, this.editor.locale.contentLanguageDirection );
+		const direction = getLocalizedArrowKeyCodeDirection( keyCode, editor.locale.contentLanguageDirection );
 		const wasHandled = this._handleArrowKeys( direction, domEventData.shiftKey );
 
 		if ( wasHandled ) {
@@ -224,19 +227,6 @@ export default class TableNavigation extends Plugin {
 			this._navigateFromCellInDirection( tableCell, direction, expandSelection );
 
 			return true;
-		}
-
-		// If this is an object selected and it's not at the start or the end of cell content
-		// then let's allow widget handler to take care of it.
-		const objectElement = selection.getSelectedElement();
-
-		if ( objectElement && model.schema.isObject( objectElement ) ) {
-			return false;
-		}
-
-		// If next to the selection there is an object then this is not the cell boundary (widget handler should handle this).
-		if ( this._isObjectElementNextToSelection( selection, isForward ) ) {
-			return false;
 		}
 
 		// If there isn't any $text position between cell edge and selection then we shall move the selection to next cell.
@@ -301,27 +291,6 @@ export default class TableNavigation extends Plugin {
 
 		// If there was no change in the focus position, then it's not possible to move the selection there.
 		return focus.isEqual( probe.focus );
-	}
-
-	/**
-	 * Checks if there is an {@link module:engine/model/element~Element element} next to the current
-	 * {@link module:engine/model/selection~Selection model selection} marked in the
-	 * {@link module:engine/model/schema~Schema schema} as an `object`.
-	 *
-	 * @private
-	 * @param {module:engine/model/selection~Selection} modelSelection The selection.
-	 * @param {Boolean} isForward The direction of checking.
-	 * @returns {Boolean}
-	 */
-	_isObjectElementNextToSelection( modelSelection, isForward ) {
-		const model = this.editor.model;
-		const schema = model.schema;
-
-		const probe = model.createSelection( modelSelection );
-		model.modifySelection( probe, { direction: isForward ? 'forward' : 'backward' } );
-		const objectElement = isForward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
-
-		return objectElement && schema.isObject( objectElement );
 	}
 
 	/**
@@ -450,7 +419,7 @@ export default class TableNavigation extends Plugin {
 		const model = this.editor.model;
 
 		const table = findAncestor( 'table', focusCell );
-		const tableMap = [ ...new TableWalker( table, { includeSpanned: true } ) ];
+		const tableMap = [ ...new TableWalker( table, { includeAllSlots: true } ) ];
 		const { row: lastRow, column: lastColumn } = tableMap[ tableMap.length - 1 ];
 
 		const currentCellInfo = tableMap.find( ( { cell } ) => cell == focusCell );
@@ -466,11 +435,11 @@ export default class TableNavigation extends Plugin {
 				break;
 
 			case 'right':
-				column += currentCellInfo.colspan;
+				column += currentCellInfo.cellWidth;
 				break;
 
 			case 'down':
-				row += currentCellInfo.rowspan;
+				row += currentCellInfo.cellHeight;
 				break;
 		}
 
@@ -515,38 +484,3 @@ export default class TableNavigation extends Plugin {
 	}
 }
 
-// Returns `true` if the provided key code represents one of the arrow keys.
-//
-// @private
-// @param {Number} keyCode
-// @returns {Boolean}
-function isArrowKeyCode( keyCode ) {
-	return keyCode == keyCodes.arrowright ||
-		keyCode == keyCodes.arrowleft ||
-		keyCode == keyCodes.arrowup ||
-		keyCode == keyCodes.arrowdown;
-}
-
-// Returns the direction name from `keyCode`.
-//
-// @private
-// @param {Number} keyCode
-// @param {String} contentLanguageDirection The content language direction.
-// @returns {'left'|'up'|'right'|'down'} Arrow direction.
-function getDirectionFromKeyCode( keyCode, contentLanguageDirection ) {
-	const isLtrContent = contentLanguageDirection === 'ltr';
-
-	switch ( keyCode ) {
-		case keyCodes.arrowleft:
-			return isLtrContent ? 'left' : 'right';
-
-		case keyCodes.arrowright:
-			return isLtrContent ? 'right' : 'left';
-
-		case keyCodes.arrowup:
-			return 'up';
-
-		case keyCodes.arrowdown:
-			return 'down';
-	}
-}

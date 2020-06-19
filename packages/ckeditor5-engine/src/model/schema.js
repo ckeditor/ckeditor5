@@ -26,9 +26,9 @@ import TreeWalker from './treewalker';
  *
  * Read more about the schema in:
  *
- * * {@glink framework/guides/architecture/editing-engine#schema "Schema"} section of the
- * {@glink framework/guides/architecture/editing-engine Introduction to the "Editing engine architecture"}.
- * * {@glink framework/guides/deep-dive/schema "Schema" deep dive} guide.
+ * * {@glink framework/guides/architecture/editing-engine#schema Schema} section of the
+ * {@glink framework/guides/architecture/editing-engine Introduction to the Editing engine architecture}.
+ * * {@glink framework/guides/deep-dive/schema Schema deep dive} guide.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
@@ -171,7 +171,7 @@ export default class Schema {
 	}
 
 	/**
-	 * Returns a definition of the given item or `undefined` if item is not registered.
+	 * Returns a definition of the given item or `undefined` if an item is not registered.
 	 *
 	 * This method should normally be used for reflection purposes (e.g. defining a clone of a certain element,
 	 * checking a list of all block elements, etc).
@@ -212,7 +212,7 @@ export default class Schema {
 
 	/**
 	 * Returns `true` if the given item is defined to be
-	 * a block by {@link module:engine/model/schema~SchemaItemDefinition}'s `isBlock` property.
+	 * a block by the {@link module:engine/model/schema~SchemaItemDefinition}'s `isBlock` property.
 	 *
 	 *		schema.isBlock( 'paragraph' ); // -> true
 	 *		schema.isBlock( '$root' ); // -> false
@@ -220,7 +220,7 @@ export default class Schema {
 	 *		const paragraphElement = writer.createElement( 'paragraph' );
 	 *		schema.isBlock( paragraphElement ); // -> true
 	 *
-	 * See the {@glink framework/guides/deep-dive/schema#block-elements Block elements} section of the "Schema" deep dive}
+	 * See the {@glink framework/guides/deep-dive/schema#block-elements Block elements} section of the Schema deep dive}
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
@@ -234,18 +234,18 @@ export default class Schema {
 	/**
 	 * Returns `true` if the given item should be treated as a limit element.
 	 *
-	 * It considers the item to be a limit element if its
+	 * It considers an item to be a limit element if its
 	 * {@link module:engine/model/schema~SchemaItemDefinition}'s
 	 * {@link module:engine/model/schema~SchemaItemDefinition#isLimit `isLimit`} or
 	 * {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} property
-	 * were set to `true`.
+	 * was set to `true`.
 	 *
 	 *		schema.isLimit( 'paragraph' ); // -> false
 	 *		schema.isLimit( '$root' ); // -> true
 	 *		schema.isLimit( editor.model.document.getRoot() ); // -> true
 	 *		schema.isLimit( 'image' ); // -> true
 	 *
-	 * See the {@glink framework/guides/deep-dive/schema#limit-elements Limit elements} section of the "Schema" deep dive}
+	 * See the {@glink framework/guides/deep-dive/schema#limit-elements Limit elements} section of the Schema deep dive}
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
@@ -261,12 +261,12 @@ export default class Schema {
 	}
 
 	/**
-	 * Returns `true` if the given item is should be treated as an object element.
+	 * Returns `true` if the given item should be treated as an object element.
 	 *
-	 * It considers the item to be an object element if its
+	 * It considers an item to be an object element if its
 	 * {@link module:engine/model/schema~SchemaItemDefinition}'s
 	 * {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} property
-	 * were set to `true`.
+	 * was set to `true`.
 	 *
 	 *		schema.isObject( 'paragraph' ); // -> false
 	 *		schema.isObject( 'image' ); // -> true
@@ -274,7 +274,7 @@ export default class Schema {
 	 *		const imageElement = writer.createElement( 'image' );
 	 *		schema.isObject( imageElement ); // -> true
 	 *
-	 * See the {@glink framework/guides/deep-dive/schema#object-elements Object elements} section of the "Schema" deep dive}
+	 * See the {@glink framework/guides/deep-dive/schema#object-elements Object elements} section of the Schema deep dive}
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
@@ -287,7 +287,7 @@ export default class Schema {
 
 	/**
 	 * Returns `true` if the given item is defined to be
-	 * an inline element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isInline` property.
+	 * an inline element by the {@link module:engine/model/schema~SchemaItemDefinition}'s `isInline` property.
 	 *
 	 *		schema.isInline( 'paragraph' ); // -> false
 	 *		schema.isInline( 'softBreak' ); // -> true
@@ -295,7 +295,7 @@ export default class Schema {
 	 *		const text = writer.createText('foo' );
 	 *		schema.isInline( text ); // -> true
 	 *
-	 * See the {@glink framework/guides/deep-dive/schema#inline-elements Inline elements} section of the "Schema" deep dive}
+	 * See the {@glink framework/guides/deep-dive/schema#inline-elements Inline elements} section of the Schema deep dive}
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
@@ -737,13 +737,13 @@ export default class Schema {
 	}
 
 	/**
-	 * Tries to find position ancestors that allows to insert given node.
+	 * Tries to find position ancestors that allow to insert a given node.
 	 * It starts searching from the given position and goes node by node to the top of the model tree
-	 * as long as {@link module:engine/model/schema~Schema#isLimit limit element},
-	 * {@link module:engine/model/schema~Schema#isObject object element} or top-most ancestor won't be reached.
+	 * as long as a {@link module:engine/model/schema~Schema#isLimit limit element}, an
+	 * {@link module:engine/model/schema~Schema#isObject object element} or a topmost ancestor is not reached.
 	 *
-	 * @param {module:engine/model/position~Position} position Position from searching will start.
-	 * @param {module:engine/model/node~Node|String} node Node for which allowed parent should be found or its name.
+	 * @param {module:engine/model/position~Position} position The position that the search will start from.
+	 * @param {module:engine/model/node~Node|String} node The node for which an allowed parent should be found or its name.
 	 * @returns {module:engine/model/element~Element|null} element Allowed parent or null if nothing was found.
 	 */
 	findAllowedParent( position, node ) {
@@ -873,7 +873,7 @@ export default class Schema {
 	 * This is a helper function for {@link ~Schema#getValidRanges}.
 	 *
 	 * @private
-	 * @param {module:engine/model/range~Range} range Range to process.
+	 * @param {module:engine/model/range~Range} range The range to process.
 	 * @param {String} attribute The name of the attribute to check.
 	 * @returns {Iterable.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
 	 */
@@ -907,7 +907,7 @@ mix( Schema, ObservableMixin );
 
 /**
  * Event fired when the {@link #checkChild} method is called. It allows plugging in
- * additional behavior – e.g. implementing rules which cannot be defined using the declarative
+ * additional behavior, for example implementing rules which cannot be defined using the declarative
  * {@link module:engine/model/schema~SchemaItemDefinition} interface.
  *
  * **Note:** The {@link #addChildCheck} method is a more handy way to register callbacks. Internally,
@@ -916,7 +916,7 @@ mix( Schema, ObservableMixin );
  *
  * The {@link #checkChild} method fires an event because it is
  * {@link module:utils/observablemixin~ObservableMixin#decorate decorated} with it. Thanks to that you can
- * use this event in a various way, but the most important use case is overriding standard behaviour of the
+ * use this event in various ways, but the most important use case is overriding standard behavior of the
  * `checkChild()` method. Let's see a typical listener template:
  *
  *		schema.on( 'checkChild', ( evt, args ) => {
@@ -927,12 +927,12 @@ mix( Schema, ObservableMixin );
  * The listener is added with a `high` priority to be executed before the default method is really called. The `args` callback
  * parameter contains arguments passed to `checkChild( context, child )`. However, the `context` parameter is already
  * normalized to a {@link module:engine/model/schema~SchemaContext} instance and `child` to a
- * {@link module:engine/model/schema~SchemaCompiledItemDefinition} instance, so you don't have to worry about
+ * {@link module:engine/model/schema~SchemaCompiledItemDefinition} instance, so you do not have to worry about
  * the various ways how `context` and `child` may be passed to `checkChild()`.
  *
  * **Note:** `childDefinition` may be `undefined` if `checkChild()` was called with a non-registered element.
  *
- * So, in order to implement a rule "disallow `heading1` in `blockQuote`" you can add such a listener:
+ * So, in order to implement a rule "disallow `heading1` in `blockQuote`", you can add such a listener:
  *
  *		schema.on( 'checkChild', ( evt, args ) => {
  *			const context = args[ 0 ];
@@ -946,8 +946,8 @@ mix( Schema, ObservableMixin );
  *			}
  *		}, { priority: 'high' } );
  *
- * Allowing elements in specific contexts will be a far less common use case, because it's normally handled by
- * `allowIn` rule from {@link module:engine/model/schema~SchemaItemDefinition} but if you have a complex scenario
+ * Allowing elements in specific contexts will be a far less common use case, because it is normally handled by the
+ * `allowIn` rule from {@link module:engine/model/schema~SchemaItemDefinition}. But if you have a complex scenario
  * where `listItem` should be allowed only in element `foo` which must be in element `bar`, then this would be the way:
  *
  *		schema.on( 'checkChild', ( evt, args ) => {
@@ -968,16 +968,16 @@ mix( Schema, ObservableMixin );
 
 /**
  * Event fired when the {@link #checkAttribute} method is called. It allows plugging in
- * additional behavior – e.g. implementing rules which cannot be defined using the declarative
+ * additional behavior, for example implementing rules which cannot be defined using the declarative
  * {@link module:engine/model/schema~SchemaItemDefinition} interface.
  *
  * **Note:** The {@link #addAttributeCheck} method is a more handy way to register callbacks. Internally,
  * it registers a listener to this event but comes with a simpler API and it is the recommended choice
  * in most of the cases.
  *
- * The {@link #checkAttribute} method fires an event because it's
+ * The {@link #checkAttribute} method fires an event because it is
  * {@link module:utils/observablemixin~ObservableMixin#decorate decorated} with it. Thanks to that you can
- * use this event in a various way, but the most important use case is overriding standard behaviour of the
+ * use this event in various ways, but the most important use case is overriding the standard behavior of the
  * `checkAttribute()` method. Let's see a typical listener template:
  *
  *		schema.on( 'checkAttribute', ( evt, args ) => {
@@ -987,10 +987,10 @@ mix( Schema, ObservableMixin );
  *
  * The listener is added with a `high` priority to be executed before the default method is really called. The `args` callback
  * parameter contains arguments passed to `checkAttribute( context, attributeName )`. However, the `context` parameter is already
- * normalized to a {@link module:engine/model/schema~SchemaContext} instance, so you don't have to worry about
+ * normalized to a {@link module:engine/model/schema~SchemaContext} instance, so you do not have to worry about
  * the various ways how `context` may be passed to `checkAttribute()`.
  *
- * So, in order to implement a rule "disallow `bold` in a text which is in a `heading1` you can add such a listener:
+ * So, in order to implement a rule "disallow `bold` in a text which is in a `heading1`, you can add such a listener:
  *
  *		schema.on( 'checkAttribute', ( evt, args ) => {
  *			const context = args[ 0 ];
@@ -1004,8 +1004,8 @@ mix( Schema, ObservableMixin );
  *			}
  *		}, { priority: 'high' } );
  *
- * Allowing attributes in specific contexts will be a far less common use case, because it's normally handled by
- * `allowAttributes` rule from {@link module:engine/model/schema~SchemaItemDefinition} but if you have a complex scenario
+ * Allowing attributes in specific contexts will be a far less common use case, because it is normally handled by the
+ * `allowAttributes` rule from {@link module:engine/model/schema~SchemaItemDefinition}. But if you have a complex scenario
  * where `bold` should be allowed only in element `foo` which must be in element `bar`, then this would be the way:
  *
  *		schema.on( 'checkAttribute', ( evt, args ) => {
@@ -1056,7 +1056,7 @@ mix( Schema, ObservableMixin );
  * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
  *
  * Read more about the meaning of these types in the
- * {@glink framework/guides/deep-dive/schema#defining-additional-semantics Dedicated section of the "Schema" deep dive} guide.
+ * {@glink framework/guides/deep-dive/schema#defining-additional-semantics dedicated section of the Schema deep dive} guide.
  *
  * # Generic items
  *
@@ -1159,14 +1159,14 @@ mix( Schema, ObservableMixin );
  * Most block type items will inherit from `$block` (through `inheritAllFrom`).
  *
  * Read more about the block elements in the
- * {@glink framework/guides/deep-dive/schema#block-elements Block elements} section of the "Schema" deep dive} guide.
+ * {@glink framework/guides/deep-dive/schema#block-elements Block elements} section of the Schema deep dive} guide.
  *
  * @property {Boolean} isInline
  * Whether an item is "text-like" and should be treated as an inline node. Examples of inline elements:
  * `$text`, `softBreak` (`<br>`), etc.
  *
  * Read more about the inline elements in the
- * {@glink framework/guides/deep-dive/schema#inline-elements Inline elements} section of the "Schema" deep dive} guide.
+ * {@glink framework/guides/deep-dive/schema#inline-elements Inline elements} section of the Schema deep dive} guide.
  *
  * @property {Boolean} isLimit
  * It can be understood as whether this element should not be split by <kbd>Enter</kbd>.
@@ -1174,7 +1174,7 @@ mix( Schema, ObservableMixin );
  * a limit element are limited to its content.
  *
  * Read more about the limit elements in the
- * {@glink framework/guides/deep-dive/schema#limit-elements Limit elements} section of the "Schema" deep dive} guide.
+ * {@glink framework/guides/deep-dive/schema#limit-elements Limit elements} section of the Schema deep dive} guide.
  *
  * @property {Boolean} isObject
  * Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
@@ -1184,7 +1184,7 @@ mix( Schema, ObservableMixin );
  * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
  *
  * Read more about the object elements in the
- * {@glink framework/guides/deep-dive/schema#object-elements Object elements} section of the "Schema" deep dive} guide.
+ * {@glink framework/guides/deep-dive/schema#object-elements Object elements} section of the Schema deep dive} guide.
  */
 
 /**

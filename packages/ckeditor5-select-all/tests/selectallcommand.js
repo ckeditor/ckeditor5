@@ -70,11 +70,49 @@ describe( 'SelectAllCommand', () => {
 		} );
 
 		it( 'should select all (selection in a nested editable)', () => {
-			setData( model, '<paragraph>foo</paragraph><image src="foo.png"><caption>[bar]</caption></image>' );
+			setData( model, '<paragraph>foo</paragraph><image src="foo.png"><caption>b[ar]</caption></image>' );
 
 			editor.execute( 'selectAll' );
 
 			expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph><image src="foo.png"><caption>[bar]</caption></image>' );
+		} );
+
+		it( 'should select all (selection within limit element)', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+						'</tableCell>' +
+						'[<tableCell>' +
+							'<paragraph>bar</paragraph>' +
+						'</tableCell>]' +
+						'[<tableCell>' +
+							'<paragraph>baz</paragraph>' +
+						'</tableCell>]' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			editor.execute( 'selectAll' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>[foo</paragraph>' +
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>bar</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>baz</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>]'
+			);
 		} );
 
 		it( 'should select all in the closest nested editable (nested editable inside another nested editable)', () => {
@@ -101,6 +139,82 @@ describe( 'SelectAllCommand', () => {
 						'</tableCell>' +
 					'</tableRow>' +
 				'</table>'
+			);
+		} );
+
+		it( 'should select all in the parent select-all-limit element (the entire editable is selected)', () => {
+			setData( model, '<paragraph>foo</paragraph><image src="foo.png"><caption>[bar]</caption></image>' );
+
+			editor.execute( 'selectAll' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>[foo</paragraph><image src="foo.png"><caption>bar</caption></image>]' );
+		} );
+
+		it( 'should select all in the parent sellect-all-limit element (consecutive execute() on a nested editable)', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+							'<image src="foo.png"><caption>b[]ar</caption></image>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			editor.execute( 'selectAll' );
+			editor.execute( 'selectAll' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph>' +
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>[foo</paragraph>' +
+							'<image src="foo.png"><caption>bar</caption></image>]' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			editor.execute( 'selectAll' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>[foo</paragraph>' +
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+							'<image src="foo.png"><caption>bar</caption></image>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>]'
+			);
+		} );
+
+		it( 'should not change the selection (the entire editor is selected)', () => {
+			setData( model,
+				'<paragraph>[foo</paragraph>' +
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+							'<image src="foo.png"><caption>bar</caption></image>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>]'
+			);
+
+			editor.execute( 'selectAll' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>[foo</paragraph>' +
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+							'<image src="foo.png"><caption>bar</caption></image>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>]'
 			);
 		} );
 	} );

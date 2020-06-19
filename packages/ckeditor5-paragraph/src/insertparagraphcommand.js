@@ -18,6 +18,10 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  *			position: editor.model.createPositionBefore( element )
  *		} );
  *
+ * If a paragraph is disallowed in the context of the specific position, the command
+ * will attempt to split position ancestors to find a place where it is possible
+ * to insert a paragraph.
+ *
  * **Note**: This command moves the selection to the inserted paragraph.
  *
  * @extends module:core/command~Command
@@ -33,15 +37,24 @@ export default class InsertParagraphCommand extends Command {
 	 */
 	execute( options ) {
 		const model = this.editor.model;
-
-		if ( !model.schema.checkChild( options.position, 'paragraph' ) ) {
-			return;
-		}
+		let position = options.position;
 
 		model.change( writer => {
 			const paragraph = writer.createElement( 'paragraph' );
 
-			model.insertContent( paragraph, options.position );
+			if ( !model.schema.checkChild( position.parent, paragraph ) ) {
+				const allowedParent = model.schema.findAllowedParent( position, paragraph );
+
+				// It could be there's no ancestor limit that would allow paragraph.
+				// In theory, "paragraph" could be disallowed even in the "$root".
+				if ( !allowedParent ) {
+					return;
+				}
+
+				position = writer.split( position, allowedParent ).position;
+			}
+
+			model.insertContent( paragraph, position );
 
 			writer.setSelection( paragraph, 'in' );
 		} );

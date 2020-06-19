@@ -3,21 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import {
-	downcastInsertCell,
-	downcastInsertRow,
-	downcastInsertTable,
-	downcastRemoveRow,
-	downcastTableHeadingColumnsChange,
-	downcastTableHeadingRowsChange
-} from '../../src/converters/downcast';
-import upcastTable, { upcastTableCell } from '../../src/converters/upcasttable';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import TableWalker from '../../src/tablewalker';
 
 const WIDGET_TABLE_CELL_CLASS = 'ck-editor__editable ck-editor__nested-editable';
-const BORDER_REG_EXP = /[\s\S]+/;
 
 /**
  * Returns a model representation of a table shorthand notation:
@@ -178,85 +168,6 @@ export function viewTable( tableData, attributes = {} ) {
 	const widgetHandler = '<div class="ck ck-widget__selection-handle"></div>';
 
 	return `<figure ${ figureAttributes }>${ asWidget ? widgetHandler : '' }<table>${ thead }${ tbody }</table></figure>`;
-}
-
-export function defaultSchema( schema, registerParagraph = true ) {
-	schema.register( 'table', {
-		allowWhere: '$block',
-		allowAttributes: [ 'headingRows', 'headingColumns' ],
-		isLimit: true,
-		isObject: true,
-		isBlock: true
-	} );
-
-	schema.register( 'tableRow', {
-		allowIn: 'table',
-		isLimit: true
-	} );
-
-	schema.register( 'tableCell', {
-		allowIn: 'tableRow',
-		allowAttributes: [ 'colspan', 'rowspan' ],
-		isObject: true
-	} );
-
-	// Allow all $block content inside table cell.
-	schema.extend( '$block', { allowIn: 'tableCell' } );
-
-	// Disallow table in table.
-	schema.addChildCheck( ( context, childDefinition ) => {
-		if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
-			return false;
-		}
-	} );
-
-	if ( registerParagraph ) {
-		schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-	}
-
-	// Styles
-	schema.extend( 'tableCell', {
-		allowAttributes: [ 'border' ]
-	} );
-}
-
-export function defaultConversion( conversion, asWidget = false ) {
-	conversion.elementToElement( { model: 'paragraph', view: 'p' } );
-
-	// Table conversion.
-	conversion.for( 'upcast' ).add( upcastTable() );
-	conversion.for( 'downcast' ).add( downcastInsertTable( { asWidget } ) );
-
-	// Table row conversion.
-	conversion.for( 'upcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
-	conversion.for( 'downcast' ).add( downcastInsertRow( { asWidget } ) );
-	conversion.for( 'downcast' ).add( downcastRemoveRow( { asWidget } ) );
-
-	// Table cell conversion.
-	conversion.for( 'upcast' ).add( upcastTableCell( 'td' ) );
-	conversion.for( 'upcast' ).add( upcastTableCell( 'th' ) );
-	conversion.for( 'downcast' ).add( downcastInsertCell( { asWidget } ) );
-
-	// Table attributes conversion.
-	conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-	conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
-
-	conversion.for( 'downcast' ).add( downcastTableHeadingColumnsChange( { asWidget } ) );
-	conversion.for( 'downcast' ).add( downcastTableHeadingRowsChange( { asWidget } ) );
-
-	// Styles
-	conversion.for( 'upcast' ).attributeToAttribute( {
-		view: {
-			name: 'td',
-			styles: {
-				border: BORDER_REG_EXP
-			}
-		},
-		model: {
-			key: 'border',
-			value: viewElement => viewElement.getStyle( 'border' )
-		}
-	} );
 }
 
 /**
@@ -420,10 +331,10 @@ function formatAttributes( attributes ) {
 	let attributesString = '';
 
 	if ( attributes ) {
-		const entries = Object.entries( attributes );
+		const sortedKeys = Object.keys( attributes ).sort();
 
-		if ( entries.length ) {
-			attributesString = ' ' + entries.map( entry => `${ entry[ 0 ] }="${ entry[ 1 ] }"` ).join( ' ' );
+		if ( sortedKeys.length ) {
+			attributesString = ' ' + sortedKeys.map( key => `${ key }="${ attributes[ key ] }"` ).join( ' ' );
 		}
 	}
 
@@ -456,17 +367,24 @@ function makeRows( tableData, options ) {
 					delete tableCellData.isSelected;
 				}
 
-				const attributes = isObject ? tableCellData : {};
+				let attributes = {};
 
 				if ( asWidget ) {
 					attributes.class = getClassToSet( attributes );
 					attributes.contenteditable = 'true';
 				}
 
+				if ( isObject ) {
+					attributes = {
+						...attributes,
+						...tableCellData
+					};
+				}
+
 				if ( !( contents.replace( '[', '' ).replace( ']', '' ).startsWith( '<' ) ) && enforceWrapping ) {
 					contents =
 						`<${ wrappingElement == 'span' ? 'span style="display:inline-block"' : wrappingElement }>` +
-							contents +
+						contents +
 						`</${ wrappingElement }>`;
 				}
 
@@ -498,7 +416,7 @@ function getClassToSet( attributes ) {
  * @returns {String}
  */
 export function createTableAsciiArt( model, table ) {
-	const tableMap = [ ...new TableWalker( table, { includeSpanned: true } ) ];
+	const tableMap = [ ...new TableWalker( table, { includeAllSlots: true } ) ];
 
 	if ( !tableMap.length ) {
 		return '';
@@ -519,25 +437,17 @@ export function createTableAsciiArt( model, table ) {
 		for ( let column = 0; column <= lastColumn; column++ ) {
 			const cellInfo = tableMap[ row * columns + column ];
 
-			if ( cellInfo.rowspan > 1 || cellInfo.colspan > 1 ) {
-				for ( let subRow = row; subRow < row + cellInfo.rowspan; subRow++ ) {
-					for ( let subColumn = column; subColumn < column + cellInfo.colspan; subColumn++ ) {
-						const subCellInfo = tableMap[ subRow * columns + subColumn ];
+			const isColSpan = cellInfo.cellAnchorColumn != cellInfo.column;
+			const isRowSpan = cellInfo.cellAnchorRow != cellInfo.row;
 
-						subCellInfo.isColSpan = subColumn > column;
-						subCellInfo.isRowSpan = subRow > row;
-					}
-				}
-			}
-
-			gridLine += !cellInfo.isColSpan || !cellInfo.isRowSpan ? '+' : ' ';
-			gridLine += !cellInfo.isRowSpan ? '----' : '    ';
+			gridLine += !isColSpan || !isRowSpan ? '+' : ' ';
+			gridLine += !isRowSpan ? '----' : '    ';
 
 			let contents = getElementPlainText( model, cellInfo.cell ).substring( 0, 2 );
 			contents += ' '.repeat( 2 - contents.length );
 
-			contentLine += !cellInfo.isColSpan ? '|' : ' ';
-			contentLine += !cellInfo.isColSpan && !cellInfo.isRowSpan ? ` ${ contents } ` : '    ';
+			contentLine += !isColSpan ? '|' : ' ';
+			contentLine += !isColSpan && !isRowSpan ? ` ${ contents } ` : '    ';
 
 			if ( column == lastColumn ) {
 				gridLine += '+';
@@ -578,23 +488,23 @@ export function prepareModelTableInput( model, table ) {
 	const result = [];
 	let row = [];
 
-	for ( const cellInfo of new TableWalker( table, { includeSpanned: true } ) ) {
+	for ( const cellInfo of new TableWalker( table, { includeAllSlots: true } ) ) {
 		if ( cellInfo.column == 0 && cellInfo.row > 0 ) {
 			result.push( row );
 			row = [];
 		}
 
-		if ( cellInfo.isSpanned ) {
+		if ( !cellInfo.isAnchor ) {
 			continue;
 		}
 
 		const contents = getElementPlainText( model, cellInfo.cell );
 
-		if ( cellInfo.colspan > 1 || cellInfo.rowspan > 1 ) {
+		if ( cellInfo.cellWidth > 1 || cellInfo.cellHeight > 1 ) {
 			row.push( {
 				contents,
-				...( cellInfo.colspan > 1 ? { colspan: cellInfo.colspan } : null ),
-				...( cellInfo.rowspan > 1 ? { rowspan: cellInfo.rowspan } : null )
+				...( cellInfo.cellWidth > 1 ? { colspan: cellInfo.cellWidth } : null ),
+				...( cellInfo.cellHeight > 1 ? { rowspan: cellInfo.cellHeight } : null )
 			} );
 		} else {
 			row.push( contents );

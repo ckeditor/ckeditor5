@@ -13,6 +13,16 @@
 	--ck-color-widget-type-around-button-icon: var(--ck-color-base-background);
 }
 
+@define-mixin ck-widget-type-around-button-visible {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+@define-mixin ck-widget-type-around-button-hidden {
+	opacity: 0;
+	pointer-events: none;
+}
+
 .ck .ck-widget {
 	/*
 	 * Styles of the type around buttons
@@ -22,10 +32,9 @@
 		height: var(--ck-widget-type-around-button-size);
 		background: var(--ck-color-widget-type-around-button);
 		border-radius: 100px;
-
-		pointer-events: none;
-		opacity: 0;
 		transition: opacity var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve), background var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
+
+		@mixin ck-widget-type-around-button-hidden;
 
 		& svg {
 			width: 10px;
@@ -77,8 +86,7 @@
 	&.ck-widget_selected,
 	&:hover {
 		& > .ck-widget__type-around > .ck-widget__type-around__button {
-			pointer-events: auto;
-			opacity: 1;
+			@mixin ck-widget-type-around-button-visible;
 		}
 	}
 
@@ -114,6 +122,75 @@
 	&.ck-widget_with-selection-handle > .ck-widget__type-around > .ck-widget__type-around__button_before {
 		margin-left: 20px;
 	}
+
+	/*
+	 * Styles for the horizontal "fake caret" which is displayed when the user navigates using the keyboard.
+	 */
+	& .ck-widget__type-around__fake-caret {
+		pointer-events: none;
+		height: 1px;
+		animation: ck-widget-type-around-fake-caret-pulse linear 1s infinite normal forwards;
+
+		/*
+		 * The semi-transparent-outline+background combo improves the contrast
+		 * when the background underneath the fake caret is dark.
+		 */
+		outline: solid 1px hsla(0, 0%, 100%, .5);
+		background: var(--ck-color-base-text);
+	}
+
+	/*
+	 * Styles of the widget when the "fake caret" is blinking (e.g. upon keyboard navigation).
+	 * Despite the widget being physically selected in the model, its outline should disappear.
+	 */
+	&.ck-widget_selected {
+		&.ck-widget_type-around_show-fake-caret_before,
+		&.ck-widget_type-around_show-fake-caret_after {
+			outline-color: transparent;
+		}
+	}
+
+	&.ck-widget_type-around_show-fake-caret_before,
+	&.ck-widget_type-around_show-fake-caret_after {
+		/*
+		 * When the "fake caret" is visible we simulate that the widget is not selected
+		 * (despite being physically selected), so the outline color should be for the
+		 * unselected widget.
+		 */
+		&.ck-widget_selected:hover {
+			outline-color: var(--ck-color-widget-hover-border);
+		}
+
+		/*
+		 * Styles of the type around buttons when the "fake caret" is blinking (e.g. upon keyboard navigation).
+		 * In this state, the type around buttons would collide with the fake carets so they should disappear.
+		 */
+		& > .ck-widget__type-around > .ck-widget__type-around__button {
+			@mixin ck-widget-type-around-button-hidden;
+		}
+
+		/*
+		 * Fake horizontal caret integration with the selection handle. When the caret is visible, simply
+		 * hide the handle because it intersects with the caret (and does not make much sense anyway).
+		 */
+		&.ck-widget_with-selection-handle {
+			&.ck-widget_selected,
+			&.ck-widget_selected:hover {
+				& > .ck-widget__selection-handle {
+					opacity: 0
+				}
+			}
+		}
+
+		/*
+		 * Fake horizontal caret integration with the resize UI. When the caret is visible, simply
+		 * hide the resize UI because it creates too much noise. It can be visible when the user
+		 * hovers the widget, though.
+		 */
+		&.ck-widget_selected.ck-widget_with-resizer > .ck-widget__resizer {
+			opacity: 0
+		}
+	}
 }
 
 /*
@@ -127,8 +204,7 @@
 		&.ck-widget_selected,
 		&:hover {
 			& > .ck-widget__type-around > .ck-widget__type-around__button {
-				pointer-events: none;
-				opacity: 0;
+				@mixin ck-widget-type-around-button-hidden;
 			}
 		}
 	}
@@ -172,5 +248,23 @@
 	}
 	100% {
 		box-shadow: 0 0 0 5px hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-start-alpha));
+	}
+}
+
+@keyframes ck-widget-type-around-fake-caret-pulse {
+	0% {
+		opacity: 1;
+	}
+	49% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0;
+	}
+	99% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
 	}
 }

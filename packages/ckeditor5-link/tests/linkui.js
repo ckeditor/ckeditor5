@@ -8,7 +8,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -351,16 +351,16 @@ describe( 'LinkUI', () => {
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'updates the position of the panel – creating a new link, then the selection moved', () => {
-				setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
+				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 				linkUIFeature._showUI();
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 
 				const root = viewDocument.getRoot();
-				const text = root.getChild( 0 ).getChild( 0 );
+				const text = root.getChild( 0 ).getChild( 2 );
 
 				view.change( writer => {
-					writer.setSelection( text, 3, true );
+					writer.setSelection( text, 1, true );
 				} );
 
 				sinon.assert.calledOnce( spy );
@@ -465,6 +465,40 @@ describe( 'LinkUI', () => {
 				sinon.assert.notCalled( spyUpdate );
 			} );
 		} );
+
+		it( 'should display a fake visual selection when a text fragment is selected', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+
+			expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+			const paragraph = editor.model.document.getRoot().getChild( 0 );
+			const expectedRange = editor.model.createRange(
+				editor.model.createPositionAt( paragraph, 1 ),
+				editor.model.createPositionAt( paragraph, 2 )
+			);
+			const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
+
+		it( 'should display a fake visual selection on a collapsed selection', () => {
+			setModelData( editor.model, '<paragraph>f[]o</paragraph>' );
+
+			linkUIFeature._showUI();
+
+			expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+			const paragraph = editor.model.document.getRoot().getChild( 0 );
+			const expectedRange = editor.model.createRange(
+				editor.model.createPositionAt( paragraph, 1 ),
+				editor.model.createPositionAt( paragraph, 1 )
+			);
+			const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+		} );
 	} );
 
 	describe( '_hideUI()', () => {
@@ -517,6 +551,14 @@ describe( 'LinkUI', () => {
 			editor.ui.fire( 'update' );
 
 			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should clear the fake visual selection from a selected text fragment', () => {
+			expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+			linkUIFeature._hideUI();
+
+			expect( editor.model.markers.has( 'link-ui' ) ).to.be.false;
 		} );
 	} );
 
@@ -891,6 +933,27 @@ describe( 'LinkUI', () => {
 	describe( 'link form view', () => {
 		let focusEditableSpy;
 
+		const createEditorWithDefaultProtocol = defaultProtocol => {
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ LinkEditing, LinkUI, Paragraph, BlockQuote ],
+					link: { defaultProtocol }
+				} )
+				.then( editor => {
+					const linkUIFeature = editor.plugins.get( LinkUI );
+					const formView = linkUIFeature.formView;
+
+					formView.render();
+
+					editor.model.schema.extend( '$text', {
+						allowIn: '$root',
+						allowAttributes: 'linkHref'
+					} );
+
+					return { editor, formView };
+				} );
+		};
+
 		beforeEach( () => {
 			focusEditableSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 		} );
@@ -903,6 +966,137 @@ describe( 'LinkUI', () => {
 			formView.element.dispatchEvent( new Event( 'focus' ) );
 
 			expect( editor.ui.focusTracker.isFocused ).to.be.true;
+		} );
+
+		describe( 'link protocol', () => {
+			it( 'should use a default link protocol from the `config.link.defaultProtocol` when provided', () => {
+				return ClassicTestEditor
+					.create( editorElement, {
+						link: {
+							defaultProtocol: 'https://'
+						}
+					} )
+					.then( editor => {
+						const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
+
+						expect( defaultProtocol ).to.equal( 'https://' );
+
+						return editor.destroy();
+					} );
+			} );
+
+			it( 'should not add a protocol without the configuration', () => {
+				formView.urlInputView.fieldView.value = 'ckeditor.com';
+				formView.fire( 'submit' );
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'ckeditor.com' );
+			} );
+
+			it( 'should not add a protocol to the local links even when `config.link.defaultProtocol` configured', () => {
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					const linkCommandSpy = sinon.spy( editor.commands.get( 'link' ), 'execute' );
+					formView.urlInputView.fieldView.value = '#test';
+					formView.fire( 'submit' );
+
+					sinon.assert.calledWith( linkCommandSpy, '#test', sinon.match.any );
+
+					return editor.destroy();
+				} );
+			} );
+
+			it( 'should not add a protocol to the relative links even when `config.link.defaultProtocol` configured', () => {
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					const linkCommandSpy = sinon.spy( editor.commands.get( 'link' ), 'execute' );
+					formView.urlInputView.fieldView.value = '/test.html';
+					formView.fire( 'submit' );
+
+					sinon.assert.calledWith( linkCommandSpy, '/test.html', sinon.match.any );
+
+					return editor.destroy();
+				} );
+			} );
+
+			it( 'should not add a protocol when given provided within the value even when `config.link.defaultProtocol` configured', () => {
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					const linkCommandSpy = sinon.spy( editor.commands.get( 'link' ), 'execute' );
+					formView.urlInputView.fieldView.value = 'http://example.com';
+					formView.fire( 'submit' );
+
+					expect( formView.urlInputView.fieldView.value ).to.equal( 'http://example.com' );
+					sinon.assert.calledWith( linkCommandSpy, 'http://example.com', sinon.match.any );
+
+					return editor.destroy();
+				} );
+			} );
+
+			it( 'should use the "http://" protocol when it\'s configured', () => {
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					const linkCommandSpy = sinon.spy( editor.commands.get( 'link' ), 'execute' );
+
+					formView.urlInputView.fieldView.value = 'ckeditor.com';
+					formView.fire( 'submit' );
+
+					sinon.assert.calledWith( linkCommandSpy, 'http://ckeditor.com', sinon.match.any );
+
+					return editor.destroy();
+				} );
+			} );
+
+			it( 'should use the "http://" protocol when it\'s configured and form input value contains "www."', () => {
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					const linkCommandSpy = sinon.spy( editor.commands.get( 'link' ), 'execute' );
+
+					formView.urlInputView.fieldView.value = 'www.ckeditor.com';
+					formView.fire( 'submit' );
+
+					sinon.assert.calledWith( linkCommandSpy, 'http://www.ckeditor.com', sinon.match.any );
+
+					return editor.destroy();
+				} );
+			} );
+
+			it( 'should propagate the protocol to the link\'s `linkHref` attribute in model', () => {
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					setModelData( editor.model, '[ckeditor.com]' );
+
+					formView.urlInputView.fieldView.value = 'ckeditor.com';
+					formView.fire( 'submit' );
+
+					expect( getModelData( editor.model ) ).to.equal(
+						'[<$text linkHref="http://ckeditor.com">ckeditor.com</$text>]'
+					);
+
+					return editor.destroy();
+				} );
+			} );
+
+			it( 'should detect an email on submitting the form and add "mailto:" protocol automatically to the provided value', () => {
+				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					setModelData( editor.model, '[email@example.com]' );
+
+					formView.urlInputView.fieldView.value = 'email@example.com';
+					formView.fire( 'submit' );
+
+					expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:email@example.com' );
+					expect( getModelData( editor.model ) ).to.equal(
+						'[<$text linkHref="mailto:email@example.com">email@example.com</$text>]'
+					);
+
+					return editor.destroy();
+				} );
+			} );
+
+			it( 'should not add an email protocol when given provided within the value' +
+				'even when `config.link.defaultProtocol` configured', () => {
+				return createEditorWithDefaultProtocol( 'mailto:' ).then( ( { editor, formView } ) => {
+					formView.urlInputView.fieldView.value = 'mailto:test@example.com';
+					formView.fire( 'submit' );
+
+					expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:test@example.com' );
+
+					return editor.destroy();
+				} );
+			} );
 		} );
 
 		describe( 'binding', () => {
@@ -930,6 +1124,16 @@ describe( 'LinkUI', () => {
 
 				expect( executeSpy.calledOnce ).to.be.true;
 				expect( executeSpy.calledWithExactly( 'link', 'http://cksource.com', {} ) ).to.be.true;
+			} );
+
+			it( 'should should clear the fake visual selection on formView#submit event', () => {
+				linkUIFeature._showUI();
+				expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+				formView.urlInputView.fieldView.value = 'http://cksource.com';
+				formView.fire( 'submit' );
+
+				expect( editor.model.markers.has( 'link-ui' ) ).to.be.false;
 			} );
 
 			it( 'should hide and reveal the #actionsView on formView#submit event', () => {

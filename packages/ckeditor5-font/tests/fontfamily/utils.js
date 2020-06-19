@@ -62,7 +62,7 @@ describe( 'FontFamily utils', () => {
 					},
 					{
 						title: 'Comic Sans MS',
-						model: 'Comic Sans MS',
+						model: '\'Comic Sans MS\', sans-serif',
 						view: {
 							name: 'span',
 							styles: {
@@ -73,7 +73,7 @@ describe( 'FontFamily utils', () => {
 					},
 					{
 						title: 'Lucida Console',
-						model: 'Lucida Console',
+						model: '\'Lucida Console\', \'Courier New\', Courier, monospace',
 						view: {
 							name: 'span',
 							styles: {

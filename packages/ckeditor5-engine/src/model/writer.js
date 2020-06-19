@@ -117,6 +117,18 @@ export default class Writer {
 	}
 
 	/**
+	 * Creates a copy of the element and returns it. Created element has the same name and attributes as the original element.
+	 * If clone is deep, the original element's children are also cloned. If not, then empty element is returned.
+	 *
+	 * @param {module:engine/model/element~Element} element The element to clone.
+	 * @param {Boolean} [deep=true] If set to `true` clones element and all its children recursively. When set to `false`,
+	 * element will be cloned without any child.
+	 */
+	cloneElement( element, deep = true ) {
+		return element._clone( deep );
+	}
+
+	/**
 	 * Inserts item on given position.
 	 *
 	 *		const paragraph = writer.createElement( 'paragraph' );

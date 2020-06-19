@@ -67,6 +67,56 @@ describe( 'LinkCommand', () => {
 				setData( model, '<x>[foo]</x>' );
 				expect( command.isEnabled ).to.be.false;
 			} );
+
+			describe( 'for images', () => {
+				beforeEach( () => {
+					model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
+				} );
+
+				it( 'should be true when an image is selected', () => {
+					setData( model, '[<image linkHref="foo"></image>]' );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true when an image and a text are selected', () => {
+					setData( model, '[<image linkHref="foo"></image>Foo]' );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true when a text and an image are selected', () => {
+					setData( model, '[Foo<image linkHref="foo"></image>]' );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true when two images are selected', () => {
+					setData( model, '[<image linkHref="foo"></image><image linkHref="foo"></image>]' );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be false when a fake image is selected', () => {
+					model.schema.register( 'fake', { isBlock: true, allowWhere: '$text' } );
+
+					setData( model, '[<fake></fake>]' );
+
+					expect( command.isEnabled ).to.be.false;
+				} );
+
+				it( 'should be false if an image does not accept the `linkHref` attribute in given context', () => {
+					model.schema.addAttributeCheck( ( ctx, attributeName ) => {
+						if ( ctx.endsWith( '$root image' ) && attributeName == 'linkHref' ) {
+							return false;
+						}
+					} );
+
+					setData( model, '[<image></image>]' );
+
+					expect( command.isEnabled ).to.be.false;
+				} );
+			} );
 		} );
 	} );
 
@@ -94,6 +144,38 @@ describe( 'LinkCommand', () => {
 
 			it( 'should be undefined when selection contains not only elements with `linkHref` attribute', () => {
 				setData( model, 'f[o<$text linkHref="url">ob</$text>]ar' );
+
+				expect( command.value ).to.be.undefined;
+			} );
+		} );
+
+		describe( 'for images', () => {
+			beforeEach( () => {
+				model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
+			} );
+
+			it( 'should read the value from a selected image', () => {
+				setData( model, '[<image linkHref="foo"></image>]' );
+
+				expect( command.value ).to.be.equal( 'foo' );
+			} );
+
+			it( 'should read the value from a selected image and ignore a text node', () => {
+				setData( model, '[<image linkHref="foo"></image><p><$text linkHref="bar">bar</$text>]</p>' );
+
+				expect( command.value ).to.be.equal( 'foo' );
+			} );
+
+			it( 'should read the value from a selected text node and ignore an image', () => {
+				setData( model, '<p>[<$text linkHref="bar">bar</$text></p><image linkHref="foo"></image>]' );
+
+				expect( command.value ).to.be.equal( 'bar' );
+			} );
+
+			it( 'should be undefined when a fake image is selected', () => {
+				model.schema.register( 'fake', { isBlock: true, allowWhere: '$text' } );
+
+				setData( model, '[<fake></fake>]' );
 
 				expect( command.value ).to.be.undefined;
 			} );
@@ -193,28 +275,88 @@ describe( 'LinkCommand', () => {
 				expect( command.value ).to.equal( 'url' );
 			} );
 
-			it( 'should set `linkHref` attribute only to allowed elements and omit disallowed', () => {
-				model.schema.register( 'img', { allowWhere: '$text' } );
+			it( 'should set `linkHref` attribute to allowed elements', () => {
+				model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
 
-				setData( model, '<p>f[oo<img></img>ba]r</p>' );
+				setData( model, '<p>f[oo<image></image>ba]r</p>' );
 
 				expect( command.value ).to.be.undefined;
 
 				command.execute( 'url' );
 
-				expect( getData( model ) )
-					.to.equal( '<p>f[<$text linkHref="url">oo</$text><img></img><$text linkHref="url">ba</$text>]r</p>' );
+				expect( getData( model ) ).to.equal(
+					'<p>f[<$text linkHref="url">oo</$text><image linkHref="url"></image><$text linkHref="url">ba</$text>]r</p>'
+				);
 				expect( command.value ).to.equal( 'url' );
+			} );
+
+			it( 'should set `linkHref` attribute to nested allowed elements', () => {
+				model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
+				model.schema.register( 'blockQuote', { allowWhere: '$block', allowContentOf: '$root' } );
+
+				setData( model, '<p>foo</p>[<blockQuote><image></image></blockQuote>]<p>bar</p>' );
+
+				command.execute( 'url' );
+
+				expect( getData( model ) )
+					.to.equal( '<p>foo</p>[<blockQuote><image linkHref="url"></image></blockQuote>]<p>bar</p>' );
+			} );
+
+			it( 'should set `linkHref` attribute to allowed elements on multi-selection', () => {
+				model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
+
+				setData( model, '<p>[<image></image>][<image></image>]</p>' );
+
+				command.execute( 'url' );
+
+				expect( getData( model ) )
+					.to.equal( '<p>[<image linkHref="url"></image>][<image linkHref="url"></image>]</p>' );
+			} );
+
+			it( 'should set `linkHref` attribute to allowed elements and omit disallowed', () => {
+				model.schema.register( 'image', { isBlock: true, allowWhere: '$text' } );
+				model.schema.register( 'caption', { allowIn: 'image' } );
+				model.schema.extend( '$text', { allowIn: 'caption' } );
+
+				setData( model, '<p>f[oo<image><caption>xxx</caption></image>ba]r</p>' );
+
+				command.execute( 'url' );
+
+				expect( getData( model ) ).to.equal(
+					'<p>' +
+						'f[<$text linkHref="url">oo</$text>' +
+						'<image><caption><$text linkHref="url">xxx</$text></caption></image>' +
+						'<$text linkHref="url">ba</$text>]r' +
+					'</p>'
+				);
+			} );
+
+			it( 'should set `linkHref` attribute to allowed elements and omit their children even if they accept the attribute', () => {
+				model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
+				model.schema.register( 'caption', { allowIn: 'image' } );
+				model.schema.extend( '$text', { allowIn: 'caption' } );
+
+				setData( model, '<p>f[oo<image><caption>xxx</caption></image>ba]r</p>' );
+
+				command.execute( 'url' );
+
+				expect( getData( model ) ).to.equal(
+					'<p>' +
+						'f[<$text linkHref="url">oo</$text>' +
+						'<image linkHref="url"><caption>xxx</caption></image>' +
+						'<$text linkHref="url">ba</$text>]r' +
+					'</p>'
+				);
 			} );
 		} );
 
 		describe( 'collapsed selection', () => {
-			it( 'should insert text with `linkHref` attribute, text data equal to href and select new link', () => {
+			it( 'should insert text with `linkHref` attribute, text data equal to href and put the selection after the new link', () => {
 				setData( model, 'foo[]bar' );
 
 				command.execute( 'url' );
 
-				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
+				expect( getData( model ) ).to.equal( 'foo<$text linkHref="url">url</$text>[]bar' );
 			} );
 
 			it( 'should insert text with `linkHref` attribute, and selection attributes', () => {
@@ -225,16 +367,16 @@ describe( 'LinkCommand', () => {
 				command.execute( 'url' );
 
 				expect( getData( model ) ).to.equal(
-					'<$text bold="true">foo</$text>[<$text bold="true" linkHref="url">url</$text>]<$text bold="true">bar</$text>'
+					'<$text bold="true">foo</$text><$text bold="true" linkHref="url">url</$text><$text bold="true">[]bar</$text>'
 				);
 			} );
 
-			it( 'should update `linkHref` attribute and select whole link when selection is inside text with `linkHref` attribute', () => {
+			it( 'should update `linkHref` attribute (text with `linkHref` attribute) and put the selection after the node', () => {
 				setData( model, '<$text linkHref="other url">foo[]bar</$text>' );
 
 				command.execute( 'url' );
 
-				expect( getData( model ) ).to.equal( '[<$text linkHref="url">foobar</$text>]' );
+				expect( getData( model ) ).to.equal( '<$text linkHref="url">foobar</$text>[]' );
 			} );
 
 			it( 'should not insert text with `linkHref` attribute when is not allowed in parent', () => {
@@ -313,7 +455,7 @@ describe( 'LinkCommand', () => {
 				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
 
 				expect( getData( model ) ).to
-					.equal( 'foo[<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">url</$text>]bar' );
+					.equal( 'foo<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">url</$text>[]bar' );
 			} );
 
 			it( 'should add additional attributes to link when link is modified', () => {
@@ -322,7 +464,7 @@ describe( 'LinkCommand', () => {
 				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
 
 				expect( getData( model ) ).to
-					.equal( 'f[<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">ooba</$text>]r' );
+					.equal( 'f<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">ooba</$text>[]r' );
 			} );
 
 			it( 'should remove additional attributes to link if those are falsy', () => {
@@ -330,7 +472,7 @@ describe( 'LinkCommand', () => {
 
 				command.execute( 'url', { linkIsFoo: false, linkIsBar: false } );
 
-				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
+				expect( getData( model ) ).to.equal( 'foo<$text linkHref="url">url</$text>[]bar' );
 			} );
 		} );
 

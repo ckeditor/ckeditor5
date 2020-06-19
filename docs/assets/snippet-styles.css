@@ -196,6 +196,15 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	margin-left: 2.5rem;
 }
 
+/* Umberto stylesheet is centering `<img>` inside a `<p>`, let's overwrite it with higher CSS Specificity.
+ * See: https://github.com/ckeditor/ckeditor5/issues/2080.
+ */
+.live-snippet p img {
+	display: initial;
+	margin: initial;
+	box-sizing: initial;
+}
+
 .live-snippet .image img {
 	margin: 0 auto;
 }

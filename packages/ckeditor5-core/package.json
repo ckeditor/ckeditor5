@@ -23,7 +23,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-engine": "^19.0.1",
     "@ckeditor/ckeditor5-utils": "^19.0.1",
-    "lodash-es": "^4.17.10"
+    "lodash-es": "^4.17.15"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-autoformat": "^19.0.1",
@@ -42,7 +42,7 @@
     "@ckeditor/ckeditor5-ui": "^19.0.1"
   },
   "engines": {
-    "node": ">=8.0.0",
+    "node": ">=12.0.0",
     "npm": ">=5.7.1"
   },
   "author": "CKSource (http://cksource.com/)",

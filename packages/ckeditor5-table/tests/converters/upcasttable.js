@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
@@ -17,8 +17,8 @@ describe( 'upcastTable()', () => {
 	let editor, model;
 
 	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
+		return ClassicTestEditor
+			.create( '', {
 				plugins: [ TableEditing, Paragraph, ImageEditing, Widget ]
 			} )
 			.then( newEditor => {
@@ -29,6 +29,10 @@ describe( 'upcastTable()', () => {
 				// so defining model->view converters won't be necessary.
 				editor.editing.destroy();
 			} );
+	} );
+
+	afterEach( () => {
+		editor.destroy();
 	} );
 
 	function expectModel( data ) {

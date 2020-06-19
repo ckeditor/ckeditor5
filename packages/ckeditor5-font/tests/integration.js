@@ -19,7 +19,10 @@ describe( 'Integration test Font', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ Font, ArticlePluginSet ]
+				plugins: [ Font, ArticlePluginSet ],
+				image: {
+					toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+				}
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -37,7 +40,8 @@ describe( 'Integration test Font', () => {
 		it( 'should render one span element for all types of font features', () => {
 			setModelData( model,
 				'<paragraph>' +
-					'<$text fontColor="#123456" fontBackgroundColor="rgb(10,20,30)" fontSize="big" fontFamily="Arial">foo</$text>' +
+					'<$text fontColor="#123456" fontBackgroundColor="rgb(10,20,30)" fontSize="big" ' +
+						'fontFamily="Arial, Helvetica, sans-serif">foo</$text>' +
 				'</paragraph>'
 			);
 
@@ -65,6 +69,9 @@ describe( 'Integration test Font', () => {
 					fontSize: {
 						options: [ 10, 12, 14 ],
 						supportAllValues: true
+					},
+					image: {
+						toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
 					}
 				} )
 				.then( editor => {
@@ -128,6 +135,9 @@ describe( 'Integration test Font', () => {
 					fontSize: {
 						options: [ 10, 12, 14 ],
 						supportAllValues: true
+					},
+					image: {
+						toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
 					}
 				} )
 				.then( editor => {

@@ -14,6 +14,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 
@@ -55,7 +56,7 @@ describe( 'BalloonToolbar', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Bold, Italic, BalloonToolbar ],
+				plugins: [ Paragraph, Bold, Italic, BalloonToolbar, HorizontalLine ],
 				balloonToolbar: [ 'bold', 'italic' ]
 			} )
 			.then( newEditor => {
@@ -369,6 +370,15 @@ describe( 'BalloonToolbar', () => {
 
 		it( 'should not add the #toolbarView to the #_balloon when the selection is collapsed', () => {
 			setData( model, '<paragraph>b[]ar</paragraph>' );
+
+			balloonToolbar.show();
+			sinon.assert.notCalled( balloonAddSpy );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/6443
+		it( 'should not add the #toolbarView to the #_balloon when the selection contains more than one fully contained object', () => {
+			// This is for multi cell selection in tables.
+			setData( model, '[<horizontalLine></horizontalLine>]<paragraph>foo</paragraph>[<horizontalLine></horizontalLine>]' );
 
 			balloonToolbar.show();
 			sinon.assert.notCalled( balloonAddSpy );

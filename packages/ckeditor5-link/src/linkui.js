@@ -9,7 +9,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
-import { isLinkElement } from './utils';
+import { isLinkElement, LINK_KEYSTROKE } from './utils';
+
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
@@ -20,7 +21,9 @@ import LinkActionsView from './ui/linkactionsview';
 
 import linkIcon from '../theme/icons/link.svg';
 
-const linkKeystroke = 'Ctrl+K';
+const protocolRegExp = /^((\w+:(\/{2,})?)|(\W))/i;
+const emailRegExp = /[\w-]+@[\w-]+\.+[\w-]+/i;
+const VISUAL_SELECTION_MARKER_NAME = 'link-ui';
 
 /**
  * The link UI plugin. It introduces the `'link'` and `'unlink'` buttons and support for the <kbd>Ctrl+K</kbd> keystroke.
@@ -80,6 +83,23 @@ export default class LinkUI extends Plugin {
 
 		// Attach lifecycle actions to the the balloon.
 		this._enableUserBalloonInteractions();
+
+		// Renders a fake visual selection marker on an expanded selection.
+		editor.conversion.for( 'downcast' ).markerToHighlight( {
+			model: VISUAL_SELECTION_MARKER_NAME,
+			view: {
+				classes: [ 'ck-fake-link-selection' ]
+			}
+		} );
+
+		// Renders a fake visual selection marker on a collapsed selection.
+		editor.conversion.for( 'downcast' ).markerToElement( {
+			model: VISUAL_SELECTION_MARKER_NAME,
+			view: {
+				name: 'span',
+				classes: [ 'ck-fake-link-selection', 'ck-fake-link-selection_collapsed' ]
+			}
+		} );
 	}
 
 	/**
@@ -126,7 +146,7 @@ export default class LinkUI extends Plugin {
 		} );
 
 		// Open the form view on Ctrl+K when the **actions have focus**..
-		actionsView.keystrokes.set( linkKeystroke, ( data, cancel ) => {
+		actionsView.keystrokes.set( LINK_KEYSTROKE, ( data, cancel ) => {
 			this._addFormView();
 			cancel();
 		} );
@@ -143,8 +163,9 @@ export default class LinkUI extends Plugin {
 	_createFormView() {
 		const editor = this.editor;
 		const linkCommand = editor.commands.get( 'link' );
+		const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
 
-		const formView = new LinkFormView( editor.locale, linkCommand );
+		const formView = new LinkFormView( editor.locale, linkCommand, defaultProtocol );
 
 		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
 
@@ -154,7 +175,17 @@ export default class LinkUI extends Plugin {
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
-			editor.execute( 'link', formView.urlInputView.fieldView.element.value, formView.getDecoratorSwitchesState() );
+			const { value } = formView.urlInputView.fieldView.element;
+
+			// The regex checks for the protocol syntax ('xxxx://' or 'xxxx:')
+			// or non-word characters at the beginning of the link ('/', '#' etc.).
+			const isProtocolNeeded = !!defaultProtocol && !protocolRegExp.test( value );
+			const isEmail = emailRegExp.test( value );
+
+			const protocol = isEmail ? 'mailto:' : defaultProtocol;
+			const parsedValue = value && isProtocolNeeded ? protocol + value : value;
+
+			editor.execute( 'link', parsedValue, formView.getDecoratorSwitchesState() );
 			this._closeFormView();
 		} );
 
@@ -184,7 +215,7 @@ export default class LinkUI extends Plugin {
 		const t = editor.t;
 
 		// Handle the `Ctrl+K` keystroke and show the panel.
-		editor.keystrokes.set( linkKeystroke, ( keyEvtData, cancel ) => {
+		editor.keystrokes.set( LINK_KEYSTROKE, ( keyEvtData, cancel ) => {
 			// Prevent focusing the search bar in FF, Chrome and Edge. See https://github.com/ckeditor/ckeditor5/issues/4811.
 			cancel();
 
@@ -197,7 +228,7 @@ export default class LinkUI extends Plugin {
 			button.isEnabled = true;
 			button.label = t( 'Link' );
 			button.icon = linkIcon;
-			button.keystroke = linkKeystroke;
+			button.keystroke = LINK_KEYSTROKE;
 			button.tooltip = true;
 			button.isToggleable = true;
 
@@ -349,6 +380,8 @@ export default class LinkUI extends Plugin {
 			// Because the form has an input which has focus, the focus must be brought back
 			// to the editor. Otherwise, it would be lost.
 			this.editor.editing.view.focus();
+
+			this._hideFakeVisualSelection();
 		}
 	}
 
@@ -369,6 +402,9 @@ export default class LinkUI extends Plugin {
 			}
 
 			this._addFormView();
+			// Show visual selection on a text without a link when the contextual balloon is displayed.
+			// See https://github.com/ckeditor/ckeditor5/issues/4721.
+			this._showFakeVisualSelection();
 		}
 		// If there's a link under the selection...
 		else {
@@ -417,6 +453,8 @@ export default class LinkUI extends Plugin {
 
 		// Then remove the actions view because it's beneath the form.
 		this._balloon.remove( this.actionsView );
+
+		this._hideFakeVisualSelection();
 	}
 
 	/**
@@ -594,6 +632,46 @@ export default class LinkUI extends Plugin {
 			} else {
 				return null;
 			}
+		}
+	}
+
+	/**
+	 * Displays a fake visual selection when the contextual balloon is displayed.
+	 *
+	 * This adds a 'link-ui' marker into the document that is rendered as a highlight on selected text fragment.
+	 *
+	 * @private
+	 */
+	_showFakeVisualSelection() {
+		const model = this.editor.model;
+
+		model.change( writer => {
+			if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
+				writer.updateMarker( VISUAL_SELECTION_MARKER_NAME, {
+					range: model.document.selection.getFirstRange()
+				} );
+			} else {
+				writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+					usingOperation: false,
+					affectsData: false,
+					range: model.document.selection.getFirstRange()
+				} );
+			}
+		} );
+	}
+
+	/**
+	 * Hides the fake visual selection created in {@link #_showFakeVisualSelection}.
+	 *
+	 * @private
+	 */
+	_hideFakeVisualSelection() {
+		const model = this.editor.model;
+
+		if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
+			model.change( writer => {
+				writer.removeMarker( VISUAL_SELECTION_MARKER_NAME );
+			} );
 		}
 	}
 }

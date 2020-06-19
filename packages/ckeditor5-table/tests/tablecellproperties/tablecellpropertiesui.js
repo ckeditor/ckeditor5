@@ -20,7 +20,7 @@ import Table from '../../src/table';
 import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting';
 import TableCellPropertiesUI from '../../src/tablecellproperties/tablecellpropertiesui';
 import TableCellPropertiesUIView from '../../src/tablecellproperties/ui/tablecellpropertiesview';
-import { defaultColors } from '../../src/ui/utils';
+import { defaultColors } from '../../src/utils/ui/table-properties';
 import { modelTable } from '../_utils/utils';
 
 describe( 'table cell properties', () => {

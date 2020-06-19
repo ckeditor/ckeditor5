@@ -535,5 +535,18 @@ describe( 'RemoveRowCommand', () => {
 				[ '30', '31', '32' ]
 			] ) );
 		} );
+
+		it( 'should remove empty columns after removing row', () => {
+			setData( model, modelTable( [
+				[ '00', { contents: '01', colspan: 2 } ],
+				[ '[]10', '11', '12' ]
+			] ) );
+
+			command.execute();
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '[]00', '01' ]
+			] ) );
+		} );
 	} );
 } );

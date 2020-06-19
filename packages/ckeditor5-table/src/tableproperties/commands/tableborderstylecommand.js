@@ -8,7 +8,7 @@
  */
 
 import TablePropertyCommand from './tablepropertycommand';
-import { getSingleValue } from '../../commands/utils';
+import { getSingleValue } from '../../utils/table-properties';
 
 /**
  * The table style border command.

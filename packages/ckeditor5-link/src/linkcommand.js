@@ -11,6 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import findLinkRange from './findlinkrange';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
  * The link command. It is used by the {@link module:link/link~Link link feature}.
@@ -57,13 +58,21 @@ export default class LinkCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 
-		this.value = doc.selection.getAttribute( 'linkHref' );
+		const selectedElement = first( doc.selection.getSelectedBlocks() );
+
+		// A check for the `LinkImage` plugin. If the selection contains an element, get values from the element.
+		// Currently the selection reads attributes from text nodes only. See #7429.
+		if ( selectedElement && selectedElement.is( 'image' ) ) {
+			this.value = selectedElement.getAttribute( 'linkHref' );
+			this.isEnabled = model.schema.checkAttribute( selectedElement, 'linkHref' );
+		} else {
+			this.value = doc.selection.getAttribute( 'linkHref' );
+			this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
+		}
 
 		for ( const manualDecorator of this.manualDecorators ) {
 			manualDecorator.value = this._getDecoratorStateFromModel( manualDecorator.id );
 		}
-
-		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
 	}
 
 	/**
@@ -163,8 +172,8 @@ export default class LinkCommand extends Command {
 						writer.removeAttribute( item, linkRange );
 					} );
 
-					// Create new range wrapping changed link.
-					writer.setSelection( linkRange );
+					// Put the selection at the end of the updated link.
+					writer.setSelection( writer.createPositionAfter( linkRange.end.nodeBefore ) );
 				}
 				// If not then insert text node with `linkHref` attribute in place of caret.
 				// However, since selection in collapsed, attribute value will be used as data for text node.
@@ -182,15 +191,41 @@ export default class LinkCommand extends Command {
 
 					model.insertContent( node, position );
 
-					// Create new range wrapping created node.
-					writer.setSelection( writer.createRangeOn( node ) );
+					// Put the selection at the end of the inserted link.
+					writer.setSelection( writer.createPositionAfter( node ) );
 				}
+
+				// Remove the `linkHref` attribute and all link decorators from the selection.
+				// It stops adding a new content into the link element.
+				[ 'linkHref', ...truthyManualDecorators, ...falsyManualDecorators ].forEach( item => {
+					writer.removeSelectionAttribute( item );
+				} );
 			} else {
 				// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges
-				// omitting nodes where `linkHref` attribute is disallowed.
+				// omitting nodes where the `linkHref` attribute is disallowed.
 				const ranges = model.schema.getValidRanges( selection.getRanges(), 'linkHref' );
 
+				// But for the first, check whether the `linkHref` attribute is allowed on selected blocks (e.g. the "image" element).
+				const allowedRanges = [];
+
+				for ( const element of selection.getSelectedBlocks() ) {
+					if ( model.schema.checkAttribute( element, 'linkHref' ) ) {
+						allowedRanges.push( writer.createRangeOn( element ) );
+					}
+				}
+
+				// Ranges that accept the `linkHref` attribute. Since we will iterate over `allowedRanges`, let's clone it.
+				const rangesToUpdate = allowedRanges.slice();
+
+				// For all selection ranges we want to check whether given range is inside an element that accepts the `linkHref` attribute.
+				// If so, we don't want to propagate applying the attribute to its children.
 				for ( const range of ranges ) {
+					if ( this._isRangeToUpdate( range, allowedRanges ) ) {
+						rangesToUpdate.push( range );
+					}
+				}
+
+				for ( const range of rangesToUpdate ) {
 					writer.setAttribute( 'linkHref', href, range );
 
 					truthyManualDecorators.forEach( item => {
@@ -215,5 +250,24 @@ export default class LinkCommand extends Command {
 	_getDecoratorStateFromModel( decoratorName ) {
 		const doc = this.editor.model.document;
 		return doc.selection.getAttribute( decoratorName );
+	}
+
+	/**
+	 * Checks whether specified `range` is inside an element that accepts the `linkHref` attribute.
+	 *
+	 * @private
+	 * @param {module:engine/view/range~Range} range A range to check.
+	 * @param {Array.<module:engine/view/range~Range>} allowedRanges An array of ranges created on elements where the attribute is accepted.
+	 * @returns {Boolean}
+	 */
+	_isRangeToUpdate( range, allowedRanges ) {
+		for ( const allowedRange of allowedRanges ) {
+			// A range is inside an element that will have the `linkHref` attribute. Do not modify its nodes.
+			if ( allowedRange.containsRange( range ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

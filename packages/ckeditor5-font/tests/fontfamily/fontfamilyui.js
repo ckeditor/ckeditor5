@@ -10,9 +10,11 @@ import FontFamilyUI from '../../src/fontfamily/fontfamilyui';
 
 import fontFamilyIcon from '../../theme/icons/font-family.svg';
 
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'FontFamilyUI', () => {
 	let editor, command, element;
@@ -97,47 +99,67 @@ describe( 'FontFamilyUI', () => {
 			expect( listView.items.map( item => item.children.first.isOn ) )
 				.to.deep.equal( [ true, false, false, false, false, false, false, false, false ] );
 
-			command.value = 'Arial';
+			command.value = 'Arial, Helvetica, sans-serif';
 
 			// The second item is 'Arial' font family.
 			expect( listView.items.map( item => item.children.first.isOn ) )
 				.to.deep.equal( [ false, true, false, false, false, false, false, false, false ] );
 		} );
 
-		it( 'should activate current option in dropdown for full font family definitions', () => {
-			const element = document.createElement( 'div' );
-			document.body.appendChild( element );
+		describe( 'with supportAllValues=true', () => {
+			let editor, element, command, dropdown;
 
-			return ClassicTestEditor
-				.create( element, {
-					plugins: [ FontFamilyEditing, FontFamilyUI ],
-					fontSize: {
-						supportAllValues: true
-					}
-				} )
-				.then( editor => {
-					const command = editor.commands.get( 'fontFamily' );
-					const dropdown = editor.ui.componentFactory.create( 'fontFamily' );
+			beforeEach( async () => {
+				element = document.createElement( 'div' );
+				document.body.appendChild( element );
 
-					const listView = dropdown.listView;
+				editor = await ClassicTestEditor
+					.create( element, {
+						plugins: [ Paragraph, FontFamilyEditing, FontFamilyUI ],
+						fontSize: {
+							supportAllValues: true
+						}
+					} );
 
-					command.value = undefined;
+				command = editor.commands.get( 'fontFamily' );
+				dropdown = editor.ui.componentFactory.create( 'fontFamily' );
+			} );
 
-					// The first item is 'default' font family.
-					expect( listView.items.map( item => item.children.first.isOn ) )
-						.to.deep.equal( [ true, false, false, false, false, false, false, false, false ] );
+			afterEach( async () => {
+				await editor.destroy();
+				element.remove();
+			} );
 
-					command.value = '\'Courier New\', Courier, monospace';
+			it( 'should activate the current option in the dropdown for full font family definitions', () => {
+				const listView = dropdown.listView;
 
-					// The third item is 'Courier New' font family.
-					expect( listView.items.map( item => item.children.first.isOn ) )
-						.to.deep.equal( [ false, false, true, false, false, false, false, false, false ] );
+				command.value = undefined;
 
-					return editor.destroy();
-				} )
-				.then( () => {
-					element.remove();
-				} );
+				// The first item is 'default' font family.
+				expect( listView.items.map( item => item.children.first.isOn ) )
+					.to.deep.equal( [ true, false, false, false, false, false, false, false, false ] );
+
+				command.value = '\'Courier New\', Courier, monospace';
+
+				// The third item is 'Courier New' font family.
+				expect( listView.items.map( item => item.children.first.isOn ) )
+					.to.deep.equal( [ false, false, true, false, false, false, false, false, false ] );
+			} );
+
+			it( 'should apply the complete font-family value (list of font-families)', () => {
+				const listView = dropdown.listView;
+				const fontFamilyArialButton = listView.items.get( 1 ).children.first;
+
+				setModelData( editor.model, '<paragraph>f[oo]</paragraph>' );
+
+				fontFamilyArialButton.fire( 'execute' );
+
+				expect( getModelData( editor.model ) ).to.equal(
+					'<paragraph>f[<$text fontFamily="Arial, Helvetica, sans-serif">oo</$text>]</paragraph>'
+				);
+
+				expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial, Helvetica, sans-serif;">oo</span></p>' );
+			} );
 		} );
 
 		describe( 'model to command binding', () => {
