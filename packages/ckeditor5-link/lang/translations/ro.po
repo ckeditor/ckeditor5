@@ -28,6 +28,10 @@ msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
 msgstr "Link URL"
 
+msgctxt "Label for the image link button."
+msgid "Link image"
+msgstr ""
+
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
 msgstr "Modifică link"
