@@ -257,6 +257,17 @@ ClassicEditor
 
 {@snippet features/image-resize-px}
 
+### Future development
+
+Resizing by dragging handles displayed over the image is the first option provided, but we consider implementing more with time. Some of the possible next steps include:
+
+* [Buttons such as "50%", "75%" and "100%" in the image toolbar](https://github.com/ckeditor/ckeditor5-image/issues/322), allowing the user to choose only from predefined widths.
+* [A traditional "width" input](https://github.com/ckeditor/ckeditor5-image/issues/319). Or an option to set both width and height separately.
+* [An option to restore the original image size](https://github.com/ckeditor/ckeditor5-image/issues/318).
+* [Limiting image resize](https://github.com/ckeditor/ckeditor5-image/issues/320) with min and max values.
+
+We count on your feedback. React with 👍 under the respective tickets or [report new ones](https://github.com/ckeditor/ckeditor5-image/issues) if you have different ideas.
+
 ## Linking images
 
 The {@link module:link/linkimage~LinkImage} plugin adds support for linking images:
@@ -276,17 +287,6 @@ Enabling linking images brings support for link editing to the rich-text editor.
 <info-box info>
 	The {@link module:link/linkimage~LinkImage} plugin is available in the [@ckeditor/ckeditor5-link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package.
 </info-box>
-
-### Future development
-
-Resizing by dragging handles displayed over the image is the first option provided, but we consider implementing more with time. Some of the possible next steps include:
-
-* [Buttons such as "50%", "75%" and "100%" in the image toolbar](https://github.com/ckeditor/ckeditor5-image/issues/322), allowing the user to choose only from predefined widths.
-* [A traditional "width" input](https://github.com/ckeditor/ckeditor5-image/issues/319). Or an option to set both width and height separately.
-* [An option to restore the original image size](https://github.com/ckeditor/ckeditor5-image/issues/318).
-* [Limiting image resize](https://github.com/ckeditor/ckeditor5-image/issues/320) with min and max values.
-
-We count on your feedback. React with 👍 under the respective tickets or [report new ones](https://github.com/ckeditor/ckeditor5-image/issues) if you have different ideas.
 
 ## Installation
 
