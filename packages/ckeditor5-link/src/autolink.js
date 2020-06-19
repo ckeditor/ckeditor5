@@ -15,10 +15,6 @@ const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
 
 const urlRegExp = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*))$/;
 
-function isSingleSpaceAtTheEnd( text ) {
-	return text.length > MIN_LINK_LENGTH_WITH_SPACE_AT_END && text[ text.length - 1 ] === ' ' && text[ text.length - 2 ] !== ' ';
-}
-
 /**
  * The auto link plugin.
  *
@@ -61,61 +57,78 @@ export default class AutoLink extends Plugin {
 				return;
 			}
 
-			applyAutoLink( match[ 1 ], range, editor );
+			this._applyAutoLink( match[ 1 ], range );
 		} );
+
+		// todo: watcher.bind();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	afterInit() {
-		const editor = this.editor;
+		this._enableEnterHandling();
+		this._enableShiftEnterHandling();
+	}
 
+	_enableEnterHandling() {
+		const editor = this.editor;
+		const model = editor.model;
 		const enterCommand = editor.commands.get( 'enter' );
+
+		enterCommand.on( 'execute', () => {
+			const position = model.document.selection.getFirstPosition();
+
+			const rangeToCheck = model.createRange(
+				model.createPositionAt( position.parent.previousSibling, 0 ),
+				model.createPositionAt( position.parent.previousSibling, 'end' )
+			);
+
+			this._checkAndApplyAutoLinkOnRange( rangeToCheck );
+		} );
+	}
+
+	_enableShiftEnterHandling() {
+		const editor = this.editor;
+		const model = editor.model;
+
 		const shiftEnterCommand = editor.commands.get( 'shiftEnter' );
 
 		shiftEnterCommand.on( 'execute', () => {
-			const position = editor.model.document.selection.getFirstPosition();
+			const position = model.document.selection.getFirstPosition();
 
-			const rangeToCheck = editor.model.createRange(
-				editor.model.createPositionAt( position.parent, 0 ),
+			const rangeToCheck = model.createRange(
+				model.createPositionAt( position.parent, 0 ),
 				position.getShiftedBy( -1 )
 			);
 
-			checkAndApplyAutoLinkOnRange( rangeToCheck, editor );
-		}, { priority: 'low' } );
+			this._checkAndApplyAutoLinkOnRange( rangeToCheck );
+		} );
+	}
 
-		enterCommand.on( 'execute', () => {
-			const position = editor.model.document.selection.getFirstPosition();
+	_checkAndApplyAutoLinkOnRange( rangeToCheck ) {
+		const { text, range } = getLastTextLine( rangeToCheck, this.editor.model );
 
-			const rangeToCheck = editor.model.createRange(
-				editor.model.createPositionAt( position.parent.previousSibling, 0 ),
-				editor.model.createPositionAt( position.parent.previousSibling, 'end' )
+		const match = urlRegExp.exec( text );
+
+		if ( match ) {
+			this._applyAutoLink( match[ 1 ], range, 0 );
+		}
+	}
+
+	_applyAutoLink( linkHref, range, additionalOffset = 1 ) {
+		// Enqueue change to make undo step.
+		this.editor.model.enqueueChange( writer => {
+			const linkRange = writer.createRange(
+				range.end.getShiftedBy( -( additionalOffset + linkHref.length ) ),
+				range.end.getShiftedBy( -additionalOffset )
 			);
 
-			checkAndApplyAutoLinkOnRange( rangeToCheck, editor );
-		}, { priority: 'low' } );
+			writer.setAttribute( 'linkHref', linkHref, linkRange );
+		} );
 	}
 }
 
-function applyAutoLink( linkHref, range, editor, additionalOffset = 1 ) {
-	// Enqueue change to make undo step.
-	editor.model.enqueueChange( writer => {
-		const linkRange = writer.createRange(
-			range.end.getShiftedBy( -( additionalOffset + linkHref.length ) ),
-			range.end.getShiftedBy( -additionalOffset )
-		);
-
-		writer.setAttribute( 'linkHref', linkHref, linkRange );
-	} );
-}
-
-function checkAndApplyAutoLinkOnRange( rangeToCheck, editor ) {
-	const { text, range } = getLastTextLine( rangeToCheck, editor.model );
-
-	const match = urlRegExp.exec( text );
-
-	if ( match ) {
-		applyAutoLink( match[ 1 ], range, editor, 0 );
-	}
+function isSingleSpaceAtTheEnd( text ) {
+	return text.length > MIN_LINK_LENGTH_WITH_SPACE_AT_END && text[ text.length - 1 ] === ' ' && text[ text.length - 2 ] !== ' ';
 }
