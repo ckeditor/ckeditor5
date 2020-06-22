@@ -7,6 +7,11 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
+
+window.CKEditorPlugins = {
+	AutoLink
+};
 
 window.ClassicEditor = ClassicEditor;
 window.CS_CONFIG = CS_CONFIG;
