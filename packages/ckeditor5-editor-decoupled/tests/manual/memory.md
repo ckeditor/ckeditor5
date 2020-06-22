@@ -2,7 +2,7 @@
 2. Go to Memory tab.
 3. Select "Heap snapshot" profiling type.
 4. Click "Collect Garbage" (trash icon) and "Clear all profiles" (don't go icon).
-5. Record heap snapshot ("Take heap snapshot" a record icon).
+5. Take heap snapshot (record icon).
 6. Repeat multiple times:
     - click "Init editor",
     - wait to editor show up ,
@@ -23,7 +23,7 @@
         --disable-extensions \
         --disable-plugins \
         --incognito \
-        http://localhost:8125 
+        http://localhost:8125
     ```
 
     The above will run Chrome without extensions or plugins in incognito mode and open manual tests page.

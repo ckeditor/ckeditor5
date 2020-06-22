@@ -981,7 +981,7 @@ describe( 'LinkUI', () => {
 
 						expect( defaultProtocol ).to.equal( 'https://' );
 
-						editor.destroy();
+						return editor.destroy();
 					} );
 			} );
 
@@ -994,56 +994,64 @@ describe( 'LinkUI', () => {
 
 			it( 'should not add a protocol to the local links even when `config.link.defaultProtocol` configured', () => {
 				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					const linkCommandSpy = sinon.spy( editor.commands.get( 'link' ), 'execute' );
 					formView.urlInputView.fieldView.value = '#test';
 					formView.fire( 'submit' );
 
-					expect( formView.urlInputView.fieldView.value ).to.equal( '#test' );
+					sinon.assert.calledWith( linkCommandSpy, '#test', sinon.match.any );
 
-					editor.destroy();
+					return editor.destroy();
 				} );
 			} );
 
 			it( 'should not add a protocol to the relative links even when `config.link.defaultProtocol` configured', () => {
 				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					const linkCommandSpy = sinon.spy( editor.commands.get( 'link' ), 'execute' );
 					formView.urlInputView.fieldView.value = '/test.html';
 					formView.fire( 'submit' );
 
-					expect( formView.urlInputView.fieldView.value ).to.equal( '/test.html' );
+					sinon.assert.calledWith( linkCommandSpy, '/test.html', sinon.match.any );
 
-					editor.destroy();
+					return editor.destroy();
 				} );
 			} );
 
 			it( 'should not add a protocol when given provided within the value even when `config.link.defaultProtocol` configured', () => {
 				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					const linkCommandSpy = sinon.spy( editor.commands.get( 'link' ), 'execute' );
 					formView.urlInputView.fieldView.value = 'http://example.com';
 					formView.fire( 'submit' );
 
 					expect( formView.urlInputView.fieldView.value ).to.equal( 'http://example.com' );
+					sinon.assert.calledWith( linkCommandSpy, 'http://example.com', sinon.match.any );
 
-					editor.destroy();
+					return editor.destroy();
 				} );
 			} );
 
 			it( 'should use the "http://" protocol when it\'s configured', () => {
 				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					const linkCommandSpy = sinon.spy( editor.commands.get( 'link' ), 'execute' );
+
 					formView.urlInputView.fieldView.value = 'ckeditor.com';
 					formView.fire( 'submit' );
 
-					expect( formView.urlInputView.fieldView.value ).to.equal( 'http://ckeditor.com' );
+					sinon.assert.calledWith( linkCommandSpy, 'http://ckeditor.com', sinon.match.any );
 
-					editor.destroy();
+					return editor.destroy();
 				} );
 			} );
 
 			it( 'should use the "http://" protocol when it\'s configured and form input value contains "www."', () => {
 				return createEditorWithDefaultProtocol( 'http://' ).then( ( { editor, formView } ) => {
+					const linkCommandSpy = sinon.spy( editor.commands.get( 'link' ), 'execute' );
+
 					formView.urlInputView.fieldView.value = 'www.ckeditor.com';
 					formView.fire( 'submit' );
 
-					expect( formView.urlInputView.fieldView.value ).to.equal( 'http://www.ckeditor.com' );
+					sinon.assert.calledWith( linkCommandSpy, 'http://www.ckeditor.com', sinon.match.any );
 
-					editor.destroy();
+					return editor.destroy();
 				} );
 			} );
 
@@ -1058,7 +1066,7 @@ describe( 'LinkUI', () => {
 						'[<$text linkHref="http://ckeditor.com">ckeditor.com</$text>]'
 					);
 
-					editor.destroy();
+					return editor.destroy();
 				} );
 			} );
 
@@ -1074,7 +1082,7 @@ describe( 'LinkUI', () => {
 						'[<$text linkHref="mailto:email@example.com">email@example.com</$text>]'
 					);
 
-					editor.destroy();
+					return editor.destroy();
 				} );
 			} );
 
@@ -1086,7 +1094,7 @@ describe( 'LinkUI', () => {
 
 					expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:test@example.com' );
 
-					editor.destroy();
+					return editor.destroy();
 				} );
 			} );
 		} );

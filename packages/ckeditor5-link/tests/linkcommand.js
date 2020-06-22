@@ -351,12 +351,12 @@ describe( 'LinkCommand', () => {
 		} );
 
 		describe( 'collapsed selection', () => {
-			it( 'should insert text with `linkHref` attribute, text data equal to href and select new link', () => {
+			it( 'should insert text with `linkHref` attribute, text data equal to href and put the selection after the new link', () => {
 				setData( model, 'foo[]bar' );
 
 				command.execute( 'url' );
 
-				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
+				expect( getData( model ) ).to.equal( 'foo<$text linkHref="url">url</$text>[]bar' );
 			} );
 
 			it( 'should insert text with `linkHref` attribute, and selection attributes', () => {
@@ -367,16 +367,16 @@ describe( 'LinkCommand', () => {
 				command.execute( 'url' );
 
 				expect( getData( model ) ).to.equal(
-					'<$text bold="true">foo</$text>[<$text bold="true" linkHref="url">url</$text>]<$text bold="true">bar</$text>'
+					'<$text bold="true">foo</$text><$text bold="true" linkHref="url">url</$text><$text bold="true">[]bar</$text>'
 				);
 			} );
 
-			it( 'should update `linkHref` attribute and select whole link when selection is inside text with `linkHref` attribute', () => {
+			it( 'should update `linkHref` attribute (text with `linkHref` attribute) and put the selection after the node', () => {
 				setData( model, '<$text linkHref="other url">foo[]bar</$text>' );
 
 				command.execute( 'url' );
 
-				expect( getData( model ) ).to.equal( '[<$text linkHref="url">foobar</$text>]' );
+				expect( getData( model ) ).to.equal( '<$text linkHref="url">foobar</$text>[]' );
 			} );
 
 			it( 'should not insert text with `linkHref` attribute when is not allowed in parent', () => {
@@ -455,7 +455,7 @@ describe( 'LinkCommand', () => {
 				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
 
 				expect( getData( model ) ).to
-					.equal( 'foo[<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">url</$text>]bar' );
+					.equal( 'foo<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">url</$text>[]bar' );
 			} );
 
 			it( 'should add additional attributes to link when link is modified', () => {
@@ -464,7 +464,7 @@ describe( 'LinkCommand', () => {
 				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
 
 				expect( getData( model ) ).to
-					.equal( 'f[<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">ooba</$text>]r' );
+					.equal( 'f<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">ooba</$text>[]r' );
 			} );
 
 			it( 'should remove additional attributes to link if those are falsy', () => {
@@ -472,7 +472,7 @@ describe( 'LinkCommand', () => {
 
 				command.execute( 'url', { linkIsFoo: false, linkIsBar: false } );
 
-				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
+				expect( getData( model ) ).to.equal( 'foo<$text linkHref="url">url</$text>[]bar' );
 			} );
 		} );
 

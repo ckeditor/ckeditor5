@@ -7,7 +7,8 @@
 3. Check if balloon panel attached to the selection appeared.
 4. Fill in `Link URL` input in the panel.
 5. Click `Save` button.
-6. Check if selected text is converted into a link.
+6. Check if the selection is after the text that was converted into a link.
+7. Typing should not modify the link node.
 
 ### Insert new link
 
@@ -16,7 +17,8 @@
 3. Check if balloon panel attached to the selection appeared.
 4. Fill in `Link URL` input in the panel.
 5. Click `Save` button.
-6. Check if new link with anchor text the same as url value has been inserted and selected.
+6. Check if new link with anchor text the same as url value has been inserted.
+7. Check if the selection is after the text node. Typing should not modify the node.
 
 ### Edit link
 
@@ -25,6 +27,7 @@
 3. Change `Link URL` input value.
 4. Click `Save` button.
 5. Check if link href value has changed.
+6. Check if the selection is after the updated text node. Typing should not modify the node.
 
 ### Keyboard support
 

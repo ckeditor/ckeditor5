@@ -9,7 +9,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
-import { isLinkElement } from './utils';
+import { isLinkElement, LINK_KEYSTROKE } from './utils';
+
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
@@ -20,7 +21,6 @@ import LinkActionsView from './ui/linkactionsview';
 
 import linkIcon from '../theme/icons/link.svg';
 
-const linkKeystroke = 'Ctrl+K';
 const protocolRegExp = /^((\w+:(\/{2,})?)|(\W))/i;
 const emailRegExp = /[\w-]+@[\w-]+\.+[\w-]+/i;
 const VISUAL_SELECTION_MARKER_NAME = 'link-ui';
@@ -146,7 +146,7 @@ export default class LinkUI extends Plugin {
 		} );
 
 		// Open the form view on Ctrl+K when the **actions have focus**..
-		actionsView.keystrokes.set( linkKeystroke, ( data, cancel ) => {
+		actionsView.keystrokes.set( LINK_KEYSTROKE, ( data, cancel ) => {
 			this._addFormView();
 			cancel();
 		} );
@@ -215,7 +215,7 @@ export default class LinkUI extends Plugin {
 		const t = editor.t;
 
 		// Handle the `Ctrl+K` keystroke and show the panel.
-		editor.keystrokes.set( linkKeystroke, ( keyEvtData, cancel ) => {
+		editor.keystrokes.set( LINK_KEYSTROKE, ( keyEvtData, cancel ) => {
 			// Prevent focusing the search bar in FF, Chrome and Edge. See https://github.com/ckeditor/ckeditor5/issues/4811.
 			cancel();
 
@@ -228,7 +228,7 @@ export default class LinkUI extends Plugin {
 			button.isEnabled = true;
 			button.label = t( 'Link' );
 			button.icon = linkIcon;
-			button.keystroke = linkKeystroke;
+			button.keystroke = LINK_KEYSTROKE;
 			button.tooltip = true;
 			button.isToggleable = true;
 

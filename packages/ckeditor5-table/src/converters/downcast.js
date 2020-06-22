@@ -56,10 +56,8 @@ export function downcastInsertTable( options = {} ) {
 		for ( const tableSlot of tableWalker ) {
 			const { row, cell } = tableSlot;
 
-			const tableSection = getOrCreateTableSection( getSectionName( row, tableAttributes ), tableElement, conversionApi );
 			const tableRow = table.getChild( row );
-
-			const trElement = viewRows.get( row ) || createTr( tableRow, row, tableSection, conversionApi );
+			const trElement = viewRows.get( row ) || createTr( tableElement, tableRow, row, tableAttributes, conversionApi );
 			viewRows.set( row, trElement );
 
 			// Consume table cell - it will be always consumed as we convert whole table at once.
@@ -68,6 +66,16 @@ export function downcastInsertTable( options = {} ) {
 			const insertPosition = conversionApi.writer.createPositionAt( trElement, 'end' );
 
 			createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, options );
+		}
+
+		// Insert empty TR elements if there are any rows without anchored cells. Since the model is always normalized
+		// this can happen only in the document fragment that only part of the table is down-casted.
+		for ( const tableRow of table.getChildren() ) {
+			const rowIndex = tableRow.index;
+
+			if ( !viewRows.has( rowIndex ) ) {
+				viewRows.set( rowIndex, createTr( tableElement, tableRow, rowIndex, tableAttributes, conversionApi ) );
+			}
 		}
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
@@ -110,9 +118,7 @@ export function downcastInsertRow() {
 		const viewRows = new Map();
 
 		for ( const tableSlot of tableWalker ) {
-			const tableSection = getOrCreateTableSection( getSectionName( row, tableAttributes ), tableElement, conversionApi );
-
-			const trElement = viewRows.get( row ) || createTr( tableRow, row, tableSection, conversionApi );
+			const trElement = viewRows.get( row ) || createTr( tableElement, tableRow, row, tableAttributes, conversionApi );
 			viewRows.set( row, trElement );
 
 			// Consume table cell - it will be always consumed as we convert whole row at once.
@@ -425,22 +431,28 @@ function createViewTableCellElement( tableSlot, tableAttributes, insertPosition,
 
 // Creates a `<tr>` view element.
 //
-// @param {module:engine/view/element~Element} tableRow
+// @param {module:engine/view/element~Element} tableElement
+// @param {module:engine/model/element~Element} tableRow
 // @param {Number} rowIndex
-// @param {module:engine/view/element~Element} tableSection
+// @param {{headingColumns, headingRows}} tableAttributes
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @returns {module:engine/view/element~Element}
-function createTr( tableRow, rowIndex, tableSection, conversionApi ) {
+function createTr( tableElement, tableRow, rowIndex, tableAttributes, conversionApi ) {
 	// Will always consume since we're converting <tableRow> element from a parent <table>.
 	conversionApi.consumable.consume( tableRow, 'insert' );
 
-	const trElement = conversionApi.writer.createContainerElement( 'tr' );
+	const trElement = tableRow.isEmpty ?
+		conversionApi.writer.createEmptyElement( 'tr' ) :
+		conversionApi.writer.createContainerElement( 'tr' );
+
 	conversionApi.mapper.bindElements( tableRow, trElement );
 
-	const headingRows = tableRow.parent.getAttribute( 'headingRows' ) || 0;
-	const offset = headingRows > 0 && rowIndex >= headingRows ? rowIndex - headingRows : rowIndex;
+	const headingRows = tableAttributes.headingRows;
+	const tableSection = getOrCreateTableSection( getSectionName( rowIndex, tableAttributes ), tableElement, conversionApi );
 
+	const offset = headingRows > 0 && rowIndex >= headingRows ? rowIndex - headingRows : rowIndex;
 	const position = conversionApi.writer.createPositionAt( tableSection, offset );
+
 	conversionApi.writer.insert( position, trElement );
 
 	return trElement;

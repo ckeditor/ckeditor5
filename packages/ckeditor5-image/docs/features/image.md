@@ -14,6 +14,7 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link module:image/imagetextalternative~ImageTextAlternative} adds support for adding text alternative.
 * {@link module:image/imageupload~ImageUpload} adds support for uploading dropped or pasted images (see: {@link features/image-upload Image upload}).
 * {@link module:image/imageresize~ImageResize} adds support for resizing images.
+* {@link module:link/linkimage~LinkImage} adds support for linking images.
 
 <info-box info>
 	All features listed above except the image resize are enabled by default in all WYSIWYG editor builds.
@@ -266,6 +267,26 @@ Resizing by dragging handles displayed over the image is the first option provid
 * [Limiting image resize](https://github.com/ckeditor/ckeditor5-image/issues/320) with min and max values.
 
 We count on your feedback. React with 👍 under the respective tickets or [report new ones](https://github.com/ckeditor/ckeditor5-image/issues) if you have different ideas.
+
+## Linking images
+
+The {@link module:link/linkimage~LinkImage} plugin adds support for linking images:
+
+```html
+<figure class="image">
+	<a href="...">
+	    <img src="..." alt="...">
+    </a>
+</figure>
+```
+
+Enabling linking images brings support for link editing to the rich-text editor. See the {@link features/link Link guide} to read more about the feature.
+
+{@snippet features/image-link}
+
+<info-box info>
+	The {@link module:link/linkimage~LinkImage} plugin is available in the [@ckeditor/ckeditor5-link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package.
+</info-box>
 
 ## Installation
 

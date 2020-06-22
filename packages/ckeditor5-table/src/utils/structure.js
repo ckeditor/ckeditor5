@@ -328,7 +328,7 @@ function addHeadingsToCroppedTable( croppedTable, sourceTable, startRow, startCo
  * @protected
  * @param {module:engine/model/element~Element} table
  * @param {module:table/tableutils~TableUtils} tableUtils
- * @return {Boolean} True if removed some columns.
+ * @returns {Boolean} True if removed some columns.
  */
 export function removeEmptyColumns( table, tableUtils ) {
 	const width = tableUtils.getColumns( table );
@@ -381,7 +381,7 @@ export function removeEmptyColumns( table, tableUtils ) {
  * @param {module:engine/model/element~Element} table
  * @param {module:table/tableutils~TableUtils} tableUtils
  * @param {module:engine/model/batch~Batch|null} [batch] Batch that should be used for removing empty rows.
- * @return {Boolean} True if removed some rows.
+ * @returns {Boolean} True if removed some rows.
  */
 export function removeEmptyRows( table, tableUtils, batch ) {
 	const emptyRows = [];
@@ -437,4 +437,93 @@ export function removeEmptyRowsColumns( table, tableUtils, batch ) {
 	if ( !removedColumns ) {
 		removeEmptyRows( table, tableUtils, batch );
 	}
+}
+
+/**
+ * Returns adjusted last row index if selection covers part of a row with empty slots (spanned by other cells).
+ * The `dimensions.lastRow` is equal to last row index but selection might be bigger.
+ *
+ * This happens *only* on rectangular selection so we analyze a case like this:
+ *
+ *        +---+---+---+---+
+ *      0 | a | b | c | d |
+ *        +   +   +---+---+
+ *      1 |   | e | f | g |
+ *        +   +---+   +---+
+ *      2 |   | h |   | i | <- last row, each cell has rowspan = 2,
+ *        +   +   +   +   +    so we need to return 3, not 2
+ *      3 |   |   |   |   |
+ *        +---+---+---+---+
+ *
+ * @param {module:engine/model/element~Element} table
+ * @param {Object} dimensions
+ * @param {Number} dimensions.firstRow
+ * @param {Number} dimensions.firstColumn
+ * @param {Number} dimensions.lastRow
+ * @param {Number} dimensions.lastColumn
+ * @returns {Number} Adjusted last row index.
+ */
+export function adjustLastRowIndex( table, dimensions ) {
+	const lastRowMap = Array.from( new TableWalker( table, {
+		startColumn: dimensions.firstColumn,
+		endColumn: dimensions.lastColumn,
+		row: dimensions.lastRow
+	} ) );
+
+	const everyCellHasSingleRowspan = lastRowMap.every( ( { cellHeight } ) => cellHeight === 1 );
+
+	// It is a "flat" row, so the last row index is OK.
+	if ( everyCellHasSingleRowspan ) {
+		return dimensions.lastRow;
+	}
+
+	// Otherwise get any cell's rowspan and adjust the last row index.
+	const rowspanAdjustment = lastRowMap[ 0 ].cellHeight - 1;
+	return dimensions.lastRow + rowspanAdjustment;
+}
+
+/**
+ * Returns adjusted last column index if selection covers part of a column with empty slots (spanned by other cells).
+ * The `dimensions.lastColumn` is equal to last column index but selection might be bigger.
+ *
+ * This happens *only* on rectangular selection so we analyze a case like this:
+ *
+ *       0   1   2   3
+ *     +---+---+---+---+
+ *     | a             |
+ *     +---+---+---+---+
+ *     | b | c | d     |
+ *     +---+---+---+---+
+ *     | e     | f     |
+ *     +---+---+---+---+
+ *     | g | h         |
+ *     +---+---+---+---+
+ *               ^
+ *              last column, each cell has colspan = 2, so we need to return 3, not 2
+ *
+ * @param {module:engine/model/element~Element} table
+ * @param {Object} dimensions
+ * @param {Number} dimensions.firstRow
+ * @param {Number} dimensions.firstColumn
+ * @param {Number} dimensions.lastRow
+ * @param {Number} dimensions.lastColumn
+ * @returns {Number} Adjusted last column index.
+ */
+export function adjustLastColumnIndex( table, dimensions ) {
+	const lastColumnMap = Array.from( new TableWalker( table, {
+		startRow: dimensions.firstRow,
+		endRow: dimensions.lastRow,
+		column: dimensions.lastColumn
+	} ) );
+
+	const everyCellHasSingleColspan = lastColumnMap.every( ( { cellWidth } ) => cellWidth === 1 );
+
+	// It is a "flat" column, so the last column index is OK.
+	if ( everyCellHasSingleColspan ) {
+		return dimensions.lastColumn;
+	}
+
+	// Otherwise get any cell's colspan and adjust the last column index.
+	const colspanAdjustment = lastColumnMap[ 0 ].cellWidth - 1;
+	return dimensions.lastColumn + colspanAdjustment;
 }
