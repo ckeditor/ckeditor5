@@ -9,6 +9,14 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-table' ), {
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+		},
+		image: {
+			toolbar: [
+				'imageStyle:full',
+				'imageStyle:side',
+				'|',
+				'imageTextAlternative'
+			]
 		}
 	} )
 	.then( editor => {

@@ -13,6 +13,7 @@ import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imag
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Input from '@ckeditor/ckeditor5-typing/src/input';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -148,6 +149,41 @@ describe( 'table clipboard', () => {
 			] ) );
 		} );
 
+		it( 'should normalize pasted table if selection is outside table', () => {
+			model.change( writer => {
+				writer.insertElement( 'paragraph', modelRoot.getChild( 0 ), 'before' );
+				writer.setSelection( modelRoot.getChild( 0 ), 'before' );
+			} );
+
+			const table = viewTable( [
+				[ 'aa', 'ab', { contents: 'ac', rowspan: 3 } ],
+				[ { contents: 'ba', rowspan: 2 }, { contents: 'bb', rowspan: 2 } ]
+			] );
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+			data.dataTransfer.setData( 'text/html', table );
+			viewDocument.fire( 'paste', data );
+
+			editor.isReadOnly = false;
+
+			assertEqualMarkup( getModelData( model ),
+				'[' + modelTable( [
+					[ 'aa', 'ab', { contents: 'ac', rowspan: 2 } ],
+					[ 'ba', 'bb' ]
+				] ) + ']' +
+				modelTable( [
+					[ '00', '01', '02', '03' ],
+					[ '10', '11', '12', '13' ],
+					[ '20', '21', '22', '23' ],
+					[ '30', '31', '32', '33' ]
+				] )
+			);
+		} );
+
 		it( 'should not alter model.insertContent if no table pasted', () => {
 			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
@@ -168,6 +204,17 @@ describe( 'table clipboard', () => {
 				[ '20', '21', '22', '23' ],
 				[ '30', '31', '32', '33' ]
 			] ) );
+		} );
+
+		it( 'should not alter model.insertContent if a text node is inserted', async () => {
+			await editor.destroy();
+			await createEditor( [ Input ] );
+
+			setModelData( model, '<paragraph>foo[]</paragraph>' );
+
+			editor.execute( 'input', { text: 'bar' } );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foobar[]</paragraph>' );
 		} );
 
 		it( 'should not alter model.insertContent if mixed content is pasted (table + paragraph)', () => {

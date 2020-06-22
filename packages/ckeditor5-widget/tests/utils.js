@@ -327,6 +327,11 @@ describe( 'widget utils', () => {
 				isBlock: true
 			} );
 
+			model.schema.register( 'horizontalLine', {
+				isObject: true,
+				allowWhere: '$block'
+			} );
+
 			model.schema.extend( 'span', { allowIn: 'paragraph' } );
 			model.schema.extend( '$text', { allowIn: 'span' } );
 		} );
@@ -409,6 +414,73 @@ describe( 'widget utils', () => {
 			const pos = findOptimalInsertionPosition( doc.selection, model );
 
 			expect( pos.path ).to.deep.equal( [ 3 ] );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/7438
+		describe( 'integration with the WidgetTypeAround feature ("widget-type-around" model selection attribute)', () => {
+			it( 'should respect the attribute value when a widget (block and an object) is selected ("fake caret" before a widget)', () => {
+				setData( model, '<paragraph>x</paragraph>[<image></image>]<paragraph>y</paragraph>' );
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'widget-type-around', 'before' );
+				} );
+
+				const pos = findOptimalInsertionPosition( doc.selection, model );
+
+				expect( pos.path ).to.deep.equal( [ 1 ] );
+			} );
+
+			it( 'should respect the attribute value when a widget (block and an object) is selected ("fake caret" after a widget)', () => {
+				setData( model, '<paragraph>x</paragraph>[<image></image>]<paragraph>y</paragraph>' );
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'widget-type-around', 'after' );
+				} );
+
+				const pos = findOptimalInsertionPosition( doc.selection, model );
+
+				expect( pos.path ).to.deep.equal( [ 2 ] );
+			} );
+
+			it( 'should return a position after a selected widget (block and an object) ("fake caret" not displayed)', () => {
+				setData( model, '<paragraph>x</paragraph>[<image></image>]<paragraph>y</paragraph>' );
+
+				const pos = findOptimalInsertionPosition( doc.selection, model );
+
+				expect( pos.path ).to.deep.equal( [ 2 ] );
+			} );
+
+			it( 'should respect the attribute value when a widget (an object) is selected ("fake caret" before a widget)', () => {
+				setData( model, '<paragraph>x</paragraph>[<horizontalLine></horizontalLine>]<paragraph>y</paragraph>' );
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'widget-type-around', 'before' );
+				} );
+
+				const pos = findOptimalInsertionPosition( doc.selection, model );
+
+				expect( pos.path ).to.deep.equal( [ 1 ] );
+			} );
+
+			it( 'should respect the attribute value when a widget (an object) is selected ("fake caret" after a widget)', () => {
+				setData( model, '<paragraph>x</paragraph>[<horizontalLine></horizontalLine>]<paragraph>y</paragraph>' );
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'widget-type-around', 'after' );
+				} );
+
+				const pos = findOptimalInsertionPosition( doc.selection, model );
+
+				expect( pos.path ).to.deep.equal( [ 2 ] );
+			} );
+
+			it( 'should return a position after a selected widget (an object) ("fake caret" not displayed)', () => {
+				setData( model, '<paragraph>x</paragraph>[<horizontalLine></horizontalLine>]<paragraph>y</paragraph>' );
+
+				const pos = findOptimalInsertionPosition( doc.selection, model );
+
+				expect( pos.path ).to.deep.equal( [ 2 ] );
+			} );
 		} );
 	} );
 

@@ -15,6 +15,8 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { isLinkElement } from '../src/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 
 /* global document */
 
@@ -849,6 +851,200 @@ describe( 'LinkEditing', () => {
 
 				await editor.destroy();
 			} );
+		} );
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/1016
+	describe( 'typing around the link after a click', () => {
+		let editor;
+
+		beforeEach( async () => {
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, LinkEditing, Enter, Typing, BoldEditing ],
+				link: {
+					decorators: {
+						isFoo: {
+							mode: 'manual',
+							label: 'Foo',
+							attributes: {
+								class: 'foo'
+							}
+						},
+						isBar: {
+							mode: 'manual',
+							label: 'Bar',
+							attributes: {
+								target: '_blank'
+							}
+						}
+					}
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should insert content after the link', () => {
+			setModelData( model, '<paragraph><$text linkHref="url">Bar[]</$text></paragraph>' );
+
+			editor.editing.view.document.fire( 'mousedown' );
+			editor.editing.view.document.fire( 'selectionChange', {
+				newSelection: view.document.selection
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph><$text linkHref="url">Bar</$text>[]</paragraph>' );
+
+			editor.execute( 'input', { text: 'Foo' } );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph><$text linkHref="url">Bar</$text>Foo[]</paragraph>' );
+		} );
+
+		it( 'should insert content before the link', () => {
+			setModelData( model, '<paragraph><$text linkHref="url">[]Bar</$text></paragraph>' );
+
+			editor.editing.view.document.fire( 'mousedown' );
+			editor.editing.view.document.fire( 'selectionChange', {
+				newSelection: view.document.selection
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]<$text linkHref="url">Bar</$text></paragraph>' );
+
+			editor.execute( 'input', { text: 'Foo' } );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>Foo[]<$text linkHref="url">Bar</$text></paragraph>' );
+		} );
+
+		it( 'should insert content to the link if clicked inside it', () => {
+			setModelData( model, '<paragraph><$text linkHref="url">B[]ar</$text></paragraph>' );
+
+			editor.editing.view.document.fire( 'mousedown' );
+			editor.editing.view.document.fire( 'selectionChange', {
+				newSelection: view.document.selection
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph><$text linkHref="url">B[]ar</$text></paragraph>' );
+
+			editor.execute( 'input', { text: 'ar. B' } );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph><$text linkHref="url">Bar. B[]ar</$text></paragraph>' );
+		} );
+
+		it( 'should insert content between two links (selection at the end of the first link)', () => {
+			setModelData( model, '<paragraph><$text linkHref="foo">Foo[]</$text><$text linkHref="bar">Bar</$text></paragraph>' );
+
+			editor.editing.view.document.fire( 'mousedown' );
+			editor.editing.view.document.fire( 'selectionChange', {
+				newSelection: view.document.selection
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph><$text linkHref="foo">Foo</$text>[]<$text linkHref="bar">Bar</$text></paragraph>'
+			);
+
+			editor.execute( 'input', { text: 'Foo' } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph><$text linkHref="foo">Foo</$text>Foo[]<$text linkHref="bar">Bar</$text></paragraph>'
+			);
+		} );
+
+		it( 'should insert content between two links (selection at the beginning of the second link)', () => {
+			setModelData( model, '<paragraph><$text linkHref="foo">Foo</$text><$text linkHref="bar">[]Bar</$text></paragraph>' );
+
+			editor.editing.view.document.fire( 'mousedown' );
+			editor.editing.view.document.fire( 'selectionChange', {
+				newSelection: view.document.selection
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph><$text linkHref="foo">Foo</$text>[]<$text linkHref="bar">Bar</$text></paragraph>'
+			);
+
+			editor.execute( 'input', { text: 'Foo' } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph><$text linkHref="foo">Foo</$text>Foo[]<$text linkHref="bar">Bar</$text></paragraph>'
+			);
+		} );
+
+		it( 'should not touch other attributes than `linkHref`', () => {
+			setModelData( model, '<paragraph><$text bold="true" linkHref="url">Bar[]</$text></paragraph>' );
+
+			editor.editing.view.document.fire( 'mousedown' );
+			editor.editing.view.document.fire( 'selectionChange', {
+				newSelection: view.document.selection
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph><$text bold="true" linkHref="url">Bar</$text><$text bold="true">[]</$text></paragraph>'
+			);
+
+			editor.execute( 'input', { text: 'Foo' } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph><$text bold="true" linkHref="url">Bar</$text><$text bold="true">Foo[]</$text></paragraph>'
+			);
+		} );
+
+		it( 'should do nothing if the text was not clicked', () => {
+			setModelData( model, '<paragraph><$text linkHref="url">Bar[]</$text></paragraph>' );
+
+			editor.editing.view.document.fire( 'selectionChange', {
+				newSelection: view.document.selection
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph><$text linkHref="url">Bar[]</$text></paragraph>' );
+		} );
+
+		it( 'should do nothing if the selection is not collapsed after the click', () => {
+			setModelData( model, '<paragraph>[<$text linkHref="url">Bar</$text>]</paragraph>' );
+
+			editor.editing.view.document.fire( 'mousedown' );
+			editor.editing.view.document.fire( 'selectionChange', {
+				newSelection: view.document.selection
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>[<$text linkHref="url">Bar</$text>]</paragraph>' );
+		} );
+
+		it( 'should do nothing if the text is not a link', () => {
+			setModelData( model, '<paragraph><$text bold="true">Bar[]</$text></paragraph>' );
+
+			editor.editing.view.document.fire( 'mousedown' );
+			editor.editing.view.document.fire( 'selectionChange', {
+				newSelection: view.document.selection
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bar[]</$text></paragraph>' );
+		} );
+
+		it( 'should remove manual decorators', () => {
+			model.schema.extend( '$text', {
+				allowIn: '$root',
+				allowAttributes: [ 'linkIsFoo', 'linkIsBar' ]
+			} );
+
+			setModelData( model, '<paragraph><$text linkIsFoo="true" linkIsBar="true" linkHref="url">Bar[]</$text></paragraph>' );
+
+			editor.editing.view.document.fire( 'mousedown' );
+			editor.editing.view.document.fire( 'selectionChange', {
+				newSelection: view.document.selection
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph><$text linkHref="url" linkIsBar="true" linkIsFoo="true">Bar</$text>[]</paragraph>'
+			);
+
+			editor.execute( 'input', { text: 'Foo' } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph><$text linkHref="url" linkIsBar="true" linkIsFoo="true">Bar</$text>Foo[]</paragraph>'
+			);
 		} );
 	} );
 } );

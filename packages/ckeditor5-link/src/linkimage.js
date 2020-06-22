@@ -15,7 +15,7 @@ import LinkImageUI from './linkimageui';
  * The `LinkImage` plugin.
  *
  * This is a "glue" plugin that loads the {@link module:link/linkimageediting~LinkImageEditing link image editing feature}
- * and {@link module:link/linkimageui~LinkImageUI linkimage UI feature}.
+ * and {@link module:link/linkimageui~LinkImageUI link image UI feature}.
  *
  * @extends module:core/plugin~Plugin
  */
