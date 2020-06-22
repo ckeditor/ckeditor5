@@ -13,7 +13,7 @@ import getLastTextLine from '@ckeditor/ckeditor5-typing/src/utils/getlasttextlin
 
 const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
 
-const urlRegExp = new RegExp(
+const URL_REG_EXP = new RegExp(
 	// Group 1: Line start or after a space.
 	'(^|\\s)' + // Match .
 	// Group 2: Full detected URL.
@@ -27,7 +27,7 @@ const urlRegExp = new RegExp(
 const URL_GROUP_IN_MATCH = 2;
 
 // Simplified email test - should be run over previously found URL.
-const emailRegExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+const EMAIL_REG_EXP = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 
 /**
  * The auto link plugin.
@@ -150,11 +150,11 @@ function isSingleSpaceAtTheEnd( text ) {
 }
 
 function getUrlAtTextEnd( text ) {
-	const match = urlRegExp.exec( text );
+	const match = URL_REG_EXP.exec( text );
 
 	return match ? match[ URL_GROUP_IN_MATCH ] : null;
 }
 
 function isEmail( linkHref ) {
-	return emailRegExp.exec( linkHref );
+	return EMAIL_REG_EXP.exec( linkHref );
 }
