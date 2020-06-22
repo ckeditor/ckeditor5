@@ -24,14 +24,10 @@ const urlRegExp = new RegExp(
 		'((?:\\/[+~%/.\\w\\-_]*)?\\??(?:[-+=&;%@.\\w_]*)#?(?:[.!/\\\\\\w]*))?' +
 	')$', 'i' );
 
+const URL_GROUP_IN_MATCH = 2;
+
 // Simplified email test - should be run over previously found URL.
 const emailRegExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
-
-const URL_POSITION_IN_MATCH = 2;
-
-function isEmail( linkHref ) {
-	return emailRegExp.exec( linkHref );
-}
 
 /**
  * The auto link plugin.
@@ -59,23 +55,23 @@ export default class AutoLink extends Plugin {
 			}
 
 			// 2. Check text before "space" or "enter".
-			const match = urlRegExp.exec( text.substr( 0, text.length - 1 ) );
+			const url = getUrlAtTextEnd( text.substr( 0, text.length - 1 ) );
 
-			if ( match ) {
-				return { match };
+			if ( url ) {
+				return { url };
 			}
 		} );
 
 		const input = editor.plugins.get( 'Input' );
 
 		watcher.on( 'matched:data', ( evt, data ) => {
-			const { batch, range, match } = data;
+			const { batch, range, url } = data;
 
 			if ( !input.isInput( batch ) ) {
 				return;
 			}
 
-			this._applyAutoLink( match[ URL_POSITION_IN_MATCH ], range );
+			this._applyAutoLink( url, range );
 		} );
 
 		// todo: watcher.bind();
@@ -127,10 +123,10 @@ export default class AutoLink extends Plugin {
 	_checkAndApplyAutoLinkOnRange( rangeToCheck ) {
 		const { text, range } = getLastTextLine( rangeToCheck, this.editor.model );
 
-		const match = urlRegExp.exec( text );
+		const url = getUrlAtTextEnd( text );
 
-		if ( match ) {
-			this._applyAutoLink( match[ URL_POSITION_IN_MATCH ], range, 0 );
+		if ( url ) {
+			this._applyAutoLink( url, range, 0 );
 		}
 	}
 
@@ -151,4 +147,14 @@ export default class AutoLink extends Plugin {
 
 function isSingleSpaceAtTheEnd( text ) {
 	return text.length > MIN_LINK_LENGTH_WITH_SPACE_AT_END && text[ text.length - 1 ] === ' ' && text[ text.length - 2 ] !== ' ';
+}
+
+function getUrlAtTextEnd( text ) {
+	const match = urlRegExp.exec( text );
+
+	return match ? match[ URL_GROUP_IN_MATCH ] : null;
+}
+
+function isEmail( linkHref ) {
+	return emailRegExp.exec( linkHref );
 }
