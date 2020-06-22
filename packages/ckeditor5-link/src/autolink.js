@@ -96,7 +96,12 @@ export default class AutoLink extends Plugin {
 				return;
 			}
 
-			this._applyAutoLink( url, range );
+			const linkRange = editor.model.createRange(
+				range.end.getShiftedBy( -( 1 + url.length ) ),
+				range.end.getShiftedBy( -1 )
+			);
+
+			this._applyAutoLink( url, linkRange );
 		} );
 
 		watcher.bind( 'isEnabled' ).to( this );
@@ -154,33 +159,34 @@ export default class AutoLink extends Plugin {
 	 * @private
 	 */
 	_checkAndApplyAutoLinkOnRange( rangeToCheck ) {
-		const { text, range } = getLastTextLine( rangeToCheck, this.editor.model );
+		const model = this.editor.model;
+		const { text, range } = getLastTextLine( rangeToCheck, model );
 
 		const url = getUrlAtTextEnd( text );
 
 		if ( url ) {
-			this._applyAutoLink( url, range, 0 );
+			const linkRange = model.createRange(
+				range.end.getShiftedBy( -url.length ),
+				range.end
+			);
+
+			this._applyAutoLink( url, linkRange );
 		}
 	}
 
 	/**
-	 * Applies link on selected renage.
+	 * Applies link on a given range.
 	 *
-	 * @param {String} linkHref Link href value.
+	 * @param {String} url URL to link.
 	 * @param {module:engine/model/range~Range} range Text range to apply link attribute.
 	 * @private
 	 */
-	_applyAutoLink( linkHref, range, additionalOffset = 1 ) {
+	_applyAutoLink( url, range ) {
 		// Enqueue change to make undo step.
 		this.editor.model.enqueueChange( writer => {
-			const linkRange = writer.createRange(
-				range.end.getShiftedBy( -( additionalOffset + linkHref.length ) ),
-				range.end.getShiftedBy( -additionalOffset )
-			);
+			const linkHrefValue = isEmail( url ) ? `mailto://${ url }` : url;
 
-			const linkHrefValue = isEmail( linkHref ) ? `mailto://${ linkHref }` : linkHref;
-
-			writer.setAttribute( 'linkHref', linkHrefValue, linkRange );
+			writer.setAttribute( 'linkHref', linkHrefValue, range );
 		} );
 	}
 }
