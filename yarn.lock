@@ -11419,10 +11419,10 @@ uglify-to-browserify@~1.0.0:
   resolved "https://registry.yarnpkg.com/uglify-to-browserify/-/uglify-to-browserify-1.0.2.tgz#6e0924d6bda6b5afe349e39a6d632850a0f882b7"
   integrity sha1-bgkk1r2mta/jSeOabWMoUKD4grc=
 
-umberto@^1.3.2:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/umberto/-/umberto-1.4.0.tgz#86440c04b2049bc1683eb89cfe3866bcbfbce184"
-  integrity sha512-HE1hMilYqNEnyeqNwebsKhMcg2RRMc3WqDtunn+JZ3IGOWb30VjFRiN7FB20iZTcQuU1RRJdeME0Ok1MRBci3w==
+umberto@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/umberto/-/umberto-1.4.1.tgz#e17d25509b513768cf6d0f4a7e260ae32ee1e1f1"
+  integrity sha512-geO9cw9mJJS2t+moRLYCAHgcc1yyw7fQKNv6cXhQI1LyKHlrCZkBfesesoVMJj7JHti46fXz6NQAOLZHrpme4w==
   dependencies:
     "@babel/core" "^7.1.2"
     "@babel/polyfill" "^7.0.0"
