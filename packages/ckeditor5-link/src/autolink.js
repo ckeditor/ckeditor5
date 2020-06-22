@@ -65,6 +65,11 @@ export default class AutoLink extends Plugin {
 		this._enableShiftEnterHandling();
 	}
 
+	/**
+	 * Enables auto-link on typing.
+	 *
+	 * @private
+	 */
 	_enableTypingHandling() {
 		const editor = this.editor;
 
@@ -74,7 +79,7 @@ export default class AutoLink extends Plugin {
 				return;
 			}
 
-			// 2. Check text before "space" or "enter".
+			// 2. Check text before last typed "space".
 			const url = getUrlAtTextEnd( text.substr( 0, text.length - 1 ) );
 
 			if ( url ) {
@@ -97,6 +102,11 @@ export default class AutoLink extends Plugin {
 		watcher.bind( 'isEnabled' ).to( this );
 	}
 
+	/**
+	 * Enables auto-link on <kbd>enter</kbd> key.
+	 *
+	 * @private
+	 */
 	_enableEnterHandling() {
 		const editor = this.editor;
 		const model = editor.model;
@@ -114,6 +124,11 @@ export default class AutoLink extends Plugin {
 		} );
 	}
 
+	/**
+	 * Enables auto-link on <kbd>shift</kbd>+<kbd>enter</kbd> key.
+	 *
+	 * @private
+	 */
 	_enableShiftEnterHandling() {
 		const editor = this.editor;
 		const model = editor.model;
@@ -132,6 +147,12 @@ export default class AutoLink extends Plugin {
 		} );
 	}
 
+	/**
+	 * Checks passed range if it contains a linkable text.
+	 *
+	 * @param {module:engine/model/range~Range} rangeToCheck
+	 * @private
+	 */
 	_checkAndApplyAutoLinkOnRange( rangeToCheck ) {
 		const { text, range } = getLastTextLine( rangeToCheck, this.editor.model );
 
@@ -142,6 +163,13 @@ export default class AutoLink extends Plugin {
 		}
 	}
 
+	/**
+	 * Applies link on selected renage.
+	 *
+	 * @param {String} linkHref Link href value.
+	 * @param {module:engine/model/range~Range} range Text range to apply link attribute.
+	 * @private
+	 */
 	_applyAutoLink( linkHref, range, additionalOffset = 1 ) {
 		// Enqueue change to make undo step.
 		this.editor.model.enqueueChange( writer => {
@@ -157,6 +185,7 @@ export default class AutoLink extends Plugin {
 	}
 }
 
+// Check if text should be evaluated by the plugin in order to reduce number of RegExp checks on whole text.
 function isSingleSpaceAtTheEnd( text ) {
 	return text.length > MIN_LINK_LENGTH_WITH_SPACE_AT_END && text[ text.length - 1 ] === ' ' && text[ text.length - 2 ] !== ' ';
 }
