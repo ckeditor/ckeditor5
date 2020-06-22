@@ -130,6 +130,53 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
+		it( 'adds "mailto://" to link of detected email addresses', () => {
+			simulateTyping( 'newsletter@cksource.com ' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><$text linkHref="mailto://newsletter@cksource.com">newsletter@cksource.com</$text> []</paragraph>'
+			);
+		} );
+
+		const supportedURLs = [
+			'http://cksource.com',
+			'https://cksource.com',
+			'http://www.cksource.com',
+			'hTtP://WwW.cKsOuRcE.cOm',
+			'http://foo.bar.cksource.com',
+			'http://www.cksource.com/some/path/index.html#abc',
+			'http://www.cksource.com/some/path/index.html?foo=bar',
+			'http://www.cksource.com/some/path/index.html?foo=bar#abc',
+			'http://localhost',
+			'ftp://cksource.com',
+			'mailto://cksource@cksource.com',
+			'www.cksource.com',
+			'cksource.com'
+		];
+
+		const unsupportedURLs = [
+			'http://www.cksource.com/some/path/index.html#abc?foo=bar', // Wrong #? sequence.
+			'http:/cksource.com'
+		];
+
+		for ( const supportedURL of supportedURLs ) {
+			it( `should detect "${ supportedURL }" as a valid URL`, () => {
+				simulateTyping( supportedURL + ' ' );
+
+				expect( getData( model ) ).to.equal(
+					`<paragraph><$text linkHref="${ supportedURL }">${ supportedURL }</$text> []</paragraph>` );
+			} );
+		}
+
+		for ( const unsupportedURL of unsupportedURLs ) {
+			it( `should not detect "${ unsupportedURL }" as a valid URL`, () => {
+				simulateTyping( unsupportedURL + ' ' );
+
+				expect( getData( model ) ).to.equal(
+					`<paragraph>${ unsupportedURL } []</paragraph>` );
+			} );
+		}
+
 		function simulateTyping( text ) {
 			const letters = text.split( '' );
 

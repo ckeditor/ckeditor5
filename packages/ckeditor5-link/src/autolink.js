@@ -13,7 +13,25 @@ import getLastTextLine from '@ckeditor/ckeditor5-typing/src/utils/getlasttextlin
 
 const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
 
-const urlRegExp = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*))$/;
+const urlRegExp = new RegExp(
+	// Group 1: Line start or after a space.
+	'(^|\\s)' + // Match .
+	// Group 2: Full detected URL.
+	'(' +
+		// Group 3 + 4: Protocol + domain.
+		'(([a-z]{3,9}:(?:\\/\\/)?)(?:[\\w]+)?[a-z0-9.-]+|(?:www\\.|[\\w]+)[a-z0-9.-]+)' +
+		// Group 5: Optional path + query string + location.
+		'((?:\\/[+~%/.\\w\\-_]*)?\\??(?:[-+=&;%@.\\w_]*)#?(?:[.!/\\\\\\w]*))?' +
+	')$', 'i' );
+
+// Simplified email test - should be run over previously found URL.
+const emailRegExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+
+const URL_POSITION_IN_MATCH = 2;
+
+function isEmail( linkHref ) {
+	return emailRegExp.exec( linkHref );
+}
 
 /**
  * The auto link plugin.
@@ -57,7 +75,7 @@ export default class AutoLink extends Plugin {
 				return;
 			}
 
-			this._applyAutoLink( match[ 1 ], range );
+			this._applyAutoLink( match[ URL_POSITION_IN_MATCH ], range );
 		} );
 
 		// todo: watcher.bind();
@@ -112,7 +130,7 @@ export default class AutoLink extends Plugin {
 		const match = urlRegExp.exec( text );
 
 		if ( match ) {
-			this._applyAutoLink( match[ 1 ], range, 0 );
+			this._applyAutoLink( match[ URL_POSITION_IN_MATCH ], range, 0 );
 		}
 	}
 
@@ -124,7 +142,9 @@ export default class AutoLink extends Plugin {
 				range.end.getShiftedBy( -additionalOffset )
 			);
 
-			writer.setAttribute( 'linkHref', linkHref, linkRange );
+			const linkHrefValue = isEmail( linkHref ) ? `mailto://${ linkHref }` : linkHref;
+
+			writer.setAttribute( 'linkHref', linkHrefValue, linkRange );
 		} );
 	}
 }
