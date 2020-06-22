@@ -6,6 +6,7 @@
     - Staring with `http://`.
     - staring with `https://`.
     - staring without a protocol (www.cksource.com).
+    - e-mail address should be linked using `mailto://` (in `linkHref` attribute value only).
 2. Type space after a URL.
 3. Check if text typed before space get converted to link.
 
