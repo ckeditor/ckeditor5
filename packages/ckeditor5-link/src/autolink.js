@@ -54,6 +54,20 @@ export default class AutoLink extends Plugin {
 			this.isEnabled = !selection.anchor.parent.is( 'codeBlock' );
 		} );
 
+		this._enableTypingHandling();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	afterInit() {
+		this._enableEnterHandling();
+		this._enableShiftEnterHandling();
+	}
+
+	_enableTypingHandling() {
+		const editor = this.editor;
+
 		const watcher = new TextWatcher( editor.model, text => {
 			// 1. Detect "space" after a text with a potential link.
 			if ( !isSingleSpaceAtTheEnd( text ) ) {
@@ -81,14 +95,6 @@ export default class AutoLink extends Plugin {
 		} );
 
 		watcher.bind( 'isEnabled' ).to( this );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	afterInit() {
-		this._enableEnterHandling();
-		this._enableShiftEnterHandling();
 	}
 
 	_enableEnterHandling() {
