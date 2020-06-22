@@ -95,13 +95,38 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
-		it( 'can undo auto-linking', () => {
+		it( 'can undo auto-linking (after space)', () => {
 			simulateTyping( 'https://www.cksource.com ' );
 
 			editor.commands.execute( 'undo' );
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>https://www.cksource.com []</paragraph>'
+			);
+		} );
+
+		it( 'can undo auto-linking (after <softBreak>)', () => {
+			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
+
+			editor.execute( 'shiftEnter' );
+
+			editor.commands.execute( 'undo' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>https://www.cksource.com<softBreak></softBreak>[]</paragraph>'
+			);
+		} );
+
+		it( 'can undo auto-linking (after enter)', () => {
+			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
+
+			editor.execute( 'enter' );
+
+			editor.commands.execute( 'undo' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>https://www.cksource.com</paragraph>' +
+				'<paragraph>[]</paragraph>'
 			);
 		} );
 
