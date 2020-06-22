@@ -15,16 +15,18 @@ import LinkEditing from '../src/linkediting';
 import AutoLink from '../src/autolink';
 
 describe( 'AutoLink', () => {
+	let editor;
+
 	it( 'should be named', () => {
 		expect( AutoLink.pluginName ).to.equal( 'AutoLink' );
 	} );
 
 	describe( 'auto link behavior', () => {
-		let editor, model;
+		let model;
 
 		beforeEach( async () => {
 			editor = await ModelTestEditor.create( {
-				plugins: [ Paragraph, Input, LinkEditing, AutoLink, UndoEditing, Enter, ShiftEnter ]
+				plugins: [ Paragraph, Input, LinkEditing, AutoLink, Enter, ShiftEnter ]
 			} );
 
 			model = editor.model;
@@ -95,41 +97,6 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
-		it( 'can undo auto-linking (after space)', () => {
-			simulateTyping( 'https://www.cksource.com ' );
-
-			editor.commands.execute( 'undo' );
-
-			expect( getData( model ) ).to.equal(
-				'<paragraph>https://www.cksource.com []</paragraph>'
-			);
-		} );
-
-		it( 'can undo auto-linking (after <softBreak>)', () => {
-			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
-
-			editor.execute( 'shiftEnter' );
-
-			editor.commands.execute( 'undo' );
-
-			expect( getData( model ) ).to.equal(
-				'<paragraph>https://www.cksource.com<softBreak></softBreak>[]</paragraph>'
-			);
-		} );
-
-		it( 'can undo auto-linking (after enter)', () => {
-			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
-
-			editor.execute( 'enter' );
-
-			editor.commands.execute( 'undo' );
-
-			expect( getData( model ) ).to.equal(
-				'<paragraph>https://www.cksource.com</paragraph>' +
-				'<paragraph>[]</paragraph>'
-			);
-		} );
-
 		it( 'adds "mailto://" to link of detected email addresses', () => {
 			simulateTyping( 'newsletter@cksource.com ' );
 
@@ -176,13 +143,58 @@ describe( 'AutoLink', () => {
 					`<paragraph>${ unsupportedURL } []</paragraph>` );
 			} );
 		}
-
-		function simulateTyping( text ) {
-			const letters = text.split( '' );
-
-			for ( const letter of letters ) {
-				editor.execute( 'input', { text: letter } );
-			}
-		}
 	} );
+
+	describe( 'Undo integration', () => {
+		let model;
+
+		beforeEach( async () => {
+			editor = await ModelTestEditor.create( {
+				plugins: [ Paragraph, Input, LinkEditing, AutoLink, UndoEditing, Enter, ShiftEnter ]
+			} );
+
+			model = editor.model;
+
+			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
+		} );
+
+		it( 'should undo auto-linking (after space)', () => {
+			simulateTyping( ' ' );
+
+			editor.commands.execute( 'undo' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>https://www.cksource.com []</paragraph>'
+			);
+		} );
+
+		it( 'should undo auto-linking (after <softBreak>)', () => {
+			editor.execute( 'shiftEnter' );
+
+			editor.commands.execute( 'undo' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>https://www.cksource.com<softBreak></softBreak>[]</paragraph>'
+			);
+		} );
+
+		it( 'should undo auto-linking (after enter)', () => {
+			editor.execute( 'enter' );
+
+			editor.commands.execute( 'undo' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>https://www.cksource.com</paragraph>' +
+				'<paragraph>[]</paragraph>'
+			);
+		} );
+	} );
+
+	function simulateTyping( text ) {
+		const letters = text.split( '' );
+
+		for ( const letter of letters ) {
+			editor.execute( 'input', { text: letter } );
+		}
+	}
 } );

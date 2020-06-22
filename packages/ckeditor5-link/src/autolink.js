@@ -74,7 +74,7 @@ export default class AutoLink extends Plugin {
 			this._applyAutoLink( url, range );
 		} );
 
-		// todo: watcher.bind();
+		watcher.bind( 'isEnabled' ).to( this );
 	}
 
 	/**
