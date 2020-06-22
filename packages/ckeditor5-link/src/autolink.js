@@ -47,6 +47,12 @@ export default class AutoLink extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const selection = editor.model.document.selection;
+
+		selection.on( 'change:range', () => {
+			// Disable plugin when selection is inside a code block.
+			this.isEnabled = !selection.anchor.parent.is( 'codeBlock' );
+		} );
 
 		const watcher = new TextWatcher( editor.model, text => {
 			// 1. Detect "space" after a text with a potential link.

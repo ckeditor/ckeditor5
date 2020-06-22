@@ -4,6 +4,7 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -26,7 +27,7 @@ describe( 'AutoLink', () => {
 
 		beforeEach( async () => {
 			editor = await ModelTestEditor.create( {
-				plugins: [ Paragraph, Input, LinkEditing, AutoLink, Enter, ShiftEnter ]
+				plugins: [ Paragraph, Input, Enter, ShiftEnter, LinkEditing, AutoLink ]
 			} );
 
 			model = editor.model;
@@ -150,7 +151,7 @@ describe( 'AutoLink', () => {
 
 		beforeEach( async () => {
 			editor = await ModelTestEditor.create( {
-				plugins: [ Paragraph, Input, LinkEditing, AutoLink, UndoEditing, Enter, ShiftEnter ]
+				plugins: [ Paragraph, Input, Enter, ShiftEnter, LinkEditing, AutoLink, UndoEditing ]
 			} );
 
 			model = editor.model;
@@ -187,6 +188,30 @@ describe( 'AutoLink', () => {
 				'<paragraph>https://www.cksource.com</paragraph>' +
 				'<paragraph>[]</paragraph>'
 			);
+		} );
+	} );
+
+	describe( 'Code blocks integration', () => {
+		let model;
+
+		beforeEach( async () => {
+			editor = await ModelTestEditor.create( {
+				plugins: [ Paragraph, Input, Enter, ShiftEnter, LinkEditing, AutoLink, CodeBlockEditing ]
+			} );
+
+			model = editor.model;
+		} );
+
+		it( 'should be disabled inside code blocks', () => {
+			setData( model, '<codeBlock language="plaintext">some [] code</codeBlock>' );
+
+			const plugin = editor.plugins.get( 'AutoLink' );
+
+			simulateTyping( 'www.cksource.com' );
+
+			expect( plugin.isEnabled ).to.be.false;
+			expect( getData( model, { withoutSelection: true } ) )
+				.to.equal( '<codeBlock language="plaintext">some www.cksource.com code</codeBlock>' );
 		} );
 	} );
 
