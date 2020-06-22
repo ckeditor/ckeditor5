@@ -10,6 +10,12 @@
 import { isWidget } from '../utils';
 
 /**
+ * The name of the type around model selection attribute responsible for
+ * displaying a "fake caret" next to a selected widget.
+ */
+export const TYPE_AROUND_SELECTION_ATTRIBUTE = 'widget-type-around';
+
+/**
  * Checks if an element is a widget that qualifies to get the type around UI.
  *
  * @param {module:engine/view/element~Element} viewElement
@@ -37,7 +43,7 @@ export function getClosestTypeAroundDomButton( domElement ) {
  * clicked by the user.
  *
  * @param {HTMLElement} domElement
- * @returns {String} Either `'before'` or `'after'`.
+ * @returns {'before'|'after'} Position of the button.
  */
 export function getTypeAroundButtonPosition( domElement ) {
 	return domElement.classList.contains( 'ck-widget__type-around__button_before' ) ? 'before' : 'after';
@@ -54,4 +60,16 @@ export function getClosestWidgetViewElement( domElement, domConverter ) {
 	const widgetDomElement = domElement.closest( '.ck-widget' );
 
 	return domConverter.mapDomToView( widgetDomElement );
+}
+
+/**
+ * For the passed selection instance, it returns the position of the "fake caret" displayed next to a widget.
+ *
+ * **Note**: If the "fake caret" is not currently displayed, `null` is returned.
+ *
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * @returns {'before'|'after'|null} Position of the fake caret or `null` when none is preset.
+ */
+export function getTypeAroundFakeCaretPosition( selection ) {
+	return selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
 }

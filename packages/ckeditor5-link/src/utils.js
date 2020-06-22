@@ -13,6 +13,11 @@ const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u20
 const SAFE_URL = /^(?:(?:https?|ftps?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.:-]|$))/i;
 
 /**
+ * A keystroke used by the {@link module:link/linkui~LinkUI link UI feature}.
+ */
+export const LINK_KEYSTROKE = 'Ctrl+K';
+
+/**
  * Returns `true` if a given view node is the link element.
  *
  * @param {module:engine/view/node~Node} node

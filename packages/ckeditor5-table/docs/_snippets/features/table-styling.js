@@ -105,6 +105,14 @@ ClassicEditor
 				borderColors: COLOR_PALETTE,
 				backgroundColors: COLOR_PALETTE
 			}
+		},
+		image: {
+			toolbar: [
+				'imageStyle:full',
+				'imageStyle:side',
+				'|',
+				'imageTextAlternative'
+			]
 		}
 	} )
 	.then( editor => {

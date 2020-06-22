@@ -14,6 +14,7 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import dragHandleIcon from '../theme/icons/drag-handle.svg';
+import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils';
 
 /**
  * CSS class added to each widget element.
@@ -256,8 +257,18 @@ export function toWidgetEditable( editable, writer ) {
 export function findOptimalInsertionPosition( selection, model ) {
 	const selectedElement = selection.getSelectedElement();
 
-	if ( selectedElement && model.schema.isBlock( selectedElement ) ) {
-		return model.createPositionAfter( selectedElement );
+	if ( selectedElement ) {
+		const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( selection );
+
+		// If the WidgetTypeAround "fake caret" is displayed, use its position for the insertion
+		// to provide the most predictable UX (https://github.com/ckeditor/ckeditor5/issues/7438).
+		if ( typeAroundFakeCaretPosition ) {
+			return model.createPositionAt( selectedElement, typeAroundFakeCaretPosition );
+		}
+
+		if ( model.schema.isBlock( selectedElement ) ) {
+			return model.createPositionAfter( selectedElement );
+		}
 	}
 
 	const firstBlock = selection.getSelectedBlocks().next().value;
