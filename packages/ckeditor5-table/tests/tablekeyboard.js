@@ -1277,7 +1277,7 @@ describe( 'TableKeyboard', () => {
 						downArrowDomEvtDataStub.shiftKey = true;
 					} );
 
-					it( 'should not expand the selection if TableSelection plugin is disabled', () => {
+					it( 'should move to the cell below if TableSelection plugin is disabled', () => {
 						editor.plugins.get( 'TableSelection' ).forceDisabled();
 
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
