@@ -25,16 +25,22 @@ const commonConfig = {
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
 		'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo', 'outdent', 'indent' ],
 	image: {
-		imageResize: [
+		resizeUnit: '%',
+		imageResizeOptions: [
+			{
+				name: 'imageResize:original',
+				label: 'Original size',
+				value: null
+			},
 			{
 				name: 'imageResize:50',
-				label: 'Resize image of 50%',
-				value: '50%'
+				label: '50%',
+				value: '50'
 			},
 			{
 				name: 'imageResize:75',
-				label: 'Resize image of 75%',
-				value: '75%'
+				label: '75%',
+				value: '75'
 			}
 		],
 		toolbar: [ 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:side', '|', 'imageResize' ],
@@ -51,8 +57,88 @@ const commonConfig = {
 	cloudServices: CS_CONFIG
 };
 
+const imageConfig1 = {
+	resizeUnit: '%',
+	imageResizeOptions: [
+		{
+			name: 'imageResize:original',
+			label: 'Original size',
+			value: null
+		},
+		{
+			name: 'imageResize:50',
+			label: '50%',
+			value: '50'
+		},
+		{
+			name: 'imageResize:75',
+			label: '75%',
+			value: '75'
+		}
+	],
+	toolbar: [ 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:side', '|', 'imageResize' ],
+	styles: [
+		'full',
+		'alignLeft',
+		'side' // Purposely using side image instead right aligned image to make sure it works well with both style types.
+	]
+};
+
+const config1 = {
+	...commonConfig,
+	image: imageConfig1
+};
+
 ClassicEditor
-	.create( document.querySelector( '#editor' ), commonConfig )
+	.create( document.querySelector( '#editor1' ), config1 )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+const imageConfig2 = {
+	resizeUnit: '%',
+	imageResizeOptions: [
+		{
+			name: 'imageResize:original',
+			label: 'Original size',
+			value: null
+		},
+		{
+			name: 'imageResize:50',
+			label: '50%',
+			value: '50'
+		},
+		{
+			name: 'imageResize:75',
+			label: '75%',
+			value: '75'
+		}
+	],
+	toolbar: [
+		'imageStyle:alignLeft',
+		'imageStyle:full',
+		'imageStyle:side', '|',
+		'imageResize:original',
+		'imageResize:50',
+		'imageResize:75'
+	],
+	styles: [
+		'full',
+		'alignLeft',
+		'side' // Purposely using side image instead right aligned image to make sure it works well with both style types.
+	]
+};
+
+const config2 = {
+	...commonConfig,
+	image: imageConfig2
+};
+
+ClassicEditor
+	.create( document.querySelector( '#editor2' ), config2 )
 	.then( editor => {
 		window.editor = editor;
 	} )
