@@ -94,7 +94,7 @@ export default class Observer {
 	 * @returns {Boolean} Whether this event should be ignored by the observer.
 	 */
 	checkShouldIgnoreEvent( domEvt ) {
-		return domEvt.target.matches( '[data-cke-ignore-events]' );
+		return domEvt.target.matches( '[data-cke-ignore-events], [data-cke-ignore-events] *' );
 	}
 
 	/**
