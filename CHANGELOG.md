@@ -13,6 +13,7 @@ This release brings some highly anticipated features:
 * Support for [linking images](https://github.com/ckeditor/ckeditor5/issues/702).
 * [Typing around widgets](https://github.com/ckeditor/ckeditor5/issues/407).
 * An option to [automatically set link protocol](https://github.com/ckeditor/ckeditor5/issues/4858).
+* [Improved selection handling when working with links](https://github.com/ckeditor/ckeditor5/issues/1016).
 
 New features were also accompanied by a set of bug fixes, to name a few:
 
