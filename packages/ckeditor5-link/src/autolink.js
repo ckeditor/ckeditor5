@@ -119,10 +119,10 @@ export default class AutoLink extends Plugin {
 				return;
 			}
 
-			const linkRange = editor.model.createRange(
-				range.end.getShiftedBy( -( 1 + url.length ) ),
-				range.end.getShiftedBy( -1 )
-			);
+			const linkEnd = range.end.getShiftedBy( -1 ); // Executed after a space character.
+			const linkStart = linkEnd.getShiftedBy( -url.length );
+
+			const linkRange = editor.model.createRange( linkStart, linkEnd );
 
 			this._applyAutoLink( url, linkRange );
 		} );
