@@ -114,44 +114,105 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
-		const supportedURLs = [
-			'http://cksource.com',
-			'https://cksource.com',
-			'http://www.cksource.com',
-			'hTtP://WwW.cKsOuRcE.cOm',
-			'http://foo.bar.cksource.com',
-			'http://www.cksource.com/some/path/index.html#abc',
-			'http://www.cksource.com/some/path/index.html?foo=bar',
-			'http://www.cksource.com/some/path/index.html?foo=bar#abc',
-			'http://localhost',
-			'ftp://cksource.com',
-			'mailto://cksource@cksource.com',
-			'www.cksource.com',
-			'cksource.com'
-		];
+		// Some examples came from https://mathiasbynens.be/demo/url-regex.
+		describe( 'supported URL', () => {
+			const supportedURLs = [
+				'http://cksource.com',
+				'https://cksource.com',
+				'https://cksource.com:8080',
+				'http://www.cksource.com',
+				'hTtP://WwW.cKsOuRcE.cOm',
+				'www.cksource.com',
+				'http://foo.bar.cksource.com',
+				'http://www.cksource.com/some/path/index.html#abc',
+				'http://www.cksource.com/some/path/index.html?foo=bar',
+				'http://www.cksource.com/some/path/index.html?foo=bar#abc',
+				'http://www.cksource.com:8080/some/path/index.html?foo=bar#abc',
+				'http://www.cksource.com/some/path/index.html#abc?foo=bar',
+				'ftp://cksource.com',
+				'http://cksource.com/foo_bar',
+				'http://cksource.com/foo_bar/',
+				'http://cksource.com/foo_bar_(wikipedia)',
+				'http://cksource.com/foo_bar_(wikipedia)_(again)',
+				'http://www.cksource.com/wpstyle/?p=364',
+				'http://www.cksource.com/wpstyle/?bar=baz&inga=42&quux',
+				'http://userid:password@example.com:8080' +
+				'http://userid:password@example.com:8080/' +
+				'http://userid@cksource.com' +
+				'http://userid@cksource.com/' +
+				'http://userid@cksource.com:8080' +
+				'http://userid@cksource.com:8080/' +
+				'http://userid:password@cksource.com' +
+				'http://userid:password@cksource.com/' +
+				'http://🥳df.ws/123',
+				'http://🥳.ws/富',
+				'http://🥳.ws',
+				'http://🥳.ws/',
+				'http://cksource.com/blah_(wikipedia)#cite-1',
+				'http://cksource.com/blah_(wikipedia)_blah#cite-1',
+				'http://cksource.com/unicode_(🥳)_in_parens',
+				'http://cksource.com/(something)?after=parens',
+				'http://🥳.cksource.com/',
+				'http://code.cksource.com/woot/#&product=browser',
+				'http://j.mp',
+				'ftp://cksource.com/baz',
+				'http://cksource.com/?q=Test%20URL-encoded%20stuff',
+				'http://مثال.إختبار',
+				'http://例子.测试',
+				'http://उदाहरण.परीक्षा',
+				'http://1337.net',
+				'http://a.b-c.de'
+			];
 
-		const unsupportedURLs = [
-			'http://www.cksource.com/some/path/index.html#abc?foo=bar', // Wrong #? sequence.
-			'http:/cksource.com'
-		];
+			for ( const supportedURL of supportedURLs ) {
+				it( `should detect "${ supportedURL }" as a valid URL`, () => {
+					simulateTyping( supportedURL + ' ' );
 
-		for ( const supportedURL of supportedURLs ) {
-			it( `should detect "${ supportedURL }" as a valid URL`, () => {
-				simulateTyping( supportedURL + ' ' );
+					expect( getData( model ) ).to.equal(
+						`<paragraph><$text linkHref="${ supportedURL }">${ supportedURL }</$text> []</paragraph>` );
+				} );
+			}
+		} );
 
-				expect( getData( model ) ).to.equal(
-					`<paragraph><$text linkHref="${ supportedURL }">${ supportedURL }</$text> []</paragraph>` );
-			} );
-		}
+		describe( 'invalid or supported URL', () => {
+			// Some examples came from https://mathiasbynens.be/demo/url-regex.
+			const unsupportedOrInvalid = [
+				'http://',
+				'http://.',
+				'http://..',
+				'http://../',
+				'http://🥳',
+				'http://?',
+				'http://??',
+				'http://??/',
+				'http://#',
+				'http://##',
+				'http://##/',
+				'//',
+				'//a',
+				'///a',
+				'///',
+				'http:///a',
+				'rdar://1234',
+				'h://test',
+				':// foo bar',
+				'ftps://foo.bar/',
+				'http://-error-.invalid/',
+				'http://localhost',
+				'http:/cksource.com',
+				'cksource.com',
+				'ww.cksource.com'
+			];
 
-		for ( const unsupportedURL of unsupportedURLs ) {
-			it( `should not detect "${ unsupportedURL }" as a valid URL`, () => {
-				simulateTyping( unsupportedURL + ' ' );
+			for ( const unsupportedURL of unsupportedOrInvalid ) {
+				it( `should not detect "${ unsupportedURL }" as a valid URL`, () => {
+					simulateTyping( unsupportedURL + ' ' );
 
-				expect( getData( model ) ).to.equal(
-					`<paragraph>${ unsupportedURL } []</paragraph>` );
-			} );
-		}
+					expect( getData( model ) ).to.equal(
+						`<paragraph>${ unsupportedURL } []</paragraph>` );
+				} );
+			}
+		} );
 	} );
 
 	describe( 'Undo integration', () => {

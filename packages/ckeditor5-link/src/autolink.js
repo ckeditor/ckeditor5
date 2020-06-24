@@ -13,21 +13,44 @@ import getLastTextLine from '@ckeditor/ckeditor5-typing/src/utils/getlasttextlin
 
 const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
 
+// This was tweak from https://gist.github.com/dperini/729294.
 const URL_REG_EXP = new RegExp(
 	// Group 1: Line start or after a space.
-	'(^|\\s)' + // Match .
-	// Group 2: Full detected URL.
+	'(^|\\s)' +
+	// Group 2: Detected URL (or e-mail).
 	'(' +
-		// Group 3 + 4: Protocol + domain.
-		'(([a-z]{3,9}:(?:\\/\\/)?)(?:[\\w]+)?[a-z0-9.-]+|(?:www\\.|[\\w]+)[a-z0-9.-]+)' +
-		// Group 5: Optional path + query string + location.
-		'((?:\\/[+~%/.\\w\\-_]*)?\\??(?:[-+=&;%@.\\w_]*)#?(?:[.!/\\\\\\w]*))?' +
+		// Protocol identifier or short syntax "//"
+		// a. Full form http://user@foo.bar.baz:8080/foo/bar.html#baz?foo=bar
+		'(' +
+			'(?:(?:(?:https?|ftp):)?\\/\\/)' +
+			// BasicAuth using user:pass (optional)
+			'(?:\\S+(?::\\S*)?@)?' +
+			'(?:' +
+				// Host & domain names.
+				'(?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.)+' +
+				// TLD identifier name.
+				'(?:[a-z\\u00a1-\\uffff]{2,})' +
+			')' +
+			// port number (optional)
+			'(?::\\d{2,5})?' +
+			// resource path (optional)
+			'(?:[/?#]\\S*)?' +
+		')' +
+		'|' +
+		// b. Short form (either www.example.com or example@example.com)
+		'(' +
+			'(www.|(\\S+@))' +
+			// Host & domain names.
+			'((?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.))+' +
+			// TLD identifier name.
+			'(?:[a-z\\u00a1-\\uffff]{2,})' +
+		')' +
 	')$', 'i' );
 
 const URL_GROUP_IN_MATCH = 2;
 
 // Simplified email test - should be run over previously found URL.
-const EMAIL_REG_EXP = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+const EMAIL_REG_EXP = /^[\S]+@((?![-_])(?:[-\w\u00a1-\uffff]{0,63}[^-_]\.))+(?:[a-z\u00a1-\uffff]{2,})$/i;
 
 /**
  * The auto link plugin.

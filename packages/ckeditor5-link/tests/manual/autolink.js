@@ -15,10 +15,11 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
 import Link from '../../src/link';
 import AutoLink from '../../src/autolink';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Link, AutoLink, Typing, Paragraph, Undo, Enter, ShiftEnter ],
+		plugins: [ Bold, Typing, Paragraph, Undo, Enter, ShiftEnter, Link, AutoLink ],
 		toolbar: [ 'link', 'undo', 'redo' ]
 	} )
 	.then( editor => {
