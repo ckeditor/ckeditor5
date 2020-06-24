@@ -289,7 +289,7 @@ describe( 'AutoLink', () => {
 			model = editor.model;
 		} );
 
-		it( 'should be disabled inside code blocks', () => {
+		it( 'should be disabled inside code blocks (on space)', () => {
 			setData( model, '<codeBlock language="plaintext">some [] code</codeBlock>' );
 
 			const plugin = editor.plugins.get( 'AutoLink' );
@@ -299,6 +299,33 @@ describe( 'AutoLink', () => {
 			expect( plugin.isEnabled ).to.be.false;
 			expect( getData( model, { withoutSelection: true } ) )
 				.to.equal( '<codeBlock language="plaintext">some www.cksource.com code</codeBlock>' );
+		} );
+
+		it( 'should be disabled inside code blocks (on enter)', () => {
+			setData( model, '<codeBlock language="plaintext">some www.cksource.com[] code</codeBlock>' );
+
+			const plugin = editor.plugins.get( 'AutoLink' );
+
+			editor.execute( 'enter' );
+
+			expect( plugin.isEnabled ).to.be.false;
+			expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				'<codeBlock language="plaintext">some www.cksource.com</codeBlock>' +
+				'<codeBlock language="plaintext"> code</codeBlock>'
+			);
+		} );
+
+		it( 'should be disabled inside code blocks (on shift-enter)', () => {
+			setData( model, '<codeBlock language="plaintext">some www.cksource.com[] code</codeBlock>' );
+
+			const plugin = editor.plugins.get( 'AutoLink' );
+
+			editor.execute( 'shiftEnter' );
+
+			expect( plugin.isEnabled ).to.be.false;
+			expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				'<codeBlock language="plaintext">some www.cksource.com<softBreak></softBreak> code</codeBlock>'
+			);
 		} );
 	} );
 
