@@ -100,8 +100,8 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		this.listenTo( domDocument, 'selectionchange', () => {
-			this._handleSelectionChange( domDocument );
+		this.listenTo( domDocument, 'selectionchange', evt => {
+			this._handleSelectionChange( evt, domDocument );
 		} );
 
 		this._documents.add( domDocument );
@@ -123,10 +123,15 @@ export default class SelectionObserver extends Observer {
 	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when selection stop changing.
 	 *
 	 * @private
+	 * @param {Event} domEvent DOM event.
 	 * @param {Document} domDocument DOM document.
 	 */
-	_handleSelectionChange( domDocument ) {
+	_handleSelectionChange( domEvent, domDocument ) {
 		if ( !this.isEnabled ) {
+			return;
+		}
+
+		if ( this.checkShouldIgnoreEvent( domEvent ) ) {
 			return;
 		}
 

@@ -75,7 +75,7 @@ export default class DomEventObserver extends Observer {
 
 		types.forEach( type => {
 			this.listenTo( domElement, type, ( eventInfo, domEvent ) => {
-				if ( this.isEnabled ) {
+				if ( this.isEnabled && !this.checkShouldIgnoreEvent( domEvent ) ) {
 					this.onDomEvent( domEvent );
 				}
 			}, { useCapture: this.useCapture } );
