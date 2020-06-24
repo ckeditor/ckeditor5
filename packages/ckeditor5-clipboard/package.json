@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-clipboard",
-  "version": "19.0.1",
+  "version": "20.0.0",
   "description": "Clipboard integration for CKEditor 5.",
   "keywords": [
     "ckeditor",

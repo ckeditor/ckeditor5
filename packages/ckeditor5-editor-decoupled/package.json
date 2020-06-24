@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-editor-decoupled",
-  "version": "19.0.1",
+  "version": "20.0.0",
   "description": "Decoupled editor implementation for CKEditor 5.",
   "keywords": [
     "ckeditor",

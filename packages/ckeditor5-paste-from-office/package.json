@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-paste-from-office",
-  "version": "19.0.2",
+  "version": "20.0.0",
   "description": "Paste from Office feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
