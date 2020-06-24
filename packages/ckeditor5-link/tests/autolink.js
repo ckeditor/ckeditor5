@@ -35,6 +35,14 @@ describe( 'AutoLink', () => {
 			setData( model, '<paragraph>[]</paragraph>' );
 		} );
 
+		it( 'does nothing on typing normal text', () => {
+			simulateTyping( 'Cupcake ipsum dolor. Sit amet caramels. Pie jelly-o lemon drops fruitcake.' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>Cupcake ipsum dolor. Sit amet caramels. Pie jelly-o lemon drops fruitcake.[]</paragraph>'
+			);
+		} );
+
 		it( 'does not add linkHref attribute to a text link while typing', () => {
 			simulateTyping( 'https://www.cksource.com' );
 
