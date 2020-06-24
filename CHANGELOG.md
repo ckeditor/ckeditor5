@@ -9,7 +9,6 @@ We are happy to announce the release of CKEditor 5 v20.0.0.
 
 This release brings some highly anticipated features:
 
-* [PDF export](https://ckeditor.com/blog/How-to-print-WYSIWYG-editor-content-to-PDF-Export-to-PDF-feature-released/) feature.
 * Support for [linking images](https://github.com/ckeditor/ckeditor5/issues/702).
 * [Typing around widgets](https://github.com/ckeditor/ckeditor5/issues/407).
 * An option to [automatically set link protocol](https://github.com/ckeditor/ckeditor5/issues/4858).
@@ -18,7 +17,6 @@ This release brings some highly anticipated features:
 New features were also accompanied by a set of bug fixes, to name a few:
 
 * [Autoformatting will no longer change formatting when typing in an inline code](https://github.com/ckeditor/ckeditor5/issues/1239).
-* Fixed [table cell background retention when pasting from Microsoft Word](https://github.com/ckeditor/ckeditor5/issues/7275).
 * Editor will no longer [crash if there's a HTML comment in the source data](https://github.com/ckeditor/ckeditor5/issues/5734).
 
 TODO: Add a link to the blog post.
