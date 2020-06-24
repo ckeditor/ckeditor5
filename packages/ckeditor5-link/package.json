@@ -21,6 +21,7 @@
     "@ckeditor/ckeditor5-basic-styles": "^20.0.0",
     "@ckeditor/ckeditor5-block-quote": "^20.0.0",
     "@ckeditor/ckeditor5-clipboard": "^20.0.0",
+    "@ckeditor/ckeditor5-code-block": "^20.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^20.0.0",
     "@ckeditor/ckeditor5-enter": "^20.0.0",
     "@ckeditor/ckeditor5-paragraph": "^20.0.0",
