@@ -22,6 +22,14 @@ describe( 'AutoLink', () => {
 		expect( AutoLink.pluginName ).to.equal( 'AutoLink' );
 	} );
 
+	it( 'should be loaded without Enter & ShiftEnter features', async () => {
+		const editor = await ModelTestEditor.create( {
+			plugins: [ Paragraph, Input, LinkEditing, AutoLink ]
+		} );
+
+		await editor.destroy();
+	} );
+
 	describe( 'auto link behavior', () => {
 		let model;
 

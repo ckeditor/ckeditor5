@@ -140,6 +140,10 @@ export default class AutoLink extends Plugin {
 		const model = editor.model;
 		const enterCommand = editor.commands.get( 'enter' );
 
+		if ( !enterCommand ) {
+			return;
+		}
+
 		enterCommand.on( 'execute', () => {
 			const position = model.document.selection.getFirstPosition();
 
@@ -162,6 +166,10 @@ export default class AutoLink extends Plugin {
 		const model = editor.model;
 
 		const shiftEnterCommand = editor.commands.get( 'shiftEnter' );
+
+		if ( !shiftEnterCommand ) {
+			return;
+		}
 
 		shiftEnterCommand.on( 'execute', () => {
 			const position = model.document.selection.getFirstPosition();
