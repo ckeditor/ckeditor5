@@ -12,7 +12,7 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-import bindTwoStepCaretToAttribute from '../../src/utils/bindtwostepcarettoattribute';
+import bindTwoStepCaretToAttribute from '../../src/twostepcaretmovement';
 
 ClassicEditor
 	.create( document.querySelector( '#editor-ltr' ), {

@@ -7,13 +7,13 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import DomEventData from '../../src/view/observer/domeventdata';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import bindTwoStepCaretToAttribute, { TwoStepCaretHandler } from '../../src/utils/bindtwostepcarettoattribute';
-import Position from '../../src/model/position';
+import bindTwoStepCaretToAttribute, { TwoStepCaretHandler } from '../src/twostepcaretmovement';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { setData } from '../../src/dev-utils/model';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'bindTwoStepCaretToAttribute()', () => {
 	let editor, model, emitter, selection, view, locale;

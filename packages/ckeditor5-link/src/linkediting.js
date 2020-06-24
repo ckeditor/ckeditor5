@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
-import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
+import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-typing/src/twostepcaretmovement';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import AutomaticDecorators from './utils/automaticdecorators';

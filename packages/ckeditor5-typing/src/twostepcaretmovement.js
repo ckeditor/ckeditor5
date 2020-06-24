@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/utils/bindtwostepcarettoattribute
+ * @module typing/twostepcaretmovement
  */
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -143,7 +143,7 @@ export default function bindTwoStepCaretToAttribute( { view, model, emitter, att
 }
 
 /**
- * This is a protected helper–class for {@link module:engine/utils/bindtwostepcarettoattribute}.
+ * This is a protected helper–class for {@link module:typing/twostepcaretmovement}.
  * It handles the state of the 2-step caret movement for a single {@link module:engine/model/model~Model}
  * attribute upon the `keypress` in the {@link module:engine/view/view~View}.
  *
