@@ -42,9 +42,9 @@ const URL_REG_EXP = new RegExp(
 			'(www.|(\\S+@))' +
 			// Host & domain names.
 			'((?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.))+' +
-			// TLD identifier name.
-			'(?:[a-z\\u00a1-\\uffff]{2,})' +
-		')' +
+	// TLD identifier name.
+	'(?:[a-z\\u00a1-\\uffff]{2,})' +
+	')' +
 	')$', 'i' );
 
 const URL_GROUP_IN_MATCH = 2;
@@ -213,8 +213,14 @@ export default class AutoLink extends Plugin {
 	 * @private
 	 */
 	_applyAutoLink( url, range ) {
+		const model = this.editor.model;
+
+		if ( !isLinkAllowedOnRange( range, model ) ) {
+			return;
+		}
+
 		// Enqueue change to make undo step.
-		this.editor.model.enqueueChange( writer => {
+		model.enqueueChange( writer => {
 			const linkHrefValue = isEmail( url ) ? `mailto://${ url }` : url;
 
 			writer.setAttribute( 'linkHref', linkHrefValue, range );
@@ -235,4 +241,8 @@ function getUrlAtTextEnd( text ) {
 
 function isEmail( linkHref ) {
 	return EMAIL_REG_EXP.exec( linkHref );
+}
+
+function isLinkAllowedOnRange( range, model ) {
+	return model.schema.checkAttributeInSelection( model.createSelection( range ), 'linkHref' );
 }

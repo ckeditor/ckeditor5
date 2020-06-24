@@ -67,6 +67,16 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
+		it( 'does not add linkHref attribute if linkHref is not allowed', () => {
+			model.schema.addAttributeCheck( () => false ); // Disable all attributes.
+
+			simulateTyping( 'https://www.cksource.com ' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>https://www.cksource.com []</paragraph>'
+			);
+		} );
+
 		it( 'adds linkHref attribute to a text link after space (inside paragraph)', () => {
 			setData( model, '<paragraph>Foo Bar [] Baz</paragraph>' );
 
