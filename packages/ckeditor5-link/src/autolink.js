@@ -215,7 +215,7 @@ export default class AutoLink extends Plugin {
 	_applyAutoLink( url, range ) {
 		const model = this.editor.model;
 
-		if ( !isLinkAllowedOnRange( range, model ) ) {
+		if ( !this.isEnabled || !isLinkAllowedOnRange( range, model ) ) {
 			return;
 		}
 

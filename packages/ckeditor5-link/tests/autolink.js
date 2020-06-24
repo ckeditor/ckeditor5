@@ -77,6 +77,39 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
+		it( 'does not add linkHref attribute if plugin is force-disabled (on space)', () => {
+			editor.plugins.get( 'AutoLink' ).forceDisabled( 'test' );
+
+			simulateTyping( 'https://www.cksource.com ' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>https://www.cksource.com []</paragraph>'
+			);
+		} );
+
+		it( 'does not add linkHref attribute if plugin is force-disabled (on enter)', () => {
+			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
+			editor.plugins.get( 'AutoLink' ).forceDisabled( 'test' );
+
+			editor.execute( 'enter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>https://www.cksource.com</paragraph>' +
+				'<paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'does not add linkHref attribute if plugin is force-disabled (on shift enter)', () => {
+			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
+			editor.plugins.get( 'AutoLink' ).forceDisabled( 'test' );
+
+			editor.execute( 'shiftEnter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>https://www.cksource.com<softBreak></softBreak>[]</paragraph>'
+			);
+		} );
+
 		it( 'adds linkHref attribute to a text link after space (inside paragraph)', () => {
 			setData( model, '<paragraph>Foo Bar [] Baz</paragraph>' );
 
@@ -87,7 +120,7 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
-		it( 'adds linkHref attribute to a text link after a soft break', () => {
+		it( 'adds linkHref attribute to a text link on shift enter', () => {
 			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
 
 			editor.execute( 'shiftEnter' );
@@ -95,8 +128,8 @@ describe( 'AutoLink', () => {
 			// TODO: should test with selection but master has a bug. See: https://github.com/ckeditor/ckeditor5/issues/7459.
 			expect( getData( model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph>' +
-					'<$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>' +
-					'<softBreak></softBreak>' +
+				'<$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>' +
+				'<softBreak></softBreak>' +
 				'</paragraph>'
 			);
 		} );
