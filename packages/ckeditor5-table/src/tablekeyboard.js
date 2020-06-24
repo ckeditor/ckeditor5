@@ -468,9 +468,9 @@ export default class TableKeyboard extends Plugin {
 
 		const cellToSelect = tableMap.find( cellInfo => cellInfo.row == row && cellInfo.column == column ).cell;
 		const isForward = [ 'right', 'down' ].includes( direction );
+		const tableSelection = this.editor.plugins.get( 'TableSelection' );
 
-		if ( expandSelection ) {
-			const tableSelection = this.editor.plugins.get( 'TableSelection' );
+		if ( expandSelection && tableSelection.isEnabled ) {
 			const anchorCell = tableSelection.getAnchorCell() || focusCell;
 
 			tableSelection.setCellSelection( anchorCell, cellToSelect );
