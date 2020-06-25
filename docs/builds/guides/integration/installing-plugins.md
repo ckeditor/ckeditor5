@@ -1,10 +1,91 @@
-
+---
 menu-title: Installing plugins
 category: builds-integration
 order: 50
 ---
 
+## TODO
+
+* Change the README in packaged downloaded from online builder
+* Review installation.md, advanced-setup.md, overview.md, plugins.md, quick-start.md
+* Link to this guide at the end of installation.md
+* Add redirect from the old custom-builds.md to this guide.
+* Remove custom-builds.md.
+
+---
+
 # Installing plugins
+
+While {@link builds/guides/integration/installation installing one of the existing builds} is a convenient way to start using CKEditor 5, soon you may want to do one of the following:
+
+* install additional plugins (official, 3rd party, or your custom ones) to add missing functionalities,
+* remove unnecessary plugins in order to optimize the build size,
+* {@link TODO create a "super build"} containing more than one editor type,
+* customize any other aspect of the build ({@link TODO change the built-in UI language}, {@link TODO extract styles to a separate file}).
+
+To achieve any of this, you need to change the configuration and perform the build step.
+
+This guide covers three main ways to customize a build. We start from the simplest one (using the online builder) and then cover more flexible options (cloning a build and integrating the editor from source):
+
+* [Online builder](#online-builder) &mdash; If you use one of the existing builds and want to add one of the official plugins, remove plugins or change the built-in language, this is the simplest option. This option is recommended if you are new to the JavaScript build stack (npm, webpack) or JavaScript itself.
+* [Creating a custom build](#custom-build) &mdash; The minimal structure of a build's source contains just a three files. You can create such a setup manually and included it in a subdirectory of your repository (or put them anywhere else). This setup is recommended if you cannot integrate the editor from source, as it does not require adjusting your webpack configuration.
+* [Integrating the editor from source](#integrating-from-source) &mdash; This is by far the most powerful and optimal way to use CKEditor 5. In this scenario you can import and interact with it or any of its modules (e.g. in order to implement a custom plugin) just like you interact with your source modules. However, it requires adjusting your webpack configuration which is not always feasible.
+
+## Online builder
+
+The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) lets you download CKEditor 5 builds and also allows you to create your own, customized builds (with a different set of plugins) in a few easy steps, through a simple and intuitive UI.
+
+For security reasons, the online builder offers only the official plugins. Its UI does not allow creating "super builds" or customize webpack configuration. However, you can do that after downloading one of the builds.
+
+The downloaded ZIP package contains:
+
+* `build/` &mdash; a directory with a ready-to-use build (`build/ckeditor.js`) and translations.
+* `sample/` &mdash; a sample on which you can test the build.
+* `src/ckeditor.js` &mdash; a source of the build that defines which editor and plugins should be included.
+* `package.json` &mdash; definition of this build's dependencies (CKEditor 5 packages to install as well as build tools).
+* `webpack.config.js` &mdash; webpack configuration.
+* `README.md` and `LICENSE.md` with additional information.
+
+The build downloaded from the online builder is ready-to-use (the `build/` directory is populated). However, you can still use it as a starting point to further adjustments (e.g. installing 3rd party plugins).
+
+Follow the instructions in included `README.md` in order to further customize your build.
+
+## Custom build
+
+A custom build is an extension of what you can achieve with the [online builder](#online-builder). In fact, a build generated with the online builder can become your custom build.
+
+The goal of this section, though, is to show you how you could maintain a custom build over time. We assume that you work on a project that is maintained in a Git (or alternative) repository and you would like to store the source files of a build (and perhaps the build itself too) in this repository.
+
+### Implementing custom plugins
+
+## Integrating from source
+
+### Implementing custom plugins
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 CKEditor 5 plugins are distributed through [npm](https://www.npmjs.com) packages and are implemented in a modular way, which means that a single plugin may consist of multiple JavaScript files.
 
