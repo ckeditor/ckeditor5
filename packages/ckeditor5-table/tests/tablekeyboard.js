@@ -1277,6 +1277,30 @@ describe( 'TableKeyboard', () => {
 						downArrowDomEvtDataStub.shiftKey = true;
 					} );
 
+					it( 'should move to the cell below if TableSelection plugin is disabled', () => {
+						editor.plugins.get( 'TableSelection' ).forceDisabled();
+
+						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10[]', '11', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+						assertEqualMarkup( getModelData( model ), modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '11', '12' ],
+							[ '[]20', '21', '22' ]
+						] ) );
+
+						expect( tableSelection.getAnchorCell() ).to.be.null;
+						expect( tableSelection.getFocusCell() ).to.be.null;
+						expect( selection.rangeCount ).to.equal( 1 );
+					} );
+
 					it( 'should expand the selection to the cell on the left', () => {
 						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
 

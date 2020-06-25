@@ -24,12 +24,12 @@ export default class UnlinkCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 
-		const selectedImage = first( doc.selection.getSelectedBlocks() );
+		const selectedElement = first( doc.selection.getSelectedBlocks() );
 
 		// A check for the `LinkImage` plugin. If the selection contains an image element, get values from the element.
-		// Currently the selection reads attributes from text nodes only. See #7429.
-		if ( selectedImage && selectedImage.name === 'image' ) {
-			this.isEnabled = model.schema.checkAttribute( selectedImage, 'linkHref' );
+		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
+		if ( selectedElement && selectedElement.is( 'image' ) && model.schema.checkAttribute( 'image', 'linkHref' ) ) {
+			this.isEnabled = model.schema.checkAttribute( selectedElement, 'linkHref' );
 		} else {
 			this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
 		}

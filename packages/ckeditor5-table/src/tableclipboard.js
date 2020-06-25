@@ -342,6 +342,10 @@ function expandTableSize( table, expectedHeight, expectedWidth, writer, tableUti
 }
 
 function getTableIfOnlyTableInContent( content, model ) {
+	if ( !content.is( 'documentFragment' ) && !content.is( 'element' ) ) {
+		return null;
+	}
+
 	// Table passed directly.
 	if ( content.is( 'table' ) ) {
 		return content;
