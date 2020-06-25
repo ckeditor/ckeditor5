@@ -4,11 +4,9 @@
  */
 
 import Matcher from '../view/matcher';
-import ModelRange from '../model/range';
 import ConversionHelpers from './conversionhelpers';
 
 import { cloneDeep } from 'lodash-es';
-import ModelSelection from '../model/selection';
 
 /**
  * Contains {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
@@ -374,7 +372,10 @@ export function convertText() {
 
 				conversionApi.writer.insert( text, data.modelCursor );
 
-				data.modelRange = ModelRange._createFromPositionAndShift( data.modelCursor, text.offsetSize );
+				data.modelRange = conversionApi.writer.createRange(
+					data.modelCursor,
+					data.modelCursor.getShiftedBy( text.offsetSize )
+				);
 				data.modelCursor = data.modelRange.end;
 			}
 		}
@@ -398,7 +399,6 @@ export function convertText() {
 export function convertSelectionChange( model, mapper ) {
 	return ( evt, data ) => {
 		const viewSelection = data.newSelection;
-		const modelSelection = new ModelSelection();
 
 		const ranges = [];
 
@@ -406,7 +406,9 @@ export function convertSelectionChange( model, mapper ) {
 			ranges.push( mapper.toModelRange( viewRange ) );
 		}
 
-		modelSelection.setTo( ranges, { backward: viewSelection.isBackward } );
+		const modelSelection = model.createSelection( ranges, { backward: viewSelection.isBackward } );
+
+		// modelSelection.setTo( ranges, { backward: viewSelection.isBackward } );
 
 		if ( !modelSelection.isEqual( model.document.selection ) ) {
 			model.change( writer => {
@@ -560,16 +562,16 @@ function prepareToElementConverter( config ) {
 		// Force consuming element's name.
 		match.name = true;
 
+		// When element was already consumed then skip it.
+		if ( !conversionApi.consumable.test( data.viewItem, match ) ) {
+			return;
+		}
+
 		// Create model element basing on config.
 		const modelElement = getModelElement( config.model, data.viewItem, conversionApi.writer );
 
 		// Do not convert if element building function returned falsy value.
 		if ( !modelElement ) {
-			return;
-		}
-
-		// When element was already consumed then skip it.
-		if ( !conversionApi.consumable.test( data.viewItem, match ) ) {
 			return;
 		}
 
@@ -595,7 +597,7 @@ function prepareToElementConverter( config ) {
 		const parts = conversionApi.getSplitParts( modelElement );
 
 		// Set conversion result range.
-		data.modelRange = new ModelRange(
+		data.modelRange = conversionApi.writer.createRange(
 			conversionApi.writer.createPositionBefore( modelElement ),
 			conversionApi.writer.createPositionAfter( parts[ parts.length - 1 ] )
 		);
