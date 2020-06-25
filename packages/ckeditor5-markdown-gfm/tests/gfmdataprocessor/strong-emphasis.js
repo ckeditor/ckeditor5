@@ -81,7 +81,7 @@ describe( 'GFMDataProcessor', () => {
 				'<p>This should_not_be_emp.</p>',
 
 				// Turndow escape markdown markup characters used inside text.
-				'This should\\_not\\_be\\_emp.',
+				'This should\\_not\\_be\\_emp.'
 			);
 		} );
 
