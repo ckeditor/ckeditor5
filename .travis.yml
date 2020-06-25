@@ -22,7 +22,7 @@ script:
 - node ./scripts/continuous-integration-script.js
 - yarn run lint
 - yarn run stylelint
-- travis_wait 30 yarn run docs --strict
+- yarn run docs --strict
 - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
     travis_wait 30 yarn run docs:build-and-publish-nightly;
   fi'
