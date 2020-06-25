@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-markdown-gfm",
-  "version": "19.0.1",
+  "version": "20.0.0",
   "description": "GitHub Flavored Markdown data processor for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -10,7 +10,7 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-engine": "^19.0.1"
+    "@ckeditor/ckeditor5-engine": "^20.0.0"
   },
   "engines": {
     "node": ">=12.0.0",
