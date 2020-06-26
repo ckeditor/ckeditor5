@@ -13,6 +13,7 @@
     "@ckeditor/ckeditor5-core": "^19.0.1",
     "@ckeditor/ckeditor5-engine": "^19.0.1",
     "@ckeditor/ckeditor5-image": "^19.0.1",
+    "@ckeditor/ckeditor5-typing": "^19.0.1",
     "@ckeditor/ckeditor5-ui": "^19.0.1",
     "@ckeditor/ckeditor5-utils": "^19.0.1",
     "lodash-es": "^4.17.15"
@@ -25,7 +26,6 @@
     "@ckeditor/ckeditor5-enter": "^19.0.1",
     "@ckeditor/ckeditor5-paragraph": "^19.1.0",
     "@ckeditor/ckeditor5-theme-lark": "^19.1.0",
-    "@ckeditor/ckeditor5-typing": "^19.0.1",
     "@ckeditor/ckeditor5-undo": "^19.0.1"
   },
   "engines": {
