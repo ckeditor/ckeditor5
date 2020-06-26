@@ -789,6 +789,100 @@ describe( 'Range', () => {
 		} );
 	} );
 
+	describe( 'getSum()', () => {
+		let range;
+
+		beforeEach( () => {
+			range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
+		} );
+
+		it( 'should return null if ranges do not intersect', () => {
+			const otherRange = new Range( new Position( root, [ 5, 4 ] ), new Position( root, [ 7 ] ) );
+			const sum = range.getSum( otherRange );
+
+			expect( sum ).to.be.null;
+		} );
+
+		it( 'should return a range spanning both of the ranges - original range contains the other range', () => {
+			const otherRange = new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) );
+			const sum = range.getSum( otherRange );
+
+			expect( sum.isEqual( range ) ).to.be.true;
+		} );
+
+		it( 'should return a range spanning both of the ranges - original range is contained by the other range', () => {
+			const otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 6 ] ) );
+			const sum = range.getSum( otherRange );
+
+			expect( sum.isEqual( otherRange ) ).to.be.true;
+		} );
+
+		it( 'should return a range spanning both of the ranges - original range intersects with the other range', () => {
+			const otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 4, 7 ] ) );
+			const sum = range.getSum( otherRange );
+
+			expect( sum.start.path ).to.deep.equal( [ 3 ] );
+			expect( sum.end.path ).to.deep.equal( [ 5, 4 ] );
+		} );
+
+		it( 'should return a range spanning both of the ranges if both ranges are equal', () => {
+			const otherRange = range.clone();
+			const sum = range.getSum( otherRange );
+
+			expect( sum.isEqual( range ) ).to.be.true;
+		} );
+
+		describe( 'with `loose` option enabled', () => {
+			beforeEach( () => {
+				prepareRichRoot( root );
+			} );
+
+			it( 'should return null if ranges are not intersecting nor touching', () => {
+				const range = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 3 ] ) );
+				const otherRange = new Range( new Position( root, [ 3, 1 ] ), new Position( root, [ 3, 2 ] ) );
+				const sum = range.getSum( otherRange, true );
+
+				expect( sum ).to.be.null;
+			} );
+
+			it( 'should return a range spanning both of the ranges - original range end is equal to other range start position', () => {
+				const range = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 3 ] ) );
+				const otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 3, 2 ] ) );
+				const sum = range.getSum( otherRange, true );
+
+				expect( sum.start.path ).to.deep.equal( [ 0, 1 ] );
+				expect( sum.end.path ).to.deep.equal( [ 3, 2 ] );
+			} );
+
+			it( 'should return a range spanning both of the ranges - original range start is equal to other range end position', () => {
+				const range = new Range( new Position( root, [ 3 ] ), new Position( root, [ 3, 2 ] ) );
+				const otherRange = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 3 ] ) );
+				const sum = range.getSum( otherRange, true );
+
+				expect( sum.start.path ).to.deep.equal( [ 0, 1 ] );
+				expect( sum.end.path ).to.deep.equal( [ 3, 2 ] );
+			} );
+
+			it( 'should return a range spanning both of the ranges - original range is touching other range on the right side', () => {
+				const range = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 3 ] ) );
+				const otherRange = new Range( new Position( root, [ 3, 0 ] ), new Position( root, [ 3, 2 ] ) );
+				const sum = range.getSum( otherRange, true );
+
+				expect( sum.start.path ).to.deep.equal( [ 0, 1 ] );
+				expect( sum.end.path ).to.deep.equal( [ 3, 2 ] );
+			} );
+
+			it( 'should return a range spanning both of the ranges - original range is touching other range on the left side', () => {
+				const range = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 3, 2 ] ) );
+				const otherRange = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 2 ] ) );
+				const sum = range.getSum( otherRange, true );
+
+				expect( sum.start.path ).to.deep.equal( [ 0, 1 ] );
+				expect( sum.end.path ).to.deep.equal( [ 3, 2 ] );
+			} );
+		} );
+	} );
+
 	// Note: We don't create model element structure in these tests because this method
 	// is used by OT so it must not check the structure.
 	describe( 'getTransformedByOperation()', () => {

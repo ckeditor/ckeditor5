@@ -277,7 +277,26 @@ export default class Range {
 	}
 
 	/**
-	 * TODO
+	 * Returns a sum of this {@link ~Range range} and given {@link ~Range range}.
+	 * Sum is a range that is spanning over both of those ranges. If ranges have no common part, returns `null`.
+	 *
+	 * Examples:
+	 *
+	 *		let range = model.createRange(
+	 *			model.createPositionFromPath( root, [ 2, 7 ] ),
+	 *			model.createPositionFromPath( root, [ 4, 0, 1 ] )
+	 *		);
+	 *		let otherRange = model.createRange(
+	 *			model.createPositionFromPath( root, [ 1 ] ),
+	 *			model.createPositionFromPath( root, [ 2 ] )
+ 	 *		);
+	 *		let transformed = range.getSum( otherRange ); // null - ranges have no common part
+	 *
+	 *		otherRange = model.createRange(
+	 *			model.createPositionFromPath( root, [ 3 ] ),
+	 *			model.createPositionFromPath( root, [ 5 ] )
+	 *		);
+	 *		transformed = range.getSum( otherRange ); // range from [ 2, 7 ] to [ 5 ]
 	 *
 	 * @param {module:engine/model/range~Range} otherRange Range to sum with.
 	 * @param {Boolean} [loose=false] Whether the sum intersection check is loose or strict. If the check is strict (`false`),
