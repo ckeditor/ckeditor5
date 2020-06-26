@@ -75,7 +75,7 @@ describe( 'LinkEditing', () => {
 		expect( model.schema.checkAttribute( [ '$block' ], 'linkHref' ) ).to.be.false;
 	} );
 
-	// Let's check only the minimum to not duplicate `bindTwoStepCaretToAttribute()` tests.
+	// Let's check only the minimum to not duplicate `TwoStepCaretMovement` tests.
 	// Testing minimum is better than testing using spies that might give false positive results.
 	describe( 'two-step caret movement', () => {
 		it( 'should be bound to the `linkHref` attribute (LTR)', () => {

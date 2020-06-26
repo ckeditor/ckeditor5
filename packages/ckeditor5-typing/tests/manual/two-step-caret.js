@@ -12,31 +12,18 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-import bindTwoStepCaretToAttribute from '../../src/twostepcaretmovement';
+import TwoStepCaretMovement from '../../src/twostepcaretmovement';
 
 ClassicEditor
 	.create( document.querySelector( '#editor-ltr' ), {
-		plugins: [ Essentials, Paragraph, Underline, Bold, Italic ],
+		plugins: [ Essentials, Paragraph, Underline, Bold, Italic, TwoStepCaretMovement ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'underline', 'italic' ]
 	} )
 	.then( editor => {
-		const bold = editor.plugins.get( Italic );
-		const underline = editor.plugins.get( Underline );
+		const twoStepCaretMovement = editor.plugins.get( TwoStepCaretMovement );
 
-		bindTwoStepCaretToAttribute( {
-			view: editor.editing.view,
-			model: editor.model,
-			emitter: bold,
-			attribute: 'italic',
-			locale: editor.locale
-		} );
-		bindTwoStepCaretToAttribute( {
-			view: editor.editing.view,
-			model: editor.model,
-			emitter: underline,
-			attribute: 'underline',
-			locale: editor.locale
-		} );
+		twoStepCaretMovement.registerAttribute( 'italic' );
+		twoStepCaretMovement.registerAttribute( 'underline' );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -47,27 +34,14 @@ ClassicEditor
 		language: {
 			content: 'he'
 		},
-		plugins: [ Essentials, Paragraph, Underline, Bold, Italic ],
+		plugins: [ Essentials, Paragraph, Underline, Bold, Italic, TwoStepCaretMovement ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'underline', 'italic' ]
 	} )
 	.then( editor => {
-		const bold = editor.plugins.get( Italic );
-		const underline = editor.plugins.get( Underline );
+		const twoStepCaretMovement = editor.plugins.get( TwoStepCaretMovement );
 
-		bindTwoStepCaretToAttribute( {
-			view: editor.editing.view,
-			model: editor.model,
-			emitter: bold,
-			attribute: 'italic',
-			locale: editor.locale
-		} );
-		bindTwoStepCaretToAttribute( {
-			view: editor.editing.view,
-			model: editor.model,
-			emitter: underline,
-			attribute: 'underline',
-			locale: editor.locale
-		} );
+		twoStepCaretMovement.registerAttribute( 'italic' );
+		twoStepCaretMovement.registerAttribute( 'underline' );
 	} )
 	.catch( err => {
 		console.error( err.stack );

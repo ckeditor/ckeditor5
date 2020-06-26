@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
-import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-typing/src/twostepcaretmovement';
+import TwoStepCaretMovement from '@ckeditor/ckeditor5-typing/src/twostepcaretmovement';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import AutomaticDecorators from './utils/automaticdecorators';
@@ -43,6 +43,13 @@ export default class LinkEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ TwoStepCaretMovement ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		super( editor );
 
@@ -56,7 +63,6 @@ export default class LinkEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const locale = editor.locale;
 
 		// Allow link attribute on all inline nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'linkHref' } );
@@ -93,13 +99,8 @@ export default class LinkEditing extends Plugin {
 		this._enableManualDecorators( linkDecorators.filter( item => item.mode === DECORATOR_MANUAL ) );
 
 		// Enable two-step caret movement for `linkHref` attribute.
-		bindTwoStepCaretToAttribute( {
-			view: editor.editing.view,
-			model: editor.model,
-			emitter: this,
-			attribute: 'linkHref',
-			locale
-		} );
+		const twoStepCaretMovementPlugin = editor.plugins.get( TwoStepCaretMovement );
+		twoStepCaretMovementPlugin.registerAttribute( 'linkHref' );
 
 		// Setup highlight over selected link.
 		this._setupLinkHighlight();

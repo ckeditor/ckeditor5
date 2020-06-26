@@ -9,14 +9,14 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import bindTwoStepCaretToAttribute, { TwoStepCaretHandler } from '../src/twostepcaretmovement';
+import { TwoStepCaretMovement, TwoStepCaretHandler } from '../src/twostepcaretmovement';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'bindTwoStepCaretToAttribute()', () => {
-	let editor, model, emitter, selection, view, locale;
+describe( 'TwoStepCaretMovement()', () => {
+	let editor, model, emitter, selection, view, plugin;
 	let preventDefaultSpy, evtStopSpy;
 
 	testUtils.createSinonSandbox();
@@ -24,12 +24,12 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 	beforeEach( () => {
 		emitter = Object.create( DomEmitterMixin );
 
-		return VirtualTestEditor.create().then( newEditor => {
+		return VirtualTestEditor.create( { plugins: [ TwoStepCaretMovement ] } ).then( newEditor => {
 			editor = newEditor;
 			model = editor.model;
 			selection = model.document.selection;
 			view = editor.editing.view;
-			locale = editor.locale;
+			plugin = editor.plugins.get( TwoStepCaretMovement );
 
 			preventDefaultSpy = sinon.spy();
 			evtStopSpy = sinon.spy();
@@ -45,13 +45,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'c', model: 'c' } );
 			editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 
-			bindTwoStepCaretToAttribute( {
-				view: editor.editing.view,
-				model: editor.model,
-				emitter,
-				attribute: 'a',
-				locale
-			} );
+			plugin.registerAttribute( 'a' );
 		} );
 	} );
 
@@ -560,13 +554,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 
 	describe( 'multiple attributes', () => {
 		beforeEach( () => {
-			bindTwoStepCaretToAttribute( {
-				view: editor.editing.view,
-				model: editor.model,
-				emitter,
-				attribute: 'c',
-				locale
-			} );
+			plugin.registerAttribute( 'c' );
 		} );
 
 		it( 'should work with the two-step caret movement (moving right)', () => {
@@ -786,12 +774,12 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 		it( 'should use the opposite helper methods (RTL content direction)', () => {
 			const forwardStub = testUtils.sinon.stub( TwoStepCaretHandler.prototype, 'handleForwardMovement' );
 			const backwardStub = testUtils.sinon.stub( TwoStepCaretHandler.prototype, 'handleBackwardMovement' );
-			const emitter = Object.create( DomEmitterMixin );
 
 			let model;
 
 			return VirtualTestEditor
 				.create( {
+					plugins: [ TwoStepCaretMovement ],
 					language: {
 						content: 'ar'
 					}
@@ -812,13 +800,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 					newEditor.conversion.for( 'upcast' ).elementToAttribute( { view: 'c', model: 'c' } );
 					newEditor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 
-					bindTwoStepCaretToAttribute( {
-						view: newEditor.editing.view,
-						model: newEditor.model,
-						emitter,
-						attribute: 'a',
-						locale: newEditor.locale
-					} );
+					newEditor.plugins.get( TwoStepCaretMovement ).registerAttribute( 'a' );
 
 					return newEditor;
 				} )

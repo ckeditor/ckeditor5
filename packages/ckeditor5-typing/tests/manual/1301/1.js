@@ -11,23 +11,17 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-import bindTwoStepCaretToAttribute from '../../src/twostepcaretmovement';
+import TwoStepCaretMovement from '../../../src/twostepcaretmovement';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Bold, Italic ],
+		plugins: [ Essentials, Paragraph, Bold, Italic, TwoStepCaretMovement ],
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
 	} )
 	.then( editor => {
-		const bold = editor.plugins.get( Bold );
+		const twoStepCaretMovement = editor.plugins.get( TwoStepCaretMovement );
 
-		bindTwoStepCaretToAttribute( {
-			view: editor.editing.view,
-			model: editor.model,
-			emitter: bold,
-			attribute: 'bold',
-			locale: editor.locale
-		} );
+		twoStepCaretMovement.registerAttribute( 'bold' );
 	} )
 	.catch( err => {
 		console.error( err.stack );
