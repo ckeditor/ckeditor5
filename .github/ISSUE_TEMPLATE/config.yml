@@ -5,3 +5,6 @@ contact_links:
     about: |
       Please **DO NOT report security issues here**,
       use the contact form at https://ckeditor.com/contact/ instead.
+  - name: "\U0001F4F1 Licensed Customers support"
+    about: Support channel for Licensed Customers.
+    url: https://support.ckeditor.com/hc/en-us/requests/new
