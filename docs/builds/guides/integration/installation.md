@@ -73,7 +73,7 @@ After downloading and installing a CKEditor 5 build in your application, it is t
 Once the CKEditor script is loaded, you can {@link builds/guides/integration/basic-api use the API} to create editors in your page.
 
 <info-box>
-	The `build/ckeditor.js` file is generated in the [UMD format](https://github.com/umdjs/umd) so you can also import it into your application if you use CommonJS modules (like in Node.js) or AMD modules (like in Require.js). Read more in the {@link builds/guides/integration/basic-api#umd-support Basic API guide}.
+	The `build/ckeditor.js` file is generated in the [UMD format](https://github.com/umdjs/umd) so you can also import it into your application if you use ES6 modules, CommonJS modules (like in Node.js) or AMD modules (like in Require.js). Read more in the {@link builds/guides/integration/basic-api#umd-support Basic API guide}.
 
 	Also, for a more advanced setup, you may wish to bundle the CKEditor script with other scripts used by your application. See {@link builds/guides/integration/advanced-setup Advanced setup} for more information about it.
 </info-box>

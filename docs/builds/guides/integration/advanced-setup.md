@@ -5,9 +5,9 @@ order: 60
 
 # Advanced setup
 
-The {@link builds/guides/integration/installation Installation} guide describes the easiest ways to run CKEditor builds in your project and the {@link builds/guides/integration/installing-plugins Installing plugins} guide explains how to customize an existing build.
+The {@link builds/guides/integration/installation Installation} guide describes the easiest ways to run CKEditor builds in your project and the {@link builds/guides/integration/installing-plugins Installing plugins} guide explains how to customize an existing build (e.g. to add a plugin).
 
-In this guide, we would like to show you ways to closer integrate CKEditor 5 with your application. Thanks to that, you will be able to optimize the bundling process of your project and customize the builds in a more convenient way.
+In this guide, we would like to show you ways to closer integrate CKEditor 5 with your application and further customize builds. Thanks to that, you will be able to optimize the bundling process of your project and customize the builds in a more convenient way.
 
 ## Requirements
 
@@ -23,42 +23,7 @@ CKEditor 5 is currently built using [webpack@4](https://webpack.js.org). All bui
 
 Therefore, **a prerequisite to this guide is that you are using webpack as your build tool**.
 
-## Scenario 1: Integrating existing builds
-
-This is the simplest scenario. It assumes that you want to use {@link builds/guides/overview#available-builds one of the existing builds} "as-is" (you can, of course, still {@link builds/guides/integration/configuration configure the rich text editor}). It also gives the fastest build times.
-
-First, install the build of your choice {@link builds/guides/integration/installation#npm from npm}:
-
-```bash
-npm install --save @ckeditor/ckeditor5-build-classic
-```
-
-Now, import the editor build into your code:
-
-```js
-// Using ES6 imports:
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
-// Or CJS imports:
-const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic' );
-```
-
-And use it:
-
-```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ) )
-	.then( editor => {
-		console.log( editor );
-	} )
-	.catch( error => {
-		console.error( error );
-	} );
-```
-
-Since you are using an already built editor (so a result of passing CKEditor 5 source through webpack), you do not need any additional webpack configuration. In this case CKEditor works as a ready-to-use library.
-
-## Scenario 2: Building from source
+## Building from source
 
 This scenario allows you to fully control the building process of CKEditor. This means that you will not actually use the builds anymore, but instead build CKEditor from source directly into your project. This integration method gives you full control over which features will be included and how webpack will be configured.
 

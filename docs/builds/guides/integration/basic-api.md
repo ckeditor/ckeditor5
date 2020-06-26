@@ -183,6 +183,7 @@ This event is fired when the document changes in such a way which is "visible" i
 Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), editor classes can be retrieved in various ways:
 
 * by a [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)-compatible loader (e.g. [webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)),
+* by an environment capable of loading ES6 modules,
 * by [RequireJS](http://requirejs.org/) (or any other AMD library),
 * from the global namespace if none of the above loaders is available.
 

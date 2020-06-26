@@ -1,5 +1,4 @@
 ---
-menu-title: Installing plugins
 category: builds-integration
 order: 50
 ---
@@ -14,6 +13,35 @@ order: 50
 * Create a bootstrap task that could create all these files via `npx ckeditor5-bootstrap-build`.
 * Make official builds and ones built with the online builder resemble each other as closely as possible.
 * Check the READMEs of the official builds and the online builder.
+
+
+# TOC
+
+* Installing plugins
+	* Requirements
+	* Online builder
+	* Customizing a build
+	* Integrating from source
+		* fwd to advanced setup
+* Advanced setup
+	* Requirements
+	* Bundler
+		* Why do we need it
+		* What does each part do
+	* Scenario 1: Creating a custom build (from scratch)
+		Installing dependencies
+		Webpack configuration
+		...
+	* Scenario 2: Integrating from source (heavy rewrite of the current "Building from source" which can be simplified)
+		Installing dependencies
+		Webpack configuration
+		Running the editor (only the direct approach as the other is covered in the previous section)
+		Building
+	* Going deeper
+		Option: Minifying JavaScript
+		Option: Extracting CSS
+		Option: Building to ES5 target
+		Using two different editors
 
 ---
 
