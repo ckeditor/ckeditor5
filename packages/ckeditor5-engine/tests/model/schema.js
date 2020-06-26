@@ -259,6 +259,18 @@ describe( 'Schema', () => {
 				allowAttributes: [ 'foo' ]
 			} );
 		} );
+
+		it( 'handles allowMultiRangeSelection flag', () => {
+			schema.register( 'foo', {
+				isBlock: true,
+				allowMultiRangeSelection: true
+			} );
+
+			const definitions = schema.getDefinitions();
+
+			expect( definitions.foo ).to.have.property( 'isBlock', true );
+			expect( definitions.foo ).to.have.property( 'allowMultiRangeSelection', true );
+		} );
 	} );
 
 	describe( 'getDefinition()', () => {
