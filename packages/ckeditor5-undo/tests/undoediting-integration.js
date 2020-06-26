@@ -15,6 +15,7 @@ import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -25,15 +26,16 @@ describe( 'UndoEditing integration', () => {
 		div = document.createElement( 'div' );
 		document.body.appendChild( div );
 
-		return ClassicEditor.create( div, { plugins: [ Paragraph, HeadingEditing, Typing, Enter, Clipboard, BoldEditing, UndoEditing ] } )
-			.then( newEditor => {
-				editor = newEditor;
+		return ClassicEditor.create( div, {
+			plugins: [ Paragraph, HeadingEditing, Typing, Enter, Clipboard, BoldEditing, UndoEditing, TableEditing ]
+		} ).then( newEditor => {
+			editor = newEditor;
 
-				model = editor.model;
-				doc = model.document;
+			model = editor.model;
+			doc = model.document;
 
-				root = doc.getRoot();
-			} );
+			root = doc.getRoot();
+		} );
 	} );
 
 	afterEach( () => {
@@ -1069,6 +1071,83 @@ describe( 'UndoEditing integration', () => {
 
 			expect( p.root ).to.equal( gy );
 			expect( p.getAttribute( 'bold' ) ).to.be.true;
+		} );
+
+		it( 'undo table cells merge', () => {
+			input(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'[<tableCell><paragraph>01</paragraph></tableCell>]' +
+						'[<tableCell><paragraph>02</paragraph></tableCell>]' +
+						'<tableCell><paragraph>03</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>10</paragraph></tableCell>' +
+						'[<tableCell><paragraph>11</paragraph></tableCell>]' +
+						'[<tableCell><paragraph>12</paragraph></tableCell>]' +
+						'<tableCell><paragraph>13</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>20</paragraph></tableCell>' +
+						'<tableCell><paragraph>21</paragraph></tableCell>' +
+						'<tableCell><paragraph>22</paragraph></tableCell>' +
+						'<tableCell><paragraph>23</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			editor.execute( 'mergeTableCells' );
+
+			output(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'<tableCell colspan="2" rowspan="2">' +
+							'<paragraph>[01</paragraph>' +
+							'<paragraph>02</paragraph>' +
+							'<paragraph>11</paragraph>' +
+							'<paragraph>12]</paragraph>' +
+						'</tableCell>' +
+						'<tableCell><paragraph>03</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>10</paragraph></tableCell>' +
+						'<tableCell><paragraph>13</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>20</paragraph></tableCell>' +
+						'<tableCell><paragraph>21</paragraph></tableCell>' +
+						'<tableCell><paragraph>22</paragraph></tableCell>' +
+						'<tableCell><paragraph>23</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			editor.execute( 'undo' );
+
+			output(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'[<tableCell><paragraph>01</paragraph></tableCell>]' +
+						'[<tableCell><paragraph>02</paragraph></tableCell>]' +
+						'<tableCell><paragraph>03</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>10</paragraph></tableCell>' +
+						'[<tableCell><paragraph>11</paragraph></tableCell>]' +
+						'[<tableCell><paragraph>12</paragraph></tableCell>]' +
+						'<tableCell><paragraph>13</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>20</paragraph></tableCell>' +
+						'<tableCell><paragraph>21</paragraph></tableCell>' +
+						'<tableCell><paragraph>22</paragraph></tableCell>' +
+						'<tableCell><paragraph>23</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
 		} );
 	} );
 

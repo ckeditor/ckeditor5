@@ -99,10 +99,14 @@ export default class BaseCommand extends Command {
 			.filter( range => range.root != document.graveyard )
 			.sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
 
+		// Join ranges if they intersect. This is because of moving parts of document between different original ranges.
 		normalizeRanges( selectionRanges );
+
+		// Join ranges if they are touching one another but if element is not excluded from joining (i.e. tableCell).
+		// This is to avoid changing single-range selection into multi-range selection if it's not expected.
 		normalizeRanges( selectionRanges, elementsExpectingSeparateSelectionRange );
 
-		// @if CK_DEBUG_ENGINE // console.log( `Restored selection from undo: ${ selectionRanges.join( ', ' ) }` );
+		// @if CK_DEBUG_ENGINE // console.log( `Restored selection by undo: ${ selectionRanges.join( ', ' ) }` );
 
 		// `selectionRanges` may be empty if all ranges ended up in graveyard. If that is the case, do not restore selection.
 		if ( selectionRanges.length ) {
@@ -161,18 +165,28 @@ export default class BaseCommand extends Command {
 	}
 }
 
-function normalizeRanges( ranges, dontSumElements = null ) {
+// Normalizes list of ranges by joining intersecting ranges. It expects input ranges to be sorted.
+//
+// Performs 'loose' joining if second argument is provided (ranges are joined if they are 'touching' one another)
+// and additionally avoids merging ranges that fully-contain any of the elements provided in the exclusion list.
+//
+// @param {Array.<module:engine/model/range~Range>} ranges
+// @param {Array.<String>} [elementExclusions]
+//
+function normalizeRanges( ranges, elementExclusions = null ) {
 	for ( let i = 1; i < ranges.length; i++ ) {
 		const previousRange = ranges[ i - 1 ];
-		const containedElement = dontSumElements && previousRange.getContainedElement();
+		const containedElement = elementExclusions && previousRange.getContainedElement();
 
-		if ( containedElement && dontSumElements.includes( containedElement.name ) ) {
+		// Skip joining a range if the previous range fully contained an element from exclusion list.
+		if ( containedElement && elementExclusions.includes( containedElement.name ) ) {
 			continue;
 		}
 
-		const summedRange = previousRange.getSum( ranges[ i ], !!dontSumElements );
+		const summedRange = previousRange.getSum( ranges[ i ], !!elementExclusions );
 
 		if ( summedRange ) {
+			// Replace the ranges on the list with the new joined range.
 			ranges.splice( --i, 2, summedRange );
 		}
 	}
