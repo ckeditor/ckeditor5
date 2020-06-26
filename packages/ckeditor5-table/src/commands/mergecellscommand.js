@@ -46,21 +46,19 @@ export default class MergeCellsCommand extends Command {
 			const selectedTableCells = getSelectedTableCells( model.document.selection );
 
 			// All cells will be merged into the first one.
-			const firstTableCell = selectedTableCells.shift();
-
-			// Set the selection in cell that other cells are being merged to prevent model-selection-range-intersects error in undo.
-			// See https://github.com/ckeditor/ckeditor5/issues/6634.
-			// May be fixed by: https://github.com/ckeditor/ckeditor5/issues/6639.
-			writer.setSelection( firstTableCell, 0 );
+			const firstTableCell = selectedTableCells[ 0 ];
 
 			// Update target cell dimensions.
-			const { mergeWidth, mergeHeight } = getMergeDimensions( firstTableCell, selectedTableCells, tableUtils );
+			const { mergeWidth, mergeHeight } = getMergeDimensions( selectedTableCells, tableUtils );
 			updateNumericAttribute( 'colspan', mergeWidth, firstTableCell, writer );
 			updateNumericAttribute( 'rowspan', mergeHeight, firstTableCell, writer );
 
-			for ( const tableCell of selectedTableCells ) {
-				mergeTableCells( tableCell, firstTableCell, writer );
+			for ( let i = 1; i < selectedTableCells.length; i++ ) {
+				mergeTableCells( selectedTableCells[ i ], firstTableCell, writer );
 			}
+			// for ( let i = selectedTableCells.length - 1; i > 0; i-- ) {
+			// 	mergeTableCells( selectedTableCells[ i ], selectedTableCells[ i - 1 ], writer );
+			// }
 
 			const table = findAncestor( 'table', firstTableCell );
 
@@ -90,6 +88,23 @@ function mergeTableCells( cellBeingMerged, targetCell, writer ) {
 
 	// Remove merged table cell.
 	writer.remove( cellBeingMerged );
+
+	// 	const positionAfterTargetCell = writer.createPositionAfter( targetCell );
+	// 	const positionBeforeMergedCell = writer.createPositionBefore( cellBeingMerged );
+	//
+	// 	const targetCellWasEmpty = !writer.model.hasContent( targetCell );
+	// 	const mergedCellWasEmpty = !writer.model.hasContent( cellBeingMerged );
+	// 	const positionAtEndOfTargetContent = writer.createPositionAt( targetCell, 'end' );
+	//
+	// 	if ( !positionAfterTargetCell.isEqual( positionBeforeMergedCell ) ) {
+	// 		writer.move( writer.createRangeOn( cellBeingMerged ), positionAfterTargetCell );
+	// 	}
+	//
+	// 	writer.merge( positionAfterTargetCell );
+	//
+	// 	if ( targetCellWasEmpty || mergedCellWasEmpty ) {
+	// 		writer.merge( positionAtEndOfTargetContent );
+	// 	}
 }
 
 // Checks if the passed table cell contains an empty paragraph.
@@ -100,7 +115,7 @@ function isEmpty( tableCell ) {
 	return tableCell.childCount == 1 && tableCell.getChild( 0 ).is( 'paragraph' ) && tableCell.getChild( 0 ).isEmpty;
 }
 
-function getMergeDimensions( firstTableCell, selectedTableCells, tableUtils ) {
+function getMergeDimensions( [ firstTableCell, ...selectedTableCells ], tableUtils ) {
 	let maxWidthOffset = 0;
 	let maxHeightOffset = 0;
 

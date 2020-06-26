@@ -277,6 +277,44 @@ export default class Range {
 	}
 
 	/**
+	 * TODO
+	 *
+	 * @param {module:engine/model/range~Range} otherRange Range to sum with.
+	 * @param {Boolean} [loose=false] Whether the sum intersection check is loose or strict. If the check is strict (`false`),
+	 * summed range is tested for intersection only. If the check is loose (`true`), compared range is also checked if it's "touching"
+	 * current range.
+	 * @returns {module:engine/model/range~Range|null} A sum of given ranges or `null` if ranges have no common part.
+	 */
+	getSum( otherRange, loose = false ) {
+		let shouldSum = this.isIntersecting( otherRange );
+
+		if ( loose && !shouldSum ) {
+			if ( this.start.isBefore( otherRange.start ) ) {
+				shouldSum = this.end.isTouching( otherRange.start );
+			} else {
+				shouldSum = otherRange.end.isTouching( this.start );
+			}
+		}
+
+		if ( !shouldSum ) {
+			return null;
+		}
+
+		let startPosition = this.start;
+		let endPosition = this.end;
+
+		if ( otherRange.start.isBefore( startPosition ) ) {
+			startPosition = otherRange.start;
+		}
+
+		if ( otherRange.end.isAfter( endPosition ) ) {
+			endPosition = otherRange.end;
+		}
+
+		return new Range( startPosition, endPosition );
+	}
+
+	/**
 	 * Computes and returns the smallest set of {@link #isFlat flat} ranges, that covers this range in whole.
 	 *
 	 * See an example of a model structure (`[` and `]` are range boundaries):

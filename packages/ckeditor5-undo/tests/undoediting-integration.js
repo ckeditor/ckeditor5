@@ -428,6 +428,55 @@ describe( 'UndoEditing integration', () => {
 
 			undoDisabled();
 		} );
+
+		it.skip( 'move, merge and undo', () => {
+			// Add a "div feature".
+			model.schema.register( 'div', {
+				allowWhere: '$block',
+				allowContentOf: '$root'
+			} );
+
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'div', view: 'div' } );
+			editor.conversion.for( 'upcast' ).elementToElement( { model: 'div', view: 'div' } );
+
+			input(
+				'<div><paragraph>[]00.</paragraph><paragraph>01.</paragraph><paragraph>02.</paragraph></div>' +
+				'<div><paragraph>10.</paragraph><paragraph>11.</paragraph><paragraph>12.</paragraph></div>'
+			);
+
+			const elements = [
+				root.getNodeByPath( [ 0, 1 ] ),
+				root.getNodeByPath( [ 1, 0 ] ),
+				root.getNodeByPath( [ 1, 1 ] )
+			];
+
+			model.change( writer => {
+				for ( let i = elements.length - 1; i > 0; i-- ) {
+					merge( elements[ i ], elements[ i - 1 ], writer );
+				}
+			} );
+			output(
+				'<div><paragraph>[]00.</paragraph><paragraph>01.10.11.</paragraph><paragraph>02.</paragraph></div>' +
+				'<div><paragraph>12.</paragraph></div>'
+			);
+
+			editor.execute( 'undo' );
+			output(
+				'<div><paragraph>[]00.</paragraph><paragraph>01.</paragraph><paragraph>02.</paragraph></div>' +
+				'<div><paragraph>10.</paragraph><paragraph>11.</paragraph><paragraph>12.</paragraph></div>'
+			);
+
+			function merge( element, targetElement, writer ) {
+				const positionAfterTarget = writer.createPositionAfter( targetElement );
+				const positionBeforeElement = writer.createPositionBefore( element );
+
+				if ( !positionAfterTarget.isEqual( positionBeforeElement ) ) {
+					writer.move( writer.createRangeOn( element ), positionAfterTarget );
+				}
+
+				writer.merge( positionAfterTarget );
+			}
+		} );
 	} );
 
 	// Restoring selection in those examples may be completely off.

@@ -89,26 +89,16 @@ export default class BaseCommand extends Command {
 		const model = this.editor.model;
 		const document = model.document;
 
-		// This will keep the transformed selection ranges.
-		const selectionRanges = [];
-
 		// Transform all ranges from the restored selection.
-		for ( const range of ranges ) {
-			const transformed = transformSelectionRange( range, operations );
+		const selectionRanges = ranges
+			.flatMap( range => range.getTransformedByOperations( operations ) )
+			.filter( range => range.root != document.graveyard )
+			.sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
 
-			// For each `range` from `ranges`, we take only one transformed range.
-			// This is because we want to prevent situation where single-range selection
-			// got transformed to multi-range selection. We will take the first range that
-			// is not in the graveyard.
-			const newRange = transformed.find(
-				range => range.start.root != document.graveyard
-			);
+		normalizeRanges( selectionRanges );
+		normalizeRanges( selectionRanges, [ 'tableCell' ] );
 
-			// `transformedRange` might be `undefined` if transformed range ended up in graveyard.
-			if ( newRange ) {
-				selectionRanges.push( newRange );
-			}
-		}
+		// @if CK_DEBUG_ENGINE // console.log( `Restored selection from undo: ${ selectionRanges.join( ', ' ) }` );
 
 		// `selectionRanges` may be empty if all ranges ended up in graveyard. If that is the case, do not restore selection.
 		if ( selectionRanges.length ) {
@@ -167,28 +157,19 @@ export default class BaseCommand extends Command {
 	}
 }
 
-// Transforms given range `range` by given `operations`.
-// Returns an array containing one or more ranges, which are result of the transformation.
-function transformSelectionRange( range, operations ) {
-	const transformed = range.getTransformedByOperations( operations );
+function normalizeRanges( ranges, dontSumElements = null ) {
+	for ( let i = 1; i < ranges.length; i++ ) {
+		const previousRange = ranges[ i - 1 ];
+		const containedElement = dontSumElements && previousRange.getContainedElement();
 
-	// After `range` got transformed, we have an array of ranges. Some of those
-	// ranges may be "touching" -- they can be next to each other and could be merged.
-	// First, we have to sort those ranges to assure that they are in order.
-	transformed.sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
+		if ( containedElement && dontSumElements.includes( containedElement.name ) ) {
+			continue;
+		}
 
-	// Then, we check if two consecutive ranges are touching.
-	for ( let i = 1; i < transformed.length; i++ ) {
-		const a = transformed[ i - 1 ];
-		const b = transformed[ i ];
+		const summedRange = previousRange.getSum( ranges[ i ], !!dontSumElements );
 
-		if ( a.end.isTouching( b.start ) ) {
-			// And join them together if they are.
-			a.end = b.end;
-			transformed.splice( i, 1 );
-			i--;
+		if ( summedRange ) {
+			ranges.splice( --i, 2, summedRange );
 		}
 	}
-
-	return transformed;
 }
