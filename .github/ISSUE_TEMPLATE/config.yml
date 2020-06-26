@@ -1,0 +1,10 @@
+blank_issues_enabled: false
+contact_links:
+  - name: \U0001F6A8 Security issue
+    url: https://ckeditor.com/contact
+    about: |
+      Please **DO NOT report security issues here**,
+      use the contact form at https://ckeditor.com/contact/ instead.
+  - name: "\U0001F4F1 Licensed Customers support"
+    about: Support channel for Licensed Customers.
+    url: https://support.ckeditor.com/hc/en-us/requests/new
