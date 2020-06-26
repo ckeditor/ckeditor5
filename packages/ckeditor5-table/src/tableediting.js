@@ -77,7 +77,8 @@ export default class TableEditing extends Plugin {
 		schema.register( 'tableCell', {
 			allowIn: 'tableRow',
 			allowAttributes: [ 'colspan', 'rowspan' ],
-			isObject: true
+			isObject: true,
+			allowMultiRangeSelection: true
 		} );
 
 		// Allow all $block content inside table cell.
@@ -146,14 +147,6 @@ export default class TableEditing extends Plugin {
 		injectTableLayoutPostFixer( model );
 		injectTableCellRefreshPostFixer( model );
 		injectTableCellParagraphPostFixer( model );
-
-		const undoElementsWithSeparateSelectionRanges = editor.config.get( 'undo.elementsWithSeparateSelectionRanges' ) || [];
-
-		if ( !undoElementsWithSeparateSelectionRanges.includes( 'tableCell' ) ) {
-			undoElementsWithSeparateSelectionRanges.push( 'tableCell' );
-
-			editor.config.set( 'undo.elementsWithSeparateSelectionRanges', undoElementsWithSeparateSelectionRanges );
-		}
 	}
 
 	/**

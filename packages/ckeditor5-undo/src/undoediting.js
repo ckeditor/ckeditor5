@@ -55,8 +55,6 @@ export default class UndoEditing extends Plugin {
 		 * @member {WeakSet.<module:engine/model/batch~Batch>}
 		 */
 		this._batchRegistry = new WeakSet();
-
-		editor.config.define( 'undo.elementsWithSeparateSelectionRanges', [] );
 	}
 
 	/**

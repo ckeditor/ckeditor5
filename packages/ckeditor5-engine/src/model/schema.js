@@ -1490,7 +1490,7 @@ function compileBaseItemRule( sourceItemRules, itemName ) {
 		inheritTypesFrom: []
 	};
 
-	copyTypes( sourceItemRules, itemRule );
+	copyTypesAndFlags( sourceItemRules, itemRule );
 
 	copyProperty( sourceItemRules, itemRule, 'allowIn' );
 	copyProperty( sourceItemRules, itemRule, 'allowContentOf' );
@@ -1585,9 +1585,9 @@ function cleanUpAllowAttributes( compiledDefinitions, itemName ) {
 	itemRule.allowAttributes = Array.from( new Set( itemRule.allowAttributes ) );
 }
 
-function copyTypes( sourceItemRules, itemRule ) {
+function copyTypesAndFlags( sourceItemRules, itemRule ) {
 	for ( const sourceItemRule of sourceItemRules ) {
-		const typeNames = Object.keys( sourceItemRule ).filter( name => name.startsWith( 'is' ) );
+		const typeNames = Object.keys( sourceItemRule ).filter( name => name.startsWith( 'is' ) || name == 'allowMultiRangeSelection' );
 
 		for ( const name of typeNames ) {
 			itemRule[ name ] = sourceItemRule[ name ];
