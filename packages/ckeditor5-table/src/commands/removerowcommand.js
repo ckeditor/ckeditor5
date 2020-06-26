@@ -63,10 +63,7 @@ export default class RemoveRowCommand extends Command {
 		// Use single batch to modify table in steps but in one undo step.
 		const batch = model.createBatch();
 
-		model.enqueueChange( batch, writer => {
-			// This prevents the "model-selection-range-intersects" error, caused by removing row selected cells.
-			writer.setSelection( writer.createSelection( table, 'on' ) );
-
+		model.enqueueChange( batch, () => {
 			const rowsToRemove = removedRowIndexes.last - removedRowIndexes.first + 1;
 
 			this.editor.plugins.get( 'TableUtils' ).removeRows( table, {
