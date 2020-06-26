@@ -11,6 +11,7 @@ order: 50
 * Link to this guide at the end of installation.md
 * Add redirect from the old custom-builds.md to this guide.
 * Remove custom-builds.md.
+* Create a bootstrap task that could create all these files via `npx ckeditor5-bootstrap-build`.
 
 ---
 
@@ -56,11 +57,362 @@ A custom build is an extension of what you can achieve with the [online builder]
 
 The goal of this section, though, is to show you how you could maintain a custom build over time. We assume that you work on a project that is maintained in a Git (or alternative) repository and you would like to store the source files of a build (and perhaps the build itself too) in this repository.
 
-### Implementing custom plugins
+### Step 1. Build files
+
+Let's create a `vendor/ckeditor/` directory with these 3 files:
+
+* `vendor/ckeditor/package.json`
+
+	```js
+	{
+	  "name": "ckeditor5-custom-build",
+	  "version": "0.0.1",
+	  "private": true,
+	  "scripts": {
+	    "build": "webpack --mode production"
+	  }
+	}
+	```
+
+* `vendor/ckeditor/webpack.config.js`:
+
+	```js
+	'use strict';
+
+	const path = require( 'path' );
+	const webpack = require( 'webpack' );
+	const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+	const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+	const TerserWebpackPlugin = require( 'terser-webpack-plugin' );
+
+	module.exports = {
+		devtool: 'source-map',
+		performance: { hints: false },
+
+		entry: path.resolve( __dirname, 'src', 'ckeditor.js' ),
+
+		output: {
+			// The name under which the editor will be exported.
+			library: 'ClassicEditor',
+
+			path: path.resolve( __dirname, 'build' ),
+			filename: 'ckeditor.js',
+			libraryTarget: 'umd',
+			libraryExport: 'default'
+		},
+
+		optimization: {
+			minimizer: [
+				new TerserWebpackPlugin( {
+					sourceMap: true,
+					terserOptions: {
+						output: {
+							// Preserve CKEditor 5 license comments.
+							comments: /^!/
+						}
+					},
+					extractComments: false
+				} )
+			]
+		},
+
+		plugins: [
+			new CKEditorWebpackPlugin( {
+				// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
+				// When changing the built-in language, remember to also change it in the editor's configuration (src/ckeditor.js).
+				language: 'en',
+				additionalLanguages: 'all'
+			} ),
+			new webpack.BannerPlugin( {
+				banner: bundler.getLicenseBanner(),
+				raw: true
+			} )
+		],
+
+		module: {
+			rules: [
+				{
+					test: /\.svg$/,
+					use: [ 'raw-loader' ]
+				},
+				{
+					test: /\.css$/,
+					use: [
+						{
+							loader: 'style-loader',
+							options: {
+								injectType: 'singletonStyleTag',
+								attributes: {
+									'data-cke': true
+								}
+							}
+						},
+						{
+							loader: 'postcss-loader',
+							options: styles.getPostCssConfig( {
+								themeImporter: {
+									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+								},
+								minify: true
+							} )
+						},
+					]
+				}
+			]
+		}
+	};
+	```
+
+* `vendor/ckeditor/src/ckeditor.js`:
+
+	```js
+	import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+	import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+	import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+	import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+	import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+
+	class Editor extends ClassicEditor {}
+
+	// Plugins to include in the build.
+	Editor.builtinPlugins = [
+		Essentials,
+		Paragraph,
+		Bold,
+		Italic
+	];
+
+	// Default editor configuration
+	// (it can be overridden when initializing the editor).
+	ClassicEditor.defaultConfig = {
+		toolbar: {
+			items: [
+				'bold',
+				'italic',
+				'|',
+				'undo',
+				'redo'
+			]
+		},
+		// This value must be kept in sync with the language defined in webpack.config.js.
+		language: 'en'
+	};
+
+	export default Editor;
+	```
+
+### Step 2. Dependencies
+
+Now, let's install missing dependencies (while being in `vendor/ckeditor/`):
+
+```bash
+npm install --save \
+	@ckeditor/ckeditor5-dev-utils \
+	@ckeditor/ckeditor5-dev-webpack-plugin \
+	@ckeditor/ckeditor5-editor-classic \
+	@ckeditor/ckeditor5-essentials \
+	@ckeditor/ckeditor5-paragraph \
+	@ckeditor/ckeditor5-basic-styles \
+	@ckeditor/ckeditor5-theme-lark \
+	postcss-loader@3 \
+	raw-loader@3 \
+	style-loader@1 \
+	webpack@4 \
+	webpack-cli@3
+```
+
+### Step 3. Build the editor
+
+To build the editor run the following command (while being in `vendor/ckeditor/`):
+
+```bash
+npm run build
+```
+
+### Step 4. Test your build
+
+To test your build you can create a simple test file in `vendor/ckeditor/sample/index.html`:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>CKEditor 5 – sample</title>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+	</style>
+</head>
+<body>
+	<h1>CKEditor 5 – sample</h1>
+	<div id="editor">
+		<p>This is an instance of <strong>CKEditor 5</strong>.</p>
+	</div>
+	<script src="../build/ckeditor.js"></script>
+	<script>
+		ClassicEditor.create( document.querySelector( '#editor' ) )
+			.then( editor => {
+				window.editor = editor;
+			} )
+			.catch( error => {
+				console.error( 'There was a problem initializing the editor.', error );
+			} );
+	</script>
+</body>
+</html>
+```
+
+You can now open this file in your browser 🎉
+
+### Step 5. Installing a plugin
+
+Let's say that you want to install the {@link features/link Link feature}.
+
+First install the package:
+
+```bash
+npm install --save @ckeditor/ckeditor5-link
+```
+
+Then, add the plugin to the builtin plugin list in `vendor/ckeditor/src/ckeditor.js`:
+
+```js
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+
+import Link from '@ckeditor/ckeditor5-link/src/link.js'; // <- ADD
+
+class Editor extends ClassicEditor {}
+
+// Plugins to include in the build.
+Editor.builtinPlugins = [
+	Essentials,
+	Paragraph,
+	Bold,
+	Italic,
+	Link // <- ADD
+];
+
+// Default editor configuration
+// (it can be overridden when initializing the editor).
+Editor.defaultConfig = {
+	toolbar: {
+		items: [
+			'bold',
+			'italic',
+			'link', // <- ADD
+			'|',
+			'undo',
+			'redo'
+		]
+	},
+	// This value must be kept in sync with the language defined in webpack.config.js.
+	language: 'en'
+};
+
+export default Editor;
+```
+
+Rebuild the build:
+
+```bash
+npm run build
+```
+
+And refresh the sample (make sure to clear the cache!). There should be the link button in the toolbar.
+
+### Step 6. Adding a custom plugin
+
+In this setup it is also possible to add custom plugins. You can keep their source for instance in `vendor/ckeditor/plugins/`.
+
+For a complete tutorial on implementing your first custom plugin see {@link framework/guides/creating-simple-plugin Creating a simple plugin}. In this section we will go quickly through the most important parts.
+
+First, install the missing dependency:
+
+```js
+npm install --save @ckeditor/ckeditor5-core
+```
+
+Implement your plugin (`vendor/ckeditor/plugins/customplugin.js`):
+
+```js
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
+export default class CustomPlugin extends Plugin {
+	init() {
+		console.log( 'My CustomPlugin works 🎉' );
+	}
+}
+```
+
+Edit `vendor/ckeditor/src/ckeditor.js` again:
+
+```js
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+
+import Link from '@ckeditor/ckeditor5-link/src/link.js';
+
+import CustomPlugin from '../plugins/customplugin.js'; // <- ADD
+
+class Editor extends ClassicEditor {}
+
+// Plugins to include in the build.
+Editor.builtinPlugins = [
+	Essentials,
+	Paragraph,
+	Bold,
+	Italic,
+	Link,
+	CustomPlugin // <- ADD
+];
+
+// Default editor configuration
+// (it can be overridden when initializing the editor).
+Editor.defaultConfig = {
+	toolbar: {
+		items: [
+			'bold',
+			'italic',
+			'link',
+			'|',
+			'undo',
+			'redo'
+		]
+	},
+	// This value must be kept in sync with the language defined in webpack.config.js.
+	language: 'en'
+};
+
+export default Editor;
+```
+
+Rebuild the build:
+
+```bash
+npm run build
+```
+
+And refresh the demo (remember about the cache!) again. You should see `"My CustomPlugin works 🎉"` on the console.
+
+### Conclusions
+
+A custom build follows the same structure to the ZIP packages generated with the [online builder](#online-builder) and the [source of the official builds](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-build-classic). This means that you can use one of these as a starting point for your custom build.
+
+A custom build allows you to control all aspects of how CKEditor 5 is built as you maintain control over the webpack configuration and the "entry file" (`src/ckeditor.js`).
+
+The only disadvantages are that you have to introduce an additional build step to your application and that you cannot freely interact with modules from `@ckeditor/ckeditor5-*` packages directly from your application's source code (which would lead to {@link framework/guides/support/error-codes#error-ckeditor-duplicated-modules module duplication errors}). All interaction needs to happen through the API exposed by the `build/ckeditor.js` file.
 
 ## Integrating from source
-
-### Implementing custom plugins
 
 
 
