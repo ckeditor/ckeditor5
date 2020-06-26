@@ -5,7 +5,7 @@ order: 60
 
 # Advanced setup
 
-The {@link builds/guides/integration/installation Installation} guide describes the easiest ways to run CKEditor builds in your project and the {@link builds/guides/development/custom-builds Custom builds} guide explains how to add or remove features from the build or change webpack configuration.
+The {@link builds/guides/integration/installation Installation} guide describes the easiest ways to run CKEditor builds in your project and the {@link builds/guides/integration/installing-plugins Installing plugins} guide explains how to customize an existing build.
 
 In this guide, we would like to show you ways to closer integrate CKEditor 5 with your application. Thanks to that, you will be able to optimize the bundling process of your project and customize the builds in a more convenient way.
 
@@ -13,8 +13,8 @@ In this guide, we would like to show you ways to closer integrate CKEditor 5 wit
 
 In order to start developing CKEditor 5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 6.9.0+
-* npm 4+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
+* [Node.js](https://nodejs.org/en/) 8.0.0+
+* npm 5.0.0+
 * [Git](https://git-scm.com/)
 
 ## Bundler
@@ -376,7 +376,7 @@ Webpack 4 introduced the [concept of modes](https://webpack.js.org/concepts/mode
 
 <info-box>
 	Prior to version 1.2.7 `uglifyjs-webpack-plugin` had a bug which caused webpack to crash with the following error: `TypeError: Assignment to constant variable.`. If you experienced this error, make sure that your `node_modules` contains an up-to-date version of this package (and that webpack uses this version).
-	
+
 	CKEditor 5 Builds use [`Terser`](https://github.com/terser/terser) instead of `uglifyjs-webpack-plugin` because [the later one seems to be unsupported anymore](https://github.com/ckeditor/ckeditor5/issues/1353).
 </info-box>
 

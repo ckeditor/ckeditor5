@@ -12,6 +12,8 @@ order: 50
 * Add redirect from the old custom-builds.md to this guide.
 * Remove custom-builds.md.
 * Create a bootstrap task that could create all these files via `npx ckeditor5-bootstrap-build`.
+* Make official builds and ones built with the online builder resemble each other as closely as possible.
+* Check the READMEs of the official builds and the online builder.
 
 ---
 
@@ -32,6 +34,13 @@ This guide covers three main ways to customize a build. We start from the simple
 * [Creating a custom build](#custom-build) &mdash; The minimal structure of a build's source contains just a three files. You can create such a setup manually and included it in a subdirectory of your repository (or put them anywhere else). This setup is recommended if you cannot integrate the editor from source, as it does not require adjusting your webpack configuration.
 * [Integrating the editor from source](#integrating-from-source) &mdash; This is by far the most powerful and optimal way to use CKEditor 5. In this scenario you can import and interact with it or any of its modules (e.g. in order to implement a custom plugin) just like you interact with your source modules. However, it requires adjusting your webpack configuration which is not always feasible.
 
+## Requirements
+
+In order to start customizing CKEditor 5 you will require:
+
+* [Node.js](https://nodejs.org/en/) 8.0.0+
+* npm 5.0.0+
+
 ## Online builder
 
 The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) lets you download CKEditor 5 builds and also allows you to create your own, customized builds (with a different set of plugins) in a few easy steps, through a simple and intuitive UI.
@@ -47,7 +56,7 @@ The downloaded ZIP package contains:
 * `webpack.config.js` &mdash; webpack configuration.
 * `README.md` and `LICENSE.md` with additional information.
 
-The build downloaded from the online builder is ready-to-use (the `build/` directory is populated). However, you can still use it as a starting point to further adjustments (e.g. installing 3rd party plugins).
+The build downloaded from the online builder is ready-to-use (the `build/` directory is populated). However, you can still use it as a starting point to further adjustments (e.g. installing plugins).
 
 Follow the instructions in included `README.md` in order to further customize your build.
 
@@ -89,8 +98,10 @@ Let's create a `vendor/ckeditor/` directory with these 3 files:
 		devtool: 'source-map',
 		performance: { hints: false },
 
+		// https://webpack.js.org/configuration/entry-context/
 		entry: path.resolve( __dirname, 'src', 'ckeditor.js' ),
 
+		// https://webpack.js.org/configuration/output/
 		output: {
 			// The name under which the editor will be exported.
 			library: 'ClassicEditor',
@@ -200,6 +211,14 @@ Let's create a `vendor/ckeditor/` directory with these 3 files:
 
 	export default Editor;
 	```
+
+	<info-box>
+		This guide is using the ES6 modules syntax. If you are not familiar with it, check out this [article](http://exploringjs.com/es6/ch_modules.html).
+	</info-box>
+
+	<info-box warning>
+		Note that in this guide the editor class is used directly (i.e. we use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
+	</info-box>
 
 ### Step 2. Dependencies
 
@@ -454,8 +473,8 @@ In this guide you can learn how to add plugins to your editor in the two most co
 
 In order to start developing CKEditor 5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 6.9.0+
-* npm 4+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
+* [Node.js](https://nodejs.org/en/) 8.0.0+
+* npm 5.0.0+
 
 ## Adding a plugin to a build
 
