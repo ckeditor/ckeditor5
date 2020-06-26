@@ -96,7 +96,7 @@ export default class BaseCommand extends Command {
 			.sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
 
 		normalizeRanges( selectionRanges );
-		normalizeRanges( selectionRanges, [ 'tableCell' ] );
+		normalizeRanges( selectionRanges, this.editor.config.get( 'undo.elementsWithSeparateSelectionRanges' ) || [] );
 
 		// @if CK_DEBUG_ENGINE // console.log( `Restored selection from undo: ${ selectionRanges.join( ', ' ) }` );
 
