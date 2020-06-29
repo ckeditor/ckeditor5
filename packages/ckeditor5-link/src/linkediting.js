@@ -339,7 +339,7 @@ export default class LinkEditing extends Plugin {
 			}
 
 			const position = selection.getFirstPosition();
-			const linkRange = findAttributeRange( position, selection.getAttribute( 'linkHref' ), editor.model );
+			const linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), editor.model );
 
 			// ...check whether clicked start/end boundary of the link.
 			// If so, remove the `linkHref` attribute.

@@ -33,7 +33,12 @@ export default function setupLinkHighlight( editor, className ) {
 		let changed = false;
 
 		if ( selection.hasAttribute( 'linkHref' ) ) {
-			const modelRange = findAttributeRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ), editor.model );
+			const modelRange = findAttributeRange(
+				selection.getFirstPosition(),
+				'linkHref',
+				selection.getAttribute( 'linkHref' ),
+				editor.model
+			);
 			const viewRange = editor.editing.mapper.toViewRange( modelRange );
 
 			// There might be multiple `a` elements in the `viewRange`, for example, when the `a` element is

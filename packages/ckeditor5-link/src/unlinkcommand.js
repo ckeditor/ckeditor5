@@ -57,7 +57,13 @@ export default class UnlinkCommand extends Command {
 		model.change( writer => {
 			// Get ranges to unlink.
 			const rangesToUnlink = selection.isCollapsed ?
-				[ findAttributeRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ), model ) ] : selection.getRanges();
+				[ findAttributeRange(
+					selection.getFirstPosition(),
+					'linkHref',
+					selection.getAttribute( 'linkHref' ),
+					model
+				) ] :
+				selection.getRanges();
 
 			// Remove `linkHref` attribute from specified ranges.
 			for ( const range of rangesToUnlink ) {

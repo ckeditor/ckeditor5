@@ -160,7 +160,7 @@ export default class LinkCommand extends Command {
 				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'linkHref' ) ) {
 					// Then update `linkHref` value.
-					const linkRange = findAttributeRange( position, selection.getAttribute( 'linkHref' ), model );
+					const linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
 
 					writer.setAttribute( 'linkHref', href, linkRange );
 
