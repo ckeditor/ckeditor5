@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import findLinkRange from './findlinkrange';
+import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattributerange';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
@@ -57,7 +57,7 @@ export default class UnlinkCommand extends Command {
 		model.change( writer => {
 			// Get ranges to unlink.
 			const rangesToUnlink = selection.isCollapsed ?
-				[ findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ), model ) ] : selection.getRanges();
+				[ findAttributeRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ), model ) ] : selection.getRanges();
 
 			// Remove `linkHref` attribute from specified ranges.
 			for ( const range of rangesToUnlink ) {

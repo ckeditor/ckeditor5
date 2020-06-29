@@ -4,7 +4,7 @@
  */
 
 /**
- * @module link/findlinkrange
+ * @module typing/utils/findattributerange
  */
 
 /**
@@ -17,7 +17,7 @@
  * @param {String} value The `linkHref` attribute value.
  * @returns {module:engine/model/range~Range} The link range.
  */
-export default function findLinkRange( position, value, model ) {
+export default function findAttributeRange( position, value, model ) {
 	return model.createRange( _findBound( position, value, true, model ), _findBound( position, value, false, model ) );
 }
 

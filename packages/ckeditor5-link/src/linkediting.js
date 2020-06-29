@@ -10,11 +10,12 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import TwoStepCaretMovement from '@ckeditor/ckeditor5-typing/src/twostepcaretmovement';
+import setupLinkHighlight from '@ckeditor/ckeditor5-typing/src/utils/inlinehighlight';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import AutomaticDecorators from './utils/automaticdecorators';
 import ManualDecorator from './utils/manualdecorator';
-import findLinkRange from './findlinkrange';
+import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattributerange';
 import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators } from './utils';
 
 import '../theme/link.css';
@@ -103,7 +104,7 @@ export default class LinkEditing extends Plugin {
 		twoStepCaretMovementPlugin.registerAttribute( 'linkHref' );
 
 		// Setup highlight over selected link.
-		this._setupLinkHighlight();
+		setupLinkHighlight( editor, HIGHLIGHT_CLASS );
 
 		// Change the attributes of the selection in certain situations after the link was inserted into the document.
 		this._enableInsertContentSelectionAttributesFixer();
@@ -196,67 +197,6 @@ export default class LinkEditing extends Plugin {
 					key: decorator.id
 				}
 			} );
-		} );
-	}
-
-	/**
-	 * Adds a visual highlight style to a link in which the selection is anchored.
-	 * Together with two-step caret movement, they indicate that the user is typing inside the link.
-	 *
-	 * Highlight is turned on by adding the `.ck-link_selected` class to the link in the view:
-	 *
-	 * * The class is removed before the conversion has started, as callbacks added with the `'highest'` priority
-	 * to {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} events.
-	 * * The class is added in the view post fixer, after other changes in the model tree were converted to the view.
-	 *
-	 * This way, adding and removing the highlight does not interfere with conversion.
-	 *
-	 * @private
-	 */
-	_setupLinkHighlight() {
-		const editor = this.editor;
-		const view = editor.editing.view;
-		const highlightedLinks = new Set();
-
-		// Adding the class.
-		view.document.registerPostFixer( writer => {
-			const selection = editor.model.document.selection;
-			let changed = false;
-
-			if ( selection.hasAttribute( 'linkHref' ) ) {
-				const modelRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ), editor.model );
-				const viewRange = editor.editing.mapper.toViewRange( modelRange );
-
-				// There might be multiple `a` elements in the `viewRange`, for example, when the `a` element is
-				// broken by a UIElement.
-				for ( const item of viewRange.getItems() ) {
-					if ( item.is( 'a' ) && !item.hasClass( HIGHLIGHT_CLASS ) ) {
-						writer.addClass( HIGHLIGHT_CLASS, item );
-						highlightedLinks.add( item );
-						changed = true;
-					}
-				}
-			}
-
-			return changed;
-		} );
-
-		// Removing the class.
-		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-			// Make sure the highlight is removed on every possible event, before conversion is started.
-			dispatcher.on( 'insert', removeHighlight, { priority: 'highest' } );
-			dispatcher.on( 'remove', removeHighlight, { priority: 'highest' } );
-			dispatcher.on( 'attribute', removeHighlight, { priority: 'highest' } );
-			dispatcher.on( 'selection', removeHighlight, { priority: 'highest' } );
-
-			function removeHighlight() {
-				view.change( writer => {
-					for ( const item of highlightedLinks.values() ) {
-						writer.removeClass( HIGHLIGHT_CLASS, item );
-						highlightedLinks.delete( item );
-					}
-				} );
-			}
 		} );
 	}
 
@@ -399,7 +339,7 @@ export default class LinkEditing extends Plugin {
 			}
 
 			const position = selection.getFirstPosition();
-			const linkRange = findLinkRange( position, selection.getAttribute( 'linkHref' ), editor.model );
+			const linkRange = findAttributeRange( position, selection.getAttribute( 'linkHref' ), editor.model );
 
 			// ...check whether clicked start/end boundary of the link.
 			// If so, remove the `linkHref` attribute.
