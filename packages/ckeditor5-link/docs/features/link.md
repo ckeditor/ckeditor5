@@ -236,6 +236,27 @@ ClassicEditor
 	.catch( ... );
 ```
 
+## Autolink feature
+
+You can enable automatic linking of URLs typed or pasted into editor. The `AutoLink` feature will automatically add links to URLs or e-mail addresses.
+
+<info-box>
+	Autolink action can be always reverted using undo (<kbd>CTRL</kbd>+<kbd>Z</kbd>).
+</info-box>
+
+{@snippet features/autolink}
+
+```js
+import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Link, AutoLink, ... ]
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
 ## Installation
 
 <info-box info>

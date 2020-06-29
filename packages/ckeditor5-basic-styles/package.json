@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-basic-styles",
-  "version": "19.0.1",
+  "version": "20.0.0",
   "description": "Basic styles feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -10,16 +10,16 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^19.0.1",
-    "@ckeditor/ckeditor5-ui": "^19.0.1"
+    "@ckeditor/ckeditor5-core": "^20.0.0",
+    "@ckeditor/ckeditor5-ui": "^20.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-editor-classic": "^19.0.1",
-    "@ckeditor/ckeditor5-engine": "^19.0.1",
-    "@ckeditor/ckeditor5-essentials": "^19.0.1",
-    "@ckeditor/ckeditor5-paragraph": "^19.1.0",
-    "@ckeditor/ckeditor5-remove-format": "^19.0.1",
-    "@ckeditor/ckeditor5-utils": "^19.0.1"
+    "@ckeditor/ckeditor5-editor-classic": "^20.0.0",
+    "@ckeditor/ckeditor5-engine": "^20.0.0",
+    "@ckeditor/ckeditor5-essentials": "^20.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^20.0.0",
+    "@ckeditor/ckeditor5-remove-format": "^20.0.0",
+    "@ckeditor/ckeditor5-utils": "^20.0.0"
   },
   "engines": {
     "node": ">=12.0.0",
