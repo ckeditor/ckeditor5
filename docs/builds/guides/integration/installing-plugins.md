@@ -3,6 +3,10 @@ category: builds-integration
 order: 50
 ---
 
+# Installing plugins
+
+---
+
 ## TODO
 
 * Change the README in packaged downloaded from online builder
@@ -21,6 +25,7 @@ order: 50
 	* Requirements
 	* Online builder
 	* Customizing a build
+		* link to custom build from scratch
 	* Integrating from source
 		* fwd to advanced setup
 * Advanced setup
@@ -44,8 +49,6 @@ order: 50
 		Using two different editors
 
 ---
-
-# Installing plugins
 
 While {@link builds/guides/integration/installation installing one of the existing builds} is a convenient way to start using CKEditor 5, soon you may want to do one of the following:
 
@@ -88,7 +91,7 @@ The build downloaded from the online builder is ready-to-use (the `build/` direc
 
 Follow the instructions in included `README.md` in order to further customize your build.
 
-## Custom build
+## Customizing a build
 
 A custom build is an extension of what you can achieve with the [online builder](#online-builder). In fact, a build generated with the online builder can become your custom build.
 
