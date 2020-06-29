@@ -445,7 +445,7 @@ function dataViewModelH1Insertion( evt, data, conversionApi ) {
 	modelWriter.append( titleContent, title );
 	modelWriter.insert( title, modelCursor );
 
-	conversionApi.convertChildren( viewItem, modelWriter.createPositionAt( titleContent, 0 ) );
+	conversionApi.convertChildren( viewItem, titleContent );
 
 	data.modelRange = modelWriter.createRangeOn( title );
 	data.modelCursor = modelWriter.createPositionAt( data.modelRange.end );

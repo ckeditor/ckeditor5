@@ -55,7 +55,7 @@ export function viewFigureToModel() {
 		}
 
 		// Convert rest of the figure element's children as an image children.
-		conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelImage, 0 ) );
+		conversionApi.convertChildren( data.viewItem, modelImage );
 
 		// Set image range as conversion result.
 		data.modelRange = conversionResult.modelRange;

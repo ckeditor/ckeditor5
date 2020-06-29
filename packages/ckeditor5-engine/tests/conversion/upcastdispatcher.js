@@ -275,7 +275,7 @@ describe( 'UpcastDispatcher', () => {
 				const modelElement = writer.createElement( data.viewItem.name );
 				writer.insert( modelElement, data.modelCursor );
 
-				const result = conversionApi.convertChildren( data.viewItem, writer.createPositionAt( modelElement, 0 ) );
+				const result = conversionApi.convertChildren( data.viewItem, modelElement );
 
 				data.modelRange = writer.createRange(
 					writer.createPositionBefore( modelElement ),
@@ -485,12 +485,39 @@ describe( 'UpcastDispatcher', () => {
 		} );
 
 		describe( 'convertChildren()', () => {
-			it( 'should fire conversion for all children of passed element and return conversion results ' +
-				'wrapped in document fragment', () => {
+			it( 'should fire conversion for all children of passed view element and return conversion results ' +
+				'wrapped in document fragment (using modelCursor)', () => {
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					spy();
 
-					const result = conversionApi.convertChildren( data.viewItem, ModelPosition._createAt( rootMock, 0 ) );
+					const modelCursor = ModelPosition._createAt( rootMock, 0 );
+					const result = conversionApi.convertChildren( data.viewItem, modelCursor );
+
+					expect( result.modelRange ).to.be.instanceof( ModelRange );
+					expect( result.modelRange.start.path ).to.deep.equal( [ 0 ] );
+					expect( result.modelRange.end.path ).to.deep.equal( [ 7 ] );
+					expect( Array.from( result.modelRange.getItems() ) ).to.length( 2 );
+					expect( Array.from( result.modelRange.getItems() )[ 0 ] ).to.equal( modelP );
+					expect( Array.from( result.modelRange.getItems() )[ 1 ] ).to.instanceof( ModelTextProxy );
+					expect( Array.from( result.modelRange.getItems() )[ 1 ].data ).to.equal( 'foobar' );
+
+					expect( result.modelCursor ).instanceof( ModelPosition );
+					expect( result.modelCursor.path ).to.deep.equal( [ 7 ] );
+				} );
+
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument, [ viewP, viewText ] ), writer ) );
+
+				expect( spy.calledOnce ).to.be.true;
+				expect( spyP.calledOnce ).to.be.true;
+				expect( spyText.calledOnce ).to.be.true;
+			} );
+
+			it( 'should fire conversion for all children of passed view element and return conversion results ' +
+				'wrapped in document fragment (using model element)', () => {
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
+					spy();
+
+					const result = conversionApi.convertChildren( data.viewItem, rootMock );
 
 					expect( result.modelRange ).to.be.instanceof( ModelRange );
 					expect( result.modelRange.start.path ).to.deep.equal( [ 0 ] );
@@ -680,7 +707,7 @@ describe( 'UpcastDispatcher', () => {
 					const modelElement = conversionApi.writer.createElement( 'paragraph' );
 
 					conversionApi.writer.insert( modelElement, data.modelCursor );
-					conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelElement, 0 ) );
+					conversionApi.convertChildren( data.viewItem, modelElement );
 
 					const parts = conversionApi.getSplitParts( modelElement );
 

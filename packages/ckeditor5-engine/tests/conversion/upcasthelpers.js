@@ -817,7 +817,7 @@ describe( 'upcast-converters', () => {
 					const paragraph = conversionApi.writer.createElement( 'paragraph' );
 
 					conversionApi.writer.insert( paragraph, data.modelCursor );
-					conversionApi.convertChildren( data.viewItem, ModelPosition._createAt( paragraph, 0 ) );
+					conversionApi.convertChildren( data.viewItem, paragraph );
 
 					data.modelRange = ModelRange._createOn( paragraph );
 					data.modelCursor = data.modelRange.end;

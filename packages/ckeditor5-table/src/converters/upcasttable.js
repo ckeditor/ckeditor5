@@ -134,12 +134,11 @@ export function upcastTableCell( elementName ) {
 			conversionApi.writer.insert( tableCell, splitResult.position );
 			conversionApi.consumable.consume( viewTableCell, { name: true } );
 
-			const modelCursor = conversionApi.writer.createPositionAt( tableCell, 0 );
-			conversionApi.convertChildren( viewTableCell, modelCursor );
+			conversionApi.convertChildren( viewTableCell, tableCell );
 
 			// Ensure a paragraph in the model for empty table cells.
 			if ( !tableCell.childCount ) {
-				conversionApi.writer.insertElement( 'paragraph', modelCursor );
+				conversionApi.writer.insertElement( 'paragraph', tableCell, 0 );
 			}
 
 			// Set conversion result range.

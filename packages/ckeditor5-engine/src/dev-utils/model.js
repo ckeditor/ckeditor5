@@ -406,7 +406,7 @@ function convertToModelElement() {
 
 		conversionApi.mapper.bindElements( element, data.viewItem );
 
-		conversionApi.convertChildren( data.viewItem, ModelPosition._createAt( element, 0 ) );
+		conversionApi.convertChildren( data.viewItem, element );
 
 		data.modelRange = ModelRange._createOn( element );
 		data.modelCursor = data.modelRange.end;

@@ -589,7 +589,7 @@ function prepareToElementConverter( config ) {
 		conversionApi.writer.insert( modelElement, splitResult.position );
 
 		// Convert children and insert to element.
-		conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelElement, 0 ) );
+		conversionApi.convertChildren( data.viewItem, modelElement );
 
 		// Consume appropriate value from consumable values list.
 		conversionApi.consumable.consume( data.viewItem, match );

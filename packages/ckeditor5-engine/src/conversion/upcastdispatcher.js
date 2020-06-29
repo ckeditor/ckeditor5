@@ -262,9 +262,11 @@ export default class UpcastDispatcher {
 	 * @private
 	 * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#convertChildren
 	 */
-	_convertChildren( viewItem, modelCursor ) {
-		const modelRange = new ModelRange( modelCursor );
-		let nextModelCursor = modelCursor;
+	_convertChildren( viewItem, elementOrModelCursor ) {
+		let nextModelCursor = elementOrModelCursor.is( 'position' ) ?
+			elementOrModelCursor : ModelPosition._createAt( elementOrModelCursor, 0 );
+
+		const modelRange = new ModelRange( nextModelCursor );
 
 		for ( const viewChild of Array.from( viewItem.getChildren() ) ) {
 			const result = this._convertItem( viewChild, nextModelCursor );
@@ -541,7 +543,7 @@ function createContextTree( contextDefinition, writer ) {
  * @fires module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:text
  * @fires module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:documentFragment
  * @param {module:engine/view/item~Item} viewItem Element which children should be converted.
- * @param {module:engine/model/position~Position} modelCursor Position of conversion.
+ * @param {module:engine/model/position~Position|module:engine/model/element~Element} positionOrElement Position or element of conversion.
  * @returns {Object} result Conversion result.
  * @returns {module:engine/model/range~Range} result.modelRange Model range containing results of conversion of all children of given item.
  * When no children was converted then range is collapsed.
