@@ -118,7 +118,8 @@ describe( 'UpcastHelpers', () => {
 			expectResult( new ViewContainerElement( viewDocument, 'p', { 'data-level': 2 } ), '' );
 		} );
 
-		it( 'config.view is not set - should fire conversion for every element', () => {
+		// TODO i/7336: - define behavior
+		it.skip( 'config.view is not set - should fire conversion for every element', () => {
 			upcastHelpers.elementToElement( {
 				model: 'paragraph'
 			} );

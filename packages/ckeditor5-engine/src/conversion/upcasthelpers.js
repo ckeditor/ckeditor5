@@ -575,6 +575,8 @@ function prepareToElementConverter( config ) {
 			return;
 		}
 
+		// ---- 4. Safely insert (should consume?)
+
 		// Find allowed parent for element that we are going to insert.
 		// If current parent does not allow to insert element but one of the ancestors does
 		// then split nodes to allowed parent.
@@ -588,11 +590,17 @@ function prepareToElementConverter( config ) {
 		// Insert element on allowed position.
 		conversionApi.writer.insert( modelElement, splitResult.position );
 
+		// ---- 5. Convert children
+
 		// Convert children and insert to element.
 		conversionApi.convertChildren( data.viewItem, modelElement );
 
+		// ---- 6. Consume
+
 		// Consume appropriate value from consumable values list.
 		conversionApi.consumable.consume( data.viewItem, match );
+
+		// ---- 7. Safe insert continued...
 
 		const parts = conversionApi.getSplitParts( modelElement );
 
