@@ -18,7 +18,24 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 
-/* global document */
+/* globals document, chai */
+
+chai.Assertion.addMethod( 'attribute', function attributeAssertion( type ) {
+	const obj = this._obj;
+
+	// Check if it has the method at all.
+	new chai.Assertion( obj ).to.respondTo( 'hasAttribute' );
+
+	// Check if it has the attribute.
+	const hasAttribute = obj.hasAttribute( type );
+	this.assert(
+		hasAttribute === true,
+		`expected #{this} to have '${ type }' attribute`,
+		`expected #{this} to not have the '${ type }' attribute`,
+		!chai.util.flag( this, 'negate' ),
+		hasAttribute
+	);
+} );
 
 describe( 'LinkEditing', () => {
 	let element, editor, model, view;
@@ -371,7 +388,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph>foo <$text linkHref="url">b{}ar</$text> baz</paragraph>'
 			);
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+			expect( model.document.selection ).to.have.an.attribute( 'linkHref' );
 			expect( getViewData( view ) ).to.equal(
 				'<p>foo <a class="ck-link_selected" href="url">b{}ar</a> baz</p>'
 			);
@@ -388,7 +405,7 @@ describe( 'LinkEditing', () => {
 				writer.setSelectionAttribute( 'linkHref', 'url' );
 			} );
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+			expect( model.document.selection ).to.have.an.attribute( 'linkHref' );
 			expect( getViewData( view ) ).to.equal(
 				'<p>foo <a class="ck-link_selected" href="url">{}bar</a> baz</p>'
 			);
@@ -399,7 +416,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph>foo <$text linkHref="url">bar</$text>{} baz</paragraph>'
 			);
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+			expect( model.document.selection ).to.have.an.attribute( 'linkHref' );
 			expect( getViewData( view ) ).to.equal(
 				'<p>foo <a class="ck-link_selected" href="url">bar{}</a> baz</p>'
 			);
@@ -417,7 +434,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph><$text linkHref="url">[]nk</$text> baz</paragraph>'
 			);
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+			expect( model.document.selection ).to.have.an.attribute( 'linkHref' );
 		} );
 
 		it( 'should remove classes when selection is moved out from the link', () => {
