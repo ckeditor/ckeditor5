@@ -104,7 +104,7 @@ export default class LinkEditing extends Plugin {
 		twoStepCaretMovementPlugin.registerAttribute( 'linkHref' );
 
 		// Setup highlight over selected link.
-		setupLinkHighlight( editor, HIGHLIGHT_CLASS );
+		setupLinkHighlight( editor, 'linkHref', 'a', HIGHLIGHT_CLASS );
 
 		// Change the attributes of the selection in certain situations after the link was inserted into the document.
 		this._enableInsertContentSelectionAttributesFixer();

@@ -10,10 +10,10 @@ import findAttributeRange from './findattributerange';
  */
 
 /**
- * Adds a visual highlight style to a link in which the selection is anchored.
- * Together with two-step caret movement, they indicate that the user is typing inside the link.
+ * Adds a visual highlight style to an attribute element in which the selection is anchored.
+ * Together with two-step caret movement, they indicate that the user is typing inside the element.
  *
- * Highlight is turned on by adding the given class to the link in the view:
+ * Highlight is turned on by adding the given class to the attribute element in the view:
  *
  * * The class is removed before the conversion has started, as callbacks added with the `'highest'` priority
  * to {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} events.
@@ -21,32 +21,35 @@ import findAttributeRange from './findattributerange';
  *
  * This way, adding and removing the highlight does not interfere with conversion.
  *
+ * @param {module:core/editor/editor~Editor} editor The editor instance.
+ * @param {String} attributeName The attribute name to check.
+ * @param {String} tagName The tagName of a view item.
  * @param {String} className The class name to apply in the view.
  */
-export default function setupLinkHighlight( editor, className ) {
+export default function setupLinkHighlight( editor, attributeName, tagName, className ) {
 	const view = editor.editing.view;
-	const highlightedLinks = new Set();
+	const highlightedElements = new Set();
 
 	// Adding the class.
 	view.document.registerPostFixer( writer => {
 		const selection = editor.model.document.selection;
 		let changed = false;
 
-		if ( selection.hasAttribute( 'linkHref' ) ) {
+		if ( selection.hasAttribute( attributeName ) ) {
 			const modelRange = findAttributeRange(
 				selection.getFirstPosition(),
-				'linkHref',
-				selection.getAttribute( 'linkHref' ),
+				attributeName,
+				selection.getAttribute( attributeName ),
 				editor.model
 			);
 			const viewRange = editor.editing.mapper.toViewRange( modelRange );
 
-			// There might be multiple `a` elements in the `viewRange`, for example, when the `a` element is
+			// There might be multiple view elements in the `viewRange`, for example, when the `a` element is
 			// broken by a UIElement.
 			for ( const item of viewRange.getItems() ) {
-				if ( item.is( 'a' ) && !item.hasClass( className ) ) {
+				if ( item.is( tagName ) && !item.hasClass( className ) ) {
 					writer.addClass( className, item );
-					highlightedLinks.add( item );
+					highlightedElements.add( item );
 					changed = true;
 				}
 			}
@@ -65,9 +68,9 @@ export default function setupLinkHighlight( editor, className ) {
 
 		function removeHighlight() {
 			view.change( writer => {
-				for ( const item of highlightedLinks.values() ) {
+				for ( const item of highlightedElements.values() ) {
 					writer.removeClass( className, item );
-					highlightedLinks.delete( item );
+					highlightedElements.delete( item );
 				}
 			} );
 		}
