@@ -47,7 +47,7 @@ export default class Input extends Plugin {
 	 *		const input = editor.plugins.get( 'Input' );
 	 *
 	 *		editor.model.document.on( 'change:data', ( evt, batch ) => {
-	 *			if ( input.isTyping( batch ) ) {
+	 *			if ( input.isInput( batch ) ) {
 	 *				console.log( 'The user typed something...' );
 	 *			}
 	 *		} );
