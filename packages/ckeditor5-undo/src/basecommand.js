@@ -92,25 +92,29 @@ export default class BaseCommand extends Command {
 		// This will keep the transformed selection ranges.
 		const selectionRanges = [];
 
+		// Transform all ranges from the restored selection.
 		const transformedRangeGroups = ranges.map( range => range.getTransformedByOperations( operations ) );
 		const allRanges = transformedRangeGroups.flat();
 
 		for ( const rangeGroup of transformedRangeGroups ) {
 			// While transforming there could appear ranges that are contained by other ranges, we shall ignore them.
-			const newRanges = rangeGroup.filter( range => !allRanges.some( otherRange => (
+			const transformed = rangeGroup.filter( range => !allRanges.some( otherRange => (
 				otherRange !== range && otherRange.containsRange( range, true )
 			) ) );
 
 			// After the range got transformed, we have an array of ranges. Some of those
 			// ranges may be "touching" -- they can be next to each other and could be merged.
-			normalizeRanges( newRanges );
+			normalizeRanges( transformed );
 
 			// For each `range` from `ranges`, we take only one transformed range.
 			// This is because we want to prevent situation where single-range selection
 			// got transformed to multi-range selection. We will take the first range that
 			// is not in the graveyard.
-			const newRange = newRanges.find( range => range.root != document.graveyard );
+			const newRange = transformed.find(
+				range => range.root != document.graveyard
+			);
 
+			// `transformedRange` might be `undefined` if transformed range ended up in graveyard.
 			if ( newRange ) {
 				selectionRanges.push( newRange );
 			}
