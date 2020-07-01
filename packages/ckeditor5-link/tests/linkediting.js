@@ -256,7 +256,7 @@ describe( 'LinkEditing', () => {
 				domTarget: document.body
 			} );
 
-			expect( model.document.selection.isGravityOverridden ).to.be.true;
+			expect( model.document.selection ).to.have.property( 'isGravityOverridden', true );
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'INSERTED', { bold: true } ) );
@@ -270,8 +270,7 @@ describe( 'LinkEditing', () => {
 				'</paragraph>'
 			);
 
-			expect( model.document.selection.isGravityOverridden ).to.be.true;
-
+			expect( model.document.selection ).to.have.property( 'isGravityOverridden', true );
 			expect( model.document.selection ).to.have.attribute( 'linkHref' );
 		} );
 
@@ -296,7 +295,7 @@ describe( 'LinkEditing', () => {
 		it( 'should not remove link atttributes when pasting before another link (different URLs, no merge)', () => {
 			setModelData( model, '<paragraph>[]<$text linkHref="ckeditor.com">foo</$text></paragraph>' );
 
-			expect( model.document.selection.isGravityOverridden ).to.be.false;
+			expect( model.document.selection ).to.have.property( 'isGravityOverridden', false );
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'INSERTED', { linkHref: 'http://INSERTED' } ) );
