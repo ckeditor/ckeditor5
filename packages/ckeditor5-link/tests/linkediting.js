@@ -2,6 +2,29 @@
  * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+// Requires changes to @ckeditor/ckeditor5-dev-tests/node_modules/webpack/lib/MainTemplate.js:281
+// - "Object.defineProperty(exports, name, { enumerable: true, get: getter });"
+// + "Object.defineProperty(exports, name, { enumerable: true, get: getter, configurable: true });"
+
+import * as inlineHighlightModule from '@ckeditor/ckeditor5-typing/src/utils/inlinehighlight';
+
+// Create a spy that is called whenever `setupLinkHighlight` getter is accessed,
+// either by test's code, src/linkediting.js, or imported by any other module.
+const dependencyGetterSpy = sinon.spy( inlineHighlightModule, 'setupLinkHighlight', [ 'get' ] );
+
+// Create a spy that is called whenever exported `setupLinkHighlight()` function is called.
+const setupLinkHighlightSpy = sinon.spy().named( 'setupLinkHighlight' );
+// Workaround lack of `stub.wrappedMethod` for  property accessors. https://github.com/sinonjs/sinon/issues/2198#issuecomment-652630739
+const originalDescriptor = Object.getOwnPropertyDescriptor( inlineHighlightModule, 'setupLinkHighlight' );
+const wrappedMethod = originalDescriptor.get;
+const dependencyGetterStub = sinon.stub( inlineHighlightModule, 'setupLinkHighlight' ).get( function fakeGet() {
+	return function stubbedDependency( ...args ) {
+		// Call spy.
+		setupLinkHighlightSpy.apply( this, args );
+		// Call through.
+		return wrappedMethod.apply( this, args );
+	};
+} );
 
 import LinkEditing from '../src/linkediting';
 import LinkCommand from '../src/linkcommand';
@@ -79,6 +102,7 @@ describe( 'LinkEditing', () => {
 	let element, editor, model, view;
 
 	beforeEach( async () => {
+		setupLinkHighlightSpy.resetHistory();
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
@@ -115,8 +139,21 @@ describe( 'LinkEditing', () => {
 		await editor.destroy();
 	} );
 
+	after( () => {
+		dependencyGetterStub.reset();
+		dependencyGetterSpy.restore();
+	} );
+
 	it( 'should have pluginName', () => {
 		expect( LinkEditing.pluginName ).to.equal( 'LinkEditing' );
+	} );
+
+	it( 'should import setupLinkHighlight', () => {
+		expect( dependencyGetterSpy.get ).to.be.called;
+	} );
+
+	it( 'should call setupLinkHighlight', () => {
+		expect( setupLinkHighlightSpy ).to.be.calledOnceWith( editor, 'linkHref', 'a', 'ck-link_selected' );
 	} );
 
 	it( 'should be loaded', () => {

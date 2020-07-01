@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import TwoStepCaretMovement from '@ckeditor/ckeditor5-typing/src/twostepcaretmovement';
-import setupLinkHighlight from '@ckeditor/ckeditor5-typing/src/utils/inlinehighlight';
+import { setupLinkHighlight } from '@ckeditor/ckeditor5-typing/src/utils/inlinehighlight';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import AutomaticDecorators from './utils/automaticdecorators';

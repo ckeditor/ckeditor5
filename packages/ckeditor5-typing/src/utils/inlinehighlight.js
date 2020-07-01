@@ -26,7 +26,7 @@ import findAttributeRange from './findattributerange';
  * @param {String} tagName The tagName of a view item.
  * @param {String} className The class name to apply in the view.
  */
-export default function setupLinkHighlight( editor, attributeName, tagName, className ) {
+export function setupLinkHighlight( editor, attributeName, tagName, className ) {
 	const view = editor.editing.view;
 	const highlightedElements = new Set();
 
@@ -76,3 +76,4 @@ export default function setupLinkHighlight( editor, attributeName, tagName, clas
 		}
 	} );
 }
+export default setupLinkHighlight;
