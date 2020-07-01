@@ -179,10 +179,7 @@ export default class BaseCommand extends Command {
 	}
 }
 
-// Normalizes list of ranges by joining intersecting ranges. It expects input ranges to be sorted.
-//
-// Performs 'loose' joining if second argument is provided (ranges are joined if they are 'touching' one another)
-// and additionally avoids merging ranges that fully-contain any of the elements provided in the exclusion list.
+// Normalizes list of ranges by joining intersecting or "touching" ranges.
 //
 // @param {Array.<module:engine/model/range~Range>} ranges
 //
