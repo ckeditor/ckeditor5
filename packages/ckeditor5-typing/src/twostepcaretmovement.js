@@ -84,7 +84,7 @@ import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
  *
  *   		<$text a="true">ba{}r</$text>b{}az
  */
-export class TwoStepCaretMovement extends Plugin {
+export default class TwoStepCaretMovement extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -183,7 +183,6 @@ export class TwoStepCaretMovement extends Plugin {
 		);
 	}
 }
-export default TwoStepCaretMovement;
 
 /**
  * This is a protected helper–class for {@link module:typing/twostepcaretmovement}.
