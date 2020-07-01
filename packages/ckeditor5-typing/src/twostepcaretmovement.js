@@ -130,11 +130,6 @@ export class TwoStepCaretMovement extends Plugin {
 		//
 		// Find out more in https://github.com/ckeditor/ckeditor5-engine/issues/1301.
 		this.listenTo( view.document, 'keydown', ( evt, data ) => {
-			// Do nothing if the plugin is disabled.
-			// if ( !this.isEnabled ) {
-			// 	return;
-			// }
-
 			// This implementation works only for collapsed selection.
 			if ( !modelSelection.isCollapsed ) {
 				return;
