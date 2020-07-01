@@ -20,7 +20,7 @@ import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
  * Thanks to this (phantom) caret movement the user is able to type before/after as well as at the
  * beginning/end of an attribute.
  *
- * **Note:** This class support right–to–left (Arabic, Hebrew, etc.) content by mirroring its behavior
+ * **Note:** This plugin support right–to–left (Arabic, Hebrew, etc.) content by mirroring its behavior
  * but for the sake of simplicity examples showcase only left–to–right use–cases.
  *
  * # Forward movement
@@ -84,7 +84,7 @@ import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
  *
  *   		<$text a="true">ba{}r</$text>b{}az
  */
-export class TwoStepCaretMovement extends Plugin {
+export default class TwoStepCaretMovement extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -116,7 +116,6 @@ export class TwoStepCaretMovement extends Plugin {
 		const view = editor.editing.view;
 		const locale = editor.locale;
 
-		// const twoStepCaretHandler = new TwoStepCaretHandler( model, emitter, attribute );
 		const modelSelection = model.document.selection;
 
 		// Listen to keyboard events and handle the caret movement according to the 2-step caret logic.
@@ -131,11 +130,6 @@ export class TwoStepCaretMovement extends Plugin {
 		//
 		// Find out more in https://github.com/ckeditor/ckeditor5-engine/issues/1301.
 		this.listenTo( view.document, 'keydown', ( evt, data ) => {
-			// Do nothing if the plugin is disabled.
-			// if ( !this.isEnabled ) {
-			// 	return;
-			// }
-
 			// This implementation works only for collapsed selection.
 			if ( !modelSelection.isCollapsed ) {
 				return;
@@ -189,7 +183,6 @@ export class TwoStepCaretMovement extends Plugin {
 		);
 	}
 }
-export default TwoStepCaretMovement;
 
 /**
  * This is a protected helper–class for {@link module:typing/twostepcaretmovement}.
