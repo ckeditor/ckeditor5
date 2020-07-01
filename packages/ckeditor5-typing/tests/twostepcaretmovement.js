@@ -9,7 +9,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import { TwoStepCaretMovement, TwoStepCaretHandler } from '../src/twostepcaretmovement';
+import TwoStepCaretMovement, { TwoStepCaretHandler } from '../src/twostepcaretmovement';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
