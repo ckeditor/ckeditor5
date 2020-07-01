@@ -89,22 +89,32 @@ export default class BaseCommand extends Command {
 		const model = this.editor.model;
 		const document = model.document;
 
-		const elementsExpectingSeparateSelectionRange = Object.values( model.schema.getDefinitions() )
-			.filter( ( { allowMultiRangeSelection } ) => allowMultiRangeSelection )
-			.map( ( { name } ) => name );
+		// This will keep the transformed selection ranges.
+		const selectionRanges = [];
 
-		// Transform all ranges from the restored selection.
-		const selectionRanges = ranges
-			.flatMap( range => range.getTransformedByOperations( operations ) )
-			.filter( range => range.root != document.graveyard )
-			.sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
+		const transformedRangeGroups = ranges.map( range => range.getTransformedByOperations( operations ) );
+		const allRanges = transformedRangeGroups.flat();
 
-		// Join ranges if they intersect. This is because of moving parts of document between different original ranges.
-		normalizeRanges( selectionRanges );
+		for ( const rangeGroup of transformedRangeGroups ) {
+			// While transforming there could appear ranges that are contained by other ranges, we shall ignore them.
+			const newRanges = rangeGroup.filter( range => !allRanges.some( otherRange => (
+				otherRange !== range && otherRange.containsRange( range, true )
+			) ) );
 
-		// Join ranges if they are touching one another but if element is not excluded from joining (i.e. tableCell).
-		// This is to avoid changing single-range selection into multi-range selection if it's not expected.
-		normalizeRanges( selectionRanges, elementsExpectingSeparateSelectionRange );
+			// After the range got transformed, we have an array of ranges. Some of those
+			// ranges may be "touching" -- they can be next to each other and could be merged.
+			normalizeRanges( newRanges );
+
+			// For each `range` from `ranges`, we take only one transformed range.
+			// This is because we want to prevent situation where single-range selection
+			// got transformed to multi-range selection. We will take the first range that
+			// is not in the graveyard.
+			const newRange = newRanges.find( range => range.root != document.graveyard );
+
+			if ( newRange ) {
+				selectionRanges.push( newRange );
+			}
+		}
 
 		// @if CK_DEBUG_ENGINE // console.log( `Restored selection by undo: ${ selectionRanges.join( ', ' ) }` );
 
@@ -171,23 +181,18 @@ export default class BaseCommand extends Command {
 // and additionally avoids merging ranges that fully-contain any of the elements provided in the exclusion list.
 //
 // @param {Array.<module:engine/model/range~Range>} ranges
-// @param {Array.<String>} [elementExclusions]
 //
-function normalizeRanges( ranges, elementExclusions = null ) {
+function normalizeRanges( ranges ) {
+	ranges.sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
+
 	for ( let i = 1; i < ranges.length; i++ ) {
 		const previousRange = ranges[ i - 1 ];
-		const containedElement = elementExclusions && previousRange.getContainedElement();
-
-		// Skip joining a range if the previous range fully contained an element from exclusion list.
-		if ( containedElement && elementExclusions.includes( containedElement.name ) ) {
-			continue;
-		}
-
-		const summedRange = previousRange.getSum( ranges[ i ], !!elementExclusions );
+		const summedRange = previousRange.getJoined( ranges[ i ], true );
 
 		if ( summedRange ) {
 			// Replace the ranges on the list with the new joined range.
-			ranges.splice( --i, 2, summedRange );
+			i--;
+			ranges.splice( i, 2, summedRange );
 		}
 	}
 }

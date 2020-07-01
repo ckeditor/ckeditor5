@@ -290,13 +290,13 @@ export default class Range {
 	 *			model.createPositionFromPath( root, [ 1 ] ),
 	 *			model.createPositionFromPath( root, [ 2 ] )
  	 *		);
-	 *		let transformed = range.getSum( otherRange ); // null - ranges have no common part
+	 *		let transformed = range.getJoined( otherRange ); // null - ranges have no common part
 	 *
 	 *		otherRange = model.createRange(
 	 *			model.createPositionFromPath( root, [ 3 ] ),
 	 *			model.createPositionFromPath( root, [ 5 ] )
 	 *		);
-	 *		transformed = range.getSum( otherRange ); // range from [ 2, 7 ] to [ 5 ]
+	 *		transformed = range.getJoined( otherRange ); // range from [ 2, 7 ] to [ 5 ]
 	 *
 	 * @param {module:engine/model/range~Range} otherRange Range to sum with.
 	 * @param {Boolean} [loose=false] Whether the sum intersection check is loose or strict. If the check is strict (`false`),
@@ -304,7 +304,7 @@ export default class Range {
 	 * current range.
 	 * @returns {module:engine/model/range~Range|null} A sum of given ranges or `null` if ranges have no common part.
 	 */
-	getSum( otherRange, loose = false ) {
+	getJoined( otherRange, loose = false ) {
 		let shouldSum = this.isIntersecting( otherRange );
 
 		if ( loose && !shouldSum ) {

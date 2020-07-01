@@ -68,7 +68,6 @@ describe( 'TableEditing', () => {
 		// Table cell:
 		expect( model.schema.isRegistered( 'tableCell' ) ).to.be.true;
 		expect( model.schema.isLimit( 'tableCell' ) ).to.be.true;
-		expect( model.schema.getDefinition( 'tableCell' ) ).to.have.property( 'allowMultiRangeSelection', true );
 
 		expect( model.schema.checkChild( [ '$root' ], 'tableCell' ) ).to.be.false;
 		expect( model.schema.checkChild( [ 'table' ], 'tableCell' ) ).to.be.false;
