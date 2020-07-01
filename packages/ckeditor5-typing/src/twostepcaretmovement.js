@@ -20,7 +20,7 @@ import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
  * Thanks to this (phantom) caret movement the user is able to type before/after as well as at the
  * beginning/end of an attribute.
  *
- * **Note:** This class support right–to–left (Arabic, Hebrew, etc.) content by mirroring its behavior
+ * **Note:** This plugin support right–to–left (Arabic, Hebrew, etc.) content by mirroring its behavior
  * but for the sake of simplicity examples showcase only left–to–right use–cases.
  *
  * # Forward movement
