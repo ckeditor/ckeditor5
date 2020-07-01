@@ -82,8 +82,14 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 
 		const blockToFormat = entry.position.parent;
 
-		// Block formatting should trigger only if the entire content of a paragraph is a single text node... (see ckeditor5#5671).
-		if ( !blockToFormat.is( 'paragraph' ) || blockToFormat.childCount !== 1 ) {
+		// Block formatting should be disabled in codeBlocks, and in non-empty blocks (ckeditor5#5671).
+		if ( blockToFormat.is( 'codeBlock' ) || blockToFormat.childCount !== 1 ) {
+			return;
+		}
+
+		// In case a command is bound, do not re-execute it over an existing block style which would result with a style removal.
+		// Instead just drop processing so that autoformatting trigger text is not lost. E.g. writing "# " in a level 1 heading.
+		if ( command && command.value === true ) {
 			return;
 		}
 

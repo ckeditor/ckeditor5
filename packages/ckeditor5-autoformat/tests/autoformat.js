@@ -150,6 +150,24 @@ describe( 'Autoformat', () => {
 
 			expect( getData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>1. []</paragraph>' );
 		} );
+
+		it( 'should should be converted from a header', () => {
+			setData( model, '<heading1>1.[]</heading1>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]</listItem>' );
+		} );
+
+		it( 'should should be converted from a bulleted list', () => {
+			setData( model, '<listItem listIndent="0" listType="bulleted">1.[]</listItem>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]</listItem>' );
+		} );
 	} );
 
 	describe( 'Heading', () => {
@@ -255,13 +273,13 @@ describe( 'Autoformat', () => {
 			expect( getData( model ) ).to.equal( '<blockQuote><paragraph>[]</paragraph></blockQuote>' );
 		} );
 
-		it( 'should not replace greater-than character when inside heading', () => {
+		it( 'should wrap the heading if greater-than character was used', () => {
 			setData( model, '<heading1>>[]</heading1>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<heading1>> []</heading1>' );
+			expect( getData( model ) ).to.equal( '<blockQuote><heading1>[]</heading1></blockQuote>' );
 		} );
 
 		it( 'should not replace greater-than character when inside numbered list', () => {
@@ -302,6 +320,15 @@ describe( 'Autoformat', () => {
 			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">[]</codeBlock>' );
 		} );
 
+		it( 'should replace triple grave accents in a heading', () => {
+			setData( model, '<heading1>``[]</heading1>' );
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">[]</codeBlock>' );
+		} );
+
 		it( 'should not replace triple grave accents when already in a code block', () => {
 			setData( model, '<codeBlock language="plaintext">``[]</codeBlock>' );
 			model.change( writer => {
@@ -309,15 +336,6 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">```[]</codeBlock>' );
-		} );
-
-		it( 'should not replace triple grave accents when inside heading', () => {
-			setData( model, '<heading1>``[]</heading1>' );
-			model.change( writer => {
-				writer.insertText( '`', doc.selection.getFirstPosition() );
-			} );
-
-			expect( getData( model ) ).to.equal( '<heading1>```[]</heading1>' );
 		} );
 
 		it( 'should not replace triple grave accents when inside numbered list', () => {

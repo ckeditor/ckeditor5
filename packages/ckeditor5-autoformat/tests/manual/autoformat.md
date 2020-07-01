@@ -22,6 +22,4 @@
 
 1. For every autoformat pattern: Undo until you'll see just the pattern (e.g. `- `). Typing should be then possible without triggering the autoformatting again.
 
-1. Typing a different pattern in an already converted block **must not** trigger the autoformatting. For example, typing `- ` in a heading should not convert a heading to a list.
-
 1. Type inline formatting (bold, italic, code, strikethrough) after a soft break (<kbd>Shift</kbd>+<kbd>Enter</kbd>).
