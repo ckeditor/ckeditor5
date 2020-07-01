@@ -116,7 +116,6 @@ export class TwoStepCaretMovement extends Plugin {
 		const view = editor.editing.view;
 		const locale = editor.locale;
 
-		// const twoStepCaretHandler = new TwoStepCaretHandler( model, emitter, attribute );
 		const modelSelection = model.document.selection;
 
 		// Listen to keyboard events and handle the caret movement according to the 2-step caret logic.
