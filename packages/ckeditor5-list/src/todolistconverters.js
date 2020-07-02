@@ -9,7 +9,7 @@
 
 /* global document */
 
-import { generateLiInUl, injectViewList } from './utils';
+import { generateLiInUl, injectViewList, positionAfterUiElements } from './utils';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 /**
@@ -52,8 +52,13 @@ export function modelViewInsertion( model, onCheckboxChecked ) {
 		const isChecked = !!modelItem.getAttribute( 'todoListChecked' );
 		const checkmarkElement = createCheckmarkElement( modelItem, viewWriter, isChecked, onCheckboxChecked );
 
+		const span = viewWriter.createContainerElement( 'span', {
+			class: 'todo-list__label__description'
+		} );
+
 		viewWriter.addClass( 'todo-list', viewItem.parent );
 		viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkmarkElement );
+		viewWriter.insert( viewWriter.createPositionAfter( checkmarkElement ), span );
 
 		injectViewList( modelItem, viewItem, conversionApi, model );
 	};
@@ -93,7 +98,7 @@ export function dataModelViewInsertion( model ) {
 
 		viewWriter.addClass( 'todo-list', viewItem.parent );
 
-		const label = viewWriter.createAttributeElement( 'label', {
+		const label = viewWriter.createContainerElement( 'label', {
 			class: 'todo-list__label'
 		} );
 
@@ -102,49 +107,21 @@ export function dataModelViewInsertion( model ) {
 			disabled: 'disabled'
 		} );
 
+		const span = viewWriter.createContainerElement( 'span', {
+			class: 'todo-list__label__description'
+		} );
+
 		if ( data.item.getAttribute( 'todoListChecked' ) ) {
 			viewWriter.setAttribute( 'checked', 'checked', checkbox );
 			viewWriter.addClass( 'todo-list__label', label );
 		}
 
-		viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkbox );
-		viewWriter.wrap( viewWriter.createRangeOn( checkbox ), label );
+		viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), label );
+		viewWriter.insert( viewWriter.createPositionAt( label, 0 ), checkbox );
+		viewWriter.insert( viewWriter.createPositionAfter( checkbox ), span );
 
 		injectViewList( modelItem, viewItem, conversionApi, model );
 	};
-}
-
-/**
- * A model-to-view converter for the model `$text` element inside a to-do list item.
- *
- * It is used by {@link module:engine/controller/datacontroller~DataController}.
- *
- * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
- */
-export function dataModelViewTextInsertion( evt, data, conversionApi ) {
-	const parent = data.range.start.parent;
-
-	if ( parent.name != 'listItem' || parent.getAttribute( 'listType' ) != 'todo' ) {
-		return;
-	}
-
-	if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
-		return;
-	}
-
-	const viewWriter = conversionApi.writer;
-	const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-	const viewText = viewWriter.createText( data.item.data );
-
-	const span = viewWriter.createAttributeElement( 'span', { class: 'todo-list__label__description' } );
-	const label = viewPosition.parent.getChild( 0 );
-
-	viewWriter.insert( viewWriter.createPositionAt( viewPosition.parent, 'end' ), viewText );
-	viewWriter.wrap( viewWriter.createRangeOn( viewText ), span );
-	viewWriter.wrap( viewWriter.createRangeOn( viewText.parent ), label );
 }
 
 /**
@@ -209,11 +186,28 @@ export function modelViewChangeType( onCheckedChange, view ) {
 			const isChecked = !!data.item.getAttribute( 'todoListChecked' );
 			const checkmarkElement = createCheckmarkElement( data.item, viewWriter, isChecked, onCheckedChange );
 
+			const span = viewWriter.createContainerElement( 'span', {
+				class: 'todo-list__label__description'
+			} );
+
+			const itemRange = viewWriter.createRangeIn( viewItem );
+			const nestedList = findNestedList( viewItem );
+
+			const descriptionStart = positionAfterUiElements( itemRange.start );
+			const descriptionEnd = nestedList ? viewWriter.createPositionBefore( nestedList ) : itemRange.end;
+			const descriptionRange = viewWriter.createRange( descriptionStart, descriptionEnd );
+
 			viewWriter.addClass( 'todo-list', viewItem.parent );
+			viewWriter.move( descriptionRange, viewWriter.createPositionAt( span, 0 ) );
 			viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), checkmarkElement );
+			viewWriter.insert( viewWriter.createPositionAfter( checkmarkElement ), span );
 		} else if ( data.attributeOldValue == 'todo' ) {
+			const descriptionSpan = findDescription( viewItem, view );
+
 			viewWriter.removeClass( 'todo-list', viewItem.parent );
 			viewWriter.remove( findLabel( viewItem, view ) );
+			viewWriter.move( viewWriter.createRangeIn( descriptionSpan ), viewWriter.createPositionBefore( descriptionSpan ) );
+			viewWriter.remove( descriptionSpan );
 		}
 	};
 }
@@ -261,34 +255,24 @@ export function modelViewChangeChecked( onCheckedChange ) {
  * It only handles the position at the beginning of a list item as other positions are properly mapped be the default mapper.
  *
  * @param {module:engine/view/view~View} view
- * @param {module:engine/conversion/mapper~Mapper} mapper
  * @return {Function}
  */
-export function mapModelToViewZeroOffsetPosition( view, mapper ) {
+export function mapModelToViewPosition( view ) {
 	return ( evt, data ) => {
 		const modelPosition = data.modelPosition;
 		const parent = modelPosition.parent;
 
-		// Handle only position at the beginning of a todo list item.
-		if ( !parent.is( 'listItem' ) || parent.getAttribute( 'listType' ) != 'todo' || modelPosition.offset !== 0 ) {
+		if ( !parent.is( 'listItem' ) || parent.getAttribute( 'listType' ) != 'todo' ) {
 			return;
 		}
 
-		const viewLi = mapper.toViewElement( parent );
-		const label = findLabel( viewLi, view );
+		const viewLi = data.mapper.toViewElement( parent );
+		const descSpan = findDescription( viewLi, view );
 
-		// If there is no label then most probably the default converter was overridden.
-		if ( !label ) {
-			return;
-		}
-
-		// Map the position to the next sibling (if it is not a marker) - most likely it will be a text node...
-		if ( label.nextSibling && !label.nextSibling.is( 'uiElement' ) ) {
-			data.viewPosition = view.createPositionAt( label.nextSibling, 0 );
-		}
-		// ... otherwise return position after the label.
-		else {
-			data.viewPosition = view.createPositionAfter( label );
+		if ( descSpan ) {
+			data.viewPosition = data.mapper._findPositionIn( descSpan, modelPosition.offset );
+		} else if ( modelPosition.offset == 0 ) {
+			data.viewPosition = view.createPositionAfter( findLabel( viewLi, view ) );
 		}
 	};
 }
@@ -335,6 +319,24 @@ function findLabel( viewItem, view ) {
 	for ( const value of range ) {
 		if ( value.item.is( 'uiElement', 'label' ) ) {
 			return value.item;
+		}
+	}
+}
+
+function findDescription( viewItem, view ) {
+	const range = view.createRangeIn( viewItem );
+
+	for ( const value of range ) {
+		if ( value.item.is( 'containerElement', 'span' ) && value.item.hasClass( 'todo-list__label__description' ) ) {
+			return value.item;
+		}
+	}
+}
+
+function findNestedList( viewItem ) {
+	for ( const node of viewItem.getChildren() ) {
+		if ( node.name == 'ul' || node.name == 'ol' ) {
+			return node;
 		}
 	}
 }

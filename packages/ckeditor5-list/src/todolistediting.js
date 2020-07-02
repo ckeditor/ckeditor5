@@ -15,9 +15,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import {
 	dataModelViewInsertion,
-	dataModelViewTextInsertion,
 	dataViewModelCheckmarkInsertion,
-	mapModelToViewZeroOffsetPosition,
+	mapModelToViewPosition,
 	modelViewChangeChecked,
 	modelViewChangeType,
 	modelViewInsertion
@@ -76,7 +75,7 @@ export default class TodoListEditing extends Plugin {
 
 		// Define converters.
 		data.downcastDispatcher.on( 'insert:listItem', dataModelViewInsertion( model ), { priority: 'high' } );
-		data.downcastDispatcher.on( 'insert:$text', dataModelViewTextInsertion, { priority: 'high' } );
+		data.upcastDispatcher.on( 'element:input', dataViewModelCheckmarkInsertion, { priority: 'high' } );
 
 		editing.downcastDispatcher.on(
 			'insert:listItem',
@@ -92,9 +91,8 @@ export default class TodoListEditing extends Plugin {
 			modelViewChangeChecked( listItem => this._handleCheckmarkChange( listItem ) )
 		);
 
-		editing.mapper.on( 'modelToViewPosition', mapModelToViewZeroOffsetPosition( editing.view, editing.mapper ) );
-
-		data.upcastDispatcher.on( 'element:input', dataViewModelCheckmarkInsertion, { priority: 'high' } );
+		editing.mapper.on( 'modelToViewPosition', mapModelToViewPosition( editing.view ) );
+		data.mapper.on( 'modelToViewPosition', mapModelToViewPosition( editing.view ) );
 
 		// Jump at the end of the previous node on left arrow key press, when selection is after the checkbox.
 		//

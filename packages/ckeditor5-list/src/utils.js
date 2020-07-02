@@ -88,6 +88,11 @@ export function injectViewList( modelItem, injectedItem, conversionApi, model ) 
 			// If it is a list item, it has to have a lower indent.
 			// It means that the inserted item should be added to it as its nested item.
 			insertPosition = mapper.toViewPosition( model.createPositionAt( prevItem, 'end' ) );
+
+			// There could be some not mapped elements (eg. span in to-do list) but we need to insert
+			// a nested list directly inside the li element.
+			const mappedViewAncestor = mapper.findMappedViewAncestor( insertPosition );
+			insertPosition = viewWriter.createPositionAt( mappedViewAncestor, 'end' );
 		} else {
 			// The previous item is not a list item (or does not exist at all).
 			// Just map the position and insert the view item at the mapped position.
