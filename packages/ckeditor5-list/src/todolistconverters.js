@@ -182,6 +182,8 @@ export function modelViewChangeType( onCheckedChange, view ) {
 		const viewItem = conversionApi.mapper.toViewElement( data.item );
 		const viewWriter = conversionApi.writer;
 
+		const labelElement = findLabel( viewItem, view );
+
 		if ( data.attributeNewValue == 'todo' ) {
 			const isChecked = !!data.item.getAttribute( 'todoListChecked' );
 			const checkmarkElement = createCheckmarkElement( data.item, viewWriter, isChecked, onCheckedChange );
@@ -205,7 +207,7 @@ export function modelViewChangeType( onCheckedChange, view ) {
 			const descriptionSpan = findDescription( viewItem, view );
 
 			viewWriter.removeClass( 'todo-list', viewItem.parent );
-			viewWriter.remove( findLabel( viewItem, view ) );
+			viewWriter.remove( labelElement );
 			viewWriter.move( viewWriter.createRangeIn( descriptionSpan ), viewWriter.createPositionBefore( descriptionSpan ) );
 			viewWriter.remove( descriptionSpan );
 		}
@@ -271,8 +273,6 @@ export function mapModelToViewPosition( view ) {
 
 		if ( descSpan ) {
 			data.viewPosition = data.mapper._findPositionIn( descSpan, modelPosition.offset );
-		} else if ( modelPosition.offset == 0 ) {
-			data.viewPosition = view.createPositionAfter( findLabel( viewLi, view ) );
 		}
 	};
 }
