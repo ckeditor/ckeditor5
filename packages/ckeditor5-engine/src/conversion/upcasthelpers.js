@@ -541,23 +541,19 @@ function getViewElementNameFromConfig( viewConfig ) {
 // @param {Object} config Conversion configuration.
 // @returns {Function} View to model converter.
 function prepareToElementConverter( config ) {
-	const matcher = config.view ? new Matcher( config.view ) : null;
+	const matcher = new Matcher( config.view );
 
 	return ( evt, data, conversionApi ) => {
-		let match = {};
-
 		// If `config.view` has not been passed do not try matching. In this case, the converter should fire for all elements.
-		if ( matcher ) {
-			// This will be usually just one pattern but we support matchers with many patterns too.
-			const matcherResult = matcher.match( data.viewItem );
+		// This will be usually just one pattern but we support matchers with many patterns too.
+		const matcherResult = matcher.match( data.viewItem );
 
-			// If there is no match, this callback should not do anything.
-			if ( !matcherResult ) {
-				return;
-			}
-
-			match = matcherResult.match;
+		// If there is no match, this callback should not do anything.
+		if ( !matcherResult ) {
+			return;
 		}
+
+		const match = matcherResult.match;
 
 		// Force consuming element's name.
 		match.name = true;
