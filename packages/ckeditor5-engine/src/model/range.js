@@ -298,7 +298,7 @@ export default class Range {
 	 *		);
 	 *		transformed = range.getJoined( otherRange ); // range from [ 2, 7 ] to [ 5 ]
 	 *
-	 * @param {module:engine/model/range~Range} otherRange Range to sum with.
+	 * @param {module:engine/model/range~Range} otherRange Range to be joined.
 	 * @param {Boolean} [loose=false] Whether the intersection check is loose or strict. If the check is strict (`false`),
 	 * ranges are tested for intersection only. If the check is loose (`true`), compared range is also checked if it's "touching"
 	 * current range.
