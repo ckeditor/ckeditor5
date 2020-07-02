@@ -575,54 +575,18 @@ function prepareToElementConverter( config ) {
 			return;
 		}
 
-		// ---- 4. Safely insert (should consume?)
-
-		// Find allowed parent for element that we are going to insert.
-		// If current parent does not allow to insert element but one of the ancestors does
-		// then split nodes to allowed parent.
-		const splitResult = conversionApi.splitToAllowedParent( modelElement, data.modelCursor );
-
-		// When there is no split result it means that we can't insert element to model tree, so let's skip it.
-		if ( !splitResult ) {
+		if ( !safeInsert( conversionApi, modelElement, data.modelCursor ) ) {
 			return;
 		}
-
-		// Insert element on allowed position.
-		conversionApi.writer.insert( modelElement, splitResult.position );
-
-		// ---- 5. Convert children
 
 		// Convert children and insert to element.
 		conversionApi.convertChildren( data.viewItem, modelElement );
 
-		// ---- 6. Consume
-
 		// Consume appropriate value from consumable values list.
 		conversionApi.consumable.consume( data.viewItem, match );
 
-		// ---- 7. Safe insert continued...
-
-		const parts = conversionApi.getSplitParts( modelElement );
-
-		// Set conversion result range.
-		data.modelRange = conversionApi.writer.createRange(
-			conversionApi.writer.createPositionBefore( modelElement ),
-			conversionApi.writer.createPositionAfter( parts[ parts.length - 1 ] )
-		);
-
-		// Now we need to check where the `modelCursor` should be.
-		if ( splitResult.cursorParent ) {
-			// If we split parent to insert our element then we want to continue conversion in the new part of the split parent.
-			//
-			// before: <allowed><notAllowed>foo[]</notAllowed></allowed>
-			// after:  <allowed><notAllowed>foo</notAllowed><converted></converted><notAllowed>[]</notAllowed></allowed>
-
-			data.modelCursor = conversionApi.writer.createPositionAt( splitResult.cursorParent, 0 );
-		} else {
-			// Otherwise just continue after inserted element.
-
-			data.modelCursor = data.modelRange.end;
-		}
+		// ---- 7. Update conversion result
+		updateConversionData( conversionApi, modelElement, data );
 	};
 }
 
@@ -800,4 +764,47 @@ function normalizeToMarkerConfig( config ) {
 
 		return modelWriter.createElement( '$marker', { 'data-name': markerName } );
 	};
+}
+
+function safeInsert( conversionApi, modelElement, position ) {
+	// Find allowed parent for element that we are going to insert.
+	// If current parent does not allow to insert element but one of the ancestors does
+	// then split nodes to allowed parent.
+	const splitResult = conversionApi.splitToAllowedParent( modelElement, position );
+
+	// When there is no split result it means that we can't insert element to model tree, so let's skip it.
+	if ( !splitResult ) {
+		return false;
+	}
+
+	// Insert element on allowed position.
+	conversionApi.writer.insert( modelElement, splitResult.position );
+
+	return true;
+}
+
+function updateConversionData( conversionApi, modelElement, data ) {
+	const parts = conversionApi.getSplitParts( modelElement );
+
+	// Set conversion result range.
+	data.modelRange = conversionApi.writer.createRange(
+		conversionApi.writer.createPositionBefore( modelElement ),
+		conversionApi.writer.createPositionAfter( parts[ parts.length - 1 ] )
+	);
+
+	const savedCursorParent = conversionApi.getCursorParent( modelElement );
+
+	// Now we need to check where the `modelCursor` should be.
+	if ( savedCursorParent ) {
+		// If we split parent to insert our element then we want to continue conversion in the new part of the split parent.
+		//
+		// before: <allowed><notAllowed>foo[]</notAllowed></allowed>
+		// after:  <allowed><notAllowed>foo</notAllowed> <converted></converted> <notAllowed>[]</notAllowed></allowed>
+
+		data.modelCursor = conversionApi.writer.createPositionAt( savedCursorParent, 0 );
+	} else {
+		// Otherwise just continue after inserted element.
+
+		data.modelCursor = data.modelRange.end;
+	}
 }

@@ -137,6 +137,7 @@ export default class UpcastDispatcher {
 		 * @type {Map.<module:engine/model/element~Element,Array.<module:engine/model/element~Element>>}
 		 */
 		this._splitParts = new Map();
+		this._foooo = new Map(); // WeakMap?
 
 		/**
 		 * Position in the temporary structure where the converted content is inserted. The structure reflect the context of
@@ -161,6 +162,7 @@ export default class UpcastDispatcher {
 		this.conversionApi.convertChildren = this._convertChildren.bind( this );
 		this.conversionApi.splitToAllowedParent = this._splitToAllowedParent.bind( this );
 		this.conversionApi.getSplitParts = this._getSplitParts.bind( this );
+		this.conversionApi.getCursorParent = this._getCursorParent.bind( this );
 	}
 
 	/**
@@ -334,10 +336,21 @@ export default class UpcastDispatcher {
 			}
 		}
 
+		const cursorParent = splitResult.range.end.parent;
+		this._registerCursorParent( node, cursorParent );
+
 		return {
 			position: splitResult.position,
-			cursorParent: splitResult.range.end.parent
+			cursorParent
 		};
+	}
+
+	_registerCursorParent( original, cursorParent ) {
+		this._foooo.set( original, cursorParent );
+	}
+
+	_getCursorParent( original ) {
+		return this._foooo.get( original );
 	}
 
 	/**
