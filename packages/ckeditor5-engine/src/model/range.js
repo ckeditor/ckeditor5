@@ -277,9 +277,8 @@ export default class Range {
 	}
 
 	/**
-	 * Returns a sum of this {@link ~Range range} and given {@link ~Range range}.
-	 * Sum is a range that is spanning over both of those ranges. If ranges have no common part, returns `null`,
-	 * even if the ranges has equal start/end position.
+	 * Returns a range created by joining this {@link ~Range range} with the given {@link ~Range range}.
+	 * If ranges have no common part, returns `null`, even if they have equal start/end position.
 	 *
 	 * Examples:
 	 *
@@ -300,23 +299,23 @@ export default class Range {
 	 *		transformed = range.getJoined( otherRange ); // range from [ 2, 7 ] to [ 5 ]
 	 *
 	 * @param {module:engine/model/range~Range} otherRange Range to sum with.
-	 * @param {Boolean} [loose=false] Whether the sum intersection check is loose or strict. If the check is strict (`false`),
-	 * summed range is tested for intersection only. If the check is loose (`true`), compared range is also checked if it's "touching"
+	 * @param {Boolean} [loose=false] Whether the intersection check is loose or strict. If the check is strict (`false`),
+	 * ranges are tested for intersection only. If the check is loose (`true`), compared range is also checked if it's "touching"
 	 * current range.
 	 * @returns {module:engine/model/range~Range|null} A sum of given ranges or `null` if ranges have no common part.
 	 */
 	getJoined( otherRange, loose = false ) {
-		let shouldSum = this.isIntersecting( otherRange );
+		let shouldJoin = this.isIntersecting( otherRange );
 
-		if ( loose && !shouldSum ) {
+		if ( loose && !shouldJoin ) {
 			if ( this.start.isBefore( otherRange.start ) ) {
-				shouldSum = this.end.isTouching( otherRange.start );
+				shouldJoin = this.end.isTouching( otherRange.start );
 			} else {
-				shouldSum = otherRange.end.isTouching( this.start );
+				shouldJoin = otherRange.end.isTouching( this.start );
 			}
 		}
 
-		if ( !shouldSum ) {
+		if ( !shouldJoin ) {
 			return null;
 		}
 

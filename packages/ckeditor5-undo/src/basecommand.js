@@ -98,9 +98,7 @@ export default class BaseCommand extends Command {
 
 		for ( const rangeGroup of transformedRangeGroups ) {
 			// While transforming there could appear ranges that are contained by other ranges, we shall ignore them.
-			const transformed = rangeGroup.filter( range => !allRanges.some( otherRange => (
-				otherRange !== range && otherRange.containsRange( range, true )
-			) ) );
+			const transformed = rangeGroup.filter( range => !isRangeContainedByAnyOtherRange( range, allRanges ) );
 
 			// After the range got transformed, we have an array of ranges. Some of those
 			// ranges may be "touching" -- they can be next to each other and could be merged.
@@ -188,12 +186,16 @@ function normalizeRanges( ranges ) {
 
 	for ( let i = 1; i < ranges.length; i++ ) {
 		const previousRange = ranges[ i - 1 ];
-		const summedRange = previousRange.getJoined( ranges[ i ], true );
+		const joinedRange = previousRange.getJoined( ranges[ i ], true );
 
-		if ( summedRange ) {
+		if ( joinedRange ) {
 			// Replace the ranges on the list with the new joined range.
 			i--;
-			ranges.splice( i, 2, summedRange );
+			ranges.splice( i, 2, joinedRange );
 		}
 	}
+}
+
+function isRangeContainedByAnyOtherRange( range, ranges ) {
+	return ranges.some( otherRange => otherRange !== range && otherRange.containsRange( range, true ) );
 }
