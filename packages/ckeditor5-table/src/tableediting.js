@@ -77,8 +77,7 @@ export default class TableEditing extends Plugin {
 		schema.register( 'tableCell', {
 			allowIn: 'tableRow',
 			allowAttributes: [ 'colspan', 'rowspan' ],
-			isObject: true,
-			allowMultiRangeSelection: true
+			isObject: true
 		} );
 
 		// Allow all $block content inside table cell.
