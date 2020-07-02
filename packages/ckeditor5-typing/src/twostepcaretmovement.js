@@ -4,27 +4,30 @@
  */
 
 /**
- * @module engine/utils/bindtwostepcarettoattribute
+ * @module typing/twostepcaretmovement
  */
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 /**
- * This helper enables the two-step caret (phantom) movement behavior for the given {@link module:engine/model/model~Model}
- * attribute on arrow right (<kbd>→</kbd>) and left (<kbd>←</kbd>) key press.
+ * This plugin enables the two-step caret (phantom) movement behavior for
+ * {@link module:typing/twostepcaretmovement~TwoStepCaretMovement#registerAttribute registered attributes}
+ * on arrow right (<kbd>→</kbd>) and left (<kbd>←</kbd>) key press.
  *
  * Thanks to this (phantom) caret movement the user is able to type before/after as well as at the
  * beginning/end of an attribute.
  *
- * **Note:** This helper support right–to–left (Arabic, Hebrew, etc.) content by mirroring its behavior
+ * **Note:** This plugin support right–to–left (Arabic, Hebrew, etc.) content by mirroring its behavior
  * but for the sake of simplicity examples showcase only left–to–right use–cases.
  *
  * # Forward movement
  *
  * ## "Entering" an attribute:
  *
- * When this behavior is enabled for the `a` attribute and the selection is right before it
+ * When this plugin is enabled and registered for the `a` attribute and the selection is right before it
  * (at the attribute boundary), pressing the right arrow key will not move the selection but update its
  * attributes accordingly:
  *
@@ -80,70 +83,109 @@ import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
  *   <kbd>←</kbd>
  *
  *   		<$text a="true">ba{}r</$text>b{}az
- *
- * @param {Object} options Helper options.
- * @param {module:engine/view/view~View} options.view View controller instance.
- * @param {module:engine/model/model~Model} options.model Data model instance.
- * @param {module:utils/dom/emittermixin~Emitter} options.emitter The emitter to which this behavior should be added
- * (e.g. a plugin instance).
- * @param {String} options.attribute Attribute for which this behavior will be added.
- * @param {module:utils/locale~Locale} options.locale The {@link module:core/editor/editor~Editor#locale} instance.
  */
-export default function bindTwoStepCaretToAttribute( { view, model, emitter, attribute, locale } ) {
-	const twoStepCaretHandler = new TwoStepCaretHandler( model, emitter, attribute );
-	const modelSelection = model.document.selection;
+export default class TwoStepCaretMovement extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'TwoStepCaretMovement';
+	}
 
-	// Listen to keyboard events and handle the caret movement according to the 2-step caret logic.
-	//
-	// Note: This listener has the "high+1" priority:
-	// * "high" because of the filler logic implemented in the renderer which also engages on #keydown.
-	// When the gravity is overridden the attributes of the (model) selection attributes are reset.
-	// It may end up with the filler kicking in and breaking the selection.
-	// * "+1" because we would like to avoid collisions with other features (like Widgets), which
-	// take over the keydown events with the "high" priority. Two-step caret movement takes precedence
-	// over Widgets in that matter.
-	//
-	// Find out more in https://github.com/ckeditor/ckeditor5-engine/issues/1301.
-	emitter.listenTo( view.document, 'keydown', ( evt, data ) => {
-		// This implementation works only for collapsed selection.
-		if ( !modelSelection.isCollapsed ) {
-			return;
-		}
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor ) {
+		super( editor );
 
-		// When user tries to expand the selection or jump over the whole word or to the beginning/end then
-		// two-steps movement is not necessary.
-		if ( data.shiftKey || data.altKey || data.ctrlKey ) {
-			return;
-		}
+		/**
+		 * A map of handlers for each attribute.
+		 *
+		 * @protected
+		 * @property {module:typing/twostepcaretmovement~TwoStepCaretMovement}
+		 */
+		this._handlers = new Map();
+	}
 
-		const arrowRightPressed = data.keyCode == keyCodes.arrowright;
-		const arrowLeftPressed = data.keyCode == keyCodes.arrowleft;
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		const editor = this.editor;
+		const model = editor.model;
+		const view = editor.editing.view;
+		const locale = editor.locale;
 
-		// When neither left or right arrow has been pressed then do noting.
-		if ( !arrowRightPressed && !arrowLeftPressed ) {
-			return;
-		}
+		const modelSelection = model.document.selection;
 
-		const position = modelSelection.getFirstPosition();
-		const contentDirection = locale.contentLanguageDirection;
-		let isMovementHandled;
+		// Listen to keyboard events and handle the caret movement according to the 2-step caret logic.
+		//
+		// Note: This listener has the "high+1" priority:
+		// * "high" because of the filler logic implemented in the renderer which also engages on #keydown.
+		// When the gravity is overridden the attributes of the (model) selection attributes are reset.
+		// It may end up with the filler kicking in and breaking the selection.
+		// * "+1" because we would like to avoid collisions with other features (like Widgets), which
+		// take over the keydown events with the "high" priority. Two-step caret movement takes precedence
+		// over Widgets in that matter.
+		//
+		// Find out more in https://github.com/ckeditor/ckeditor5-engine/issues/1301.
+		this.listenTo( view.document, 'keydown', ( evt, data ) => {
+			// This implementation works only for collapsed selection.
+			if ( !modelSelection.isCollapsed ) {
+				return;
+			}
 
-		if ( ( contentDirection === 'ltr' && arrowRightPressed ) || ( contentDirection === 'rtl' && arrowLeftPressed ) ) {
-			isMovementHandled = twoStepCaretHandler.handleForwardMovement( position, data );
-		} else {
-			isMovementHandled = twoStepCaretHandler.handleBackwardMovement( position, data );
-		}
+			// When user tries to expand the selection or jump over the whole word or to the beginning/end then
+			// two-steps movement is not necessary.
+			if ( data.shiftKey || data.altKey || data.ctrlKey ) {
+				return;
+			}
 
-		// Stop the keydown event if the two-step caret movement handled it. Avoid collisions
-		// with other features which may also take over the caret movement (e.g. Widget).
-		if ( isMovementHandled ) {
-			evt.stop();
-		}
-	}, { priority: priorities.get( 'high' ) + 1 } );
+			const arrowRightPressed = data.keyCode == keyCodes.arrowright;
+			const arrowLeftPressed = data.keyCode == keyCodes.arrowleft;
+
+			// When neither left or right arrow has been pressed then do noting.
+			if ( !arrowRightPressed && !arrowLeftPressed ) {
+				return;
+			}
+
+			const position = modelSelection.getFirstPosition();
+			const contentDirection = locale.contentLanguageDirection;
+			let isMovementHandled = false;
+
+			if ( ( contentDirection === 'ltr' && arrowRightPressed ) || ( contentDirection === 'rtl' && arrowLeftPressed ) ) {
+				for ( const [ , handler ] of this._handlers ) {
+					isMovementHandled = isMovementHandled || handler.handleForwardMovement( position, data );
+				}
+			} else {
+				for ( const [ , handler ] of this._handlers ) {
+					isMovementHandled = isMovementHandled || handler.handleBackwardMovement( position, data );
+				}
+			}
+
+			// Stop the keydown event if the two-step caret movement handled it. Avoid collisions
+			// with other features which may also take over the caret movement (e.g. Widget).
+			if ( isMovementHandled ) {
+				evt.stop();
+			}
+		}, { priority: priorities.get( 'high' ) + 1 } );
+	}
+
+	/**
+	 * Registers a given attribute for the two-step caret movement.
+	 *
+	 * @param {String} attribute Name of the attribute to handle.
+	 */
+	registerAttribute( attribute ) {
+		this._handlers.set(
+			attribute,
+			new TwoStepCaretHandler( this.editor.model, this, attribute )
+		);
+	}
 }
 
 /**
- * This is a protected helper–class for {@link module:engine/utils/bindtwostepcarettoattribute}.
+ * This is a protected helper–class for {@link module:typing/twostepcaretmovement}.
  * It handles the state of the 2-step caret movement for a single {@link module:engine/model/model~Model}
  * attribute upon the `keypress` in the {@link module:engine/view/view~View}.
  *
