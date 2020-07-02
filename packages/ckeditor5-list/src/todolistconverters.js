@@ -9,7 +9,7 @@
 
 /* global document */
 
-import { generateLiInUl, injectViewList, positionAfterUiElements } from './utils';
+import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList } from './utils';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 /**
@@ -329,14 +329,6 @@ function findDescription( viewItem, view ) {
 	for ( const value of range ) {
 		if ( value.item.is( 'containerElement', 'span' ) && value.item.hasClass( 'todo-list__label__description' ) ) {
 			return value.item;
-		}
-	}
-}
-
-function findNestedList( viewItem ) {
-	for ( const node of viewItem.getChildren() ) {
-		if ( node.name == 'ul' || node.name == 'ol' ) {
-			return node;
 		}
 	}
 }
