@@ -278,7 +278,8 @@ export default class Range {
 
 	/**
 	 * Returns a sum of this {@link ~Range range} and given {@link ~Range range}.
-	 * Sum is a range that is spanning over both of those ranges. If ranges have no common part, returns `null`.
+	 * Sum is a range that is spanning over both of those ranges. If ranges have no common part, returns `null`,
+	 * even if the ranges has equal start/end position.
 	 *
 	 * Examples:
 	 *
