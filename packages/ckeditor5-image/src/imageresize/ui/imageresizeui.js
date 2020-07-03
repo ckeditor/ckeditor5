@@ -167,14 +167,14 @@ export default class ImageResizeUI extends Plugin {
 function prepareListDefinitions( definitions, command, resizeUnit ) {
 	const itemDefinitions = new Collection();
 
-	definitions.map( definition => {
-		const parsedValue = definition.value ? definition.value + resizeUnit : null;
-		const def = {
+	definitions.map( itemDefinition => {
+		const parsedValue = itemDefinition.value ? itemDefinition.value + resizeUnit : null;
+		const definition = {
 			type: 'button',
 			model: new Model( {
 				commandName: 'imageResize',
 				commandValue: parsedValue,
-				label: definition.label,
+				label: itemDefinition.label,
 				withText: true,
 				icon: null
 			} )
@@ -182,9 +182,9 @@ function prepareListDefinitions( definitions, command, resizeUnit ) {
 
 		const commandCallback = setOptionOn( parsedValue );
 
-		def.model.bind( 'isOn' ).to( command, 'value', commandCallback );
+		definition.model.bind( 'isOn' ).to( command, 'value', commandCallback );
 
-		itemDefinitions.add( def );
+		itemDefinitions.add( definition );
 	} );
 
 	return itemDefinitions;
