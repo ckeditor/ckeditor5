@@ -44,35 +44,19 @@ export default class ImageResizeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
-		super( editor );
-
-		/**
-		 * A state of resize unit configured by the user.
-		 * If not set, it takes "%" as a default value.
-		 *
-		 * @private
-		 *
-		 * @member {module:image/image~ImageConfig#resizeUnit}
-		 */
-		this._resizeUnit = editor.config.get( 'image.resizeUnit' ) || '%';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	init() {
 		const editor = this.editor;
 		const options = editor.config.get( 'image.imageResizeOptions' );
 		const command = editor.commands.get( 'imageResize' );
+		const resizeUnit = editor.config.get( 'image.resizeUnit' ) || '%';
 
 		this.bind( 'isEnabled' ).to( command );
 
 		for ( const option of options ) {
-			this._addButton( option );
+			this._addButton( option, resizeUnit );
 		}
 
-		this._addDropdown( options );
+		this._addDropdown( options, resizeUnit );
 	}
 
 	/**
@@ -82,10 +66,10 @@ export default class ImageResizeUI extends Plugin {
 	 *
 	 * @param {module:image/imageresizeui~resizeOption} resizeOption A model of resize option.
 	 */
-	_addButton( { name, label, value } ) {
+	_addButton( { name, label, value }, unit ) {
 		const editor = this.editor;
 		const t = editor.t;
-		const parsedValue = value ? value + this._resizeUnit : null;
+		const parsedValue = value ? value + unit : null;
 
 		editor.ui.componentFactory.add( name, locale => {
 			const button = new ButtonView( locale );
@@ -121,7 +105,7 @@ export default class ImageResizeUI extends Plugin {
 	 *
 	 * @param {Array.<module:image/imageresizeui~resizeOption>} options An array of the configured options.
 	 */
-	_addDropdown( options ) {
+	_addDropdown( options, unit ) {
 		const editor = this.editor;
 		const t = editor.t;
 		const firstOption = options[ 0 ];
@@ -148,7 +132,7 @@ export default class ImageResizeUI extends Plugin {
 			dropdownView.bind( 'isOn' ).to( command );
 			dropdownView.bind( 'isEnabled' ).to( this );
 
-			addListToDropdown( dropdownView, prepareListDefinitions( options, command, this._resizeUnit ) );
+			addListToDropdown( dropdownView, prepareListDefinitions( options, command, unit ) );
 
 			dropdownView.listView.ariaLabel = t( 'Image resize list' );
 
