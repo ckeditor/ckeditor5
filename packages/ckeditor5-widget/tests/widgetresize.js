@@ -72,7 +72,7 @@ describe( 'WidgetResize', () => {
 			const unrelatedElement = document.createElement( 'div' );
 
 			editor.plugins.get( WidgetResize )._mouseDownListener( {}, {
-				target: unrelatedElement
+				domTarget: unrelatedElement
 			} );
 		} );
 
@@ -113,6 +113,16 @@ describe( 'WidgetResize', () => {
 
 			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, initialPointerPosition );
 			// No exception should be thrown.
+		} );
+
+		it( 'stops the event after starting resizing', () => {
+			const stopSpy = sinon.spy().named( 'stop' );
+
+			const domParts = getWidgetDomParts( editor, widget, 'top-right' );
+
+			resizerMouseSimulator.down( editor, domParts.resizeHandle, stopSpy );
+
+			expect( stopSpy.called ).to.be.equal( true );
 		} );
 	} );
 
