@@ -20,6 +20,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ImageResizeUI', () => {
 	let plugin, command, editor, editorElement;
+
 	const resizeOptions = [ {
 		name: 'imageResize:original',
 		label: 'Original size',
@@ -38,32 +39,30 @@ describe( 'ImageResizeUI', () => {
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
+	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor
+		editor = await ClassicTestEditor
 			.create( editorElement, {
 				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
 				image: {
 					resizeUnit: '%',
 					imageResizeOptions: resizeOptions
 				}
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				command = editor.commands.get( 'imageResize' );
-				plugin = editor.plugins.get( 'ImageResizeUI' );
 			} );
+
+		command = editor.commands.get( 'imageResize' );
+		plugin = editor.plugins.get( 'ImageResizeUI' );
 	} );
 
-	afterEach( () => {
+	afterEach( async () => {
 		if ( editorElement ) {
 			editorElement.remove();
 		}
 
 		if ( editor ) {
-			return editor.destroy();
+			await editor.destroy();
 		}
 	} );
 
@@ -72,7 +71,7 @@ describe( 'ImageResizeUI', () => {
 			expect( ImageResizeUI.pluginName ).to.equal( 'ImageResizeUI' );
 		} );
 
-		it( 'should be bound to `imageResize#isEnabled`', () => {
+		it( 'should be disabled when command is disabled', () => {
 			command.isEnabled = true;
 
 			expect( plugin.isEnabled ).to.be.true;
@@ -85,42 +84,52 @@ describe( 'ImageResizeUI', () => {
 
 	describe( 'init()', () => {
 		it( 'should have set "%" resize unit', () => {
-			expect( plugin._resizeUnit ).to.equal( '%' );
+			const unit = editor.config.get( 'image.resizeUnit' );
+
+			expect( unit ).to.equal( '%' );
 		} );
 
-		it( 'should have set "%" resize unit if not defined', () => {
-			return ClassicTestEditor
+		it( 'should have set "%" resize unit if not defined', async () => {
+			const editor = await ClassicTestEditor
 				.create( editorElement, {
 					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
 					image: {
 						imageResizeOptions: resizeOptions
 					}
-				} )
-				.then( newEditor => {
-					const plugin = newEditor.plugins.get( 'ImageResizeUI' );
-
-					expect( plugin._resizeUnit ).to.equal( '%' );
-
-					newEditor.destroy();
 				} );
+
+			const button = editor.ui.componentFactory.create( 'imageResize:50' );
+			const command = editor.commands.get( 'imageResize' );
+
+			command.isEnabled = true;
+
+			button.fire( 'execute' );
+
+			expect( command.value.width.includes( '%' ) ).to.be.true;
+
+			await editor.destroy();
 		} );
 
-		it( 'should have set "px" resize unit', () => {
-			return ClassicTestEditor
+		it( 'should have set "px" resize unit', async () => {
+			const editor = await ClassicTestEditor
 				.create( editorElement, {
 					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
 					image: {
 						resizeUnit: 'px',
 						imageResizeOptions: resizeOptions
 					}
-				} )
-				.then( newEditor => {
-					const plugin = newEditor.plugins.get( 'ImageResizeUI' );
-
-					expect( plugin._resizeUnit ).to.equal( 'px' );
-
-					newEditor.destroy();
 				} );
+
+			const button = editor.ui.componentFactory.create( 'imageResize:50' );
+			const command = editor.commands.get( 'imageResize' );
+
+			command.isEnabled = true;
+
+			button.fire( 'execute' );
+
+			expect( command.value.width.includes( 'px' ) ).to.be.true;
+
+			await editor.destroy();
 		} );
 
 		it( 'should have configured resize options', () => {
@@ -131,7 +140,7 @@ describe( 'ImageResizeUI', () => {
 	} );
 
 	describe( 'resize options dropdown', () => {
-		it( 'should be bound to `#isEnabled`', () => {
+		it( 'should be disabled when plugin is disabled', () => {
 			const dropdownView = editor.ui.componentFactory.create( 'imageResize' );
 
 			plugin.isEnabled = true;
@@ -161,8 +170,7 @@ describe( 'ImageResizeUI', () => {
 			const commandSpy = sinon.spy( command, 'execute' );
 			const resizeBy50Percent = dropdownView.listView.items._items[ 1 ].children._items[ 0 ];
 
-			// TODO
-			command.value = { width: resizeBy50Percent.commandValue };
+			command.isEnabled = true;
 
 			resizeBy50Percent.fire( 'execute' );
 
@@ -208,8 +216,7 @@ describe( 'ImageResizeUI', () => {
 			const command = editor.commands.get( 'imageResize' );
 			const commandSpy = sinon.spy( command, 'execute' );
 
-			// TODO
-			command.value = { width: buttonView.commandValue };
+			command.isEnabled = true;
 
 			buttonView.fire( 'execute' );
 
