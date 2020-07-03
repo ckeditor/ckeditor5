@@ -4,23 +4,22 @@
  */
 
 /**
- * @module image/imageresize
+ * @module image/imageresizeediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
-import ImageResizeCommand from './imageresize/imageresizecommand';
-
-import '../theme/imageresize.css';
+import ImageResizeCommand from './imageresizecommand';
 
 /**
- * The image resize plugin.
+ * The image resize feature.
  *
- * It adds a possibility to resize each image using handles.
+ * It adds a possibility to resize each image using handles or manually by
+ * {@link module:image/imageresize/ui/imageresizeui~ImageResizeUI} buttons.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ImageResize extends Plugin {
+export default class ImageResizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -32,7 +31,7 @@ export default class ImageResize extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'ImageResize';
+		return 'ImageResizeEditing';
 	}
 
 	/**
@@ -141,24 +140,3 @@ export default class ImageResize extends Plugin {
 			} );
 	}
 }
-
-/**
- * The available options are `'px'` or `'%'`.
- *
- * Determines the size unit applied to the resized image.
- *
- *		ClassicEditor
- *			.create( editorElement, {
- *				image: {
- *					resizeUnit: 'px'
- *				}
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
- *
- * This option is used by the {@link module:image/imageresize~ImageResize} feature.
- *
- * @default '%'
- * @member {String} module:image/image~ImageConfig#resizeUnit
- */

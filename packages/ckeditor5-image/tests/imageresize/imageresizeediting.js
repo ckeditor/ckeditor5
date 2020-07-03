@@ -9,12 +9,12 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Image from '../src/image';
-import ImageResize from '../src/imageresize';
-import ImageResizeCommand from '../src/imageresize/imageresizecommand';
-import ImageStyle from '../src/imagestyle';
-import ImageToolbar from '../src/imagetoolbar';
-import ImageTextAlternative from '../src/imagetextalternative';
+import Image from '../../src/image';
+import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
+import ImageResizeCommand from '../../src/imageresize/imageresizecommand';
+import ImageStyle from '../../src/imagestyle';
+import ImageToolbar from '../../src/imagetoolbar';
+import ImageTextAlternative from '../../src/imagetextalternative';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 
@@ -30,7 +30,7 @@ import {
 
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
 
-describe( 'ImageResize', () => {
+describe( 'ImageResizeEditing', () => {
 	// 100x50 black png image
 	const IMAGE_SRC_FIXTURE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
 		'aM3g14MGNJMXKiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiJysRFNMgH0RpujAAAAAElFTkSuQmCC';
@@ -61,6 +61,10 @@ describe( 'ImageResize', () => {
 		if ( editor ) {
 			return editor.destroy();
 		}
+	} );
+
+	it( 'should be named', () => {
+		expect( ImageResizeEditing.pluginName ).to.equal( 'ImageResizeEditing' );
 	} );
 
 	describe( 'conversion', () => {
@@ -195,7 +199,7 @@ describe( 'ImageResize', () => {
 
 	it( 'uses percents by default', async () => {
 		const localEditor = await createEditor( {
-			plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ]
+			plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeEditing ]
 		} );
 
 		const attachToSpy = sinon.spy( localEditor.plugins.get( WidgetResize ), 'attachTo' );
@@ -402,7 +406,7 @@ describe( 'ImageResize', () => {
 
 		beforeEach( async () => {
 			await createEditor( {
-				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize, ImageToolbar, ImageTextAlternative ],
+				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeEditing, ImageToolbar, ImageTextAlternative ],
 				image: {
 					toolbar: [ 'imageTextAlternative' ],
 					resizeUnit: 'px'
@@ -481,7 +485,7 @@ describe( 'ImageResize', () => {
 
 		return ClassicEditor
 			.create( editorElement, config || {
-				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResize ],
+				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeEditing ],
 				image: {
 					resizeUnit: 'px'
 				}

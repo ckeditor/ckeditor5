@@ -4,12 +4,12 @@
  */
 
 /**
- * @module image/imageresizeui
+ * @module image/imageresize/ui/imageresizeui
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import ImageResize from './imageresize';
+import ImageResize from '../imageresizeediting';
 import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import DropdownButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/dropdownbuttonview';
 
@@ -17,7 +17,7 @@ import Model from '@ckeditor/ckeditor5-ui/src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 // TODO
-import linkIcon from '../theme/icons/image_resize.svg';
+import linkIcon from '../../../theme/icons/image_resize.svg';
 
 /**
  * The `ImageResizeUI` plugin.
