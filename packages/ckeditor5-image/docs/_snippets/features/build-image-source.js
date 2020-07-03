@@ -8,7 +8,9 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 
 ClassicEditor.builtinPlugins.push( ImageResize );
+ClassicEditor.builtinPlugins.push( LinkImage );
 
 window.ClassicEditor = ClassicEditor;

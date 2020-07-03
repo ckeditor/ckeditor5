@@ -13,6 +13,7 @@ import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imag
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Input from '@ckeditor/ckeditor5-typing/src/input';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -203,6 +204,17 @@ describe( 'table clipboard', () => {
 				[ '20', '21', '22', '23' ],
 				[ '30', '31', '32', '33' ]
 			] ) );
+		} );
+
+		it( 'should not alter model.insertContent if a text node is inserted', async () => {
+			await editor.destroy();
+			await createEditor( [ Input ] );
+
+			setModelData( model, '<paragraph>foo[]</paragraph>' );
+
+			editor.execute( 'input', { text: 'bar' } );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foobar[]</paragraph>' );
 		} );
 
 		it( 'should not alter model.insertContent if mixed content is pasted (table + paragraph)', () => {

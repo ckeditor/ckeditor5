@@ -14,9 +14,10 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link module:image/imagetextalternative~ImageTextAlternative} adds support for adding text alternative.
 * {@link module:image/imageupload~ImageUpload} adds support for uploading dropped or pasted images (see: {@link features/image-upload Image upload}).
 * {@link module:image/imageresize~ImageResize} adds support for resizing images.
+* {@link module:link/linkimage~LinkImage} adds support for linking images.
 
 <info-box info>
-	All features listed above except the image resize are enabled by default in all WYSIWYG editor builds.
+	All features listed above except the image resize and image linking are enabled by default in all WYSIWYG editor builds.
 
 	Check the documentation of each subfeature to learn more about it.
 </info-box>
@@ -256,23 +257,39 @@ ClassicEditor
 
 {@snippet features/image-resize-px}
 
-### Future development
+## Linking images
 
-Resizing by dragging handles displayed over the image is the first option provided, but we consider implementing more with time. Some of the possible next steps include:
+The {@link module:link/linkimage~LinkImage} plugin adds support for linking images. Some use cases where this is needed are:
 
-* [Buttons such as "50%", "75%" and "100%" in the image toolbar](https://github.com/ckeditor/ckeditor5-image/issues/322), allowing the user to choose only from predefined widths.
-* [A traditional "width" input](https://github.com/ckeditor/ckeditor5-image/issues/319). Or an option to set both width and height separately.
-* [An option to restore the original image size](https://github.com/ckeditor/ckeditor5-image/issues/318).
-* [Limiting image resize](https://github.com/ckeditor/ckeditor5-image/issues/320) with min and max values.
+* Linking to a high-resolution version of an image.
+* Using images as thumbnails linking to an article or product page.
+* Creating banners linking to other pages.
 
-We count on your feedback. React with 👍 under the respective tickets or [report new ones](https://github.com/ckeditor/ckeditor5-image/issues) if you have different ideas.
+```html
+<figure class="image">
+	<a href="...">
+		<img src="..." alt="...">
+	</a>
+	<figcaption>Image caption</figcaption>
+</figure>
+```
+
+{@snippet features/image-link}
+
+### Enabling image linking
+
+The image linking feature is not enabled by default in any of the editor builds. In order to enable it, you need to load the {@link module:link/linkimage~LinkImage} plugin. Read more in the [Installation](#installation) section.
+
+<info-box info>
+	The {@link module:link/linkimage~LinkImage} plugin is available in the {@link api/link `@ckeditor/ckeditor5-link`} package.
+</info-box>
 
 ## Installation
 
 To add image features to your rich-text editor, install the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package:
 
-```bash
-npm install --save @ckeditor/ckeditor5-image
+```plaintext
+npm install --save @ckeditor/ckeditor5-image @ckeditor/ckeditor5-link
 ```
 
 And add the plugins that you need to your plugin list. You also need to set the image toolbar items.
@@ -283,12 +300,20 @@ import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize ],
+		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
 		image: {
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:full', 'imageStyle:side' ]
+			toolbar: [
+				'imageStyle:full',
+				'imageStyle:side',
+				'|',
+				'imageTextAlternative',
+				'|',
+				'linkImage'
+			]
 		}
 	} )
 	.then( ... )

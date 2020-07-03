@@ -12,9 +12,9 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Uighur (https://www.transifex.com/ckeditor/teams/11143/ug/)\n"
+"Language-Team: Uyghur (https://www.transifex.com/ckeditor/teams/11143/ug/)\n"
 "Language: ug\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Toolbar button tooltip for the Unlink feature."
 msgid "Unlink"
@@ -27,6 +27,10 @@ msgstr "ئۇلاش"
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
 msgstr "ئۇلاش ئادىرسى"
+
+msgctxt "Label for the image link button."
+msgid "Link image"
+msgstr ""
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
