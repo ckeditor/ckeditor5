@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import ImageResizeEditing from '../imageresizeediting';
 import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import DropdownButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/dropdownbuttonview';
 
@@ -26,6 +27,13 @@ import linkIcon from '../../../theme/icons/image_resize.svg';
  * @extends module:core/plugin~Plugin
  */
 export default class ImageResizeUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ ImageResizeEditing ];
+	}
+
 	/**
 	 * @inheritDoc
 	 */
