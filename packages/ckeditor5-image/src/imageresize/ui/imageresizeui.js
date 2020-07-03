@@ -9,7 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import ImageResize from '../imageresizeediting';
 import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import DropdownButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/dropdownbuttonview';
 
@@ -30,13 +29,6 @@ export default class ImageResizeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
-		return [ ImageResize ];
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	static get pluginName() {
 		return 'ImageResizeUI';
 	}
@@ -46,9 +38,13 @@ export default class ImageResizeUI extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const options = editor.config.get( 'image.imageResizeOptions' );
+		const options = editor.config.get( 'image.resizeOptions' );
 		const command = editor.commands.get( 'imageResize' );
 		const resizeUnit = editor.config.get( 'image.resizeUnit' ) || '%';
+
+		if ( !options ) {
+			return;
+		}
 
 		this.bind( 'isEnabled' ).to( command );
 
@@ -80,7 +76,7 @@ export default class ImageResizeUI extends Plugin {
 				label: t( label ),
 				withText: true,
 				icon: linkIcon,
-				tooltip: t( `Resize image to ${ parsedValue }` ),
+				tooltip: t( 'Resize image to' ) + ' ' + parsedValue,
 				isToggleable: true,
 				commandValue: parsedValue
 			} );
