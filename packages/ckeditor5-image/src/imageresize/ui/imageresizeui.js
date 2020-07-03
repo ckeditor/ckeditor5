@@ -80,7 +80,7 @@ export default class ImageResizeUI extends Plugin {
 				label: t( label ),
 				withText: true,
 				icon: linkIcon,
-				tooltip: t( 'Resize Image' ),
+				tooltip: t( `Resize image to ${ parsedValue }` ),
 				isToggleable: true,
 				commandValue: parsedValue
 			} );
@@ -118,7 +118,7 @@ export default class ImageResizeUI extends Plugin {
 			const dropdownButton = dropdownView.buttonView;
 
 			dropdownButton.set( {
-				tooltip: t( 'Resize Image' ),
+				tooltip: t( 'Resize image' ),
 				icon: linkIcon,
 				commandValue: firstOption.value,
 				isToggleable: true,
