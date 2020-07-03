@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ImageResize from '../../src/imageresize/imageresize';
+import ImageResize from '../../src/imageresize';
 import ImageResizeUI from '../../src/imageresize/ui/imageresizeui';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 

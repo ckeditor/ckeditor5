@@ -48,7 +48,7 @@ describe( 'ImageResizeUI', () => {
 				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
 				image: {
 					resizeUnit: '%',
-					imageResizeOptions: resizeOptions
+					resizeOptions
 				}
 			} );
 
@@ -94,7 +94,7 @@ describe( 'ImageResizeUI', () => {
 				.create( editorElement, {
 					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
 					image: {
-						imageResizeOptions: resizeOptions
+						resizeOptions
 					}
 				} );
 
@@ -116,7 +116,7 @@ describe( 'ImageResizeUI', () => {
 					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
 					image: {
 						resizeUnit: 'px',
-						imageResizeOptions: resizeOptions
+						resizeOptions
 					}
 				} );
 
@@ -133,9 +133,26 @@ describe( 'ImageResizeUI', () => {
 		} );
 
 		it( 'should have configured resize options', () => {
-			const imageResizeOptions = editor.config.get( 'image.imageResizeOptions' );
+			const resizeOptions = editor.config.get( 'image.resizeOptions' );
 
-			expect( imageResizeOptions.length ).to.equal( 3 );
+			expect( resizeOptions.length ).to.equal( 3 );
+		} );
+
+		it( 'should not register a dropdown or buttons if no resize options passed', async () => {
+			const editor = await ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
+					image: {
+						resizeUnit: 'px'
+					}
+				} );
+
+			const resizeOptions = editor.config.get( 'image.resizeOptions' );
+
+			expect( resizeOptions ).to.be.undefined;
+			expect( editor.ui.componentFactory.has( 'imageResize' ) ).to.be.false;
+
+			await editor.destroy();
 		} );
 	} );
 

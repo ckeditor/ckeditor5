@@ -7,7 +7,7 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ImageResizeUI from '../../src/imageresize/ui/imageresizeui';
+import ImageResize from '../../src/imageresize';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
@@ -17,7 +17,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 const commonConfig = {
 	plugins: [
 		ArticlePluginSet,
-		ImageResizeUI,
+		ImageResize,
 		Indent,
 		IndentBlock,
 		EasyImage
@@ -26,7 +26,7 @@ const commonConfig = {
 		'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo', 'outdent', 'indent' ],
 	image: {
 		resizeUnit: '%',
-		imageResizeOptions: [
+		resizeOptions: [
 			{
 				name: 'imageResize:original',
 				label: 'Original size',
@@ -59,7 +59,7 @@ const commonConfig = {
 
 const imageConfig1 = {
 	resizeUnit: '%',
-	imageResizeOptions: [
+	resizeOptions: [
 		{
 			name: 'imageResize:original',
 			label: 'Original size',
@@ -100,7 +100,7 @@ ClassicEditor
 
 const imageConfig2 = {
 	resizeUnit: '%',
-	imageResizeOptions: [
+	resizeOptions: [
 		{
 			name: 'imageResize:original',
 			label: 'Original size',
