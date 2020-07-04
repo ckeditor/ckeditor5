@@ -7,17 +7,6 @@
 	--ck-todo-list-checkmark-size: 16px;
 }
 
-/*
- * Inside editing view <label> elements are not wrapping description of an item.
- */
-.ck-editor__editable .todo-list {
-	& .todo-list__label__description,
-	& .todo-list__label {
-		vertical-align: middle;
-		display: inline-block;
-	}
-}
-
 .ck-content .todo-list {
 	list-style: none;
 

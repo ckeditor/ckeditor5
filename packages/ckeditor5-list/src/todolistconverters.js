@@ -22,6 +22,7 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
  * @param {module:engine/model/model~Model} model Model instance.
+ * @param {Function} onCheckboxChecked Callback function.
  * @returns {Function} Returns a conversion callback.
  */
 export function modelViewInsertion( model, onCheckboxChecked ) {
@@ -88,12 +89,14 @@ export function dataModelViewInsertion( model ) {
 			return;
 		}
 
-		consumable.consume( data.item, 'insert' );
-		consumable.consume( data.item, 'attribute:listType' );
-		consumable.consume( data.item, 'attribute:listIndent' );
+		const modelItem = data.item;
+
+		consumable.consume( modelItem, 'insert' );
+		consumable.consume( modelItem, 'attribute:listType' );
+		consumable.consume( modelItem, 'attribute:listIndent' );
+		consumable.consume( modelItem, 'attribute:todoListChecked' );
 
 		const viewWriter = conversionApi.writer;
-		const modelItem = data.item;
 		const viewItem = generateLiInUl( modelItem, conversionApi );
 
 		viewWriter.addClass( 'todo-list', viewItem.parent );
@@ -111,9 +114,8 @@ export function dataModelViewInsertion( model ) {
 			class: 'todo-list__label__description'
 		} );
 
-		if ( data.item.getAttribute( 'todoListChecked' ) ) {
+		if ( modelItem.getAttribute( 'todoListChecked' ) ) {
 			viewWriter.setAttribute( 'checked', 'checked', checkbox );
-			viewWriter.addClass( 'todo-list__label', label );
 		}
 
 		viewWriter.insert( viewWriter.createPositionAt( viewItem, 0 ), label );
@@ -175,6 +177,7 @@ export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param {Function} onCheckedChange Callback fired after clicking the checkbox UI element.
+ * @param {module:engine/view/view~View} view Editing view controller.
  * @returns {Function} Returns a conversion callback.
  */
 export function modelViewChangeType( onCheckedChange, view ) {
