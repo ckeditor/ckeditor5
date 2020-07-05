@@ -89,7 +89,12 @@ describe( 'LinkEditing', () => {
 				'<paragraph>foo <$text linkHref="url">li{}nk</$text> baz</paragraph>'
 			);
 
-			editor.execute( 'enter' );
+			model.change( writer => {
+				const splitPos = model.document.selection.getFirstRange().start;
+
+				writer.split( splitPos );
+				writer.setSelection( splitPos.parent.nextSibling, 0 );
+			} );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>foo <$text linkHref="url">li</$text></paragraph>' +
