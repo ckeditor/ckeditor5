@@ -28,18 +28,29 @@ const includeDotFiles = {
 	dot: true
 };
 
-glob( '!(build|coverage|node_modules|packages)/**', updateYear );
+glob( '!(build|coverage|node_modules|external)/**', updateYear );
 
 // LICENSE.md, .eslintrc.js, etc.
 glob( '*', includeDotFiles, updateYear );
 
 function updateYear( err, fileNames ) {
 	const filteredFileNames = fileNames.filter( fileName => {
-		// Filter out stuff from ckeditor5-utils/src/lib.
+		// Filter out nested `node_modules`.
+		if ( minimatch( fileName, '**/node_modules/**' ) ) {
+			return false;
+		}
+
+		// Filter out stuff from `src/lib/`.
 		if ( minimatch( fileName, '**/src/lib/**' ) ) {
 			return false;
 		}
 
+		// Filter out builds.
+		if ( minimatch( fileName, '**/ckeditor5-build-*/build/**' ) ) {
+			return false;
+		}
+
+		// Filter out directories.
 		if ( fs.statSync( fileName ).isDirectory() ) {
 			return false;
 		}

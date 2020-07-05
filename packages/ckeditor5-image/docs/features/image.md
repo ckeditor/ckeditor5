@@ -259,7 +259,11 @@ ClassicEditor
 
 ## Linking images
 
-The {@link module:link/linkimage~LinkImage} plugin adds support for linking images:
+The {@link module:link/linkimage~LinkImage} plugin adds support for linking images. Some use cases where this is needed are:
+
+* Linking to a high-resolution version of an image.
+* Using images as thumbnails linking to an article or product page.
+* Creating banners linking to other pages.
 
 ```html
 <figure class="image">
@@ -284,7 +288,7 @@ The image linking feature is not enabled by default in any of the editor builds.
 
 To add image features to your rich-text editor, install the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package:
 
-```bash
+```plaintext
 npm install --save @ckeditor/ckeditor5-image @ckeditor/ckeditor5-link
 ```
 
