@@ -18,7 +18,7 @@ import TableClipboard from '../src/tableclipboard';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { modelTable } from './_utils/utils';
+import { assertSelectedCells, modelTable } from './_utils/utils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -227,7 +227,6 @@ describe( 'TableSelection - integration', () => {
 			await setupEditor( [ UndoEditing ] );
 		} );
 
-		// See https://github.com/ckeditor/ckeditor5/issues/6634.
 		it( 'works with merge cells command', () => {
 			setModelData( editor.model, modelTable( [
 				[ '00', '01' ],
@@ -248,10 +247,15 @@ describe( 'TableSelection - integration', () => {
 
 			editor.execute( 'undo' );
 
-			assertEqualMarkup( getModelData( model ), modelTable( [
-				[ '[]00', '01' ],
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ '00', '01' ],
 				[ '10', '11' ]
 			] ) );
+
+			assertSelectedCells( model, [
+				[ 1, 1 ],
+				[ 0, 0 ]
+			] );
 		} );
 	} );
 

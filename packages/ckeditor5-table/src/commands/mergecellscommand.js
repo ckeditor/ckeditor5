@@ -48,11 +48,6 @@ export default class MergeCellsCommand extends Command {
 			// All cells will be merged into the first one.
 			const firstTableCell = selectedTableCells.shift();
 
-			// Set the selection in cell that other cells are being merged to prevent model-selection-range-intersects error in undo.
-			// See https://github.com/ckeditor/ckeditor5/issues/6634.
-			// May be fixed by: https://github.com/ckeditor/ckeditor5/issues/6639.
-			writer.setSelection( firstTableCell, 0 );
-
 			// Update target cell dimensions.
 			const { mergeWidth, mergeHeight } = getMergeDimensions( firstTableCell, selectedTableCells, tableUtils );
 			updateNumericAttribute( 'colspan', mergeWidth, firstTableCell, writer );
