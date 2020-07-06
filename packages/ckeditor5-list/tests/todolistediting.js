@@ -1093,13 +1093,13 @@ describe( 'TodoListEditing', () => {
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 			} );
 
-			it( 'should do nothing when list item is a first block element in the root', () => {
+			it( 'should prevent default handler when list item is a first block element in the root', () => {
 				setModelData( model, '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
 
 				viewDoc.fire( 'keydown', domEvtDataStub );
 
-				sinon.assert.notCalled( domEvtDataStub.preventDefault );
-				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
 				assertEqualMarkup( getModelData( model ), '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
 			} );

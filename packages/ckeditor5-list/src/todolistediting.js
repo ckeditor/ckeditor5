@@ -21,6 +21,7 @@ import {
 	modelViewChangeType,
 	modelViewInsertion
 } from './todolistconverters';
+import { getLocalizedArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * The engine of the to-do list feature. It handles creating, editing and removing to-do lists and their items.
@@ -104,10 +105,19 @@ export default class TodoListEditing extends Plugin {
 		// <blockquote><p>Foo{}</p></blockquote>
 		// <ul><li><checkbox/>Bar</li></ul>
 		//
-		// Note: When content language direction is RTL, the behaviour is mirrored.
-		const localizedJumpOverCheckmarkKey = editor.locale.contentLanguageDirection === 'ltr' ? 'arrowleft' : 'arrowright';
+		this.listenTo( editing.view.document, 'keydown', ( eventInfo, domEventData ) => {
+			const direction = getLocalizedArrowKeyCodeDirection( domEventData.keyCode, editor.locale.contentLanguageDirection );
 
-		editor.keystrokes.set( localizedJumpOverCheckmarkKey, ( evt, stop ) => jumpOverCheckmarkOnSideArrowKeyPress( stop, model ) );
+			if ( direction != 'left' ) {
+				return;
+			}
+
+			if ( jumpOverCheckmarkOnSideArrowKeyPress( model ) ) {
+				domEventData.preventDefault();
+				domEventData.stopPropagation();
+				eventInfo.stop();
+			}
+		} );
 
 		// Toggle check state of selected to-do list items on keystroke.
 		editor.keystrokes.set( 'Ctrl+space', () => editor.execute( 'todoListCheck' ) );
@@ -176,9 +186,9 @@ export default class TodoListEditing extends Plugin {
 // moving the selection to the left/right (LTR/RTL).
 //
 // @private
-// @param {Function} stopKeyEvent
 // @param {module:engine/model/model~Model} model
-function jumpOverCheckmarkOnSideArrowKeyPress( stopKeyEvent, model ) {
+// @returns {Boolean} True if event was handled.
+function jumpOverCheckmarkOnSideArrowKeyPress( model ) {
 	const schema = model.schema;
 	const selection = model.document.selection;
 
@@ -193,8 +203,11 @@ function jumpOverCheckmarkOnSideArrowKeyPress( stopKeyEvent, model ) {
 		const newRange = schema.getNearestSelectionRange( model.createPositionBefore( parent ), 'backward' );
 
 		if ( newRange ) {
-			stopKeyEvent();
 			model.change( writer => writer.setSelection( newRange ) );
 		}
+
+		return true;
 	}
+
+	return false;
 }
