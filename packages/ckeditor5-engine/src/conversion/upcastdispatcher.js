@@ -163,6 +163,8 @@ export default class UpcastDispatcher {
 		this.conversionApi.splitToAllowedParent = this._splitToAllowedParent.bind( this );
 		this.conversionApi.getSplitParts = this._getSplitParts.bind( this );
 		this.conversionApi.getCursorParent = this._getCursorParent.bind( this );
+		this.conversionApi.safeInsert = this._safeInsert.bind( this );
+		this.conversionApi.updateConversionData = this._updateConversionResult.bind( this );
 	}
 
 	/**
@@ -280,6 +282,51 @@ export default class UpcastDispatcher {
 		}
 
 		return { modelRange, modelCursor: nextModelCursor };
+	}
+
+	_safeInsert( modelElement, position ) {
+		// Find allowed parent for element that we are going to insert.
+		// If current parent does not allow to insert element but one of the ancestors does
+		// then split nodes to allowed parent.
+		const splitResult = this._splitToAllowedParent( modelElement, position );
+
+		// When there is no split result it means that we can't insert element to model tree, so let's skip it.
+		if ( !splitResult ) {
+			return false;
+		}
+
+		// Insert element on allowed position.
+		this.conversionApi.writer.insert( modelElement, splitResult.position );
+
+		return true;
+	}
+
+	_updateConversionResult( modelElement, data ) {
+		const parts = this._getSplitParts( modelElement );
+
+		const writer = this.conversionApi.writer;
+
+		// Set conversion result range.
+		data.modelRange = writer.createRange(
+			writer.createPositionBefore( modelElement ),
+			writer.createPositionAfter( parts[ parts.length - 1 ] )
+		);
+
+		const savedCursorParent = this._getCursorParent( modelElement );
+
+		// Now we need to check where the `modelCursor` should be.
+		if ( savedCursorParent ) {
+			// If we split parent to insert our element then we want to continue conversion in the new part of the split parent.
+			//
+			// before: <allowed><notAllowed>foo[]</notAllowed></allowed>
+			// after:  <allowed><notAllowed>foo</notAllowed> <converted></converted> <notAllowed>[]</notAllowed></allowed>
+
+			data.modelCursor = writer.createPositionAt( savedCursorParent, 0 );
+		} else {
+			// Otherwise just continue after inserted element.
+
+			data.modelCursor = data.modelRange.end;
+		}
 	}
 
 	/**

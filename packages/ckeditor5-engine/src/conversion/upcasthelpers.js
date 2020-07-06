@@ -544,11 +544,8 @@ function prepareToElementConverter( config ) {
 	const matcher = new Matcher( config.view );
 
 	return ( evt, data, conversionApi ) => {
-		// If `config.view` has not been passed do not try matching. In this case, the converter should fire for all elements.
-		// This will be usually just one pattern but we support matchers with many patterns too.
 		const matcherResult = matcher.match( data.viewItem );
 
-		// If there is no match, this callback should not do anything.
 		if ( !matcherResult ) {
 			return;
 		}
@@ -558,31 +555,23 @@ function prepareToElementConverter( config ) {
 		// Force consuming element's name.
 		match.name = true;
 
-		// When element was already consumed then skip it.
 		if ( !conversionApi.consumable.test( data.viewItem, match ) ) {
 			return;
 		}
 
-		// Create model element basing on config.
 		const modelElement = getModelElement( config.model, data.viewItem, conversionApi.writer );
 
-		// Do not convert if element building function returned falsy value.
 		if ( !modelElement ) {
 			return;
 		}
 
-		if ( !safeInsert( conversionApi, modelElement, data.modelCursor ) ) {
+		if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
 			return;
 		}
 
-		// Convert children and insert to element.
-		conversionApi.convertChildren( data.viewItem, modelElement );
-
-		// Consume appropriate value from consumable values list.
 		conversionApi.consumable.consume( data.viewItem, match );
-
-		// ---- 7. Update conversion result
-		updateConversionData( conversionApi, modelElement, data );
+		conversionApi.convertChildren( data.viewItem, modelElement );
+		conversionApi.updateConversionData( modelElement, data );
 	};
 }
 
@@ -760,47 +749,4 @@ function normalizeToMarkerConfig( config ) {
 
 		return modelWriter.createElement( '$marker', { 'data-name': markerName } );
 	};
-}
-
-function safeInsert( conversionApi, modelElement, position ) {
-	// Find allowed parent for element that we are going to insert.
-	// If current parent does not allow to insert element but one of the ancestors does
-	// then split nodes to allowed parent.
-	const splitResult = conversionApi.splitToAllowedParent( modelElement, position );
-
-	// When there is no split result it means that we can't insert element to model tree, so let's skip it.
-	if ( !splitResult ) {
-		return false;
-	}
-
-	// Insert element on allowed position.
-	conversionApi.writer.insert( modelElement, splitResult.position );
-
-	return true;
-}
-
-function updateConversionData( conversionApi, modelElement, data ) {
-	const parts = conversionApi.getSplitParts( modelElement );
-
-	// Set conversion result range.
-	data.modelRange = conversionApi.writer.createRange(
-		conversionApi.writer.createPositionBefore( modelElement ),
-		conversionApi.writer.createPositionAfter( parts[ parts.length - 1 ] )
-	);
-
-	const savedCursorParent = conversionApi.getCursorParent( modelElement );
-
-	// Now we need to check where the `modelCursor` should be.
-	if ( savedCursorParent ) {
-		// If we split parent to insert our element then we want to continue conversion in the new part of the split parent.
-		//
-		// before: <allowed><notAllowed>foo[]</notAllowed></allowed>
-		// after:  <allowed><notAllowed>foo</notAllowed> <converted></converted> <notAllowed>[]</notAllowed></allowed>
-
-		data.modelCursor = conversionApi.writer.createPositionAt( savedCursorParent, 0 );
-	} else {
-		// Otherwise just continue after inserted element.
-
-		data.modelCursor = data.modelRange.end;
-	}
 }
