@@ -93,15 +93,23 @@ export default class BaseCommand extends Command {
 		const selectionRanges = [];
 
 		// Transform all ranges from the restored selection.
-		for ( const range of ranges ) {
-			const transformed = transformSelectionRange( range, operations );
+		const transformedRangeGroups = ranges.map( range => range.getTransformedByOperations( operations ) );
+		const allRanges = transformedRangeGroups.flat();
+
+		for ( const rangeGroup of transformedRangeGroups ) {
+			// While transforming there could appear ranges that are contained by other ranges, we shall ignore them.
+			const transformed = rangeGroup.filter( range => !isRangeContainedByAnyOtherRange( range, allRanges ) );
+
+			// After the range got transformed, we have an array of ranges. Some of those
+			// ranges may be "touching" -- they can be next to each other and could be merged.
+			normalizeRanges( transformed );
 
 			// For each `range` from `ranges`, we take only one transformed range.
 			// This is because we want to prevent situation where single-range selection
 			// got transformed to multi-range selection. We will take the first range that
 			// is not in the graveyard.
 			const newRange = transformed.find(
-				range => range.start.root != document.graveyard
+				range => range.root != document.graveyard
 			);
 
 			// `transformedRange` might be `undefined` if transformed range ended up in graveyard.
@@ -109,6 +117,8 @@ export default class BaseCommand extends Command {
 				selectionRanges.push( newRange );
 			}
 		}
+
+		// @if CK_DEBUG_ENGINE // console.log( `Restored selection by undo: ${ selectionRanges.join( ', ' ) }` );
 
 		// `selectionRanges` may be empty if all ranges ended up in graveyard. If that is the case, do not restore selection.
 		if ( selectionRanges.length ) {
@@ -167,28 +177,25 @@ export default class BaseCommand extends Command {
 	}
 }
 
-// Transforms given range `range` by given `operations`.
-// Returns an array containing one or more ranges, which are result of the transformation.
-function transformSelectionRange( range, operations ) {
-	const transformed = range.getTransformedByOperations( operations );
+// Normalizes list of ranges by joining intersecting or "touching" ranges.
+//
+// @param {Array.<module:engine/model/range~Range>} ranges
+//
+function normalizeRanges( ranges ) {
+	ranges.sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
 
-	// After `range` got transformed, we have an array of ranges. Some of those
-	// ranges may be "touching" -- they can be next to each other and could be merged.
-	// First, we have to sort those ranges to assure that they are in order.
-	transformed.sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
+	for ( let i = 1; i < ranges.length; i++ ) {
+		const previousRange = ranges[ i - 1 ];
+		const joinedRange = previousRange.getJoined( ranges[ i ], true );
 
-	// Then, we check if two consecutive ranges are touching.
-	for ( let i = 1; i < transformed.length; i++ ) {
-		const a = transformed[ i - 1 ];
-		const b = transformed[ i ];
-
-		if ( a.end.isTouching( b.start ) ) {
-			// And join them together if they are.
-			a.end = b.end;
-			transformed.splice( i, 1 );
+		if ( joinedRange ) {
+			// Replace the ranges on the list with the new joined range.
 			i--;
+			ranges.splice( i, 2, joinedRange );
 		}
 	}
+}
 
-	return transformed;
+function isRangeContainedByAnyOtherRange( range, ranges ) {
+	return ranges.some( otherRange => otherRange !== range && otherRange.containsRange( range, true ) );
 }
