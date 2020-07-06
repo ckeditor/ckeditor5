@@ -107,8 +107,7 @@ export default class Resizer {
 
 		editingView.change( writer => {
 			const viewResizerWrapper = writer.createUIElement( 'div', {
-				class: 'ck ck-reset_all ck-widget__resizer',
-				'data-cke-ignore-events': true
+				class: 'ck ck-reset_all ck-widget__resizer'
 			}, function( domDocument ) {
 				const domElement = this.toDomElement( domDocument );
 
