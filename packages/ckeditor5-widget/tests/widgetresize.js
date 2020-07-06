@@ -72,7 +72,8 @@ describe( 'WidgetResize', () => {
 			const unrelatedElement = document.createElement( 'div' );
 
 			editor.plugins.get( WidgetResize )._mouseDownListener( {}, {
-				target: unrelatedElement
+				domTarget: unrelatedElement,
+				preventDefault: sinon.spy()
 			} );
 		} );
 
@@ -113,6 +114,26 @@ describe( 'WidgetResize', () => {
 
 			resizerMouseSimulator.dragTo( editor, domParts.resizeHandle, initialPointerPosition );
 			// No exception should be thrown.
+		} );
+
+		it( 'stops the event after starting resizing', () => {
+			const stopSpy = sinon.spy().named( 'stop' );
+
+			const domParts = getWidgetDomParts( editor, widget, 'top-right' );
+
+			resizerMouseSimulator.down( editor, domParts.resizeHandle, { stop: stopSpy } );
+
+			expect( stopSpy.called ).to.be.equal( true );
+		} );
+
+		it( 'prevents default action after starting resizing', () => {
+			const preventDefaultSpy = sinon.spy().named( 'preventDefault' );
+
+			const domParts = getWidgetDomParts( editor, widget, 'top-right' );
+
+			resizerMouseSimulator.down( editor, domParts.resizeHandle, { preventDefault: preventDefaultSpy } );
+
+			expect( preventDefaultSpy.called ).to.be.equal( true );
 		} );
 	} );
 
