@@ -85,11 +85,11 @@ export default class TableMouse extends Plugin {
 
 				domEventData.preventDefault();
 			}
-		}, { priority: 'low' } );
+		} );
 
 		this.listenTo( editor.editing.view.document, 'mouseup', () => {
 			blockSelectionChange = false;
-		}, { priority: 'low' } );
+		} );
 
 		// We need to ignore a `selectionChange` event that is fired after we render our new table cells selection.
 		// When downcasting table cells selection to the view, we put the view selection in the last selected cell
@@ -145,7 +145,7 @@ export default class TableMouse extends Plugin {
 			}
 
 			anchorCell = this._getModelTableCellFromDomEvent( domEventData );
-		}, { priority: 'low' } );
+		} );
 
 		this.listenTo( editor.editing.view.document, 'mousemove', ( evt, domEventData ) => {
 			if ( !domEventData.domEvent.buttons ) {
@@ -177,14 +177,14 @@ export default class TableMouse extends Plugin {
 			tableSelection.setCellSelection( anchorCell, targetCell );
 
 			domEventData.preventDefault();
-		}, { priority: 'low' } );
+		} );
 
 		this.listenTo( editor.editing.view.document, 'mouseup', () => {
 			beganCellSelection = false;
 			blockSelectionChange = false;
 			anchorCell = null;
 			targetCell = null;
-		}, { priority: 'low' } );
+		} );
 
 		// See the explanation in `_enableShiftClickSelection()`.
 		this.listenTo( editor.editing.view.document, 'selectionChange', evt => {

@@ -72,7 +72,8 @@ describe( 'WidgetResize', () => {
 			const unrelatedElement = document.createElement( 'div' );
 
 			editor.plugins.get( WidgetResize )._mouseDownListener( {}, {
-				domTarget: unrelatedElement
+				domTarget: unrelatedElement,
+				preventDefault: sinon.spy()
 			} );
 		} );
 
@@ -120,9 +121,19 @@ describe( 'WidgetResize', () => {
 
 			const domParts = getWidgetDomParts( editor, widget, 'top-right' );
 
-			resizerMouseSimulator.down( editor, domParts.resizeHandle, stopSpy );
+			resizerMouseSimulator.down( editor, domParts.resizeHandle, { stop: stopSpy } );
 
 			expect( stopSpy.called ).to.be.equal( true );
+		} );
+
+		it( 'prevents default action after starting resizing', () => {
+			const preventDefaultSpy = sinon.spy().named( 'preventDefault' );
+
+			const domParts = getWidgetDomParts( editor, widget, 'top-right' );
+
+			resizerMouseSimulator.down( editor, domParts.resizeHandle, { preventDefault: preventDefaultSpy } );
+
+			expect( preventDefaultSpy.called ).to.be.equal( true );
 		} );
 	} );
 
