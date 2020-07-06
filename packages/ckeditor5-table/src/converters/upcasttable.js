@@ -41,15 +41,10 @@ export default function upcastTable() {
 
 			const table = conversionApi.writer.createElement( 'table', attributes );
 
-			// Insert element on allowed position.
-			const splitResult = conversionApi.splitToAllowedParent( table, data.modelCursor );
-
-			// When there is no split result it means that we can't insert element to model tree, so let's skip it.
-			if ( !splitResult ) {
+			if ( !conversionApi.safeInsert( table, data.modelCursor ) ) {
 				return;
 			}
 
-			conversionApi.writer.insert( table, splitResult.position );
 			conversionApi.consumable.consume( viewTable, { name: true } );
 
 			// Upcast table rows in proper order (heading rows first).
@@ -63,29 +58,7 @@ export default function upcastTable() {
 				createEmptyTableCell( conversionApi.writer, conversionApi.writer.createPositionAt( row, 'end' ) );
 			}
 
-			// Set conversion result range.
-			data.modelRange = conversionApi.writer.createRange(
-				// Range should start before inserted element
-				conversionApi.writer.createPositionBefore( table ),
-				// Should end after but we need to take into consideration that children could split our
-				// element, so we need to move range after parent of the last converted child.
-				// before: <allowed>[]</allowed>
-				// after: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
-				conversionApi.writer.createPositionAfter( table )
-			);
-
-			// Now we need to check where the modelCursor should be.
-			// If we had to split parent to insert our element then we want to continue conversion inside split parent.
-			//
-			// before: <allowed><notAllowed>[]</notAllowed></allowed>
-			// after:  <allowed><notAllowed></notAllowed><converted></converted><notAllowed>[]</notAllowed></allowed>
-			if ( splitResult.cursorParent ) {
-				data.modelCursor = conversionApi.writer.createPositionAt( splitResult.cursorParent, 0 );
-
-				// Otherwise just continue after inserted element.
-			} else {
-				data.modelCursor = data.modelRange.end;
-			}
+			conversionApi.updateConversionResult( table, data );
 		} );
 	};
 }
