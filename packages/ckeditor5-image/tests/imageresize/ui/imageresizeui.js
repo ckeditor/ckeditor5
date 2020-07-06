@@ -132,12 +132,6 @@ describe( 'ImageResizeUI', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should have configured resize options', () => {
-			const resizeOptions = editor.config.get( 'image.resizeOptions' );
-
-			expect( resizeOptions.length ).to.equal( 3 );
-		} );
-
 		it( 'should not register a dropdown or buttons if no resize options passed', async () => {
 			const editor = await ClassicTestEditor
 				.create( editorElement, {
