@@ -833,6 +833,21 @@ describe( 'TodoListEditing', () => {
 
 			expect( editor.getData() ).to.equal( '<test>Foo</test>' );
 		} );
+
+		it( 'should handle links inside to-do list item', () => {
+			setModelData( model, '<listItem listType="todo" listIndent="0"><$text linkHref="foo">Foo</$text> Bar</listItem>' );
+
+			expect( editor.getData() ).to.equal(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<label class="todo-list__label">' +
+							'<input type="checkbox" disabled="disabled">' +
+							'<span class="todo-list__label__description"><a href="foo">Foo</a> Bar</span>' +
+						'</label>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
 	} );
 
 	describe( 'data pipeline v -> m', () => {
