@@ -76,7 +76,7 @@ export default class WidgetResize extends Plugin {
 
 		this._observer = Object.create( DomEmitterMixin );
 
-		this.listenTo( this.editor.editing.view.document, 'mousedown', this._mouseDownListener.bind( this ), { priority: 'high' } );
+		this.listenTo( this.editor.editing.view.document, 'mousedown', this._mouseDownListener.bind( this ) );
 
 		this._observer.listenTo( domDocument, 'mousemove', this._mouseMoveListener.bind( this ) );
 		this._observer.listenTo( domDocument, 'mouseup', this._mouseUpListener.bind( this ) );

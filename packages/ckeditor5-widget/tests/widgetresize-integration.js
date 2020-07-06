@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, Event */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
@@ -47,7 +47,8 @@ describe( 'WidgetResize - integration', () => {
 		const squareDomElement = view.domConverter.mapViewToDom( resizeSquareUI ).querySelector( '.ck-widget__resizer__handle-top-left' );
 
 		viewDocument.on( 'mousedown', eventSpy );
-		viewDocument.fire( 'mousedown', { domTarget: squareDomElement } );
+
+		squareDomElement.dispatchEvent( new Event( 'mousedown' ) );
 
 		expect( eventSpy.called ).to.equal( false );
 	} );
