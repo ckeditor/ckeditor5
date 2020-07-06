@@ -16,9 +16,6 @@ import DropdownButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/dropd
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
-// TODO
-import linkIcon from '../../../theme/icons/image_resize.svg';
-
 /**
  * The `ImageResizeUI` plugin.
  *
@@ -83,7 +80,6 @@ export default class ImageResizeUI extends Plugin {
 			button.set( {
 				label: t( label ),
 				withText: true,
-				icon: linkIcon,
 				tooltip: t( 'Resize image to' ) + ' ' + parsedValue,
 				isToggleable: true,
 				commandValue: parsedValue
@@ -123,7 +119,6 @@ export default class ImageResizeUI extends Plugin {
 
 			dropdownButton.set( {
 				tooltip: t( 'Resize image' ),
-				icon: linkIcon,
 				commandValue: firstOption.value,
 				isToggleable: true,
 				label: firstOption.label,
