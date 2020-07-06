@@ -275,7 +275,7 @@ export function mapModelToViewPosition( view ) {
 		const descSpan = findDescription( viewLi, view );
 
 		if ( descSpan ) {
-			data.viewPosition = data.mapper._findPositionIn( descSpan, modelPosition.offset );
+			data.viewPosition = data.mapper.findPositionIn( descSpan, modelPosition.offset );
 		}
 	};
 }
