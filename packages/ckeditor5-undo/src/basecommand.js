@@ -186,7 +186,7 @@ function normalizeRanges( ranges ) {
 
 	for ( let i = 1; i < ranges.length; i++ ) {
 		const previousRange = ranges[ i - 1 ];
-		const joinedRange = previousRange.getJoined( ranges[ i ], true );
+		const joinedRange = previousRange.getJoined( ranges[ i ] );
 
 		if ( joinedRange ) {
 			// Replace the ranges on the list with the new joined range.

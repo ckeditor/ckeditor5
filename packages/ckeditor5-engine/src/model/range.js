@@ -278,7 +278,7 @@ export default class Range {
 
 	/**
 	 * Returns a range created by joining this {@link ~Range range} with the given {@link ~Range range}.
-	 * If ranges have no common part, returns `null`, even if they have equal start/end position.
+	 * If ranges have no common part, returns `null`.
 	 *
 	 * Examples:
 	 *
@@ -299,15 +299,12 @@ export default class Range {
 	 *		transformed = range.getJoined( otherRange ); // range from [ 2, 7 ] to [ 5 ]
 	 *
 	 * @param {module:engine/model/range~Range} otherRange Range to be joined.
-	 * @param {Boolean} [loose=false] Whether the intersection check is loose or strict. If the check is strict (`false`),
-	 * ranges are tested for intersection only. If the check is loose (`true`), compared range is also checked if it's "touching"
-	 * current range.
 	 * @returns {module:engine/model/range~Range|null} A sum of given ranges or `null` if ranges have no common part.
 	 */
-	getJoined( otherRange, loose = false ) {
+	getJoined( otherRange ) {
 		let shouldJoin = this.isIntersecting( otherRange );
 
-		if ( loose && !shouldJoin ) {
+		if ( !shouldJoin ) {
 			if ( this.start.isBefore( otherRange.start ) ) {
 				shouldJoin = this.end.isTouching( otherRange.start );
 			} else {
