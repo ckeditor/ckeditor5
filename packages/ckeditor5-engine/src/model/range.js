@@ -301,7 +301,7 @@ export default class Range {
 	 * @param {module:engine/model/range~Range} otherRange Range to be joined.
 	 * @param {Boolean} [loose=false] Whether the intersection check is loose or strict. If the check is strict (`false`),
 	 * ranges are tested for intersection or whether start/end positions are equal. If the check is loose (`true`),
-	 * compared range is also checked if it's "touching" current range.
+	 * compared range is also checked if it's {@link module:engine/model/position~Position#isTouching touching} current range.
 	 * @returns {module:engine/model/range~Range|null} A sum of given ranges or `null` if ranges have no common part.
 	 */
 	getJoined( otherRange, loose = false ) {
