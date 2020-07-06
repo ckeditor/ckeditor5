@@ -67,6 +67,10 @@ export default class ImageResize extends Plugin {
  *
  * The value property is combined with the `resizeUnit` (`%` by default), eg: `value: '50'` and `resizeUnit: '%'` is `50%`.
  *
+ * **NOTE:** If you want to set an option that will reset image to its original size, you need to pass a `null` value
+ * to one of the options. The `:original` token is not mandatory, you can call it anything you wish, but it must reflect
+ * in the standalone buttons configuration for the image toolbar.
+ *
  *		ClassicEditor
  *			.create( editorElement, {
  *				image: {
