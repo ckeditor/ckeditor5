@@ -299,16 +299,19 @@ export default class Range {
 	 *		transformed = range.getJoined( otherRange ); // range from [ 2, 7 ] to [ 5 ]
 	 *
 	 * @param {module:engine/model/range~Range} otherRange Range to be joined.
+	 * @param {Boolean} [loose=false] Whether the intersection check is loose or strict. If the check is strict (`false`),
+	 * ranges are tested for intersection or whether start/end positions are equal. If the check is loose (`true`),
+	 * compared range is also checked if it's "touching" current range.
 	 * @returns {module:engine/model/range~Range|null} A sum of given ranges or `null` if ranges have no common part.
 	 */
-	getJoined( otherRange ) {
+	getJoined( otherRange, loose = false ) {
 		let shouldJoin = this.isIntersecting( otherRange );
 
 		if ( !shouldJoin ) {
 			if ( this.start.isBefore( otherRange.start ) ) {
-				shouldJoin = this.end.isTouching( otherRange.start );
+				shouldJoin = loose ? this.end.isTouching( otherRange.start ) : this.end.isEqual( otherRange.start );
 			} else {
-				shouldJoin = otherRange.end.isTouching( this.start );
+				shouldJoin = loose ? otherRange.end.isTouching( this.start ) : otherRange.end.isEqual( this.start );
 			}
 		}
 
