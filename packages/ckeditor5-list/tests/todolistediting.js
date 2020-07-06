@@ -13,6 +13,8 @@ import TodoListCheckCommand from '../src/todolistcheckcommand';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -29,7 +31,7 @@ describe( 'TodoListEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TodoListEditing, Typing, BoldEditing, BlockQuoteEditing, LinkEditing ]
+				plugins: [ TodoListEditing, Typing, BoldEditing, BlockQuoteEditing, LinkEditing, Enter, ShiftEnter ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -650,6 +652,17 @@ describe( 'TodoListEditing', () => {
 						'</span>' +
 					'</li>' +
 				'</ul>'
+			);
+		} );
+
+		it( 'should properly handle enter key in list item containing soft-breaks', () => {
+			setModelData( model, '<listItem listType="todo" listIndent="0">[]Foo<softBreak></softBreak>bar</listItem>' );
+
+			editor.execute( 'enter' );
+
+			assertEqualMarkup( getModelData( model ),
+				'<listItem listIndent="0" listType="todo"></listItem>' +
+				'<listItem listIndent="0" listType="todo">[]Foo<softBreak></softBreak>bar</listItem>'
 			);
 		} );
 	} );
