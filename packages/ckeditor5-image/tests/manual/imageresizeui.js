@@ -24,32 +24,6 @@ const commonConfig = {
 	],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
 		'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo', 'outdent', 'indent' ],
-	image: {
-		resizeUnit: '%',
-		resizeOptions: [
-			{
-				name: 'imageResize:original',
-				label: 'Original size',
-				value: null
-			},
-			{
-				name: 'imageResize:50',
-				label: '50%',
-				value: '50'
-			},
-			{
-				name: 'imageResize:75',
-				label: '75%',
-				value: '75'
-			}
-		],
-		toolbar: [ 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:side', '|', 'imageResize' ],
-		styles: [
-			'full',
-			'alignLeft',
-			'side' // Purposely using side image instead right aligned image to make sure it works well with both style types.
-		]
-	},
 	table: {
 		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
 		tableToolbar: [ 'bold', 'italic' ]
