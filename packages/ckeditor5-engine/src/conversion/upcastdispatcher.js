@@ -164,7 +164,7 @@ export default class UpcastDispatcher {
 		this.conversionApi.getSplitParts = this._getSplitParts.bind( this );
 		this.conversionApi.getCursorParent = this._getCursorParent.bind( this );
 		this.conversionApi.safeInsert = this._safeInsert.bind( this );
-		this.conversionApi.updateConversionData = this._updateConversionResult.bind( this );
+		this.conversionApi.updateConversionResult = this._updateConversionResult.bind( this );
 	}
 
 	/**

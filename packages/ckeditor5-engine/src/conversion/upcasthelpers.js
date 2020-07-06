@@ -571,7 +571,7 @@ function prepareToElementConverter( config ) {
 
 		conversionApi.consumable.consume( data.viewItem, match );
 		conversionApi.convertChildren( data.viewItem, modelElement );
-		conversionApi.updateConversionData( modelElement, data );
+		conversionApi.updateConversionResult( modelElement, data );
 	};
 }
 
