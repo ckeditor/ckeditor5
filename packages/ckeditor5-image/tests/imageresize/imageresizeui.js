@@ -7,12 +7,12 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Image from '../../../src/image';
+import Image from '../../src/image';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import ImageResizeUI from '../../../src/imageresize/ui/imageresizeui';
-import ImageStyle from '../../../src/imagestyle';
+import ImageResizeUI from '../../src/imageresize/imageresizeui';
+import ImageStyle from '../../src/imagestyle';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 

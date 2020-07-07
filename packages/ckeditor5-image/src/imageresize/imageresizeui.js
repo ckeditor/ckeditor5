@@ -4,12 +4,12 @@
  */
 
 /**
- * @module image/imageresize/ui/imageresizeui
+ * @module image/imageresize/imageresizeui
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import ImageResizeEditing from '../imageresizeediting';
+import ImageResizeEditing from './imageresizeediting';
 import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import DropdownButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/dropdownbuttonview';
 
@@ -65,7 +65,8 @@ export default class ImageResizeUI extends Plugin {
 	 *
 	 * @private
 	 *
-	 * @param {module:image/imageresizeui~resizeOption} resizeOption A model of resize option.
+	 * @param {module:image/imageresize/imageresizeui~ImageResizeOption} resizeOption A model of resize option.
+	 * @param {String} unit A resize unit.
 	 */
 	_addButton( { name, label, value }, unit ) {
 		const editor = this.editor;
@@ -103,7 +104,8 @@ export default class ImageResizeUI extends Plugin {
 	 *
 	 * @private
 	 *
-	 * @param {Array.<module:image/imageresizeui~resizeOption>} options An array of the configured options.
+	 * @param {Array.<module:image/imageresize/imageresizeui~ImageResizeOption>} options An array of the configured options.
+	 * @param {String} unit A resize unit.
 	 */
 	_addDropdown( options, unit ) {
 		const editor = this.editor;
@@ -188,9 +190,10 @@ function setOptionOn( value ) {
 /**
  * A resize option type.
  *
- * @typedef {Object} module:image/imageresizeui~resizeOption
+ * @typedef {Object} module:image/imageresize/imageresizeui~ImageResizeOption
  *
  * @property {String} resizeOption.name A name of the option used for creating a component.
+ * You refer to that name later in the {@link module:image/image~ImageConfig#toolbar}.
  * @property {String} resizeOption.label A label to be displayed with a button.
- * @property {String} resizeOption.value A value of a resize option.
+ * @property {String} resizeOption.value A value of a resize option. `null` value is for resetting an image to its original size.
  */

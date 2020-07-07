@@ -4,7 +4,7 @@
  */
 
 import ImageResize from '../../src/imageresize';
-import ImageResizeUI from '../../src/imageresize/ui/imageresizeui';
+import ImageResizeUI from '../../src/imageresize/imageresizeui';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 
 describe( 'ImageResize', () => {

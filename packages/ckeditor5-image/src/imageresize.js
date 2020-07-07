@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageResizeUI from './imageresize/ui/imageresizeui';
+import ImageResizeUI from './imageresize/imageresizeui';
 import ImageResizeEditing from './imageresize/imageresizeediting';
 
 import '../theme/imageresize.css';
@@ -61,7 +61,7 @@ export default class ImageResize extends Plugin {
  * The resize options.
  *
  * Each option should have its `name`, which is a component name definition that will be
- * used in the {@link module:image/imageresize/ui/imageresizeui~ImageResizeUI} plugin.
+ * used in the {@link module:image/imageresize/imageresizeui~ImageResizeUI} plugin.
  * Other properties like `label` and `value` define the following:
  * a text label for the option button and the value that will be applied to the image's width.
  *
@@ -151,5 +151,6 @@ export default class ImageResize extends Plugin {
  *			.then( ... )
  *			.catch( ... );
  *
- * @member {String} module:image/image~ImageConfig#resizeOptions
+ *
+ * @member {Array.<module:image/imageresize/imageresizeui~ImageResizeOption>} module:image/image~ImageConfig#resizeOptions
  */
