@@ -176,6 +176,12 @@ describe( 'ImageResizeUI', () => {
 			expect( dropdownView.listView.items.last.element.textContent ).to.equal( '75%' );
 		} );
 
+		it( 'should be created with a proper tooltip', () => {
+			const dropdownView = editor.ui.componentFactory.create( 'imageResize' );
+
+			expect( dropdownView.buttonView.tooltip ).to.equal( 'Resize image' );
+		} );
+
 		it( 'should execute resize command with a proper value', () => {
 			const dropdownView = editor.ui.componentFactory.create( 'imageResize' );
 			const commandSpy = sinon.spy( command, 'execute' );
