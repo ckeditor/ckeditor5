@@ -31,8 +31,8 @@ describe( 'TwoStepCaretMovement()', () => {
 			view = editor.editing.view;
 			plugin = editor.plugins.get( TwoStepCaretMovement );
 
-			preventDefaultSpy = sinon.spy();
-			evtStopSpy = sinon.spy();
+			preventDefaultSpy = sinon.spy().named( 'preventDefault' );
+			evtStopSpy = sinon.spy().named( 'evt.stop' );
 
 			editor.model.schema.extend( '$text', {
 				allowAttributes: [ 'a', 'b', 'c' ],
@@ -657,9 +657,9 @@ describe( 'TwoStepCaretMovement()', () => {
 	} );
 
 	it( 'should listen with the high+1 priority on view.document#keydown', () => {
-		const highestPrioritySpy = sinon.spy();
-		const highPrioritySpy = sinon.spy();
-		const normalPrioritySpy = sinon.spy();
+		const highestPrioritySpy = sinon.spy().named( 'highestPrioritySpy' );
+		const highPrioritySpy = sinon.spy().named( 'highPrioritySpy' );
+		const normalPrioritySpy = sinon.spy().named( 'normalPrioritySpy' );
 
 		setData( model, '<$text c="true">foo[]</$text><$text a="true" b="true">bar</$text>' );
 
