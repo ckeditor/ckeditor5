@@ -141,16 +141,20 @@ describe( 'TwoStepCaretMovement()', () => {
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/1301
 		it( 'should handle passing through the only character in the block', () => {
-			setData( model, '[]<$text a="1">x</$text>' );
+			setData( model, '<$text a="1">[]x</$text>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
+				// <$text a="1">[]x</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 0 },
 				'→',
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
+				// <$text a="1">x[]</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 1 },
 				'→',
-				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStop: 1 },
+				// <$text a="1">x</$text>[]
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStop: 1, caretPosition: 1 },
 				'→',
-				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStop: 1 }
+				// Stays at <$text a="1">x</$text>[]
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStop: 1, caretPosition: 1 }
 			] );
 		} );
 
@@ -640,6 +644,82 @@ describe( 'TwoStepCaretMovement()', () => {
 				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 4, evtStop: 4 }
 			] );
 		} );
+
+		describe( 'when two elements ends at the same position', () => {
+			it( 'moving the caret in should take 2 steps', () => {
+				setData( model, 'foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text>q[]ux' );
+
+				testTwoStepCaretMovement( [
+					// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text>q[]ux
+					{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 10 },
+					'←',
+					// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text>[]qux
+					{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 0, evtStop: 0, caretPosition: 9 },
+					'←',
+					// foo<$text a="true">foo</$text><$text a="true" c="true">bar[]</$text>qux
+					{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: 9 },
+					'←',
+					// foo<$text a="true">foo</$text><$text a="true" c="true">ba[]r</$text>qux
+					{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: 8 }
+				] );
+			} );
+
+			it( 'moving the caret out should take 2 steps', () => {
+				setData( model, 'foo<$text a="true">foo</$text><$text a="true" c="true">ba[]r</$text>qux' );
+
+				testTwoStepCaretMovement( [
+					// foo<$text a="true">foo</$text><$text a="true" c="true">ba[]r</$text>qux
+					{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 8 },
+					'→',
+					// foo<$text a="true">foo</$text><$text a="true" c="true">bar[]</$text>qux
+					{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 9 },
+					'→',
+					// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text>[]qux
+					{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStop: 1, caretPosition: 9 },
+					'→',
+					// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text>q[]ux
+					{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: 10 }
+				] );
+			} );
+		} );
+
+		describe( 'when two elements starts at the same position', () => {
+			it( 'moving the caret in should take 2 steps', () => {
+				setData( model, 'fo[]o<$text a="true" c="true">bar</$text><$text a="true">baz</$text>qux' );
+
+				testTwoStepCaretMovement( [
+					// fo[]o<$text a="true" c="true">bar</$text><$text a="true">baz</$text>qux
+					{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 2 },
+					'→',
+					// foo[]<$text a="true" c="true">bar</$text><$text a="true">baz</$text>qux
+					{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 3 },
+					'→',
+					// foo<$text a="true" c="true">[]bar</$text><$text a="true">baz</$text>qux
+					{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: true, preventDefault: 1, evtStop: 1, caretPosition: 3 },
+					'→',
+					// foo<$text a="true" c="true">b[]ar</$text><$text a="true">baz</$text>qux
+					{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: 4 }
+				] );
+			} );
+
+			it( 'moving the caret out should take 2 steps', () => {
+				setData( model, 'foo<$text a="true" c="true">b[]ar</$text><$text a="true">baz</$text>qux' );
+
+				testTwoStepCaretMovement( [
+					// foo<$text a="true" c="true">b[]ar</$text><$text a="true">baz</$text>qux
+					{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 4 },
+					'←',
+					// foo<$text a="true" c="true">[]bar</$text><$text a="true">baz</$text>qux
+					{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: true, preventDefault: 0, evtStop: 0, caretPosition: 3 },
+					'←',
+					// foo[]<$text a="true" c="true">bar</$text><$text a="true">baz</$text>qux
+					{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: 3 },
+					'←',
+					// fo[]o<$text a="true" c="true">bar</$text><$text a="true">baz</$text>qux
+					{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: 2 }
+				] );
+			} );
+		} );
 	} );
 
 	describe( 'mouse', () => {
@@ -854,7 +934,6 @@ describe( 'TwoStepCaretMovement()', () => {
 				// An arrow key pressed. Fire the view event and update the model selection.
 				if ( keyMap[ step ] ) {
 					let preventDefaultCalled;
-
 					fireKeyDownEvent( {
 						keyCode: keyCodes[ keyMap[ step ] ],
 						preventDefault: () => {
@@ -908,9 +987,13 @@ describe( 'TwoStepCaretMovement()', () => {
 				const stepIndex = scenario.indexOf( step );
 				const stepString = `in step #${ stepIndex } ${ JSON.stringify( step ) }`;
 
-				expect( getSelectionAttributesArray( selection ) ).to.have.members(
-					step.selectionAttributes, `#attributes ${ stepString }` );
-				expect( selection, `#isGravityOverridden ${ stepString }` )
+				if ( step.caretPosition !== undefined ) {
+					expect( selection.getFirstPosition(), `in step #${ stepIndex }, selection's first position` )
+						.to.have.deep.property( 'path', [ step.caretPosition ] );
+				}
+				expect( getSelectionAttributesArray( selection ), `in step #${ stepIndex }, selection's gravity` )
+					.to.have.members( step.selectionAttributes, `#attributes ${ stepString }` );
+				expect( selection, `in step #${ stepIndex }, selection's gravity` )
 					.to.have.property( 'isGravityOverridden', step.isGravityOverridden );
 				expect( preventDefaultSpy.callCount ).to.equal( step.preventDefault, `#preventDefault ${ stepString }` );
 				expect( evtStopSpy.callCount ).to.equal( step.evtStop, `#evtStop ${ stepString }` );
