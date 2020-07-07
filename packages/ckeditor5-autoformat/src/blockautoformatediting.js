@@ -91,7 +91,7 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 		}
 
 		// In case a command is bound, do not re-execute it over an existing block style which would result with a style removal.
-		// Instead just drop processing so that autoformatting trigger text is not lost. E.g. writing "# " in a level 1 heading.
+		// Instead just drop processing so that autoformat trigger text is not lost. E.g. writing "# " in a level 1 heading.
 		if ( command && command.value === true ) {
 			return;
 		}
