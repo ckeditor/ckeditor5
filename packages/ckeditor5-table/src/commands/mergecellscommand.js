@@ -60,7 +60,7 @@ export default class MergeCellsCommand extends Command {
 			const table = findAncestor( 'table', firstTableCell );
 
 			// Remove rows and columns that become empty (have no anchored cells).
-			removeEmptyRowsColumns( table, tableUtils, writer.batch );
+			removeEmptyRowsColumns( table, tableUtils );
 
 			writer.setSelection( firstTableCell, 'in' );
 		} );

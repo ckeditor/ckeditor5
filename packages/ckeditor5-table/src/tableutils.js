@@ -336,11 +336,15 @@ export default class TableUtils extends Plugin {
 				updateNumericAttribute( 'rowspan', rowspan, cell, writer );
 			}
 
-			// 2d. Remove empty columns (without anchored cells) if there are any.
-			removeEmptyColumns( table, this );
-
-			// 2e. Adjust heading rows if removed rows were in a heading section.
+			// 2d. Adjust heading rows if removed rows were in a heading section.
 			updateHeadingRows( table, first, last, model );
+
+			// 2e. Remove empty columns (without anchored cells) if there are any.
+			if ( !removeEmptyColumns( table, this ) ) {
+				// If there wasn't any empty columns then we still need to check if this wasn't called
+				// because of cleaning empty rows and we only removed one of them.
+				removeEmptyRows( table, this );
+			}
 		} );
 	}
 
@@ -395,7 +399,11 @@ export default class TableUtils extends Plugin {
 			}
 
 			// Remove empty rows that could appear after removing columns.
-			removeEmptyRows( table, this, writer.batch );
+			if ( !removeEmptyRows( table, this ) ) {
+				// If there wasn't any empty rows then we still need to check if this wasn't called
+				// because of cleaning empty columns and we only removed one of them.
+				removeEmptyColumns( table, this );
+			}
 		} );
 	}
 
