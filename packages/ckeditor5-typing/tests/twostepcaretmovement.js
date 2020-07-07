@@ -9,7 +9,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import TwoStepCaretMovement, { TwoStepCaretHandler } from '../src/twostepcaretmovement';
+import TwoStepCaretMovement from '../src/twostepcaretmovement';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -827,85 +827,8 @@ describe( 'TwoStepCaretMovement()', () => {
 		expect( getSelectionAttributesArray( selection ) ).to.have.members( [] );
 	} );
 
-	describe( 'left–to–right and right–to–left content', () => {
-		it( 'should call methods associated with the keys (LTR content direction)', () => {
-			const forwardStub = testUtils.sinon.stub( TwoStepCaretHandler.prototype, 'handleForwardMovement' );
-			const backwardStub = testUtils.sinon.stub( TwoStepCaretHandler.prototype, 'handleBackwardMovement' );
+	xdescribe( 'left–to–right and right–to–left content', () => {
 
-			setData( model, '<$text>foo[]</$text><$text a="true">bar</$text>' );
-
-			fireKeyDownEvent( {
-				keyCode: keyCodes.arrowright
-			} );
-
-			sinon.assert.calledOnce( forwardStub );
-			sinon.assert.notCalled( backwardStub );
-
-			setData( model, '<$text>foo</$text><$text a="true">[]bar</$text>' );
-
-			fireKeyDownEvent( {
-				keyCode: keyCodes.arrowleft
-			} );
-
-			sinon.assert.calledOnce( backwardStub );
-			sinon.assert.calledOnce( forwardStub );
-		} );
-
-		it( 'should use the opposite helper methods (RTL content direction)', () => {
-			const forwardStub = testUtils.sinon.stub( TwoStepCaretHandler.prototype, 'handleForwardMovement' );
-			const backwardStub = testUtils.sinon.stub( TwoStepCaretHandler.prototype, 'handleBackwardMovement' );
-
-			let model;
-
-			return VirtualTestEditor
-				.create( {
-					plugins: [ TwoStepCaretMovement ],
-					language: {
-						content: 'ar'
-					}
-				} )
-				.then( newEditor => {
-					model = newEditor.model;
-					selection = model.document.selection;
-					view = newEditor.editing.view;
-
-					newEditor.model.schema.extend( '$text', {
-						allowAttributes: [ 'a', 'b', 'c' ],
-						allowIn: '$root'
-					} );
-
-					model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-					newEditor.conversion.for( 'upcast' ).elementToAttribute( { view: 'a', model: 'a' } );
-					newEditor.conversion.for( 'upcast' ).elementToAttribute( { view: 'b', model: 'b' } );
-					newEditor.conversion.for( 'upcast' ).elementToAttribute( { view: 'c', model: 'c' } );
-					newEditor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
-
-					newEditor.plugins.get( TwoStepCaretMovement ).registerAttribute( 'a' );
-
-					return newEditor;
-				} )
-				.then( newEditor => {
-					setData( model, '<$text>foo[]</$text><$text a="true">bar</$text>' );
-
-					fireKeyDownEvent( {
-						keyCode: keyCodes.arrowleft
-					} );
-
-					sinon.assert.calledOnce( forwardStub );
-					sinon.assert.notCalled( backwardStub );
-
-					setData( model, '<$text>foo</$text><$text a="true">[]bar</$text>' );
-
-					fireKeyDownEvent( {
-						keyCode: keyCodes.arrowright
-					} );
-
-					sinon.assert.calledOnce( backwardStub );
-					sinon.assert.calledOnce( forwardStub );
-
-					return newEditor.destroy();
-				} );
-		} );
 	} );
 
 	const keyMap = {
