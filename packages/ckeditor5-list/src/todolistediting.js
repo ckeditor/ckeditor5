@@ -105,19 +105,7 @@ export default class TodoListEditing extends Plugin {
 		// <blockquote><p>Foo{}</p></blockquote>
 		// <ul><li><checkbox/>Bar</li></ul>
 		//
-		this.listenTo( editing.view.document, 'keydown', ( eventInfo, domEventData ) => {
-			const direction = getLocalizedArrowKeyCodeDirection( domEventData.keyCode, editor.locale.contentLanguageDirection );
-
-			if ( direction != 'left' ) {
-				return;
-			}
-
-			if ( jumpOverCheckmarkOnSideArrowKeyPress( model ) ) {
-				domEventData.preventDefault();
-				domEventData.stopPropagation();
-				eventInfo.stop();
-			}
-		} );
+		this.listenTo( editing.view.document, 'keydown', jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ) );
 
 		// Toggle check state of selected to-do list items on keystroke.
 		editor.keystrokes.set( 'Ctrl+space', () => editor.execute( 'todoListCheck' ) );
@@ -187,27 +175,36 @@ export default class TodoListEditing extends Plugin {
 //
 // @private
 // @param {module:engine/model/model~Model} model
-// @returns {Boolean} True if event was handled.
-function jumpOverCheckmarkOnSideArrowKeyPress( model ) {
-	const schema = model.schema;
-	const selection = model.document.selection;
+// @param {module:utils/locale~Locale} locale
+// @returns {Function} Callback for 'keydown' events.
+function jumpOverCheckmarkOnSideArrowKeyPress( model, locale ) {
+	return ( eventInfo, domEventData ) => {
+		const direction = getLocalizedArrowKeyCodeDirection( domEventData.keyCode, locale.contentLanguageDirection );
 
-	if ( !selection.isCollapsed ) {
-		return;
-	}
-
-	const position = selection.getFirstPosition();
-	const parent = position.parent;
-
-	if ( parent.name === 'listItem' && parent.getAttribute( 'listType' ) == 'todo' && position.isAtStart ) {
-		const newRange = schema.getNearestSelectionRange( model.createPositionBefore( parent ), 'backward' );
-
-		if ( newRange ) {
-			model.change( writer => writer.setSelection( newRange ) );
+		if ( direction != 'left' ) {
+			return;
 		}
 
-		return true;
-	}
+		const schema = model.schema;
+		const selection = model.document.selection;
 
-	return false;
+		if ( !selection.isCollapsed ) {
+			return;
+		}
+
+		const position = selection.getFirstPosition();
+		const parent = position.parent;
+
+		if ( parent.name === 'listItem' && parent.getAttribute( 'listType' ) == 'todo' && position.isAtStart ) {
+			const newRange = schema.getNearestSelectionRange( model.createPositionBefore( parent ), 'backward' );
+
+			if ( newRange ) {
+				model.change( writer => writer.setSelection( newRange ) );
+			}
+
+			domEventData.preventDefault();
+			domEventData.stopPropagation();
+			eventInfo.stop();
+		}
+	};
 }
