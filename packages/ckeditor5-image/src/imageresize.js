@@ -75,7 +75,7 @@ export default class ImageResize extends Plugin {
  *			.create( editorElement, {
  *				image: {
  *					resizeUnit: "%",
- *					resizeOptions: [{
+ *					resizeOptions: [ {
  *						name: 'imageResize:original',
  *						label: 'Original size',
  *						value: null
@@ -89,7 +89,7 @@ export default class ImageResize extends Plugin {
  *						name: 'imageResize:75',
  *						label: '75%',
  *						value: '75'
- *					}]
+ *					} ]
  *				}
  *			} )
  *			.then( ... )
@@ -103,7 +103,7 @@ export default class ImageResize extends Plugin {
  *			.create( editorElement, {
  *				image: {
  *					resizeUnit: "%",
- *					resizeOptions: [{
+ *					resizeOptions: [ {
  *						name: 'imageResize:original',
  *						label: 'Original size',
  *						value: null
@@ -117,7 +117,7 @@ export default class ImageResize extends Plugin {
  *						name: 'imageResize:75',
  *						label: '75%',
  *						value: '75'
- *					}],
+ *					} ],
  *					toolbar: [ 'imageResize', ... ],
  *				}
  *			} )
