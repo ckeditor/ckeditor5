@@ -56,6 +56,30 @@ describe( 'WidgetTypeAround', () => {
 		it( 'should have a name', () => {
 			expect( WidgetTypeAround.pluginName ).to.equal( 'WidgetTypeAround' );
 		} );
+
+		describe( '#isEnabled support', () => {
+			it( 'should add class to the editing view root when becoming disabled', () => {
+				editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+				expect( viewRoot.hasClass( 'ck-widget__type-around_disabled' ) ).to.be.true;
+
+				editor.plugins.get( WidgetTypeAround ).isEnabled = true;
+				expect( viewRoot.hasClass( 'ck-widget__type-around_disabled' ) ).to.be.false;
+			} );
+
+			it( 'should remove the model selection attribute when becoming disabled', () => {
+				setModelData( editor.model, '<blockWidget></blockWidget>' );
+
+				editor.model.change( writer => {
+					writer.setSelectionAttribute( 'widget-type-around', 'foo' );
+				} );
+
+				expect( editor.model.document.selection.getAttribute( 'widget-type-around' ) ).to.equal( 'foo' );
+
+				editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
+				expect( editor.model.document.selection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			} );
+		} );
 	} );
 
 	describe( '_insertParagraph()', () => {
@@ -651,6 +675,22 @@ describe( 'WidgetTypeAround', () => {
 			} );
 		} );
 
+		it( 'should not work when the plugin is disabled', () => {
+			editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph><blockWidget></blockWidget><paragraph>bar</paragraph>' );
+
+			fireKeyboardEvent( 'arrowright' );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+
+			fireKeyboardEvent( 'arrowdown' );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><blockWidget></blockWidget><paragraph>[]bar</paragraph>' );
+			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+		} );
+
 		it( 'should activate and deactivate the "fake caret" using all 4 arrow keys', () => {
 			setModelData( editor.model, '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
 
@@ -961,6 +1001,16 @@ describe( 'WidgetTypeAround', () => {
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
 					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
 				} );
+			} );
+
+			it( 'should not work when the plugin is disabled', () => {
+				editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
+				setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+				fireKeyboardEvent( 'enter' );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 			} );
 		} );
 

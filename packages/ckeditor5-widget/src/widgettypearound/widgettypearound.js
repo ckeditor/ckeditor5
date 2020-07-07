@@ -39,6 +39,8 @@ const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ];
 // Do the SVG parsing once and then clone the result <svg> DOM element for each new button.
 const RETURN_ARROW_ICON_ELEMENT = new DOMParser().parseFromString( returnIcon, 'image/svg+xml' ).firstChild;
 
+const PLUGIN_DISABLED_EDITING_ROOT_CLASS = 'ck-widget__type-around_disabled';
+
 /**
  * A plugin that allows users to type around widgets where normally it is impossible to place the caret due
  * to limitations of web browsers. These "tight spots" occur, for instance, before (or after) a widget being
@@ -81,6 +83,29 @@ export default class WidgetTypeAround extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		const editor = this.editor;
+		const editingView = editor.editing.view;
+
+		// Set a CSS class on the view editing root when the plugin is disabled so all the buttons
+		// and lines visually disappear. All the interactions are disabled in individual plugin methods.
+		this.on( 'change:isEnabled', ( evt, data, isEnabled ) => {
+			editingView.change( writer => {
+				for ( const root of editingView.document.roots ) {
+					if ( isEnabled ) {
+						writer.removeClass( PLUGIN_DISABLED_EDITING_ROOT_CLASS, root );
+					} else {
+						writer.addClass( PLUGIN_DISABLED_EDITING_ROOT_CLASS, root );
+					}
+				}
+			} );
+
+			if ( !isEnabled ) {
+				editor.model.change( writer => {
+					writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+				} );
+			}
+		} );
+
 		this._enableTypeAroundUIInjection();
 		this._enableInsertingParagraphsOnButtonClick();
 		this._enableInsertingParagraphsOnEnterKeypress();
@@ -214,6 +239,11 @@ export default class WidgetTypeAround extends Plugin {
 		// Note: The priority must precede the default Widget class keydown handler ("high") and the
 		// TableKeyboard keydown handler ("high-10").
 		editingView.document.on( 'keydown', ( evt, domEventData ) => {
+			// Do not respond if the plugin is disabled.
+			if ( !this.isEnabled ) {
+				return;
+			}
+
 			if ( isArrowKeyCode( domEventData.keyCode ) ) {
 				this._handleArrowKeyPress( evt, domEventData );
 			}
@@ -224,6 +254,11 @@ export default class WidgetTypeAround extends Plugin {
 		// (and the "fake horizontal caret" is visible) so whenever the range changes (e.g. selection moved somewhere else),
 		// let's get rid of the attribute so that the selection downcast dispatcher isn't even bothered.
 		modelSelection.on( 'change:range', ( evt, data ) => {
+			// Do not respond if the plugin is disabled.
+			if ( !this.isEnabled ) {
+				return;
+			}
+
 			// Do not reset the selection attribute when the change was indirect.
 			if ( !data.directChange ) {
 				return;
@@ -239,6 +274,11 @@ export default class WidgetTypeAround extends Plugin {
 		// Get rid of the widget type around attribute of the selection on every document change
 		// that makes widget not selected any more (i.e. widget was removed).
 		model.document.on( 'change:data', () => {
+			// Do not respond if the plugin is disabled.
+			if ( !this.isEnabled ) {
+				return;
+			}
+
 			const selectedModelElement = modelSelection.getSelectedElement();
 
 			if ( selectedModelElement ) {
@@ -258,6 +298,11 @@ export default class WidgetTypeAround extends Plugin {
 		// If the block widget is selected and the attribute changes, downcast the attribute to special
 		// CSS classes associated with the active ("fake horizontal caret") mode of the widget.
 		editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+			// Do not respond if the plugin is disabled.
+			if ( !this.isEnabled ) {
+				return;
+			}
+
 			const writer = conversionApi.writer;
 
 			if ( this._currentFakeCaretModelElement ) {
@@ -488,6 +533,11 @@ export default class WidgetTypeAround extends Plugin {
 		const editingView = editor.editing.view;
 
 		this.listenTo( editingView.document, 'enter', ( evt, domEventData ) => {
+			// Do not respond if the plugin is disabled.
+			if ( !this.isEnabled ) {
+				return;
+			}
+
 			const selectedViewElement = editingView.document.selection.getSelectedElement();
 			const selectedModelElement = editor.editing.mapper.toModelElement( selectedViewElement );
 			const schema = editor.model.schema;
