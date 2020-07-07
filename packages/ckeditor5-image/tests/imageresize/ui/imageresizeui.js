@@ -216,6 +216,17 @@ describe( 'ImageResizeUI', () => {
 			expect( buttonView.labelView ).to.be.instanceOf( View );
 		} );
 
+		it( 'should be created with a proper tooltip, depends on the set value', () => {
+			const buttonViewOriginal = editor.ui.componentFactory.create( 'imageResize:original' );
+			const buttonView50 = editor.ui.componentFactory.create( 'imageResize:50' );
+
+			buttonViewOriginal.render();
+			buttonView50.render();
+
+			expect( buttonViewOriginal.tooltip ).to.equal( 'Resize image to the original size' );
+			expect( buttonView50.tooltip ).to.equal( 'Resize image to 50%' );
+		} );
+
 		it( 'should have `commandValue` equal "50%"', () => {
 			const buttonView = editor.ui.componentFactory.create( 'imageResize:50' );
 

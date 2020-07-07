@@ -80,7 +80,7 @@ export default class ImageResizeUI extends Plugin {
 			button.set( {
 				label: t( label ),
 				withText: true,
-				tooltip: t( 'Resize image to' ) + ' ' + parsedValue,
+				tooltip: t( 'Resize image to' ) + ' ' + ( parsedValue || 'the original size' ),
 				isToggleable: true,
 				commandValue: parsedValue
 			} );
