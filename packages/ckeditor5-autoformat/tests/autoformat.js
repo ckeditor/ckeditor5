@@ -77,6 +77,15 @@ describe( 'Autoformat', () => {
 			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">[]</listItem>' );
 		} );
 
+		it( 'should replace a non-empty paragraph using the parenthesis format', () => {
+			setData( model, '<paragraph>*[]sample text</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">[]sample text</listItem>' );
+		} );
+
 		it( 'should not replace minus character when inside bulleted list item', () => {
 			setData( model, '<listItem listIndent="0" listType="bulleted">-[]</listItem>' );
 			model.change( writer => {
@@ -113,6 +122,15 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]</listItem>' );
+		} );
+
+		it( 'should replace a non-empty paragraph using the parenthesis format', () => {
+			setData( model, '<paragraph>1)[]sample text</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]sample text</listItem>' );
 		} );
 
 		it( 'should not replace digit character when there is no . or ) in the format', () => {
@@ -282,6 +300,15 @@ describe( 'Autoformat', () => {
 			expect( getData( model ) ).to.equal( '<blockQuote><paragraph>[]</paragraph></blockQuote>' );
 		} );
 
+		it( 'should replace greater-than character in a non-empty paragraph', () => {
+			setData( model, '<paragraph>>[]foo</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<blockQuote><paragraph>[]foo</paragraph></blockQuote>' );
+		} );
+
 		it( 'should wrap the heading if greater-than character was used', () => {
 			setData( model, '<heading1>>[]</heading1>' );
 			model.change( writer => {
@@ -336,6 +363,15 @@ describe( 'Autoformat', () => {
 			} );
 
 			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">[]</codeBlock>' );
+		} );
+
+		it( 'should replace triple grave accents in a non-empty paragraph', () => {
+			setData( model, '<paragraph>``[]let foo = 1;</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">[]let foo = 1;</codeBlock>' );
 		} );
 
 		it( 'should not replace triple grave accents when already in a code block', () => {
