@@ -2,7 +2,10 @@
  * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
 import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
+import first from '@ckeditor/ckeditor5-utils/src/first';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 /**
  * The block autoformatting engine. It allows to format various block patterns. For example,
@@ -82,8 +85,8 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 
 		const blockToFormat = entry.position.parent;
 
-		// Block formatting should be disabled in codeBlocks, and in non-empty blocks (ckeditor5#5671).
-		if ( blockToFormat.is( 'codeBlock' ) || blockToFormat.childCount !== 1 ) {
+		// Block formatting should be disabled in codeBlocks (#5800).
+		if ( blockToFormat.is( 'codeBlock' ) ) {
 			return;
 		}
 
@@ -93,10 +96,20 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 			return;
 		}
 
-		const match = pattern.exec( blockToFormat.getChild( 0 ).data );
+		const firstNode = blockToFormat.getChild( 0 );
+		const match = pattern.exec( firstNode.data );
 
 		// ...and this text node's data match the pattern.
 		if ( !match ) {
+			return;
+		}
+
+		const range = first( editor.model.document.selection.getRanges() );
+
+		// We're only handling a collapsed selection that is right after the matched text (#5671).
+		const expectedPosition = ( new Position( range.root, firstNode.getPath() ) ).getShiftedBy( match[ 0 ].length );
+
+		if ( !( range.isCollapsed && range.end.isEqual( expectedPosition ) ) ) {
 			return;
 		}
 

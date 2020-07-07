@@ -167,6 +167,18 @@ describe( 'blockAutoformatEditing', () => {
 			sinon.assert.notCalled( spy );
 		} );
 
+		it( 'should not call callback when typing in the middle of block text', () => {
+			const spy = testUtils.sinon.spy();
+			blockAutoformatEditing( editor, plugin, /^[*]\s/, spy );
+
+			setData( model, '<paragraph>* foo[]bar</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
 		it( 'should not call callback when after inline element (typing after softBreak in a "matching" paragraph)', () => {
 			// Configure the schema.
 			model.schema.register( 'softBreak', {

@@ -261,6 +261,15 @@ describe( 'Autoformat', () => {
 
 			expect( getData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak># []</paragraph>' );
 		} );
+
+		it( 'should convert a header that already contains a text', () => {
+			setData( model, '<heading1>###[]foo</heading1>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<heading3>[]foo</heading3>' );
+		} );
 	} );
 
 	describe( 'Block quote', () => {
