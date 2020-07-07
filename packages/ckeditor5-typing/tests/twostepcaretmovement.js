@@ -58,9 +58,9 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '[]<$text c="true">foo</$text>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 }
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 }
 			] );
 		} );
 
@@ -68,9 +68,9 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '<$text c="true">foo[]</$text>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 }
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 }
 			] );
 		} );
 
@@ -79,13 +79,13 @@ describe( 'TwoStepCaretMovement()', () => {
 
 			testTwoStepCaretMovement( [
 				// Gravity is not overridden, caret is at the beginning of the text but is "outside" of the text.
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
 				// Gravity is overridden, caret movement is blocked, selection at the beginning but "inside" the text.
-				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: true, preventDefault: 1, evtStop: 1 },
 				'→',
 				// Caret movement was not blocked this time (still once) so everything works normally.
-				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 }
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1 }
 			] );
 		} );
 
@@ -94,12 +94,12 @@ describe( 'TwoStepCaretMovement()', () => {
 
 			testTwoStepCaretMovement( [
 				// Gravity is not overridden, caret is at the end of the text but is "inside" of the text.
-				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
 				// Gravity is overridden, caret movement is blocked, selection at the end but "outside" the text.
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: true, preventDefault: 1, evtStop: 1 },
 				'→',
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 }
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1 }
 			] );
 		} );
 
@@ -107,16 +107,16 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '<$text a="1">bar[]</$text><$text a="2">foo</$text>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
 				// <$text a="1">bar</$text>[]<$text a="2">foo</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'→',
 				// <$text a="1">bar</$text><$text a="2">[]foo</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 2, evtStopCalled: 2 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 2, evtStop: 2 },
 				'→',
 				// <$text a="1">bar</$text><$text a="2">f[]oo</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 }
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2, evtStop: 2 }
 			] );
 		} );
 
@@ -125,17 +125,17 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '<$text a="1">fo[]o</$text><$text a="1" b="2">bar</$text><$text a="1">baz</$text>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
-				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
-				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
-				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 }
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 }
 			] );
 		} );
 
@@ -144,13 +144,13 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '[]<$text a="1">x</$text>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
-				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStop: 1 },
 				'→',
-				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 }
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStop: 1 }
 			] );
 		} );
 
@@ -161,15 +161,15 @@ describe( 'TwoStepCaretMovement()', () => {
 			model.change( writer => writer.removeSelectionAttribute( 'a' ) );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1, evtStop: 1 },
 				'→',
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'→',
-				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 2, evtStopCalled: 2 },
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 2, evtStop: 2 },
 				'→',
-				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 2, evtStopCalled: 2 }
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 2, evtStop: 2 }
 			] );
 		} );
 
@@ -178,22 +178,22 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '[]<$text a="1">xyz</$text>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
 				// <$text a="1">x{}yz</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
 				// <$text a="1">xy{}z</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
 				// <$text a="1">xyz{}</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
 				// <$text a="1">xyz</$text>{}
-				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStop: 1 },
 				'→',
 				// <$text a="1">xyz</$text>{}
-				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 }
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStop: 1 }
 			] );
 		} );
 
@@ -201,16 +201,16 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '<paragraph><$text a="1">foo[]</$text></paragraph><paragraph><$text b="1">bar</$text></paragraph>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
 				// <paragraph><$text a="1">bar</$text>[]</paragraph><paragraph>foo</paragraph>
-				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStop: 1 },
 				'→',
 				// <paragraph><$text a="1">bar</$text></paragraph><paragraph>f[]oo</paragraph>
-				{ selectionAttributes: [ 'b' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'b' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'→',
 				// <paragraph><$text a="1">bar</$text></paragraph><paragraph>fo[]o</paragraph>
-				{ selectionAttributes: [ 'b' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 }
+				{ selectionAttributes: [ 'b' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1 }
 			] );
 		} );
 	} );
@@ -221,14 +221,14 @@ describe( 'TwoStepCaretMovement()', () => {
 
 			testTwoStepCaretMovement( [
 				// Gravity is not overridden, caret is a one character after the and of the text.
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
 				// Caret movement was not blocked but the gravity is overridden.
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: true, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: true, preventDefault: 0, evtStop: 0 },
 				'←',
-				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'←',
-				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 }
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1 }
 			] );
 		} );
 
@@ -237,14 +237,14 @@ describe( 'TwoStepCaretMovement()', () => {
 
 			testTwoStepCaretMovement( [
 				// Gravity is not overridden, caret is a one character after the beginning of the text.
-				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
 				// Caret movement was not blocked.
-				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: true, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: true, preventDefault: 0, evtStop: 0 },
 				'←',
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'←',
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 }
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1 }
 			] );
 		} );
 
@@ -252,11 +252,11 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '<$text c="true">[]foo</$text>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 }
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 }
 			] );
 		} );
 
@@ -264,11 +264,11 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '<$text c="true">foo</$text>[]' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 }
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 }
 			] );
 		} );
 
@@ -276,9 +276,9 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '[]foo', { lastRangeBackward: true } );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 }
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0 }
 			] );
 		} );
 
@@ -286,19 +286,19 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '<$text a="2">foo</$text><$text a="1">b[]ar</$text>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
 				// <$text a="2">foo</$text><$text a="1">[]bar</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 0, evtStop: 0 },
 				'←',
 				// <$text a="2">foo</$text>[]<$text a="1">bar</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'←',
 				// <$text a="2">foo[]</$text><$text a="1">bar</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2, evtStop: 2 },
 				'←',
 				// <$text a="2">fo[]o</$text><$text a="1">bar</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 }
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2, evtStop: 2 }
 			] );
 		} );
 
@@ -307,15 +307,15 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '<$text a="1">foo</$text><$text a="1" b="2">bar</$text><$text a="1">b[]az</$text>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
-				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
-				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
-				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 }
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 }
 			] );
 		} );
 
@@ -324,16 +324,16 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '<$text a="1">x</$text>[]' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
 				// <$text a="1">{}x</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 0, evtStop: 0 },
 				'←',
 				// {}<$text a="1">x</$text> (because it's a first-child)
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'←',
 				// {}<$text a="1">x</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 }
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1 }
 			] );
 		} );
 
@@ -344,15 +344,15 @@ describe( 'TwoStepCaretMovement()', () => {
 			model.change( writer => writer.removeSelectionAttribute( 'a' ) );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'←',
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1, evtStop: 1 },
 				'←',
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2, evtStop: 2 },
 				'←',
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 }
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2, evtStop: 2 }
 			] );
 		} );
 
@@ -361,16 +361,16 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, 'abc<$text a="1">x</$text>[]' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
 				// abc<$text a="1">{}x</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 0, evtStop: 0 },
 				'←',
 				// abc{}<$text a="1">x</$text> (because it's a first-child)
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'←',
 				// abc{}<$text a="1">x</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 }
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1 }
 			] );
 		} );
 
@@ -379,22 +379,22 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '<$text a="1">xyz</$text>[]' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
 				// <$text a="1">xy{}z</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
 				// <$text a="1">x{}yz</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
 				// <$text a="1">{}xyz</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 0, evtStop: 0 },
 				'←',
 				// {}<$text a="1">xyz</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'←',
 				// {}<$text a="1">xyz</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 }
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1 }
 			] );
 		} );
 
@@ -402,11 +402,11 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '<paragraph><$text b="1">foo</$text></paragraph><paragraph><$text a="1">[]bar</$text></paragraph>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'←',
-				{ selectionAttributes: [ 'b' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 }
+				{ selectionAttributes: [ 'b' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1 }
 			] );
 		} );
 	} );
@@ -416,25 +416,25 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '<$text a="1">x[]</$text>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'y',
 				// <$text a="1">xy[]</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
 				// <$text a="1">xy</$text>[]
-				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStop: 1 },
 				'z',
 				// <$text a="1">xy</$text>z[]
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'←',
 				// <$text a="1">xy</$text>[]z
-				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStop: 1 },
 				'←',
 				// <$text a="1">xy[]</$text>z
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2, evtStop: 2 },
 				'w',
 				// <$text a="1">xyw[]</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 }
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2, evtStop: 2 }
 			] );
 		} );
 
@@ -442,22 +442,22 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '<$text a="1">[]x</$text>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
 				// []<$text a="1">x</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'z',
 				// z[]<$text a="1">x</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'x',
 				// zx[]<$text a="1">x</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'→',
 				// zx<$text a="1">[]x</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 2, evtStopCalled: 2 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 2, evtStop: 2 },
 				'a',
 				// zx<$text a="1">a[]x</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 }
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2, evtStop: 2 }
 			] );
 		} );
 
@@ -467,31 +467,31 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, 'fo[]o <$text a="1">bar</$text>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
 				// foo[] <$text a="1">bar</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
 				// foo []<$text a="1">bar</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
 				// foo <$text a="1">[]bar</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1, evtStop: 1 },
 				'→',
 				// foo <$text a="1">b[]ar</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'←',
 				// foo <$text a="1">[]bar</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1, evtStop: 1 },
 				'←',
 				// foo []<$text a="1">bar</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2, evtStop: 2 },
 				'←',
 				// foo[] <$text a="1">bar</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2, evtStop: 2 },
 				'←',
 				// fo[]o <$text a="1">bar</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 }
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2, evtStop: 2 }
 			] );
 		} );
 
@@ -500,10 +500,10 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '<$text a="1">x[]</$text>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
 				// <$text a="1">x</$text>[]
-				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 }
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStop: 1 }
 			] );
 
 			model.change( writer => {
@@ -528,10 +528,10 @@ describe( 'TwoStepCaretMovement()', () => {
 			setData( model, '<$text a="1">[]x</$text>' );
 
 			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
 				// []<$text a="1">x</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 }
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1 }
 			] );
 
 			model.change( writer => {
@@ -562,40 +562,40 @@ describe( 'TwoStepCaretMovement()', () => {
 
 			testTwoStepCaretMovement( [
 				// fo[]o<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
 				// foo[]<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'→',
 				// foo<$text a="true">[]foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1, evtStop: 1 },
 				'→',
 				'→',
 				'→',
 				// foo<$text a="true">foo[]</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'→',
 				// foo<$text a="true">foo</$text><$text a="true" c="true">[]bar</$text><$text c="true">baz</$text>qux
-				{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: true, preventDefault: 2, evtStopCalled: 2 },
+				{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: true, preventDefault: 2, evtStop: 2 },
 				'→',
 				'→',
 				'→',
 				// foo<$text a="true">foo</$text><$text a="true" c="true">bar[]</$text><$text c="true">baz</$text>qux
-				{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 },
+				{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: false, preventDefault: 2, evtStop: 2 },
 				'→',
 				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">[]baz</$text>qux
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: true, preventDefault: 3, evtStopCalled: 3 },
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: true, preventDefault: 3, evtStop: 3 },
 				'→',
 				'→',
 				'→',
 				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz[]</$text>qux
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 3, evtStopCalled: 3 },
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 3, evtStop: 3 },
 				'→',
 				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>[]qux
-				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 4, evtStopCalled: 4 },
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 4, evtStop: 4 },
 				'→',
 				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>q[]ux
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 4, evtStopCalled: 4 }
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 4, evtStop: 4 }
 			] );
 		} );
 
@@ -604,40 +604,40 @@ describe( 'TwoStepCaretMovement()', () => {
 
 			testTwoStepCaretMovement( [
 				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>q[]ux
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 				'←',
 				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>[]qux
-				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 0, evtStop: 0 },
 				'←',
 				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz[]</$text>qux
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1 },
 				'←',
 				'←',
 				'←',
 				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">[]baz</$text>qux
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: true, preventDefault: 1, evtStop: 1 },
 				'←',
 				// foo<$text a="true">foo</$text><$text a="true" c="true">bar[]</$text><$text c="true">baz</$text>qux
-				{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 },
+				{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: false, preventDefault: 2, evtStop: 2 },
 				'←',
 				'←',
 				'←',
 				// foo<$text a="true">foo</$text><$text a="true" c="true">[]bar</$text><$text c="true">baz</$text>qux
-				{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: true, preventDefault: 2, evtStopCalled: 2 },
+				{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: true, preventDefault: 2, evtStop: 2 },
 				'←',
 				// foo<$text a="true">foo[]</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 3, evtStopCalled: 3 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 3, evtStop: 3 },
 				'←',
 				'←',
 				'←',
 				// foo<$text a="true">[]foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 3, evtStopCalled: 3 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 3, evtStop: 3 },
 				'←',
 				// foo[]<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 4, evtStopCalled: 4 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 4, evtStop: 4 },
 				'←',
 				// fo[]o<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 4, evtStopCalled: 4 }
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 4, evtStop: 4 }
 			] );
 		} );
 	} );
@@ -733,9 +733,9 @@ describe( 'TwoStepCaretMovement()', () => {
 		setData( model, '<$text a="true">foo[]</$text>bar' );
 
 		testTwoStepCaretMovement( [
-			{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+			{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
 			'→',
-			{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 }
+			{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStop: 1 }
 		] );
 
 		// Simulate an external text insertion BEFORE the user selection to trigger #change:range.
@@ -913,7 +913,7 @@ describe( 'TwoStepCaretMovement()', () => {
 				expect( selection, `#isGravityOverridden ${ stepString }` )
 					.to.have.property( 'isGravityOverridden', step.isGravityOverridden );
 				expect( preventDefaultSpy.callCount ).to.equal( step.preventDefault, `#preventDefault ${ stepString }` );
-				expect( evtStopSpy.callCount ).to.equal( step.evtStopCalled, `#evtStopCalled ${ stepString }` );
+				expect( evtStopSpy.callCount ).to.equal( step.evtStop, `#evtStop ${ stepString }` );
 			}
 		}
 	}
