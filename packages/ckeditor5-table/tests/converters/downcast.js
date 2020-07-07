@@ -941,36 +941,6 @@ describe( 'downcast converters', () => {
 				], { headingRows: 2, asWidget: true } ) );
 			} );
 
-			it( 'should be possible to overwrite', () => {
-				editor.conversion.attributeToAttribute( {
-					model: 'headingRows',
-					view: 'headingRows',
-					converterPriority: 'high'
-				} );
-				setModelData( model, modelTable( [ [ '00' ] ] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.setAttribute( 'headingRows', 1, table );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false" headingRows="1">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
-									'</td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-
 			it( 'should work with adding table rows at the beginning of a table', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01' ],

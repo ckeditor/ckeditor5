@@ -15,8 +15,7 @@ import {
 	downcastInsertRow,
 	downcastInsertTable,
 	downcastRemoveRow,
-	downcastTableHeadingColumnsChange,
-	downcastTableHeadingRowsChange
+	downcastTableHeadingColumnsChange
 } from './converters/downcast';
 
 import InsertTableCommand from './commands/inserttablecommand';
@@ -113,9 +112,11 @@ export default class TableEditing extends Plugin {
 		conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 		conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
 
-		// Table heading rows and columns conversion.
+		// Table heading columns conversion (change of heading rows requires reconversion of the whole table).
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange() );
-		conversion.for( 'editingDowncast' ).add( downcastTableHeadingRowsChange() );
+
+		// Table heading rows change requires reconversion of the whole table.
+		this.listenTo( model, 'applyOperation', headingRowsAttributeChangeHandler( model ) );
 
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
@@ -154,4 +155,23 @@ export default class TableEditing extends Plugin {
 	static get requires() {
 		return [ TableUtils ];
 	}
+}
+
+// Model#applyOperation handler for headingRows attribute changes.
+function headingRowsAttributeChangeHandler( model ) {
+	return ( event, [ operation ] ) => {
+		if ( !operation.isDocumentOperation ) {
+			return;
+		}
+
+		if ( operation.type != 'addAttribute' && operation.type != 'removeAttribute' && operation.type != 'changeAttribute' ) {
+			return;
+		}
+
+		const element = operation.range.getContainedElement();
+
+		if ( element && element.is( 'table' ) && operation.key == 'headingRows' ) {
+			model.document.differ.refreshItem( element );
+		}
+	};
 }
