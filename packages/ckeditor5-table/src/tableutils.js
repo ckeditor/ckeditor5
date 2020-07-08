@@ -337,7 +337,7 @@ export default class TableUtils extends Plugin {
 			}
 
 			// 2d. Adjust heading rows if removed rows were in a heading section.
-			updateHeadingRows( table, first, last, model );
+			updateHeadingRows( table, first, last, writer );
 
 			// 2e. Remove empty columns (without anchored cells) if there are any.
 			if ( !removeEmptyColumns( table, this ) ) {
@@ -783,16 +783,14 @@ function adjustHeadingColumns( table, removedColumnIndexes, writer ) {
 }
 
 // Calculates a new heading rows value for removing rows from heading section.
-function updateHeadingRows( table, first, last, model ) {
-	model.change( writer => {
-		const headingRows = table.getAttribute( 'headingRows' ) || 0;
+function updateHeadingRows( table, first, last, writer ) {
+	const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
-		if ( first < headingRows ) {
-			const newRows = last < headingRows ? headingRows - ( last - first + 1 ) : first;
+	if ( first < headingRows ) {
+		const newRows = last < headingRows ? headingRows - ( last - first + 1 ) : first;
 
-			updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
-		}
-	} );
+		updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
+	}
 }
 
 // Finds cells that will be:
