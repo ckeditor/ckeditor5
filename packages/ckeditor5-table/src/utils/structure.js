@@ -138,6 +138,7 @@ export function getVerticallyOverlappingCells( table, overlapRow, startRow = 0 )
  * @param {module:engine/model/element~Element} tableCell
  * @param {Number} splitRow
  * @param {module:engine/model/writer~Writer} writer
+ * @returns {module:engine/model/element~Element} Created table cell.
  */
 export function splitHorizontally( tableCell, splitRow, writer ) {
 	const tableRow = tableCell.parent;
@@ -164,6 +165,7 @@ export function splitHorizontally( tableCell, splitRow, writer ) {
 	const endRow = startRow + newRowspan;
 	const tableMap = [ ...new TableWalker( table, { startRow, endRow, includeAllSlots: true } ) ];
 
+	let newCell = null;
 	let columnIndex;
 
 	for ( const tableSlot of tableMap ) {
@@ -174,12 +176,14 @@ export function splitHorizontally( tableCell, splitRow, writer ) {
 		}
 
 		if ( columnIndex !== undefined && columnIndex === column && row === endRow ) {
-			createEmptyTableCell( writer, tableSlot.getPositionBefore(), newCellAttributes );
+			newCell = createEmptyTableCell( writer, tableSlot.getPositionBefore(), newCellAttributes );
 		}
 	}
 
 	// Update the rowspan attribute after updating table.
 	updateNumericAttribute( 'rowspan', newRowspan, tableCell, writer );
+
+	return newCell;
 }
 
 /**
@@ -232,6 +236,7 @@ export function getHorizontallyOverlappingCells( table, overlapColumn ) {
  * @param {Number} columnIndex The table cell column index.
  * @param {Number} splitColumn The index of column to split cell on.
  * @param {module:engine/model/writer~Writer} writer
+ * @returns {module:engine/model/element~Element} Created table cell.
  */
 export function splitVertically( tableCell, columnIndex, splitColumn, writer ) {
 	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) );
@@ -250,9 +255,12 @@ export function splitVertically( tableCell, columnIndex, splitColumn, writer ) {
 		newCellAttributes.rowspan = rowspan;
 	}
 
-	createEmptyTableCell( writer, writer.createPositionAfter( tableCell ), newCellAttributes );
+	const newCell = createEmptyTableCell( writer, writer.createPositionAfter( tableCell ), newCellAttributes );
+
 	// Update the colspan attribute after updating table.
 	updateNumericAttribute( 'colspan', newColspan, tableCell, writer );
+
+	return newCell;
 }
 
 /**

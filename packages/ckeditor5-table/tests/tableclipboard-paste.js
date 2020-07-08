@@ -3385,6 +3385,75 @@ describe( 'table clipboard', () => {
 				}
 			);
 		} );
+
+		describe( 'headings overlapping selected area', () => {
+			// TODO more tests
+
+			it( 'should split cells that overlap from headings', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01', '02', '03', '04' ],
+					[ '10', '11', '12', '13', '14' ],
+					[ '20', '21', '22', '23', '24' ],
+					[ '30', '31', '32', '33', '34' ],
+					[ '40', '41', '42', '43', '44' ]
+				], { headingRows: 2, headingColumns: 2 } ) );
+
+				// +----+----+----+----+
+				// | aa           | ad |
+				// +              +----+
+				// |              | bd |
+				// +              +----+
+				// |              | cd |
+				// +----+----+----+----+
+				// | da | db | dc | dd |
+				// +----+----+----+----+
+				pasteTable( [
+					[ { contents: 'aa', colspan: 3, rowspan: 3 }, 'ad' ],
+					[ 'bd' ],
+					[ 'cd' ],
+					[ 'da', 'db', 'dc', 'dd' ]
+				] );
+
+				// +----+----+----+----+----+
+				// | aa      |    | ad | 04 |
+				// +         +    +----+----+
+				// |         |    | bd | 14 |
+				// +----+----+----+----+----+ <-- heading rows
+				// |         |    | cd | 24 |
+				// +----+----+----+----+----+
+				// | da | db | dc | dd | 34 |
+				// +----+----+----+----+----+
+				// | 40 | 41 | 42 | 43 | 44 |
+				// +----+----+----+----+----+
+				//           ^-- heading columns
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ { contents: 'aa', colspan: 2, rowspan: 2 }, { contents: '', rowspan: 2 }, 'ad', '04' ],
+					[ 'bd', '14' ],
+					[ { contents: '', colspan: 2 }, '', 'cd', '24' ],
+					[ 'da', 'db', 'dc', 'dd', '34' ],
+					[ '40', '41', '42', '43', '44' ]
+				], { headingRows: 2, headingColumns: 2 } ) );
+
+				const selectionRanges = Array.from( model.document.selection.getRanges() );
+				const selectedCellsPaths = selectionRanges.map( ( { start } ) => start.path );
+
+				// Note that order of ranges is also important.
+				expect( selectionRanges.length ).to.be.equal( 11 );
+				expect( selectedCellsPaths ).to.deep.equal( [
+					[ 0, 0, 0 ],
+					[ 0, 0, 1 ],
+					[ 0, 0, 2 ],
+					[ 0, 1, 0 ],
+					[ 0, 2, 0 ],
+					[ 0, 2, 1 ],
+					[ 0, 2, 2 ],
+					[ 0, 3, 0 ],
+					[ 0, 3, 1 ],
+					[ 0, 3, 2 ],
+					[ 0, 3, 3 ]
+				] );
+			} );
+		} );
 	} );
 
 	describe( 'Clipboard integration - paste (content scenarios)', () => {

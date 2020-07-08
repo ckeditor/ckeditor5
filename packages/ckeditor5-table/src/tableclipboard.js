@@ -316,7 +316,29 @@ function replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selected
 		insertPosition = writer.createPositionAfter( cellToInsert );
 	}
 
-	writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
+	// If there are any headings, all the cells that overlap from heading must be splitted.
+	const headingRows = parseInt( selectedTable.getAttribute( 'headingRows' ) || 0 );
+	const headingColumns = parseInt( selectedTable.getAttribute( 'headingColumns' ) || 0 );
+
+	if ( selection.firstRow < headingRows && headingRows <= selection.lastRow ) {
+		const columnsLimit = { first: selection.firstColumn, last: selection.lastColumn };
+		const newCells = doHorizontalSplit( selectedTable, headingRows, columnsLimit, writer, selection.firstRow );
+
+		cellsToSelect.push( ...newCells );
+	}
+
+	if ( selection.firstColumn < headingColumns && headingColumns <= selection.lastColumn ) {
+		const rowsLimit = { first: selection.firstRow, last: selection.lastRow };
+		const newCells = doVerticalSplit( selectedTable, headingColumns, rowsLimit, writer );
+
+		cellsToSelect.push( ...newCells );
+	}
+
+	const selectionRanges = cellsToSelect
+		.map( cell => writer.createRangeOn( cell ) )
+		.sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
+
+	writer.setSelection( selectionRanges );
 }
 
 // Expand table (in place) to expected size.
@@ -489,9 +511,7 @@ function doHorizontalSplit( table, splitRow, limitColumns, writer, startRow = 0 
 	// Filter out cells that are not touching insides of the rectangular selection.
 	const cellsToSplit = overlappingCells.filter( ( { column, cellWidth } ) => isAffectedBySelection( column, cellWidth, limitColumns ) );
 
-	for ( const { cell } of cellsToSplit ) {
-		splitHorizontally( cell, splitRow, writer );
-	}
+	return cellsToSplit.map( ( { cell } ) => splitHorizontally( cell, splitRow, writer ) );
 }
 
 function doVerticalSplit( table, splitColumn, limitRows, writer ) {
@@ -505,9 +525,7 @@ function doVerticalSplit( table, splitColumn, limitRows, writer ) {
 	// Filter out cells that are not touching insides of the rectangular selection.
 	const cellsToSplit = overlappingCells.filter( ( { row, cellHeight } ) => isAffectedBySelection( row, cellHeight, limitRows ) );
 
-	for ( const { cell, column } of cellsToSplit ) {
-		splitVertically( cell, column, splitColumn, writer );
-	}
+	return cellsToSplit.map( ( { cell, column } ) => splitVertically( cell, column, splitColumn, writer ) );
 }
 
 // Checks if cell at given row (column) is affected by a rectangular selection defined by first/last column (row).
