@@ -35,6 +35,7 @@ import TableUtils from '../src/tableutils';
 import injectTableLayoutPostFixer from './converters/table-layout-post-fixer';
 import injectTableCellParagraphPostFixer from './converters/table-cell-paragraph-post-fixer';
 import injectTableCellRefreshPostFixer from './converters/table-cell-refresh-post-fixer';
+import injectTableHeadingRowsRefreshPostFixer from './converters/table-heading-rows-refresh-post-fixer';
 
 import '../theme/tableediting.css';
 
@@ -115,9 +116,6 @@ export default class TableEditing extends Plugin {
 		// Table heading columns conversion (change of heading rows requires reconversion of the whole table).
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange() );
 
-		// Table heading rows change requires reconversion of the whole table.
-		this.listenTo( model, 'applyOperation', headingRowsAttributeChangeHandler( model ) );
-
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
 		editor.commands.add( 'insertTableRowAbove', new InsertRowCommand( editor, { order: 'above' } ) );
@@ -144,6 +142,7 @@ export default class TableEditing extends Plugin {
 		editor.commands.add( 'selectTableRow', new SelectRowCommand( editor ) );
 		editor.commands.add( 'selectTableColumn', new SelectColumnCommand( editor ) );
 
+		injectTableHeadingRowsRefreshPostFixer( model );
 		injectTableLayoutPostFixer( model );
 		injectTableCellRefreshPostFixer( model );
 		injectTableCellParagraphPostFixer( model );
@@ -155,23 +154,4 @@ export default class TableEditing extends Plugin {
 	static get requires() {
 		return [ TableUtils ];
 	}
-}
-
-// Model#applyOperation handler for headingRows attribute changes.
-function headingRowsAttributeChangeHandler( model ) {
-	return ( event, [ operation ] ) => {
-		if ( !operation.isDocumentOperation ) {
-			return;
-		}
-
-		if ( operation.type != 'addAttribute' && operation.type != 'removeAttribute' && operation.type != 'changeAttribute' ) {
-			return;
-		}
-
-		const element = operation.range.getContainedElement();
-
-		if ( element && element.is( 'table' ) && operation.key == 'headingRows' ) {
-			model.document.differ.refreshItem( element );
-		}
-	};
 }
