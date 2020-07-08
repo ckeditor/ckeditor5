@@ -52,7 +52,6 @@ const PLUGIN_DISABLED_EDITING_ROOT_CLASS = 'ck-widget__type-around_disabled';
  * in it so that users can type (or insert content, paste, etc.) straight away.
  *
  * @extends module:core/plugin~Plugin
- * @private
  */
 export default class WidgetTypeAround extends Plugin {
 	/**
