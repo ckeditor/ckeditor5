@@ -128,6 +128,7 @@ export default class Autoformat extends Plugin {
 					const pattern = new RegExp( `^(#{${ level }})\\s` );
 
 					blockAutoformatEditing( this.editor, this, pattern, () => {
+						// Should only be active if command is enabled and heading style associated with pattern is inactive.
 						if ( !command.isEnabled || command.value === modelName ) {
 							return false;
 						}
