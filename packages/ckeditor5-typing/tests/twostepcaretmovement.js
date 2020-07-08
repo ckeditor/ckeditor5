@@ -826,8 +826,64 @@ describe( 'TwoStepCaretMovement()', () => {
 		expect( getSelectionAttributesArray( selection ) ).to.have.members( [] );
 	} );
 
-	xdescribe( 'left–to–right and right–to–left content', () => {
+	describe( 'right–to–left content', () => {
+		it( 'should use the opposite helper methods (RTL content direction)', () => {
+			// let model;
 
+			return VirtualTestEditor
+				.create( {
+					plugins: [ TwoStepCaretMovement ],
+					language: {
+						content: 'he'
+					}
+				} )
+				.then( newEditor => {
+					model = newEditor.model;
+					selection = model.document.selection;
+					view = newEditor.editing.view;
+
+					newEditor.model.schema.extend( '$text', {
+						allowAttributes: [ 'a', 'b', 'c' ],
+						allowIn: '$root'
+					} );
+
+					model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+					newEditor.conversion.for( 'upcast' ).elementToAttribute( { view: 'a', model: 'a' } );
+					newEditor.conversion.for( 'upcast' ).elementToAttribute( { view: 'b', model: 'b' } );
+					newEditor.conversion.for( 'upcast' ).elementToAttribute( { view: 'c', model: 'c' } );
+					newEditor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
+
+					newEditor.plugins.get( TwoStepCaretMovement ).registerAttribute( 'a' );
+
+					return newEditor;
+				} )
+				.then( newEditor => {
+					setData( model, '<$text>לזה[]</$text><$text a="true">שיוצג</$text>' );
+
+					testTwoStepCaretMovement( [
+						{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 3 },
+						'←',
+						{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1, evtStop: 1, caretPosition: 3 }
+					], 'rtl' );
+
+					preventDefaultSpy.resetHistory();
+					evtStopSpy.resetHistory();
+
+					setData( model, '<$text>לזה</$text><$text a="true">ש[]יוצג</$text>' );
+
+					testTwoStepCaretMovement( [
+						{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 4 },
+						'→',
+						{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 0, evtStop: 0, caretPosition: 3 },
+						'→',
+						{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: 3 },
+						'→',
+						{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: 2 }
+					], 'rtl' );
+
+					return newEditor.destroy();
+				} );
+		} );
 	} );
 
 	const keyMap = {
@@ -850,7 +906,7 @@ describe( 'TwoStepCaretMovement()', () => {
 		return Array.from( selection.getAttributeKeys() );
 	}
 
-	function testTwoStepCaretMovement( scenario ) {
+	function testTwoStepCaretMovement( scenario, rtl ) {
 		for ( const step of scenario ) {
 			if ( typeof step == 'string' ) {
 				// An arrow key pressed. Fire the view event and update the model selection.
@@ -868,7 +924,7 @@ describe( 'TwoStepCaretMovement()', () => {
 					const position = selection.getFirstPosition();
 
 					if ( !preventDefaultCalled ) {
-						if ( step == '→' ) {
+						if ( step == '→' && !rtl || step == '←' && rtl ) {
 							model.change( writer => {
 								if ( position.isAtEnd ) {
 									const nextBlock = position.parent.nextSibling;
@@ -880,7 +936,7 @@ describe( 'TwoStepCaretMovement()', () => {
 									writer.setSelection( selection.getFirstPosition().getShiftedBy( 1 ) );
 								}
 							} );
-						} else if ( step == '←' ) {
+						} else if ( step == '←' && !rtl || step == '→' && rtl ) {
 							model.change( writer => {
 								if ( position.isAtStart ) {
 									const previousBlock = position.parent.previousSibling;
