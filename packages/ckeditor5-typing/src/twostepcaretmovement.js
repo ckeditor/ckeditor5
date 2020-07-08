@@ -327,23 +327,20 @@ function handleBackwardMovement( position, data, plugin, attributes ) {
 	const model = plugin.editor.model;
 	const selection = model.document.selection;
 
-	// When the gravity is already overridden...
+	// When the gravity is already overridden (by this plugin), it means we are on the two-step position.
+	// Prevent the movement, restore the gravity and update selection attributes.
+	//
+	//		<paragraph>foo<$text attribute=1>bar</$text><$text attribute=2>{}baz</$text></paragraph>
+	//		<paragraph>foo<$text attribute>bar</$text><$text otherAttribute>{}baz</$text></paragraph>
+	//		<paragraph>foo<$text attribute>{}bar</$text>baz</paragraph>
+	//		<paragraph>foo<$text attribute>bar</$text>{}baz</paragraph>
+	//
 	if ( plugin._isGravityOverridden ) {
-		// ENGAGE 2-SCM & update SELECTION ATTRIBUTE
-		// When at least one of the observed attributes changes its value (incl. starts, ends).
-		//
-		//		<paragraph>foo<$text attribute=1>bar</$text><$text attribute=2>{}baz</$text></paragraph>
-		//		<paragraph>foo<$text attribute>bar</$text><$text otherAttribute>{}baz</$text></paragraph>
-		//		<paragraph>foo<$text attribute>{}bar</$text>baz</paragraph>
-		//		<paragraph>foo<$text attribute>bar</$text>{}baz</paragraph>
-		//
-		if ( isBetweenDifferentAttributes( position, attributes ) ) {
-			preventCaretMovement( data );
-			plugin._restoreGravity();
-			setSelectionAttributesFromTheNodeBefore( model, attributes, position );
+		preventCaretMovement( data );
+		plugin._restoreGravity();
+		setSelectionAttributesFromTheNodeBefore( model, attributes, position );
 
-			return true;
-		}
+		return true;
 	} else {
 		// REMOVE SELECTION ATTRIBUTE when restoring gravity towards a non-existent content at the
 		// beginning of the block.
@@ -361,7 +358,8 @@ function handleBackwardMovement( position, data, plugin, attributes ) {
 			return false;
 		}
 
-		// DON'T ENGAGE 2-SCM when about to change the set of attributes.
+		// When we are moving from natural gravity, to the position of the 2SCM, we need to override the gravity,
+		// and make sure it won't be restored. Unless it's at the end of the block and an observed attribute.
 		// We need to check if the caret is a one position before the attribute boundary:
 		//
 		//		<paragraph>foo<$text attribute=1>bar</$text><$text attribute=2>b{}az</$text></paragraph>
