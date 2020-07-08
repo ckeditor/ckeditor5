@@ -3553,6 +3553,32 @@ describe( 'table clipboard', () => {
 				[ '02', '21', '22' ]
 			] ) );
 		} );
+
+		it( 'removes block fillers from empty cells', async () => {
+			await createEditor();
+
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '01', '11', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			pasteTable( [
+				[ '&nbsp;', '&nbsp;' ],
+				[ '&nbsp;', '&nbsp;' ]
+			] );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ '', '', '02' ],
+				[ '', '', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
+		} );
 	} );
 
 	async function createEditor( extraPlugins = [] ) {
