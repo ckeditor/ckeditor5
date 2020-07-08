@@ -146,9 +146,6 @@ export default class Position {
 		return this.path[ this.path.length - 1 ];
 	}
 
-	/**
-	 * @param {Number} newOffset
-	 */
 	set offset( newOffset ) {
 		this.path[ this.path.length - 1 ] = newOffset;
 	}
