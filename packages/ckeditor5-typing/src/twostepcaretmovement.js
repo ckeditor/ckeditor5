@@ -162,27 +162,15 @@ export default class TwoStepCaretMovement extends Plugin {
 			const contentDirection = locale.contentLanguageDirection;
 			let isMovementHandled = false;
 
-			let orientedHandlerMethod;
 			if ( ( contentDirection === 'ltr' && arrowRightPressed ) || ( contentDirection === 'rtl' && arrowLeftPressed ) ) {
-				orientedHandlerMethod = handleForwardMovement;
+				isMovementHandled = handleForwardMovement( position, data, this, this.attributes );
 			} else {
-				orientedHandlerMethod = handleBackwardMovement;
-			}
-
-			for ( const attribute of this.attributes ) {
-				// If gravity was changed for at least one attribute, move on.
-				const result = orientedHandlerMethod( position, data, this, attribute );
-				if ( result === true ) {
-					isMovementHandled = true;
-					break;
-				} else if ( result === 'next' ) {
-					break;
-				}
+				isMovementHandled = handleBackwardMovement( position, data, this, this.attributes );
 			}
 
 			// Stop the keydown event if the two-step caret movement handled it. Avoid collisions
 			// with other features which may also take over the caret movement (e.g. Widget).
-			if ( isMovementHandled ) {
+			if ( isMovementHandled === true ) {
 				evt.stop();
 			}
 		}, { priority: priorities.get( 'high' ) + 1 } );
@@ -217,10 +205,7 @@ export default class TwoStepCaretMovement extends Plugin {
 			// Skip automatic restore when the change is indirect AND the selection is at the attribute boundary.
 			// It means that e.g. if the change was external (collaboration) and the user had their
 			// selection around the link, its gravity should remain intact in this change:range event.
-			const isAnyAtBoundary = Array.from( this.attributes )
-				.some( attribute => isAtBoundary( modelSelection.getFirstPosition(), attribute ) );
-
-			if ( !data.directChange && isAnyAtBoundary ) {
+			if ( !data.directChange && isBetweenDifferentAttributes( modelSelection.getFirstPosition(), this.attributes ) ) {
 				return;
 			}
 
@@ -287,8 +272,9 @@ export default class TwoStepCaretMovement extends Plugin {
  * @param {String} attribute. The attribute to handle.
  * @returns {Boolean} `true` when the handler prevented caret movement
  */
-function handleForwardMovement( position, data, plugin, attribute ) {
+function handleForwardMovement( position, data, plugin, attributes ) {
 	const model = plugin.editor.model;
+	const selection = model.document.selection;
 	// DON'T ENGAGE 2-SCM if gravity is already overridden. It means that we just entered
 	//
 	// 		<paragraph>foo<$text attribute>{}bar</$text>baz</paragraph>
@@ -299,10 +285,8 @@ function handleForwardMovement( position, data, plugin, attribute ) {
 	//
 	// and the gravity will be restored automatically.
 	if ( plugin._isGravityOverridden ) {
-		return;
+		return false;
 	}
-
-	const hasSelectionAttribute = model.document.selection.hasAttribute( attribute );
 
 	// DON'T ENGAGE 2-SCM when the selection is at the beginning of the block AND already has the
 	// attribute:
@@ -311,44 +295,20 @@ function handleForwardMovement( position, data, plugin, attribute ) {
 	//
 	//		<paragraph><$text attribute>{}bar</$text>baz</paragraph>
 	//
-	if ( position.isAtStart && hasSelectionAttribute ) {
-		return;
+	if ( position.isAtStart && hasAnyAttribute( selection, attributes ) ) {
+		return false;
 	}
 
-	// ENGAGE 2-SCM when about to leave one attribute value and enter another:
-	//
-	// 		<paragraph><$text attribute="1">foo{}</$text><$text attribute="2">bar</$text></paragraph>
-	//
-	// but DON'T when already in between of them (no attribute selection):
-	//
-	// 		<paragraph><$text attribute="1">foo</$text>{}<$text attribute="2">bar</$text></paragraph>
-	//
-	if ( isBetweenDifferentValues( position, attribute ) && hasSelectionAttribute ) {
-		preventCaretMovement( data );
-		removeSelectionAttribute( model, attribute );
-
-		return true;
-	}
-
-	// ENGAGE 2-SCM when entering an attribute:
-	//
-	// 		<paragraph>foo{}<$text attribute>bar</$text>baz</paragraph>
-	//
-	if ( isAtStartBoundary( position, attribute ) ) {
-		preventCaretMovement( data );
-		plugin._overrideGravity();
-
-		return true;
-	}
-
-	// ENGAGE 2-SCM when leaving an attribute:
+	// ENGAGE 2-SCM When at least one of the observed attributes changes its value (incl. starts, ends).
 	//
 	//		<paragraph>foo<$text attribute>bar{}</$text>baz</paragraph>
+	//		<paragraph>foo<$text attribute>bar{}</$text><$text otherAttribute>baz</$text></paragraph>
+	//		<paragraph>foo<$text attribute=1>bar{}</$text><$text attribute=2>baz</$text></paragraph>
+	//		<paragraph>foo{}<$text attribute>bar</$text>baz</paragraph>
 	//
-	if ( isAtEndBoundary( position, attribute ) && hasSelectionAttribute ) {
+	if ( isBetweenDifferentAttributes( position, attributes ) ) {
 		preventCaretMovement( data );
 		plugin._overrideGravity();
-
 		return true;
 	}
 }
@@ -361,136 +321,66 @@ function handleForwardMovement( position, data, plugin, attribute ) {
  * @param {module:engine/view/observer/domeventdata~DomEventData} data Data of the key press.
  * @param {module:typing/src/twostepcaretmovement~TwoStepCaretMovement} plugin 2SCM plugin.
  * @param {String} attribute. The attribute to handle.
- * @returns {Boolean|String} `true` when the handler prevented caret movement,
- * 							`'next'` when the next gravity restoration should be skipped.
+ * @returns {Boolean} `true` when the handler prevented caret movement
  */
-function handleBackwardMovement( position, data, plugin, attribute ) {
+function handleBackwardMovement( position, data, plugin, attributes ) {
 	const model = plugin.editor.model;
-	const hasSelectionAttribute = model.document.selection.hasAttribute( attribute );
+	const selection = model.document.selection;
+
 	// When the gravity is already overridden...
 	if ( plugin._isGravityOverridden ) {
-		// ENGAGE 2-SCM & REMOVE SELECTION ATTRIBUTE
-		// when about to leave one attribute value and enter another:
+		// ENGAGE 2-SCM & update SELECTION ATTRIBUTE
+		// When at least one of the observed attributes changes its value (incl. starts, ends).
 		//
-		// 		<paragraph><$text attribute="1">foo</$text><$text attribute="2">{}bar</$text></paragraph>
+		//		<paragraph>foo<$text attribute=1>bar</$text><$text attribute=2>{}baz</$text></paragraph>
+		//		<paragraph>foo<$text attribute>bar</$text><$text otherAttribute>{}baz</$text></paragraph>
+		//		<paragraph>foo<$text attribute>{}bar</$text>baz</paragraph>
+		//		<paragraph>foo<$text attribute>bar</$text>{}baz</paragraph>
 		//
-		// but DON'T when already in between of them (no attribute selection):
-		//
-		// 		<paragraph><$text attribute="1">foo</$text>{}<$text attribute="2">bar</$text></paragraph>
-		//
-		if ( isBetweenDifferentValues( position, attribute ) && hasSelectionAttribute ) {
+		if ( isBetweenDifferentAttributes( position, attributes ) ) {
 			preventCaretMovement( data );
 			plugin._restoreGravity();
-			removeSelectionAttribute( plugin.editor.model, attribute );
-
-			return true;
-		}
-
-		// ENGAGE 2-SCM when at any boundary of the attribute:
-		//
-		// 		<paragraph>foo<$text attribute>bar</$text>{}baz</paragraph>
-		// 		<paragraph>foo<$text attribute>{}bar</$text>baz</paragraph>
-		//
-		else {
-			preventCaretMovement( data );
-			plugin._restoreGravity();
-
-			// REMOVE SELECTION ATRIBUTE at the beginning of the block.
-			// It's like restoring gravity but towards a non-existent content when
-			// the gravity is overridden:
-			//
-			// 		<paragraph><$text attribute>{}bar</$text></paragraph>
-			//
-			// becomes:
-			//
-			// 		<paragraph>{}<$text attribute>bar</$text></paragraph>
-			//
-			if ( position.isAtStart ) {
-				removeSelectionAttribute( plugin.editor.model, attribute );
-			}
+			setSelectionAttributesFromTheNodeBefore( model, attributes, position );
 
 			return true;
 		}
 	} else {
-		// ENGAGE 2-SCM when between two different attribute values but selection has no attribute:
-		//
-		// 		<paragraph><$text attribute="1">foo</$text>{}<$text attribute="2">bar</$text></paragraph>
-		//
-		if ( isBetweenDifferentValues( position, attribute ) && !hasSelectionAttribute ) {
-			preventCaretMovement( data );
-			setSelectionAttributeFromTheNodeBefore( plugin.editor.model, attribute, position );
-
-			return true;
-		}
-
-		// End of block boundary cases:
-		//
-		// 		<paragraph><$text attribute>bar{}</$text></paragraph>
-		// 		<paragraph><$text attribute>bar</$text>{}</paragraph>
-		//
-		if ( position.isAtEnd && isAtEndBoundary( position, attribute ) ) {
-			// DON'T ENGAGE 2-SCM if the selection has the attribute already.
-			// This is a common selection if set using the mouse.
-			//
-			// 		<paragraph><$text attribute>bar{}</$text></paragraph>
-			//
-			if ( hasSelectionAttribute ) {
-				// DON'T ENGAGE 2-SCM if the attribute at the end of the block which has length == 1.
-				// Make sure the selection will not the attribute after it moves backwards.
-				//
-				// 		<paragraph>foo<$text attribute>b{}</$text></paragraph>
-				//
-				if ( isStepAfterTheAttributeBoundary( position, attribute ) ) {
-					// Skip the automatic gravity restore upon the next selection#change:range event.
-					// If not skipped, it would automatically restore the gravity, which should remain
-					// overridden.
-					plugin._isNextGravityRestorationSkipped = true;
-					plugin._overrideGravity();
-
-					// Don't return "true" here because we didn't call _preventCaretMovement.
-					// Returning here will destabilize the filler logic, which also listens to
-					// keydown (and the event would be stopped).
-					return 'next';
-				}
-
-				return;
-			}
-			// ENGAGE 2-SCM if the selection has no attribute. This may happen when the user
-			// left the attribute using a FORWARD 2-SCM.
-			//
-			// 		<paragraph><$text attribute>bar</$text>{}</paragraph>
-			//
-			else {
-				preventCaretMovement( data );
-				setSelectionAttributeFromTheNodeBefore( plugin.editor.model, attribute, position );
-
-				return true;
-			}
-		}
-
-		// REMOVE SELECTION ATRIBUTE when restoring gravity towards a non-existent content at the
+		// REMOVE SELECTION ATTRIBUTE when restoring gravity towards a non-existent content at the
 		// beginning of the block.
 		//
 		// 		<paragraph>{}<$text attribute>bar</$text></paragraph>
 		//
 		if ( position.isAtStart ) {
-			if ( hasSelectionAttribute ) {
-				removeSelectionAttribute( model, attribute );
+			if ( hasAnyAttribute( selection, attributes ) ) {
 				preventCaretMovement( data );
+				setSelectionAttributesFromTheNodeBefore( model, attributes, position );
 
 				return true;
 			}
 
-			return;
+			return false;
 		}
 
-		// DON'T ENGAGE 2-SCM when about to enter of leave an attribute.
+		// DON'T ENGAGE 2-SCM when about to change the set of attributes.
 		// We need to check if the caret is a one position before the attribute boundary:
 		//
-		// 		<paragraph>foo<$text attribute>b{}ar</$text>baz</paragraph>
-		// 		<paragraph>foo<$text attribute>bar</$text>b{}az</paragraph>
+		//		<paragraph>foo<$text attribute=1>bar</$text><$text attribute=2>b{}az</$text></paragraph>
+		//		<paragraph>foo<$text attribute>bar</$text><$text otherAttribute>b{}az</$text></paragraph>
+		//		<paragraph>foo<$text attribute>b{}ar</$text>baz</paragraph>
+		//		<paragraph>foo<$text attribute>bar</$text>b{}az</paragraph>
 		//
-		if ( isStepAfterTheAttributeBoundary( position, attribute ) ) {
+		if ( isStepAfterAnyAttributeBoundary( position, attributes ) ) {
+			// ENGAGE 2-SCM if the selection has no attribute. This may happen when the user
+			// left the attribute using a FORWARD 2-SCM.
+			//
+			// 		<paragraph><$text attribute>bar</$text>{}</paragraph>
+			//
+			if ( position.isAtEnd && !hasAnyAttribute( selection, attributes ) && isBetweenDifferentAttributes( position, attributes ) ) {
+				preventCaretMovement( data );
+				setSelectionAttributesFromTheNodeBefore( model, attributes, position );
+
+				return true;
+			}
 			// Skip the automatic gravity restore upon the next selection#change:range event.
 			// If not skipped, it would automatically restore the gravity, which should remain
 			// overridden.
@@ -505,26 +395,35 @@ function handleBackwardMovement( position, data, plugin, attribute ) {
 	}
 }
 
-// Applies the {@link #attribute} to the current selection using using the
-// value from the node before the current position. Uses
+// Checks whether the selection has any of given attributes.
+//
+// @param {module:engine/model/documentselection~DocumentSelection} selection
+// @param {Iterable.<String>} attributes
+function hasAnyAttribute( selection, attributes ) {
+	for ( const observedAttribute of attributes ) {
+		if ( selection.hasAttribute( observedAttribute ) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+// Applies the given attributes to the current selection using using the
+// values from the node before the current position. Uses
 // the {@link module:engine/model/writer~Writer model writer}.
 //
 // @param {module:engine/model/model~Model}
-// @param {String} attribute
+// @param {Iterable.<String>} attributess
 // @param {module:engine/model/position~Position} position
-function setSelectionAttributeFromTheNodeBefore( model, attribute, position ) {
+function setSelectionAttributesFromTheNodeBefore( model, attributes, position ) {
+	const nodeBefore = position.nodeBefore;
 	model.change( writer => {
-		writer.setSelectionAttribute( attribute, position.nodeBefore.getAttribute( attribute ) );
-	} );
-}
-
-// Removes the {@link #attribute} from the selection using using the
-// {@link module:engine/model/writer~Writer model writer}.
-// @param {module:engine/model/model~Model}
-// @param {String} attribute
-function removeSelectionAttribute( model, attribute ) {
-	model.change( writer => {
-		writer.removeSelectionAttribute( attribute );
+		if ( nodeBefore ) {
+			writer.setSelectionAttribute( nodeBefore.getAttributes() );
+		} else {
+			writer.removeSelectionAttribute( attributes );
+		}
 	} );
 }
 
@@ -535,49 +434,29 @@ function preventCaretMovement( data ) {
 	data.preventDefault();
 }
 
+// Checks whether the step before `isBetweenDifferentAttributes()`.
+//
 // @param {module:engine/model/position~Position} position
 // @param {String} attribute
-// @returns {Boolean} `true` when position between the nodes sticks to the bound of text with given attribute.
-function isAtBoundary( position, attribute ) {
-	return isAtStartBoundary( position, attribute ) || isAtEndBoundary( position, attribute );
+function isStepAfterAnyAttributeBoundary( position, attributes ) {
+	const positionBefore = position.getShiftedBy( -1 );
+	return isBetweenDifferentAttributes( positionBefore, attributes );
 }
 
+// Checks whether the given position is between different values of given attributes.
+//
 // @param {module:engine/model/position~Position} position
-// @param {String} attribute
-function isAtStartBoundary( position, attribute ) {
+// @param {Iterable.<String>} attributes
+function isBetweenDifferentAttributes( position, attributes ) {
 	const { nodeBefore, nodeAfter } = position;
-	const isAttrBefore = nodeBefore ? nodeBefore.hasAttribute( attribute ) : false;
-	const isAttrAfter = nodeAfter ? nodeAfter.hasAttribute( attribute ) : false;
+	for ( const observedAttribute of attributes ) {
+		const attrBefore = nodeBefore ? nodeBefore.getAttribute( observedAttribute ) : undefined;
+		const attrAfter = nodeAfter ? nodeAfter.getAttribute( observedAttribute ) : undefined;
 
-	return isAttrAfter && ( !isAttrBefore || nodeBefore.getAttribute( attribute ) !== nodeAfter.getAttribute( attribute ) );
-}
-
-// @param {module:engine/model/position~Position} position
-// @param {String} attribute
-function isAtEndBoundary( position, attribute ) {
-	const { nodeBefore, nodeAfter } = position;
-	const isAttrBefore = nodeBefore ? nodeBefore.hasAttribute( attribute ) : false;
-	const isAttrAfter = nodeAfter ? nodeAfter.hasAttribute( attribute ) : false;
-
-	return isAttrBefore && ( !isAttrAfter || nodeBefore.getAttribute( attribute ) !== nodeAfter.getAttribute( attribute ) );
-}
-
-// @param {module:engine/model/position~Position} position
-// @param {String} attribute
-function isBetweenDifferentValues( position, attribute ) {
-	const { nodeBefore, nodeAfter } = position;
-	const isAttrBefore = nodeBefore ? nodeBefore.hasAttribute( attribute ) : false;
-	const isAttrAfter = nodeAfter ? nodeAfter.hasAttribute( attribute ) : false;
-
-	if ( !isAttrAfter || !isAttrBefore ) {
-		return;
+		if ( attrAfter !== attrBefore ) {
+			return true;
+		}
 	}
-
-	return nodeAfter.getAttribute( attribute ) !== nodeBefore.getAttribute( attribute );
+	return false;
 }
 
-// @param {module:engine/model/position~Position} position
-// @param {String} attribute
-function isStepAfterTheAttributeBoundary( position, attribute ) {
-	return isAtBoundary( position.getShiftedBy( -1 ), attribute );
-}
