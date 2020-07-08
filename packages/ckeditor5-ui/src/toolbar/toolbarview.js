@@ -276,11 +276,27 @@ export default class ToolbarView extends View {
 	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
 	 */
 	fillFromConfig( config, factory ) {
-		config.map( name => {
+		for ( const item of ToolbarView.createItemsFromConfig( config, factory ) ) {
+			this.items.add( item );
+		}
+	}
+
+	/**
+	 * A utility that expands the plain toolbar configuration into
+	 * {@link module:ui/toolbar/toolbarview~ToolbarView#items} using a given component factory.
+	 *
+	 * @param {Array.<String>} config The toolbar items configuration.
+	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
+	 * @returns {Set.<module:ui/view~View>}
+	 */
+	static createItemsFromConfig( config, factory ) {
+		const items = new Set();
+
+		for ( const name of config ) {
 			if ( name == '|' ) {
-				this.items.add( new ToolbarSeparatorView() );
+				items.add( new ToolbarSeparatorView() );
 			} else if ( factory.has( name ) ) {
-				this.items.add( factory.create( name ) );
+				items.add( factory.create( name ) );
 			} else {
 				/**
 				 * There was a problem processing the configuration of the toolbar. The item with the given
@@ -300,9 +316,13 @@ export default class ToolbarView extends View {
 				 * @param {String} name The name of the component.
 				 */
 				console.warn( attachLinkToDocumentation(
-					'toolbarview-item-unavailable: The requested toolbar item is unavailable.' ), { name } );
+					'toolbarview-item-unavailable: The requested toolbar item is unavailable.' ), {
+					name
+				} );
 			}
-		} );
+		}
+
+		return items;
 	}
 }
 
