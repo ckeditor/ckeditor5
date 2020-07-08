@@ -3434,25 +3434,28 @@ describe( 'table clipboard', () => {
 					[ '40', '41', '42', '43', '44' ]
 				], { headingRows: 2, headingColumns: 2 } ) );
 
-				const selectionRanges = Array.from( model.document.selection.getRanges() );
-				const selectedCellsPaths = selectionRanges.map( ( { start } ) => start.path );
+				assertSelectionRangesSorted();
 
-				// Note that order of ranges is also important.
-				expect( selectionRanges.length ).to.be.equal( 11 );
-				expect( selectedCellsPaths ).to.deep.equal( [
-					[ 0, 0, 0 ],
-					[ 0, 0, 1 ],
-					[ 0, 0, 2 ],
-					[ 0, 1, 0 ],
-					[ 0, 2, 0 ],
-					[ 0, 2, 1 ],
-					[ 0, 2, 2 ],
-					[ 0, 3, 0 ],
-					[ 0, 3, 1 ],
-					[ 0, 3, 2 ],
-					[ 0, 3, 3 ]
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 1,    1, 1, 0 ],
+					[          1, 0 ],
+					[ 1,    1, 1, 0 ],
+					[ 1, 1, 1, 1, 0 ],
+					[ 0, 0, 0, 0, 0 ]
 				] );
+				/* eslint-enable no-multi-spaces */
 			} );
+
+			function assertSelectionRangesSorted() {
+				const selectionRanges = Array.from( model.document.selection.getRanges() );
+				const selectionRangesSorted = selectionRanges.slice().sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
+
+				const selectionPaths = selectionRanges.map( ( { start } ) => start.path );
+				const sortedPaths = selectionRangesSorted.map( ( { start } ) => start.path );
+
+				expect( selectionPaths ).to.deep.equal( sortedPaths );
+			}
 		} );
 	} );
 
