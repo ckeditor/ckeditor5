@@ -10,5 +10,8 @@
 	"Enter image caption": "Placeholder text for image caption displayed when caption is empty.",
 	"Insert image": "Label for the insert image toolbar button.",
 	"Upload failed": "Title of the notification displayed when upload fails.",
-	"Image toolbar": "The label used by assistive technologies describing an image toolbar attached to an image widget."
+	"Image toolbar": "The label used by assistive technologies describing an image toolbar attached to an image widget.",
+	"Resize image to": "The label used for the standalone resize option buttons in the image toolbar",
+	"Resize image": "The label used for the dropdown in the image toolbar, containing defined resize options",
+	"Resize image to the original size": "The label used for the standalone resize reset option button in the image toolbar, when user set the value to `null`"
 }
