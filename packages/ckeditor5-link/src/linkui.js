@@ -686,9 +686,5 @@ export default class LinkUI extends Plugin {
 // @param {module:engine/view/position~Position} View position to analyze.
 // @returns {module:engine/view/attributeelement~AttributeElement|null} Link element at the position or null.
 function findLinkElementAncestor( position ) {
-	// console.log( position );
-	return position.getAncestors( ).find( ancestor => {
-		// console.log( ancestor );
-		return isLinkElement( ancestor );
-	} );
+	return position.getAncestors().find( ancestor => isLinkElement( ancestor ) );
 }
