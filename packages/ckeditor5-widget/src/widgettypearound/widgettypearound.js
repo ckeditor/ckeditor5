@@ -144,9 +144,17 @@ export default class WidgetTypeAround extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * A wrapper for the {@link module:utils/emittermixin~EmitterMixin#listenTo} method that executes the callbacks only
+	 * when the plugin {@link #isEnabled is enabled}.
 	 *
 	 * @private
+	 * @param {module:utils/emittermixin~Emitter} emitter The object that fires the event.
+	 * @param {String} event The name of the event.
+	 * @param {Function} callback The function to be called on event.
+	 * @param {Object} [options={}] Additional options.
+	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
+	 * order they were added.
 	 */
 	_listenToIfEnabled( emitter, event, callback, options ) {
 		super.listenTo( emitter, event, ( ...args ) => {
