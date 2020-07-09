@@ -844,11 +844,11 @@ describe( 'WidgetTypeAround', () => {
 				it( 'should not work when the plugin is disabled', () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
+					editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
 					model.change( writer => {
 						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
 					} );
-
-					editor.plugins.get( WidgetTypeAround ).isEnabled = false;
 
 					fireKeyboardEvent( 'enter' );
 					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
@@ -1029,11 +1029,11 @@ describe( 'WidgetTypeAround', () => {
 				it( 'should not work when the plugin is disabled', () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
+					editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
 					model.change( writer => {
 						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
 					} );
-
-					editor.plugins.get( WidgetTypeAround ).isEnabled = false;
 
 					fireKeyboardEvent( 'a' );
 					fireMutation( 'a' );
@@ -1382,6 +1382,10 @@ describe( 'WidgetTypeAround', () => {
 
 				editor.plugins.get( WidgetTypeAround ).isEnabled = false;
 
+				model.change( writer => {
+					writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+				} );
+
 				fireDeleteEvent();
 				expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 			} );
@@ -1544,11 +1548,11 @@ describe( 'WidgetTypeAround', () => {
 		it( 'should not work when the plugin is disabled', () => {
 			setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
+			editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
 			model.change( writer => {
 				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
 			} );
-
-			editor.plugins.get( WidgetTypeAround ).isEnabled = false;
 
 			model.insertContent( createParagraph( 'bar' ) );
 
