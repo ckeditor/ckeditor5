@@ -179,27 +179,54 @@ export default class Collection {
 	 * @param {Number} [index] The position of the item in the collection. The item
 	 * is pushed to the collection when `index` not specified.
 	 * @fires add
+	 * @fires batchAdd
 	 */
 	add( item, index ) {
-		const itemId = this._getItemIdBeforeAdding( item );
+		return this.batchAdd( [ item ], index );
+	}
 
-		// TODO: Use ES6 default function argument.
-		if ( index === undefined ) {
-			index = this._items.length;
-		} else if ( index > this._items.length || index < 0 ) {
-			/**
-			 * The index number has invalid value.
-			 *
-			 * @error collection-add-item-bad-index
-			 */
-			throw new CKEditorError( 'collection-add-item-invalid-index', this );
+	/**
+	 * Adds multiple items into the collection.
+	 *
+	 * Any item not containing an id will get an automatically generated one.
+	 *
+	 * @chainable
+	 * @param {Iterable.<Object>} item
+	 * @param {Number} [index] The position of the insertion. The item is pushed to the collection
+	 * when `index` not specified.
+	 * @fires add
+	 * @fires batchAdd
+	 */
+	batchAdd( items, index ) {
+		let firstIndex;
+
+		for ( const item of items ) {
+			const itemId = this._getItemIdBeforeAdding( item );
+
+			// TODO: Use ES6 default function argument.
+			if ( index === undefined ) {
+				index = this._items.length;
+			} else if ( index > this._items.length || index < 0 ) {
+				/**
+				 * The index number has invalid value.
+				 *
+				 * @error collection-add-item-bad-index
+				 */
+				throw new CKEditorError( 'collection-add-item-invalid-index', this );
+			}
+
+			if ( firstIndex === undefined ) {
+				firstIndex = index;
+			}
+
+			this._items.splice( index, 0, item );
+
+			this._itemMap.set( itemId, item );
+
+			this.fire( 'add', item, index );
 		}
 
-		this._items.splice( index, 0, item );
-
-		this._itemMap.set( itemId, item );
-
-		this.fire( 'add', item, index );
+		this.fire( 'batchAdd', items, firstIndex );
 
 		return this;
 	}
