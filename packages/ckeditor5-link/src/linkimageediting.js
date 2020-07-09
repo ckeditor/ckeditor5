@@ -118,7 +118,7 @@ function downcastImageLink() {
 			const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
 
 			// Create an icon indicator for a linked image.
-			const linkIconContainer = writer.createUIElement( 'span', { class: 'ck ck-link-image_icon' }, function( domDocument ) {
+			const linkIconIndicator = writer.createUIElement( 'span', { class: 'ck ck-link-image_icon' }, function( domDocument ) {
 				const domElement = this.toDomElement( domDocument );
 				domElement.innerHTML = linkIcon;
 
@@ -147,7 +147,7 @@ function downcastImageLink() {
 				writer.move( writer.createRangeOn( viewFigure.getChild( 1 ) ), writer.createPositionAt( linkElement, 0 ) );
 
 				// 4. Inset the linked image icon indicator.
-				writer.insert( writer.createPositionAt( linkElement, 0 ), linkIconContainer );
+				writer.insert( writer.createPositionAt( linkElement, 'end' ), linkIconIndicator );
 			}
 		} );
 	};
