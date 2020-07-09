@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import TwoStepCaretMovement from '@ckeditor/ckeditor5-typing/src/twostepcaretmovement';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import AutomaticDecorators from './utils/automaticdecorators';
@@ -110,6 +111,9 @@ export default class LinkEditing extends Plugin {
 
 		// Handle a click at the beginning/end of a link element.
 		this._enableClickingAfterLink();
+
+		// Handle typing over the link.
+		this._enableTypingOverLink();
 	}
 
 	/**
@@ -414,4 +418,86 @@ export default class LinkEditing extends Plugin {
 			}
 		} );
 	}
+
+	/**
+	 * Starts listening to {@link module:engine/model/model~Model#deleteContent} and {@link module:engine/model/model~Model#insertContent}
+	 * and checks whether typing over the link. If so, attributes of removed text are preserved and applied to the inserted text.
+	 *
+	 * The purpose of this action is to allow modifying a text without loosing the `linkHref` attribute (and other).
+	 *
+	 * See https://github.com/ckeditor/ckeditor5/issues/4762.
+	 *
+	 * @private
+	 */
+	_enableTypingOverLink() {
+		const editor = this.editor;
+
+		// Selection attributes when started typing over the link.
+		let selectionAttributes;
+
+		// Whether pressed `Backspace` or `Delete`. If so, attributes should not be preserved.
+		let deletedContent;
+
+		// Detect pressing `Backspace` / `Delete`.
+		editor.editing.view.document.on( 'delete', ( evt, data ) => {
+			/* istanbul ignore else */
+			if ( data.domEvent.keyCode == keyCodes.delete || data.domEvent.keyCode == keyCodes.backspace ) {
+				deletedContent = true;
+			}
+		}, { priority: 'high' } );
+
+		editor.model.on( 'deleteContent', () => {
+			const selection = editor.model.document.selection;
+
+			// Copy attributes only if anything is selected.
+			if ( selection.isCollapsed ) {
+				return;
+			}
+
+			// When the content was deleted, do not preserve attributes.
+			if ( deletedContent ) {
+				deletedContent = false;
+
+				return;
+			}
+
+			const nodeAfterFirstPosition = selection.getFirstPosition().nodeAfter;
+			const nodeBeforeLastPosition = selection.getLastPosition().nodeBefore;
+
+			if ( isCorrectLink( nodeAfterFirstPosition, nodeBeforeLastPosition ) ) {
+				selectionAttributes = nodeAfterFirstPosition.getAttributes();
+			}
+		}, { priority: 'high' } );
+
+		editor.model.on( 'insertContent', ( evt, [ element ] ) => {
+			if ( !selectionAttributes ) {
+				return;
+			}
+
+			editor.model.change( writer => {
+				for ( const [ attribute, value ] of selectionAttributes ) {
+					writer.setAttribute( attribute, value, element );
+				}
+			} );
+
+			selectionAttributes = null;
+		}, { priority: 'high' } );
+	}
+}
+
+// Checks whether passed elements are the same and they represent a text node.
+//
+// @param {module:engine/model/node~Node} nodeA
+// @param {module:engine/model/node~Node} nodeB
+// @returns {Boolean}
+function isCorrectLink( nodeA, nodeB ) {
+	if ( !nodeA || !nodeB ) {
+		return;
+	}
+
+	if ( nodeA !== nodeB ) {
+		return;
+	}
+
+	return nodeA.is( 'text' );
 }

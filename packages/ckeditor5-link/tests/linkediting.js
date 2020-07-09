@@ -17,6 +17,7 @@ import { isLinkElement } from '../src/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
 /* global document */
 
@@ -892,6 +893,11 @@ describe( 'LinkEditing', () => {
 
 			model = editor.model;
 			view = editor.editing.view;
+
+			model.schema.extend( '$text', {
+				allowIn: '$root',
+				allowAttributes: [ 'linkIsFoo', 'linkIsBar' ]
+			} );
 		} );
 
 		afterEach( async () => {
@@ -1033,11 +1039,6 @@ describe( 'LinkEditing', () => {
 		} );
 
 		it( 'should remove manual decorators', () => {
-			model.schema.extend( '$text', {
-				allowIn: '$root',
-				allowAttributes: [ 'linkIsFoo', 'linkIsBar' ]
-			} );
-
 			setModelData( model, '<paragraph><$text linkIsFoo="true" linkIsBar="true" linkHref="url">Bar[]</$text></paragraph>' );
 
 			editor.editing.view.document.fire( 'mousedown' );
@@ -1053,6 +1054,185 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph><$text linkHref="url" linkIsBar="true" linkIsFoo="true">Bar</$text>Foo[]</paragraph>'
+			);
+		} );
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/4762
+	describe( 'typing over the link', () => {
+		let editor;
+
+		beforeEach( async () => {
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, LinkEditing, Enter, Typing ],
+				link: {
+					decorators: {
+						isFoo: {
+							mode: 'manual',
+							label: 'Foo',
+							attributes: {
+								class: 'foo'
+							}
+						},
+						isBar: {
+							mode: 'manual',
+							label: 'Bar',
+							attributes: {
+								target: '_blank'
+							}
+						}
+					}
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+
+			model.schema.extend( '$text', {
+				allowIn: '$root',
+				allowAttributes: [ 'linkIsFoo', 'linkIsBar' ]
+			} );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should preserve the `linkHref` attribute when the entire link is selected', () => {
+			setModelData( model,
+				'<paragraph>This is <$text linkHref="foo">[Foo]</$text> from <$text linkHref="bar">Bar</$text>.</paragraph>'
+			);
+
+			model.change( writer => {
+				model.deleteContent( model.document.selection );
+				model.insertContent( writer.createText( 'Abcde' ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>This is <$text linkHref="foo">Abcde</$text>[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
+			);
+		} );
+
+		it( 'should preserve all attributes of the link node (decorators check)', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'This is ' +
+					'<$text linkIsFoo="true" linkIsBar="true" linkHref="foo">[Foo]</$text>' +
+					' from ' +
+					'<$text linkHref="bar">Bar</$text>' +
+					'.' +
+				'</paragraph>'
+			);
+
+			model.change( writer => {
+				model.deleteContent( model.document.selection );
+				model.insertContent( writer.createText( 'Abcde' ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+					'This is ' +
+					'<$text linkHref="foo" linkIsBar="true" linkIsFoo="true">Abcde</$text>[]' +
+					' from ' +
+					'<$text linkHref="bar">Bar</$text>' +
+					'.' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should not preserve the `linkHref` attribute when the entire link is selected and pressed "Backspace"', () => {
+			setModelData( model,
+				'<paragraph>This is <$text linkHref="foo">[Foo]</$text> from <$text linkHref="bar">Bar</$text>.</paragraph>'
+			);
+
+			view.document.fire( 'delete', new DomEventData( view.document, {
+				keyCode: keyCodes.backspace,
+				preventDefault: () => {}
+			} ) );
+
+			model.change( writer => {
+				model.insertContent( writer.createText( 'Abcde' ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
+			);
+		} );
+
+		it( 'should not preserve the `linkHref` attribute when the entire link is selected and pressed "Delete"', () => {
+			setModelData( model,
+				'<paragraph>This is <$text linkHref="foo">[Foo]</$text> from <$text linkHref="bar">Bar</$text>.</paragraph>'
+			);
+
+			view.document.fire( 'delete', new DomEventData( view.document, {
+				keyCode: keyCodes.delete,
+				preventDefault: () => {}
+			} ) );
+
+			model.change( writer => {
+				model.insertContent( writer.createText( 'Abcde' ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>This is Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
+			);
+		} );
+
+		it( 'should not preserve the `linkHref` attribute when selected different links', () => {
+			setModelData( model,
+				'<paragraph>This is <$text linkHref="foo">[Foo</$text> from <$text linkHref="bar">Bar]</$text>.</paragraph>'
+			);
+
+			model.change( writer => {
+				model.deleteContent( model.document.selection );
+				model.insertContent( writer.createText( 'Abcde' ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>This is Abcde[].</paragraph>' );
+		} );
+
+		it( 'should not preserve the `linkHref` attribute when selected more than single link (start of the selection)', () => {
+			setModelData( model,
+				'<paragraph>This is[ <$text linkHref="foo">Foo]</$text> from <$text linkHref="bar">Bar</$text>.</paragraph>'
+			);
+
+			model.change( writer => {
+				model.deleteContent( model.document.selection );
+				model.insertContent( writer.createText( 'Abcde' ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>This isAbcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
+			);
+		} );
+
+		it( 'should not preserve the `linkHref` attribute when selected more than single link (end of the selection)', () => {
+			setModelData( model,
+				'<paragraph>This is <$text linkHref="foo">[Foo</$text> ]from <$text linkHref="bar">Bar</$text>.</paragraph>'
+			);
+
+			model.change( writer => {
+				model.deleteContent( model.document.selection );
+				model.insertContent( writer.createText( 'Abcde' ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>This is Abcde[]from <$text linkHref="bar">Bar</$text>.</paragraph>'
+			);
+		} );
+
+		it( 'should not preserve the `linkHref` attribute when selection is collapsed', () => {
+			setModelData( model,
+				'<paragraph>This is <$text linkHref="foo">Foo[]</$text> from <$text linkHref="bar">Bar</$text>.</paragraph>'
+			);
+
+			model.change( writer => {
+				model.deleteContent( model.document.selection );
+				model.insertContent( writer.createText( 'Abcde' ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>This is <$text linkHref="foo">Foo</$text>Abcde[] from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
 		} );
 	} );
