@@ -83,6 +83,25 @@ import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
  *   <kbd>←</kbd>
  *
  *   		<$text a="true">ba{}r</$text>b{}az
+ *
+ * # Multiple attributes
+ *
+ * * When enabled and many attributes starts or ends at the same position:
+ *
+ *   		<$text a="true" b="true">bar</$text>{}baz
+ *
+ *    <kbd>←</kbd>
+ *
+ *   		<$text a="true" b="true">bar{}</$text>baz
+ *
+ * * When enabled and one procedes another:
+ *
+ *   		<$text a="true">bar</$text><$text b="true">{}bar</$text>
+ *
+ *    <kbd>←</kbd>
+ *
+ *   		<$text a="true">bar{}</$text><$text b="true">bar</$text>
+ *
  */
 export default class TwoStepCaretMovement extends Plugin {
 	/**
@@ -175,8 +194,7 @@ export default class TwoStepCaretMovement extends Plugin {
 		}, { priority: priorities.get( 'high' ) + 1 } );
 
 		/**
-		 * A flag indicating that the automatic gravity restoration for this attribute
-		 * should not happen upon the next
+		 * A flag indicating that the automatic gravity restoration should not happen upon the next
 		 * {@link module:engine/model/selection~Selection#event:change:range} event.
 		 *
 		 * @private
@@ -357,7 +375,7 @@ export default class TwoStepCaretMovement extends Plugin {
 	}
 
 	/**
-	 * `true` when the gravity is overridden for the {@link #attribute}.
+	 * `true` when the gravity is overridden for the plugin.
 	 *
 	 * @readonly
 	 * @private
