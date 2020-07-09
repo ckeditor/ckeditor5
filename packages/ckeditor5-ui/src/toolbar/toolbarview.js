@@ -21,6 +21,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
 import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import verticalDotsIcon from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
+import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
 
 import '../../theme/components/toolbar/toolbar.css';
 
@@ -37,9 +38,10 @@ export default class ToolbarView extends View {
 	 * Also see {@link #render}.
 	 *
 	 * @param {module:utils/locale~Locale} locale The localization services instance.
+	 * @param {module:ui/componentfactory~ComponentFactory} componentsFactory Factory used to create UI components.
 	 * @param {module:ui/toolbar/toolbarview~ToolbarOptions} [options] Configuration options of the toolbar.
 	 */
-	constructor( locale, options ) {
+	constructor( locale, componentsFactory, options ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -80,7 +82,10 @@ export default class ToolbarView extends View {
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
-		this.items = this.createCollection();
+		this.items = ToolbarView.createItemsFromConfig( normalizeToolbarConfig( options.toolbarItems ).items, componentsFactory );
+		// ToolbarView.createItemsFromConfig( factory );
+		// this._toolbarConfig.items
+		// normalizeToolbarConfig( editor.config.get( 'toolbar' ) )
 
 		/**
 		 * Tracks information about the DOM focus in the toolbar.
@@ -873,6 +878,14 @@ class DynamicGrouping {
  * Also see: {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth}.
  *
  * @member {Boolean} module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull
+ */
+
+/**
+ * Toolbar items to be initially rendered in the toolbar.
+ *
+ * Based on {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
+ *
+ * @member {Array.<String>|Object} module:ui/toolbar/toolbarview~ToolbarOptions#toolbarItems
  */
 
 /**

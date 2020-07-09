@@ -12,6 +12,7 @@ import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin
 import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
@@ -71,11 +72,15 @@ export default class ClassicEditor extends Editor {
 		this.model.document.createRoot();
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
-		const view = new ClassicEditorUIView( this.locale, this.editing.view, {
-			shouldToolbarGroupWhenFull
+
+		const componentFactory = new ComponentFactory( this );
+
+		const view = new ClassicEditorUIView( this.locale, this.editing.view, componentFactory, {
+			shouldToolbarGroupWhenFull,
+			toolbarItems: this.config.get( 'toolbar' )
 		} );
 
-		this.ui = new ClassicEditorUI( this, view );
+		this.ui = new ClassicEditorUI( this, view, componentFactory );
 
 		attachToForm( this );
 	}
