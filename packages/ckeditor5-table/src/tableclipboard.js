@@ -11,9 +11,6 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
-import {
-	findAncestor
-} from './utils/common';
 import TableUtils from './tableutils';
 import { getColumnIndexes, getRowIndexes, getSelectionAffectedTableCells, isSelectionRectangular } from './utils/selection';
 import {
@@ -165,7 +162,7 @@ export default class TableClipboard extends Plugin {
 			pastedTable = cropTableToDimensions( pastedTable, cropDimensions, writer );
 
 			// Content table to which we insert a pasted table.
-			const selectedTable = findAncestor( 'table', selectedTableCells[ 0 ] );
+			const selectedTable = selectedTableCells[ 0 ].findAncestor( 'table' );
 
 			replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selectedTable, selection, writer );
 		} );
@@ -186,7 +183,7 @@ export default class TableClipboard extends Plugin {
 // @returns {Number} selection.lastColumn
 // @returns {Number} selection.lastRow
 function prepareTableForPasting( selectedTableCells, pastedDimensions, writer, tableUtils ) {
-	const selectedTable = findAncestor( 'table', selectedTableCells[ 0 ] );
+	const selectedTable = selectedTableCells[ 0 ].findAncestor( 'table' );
 
 	const columnIndexes = getColumnIndexes( selectedTableCells );
 	const rowIndexes = getRowIndexes( selectedTableCells );

@@ -15,7 +15,6 @@ import { debounce } from 'lodash-es';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import TableWalker from '../../src/tablewalker';
 import { getSelectionAffectedTableCells } from '../../src/utils/selection';
-import { findAncestor } from '../../src/utils/common';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -120,7 +119,7 @@ ClassicEditor
 			const tableCells = getSelectionAffectedTableCells( selection );
 
 			if ( tableCells.length ) {
-				return findAncestor( 'table', tableCells[ 0 ] );
+				return tableCells[ 0 ].findAncestor( 'table' );
 			}
 
 			const element = selection.getSelectedElement();

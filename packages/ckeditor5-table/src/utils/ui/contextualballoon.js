@@ -10,7 +10,6 @@
 import { centeredBalloonPositionForLongWidgets } from '@ckeditor/ckeditor5-widget/src/utils';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { getTableWidgetAncestor } from './widget';
-import { findAncestor } from '../common';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 
 const DEFAULT_BALLOON_POSITIONS = BalloonPanelView.defaultPositions;
@@ -64,7 +63,7 @@ export function repositionContextualBalloon( editor, target ) {
  */
 export function getBalloonTablePositionData( editor ) {
 	const firstPosition = editor.model.document.selection.getFirstPosition();
-	const modelTable = findAncestor( 'table', firstPosition );
+	const modelTable = firstPosition.findAncestor( 'table' );
 	const viewTable = editor.editing.mapper.toViewElement( modelTable );
 
 	return {
@@ -113,7 +112,7 @@ export function getBalloonCellPositionData( editor ) {
 function getTableCellAtPosition( position ) {
 	const isTableCellSelected = position.nodeAfter && position.nodeAfter.is( 'tableCell' );
 
-	return isTableCellSelected ? position.nodeAfter : findAncestor( 'tableCell', position );
+	return isTableCellSelected ? position.nodeAfter : position.findAncestor( 'tableCell' );
 }
 
 // Returns bounding rect for list of rects.
