@@ -157,7 +157,7 @@ export default class WidgetTypeAround extends Plugin {
 	 * order they were added.
 	 */
 	_listenToIfEnabled( emitter, event, callback, options ) {
-		super.listenTo( emitter, event, ( ...args ) => {
+		this.listenTo( emitter, event, ( ...args ) => {
 			// Do not respond if the plugin is disabled.
 			if ( this.isEnabled ) {
 				callback( ...args );
