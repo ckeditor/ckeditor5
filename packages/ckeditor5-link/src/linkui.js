@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals setTimeout */
+
 /**
  * @module link/linkui
  */
@@ -255,12 +257,14 @@ export default class LinkUI extends Plugin {
 		// Handle click on view document and show panel when selection is placed inside the link element.
 		// Keep panel open until selection will be inside the same link element.
 		this.listenTo( viewDocument, 'click', () => {
-			const parentLink = this._getSelectedLinkElement();
+			setTimeout( () => {
+				const parentLink = this._getSelectedLinkElement();
 
-			if ( parentLink ) {
-				// Then show panel but keep focus inside editor editable.
-				this._showUI();
-			}
+				if ( parentLink ) {
+					// Then show panel but keep focus inside editor editable.
+					this._showUI();
+				}
+			} );
 		} );
 
 		// Focus the form if the balloon is visible and the Tab key has been pressed.
@@ -682,5 +686,9 @@ export default class LinkUI extends Plugin {
 // @param {module:engine/view/position~Position} View position to analyze.
 // @returns {module:engine/view/attributeelement~AttributeElement|null} Link element at the position or null.
 function findLinkElementAncestor( position ) {
-	return position.getAncestors().find( ancestor => isLinkElement( ancestor ) );
+	// console.log( position );
+	return position.getAncestors( ).find( ancestor => {
+		// console.log( ancestor );
+		return isLinkElement( ancestor );
+	} );
 }

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document, Event, setTimeout */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -776,25 +776,40 @@ describe( 'LinkUI', () => {
 				spy = testUtils.sinon.stub( linkUIFeature, '_showUI' ).returns( {} );
 			} );
 
-			it( 'should show the UI when collapsed selection is inside link element', () => {
+			it( 'should show the UI when collapsed selection is inside link element', done => {
 				setModelData( editor.model, '<$text linkHref="url">fo[]o</$text>' );
 
 				observer.fire( 'click', { target: document.body } );
-				sinon.assert.calledWithExactly( spy );
+
+				setTimeout( () => {
+					sinon.assert.calledWithExactly( spy );
+
+					done();
+				} );
 			} );
 
-			it( 'should show the UI when selection exclusively encloses a link element (#1)', () => {
+			it( 'should show the UI when selection exclusively encloses a link element (#1)', done => {
 				setModelData( editor.model, '[<$text linkHref="url">foo</$text>]' );
 
 				observer.fire( 'click', { target: {} } );
-				sinon.assert.calledWithExactly( spy );
+
+				setTimeout( () => {
+					sinon.assert.calledWithExactly( spy );
+
+					done();
+				} );
 			} );
 
-			it( 'should show the UI when selection exclusively encloses a link element (#2)', () => {
+			it( 'should show the UI when selection exclusively encloses a link element (#2)', done => {
 				setModelData( editor.model, '<$text linkHref="url">[foo]</$text>' );
 
 				observer.fire( 'click', { target: {} } );
-				sinon.assert.calledWithExactly( spy );
+
+				setTimeout( () => {
+					sinon.assert.calledWithExactly( spy );
+
+					done();
+				} );
 			} );
 
 			it( 'should do nothing when selection is not inside link element', () => {
