@@ -840,6 +840,19 @@ describe( 'WidgetTypeAround', () => {
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				} );
+
+				it( 'should not work when the plugin is disabled', () => {
+					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+					model.change( writer => {
+						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
+					} );
+
+					editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
+					fireKeyboardEvent( 'enter' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				} );
 			} );
 
 			describe( 'on Enter key press when the widget is selected (no "fake caret", though)', () => {
@@ -942,6 +955,16 @@ describe( 'WidgetTypeAround', () => {
 					expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[]</paragraph>' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				} );
+
+				it( 'should not work when the plugin is disabled', () => {
+					editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
+					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+					fireKeyboardEvent( 'enter' );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				} );
 			} );
 
 			describe( 'on keydown of a "typing" character when the "fake caret" is activated ', () => {
@@ -1002,16 +1025,22 @@ describe( 'WidgetTypeAround', () => {
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				} );
-			} );
 
-			it( 'should not work when the plugin is disabled', () => {
-				editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+				it( 'should not work when the plugin is disabled', () => {
+					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
-				setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+					model.change( writer => {
+						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+					} );
 
-				fireKeyboardEvent( 'enter' );
+					editor.plugins.get( WidgetTypeAround ).isEnabled = false;
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+					fireKeyboardEvent( 'a' );
+					fireMutation( 'a' );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>a[]</paragraph>' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+				} );
 			} );
 		} );
 
@@ -1344,6 +1373,19 @@ describe( 'WidgetTypeAround', () => {
 				} );
 			} );
 
+			it( 'should not work when the plugin is disabled', () => {
+				setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+				fireKeyboardEvent( 'arrowleft' );
+
+				expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
+
+				editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
+				fireDeleteEvent();
+				expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			} );
+
 			function fireDeleteEvent( isForward = false ) {
 				eventInfoStub = new EventInfo( viewDocument, 'delete' );
 				sinon.spy( eventInfoStub, 'stop' );
@@ -1497,6 +1539,20 @@ describe( 'WidgetTypeAround', () => {
 			expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>bar[]</paragraph><paragraph>foo</paragraph>' );
 			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should not work when the plugin is disabled', () => {
+			setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+			model.change( writer => {
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+			} );
+
+			editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
+			model.insertContent( createParagraph( 'bar' ) );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>bar[]</paragraph>' );
 		} );
 
 		function createParagraph( text ) {
