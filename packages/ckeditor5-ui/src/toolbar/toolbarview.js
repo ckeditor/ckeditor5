@@ -276,11 +276,12 @@ export default class ToolbarView extends View {
 	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
 	 */
 	fillFromConfig( config, factory ) {
+		const toolbarItems = [];
 		config.map( name => {
 			if ( name == '|' ) {
-				this.items.add( new ToolbarSeparatorView() );
+				toolbarItems.push( new ToolbarSeparatorView() );
 			} else if ( factory.has( name ) ) {
-				this.items.add( factory.create( name ) );
+				toolbarItems.push( factory.create( name ) );
 			} else {
 				/**
 				 * There was a problem processing the configuration of the toolbar. The item with the given
@@ -303,6 +304,8 @@ export default class ToolbarView extends View {
 					'toolbarview-item-unavailable: The requested toolbar item is unavailable.' ), { name } );
 			}
 		} );
+
+		this.items.batchAdd( toolbarItems );
 	}
 }
 
@@ -549,14 +552,18 @@ class DynamicGrouping {
 		// represented in either grouped or ungrouped items at the right index.
 		// In other words #items == concat( #ungroupedItems, #groupedItems )
 		// (in length and order).
-		view.items.on( 'add', ( evt, item, index ) => {
-			if ( index > this.ungroupedItems.length ) {
-				this.groupedItems.add( item, index - this.ungroupedItems.length );
-			} else {
-				this.ungroupedItems.add( item, index );
+		view.items.on( 'batchAdd', ( evt, items, firstIndex ) => {
+			for ( let currentIndex = firstIndex; currentIndex < firstIndex + items.length; currentIndex++ ) {
+				const item = items[ currentIndex - firstIndex ];
+
+				if ( currentIndex > this.ungroupedItems.length ) {
+					this.groupedItems.add( item, currentIndex - this.ungroupedItems.length );
+				} else {
+					this.ungroupedItems.add( item, currentIndex );
+				}
 			}
 
-			// When a new ungrouped item joins in and lands in #ungroupedItems, there's a chance it causes
+			// When new ungrouped items join in and land in #ungroupedItems, there's a chance it causes
 			// the toolbar to overflow.
 			this._updateGrouping();
 		} );
