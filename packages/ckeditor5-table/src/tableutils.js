@@ -83,12 +83,26 @@ export default class TableUtils extends Plugin {
 	 * @param {module:engine/model/writer~Writer} writer The model writer.
 	 * @param {Number} rows The number of rows to create.
 	 * @param {Number} columns The number of columns to create.
+	 * @param {Object} [options]
+	 * @param {Number} [options.headingRows=0] The number of heading rows.
+	 * @param {Number} [options.headingColumns=0] The number of heading columns.
 	 * @returns {module:engine/model/element~Element} The created table element.
 	 */
-	createTable( writer, rows, columns ) {
+	createTable( writer, rows, columns, options ) {
 		const table = writer.createElement( 'table' );
 
 		createEmptyRows( writer, table, 0, rows, columns );
+
+		const headingRows = options && parseInt( options.headingRows ) || 0;
+		const headingColumns = options && parseInt( options.headingColumns ) || 0;
+
+		if ( headingRows ) {
+			updateNumericAttribute( 'headingRows', headingRows, table, writer, 0 );
+		}
+
+		if ( headingColumns ) {
+			updateNumericAttribute( 'headingColumns', headingColumns, table, writer, 0 );
+		}
 
 		return table;
 	}
