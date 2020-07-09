@@ -11,6 +11,13 @@ import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml'
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
 
+const linkIconInditatorElement = '<span class="ck ck-link-image_icon"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">' +
+'<path d="M11.077 15l.991-1.416a.75.75 0 1 1 1.229.86l-1.148 1.64a.748.748 0 0 1-.217.206 5.251 5.251 0 0 1-8.503-5.955.741.741 ' +
+'0 0 1 .12-.274l1.147-1.639a.75.75 0 1 1 1.228.86L4.933 10.7l.006.003a3.75 3.75 0 0 0 6.132 4.294l.006.004zm5.494-5.335a.748.748 ' +
+'0 0 1-.12.274l-1.147 1.639a.75.75 0 1 1-1.228-.86l.86-1.23a3.75 3.75 0 0 0-6.144-4.301l-.86 1.229a.75.75 0 0 ' +
+'1-1.229-.86l1.148-1.64a.748.748 0 0 1 .217-.206 5.251 5.251 0 0 1 8.503 5.955zm-4.563-2.532a.75.75 0 0 1 .184 ' +
+'1.045l-3.155 4.505a.75.75 0 1 1-1.229-.86l3.155-4.506a.75.75 0 0 1 1.045-.184z"></path></svg></span>';
+
 describe( 'LinkImageEditing', () => {
 	let editor, model, view;
 
@@ -48,7 +55,9 @@ describe( 'LinkImageEditing', () => {
 				setModelData( model, '<image src="/assets/sample.png" alt="alt text" linkHref="http://ckeditor.com"></image>' );
 
 				expect( editor.getData() ).to.equal(
-					'<figure class="image"><a href="http://ckeditor.com"><img alt="alt text" src="/assets/sample.png"></a></figure>'
+					'<figure class="image"><a href="http://ckeditor.com"><img alt="alt text" src="/assets/sample.png">' +
+					linkIconInditatorElement +
+					'</a></figure>'
 				);
 			} );
 
@@ -56,7 +65,9 @@ describe( 'LinkImageEditing', () => {
 				setModelData( model, '<image src="/assets/sample.png" linkHref="http://ckeditor.com"></image>' );
 
 				expect( editor.getData() ).to.equal(
-					'<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png"></a></figure>'
+					'<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png">' +
+					linkIconInditatorElement +
+					'</a></figure>'
 				);
 			} );
 
@@ -72,6 +83,7 @@ describe( 'LinkImageEditing', () => {
 					'<figure class="image">' +
 						'<a href="http://ckeditor.com">' +
 							'<img sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w"></img>' +
+							linkIconInditatorElement +
 						'</a>' +
 					'</figure>'
 				);
@@ -264,6 +276,8 @@ describe( 'LinkImageEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="http://ckeditor.com">' +
 							'<img alt="alt text" src="/assets/sample.png"></img>' +
+							// Content of the UIElement is skipped here.
+							'<span class="ck ck-link-image_icon"></span>' +
 						'</a>' +
 					'</figure>'
 				);
@@ -281,6 +295,8 @@ describe( 'LinkImageEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="https://ckeditor.com/why-ckeditor/">' +
 							'<img alt="alt text" src="/assets/sample.png"></img>' +
+							// Content of the UIElement is skipped here.
+							'<span class="ck ck-link-image_icon"></span>' +
 						'</a>' +
 					'</figure>'
 				);
@@ -302,7 +318,7 @@ describe( 'LinkImageEditing', () => {
 			} );
 		} );
 
-		describe( 'figure > a > img + figcaption', () => {
+		describe( 'figure > a > img + span + figcaption', () => {
 			it( 'should convert a link and the caption element', () => {
 				return VirtualTestEditor
 					.create( {
@@ -319,6 +335,8 @@ describe( 'LinkImageEditing', () => {
 							'<figure class="ck-widget image" contenteditable="false">' +
 								'<a href="http://ckeditor.com">' +
 									'<img alt="alt text" src="/assets/sample.png"></img>' +
+									// Content of the UIElement is skipped here.
+									'<span class="ck ck-link-image_icon"></span>' +
 								'</a>' +
 								'<figcaption class="ck-editor__editable ck-editor__nested-editable" ' +
 									'contenteditable="true" data-placeholder="Enter image caption">' +
