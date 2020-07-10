@@ -379,9 +379,9 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 * Tag and attribute names and values are generated from the marker name:
 	 *
-	 * * template for attributes are `data-group-start-before="name"`,`data-group-start-after="name"`,
+	 * * templates for attributes are `data-group-start-before="name"`, `data-group-start-after="name"`,
 	 * `data-group-end-before="name"` and `data-group-end-after="name"`,
-	 * * template for view elements are `<group-start name="name">` and `<group-end name="name">`.
+	 * * templates for view elements are `<group-start name="name">` and `<group-end name="name">`.
 	 *
 	 * Attributes mark whether given marker start or end boundary is before or after given element.
 	 * Attributes `data-group-start-before` and `data-group-end-after` are favored. Other two are used when former two cannot be used.
