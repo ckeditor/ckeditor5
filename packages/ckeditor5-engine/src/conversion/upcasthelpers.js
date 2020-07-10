@@ -10,6 +10,8 @@ import ConversionHelpers from './conversionhelpers';
 import { cloneDeep } from 'lodash-es';
 import ModelSelection from '../model/selection';
 
+/* global console */
+
 /**
  * Contains {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
  * {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher}.
@@ -333,6 +335,11 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	elementToMarker( config ) {
+		console.warn(
+			'upcast-helpers-element-to-marker-deprecated: ' +
+			'The UpcastHelpers#elementToMarker() method has been deprecated and will be removed in the near future. ' +
+			'Please use #dataToMarker() method instead.' );
+
 		return this.add( upcastElementToMarker( config ) );
 	}
 

@@ -20,6 +20,8 @@ import ConversionHelpers from './conversionhelpers';
 import { cloneDeep } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
+/* global console */
+
 /**
  * Downcast conversion helper functions.
  *
@@ -299,6 +301,11 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	markerToElement( config ) {
+		console.warn(
+			'downcast-helpers-marker-to-element-deprecated: ' +
+			'The DowncastHelpers#markerToElement() method has been deprecated and will be removed in the near future. ' +
+			'Please use #markerToData() method instead.' );
+
 		return this.add( downcastMarkerToElement( config ) );
 	}
 
