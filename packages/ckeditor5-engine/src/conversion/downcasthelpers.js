@@ -466,7 +466,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @method #markerToData
 	 * @param {Object} config Conversion configuration.
 	 * @param {String} config.model The name of the model marker (or model marker group) to convert.
-	 * @param {Function} [config.view] Function that takes the model marker data as a parameter and returns an object with `group`
+	 * @param {Function} [config.view] Function that takes the model marker name as a parameter and returns an object with `group`
 	 * and `name` properties.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
@@ -876,7 +876,8 @@ function removeUIElement() {
 //
 // See {@link DowncastHelpers#markerToData} for more information what type of view is generated.
 //
-// This converter binds created UI elements with the marker name using {@link module:engine/conversion/mapper~Mapper#bindElementToMarker}.
+// This converter binds created UI elements and affected view elements with the marker name
+// using {@link module:engine/conversion/mapper~Mapper#bindElementToMarker}.
 //
 // @returns {Function} Add marker converter.
 function insertMarkerData( viewCreator ) {
@@ -889,9 +890,6 @@ function insertMarkerData( viewCreator ) {
 
 		const markerRange = data.markerRange;
 
-		// Marker that is collapsed has consumable build differently that non-collapsed one.
-		// For more information see `addMarker` event description.
-		// If marker's range is collapsed - check if it can be consumed.
 		if ( !conversionApi.consumable.consume( markerRange, evt.name ) ) {
 			return;
 		}
@@ -899,8 +897,7 @@ function insertMarkerData( viewCreator ) {
 		const mapper = conversionApi.mapper;
 		const viewWriter = conversionApi.writer;
 
-		// Adding closing data first to keep proper order in the view.
-		// If <group-start> is added first, then <group-end> is added before it.
+		// Adding closing data first to keep the proper order in the view.
 		handleMarkerBoundary( markerRange, false );
 		handleMarkerBoundary( markerRange, true );
 
@@ -961,7 +958,7 @@ function insertMarkerData( viewCreator ) {
 	};
 }
 
-// Function factory that creates a default converter for removing a model marker that was added by {@link #insertMarkerData} converter.
+// Function factory that creates a converter for removing a model marker data added by the {@link #insertMarkerData} converter.
 //
 // @returns {Function} Remove marker converter.
 function removeMarkerData( viewCreator ) {
@@ -1434,11 +1431,11 @@ function downcastMarkerToElement( config ) {
 	};
 }
 
-// Model marker to view conversion helper.
+// Model marker to view data conversion helper.
 //
-// See {@link ~DowncastHelpers#markerToData `.markerToData()` downcast helper} for examples.
+// See {@link ~DowncastHelpers#markerToData `markerToData()` downcast helper} to learn more.
 //
-// @param {Object} config Conversion configuration.
+// @param {Object} config
 // @param {String} config.model
 // @param {Function} [config.view]
 // @param {module:utils/priorities~PriorityString} [config.converterPriority='normal']
