@@ -25,12 +25,6 @@
 
 .ck .ck-widget {
 	/*
-	 * Disable triple-click selection of UI elements.
-	 */
-	& .ck-widget__type-around {
-		user-select: none;
-	}
-	/*
 	 * Styles of the type around buttons
 	 */
 	& .ck-widget__type-around__button {
