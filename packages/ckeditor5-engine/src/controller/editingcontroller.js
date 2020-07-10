@@ -65,7 +65,8 @@ export default class EditingController {
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastDispatcher} #downcastDispatcher
 		 */
 		this.downcastDispatcher = new DowncastDispatcher( {
-			mapper: this.mapper
+			mapper: this.mapper,
+			schema: model.schema
 		} );
 
 		const doc = this.model.document;
