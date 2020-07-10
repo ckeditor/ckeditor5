@@ -136,7 +136,7 @@ export default class TableUtils extends Plugin {
 
 			// Inserting rows inside heading section requires to update `headingRows` attribute as the heading section will grow.
 			if ( headingRows > insertAt ) {
-				writer.setAttribute( 'headingRows', headingRows + rowsToInsert, table );
+				updateNumericAttribute( 'headingRows', headingRows + rowsToInsert, table, writer, 0 );
 			}
 
 			// Inserting at the end or at the beginning of a table doesn't require to calculate anything special.
@@ -309,9 +309,8 @@ export default class TableUtils extends Plugin {
 		const rowsToRemove = options.rows || 1;
 		const first = options.at;
 		const last = first + rowsToRemove - 1;
-		const batch = options.batch || 'default';
 
-		model.enqueueChange( batch, writer => {
+		model.change( writer => {
 			// Removing rows from the table require that most calculations to be done prior to changing table structure.
 			// Preparations must be done in the same enqueueChange callback to use the current table structure.
 
@@ -337,11 +336,15 @@ export default class TableUtils extends Plugin {
 				updateNumericAttribute( 'rowspan', rowspan, cell, writer );
 			}
 
-			// 2d. Remove empty columns (without anchored cells) if there are any.
-			removeEmptyColumns( table, this );
+			// 2d. Adjust heading rows if removed rows were in a heading section.
+			updateHeadingRows( table, first, last, writer );
 
-			// 2e. Adjust heading rows if removed rows were in a heading section.
-			updateHeadingRows( table, first, last, model, batch );
+			// 2e. Remove empty columns (without anchored cells) if there are any.
+			if ( !removeEmptyColumns( table, this ) ) {
+				// If there wasn't any empty columns then we still need to check if this wasn't called
+				// because of cleaning empty rows and we only removed one of them.
+				removeEmptyRows( table, this );
+			}
 		} );
 	}
 
@@ -396,7 +399,11 @@ export default class TableUtils extends Plugin {
 			}
 
 			// Remove empty rows that could appear after removing columns.
-			removeEmptyRows( table, this, writer.batch );
+			if ( !removeEmptyRows( table, this ) ) {
+				// If there wasn't any empty rows then we still need to check if this wasn't called
+				// because of cleaning empty columns and we only removed one of them.
+				removeEmptyColumns( table, this );
+			}
 		} );
 	}
 
@@ -776,21 +783,14 @@ function adjustHeadingColumns( table, removedColumnIndexes, writer ) {
 }
 
 // Calculates a new heading rows value for removing rows from heading section.
-function updateHeadingRows( table, first, last, model, batch ) {
-	// Must be done after the changes in table structure (removing rows).
-	// Otherwise the downcast converter for headingRows attribute will fail.
-	// See https://github.com/ckeditor/ckeditor5/issues/6391.
-	//
-	// Must be completely wrapped in enqueueChange to get the current table state (after applying other enqueued changes).
-	model.enqueueChange( batch, writer => {
-		const headingRows = table.getAttribute( 'headingRows' ) || 0;
+function updateHeadingRows( table, first, last, writer ) {
+	const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
-		if ( first < headingRows ) {
-			const newRows = last < headingRows ? headingRows - ( last - first + 1 ) : first;
+	if ( first < headingRows ) {
+		const newRows = last < headingRows ? headingRows - ( last - first + 1 ) : first;
 
-			updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
-		}
-	} );
+		updateNumericAttribute( 'headingRows', newRows, table, writer, 0 );
+	}
 }
 
 // Finds cells that will be:
