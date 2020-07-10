@@ -27,6 +27,7 @@
     "@ckeditor/ckeditor5-heading": "^20.0.0",
     "@ckeditor/ckeditor5-horizontal-line": "^20.0.0",
     "@ckeditor/ckeditor5-image": "^20.0.0",
+    "@ckeditor/ckeditor5-link": "^20.0.0",
     "@ckeditor/ckeditor5-media-embed": "^20.0.0",
     "@ckeditor/ckeditor5-paragraph": "^20.0.0",
     "@ckeditor/ckeditor5-table": "^20.0.0",
