@@ -3553,6 +3553,32 @@ describe( 'table clipboard', () => {
 				[ '02', '21', '22' ]
 			] ) );
 		} );
+
+		it( 'removes block fillers from empty cells (both td and th)', async () => {
+			await createEditor();
+
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '01', '11', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			pasteTable( [
+				[ '&nbsp;', '&nbsp;' ],
+				[ '&nbsp;', '&nbsp;' ]
+			], { headingRows: 1 } );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ '', '', '02' ],
+				[ '', '', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
+		} );
 	} );
 
 	async function createEditor( extraPlugins = [] ) {
@@ -3566,13 +3592,13 @@ describe( 'table clipboard', () => {
 		tableSelection = editor.plugins.get( 'TableSelection' );
 	}
 
-	function pasteTable( tableData ) {
+	function pasteTable( tableData, attributes = {} ) {
 		const data = {
 			dataTransfer: createDataTransfer(),
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
 		};
-		data.dataTransfer.setData( 'text/html', viewTable( tableData ) );
+		data.dataTransfer.setData( 'text/html', viewTable( tableData, attributes ) );
 		viewDocument.fire( 'paste', data );
 
 		return data;
