@@ -23,3 +23,11 @@
 		display: block;
 	}
 }
+
+[dir="ltr"] .ck.ck-button.ck-button_with-text.ck-resize-image-button .ck-button__icon {
+	margin-right: 6px;
+}
+
+[dir="rtl"] .ck.ck-button.ck-button_with-text.ck-resize-image-button .ck-button__icon {
+	margin-left: 6px;
+}
