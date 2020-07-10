@@ -411,6 +411,8 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		<p>Foo <myMarker-start></myMarker-start>bar</p>
 	 *		<figure data-myMarker-end-after="" class="image"><img src="abc.jpg" /></figure>
 	 *
+	 * **Note:** situation when some markers have `name` part and some don't is incorrect and should be avoided.
+	 *
 	 * Examples where `data-group-start-after` and `data-group-end-before` are used:
 	 *
 	 *		// Model:
@@ -426,8 +428,6 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		// View:
 	 *		<blockquote><p data-group-end-after="name" data-group-start-after="name">Foo</p></blockquote>
-	 *
-	 * **Note:** situation when some markers have `name` part and some don't is incorrect and should be avoided.
 	 *
 	 * When there are multiple markers from the same group starting before/ending after the same view container element, their
 	 * name parts are put together in one attribute value, for example: `data-group-start="name1,name2,name3"`.
