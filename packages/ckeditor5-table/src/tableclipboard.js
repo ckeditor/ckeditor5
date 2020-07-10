@@ -15,7 +15,7 @@ import {
 	findAncestor
 } from './utils/common';
 import TableUtils from './tableutils';
-import { getColumnIndexes, getRowIndexes, getSelectionAffectedTableCells, isSelectionRectangular } from './utils/selection';
+import { getColumnIndexes, getRowIndexes, getSelectionAffectedTableCells, isSelectionRectangular, sortRanges } from './utils/selection';
 import {
 	cropTableToDimensions,
 	getHorizontallyOverlappingCells,
@@ -320,23 +320,26 @@ function replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selected
 	const headingRows = parseInt( selectedTable.getAttribute( 'headingRows' ) || 0 );
 	const headingColumns = parseInt( selectedTable.getAttribute( 'headingColumns' ) || 0 );
 
-	if ( selection.firstRow < headingRows && headingRows <= selection.lastRow ) {
+	const areHeadingRowsIntersectingSelection = selection.firstRow < headingRows && headingRows <= selection.lastRow;
+	const areHeadingColumnsIntersectingSelection = selection.firstColumn < headingColumns && headingColumns <= selection.lastColumn;
+
+	if ( areHeadingRowsIntersectingSelection ) {
 		const columnsLimit = { first: selection.firstColumn, last: selection.lastColumn };
 		const newCells = doHorizontalSplit( selectedTable, headingRows, columnsLimit, writer, selection.firstRow );
 
 		cellsToSelect.push( ...newCells );
 	}
 
-	if ( selection.firstColumn < headingColumns && headingColumns <= selection.lastColumn ) {
+	if ( areHeadingColumnsIntersectingSelection ) {
 		const rowsLimit = { first: selection.firstRow, last: selection.lastRow };
 		const newCells = doVerticalSplit( selectedTable, headingColumns, rowsLimit, writer );
 
 		cellsToSelect.push( ...newCells );
 	}
 
-	const selectionRanges = cellsToSelect
-		.map( cell => writer.createRangeOn( cell ) )
-		.sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
+	// Selection ranges must be sorted because the first and last selection ranges are considered
+	// as anchor/focus cell ranges for multi-cell selection.
+	const selectionRanges = sortRanges( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
 
 	writer.setSelection( selectionRanges );
 }

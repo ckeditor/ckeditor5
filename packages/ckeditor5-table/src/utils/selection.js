@@ -188,6 +188,16 @@ export function isSelectionRectangular( selectedTableCells, tableUtils ) {
 	return areaOfValidSelection == areaOfSelectedCells;
 }
 
+/**
+ * Returns array of sorted ranges.
+ *
+ * @param {Iterable.<module:engine/model/range~Range>} ranges
+ * @return {Array.<module:engine/model/range~Range>}
+ */
+export function sortRanges( ranges ) {
+	return Array.from( ranges ).sort( compareRangeOrder );
+}
+
 // Helper method to get an object with `first` and `last` indexes from an unsorted array of indexes.
 function getFirstLastIndexesObject( indexes ) {
 	const allIndexesSorted = indexes.sort( ( indexA, indexB ) => indexA - indexB );
@@ -196,10 +206,6 @@ function getFirstLastIndexesObject( indexes ) {
 	const last = allIndexesSorted[ allIndexesSorted.length - 1 ];
 
 	return { first, last };
-}
-
-function sortRanges( rangesIterator ) {
-	return Array.from( rangesIterator ).sort( compareRangeOrder );
 }
 
 function compareRangeOrder( rangeA, rangeB ) {
