@@ -17,24 +17,38 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+
+import iconSmall from '../../theme/icons/image-resize-small.svg';
+import iconMedium from '../../theme/icons/image-resize-medium.svg';
+import iconLarge from '../../theme/icons/image-resize-large.svg';
+import iconFull from '../../theme/icons/image-resize-full.svg';
 
 describe( 'ImageResizeUI', () => {
 	let plugin, command, editor, editorElement;
 
 	const resizeOptions = [ {
 		name: 'imageResize:original',
-		label: 'Original size',
-		value: null
+		value: null,
+		icon: 'original'
+	},
+	{
+		name: 'imageResize:25',
+		label: '25%',
+		value: '25',
+		icon: 'small'
 	},
 	{
 		name: 'imageResize:50',
 		label: '50%',
-		value: '50'
+		value: '50',
+		icon: 'medium'
 	},
 	{
 		name: 'imageResize:75',
 		label: '75%',
-		value: '75'
+		value: '75',
+		icon: 'large'
 	} ];
 
 	testUtils.createSinonSandbox();
@@ -80,6 +94,12 @@ describe( 'ImageResizeUI', () => {
 
 			expect( plugin.isEnabled ).to.be.false;
 		} );
+	} );
+
+	it( 'should create `_resizeUnit`', () => {
+		const unit = plugin._resizeUnit;
+
+		expect( unit ).to.equal( '%' );
 	} );
 
 	describe( 'init()', () => {
@@ -167,12 +187,12 @@ describe( 'ImageResizeUI', () => {
 			expect( editor.ui.componentFactory.create( 'imageResize' ) ).to.be.instanceof( DropdownView );
 		} );
 
-		it( 'should have 3 resize options in the `imageResize` dropdown', () => {
+		it( 'should have 4 resize options in the `imageResize` dropdown', () => {
 			const dropdownView = editor.ui.componentFactory.create( 'imageResize' );
 
-			expect( dropdownView.listView.items.length ).to.equal( 3 );
-			expect( dropdownView.listView.items.first.element.textContent ).to.equal( 'Original size' );
-			expect( dropdownView.listView.items._items[ 1 ].element.textContent ).to.equal( '50%' );
+			expect( dropdownView.listView.items.length ).to.equal( 4 );
+			expect( dropdownView.listView.items.first.element.textContent ).to.equal( 'Original' );
+			expect( dropdownView.listView.items._items[ 1 ].element.textContent ).to.equal( '25%' );
 			expect( dropdownView.listView.items.last.element.textContent ).to.equal( '75%' );
 		} );
 
@@ -192,7 +212,7 @@ describe( 'ImageResizeUI', () => {
 			resizeBy50Percent.fire( 'execute' );
 
 			sinon.assert.calledOnce( commandSpy );
-			expect( command.value.width ).to.equal( '50%' );
+			expect( command.value.width ).to.equal( '25%' );
 		} );
 	} );
 
@@ -213,13 +233,37 @@ describe( 'ImageResizeUI', () => {
 			expect( editor.ui.componentFactory.create( 'imageResize:50' ) ).to.be.instanceof( ButtonView );
 		} );
 
-		it( 'should be created with visible "50%" label', () => {
+		it( 'should be created with invisible "50%" label when is provided', () => {
 			const buttonView = editor.ui.componentFactory.create( 'imageResize:50' );
 			buttonView.render();
 
-			expect( buttonView.withText ).to.be.true;
+			expect( buttonView.withText ).to.be.false;
 			expect( buttonView.label ).to.equal( '50%' );
 			expect( buttonView.labelView ).to.be.instanceOf( View );
+		} );
+
+		it( 'should be created with invisible "50%" label when is not provided', async () => {
+			const editor = await ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
+					image: {
+						resizeUnit: '%',
+						resizeOptions: [ {
+							name: 'imageResize:50',
+							value: '50',
+							icon: 'medium'
+						} ]
+					}
+				} );
+
+			const buttonView = editor.ui.componentFactory.create( 'imageResize:50' );
+			buttonView.render();
+
+			expect( buttonView.withText ).to.be.false;
+			expect( buttonView.label ).to.equal( '50%' );
+			expect( buttonView.labelView ).to.be.instanceOf( View );
+
+			editor.destroy();
 		} );
 
 		it( 'should be created with a proper tooltip, depends on the set value', () => {
@@ -250,6 +294,42 @@ describe( 'ImageResizeUI', () => {
 
 			sinon.assert.calledOnce( commandSpy );
 			expect( command.value.width ).to.equal( '50%' );
+		} );
+
+		it( 'should have set a proper icon', () => {
+			const buttonOriginal = editor.ui.componentFactory.create( 'imageResize:original' );
+			const button25 = editor.ui.componentFactory.create( 'imageResize:25' );
+			const button50 = editor.ui.componentFactory.create( 'imageResize:50' );
+			const button75 = editor.ui.componentFactory.create( 'imageResize:75' );
+
+			expect( buttonOriginal.icon ).to.deep.equal( iconFull );
+			expect( button25.icon ).to.deep.equal( iconSmall );
+			expect( button50.icon ).to.deep.equal( iconMedium );
+			expect( button75.icon ).to.deep.equal( iconLarge );
+		} );
+
+		it( 'should throw the CKEditorError if no `icon` is provided', async () => {
+			const editor = await ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
+					image: {
+						resizeUnit: '%',
+						resizeOptions: [ {
+							name: 'imageResize:noicon',
+							value: '100'
+						} ],
+						toolbar: [ 'imageResize:noicon' ]
+					}
+				} );
+
+			const errMsg = 'The resize option "imageResize:noicon" misses an `icon` property ' +
+				'or its value doesn\'t match the available options.';
+
+			expectToThrowCKEditorError( () => {
+				editor.ui.componentFactory.create( 'imageResize:noicon' );
+			}, errMsg );
+
+			editor.destroy();
 		} );
 	} );
 } );
