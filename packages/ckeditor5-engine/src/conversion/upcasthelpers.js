@@ -287,6 +287,8 @@ export default class UpcastHelpers extends ConversionHelpers {
 	/**
 	 * View element to model marker conversion helper.
 	 *
+	 * **Note**: This method was deprecated. Please use {@link #dataToMarker} instead.
+	 *
 	 * This conversion results in creating a model marker. For example, if the marker was stored in a view as an element:
 	 * `<p>Fo<span data-marker="comment" data-comment-id="7"></span>o</p><p>B<span data-marker="comment" data-comment-id="7"></span>ar</p>`,
 	 * after the conversion is done, the marker will be available in
@@ -321,6 +323,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
+	 * @deprecated
 	 * @method #elementToMarker
 	 * @param {Object} config Conversion configuration.
 	 * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.

@@ -239,6 +239,8 @@ export default class DowncastHelpers extends ConversionHelpers {
 	/**
 	 * Model marker to view element conversion helper.
 	 *
+	 * **Note**: This method was deprecated. Please use {@link #markerToData} instead.
+	 *
 	 * This conversion results in creating a view element on the boundaries of the converted marker. If the converted marker
 	 * is collapsed, only one element is created. For example, model marker set like this: `<paragraph>F[oo b]ar</paragraph>`
 	 * becomes `<p>F<span data-marker="search"></span>oo b<span data-marker="search"></span>ar</p>` in the view.
@@ -287,6 +289,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
+	 * @deprecated
 	 * @method #markerToElement
 	 * @param {Object} config Conversion configuration.
 	 * @param {String} config.model The name of the model marker (or model marker group) to convert.
