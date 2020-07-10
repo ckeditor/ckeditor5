@@ -429,8 +429,8 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		// View:
 	 *		<blockquote><p data-group-end-after="name" data-group-start-after="name">Foo</p></blockquote>
 	 *
-	 * When there are multiple markers from the same group starting before/ending after the same view container element, their
-	 * name parts are put together in one attribute value, for example: `data-group-start="name1,name2,name3"`.
+	 * When there are multiple markers from the same group stored in the same attribute of the same element, their
+	 * name parts are put together in the attribute value, for example: `data-group-start-before="name1,name2,name3"`.
 	 *
 	 * Examples of usage:
 	 *
