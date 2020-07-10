@@ -959,6 +959,21 @@ describe( 'TableUtils', () => {
 				], { headingRows: 1 } ) );
 			} );
 
+			it( 'should change heading rows if removing a heading row (and cell below is row-spanned)', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', { contents: '11', rowspan: 2 } ],
+					[ '20' ]
+				], { headingRows: 1 } ) );
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 0 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '10', { contents: '11', rowspan: 2 } ],
+					[ '20' ]
+				] ) );
+			} );
+
 			it( 'should decrease rowspan of table cells from previous rows', () => {
 				// +----+----+----+----+----+
 				// | 00 | 01 | 02 | 03 | 04 |

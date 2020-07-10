@@ -205,7 +205,7 @@ function prepareTableForPasting( selectedTableCells, pastedDimensions, writer, t
 		selection.lastRow += pastedDimensions.height - 1;
 		selection.lastColumn += pastedDimensions.width - 1;
 
-		expandTableSize( selectedTable, selection.lastRow + 1, selection.lastColumn + 1, writer, tableUtils );
+		expandTableSize( selectedTable, selection.lastRow + 1, selection.lastColumn + 1, tableUtils );
 	}
 
 	// In case of expanding selection we do not reset the selection so in this case we will always try to fix selection
@@ -342,13 +342,12 @@ function replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selected
 }
 
 // Expand table (in place) to expected size.
-function expandTableSize( table, expectedHeight, expectedWidth, writer, tableUtils ) {
+function expandTableSize( table, expectedHeight, expectedWidth, tableUtils ) {
 	const tableWidth = tableUtils.getColumns( table );
 	const tableHeight = tableUtils.getRows( table );
 
 	if ( expectedWidth > tableWidth ) {
 		tableUtils.insertColumns( table, {
-			batch: writer.batch,
 			at: tableWidth,
 			columns: expectedWidth - tableWidth
 		} );
@@ -356,7 +355,6 @@ function expandTableSize( table, expectedHeight, expectedWidth, writer, tableUti
 
 	if ( expectedHeight > tableHeight ) {
 		tableUtils.insertRows( table, {
-			batch: writer.batch,
 			at: tableHeight,
 			rows: expectedHeight - tableHeight
 		} );

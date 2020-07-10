@@ -109,7 +109,7 @@ export default class MergeCellCommand extends Command {
 			const table = findAncestor( 'table', removedTableCellRow );
 
 			// Remove empty rows and columns after merging.
-			removeEmptyRowsColumns( table, tableUtils, writer.batch );
+			removeEmptyRowsColumns( table, tableUtils );
 		} );
 	}
 
