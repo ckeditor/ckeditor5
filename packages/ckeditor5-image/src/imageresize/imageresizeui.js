@@ -16,6 +16,13 @@ import DropdownButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/dropd
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import iconSmall from '../../theme/icons/image-resize-small.svg';
+import iconMedium from '../../theme/icons/image-resize-medium.svg';
+import iconLarge from '../../theme/icons/image-resize-large.svg';
+import iconFull from '../../theme/icons/image-resize-full.svg';
+
 /**
  * The `ImageResizeUI` plugin.
  *
@@ -41,11 +48,29 @@ export default class ImageResizeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		/**
+		 * The resize unit.
+		 *
+		 * @readonly
+		 * @private
+		 *
+		 * @type {module:image/image~ImageConfig#resizeUnit}
+		 *
+		 * Defaults to `%`.
+		 */
+		this._resizeUnit = editor.config.get( 'image.resizeUnit' ) || '%';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const options = editor.config.get( 'image.resizeOptions' );
 		const command = editor.commands.get( 'imageResize' );
-		const resizeUnit = editor.config.get( 'image.resizeUnit' ) || '%';
 
 		if ( !options ) {
 			return;
@@ -54,10 +79,10 @@ export default class ImageResizeUI extends Plugin {
 		this.bind( 'isEnabled' ).to( command );
 
 		for ( const option of options ) {
-			this._addButton( option, resizeUnit );
+			this._addButton( option );
 		}
 
-		this._addDropdown( options, resizeUnit );
+		this._addDropdown( options );
 	}
 
 	/**
@@ -66,21 +91,46 @@ export default class ImageResizeUI extends Plugin {
 	 * @private
 	 *
 	 * @param {module:image/imageresize/imageresizeui~ImageResizeOption} resizeOption A model of resize option.
-	 * @param {String} unit A resize unit.
 	 */
-	_addButton( { name, label, value }, unit ) {
+	_addButton( option ) {
 		const editor = this.editor;
 		const t = editor.t;
-		const parsedValue = value ? value + unit : null;
+		const { name, value, icon } = option;
+		const parsedValue = value ? value + this._resizeUnit : null;
 
 		editor.ui.componentFactory.add( name, locale => {
 			const button = new ButtonView( locale );
 			const command = editor.commands.get( 'imageResize' );
 			const commandCallback = setOptionOn( parsedValue );
 
+			const userIcon = () => {
+				switch ( icon ) {
+					case 'original':
+						return iconFull;
+					case 'small':
+						return iconSmall;
+					case 'medium':
+						return iconMedium;
+					case 'large':
+						return iconLarge;
+					default:
+						return null;
+				}
+			};
+
+			// console.log( userIcon() );
+
+			if ( !userIcon() ) {
+			// TODO
+				throw new CKEditorError(
+					'The resize option "' + name + '" misses an `icon` property ' +
+					'or its value doesn\'t match the available options.'
+				);
+			}
+
 			button.set( {
-				label: t( label ),
-				withText: true,
+				label: this._createLabel( option ),
+				icon: userIcon(),
 				tooltip: parsedValue ? t( 'Resize image to' ) + ' ' + parsedValue : t( 'Resize image to the original size' ),
 				isToggleable: true,
 				commandValue: parsedValue
@@ -105,13 +155,11 @@ export default class ImageResizeUI extends Plugin {
 	 * @private
 	 *
 	 * @param {Array.<module:image/imageresize/imageresizeui~ImageResizeOption>} options An array of the configured options.
-	 * @param {String} unit A resize unit.
 	 */
-	_addDropdown( options, unit ) {
+	_addDropdown( options ) {
 		const editor = this.editor;
 		const t = editor.t;
-		const firstOption = options[ 0 ];
-		const resetOption = options.find( option => option.value === null );
+		const originalSizeOption = options.find( option => !option.value );
 
 		// Register dropdown.
 		editor.ui.componentFactory.add( 'imageResize', locale => {
@@ -121,19 +169,21 @@ export default class ImageResizeUI extends Plugin {
 
 			dropdownButton.set( {
 				tooltip: t( 'Resize image' ),
-				commandValue: firstOption.value,
+				commandValue: originalSizeOption.value,
+				icon: iconMedium,
 				isToggleable: true,
-				label: firstOption.label,
-				withText: true
+				label: this._createLabel( originalSizeOption ),
+				withText: true,
+				class: 'ck-resize-image-button'
 			} );
 
 			dropdownButton.bind( 'label' ).to( command, 'value', commandValue => {
-				return commandValue && commandValue.width || resetOption.label;
+				return commandValue && commandValue.width || this._createLabel( originalSizeOption );
 			} );
 			dropdownView.bind( 'isOn' ).to( command );
 			dropdownView.bind( 'isEnabled' ).to( this );
 
-			addListToDropdown( dropdownView, prepareListDefinitions( options, command, unit ) );
+			addListToDropdown( dropdownView, this._prepareListDefinitions( options, command ) );
 
 			dropdownView.listView.ariaLabel = t( 'Image resize list' );
 
@@ -146,33 +196,61 @@ export default class ImageResizeUI extends Plugin {
 			return dropdownView;
 		} );
 	}
-}
 
-// A helper function for parsing resize options definitions.
-function prepareListDefinitions( definitions, command, resizeUnit ) {
-	const itemDefinitions = new Collection();
+	/**
+	 * A helper function for creating an option label.
+	 *
+	 * @private
+	 *
+	 * @param {module:image/imageresize/imageresizeui~ImageResizeOption} option A resize option object.
+	 * @returns {String} A user-defined label, a label combined from the value and resize unit or the default label
+	 * for reset options (`Original`).
+	 */
+	_createLabel( option ) {
+		const t = this.editor.t;
 
-	definitions.map( itemDefinition => {
-		const parsedValue = itemDefinition.value ? itemDefinition.value + resizeUnit : null;
-		const definition = {
-			type: 'button',
-			model: new Model( {
-				commandName: 'imageResize',
-				commandValue: parsedValue,
-				label: itemDefinition.label,
-				withText: true,
-				icon: null
-			} )
-		};
+		if ( option.label ) {
+			return option.label;
+		} else {
+			return option.value ? option.value + this._resizeUnit : t( 'Original' );
+		}
+	}
 
-		const commandCallback = setOptionOn( parsedValue );
+	/**
+	 * A helper function for parsing resize options definitions.
+	 *
+	 * @private
+	 *
+	 * @param {Array.<module:image/imageresize/imageresizeui~ImageResizeOption>} options The resize options.
+	 * @param {modules:image/imageresize/imageresizecommand} command A resize image command.
+	 *
+	 * @returns {module:utils/collection} definitions
+	*/
+	_prepareListDefinitions( options, command ) {
+		const itemDefinitions = new Collection();
 
-		definition.model.bind( 'isOn' ).to( command, 'value', commandCallback );
+		options.map( option => {
+			const parsedValue = option.value ? option.value + this._resizeUnit : null;
+			const definition = {
+				type: 'button',
+				model: new Model( {
+					commandName: 'imageResize',
+					commandValue: parsedValue,
+					label: this._createLabel( option ),
+					withText: true,
+					icon: null
+				} )
+			};
 
-		itemDefinitions.add( definition );
-	} );
+			const commandCallback = setOptionOn( parsedValue );
 
-	return itemDefinitions;
+			definition.model.bind( 'isOn' ).to( command, 'value', commandCallback );
+
+			itemDefinitions.add( definition );
+		} );
+
+		return itemDefinitions;
+	}
 }
 
 // A helper function for setting the `isOn` state used for creating a callback function in a value binding.
@@ -194,6 +272,7 @@ function setOptionOn( value ) {
  *
  * @property {String} resizeOption.name A name of the option used for creating a component.
  * You refer to that name later in the {@link module:image/image~ImageConfig#toolbar}.
- * @property {String} resizeOption.label A label to be displayed with a button.
  * @property {String} resizeOption.value A value of a resize option. `null` value is for resetting an image to its original size.
+ * @property {String} resizeOptions.icon A value of the available icon sizes (`small`, `medium`, `large`, `original`).
+ * @property {String} [resizeOption.label] A label to be displayed with a button.
  */
