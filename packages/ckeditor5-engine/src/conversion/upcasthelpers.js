@@ -335,6 +335,54 @@ export default class UpcastHelpers extends ConversionHelpers {
 	elementToMarker( config ) {
 		return this.add( upcastElementToMarker( config ) );
 	}
+
+	/**
+	 * View to model marker conversion helper.
+	 *
+	 * Converts view data created by {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToData} back to a model marker.
+	 *
+	 * This converter looks for specific view elements and view attributes that marks marker boundaries. See
+	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToData} to learn what view data is expected by this converter.
+	 *
+	 * The `config.view` property is equal to the marker group name to convert.
+	 *
+	 * By default, this converter creates markers with `group:name` name convention (to match the default `markerToData` conversion).
+	 *
+	 * The conversion configuration can take a function that will generate a marker name.
+	 * If such function is set as the `config.model` parameter, it is passed the `name` part from the view element or attribute and it is
+	 * expected to return a string with the marker name.
+	 *
+	 *		// Using the default conversion.
+	 *		editor.conversion.for( 'upcast' ).dataToMarker( {
+	 *			view: 'comment'
+	 *		} );
+	 *
+	 *		// Using custom function which is the same as the default conversion:
+	 *		editor.conversion.for( 'upcast' ).dataToMarker( {
+	 *			view: 'comment',
+	 *			model: name => 'comment:' + name,
+	 *		} );
+	 *
+	 *		// Using converter priority:
+	 *		editor.conversion.for( 'upcast' ).dataToMarker( {
+	 *			view: 'comment',
+	 *			model: name => 'comment:' + name,
+	 *			converterPriority: 'high'
+	 *		} );
+	 *
+	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
+	 * to the conversion process.
+	 *
+	 * @method #dataToMarker
+	 * @param {Object} config Conversion configuration.
+	 * @param {String} config.view Marker group name to convert.
+	 * @param {Function} [config.model] Function that takes `name` part from the view element or attribute and returns the marker name.
+	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
+	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
+	 */
+	dataToMarker( config ) {
+		return this.add( upcastDataToMarker( config ) );
+	}
 }
 
 /**
@@ -515,9 +563,88 @@ function upcastAttributeToAttribute( config ) {
 function upcastElementToMarker( config ) {
 	config = cloneDeep( config );
 
-	normalizeToMarkerConfig( config );
+	normalizeElementToMarkerConfig( config );
 
 	return upcastElementToElement( config );
+}
+
+// View data to model marker conversion helper.
+//
+// See {@link ~UpcastHelpers#dataToMarker} to learn more.
+//
+// @param {Object} config
+// @param {String} config.view
+// @param {Function} [config.model]
+// @param {module:utils/priorities~PriorityString} [config.converterPriority='normal']
+// @returns {Function} Conversion helper.
+function upcastDataToMarker( config ) {
+	config = cloneDeep( config );
+
+	// Default conversion.
+	if ( !config.model ) {
+		config.model = name => {
+			return name ? config.view + ':' + name : config.view;
+		};
+	}
+
+	const converterStart = prepareToElementConverter( normalizeDataToMarkerConfig( config, 'start' ) );
+	const converterEnd = prepareToElementConverter( normalizeDataToMarkerConfig( config, 'end' ) );
+
+	return dispatcher => {
+		dispatcher.on( 'element:' + config.view + '-start', converterStart, { priority: config.converterPriority || 'normal' } );
+		dispatcher.on( 'element:' + config.view + '-end', converterEnd, { priority: config.converterPriority || 'normal' } );
+
+		dispatcher.on( 'element', upcastAttributeToMarker( config ), { priority: config.converterPriority || 'normal' } );
+	};
+}
+
+// Function factory, returns a callback function which converts view attributes to a model marker.
+//
+// The converter looks for elements with `data-group-start-before`, `data-group-start-after`, `data-group-end-before`
+// and `data-group-end-after` attributes and inserts `$marker` model elements before/after those elements.
+// `group` part is specified in `config.view`.
+//
+// @param {Object} config
+// @param {String} config.view
+// @param {Function} [config.model]
+// @returns {Function} Marker converter.
+function upcastAttributeToMarker( config ) {
+	return ( evt, data, conversionApi ) => {
+		const attrName = `data-${ config.view }`;
+
+		if ( conversionApi.consumable.consume( data.viewItem, { attributes: attrName + '-end-after' } ) ) {
+			addMarkerElements( data.modelRange.end, data.viewItem.getAttribute( attrName + '-end-after' ).split( ',' ) );
+		}
+
+		if ( conversionApi.consumable.consume( data.viewItem, { attributes: attrName + '-start-after' } ) ) {
+			addMarkerElements( data.modelRange.end, data.viewItem.getAttribute( attrName + '-start-after' ).split( ',' ) );
+		}
+
+		if ( conversionApi.consumable.consume( data.viewItem, { attributes: attrName + '-end-before' } ) ) {
+			addMarkerElements( data.modelRange.start, data.viewItem.getAttribute( attrName + '-end-before' ).split( ',' ) );
+		}
+
+		if ( conversionApi.consumable.consume( data.viewItem, { attributes: attrName + '-start-before' } ) ) {
+			addMarkerElements( data.modelRange.start, data.viewItem.getAttribute( attrName + '-start-before' ).split( ',' ) );
+		}
+
+		function addMarkerElements( position, markerViewNames ) {
+			for ( const markerViewName of markerViewNames ) {
+				const markerName = config.model( markerViewName );
+				const element = conversionApi.writer.createElement( '$marker', { 'data-name': markerName } );
+
+				conversionApi.writer.insert( element, position );
+
+				if ( data.modelCursor.isEqual( position ) ) {
+					data.modelCursor = data.modelCursor.getShiftedBy( 1 );
+				} else {
+					data.modelCursor = data.modelCursor._getTransformedByInsertion( position, 1 );
+				}
+
+				data.modelRange = data.modelRange._getTransformedByInsertion( position, 1 )[ 0 ];
+			}
+		}
+	};
 }
 
 // Helper function for from-view-element conversion. Checks if `config.view` directly specifies converted view element's name
@@ -782,10 +909,10 @@ function setAttributeOn( modelRange, modelAttribute, shallow, conversionApi ) {
 }
 
 // Helper function for upcasting-to-marker conversion. Takes the config in a format requested by `upcastElementToMarker()`
-// function and converts it to a format that is supported by `_upcastElementToElement()` function.
+// function and converts it to a format that is supported by `upcastElementToElement()` function.
 //
 // @param {Object} config Conversion configuration.
-function normalizeToMarkerConfig( config ) {
+function normalizeElementToMarkerConfig( config ) {
 	const oldModel = config.model;
 
 	config.model = ( viewElement, modelWriter ) => {
@@ -793,4 +920,24 @@ function normalizeToMarkerConfig( config ) {
 
 		return modelWriter.createElement( '$marker', { 'data-name': markerName } );
 	};
+}
+
+// Helper function for upcasting-to-marker conversion. Takes the config in a format requested by `upcastDataToMarker()`
+// function and converts it to a format that is supported by `upcastElementToElement()` function.
+//
+// @param {Object} config Conversion configuration.
+function normalizeDataToMarkerConfig( config, type ) {
+	const configForElements = {};
+
+	// Upcast <markerGroup-start> and <markerGroup-end> elements.
+	configForElements.view = config.view + '-' + type;
+
+	configForElements.model = ( viewElement, modelWriter ) => {
+		const viewName = viewElement.getAttribute( 'name' );
+		const markerName = config.model( viewName );
+
+		return modelWriter.createElement( '$marker', { 'data-name': markerName } );
+	};
+
+	return configForElements;
 }
