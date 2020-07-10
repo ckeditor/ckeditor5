@@ -60,20 +60,14 @@ export default class RemoveRowCommand extends Command {
 
 		const columnIndexToFocus = this.editor.plugins.get( 'TableUtils' ).getCellLocation( firstCell ).column;
 
-		// Use single batch to modify table in steps but in one undo step.
-		const batch = model.createBatch();
-
-		model.enqueueChange( batch, () => {
+		model.change( writer => {
 			const rowsToRemove = removedRowIndexes.last - removedRowIndexes.first + 1;
 
 			this.editor.plugins.get( 'TableUtils' ).removeRows( table, {
 				at: removedRowIndexes.first,
-				rows: rowsToRemove,
-				batch
+				rows: rowsToRemove
 			} );
-		} );
 
-		model.enqueueChange( batch, writer => {
 			const cellToFocus = getCellToFocus( table, removedRowIndexes.first, columnIndexToFocus );
 
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );

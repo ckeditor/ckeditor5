@@ -88,6 +88,19 @@ export function injectViewList( modelItem, injectedItem, conversionApi, model ) 
 			// If it is a list item, it has to have a lower indent.
 			// It means that the inserted item should be added to it as its nested item.
 			insertPosition = mapper.toViewPosition( model.createPositionAt( prevItem, 'end' ) );
+
+			// There could be some not mapped elements (eg. span in to-do list) but we need to insert
+			// a nested list directly inside the li element.
+			const mappedViewAncestor = mapper.findMappedViewAncestor( insertPosition );
+			const nestedList = findNestedList( mappedViewAncestor );
+
+			// If there already is some nested list, then use it's position.
+			if ( nestedList ) {
+				insertPosition = viewWriter.createPositionBefore( nestedList );
+			} else {
+				// Else just put new list on the end of list item content.
+				insertPosition = viewWriter.createPositionAt( mappedViewAncestor, 'end' );
+			}
 		} else {
 			// The previous item is not a list item (or does not exist at all).
 			// Just map the position and insert the view item at the mapped position.
@@ -248,6 +261,22 @@ export function createUIComponent( editor, commandName, label, icon ) {
 
 		return buttonView;
 	} );
+}
+
+/**
+ * Returns a first list view element that is direct child of the given view element.
+ *
+ * @param {module:engine/view/element~Element} viewElement
+ * @return {module:engine/view/element~Element|null}
+ */
+export function findNestedList( viewElement ) {
+	for ( const node of viewElement.getChildren() ) {
+		if ( node.name == 'ul' || node.name == 'ol' ) {
+			return node;
+		}
+	}
+
+	return null;
 }
 
 // Implementation of getFillerOffset for view list item element.

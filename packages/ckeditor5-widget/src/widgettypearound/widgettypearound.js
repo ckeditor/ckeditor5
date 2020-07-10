@@ -39,6 +39,8 @@ const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ];
 // Do the SVG parsing once and then clone the result <svg> DOM element for each new button.
 const RETURN_ARROW_ICON_ELEMENT = new DOMParser().parseFromString( returnIcon, 'image/svg+xml' ).firstChild;
 
+const PLUGIN_DISABLED_EDITING_ROOT_CLASS = 'ck-widget__type-around_disabled';
+
 /**
  * A plugin that allows users to type around widgets where normally it is impossible to place the caret due
  * to limitations of web browsers. These "tight spots" occur, for instance, before (or after) a widget being
@@ -50,7 +52,6 @@ const RETURN_ARROW_ICON_ELEMENT = new DOMParser().parseFromString( returnIcon, '
  * in it so that users can type (or insert content, paste, etc.) straight away.
  *
  * @extends module:core/plugin~Plugin
- * @private
  */
 export default class WidgetTypeAround extends Plugin {
 	/**
@@ -81,6 +82,29 @@ export default class WidgetTypeAround extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		const editor = this.editor;
+		const editingView = editor.editing.view;
+
+		// Set a CSS class on the view editing root when the plugin is disabled so all the buttons
+		// and lines visually disappear. All the interactions are disabled in individual plugin methods.
+		this.on( 'change:isEnabled', ( evt, data, isEnabled ) => {
+			editingView.change( writer => {
+				for ( const root of editingView.document.roots ) {
+					if ( isEnabled ) {
+						writer.removeClass( PLUGIN_DISABLED_EDITING_ROOT_CLASS, root );
+					} else {
+						writer.addClass( PLUGIN_DISABLED_EDITING_ROOT_CLASS, root );
+					}
+				}
+			} );
+
+			if ( !isEnabled ) {
+				editor.model.change( writer => {
+					writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
+				} );
+			}
+		} );
+
 		this._enableTypeAroundUIInjection();
 		this._enableInsertingParagraphsOnButtonClick();
 		this._enableInsertingParagraphsOnEnterKeypress();
@@ -117,6 +141,28 @@ export default class WidgetTypeAround extends Plugin {
 
 		editingView.focus();
 		editingView.scrollToTheSelection();
+	}
+
+	/**
+	 * A wrapper for the {@link module:utils/emittermixin~EmitterMixin#listenTo} method that executes the callbacks only
+	 * when the plugin {@link #isEnabled is enabled}.
+	 *
+	 * @private
+	 * @param {module:utils/emittermixin~Emitter} emitter The object that fires the event.
+	 * @param {String} event The name of the event.
+	 * @param {Function} callback The function to be called on event.
+	 * @param {Object} [options={}] Additional options.
+	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
+	 * order they were added.
+	 */
+	_listenToIfEnabled( emitter, event, callback, options ) {
+		this.listenTo( emitter, event, ( ...args ) => {
+			// Do not respond if the plugin is disabled.
+			if ( this.isEnabled ) {
+				callback( ...args );
+			}
+		}, options );
 	}
 
 	/**
@@ -213,7 +259,7 @@ export default class WidgetTypeAround extends Plugin {
 		// This is the main listener responsible for the "fake caret".
 		// Note: The priority must precede the default Widget class keydown handler ("high") and the
 		// TableKeyboard keydown handler ("high-10").
-		editingView.document.on( 'keydown', ( evt, domEventData ) => {
+		this._listenToIfEnabled( editingView.document, 'keydown', ( evt, domEventData ) => {
 			if ( isArrowKeyCode( domEventData.keyCode ) ) {
 				this._handleArrowKeyPress( evt, domEventData );
 			}
@@ -223,7 +269,7 @@ export default class WidgetTypeAround extends Plugin {
 		// selection as soon as the model range changes. This attribute only makes sense when a widget is selected
 		// (and the "fake horizontal caret" is visible) so whenever the range changes (e.g. selection moved somewhere else),
 		// let's get rid of the attribute so that the selection downcast dispatcher isn't even bothered.
-		modelSelection.on( 'change:range', ( evt, data ) => {
+		this._listenToIfEnabled( modelSelection, 'change:range', ( evt, data ) => {
 			// Do not reset the selection attribute when the change was indirect.
 			if ( !data.directChange ) {
 				return;
@@ -238,7 +284,7 @@ export default class WidgetTypeAround extends Plugin {
 
 		// Get rid of the widget type around attribute of the selection on every document change
 		// that makes widget not selected any more (i.e. widget was removed).
-		model.document.on( 'change:data', () => {
+		this._listenToIfEnabled( model.document, 'change:data', () => {
 			const selectedModelElement = modelSelection.getSelectedElement();
 
 			if ( selectedModelElement ) {
@@ -257,7 +303,7 @@ export default class WidgetTypeAround extends Plugin {
 		// React to changes of the model selection attribute made by the arrow keys listener.
 		// If the block widget is selected and the attribute changes, downcast the attribute to special
 		// CSS classes associated with the active ("fake horizontal caret") mode of the widget.
-		editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+		this._listenToIfEnabled( editor.editing.downcastDispatcher, 'selection', ( evt, data, conversionApi ) => {
 			const writer = conversionApi.writer;
 
 			if ( this._currentFakeCaretModelElement ) {
@@ -296,7 +342,7 @@ export default class WidgetTypeAround extends Plugin {
 			this._currentFakeCaretModelElement = selectedModelElement;
 		} );
 
-		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
+		this._listenToIfEnabled( editor.ui.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
 			if ( !isFocused ) {
 				editor.model.change( writer => {
 					writer.removeSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE );
@@ -450,7 +496,7 @@ export default class WidgetTypeAround extends Plugin {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
-		editingView.document.on( 'mousedown', ( evt, domEventData ) => {
+		this._listenToIfEnabled( editingView.document, 'mousedown', ( evt, domEventData ) => {
 			const button = getClosestTypeAroundDomButton( domEventData.domTarget );
 
 			if ( !button ) {
@@ -487,7 +533,7 @@ export default class WidgetTypeAround extends Plugin {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
-		this.listenTo( editingView.document, 'enter', ( evt, domEventData ) => {
+		this._listenToIfEnabled( editingView.document, 'enter', ( evt, domEventData ) => {
 			const selectedViewElement = editingView.document.selection.getSelectedElement();
 			const selectedModelElement = editor.editing.mapper.toModelElement( selectedViewElement );
 			const schema = editor.model.schema;
@@ -543,7 +589,7 @@ export default class WidgetTypeAround extends Plugin {
 
 		// Note: The priority must precede the default Widget class keydown handler ("high") and the
 		// TableKeyboard keydown handler ("high + 1").
-		editingView.document.on( 'keydown', ( evt, domEventData ) => {
+		this._listenToIfEnabled( editingView.document, 'keydown', ( evt, domEventData ) => {
 			// Don't handle enter/backspace/delete here. They are handled in dedicated listeners.
 			if ( !keyCodesHandledSomewhereElse.includes( domEventData.keyCode ) && !isNonTypingKeystroke( domEventData ) ) {
 				this._insertParagraphAccordingToFakeCaretPosition();
@@ -568,7 +614,7 @@ export default class WidgetTypeAround extends Plugin {
 		const schema = model.schema;
 
 		// Note: The priority must precede the default Widget class delete handler.
-		this.listenTo( editingView.document, 'delete', ( evt, domEventData ) => {
+		this._listenToIfEnabled( editingView.document, 'delete', ( evt, domEventData ) => {
 			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( model.document.selection );
 
 			// This listener handles only these cases when the "fake caret" is active.
@@ -647,7 +693,7 @@ export default class WidgetTypeAround extends Plugin {
 		const model = this.editor.model;
 		const documentSelection = model.document.selection;
 
-		this.listenTo( editor.model, 'insertContent', ( evt, [ content, selectable ] ) => {
+		this._listenToIfEnabled( editor.model, 'insertContent', ( evt, [ content, selectable ] ) => {
 			if ( selectable && !selectable.is( 'documentSelection' ) ) {
 				return;
 			}
