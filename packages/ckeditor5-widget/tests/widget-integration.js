@@ -298,8 +298,9 @@ describe( 'Widget - integration', () => {
 		expect( getModelData( model ) ).to.equal( '<paragraph>Foo[<inline-widget>foo bar</inline-widget>]Bar</paragraph>' );
 	} );
 
-	it( 'should do nothing for non-Safari browser', () => {
+	it( 'should do nothing for non-Safari and non-Gecko browser', () => {
 		testUtils.sinon.stub( env, 'isSafari' ).get( () => false );
+		testUtils.sinon.stub( env, 'isGecko' ).get( () => false );
 
 		setModelData( model, '<paragraph>[]</paragraph><widget><nested>foo bar</nested></widget>' );
 
