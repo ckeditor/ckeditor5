@@ -92,6 +92,11 @@ export default class MarkerCollection {
 	 */
 	_set( markerOrName, range, managedUsingOperations = false, affectsData = false ) {
 		const markerName = markerOrName instanceof Marker ? markerOrName.name : markerOrName;
+
+		if ( markerName.includes( ',' ) ) {
+			throw new CKEditorError( 'markercollection-incorrect-marker-name: Marker name cannot contain "," character.', this );
+		}
+
 		const oldMarker = this._markers.get( markerName );
 
 		if ( oldMarker ) {
