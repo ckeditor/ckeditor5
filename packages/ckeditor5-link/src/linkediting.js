@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import TwoStepCaretMovement from '@ckeditor/ckeditor5-typing/src/twostepcaretmovement';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import Input from '@ckeditor/ckeditor5-typing/src/input';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import AutomaticDecorators from './utils/automaticdecorators';
@@ -45,7 +45,7 @@ export default class LinkEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TwoStepCaretMovement ];
+		return [ TwoStepCaretMovement, Input ];
 	}
 
 	/**
@@ -431,6 +431,7 @@ export default class LinkEditing extends Plugin {
 	 */
 	_enableTypingOverLink() {
 		const editor = this.editor;
+		const view = editor.editing.view;
 
 		// Selection attributes when started typing over the link.
 		let selectionAttributes;
@@ -439,14 +440,23 @@ export default class LinkEditing extends Plugin {
 		let deletedContent;
 
 		// Detect pressing `Backspace` / `Delete`.
-		editor.editing.view.document.on( 'delete', ( evt, data ) => {
-			/* istanbul ignore else */
-			if ( data.domEvent.keyCode == keyCodes.delete || data.domEvent.keyCode == keyCodes.backspace ) {
-				deletedContent = true;
-			}
+		this.listenTo( view.document, 'delete', () => {
+			deletedContent = true;
 		}, { priority: 'high' } );
 
-		editor.model.on( 'deleteContent', () => {
+		// Detect when the content was cut from the editor.
+		// this.listenTo( view.document, 'cut', () => {
+		// 	deletedContent = true;
+		// }, { priority: 'high' } );
+
+		// Detect when pasting content. Attributes should not be copied.
+		// this.listenTo( view.document, 'paste', () => {
+		// 	selectionAttributes = null;
+		// }, { priority: 'high' } );
+
+		// Listening to `model#deleteContent` allows detecting whether selected content was a link.
+		// If so, before removing the element, we will copy its attributes.
+		this.listenTo( editor.model, 'deleteContent', () => {
 			const selection = editor.model.document.selection;
 
 			// Copy attributes only if anything is selected.
@@ -461,15 +471,28 @@ export default class LinkEditing extends Plugin {
 				return;
 			}
 
-			const nodeAfterFirstPosition = selection.getFirstPosition().nodeAfter;
-			const nodeBeforeLastPosition = selection.getLastPosition().nodeBefore;
+			// Enabled only when typing.
+			if ( !isTyping( editor ) ) {
+				return;
+			}
 
-			if ( isCorrectLink( nodeAfterFirstPosition, nodeBeforeLastPosition ) ) {
-				selectionAttributes = nodeAfterFirstPosition.getAttributes();
+			if ( shouldCopyAttributes( selection.getFirstPosition(), selection.getLastPosition() ) ) {
+				selectionAttributes = selection.getAttributes();
 			}
 		}, { priority: 'high' } );
 
-		editor.model.on( 'insertContent', ( evt, [ element ] ) => {
+		// Listening to `model#insertContent` allows detecting the content insertion.
+		// We want to apply attributes that were removed while typing over the link.
+		this.listenTo( editor.model, 'insertContent', ( evt, [ element ] ) => {
+			// eslint-disable-next-line
+			console.log( 'insertContent: isTyping', editor.plugins.get( 'Input' ).isInput( editor.model.change( writer => writer.batch ) ) );
+			deletedContent = false;
+
+			// Enabled only when typing.
+			if ( !isTyping( editor ) ) {
+				return;
+			}
+
 			if ( !selectionAttributes ) {
 				return;
 			}
@@ -485,19 +508,41 @@ export default class LinkEditing extends Plugin {
 	}
 }
 
-// Checks whether passed elements are the same and they represent a text node.
+// Checks whether selection's attributes should be copied to the new inserted text.
 //
-// @param {module:engine/model/node~Node} nodeA
-// @param {module:engine/model/node~Node} nodeB
+// @param {module:engine/model/position~Position} positionA
+// @param {module:engine/model/position~Position} positionB
 // @returns {Boolean}
-function isCorrectLink( nodeA, nodeB ) {
-	if ( !nodeA || !nodeB ) {
-		return;
+function shouldCopyAttributes( positionA, positionB ) {
+	const nodeAtFirstPosition = positionA.nodeAfter;
+
+	// The text link node does not exist...
+	if ( !nodeAtFirstPosition ) {
+		return false;
 	}
 
-	if ( nodeA !== nodeB ) {
-		return;
+	// ...or it isn't the text node...
+	if ( !nodeAtFirstPosition.is( 'text' ) ) {
+		return false;
 	}
 
-	return nodeA.is( 'text' );
+	// ...or isn't the link.
+	if ( !nodeAtFirstPosition.hasAttribute( 'linkHref' ) ) {
+		return false;
+	}
+
+	// `textNode` = the position is inside the link element.
+	// `nodeBefore` = the position is at the end of the link element.
+	const nodeAtLastPosition = positionB.textNode || positionB.nodeBefore;
+
+	// Both nodes must indicate the same node in the model tree.
+	return nodeAtFirstPosition === nodeAtLastPosition;
+}
+
+// @params {module:core/editor/editor~Editor} editor
+// @returns {Boolean}
+function isTyping( editor ) {
+	const input = editor.plugins.get( 'Input' );
+
+	return input.isInput( editor.model.change( writer => writer.batch ) );
 }
