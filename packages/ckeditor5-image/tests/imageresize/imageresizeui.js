@@ -264,21 +264,38 @@ describe( 'ImageResizeUI', () => {
 			expect( editor.ui.componentFactory.create( 'imageResize:50' ) ).to.be.instanceof( ButtonView );
 		} );
 
-		it( 'should be created with invisible "50%" label when is provided', () => {
-			const buttonView = editor.ui.componentFactory.create( 'imageResize:50' );
+		it( 'should be created with invisible "Resize image: 30%" label when is provided', async () => {
+			const editor = await ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
+					image: {
+						resizeUnit: '%',
+						resizeOptions: [ {
+							name: 'imageResize:30',
+							value: '30',
+							label: 'Resize image: 30%',
+							icon: 'small'
+						} ],
+						toolbar: [ 'imageResize:30' ]
+					}
+				} );
+
+			const buttonView = editor.ui.componentFactory.create( 'imageResize:30' );
 			buttonView.render();
 
 			expect( buttonView.withText ).to.be.false;
-			expect( buttonView.label ).to.equal( '50%' );
+			expect( buttonView.label ).to.equal( 'Resize image: 30%' );
 			expect( buttonView.labelView ).to.be.instanceOf( View );
+
+			editor.destroy();
 		} );
 
-		it( 'should be created with invisible "50%" label when is not provided', async () => {
+		it( 'should be created with invisible "Resize image to 50%" label when is not provided', async () => {
 			const buttonView = editor.ui.componentFactory.create( 'imageResize:50' );
 			buttonView.render();
 
 			expect( buttonView.withText ).to.be.false;
-			expect( buttonView.label ).to.equal( '50%' );
+			expect( buttonView.label ).to.equal( 'Resize image to 50%' );
 			expect( buttonView.labelView ).to.be.instanceOf( View );
 
 			editor.destroy();
