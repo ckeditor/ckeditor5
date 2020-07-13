@@ -12,7 +12,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
-import { getColumnIndexes, getRowIndexes, getSelectionAffectedTableCells, isSelectionRectangular } from './utils/selection';
+import { getColumnIndexes, getRowIndexes, getSelectionAffectedTableCells, isSelectionRectangular, sortRanges } from './utils/selection';
 import {
 	cropTableToDimensions,
 	getHorizontallyOverlappingCells,
@@ -313,7 +313,32 @@ function replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selected
 		insertPosition = writer.createPositionAfter( cellToInsert );
 	}
 
-	writer.setSelection( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
+	// If there are any headings, all the cells that overlap from heading must be splitted.
+	const headingRows = parseInt( selectedTable.getAttribute( 'headingRows' ) || 0 );
+	const headingColumns = parseInt( selectedTable.getAttribute( 'headingColumns' ) || 0 );
+
+	const areHeadingRowsIntersectingSelection = selection.firstRow < headingRows && headingRows <= selection.lastRow;
+	const areHeadingColumnsIntersectingSelection = selection.firstColumn < headingColumns && headingColumns <= selection.lastColumn;
+
+	if ( areHeadingRowsIntersectingSelection ) {
+		const columnsLimit = { first: selection.firstColumn, last: selection.lastColumn };
+		const newCells = doHorizontalSplit( selectedTable, headingRows, columnsLimit, writer, selection.firstRow );
+
+		cellsToSelect.push( ...newCells );
+	}
+
+	if ( areHeadingColumnsIntersectingSelection ) {
+		const rowsLimit = { first: selection.firstRow, last: selection.lastRow };
+		const newCells = doVerticalSplit( selectedTable, headingColumns, rowsLimit, writer );
+
+		cellsToSelect.push( ...newCells );
+	}
+
+	// Selection ranges must be sorted because the first and last selection ranges are considered
+	// as anchor/focus cell ranges for multi-cell selection.
+	const selectionRanges = sortRanges( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
+
+	writer.setSelection( selectionRanges );
 }
 
 // Expand table (in place) to expected size.
@@ -484,9 +509,7 @@ function doHorizontalSplit( table, splitRow, limitColumns, writer, startRow = 0 
 	// Filter out cells that are not touching insides of the rectangular selection.
 	const cellsToSplit = overlappingCells.filter( ( { column, cellWidth } ) => isAffectedBySelection( column, cellWidth, limitColumns ) );
 
-	for ( const { cell } of cellsToSplit ) {
-		splitHorizontally( cell, splitRow, writer );
-	}
+	return cellsToSplit.map( ( { cell } ) => splitHorizontally( cell, splitRow, writer ) );
 }
 
 function doVerticalSplit( table, splitColumn, limitRows, writer ) {
@@ -500,9 +523,7 @@ function doVerticalSplit( table, splitColumn, limitRows, writer ) {
 	// Filter out cells that are not touching insides of the rectangular selection.
 	const cellsToSplit = overlappingCells.filter( ( { row, cellHeight } ) => isAffectedBySelection( row, cellHeight, limitRows ) );
 
-	for ( const { cell, column } of cellsToSplit ) {
-		splitVertically( cell, column, splitColumn, writer );
-	}
+	return cellsToSplit.map( ( { cell, column } ) => splitVertically( cell, column, splitColumn, writer ) );
 }
 
 // Checks if cell at given row (column) is affected by a rectangular selection defined by first/last column (row).

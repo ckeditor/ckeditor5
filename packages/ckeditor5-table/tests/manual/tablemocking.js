@@ -32,6 +32,10 @@ ClassicEditor
 		const asciiOut = document.getElementById( 'ascii-art' );
 		const modelData = document.getElementById( 'model-data' );
 
+		editor.editing.view.document.on( 'paste', ( evt, data ) => {
+			document.getElementById( 'clipboard' ).innerText = data.dataTransfer.getData( 'text/html' ).replace( />(?=<)/g, '>\n' );
+		} );
+
 		document.getElementById( 'clear-content' ).addEventListener( 'click', () => {
 			editor.setData( '' );
 		} );

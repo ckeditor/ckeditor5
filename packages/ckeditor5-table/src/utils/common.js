@@ -30,11 +30,15 @@ export function updateNumericAttribute( key, value, item, writer, defaultValue =
  * @param {module:engine/model/writer~Writer} writer The model writer.
  * @param {module:engine/model/position~Position} insertPosition The position at which the table cell should be inserted.
  * @param {Object} attributes The element attributes.
+ * @returns {module:engine/model/element~Element} Created table cell.
  */
 export function createEmptyTableCell( writer, insertPosition, attributes = {} ) {
 	const tableCell = writer.createElement( 'tableCell', attributes );
+
 	writer.insertElement( 'paragraph', tableCell );
 	writer.insert( tableCell, insertPosition );
+
+	return tableCell;
 }
 
 /**
