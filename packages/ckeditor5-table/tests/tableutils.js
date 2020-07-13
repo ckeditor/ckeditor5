@@ -1526,4 +1526,70 @@ describe( 'TableUtils', () => {
 			} );
 		} );
 	} );
+
+	describe( 'createTable()', () => {
+		it( 'should create table', () => {
+			setData( model, '[]' );
+
+			model.change( writer => {
+				const table = tableUtils.createTable( writer, { rows: 3, columns: 2 } );
+
+				model.insertContent( table, model.document.selection.focus );
+			} );
+
+			assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+				[ '', '' ],
+				[ '', '' ],
+				[ '', '' ]
+			] ) );
+		} );
+
+		it( 'should create table with heading rows', () => {
+			setData( model, '[]' );
+
+			model.change( writer => {
+				const table = tableUtils.createTable( writer, { rows: 3, columns: 2, headingRows: 1 } );
+
+				model.insertContent( table, model.document.selection.focus );
+			} );
+
+			assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+				[ '', '' ],
+				[ '', '' ],
+				[ '', '' ]
+			], { headingRows: 1 } ) );
+		} );
+
+		it( 'should create table with heading columns', () => {
+			setData( model, '[]' );
+
+			model.change( writer => {
+				const table = tableUtils.createTable( writer, { rows: 3, columns: 2, headingColumns: 1 } );
+
+				model.insertContent( table, model.document.selection.focus );
+			} );
+
+			assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+				[ '', '' ],
+				[ '', '' ],
+				[ '', '' ]
+			], { headingColumns: 1 } ) );
+		} );
+
+		it( 'should create table with heading rows and columns', () => {
+			setData( model, '[]' );
+
+			model.change( writer => {
+				const table = tableUtils.createTable( writer, { rows: 3, columns: 2, headingRows: 2, headingColumns: 1 } );
+
+				model.insertContent( table, model.document.selection.focus );
+			} );
+
+			assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+				[ '', '' ],
+				[ '', '' ],
+				[ '', '' ]
+			], { headingRows: 2, headingColumns: 1 } ) );
+		} );
+	} );
 } );

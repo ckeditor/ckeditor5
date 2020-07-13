@@ -74,21 +74,35 @@ export default class TableUtils extends Plugin {
 	 *
 	 *		model.change( ( writer ) => {
 	 *			// Create a table of 2 rows and 7 columns:
-	 *			const table = tableUtils.createTable( writer, 2, 7);
+	 *			const table = tableUtils.createTable( writer, { rows: 2, columns: 7 } );
 	 *
 	 *			// Insert a table to the model at the best position taking the current selection:
 	 *			model.insertContent( table );
 	 *		}
 	 *
 	 * @param {module:engine/model/writer~Writer} writer The model writer.
-	 * @param {Number} rows The number of rows to create.
-	 * @param {Number} columns The number of columns to create.
+	 * @param {Object} options
+	 * @param {Number} [options.rows=2] The number of rows to create.
+	 * @param {Number} [options.columns=2] The number of columns to create.
+	 * @param {Number} [options.headingRows=0] The number of heading rows.
+	 * @param {Number} [options.headingColumns=0] The number of heading columns.
 	 * @returns {module:engine/model/element~Element} The created table element.
 	 */
-	createTable( writer, rows, columns ) {
+	createTable( writer, options ) {
 		const table = writer.createElement( 'table' );
 
+		const rows = parseInt( options.rows ) || 2;
+		const columns = parseInt( options.columns ) || 2;
+
 		createEmptyRows( writer, table, 0, rows, columns );
+
+		if ( options.headingRows ) {
+			updateNumericAttribute( 'headingRows', options.headingRows, table, writer, 0 );
+		}
+
+		if ( options.headingColumns ) {
+			updateNumericAttribute( 'headingColumns', options.headingColumns, table, writer, 0 );
+		}
 
 		return table;
 	}

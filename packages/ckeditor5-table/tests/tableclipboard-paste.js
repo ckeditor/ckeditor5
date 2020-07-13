@@ -108,7 +108,7 @@ describe( 'table clipboard', () => {
 					model.createRangeOn( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) )
 				] );
 
-				const tableToInsert = editor.plugins.get( 'TableUtils' ).createTable( writer, 2, 2 );
+				const tableToInsert = editor.plugins.get( 'TableUtils' ).createTable( writer, { rows: 2, columns: 2 } );
 
 				for ( const { cell } of new TableWalker( tableToInsert ) ) {
 					writer.insertText( 'foo', cell.getChild( 0 ), 0 );
@@ -461,7 +461,7 @@ describe( 'table clipboard', () => {
 			);
 
 			model.change( writer => {
-				const tableToInsert = editor.plugins.get( 'TableUtils' ).createTable( writer, 2, 2 );
+				const tableToInsert = editor.plugins.get( 'TableUtils' ).createTable( writer, { rows: 2, columns: 2 } );
 
 				for ( const { cell } of new TableWalker( tableToInsert ) ) {
 					writer.insertText( 'foo', cell.getChild( 0 ), 0 );
