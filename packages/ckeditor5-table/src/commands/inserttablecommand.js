@@ -43,6 +43,8 @@ export default class InsertTableCommand extends Command {
 	 * @param {Object} options
 	 * @param {Number} [options.rows=2] The number of rows to create in the inserted table.
 	 * @param {Number} [options.columns=2] The number of columns to create in the inserted table.
+	 * @param {Number} [options.headingRows=0] The number of heading rows.
+	 * @param {Number} [options.headingColumns=0] The number of heading columns.
 	 * @fires execute
 	 */
 	execute( options = {} ) {
@@ -50,13 +52,10 @@ export default class InsertTableCommand extends Command {
 		const selection = model.document.selection;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
-		const rows = parseInt( options.rows ) || 2;
-		const columns = parseInt( options.columns ) || 2;
-
 		const insertPosition = findOptimalInsertionPosition( selection, model );
 
 		model.change( writer => {
-			const table = tableUtils.createTable( writer, rows, columns );
+			const table = tableUtils.createTable( writer, options );
 
 			model.insertContent( table, insertPosition );
 

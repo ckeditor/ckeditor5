@@ -108,7 +108,7 @@ describe( 'table clipboard', () => {
 					model.createRangeOn( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) )
 				] );
 
-				const tableToInsert = editor.plugins.get( 'TableUtils' ).createTable( writer, 2, 2 );
+				const tableToInsert = editor.plugins.get( 'TableUtils' ).createTable( writer, { rows: 2, columns: 2 } );
 
 				for ( const { cell } of new TableWalker( tableToInsert ) ) {
 					writer.insertText( 'foo', cell.getChild( 0 ), 0 );
@@ -461,7 +461,7 @@ describe( 'table clipboard', () => {
 			);
 
 			model.change( writer => {
-				const tableToInsert = editor.plugins.get( 'TableUtils' ).createTable( writer, 2, 2 );
+				const tableToInsert = editor.plugins.get( 'TableUtils' ).createTable( writer, { rows: 2, columns: 2 } );
 
 				for ( const { cell } of new TableWalker( tableToInsert ) ) {
 					writer.insertText( 'foo', cell.getChild( 0 ), 0 );
@@ -3385,6 +3385,329 @@ describe( 'table clipboard', () => {
 				}
 			);
 		} );
+
+		describe( 'headings overlapping selected area', () => {
+			beforeEach( () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02', '03', '04', '05' ],
+					[ '10', '11', '12', '13', '14', '15' ],
+					[ '20', '21', '22', '23', '24', '25' ],
+					[ '30', '31', '32', '33', '34', '35' ],
+					[ '40', '41', '42', '43', '44', '45' ],
+					[ '50', '51', '52', '53', '54', '55' ]
+				], { headingRows: 3, headingColumns: 3 } ) );
+			} );
+
+			it( 'should not split cells if they are not overlapping from headings', () => {
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] )
+				);
+
+				// +----+----+----+----+
+				// | aa           | ad |
+				// +              +----+
+				// |              | bd |
+				// +              +----+
+				// |              | cd |
+				// +----+----+----+----+
+				// | da | db | dc | dd |
+				// +----+----+----+----+
+				pasteTable( [
+					[ { contents: 'aa', colspan: 3, rowspan: 3 }, 'ad' ],
+					[ 'bd' ],
+					[ 'cd' ],
+					[ 'da', 'db', 'dc', 'dd' ]
+				] );
+
+				// +----+----+----+----+----+----+
+				// | aa           | ad | 04 | 05 |
+				// +              +----+----+----+
+				// |              | bd | 14 | 15 |
+				// +              +----+----+----+
+				// |              | cd | 24 | 25 |
+				// +----+----+----+----+----+----+ <-- heading rows
+				// | da | db | dc | dd | 34 | 35 |
+				// +----+----+----+----+----+----+
+				// | 40 | 41 | 42 | 43 | 44 | 45 |
+				// +----+----+----+----+----+----+
+				// | 50 | 51 | 52 | 53 | 54 | 55 |
+				// +----+----+----+----+----+----+
+				//                ^-- heading columns
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ { contents: 'aa', colspan: 3, rowspan: 3 }, 'ad', '04', '05' ],
+					[ 'bd', '14', '15' ],
+					[ 'cd', '24', '25' ],
+					[ 'da', 'db', 'dc', 'dd', '34', '35' ],
+					[ '40', '41', '42', '43', '44', '45' ],
+					[ '50', '51', '52', '53', '54', '55' ]
+				], { headingRows: 3, headingColumns: 3 } ) );
+
+				assertSelectionRangesSorted();
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 1,       1, 0, 0 ],
+					[          1, 0, 0 ],
+					[          1, 0, 0 ],
+					[ 1, 1, 1, 1, 0, 0 ],
+					[ 0, 0, 0, 0, 0, 0 ],
+					[ 0, 0, 0, 0, 0, 0 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+			} );
+
+			it( 'should split cells that overlap from headings', () => {
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+				);
+
+				// +----+----+----+----+
+				// | aa           | ad |
+				// +              +----+
+				// |              | bd |
+				// +              +----+
+				// |              | cd |
+				// +----+----+----+----+
+				// | da | db | dc | dd |
+				// +----+----+----+----+
+				pasteTable( [
+					[ { contents: 'aa', colspan: 3, rowspan: 3 }, 'ad' ],
+					[ 'bd' ],
+					[ 'cd' ],
+					[ 'da', 'db', 'dc', 'dd' ]
+				] );
+
+				// +----+----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 | 05 |
+				// +----+----+----+----+----+----+
+				// | 10 | aa      |    | ad | 15 |
+				// +----+         +    +----+----+
+				// | 20 |         |    | bd | 25 |
+				// +----+----+----+----+----+----+ <-- heading rows
+				// | 30 |         |    | cd | 35 |
+				// +----+----+----+----+----+----+
+				// | 40 | da | db | dc | dd | 45 |
+				// +----+----+----+----+----+----+
+				// | 50 | 51 | 52 | 53 | 54 | 55 |
+				// +----+----+----+----+----+----+
+				//                ^-- heading columns
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', '01', '02', '03', '04', '05' ],
+					[ '10', { contents: 'aa', colspan: 2, rowspan: 2 }, { contents: '', rowspan: 2 }, 'ad', '15' ],
+					[ '20', 'bd', '25' ],
+					[ '30', { contents: '', colspan: 2 }, '', 'cd', '35' ],
+					[ '40', 'da', 'db', 'dc', 'dd', '45' ],
+					[ '50', '51', '52', '53', '54', '55' ]
+				], { headingRows: 3, headingColumns: 3 } ) );
+
+				assertSelectionRangesSorted();
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 0, 0, 0, 0, 0, 0 ],
+					[ 0, 1,    1, 1, 0 ],
+					[ 0,          1, 0 ],
+					[ 0, 1,    1, 1, 0 ],
+					[ 0, 1, 1, 1, 1, 0 ],
+					[ 0, 0, 0, 0, 0, 0 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+			} );
+
+			it( 'should split cells that overlap from heading rows', () => {
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 2, 3 ] ),
+					modelRoot.getNodeByPath( [ 0, 2, 3 ] )
+				);
+
+				// +----+----+----+----+
+				// | aa           | ad |
+				// +              +----+
+				// |              | bd |
+				// +              +----+
+				// |              | cd |
+				// +----+----+----+----+
+				// | da | db | dc | dd |
+				// +----+----+----+----+
+				pasteTable( [
+					[ { contents: 'aa', colspan: 3, rowspan: 3 }, 'ad' ],
+					[ 'bd' ],
+					[ 'cd' ],
+					[ 'da', 'db', 'dc', 'dd' ]
+				] );
+
+				// +----+----+----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 | 05 |    |
+				// +----+----+----+----+----+----+----+
+				// | 10 | 11 | 12 | 13 | 14 | 15 |    |
+				// +----+----+----+----+----+----+----+
+				// | 20 | 21 | 22 | aa           | ad |
+				// +----+----+----+----+----+----+----+ <-- heading rows
+				// | 30 | 31 | 32 |              | bd |
+				// +----+----+----+              +----+
+				// | 40 | 41 | 42 |              | cd |
+				// +----+----+----+----+----+----+----+
+				// | 50 | 51 | 52 | da | db | dc | dd |
+				// +----+----+----+----+----+----+----+
+				//                ^-- heading columns
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', '01', '02', '03', '04', '05', '' ],
+					[ '10', '11', '12', '13', '14', '15', '' ],
+					[ '20', '21', '22', { contents: 'aa', colspan: 3 }, 'ad' ],
+					[ '30', '31', '32', { contents: '', colspan: 3, rowspan: 2 }, 'bd' ],
+					[ '40', '41', '42', 'cd' ],
+					[ '50', '51', '52', 'da', 'db', 'dc', 'dd' ]
+				], { headingRows: 3, headingColumns: 3 } ) );
+
+				assertSelectionRangesSorted();
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 0, 0, 0, 0, 0, 0, 0 ],
+					[ 0, 0, 0, 0, 0, 0, 0 ],
+					[ 0, 0, 0, 1,       1 ],
+					[ 0, 0, 0, 1,       1 ],
+					[ 0, 0, 0,          1 ],
+					[ 0, 0, 0, 1, 1, 1, 1 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+			} );
+
+			it( 'should split cells that overlap from heading columns', () => {
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 3, 2 ] ),
+					modelRoot.getNodeByPath( [ 0, 3, 2 ] )
+				);
+
+				// +----+----+----+----+
+				// | aa           | ad |
+				// +              +----+
+				// |              | bd |
+				// +              +----+
+				// |              | cd |
+				// +----+----+----+----+
+				// | da | db | dc | dd |
+				// +----+----+----+----+
+				pasteTable( [
+					[ { contents: 'aa', colspan: 3, rowspan: 3 }, 'ad' ],
+					[ 'bd' ],
+					[ 'cd' ],
+					[ 'da', 'db', 'dc', 'dd' ]
+				] );
+
+				// +----+----+----+----+----+----+
+				// | 00 | 01 | 02 | 03 | 04 | 05 |
+				// +----+----+----+----+----+----+
+				// | 10 | 11 | 12 | 13 | 14 | 15 |
+				// +----+----+----+----+----+----+
+				// | 20 | 21 | 22 | 23 | 24 | 25 |
+				// +----+----+----+----+----+----+ <-- heading rows
+				// | 30 | 31 | aa |         | ad |
+				// +----+----+    +         +----+
+				// | 40 | 41 |    |         | bd |
+				// +----+----+    +         +----+
+				// | 50 | 51 |    |         | cd |
+				// +----+----+----+----+----+----+
+				// |    |    | da | db | dc | dd |
+				// +----+----+----+----+----+----+
+				//                ^-- heading columns
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '00', '01', '02', '03', '04', '05' ],
+					[ '10', '11', '12', '13', '14', '15' ],
+					[ '20', '21', '22', '23', '24', '25' ],
+					[ '30', '31', { contents: 'aa', rowspan: 3 }, { contents: '', colspan: 2, rowspan: 3 }, 'ad' ],
+					[ '40', '41', 'bd' ],
+					[ '50', '51', 'cd' ],
+					[ '', '', 'da', 'db', 'dc', 'dd' ]
+				], { headingRows: 3, headingColumns: 3 } ) );
+
+				assertSelectionRangesSorted();
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 0, 0, 0, 0, 0, 0 ],
+					[ 0, 0, 0, 0, 0, 0 ],
+					[ 0, 0, 0, 0, 0, 0 ],
+					[ 0, 0, 1, 1,    1 ],
+					[ 0, 0,          1 ],
+					[ 0, 0,          1 ],
+					[ 0, 0, 1, 1, 1, 1 ]
+				] );
+				/* eslint-enable no-multi-spaces */
+			} );
+
+			it( 'should split cells that overlap from headings (repeated pasted table)', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02', '03', '04' ],
+					[ '10', '11', '12', '13', '14' ],
+					[ '20', '21', '22', '23', '24' ],
+					[ '30', '31', '32', '33', '34' ],
+					[ '40', '41', '42', '43', '44' ]
+				], { headingRows: 1, headingColumns: 1 } ) );
+
+				tableSelection.setCellSelection(
+					modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+					modelRoot.getNodeByPath( [ 0, 4, 4 ] )
+				);
+
+				// +----+----+----+
+				// | aa      | ac |
+				// +         +----+
+				// |         | bc |
+				// +----+----+----+
+				// | ca | cb | cc |
+				// +----+----+----+
+				pasteTable( [
+					[ { contents: 'aa', colspan: 2, rowspan: 2 }, 'ac' ],
+					[ 'bc' ],
+					[ 'ca', 'cb', 'cc' ]
+				] );
+
+				// +----+----+----+----+----+
+				// | aa |    | ac | aa      |
+				// +----+----+----+----+----+ <-- heading rows
+				// |    |    | bc |         |
+				// +----+----+----+----+----+
+				// | ca | cb | cc | ca | cb |
+				// +----+----+----+----+----+
+				// | aa |    | ac | aa      |
+				// +    +    +----+         +
+				// |    |    | bc |         |
+				// +----+----+----+----+----+
+				//      ^-- heading columns
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ 'aa', '', 'ac', { contents: 'aa', colspan: 2 } ],
+					[ '', '', 'bc', { contents: '', colspan: 2 } ],
+					[ 'ca', 'cb', 'cc', 'ca', 'cb' ],
+					[ { contents: 'aa', rowspan: 2 }, { contents: '', rowspan: 2 }, 'ac', { contents: 'aa', colspan: 2, rowspan: 2 } ],
+					[ 'bc' ]
+				], { headingRows: 1, headingColumns: 1 } ) );
+
+				assertSelectionRangesSorted();
+
+				/* eslint-disable no-multi-spaces */
+				assertSelectedCells( model, [
+					[ 1, 1, 1, 1    ],
+					[ 1, 1, 1, 1    ],
+					[ 1, 1, 1, 1, 1 ],
+					[ 1, 1, 1, 1    ],
+					[       1       ]
+				] );
+				/* eslint-enable no-multi-spaces */
+			} );
+
+			function assertSelectionRangesSorted() {
+				const selectionRanges = Array.from( model.document.selection.getRanges() );
+				const selectionRangesSorted = selectionRanges.slice().sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
+
+				const selectionPaths = selectionRanges.map( ( { start } ) => start.path );
+				const sortedPaths = selectionRangesSorted.map( ( { start } ) => start.path );
+
+				expect( selectionPaths ).to.deep.equal( sortedPaths );
+			}
+		} );
 	} );
 
 	describe( 'Clipboard integration - paste (content scenarios)', () => {
@@ -3553,6 +3876,32 @@ describe( 'table clipboard', () => {
 				[ '02', '21', '22' ]
 			] ) );
 		} );
+
+		it( 'removes block fillers from empty cells (both td and th)', async () => {
+			await createEditor();
+
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '01', '11', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			pasteTable( [
+				[ '&nbsp;', '&nbsp;' ],
+				[ '&nbsp;', '&nbsp;' ]
+			], { headingRows: 1 } );
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ '', '', '02' ],
+				[ '', '', '12' ],
+				[ '02', '21', '22' ]
+			] ) );
+		} );
 	} );
 
 	async function createEditor( extraPlugins = [] ) {
@@ -3566,13 +3915,13 @@ describe( 'table clipboard', () => {
 		tableSelection = editor.plugins.get( 'TableSelection' );
 	}
 
-	function pasteTable( tableData ) {
+	function pasteTable( tableData, attributes = {} ) {
 		const data = {
 			dataTransfer: createDataTransfer(),
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
 		};
-		data.dataTransfer.setData( 'text/html', viewTable( tableData ) );
+		data.dataTransfer.setData( 'text/html', viewTable( tableData, attributes ) );
 		viewDocument.fire( 'paste', data );
 
 		return data;

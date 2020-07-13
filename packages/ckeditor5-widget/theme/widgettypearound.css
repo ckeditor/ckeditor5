@@ -104,3 +104,10 @@
 .ck.ck-editor__editable.ck-restricted-editing_mode_restricted .ck-widget__type-around {
 	display: none;
 }
+
+/*
+ * Integration with the #isEnabled property of the WidgetTypeAround plugin.
+ */
+.ck.ck-editor__editable.ck-widget__type-around_disabled .ck-widget__type-around {
+	display: none;
+}

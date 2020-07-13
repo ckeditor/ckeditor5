@@ -684,6 +684,26 @@ describe( 'Position', () => {
 		} );
 	} );
 
+	describe( 'findAncestor()', () => {
+		it( 'should return position parent element', () => {
+			expect( new Position( root, [ 1, 1, 1 ] ).findAncestor( 'li' ) ).to.equal( li2 );
+		} );
+
+		it( 'should return deeper ancestor element', () => {
+			expect( new Position( root, [ 1, 1, 1 ] ).findAncestor( 'ul' ) ).to.equal( ul );
+		} );
+
+		it( 'should return null if ancestor is not found', () => {
+			expect( new Position( root, [ 1, 1, 1 ] ).findAncestor( 'p' ) ).to.be.null;
+		} );
+
+		it( 'should return null if position is not in an element', () => {
+			const docFrag = new DocumentFragment();
+
+			expect( new Position( docFrag, [ 0 ] ).findAncestor( 'li' ) ).to.be.null;
+		} );
+	} );
+
 	describe( 'getCommonPath()', () => {
 		it( 'returns the common part', () => {
 			const pos1 = new Position( root, [ 1, 0, 0 ] );

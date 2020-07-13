@@ -146,12 +146,15 @@ export default class Widget extends Plugin {
 			// But at least triple click inside nested editable causes broken selection in Safari.
 			// For such event, we select the entire nested editable element.
 			// See: https://github.com/ckeditor/ckeditor5/issues/1463.
-			if ( env.isSafari && domEventData.domEvent.detail >= 3 ) {
+			if ( ( env.isSafari || env.isGecko ) && domEventData.domEvent.detail >= 3 ) {
 				const mapper = editor.editing.mapper;
-				const modelElement = mapper.toModelElement( element );
+				const viewElement = element.is( 'attributeElement' ) ?
+					element.findAncestor( element => !element.is( 'attributeElement' ) ) : element;
+				const modelElement = mapper.toModelElement( viewElement );
+
+				domEventData.preventDefault();
 
 				this.editor.model.change( writer => {
-					domEventData.preventDefault();
 					writer.setSelection( modelElement, 'in' );
 				} );
 			}
