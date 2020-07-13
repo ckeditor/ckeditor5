@@ -60,14 +60,15 @@ export default class ImageResize extends Plugin {
 /**
  * The resize options.
  *
- * Each option should have its `name`, which is a component name definition that will be
- * used in the {@link module:image/imageresize/imageresizeui~ImageResizeUI} plugin.
- * Other properties like `label` and `value` define the following:
- * a text label for the option button and the value that will be applied to the image's width.
+ * Each option should have its own `name`, which is a component name definition that will be
+ * used in the {@link module:image/imageresize/imageresizeui~ImageResizeUI} plugin and `value` which will
+ * be applied to the image's width during the {@link module:image/imageresize/imageresizecommand~ImageResizeCommand} execution.
  *
  * The value property is combined with the `resizeUnit` (`%` by default), eg: `value: '50'` and `resizeUnit: '%'` is `50%`.
  *
- * **NOTE:** If you want to set an option that will reset image to its original size, you need to pass a `null` value
+ * **NOTE:** There is additional mandatory property — `icon`, but it's necessary only for setting the standalone buttons configuration.
+ *
+ * **Reset size option:** If you want to set an option that will reset image to its original size, you need to pass a `null` value
  * to one of the options. The `:original` token is not mandatory, you can call it anything you wish, but it must reflect
  * in the standalone buttons configuration for the image toolbar.
  *
@@ -77,18 +78,18 @@ export default class ImageResize extends Plugin {
  *					resizeUnit: "%",
  *					resizeOptions: [ {
  *						name: 'imageResize:original',
- *						label: 'Original size',
  *						value: null
+ *						// you should add `icon` property if you're configuring the standalone buttons.
  *					},
  *					{
  *						name: 'imageResize:50',
- *						label: '50%',
  *						value: '50'
+ *						// you should add `icon` property if you're configuring the standalone buttons.
  *					},
  *					{
  *						name: 'imageResize:75',
- *						label: '75%',
  *						value: '75'
+ *						// you should add `icon` property if you're configuring the standalone buttons.
  *					} ]
  *				}
  *			} )
@@ -105,17 +106,14 @@ export default class ImageResize extends Plugin {
  *					resizeUnit: "%",
  *					resizeOptions: [ {
  *						name: 'imageResize:original',
- *						label: 'Original size',
  *						value: null
  *					},
  *					{
  *						name: 'imageResize:50',
- *						label: '50%',
  *						value: '50'
  *					},
  *					{
  *						name: 'imageResize:75',
- *						label: '75%',
  *						value: '75'
  *					} ],
  *					toolbar: [ 'imageResize', ... ],
@@ -124,7 +122,8 @@ export default class ImageResize extends Plugin {
  *			.then( ... )
  *			.catch( ... );
  *
- * If you want to have separate buttons for each option, pass their names instead:
+ * If you want to have separate buttons for each option, pass their names to the `image.toolbar` instead. Please keep in
+ * mind that this time **you should define additional `icon` property**:
  *
  *			ClassicEditor
  *			.create( editorElement, {
@@ -132,20 +131,53 @@ export default class ImageResize extends Plugin {
  *					resizeUnit: "%",
  *					resizeOptions: [ {
  *						name: 'imageResize:original',
- *						label: 'Original size',
  *						value: null
+ *						icon: 'original'
+ *					},
+ *					{
+ *						name: 'imageResize:25',
+ *						value: '25'
+ *						icon: 'small'
  *					},
  *					{
  *						name: 'imageResize:50',
- *						label: '50%',
  *						value: '50'
+ *						icon: 'medium'
  *					},
  *					{
  *						name: 'imageResize:75',
- *						label: '75%',
  *						value: '75'
+ *						icon: 'large'
  *					} ],
- *					toolbar: [ 'imageResize:original', 'imageResize:50', 'imageResize:75', ... ],
+ *					toolbar: [ 'imageResize:25', 'imageResize:50', 'imageResize:75', 'imageResize:original', ... ],
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * **User-defined labels**: You can also set your own labels for each option. To do that, please add `label` property like
+ * in the example below. With the **dropdown**, the labels will be shown on the list of all options when you open the dropdown.
+ * With the **standalone buttons**, the labels will be shown only in tooltips when you hover over the icons.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				image: {
+ *					resizeUnit: "%",
+ *					resizeOptions: [ {
+ *						name: 'imageResize:original',
+ *						value: null,
+ *						label: 'Original size'
+ *					},
+ *					{
+ *						name: 'imageResize:50',
+ *						value: '50',
+ *						label: 'Medium size'
+ *					},
+ *					{
+ *						name: 'imageResize:75',
+ *						value: '75',
+ *						label: 'Large size'
+ *					} ]
  *				}
  *			} )
  *			.then( ... )
