@@ -117,14 +117,15 @@ export default class ImageResizeUI extends Plugin {
 
 			if ( !userIcon() ) {
 				/**
-			 * Setting {@link module:image/image~ImageConfig#resizeOptions `config.image.resizeOptions`} for the standalone buttons,
-			 * you have to choose a valid icon token for each option.
-			 *
-			 * See all valid options described in the {@link module:image/imageresize/imageresizeui~ImageResizeOption plugin configuration}.
-			 *
-			 * @error imageresizeui-missing-icon
-			 * @param {module:image/imageresize/imageresizeui~ImageResizeOption} option Invalid image resize option.
-			 */
+				* Setting {@link module:image/image~ImageConfig#resizeOptions `config.image.resizeOptions`} for the standalone buttons,
+				* you have to choose a valid icon token for each option.
+				*
+				* See all valid options described in the
+				* {@link module:image/imageresize/imageresizeui~ImageResizeOption plugin configuration}.
+				*
+				* @error imageresizeui-missing-icon
+				* @param {module:image/imageresize/imageresizeui~ImageResizeOption} option Invalid image resize option.
+				*/
 				throw new CKEditorError(
 					'imageresizeui-missing-icon: ' +
 					'The resize option "' + name + '" misses an `icon` property ' +
