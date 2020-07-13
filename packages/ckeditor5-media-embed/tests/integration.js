@@ -27,6 +27,7 @@ describe( 'MediaEmbed integration', () => {
 	} );
 
 	describe( 'with the placeholder feature', () => {
+		// https://github.com/ckeditor/ckeditor5/issues/1684
 		it( 'should make the placeholder CSS class disappear when pasting a new media into an empty editing root', async () => {
 			const editor = await ClassicTestEditor.create( element, {
 				plugins: [ MediaEmbed, Paragraph ]
