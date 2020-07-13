@@ -28,8 +28,6 @@ In order to start developing CKEditor 5 you will require:
 
 Besides that, CKEditor 5 relies heavily on [webpack](https://webpack.js.org/), the most popular build tool for JavaScript applications.
 
-### Webpack
-
 CKEditor 5 is currently built using [webpack@4](https://webpack.js.org). All builds, examples and demos are generated using this bundler. While it should be possible to use other bundlers (like [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/)), porting [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) that allows localizing the editor or the PostCSS configuration may require a major effort and hence is not recommended.
 
 There are a couple of things that you need to take care of when building CKEditor 5:
@@ -107,7 +105,7 @@ The goal of this section, though, is to show you how you could maintain a custom
 
 Let's see how you can create a build from scratch, taking care of each of the steps for the greatest control on the process.
 
-### Step 1. Build files
+### Step 1. Adding build files
 
 Let's create a `vendor/ckeditor/` directory with these 3 files:
 
@@ -261,7 +259,7 @@ Let's create a `vendor/ckeditor/` directory with these 3 files:
 		Note that in this guide the editor class is used directly (this is &mdash; we use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
 	</info-box>
 
-### Step 2. Dependencies
+### Step 2. Installing dependencies
 
 Now, let's install missing dependencies (while being in `vendor/ckeditor/`):
 
@@ -281,7 +279,7 @@ npm install --save \
 	webpack-cli@3
 ```
 
-### Step 3. Build the editor
+### Step 3. Building the editor
 
 To build the editor run the following command (while being in `vendor/ckeditor/`):
 
@@ -289,7 +287,7 @@ To build the editor run the following command (while being in `vendor/ckeditor/`
 npm run build
 ```
 
-### Step 4. Test your build
+### Step 4. Testing your build
 
 To test your build you can create a simple test file in `vendor/ckeditor/sample/index.html`:
 
