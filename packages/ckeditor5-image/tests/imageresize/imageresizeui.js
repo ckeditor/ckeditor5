@@ -29,26 +29,19 @@ describe( 'ImageResizeUI', () => {
 
 	const resizeOptions = [ {
 		name: 'imageResize:original',
-		value: null,
-		icon: 'original'
+		value: null
 	},
 	{
 		name: 'imageResize:25',
-		label: '25%',
-		value: '25',
-		icon: 'small'
+		value: '25'
 	},
 	{
 		name: 'imageResize:50',
-		label: '50%',
-		value: '50',
-		icon: 'medium'
+		value: '50'
 	},
 	{
 		name: 'imageResize:75',
-		label: '75%',
-		value: '75',
-		icon: 'large'
+		value: '75'
 	} ];
 
 	testUtils.createSinonSandbox();
@@ -61,7 +54,6 @@ describe( 'ImageResizeUI', () => {
 			.create( editorElement, {
 				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
 				image: {
-					resizeUnit: '%',
 					resizeOptions
 				}
 			} );
@@ -104,27 +96,20 @@ describe( 'ImageResizeUI', () => {
 
 	describe( 'init()', () => {
 		it( 'should have set "%" resize unit', () => {
-			const unit = editor.config.get( 'image.resizeUnit' );
-
-			expect( unit ).to.equal( '%' );
+			expect( plugin._resizeUnit ).to.equal( '%' );
 		} );
 
 		it( 'should have set "%" resize unit if not defined', async () => {
-			const editor = await ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
-					image: {
-						resizeOptions
-					}
-				} );
-
-			const button = editor.ui.componentFactory.create( 'imageResize:50' );
-			const command = editor.commands.get( 'imageResize' );
+			const dropdown = editor.ui.componentFactory.create( 'imageResize' );
+			const button = dropdown.listView.items.get( 1 ).children.get( 0 );
 
 			command.isEnabled = true;
 
+			dropdown.render();
+
 			button.fire( 'execute' );
 
+			expect( editor.config.get( 'image.resizeUnit' ) ).to.be.undefined;
 			expect( command.value.width.includes( '%' ) ).to.be.true;
 
 			await editor.destroy();
@@ -140,7 +125,8 @@ describe( 'ImageResizeUI', () => {
 					}
 				} );
 
-			const button = editor.ui.componentFactory.create( 'imageResize:50' );
+			const dropdown = editor.ui.componentFactory.create( 'imageResize' );
+			const button = dropdown.listView.items.get( 1 ).children.get( 0 );
 			const command = editor.commands.get( 'imageResize' );
 
 			command.isEnabled = true;
@@ -217,6 +203,51 @@ describe( 'ImageResizeUI', () => {
 	} );
 
 	describe( 'resize option button', () => {
+		let editor, plugin;
+
+		beforeEach( async () => {
+			editor = await ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
+					image: {
+						resizeUnit: '%',
+						resizeOptions: [ {
+							name: 'imageResize:original',
+							value: null,
+							icon: 'original'
+						},
+						{
+							name: 'imageResize:25',
+							value: '25',
+							icon: 'small'
+						},
+						{
+							name: 'imageResize:50',
+							value: '50',
+							icon: 'medium'
+						},
+						{
+							name: 'imageResize:75',
+							value: '75',
+							icon: 'large'
+						} ],
+						toolbar: [ 'imageResize:original', 'imageResize:25', 'imageResize:50', 'imageResize:75' ]
+					}
+				} );
+
+			plugin = editor.plugins.get( 'ImageResizeUI' );
+		} );
+
+		afterEach( async () => {
+			if ( editorElement ) {
+				editorElement.remove();
+			}
+
+			if ( editor ) {
+				await editor.destroy();
+			}
+		} );
+
 		it( 'should be bound to `#isEnabled`', () => {
 			const buttonView = editor.ui.componentFactory.create( 'imageResize:50' );
 
@@ -243,19 +274,6 @@ describe( 'ImageResizeUI', () => {
 		} );
 
 		it( 'should be created with invisible "50%" label when is not provided', async () => {
-			const editor = await ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
-					image: {
-						resizeUnit: '%',
-						resizeOptions: [ {
-							name: 'imageResize:50',
-							value: '50',
-							icon: 'medium'
-						} ]
-					}
-				} );
-
 			const buttonView = editor.ui.componentFactory.create( 'imageResize:50' );
 			buttonView.render();
 
@@ -327,7 +345,7 @@ describe( 'ImageResizeUI', () => {
 
 			expectToThrowCKEditorError( () => {
 				editor.ui.componentFactory.create( 'imageResize:noicon' );
-			}, errMsg );
+			}, errMsg, editor );
 
 			editor.destroy();
 		} );

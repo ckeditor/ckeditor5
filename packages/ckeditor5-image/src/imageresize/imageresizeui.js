@@ -58,8 +58,6 @@ export default class ImageResizeUI extends Plugin {
 		 * @private
 		 *
 		 * @type {module:image/image~ImageConfig#resizeUnit}
-		 *
-		 * Defaults to `%`.
 		 */
 		this._resizeUnit = editor.config.get( 'image.resizeUnit' ) || '%';
 	}
@@ -94,7 +92,6 @@ export default class ImageResizeUI extends Plugin {
 	 */
 	_addButton( option ) {
 		const editor = this.editor;
-		const t = editor.t;
 		const { name, value, icon } = option;
 		const parsedValue = value ? value + this._resizeUnit : null;
 
@@ -118,20 +115,30 @@ export default class ImageResizeUI extends Plugin {
 				}
 			};
 
-			// console.log( userIcon() );
-
 			if ( !userIcon() ) {
-			// TODO
+				/**
+			 * Setting {@link module:image/image~ImageConfig#resizeOptions `config.image.resizeOptions`} for the standalone buttons,
+			 * you have to choose a valid icon token for each option.
+			 *
+			 * See all valid options described in the {@link module:image/imageresize/imageresizeui~ImageResizeOption plugin configuration}.
+			 *
+			 * @error imageresizeui-missing-icon
+			 * @param {module:image/imageresize/imageresizeui~ImageResizeOption} option Invalid image resize option.
+			 */
 				throw new CKEditorError(
+					'imageresizeui-missing-icon: ' +
 					'The resize option "' + name + '" misses an `icon` property ' +
-					'or its value doesn\'t match the available options.'
+					'or its value doesn\'t match the available options.',
+					editor,
+					option
 				);
 			}
 
 			button.set( {
-				label: this._createLabel( option ),
+				// Uses `label` property for setting the more verbose text (from tooltip) for ARIA purpose.
+				label: this._createLabel( option, true ),
 				icon: userIcon(),
-				tooltip: parsedValue ? t( 'Resize image to' ) + ' ' + parsedValue : t( 'Resize image to the original size' ),
+				tooltip: this._createLabel( option, true ),
 				isToggleable: true,
 				commandValue: parsedValue
 			} );
@@ -203,14 +210,22 @@ export default class ImageResizeUI extends Plugin {
 	 * @private
 	 *
 	 * @param {module:image/imageresize/imageresizeui~ImageResizeOption} option A resize option object.
+	 * @param {Boolean} [forTooltip] An optional flag for creating a tooltip label.
+	 *
 	 * @returns {String} A user-defined label, a label combined from the value and resize unit or the default label
 	 * for reset options (`Original`).
 	 */
-	_createLabel( option ) {
+	_createLabel( option, forTooltip ) {
 		const t = this.editor.t;
 
 		if ( option.label ) {
 			return option.label;
+		} else if ( forTooltip ) {
+			if ( option.value ) {
+				return t( 'Resize image to' ) + ' ' + option.value + this._resizeUnit;
+			} else {
+				return t( 'Resize image to the original size' );
+			}
 		} else {
 			return option.value ? option.value + this._resizeUnit : t( 'Original' );
 		}
@@ -222,9 +237,9 @@ export default class ImageResizeUI extends Plugin {
 	 * @private
 	 *
 	 * @param {Array.<module:image/imageresize/imageresizeui~ImageResizeOption>} options The resize options.
-	 * @param {modules:image/imageresize/imageresizecommand} command A resize image command.
+	 * @param {module:image/imageresize/imageresizecommand~ImageResizeCommand} command A resize image command.
 	 *
-	 * @returns {module:utils/collection} definitions
+	 * @returns {module:utils/collection~Collection} definitions
 	*/
 	_prepareListDefinitions( options, command ) {
 		const itemDefinitions = new Collection();
