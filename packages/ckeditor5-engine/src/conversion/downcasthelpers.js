@@ -20,8 +20,6 @@ import ConversionHelpers from './conversionhelpers';
 import { cloneDeep } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-/* global console */
-
 /**
  * Downcast conversion helper functions.
  *
@@ -241,24 +239,25 @@ export default class DowncastHelpers extends ConversionHelpers {
 	/**
 	 * Model marker to view element conversion helper.
 	 *
-	 * **Note**: This method was deprecated. Please use {@link #markerToData} instead.
+	 * **Note**: This method should be used only for editing downcast. For data downcast, use {@link #markerToData} which produces
+	 * valid HTML data.
 	 *
 	 * This conversion results in creating a view element on the boundaries of the converted marker. If the converted marker
 	 * is collapsed, only one element is created. For example, model marker set like this: `<paragraph>F[oo b]ar</paragraph>`
 	 * becomes `<p>F<span data-marker="search"></span>oo b<span data-marker="search"></span>ar</p>` in the view.
 	 *
-	 *		editor.conversion.for( 'downcast' ).markerToElement( {
+	 *		editor.conversion.for( 'editingDowncast' ).markerToElement( {
 	 *			model: 'search',
 	 *			view: 'marker-search'
 	 *		} );
 	 *
-	 *		editor.conversion.for( 'downcast' ).markerToElement( {
+	 *		editor.conversion.for( 'editingDowncast' ).markerToElement( {
 	 *			model: 'search',
 	 *			view: 'search-result',
 	 *			converterPriority: 'high'
 	 *		} );
 	 *
-	 *		editor.conversion.for( 'downcast' ).markerToElement( {
+	 *		editor.conversion.for( 'editingDowncast' ).markerToElement( {
 	 *			model: 'search',
 	 *			view: {
 	 *				name: 'span',
@@ -268,7 +267,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			}
 	 *		} );
 	 *
-	 *		editor.conversion.for( 'downcast' ).markerToElement( {
+	 *		editor.conversion.for( 'editingDowncast' ).markerToElement( {
 	 *			model: 'search',
 	 *			view: ( markerData, viewWriter ) => {
 	 *				return viewWriter.createUIElement( 'span', {
@@ -286,12 +285,9 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * the `data.isOpening` parameter is passed, which is set to `true` for the marker start boundary element, and `false` to
 	 * the marker end boundary element.
 	 *
-	 * This kind of conversion is useful for saving data into the database, so it should be used in the data conversion pipeline.
-	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
-	 * @deprecated
 	 * @method #markerToElement
 	 * @param {Object} config Conversion configuration.
 	 * @param {String} config.model The name of the model marker (or model marker group) to convert.
@@ -301,11 +297,6 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	markerToElement( config ) {
-		console.warn(
-			'downcast-helpers-marker-to-element-deprecated: ' +
-			'The DowncastHelpers#markerToElement() method has been deprecated and will be removed in the near future. ' +
-			'Please use #markerToData() method instead.' );
-
 		return this.add( downcastMarkerToElement( config ) );
 	}
 
@@ -440,7 +431,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		} );
 	 *
 	 *		// Using custom function which is the same as the default conversion:
-	 *		editor.conversion.for( 'downcast' ).markerToData( {
+	 *		editor.conversion.for( 'dataDowncast' ).markerToData( {
 	 *			model: 'comment'
 	 *			view: markerName => ( {
 	 *				group: 'comment',
@@ -449,7 +440,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		} );
 	 *
 	 *		// Using converter priority:
-	 *		editor.conversion.for( 'downcast' ).markerToData( {
+	 *		editor.conversion.for( 'dataDowncast' ).markerToData( {
 	 *			model: 'comment'
 	 *			view: markerName => ( {
 	 *				group: 'comment',

@@ -30,6 +30,8 @@ import ViewSelection from '../../src/view/selection';
 import ViewRange from '../../src/view/range';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
+/* globals console */
+
 describe( 'UpcastHelpers', () => {
 	let upcastDispatcher, model, schema, upcastHelpers, viewDocument;
 
@@ -585,6 +587,16 @@ describe( 'UpcastHelpers', () => {
 	} );
 
 	describe( 'elementToMarker()', () => {
+		before( () => {
+			// Silence warning about deprecated method.
+			// This whole suite will be removed when the deprecated method is removed.
+			sinon.stub( console, 'warn' );
+		} );
+
+		after( () => {
+			console.warn.restore();
+		} );
+
 		it( 'should be chainable', () => {
 			expect( upcastHelpers.elementToMarker( { view: 'marker-search', model: 'search' } ) ).to.equal( upcastHelpers );
 		} );
