@@ -164,7 +164,18 @@ export default class TableClipboard extends Plugin {
 			// Content table to which we insert a pasted table.
 			const selectedTable = selectedTableCells[ 0 ].findAncestor( 'table' );
 
-			replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selectedTable, selection, writer );
+			const cellsToSelect = replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selectedTable, selection, writer );
+
+			if ( this.editor.plugins.get( 'TableSelection' ).isEnabled ) {
+				// Selection ranges must be sorted because the first and last selection ranges are considered
+				// as anchor/focus cell ranges for multi-cell selection.
+				const selectionRanges = sortRanges( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
+
+				writer.setSelection( selectionRanges );
+			} else {
+				// Set selection inside first cell if multi-cell selection is disabled.
+				writer.setSelection( cellsToSelect[ 0 ], 0 );
+			}
 		} );
 	}
 }
@@ -248,6 +259,7 @@ function prepareTableForPasting( selectedTableCells, pastedDimensions, writer, t
 // @param {Number} selection.lastColumn
 // @param {Number} selection.lastRow
 // @param {module:engine/model/writer~Writer} writer
+// @returns {Array.<module:engine/model/element~Element>}
 function replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selectedTable, selection, writer ) {
 	const { width: pastedWidth, height: pastedHeight } = pastedDimensions;
 
@@ -334,11 +346,7 @@ function replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selected
 		cellsToSelect.push( ...newCells );
 	}
 
-	// Selection ranges must be sorted because the first and last selection ranges are considered
-	// as anchor/focus cell ranges for multi-cell selection.
-	const selectionRanges = sortRanges( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
-
-	writer.setSelection( selectionRanges );
+	return cellsToSelect;
 }
 
 // Expand table (in place) to expected size.
