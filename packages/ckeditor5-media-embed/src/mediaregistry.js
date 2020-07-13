@@ -234,7 +234,7 @@ class Media {
 
 			const mediaHtml = this._getPreviewHtml( options );
 
-			viewElement = writer.createUIElement( 'div', attributes, function( domDocument ) {
+			viewElement = writer.createRawElement( 'div', attributes, function( domDocument ) {
 				const domElement = this.toDomElement( domDocument );
 
 				domElement.innerHTML = mediaHtml;
