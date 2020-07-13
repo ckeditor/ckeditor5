@@ -41,6 +41,7 @@ We are doing our best to deliver the best RTL support to our users and we consta
 
 * [CDN](#cdn),
 * [npm](#npm),
+* [Online builder](#online-builder),
 * [Zip download](#zip).
 
 Next, you can configure the editor to use the chosen language:
@@ -85,6 +86,14 @@ A single language can be loaded directly to your code by importing e.g. `'@ckedi
 
 See the {@link builds/guides/integration/installation#npm npm installation guide} for more information.
 
+### Online builder
+
+After downloading a build generated with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), languages will be available in `path-to-the-build/build/translations/[lang].js`.
+
+A single language can be loaded directly to your code by importing e.g. `'path-to-the-build/build/translations/de.js'`.
+
+See the {@link builds/guides/integration/installation#npm npm installation guide} for more information.
+
 ### Zip
 
 All additional languages are included in the `.zip` file. You need to include the `ckeditor.js` file together with the chosen language file:
@@ -100,7 +109,7 @@ See the {@link builds/guides/integration/installation#zip-download zip installat
 
 Currently, it is possible to change the UI language at the build stage and after the build. A single build of the editor supports the language which was defined in the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin)'s configuration. Check the whole translation process to see how you can change the language later.
 
-If you use one of the {@link builds/index predefined editor builds}, refer to {@link builds/guides/development/custom-builds Creating custom builds} to learn how to change the language of your build.
+If you use one of the {@link builds/index predefined editor builds}, refer to @link builds/guides/integration/advanced-setup#creating-a-custom-build Creating a custom build} to learn how to change the language of your build.
 
 If you build CKEditor 5 from scratch or integrate it directly into your application, then all you need to do is to:
 

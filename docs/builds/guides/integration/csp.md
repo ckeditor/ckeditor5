@@ -5,7 +5,7 @@
 # * List the strictest working Content Security Policy settings.
 
 category: builds-integration
-order: 70
+order: 80
 ---
 
 # Content Security Policy

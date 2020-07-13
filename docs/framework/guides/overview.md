@@ -11,7 +11,7 @@ This guide explains how the framework is built and how to start using it.
 
 ## When to use the framework?
 
-{@link builds/guides/development/custom-builds CKEditor 5 Builds can be customized}, but certain types of customizations require using the framework.
+{@link builds/guides/integration/installing-plugins#customizing-a-build CKEditor 5 Builds can be customized}, but certain types of customizations require using the framework.
 
 * **Writing your own features.** Features are implemented using the framework.
 * **Customizing existing features.** Changing the behavior or look of existing features can be done using the framework capabilities.

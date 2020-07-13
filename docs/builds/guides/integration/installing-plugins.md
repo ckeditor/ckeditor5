@@ -12,7 +12,7 @@ order: 50
 * Change the README in packaged downloaded from online builder. IT MUST BE PROOF-READ.
 * Review installation.md, advanced-setup.md, overview.md, plugins.md, quick-start.md
 * Link to this guide at the end of installation.md
-* Add redirect from the old custom-builds.md to this guide.
+* Add redirect from the old custom-builds.md to this guide and from integration/plugins.md to integration/plugins.md
 * Remove custom-builds.md.
 * Create a bootstrap task that could create all these files via `npx ckeditor5-bootstrap-build`.
 * Make official builds and ones built with the online builder resemble each other as closely as possible.
@@ -22,9 +22,9 @@ order: 50
 
 While {@link builds/guides/integration/installation installing one of the existing builds} is a convenient way to start using CKEditor 5, soon you may want to do one of the following:
 
-* installing additional plugins (official, 3rd party, or your custom ones) to add missing functionalities,
+* installing additional plugins (official, third-party, or your custom ones) to add missing functionalities,
 * removing unnecessary plugins in order to optimize the build size,
-* {@link buiids/guides/integration/advanced-setup#option-using-two-different-editors creating a "super build"} containing more than one editor type,
+* {@link builds/guides/integration/advanced-setup#option-using-two-different-editors creating a "super build"} containing more than one editor type,
 * customizing any other aspect of the build ({@link features/ui-language#building-the-editor-using-a-specific-language changing the built-in UI language}, {@link builds/guides/integration/advanced-setup#option-extracting-css extracting styles to a separate file}).
 
 To achieve any of this, you need to customize a build by changing its configuration and performing the build step.
@@ -32,7 +32,7 @@ To achieve any of this, you need to customize a build by changing its configurat
 This guide covers the simplest way to customize a build:
 
 * [Using the online builder](#online-builder) &mdash; The online builder allows choosing the editor type, installing and removing plugins (only official plugins are available) as well as changing the built-in language. This option is recommended if you are new to the JavaScript build stack (npm, webpack) or JavaScript itself.
-* [Customizing a build](#customizing-a-build) &mdash; The package created with the online builder can be further customized locally. This way, you can add 3rd party and custom plugins or change webpack configuration to tune various aspects of the build process (minification, CSS extraction, etc.).
+* [Customizing a build](#customizing-a-build) &mdash; The package created with the online builder can be further customized locally. This way, you can add third-party and custom plugins or change webpack configuration to tune various aspects of the build process (minification, CSS extraction, etc.).
 
 <info-box>
 	If you do not use existing builds because you {@link builds/guides/integration/advanced-setup#scenario-2-integrating-from-source integrated the editor from source}, in your case, installing plugins boils down to following the "Installation" section covered in each feature guide.
@@ -64,6 +64,10 @@ If you want to make bigger changes to the build, read on to learn how to do that
 ## Customizing a build
 
 Installing plugins, implementing custom ones, changing webpack configuration require rebuilding the editor. Let's see how to do that.
+
+<info-box>
+	At this point, we assume that you use a build generated with the [online builder](#online-builder). If you use an official build from npm, CDN or a Zip package you need to generate an adequate build by using the online builder. You can also check the {@link builds/guides/integration/advanced-setup advance integration options}.
+</info-box>
 
 We will start from rebuilding the editor without changing the configuration to see the process. Then, we will add a missing plugin and rebuild the editor again.
 

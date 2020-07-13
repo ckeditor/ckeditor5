@@ -86,7 +86,7 @@ We plan to provide more official integrations with time. [Your feedback on what 
 
 We believe each editor build should serve its purpose. Including features that are not used makes little sense because they increase the size of the editor and make the website heavier for no good reason. This is why we do not provide a full editor package similar to what we offer in CKEditor 4.
 
-At the same time, we recommend you to {@link builds/guides/integration/installing-plugins install plugins} to enable {@link features/index additional features} or even create a {@link builds/guides/development/custom-builds custom build} to make sure you make the most out of CKEditor 5.
+At the same time, we recommend you to {@link builds/guides/integration/installing-plugins install plugins} to enable {@link features/index additional features} or even create a {@link builds/guides/integration/advanced-setup#creating-a-custom-build custom build} to make sure you make the most out of CKEditor 5.
 
 ## How to customize the CKEditor 5 icons?
 

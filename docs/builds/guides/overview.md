@@ -77,13 +77,13 @@ To try it out online, check the {@link examples/builds/document-editor document 
 
 Every build comes with a default set of features and their default configuration. Although the builds try to fit many use cases, they may still need to be adjusted in some integrations. The following modifications are possible:
 
- * You can override the default **configuration of features** (e.g. define different image styles or heading levels).
- * You can change the default **toolbar configuration** (e.g. remove undo/redo buttons).
- * You can also **remove features** (plugins).
+* You can override the default **configuration of features** (e.g. define different image styles or heading levels).
+* You can change the default **toolbar configuration** (e.g. remove undo/redo buttons).
+* You can also **remove features** (plugins).
 
 Read more in the {@link builds/guides/integration/configuration Configuration guide}.
 
-If a build does not provide all the necessary features or you want to create a highly optimized build of the editor which will contain only the features that you require, you need to customize the build or create a brand new one. Check {@link builds/guides/development/custom-builds Custom builds} for details on how to change the default builds to match your preferences.
+If a build does not provide all the necessary features or you want to create a highly optimized build of the editor which will contain only the features that you require, you need to {@link builds/guides/integration/installing-plugins customize the build}, {@link builds/guides/integration/advanced-setup#scenario-1-creating-a-custom-build create a brand new one} or {@link builds/guides/integration/advanced-setup#scenario-2-integrating-from-source integrate the editor directly from source}.
 
 ## Additional information
 
@@ -130,10 +130,3 @@ In the following cases [CKEditor 4](https://ckeditor.com/ckeditor-4/) should be 
 * When compatibility with old browsers is a requirement.
 * If CKEditor 4 contains features that are essential for you, which are not available in CKEditor 5 yet.
 * If CKEditor 4 is already in use in your application and you are still not ready to replace it with CKEditor 5.
-
-In the following cases [Letters](https://ckeditor.com/letters/) may be used instead:
-
-* When you want an easy way to enable, as part of your application, the creation of articles and documents that feature:
-	* Real-time collaborative writing.
-	* Inline comments and discussion in the content.
-	* Advanced writing features.

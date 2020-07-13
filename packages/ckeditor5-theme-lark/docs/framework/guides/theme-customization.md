@@ -18,7 +18,7 @@ Below you can see a demo of an editor with the dark theme as a result of customi
 CKEditor 5 is bundled using [webpack](https://webpack.js.org/) and it handles the importing and processing of styles using [loaders](https://webpack.js.org/concepts/loaders/). Its configuration can be found in the `webpack.config.js` file.
 
 <info-box info>
-	To learn more about building CKEditor, check out the {@link builds/guides/development/custom-builds Creating custom builds} guide.
+	To learn more about building CKEditor, check out the {@link builds/guides/integration/advanced-setup Advanced setup} guide.
 </info-box>
 
 The entire process of building and managing the styles boils down to three steps:

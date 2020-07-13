@@ -5,7 +5,7 @@
 # * Point to resources to learn plugin development.
 
 category: builds-development
-order: 20
+order: 70
 ---
 
 # Plugins
@@ -35,7 +35,7 @@ Creating your own plugins is a straightforward task but it requires good knowled
 
 * The {@link framework/guides/creating-simple-plugin Plugin development guide} in the {@link framework/index CKEditor 5 Framework} documentation.
 * The {@link framework/guides/quick-start Quick start guide} in the {@link framework/index CKEditor 5 Framework} documentation.
-* {@link builds/guides/development/custom-builds Creating custom builds} which is necessary to have your plugin included inside a CKEditor 5 build.
+* {@link builds/guides/integration/advanced-setup#scenario-1-creating-a-custom-build Creating custom builds} which is necessary to have your plugin included inside a CKEditor 5 build.
 
 A good understanding of the {@link framework/index CKEditor 5 Framework} is also very welcome when it comes to creating plugins.
 

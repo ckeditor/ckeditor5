@@ -4,7 +4,7 @@
 # * Offer developers a way to obtain the editor content styles.
 
 category: builds-integration
-order: 80
+order: 90
 ---
 
 # Content styles
