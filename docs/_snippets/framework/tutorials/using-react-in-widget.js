@@ -114,7 +114,7 @@ class ProductPreviewEditing extends Plugin {
 
 				// The inner <div class="product__react-wrapper"></div> element.
 				// This element will host a React <ProductPreview /> component.
-				const reactWrapper = viewWriter.createUIElement( 'div', {
+				const reactWrapper = viewWriter.createRawElement( 'div', {
 					class: 'product__react-wrapper'
 				}, function( domDocument ) {
 					const domElement = this.toDomElement( domDocument );
