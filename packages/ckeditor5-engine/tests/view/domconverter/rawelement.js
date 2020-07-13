@@ -5,17 +5,17 @@
 
 /* globals document, HTMLElement */
 
-import ViewUIElement from '../../../src/view/uielement';
+import ViewRawElement from '../../../src/view/rawelement';
 import ViewContainer from '../../../src/view/containerelement';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocument from '../../../src/view/document';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
-describe( 'DOMConverter UIElement integration', () => {
+describe( 'DOMConverter RawElement integration', () => {
 	let converter, viewDocument;
 
-	function createUIElement( name ) {
-		const element = new ViewUIElement( viewDocument, name );
+	function createRawElement( name ) {
+		const element = new ViewRawElement( viewDocument, name );
 
 		element.render = function( domDocument ) {
 			const root = this.toDomElement( domDocument );
@@ -33,23 +33,23 @@ describe( 'DOMConverter UIElement integration', () => {
 	} );
 
 	describe( 'viewToDom()', () => {
-		it( 'should create DOM element from UIElement', () => {
-			const uiElement = new ViewUIElement( viewDocument, 'div' );
-			const domElement = converter.viewToDom( uiElement, document );
+		it( 'should create a DOM element from a RawElement', () => {
+			const rawElement = new ViewRawElement( viewDocument, 'div' );
+			const domElement = converter.viewToDom( rawElement, document );
 
 			expect( domElement ).to.be.instanceOf( HTMLElement );
 		} );
 
-		it( 'should create DOM structure from UIElement', () => {
-			const myElement = createUIElement( 'div' );
+		it( 'should create a DOM structure from a RawElement', () => {
+			const myElement = createRawElement( 'div' );
 			const domElement = converter.viewToDom( myElement, document );
 
 			expect( domElement ).to.be.instanceOf( HTMLElement );
 			expect( domElement.innerHTML ).to.equal( '<p><span>foo</span> bar</p>' );
 		} );
 
-		it( 'should create DOM structure that all is mapped to single UIElement', () => {
-			const myElement = createUIElement( 'div' );
+		it( 'should create a DOM structure entirely mapped to a single RawElement', () => {
+			const myElement = createRawElement( 'div' );
 			const domElement = converter.viewToDom( myElement, document, { bind: true } );
 			const domParagraph = domElement.childNodes[ 0 ];
 
@@ -60,31 +60,31 @@ describe( 'DOMConverter UIElement integration', () => {
 	} );
 
 	describe( 'domToView()', () => {
-		it( 'should return UIElement itself', () => {
-			const uiElement = createUIElement( 'div' );
-			const domElement = converter.viewToDom( uiElement, document, { bind: true } );
+		it( 'should return a RawElement', () => {
+			const rawElement = createRawElement( 'div' );
+			const domElement = converter.viewToDom( rawElement, document, { bind: true } );
 
-			expect( converter.domToView( domElement ) ).to.equal( uiElement );
+			expect( converter.domToView( domElement ) ).to.equal( rawElement );
 		} );
 
-		it( 'should return UIElement for nodes inside', () => {
-			const uiElement = createUIElement( 'div' );
-			const domElement = converter.viewToDom( uiElement, document, { bind: true } );
+		it( 'should return a RawElement for all nodes inside of it', () => {
+			const rawElement = createRawElement( 'div' );
+			const domElement = converter.viewToDom( rawElement, document, { bind: true } );
 
 			const domParagraph = domElement.childNodes[ 0 ];
 			const domSpan = domParagraph.childNodes[ 0 ];
 
-			expect( converter.domToView( domParagraph ) ).to.equal( uiElement );
-			expect( converter.domToView( domSpan ) ).to.equal( uiElement );
-			expect( converter.domToView( domParagraph.childNodes[ 0 ] ) ).equal( uiElement );
-			expect( converter.domToView( domSpan.childNodes[ 0 ] ) ).equal( uiElement );
+			expect( converter.domToView( domParagraph ) ).to.equal( rawElement );
+			expect( converter.domToView( domSpan ) ).to.equal( rawElement );
+			expect( converter.domToView( domParagraph.childNodes[ 0 ] ) ).equal( rawElement );
+			expect( converter.domToView( domSpan.childNodes[ 0 ] ) ).equal( rawElement );
 		} );
 	} );
 
 	describe( 'domPositionToView()', () => {
-		it( 'should convert position inside UIElement to position before it', () => {
-			const uiElement = createUIElement( 'h1' );
-			const container = new ViewContainer( viewDocument, 'div', null, [ new ViewContainer( viewDocument, 'div' ), uiElement ] );
+		it( 'should convert a position inside a RawElement to a position before it', () => {
+			const rawElement = createRawElement( 'h1' );
+			const container = new ViewContainer( viewDocument, 'div', null, [ new ViewContainer( viewDocument, 'div' ), rawElement ] );
 			const domContainer = converter.viewToDom( container, document, { bind: true } );
 
 			const viewPosition = converter.domPositionToView( domContainer.childNodes[ 1 ], 0 );
@@ -93,9 +93,9 @@ describe( 'DOMConverter UIElement integration', () => {
 			expect( viewPosition.offset ).to.equal( 1 );
 		} );
 
-		it( 'should convert position inside UIElement children to position before UIElement', () => {
-			const uiElement = createUIElement( 'h1' );
-			const container = new ViewContainer( viewDocument, 'div', null, [ new ViewContainer( viewDocument, 'div' ), uiElement ] );
+		it( 'should convert a position inside RawElement children to a position before it', () => {
+			const rawElement = createRawElement( 'h1' );
+			const container = new ViewContainer( viewDocument, 'div', null, [ new ViewContainer( viewDocument, 'div' ), rawElement ] );
 			const domContainer = converter.viewToDom( container, document, { bind: true } );
 
 			const viewPosition = converter.domPositionToView( domContainer.childNodes[ 1 ].childNodes[ 0 ], 1 );
@@ -106,8 +106,8 @@ describe( 'DOMConverter UIElement integration', () => {
 	} );
 
 	describe( 'mapDomToView()', () => {
-		it( 'should return UIElement for DOM elements inside', () => {
-			const myElement = createUIElement( 'div' );
+		it( 'should return a RawElement for all DOM elements inside of it', () => {
+			const myElement = createRawElement( 'div' );
 			const domElement = converter.viewToDom( myElement, document, { bind: true } );
 
 			expect( converter.mapDomToView( domElement ) ).to.equal( myElement );
@@ -121,8 +121,8 @@ describe( 'DOMConverter UIElement integration', () => {
 	} );
 
 	describe( 'findCorrespondingViewText()', () => {
-		it( 'should return UIElement for DOM text inside', () => {
-			const myElement = createUIElement( 'div' );
+		it( 'should return a RawElement for all DOM text nodes inside of it', () => {
+			const myElement = createRawElement( 'div' );
 			const domElement = converter.viewToDom( myElement, document, { bind: true } );
 
 			const domText = domElement.querySelector( 'span' ).childNodes[ 0 ];
@@ -131,20 +131,20 @@ describe( 'DOMConverter UIElement integration', () => {
 	} );
 
 	describe( 'getHostViewElement()', () => {
-		it( 'should return UIElement for DOM children', () => {
-			const uiElement = createUIElement( 'div' );
-			const domElement = converter.viewToDom( uiElement, document, { bind: true } );
+		it( 'should return a RawElement for all DOM children', () => {
+			const rawElement = createRawElement( 'div' );
+			const domElement = converter.viewToDom( rawElement, document, { bind: true } );
 
 			const domParagraph = domElement.childNodes[ 0 ];
 			const domSpan = domParagraph.childNodes[ 0 ];
 
-			expect( converter.getHostViewElement( domParagraph ) ).to.equal( uiElement );
-			expect( converter.getHostViewElement( domSpan ) ).to.equal( uiElement );
+			expect( converter.getHostViewElement( domParagraph ) ).to.equal( rawElement );
+			expect( converter.getHostViewElement( domSpan ) ).to.equal( rawElement );
 		} );
 
-		it( 'should return null for element itself', () => {
-			const uiElement = createUIElement( 'div' );
-			const domElement = converter.viewToDom( uiElement, document, { bind: true } );
+		it( 'should return "null" for the parent itself', () => {
+			const rawElement = createRawElement( 'div' );
+			const domElement = converter.viewToDom( rawElement, document, { bind: true } );
 
 			expect( converter.getHostViewElement( domElement ) ).to.be.null;
 		} );
