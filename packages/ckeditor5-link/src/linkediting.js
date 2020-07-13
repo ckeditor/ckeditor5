@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import TwoStepCaretMovement from '@ckeditor/ckeditor5-typing/src/twostepcaretmovement';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import AutomaticDecorators from './utils/automaticdecorators';
@@ -45,7 +46,8 @@ export default class LinkEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TwoStepCaretMovement, Input ];
+		// Clipboard is required for handling cut and paste events while typing over the link.
+		return [ TwoStepCaretMovement, Input, Clipboard ];
 	}
 
 	/**
@@ -444,16 +446,6 @@ export default class LinkEditing extends Plugin {
 			deletedContent = true;
 		}, { priority: 'high' } );
 
-		// Detect when the content was cut from the editor.
-		// this.listenTo( view.document, 'cut', () => {
-		// 	deletedContent = true;
-		// }, { priority: 'high' } );
-
-		// Detect when pasting content. Attributes should not be copied.
-		// this.listenTo( view.document, 'paste', () => {
-		// 	selectionAttributes = null;
-		// }, { priority: 'high' } );
-
 		// Listening to `model#deleteContent` allows detecting whether selected content was a link.
 		// If so, before removing the element, we will copy its attributes.
 		this.listenTo( editor.model, 'deleteContent', () => {
@@ -484,8 +476,6 @@ export default class LinkEditing extends Plugin {
 		// Listening to `model#insertContent` allows detecting the content insertion.
 		// We want to apply attributes that were removed while typing over the link.
 		this.listenTo( editor.model, 'insertContent', ( evt, [ element ] ) => {
-			// eslint-disable-next-line
-			console.log( 'insertContent: isTyping', editor.plugins.get( 'Input' ).isInput( editor.model.change( writer => writer.batch ) ) );
 			deletedContent = false;
 
 			// Enabled only when typing.
@@ -539,6 +529,8 @@ function shouldCopyAttributes( positionA, positionB ) {
 	return nodeAtFirstPosition === nodeAtLastPosition;
 }
 
+// Checks whether provided changes were caused by typing.
+//
 // @params {module:core/editor/editor~Editor} editor
 // @returns {Boolean}
 function isTyping( editor ) {
