@@ -27,7 +27,7 @@ const contentRules = {
 	atRules: {}
 };
 const packagesPath = path.join( process.cwd(), 'packages' );
-const shouldUpdateGuide = process.argv.includes( '--update-guide' );
+const shouldUpdateGuide = process.argv.includes( '--commit' );
 
 logProcess( 'Gathering all CKEditor 5 modules...' );
 
