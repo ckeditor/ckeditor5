@@ -587,13 +587,13 @@ describe( 'UpcastHelpers', () => {
 	} );
 
 	describe( 'elementToMarker()', () => {
-		before( () => {
+		beforeEach( () => {
 			// Silence warning about deprecated method.
 			// This whole suite will be removed when the deprecated method is removed.
 			sinon.stub( console, 'warn' );
 		} );
 
-		after( () => {
+		afterEach( () => {
 			console.warn.restore();
 		} );
 
