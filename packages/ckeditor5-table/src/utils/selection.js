@@ -8,7 +8,6 @@
  */
 
 import TableWalker from '../tablewalker';
-import { findAncestor } from './common';
 
 /**
  * Returns all model table cells that are fully selected (from the outside)
@@ -48,7 +47,7 @@ export function getTableCellsContainingSelection( selection ) {
 	const cells = [];
 
 	for ( const range of selection.getRanges() ) {
-		const cellWithSelection = findAncestor( 'tableCell', range.start );
+		const cellWithSelection = range.start.findAncestor( 'tableCell' );
 
 		if ( cellWithSelection ) {
 			cells.push( cellWithSelection );
@@ -110,7 +109,7 @@ export function getRowIndexes( tableCells ) {
  * @returns {Object} Returns an object with the `first` and `last` table column indexes.
  */
 export function getColumnIndexes( tableCells ) {
-	const table = findAncestor( 'table', tableCells[ 0 ] );
+	const table = tableCells[ 0 ].findAncestor( 'table' );
 	const tableMap = [ ...new TableWalker( table ) ];
 
 	const indexes = tableMap
@@ -245,7 +244,7 @@ function getBiggestRectangleArea( rows, columns ) {
 //		│ c │ c │ d │ d │
 //		└───┴───┴───┴───┘
 function areCellInTheSameTableSection( tableCells ) {
-	const table = findAncestor( 'table', tableCells[ 0 ] );
+	const table = tableCells[ 0 ].findAncestor( 'table' );
 
 	const rowIndexes = getRowIndexes( tableCells );
 	const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );

@@ -210,6 +210,28 @@ export default class Element extends Node {
 	}
 
 	/**
+	 * Returns the parent element of the given name. Returns null if the element is not inside the desired parent.
+	 *
+	 * @param {String} parentName The name of the parent element to find.
+	 * @param {Object} [options] Options object.
+	 * @param {Boolean} [options.includeSelf=false] When set to `true` this node will be also included while searching.
+	 * @returns {module:engine/model/element~Element|null}
+	 */
+	findAncestor( parentName, options = { includeSelf: false } ) {
+		let parent = options.includeSelf ? this : this.parent;
+
+		while ( parent ) {
+			if ( parent.name === parentName ) {
+				return parent;
+			}
+
+			parent = parent.parent;
+		}
+
+		return null;
+	}
+
+	/**
 	 * Converts `Element` instance to plain object and returns it. Takes care of converting all of this element's children.
 	 *
 	 * @returns {Object} `Element` instance converted to plain object.

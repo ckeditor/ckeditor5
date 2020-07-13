@@ -10,7 +10,6 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import { getRowIndexes, getSelectionAffectedTableCells } from '../utils/selection';
-import { findAncestor } from '../utils/common';
 
 /**
  * The remove row command.
@@ -32,7 +31,7 @@ export default class RemoveRowCommand extends Command {
 		const firstCell = selectedCells[ 0 ];
 
 		if ( firstCell ) {
-			const table = findAncestor( 'table', firstCell );
+			const table = firstCell.findAncestor( 'table' );
 			const tableRowCount = this.editor.plugins.get( 'TableUtils' ).getRows( table );
 			const lastRowIndex = tableRowCount - 1;
 
@@ -56,7 +55,7 @@ export default class RemoveRowCommand extends Command {
 		const removedRowIndexes = getRowIndexes( referenceCells );
 
 		const firstCell = referenceCells[ 0 ];
-		const table = findAncestor( 'table', firstCell );
+		const table = firstCell.findAncestor( 'table' );
 
 		const columnIndexToFocus = this.editor.plugins.get( 'TableUtils' ).getCellLocation( firstCell ).column;
 
