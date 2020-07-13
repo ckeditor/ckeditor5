@@ -247,6 +247,33 @@ describe( 'Element', () => {
 		} );
 	} );
 
+	describe( 'findAncestor', () => {
+		let p, td, tr, table;
+
+		beforeEach( () => {
+			p = new Element( 'p', [], [ new Text( 'foo' ) ] );
+			td = new Element( 'td', [], [ p ] );
+			tr = new Element( 'tr', [], [ td ] );
+			table = new Element( 'table', [], [ tr ] );
+		} );
+
+		it( 'should return ancestor', () => {
+			expect( p.findAncestor( 'p' ) ).to.be.null;
+			expect( p.findAncestor( 'td' ) ).to.equal( td );
+			expect( p.findAncestor( 'tr' ) ).to.equal( tr );
+			expect( p.findAncestor( 'table' ) ).to.equal( table );
+			expect( p.findAncestor( 'abc' ) ).to.be.null;
+		} );
+
+		it( 'should return ancestor or self (includeSelf = true)', () => {
+			expect( p.findAncestor( 'p', { includeSelf: true } ) ).to.equal( p );
+			expect( p.findAncestor( 'td', { includeSelf: true } ) ).to.equal( td );
+			expect( p.findAncestor( 'tr', { includeSelf: true } ) ).to.equal( tr );
+			expect( p.findAncestor( 'table', { includeSelf: true } ) ).to.equal( table );
+			expect( p.findAncestor( 'abc', { includeSelf: true } ) ).to.be.null;
+		} );
+	} );
+
 	describe( 'getChildIndex', () => {
 		it( 'should return child index', () => {
 			const element = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );

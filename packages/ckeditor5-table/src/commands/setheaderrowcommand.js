@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor, updateNumericAttribute } from '../utils/common';
+import { updateNumericAttribute } from '../utils/common';
 import { getRowIndexes, getSelectionAffectedTableCells } from '../utils/selection';
 import { getVerticallyOverlappingCells, splitHorizontally } from '../utils/structure';
 
@@ -67,7 +67,7 @@ export default class SetHeaderRowCommand extends Command {
 		}
 		const model = this.editor.model;
 		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
-		const table = findAncestor( 'table', selectedCells[ 0 ] );
+		const table = selectedCells[ 0 ].findAncestor( 'table' );
 
 		const { first, last } = getRowIndexes( selectedCells );
 		const headingRowsToSet = this.value ? first : last + 1;
