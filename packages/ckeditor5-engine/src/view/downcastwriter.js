@@ -14,6 +14,7 @@ import ContainerElement from './containerelement';
 import AttributeElement from './attributeelement';
 import EmptyElement from './emptyelement';
 import UIElement from './uielement';
+import RawElement from './rawelement';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import DocumentFragment from './documentfragment';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
@@ -270,6 +271,36 @@ export default class DowncastWriter {
 		}
 
 		return uiElement;
+	}
+
+	/**
+	 * Creates a new {@link module:engine/view/rawelement~RawElement}.
+	 *
+	 *		writer.createRawElement( 'span' );
+	 *		writer.createRawElement( 'span', { id: 'foo-1234' } );
+	 *
+	 * Custom render function can be provided as third parameter:
+	 *
+	 *		writer.createRawElement( 'span', null, function( domDocument ) {
+	 *			const domElement = this.toDomElement( domDocument );
+	 *			domElement.innerHTML = '<b>this is ui element</b>';
+	 *
+	 *			return domElement;
+	 *		} );
+	 *
+	 * @param {String} name Name of the element.
+	 * @param {Object} [attributes] Elements attributes.
+	 * @param {Function} [renderFunction] Custom render function.
+	 * @returns {module:engine/view/rawelement~RawElement} Created element.
+	 */
+	createRawElement( name, attributes, renderFunction ) {
+		const rawElement = new RawElement( this.document, name, attributes );
+
+		if ( renderFunction ) {
+			rawElement.render = renderFunction;
+		}
+
+		return rawElement;
 	}
 
 	/**
@@ -831,7 +862,7 @@ export default class DowncastWriter {
 	 * @param {module:engine/view/range~Range} range Range to wrap.
 	 * @param {module:engine/view/attributeelement~AttributeElement} attribute Attribute element to use as wrapper.
 	 * @returns {module:engine/view/range~Range} range Range after wrapping, spanning over wrapping attribute element.
-	*/
+	 */
 	wrap( range, attribute ) {
 		if ( !( attribute instanceof AttributeElement ) ) {
 			throw new CKEditorError( 'view-writer-wrap-invalid-attribute', this.document );
@@ -1108,6 +1139,7 @@ export default class DowncastWriter {
 			const isAttribute = child.is( 'attributeElement' );
 			const isEmpty = child.is( 'emptyElement' );
 			const isUI = child.is( 'uiElement' );
+			const isRaw = child.is( 'rawElement' );
 
 			//
 			// (In all examples, assume that `wrapElement` is `<span class="foo">` element.)
@@ -1126,8 +1158,7 @@ export default class DowncastWriter {
 			//
 			// <p>abc</p>                   -->  <p><span class="foo">abc</span></p>
 			// <p><strong>abc</strong></p>  -->  <p><span class="foo"><strong>abc</strong></span></p>
-			//
-			else if ( isText || isEmpty || isUI || ( isAttribute && shouldABeOutsideB( wrapElement, child ) ) ) {
+			else if ( isText || isEmpty || isUI || isRaw || ( isAttribute && shouldABeOutsideB( wrapElement, child ) ) ) {
 				// Clone attribute.
 				const newAttribute = wrapElement._clone();
 
@@ -1572,6 +1603,16 @@ export default class DowncastWriter {
 			throw new CKEditorError( 'view-writer-cannot-break-ui-element', this.document );
 		}
 
+		// If position is placed inside RawElement - throw an exception as we cannot break inside.
+		if ( position.parent.is( 'rawElement' ) ) {
+			/**
+			 * Cannot break inside RawElement instance.
+			 *
+			 * @error view-writer-cannot-break-raw-element
+			 */
+			throw new CKEditorError( 'view-writer-cannot-break-raw-element', this.document );
+		}
+
 		// There are no attributes to break and text nodes breaking is not forced.
 		if ( !forceSplitText && positionParent.is( 'text' ) && isContainerOrFragment( positionParent.parent ) ) {
 			return position.clone();
@@ -1872,7 +1913,7 @@ function validateNodesToInsert( nodes, errorContext ) {
 	}
 }
 
-const validNodesToInsert = [ Text, AttributeElement, ContainerElement, EmptyElement, UIElement ];
+const validNodesToInsert = [ Text, AttributeElement, ContainerElement, EmptyElement, RawElement, UIElement ];
 
 // Checks if node is ContainerElement or DocumentFragment, because in most cases they should be treated the same way.
 //

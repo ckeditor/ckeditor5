@@ -136,6 +136,26 @@ describe( 'DowncastWriter', () => {
 		} );
 	} );
 
+	describe( 'createRawElement()', () => {
+		it( 'should create a RawElement', () => {
+			const element = writer.createRawElement( 'foo', attributes );
+
+			expect( element.is( 'rawElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			assertElementAttributes( element, attributes );
+		} );
+
+		it( 'should allow to pass custom rendering method', () => {
+			const renderFn = function() {};
+			const element = writer.createRawElement( 'foo', attributes, renderFn );
+
+			expect( element.is( 'rawElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( element.render ).to.equal( renderFn );
+			assertElementAttributes( element, attributes );
+		} );
+	} );
+
 	describe( 'setAttribute()', () => {
 		it( 'should set attribute on given element', () => {
 			const element = writer.createAttributeElement( 'span' );
