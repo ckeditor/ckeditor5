@@ -147,8 +147,8 @@ class MutationHandler {
 		// Replace non-texts with any character. This is potentially dangerous but passes in manual tests. The thing is
 		// that we need to take care of proper indexes so we cannot simply remove non-text elements from the content.
 		// By inserting a character we keep all the real texts on their indexes.
-		const newText = modelFromDomChildren.map( item => item.is( 'text' ) ? item.data : '@' ).join( '' ).replace( /\u00A0/g, ' ' );
-		const oldText = currentModelChildren.map( item => item.is( 'text' ) ? item.data : '@' ).join( '' ).replace( /\u00A0/g, ' ' );
+		const newText = modelFromDomChildren.map( item => item.is( '$text' ) ? item.data : '@' ).join( '' ).replace( /\u00A0/g, ' ' );
+		const oldText = currentModelChildren.map( item => item.is( '$text' ) ? item.data : '@' ).join( '' ).replace( /\u00A0/g, ' ' );
 
 		// Do nothing if mutations created same text.
 		if ( oldText === newText ) {

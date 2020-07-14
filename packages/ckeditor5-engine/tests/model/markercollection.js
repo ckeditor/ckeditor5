@@ -427,7 +427,7 @@ describe( 'Marker', () => {
 		it( 'should return false for incorrect values', () => {
 			expect( marker.is( 'model' ) ).to.be.false;
 			expect( marker.is( 'model:node' ) ).to.be.false;
-			expect( marker.is( 'text' ) ).to.be.false;
+			expect( marker.is( '$text' ) ).to.be.false;
 			expect( marker.is( 'element', 'paragraph' ) ).to.be.false;
 		} );
 	} );

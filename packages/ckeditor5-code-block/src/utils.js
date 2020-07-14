@@ -189,7 +189,7 @@ export function getIndentOutdentPositions( model ) {
 		} );
 
 		for ( const { item } of walker ) {
-			if ( item.is( 'textProxy' ) && item.parent.is( 'codeBlock' ) ) {
+			if ( item.is( '$textProxy' ) && item.parent.is( 'codeBlock' ) ) {
 				const leadingWhiteSpaces = getLeadingWhiteSpaces( item.textNode );
 				const { parent, startOffset } = item.textNode;
 

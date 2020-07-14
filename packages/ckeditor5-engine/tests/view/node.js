@@ -50,8 +50,8 @@ describe( 'Node', () => {
 			expect( node.is( 'containerElement' ) ).to.be.false;
 			expect( node.is( 'element' ) ).to.be.false;
 			expect( node.is( 'p' ) ).to.be.false;
-			expect( node.is( 'text' ) ).to.be.false;
-			expect( node.is( 'textProxy' ) ).to.be.false;
+			expect( node.is( '$text' ) ).to.be.false;
+			expect( node.is( '$textProxy' ) ).to.be.false;
 			expect( node.is( 'attributeElement' ) ).to.be.false;
 			expect( node.is( 'uiElement' ) ).to.be.false;
 			expect( node.is( 'emptyElement' ) ).to.be.false;

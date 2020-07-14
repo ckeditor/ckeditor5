@@ -61,9 +61,9 @@ describe( 'Element', () => {
 			expect( element.is( 'model:element', 'image' ) ).to.be.false;
 			expect( element.is( 'image' ) ).to.be.false;
 			expect( element.is( 'model:image' ) ).to.be.false;
-			expect( element.is( 'text' ) ).to.be.false;
-			expect( element.is( 'model:text' ) ).to.be.false;
-			expect( element.is( 'textProxy' ) ).to.be.false;
+			expect( element.is( '$text' ) ).to.be.false;
+			expect( element.is( 'model:$text' ) ).to.be.false;
+			expect( element.is( '$textProxy' ) ).to.be.false;
 			expect( element.is( 'documentFragment' ) ).to.be.false;
 			expect( element.is( 'rootElement' ) ).to.be.false;
 			expect( element.is( 'model:rootElement' ) ).to.be.false;

@@ -69,8 +69,8 @@ describe( 'Range', () => {
 			expect( range.is( 'containerElement' ) ).to.be.false;
 			expect( range.is( 'element' ) ).to.be.false;
 			expect( range.is( 'p' ) ).to.be.false;
-			expect( range.is( 'text' ) ).to.be.false;
-			expect( range.is( 'textProxy' ) ).to.be.false;
+			expect( range.is( '$text' ) ).to.be.false;
+			expect( range.is( '$textProxy' ) ).to.be.false;
 			expect( range.is( 'attributeElement' ) ).to.be.false;
 			expect( range.is( 'uiElement' ) ).to.be.false;
 			expect( range.is( 'emptyElement' ) ).to.be.false;

@@ -99,7 +99,7 @@ export default class PageBreakEditing extends Plugin {
 
 					const text = first( viewSpan.getChildren() );
 
-					if ( !text.is( 'text' ) || text.data !== ' ' ) {
+					if ( !text.is( '$text' ) || text.data !== ' ' ) {
 						return;
 					}
 

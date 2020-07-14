@@ -201,7 +201,7 @@ export default class DomConverter {
 	 * @returns {Node|DocumentFragment} Converted node or DocumentFragment.
 	 */
 	viewToDom( viewNode, domDocument, options = {} ) {
-		if ( viewNode.is( 'text' ) ) {
+		if ( viewNode.is( '$text' ) ) {
 			const textData = this._processDataFromViewText( viewNode );
 
 			return domDocument.createTextNode( textData );
@@ -317,7 +317,7 @@ export default class DomConverter {
 	viewPositionToDom( viewPosition ) {
 		const viewParent = viewPosition.parent;
 
-		if ( viewParent.is( 'text' ) ) {
+		if ( viewParent.is( '$text' ) ) {
 			const domParent = this.findCorrespondingDomText( viewParent );
 
 			if ( !domParent ) {
@@ -348,7 +348,7 @@ export default class DomConverter {
 			} else {
 				const nodeBefore = viewPosition.nodeBefore;
 
-				domBefore = nodeBefore.is( 'text' ) ?
+				domBefore = nodeBefore.is( '$text' ) ?
 					this.findCorrespondingDomText( nodeBefore ) :
 					this.mapViewToDom( viewPosition.nodeBefore );
 
@@ -1139,7 +1139,7 @@ export default class DomConverter {
 				return null;
 			}
 			// Found a text node in the same container element.
-			else if ( value.item.is( 'textProxy' ) ) {
+			else if ( value.item.is( '$textProxy' ) ) {
 				return value.item;
 			}
 		}

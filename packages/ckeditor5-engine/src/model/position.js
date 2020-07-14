@@ -176,7 +176,7 @@ export default class Position {
 			}
 		}
 
-		if ( parent.is( 'text' ) ) {
+		if ( parent.is( '$text' ) ) {
 			/**
 			 * The position's path is incorrect. This means that a position does not point to
 			 * a correct place in the tree and hence, some of its methods and getters cannot work correctly.
@@ -1106,7 +1106,7 @@ export default class Position {
 export function getTextNodeAtPosition( position, positionParent ) {
 	const node = positionParent.getChild( positionParent.offsetToIndex( position.offset ) );
 
-	if ( node && node.is( 'text' ) && node.startOffset < position.offset ) {
+	if ( node && node.is( '$text' ) && node.startOffset < position.offset ) {
 		return node;
 	}
 

@@ -445,7 +445,7 @@ export default class Mapper {
 		// viewBlock == viewParent, so we need to calculate the offset in the parent element.
 
 		// If the position is a text it is simple ("ba|r" -> 2).
-		if ( viewParent.is( 'text' ) ) {
+		if ( viewParent.is( '$text' ) ) {
 			return viewOffset;
 		}
 
@@ -488,7 +488,7 @@ export default class Mapper {
 			return callback( viewNode );
 		} else if ( this._viewToModelMapping.has( viewNode ) ) {
 			return 1;
-		} else if ( viewNode.is( 'text' ) ) {
+		} else if ( viewNode.is( '$text' ) ) {
 			return viewNode.data.length;
 		} else if ( viewNode.is( 'uiElement' ) ) {
 			return 0;
@@ -537,7 +537,7 @@ export default class Mapper {
 		let viewOffset = 0;
 
 		// In the text node it is simple: offset in the model equals offset in the text.
-		if ( viewParent.is( 'text' ) ) {
+		if ( viewParent.is( '$text' ) ) {
 			return new ViewPosition( viewParent, expectedOffset );
 		}
 

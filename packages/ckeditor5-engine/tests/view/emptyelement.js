@@ -50,9 +50,9 @@ describe( 'EmptyElement', () => {
 			expect( el.is( 'view:element', 'span' ) ).to.be.false;
 			expect( el.is( 'span' ) ).to.be.false;
 			expect( el.is( 'view:span' ) ).to.be.false;
-			expect( el.is( 'text' ) ).to.be.false;
-			expect( el.is( 'view:text' ) ).to.be.false;
-			expect( el.is( 'textProxy' ) ).to.be.false;
+			expect( el.is( '$text' ) ).to.be.false;
+			expect( el.is( 'view:$text' ) ).to.be.false;
+			expect( el.is( '$textProxy' ) ).to.be.false;
 			expect( el.is( 'containerElement' ) ).to.be.false;
 			expect( el.is( 'attributeElement' ) ).to.be.false;
 			expect( el.is( 'uiElement' ) ).to.be.false;

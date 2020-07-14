@@ -264,7 +264,7 @@ export default class MutationObserver extends Observer {
 				return true;
 			}
 			// Texts.
-			else if ( child1.is( 'text' ) && child2.is( 'text' ) ) {
+			else if ( child1.is( '$text' ) && child2.is( '$text' ) ) {
 				return child1.data === child2.data;
 			}
 

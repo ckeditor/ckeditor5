@@ -381,7 +381,7 @@ export default class Element extends Node {
 	// @if CK_DEBUG_ENGINE // 	for ( const child of this.getChildren() ) {
 	// @if CK_DEBUG_ENGINE // 		string += '\n';
 
-	// @if CK_DEBUG_ENGINE // 		if ( child.is( 'text' ) ) {
+	// @if CK_DEBUG_ENGINE // 		if ( child.is( '$text' ) ) {
 	// @if CK_DEBUG_ENGINE // 			const textAttrs = convertMapToTags( child._attrs );
 
 	// @if CK_DEBUG_ENGINE // 			string += '\t'.repeat( level + 1 );

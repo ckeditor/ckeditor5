@@ -143,10 +143,10 @@ export default class TextProxy {
 	/**
 	 * Checks whether this object is of the given type.
 	 *
-	 *		textProxy.is( 'textProxy' ); // -> true
-	 *		textProxy.is( 'view:textProxy' ); // -> true
+	 *		textProxy.is( '$textProxy' ); // -> true
+	 *		textProxy.is( 'view:$textProxy' ); // -> true
 	 *
-	 *		textProxy.is( 'model:textProxy' ); // -> false
+	 *		textProxy.is( 'model:$textProxy' ); // -> false
 	 *		textProxy.is( 'element' ); // -> false
 	 *		textProxy.is( 'range' ); // -> false
 	 *
@@ -156,7 +156,7 @@ export default class TextProxy {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type === 'textProxy' || type === 'view:textProxy';
+		return type === '$textProxy' || type === 'view:$textProxy';
 	}
 
 	/**

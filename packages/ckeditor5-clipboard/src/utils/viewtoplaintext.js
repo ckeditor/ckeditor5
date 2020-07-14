@@ -21,7 +21,7 @@ const smallPaddingElements = [ 'figcaption', 'li' ];
 export default function viewToPlainText( viewItem ) {
 	let text = '';
 
-	if ( viewItem.is( 'text' ) || viewItem.is( 'textProxy' ) ) {
+	if ( viewItem.is( '$text' ) || viewItem.is( '$textProxy' ) ) {
 		// If item is `Text` or `TextProxy` simple take its text data.
 		text = viewItem.data;
 	} else if ( viewItem.is( 'img' ) && viewItem.hasAttribute( 'alt' ) ) {

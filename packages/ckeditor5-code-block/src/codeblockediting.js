@@ -248,7 +248,7 @@ function breakLineOnEnter( editor ) {
 	let leadingWhiteSpaces;
 
 	// Figure out the indentation (white space chars) at the beginning of the line.
-	if ( node && node.is( 'text' ) ) {
+	if ( node && node.is( '$text' ) ) {
 		leadingWhiteSpaces = getLeadingWhiteSpaces( node );
 	}
 
@@ -367,7 +367,7 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 	//		<codeBlock>foo[<softBreak></softBreak>    ]</codeBlock>
 	//
 	else if (
-		nodeBefore.is( 'text' ) &&
+		nodeBefore.is( '$text' ) &&
 		!nodeBefore.data.match( /\S/ ) &&
 		nodeBefore.previousSibling &&
 		nodeBefore.previousSibling.is( 'softBreak' )

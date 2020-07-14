@@ -166,10 +166,10 @@ export default class TextProxy {
 	/**
 	 * Checks whether this object is of the given.
 	 *
-	 *		textProxy.is( 'textProxy' ); // -> true
-	 *		textProxy.is( 'model:textProxy' ); // -> true
+	 *		textProxy.is( '$textProxy' ); // -> true
+	 *		textProxy.is( 'model:$textProxy' ); // -> true
 	 *
-	 *		textProxy.is( 'view:textProxy' ); // -> false
+	 *		textProxy.is( 'view:$textProxy' ); // -> false
 	 *		textProxy.is( 'range' ); // -> false
 	 *
 	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
@@ -178,7 +178,7 @@ export default class TextProxy {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type === 'textProxy' || type === 'model:textProxy';
+		return type === '$textProxy' || type === 'model:$textProxy';
 	}
 
 	/**

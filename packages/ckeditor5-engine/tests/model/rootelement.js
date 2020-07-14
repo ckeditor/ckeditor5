@@ -53,8 +53,8 @@ describe( 'RootElement', () => {
 			expect( root.is( 'rootElement', '$graveyard' ) ).to.be.false;
 			expect( root.is( 'model:rootElement', '$graveyard' ) ).to.be.false;
 			expect( root.is( '$graveyard' ) ).to.be.false;
-			expect( root.is( 'text' ) ).to.be.false;
-			expect( root.is( 'textProxy' ) ).to.be.false;
+			expect( root.is( '$text' ) ).to.be.false;
+			expect( root.is( '$textProxy' ) ).to.be.false;
 			expect( root.is( 'documentFragment' ) ).to.be.false;
 			expect( root.is( 'view:element' ) ).to.be.false;
 		} );

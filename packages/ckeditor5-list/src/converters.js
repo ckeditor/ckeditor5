@@ -454,7 +454,7 @@ export function cleanListItem( evt, data, conversionApi ) {
 				child._remove();
 			}
 
-			if ( child.is( 'text' ) ) {
+			if ( child.is( '$text' ) ) {
 				// If this is the first node and it's a text node, left-trim it.
 				if ( firstNode ) {
 					child._data = child.data.replace( /^\s+/, '' );

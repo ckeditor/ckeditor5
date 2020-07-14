@@ -55,8 +55,8 @@ describe( 'AttributeElement', () => {
 			expect( el.is( 'view:element', 'p' ) ).to.be.false;
 			expect( el.is( 'p' ) ).to.be.false;
 			expect( el.is( 'view:p' ) ).to.be.false;
-			expect( el.is( 'text' ) ).to.be.false;
-			expect( el.is( 'textProxy' ) ).to.be.false;
+			expect( el.is( '$text' ) ).to.be.false;
+			expect( el.is( '$textProxy' ) ).to.be.false;
 			expect( el.is( 'containerElement' ) ).to.be.false;
 			expect( el.is( 'uiElement' ) ).to.be.false;
 			expect( el.is( 'emptyElement' ) ).to.be.false;

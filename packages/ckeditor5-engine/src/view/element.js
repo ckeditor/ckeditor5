@@ -834,7 +834,7 @@ export default class Element extends Node {
 	// @if CK_DEBUG_ENGINE //	string += '\t'.repeat( level ) + `<${ this.name }${ convertMapToTags( this.getAttributes() ) }>`;
 
 	// @if CK_DEBUG_ENGINE //	for ( const child of this.getChildren() ) {
-	// @if CK_DEBUG_ENGINE //		if ( child.is( 'text' ) ) {
+	// @if CK_DEBUG_ENGINE //		if ( child.is( '$text' ) ) {
 	// @if CK_DEBUG_ENGINE //			string += '\n' + '\t'.repeat( level + 1 ) + child.data;
 	// @if CK_DEBUG_ENGINE //		} else {
 	// @if CK_DEBUG_ENGINE //			string += '\n' + child.printTree( level + 1 );

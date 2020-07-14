@@ -61,7 +61,7 @@ describe( 'DowncastWriter', () => {
 		it( 'should create Text instance', () => {
 			const text = writer.createText( 'foo bar' );
 
-			expect( text.is( 'text' ) ).to.be.true;
+			expect( text.is( '$text' ) ).to.be.true;
 			expect( text.data ).to.equal( 'foo bar' );
 		} );
 	} );
