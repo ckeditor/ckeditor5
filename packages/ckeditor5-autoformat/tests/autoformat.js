@@ -77,7 +77,7 @@ describe( 'Autoformat', () => {
 			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">[]</listItem>' );
 		} );
 
-		it( 'should replace a non-empty paragraph using the parenthesis format', () => {
+		it( 'should replace a non-empty paragraph using the asterisk', () => {
 			setData( model, '<paragraph>*[]sample text</paragraph>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
@@ -169,7 +169,7 @@ describe( 'Autoformat', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>1. []</paragraph>' );
 		} );
 
-		it( 'should should be converted from a header', () => {
+		it( 'should be converted from a header', () => {
 			setData( model, '<heading1>1.[]</heading1>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
@@ -178,7 +178,7 @@ describe( 'Autoformat', () => {
 			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]</listItem>' );
 		} );
 
-		it( 'should should be converted from a bulleted list', () => {
+		it( 'should be converted from a bulleted list', () => {
 			setData( model, '<listItem listIndent="0" listType="bulleted">1.[]</listItem>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
