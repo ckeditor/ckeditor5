@@ -1,12 +1,14 @@
 ## Autoformat
 
-1. Type `#` and press the space in an empty paragraph to replace it with a heading.
+Note: autoformat should not work in a code blocks.
 
-1. Type `*` or `-` and the press space in an empty paragraph to replace it with a list item.
+1. Type `#` and press the space at the beginning of a block to replace it with a heading.
 
-1. Type `>` and press the space in an empty paragraph to replace it with a block quote.
+1. Type `*` or `-` and the press space at the beginning of a block to replace it with a list item.
 
-1. Type `1` followed by a `.` or `)` and press space to replace an empty paragraph with a numbered list item.
+1. Type `>` and press the space at the beginning of a block to replace it with a block quote.
+
+1. Type `1` followed by a `.` or `)` and press space (at the beginning of a block) to replace it with a numbered list item.
 
 1. Type `*foobar*`/`_foobar_` to italicize `foobar`. `*`/`_` should be removed.
 
