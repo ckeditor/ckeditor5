@@ -101,15 +101,15 @@ describe( 'RawElement', () => {
 
 	describe( '_clone()', () => {
 		it( 'should be properly cloned', () => {
-			const newUIElement = rawElement._clone();
+			const newRawElement = rawElement._clone();
 
-			expect( newUIElement.name ).to.equal( 'span' );
-			expect( newUIElement.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			expect( newUIElement.getStyle( 'margin-top' ) ).to.equal( '2em' );
-			expect( newUIElement.getStyle( 'color' ) ).to.equal( 'white' );
-			expect( newUIElement.hasClass( 'foo' ) ).to.true;
-			expect( newUIElement.hasClass( 'bar' ) ).to.true;
-			expect( newUIElement.isSimilar( rawElement ) ).to.true;
+			expect( newRawElement.name ).to.equal( 'span' );
+			expect( newRawElement.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( newRawElement.getStyle( 'margin-top' ) ).to.equal( '2em' );
+			expect( newRawElement.getStyle( 'color' ) ).to.equal( 'white' );
+			expect( newRawElement.hasClass( 'foo' ) ).to.true;
+			expect( newRawElement.hasClass( 'bar' ) ).to.true;
+			expect( newRawElement.isSimilar( rawElement ) ).to.true;
 		} );
 	} );
 
