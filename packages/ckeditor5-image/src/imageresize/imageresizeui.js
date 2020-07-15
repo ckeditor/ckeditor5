@@ -18,10 +18,17 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import iconSmall from '../../theme/icons/image-resize-small.svg';
-import iconMedium from '../../theme/icons/image-resize-medium.svg';
-import iconLarge from '../../theme/icons/image-resize-large.svg';
-import iconFull from '../../theme/icons/image-resize-full.svg';
+import iconSmall from '@ckeditor/ckeditor5-core/theme/icons/object-size-small.svg';
+import iconMedium from '@ckeditor/ckeditor5-core/theme/icons/object-size-medium.svg';
+import iconLarge from '@ckeditor/ckeditor5-core/theme/icons/object-size-large.svg';
+import iconFull from '@ckeditor/ckeditor5-core/theme/icons/object-size-full.svg';
+
+const RESIZE_ICONS = {
+	small: iconSmall,
+	medium: iconMedium,
+	large: iconLarge,
+	original: iconFull
+};
 
 /**
  * The `ImageResizeUI` plugin.
@@ -56,8 +63,8 @@ export default class ImageResizeUI extends Plugin {
 		 *
 		 * @readonly
 		 * @private
-		 *
 		 * @type {module:image/image~ImageConfig#resizeUnit}
+		 * @default '%'
 		 */
 		this._resizeUnit = editor.config.get( 'image.resizeUnit' ) || '%';
 	}
@@ -87,7 +94,6 @@ export default class ImageResizeUI extends Plugin {
 	 * A helper function that creates a standalone button component for the plugin.
 	 *
 	 * @private
-	 *
 	 * @param {module:image/imageresize/imageresizeui~ImageResizeOption} resizeOption A model of resize option.
 	 */
 	_addButton( option ) {
@@ -99,30 +105,15 @@ export default class ImageResizeUI extends Plugin {
 			const button = new ButtonView( locale );
 			const command = editor.commands.get( 'imageResize' );
 			const commandCallback = setOptionOn( parsedValue );
+			const labelText = this._createLabel( option, true );
 
-			const userIcon = () => {
-				switch ( icon ) {
-					case 'original':
-						return iconFull;
-					case 'small':
-						return iconSmall;
-					case 'medium':
-						return iconMedium;
-					case 'large':
-						return iconLarge;
-					default:
-						return null;
-				}
-			};
-
-			if ( !userIcon() ) {
+			if ( !RESIZE_ICONS[ icon ] ) {
 				/**
 				* Setting {@link module:image/image~ImageConfig#resizeOptions `config.image.resizeOptions`} for the standalone buttons,
 				* you have to choose a valid icon token for each option.
 				*
 				* See all valid options described in the
 				* {@link module:image/imageresize/imageresizeui~ImageResizeOption plugin configuration}.
-				*
 				* @error imageresizeui-missing-icon
 				* @param {module:image/imageresize/imageresizeui~ImageResizeOption} option Invalid image resize option.
 				*/
@@ -137,9 +128,9 @@ export default class ImageResizeUI extends Plugin {
 
 			button.set( {
 				// Uses `label` property for setting the more verbose text (from tooltip) for ARIA purpose.
-				label: this._createLabel( option, true ),
-				icon: userIcon(),
-				tooltip: this._createLabel( option, true ),
+				label: labelText,
+				icon: RESIZE_ICONS[ icon ],
+				tooltip: labelText,
 				isToggleable: true,
 				commandValue: parsedValue
 			} );
@@ -161,7 +152,6 @@ export default class ImageResizeUI extends Plugin {
 	 * plugin configuration settings.
 	 *
 	 * @private
-	 *
 	 * @param {Array.<module:image/imageresize/imageresizeui~ImageResizeOption>} options An array of the configured options.
 	 */
 	_addDropdown( options ) {
@@ -191,7 +181,7 @@ export default class ImageResizeUI extends Plugin {
 			dropdownView.bind( 'isOn' ).to( command );
 			dropdownView.bind( 'isEnabled' ).to( this );
 
-			addListToDropdown( dropdownView, this._prepareListDefinitions( options, command ) );
+			addListToDropdown( dropdownView, this._getResizeDropdownListItemDefinitions( options, command ) );
 
 			dropdownView.listView.ariaLabel = t( 'Image resize list' );
 
@@ -209,10 +199,8 @@ export default class ImageResizeUI extends Plugin {
 	 * A helper function for creating an option label.
 	 *
 	 * @private
-	 *
 	 * @param {module:image/imageresize/imageresizeui~ImageResizeOption} option A resize option object.
 	 * @param {Boolean} [forTooltip] An optional flag for creating a tooltip label.
-	 *
 	 * @returns {String} A user-defined label, a label combined from the value and resize unit or the default label
 	 * for reset options (`Original`).
 	 */
@@ -223,26 +211,28 @@ export default class ImageResizeUI extends Plugin {
 			return option.label;
 		} else if ( forTooltip ) {
 			if ( option.value ) {
-				return t( 'Resize image to' ) + ' ' + option.value + this._resizeUnit;
+				return t( 'Resize image to %0', option.value + this._resizeUnit );
 			} else {
 				return t( 'Resize image to the original size' );
 			}
 		} else {
-			return option.value ? option.value + this._resizeUnit : t( 'Original' );
+			if ( option.value ) {
+				return option.value + this._resizeUnit;
+			} else {
+				return t( 'Original' );
+			}
 		}
 	}
 
 	/**
-	 * A helper function for parsing resize options definitions.
+	 * A helper function that parses resize options and returns definitions ready for use in a dropdown.
 	 *
 	 * @private
-	 *
 	 * @param {Array.<module:image/imageresize/imageresizeui~ImageResizeOption>} options The resize options.
 	 * @param {module:image/imageresize/imageresizecommand~ImageResizeCommand} command A resize image command.
-	 *
 	 * @returns {module:utils/collection~Collection} definitions
 	*/
-	_prepareListDefinitions( options, command ) {
+	_getResizeDropdownListItemDefinitions( options, command ) {
 		const itemDefinitions = new Collection();
 
 		options.map( option => {
@@ -285,10 +275,9 @@ function setOptionOn( value ) {
  * A resize option type.
  *
  * @typedef {Object} module:image/imageresize/imageresizeui~ImageResizeOption
- *
  * @property {String} resizeOption.name A name of the option used for creating a component.
  * You refer to that name later in the {@link module:image/image~ImageConfig#toolbar}.
  * @property {String} resizeOption.value A value of a resize option. `null` value is for resetting an image to its original size.
- * @property {String} resizeOptions.icon A value of the available icon sizes (`small`, `medium`, `large`, `original`).
+ * @property {String} [resizeOptions.icon] A value of the available icon sizes (`small`, `medium`, `large`, `original`).
  * @property {String} [resizeOption.label] A label to be displayed with a button.
  */
