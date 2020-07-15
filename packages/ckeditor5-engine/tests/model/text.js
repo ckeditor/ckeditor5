@@ -3,8 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals console */
+
 import Text from '../../src/model/text';
 import Node from '../../src/model/node';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'Text', () => {
 	describe( 'constructor()', () => {
@@ -35,6 +38,8 @@ describe( 'Text', () => {
 	describe( 'is()', () => {
 		let text;
 
+		testUtils.createSinonSandbox();
+
 		before( () => {
 			text = new Text( 'bar' );
 		} );
@@ -52,6 +57,17 @@ describe( 'Text', () => {
 			expect( text.is( 'model:element' ) ).to.be.false;
 			expect( text.is( 'rootElement' ) ).to.be.false;
 			expect( text.is( 'documentFragment' ) ).to.be.false;
+		} );
+
+		it( 'should print warning for legacy "text" argument', () => {
+			testUtils.sinon.stub( console, 'warn' );
+
+			expect( text.is( 'text' ) ).to.be.false;
+
+			sinon.assert.calledOnce( console.warn );
+			sinon.assert.calledWithExactly( console.warn,
+				sinon.match( /^model-text-node-deprecated-is-text-argument/ )
+			);
 		} );
 	} );
 

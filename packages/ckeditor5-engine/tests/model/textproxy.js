@@ -3,12 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals console */
+
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import TextProxy from '../../src/model/textproxy';
 import Model from '../../src/model/model';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'TextProxy', () => {
 	let model, doc, element, textProxy, root, textProxyNoParent, text, textNoParent;
@@ -98,6 +101,8 @@ describe( 'TextProxy', () => {
 	} );
 
 	describe( 'is()', () => {
+		testUtils.createSinonSandbox();
+
 		it( 'should return true for $textProxy', () => {
 			expect( textProxy.is( '$textProxy' ) ).to.be.true;
 			expect( textProxy.is( 'model:$textProxy' ) ).to.be.true;
@@ -111,6 +116,17 @@ describe( 'TextProxy', () => {
 			expect( textProxy.is( 'model:element', 'image' ) ).to.be.false;
 			expect( textProxy.is( 'documentFragment' ) ).to.be.false;
 			expect( textProxy.is( 'rootElement' ) ).to.be.false;
+		} );
+
+		it( 'should print warning for legacy "textProxy" argument', () => {
+			testUtils.sinon.stub( console, 'warn' );
+
+			expect( textProxy.is( 'textProxy' ) ).to.be.false;
+
+			sinon.assert.calledOnce( console.warn );
+			sinon.assert.calledWithExactly( console.warn,
+				sinon.match( /^model-textProxy-deprecated-is-textProxy-argument/ )
+			);
 		} );
 	} );
 
