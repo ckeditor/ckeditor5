@@ -67,12 +67,20 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 			<th colspan="3">When a widget is selected (for example: image, table, horizontal line, etc.)</th>
 		</tr>
 		<tr>
-            <td>Insert a new paragraph directly after a widget</td>
+			<td>Insert a new paragraph directly after a widget</td>
 			<td colspan="2"><kbd>Enter</kbd></td>
-		</tr> 
+		</tr>
 		<tr>
 			<td>Insert a new paragraph directly before a widget</td>
 			<td colspan="2"><kbd>Shift</kbd> + <kbd>Enter</kbd></td>
+		</tr>
+		<tr>
+			<td>Display the caret to allow typing directly before a widget</td>
+			<td colspan="2"><kbd>↑</kbd> / <kbd>←</kbd></td>
+		</tr>
+		<tr>
+			<td>Display the caret to allow typing directly after a widget</td>
+			<td colspan="2"><kbd>↓</kbd> / <kbd>→</kbd></td>
 		</tr>
 		<tr>
 			<th colspan="3">In a table cell</th>

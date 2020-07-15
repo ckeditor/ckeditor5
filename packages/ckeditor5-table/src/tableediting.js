@@ -15,8 +15,7 @@ import {
 	downcastInsertRow,
 	downcastInsertTable,
 	downcastRemoveRow,
-	downcastTableHeadingColumnsChange,
-	downcastTableHeadingRowsChange
+	downcastTableHeadingColumnsChange
 } from './converters/downcast';
 
 import InsertTableCommand from './commands/inserttablecommand';
@@ -36,6 +35,7 @@ import TableUtils from '../src/tableutils';
 import injectTableLayoutPostFixer from './converters/table-layout-post-fixer';
 import injectTableCellParagraphPostFixer from './converters/table-cell-paragraph-post-fixer';
 import injectTableCellRefreshPostFixer from './converters/table-cell-refresh-post-fixer';
+import injectTableHeadingRowsRefreshPostFixer from './converters/table-heading-rows-refresh-post-fixer';
 
 import '../theme/tableediting.css';
 
@@ -115,9 +115,8 @@ export default class TableEditing extends Plugin {
 		conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 		conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
 
-		// Table heading rows and columns conversion.
+		// Table heading columns conversion (change of heading rows requires reconversion of the whole table).
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange() );
-		conversion.for( 'editingDowncast' ).add( downcastTableHeadingRowsChange() );
 
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
@@ -145,6 +144,7 @@ export default class TableEditing extends Plugin {
 		editor.commands.add( 'selectTableRow', new SelectRowCommand( editor ) );
 		editor.commands.add( 'selectTableColumn', new SelectColumnCommand( editor ) );
 
+		injectTableHeadingRowsRefreshPostFixer( model );
 		injectTableLayoutPostFixer( model );
 		injectTableCellRefreshPostFixer( model );
 		injectTableCellParagraphPostFixer( model );

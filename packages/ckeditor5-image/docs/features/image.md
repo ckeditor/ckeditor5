@@ -185,7 +185,70 @@ The [image styles](#image-styles) feature is meant to give the user the choice b
 
 It is implemented by the {@link module:image/imageresize~ImageResize} plugin and enables four "resize handles" displayed over the selected image. The user can freely resize the image by dragging them. The feature can be configured to use either percentage (default) or pixel values.
 
+The plugin also gives you an ability to change the size of the image through the image toolbar. You can set an optional static configuration with {@link module:image/image~ImageConfig#resizeOptions} and choose whether you want to use a dropdown or set of the standalone buttons.
+
+### Resize image using handles
+
 {@snippet features/image-resize}
+
+### Resize image using the plugin dropdown
+
+```js
+const imageConfiguration = {
+	resizeOptions: [
+		{
+			name: 'imageResize:original',
+			label: 'Original size',
+			value: null
+		},
+		{
+			name: 'imageResize:50',
+			label: '50%',
+			value: '50'
+		},
+		{
+			name: 'imageResize:75',
+			label: '75%',
+			value: '75'
+		}
+	],
+	toolbar: [ ... , 'imageResize' ]
+}
+```
+
+{@snippet features/image-resizeuidropdown}
+
+### Resize image using the standalone buttons
+
+```js
+const imageConfiguration = {
+	resizeOptions: [
+		{
+			name: 'imageResize:original',
+			label: 'Original size',
+			value: null
+		},
+		{
+			name: 'imageResize:50',
+			label: '50%',
+			value: '50'
+		},
+		{
+			name: 'imageResize:75',
+			label: '75%',
+			value: '75'
+		}
+	],
+	toolbar: [
+		// ...,
+		'imageResize:original',
+		'imageResize:50',
+		'imageResize:75'
+	]
+}
+```
+
+{@snippet features/image-resizeui}
 
 ### Enabling image resizing
 
@@ -259,7 +322,11 @@ ClassicEditor
 
 ## Linking images
 
-The {@link module:link/linkimage~LinkImage} plugin adds support for linking images:
+The {@link module:link/linkimage~LinkImage} plugin adds support for linking images. Some use cases where this is needed are:
+
+* Linking to a high-resolution version of an image.
+* Using images as thumbnails linking to an article or product page.
+* Creating banners linking to other pages.
 
 ```html
 <figure class="image">
@@ -284,7 +351,7 @@ The image linking feature is not enabled by default in any of the editor builds.
 
 To add image features to your rich-text editor, install the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package:
 
-```bash
+```plaintext
 npm install --save @ckeditor/ckeditor5-image @ckeditor/ckeditor5-link
 ```
 

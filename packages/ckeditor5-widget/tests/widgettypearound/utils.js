@@ -16,6 +16,12 @@ describe( 'widget type around utils', () => {
 		selection = new Selection();
 	} );
 
+	describe( 'TYPE_AROUND_SELECTION_ATTRIBUTE', () => {
+		it( 'should be defined', () => {
+			expect( TYPE_AROUND_SELECTION_ATTRIBUTE ).to.equal( 'widget-type-around' );
+		} );
+	} );
+
 	describe( 'getTypeAroundFakeCaretPosition()', () => {
 		it( 'should return "before" if the model selection attribute is "before"', () => {
 			selection.setAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
