@@ -198,32 +198,30 @@ export default class Collection {
 	 * @fires batchAdd
 	 */
 	batchAdd( items, index ) {
-		let firstIndex;
+		if ( index === undefined ) {
+			index = this._items.length;
+		}
 
-		for ( const item of items ) {
+		const firstIndex = index; // @todo: just use index
+
+		if ( index > this._items.length || index < 0 ) {
+			/**
+			 * The index number has invalid value.
+			 *
+			 * @error collection-add-item-bad-index
+			 */
+			throw new CKEditorError( 'collection-add-item-invalid-index', this );
+		}
+
+		for ( let offset = 0; offset < items.length; offset++ ) {
+			const item = items[ offset ];
 			const itemId = this._getItemIdBeforeAdding( item );
 
-			// TODO: Use ES6 default function argument.
-			if ( index === undefined ) {
-				index = this._items.length;
-			} else if ( index > this._items.length || index < 0 ) {
-				/**
-				 * The index number has invalid value.
-				 *
-				 * @error collection-add-item-bad-index
-				 */
-				throw new CKEditorError( 'collection-add-item-invalid-index', this );
-			}
-
-			if ( firstIndex === undefined ) {
-				firstIndex = index;
-			}
-
-			this._items.splice( index, 0, item );
-
+			const currentItemIndex = index + offset;
+			this._items.splice( currentItemIndex, 0, item );
 			this._itemMap.set( itemId, item );
 
-			this.fire( 'add', item, index );
+			this.fire( 'add', item, currentItemIndex );
 		}
 
 		this.fire( 'batchAdd', items, firstIndex );
