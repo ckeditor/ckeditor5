@@ -17,7 +17,7 @@ ClassicEditor
 			resizeOptions: [
 				{
 					name: 'imageResize:original',
-					label: 'Original size',
+					label: 'Original',
 					value: null
 				},
 				{
@@ -31,12 +31,19 @@ ClassicEditor
 					value: '75'
 				}
 			],
+			styles: [
+				'alignLeft',
+				'alignCenter',
+				'alignRight'
+			],
 			toolbar: [
-				'imageStyle:full',
-				'imageStyle:side', '|',
-				'imageResize:original',
+				'imageStyle:alignLeft',
+				'imageStyle:alignCenter',
+				'imageStyle:alignRight',
+				'|',
 				'imageResize:50',
-				'imageResize:75'
+				'imageResize:75',
+				'imageResize:original'
 			]
 		},
 		cloudServices: CS_CONFIG

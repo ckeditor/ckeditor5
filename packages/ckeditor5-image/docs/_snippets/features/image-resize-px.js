@@ -11,7 +11,36 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-image-resize-px' ), {
 		removePlugins: [ 'LinkImage' ],
 		image: {
-			resizeUnit: 'px'
+			resizeUnit: 'px',
+			resizeOptions: [
+				{
+					name: 'imageResize:original',
+					label: 'Original',
+					value: null
+				},
+				{
+					name: 'imageResize:250',
+					label: '250px',
+					value: '250'
+				},
+				{
+					name: 'imageResize:500',
+					label: '500px',
+					value: '500'
+				}
+			],
+			styles: [
+				'alignLeft',
+				'alignCenter',
+				'alignRight'
+			],
+			toolbar: [
+				'imageStyle:alignLeft',
+				'imageStyle:alignCenter',
+				'imageStyle:alignRight',
+				'|',
+				'imageResize'
+			]
 		},
 		toolbar: {
 			viewportTopOffset: window.getViewportTopOffsetConfig()
