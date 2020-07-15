@@ -94,7 +94,7 @@ export default class PageBreakEditing extends Plugin {
 						return;
 					}
 
-					// The "page break" div accepts only single child.
+					// The "page break" div accepts only single child or no child at all.
 					if ( element.childCount == 1 ) {
 						const viewSpan = element.getChild( 0 );
 
