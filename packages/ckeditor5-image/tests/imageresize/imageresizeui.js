@@ -19,10 +19,10 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-import iconSmall from '../../theme/icons/image-resize-small.svg';
-import iconMedium from '../../theme/icons/image-resize-medium.svg';
-import iconLarge from '../../theme/icons/image-resize-large.svg';
-import iconFull from '../../theme/icons/image-resize-full.svg';
+import iconSmall from '@ckeditor/ckeditor5-core/theme/icons/object-size-small.svg';
+import iconMedium from '@ckeditor/ckeditor5-core/theme/icons/object-size-medium.svg';
+import iconLarge from '@ckeditor/ckeditor5-core/theme/icons/object-size-large.svg';
+import iconFull from '@ckeditor/ckeditor5-core/theme/icons/object-size-full.svg';
 
 describe( 'ImageResizeUI', () => {
 	let plugin, command, editor, editorElement;
@@ -76,7 +76,17 @@ describe( 'ImageResizeUI', () => {
 		it( 'should be named', () => {
 			expect( ImageResizeUI.pluginName ).to.equal( 'ImageResizeUI' );
 		} );
+	} );
 
+	describe( 'constructor()', () => {
+		it( 'should create `_resizeUnit` with default value of `%`', () => {
+			const unit = plugin._resizeUnit;
+
+			expect( unit ).to.equal( '%' );
+		} );
+	} );
+
+	describe( 'init()', () => {
 		it( 'should be disabled when command is disabled', () => {
 			command.isEnabled = true;
 
@@ -85,57 +95,6 @@ describe( 'ImageResizeUI', () => {
 			command.isEnabled = false;
 
 			expect( plugin.isEnabled ).to.be.false;
-		} );
-	} );
-
-	it( 'should create `_resizeUnit`', () => {
-		const unit = plugin._resizeUnit;
-
-		expect( unit ).to.equal( '%' );
-	} );
-
-	describe( 'init()', () => {
-		it( 'should have set "%" resize unit', () => {
-			expect( plugin._resizeUnit ).to.equal( '%' );
-		} );
-
-		it( 'should have set "%" resize unit if not defined', async () => {
-			const dropdown = editor.ui.componentFactory.create( 'imageResize' );
-			const button = dropdown.listView.items.get( 1 ).children.get( 0 );
-
-			command.isEnabled = true;
-
-			dropdown.render();
-
-			button.fire( 'execute' );
-
-			expect( editor.config.get( 'image.resizeUnit' ) ).to.be.undefined;
-			expect( command.value.width.includes( '%' ) ).to.be.true;
-
-			await editor.destroy();
-		} );
-
-		it( 'should have set "px" resize unit', async () => {
-			const editor = await ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
-					image: {
-						resizeUnit: 'px',
-						resizeOptions
-					}
-				} );
-
-			const dropdown = editor.ui.componentFactory.create( 'imageResize' );
-			const button = dropdown.listView.items.get( 1 ).children.get( 0 );
-			const command = editor.commands.get( 'imageResize' );
-
-			command.isEnabled = true;
-
-			button.fire( 'execute' );
-
-			expect( command.value.width.includes( 'px' ) ).to.be.true;
-
-			await editor.destroy();
 		} );
 
 		it( 'should not register a dropdown or buttons if no resize options passed', async () => {
