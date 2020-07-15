@@ -527,7 +527,7 @@ function shouldCopyAttributes( model ) {
 	// `nodeBefore` = the position is at the end of the link element.
 	const nodeAtLastPosition = lastPosition.textNode || lastPosition.nodeBefore;
 
-	// Both nodes must indicate the same node in the model tree.
+	// If both references the same node selection contains a single text node.
 	if ( nodeAtFirstPosition === nodeAtLastPosition ) {
 		return true;
 	}
