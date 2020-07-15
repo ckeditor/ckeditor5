@@ -192,8 +192,7 @@ export default class Collection {
 	 *
 	 * @chainable
 	 * @param {Iterable.<Object>} item
-	 * @param {Number} [index] The position of the insertion. The item is pushed to the collection
-	 * when `index` not specified.
+	 * @param {Number} [index] The position of the insertion. Items will be appended if no `index` is specified.
 	 * @fires add
 	 * @fires addBatch
 	 */
