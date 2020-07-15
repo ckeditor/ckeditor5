@@ -468,7 +468,7 @@ export default class LinkEditing extends Plugin {
 				return;
 			}
 
-			if ( shouldCopyAttributes( selection.getFirstPosition(), selection.getLastPosition() ) ) {
+			if ( shouldCopyAttributes( editor.model ) ) {
 				selectionAttributes = selection.getAttributes();
 			}
 		}, { priority: 'high' } );
@@ -500,11 +500,13 @@ export default class LinkEditing extends Plugin {
 
 // Checks whether selection's attributes should be copied to the new inserted text.
 //
-// @param {module:engine/model/position~Position} positionA
-// @param {module:engine/model/position~Position} positionB
+// @param {module:engine/model/model~Model} model
 // @returns {Boolean}
-function shouldCopyAttributes( positionA, positionB ) {
-	const nodeAtFirstPosition = positionA.nodeAfter;
+function shouldCopyAttributes( model ) {
+	const selection = model.document.selection;
+	const firstPosition = selection.getFirstPosition();
+	const lastPosition = selection.getLastPosition();
+	const nodeAtFirstPosition = firstPosition.nodeAfter;
 
 	// The text link node does not exist...
 	if ( !nodeAtFirstPosition ) {
@@ -523,10 +525,19 @@ function shouldCopyAttributes( positionA, positionB ) {
 
 	// `textNode` = the position is inside the link element.
 	// `nodeBefore` = the position is at the end of the link element.
-	const nodeAtLastPosition = positionB.textNode || positionB.nodeBefore;
+	const nodeAtLastPosition = lastPosition.textNode || lastPosition.nodeBefore;
 
 	// Both nodes must indicate the same node in the model tree.
-	return nodeAtFirstPosition === nodeAtLastPosition;
+	if ( nodeAtFirstPosition === nodeAtLastPosition ) {
+		return true;
+	}
+
+	// If nodes are not equal, maybe the link nodes has defined additional attributes inside.
+	// First, we need to find the entire link range.
+	const linkRange = findLinkRange( firstPosition, nodeAtFirstPosition.getAttribute( 'linkHref' ), model );
+
+	// Then we can check whether selected range is inside the found link range. If so, attributes should be preserved.
+	return linkRange.containsRange( model.createRange( firstPosition, lastPosition ), true );
 }
 
 // Checks whether provided changes were caused by typing.

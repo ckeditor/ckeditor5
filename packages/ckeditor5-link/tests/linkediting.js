@@ -10,6 +10,7 @@ import UnlinkCommand from '../src/unlinkcommand';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
@@ -1066,7 +1067,7 @@ describe( 'LinkEditing', () => {
 
 		beforeEach( async () => {
 			editor = await ClassicTestEditor.create( element, {
-				plugins: [ Paragraph, LinkEditing, Enter, BoldEditing, ImageEditing ],
+				plugins: [ Paragraph, LinkEditing, Enter, BoldEditing, ItalicEditing, ImageEditing ],
 				link: {
 					decorators: {
 						isFoo: {
@@ -1108,7 +1109,7 @@ describe( 'LinkEditing', () => {
 			expect( LinkEditing.requires.includes( Input ) ).to.equal( true );
 		} );
 
-		it( 'should preserve the `linkHref` attribute when the entire link is selected', () => {
+		it( 'should preserve selection attributes when the entire link is selected', () => {
 			setModelData( model,
 				'<paragraph>This is [<$text linkHref="foo">Foo</$text>] from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
@@ -1122,7 +1123,39 @@ describe( 'LinkEditing', () => {
 			);
 		} );
 
-		it( 'should preserve the `linkHref` attribute when the selection starts at the beginning of the link', () => {
+		it( 'should preserve selection attributes when the entire link is selected (mixed attributes in the link)', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'This is [' +
+					'<$text linkHref="foo" italic="true">F</$text>' +
+					'<$text linkHref="foo" bold="true">o</$text>' +
+					'<$text linkHref="foo" bold="true" italic="true">o</$text>' +
+					'<$text linkHref="foo" bold="true">B</$text>' +
+					'<$text linkHref="foo" bold="true" italic="true">a</$text>' +
+					'<$text linkHref="foo">r</$text>]' +
+					' from ' +
+					'<$text linkHref="bar">Bar</$text>' +
+					'.' +
+				'</paragraph>'
+			);
+
+			editor.execute( 'input', {
+				text: 'Abcde'
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+					'This is ' +
+					'<$text italic="true" linkHref="foo">Abcde</$text>' +
+					'<$text italic="true">[]</$text>' +
+					' from ' +
+					'<$text linkHref="bar">Bar</$text>' +
+					'.' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should preserve selection attributes when the selection starts at the beginning of the link', () => {
 			setModelData( model,
 				'<paragraph>This is [<$text linkHref="foo">Fo]o</$text> from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
@@ -1133,6 +1166,38 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>This is <$text linkHref="foo">Abcde[]o</$text> from <$text linkHref="bar">Bar</$text>.</paragraph>'
+			);
+		} );
+
+		it( 'should preserve selection attributes when it starts at the beginning of the link (mixed attributes in the link)', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'This is [' +
+					'<$text linkHref="foo" italic="true">F</$text>' +
+					'<$text linkHref="foo" bold="true">o</$text>' +
+					'<$text linkHref="foo" bold="true" italic="true">o</$text>' +
+					'<$text linkHref="foo" bold="true">B</$text>' +
+					'<$text linkHref="foo" bold="true" italic="true">a]</$text>' +
+					'<$text linkHref="foo">r</$text>' +
+					' from ' +
+					'<$text linkHref="bar">Bar</$text>' +
+					'.' +
+				'</paragraph>'
+			);
+
+			editor.execute( 'input', {
+				text: 'Abcde'
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+					'This is ' +
+					'<$text italic="true" linkHref="foo">Abcde[]</$text>' +
+					'<$text linkHref="foo">r</$text>' +
+					' from ' +
+					'<$text linkHref="bar">Bar</$text>' +
+					'.' +
+				'</paragraph>'
 			);
 		} );
 
@@ -1162,7 +1227,7 @@ describe( 'LinkEditing', () => {
 			);
 		} );
 
-		it( 'should not preserve the `linkHref` attribute when the changes are not caused by typing', () => {
+		it( 'should not preserve selection attributes when the changes are not caused by typing', () => {
 			setModelData( model,
 				'<paragraph>This is [<$text linkHref="foo">Foo</$text>] from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
@@ -1177,7 +1242,7 @@ describe( 'LinkEditing', () => {
 			);
 		} );
 
-		it( 'should not preserve the `linkHref` attribute when the changes are not caused by typing (pasting check)', () => {
+		it( 'should not preserve selection attributes when the changes are not caused by typing (pasting check)', () => {
 			setModelData( model,
 				'<paragraph>This is [<$text linkHref="foo">Foo</$text>] from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
@@ -1196,7 +1261,7 @@ describe( 'LinkEditing', () => {
 			);
 		} );
 
-		it( 'should not preserve the `linkHref` attribute when typed after cutting the content', () => {
+		it( 'should not preserve selection attributes when typed after cutting the content', () => {
 			setModelData( model,
 				'<paragraph>This is [<$text linkHref="foo">Foo</$text>] from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
@@ -1230,7 +1295,7 @@ describe( 'LinkEditing', () => {
 			);
 		} );
 
-		it( 'should not preserve anything if selected text does not have the `linkHref` attribute', () => {
+		it( 'should not preserve anything if selected text does not have the `linkHref` attribute`', () => {
 			setModelData( model,
 				'<paragraph>This is [<$text bold="foo">Foo</$text>] from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
@@ -1244,7 +1309,7 @@ describe( 'LinkEditing', () => {
 			);
 		} );
 
-		it( 'should not preserve the `linkHref` attribute when the entire link is selected and pressed "Backspace"', () => {
+		it( 'should not preserve selection attributes when the entire link is selected and pressed "Backspace"', () => {
 			setModelData( model,
 				'<paragraph>This is [<$text linkHref="foo">Foo</$text>] from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
@@ -1263,7 +1328,7 @@ describe( 'LinkEditing', () => {
 			);
 		} );
 
-		it( 'should not preserve the `linkHref` attribute when the entire link is selected and pressed "Delete"', () => {
+		it( 'should not preserve selection attributes when the entire link is selected and pressed "Delete"', () => {
 			setModelData( model,
 				'<paragraph>This is [<$text linkHref="foo">Foo</$text>] from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
@@ -1282,7 +1347,7 @@ describe( 'LinkEditing', () => {
 			);
 		} );
 
-		it( 'should not preserve the `linkHref` attribute when selected different links', () => {
+		it( 'should not preserve selection attributes when selected different links', () => {
 			setModelData( model,
 				'<paragraph>This is <$text linkHref="foo">[Foo</$text> from <$text linkHref="bar">Bar]</$text>.</paragraph>'
 			);
@@ -1294,7 +1359,7 @@ describe( 'LinkEditing', () => {
 			expect( getModelData( model ) ).to.equal( '<paragraph>This is Abcde[].</paragraph>' );
 		} );
 
-		it( 'should not preserve the `linkHref` attribute when selected more than single link (start of the selection)', () => {
+		it( 'should not preserve selection attributes when selected more than single link (start of the selection)', () => {
 			setModelData( model,
 				'<paragraph>This is[ <$text linkHref="foo">Foo]</$text> from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
@@ -1308,7 +1373,7 @@ describe( 'LinkEditing', () => {
 			);
 		} );
 
-		it( 'should not preserve the `linkHref` attribute when selected more than single link (end of the selection)', () => {
+		it( 'should not preserve selection attributes when selected more than single link (end of the selection)', () => {
 			setModelData( model,
 				'<paragraph>This is <$text linkHref="foo">[Foo</$text> ]from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
