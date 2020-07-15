@@ -202,8 +202,6 @@ export default class Collection {
 			index = this._items.length;
 		}
 
-		const firstIndex = index; // @todo: just use index
-
 		if ( index > this._items.length || index < 0 ) {
 			/**
 			 * The index number has invalid value.
@@ -224,7 +222,7 @@ export default class Collection {
 			this.fire( 'add', item, currentItemIndex );
 		}
 
-		this.fire( 'addBatch', items, firstIndex );
+		this.fire( 'addBatch', items, index );
 
 		return this;
 	}
