@@ -25,9 +25,13 @@
 }
 
 [dir="ltr"] .ck.ck-button.ck-button_with-text.ck-resize-image-button .ck-button__icon {
-	margin-right: 6px;
+	margin-right: var(--ck-spacing-standard);
 }
 
 [dir="rtl"] .ck.ck-button.ck-button_with-text.ck-resize-image-button .ck-button__icon {
-	margin-left: 6px;
+	margin-left: var(--ck-spacing-standard);
+}
+
+.ck.ck-dropdown .ck-button.ck-resize-image-button .ck-button__label {
+	width: 4em;
 }
