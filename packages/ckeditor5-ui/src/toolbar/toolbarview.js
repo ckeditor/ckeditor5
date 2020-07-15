@@ -305,7 +305,7 @@ export default class ToolbarView extends View {
 			}
 		} );
 
-		this.items.batchAdd( toolbarItems );
+		this.items.addBatch( toolbarItems );
 	}
 }
 
@@ -552,7 +552,7 @@ class DynamicGrouping {
 		// represented in either grouped or ungrouped items at the right index.
 		// In other words #items == concat( #ungroupedItems, #groupedItems )
 		// (in length and order).
-		view.items.on( 'batchAdd', ( evt, items, firstIndex ) => {
+		view.items.on( 'addBatch', ( evt, items, firstIndex ) => {
 			for ( let currentIndex = firstIndex; currentIndex < firstIndex + items.length; currentIndex++ ) {
 				const item = items[ currentIndex - firstIndex ];
 
