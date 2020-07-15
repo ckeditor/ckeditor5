@@ -3,10 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import {
-	keyCodes
-} from '@ckeditor/ckeditor5-utils/src/keyboard';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { keyCodes, getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { isNonTypingKeystroke } from '../../src/utils/injectunsafekeystrokeshandling';
+import Typing from '../../src/typing';
 
 describe( 'unsafe keystroke handling utils', () => {
 	describe( 'isNonTypingKeystroke()', () => {
@@ -80,6 +82,47 @@ describe( 'unsafe keystroke handling utils', () => {
 			expect( isNonTypingKeystroke( { keyCode: keyCodes.a } ), 'a' ).to.be.false;
 			expect( isNonTypingKeystroke( { keyCode: keyCodes[ 0 ] } ), '0' ).to.be.false;
 			expect( isNonTypingKeystroke( { keyCode: keyCodes.a, altKey: true } ), 'Alt+a' ).to.be.false;
+		} );
+	} );
+
+	describe( 'injectUnsafeKeystrokesHandling()', () => {
+		let editor, model;
+
+		beforeEach( () => {
+			return ModelTestEditor.create( { plugins: [ Typing ] } )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+
+					model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'uses typing batch while removing the content', () => {
+			const inputCommand = editor.commands.get( 'input' );
+
+			expect( inputCommand._batches.has( getCurrentBatch() ), 'batch before typing' ).to.equal( false );
+
+			model.on( 'deleteContent', () => {
+				expect( inputCommand._batches.has( getCurrentBatch() ), 'batch when deleting content' ).to.equal( true );
+			}, { priority: 'highest' } );
+
+			setData( model, '<paragraph>[foo]</paragraph>' );
+
+			editor.editing.view.document.fire( 'keydown', new DomEventData( editor.editing.view.document, {
+				preventDefault: () => {},
+				keyCode: getCode( 'A' )
+			} ) );
+
+			expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+
+			function getCurrentBatch() {
+				return editor.model.change( writer => writer.batch );
+			}
 		} );
 	} );
 } );
