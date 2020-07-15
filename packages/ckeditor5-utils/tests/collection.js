@@ -380,8 +380,6 @@ describe( 'Collection', () => {
 			expect( collection ).to.have.length( 3 );
 		} );
 
-		// @todo: ensure that proper index is reported in batchAdd events.
-
 		it( 'should enable get( index )', () => {
 			const item1 = {};
 			const item2 = {};
@@ -525,17 +523,6 @@ describe( 'Collection', () => {
 			expect( collectionA.get( item.id ) ).to.equal( collectionB.get( 0 ) );
 		} );
 
-		it( 'should fire the "batchAdd" event', () => {
-			const spy = sinon.spy();
-			const items = [ {}, {} ];
-
-			collection.on( 'batchAdd', spy );
-
-			collection.batchAdd( items );
-
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), items, 0 );
-		} );
-
 		it( 'should fire the "add" event', () => {
 			const spy = sinon.spy();
 			const item = {};
@@ -559,6 +546,45 @@ describe( 'Collection', () => {
 			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), items[ 1 ], 1 );
 
 			expect( spy.callCount ).to.equal( 2 );
+		} );
+
+		it( 'should fire the "add" event with the index argument', () => {
+			const spy = sinon.spy();
+
+			collection.batchAdd( [ {} ] );
+			collection.batchAdd( [ {} ] );
+
+			collection.on( 'add', spy );
+
+			const item = {};
+			collection.batchAdd( [ item ], 1 );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item, 1 );
+		} );
+
+		it( 'should fire the "batchAdd" event', () => {
+			const spy = sinon.spy();
+			const items = [ {}, {} ];
+
+			collection.on( 'batchAdd', spy );
+
+			collection.batchAdd( items );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), items, 0 );
+		} );
+
+		it( 'should fire the "batchAdd" event with the index argument', () => {
+			const spy = sinon.spy();
+			const firstBatch = [ {}, {} ];
+			const secondBatch = [ {}, {} ];
+
+			collection.batchAdd( firstBatch );
+
+			collection.on( 'batchAdd', spy );
+
+			collection.batchAdd( secondBatch, 1 );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), secondBatch, 1 );
 		} );
 
 		it( 'should support an optional index argument', () => {
@@ -597,20 +623,6 @@ describe( 'Collection', () => {
 			collection.batchAdd( [ item3 ], 0 );
 
 			expect( collection.length ).to.equal( 3 );
-		} );
-
-		it( 'should fire the "add" event with the index argument', () => {
-			const spy = sinon.spy();
-
-			collection.batchAdd( [ {} ] );
-			collection.batchAdd( [ {} ] );
-
-			collection.on( 'add', spy );
-
-			const item = {};
-			collection.batchAdd( [ item ], 1 );
-
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item, 1 );
 		} );
 	} );
 
