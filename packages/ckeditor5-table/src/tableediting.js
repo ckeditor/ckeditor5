@@ -64,7 +64,6 @@ export default class TableEditing extends Plugin {
 		schema.register( 'table', {
 			allowWhere: '$block',
 			allowAttributes: [ 'headingRows', 'headingColumns' ],
-			isLimit: true,
 			isObject: true,
 			isBlock: true
 		} );
@@ -77,7 +76,8 @@ export default class TableEditing extends Plugin {
 		schema.register( 'tableCell', {
 			allowIn: 'tableRow',
 			allowAttributes: [ 'colspan', 'rowspan' ],
-			isObject: true
+			isLimit: true,
+			isSelectable: true
 		} );
 
 		// Allow all $block content inside table cell.

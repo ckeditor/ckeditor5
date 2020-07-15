@@ -307,6 +307,27 @@ export default class Schema {
 	}
 
 	/**
+	 * Returns `true` if the given item is defined to be
+	 * a selectable element by the {@link module:engine/model/schema~SchemaItemDefinition}'s `isSelectable` property.
+	 *
+	 *		TODO
+	 *
+	 * See the {@glink framework/guides/deep-dive/schema#TODO Selectable elements} section of the Schema deep dive}
+	 * guide for more details.
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+	 */
+	isSelectable( item ) {
+		const def = this.getDefinition( item );
+
+		if ( !def ) {
+			return false;
+		}
+
+		return !!( def.isSelectable || def.isObject );
+	}
+
+	/**
 	 * Checks whether the given node (`child`) can be a child of the given context.
 	 *
 	 *		schema.checkChild( model.document.getRoot(), paragraph ); // -> false
