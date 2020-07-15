@@ -78,6 +78,14 @@ By default, if the image caption is empty, the `<figcaption>` element is not vis
 
 {@snippet features/image-caption}
 
+## Image upload
+
+See the {@link features/image-upload Image upload} guide.
+
+## Responsive images
+
+Support for responsive images in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Learn more how to use the feature in your project in the {@link features/easy-image#responsive-images Easy Image integration} guide.
+
 ## Image styles
 
 In simple integrations it is enough to let the user insert images, set their text alternative and the editor's job is done. An example of such a simple solution are e.g. [GitHub](https://github.com) comments. The styling of the images (for example, their maximum width and margins) is controlled by GitHub through stylesheets.
@@ -86,9 +94,13 @@ In more advanced scenarios, the user may need to be able to decide whether the i
 
 This is what the {@link module:image/imagestyle~ImageStyle} feature is designed for.
 
-However, unlike in CKEditor 4, in CKEditor 5 the end user does not set the image border, alignment, margins, width, etc. separately. Instead, they can pick one of the styles defined by the developer who prepared the WYSIWYG editor integration. This gives the developer control over how the users style images and makes the user's life easier by setting multiple properties at once.
+The available image styles can be configured using the {@link module:image/image~ImageConfig#styles `image.styles`} option.
 
-A style is applied to the image in form of a class. By default, CKEditor 5 is configured to support two styles: "full width" (which does not apply any class &mdash; it is the default style) and "side image" (which applies the `image-style-side` class).
+### Semantical image styles
+
+Unlike in CKEditor 4, in CKEditor 5 the end user does not set the image border, alignment, margins, width, etc. separately. Instead, they can pick one of the styles defined by the developer who prepared the WYSIWYG editor integration. This gives the developer control over how the users style images and makes the user's life easier by setting multiple properties at once.
+
+A style is applied to the image in form of a class. By default, CKEditor 5 is configured to support two default semantical styles: **"full width"** (which does not apply any class &mdash; it is the default style) and **"side image"** (which applies the `image-style-side` class).
 
 A normal (full width) image:
 
@@ -108,29 +120,39 @@ A side image:
 	You can find the source of the default styles applied by the editor here: [`ckeditor5-image/theme/imagestyle.css`](https://github.com/ckeditor/ckeditor5-image/blob/master/theme/imagestyle.css).
 </info-box>
 
-Below you can see a demo of the WYSIWYG editor with the image styles feature enabled. The default configuration is used. You can change the styles of images through the image's contextual toolbar.
+Below you can see a demo of the WYSIWYG editor with the semantical image styles. The default configuration is used. You can change the styles of images through the image's contextual toolbar.
 
 {@snippet features/image-style}
 
-### Configuring image styles
+It's important to note, that semantical image styles are powerfull concepts and can easily replace some other features presented in this documentation. For example, the "side image" works as a combination of the [presentational](#presentational-image-styles) styles like: "resize image to 50%" and "align it to the right". But what's intresting here, by appling the semantical styles to the image, you're apping also a new meaning the that element with the relation to the surrending content.
 
-The available image styles can be configured using the {@link module:image/image~ImageConfig#styles `image.styles`} option.
+<info-box hint>
+	In the example above the options represent simple "align left" and "align right" styles. Most text editors support left, center and right alignments, however, it is better not to think about CKEditor 5's image styles in this way. Try to understand what use cases the system needs to support and define semantic options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. For example, the "side image" style can be displayed as a floated image on wide screens and as a normal image on low resolution screens.
+</info-box>
 
-The following WYSIWYG editor supports the default full image style plus left- and right-aligned images:
+<info-box warning>
+	At the moment, semantical styles like "full width" and "side image" are not fully compatibile with the [`Image Resize`](#resizing-images) feature and should not be used together. However, to achieve the same, but with more flexibility, you can use [**presentational image styles**](#presentational-image-styles).
+</info-box>
+
+### Presentational image styles
+
+Think of them as styles that don't add any special meaning to the changed content. Sometimes you just want to align an image to the right without making it a special kind of element. The only reason you want to do this is the **presentational** purpose. From the editor's content perspective, the image only gets additional styles.
+
+The following WYSIWYG editor supports the default alignment features — left, center and right:
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		image: {
 			// You need to configure the image toolbar, too, so it uses the new style buttons.
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ],
+			toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|', 'imageTextAlternative' ],
 
 			styles: [
-				// This option is equal to a situation where no style is applied.
-				'full',
-
 				// This represents an image aligned to the left.
 				'alignLeft',
+
+				// This represents an image aligned to the center.
+				'alignCenter',
 
 				// This represents an image aligned to the right.
 				'alignRight'
@@ -141,15 +163,13 @@ ClassicEditor
 	.catch( ... );
 ```
 
-The code sample above uses predefined image styles: `'full'`, `'alignLeft'` and `'alignRight'`. The latter two apply, respectively, the `.image-style-align-left` and  `.image-style-align-right` classes to the `<figure>` element.
+The code sample above uses predefined presentational image styles: `'alignLeft'`, `'alignCenter'` and `'alignRight'`. The all three apply, respectively, the `.image-style-align-left`, `.image-style-align-center` and  `.image-style-align-right` classes to the `<figure>` element.
 
 See the result below:
 
 {@snippet features/image-style-custom}
 
-<info-box hint>
-	In the example above the options represent simple "align left" and "align right" styles. Most text editors support left, center and right alignments, however, it is better not to think about CKEditor 5's image styles in this way. Try to understand what use cases the system needs to support and define semantic options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. For example, the "side image" style can be displayed as a floated image on wide screens and as a normal image on low resolution screens.
-</info-box>
+As you can see, our predefined image alignment styles work beautifully with image resizing. They're not limited to work only with resizing by handles, they work with resize options via [dropdown](#resize-image-using-the-plugin-dropdown) or [standalone buttons](#resize-image-using-the-standalone-buttons) as well.
 
 ### Defining custom styles
 
@@ -170,14 +190,6 @@ you can also define your own styles or modify the existing ones.
 You can find advanced examples in the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option documentation.
 
 <!-- TODO (live example)... -->
-
-## Image upload
-
-See the {@link features/image-upload Image upload} guide.
-
-## Responsive images
-
-Support for responsive images in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Learn more how to use the feature in your project in the {@link features/easy-image#responsive-images Easy Image integration} guide.
 
 ## Resizing images
 
