@@ -7,7 +7,9 @@
  * @module engine/model/textproxy
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+/* global console */
+
+import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-utils/utils' );
 
@@ -178,6 +180,21 @@ export default class TextProxy {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
+		if ( type === 'textProxy' || type === 'model:textProxy' ) {
+			/**
+			 * Usage of `node.is( 'textProxy' )` was replaced in CKEditor 21.0.0 with `node.is( '$textProxy' )`
+			 * due to conflicts with element's name. See {@link module:engine/model/textproxy~TextProxy}.
+			 *
+			 * @error model-textProxy-deprecated-is-textProxy-argument
+			 */
+			console.warn(
+				attachLinkToDocumentation(
+					'model-textProxy-deprecated-is-textProxy-argument: ' +
+					'"textProxy" is deprecated value for testing TextProxy items, use "$textProxy" instead.'
+				)
+			);
+		}
+
 		return type === '$textProxy' || type === 'model:$textProxy';
 	}
 
