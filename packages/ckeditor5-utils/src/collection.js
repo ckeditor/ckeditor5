@@ -179,10 +179,10 @@ export default class Collection {
 	 * @param {Number} [index] The position of the item in the collection. The item
 	 * is pushed to the collection when `index` not specified.
 	 * @fires add
-	 * @fires batchAdd
+	 * @fires addBatch
 	 */
 	add( item, index ) {
-		return this.batchAdd( [ item ], index );
+		return this.addBatch( [ item ], index );
 	}
 
 	/**
@@ -195,9 +195,9 @@ export default class Collection {
 	 * @param {Number} [index] The position of the insertion. The item is pushed to the collection
 	 * when `index` not specified.
 	 * @fires add
-	 * @fires batchAdd
+	 * @fires addBatch
 	 */
-	batchAdd( items, index ) {
+	addBatch( items, index ) {
 		if ( index === undefined ) {
 			index = this._items.length;
 		}
@@ -224,7 +224,7 @@ export default class Collection {
 			this.fire( 'add', item, currentItemIndex );
 		}
 
-		this.fire( 'batchAdd', items, firstIndex );
+		this.fire( 'addBatch', items, firstIndex );
 
 		return this;
 	}
