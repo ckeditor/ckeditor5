@@ -1,13 +1,20 @@
 ## Image Resize UI
 
-The tests for manual image resizing.
-- The first test should have the dropdown with configured options in the image toolbar (using `imageResize`).
-	- Plugin icon should appear only in the dropbdown button.
-	- Each option should have a label text represented an option value defined in the plugin configuration.
-	- Selected options should be set "on" when dropdown is open.
-- The second one should have the standalone buttons instead of dropdown (from the first test) in the image toolbar (using
-`imageResize:option`).
-	- Each option should have the plugin icon, depends on set token (`small`, `medium`, `large` or `original`).
-	- No label
-	- Tooltip text and `aria-label` should be more verbose and should be the same.
-	- Selected option should be set "on".
+Tests for manual image resizing using the UI in the image toolbar.
+
+## Dropdown
+
+1. Select an image in the editor.
+2. A dropdown with configured options (`config.image.resizeOptions`) should be visible in the toolbar.
+	- The plugin icon should appear only next to the dropdown button.
+	- Each option should have a label text corresponding to an option value defined in the configuration.
+	- The selected option should be "on" when the dropdown is open.
+
+## Buttons
+
+1. Select an image in the editor.
+2. Standalone buttons should be displayed in the image toolbar (corresponding to `config.image.resizeOptions`).
+	- Each button should have an icon as in the configuration (`small`, `medium`, `large` or `original`).
+	- No label should be rendered,
+	- The tooltip text and the `aria-label` attribute should be the same (and more verbose).
+	- The selected option button should be "on".
