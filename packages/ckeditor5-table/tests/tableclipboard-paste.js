@@ -899,6 +899,21 @@ describe( 'table clipboard', () => {
 						[ '', '', 'ba', 'bb' ]
 					] ) );
 				} );
+
+				it( 'should not set multi-cell selection if TableSelection plugin is disabled', () => {
+					editor.plugins.get( 'TableSelection' ).forceDisabled();
+
+					pasteTable( [
+						[ 'aa', 'ab' ],
+						[ 'ba', 'bb' ]
+					] );
+
+					assertEqualMarkup( getModelData( model ), modelTable( [
+						[ '[]aa', 'ab', '02' ],
+						[ 'ba', 'bb', '12' ],
+						[ '20', '21', '22' ]
+					] ) );
+				} );
 			} );
 
 			describe( 'with spanned cells', () => {

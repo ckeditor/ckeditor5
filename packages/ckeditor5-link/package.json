@@ -10,6 +10,7 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
+    "@ckeditor/ckeditor5-clipboard": "^20.0.0",
     "@ckeditor/ckeditor5-core": "^20.0.0",
     "@ckeditor/ckeditor5-engine": "^20.0.0",
     "@ckeditor/ckeditor5-image": "^20.0.0",
@@ -21,7 +22,6 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^20.0.0",
     "@ckeditor/ckeditor5-block-quote": "^20.0.0",
-    "@ckeditor/ckeditor5-clipboard": "^20.0.0",
     "@ckeditor/ckeditor5-code-block": "^20.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^20.0.0",
     "@ckeditor/ckeditor5-enter": "^20.0.0",
