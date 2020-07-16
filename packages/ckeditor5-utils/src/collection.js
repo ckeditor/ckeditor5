@@ -182,7 +182,7 @@ export default class Collection {
 	 * @fires addBatch
 	 */
 	add( item, index ) {
-		return this.addBatch( [ item ], index );
+		return this.addMany( [ item ], index );
 	}
 
 	/**
@@ -196,7 +196,7 @@ export default class Collection {
 	 * @fires add
 	 * @fires addBatch
 	 */
-	addBatch( items, index ) {
+	addMany( items, index ) {
 		if ( index === undefined ) {
 			index = this._items.length;
 		}

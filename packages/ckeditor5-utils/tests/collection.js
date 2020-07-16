@@ -148,8 +148,8 @@ describe( 'Collection', () => {
 	} );
 
 	describe( 'add()', () => {
-		it( 'should proxy its calls to addBatch', () => {
-			const spy = sinon.spy( collection, 'addBatch' );
+		it( 'should proxy its calls to addMany', () => {
+			const spy = sinon.spy( collection, 'addMany' );
 			const item = {};
 
 			collection.add( item );
@@ -159,7 +159,7 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should proxy custom index', () => {
-			const stub = sinon.stub( collection, 'addBatch' );
+			const stub = sinon.stub( collection, 'addMany' );
 			const item = {};
 
 			collection.add( item, 5 );
@@ -170,7 +170,7 @@ describe( 'Collection', () => {
 
 		it( 'should proxy returned value', () => {
 			const expectedReturn = {};
-			sinon.stub( collection, 'addBatch' ).returns( expectedReturn );
+			sinon.stub( collection, 'addMany' ).returns( expectedReturn );
 
 			expect( collection.add( 1 ) ).to.equal( expectedReturn );
 		} );
@@ -186,18 +186,18 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'addBatch()', () => {
+	describe( 'addMany()', () => {
 		it( 'should be chainable', () => {
-			expect( collection.addBatch( [ {} ] ) ).to.equal( collection );
+			expect( collection.addMany( [ {} ] ) ).to.equal( collection );
 		} );
 
 		it( 'should change the length', () => {
 			expect( collection ).to.have.length( 0 );
 
-			collection.addBatch( [ {}, {} ] );
+			collection.addMany( [ {}, {} ] );
 			expect( collection ).to.have.length( 2 );
 
-			collection.addBatch( [ {} ] );
+			collection.addMany( [ {} ] );
 			expect( collection ).to.have.length( 3 );
 		} );
 
@@ -205,7 +205,7 @@ describe( 'Collection', () => {
 			const item1 = {};
 			const item2 = {};
 
-			collection.addBatch( [ item1, item2 ] );
+			collection.addMany( [ item1, item2 ] );
 			expect( collection.get( 0 ) ).to.equal( item1 );
 			expect( collection.get( 1 ) ).to.equal( item2 );
 		} );
@@ -214,7 +214,7 @@ describe( 'Collection', () => {
 			const item1 = getItem( 'foo' );
 			const item2 = getItem( 'bar' );
 
-			collection.addBatch( [ item1, item2 ] );
+			collection.addMany( [ item1, item2 ] );
 
 			expect( collection.get( 'foo' ) ).to.equal( item1 );
 			expect( collection.get( 'bar' ) ).to.equal( item2 );
@@ -235,7 +235,7 @@ describe( 'Collection', () => {
 		it( 'should generate an id when not defined', () => {
 			const item = {};
 
-			collection.addBatch( [ item ] );
+			collection.addMany( [ item ] );
 
 			expect( item.id ).to.be.a( 'string' );
 			expect( collection.get( item.id ) ).to.equal( item );
@@ -245,7 +245,7 @@ describe( 'Collection', () => {
 			const collection = new Collection( { idProperty: 'name' } );
 			const item = {};
 
-			collection.addBatch( [ item ] );
+			collection.addMany( [ item ] );
 
 			expect( item.name ).to.be.a( 'string' );
 			expect( collection.get( item.name ) ).to.equal( item );
@@ -254,7 +254,7 @@ describe( 'Collection', () => {
 		it( 'should not change an existing id of an item', () => {
 			const item = getItem( 'foo' );
 
-			collection.addBatch( [ item ] );
+			collection.addMany( [ item ] );
 
 			expect( item.id ).to.equal( 'foo' );
 		} );
@@ -263,7 +263,7 @@ describe( 'Collection', () => {
 			const item1 = getItem( 'foo' );
 
 			expectToThrowCKEditorError( () => {
-				collection.addBatch( [ item1, item1 ] );
+				collection.addMany( [ item1, item1 ] );
 			}, /^collection-add-item-already-exists/ );
 		} );
 
@@ -271,10 +271,10 @@ describe( 'Collection', () => {
 			const item1 = getItem( 'foo' );
 			const item2 = getItem( 'foo' );
 
-			collection.addBatch( [ item1 ] );
+			collection.addMany( [ item1 ] );
 
 			expectToThrowCKEditorError( () => {
-				collection.addBatch( [ item2 ] );
+				collection.addMany( [ item2 ] );
 			}, /^collection-add-item-already-exists/ );
 		} );
 
@@ -282,7 +282,7 @@ describe( 'Collection', () => {
 			const item = { id: 1 };
 
 			expectToThrowCKEditorError( () => {
-				collection.addBatch( [ item ] );
+				collection.addMany( [ item ] );
 			}, /^collection-add-invalid-id/ );
 		} );
 
@@ -295,9 +295,9 @@ describe( 'Collection', () => {
 				const itemA = {};
 				const itemB = {};
 
-				collectionA.addBatch( [ itemA ] );
-				collectionB.addBatch( [ itemB ] );
-				collectionB.addBatch( [ collectionA.remove( itemA ) ] );
+				collectionA.addMany( [ itemA ] );
+				collectionB.addMany( [ itemB ] );
+				collectionB.addMany( [ collectionA.remove( itemA ) ] );
 
 				expect( collectionA.length ).to.equal( 0 );
 				expect( collectionB.length ).to.equal( 2 );
@@ -318,9 +318,9 @@ describe( 'Collection', () => {
 				const itemA = {};
 				const itemB = {};
 
-				collectionA.addBatch( [ itemA ] );
-				collectionB.addBatch( [ itemB ] );
-				collectionB.addBatch( [ collectionA.remove( itemA ) ] );
+				collectionA.addMany( [ itemA ] );
+				collectionB.addMany( [ itemB ] );
+				collectionB.addMany( [ collectionA.remove( itemA ) ] );
 
 				expect( collectionA.length ).to.equal( 0 );
 				expect( collectionB.length ).to.equal( 2 );
@@ -336,8 +336,8 @@ describe( 'Collection', () => {
 			const collectionB = new Collection();
 			const item = {};
 
-			collectionA.addBatch( [ item ] );
-			collectionB.addBatch( [ item ] );
+			collectionA.addMany( [ item ] );
+			collectionB.addMany( [ item ] );
 
 			expect( collectionA.length ).to.equal( 1 );
 			expect( collectionB.length ).to.equal( 1 );
@@ -350,7 +350,7 @@ describe( 'Collection', () => {
 
 			collection.on( 'add', spy );
 
-			collection.addBatch( [ item ] );
+			collection.addMany( [ item ] );
 
 			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item, 0 );
 		} );
@@ -361,7 +361,7 @@ describe( 'Collection', () => {
 
 			collection.on( 'add', spy );
 
-			collection.addBatch( items );
+			collection.addMany( items );
 
 			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), items[ 0 ], 0 );
 			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), items[ 1 ], 1 );
@@ -372,13 +372,13 @@ describe( 'Collection', () => {
 		it( 'should fire the "add" event with the index argument', () => {
 			const spy = sinon.spy();
 
-			collection.addBatch( [ {} ] );
-			collection.addBatch( [ {} ] );
+			collection.addMany( [ {} ] );
+			collection.addMany( [ {} ] );
 
 			collection.on( 'add', spy );
 
 			const item = {};
-			collection.addBatch( [ item ], 1 );
+			collection.addMany( [ item ], 1 );
 
 			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item, 1 );
 		} );
@@ -389,7 +389,7 @@ describe( 'Collection', () => {
 
 			collection.on( 'addBatch', spy );
 
-			collection.addBatch( items );
+			collection.addMany( items );
 
 			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), items, 0 );
 		} );
@@ -399,11 +399,11 @@ describe( 'Collection', () => {
 			const firstBatch = [ {}, {} ];
 			const secondBatch = [ {}, {} ];
 
-			collection.addBatch( firstBatch );
+			collection.addMany( firstBatch );
 
 			collection.on( 'addBatch', spy );
 
-			collection.addBatch( secondBatch, 1 );
+			collection.addMany( secondBatch, 1 );
 
 			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), secondBatch, 1 );
 		} );
@@ -414,10 +414,10 @@ describe( 'Collection', () => {
 			const item3 = getItem( 'baz' );
 			const item4 = getItem( 'abc' );
 
-			collection.addBatch( [ item1 ] );
-			collection.addBatch( [ item2 ], 0 );
-			collection.addBatch( [ item3 ], 1 );
-			collection.addBatch( [ item4 ], 3 );
+			collection.addMany( [ item1 ] );
+			collection.addMany( [ item2 ], 0 );
+			collection.addMany( [ item3 ], 1 );
+			collection.addMany( [ item4 ], 3 );
 
 			expect( collection.get( 0 ) ).to.equal( item2 );
 			expect( collection.get( 1 ) ).to.equal( item3 );
@@ -430,18 +430,18 @@ describe( 'Collection', () => {
 			const item2 = getItem( 'bar' );
 			const item3 = getItem( 'baz' );
 
-			collection.addBatch( [ item1 ] );
+			collection.addMany( [ item1 ] );
 
 			expectToThrowCKEditorError( () => {
-				collection.addBatch( [ item2 ], -1 );
+				collection.addMany( [ item2 ], -1 );
 			}, /^collection-add-item-invalid-index/ );
 
 			expectToThrowCKEditorError( () => {
-				collection.addBatch( [ item2 ], 2 );
+				collection.addMany( [ item2 ], 2 );
 			}, /^collection-add-item-invalid-index/ );
 
-			collection.addBatch( [ item2 ], 1 );
-			collection.addBatch( [ item3 ], 0 );
+			collection.addMany( [ item2 ], 1 );
+			collection.addMany( [ item3 ], 0 );
 
 			expect( collection.length ).to.equal( 3 );
 		} );
