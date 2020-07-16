@@ -84,10 +84,10 @@ export default class ImageResizeUI extends Plugin {
 		this.bind( 'isEnabled' ).to( command );
 
 		for ( const option of options ) {
-			this._addButton( option );
+			this._registerImageResizeButton( option );
 		}
 
-		this._addDropdown( options );
+		this._registerImageResizeDropdown( options );
 	}
 
 	/**
@@ -96,7 +96,7 @@ export default class ImageResizeUI extends Plugin {
 	 * @private
 	 * @param {module:image/imageresize/imageresizeui~ImageResizeOption} resizeOption A model of resize option.
 	 */
-	_addButton( option ) {
+	_registerImageResizeButton( option ) {
 		const editor = this.editor;
 		const { name, value, icon } = option;
 		const parsedValue = value ? value + this._resizeUnit : null;
@@ -109,13 +109,13 @@ export default class ImageResizeUI extends Plugin {
 
 			if ( !RESIZE_ICONS[ icon ] ) {
 				/**
-				* Setting {@link module:image/image~ImageConfig#resizeOptions `config.image.resizeOptions`} for the standalone buttons,
-				* you have to choose a valid icon token for each option.
-				*
-				* See all valid options described in the
-				* {@link module:image/imageresize/imageresizeui~ImageResizeOption plugin configuration}.
-				* @error imageresizeui-missing-icon
-				* @param {module:image/imageresize/imageresizeui~ImageResizeOption} option Invalid image resize option.
+				 * Setting {@link module:image/image~ImageConfig#resizeOptions `config.image.resizeOptions`} for the standalone buttons,
+				 * you have to choose a valid icon token for each option.
+				 *
+				 * See all valid options described in the
+				 * {@link module:image/imageresize/imageresizeui~ImageResizeOption plugin configuration}.
+				 * @error imageresizeui-missing-icon
+				 * @param {module:image/imageresize/imageresizeui~ImageResizeOption} option Invalid image resize option.
 				*/
 				throw new CKEditorError(
 					'imageresizeui-missing-icon: ' +
@@ -127,7 +127,7 @@ export default class ImageResizeUI extends Plugin {
 			}
 
 			button.set( {
-				// Uses `label` property for setting the more verbose text (from tooltip) for ARIA purpose.
+				// Use the `label` property for a verbose description for ARIA purposes.
 				label: labelText,
 				icon: RESIZE_ICONS[ icon ],
 				tooltip: labelText,
@@ -154,7 +154,7 @@ export default class ImageResizeUI extends Plugin {
 	 * @private
 	 * @param {Array.<module:image/imageresize/imageresizeui~ImageResizeOption>} options An array of the configured options.
 	 */
-	_addDropdown( options ) {
+	_registerImageResizeDropdown( options ) {
 		const editor = this.editor;
 		const t = editor.t;
 		const originalSizeOption = options.find( option => !option.value );
@@ -176,7 +176,11 @@ export default class ImageResizeUI extends Plugin {
 			} );
 
 			dropdownButton.bind( 'label' ).to( command, 'value', commandValue => {
-				return commandValue && commandValue.width || this._createLabel( originalSizeOption );
+				if ( commandValue && commandValue.width ) {
+					return commandValue.width;
+				} else {
+					return this._createLabel( originalSizeOption );
+				}
 			} );
 			dropdownView.bind( 'isOn' ).to( command );
 			dropdownView.bind( 'isEnabled' ).to( this );
@@ -230,8 +234,8 @@ export default class ImageResizeUI extends Plugin {
 	 * @private
 	 * @param {Array.<module:image/imageresize/imageresizeui~ImageResizeOption>} options The resize options.
 	 * @param {module:image/imageresize/imageresizecommand~ImageResizeCommand} command A resize image command.
-	 * @returns {module:utils/collection~Collection} definitions
-	*/
+	 * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>} Dropdown item definitions.
+	 */
 	_getResizeDropdownListItemDefinitions( options, command ) {
 		const itemDefinitions = new Collection();
 
