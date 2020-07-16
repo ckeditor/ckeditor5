@@ -58,18 +58,21 @@ export default class ImageResize extends Plugin {
  */
 
 /**
- * The resize options.
+ * The image resize options.
  *
- * Each option should have 2 properties:
+ * Each option should have at least these two properties:
+ *
  * * name: The name of the UI component registered in the global
  * {@link module:core/editor/editorui~EditorUI#componentFactory component factory} of the editor,
  * representing the button a user can click to change the size of an image,
  * * value: An actual image width applied when a user clicks the mentioned button
  * ({@link module:image/imageresize/imageresizecommand~ImageResizeCommand} gets executed).
- * The value property is combined with the {@link module:image/image~ImageConfig#resizeUnit `config.image.resizeUnit`} (`%` by default),
- * e.g.: `value: '50'` and `resizeUnit: '%'` give `50%`.
+ * The value property is combined with the {@link module:image/image~ImageConfig#resizeUnit `config.image.resizeUnit`} (`%` by default).
+ * For instance: `value: '50'` and `resizeUnit: '%'` will render as `'50%'` in the UI.
  *
- * **Reset size option:** If you want to set an option that will reset image to its original size, you need to pass a `null` value
+ * **Resetting the image size**
+ *
+ * If you want to set an option that will reset image to its original size, you need to pass a `null` value
  * to one of the options. The `:original` token is not mandatory, you can call it anything you wish, but it must reflect
  * in the standalone buttons configuration for the image toolbar.
  *
@@ -94,11 +97,13 @@ export default class ImageResize extends Plugin {
  *			.then( ... )
  *			.catch( ... );
  *
- * With resize options defined, you can decide whether you want to display them as a dropdown or as standalone buttons.
- * For the dropdown, you need to pass only the `imageResize` token to the `image.toolbar`.
- * The dropdown contains all defined options by default:
+ * **Resizing images using a dropdown**
  *
- *			ClassicEditor
+ * With resize options defined, you can decide whether you want to display them as a dropdown or as standalone buttons.
+ * For the dropdown, you need to pass only the `imageResize` token to the
+{@link module:image/image~ImageConfig#toolbar `config.image.toolbar`}. The dropdown contains all defined options by default:
+ *
+ *		ClassicEditor
  *			.create( editorElement, {
  *				image: {
  *					resizeUnit: "%",
@@ -120,10 +125,13 @@ export default class ImageResize extends Plugin {
  *			.then( ... )
  *			.catch( ... );
  *
- * If you want to have separate buttons for {@link module:image/imageresize/imageresizeui~ImageResizeOption each option},
- * pass their names to the `image.toolbar` instead. Please keep in mind that this time **you should define additional `icon` property**:
+ * **Resizing images using individual buttons**
  *
- *			ClassicEditor
+ * If you want to have separate buttons for {@link module:image/imageresize/imageresizeui~ImageResizeOption each option},
+ * pass their names to the {@link module:image/image~ImageConfig#toolbar `config.image.toolbar`} instead. Please keep in mind
+ * that this time **you must define the additional `icon` property**:
+ *
+ *		ClassicEditor
  *			.create( editorElement, {
  *				image: {
  *					resizeUnit: "%",
@@ -153,9 +161,12 @@ export default class ImageResize extends Plugin {
  *			.then( ... )
  *			.catch( ... );
  *
- * **User-defined labels**: You can also set your own labels for each option. To do that, please add `label` property like
- * in the example below. With the **dropdown**, the labels will be shown on the list of all options when you open the dropdown.
- * With the **standalone buttons**, the labels will be shown only in tooltips when you hover over the icons.
+ * **Customizing resize button labels**
+ *
+ * You can set your own label for each resize button. To do that, add the `label` property like in the example below.
+ *
+ * * When using the **dropdown**, the labels are displayed on the list of all options when you open the dropdown.
+ * * When using **standalone buttons**, the labels will are displayed as tooltips when a user hovers over the button.
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -165,25 +176,24 @@ export default class ImageResize extends Plugin {
  *						name: 'imageResize:original',
  *						value: null,
  *						label: 'Original size'
- *						// you should add `icon` property if you're configuring the standalone buttons.
+ *						// Note: add the "icon" property if you're configuring a standalone button.
  *					},
  *					{
  *						name: 'imageResize:50',
  *						value: '50',
  *						label: 'Medium size'
- *						// you should add `icon` property if you're configuring the standalone buttons.
+ *						// Note: add the "icon" property if you're configuring a standalone button.
  *					},
  *					{
  *						name: 'imageResize:75',
  *						value: '75',
  *						label: 'Large size'
- *						// you should add `icon` property if you're configuring the standalone buttons.
+ *						// Note: add the "icon" property if you're configuring a standalone button.
  *					} ]
  *				}
  *			} )
  *			.then( ... )
  *			.catch( ... );
- *
  *
  * @member {Array.<module:image/imageresize/imageresizeui~ImageResizeOption>} module:image/image~ImageConfig#resizeOptions
  */

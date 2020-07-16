@@ -271,12 +271,6 @@ describe( 'ImageResizeUI', () => {
 			expect( buttonView50.tooltip ).to.equal( 'Resize image to 50%' );
 		} );
 
-		it( 'should have `commandValue` equal "50%"', () => {
-			const buttonView = editor.ui.componentFactory.create( 'imageResize:50' );
-
-			expect( buttonView.commandValue ).to.equal( '50%' );
-		} );
-
 		it( 'should execute `imageResize` command with "50%" value', () => {
 			const buttonView = editor.ui.componentFactory.create( 'imageResize:50' );
 			const command = editor.commands.get( 'imageResize' );
@@ -316,8 +310,8 @@ describe( 'ImageResizeUI', () => {
 					}
 				} );
 
-			const errMsg = 'The resize option "imageResize:noicon" misses an `icon` property ' +
-				'or its value doesn\'t match the available options.';
+			const errMsg = 'The resize option "imageResize:noicon" misses the "icon" property ' +
+				'or the property value doesn\'t match any of available icons.';
 
 			expectToThrowCKEditorError( () => {
 				editor.ui.componentFactory.create( 'imageResize:noicon' );
