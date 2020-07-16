@@ -137,7 +137,16 @@ export default class UpcastDispatcher {
 		 * @type {Map.<module:engine/model/element~Element,Array.<module:engine/model/element~Element>>}
 		 */
 		this._splitParts = new Map();
-		this._foooo = new Map(); // WeakMap?
+
+		/**
+		 * List of cursor parent elements that were created during splitting.
+		 *
+		 * After conversion process the list is cleared.
+		 *
+		 * @private
+		 * @type {Map.<module:engine/model/element~Element,Array.<module:engine/model/element~Element>>}
+		 */
+		this._cursorParents = new Map();
 
 		/**
 		 * Position in the temporary structure where the converted content is inserted. The structure reflect the context of
@@ -156,13 +165,12 @@ export default class UpcastDispatcher {
 		 */
 		this.conversionApi = Object.assign( {}, conversionApi );
 
-		// `convertItem`, `convertChildren` and `splitToAllowedParent` are bound to this `UpcastDispatcher`
-		// instance and set on `conversionApi`. This way only a part of `UpcastDispatcher` API is exposed.
+		// The below methods are bound to this `UpcastDispatcher` instance and set on `conversionApi`.
+		// This way only a part of `UpcastDispatcher` API is exposed.
 		this.conversionApi.convertItem = this._convertItem.bind( this );
 		this.conversionApi.convertChildren = this._convertChildren.bind( this );
 		this.conversionApi.splitToAllowedParent = this._splitToAllowedParent.bind( this );
 		this.conversionApi.getSplitParts = this._getSplitParts.bind( this );
-		this.conversionApi.getCursorParent = this._getCursorParent.bind( this );
 		this.conversionApi.safeInsert = this._safeInsert.bind( this );
 		this.conversionApi.updateConversionResult = this._updateConversionResult.bind( this );
 	}
@@ -221,8 +229,9 @@ export default class UpcastDispatcher {
 		// Clear context position.
 		this._modelCursor = null;
 
-		// Clear split elements lists.
+		// Clear split elements & parents lists.
 		this._splitParts.clear();
+		this._cursorParents.clear();
 
 		// Clear conversion API.
 		this.conversionApi.writer = null;
@@ -284,6 +293,10 @@ export default class UpcastDispatcher {
 		return { modelRange, modelCursor: nextModelCursor };
 	}
 
+	/**
+	 * @private
+	 * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#safeInsert
+	 */
 	_safeInsert( modelElement, position ) {
 		// Find allowed parent for element that we are going to insert.
 		// If current parent does not allow to insert element but one of the ancestors does
@@ -301,6 +314,10 @@ export default class UpcastDispatcher {
 		return true;
 	}
 
+	/**
+	 * @private
+	 * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#updateConversionResult
+	 */
 	_updateConversionResult( modelElement, data ) {
 		const parts = this._getSplitParts( modelElement );
 
@@ -312,7 +329,7 @@ export default class UpcastDispatcher {
 			writer.createPositionAfter( parts[ parts.length - 1 ] )
 		);
 
-		const savedCursorParent = this._getCursorParent( modelElement );
+		const savedCursorParent = this._cursorParents.get( modelElement );
 
 		// Now we need to check where the `modelCursor` should be.
 		if ( savedCursorParent ) {
@@ -384,20 +401,12 @@ export default class UpcastDispatcher {
 		}
 
 		const cursorParent = splitResult.range.end.parent;
-		this._registerCursorParent( node, cursorParent );
+		this._cursorParents.set( node, cursorParent );
 
 		return {
 			position: splitResult.position,
 			cursorParent
 		};
-	}
-
-	_registerCursorParent( original, cursorParent ) {
-		this._foooo.set( original, cursorParent );
-	}
-
-	_getCursorParent( original ) {
-		return this._foooo.get( original );
 	}
 
 	/**
