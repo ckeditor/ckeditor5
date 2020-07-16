@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableUtils from '../tableutils';
 import { getSelectedTableCells, isSelectionRectangular } from '../utils/selection';
-import { findAncestor, updateNumericAttribute } from '../utils/common';
+import { updateNumericAttribute } from '../utils/common';
 import { removeEmptyRowsColumns } from '../utils/structure';
 
 /**
@@ -48,11 +48,6 @@ export default class MergeCellsCommand extends Command {
 			// All cells will be merged into the first one.
 			const firstTableCell = selectedTableCells.shift();
 
-			// Set the selection in cell that other cells are being merged to prevent model-selection-range-intersects error in undo.
-			// See https://github.com/ckeditor/ckeditor5/issues/6634.
-			// May be fixed by: https://github.com/ckeditor/ckeditor5/issues/6639.
-			writer.setSelection( firstTableCell, 0 );
-
 			// Update target cell dimensions.
 			const { mergeWidth, mergeHeight } = getMergeDimensions( firstTableCell, selectedTableCells, tableUtils );
 			updateNumericAttribute( 'colspan', mergeWidth, firstTableCell, writer );
@@ -62,10 +57,10 @@ export default class MergeCellsCommand extends Command {
 				mergeTableCells( tableCell, firstTableCell, writer );
 			}
 
-			const table = findAncestor( 'table', firstTableCell );
+			const table = firstTableCell.findAncestor( 'table' );
 
 			// Remove rows and columns that become empty (have no anchored cells).
-			removeEmptyRowsColumns( table, tableUtils, writer.batch );
+			removeEmptyRowsColumns( table, tableUtils );
 
 			writer.setSelection( firstTableCell, 'in' );
 		} );

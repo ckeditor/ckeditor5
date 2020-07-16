@@ -51,8 +51,15 @@ export default class ImageResizeCommand extends Command {
 		const model = this.editor.model;
 		const imageElement = model.document.selection.getSelectedElement();
 
-		model.change( writer => {
-			writer.setAttribute( 'width', options.width, imageElement );
-		} );
+		this.value = {
+			width: options.width,
+			height: null
+		};
+
+		if ( imageElement ) {
+			model.change( writer => {
+				writer.setAttribute( 'width', options.width, imageElement );
+			} );
+		}
 	}
 }

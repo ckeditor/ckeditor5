@@ -352,6 +352,22 @@ export default class Position {
 	}
 
 	/**
+	 * Returns the parent element of the given name. Returns null if the position is not inside the desired parent.
+	 *
+	 * @param {String} parentName The name of the parent element to find.
+	 * @returns {module:engine/model/element~Element|null}
+	 */
+	findAncestor( parentName ) {
+		const parent = this.parent;
+
+		if ( parent.is( 'element' ) ) {
+			return parent.findAncestor( parentName, { includeSelf: true } );
+		}
+
+		return null;
+	}
+
+	/**
 	 * Returns the slice of two position {@link #path paths} which is identical. The {@link #root roots}
 	 * of these two paths must be identical.
 	 *

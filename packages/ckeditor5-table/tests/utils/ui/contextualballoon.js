@@ -16,7 +16,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { centeredBalloonPositionForLongWidgets } from '@ckeditor/ckeditor5-widget/src/utils';
 import { modelTable } from '../../_utils/utils';
 import { getTableCellsContainingSelection } from '../../../src/utils/selection';
-import { findAncestor } from '../../../src/utils/common';
 import { getBalloonCellPositionData, repositionContextualBalloon } from '../../../src/utils/ui/contextualballoon';
 
 describe( 'table utils', () => {
@@ -117,7 +116,7 @@ describe( 'table utils', () => {
 						'</tableRow></table>' );
 					repositionContextualBalloon( editor, 'table' );
 
-					const modelTable = findAncestor( 'table', editor.model.document.selection.getFirstPosition() );
+					const modelTable = editor.model.document.selection.getFirstPosition().findAncestor( 'table' );
 					const viewTable = editor.editing.mapper.toViewElement( modelTable );
 
 					sinon.assert.calledWithExactly( spy, {
