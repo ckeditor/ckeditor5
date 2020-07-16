@@ -60,13 +60,14 @@ export default class ImageResize extends Plugin {
 /**
  * The resize options.
  *
- * Each option should have its own `name`, which is a component name definition that will be
- * used in the {@link module:image/imageresize/imageresizeui~ImageResizeUI} plugin and `value` which will
- * be applied to the image's width during the {@link module:image/imageresize/imageresizecommand~ImageResizeCommand} execution.
- *
- * The value property is combined with the `resizeUnit` (`%` by default), eg: `value: '50'` and `resizeUnit: '%'` is `50%`.
- *
- * **NOTE:** There is additional mandatory property — `icon`, but it's necessary only for setting the standalone buttons configuration.
+ * Each option should have 2 properties:
+ * * name: The name of the UI component registered in the global
+ * {@link module:core/editor/editorui~EditorUI#componentFactory component factory} of the editor,
+ * representing the button a user can click to change the size of an image,
+ * * value: An actual image width applied when a user clicks the mentioned button
+ * ({@link module:image/imageresize/imageresizecommand~ImageResizeCommand} gets executed).
+ * The value property is combined with the {@link module:image/image~ImageConfig#resizeUnit `config.image.resizeUnit`} (`%` by default),
+ * e.g.: `value: '50'` and `resizeUnit: '%'` give `50%`.
  *
  * **Reset size option:** If you want to set an option that will reset image to its original size, you need to pass a `null` value
  * to one of the options. The `:original` token is not mandatory, you can call it anything you wish, but it must reflect
@@ -79,17 +80,14 @@ export default class ImageResize extends Plugin {
  *					resizeOptions: [ {
  *						name: 'imageResize:original',
  *						value: null
- *						// you should add `icon` property if you're configuring the standalone buttons.
  *					},
  *					{
  *						name: 'imageResize:50',
  *						value: '50'
- *						// you should add `icon` property if you're configuring the standalone buttons.
  *					},
  *					{
  *						name: 'imageResize:75',
  *						value: '75'
- *						// you should add `icon` property if you're configuring the standalone buttons.
  *					} ]
  *				}
  *			} )
@@ -122,8 +120,8 @@ export default class ImageResize extends Plugin {
  *			.then( ... )
  *			.catch( ... );
  *
- * If you want to have separate buttons for each option, pass their names to the `image.toolbar` instead. Please keep in
- * mind that this time **you should define additional `icon` property**:
+ * If you want to have separate buttons for {@link module:image/imageresize/imageresizeui~ImageResizeOption each option},
+ * pass their names to the `image.toolbar` instead. Please keep in mind that this time **you should define additional `icon` property**:
  *
  *			ClassicEditor
  *			.create( editorElement, {
@@ -167,16 +165,19 @@ export default class ImageResize extends Plugin {
  *						name: 'imageResize:original',
  *						value: null,
  *						label: 'Original size'
+ *						// you should add `icon` property if you're configuring the standalone buttons.
  *					},
  *					{
  *						name: 'imageResize:50',
  *						value: '50',
  *						label: 'Medium size'
+ *						// you should add `icon` property if you're configuring the standalone buttons.
  *					},
  *					{
  *						name: 'imageResize:75',
  *						value: '75',
  *						label: 'Large size'
+ *						// you should add `icon` property if you're configuring the standalone buttons.
  *					} ]
  *				}
  *			} )
