@@ -3,13 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console */
-
 import Node from '../../src/view/node';
 import Text from '../../src/view/text';
 import Document from '../../src/view/document';
 import { StylesProcessor } from '../../src/view/stylesmap';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'Text', () => {
 	let document;
@@ -31,8 +28,6 @@ describe( 'Text', () => {
 	describe( 'is()', () => {
 		let text;
 
-		testUtils.createSinonSandbox();
-
 		before( () => {
 			text = new Text( document, 'foo' );
 		} );
@@ -42,6 +37,8 @@ describe( 'Text', () => {
 			expect( text.is( 'view:node' ) ).to.be.true;
 			expect( text.is( '$text' ) ).to.be.true;
 			expect( text.is( 'view:$text' ) ).to.be.true;
+			expect( text.is( 'text' ) ).to.be.true;
+			expect( text.is( 'view:text' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
@@ -57,17 +54,6 @@ describe( 'Text', () => {
 			expect( text.is( 'documentFragment' ) ).to.be.false;
 			expect( text.is( 'model:$text' ) ).to.be.false;
 			expect( text.is( 'model:node' ) ).to.be.false;
-		} );
-
-		it( 'should print warning for legacy "text" argument', () => {
-			testUtils.sinon.stub( console, 'warn' );
-
-			expect( text.is( 'text' ) ).to.be.false;
-
-			sinon.assert.calledOnce( console.warn );
-			sinon.assert.calledWithExactly( console.warn,
-				sinon.match( /^view-text-node-deprecated-is-text-argument/ )
-			);
 		} );
 	} );
 

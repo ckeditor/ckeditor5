@@ -7,9 +7,7 @@
  * @module engine/view/textproxy
  */
 
-/* global console */
-
-import CKEditorError, { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * TextProxy is a wrapper for substring of {@link module:engine/view/text~Text}. Instance of this class is created by
@@ -154,26 +152,16 @@ export default class TextProxy {
 	 *
 	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *
+	 * **Note:** Until version 20.0.0 this method wasn't accepting `'$textProxy'` type. The legacy `'textProxy'` type is still
+	 * accepted for backward compatibility.
+	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		if ( type === 'textProxy' || type === 'model:textProxy' ) {
-			/**
-			 * Usage of `node.is( 'textProxy' )` was replaced in CKEditor 21.0.0 with `node.is( '$textProxy' )`
-			 * due to conflicts with element's name. See {@link module:engine/model/textproxy~TextProxy}.
-			 *
-			 * @error view-textProxy-deprecated-is-textProxy-argument
-			 */
-			console.warn(
-				attachLinkToDocumentation(
-					'view-textProxy-deprecated-is-textProxy-argument: ' +
-					'"textProxy" is deprecated value for testing TextProxy items, use "$textProxy" instead.'
-				)
-			);
-		}
-
-		return type === '$textProxy' || type === 'view:$textProxy';
+		return type === '$textProxy' || type === 'view:$textProxy' ||
+			// This are legacy values kept for backward compatibility.
+			type === 'textProxy' || type === 'view:textProxy';
 	}
 
 	/**

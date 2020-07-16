@@ -7,10 +7,7 @@
  * @module engine/view/text
  */
 
-/* global console */
-
 import Node from './node';
-import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Tree view text node.
@@ -59,26 +56,16 @@ export default class Text extends Node {
 	 *
 	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *
+	 * **Note:** Until version 20.0.0 this method wasn't accepting `'$text'` type. The legacy `'text'` type is still
+	 * accepted for backward compatibility.
+	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		if ( type === 'text' || type === 'model:text' ) {
-			/**
-			 * Usage of `node.is( 'text' )` was replaced in CKEditor 21.0.0 with `node.is( '$text' )`
-			 * due to conflicts with element's name. See {@link module:engine/view/text~Text}.
-			 *
-			 * @error view-text-node-deprecated-is-text-argument
-			 */
-			console.warn(
-				attachLinkToDocumentation(
-					'view-text-node-deprecated-is-text-argument: ' +
-					'"text" is deprecated value for testing text nodes, use "$text" instead.'
-				)
-			);
-		}
-
 		return type === '$text' || type === 'view:$text' ||
+			// This are legacy values kept for backward compatibility.
+			type === 'text' || type === 'view:text' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 			type === 'node' || type === 'view:node';
 	}

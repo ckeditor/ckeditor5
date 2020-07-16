@@ -7,10 +7,7 @@
  * @module engine/model/text
  */
 
-/* global console */
-
 import Node from './node';
-import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-utils/utils' );
 
@@ -80,27 +77,17 @@ export default class Text extends Node {
 	 *
 	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
 	 *
+	 * **Note:** Until version 20.0.0 this method wasn't accepting `'$text'` type. The legacy `'text'` type is still
+	 * accepted for backward compatibility.
+	 *
 	 * @param {String} type Type to check when `name` parameter is present.
 	 * Otherwise, it acts like the `name` parameter.
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		if ( type === 'text' || type === 'model:text' ) {
-			/**
-			 * Usage of `node.is( 'text' )` was replaced in CKEditor 21.0.0 with `node.is( '$text' )`
-			 * due to conflicts with element's name. See {@link module:engine/model/text~Text}.
-			 *
-			 * @error model-text-node-deprecated-is-text-argument
-			 */
-			console.warn(
-				attachLinkToDocumentation(
-					'model-text-node-deprecated-is-text-argument: ' +
-					'"text" is deprecated value for testing text nodes, use "$text" instead.'
-				)
-			);
-		}
-
 		return type === '$text' || type === 'model:$text' ||
+			// This are legacy values kept for backward compatibility.
+			type === 'text' || type === 'model:text' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 			type === 'node' || type === 'model:node';
 	}
