@@ -601,7 +601,8 @@ function upcastDataToMarker( config ) {
 		dispatcher.on( 'element:' + config.view + '-start', converterStart, { priority: config.converterPriority || 'normal' } );
 		dispatcher.on( 'element:' + config.view + '-end', converterEnd, { priority: config.converterPriority || 'normal' } );
 
-		dispatcher.on( 'element', upcastAttributeToMarker( config ), { priority: config.converterPriority || 'normal' } );
+		// This is attribute upcast so it has to be done after the element upcast.
+		dispatcher.on( 'element', upcastAttributeToMarker( config ), { priority: config.converterPriority || 'low' } );
 	};
 }
 
