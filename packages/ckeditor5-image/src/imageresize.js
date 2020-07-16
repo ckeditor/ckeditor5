@@ -129,7 +129,8 @@ export default class ImageResize extends Plugin {
  *
  * If you want to have separate buttons for {@link module:image/imageresize/imageresizeui~ImageResizeOption each option},
  * pass their names to the {@link module:image/image~ImageConfig#toolbar `config.image.toolbar`} instead. Please keep in mind
- * that this time **you must define the additional `icon` property**:
+ * that this time **you must define the additional
+ * {@link module:image/imageresize/imageresizeui~ImageResizeOption `icon` property}**:
  *
  *		ClassicEditor
  *			.create( editorElement, {
