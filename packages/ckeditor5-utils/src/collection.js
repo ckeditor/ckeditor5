@@ -179,7 +179,7 @@ export default class Collection {
 	 * @param {Number} [index] The position of the item in the collection. The item
 	 * is pushed to the collection when `index` not specified.
 	 * @fires add
-	 * @fires addBatch
+	 * @fires change
 	 */
 	add( item, index ) {
 		return this.addMany( [ item ], index );
@@ -194,7 +194,7 @@ export default class Collection {
 	 * @param {Iterable.<Object>} item
 	 * @param {Number} [index] The position of the insertion. Items will be appended if no `index` is specified.
 	 * @fires add
-	 * @fires addBatch
+	 * @fires change
 	 */
 	addMany( items, index ) {
 		if ( index === undefined ) {
@@ -221,7 +221,11 @@ export default class Collection {
 			this.fire( 'add', item, currentItemIndex );
 		}
 
-		this.fire( 'addBatch', items, index );
+		this.fire( 'change', {
+			added: items,
+			removed: [],
+			index
+		} );
 
 		return this;
 	}
@@ -700,6 +704,15 @@ export default class Collection {
 	 *
 	 * @event add
 	 * @param {Object} item The added item.
+	 */
+
+	/**
+	 * Fired when the collection was changed due to adding or removing items.
+	 *
+	 * @event change
+	 * @param {Iterable.<Object>} added List of added items.
+	 * @param {Iterable.<Object>} removed List of removed items.
+	 * @param {Number} index Index where the addition or removal occurred.
 	 */
 
 	/**

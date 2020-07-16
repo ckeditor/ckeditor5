@@ -383,29 +383,39 @@ describe( 'Collection', () => {
 			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item, 1 );
 		} );
 
-		it( 'should fire the "addBatch" event', () => {
+		it( 'should fire the "change" event', () => {
 			const spy = sinon.spy();
 			const items = [ {}, {} ];
 
-			collection.on( 'addBatch', spy );
+			collection.on( 'change', spy );
 
 			collection.addMany( items );
 
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), items, 0 );
+			expect( spy.callCount, 'call count' ).to.equal( 1 );
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.eql( {
+				added: items,
+				removed: [],
+				index: 0
+			} );
 		} );
 
-		it( 'should fire the "addBatch" event with the index argument', () => {
+		it( 'should fire the "change" event with the index argument', () => {
 			const spy = sinon.spy();
 			const firstBatch = [ {}, {} ];
 			const secondBatch = [ {}, {} ];
 
 			collection.addMany( firstBatch );
 
-			collection.on( 'addBatch', spy );
+			collection.on( 'change', spy );
 
 			collection.addMany( secondBatch, 1 );
 
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), secondBatch, 1 );
+			expect( spy.callCount, 'call count' ).to.equal( 1 );
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.eql( {
+				added: secondBatch,
+				removed: [],
+				index: 1
+			} );
 		} );
 
 		it( 'should support an optional index argument', () => {
