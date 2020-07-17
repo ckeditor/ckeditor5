@@ -199,9 +199,7 @@ export default class Collection {
 	addMany( items, index ) {
 		if ( index === undefined ) {
 			index = this._items.length;
-		}
-
-		if ( index > this._items.length || index < 0 ) {
+		} else if ( index > this._items.length || index < 0 ) {
 			/**
 			 * The index number has invalid value.
 			 *
@@ -213,8 +211,8 @@ export default class Collection {
 		for ( let offset = 0; offset < items.length; offset++ ) {
 			const item = items[ offset ];
 			const itemId = this._getItemIdBeforeAdding( item );
-
 			const currentItemIndex = index + offset;
+
 			this._items.splice( currentItemIndex, 0, item );
 			this._itemMap.set( itemId, item );
 
@@ -355,7 +353,7 @@ export default class Collection {
 			this._bindToCollection = null;
 		}
 
-		const removedItems = [ ...this._items ];
+		const removedItems = Array.from( this._items );
 
 		while ( this.length ) {
 			this._remove( 0, true );
@@ -664,7 +662,7 @@ export default class Collection {
 	 *
 	 * @private
 	 * @param {Object} subject The item to remove, its id or index in the collection.
-	 * @param {Boolean} [skipChange] If `true` no change event is fired.
+	 * @param {Boolean} [skipChange] If `true` no {@link #event:change} event is fired.
 	 * @returns {Object} The removed item.
 	 * @fires remove
 	 * @fires change
