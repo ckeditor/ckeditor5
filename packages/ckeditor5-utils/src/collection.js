@@ -352,7 +352,7 @@ export default class Collection {
 			this._bindToCollection = null;
 		}
 
-		const removedItems = this._items.concat( [] );
+		const removedItems = [ ...this._items ];
 
 		while ( this.length ) {
 			this._remove( 0, true );
