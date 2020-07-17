@@ -62,12 +62,12 @@ export default class BlockQuoteEditing extends Plugin {
 						continue;
 					}
 
-					if ( element.is( 'blockQuote' ) && element.isEmpty ) {
+					if ( element.is( 'element', 'blockQuote' ) && element.isEmpty ) {
 						// Added an empty blockQuote - remove it.
 						writer.remove( element );
 
 						return true;
-					} else if ( element.is( 'blockQuote' ) && !schema.checkChild( entry.position, element ) ) {
+					} else if ( element.is( 'element', 'blockQuote' ) && !schema.checkChild( entry.position, element ) ) {
 						// Added a blockQuote in incorrect place - most likely inside another blockQuote. Unwrap it
 						// so the content inside is not lost.
 						writer.unwrap( element );
@@ -78,17 +78,19 @@ export default class BlockQuoteEditing extends Plugin {
 						const range = writer.createRangeIn( element );
 
 						for ( const child of range.getItems() ) {
-							if ( child.is( 'blockQuote' ) && !schema.checkChild( writer.createPositionBefore( child ), child ) ) {
-								writer.unwrap( child );
+							if ( child.is( 'element', 'blockQuote' ) ) {
+								if ( !schema.checkChild( writer.createPositionBefore( child ), child ) ) {
+									writer.unwrap( child );
 
-								return true;
+									return true;
+								}
 							}
 						}
 					}
 				} else if ( entry.type == 'remove' ) {
 					const parent = entry.position.parent;
 
-					if ( parent.is( 'blockQuote' ) && parent.isEmpty ) {
+					if ( parent.is( 'element', 'blockQuote' ) && parent.isEmpty ) {
 						// Something got removed and now blockQuote is empty. Remove the blockQuote as well.
 						writer.remove( parent );
 

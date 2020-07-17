@@ -65,7 +65,7 @@ export function getSelectedImageWidget( selection ) {
  * @returns {Boolean}
  */
 export function isImage( modelElement ) {
-	return !!modelElement && modelElement.is( 'image' );
+	return !!modelElement && modelElement.is( 'element', 'image' );
 }
 
 /**
@@ -129,7 +129,7 @@ export function getViewImgFromWidget( figureView ) {
 		}
 	}
 
-	return figureChildren.find( viewChild => viewChild.is( 'img' ) );
+	return figureChildren.find( viewChild => viewChild.is( 'element', 'img' ) );
 }
 
 // Checks if image is allowed by schema in optimal insertion parent.
@@ -152,7 +152,7 @@ function checkSelectionOnObject( selection, schema ) {
 
 // Checks if selection is placed in other image (ie. in caption).
 function isInOtherImage( selection ) {
-	return [ ...selection.focus.getAncestors() ].every( ancestor => !ancestor.is( 'image' ) );
+	return [ ...selection.focus.getAncestors() ].every( ancestor => !ancestor.is( 'element', 'image' ) );
 }
 
 // Returns a node that will be used to insert image with `model.insertContent` to check if image can be placed there.

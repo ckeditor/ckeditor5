@@ -89,11 +89,11 @@ export function unwrapParagraphInListItem( documentFragment, writer ) {
 	for ( const value of writer.createRangeIn( documentFragment ) ) {
 		const element = value.item;
 
-		if ( element.is( 'li' ) ) {
+		if ( element.is( 'element', 'li' ) ) {
 			// Google Docs allows on single paragraph inside LI.
 			const firstChild = element.getChild( 0 );
 
-			if ( firstChild.is( 'p' ) ) {
+			if ( firstChild.is( 'element', 'p' ) ) {
 				writer.unwrapElement( firstChild );
 			}
 		}
@@ -295,7 +295,7 @@ function isNewListNeeded( previousItem, currentItem ) {
 }
 
 function isList( element ) {
-	return element.is( 'ol' ) || element.is( 'ul' );
+	return element.is( 'element', 'ol' ) || element.is( 'element', 'ul' );
 }
 
 // Calculates the indentation difference between two given list items (based on indent attribute

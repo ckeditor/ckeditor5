@@ -128,7 +128,7 @@ function fixTableCellContent( tableCell, writer ) {
 // @param {Object} differ change entry
 // @returns {Boolean}
 function checkTableCellChange( entry ) {
-	if ( !entry.position || !entry.position.parent.is( 'tableCell' ) ) {
+	if ( !entry.position || !entry.position.parent.is( 'element', 'tableCell' ) ) {
 		return false;
 	}
 

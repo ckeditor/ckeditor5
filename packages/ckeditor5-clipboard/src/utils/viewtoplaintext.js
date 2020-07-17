@@ -24,7 +24,7 @@ export default function viewToPlainText( viewItem ) {
 	if ( viewItem.is( '$text' ) || viewItem.is( '$textProxy' ) ) {
 		// If item is `Text` or `TextProxy` simple take its text data.
 		text = viewItem.data;
-	} else if ( viewItem.is( 'img' ) && viewItem.hasAttribute( 'alt' ) ) {
+	} else if ( viewItem.is( 'element', 'img' ) && viewItem.hasAttribute( 'alt' ) ) {
 		// Special case for images - use alt attribute if it is provided.
 		text = viewItem.getAttribute( 'alt' );
 	} else {

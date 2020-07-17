@@ -236,7 +236,7 @@ export default class LinkEditing extends Plugin {
 				// There might be multiple `a` elements in the `viewRange`, for example, when the `a` element is
 				// broken by a UIElement.
 				for ( const item of viewRange.getItems() ) {
-					if ( item.is( 'a' ) && !item.hasClass( HIGHLIGHT_CLASS ) ) {
+					if ( item.is( 'element', 'a' ) && !item.hasClass( HIGHLIGHT_CLASS ) ) {
 						writer.addClass( HIGHLIGHT_CLASS, item );
 						highlightedLinks.add( item );
 						changed = true;

@@ -132,7 +132,10 @@ class MutationHandler {
 		const lastDomChild = modelFromDomChildren[ modelFromDomChildren.length - 1 ];
 		const lastCurrentChild = currentModelChildren[ currentModelChildren.length - 1 ];
 
-		if ( lastDomChild && lastDomChild.is( 'softBreak' ) && lastCurrentChild && !lastCurrentChild.is( 'softBreak' ) ) {
+		const isLastDomChildSoftBreak = lastDomChild && lastDomChild.is( 'element', 'softBreak' );
+		const isLastCurrentChildSoftBreak = lastCurrentChild && !lastCurrentChild.is( 'element', 'softBreak' );
+
+		if ( isLastDomChildSoftBreak && isLastCurrentChildSoftBreak ) {
 			modelFromDomChildren.pop();
 		}
 

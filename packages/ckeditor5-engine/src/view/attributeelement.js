@@ -145,9 +145,9 @@ export default class AttributeElement extends Element {
 	 * Assuming that the object being checked is an attribute element, you can also check its
 	 * {@link module:engine/view/attributeelement~AttributeElement#name name}:
 	 *
-	 *		attributeElement.is( 'b' ); // -> true if this is a bold element
+	 *		attributeElement.is( 'element', 'b' ); // -> true if this is a bold element
 	 *		attributeElement.is( 'attributeElement', 'b' ); // -> same as above
-	 *		text.is( 'b' ); -> false
+	 *		text.is( 'element', 'b' ); -> false
 	 *
 	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *

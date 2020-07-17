@@ -103,14 +103,14 @@ describe( 'Element', () => {
 			expect( el.is( 'view:element' ) ).to.be.true;
 			expect( el.is( 'element', 'p' ) ).to.be.true;
 			expect( el.is( 'view:element', 'p' ) ).to.be.true;
-			expect( el.is( 'p' ) ).to.be.true;
+			expect( el.is( 'element', 'p' ) ).to.be.true;
 			expect( el.is( 'view:p' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
 			expect( el.is( 'element', 'span' ) ).to.be.false;
 			expect( el.is( 'view:element', 'span' ) ).to.be.false;
-			expect( el.is( 'span' ) ).to.be.false;
+			expect( el.is( 'element', 'span' ) ).to.be.false;
 			expect( el.is( 'view:span' ) ).to.be.false;
 			expect( el.is( '$text' ) ).to.be.false;
 			expect( el.is( 'view:$text' ) ).to.be.false;

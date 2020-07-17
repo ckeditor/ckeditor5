@@ -55,9 +55,9 @@ export default class RootEditableElement extends EditableElement {
 	 * Assuming that the object being checked is a root editable element, you can also check its
 	 * {@link module:engine/view/rooteditableelement~RootEditableElement#name name}:
 	 *
-	 *		rootEditableElement.is( 'div' ); // -> true if this is a div root editable element
+	 *		rootEditableElement.is( 'element', 'div' ); // -> true if this is a div root editable element
 	 *		rootEditableElement.is( 'rootElement', 'div' ); // -> same as above
-	 *		text.is( 'div' ); -> false
+	 *		text.is( 'element', 'div' ); -> false
 	 *
 	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *

@@ -44,7 +44,7 @@ describe( 'AttributeElement', () => {
 			expect( el.is( 'view:element' ) ).to.be.true;
 			expect( el.is( 'element', 'span' ) ).to.be.true;
 			expect( el.is( 'view:element', 'span' ) ).to.be.true;
-			expect( el.is( 'span' ) ).to.be.true;
+			expect( el.is( 'element', 'span' ) ).to.be.true;
 			expect( el.is( 'view:span' ) ).to.be.true;
 		} );
 
@@ -53,7 +53,7 @@ describe( 'AttributeElement', () => {
 			expect( el.is( 'view:attributeElement', 'p' ) ).to.be.false;
 			expect( el.is( 'element', 'p' ) ).to.be.false;
 			expect( el.is( 'view:element', 'p' ) ).to.be.false;
-			expect( el.is( 'p' ) ).to.be.false;
+			expect( el.is( 'element', 'p' ) ).to.be.false;
 			expect( el.is( 'view:p' ) ).to.be.false;
 			expect( el.is( '$text' ) ).to.be.false;
 			expect( el.is( '$textProxy' ) ).to.be.false;

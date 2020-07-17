@@ -71,9 +71,9 @@ export default class ContainerElement extends Element {
 	 * Assuming that the object being checked is a container element, you can also check its
 	 * {@link module:engine/view/containerelement~ContainerElement#name name}:
 	 *
-	 *		containerElement.is( 'div' ); // -> true if this is a div container element
+	 *		containerElement.is( 'element', 'div' ); // -> true if this is a div container element
 	 *		containerElement.is( 'contaienrElement', 'div' ); // -> same as above
-	 *		text.is( 'div' ); -> false
+	 *		text.is( 'element', 'div' ); -> false
 	 *
 	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *

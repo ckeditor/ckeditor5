@@ -1135,7 +1135,7 @@ export default class DomConverter {
 				return null;
 			}
 			// <br> found – it works like a block boundary, so do not scan further.
-			else if ( value.item.is( 'br' ) ) {
+			else if ( value.item.is( 'element', 'br' ) ) {
 				return null;
 			}
 			// Found a text node in the same container element.

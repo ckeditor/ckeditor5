@@ -28,7 +28,7 @@ export default class UnlinkCommand extends Command {
 
 		// A check for the `LinkImage` plugin. If the selection contains an image element, get values from the element.
 		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
-		if ( selectedElement && selectedElement.is( 'image' ) && model.schema.checkAttribute( 'image', 'linkHref' ) ) {
+		if ( selectedElement && selectedElement.is( 'element', 'image' ) && model.schema.checkAttribute( 'image', 'linkHref' ) ) {
 			this.isEnabled = model.schema.checkAttribute( selectedElement, 'linkHref' );
 		} else {
 			this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'linkHref' );

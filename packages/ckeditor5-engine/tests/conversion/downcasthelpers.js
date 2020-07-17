@@ -2277,7 +2277,7 @@ describe( 'downcast selection converters', () => {
 				for ( const range of selection.getRanges() ) {
 					const node = range.start.parent;
 
-					if ( !!node && node.is( 'td' ) ) {
+					if ( !!node && node.is( 'element', 'td' ) ) {
 						conversionApi.consumable.consume( selection, 'selection' );
 
 						const viewNode = conversionApi.mapper.toViewElement( node );

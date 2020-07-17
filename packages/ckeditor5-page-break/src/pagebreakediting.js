@@ -93,7 +93,7 @@ export default class PageBreakEditing extends Plugin {
 					const viewSpan = first( element.getChildren() );
 
 					// The child must be the "span" element that is not displayed and has a space inside.
-					if ( !viewSpan.is( 'span' ) || viewSpan.getStyle( 'display' ) != 'none' || viewSpan.childCount != 1 ) {
+					if ( !viewSpan.is( 'element', 'span' ) || viewSpan.getStyle( 'display' ) != 'none' || viewSpan.childCount != 1 ) {
 						return;
 					}
 

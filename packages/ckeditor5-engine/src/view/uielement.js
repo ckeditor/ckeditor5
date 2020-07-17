@@ -75,9 +75,9 @@ export default class UIElement extends Element {
 	 * Assuming that the object being checked is an ui element, you can also check its
 	 * {@link module:engine/view/uielement~UIElement#name name}:
 	 *
-	 *		uiElement.is( 'span' ); // -> true if this is a span ui element
+	 *		uiElement.is( 'element', 'span' ); // -> true if this is a span ui element
 	 *		uiElement.is( 'uiElement', 'span' ); // -> same as above
-	 *		text.is( 'span' ); -> false
+	 *		text.is( 'element', 'span' ); -> false
 	 *
 	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *

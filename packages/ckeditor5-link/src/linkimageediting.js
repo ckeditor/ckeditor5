@@ -81,7 +81,7 @@ function upcastLink() {
 			// figure > a > img: parent of the link element is an image element.
 			let modelElement = data.modelCursor.parent;
 
-			if ( !modelElement.is( 'image' ) ) {
+			if ( !modelElement.is( 'element', 'image' ) ) {
 				// a > img: parent of the link is not the image element. We need to convert it manually.
 				const conversionResult = conversionApi.convertItem( imageInLink, data.modelCursor );
 
@@ -94,7 +94,7 @@ function upcastLink() {
 				modelElement = data.modelCursor.nodeBefore;
 			}
 
-			if ( modelElement && modelElement.is( 'image' ) ) {
+			if ( modelElement && modelElement.is( 'element', 'image' ) ) {
 				// Set the linkHref attribute from link element on model image element.
 				conversionApi.writer.setAttribute( 'linkHref', linkHref, modelElement );
 			}

@@ -348,7 +348,7 @@ describe( 'DowncastWriter', () => {
 			);
 
 			// Find all spans.
-			const allSpans = Array.from( ViewRange._createIn( root ).getItems() ).filter( element => element.is( 'span' ) );
+			const allSpans = Array.from( ViewRange._createIn( root ).getItems() ).filter( element => element.is( 'element', 'span' ) );
 
 			// For each of the spans created above...
 			for ( const oneOfAllSpans of allSpans ) {

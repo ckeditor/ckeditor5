@@ -52,14 +52,14 @@ describe( 'Element', () => {
 			expect( element.is( 'model:element' ) ).to.be.true;
 			expect( element.is( 'element', 'paragraph' ) ).to.be.true;
 			expect( element.is( 'model:element', 'paragraph' ) ).to.be.true;
-			expect( element.is( 'paragraph' ) ).to.be.true;
+			expect( element.is( 'element', 'paragraph' ) ).to.be.true;
 			expect( element.is( 'model:paragraph' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
 			expect( element.is( 'element', 'image' ) ).to.be.false;
 			expect( element.is( 'model:element', 'image' ) ).to.be.false;
-			expect( element.is( 'image' ) ).to.be.false;
+			expect( element.is( 'element', 'image' ) ).to.be.false;
 			expect( element.is( 'model:image' ) ).to.be.false;
 			expect( element.is( '$text' ) ).to.be.false;
 			expect( element.is( 'model:$text' ) ).to.be.false;

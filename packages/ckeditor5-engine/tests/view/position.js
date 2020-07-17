@@ -53,7 +53,7 @@ describe( 'Position', () => {
 			expect( position.is( 'rootElement' ) ).to.be.false;
 			expect( position.is( 'containerElement' ) ).to.be.false;
 			expect( position.is( 'element' ) ).to.be.false;
-			expect( position.is( 'p' ) ).to.be.false;
+			expect( position.is( 'element', 'p' ) ).to.be.false;
 			expect( position.is( '$text' ) ).to.be.false;
 			expect( position.is( '$textProxy' ) ).to.be.false;
 			expect( position.is( 'attributeElement' ) ).to.be.false;

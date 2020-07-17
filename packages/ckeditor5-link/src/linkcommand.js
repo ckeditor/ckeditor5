@@ -62,7 +62,7 @@ export default class LinkCommand extends Command {
 
 		// A check for the `LinkImage` plugin. If the selection contains an element, get values from the element.
 		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
-		if ( selectedElement && selectedElement.is( 'image' ) && model.schema.checkAttribute( 'image', 'linkHref' ) ) {
+		if ( selectedElement && selectedElement.is( 'element', 'image' ) && model.schema.checkAttribute( 'image', 'linkHref' ) ) {
 			this.value = selectedElement.getAttribute( 'linkHref' );
 			this.isEnabled = model.schema.checkAttribute( selectedElement, 'linkHref' );
 		} else {

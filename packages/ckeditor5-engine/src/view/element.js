@@ -164,9 +164,9 @@ export default class Element extends Node {
 	 * Assuming that the object being checked is an element, you can also check its
 	 * {@link module:engine/view/element~Element#name name}:
 	 *
-	 *		element.is( 'img' ); // -> true if this is an <img> element
+	 *		element.is( 'element', 'img' ); // -> true if this is an <img> element
 	 *		element.is( 'element', 'img' ); // -> same as above
-	 *		text.is( 'img' ); -> false
+	 *		text.is( 'element', 'img' ); -> false
 	 *
 	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *
