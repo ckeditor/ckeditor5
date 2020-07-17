@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageResizeUI from './imageresize/imageresizeui';
 import ImageResizeEditing from './imageresize/imageresizeediting';
+import ImageResizeHandles from './imageresize/imageresizehandles';
 
 import '../theme/imageresize.css';
 
@@ -25,7 +26,7 @@ export default class ImageResize extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageResizeEditing, ImageResizeUI ];
+		return [ ImageResizeEditing, ImageResizeHandles, ImageResizeUI ];
 	}
 
 	/**
@@ -33,6 +34,15 @@ export default class ImageResize extends Plugin {
 	 */
 	static get pluginName() {
 		return 'ImageResize';
+	}
+
+	init() {
+		const editor = this.editor;
+		const shouldDisableImageResizeHandles = editor.config.get( 'image.disableResizeHandles' );
+
+		if ( shouldDisableImageResizeHandles ) {
+			editor.plugins.get( 'ImageResizeHandles' ).forceDisabled( 'ImageResize' );
+		}
 	}
 }
 
