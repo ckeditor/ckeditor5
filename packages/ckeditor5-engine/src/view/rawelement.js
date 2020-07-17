@@ -14,7 +14,15 @@ import Node from './node';
 /**
  * The raw element class.
  *
- * It is used to represent elements that TODO.
+ * Raw elements work as data containers ("wrappers", "sandboxes") but their children are not managed or
+ * even recognized by the editor. This encapsulation allows integrations to maintain custom DOM structures
+ * in the editor content without, for instance, worrying about compatibility with other editor features.
+ * Raw elements make a perfect tool for integration with external frameworks and data sources.
+ *
+ * Unlike {@link module:engine/view/uielement~UIElement ui elements}, raw elements act like a real editor
+ * content (similar to {@link module:engine/view/containerelement~ContainerElement} or
+ * {@link module:engine/view/emptyelement~EmptyElement}), they are considered by the editor selection and
+ * {@link module:widget/utils.toWidget they can work as widgets}.
  *
  * To create a new raw element use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createRawElement `downcastWriter#createRawElement()`} method.
@@ -100,59 +108,33 @@ export default class RawElement extends Element {
 	_insertChild( index, nodes ) {
 		if ( nodes && ( nodes instanceof Node || Array.from( nodes ).length > 0 ) ) {
 			/**
-			 * Cannot add children to a {@link module:engine/view/rawelement~RawElement}.
+			 * Cannot add children to a {@link module:engine/view/rawelement~RawElement} instance.
 			 *
 			 * @error view-rawelement-cannot-add
 			 */
 			throw new CKEditorError(
-				'view-rawelement-cannot-add: Cannot add child nodes to RawElement instance.',
+				'view-rawelement-cannot-add: Cannot add child nodes to a RawElement instance.',
 				[ this, nodes ]
 			);
 		}
 	}
 
 	/**
-	 * Renders this {@link module:engine/view/rawelement~RawElement} to DOM. This method is called by
-	 * {@link module:engine/view/domconverter~DomConverter}.
-	 * Do not use inheritance to create custom rendering method, replace `render()` method instead:
+	 * Allows rendering the children of a {@link module:engine/view/rawelement~RawElement} on the DOM level.
+	 * This method is called by the {@link module:engine/view/domconverter~DomConverter} with the raw DOM element
+	 * passed as an argument leaving the number and shape of the children up to the integrator.
 	 *
-	 *		const myRawElement = downcastWriter.createRawElement( 'span' );
+	 * This method **must be defined** for the `RawElement` to work:
 	 *
-	 *		myRawElement.render = function( domDocument ) {
-	 *			const domElement = this.toDomElement( domDocument );
-	 *			domElement.innerHTML = '<b>this is ui element</b>';
+	 *		const myRawElement = downcastWriter.createRawElement( 'div' );
 	 *
-	 *			return domElement;
+	 *		myRawElement.render = function( domElement ) {
+	 *			domElement.innerHTML = '<b>This is the raw content of myRawElement.</b>';
 	 *		};
 	 *
-	 * If changes in your raw element should trigger some editor UI update you should call
-	 * the {@link module:core/editor/editorui~EditorUI#update `editor.ui.update()`} method
-	 * after rendering your UI element.
-	 *
-	 * @param {Document} domDocument
-	 * @returns {HTMLElement}
+	 * @method #render
+	 * @param {HTMLElement} domElement The native DOM element representing the raw view element.
 	 */
-	render( domDocument ) {
-		return this.toDomElement( domDocument );
-	}
-
-	/**
-	 * Creates DOM element based on this view `RawElement`.
-	 *
-	 * **Note**: Each time this method is called new DOM element is created.
-	 *
-	 * @param {Document} domDocument
-	 * @returns {HTMLElement}
-	 */
-	toDomElement( domDocument ) {
-		const domElement = domDocument.createElement( this.name );
-
-		for ( const key of this.getAttributeKeys() ) {
-			domElement.setAttribute( key, this.getAttribute( key ) );
-		}
-
-		return domElement;
-	}
 }
 
 // Returns `null` because block filler is not needed for RawElements.
