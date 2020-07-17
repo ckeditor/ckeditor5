@@ -104,7 +104,6 @@ describe( 'Element', () => {
 			expect( el.is( 'element', 'p' ) ).to.be.true;
 			expect( el.is( 'view:element', 'p' ) ).to.be.true;
 			expect( el.is( 'element', 'p' ) ).to.be.true;
-			expect( el.is( 'view:p' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {

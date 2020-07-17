@@ -53,7 +53,6 @@ describe( 'Element', () => {
 			expect( element.is( 'element', 'paragraph' ) ).to.be.true;
 			expect( element.is( 'model:element', 'paragraph' ) ).to.be.true;
 			expect( element.is( 'element', 'paragraph' ) ).to.be.true;
-			expect( element.is( 'model:paragraph' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {

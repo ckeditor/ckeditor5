@@ -335,7 +335,7 @@ export default class Node {
 	 * * {@link module:engine/view/uielement~UIElement#is `UIElement#is()`}
 	 *
 	 * @method #is
-	 * @param {String} type
+	 * @param {String} type Type to check.
 	 * @returns {Boolean}
 	 */
 	is( type ) {

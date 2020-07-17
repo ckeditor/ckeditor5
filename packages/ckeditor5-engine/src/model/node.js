@@ -427,7 +427,7 @@ export default class Node {
 	 * * {@link module:engine/model/textproxy~TextProxy#is `TextProxy#is()`}
 	 *
 	 * @method #is
-	 * @param {String} type
+	 * @param {String} type Type to check.
 	 * @returns {Boolean}
 	 */
 	is( type ) {

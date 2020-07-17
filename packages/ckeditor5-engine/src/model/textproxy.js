@@ -177,7 +177,7 @@ export default class TextProxy {
 	 * **Note:** Until version 20.0.0 this method wasn't accepting `'$textProxy'` type. The legacy `'textProxt'` type is still
 	 * accepted for backward compatibility.
 	 *
-	 * @param {String} type
+	 * @param {String} type Type to check.
 	 * @returns {Boolean}
 	 */
 	is( type ) {

@@ -110,15 +110,13 @@ export default class Element extends Node {
 	 *
 	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
 	 *
-	 * @param {String} type Type to check when `name` parameter is present.
-	 * Otherwise, it acts like the `name` parameter.
+	 * @param {String} type Type to check.
 	 * @param {String} [name] Element name.
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
 		if ( !name ) {
 			return type === 'element' || type === 'model:element' ||
-				type === this.name || type === 'model:' + this.name ||
 				// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 				type === 'node' || type === 'model:node';
 		}

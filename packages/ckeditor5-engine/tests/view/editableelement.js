@@ -32,7 +32,6 @@ describe( 'EditableElement', () => {
 			expect( el.is( 'element', 'div' ) ).to.be.true;
 			expect( el.is( 'view:element', 'div' ) ).to.be.true;
 			expect( el.is( 'element', 'div' ) ).to.be.true;
-			expect( el.is( 'view:div' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {

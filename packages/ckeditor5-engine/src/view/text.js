@@ -59,7 +59,7 @@ export default class Text extends Node {
 	 * **Note:** Until version 20.0.0 this method wasn't accepting `'$text'` type. The legacy `'text'` type is still
 	 * accepted for backward compatibility.
 	 *
-	 * @param {String} type
+	 * @param {String} type Type to check.
 	 * @returns {Boolean}
 	 */
 	is( type ) {

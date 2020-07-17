@@ -60,7 +60,6 @@ describe( 'UIElement', () => {
 			expect( el.is( 'element', 'span' ) ).to.be.true;
 			expect( el.is( 'view:element', 'span' ) ).to.be.true;
 			expect( el.is( 'element', 'span' ) ).to.be.true;
-			expect( el.is( 'view:span' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {

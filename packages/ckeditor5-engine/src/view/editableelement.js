@@ -89,8 +89,7 @@ export default class EditableElement extends ContainerElement {
 	 *
 	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *
-	 * @param {String} type Type to check when `name` parameter is present.
-	 * Otherwise, it acts like the `name` parameter.
+	 * @param {String} type Type to check.
 	 * @param {String} [name] Element name.
 	 * @returns {Boolean}
 	 */
@@ -99,7 +98,6 @@ export default class EditableElement extends ContainerElement {
 			return type === 'editableElement' || type === 'view:editableElement' ||
 				// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 				type === 'containerElement' || type === 'view:containerElement' ||
-				type === this.name || type === 'view:' + this.name ||
 				type === 'element' || type === 'view:element' ||
 				type === 'node' || type === 'view:node';
 		} else {

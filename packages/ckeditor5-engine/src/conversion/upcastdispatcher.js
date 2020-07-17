@@ -10,6 +10,7 @@
 import ViewConsumable from './viewconsumable';
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
+import RootElement from '../model/rootelement';
 import { SchemaContext } from '../model/schema';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -494,10 +495,13 @@ function createContextTree( contextDefinition, writer ) {
 			attributes[ key ] = item.getAttribute( key );
 		}
 
-		const current = writer.createElement( item.name, attributes );
+		let current;
 
 		if ( position ) {
+			current = writer.createElement( item.name, attributes );
 			writer.append( current, position );
+		} else {
+			current = new RootElement( null, item.name );
 		}
 
 		position = ModelPosition._createAt( current, 0 );

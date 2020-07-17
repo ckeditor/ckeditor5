@@ -67,7 +67,7 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 			}
 
 			if ( itemLikeElement.indent <= currentIndentation ) {
-				if ( !currentList.is( listStyle.type ) ) {
+				if ( !currentList.is( 'element', listStyle.type ) ) {
 					currentList = writer.rename( listStyle.type, currentList );
 				}
 			}
