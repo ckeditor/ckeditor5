@@ -294,7 +294,7 @@ export default class Collection {
 	/**
 	 * Removes an item from the collection.
 	 *
-	 * @param {Object} subject The item to remove, its id or index in the collection.
+	 * @param {Object|Number|String} subject The item to remove, its id or index in the collection.
 	 * @returns {Object} The removed item.
 	 * @fires remove
 	 * @fires change
@@ -345,6 +345,9 @@ export default class Collection {
 	/**
 	 * Removes all items from the collection and destroys the binding created using
 	 * {@link #bindTo}.
+	 *
+	 * @fires remove
+	 * @fires change
 	 */
 	clear() {
 		if ( this._bindToCollection ) {
@@ -743,9 +746,9 @@ export default class Collection {
 	 * Fired when the collection was changed due to adding or removing items.
 	 *
 	 * @event change
-	 * @param {Iterable.<Object>} added List of added items.
-	 * @param {Iterable.<Object>} removed List of removed items.
-	 * @param {Number} index Index where the addition or removal occurred.
+	 * @param {Iterable.<Object>} added A list of added items.
+	 * @param {Iterable.<Object>} removed A list of removed items.
+	 * @param {Number} index An index where the addition or removal occurred.
 	 */
 
 	/**
