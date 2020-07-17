@@ -36,6 +36,9 @@ export default class ImageResize extends Plugin {
 		return 'ImageResize';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const shouldDisableImageResizeHandles = editor.config.get( 'image.disableResizeHandles' );
