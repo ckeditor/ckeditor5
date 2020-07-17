@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imageresizeediting
+ * @module image/imageresize/imageresizeediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
