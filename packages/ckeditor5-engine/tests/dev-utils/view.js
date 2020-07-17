@@ -431,12 +431,8 @@ describe( 'view test utils', () => {
 		it( 'should stringify a RawElement, (renderRawElements=true)', () => {
 			const span = new RawElement( viewDocument, 'span' );
 
-			span.render = function( domDocument ) {
-				const domElement = this.toDomElement( domDocument );
-
+			span.render = function( domElement ) {
 				domElement.innerHTML = '<b>foo</b>';
-
-				return domElement;
 			};
 
 			const p = new ContainerElement( viewDocument, 'p', null, span );
