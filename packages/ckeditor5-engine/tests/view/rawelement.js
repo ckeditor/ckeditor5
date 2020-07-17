@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, HTMLElement */
-
 import RawElement from '../../src/view/rawelement';
 import Element from '../../src/view/element';
 import Document from '../../src/view/document';
@@ -37,7 +35,7 @@ describe( 'RawElement', () => {
 		it( 'should throw if child elements are passed to constructor', () => {
 			expectToThrowCKEditorError( () => {
 				new RawElement( doc, 'img', null, [ new Element( doc, 'i' ) ] ); // eslint-disable-line no-new
-			}, 'view-rawelement-cannot-add: Cannot add child nodes to RawElement instance.' );
+			}, 'view-rawelement-cannot-add: Cannot add child nodes to a RawElement instance.' );
 		} );
 	} );
 
@@ -87,7 +85,7 @@ describe( 'RawElement', () => {
 		it( 'should throw when try to append new child element', () => {
 			expectToThrowCKEditorError( () => {
 				rawElement._appendChild( new Element( doc, 'i' ) );
-			}, 'view-rawelement-cannot-add: Cannot add child nodes to RawElement instance.' );
+			}, 'view-rawelement-cannot-add: Cannot add child nodes to a RawElement instance.' );
 		} );
 	} );
 
@@ -95,7 +93,7 @@ describe( 'RawElement', () => {
 		it( 'should throw when try to insert new child element', () => {
 			expectToThrowCKEditorError( () => {
 				rawElement._insertChild( 0, new Element( doc, 'i' ) );
-			}, 'view-rawelement-cannot-add: Cannot add child nodes to RawElement instance.' );
+			}, 'view-rawelement-cannot-add: Cannot add child nodes to a RawElement instance.' );
 		} );
 	} );
 
@@ -116,50 +114,6 @@ describe( 'RawElement', () => {
 	describe( 'getFillerOffset()', () => {
 		it( 'should return null', () => {
 			expect( rawElement.getFillerOffset() ).to.null;
-		} );
-	} );
-
-	describe( 'render()', () => {
-		let domElement;
-
-		beforeEach( () => {
-			domElement = rawElement.render( document );
-		} );
-
-		it( 'should return DOM element', () => {
-			expect( domElement ).to.be.instanceOf( HTMLElement );
-		} );
-
-		it( 'should use element name', () => {
-			expect( domElement.tagName.toLowerCase() ).to.equal( rawElement.name );
-		} );
-
-		it( 'should render attributes', () => {
-			for ( const key of rawElement.getAttributeKeys() ) {
-				expect( domElement.getAttribute( key ) ).to.equal( rawElement.getAttribute( key ) );
-			}
-		} );
-
-		it( 'should allow to change render() method', () => {
-			rawElement.render = function( domDocument ) {
-				return domDocument.createElement( 'b' );
-			};
-
-			expect( rawElement.render( document ).tagName.toLowerCase() ).to.equal( 'b' );
-		} );
-
-		it( 'should allow to add new elements inside', () => {
-			rawElement.render = function( domDocument ) {
-				const element = this.toDomElement( domDocument );
-				const text = domDocument.createTextNode( 'foo bar' );
-				element.appendChild( text );
-
-				return element;
-			};
-
-			const rendered = rawElement.render( document );
-			expect( rendered.tagName.toLowerCase() ).to.equal( 'span' );
-			expect( rendered.textContent ).to.equal( 'foo bar' );
 		} );
 	} );
 } );
