@@ -87,7 +87,7 @@ export default class WidgetResize extends Plugin {
 			}
 		};
 
-		const redrawFocusedResizerThrottled = throttle( redrawFocusedResizer, 200 ); // 5fps
+		const redrawFocusedResizerThrottled = throttle( redrawFocusedResizer, 50 ); // 5fps
 
 		// Redraws occurring upon a change of visible resizer must not be throttled, as it is crucial for the initial
 		// render. Without it the resizer frame would be misaligned with resizing host for a fraction of second.
@@ -105,6 +105,16 @@ export default class WidgetResize extends Plugin {
 			const selectedElement = viewSelection.getSelectedElement();
 
 			this._visibleResizer = this._getResizerByViewElement( selectedElement ) || null;
+		} );
+
+		// Currently, we have set the `redrawFocusedResizerThrottled()` callback on every editor's `update`,
+		// which doesn't stop executing when we click outside the editor.
+		// We should reset the `#_visibleResizer` to stop redrawing the ResizeWidget's handles when they are not in use.
+		// ATM, constantly redrawing widget is hard to be set disabled.
+		this.editor.ui.view.editable.on( 'change:isFocused', () => {
+			if ( !this.editor.ui.view.editable.isFocused ) {
+				this._visibleResizer = null;
+			}
 		} );
 	}
 
