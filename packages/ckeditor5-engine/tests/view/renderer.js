@@ -3301,13 +3301,11 @@ describe( 'Renderer', () => {
 					'<p>Foo<span><span id="id2"><b>UI2</b></span></span> Bar</p>' ) );
 			} );
 
-			it( 'should handle rawElement rendering', () => {
+			it( 'should handle RawElement rendering', () => {
 				function createRawElement( id, text ) {
 					const element = new ViewRawElement( viewDocument, 'span' );
-					element.render = function( domDocument ) {
-						const domElement = this.toDomElement( domDocument );
+					element.render = function( domElement ) {
 						domElement.innerText = `<span id="${ id }"><b>${ text }</b></span>`;
-						return domElement;
 					};
 
 					return element;
@@ -3337,6 +3335,36 @@ describe( 'Renderer', () => {
 
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
 					'<p>Foo<span><span id="id2"><b>RAW2</b></span></span> Bar</p>' ) );
+			} );
+
+			it( 'should manage RawElement attributes', () => {
+				const rawElement = new ViewRawElement( viewDocument, 'span', {
+					foo: 'foo1',
+					baz: 'baz1'
+				} );
+
+				rawElement.render = function( domElement ) {
+					domElement.innerHTML = '<b>foo</b>';
+				};
+
+				const viewP = new ViewContainerElement( viewDocument, 'p', null, [ rawElement ] );
+				viewRoot._appendChild( viewP );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<p><span baz="baz1" foo="foo1"><b>foo</b></span></p>' ) );
+
+				rawElement._setAttribute( 'foo', 'foo2' );
+				rawElement._setAttribute( 'new', 'new-value' );
+				rawElement._removeAttribute( 'baz' );
+
+				renderer.markToSync( 'attributes', rawElement );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<p><span foo="foo2" new="new-value"><b>foo</b></span></p>' ) );
 			} );
 
 			it( 'should handle linking entire content', () => {
