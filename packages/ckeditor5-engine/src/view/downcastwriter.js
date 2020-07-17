@@ -258,6 +258,11 @@ export default class DowncastWriter {
 	 *			return domElement;
 	 *		} );
 	 *
+	 * Unlike {@link #createRawElement raw elements}, UI elements are by no means editor content, for instance,
+	 * they are ignored by the editor selection system and they cannot {@link module:widget/utils.toWidget become a widget}.
+	 *
+	 * You should not use UI elements as data containers. Check out {@link #createRawElement} instead.
+	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
 	 * @param {Function} [renderFunction] Custom render function.
@@ -279,14 +284,22 @@ export default class DowncastWriter {
 	 *		writer.createRawElement( 'span' );
 	 *		writer.createRawElement( 'span', { id: 'foo-1234' } );
 	 *
-	 * Custom render function can be provided as third parameter:
+	 * Custom render function should be provided as third parameter:
 	 *
-	 *		writer.createRawElement( 'span', null, function( domDocument ) {
-	 *			const domElement = this.toDomElement( domDocument );
-	 *			domElement.innerHTML = '<b>this is ui element</b>';
-	 *
-	 *			return domElement;
+	 *		writer.createRawElement( 'span', null, function( domElement ) {
+	 *			domElement.innerHTML = '<b>This is the raw content of the raw element.</b>';
 	 *		} );
+	 *
+	 * Raw elements work as data containers ("wrappers", "sandboxes") but their children are not managed or
+	 * even recognized by the editor. This encapsulation allows integrations to maintain custom DOM structures
+	 * in the editor content without, for instance, worrying about compatibility with other editor features.
+	 * Raw elements make a perfect tool for integration with external frameworks and data sources.
+	 *
+	 * Unlike {@link #createUIElement ui elements}, raw elements act like a "real" editor content (similar to
+	 * {@link module:engine/view/containerelement~ContainerElement} or {@link module:engine/view/emptyelement~EmptyElement}),
+	 * they are considered by the editor selection and {@link module:widget/utils.toWidget they can work as widgets}.
+	 *
+	 * You should not use raw elements to render UI in the editor content. Check out {@link #createUIElement} instead.
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -296,9 +309,7 @@ export default class DowncastWriter {
 	createRawElement( name, attributes, renderFunction ) {
 		const rawElement = new RawElement( this.document, name, attributes );
 
-		if ( renderFunction ) {
-			rawElement.render = renderFunction;
-		}
+		rawElement.render = renderFunction || ( () => {} );
 
 		return rawElement;
 	}
@@ -1610,7 +1621,7 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-cannot-break-raw-element
 			 */
-			throw new CKEditorError( 'view-writer-cannot-break-raw-element', this.document );
+			throw new CKEditorError( 'view-writer-cannot-break-raw-element: Cannot break inside a RawElement instance.', this.document );
 		}
 
 		// There are no attributes to break and text nodes breaking is not forced.
