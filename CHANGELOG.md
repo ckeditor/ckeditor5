@@ -19,7 +19,7 @@ New features were also accompanied by a set of bug fixes, to name a few:
 * [Autoformatting will no longer change formatting when typing in an inline code](https://github.com/ckeditor/ckeditor5/issues/1239).
 * Editor will no longer [crash if there's a HTML comment in the source data](https://github.com/ckeditor/ckeditor5/issues/5734).
 
-TODO: Add a link to the blog post.
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v20.0.0-with-linking-images-and-multi-cell-comments-released/
 
 ### Collaboration features
 

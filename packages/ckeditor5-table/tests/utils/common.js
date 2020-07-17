@@ -10,7 +10,7 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import TableEditing from '../../src/tableediting';
 import { modelTable } from '../_utils/utils';
 
-import { findAncestor, isHeadingColumnCell } from '../../src/utils/common';
+import { isHeadingColumnCell } from '../../src/utils/common';
 
 describe( 'table utils', () => {
 	let editor, model, modelRoot, tableUtils;
@@ -32,23 +32,6 @@ describe( 'table utils', () => {
 	} );
 
 	describe( 'common', () => {
-		describe( 'findAncestor()', () => {
-			it( 'should return undefined if not in table', () => {
-				setData( model, '<paragraph>foo[]</paragraph>' );
-
-				expect( findAncestor( 'table', model.document.selection.focus ) ).to.be.undefined;
-			} );
-
-			it( 'should return table if position is in tableCell', () => {
-				setData( model, modelTable( [ [ '[]' ] ] ) );
-
-				const parentTable = findAncestor( 'table', model.document.selection.focus );
-
-				expect( parentTable ).to.not.be.undefined;
-				expect( parentTable.is( 'table' ) ).to.be.true;
-			} );
-		} );
-
 		describe( 'isHeadingColumnCell()', () => {
 			it( 'should return "true" for a heading column cell', () => {
 				setData( model, modelTable( [

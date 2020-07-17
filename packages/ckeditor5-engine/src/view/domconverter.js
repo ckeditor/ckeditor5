@@ -82,7 +82,7 @@ export default class DomConverter {
 		 * @readonly
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#blockElements
 		 */
-		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'dd', 'dt', 'figcaption' ];
+		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'dd', 'dt', 'figcaption', 'td', 'th' ];
 
 		/**
 		 * Block {@link module:engine/view/filler filler} creator, which is used to create all block fillers during the
