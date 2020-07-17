@@ -7,10 +7,13 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ImageResize from '../../src/imageresize';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+
+import ImageResize from '../../src/imageresize';
+import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
+import ImageResizeUI from '../../src/imageresize/imageresizeui';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -30,6 +33,8 @@ const commonConfig = {
 	},
 	cloudServices: CS_CONFIG
 };
+
+// Editor 1
 
 const imageConfig1 = {
 	resizeUnit: '%',
@@ -57,6 +62,14 @@ const imageConfig1 = {
 
 const config1 = {
 	...commonConfig,
+	plugins: [
+		ArticlePluginSet,
+		Indent,
+		IndentBlock,
+		EasyImage,
+		ImageResizeEditing,
+		ImageResizeUI
+	],
 	image: imageConfig1
 };
 
@@ -68,6 +81,8 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+// Editor 2
 
 const imageConfig2 = {
 	resizeUnit: '%',
@@ -96,6 +111,7 @@ const imageConfig2 = {
 		'imageResize:75',
 		'imageResize:original'
 	],
+	disableResizeHandles: true,
 	styles: [
 		'full',
 		'alignLeft',
