@@ -95,6 +95,14 @@ export default class Resizer {
 				event.stop();
 			}
 		}, { priority: 'high' } );
+
+		this.on( 'change:isEnabled', () => {
+			// We should redraw the resize handles when the plugin is enabled again.
+			// Otherwise they won't show up.
+			if ( this.isEnabled ) {
+				this.redraw();
+			}
+		} );
 	}
 
 	/**
@@ -226,6 +234,10 @@ export default class Resizer {
 	 * @param {module:utils/dom/rect~Rect} [handleHostRect] Handle host rectangle might be given to improve performance.
 	 */
 	redraw( handleHostRect ) {
+		if ( !this.isEnabled ) {
+			return;
+		}
+
 		const domWrapper = this._domResizerWrapper;
 
 		if ( existsInDom( domWrapper ) ) {
