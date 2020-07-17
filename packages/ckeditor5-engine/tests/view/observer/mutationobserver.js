@@ -597,11 +597,8 @@ describe( 'MutationObserver', () => {
 		function createRawElement( name ) {
 			const element = new RawElement( name );
 
-			element.render = function( domDocument ) {
-				const root = this.toDomElement( domDocument );
-				root.innerHTML = 'foo bar';
-
-				return root;
+			element.render = function( domElement ) {
+				domElement.innerHTML = 'foo bar';
 			};
 
 			return element;
