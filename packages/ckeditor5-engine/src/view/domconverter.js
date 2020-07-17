@@ -229,15 +229,17 @@ export default class DomConverter {
 
 				return domElement;
 			} else {
-				// RawElement has its own render() method (see https://github.com/ckeditor/ckeditor5/issues/4469).
-				if ( viewNode.is( 'rawElement' ) ) {
-					domElement = viewNode.render( domDocument );
-				}
 				// Create DOM element.
-				else if ( viewNode.hasAttribute( 'xmlns' ) ) {
+				if ( viewNode.hasAttribute( 'xmlns' ) ) {
 					domElement = domDocument.createElementNS( viewNode.getAttribute( 'xmlns' ), viewNode.name );
 				} else {
 					domElement = domDocument.createElement( viewNode.name );
+				}
+
+				// RawElement take care of their children in RawElement#render() method which can be customized
+				// (see https://github.com/ckeditor/ckeditor5/issues/4469).
+				if ( viewNode.is( 'rawElement' ) ) {
+					viewNode.render( domElement );
 				}
 
 				if ( options.bind ) {
@@ -895,9 +897,10 @@ export default class DomConverter {
 	 * Checks if given selection's boundaries are at correct places.
 	 *
 	 * The following places are considered as incorrect for selection boundaries:
+	 *
 	 * * before or in the middle of the inline filler sequence,
-	 * * inside the DOM element which represents {@link module:engine/view/uielement~UIElement a view UI element}.
-	 * * inside the DOM element which represents {@link module:engine/view/rawelement~RawElement a view raw element}.
+	 * * inside a DOM element which represents {@link module:engine/view/uielement~UIElement a view UI element},
+	 * * inside a DOM element which represents {@link module:engine/view/rawelement~RawElement a view raw element}.
 	 *
 	 * @param {Selection} domSelection DOM Selection object to be checked.
 	 * @returns {Boolean} `true` if the given selection is at a correct place, `false` otherwise.

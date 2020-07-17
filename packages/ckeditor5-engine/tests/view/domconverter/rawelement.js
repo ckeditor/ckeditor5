@@ -17,11 +17,8 @@ describe( 'DOMConverter RawElement integration', () => {
 	function createRawElement( name ) {
 		const element = new ViewRawElement( viewDocument, name );
 
-		element.render = function( domDocument ) {
-			const root = this.toDomElement( domDocument );
-			root.innerHTML = '<p><span>foo</span> bar</p>';
-
-			return root;
+		element.render = function( domElement ) {
+			domElement.innerHTML = '<p><span>foo</span> bar</p>';
 		};
 
 		return element;
@@ -35,6 +32,7 @@ describe( 'DOMConverter RawElement integration', () => {
 	describe( 'viewToDom()', () => {
 		it( 'should create a DOM element from a RawElement', () => {
 			const rawElement = new ViewRawElement( viewDocument, 'div' );
+			rawElement.render = () => {};
 			const domElement = converter.viewToDom( rawElement, document );
 
 			expect( domElement ).to.be.instanceOf( HTMLElement );
