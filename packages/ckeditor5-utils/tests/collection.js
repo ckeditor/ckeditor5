@@ -391,7 +391,7 @@ describe( 'Collection', () => {
 
 			collection.addMany( items );
 
-			expect( spy.callCount, 'call count' ).to.equal( 1 );
+			sinon.assert.calledOnce( spy );
 			expect( spy.args[ 0 ][ 1 ] ).to.deep.eql( {
 				added: items,
 				removed: [],
@@ -638,6 +638,23 @@ describe( 'Collection', () => {
 			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item3, 0 );
 		} );
 
+		it( 'should fire the "change" event', () => {
+			const item = getItem( 'foo' );
+			const spy = sinon.spy();
+
+			collection.add( item );
+			collection.on( 'change', spy );
+
+			collection.remove( item );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.eql( {
+				added: [],
+				removed: [ item ],
+				index: 0
+			} );
+		} );
+
 		it( 'should throw an error on invalid index', () => {
 			collection.add( getItem( 'foo' ) );
 
@@ -747,6 +764,24 @@ describe( 'Collection', () => {
 			expect( collection ).to.have.length( 0 );
 
 			expect( collection._bindToCollection ).to.be.null;
+		} );
+
+		it( 'should fire the "change" event', () => {
+			const items = [ {}, {}, {} ];
+			const spy = sinon.spy();
+
+			collection.addMany( items );
+			collection.on( 'change', spy );
+
+			collection.clear();
+
+			sinon.assert.calledOnce( spy );
+
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.eql( {
+				added: [],
+				removed: items,
+				index: 0
+			} );
 		} );
 	} );
 

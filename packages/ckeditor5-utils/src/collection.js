@@ -294,57 +294,13 @@ export default class Collection {
 	/**
 	 * Removes an item from the collection.
 	 *
-	 * @param {Object|Number|String} subject The item to remove, its id or index in the collection.
+	 * @param {Object} subject The item to remove, its id or index in the collection.
 	 * @returns {Object} The removed item.
 	 * @fires remove
+	 * @fires change
 	 */
 	remove( subject ) {
-		let index, id, item;
-		let itemDoesNotExist = false;
-		const idProperty = this._idProperty;
-
-		if ( typeof subject == 'string' ) {
-			id = subject;
-			item = this._itemMap.get( id );
-			itemDoesNotExist = !item;
-
-			if ( item ) {
-				index = this._items.indexOf( item );
-			}
-		} else if ( typeof subject == 'number' ) {
-			index = subject;
-			item = this._items[ index ];
-			itemDoesNotExist = !item;
-
-			if ( item ) {
-				id = item[ idProperty ];
-			}
-		} else {
-			item = subject;
-			id = item[ idProperty ];
-			index = this._items.indexOf( item );
-			itemDoesNotExist = ( index == -1 || !this._itemMap.get( id ) );
-		}
-
-		if ( itemDoesNotExist ) {
-			/**
-			 * Item not found.
-			 *
-			 * @error collection-remove-404
-			 */
-			throw new CKEditorError( 'collection-remove-404: Item not found.', this );
-		}
-
-		this._items.splice( index, 1 );
-		this._itemMap.delete( id );
-
-		const externalItem = this._bindToInternalToExternalMap.get( item );
-		this._bindToInternalToExternalMap.delete( item );
-		this._bindToExternalToInternalMap.delete( externalItem );
-
-		this.fire( 'remove', item, index );
-
-		return item;
+		return this._remove( subject );
 	}
 
 	/**
@@ -396,9 +352,17 @@ export default class Collection {
 			this._bindToCollection = null;
 		}
 
+		const removedItems = this._items.concat( [] );
+
 		while ( this.length ) {
-			this.remove( 0 );
+			this._remove( 0, true );
 		}
+
+		this.fire( 'change', {
+			added: [],
+			removed: removedItems,
+			index: 0
+		} );
 	}
 
 	/**
@@ -688,6 +652,75 @@ export default class Collection {
 		}
 
 		return itemId;
+	}
+
+	/**
+	 * Removes an item from the collection.
+	 *
+	 * This is an internal implementation allowing to skip the {@link #event:change} event.
+	 *
+	 * @private
+	 * @param {Object} subject The item to remove, its id or index in the collection.
+	 * @param {Boolean} [skipChange] If `true` no change event is fired.
+	 * @returns {Object} The removed item.
+	 * @fires remove
+	 * @fires change
+	 */
+	_remove( subject, skipChange ) {
+		let index, id, item;
+		let itemDoesNotExist = false;
+		const idProperty = this._idProperty;
+
+		if ( typeof subject == 'string' ) {
+			id = subject;
+			item = this._itemMap.get( id );
+			itemDoesNotExist = !item;
+
+			if ( item ) {
+				index = this._items.indexOf( item );
+			}
+		} else if ( typeof subject == 'number' ) {
+			index = subject;
+			item = this._items[ index ];
+			itemDoesNotExist = !item;
+
+			if ( item ) {
+				id = item[ idProperty ];
+			}
+		} else {
+			item = subject;
+			id = item[ idProperty ];
+			index = this._items.indexOf( item );
+			itemDoesNotExist = ( index == -1 || !this._itemMap.get( id ) );
+		}
+
+		if ( itemDoesNotExist ) {
+			/**
+			 * Item not found.
+			 *
+			 * @error collection-remove-404
+			 */
+			throw new CKEditorError( 'collection-remove-404: Item not found.', this );
+		}
+
+		this._items.splice( index, 1 );
+		this._itemMap.delete( id );
+
+		const externalItem = this._bindToInternalToExternalMap.get( item );
+		this._bindToInternalToExternalMap.delete( item );
+		this._bindToExternalToInternalMap.delete( externalItem );
+
+		this.fire( 'remove', item, index );
+
+		if ( !skipChange ) {
+			this.fire( 'change', {
+				added: [],
+				removed: [ item ],
+				index
+			} );
+		}
+
+		return item;
 	}
 
 	/**
