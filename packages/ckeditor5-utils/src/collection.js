@@ -298,7 +298,15 @@ export default class Collection {
 	 * @fires change
 	 */
 	remove( subject ) {
-		return this._remove( subject );
+		const [ item, index ] = this._remove( subject );
+
+		this.fire( 'change', {
+			added: [],
+			removed: [ item ],
+			index
+		} );
+
+		return item;
 	}
 
 	/**
@@ -656,18 +664,16 @@ export default class Collection {
 	}
 
 	/**
-	 * Removes an item from the collection.
+	 * Core {@link #remove} method implementation shared in other functions.
 	 *
-	 * This is an internal implementation allowing to skip the {@link #event:change} event.
+	 * In contrast this method **does not** fire the {@link #event:change} event.
 	 *
 	 * @private
 	 * @param {Object} subject The item to remove, its id or index in the collection.
-	 * @param {Boolean} [skipChange] If `true` no {@link #event:change} event is fired.
-	 * @returns {Object} The removed item.
+	 * @returns {Array} Returns an array with the removed item and its index.
 	 * @fires remove
-	 * @fires change
 	 */
-	_remove( subject, skipChange ) {
+	_remove( subject ) {
 		let index, id, item;
 		let itemDoesNotExist = false;
 		const idProperty = this._idProperty;
@@ -713,15 +719,7 @@ export default class Collection {
 
 		this.fire( 'remove', item, index );
 
-		if ( !skipChange ) {
-			this.fire( 'change', {
-				added: [],
-				removed: [ item ],
-				index
-			} );
-		}
-
-		return item;
+		return [ item, index ];
 	}
 
 	/**
