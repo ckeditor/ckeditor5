@@ -367,15 +367,11 @@ export default class ProductPreviewEditing extends Plugin {
 				// This element will host a React <ProductPreview /> component.
 				const reactWrapper = viewWriter.createRawElement( 'div', {
 					class: 'product__react-wrapper'
-				}, function( domDocument ) {
-					const domElement = this.toDomElement( domDocument );
-
+				}, function( domElement ) {
 					// This the place where React renders the actual product preview hosted
 					// by a UIElement in the view. You are using a function (renderer) passed as
 					// editor.config.products#productRenderer.
 					renderProduct( id, domElement );
-
-					return domElement;
 				} );
 
 				viewWriter.insert( viewWriter.createPositionAt( section, 0 ), reactWrapper );
@@ -1186,15 +1182,11 @@ export default class ProductPreviewEditing extends Plugin {
 				// This element will host a React <ProductPreview /> component.
 				const reactWrapper = viewWriter.createRawElement( 'div', {
 					class: 'product__react-wrapper'
-				}, function( domDocument ) {
-					const domElement = this.toDomElement( domDocument );
-
+				}, function( domElement ) {
 					// This the place where React renders the actual product preview hosted
 					// by a UIElement in the view. You are using a function (renderer) passed as
 					// editor.config.products#productRenderer.
 					renderProduct( id, domElement );
-
-					return domElement;
 				} );
 
 				viewWriter.insert( viewWriter.createPositionAt( section, 0 ), reactWrapper );
