@@ -159,7 +159,7 @@ Markers are a special type of ranges.
 * They can only be created and changed through the {@link module:engine/model/writer~Writer model writer}.
 * They can be synchronized over the network with other collaborating clients.
 * They are automatically updated when the document's structure is changed.
-* They can be {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToHighlight converted to the editing view}, to show them in the editor.
+* They can be converted to the editing view, to show them in the editor (as {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToHighlight highlights} or {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToElement elements}).
 * They can be {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToData converted to the data view}, to store them with the document data.
 * They can be {@link module:engine/conversion/upcasthelpers~UpcastHelpers#dataToMarker loaded with the document data}.
 

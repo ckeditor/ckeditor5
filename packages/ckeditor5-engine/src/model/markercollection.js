@@ -94,6 +94,11 @@ export default class MarkerCollection {
 		const markerName = markerOrName instanceof Marker ? markerOrName.name : markerOrName;
 
 		if ( markerName.includes( ',' ) ) {
+			/**
+			 * Marker name cannot contain "," character.
+			 *
+			 * @error markercollection-incorrect-marker-name
+			 */
 			throw new CKEditorError( 'markercollection-incorrect-marker-name: Marker name cannot contain "," character.', this );
 		}
 
