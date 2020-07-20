@@ -9,6 +9,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
+import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import LinkEditing from './linkediting';
 
 import linkIcon from '../theme/icons/link.svg';
@@ -42,7 +44,46 @@ export default class LinkImageEditing extends Plugin {
 		editor.model.schema.extend( 'image', { allowAttributes: [ 'linkHref' ] } );
 
 		editor.conversion.for( 'upcast' ).add( upcastLink() );
-		editor.conversion.for( 'downcast' ).add( downcastImageLink() );
+		editor.conversion.for( 'editingDowncast' ).add( downcastImageLink( { attachIconIndicator: true } ) );
+		editor.conversion.for( 'dataDowncast' ).add( downcastImageLink( { attachIconIndicator: false } ) );
+
+		// Definitions for decorators are provided by the `link` command and the `LinkEditing` plugin.
+		this._enableAutomaticDecorators();
+		this._enableManualDecorators();
+	}
+
+	/**
+	 * Processes {@link module:link/link~LinkDecoratorAutomaticDefinition automatic decorators} definitions and
+	 * attaches proper converters that will work when linking an image.`
+	 *
+	 * @private
+	 */
+	_enableAutomaticDecorators() {
+		const editor = this.editor;
+		const command = editor.commands.get( 'link' );
+		const automaticDecorators = command.automaticDecorators;
+
+		if ( automaticDecorators.length ) {
+			editor.conversion.for( 'downcast' ).add( automaticDecorators.getDispatcherForLinkedImage() );
+		}
+	}
+
+	/**
+	 * Processes transformed {@link module:link/utils~ManualDecorator} instances and attaches proper converters
+	 * that will work when linking an image.
+	 *
+	 * @private
+	 */
+	_enableManualDecorators() {
+		const editor = this.editor;
+		const command = editor.commands.get( 'link' );
+		const manualDecorators = command.manualDecorators;
+
+		for ( const decorator of command.manualDecorators ) {
+			editor.model.schema.extend( 'image', { allowAttributes: decorator.id } );
+			editor.conversion.for( 'downcast' ).add( downcastImageLinkManualDecorator( manualDecorators, decorator ) );
+			editor.conversion.for( 'upcast' ).add( upcastImageLinkManualDecorator( manualDecorators, decorator ) );
+		}
 	}
 }
 
@@ -50,7 +91,6 @@ export default class LinkImageEditing extends Plugin {
 //
 // @private
 // @returns {Function}
-//
 function upcastLink() {
 	return dispatcher => {
 		dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
@@ -99,15 +139,18 @@ function upcastLink() {
 				conversionApi.writer.setAttribute( 'linkHref', linkHref, modelElement );
 			}
 		}, { priority: 'high' } );
+		// Using the same priority that `upcastImageLinkManualDecorator()` converter guarantees
+		// that manual decorators will decorate the proper element.
 	};
 }
 
 // Return a converter that adds the `<a>` element to data.
 //
 // @private
+// @params {Object} options
+// @params {Boolean} options.attachIconIndicator=false If set to `true`, an icon that informs about the linked image will be added.
 // @returns {Function}
-//
-function downcastImageLink() {
+function downcastImageLink( options ) {
 	return dispatcher => {
 		dispatcher.on( 'attribute:linkHref:image', ( evt, data, conversionApi ) => {
 			// The image will be already converted - so it will be present in the view.
@@ -117,13 +160,17 @@ function downcastImageLink() {
 			// But we need to check whether the link element exists.
 			const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
 
-			// Create an icon indicator for a linked image.
-			const linkIconIndicator = writer.createUIElement( 'span', { class: 'ck ck-link-image_icon' }, function( domDocument ) {
-				const domElement = this.toDomElement( domDocument );
-				domElement.innerHTML = linkIcon;
+			let linkIconIndicator;
 
-				return domElement;
-			} );
+			if ( options.attachIconIndicator ) {
+				// Create an icon indicator for a linked image.
+				linkIconIndicator = writer.createUIElement( 'span', { class: 'ck ck-link-image_icon' }, function( domDocument ) {
+					const domElement = this.toDomElement( domDocument );
+					domElement.innerHTML = linkIcon;
+
+					return domElement;
+				} );
+			}
 
 			// If so, update the attribute if it's defined or remove the entire link if the attribute is empty.
 			if ( linkInImage ) {
@@ -146,9 +193,65 @@ function downcastImageLink() {
 				// 3. Move the image to the link.
 				writer.move( writer.createRangeOn( viewFigure.getChild( 1 ) ), writer.createPositionAt( linkElement, 0 ) );
 
-				// 4. Inset the linked image icon indicator.
-				writer.insert( writer.createPositionAt( linkElement, 'end' ), linkIconIndicator );
+				// 4. Inset the linked image icon indicator while downcast to editing.
+				if ( linkIconIndicator ) {
+					writer.insert( writer.createPositionAt( linkElement, 'end' ), linkIconIndicator );
+				}
 			}
 		} );
+	};
+}
+
+// Returns a converter that decorates the `<a>` element when the image is the link label.
+//
+// @private
+// @returns {Function}
+function downcastImageLinkManualDecorator( manualDecorators, decorator ) {
+	return dispatcher => {
+		dispatcher.on( `attribute:${ decorator.id }:image`, ( evt, data, conversionApi ) => {
+			const attributes = manualDecorators.get( decorator.id ).attributes;
+
+			const viewFigure = conversionApi.mapper.toViewElement( data.item );
+			const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
+
+			for ( const [ key, val ] of toMap( attributes ) ) {
+				conversionApi.writer.setAttribute( key, val, linkInImage );
+			}
+		} );
+	};
+}
+
+// Returns a converter that checks whether manual decorators should be applied to the link.
+//
+// @private
+// @returns {Function}
+function upcastImageLinkManualDecorator( manualDecorators, decorator ) {
+	return dispatcher => {
+		dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+			const viewLink = data.viewItem;
+
+			const consumableAttributes = {
+				attributes: manualDecorators.get( decorator.id ).attributes
+			};
+
+			const matcher = new Matcher( consumableAttributes );
+			const result = matcher.match( viewLink );
+
+			// The link element does not have required attributes or/and proper values.
+			if ( !result ) {
+				return;
+			}
+
+			// Check whether we can consume those attributes.
+			if ( !conversionApi.consumable.consume( viewLink, result.match ) ) {
+				return;
+			}
+
+			// At this stage we can assume that we have the `<image>` element.
+			const modelElement = data.modelCursor.parent;
+
+			conversionApi.writer.setAttribute( decorator.id, true, modelElement );
+		}, { priority: 'high' } );
+		// Using the same priority that `upcastLink()` converter guarantees that the linked image was properly converted.
 	};
 }

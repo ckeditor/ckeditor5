@@ -724,6 +724,10 @@ describe( 'LinkEditing', () => {
 						expect( editor.getData() ).to.equal( `<p><a ${ reducedAttr }href="${ link.url }">foo</a>bar</p>` );
 					} );
 				} );
+
+				it( 'stores decorators in LinkCommand#automaticDecorators collection', () => {
+					expect( editor.commands.get( 'link' ).automaticDecorators.length ).to.equal( 3 );
+				} );
 			} );
 		} );
 
