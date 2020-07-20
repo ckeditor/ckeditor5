@@ -12,7 +12,6 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableSelection from './tableselection';
 import MouseEventsObserver from './tablemouse/mouseeventsobserver';
 
-import { findAncestor } from './utils/common';
 import { getTableCellsContainingSelection } from './utils/selection';
 
 /**
@@ -210,11 +209,7 @@ export default class TableMouse extends Plugin {
 		const modelPosition = this.editor.editing.mapper.toModelPosition( viewPosition );
 		const modelElement = modelPosition.parent;
 
-		if ( modelElement.is( 'tableCell' ) ) {
-			return modelElement;
-		}
-
-		return findAncestor( 'tableCell', modelElement );
+		return modelElement.findAncestor( 'tableCell', { includeSelf: true } );
 	}
 }
 

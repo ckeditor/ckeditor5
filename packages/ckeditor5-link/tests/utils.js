@@ -8,8 +8,9 @@ import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwrit
 import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
 import ContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import Text from '@ckeditor/ckeditor5-engine/src/view/text';
-
-import { createLinkElement, isLinkElement, ensureSafeUrl, normalizeDecorators } from '../src/utils';
+import Schema from '@ckeditor/ckeditor5-engine/src/model/schema';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import { createLinkElement, isLinkElement, ensureSafeUrl, normalizeDecorators, isImageAllowed } from '../src/utils';
 
 describe( 'utils', () => {
 	describe( 'isLinkElement()', () => {
@@ -213,6 +214,34 @@ describe( 'utils', () => {
 					}
 				}
 			] );
+		} );
+	} );
+
+	describe( 'isImageAllowed()', () => {
+		it( 'returns false when passed "null" as element', () => {
+			expect( isImageAllowed( null, new Schema() ) ).to.equal( false );
+		} );
+
+		it( 'returns false when passed an element that is not the image element', () => {
+			const element = new ModelElement( 'paragraph' );
+			expect( isImageAllowed( element, new Schema() ) ).to.equal( false );
+		} );
+
+		it( 'returns false when schema does not allow linking images', () => {
+			const element = new ModelElement( 'image' );
+			expect( isImageAllowed( element, new Schema() ) ).to.equal( false );
+		} );
+
+		it( 'returns true when passed an image element and it can be linked', () => {
+			const element = new ModelElement( 'image' );
+			const schema = new Schema();
+
+			schema.register( 'image', {
+				allowIn: '$root',
+				allowAttributes: [ 'linkHref' ]
+			} );
+
+			expect( isImageAllowed( element, schema ) ).to.equal( true );
 		} );
 	} );
 } );

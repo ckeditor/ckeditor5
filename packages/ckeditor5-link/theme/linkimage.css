@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-link-image_icon {
+	position: absolute;
+	top: var(--ck-spacing-medium);
+	right: var(--ck-spacing-medium);
+	width: 18px;
+	height: 18px;
+	padding: 5px;
+	border-radius: var(--ck-border-radius);
+
+	& svg {
+		fill: currentColor;
+	}
+}

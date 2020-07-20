@@ -17,7 +17,7 @@ ClassicEditor
 			resizeOptions: [
 				{
 					name: 'imageResize:original',
-					label: 'Original size',
+					label: 'Original',
 					value: null
 				},
 				{
