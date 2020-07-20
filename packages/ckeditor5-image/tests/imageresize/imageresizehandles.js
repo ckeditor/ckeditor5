@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, window */
+/* global document */
 
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -57,12 +57,19 @@ describe( 'ImageResizeHandles', () => {
 	beforeEach( () => createEditor() );
 
 	afterEach( () => {
+		const wrappers = Array.from( document.querySelectorAll( '.ck-body-wrapper' ) );
+
+		// We need to remove all leftovers manually.
+		for ( const wrapper of wrappers ) {
+			wrapper.remove();
+		}
+
 		if ( editorElement ) {
 			editorElement.remove();
 		}
 
 		if ( editor ) {
-			return editor.destroy();
+			editor.destroy();
 		}
 	} );
 
@@ -158,8 +165,6 @@ describe( 'ImageResizeHandles', () => {
 			const resizeWrapperView = widget.getChild( 2 );
 
 			resizerMouseSimulator.down( editor, domParts.resizeHandle );
-
-			await wait( 40 );
 
 			resizerMouseSimulator.move( editor, domParts.resizeHandle, null, initialPointerPosition );
 
@@ -400,10 +405,6 @@ describe( 'ImageResizeHandles', () => {
 			expect( widgetToolbarRepository.isEnabled ).to.be.true;
 		} );
 	} );
-
-	function wait( delay ) {
-		return new Promise( resolve => window.setTimeout( () => resolve(), delay ) );
-	}
 
 	function getDomWidth( domElement ) {
 		return new Rect( domElement ).width;

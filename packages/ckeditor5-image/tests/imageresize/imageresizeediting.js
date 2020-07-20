@@ -17,9 +17,7 @@ import ImageStyle from '../../src/imagestyle';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import {
-	focusEditor
-} from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
+import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 
 describe( 'ImageResizeEditing', () => {
 	// 100x50 black png image
