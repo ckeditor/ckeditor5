@@ -50,13 +50,26 @@ describe( 'LinkImageEditing', () => {
 
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
+			it( 'should attach a link indicator to the image element', () => {
+				setModelData( model, '<image src="/assets/sample.png" alt="alt text" linkHref="http://ckeditor.com"></image>' );
+
+				expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<a href="http://ckeditor.com">' +
+							'<img alt="alt text" src="/assets/sample.png"></img>' +
+							linkIconInditatorElement +
+						'</a>' +
+					'</figure>'
+				);
+			} );
+		} );
+
+		describe( 'model to data', () => {
 			it( 'should convert an image with a link', () => {
 				setModelData( model, '<image src="/assets/sample.png" alt="alt text" linkHref="http://ckeditor.com"></image>' );
 
 				expect( editor.getData() ).to.equal(
-					'<figure class="image"><a href="http://ckeditor.com"><img alt="alt text" src="/assets/sample.png">' +
-					linkIconInditatorElement +
-					'</a></figure>'
+					'<figure class="image"><a href="http://ckeditor.com"><img alt="alt text" src="/assets/sample.png"></a></figure>'
 				);
 			} );
 
@@ -64,9 +77,7 @@ describe( 'LinkImageEditing', () => {
 				setModelData( model, '<image src="/assets/sample.png" linkHref="http://ckeditor.com"></image>' );
 
 				expect( editor.getData() ).to.equal(
-					'<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png">' +
-					linkIconInditatorElement +
-					'</a></figure>'
+					'<figure class="image"><a href="http://ckeditor.com"><img src="/assets/sample.png"></a></figure>'
 				);
 			} );
 
@@ -82,7 +93,6 @@ describe( 'LinkImageEditing', () => {
 					'<figure class="image">' +
 						'<a href="http://ckeditor.com">' +
 							'<img sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w"></img>' +
-							linkIconInditatorElement +
 						'</a>' +
 					'</figure>'
 				);
@@ -345,6 +355,363 @@ describe( 'LinkImageEditing', () => {
 						);
 						return editor.destroy();
 					} );
+			} );
+		} );
+	} );
+
+	describe( 'link attributes decorator', () => {
+		describe( 'default behavior', () => {
+			const testLinks = [
+				{
+					external: true,
+					url: 'http://example.com'
+				}, {
+					external: true,
+					url: 'https://cksource.com'
+				}, {
+					external: false,
+					url: 'ftp://server.io'
+				}, {
+					external: true,
+					url: '//schemaless.org'
+				}, {
+					external: false,
+					url: 'www.ckeditor.com'
+				}, {
+					external: false,
+					url: '/relative/url.html'
+				}, {
+					external: false,
+					url: 'another/relative/url.html'
+				}, {
+					external: false,
+					url: '#anchor'
+				}, {
+					external: false,
+					url: 'mailto:some@user.org'
+				}, {
+					external: false,
+					url: 'tel:123456789'
+				}
+			];
+
+			describe( 'for link.addTargetToExternalLinks=false', () => {
+				let editor, model;
+
+				beforeEach( async () => {
+					editor = await VirtualTestEditor.create( {
+						plugins: [ Paragraph, LinkImageEditing ],
+						link: {
+							addTargetToExternalLinks: false
+						}
+					} );
+
+					model = editor.model;
+					view = editor.editing.view;
+				} );
+
+				afterEach( async () => {
+					await editor.destroy();
+				} );
+
+				testLinks.forEach( link => {
+					it( `link: ${ link.url } should not get 'target' and 'rel' attributes`, () => {
+						// Upcast check.
+						editor.setData(
+							'<figure class="image">' +
+								`<a href="${ link.url }" target="_blank" rel="noopener noreferrer">` +
+									'<img src="/assets/sample.png">' +
+								'</a>' +
+							'</figure>'
+						);
+
+						expect( getModelData( model, { withoutSelection: true } ) )
+							.to.equal( `<image linkHref="${ link.url }" src="/assets/sample.png"></image>` );
+
+						// Downcast check.
+						expect( editor.getData() ).to.equal(
+							'<figure class="image">' +
+								`<a href="${ link.url }">` +
+									'<img src="/assets/sample.png">' +
+								'</a>' +
+							'</figure>'
+						);
+					} );
+				} );
+			} );
+
+			describe( 'for link.addTargetToExternalLinks=true', () => {
+				let editor, model;
+
+				beforeEach( async () => {
+					editor = await VirtualTestEditor.create( {
+						plugins: [ Paragraph, LinkImageEditing ],
+						link: {
+							addTargetToExternalLinks: true
+						}
+					} );
+
+					model = editor.model;
+					view = editor.editing.view;
+				} );
+
+				afterEach( async () => {
+					await editor.destroy();
+				} );
+
+				testLinks.forEach( link => {
+					it( `link: ${ link.url } should be treat as ${ link.external ? 'external' : 'non-external' } link`, () => {
+						// Upcast check.
+						editor.setData(
+							`<a href="${ link.url }" target="_blank" rel="noopener noreferrer"><img src="/assets/sample.png"></a>`
+						);
+
+						expect( getModelData( model, { withoutSelection: true } ) )
+							.to.equal( `<image linkHref="${ link.url }" src="/assets/sample.png"></image>` );
+
+						// Downcast check.
+						if ( link.external ) {
+							expect( editor.getData() ).to.equal(
+								'<figure class="image">' +
+									`<a href="${ link.url }" target="_blank" rel="noopener noreferrer">` +
+										'<img src="/assets/sample.png">' +
+									'</a>' +
+								'</figure>'
+							);
+						} else {
+							expect( editor.getData() ).to.equal(
+								'<figure class="image">' +
+									`<a href="${ link.url }">` +
+										'<img src="/assets/sample.png">' +
+									'</a>' +
+								'</figure>'
+							);
+						}
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'custom config', () => {
+			describe( 'mode: automatic', () => {
+				let editor;
+
+				const testLinks = [
+					{
+						url: 'relative/url.html',
+						attributes: {}
+					}, {
+						url: 'http://exmaple.com',
+						attributes: {
+							target: '_blank'
+						}
+					}, {
+						url: 'https://example.com/download/link.pdf',
+						attributes: {
+							target: '_blank',
+							download: 'download'
+						}
+					}, {
+						url: 'mailto:some@person.io',
+						attributes: {
+							class: 'mail-url'
+						}
+					}
+				];
+
+				beforeEach( async () => {
+					editor = await VirtualTestEditor.create( {
+						plugins: [ Paragraph, LinkImageEditing ],
+						link: {
+							addTargetToExternalLinks: false,
+							decorators: {
+								isExternal: {
+									mode: 'automatic',
+									callback: url => url.startsWith( 'http' ),
+									attributes: {
+										target: '_blank'
+									}
+								},
+								isDownloadable: {
+									mode: 'automatic',
+									callback: url => url.includes( 'download' ),
+									attributes: {
+										download: 'download'
+									}
+								},
+								isMail: {
+									mode: 'automatic',
+									callback: url => url.startsWith( 'mailto:' ),
+									attributes: {
+										class: 'mail-url'
+									}
+								}
+							}
+						}
+					} );
+
+					model = editor.model;
+				} );
+
+				afterEach( () => {
+					return editor.destroy();
+				} );
+
+				testLinks.forEach( link => {
+					it( `Link: ${ link.url } should get attributes: ${ JSON.stringify( link.attributes ) }`, () => {
+						const ORDER = [ 'class', 'href', 'target', 'download' ];
+						const attributes = Object.assign( {}, link.attributes, {
+							href: link.url
+						} );
+						const attr = Object.entries( attributes ).sort( ( a, b ) => {
+							const aIndex = ORDER.indexOf( a[ 0 ] );
+							const bIndex = ORDER.indexOf( b[ 0 ] );
+							return aIndex - bIndex;
+						} );
+						const reducedAttr = attr.reduce( ( acc, cur ) => {
+							return acc + `${ cur[ 0 ] }="${ cur[ 1 ] }" `;
+						}, '' ).trim();
+
+						editor.setData( `<a href="${ link.url }"><img src="/assets/sample.png"></a>` );
+
+						expect( getModelData( model, { withoutSelection: true } ) )
+							.to.equal( `<image linkHref="${ link.url }" src="/assets/sample.png"></image>` );
+
+						// Order of attributes is important, that's why this is assert is construct in such way.
+						expect( editor.getData() ).to.equal(
+							'<figure class="image">' +
+								`<a ${ reducedAttr }>` +
+									'<img src="/assets/sample.png">' +
+								'</a>' +
+							'</figure>'
+						);
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'upcast converter', () => {
+			let editor;
+
+			it( 'should upcast attributes from initial data', async () => {
+				editor = await VirtualTestEditor.create( {
+					initialData: '<figure class="image"><a href="url" target="_blank" rel="noopener noreferrer" download="file">' +
+						'<img src="/assets/sample.png"></a></figure>',
+					plugins: [ Paragraph, LinkImageEditing ],
+					link: {
+						decorators: {
+							isExternal: {
+								mode: 'manual',
+								label: 'Open in a new window',
+								attributes: {
+									target: '_blank',
+									rel: 'noopener noreferrer'
+								}
+							},
+							isDownloadable: {
+								mode: 'manual',
+								label: 'Downloadable',
+								attributes: {
+									download: 'file'
+								}
+							}
+						}
+					}
+				} );
+
+				model = editor.model;
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<image linkHref="url" linkIsDownloadable="true" linkIsExternal="true" src="/assets/sample.png"></image>'
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should not upcast partial and incorrect attributes', async () => {
+				editor = await VirtualTestEditor.create( {
+					initialData: '<figure class="image"><a href="url" target="_blank" rel="noopener noreferrer" download="something">' +
+						'<img src="/assets/sample.png"></a></figure>',
+					plugins: [ Paragraph, LinkImageEditing ],
+					link: {
+						decorators: {
+							isExternal: {
+								mode: 'manual',
+								label: 'Open in a new window',
+								attributes: {
+									target: '_blank',
+									rel: 'noopener noreferrer'
+								}
+							},
+							isDownloadable: {
+								mode: 'manual',
+								label: 'Downloadable',
+								attributes: {
+									download: 'file'
+								}
+							}
+						}
+					}
+				} );
+
+				model = editor.model;
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<image linkHref="url" linkIsExternal="true" src="/assets/sample.png"></image>'
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'allows overwriting conversion process using highest priority', async () => {
+				editor = await VirtualTestEditor.create( {
+					initialData: '',
+					plugins: [ Paragraph, LinkImageEditing ],
+					link: {
+						decorators: {
+							isExternal: {
+								mode: 'manual',
+								label: 'Open in a new window',
+								attributes: {
+									target: '_blank',
+									rel: 'noopener noreferrer'
+								}
+							},
+							isDownloadable: {
+								mode: 'manual',
+								label: 'Downloadable',
+								attributes: {
+									download: 'file'
+								}
+							}
+						}
+					}
+				} );
+
+				model = editor.model;
+
+				// Block manual decorator converter. Consume all attributes and do nothing with them.
+				editor.conversion.for( 'upcast' ).add( dispatcher => {
+					dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+						const consumableAttributes = {
+							attributes: [ 'target', 'rel', 'download' ]
+						};
+
+						conversionApi.consumable.consume( data.viewItem, consumableAttributes );
+					}, { priority: 'highest' } );
+				} );
+
+				editor.setData(
+					'<figure class="image">' +
+						'<a href="url" target="_blank" rel="noopener noreferrer" download="something">' +
+							'<img src="/assets/sample.png">' +
+						'</a>' +
+					'</figure>'
+				);
+
+				expect( editor.getData() ).to.equal( '<figure class="image"><a href="url"><img src="/assets/sample.png"></a></figure>' );
+
+				await editor.destroy();
 			} );
 		} );
 	} );

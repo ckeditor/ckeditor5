@@ -6,12 +6,8 @@
 /* globals console:false, window, document, CKEditorInspector */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Link from '../../src/link';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import LinkImage from '../../src/linkimage';
 
 // Just to have nicely styles switchbutton;
 import '@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/list/list.css';
@@ -20,7 +16,7 @@ window.editors = {};
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Link, Typing, Paragraph, Clipboard, Undo, Enter ],
+		plugins: [ ArticlePluginSet, LinkImage ],
 		toolbar: [ 'link', 'undo', 'redo' ],
 		link: {
 			decorators: {
@@ -47,6 +43,9 @@ ClassicEditor
 					}
 				}
 			}
+		},
+		image: {
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative', '|', 'linkImage' ]
 		}
 	} )
 	.then( editor => {
@@ -59,7 +58,7 @@ ClassicEditor
 
 ClassicEditor
 	.create( document.querySelector( '#editor2' ), {
-		plugins: [ Link, Typing, Paragraph, Clipboard, Undo, Enter ],
+		plugins: [ ArticlePluginSet, LinkImage ],
 		toolbar: [ 'link', 'undo', 'redo' ],
 		link: {
 			decorators: {
@@ -79,6 +78,9 @@ ClassicEditor
 				}
 			},
 			addTargetToExternalLinks: true
+		},
+		image: {
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative', '|', 'linkImage' ]
 		}
 	} )
 	.then( editor => {
