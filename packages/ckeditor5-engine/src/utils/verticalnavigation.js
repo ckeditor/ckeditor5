@@ -25,7 +25,7 @@ export default function verticalNavigationHandler( editing ) {
 
 		const range = findTextRangeFromSelection( model, editing.mapper, selection, arrowDownPressed );
 
-		if ( range.start.isTouching( range.end ) ) {
+		if ( !range || range.start.isTouching( range.end ) ) {
 			return;
 		}
 
@@ -47,55 +47,68 @@ export default function verticalNavigationHandler( editing ) {
 			data.preventDefault();
 			data.stopPropagation();
 		}
-	}, { priority: 'highest' } );
+	} );
 }
 
 function findTextRangeFromSelection( model, mapper, selection, isForward ) {
 	const schema = model.schema;
 
-	const rootRange = model.createRangeIn( model.document.getRoot() );
-
 	if ( isForward ) {
-		const position = selection.getLastPosition();
-		const range = model.createRange( position, rootRange.end );
-		const lastRangePosition = getNearestVisibleTextPosition( schema, mapper, range, 'forward' );
+		const startPosition = selection.isCollapsed ? selection.focus : selection.getLastPosition();
+		const endPosition = getNearestNonInlineLimit( model, startPosition, 'forward' );
 
-		if ( lastRangePosition && position.isBefore( lastRangePosition ) ) {
-			return model.createRange( position, lastRangePosition );
+		const range = model.createRange( startPosition, endPosition );
+		const lastRangePosition = getNearestVisibleTextPosition( schema, mapper, range, 'backward' );
+
+		if ( lastRangePosition && startPosition.isBefore( lastRangePosition ) ) {
+			return model.createRange( startPosition, lastRangePosition );
 		}
 
 		return null;
 	} else {
-		const position = selection.getFirstPosition();
-		const range = model.createRange( rootRange.start, position );
-		const firstRangePosition = getNearestVisibleTextPosition( schema, mapper, range, 'backward' );
+		const endPosition = selection.isCollapsed ? selection.focus : selection.getFirstPosition();
+		const startPosition = getNearestNonInlineLimit( model, endPosition, 'backward' );
 
-		if ( firstRangePosition && position.isAfter( firstRangePosition ) ) {
-			return model.createRange( firstRangePosition, position );
+		const range = model.createRange( startPosition, endPosition );
+		const firstRangePosition = getNearestVisibleTextPosition( schema, mapper, range, 'forward' );
+
+		if ( firstRangePosition && endPosition.isAfter( firstRangePosition ) ) {
+			return model.createRange( firstRangePosition, endPosition );
 		}
 
 		return null;
 	}
 }
 
-function getNearestVisibleTextPosition( schema, mapper, range, direction ) {
-	let lastTextPosition = null;
+function getNearestNonInlineLimit( model, startPosition, direction ) {
+	const schema = model.schema;
+	const range = model.createRangeIn( startPosition.root );
 
-	for ( const { nextPosition, item, type } of range.getWalker( { direction } ) ) {
-		if ( schema.isLimit( item ) ) {
-			return lastTextPosition;
-		}
-
-		if ( schema.checkChild( item, '$text' ) && type == ( direction == 'forward' ? 'elementEnd' : 'elementStart' ) ) {
-			const viewElement = mapper.toViewElement( item );
-
-			if ( viewElement && !viewElement.hasClass( 'ck-hidden' ) ) {
-				lastTextPosition = nextPosition;
-			}
+	for ( const { previousPosition, item } of range.getWalker( { startPosition, direction } ) ) {
+		if ( schema.isLimit( item ) && !schema.isInline( item ) ) {
+			return previousPosition;
 		}
 	}
 
-	return lastTextPosition;
+	return direction == 'forward' ? range.end : range.start;
+}
+
+function getNearestVisibleTextPosition( schema, mapper, range, direction ) {
+	const position = direction == 'backward' ? range.end : range.start;
+
+	if ( schema.checkChild( position, '$text' ) ) {
+		return position;
+	}
+
+	for ( const { nextPosition } of range.getWalker( { direction } ) ) {
+		if ( schema.checkChild( nextPosition, '$text' ) ) {
+			const viewElement = mapper.toViewElement( nextPosition.parent );
+
+			if ( viewElement && !viewElement.hasClass( 'ck-hidden' ) ) {
+				return nextPosition;
+			}
+		}
+	}
 }
 
 function isSingleLineRange( model, editing, modelRange, isForward ) {
