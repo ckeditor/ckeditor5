@@ -276,11 +276,12 @@ export default class ToolbarView extends View {
 	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
 	 */
 	fillFromConfig( config, factory ) {
+		const toolbarItems = [];
 		config.map( name => {
 			if ( name == '|' ) {
-				this.items.add( new ToolbarSeparatorView() );
+				toolbarItems.push( new ToolbarSeparatorView() );
 			} else if ( factory.has( name ) ) {
-				this.items.add( factory.create( name ) );
+				toolbarItems.push( factory.create( name ) );
 			} else {
 				/**
 				 * There was a problem processing the configuration of the toolbar. The item with the given
@@ -303,6 +304,8 @@ export default class ToolbarView extends View {
 					'toolbarview-item-unavailable: The requested toolbar item is unavailable.' ), { name } );
 			}
 		} );
+
+		this.items.addMany( toolbarItems );
 	}
 }
 
@@ -545,18 +548,61 @@ class DynamicGrouping {
 		view.children.on( 'add', this._updateFocusCycleableItems.bind( this ) );
 		view.children.on( 'remove', this._updateFocusCycleableItems.bind( this ) );
 
+		view.items.on( 'change', ( evt, changeData ) => {
+			const index = changeData.index;
+
+			// Removing.
+			for ( let currentIndex = index; currentIndex < index + changeData.removed.length; currentIndex++ ) {
+				for ( let currentIndex = index; currentIndex < index + changeData.removed.length; currentIndex++ ) {
+					const item = changeData.removed[ currentIndex - index ];
+
+					if ( index > this.ungroupedItems.length ) {
+						this.groupedItems.remove( item );
+					} else {
+						this.ungroupedItems.remove( item );
+					}
+				}
+			}
+
+			// Adding.
+			for ( let currentIndex = index; currentIndex < index + changeData.added.length; currentIndex++ ) {
+				const item = changeData.added[ currentIndex - index ];
+
+				if ( currentIndex > this.ungroupedItems.length ) {
+					this.groupedItems.add( item, currentIndex - this.ungroupedItems.length );
+				} else {
+					this.ungroupedItems.add( item, currentIndex );
+				}
+			}
+
+			// When new ungrouped items join in and land in #ungroupedItems, there's a chance it causes
+			// the toolbar to overflow.
+			this._updateGrouping();
+		} );
+
 		// ToolbarView#items is dynamic. When an item is added, it should be automatically
 		// represented in either grouped or ungrouped items at the right index.
 		// In other words #items == concat( #ungroupedItems, #groupedItems )
 		// (in length and order).
-		view.items.on( 'add', ( evt, item, index ) => {
-			if ( index > this.ungroupedItems.length ) {
-				this.groupedItems.add( item, index - this.ungroupedItems.length );
-			} else {
-				this.ungroupedItems.add( item, index );
+		/* view.items.on( 'change', ( evt, changeData ) => {
+			if ( !changeData.added.length ) {
+				return;
 			}
 
-			// When a new ungrouped item joins in and lands in #ungroupedItems, there's a chance it causes
+			const items = changeData.added;
+			const firstIndex = changeData.index;
+
+			for ( let currentIndex = firstIndex; currentIndex < firstIndex + items.length; currentIndex++ ) {
+				const item = items[ currentIndex - firstIndex ];
+
+				if ( currentIndex > this.ungroupedItems.length ) {
+					this.groupedItems.add( item, currentIndex - this.ungroupedItems.length );
+				} else {
+					this.ungroupedItems.add( item, currentIndex );
+				}
+			}
+
+			// When new ungrouped items join in and land in #ungroupedItems, there's a chance it causes
 			// the toolbar to overflow.
 			this._updateGrouping();
 		} );
@@ -564,16 +610,30 @@ class DynamicGrouping {
 		// When an item is removed from ToolbarView#items, it should be automatically
 		// removed from either grouped or ungrouped items.
 		view.items.on( 'remove', ( evt, item, index ) => {
-			if ( index > this.ungroupedItems.length ) {
-				this.groupedItems.remove( item );
-			} else {
-				this.ungroupedItems.remove( item );
+			const items = [ item ];
+
+			for ( let currentIndex = index; currentIndex < index + items.length; currentIndex++ ) {
+				for ( let currentIndex = index; currentIndex < index + items.length; currentIndex++ ) {
+					const item = items[ currentIndex - index ];
+
+					if ( index > this.ungroupedItems.length ) {
+						this.groupedItems.remove( item );
+					} else {
+						this.ungroupedItems.remove( item );
+					}
+				}
 			}
+
+			// if ( index > this.ungroupedItems.length ) {
+			// 	this.groupedItems.remove( item );
+			// } else {
+			// 	this.ungroupedItems.remove( item );
+			// }
 
 			// Whether removed from grouped or ungrouped items, there is a chance
 			// some new space is available and we could do some ungrouping.
 			this._updateGrouping();
-		} );
+		} ); */
 
 		view.extendTemplate( {
 			attributes: {
