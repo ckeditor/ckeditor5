@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import TwoStepCaretMovement from '@ckeditor/ckeditor5-typing/src/twostepcaretmovement';
-import setupLinkHighlight from '@ckeditor/ckeditor5-typing/src/utils/inlinehighlight';
+import inlineHighlight from '@ckeditor/ckeditor5-typing/src/utils/inlinehighlight';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import AutomaticDecorators from './utils/automaticdecorators';
@@ -104,7 +104,7 @@ export default class LinkEditing extends Plugin {
 		twoStepCaretMovementPlugin.registerAttribute( 'linkHref' );
 
 		// Setup highlight over selected link.
-		setupLinkHighlight( editor, 'linkHref', 'a', HIGHLIGHT_CLASS );
+		inlineHighlight( editor, 'linkHref', 'a', HIGHLIGHT_CLASS );
 
 		// Change the attributes of the selection in certain situations after the link was inserted into the document.
 		this._enableInsertContentSelectionAttributesFixer();

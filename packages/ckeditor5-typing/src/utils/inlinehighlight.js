@@ -21,12 +21,20 @@ import findAttributeRange from './findattributerange';
  *
  * This way, adding and removing the highlight does not interfere with conversion.
  *
+ * Usage:
+ *
+ *		import inlineHighlight from '@ckeditor/ckeditor5-typing/src/utils/inlinehighlight';
+ *
+ *		// Make `ck-link_selected` class be applied on an `a` element
+ *		// whenever the corresponding `linkHref` attribute element is selected.
+ *		inlineHighlight( editor, 'linkHref', 'a', 'ck-link_selected' );
+ *
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  * @param {String} attributeName The attribute name to check.
  * @param {String} tagName The tagName of a view item.
  * @param {String} className The class name to apply in the view.
  */
-export default function setupLinkHighlight( editor, attributeName, tagName, className ) {
+export default function inlineHighlight( editor, attributeName, tagName, className ) {
 	const view = editor.editing.view;
 	const highlightedElements = new Set();
 
