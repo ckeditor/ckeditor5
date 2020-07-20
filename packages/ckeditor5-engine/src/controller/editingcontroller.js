@@ -16,7 +16,6 @@ import { clearAttributes, convertCollapsedSelection, convertRangeSelection, inse
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { convertSelectionChange } from '../conversion/upcasthelpers';
-import verticalNavigationHandler from '../utils/verticalnavigation';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 
@@ -134,8 +133,6 @@ export default class EditingController {
 		// @if CK_DEBUG_ENGINE // this.model.document.on( 'change', () => {
 		// @if CK_DEBUG_ENGINE //	dumpTrees( this.view.document, this.model.document.version );
 		// @if CK_DEBUG_ENGINE // }, { priority: 'lowest' } );
-
-		verticalNavigationHandler( this );
 	}
 
 	/**

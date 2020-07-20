@@ -7,13 +7,13 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 /**
- * @module engine/utils/verticalnavigationhandler
+ * @module widget/verticalnavigationhandler
  */
 
 export default function verticalNavigationHandler( editing ) {
 	const model = editing.model;
 
-	editing.view.document.on( 'keydown', ( evt, data ) => {
+	return ( evt, data ) => {
 		const arrowUpPressed = data.keyCode == keyCodes.arrowup;
 		const arrowDownPressed = data.keyCode == keyCodes.arrowdown;
 		const expandSelection = data.shiftKey;
@@ -47,7 +47,7 @@ export default function verticalNavigationHandler( editing ) {
 			data.preventDefault();
 			data.stopPropagation();
 		}
-	} );
+	};
 }
 
 function findTextRangeFromSelection( model, mapper, selection, isForward ) {
