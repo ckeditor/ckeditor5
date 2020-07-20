@@ -1,7 +1,7 @@
 {
   "name": "@ckeditor/ckeditor5-highlight",
   "version": "20.0.0",
-  "description": "Highilght feature for CKEditor 5.",
+  "description": "Highlight feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
     "ckeditor5",
