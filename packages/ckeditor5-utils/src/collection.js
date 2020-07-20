@@ -364,7 +364,7 @@ export default class Collection {
 		const removedItems = Array.from( this._items );
 
 		while ( this.length ) {
-			this._remove( 0, true );
+			this._remove( 0 );
 		}
 
 		this.fire( 'change', {
