@@ -148,31 +148,8 @@ describe( 'Collection', () => {
 	} );
 
 	describe( 'add()', () => {
-		it( 'should proxy its calls to addMany', () => {
-			const spy = sinon.spy( collection, 'addMany' );
-			const item = {};
-
-			collection.add( item );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, sinon.match.array.contains( [ item ] ), undefined );
-		} );
-
-		it( 'should proxy custom index', () => {
-			const stub = sinon.stub( collection, 'addMany' );
-			const item = {};
-
-			collection.add( item, 5 );
-
-			sinon.assert.calledOnce( stub );
-			sinon.assert.calledWithExactly( stub, sinon.match.any, 5 );
-		} );
-
-		it( 'should proxy returned value', () => {
-			const expectedReturn = {};
-			sinon.stub( collection, 'addMany' ).returns( expectedReturn );
-
-			expect( collection.add( 1 ) ).to.equal( expectedReturn );
+		it( 'should be chainable', () => {
+			expect( collection.add( {} ) ).to.equal( collection );
 		} );
 
 		it( 'should change the length', () => {
@@ -183,6 +160,208 @@ describe( 'Collection', () => {
 
 			collection.add( {} );
 			expect( collection ).to.have.length( 2 );
+		} );
+
+		it( 'should enable get( index )', () => {
+			const item1 = {};
+			const item2 = {};
+
+			collection.add( item1 );
+			expect( collection.get( 0 ) ).to.equal( item1 );
+
+			collection.add( item2 );
+			expect( collection.get( 0 ) ).to.equal( item1 );
+			expect( collection.get( 1 ) ).to.equal( item2 );
+		} );
+
+		it( 'should enable get( id )', () => {
+			const item1 = getItem( 'foo' );
+			const item2 = getItem( 'bar' );
+
+			collection.add( item1 );
+			collection.add( item2 );
+
+			expect( collection.get( 'foo' ) ).to.equal( item1 );
+			expect( collection.get( 'bar' ) ).to.equal( item2 );
+		} );
+
+		it( 'should enable get( id ) - custom id property', () => {
+			const collection = new Collection( { idProperty: 'name' } );
+			const item1 = getItem( 'foo', 'name' );
+			const item2 = getItem( 'bar', 'name' );
+
+			collection.add( item1 );
+			collection.add( item2 );
+
+			expect( collection.get( 'foo' ) ).to.equal( item1 );
+			expect( collection.get( 'bar' ) ).to.equal( item2 );
+		} );
+
+		it( 'should generate an id when not defined', () => {
+			const item = {};
+
+			collection.add( item );
+
+			expect( item.id ).to.be.a( 'string' );
+			expect( collection.get( item.id ) ).to.equal( item );
+		} );
+
+		it( 'should generate an id when not defined - custom id property', () => {
+			const collection = new Collection( { idProperty: 'name' } );
+			const item = {};
+
+			collection.add( item );
+
+			expect( item.name ).to.be.a( 'string' );
+			expect( collection.get( item.name ) ).to.equal( item );
+		} );
+
+		it( 'should not change an existing id of an item', () => {
+			const item = getItem( 'foo' );
+
+			collection.add( item );
+
+			expect( item.id ).to.equal( 'foo' );
+		} );
+
+		it( 'should throw when item with this id already exists', () => {
+			const item1 = getItem( 'foo' );
+			const item2 = getItem( 'foo' );
+
+			collection.add( item1 );
+
+			expectToThrowCKEditorError( () => {
+				collection.add( item2 );
+			}, /^collection-add-item-already-exists/ );
+		} );
+
+		it( 'should throw when item\'s id is not a string', () => {
+			const item = { id: 1 };
+
+			expectToThrowCKEditorError( () => {
+				collection.add( item );
+			}, /^collection-add-invalid-id/ );
+		} );
+
+		it(
+			'should generate an id when not defined, which is globally unique ' +
+			'so it is possible to move items between collections and avoid id collisions',
+			() => {
+				const collectionA = new Collection();
+				const collectionB = new Collection();
+				const itemA = {};
+				const itemB = {};
+
+				collectionA.add( itemA );
+				collectionB.add( itemB );
+				collectionB.add( collectionA.remove( itemA ) );
+
+				expect( collectionA.length ).to.equal( 0 );
+				expect( collectionB.length ).to.equal( 2 );
+				expect( collectionB.get( 0 ) ).to.equal( itemB );
+				expect( collectionB.get( 1 ) ).to.equal( itemA );
+
+				expect( itemA.id ).to.not.equal( itemB.id );
+			}
+		);
+
+		it(
+			'should generate an id when not defined, which is globally unique ' +
+			'so it is possible to move items between collections and avoid id collisions ' +
+			'– custom id property',
+			() => {
+				const collectionA = new Collection( { idProperty: 'foo' } );
+				const collectionB = new Collection( { idProperty: 'foo' } );
+				const itemA = {};
+				const itemB = {};
+
+				collectionA.add( itemA );
+				collectionB.add( itemB );
+				collectionB.add( collectionA.remove( itemA ) );
+
+				expect( collectionA.length ).to.equal( 0 );
+				expect( collectionB.length ).to.equal( 2 );
+				expect( collectionB.get( 0 ) ).to.equal( itemB );
+				expect( collectionB.get( 1 ) ).to.equal( itemA );
+
+				expect( itemA.foo ).to.not.equal( itemB.foo );
+			}
+		);
+
+		it( 'should allow an item which is already in some other collection', () => {
+			const collectionA = new Collection();
+			const collectionB = new Collection();
+			const item = {};
+
+			collectionA.add( item );
+			collectionB.add( item );
+
+			expect( collectionA.length ).to.equal( 1 );
+			expect( collectionB.length ).to.equal( 1 );
+			expect( collectionA.get( item.id ) ).to.equal( collectionB.get( 0 ) );
+		} );
+
+		it( 'should fire the "add" event', () => {
+			const spy = sinon.spy();
+			const item = {};
+
+			collection.on( 'add', spy );
+
+			collection.add( item );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item, 0 );
+		} );
+
+		it( 'should support an optional index argument', () => {
+			const item1 = getItem( 'foo' );
+			const item2 = getItem( 'bar' );
+			const item3 = getItem( 'baz' );
+			const item4 = getItem( 'abc' );
+
+			collection.add( item1 );
+			collection.add( item2, 0 );
+			collection.add( item3, 1 );
+			collection.add( item4, 3 );
+
+			expect( collection.get( 0 ) ).to.equal( item2 );
+			expect( collection.get( 1 ) ).to.equal( item3 );
+			expect( collection.get( 2 ) ).to.equal( item1 );
+			expect( collection.get( 3 ) ).to.equal( item4 );
+		} );
+
+		it( 'should throw when index argument is invalid', () => {
+			const item1 = getItem( 'foo' );
+			const item2 = getItem( 'bar' );
+			const item3 = getItem( 'baz' );
+
+			collection.add( item1 );
+
+			expectToThrowCKEditorError( () => {
+				collection.add( item2, -1 );
+			}, /^collection-add-item-invalid-index/ );
+
+			expectToThrowCKEditorError( () => {
+				collection.add( item2, 2 );
+			}, /^collection-add-item-invalid-index/ );
+
+			collection.add( item2, 1 );
+			collection.add( item3, 0 );
+
+			expect( collection.length ).to.equal( 3 );
+		} );
+
+		it( 'should fire the "add" event with the index argument', () => {
+			const spy = sinon.spy();
+
+			collection.add( {} );
+			collection.add( {} );
+
+			collection.on( 'add', spy );
+
+			const item = {};
+			collection.add( item, 1 );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item, 1 );
 		} );
 	} );
 
