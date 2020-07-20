@@ -556,24 +556,22 @@ class DynamicGrouping {
 			const index = changeData.index;
 
 			// Removing.
-			for ( let currentIndex = index; currentIndex < index + changeData.removed.length; currentIndex++ ) {
-				const item = changeData.removed[ currentIndex - index ];
-
+			for ( const removedItem of changeData.removed ) {
 				if ( index > this.ungroupedItems.length ) {
-					this.groupedItems.remove( item );
+					this.groupedItems.remove( removedItem );
 				} else {
-					this.ungroupedItems.remove( item );
+					this.ungroupedItems.remove( removedItem );
 				}
 			}
 
 			// Adding.
 			for ( let currentIndex = index; currentIndex < index + changeData.added.length; currentIndex++ ) {
-				const item = changeData.added[ currentIndex - index ];
+				const addedItem = changeData.added[ currentIndex - index ];
 
 				if ( currentIndex > this.ungroupedItems.length ) {
-					this.groupedItems.add( item, currentIndex - this.ungroupedItems.length );
+					this.groupedItems.add( addedItem, currentIndex - this.ungroupedItems.length );
 				} else {
-					this.ungroupedItems.add( item, currentIndex );
+					this.ungroupedItems.add( addedItem, currentIndex );
 				}
 			}
 
