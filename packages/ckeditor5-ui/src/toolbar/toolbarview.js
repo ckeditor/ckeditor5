@@ -548,19 +548,21 @@ class DynamicGrouping {
 		view.children.on( 'add', this._updateFocusCycleableItems.bind( this ) );
 		view.children.on( 'remove', this._updateFocusCycleableItems.bind( this ) );
 
+		// ToolbarView#items is dynamic. When an item is added or removed, it should be automatically
+		// represented in either grouped or ungrouped items at the right index.
+		// In other words #items == concat( #ungroupedItems, #groupedItems )
+		// (in length and order).
 		view.items.on( 'change', ( evt, changeData ) => {
 			const index = changeData.index;
 
 			// Removing.
 			for ( let currentIndex = index; currentIndex < index + changeData.removed.length; currentIndex++ ) {
-				for ( let currentIndex = index; currentIndex < index + changeData.removed.length; currentIndex++ ) {
-					const item = changeData.removed[ currentIndex - index ];
+				const item = changeData.removed[ currentIndex - index ];
 
-					if ( index > this.ungroupedItems.length ) {
-						this.groupedItems.remove( item );
-					} else {
-						this.ungroupedItems.remove( item );
-					}
+				if ( index > this.ungroupedItems.length ) {
+					this.groupedItems.remove( item );
+				} else {
+					this.ungroupedItems.remove( item );
 				}
 			}
 
@@ -577,63 +579,10 @@ class DynamicGrouping {
 
 			// When new ungrouped items join in and land in #ungroupedItems, there's a chance it causes
 			// the toolbar to overflow.
-			this._updateGrouping();
-		} );
-
-		// ToolbarView#items is dynamic. When an item is added, it should be automatically
-		// represented in either grouped or ungrouped items at the right index.
-		// In other words #items == concat( #ungroupedItems, #groupedItems )
-		// (in length and order).
-		/* view.items.on( 'change', ( evt, changeData ) => {
-			if ( !changeData.added.length ) {
-				return;
-			}
-
-			const items = changeData.added;
-			const firstIndex = changeData.index;
-
-			for ( let currentIndex = firstIndex; currentIndex < firstIndex + items.length; currentIndex++ ) {
-				const item = items[ currentIndex - firstIndex ];
-
-				if ( currentIndex > this.ungroupedItems.length ) {
-					this.groupedItems.add( item, currentIndex - this.ungroupedItems.length );
-				} else {
-					this.ungroupedItems.add( item, currentIndex );
-				}
-			}
-
-			// When new ungrouped items join in and land in #ungroupedItems, there's a chance it causes
-			// the toolbar to overflow.
-			this._updateGrouping();
-		} );
-
-		// When an item is removed from ToolbarView#items, it should be automatically
-		// removed from either grouped or ungrouped items.
-		view.items.on( 'remove', ( evt, item, index ) => {
-			const items = [ item ];
-
-			for ( let currentIndex = index; currentIndex < index + items.length; currentIndex++ ) {
-				for ( let currentIndex = index; currentIndex < index + items.length; currentIndex++ ) {
-					const item = items[ currentIndex - index ];
-
-					if ( index > this.ungroupedItems.length ) {
-						this.groupedItems.remove( item );
-					} else {
-						this.ungroupedItems.remove( item );
-					}
-				}
-			}
-
-			// if ( index > this.ungroupedItems.length ) {
-			// 	this.groupedItems.remove( item );
-			// } else {
-			// 	this.ungroupedItems.remove( item );
-			// }
-
-			// Whether removed from grouped or ungrouped items, there is a chance
+			// Consequently if removed from grouped or ungrouped items, there is a chance
 			// some new space is available and we could do some ungrouping.
 			this._updateGrouping();
-		} ); */
+		} );
 
 		view.extendTemplate( {
 			attributes: {
