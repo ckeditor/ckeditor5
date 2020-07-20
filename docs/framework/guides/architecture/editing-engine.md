@@ -163,7 +163,7 @@ Markers are a special type of ranges.
 * They can be {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToData converted to the data view}, to store them with the document data.
 * They can be {@link module:engine/conversion/upcasthelpers~UpcastHelpers#dataToMarker loaded with the document data}.
 
-Markers are ideal for storing and maintaining additional data &mdash; such as comments or selections of other users &mdash; that is related to some portion of the content.
+Markers are ideal for storing and maintaining additional data related to portions of the document &mdash; such as comments or selections of other users.
 
 ### Schema
 

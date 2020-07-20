@@ -239,8 +239,8 @@ export default class DowncastHelpers extends ConversionHelpers {
 	/**
 	 * Model marker to view element conversion helper.
 	 *
-	 * **Note**: This method should be used only for editing downcast. For data downcast, use {@link #markerToData} which produces
-	 * valid HTML data.
+	 * **Note**: This method should be used only for editing downcast. For data downcast, use
+	 * {@link #markerToData `#markerToData()`} that produces valid HTML data.
 	 *
 	 * This conversion results in creating a view element on the boundaries of the converted marker. If the converted marker
 	 * is collapsed, only one element is created. For example, model marker set like this: `<paragraph>F[oo b]ar</paragraph>`
@@ -366,7 +366,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 * * if the marker boundary is at a position where text nodes are allowed, then a view element with specified tag name
 	 * and `name` attribute is added at that position,
-	 * * in other case, a specified attribute is set on an view element that is before/after marker boundary.
+	 * * in other cases, a specified attribute is set on a view element that is before/after marker boundary.
 	 *
 	 * Tag and attribute names and values are generated from the marker name:
 	 *
@@ -375,7 +375,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * * templates for view elements are `<group-start name="name">` and `<group-end name="name">`.
 	 *
 	 * Attributes mark whether given marker start or end boundary is before or after given element.
-	 * Attributes `data-group-start-before` and `data-group-end-after` are favored. Other two are used when former two cannot be used.
+	 * Attributes `data-group-start-before` and `data-group-end-after` are favored. The other two are used when the former two cannot be used.
 	 *
 	 * Typically, the marker names use `group:uniqueId:otherData` convention. For example: `comment:e34zfk9k2n459df53sjl34:zx32c`.
 	 * The default configuration for this conversion is that the first part is `group` part and the rest of

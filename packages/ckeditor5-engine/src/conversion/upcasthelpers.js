@@ -346,10 +346,10 @@ export default class UpcastHelpers extends ConversionHelpers {
 	/**
 	 * View to model marker conversion helper.
 	 *
-	 * Converts view data created by {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToData} back to a model marker.
+	 * Converts view data created by {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToData `#markerToData()`} back to a model marker.
 	 *
-	 * This converter looks for specific view elements and view attributes that marks marker boundaries. See
-	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToData} to learn what view data is expected by this converter.
+	 * This converter looks for specific view elements and view attributes that mark marker boundaries. See
+	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToData `#markerToData()`} to learn what view data is expected by this converter.
 	 *
 	 * The `config.view` property is equal to the marker group name to convert.
 	 *
