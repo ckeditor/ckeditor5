@@ -12,6 +12,7 @@ import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 
 import Widget from '../../src/widget';
 import WidgetTypeAround from '../../src/widgettypearound/widgettypearound';
+import { TYPE_AROUND_SELECTION_ATTRIBUTE } from '../../src/widgettypearound/utils';
 import { toWidget } from '../../src/utils';
 
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -55,6 +56,30 @@ describe( 'WidgetTypeAround', () => {
 
 		it( 'should have a name', () => {
 			expect( WidgetTypeAround.pluginName ).to.equal( 'WidgetTypeAround' );
+		} );
+
+		describe( '#isEnabled support', () => {
+			it( 'should add class to the editing view root when becoming disabled', () => {
+				editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+				expect( viewRoot.hasClass( 'ck-widget__type-around_disabled' ) ).to.be.true;
+
+				editor.plugins.get( WidgetTypeAround ).isEnabled = true;
+				expect( viewRoot.hasClass( 'ck-widget__type-around_disabled' ) ).to.be.false;
+			} );
+
+			it( 'should remove the model selection attribute when becoming disabled', () => {
+				setModelData( editor.model, '<blockWidget></blockWidget>' );
+
+				editor.model.change( writer => {
+					writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'foo' );
+				} );
+
+				expect( editor.model.document.selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'foo' );
+
+				editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
+				expect( editor.model.document.selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+			} );
 		} );
 	} );
 
@@ -299,7 +324,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowright' );
 
 				expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 				const viewWidget = viewRoot.getChild( 1 );
 
@@ -316,7 +341,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowleft' );
 
 				expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]<paragraph>foo</paragraph>' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 				const viewWidget = viewRoot.getChild( 0 );
 
@@ -333,7 +358,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowright' );
 
 				expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 				const viewWidget = viewRoot.getChild( 0 );
 
@@ -350,7 +375,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowleft' );
 
 				expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 				const viewWidget = viewRoot.getChild( 0 );
 
@@ -367,7 +392,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowright', { shiftKey: true } );
 
 				expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
 				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -379,7 +404,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'a' );
 				fireMutation( 'a' );
 
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				expect( getModelData( model ) ).to.equal( '<paragraph>fooa[]</paragraph><blockWidget></blockWidget>' );
 
 				const viewWidget = viewRoot.getChild( 1 );
@@ -396,7 +421,7 @@ describe( 'WidgetTypeAround', () => {
 
 				fireKeyboardEvent( 'arrowright' );
 
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 				const viewWidget = viewRoot.getChild( 1 );
 
@@ -412,7 +437,7 @@ describe( 'WidgetTypeAround', () => {
 
 				fireKeyboardEvent( 'arrowleft' );
 
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 				const viewWidget = viewRoot.getChild( 0 );
 
@@ -428,7 +453,7 @@ describe( 'WidgetTypeAround', () => {
 
 				fireKeyboardEvent( 'arrowright' );
 
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 				const viewWidget = viewRoot.getChild( 1 );
 
@@ -444,7 +469,7 @@ describe( 'WidgetTypeAround', () => {
 
 				fireKeyboardEvent( 'arrowleft' );
 
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 				const viewWidget = viewRoot.getChild( 0 );
 
@@ -480,7 +505,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowleft' );
 
 				expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
 				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -488,7 +513,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowleft' );
 
 				expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 				const viewWidget = viewRoot.getChild( 1 );
 
@@ -505,7 +530,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowright' );
 
 				expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]<paragraph>foo</paragraph>' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
 				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -513,7 +538,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowright' );
 
 				expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]foo</paragraph>' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 				const viewWidget = viewRoot.getChild( 0 );
 
@@ -530,7 +555,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowleft', { shiftKey: true } );
 
 				expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
 				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -538,7 +563,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowleft', { shiftKey: true } );
 
 				expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
 				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -550,7 +575,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowleft' );
 
 				expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
 				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -558,7 +583,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowleft' );
 
 				expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
 				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -578,7 +603,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowright' );
 
 				expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
 				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -586,7 +611,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowright' );
 
 				expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
 				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -606,7 +631,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowleft' );
 
 				expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
 				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -614,7 +639,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowright' );
 
 				expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 				const viewWidget = viewRoot.getChild( 0 );
 
@@ -631,7 +656,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowright' );
 
 				expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
 				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -639,7 +664,7 @@ describe( 'WidgetTypeAround', () => {
 				fireKeyboardEvent( 'arrowleft' );
 
 				expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-				expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 				const viewWidget = viewRoot.getChild( 0 );
 
@@ -651,28 +676,44 @@ describe( 'WidgetTypeAround', () => {
 			} );
 		} );
 
+		it( 'should not work when the plugin is disabled', () => {
+			editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
+			setModelData( editor.model, '<paragraph>foo[]</paragraph><blockWidget></blockWidget><paragraph>bar</paragraph>' );
+
+			fireKeyboardEvent( 'arrowright' );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+
+			fireKeyboardEvent( 'arrowdown' );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><blockWidget></blockWidget><paragraph>[]bar</paragraph>' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+		} );
+
 		it( 'should activate and deactivate the "fake caret" using all 4 arrow keys', () => {
 			setModelData( editor.model, '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
 
 			fireKeyboardEvent( 'arrowright' );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 			fireKeyboardEvent( 'arrowdown' );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 			fireKeyboardEvent( 'arrowup' );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 			fireKeyboardEvent( 'arrowleft' );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 		} );
 
 		it( 'should quit the "fake caret" mode when the editor loses focus', () => {
@@ -683,13 +724,13 @@ describe( 'WidgetTypeAround', () => {
 			fireKeyboardEvent( 'arrowright' );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 			editor.ui.focusTracker.isFocused = false;
 
 			const viewWidget = viewRoot.getChild( 1 );
 
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 			expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 			expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 		} );
@@ -700,7 +741,7 @@ describe( 'WidgetTypeAround', () => {
 			fireKeyboardEvent( 'arrowright' );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 			model.change( writer => {
 				writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
@@ -708,7 +749,7 @@ describe( 'WidgetTypeAround', () => {
 
 			const viewWidget = viewRoot.getChild( 1 );
 
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 			expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 			expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 		} );
@@ -719,14 +760,14 @@ describe( 'WidgetTypeAround', () => {
 			fireKeyboardEvent( 'arrowright' );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 			// This could happen in collaboration.
 			model.document.selection.fire( 'change:range', {
 				directChange: false
 			} );
 
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 			const viewWidget = viewRoot.getChild( 1 );
 
@@ -740,14 +781,14 @@ describe( 'WidgetTypeAround', () => {
 			const selection = model.createSelection( modelSelection );
 
 			model.change( writer => {
-				writer.setSelectionAttribute( 'widget-type-around', 'before' );
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
 				model.deleteContent( selection );
 			} );
 
 			const viewWidget = viewRoot.getChild( 1 );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph></paragraph><paragraph>baz</paragraph>' );
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 			expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 			expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 		} );
@@ -756,12 +797,12 @@ describe( 'WidgetTypeAround', () => {
 			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
 
 			model.change( writer => {
-				writer.setSelectionAttribute( 'widget-type-around', 'before' );
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
 				writer.remove( editor.model.document.getRoot().getChild( 1 ) );
 			} );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>baz</paragraph>' );
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 		} );
 
 		describe( 'inserting a new paragraph', () => {
@@ -770,7 +811,7 @@ describe( 'WidgetTypeAround', () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
 					fireKeyboardEvent( 'arrowleft' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 					fireKeyboardEvent( 'enter' );
 					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><blockWidget></blockWidget>' );
@@ -780,7 +821,7 @@ describe( 'WidgetTypeAround', () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
 					fireKeyboardEvent( 'arrowright' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 					fireKeyboardEvent( 'enter' );
 					expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]</paragraph>' );
@@ -797,49 +838,62 @@ describe( 'WidgetTypeAround', () => {
 					editor.execute( 'undo' );
 
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+				} );
+
+				it( 'should not work when the plugin is disabled', () => {
+					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+					editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
+					model.change( writer => {
+						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
+					} );
+
+					fireKeyboardEvent( 'enter' );
+					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 				} );
 			} );
 
 			describe( 'on Enter key press when the widget is selected (no "fake caret", though)', () => {
 				it( 'should insert a new paragraph after the widget if Enter was pressed', () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 					fireKeyboardEvent( 'enter' );
 
 					expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]</paragraph>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				} );
 
 				it( 'should insert a new paragraph before the widget if Shift+Enter was pressed', () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 					fireKeyboardEvent( 'enter', { shiftKey: true } );
 
 					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><blockWidget></blockWidget>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				} );
 
 				it( 'should insert a new paragraph only if an entire widget is selected (selected nested editable content)', () => {
 					setModelData( editor.model, '<blockWidget><nested>[foo] bar</nested></blockWidget>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 					fireKeyboardEvent( 'enter' );
 
 					expect( getModelData( model ) ).to.equal( '<blockWidget><nested>[] bar</nested></blockWidget>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				} );
 
 				it( 'should insert a new paragraph only if an entire widget is selected (selected widget siblings)', () => {
 					setModelData( editor.model, '<paragraph>f[oo</paragraph><blockWidget></blockWidget><paragraph>o]o</paragraph>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 					fireKeyboardEvent( 'enter' );
 
 					expect( getModelData( model ) ).to.equal( '<paragraph>f</paragraph><paragraph>[]o</paragraph>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				} );
 
 				it( 'should split ancestors to find a place that allows a widget', () => {
@@ -879,27 +933,37 @@ describe( 'WidgetTypeAround', () => {
 
 				it( 'should integrate with the undo feature', () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 					fireKeyboardEvent( 'enter' );
 
 					expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]</paragraph>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 					editor.execute( 'undo' );
 
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				} );
 
 				it( 'should do nothing if a non-type-around-friendly content is selected', () => {
 					setModelData( editor.model, '<paragraph>foo[<inlineWidget></inlineWidget>]</paragraph>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 					fireKeyboardEvent( 'enter' );
 
 					expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[]</paragraph>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+				} );
+
+				it( 'should not work when the plugin is disabled', () => {
+					editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
+					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+					fireKeyboardEvent( 'enter' );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 				} );
 			} );
 
@@ -908,40 +972,40 @@ describe( 'WidgetTypeAround', () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
 					fireKeyboardEvent( 'arrowleft' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 					fireKeyboardEvent( 'a' );
 					fireMutation( 'a' );
 
 					expect( getModelData( model ) ).to.equal( '<paragraph>a[]</paragraph><blockWidget></blockWidget>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				} );
 
 				it( 'should insert a character inside a new paragraph after a widget if the caret was "after" it', () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
 					fireKeyboardEvent( 'arrowright' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 					fireKeyboardEvent( 'a' );
 					fireMutation( 'a' );
 
 					expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>a[]</paragraph>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				} );
 
 				it( 'should do nothing if a "safe" keystroke was pressed', () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
 					fireKeyboardEvent( 'arrowright' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 					fireKeyboardEvent( 'esc' );
 					fireKeyboardEvent( 'tab' );
 					fireKeyboardEvent( 'd', { ctrlKey: true } );
 
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 				} );
 
 				it( 'should integrate with the undo feature', () => {
@@ -955,11 +1019,27 @@ describe( 'WidgetTypeAround', () => {
 
 					editor.execute( 'undo' );
 					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><blockWidget></blockWidget>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 					editor.execute( 'undo' );
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+				} );
+
+				it( 'should not work when the plugin is disabled', () => {
+					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+					editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
+					model.change( writer => {
+						writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+					} );
+
+					fireKeyboardEvent( 'a' );
+					fireMutation( 'a' );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>a[]</paragraph>' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				} );
 			} );
 		} );
@@ -974,11 +1054,11 @@ describe( 'WidgetTypeAround', () => {
 					fireKeyboardEvent( 'arrowleft' );
 
 					expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 					fireDeleteEvent();
 					expect( getModelData( model ) ).to.equal( '<paragraph>fo[]</paragraph><blockWidget></blockWidget>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -990,11 +1070,11 @@ describe( 'WidgetTypeAround', () => {
 					fireKeyboardEvent( 'arrowleft' );
 
 					expect( getModelData( model ) ).to.equal( '<paragraph></paragraph>[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 					fireDeleteEvent();
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -1011,11 +1091,11 @@ describe( 'WidgetTypeAround', () => {
 						'</blockQuote>' +
 						'[<blockWidget></blockWidget>]'
 					);
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 					fireDeleteEvent();
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -1041,7 +1121,7 @@ describe( 'WidgetTypeAround', () => {
 						'</blockQuote>' +
 						'[<blockWidget></blockWidget>]'
 					);
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 					// Assert that the paragraph is merged rather than deleted because
 					// it is safer for collaboration.
@@ -1056,7 +1136,7 @@ describe( 'WidgetTypeAround', () => {
 						'</blockQuote>' +
 						'<blockWidget></blockWidget>'
 					);
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 					expect( operationType ).to.equal( 'merge' );
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
@@ -1069,11 +1149,11 @@ describe( 'WidgetTypeAround', () => {
 					fireKeyboardEvent( 'arrowleft' );
 
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 					fireDeleteEvent();
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -1085,11 +1165,11 @@ describe( 'WidgetTypeAround', () => {
 					fireKeyboardEvent( 'arrowright' );
 
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 					fireDeleteEvent();
 					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -1101,11 +1181,11 @@ describe( 'WidgetTypeAround', () => {
 					fireKeyboardEvent( 'arrowright' );
 
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]<paragraph>foo</paragraph>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 					fireDeleteEvent();
 					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -1120,11 +1200,11 @@ describe( 'WidgetTypeAround', () => {
 						'<blockWidget><nested>foo</nested></blockWidget>' +
 						'[<blockWidget></blockWidget>]'
 					);
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 					fireDeleteEvent();
 					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><blockWidget></blockWidget>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -1138,11 +1218,11 @@ describe( 'WidgetTypeAround', () => {
 					fireKeyboardEvent( 'arrowright' );
 
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]<paragraph>foo</paragraph>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 					fireDeleteEvent( true );
 					expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]oo</paragraph>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -1154,11 +1234,11 @@ describe( 'WidgetTypeAround', () => {
 					fireKeyboardEvent( 'arrowright' );
 
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]<paragraph></paragraph>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 					fireDeleteEvent( true );
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -1173,11 +1253,11 @@ describe( 'WidgetTypeAround', () => {
 						'[<blockWidget></blockWidget>]' +
 						'<blockQuote><paragraph></paragraph></blockQuote>'
 					);
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 					fireDeleteEvent( true );
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -1203,7 +1283,7 @@ describe( 'WidgetTypeAround', () => {
 							'<paragraph>foo</paragraph>' +
 						'</blockQuote>'
 					);
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 					// Assert that the paragraph is merged rather than deleted because
 					// it is safer for collaboration.
@@ -1218,7 +1298,7 @@ describe( 'WidgetTypeAround', () => {
 							'<paragraph>[]foo</paragraph>' +
 						'</blockQuote>'
 					);
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 					expect( operationType ).to.equal( 'merge' );
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
@@ -1231,11 +1311,11 @@ describe( 'WidgetTypeAround', () => {
 					fireKeyboardEvent( 'arrowright' );
 
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 					fireDeleteEvent( true );
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -1247,11 +1327,11 @@ describe( 'WidgetTypeAround', () => {
 					fireKeyboardEvent( 'arrowleft' );
 
 					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 					fireDeleteEvent( true );
 					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -1263,11 +1343,11 @@ describe( 'WidgetTypeAround', () => {
 					fireKeyboardEvent( 'arrowleft' );
 
 					expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'before' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
 					fireDeleteEvent( true );
 					expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[]</paragraph>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -1282,15 +1362,32 @@ describe( 'WidgetTypeAround', () => {
 						'[<blockWidget></blockWidget>]' +
 						'<blockWidget><nested>foo</nested></blockWidget>'
 					);
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.equal( 'after' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
 					fireDeleteEvent( true );
 					expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]</paragraph>' );
-					expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 					sinon.assert.calledOnce( eventInfoStub.stop );
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
 				} );
+			} );
+
+			it( 'should not work when the plugin is disabled', () => {
+				setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+				fireKeyboardEvent( 'arrowleft' );
+
+				expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
+
+				editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
+				model.change( writer => {
+					writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+				} );
+
+				fireDeleteEvent();
+				expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 			} );
 
 			function fireDeleteEvent( isForward = false ) {
@@ -1362,7 +1459,7 @@ describe( 'WidgetTypeAround', () => {
 			const selection = model.createSelection( modelSelection );
 
 			model.change( writer => {
-				writer.setSelectionAttribute( 'widget-type-around', 'before' );
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
 				model.insertContent( createParagraph( 'bar' ), selection );
 			} );
 
@@ -1375,12 +1472,12 @@ describe( 'WidgetTypeAround', () => {
 
 			const batchSet = setupBatchWatch();
 
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 			model.insertContent( createParagraph( 'bar' ) );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar[]</paragraph><paragraph>baz</paragraph>' );
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 			expect( batchSet.size ).to.be.equal( 1 );
 		} );
 
@@ -1390,13 +1487,13 @@ describe( 'WidgetTypeAround', () => {
 			const batchSet = setupBatchWatch();
 
 			model.change( writer => {
-				writer.setSelectionAttribute( 'widget-type-around', 'before' );
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
 			} );
 
 			model.insertContent( createParagraph( 'bar' ) );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>bar[]</paragraph><blockWidget></blockWidget>' );
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 			expect( batchSet.size ).to.be.equal( 1 );
 		} );
 
@@ -1406,13 +1503,13 @@ describe( 'WidgetTypeAround', () => {
 			const batchSet = setupBatchWatch();
 
 			model.change( writer => {
-				writer.setSelectionAttribute( 'widget-type-around', 'after' );
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
 			} );
 
 			model.insertContent( createParagraph( 'bar' ) );
 
 			expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>bar[]</paragraph>' );
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 			expect( batchSet.size ).to.be.equal( 1 );
 		} );
 
@@ -1422,13 +1519,13 @@ describe( 'WidgetTypeAround', () => {
 			const batchSet = setupBatchWatch();
 
 			model.change( writer => {
-				writer.setSelectionAttribute( 'widget-type-around', 'before' );
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
 			} );
 
 			model.insertContent( createParagraph( 'bar' ) );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar[]</paragraph><blockWidget></blockWidget>' );
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 			expect( batchSet.size ).to.be.equal( 1 );
 		} );
 
@@ -1438,14 +1535,28 @@ describe( 'WidgetTypeAround', () => {
 			const batchSet = setupBatchWatch();
 
 			model.change( writer => {
-				writer.setSelectionAttribute( 'widget-type-around', 'after' );
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
 			} );
 
 			model.insertContent( createParagraph( 'bar' ) );
 
 			expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>bar[]</paragraph><paragraph>foo</paragraph>' );
-			expect( modelSelection.getAttribute( 'widget-type-around' ) ).to.be.undefined;
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should not work when the plugin is disabled', () => {
+			setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+			editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
+			model.change( writer => {
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+			} );
+
+			model.insertContent( createParagraph( 'bar' ) );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>bar[]</paragraph>' );
 		} );
 
 		function createParagraph( text ) {

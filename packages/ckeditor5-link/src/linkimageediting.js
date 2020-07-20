@@ -11,6 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import LinkEditing from './linkediting';
 
+import linkIcon from '../theme/icons/link.svg';
+
 /**
  * The link image engine feature.
  *
@@ -115,6 +117,14 @@ function downcastImageLink() {
 			// But we need to check whether the link element exists.
 			const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
 
+			// Create an icon indicator for a linked image.
+			const linkIconIndicator = writer.createUIElement( 'span', { class: 'ck ck-link-image_icon' }, function( domDocument ) {
+				const domElement = this.toDomElement( domDocument );
+				domElement.innerHTML = linkIcon;
+
+				return domElement;
+			} );
+
 			// If so, update the attribute if it's defined or remove the entire link if the attribute is empty.
 			if ( linkInImage ) {
 				if ( data.attributeNewValue ) {
@@ -135,6 +145,9 @@ function downcastImageLink() {
 
 				// 3. Move the image to the link.
 				writer.move( writer.createRangeOn( viewFigure.getChild( 1 ) ), writer.createPositionAt( linkElement, 0 ) );
+
+				// 4. Inset the linked image icon indicator.
+				writer.insert( writer.createPositionAt( linkElement, 'end' ), linkIconIndicator );
 			}
 		} );
 	};

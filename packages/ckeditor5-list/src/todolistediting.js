@@ -15,13 +15,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import {
 	dataModelViewInsertion,
-	dataModelViewTextInsertion,
 	dataViewModelCheckmarkInsertion,
-	mapModelToViewZeroOffsetPosition,
+	mapModelToViewPosition,
 	modelViewChangeChecked,
 	modelViewChangeType,
 	modelViewInsertion
 } from './todolistconverters';
+import { getLocalizedArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * The engine of the to-do list feature. It handles creating, editing and removing to-do lists and their items.
@@ -76,7 +76,7 @@ export default class TodoListEditing extends Plugin {
 
 		// Define converters.
 		data.downcastDispatcher.on( 'insert:listItem', dataModelViewInsertion( model ), { priority: 'high' } );
-		data.downcastDispatcher.on( 'insert:$text', dataModelViewTextInsertion, { priority: 'high' } );
+		data.upcastDispatcher.on( 'element:input', dataViewModelCheckmarkInsertion, { priority: 'high' } );
 
 		editing.downcastDispatcher.on(
 			'insert:listItem',
@@ -92,9 +92,8 @@ export default class TodoListEditing extends Plugin {
 			modelViewChangeChecked( listItem => this._handleCheckmarkChange( listItem ) )
 		);
 
-		editing.mapper.on( 'modelToViewPosition', mapModelToViewZeroOffsetPosition( editing.view, editing.mapper ) );
-
-		data.upcastDispatcher.on( 'element:input', dataViewModelCheckmarkInsertion, { priority: 'high' } );
+		editing.mapper.on( 'modelToViewPosition', mapModelToViewPosition( editing.view ) );
+		data.mapper.on( 'modelToViewPosition', mapModelToViewPosition( editing.view ) );
 
 		// Jump at the end of the previous node on left arrow key press, when selection is after the checkbox.
 		//
@@ -106,10 +105,7 @@ export default class TodoListEditing extends Plugin {
 		// <blockquote><p>Foo{}</p></blockquote>
 		// <ul><li><checkbox/>Bar</li></ul>
 		//
-		// Note: When content language direction is RTL, the behaviour is mirrored.
-		const localizedJumpOverCheckmarkKey = editor.locale.contentLanguageDirection === 'ltr' ? 'arrowleft' : 'arrowright';
-
-		editor.keystrokes.set( localizedJumpOverCheckmarkKey, ( evt, stop ) => jumpOverCheckmarkOnSideArrowKeyPress( stop, model ) );
+		this.listenTo( editing.view.document, 'keydown', jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ) );
 
 		// Toggle check state of selected to-do list items on keystroke.
 		editor.keystrokes.set( 'Ctrl+space', () => editor.execute( 'todoListCheck' ) );
@@ -178,25 +174,37 @@ export default class TodoListEditing extends Plugin {
 // moving the selection to the left/right (LTR/RTL).
 //
 // @private
-// @param {Function} stopKeyEvent
 // @param {module:engine/model/model~Model} model
-function jumpOverCheckmarkOnSideArrowKeyPress( stopKeyEvent, model ) {
-	const schema = model.schema;
-	const selection = model.document.selection;
+// @param {module:utils/locale~Locale} locale
+// @returns {Function} Callback for 'keydown' events.
+function jumpOverCheckmarkOnSideArrowKeyPress( model, locale ) {
+	return ( eventInfo, domEventData ) => {
+		const direction = getLocalizedArrowKeyCodeDirection( domEventData.keyCode, locale.contentLanguageDirection );
 
-	if ( !selection.isCollapsed ) {
-		return;
-	}
-
-	const position = selection.getFirstPosition();
-	const parent = position.parent;
-
-	if ( parent.name === 'listItem' && parent.getAttribute( 'listType' ) == 'todo' && position.isAtStart ) {
-		const newRange = schema.getNearestSelectionRange( model.createPositionBefore( parent ), 'backward' );
-
-		if ( newRange ) {
-			stopKeyEvent();
-			model.change( writer => writer.setSelection( newRange ) );
+		if ( direction != 'left' ) {
+			return;
 		}
-	}
+
+		const schema = model.schema;
+		const selection = model.document.selection;
+
+		if ( !selection.isCollapsed ) {
+			return;
+		}
+
+		const position = selection.getFirstPosition();
+		const parent = position.parent;
+
+		if ( parent.name === 'listItem' && parent.getAttribute( 'listType' ) == 'todo' && position.isAtStart ) {
+			const newRange = schema.getNearestSelectionRange( model.createPositionBefore( parent ), 'backward' );
+
+			if ( newRange ) {
+				model.change( writer => writer.setSelection( newRange ) );
+			}
+
+			domEventData.preventDefault();
+			domEventData.stopPropagation();
+			eventInfo.stop();
+		}
+	};
 }

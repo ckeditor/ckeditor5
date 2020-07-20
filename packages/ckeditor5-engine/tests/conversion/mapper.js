@@ -536,7 +536,7 @@ describe( 'Mapper', () => {
 			it( 'should transform viewTextFOO 3', () => createToModelTest( viewTextFOO, 3, modelCaption, 3 ) );
 		} );
 
-		describe( 'toViewPosition', () => {
+		describe( 'toViewPosition and findPositionIn', () => {
 			it( 'should transform modelDiv 0', () => createToViewTest( modelDiv, 0, viewTextX, 0 ) );
 			it( 'should transform modelDiv 1', () => createToViewTest( modelDiv, 1, viewTextX, 1 ) );
 			it( 'should transform modelDiv 2', () => createToViewTest( modelDiv, 2, viewTextZZ, 0 ) );
@@ -553,7 +553,11 @@ describe( 'Mapper', () => {
 
 		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
 			const modelPosition = ModelPosition._createAt( modelElement, modelOffset );
-			const viewPosition = mapper.toViewPosition( modelPosition );
+			let viewPosition = mapper.toViewPosition( modelPosition );
+			expect( viewPosition.parent ).to.equal( viewElement );
+			expect( viewPosition.offset ).to.equal( viewOffset );
+
+			viewPosition = mapper.findPositionIn( mapper.toViewElement( modelElement ), modelOffset );
 			expect( viewPosition.parent ).to.equal( viewElement );
 			expect( viewPosition.offset ).to.equal( viewOffset );
 		}

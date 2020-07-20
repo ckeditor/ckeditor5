@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
 import { getTableCellsContainingSelection } from '../utils/selection';
-import { findAncestor, isHeadingColumnCell } from '../utils/common';
+import { isHeadingColumnCell } from '../utils/common';
 import { removeEmptyRowsColumns } from '../utils/structure';
 
 /**
@@ -106,10 +106,10 @@ export default class MergeCellCommand extends Command {
 			writer.setSelection( writer.createRangeIn( cellToExpand ) );
 
 			const tableUtils = this.editor.plugins.get( 'TableUtils' );
-			const table = findAncestor( 'table', removedTableCellRow );
+			const table = removedTableCellRow.findAncestor( 'table' );
 
 			// Remove empty rows and columns after merging.
-			removeEmptyRowsColumns( table, tableUtils, writer.batch );
+			removeEmptyRowsColumns( table, tableUtils );
 		} );
 	}
 
