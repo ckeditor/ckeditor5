@@ -879,9 +879,9 @@ function removeUIElement() {
 // @returns {Function} Add marker converter.
 function insertMarkerData( viewCreator ) {
 	return ( evt, data, conversionApi ) => {
-		const viewData = viewCreator( data.markerName );
+		const viewMarkerData = viewCreator( data.markerName );
 
-		if ( !viewData ) {
+		if ( !viewMarkerData ) {
 			return;
 		}
 
@@ -891,68 +891,68 @@ function insertMarkerData( viewCreator ) {
 			return;
 		}
 
-		const mapper = conversionApi.mapper;
-		const viewWriter = conversionApi.writer;
-
 		// Adding closing data first to keep the proper order in the view.
-		handleMarkerBoundary( markerRange, false );
-		handleMarkerBoundary( markerRange, true );
+		handleMarkerBoundary( markerRange, false, conversionApi, data, viewMarkerData );
+		handleMarkerBoundary( markerRange, true, conversionApi, data, viewMarkerData );
 
 		evt.stop();
-
-		function handleMarkerBoundary( range, isStart ) {
-			const modelPosition = isStart ? range.start : range.end;
-			const canInsertElement = conversionApi.schema.checkChild( modelPosition, '$text' );
-
-			if ( canInsertElement ) {
-				const viewPosition = mapper.toViewPosition( modelPosition );
-
-				insertMarkerAsElement( viewPosition, isStart );
-			} else {
-				let modelElement;
-				let isBefore;
-
-				// If possible, we want to add `data-group-start-before` and `data-group-end-after` attributes.
-				// Below `if` is constructed in a way that will favor adding these attributes.
-				//
-				// Also, I assume that there will be always an element either after or before the position.
-				// If not, then it is a case when we are not in a position where text is allowed and also there are no elements around...
-				if ( isStart && modelPosition.nodeAfter || !isStart && !modelPosition.nodeBefore ) {
-					modelElement = modelPosition.nodeAfter;
-					isBefore = true;
-				} else {
-					modelElement = modelPosition.nodeBefore;
-					isBefore = false;
-				}
-
-				const viewElement = mapper.toViewElement( modelElement );
-
-				insertMarkerAsAttribute( viewElement, isStart, isBefore );
-			}
-		}
-
-		function insertMarkerAsAttribute( viewElement, isStart, isBefore ) {
-			const attributeName = `data-${ viewData.group }-${ isStart ? 'start' : 'end' }-${ isBefore ? 'before' : 'after' }`;
-
-			const markerNames = viewElement.hasAttribute( attributeName ) ? viewElement.getAttribute( attributeName ).split( ',' ) : [];
-
-			// Adding marker name at the beginning to have the same order in the attribute as there is with marker elements.
-			markerNames.unshift( viewData.name );
-
-			viewWriter.setAttribute( attributeName, markerNames.join( ',' ), viewElement );
-			conversionApi.mapper.bindElementToMarker( viewElement, data.markerName );
-		}
-
-		function insertMarkerAsElement( position, isStart ) {
-			const viewElementName = `${ viewData.group }-${ isStart ? 'start' : 'end' }`;
-
-			const attrs = viewData.name ? { 'name': viewData.name } : null;
-			const viewElement = viewWriter.createUIElement( viewElementName, attrs );
-
-			viewWriter.insert( position, viewElement );
-			conversionApi.mapper.bindElementToMarker( viewElement, data.markerName );
-		}
 	};
+}
+
+// Helper function for `insertMarkerData()` that marks a marker boundary at the beginning or end of given `range`.
+function handleMarkerBoundary( range, isStart, conversionApi, data, viewMarkerData ) {
+	const modelPosition = isStart ? range.start : range.end;
+	const canInsertElement = conversionApi.schema.checkChild( modelPosition, '$text' );
+
+	if ( canInsertElement ) {
+		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
+
+		insertMarkerAsElement( viewPosition, isStart, conversionApi, data, viewMarkerData );
+	} else {
+		let modelElement;
+		let isBefore;
+
+		// If possible, we want to add `data-group-start-before` and `data-group-end-after` attributes.
+		// Below `if` is constructed in a way that will favor adding these attributes.
+		//
+		// Also, I assume that there will be always an element either after or before the position.
+		// If not, then it is a case when we are not in a position where text is allowed and also there are no elements around...
+		if ( isStart && modelPosition.nodeAfter || !isStart && !modelPosition.nodeBefore ) {
+			modelElement = modelPosition.nodeAfter;
+			isBefore = true;
+		} else {
+			modelElement = modelPosition.nodeBefore;
+			isBefore = false;
+		}
+
+		const viewElement = conversionApi.mapper.toViewElement( modelElement );
+
+		insertMarkerAsAttribute( viewElement, isStart, isBefore, conversionApi, data, viewMarkerData );
+	}
+}
+
+// Helper function for `insertMarkerData()` that marks a marker boundary in the view as an attribute on a view element.
+function insertMarkerAsAttribute( viewElement, isStart, isBefore, conversionApi, data, viewMarkerData ) {
+	const attributeName = `data-${ viewMarkerData.group }-${ isStart ? 'start' : 'end' }-${ isBefore ? 'before' : 'after' }`;
+
+	const markerNames = viewElement.hasAttribute( attributeName ) ? viewElement.getAttribute( attributeName ).split( ',' ) : [];
+
+	// Adding marker name at the beginning to have the same order in the attribute as there is with marker elements.
+	markerNames.unshift( viewMarkerData.name );
+
+	conversionApi.writer.setAttribute( attributeName, markerNames.join( ',' ), viewElement );
+	conversionApi.mapper.bindElementToMarker( viewElement, data.markerName );
+}
+
+// Helper function for `insertMarkerData()` that marks a marker boundary in the view as a separate view ui element.
+function insertMarkerAsElement( position, isStart, conversionApi, data, viewMarkerData ) {
+	const viewElementName = `${ viewMarkerData.group }-${ isStart ? 'start' : 'end' }`;
+
+	const attrs = viewMarkerData.name ? { 'name': viewMarkerData.name } : null;
+	const viewElement = conversionApi.writer.createUIElement( viewElementName, attrs );
+
+	conversionApi.writer.insert( position, viewElement );
+	conversionApi.mapper.bindElementToMarker( viewElement, data.markerName );
 }
 
 // Function factory that creates a converter for removing a model marker data added by the {@link #insertMarkerData} converter.
