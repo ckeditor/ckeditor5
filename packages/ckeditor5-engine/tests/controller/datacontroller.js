@@ -258,6 +258,16 @@ describe( 'DataController', () => {
 	} );
 
 	describe( 'set()', () => {
+		it( 'should be decorated', () => {
+			const spy = sinon.spy();
+
+			data.on( 'set', spy );
+
+			data.set( 'foo bar' );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.any, [ 'foo bar' ] );
+		} );
+
 		it( 'should set data to default main root', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			data.set( 'foo' );

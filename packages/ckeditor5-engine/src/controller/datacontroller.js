@@ -132,6 +132,7 @@ export default class DataController {
 		this.upcastDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 		this.decorate( 'init' );
+		this.decorate( 'set' );
 
 		// Fire `ready` event when initialisation has completed. Such low level listener gives possibility
 		// to plug into initialisation pipeline without interrupting the initialisation flow.
@@ -316,6 +317,7 @@ export default class DataController {
 	 *
 	 *		dataController.set( { main: '<p>Foo</p>', title: '<h1>Bar</h1>' } ); // Sets data on the `main` and `title` roots.
 	 *
+	 * @fires set
 	 * @param {String|Object.<String,String>} data Input data as a string or an object containing `rootName` - `data`
 	 * pairs to set data on multiple roots at once.
 	 */
