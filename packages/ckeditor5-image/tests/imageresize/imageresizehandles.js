@@ -59,17 +59,17 @@ describe( 'ImageResizeHandles', () => {
 	afterEach( () => {
 		const wrappers = Array.from( document.querySelectorAll( '.ck-body-wrapper' ) );
 
-		// We need to remove all leftovers manually.
-		for ( const wrapper of wrappers ) {
-			wrapper.remove();
+		if ( editor ) {
+			editor.destroy();
 		}
 
 		if ( editorElement ) {
 			editorElement.remove();
 		}
 
-		if ( editor ) {
-			editor.destroy();
+		// We need to remove all leftovers manually.
+		for ( const wrapper of wrappers ) {
+			wrapper.remove();
 		}
 	} );
 
