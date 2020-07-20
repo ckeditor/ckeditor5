@@ -557,7 +557,7 @@ class DynamicGrouping {
 
 			// Removing.
 			for ( const removedItem of changeData.removed ) {
-				if ( index > this.ungroupedItems.length ) {
+				if ( index >= this.ungroupedItems.length ) {
 					this.groupedItems.remove( removedItem );
 				} else {
 					this.ungroupedItems.remove( removedItem );
