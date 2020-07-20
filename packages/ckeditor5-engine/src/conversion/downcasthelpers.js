@@ -441,7 +441,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			model: 'comment'
 	 *			view: markerName => ( {
 	 *				group: 'comment',
-	 *				name: markerName.substr( config.model.length + 1 )
+	 *				name: markerName.substr( 8 ) // Removes 'comment:' part.
 	 *			} )
 	 *		} );
 	 *
@@ -450,7 +450,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			model: 'comment'
 	 *			view: markerName => ( {
 	 *				group: 'comment',
-	 *				name: markerName.substr( config.model.length + 1 )
+	 *				name: markerName.substr( 8 ) // Removes 'comment:' part.
 	 *			} ),
 	 *			converterPriority: 'high'
 	 *		} );
