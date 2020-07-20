@@ -26,6 +26,7 @@
     "@ckeditor/ckeditor5-link": "^20.0.0",
     "@ckeditor/ckeditor5-list": "^20.0.0",
     "@ckeditor/ckeditor5-paragraph": "^20.0.0",
+    "@ckeditor/ckeditor5-page-break": "^20.0.0",
     "@ckeditor/ckeditor5-table": "^20.0.0",
     "@ckeditor/ckeditor5-utils": "^20.0.0"
   },

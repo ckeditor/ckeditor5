@@ -24,8 +24,8 @@ Type (another-package-name): If the change affects more than one package, it's p
 
 Optional description.
 
-BREAKING CHANGE (scope): If any breaking changes were done, they need to be listed here.
-BREAKING CHANGE (scope): Another breaking change if needed. Closes #ZZZ.
+BREAKING CHANGE (package-name): If any breaking changes were done, they need to be listed here.
+BREAKING CHANGE (package-name): Another breaking change if needed. Closes #ZZZ.
 ```
 
 ### Commit types
@@ -50,7 +50,7 @@ If any change contains the `MAJOR BREAKING CHANGE` note, the next release will b
 
 For reference on how to identify minor or major breaking change see the {@link framework/guides/support/versioning-policy versioning policy guide}.
 
-Each `BREAKING CHANGE` note must be followed by the scope of changes.
+Each `BREAKING CHANGE` note must be followed by the package name.
 
 ### Package name
 

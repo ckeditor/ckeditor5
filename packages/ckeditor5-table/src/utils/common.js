@@ -8,26 +8,6 @@
  */
 
 /**
- * Returns the parent element of the given name. Returns undefined if the position or the element is not inside the desired parent.
- *
- * @param {String} parentName The name of the parent element to find.
- * @param {module:engine/model/position~Position|module:engine/model/position~Position} positionOrElement The position or
- * the parentElement to start searching.
- * @returns {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
- */
-export function findAncestor( parentName, positionOrElement ) {
-	let parent = positionOrElement.parent;
-
-	while ( parent ) {
-		if ( parent.name === parentName ) {
-			return parent;
-		}
-
-		parent = parent.parent;
-	}
-}
-
-/**
  * A common method to update the numeric value. If a value is the default one, it will be unset.
  *
  * @param {String} key An attribute key.
@@ -50,11 +30,15 @@ export function updateNumericAttribute( key, value, item, writer, defaultValue =
  * @param {module:engine/model/writer~Writer} writer The model writer.
  * @param {module:engine/model/position~Position} insertPosition The position at which the table cell should be inserted.
  * @param {Object} attributes The element attributes.
+ * @returns {module:engine/model/element~Element} Created table cell.
  */
 export function createEmptyTableCell( writer, insertPosition, attributes = {} ) {
 	const tableCell = writer.createElement( 'tableCell', attributes );
+
 	writer.insertElement( 'paragraph', tableCell );
 	writer.insert( tableCell, insertPosition );
+
+	return tableCell;
 }
 
 /**

@@ -9,8 +9,6 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import { findAncestor } from '../../utils/common';
-
 /**
  * The table cell attribute command.
  *
@@ -38,7 +36,7 @@ export default class TablePropertyCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
-		const table = findAncestor( 'table', selection.getFirstPosition() );
+		const table = selection.getFirstPosition().findAncestor( 'table' );
 
 		this.isEnabled = !!table;
 		this.value = this._getValue( table );
@@ -60,7 +58,7 @@ export default class TablePropertyCommand extends Command {
 
 		const { value, batch } = options;
 
-		const table = findAncestor( 'table', selection.getFirstPosition() );
+		const table = selection.getFirstPosition().findAncestor( 'table' );
 		const valueToSet = this._getValueToSet( value );
 
 		model.enqueueChange( batch || 'default', writer => {

@@ -22,6 +22,7 @@ import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
 
 import PasteFromOffice from '../../src/pastefromoffice';
 import { generateTests } from '../_utils/utils';
+import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 
 const browsers = [ 'chrome', 'firefox', 'safari', 'edge' ];
 
@@ -120,6 +121,15 @@ describe( 'PasteFromOffice - integration', () => {
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Table, TableProperties, TableCellProperties, Bold, PasteFromOffice,
 				FontColor, FontBackgroundColor ]
+		}
+	} );
+
+	generateTests( {
+		input: 'page-break',
+		type: 'integration',
+		browsers,
+		editorConfig: {
+			plugins: [ Clipboard, Paragraph, Bold, PasteFromOffice, PageBreak ]
 		}
 	} );
 } );
