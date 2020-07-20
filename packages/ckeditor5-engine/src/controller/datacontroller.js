@@ -453,6 +453,15 @@ export default class DataController {
 	 *
 	 * @event init
 	 */
+
+	/**
+	 * Event fired after {@link #set set() method} has been run.
+	 *
+	 * The `set` event is fired by decorated {@link #set} method.
+	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+	 *
+	 * @event set
+	 */
 }
 
 mix( DataController, ObservableMixin );
