@@ -76,39 +76,28 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *			}
  *		}, { priority: 'low' } );
  *
- *		// Convert all elements which have no custom converter into paragraph (autoparagraphing).
- *  	editor.data.upcastDispatcher.on( 'element', ( evt, data, conversionApi ) => {
- *  	 	// When element is already consumed by higher priority converters then do nothing.
- *  	 	if ( conversionApi.consumable.test( data.viewItem, { name: data.viewItem.name } ) ) {
- *  	 			const paragraph = conversionApi.writer.createElement( 'paragraph' );
+ *		// Convert all elements which have no custom converter into a paragraph (autoparagraphing).
+ *		editor.data.upcastDispatcher.on( 'element', ( evt, data, conversionApi ) => {
+ *			// Try to consume the element.
+ *			if ( conversionApi.consumable.consume( data.viewItem, { name: data.viewItem.name } ) ) {
+ *				// When element is already consumed by higher priority converters then do nothing.
+ *				return;
+ *			}
  *
- *  	 			// Find allowed parent for paragraph that we are going to insert. If current parent does not allow
- *  	 			// to insert paragraph but one of the ancestors does then split nodes to allowed parent.
- *  	 			const splitResult = conversionApi.splitToAllowedParent( paragraph, data.modelCursor );
+ *			const paragraph = conversionApi.writer.createElement( 'paragraph' );
  *
- *  	 			// When there is no split result it means that we can't insert paragraph in this position.
- *  	 			if ( splitResult ) {
- *  	 				// Insert paragraph in allowed position.
- *  	 				conversionApi.writer.insert( paragraph, splitResult.position );
+ *			// Try to safely insert paragraph at model cursor - it will find an allowed parent for a current element.
+ *			if ( !conversionApi.safeInsert( paragraph, data.modelCursor ) ) {
+ *				// When element was not inserted it means that we can't insert paragraph at this position.
+ *				return;
+ *			}
  *
- *  	 				// Convert children to paragraph.
- *  	 				const { modelRange } = conversionApi.convertChildren(
- *  	 					data.viewItem,
- *  	 					conversionApi.writer.createPositionAt( paragraph, 0 )
- *  	 				);
+ *			// Convert children to paragraph.
+ *			const { modelRange } = conversionApi.convertChildren( data.viewItem,  paragraph ) );
  *
- * 						// Set as conversion result, attribute converters may use this property.
- *  	 				data.modelRange = conversionApi.writer.createRange(
- *  	 					conversionApi.writer.createPositionBefore( paragraph ),
- *  	 					modelRange.end
- *  	 				);
- *
- *  	 				// Continue conversion inside paragraph.
- *  	 				data.modelCursor = data.modelRange.end;
- *  	 			}
- *  	 		}
- *  	 	}
- *  	 }, { priority: 'low' } );
+ *			// Update `modelRange` and `modelCursor` in a `data` as a conversion result.
+ *			conversionApi.updateConversionResult( paragraph, data );
+ *		}, { priority: 'low' } );
  *
  * Before each conversion process, `UpcastDispatcher` fires {@link ~UpcastDispatcher#event:viewCleanup}
  * event which can be used to prepare tree view for conversion.
@@ -169,10 +158,11 @@ export default class UpcastDispatcher {
 		// This way only a part of `UpcastDispatcher` API is exposed.
 		this.conversionApi.convertItem = this._convertItem.bind( this );
 		this.conversionApi.convertChildren = this._convertChildren.bind( this );
-		this.conversionApi.splitToAllowedParent = this._splitToAllowedParent.bind( this );
-		this.conversionApi.getSplitParts = this._getSplitParts.bind( this );
 		this.conversionApi.safeInsert = this._safeInsert.bind( this );
 		this.conversionApi.updateConversionResult = this._updateConversionResult.bind( this );
+		// Advanced API - use only if custom position handling is needed.
+		this.conversionApi.splitToAllowedParent = this._splitToAllowedParent.bind( this );
+		this.conversionApi.getSplitParts = this._getSplitParts.bind( this );
 	}
 
 	/**
@@ -622,6 +612,66 @@ function createContextTree( contextDefinition, writer ) {
  */
 
 /**
+ * Safely inserts an element to the document checking {@link module:engine/model/schema~Schema schema} to find allowed parent for
+ * an element that we are going to insert starting from given position. If current parent does not allow to insert element
+ * but one of the ancestors does then split nodes to allowed parent.
+ *
+ * If schema allows to insert node in given position, nothing is split.
+ *
+ * If it was not possible to find allowed parent, `false` is returned, nothing is split.
+ *
+ * Otherwise, ancestors are split.
+ *
+ * For instance, if `<image>` is not allowed in `<paragraph>` but is allowed in `$root`:
+ *
+ *		<paragraph>foo[]bar</paragraph>
+ *
+ *		-> safe insert for `<image>` will split ->
+ *
+ *		<paragraph>foo</paragraph>[]<paragraph>bar</paragraph>
+ *
+ * Example usage:
+ *
+ *		const myElement = conversionApi.writer.createElement( 'myElement' );
+ *
+ *		if ( !conversionApi.safeInsert( myElement, data.modelCursor ) ) {
+ *			return;
+ *		}
+ *
+ * The split result is saved and {@link #updateConversionResult} should be used to update conversion data.
+ *
+ * @method #safeInsert
+ * @param {module:engine/model/node~Node} node Node to insert.
+ * @param {module:engine/model/position~Position} position Position on which element is going to be inserted.
+ * @returns {Boolean} Split result. If it was not possible to find allowed position `false` is returned.
+ */
+
+/**
+ * Updates the conversion result and sets proper `data.modelRange` and next `data.modelCursor` after the conversion.
+ * Used together with {@link #safeInsert} enables you to easily convert elements without worrying if the node was split
+ * during its children conversion.
+ *
+ * If given `element` was not split, an array with single element is returned.
+ *
+ * Example of a usage in a converter code:
+ *
+ *		const myElement = conversionApi.writer.createElement( 'myElement' );
+ *
+ *		if ( !conversionApi.safeInsert( myElement, data.modelCursor ) ) {
+ *			return;
+ *		}
+ *
+ *		// Children conversion may split `myElement`.
+ *		conversionApi.convertChildren( data.viewItem, myElement );
+ *
+ *		conversionApi.updateConversionResult( myElement, data );
+ *
+ * @method #updateConversionResult
+ * @param {module:engine/model/element~Element} element
+ * @returns {Array.<module:engine/model/element~Element>}
+ */
+
+/**
  * Checks {@link module:engine/model/schema~Schema schema} to find allowed parent for element that we are going to insert
  * starting from given position. If current parent does not allow to insert element but one of the ancestors does then
  * split nodes to allowed parent.
@@ -636,12 +686,14 @@ function createContextTree( contextDefinition, writer ) {
  *
  *		<paragraph>foo[]bar</paragraph>
  *
- *  	-> split for `<image>` ->
+ *		-> split for `<image>` ->
  *
- *  	<paragraph>foo</paragraph>[]<paragraph>bar</paragraph>
+ *		<paragraph>foo</paragraph>[]<paragraph>bar</paragraph>
  *
  * In the sample above position between `<paragraph>` elements will be returned as `position` and the second `paragraph`
  * as `cursorParent`.
+ *
+ * **Note:** This is an advanced method. For most cases {@link #safeInsert} and {@link #updateConversionResult} should be used.
  *
  * @method #splitToAllowedParent
  * @param {module:engine/model/position~Position} position Position on which element is going to be inserted.
@@ -669,7 +721,7 @@ function createContextTree( contextDefinition, writer ) {
  *		const myElement = conversionApi.writer.createElement( 'myElement' );
  *
  *		// Children conversion may split `myElement`.
- *		conversionApi.convertChildren( myElement, modelCursor );
+ *		conversionApi.convertChildren( data.viewItem, data.modelCursor );
  *
  *		const splitParts = conversionApi.getSplitParts( myElement );
  *		const lastSplitPart = splitParts[ splitParts.length - 1 ];
@@ -686,6 +738,8 @@ function createContextTree( contextDefinition, writer ) {
  * **Tip:** if you are unable to get a reference to the original element (for example because the code is split into multiple converters
  * or even classes) but it was already converted, you might want to check first element in `data.modelRange`. This is a common situation
  * if an attribute converter is separated from an element converter.
+ *
+ * **Note:** This is an advanced method. For most cases {@link #safeInsert} and {@link #updateConversionResult} should be used.
  *
  * @method #getSplitParts
  * @param {module:engine/model/element~Element} element
