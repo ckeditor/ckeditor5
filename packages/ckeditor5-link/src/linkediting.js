@@ -14,7 +14,6 @@ import Input from '@ckeditor/ckeditor5-typing/src/input';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
-import AutomaticDecorators from './utils/automaticdecorators';
 import ManualDecorator from './utils/manualdecorator';
 import findLinkRange from './findlinkrange';
 import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators } from './utils';
@@ -132,7 +131,10 @@ export default class LinkEditing extends Plugin {
 	 */
 	_enableAutomaticDecorators( automaticDecoratorDefinitions ) {
 		const editor = this.editor;
-		const automaticDecorators = new AutomaticDecorators();
+		// Store automatic decorators in the command instance as we do the same with manual decorators.
+		// Thanks to that, `LinkImageEditing` plugin can re-use the same definitions.
+		const command = editor.commands.get( 'link' );
+		const automaticDecorators = command.automaticDecorators;
 
 		// Adds a default decorator for external links.
 		if ( editor.config.get( 'link.addTargetToExternalLinks' ) ) {

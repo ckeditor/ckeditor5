@@ -12,6 +12,8 @@ import findLinkRange from './findlinkrange';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import first from '@ckeditor/ckeditor5-utils/src/first';
+import AutomaticDecorators from './utils/automaticdecorators';
+import { isImageAllowed } from './utils';
 
 /**
  * The link command. It is used by the {@link module:link/link~Link link feature}.
@@ -40,6 +42,15 @@ export default class LinkCommand extends Command {
 		 * @type {module:utils/collection~Collection}
 		 */
 		this.manualDecorators = new Collection();
+
+		/**
+		 * An instance of the helper that ties together all {@link module:link/link~LinkDecoratorAutomaticDefinition}
+		 * that are used by the {@glink features/link link} and the {@glink features/image#linking-images linking images} features.
+		 *
+		 * @readonly
+		 * @type {module:link/utils~AutomaticDecorators}
+		 */
+		this.automaticDecorators = new AutomaticDecorators();
 	}
 
 	/**
@@ -62,7 +73,7 @@ export default class LinkCommand extends Command {
 
 		// A check for the `LinkImage` plugin. If the selection contains an element, get values from the element.
 		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
-		if ( selectedElement && selectedElement.is( 'image' ) && model.schema.checkAttribute( 'image', 'linkHref' ) ) {
+		if ( isImageAllowed( selectedElement, model.schema ) ) {
 			this.value = selectedElement.getAttribute( 'linkHref' );
 			this.isEnabled = model.schema.checkAttribute( selectedElement, 'linkHref' );
 		} else {
@@ -248,7 +259,17 @@ export default class LinkCommand extends Command {
 	 * @returns {Boolean} The information whether a given decorator is currently present in the selection.
 	 */
 	_getDecoratorStateFromModel( decoratorName ) {
-		const doc = this.editor.model.document;
+		const model = this.editor.model;
+		const doc = model.document;
+
+		const selectedElement = first( doc.selection.getSelectedBlocks() );
+
+		// A check for the `LinkImage` plugin. If the selection contains an element, get values from the element.
+		// Currently the selection reads attributes from text nodes only. See #7429 and #7465.
+		if ( isImageAllowed( selectedElement, model.schema ) ) {
+			return selectedElement.getAttribute( decoratorName );
+		}
+
 		return doc.selection.getAttribute( decoratorName );
 	}
 
