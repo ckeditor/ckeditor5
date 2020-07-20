@@ -323,11 +323,13 @@ export default class UpcastDispatcher {
 
 		const writer = this.conversionApi.writer;
 
-		// Set conversion result range.
-		data.modelRange = writer.createRange(
-			writer.createPositionBefore( modelElement ),
-			writer.createPositionAfter( parts[ parts.length - 1 ] )
-		);
+		if ( !data.modelRange ) {
+			// Set conversion result range.
+			data.modelRange = writer.createRange(
+				writer.createPositionBefore( modelElement ),
+				writer.createPositionAfter( parts[ parts.length - 1 ] )
+			);
+		}
 
 		const savedCursorParent = this._cursorParents.get( modelElement );
 
