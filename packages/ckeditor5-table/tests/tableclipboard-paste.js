@@ -861,7 +861,7 @@ describe( 'table clipboard', () => {
 					setModelData( model, modelTable( [
 						[ '00', '01', '02' ],
 						[ '10', '11', '12' ],
-						[ '20', '21', '[<image src="/assets/sample.jpg"><caption></caption></image>]' ]
+						[ '20', '21', '[<image src="/assets/sample.png"><caption></caption></image>]' ]
 					] ) );
 
 					pasteTable( [
@@ -884,7 +884,7 @@ describe( 'table clipboard', () => {
 					setModelData( model, modelTable( [
 						[ '00', '01', '02' ],
 						[ '10', '11', '12' ],
-						[ '20', '21', '<image src="/assets/sample.jpg"><caption>fo[]o</caption></image>' ]
+						[ '20', '21', '<image src="/assets/sample.png"><caption>fo[]o</caption></image>' ]
 					] ) );
 
 					pasteTable( [
@@ -3767,12 +3767,12 @@ describe( 'table clipboard', () => {
 			);
 
 			pasteTable( [
-				[ '<img src="/assets/sample.jpg">', 'ab' ],
+				[ '<img src="/assets/sample.png">', 'ab' ],
 				[ 'ba', 'bb' ]
 			] );
 
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ '<image src="/assets/sample.jpg"><caption></caption></image>', 'ab', '02' ],
+				[ '<image src="/assets/sample.png"><caption></caption></image>', 'ab', '02' ],
 				[ 'ba', 'bb', '12' ],
 				[ '02', '21', '22' ]
 			] ) );
@@ -3792,7 +3792,7 @@ describe( 'table clipboard', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			const img = '<img src="/assets/sample.jpg">';
+			const img = '<img src="/assets/sample.png">';
 			const list = '<ul><li>foo</li><li>bar</li></ul>';
 			const blockquote = `<blockquote><p>baz</p>${ list }</blockquote>`;
 
@@ -3803,7 +3803,7 @@ describe( 'table clipboard', () => {
 
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
 				[
-					'<image src="/assets/sample.jpg"><caption></caption></image>' +
+					'<image src="/assets/sample.png"><caption></caption></image>' +
 					'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
 					'<listItem listIndent="0" listType="bulleted">bar</listItem>' +
 					'<blockQuote>' +
