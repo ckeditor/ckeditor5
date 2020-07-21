@@ -95,7 +95,7 @@ export default class MarkerCollection {
 
 		if ( markerName.includes( ',' ) ) {
 			/**
-			 * Marker name cannot contain "," character.
+			 * Marker name cannot contain the "," character.
 			 *
 			 * @error markercollection-incorrect-marker-name
 			 */
