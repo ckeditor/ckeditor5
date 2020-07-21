@@ -8,9 +8,8 @@
  */
 
 /**
- * Returns a model range that covers all consecutive
- * {@link module:engine/view/attributeelement~AttributeElement attribute elements}
- * of the given `attributeName` and `value` that intersect the given `position`.
+ * Returns a model range that covers all consecutive nodes with the same `attributeName` and its `value`
+ * that intersect the given `position`.
  *
  * It can be used e.g. to get the entire range on which the `linkHref` attribute needs to be changed when having a
  * selection inside a link.
@@ -18,6 +17,7 @@
  * @param {module:engine/model/position~Position} position The start position.
  * @param {String} attributeName The attribute name.
  * @param {String} value The attribute value.
+ * @param {module:engine/model/model~Model} model The model instance.
  * @returns {module:engine/model/range~Range} The link range.
  */
 export default function findAttributeRange( position, attributeName, value, model ) {
