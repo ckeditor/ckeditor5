@@ -85,7 +85,8 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 		filterWhitelistedSnippets( snippets, options.whitelistedSnippets );
 	}
 
-	console.log( `Building ${ snippets.size } snippets...` );
+	console.log( `Found ${ snippets.size } "{@snippet ...}" tags...` );
+	console.log( `Building ${ countUniqueSnippets( snippets ) } snippets...` );
 
 	const groupedSnippetsByLanguage = {};
 
@@ -209,7 +210,7 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 			}
 		} )
 		.then( () => {
-			console.log( `Finished building ${ snippets.size } snippets.` );
+			console.log( 'Finished building snippets.' );
 		} );
 };
 
@@ -449,6 +450,21 @@ function getHTMLImports( files, mapFunction ) {
 		.map( mapFunction )
 		.join( '\n' )
 		.replace( /^\s+/, '' );
+}
+
+/**
+ * Returns a number of unique snippet names that will be built.
+ *
+ * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
+ * @returns {Number}
+ */
+function countUniqueSnippets( snippets ) {
+	const uniqueSnippetNames = new Set();
+
+	for ( const snippet of snippets ) {
+		uniqueSnippetNames.add( snippet.snippetName );
+	}
+	return uniqueSnippetNames.size;
 }
 
 /**
