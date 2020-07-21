@@ -476,7 +476,7 @@ function shouldCopyAttributes( model ) {
 
 	// If nodes are not equal, maybe the link nodes has defined additional attributes inside.
 	// First, we need to find the entire link range.
-	const linkRange = findLinkRange( firstPosition, nodeAtFirstPosition.getAttribute( 'linkHref' ), model );
+	const linkRange = findAttributeRange( firstPosition, 'linkHref', nodeAtFirstPosition.getAttribute( 'linkHref' ), model );
 
 	// Then we can check whether selected range is inside the found link range. If so, attributes should be preserved.
 	return linkRange.containsRange( model.createRange( firstPosition, lastPosition ), true );
