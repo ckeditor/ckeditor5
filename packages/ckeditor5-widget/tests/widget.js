@@ -827,7 +827,7 @@ describe( 'Widget', () => {
 				for ( const action of actions ) {
 					viewDocument.fire( 'keydown', new DomEventData(
 						viewDocument,
-						{ target: document.createElement( 'div' ), preventDefault() {} },
+						{ target: document.createElement( 'div' ), preventDefault() {}, stopPropagation() {} },
 						action
 					) );
 				}
