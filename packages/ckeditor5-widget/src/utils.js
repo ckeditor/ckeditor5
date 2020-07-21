@@ -12,6 +12,7 @@ import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import dragHandleIcon from '../theme/icons/drag-handle.svg';
 import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils';
@@ -93,6 +94,21 @@ export function isWidget( node ) {
  */
 /* eslint-enable max-len */
 export function toWidget( element, writer, options = {} ) {
+	if ( !element.is( 'containerElement' ) ) {
+		/**
+		 * The element passed to `toWidget()` must be a {@link module:engine/view/containerelement~ContainerElement}
+		 * instance.
+		 *
+		 * @error widget-to-widget-wrong-element-type
+		 * @param {String} element The view element passed to `toWidget()`.
+		 */
+		throw new CKEditorError(
+			'widget-to-widget-wrong-element-type: The element passed to toWidget() must be a container element instance.',
+			null,
+			{ element }
+		);
+	}
+
 	writer.setAttribute( 'contenteditable', 'false', element );
 
 	writer.addClass( WIDGET_CLASS_NAME, element );
