@@ -24,9 +24,9 @@ ClassicEditor
 					value: '250'
 				},
 				{
-					name: 'imageResize:500',
-					label: '500px',
-					value: '500'
+					name: 'imageResize:400',
+					label: '400px',
+					value: '400'
 				}
 			],
 			styles: [
