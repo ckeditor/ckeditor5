@@ -267,7 +267,7 @@ export function mapModelToViewPosition( view ) {
 		const modelPosition = data.modelPosition;
 		const parent = modelPosition.parent;
 
-		if ( !parent.is( 'listItem' ) || parent.getAttribute( 'listType' ) != 'todo' ) {
+		if ( !parent.is( 'element', 'listItem' ) || parent.getAttribute( 'listType' ) != 'todo' ) {
 			return;
 		}
 

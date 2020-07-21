@@ -44,7 +44,6 @@ export function isWidget( node ) {
 	return !!node.getCustomProperty( 'widget' );
 }
 
-/* eslint-disable max-len */
 /**
  * Converts the given {@link module:engine/view/element~Element} to a widget in the following way:
  *
@@ -91,7 +90,6 @@ export function isWidget( node ) {
  * @param {Boolean} [options.hasSelectionHandle=false] If `true`, the widget will have a selection handle added.
  * @returns {module:engine/view/element~Element} Returns the same element.
  */
-/* eslint-enable max-len */
 export function toWidget( element, writer, options = {} ) {
 	writer.setAttribute( 'contenteditable', 'false', element );
 

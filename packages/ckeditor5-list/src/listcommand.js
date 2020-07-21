@@ -176,7 +176,7 @@ export default class ListCommand extends Command {
 				let lowestIndent = Number.POSITIVE_INFINITY;
 
 				for ( const item of blocks ) {
-					if ( item.is( 'listItem' ) && item.getAttribute( 'listIndent' ) < lowestIndent ) {
+					if ( item.is( 'element', 'listItem' ) && item.getAttribute( 'listIndent' ) < lowestIndent ) {
 						lowestIndent = item.getAttribute( 'listIndent' );
 					}
 				}
@@ -224,7 +224,7 @@ export default class ListCommand extends Command {
 		// Check whether closest `listItem` ancestor of the position has a correct type.
 		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
 
-		return !!listItem && listItem.is( 'listItem' ) && listItem.getAttribute( 'listType' ) == this.type;
+		return !!listItem && listItem.is( 'element', 'listItem' ) && listItem.getAttribute( 'listType' ) == this.type;
 	}
 
 	/**
@@ -265,7 +265,7 @@ function _fixType( blocks, isBackward, lowestIndent ) {
 	// We need to check previous sibling of first changed item and next siblings of last changed item.
 	const startingItem = isBackward ? blocks[ 0 ] : blocks[ blocks.length - 1 ];
 
-	if ( startingItem.is( 'listItem' ) ) {
+	if ( startingItem.is( 'element', 'listItem' ) ) {
 		let item = startingItem[ isBackward ? 'previousSibling' : 'nextSibling' ];
 		// During processing items, keeps the lowest indent of already processed items.
 		// This saves us from changing too many items.
@@ -284,7 +284,7 @@ function _fixType( blocks, isBackward, lowestIndent ) {
 
 		// Look back until a list item with indent lower than reference `lowestIndent`.
 		// That would be the parent of nested sublist which contains item having `lowestIndent`.
-		while ( item && item.is( 'listItem' ) && item.getAttribute( 'listIndent' ) >= lowestIndent ) {
+		while ( item && item.is( 'element', 'listItem' ) && item.getAttribute( 'listIndent' ) >= lowestIndent ) {
 			if ( currentIndent > item.getAttribute( 'listIndent' ) ) {
 				currentIndent = item.getAttribute( 'listIndent' );
 			}

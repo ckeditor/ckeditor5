@@ -186,7 +186,7 @@ export default class Schema {
 
 		if ( typeof item == 'string' ) {
 			itemName = item;
-		} else if ( item.is && ( item.is( 'text' ) || item.is( 'textProxy' ) ) ) {
+		} else if ( item.is && ( item.is( '$text' ) || item.is( '$textProxy' ) ) ) {
 			itemName = '$text';
 		}
 		// Element or module:engine/model/schema~SchemaContextItem.
@@ -774,7 +774,7 @@ export default class Schema {
 	removeDisallowedAttributes( nodes, writer ) {
 		for ( const node of nodes ) {
 			// When node is a `Text` it has no children, so just filter it out.
-			if ( node.is( 'text' ) ) {
+			if ( node.is( '$text' ) ) {
 				removeDisallowedAttributeFromNode( this, node, writer );
 			}
 			// In a case of `Element` iterates through positions between nodes inside this element

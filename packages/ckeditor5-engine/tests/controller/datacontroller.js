@@ -342,8 +342,8 @@ describe( 'DataController', () => {
 
 			data.set( 'foo' );
 
-			downcastHelpers.markerToElement( { model: 'marker', view: 'marker' } );
-			upcastHelpers.elementToMarker( { view: 'marker', model: 'marker' } );
+			downcastHelpers.markerToData( { model: 'marker' } );
+			upcastHelpers.dataToMarker( { view: 'marker' } );
 
 			model.change( writer => {
 				writer.addMarker( 'marker', { range: writer.createRangeIn( modelDocument.getRoot() ), usingOperation: true } );

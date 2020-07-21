@@ -613,8 +613,8 @@ describe( 'Selection', () => {
 			expect( selection.is( 'documentSelection' ) ).to.be.false;
 			expect( selection.is( 'view:documentSelection' ) ).to.be.false;
 			expect( selection.is( 'node' ) ).to.be.false;
-			expect( selection.is( 'text' ) ).to.be.false;
-			expect( selection.is( 'textProxy' ) ).to.be.false;
+			expect( selection.is( '$text' ) ).to.be.false;
+			expect( selection.is( '$textProxy' ) ).to.be.false;
 			expect( selection.is( 'element' ) ).to.be.false;
 			expect( selection.is( 'rootElement' ) ).to.be.false;
 			expect( selection.is( 'model:selection' ) ).to.be.false;

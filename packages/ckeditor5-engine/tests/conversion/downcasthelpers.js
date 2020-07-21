@@ -996,6 +996,487 @@ describe( 'DowncastHelpers', () => {
 		} );
 	} );
 
+	describe( 'markerToData()', () => {
+		let root;
+
+		beforeEach( () => {
+			root = model.document.getRoot();
+
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+		} );
+
+		it( 'should be chainable', () => {
+			expect( downcastHelpers.markerToData( { model: 'search' } ) ).to.equal( downcastHelpers );
+		} );
+
+		it( 'default conversion, inside text, non-collapsed, no name', () => {
+			downcastHelpers.markerToData( { model: 'search' } );
+
+			setModelData( model, '<paragraph>Fo[ob]ar</paragraph>' );
+
+			model.change( writer => {
+				writer.addMarker( 'search', { range: model.document.selection.getFirstRange(), usingOperation: false } );
+			} );
+
+			expectResult( '<p>Fo<search-start></search-start>ob<search-end></search-end>ar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'search' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'default conversion, inside text, non-collapsed, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Fo[ob]ar</paragraph>' );
+
+			model.change( writer => {
+				writer.addMarker( 'group:foo:bar:baz', { range: model.document.selection.getFirstRange(), usingOperation: false } );
+			} );
+
+			expectResult( '<p>Fo<group-start name="foo:bar:baz"></group-start>ob<group-end name="foo:bar:baz"></group-end>ar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar:baz' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'default conversion, inside text, collapsed, no name', () => {
+			downcastHelpers.markerToData( { model: 'search' } );
+
+			setModelData( model, '<paragraph>Foo[]bar</paragraph>' );
+
+			model.change( writer => {
+				writer.addMarker( 'search', { range: model.document.selection.getFirstRange(), usingOperation: false } );
+			} );
+
+			expectResult( '<p>Foo<search-start></search-start><search-end></search-end>bar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'search' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'default conversion, inside text, collapsed, multiple markers, no name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foo[]bar</paragraph>' );
+
+			model.change( writer => {
+				writer.addMarker( 'group:foo', { range: model.document.selection.getFirstRange(), usingOperation: false } );
+				writer.addMarker( 'group:abc', { range: model.document.selection.getFirstRange(), usingOperation: false } );
+			} );
+
+			expectResult(
+				'<p>' +
+					'Foo' +
+					'<group-start name="abc"></group-start><group-end name="abc"></group-end>' +
+					'<group-start name="foo"></group-start><group-end name="foo"></group-end>' +
+					'bar' +
+				'</p>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo' );
+				writer.removeMarker( 'group:abc' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'default conversion, on two elements, no name', () => {
+			downcastHelpers.markerToData( { model: 'search' } );
+
+			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRangeIn( root );
+				writer.addMarker( 'search', { range, usingOperation: false } );
+			} );
+
+			expectResult( '<p data-search-start-before="">Foo</p><p data-search-end-after="">Bar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'search' );
+			} );
+
+			expectResult( '<p>Foo</p><p>Bar</p>' );
+		} );
+
+		it( 'default conversion, on two elements, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRangeIn( root );
+				writer.addMarker( 'group:foo:bar:baz', { range, usingOperation: false } );
+			} );
+
+			expectResult( '<p data-group-start-before="foo:bar:baz">Foo</p><p data-group-end-after="foo:bar:baz">Bar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar:baz' );
+			} );
+
+			expectResult( '<p>Foo</p><p>Bar</p>' );
+		} );
+
+		it( 'default conversion, on one element, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foobar</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRangeIn( root );
+				writer.addMarker( 'group:foo:bar:baz', { range, usingOperation: false } );
+			} );
+
+			expectResult( '<p data-group-end-after="foo:bar:baz" data-group-start-before="foo:bar:baz">Foobar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar:baz' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'default conversion, collapsed before element, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foobar</paragraph>' );
+
+			model.change( writer => {
+				// Collapsed before <paragraph>.
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0 ] )
+				);
+
+				writer.addMarker( 'group:foo:bar:baz', { range, usingOperation: false } );
+			} );
+
+			expectResult( '<p data-group-end-before="foo:bar:baz" data-group-start-before="foo:bar:baz">Foobar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar:baz' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'default conversion, collapsed after element, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foobar</paragraph>' );
+
+			model.change( writer => {
+				// Collapsed before <paragraph>.
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 1 ] )
+				);
+
+				writer.addMarker( 'group:foo:bar:baz', { range, usingOperation: false } );
+			} );
+
+			expectResult( '<p data-group-end-after="foo:bar:baz" data-group-start-after="foo:bar:baz">Foobar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar:baz' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'default conversion, mixed, multiple markers, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0 ] ),
+					writer.createPositionFromPath( root, [ 1, 2 ] )
+				);
+
+				writer.addMarker( 'group:foo:bar', { range, usingOperation: false } );
+				writer.addMarker( 'group:abc:xyz', { range, usingOperation: false } );
+			} );
+
+			expectResult(
+				'<p data-group-start-before="abc:xyz,foo:bar">Foo</p>' +
+				'<p>Ba<group-end name="abc:xyz"></group-end><group-end name="foo:bar"></group-end>r</p>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar' );
+				writer.removeMarker( 'group:abc:xyz' );
+			} );
+
+			expectResult( '<p>Foo</p><p>Bar</p>' );
+		} );
+
+		it( 'default conversion, mixed #2, multiple markers, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0, 1 ] ),
+					writer.createPositionFromPath( root, [ 2 ] )
+				);
+
+				writer.addMarker( 'group:foo:bar', { range, usingOperation: false } );
+				writer.addMarker( 'group:abc:xyz', { range, usingOperation: false } );
+			} );
+
+			expectResult(
+				'<p>F<group-start name="abc:xyz"></group-start><group-start name="foo:bar"></group-start>oo</p>' +
+				'<p data-group-end-after="abc:xyz,foo:bar">Bar</p>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar' );
+				writer.removeMarker( 'group:abc:xyz' );
+			} );
+
+			expectResult( '<p>Foo</p><p>Bar</p>' );
+		} );
+
+		it( 'default conversion, mixed #3, multiple markers, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foo</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0 ] ),
+					writer.createPositionFromPath( root, [ 0, 2 ] )
+				);
+
+				writer.addMarker( 'group:foo:bar', { range, usingOperation: false } );
+				writer.addMarker( 'group:abc:xyz', { range, usingOperation: false } );
+			} );
+
+			expectResult(
+				'<p data-group-start-before="abc:xyz,foo:bar">' +
+					'Fo<group-end name="abc:xyz"></group-end><group-end name="foo:bar"></group-end>o' +
+				'</p>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar' );
+				writer.removeMarker( 'group:abc:xyz' );
+			} );
+
+			expectResult( '<p>Foo</p>' );
+		} );
+
+		it( 'default conversion, mixed #4, multiple markers, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foo</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0, 2 ] ),
+					writer.createPositionFromPath( root, [ 1 ] )
+				);
+
+				writer.addMarker( 'group:foo:bar', { range, usingOperation: false } );
+				writer.addMarker( 'group:abc:xyz', { range, usingOperation: false } );
+			} );
+
+			expectResult(
+				'<p data-group-end-after="abc:xyz,foo:bar">' +
+					'Fo<group-start name="abc:xyz"></group-start><group-start name="foo:bar"></group-start>o' +
+				'</p>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar' );
+				writer.removeMarker( 'group:abc:xyz' );
+			} );
+
+			expectResult( '<p>Foo</p>' );
+		} );
+
+		it( 'conversion callback, mixed, multiple markers, name', () => {
+			const customData = {
+				foo: 'bar',
+				abc: 'xyz'
+			};
+
+			downcastHelpers.markerToData( {
+				model: 'group',
+				view: markerName => {
+					const namePart = markerName.split( ':' )[ 1 ];
+
+					return {
+						group: 'g',
+						name: namePart + '_' + customData[ namePart ]
+					};
+				}
+			} );
+
+			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0 ] ),
+					writer.createPositionFromPath( root, [ 1, 2 ] )
+				);
+
+				writer.addMarker( 'group:foo', { range, usingOperation: false } );
+				writer.addMarker( 'group:abc', { range, usingOperation: false } );
+			} );
+
+			expectResult(
+				'<p data-g-start-before="abc_xyz,foo_bar">Foo</p>' +
+				'<p>Ba<g-end name="abc_xyz"></g-end><g-end name="foo_bar"></g-end>r</p>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo' );
+				writer.removeMarker( 'group:abc' );
+			} );
+
+			expectResult( '<p>Foo</p><p>Bar</p>' );
+		} );
+
+		it( 'conversion callback, mixed #2, multiple markers, name', () => {
+			const customData = {
+				foo: 'bar',
+				abc: 'xyz'
+			};
+
+			downcastHelpers.markerToData( {
+				model: 'group',
+				view: markerName => {
+					const namePart = markerName.split( ':' )[ 1 ];
+
+					return {
+						group: 'g',
+						name: namePart + '_' + customData[ namePart ]
+					};
+				}
+			} );
+
+			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0, 1 ] ),
+					writer.createPositionFromPath( root, [ 2 ] )
+				);
+
+				writer.addMarker( 'group:foo', { range, usingOperation: false } );
+				writer.addMarker( 'group:abc', { range, usingOperation: false } );
+			} );
+
+			expectResult(
+				'<p>F<g-start name="abc_xyz"></g-start><g-start name="foo_bar"></g-start>oo</p>' +
+				'<p data-g-end-after="abc_xyz,foo_bar">Bar</p>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo' );
+				writer.removeMarker( 'group:abc' );
+			} );
+
+			expectResult( '<p>Foo</p><p>Bar</p>' );
+		} );
+
+		it( 'can be overwritten using converterPriority', () => {
+			downcastHelpers.markerToData( {
+				model: 'group'
+			} );
+
+			downcastHelpers.markerToData( {
+				model: 'group',
+				view: markerName => {
+					const name = markerName.split( ':' )[ 1 ];
+
+					return {
+						group: 'g',
+						name
+					};
+				},
+				converterPriority: 'high'
+			} );
+
+			setModelData( model, '<paragraph>F[ooba]r</paragraph>' );
+
+			model.change( writer => {
+				writer.addMarker( 'group:foo', { range: model.document.selection.getFirstRange(), usingOperation: false } );
+			} );
+
+			expectResult(
+				'<p>F<g-start name="foo"></g-start>ooba<g-end name="foo"></g-end>r</p>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'can be overwritten by custom callback', () => {
+			downcastHelpers.markerToData( {
+				model: 'group'
+			} );
+
+			downcastHelpers.add( dispatcher => {
+				dispatcher.on( 'addMarker:group', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.markerRange, evt.name );
+				}, { priority: 'high' } );
+			} );
+
+			setModelData( model, '<paragraph>Foo[]bar</paragraph>' );
+
+			model.change( writer => {
+				writer.addMarker( 'group:foo', { range: model.document.selection.getFirstRange(), usingOperation: false } );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'should not perform conversion if the callback returned falsy value', () => {
+			downcastHelpers.markerToData( {
+				model: 'group',
+				view: () => false
+			} );
+
+			setModelData( model, '<paragraph>F[ooba]r</paragraph>' );
+
+			model.change( writer => {
+				writer.addMarker( 'group:foo', { range: model.document.selection.getFirstRange(), usingOperation: false } );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+	} );
+
 	describe( 'markerToHighlight()', () => {
 		it( 'should be chainable', () => {
 			expect( downcastHelpers.markerToHighlight( { model: 'comment', view: { classes: 'comment' } } ) ).to.equal( downcastHelpers );
@@ -2277,7 +2758,7 @@ describe( 'downcast selection converters', () => {
 				for ( const range of selection.getRanges() ) {
 					const node = range.start.parent;
 
-					if ( !!node && node.is( 'td' ) ) {
+					if ( !!node && node.is( 'element', 'td' ) ) {
 						conversionApi.consumable.consume( selection, 'selection' );
 
 						const viewNode = conversionApi.mapper.toViewElement( node );
