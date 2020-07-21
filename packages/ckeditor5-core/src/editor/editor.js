@@ -90,6 +90,8 @@ export default class Editor {
 		this.plugins = new PluginCollection( this, availablePlugins, this._context.plugins );
 
 		/**
+		 * The locale instance.
+		 *
 		 * @readonly
 		 * @type {module:utils/locale~Locale}
 		 */
