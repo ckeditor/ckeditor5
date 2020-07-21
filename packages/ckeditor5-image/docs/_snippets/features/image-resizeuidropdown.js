@@ -31,7 +31,18 @@ ClassicEditor
 					value: '75'
 				}
 			],
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageResize' ]
+			styles: [
+				'alignLeft',
+				'alignCenter',
+				'alignRight'
+			],
+			toolbar: [
+				'imageStyle:alignLeft',
+				'imageStyle:alignCenter',
+				'imageStyle:alignRight',
+				'|',
+				'imageResize'
+			]
 		},
 		cloudServices: CS_CONFIG
 	} )
