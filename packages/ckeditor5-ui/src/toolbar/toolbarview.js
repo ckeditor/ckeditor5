@@ -276,12 +276,11 @@ export default class ToolbarView extends View {
 	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
 	 */
 	fillFromConfig( config, factory ) {
-		const toolbarItems = [];
-		config.map( name => {
+		this.items.addMany( config.map( name => {
 			if ( name == '|' ) {
-				toolbarItems.push( new ToolbarSeparatorView() );
+				return new ToolbarSeparatorView();
 			} else if ( factory.has( name ) ) {
-				toolbarItems.push( factory.create( name ) );
+				return factory.create( name );
 			} else {
 				/**
 				 * There was a problem processing the configuration of the toolbar. The item with the given
@@ -303,9 +302,7 @@ export default class ToolbarView extends View {
 				console.warn( attachLinkToDocumentation(
 					'toolbarview-item-unavailable: The requested toolbar item is unavailable.' ), { name } );
 			}
-		} );
-
-		this.items.addMany( toolbarItems );
+		} ).filter( item => item !== undefined ) );
 	}
 }
 
