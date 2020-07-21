@@ -579,11 +579,7 @@ describe( 'ToolbarView', () => {
 			it( 'doesnt throw when removing the first of grouped items', () => { // (#7655)
 				const items = [ focusable(), focusable(), focusable(), focusable() ];
 				view.element.style.width = '200px';
-
 				view.items.addMany( items );
-
-				console.log( ungroupedItems.map( i => i ).length );
-				console.log( groupedItems.map( i => i ).length );
 
 				view.items.remove( 1 );
 
