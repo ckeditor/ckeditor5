@@ -31,8 +31,8 @@ describe( 'TwoStepCaretMovement()', () => {
 			view = editor.editing.view;
 			plugin = editor.plugins.get( TwoStepCaretMovement );
 
-			preventDefaultSpy = sinon.spy();
-			evtStopSpy = sinon.spy();
+			preventDefaultSpy = sinon.spy().named( 'preventDefaultSpy' );
+			evtStopSpy = sinon.spy().named( 'evtStopSpy' );
 
 			editor.model.schema.extend( '$text', {
 				allowAttributes: [ 'a', 'b', 'c' ],
@@ -657,9 +657,9 @@ describe( 'TwoStepCaretMovement()', () => {
 	} );
 
 	it( 'should listen with the high+1 priority on view.document#keydown', () => {
-		const highestPrioritySpy = sinon.spy();
-		const highPrioritySpy = sinon.spy();
-		const normalPrioritySpy = sinon.spy();
+		const highestPrioritySpy = sinon.spy().named( 'highestPrioritySpy' );
+		const highPrioritySpy = sinon.spy().named( 'highPrioritySpy' );
+		const normalPrioritySpy = sinon.spy().named( 'normalPrioritySpy' );
 
 		setData( model, '<$text c="true">foo[]</$text><$text a="true" b="true">bar</$text>' );
 
@@ -672,12 +672,11 @@ describe( 'TwoStepCaretMovement()', () => {
 			preventDefault: preventDefaultSpy
 		} );
 
-		sinon.assert.callOrder(
-			highestPrioritySpy,
-			preventDefaultSpy );
+		expect( highestPrioritySpy ).to.be.calledOnce;
+		expect( preventDefaultSpy ).to.be.calledImmediatelyAfter( highestPrioritySpy );
 
-		sinon.assert.notCalled( highPrioritySpy );
-		sinon.assert.notCalled( normalPrioritySpy );
+		expect( highPrioritySpy ).not.to.be.called;
+		expect( normalPrioritySpy ).not.to.be.called;
 	} );
 
 	it( 'should do nothing when key other then arrow left and right is pressed', () => {
@@ -758,8 +757,8 @@ describe( 'TwoStepCaretMovement()', () => {
 				keyCode: keyCodes.arrowright
 			} );
 
-			sinon.assert.calledOnce( forwardStub );
-			sinon.assert.notCalled( backwardStub );
+			expect( forwardStub ).to.be.calledOnce;
+			expect( backwardStub ).not.to.be.called;
 
 			setData( model, '<$text>foo</$text><$text a="true">[]bar</$text>' );
 
@@ -767,8 +766,8 @@ describe( 'TwoStepCaretMovement()', () => {
 				keyCode: keyCodes.arrowleft
 			} );
 
-			sinon.assert.calledOnce( backwardStub );
-			sinon.assert.calledOnce( forwardStub );
+			expect( forwardStub ).to.be.calledOnce;
+			expect( backwardStub ).to.be.calledOnce;
 		} );
 
 		it( 'should use the opposite helper methods (RTL content direction)', () => {
@@ -811,8 +810,8 @@ describe( 'TwoStepCaretMovement()', () => {
 						keyCode: keyCodes.arrowleft
 					} );
 
-					sinon.assert.calledOnce( forwardStub );
-					sinon.assert.notCalled( backwardStub );
+					expect( forwardStub ).to.be.calledOnce;
+					expect( backwardStub ).not.to.be.called;
 
 					setData( model, '<$text>foo</$text><$text a="true">[]bar</$text>' );
 
@@ -820,8 +819,8 @@ describe( 'TwoStepCaretMovement()', () => {
 						keyCode: keyCodes.arrowright
 					} );
 
-					sinon.assert.calledOnce( backwardStub );
-					sinon.assert.calledOnce( forwardStub );
+					expect( forwardStub ).to.be.calledOnce;
+					expect( backwardStub ).to.be.calledOnce;
 
 					return newEditor.destroy();
 				} );
