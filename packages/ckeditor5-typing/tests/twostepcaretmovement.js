@@ -751,12 +751,11 @@ describe( 'TwoStepCaretMovement()', () => {
 			preventDefault: preventDefaultSpy
 		} );
 
-		sinon.assert.callOrder(
-			highestPrioritySpy,
-			preventDefaultSpy );
+		expect( highestPrioritySpy ).to.be.calledOnce;
+		expect( preventDefaultSpy ).to.be.calledImmediatelyAfter( highestPrioritySpy );
 
-		sinon.assert.notCalled( highPrioritySpy );
-		sinon.assert.notCalled( normalPrioritySpy );
+		expect( highPrioritySpy ).not.to.be.called;
+		expect( normalPrioritySpy ).not.to.be.called;
 	} );
 
 	it( 'should do nothing when key other then arrow left and right is pressed', () => {

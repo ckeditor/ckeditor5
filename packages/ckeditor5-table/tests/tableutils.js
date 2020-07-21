@@ -959,6 +959,21 @@ describe( 'TableUtils', () => {
 				], { headingRows: 1 } ) );
 			} );
 
+			it( 'should change heading rows if removing a heading row (and cell below is row-spanned)', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', { contents: '11', rowspan: 2 } ],
+					[ '20' ]
+				], { headingRows: 1 } ) );
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 0 } );
+
+				assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+					[ '10', { contents: '11', rowspan: 2 } ],
+					[ '20' ]
+				] ) );
+			} );
+
 			it( 'should decrease rowspan of table cells from previous rows', () => {
 				// +----+----+----+----+----+
 				// | 00 | 01 | 02 | 03 | 04 |
@@ -1509,6 +1524,72 @@ describe( 'TableUtils', () => {
 					[ '22' ]
 				] ) );
 			} );
+		} );
+	} );
+
+	describe( 'createTable()', () => {
+		it( 'should create table', () => {
+			setData( model, '[]' );
+
+			model.change( writer => {
+				const table = tableUtils.createTable( writer, { rows: 3, columns: 2 } );
+
+				model.insertContent( table, model.document.selection.focus );
+			} );
+
+			assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+				[ '', '' ],
+				[ '', '' ],
+				[ '', '' ]
+			] ) );
+		} );
+
+		it( 'should create table with heading rows', () => {
+			setData( model, '[]' );
+
+			model.change( writer => {
+				const table = tableUtils.createTable( writer, { rows: 3, columns: 2, headingRows: 1 } );
+
+				model.insertContent( table, model.document.selection.focus );
+			} );
+
+			assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+				[ '', '' ],
+				[ '', '' ],
+				[ '', '' ]
+			], { headingRows: 1 } ) );
+		} );
+
+		it( 'should create table with heading columns', () => {
+			setData( model, '[]' );
+
+			model.change( writer => {
+				const table = tableUtils.createTable( writer, { rows: 3, columns: 2, headingColumns: 1 } );
+
+				model.insertContent( table, model.document.selection.focus );
+			} );
+
+			assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+				[ '', '' ],
+				[ '', '' ],
+				[ '', '' ]
+			], { headingColumns: 1 } ) );
+		} );
+
+		it( 'should create table with heading rows and columns', () => {
+			setData( model, '[]' );
+
+			model.change( writer => {
+				const table = tableUtils.createTable( writer, { rows: 3, columns: 2, headingRows: 2, headingColumns: 1 } );
+
+				model.insertContent( table, model.document.selection.focus );
+			} );
+
+			assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+				[ '', '' ],
+				[ '', '' ],
+				[ '', '' ]
+			], { headingRows: 2, headingColumns: 1 } ) );
 		} );
 	} );
 } );

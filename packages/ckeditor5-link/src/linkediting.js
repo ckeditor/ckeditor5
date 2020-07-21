@@ -10,10 +10,11 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import TwoStepCaretMovement from '@ckeditor/ckeditor5-typing/src/twostepcaretmovement';
-import setupHighlight from '@ckeditor/ckeditor5-typing/src/utils/inlinehighlight';
+import inlineHighlight from '@ckeditor/ckeditor5-typing/src/utils/inlinehighlight';
+import Input from '@ckeditor/ckeditor5-typing/src/input';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
-import AutomaticDecorators from './utils/automaticdecorators';
 import ManualDecorator from './utils/manualdecorator';
 import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattributerange';
 import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators } from './utils';
@@ -45,7 +46,8 @@ export default class LinkEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TwoStepCaretMovement ];
+		// Clipboard is required for handling cut and paste events while typing over the link.
+		return [ TwoStepCaretMovement, Input, Clipboard ];
 	}
 
 	/**
@@ -104,13 +106,16 @@ export default class LinkEditing extends Plugin {
 		twoStepCaretMovementPlugin.registerAttribute( 'linkHref' );
 
 		// Setup highlight over selected link.
-		setupHighlight( editor, 'linkHref', 'a', HIGHLIGHT_CLASS );
+		inlineHighlight( editor, 'linkHref', 'a', HIGHLIGHT_CLASS );
 
 		// Change the attributes of the selection in certain situations after the link was inserted into the document.
 		this._enableInsertContentSelectionAttributesFixer();
 
 		// Handle a click at the beginning/end of a link element.
 		this._enableClickingAfterLink();
+
+		// Handle typing over the link.
+		this._enableTypingOverLink();
 	}
 
 	/**
@@ -127,7 +132,10 @@ export default class LinkEditing extends Plugin {
 	 */
 	_enableAutomaticDecorators( automaticDecoratorDefinitions ) {
 		const editor = this.editor;
-		const automaticDecorators = new AutomaticDecorators();
+		// Store automatic decorators in the command instance as we do the same with manual decorators.
+		// Thanks to that, `LinkImageEditing` plugin can re-use the same definitions.
+		const command = editor.commands.get( 'link' );
+		const automaticDecorators = command.automaticDecorators;
 
 		// Adds a default decorator for external links.
 		if ( editor.config.get( 'link.addTargetToExternalLinks' ) ) {
@@ -354,4 +362,132 @@ export default class LinkEditing extends Plugin {
 			}
 		} );
 	}
+
+	/**
+	 * Starts listening to {@link module:engine/model/model~Model#deleteContent} and {@link module:engine/model/model~Model#insertContent}
+	 * and checks whether typing over the link. If so, attributes of removed text are preserved and applied to the inserted text.
+	 *
+	 * The purpose of this action is to allow modifying a text without loosing the `linkHref` attribute (and other).
+	 *
+	 * See https://github.com/ckeditor/ckeditor5/issues/4762.
+	 *
+	 * @private
+	 */
+	_enableTypingOverLink() {
+		const editor = this.editor;
+		const view = editor.editing.view;
+
+		// Selection attributes when started typing over the link.
+		let selectionAttributes;
+
+		// Whether pressed `Backspace` or `Delete`. If so, attributes should not be preserved.
+		let deletedContent;
+
+		// Detect pressing `Backspace` / `Delete`.
+		this.listenTo( view.document, 'delete', () => {
+			deletedContent = true;
+		}, { priority: 'high' } );
+
+		// Listening to `model#deleteContent` allows detecting whether selected content was a link.
+		// If so, before removing the element, we will copy its attributes.
+		this.listenTo( editor.model, 'deleteContent', () => {
+			const selection = editor.model.document.selection;
+
+			// Copy attributes only if anything is selected.
+			if ( selection.isCollapsed ) {
+				return;
+			}
+
+			// When the content was deleted, do not preserve attributes.
+			if ( deletedContent ) {
+				deletedContent = false;
+
+				return;
+			}
+
+			// Enabled only when typing.
+			if ( !isTyping( editor ) ) {
+				return;
+			}
+
+			if ( shouldCopyAttributes( editor.model ) ) {
+				selectionAttributes = selection.getAttributes();
+			}
+		}, { priority: 'high' } );
+
+		// Listening to `model#insertContent` allows detecting the content insertion.
+		// We want to apply attributes that were removed while typing over the link.
+		this.listenTo( editor.model, 'insertContent', ( evt, [ element ] ) => {
+			deletedContent = false;
+
+			// Enabled only when typing.
+			if ( !isTyping( editor ) ) {
+				return;
+			}
+
+			if ( !selectionAttributes ) {
+				return;
+			}
+
+			editor.model.change( writer => {
+				for ( const [ attribute, value ] of selectionAttributes ) {
+					writer.setAttribute( attribute, value, element );
+				}
+			} );
+
+			selectionAttributes = null;
+		}, { priority: 'high' } );
+	}
+}
+
+// Checks whether selection's attributes should be copied to the new inserted text.
+//
+// @param {module:engine/model/model~Model} model
+// @returns {Boolean}
+function shouldCopyAttributes( model ) {
+	const selection = model.document.selection;
+	const firstPosition = selection.getFirstPosition();
+	const lastPosition = selection.getLastPosition();
+	const nodeAtFirstPosition = firstPosition.nodeAfter;
+
+	// The text link node does not exist...
+	if ( !nodeAtFirstPosition ) {
+		return false;
+	}
+
+	// ...or it isn't the text node...
+	if ( !nodeAtFirstPosition.is( 'text' ) ) {
+		return false;
+	}
+
+	// ...or isn't the link.
+	if ( !nodeAtFirstPosition.hasAttribute( 'linkHref' ) ) {
+		return false;
+	}
+
+	// `textNode` = the position is inside the link element.
+	// `nodeBefore` = the position is at the end of the link element.
+	const nodeAtLastPosition = lastPosition.textNode || lastPosition.nodeBefore;
+
+	// If both references the same node selection contains a single text node.
+	if ( nodeAtFirstPosition === nodeAtLastPosition ) {
+		return true;
+	}
+
+	// If nodes are not equal, maybe the link nodes has defined additional attributes inside.
+	// First, we need to find the entire link range.
+	const linkRange = findAttributeRange( firstPosition, 'linkHref', nodeAtFirstPosition.getAttribute( 'linkHref' ), model );
+
+	// Then we can check whether selected range is inside the found link range. If so, attributes should be preserved.
+	return linkRange.containsRange( model.createRange( firstPosition, lastPosition ), true );
+}
+
+// Checks whether provided changes were caused by typing.
+//
+// @params {module:core/editor/editor~Editor} editor
+// @returns {Boolean}
+function isTyping( editor ) {
+	const input = editor.plugins.get( 'Input' );
+
+	return input.isInput( editor.model.change( writer => writer.batch ) );
 }

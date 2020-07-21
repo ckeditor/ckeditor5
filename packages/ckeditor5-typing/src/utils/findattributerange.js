@@ -8,8 +8,9 @@
  */
 
 /**
- * Returns a range containing the entire {@link module:engine/view/attributeelement~AttributeElement#childCount attribute element}
- * in which the given `position` is placed.
+ * Returns a model range that covers all consecutive
+ * {@link module:engine/view/attributeelement~AttributeElement attribute elements}
+ * of the given `attributeName` and `value` that intersect the given `position`.
  *
  * It can be used e.g. to get the entire range on which the `linkHref` attribute needs to be changed when having a
  * selection inside a link.

@@ -12,6 +12,7 @@ import Resizer from './widgetresize/resizer';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { throttle } from 'lodash-es';
 
@@ -71,12 +72,13 @@ export default class WidgetResize extends Plugin {
 			isFormatting: true
 		} );
 
+		this.editor.editing.view.addObserver( MouseObserver );
+
 		this._observer = Object.create( DomEmitterMixin );
 
-		this._observer.listenTo( domDocument, 'mousedown', this._mouseDownListener.bind( this ) );
+		this.listenTo( this.editor.editing.view.document, 'mousedown', this._mouseDownListener.bind( this ), { priority: 'high' } );
 
 		this._observer.listenTo( domDocument, 'mousemove', this._mouseMoveListener.bind( this ) );
-
 		this._observer.listenTo( domDocument, 'mouseup', this._mouseUpListener.bind( this ) );
 
 		const redrawFocusedResizer = () => {
@@ -182,13 +184,20 @@ export default class WidgetResize extends Plugin {
 	 * @param {Event} domEventData Native DOM event.
 	 */
 	_mouseDownListener( event, domEventData ) {
-		if ( !Resizer.isResizeHandle( domEventData.target ) ) {
+		const resizeHandle = domEventData.domTarget;
+
+		if ( !Resizer.isResizeHandle( resizeHandle ) ) {
 			return;
 		}
-		const resizeHandle = domEventData.target;
+
 		this._activeResizer = this._getResizerByHandle( resizeHandle );
+
 		if ( this._activeResizer ) {
 			this._activeResizer.begin( resizeHandle );
+
+			// Do not call other events when resizing. See: #6755.
+			event.stop();
+			domEventData.preventDefault();
 		}
 	}
 

@@ -8,8 +8,8 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
-import ImageResizeCommand from './imageresize/imageresizecommand';
+import ImageResizeUI from './imageresize/imageresizeui';
+import ImageResizeEditing from './imageresize/imageresizeediting';
 
 import '../theme/imageresize.css';
 
@@ -25,7 +25,7 @@ export default class ImageResize extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ WidgetResize ];
+		return [ ImageResizeEditing, ImageResizeUI ];
 	}
 
 	/**
@@ -33,112 +33,6 @@ export default class ImageResize extends Plugin {
 	 */
 	static get pluginName() {
 		return 'ImageResize';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-		const editor = this.editor;
-		const command = new ImageResizeCommand( editor );
-
-		this._registerSchema();
-		this._registerConverters();
-
-		editor.commands.add( 'imageResize', command );
-
-		editor.editing.downcastDispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
-			const widget = conversionApi.mapper.toViewElement( data.item );
-
-			const resizer = editor.plugins
-				.get( WidgetResize )
-				.attachTo( {
-					unit: editor.config.get( 'image.resizeUnit' ) || '%',
-
-					modelElement: data.item,
-					viewElement: widget,
-					editor,
-
-					getHandleHost( domWidgetElement ) {
-						return domWidgetElement.querySelector( 'img' );
-					},
-					getResizeHost( domWidgetElement ) {
-						return domWidgetElement;
-					},
-					// TODO consider other positions.
-					isCentered() {
-						const imageStyle = data.item.getAttribute( 'imageStyle' );
-
-						return !imageStyle || imageStyle == 'full' || imageStyle == 'alignCenter';
-					},
-
-					onCommit( newValue ) {
-						editor.execute( 'imageResize', { width: newValue } );
-					}
-				} );
-
-			resizer.on( 'updateSize', () => {
-				if ( !widget.hasClass( 'image_resized' ) ) {
-					editor.editing.view.change( writer => {
-						writer.addClass( 'image_resized', widget );
-					} );
-				}
-			} );
-
-			resizer.bind( 'isEnabled' ).to( command );
-		}, { priority: 'low' } );
-	}
-
-	/**
-	 * @private
-	 */
-	_registerSchema() {
-		this.editor.model.schema.extend( 'image', {
-			allowAttributes: 'width'
-		} );
-	}
-
-	/**
-	 * Registers image resize converters.
-	 *
-	 * @private
-	 */
-	_registerConverters() {
-		const editor = this.editor;
-
-		// Dedicated converter to propagate image's attribute to the img tag.
-		editor.conversion.for( 'downcast' ).add( dispatcher =>
-			dispatcher.on( 'attribute:width:image', ( evt, data, conversionApi ) => {
-				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-					return;
-				}
-
-				const viewWriter = conversionApi.writer;
-				const figure = conversionApi.mapper.toViewElement( data.item );
-
-				if ( data.attributeNewValue !== null ) {
-					viewWriter.setStyle( 'width', data.attributeNewValue, figure );
-					viewWriter.addClass( 'image_resized', figure );
-				} else {
-					viewWriter.removeStyle( 'width', figure );
-					viewWriter.removeClass( 'image_resized', figure );
-				}
-			} )
-		);
-
-		editor.conversion.for( 'upcast' )
-			.attributeToAttribute( {
-				view: {
-					name: 'figure',
-					styles: {
-						width: /.+/
-					}
-				},
-				model: {
-					key: 'width',
-					value: viewElement => viewElement.getStyle( 'width' )
-				}
-			} );
 	}
 }
 
@@ -161,4 +55,146 @@ export default class ImageResize extends Plugin {
  *
  * @default '%'
  * @member {String} module:image/image~ImageConfig#resizeUnit
+ */
+
+/**
+ * The image resize options.
+ *
+ * Each option should have at least these two properties:
+ *
+ * * name: The name of the UI component registered in the global
+ * {@link module:core/editor/editorui~EditorUI#componentFactory component factory} of the editor,
+ * representing the button a user can click to change the size of an image,
+ * * value: An actual image width applied when a user clicks the mentioned button
+ * ({@link module:image/imageresize/imageresizecommand~ImageResizeCommand} gets executed).
+ * The value property is combined with the {@link module:image/image~ImageConfig#resizeUnit `config.image.resizeUnit`} (`%` by default).
+ * For instance: `value: '50'` and `resizeUnit: '%'` will render as `'50%'` in the UI.
+ *
+ * **Resetting the image size**
+ *
+ * If you want to set an option that will reset image to its original size, you need to pass a `null` value
+ * to one of the options. The `:original` token is not mandatory, you can call it anything you wish, but it must reflect
+ * in the standalone buttons configuration for the image toolbar.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				image: {
+ *					resizeUnit: "%",
+ *					resizeOptions: [ {
+ *						name: 'imageResize:original',
+ *						value: null
+ *					},
+ *					{
+ *						name: 'imageResize:50',
+ *						value: '50'
+ *					},
+ *					{
+ *						name: 'imageResize:75',
+ *						value: '75'
+ *					} ]
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * **Resizing images using a dropdown**
+ *
+ * With resize options defined, you can decide whether you want to display them as a dropdown or as standalone buttons.
+ * For the dropdown, you need to pass only the `imageResize` token to the
+{@link module:image/image~ImageConfig#toolbar `config.image.toolbar`}. The dropdown contains all defined options by default:
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				image: {
+ *					resizeUnit: "%",
+ *					resizeOptions: [ {
+ *						name: 'imageResize:original',
+ *						value: null
+ *					},
+ *					{
+ *						name: 'imageResize:50',
+ *						value: '50'
+ *					},
+ *					{
+ *						name: 'imageResize:75',
+ *						value: '75'
+ *					} ],
+ *					toolbar: [ 'imageResize', ... ],
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * **Resizing images using individual buttons**
+ *
+ * If you want to have separate buttons for {@link module:image/imageresize/imageresizeui~ImageResizeOption each option},
+ * pass their names to the {@link module:image/image~ImageConfig#toolbar `config.image.toolbar`} instead. Please keep in mind
+ * that this time **you must define the additional
+ * {@link module:image/imageresize/imageresizeui~ImageResizeOption `icon` property}**:
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				image: {
+ *					resizeUnit: "%",
+ *					resizeOptions: [ {
+ *						name: 'imageResize:original',
+ *						value: null
+ *						icon: 'original'
+ *					},
+ *					{
+ *						name: 'imageResize:25',
+ *						value: '25'
+ *						icon: 'small'
+ *					},
+ *					{
+ *						name: 'imageResize:50',
+ *						value: '50'
+ *						icon: 'medium'
+ *					},
+ *					{
+ *						name: 'imageResize:75',
+ *						value: '75'
+ *						icon: 'large'
+ *					} ],
+ *					toolbar: [ 'imageResize:25', 'imageResize:50', 'imageResize:75', 'imageResize:original', ... ],
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * **Customizing resize button labels**
+ *
+ * You can set your own label for each resize button. To do that, add the `label` property like in the example below.
+ *
+ * * When using the **dropdown**, the labels are displayed on the list of all options when you open the dropdown.
+ * * When using **standalone buttons**, the labels will are displayed as tooltips when a user hovers over the button.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				image: {
+ *					resizeUnit: "%",
+ *					resizeOptions: [ {
+ *						name: 'imageResize:original',
+ *						value: null,
+ *						label: 'Original size'
+ *						// Note: add the "icon" property if you're configuring a standalone button.
+ *					},
+ *					{
+ *						name: 'imageResize:50',
+ *						value: '50',
+ *						label: 'Medium size'
+ *						// Note: add the "icon" property if you're configuring a standalone button.
+ *					},
+ *					{
+ *						name: 'imageResize:75',
+ *						value: '75',
+ *						label: 'Large size'
+ *						// Note: add the "icon" property if you're configuring a standalone button.
+ *					} ]
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @member {Array.<module:image/imageresize/imageresizeui~ImageResizeOption>} module:image/image~ImageConfig#resizeOptions
  */
