@@ -131,6 +131,29 @@ describe( 'Resizer', () => {
 			// Cleanup.
 			renderedElement.remove();
 		} );
+
+		it( 'should not redraw the handles when plugin is disabled', () => {
+			const resizerInstance = createResizer( {
+				getHandleHost: widgetWrapper => widgetWrapper
+			} );
+
+			resizerInstance.attach();
+
+			const renderedElement = resizerInstance._viewResizerWrapper.render( document );
+
+			document.body.appendChild( renderedElement );
+
+			const resizerSpy = sinon.spy( resizerInstance, 'redraw' );
+
+			resizerInstance.isEnabled = false;
+
+			resizerInstance.redraw();
+
+			expect( resizerSpy.returnValues[ 0 ] ).to.be.undefined;
+			expect( resizerInstance._domResizerWrapper.style.display ).to.equal( 'none' );
+
+			renderedElement.remove();
+		} );
 	} );
 
 	describe( '_proposeNewSize()', () => {
