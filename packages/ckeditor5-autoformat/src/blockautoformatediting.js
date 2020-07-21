@@ -5,7 +5,6 @@
 
 import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
 import first from '@ckeditor/ckeditor5-utils/src/first';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 /**
  * The block autoformatting engine. It allows to format various block patterns. For example,
@@ -46,7 +45,8 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position';
  *
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  * @param {module:autoformat/autoformat~Autoformat} plugin The autoformat plugin instance.
- * @param {RegExp} pattern The regular expression to execute on just inserted text.
+ * @param {RegExp} pattern The regular expression to execute on just inserted text. The regular expression is tested against the text
+ * from the beginning until the caret position.
  * @param {Function|String} callbackOrCommand The callback to execute or the command to run when the text is matched.
  * In case of providing the callback, it receives the following parameter:
  * * {Object} match RegExp.exec() result of matching the pattern to inserted text.
@@ -68,6 +68,12 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 
 	editor.model.document.on( 'change:data', ( evt, batch ) => {
 		if ( command && !command.isEnabled || !plugin.isEnabled ) {
+			return;
+		}
+
+		const range = first( editor.model.document.selection.getRanges() );
+
+		if ( !range.isCollapsed ) {
 			return;
 		}
 
@@ -97,19 +103,17 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 		}
 
 		const firstNode = blockToFormat.getChild( 0 );
-		const match = pattern.exec( firstNode.data );
+		const firstNodeRange = editor.model.createRangeOn( firstNode );
 
-		// ...and this text node's data match the pattern.
-		if ( !match ) {
+		// Range is only expected to be within or at the very end of the first text node.
+		if ( !firstNodeRange.containsRange( range ) && !range.end.isEqual( firstNodeRange.end ) ) {
 			return;
 		}
 
-		const range = first( editor.model.document.selection.getRanges() );
+		const match = pattern.exec( firstNode.data.substr( 0, range.end.offset ) );
 
-		// We're only handling a collapsed selection that is right after the matched text (#5671).
-		const expectedPosition = ( new Position( range.root, firstNode.getPath() ) ).getShiftedBy( match[ 0 ].length );
-
-		if ( !( range.isCollapsed && range.end.isEqual( expectedPosition ) ) ) {
+		// ...and this text node's data match the pattern.
+		if ( !match ) {
 			return;
 		}
 

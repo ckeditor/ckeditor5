@@ -117,7 +117,7 @@ describe( 'blockAutoformatEditing', () => {
 
 		it( 'should ignore other delta operations', () => {
 			const spy = testUtils.sinon.spy();
-			blockAutoformatEditing( editor, plugin, /^[*]\s/, spy );
+			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 			setData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
@@ -129,7 +129,7 @@ describe( 'blockAutoformatEditing', () => {
 
 		it( 'should stop if there is no text to run matching on', () => {
 			const spy = testUtils.sinon.spy();
-			blockAutoformatEditing( editor, plugin, /^[*]\s/, spy );
+			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 			setData( model, '<paragraph>[]</paragraph>' );
 			model.change( writer => {
@@ -157,7 +157,7 @@ describe( 'blockAutoformatEditing', () => {
 				} );
 
 			const spy = testUtils.sinon.spy();
-			blockAutoformatEditing( editor, plugin, /^[*]\s/, spy );
+			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 			setData( model, '<paragraph>*<softBreak></softBreak>[]</paragraph>' );
 			model.change( writer => {
@@ -169,7 +169,7 @@ describe( 'blockAutoformatEditing', () => {
 
 		it( 'should not call callback when typing in the middle of block text', () => {
 			const spy = testUtils.sinon.spy();
-			blockAutoformatEditing( editor, plugin, /^[*]\s/, spy );
+			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 			setData( model, '<paragraph>* foo[]bar</paragraph>' );
 			model.change( writer => {
@@ -197,7 +197,7 @@ describe( 'blockAutoformatEditing', () => {
 				} );
 
 			const spy = testUtils.sinon.spy();
-			blockAutoformatEditing( editor, plugin, /^[*]\s/, spy );
+			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 			setData( model, '<paragraph>* <softBreak></softBreak>[]</paragraph>' );
 

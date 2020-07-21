@@ -51,11 +51,11 @@ export default class Autoformat extends Plugin {
 		const commands = this.editor.commands;
 
 		if ( commands.get( 'bulletedList' ) ) {
-			blockAutoformatEditing( this.editor, this, /^[*-]\s/, 'bulletedList' );
+			blockAutoformatEditing( this.editor, this, /^[*-]\s$/, 'bulletedList' );
 		}
 
 		if ( commands.get( 'numberedList' ) ) {
-			blockAutoformatEditing( this.editor, this, /^1[.|)]\s/, 'numberedList' );
+			blockAutoformatEditing( this.editor, this, /^1[.|)]\s$/, 'numberedList' );
 		}
 	}
 
@@ -125,7 +125,7 @@ export default class Autoformat extends Plugin {
 				.filter( name => name.match( /^heading[1-6]$/ ) )
 				.forEach( modelName => {
 					const level = modelName[ 7 ];
-					const pattern = new RegExp( `^(#{${ level }})\\s` );
+					const pattern = new RegExp( `^(#{${ level }})\\s$` );
 
 					blockAutoformatEditing( this.editor, this, pattern, () => {
 						// Should only be active if command is enabled and heading style associated with pattern is inactive.
@@ -149,7 +149,7 @@ export default class Autoformat extends Plugin {
 	 */
 	_addBlockQuoteAutoformats() {
 		if ( this.editor.commands.get( 'blockQuote' ) ) {
-			blockAutoformatEditing( this.editor, this, /^>\s/, 'blockQuote' );
+			blockAutoformatEditing( this.editor, this, /^>\s$/, 'blockQuote' );
 		}
 	}
 
@@ -163,7 +163,7 @@ export default class Autoformat extends Plugin {
 	 */
 	_addCodeBlockAutoformats() {
 		if ( this.editor.commands.get( 'codeBlock' ) ) {
-			blockAutoformatEditing( this.editor, this, /^```/, 'codeBlock' );
+			blockAutoformatEditing( this.editor, this, /^```$/, 'codeBlock' );
 		}
 	}
 }
