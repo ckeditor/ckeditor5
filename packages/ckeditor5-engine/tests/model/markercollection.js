@@ -123,6 +123,12 @@ describe( 'MarkerCollection', () => {
 
 			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
 		} );
+
+		it( 'should throw if marker name with "," is added', () => {
+			expectToThrowCKEditorError( () => {
+				markers._set( 'foo,bar', range );
+			}, /^markercollection-incorrect-marker-name:/, markers );
+		} );
 	} );
 
 	describe( 'has', () => {

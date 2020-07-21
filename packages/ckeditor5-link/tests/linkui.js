@@ -481,6 +481,9 @@ describe( 'LinkUI', () => {
 			const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
 
 			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+			expect( getViewData( editor.editing.view ) ).to.equal( '<p>f{<span class="ck-fake-link-selection">o</span>}o</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo</p>' );
 		} );
 
 		it( 'should display a fake visual selection on a collapsed selection', () => {
@@ -498,6 +501,11 @@ describe( 'LinkUI', () => {
 			const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
 
 			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+			expect( getViewData( editor.editing.view ) ).to.equal(
+				'<p>f{}<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span>o</p>'
+			);
+			expect( editor.getData() ).to.equal( '<p>fo</p>' );
 		} );
 	} );
 

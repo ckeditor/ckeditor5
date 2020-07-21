@@ -29,6 +29,10 @@ export default class DocumentColorCollection extends Collection {
 		 * @member {Boolean} #isEmpty
 		 */
 		this.set( 'isEmpty', true );
+
+		this.on( 'change', () => {
+			this.set( 'isEmpty', this.length === 0 );
+		} );
 	}
 
 	/**
@@ -44,6 +48,7 @@ export default class DocumentColorCollection extends Collection {
 	 * @param {Number} [index] The position of the item in the collection. The item
 	 * is pushed to the collection when `index` is not specified.
 	 * @fires add
+	 * @fires change
 	 */
 	add( item, index ) {
 		if ( this.find( element => element.color === item.color ) ) {
@@ -52,21 +57,6 @@ export default class DocumentColorCollection extends Collection {
 		}
 
 		super.add( item, index );
-
-		this.set( 'isEmpty', false );
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	remove( subject ) {
-		const ret = super.remove( subject );
-
-		if ( this.length === 0 ) {
-			this.set( 'isEmpty', true );
-		}
-
-		return ret;
 	}
 
 	/**

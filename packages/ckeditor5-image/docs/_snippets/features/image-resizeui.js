@@ -17,26 +17,36 @@ ClassicEditor
 			resizeOptions: [
 				{
 					name: 'imageResize:original',
-					label: 'Original size',
-					value: null
+					label: 'Original',
+					value: null,
+					icon: 'original'
 				},
 				{
 					name: 'imageResize:50',
 					label: '50%',
-					value: '50'
+					value: '50',
+					icon: 'medium'
 				},
 				{
 					name: 'imageResize:75',
 					label: '75%',
-					value: '75'
+					value: '75',
+					icon: 'large'
 				}
 			],
+			styles: [
+				'alignLeft',
+				'alignCenter',
+				'alignRight'
+			],
 			toolbar: [
-				'imageStyle:full',
-				'imageStyle:side', '|',
-				'imageResize:original',
+				'imageStyle:alignLeft',
+				'imageStyle:alignCenter',
+				'imageStyle:alignRight',
+				'|',
 				'imageResize:50',
-				'imageResize:75'
+				'imageResize:75',
+				'imageResize:original'
 			]
 		},
 		cloudServices: CS_CONFIG

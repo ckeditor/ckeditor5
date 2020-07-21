@@ -36,25 +36,22 @@ const imageConfig1 = {
 	resizeOptions: [
 		{
 			name: 'imageResize:original',
-			label: 'Original size',
 			value: null
 		},
 		{
 			name: 'imageResize:50',
-			label: '50%',
 			value: '50'
 		},
 		{
 			name: 'imageResize:75',
-			label: '75%',
 			value: '75'
 		}
 	],
-	toolbar: [ 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:side', '|', 'imageResize' ],
+	toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|', 'imageResize' ],
 	styles: [
-		'full',
 		'alignLeft',
-		'side' // Purposely using side image instead right aligned image to make sure it works well with both style types.
+		'alignCenter',
+		'alignRight'
 	]
 };
 
@@ -66,7 +63,7 @@ const config1 = {
 ClassicEditor
 	.create( document.querySelector( '#editor1' ), config1 )
 	.then( editor => {
-		window.editor = editor;
+		window.editor1 = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -77,27 +74,27 @@ const imageConfig2 = {
 	resizeOptions: [
 		{
 			name: 'imageResize:original',
-			label: 'Original size',
-			value: null
+			value: null,
+			icon: 'original'
 		},
 		{
 			name: 'imageResize:50',
-			label: '50%',
-			value: '50'
+			value: '50',
+			icon: 'medium'
 		},
 		{
 			name: 'imageResize:75',
-			label: '75%',
-			value: '75'
+			value: '75',
+			icon: 'large'
 		}
 	],
 	toolbar: [
 		'imageStyle:alignLeft',
 		'imageStyle:full',
 		'imageStyle:side', '|',
-		'imageResize:original',
 		'imageResize:50',
-		'imageResize:75'
+		'imageResize:75',
+		'imageResize:original'
 	],
 	styles: [
 		'full',
@@ -114,7 +111,7 @@ const config2 = {
 ClassicEditor
 	.create( document.querySelector( '#editor2' ), config2 )
 	.then( editor => {
-		window.editor = editor;
+		window.editor2 = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );

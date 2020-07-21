@@ -1,0 +1,9 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-link-image_icon {
+	color: hsl(0, 0%, 100%);
+	background: hsla(0, 0%, 0%, .4);
+}
