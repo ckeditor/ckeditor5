@@ -452,7 +452,7 @@ class RangeParser {
 			}
 		}
 
-		if ( node.is( 'text' ) ) {
+		if ( node.is( '$text' ) ) {
 			const regexp = new RegExp(
 				`[${ TEXT_RANGE_START_TOKEN }${ TEXT_RANGE_END_TOKEN }\\${ ELEMENT_RANGE_END_TOKEN }\\${ ELEMENT_RANGE_START_TOKEN }]`,
 				'g'
@@ -688,7 +688,7 @@ class ViewStringify {
 			}
 		}
 
-		if ( root.is( 'text' ) ) {
+		if ( root.is( '$text' ) ) {
 			callback( this._stringifyTextRanges( root ) );
 		}
 	}

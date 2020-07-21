@@ -456,7 +456,7 @@ function shouldCopyAttributes( model ) {
 	}
 
 	// ...or it isn't the text node...
-	if ( !nodeAtFirstPosition.is( 'text' ) ) {
+	if ( !nodeAtFirstPosition.is( '$text' ) ) {
 		return false;
 	}
 

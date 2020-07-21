@@ -110,7 +110,7 @@ export function getBalloonCellPositionData( editor ) {
 // @param {module:engine/model/position~Position} position Document position.
 // @returns {module:engine/model/element~Element}
 function getTableCellAtPosition( position ) {
-	const isTableCellSelected = position.nodeAfter && position.nodeAfter.is( 'tableCell' );
+	const isTableCellSelected = position.nodeAfter && position.nodeAfter.is( 'element', 'tableCell' );
 
 	return isTableCellSelected ? position.nodeAfter : position.findAncestor( 'tableCell' );
 }

@@ -8,16 +8,10 @@
 }
 
 .ck-content {
-	& .image-style-side,
-	& .image-style-align-left,
-	& .image-style-align-center,
-	& .image-style-align-right {
-		max-width: 50%;
-	}
-
 	& .image-style-side {
 		float: right;
 		margin-left: var(--ck-image-style-spacing);
+		max-width: 50%;
 	}
 
 	& .image-style-align-left {
