@@ -9,28 +9,8 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-style-custom' ), {
-		removePlugins: [ 'LinkImage' ],
+		removePlugins: [ 'ImageResize', 'LinkImage' ],
 		image: {
-			resizeOptions: [
-				{
-					name: 'imageResize:original',
-					label: 'Original',
-					value: null,
-					icon: 'original'
-				},
-				{
-					name: 'imageResize:50',
-					label: '50%',
-					value: '50',
-					icon: 'medium'
-				},
-				{
-					name: 'imageResize:75',
-					label: '75%',
-					value: '75',
-					icon: 'large'
-				}
-			],
 			styles: [
 				'alignLeft',
 				'alignCenter',
@@ -41,9 +21,7 @@ ClassicEditor
 				'imageStyle:alignCenter',
 				'imageStyle:alignRight',
 				'|',
-				'imageResize:50',
-				'imageResize:75',
-				'imageResize:original'
+				'imageTextAlternative'
 			]
 		},
 		toolbar: {
