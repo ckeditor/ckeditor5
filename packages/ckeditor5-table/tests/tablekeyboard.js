@@ -2451,7 +2451,7 @@ describe( 'TableKeyboard', () => {
 							] ) );
 						} );
 
-						it( 'should expand not collapsed selection to the beginning of the cell content from the selection anchor', () => {
+						it( 'should not prevent default browser behavior for shrinking selection (up arrow)', () => {
 							setModelData( model, modelTable( [
 								[ '00', '01', '02' ],
 								[ '10', 'word [word]' + text, '12' ],
@@ -2460,12 +2460,25 @@ describe( 'TableKeyboard', () => {
 
 							editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
+							sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
+							sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+						} );
+
+						it( 'should expand not collapsed selection to the beginning of the cell content from the selection anchor', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', 'word [word]' + text, '12' ],
+								[ '20', '21', '22' ]
+							] ), { lastRangeBackward: true } );
+
+							editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
 							sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 							sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
 							assertEqualMarkup( getModelData( model ), modelTable( [
 								[ '00', '01', '02' ],
-								[ '10', '[word ]word' + text, '12' ],
+								[ '10', '[word word]' + text, '12' ],
 								[ '20', '21', '22' ]
 							] ) );
 						} );
@@ -2487,6 +2500,19 @@ describe( 'TableKeyboard', () => {
 								[ '10', text + 'word[ word]', '12' ],
 								[ '20', '21', '22' ]
 							] ) );
+						} );
+
+						it( 'should not prevent default browser behavior for shrinking selection (down arrow)', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', text + '[word] word', '12' ],
+								[ '20', '21', '22' ]
+							] ), { lastRangeBackward: true } );
+
+							editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
+
+							sinon.assert.notCalled( downArrowDomEvtDataStub.preventDefault );
+							sinon.assert.notCalled( downArrowDomEvtDataStub.stopPropagation );
 						} );
 
 						it( 'should expand not collapsed selection to the end of the cell content from the selection anchor', () => {

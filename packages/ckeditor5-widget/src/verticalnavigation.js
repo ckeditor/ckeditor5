@@ -29,6 +29,12 @@ export default function verticalNavigationHandler( editing ) {
 			return;
 		}
 
+		// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
+		// Selection for sure will not approach any object.
+		if ( expandSelection && !selection.isCollapsed && selection.isBackward == arrowDownPressed ) {
+			return;
+		}
+
 		// Find a range between selection and closest limit element.
 		const range = findTextRangeFromSelection( editing, selection, arrowDownPressed );
 

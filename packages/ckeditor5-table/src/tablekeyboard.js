@@ -218,6 +218,12 @@ export default class TableKeyboard extends Plugin {
 			return false;
 		}
 
+		// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
+		// Selection for sure will not approach cell edge.
+		if ( expandSelection && !selection.isCollapsed && selection.isBackward == isForward ) {
+			return false;
+		}
+
 		const cellRange = model.createRangeIn( tableCell );
 
 		// Let's check if the selection is at the beginning/end of the cell.
