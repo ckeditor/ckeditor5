@@ -10,7 +10,6 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattributerange';
 import first from '@ckeditor/ckeditor5-utils/src/first';
-import findLinkRange from './findlinkrange';
 import { isImageAllowed } from './utils';
 
 /**
