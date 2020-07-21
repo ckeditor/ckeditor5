@@ -78,12 +78,13 @@ export default class BlockQuoteEditing extends Plugin {
 						const range = writer.createRangeIn( element );
 
 						for ( const child of range.getItems() ) {
-							if ( child.is( 'element', 'blockQuote' ) ) {
-								if ( !schema.checkChild( writer.createPositionBefore( child ), child ) ) {
-									writer.unwrap( child );
+							if (
+								child.is( 'element', 'blockQuote' ) &&
+								!schema.checkChild( writer.createPositionBefore( child ), child )
+							) {
+								writer.unwrap( child );
 
-									return true;
-								}
+								return true;
 							}
 						}
 					}
