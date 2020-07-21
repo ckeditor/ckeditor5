@@ -69,6 +69,8 @@ describe( 'Element', () => {
 			expect( element.is( 'view:node' ) ).to.be.false;
 			expect( element.is( 'view:element' ) ).to.be.false;
 			expect( element.is( 'view:element' ) ).to.be.false;
+			expect( element.is( 'node', 'paragraph' ) ).to.be.false;
+			expect( element.is( 'model:node', 'paragraph' ) ).to.be.false;
 		} );
 	} );
 

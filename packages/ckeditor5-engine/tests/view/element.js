@@ -103,7 +103,6 @@ describe( 'Element', () => {
 			expect( el.is( 'view:element' ) ).to.be.true;
 			expect( el.is( 'element', 'p' ) ).to.be.true;
 			expect( el.is( 'view:element', 'p' ) ).to.be.true;
-			expect( el.is( 'element', 'p' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
@@ -122,6 +121,8 @@ describe( 'Element', () => {
 			expect( el.is( 'rootElement' ) ).to.be.false;
 			expect( el.is( 'view:ootElement' ) ).to.be.false;
 			expect( el.is( 'documentFragment' ) ).to.be.false;
+			expect( el.is( 'node', 'p' ) ).to.be.false;
+			expect( el.is( 'view:node', 'p' ) ).to.be.false;
 		} );
 	} );
 

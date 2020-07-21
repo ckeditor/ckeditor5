@@ -44,7 +44,6 @@ describe( 'AttributeElement', () => {
 			expect( el.is( 'view:element' ) ).to.be.true;
 			expect( el.is( 'element', 'span' ) ).to.be.true;
 			expect( el.is( 'view:element', 'span' ) ).to.be.true;
-			expect( el.is( 'element', 'span' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
@@ -61,6 +60,8 @@ describe( 'AttributeElement', () => {
 			expect( el.is( 'emptyElement' ) ).to.be.false;
 			expect( el.is( 'rootElement' ) ).to.be.false;
 			expect( el.is( 'documentFragment' ) ).to.be.false;
+			expect( el.is( 'node', 'span' ) ).to.be.false;
+			expect( el.is( 'view:node', 'span' ) ).to.be.false;
 		} );
 	} );
 
