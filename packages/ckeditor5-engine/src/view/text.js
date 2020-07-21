@@ -76,7 +76,9 @@ export default class Text extends Node {
 	}
 
 	/**
-	 * This getter is required when using the addition assignment operator on protected property:
+	 * The `_data` property is controlled by a getter and a setter.
+	 *
+	 * The getter is required when using the addition assignment operator on protected property:
 	 *
 	 *		const foo = downcastWriter.createText( 'foo' );
 	 *		const bar = downcastWriter.createText( 'bar' );
@@ -86,6 +88,8 @@ export default class Text extends Node {
 	 *
 	 * If the protected getter didn't exist, `foo._data` will return `undefined` and result of the merge will be invalid.
 	 *
+	 * The setter sets data and fires the {@link module:engine/view/node~Node#event:change:text change event}.
+	 *
 	 * @protected
 	 * @type {String}
 	 */
@@ -93,13 +97,6 @@ export default class Text extends Node {
 		return this.data;
 	}
 
-	/**
-	 * Sets data and fires the {@link module:engine/view/node~Node#event:change:text change event}.
-	 *
-	 * @protected
-	 * @fires change:text
-	 * @param {String} data New data for the text node.
-	 */
 	set _data( data ) {
 		this._fireChange( 'text', this );
 
