@@ -631,7 +631,7 @@ export default class Mapper {
 	 *			const sibling = data.modelPosition.nodeBefore;
 	 *
 	 *			// Check if this is the element we are interested in.
-	 *			if ( !sibling.is( 'customElement' ) ) {
+	 *			if ( !sibling.is( 'element', 'customElement' ) ) {
 	 *				return;
 	 *			}
 	 *
