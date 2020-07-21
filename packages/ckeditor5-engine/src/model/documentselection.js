@@ -1120,7 +1120,7 @@ class LiveSelection extends Selection {
 		return attrs;
 	}
 
-	// Fixes the selection after all it ranges get removed.
+	// Fixes the selection after all its ranges got removed.
 	//
 	// @private
 	// @param {module:engine/model/position~Position} deletionPosition Position where the deletion happened.
