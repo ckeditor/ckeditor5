@@ -962,7 +962,7 @@ describe( 'TwoStepCaretMovement()', () => {
 			// If not a key, then it's an assertion.
 			else {
 				const stepIndex = scenario.indexOf( step );
-				const stepString = `in step #${ stepIndex } ${ JSON.stringify( step ) }`;
+				const stepString = `in step #${ stepIndex }`;
 				let caretPosition = step.caretPosition;
 
 				if ( caretPosition !== undefined ) {
@@ -971,12 +971,12 @@ describe( 'TwoStepCaretMovement()', () => {
 					expect( selection.getFirstPosition(), `in step #${ stepIndex }, selection's first position` )
 						.to.have.deep.property( 'path', caretPosition );
 				}
-				expect( getSelectionAttributesArray( selection ), `in step #${ stepIndex }, selection's gravity` )
-					.to.have.members( step.selectionAttributes, `#attributes ${ stepString }` );
-				expect( selection, `in step #${ stepIndex }, selection's gravity` )
+				expect( getSelectionAttributesArray( selection ), `${ stepString }, selection's attributes` )
+					.to.have.members( step.selectionAttributes );
+				expect( selection, `${ stepString }, selection's gravity` )
 					.to.have.property( 'isGravityOverridden', step.isGravityOverridden );
-				expect( preventDefaultSpy.callCount ).to.equal( step.preventDefault, `#preventDefault ${ stepString }` );
-				expect( evtStopSpy.callCount ).to.equal( step.evtStop, `#evtStop ${ stepString }` );
+				expect( preventDefaultSpy, stepString ).to.have.callCount( step.preventDefault );
+				expect( evtStopSpy, stepString ).to.have.callCount( step.evtStop );
 			}
 		}
 	}
