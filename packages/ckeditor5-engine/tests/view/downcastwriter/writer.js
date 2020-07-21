@@ -143,6 +143,18 @@ describe( 'DowncastWriter', () => {
 			expect( element.is( 'rawElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			assertElementAttributes( element, attributes );
+
+			expect( element.render ).to.be.a( 'function' );
+		} );
+
+		it( 'should provide a default empty render() method', () => {
+			const element = writer.createRawElement( 'foo' );
+
+			expect( element.render ).to.be.a( 'function' );
+
+			expect( () => {
+				element.render();
+			} ).to.not.throw();
 		} );
 
 		it( 'should allow to pass custom rendering method', () => {
