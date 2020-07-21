@@ -66,8 +66,6 @@ describe( 'RootEditableElement', () => {
 			expect( el.is( 'view:element' ) ).to.be.true;
 			expect( el.is( 'element', 'div' ) ).to.be.true;
 			expect( el.is( 'view:element', 'div' ) ).to.be.true;
-			expect( el.is( 'element', 'div' ) ).to.be.true;
-			expect( el.is( 'view:div' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
@@ -87,6 +85,10 @@ describe( 'RootEditableElement', () => {
 			expect( el.is( 'emptyElement' ) ).to.be.false;
 			expect( el.is( 'documentFragment' ) ).to.be.false;
 			expect( el.is( 'model:rootElement' ) ).to.be.false;
+			expect( el.is( 'div' ) ).to.be.false;
+			expect( el.is( 'view:div' ) ).to.be.false;
+			expect( el.is( 'node', 'div' ) ).to.be.false;
+			expect( el.is( 'view:node', 'div' ) ).to.be.false;
 		} );
 	} );
 

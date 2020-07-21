@@ -429,7 +429,7 @@ function dataViewModelH1Insertion( evt, data, conversionApi ) {
 	const modelCursor = data.modelCursor;
 	const viewItem = data.viewItem;
 
-	if ( !modelCursor.isAtStart || !modelCursor.parent.is( '$root' ) ) {
+	if ( !modelCursor.isAtStart || !modelCursor.parent.is( 'element', '$root' ) ) {
 		return;
 	}
 

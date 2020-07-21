@@ -161,7 +161,7 @@ function getInsertImageParent( selection, model ) {
 
 	const parent = insertAt.parent;
 
-	if ( parent.isEmpty && !parent.is( '$root' ) ) {
+	if ( parent.isEmpty && !parent.is( 'element', '$root' ) ) {
 		return parent.parent;
 	}
 
