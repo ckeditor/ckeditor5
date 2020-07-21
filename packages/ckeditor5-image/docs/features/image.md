@@ -158,7 +158,7 @@ Try to understand what use cases the system needs to support and define semantic
 </info-box>
 
 <info-box warning>
-	While semantical styles can be combined with manual [image resizing](#image-resizing), these features were not designed to be used together.
+	While semantical styles can be combined with manual [image resizing](#resizing-images), these features were not designed to be used together.
 
 	If you want to enable image resizing, use [presentational image styles](#presentational-styles).
 </info-box>
@@ -224,11 +224,21 @@ It is implemented by the {@link module:image/imageresize~ImageResize} plugin and
 
 The plugin also gives you an ability to change the size of the image through the image toolbar. You can set an optional static configuration with {@link module:image/image~ImageConfig#resizeOptions} and choose whether you want to use a dropdown or set of the standalone buttons.
 
-### Resize image using handles
+### Methods to resize images
+
+The editor offers three ways to resize images. One of them (resize handles) is
+
+#### Using handles
+
+In this case, the user is able to resize images via dragging square handles displayed in each corner of the image. Once [image resizing was enabled](#enabling-image-resizing), this option does not require any additional configuration.
 
 {@snippet features/image-resize}
 
-### Resize image using the plugin dropdown
+#### Using the dropdown
+
+In this case, the user is able to choose from a set of predefined options. These options can be displayed in the image toolbar in form of a dropdown.
+
+To use this option, you need to [enable image resizing](#enabling-image-resizing) and configure the available {@link module:image/image~ImageConfig#resizeOptions resize options}.
 
 ```js
 const imageConfiguration = {
@@ -249,13 +259,17 @@ const imageConfiguration = {
 			value: '75'
 		}
 	],
-	toolbar: [ ... , 'imageResize' ]
+	toolbar: [ ..., 'imageResize' ]
 }
 ```
 
 {@snippet features/image-resizeuidropdown}
 
-### Resize image using the standalone buttons
+#### Using standalone buttons
+
+In this case, the resize options are displayed in form of separate buttons. The benefit of this solution is the smoothest UX as the user needs just one click to resize an image.
+
+To use this option, you need to [enabling image resizing](#enabling-image-resizing) and configure the available {@link module:image/image~ImageConfig#resizeOptions resize options}.
 
 ```js
 const imageConfiguration = {
@@ -277,7 +291,7 @@ const imageConfiguration = {
 		}
 	],
 	toolbar: [
-		// ...,
+		...,
 		'imageResize:original',
 		'imageResize:50',
 		'imageResize:75'
