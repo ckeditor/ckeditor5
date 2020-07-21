@@ -121,7 +121,7 @@ export function injectViewList( modelItem, injectedItem, conversionApi, model ) 
 		const walker = walkerBoundaries.getWalker( { ignoreElementEnd: true } );
 
 		for ( const value of walker ) {
-			if ( value.item.is( 'li' ) ) {
+			if ( value.item.is( 'element', 'li' ) ) {
 				const breakPosition = viewWriter.breakContainer( viewWriter.createPositionBefore( value.item ) );
 				const viewList = value.item.parent;
 
@@ -135,7 +135,7 @@ export function injectViewList( modelItem, injectedItem, conversionApi, model ) 
 	} else {
 		const nextViewList = injectedList.nextSibling;
 
-		if ( nextViewList && ( nextViewList.is( 'ul' ) || nextViewList.is( 'ol' ) ) ) {
+		if ( nextViewList && ( nextViewList.is( 'element', 'ul' ) || nextViewList.is( 'element', 'ol' ) ) ) {
 			let lastSubChild = null;
 
 			for ( const child of nextViewList.getChildren() ) {

@@ -573,7 +573,7 @@ export default class Model {
 		}
 
 		for ( const item of range.getItems() ) {
-			if ( item.is( 'textProxy' ) ) {
+			if ( item.is( '$textProxy' ) ) {
 				if ( !ignoreWhitespaces ) {
 					return true;
 				} else if ( item.data.search( /\S/ ) !== -1 ) {

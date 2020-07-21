@@ -45,22 +45,27 @@ export default class Text extends Node {
 	/**
 	 * Checks whether this object is of the given type.
 	 *
-	 *		text.is( 'text' ); // -> true
+	 *		text.is( '$text' ); // -> true
 	 *		text.is( 'node' ); // -> true
-	 *		text.is( 'view:text' ); // -> true
+	 *		text.is( 'view:$text' ); // -> true
 	 *		text.is( 'view:node' ); // -> true
 	 *
-	 *		text.is( 'model:text' ); // -> false
+	 *		text.is( 'model:$text' ); // -> false
 	 *		text.is( 'element' ); // -> false
 	 *		text.is( 'range' ); // -> false
 	 *
 	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *
-	 * @param {String} type
+	 * **Note:** Until version 20.0.0 this method wasn't accepting `'$text'` type. The legacy `'text'` type is still
+	 * accepted for backward compatibility.
+	 *
+	 * @param {String} type Type to check.
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type === 'text' || type === 'view:text' ||
+		return type === '$text' || type === 'view:$text' ||
+			// This are legacy values kept for backward compatibility.
+			type === 'text' || type === 'view:text' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 			type === 'node' || type === 'view:node';
 	}

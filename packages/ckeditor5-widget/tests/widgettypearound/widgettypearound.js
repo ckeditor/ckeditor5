@@ -172,9 +172,9 @@ describe( 'WidgetTypeAround', () => {
 			const lastViewWidget = viewRoot.getChild( 1 ).getChild( 0 );
 
 			expect( firstViewWidget.childCount ).to.equal( 1 );
-			expect( firstViewWidget.getChild( 0 ).is( 'text' ) ).to.be.true;
+			expect( firstViewWidget.getChild( 0 ).is( '$text' ) ).to.be.true;
 			expect( lastViewWidget.childCount ).to.equal( 1 );
-			expect( lastViewWidget.getChild( 0 ).is( 'text' ) ).to.be.true;
+			expect( lastViewWidget.getChild( 0 ).is( '$text' ) ).to.be.true;
 		} );
 
 		it( 'should inject buttons into the wrapper', () => {

@@ -71,14 +71,13 @@ export default class ContainerElement extends Element {
 	 * Assuming that the object being checked is a container element, you can also check its
 	 * {@link module:engine/view/containerelement~ContainerElement#name name}:
 	 *
-	 *		containerElement.is( 'div' ); // -> true if this is a div container element
+	 *		containerElement.is( 'element', 'div' ); // -> true if this is a div container element
 	 *		containerElement.is( 'contaienrElement', 'div' ); // -> same as above
-	 *		text.is( 'div' ); -> false
+	 *		text.is( 'element', 'div' ); -> false
 	 *
 	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *
-	 * @param {String} type Type to check when `name` parameter is present.
-	 * Otherwise, it acts like the `name` parameter.
+	 * @param {String} type Type to check.
 	 * @param {String} [name] Element name.
 	 * @returns {Boolean}
 	 */
@@ -86,7 +85,6 @@ export default class ContainerElement extends Element {
 		if ( !name ) {
 			return type === 'containerElement' || type === 'view:containerElement' ||
 				// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
-				type === this.name || type === 'view:' + this.name ||
 				type === 'element' || type === 'view:element' ||
 				type === 'node' || type === 'view:node';
 		} else {
