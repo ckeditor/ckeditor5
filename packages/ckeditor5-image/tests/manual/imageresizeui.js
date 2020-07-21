@@ -52,11 +52,11 @@ const imageConfig1 = {
 			value: '75'
 		}
 	],
-	toolbar: [ 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:side', '|', 'imageResize' ],
+	toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|', 'imageResize' ],
 	styles: [
-		'full',
 		'alignLeft',
-		'side' // Purposely using side image instead right aligned image to make sure it works well with both style types.
+		'alignCenter',
+		'alignRight'
 	]
 };
 

@@ -104,7 +104,7 @@ export default class IndentCommand extends Command {
 		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
 
 		// If selection is not in a list item, the command is disabled.
-		if ( !listItem || !listItem.is( 'listItem' ) ) {
+		if ( !listItem || !listItem.is( 'element', 'listItem' ) ) {
 			return false;
 		}
 
@@ -116,7 +116,7 @@ export default class IndentCommand extends Command {
 
 			let prev = listItem.previousSibling;
 
-			while ( prev && prev.is( 'listItem' ) && prev.getAttribute( 'listIndent' ) >= indent ) {
+			while ( prev && prev.is( 'element', 'listItem' ) && prev.getAttribute( 'listIndent' ) >= indent ) {
 				if ( prev.getAttribute( 'listIndent' ) == indent ) {
 					// The item is on the same level.
 					// If it has same type, it means that we found a preceding sibling from the same list.

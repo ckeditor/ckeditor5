@@ -173,7 +173,7 @@ function getCorrectWordBreakPosition( walker, isForward ) {
 			const nextNode = isForward ? walker.position.nodeAfter : walker.position.nodeBefore;
 
 			// Scan only text nodes. Ignore inline elements (like `<softBreak>`).
-			if ( nextNode && nextNode.is( 'text' ) ) {
+			if ( nextNode && nextNode.is( '$text' ) ) {
 				// Check boundary char of an adjacent text node.
 				const boundaryChar = nextNode.data.charAt( isForward ? 0 : nextNode.data.length - 1 );
 

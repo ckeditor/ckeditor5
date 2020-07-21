@@ -529,7 +529,7 @@ export default class DowncastWriter {
 		const positionParent = position.parent;
 
 		// When inside text node - nothing to merge.
-		if ( positionParent.is( 'text' ) ) {
+		if ( positionParent.is( '$text' ) ) {
 			return position;
 		}
 
@@ -553,7 +553,7 @@ export default class DowncastWriter {
 		}
 
 		// When position is between two text nodes.
-		if ( nodeBefore.is( 'text' ) && nodeAfter.is( 'text' ) ) {
+		if ( nodeBefore.is( '$text' ) && nodeAfter.is( '$text' ) ) {
 			return mergeTextNodes( nodeBefore, nodeAfter );
 		}
 		// When position is between two same attribute elements.
@@ -749,7 +749,7 @@ export default class DowncastWriter {
 				// Create range on this element.
 				rangeToRemove = Range._createOn( item );
 				// When range starts inside Text or TextProxy element.
-			} else if ( !current.nextPosition.isAfter( range.start ) && item.is( 'textProxy' ) ) {
+			} else if ( !current.nextPosition.isAfter( range.start ) && item.is( '$textProxy' ) ) {
 				// We need to check if parent of this text matches to given element.
 				const parentElement = item.getAncestors().find( ancestor => {
 					return ancestor.is( 'element' ) && element.isSimilar( ancestor );
@@ -1104,7 +1104,7 @@ export default class DowncastWriter {
 
 		while ( i < endOffset ) {
 			const child = parent.getChild( i );
-			const isText = child.is( 'text' );
+			const isText = child.is( '$text' );
 			const isAttribute = child.is( 'attributeElement' );
 			const isEmpty = child.is( 'emptyElement' );
 			const isUI = child.is( 'uiElement' );
@@ -1334,7 +1334,7 @@ export default class DowncastWriter {
 		}
 
 		// When position is inside text node - break it and place new position between two text nodes.
-		if ( position.parent.is( 'text' ) ) {
+		if ( position.parent.is( '$text' ) ) {
 			position = breakTextNode( position );
 		}
 
@@ -1573,7 +1573,7 @@ export default class DowncastWriter {
 		}
 
 		// There are no attributes to break and text nodes breaking is not forced.
-		if ( !forceSplitText && positionParent.is( 'text' ) && isContainerOrFragment( positionParent.parent ) ) {
+		if ( !forceSplitText && positionParent.is( '$text' ) && isContainerOrFragment( positionParent.parent ) ) {
 			return position.clone();
 		}
 
@@ -1583,7 +1583,7 @@ export default class DowncastWriter {
 		}
 
 		// Break text and start again in new position.
-		if ( positionParent.is( 'text' ) ) {
+		if ( positionParent.is( '$text' ) ) {
 			return this._breakAttributes( breakTextNode( position ), forceSplitText );
 		}
 
@@ -1778,13 +1778,13 @@ function shouldABeOutsideB( a, b ) {
 function movePositionToTextNode( position ) {
 	const nodeBefore = position.nodeBefore;
 
-	if ( nodeBefore && nodeBefore.is( 'text' ) ) {
+	if ( nodeBefore && nodeBefore.is( '$text' ) ) {
 		return new Position( nodeBefore, nodeBefore.data.length );
 	}
 
 	const nodeAfter = position.nodeAfter;
 
-	if ( nodeAfter && nodeAfter.is( 'text' ) ) {
+	if ( nodeAfter && nodeAfter.is( '$text' ) ) {
 		return new Position( nodeAfter, 0 );
 	}
 
@@ -1866,7 +1866,7 @@ function validateNodesToInsert( nodes, errorContext ) {
 			throw new CKEditorError( 'view-writer-insert-invalid-node', errorContext );
 		}
 
-		if ( !node.is( 'text' ) ) {
+		if ( !node.is( '$text' ) ) {
 			validateNodesToInsert( node.getChildren(), errorContext );
 		}
 	}

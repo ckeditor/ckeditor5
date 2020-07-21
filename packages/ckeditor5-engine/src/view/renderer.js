@@ -332,7 +332,7 @@ export default class Renderer {
 	_getInlineFillerPosition() {
 		const firstPos = this.selection.getFirstPosition();
 
-		if ( firstPos.parent.is( 'text' ) ) {
+		if ( firstPos.parent.is( '$text' ) ) {
 			return ViewPosition._createBefore( this.selection.getFirstPosition().parent );
 		} else {
 			return firstPos;
@@ -659,7 +659,7 @@ export default class Renderer {
 			return;
 		}
 
-		if ( viewNode.is( 'text' ) ) {
+		if ( viewNode.is( '$text' ) ) {
 			this.markedTexts.add( viewNode );
 		} else if ( viewNode.is( 'element' ) ) {
 			for ( const child of viewNode.getChildren() ) {

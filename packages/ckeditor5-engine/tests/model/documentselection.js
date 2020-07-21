@@ -719,8 +719,8 @@ describe( 'DocumentSelection', () => {
 		it( 'should return false for other values', () => {
 			expect( selection.is( 'node' ) ).to.be.false;
 			expect( selection.is( 'model:node' ) ).to.be.false;
-			expect( selection.is( 'text' ) ).to.be.false;
-			expect( selection.is( 'textProxy' ) ).to.be.false;
+			expect( selection.is( '$text' ) ).to.be.false;
+			expect( selection.is( '$textProxy' ) ).to.be.false;
 			expect( selection.is( 'element' ) ).to.be.false;
 			expect( selection.is( 'element', 'paragraph' ) ).to.be.false;
 			expect( selection.is( 'rootElement' ) ).to.be.false;
