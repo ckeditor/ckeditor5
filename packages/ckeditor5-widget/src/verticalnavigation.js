@@ -84,6 +84,11 @@ function findTextRangeFromSelection( editing, selection, isForward ) {
 		const startPosition = selection.isCollapsed ? selection.focus : selection.getLastPosition();
 		const endPosition = getNearestNonInlineLimit( model, startPosition, 'forward' );
 
+		// There is no limit element, browser should handle this.
+		if ( !endPosition ) {
+			return null;
+		}
+
 		const range = model.createRange( startPosition, endPosition );
 		const lastRangePosition = getNearestVisibleTextPosition( editing, range, 'backward' );
 
@@ -95,6 +100,11 @@ function findTextRangeFromSelection( editing, selection, isForward ) {
 	} else {
 		const endPosition = selection.isCollapsed ? selection.focus : selection.getFirstPosition();
 		const startPosition = getNearestNonInlineLimit( model, endPosition, 'backward' );
+
+		// There is no limit element, browser should handle this.
+		if ( !startPosition ) {
+			return null;
+		}
 
 		const range = model.createRange( startPosition, endPosition );
 		const firstRangePosition = getNearestVisibleTextPosition( editing, range, 'forward' );
@@ -112,7 +122,7 @@ function findTextRangeFromSelection( editing, selection, isForward ) {
 // @param {module:engine/model/model~Model} model
 // @param {<module:engine/model/position~Position>} startPosition
 // @param {'forward'|'backward'} direction Search direction.
-// @returns {<module:engine/model/position~Position>}
+// @returns {<module:engine/model/position~Position>|null}
 //
 function getNearestNonInlineLimit( model, startPosition, direction ) {
 	const schema = model.schema;
@@ -124,7 +134,7 @@ function getNearestNonInlineLimit( model, startPosition, direction ) {
 		}
 	}
 
-	return direction == 'forward' ? range.end : range.start;
+	return null;
 }
 
 // Basing on the provided range, finds the first or last (depending on `direction`) position inside the range
