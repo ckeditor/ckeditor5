@@ -55,7 +55,7 @@ export default function inlineHighlight( editor, attributeName, tagName, classNa
 			// There might be multiple view elements in the `viewRange`, for example, when the `a` element is
 			// broken by a UIElement.
 			for ( const item of viewRange.getItems() ) {
-				if ( item.is( tagName ) && !item.hasClass( className ) ) {
+				if ( item.is( 'element', tagName ) && !item.hasClass( className ) ) {
 					writer.addClass( className, item );
 					highlightedElements.add( item );
 					changed = true;
