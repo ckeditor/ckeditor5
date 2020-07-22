@@ -10,6 +10,7 @@
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -228,39 +229,59 @@ export default class Resizer {
 	redraw( handleHostRect ) {
 		const domWrapper = this._domResizerWrapper;
 
-		if ( existsInDom( domWrapper ) ) {
-			this._options.editor.editing.view.change( writer => {
-				// Refresh only if resizer exists in the DOM.
-				const widgetWrapper = domWrapper.parentElement;
-				const handleHost = this._getHandleHost();
-				const clientRect = handleHostRect || new Rect( handleHost );
-
-				writer.setStyle( 'width', clientRect.width + 'px', this._viewResizerWrapper );
-				writer.setStyle( 'height', clientRect.height + 'px', this._viewResizerWrapper );
-
-				const offsets = {
-					left: handleHost.offsetLeft,
-					top: handleHost.offsetTop,
-					height: handleHost.offsetHeight,
-					width: handleHost.offsetWidth
-				};
-
-				// In case a resizing host is not a widget wrapper, we need to compensate
-				// for any additional offsets the resize host might have. E.g. wrapper padding
-				// or simply another editable. By doing that the border and resizers are shown
-				// only around the resize host.
-				if ( !widgetWrapper.isSameNode( handleHost ) ) {
-					writer.setStyle( 'left', offsets.left + 'px', this._viewResizerWrapper );
-					writer.setStyle( 'top', offsets.top + 'px', this._viewResizerWrapper );
-
-					writer.setStyle( 'height', offsets.height + 'px', this._viewResizerWrapper );
-					writer.setStyle( 'width', offsets.width + 'px', this._viewResizerWrapper );
-				}
-			} );
+		// Refresh only if resizer exists in the DOM.
+		if ( !existsInDom( domWrapper ) ) {
+			return;
 		}
 
-		function existsInDom( element ) {
-			return element && element.ownerDocument && element.ownerDocument.contains( element );
+		const widgetWrapper = domWrapper.parentElement;
+		const handleHost = this._getHandleHost();
+		const resizerWrapper = this._viewResizerWrapper;
+		const currentDimensions = [
+			resizerWrapper.getStyle( 'width' ),
+			resizerWrapper.getStyle( 'height' ),
+			resizerWrapper.getStyle( 'left' ),
+			resizerWrapper.getStyle( 'top' )
+		];
+		let newDimensions;
+
+		if ( widgetWrapper.isSameNode( handleHost ) ) {
+			const clientRect = handleHostRect || new Rect( handleHost );
+
+			newDimensions = [
+				clientRect.width + 'px',
+				clientRect.height + 'px',
+				undefined,
+				undefined
+			];
+		}
+		// In case a resizing host is not a widget wrapper, we need to compensate
+		// for any additional offsets the resize host might have. E.g. wrapper padding
+		// or simply another editable. By doing that the border and resizers are shown
+		// only around the resize host.
+		else {
+			newDimensions = [
+				handleHost.offsetWidth + 'px',
+				handleHost.offsetHeight + 'px',
+				handleHost.offsetLeft + 'px',
+				handleHost.offsetTop + 'px'
+			];
+		}
+
+		// Make changes to the view only if the resizer should actually get new dimensions.
+		// Otherwise, if View#change() was always called, this would cause EditorUI#update
+		// loops because the WidgetResize plugin listens to EditorUI#update and updates
+		// the resizer.
+		// https://github.com/ckeditor/ckeditor5/issues/7633
+		if ( compareArrays( currentDimensions, newDimensions ) !== 'same' ) {
+			this._options.editor.editing.view.change( writer => {
+				writer.setStyle( {
+					width: newDimensions[ 0 ],
+					height: newDimensions[ 1 ],
+					left: newDimensions[ 2 ],
+					top: newDimensions[ 3 ]
+				}, resizerWrapper );
+			} );
 		}
 	}
 
@@ -513,4 +534,8 @@ function extractCoordinates( event ) {
 		x: event.pageX,
 		y: event.pageY
 	};
+}
+
+function existsInDom( element ) {
+	return element && element.ownerDocument && element.ownerDocument.contains( element );
 }
