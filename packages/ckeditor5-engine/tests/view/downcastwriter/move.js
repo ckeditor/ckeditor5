@@ -10,6 +10,7 @@ import AttributeElement from '../../../src/view/attributeelement';
 import RootEditableElement from '../../../src/view/rooteditableelement';
 import EmptyElement from '../../../src/view/emptyelement';
 import UIElement from '../../../src/view/uielement';
+import RawElement from '../../../src/view/rawelement';
 import Range from '../../../src/view/range';
 import Position from '../../../src/view/position';
 
@@ -184,6 +185,29 @@ describe( 'DowncastWriter', () => {
 			expectToThrowCKEditorError( () => {
 				writer.move( srcRange, dstPosition );
 			}, 'view-writer-cannot-break-ui-element', writer );
+		} );
+
+		it( 'should move a RawElement', () => {
+			testMove(
+				'<container:p>foo[<raw:span></raw:span>]bar</container:p>',
+				'<container:div>baz{}quix</container:div>',
+				'<container:p>foobar</container:p>',
+				'<container:div>baz[<raw:span></raw:span>]quix</container:div>'
+			);
+		} );
+
+		it( 'should throw if trying to move to a RawElement', () => {
+			const srcAttribute = new AttributeElement( document, 'b' );
+			const srcContainer = new ContainerElement( document, 'p', null, srcAttribute );
+			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
+
+			const dstRawElement = new RawElement( document, 'span' );
+			new ContainerElement( document, 'p', null, dstRawElement ); // eslint-disable-line no-new
+			const dstPosition = new Position( dstRawElement, 0 );
+
+			expectToThrowCKEditorError( () => {
+				writer.move( srcRange, dstPosition );
+			}, 'view-writer-cannot-break-raw-element', writer );
 		} );
 
 		it( 'should not break marker mappings if marker element was split and the original element was removed', () => {
