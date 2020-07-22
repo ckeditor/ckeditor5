@@ -31,8 +31,8 @@ describe( 'TwoStepCaretMovement()', () => {
 			view = editor.editing.view;
 			plugin = editor.plugins.get( TwoStepCaretMovement );
 
-			preventDefaultSpy = sinon.spy();
-			evtStopSpy = sinon.spy();
+			preventDefaultSpy = sinon.spy().named( 'preventDefaultSpy' );
+			evtStopSpy = sinon.spy().named( 'evtStopSpy' );
 
 			editor.model.schema.extend( '$text', {
 				allowAttributes: [ 'a', 'b', 'c' ],
@@ -511,7 +511,7 @@ describe( 'TwoStepCaretMovement()', () => {
 			} );
 
 			// <$text a="1">x</$text><$text b="1">[]</$text>
-			expect( selection.isGravityOverridden ).to.be.true;
+			expect( selection ).to.have.property( 'isGravityOverridden', true );
 			expect( getSelectionAttributesArray( selection ) ).to.have.members( [ 'b' ] );
 
 			model.change( writer => {
@@ -519,7 +519,7 @@ describe( 'TwoStepCaretMovement()', () => {
 			} );
 
 			// <$text a="1">x</$text><$text b="1">yz[]</$text>
-			expect( selection.isGravityOverridden ).to.be.false;
+			expect( selection ).to.have.property( 'isGravityOverridden', false );
 			expect( getSelectionAttributesArray( selection ) ).to.have.members( [ 'b' ] );
 		} );
 
@@ -539,7 +539,7 @@ describe( 'TwoStepCaretMovement()', () => {
 			} );
 
 			// <$text b="1">[]</$text><$text a="1">x</$text>
-			expect( selection.isGravityOverridden ).to.be.false;
+			expect( selection ).to.have.property( 'isGravityOverridden', false );
 			expect( getSelectionAttributesArray( selection ) ).to.have.members( [ 'b' ] );
 
 			model.change( writer => {
@@ -547,7 +547,7 @@ describe( 'TwoStepCaretMovement()', () => {
 			} );
 
 			// <$text b="1">yz[]</$text><$text a="1">x</$text>
-			expect( selection.isGravityOverridden ).to.be.false;
+			expect( selection ).to.have.property( 'isGravityOverridden', false );
 			expect( getSelectionAttributesArray( selection ) ).to.have.members( [ 'b' ] );
 		} );
 	} );
@@ -646,20 +646,20 @@ describe( 'TwoStepCaretMovement()', () => {
 		it( 'should not override gravity when selection is placed at the beginning of text', () => {
 			setData( model, '<$text a="true">[]foo</$text>' );
 
-			expect( selection.isGravityOverridden ).to.be.false;
+			expect( selection ).to.have.property( 'isGravityOverridden', false );
 		} );
 
 		it( 'should not override gravity when selection is placed at the end of text', () => {
 			setData( model, '<$text a="true">foo[]</$text>' );
 
-			expect( selection.isGravityOverridden ).to.be.false;
+			expect( selection ).to.have.property( 'isGravityOverridden', false );
 		} );
 	} );
 
 	it( 'should listen with the high+1 priority on view.document#keydown', () => {
-		const highestPrioritySpy = sinon.spy();
-		const highPrioritySpy = sinon.spy();
-		const normalPrioritySpy = sinon.spy();
+		const highestPrioritySpy = sinon.spy().named( 'highestPrioritySpy' );
+		const highPrioritySpy = sinon.spy().named( 'highPrioritySpy' );
+		const normalPrioritySpy = sinon.spy().named( 'normalPrioritySpy' );
 
 		setData( model, '<$text c="true">foo[]</$text><$text a="true" b="true">bar</$text>' );
 
@@ -672,12 +672,11 @@ describe( 'TwoStepCaretMovement()', () => {
 			preventDefault: preventDefaultSpy
 		} );
 
-		sinon.assert.callOrder(
-			highestPrioritySpy,
-			preventDefaultSpy );
+		expect( highestPrioritySpy ).to.be.calledOnce;
+		expect( preventDefaultSpy ).to.be.calledImmediatelyAfter( highestPrioritySpy );
 
-		sinon.assert.notCalled( highPrioritySpy );
-		sinon.assert.notCalled( normalPrioritySpy );
+		expect( highPrioritySpy ).not.to.be.called;
+		expect( normalPrioritySpy ).not.to.be.called;
 	} );
 
 	it( 'should do nothing when key other then arrow left and right is pressed', () => {
@@ -693,7 +692,7 @@ describe( 'TwoStepCaretMovement()', () => {
 
 		fireKeyDownEvent( { keyCode: keyCodes.arrowright } );
 
-		expect( selection.isGravityOverridden ).to.be.false;
+		expect( selection ).to.have.property( 'isGravityOverridden', false );
 	} );
 
 	it( 'should do nothing when shift key is pressed', () => {
@@ -704,7 +703,7 @@ describe( 'TwoStepCaretMovement()', () => {
 			shiftKey: true
 		} );
 
-		expect( selection.isGravityOverridden ).to.be.false;
+		expect( selection ).to.have.property( 'isGravityOverridden', false );
 	} );
 
 	it( 'should do nothing when alt key is pressed', () => {
@@ -715,7 +714,7 @@ describe( 'TwoStepCaretMovement()', () => {
 			altKey: true
 		} );
 
-		expect( selection.isGravityOverridden ).to.be.false;
+		expect( selection ).to.have.property( 'isGravityOverridden', false );
 	} );
 
 	it( 'should do nothing when ctrl key is pressed', () => {
@@ -726,7 +725,7 @@ describe( 'TwoStepCaretMovement()', () => {
 			ctrlKey: true
 		} );
 
-		expect( selection.isGravityOverridden ).to.be.false;
+		expect( selection ).to.have.property( 'isGravityOverridden', false );
 	} );
 
 	it( 'should do nothing when the not a direct selection change but at the attribute boundary', () => {
@@ -743,7 +742,7 @@ describe( 'TwoStepCaretMovement()', () => {
 			writer.insertText( 'x', selection.getFirstPosition().getShiftedBy( -2 ) );
 		} );
 
-		expect( selection.isGravityOverridden ).to.be.true;
+		expect( selection ).to.have.property( 'isGravityOverridden', true );
 		expect( getSelectionAttributesArray( selection ) ).to.have.members( [] );
 	} );
 
@@ -758,8 +757,8 @@ describe( 'TwoStepCaretMovement()', () => {
 				keyCode: keyCodes.arrowright
 			} );
 
-			sinon.assert.calledOnce( forwardStub );
-			sinon.assert.notCalled( backwardStub );
+			expect( forwardStub ).to.be.calledOnce;
+			expect( backwardStub ).not.to.be.called;
 
 			setData( model, '<$text>foo</$text><$text a="true">[]bar</$text>' );
 
@@ -767,8 +766,8 @@ describe( 'TwoStepCaretMovement()', () => {
 				keyCode: keyCodes.arrowleft
 			} );
 
-			sinon.assert.calledOnce( backwardStub );
-			sinon.assert.calledOnce( forwardStub );
+			expect( forwardStub ).to.be.calledOnce;
+			expect( backwardStub ).to.be.calledOnce;
 		} );
 
 		it( 'should use the opposite helper methods (RTL content direction)', () => {
@@ -811,8 +810,8 @@ describe( 'TwoStepCaretMovement()', () => {
 						keyCode: keyCodes.arrowleft
 					} );
 
-					sinon.assert.calledOnce( forwardStub );
-					sinon.assert.notCalled( backwardStub );
+					expect( forwardStub ).to.be.calledOnce;
+					expect( backwardStub ).not.to.be.called;
 
 					setData( model, '<$text>foo</$text><$text a="true">[]bar</$text>' );
 
@@ -820,8 +819,8 @@ describe( 'TwoStepCaretMovement()', () => {
 						keyCode: keyCodes.arrowright
 					} );
 
-					sinon.assert.calledOnce( backwardStub );
-					sinon.assert.calledOnce( forwardStub );
+					expect( forwardStub ).to.be.calledOnce;
+					expect( backwardStub ).to.be.calledOnce;
 
 					return newEditor.destroy();
 				} );
@@ -910,7 +909,8 @@ describe( 'TwoStepCaretMovement()', () => {
 
 				expect( getSelectionAttributesArray( selection ) ).to.have.members(
 					step.selectionAttributes, `#attributes ${ stepString }` );
-				expect( selection.isGravityOverridden ).to.equal( step.isGravityOverridden, `#isGravityOverridden ${ stepString }` );
+				expect( selection, `#isGravityOverridden ${ stepString }` )
+					.to.have.property( 'isGravityOverridden', step.isGravityOverridden );
 				expect( preventDefaultSpy.callCount ).to.equal( step.preventDefault, `#preventDefault ${ stepString }` );
 				expect( evtStopSpy.callCount ).to.equal( step.evtStopCalled, `#evtStopCalled ${ stepString }` );
 			}

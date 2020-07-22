@@ -12519,9 +12519,9 @@ uglify-to-browserify@~1.0.0:
   integrity sha1-bgkk1r2mta/jSeOabWMoUKD4grc=
 
 umberto@^1.4.1:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/umberto/-/umberto-1.5.0.tgz#abdc002f0ec6e1c604a122d64e9ed9bd56692e56"
-  integrity sha512-PfT3NB3culnvEcqYGsX8nxvRzXbEgKr+poU0Xd8q+R2dXKP93MRYoKfPxOdybnIEOxv9WJddtBj32njHIt9HHA==
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/umberto/-/umberto-1.5.1.tgz#3b9c60d11191cd76d25299245f5648036e5adebd"
+  integrity sha512-9cn19O4q8+mwYQabFnQlVLf4jzhB/YdCJa9lvXGSspBjMye/7nTnxt7FbdUQCaFR7aGim587xkf9JLuN7p5jmA==
   dependencies:
     "@babel/core" "^7.10.3"
     "@babel/polyfill" "^7.10.1"

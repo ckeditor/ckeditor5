@@ -387,7 +387,7 @@ describe( 'Paragraph feature', () => {
 	describe( 'post-fixing empty roots', () => {
 		it( 'should fix empty roots after editor is initialised', () => {
 			expect( doc.getRoot().childCount ).to.equal( 1 );
-			expect( doc.getRoot().getChild( 0 ).is( 'paragraph' ) ).to.be.true;
+			expect( doc.getRoot().getChild( 0 ).is( 'element', 'paragraph' ) ).to.be.true;
 		} );
 
 		it( 'should fix root if it becomes empty', () => {
@@ -403,7 +403,7 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			expect( doc.getRoot().childCount ).to.equal( 1 );
-			expect( doc.getRoot().getChild( 0 ).is( 'paragraph' ) ).to.be.true;
+			expect( doc.getRoot().getChild( 0 ).is( 'element', 'paragraph' ) ).to.be.true;
 		} );
 
 		it( 'should not fix root which does not allow paragraph', () => {

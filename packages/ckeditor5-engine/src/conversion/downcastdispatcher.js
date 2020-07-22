@@ -659,6 +659,12 @@ function shouldMarkerChangeBeConverted( modelPosition, marker, mapper ) {
  */
 
 /**
+ * The {@link module:engine/model/schema~Schema} instance set for the model that is downcast.
+ *
+ * @member {module:engine/model/schema~Schema} #schema
+ */
+
+/**
  * The {@link module:engine/view/downcastwriter~DowncastWriter} instance used to manipulate data during conversion.
  *
  * @member {module:engine/view/downcastwriter~DowncastWriter} #writer

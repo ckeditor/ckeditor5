@@ -132,5 +132,5 @@ export function isImageAllowed( element, schema ) {
 		return false;
 	}
 
-	return element.is( 'image' ) && schema.checkAttribute( 'image', 'linkHref' );
+	return element.is( 'element', 'image' ) && schema.checkAttribute( 'image', 'linkHref' );
 }

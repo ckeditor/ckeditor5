@@ -92,7 +92,7 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 		const blockToFormat = entry.position.parent;
 
 		// Block formatting should be disabled in codeBlocks (#5800).
-		if ( blockToFormat.is( 'codeBlock' ) ) {
+		if ( blockToFormat.is( 'element', 'codeBlock' ) ) {
 			return;
 		}
 

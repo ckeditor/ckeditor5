@@ -95,7 +95,7 @@ export function createMediaFigureElement( writer, registry, url, options ) {
 export function getSelectedMediaModelWidget( selection ) {
 	const selectedElement = selection.getSelectedElement();
 
-	if ( selectedElement && selectedElement.is( 'media' ) ) {
+	if ( selectedElement && selectedElement.is( 'element', 'media' ) ) {
 		return selectedElement;
 	}
 

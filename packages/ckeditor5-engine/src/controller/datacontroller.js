@@ -90,7 +90,8 @@ export default class DataController {
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastDispatcher}
 		 */
 		this.downcastDispatcher = new DowncastDispatcher( {
-			mapper: this.mapper
+			mapper: this.mapper,
+			schema: model.schema
 		} );
 		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );
 

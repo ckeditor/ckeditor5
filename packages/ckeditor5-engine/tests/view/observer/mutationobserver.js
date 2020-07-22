@@ -300,7 +300,7 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].type ).to.equal( 'children' );
 		expect( lastMutations[ 0 ].oldChildren.length ).to.equal( 0 );
 		expect( lastMutations[ 0 ].newChildren.length ).to.equal( 1 );
-		expect( lastMutations[ 0 ].newChildren[ 0 ].is( 'text' ) ).to.be.true;
+		expect( lastMutations[ 0 ].newChildren[ 0 ].is( '$text' ) ).to.be.true;
 		expect( lastMutations[ 0 ].newChildren[ 0 ].data ).to.equal( ' ' );
 		expect( lastMutations[ 0 ].node ).to.equal( selection.getFirstPosition().parent );
 	} );
@@ -334,9 +334,9 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].newChildren.length ).to.equal( 3 );
 
 		// Foo and attribute is removed and reinserted.
-		expect( lastMutations[ 0 ].oldChildren[ 0 ].is( 'text' ) ).to.be.true;
+		expect( lastMutations[ 0 ].oldChildren[ 0 ].is( '$text' ) ).to.be.true;
 		expect( lastMutations[ 0 ].oldChildren[ 0 ].data ).to.equal( 'foo' );
-		expect( lastMutations[ 0 ].newChildren[ 0 ].is( 'text' ) ).to.be.true;
+		expect( lastMutations[ 0 ].newChildren[ 0 ].is( '$text' ) ).to.be.true;
 		expect( lastMutations[ 0 ].newChildren[ 0 ].data ).to.equal( 'foo' );
 
 		expect( lastMutations[ 0 ].oldChildren[ 1 ].is( 'attributeElement' ) ).to.be.true;
@@ -344,7 +344,7 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].newChildren[ 1 ].is( 'attributeElement' ) ).to.be.true;
 		expect( lastMutations[ 0 ].newChildren[ 1 ].name ).to.equal( 'b' );
 
-		expect( lastMutations[ 0 ].newChildren[ 2 ].is( 'text' ) ).to.be.true;
+		expect( lastMutations[ 0 ].newChildren[ 2 ].is( '$text' ) ).to.be.true;
 		expect( lastMutations[ 0 ].newChildren[ 2 ].data ).to.equal( ' ' );
 		expect( lastMutations[ 0 ].node ).to.equal( selection.getFirstPosition().parent );
 	} );
@@ -375,7 +375,7 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].type ).to.equal( 'children' );
 		expect( lastMutations[ 0 ].oldChildren.length ).to.equal( 0 );
 		expect( lastMutations[ 0 ].newChildren.length ).to.equal( 1 );
-		expect( lastMutations[ 0 ].newChildren[ 0 ].is( 'text' ) ).to.be.true;
+		expect( lastMutations[ 0 ].newChildren[ 0 ].is( '$text' ) ).to.be.true;
 		expect( lastMutations[ 0 ].newChildren[ 0 ].data ).to.equal( ' ' );
 		expect( lastMutations[ 0 ].node ).to.equal( selection.getFirstPosition().parent );
 	} );

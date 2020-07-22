@@ -228,7 +228,7 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 
 	downcastDispatcher.on( 'insert:$text', insertText() );
 	downcastDispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
-		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection || data.item.is( 'textProxy' ) ) {
+		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection || data.item.is( '$textProxy' ) ) {
 			const converter = wrap( ( modelAttributeValue, viewWriter ) => {
 				return viewWriter.createAttributeElement(
 					'model-text-with-attributes',

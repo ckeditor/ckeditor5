@@ -104,21 +104,19 @@ export default class Element extends Node {
 	 * Assuming that the object being checked is an element, you can also check its
 	 * {@link module:engine/model/element~Element#name name}:
 	 *
-	 *		element.is( 'image' ); // -> true if this is an <image> element
+	 *		element.is( 'element', 'image' ); // -> true if this is an <image> element
 	 *		element.is( 'element', 'image' ); // -> same as above
-	 *		text.is( 'image' ); -> false
+	 *		text.is( 'element', 'image' ); -> false
 	 *
 	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
 	 *
-	 * @param {String} type Type to check when `name` parameter is present.
-	 * Otherwise, it acts like the `name` parameter.
+	 * @param {String} type Type to check.
 	 * @param {String} [name] Element name.
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
 		if ( !name ) {
 			return type === 'element' || type === 'model:element' ||
-				type === this.name || type === 'model:' + this.name ||
 				// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 				type === 'node' || type === 'model:node';
 		}
@@ -381,7 +379,7 @@ export default class Element extends Node {
 	// @if CK_DEBUG_ENGINE // 	for ( const child of this.getChildren() ) {
 	// @if CK_DEBUG_ENGINE // 		string += '\n';
 
-	// @if CK_DEBUG_ENGINE // 		if ( child.is( 'text' ) ) {
+	// @if CK_DEBUG_ENGINE // 		if ( child.is( '$text' ) ) {
 	// @if CK_DEBUG_ENGINE // 			const textAttrs = convertMapToTags( child._attrs );
 
 	// @if CK_DEBUG_ENGINE // 			string += '\t'.repeat( level + 1 );
