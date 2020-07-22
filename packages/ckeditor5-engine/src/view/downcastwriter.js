@@ -281,12 +281,7 @@ export default class DowncastWriter {
 	/**
 	 * Creates a new {@link module:engine/view/rawelement~RawElement}.
 	 *
-	 *		writer.createRawElement( 'span' );
-	 *		writer.createRawElement( 'span', { id: 'foo-1234' } );
-	 *
-	 * Custom render function should be provided as third parameter:
-	 *
-	 *		writer.createRawElement( 'span', null, function( domElement ) {
+	 *		writer.createRawElement( 'span', { id: 'foo-1234' }, function( domElement ) {
 	 *			domElement.innerHTML = '<b>This is the raw content of the raw element.</b>';
 	 *		} );
 	 *
@@ -299,7 +294,7 @@ export default class DowncastWriter {
 	 * {@link module:engine/view/containerelement~ContainerElement} or {@link module:engine/view/emptyelement~EmptyElement}),
 	 * and they are considered by the editor selection.
 	 *
-	 * You should not use raw elements to render UI in the editor content. Check out {@link #createUIElement} instead.
+	 * You should not use raw elements to render UI in the editor content. Check out {@link #createUIElement `#createUIElement()`} instead.
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
