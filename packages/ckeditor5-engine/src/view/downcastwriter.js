@@ -259,7 +259,7 @@ export default class DowncastWriter {
 	 *		} );
 	 *
 	 * Unlike {@link #createRawElement raw elements}, UI elements are by no means editor content, for instance,
-	 * they are ignored by the editor selection system and they cannot {@link module:widget/utils.toWidget become a widget}.
+	 * they are ignored by the editor selection system.
 	 *
 	 * You should not use UI elements as data containers. Check out {@link #createRawElement} instead.
 	 *
@@ -297,7 +297,7 @@ export default class DowncastWriter {
 	 *
 	 * Unlike {@link #createUIElement ui elements}, raw elements act like a "real" editor content (similar to
 	 * {@link module:engine/view/containerelement~ContainerElement} or {@link module:engine/view/emptyelement~EmptyElement}),
-	 * they are considered by the editor selection and {@link module:widget/utils.toWidget they can work as widgets}.
+	 * and they are considered by the editor selection.
 	 *
 	 * You should not use raw elements to render UI in the editor content. Check out {@link #createUIElement} instead.
 	 *
