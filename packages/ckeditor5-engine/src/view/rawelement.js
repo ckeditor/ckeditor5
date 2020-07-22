@@ -22,7 +22,7 @@ import Node from './node';
  * Unlike {@link module:engine/view/uielement~UIElement ui elements}, raw elements act like a real editor
  * content (similar to {@link module:engine/view/containerelement~ContainerElement} or
  * {@link module:engine/view/emptyelement~EmptyElement}), they are considered by the editor selection and
- * {@link module:widget/utils.toWidget they can work as widgets}.
+ * {@link module:widget/utils~toWidget they can work as widgets}.
  *
  * To create a new raw element use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createRawElement `downcastWriter#createRawElement()`} method.
