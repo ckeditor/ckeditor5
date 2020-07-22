@@ -220,6 +220,40 @@ describe( 'TableSelection - integration', () => {
 				'</table>'
 			);
 		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/7659.
+		// The fix is in the `DocumentSelection` class but this test is here to make sure that the fix works
+		// and that the behavior won't change in the future.
+		it( 'should not fix selection if not all ranges were removed', () => {
+			// [ ][ ][ ]
+			// [x][x][ ]
+			// [x][x][ ]
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+			);
+
+			editor.model.change( writer => {
+				// Remove second row.
+				writer.remove( modelRoot.getNodeByPath( [ 0, 1 ] ) );
+			} );
+
+			assertEqualMarkup(
+				getModelData( model ),
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>11</paragraph></tableCell>' +
+						'<tableCell><paragraph>12</paragraph></tableCell>' +
+						'<tableCell><paragraph>13</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'[<tableCell><paragraph>31</paragraph></tableCell>]' +
+						'[<tableCell><paragraph>32</paragraph></tableCell>]' +
+						'<tableCell><paragraph>33</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
 	} );
 
 	describe( 'with undo', () => {

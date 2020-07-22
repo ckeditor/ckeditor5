@@ -284,10 +284,11 @@ export default class Editor {
 	 *
 	 * @param {String} commandName The name of the command to execute.
 	 * @param {*} [...commandParams] Command parameters.
+	 * @returns {*} The value returned by the {@link module:core/commandcollection~CommandCollection#execute `commands.execute()`}.
 	 */
 	execute( ...args ) {
 		try {
-			this.commands.execute( ...args );
+			return this.commands.execute( ...args );
 		} catch ( err ) {
 			// @if CK_DEBUG // throw err;
 			/* istanbul ignore next */
