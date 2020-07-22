@@ -127,6 +127,20 @@ describe( 'blockAutoformatEditing', () => {
 			sinon.assert.notCalled( spy );
 		} );
 
+		it( 'should ignore a ranged selection', () => {
+			model.schema.extend( '$text', { allowAttributes: 'foo' } );
+
+			const spy = testUtils.sinon.spy();
+			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
+
+			setData( model, '<paragraph>[* ]foo</paragraph>' );
+			model.change( writer => {
+				writer.setAttribute( 'foo', true, model.document.selection.getFirstRange() );
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
 		it( 'should stop if there is no text to run matching on', () => {
 			const spy = testUtils.sinon.spy();
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
