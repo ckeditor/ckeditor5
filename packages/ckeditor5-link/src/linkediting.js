@@ -227,6 +227,7 @@ export default class LinkEditing extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
+		const linkCommand = editor.commands.get( 'link' );
 
 		this.listenTo( model, 'insertContent', () => {
 			const nodeBefore = selection.anchor.nodeBefore;
@@ -296,7 +297,7 @@ export default class LinkEditing extends Plugin {
 			}
 
 			model.change( writer => {
-				removeLinkAttributesFromSelection( writer, editor.commands.get( 'link' ) );
+				removeLinkAttributesFromSelection( writer, linkCommand.manualDecorators );
 			} );
 		}, { priority: 'low' } );
 	}
@@ -314,6 +315,7 @@ export default class LinkEditing extends Plugin {
 	 */
 	_enableClickingAfterLink() {
 		const editor = this.editor;
+		const linkCommand = editor.commands.get( 'link' );
 
 		editor.editing.view.addObserver( MouseObserver );
 
@@ -352,7 +354,7 @@ export default class LinkEditing extends Plugin {
 			// If so, remove the `linkHref` attribute.
 			if ( position.isTouching( linkRange.start ) || position.isTouching( linkRange.end ) ) {
 				editor.model.change( writer => {
-					removeLinkAttributesFromSelection( writer, editor.commands.get( 'link' ) );
+					removeLinkAttributesFromSelection( writer, linkCommand.manualDecorators );
 				} );
 			}
 		} );
@@ -453,6 +455,7 @@ export default class LinkEditing extends Plugin {
 		const model = editor.model;
 		const selection = model.document.selection;
 		const view = editor.editing.view;
+		const linkCommand = editor.commands.get( 'link' );
 
 		// A flag whether attributes `linkHref` attribute should be preserved.
 		let shouldPreserveAttributes = false;
@@ -501,7 +504,7 @@ export default class LinkEditing extends Plugin {
 
 			// Use `model.enqueueChange()` in order to execute the callback at the end of the changes process.
 			editor.model.enqueueChange( writer => {
-				removeLinkAttributesFromSelection( writer, editor.commands.get( 'link' ) );
+				removeLinkAttributesFromSelection( writer, linkCommand.manualDecorators );
 			} );
 		}, { priority: 'low' } );
 	}
@@ -512,12 +515,12 @@ export default class LinkEditing extends Plugin {
 // but also all decorator attributes (they have dynamic names).
 //
 // @param {module:engine/model/writer~Writer} writer
-// @param {module:link/linkcommand~LinkCommand} linkCommand
-function removeLinkAttributesFromSelection( writer, linkCommand ) {
+// @param {module:utils/collection~Collection} manualDecorators
+function removeLinkAttributesFromSelection( writer, manualDecorators ) {
 	writer.removeSelectionAttribute( 'linkHref' );
 
-	for ( const manualDecorator of linkCommand.manualDecorators ) {
-		writer.removeSelectionAttribute( manualDecorator.id );
+	for ( const decorator of manualDecorators ) {
+		writer.removeSelectionAttribute( decorator.id );
 	}
 }
 
