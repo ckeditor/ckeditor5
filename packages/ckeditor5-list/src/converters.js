@@ -57,7 +57,8 @@ export function modelViewInsertion( model ) {
  */
 export function modelViewRemove( model ) {
 	return ( evt, data, conversionApi ) => {
-		const viewStart = conversionApi.mapper.toViewPosition( data.position ).getLastMatchingPosition( value => !value.item.is( 'li' ) );
+		const viewPosition = conversionApi.mapper.toViewPosition( data.position );
+		const viewStart = viewPosition.getLastMatchingPosition( value => !value.item.is( 'element', 'li' ) );
 		const viewItem = viewStart.nodeAfter;
 		const viewWriter = conversionApi.writer;
 
@@ -421,7 +422,7 @@ export function cleanList( evt, data, conversionApi ) {
 		const children = Array.from( data.viewItem.getChildren() );
 
 		for ( const child of children ) {
-			const isWrongElement = !( child.is( 'li' ) || isList( child ) );
+			const isWrongElement = !( child.is( 'element', 'li' ) || isList( child ) );
 
 			if ( isWrongElement ) {
 				child._remove();
@@ -454,7 +455,7 @@ export function cleanListItem( evt, data, conversionApi ) {
 				child._remove();
 			}
 
-			if ( child.is( 'text' ) ) {
+			if ( child.is( '$text' ) ) {
 				// If this is the first node and it's a text node, left-trim it.
 				if ( firstNode ) {
 					child._data = child.data.replace( /^\s+/, '' );
@@ -491,13 +492,13 @@ export function modelToViewPosition( view ) {
 
 		const modelItem = data.modelPosition.nodeBefore;
 
-		if ( modelItem && modelItem.is( 'listItem' ) ) {
+		if ( modelItem && modelItem.is( 'element', 'listItem' ) ) {
 			const viewItem = data.mapper.toViewElement( modelItem );
 			const topmostViewList = viewItem.getAncestors().find( isList );
 			const walker = view.createPositionAt( viewItem, 0 ).getWalker();
 
 			for ( const value of walker ) {
-				if ( value.type == 'elementStart' && value.item.is( 'li' ) ) {
+				if ( value.type == 'elementStart' && value.item.is( 'element', 'li' ) ) {
 					data.viewPosition = value.previousPosition;
 
 					break;
@@ -624,7 +625,7 @@ export function modelChangePostFixer( model, writer ) {
 					applied = true;
 				}
 
-				for ( const innerItem of Array.from( model.createRangeIn( item ) ).filter( e => e.item.is( 'listItem' ) ) ) {
+				for ( const innerItem of Array.from( model.createRangeIn( item ) ).filter( e => e.item.is( 'element', 'listItem' ) ) ) {
 					_addListToFix( innerItem.previousPosition );
 				}
 			}
@@ -651,10 +652,10 @@ export function modelChangePostFixer( model, writer ) {
 	function _addListToFix( position ) {
 		const previousNode = position.nodeBefore;
 
-		if ( !previousNode || !previousNode.is( 'listItem' ) ) {
+		if ( !previousNode || !previousNode.is( 'element', 'listItem' ) ) {
 			const item = position.nodeAfter;
 
-			if ( item && item.is( 'listItem' ) ) {
+			if ( item && item.is( 'element', 'listItem' ) ) {
 				itemToListHead.set( item, item );
 			}
 		} else {
@@ -667,7 +668,7 @@ export function modelChangePostFixer( model, writer ) {
 			for (
 				// Cache previousSibling and reuse for performance reasons. See #6581.
 				let previousSibling = listHead.previousSibling;
-				previousSibling && previousSibling.is( 'listItem' );
+				previousSibling && previousSibling.is( 'element', 'listItem' );
 				previousSibling = listHead.previousSibling
 			) {
 				listHead = previousSibling;
@@ -685,7 +686,7 @@ export function modelChangePostFixer( model, writer ) {
 		let maxIndent = 0;
 		let fixBy = null;
 
-		while ( item && item.is( 'listItem' ) ) {
+		while ( item && item.is( 'element', 'listItem' ) ) {
 			const itemIndent = item.getAttribute( 'listIndent' );
 
 			if ( itemIndent > maxIndent ) {
@@ -718,7 +719,7 @@ export function modelChangePostFixer( model, writer ) {
 		let typesStack = [];
 		let prev = null;
 
-		while ( item && item.is( 'listItem' ) ) {
+		while ( item && item.is( 'element', 'listItem' ) ) {
 			const itemIndent = item.getAttribute( 'listIndent' );
 
 			if ( prev && prev.getAttribute( 'listIndent' ) > itemIndent ) {
@@ -784,14 +785,14 @@ export function modelIndentPasteFixer( evt, [ content, selectable ] ) {
 		selection = this.createSelection( selectable );
 	}
 
-	if ( item && item.is( 'listItem' ) ) {
+	if ( item && item.is( 'element', 'listItem' ) ) {
 		// Get a reference list item. Inserted list items will be fixed according to that item.
 		const pos = selection.getFirstPosition();
 		let refItem = null;
 
-		if ( pos.parent.is( 'listItem' ) ) {
+		if ( pos.parent.is( 'element', 'listItem' ) ) {
 			refItem = pos.parent;
-		} else if ( pos.nodeBefore && pos.nodeBefore.is( 'listItem' ) ) {
+		} else if ( pos.nodeBefore && pos.nodeBefore.is( 'element', 'listItem' ) ) {
 			refItem = pos.nodeBefore;
 		}
 
@@ -805,7 +806,7 @@ export function modelIndentPasteFixer( evt, [ content, selectable ] ) {
 			// Fix only if there is anything to fix.
 			if ( indentChange > 0 ) {
 				// Adjust indent of all "first" list items in inserted data.
-				while ( item && item.is( 'listItem' ) ) {
+				while ( item && item.is( 'element', 'listItem' ) ) {
 					item._setAttribute( 'listIndent', item.getAttribute( 'listIndent' ) + indentChange );
 
 					item = item.nextSibling;
@@ -873,7 +874,7 @@ function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conv
 				//
 				// We need to check for such cases and use proper list item and position based on it.
 				//
-				if ( result.modelCursor.parent.is( 'listItem' ) ) {
+				if ( result.modelCursor.parent.is( 'element', 'listItem' ) ) {
 					// (1).
 					listItemModel = result.modelCursor.parent;
 				} else {
@@ -897,7 +898,7 @@ function findNextListItem( startPosition ) {
 
 	do {
 		value = treeWalker.next();
-	} while ( !value.value.item.is( 'listItem' ) );
+	} while ( !value.value.item.is( 'element', 'listItem' ) );
 
 	return value.value.item;
 }
@@ -1004,7 +1005,7 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 // @param {module:engine/view/element~Element} viewElement
 // @returns {Boolean}
 function isList( viewElement ) {
-	return viewElement.is( 'ol' ) || viewElement.is( 'ul' );
+	return viewElement.is( 'element', 'ol' ) || viewElement.is( 'element', 'ul' );
 }
 
 // Calculates the indent value for a list item. Handles HTML compliant and non-compliant lists.
@@ -1044,7 +1045,7 @@ function getIndent( listItem ) {
 
 	while ( parent ) {
 		// Each LI in the tree will result in an increased indent for HTML compliant lists.
-		if ( parent.is( 'li' ) ) {
+		if ( parent.is( 'element', 'li' ) ) {
 			indent++;
 		} else {
 			// If however the list is nested in other list we should check previous sibling of any of the list elements...
@@ -1056,7 +1057,7 @@ function getIndent( listItem ) {
 			//		|-> LI (parent LIs: 0)            |-> LI         (indent: 0)
 			//		|-> OL                                |-> OL
 			//		    |-> LI (parent LIs: 0)                |-> LI (indent: 1)
-			if ( previousSibling && previousSibling.is( 'li' ) ) {
+			if ( previousSibling && previousSibling.is( 'element', 'li' ) ) {
 				indent++;
 			}
 		}

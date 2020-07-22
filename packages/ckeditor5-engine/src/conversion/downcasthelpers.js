@@ -1155,7 +1155,7 @@ function highlightText( highlightDescriptor ) {
 			return;
 		}
 
-		if ( !( data.item instanceof ModelSelection || data.item instanceof DocumentSelection ) && !data.item.is( 'textProxy' ) ) {
+		if ( !( data.item instanceof ModelSelection || data.item instanceof DocumentSelection ) && !data.item.is( '$textProxy' ) ) {
 			return;
 		}
 

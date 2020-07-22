@@ -75,14 +75,13 @@ export default class UIElement extends Element {
 	 * Assuming that the object being checked is an ui element, you can also check its
 	 * {@link module:engine/view/uielement~UIElement#name name}:
 	 *
-	 *		uiElement.is( 'span' ); // -> true if this is a span ui element
+	 *		uiElement.is( 'element', 'span' ); // -> true if this is a span ui element
 	 *		uiElement.is( 'uiElement', 'span' ); // -> same as above
-	 *		text.is( 'span' ); -> false
+	 *		text.is( 'element', 'span' ); -> false
 	 *
 	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *
-	 * @param {String} type Type to check when `name` parameter is present.
-	 * Otherwise, it acts like the `name` parameter.
+	 * @param {String} type Type to check.
 	 * @param {String} [name] Element name.
 	 * @returns {Boolean}
 	 */
@@ -90,7 +89,6 @@ export default class UIElement extends Element {
 		if ( !name ) {
 			return type === 'uiElement' || type === 'view:uiElement' ||
 				// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
-				type === this.name || type === 'view:' + this.name ||
 				type === 'element' || type === 'view:element' ||
 				type === 'node' || type === 'view:node';
 		} else {

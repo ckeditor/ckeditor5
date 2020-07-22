@@ -164,21 +164,19 @@ export default class Element extends Node {
 	 * Assuming that the object being checked is an element, you can also check its
 	 * {@link module:engine/view/element~Element#name name}:
 	 *
-	 *		element.is( 'img' ); // -> true if this is an <img> element
+	 *		element.is( 'element', 'img' ); // -> true if this is an <img> element
 	 *		element.is( 'element', 'img' ); // -> same as above
-	 *		text.is( 'img' ); -> false
+	 *		text.is( 'element', 'img' ); -> false
 	 *
 	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *
-	 * @param {String} type Type to check when `name` parameter is present.
-	 * Otherwise, it acts like the `name` parameter.
+	 * @param {String} type Type to check.
 	 * @param {String} [name] Element name.
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
 		if ( !name ) {
-			return type === this.name || type === 'view:' + this.name ||
-				type === 'element' || type === 'view:element' ||
+			return type === 'element' || type === 'view:element' ||
 				// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 				type === 'node' || type === 'view:node';
 		} else {
@@ -834,7 +832,7 @@ export default class Element extends Node {
 	// @if CK_DEBUG_ENGINE //	string += '\t'.repeat( level ) + `<${ this.name }${ convertMapToTags( this.getAttributes() ) }>`;
 
 	// @if CK_DEBUG_ENGINE //	for ( const child of this.getChildren() ) {
-	// @if CK_DEBUG_ENGINE //		if ( child.is( 'text' ) ) {
+	// @if CK_DEBUG_ENGINE //		if ( child.is( '$text' ) ) {
 	// @if CK_DEBUG_ENGINE //			string += '\n' + '\t'.repeat( level + 1 ) + child.data;
 	// @if CK_DEBUG_ENGINE //		} else {
 	// @if CK_DEBUG_ENGINE //			string += '\n' + child.printTree( level + 1 );
