@@ -119,7 +119,7 @@ export default class LinkEditing extends Plugin {
 		this._enableTypingOverLink();
 
 		// Handle removing the content after the link element.
-		this._enableRemovingLinkAttributesWhileRemovingEndOfLink();
+		this._handleDeleteContentAfterLink();
 	}
 
 	/**
@@ -450,7 +450,7 @@ export default class LinkEditing extends Plugin {
 	 *
 	 * @private
 	 */
-	_enableRemovingLinkAttributesWhileRemovingEndOfLink() {
+	_handleDeleteContentAfterLink() {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
