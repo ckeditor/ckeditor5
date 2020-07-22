@@ -338,50 +338,7 @@ const imageConfiguration = {
 
 ### Disabling image resize handles
 
-If for some reason you want to configure the editor where you can resize the images only by image toolbar UI, you can do it in two different ways.
-
- - Having installed {@link module:image/imageresize~ImageResize `ImageResize`} plugin you can set {@link module:image/image~ImageConfig#disableResizeHandles `image.disableResizeHandles: true`}. This setting will {@link module:core/plugin~Plugin#forceDisabled disable} the {@link module:image/imageresize/imageresizehandles~ImageResizeHandles `ImageResizeHandles`} plugin.
-
-```js
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Image, ImageResize, ImageToolbar, ... ],
-		image: {
-			disableResizeHandles: true,
-			resizeOptions: [
-			{
-				name: 'imageResize:original',
-				value: null,
-				icon: 'original'
-			},
-			{
-				name: 'imageResize:50',
-				value: '50',
-				icon: 'medium'
-			},
-			{
-				name: 'imageResize:75',
-				value: '75',
-				icon: 'large'
-			}
-		],
-		toolbar: [
-			// ...,
-			'imageResize:50',
-			'imageResize:75',
-			'imageResize:original',
-		]
-		}
-	} )
-	.then( ... )
-	.catch( ... );
-```
-
-- Or you can simply do not install {@link module:image/imageresize/imageresizehandles~ImageResizeHandles `ImageResizeHandles`} plugin at all. This means that your plugins setup will look like this: `plugins: [ 'ImageResizeEditing', 'ImageResizeButtons', ... ]` which only enables resizing image feature by the choosen UI ([dropdown](#resize-image-using-the-plugin-dropdown) or [standalone buttons](#resize-image-using-the-standalone-buttons)) in the image toolbar.
+If for some reason you want to configure the editor where you can resize the images only by image toolbar UI, you can do it by omitting {@link module:image/imageresize/imageresizehandles~ImageResizeHandles `ImageResizeHandles`} plugin. This means that your plugins setup will look like this: `plugins: [ ... , 'ImageResizeEditing', 'ImageResizeButtons', ... ]` instead of `plugins: [ ... , 'ImageResize', ... ]`. It will only enable resizing image feature by the chosen UI ([dropdown](#using-the-dropdown) or [standalone buttons](#using-standalone-buttons)) in the image toolbar.
 
 ```js
 import Image from '@ckeditor/ckeditor5-image/src/image';

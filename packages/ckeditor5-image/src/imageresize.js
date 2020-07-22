@@ -35,18 +35,6 @@ export default class ImageResize extends Plugin {
 	static get pluginName() {
 		return 'ImageResize';
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-		const editor = this.editor;
-		const shouldDisableImageResizeHandles = editor.config.get( 'image.disableResizeHandles' );
-
-		if ( shouldDisableImageResizeHandles ) {
-			editor.plugins.get( 'ImageResizeHandles' ).forceDisabled( 'ImageResize' );
-		}
-	}
 }
 
 /**
@@ -68,29 +56,6 @@ export default class ImageResize extends Plugin {
  *
  * @default '%'
  * @member {String} module:image/image~ImageConfig#resizeUnit
- */
-
-/**
- * The option for disabling image resize by handles.
- *
- * It's useful when you want to set certain options for image resize and be sure that other users
- * can only set one of those sizes by the dropdown or standalone buttons defined in
- * {@link module:image/image~ImageConfig#resizeOptions}.
- *
- *		ClassicEditor
- *			.create( editorElement, {
- *				image: {
- *					disableResizeHandles: true
- *				}
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
- *
- * This option is used by the {@link module:image/imageresize~ImageResize} feature.
- *
- * @default 'false'
- * @member {String} module:image/image~ImageConfig#disableResizeHandles
  */
 
 /**
