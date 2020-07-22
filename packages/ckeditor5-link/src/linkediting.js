@@ -436,11 +436,11 @@ export default class LinkEditing extends Plugin {
 
 	/**
 	 * Starts listening to {@link module:engine/model/model~Model#deleteContent} and checks whether
-	 * removing a content after a link element.
+	 * removing a content right after the "linkHref" attribute.
 	 *
 	 * If so, the selection should not preserve the `linkHref` attribute. However, if
-	 * {@link module:typing/twostepcaretmovement~TwoStepCaretMovement} plugin is activated and
-	 * the selection is inside the link, at the end, the `linkHref` attribute should stay untouched.
+	 * the {@link module:typing/twostepcaretmovement~TwoStepCaretMovement} plugin is active and
+	 * the selection has the "linkHref" attribute due to overriden gravity (at the end), the `linkHref` attribute should stay untouched.
 	 *
 	 * The purpose of this action is to allow removing the link label and keep the selection outside the link.
 	 *
