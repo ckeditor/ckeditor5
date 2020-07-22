@@ -273,10 +273,10 @@ export default class Renderer {
 					const deleteIndex = counter.equal + counter.delete;
 					const viewChild = viewElement.getChild( insertIndex );
 
-					// The 'uiElement' is a special one and its children are not stored in a view (#799),
-					// so we cannot use it with replacing flow (since it uses view children during rendering
-					// which will always result in rendering empty element).
-					if ( viewChild && !viewChild.is( 'uiElement' ) ) {
+					// UIElement and RawElement are special cases. Their children are not stored in a view (#799)
+					// so we cannot use them with replacing flow (since they use view children during rendering
+					// which will always result in rendering empty elements).
+					if ( viewChild && !( viewChild.is( 'uiElement' ) || viewChild.is( 'rawElement' ) ) ) {
 						this._updateElementMappings( viewChild, actualDomChildren[ deleteIndex ] );
 					}
 

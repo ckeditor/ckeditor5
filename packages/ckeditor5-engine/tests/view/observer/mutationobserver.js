@@ -8,6 +8,7 @@
 import View from '../../../src/view/view';
 import MutationObserver from '../../../src/view/observer/mutationobserver';
 import UIElement from '../../../src/view/uielement';
+import RawElement from '../../../src/view/rawelement';
 import createViewRoot from '../_utils/createroot';
 import { parse } from '../../../src/dev-utils/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
@@ -582,6 +583,62 @@ describe( 'MutationObserver', () => {
 		} );
 
 		it( 'should not cause a render when UIElement gets a child', () => {
+			const span = document.createElement( 'span' );
+			domEditor.childNodes[ 2 ].appendChild( span );
+
+			mutationObserver.flush();
+
+			expect( renderStub.callCount ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'RawElement integration', () => {
+		const renderStub = sinon.stub();
+		function createRawElement( name ) {
+			const element = new RawElement( name );
+
+			element.render = function( domElement ) {
+				domElement.innerHTML = 'foo bar';
+			};
+
+			return element;
+		}
+
+		beforeEach( () => {
+			const rawElement = createRawElement( 'div' );
+			viewRoot._appendChild( rawElement );
+
+			view.forceRender();
+			renderStub.reset();
+			view.on( 'render', renderStub );
+		} );
+
+		it( 'should not collect text mutations from RawElement', () => {
+			domEditor.childNodes[ 2 ].childNodes[ 0 ].data = 'foom';
+
+			mutationObserver.flush();
+
+			expect( lastMutations ).to.be.null;
+		} );
+
+		it( 'should not cause a render from RawElement', () => {
+			domEditor.childNodes[ 2 ].childNodes[ 0 ].data = 'foom';
+
+			mutationObserver.flush();
+
+			expect( renderStub.callCount ).to.equal( 0 );
+		} );
+
+		it( 'should not collect child mutations from RawElement', () => {
+			const span = document.createElement( 'span' );
+			domEditor.childNodes[ 2 ].appendChild( span );
+
+			mutationObserver.flush();
+
+			expect( lastMutations ).to.be.null;
+		} );
+
+		it( 'should not cause a render when RawElement gets a child', () => {
 			const span = document.createElement( 'span' );
 			domEditor.childNodes[ 2 ].appendChild( span );
 

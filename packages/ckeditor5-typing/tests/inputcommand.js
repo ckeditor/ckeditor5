@@ -259,7 +259,7 @@ describe( 'InputCommand', () => {
 				model.change( writer => {
 					let rangeSelection;
 
-					for ( const range of selection.getRanges() ) {
+					for ( const range of Array.from( selection.getRanges() ) ) {
 						rangeSelection = writer.createSelection( range );
 
 						model.deleteContent( rangeSelection );

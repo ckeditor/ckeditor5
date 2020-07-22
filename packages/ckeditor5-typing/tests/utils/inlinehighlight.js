@@ -12,7 +12,7 @@ import '@ckeditor/ckeditor5-core/tests/_utils/assertions/attribute';
 
 /* global document */
 
-describe( 'LinkEditing', () => {
+describe( 'inlineHighlight', () => {
 	let element, editor, model, view;
 
 	beforeEach( async () => {
@@ -44,7 +44,7 @@ describe( 'LinkEditing', () => {
 		await editor.destroy();
 	} );
 
-	describe( 'link highlighting', () => {
+	describe( 'attribute highlighting', () => {
 		it( 'should convert the highlight to a proper view classes', () => {
 			setModelData( model,
 				'<paragraph>foo <$text linkHref="url">b{}ar</$text> baz</paragraph>'

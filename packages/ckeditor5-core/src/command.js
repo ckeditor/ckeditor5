@@ -208,6 +208,9 @@ export default class Command {
 	 *
 	 * In order to see how to disable a command from "outside" see the {@link #isEnabled} documentation.
 	 *
+	 * This method may return a value, which would be forwarded all the way down to the
+	 * {@link module:core/editor/editor~Editor#execute `editor.execute()`}.
+	 *
 	 * @fires execute
 	 */
 	execute() {}
