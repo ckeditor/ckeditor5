@@ -1469,6 +1469,50 @@ describe( 'LinkEditing', () => {
 			expect( getModelData( model ) ).to.equal( '<paragraph>Foo <$text linkHref="url">Ba</$text>[]</paragraph>' );
 		} );
 
+		it( 'should not preserve the `linkHref` attribute when deleting content after the link (decorators check)', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'This is ' +
+					'<$text linkIsFoo="true" linkIsBar="true" linkHref="foo">Foo</$text>' +
+					' []from ' +
+					'<$text linkHref="bar">Bar</$text>' +
+					'.' +
+				'</paragraph>'
+			);
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial "linkHref" state' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkIsFoo' ), 'initial "linkIsFoo" state' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial "linkHref" state' ).to.equal( false );
+
+			view.document.fire( 'delete', new DomEventData( view.document, {
+				keyCode: keyCodes.backspace,
+				preventDefault: () => {}
+			} ) );
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link ("linkHref")' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkIsFoo' ), 'removing space after the link ("linkIsFoo")' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link ("linkHref")' ).to.equal( false );
+
+			view.document.fire( 'delete', new DomEventData( view.document, {
+				keyCode: keyCodes.backspace,
+				preventDefault: () => {}
+			} ) );
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character the link ("linkHref")' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkIsFoo' ), 'removing a character the link ("linkIsFoo")' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character the link ("linkHref")' ).to.equal( false );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+					'This is ' +
+					'<$text linkHref="foo" linkIsBar="true" linkIsFoo="true">Fo</$text>' +
+					'[]from ' +
+					'<$text linkHref="bar">Bar</$text>' +
+					'.' +
+				'</paragraph>'
+			);
+		} );
+
 		it( 'should preserve the `linkHref` attribute when deleting content while the selection is at the end of the link', () => {
 			setModelData( model, '<paragraph>Foo <$text linkHref="url">Bar []</$text></paragraph>' );
 
