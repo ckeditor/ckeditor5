@@ -195,6 +195,7 @@ export default class TwoStepCaretMovement extends Plugin {
 
 		/**
 		 * A flag indicating that the automatic gravity restoration should not happen upon the next
+		 * gravity restoration.
 		 * {@link module:engine/model/selection~Selection#event:change:range} event.
 		 *
 		 * @private
