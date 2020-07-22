@@ -32,7 +32,7 @@ export default class ParagraphCommand extends Command {
 		const document = model.document;
 		const block = first( document.selection.getSelectedBlocks() );
 
-		this.value = !!block && block.is( 'paragraph' );
+		this.value = !!block && block.is( 'element', 'paragraph' );
 		this.isEnabled = !!block && checkCanBecomeParagraph( block, model.schema );
 	}
 
@@ -54,7 +54,7 @@ export default class ParagraphCommand extends Command {
 			const blocks = ( options.selection || document.selection ).getSelectedBlocks();
 
 			for ( const block of blocks ) {
-				if ( !block.is( 'paragraph' ) && checkCanBecomeParagraph( block, model.schema ) ) {
+				if ( !block.is( 'element', 'paragraph' ) && checkCanBecomeParagraph( block, model.schema ) ) {
 					writer.rename( block, 'paragraph' );
 				}
 			}

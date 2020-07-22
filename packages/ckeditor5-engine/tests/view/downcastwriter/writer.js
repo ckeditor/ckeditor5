@@ -61,7 +61,7 @@ describe( 'DowncastWriter', () => {
 		it( 'should create Text instance', () => {
 			const text = writer.createText( 'foo bar' );
 
-			expect( text.is( 'text' ) ).to.be.true;
+			expect( text.is( '$text' ) ).to.be.true;
 			expect( text.data ).to.equal( 'foo bar' );
 		} );
 	} );
@@ -380,7 +380,7 @@ describe( 'DowncastWriter', () => {
 			);
 
 			// Find all spans.
-			const allSpans = Array.from( ViewRange._createIn( root ).getItems() ).filter( element => element.is( 'span' ) );
+			const allSpans = Array.from( ViewRange._createIn( root ).getItems() ).filter( element => element.is( 'element', 'span' ) );
 
 			// For each of the spans created above...
 			for ( const oneOfAllSpans of allSpans ) {

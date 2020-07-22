@@ -83,7 +83,7 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 		const blockToFormat = entry.position.parent;
 
 		// Block formatting should trigger only if the entire content of a paragraph is a single text node... (see ckeditor5#5671).
-		if ( !blockToFormat.is( 'paragraph' ) || blockToFormat.childCount !== 1 ) {
+		if ( !blockToFormat.is( 'element', 'paragraph' ) || blockToFormat.childCount !== 1 ) {
 			return;
 		}
 

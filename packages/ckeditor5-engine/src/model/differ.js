@@ -1039,7 +1039,7 @@ function _getChildrenSnapshot( children ) {
 	const snapshot = [];
 
 	for ( const child of children ) {
-		if ( child.is( 'text' ) ) {
+		if ( child.is( '$text' ) ) {
 			for ( let i = 0; i < child.data.length; i++ ) {
 				snapshot.push( {
 					name: '$text',

@@ -22,6 +22,8 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { isLinkElement } from '../src/utils';
 
+import '@ckeditor/ckeditor5-core/tests/_utils/assertions/attribute';
+
 /* global document */
 
 describe( 'LinkEditing', () => {
@@ -89,7 +91,7 @@ describe( 'LinkEditing', () => {
 			setModelData( editor.model, '<paragraph>foo[]<$text linkHref="url">b</$text>ar</paragraph>' );
 
 			// The selection's gravity should read attributes from the left.
-			expect( selection.hasAttribute( 'linkHref' ), 'hasAttribute( \'linkHref\' )' ).to.be.false;
+			expect( selection ).not.to.have.attribute( 'linkHref' );
 
 			// So let's simulate the `keydown` event.
 			editor.editing.view.document.fire( 'keydown', {
@@ -100,8 +102,8 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo<$text linkHref="url">[]b</$text>ar</paragraph>' );
 			// Selection should get the attributes from the right.
-			expect( selection.hasAttribute( 'linkHref' ), 'hasAttribute( \'linkHref\' )' ).to.be.true;
-			expect( selection.getAttribute( 'linkHref' ), 'linkHref attribute' ).to.equal( 'url' );
+			expect( selection ).to.have.attribute( 'linkHref' );
+			expect( selection ).to.have.attribute( 'linkHref', 'url' );
 		} );
 
 		it( 'should be bound to the `linkHref` attribute (RTL)', async () => {
@@ -120,7 +122,7 @@ describe( 'LinkEditing', () => {
 			setModelData( editor.model, '<paragraph>foo[]<$text linkHref="url">b</$text>ar</paragraph>' );
 
 			// The selection's gravity should read attributes from the left.
-			expect( selection.hasAttribute( 'linkHref' ), 'hasAttribute( \'linkHref\' )' ).to.be.false;
+			expect( selection ).not.to.have.attribute( 'linkHref' );
 
 			// So let's simulate the `keydown` event.
 			editor.editing.view.document.fire( 'keydown', {
@@ -131,8 +133,8 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo<$text linkHref="url">[]b</$text>ar</paragraph>' );
 			// Selection should get the attributes from the right.
-			expect( selection.hasAttribute( 'linkHref' ), 'hasAttribute( \'linkHref\' )' ).to.be.true;
-			expect( selection.getAttribute( 'linkHref' ), 'linkHref attribute' ).to.equal( 'url' );
+			expect( selection ).to.have.attribute( 'linkHref' );
+			expect( selection ).to.have.attribute( 'linkHref', 'url' );
 
 			await editor.destroy();
 		} );
@@ -182,7 +184,7 @@ describe( 'LinkEditing', () => {
 				'</paragraph>'
 			);
 
-			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.have.members( [ 'bold' ] );
+			expect( model.document.selection ).to.have.attribute( 'bold' );
 		} );
 
 		it( 'should not remove link atttributes when pasting in the middle of a link with the same URL', () => {
@@ -193,7 +195,7 @@ describe( 'LinkEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph><$text linkHref="ckeditor.com">foINSERTED[]o</$text></paragraph>' );
-			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.have.members( [ 'linkHref' ] );
+			expect( model.document.selection ).to.have.attribute( 'linkHref' );
 		} );
 
 		it( 'should not remove link atttributes from the selection when pasting before a link when the gravity is overridden', () => {
@@ -205,7 +207,7 @@ describe( 'LinkEditing', () => {
 				domTarget: document.body
 			} );
 
-			expect( model.document.selection.isGravityOverridden ).to.be.true;
+			expect( model.document.selection ).to.have.property( 'isGravityOverridden', true );
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'INSERTED', { bold: true } ) );
@@ -219,8 +221,8 @@ describe( 'LinkEditing', () => {
 				'</paragraph>'
 			);
 
-			expect( model.document.selection.isGravityOverridden ).to.be.true;
-			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.have.members( [ 'linkHref' ] );
+			expect( model.document.selection ).to.have.property( 'isGravityOverridden', true );
+			expect( model.document.selection ).to.have.attribute( 'linkHref' );
 		} );
 
 		it( 'should not remove link atttributes when pasting a link into another link (different URLs, no merge)', () => {
@@ -238,13 +240,13 @@ describe( 'LinkEditing', () => {
 				'</paragraph>'
 			);
 
-			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.have.members( [ 'linkHref' ] );
+			expect( model.document.selection ).to.have.attribute( 'linkHref' );
 		} );
 
 		it( 'should not remove link atttributes when pasting before another link (different URLs, no merge)', () => {
 			setModelData( model, '<paragraph>[]<$text linkHref="ckeditor.com">foo</$text></paragraph>' );
 
-			expect( model.document.selection.isGravityOverridden ).to.be.false;
+			expect( model.document.selection ).to.have.property( 'isGravityOverridden', false );
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'INSERTED', { linkHref: 'http://INSERTED' } ) );
@@ -257,8 +259,8 @@ describe( 'LinkEditing', () => {
 				'</paragraph>'
 			);
 
-			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.have.members( [ 'linkHref' ] );
-			expect( model.document.selection.getAttribute( 'linkHref' ) ).to.equal( 'http://INSERTED' );
+			expect( model.document.selection ).to.have.attribute( 'linkHref' );
+			expect( model.document.selection ).to.have.attribute( 'linkHref', 'http://INSERTED' );
 		} );
 	} );
 
@@ -375,7 +377,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph>foo <$text linkHref="url">b{}ar</$text> baz</paragraph>'
 			);
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+			expect( model.document.selection ).to.have.attribute( 'linkHref' );
 			expect( getViewData( view ) ).to.equal(
 				'<p>foo <a class="ck-link_selected" href="url">b{}ar</a> baz</p>'
 			);
@@ -386,13 +388,13 @@ describe( 'LinkEditing', () => {
 				'<paragraph>foo {}<$text linkHref="url">bar</$text> baz</paragraph>'
 			);
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.false;
+			expect( model.document.selection ).to.not.have.attribute( 'linkHref' );
 
 			model.change( writer => {
 				writer.setSelectionAttribute( 'linkHref', 'url' );
 			} );
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+			expect( model.document.selection ).to.have.attribute( 'linkHref' );
 			expect( getViewData( view ) ).to.equal(
 				'<p>foo <a class="ck-link_selected" href="url">{}bar</a> baz</p>'
 			);
@@ -403,7 +405,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph>foo <$text linkHref="url">bar</$text>{} baz</paragraph>'
 			);
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+			expect( model.document.selection ).to.have.attribute( 'linkHref' );
 			expect( getViewData( view ) ).to.equal(
 				'<p>foo <a class="ck-link_selected" href="url">bar{}</a> baz</p>'
 			);
@@ -421,7 +423,11 @@ describe( 'LinkEditing', () => {
 				'<paragraph><$text linkHref="url">[]nk</$text> baz</paragraph>'
 			);
 
-			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+			expect( model.document.selection ).to.have.attribute( 'linkHref' );
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo <a href="url">li</a></p>' +
+				'<p><a class="ck-link_selected" href="url">{}nk</a> baz</p>'
+			);
 		} );
 
 		it( 'should remove classes when selection is moved out from the link', () => {
@@ -723,6 +729,10 @@ describe( 'LinkEditing', () => {
 						// Order of attributes is important, that's why this is assert is construct in such way.
 						expect( editor.getData() ).to.equal( `<p><a ${ reducedAttr }href="${ link.url }">foo</a>bar</p>` );
 					} );
+				} );
+
+				it( 'stores decorators in LinkCommand#automaticDecorators collection', () => {
+					expect( editor.commands.get( 'link' ).automaticDecorators.length ).to.equal( 3 );
 				} );
 			} );
 		} );

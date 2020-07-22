@@ -113,11 +113,11 @@ export default class Range {
 		let end = this.end.getLastMatchingPosition( enlargeTrimSkip );
 
 		// Fix positions, in case if they are in Text node.
-		if ( start.parent.is( 'text' ) && start.isAtStart ) {
+		if ( start.parent.is( '$text' ) && start.isAtStart ) {
 			start = Position._createBefore( start.parent );
 		}
 
-		if ( end.parent.is( 'text' ) && end.isAtEnd ) {
+		if ( end.parent.is( '$text' ) && end.isAtEnd ) {
 			end = Position._createAfter( end.parent );
 		}
 
@@ -153,11 +153,11 @@ export default class Range {
 		const nodeBeforeEnd = end.nodeBefore;
 
 		// Because TreeWalker prefers positions next to text node, we need to move them manually into these text nodes.
-		if ( nodeAfterStart && nodeAfterStart.is( 'text' ) ) {
+		if ( nodeAfterStart && nodeAfterStart.is( '$text' ) ) {
 			start = new Position( nodeAfterStart, 0 );
 		}
 
-		if ( nodeBeforeEnd && nodeBeforeEnd.is( 'text' ) ) {
+		if ( nodeBeforeEnd && nodeBeforeEnd.is( '$text' ) ) {
 			end = new Position( nodeBeforeEnd, nodeBeforeEnd.data.length );
 		}
 
@@ -359,11 +359,11 @@ export default class Range {
 		// These are basically the same range, only the difference is if the range position is at
 		// at the end/at the beginning of a text node or just before/just after the text node.
 		//
-		if ( this.start.parent.is( 'text' ) && this.start.isAtEnd && this.start.parent.nextSibling ) {
+		if ( this.start.parent.is( '$text' ) && this.start.isAtEnd && this.start.parent.nextSibling ) {
 			nodeAfterStart = this.start.parent.nextSibling;
 		}
 
-		if ( this.end.parent.is( 'text' ) && this.end.isAtStart && this.end.parent.previousSibling ) {
+		if ( this.end.parent.is( '$text' ) && this.end.isAtStart && this.end.parent.previousSibling ) {
 			nodeBeforeEnd = this.end.parent.previousSibling;
 		}
 
@@ -517,7 +517,7 @@ export default class Range {
 	 * @returns {module:engine/view/range~Range}
 	 */
 	static _createOn( item ) {
-		const size = item.is( 'textProxy' ) ? item.offsetSize : 1;
+		const size = item.is( '$textProxy' ) ? item.offsetSize : 1;
 
 		return this._createFromPositionAndShift( Position._createBefore( item ), size );
 	}

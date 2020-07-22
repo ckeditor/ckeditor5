@@ -56,7 +56,7 @@ class InlineWidget extends Plugin {
 				if ( viewElement.childCount ) {
 					const text = viewElement.getChild( 0 );
 
-					if ( text.is( 'text' ) ) {
+					if ( text.is( '$text' ) ) {
 						type = text.data.slice( 1, -1 );
 					}
 				}

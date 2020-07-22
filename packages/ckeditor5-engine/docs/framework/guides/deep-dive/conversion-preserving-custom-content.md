@@ -429,7 +429,7 @@ function downcastCustomClassesToChild( viewElementName, modelElementName ) {
 function findViewChild( viewElement, viewElementName, conversionApi ) {
 	const viewChildren = Array.from( conversionApi.writer.createRangeIn( viewElement ).getItems() );
 
-	return viewChildren.find( item => item.is( viewElementName ) );
+	return viewChildren.find( item => item.is( 'element', viewElementName ) );
 }
 
 /**
