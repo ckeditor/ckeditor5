@@ -34,9 +34,16 @@ ClassicEditor
 					icon: 'large'
 				}
 			],
+			styles: [
+				'alignLeft',
+				'alignCenter',
+				'alignRight'
+			],
 			toolbar: [
-				'imageStyle:full',
-				'imageStyle:side', '|',
+				'imageStyle:alignLeft',
+				'imageStyle:alignCenter',
+				'imageStyle:alignRight',
+				'|',
 				'imageResize:50',
 				'imageResize:75',
 				'imageResize:original'

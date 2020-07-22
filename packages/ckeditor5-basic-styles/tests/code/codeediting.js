@@ -11,6 +11,9 @@ import AttributeCommand from '../../src/attributecommand';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+
+/* global document */
 
 describe( 'CodeEditing', () => {
 	let editor, model;
@@ -99,5 +102,37 @@ describe( 'CodeEditing', () => {
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><code>foo</code>bar</p>' );
 		} );
+	} );
+
+	it( 'should add `ck-code_selected` class when caret enters the element', () => {
+		// Put selection before the link element.
+		setModelData( editor.model, '<paragraph>foo[]<$text code="true">ba</$text>r</paragraph>' );
+
+		// So let's simulate the `keydown` event.
+		editor.editing.view.document.fire( 'keydown', {
+			keyCode: keyCodes.arrowright,
+			preventDefault: () => {},
+			domTarget: document.body
+		} );
+
+		expect( getViewData( editor.editing.view ) ).to.equal(
+			'<p>foo<code class="ck-code_selected">{}ba</code>r</p>'
+		);
+	} );
+
+	it( 'should remove `ck-code_selected` class when caret leaves the element', () => {
+		// Put selection before the link element.
+		setModelData( editor.model, '<paragraph>foo<$text code="true">ba[]</$text>r</paragraph>' );
+
+		// So let's simulate the `keydown` event.
+		editor.editing.view.document.fire( 'keydown', {
+			keyCode: keyCodes.arrowright,
+			preventDefault: () => {},
+			domTarget: document.body
+		} );
+
+		expect( getViewData( editor.editing.view ) ).to.equal(
+			'<p>foo<code>ba</code>{}r</p>'
+		);
 	} );
 } );

@@ -159,9 +159,11 @@ Markers are a special type of ranges.
 * They can only be created and changed through the {@link module:engine/model/writer~Writer model writer}.
 * They can be synchronized over the network with other collaborating clients.
 * They are automatically updated when the document's structure is changed.
-* They can be converted to attributes or elements in the [view](#view).
+* They can be converted to the editing view, to show them in the editor (as {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToHighlight highlights} or {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToElement elements}).
+* They can be {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToData converted to the data view}, to store them with the document data.
+* They can be {@link module:engine/conversion/upcasthelpers~UpcastHelpers#dataToMarker loaded with the document data}.
 
-This makes them ideal for storing and maintaining additional data in the model &mdash; such as comments, selections of other users, etc.
+Markers are ideal for storing and maintaining additional data related to portions of the document &mdash; such as comments or selections of other users.
 
 ### Schema
 
@@ -224,7 +226,7 @@ editor.data;                    // The data pipeline (DataController).
 
 ### Element types and custom data
 
-The structure of the view resembles the structure in the DOM very closely. The semantics of HTML is defined in its specification. The view structure comes "DTD-free", so in order to provide additional information and better express the semantics of the content, the view structure implements 5 element types ({@link module:engine/view/containerelement~ContainerElement}, {@link module:engine/view/attributeelement~AttributeElement}, {@link module:engine/view/emptyelement~EmptyElement}, {@link module:engine/view/uielement~UIElement}, and {@link module:engine/view/editableelement~EditableElement}) and so called {@link module:engine/view/element~Element#getCustomProperty "custom properties"} (i.e. custom element properties which are not rendered). This additional information provided by editor features is then used by the {@link module:engine/view/renderer~Renderer} and [converters](#conversion).
+The structure of the view resembles the structure in the DOM very closely. The semantics of HTML is defined in its specification. The view structure comes "DTD-free", so in order to provide additional information and better express the semantics of the content, the view structure implements 6 element types ({@link module:engine/view/containerelement~ContainerElement}, {@link module:engine/view/attributeelement~AttributeElement}, {@link module:engine/view/emptyelement~EmptyElement}, {@link module:engine/view/rawelement~RawElement}, {@link module:engine/view/uielement~UIElement}, and {@link module:engine/view/editableelement~EditableElement}) and so called {@link module:engine/view/element~Element#getCustomProperty "custom properties"} (i.e. custom element properties which are not rendered). This additional information provided by editor features is then used by the {@link module:engine/view/renderer~Renderer} and [converters](#conversion).
 
 The element types can be defined as follows:
 
@@ -232,6 +234,7 @@ The element types can be defined as follows:
 * **Attribute element** &ndash; The elements that cannot contain container elements inside them. Most model text attributes are converted to view attribute elements. They are used mostly for inline styling elements such as `<strong>`, `<i>`, `<a>`, `<code>`. Similar attribute elements are flattened by the view writer, so e.g. `<a href="..."><a class="bar">x</a></a>` would automatically be optimized to `<a href="..." class="bar">x</a>`.
 * **Empty element** &ndash; The elements that must not have any child nodes, for example `<img>`.
 * **UI elements** &ndash; The elements that are not a part of the "data" but need to be "inlined" in the content. They are ignored by the selection (it jumps over them) and the view writer in general. The contents of these elements and events coming from them are filtered out, too.
+* **Raw element** &ndash; The elements that work as data containers ("wrappers", "sandboxes") but their children are transparent to the editor. Useful when non-standard data must be rendered but the editor should not be concerned what it is and how it works. Users cannot put the selection inside a raw element, split it into smaller chunks or directly modify its content.
 * **Editable element** &ndash; The elements used as "nested editables" of non-editable fragments of the content, for example a caption in the image widget, where the `<figure>` wrapping the image is not editable (it is a widget) and the `<figcaption>` inside it is an editable element.
 
 Additionally, you can define {@link module:engine/view/element~Element#getCustomProperty custom properties} which can be used to store information like:

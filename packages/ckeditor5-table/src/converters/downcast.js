@@ -216,7 +216,7 @@ export function downcastRemoveRow() {
 		const viewWriter = conversionApi.writer;
 		const mapper = conversionApi.mapper;
 
-		const viewStart = mapper.toViewPosition( data.position ).getLastMatchingPosition( value => !value.item.is( 'tr' ) );
+		const viewStart = mapper.toViewPosition( data.position ).getLastMatchingPosition( value => !value.item.is( 'element', 'tr' ) );
 		const viewItem = viewStart.nodeAfter;
 		const tableSection = viewItem.parent;
 		const viewTable = tableSection.parent;

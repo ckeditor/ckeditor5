@@ -65,7 +65,9 @@ describe( 'TextProxy', () => {
 	} );
 
 	describe( 'is()', () => {
-		it( 'should return true for textProxy', () => {
+		it( 'should return true for $textProxy', () => {
+			expect( textProxy.is( '$textProxy' ) ).to.be.true;
+			expect( textProxy.is( 'view:$textProxy' ) ).to.be.true;
 			expect( textProxy.is( 'textProxy' ) ).to.be.true;
 			expect( textProxy.is( 'view:textProxy' ) ).to.be.true;
 		} );
@@ -73,8 +75,8 @@ describe( 'TextProxy', () => {
 		it( 'should return false for other accept values', () => {
 			expect( textProxy.is( 'node' ) ).to.be.false;
 			expect( textProxy.is( 'view:node' ) ).to.be.false;
-			expect( textProxy.is( 'text' ) ).to.be.false;
-			expect( textProxy.is( 'view:text' ) ).to.be.false;
+			expect( textProxy.is( '$text' ) ).to.be.false;
+			expect( textProxy.is( 'view:$text' ) ).to.be.false;
 			expect( textProxy.is( 'element' ) ).to.be.false;
 			expect( textProxy.is( 'containerElement' ) ).to.be.false;
 			expect( textProxy.is( 'attributeElement' ) ).to.be.false;
@@ -82,7 +84,7 @@ describe( 'TextProxy', () => {
 			expect( textProxy.is( 'emptyElement' ) ).to.be.false;
 			expect( textProxy.is( 'rootElement' ) ).to.be.false;
 			expect( textProxy.is( 'documentFragment' ) ).to.be.false;
-			expect( textProxy.is( 'model:textProxy' ) ).to.be.false;
+			expect( textProxy.is( 'model:$textProxy' ) ).to.be.false;
 		} );
 	} );
 
