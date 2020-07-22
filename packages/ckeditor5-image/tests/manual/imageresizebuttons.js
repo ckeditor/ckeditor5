@@ -13,7 +13,7 @@ import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 
 import ImageResize from '../../src/imageresize';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
-import ImageResizeUI from '../../src/imageresize/imageresizeui';
+import ImageResizeButtons from '../../src/imageresize/imageresizebuttons';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -68,7 +68,7 @@ const config1 = {
 		IndentBlock,
 		EasyImage,
 		ImageResizeEditing,
-		ImageResizeUI
+		ImageResizeButtons
 	],
 	image: imageConfig1
 };

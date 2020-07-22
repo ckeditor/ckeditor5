@@ -14,7 +14,7 @@ import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
  * The image resize by handles feature.
  *
  * It adds a possibility to resize each image using handles or manually by
- * {@link module:image/imageresize/imageresizeui~ImageResizeUI} buttons.
+ * {@link module:image/imageresize/imageresizebuttons~ImageResizeButtons} buttons.
  *
  * @extends module:core/plugin~Plugin
  */

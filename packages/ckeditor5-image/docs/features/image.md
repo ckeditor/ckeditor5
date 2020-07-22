@@ -236,7 +236,7 @@ In this case, the user is able to resize images via dragging square handles disp
 
 You can configure the editor for resizing images by handles in two different ways:
 
-- By installing the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeUI`).
+- By installing the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`).
 
 ```js
 import Image from '@ckeditor/ckeditor5-image/src/image';
@@ -298,7 +298,7 @@ const imageConfiguration = {
 }
 ```
 
-{@snippet features/image-resizeuidropdown}
+{@snippet features/image-resize-buttons-dropdown}
 
 #### Using standalone buttons
 
@@ -334,7 +334,7 @@ const imageConfiguration = {
 }
 ```
 
-{@snippet features/image-resizeui}
+{@snippet features/image-resize-buttons}
 
 ### Disabling image resize handles
 
@@ -381,17 +381,17 @@ ClassicEditor
 	.catch( ... );
 ```
 
-- Or you can simply do not install {@link module:image/imageresize/imageresizehandles~ImageResizeHandles `ImageResizeHandles`} plugin at all. This means that your plugins setup will look like this: `plugins: [ 'ImageResizeEditing', 'ImageResizeUI', ... ]` which only enables resizing image feature by the choosen UI ([dropdown](#resize-image-using-the-plugin-dropdown) or [standalone buttons](#resize-image-using-the-standalone-buttons)) in the image toolbar.
+- Or you can simply do not install {@link module:image/imageresize/imageresizehandles~ImageResizeHandles `ImageResizeHandles`} plugin at all. This means that your plugins setup will look like this: `plugins: [ 'ImageResizeEditing', 'ImageResizeButtons', ... ]` which only enables resizing image feature by the choosen UI ([dropdown](#resize-image-using-the-plugin-dropdown) or [standalone buttons](#resize-image-using-the-standalone-buttons)) in the image toolbar.
 
 ```js
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageResizeEditing from '@ckeditor/ckeditor5-image/src/imageresize/imageresizeedititing';
-import ImageResizeUI from '@ckeditor/ckeditor5-image/src/imageresize/imageresizeui';
+import ImageResizeButtons from '@ckeditor/ckeditor5-image/src/imageresize/imageresizebuttons';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Image, ImageResizeEditing, ImageResizeUI, ImageToolbar, ... ],
+		plugins: [ Image, ImageResizeEditing, ImageResizeButtons, ImageToolbar, ... ],
 		image: {
 			resizeOptions: [
 			{
@@ -494,7 +494,7 @@ ClassicEditor
 
 ## Linking images
 
-The {@link module:link/linkimage, ... adds support for linking images. Some use cases where this is needed are:
+The {@link module:link/linkimage~LinkImage} plugin adds support for linking images. Some use cases where this is needed are:
 
 * Linking to a high-resolution version of an image.
 * Using images as thumbnails linking to an article or product page.
