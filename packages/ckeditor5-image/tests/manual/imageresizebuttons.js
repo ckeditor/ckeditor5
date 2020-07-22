@@ -111,7 +111,6 @@ const imageConfig2 = {
 		'imageResize:75',
 		'imageResize:original'
 	],
-	disableResizeHandles: true,
 	styles: [
 		'full',
 		'alignLeft',

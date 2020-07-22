@@ -20,4 +20,4 @@ Tests for manual image resizing using the UI in the image toolbar.
 	- No label should be rendered,
 	- The tooltip text and the `aria-label` attribute should be the same (and more verbose).
 	- The selected option button should be "on".
-	- The editor is using `ImageResize` with the configuration option: `image.disableResizeHandles: true`.
+	- The editor is using the combination of `ImageResizeEditing` and `ImageResizeButtons`.
