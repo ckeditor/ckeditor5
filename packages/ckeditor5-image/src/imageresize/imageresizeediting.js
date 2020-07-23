@@ -8,25 +8,17 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
 import ImageResizeCommand from './imageresizecommand';
 
 /**
- * The image resize feature.
+ * The image resize editing feature.
  *
  * It adds a possibility to resize each image using handles or manually by
- * {@link module:image/imageresize/imageresizeui~ImageResizeUI} buttons.
+ * {@link module:image/imageresize/imageresizebuttons~ImageResizeButtons} buttons.
  *
  * @extends module:core/plugin~Plugin
  */
 export default class ImageResizeEditing extends Plugin {
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ WidgetResize ];
-	}
-
 	/**
 	 * @inheritDoc
 	 */
@@ -45,55 +37,15 @@ export default class ImageResizeEditing extends Plugin {
 		this._registerConverters();
 
 		editor.commands.add( 'imageResize', command );
-
-		editor.editing.downcastDispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
-			const widget = conversionApi.mapper.toViewElement( data.item );
-
-			const resizer = editor.plugins
-				.get( WidgetResize )
-				.attachTo( {
-					unit: editor.config.get( 'image.resizeUnit' ) || '%',
-
-					modelElement: data.item,
-					viewElement: widget,
-					editor,
-
-					getHandleHost( domWidgetElement ) {
-						return domWidgetElement.querySelector( 'img' );
-					},
-					getResizeHost( domWidgetElement ) {
-						return domWidgetElement;
-					},
-					// TODO consider other positions.
-					isCentered() {
-						const imageStyle = data.item.getAttribute( 'imageStyle' );
-
-						return !imageStyle || imageStyle == 'full' || imageStyle == 'alignCenter';
-					},
-
-					onCommit( newValue ) {
-						editor.execute( 'imageResize', { width: newValue } );
-					}
-				} );
-
-			resizer.on( 'updateSize', () => {
-				if ( !widget.hasClass( 'image_resized' ) ) {
-					editor.editing.view.change( writer => {
-						writer.addClass( 'image_resized', widget );
-					} );
-				}
-			} );
-
-			resizer.bind( 'isEnabled' ).to( command );
-		}, { priority: 'low' } );
 	}
 
 	/**
 	 * @private
 	 */
 	_registerSchema() {
-		this.editor.model.schema.extend( 'image', {
-			allowAttributes: 'width'
+		this.editor.model.schema.extend( 'image', { allowAttributes: 'width' } );
+		this.editor.model.schema.setAttributeProperties( 'width', {
+			isFormatting: true
 		} );
 	}
 

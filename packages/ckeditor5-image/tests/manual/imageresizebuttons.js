@@ -7,20 +7,23 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ImageResize from '../../src/imageresize';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+
+import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
+import ImageResizeButtons from '../../src/imageresize/imageresizebuttons';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 const commonConfig = {
 	plugins: [
 		ArticlePluginSet,
-		ImageResize,
 		Indent,
 		IndentBlock,
-		EasyImage
+		EasyImage,
+		ImageResizeEditing,
+		ImageResizeButtons
 	],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
 		'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo', 'outdent', 'indent' ],
@@ -30,6 +33,8 @@ const commonConfig = {
 	},
 	cloudServices: CS_CONFIG
 };
+
+// Editor 1
 
 const imageConfig1 = {
 	resizeUnit: '%',
@@ -68,6 +73,8 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+// Editor 2
 
 const imageConfig2 = {
 	resizeUnit: '%',

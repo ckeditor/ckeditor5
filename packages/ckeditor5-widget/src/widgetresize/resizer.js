@@ -96,6 +96,14 @@ export default class Resizer {
 				event.stop();
 			}
 		}, { priority: 'high' } );
+
+		this.on( 'change:isEnabled', () => {
+			// We should redraw the resize handles when the plugin is enabled again.
+			// Otherwise they won't show up.
+			if ( this.isEnabled ) {
+				this.redraw();
+			}
+		} );
 	}
 
 	/**
