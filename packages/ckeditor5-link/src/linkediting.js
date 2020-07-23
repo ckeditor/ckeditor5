@@ -17,6 +17,7 @@ import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import ManualDecorator from './utils/manualdecorator';
 import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattributerange';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators } from './utils';
 
 import '../theme/link.css';
@@ -453,10 +454,19 @@ export default class LinkEditing extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
+		const view = editor.editing.view;
 		const linkCommand = editor.commands.get( 'link' );
 
 		// A flag whether attributes `linkHref` attribute should be preserved.
 		let shouldPreserveAttributes = false;
+
+		// A flag whether the `Backspace` key was pressed.
+		let hasBackspacePressed = false;
+
+		// Detect pressing `Backspace`.
+		this.listenTo( view.document, 'delete', ( evt, data ) => {
+			hasBackspacePressed = data.domEvent.keyCode === keyCodes.backspace;
+		}, { priority: 'high' } );
 
 		// Before removing the content, check whether the selection is inside a link or at the end of link but with 2-SCM enabled.
 		// If so, we want to preserve link attributes.
@@ -480,6 +490,13 @@ export default class LinkEditing extends Plugin {
 
 		// After removing the content, check whether the current selection should preserve the `linkHref` attribute.
 		this.listenTo( model, 'deleteContent', () => {
+			// If didn't press `Backspace`.
+			if ( !hasBackspacePressed ) {
+				return;
+			}
+
+			hasBackspacePressed = false;
+
 			// Disable the mechanism if inside a link (`<$text url="foo">F[]oo</$text>` or <$text url="foo">Foo[]</$text>`).
 			if ( shouldPreserveAttributes ) {
 				return;
