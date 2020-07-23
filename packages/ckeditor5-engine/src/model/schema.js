@@ -245,7 +245,7 @@ export default class Schema {
 	 *		schema.isLimit( editor.model.document.getRoot() ); // -> true
 	 *		schema.isLimit( 'image' ); // -> true
 	 *
-	 * See the {@glink framework/guides/deep-dive/schema#limit-elements Limit elements} section of the Schema deep dive}
+	 * See the {@glink framework/guides/deep-dive/schema#limit-elements Limit elements} section of the Schema deep dive
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
@@ -274,7 +274,7 @@ export default class Schema {
 	 *		const imageElement = writer.createElement( 'image' );
 	 *		schema.isObject( imageElement ); // -> true
 	 *
-	 * See the {@glink framework/guides/deep-dive/schema#object-elements Object elements} section of the Schema deep dive}
+	 * See the {@glink framework/guides/deep-dive/schema#object-elements Object elements} section of the Schema deep dive
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
@@ -295,7 +295,7 @@ export default class Schema {
 	 *		const text = writer.createText('foo' );
 	 *		schema.isInline( text ); // -> true
 	 *
-	 * See the {@glink framework/guides/deep-dive/schema#inline-elements Inline elements} section of the Schema deep dive}
+	 * See the {@glink framework/guides/deep-dive/schema#inline-elements Inline elements} section of the Schema deep dive
 	 * guide for more details.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
