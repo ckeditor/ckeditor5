@@ -29,6 +29,37 @@ export default class ImageResizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'image', {
+			resizeUnit: '%',
+			resizeOptions: [ {
+				name: 'imageResize:original',
+				value: null,
+				icon: 'original'
+			},
+			{
+				name: 'imageResize:25',
+				value: '25',
+				icon: 'small'
+			},
+			{
+				name: 'imageResize:50',
+				value: '50',
+				icon: 'medium'
+			},
+			{
+				name: 'imageResize:75',
+				value: '75',
+				icon: 'large'
+			} ]
+		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const command = new ImageResizeCommand( editor );

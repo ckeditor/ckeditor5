@@ -48,7 +48,7 @@ export default class ImageResizeHandles extends Plugin {
 			const resizer = editor.plugins
 				.get( WidgetResize )
 				.attachTo( {
-					unit: editor.config.get( 'image.resizeUnit' ) || '%',
+					unit: editor.config.get( 'image.resizeUnit' ),
 
 					modelElement: data.item,
 					viewElement: widget,
