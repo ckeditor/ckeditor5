@@ -139,22 +139,22 @@ export default class ImageResize extends Plugin {
  *					resizeUnit: "%",
  *					resizeOptions: [ {
  *						name: 'imageResize:original',
- *						value: null
+ *						value: null,
  *						icon: 'original'
  *					},
  *					{
  *						name: 'imageResize:25',
- *						value: '25'
+ *						value: '25',
  *						icon: 'small'
  *					},
  *					{
  *						name: 'imageResize:50',
- *						value: '50'
+ *						value: '50',
  *						icon: 'medium'
  *					},
  *					{
  *						name: 'imageResize:75',
- *						value: '75'
+ *						value: '75',
  *						icon: 'large'
  *					} ],
  *					toolbar: [ 'imageResize:25', 'imageResize:50', 'imageResize:75', 'imageResize:original', ... ],
@@ -196,6 +196,33 @@ export default class ImageResize extends Plugin {
  *			} )
  *			.then( ... )
  *			.catch( ... );
+ *
+ * **Default value**
+ *
+ * The following configuration is used by default:
+ *
+ *		resizeOptions = [
+ *			{
+ *				name: 'imageResize:original',
+ *				value: null,
+ *				icon: 'original'
+ *			},
+ *			{
+ *				name: 'imageResize:25',
+ *				value: '25',
+ *				icon: 'small'
+ *			},
+ *			{
+ *				name: 'imageResize:50',
+ *				value: '50',
+ *				icon: 'medium'
+ *			},
+ *			{
+ *				name: 'imageResize:75',
+ *				value: '75',
+ *				icon: 'large'
+ *			}
+ *		];
  *
  * @member {Array.<module:image/imageresize/imageresizebuttons~ImageResizeOption>} module:image/image~ImageConfig#resizeOptions
  */

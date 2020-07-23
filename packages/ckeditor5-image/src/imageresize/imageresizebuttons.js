@@ -66,7 +66,7 @@ export default class ImageResizeButtons extends Plugin {
 		 * @type {module:image/image~ImageConfig#resizeUnit}
 		 * @default '%'
 		 */
-		this._resizeUnit = editor.config.get( 'image.resizeUnit' ) || '%';
+		this._resizeUnit = editor.config.get( 'image.resizeUnit' );
 	}
 
 	/**
@@ -76,10 +76,6 @@ export default class ImageResizeButtons extends Plugin {
 		const editor = this.editor;
 		const options = editor.config.get( 'image.resizeOptions' );
 		const command = editor.commands.get( 'imageResize' );
-
-		if ( !options ) {
-			return;
-		}
 
 		this.bind( 'isEnabled' ).to( command );
 

@@ -45,6 +45,41 @@ describe( 'ImageResizeEditing', () => {
 		expect( ImageResizeEditing.pluginName ).to.equal( 'ImageResizeEditing' );
 	} );
 
+	describe( 'constructor()', () => {
+		beforeEach( async () => {
+			editor = await createEditor( {
+				plugins: [ Paragraph, Image, ImageStyle, ImageResizeEditing ]
+			} );
+		} );
+
+		it( 'should define the default value for config.image.resizeUnit', () => {
+			expect( editor.config.get( 'image.resizeUnit' ) ).to.equal( '%' );
+		} );
+
+		it( 'should define the default value for config.image.resizeOptions', () => {
+			expect( editor.config.get( 'image.resizeOptions' ) ).to.deep.equal( [ {
+				name: 'imageResize:original',
+				value: null,
+				icon: 'original'
+			},
+			{
+				name: 'imageResize:25',
+				value: '25',
+				icon: 'small'
+			},
+			{
+				name: 'imageResize:50',
+				value: '50',
+				icon: 'medium'
+			},
+			{
+				name: 'imageResize:75',
+				value: '75',
+				icon: 'large'
+			} ] );
+		} );
+	} );
+
 	describe( 'conversion', () => {
 		beforeEach( async () => {
 			editor = await createEditor();
