@@ -11,12 +11,6 @@ import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml'
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
 
-import linkIcon from '../theme/icons/link.svg';
-
-// We can import the SVG code directly to avoid re-edit, but we have to make sure that the icon code has `</path>` closing tag.
-// After cleaning up the icons, the closing tag can be re-parsed and some tests will fail.
-const linkIconInditatorElement = '<span class="ck ck-link-image_icon">' + linkIcon + '</span>';
-
 describe( 'LinkImageEditing', () => {
 	let editor, model, view;
 
@@ -51,16 +45,18 @@ describe( 'LinkImageEditing', () => {
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should attach a link indicator to the image element', () => {
-				setModelData( model, '<image src="/assets/sample.png" alt="alt text" linkHref="http://ckeditor.com"></image>' );
+				setModelData( model, '<image src="/assets/sample.png" alt="alt text" linkHref="foo"></image>' );
 
-				expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.match( new RegExp(
 					'<figure class="ck-widget image" contenteditable="false">' +
-						'<a href="http://ckeditor.com">' +
+						'<a href="foo">' +
 							'<img alt="alt text" src="/assets/sample.png"></img>' +
-							linkIconInditatorElement +
+							'<span class="ck ck-link-image_icon">' +
+								'<svg[^>]+>.*<\\/svg>' +
+							'</span>' +
 						'</a>' +
 					'</figure>'
-				);
+				) );
 			} );
 		} );
 
