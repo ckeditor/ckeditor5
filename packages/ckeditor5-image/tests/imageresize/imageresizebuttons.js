@@ -96,23 +96,6 @@ describe( 'ImageResizeButtons', () => {
 
 			expect( plugin.isEnabled ).to.be.false;
 		} );
-
-		it( 'should not register a dropdown or buttons if no resize options passed', async () => {
-			const editor = await ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeButtons ],
-					image: {
-						resizeUnit: 'px'
-					}
-				} );
-
-			const resizeOptions = editor.config.get( 'image.resizeOptions' );
-
-			expect( resizeOptions ).to.be.undefined;
-			expect( editor.ui.componentFactory.has( 'imageResize' ) ).to.be.false;
-
-			await editor.destroy();
-		} );
 	} );
 
 	describe( 'resize options dropdown', () => {
