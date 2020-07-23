@@ -50,7 +50,7 @@ msgstr "Panel nástrojov roletového menu"
 
 msgctxt "Label of a toolbar button which reveals more toolbar items."
 msgid "Show more items"
-msgstr ""
+msgstr "Zobraziť viac položiek"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"

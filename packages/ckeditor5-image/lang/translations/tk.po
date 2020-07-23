@@ -1,0 +1,65 @@
+# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Turkmen (https://www.transifex.com/ckeditor/teams/11143/tk/)\n"
+"Language: tk\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Label for the image widget."
+msgid "image widget"
+msgstr "surat widjeti"
+
+msgctxt "Label for the Side image option."
+msgid "Side image"
+msgstr "Gapdal surat"
+
+msgctxt "Label for the Full size image option."
+msgid "Full size image"
+msgstr "Doly ululykdaky surat"
+
+msgctxt "Label for the Left aligned image option"
+msgid "Left aligned image"
+msgstr "Çep deňleşdirilen surat"
+
+msgctxt "Label for the Centered image option"
+msgid "Centered image"
+msgstr "Merkezleşdirilen surat"
+
+msgctxt "Label for the Right aligned image option"
+msgid "Right aligned image"
+msgstr "Sag deňleşdirilen surat"
+
+msgctxt "Label for the Change image text alternative button."
+msgid "Change image text alternative"
+msgstr "Surat tekstiniň alternatiwasyny üýtgediň"
+
+msgctxt "Label for the image text alternative input."
+msgid "Text alternative"
+msgstr "Tekstiň alternatiwasy"
+
+msgctxt "Placeholder text for image caption displayed when caption is empty."
+msgid "Enter image caption"
+msgstr "Surat ýazgysyny giriziň"
+
+msgctxt "Label for the insert image toolbar button."
+msgid "Insert image"
+msgstr "Surat goýuň"
+
+msgctxt "Title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr "Ýükläp bolmady"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Image toolbar"
+msgstr "Surat gurallar paneli"

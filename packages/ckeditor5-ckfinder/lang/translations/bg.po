@@ -1,0 +1,37 @@
+# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Bulgarian (https://www.transifex.com/ckeditor/teams/11143/bg/)\n"
+"Language: bg\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Toolbar button tooltip for inserting an image or file via a CKFinder file browser."
+msgid "Insert image or file"
+msgstr "Вмъкни изображение или файл"
+
+msgctxt "Error message displayed when inserting a resized version of an image failed."
+msgid "Could not obtain resized image URL."
+msgstr "Не може да бъде придобит промененият уеб адрес на изображението."
+
+msgctxt "Title of a notification displayed when inserting a resized version of an image failed."
+msgid "Selecting resized image failed"
+msgstr "Избирането на промененото изображение не е успешно"
+
+msgctxt "Error message displayed when an image cannot be inserted at the current position."
+msgid "Could not insert image at the current position."
+msgstr "На текущата позиция не може да се вмъкне изображение."
+
+msgctxt "Title of a notification displayed when an image cannot be inserted at the current position."
+msgid "Inserting image failed"
+msgstr "Вмъкването на изображение не е успешно"
