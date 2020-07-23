@@ -24,31 +24,20 @@ describe( 'ImageResizeEditing', () => {
 	const IMAGE_SRC_FIXTURE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
 		'aM3g14MGNJMXKiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiJysRFNMgH0RpujAAAAAElFTkSuQmCC';
 
-	let absoluteContainer, editor, editorElement;
+	let editor, editorElement;
 
-	before( () => {
-		// This container is required to position editor element in a reliable element.
-		// @todo ensure whether it's required after migrating the tests.
-		absoluteContainer = document.createElement( 'div' );
-		absoluteContainer.style.top = '50px';
-		absoluteContainer.style.left = '50px';
-		absoluteContainer.style.height = '1000px';
-		absoluteContainer.style.width = '500px';
-		absoluteContainer.style.position = 'absolute';
-		document.body.appendChild( absoluteContainer );
+	beforeEach( () => {
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 	} );
 
-	after( () => {
-		absoluteContainer.remove();
-	} );
-
-	afterEach( () => {
+	afterEach( async () => {
 		if ( editorElement ) {
 			editorElement.remove();
 		}
 
 		if ( editor ) {
-			return editor.destroy();
+			await editor.destroy();
 		}
 	} );
 
@@ -57,7 +46,9 @@ describe( 'ImageResizeEditing', () => {
 	} );
 
 	describe( 'conversion', () => {
-		beforeEach( () => createEditor() );
+		beforeEach( async () => {
+			editor = await createEditor();
+		} );
 
 		it( 'upcasts 100px width correctly', () => {
 			editor.setData( `<figure class="image" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
@@ -112,7 +103,9 @@ describe( 'ImageResizeEditing', () => {
 	} );
 
 	describe( 'schema', () => {
-		beforeEach( () => createEditor() );
+		beforeEach( async () => {
+			editor = await createEditor();
+		} );
 
 		it( 'allows the width attribute', () => {
 			expect( editor.model.schema.checkAttribute( 'image', 'width' ) ).to.be.true;
@@ -124,7 +117,9 @@ describe( 'ImageResizeEditing', () => {
 	} );
 
 	describe( 'command', () => {
-		beforeEach( () => createEditor() );
+		beforeEach( async () => {
+			editor = await createEditor();
+		} );
 
 		it( 'defines the imageResize command', () => {
 			expect( editor.commands.get( 'imageResize' ) ).to.be.instanceOf( ImageResizeCommand );
@@ -132,10 +127,6 @@ describe( 'ImageResizeEditing', () => {
 	} );
 
 	function createEditor( config ) {
-		editorElement = document.createElement( 'div' );
-
-		absoluteContainer.appendChild( editorElement );
-
 		return ClassicEditor
 			.create( editorElement, config || {
 				plugins: [ Paragraph, Image, ImageStyle, ImageResizeEditing ],
@@ -144,11 +135,9 @@ describe( 'ImageResizeEditing', () => {
 				}
 			} )
 			.then( newEditor => {
-				editor = newEditor;
+				focusEditor( newEditor );
 
-				focusEditor( editor );
-
-				return editor;
+				return newEditor;
 			} );
 	}
 } );
