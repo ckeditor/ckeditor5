@@ -9,7 +9,7 @@ import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 import ImageResizeHandles from '../../src/imageresize/imageresizehandles';
 
 describe( 'ImageResize', () => {
-	it( 'should require "ImageResizeEditing" and "ImageResizeButtons"', () => {
+	it( 'should require "ImageResizeEditing", "ImageResizeHandles", and "ImageResizeButtons"', () => {
 		expect( ImageResize.requires ).to.deep.equal( [ ImageResizeEditing, ImageResizeHandles, ImageResizeButtons ] );
 	} );
 
