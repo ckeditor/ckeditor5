@@ -226,7 +226,7 @@ The plugin also gives you an ability to change the size of the image through the
 
 ### Methods to resize images
 
-The editor offers three ways to resize images. One of them (resize handles) is
+The editor offers different ways to resize images either by using resize handles or by using dedicated UI components.
 
 #### Using handles
 
