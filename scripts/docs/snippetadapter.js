@@ -22,7 +22,7 @@ const MULTI_LANGUAGE = 'multi-language';
  * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
  * @param {Object} options
  * @param {Boolean} options.production Whether to build snippets in production mode.
- * @param {Array.<String>|undefined} options.whitelistedSnippets An array that contains glob patterns.
+ * @param {Array.<String>|undefined} options.allowedSnippets An array that contains glob patterns.
  * @param {Object.<String, Function>} umbertoHelpers
  * @returns {Promise}
  */
@@ -80,12 +80,16 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 		snippets.add( snippetData );
 	}
 
-	// Remove snippets that do not match to patterns specified in `options.whitelistedSnippets`.
-	if ( options.whitelistedSnippets ) {
-		filterWhitelistedSnippets( snippets, options.whitelistedSnippets );
+	// Remove snippets that do not match to patterns specified in `options.allowedSnippets`.
+	if ( options.allowedSnippets ) {
+		filterAllowedSnippets( snippets, options.allowedSnippets );
 	}
 
-	console.log( `Building ${ snippets.size } snippets...` );
+	if ( options.allowedSnippets.length ) {
+		console.log( `Found ${ snippets.size } matching {@snippet} tags.` );
+	}
+
+	console.log( `Building ${ countUniqueSnippets( snippets ) } snippets...` );
 
 	const groupedSnippetsByLanguage = {};
 
@@ -209,18 +213,18 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 			}
 		} )
 		.then( () => {
-			console.log( `Finished building ${ snippets.size } snippets.` );
+			console.log( 'Finished building snippets.' );
 		} );
 };
 
 /**
- * Removes snippets that names do not match to patterns specified in `whitelistedSnippets` array.
+ * Removes snippets that names do not match to patterns specified in `allowedSnippets` array.
  *
  * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
- * @param {Array.<String>|undefined} whitelistedSnippets Snippet patterns that should be built.
+ * @param {Array.<String>|undefined} allowedSnippets Snippet patterns that should be built.
  */
-function filterWhitelistedSnippets( snippets, whitelistedSnippets ) {
-	if ( !whitelistedSnippets.length ) {
+function filterAllowedSnippets( snippets, allowedSnippets ) {
+	if ( !allowedSnippets.length ) {
 		return;
 	}
 
@@ -228,7 +232,7 @@ function filterWhitelistedSnippets( snippets, whitelistedSnippets ) {
 
 	// Find all snippets that matched to specified criteria.
 	for ( const snippetData of snippets ) {
-		const shouldBeBuilt = whitelistedSnippets.some( pattern => {
+		const shouldBeBuilt = allowedSnippets.some( pattern => {
 			return minimatch( snippetData.snippetName, pattern ) || snippetData.snippetName.includes( pattern );
 		} );
 
@@ -449,6 +453,16 @@ function getHTMLImports( files, mapFunction ) {
 		.map( mapFunction )
 		.join( '\n' )
 		.replace( /^\s+/, '' );
+}
+
+/**
+ * Returns a number of unique snippet names that will be built.
+ *
+ * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
+ * @returns {Number}
+ */
+function countUniqueSnippets( snippets ) {
+	return new Set( Array.from( snippets, snippet => snippet.snippetName ) ).size;
 }
 
 /**
