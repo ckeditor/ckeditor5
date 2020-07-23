@@ -53,6 +53,15 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	display: none !important; /* Firefox is very stubborn. */
 }
 
+/* Umberto has some high specificity rules - for code highlight we need even more.. */
+.ck.ck-content code:not(.hljs) {
+	background-color: hsla(0, 0%, 78%, 0.3);
+}
+
+.ck-content code.ck-code_selected:not(.hljs) {
+	background-color: hsla(0, 0%, 78%, 0.5);
+}
+
 /* Restore default browser styles for <sub> and <sup>. */
 .ck.ck-content sub {
 	vertical-align: sub;
