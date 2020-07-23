@@ -11,7 +11,6 @@ import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 
-import ImageResize from '../../src/imageresize';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 import ImageResizeButtons from '../../src/imageresize/imageresizebuttons';
 
@@ -20,10 +19,11 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 const commonConfig = {
 	plugins: [
 		ArticlePluginSet,
-		ImageResize,
 		Indent,
 		IndentBlock,
-		EasyImage
+		EasyImage,
+		ImageResizeEditing,
+		ImageResizeButtons
 	],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
 		'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo', 'outdent', 'indent' ],
@@ -62,14 +62,6 @@ const imageConfig1 = {
 
 const config1 = {
 	...commonConfig,
-	plugins: [
-		ArticlePluginSet,
-		Indent,
-		IndentBlock,
-		EasyImage,
-		ImageResizeEditing,
-		ImageResizeButtons
-	],
 	image: imageConfig1
 };
 
