@@ -199,7 +199,7 @@ export function getLabel( element ) {
  * * adds the `ck-editor__editable` and `ck-editor__nested-editable` CSS classes,
  * * adds the `ck-editor__nested-editable_focused` CSS class when the editable is focused and removes it when it is blurred.
  *
- * Similarly to {@link ~toWidget `toWidget()`} this function should be used in `dataDowncast` only and it is usually
+ * Similarly to {@link ~toWidget `toWidget()`} this function should be used in `editingDowncast` only and it is usually
  * used together with {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`}.
  *
  * For example, in order to convert a `<nested>` model element to `<div class="nested">` in the view, you can define
