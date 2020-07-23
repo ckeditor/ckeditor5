@@ -240,29 +240,22 @@ ClassicEditor
 
 ## Autolink feature
 
-You can enable automatic linking of URLs typed or pasted into editor. The `AutoLink` feature will automatically add links to URLs or e-mail addresses.
+You can enable automatic linking of URLs typed or pasted into editor. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically add turn URLs or e-mail addresses into real links.
 
 <info-box>
-	Autolink action can be always reverted using undo (<kbd>CTRL</kbd>+<kbd>Z</kbd>).
+	Autolink action can always be reverted by the undo feature (<kbd>CTRL</kbd>+<kbd>Z</kbd>).
 </info-box>
 
 {@snippet features/autolink}
 
-```js
-import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Link, AutoLink, ... ]
-	} )
-	.then( ... )
-	.catch( ... );
-```
+The `Autolink` plugin is not available in any of the builds. See the [Installation](#installation) section to learn how to enable it.
 
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom rich text editor.
+	This base link feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom rich text editor.
+
+	The autolink feature is not available in any of the builds and needs to be installed first. Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package:
@@ -271,14 +264,15 @@ To add this feature to your editor, install the [`@ckeditor/ckeditor5-link`](htt
 npm install --save @ckeditor/ckeditor5-link
 ```
 
-Then add the `Link` plugin to your plugin list:
+Then add the `Link` and `AutoLink` plugins to your plugin list:
 
 ```js
 import Link from '@ckeditor/ckeditor5-link/src/link';
+import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Link, ... ],
+		plugins: [ Link, AutoLink, ... ],
 		toolbar: [ 'link', ... ],
 	} )
 	.then( ... )
