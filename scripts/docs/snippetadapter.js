@@ -85,7 +85,10 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 		filterAllowedSnippets( snippets, options.allowedSnippets );
 	}
 
-	console.log( `Found ${ snippets.size } "{@snippet ...}" tags...` );
+	if ( options.allowedSnippets.length ) {
+		console.log( `Found ${ snippets.size } matching {@snippet} tags.` );
+	}
+
 	console.log( `Building ${ countUniqueSnippets( snippets ) } snippets...` );
 
 	const groupedSnippetsByLanguage = {};
@@ -459,12 +462,7 @@ function getHTMLImports( files, mapFunction ) {
  * @returns {Number}
  */
 function countUniqueSnippets( snippets ) {
-	const uniqueSnippetNames = new Set();
-
-	for ( const snippet of snippets ) {
-		uniqueSnippetNames.add( snippet.snippetName );
-	}
-	return uniqueSnippetNames.size;
+	return new Set( Array.from( snippets, snippet => snippet.snippetName ) ).size;
 }
 
 /**
