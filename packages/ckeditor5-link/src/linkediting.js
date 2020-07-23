@@ -444,7 +444,7 @@ export default class LinkEditing extends Plugin {
 	 * the {@link module:typing/twostepcaretmovement~TwoStepCaretMovement} plugin is active and
 	 * the selection has the "linkHref" attribute due to overriden gravity (at the end), the `linkHref` attribute should stay untouched.
 	 *
-	 * The purpose of this action is to allow removing the link label and keep the selection outside the link.
+	 * The purpose of this action is to allow removing the link text and keep the selection outside the link.
 	 *
 	 * See https://github.com/ckeditor/ckeditor5/issues/7521.
 	 *
