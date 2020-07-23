@@ -68,7 +68,7 @@ describe( 'ImageResizeHandles', () => {
 
 		attachToSpy.restore();
 
-		localEditor.destroy();
+		await localEditor.destroy();
 	} );
 
 	describe( 'command', () => {
