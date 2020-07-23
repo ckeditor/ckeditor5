@@ -258,6 +258,16 @@ describe( 'DataController', () => {
 	} );
 
 	describe( 'set()', () => {
+		it( 'should be decorated', () => {
+			const spy = sinon.spy();
+
+			data.on( 'set', spy );
+
+			data.set( 'foo bar' );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.any, [ 'foo bar' ] );
+		} );
+
 		it( 'should set data to default main root', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			data.set( 'foo' );
@@ -342,8 +352,8 @@ describe( 'DataController', () => {
 
 			data.set( 'foo' );
 
-			downcastHelpers.markerToElement( { model: 'marker', view: 'marker' } );
-			upcastHelpers.elementToMarker( { view: 'marker', model: 'marker' } );
+			downcastHelpers.markerToData( { model: 'marker' } );
+			upcastHelpers.dataToMarker( { view: 'marker' } );
 
 			model.change( writer => {
 				writer.addMarker( 'marker', { range: writer.createRangeIn( modelDocument.getRoot() ), usingOperation: true } );

@@ -719,8 +719,8 @@ describe( 'DocumentSelection', () => {
 		it( 'should return false for other values', () => {
 			expect( selection.is( 'node' ) ).to.be.false;
 			expect( selection.is( 'model:node' ) ).to.be.false;
-			expect( selection.is( 'text' ) ).to.be.false;
-			expect( selection.is( 'textProxy' ) ).to.be.false;
+			expect( selection.is( '$text' ) ).to.be.false;
+			expect( selection.is( '$textProxy' ) ).to.be.false;
 			expect( selection.is( 'element' ) ).to.be.false;
 			expect( selection.is( 'element', 'paragraph' ) ).to.be.false;
 			expect( selection.is( 'rootElement' ) ).to.be.false;
@@ -1779,7 +1779,7 @@ describe( 'DocumentSelection', () => {
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0, 0 ] );
 			} );
 
-			it( 'handles multi-range selection in a text node by merging it into one range (resulting in collapsed ranges)', () => {
+			it( 'handles multi-range selection in a text node by merging it into one range (resulting in a collapsed range)', () => {
 				const ranges = [
 					new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 2 ] ) ),
 					new Range( new Position( root, [ 1, 3 ] ), new Position( root, [ 1, 4 ] ) )
@@ -1789,19 +1789,19 @@ describe( 'DocumentSelection', () => {
 
 				model.applyOperation(
 					new MoveOperation(
-						new Position( root, [ 1, 1 ] ),
-						4,
+						new Position( root, [ 1, 0 ] ),
+						5,
 						new Position( doc.graveyard, [ 0 ] ),
 						doc.version
 					)
 				);
 
 				expect( selection.rangeCount ).to.equal( 1 );
-				expect( selection.getFirstPosition().path ).to.deep.equal( [ 1, 1 ] );
-				expect( selection.getLastPosition().path ).to.deep.equal( [ 1, 1 ] );
+				expect( selection.getFirstPosition().path ).to.deep.equal( [ 1, 0 ] );
+				expect( selection.getLastPosition().path ).to.deep.equal( [ 1, 0 ] );
 			} );
 
-			it( 'handles multi-range selection on object nodes by merging it into one range (resulting in non-collapsed ranges)', () => {
+			it( 'handles multi-range selection on object nodes by merging it into one range (resulting in a non-collapsed range)', () => {
 				model.schema.register( 'outer', {
 					isObject: true
 				} );
@@ -1834,6 +1834,28 @@ describe( 'DocumentSelection', () => {
 				expect( selection.rangeCount ).to.equal( 1 );
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0, 0 ] );
 				expect( selection.getLastPosition().path ).to.deep.equal( [ 0, 1 ] );
+			} );
+
+			it( 'should not fix the selection if not all ranges were removed', () => {
+				const ranges = [
+					new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 2 ] ) ),
+					new Range( new Position( root, [ 1, 3 ] ), new Position( root, [ 1, 4 ] ) )
+				];
+
+				selection._setTo( ranges );
+
+				model.applyOperation(
+					new MoveOperation(
+						new Position( root, [ 1, 1 ] ),
+						1,
+						new Position( doc.graveyard, [ 0 ] ),
+						doc.version
+					)
+				);
+
+				expect( selection.rangeCount ).to.equal( 1 );
+				expect( selection.getFirstPosition().path ).to.deep.equal( [ 1, 2 ] );
+				expect( selection.getLastPosition().path ).to.deep.equal( [ 1, 3 ] );
 			} );
 		} );
 

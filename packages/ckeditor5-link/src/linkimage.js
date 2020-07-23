@@ -11,6 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import LinkImageEditing from './linkimageediting';
 import LinkImageUI from './linkimageui';
 
+import '../theme/linkimage.css';
+
 /**
  * The `LinkImage` plugin.
  *

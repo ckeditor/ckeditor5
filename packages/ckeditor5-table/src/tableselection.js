@@ -13,7 +13,6 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
 
-import { findAncestor } from './utils/common';
 import { cropTableToDimensions, adjustLastRowIndex, adjustLastColumnIndex } from './utils/structure';
 import { getColumnIndexes, getRowIndexes, getSelectedTableCells, isSelectionRectangular } from './utils/selection';
 
@@ -95,7 +94,7 @@ export default class TableSelection extends Plugin {
 			const { first: firstColumn, last: lastColumn } = getColumnIndexes( selectedCells );
 			const { first: firstRow, last: lastRow } = getRowIndexes( selectedCells );
 
-			const sourceTable = findAncestor( 'table', selectedCells[ 0 ] );
+			const sourceTable = selectedCells[ 0 ].findAncestor( 'table' );
 
 			let adjustedLastRow = lastRow;
 			let adjustedLastColumn = lastColumn;
@@ -164,7 +163,7 @@ export default class TableSelection extends Plugin {
 		const focusCellRange = [ ...selection.getRanges() ].pop();
 		const element = focusCellRange.getContainedElement();
 
-		if ( element && element.is( 'tableCell' ) ) {
+		if ( element && element.is( 'element', 'tableCell' ) ) {
 			return element;
 		}
 
@@ -181,7 +180,7 @@ export default class TableSelection extends Plugin {
 		const anchorCellRange = first( selection.getRanges() );
 		const element = anchorCellRange.getContainedElement();
 
-		if ( element && element.is( 'tableCell' ) ) {
+		if ( element && element.is( 'element', 'tableCell' ) ) {
 			return element;
 		}
 
@@ -335,7 +334,7 @@ export default class TableSelection extends Plugin {
 			endColumn
 		};
 
-		for ( const { row, cell } of new TableWalker( findAncestor( 'table', anchorCell ), walkerOptions ) ) {
+		for ( const { row, cell } of new TableWalker( anchorCell.findAncestor( 'table' ), walkerOptions ) ) {
 			selectionMap[ row - startRow ].push( cell );
 		}
 

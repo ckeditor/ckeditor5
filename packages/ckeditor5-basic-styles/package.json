@@ -11,6 +11,7 @@
   ],
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^20.0.0",
+    "@ckeditor/ckeditor5-typing": "^20.0.0",
     "@ckeditor/ckeditor5-ui": "^20.0.0"
   },
   "devDependencies": {

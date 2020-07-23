@@ -104,7 +104,7 @@ export default class Mapper {
 
 			const viewContainer = this._modelToViewMapping.get( data.modelPosition.parent );
 
-			data.viewPosition = this._findPositionIn( viewContainer, data.modelPosition.offset );
+			data.viewPosition = this.findPositionIn( viewContainer, data.modelPosition.offset );
 		}, { priority: 'low' } );
 
 		// Default mapper algorithm for mapping view position to model position.
@@ -445,7 +445,7 @@ export default class Mapper {
 		// viewBlock == viewParent, so we need to calculate the offset in the parent element.
 
 		// If the position is a text it is simple ("ba|r" -> 2).
-		if ( viewParent.is( 'text' ) ) {
+		if ( viewParent.is( '$text' ) ) {
 			return viewOffset;
 		}
 
@@ -488,7 +488,7 @@ export default class Mapper {
 			return callback( viewNode );
 		} else if ( this._viewToModelMapping.has( viewNode ) ) {
 			return 1;
-		} else if ( viewNode.is( 'text' ) ) {
+		} else if ( viewNode.is( '$text' ) ) {
 			return viewNode.data.length;
 		} else if ( viewNode.is( 'uiElement' ) ) {
 			return 0;
@@ -510,25 +510,24 @@ export default class Mapper {
 	 *
 	 *		<p>fo<b>bar</b>bom</p> -> expected offset: 4
 	 *
-	 *		_findPositionIn( p, 4 ):
+	 *		findPositionIn( p, 4 ):
 	 *		<p>|fo<b>bar</b>bom</p> -> expected offset: 4, actual offset: 0
 	 *		<p>fo|<b>bar</b>bom</p> -> expected offset: 4, actual offset: 2
 	 *		<p>fo<b>bar</b>|bom</p> -> expected offset: 4, actual offset: 5 -> we are too far
 	 *
-	 *		_findPositionIn( b, 4 - ( 5 - 3 ) ):
+	 *		findPositionIn( b, 4 - ( 5 - 3 ) ):
 	 *		<p>fo<b>|bar</b>bom</p> -> expected offset: 2, actual offset: 0
 	 *		<p>fo<b>bar|</b>bom</p> -> expected offset: 2, actual offset: 3 -> we are too far
 	 *
-	 *		_findPositionIn( bar, 2 - ( 3 - 3 ) ):
+	 *		findPositionIn( bar, 2 - ( 3 - 3 ) ):
 	 *		We are in the text node so we can simple find the offset.
 	 *		<p>fo<b>ba|r</b>bom</p> -> expected offset: 2, actual offset: 2 -> position found
 	 *
-	 * @private
 	 * @param {module:engine/view/element~Element} viewParent Tree view element in which we are looking for the position.
 	 * @param {Number} expectedOffset Expected offset.
 	 * @returns {module:engine/view/position~Position} Found position.
 	 */
-	_findPositionIn( viewParent, expectedOffset ) {
+	findPositionIn( viewParent, expectedOffset ) {
 		// Last scanned view node.
 		let viewNode;
 		// Length of the last scanned view node.
@@ -538,7 +537,7 @@ export default class Mapper {
 		let viewOffset = 0;
 
 		// In the text node it is simple: offset in the model equals offset in the text.
-		if ( viewParent.is( 'text' ) ) {
+		if ( viewParent.is( '$text' ) ) {
 			return new ViewPosition( viewParent, expectedOffset );
 		}
 
@@ -560,7 +559,7 @@ export default class Mapper {
 		else {
 			// ( modelOffset - lastLength ) is the offset to the child we enter,
 			// so we subtract it from the expected offset to fine the offset in the child.
-			return this._findPositionIn( viewNode, expectedOffset - ( modelOffset - lastLength ) );
+			return this.findPositionIn( viewNode, expectedOffset - ( modelOffset - lastLength ) );
 		}
 	}
 
@@ -632,7 +631,7 @@ export default class Mapper {
 	 *			const sibling = data.modelPosition.nodeBefore;
 	 *
 	 *			// Check if this is the element we are interested in.
-	 *			if ( !sibling.is( 'customElement' ) ) {
+	 *			if ( !sibling.is( 'element', 'customElement' ) ) {
 	 *				return;
 	 *			}
 	 *

@@ -174,79 +174,6 @@ export function downcastInsertCell() {
 }
 
 /**
- * Conversion helper that acts on heading row table attribute change.
- *
- * This converter will:
- *
- * * Rename `<td>` to `<th>` elements or vice versa depending on headings.
- * * Create `<thead>` or `<tbody>` elements if needed.
- * * Remove empty `<thead>` or `<tbody>` if needed.
- *
- * @returns {Function} Conversion helper.
- */
-export function downcastTableHeadingRowsChange() {
-	return dispatcher => dispatcher.on( 'attribute:headingRows:table', ( evt, data, conversionApi ) => {
-		const table = data.item;
-
-		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-			return;
-		}
-
-		const figureElement = conversionApi.mapper.toViewElement( table );
-		const viewTable = getViewTable( figureElement );
-
-		const oldRows = data.attributeOldValue;
-		const newRows = data.attributeNewValue;
-
-		// The head section has grown so move rows from <tbody> to <thead>.
-		if ( newRows > oldRows ) {
-			// Filter out only those rows that are in wrong section.
-			const rowsToMove = Array.from( table.getChildren() ).filter( ( { index } ) => isBetween( index, oldRows - 1, newRows ) );
-
-			const viewTableHead = getOrCreateTableSection( 'thead', viewTable, conversionApi );
-			moveViewRowsToTableSection( rowsToMove, viewTableHead, conversionApi, 'end' );
-
-			// Rename all table cells from moved rows to 'th' as they lands in <thead>.
-			for ( const tableRow of rowsToMove ) {
-				for ( const tableCell of tableRow.getChildren() ) {
-					renameViewTableCell( tableCell, 'th', conversionApi );
-				}
-			}
-		}
-		// The head section has shrunk so move rows from <thead> to <tbody>.
-		else {
-			// Filter out only those rows that are in wrong section.
-			const rowsToMove = Array.from( table.getChildren() )
-				.filter( ( { index } ) => isBetween( index, newRows - 1, oldRows ) )
-				.reverse(); // The rows will be moved from <thead> to <tbody> in reverse order at the beginning of a <tbody>.
-
-			const viewTableBody = getOrCreateTableSection( 'tbody', viewTable, conversionApi );
-			moveViewRowsToTableSection( rowsToMove, viewTableBody, conversionApi, 0 );
-
-			// Check if cells moved from <thead> to <tbody> requires renaming to <td> as this depends on current heading columns attribute.
-			const tableWalker = new TableWalker( table, { startRow: newRows ? newRows - 1 : newRows, endRow: oldRows - 1 } );
-
-			const tableAttributes = {
-				headingRows: table.getAttribute( 'headingRows' ) || 0,
-				headingColumns: table.getAttribute( 'headingColumns' ) || 0
-			};
-
-			for ( const tableSlot of tableWalker ) {
-				renameViewTableCellIfRequired( tableSlot, tableAttributes, conversionApi );
-			}
-		}
-
-		// Cleanup: Ensure that thead & tbody sections are removed if left empty after moving rows. See #6437, #6391.
-		removeTableSectionIfEmpty( 'thead', viewTable, conversionApi );
-		removeTableSectionIfEmpty( 'tbody', viewTable, conversionApi );
-
-		function isBetween( index, lower, upper ) {
-			return index > lower && index < upper;
-		}
-	} );
-}
-
-/**
  * Conversion helper that acts on heading column table attribute change.
  *
  * Depending on changed attributes this converter will rename `<td` to `<th>` elements or vice versa depending on the cell column index.
@@ -289,7 +216,7 @@ export function downcastRemoveRow() {
 		const viewWriter = conversionApi.writer;
 		const mapper = conversionApi.mapper;
 
-		const viewStart = mapper.toViewPosition( data.position ).getLastMatchingPosition( value => !value.item.is( 'tr' ) );
+		const viewStart = mapper.toViewPosition( data.position ).getLastMatchingPosition( value => !value.item.is( 'element', 'tr' ) );
 		const viewItem = viewStart.nodeAfter;
 		const tableSection = viewItem.parent;
 		const viewTable = tableSection.parent;
@@ -332,11 +259,6 @@ function toTableWidget( viewElement, writer ) {
 function renameViewTableCell( tableCell, desiredCellElementName, conversionApi ) {
 	const viewWriter = conversionApi.writer;
 	const viewCell = conversionApi.mapper.toViewElement( tableCell );
-
-	// View cell might be not yet converted - skip it as it will be properly created by cell converter later on.
-	if ( !viewCell ) {
-		return;
-	}
 
 	const editable = viewWriter.createEditableElement( desiredCellElementName, viewCell.getAttributes() );
 	const renamedCell = toWidgetEditable( editable, viewWriter );
@@ -542,28 +464,6 @@ function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
 
 	if ( tableSection && tableSection.childCount === 0 ) {
 		conversionApi.writer.remove( conversionApi.writer.createRangeOn( tableSection ) );
-	}
-}
-
-// Moves view table rows associated with passed model rows to the provided table section element.
-//
-// **Note**: This method will skip not converted table rows.
-//
-// @param {Array.<module:engine/model/element~Element>} rowsToMove
-// @param {module:engine/view/element~Element} viewTableSection
-// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-// @param {Number|'end'|'before'|'after'} offset Offset or one of the flags.
-function moveViewRowsToTableSection( rowsToMove, viewTableSection, conversionApi, offset ) {
-	for ( const tableRow of rowsToMove ) {
-		const viewTableRow = conversionApi.mapper.toViewElement( tableRow );
-
-		// View table row might be not yet converted - skip it as it will be properly created by cell converter later on.
-		if ( viewTableRow ) {
-			conversionApi.writer.move(
-				conversionApi.writer.createRangeOn( viewTableRow ),
-				conversionApi.writer.createPositionAt( viewTableSection, offset )
-			);
-		}
 	}
 }
 

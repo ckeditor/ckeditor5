@@ -29,16 +29,16 @@ import { isElement } from 'lodash-es';
 const BR_FILLER_REF = BR_FILLER( document );
 
 /**
- * DomConverter is a set of tools to do transformations between DOM nodes and view nodes. It also handles
- * {@link module:engine/view/domconverter~DomConverter#bindElements binding} these nodes.
+ * `DomConverter` is a set of tools to do transformations between DOM nodes and view nodes. It also handles
+ * {@link module:engine/view/domconverter~DomConverter#bindElements bindings} between these nodes.
  *
- * The instance of DOMConverter is available in {@link module:engine/view/view~View#domConverter `editor.editing.view.domConverter`}.
+ * The instance of `DOMConverter` is available under {@link module:engine/view/view~View#domConverter `editor.editing.view.domConverter`}.
  *
- * DomConverter does not check which nodes should be rendered (use {@link module:engine/view/renderer~Renderer}), does not keep a
+ * `DomConverter` does not check which nodes should be rendered (use {@link module:engine/view/renderer~Renderer}), does not keep a
  * state of a tree nor keeps synchronization between tree view and DOM tree (use {@link module:engine/view/document~Document}).
  *
- * DomConverter keeps DOM elements to View element bindings, so when the converter will be destroyed, the binding will
- * be lost. Two converters will keep separate binding maps, so one tree view can be bound with two DOM trees.
+ * `DomConverter` keeps DOM elements to View element bindings, so when the converter gets destroyed, the bindings are lost.
+ * Two converters will keep separate binding maps, so one tree view can be bound with two DOM trees.
  */
 export default class DomConverter {
 	/**
@@ -82,7 +82,7 @@ export default class DomConverter {
 		 * @readonly
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#blockElements
 		 */
-		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'dd', 'dt', 'figcaption' ];
+		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'dd', 'dt', 'figcaption', 'td', 'th' ];
 
 		/**
 		 * Block {@link module:engine/view/filler filler} creator, which is used to create all block fillers during the
@@ -201,7 +201,7 @@ export default class DomConverter {
 	 * @returns {Node|DocumentFragment} Converted node or DocumentFragment.
 	 */
 	viewToDom( viewNode, domDocument, options = {} ) {
-		if ( viewNode.is( 'text' ) ) {
+		if ( viewNode.is( '$text' ) ) {
 			const textData = this._processDataFromViewText( viewNode );
 
 			return domDocument.createTextNode( textData );
@@ -234,6 +234,12 @@ export default class DomConverter {
 					domElement = domDocument.createElementNS( viewNode.getAttribute( 'xmlns' ), viewNode.name );
 				} else {
 					domElement = domDocument.createElement( viewNode.name );
+				}
+
+				// RawElement take care of their children in RawElement#render() method which can be customized
+				// (see https://github.com/ckeditor/ckeditor5/issues/4469).
+				if ( viewNode.is( 'rawElement' ) ) {
+					viewNode.render( domElement );
 				}
 
 				if ( options.bind ) {
@@ -317,7 +323,7 @@ export default class DomConverter {
 	viewPositionToDom( viewPosition ) {
 		const viewParent = viewPosition.parent;
 
-		if ( viewParent.is( 'text' ) ) {
+		if ( viewParent.is( '$text' ) ) {
 			const domParent = this.findCorrespondingDomText( viewParent );
 
 			if ( !domParent ) {
@@ -348,7 +354,7 @@ export default class DomConverter {
 			} else {
 				const nodeBefore = viewPosition.nodeBefore;
 
-				domBefore = nodeBefore.is( 'text' ) ?
+				domBefore = nodeBefore.is( '$text' ) ?
 					this.findCorrespondingDomText( nodeBefore ) :
 					this.mapViewToDom( viewPosition.nodeBefore );
 
@@ -392,11 +398,11 @@ export default class DomConverter {
 			return null;
 		}
 
-		// When node is inside UIElement return that UIElement as it's view representation.
-		const uiElement = this.getParentUIElement( domNode, this._domToViewMapping );
+		// When node is inside a UIElement or a RawElement return that parent as it's view representation.
+		const hostElement = this.getHostViewElement( domNode, this._domToViewMapping );
 
-		if ( uiElement ) {
-			return uiElement;
+		if ( hostElement ) {
+			return hostElement;
 		}
 
 		if ( isText( domNode ) ) {
@@ -550,10 +556,10 @@ export default class DomConverter {
 			return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
 		}
 
-		// If position is somewhere inside UIElement - return position before that element.
+		// If position is somewhere inside UIElement or a RawElement - return position before that element.
 		const viewElement = this.mapDomToView( domParent );
 
-		if ( viewElement && viewElement.is( 'uiElement' ) ) {
+		if ( viewElement && ( viewElement.is( 'uiElement' ) || viewElement.is( 'rawElement' ) ) ) {
 			return ViewPosition._createBefore( viewElement );
 		}
 
@@ -605,14 +611,18 @@ export default class DomConverter {
 	 * {@link module:engine/view/documentfragment~DocumentFragment} for provided DOM element or
 	 * document fragment. If there is no view item {@link module:engine/view/domconverter~DomConverter#bindElements bound}
 	 * to the given DOM - `undefined` is returned.
-	 * For all DOM elements rendered by {@link module:engine/view/uielement~UIElement} that UIElement will be returned.
+	 *
+	 * For all DOM elements rendered by a {@link module:engine/view/uielement~UIElement} or
+	 * a {@link module:engine/view/rawelement~RawElement}, the parent `UIElement` or `RawElement` will be returned.
 	 *
 	 * @param {DocumentFragment|Element} domElementOrDocumentFragment DOM element or document fragment.
 	 * @returns {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment|undefined}
 	 * Corresponding view element, document fragment or `undefined` if no element was bound.
 	 */
 	mapDomToView( domElementOrDocumentFragment ) {
-		return this.getParentUIElement( domElementOrDocumentFragment ) || this._domToViewMapping.get( domElementOrDocumentFragment );
+		const hostElement = this.getHostViewElement( domElementOrDocumentFragment );
+
+		return hostElement || this._domToViewMapping.get( domElementOrDocumentFragment );
 	}
 
 	/**
@@ -625,7 +635,8 @@ export default class DomConverter {
 	 * If this is a first child in the parent and the parent is a {@link module:engine/view/domconverter~DomConverter#bindElements bound}
 	 * element, it is used to find the corresponding text node.
 	 *
-	 * For all text nodes rendered by {@link module:engine/view/uielement~UIElement} that UIElement will be returned.
+	 * For all text nodes rendered by a {@link module:engine/view/uielement~UIElement} or
+	 * a {@link module:engine/view/rawelement~RawElement}, the parent `UIElement` or `RawElement` will be returned.
 	 *
 	 * Otherwise `null` is returned.
 	 *
@@ -640,11 +651,11 @@ export default class DomConverter {
 			return null;
 		}
 
-		// If DOM text was rendered by UIElement - return that element.
-		const uiElement = this.getParentUIElement( domText );
+		// If DOM text was rendered by a UIElement or a RawElement - return this parent element.
+		const hostElement = this.getHostViewElement( domText );
 
-		if ( uiElement ) {
-			return uiElement;
+		if ( hostElement ) {
+			return hostElement;
 		}
 
 		const previousSibling = domText.previousSibling;
@@ -858,13 +869,13 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Returns parent {@link module:engine/view/uielement~UIElement} for provided DOM node. Returns `null` if there is no
-	 * parent UIElement.
+	 * Returns a parent {@link module:engine/view/uielement~UIElement} or {@link module:engine/view/rawelement~RawElement}
+	 * that hosts the provided DOM node. Returns `null` if there is no such parent.
 	 *
 	 * @param {Node} domNode
-	 * @returns {module:engine/view/uielement~UIElement|null}
+	 * @returns {module:engine/view/uielement~UIElement|module:engine/view/rawelement~RawElement|null}
 	 */
-	getParentUIElement( domNode ) {
+	getHostViewElement( domNode ) {
 		const ancestors = getAncestors( domNode );
 
 		// Remove domNode from the list.
@@ -874,7 +885,7 @@ export default class DomConverter {
 			const domNode = ancestors.pop();
 			const viewNode = this._domToViewMapping.get( domNode );
 
-			if ( viewNode && viewNode.is( 'uiElement' ) ) {
+			if ( viewNode && ( viewNode.is( 'uiElement' ) || viewNode.is( 'rawElement' ) ) ) {
 				return viewNode;
 			}
 		}
@@ -886,8 +897,10 @@ export default class DomConverter {
 	 * Checks if given selection's boundaries are at correct places.
 	 *
 	 * The following places are considered as incorrect for selection boundaries:
+	 *
 	 * * before or in the middle of the inline filler sequence,
-	 * * inside the DOM element which represents {@link module:engine/view/uielement~UIElement a view ui element}.
+	 * * inside a DOM element which represents {@link module:engine/view/uielement~UIElement a view UI element},
+	 * * inside a DOM element which represents {@link module:engine/view/rawelement~RawElement a view raw element}.
 	 *
 	 * @param {Selection} domSelection DOM Selection object to be checked.
 	 * @returns {Boolean} `true` if the given selection is at a correct place, `false` otherwise.
@@ -919,9 +932,10 @@ export default class DomConverter {
 
 		const viewParent = this.mapDomToView( domParent );
 
-		// If selection is in `view.UIElement`, it is incorrect. Note that `mapDomToView()` returns `view.UIElement`
-		// also for any dom element that is inside the view ui element (so we don't need to perform any additional checks).
-		if ( viewParent && viewParent.is( 'uiElement' ) ) {
+		// The position is incorrect when anchored inside a UIElement or a RawElement.
+		// Note: In case of UIElement and RawElement, mapDomToView() returns a parent element for any DOM child
+		// so there's no need to perform any additional checks.
+		if ( viewParent && ( viewParent.is( 'uiElement' ) || viewParent.is( 'rawElement' ) ) ) {
 			return false;
 		}
 
@@ -1135,11 +1149,11 @@ export default class DomConverter {
 				return null;
 			}
 			// <br> found – it works like a block boundary, so do not scan further.
-			else if ( value.item.is( 'br' ) ) {
+			else if ( value.item.is( 'element', 'br' ) ) {
 				return null;
 			}
 			// Found a text node in the same container element.
-			else if ( value.item.is( 'textProxy' ) ) {
+			else if ( value.item.is( '$textProxy' ) ) {
 				return value.item;
 			}
 		}

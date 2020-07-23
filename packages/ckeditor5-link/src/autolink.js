@@ -74,7 +74,7 @@ export default class AutoLink extends Plugin {
 
 		selection.on( 'change:range', () => {
 			// Disable plugin when selection is inside a code block.
-			this.isEnabled = !selection.anchor.parent.is( 'codeBlock' );
+			this.isEnabled = !selection.anchor.parent.is( 'element', 'codeBlock' );
 		} );
 
 		this._enableTypingHandling();

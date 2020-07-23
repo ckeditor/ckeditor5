@@ -18,7 +18,7 @@ import TableClipboard from '../src/tableclipboard';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { modelTable } from './_utils/utils';
+import { assertSelectedCells, modelTable } from './_utils/utils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -220,6 +220,40 @@ describe( 'TableSelection - integration', () => {
 				'</table>'
 			);
 		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/7659.
+		// The fix is in the `DocumentSelection` class but this test is here to make sure that the fix works
+		// and that the behavior won't change in the future.
+		it( 'should not fix selection if not all ranges were removed', () => {
+			// [ ][ ][ ]
+			// [x][x][ ]
+			// [x][x][ ]
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 2, 1 ] )
+			);
+
+			editor.model.change( writer => {
+				// Remove second row.
+				writer.remove( modelRoot.getNodeByPath( [ 0, 1 ] ) );
+			} );
+
+			assertEqualMarkup(
+				getModelData( model ),
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>11</paragraph></tableCell>' +
+						'<tableCell><paragraph>12</paragraph></tableCell>' +
+						'<tableCell><paragraph>13</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'[<tableCell><paragraph>31</paragraph></tableCell>]' +
+						'[<tableCell><paragraph>32</paragraph></tableCell>]' +
+						'<tableCell><paragraph>33</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
 	} );
 
 	describe( 'with undo', () => {
@@ -227,7 +261,6 @@ describe( 'TableSelection - integration', () => {
 			await setupEditor( [ UndoEditing ] );
 		} );
 
-		// See https://github.com/ckeditor/ckeditor5/issues/6634.
 		it( 'works with merge cells command', () => {
 			setModelData( editor.model, modelTable( [
 				[ '00', '01' ],
@@ -248,10 +281,15 @@ describe( 'TableSelection - integration', () => {
 
 			editor.execute( 'undo' );
 
-			assertEqualMarkup( getModelData( model ), modelTable( [
-				[ '[]00', '01' ],
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ '00', '01' ],
 				[ '10', '11' ]
 			] ) );
+
+			assertSelectedCells( model, [
+				[ 1, 1 ],
+				[ 0, 0 ]
+			] );
 		} );
 	} );
 

@@ -288,5 +288,13 @@ describe( 'RedoCommand', () => {
 				expect( undoSpy.firstCall.args[ 1 ] ).to.equal( redoingBatch );
 			} );
 		} );
+
+		it( 'should clear stack on DataController set()', () => {
+			const spy = sinon.stub( redo, 'clearStack' );
+
+			editor.setData( 'foo' );
+
+			sinon.assert.called( spy );
+		} );
 	} );
 } );

@@ -61,7 +61,7 @@ describe( 'DowncastWriter', () => {
 		it( 'should create Text instance', () => {
 			const text = writer.createText( 'foo bar' );
 
-			expect( text.is( 'text' ) ).to.be.true;
+			expect( text.is( '$text' ) ).to.be.true;
 			expect( text.data ).to.equal( 'foo bar' );
 		} );
 	} );
@@ -130,6 +130,38 @@ describe( 'DowncastWriter', () => {
 			const element = writer.createUIElement( 'foo', attributes, renderFn );
 
 			expect( element.is( 'uiElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( element.render ).to.equal( renderFn );
+			assertElementAttributes( element, attributes );
+		} );
+	} );
+
+	describe( 'createRawElement()', () => {
+		it( 'should create a RawElement', () => {
+			const element = writer.createRawElement( 'foo', attributes );
+
+			expect( element.is( 'rawElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			assertElementAttributes( element, attributes );
+
+			expect( element.render ).to.be.a( 'function' );
+		} );
+
+		it( 'should provide a default empty render() method', () => {
+			const element = writer.createRawElement( 'foo' );
+
+			expect( element.render ).to.be.a( 'function' );
+
+			expect( () => {
+				element.render();
+			} ).to.not.throw();
+		} );
+
+		it( 'should allow to pass custom rendering method', () => {
+			const renderFn = function() {};
+			const element = writer.createRawElement( 'foo', attributes, renderFn );
+
+			expect( element.is( 'rawElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			expect( element.render ).to.equal( renderFn );
 			assertElementAttributes( element, attributes );
@@ -348,7 +380,7 @@ describe( 'DowncastWriter', () => {
 			);
 
 			// Find all spans.
-			const allSpans = Array.from( ViewRange._createIn( root ).getItems() ).filter( element => element.is( 'span' ) );
+			const allSpans = Array.from( ViewRange._createIn( root ).getItems() ).filter( element => element.is( 'element', 'span' ) );
 
 			// For each of the spans created above...
 			for ( const oneOfAllSpans of allSpans ) {

@@ -20,7 +20,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
  * This plugin calculates all words and characters in all {@link module:engine/model/text~Text text nodes} available in the model.
  * It also provides an HTML element that updates its state whenever the editor content is changed.
  *
- * The model's data is first converted to plain text using {@link module:word-count/utils.modelElementToPlainText}.
+ * The model's data is first converted to plain text using {@link module:word-count/utils~modelElementToPlainText}.
  * The number of words and characters in your text are determined based on the created plain text. Please keep in mind
  * that every block in the editor is separated with a newline character, which is included in the calculation.
  *

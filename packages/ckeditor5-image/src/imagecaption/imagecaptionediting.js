@@ -101,7 +101,7 @@ export default class ImageCaptionEditing extends Plugin {
 		const modelSelection = this.editor.model.document.selection;
 		const selectedElement = modelSelection.getSelectedElement();
 
-		if ( selectedElement && selectedElement.is( 'image' ) ) {
+		if ( selectedElement && selectedElement.is( 'element', 'image' ) ) {
 			const modelCaption = getCaptionFromImage( selectedElement );
 			viewCaption = mapper.toViewElement( modelCaption );
 		}
@@ -191,14 +191,14 @@ export default class ImageCaptionEditing extends Plugin {
 			if ( entry.type == 'insert' && entry.name != '$text' ) {
 				const item = entry.position.nodeAfter;
 
-				if ( item.is( 'image' ) && !getCaptionFromImage( item ) ) {
+				if ( item.is( 'element', 'image' ) && !getCaptionFromImage( item ) ) {
 					imagesWithoutCaption.push( item );
 				}
 
 				// Check elements with children for nested images.
-				if ( !item.is( 'image' ) && item.childCount ) {
+				if ( !item.is( 'element', 'image' ) && item.childCount ) {
 					for ( const nestedItem of model.createRangeIn( item ).getItems() ) {
-						if ( nestedItem.is( 'image' ) && !getCaptionFromImage( nestedItem ) ) {
+						if ( nestedItem.is( 'element', 'image' ) && !getCaptionFromImage( nestedItem ) ) {
 							imagesWithoutCaption.push( nestedItem );
 						}
 					}
