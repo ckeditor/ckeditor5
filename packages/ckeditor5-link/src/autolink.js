@@ -221,7 +221,7 @@ export default class AutoLink extends Plugin {
 
 		// Enqueue change to make undo step.
 		model.enqueueChange( writer => {
-			const linkHrefValue = isEmail( url ) ? `mailto://${ url }` : url;
+			const linkHrefValue = isEmail( url ) ? `mailto:${ url }` : url;
 
 			writer.setAttribute( 'linkHref', linkHrefValue, range );
 		} );
