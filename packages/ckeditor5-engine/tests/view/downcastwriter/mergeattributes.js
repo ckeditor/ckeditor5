@@ -150,5 +150,12 @@ describe( 'DowncastWriter', () => {
 				'<container:p><ui:span></ui:span>[]<ui:span></ui:span></container:p>'
 			);
 		} );
+
+		it( 'should not merge when placed between RawElements', () => {
+			testMerge(
+				'<container:p><raw:span></raw:span>[]<raw:span></raw:span></container:p>',
+				'<container:p><raw:span></raw:span>[]<raw:span></raw:span></container:p>'
+			);
+		} );
 	} );
 } );

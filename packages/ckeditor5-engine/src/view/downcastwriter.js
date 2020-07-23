@@ -14,6 +14,7 @@ import ContainerElement from './containerelement';
 import AttributeElement from './attributeelement';
 import EmptyElement from './emptyelement';
 import UIElement from './uielement';
+import RawElement from './rawelement';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import DocumentFragment from './documentfragment';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
@@ -257,6 +258,11 @@ export default class DowncastWriter {
 	 *			return domElement;
 	 *		} );
 	 *
+	 * Unlike {@link #createRawElement raw elements}, UI elements are by no means editor content, for instance,
+	 * they are ignored by the editor selection system.
+	 *
+	 * You should not use UI elements as data containers. Check out {@link #createRawElement} instead.
+	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
 	 * @param {Function} [renderFunction] Custom render function.
@@ -270,6 +276,37 @@ export default class DowncastWriter {
 		}
 
 		return uiElement;
+	}
+
+	/**
+	 * Creates a new {@link module:engine/view/rawelement~RawElement}.
+	 *
+	 *		writer.createRawElement( 'span', { id: 'foo-1234' }, function( domElement ) {
+	 *			domElement.innerHTML = '<b>This is the raw content of the raw element.</b>';
+	 *		} );
+	 *
+	 * Raw elements work as data containers ("wrappers", "sandboxes") but their children are not managed or
+	 * even recognized by the editor. This encapsulation allows integrations to maintain custom DOM structures
+	 * in the editor content without, for instance, worrying about compatibility with other editor features.
+	 * Raw elements make a perfect tool for integration with external frameworks and data sources.
+	 *
+	 * Unlike {@link #createUIElement ui elements}, raw elements act like a "real" editor content (similar to
+	 * {@link module:engine/view/containerelement~ContainerElement} or {@link module:engine/view/emptyelement~EmptyElement}),
+	 * and they are considered by the editor selection.
+	 *
+	 * You should not use raw elements to render UI in the editor content. Check out {@link #createUIElement `#createUIElement()`} instead.
+	 *
+	 * @param {String} name Name of the element.
+	 * @param {Object} [attributes] Elements attributes.
+	 * @param {Function} [renderFunction] Custom render function.
+	 * @returns {module:engine/view/rawelement~RawElement} Created element.
+	 */
+	createRawElement( name, attributes, renderFunction ) {
+		const rawElement = new RawElement( this.document, name, attributes );
+
+		rawElement.render = renderFunction || ( () => {} );
+
+		return rawElement;
 	}
 
 	/**
@@ -831,7 +868,7 @@ export default class DowncastWriter {
 	 * @param {module:engine/view/range~Range} range Range to wrap.
 	 * @param {module:engine/view/attributeelement~AttributeElement} attribute Attribute element to use as wrapper.
 	 * @returns {module:engine/view/range~Range} range Range after wrapping, spanning over wrapping attribute element.
-	*/
+	 */
 	wrap( range, attribute ) {
 		if ( !( attribute instanceof AttributeElement ) ) {
 			throw new CKEditorError( 'view-writer-wrap-invalid-attribute', this.document );
@@ -1108,6 +1145,7 @@ export default class DowncastWriter {
 			const isAttribute = child.is( 'attributeElement' );
 			const isEmpty = child.is( 'emptyElement' );
 			const isUI = child.is( 'uiElement' );
+			const isRaw = child.is( 'rawElement' );
 
 			//
 			// (In all examples, assume that `wrapElement` is `<span class="foo">` element.)
@@ -1126,8 +1164,7 @@ export default class DowncastWriter {
 			//
 			// <p>abc</p>                   -->  <p><span class="foo">abc</span></p>
 			// <p><strong>abc</strong></p>  -->  <p><span class="foo"><strong>abc</strong></span></p>
-			//
-			else if ( isText || isEmpty || isUI || ( isAttribute && shouldABeOutsideB( wrapElement, child ) ) ) {
+			else if ( isText || isEmpty || isUI || isRaw || ( isAttribute && shouldABeOutsideB( wrapElement, child ) ) ) {
 				// Clone attribute.
 				const newAttribute = wrapElement._clone();
 
@@ -1572,6 +1609,16 @@ export default class DowncastWriter {
 			throw new CKEditorError( 'view-writer-cannot-break-ui-element', this.document );
 		}
 
+		// If position is placed inside RawElement - throw an exception as we cannot break inside.
+		if ( position.parent.is( 'rawElement' ) ) {
+			/**
+			 * Cannot break inside RawElement instance.
+			 *
+			 * @error view-writer-cannot-break-raw-element
+			 */
+			throw new CKEditorError( 'view-writer-cannot-break-raw-element: Cannot break inside a RawElement instance.', this.document );
+		}
+
 		// There are no attributes to break and text nodes breaking is not forced.
 		if ( !forceSplitText && positionParent.is( '$text' ) && isContainerOrFragment( positionParent.parent ) ) {
 			return position.clone();
@@ -1872,7 +1919,7 @@ function validateNodesToInsert( nodes, errorContext ) {
 	}
 }
 
-const validNodesToInsert = [ Text, AttributeElement, ContainerElement, EmptyElement, UIElement ];
+const validNodesToInsert = [ Text, AttributeElement, ContainerElement, EmptyElement, RawElement, UIElement ];
 
 // Checks if node is ContainerElement or DocumentFragment, because in most cases they should be treated the same way.
 //
