@@ -53,11 +53,14 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	display: none !important; /* Firefox is very stubborn. */
 }
 
-/* Umberto has some high specificity rules - for code highlight we need even more.. */
+/* Umberto has some high specificity rules - for code highlight we need even more.
+  See https://github.com/ckeditor/ckeditor5/issues/7671 */
 .ck.ck-content code:not(.hljs) {
 	background-color: hsla(0, 0%, 78%, 0.3);
 }
 
+/* The same as above, but for 2SCM highlight.
+  See https://github.com/ckeditor/ckeditor5/issues/7671 */
 .ck-content code.ck-code_selected:not(.hljs) {
 	background-color: hsla(0, 0%, 78%, 0.5);
 }
