@@ -41,7 +41,7 @@ Start with [forking](https://help.github.com/articles/fork-a-repo/) one of the o
 git clone -b stable git@github.com:<your-username>/ckeditor5.git
 ```
 
-Builds are available in the packages directory. The directories are named ckeditor5-build-*.
+Builds are available in the `packages/` directory. The directories are named `ckeditor5-build-*`.
 For example, use the following command to get to the classic build:
 
 ```bash
