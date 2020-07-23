@@ -124,6 +124,16 @@ describe( 'PasteFromOffice - integration', () => {
 		}
 	} );
 
+	// See: https://github.com/ckeditor/ckeditor5/issues/7684.
+	generateTests( {
+		input: 'font-without-table-properties',
+		type: 'integration',
+		browsers,
+		editorConfig: {
+			plugins: [ Clipboard, Paragraph, Table, Bold, PasteFromOffice, FontColor, FontBackgroundColor ]
+		}
+	} );
+
 	generateTests( {
 		input: 'page-break',
 		type: 'integration',

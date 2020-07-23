@@ -22,8 +22,8 @@ msgstr "Barra degli strumenti del widget"
 
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph before a block."
 msgid "Insert paragraph before block"
-msgstr ""
+msgstr "Inserisci paragrafo prima di blocco"
 
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph after a block."
 msgid "Insert paragraph after block"
-msgstr ""
+msgstr "Inserisci paragrafo dopo blocco"
