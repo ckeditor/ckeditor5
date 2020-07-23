@@ -106,16 +106,6 @@ export default class WidgetResize extends Plugin {
 
 			this._visibleResizer = this._getResizerByViewElement( selectedElement ) || null;
 		} );
-
-		// Currently, we have set the `redrawFocusedResizerThrottled()` callback on every editor's `update`,
-		// which doesn't stop executing when we click outside the editor.
-		// We should reset the `#_visibleResizer` to stop redrawing the ResizeWidget's handles when they are not in use.
-		// ATM, constantly redrawing widget is hard to be set disabled.
-		this.editor.ui.view.editable.on( 'change:isFocused', () => {
-			if ( !this.editor.ui.view.editable.isFocused ) {
-				this._visibleResizer = null;
-			}
-		} );
 	}
 
 	/**

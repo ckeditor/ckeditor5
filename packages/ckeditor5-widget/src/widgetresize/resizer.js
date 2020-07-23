@@ -235,10 +235,6 @@ export default class Resizer {
 	 * @param {module:utils/dom/rect~Rect} [handleHostRect] Handle host rectangle might be given to improve performance.
 	 */
 	redraw( handleHostRect ) {
-		if ( !this.isEnabled ) {
-			return;
-		}
-
 		const domWrapper = this._domResizerWrapper;
 
 		// Refresh only if resizer exists in the DOM.

@@ -519,15 +519,6 @@ describe( 'WidgetResize', () => {
 
 			expect( redrawSpy.callCount ).to.equal( 1 );
 		} );
-
-		it( 'should set "#_visibleResizer" to "null" when editor is not focused', () => {
-			const plugin = editor.plugins.get( 'WidgetResize' );
-			plugin._visibleResizer = createResizer();
-
-			editor.ui.view.editable.isFocused = false;
-
-			expect( plugin._visibleResizer ).to.be.null;
-		} );
 	} );
 
 	describe( 'cancel()', () => {
