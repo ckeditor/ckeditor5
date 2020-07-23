@@ -36,40 +36,18 @@ describe( 'ImageResizeHandles', () => {
 	const IMAGE_SRC_FIXTURE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
 		'aM3g14MGNJMXKiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiJysRFNMgH0RpujAAAAAElFTkSuQmCC';
 
-	let absoluteContainer, widget, editor, view, viewDocument, editorElement;
+	let widget, editor, view, viewDocument, editorElement;
 
-	before( () => {
-		// This container is required to position editor element in a reliable element.
-		// @todo ensure whether it's required after migrating the tests.
-		absoluteContainer = document.createElement( 'div' );
-		absoluteContainer.style.top = '50px';
-		absoluteContainer.style.left = '50px';
-		absoluteContainer.style.height = '1000px';
-		absoluteContainer.style.width = '500px';
-		absoluteContainer.style.position = 'absolute';
-		document.body.appendChild( absoluteContainer );
+	beforeEach( () => {
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 	} );
 
-	after( () => {
-		absoluteContainer.remove();
-	} );
-
-	beforeEach( () => createEditor() );
-
-	afterEach( () => {
-		const wrappers = Array.from( document.querySelectorAll( '.ck-body-wrapper' ) );
+	afterEach( async () => {
+		editorElement.remove();
 
 		if ( editor ) {
-			editor.destroy();
-		}
-
-		if ( editorElement ) {
-			editorElement.remove();
-		}
-
-		// We need to remove all leftovers manually.
-		for ( const wrapper of wrappers ) {
-			wrapper.remove();
+			await editor.destroy();
 		}
 	} );
 
@@ -89,10 +67,16 @@ describe( 'ImageResizeHandles', () => {
 		expect( attachToSpy.args[ 0 ][ 0 ] ).to.have.a.property( 'unit', '%' );
 
 		attachToSpy.restore();
+
+		localEditor.destroy();
 	} );
 
 	describe( 'command', () => {
-		it( 'uses the command on commit', () => {
+		beforeEach( async () => {
+			editor = await createEditor();
+		} );
+
+		it( 'uses the command on commit', async () => {
 			const spy = sinon.spy( editor.commands.get( 'imageResize' ), 'execute' );
 
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
@@ -107,7 +91,7 @@ describe( 'ImageResizeHandles', () => {
 			expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( { width: '80px' } );
 		} );
 
-		it( 'disables the resizer if the command is disabled', () => {
+		it( 'disables the resizer if the command is disabled', async () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			const resizer = getSelectedImageResizer( editor );
@@ -127,7 +111,7 @@ describe( 'ImageResizeHandles', () => {
 			expect( resizer.isEnabled ).to.be.true;
 		} );
 
-		it( 'the resizer is disabled from the beginning when the command is disabled when the image is inserted', () => {
+		it( 'the resizer is disabled from the beginning when the command is disabled when the image is inserted', async () => {
 			setData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			editor.commands.get( 'imageResize' ).on( 'set:isEnabled', evt => {
@@ -150,7 +134,7 @@ describe( 'ImageResizeHandles', () => {
 
 	describe( 'side image resizing', () => {
 		beforeEach( async () => {
-			await createEditor();
+			editor = await createEditor();
 
 			setData( editor.model, `<paragraph>foo</paragraph>[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
@@ -192,7 +176,7 @@ describe( 'ImageResizeHandles', () => {
 
 	describe( 'undo integration', () => {
 		beforeEach( async () => {
-			await createEditor();
+			editor = await createEditor();
 
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
@@ -210,7 +194,7 @@ describe( 'ImageResizeHandles', () => {
 				to: finalPointerPosition
 			} );
 
-			expect( '120px' ).to.equal( domParts.widget.style.width );
+			expect( domParts.widget.style.width ).to.equal( '120px' );
 
 			editor.commands.get( 'undo' ).execute();
 
@@ -229,9 +213,9 @@ describe( 'ImageResizeHandles', () => {
 	} );
 
 	describe( 'table integration', () => {
-		beforeEach( () => createEditor() );
+		it( 'works when resizing in a table', async () => {
+			editor = await createEditor();
 
-		it( 'works when resizing in a table', () => {
 			setData( editor.model,
 				'<table>' +
 					`<tableRow><tableCell>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]</tableCell></tableRow>` +
@@ -276,7 +260,7 @@ describe( 'ImageResizeHandles', () => {
 		} );
 
 		beforeEach( async () => {
-			await createEditor();
+			editor = await createEditor();
 
 			editor.setData(
 				`<figure class="image">
@@ -340,7 +324,7 @@ describe( 'ImageResizeHandles', () => {
 		let widgetToolbarRepository;
 
 		beforeEach( async () => {
-			await createEditor( {
+			editor = await createEditor( {
 				plugins: [
 					Paragraph,
 					Image,
@@ -417,26 +401,18 @@ describe( 'ImageResizeHandles', () => {
 	}
 
 	function createEditor( config ) {
-		editorElement = document.createElement( 'div' );
+		return ClassicEditor.create( editorElement, config || {
+			plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeEditing, ImageResizeHandles ],
+			image: {
+				resizeUnit: 'px'
+			}
+		} ).then( newEditor => {
+			view = newEditor.editing.view;
+			viewDocument = view.document;
 
-		absoluteContainer.appendChild( editorElement );
+			focusEditor( newEditor );
 
-		return ClassicEditor
-			.create( editorElement, config || {
-				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeEditing, ImageResizeHandles ],
-				image: {
-					resizeUnit: 'px'
-				}
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				view = editor.editing.view;
-				viewDocument = view.document;
-				widget = viewDocument.getRoot().getChild( 1 );
-
-				focusEditor( editor );
-
-				return newEditor;
-			} );
+			return newEditor;
+		} );
 	}
 } );
