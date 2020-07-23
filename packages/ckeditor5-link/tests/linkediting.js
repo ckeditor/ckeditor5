@@ -17,6 +17,7 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -1405,5 +1406,184 @@ describe( 'LinkEditing', () => {
 				setData() {}
 			};
 		}
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/7521
+	describe( 'removing a character before the link element', () => {
+		let editor;
+
+		beforeEach( async () => {
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, LinkEditing, Delete, BoldEditing ],
+				link: {
+					decorators: {
+						isFoo: {
+							mode: 'manual',
+							label: 'Foo',
+							attributes: {
+								class: 'foo'
+							}
+						},
+						isBar: {
+							mode: 'manual',
+							label: 'Bar',
+							attributes: {
+								target: '_blank'
+							}
+						}
+					}
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+
+			model.schema.extend( '$text', {
+				allowIn: '$root',
+				allowAttributes: [ 'linkIsFoo', 'linkIsBar' ]
+			} );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should not preserve the `linkHref` attribute when deleting content after the link', () => {
+			setModelData( model, '<paragraph>Foo <$text linkHref="url">Bar</$text> []</paragraph>' );
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( false );
+
+			view.document.fire( 'delete', new DomEventData( view.document, {
+				keyCode: keyCodes.backspace,
+				preventDefault: () => {}
+			} ) );
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( false );
+
+			view.document.fire( 'delete', new DomEventData( view.document, {
+				keyCode: keyCodes.backspace,
+				preventDefault: () => {}
+			} ) );
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character in the link' ).to.equal( false );
+			expect( getModelData( model ) ).to.equal( '<paragraph>Foo <$text linkHref="url">Ba</$text>[]</paragraph>' );
+		} );
+
+		it( 'should not preserve the `linkHref` attribute when deleting content after the link (decorators check)', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'This is ' +
+					'<$text linkIsFoo="true" linkIsBar="true" linkHref="foo">Foo</$text>' +
+					' []from ' +
+					'<$text linkHref="bar">Bar</$text>' +
+					'.' +
+				'</paragraph>'
+			);
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial "linkHref" state' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkIsFoo' ), 'initial "linkIsFoo" state' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial "linkHref" state' ).to.equal( false );
+
+			view.document.fire( 'delete', new DomEventData( view.document, {
+				keyCode: keyCodes.backspace,
+				preventDefault: () => {}
+			} ) );
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link ("linkHref")' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkIsFoo' ), 'removing space after the link ("linkIsFoo")' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link ("linkHref")' ).to.equal( false );
+
+			view.document.fire( 'delete', new DomEventData( view.document, {
+				keyCode: keyCodes.backspace,
+				preventDefault: () => {}
+			} ) );
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character the link ("linkHref")' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkIsFoo' ), 'removing a character the link ("linkIsFoo")' ).to.equal( false );
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character the link ("linkHref")' ).to.equal( false );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+					'This is ' +
+					'<$text linkHref="foo" linkIsBar="true" linkIsFoo="true">Fo</$text>' +
+					'[]from ' +
+					'<$text linkHref="bar">Bar</$text>' +
+					'.' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should preserve the `linkHref` attribute when deleting content while the selection is at the end of the link', () => {
+			setModelData( model, '<paragraph>Foo <$text linkHref="url">Bar []</$text></paragraph>' );
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( true );
+
+			view.document.fire( 'delete', new DomEventData( view.document, {
+				keyCode: keyCodes.backspace,
+				preventDefault: () => {}
+			} ) );
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
+
+			view.document.fire( 'delete', new DomEventData( view.document, {
+				keyCode: keyCodes.backspace,
+				preventDefault: () => {}
+			} ) );
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character in the link' ).to.equal( true );
+			expect( getModelData( model ) ).to.equal( '<paragraph>Foo <$text linkHref="url">Ba[]</$text></paragraph>' );
+		} );
+
+		it( 'should preserve the `linkHref` attribute when deleting content while the selection is inside the link', () => {
+			setModelData( model, '<paragraph>Foo <$text linkHref="url">A long URLLs[] description</$text></paragraph>' );
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( true );
+
+			view.document.fire( 'delete', new DomEventData( view.document, {
+				keyCode: keyCodes.backspace,
+				preventDefault: () => {}
+			} ) );
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
+
+			view.document.fire( 'delete', new DomEventData( view.document, {
+				keyCode: keyCodes.backspace,
+				preventDefault: () => {}
+			} ) );
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character in the link' ).to.equal( true );
+			expect( getModelData( model ) ).to.equal( '<paragraph>Foo <$text linkHref="url">A long URL[] description</$text></paragraph>' );
+		} );
+
+		it( 'should do nothing if there is no `linkHref` attribute', () => {
+			setModelData( model, '<paragraph>Foo <$text bold="true">Bolded.</$text> []Bar</paragraph>' );
+
+			view.document.fire( 'delete', new DomEventData( view.document, {
+				keyCode: keyCodes.backspace,
+				preventDefault: () => {}
+			} ) );
+
+			view.document.fire( 'delete', new DomEventData( view.document, {
+				keyCode: keyCodes.backspace,
+				preventDefault: () => {}
+			} ) );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>Foo <$text bold="true">Bolded[]</$text>Bar</paragraph>' );
+		} );
+
+		it( 'should preserve the `linkHref` attribute when deleting content using "Delete" key', () => {
+			setModelData( model, '<paragraph>Foo <$text linkHref="url">Bar</$text>[ ]</paragraph>' );
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( false );
+
+			view.document.fire( 'delete', new DomEventData( view.document, {
+				keyCode: keyCodes.delete,
+				preventDefault: () => {}
+			}, { direction: 'forward' } ) );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>Foo <$text linkHref="url">Bar[]</$text></paragraph>' );
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
+		} );
 	} );
 } );

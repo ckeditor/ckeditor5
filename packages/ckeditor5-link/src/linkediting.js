@@ -17,6 +17,7 @@ import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import ManualDecorator from './utils/manualdecorator';
 import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattributerange';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators } from './utils';
 
 import '../theme/link.css';
@@ -116,6 +117,9 @@ export default class LinkEditing extends Plugin {
 
 		// Handle typing over the link.
 		this._enableTypingOverLink();
+
+		// Handle removing the content after the link element.
+		this._handleDeleteContentAfterLink();
 	}
 
 	/**
@@ -223,8 +227,9 @@ export default class LinkEditing extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
+		const linkCommand = editor.commands.get( 'link' );
 
-		model.on( 'insertContent', () => {
+		this.listenTo( model, 'insertContent', () => {
 			const nodeBefore = selection.anchor.nodeBefore;
 			const nodeAfter = selection.anchor.nodeAfter;
 
@@ -291,13 +296,8 @@ export default class LinkEditing extends Plugin {
 				return;
 			}
 
-			// Make the selection free of link-related model attributes.
-			// All link-related model attributes start with "link". That includes not only "linkHref"
-			// but also all decorator attributes (they have dynamic names).
 			model.change( writer => {
-				[ ...model.document.selection.getAttributeKeys() ]
-					.filter( name => name.startsWith( 'link' ) )
-					.forEach( name => writer.removeSelectionAttribute( name ) );
+				removeLinkAttributesFromSelection( writer, linkCommand.manualDecorators );
 			} );
 		}, { priority: 'low' } );
 	}
@@ -315,6 +315,7 @@ export default class LinkEditing extends Plugin {
 	 */
 	_enableClickingAfterLink() {
 		const editor = this.editor;
+		const linkCommand = editor.commands.get( 'link' );
 
 		editor.editing.view.addObserver( MouseObserver );
 
@@ -353,11 +354,7 @@ export default class LinkEditing extends Plugin {
 			// If so, remove the `linkHref` attribute.
 			if ( position.isTouching( linkRange.start ) || position.isTouching( linkRange.end ) ) {
 				editor.model.change( writer => {
-					writer.removeSelectionAttribute( 'linkHref' );
-
-					for ( const manualDecorator of editor.commands.get( 'link' ).manualDecorators ) {
-						writer.removeSelectionAttribute( manualDecorator.id );
-					}
+					removeLinkAttributesFromSelection( writer, linkCommand.manualDecorators );
 				} );
 			}
 		} );
@@ -437,6 +434,93 @@ export default class LinkEditing extends Plugin {
 
 			selectionAttributes = null;
 		}, { priority: 'high' } );
+	}
+
+	/**
+	 * Starts listening to {@link module:engine/model/model~Model#deleteContent} and checks whether
+	 * removing a content right after the "linkHref" attribute.
+	 *
+	 * If so, the selection should not preserve the `linkHref` attribute. However, if
+	 * the {@link module:typing/twostepcaretmovement~TwoStepCaretMovement} plugin is active and
+	 * the selection has the "linkHref" attribute due to overriden gravity (at the end), the `linkHref` attribute should stay untouched.
+	 *
+	 * The purpose of this action is to allow removing the link text and keep the selection outside the link.
+	 *
+	 * See https://github.com/ckeditor/ckeditor5/issues/7521.
+	 *
+	 * @private
+	 */
+	_handleDeleteContentAfterLink() {
+		const editor = this.editor;
+		const model = editor.model;
+		const selection = model.document.selection;
+		const view = editor.editing.view;
+		const linkCommand = editor.commands.get( 'link' );
+
+		// A flag whether attributes `linkHref` attribute should be preserved.
+		let shouldPreserveAttributes = false;
+
+		// A flag whether the `Backspace` key was pressed.
+		let hasBackspacePressed = false;
+
+		// Detect pressing `Backspace`.
+		this.listenTo( view.document, 'delete', ( evt, data ) => {
+			hasBackspacePressed = data.domEvent.keyCode === keyCodes.backspace;
+		}, { priority: 'high' } );
+
+		// Before removing the content, check whether the selection is inside a link or at the end of link but with 2-SCM enabled.
+		// If so, we want to preserve link attributes.
+		this.listenTo( model, 'deleteContent', () => {
+			// Reset the state.
+			shouldPreserveAttributes = false;
+
+			const position = selection.getFirstPosition();
+			const linkHref = selection.getAttribute( 'linkHref' );
+
+			if ( !linkHref ) {
+				return;
+			}
+
+			const linkRange = findAttributeRange( position, 'linkHref', linkHref, model );
+
+			// Preserve `linkHref` attribute if the selection is in the middle of the link or
+			// the selection is at the end of the link and 2-SCM is activated.
+			shouldPreserveAttributes = linkRange.containsPosition( position ) || linkRange.end.isEqual( position );
+		}, { priority: 'high' } );
+
+		// After removing the content, check whether the current selection should preserve the `linkHref` attribute.
+		this.listenTo( model, 'deleteContent', () => {
+			// If didn't press `Backspace`.
+			if ( !hasBackspacePressed ) {
+				return;
+			}
+
+			hasBackspacePressed = false;
+
+			// Disable the mechanism if inside a link (`<$text url="foo">F[]oo</$text>` or <$text url="foo">Foo[]</$text>`).
+			if ( shouldPreserveAttributes ) {
+				return;
+			}
+
+			// Use `model.enqueueChange()` in order to execute the callback at the end of the changes process.
+			editor.model.enqueueChange( writer => {
+				removeLinkAttributesFromSelection( writer, linkCommand.manualDecorators );
+			} );
+		}, { priority: 'low' } );
+	}
+}
+
+// Make the selection free of link-related model attributes.
+// All link-related model attributes start with "link". That includes not only "linkHref"
+// but also all decorator attributes (they have dynamic names).
+//
+// @param {module:engine/model/writer~Writer} writer
+// @param {module:utils/collection~Collection} manualDecorators
+function removeLinkAttributesFromSelection( writer, manualDecorators ) {
+	writer.removeSelectionAttribute( 'linkHref' );
+
+	for ( const decorator of manualDecorators ) {
+		writer.removeSelectionAttribute( decorator.id );
 	}
 }
 
