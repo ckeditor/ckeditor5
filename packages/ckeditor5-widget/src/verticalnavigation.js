@@ -90,7 +90,7 @@ function findTextRangeFromSelection( editing, selection, isForward ) {
 		}
 
 		const range = model.createRange( startPosition, endPosition );
-		const lastRangePosition = getNearestVisibleTextPosition( editing, range, 'backward' );
+		const lastRangePosition = getNearestTextPosition( model.schema, range, 'backward' );
 
 		if ( lastRangePosition && startPosition.isBefore( lastRangePosition ) ) {
 			return model.createRange( startPosition, lastRangePosition );
@@ -107,7 +107,7 @@ function findTextRangeFromSelection( editing, selection, isForward ) {
 		}
 
 		const range = model.createRange( startPosition, endPosition );
-		const firstRangePosition = getNearestVisibleTextPosition( editing, range, 'forward' );
+		const firstRangePosition = getNearestTextPosition( model.schema, range, 'forward' );
 
 		if ( firstRangePosition && endPosition.isAfter( firstRangePosition ) ) {
 			return model.createRange( firstRangePosition, endPosition );
@@ -143,17 +143,14 @@ function getNearestNonInlineLimit( model, startPosition, direction ) {
 }
 
 // Basing on the provided range, finds the first or last (depending on `direction`) position inside the range
-// that can contain `$text` (according to schema) and is visible in the view.
+// that can contain `$text` (according to schema).
 //
-// @param {module:engine/controller/editingcontroller~EditingController} editing The editing controller.
+// @param {module:engine/model/schema~Schema} schema The schema.
 // @param {module:engine/model/range~Range} range The range to find the position in.
 // @param {'forward'|'backward'} direction Search direction.
 // @returns {module:engine/model/position~Position} The nearest selection range.
 //
-function getNearestVisibleTextPosition( editing, range, direction ) {
-	const schema = editing.model.schema;
-	const mapper = editing.mapper;
-
+function getNearestTextPosition( schema, range, direction ) {
 	const position = direction == 'backward' ? range.end : range.start;
 
 	if ( schema.checkChild( position, '$text' ) ) {
@@ -162,11 +159,7 @@ function getNearestVisibleTextPosition( editing, range, direction ) {
 
 	for ( const { nextPosition } of range.getWalker( { direction } ) ) {
 		if ( schema.checkChild( nextPosition, '$text' ) ) {
-			const viewElement = mapper.toViewElement( nextPosition.parent );
-
-			if ( viewElement && !viewElement.hasClass( 'ck-hidden' ) ) {
-				return nextPosition;
-			}
+			return nextPosition;
 		}
 	}
 }
