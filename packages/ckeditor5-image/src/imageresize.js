@@ -8,8 +8,9 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageResizeUI from './imageresize/imageresizeui';
+import ImageResizeButtons from './imageresize/imageresizebuttons';
 import ImageResizeEditing from './imageresize/imageresizeediting';
+import ImageResizeHandles from './imageresize/imageresizehandles';
 
 import '../theme/imageresize.css';
 
@@ -25,7 +26,7 @@ export default class ImageResize extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageResizeEditing, ImageResizeUI ];
+		return [ ImageResizeEditing, ImageResizeHandles, ImageResizeButtons ];
 	}
 
 	/**
@@ -127,10 +128,10 @@ export default class ImageResize extends Plugin {
  *
  * **Resizing images using individual buttons**
  *
- * If you want to have separate buttons for {@link module:image/imageresize/imageresizeui~ImageResizeOption each option},
+ * If you want to have separate buttons for {@link module:image/imageresize/imageresizebuttons~ImageResizeOption each option},
  * pass their names to the {@link module:image/image~ImageConfig#toolbar `config.image.toolbar`} instead. Please keep in mind
  * that this time **you must define the additional
- * {@link module:image/imageresize/imageresizeui~ImageResizeOption `icon` property}**:
+ * {@link module:image/imageresize/imageresizebuttons~ImageResizeOption `icon` property}**:
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -138,22 +139,22 @@ export default class ImageResize extends Plugin {
  *					resizeUnit: "%",
  *					resizeOptions: [ {
  *						name: 'imageResize:original',
- *						value: null
+ *						value: null,
  *						icon: 'original'
  *					},
  *					{
  *						name: 'imageResize:25',
- *						value: '25'
+ *						value: '25',
  *						icon: 'small'
  *					},
  *					{
  *						name: 'imageResize:50',
- *						value: '50'
+ *						value: '50',
  *						icon: 'medium'
  *					},
  *					{
  *						name: 'imageResize:75',
- *						value: '75'
+ *						value: '75',
  *						icon: 'large'
  *					} ],
  *					toolbar: [ 'imageResize:25', 'imageResize:50', 'imageResize:75', 'imageResize:original', ... ],
@@ -196,5 +197,32 @@ export default class ImageResize extends Plugin {
  *			.then( ... )
  *			.catch( ... );
  *
- * @member {Array.<module:image/imageresize/imageresizeui~ImageResizeOption>} module:image/image~ImageConfig#resizeOptions
+ * **Default value**
+ *
+ * The following configuration is used by default:
+ *
+ *		resizeOptions = [
+ *			{
+ *				name: 'imageResize:original',
+ *				value: null,
+ *				icon: 'original'
+ *			},
+ *			{
+ *				name: 'imageResize:25',
+ *				value: '25',
+ *				icon: 'small'
+ *			},
+ *			{
+ *				name: 'imageResize:50',
+ *				value: '50',
+ *				icon: 'medium'
+ *			},
+ *			{
+ *				name: 'imageResize:75',
+ *				value: '75',
+ *				icon: 'large'
+ *			}
+ *		];
+ *
+ * @member {Array.<module:image/imageresize/imageresizebuttons~ImageResizeOption>} module:image/image~ImageConfig#resizeOptions
  */

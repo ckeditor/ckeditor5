@@ -11,7 +11,7 @@ import Image from '../../src/image';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import ImageResizeUI from '../../src/imageresize/imageresizeui';
+import ImageResizeButtons from '../../src/imageresize/imageresizebuttons';
 import ImageStyle from '../../src/imagestyle';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Table from '@ckeditor/ckeditor5-table/src/table';
@@ -24,7 +24,7 @@ import iconMedium from '@ckeditor/ckeditor5-core/theme/icons/object-size-medium.
 import iconLarge from '@ckeditor/ckeditor5-core/theme/icons/object-size-large.svg';
 import iconFull from '@ckeditor/ckeditor5-core/theme/icons/object-size-full.svg';
 
-describe( 'ImageResizeUI', () => {
+describe( 'ImageResizeButtons', () => {
 	let plugin, command, editor, editorElement;
 
 	const resizeOptions = [ {
@@ -52,14 +52,14 @@ describe( 'ImageResizeUI', () => {
 
 		editor = await ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
+				plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeButtons ],
 				image: {
 					resizeOptions
 				}
 			} );
 
 		command = editor.commands.get( 'imageResize' );
-		plugin = editor.plugins.get( 'ImageResizeUI' );
+		plugin = editor.plugins.get( 'ImageResizeButtons' );
 	} );
 
 	afterEach( async () => {
@@ -74,7 +74,7 @@ describe( 'ImageResizeUI', () => {
 
 	describe( 'plugin', () => {
 		it( 'should be named', () => {
-			expect( ImageResizeUI.pluginName ).to.equal( 'ImageResizeUI' );
+			expect( ImageResizeButtons.pluginName ).to.equal( 'ImageResizeButtons' );
 		} );
 	} );
 
@@ -95,23 +95,6 @@ describe( 'ImageResizeUI', () => {
 			command.isEnabled = false;
 
 			expect( plugin.isEnabled ).to.be.false;
-		} );
-
-		it( 'should not register a dropdown or buttons if no resize options passed', async () => {
-			const editor = await ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
-					image: {
-						resizeUnit: 'px'
-					}
-				} );
-
-			const resizeOptions = editor.config.get( 'image.resizeOptions' );
-
-			expect( resizeOptions ).to.be.undefined;
-			expect( editor.ui.componentFactory.has( 'imageResize' ) ).to.be.false;
-
-			await editor.destroy();
 		} );
 	} );
 
@@ -167,7 +150,7 @@ describe( 'ImageResizeUI', () => {
 		beforeEach( async () => {
 			editor = await ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
+					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeButtons ],
 					image: {
 						resizeUnit: '%',
 						resizeOptions: [ {
@@ -194,7 +177,7 @@ describe( 'ImageResizeUI', () => {
 					}
 				} );
 
-			plugin = editor.plugins.get( 'ImageResizeUI' );
+			plugin = editor.plugins.get( 'ImageResizeButtons' );
 		} );
 
 		afterEach( async () => {
@@ -226,7 +209,7 @@ describe( 'ImageResizeUI', () => {
 		it( 'should be created with invisible "Resize image: 30%" label when is provided', async () => {
 			const editor = await ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
+					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeButtons ],
 					image: {
 						resizeUnit: '%',
 						resizeOptions: [ {
@@ -299,7 +282,7 @@ describe( 'ImageResizeUI', () => {
 		it( 'should throw the CKEditorError if no `icon` is provided', async () => {
 			const editor = await ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeUI ],
+					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeButtons ],
 					image: {
 						resizeUnit: '%',
 						resizeOptions: [ {

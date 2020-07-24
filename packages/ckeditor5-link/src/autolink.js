@@ -74,7 +74,7 @@ export default class AutoLink extends Plugin {
 
 		selection.on( 'change:range', () => {
 			// Disable plugin when selection is inside a code block.
-			this.isEnabled = !selection.anchor.parent.is( 'codeBlock' );
+			this.isEnabled = !selection.anchor.parent.is( 'element', 'codeBlock' );
 		} );
 
 		this._enableTypingHandling();
@@ -221,7 +221,7 @@ export default class AutoLink extends Plugin {
 
 		// Enqueue change to make undo step.
 		model.enqueueChange( writer => {
-			const linkHrefValue = isEmail( url ) ? `mailto://${ url }` : url;
+			const linkHrefValue = isEmail( url ) ? `mailto:${ url }` : url;
 
 			writer.setAttribute( 'linkHref', linkHrefValue, range );
 		} );

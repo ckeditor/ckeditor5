@@ -18,11 +18,11 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the Unlink feature."
 msgid "Unlink"
-msgstr "ئۈزۈش"
+msgstr "ئۇلانمىنى ئۈزۈش"
 
 msgctxt "Toolbar button tooltip for the Link feature."
 msgid "Link"
-msgstr "ئۇلاش"
+msgstr "ئۇلانما"
 
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"

@@ -35,7 +35,7 @@ function tableHeadingRowsRefreshPostFixer( model ) {
 
 		const element = change.range.start.nodeAfter;
 
-		if ( element && element.is( 'table' ) && change.attributeKey == 'headingRows' ) {
+		if ( element && element.is( 'element', 'table' ) && change.attributeKey == 'headingRows' ) {
 			tablesToRefresh.add( element );
 		}
 	}

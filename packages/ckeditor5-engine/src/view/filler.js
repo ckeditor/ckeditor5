@@ -64,6 +64,8 @@ export const INLINE_FILLER_LENGTH = 7;
 
 /**
  * Inline filler which is a sequence of the zero width spaces.
+ *
+ * @type {String}
  */
 export const INLINE_FILLER = ( () => {
 	let inlineFiller = '';

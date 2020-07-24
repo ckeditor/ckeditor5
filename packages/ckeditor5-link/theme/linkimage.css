@@ -7,9 +7,10 @@
 	position: absolute;
 	top: var(--ck-spacing-medium);
 	right: var(--ck-spacing-medium);
-	width: 18px;
-	height: 18px;
-	padding: 5px;
+	width: 28px;
+	height: 28px;
+	padding: 4px;
+	box-sizing: border-box;
 	border-radius: var(--ck-border-radius);
 
 	& svg {

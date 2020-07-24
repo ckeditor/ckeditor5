@@ -95,7 +95,9 @@ This task accepts the following arguments:
 
 * `--skip-api` &ndash; Skips building the API documentation (which takes the majority of the total time).
 * `--skip-snippets` &ndash; Skips building live snippets.
-* `--snippets=snippet-name` &ndash; Whitelists snippets to build (accepts glob patterns).
+* `--snippets=snippet-name` &ndash; Snippets to build (accepts glob patterns). If a snippet that you want to build uses another snippet as a source that provides an editor instance, you need to specify both snippets. See examples:
+    - `--snippets=features/*` - all snippets that starts with `features/` in their names will be built,
+    - `--snippets=classic-editor,build-classic-source` - all snippets that contains the specified strings in their names will be built.
 * `--skip-validation` &ndash; Skips the final link validation.
 * `--watch` &ndash; Runs the documentation generator in a watch mode. It covers guides but it does not cover API docs.
 * `--production` &ndash; Minifies the assets and performs other actions which are unnecessary during CKEditor 5 development.

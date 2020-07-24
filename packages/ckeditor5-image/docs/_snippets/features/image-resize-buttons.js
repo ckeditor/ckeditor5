@@ -8,7 +8,7 @@
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-image-resizeui' ), {
+	.create( document.querySelector( '#snippet-image-resize-buttons' ), {
 		removePlugins: [ 'LinkImage' ],
 		toolbar: {
 			viewportTopOffset: window.getViewportTopOffsetConfig()
@@ -34,9 +34,16 @@ ClassicEditor
 					icon: 'large'
 				}
 			],
+			styles: [
+				'alignLeft',
+				'alignCenter',
+				'alignRight'
+			],
 			toolbar: [
-				'imageStyle:full',
-				'imageStyle:side', '|',
+				'imageStyle:alignLeft',
+				'imageStyle:alignCenter',
+				'imageStyle:alignRight',
+				'|',
 				'imageResize:50',
 				'imageResize:75',
 				'imageResize:original'

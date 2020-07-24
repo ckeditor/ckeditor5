@@ -25,7 +25,7 @@ export function getSelectedTableCells( selection ) {
 	for ( const range of sortRanges( selection.getRanges() ) ) {
 		const element = range.getContainedElement();
 
-		if ( element && element.is( 'tableCell' ) ) {
+		if ( element && element.is( 'element', 'tableCell' ) ) {
 			cells.push( element );
 		}
 	}

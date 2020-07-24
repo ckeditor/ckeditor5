@@ -72,7 +72,7 @@ export default class TableKeyboard extends Plugin {
 		if ( !selection.isCollapsed && selection.rangeCount === 1 && selection.getFirstRange().isFlat ) {
 			const selectedElement = selection.getSelectedElement();
 
-			if ( !selectedElement || !selectedElement.is( 'table' ) ) {
+			if ( !selectedElement || !selectedElement.is( 'element', 'table' ) ) {
 				return;
 			}
 
@@ -251,7 +251,7 @@ export default class TableKeyboard extends Plugin {
 
 		// If the current limit element is not table cell we are for sure not at the cell edge.
 		// Also `modifySelection` will not let us out of it.
-		if ( !schema.getLimitElement( focus ).is( 'tableCell' ) ) {
+		if ( !schema.getLimitElement( focus ).is( 'element', 'tableCell' ) ) {
 			const boundaryPosition = isForward ? cellRange.end : cellRange.start;
 
 			return boundaryPosition.isTouching( focus );

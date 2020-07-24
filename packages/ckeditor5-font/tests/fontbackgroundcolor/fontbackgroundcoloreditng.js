@@ -211,7 +211,17 @@ describe( 'FontBackgroundColorEditing', () => {
 				} );
 		} );
 
-		it( 'should convert from element with defined style when with other styles', () => {
+		it( 'should convert from element with defined style when with other styles (using background-color style)', () => {
+			const data = '<p>f<span style="font-size: 18px;background: rgb(10, 20, 30);">o</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontBackgroundColor="rgb(10,20,30)">o</$text>o</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>f<span style="background-color:rgb(10,20,30);">o</span>o</p>' );
+		} );
+
+		it( 'should convert from element with defined style when with other styles (using background style)', () => {
 			const data = '<p>f<span style="font-size: 18px;background-color: rgb(10, 20, 30);">o</span>o</p>';
 
 			editor.setData( data );

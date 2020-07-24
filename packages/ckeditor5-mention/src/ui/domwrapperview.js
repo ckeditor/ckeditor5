@@ -13,6 +13,8 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
  * This class wraps DOM element as a CKEditor5 UI View.
  *
  * It allows to render any DOM element and use it in mentions list.
+ *
+ * @extends {module:ui/view~View}
  */
 export default class DomWrapperView extends View {
 	/**
