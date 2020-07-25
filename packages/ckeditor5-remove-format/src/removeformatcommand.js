@@ -70,11 +70,19 @@ export default class RemoveFormatCommand extends Command {
 			return !!first( this._getFormattingAttributes( item, schema ) );
 		};
 
+		// Check formatting on selected items that are not blocks.
 		for ( const curRange of selection.getRanges() ) {
 			for ( const item of curRange.getItems() ) {
-				if ( itemHasRemovableFormatting( item ) ) {
+				if ( !schema.isBlock( item ) && itemHasRemovableFormatting( item ) ) {
 					yield item;
 				}
+			}
+		}
+
+		// Check formatting from selected blocks.
+		for ( const block of selection.getSelectedBlocks() ) {
+			if ( itemHasRemovableFormatting( block ) ) {
+				yield block;
 			}
 		}
 
