@@ -1218,6 +1218,32 @@ describe( 'DocumentSelection', () => {
 				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
 			} );
 		} );
+
+		// #7459
+		describe( 'ignores inline elements while reading surrounding attributes', () => {
+			beforeEach( () => {
+				model.schema.register( 'softBreak', {
+					allowWhere: '$text',
+					isInline: true
+				} );
+			} );
+
+			it( 'should not inherit attributes from a node before an inline element', () => {
+				setData( model, '<p><$text bold="true">Caption for the image.</$text><softBreak></softBreak>[]</p>' );
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
+			} );
+
+			it( 'should not inherit attributes from a node after an inline element (override gravity)', () => {
+				setData( model, '<p>[]<softBreak></softBreak><$text bold="true">Caption for the image.</$text></p>' );
+
+				const overrideGravityUid = selection._overrideGravity();
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
+
+				selection._restoreGravity( overrideGravityUid );
+			} );
+		} );
 	} );
 
 	describe( '_overrideGravity()', () => {
