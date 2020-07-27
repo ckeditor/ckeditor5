@@ -1229,13 +1229,13 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'should not inherit attributes from a node before an inline element', () => {
-				setData( model, '<p><$text bold="true">Caption for the image.</$text><softBreak></softBreak>[]</p>' );
+				setData( model, '<p><$text bold="true">Foo Bar.</$text><softBreak></softBreak>[]</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'should not inherit attributes from a node after an inline element (override gravity)', () => {
-				setData( model, '<p>[]<softBreak></softBreak><$text bold="true">Caption for the image.</$text></p>' );
+				setData( model, '<p>[]<softBreak></softBreak><$text bold="true">Foo Bar.</$text></p>' );
 
 				const overrideGravityUid = selection._overrideGravity();
 
