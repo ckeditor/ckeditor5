@@ -773,7 +773,7 @@ describe( 'ToolbarView', () => {
 			} );
 
 			it( 'does not update the state of grouped items if toolbar is not in the DOM', () => {
-				view.element.style.height = '200px';
+				view.element.style.width = '500px';
 
 				view.items.add( focusable() );
 				view.items.add( focusable() );
