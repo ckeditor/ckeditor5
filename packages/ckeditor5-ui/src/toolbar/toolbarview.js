@@ -630,6 +630,8 @@ class DynamicGrouping {
 		// nothing else. This happens, for instance, when the toolbar is detached from DOM and
 		// some logic adds or removes its #items.
 		if ( !this.viewElement.ownerDocument.body.contains( this.viewElement ) ) {
+			this.shouldUpdateGroupingOnNextResize = true;
+
 			return;
 		}
 

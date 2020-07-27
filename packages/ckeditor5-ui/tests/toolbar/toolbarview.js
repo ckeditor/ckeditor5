@@ -772,6 +772,26 @@ describe( 'ToolbarView', () => {
 				sinon.assert.calledOnce( view._behavior._updateGrouping );
 			} );
 
+			it( 'does not update the state of grouped items if toolbar is not in the DOM', () => {
+				view.element.style.height = '200px';
+
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+
+				expect( ungroupedItems ).to.have.length( 5 );
+				expect( groupedItems ).to.have.length( 0 );
+
+				view.element.remove();
+
+				view.element.style.width = '100px';
+
+				expect( ungroupedItems ).to.have.length( 5 );
+				expect( groupedItems ).to.have.length( 0 );
+			} );
+
 			it( 'does not update the state of grouped items if invisible', () => {
 				view.element.style.width = '500px';
 				view.element.style.height = '200px';
