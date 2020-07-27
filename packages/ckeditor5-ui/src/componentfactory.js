@@ -102,9 +102,10 @@ export default class ComponentFactory {
 	 * {@link module:ui/view~View view}.
 	 *
 	 * @param {String} name The name of the component.
+	 * @param {Object} [options] Optional options passed to callback function.
 	 * @returns {module:ui/view~View} The instantiated component view.
 	 */
-	create( name ) {
+	create( name, options ) {
 		if ( !this.has( name ) ) {
 			/**
 			 * The required component is not registered in the component factory. Please make sure
@@ -121,7 +122,7 @@ export default class ComponentFactory {
 			);
 		}
 
-		return this._components.get( getNormalized( name ) ).callback( this.editor.locale );
+		return this._components.get( getNormalized( name ) ).callback( this.editor.locale, options );
 	}
 
 	/**

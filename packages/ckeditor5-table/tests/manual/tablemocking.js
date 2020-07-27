@@ -23,7 +23,7 @@ ClassicEditor
 			'insertTable', 'undo', 'redo'
 		],
 		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+			// contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		}
 	} )
 	.then( editor => {

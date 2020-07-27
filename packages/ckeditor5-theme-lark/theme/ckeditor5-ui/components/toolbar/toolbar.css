@@ -27,6 +27,18 @@
 		margin-bottom: var(--ck-spacing-small);
 	}
 
+	&.ck-toolbar_vertical .ck.ck-toolbar__separator {
+		height: 1px;
+		min-height: 1px;
+
+		/*
+		 * These margins make the separators look better in balloon toolbars (when aligned with the "tip").
+		 * See https://github.com/ckeditor/ckeditor5/issues/7493.
+		 */
+		margin-left: var(--ck-spacing-small);
+		margin-right: var(--ck-spacing-small);
+	}
+
 	& > .ck-toolbar__items {
 		& > * {
 			/* Make sure items wrapped to the next line have v-spacing */

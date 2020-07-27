@@ -36,19 +36,16 @@ export default class SelectColumnCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	execute() {
+	execute( options = {} ) {
 		const model = this.editor.model;
-		const referenceCells = getSelectionAffectedTableCells( model.document.selection );
-		const firstCell = referenceCells[ 0 ];
-		const lastCell = referenceCells.pop();
-		const table = firstCell.findAncestor( 'table' );
-
+		const selection = model.document.selection;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
-		const startLocation = tableUtils.getCellLocation( firstCell );
-		const endLocation = tableUtils.getCellLocation( lastCell );
 
-		const startColumn = Math.min( startLocation.column, endLocation.column );
-		const endColumn = Math.max( startLocation.column, endLocation.column );
+		const { table, startColumn, endColumn } = options.table ? {
+			table: options.table,
+			startColumn: options.column,
+			endColumn: options.column
+		} : getOptionsFromSelection( selection, tableUtils );
 
 		const rangesToSelect = [];
 
@@ -60,4 +57,26 @@ export default class SelectColumnCommand extends Command {
 			writer.setSelection( rangesToSelect );
 		} );
 	}
+}
+
+/**
+ * TODO
+ */
+function getOptionsFromSelection( selection, tableUtils ) {
+	const referenceCells = getSelectionAffectedTableCells( selection );
+	const firstCell = referenceCells[ 0 ];
+	const lastCell = referenceCells.pop();
+	const table = firstCell.findAncestor( 'table' );
+
+	const startLocation = tableUtils.getCellLocation( firstCell );
+	const endLocation = tableUtils.getCellLocation( lastCell );
+
+	const startColumn = Math.min( startLocation.column, endLocation.column );
+	const endColumn = Math.max( startLocation.column, endLocation.column );
+
+	return {
+		table,
+		startColumn,
+		endColumn
+	};
 }

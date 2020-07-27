@@ -8,6 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 import TableEditing from './tableediting';
 import TableUI from './tableui';
@@ -15,7 +16,7 @@ import TableSelection from './tableselection';
 import TableClipboard from './tableclipboard';
 import TableKeyboard from './tablekeyboard';
 import TableMouse from './tablemouse';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import TableHandles from './tablehandles';
 
 import '../theme/table.css';
 
@@ -40,7 +41,7 @@ export default class Table extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableEditing, TableUI, TableSelection, TableMouse, TableKeyboard, TableClipboard, Widget ];
+		return [ TableEditing, TableUI, TableSelection, TableMouse, TableKeyboard, TableClipboard, Widget, TableHandles ];
 	}
 
 	/**

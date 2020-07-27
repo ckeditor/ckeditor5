@@ -83,7 +83,7 @@ export default class TableUI extends Plugin {
 			return dropdownView;
 		} );
 
-		editor.ui.componentFactory.add( 'tableColumn', locale => {
+		editor.ui.componentFactory.add( 'tableColumn', ( locale, commandOptions ) => {
 			const options = [
 				{
 					type: 'switchbutton',
@@ -119,7 +119,8 @@ export default class TableUI extends Plugin {
 					type: 'button',
 					model: {
 						commandName: 'selectTableColumn',
-						label: t( 'Select column' )
+						label: t( 'Select column' ),
+						commandOptions
 					}
 				}
 			];
@@ -127,7 +128,7 @@ export default class TableUI extends Plugin {
 			return this._prepareDropdown( t( 'Column' ), tableColumnIcon, options, locale );
 		} );
 
-		editor.ui.componentFactory.add( 'tableRow', locale => {
+		editor.ui.componentFactory.add( 'tableRow', ( locale, commandOptions ) => {
 			const options = [
 				{
 					type: 'switchbutton',
@@ -168,7 +169,7 @@ export default class TableUI extends Plugin {
 				}
 			];
 
-			return this._prepareDropdown( t( 'Row' ), tableRowIcon, options, locale );
+			return this._prepareDropdown( t( 'Row' ), tableRowIcon, options, locale, commandOptions );
 		} );
 
 		editor.ui.componentFactory.add( 'mergeTableCells', locale => {
@@ -250,7 +251,7 @@ export default class TableUI extends Plugin {
 		} );
 
 		this.listenTo( dropdownView, 'execute', evt => {
-			editor.execute( evt.source.commandName );
+			editor.execute( evt.source.commandName, evt.source.commandOptions );
 			editor.editing.view.focus();
 		} );
 

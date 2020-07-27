@@ -1,0 +1,24 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-table-handles {
+	position: absolute;
+	z-index: var(--ck-z-default);
+
+	& .ck-table-handles__columns {
+		position: absolute;
+		bottom: 10px;
+	}
+
+	& .ck-table-handles__rows {
+		position: absolute;
+		right: 10px;
+	}
+
+	& .ck-toolbar__items {
+		flex-wrap: nowrap;
+	}
+}
+
