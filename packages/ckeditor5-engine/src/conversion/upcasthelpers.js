@@ -653,6 +653,13 @@ function upcastAttributeToMarker( config ) {
 	return ( evt, data, conversionApi ) => {
 		const attrName = `data-${ config.view }`;
 
+		// Since we are converting to attribute we need an range on which we will set the attribute.
+		// If the range is not created yet, we will create it.
+		if ( !data.modelRange ) {
+			// Convert children and set conversion result as a current data.
+			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+		}
+
 		if ( conversionApi.consumable.consume( data.viewItem, { attributes: attrName + '-end-after' } ) ) {
 			addMarkerElements( data.modelRange.end, data.viewItem.getAttribute( attrName + '-end-after' ).split( ',' ) );
 		}
