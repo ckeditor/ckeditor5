@@ -157,7 +157,7 @@ export default class AutoLink extends Plugin {
 	}
 
 	/**
-	 * Enables autolink on <kbd>Shift</kbd>+<kbd>Enter</kbd> key.
+	 * Enables autolinking on the <kbd>Shift</kbd>+<kbd>Enter</kbd> keyboard shortcut.
 	 *
 	 * @private
 	 */
