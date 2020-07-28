@@ -171,7 +171,7 @@ export default class WidgetTypeAround extends Plugin {
 	 * according to the "widget-type-around" model selection attribute value ("fake caret" position).
 	 *
 	 * Because this method requires the "widget-type-around" attribute to be set,
-	 * the insertion can only happen when the widget "fake caret" is active (e.g. activated
+	 * the insertion can only happen when the widget's "fake caret" is active (e.g. activated
 	 * using the keyboard).
 	 *
 	 * @private
@@ -225,7 +225,7 @@ export default class WidgetTypeAround extends Plugin {
 	/**
 	 * Brings support for the "fake caret" that appears when either:
 	 *
-	 * * the selection moves from a position next to a widget (to a widget) using arrow keys,
+	 * * the selection moves to a widget from a position next to it using arrow keys,
 	 * * the arrow key is pressed when the widget is already selected.
 	 *
 	 * The "fake caret" lets the user know that they can start typing or just press
@@ -359,7 +359,7 @@ export default class WidgetTypeAround extends Plugin {
 	 * A listener executed on each "keydown" in the view document, a part of
 	 * {@link #_enableTypeAroundFakeCaretActivationUsingKeyboardArrows}.
 	 *
-	 * It decides whether the arrow key press should activate the "fake caret" or not (also whether it should
+	 * It decides whether the arrow keypress should activate the "fake caret" or not (also whether it should
 	 * be deactivated).
 	 *
 	 * The "fake caret" activation is done by setting the "widget-type-around" model selection attribute
@@ -448,7 +448,7 @@ export default class WidgetTypeAround extends Plugin {
 
 	/**
 	 * Handles the keyboard navigation on "keydown" when **no** widget is selected but the selection is **directly** next
-	 * to one and upon the "fake caret" should become active for this widget upon arrow key press
+	 * to one and upon the "fake caret" should become active for this widget upon arrow keypress
 	 * (AKA entering/selecting the widget).
 	 *
 	 * **Note**: This code mirrors the implementation from the Widget plugin but also adds the selection attribute.
@@ -564,14 +564,14 @@ export default class WidgetTypeAround extends Plugin {
 	 * to insert a paragraph next to a widget when the "fake caret" was activated using arrow
 	 * keys but it responds to "typing keystrokes" instead of "enter".
 	 *
-	 * "Typing keystrokes" are keystrokes that insert new content into the document
-	 * like, for instance, letters ("a") or numbers ("4"). The "keydown" listener enabled by this method
+	 * "Typing keystrokes" are keystrokes that insert new content into the document,
+	 * for instance, letters ("a") or numbers ("4"). The "keydown" listener enabled by this method
 	 * will insert a new paragraph according to the "widget-type-around" model selection attribute
 	 * as the user simply starts typing, which creates the impression that the "fake caret"
 	 * behaves like a "real one" rendered by the browser (AKA your text appears where the caret was).
 	 *
 	 * **Note**: ATM this listener creates 2 undo steps: one for the "insertParagraph" command
-	 * and the second for the actual typing. It's not a disaster but this may need to be fixed
+	 * and another one for the actual typing. It's not a disaster but this may need to be fixed
 	 * sooner or later.
 	 *
 	 * Learn more in {@link module:typing/utils/injectunsafekeystrokeshandling}.
@@ -682,7 +682,7 @@ export default class WidgetTypeAround extends Plugin {
 
 	/**
 	 * Attaches the {@link module:engine/model/model~Model#event:insertContent} event listener that, for instance, allows the user to paste
-	 * content near a widget when the "fake caret" was first activated using the arrow keys.
+	 * content near a widget when the "fake caret" is first activated using the arrow keys.
 	 *
 	 * The content is inserted according to the "widget-type-around" selection attribute (see {@link #_handleArrowKeyPress}).
 	 *
