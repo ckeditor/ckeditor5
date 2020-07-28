@@ -11,6 +11,8 @@ import { cloneDeep } from 'lodash-es';
 import ModelSelection from '../model/selection';
 import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
+import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+
 /* global console */
 
 /**
@@ -634,8 +636,23 @@ function upcastDataToMarker( config ) {
 		dispatcher.on( 'element:' + config.view + '-start', converterStart, { priority: config.converterPriority || 'normal' } );
 		dispatcher.on( 'element:' + config.view + '-end', converterEnd, { priority: config.converterPriority || 'normal' } );
 
-		// This is attribute upcast so it has to be done after the element upcast.
-		dispatcher.on( 'element', upcastAttributeToMarker( config ), { priority: config.converterPriority || 'low' } );
+		// Below is a hack that is needed to properly handle `converterPriority` for both elements and attributes.
+		// Attribute conversion needs to be performed *after* element conversion.
+		// This converter handles both element conversion and attribute conversion, which means that if single
+		// `config.converterPriority` is used, it will lead to problems. For example, if `'high'` priority is used,
+		// then attribute conversion will be performed before a lot of element upcast converters.
+		// On the other hand we want to support `config.converterPriority` and overwriting conveters.
+		//
+		// To have it work, we need to some extra processing for priority for attribute converter.
+		// Priority `'low'` value should be the base value and then we will change it depending on `config.converterPriority` value.
+		//
+		// This hack probably would not be needed if attributes are upcasted separately.
+		//
+		const basePriority = priorities.get( 'low' );
+		const maxPriority = priorities.get( 'highest' );
+		const priorityFactor = priorities.get( config.converterPriority ) / maxPriority; // Number in range [1, -1].
+
+		dispatcher.on( 'element', upcastAttributeToMarker( config ), { priority: basePriority + priorityFactor } );
 	};
 }
 
@@ -652,6 +669,14 @@ function upcastDataToMarker( config ) {
 function upcastAttributeToMarker( config ) {
 	return ( evt, data, conversionApi ) => {
 		const attrName = `data-${ config.view }`;
+
+		// This converter wants to add a model element, marking a marker, before/after an element (or maybe even group of elements).
+		// To do that, we can use `data.modelRange` which is set on an element (or a group of elements) that has been upcasted.
+		// But, if the processed view element has not been upcasted yet (it does not have a converted), we need to
+		// fire conversion for its children first, then we will have `data.modelRange` available.
+		if ( !data.modelRange ) {
+			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+		}
 
 		if ( conversionApi.consumable.consume( data.viewItem, { attributes: attrName + '-end-after' } ) ) {
 			addMarkerElements( data.modelRange.end, data.viewItem.getAttribute( attrName + '-end-after' ).split( ',' ) );
