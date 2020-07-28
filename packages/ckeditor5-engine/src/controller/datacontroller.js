@@ -126,8 +126,8 @@ export default class DataController {
 		// Define default converters for text and elements.
 		//
 		// Note that if there is no default converter for the element it will be skipped, for instance `<b>foo</b>` will be
-		// converted to nothing. We add `convertToModelFragment` as a last converter so it converts children of that
-		// element to the document fragment so `<b>foo</b>` will be converted to `foo` if there is no converter for `<b>`.
+		// converted to nothing. We therefore add `convertToModelFragment` as a last converter so it converts children of that
+		// element to the document fragment and so `<b>foo</b>` will be converted to `foo` if there is no converter for `<b>`.
 		this.upcastDispatcher.on( 'text', convertText(), { priority: 'lowest' } );
 		this.upcastDispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		this.upcastDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
@@ -135,8 +135,8 @@ export default class DataController {
 		this.decorate( 'init' );
 		this.decorate( 'set' );
 
-		// Fire `ready` event when initialisation has completed. Such low level listener gives possibility
-		// to plug into initialisation pipeline without interrupting the initialisation flow.
+		// Fire `ready` event when initialization has completed. Such low level listener gives possibility
+		// to plug into initialization pipeline without interrupting the initialization flow.
 		this.on( 'init', () => {
 			this.fire( 'ready' );
 		}, { priority: 'lowest' } );
@@ -220,7 +220,7 @@ export default class DataController {
 
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
-		// We have no view controller and rendering do DOM in DataController so view.change() block is not used here.
+		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
 		this.downcastDispatcher.convertInsert( modelRange, viewWriter );
 
 		if ( !modelElementOrFragment.is( 'documentFragment' ) ) {
@@ -439,14 +439,14 @@ export default class DataController {
 	}
 
 	/**
-	 * Event fired once data initialisation has finished.
+	 * Event fired once data initialization has finished.
 	 *
 	 * @event ready
 	 */
 
 	/**
 	 * Event fired after {@link #init init() method} has been run. It can be {@link #listenTo listened to} to adjust/modify
-	 * the initialisation flow. However, if the `init` event is stopped or prevented, the {@link #event:ready ready event}
+	 * the initialization flow. However, if the `init` event is stopped or prevented, the {@link #event:ready ready event}
 	 * should be fired manually.
 	 *
 	 * The `init` event is fired by decorated {@link #init} method.

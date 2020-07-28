@@ -16,16 +16,16 @@ import { extend } from 'lodash-es';
 /**
  * `DowncastDispatcher` is a central point of downcasting (conversion from model to view), which is a process of reacting to changes
  * in the model and firing a set of events. Callbacks listening to those events are called converters. Those
- * converters role is to convert the model changes to changes in view (for example, adding view nodes or
+ * converters' role is to convert the model changes to changes in view (for example, adding view nodes or
  * changing attributes on view elements).
  *
  * During conversion process, `DowncastDispatcher` fires events, basing on state of the model and prepares
  * data for those events. It is important to understand that those events are connected with changes done on model,
- * for example: "node has been inserted" or "attribute has changed". This is in a contrary to upcasting (view to model conversion),
+ * for example: "node has been inserted" or "attribute has changed". This is in contrary to upcasting (view to model conversion),
  * where we convert view state (view nodes) to a model tree.
  *
  * The events are prepared basing on a diff created by {@link module:engine/model/differ~Differ Differ}, which buffers them
- * and then passes to `DowncastDispatcher` as a diff between old model state and new model state.
+ * and then passes to `DowncastDispatcher` as a diff between the old model state and the new model state.
  *
  * Note, that because changes are converted there is a need to have a mapping between model structure and view structure.
  * To map positions and elements during downcast (model to view conversion) use {@link module:engine/conversion/mapper~Mapper}.
@@ -37,13 +37,13 @@ import { extend } from 'lodash-es';
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove remove}
  * if a range of nodes has been removed from the model tree,
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute attribute}
- * if attribute has been added, changed or removed from a model node.
+ * if an attribute has been added, changed or removed from a model node.
  *
  * For {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert insert}
  * and {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute attribute},
  * `DowncastDispatcher` generates {@link module:engine/conversion/modelconsumable~ModelConsumable consumables}.
- * These are used to have a control over which changes has been already consumed. It is useful when some converters
- * overwrite other or converts multiple changes (for example converts insertion of an element and also converts that
+ * These are used to have a control over which changes have been already consumed. It is useful when some converters
+ * overwrite others or convert multiple changes (for example converts insertion of an element and also converts that
  * element's attributes during insertion).
  *
  * Additionally, `DowncastDispatcher` fires events for {@link module:engine/model/markercollection~Marker marker} changes:
@@ -554,7 +554,7 @@ export default class DowncastDispatcher {
 	 */
 
 	/**
-	 * Fired when a new marker is added to the model. Also fired when collapsed model selection that is inside marker is converted.
+	 * Fired when a new marker is added to the model. Also fired when collapsed model selection that is inside a marker is converted.
 	 *
 	 * `addMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `addMarker:markerName`. By specifying certain marker names, you can make the events even more gradual. For example,
@@ -634,7 +634,7 @@ function shouldMarkerChangeBeConverted( modelPosition, marker, mapper ) {
 /**
  * Conversion interface that is registered for given {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}
  * and is passed as one of parameters when {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher dispatcher}
- * fires it's events.
+ * fires its events.
  *
  * @interface module:engine/conversion/downcastdispatcher~DowncastConversionApi
  */

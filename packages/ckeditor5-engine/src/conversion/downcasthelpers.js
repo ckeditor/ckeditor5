@@ -378,7 +378,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * `data-[group]-end-before="[name]"` and `data-[group]-end-after="[name]"`,
 	 * * templates for view elements are `<[group]-start name="[name]">` and `<[group]-end name="[name]">`.
 	 *
-	 * Attributes mark whether given marker start or end boundary is before or after given element.
+	 * Attributes mark whether given marker's start or end boundary is before or after given element.
 	 * Attributes `data-[group]-start-before` and `data-[group]-end-after` are favored.
 	 * The other two are used when the former two cannot be used.
 	 *
@@ -845,7 +845,7 @@ export function insertUIElement( elementCreator ) {
 }
 
 // Function factory that returns a default downcast converter for removing a {@link module:engine/view/uielement~UIElement UI element}
-// basing on marker remove change.
+// based on marker remove change.
 //
 // This converter unbinds elements from the marker name.
 //
