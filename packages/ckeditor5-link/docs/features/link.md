@@ -250,7 +250,7 @@ To use the autolink function simply press <kbd>Space</kbd>, <kbd>Enter</kbd> or 
 
 {@snippet features/autolink}
 
-Unlike the base link feature the `Autolink` plugin is not available in any of the builds. See the [Installation](#installation) section to learn how to enable it.
+Unlike the base link feature, the autolink plugin is not available in any of the builds. Refer to the [Installation](#installation) section to learn how to enable it.
 
 ## Installation
 
