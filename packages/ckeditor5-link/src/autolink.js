@@ -209,7 +209,7 @@ export default class AutoLink extends Plugin {
 	 * Applies link on a given range.
 	 *
 	 * @param {String} url The URL to link.
-	 * @param {module:engine/model/range~Range} range Text range to apply the link attribute to.
+	 * @param {module:engine/model/range~Range} range The text range to apply the link attribute to.
 	 * @private
 	 */
 	_applyAutoLink( url, range ) {
