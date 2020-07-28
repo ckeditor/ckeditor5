@@ -14,6 +14,7 @@ import { fixtures as googleDocsBoldWrapper, browserFixtures as googleDocsBoldWra
 import { fixtures as googleDocsList, browserFixtures as googleDocsListBrowser } from '../_data/paste-from-google-docs/lists/index.js';
 import { fixtures as table } from '../_data/table/index.js';
 import { fixtures as pageBreak } from '../_data/page-break/index.js';
+import { fixtures as fontWithoutTableProperties } from '../_data/font-without-table-properties/index';
 
 // Generic fixtures.
 export const fixtures = {
@@ -25,7 +26,8 @@ export const fixtures = {
 	'google-docs-bold-wrapper': googleDocsBoldWrapper,
 	'google-docs-list': googleDocsList,
 	table,
-	'page-break': pageBreak
+	'page-break': pageBreak,
+	'font-without-table-properties': fontWithoutTableProperties
 };
 
 // Browser specific fixtures.
