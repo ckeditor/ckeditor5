@@ -526,7 +526,7 @@ class DynamicGrouping {
 		this.cachedPadding = null;
 
 		/**
-		 * A flag indicating that an items grouping update has been queued (e.g. due to the toolbar being visible)
+		 * A flag indicating that an items grouping update has been queued (e.g. due to the toolbar being invisible)
 		 * and should be executed immediately the next time the toolbar shows up.
 		 *
 		 * @readonly
