@@ -89,7 +89,7 @@ export default class AutoLink extends Plugin {
 	}
 
 	/**
-	 * Enables autolink on typing.
+	 * Enables autolinking on typing.
 	 *
 	 * @private
 	 */
