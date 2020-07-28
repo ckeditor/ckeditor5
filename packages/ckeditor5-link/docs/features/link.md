@@ -240,15 +240,17 @@ ClassicEditor
 
 ## Autolink feature
 
-You can enable automatic linking of URLs typed or pasted into editor. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically add turn URLs or e-mail addresses into real links.
+You can enable automatic linking of URLs typed or pasted into editor. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically turn URLs or e-mail addresses into real links.
+
+To use the autolink function simply type <kbd>Space</kbd>, or <kbd>Enter</kbd> or <kbd>Shift</kbd>+<kbd>Enter</kbd> after a link.
 
 <info-box>
-	Autolink action can always be reverted by the undo feature (<kbd>CTRL</kbd>+<kbd>Z</kbd>).
+	Autolink action can always be reverted by the undo feature (<kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd>).
 </info-box>
 
 {@snippet features/autolink}
 
-The `Autolink` plugin is not available in any of the builds. See the [Installation](#installation) section to learn how to enable it.
+Unlike the base link feature the `Autolink` plugin is not available in any of the builds. See the [Installation](#installation) section to learn how to enable it.
 
 ## Installation
 
