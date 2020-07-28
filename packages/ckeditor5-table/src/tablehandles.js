@@ -120,6 +120,7 @@ export default class TableHandles extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const view = editor.editing.view;
+		const selection = model.document.selection;
 
 		// Hides the button when the editor is not focused.
 		if ( !editor.ui.focusTracker.isFocused ) {
@@ -136,10 +137,10 @@ export default class TableHandles extends Plugin {
 		}
 
 		// Get the selected table.
-		const modelTarget = model.document.selection.getFirstPosition().findAncestor( 'table' );
+		const modelTarget = selection.getSelectedElement() || selection.getFirstPosition().findAncestor( 'table' );
 
 		// Hides the button when there is no enabled item in toolbar for the current block element.
-		if ( !modelTarget ) {
+		if ( !modelTarget || !modelTarget.is( 'element', 'table' ) ) {
 			this._hideHandles();
 
 			return;
@@ -183,6 +184,10 @@ export default class TableHandles extends Plugin {
 		this.handlesView.left = position.left;
 	}
 
+	/**
+	 * TODO
+	 * @private
+	 */
 	_updateHandlesContent( tableElement ) {
 		const tableUtils = this.editor.plugins.get( TableUtils );
 		const componentFactory = this.editor.ui.componentFactory;
@@ -190,18 +195,32 @@ export default class TableHandles extends Plugin {
 		const rowsCount = tableUtils.getRows( tableElement );
 		const columnsCount = tableUtils.getColumns( tableElement );
 
-		const rows = new Array( rowsCount ).fill( null )
-			.flatMap( ( item, idx ) => [
-				componentFactory.create( 'tableRow', { table: tableElement, row: idx } ),
-				new ToolbarSeparatorView()
-			] );
+		if ( this.handlesView.tableElement != tableElement ) {
+			this.handlesView.tableElement = tableElement;
+			this.handlesView._rows.items.clear();
+			this.handlesView._columns.items.clear();
+		}
 
-		const columns = new Array( columnsCount ).fill( null )
-			.flatMap( ( item, idx ) => [
-				componentFactory.create( 'tableColumn', { table: tableElement, column: idx } ),
-				new ToolbarSeparatorView()
-			] );
+		if ( this.handlesView._rows.items.length != rowsCount * 2 ) {
+			const rows = new Array( rowsCount ).fill( null )
+				.flatMap( ( item, idx ) => [
+					componentFactory.create( 'tableRow', { table: tableElement, row: idx } ),
+					new ToolbarSeparatorView()
+				] );
 
-		this.handlesView.setRowsColumns( rows, columns );
+			this.handlesView._rows.items.clear();
+			this.handlesView._rows.items.addMany( rows );
+		}
+
+		if ( this.handlesView._columns.items.length != columnsCount * 2 ) {
+			const columns = new Array( columnsCount ).fill( null )
+				.flatMap( ( item, idx ) => [
+					componentFactory.create( 'tableColumn', { table: tableElement, column: idx } ),
+					new ToolbarSeparatorView()
+				] );
+
+			this.handlesView._columns.items.clear();
+			this.handlesView._columns.items.addMany( columns );
+		}
 	}
 }

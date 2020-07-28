@@ -7,18 +7,41 @@
 	position: absolute;
 	z-index: var(--ck-z-default);
 
-	& .ck-table-handles__columns {
+	& .ck.ck-table-handles__columns {
 		position: absolute;
-		bottom: 10px;
+		bottom: var(--ck-spacing-large);
 	}
 
-	& .ck-table-handles__rows {
+	& .ck.ck-table-handles__rows {
 		position: absolute;
-		right: 10px;
+		right: var(--ck-spacing-large);
 	}
 
-	& .ck-toolbar__items {
+	& .ck.ck-toolbar__items {
 		flex-wrap: nowrap;
+
+		& > .ck.ck-dropdown > .ck.ck-splitbutton {
+			display: flex;
+			width: 100%;
+
+			& > .ck.ck-button {
+
+				&.ck-button_with-text {
+					padding: var(--ck-spacing-extra-tiny);
+					border-radius: unset;
+					flex-grow: 1;
+				}
+
+				&.ck-splitbutton__arrow {
+					padding: var(--ck-spacing-extra-tiny);
+				}
+
+				& > .ck-button__label {
+					width: 100%;
+					text-align: center;
+				}
+			}
+		}
 	}
 }
 

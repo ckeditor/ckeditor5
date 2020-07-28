@@ -52,9 +52,16 @@ export default class TableHandlesView extends View {
 		this.set( 'left', 0 );
 
 		/**
+		 * Target table element.
+		 *
+		 * @member {module:engine/model/element~Element} #tableElement
+		 */
+		this.set( 'tableElement', null );
+
+		/**
 		 * TODO
 		 * @member {ToolbarView} #_columns
-		 * @private
+		 * @protected
 		 */
 		this._columns = this._createHandles( locale, {
 			ariaLabel: t( 'Column handles' ),
@@ -64,7 +71,7 @@ export default class TableHandlesView extends View {
 		/**
 		 * TODO
 		 * @member {ToolbarView} #_rows
-		 * @private
+		 * @protected
 		 */
 		this._rows = this._createHandles( locale, {
 			ariaLabel: t( 'Row handles' ),
@@ -90,17 +97,6 @@ export default class TableHandlesView extends View {
 				this._rows
 			]
 		} );
-	}
-
-	/**
-	 * TODO
-	 */
-	setRowsColumns( rows, columns ) {
-		this._columns.items.clear();
-		this._rows.items.clear();
-
-		this._columns.items.addMany( columns );
-		this._rows.items.addMany( rows );
 	}
 
 	/**

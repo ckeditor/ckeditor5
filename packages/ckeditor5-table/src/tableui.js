@@ -83,8 +83,8 @@ export default class TableUI extends Plugin {
 			return dropdownView;
 		} );
 
-		editor.ui.componentFactory.add( 'tableColumn', ( locale, commandOptions ) => {
-			const options = [
+		editor.ui.componentFactory.add( 'tableColumn', ( locale, options ) => {
+			const optionsList = [
 				{
 					type: 'switchbutton',
 					model: {
@@ -114,22 +114,28 @@ export default class TableUI extends Plugin {
 						commandName: 'removeTableColumn',
 						label: t( 'Delete column' )
 					}
-				},
-				{
-					type: 'button',
-					model: {
-						commandName: 'selectTableColumn',
-						label: t( 'Select column' ),
-						commandOptions
-					}
 				}
 			];
 
-			return this._prepareDropdown( t( 'Column' ), tableColumnIcon, options, locale );
+			if ( options && options.table ) {
+				const label = String.fromCharCode( 'A'.charCodeAt( 0 ) + options.column );
+
+				return this._prepareDropdown( label, null, optionsList, locale, 'selectTableColumn', options );
+			} else {
+				optionsList.push( {
+					type: 'button',
+					model: {
+						commandName: 'selectTableColumn',
+						label: t( 'Select column' )
+					}
+				} );
+
+				return this._prepareDropdown( t( 'Column' ), tableColumnIcon, optionsList, locale );
+			}
 		} );
 
-		editor.ui.componentFactory.add( 'tableRow', ( locale, commandOptions ) => {
-			const options = [
+		editor.ui.componentFactory.add( 'tableRow', ( locale, options ) => {
+			const optionsList = [
 				{
 					type: 'switchbutton',
 					model: {
@@ -159,17 +165,22 @@ export default class TableUI extends Plugin {
 						commandName: 'removeTableRow',
 						label: t( 'Delete row' )
 					}
-				},
-				{
+				}
+			];
+
+			if ( options && options.table ) {
+				return this._prepareDropdown( options.row + 1, null, optionsList, locale, 'selectTableRow', options );
+			} else {
+				optionsList.push( {
 					type: 'button',
 					model: {
 						commandName: 'selectTableRow',
 						label: t( 'Select row' )
 					}
-				}
-			];
+				} );
 
-			return this._prepareDropdown( t( 'Row' ), tableRowIcon, options, locale, commandOptions );
+				return this._prepareDropdown( t( 'Row' ), tableRowIcon, optionsList, locale, options );
+			}
 		} );
 
 		editor.ui.componentFactory.add( 'mergeTableCells', locale => {
@@ -229,26 +240,34 @@ export default class TableUI extends Plugin {
 	 * @private
 	 * @param {String} label The dropdown button label.
 	 * @param {String} icon An icon for the dropdown button.
-	 * @param {Array.<module:ui/dropdown/utils~ListDropdownItemDefinition>} options The list of options for the dropdown.
+	 * @param {Array.<module:ui/dropdown/utils~ListDropdownItemDefinition>} optionsList The list of options for the dropdown.
 	 * @param {module:utils/locale~Locale} locale
 	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
 	 */
-	_prepareDropdown( label, icon, options, locale ) {
+	_prepareDropdown( label, icon, optionsList, locale, defaultCommand, defaultCommandOptions ) {
 		const editor = this.editor;
-		const dropdownView = createDropdown( locale );
-		const commands = this._fillDropdownWithListOptions( dropdownView, options );
+		const dropdownView = createDropdown( locale, defaultCommand && SplitButtonView );
+		const commands = this._fillDropdownWithListOptions( dropdownView, optionsList );
 
 		// Decorate dropdown's button.
 		dropdownView.buttonView.set( {
 			label,
 			icon,
-			tooltip: true
+			tooltip: !!icon,
+			withText: !icon
 		} );
 
 		// Make dropdown button disabled when all options are disabled.
 		dropdownView.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => {
 			return areEnabled.some( isEnabled => isEnabled );
 		} );
+
+		if ( defaultCommand ) {
+			this.listenTo( dropdownView.buttonView, 'execute', () => {
+				editor.execute( defaultCommand, defaultCommandOptions );
+				editor.editing.view.focus();
+			} );
+		}
 
 		this.listenTo( dropdownView, 'execute', evt => {
 			editor.execute( evt.source.commandName, evt.source.commandOptions );

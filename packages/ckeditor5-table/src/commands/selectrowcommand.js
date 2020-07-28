@@ -35,15 +35,19 @@ export default class SelectRowCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	execute() {
+	execute( options = {} ) {
 		const model = this.editor.model;
-		const referenceCells = getSelectionAffectedTableCells( model.document.selection );
-		const rowIndexes = getRowIndexes( referenceCells );
+		const selection = model.document.selection;
 
-		const table = referenceCells[ 0 ].findAncestor( 'table' );
+		const { table, startRow, endRow } = options.table ? {
+			table: options.table,
+			startRow: options.row,
+			endRow: options.row
+		} : getOptionsFromSelection( selection );
+
 		const rangesToSelect = [];
 
-		for ( let rowIndex = rowIndexes.first; rowIndex <= rowIndexes.last; rowIndex++ ) {
+		for ( let rowIndex = startRow; rowIndex <= endRow; rowIndex++ ) {
 			for ( const cell of table.getChild( rowIndex ).getChildren() ) {
 				rangesToSelect.push( model.createRangeOn( cell ) );
 			}
@@ -53,4 +57,15 @@ export default class SelectRowCommand extends Command {
 			writer.setSelection( rangesToSelect );
 		} );
 	}
+}
+
+function getOptionsFromSelection( selection ) {
+	const referenceCells = getSelectionAffectedTableCells( selection );
+	const rowIndexes = getRowIndexes( referenceCells );
+
+	return {
+		table: referenceCells[ 0 ].findAncestor( 'table' ),
+		startRow: rowIndexes.first,
+		endRow: rowIndexes.last
+	};
 }
