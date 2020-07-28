@@ -131,7 +131,7 @@ export default class AutoLink extends Plugin {
 	}
 
 	/**
-	 * Enables autolink on <kbd>Enter</kbd> key.
+	 * Enables autolinking on the <kbd>Enter</kbd> key.
 	 *
 	 * @private
 	 */
