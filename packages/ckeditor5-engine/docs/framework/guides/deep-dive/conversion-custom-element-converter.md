@@ -168,9 +168,8 @@ function getTypeFromViewElement( viewElement ) {
 ### Accompanying downcast conversion & updated plugin code
 
 <info-box>
-	See the {@link builds/guides/implementing-a-block-widget Implementing a block widget} to learn about widget system concepts.
+	See the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} to learn about widget system concepts.
 </info-box>
-
 
 ```js
 function editingDowncastConverter( event, data, conversionApi ) {
