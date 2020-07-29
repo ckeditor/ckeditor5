@@ -9,6 +9,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 class InfoBox {
 	constructor( editor ) {
+		// Schema definition
 		editor.model.schema.register( 'infoBox', {
 			allowWhere: '$block',
 			allowContentOf: '$root',
@@ -16,11 +17,15 @@ class InfoBox {
 			allowAttributes: [ 'infoBoxType' ]
 		} );
 
-		editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:div', upcastConverter ) );
+		// Upcast converter.
+		editor.conversion.for( 'upcast' )
+			.add( dispatcher => dispatcher.on( 'element:div', upcastConverter ) );
 
 		// The downcast conversion must be split as we need a widget in the editing pipeline.
-		editor.conversion.for( 'editingDowncast' ).add( dispatcher => dispatcher.on( 'insert:infoBox', editingDowncastConverter ) );
-		editor.conversion.for( 'dataDowncast' ).add( dispatcher => dispatcher.on( 'insert:infoBox', dataDowncastConverter ) );
+		editor.conversion.for( 'editingDowncast' )
+			.add( dispatcher => dispatcher.on( 'insert:infoBox', editingDowncastConverter ) );
+		editor.conversion.for( 'dataDowncast' )
+			.add( dispatcher => dispatcher.on( 'insert:infoBox', dataDowncastConverter ) );
 	}
 }
 
@@ -37,8 +42,8 @@ function upcastConverter( event, data, conversionApi ) {
 		infoBoxType: getTypeFromViewElement( viewInfoBox )
 	} );
 
-	// Try to safely insert element - if it returns false the element can't be safely inserted into the content,
-	// and the conversion process must stop.
+	// Try to safely insert element - if it returns false the element can't be safely inserted
+	// into the content, and the conversion process must stop.
 	if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
 		return;
 	}
@@ -47,7 +52,6 @@ function upcastConverter( event, data, conversionApi ) {
 	conversionApi.consumable.consume( viewInfoBox, { name: true } );
 
 	// Let's assume that the HTML structure is always the same.
-	// If you don't control the order of view elements a more sophisticated search might be needed.
 	const viewInfoBoxTitle = viewInfoBox.getChild( 0 );
 	const viewInfoBoxContent = viewInfoBox.getChild( 1 );
 
@@ -81,16 +85,22 @@ function dataDowncastConverter( event, data, conversionApi ) {
 function createViewElements( data, conversionApi ) {
 	const type = data.item.getAttribute( 'infoBoxType' );
 
-	const infoBox = conversionApi.writer.createContainerElement( 'div', { class: `info-box info-box-${ type.toLowerCase() }` } );
-	const infoBoxContent = conversionApi.writer.createEditableElement( 'div', { class: 'info-box-content' } );
-
-	const infoBoxTitle = conversionApi.writer.createUIElement( 'div', { class: 'info-box-title' }, function( domDocument ) {
-		const domElement = this.toDomElement( domDocument );
-
-		domElement.innerText = type;
-
-		return domElement;
+	const infoBox = conversionApi.writer.createContainerElement( 'div', {
+		class: `info-box info-box-${ type.toLowerCase() }`
 	} );
+	const infoBoxContent = conversionApi.writer.createEditableElement( 'div', {
+		class: 'info-box-content'
+	} );
+
+	const infoBoxTitle = conversionApi.writer.createUIElement( 'div',
+		{ class: 'info-box-title' },
+		function( domDocument ) {
+			const domElement = this.toDomElement( domDocument );
+
+			domElement.innerText = type;
+
+			return domElement;
+		} );
 
 	return { infoBox, infoBoxContent, infoBoxTitle };
 }
@@ -98,13 +108,22 @@ function createViewElements( data, conversionApi ) {
 function insertViewElements( data, conversionApi, infoBox, infoBoxTitle, infoBoxContent ) {
 	conversionApi.consumable.consume( data.item, 'insert' );
 
-	conversionApi.writer.insert( conversionApi.writer.createPositionAt( infoBox, 0 ), infoBoxTitle );
-	conversionApi.writer.insert( conversionApi.writer.createPositionAt( infoBox, 1 ), infoBoxContent );
+	conversionApi.writer.insert(
+		conversionApi.writer.createPositionAt( infoBox, 0 ),
+		infoBoxTitle
+	);
+	conversionApi.writer.insert(
+		conversionApi.writer.createPositionAt( infoBox, 1 ),
+		infoBoxContent
+	);
 
 	conversionApi.mapper.bindElements( data.item, infoBox );
 	conversionApi.mapper.bindElements( data.item, infoBoxContent );
 
-	conversionApi.writer.insert( conversionApi.mapper.toViewPosition( data.range.start ), infoBox );
+	conversionApi.writer.insert(
+		conversionApi.mapper.toViewPosition( data.range.start ),
+		infoBox
+	);
 }
 
 ClassicEditor

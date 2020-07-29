@@ -134,7 +134,6 @@ function upcastConverter( event, data, conversionApi ) {
 	conversionApi.consumable.consume( viewInfoBox, { name: true } );
 
 	// Let's assume that the HTML structure is always the same.
-	// If you don't control the order of view elements a more sophisticated search might be needed.
 	const viewInfoBoxTitle = viewInfoBox.getChild( 0 );
 	const viewInfoBoxContent = viewInfoBox.getChild( 1 );
 
@@ -198,14 +197,15 @@ function createViewElements( data, conversionApi ) {
 		class: 'info-box-content'
 	} );
 
-	const infoBoxTitle = conversionApi.writer.createUIElement( 'div', { class: 'info-box-title' },
+	const infoBoxTitle = conversionApi.writer.createUIElement( 'div',
+		{ class: 'info-box-title' },
 		function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
 
 			domElement.innerText = type;
 
 			return domElement;
-	} );
+		} );
 
 	return { infoBox, infoBoxContent, infoBoxTitle };
 }
@@ -213,13 +213,22 @@ function createViewElements( data, conversionApi ) {
 function insertViewElements( data, conversionApi, infoBox, infoBoxTitle, infoBoxContent ) {
 	conversionApi.consumable.consume( data.item, 'insert' );
 
-	conversionApi.writer.insert( conversionApi.writer.createPositionAt( infoBox, 0 ), infoBoxTitle );
-	conversionApi.writer.insert( conversionApi.writer.createPositionAt( infoBox, 1 ), infoBoxContent );
+	conversionApi.writer.insert(
+		conversionApi.writer.createPositionAt( infoBox, 0 ),
+		infoBoxTitle
+	);
+	conversionApi.writer.insert(
+		conversionApi.writer.createPositionAt( infoBox, 1 ),
+		infoBoxContent
+	);
 
 	conversionApi.mapper.bindElements( data.item, infoBox );
 	conversionApi.mapper.bindElements( data.item, infoBoxContent );
 
-	conversionApi.writer.insert( conversionApi.mapper.toViewPosition( data.range.start ), infoBox );
+	conversionApi.writer.insert(
+		conversionApi.mapper.toViewPosition( data.range.start ),
+		infoBox
+	);
 }
 ```
 
