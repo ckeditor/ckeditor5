@@ -34,7 +34,7 @@ import { extend } from 'lodash-es';
  *
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert`} &ndash;
  * If a range of nodes was inserted to the model tree.
- * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove remove} &ndash;
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove `remove`} &ndash;
  * If a range of nodes was removed from the model tree.
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute `attribute`} &ndash;
  * If an attribute was added, changed or removed from a model node.
