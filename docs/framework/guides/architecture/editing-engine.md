@@ -196,7 +196,7 @@ Let's again take a look at the editing engine's architecture:
 
 [{@img assets/img/framework-architecture-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
 
-So far, we talked about the topmost layer of this diagram – the model. The role of the model layer is to create an abstraction over the data. Its format was designed to allow storing and modifying the data in the most convenient way, while enabling implementation of complex features. Most features operate on the model (read from it and change it).
+So far, we talked about the topmost layer of this diagram &mdash; the model. The role of the model layer is to create an abstraction over the data. Its format was designed to allow storing and modifying the data in the most convenient way, while enabling implementation of complex features. Most features operate on the model (read from it and change it).
 
 The view, on the other hand, is an abstract representation of the DOM structure which should be presented to the user (for editing) and which should (in most cases) represent the editor's input and output (i.e. the data returned by `editor.getData()`, the data set by `editor.setData()`, pasted content, etc.).
 
