@@ -638,12 +638,12 @@ function upcastDataToMarker( config ) {
 
 		// Below is a hack that is needed to properly handle `converterPriority` for both elements and attributes.
 		// Attribute conversion needs to be performed *after* element conversion.
-		// This converter handles both element conversion and attribute conversion, which means that if single
+		// This converter handles both element conversion and attribute conversion, which means that if a single
 		// `config.converterPriority` is used, it will lead to problems. For example, if `'high'` priority is used,
 		// then attribute conversion will be performed before a lot of element upcast converters.
 		// On the other hand we want to support `config.converterPriority` and overwriting conveters.
 		//
-		// To have it work, we need to some extra processing for priority for attribute converter.
+		// To have it work, we need to do some extra processing for priority for attribute converter.
 		// Priority `'low'` value should be the base value and then we will change it depending on `config.converterPriority` value.
 		//
 		// This hack probably would not be needed if attributes are upcasted separately.
@@ -672,7 +672,7 @@ function upcastAttributeToMarker( config ) {
 
 		// This converter wants to add a model element, marking a marker, before/after an element (or maybe even group of elements).
 		// To do that, we can use `data.modelRange` which is set on an element (or a group of elements) that has been upcasted.
-		// But, if the processed view element has not been upcasted yet (it does not have a converted), we need to
+		// But, if the processed view element has not been upcasted yet (it does not have been converted), we need to
 		// fire conversion for its children first, then we will have `data.modelRange` available.
 		if ( !data.modelRange ) {
 			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
