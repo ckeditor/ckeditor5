@@ -25,6 +25,8 @@ Finally, we also took care of some developer experience-oriented improvements:
 * [We changed marker conversion, so that it doesn't break HTML structure in some cases](https://github.com/ckeditor/ckeditor5/issues/7556).
 * Introduced a new [`RawElement`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_rawelement-RawElement.html) class to make it simpler to [implement features like "embedding raw HTML"](https://github.com/ckeditor/ckeditor5/issues/4469).
 
+Please note that there are some major breaking changes, be sure to review them before upgrading.
+
 Blog post link coming soon…
 
 ### Collaboration features
@@ -37,7 +39,7 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Changed expected argument for model's and view's [`Text#is()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_model_text-Text.html#function-is) and [`TextProxy#is()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_model_textproxy-TextProxy.html#function-is) methods (`'text'` replaced with `'$text'` and `'textProxy'` replaced with `'$textProxy'`).
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Changed expected arguments for model's `Element#is()`, `Text#is()` and `TextProxy#is()` (the element name is no longer accepted as a first argument, type argument is required for name checks).
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Changed expected arguments for view's `Element#is()`, `Text#is()`, `TextProxy#is()`, `AttributeElement#is()`, `ContainerElement#is()`, `EditableElement#is()`, `EmptyElement#is()`, `UIElement#is()` (the element name is no longer accepted as a first argument, type argument is required for name checks).
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Marker names with a `,` (comma) character are now disallowed.
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Marker conversion has changed. As a result, names with a `,` (comma) character are now disallowed. See the GitHub issue for an [example migration path](https://github.com/ckeditor/ckeditor5/issues/7556#issuecomment-665579653).
 * The method `editor.setData()` clears the undo and redo stacks.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
