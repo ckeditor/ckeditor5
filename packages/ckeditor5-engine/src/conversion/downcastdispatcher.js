@@ -30,17 +30,17 @@ import { extend } from 'lodash-es';
  * Note, that because changes are converted there is a need to have a mapping between model structure and view structure.
  * To map positions and elements during downcast (model to view conversion) use {@link module:engine/conversion/mapper~Mapper}.
  *
- * `DowncastDispatcher` fires following events for model tree changes:
+ * Downcast dispatcher fires the following events for model tree changes:
  *
- * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert insert}
- * if a range of nodes has been inserted to the model tree,
- * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove remove}
- * if a range of nodes has been removed from the model tree,
- * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute attribute}
- * if an attribute has been added, changed or removed from a model node.
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert insert} &ndash;
+ * If a range of nodes was inserted to the model tree.
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove remove} &ndash;
+ * If a range of nodes was removed from the model tree.
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute `attribute`} &ndash;
+ * If an attribute was added, changed or removed from a model node.
  *
- * For {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert insert}
- * and {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute attribute},
+ * For {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert`}
+ * and {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute `attribute`},
  * `DowncastDispatcher` generates {@link module:engine/conversion/modelconsumable~ModelConsumable consumables}.
  * These are used to have a control over which changes have been already consumed. It is useful when some converters
  * overwrite others or convert multiple changes (for example converts insertion of an element and also converts that
