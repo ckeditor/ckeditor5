@@ -449,7 +449,7 @@ export default class DataController {
 	 * the initialization flow. However, if the `init` event is stopped or prevented, the {@link #event:ready ready event}
 	 * should be fired manually.
 	 *
-	 * The `init` event is fired by decorated {@link #init} method.
+	 * The `init` event is fired by the decorated {@link #init} method.
 	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
 	 *
 	 * @event init
