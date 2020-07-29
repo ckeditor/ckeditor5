@@ -439,7 +439,7 @@ export default class DataController {
 	}
 
 	/**
-	 * Event fired once data initialization has finished.
+	 * Event fired once the data initialization has finished.
 	 *
 	 * @event ready
 	 */
