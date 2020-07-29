@@ -124,8 +124,8 @@ function upcastConverter( event, data, conversionApi ) {
 		infoBoxType: getTypeFromViewElement( viewInfoBox )
 	} );
 
-	// Try to safely insert element - if it returns false the element can't be safely inserted into the content,
-	// and the conversion process must stop.
+	// Try to safely insert element - if it returns false the element can't be safely inserted
+	// into the content, and the conversion process must stop.
 	if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
 		return;
 	}
@@ -191,15 +191,20 @@ function dataDowncastConverter( event, data, conversionApi ) {
 function createViewElements( data, conversionApi ) {
 	const type = data.item.getAttribute( 'infoBoxType' );
 
-	const infoBox = conversionApi.writer.createContainerElement( 'div', { class: `info-box info-box-${ type.toLowerCase() }` } );
-	const infoBoxContent = conversionApi.writer.createEditableElement( 'div', { class: 'info-box-content' } );
+	const infoBox = conversionApi.writer.createContainerElement( 'div', {
+		class: `info-box info-box-${ type.toLowerCase() }`
+	} );
+	const infoBoxContent = conversionApi.writer.createEditableElement( 'div', {
+		class: 'info-box-content'
+	} );
 
-	const infoBoxTitle = conversionApi.writer.createUIElement( 'div', { class: 'info-box-title' }, function( domDocument ) {
-		const domElement = this.toDomElement( domDocument );
+	const infoBoxTitle = conversionApi.writer.createUIElement( 'div', { class: 'info-box-title' },
+		function( domDocument ) {
+			const domElement = this.toDomElement( domDocument );
 
-		domElement.innerText = type;
+			domElement.innerText = type;
 
-		return domElement;
+			return domElement;
 	} );
 
 	return { infoBox, infoBoxContent, infoBoxTitle };
@@ -232,11 +237,14 @@ class InfoBox {
 		} );
 
 		// Upcast converter.
-		editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:div', upcastConverter ) );
+		editor.conversion.for( 'upcast' )
+			.add( dispatcher => dispatcher.on( 'element:div', upcastConverter ) );
 
 		// The downcast conversion must be split as we need a widget in the editing pipeline.
-		editor.conversion.for( 'editingDowncast' ).add( dispatcher => dispatcher.on( 'insert:infoBox', editingDowncastConverter ) );
-		editor.conversion.for( 'dataDowncast' ).add( dispatcher => dispatcher.on( 'insert:infoBox', dataDowncastConverter ) );
+		editor.conversion.for( 'editingDowncast' )
+			.add( dispatcher => dispatcher.on( 'insert:infoBox', editingDowncastConverter ) );
+		editor.conversion.for( 'dataDowncast' )
+			.add( dispatcher => dispatcher.on( 'insert:infoBox', dataDowncastConverter ) );
 	}
 }
 ```
