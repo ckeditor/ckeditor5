@@ -25,7 +25,7 @@ import { extend } from 'lodash-es';
  * where you convert the view state (view nodes) to a model tree.
  *
  * The events are prepared basing on a diff created by {@link module:engine/model/differ~Differ Differ}, which buffers them
- * and then passes to `DowncastDispatcher` as a diff between the old model state and the new model state.
+ * and then passes to the downcast dispatcher as a diff between the old model state and the new model state.
  *
  * Note that because the changes are converted, there is a need to have a mapping between the model structure and the view structure.
  * To map positions and elements during the downcast (a model-to-view conversion), use {@link module:engine/conversion/mapper~Mapper}.
