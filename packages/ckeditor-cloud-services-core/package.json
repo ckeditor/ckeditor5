@@ -7,7 +7,7 @@
     "ckeditor5-lib"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-utils": "^20.0.0"
+    "@ckeditor/ckeditor5-utils": "^21.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

@@ -10,24 +10,24 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^20.0.0",
-    "@ckeditor/ckeditor5-engine": "^20.0.0",
-    "@ckeditor/ckeditor5-utils": "^20.0.0",
+    "@ckeditor/ckeditor5-core": "^21.0.0",
+    "@ckeditor/ckeditor5-engine": "^21.0.0",
+    "@ckeditor/ckeditor5-utils": "^21.0.0",
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^20.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^20.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^20.0.0",
-    "@ckeditor/ckeditor5-enter": "^20.0.0",
-    "@ckeditor/ckeditor5-essentials": "^20.0.0",
-    "@ckeditor/ckeditor5-heading": "^20.0.0",
-    "@ckeditor/ckeditor5-image": "^20.0.0",
-    "@ckeditor/ckeditor5-link": "^20.0.0",
-    "@ckeditor/ckeditor5-list": "^20.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^20.0.0",
-    "@ckeditor/ckeditor5-undo": "^20.0.0",
-    "@ckeditor/ckeditor5-code-block": "^20.0.0"
+    "@ckeditor/ckeditor5-basic-styles": "^21.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^21.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^21.0.0",
+    "@ckeditor/ckeditor5-enter": "^21.0.0",
+    "@ckeditor/ckeditor5-essentials": "^21.0.0",
+    "@ckeditor/ckeditor5-heading": "^21.0.0",
+    "@ckeditor/ckeditor5-image": "^21.0.0",
+    "@ckeditor/ckeditor5-link": "^21.0.0",
+    "@ckeditor/ckeditor5-list": "^21.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^21.0.0",
+    "@ckeditor/ckeditor5-undo": "^21.0.0",
+    "@ckeditor/ckeditor5-code-block": "^21.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

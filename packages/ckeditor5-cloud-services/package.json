@@ -9,11 +9,11 @@
     "ckeditor5-lib"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor-cloud-services-core": "^20.0.0",
-    "@ckeditor/ckeditor5-core": "^20.0.0"
+    "@ckeditor/ckeditor-cloud-services-core": "^21.0.0",
+    "@ckeditor/ckeditor5-core": "^21.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-editor-classic": "^20.0.0"
+    "@ckeditor/ckeditor5-editor-classic": "^21.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

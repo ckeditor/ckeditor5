@@ -10,20 +10,20 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^20.0.0",
-    "@ckeditor/ckeditor5-engine": "^20.0.0",
-    "@ckeditor/ckeditor5-ui": "^20.0.0"
+    "@ckeditor/ckeditor5-core": "^21.0.0",
+    "@ckeditor/ckeditor5-engine": "^21.0.0",
+    "@ckeditor/ckeditor5-ui": "^21.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^20.0.0",
-    "@ckeditor/ckeditor5-clipboard": "^20.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^20.0.0",
-    "@ckeditor/ckeditor5-enter": "^20.0.0",
-    "@ckeditor/ckeditor5-heading": "^20.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^20.0.0",
-    "@ckeditor/ckeditor5-typing": "^20.0.0",
-    "@ckeditor/ckeditor5-utils": "^20.0.0",
-    "@ckeditor/ckeditor5-table": "^20.0.0"
+    "@ckeditor/ckeditor5-basic-styles": "^21.0.0",
+    "@ckeditor/ckeditor5-clipboard": "^21.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^21.0.0",
+    "@ckeditor/ckeditor5-enter": "^21.0.0",
+    "@ckeditor/ckeditor5-heading": "^21.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^21.0.0",
+    "@ckeditor/ckeditor5-typing": "^21.0.0",
+    "@ckeditor/ckeditor5-utils": "^21.0.0",
+    "@ckeditor/ckeditor5-table": "^21.0.0"
   },
   "engines": {
     "node": ">=12.0.0",
