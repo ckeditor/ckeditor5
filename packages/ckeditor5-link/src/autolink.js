@@ -184,7 +184,7 @@ export default class AutoLink extends Plugin {
 	}
 
 	/**
-	 * Checks passed range if it contains a linkable text.
+	 * Checks if the passed range contains a linkable text.
 	 *
 	 * @param {module:engine/model/range~Range} rangeToCheck
 	 * @private
@@ -206,7 +206,7 @@ export default class AutoLink extends Plugin {
 	}
 
 	/**
-	 * Applies link on a given range.
+	 * Applies a link on a given range.
 	 *
 	 * @param {String} url The URL to link.
 	 * @param {module:engine/model/range~Range} range The text range to apply the link attribute to.

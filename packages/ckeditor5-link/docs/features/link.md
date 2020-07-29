@@ -7,6 +7,8 @@ category: features
 
 The {@link module:link/link~Link} feature brings support for link editing to the rich-text editor. It allows for inserting hyperlinks into the edited content and offers the UI to create and edit them.
 
+After you enable the optional [autolink](#autolink-feature) plugin, typed or pasted URL and e-mail addresses will be automatically turned into working links as you type.
+
 ## Demo
 
 You can edit existing links by clicking them and using the balloon. Use the Link toolbar button or press <kbd>Ctrl/⌘</kbd>+<kbd>K</kbd> to create a new link.
