@@ -19,7 +19,7 @@ import { extend } from 'lodash-es';
  * converters' role is to convert the model changes to changes in view (for example, adding view nodes or
  * changing attributes on view elements).
  *
- * During conversion process, `DowncastDispatcher` fires events, basing on state of the model and prepares
+ * During the conversion process, downcast dispatcher fires events basing on the state of the model and prepares
  * data for those events. It is important to understand that those events are connected with changes done on model,
  * for example: "node has been inserted" or "attribute has changed". This is in contrary to upcasting (view to model conversion),
  * where we convert view state (view nodes) to a model tree.
