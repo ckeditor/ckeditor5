@@ -22,7 +22,7 @@ import { extend } from 'lodash-es';
  * During the conversion process, downcast dispatcher fires events basing on the state of the model and prepares
  * data for these events. It is important to understand that the events are connected with the changes done on the model,
  * for example: "a node has been inserted" or "an attribute has changed". This is in contrary to upcasting (a view-to-model conversion)
- * where we convert view state (view nodes) to a model tree.
+ * where you convert the view state (view nodes) to a model tree.
  *
  * The events are prepared basing on a diff created by {@link module:engine/model/differ~Differ Differ}, which buffers them
  * and then passes to `DowncastDispatcher` as a diff between the old model state and the new model state.
