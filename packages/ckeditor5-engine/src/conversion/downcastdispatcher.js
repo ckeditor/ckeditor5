@@ -32,7 +32,7 @@ import { extend } from 'lodash-es';
  *
  * Downcast dispatcher fires the following events for model tree changes:
  *
- * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert insert} &ndash;
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert`} &ndash;
  * If a range of nodes was inserted to the model tree.
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove remove} &ndash;
  * If a range of nodes was removed from the model tree.
