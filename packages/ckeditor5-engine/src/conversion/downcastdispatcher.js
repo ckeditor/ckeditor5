@@ -14,7 +14,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { extend } from 'lodash-es';
 
 /**
- * `DowncastDispatcher` is a central point of downcasting (conversion from model to view), which is a process of reacting to changes
+ * Downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting to changes
  * in the model and firing a set of events. Callbacks listening to these events are called converters. The
  * converters' role is to convert the model changes to changes in view (for example, adding view nodes or
  * changing attributes on view elements).
