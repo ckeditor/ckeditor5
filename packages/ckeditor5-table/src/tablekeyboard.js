@@ -51,10 +51,18 @@ export default class TableKeyboard extends Plugin {
 		this.editor.keystrokes.set( 'Tab', this._getTabHandler( true ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Shift+Tab', this._getTabHandler( false ), { priority: 'low' } );
 
+		const priorityAboveWidget = priorities.get( 'high' ) + 10;
+		const priorityBelowWidget = priorities.get( 'high' ) - 10;
+
+		// This listener is handling cases inside table cell.
 		// Note: This listener has the "high-10" priority because it should allow the Widget plugin to handle the default
 		// behavior first ("high") but it should not be "prevent–defaulted" by the Widget plugin ("high-20") because of
 		// the fake selection retention on the fully selected widget.
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( ...args ), { priority: priorities.get( 'high' ) - 10 } );
+		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( false, ...args ), { priority: priorityBelowWidget } );
+
+		// This listener is handling cases when table cells are selected from outside.
+		// Note: It must have greater priority than Widget plugin to properly override handling case of single cell selected.
+		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( true, ...args ), { priority: priorityAboveWidget } );
 	}
 
 	/**
@@ -159,10 +167,11 @@ export default class TableKeyboard extends Plugin {
 	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events.
 	 *
 	 * @private
+	 * @param {Boolean} highPriority
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_onKeydown( eventInfo, domEventData ) {
+	_onKeydown( highPriority, eventInfo, domEventData ) {
 		const editor = this.editor;
 		const keyCode = domEventData.keyCode;
 
@@ -171,7 +180,13 @@ export default class TableKeyboard extends Plugin {
 		}
 
 		const direction = getLocalizedArrowKeyCodeDirection( keyCode, editor.locale.contentLanguageDirection );
-		const wasHandled = this._handleArrowKeys( direction, domEventData.shiftKey );
+		let wasHandled = false;
+
+		if ( highPriority ) {
+			wasHandled = this._handleArrowKeysOutsideTableCells( direction, domEventData.shiftKey );
+		} else {
+			wasHandled = this._handleArrowKeysInsideTableCell( direction, domEventData.shiftKey );
+		}
 
 		if ( wasHandled ) {
 			domEventData.preventDefault();
@@ -181,14 +196,15 @@ export default class TableKeyboard extends Plugin {
 	}
 
 	/**
-	 * Handles arrow keys to move the selection around the table.
+	 * Handles arrow keys to move the selection around the table. This is a high priority handler for cases when a table cells
+	 * are selected from outside (this is listening on higher priority than Widget handlers).
 	 *
 	 * @private
 	 * @param {'left'|'up'|'right'|'down'} direction The direction of the arrow key.
 	 * @param {Boolean} expandSelection If the current selection should be expanded.
 	 * @returns {Boolean} Returns `true` if key was handled.
 	 */
-	_handleArrowKeys( direction, expandSelection ) {
+	_handleArrowKeysOutsideTableCells( direction, expandSelection ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const isForward = [ 'right', 'down' ].includes( direction );
@@ -197,19 +213,36 @@ export default class TableKeyboard extends Plugin {
 		// move the selection to a cell adjacent to the selected table fragment.
 		const selectedCells = getSelectedTableCells( selection );
 
-		if ( selectedCells.length ) {
-			let focusCell;
-
-			if ( expandSelection ) {
-				focusCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
-			} else {
-				focusCell = isForward ? selectedCells[ selectedCells.length - 1 ] : selectedCells[ 0 ];
-			}
-
-			this._navigateFromCellInDirection( focusCell, direction, expandSelection );
-
-			return true;
+		if ( !selectedCells.length ) {
+			return false;
 		}
+
+		let focusCell;
+
+		if ( expandSelection ) {
+			focusCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
+		} else {
+			focusCell = isForward ? selectedCells[ selectedCells.length - 1 ] : selectedCells[ 0 ];
+		}
+
+		this._navigateFromCellInDirection( focusCell, direction, expandSelection );
+
+		return true;
+	}
+
+	/**
+	 * Handles arrow keys to move the selection around the table. This is a lower priority handler for cases when the caret
+	 * is inside a table cell. Must be lower priority than Widget to allow proper handling of widgets inside a table cell.
+	 *
+	 * @private
+	 * @param {'left'|'up'|'right'|'down'} direction The direction of the arrow key.
+	 * @param {Boolean} expandSelection If the current selection should be expanded.
+	 * @returns {Boolean} Returns `true` if key was handled.
+	 */
+	_handleArrowKeysInsideTableCell( direction, expandSelection ) {
+		const model = this.editor.model;
+		const selection = model.document.selection;
+		const isForward = [ 'right', 'down' ].includes( direction );
 
 		// Abort if we're not in a table cell.
 		const tableCell = selection.focus.findAncestor( 'tableCell' );
@@ -232,6 +265,8 @@ export default class TableKeyboard extends Plugin {
 
 			return true;
 		}
+
+		return false;
 	}
 
 	/**
