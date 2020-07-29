@@ -19,7 +19,7 @@ The editing engine implements an MVC architecture. The shape of it is not enforc
 
 What you can see are three layers: **model**, **controller** and **view**. There is one **model document** which is **converted** into separate views &mdash; the **editing view** and the **data view**. These two views represent, respectively, the content that the user is editing (the DOM structure that you see in the browser) and the editor input and output data (in a format that the plugged data processor understands). Both views feature virtual DOM structures (custom, DOM-like structures) on which converters and features work and which are then **rendered** to the DOM.
 
-The green blocks are the code introduced by editor features (plugins). These features control what changes are made to the model, how they are converted to the view and how the model needs to be changed based on fired events (respectively view's and model's ones).
+The green blocks are the code introduced by editor features (plugins). These features control what changes are made to the model, how they are converted to the view and how the model needs to be changed based on fired events (the view's and model's ones).
 
 Let's now talk about each layer separately.
 
