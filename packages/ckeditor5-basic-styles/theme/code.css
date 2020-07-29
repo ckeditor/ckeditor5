@@ -9,6 +9,6 @@
 	border-radius: 2px;
 }
 
-.ck .ck-code_selected {
+.ck.ck-editor__editable .ck-code_selected  {
 	background-color: hsla(0, 0%, 78%, 0.5);
 }
