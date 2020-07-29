@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-block-quote",
-  "version": "20.0.0",
+  "version": "21.0.0",
   "description": "Block quote feature for CKEditor 5.",
   "keywords": [
     "ckeditor",

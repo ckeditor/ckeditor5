@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-ui",
-  "version": "20.0.0",
+  "version": "21.0.0",
   "description": "The UI framework and standard UI library of CKEditor 5.",
   "keywords": [
     "ckeditor",

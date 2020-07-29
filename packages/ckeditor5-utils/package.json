@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-utils",
-  "version": "20.0.0",
+  "version": "21.0.0",
   "description": "Miscellaneous utils used by CKEditor 5.",
   "keywords": [
     "ckeditor",
