@@ -28,7 +28,7 @@ import { extend } from 'lodash-es';
  * and then passes to `DowncastDispatcher` as a diff between the old model state and the new model state.
  *
  * Note that because the changes are converted, there is a need to have a mapping between the model structure and the view structure.
- * To map positions and elements during downcast (model to view conversion) use {@link module:engine/conversion/mapper~Mapper}.
+ * To map positions and elements during the downcast (a model-to-view conversion), use {@link module:engine/conversion/mapper~Mapper}.
  *
  * Downcast dispatcher fires the following events for model tree changes:
  *
