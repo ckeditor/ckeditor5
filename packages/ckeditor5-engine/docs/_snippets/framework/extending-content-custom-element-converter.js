@@ -32,7 +32,8 @@ class InfoBox {
 function upcastConverter( event, data, conversionApi ) {
 	const viewInfoBox = data.viewItem;
 
-	// Detect that view element is an info-box div. Otherwise, it should be handled by another converter.
+	// Detect that view element is an info-box div.
+	// Otherwise, it should be handled by another converter.
 	if ( !viewInfoBox.hasClass( 'info-box' ) ) {
 		return;
 	}
