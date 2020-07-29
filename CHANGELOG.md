@@ -25,7 +25,7 @@ Finally, we also took care of some developer experience-oriented improvements:
 * [We changed marker conversion, so that it doesn't break HTML structure in some cases](https://github.com/ckeditor/ckeditor5/issues/7556).
 * Introduced a new [`RawElement`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_rawelement-RawElement.html) class to make it simpler to [implement features like "embedding raw HTML"](https://github.com/ckeditor/ckeditor5/issues/4469).
 
-Please note that there are some major breaking changes, be sure to review them before upgrading.
+Please note that there are some **major breaking changes**, be sure to review them before upgrading.
 
 Blog post link coming soon…
 
@@ -35,11 +35,11 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
+* The `editor.setData()` method now clears the undo and redo stacks.
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The [`Text#is()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_model_text-Text.html#function-is) and [`TextProxy#is()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_model_textproxy-TextProxy.html#function-is) methods (in the model and view) now expect to be called with `'$text'` instead of `'text'` and `'$textProxy'` instead of `'textProxy'`.
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `is()` method (e.g. [`Element#is()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_model_element-Element.html#function-is), [`Text#is()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_model_text-Text.html#function-is), [`AttributeElement#is()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_attributeelement-AttributeElement.html#function-is) or [`ContainerElement#is()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_containerelement-ContainerElement.html#function-is)) in both, the model and the view, no longer treats the first argument as an element name. To check the element's name use the second argument instead (`node.is( 'element', 'paragraph' )` instead of `node.is( 'paragraph' )`).
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Marker conversion to data has been revamped. The data format changed, the new conversion helpers were introduced and a new rule has been implemented that a comma (`,`) is not allowed in a marker name. See the GitHub issue for a [walkthrough and example migration path](https://github.com/ckeditor/ckeditor5/issues/7556#issuecomment-665579653).
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `DomConverter#getParentUIElement()` method was renamed to `DomConverter#getHostViewElement()` because now it supports both `UIElement` and `RawElement` (see [#4469](https://github.com/ckeditor/ckeditor5/issues/4469)).
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Changed expected argument for model's and view's [`Text#is()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_model_text-Text.html#function-is) and [`TextProxy#is()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_model_textproxy-TextProxy.html#function-is) methods (`'text'` replaced with `'$text'` and `'textProxy'` replaced with `'$textProxy'`).
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Model's and view's `is()` method (e.g. [`Element#is()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_model_element-Element.html#function-is), [`Text#is()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_model_text-Text.html#function-is), [`AttributeElement#is()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_attributeelement-AttributeElement.html#function-is) or [`ContainerElement#is()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_containerelement-ContainerElement.html#function-is)) no longer treats the first argument as a name. To check the element's name use the second argument instead.
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Marker conversion has changed. As a result, names with a `,` (comma) character are now disallowed. See the GitHub issue for an [example migration path](https://github.com/ckeditor/ckeditor5/issues/7556#issuecomment-665579653).
-* The method `editor.setData()` clears the undo and redo stacks.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
