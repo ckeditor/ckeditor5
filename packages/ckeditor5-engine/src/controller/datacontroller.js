@@ -136,7 +136,7 @@ export default class DataController {
 		this.decorate( 'set' );
 
 		// Fire the `ready` event when the initialization has completed. Such low-level listener gives possibility
-		// to plug into initialization pipeline without interrupting the initialization flow.
+		// to plug into the initialization pipeline without interrupting the initialization flow.
 		this.on( 'init', () => {
 			this.fire( 'ready' );
 		}, { priority: 'lowest' } );
