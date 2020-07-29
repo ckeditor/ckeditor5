@@ -46,7 +46,7 @@ import { extend } from 'lodash-es';
  * overwrite others or convert multiple changes (for example, it converts an insertion of an element and also converts that
  * element's attributes during the insertion).
  *
- * Additionally, `DowncastDispatcher` fires events for {@link module:engine/model/markercollection~Marker marker} changes:
+ * Additionally, downcast dispatcher fires events for {@link module:engine/model/markercollection~Marker marker} changes:
  *
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker} if a marker has been added,
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:removeMarker} if a marker has been removed.
