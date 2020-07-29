@@ -48,50 +48,50 @@ import { extend } from 'lodash-es';
  *
  * Additionally, downcast dispatcher fires events for {@link module:engine/model/markercollection~Marker marker} changes:
  *
- * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker} if a marker has been added,
- * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:removeMarker} if a marker has been removed.
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker} &ndash; If a marker was added.
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:removeMarker} &ndash; If a marker was removed.
  *
- * Note, that changing a marker is done through removing the marker from the old range, and adding on the new range,
- * so both those events are fired.
+ * Note that changing a marker is done through removing the marker from the old range and adding it on the new range,
+ * so both events are fired.
  *
- * Finally, `DowncastDispatcher` also handles firing events for {@link module:engine/model/selection model selection}
+ * Finally, downcast dispatcher also handles firing events for the {@link module:engine/model/selection model selection}
  * conversion:
  *
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:selection}
- * which converts selection from model to view,
+ * &ndash; Converts the selection from the model to the view.
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute}
- * which is fired for every selection attribute,
+ * &ndash; Fired for every selection attribute.
  * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}
- * which is fired for every marker which contains selection.
+ * &ndash; Fired for every marker that contains a selection.
  *
  * Unlike model tree and markers, events for selection are not fired for changes but for selection state.
  *
- * When providing custom listeners for `DowncastDispatcher` remember to check whether given change has not been
+ * When providing custom listeners for downcast dispatcher, remember to check whether a given change has not been
  * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} yet.
  *
- * When providing custom listeners for `DowncastDispatcher` keep in mind that any callback that had
+ * When providing custom listeners for downcast dispatcher, keep in mind that any callback that has
  * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} a value from a consumable and
  * converted the change should also stop the event (for efficiency purposes).
  *
- * When providing custom listeners for `DowncastDispatcher` remember to use provided
+ * When providing custom listeners for downcast dispatcher, remember to use the provided
  * {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer} to apply changes to the view document.
  *
- * Example of a custom converter for `DowncastDispatcher`:
+ * An example of a custom converter for the downcast dispatcher:
  *
- *		// We will convert inserting "paragraph" model element into the model.
+ *		// You will convert inserting a "paragraph" model element into the model.
  *		downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
  *			// Remember to check whether the change has not been consumed yet and consume it.
  *			if ( conversionApi.consumable.consume( data.item, 'insert' ) ) {
  *				return;
  *			}
  *
- *			// Translate position in model to position in view.
+ *			// Translate the position in the model to a position in the view.
  *			const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
  *
- *			// Create <p> element that will be inserted in view at `viewPosition`.
+ *			// Create a <p> element that will be inserted into the view at the `viewPosition`.
  *			const viewElement = conversionApi.writer.createContainerElement( 'p' );
  *
- *			// Bind the newly created view element to model element so positions will map accordingly in future.
+ *			// Bind the newly created view element to the model element so positions will map accordingly in the future.
  *			conversionApi.mapper.bindElements( data.item, viewElement );
  *
  *			// Add the newly created view element to the view.
@@ -103,15 +103,15 @@ import { extend } from 'lodash-es';
  */
 export default class DowncastDispatcher {
 	/**
-	 * Creates a `DowncastDispatcher` instance.
+	 * Creates a downcast dispatcher instance.
 	 *
 	 * @see module:engine/conversion/downcastdispatcher~DowncastConversionApi
-	 * @param {Object} conversionApi Additional properties for interface that will be passed to events fired
-	 * by `DowncastDispatcher`.
+	 * @param {Object} conversionApi Additional properties for an interface that will be passed to events fired
+	 * by the downcast dispatcher.
 	 */
 	constructor( conversionApi ) {
 		/**
-		 * Interface passed by dispatcher to the events callbacks.
+		 * An interface passed by the dispatcher to the event callbacks.
 		 *
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastConversionApi}
 		 */
@@ -119,11 +119,11 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Takes {@link module:engine/model/differ~Differ model differ} object with buffered changes and fires conversion basing on it.
+	 * Takes a {@link module:engine/model/differ~Differ model differ} object with buffered changes and fires conversion basing on it.
 	 *
-	 * @param {module:engine/model/differ~Differ} differ Differ object with buffered changes.
-	 * @param {module:engine/model/markercollection~MarkerCollection} markers Markers connected with converted model.
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
+	 * @param {module:engine/model/differ~Differ} differ The differ object with buffered changes.
+	 * @param {module:engine/model/markercollection~MarkerCollection} markers Markers connected with the converted model.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
 	convertChanges( differ, markers, writer ) {
 		// Before the view is updated, remove markers which have changed.
@@ -157,15 +157,15 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Starts conversion of a range insertion.
+	 * Starts a conversion of a range insertion.
 	 *
-	 * For each node in the range, {@link #event:insert insert event is fired}. For each attribute on each node,
-	 * {@link #event:attribute attribute event is fired}.
+	 * For each node in the range, {@link #event:insert `insert` event is fired}. For each attribute on each node,
+	 * {@link #event:attribute `attribute` event is fired}.
 	 *
 	 * @fires insert
 	 * @fires attribute
-	 * @param {module:engine/model/range~Range} range Inserted range.
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
+	 * @param {module:engine/model/range~Range} range The inserted range.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
 	convertInsert( range, writer ) {
 		this.conversionApi.writer = writer;
