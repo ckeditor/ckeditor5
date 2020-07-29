@@ -20,7 +20,7 @@ import { extend } from 'lodash-es';
  * changing attributes on view elements).
  *
  * During the conversion process, downcast dispatcher fires events basing on the state of the model and prepares
- * data for those events. It is important to understand that those events are connected with changes done on model,
+ * data for these events. It is important to understand that the events are connected with the changes done on the model,
  * for example: "node has been inserted" or "attribute has changed". This is in contrary to upcasting (view to model conversion),
  * where we convert view state (view nodes) to a model tree.
  *
