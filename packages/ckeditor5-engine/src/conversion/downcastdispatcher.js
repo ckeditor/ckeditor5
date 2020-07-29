@@ -42,7 +42,7 @@ import { extend } from 'lodash-es';
  * For {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert`}
  * and {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute `attribute`},
  * downcast dispatcher generates {@link module:engine/conversion/modelconsumable~ModelConsumable consumables}.
- * These are used to have a control over which changes have been already consumed. It is useful when some converters
+ * These are used to have control over which changes have already been consumed. It is useful when some converters
  * overwrite others or convert multiple changes (for example converts insertion of an element and also converts that
  * element's attributes during insertion).
  *
