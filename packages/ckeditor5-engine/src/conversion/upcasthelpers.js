@@ -650,7 +650,7 @@ function upcastDataToMarker( config ) {
 		//
 		const basePriority = priorities.get( 'low' );
 		const maxPriority = priorities.get( 'highest' );
-		const priorityFactor = priorities.get( config.converterPriority ) / maxPriority; // Number in range [1, -1].
+		const priorityFactor = priorities.get( config.converterPriority ) / maxPriority; // Number in range [ -1, 1 ].
 
 		dispatcher.on( 'element', upcastAttributeToMarker( config ), { priority: basePriority + priorityFactor } );
 	};
