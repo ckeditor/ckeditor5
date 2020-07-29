@@ -19,7 +19,7 @@ The editing engine implements an MVC architecture. The shape of it is not enforc
 
 What you can see are three layers: **model**, **controller** and **view**. There is one **model document** which is **converted** into separate views &mdash; the **editing view** and the **data view**. These two views represent, respectively, the content that the user is editing (the DOM structure that you see in the browser) and the editor input and output data (in a format that the plugged data processor understands). Both views feature virtual DOM structures (custom, DOM-like structures) on which converters and features work and which are then **rendered** to the DOM.
 
-The green blocks are the code introduced by editor features (plugins). These features control what changes are made to the model, how they are converted to the view and how the model needs to be changed based on fired events (respectively view's and model's ones).
+The green blocks are the code introduced by editor features (plugins). These features control what changes are made to the model, how they are converted to the view and how the model needs to be changed based on fired events (the view's and model's ones).
 
 Let's now talk about each layer separately.
 
@@ -196,7 +196,7 @@ Let's again take a look at the editing engine's architecture:
 
 [{@img assets/img/framework-architecture-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
 
-So far, we talked about the topmost layer of this diagram – the model. The role of the model layer is to create an abstraction over the data. Its format was designed to allow storing and modifying the data in the most convenient way, while enabling implementation of complex features. Most features operate on the model (read from it and change it).
+So far, we talked about the topmost layer of this diagram &mdash; the model. The role of the model layer is to create an abstraction over the data. Its format was designed to allow storing and modifying the data in the most convenient way, while enabling implementation of complex features. Most features operate on the model (read from it and change it).
 
 The view, on the other hand, is an abstract representation of the DOM structure which should be presented to the user (for editing) and which should (in most cases) represent the editor's input and output (i.e. the data returned by `editor.getData()`, the data set by `editor.setData()`, pasted content, etc.).
 
