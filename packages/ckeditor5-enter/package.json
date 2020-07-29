@@ -18,6 +18,7 @@
     "@ckeditor/ckeditor5-basic-styles": "^20.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^20.0.0",
     "@ckeditor/ckeditor5-heading": "^20.0.0",
+    "@ckeditor/ckeditor5-link": "^20.0.0",
     "@ckeditor/ckeditor5-paragraph": "^20.0.0",
     "@ckeditor/ckeditor5-typing": "^20.0.0",
     "@ckeditor/ckeditor5-undo": "^20.0.0"

@@ -22,7 +22,8 @@ const MULTI_LANGUAGE = 'multi-language';
  * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
  * @param {Object} options
  * @param {Boolean} options.production Whether to build snippets in production mode.
- * @param {Array.<String>|undefined} options.allowedSnippets An array that contains glob patterns.
+ * @param {Array.<String>|undefined} options.allowedSnippets An array that contains glob patterns of snippets that should be built.
+ * If not specified or if passed the empty array, all snippets will be built.
  * @param {Object.<String, Function>} umbertoHelpers
  * @returns {Promise}
  */
@@ -81,11 +82,8 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 	}
 
 	// Remove snippets that do not match to patterns specified in `options.allowedSnippets`.
-	if ( options.allowedSnippets ) {
+	if ( options.allowedSnippets && options.allowedSnippets.length ) {
 		filterAllowedSnippets( snippets, options.allowedSnippets );
-	}
-
-	if ( options.allowedSnippets.length ) {
 		console.log( `Found ${ snippets.size } matching {@snippet} tags.` );
 	}
 
@@ -221,13 +219,9 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
  * Removes snippets that names do not match to patterns specified in `allowedSnippets` array.
  *
  * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
- * @param {Array.<String>|undefined} allowedSnippets Snippet patterns that should be built.
+ * @param {Array.<String>} allowedSnippets Snippet patterns that should be built.
  */
 function filterAllowedSnippets( snippets, allowedSnippets ) {
-	if ( !allowedSnippets.length ) {
-		return;
-	}
-
 	const snippetsToBuild = new Set();
 
 	// Find all snippets that matched to specified criteria.
