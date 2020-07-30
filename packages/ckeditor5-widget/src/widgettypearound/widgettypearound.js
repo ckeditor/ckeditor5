@@ -168,9 +168,9 @@ export default class WidgetTypeAround extends Plugin {
 	/**
 	 * Similar to {@link #_insertParagraph}, this method inserts a paragraph except that it
 	 * does not expect a position. Instead, it performs the insertion next to a selected widget
-	 * according to the "widget-type-around" model selection attribute value (fake caret position).
+	 * according to the `widget-type-around` model selection attribute value (fake caret position).
 	 *
-	 * Because this method requires the "widget-type-around" attribute to be set,
+	 * Because this method requires the `widget-type-around` attribute to be set,
 	 * the insertion can only happen when the widget's fake caret is active (e.g. activated
 	 * using the keyboard).
 	 *
@@ -238,7 +238,7 @@ export default class WidgetTypeAround extends Plugin {
 	 *
 	 * 1. A user does one of the 2 scenarios described at the beginning.
 	 * 2. The "keydown" listener is executed and the decision is made whether to show or hide the fake caret.
-	 * 3. If it should show up, the "widget-type-around" model selection attribute is set indicating
+	 * 3. If it should show up, the `widget-type-around` model selection attribute is set indicating
 	 *    on which side of the widget it should appear.
 	 * 4. The selection dispatcher reacts to the selection attribute and sets CSS classes responsible for the
 	 *    fake caret on the view widget.
@@ -362,7 +362,7 @@ export default class WidgetTypeAround extends Plugin {
 	 * It decides whether the arrow keypress should activate the fake caret or not (also whether it should
 	 * be deactivated).
 	 *
-	 * The fake caret activation is done by setting the "widget-type-around" model selection attribute
+	 * The fake caret activation is done by setting the `widget-type-around` model selection attribute
 	 * in this listener, and stopping and preventing the event that would normally be handled by the widget
 	 * plugin that is responsible for the regular keyboard navigation near/across all widgets (that
 	 * includes inline widgets, which are ignored by the widget type around plugin).
@@ -400,7 +400,7 @@ export default class WidgetTypeAround extends Plugin {
 
 	/**
 	 * Handles the keyboard navigation on "keydown" when a widget is currently selected and activates or deactivates
-	 * the fake caret for that widget, depending on the current value of the "widget-type-around" model
+	 * the fake caret for that widget, depending on the current value of the `widget-type-around` model
 	 * selection attribute and the direction of the pressed arrow key.
 	 *
 	 * @private
@@ -521,7 +521,7 @@ export default class WidgetTypeAround extends Plugin {
 	 * * The fake caret was first activated using the arrow keys,
 	 * * The entire widget is selected in the model.
 	 *
-	 * In the first case, the new paragraph is inserted according to the "widget-type-around" selection
+	 * In the first case, the new paragraph is inserted according to the `widget-type-around` selection
 	 * attribute (see {@link #_handleArrowKeyPress}).
 	 *
 	 * In the second case, the new paragraph is inserted based on whether a soft (<kbd>Shift</kbd>+<kbd>Enter</kbd>) keystroke
@@ -566,7 +566,7 @@ export default class WidgetTypeAround extends Plugin {
 	 *
 	 * "Typing keystrokes" are keystrokes that insert new content into the document,
 	 * for instance, letters ("a") or numbers ("4"). The "keydown" listener enabled by this method
-	 * will insert a new paragraph according to the "widget-type-around" model selection attribute
+	 * will insert a new paragraph according to the `widget-type-around` model selection attribute
 	 * as the user simply starts typing, which creates the impression that the fake caret
 	 * behaves like a real one rendered by the browser (AKA your text appears where the caret was).
 	 *
@@ -684,7 +684,7 @@ export default class WidgetTypeAround extends Plugin {
 	 * Attaches the {@link module:engine/model/model~Model#event:insertContent} event listener that, for instance, allows the user to paste
 	 * content near a widget when the fake caret is first activated using the arrow keys.
 	 *
-	 * The content is inserted according to the "widget-type-around" selection attribute (see {@link #_handleArrowKeyPress}).
+	 * The content is inserted according to the `widget-type-around` selection attribute (see {@link #_handleArrowKeyPress}).
 	 *
 	 * @private
 	 */
