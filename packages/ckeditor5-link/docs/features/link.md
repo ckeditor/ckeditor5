@@ -7,6 +7,8 @@ category: features
 
 The {@link module:link/link~Link} feature brings support for link editing to the rich-text editor. It allows for inserting hyperlinks into the edited content and offers the UI to create and edit them.
 
+After you enable the optional [autolink](#autolink-feature) plugin, typed or pasted URL and e-mail addresses will be automatically turned into working links as you type.
+
 ## Demo
 
 You can edit existing links by clicking them and using the balloon. Use the Link toolbar button or press <kbd>Ctrl/⌘</kbd>+<kbd>K</kbd> to create a new link.
@@ -240,15 +242,17 @@ ClassicEditor
 
 ## Autolink feature
 
-You can enable automatic linking of URLs typed or pasted into editor. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically add turn URLs or e-mail addresses into real links.
+You can enable automatic linking of URLs typed or pasted into the editor. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically turn URLs or e-mail addresses into real, working links.
+
+To use the autolink function simply press <kbd>Space</kbd>, <kbd>Enter</kbd> or <kbd>Shift</kbd>+<kbd>Enter</kbd> after a link.
 
 <info-box>
-	Autolink action can always be reverted by the undo feature (<kbd>CTRL</kbd>+<kbd>Z</kbd>).
+	Autolink action can always be reverted by the undo feature (<kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd>).
 </info-box>
 
 {@snippet features/autolink}
 
-The `Autolink` plugin is not available in any of the builds. See the [Installation](#installation) section to learn how to enable it.
+Unlike the base link feature, the autolink plugin is not available in any of the builds. Refer to the [Installation](#installation) section to learn how to enable it.
 
 ## Installation
 
