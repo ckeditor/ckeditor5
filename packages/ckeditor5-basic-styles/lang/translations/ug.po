@@ -30,16 +30,16 @@ msgstr "ئاستى سىزىق"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
-msgstr "كودى"
+msgstr "كود"
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
-msgstr ""
+msgstr "ئۆچۈرۈش سىزىقى"
 
 msgctxt "Toolbar button tooltip for the Subscript feature."
 msgid "Subscript"
-msgstr ""
+msgstr "ئاستبەلگە"
 
 msgctxt "Toolbar button tooltip for the Superscript feature."
 msgid "Superscript"
-msgstr ""
+msgstr "ئۈستبەلگە"

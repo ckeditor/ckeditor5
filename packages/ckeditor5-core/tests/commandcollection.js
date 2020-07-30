@@ -55,6 +55,20 @@ describe( 'CommandCollection', () => {
 			expect( command.execute.args[ 0 ] ).to.deep.equal( [ 1, 2 ] );
 		} );
 
+		it( 'returns the result of command\'s execute()', () => {
+			const command = new SomeCommand( editor );
+
+			const commandResult = { foo: 'bar' };
+			sinon.stub( command, 'execute' ).returns( commandResult );
+
+			collection.add( 'foo', command );
+
+			const collectionResult = collection.execute( 'foo' );
+
+			expect( collectionResult, 'collection.execute()' ).to.equal( commandResult );
+			expect( collectionResult, 'collection.execute()' ).to.deep.equal( { foo: 'bar' } );
+		} );
+
 		it( 'throws an error if command does not exist', () => {
 			const command = new SomeCommand( editor );
 			collection.add( 'bar', command );

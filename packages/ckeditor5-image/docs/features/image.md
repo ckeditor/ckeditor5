@@ -78,17 +78,31 @@ By default, if the image caption is empty, the `<figcaption>` element is not vis
 
 {@snippet features/image-caption}
 
+## Image upload
+
+See the {@link features/image-upload Image upload} guide.
+
+## Responsive images
+
+Support for responsive images in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Learn more how to use the feature in your project in the {@link features/easy-image#responsive-images Easy Image integration} guide.
+
 ## Image styles
 
 In simple integrations it is enough to let the user insert images, set their text alternative and the editor's job is done. An example of such a simple solution are e.g. [GitHub](https://github.com) comments. The styling of the images (for example, their maximum width and margins) is controlled by GitHub through stylesheets.
 
 In more advanced scenarios, the user may need to be able to decide whether the image should take the whole width (if it is the article's main photo) or it should take, for example, 50% of the width and be pulled out of the content (so called "pulled images"). Various integration scenarios require different types of images to be used.
 
-This is what the {@link module:image/imagestyle~ImageStyle} feature is designed for.
+Finally, in certain situations, the user should be able to granularly control how an image is presented so they should be able to set the size and alignment separately.
 
-However, unlike in CKEditor 4, in CKEditor 5 the end user does not set the image border, alignment, margins, width, etc. separately. Instead, they can pick one of the styles defined by the developer who prepared the WYSIWYG editor integration. This gives the developer control over how the users style images and makes the user's life easier by setting multiple properties at once.
+The {@link module:image/imagestyle~ImageStyle} feature solves the last two scenarios. The former is handled by so-called ["semantical styles"](#semantical-styles) and the latter by ["presentational styles"](#presentational-styles) in combination with [image resize](#resizing-images).
 
-A style is applied to the image in form of a class. By default, CKEditor 5 is configured to support two styles: "full width" (which does not apply any class &mdash; it is the default style) and "side image" (which applies the `image-style-side` class).
+The available image styles can be configured using the {@link module:image/image~ImageConfig#styles `config.image.styles`} option. Respective buttons should also be added to the image toolbar via {@link module:image/image~ImageConfig#toolbar `config.image.toolbar`}.
+
+### Semantical styles
+
+A semantical style let the user choose from a predefined "types" of images. The user is not able to set the image border, alignment, margins, width, etc. separately. Instead, they can pick one of the styles defined by the developer who prepared the WYSIWYG editor integration. This gives the developer control over how the users style images and makes the user's life easier by setting multiple properties at once.
+
+A style is applied to the image in form of a class. By default, CKEditor 5 is configured to support two default semantical styles: **"full width"** (which does not apply any class &mdash; it is the default style) and **"side image"** (which applies the `image-style-side` class).
 
 A normal (full width) image:
 
@@ -103,37 +117,31 @@ A side image:
 ```
 
 <info-box>
-	The actual styling of the images is the developer's job. CKEditor 5 WYSIWYG editor comes with some default styles, but they will only be applied to images inside the editor. The developer needs to style them appropriately on the target pages.
+	The actual styling of the images is the integrator's job. CKEditor 5 WYSIWYG editor comes with some default styles, but they will only be applied to images inside the editor. The integrator needs to style them appropriately on the target pages.
 
-	You can find the source of the default styles applied by the editor here: [`ckeditor5-image/theme/imagestyle.css`](https://github.com/ckeditor/ckeditor5-image/blob/master/theme/imagestyle.css).
+	You can find the source of the default styles applied by the editor here: [`ckeditor5-image/theme/imagestyle.css`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/theme/imagestyle.css).
+
+	Read more about {@link builds/guides/integration/content-styles styling the content of the editor}.
 </info-box>
 
-Below you can see a demo of the WYSIWYG editor with the image styles feature enabled. The default configuration is used. You can change the styles of images through the image's contextual toolbar.
-
-{@snippet features/image-style}
-
-### Configuring image styles
-
-The available image styles can be configured using the {@link module:image/image~ImageConfig#styles `image.styles`} option.
-
-The following WYSIWYG editor supports the default full image style plus left- and right-aligned images:
+Below you can see a demo of the WYSIWYG editor with the semantical image styles. The "full" and "side" styles are the default value of {@link module:image/image~ImageConfig#styles `config.image.styles`} so you do not need to set it.
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle ],
 		image: {
-			// You need to configure the image toolbar, too, so it uses the new style buttons.
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ],
+			toolbar: [
+				'imageStyle:full',
+				'imageStyle:side',
+				'|',
+				'imageTextAlternative'
+			],
 
+			// The default value,
 			styles: [
-				// This option is equal to a situation where no style is applied.
 				'full',
-
-				// This represents an image aligned to the left.
-				'alignLeft',
-
-				// This represents an image aligned to the right.
-				'alignRight'
+				'side'
 			]
 		}
 	} )
@@ -141,15 +149,52 @@ ClassicEditor
 	.catch( ... );
 ```
 
-The code sample above uses predefined image styles: `'full'`, `'alignLeft'` and `'alignRight'`. The latter two apply, respectively, the `.image-style-align-left` and  `.image-style-align-right` classes to the `<figure>` element.
+See the result below. You can change the styles of images through the image's contextual toolbar.
+
+{@snippet features/image-style}
+
+<info-box hint>
+Try to understand what use cases the system needs to support and define semantic options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. For example, the "side image" style can be displayed as a floated image on wide screens and as a normal image on low resolution screens (e.g. mobile browsers).
+</info-box>
+
+<info-box warning>
+	While semantical styles can be combined with manual [image resizing](#resizing-images), these features were not designed to be used together.
+
+	If you want to enable image resizing, use [presentational image styles](#presentational-styles).
+</info-box>
+
+### Presentational styles
+
+Presentational styles do not add any special meaning to the content. They directly control the visual aspect of an image.
+
+Currently, the available presentational styles are "align center", "align left" and "align right".
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		image: {
+			// Configure the available styles.
+			styles: [
+				'alignLeft', 'alignCenter', 'alignRight'
+			],
+
+			// You need to configure the image toolbar, too, so it shows the new style buttons.
+			toolbar: [
+				'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight',
+				'|',
+				'imageTextAlternative'
+			]
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+The code sample above uses predefined presentational image styles: `'alignLeft'`, `'alignCenter'` and `'alignRight'`. They apply, respectively, the `.image-style-align-left`, `.image-style-align-center` and  `.image-style-align-right` classes to the `<figure>` element.
 
 See the result below:
 
-{@snippet features/image-style-custom}
-
-<info-box hint>
-	In the example above the options represent simple "align left" and "align right" styles. Most text editors support left, center and right alignments, however, it is better not to think about CKEditor 5's image styles in this way. Try to understand what use cases the system needs to support and define semantic options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. For example, the "side image" style can be displayed as a floated image on wide screens and as a normal image on low resolution screens.
-</info-box>
+{@snippet features/image-style-presentational}
 
 ### Defining custom styles
 
@@ -167,17 +212,9 @@ you can also define your own styles or modify the existing ones.
 	Reusing (or modifying) predefined styles has the following advantage: CKEditor 5 will use its official translations for the defined button titles.
 </info-box>
 
-You can find advanced examples in the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option documentation.
+You can find advanced examples in the {@link module:image/image~ImageConfig#styles `config.image.styles`} configuration option documentation.
 
 <!-- TODO (live example)... -->
-
-## Image upload
-
-See the {@link features/image-upload Image upload} guide.
-
-## Responsive images
-
-Support for responsive images in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Learn more how to use the feature in your project in the {@link features/easy-image#responsive-images Easy Image integration} guide.
 
 ## Resizing images
 
@@ -187,68 +224,160 @@ It is implemented by the {@link module:image/imageresize~ImageResize} plugin and
 
 The plugin also gives you an ability to change the size of the image through the image toolbar. You can set an optional static configuration with {@link module:image/image~ImageConfig#resizeOptions} and choose whether you want to use a dropdown or set of the standalone buttons.
 
-### Resize image using handles
+### Methods to resize images
+
+The editor offers different ways to resize images either by using resize handles or by using dedicated UI components.
+
+#### Using handles
+
+In this case, the user is able to resize images via dragging square handles displayed in each corner of the image. Once [image resizing was enabled](#enabling-image-resizing), this option does not require any additional configuration.
 
 {@snippet features/image-resize}
 
-### Resize image using the plugin dropdown
+You can configure the editor for resizing images by handles in two different ways:
+
+- By installing the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`).
+
+```js
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageResize, ... ],
+		...
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+- Or by installing the combination of {@link module:image/imageresize/imageresizeediting~ImageResizeEditing} and {@link module:image/imageresize/imageresizehandles~ImageResizeHandles} plugins.
+
+```js
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageResizeEditing from '@ckeditor/ckeditor5-image/src/imageresize/imageresizeediting';
+import ImageResizeHandles from '@ckeditor/ckeditor5-image/src/imageresize/imageresizehandles';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageResizeEditing, ImageResizeHandles, ... ],
+		...
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+Both ways enable resize handles by default.
+
+#### Using the dropdown
+
+In this case, the user is able to choose from a set of predefined options. These options can be displayed in the image toolbar in form of a dropdown.
+
+To use this option, you need to [enable image resizing](#enabling-image-resizing) and configure the available {@link module:image/image~ImageConfig#resizeOptions resize options}.
 
 ```js
 const imageConfiguration = {
 	resizeOptions: [
 		{
 			name: 'imageResize:original',
-			label: 'Original size',
-			value: null
+			value: null,
+			label: 'Original'
 		},
 		{
 			name: 'imageResize:50',
-			label: '50%',
-			value: '50'
+			value: '50',
+			label: '50%'
 		},
 		{
 			name: 'imageResize:75',
-			label: '75%',
-			value: '75'
+			value: '75',
+			label: '75%'
 		}
 	],
-	toolbar: [ ... , 'imageResize' ]
+	toolbar: [ ..., 'imageResize' ]
 }
 ```
 
-{@snippet features/image-resizeuidropdown}
+{@snippet features/image-resize-buttons-dropdown}
 
-### Resize image using the standalone buttons
+#### Using standalone buttons
+
+In this case, the resize options are displayed in form of separate buttons. The benefit of this solution is the smoothest UX as the user needs just one click to resize an image.
+
+To use this option, you need to [enabling image resizing](#enabling-image-resizing) and configure the available {@link module:image/image~ImageConfig#resizeOptions resize options}.
 
 ```js
 const imageConfiguration = {
 	resizeOptions: [
 		{
 			name: 'imageResize:original',
-			label: 'Original size',
-			value: null
+			value: null,
+			icon: 'original'
 		},
 		{
 			name: 'imageResize:50',
-			label: '50%',
-			value: '50'
+			value: '50',
+			icon: 'medium'
 		},
 		{
 			name: 'imageResize:75',
-			label: '75%',
-			value: '75'
+			value: '75',
+			icon: 'large'
 		}
 	],
 	toolbar: [
-		// ...,
-		'imageResize:original',
+		...,
 		'imageResize:50',
 		'imageResize:75'
+		'imageResize:original',
 	]
 }
 ```
 
-{@snippet features/image-resizeui}
+{@snippet features/image-resize-buttons}
+
+### Disabling image resize handles
+
+If, for some reason, you want to configure the editor in such a way that images can be resized only by buttons you can do so by omitting the {@link module:image/imageresize/imageresizehandles~ImageResizeHandles `ImageResizeHandles`} plugin. As a result, plugins setup should look like this: `plugins: [ 'ImageResizeEditing', 'ImageResizeButtons', ... ]` as opposed to `plugins: [ 'ImageResize', ... ]`. It will enable resizing image feature only by means of the chosen UI ([dropdown](#using-the-dropdown) or [standalone buttons](#using-standalone-buttons)) in the image toolbar.
+
+```js
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
+import ImageResizeEditing from '@ckeditor/ckeditor5-image/src/imageresize/imageresizeedititing';
+import ImageResizeButtons from '@ckeditor/ckeditor5-image/src/imageresize/imageresizebuttons';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageResizeEditing, ImageResizeButtons, ImageToolbar, ... ],
+		image: {
+			resizeOptions: [
+			{
+				name: 'imageResize:original',
+				value: null,
+				icon: 'original'
+			},
+			{
+				name: 'imageResize:50',
+				value: '50',
+				icon: 'medium'
+			},
+			{
+				name: 'imageResize:75',
+				value: '75',
+				icon: 'large'
+			}
+		],
+		toolbar: [
+			// ...,
+			'imageResize:50',
+			'imageResize:75',
+			'imageResize:original',
+		]
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
 
 ### Enabling image resizing
 

@@ -128,7 +128,7 @@ ClassicEditor
 
 			const element = selection.getSelectedElement();
 
-			if ( element && element.is( 'table' ) ) {
+			if ( element && element.is( 'element', 'table' ) ) {
 				return element;
 			}
 
@@ -136,7 +136,7 @@ ClassicEditor
 				const range = editor.model.createRangeIn( editor.model.document.getRoot() );
 
 				for ( const element of range.getItems() ) {
-					if ( element.is( 'table' ) ) {
+					if ( element.is( 'element', 'table' ) ) {
 						return element;
 					}
 				}
@@ -150,7 +150,7 @@ ClassicEditor
 			const tables = [];
 
 			for ( const element of range.getItems() ) {
-				if ( element.is( 'table' ) ) {
+				if ( element.is( 'element', 'table' ) ) {
 					tables.push( element );
 				}
 			}

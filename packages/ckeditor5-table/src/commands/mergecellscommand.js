@@ -92,7 +92,7 @@ function mergeTableCells( cellBeingMerged, targetCell, writer ) {
 // @param {module:engine/model/element~Element} tableCell
 // @returns {Boolean}
 function isEmpty( tableCell ) {
-	return tableCell.childCount == 1 && tableCell.getChild( 0 ).is( 'paragraph' ) && tableCell.getChild( 0 ).isEmpty;
+	return tableCell.childCount == 1 && tableCell.getChild( 0 ).is( 'element', 'paragraph' ) && tableCell.getChild( 0 ).isEmpty;
 }
 
 function getMergeDimensions( firstTableCell, selectedTableCells, tableUtils ) {

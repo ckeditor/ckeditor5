@@ -8,6 +8,7 @@ import ContainerElement from '../../../src/view/containerelement';
 import Element from '../../../src/view/element';
 import EmptyElement from '../../../src/view/emptyelement';
 import UIElement from '../../../src/view/uielement';
+import RawElement from '../../../src/view/rawelement';
 import Position from '../../../src/view/position';
 
 import { stringify, parse } from '../../../src/dev-utils/view';
@@ -214,6 +215,17 @@ describe( 'DowncastWriter', () => {
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, attributeElement );
 			}, 'view-writer-cannot-break-ui-element', document );
+		} );
+
+		it( 'should throw if trying to insert inside a RawElement', () => {
+			const rawElement = new RawElement( document, 'span' );
+			new ContainerElement( document, 'p', null, rawElement ); // eslint-disable-line no-new
+			const position = new Position( rawElement, 0 );
+			const attributeElement = new AttributeElement( document, 'i' );
+
+			expectToThrowCKEditorError( () => {
+				writer.insert( position, attributeElement );
+			}, 'view-writer-cannot-break-raw-element', document );
 		} );
 	} );
 } );

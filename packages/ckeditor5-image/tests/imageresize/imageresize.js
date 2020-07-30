@@ -4,12 +4,13 @@
  */
 
 import ImageResize from '../../src/imageresize';
-import ImageResizeUI from '../../src/imageresize/imageresizeui';
+import ImageResizeButtons from '../../src/imageresize/imageresizebuttons';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
+import ImageResizeHandles from '../../src/imageresize/imageresizehandles';
 
 describe( 'ImageResize', () => {
-	it( 'should require "ImageResizeEditing" and "ImageResizeUI"', () => {
-		expect( ImageResize.requires ).to.deep.equal( [ ImageResizeEditing, ImageResizeUI ] );
+	it( 'should require "ImageResizeEditing", "ImageResizeHandles", and "ImageResizeButtons"', () => {
+		expect( ImageResize.requires ).to.deep.equal( [ ImageResizeEditing, ImageResizeHandles, ImageResizeButtons ] );
 	} );
 
 	it( 'should be named', () => {

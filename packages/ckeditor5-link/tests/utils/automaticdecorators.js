@@ -95,4 +95,10 @@ describe( 'Automatic Decorators', () => {
 			expect( automaticDecorators.getDispatcher() ).to.be.a( 'function' );
 		} );
 	} );
+
+	describe( 'getDispatcherForLinkedImage()', () => {
+		it( 'should return a dispatcher function', () => {
+			expect( automaticDecorators.getDispatcherForLinkedImage() ).to.be.a( 'function' );
+		} );
+	} );
 } );

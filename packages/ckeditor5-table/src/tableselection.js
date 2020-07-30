@@ -163,7 +163,7 @@ export default class TableSelection extends Plugin {
 		const focusCellRange = [ ...selection.getRanges() ].pop();
 		const element = focusCellRange.getContainedElement();
 
-		if ( element && element.is( 'tableCell' ) ) {
+		if ( element && element.is( 'element', 'tableCell' ) ) {
 			return element;
 		}
 
@@ -180,7 +180,7 @@ export default class TableSelection extends Plugin {
 		const anchorCellRange = first( selection.getRanges() );
 		const element = anchorCellRange.getContainedElement();
 
-		if ( element && element.is( 'tableCell' ) ) {
+		if ( element && element.is( 'element', 'tableCell' ) ) {
 			return element;
 		}
 

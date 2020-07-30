@@ -87,7 +87,7 @@ export default class WidgetResize extends Plugin {
 			}
 		};
 
-		const redrawFocusedResizerThrottled = throttle( redrawFocusedResizer, 200 ); // 5fps
+		const redrawFocusedResizerThrottled = throttle( redrawFocusedResizer, 200 );
 
 		// Redraws occurring upon a change of visible resizer must not be throttled, as it is crucial for the initial
 		// render. Without it the resizer frame would be misaligned with resizing host for a fraction of second.

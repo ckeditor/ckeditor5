@@ -25,6 +25,7 @@ import AttributeElement from '../view/attributeelement';
 import ContainerElement from '../view/containerelement';
 import EmptyElement from '../view/emptyelement';
 import UIElement from '../view/uielement';
+import RawElement from '../view/rawelement';
 import { StylesProcessor } from '../view/stylesmap';
 
 const ELEMENT_RANGE_START_TOKEN = '[';
@@ -35,7 +36,8 @@ const allowedTypes = {
 	'container': ContainerElement,
 	'attribute': AttributeElement,
 	'empty': EmptyElement,
-	'ui': UIElement
+	'ui': UIElement,
+	'raw': RawElement
 };
 
 /**
@@ -55,6 +57,8 @@ const allowedTypes = {
  * (`<span id="marker:foo">`).
  * @param {Boolean} [options.renderUIElements=false] When set to `true`, the inner content of each
  * {@link module:engine/view/uielement~UIElement} will be printed.
+ * @param {Boolean} [options.renderRawElements=false] When set to `true`, the inner content of each
+ * {@link module:engine/view/rawelement~RawElement} will be printed.
  * @returns {String} The stringified data.
  */
 export function getData( view, options = {} ) {
@@ -70,6 +74,7 @@ export function getData( view, options = {} ) {
 		showType: options.showType,
 		showPriority: options.showPriority,
 		renderUIElements: options.renderUIElements,
+		renderRawElements: options.renderRawElements,
 		ignoreRoot: true
 	};
 
@@ -234,6 +239,8 @@ setData._parse = parse;
  *  `{` and `}` and the selection outside the text as `[` and `]`. When set to `false`, both will be marked as `[` and `]` only.
  * @param {Boolean} [options.renderUIElements=false] When set to `true`, the inner content of each
  * {@link module:engine/view/uielement~UIElement} will be printed.
+ * @param {Boolean} [options.renderRawElements=false] When set to `true`, the inner content of each
+ * {@link module:engine/view/rawelement~RawElement} will be printed.
  * @returns {String} An HTML-like string representing the view.
  */
 export function stringify( node, selectionOrPositionOrRange = null, options = {} ) {
@@ -452,7 +459,7 @@ class RangeParser {
 			}
 		}
 
-		if ( node.is( 'text' ) ) {
+		if ( node.is( '$text' ) ) {
 			const regexp = new RegExp(
 				`[${ TEXT_RANGE_START_TOKEN }${ TEXT_RANGE_END_TOKEN }\\${ ELEMENT_RANGE_END_TOKEN }\\${ ELEMENT_RANGE_START_TOKEN }]`,
 				'g'
@@ -622,6 +629,8 @@ class ViewStringify {
 	 * `{` and `}` and the selection outside the text as `[` and `]`. When set to `false`, both are marked as `[` and `]`.
 	 * @param {Boolean} [options.renderUIElements=false] When set to `true`, the inner content of each
 	 * {@link module:engine/view/uielement~UIElement} will be printed.
+	 * @param {Boolean} [options.renderRawElements=false] When set to `true`, the inner content of each
+	 * {@link module:engine/view/rawelement~RawElement} will be printed.
 	 */
 	constructor( root, selection, options ) {
 		this.root = root;
@@ -638,6 +647,7 @@ class ViewStringify {
 		this.ignoreRoot = !!options.ignoreRoot;
 		this.sameSelectionCharacters = !!options.sameSelectionCharacters;
 		this.renderUIElements = !!options.renderUIElements;
+		this.renderRawElements = !!options.renderRawElements;
 	}
 
 	/**
@@ -670,8 +680,15 @@ class ViewStringify {
 				callback( this._stringifyElementOpen( root ) );
 			}
 
-			if ( this.renderUIElements && root.is( 'uiElement' ) ) {
+			if ( ( this.renderUIElements && root.is( 'uiElement' ) ) ) {
 				callback( root.render( document ).innerHTML );
+			} else if ( this.renderRawElements && root.is( 'rawElement' ) ) {
+				// There's no DOM element for "root" to pass to render(). Creating
+				// a surrogate container to render the children instead.
+				const rawContentContainer = document.createElement( 'div' );
+				root.render( rawContentContainer );
+
+				callback( rawContentContainer.innerHTML );
 			} else {
 				let offset = 0;
 				callback( this._stringifyElementRanges( root, offset ) );
@@ -688,7 +705,7 @@ class ViewStringify {
 			}
 		}
 
-		if ( root.is( 'text' ) ) {
+		if ( root.is( '$text' ) ) {
 			callback( this._stringifyTextRanges( root ) );
 		}
 	}
@@ -824,8 +841,9 @@ class ViewStringify {
 	 * Returns:
 	 * * 'attribute' for {@link module:engine/view/attributeelement~AttributeElement attribute elements},
 	 * * 'container' for {@link module:engine/view/containerelement~ContainerElement container elements},
-	 * * 'empty' for {@link module:engine/view/emptyelement~EmptyElement empty elements}.
-	 * * 'ui' for {@link module:engine/view/uielement~UIElement UI elements}.
+	 * * 'empty' for {@link module:engine/view/emptyelement~EmptyElement empty elements},
+	 * * 'ui' for {@link module:engine/view/uielement~UIElement UI elements},
+	 * * 'raw' for {@link module:engine/view/rawelement~RawElement raw elements},
 	 * * an empty string when the current configuration is preventing showing elements' types.
 	 *
 	 * @private
@@ -943,10 +961,10 @@ function _convertViewElements( rootNode ) {
 		for ( const child of [ ...rootNode.getChildren() ] ) {
 			if ( convertedElement.is( 'emptyElement' ) ) {
 				throw new Error( 'Parse error - cannot parse inside EmptyElement.' );
-			}
-
-			if ( convertedElement.is( 'uiElement' ) ) {
+			} else if ( convertedElement.is( 'uiElement' ) ) {
 				throw new Error( 'Parse error - cannot parse inside UIElement.' );
+			} else if ( convertedElement.is( 'rawElement' ) ) {
+				throw new Error( 'Parse error - cannot parse inside RawElement.' );
 			}
 
 			convertedElement._appendChild( _convertViewElements( child ) );

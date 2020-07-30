@@ -90,7 +90,8 @@ export default class DataController {
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastDispatcher}
 		 */
 		this.downcastDispatcher = new DowncastDispatcher( {
-			mapper: this.mapper
+			mapper: this.mapper,
+			schema: model.schema
 		} );
 		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );
 
@@ -125,16 +126,17 @@ export default class DataController {
 		// Define default converters for text and elements.
 		//
 		// Note that if there is no default converter for the element it will be skipped, for instance `<b>foo</b>` will be
-		// converted to nothing. We add `convertToModelFragment` as a last converter so it converts children of that
-		// element to the document fragment so `<b>foo</b>` will be converted to `foo` if there is no converter for `<b>`.
+		// converted to nothing. We therefore add `convertToModelFragment` as a last converter so it converts children of that
+		// element to the document fragment and so `<b>foo</b>` will be converted to `foo` if there is no converter for `<b>`.
 		this.upcastDispatcher.on( 'text', convertText(), { priority: 'lowest' } );
 		this.upcastDispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		this.upcastDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 		this.decorate( 'init' );
+		this.decorate( 'set' );
 
-		// Fire `ready` event when initialisation has completed. Such low level listener gives possibility
-		// to plug into initialisation pipeline without interrupting the initialisation flow.
+		// Fire the `ready` event when the initialization has completed. Such low-level listener gives possibility
+		// to plug into the initialization pipeline without interrupting the initialization flow.
 		this.on( 'init', () => {
 			this.fire( 'ready' );
 		}, { priority: 'lowest' } );
@@ -218,7 +220,7 @@ export default class DataController {
 
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
-		// We have no view controller and rendering do DOM in DataController so view.change() block is not used here.
+		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
 		this.downcastDispatcher.convertInsert( modelRange, viewWriter );
 
 		if ( !modelElementOrFragment.is( 'documentFragment' ) ) {
@@ -316,6 +318,7 @@ export default class DataController {
 	 *
 	 *		dataController.set( { main: '<p>Foo</p>', title: '<h1>Bar</h1>' } ); // Sets data on the `main` and `title` roots.
 	 *
+	 * @fires set
 	 * @param {String|Object.<String,String>} data Input data as a string or an object containing `rootName` - `data`
 	 * pairs to set data on multiple roots at once.
 	 */
@@ -436,20 +439,29 @@ export default class DataController {
 	}
 
 	/**
-	 * Event fired once data initialisation has finished.
+	 * Event fired once the data initialization has finished.
 	 *
 	 * @event ready
 	 */
 
 	/**
-	 * Event fired after {@link #init init() method} has been run. It can be {@link #listenTo listened to} to adjust/modify
-	 * the initialisation flow. However, if the `init` event is stopped or prevented, the {@link #event:ready ready event}
+	 * Event fired after the {@link #init `init()` method} was run. It can be {@link #listenTo listened to} in order to adjust or modify
+	 * the initialization flow. However, if the `init` event is stopped or prevented, the {@link #event:ready `ready` event}
 	 * should be fired manually.
 	 *
-	 * The `init` event is fired by decorated {@link #init} method.
+	 * The `init` event is fired by the decorated {@link #init} method.
 	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
 	 *
 	 * @event init
+	 */
+
+	/**
+	 * Event fired after {@link #set set() method} has been run.
+	 *
+	 * The `set` event is fired by decorated {@link #set} method.
+	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+	 *
+	 * @event set
 	 */
 }
 

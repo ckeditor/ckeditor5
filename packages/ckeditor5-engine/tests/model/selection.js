@@ -142,7 +142,7 @@ describe( 'Selection', () => {
 		it( 'should return false for incorrect values', () => {
 			expect( selection.is( 'model' ) ).to.be.false;
 			expect( selection.is( 'model:node' ) ).to.be.false;
-			expect( selection.is( 'text' ) ).to.be.false;
+			expect( selection.is( '$text' ) ).to.be.false;
 			expect( selection.is( 'element', 'paragraph' ) ).to.be.false;
 		} );
 	} );
@@ -834,8 +834,8 @@ describe( 'Selection', () => {
 		it( 'should return false for other values', () => {
 			expect( selection.is( 'documentSelection' ) ).to.be.false;
 			expect( selection.is( 'node' ) ).to.be.false;
-			expect( selection.is( 'text' ) ).to.be.false;
-			expect( selection.is( 'textProxy' ) ).to.be.false;
+			expect( selection.is( '$text' ) ).to.be.false;
+			expect( selection.is( '$textProxy' ) ).to.be.false;
 			expect( selection.is( 'element' ) ).to.be.false;
 			expect( selection.is( 'rootElement' ) ).to.be.false;
 		} );
@@ -1376,7 +1376,7 @@ describe( 'Selection', () => {
 			let innerText = '';
 
 			for ( const child of el.getChildren() ) {
-				if ( child.is( 'text' ) ) {
+				if ( child.is( '$text' ) ) {
 					innerText += child.data;
 				}
 			}

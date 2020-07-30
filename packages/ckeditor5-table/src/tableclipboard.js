@@ -375,13 +375,13 @@ function getTableIfOnlyTableInContent( content, model ) {
 	}
 
 	// Table passed directly.
-	if ( content.is( 'table' ) ) {
+	if ( content.is( 'element', 'table' ) ) {
 		return content;
 	}
 
 	// We do not support mixed content when pasting table into table.
 	// See: https://github.com/ckeditor/ckeditor5/issues/6817.
-	if ( content.childCount == 1 && content.getChild( 0 ).is( 'table' ) ) {
+	if ( content.childCount == 1 && content.getChild( 0 ).is( 'element', 'table' ) ) {
 		return content.getChild( 0 );
 	}
 
@@ -390,7 +390,7 @@ function getTableIfOnlyTableInContent( content, model ) {
 	const contentRange = model.createRangeIn( content );
 
 	for ( const element of contentRange.getItems() ) {
-		if ( element.is( 'table' ) ) {
+		if ( element.is( 'element', 'table' ) ) {
 			// Stop checking if there is some content before table.
 			const rangeBefore = model.createRange( contentRange.start, model.createPositionBefore( element ) );
 
