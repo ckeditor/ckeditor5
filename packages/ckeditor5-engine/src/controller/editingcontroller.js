@@ -73,7 +73,7 @@ export default class EditingController {
 		const selection = doc.selection;
 		const markers = this.model.markers;
 
-		// When plugins listen on model changes (on selection change, post fixers, etc) and change the view as a result of
+		// When plugins listen on model changes (on selection change, post fixers, etc.) and change the view as a result of
 		// model's change, they might trigger view rendering before the conversion is completed (e.g. before the selection
 		// is converted). We disable rendering for the length of the outermost model change() block to prevent that.
 		//
