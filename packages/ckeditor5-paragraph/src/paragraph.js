@@ -70,6 +70,29 @@ export default class Paragraph extends Plugin {
 			converterPriority: 'low'
 		} );
 
+		const conversionApi = data.upcastDispatcher.conversionApi;
+		const originalSplitToAllowedParent = conversionApi.splitToAllowedParent;
+
+		conversionApi.splitToAllowedParent = ( node, modelCursor ) => {
+			const result = originalSplitToAllowedParent( node, modelCursor );
+
+			if ( result ) {
+				return result;
+			}
+
+			if ( !isParagraphable( node, modelCursor, conversionApi.schema ) ) {
+				return null;
+			}
+
+			const paragraph = conversionApi.writer.createElement( 'paragraph' );
+
+			conversionApi.writer.insert( paragraph, modelCursor );
+
+			return {
+				position: conversionApi.writer.createPositionAt( paragraph, 0 )
+			};
+		};
+
 		data.upcastDispatcher.on( 'element', ( evt, data, conversionApi ) => {
 			// Do not try auto-paragraphing if the element was already converted.
 			if ( !conversionApi.consumable.test( data.viewItem, { name: data.viewItem.name } ) ) {
