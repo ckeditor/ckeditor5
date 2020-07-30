@@ -292,7 +292,7 @@ export default class Schema {
 	 *		schema.isInline( 'paragraph' ); // -> false
 	 *		schema.isInline( 'softBreak' ); // -> true
 	 *
-	 *		const text = writer.createText('foo' );
+	 *		const text = writer.createText( 'foo' );
 	 *		schema.isInline( text ); // -> true
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#inline-elements Inline elements} section of the Schema deep dive
@@ -310,7 +310,13 @@ export default class Schema {
 	 * Returns `true` if the given item is defined to be
 	 * a selectable element by the {@link module:engine/model/schema~SchemaItemDefinition}'s `isSelectable` property.
 	 *
-	 *		TODO
+	 *		schema.isSelectable( 'paragraph' ); // -> false
+	 *		schema.isSelectable( 'heading1' ); // -> false
+	 *		schema.isSelectable( 'image' ); // -> true
+	 *		schema.isSelectable( 'tableCell' ); // -> true
+	 *
+	 *		const text = writer.createText( 'foo' );
+	 *		schema.isSelectable( text ); // -> false
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#TODO Selectable elements} section of the Schema deep dive}
 	 * guide for more details.
@@ -325,6 +331,33 @@ export default class Schema {
 		}
 
 		return !!( def.isSelectable || def.isObject );
+	}
+
+	/**
+	 * Returns `true` if the given item is defined to be
+	 * a content by the {@link module:engine/model/schema~SchemaItemDefinition}'s `isContent` property.
+	 *
+	 *		schema.isContent( 'paragraph' ); // -> false
+	 *		schema.isContent( 'heading1' ); // -> false
+	 *		schema.isContent( 'image' ); // -> true
+	 *		schema.isContent( 'horizontalLine' ); // -> true
+	 *
+	 *		const text = writer.createText( 'foo' );
+	 *		schema.isContent( text ); // -> true
+	 *
+	 * See the {@glink framework/guides/deep-dive/schema#TODO Content elements} section of the Schema deep dive}
+	 * guide for more details.
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+	 */
+	isContent( item ) {
+		const def = this.getDefinition( item );
+
+		if ( !def ) {
+			return false;
+		}
+
+		return !!( def.isContent || def.isObject );
 	}
 
 	/**

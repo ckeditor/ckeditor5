@@ -100,7 +100,8 @@ export default class Model {
 		} );
 		this.schema.register( '$text', {
 			allowIn: '$block',
-			isInline: true
+			isInline: true,
+			isContent: true
 		} );
 		this.schema.register( '$clipboardHolder', {
 			allowContentOf: '$root',
