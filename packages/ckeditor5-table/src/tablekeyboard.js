@@ -224,14 +224,14 @@ export default class TableKeyboard extends Plugin {
 			return false;
 		}
 
-		const cellRange = model.createRangeIn( tableCell );
-
 		// Let's check if the selection is at the beginning/end of the cell.
-		if ( this._isSelectionAtCellEdge( selection, cellRange, isForward ) ) {
+		if ( this._isSelectionAtCellEdge( selection, tableCell, isForward ) ) {
 			this._navigateFromCellInDirection( tableCell, direction, expandSelection );
 
 			return true;
 		}
+
+		return false;
 	}
 
 	/**
@@ -239,11 +239,11 @@ export default class TableKeyboard extends Plugin {
 	 *
 	 * @private
 	 * @param {module:engine/model/selection~Selection} selection The current selection.
-	 * @param {module:engine/model/range~Range} cellRange The current table cell content range.
+	 * @param {module:engine/model/element~Element} tableCell The current table cell element.
 	 * @param {Boolean} isForward The expected navigation direction.
 	 * @returns {Boolean}
 	 */
-	_isSelectionAtCellEdge( selection, cellRange, isForward ) {
+	_isSelectionAtCellEdge( selection, tableCell, isForward ) {
 		const model = this.editor.model;
 		const schema = this.editor.model.schema;
 
@@ -252,7 +252,7 @@ export default class TableKeyboard extends Plugin {
 		// If the current limit element is not table cell we are for sure not at the cell edge.
 		// Also `modifySelection` will not let us out of it.
 		if ( !schema.getLimitElement( focus ).is( 'element', 'tableCell' ) ) {
-			const boundaryPosition = isForward ? cellRange.end : cellRange.start;
+			const boundaryPosition = model.createPositionAt( tableCell, isForward ? 'end' : 0 );
 
 			return boundaryPosition.isTouching( focus );
 		}
