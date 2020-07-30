@@ -340,7 +340,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	elementToMarker( config ) {
 		/**
 		 * The {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToMarker `UpcastHelpers#elementToMarker()`}
-		 * method has been deprecated and will be removed in the near future.
+		 * method was deprecated and will be removed in the near future.
 		 * Please use {@link module:engine/conversion/upcasthelpers~UpcastHelpers#dataToMarker `UpcastHelpers#dataToMarker()`} instead.
 		 *
 		 * @error upcast-helpers-element-to-marker-deprecated
@@ -348,7 +348,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 		console.warn(
 			attachLinkToDocumentation(
 				'upcast-helpers-element-to-marker-deprecated: ' +
-				'The UpcastHelpers#elementToMarker() method has been deprecated and will be removed in the near future. ' +
+				'The UpcastHelpers#elementToMarker() method was deprecated and will be removed in the near future. ' +
 				'Please use UpcastHelpers#dataToMarker() instead.'
 			)
 		);
@@ -357,7 +357,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	}
 
 	/**
-	 * View to model marker conversion helper.
+	 * View-to-model marker conversion helper.
 	 *
 	 * Converts view data created by {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToData `#markerToData()`}
 	 * back to a model marker.
@@ -368,7 +368,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *
 	 * The `config.view` property is equal to the marker group name to convert.
 	 *
-	 * By default, this converter creates markers with `group:name` name convention (to match the default `markerToData` conversion).
+	 * By default, this converter creates markers with the `group:name` name convention (to match the default `markerToData` conversion).
 	 *
 	 * The conversion configuration can take a function that will generate a marker name.
 	 * If such function is set as the `config.model` parameter, it is passed the `name` part from the view element or attribute and it is
@@ -377,7 +377,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * Basic usage:
 	 *
 	 *		// Using the default conversion.
-	 *		// In this case, all markers from `comment` group will be converted.
+	 *		// In this case, all markers from the `comment` group will be converted.
 	 *		// The conversion will look for `<comment-start>` and `<comment-end>` tags and
 	 *		// `data-comment-start-before`, `data-comment-start-after`,
 	 *		// `data-comment-end-before` and `data-comment-end-after` attributes.
@@ -395,17 +395,17 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *		<paragraph>Foo[bar</paragraph>
 	 *		<image src="abc.jpg"></image>]
 	 *
-	 * Where `[]` are boundaries of a marker that will receive `comment:commentId:uid` name.
+	 * Where `[]` are boundaries of a marker that will receive the `comment:commentId:uid` name.
 	 *
 	 * Other examples of usage:
 	 *
-	 *		// Using custom function which is the same as the default conversion:
+	 *		// Using a custom function which is the same as the default conversion:
 	 *		editor.conversion.for( 'upcast' ).dataToMarker( {
 	 *			view: 'comment',
 	 *			model: name => 'comment:' + name,
 	 *		} );
 	 *
-	 *		// Using converter priority:
+	 *		// Using the converter priority:
 	 *		editor.conversion.for( 'upcast' ).dataToMarker( {
 	 *			view: 'comment',
 	 *			model: name => 'comment:' + name,
@@ -417,8 +417,9 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *
 	 * @method #dataToMarker
 	 * @param {Object} config Conversion configuration.
-	 * @param {String} config.view Marker group name to convert.
-	 * @param {Function} [config.model] Function that takes `name` part from the view element or attribute and returns the marker name.
+	 * @param {String} config.view The marker group name to convert.
+	 * @param {Function} [config.model] A function that takes the `name` part from the view element or attribute and returns the marker
+	 * name.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
