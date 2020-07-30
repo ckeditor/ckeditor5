@@ -280,18 +280,18 @@ const imageConfiguration = {
 	resizeOptions: [
 		{
 			name: 'imageResize:original',
-			label: 'Original size',
-			value: null
+			value: null,
+			label: 'Original'
 		},
 		{
 			name: 'imageResize:50',
-			label: '50%',
-			value: '50'
+			value: '50',
+			label: '50%'
 		},
 		{
 			name: 'imageResize:75',
-			label: '75%',
-			value: '75'
+			value: '75',
+			label: '75%'
 		}
 	],
 	toolbar: [ ..., 'imageResize' ]
@@ -311,25 +311,25 @@ const imageConfiguration = {
 	resizeOptions: [
 		{
 			name: 'imageResize:original',
-			label: 'Original size',
-			value: null
+			value: null,
+			icon: 'original'
 		},
 		{
 			name: 'imageResize:50',
-			label: '50%',
-			value: '50'
+			value: '50',
+			icon: 'medium'
 		},
 		{
 			name: 'imageResize:75',
-			label: '75%',
-			value: '75'
+			value: '75',
+			icon: 'large'
 		}
 	],
 	toolbar: [
 		...,
-		'imageResize:original',
 		'imageResize:50',
 		'imageResize:75'
+		'imageResize:original',
 	]
 }
 ```

@@ -861,6 +861,18 @@ describe( 'UpcastHelpers', () => {
 				{ name: 'g:foo', start: [ 0, 3 ], end: [ 0, 3 ] }
 			);
 		} );
+
+		it( 'should convert children if the view element has not been converted yet', () => {
+			upcastHelpers.dataToMarker( { view: 'group' } );
+
+			expectResult(
+				viewParse( '<div data-group-end-after="foo" data-group-start-before="foo"><p>Foo</p></div>' ),
+				'<paragraph>Foo</paragraph>',
+				[
+					{ name: 'group:foo', start: [ 0 ], end: [ 1 ] }
+				]
+			);
+		} );
 	} );
 
 	function expectResult( viewToConvert, modelString, markers ) {
