@@ -6,6 +6,6 @@
 /**
  * Default border-radius value.
  */
-:root{
+:root, :host{
 	--ck-border-radius: 2px;
 }

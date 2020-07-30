@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host {
 	--ck-media-embed-placeholder-icon-size: 3em;
 
 	--ck-color-media-embed-placeholder-url-text: hsl(0, 0%, 46%);

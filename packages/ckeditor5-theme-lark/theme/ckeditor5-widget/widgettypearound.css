@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host {
 	--ck-widget-type-around-button-size: 20px;
 	--ck-color-widget-type-around-button-active: var(--ck-color-focus-border);
 	--ck-color-widget-type-around-button-hover: var(--ck-color-widget-hover-border);

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host {
 	--ck-spacing-unit: 						0.6em;
 	--ck-spacing-large: 					calc(var(--ck-spacing-unit) * 1.5);
 	--ck-spacing-standard: 					var(--ck-spacing-unit);

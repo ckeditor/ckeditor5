@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host {
 	--ck-color-table-focused-cell-background: hsla(208, 90%, 80%, .3);
 }
 

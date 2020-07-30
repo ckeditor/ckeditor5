@@ -6,7 +6,7 @@
 @import "../mixins/_focus.css";
 @import "../mixins/_shadow.css";
 
-:root {
+:root, :host {
 	--ck-widget-outline-thickness: 3px;
 	--ck-widget-handler-icon-size: 16px;
 	--ck-widget-handler-animation-duration: 200ms;

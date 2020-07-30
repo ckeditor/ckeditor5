@@ -7,7 +7,7 @@
 @import "../../../mixins/_focus.css";
 @import "../../../mixins/_shadow.css";
 
-:root {
+:root, :host {
 	--ck-input-text-width: 18em;
 }
 

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host {
 	--ck-color-image-upload-icon: hsl(0, 0%, 100%);
 	--ck-color-image-upload-icon-background: hsl(120, 100%, 27%);
 

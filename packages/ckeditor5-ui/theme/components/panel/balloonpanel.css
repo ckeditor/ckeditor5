@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host {
 	/* Make sure the balloon arrow does not float over its children. */
 	--ck-balloon-panel-arrow-z-index: calc(var(--ck-z-default) - 3);
 }

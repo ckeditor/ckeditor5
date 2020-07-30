@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host {
 	--ck-font-size-base: 13px;
 	--ck-line-height-base: 1.84615;
 	--ck-font-face: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;

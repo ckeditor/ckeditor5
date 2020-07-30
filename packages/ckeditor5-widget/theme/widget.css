@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host {
 	--ck-color-resizer: var(--ck-color-focus-border);
 	--ck-resizer-size: 10px;
 	--ck-resizer-border-width: 1px;

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host {
 	--ck-color-base-foreground: 								hsl(0, 0%, 98%);
 	--ck-color-base-background: 								hsl(0, 0%, 100%);
 	--ck-color-base-border: 									hsl(0, 0%, 77%);

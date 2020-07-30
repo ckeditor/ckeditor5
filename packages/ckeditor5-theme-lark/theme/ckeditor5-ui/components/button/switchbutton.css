@@ -10,7 +10,7 @@
 /* Note: To avoid rendering issues (aliasing) but to preserve the responsive nature
 of the component, floating–point numbers have been used which, for the default font size
 (see: --ck-font-size-base), will generate simple integers. */
-:root {
+:root, :host {
 	/* 34px at 13px font-size */
 	--ck-switch-button-toggle-width: 2.6153846154em;
 	/* 14px at 13px font-size */
