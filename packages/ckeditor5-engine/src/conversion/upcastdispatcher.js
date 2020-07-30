@@ -240,7 +240,7 @@ export default class UpcastDispatcher {
 
 		if ( viewItem.is( 'element' ) ) {
 			this.fire( 'element:' + viewItem.name, data, this.conversionApi );
-		} else if ( viewItem.is( 'text' ) ) {
+		} else if ( viewItem.is( '$text' ) ) {
 			this.fire( 'text', data, this.conversionApi );
 		} else {
 			this.fire( 'documentFragment', data, this.conversionApi );

@@ -10,6 +10,7 @@ import Element from '../../../src/view/element';
 import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
 import EmptyElement from '../../../src/view/emptyelement';
+import RawElement from '../../../src/view/rawelement';
 import UIElement from '../../../src/view/uielement';
 import Position from '../../../src/view/position';
 import Range from '../../../src/view/range';
@@ -420,6 +421,24 @@ describe( 'DowncastWriter', () => {
 				expectToThrowCKEditorError( () => {
 					writer.wrap( range, new AttributeElement( document, 'b' ) );
 				}, 'view-writer-cannot-break-ui-element', document );
+			} );
+
+			it( 'should wrap a RawElement', () => {
+				testWrap(
+					'<container:p>[<raw:span></raw:span>]</container:p>',
+					'<attribute:b></attribute:b>',
+					'<container:p>[<attribute:b view-priority="10"><raw:span></raw:span></attribute:b>]</container:p>'
+				);
+			} );
+
+			it( 'should throw if a range is inside a RawElement', () => {
+				const rawElement = new RawElement( document, 'span' );
+				const container = new ContainerElement( document, 'p', null, rawElement );
+				const range = Range._createFromParentsAndOffsets( rawElement, 0, container, 1 );
+
+				expectToThrowCKEditorError( () => {
+					writer.wrap( range, new AttributeElement( document, 'b' ) );
+				}, 'view-writer-cannot-break-raw-element', document );
 			} );
 
 			it( 'should keep stable hierarchy when wrapping with attribute with same priority', () => {

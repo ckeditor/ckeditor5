@@ -26,8 +26,8 @@ export function createViewListItemElement( writer ) {
 
 /**
  * Helper function that creates a `<ul><li></li></ul>` or (`<ol>`) structure out of the given `modelItem` model `listItem` element.
- * Then, it binds the created view list item (<li>) with the model `listItem` element.
- * The function then returns the created view list item (<li>).
+ * Then, it binds the created view list item (`<li>`) with the model `listItem` element.
+ * The function then returns the created view list item (`<li>`).
  *
  * @param {module:engine/model/item~Item} modelItem Model list item.
  * @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface.
@@ -121,7 +121,7 @@ export function injectViewList( modelItem, injectedItem, conversionApi, model ) 
 		const walker = walkerBoundaries.getWalker( { ignoreElementEnd: true } );
 
 		for ( const value of walker ) {
-			if ( value.item.is( 'li' ) ) {
+			if ( value.item.is( 'element', 'li' ) ) {
 				const breakPosition = viewWriter.breakContainer( viewWriter.createPositionBefore( value.item ) );
 				const viewList = value.item.parent;
 
@@ -135,7 +135,7 @@ export function injectViewList( modelItem, injectedItem, conversionApi, model ) 
 	} else {
 		const nextViewList = injectedList.nextSibling;
 
-		if ( nextViewList && ( nextViewList.is( 'ul' ) || nextViewList.is( 'ol' ) ) ) {
+		if ( nextViewList && ( nextViewList.is( 'element', 'ul' ) || nextViewList.is( 'element', 'ol' ) ) ) {
 			let lastSubChild = null;
 
 			for ( const child of nextViewList.getChildren() ) {

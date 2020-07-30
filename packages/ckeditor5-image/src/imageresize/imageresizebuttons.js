@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imageresize/imageresizeui
+ * @module image/imageresize/imageresizebuttons
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -31,13 +31,13 @@ const RESIZE_ICONS = {
 };
 
 /**
- * The `ImageResizeUI` plugin.
+ * The `ImageResizeButtons` plugin.
  *
  * It adds a possibility to resize images using the toolbar dropdown or individual buttons, depending on the plugin configuration.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ImageResizeUI extends Plugin {
+export default class ImageResizeButtons extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -49,7 +49,7 @@ export default class ImageResizeUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'ImageResizeUI';
+		return 'ImageResizeButtons';
 	}
 
 	/**
@@ -66,7 +66,7 @@ export default class ImageResizeUI extends Plugin {
 		 * @type {module:image/image~ImageConfig#resizeUnit}
 		 * @default '%'
 		 */
-		this._resizeUnit = editor.config.get( 'image.resizeUnit' ) || '%';
+		this._resizeUnit = editor.config.get( 'image.resizeUnit' );
 	}
 
 	/**
@@ -76,10 +76,6 @@ export default class ImageResizeUI extends Plugin {
 		const editor = this.editor;
 		const options = editor.config.get( 'image.resizeOptions' );
 		const command = editor.commands.get( 'imageResize' );
-
-		if ( !options ) {
-			return;
-		}
 
 		this.bind( 'isEnabled' ).to( command );
 
@@ -94,7 +90,7 @@ export default class ImageResizeUI extends Plugin {
 	 * A helper function that creates a standalone button component for the plugin.
 	 *
 	 * @private
-	 * @param {module:image/imageresize/imageresizeui~ImageResizeOption} resizeOption A model of resize option.
+	 * @param {module:image/imageresize/imageresizebuttons~ImageResizeOption} resizeOption A model of resize option.
 	 */
 	_registerImageResizeButton( option ) {
 		const editor = this.editor;
@@ -112,13 +108,13 @@ export default class ImageResizeUI extends Plugin {
 				 * buttons, a valid `icon` token must be set for each option.
 				 *
 				 * See all valid options described in the
-				 * {@link module:image/imageresize/imageresizeui~ImageResizeOption plugin configuration}.
+				 * {@link module:image/imageresize/imageresizebuttons~ImageResizeOption plugin configuration}.
 				 *
-				 * @error imageresizeui-missing-icon
-				 * @param {module:image/imageresize/imageresizeui~ImageResizeOption} option Invalid image resize option.
+				 * @error imageresizebuttons-missing-icon
+				 * @param {module:image/imageresize/imageresizebuttons~ImageResizeOption} option Invalid image resize option.
 				*/
 				throw new CKEditorError(
-					'imageresizeui-missing-icon: ' +
+					'imageresizebuttons-missing-icon: ' +
 					'The resize option "' + name + '" misses the "icon" property ' +
 					'or the property value doesn\'t match any of available icons.',
 					editor,
@@ -151,7 +147,7 @@ export default class ImageResizeUI extends Plugin {
 	 * the editor configuration.
 	 *
 	 * @private
-	 * @param {Array.<module:image/imageresize/imageresizeui~ImageResizeOption>} options An array of configured options.
+	 * @param {Array.<module:image/imageresize/imageresizebuttons~ImageResizeOption>} options An array of configured options.
 	 */
 	_registerImageResizeDropdown( options ) {
 		const editor = this.editor;
@@ -202,7 +198,7 @@ export default class ImageResizeUI extends Plugin {
 	 * A helper function for creating an option label value string.
 	 *
 	 * @private
-	 * @param {module:image/imageresize/imageresizeui~ImageResizeOption} option A resize option object.
+	 * @param {module:image/imageresize/imageresizebuttons~ImageResizeOption} option A resize option object.
 	 * @param {Boolean} [forTooltip] An optional flag for creating a tooltip label.
 	 * @returns {String} A user-defined label, a label combined from the value and resize unit or the default label
 	 * for reset options (`Original`).
@@ -231,7 +227,7 @@ export default class ImageResizeUI extends Plugin {
 	 * A helper function that parses resize options and returns list item definitions ready for use in a dropdown.
 	 *
 	 * @private
-	 * @param {Array.<module:image/imageresize/imageresizeui~ImageResizeOption>} options The resize options.
+	 * @param {Array.<module:image/imageresize/imageresizebuttons~ImageResizeOption>} options The resize options.
 	 * @param {module:image/imageresize/imageresizecommand~ImageResizeCommand} command A resize image command.
 	 * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>} Dropdown item definitions.
 	 */
@@ -274,7 +270,7 @@ function getIsOnButtonCallback( value ) {
 /**
  * An image resize option used in the {@link module:image/image~ImageConfig#resizeOptions image resize configuration}.
  *
- * @typedef {Object} module:image/imageresize/imageresizeui~ImageResizeOption
+ * @typedef {Object} module:image/imageresize/imageresizebuttons~ImageResizeOption
  * @property {String} name A name of the UI component that changes the image size.
  * * If you configure the feature using individual resize buttons, you can refer to this name in the
  * {@link module:image/image~ImageConfig#toolbar image toolbar configuration}.

@@ -41,6 +41,8 @@ export default class BaseCommand extends Command {
 
 		// Refresh state, so the command is inactive right after initialization.
 		this.refresh();
+
+		this.listenTo( editor.data, 'set', () => this.clearStack() );
 	}
 
 	/**

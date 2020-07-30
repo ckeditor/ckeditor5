@@ -226,13 +226,48 @@ The plugin also gives you an ability to change the size of the image through the
 
 ### Methods to resize images
 
-The editor offers three ways to resize images. One of them (resize handles) is
+The editor offers different ways to resize images either by using resize handles or by using dedicated UI components.
 
 #### Using handles
 
 In this case, the user is able to resize images via dragging square handles displayed in each corner of the image. Once [image resizing was enabled](#enabling-image-resizing), this option does not require any additional configuration.
 
 {@snippet features/image-resize}
+
+You can configure the editor for resizing images by handles in two different ways:
+
+- By installing the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`).
+
+```js
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageResize, ... ],
+		...
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+- Or by installing the combination of {@link module:image/imageresize/imageresizeediting~ImageResizeEditing} and {@link module:image/imageresize/imageresizehandles~ImageResizeHandles} plugins.
+
+```js
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageResizeEditing from '@ckeditor/ckeditor5-image/src/imageresize/imageresizeediting';
+import ImageResizeHandles from '@ckeditor/ckeditor5-image/src/imageresize/imageresizehandles';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageResizeEditing, ImageResizeHandles, ... ],
+		...
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+Both ways enable resize handles by default.
 
 #### Using the dropdown
 
@@ -245,25 +280,25 @@ const imageConfiguration = {
 	resizeOptions: [
 		{
 			name: 'imageResize:original',
-			label: 'Original size',
-			value: null
+			value: null,
+			label: 'Original'
 		},
 		{
 			name: 'imageResize:50',
-			label: '50%',
-			value: '50'
+			value: '50',
+			label: '50%'
 		},
 		{
 			name: 'imageResize:75',
-			label: '75%',
-			value: '75'
+			value: '75',
+			label: '75%'
 		}
 	],
 	toolbar: [ ..., 'imageResize' ]
 }
 ```
 
-{@snippet features/image-resizeuidropdown}
+{@snippet features/image-resize-buttons-dropdown}
 
 #### Using standalone buttons
 
@@ -276,30 +311,73 @@ const imageConfiguration = {
 	resizeOptions: [
 		{
 			name: 'imageResize:original',
-			label: 'Original size',
-			value: null
+			value: null,
+			icon: 'original'
 		},
 		{
 			name: 'imageResize:50',
-			label: '50%',
-			value: '50'
+			value: '50',
+			icon: 'medium'
 		},
 		{
 			name: 'imageResize:75',
-			label: '75%',
-			value: '75'
+			value: '75',
+			icon: 'large'
 		}
 	],
 	toolbar: [
 		...,
-		'imageResize:original',
 		'imageResize:50',
 		'imageResize:75'
+		'imageResize:original',
 	]
 }
 ```
 
-{@snippet features/image-resizeui}
+{@snippet features/image-resize-buttons}
+
+### Disabling image resize handles
+
+If, for some reason, you want to configure the editor in such a way that images can be resized only by buttons you can do so by omitting the {@link module:image/imageresize/imageresizehandles~ImageResizeHandles `ImageResizeHandles`} plugin. As a result, plugins setup should look like this: `plugins: [ 'ImageResizeEditing', 'ImageResizeButtons', ... ]` as opposed to `plugins: [ 'ImageResize', ... ]`. It will enable resizing image feature only by means of the chosen UI ([dropdown](#using-the-dropdown) or [standalone buttons](#using-standalone-buttons)) in the image toolbar.
+
+```js
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
+import ImageResizeEditing from '@ckeditor/ckeditor5-image/src/imageresize/imageresizeedititing';
+import ImageResizeButtons from '@ckeditor/ckeditor5-image/src/imageresize/imageresizebuttons';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageResizeEditing, ImageResizeButtons, ImageToolbar, ... ],
+		image: {
+			resizeOptions: [
+			{
+				name: 'imageResize:original',
+				value: null,
+				icon: 'original'
+			},
+			{
+				name: 'imageResize:50',
+				value: '50',
+				icon: 'medium'
+			},
+			{
+				name: 'imageResize:75',
+				value: '75',
+				icon: 'large'
+			}
+		],
+		toolbar: [
+			// ...,
+			'imageResize:50',
+			'imageResize:75',
+			'imageResize:original',
+		]
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
 
 ### Enabling image resizing
 

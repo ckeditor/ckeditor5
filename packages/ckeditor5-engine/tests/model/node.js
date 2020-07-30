@@ -153,8 +153,8 @@ describe( 'Node', () => {
 
 		it( 'should return false for incorrect values', () => {
 			expect( node.is( 'model' ) ).to.be.false;
-			expect( node.is( 'model:text' ) ).to.be.false;
-			expect( node.is( 'text' ) ).to.be.false;
+			expect( node.is( 'model:$text' ) ).to.be.false;
+			expect( node.is( '$text' ) ).to.be.false;
 			expect( node.is( 'element', 'paragraph' ) ).to.be.false;
 		} );
 	} );

@@ -150,8 +150,8 @@ export default class MutationObserver extends Observer {
 			if ( mutation.type === 'childList' ) {
 				const element = domConverter.mapDomToView( mutation.target );
 
-				// Do not collect mutations from UIElements.
-				if ( element && element.is( 'uiElement' ) ) {
+				// Do not collect mutations from UIElements and RawElements.
+				if ( element && ( element.is( 'uiElement' ) || element.is( 'rawElement' ) ) ) {
 					continue;
 				}
 
@@ -165,8 +165,8 @@ export default class MutationObserver extends Observer {
 		for ( const mutation of domMutations ) {
 			const element = domConverter.mapDomToView( mutation.target );
 
-			// Do not collect mutations from UIElements.
-			if ( element && element.is( 'uiElement' ) ) {
+			// Do not collect mutations from UIElements and RawElements.
+			if ( element && ( element.is( 'uiElement' ) || element.is( 'rawElement' ) ) ) {
 				continue;
 			}
 
@@ -264,7 +264,7 @@ export default class MutationObserver extends Observer {
 				return true;
 			}
 			// Texts.
-			else if ( child1.is( 'text' ) && child2.is( 'text' ) ) {
+			else if ( child1.is( '$text' ) && child2.is( '$text' ) ) {
 				return child1.data === child2.data;
 			}
 

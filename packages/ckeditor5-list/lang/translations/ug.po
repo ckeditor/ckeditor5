@@ -18,11 +18,11 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the Numbered List feature."
 msgid "Numbered List"
-msgstr "نومۇر جەدىۋېلى"
+msgstr "نومۇرلۇق تىزىملىك"
 
 msgctxt "Toolbar button tooltip for the Bulleted List feature."
 msgid "Bulleted List"
-msgstr "بەلگە جەدىۋېلى"
+msgstr "بەلگە تىزىملىك"
 
 msgctxt "Toolbar button tooltip for the To-do List feature."
 msgid "To-do List"

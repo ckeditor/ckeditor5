@@ -22,8 +22,8 @@ msgstr "Panel nástrojov ovládacieho prvku"
 
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph before a block."
 msgid "Insert paragraph before block"
-msgstr ""
+msgstr "Vložiť odstavec pred blok"
 
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph after a block."
 msgid "Insert paragraph after block"
-msgstr ""
+msgstr "Vložiť odstavec za blok"

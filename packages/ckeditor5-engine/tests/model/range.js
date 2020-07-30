@@ -59,7 +59,7 @@ describe( 'Range', () => {
 		it( 'should return false for incorrect values', () => {
 			expect( range.is( 'model' ) ).to.be.false;
 			expect( range.is( 'model:node' ) ).to.be.false;
-			expect( range.is( 'text' ) ).to.be.false;
+			expect( range.is( '$text' ) ).to.be.false;
 			expect( range.is( 'element', 'paragraph' ) ).to.be.false;
 		} );
 	} );

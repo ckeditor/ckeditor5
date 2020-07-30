@@ -32,6 +32,8 @@ import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -43,7 +45,8 @@ ClassicEditor
 			Code, Underline, Strikethrough, Superscript, Subscript,
 			Highlight, FontColor, FontBackgroundColor, FontFamily, FontSize,
 			IndentBlock, WordCount, EasyImage,
-			TodoList, PageBreak, HorizontalLine, Mention, RemoveFormat, TextTransformation
+			TodoList, PageBreak, HorizontalLine, Mention, RemoveFormat, TextTransformation,
+			ImageResize, LinkImage
 		],
 		toolbar: [
 			'heading',
@@ -68,11 +71,32 @@ ClassicEditor
 		},
 		image: {
 			styles: [
-				'full',
+				'alignCenter',
 				'alignLeft',
 				'alignRight'
 			],
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ]
+			resizeOptions: [
+				{
+					name: 'imageResize:original',
+					label: 'Original size',
+					value: null
+				},
+				{
+					name: 'imageResize:50',
+					label: '50%',
+					value: '50'
+				},
+				{
+					name: 'imageResize:75',
+					label: '75%',
+					value: '75'
+				}
+			],
+			toolbar: [
+				'imageTextAlternative', '|',
+				'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|',
+				'imageResize'
+			]
 		},
 		placeholder: 'Type the content here!',
 		mention: {

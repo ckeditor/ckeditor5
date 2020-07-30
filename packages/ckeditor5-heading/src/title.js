@@ -237,7 +237,7 @@ export default class Title extends Plugin {
 
 		// When title element is at the beginning of the document then try to fix additional
 		// title elements (if there are any) and stop post-fixer as soon as possible.
-		if ( firstRootChild.is( 'title' ) ) {
+		if ( firstRootChild.is( 'element', 'title' ) ) {
 			return fixAdditionalTitleElements( titleElements, writer, model );
 		}
 
@@ -386,7 +386,7 @@ export default class Title extends Plugin {
 				const selection = model.document.selection;
 				const selectedElements = Array.from( selection.getSelectedBlocks() );
 
-				if ( selectedElements.length === 1 && selectedElements[ 0 ].is( 'title-content' ) ) {
+				if ( selectedElements.length === 1 && selectedElements[ 0 ].is( 'element', 'title-content' ) ) {
 					const firstBodyElement = model.document.getRoot().getChild( 1 );
 					writer.setSelection( firstBodyElement, 0 );
 					cancel();
@@ -429,7 +429,7 @@ function dataViewModelH1Insertion( evt, data, conversionApi ) {
 	const modelCursor = data.modelCursor;
 	const viewItem = data.viewItem;
 
-	if ( !modelCursor.isAtStart || !modelCursor.parent.is( '$root' ) ) {
+	if ( !modelCursor.isAtStart || !modelCursor.parent.is( 'element', '$root' ) ) {
 		return;
 	}
 
@@ -459,7 +459,7 @@ function mapModelPositionToView( editingView ) {
 	return ( evt, data ) => {
 		const positionParent = data.modelPosition.parent;
 
-		if ( !positionParent.is( 'title' ) ) {
+		if ( !positionParent.is( 'element', 'title' ) ) {
 			return;
 		}
 
@@ -476,7 +476,7 @@ function mapModelPositionToView( editingView ) {
 // @param {module:engine/model/element~Element} element
 // @returns {Boolean}
 function isTitle( element ) {
-	return element.is( 'title' );
+	return element.is( 'element', 'title' );
 }
 
 // Changes the given element to the title element.
@@ -541,7 +541,7 @@ function fixTitleElement( title, writer, model ) {
 // @param {module:engine/model/element~Element} placeholder
 // @returns {Boolean}
 function shouldRemoveLastParagraph( placeholder, root ) {
-	if ( !placeholder || !placeholder.is( 'paragraph' ) || placeholder.childCount ) {
+	if ( !placeholder || !placeholder.is( 'element', 'paragraph' ) || placeholder.childCount ) {
 		return false;
 	}
 

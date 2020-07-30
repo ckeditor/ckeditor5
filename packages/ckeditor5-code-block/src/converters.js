@@ -147,7 +147,7 @@ export function dataViewToModelCodeBlockInsertion( editingView, languageDefs ) {
 		const viewItem = data.viewItem;
 		const viewChild = viewItem.getChild( 0 );
 
-		if ( !viewChild || !viewChild.is( 'code' ) ) {
+		if ( !viewChild || !viewChild.is( 'element', 'code' ) ) {
 			return;
 		}
 
