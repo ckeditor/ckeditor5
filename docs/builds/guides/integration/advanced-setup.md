@@ -576,7 +576,7 @@ const config = {
 ClassicEditor.defaultConfig = config;
 InlineEditor.defaultConfig = config;
 
-export default {
+export {
 	ClassicEditor, InlineEditor
 };
 ```
