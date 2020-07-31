@@ -14,7 +14,7 @@ import Node from './node';
 /**
  * The raw element class.
  *
- * Raw elements work as data containers ("wrappers", "sandboxes") but their children are not managed or
+ * The raw elements work as data containers ("wrappers", "sandboxes") but their children are not managed or
  * even recognized by the editor. This encapsulation allows integrations to maintain custom DOM structures
  * in the editor content without, for instance, worrying about compatibility with other editor features.
  * Raw elements make a perfect tool for integration with external frameworks and data sources.
@@ -120,7 +120,7 @@ export default class RawElement extends Element {
 	}
 
 	/**
-	 * Allows rendering the children of a {@link module:engine/view/rawelement~RawElement} on the DOM level.
+	 * This allows rendering the children of a {@link module:engine/view/rawelement~RawElement} on the DOM level.
 	 * This method is called by the {@link module:engine/view/domconverter~DomConverter} with the raw DOM element
 	 * passed as an argument leaving the number and shape of the children up to the integrator.
 	 *

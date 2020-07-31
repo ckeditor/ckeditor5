@@ -16,21 +16,21 @@ Eventually, this knowledge will allow you to create your custom features on top 
 
 ### Code architecture
 
-It is recommended that the code that customizes the editor data and editing pipelines is delivered as {@link framework/guides/architecture/core-editor-architecture#plugins plugins} and all examples in this guide follow this convention.
+It is recommended for the code that customizes the editor data and editing pipelines to be delivered as {@link framework/guides/architecture/core-editor-architecture#plugins plugins} and all examples in this guide follow this convention.
 
 Also for the sake of simplicity all examples use the same {@link module:editor-classic/classiceditor~ClassicEditor `ClassicEditor`}, but keep in mind that code snippets will work with other editors, too.
 
-Finally, none of the converters covered in this guide require to import any module from CKEditor 5 Framework, hence, you can write them without rebuilding the editor. In other words, such converters can easily be added to existing {@link builds/guides/overview CKEditor 5 builds}.
+Finally, none of the converters covered in this guide requires to import any modules from CKEditor 5 Framework, hence, you can write them without rebuilding the editor. In other words, such converters can easily be added to existing {@link builds/guides/overview CKEditor 5 builds}.
 
 ### CKEditor 5 inspector
 
-{@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} is an invaluable help when working with the model and view structures. It allows browsing their structure and checking selection positions like in typical browser developer tools. Make sure to enable the inspector when playing with CKEditor 5.
+The {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} is an invaluable help when working with the model and view structures. It allows browsing their structure and checking selection positions like in typical browser developer tools. Make sure to enable the inspector when playing with CKEditor 5.
 
 ## Loading content with a custom attribute
 
-In this example links (`<a href="...">...</a>`) loaded into the editor content will preserve their `target` attribute, which is not supported by the {@link features/link Link} feature. The DOM `target` attribute will be stored in the editor model as a `linkTarget` attribute.
+In this example the links (`<a href="...">...</a>`) loaded into the editor content will preserve their `target` attribute, which is by default *not* supported by the {@link features/link Link} feature. The DOM `target` attribute will be stored in the editor model as a `linkTarget` attribute.
 
-Unlike the {@link framework/guides/deep-dive/conversion-extending-output#adding-an-html-attribute-to-certain-inline-elements downcast–only solution}, this approach does not change the content loaded into the editor. Links without the `target` attribute will not get one and links with the attribute will preserve its value.
+Unlike the {@link framework/guides/deep-dive/conversion-extending-output#adding-an-html-attribute-to-certain-inline-elements downcast–only solution}, this approach does not change the content loaded into the editor. Any links without the `target` attribute will not get one while all the links with the attribute will preserve its value.
 
 <info-box>
 	Note that the same behavior can be obtained with {@link features/link#custom-link-attributes-decorators link decorators}:
@@ -119,7 +119,7 @@ a[target]::after {
 
 ## Loading content with all attributes
 
-In this example `<div>` elements (`<div>...</div>`) loaded into the editor content will preserve their attributes. All the DOM attributes will be stored in the editor model as corresponding attributes.
+In this example the `<div>` elements (`<div>...</div>`) loaded into the editor content will preserve their attributes. All the DOM attributes will be stored in the editor model as corresponding attributes.
 
 {@snippet framework/extending-content-allow-div-attributes}
 
@@ -128,10 +128,10 @@ All attributes are allowed on `<div>` elements thanks to custom "upcast" and "do
 Allowing every possible attribute on a `<div>` element in the model is done by adding an {@link module:engine/model/schema~Schema#addAttributeCheck addAttributeCheck()} callback.
 
 <info-box>
-	Allowing every attribute on `<div>` elements might introduce security issues &mdash; including XSS attacks. The production code should use only application-related attributes and/or properly encode data.
+	Allowing every attribute on `<div>` elements might introduce security issues &mdash; including XSS attacks. The production code should use only application-related attributes and/or properly encode the data.
 </info-box>
 
-Adding "upcast" and "downcast" converters for the `<div>` element is enough for cases where its attributes do not change. If the attributes in the model are modified, these `elementToElement()` converters will not be called as the `<div>` is already converted. To overcome this, a lower-level API is used.
+Adding "upcast" and "downcast" converters for the `<div>` element is enough for these cases where its attributes do not change. If the attributes in the model are modified however, these `elementToElement()` converters will not be called as the `<div>` is already converted. To overcome this, a lower-level API is used.
 
 Instead of using predefined converters, the {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event-attribute `attribute`} event listener is registered for the "downcast" dispatcher.
 
@@ -150,7 +150,7 @@ function ConvertDivAttributes( editor ) {
 		}
 	} );
 
-	// View-to-model converter converting a view <div> with all its attributes to the model.
+	// The view-to-model converter converting a view <div> with all its attributes to the model.
 	editor.conversion.for( 'upcast' ).elementToElement( {
 		view: 'div',
 		model: ( viewElement, modelWriter ) => {
@@ -158,13 +158,13 @@ function ConvertDivAttributes( editor ) {
 		}
 	} );
 
-	// Model-to-view converter for the <div> element (attributes are converted separately).
+	// The model-to-view converter for the <div> element (attributes are converted separately).
 	editor.conversion.for( 'downcast' ).elementToElement( {
 		model: 'div',
 		view: 'div'
 	} );
 
-	// Model-to-view converter for <div> attributes.
+	// The model-to-view converter for <div> attributes.
 	// Note that a lower-level, event-based API is used here.
 	editor.conversion.for( 'downcast' ).add( dispatcher => {
 		dispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
@@ -229,8 +229,8 @@ function HandleFontSizeValue( editor ) {
 			value: viewElement => {
 				const value = parseFloat( viewElement.getStyle( 'font-size' ) ).toFixed( 0 );
 
-				// It might be needed to further convert the value to meet business requirements.
-				// In the sample the font size is configured to handle only the sizes:
+				// It might be necessary to further convert the value to meet business requirements.
+				// In the sample the font size is configured to handle only these sizes:
 				// 12, 14, 'default', 18, 20, 22, 24, 26, 28, 30
 				// Other sizes will be converted to the model but the UI might not be aware of them.
 
@@ -241,7 +241,7 @@ function HandleFontSizeValue( editor ) {
 		converterPriority: 'high'
 	} );
 
-	// Add a special converter for the font size feature to convert all (even not configured)
+	// Add a special converter for the font size feature to convert all (even the not configured)
 	// model attribute values.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: {
@@ -278,7 +278,7 @@ ClassicEditor
 
 ## Adding extra attributes to elements contained in a figure
 
-The {@link features/image Image} and {@link features/table Table} features wrap view elements (`<img>` for Image nad `<table>` for Table) in `<figure>`. During the downcast conversion, the model element is mapped to `<figure>` and not the inner element. In such cases the default `conversion.attributeToAttribute()` conversion helpers could lose information about the element that the attribute should be set on.
+The {@link features/image Image} and {@link features/table Table} features wrap view elements (respectively `<img>` for Image and `<table>` for Table) in a `<figure>` element. During the downcast conversion, the model element is mapped to `<figure>` and not the inner element. In such cases the default `conversion.attributeToAttribute()` conversion helpers could lose information about the element that the attribute should be set on.
 
 To overcome this limitation it is sufficient to write a custom converter that adds custom attributes to elements already converted by base features. The key point is to add these converters with a lower priority than the base converters so they will be called after the base ones.
 
@@ -288,7 +288,7 @@ The sample below is extensible. To add your own attributes to preserve, just add
 
 ```js
 /**
- * Plugin that converts custom attributes for elements that are wrapped in <figure> in the view.
+ * A plugin that converts custom attributes for elements that are wrapped in <figure> in the view.
  */
 class CustomFigureAttributes {
 	/**
@@ -323,20 +323,20 @@ class CustomFigureAttributes {
  * Sets up a conversion that preservers classes on <img> and <table> elements.
  */
 function setupCustomClassConversion( viewElementName, modelElementName, editor ) {
-	// The 'customClass' attribute will store custom classes from the data in the model so schema definitions allow this attribute.
+	// The 'customClass' attribute stores custom classes from the data in the model so that schema definitions allow this attribute.
 	editor.model.schema.extend( modelElementName, { allowAttributes: [ 'customClass' ] } );
 
-	// Define upcast converters for the <img> and <table> elements with a "low" priority so they are run after the default converters.
+	// Defines upcast converters for the <img> and <table> elements with a "low" priority so they are run after the default converters.
 	editor.conversion.for( 'upcast' ).add( upcastCustomClasses( viewElementName ), { priority: 'low' } );
 
-	// Define downcast converters for a model element with a "low" priority so they are run after the default converters.
-	// Use `downcastCustomClassesToFigure` if you'd like to keep your classes on <figure> element or `downcastCustomClassesToChild` if you'd like to keep your classes on a <figure> child element, i.e. <img>.
+	// Defines downcast converters for a model element with a "low" priority so they are run after the default converters.
+	// Use `downcastCustomClassesToFigure` if you want to keep your classes on <figure> element or `downcastCustomClassesToChild` if you'd like to keep your classes on a <figure> child element, i.e. <img>.
 	editor.conversion.for( 'downcast' ).add( downcastCustomClassesToFigure( modelElementName ), { priority: 'low' } );
 	// editor.conversion.for( 'downcast' ).add( downcastCustomClassesToChild( viewElementName, modelElementName ), { priority: 'low' } );
 }
 
 /**
- * Sets up a conversion for a custom attribute on view elements contained inside a <figure>.
+ * Sets up a conversion for a custom attribute on the view elements contained inside a <figure>.
  *
  * This method:
  * - Adds proper schema rules.
@@ -344,7 +344,7 @@ function setupCustomClassConversion( viewElementName, modelElementName, editor )
  * - Adds a downcast converter.
  */
 function setupCustomAttributeConversion( viewElementName, modelElementName, viewAttribute, editor ) {
-	// Extend the schema to store an attribute in the model.
+	// Extends the schema to store an attribute in the model.
 	const modelAttribute = `custom${ viewAttribute }`;
 
 	editor.model.schema.extend( modelElementName, { allowAttributes: [ modelAttribute ] } );
