@@ -850,7 +850,9 @@ export default class DomConverter {
 	 * @returns {Boolean}
 	 */
 	isDomSelectionBackward( selection ) {
-		if ( selection.isCollapsed ) {
+		// Due to a bug with .isCollapsed always returning true when the selection is from a shadowRoot, also check that the selection
+		// has no ranges or its range is collapsed.
+		if ( selection.isCollapsed && ( selection.rangeCount === 0 || selection.getRangeAt( 0 ).collapsed ) ) {
 			return false;
 		}
 
