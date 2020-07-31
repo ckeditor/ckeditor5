@@ -182,8 +182,8 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:engine/controller/editingcontroller~EditingController}
 		 */
-		this.sourceElementRoot = config.sourceElementRoot ? config.sourceElementRoot : document; // eslint-disable-line no-undef
-		this.editing = new EditingController( this.model, stylesProcessor, this.sourceElementRoot );
+		const sourceElementRoot = config.sourceElementRoot ? config.sourceElementRoot : document; // eslint-disable-line no-undef
+		this.editing = new EditingController( this.model, stylesProcessor, sourceElementRoot );
 		this.editing.view.document.bind( 'isReadOnly' ).to( this );
 
 		/**
