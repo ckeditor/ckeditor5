@@ -72,6 +72,15 @@ module.exports = {
 							injectType: 'singletonStyleTag',
 							attributes: {
 								'data-cke': true
+							},
+							insert: function addToStyles( styleElement ) {
+								/* eslint-disable no-undef */ // TODO: figure out why window & document are undefined
+								if ( !window.stylesToInject ) {
+									window.stylesToInject = [];
+								}
+								window.stylesToInject.push( styleElement );
+								document.head.prepend( styleElement );
+								/* eslint-eanble no-undef */
 							}
 						}
 					},
