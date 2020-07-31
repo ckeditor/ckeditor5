@@ -34,8 +34,9 @@ Adding plugins to existing builds is done through their customization. Editor bu
 4. Bundle the build.
 
 ```bash
-git clone -b stable https://github.com/ckeditor/ckeditor5-build-classic.git
-cd ckeditor5-build-classic
+git clone -b stable https://github.com/ckeditor/ckeditor5
+
+cd ckeditor5/packages/ckeditor5-build-classic
 npm install
 ```
 
