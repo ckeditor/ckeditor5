@@ -128,17 +128,7 @@ If you build CKEditor 5 from scratch or integrate it directly into your applicat
 				// The bundle is optimized for one language when this option is omitted.
 				additionalLanguages: 'all',
 
-				// An optional directory for emitted translations. Relative to the webpack's output.
-				// Defaults to `'translations'`.
-				// outputDirectory: 'ckeditor5-translations',
-
-				// Whether the build process should fail if an error occurs.
-				// Defaults to `false`.
-				// strict: true,
-
-				// Whether to log all warnings to the console.
-				// Defaults to `false`.
-				// verbose: true
+				// For more advanced options see https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-webpack-plugin.
 			} ),
 
 			// Other webpack plugins...
