@@ -26,7 +26,7 @@ import { debounce } from 'lodash-es';
  * @extends module:engine/view/observer/observer~Observer
  */
 export default class SelectionObserver extends Observer {
-	constructor( view ) {
+	constructor( view, sourceElementRoot = document ) { // eslint-disable-line no-undef
 		super( view );
 
 		/**
@@ -87,6 +87,8 @@ export default class SelectionObserver extends Observer {
 		 * @member {Number} module:engine/view/observer/selectionobserver~SelectionObserver#_loopbackCounter
 		 */
 		this._loopbackCounter = 0;
+
+		this.sourceElementRoot = sourceElementRoot;
 	}
 
 	/**
@@ -135,7 +137,13 @@ export default class SelectionObserver extends Observer {
 
 		// If there were mutations then the view will be re-rendered by the mutation observer and selection
 		// will be updated, so selections will equal and event will not be fired, as expected.
-		const domSelection = domDocument.defaultView.getSelection();
+		// const domSelection = domDocument.defaultView.getSelection();
+		let domSelection;
+		if ( this.sourceElementRoot === domDocument ) {
+			domSelection = domDocument.defaultView.getSelection();
+		} else {
+			domSelection = this.sourceElementRoot.getSelection();
+		}
 		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 
 		// Do not convert selection change if the new view selection has no ranges in it.

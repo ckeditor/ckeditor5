@@ -65,7 +65,7 @@ export default class View {
 	/**
 	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance.
 	 */
-	constructor( stylesProcessor ) {
+	constructor( stylesProcessor, sourceElementRoot = document ) { // eslint-disable-line no-undef
 		/**
 		 * Instance of the {@link module:engine/view/document~Document} associated with this view controller.
 		 *
@@ -179,7 +179,7 @@ export default class View {
 
 		// Add default observers.
 		this.addObserver( MutationObserver );
-		this.addObserver( SelectionObserver );
+		this.addObserver( SelectionObserver, sourceElementRoot );
 		this.addObserver( FocusObserver );
 		this.addObserver( KeyObserver );
 		this.addObserver( FakeSelectionObserver );
@@ -333,14 +333,14 @@ export default class View {
 	 * Should create an instance inheriting from {@link module:engine/view/observer/observer~Observer}.
 	 * @returns {module:engine/view/observer/observer~Observer} Added observer instance.
 	 */
-	addObserver( Observer ) {
+	addObserver( Observer, sourceElementRoot ) {
 		let observer = this._observers.get( Observer );
 
 		if ( observer ) {
 			return observer;
 		}
 
-		observer = new Observer( this );
+		observer = new Observer( this, sourceElementRoot );
 
 		this._observers.set( Observer, observer );
 
