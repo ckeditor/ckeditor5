@@ -541,7 +541,7 @@ export default class Model {
 	 *
 	 * * any text node (`options.ignoreWhitespaces` allows controlling whether this text node must also contain
 	 * any non-whitespace characters),
-	 * * or any {@link module:engine/model/schema~Schema#isObject object element},
+	 * * or any {@link module:engine/model/schema~Schema#isContent content element},
 	 * * or any {@link module:engine/model/markercollection~Marker marker} which
 	 * {@link module:engine/model/markercollection~Marker#_affectsData affects data}.
 	 *
@@ -574,14 +574,16 @@ export default class Model {
 		}
 
 		for ( const item of range.getItems() ) {
-			if ( item.is( '$textProxy' ) ) {
-				if ( !ignoreWhitespaces ) {
-					return true;
-				} else if ( item.data.search( /\S/ ) !== -1 ) {
+			if ( this.schema.isContent( item ) ) {
+				if ( item.is( '$textProxy' ) ) {
+					if ( !ignoreWhitespaces ) {
+						return true;
+					} else if ( item.data.search( /\S/ ) !== -1 ) {
+						return true;
+					}
+				} else {
 					return true;
 				}
-			} else if ( this.schema.isObject( item ) ) {
-				return true;
 			}
 		}
 
