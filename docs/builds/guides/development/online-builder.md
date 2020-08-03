@@ -24,13 +24,13 @@ Some of the reasons for creating custom builds are:
 
 This is where the online builder comes to aid the users needs.
 
-# Online builder
+## Online builder
 
 The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) lets you download CKEditor 5 builds and also allows you to create your own, customized builds (with a different set of plugins) in a few easy steps, through a simple and intuitive UI.
 
-# Using online builder to create custom CKEditor 5 WYSIWYG editor
+## Using online builder to create custom CKEditor 5 WYSIWYG editor
 
-## Choosing editor type
+### Choosing editor type
 
 The following CKEditor 5 Builds are currently available to choose from:
 
@@ -46,7 +46,7 @@ The following CKEditor 5 Builds are currently available to choose from:
 
  <!-- Needs an image of build choice page -->
 
-## Choosing plugins
+### Choosing plugins
 
 The basic build come with a predefined set of plugins. Take a moment to check these options out. You can freely remove those, that will not be used in your build.
 
@@ -62,7 +62,7 @@ Below the preselected plugins, you will find a large collection of features that
 
 Once you choose all the desired plugins, press the **Next step** button.
 
-## Toolbar composition
+### Toolbar composition
 
 Next step allows you to compose the toolbar. A simple drag-and-drop workspace allows for adding buttons representing the chosen plugins to the toolbars. The user may change the order of the buttons and group them accordingly.
 
@@ -74,7 +74,7 @@ Next step allows you to compose the toolbar. A simple drag-and-drop workspace al
 
 Once you design the toolbar, press the **Next step** button.
 
-## Choosing the defaut language
+### Choosing the defaut language
 
 This is simply - just scroll the list of available languages and check the one you want to be the main editor language.
 
@@ -82,7 +82,7 @@ This is simply - just scroll the list of available languages and check the one y
 	All other languages will still be available in the `translations` folder.
 </info-box>
 
-## Download the customized build
+### Download the customized build
 
 This is as simple as it gets: just press the **Download** button to get the customized package.
 
