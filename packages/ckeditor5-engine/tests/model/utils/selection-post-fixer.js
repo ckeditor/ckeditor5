@@ -41,7 +41,8 @@ describe( 'Selection post-fixer', () => {
 			model.schema.register( 'tableCell', {
 				allowIn: 'tableRow',
 				allowAttributes: [ 'colspan', 'rowspan' ],
-				isObject: true
+				isLimit: true,
+				isSelectable: true
 			} );
 
 			model.schema.extend( '$block', { allowIn: 'tableCell' } );
@@ -1274,7 +1275,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
-							'[<tableCell><paragraph>aaa</paragraph></tableCell>]' +
+							'<tableCell><paragraph>[]aaa</paragraph></tableCell>' +
 							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>' +
@@ -1296,7 +1297,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
-							'[<tableCell><paragraph>aaa</paragraph></tableCell>]' +
+							'<tableCell><paragraph>[]aaa</paragraph></tableCell>' +
 							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>' +

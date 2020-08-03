@@ -22,7 +22,7 @@ import Position from '../position';
  * allows a `$text`.
  * * None of the selection's non-collapsed ranges crosses a {@link module:engine/model/schema~Schema#isLimit limit element}
  * boundary (a range must be rooted within one limit element).
- * * Only {@link module:engine/model/schema~Schema#isObject object elements} can be selected from the outside
+ * * Only {@link module:engine/model/schema~Schema#isSelectable selectable elements} can be selected from the outside
  * (e.g. `[<paragraph>foo</paragraph>]` is invalid). This rule applies independently to both selection ends, so this
  * selection is correct: `<paragraph>f[oo</paragraph><image></image>]`.
  *
@@ -200,8 +200,8 @@ function tryFixingNonCollapsedRage( range, schema ) {
 	if ( isStartInLimit || isEndInLimit ) {
 		const bothInSameParent = ( start.nodeAfter && end.nodeBefore ) && start.nodeAfter.parent === end.nodeBefore.parent;
 
-		const expandStart = isStartInLimit && ( !bothInSameParent || !isInObject( start.nodeAfter, schema ) );
-		const expandEnd = isEndInLimit && ( !bothInSameParent || !isInObject( end.nodeBefore, schema ) );
+		const expandStart = isStartInLimit && ( !bothInSameParent || !isSelectable( start.nodeAfter, schema ) );
+		const expandEnd = isEndInLimit && ( !bothInSameParent || !isSelectable( end.nodeBefore, schema ) );
 
 		// Although we've already found limit element on start/end positions we must find the outer-most limit element.
 		// as limit elements might be nested directly inside (ie table > tableRow > tableCell).
@@ -285,11 +285,11 @@ function mergeIntersectingRanges( ranges ) {
 	return nonIntersectingRanges;
 }
 
-// Checks if node exists and if it's an object.
+// Checks if node exists and if it's a selectable.
 //
 // @param {module:engine/model/node~Node} node
 // @param {module:engine/model/schema~Schema} schema
 // @returns {Boolean}
-function isInObject( node, schema ) {
-	return node && schema.isObject( node );
+function isSelectable( node, schema ) {
+	return node && schema.isSelectable( node );
 }
