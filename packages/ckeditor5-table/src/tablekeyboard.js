@@ -69,20 +69,17 @@ export default class TableKeyboard extends Plugin {
 	_handleTabOnSelectedTable( data, cancel ) {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
+		const selectedElement = selection.getSelectedElement();
 
-		if ( !selection.isCollapsed && selection.rangeCount === 1 && selection.getFirstRange().isFlat ) {
-			const selectedElement = selection.getSelectedElement();
-
-			if ( !selectedElement || !selectedElement.is( 'element', 'table' ) ) {
-				return;
-			}
-
-			cancel();
-
-			editor.model.change( writer => {
-				writer.setSelection( writer.createRangeIn( selectedElement.getChild( 0 ).getChild( 0 ) ) );
-			} );
+		if ( !selectedElement || !selectedElement.is( 'element', 'table' ) ) {
+			return;
 		}
+
+		cancel();
+
+		editor.model.change( writer => {
+			writer.setSelection( writer.createRangeIn( selectedElement.getChild( 0 ).getChild( 0 ) ) );
+		} );
 	}
 
 	/**
@@ -97,7 +94,11 @@ export default class TableKeyboard extends Plugin {
 
 		return ( domEventData, cancel ) => {
 			const selection = editor.model.document.selection;
-			const tableCell = getTableCellsContainingSelection( selection )[ 0 ];
+			let tableCell = getTableCellsContainingSelection( selection )[ 0 ];
+
+			if ( !tableCell ) {
+				tableCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
+			}
 
 			if ( !tableCell ) {
 				return;
@@ -114,7 +115,11 @@ export default class TableKeyboard extends Plugin {
 			const isFirstCellInRow = currentCellIndex === 0;
 
 			if ( !isForward && isFirstCellInRow && currentRowIndex === 0 ) {
-				// It's the first cell of the table - don't do anything (stay in the current position).
+				// Set the selection over the whole table if the selection was in the first table cell.
+				editor.model.change( writer => {
+					writer.setSelection( writer.createRangeOn( table ) );
+				} );
+
 				return;
 			}
 
@@ -125,8 +130,12 @@ export default class TableKeyboard extends Plugin {
 				editor.execute( 'insertTableRowBelow' );
 
 				// Check if the command actually added a row. If `insertTableRowBelow` execution didn't add a row (because it was disabled
-				// or it got overwritten) do not change the selection.
+				// or it got overwritten) set the selection over the whole table to mirror the first cell case.
 				if ( currentRowIndex === table.childCount - 1 ) {
+					editor.model.change( writer => {
+						writer.setSelection( writer.createRangeOn( table ) );
+					} );
+
 					return;
 				}
 			}
