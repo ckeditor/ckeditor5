@@ -40,7 +40,7 @@ The demo below uses the {@link builds/guides/overview#classic-editor Classic edi
 
 CKEditor 5 introduces a new way of handling images, with a strong focus on the end–user experience. This feature is called {@link features/easy-image Easy Image} and its goal is to make the image upload as effortless and intuitive as possible.
 
-Easy Image is part of the [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer. It is a <abbr title="Software as a service">SaaS</abbr> product that:
+Easy Image is part of the commercial [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer. It is a <abbr title="Software as a service">SaaS</abbr> product that:
 
 * securely uploads images,
 * takes care of rescaling and optimizing them as well as providing various image sizes (responsive images),
@@ -52,11 +52,7 @@ All that with virtually zero server setup.
 
 ### CKFinder
 
-The {@link features/ckfinder CKFinder feature} provides a bridge between the rich-text editor and [CKFinder](https://ckeditor.com/ckfinder/), a browser-based file uploader with its server-side connectors (PHP, Java and ASP.NET).
-
-<info-box>
-	CKFinder is a <a href="https://ckeditor.com/ckfinder/">commercial application</a> that was designed with CKEditor compatibility in mind. It is currently available as version 3.x for PHP, ASP.NET and Java and version 2.x for ASP and ColdFusion.
-</info-box>
+The {@link features/ckfinder CKFinder feature} provides a bridge between the rich-text editor and [CKFinder](https://ckeditor.com/ckfinder/), a browser-based commercial file uploader with its server-side connectors (PHP, Java and ASP.NET).
 
 There are two ways you can integrate CKEditor 5 with the CKFinder file manager:
 
