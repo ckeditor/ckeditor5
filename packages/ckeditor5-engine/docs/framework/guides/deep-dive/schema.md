@@ -1,5 +1,6 @@
 ---
 category: framework-deep-dive
+classes: schema-deep-dive
 ---
 
 # Schema
@@ -47,6 +48,222 @@ While this would be incorrect:
 ## Defining additional semantics
 
 In addition to setting allowed structures, the schema can also define additional traits of model elements. By using the `is*` properties, a feature author may declare how a certain element should be treated by other features and the engine.
+
+Here is a table listing various model elements and their properties registered in the schema:
+
+<table>
+	<thead>
+		<tr>
+			<th rowspan="2">Schema entry</th>
+			<th colspan="6">Properties in the <a href="#defining-allowed-structures">definition</a></th>
+		</tr>
+		<tr>
+			<th><a href="#block-elements"><code>isBlock</code></a></th>
+			<th><a href="#limit-elements"><code>isLimit</code></a></th>
+			<th><a href="#object-elements"><code>isObject</code></a></th>
+			<th><a href="#inline-elements"><code>isInline</code></a></th>
+			<th><a href="#selectable-elements"><code>isSelectable</code></a></th>
+			<th><a href="#content-elements"><code>isContent</code></a></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><code>$block</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>$clipboardHolder</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>$marker</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>$root</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>$text</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>true</code></td>
+		</tr>
+		<tr>
+			<td><code>blockQuote</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>caption</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>codeBlock</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>heading1</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>heading2</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>heading3</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>horizontalLine</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+		</tr>
+		<tr>
+			<td><code>image</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+		</tr>
+		<tr>
+			<td><code>listItem</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>media</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+		</tr>
+		<tr>
+			<td><code>pageBreak</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+		</tr>
+		<tr>
+			<td><code>paragraph</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>softBreak</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>table</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+		</tr>
+		<tr>
+			<td><code>tableRow</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>tableCell</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+	</tbody>
+</table>
+
+<info-box>
+	* <span id="inherited1">[1]</span> The value of `isLimit` is `true` for this element because all [objects](#object-elements) are automatically [limit elements](#limit-elements),
+	* <span id="inherited2">[2]</span> The value of `isSelectable` is `true` for this element because all [objects](#object-elements) are automatically [selectable elements](#selectable-elements),
+	* <span id="inherited3">[3]</span> The value of `isContent` is `true` for this element because all [objects](#object-elements) are automatically [content elements](#content-elements).
+</info-box>
 
 ### Limit elements
 
@@ -305,4 +522,50 @@ Finally, the schema plays a crucial role during the conversion from the view to 
 	Some features may miss schema checks. If you happen to find such a scenario, do not hesitate to [report it to us](https://github.com/ckeditor/ckeditor5/issues).
 </info-box>
 
+<style>
+.schema-deep-dive table {
+	text-align: center;
+}
 
+.schema-deep-dive table td,
+.schema-deep-dive table th {
+	border-color: hsl(72deg 6% 16%);
+}
+
+.schema-deep-dive table thead th {
+	font-weight: bold;
+	vertical-align: middle;
+}
+
+.schema-deep-dive table thead th code {
+	white-space: nowrap;
+}
+
+.schema-deep-dive table tbody td.value_negative {
+	background: hsl(354deg, 100%, 90%);
+}
+
+.schema-deep-dive table tbody td.value_positive {
+	background: hsl(88deg, 50%, 60%);
+}
+
+.schema-deep-dive table tbody td.value_negative code,
+.schema-deep-dive table tbody td.value_positive code,
+.schema-deep-dive table tbody td.value_positive_inherited code {
+	background: none;
+	text-shadow: 0px 0px 2px hsl(0deg, 0%, 100%);
+}
+
+.schema-deep-dive table tbody td.value_positive_inherited {
+	background-image: linear-gradient(45deg, hsl(88deg, 50%, 60%) 25%, hsl(89deg, 58% ,71%) 25%, hsl(89deg, 58%, 71%) 50%, hsl(88deg, 50%, 60%) 50%, hsl(88deg, 50%, 60%) 75%, hsl(89deg, 58%, 71%) 75%, hsl(89deg, 58%, 71%) 100%);
+	background-size: 3px 3px;
+}
+
+.schema-deep-dive table tbody td sup {
+	top: -0.5em;
+	position: relative;
+	font-size: 75%;
+	line-height: 0;
+	vertical-align: baseline;
+}
+</style>
