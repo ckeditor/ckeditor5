@@ -11,9 +11,7 @@ order: 10
 
 # Creating custom builds
 
-A build is a simple [npm](https://www.npmjs.com) package (usually developed in a Git repository) with a predefined set of dependencies. Out of this repository, distribution files can be generated through the build process.
-
-Some of the reasons for creating custom builds are:
+Although the CKEditor 5 WYSIWYG editor comes with handy preconfigured builds, sometimes these predefined versions are not enough and a need for custom builds arises. Some of the reasons for creating custom builds are:
 
 * Adding features which are not included in the existing builds, either from a third party or custom developed.
 * Removing unnecessary features present in a build.
@@ -24,11 +22,9 @@ Some of the reasons for creating custom builds are:
 
 This is where the online builder comes to aid the users needs.
 
-## Online builder
+## Using online builder to create custom CKEditor 5 WYSIWYG editor
 
 The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) lets you download CKEditor 5 builds and also allows you to create your own, customized builds (with a different set of plugins) in a few easy steps, through a simple and intuitive UI.
-
-## Using online builder to create custom CKEditor 5 WYSIWYG editor
 
 ### Choosing editor type
 
@@ -40,7 +36,7 @@ The following CKEditor 5 Builds are currently available to choose from:
  * [Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-block-editor)
  * [Document editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#document-editor)
 
- Refer to the documentation to check what kind of editor suits your needs. Once you choose the desired editor type, press the **Next step** button.
+ Refer to the documentation to check what kind of WYSIWYG editor suits your needs best. Once you choose the desired editor type, press the **Next step** button on the top right.
 
  For the sake of clarity, this guide will use the Classic build as an example.
 
@@ -48,35 +44,35 @@ The following CKEditor 5 Builds are currently available to choose from:
 
 ### Choosing plugins
 
-The basic build come with a predefined set of plugins. Take a moment to check these options out. You can freely remove those, that will not be used in your build.
+The basic build comes with a predefined set of plugins grouped in the bar at the top of the page. Take a moment to check these options out. You can freely remove the ones that will not be used in your build.
 
 <!-- Need an image of the basic plugins selection -->
 
-Below the preselected plugins, you will find a large collection of features that can be added to the custom build. Choose the one you need.
+Below the top bar with preselected plugins, you will find a large collection of features that can be added to the custom build. Choose the ones that best suit your needs.
 
 <!-- Need an image of the plugins selection -->
 
 <info-box hint>
-	Note that some of the plugins require other plugins to work. These mentioned in the **Require plugin** section of the description box.
+	Note that some of the plugins require other plugins to work. These dependencies are mentioned in the **Require plugin** section of the description box for each plugin. If this section is not present - the plugin doesn't need any other plugin to work.
 </info-box>
 
-Once you choose all the desired plugins, press the **Next step** button.
+Once you choose all the desired plugins, press the **Next step** button on the top right.
 
 ### Toolbar composition
 
-Next step allows you to compose the toolbar. A simple drag-and-drop workspace allows for adding buttons representing the chosen plugins to the toolbars. The user may change the order of the buttons and group them accordingly.
+Next step allows you to compose the toolbar. A simple drag-and-drop workspace allows for adding buttons (representing the plugins chosen in the previous step) to the toolbars. The user may change the order of the buttons and group them accordingly.
 
 <!-- Need an image of the toolbar editor -->
 
 <info-box hint>
-	Note that some of the buttons are pre-placed and are grayed out. To move one of these, drag them from the lower bar into the upper bar - they will become focused and can be moved around.
+	Some of the buttons are pre-placed and are grayed out. To move one of these, drag them from the lower bar into the upper bar - they will become focused and can be then moved around.
 </info-box>
 
-Once you design the toolbar, press the **Next step** button.
+Once you finish designing the toolbar, press the **Next step** button on the top right.
 
 ### Choosing the defaut language
 
-This is simply - just scroll the list of available languages and check the one you want to be the main editor language.
+Scroll the list of available languages and check the one you want to be the main language of your editor build.
 
 <info-box hint>
 	All other languages will still be available in the `translations` folder.
