@@ -257,6 +257,12 @@ export default class LinkUI extends Plugin {
 		// Handle click on view document and show panel when selection is placed inside the link element.
 		// Keep panel open until selection will be inside the same link element.
 		this.listenTo( viewDocument, 'click', () => {
+			// There's a difference between touch and pointer devices in the matter of event order.
+			// The firing of the 'click' event on the pointer devices depends on how long you press a target,
+			// so the longer you press the target, the higher the chance that `selectionchange` will fire before `click`.
+			// On the other hand, on the touch devices `click` seems to fire immediately, before `selectionchange`.
+			// ATM, our best way to delay the code execution is to set a minimal (0) timeout.
+			// See https://github.com/ckeditor/ckeditor5/issues/6559.
 			setTimeout( () => {
 				const parentLink = this._getSelectedLinkElement();
 
