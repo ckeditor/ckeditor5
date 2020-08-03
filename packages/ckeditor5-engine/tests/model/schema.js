@@ -462,6 +462,76 @@ describe( 'Schema', () => {
 		} );
 	} );
 
+	describe( 'isSelectable()', () => {
+		it( 'should return true if an item was registered as a selectable', () => {
+			schema.register( 'foo', {
+				isSelectable: true
+			} );
+
+			expect( schema.isSelectable( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'should return true if an item was registered as an object (because all objects are selectables)', () => {
+			schema.register( 'foo', {
+				isObject: true
+			} );
+
+			expect( schema.isSelectable( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'should return false if an item was not registered as an object or selectable', () => {
+			schema.register( 'foo' );
+
+			expect( schema.isSelectable( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'should return false if an item was not registered at all', () => {
+			expect( schema.isSelectable( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'uses getDefinition()\'s item to definition normalization', () => {
+			const stub = sinon.stub( schema, 'getDefinition' ).returns( { isSelectable: true } );
+
+			expect( schema.isSelectable( 'foo' ) ).to.be.true;
+			expect( stub.calledOnce ).to.be.true;
+		} );
+	} );
+
+	describe( 'isContent()', () => {
+		it( 'should return true if an item was registered as a content', () => {
+			schema.register( 'foo', {
+				isContent: true
+			} );
+
+			expect( schema.isContent( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'should return true if an item was registered as an object (because all objects are content)', () => {
+			schema.register( 'foo', {
+				isObject: true
+			} );
+
+			expect( schema.isContent( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'should return false if an item was not registered as an object or a content', () => {
+			schema.register( 'foo' );
+
+			expect( schema.isContent( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'should return false if an item was not registered at all', () => {
+			expect( schema.isContent( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'uses getDefinition()\'s item to definition normalization', () => {
+			const stub = sinon.stub( schema, 'getDefinition' ).returns( { isContent: true } );
+
+			expect( schema.isContent( 'foo' ) ).to.be.true;
+			expect( stub.calledOnce ).to.be.true;
+		} );
+	} );
+
 	describe( 'checkChild()', () => {
 		beforeEach( () => {
 			schema.register( '$root' );
