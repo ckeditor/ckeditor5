@@ -315,14 +315,20 @@ describe( 'Mention feature - integration', () => {
 
 					editor.editing.view.document.fire( 'click' );
 
+					// The link UI shows asynchronously,
+					// so we have to wait for it after the changes made for https://github.com/ckeditor/ckeditor5/issues/6559.
+					return new Promise( resolve => setTimeout( resolve, 200 ) );
+				} )
+				.then( () => {
 					expect( panelView.isVisible ).to.be.true;
 					expect( balloon.visibleView === mentionsView ).to.be.false; // LinkUI
 
 					model.change( writer => {
 						writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
 					} );
+
+					return new Promise( resolve => setTimeout( resolve, 200 ) );
 				} )
-				.then( () => new Promise( resolve => setTimeout( resolve, 200 ) ) )
 				.then( () => {
 					expect( panelView.isVisible ).to.be.true;
 					expect( balloon.visibleView === mentionsView ).to.be.true;
