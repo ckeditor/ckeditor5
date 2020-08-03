@@ -54,6 +54,10 @@ All that with virtually zero server setup.
 
 The {@link features/ckfinder CKFinder feature} provides a bridge between the rich-text editor and [CKFinder](https://ckeditor.com/ckfinder/), a browser-based file uploader with its server-side connectors (PHP, Java and ASP.NET).
 
+<info-box>
+	CKFinder is a <a href="https://ckeditor.com/ckfinder/">commercial application</a> that was designed with CKEditor compatibility in mind. It is currently available as version 3.x for PHP, ASP.NET and Java and version 2.x for ASP and ColdFusion.
+</info-box>
+
 There are two ways you can integrate CKEditor 5 with the CKFinder file manager:
 
 * **With the server-side connector only** &ndash; In this scenario, images dropped or pasted into the editor are uploaded to the CKFinder server-side connector running on your server.
