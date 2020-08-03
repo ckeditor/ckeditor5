@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableUtils from '../tableutils';
 import { getSelectedTableCells, isSelectionRectangular } from '../utils/selection';
-import { findAncestor, updateNumericAttribute } from '../utils/common';
+import { updateNumericAttribute } from '../utils/common';
 import { removeEmptyRowsColumns } from '../utils/structure';
 
 /**
@@ -57,10 +57,10 @@ export default class MergeCellsCommand extends Command {
 				mergeTableCells( tableCell, firstTableCell, writer );
 			}
 
-			const table = findAncestor( 'table', firstTableCell );
+			const table = firstTableCell.findAncestor( 'table' );
 
 			// Remove rows and columns that become empty (have no anchored cells).
-			removeEmptyRowsColumns( table, tableUtils, writer.batch );
+			removeEmptyRowsColumns( table, tableUtils );
 
 			writer.setSelection( firstTableCell, 'in' );
 		} );
@@ -92,7 +92,7 @@ function mergeTableCells( cellBeingMerged, targetCell, writer ) {
 // @param {module:engine/model/element~Element} tableCell
 // @returns {Boolean}
 function isEmpty( tableCell ) {
-	return tableCell.childCount == 1 && tableCell.getChild( 0 ).is( 'paragraph' ) && tableCell.getChild( 0 ).isEmpty;
+	return tableCell.childCount == 1 && tableCell.getChild( 0 ).is( 'element', 'paragraph' ) && tableCell.getChild( 0 ).isEmpty;
 }
 
 function getMergeDimensions( firstTableCell, selectedTableCells, tableUtils ) {

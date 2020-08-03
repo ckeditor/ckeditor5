@@ -130,7 +130,7 @@ describe( 'DOMConverter UIElement integration', () => {
 		} );
 	} );
 
-	describe( 'getParentUIElement()', () => {
+	describe( 'getHostViewElement()', () => {
 		it( 'should return UIElement for DOM children', () => {
 			const uiElement = createUIElement( 'div' );
 			const domElement = converter.viewToDom( uiElement, document, { bind: true } );
@@ -138,15 +138,15 @@ describe( 'DOMConverter UIElement integration', () => {
 			const domParagraph = domElement.childNodes[ 0 ];
 			const domSpan = domParagraph.childNodes[ 0 ];
 
-			expect( converter.getParentUIElement( domParagraph ) ).to.equal( uiElement );
-			expect( converter.getParentUIElement( domSpan ) ).to.equal( uiElement );
+			expect( converter.getHostViewElement( domParagraph ) ).to.equal( uiElement );
+			expect( converter.getHostViewElement( domSpan ) ).to.equal( uiElement );
 		} );
 
 		it( 'should return null for element itself', () => {
 			const uiElement = createUIElement( 'div' );
 			const domElement = converter.viewToDom( uiElement, document, { bind: true } );
 
-			expect( converter.getParentUIElement( domElement ) ).to.be.null;
+			expect( converter.getHostViewElement( domElement ) ).to.be.null;
 		} );
 	} );
 } );

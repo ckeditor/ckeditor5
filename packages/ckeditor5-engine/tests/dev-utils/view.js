@@ -14,6 +14,7 @@ import AttributeElement from '../../src/view/attributeelement';
 import ContainerElement from '../../src/view/containerelement';
 import EmptyElement from '../../src/view/emptyelement';
 import UIElement from '../../src/view/uielement';
+import RawElement from '../../src/view/rawelement';
 import Text from '../../src/view/text';
 import DocumentSelection from '../../src/view/documentselection';
 import Range from '../../src/view/range';
@@ -404,6 +405,41 @@ describe( 'view test utils', () => {
 				.to.equal( '<container:p><ui:span><b>foo</b></ui:span></container:p>' );
 		} );
 
+		it( 'should stringify a RawElement', () => {
+			const span = new RawElement( viewDocument, 'span' );
+			const p = new ContainerElement( viewDocument, 'p', null, span );
+			expect( stringify( p, null, { showType: true } ) )
+				.to.equal( '<container:p><raw:span></raw:span></container:p>' );
+		} );
+
+		it( 'should not stringify the inner RawElement content (renderRawElements=false)', () => {
+			const span = new RawElement( viewDocument, 'span' );
+
+			span.render = function( domDocument ) {
+				const domElement = this.toDomElement( domDocument );
+
+				domElement.innerHTML = '<b>foo</b>';
+
+				return domElement;
+			};
+
+			const p = new ContainerElement( viewDocument, 'p', null, span );
+			expect( stringify( p, null, { showType: true } ) )
+				.to.equal( '<container:p><raw:span></raw:span></container:p>' );
+		} );
+
+		it( 'should stringify a RawElement, (renderRawElements=true)', () => {
+			const span = new RawElement( viewDocument, 'span' );
+
+			span.render = function( domElement ) {
+				domElement.innerHTML = '<b>foo</b>';
+			};
+
+			const p = new ContainerElement( viewDocument, 'p', null, span );
+			expect( stringify( p, null, { showType: true, renderRawElements: true } ) )
+				.to.equal( '<container:p><raw:span><b>foo</b></raw:span></container:p>' );
+		} );
+
 		it( 'should sort classes in specified element', () => {
 			const text = new Text( viewDocument, 'foobar' );
 			const b = new Element( viewDocument, 'b', {
@@ -714,16 +750,22 @@ describe( 'view test utils', () => {
 			expect( stringify( data ) ).to.equal( '<p><span>text</span><b>test</b></p>' );
 		} );
 
-		it( 'should parse EmptyElement', () => {
+		it( 'should parse an EmptyElement', () => {
 			const parsed = parse( '<empty:img></empty:img>' );
 
 			expect( parsed ).to.be.instanceof( EmptyElement );
 		} );
 
-		it( 'should parse UIElement', () => {
+		it( 'should parse a UIElement', () => {
 			const parsed = parse( '<ui:span></ui:span>' );
 
 			expect( parsed ).to.be.instanceof( UIElement );
+		} );
+
+		it( 'should parse a RawElement', () => {
+			const parsed = parse( '<raw:span></raw:span>' );
+
+			expect( parsed ).to.be.instanceof( RawElement );
 		} );
 
 		it( 'should throw an error if EmptyElement is not empty', () => {
@@ -732,10 +774,16 @@ describe( 'view test utils', () => {
 			} ).to.throw( Error, 'Parse error - cannot parse inside EmptyElement.' );
 		} );
 
-		it( 'should throw an error if UIElement is not empty', () => {
+		it( 'should throw an error if a UIElement is not empty', () => {
 			expect( () => {
 				parse( '<ui:span>foo bar</ui:span>' );
 			} ).to.throw( Error, 'Parse error - cannot parse inside UIElement.' );
+		} );
+
+		it( 'should throw an error if a RawElement is not empty', () => {
+			expect( () => {
+				parse( '<raw:span>foo bar</raw:span>' );
+			} ).to.throw( Error, 'Parse error - cannot parse inside RawElement.' );
 		} );
 	} );
 } );

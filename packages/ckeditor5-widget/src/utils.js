@@ -12,6 +12,7 @@ import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import dragHandleIcon from '../theme/icons/drag-handle.svg';
 import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils';
@@ -44,7 +45,6 @@ export function isWidget( node ) {
 	return !!node.getCustomProperty( 'widget' );
 }
 
-/* eslint-disable max-len */
 /**
  * Converts the given {@link module:engine/view/element~Element} to a widget in the following way:
  *
@@ -91,8 +91,22 @@ export function isWidget( node ) {
  * @param {Boolean} [options.hasSelectionHandle=false] If `true`, the widget will have a selection handle added.
  * @returns {module:engine/view/element~Element} Returns the same element.
  */
-/* eslint-enable max-len */
 export function toWidget( element, writer, options = {} ) {
+	if ( !element.is( 'containerElement' ) ) {
+		/**
+		 * The element passed to `toWidget()` must be a {@link module:engine/view/containerelement~ContainerElement}
+		 * instance.
+		 *
+		 * @error widget-to-widget-wrong-element-type
+		 * @param {String} element The view element passed to `toWidget()`.
+		 */
+		throw new CKEditorError(
+			'widget-to-widget-wrong-element-type: The element passed to toWidget() must be a container element instance.',
+			null,
+			{ element }
+		);
+	}
+
 	writer.setAttribute( 'contenteditable', 'false', element );
 
 	writer.addClass( WIDGET_CLASS_NAME, element );
@@ -185,7 +199,7 @@ export function getLabel( element ) {
  * * adds the `ck-editor__editable` and `ck-editor__nested-editable` CSS classes,
  * * adds the `ck-editor__nested-editable_focused` CSS class when the editable is focused and removes it when it is blurred.
  *
- * Similarly to {@link ~toWidget `toWidget()`} this function should be used in `dataDowncast` only and it is usually
+ * Similarly to {@link ~toWidget `toWidget()`} this function should be used in `editingDowncast` only and it is usually
  * used together with {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`}.
  *
  * For example, in order to convert a `<nested>` model element to `<div class="nested">` in the view, you can define

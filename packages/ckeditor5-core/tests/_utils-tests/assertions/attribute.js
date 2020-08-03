@@ -54,7 +54,7 @@ describe( 'attribute chai assertion', () => {
 				hasAttribute: () => true,
 				getAttribute: () => 'bar'
 			} ).to.have.attribute( 'foo', 'baz' );
-		} ).to.throw( 'expected { Object (hasAttribute, getAttribute) } to have attribute \'foo\' of \'bar\', but got \'baz\'' );
+		} ).to.throw( 'expected { Object (hasAttribute, getAttribute) } to have attribute \'foo\' of \'baz\', but got \'bar\'' );
 	} );
 
 	it( 'negated, should assert for the given type the \'target.getAttribute\' returns a value different than the given one', () => {

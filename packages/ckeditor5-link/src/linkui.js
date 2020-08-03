@@ -87,7 +87,7 @@ export default class LinkUI extends Plugin {
 		this._enableUserBalloonInteractions();
 
 		// Renders a fake visual selection marker on an expanded selection.
-		editor.conversion.for( 'downcast' ).markerToHighlight( {
+		editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
 			model: VISUAL_SELECTION_MARKER_NAME,
 			view: {
 				classes: [ 'ck-fake-link-selection' ]
@@ -95,7 +95,7 @@ export default class LinkUI extends Plugin {
 		} );
 
 		// Renders a fake visual selection marker on a collapsed selection.
-		editor.conversion.for( 'downcast' ).markerToElement( {
+		editor.conversion.for( 'editingDowncast' ).markerToElement( {
 			model: VISUAL_SELECTION_MARKER_NAME,
 			view: {
 				name: 'span',

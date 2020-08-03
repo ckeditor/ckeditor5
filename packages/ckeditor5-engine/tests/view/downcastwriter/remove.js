@@ -11,6 +11,7 @@ import { stringify, parse } from '../../../src/dev-utils/view';
 import AttributeElement from '../../../src/view/attributeelement';
 import EmptyElement from '../../../src/view/emptyelement';
 import UIElement from '../../../src/view/uielement';
+import RawElement from '../../../src/view/rawelement';
 
 import Document from '../../../src/view/document';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -160,6 +161,25 @@ describe( 'DowncastWriter', () => {
 			}, 'view-writer-cannot-break-ui-element', document );
 		} );
 
+		it( 'should remove a RawElement', () => {
+			testRemove(
+				'<container:p>foo[<raw:span></raw:span>]bar</container:p>',
+				'<container:p>foo{}bar</container:p>',
+				'<raw:span></raw:span>'
+			);
+		} );
+
+		it( 'should throw if a range is placed inside a RawElement', () => {
+			const rawElement = new RawElement( document, 'span' );
+			const attributeElement = new AttributeElement( document, 'b' );
+			new ContainerElement( document, 'p', null, [ rawElement, attributeElement ] ); // eslint-disable-line no-new
+			const range = Range._createFromParentsAndOffsets( rawElement, 0, attributeElement, 0 );
+
+			expectToThrowCKEditorError( () => {
+				writer.remove( range );
+			}, 'view-writer-cannot-break-raw-element', document );
+		} );
+
 		it( 'should remove single text node (as item)', () => {
 			testRemove( '<container:p>[foobar]</container:p>', '<container:p></container:p>', 'foobar', true );
 		} );
@@ -197,6 +217,15 @@ describe( 'DowncastWriter', () => {
 				'<container:p>foo[<ui:span></ui:span>]bar</container:p>',
 				'<container:p>foobar</container:p>',
 				'<ui:span></ui:span>',
+				true
+			);
+		} );
+
+		it( 'should remove a RawElement (as an item)', () => {
+			testRemove(
+				'<container:p>foo[<raw:span></raw:span>]bar</container:p>',
+				'<container:p>foobar</container:p>',
+				'<raw:span></raw:span>',
 				true
 			);
 		} );

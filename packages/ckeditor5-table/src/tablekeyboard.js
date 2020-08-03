@@ -18,7 +18,6 @@ import {
 	getLocalizedArrowKeyCodeDirection
 } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getSelectedTableCells, getTableCellsContainingSelection } from './utils/selection';
-import { findAncestor } from './utils/common';
 
 /**
  * This plugin enables keyboard navigation for tables.
@@ -74,7 +73,7 @@ export default class TableKeyboard extends Plugin {
 		if ( !selection.isCollapsed && selection.rangeCount === 1 && selection.getFirstRange().isFlat ) {
 			const selectedElement = selection.getSelectedElement();
 
-			if ( !selectedElement || !selectedElement.is( 'table' ) ) {
+			if ( !selectedElement || !selectedElement.is( 'element', 'table' ) ) {
 				return;
 			}
 
@@ -214,7 +213,7 @@ export default class TableKeyboard extends Plugin {
 		}
 
 		// Abort if we're not in a table cell.
-		const tableCell = findAncestor( 'tableCell', selection.focus );
+		const tableCell = selection.focus.findAncestor( 'tableCell' );
 
 		if ( !tableCell ) {
 			return false;
@@ -281,7 +280,7 @@ export default class TableKeyboard extends Plugin {
 
 		// If the current limit element is not table cell we are for sure not at the cell edge.
 		// Also `modifySelection` will not let us out of it.
-		if ( !schema.getLimitElement( focus ).is( 'tableCell' ) ) {
+		if ( !schema.getLimitElement( focus ).is( 'element', 'tableCell' ) ) {
 			return false;
 		}
 
@@ -418,7 +417,7 @@ export default class TableKeyboard extends Plugin {
 	_navigateFromCellInDirection( focusCell, direction, expandSelection = false ) {
 		const model = this.editor.model;
 
-		const table = findAncestor( 'table', focusCell );
+		const table = focusCell.findAncestor( 'table' );
 		const tableMap = [ ...new TableWalker( table, { includeAllSlots: true } ) ];
 		const { row: lastRow, column: lastColumn } = tableMap[ tableMap.length - 1 ];
 

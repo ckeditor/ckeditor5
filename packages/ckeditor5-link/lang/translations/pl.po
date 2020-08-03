@@ -30,7 +30,7 @@ msgstr "Adres URL"
 
 msgctxt "Label for the image link button."
 msgid "Link image"
-msgstr ""
+msgstr "Wstaw odnośnik do obrazka"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
@@ -38,7 +38,7 @@ msgstr "Edytuj odnośnik"
 
 msgctxt "Button opening the link in new browser tab."
 msgid "Open link in new tab"
-msgstr "Otwórz odnośnik w nowym oknie"
+msgstr "Otwórz odnośnik w nowej zakładce"
 
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"

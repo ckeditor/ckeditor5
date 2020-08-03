@@ -112,7 +112,7 @@ function preventPartialMentionDowncast( dispatcher ) {
 	dispatcher.on( 'attribute:mention', ( evt, data, conversionApi ) => {
 		const mention = data.attributeNewValue;
 
-		if ( !data.item.is( 'textProxy' ) || !mention ) {
+		if ( !data.item.is( '$textProxy' ) || !mention ) {
 			return;
 		}
 
@@ -174,7 +174,7 @@ function selectionMentionAttributePostFixer( writer, doc ) {
 // b) the position is at parents start - the selection will set attributes from node after.
 function shouldNotTypeWithMentionAt( position ) {
 	const isAtStart = position.isAtStart;
-	const isAfterAMention = position.nodeBefore && position.nodeBefore.is( 'text' );
+	const isAfterAMention = position.nodeBefore && position.nodeBefore.is( '$text' );
 
 	return isAfterAMention || isAtStart;
 }
@@ -263,7 +263,7 @@ function extendAttributeOnMentionPostFixer( writer, doc ) {
 // @param {module:engine/model/node~Node} node The node to check.
 // @returns {Boolean}
 function isBrokenMentionNode( node ) {
-	if ( !node || !( node.is( 'text' ) || node.is( 'textProxy' ) ) || !node.hasAttribute( 'mention' ) ) {
+	if ( !node || !( node.is( '$text' ) || node.is( '$textProxy' ) ) || !node.hasAttribute( 'mention' ) ) {
 		return false;
 	}
 

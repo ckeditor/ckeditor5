@@ -24,11 +24,13 @@ import UpcastHelpers, { convertToModelFragment, convertText, convertSelectionCha
 import { getData as modelGetData, setData as modelSetData, stringify } from '../../src/dev-utils/model';
 import View from '../../src/view/view';
 import createViewRoot from '../view/_utils/createroot';
-import { setData as viewSetData } from '../../src/dev-utils/view';
+import { setData as viewSetData, parse as viewParse } from '../../src/dev-utils/view';
 import Mapper from '../../src/conversion/mapper';
 import ViewSelection from '../../src/view/selection';
 import ViewRange from '../../src/view/range';
 import { StylesProcessor } from '../../src/view/stylesmap';
+
+/* globals console */
 
 describe( 'UpcastHelpers', () => {
 	let upcastDispatcher, model, schema, upcastHelpers, viewDocument;
@@ -56,7 +58,7 @@ describe( 'UpcastHelpers', () => {
 		upcastHelpers = new UpcastHelpers( [ upcastDispatcher ] );
 	} );
 
-	describe( '.elementToElement()', () => {
+	describe( 'elementToElement()', () => {
 		it( 'should be chainable', () => {
 			expect( upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } ) ).to.equal( upcastHelpers );
 		} );
@@ -168,7 +170,7 @@ describe( 'UpcastHelpers', () => {
 		} );
 	} );
 
-	describe( '.elementToAttribute()', () => {
+	describe( 'elementToAttribute()', () => {
 		it( 'should be chainable', () => {
 			expect( upcastHelpers.elementToAttribute( { view: 'strong', model: 'bold' } ) ).to.equal( upcastHelpers );
 		} );
@@ -369,7 +371,7 @@ describe( 'UpcastHelpers', () => {
 		} );
 	} );
 
-	describe( '.attributeToAttribute()', () => {
+	describe( 'attributeToAttribute()', () => {
 		beforeEach( () => {
 			upcastHelpers.elementToElement( { view: 'img', model: 'image' } );
 
@@ -584,7 +586,17 @@ describe( 'UpcastHelpers', () => {
 		} );
 	} );
 
-	describe( '.elementToMarker()', () => {
+	describe( 'elementToMarker()', () => {
+		beforeEach( () => {
+			// Silence warning about deprecated method.
+			// This whole suite will be removed when the deprecated method is removed.
+			sinon.stub( console, 'warn' );
+		} );
+
+		afterEach( () => {
+			console.warn.restore();
+		} );
+
 		it( 'should be chainable', () => {
 			expect( upcastHelpers.elementToMarker( { view: 'marker-search', model: 'search' } ) ).to.equal( upcastHelpers );
 		} );
@@ -682,16 +694,201 @@ describe( 'UpcastHelpers', () => {
 		} );
 	} );
 
-	function expectResult( viewToConvert, modelString, marker ) {
+	describe( 'dataToMarker()', () => {
+		beforeEach( () => {
+			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
+		} );
+
+		it( 'should be chainable', () => {
+			expect( upcastHelpers.dataToMarker( { view: 'search' } ) ).to.equal( upcastHelpers );
+		} );
+
+		it( 'default conversion, inside text, non-collapsed, no name', () => {
+			upcastHelpers.dataToMarker( { view: 'search' } );
+
+			expectResult(
+				viewParse( '<p>Fo<search-start></search-start>ob<search-end></search-end>ar</p>' ),
+				'<paragraph>Foobar</paragraph>',
+				{ name: 'search', start: [ 0, 2 ], end: [ 0, 4 ] }
+			);
+		} );
+
+		it( 'default conversion, inside text, non-collapsed, name', () => {
+			upcastHelpers.dataToMarker( { view: 'group' } );
+
+			expectResult(
+				viewParse( '<p>Fo<group-start name="foo:bar:baz"></group-start>ob<group-end name="foo:bar:baz"></group-end>ar</p>' ),
+				'<paragraph>Foobar</paragraph>',
+				{ name: 'group:foo:bar:baz', start: [ 0, 2 ], end: [ 0, 4 ] }
+			);
+		} );
+
+		it( 'default conversion, inside text, collapsed, no name', () => {
+			upcastHelpers.dataToMarker( { view: 'search' } );
+
+			expectResult(
+				viewParse( '<p>Foo<search-start></search-start><search-end></search-end>bar</p>' ),
+				'<paragraph>Foobar</paragraph>',
+				{ name: 'search', start: [ 0, 3 ], end: [ 0, 3 ] }
+			);
+		} );
+
+		it( 'default conversion, inside text, collapsed, multiple markers, no name', () => {
+			upcastHelpers.dataToMarker( { view: 'group' } );
+
+			expectResult(
+				viewParse(
+					'<p>' +
+						'Foo' +
+						'<group-start name="abc"></group-start><group-end name="abc"></group-end>' +
+						'<group-start name="foo"></group-start><group-end name="foo"></group-end>' +
+						'bar' +
+					'</p>'
+				),
+				'<paragraph>Foobar</paragraph>',
+				[
+					{ name: 'group:abc', start: [ 0, 3 ], end: [ 0, 3 ] },
+					{ name: 'group:foo', start: [ 0, 3 ], end: [ 0, 3 ] }
+				]
+			);
+		} );
+
+		it( 'default conversion, on two elements, no name', () => {
+			upcastHelpers.dataToMarker( { view: 'search' } );
+
+			expectResult(
+				viewParse( '<p data-search-start-before="">Foo</p><p data-search-end-after="">Bar</p>' ),
+				'<paragraph>Foo</paragraph><paragraph>Bar</paragraph>',
+				{ name: 'search', start: [ 0 ], end: [ 2 ] }
+			);
+		} );
+
+		it( 'default conversion, on two elements, name', () => {
+			upcastHelpers.dataToMarker( { view: 'group' } );
+
+			expectResult(
+				viewParse( '<p data-group-start-before="foo:bar:baz">Foo</p><p data-group-end-after="foo:bar:baz">Bar</p>' ),
+				'<paragraph>Foo</paragraph><paragraph>Bar</paragraph>',
+				{ name: 'group:foo:bar:baz', start: [ 0 ], end: [ 2 ] }
+			);
+		} );
+
+		it( 'default conversion, on one element, name', () => {
+			upcastHelpers.dataToMarker( { view: 'group' } );
+
+			expectResult(
+				viewParse( '<p data-group-end-after="foo:bar:baz" data-group-start-before="foo:bar:baz">Foobar</p>' ),
+				'<paragraph>Foobar</paragraph>',
+				{ name: 'group:foo:bar:baz', start: [ 0 ], end: [ 1 ] }
+			);
+		} );
+
+		it( 'default conversion, collapsed before element, name', () => {
+			upcastHelpers.dataToMarker( { view: 'group' } );
+
+			expectResult(
+				viewParse( '<p data-group-end-before="foo:bar:baz" data-group-start-before="foo:bar:baz">Foobar</p>' ),
+				'<paragraph>Foobar</paragraph>',
+				{ name: 'group:foo:bar:baz', start: [ 0 ], end: [ 0 ] }
+			);
+		} );
+
+		it( 'default conversion, collapsed after element, name', () => {
+			upcastHelpers.dataToMarker( { view: 'group' } );
+
+			expectResult(
+				viewParse( '<p data-group-end-after="foo:bar:baz" data-group-start-after="foo:bar:baz">Foobar</p>' ),
+				'<paragraph>Foobar</paragraph>',
+				{ name: 'group:foo:bar:baz', start: [ 1 ], end: [ 1 ] }
+			);
+		} );
+
+		it( 'default conversion, mixed, multiple markers, name', () => {
+			upcastHelpers.dataToMarker( { view: 'group' } );
+
+			expectResult(
+				viewParse(
+					'<p data-group-start-before="abc:xyz,foo:bar">Foo</p>' +
+					'<p>Ba<group-end name="abc:xyz"></group-end><group-end name="foo:bar"></group-end>r</p>'
+				),
+				'<paragraph>Foo</paragraph><paragraph>Bar</paragraph>',
+				[
+					{ name: 'group:foo:bar', start: [ 0 ], end: [ 1, 2 ] },
+					{ name: 'group:abc:xyz', start: [ 0 ], end: [ 1, 2 ] }
+				]
+			);
+		} );
+
+		it( 'default conversion, mixed #2, multiple markers, name', () => {
+			upcastHelpers.dataToMarker( { view: 'group' } );
+
+			expectResult(
+				viewParse(
+					'<p>F<group-start name="abc:xyz"></group-start><group-start name="foo:bar"></group-start>oo</p>' +
+					'<p data-group-end-after="abc:xyz,foo:bar">Bar</p>'
+				),
+				'<paragraph>Foo</paragraph><paragraph>Bar</paragraph>',
+				[
+					{ name: 'group:foo:bar', start: [ 0, 1 ], end: [ 2 ] },
+					{ name: 'group:abc:xyz', start: [ 0, 1 ], end: [ 2 ] }
+				]
+			);
+		} );
+
+		it( 'conversion callback, mixed, multiple markers, name', () => {
+			upcastHelpers.dataToMarker( { view: 'g', model: name => 'group:' + name.split( '_' )[ 0 ] } );
+
+			expectResult(
+				viewParse(
+					'<p data-g-start-before="abc_xyz,foo_bar">Foo</p>' +
+					'<p>Ba<g-end name="abc_xyz"></g-end><g-end name="foo_bar"></g-end>r</p>'
+				),
+				'<paragraph>Foo</paragraph><paragraph>Bar</paragraph>',
+				[
+					{ name: 'group:foo', start: [ 0 ], end: [ 1, 2 ] },
+					{ name: 'group:abc', start: [ 0 ], end: [ 1, 2 ] }
+				]
+			);
+		} );
+
+		it( 'can be overwritten using converterPriority', () => {
+			upcastHelpers.dataToMarker( { view: 'group' } );
+			upcastHelpers.dataToMarker( { view: 'group', model: name => 'g:' + name, converterPriority: 'high' } );
+
+			expectResult(
+				viewParse( '<p>Foo<group-start name="foo"></group-start><group-end name="foo"></group-end>bar</p>' ),
+				'<paragraph>Foobar</paragraph>',
+				{ name: 'g:foo', start: [ 0, 3 ], end: [ 0, 3 ] }
+			);
+		} );
+
+		it( 'should convert children if the view element has not been converted yet', () => {
+			upcastHelpers.dataToMarker( { view: 'group' } );
+
+			expectResult(
+				viewParse( '<div data-group-end-after="foo" data-group-start-before="foo"><p>Foo</p></div>' ),
+				'<paragraph>Foo</paragraph>',
+				[
+					{ name: 'group:foo', start: [ 0 ], end: [ 1 ] }
+				]
+			);
+		} );
+	} );
+
+	function expectResult( viewToConvert, modelString, markers ) {
 		const conversionResult = model.change( writer => upcastDispatcher.convert( viewToConvert, writer ) );
 
-		if ( marker ) {
-			expect( conversionResult.markers.has( marker.name ) ).to.be.true;
+		if ( markers ) {
+			markers = Array.isArray( markers ) ? markers : [ markers ];
 
-			const convertedMarker = conversionResult.markers.get( marker.name );
+			for ( const marker of markers ) {
+				expect( conversionResult.markers.has( marker.name ) ).to.be.true;
 
-			expect( convertedMarker.start.path ).to.deep.equal( marker.start );
-			expect( convertedMarker.end.path ).to.deep.equal( marker.end );
+				const convertedMarker = conversionResult.markers.get( marker.name );
+
+				expect( convertedMarker.start.path ).to.deep.equal( marker.start );
+				expect( convertedMarker.end.path ).to.deep.equal( marker.end );
+			}
 		}
 
 		expect( stringify( conversionResult ) ).to.equal( modelString );

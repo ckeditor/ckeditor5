@@ -741,9 +741,9 @@ describe( 'DocumentSelection', () => {
 		it( 'should return false for other values', () => {
 			expect( documentSelection.is( 'node' ) ).to.be.false;
 			expect( documentSelection.is( 'view:node' ) ).to.be.false;
-			expect( documentSelection.is( 'text' ) ).to.be.false;
-			expect( documentSelection.is( 'view:text' ) ).to.be.false;
-			expect( documentSelection.is( 'textProxy' ) ).to.be.false;
+			expect( documentSelection.is( '$text' ) ).to.be.false;
+			expect( documentSelection.is( 'view:$text' ) ).to.be.false;
+			expect( documentSelection.is( '$textProxy' ) ).to.be.false;
 			expect( documentSelection.is( 'element' ) ).to.be.false;
 			expect( documentSelection.is( 'rootElement' ) ).to.be.false;
 			expect( documentSelection.is( 'model:selection' ) ).to.be.false;

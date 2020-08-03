@@ -173,13 +173,13 @@ function getCodeLineTextNodeAtPosition( position ) {
 
 	// <codeBlock>foo^</codeBlock>
 	// <codeBlock>foo^<softBreak></softBreak>bar</codeBlock>
-	if ( !nodeAtPosition || nodeAtPosition.is( 'softBreak' ) ) {
+	if ( !nodeAtPosition || nodeAtPosition.is( 'element', 'softBreak' ) ) {
 		nodeAtPosition = position.nodeBefore;
 	}
 
 	// <codeBlock>^</codeBlock>
 	// <codeBlock>foo^<softBreak></softBreak>bar</codeBlock>
-	if ( !nodeAtPosition || nodeAtPosition.is( 'softBreak' ) ) {
+	if ( !nodeAtPosition || nodeAtPosition.is( 'element', 'softBreak' ) ) {
 		return null;
 	}
 
