@@ -43,6 +43,7 @@ describe( 'Model', () => {
 
 		it( 'registers $text to the schema', () => {
 			expect( schema.isRegistered( '$text' ) ).to.be.true;
+			expect( schema.isContent( '$text' ) ).to.be.true;
 			expect( schema.checkChild( [ '$block' ], '$text' ) ).to.be.true;
 		} );
 
