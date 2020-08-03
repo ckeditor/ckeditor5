@@ -249,6 +249,8 @@ export default class LinkUI extends Plugin {
 	 * Attaches actions that control whether the balloon panel containing the
 	 * {@link #formView} is visible or not.
 	 *
+	 * NOTE: The balloon panel for the `LinkUI` shows asynchronously.
+	 *
 	 * @private
 	 */
 	_enableUserBalloonInteractions() {
