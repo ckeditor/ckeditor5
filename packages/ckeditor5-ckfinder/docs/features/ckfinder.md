@@ -14,6 +14,10 @@ This feature allows you to insert images as well as links to files into the rich
 	Check out the comprehensive {@link features/image-upload Image upload overview} to learn about other ways to upload images into CKEditor 5.
 </info-box>
 
+<info-box>
+	CKFinder is a <a href="https://ckeditor.com/ckfinder/">commercial application</a> that was designed with CKEditor compatibility in mind. It is currently available as version 3.x for PHP, ASP.NET and Java and version 2.x for ASP and ColdFusion.
+</info-box>
+
 This feature can be used in the rich-text editor in two different ways:
 
 * [**As a server-side connector only**](#configuring-the-image-upload-only) ([demo](#image-upload-only)). In this scenario, images which are dropped or pasted into the editor are uploaded to the CKFinder server-side connector running on your server.
