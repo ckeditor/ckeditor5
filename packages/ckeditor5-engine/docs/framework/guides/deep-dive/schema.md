@@ -86,9 +86,11 @@ schema.register( 'myImage', {
 The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can later be used to check this property.
 
 <info-box>
-	Every "object" is also a "limit" element.
+	Every "object" is automatically also:
 
-	It means that for every element with `isObject` set to `true`, {@link module:engine/model/schema~Schema#isLimit `Schema#isLimit( element )`} will always return `true`.
+	* a [limit element](#limit-elements) – for every element with `isObject` set `true`, {@link module:engine/model/schema~Schema#isLimit `Schema#isLimit( element )`} will always return `true`.
+	* a [selectable element](#selectable-elements) – for every element with `isObject` set `true`, {@link module:engine/model/schema~Schema#isSelectable `Schema#isSelectable( element )`} will always return `true`.
+	* a [content element](#content-elements) – for every element with `isObject` set `true`, {@link module:engine/model/schema~Schema#isContent `Schema#isContent( element )`} will always return `true`.
 </info-box>
 
 ### Block elements
@@ -108,6 +110,42 @@ In the editor, all HTML formatting elements such as `<strong>` or `<code>` are r
 Currently, the {@link module:engine/model/schema~SchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>` or placeholder elements such as in the {@link framework/guides/tutorials/implementing-an-inline-widget Implementing an inline widget} tutorial.
 
 The support for inline elements in CKEditor 5 is so far limited to self-contained elements. Because of this, all elements marked with `isInline` should also be marked with `isObject`.
+
+### Selectable elements
+
+Elements that users can select as a whole (with all their internals) and then, for instance, copy them or apply formatting, are marked with the {@link module:engine/model/schema~SchemaItemDefinition#isSelectable `isSelectable`} property in the schema:
+
+```js
+schema.register( 'mySelectable', {
+	isSelectable: true
+} );
+```
+
+The {@link module:engine/model/schema~Schema#isSelectable `Schema#isSelectable()`} method can later be used to check this property.
+
+<info-box>
+	All [object elements](#object-elements) are selectable by default. There are other selectable elements registered in the editor, though. For instance, there is also the `tableCell` model element (rendered as a `<td>` in the editing view) that is selectable while **not** registered as an object. The {@link features/table#table-selection table selection} plugin takes advantage of this fact and allows users create rectangular selections made of multiple table cells.
+</info-box>
+
+### Content elements
+
+You can tell content model elements from other elements by looking at their representation in the editor data (you can use {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} or {@link module:engine/model/model~Model#hasContent Model#hasContent()} to check this out).
+
+Elements such as images or media will **always** find their way into editor data and this is what makes them content elements. They are marked with the {@link module:engine/model/schema~SchemaItemDefinition#isContent `isContent`} property in the schema:
+
+```js
+schema.register( 'myImage', {
+	isContent: true
+} );
+```
+
+The {@link module:engine/model/schema~Schema#isContent `Schema#isContent()`} method can later be used to check this property.
+
+At the same time, elements like paragraphs, list items, or headings **are not** content elements because they are skipped in the editor output when they are empty. From the data perspective they are transparent unless they contain other content elements (an empty paragraph is as good as no paragraph).
+
+<info-box>
+	[Object elements](#object-elements) and [`$text`](#generic-items) are content by default.
+</info-box>
 
 ## Generic items
 
