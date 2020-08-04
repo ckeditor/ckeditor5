@@ -282,7 +282,13 @@ export default class Schema {
 	isObject( item ) {
 		const def = this.getDefinition( item );
 
-		return !!( def && def.isObject );
+		if ( !def ) {
+			return false;
+		}
+
+		// Note: Check out the implementation of #isLimit(), #isSelectable(), and #isContent()
+		// to understand why these three constitute an object.
+		return !!( def.isObject || ( def.isLimit && def.isSelectable && def.isContent ) );
 	}
 
 	/**
