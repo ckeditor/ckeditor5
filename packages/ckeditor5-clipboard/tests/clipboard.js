@@ -343,6 +343,65 @@ describe( 'Clipboard feature', () => {
 			expect( spy.callCount ).to.equal( 1 );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/1006
+		describe( 'pasting plain text', () => {
+			let model;
+
+			beforeEach( () => {
+				model = editor.model;
+
+				editor.model.schema.extend( '$text', { allowAttributes: 'bold' } );
+			} );
+
+			it( 'should inherit selection attributes (collapsed selection)', () => {
+				const insertContent = model.insertContent.bind( model );
+				let insertedNode;
+
+				sinon.stub( model, 'insertContent' ).callsFake( documentFragment => {
+					insertedNode = documentFragment.getChild( 0 );
+
+					return insertContent( documentFragment );
+				} );
+
+				setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
+
+				const dataTransferMock = createDataTransfer( { 'text/plain': 'foo' } );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded foo[]text.</$text></paragraph>' );
+				expect( insertedNode.getAttribute( 'bold' ) ).to.equal( true );
+			} );
+
+			it( 'should inherit selection attributes (non-collapsed selection)', () => {
+				const insertContent = model.insertContent.bind( model );
+				let insertedNode;
+
+				sinon.stub( model, 'insertContent' ).callsFake( documentFragment => {
+					insertedNode = documentFragment.getChild( 0 );
+
+					return insertContent( documentFragment );
+				} );
+
+				setModelData( model, '<paragraph><$text bold="true">Bolded [text.]</$text></paragraph>' );
+
+				const dataTransferMock = createDataTransfer( { 'text/plain': 'foo' } );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded foo[]</$text></paragraph>' );
+				expect( insertedNode.getAttribute( 'bold' ) ).to.equal( true );
+			} );
+		} );
+
 		function createDataTransfer( data ) {
 			return {
 				getData( type ) {
