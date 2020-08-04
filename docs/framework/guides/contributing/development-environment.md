@@ -25,7 +25,7 @@ You can find all the official packages listed in the [CKEditor 5 repository's RE
 
 In order to start developing CKEditor 5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 8.0.0+
+* [Node.js](https://nodejs.org/en/) 12.0.0+
 * [Git](https://git-scm.com/)
 
 ## Setting up the CKEditor development environment

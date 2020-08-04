@@ -13,7 +13,7 @@ import ImageResizeCommand from './imageresizecommand';
 /**
  * The image resize editing feature.
  *
- * It adds a possibility to resize each image using handles or manually by
+ * It adds the ability to resize each image using handles or manually by
  * {@link module:image/imageresize/imageresizebuttons~ImageResizeButtons} buttons.
  *
  * @extends module:core/plugin~Plugin

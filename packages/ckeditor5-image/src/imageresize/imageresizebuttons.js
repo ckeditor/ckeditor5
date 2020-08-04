@@ -31,7 +31,7 @@ const RESIZE_ICONS = {
 };
 
 /**
- * The `ImageResizeButtons` plugin.
+ * The image resize buttons plugin.
  *
  * It adds a possibility to resize images using the toolbar dropdown or individual buttons, depending on the plugin configuration.
  *
@@ -90,7 +90,7 @@ export default class ImageResizeButtons extends Plugin {
 	 * A helper function that creates a standalone button component for the plugin.
 	 *
 	 * @private
-	 * @param {module:image/imageresize/imageresizebuttons~ImageResizeOption} resizeOption A model of resize option.
+	 * @param {module:image/imageresize/imageresizebuttons~ImageResizeOption} resizeOption A model of the resize option.
 	 */
 	_registerImageResizeButton( option ) {
 		const editor = this.editor;
@@ -116,7 +116,7 @@ export default class ImageResizeButtons extends Plugin {
 				throw new CKEditorError(
 					'imageresizebuttons-missing-icon: ' +
 					'The resize option "' + name + '" misses the "icon" property ' +
-					'or the property value doesn\'t match any of available icons.',
+					'or the property value doesn\'t match any of the available icons.',
 					editor,
 					option
 				);
@@ -143,7 +143,7 @@ export default class ImageResizeButtons extends Plugin {
 	}
 
 	/**
-	 * A helper function that creates a dropdown component for the plugin containing all resize options defined in
+	 * A helper function that creates a dropdown component for the plugin containing all the resize options defined in
 	 * the editor configuration.
 	 *
 	 * @private
@@ -200,7 +200,7 @@ export default class ImageResizeButtons extends Plugin {
 	 * @private
 	 * @param {module:image/imageresize/imageresizebuttons~ImageResizeOption} option A resize option object.
 	 * @param {Boolean} [forTooltip] An optional flag for creating a tooltip label.
-	 * @returns {String} A user-defined label, a label combined from the value and resize unit or the default label
+	 * @returns {String} A user-defined label combined from the numeric value and the resize unit or the default label
 	 * for reset options (`Original`).
 	 */
 	_getOptionLabelValue( option, forTooltip ) {
@@ -224,11 +224,11 @@ export default class ImageResizeButtons extends Plugin {
 	}
 
 	/**
-	 * A helper function that parses resize options and returns list item definitions ready for use in a dropdown.
+	 * A helper function that parses the resize options and returns list item definitions ready for use in the dropdown.
 	 *
 	 * @private
 	 * @param {Array.<module:image/imageresize/imageresizebuttons~ImageResizeOption>} options The resize options.
-	 * @param {module:image/imageresize/imageresizecommand~ImageResizeCommand} command A resize image command.
+	 * @param {module:image/imageresize/imageresizecommand~ImageResizeCommand} command The resize image command.
 	 * @returns {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>} Dropdown item definitions.
 	 */
 	_getResizeDropdownListItemDefinitions( options, command ) {
@@ -268,19 +268,19 @@ function getIsOnButtonCallback( value ) {
 }
 
 /**
- * An image resize option used in the {@link module:image/image~ImageConfig#resizeOptions image resize configuration}.
+ * The image resize option used in the {@link module:image/image~ImageConfig#resizeOptions image resize configuration}.
  *
  * @typedef {Object} module:image/imageresize/imageresizebuttons~ImageResizeOption
- * @property {String} name A name of the UI component that changes the image size.
+ * @property {String} name The name of the UI component that changes the image size.
  * * If you configure the feature using individual resize buttons, you can refer to this name in the
  * {@link module:image/image~ImageConfig#toolbar image toolbar configuration}.
  * * If you configure the feature using the resize dropdown, this name will be used for a list item in the dropdown.
- * @property {String} value A value of a resize option without the unit
+ * @property {String} value The value of the resize option without the unit
  * ({@link module:image/image~ImageConfig#resizeUnit configured separately}). `null` resets an image to its original size.
  * @property {String} [resizeOptions.icon] An icon used by an individual resize button (see the `name` property to learn more).
  * Available icons are: `'small'`, `'medium'`, `'large'`, `'original'`.
- * @property {String} [label] A label of the option displayed in the dropdown or, if the feature is configured using
+ * @property {String} [label] An option label displayed in the dropdown or, if the feature is configured using
  * individual buttons, a {@link module:ui/button/buttonview~ButtonView#tooltip} and an ARIA attribute of a button.
- * If not specified, the label is generated automatically based on the option `value` and the
+ * If not specified, the label is generated automatically based on the `value` option and the
  * {@link module:image/image~ImageConfig#resizeUnit `config.image.resizeUnit`}.
  */
