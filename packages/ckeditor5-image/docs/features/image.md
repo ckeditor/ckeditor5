@@ -70,7 +70,7 @@ The {@link module:image/imagecaption~ImageCaption} plugin adds support for image
 ```html
 <figure class="image">
 	<img src="..." alt="...">
-	<figcaption>Caption goes here...</figcaption>
+	<figcaption>A caption goes here...</figcaption>
 </figure>
 ```
 
@@ -84,15 +84,15 @@ See the {@link features/image-upload Image upload} guide.
 
 ## Responsive images
 
-The responsive images support in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Refer to the {@link features/easy-image#responsive-images Easy Image integration} guide to learn how to use the feature in your project.
+Support for responsive images in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Refer to the {@link features/easy-image#responsive-images Easy Image integration} guide to learn how to use the feature in your project.
 
 ## Image styles
 
-In simple integrations it is enough to let the user insert images, set their text alternative and the editor's job is done. An example of such a simple solution are e.g. [GitHub](https://github.com) comments. The styling of the images (for example, their maximum width and margins) is controlled by GitHub through stylesheets.
+In simple integrations it is enough to let the user insert images, set their text alternative and the editor's job is done. An example of such a simple solution are, for example, [GitHub](https://github.com/) comments. The styling of the images (for example, their maximum width and margins) is controlled by GitHub through stylesheets.
 
-In more advanced scenarios, the user may need to be able to decide the image's width: should it take up the whole width (if it is the article's main photo) or it should take, for example, 50% of the width and be pulled out of the content (so called "pulled images"). Various integration scenarios require different types of images to be used.
+In more advanced scenarios, the user may need to be able to decide about the image's width. Should it take up the whole width (if it is the article's main photo) or should it take up, for example, 50% of the width and be pulled out of the content (so called "pulled images")? Various integration scenarios require different types of images to be used.
 
-Finally, in certain situations, the user should be able to granularly control how an image is presented via the ability to set the size and alignment separately.
+Finally, in certain situations, the user should be able to granularly control how an image is presented thanks to the ability to set the size and alignment separately.
 
 The {@link module:image/imagestyle~ImageStyle} feature solves the last two scenarios. The former is handled by so-called ["semantical styles"](#semantical-styles) and the latter by ["presentational styles"](#presentational-styles) in combination with the [image resize](#resizing-images) feature.
 
@@ -124,7 +124,7 @@ A side image:
 	Read more about {@link builds/guides/integration/content-styles styling the content of the editor}.
 </info-box>
 
-Here you can see a demo of the WYSIWYG editor with the semantical image styles. The "full" and "side" styles are the default value of {@link module:image/image~ImageConfig#styles `config.image.styles`} so you do not need to set it.
+Below you can find a demo of the WYSIWYG editor with the semantical image styles. The "full" and "side" styles are the default value of {@link module:image/image~ImageConfig#styles `config.image.styles`} so you do not need to set it.
 
 ```js
 ClassicEditor
@@ -138,7 +138,7 @@ ClassicEditor
 				'imageTextAlternative'
 			],
 
-			// The default value,
+			// The default value.
 			styles: [
 				'full',
 				'side'
@@ -149,12 +149,12 @@ ClassicEditor
 	.catch( ... );
 ```
 
-See the result below. You can change the styles of images through the image's contextual toolbar.
+See the result in the WYSIWYG editor below. You can change the style of an image through the image's contextual toolbar.
 
 {@snippet features/image-style}
 
 <info-box hint>
-Try to understand what use cases the system needs to support and define semantic options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. For example, the "side image" style can be displayed as a floated image on wide screens and as a normal image on low resolution screens (e.g. mobile browsers).
+	Try to understand what use cases the system needs to support and define semantic options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. For example, the "side image" style can be displayed as a floated image on wide screens and as a normal image on low resolution screens (e.g. mobile browsers).
 </info-box>
 
 <info-box warning>
@@ -169,6 +169,14 @@ Presentational styles do not add any special meaning to the content. They direct
 
 Currently, the available presentational styles are "align center", "align left" and "align right".
 
+<info-box warning>
+	Presentational image styles should be combined with the optional [image resize feature](#resizing-images) as these features were designed to be used together. The image width is then controlled by the image resize feature.
+
+	If you do not enable the image resize feature in your setup using the default presentational styles, your images will always take up 100% of the editor width so the alignment may not be visible.
+
+	If you do not want to enable image resizing, use [semantical image styles](#semantical-styles).
+</info-box>
+
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -178,9 +186,31 @@ ClassicEditor
 				'alignLeft', 'alignCenter', 'alignRight'
 			],
 
-			// You need to configure the image toolbar, too, so it shows the new style buttons.
+			// Configure the available image resize options.
+			resizeOptions: [
+				{
+					name: 'imageResize:original',
+					label: 'Original',
+					value: null
+				},
+				{
+					name: 'imageResize:50',
+					label: '50%',
+					value: '50'
+				},
+				{
+					name: 'imageResize:75',
+					label: '75%',
+					value: '75'
+				}
+			],
+
+			// You need to configure the image toolbar, too, so it shows the new style
+			// buttons as well as the resize buttons.
 			toolbar: [
 				'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight',
+				'|',
+				'imageResize',
 				'|',
 				'imageTextAlternative'
 			]
@@ -191,6 +221,8 @@ ClassicEditor
 ```
 
 The code sample above uses predefined presentational image styles: `'alignLeft'`, `'alignCenter'` and `'alignRight'`. They apply, respectively, the `.image-style-align-left`, `.image-style-align-center` and  `.image-style-align-right` classes to the `<figure>` element.
+
+In addition to that, the sample is configured to use the [image resize feature](#resizing-images) with three {@link module:image/image~ImageConfig#resizeOptions resize options} available: `'imageResize:original'`, `'imageResize:50'` and `'imageResize:75'`. They allow you to set the image width in the editor to the original image size, 50% and 75%, respectively.
 
 See the result below:
 
@@ -222,7 +254,7 @@ The [image styles](#image-styles) feature is meant to give the user a choice bet
 
 ### Methods to resize images
 
-The editor offers different ways to resize images either by using "resize handles" or by using dedicated UI components - either a dropdown menu or standalone buttons.
+The editor offers different ways to resize images either by using "resize handles" or by using dedicated UI components &mdash; either a dropdown or standalone buttons.
 
 The {@link module:image/imageresize~ImageResize} plugin enables the four resize handles displayed over the selected image. The user can freely resize the image by dragging them. The feature can be configured to use either percentage (default) or pixel values.
 
@@ -230,7 +262,7 @@ The plugin also gives you an ability to change the size of the image through the
 
 #### Using handles
 
-In this case, the user is able to resize images via dragging square handles displayed in each corner of the image. Once [image resizing was enabled](#enabling-image-resizing), this option does not require any additional configuration.
+In this case, the user is able to resize images by dragging square handles displayed in each corner of the image. Once [image resizing was enabled](#enabling-image-resizing), this option does not require any additional configuration.
 
 {@snippet features/image-resize}
 
