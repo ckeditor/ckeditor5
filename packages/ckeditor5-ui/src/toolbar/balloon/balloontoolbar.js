@@ -222,9 +222,9 @@ export default class BalloonToolbar extends Plugin {
 			return;
 		}
 
-		// Do not show the toolbar when there is more than one range in the selection and they fully contain object elements.
+		// Do not show the toolbar when there is more than one range in the selection and they fully contain selectable elements.
 		// See https://github.com/ckeditor/ckeditor5/issues/6443.
-		if ( selectionContainsOnlyMultipleObjects( selection, schema ) ) {
+		if ( selectionContainsOnlyMultipleSelectables( selection, schema ) ) {
 			return;
 		}
 
@@ -364,14 +364,14 @@ function getBalloonPositions( isBackward ) {
 	];
 }
 
-// Returns "true" when the selection has multiple ranges and each range contains an object
+// Returns "true" when the selection has multiple ranges and each range contains a selectable element
 // and nothing else.
 //
 // @private
 // @param {module:engine/model/selection~Selection} selection
 // @param {module:engine/model/schema~Schema} schema
 // @returns {Boolean}
-function selectionContainsOnlyMultipleObjects( selection, schema ) {
+function selectionContainsOnlyMultipleSelectables( selection, schema ) {
 	// It doesn't contain multiple objects if there is only one range.
 	if ( selection.rangeCount === 1 ) {
 		return false;
@@ -380,7 +380,7 @@ function selectionContainsOnlyMultipleObjects( selection, schema ) {
 	return [ ...selection.getRanges() ].every( range => {
 		const element = range.getContainedElement();
 
-		return element && schema.isObject( element );
+		return element && schema.isSelectable( element );
 	} );
 }
 
