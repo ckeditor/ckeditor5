@@ -154,8 +154,7 @@ function tryFixingCollapsedRange( range, schema ) {
 // @param {module:engine/model/schema~Schema} schema
 // @returns {module:engine/model/range~Range|null} Returns fixed range or null if range is valid.
 function tryFixingNonCollapsedRage( range, schema ) {
-	const start = range.start;
-	const end = range.end;
+	const { start, end } = range;
 
 	const isTextAllowedOnStart = schema.checkChild( start, '$text' );
 	const isTextAllowedOnEnd = schema.checkChild( end, '$text' );
@@ -176,13 +175,13 @@ function tryFixingNonCollapsedRage( range, schema ) {
 		// - [<block>foo</block>]    ->    <block>[foo]</block>
 		// - [<block>foo]</block>    ->    <block>[foo]</block>
 		// - <block>f[oo</block>]    ->    <block>f[oo]</block>
-		// - [<block>foo</block><object></object>]    ->    <block>[foo</block><object></object>]
+		// - [<block>foo</block><selectable></selectable>]    ->    <block>[foo</block><selectable></selectable>]
 		if ( checkSelectionOnNonLimitElements( start, end, schema ) ) {
-			const isStartObject = start.nodeAfter && schema.isObject( start.nodeAfter );
-			const fixedStart = isStartObject ? null : schema.getNearestSelectionRange( start, 'forward' );
+			const isStartBeforeSelectable = start.nodeAfter && schema.isSelectable( start.nodeAfter );
+			const fixedStart = isStartBeforeSelectable ? null : schema.getNearestSelectionRange( start, 'forward' );
 
-			const isEndObject = end.nodeBefore && schema.isObject( end.nodeBefore );
-			const fixedEnd = isEndObject ? null : schema.getNearestSelectionRange( end, 'backward' );
+			const isEndAfterSelectable = end.nodeBefore && schema.isSelectable( end.nodeBefore );
+			const fixedEnd = isEndAfterSelectable ? null : schema.getNearestSelectionRange( end, 'backward' );
 
 			// The schema.getNearestSelectionRange might return null - if that happens use original position.
 			const rangeStart = fixedStart ? fixedStart.start : start;

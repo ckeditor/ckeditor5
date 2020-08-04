@@ -1206,6 +1206,30 @@ describe( 'Selection post-fixer', () => {
 
 				expect( getModelData( model ) ).to.equal( '<div>[<div></div>]</div>' );
 			} );
+
+			it( 'should not fix #5 (selection starts before a selectable, which is not an object)', () => {
+				model.schema.register( 'div', { allowIn: '$root' } );
+				model.schema.register( 'selectable', { isSelectable: true, allowIn: 'div' } );
+				model.schema.extend( '$text', { allowIn: 'selectable' } );
+
+				setModelData( model,
+					'<div>[<selectable>foo]</selectable></div>'
+				);
+
+				expect( getModelData( model ) ).to.equal( '<div>[<selectable>foo]</selectable></div>' );
+			} );
+
+			it( 'should not fix #6 (selection ends after before a selectable, which is not an object)', () => {
+				model.schema.register( 'div', { allowIn: '$root' } );
+				model.schema.register( 'selectable', { isSelectable: true, allowIn: 'div' } );
+				model.schema.extend( '$text', { allowIn: 'selectable' } );
+
+				setModelData( model,
+					'<div><selectable>[foo</selectable>]</div>'
+				);
+
+				expect( getModelData( model ) ).to.equal( '<div><selectable>[foo</selectable>]</div>' );
+			} );
 		} );
 
 		describe( 'non-collapsed selection - inline widget scenarios', () => {
