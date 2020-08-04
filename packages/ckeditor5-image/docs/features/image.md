@@ -298,6 +298,8 @@ const imageConfiguration = {
 }
 ```
 
+Try out the live demo of the toolbar dropdown below.
+
 {@snippet features/image-resize-buttons-dropdown}
 
 #### Using standalone buttons
@@ -333,6 +335,7 @@ const imageConfiguration = {
 	]
 }
 ```
+Try out the live demo of the individual image toolbar buttons below.
 
 {@snippet features/image-resize-buttons}
 
@@ -446,6 +449,7 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+Check out the differnce in this live demo below.
 
 {@snippet features/image-resize-px}
 
@@ -467,6 +471,7 @@ The image link can be added or edited via the image menu. An icon in top right c
 	<figcaption>Image caption</figcaption>
 </figure>
 ```
+Use the link icon in the image toolbar to access the edit options for links on image.
 
 {@snippet features/image-link}
 

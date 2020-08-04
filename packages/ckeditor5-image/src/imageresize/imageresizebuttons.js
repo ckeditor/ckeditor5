@@ -143,7 +143,7 @@ export default class ImageResizeButtons extends Plugin {
 	}
 
 	/**
-	 * A helper function that creates a dropdown component for the plugin containing all resize options defined in
+	 * A helper function that creates a dropdown component for the plugin containing all the resize options defined in
 	 * the editor configuration.
 	 *
 	 * @private
@@ -200,7 +200,7 @@ export default class ImageResizeButtons extends Plugin {
 	 * @private
 	 * @param {module:image/imageresize/imageresizebuttons~ImageResizeOption} option A resize option object.
 	 * @param {Boolean} [forTooltip] An optional flag for creating a tooltip label.
-	 * @returns {String} A user-defined label, a label combined from the value and resize unit or the default label
+	 * @returns {String} A user-defined label combined from the numeric value and the resize unit or the default label
 	 * for reset options (`Original`).
 	 */
 	_getOptionLabelValue( option, forTooltip ) {
@@ -224,7 +224,7 @@ export default class ImageResizeButtons extends Plugin {
 	}
 
 	/**
-	 * A helper function that parses resize options and returns list item definitions ready for use in a dropdown.
+	 * A helper function that parses the resize options and returns list item definitions ready for use in the dropdown.
 	 *
 	 * @private
 	 * @param {Array.<module:image/imageresize/imageresizebuttons~ImageResizeOption>} options The resize options.
@@ -279,8 +279,8 @@ function getIsOnButtonCallback( value ) {
  * ({@link module:image/image~ImageConfig#resizeUnit configured separately}). `null` resets an image to its original size.
  * @property {String} [resizeOptions.icon] An icon used by an individual resize button (see the `name` property to learn more).
  * Available icons are: `'small'`, `'medium'`, `'large'`, `'original'`.
- * @property {String} [label] A label of the option displayed in the dropdown or, if the feature is configured using
+ * @property {String} [label] An option label displayed in the dropdown or, if the feature is configured using
  * individual buttons, a {@link module:ui/button/buttonview~ButtonView#tooltip} and an ARIA attribute of a button.
- * If not specified, the label is generated automatically based on the option `value` and the
+ * If not specified, the label is generated automatically based on the `value` option and the
  * {@link module:image/image~ImageConfig#resizeUnit `config.image.resizeUnit`}.
  */
