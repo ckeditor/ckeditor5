@@ -257,6 +257,31 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher.fire.calledWith( 'attribute:bold:image' ) ).to.be.false;
 			expect( dispatcher.fire.calledWith( 'insert:caption' ) ).to.be.false;
 		} );
+
+		it( 'should allow to provide an additional options', () => {
+			root._appendChild( [
+				new ModelText( 'foo', { bold: true } )
+			] );
+
+			const range = model.createRangeIn( root );
+			const conversionOptions = { foo: 'bar' };
+			const spy = sinon.spy();
+
+			dispatcher.on( 'insert', ( evt, data, conversionApi ) => {
+				expect( conversionApi.options ).to.equal( conversionOptions );
+				spy();
+			} );
+
+			dispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
+				expect( conversionApi.options ).to.equal( conversionOptions );
+				spy();
+			} );
+
+			dispatcher.convertInsert( range, {}, conversionOptions );
+
+			// To be sure all assertions was checked.
+			sinon.assert.calledTwice( spy );
+		} );
 	} );
 
 	describe( 'convertRemove', () => {
@@ -629,6 +654,22 @@ describe( 'DowncastDispatcher', () => {
 
 			// Called once for each item, twice total.
 			expect( highAddMarkerSpy.calledTwice ).to.be.true;
+		} );
+
+		it( 'should allow to provide an additional options', () => {
+			const range = model.createRange( model.createPositionAt( element, 2 ), model.createPositionAt( element, 2 ) );
+			const conversionOptions = { foo: 'bar' };
+			const spy = sinon.spy();
+
+			dispatcher.on( 'addMarker:name', ( evt, data, conversionApi ) => {
+				expect( conversionApi.options ).to.equal( conversionOptions );
+				spy();
+			} );
+
+			dispatcher.convertMarkerAdd( 'name', range, {}, conversionOptions );
+
+			// To be sure all assertions was checked.
+			sinon.assert.called( spy );
 		} );
 	} );
 

@@ -76,5 +76,6 @@ export default DataApiMixin;
  * @param {String} [options.trim='empty'] Whether returned data should be trimmed. This option is set to `'empty'` by default,
  * which means that whenever editor content is considered empty, an empty string is returned. To turn off trimming
  * use `'none'`. In such cases exact content will be returned (for example `'<p>&nbsp;</p>'` for an empty editor).
+ * @param {Object} [options.conversionOptions] Additional, custom configuration passed to the conversion process.
  * @returns {String} Output data.
  */
