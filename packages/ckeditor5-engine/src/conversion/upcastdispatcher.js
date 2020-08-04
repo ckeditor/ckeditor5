@@ -78,8 +78,8 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *
  *		// Convert all elements which have no custom converter into a paragraph (autoparagraphing).
  *		editor.data.upcastDispatcher.on( 'element', ( evt, data, conversionApi ) => {
- *			// Try to consume the element.
- *			if ( conversionApi.consumable.consume( data.viewItem, { name: data.viewItem.name } ) ) {
+ *			// Check if element can be converted.
+ *			if ( !conversionApi.consumable.test( data.viewItem, { name: data.viewItem.name } ) ) {
  *				// When element is already consumed by higher priority converters then do nothing.
  *				return;
  *			}
@@ -91,6 +91,9 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *				// When element was not inserted it means that we can't insert paragraph at this position.
  *				return;
  *			}
+ *
+ *			// Consume the inserted element.
+ *			conversionApi.consumable.consume( data.viewItem, { name: data.viewItem.name } ) );
  *
  *			// Convert children to paragraph.
  *			const { modelRange } = conversionApi.convertChildren( data.viewItem,  paragraph ) );
@@ -478,14 +481,9 @@ export default class UpcastDispatcher {
 	 * all elements conversion or to conversion of specific elements.
 	 *
 	 * @event element
-	 * @param {Object} data Conversion data. Keep in mind that this object is shared by reference between all
-	 * callbacks that will be called. This means that callbacks can override values if needed, and those values will
-	 * be available in other callbacks.
-	 * @param {module:engine/view/item~Item} data.viewItem Converted item.
-	 * @param {module:engine/model/position~Position} data.modelCursor Position where a converter should start changes.
-	 * Change this value for the next converter to tell where the conversion should continue.
-	 * @param {module:engine/model/range~Range} data.modelRange The current state of conversion result. Every change to
-	 * converted element should be reflected by setting or modifying this property.
+	 * @param {module:engine/conversion/upcastdispatcher~UpcastConversionData} data Conversion data. Keep in mind that this object is shared
+	 * by reference between all callbacks that will be called. This means that callbacks can override values if needed, and those values
+	 * will be available in other callbacks.
 	 * @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion utilities to be used by callback.
 	 */
 
@@ -638,7 +636,8 @@ function createContextTree( contextDefinition, writer ) {
  *			return;
  *		}
  *
- * The split result is saved and {@link #updateConversionResult} should be used to update conversion data.
+ * The split result is saved and {@link #updateConversionResult} should be used to update
+ * {@link module:engine/conversion/upcastdispatcher~UpcastConversionData conversion data}.
  *
  * @method #safeInsert
  * @param {module:engine/model/node~Node} node Node to insert.
@@ -647,11 +646,10 @@ function createContextTree( contextDefinition, writer ) {
  */
 
 /**
- * Updates the conversion result and sets proper `data.modelRange` and next `data.modelCursor` after the conversion.
+ * Updates the conversion result and sets proper {@link module:engine/conversion/upcastdispatcher~UpcastConversionData#modelRange} and
+ * next {@link module:engine/conversion/upcastdispatcher~UpcastConversionData#modelCursor} after the conversion.
  * Used together with {@link #safeInsert} enables you to easily convert elements without worrying if the node was split
  * during its children conversion.
- *
- * If given `element` was not split, an array with single element is returned.
  *
  * Example of a usage in a converter code:
  *
@@ -668,7 +666,8 @@ function createContextTree( contextDefinition, writer ) {
  *
  * @method #updateConversionResult
  * @param {module:engine/model/element~Element} element
- * @returns {Array.<module:engine/model/element~Element>}
+ * @param {module:engine/conversion/upcastdispatcher~UpcastConversionData} data Conversion data.
+ * @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion utilities to be used by callback.
  */
 
 /**
@@ -774,4 +773,19 @@ function createContextTree( contextDefinition, writer ) {
  * The {@link module:engine/model/writer~Writer} instance used to manipulate data during conversion.
  *
  * @member {module:engine/model/writer~Writer} #writer
+ */
+
+/**
+ * Conversion data.
+ *
+ * **Note:** Keep in mind that this object is shared by reference between all conversion callbacks that will be called.
+ * This means that callbacks can override values if needed, and those values will be available in other callbacks.
+ *
+ * @typedef {Object} module:engine/conversion/upcastdispatcher~UpcastConversionData
+ *
+ * @property {module:engine/view/item~Item} viewItem Converted item.
+ * @property {module:engine/model/position~Position} modelCursor Position where a converter should start changes.
+ * Change this value for the next converter to tell where the conversion should continue.
+ * @property {module:engine/model/range~Range} [modelRange] The current state of conversion result. Every change to
+ * converted element should be reflected by setting or modifying this property.
  */
