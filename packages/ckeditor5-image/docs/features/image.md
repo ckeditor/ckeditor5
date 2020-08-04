@@ -17,7 +17,7 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link module:link/linkimage~LinkImage} adds support for [linking images](#linking-images).
 
 <info-box info>
-	All features listed above except the image resizing and image linking are enabled by default in all CKEditor 5 WYSIWYG editor builds.
+	All features listed above except image resizing and image linking are enabled by default in all CKEditor 5 WYSIWYG editor builds.
 
 	Check the documentation of each subfeature to learn more about it.
 </info-box>
