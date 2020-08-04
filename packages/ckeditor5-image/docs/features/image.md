@@ -481,7 +481,7 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
-Check out the differnce in this live demo below.
+Check out the difference in this live demo below.
 
 {@snippet features/image-resize-px}
 
