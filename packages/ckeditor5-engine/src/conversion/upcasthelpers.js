@@ -502,8 +502,6 @@ export function convertSelectionChange( model, mapper ) {
 
 		const modelSelection = model.createSelection( ranges, { backward: viewSelection.isBackward } );
 
-		// modelSelection.setTo( ranges, { backward: viewSelection.isBackward } );
-
 		if ( !modelSelection.isEqual( model.document.selection ) ) {
 			model.change( writer => {
 				writer.setSelection( modelSelection );
