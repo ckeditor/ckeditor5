@@ -52,7 +52,6 @@ describe( 'TableEditing', () => {
 		expect( model.schema.isRegistered( 'table' ) ).to.be.true;
 		expect( model.schema.isObject( 'table' ) ).to.be.true;
 		expect( model.schema.isBlock( 'table' ) ).to.be.true;
-		expect( model.schema.isLimit( 'table' ) ).to.be.true;
 
 		expect( model.schema.checkChild( [ '$root' ], 'table' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingRows' ) ).to.be.true;
@@ -68,6 +67,8 @@ describe( 'TableEditing', () => {
 		// Table cell:
 		expect( model.schema.isRegistered( 'tableCell' ) ).to.be.true;
 		expect( model.schema.isLimit( 'tableCell' ) ).to.be.true;
+		expect( model.schema.isObject( 'tableCell' ) ).to.be.false;
+		expect( model.schema.isSelectable( 'tableCell' ) ).to.be.true;
 
 		expect( model.schema.checkChild( [ '$root' ], 'tableCell' ) ).to.be.false;
 		expect( model.schema.checkChild( [ 'table' ], 'tableCell' ) ).to.be.false;

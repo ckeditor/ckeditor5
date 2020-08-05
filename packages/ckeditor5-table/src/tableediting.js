@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import upcastTable, { upcastTableCell, skipEmptyTableRow } from './converters/upcasttable';
+import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow } from './converters/upcasttable';
 import {
 	downcastInsertCell,
 	downcastInsertRow,
@@ -64,7 +64,6 @@ export default class TableEditing extends Plugin {
 		schema.register( 'table', {
 			allowWhere: '$block',
 			allowAttributes: [ 'headingRows', 'headingColumns' ],
-			isLimit: true,
 			isObject: true,
 			isBlock: true
 		} );
@@ -77,7 +76,8 @@ export default class TableEditing extends Plugin {
 		schema.register( 'tableCell', {
 			allowIn: 'tableRow',
 			allowAttributes: [ 'colspan', 'rowspan' ],
-			isObject: true
+			isLimit: true,
+			isSelectable: true
 		} );
 
 		// Allow all $block content inside table cell.
@@ -104,8 +104,10 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).add( downcastRemoveRow() );
 
 		// Table cell conversion.
-		conversion.for( 'upcast' ).add( upcastTableCell( 'td' ) );
-		conversion.for( 'upcast' ).add( upcastTableCell( 'th' ) );
+		conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'td' } );
+		conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'th' } );
+		conversion.for( 'upcast' ).add( ensureParagraphInTableCell( 'td' ) );
+		conversion.for( 'upcast' ).add( ensureParagraphInTableCell( 'th' ) );
 
 		conversion.for( 'editingDowncast' ).add( downcastInsertCell() );
 

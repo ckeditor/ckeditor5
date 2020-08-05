@@ -122,7 +122,8 @@ describe( 'UpcastHelpers', () => {
 
 		it( 'config.view is not set - should fire conversion for every element', () => {
 			upcastHelpers.elementToElement( {
-				model: 'paragraph'
+				model: 'paragraph',
+				view: /.+/
 			} );
 
 			expectResult( new ViewContainerElement( viewDocument, 'p' ), '<paragraph></paragraph>' );
@@ -861,6 +862,18 @@ describe( 'UpcastHelpers', () => {
 				{ name: 'g:foo', start: [ 0, 3 ], end: [ 0, 3 ] }
 			);
 		} );
+
+		it( 'should convert children if the view element has not been converted yet', () => {
+			upcastHelpers.dataToMarker( { view: 'group' } );
+
+			expectResult(
+				viewParse( '<div data-group-end-after="foo" data-group-start-before="foo"><p>Foo</p></div>' ),
+				'<paragraph>Foo</paragraph>',
+				[
+					{ name: 'group:foo', start: [ 0 ], end: [ 1 ] }
+				]
+			);
+		} );
 	} );
 
 	function expectResult( viewToConvert, modelString, markers ) {
@@ -1002,7 +1015,7 @@ describe( 'upcast-converters', () => {
 					const paragraph = conversionApi.writer.createElement( 'paragraph' );
 
 					conversionApi.writer.insert( paragraph, data.modelCursor );
-					conversionApi.convertChildren( data.viewItem, ModelPosition._createAt( paragraph, 0 ) );
+					conversionApi.convertChildren( data.viewItem, paragraph );
 
 					data.modelRange = ModelRange._createOn( paragraph );
 					data.modelCursor = data.modelRange.end;

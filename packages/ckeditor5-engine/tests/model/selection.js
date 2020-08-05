@@ -973,7 +973,7 @@ describe( 'Selection', () => {
 
 			model.schema.register( 'table', { isBlock: true, isLimit: true, isObject: true, allowIn: '$root' } );
 			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
-			model.schema.register( 'tableCell', { allowIn: 'tableRow', isObject: true } );
+			model.schema.register( 'tableCell', { allowIn: 'tableRow', isLimit: true, isSelectable: true } );
 
 			model.schema.extend( 'p', { allowIn: 'tableCell' } );
 		} );

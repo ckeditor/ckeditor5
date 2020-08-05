@@ -6,7 +6,7 @@
 /* globals console, window, document */
 
 import Widget from '../../src/widget';
-import { toWidget, viewToModelPositionOutsideModelElement } from '../../src/utils';
+import { toWidget, toWidgetEditable, viewToModelPositionOutsideModelElement } from '../../src/utils';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
@@ -34,6 +34,66 @@ function BlockWidget( editor ) {
 		model: 'div',
 		view: 'div'
 	} );
+}
+
+function BlockWidgetWithNestedEditable( editor ) {
+	const model = editor.model;
+
+	model.schema.register( 'widget', {
+		inheritAllFrom: '$block',
+		isObject: true
+	} );
+
+	model.schema.register( 'nested', {
+		allowIn: 'widget',
+		isLimit: true
+	} );
+
+	model.schema.extend( '$block', {
+		allowIn: 'nested'
+	} );
+
+	editor.conversion.for( 'dataDowncast' )
+		.elementToElement( {
+			model: 'widget',
+			view: ( modelItem, writer ) => {
+				return writer.createContainerElement( 'figure' );
+			}
+		} )
+		.elementToElement( {
+			model: 'nested',
+			view: ( modelItem, writer ) => {
+				return writer.createContainerElement( 'figcaption' );
+			}
+		} );
+
+	editor.conversion.for( 'editingDowncast' )
+		.elementToElement( {
+			model: 'widget',
+			view: ( modelItem, writer ) => {
+				const div = writer.createContainerElement( 'figure' );
+
+				return toWidget( div, writer, { label: 'widget label' } );
+			}
+		} )
+		.elementToElement( {
+			model: 'nested',
+			view: ( modelItem, writer ) => {
+				const nested = writer.createEditableElement( 'figcaption' );
+
+				return toWidgetEditable( nested, writer );
+			}
+		} );
+
+	editor.conversion.for( 'upcast' )
+		.elementToElement( {
+			view: 'figure',
+			model: 'widget'
+		} )
+		.elementToElement( {
+			view: 'figcaption',
+			model: 'nested'
+		} );
 }
 
 class InlineWidget extends Plugin {
@@ -82,7 +142,7 @@ class InlineWidget extends Plugin {
 }
 
 const config = {
-	plugins: [ ArticlePluginSet, Widget, InlineWidget, BlockWidget ],
+	plugins: [ ArticlePluginSet, Widget, InlineWidget, BlockWidget, BlockWidgetWithNestedEditable ],
 	toolbar: [
 		'heading',
 		'|',
@@ -113,6 +173,8 @@ ClassicEditor
 	.create( document.querySelector( '#editor-ltr' ), config )
 	.then( editor => {
 		window.editorLtr = editor;
+
+		bindButtons( editor );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -124,7 +186,19 @@ ClassicEditor
 	} ) )
 	.then( editor => {
 		window.editorRtl = editor;
+
+		bindButtons( editor );
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+function bindButtons( editor ) {
+	document.getElementById( 'wta-disable' ).addEventListener( 'click', () => {
+		editor.plugins.get( 'WidgetTypeAround' ).forceDisabled();
+	} );
+
+	document.getElementById( 'wta-enable' ).addEventListener( 'click', () => {
+		editor.plugins.get( 'WidgetTypeAround' ).clearForceDisabled();
+	} );
+}
