@@ -67,7 +67,7 @@ Next step allows you to compose the toolbar. A simple drag-and-drop workspace al
 {@img assets/img/online-builder-04-toolbar-configurator.png 753 The toolbar drag-and-drop configurator.}
 
 <info-box hint>
-	Some of the buttons are pre-placed and are grayed out. To move one of these, drag them from the lower bar into the upper bar - they will become focused and can be then moved around.
+	Some of the buttons are pre-placed on the layout but grayed-out. You still need, however, to drag them from the lower bar into the upper bar - they will become focused and can be then moved around.
 </info-box>
 
 Once you finish designing the toolbar, press the **Next step** button on the top right.
