@@ -949,7 +949,7 @@ describe( 'upcast-converters', () => {
 
 		it( 'should not convert text if it is wrong with schema', () => {
 			schema.addChildCheck( ( ctx, childDef ) => {
-				if ( childDef.name == '$text' && ctx.endsWith( '$root' ) ) {
+				if ( ( childDef.name == '$text' || childDef.name == 'paragraph' ) && ctx.endsWith( '$root' ) ) {
 					return false;
 				}
 			} );
@@ -960,6 +960,31 @@ describe( 'upcast-converters', () => {
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.childCount ).to.equal( 0 );
+
+			conversionResult = model.change( writer => dispatcher.convert( viewText, writer, [ '$block' ] ) );
+
+			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
+			expect( conversionResult.childCount ).to.equal( 1 );
+			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
+			expect( conversionResult.getChild( 0 ).data ).to.equal( 'foobar' );
+		} );
+
+		it( 'should wrap text with paragraph if it would allow conversion', () => {
+			schema.addChildCheck( ( ctx, childDef ) => {
+				if ( childDef.name == '$text' && ctx.endsWith( '$root' ) ) {
+					return false;
+				}
+			} );
+
+			const viewText = new ViewText( viewDocument, 'foobar' );
+			dispatcher.on( 'text', convertText() );
+			let conversionResult = model.change( writer => dispatcher.convert( viewText, writer, context ) );
+
+			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
+			expect( conversionResult.childCount ).to.equal( 1 );
+			expect( conversionResult.getChild( 0 ).name ).to.equal( 'paragraph' );
+			expect( conversionResult.getNodeByPath( [ 0, 0 ] ) ).to.be.instanceof( ModelText );
+			expect( conversionResult.getNodeByPath( [ 0, 0 ] ).data ).to.equal( 'foobar' );
 
 			conversionResult = model.change( writer => dispatcher.convert( viewText, writer, [ '$block' ] ) );
 

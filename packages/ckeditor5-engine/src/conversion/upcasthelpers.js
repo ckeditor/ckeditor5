@@ -459,20 +459,37 @@ export function convertToModelFragment() {
  * @returns {Function} {@link module:engine/view/text~Text View text} converter.
  */
 export function convertText() {
-	return ( evt, data, conversionApi ) => {
-		if ( conversionApi.schema.checkChild( data.modelCursor, '$text' ) ) {
-			if ( conversionApi.consumable.consume( data.viewItem ) ) {
-				const text = conversionApi.writer.createText( data.viewItem.data );
+	return ( evt, data, { schema, consumable, writer } ) => {
+		let position = data.modelCursor;
 
-				conversionApi.writer.insert( text, data.modelCursor );
-
-				data.modelRange = conversionApi.writer.createRange(
-					data.modelCursor,
-					data.modelCursor.getShiftedBy( text.offsetSize )
-				);
-				data.modelCursor = data.modelRange.end;
-			}
+		// When node is already converted then do nothing.
+		if ( data.modelRange || !consumable.test( data.viewItem ) ) {
+			return;
 		}
+
+		if ( !schema.checkChild( position, '$text' ) ) {
+			// Check if this text node would be allowed if wrapped with a paragraph.
+			const context = schema.createContext( position );
+
+			if ( !schema.checkChild( context, 'paragraph' ) || !schema.checkChild( context.push( 'paragraph' ), '$text' ) ) {
+				return;
+			}
+
+			const paragraph = writer.createElement( 'paragraph' );
+
+			writer.insert( paragraph, position );
+			position = writer.createPositionAt( paragraph, 0 );
+		}
+
+		const text = writer.createText( data.viewItem.data );
+
+		writer.insert( text, position );
+
+		data.modelRange = writer.createRange(
+			position,
+			position.getShiftedBy( text.offsetSize )
+		);
+		data.modelCursor = data.modelRange.end;
 	};
 }
 

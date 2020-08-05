@@ -156,7 +156,7 @@ describe( 'DataController', () => {
 			const viewFragment = new ViewDocumentFragment( viewDocument, [ parseView( 'foo' ) ] );
 
 			// Model fragment in root.
-			expect( stringify( data.toModel( viewFragment ) ) ).to.equal( '' );
+			expect( stringify( data.toModel( viewFragment ) ) ).to.equal( '<paragraph>foo</paragraph>' );
 
 			// Model fragment in inline root.
 			expect( stringify( data.toModel( viewFragment, [ 'inlineRoot' ] ) ) ).to.equal( 'foo' );

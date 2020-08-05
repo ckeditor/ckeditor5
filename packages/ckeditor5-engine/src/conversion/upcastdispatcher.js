@@ -349,22 +349,30 @@ export default class UpcastDispatcher {
 	 * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#splitToAllowedParent
 	 */
 	_splitToAllowedParent( node, modelCursor ) {
+		const { schema, writer } = this.conversionApi;
+
 		// Try to find allowed parent.
-		const allowedParent = this.conversionApi.schema.findAllowedParent( modelCursor, node );
+		let allowedParent = schema.findAllowedParent( modelCursor, node );
 
-		// When there is no parent that allows to insert node then return `null`.
+		if ( allowedParent ) {
+			// When current position parent allows to insert node then return this position.
+			if ( allowedParent === modelCursor.parent ) {
+				return { position: modelCursor };
+			}
+
+			// When allowed parent is in context tree (it's outside the converted tree).
+			if ( this._modelCursor.parent.getAncestors().includes( allowedParent ) ) {
+				allowedParent = null;
+			}
+		}
+
 		if ( !allowedParent ) {
-			return null;
-		}
+			// Check if the node wrapped with a paragraph would be accepted by the schema.
+			const paragraph = wrapWithParagraphIfPossible( node, modelCursor, writer, schema );
 
-		// When current position parent allows to insert node then return this position.
-		if ( allowedParent === modelCursor.parent ) {
-			return { position: modelCursor };
-		}
-
-		// When allowed parent is in context tree.
-		if ( this._modelCursor.parent.getAncestors().includes( allowedParent ) ) {
-			return null;
+			return paragraph && {
+				position: writer.createPositionAt( paragraph, 0 )
+			};
 		}
 
 		// Split element to allowed parent.
@@ -568,6 +576,24 @@ function createContextTree( contextDefinition, writer ) {
 	}
 
 	return position;
+}
+
+// Auto-paragraphing
+function wrapWithParagraphIfPossible( node, position, writer, schema ) {
+	// Check if the node wrapped with a paragraph would be accepted by the schema.
+	const context = schema.createContext( position );
+
+	// If paragraph is not acceptable in the current position or the model node is not accepted in that context
+	// there is nothing more that can be done with it.
+	if ( !schema.checkChild( context, 'paragraph' ) || !schema.checkChild( context.push( 'paragraph' ), node ) ) {
+		return null;
+	}
+
+	const paragraph = writer.createElement( 'paragraph' );
+
+	writer.insert( paragraph, position );
+
+	return paragraph;
 }
 
 /**

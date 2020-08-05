@@ -605,6 +605,39 @@ describe( 'UpcastDispatcher', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 
+			it( 'should insert paragraph if it\'s allowed and if it would allow conversion', () => {
+				const spy = sinon.spy();
+
+				model.schema.register( 'section', {
+					allowIn: '$root'
+				} );
+				model.schema.register( 'span', {
+					allowIn: 'paragraph'
+				} );
+				model.schema.extend( 'paragraph', {
+					allowIn: 'section'
+				} );
+
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
+					const section = conversionApi.writer.createElement( 'section' );
+					const position = ModelPosition._createAt( section, 0 );
+
+					const span = conversionApi.writer.createElement( 'span' );
+
+					const result = conversionApi.splitToAllowedParent( span, position );
+
+					expect( section.getChild( 0 ).name ).to.equal( 'paragraph' );
+					expect( result ).to.deep.equal( {
+						position: ModelPosition._createAt( section.getChild( 0 ), 0 )
+					} );
+
+					spy();
+				} );
+
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument ), writer ) );
+				sinon.assert.calledOnce( spy );
+			} );
+
 			it( 'should return null if element is not allowed in position and any of ancestors', () => {
 				const spy = sinon.spy();
 
