@@ -104,7 +104,7 @@ describe( 'DowncastHelpers', () => {
 		it( 'config.view is a function', () => {
 			downcastHelpers.elementToElement( {
 				model: 'heading',
-				view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
+				view: ( modelElement, { writer } ) => writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
 			} );
 
 			model.change( writer => {
@@ -225,8 +225,8 @@ describe( 'DowncastHelpers', () => {
 		it( 'config.view is a function', () => {
 			downcastHelpers.attributeToElement( {
 				model: 'bold',
-				view: ( modelAttributeValue, viewWriter ) => {
-					return viewWriter.createAttributeElement( 'span', { style: 'font-weight:' + modelAttributeValue } );
+				view: ( modelAttributeValue, { writer } ) => {
+					return writer.createAttributeElement( 'span', { style: 'font-weight:' + modelAttributeValue } );
 				}
 			} );
 
@@ -243,15 +243,15 @@ describe( 'DowncastHelpers', () => {
 					key: 'color',
 					name: '$text'
 				},
-				view: ( modelAttributeValue, viewWriter ) => {
-					return viewWriter.createAttributeElement( 'span', { style: 'color:' + modelAttributeValue } );
+				view: ( modelAttributeValue, { writer } ) => {
+					return writer.createAttributeElement( 'span', { style: 'color:' + modelAttributeValue } );
 				}
 			} );
 
 			downcastHelpers.elementToElement( {
 				model: 'smiley',
-				view: ( modelElement, viewWriter ) => {
-					return viewWriter.createEmptyElement( 'img', {
+				view: ( modelElement, { writer } ) => {
+					return writer.createEmptyElement( 'img', {
 						src: 'smile.jpg',
 						class: 'smiley'
 					} );
@@ -283,7 +283,7 @@ describe( 'DowncastHelpers', () => {
 
 			downcastHelpers.attributeToElement( {
 				model: 'bold',
-				view: ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'b' )
+				view: ( modelAttributeValue, { writer } ) => writer.createAttributeElement( 'b' )
 			} );
 
 			model.change( writer => {
@@ -304,9 +304,9 @@ describe( 'DowncastHelpers', () => {
 
 			downcastHelpers.attributeToElement( {
 				model: 'style',
-				view: ( modelAttributeValue, viewWriter ) => {
+				view: ( modelAttributeValue, { writer } ) => {
 					if ( modelAttributeValue == 'bold' ) {
-						return viewWriter.createAttributeElement( 'b' );
+						return writer.createAttributeElement( 'b' );
 					}
 				}
 			} );
@@ -333,8 +333,8 @@ describe( 'DowncastHelpers', () => {
 
 			downcastHelpers.attributeToElement( {
 				model: 'link',
-				view: ( modelAttributeValue, viewWriter ) => {
-					return viewWriter.createAttributeElement( 'a', { href: modelAttributeValue } );
+				view: ( modelAttributeValue, { writer } ) => {
+					return writer.createAttributeElement( 'a', { href: modelAttributeValue } );
 				}
 			} );
 
@@ -357,7 +357,7 @@ describe( 'DowncastHelpers', () => {
 
 			downcastHelpers.attributeToElement( {
 				model: 'bold',
-				view: ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'b' )
+				view: ( modelAttributeValue, { writer } ) => writer.createAttributeElement( 'b' )
 			} );
 
 			model.change( writer => {
@@ -378,11 +378,11 @@ describe( 'DowncastHelpers', () => {
 
 			downcastHelpers.attributeToElement( {
 				model: 'bold',
-				view: ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'b' )
+				view: ( modelAttributeValue, { writer } ) => writer.createAttributeElement( 'b' )
 			} );
 			downcastHelpers.attributeToElement( {
 				model: 'bold',
-				view: ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'strong' ),
+				view: ( modelAttributeValue, { writer } ) => writer.createAttributeElement( 'strong' ),
 				converterPriority: 'high'
 			} );
 
@@ -423,7 +423,7 @@ describe( 'DowncastHelpers', () => {
 			downcastHelpers.elementToElement( { model: 'image', view: 'img' } );
 			downcastHelpers.elementToElement( {
 				model: 'paragraph',
-				view: ( modelItem, viewWriter ) => viewWriter.createContainerElement( 'p' )
+				view: ( modelItem, { writer } ) => writer.createContainerElement( 'p' )
 			} );
 
 			downcastHelpers.attributeToAttribute( {
@@ -807,8 +807,8 @@ describe( 'DowncastHelpers', () => {
 		it( 'config.view is a function', () => {
 			downcastHelpers.markerToElement( {
 				model: 'search',
-				view: ( data, viewWriter ) => {
-					return viewWriter.createUIElement( 'span', { 'data-marker': 'search', 'data-start': data.isOpening } );
+				view: ( data, { writer } ) => {
+					return writer.createUIElement( 'span', { 'data-marker': 'search', 'data-start': data.isOpening } );
 				}
 			} );
 
@@ -838,7 +838,7 @@ describe( 'DowncastHelpers', () => {
 			it( 'should insert and remove ui element', () => {
 				downcastHelpers.markerToElement( {
 					model: 'marker',
-					view: ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } )
+					view: ( data, { writer } ) => writer.createUIElement( 'span', { 'class': 'marker' } )
 				} );
 
 				model.change( writer => {
@@ -859,7 +859,7 @@ describe( 'DowncastHelpers', () => {
 
 				downcastHelpers.markerToElement( {
 					model: 'marker',
-					view: ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } )
+					view: ( data, { writer } ) => writer.createUIElement( 'span', { 'class': 'marker' } )
 				} );
 
 				controller.downcastDispatcher.on( 'addMarker:marker', ( evt, data, conversionApi ) => {
@@ -911,7 +911,7 @@ describe( 'DowncastHelpers', () => {
 			it( 'should insert and remove ui element - element as a creator', () => {
 				downcastHelpers.markerToElement( {
 					model: 'marker',
-					view: ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } )
+					view: ( data, { writer } ) => writer.createUIElement( 'span', { 'class': 'marker' } )
 				} );
 
 				model.change( writer => {
@@ -931,7 +931,7 @@ describe( 'DowncastHelpers', () => {
 			it( 'should insert and remove ui element - function as a creator', () => {
 				downcastHelpers.markerToElement( {
 					model: 'marker',
-					view: ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': data.markerName } )
+					view: ( data, { writer } ) => writer.createUIElement( 'span', { 'class': data.markerName } )
 				} );
 
 				model.change( writer => {
@@ -951,12 +951,12 @@ describe( 'DowncastHelpers', () => {
 			it( 'should insert and remove different opening and ending element', () => {
 				downcastHelpers.markerToElement( {
 					model: 'marker',
-					view: ( data, viewWriter ) => {
+					view: ( data, { writer } ) => {
 						if ( data.isOpening ) {
-							return viewWriter.createUIElement( 'span', { 'class': data.markerName, 'data-start': true } );
+							return writer.createUIElement( 'span', { 'class': data.markerName, 'data-start': true } );
 						}
 
-						return viewWriter.createUIElement( 'span', { 'class': data.markerName, 'data-end': true } );
+						return writer.createUIElement( 'span', { 'class': data.markerName, 'data-end': true } );
 					}
 				} );
 
@@ -980,7 +980,7 @@ describe( 'DowncastHelpers', () => {
 
 				downcastHelpers.markerToElement( {
 					model: 'marker',
-					view: ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } )
+					view: ( data, { writer } ) => writer.createUIElement( 'span', { 'class': 'marker' } )
 				} );
 				controller.downcastDispatcher.on( 'addMarker:marker', ( evt, data, conversionApi ) => {
 					conversionApi.consumable.consume( data.item, 'addMarker:marker' );
