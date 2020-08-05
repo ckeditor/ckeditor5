@@ -153,13 +153,11 @@ ClassicEditor
 	} );
 
 function getTypeFromViewElement( viewElement ) {
-	const classNames = [ ...viewElement.getClassNames() ];
-
-	if ( classNames.includes( 'info-box-info' ) ) {
+	if ( viewElement.hasClass( 'info-box-info' ) ) {
 		return 'Info';
 	}
 
-	if ( classNames.includes( 'info-box-warning' ) ) {
+	if ( viewElement.hasClass( 'info-box-warning' ) ) {
 		return 'Warning';
 	}
 
