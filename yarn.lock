@@ -878,23 +878,23 @@
     date-fns "^1.29.0"
     lodash-es "^4.17.11"
 
-"@ckeditor/ckeditor5-dev-docs@^23.0.0":
-  version "23.1.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-docs/-/ckeditor5-dev-docs-23.1.0.tgz#b84c45ad8052b9cc5cde8b72a5189a4e7451557e"
-  integrity sha512-EDUXToEcTMCUb8s5JQG3O/VWEkB1NB8MjZ5k9pG3cJU4opRG877B3I8FhoxeOA5st02szfXRz7DDxy+Wdbxwog==
+"@ckeditor/ckeditor5-dev-docs@^23.1.1":
+  version "23.1.1"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-docs/-/ckeditor5-dev-docs-23.1.1.tgz#072914816f29a3adc58960a2695dc23bb306df62"
+  integrity sha512-eR9RvQHgj65vkSgnmr8Z4fjGzeJV2wWQm5rh2hFWqoh6Ep4iFCAd2ofxGFj/jPRiHhs6Zex8o+q/NybmKPE3wA==
   dependencies:
-    "@ckeditor/ckeditor5-dev-utils" "^23.1.0"
-    "@ckeditor/jsdoc-plugins" "^23.1.0"
+    "@ckeditor/ckeditor5-dev-utils" "^23.1.1"
+    "@ckeditor/jsdoc-plugins" "^23.1.1"
     fast-glob "^3.2.4"
     jsdoc ckeditor/jsdoc#fixed-trailing-comment-doclets
     tmp "^0.2.1"
 
-"@ckeditor/ckeditor5-dev-env@^23.0.0":
-  version "23.1.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-env/-/ckeditor5-dev-env-23.1.0.tgz#122a10c063183f2cd4886d5d1d0adbf0f65caa56"
-  integrity sha512-a76Cbwk+iVr1Io8pj6pUDvMoMDlRxnp7VxWIQuT3UhukDCpUPAwEKEDHx2BjXi+3SqrUuD4rwj1hdyqRMAw5ag==
+"@ckeditor/ckeditor5-dev-env@^23.1.1":
+  version "23.1.1"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-env/-/ckeditor5-dev-env-23.1.1.tgz#2cc2262931c4c24b1879ecc479ffde8e3bad3479"
+  integrity sha512-j5AYBjDIjMz1LrsZvRQWwc/K1QWaXhUm9Vkd1GZNWp83Sb6JfXKE8aNwuPVeJpnS9w4mSiBLOEFTdwS/ONbWHQ==
   dependencies:
-    "@ckeditor/ckeditor5-dev-utils" "^23.1.0"
+    "@ckeditor/ckeditor5-dev-utils" "^23.1.1"
     "@octokit/rest" "^17.9.2"
     chalk "^4.0.0"
     compare-func "^2.0.0"
@@ -912,15 +912,15 @@
     request "^2.88.2"
     semver "^7.3.2"
 
-"@ckeditor/ckeditor5-dev-tests@^23.0.0":
-  version "23.1.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-23.1.0.tgz#3ee60f014de5cfe625d7863e58c67c71e00033a0"
-  integrity sha512-3GN4bWDRdefIEx3F5Baj5ZKzK/PwMi+a7aYe8Hha1oUfiWCbNzAzVWzvNMzBdnd/8BrPAtFWPKsBgyj5ZU4GSg==
+"@ckeditor/ckeditor5-dev-tests@^23.1.1":
+  version "23.1.1"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-23.1.1.tgz#b3e29827c9f3927f9244297fd290a548825aee55"
+  integrity sha512-YgzFrDec97E3cYhiB5D8wO+7zfLiWOf8fFlFiZXn9wcPycLCJy9POzHOjNqu6KXsWrtVfT/3v6l1xbzH1SegSQ==
   dependencies:
     "@babel/core" "^7.9.6"
-    "@ckeditor/ckeditor5-dev-utils" "^23.1.0"
-    "@ckeditor/ckeditor5-dev-webpack-plugin" "^23.1.0"
-    "@ckeditor/ckeditor5-inspector" "^2.1.0"
+    "@ckeditor/ckeditor5-dev-utils" "^23.1.1"
+    "@ckeditor/ckeditor5-dev-webpack-plugin" "^23.1.1"
+    "@ckeditor/ckeditor5-inspector" "^2.2.0"
     babel-core "^6.26.3"
     babel-loader "^8.1.0"
     babel-plugin-transform-es2015-modules-commonjs "^6.26.2"
@@ -980,10 +980,10 @@
     shelljs "^0.8.1"
     through2 "^3.0.1"
 
-"@ckeditor/ckeditor5-dev-utils@^23.0.0", "@ckeditor/ckeditor5-dev-utils@^23.1.0":
-  version "23.1.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-utils/-/ckeditor5-dev-utils-23.1.0.tgz#daaa72000e0559f25a4849f17466f61f152bdbce"
-  integrity sha512-mPEXJB7N7hFmLivrgAC6R1m2YRUd1K57FUC+J8VxfcRrV9prIDyVtN/V5zMPImKP1pvI7c3eQBTHo+xMgc7I1w==
+"@ckeditor/ckeditor5-dev-utils@^23.1.1":
+  version "23.1.1"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-utils/-/ckeditor5-dev-utils-23.1.1.tgz#bf758fb798ca1205e73cbbdbeaeae2eee02fff2c"
+  integrity sha512-2Oq6ycNhCX53pTaVH4rXCZ5SedYOI4VIrs2p1kEPpnP5dSMQG3v1aoYee4+NWJKD0mUUFyYjPtvPeA2PPI4Urg==
   dependencies:
     acorn "^6.2.1"
     acorn-walk "^6.2.0"
@@ -1011,17 +1011,17 @@
     rimraf "^2.6.2"
     webpack-sources "^1.1.0"
 
-"@ckeditor/ckeditor5-dev-webpack-plugin@^23.0.0", "@ckeditor/ckeditor5-dev-webpack-plugin@^23.1.0":
-  version "23.1.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-webpack-plugin/-/ckeditor5-dev-webpack-plugin-23.1.0.tgz#d078b011864fc6a234f630c892008b7b808fae2f"
-  integrity sha512-J6RTId5DhzYPhP/HOq2QZdSBZp0f43ku/O7R1BHN2F0j55wxrKaPhQqCvQdDjrMaa9LKwdNbZvbtJYUFx1tz3Q==
+"@ckeditor/ckeditor5-dev-webpack-plugin@^23.1.1":
+  version "23.1.1"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-webpack-plugin/-/ckeditor5-dev-webpack-plugin-23.1.1.tgz#128be93a402a4b1be458a983eb3912c810a2fd1f"
+  integrity sha512-1zLL1w2wBFUvzoTEL4nvsjOpltqViw2IrzfCv2F4tJlnJROpQ+EADI3g4D6A1yaEvb5dtdMbasa1pxENytMf8g==
   dependencies:
-    "@ckeditor/ckeditor5-dev-utils" "^23.1.0"
+    "@ckeditor/ckeditor5-dev-utils" "^23.1.1"
     chalk "^4.0.0"
     rimraf "^3.0.2"
     webpack-sources "^1.4.3"
 
-"@ckeditor/ckeditor5-inspector@^2.1.0", "@ckeditor/ckeditor5-inspector@^2.2.0":
+"@ckeditor/ckeditor5-inspector@^2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-inspector/-/ckeditor5-inspector-2.2.0.tgz#2e72b6387c57a89cde5fb6a70ed919d3b2236af3"
   integrity sha512-2Y24+im+FzMu2VD7KjGTLMxR3RjDn8KwPtkqp/1gZY1+OxnKzWFwiQLGd71CMQ/JDhH19N+AKRL8JEfDrrnD2g==
@@ -1087,10 +1087,10 @@
     jsdoc ckeditor/jsdoc#node12
     lodash "^4.17.15"
 
-"@ckeditor/jsdoc-plugins@^23.1.0":
-  version "23.1.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/jsdoc-plugins/-/jsdoc-plugins-23.1.0.tgz#43e97b933c64755c8bb997c074b87faf8c28bd7b"
-  integrity sha512-jq3+N4wOoLsdK0gswo7kxNjrMgyvZzSSoua5eLc6sIadrDsJpkBJShj06xKhzn8wCy3Gm7u883c+xHDx7QamJw==
+"@ckeditor/jsdoc-plugins@^23.1.1":
+  version "23.1.1"
+  resolved "https://registry.yarnpkg.com/@ckeditor/jsdoc-plugins/-/jsdoc-plugins-23.1.1.tgz#061f18fc5490f54c1d8d1d7795795608589e7605"
+  integrity sha512-O3Eb0n/Dug0P6sW0CfR5Nd4wcUhaG40/KOkIG1BkhMMIXcw1Uhdi/4BpkkRYixc/s+0iOFGVkF2BxOSMsYomLA==
   dependencies:
     fs-extra "^8.1.0"
     jsdoc ckeditor/jsdoc#fixed-trailing-comment-doclets
