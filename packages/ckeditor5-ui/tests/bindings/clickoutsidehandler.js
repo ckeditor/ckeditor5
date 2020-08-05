@@ -55,6 +55,17 @@ describe( 'clickOutsideHandler', () => {
 		sinon.assert.calledOnce( actionSpy );
 	} );
 
+	it( 'should execute upon #mousedown outside of the contextElements (activator is active, unsupported shadow DOM)', () => {
+		activator.returns( true );
+
+		const event = new Event( 'mousedown', { bubbles: true } );
+		event.composedPath = undefined;
+
+		document.body.dispatchEvent( event );
+
+		sinon.assert.calledOnce( actionSpy );
+	} );
+
 	it( 'should execute upon #mousedown in the shadow root but outside the contextElements (activator is active)', () => {
 		activator.returns( true );
 
@@ -67,6 +78,17 @@ describe( 'clickOutsideHandler', () => {
 		activator.returns( false );
 
 		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+
+		sinon.assert.notCalled( actionSpy );
+	} );
+
+	it( 'should not execute upon #mousedown outside of the contextElements (activator is inactive, unsupported shadow DOM)', () => {
+		activator.returns( false );
+
+		const event = new Event( 'mousedown', { bubbles: true } );
+		event.composedPath = undefined;
+
+		document.body.dispatchEvent( event );
 
 		sinon.assert.notCalled( actionSpy );
 	} );
