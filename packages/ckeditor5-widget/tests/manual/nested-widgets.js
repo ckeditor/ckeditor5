@@ -24,7 +24,7 @@ function MyPlugin( editor ) {
 
 	editor.conversion.for( 'downcast' ).elementToElement( {
 		model: 'div',
-		view: ( modelElement, writer ) => {
+		view: ( modelElement, { writer } ) => {
 			return toWidget( writer.createContainerElement( 'div', { class: 'widget' } ), writer );
 		}
 	} );

@@ -61,12 +61,12 @@ export default class ImageEditing extends Plugin {
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'image',
-			view: ( modelElement, viewWriter ) => createImageViewElement( viewWriter )
+			view: ( modelElement, { writer } ) => createImageViewElement( writer )
 		} );
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'image',
-			view: ( modelElement, viewWriter ) => toImageWidget( createImageViewElement( viewWriter ), viewWriter, t( 'image widget' ) )
+			view: ( modelElement, { writer } ) => toImageWidget( createImageViewElement( writer ), writer, t( 'image widget' ) )
 		} );
 
 		conversion.for( 'downcast' )

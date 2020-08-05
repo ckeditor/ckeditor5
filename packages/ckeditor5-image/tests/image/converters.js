@@ -37,8 +37,8 @@ describe( 'Image converters', () => {
 					isBlock: true
 				} );
 
-				const editingElementCreator = ( modelElement, viewWriter ) =>
-					toImageWidget( createImageViewElement( viewWriter ), viewWriter, '' );
+				const editingElementCreator = ( modelElement, { writer } ) =>
+					toImageWidget( createImageViewElement( writer ), writer, '' );
 
 				editor.conversion.for( 'editingDowncast' ).elementToElement( {
 					model: 'image',

@@ -75,8 +75,8 @@ export default class LinkEditing extends Plugin {
 			.attributeToElement( { model: 'linkHref', view: createLinkElement } );
 
 		editor.conversion.for( 'editingDowncast' )
-			.attributeToElement( { model: 'linkHref', view: ( href, writer ) => {
-				return createLinkElement( ensureSafeUrl( href ), writer );
+			.attributeToElement( { model: 'linkHref', view: ( href, conversionApi ) => {
+				return createLinkElement( ensureSafeUrl( href ), conversionApi );
 			} } );
 
 		editor.conversion.for( 'upcast' )
@@ -190,7 +190,7 @@ export default class LinkEditing extends Plugin {
 
 			editor.conversion.for( 'downcast' ).attributeToElement( {
 				model: decorator.id,
-				view: ( manualDecoratorName, writer ) => {
+				view: ( manualDecoratorName, { writer } ) => {
 					if ( manualDecoratorName ) {
 						const attributes = manualDecorators.get( decorator.id ).attributes;
 						const element = writer.createAttributeElement( 'a', attributes, { priority: 5 } );
