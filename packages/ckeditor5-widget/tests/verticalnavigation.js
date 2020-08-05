@@ -19,7 +19,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'Widget - vertical keyboard navigation near widgets', () => {
-	let editorElement, editor, model;
+	let editorElement, editor, model, styleElement;
 	let leftArrowDomEvtDataStub, rightArrowDomEvtDataStub, upArrowDomEvtDataStub, downArrowDomEvtDataStub;
 
 	const imageUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAUCAQAAADRyVAeAAAAKklEQVR42u3PAQ0AAAwCI' +
@@ -63,10 +63,28 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			stopPropagation: sinon.spy(),
 			domTarget: global.document.body
 		};
+
+		// Those tests are checking text line wrapping so forcing some sizes are needed to make those tests stable.
+		// Some tests are excluded for Gecko because of differences in font rendering (text line wraps in different places).
+		styleElement = global.document.createElement( 'style' );
+		styleElement.appendChild( global.document.createTextNode(
+			`
+			* {
+				font-size: 12px !important;
+				font-family: serif !important;
+				margin: 0 !important;
+				padding: 0 !important;
+				border: 0 !important
+			}
+			.ck.ck-editor__editable { width: 300px !important; }
+			`
+		) );
+		global.document.querySelector( 'head' ).appendChild( styleElement );
 	} );
 
 	afterEach( async () => {
 		editorElement.remove();
+		styleElement.remove();
 		await editor.destroy();
 	} );
 
@@ -131,34 +149,6 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 	} );
 
 	describe( 'with selection inside root content editable', () => {
-		let styleElement;
-
-		beforeEach( () => {
-			styleElement = global.document.createElement( 'style' );
-			styleElement.type = 'text/css';
-			styleElement.appendChild( global.document.createTextNode(
-				`
-				* {
-					font-size: 12px !important;
-					font-family: serif !important;
-					margin: 0 !important;
-					padding: 0 !important;
-					border: 0 !important
-				}
-				.ck-editor__editable:not(.ck-editor__nested-editable ) {
-					width: 300px !important;
-				}
-				td { width: 30px !important; }
-				tr:nth-child(2) td:nth-child(2) { width: 300px !important; }
-				`
-			) );
-			global.document.querySelector( 'head' ).appendChild( styleElement );
-		} );
-
-		afterEach( () => {
-			styleElement.remove();
-		} );
-
 		describe( 'single paragraph surrounded with objects', () => {
 			describe( 'collapsed selection', () => {
 				beforeEach( () => {
@@ -488,30 +478,6 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 	} );
 
 	describe( 'with selection inside nested content editable', () => {
-		let styleElement;
-
-		beforeEach( () => {
-			styleElement = global.document.createElement( 'style' );
-			styleElement.type = 'text/css';
-			styleElement.appendChild( global.document.createTextNode(
-				`
-				* {
-					font-size: 12px !important;
-					font-family: serif !important;
-					margin: 0 !important;
-					padding: 0 !important;
-					border: 0 !important
-				}
-				.ck.ck-editor__editable { width: 300px !important; }
-				`
-			) );
-			global.document.querySelector( 'head' ).appendChild( styleElement );
-		} );
-
-		afterEach( () => {
-			styleElement.remove();
-		} );
-
 		describe( 'simple text content', () => {
 			describe( 'with collapsed selection', () => {
 				beforeEach( () => {
