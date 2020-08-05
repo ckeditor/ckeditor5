@@ -17,28 +17,34 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * `UpcastDispatcher` is a central point of {@link module:engine/view/view view} conversion, which is a process of
+ * `UpcastDispatcher` is a central point of the model to view conversion, which is a process of
  * converting given {@link module:engine/view/documentfragment~DocumentFragment view document fragment} or
- * {@link module:engine/view/element~Element} into another structure.
- * In default application, {@link module:engine/view/view view} is converted to {@link module:engine/model/model}.
+ * {@link module:engine/view/element~Element view element} into a correct model structure.
  *
- * During conversion process, for all {@link module:engine/view/node~Node view nodes} from the converted view document fragment,
- * `UpcastDispatcher` fires corresponding events. Special callbacks called "converters" should listen to
- * `UpcastDispatcher` for those events.
+ * During the conversion process, the dispatcher fires events for all {@link module:engine/view/node~Node view nodes}
+ * from the converted view document fragment.
+ * Special callbacks called "converters" should listen to these events in order to convert these view nodes.
  *
- * Each callback, as the second argument, is passed a special object `data` that has `viewItem`, `modelCursor` and
- * `modelRange` properties. `viewItem` property contains {@link module:engine/view/node~Node view node} or
+ * The second parameter of the callback is the `data` object with the following properties:
+ *
+ * * `data.viewItem` contains {@link module:engine/view/node~Node view node} or
  * {@link module:engine/view/documentfragment~DocumentFragment view document fragment}
- * that is converted at the moment and might be handled by the callback. `modelRange` property should be used to save the result
- * of conversion and is always a {@link module:engine/model/range~Range} when conversion result is correct.
- * `modelCursor` property is a {@link module:engine/model/position~Position position} on which conversion result will be inserted
- * and is a context according to {@link module:engine/model/schema~Schema schema} will be checked before the conversion.
- * See also {@link ~UpcastDispatcher#convert}. It is also shared by reference by all callbacks listening to given event.
+ * that is converted at the moment and might be handled by the callback.
+ * * `data.modelRange` is used to point to the result
+ * of the current conversion (e.g. the element that is being inserted)
+ * and is always a {@link module:engine/model/range~Range} when the succeeds.
+ * * `data.modelCursor` is a {@link module:engine/model/position~Position position} on which the converter should insert
+ * newly created items.
  *
- * The third parameter passed to a callback is an instance of {@link ~UpcastDispatcher}
+ * The third parameter of the callback is an instance of {@link module:engine/conversion/upcastdispatcher~UpcastConversionApi}
  * which provides additional tools for converters.
  *
- * Examples of providing callbacks for `UpcastDispatcher`:
+ * You can read more about conversion in the following guides:
+ *
+ * * {@glink framework/guides/deep-dive/conversion/conversion-introduction Advanced conversion concepts &mdash; attributes}
+ * * {@glink framework/guides/deep-dive/conversion/custom-element-conversion Custom element conversion}
+ *
+ * Examples of event-based converters:
  *
  *		// Converter for links (<a>).
  *		editor.data.upcastDispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
@@ -101,9 +107,6 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *			// Update `modelRange` and `modelCursor` in a `data` as a conversion result.
  *			conversionApi.updateConversionResult( paragraph, data );
  *		}, { priority: 'low' } );
- *
- * Before each conversion process, `UpcastDispatcher` fires {@link ~UpcastDispatcher#event:viewCleanup}
- * event which can be used to prepare tree view for conversion.
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  * @fires viewCleanup
@@ -568,9 +571,8 @@ function createContextTree( contextDefinition, writer ) {
 }
 
 /**
- * Conversion interface that is registered for given {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher}
- * and is passed as one of parameters when {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher dispatcher}
- * fires it's events.
+ * A set of conversion utils available as the third parameter of
+ * {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher upcast dispatcher}'s events.
  *
  * @interface module:engine/conversion/upcastdispatcher~UpcastConversionApi
  */
