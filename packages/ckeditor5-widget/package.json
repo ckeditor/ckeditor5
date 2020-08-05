@@ -31,7 +31,6 @@
     "@ckeditor/ckeditor5-media-embed": "^21.0.0",
     "@ckeditor/ckeditor5-paragraph": "^21.0.0",
     "@ckeditor/ckeditor5-table": "^21.0.0",
-    "@ckeditor/ckeditor5-typing": "^21.0.0",
     "@ckeditor/ckeditor5-undo": "^21.0.0"
   },
   "engines": {
