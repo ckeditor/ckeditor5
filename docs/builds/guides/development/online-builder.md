@@ -83,7 +83,7 @@ Once you finish designing the toolbar, press the **Next step** button on the top
 
 Scroll the list of available languages and check the one you want to be the main language of your editor build.
 
-{@img assets/img/online-builder-05-language-selection.png 365 Language selector list.}
+{@img assets/img/online-builder-05-language-selection.png 367 Language selector list.}
 
 <info-box hint>
 	All other languages will still be available in the `translations` folder.
