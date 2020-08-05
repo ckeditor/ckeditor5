@@ -17,7 +17,7 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * `UpcastDispatcher` is a central point of the model to view conversion, which is a process of
+ * `UpcastDispatcher` is a central point of the view to model conversion, which is a process of
  * converting given {@link module:engine/view/documentfragment~DocumentFragment view document fragment} or
  * {@link module:engine/view/element~Element view element} into a correct model structure.
  *
