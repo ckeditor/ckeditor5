@@ -13,12 +13,11 @@ order: 10
 
 Although the CKEditor 5 WYSIWYG editor comes with handy preconfigured builds, sometimes these predefined versions are not enough and a need for custom builds arises. Some of the reasons for creating custom builds are:
 
-* Adding features which are not included in the existing builds, either from a third party or custom developed.
+* Adding {@link builds/guides/development/plugins plugin-driven features} which are not included in the existing builds.
 * Removing unnecessary features present in a build.
-* Changing the {@link builds/guides/integration/basic-api#creating-an-editor editor creator}.
-* Changing the {@link framework/guides/theme-customization editor theme}.
+* Designing {@link builds/guides/integration/configuration#toolbar-setup customized toolbar experience}.
+* Changing the {@link builds/guides/overview#available-builds editor type build}.
 * Changing the {@link features/ui-language localization language} of the editor.
-* Enabling bug fixes which are still not a part of any public release.
 
 This is where the online builder comes to aid the users needs.
 
@@ -30,19 +29,27 @@ The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) lets you d
 
 The following CKEditor 5 Builds are currently available to choose from:
 
+ * {@link builds/guides/overview#classic-editor Classic editor}
+ * {@link builds/guides/overview#inline-editor Inline editor}
+ * {@link builds/guides/overview#balloon-editor Baloon editor}
+ * {@link builds/guides/overview#balloon-block-editor Baloon block editor}
+ * {@link builds/guides/overview#document-editor Document editor}
+
+ <!-- Reconsider using absolute links for the above list (opens in new tab). It's an older code, sir, but it checks out.
+ 
  * [Classic editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#classic-editor)
  * [Inline editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#inline-editor)
  * [Balloon editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-editor)
  * [Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-block-editor)
  * [Document editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#document-editor)
+ 
+ -->
 
  Refer to the documentation to check what kind of WYSIWYG editor suits your needs best. Once you choose the desired editor type, press the **Next step** button on the top right.
 
  For the sake of clarity, this guide will use the Classic build as an example.
 
  {@img assets/img/online-builder-01-editor-type-choice.png 778 Editor type selection.}
-
- <!-- What do the numbers stand for in the image link? Nevermind, figured it all myself -->
 
 ### Choosing plugins
 
