@@ -9,7 +9,7 @@ category: builds-development
 order: 10
 ---
 
-# Creating custom builds
+# Creating custom builds with Online builder
 
 Although the CKEditor 5 WYSIWYG editor comes with handy preconfigured builds, sometimes these predefined versions are not enough and a need for custom builds arises. Some of the reasons for creating custom builds are:
 
