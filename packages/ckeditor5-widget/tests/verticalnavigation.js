@@ -5,13 +5,12 @@
 
 import { toWidget, toWidgetEditable } from '../src/utils';
 
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -31,7 +30,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 		global.document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Table, Paragraph, Image, ImageCaption, HorizontalLine, BlockQuote, BlockWidgetWithNestedEditable ]
+			plugins: [ Paragraph, Image, ImageCaption, HorizontalLine, BlockQuote, BlockWidgetWithNestedEditable ]
 		} );
 
 		model = editor.model;
