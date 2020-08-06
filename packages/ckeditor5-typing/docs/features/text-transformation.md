@@ -54,7 +54,7 @@ Type snippets such as `(c)`, `3/4`, `!=`, `---`, `"foo"` into the rich-text edit
 
 In addition to enabling automatic text transformations, you may want to check the following productivity features:
 
-* {@link features/autoformat Autoformatting} &ndash; It allows to quickly apply formatting to the content you are writing.
+* {@link features/autoformat Autoformatting} &ndash; Allows to quickly apply formatting to the content you are writing.
 * {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
 * {@link features/mentions Mentions} &ndash; It brings support for smart autocompletion.
 
