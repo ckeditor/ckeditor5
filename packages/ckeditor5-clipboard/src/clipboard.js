@@ -105,12 +105,7 @@ export default class Clipboard extends Plugin {
 
 				// While pasting plain text, apply selection attributes on the text.
 				if ( isPlainText( modelFragment ) ) {
-					let node = modelFragment.getChild( 0 );
-
-					// Pasting a paragraph with text without styles.
-					if ( !node.is( 'text' ) ) {
-						node = node.getChild( 0 );
-					}
+					const node = modelFragment.getChild( 0 );
 
 					model.change( writer => {
 						writer.setAttributes( modelDocument.selection.getAttributes(), node );

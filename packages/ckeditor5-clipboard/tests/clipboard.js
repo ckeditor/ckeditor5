@@ -405,7 +405,7 @@ describe( 'Clipboard feature', () => {
 				setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
 
 				const dataTransferMock = createDataTransfer( {
-					'text/html': '<p>foo</p>',
+					'text/html': 'foo',
 					'text/plain': 'foo'
 				} );
 
