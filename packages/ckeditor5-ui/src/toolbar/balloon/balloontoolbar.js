@@ -165,6 +165,15 @@ export default class BalloonToolbar extends Plugin {
 				} );
 			} );
 		}
+
+		// Listen to the toolbar view and whenever it changes its geometry due to some items being
+		// grouped or ungrouped, update the position of the balloon because a shorter/longer toolbar
+		// means the balloon could be pointing at the wrong place. Once updated, the balloon will point
+		// at the right selection in the content again.
+		// https://github.com/ckeditor/ckeditor5/issues/6444
+		this.listenTo( this.toolbarView, 'groupedItemsUpdate', () => {
+			this._updatePosition();
+		} );
 	}
 
 	/**
@@ -236,7 +245,7 @@ export default class BalloonToolbar extends Plugin {
 
 		// Update the toolbar position when the editor ui should be refreshed.
 		this.listenTo( this.editor.ui, 'update', () => {
-			this._balloon.updatePosition( this._getBalloonPositionData() );
+			this._updatePosition();
 		} );
 
 		// Add the toolbar to the common editor contextual balloon.
@@ -298,6 +307,18 @@ export default class BalloonToolbar extends Plugin {
 			},
 			positions: getBalloonPositions( isBackward )
 		};
+	}
+
+	/**
+	 * Updates the position of the {@link #_balloon} to make up for changes:
+	 *
+	 * * in the geometry of the selection it is attached to (e.g. the selection moved in the viewport or expanded or shrunk),
+	 * * or the geometry of the balloon toolbar itself (e.g. the toolbar has grouped or ungrouped some items and it is shorter or longer).
+	 *
+	 * @private
+	 */
+	_updatePosition() {
+		this._balloon.updatePosition( this._getBalloonPositionData() );
 	}
 
 	/**
