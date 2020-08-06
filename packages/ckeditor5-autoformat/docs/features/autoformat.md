@@ -43,6 +43,7 @@ Example:
 In addition to enabling automatic text formatting, you may want to check the following productivity features:
 
 * {@link features/text-transformation Automatic text transformation} &ndash; It enables automatic turning snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
+* {@link features/link#autolink-feature Autolink} &ndash; Turns the links typed or pasted into editor into active URLs.
 * {@link features/mentions Mentions} &ndash; It brings support for smart autocompletion.
 
 ## Installation
