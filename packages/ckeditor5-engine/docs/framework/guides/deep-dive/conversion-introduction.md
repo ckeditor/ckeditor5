@@ -12,7 +12,7 @@ order: 10
 
 This guide extends the {@link framework/guides/architecture/editing-engine introduction to CKEditor 5 editing engine architecture}. Therefore, we highly recommend reading the former guide first.
 
-In this guide the user will dive deeper into some of the conversion concepts.
+In this guide you will dive deeper into some of the conversion concepts.
 
 ## Inline and block content
 

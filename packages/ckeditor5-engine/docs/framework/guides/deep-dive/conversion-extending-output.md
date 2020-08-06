@@ -53,26 +53,26 @@ The {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 in
 
 In this example all links (`<a href="...">...</a>`) get the `.my-green-link` CSS class. This includes all links in the editor output (`editor.getData()`) and all links in the edited content (existing and future ones).
 
-<info-box>
-	Note that the same behavior can be obtained with {@link features/link#custom-link-attributes-decorators link decorators}:
 
-	```js
-	ClassicEditor
-		.create( ..., {
-			// ...
-			link: {
-				decorators: {
-					addGreenLink: {
-						mode: 'automatic',
-						attributes: {
-							class: 'my-green-link'
-						}
+Note that the same behavior can be obtained with {@link features/link#custom-link-attributes-decorators link decorators}:
+
+```js
+ClassicEditor
+	.create( ..., {
+		// ...
+		link: {
+			decorators: {
+				addGreenLink: {
+					mode: 'automatic',
+					attributes: {
+						class: 'my-green-link'
 					}
 				}
 			}
-		} )
-	```
-</info-box>
+		}
+	} )
+```
+
 
 {@snippet framework/extending-content-add-link-class}
 
@@ -138,19 +138,18 @@ Add some CSS styles for `.my-green-link` to see the customization in action:
 
 In this example all the links (`<a href="...">...</a>`) that do not have "ckeditor.com" in their `href="..."` get the `target="_blank"` attribute. This includes all links in the editor output (`editor.getData()`) and all links in the edited content (existing and future ones).
 
-<info-box>
-	Note that similar behavior can be obtained with {@link module:link/link~LinkConfig#addTargetToExternalLinks link decorators}:
 
-	```js
-	ClassicEditor
-		.create( ..., {
-			// ...
-			link: {
-				addTargetToExternalLinks: true
-			}
-		} )
-	```
-</info-box>
+Note that similar behavior can be obtained with {@link module:link/link~LinkConfig#addTargetToExternalLinks link decorators}:
+
+```js
+ClassicEditor
+	.create( ..., {
+		// ...
+		link: {
+			addTargetToExternalLinks: true
+		}
+	} )
+```
 
 {@snippet framework/extending-content-add-external-link-target}
 
@@ -216,31 +215,29 @@ a[target="_blank"]::after {
 
 In this example all links (`<a href="...">...</a>`) that do not have `https://` in their `href="..."` attribute get the `.unsafe-link` CSS class. This includes all links in the editor output (`editor.getData()`) and all links in the edited content (existing and future ones).
 
-<info-box>
-	Note that the same behavior can be obtained with {@link features/link#custom-link-attributes-decorators link decorators}:
 
-	```js
-	ClassicEditor
-		.create( ..., {
-			// ...
-			link: {
-				decorators: {
-					markUnsafeLink: {
-						mode: 'automatic',
-						callback: url => /^(http:)?\/\//.test( url ),
-						attributes: {
-							class: 'unsafe-link'
-						}
+Note that the same behavior can be obtained with {@link features/link#custom-link-attributes-decorators link decorators}:
+
+```js
+ClassicEditor
+	.create( ..., {
+		// ...
+		link: {
+			decorators: {
+				markUnsafeLink: {
+					mode: 'automatic',
+					callback: url => /^(http:)?\/\//.test( url ),
+					attributes: {
+						class: 'unsafe-link'
 					}
 				}
 			}
-		} )
-	```
-</info-box>
+		}
+	} )
+```
+
 
 {@snippet framework/extending-content-add-unsafe-link-class}
-
-<!-- Changed the "red" description in the snippet into a more universal one independant of the CSS class introduced -->
 
 The `.unsafe-link` CSS class is added to all "unsafe" links by a custom converter plugged into the downcast pipeline, following the default converters brought by the {@link features/link link} feature:
 
@@ -313,8 +310,6 @@ A custom CSS class is added to all `<h2>...</h2>` elements by a custom converter
 <info-box>
 	The `heading1` element in the model corresponds to `<h2>...</h2>` in the output HTML because in the default {@link features/headings#configuring-heading-levels headings feature configuration} `<h1>...</h1>` is reserved for the top–most heading of the webpage.
 </info-box>
-
-<!-- This above is utterly unclear if an end-user would be to read it -->
 
 ```js
 // This plugin brings customization to the downcast pipeline of the editor.
