@@ -17,15 +17,15 @@ The editing engine implements an MVC architecture. The shape of it is not enforc
 
 [{@img assets/img/framework-architecture-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
 
-What you can see are three layers: **model**, **controller** and **view**. There is one **model document** which is **converted** to two views &mdash; the **editing view** and the **data view**. These two views represent, respectively, the content that the user is editing (the DOM structure that you see in the browser) and the editor input and output data (in a format that the plugged data processor understands). Both views feature virtual DOM structures (custom, DOM-like structures) on which converters and features work and which are then **rendered** to the DOM.
+What you can see are three layers: **model**, **controller** and **view**. There is one **model document** which is **converted** into separate views &mdash; the **editing view** and the **data view**. These two views represent, respectively, the content that the user is editing (the DOM structure that you see in the browser) and the editor input and output data (in a format that the plugged data processor understands). Both views feature virtual DOM structures (custom, DOM-like structures) on which converters and features work and which are then **rendered** to the DOM.
 
-The green blocks are the code introduced by editor features (plugins). So features control what changes are done to the model, how they are converted to the view and how the model needs to be changed based on fired events (view's and model's ones).
+The green blocks are the code introduced by editor features (plugins). These features control what changes are made to the model, how they are converted to the view and how the model needs to be changed based on fired events (the view's and model's ones).
 
 Let's now talk about each layer separately.
 
 ## Model
 
-The model is implemented by a DOM-like tree structure of {@link module:engine/model/element~Element elements} and {@link module:engine/model/text~Text text nodes}. Unlike in the DOM, in the model, both elements and text nodes can have attributes.
+The model is implemented by a DOM-like tree structure of {@link module:engine/model/element~Element elements} and {@link module:engine/model/text~Text text nodes}. Unlike in the actual DOM, in the model, both elements and text nodes can have attributes.
 
 Like in the DOM, the model structure is contained within a {@link module:engine/model/document~Document document} that contains {@link module:engine/model/document~Document#roots root elements} (the model, as well as the view, may have multiple roots). The document also holds its {@link module:engine/model/documentselection~DocumentSelection selection} and the {@link module:engine/model/history~History history of its changes}.
 
@@ -72,12 +72,12 @@ editor.model.change( writer => {
 ```
 
 <info-box>
-	All changes made to the document structure are done by applying {@link module:engine/model/operation/operation~Operation operations}. The concept of operations comes from [Operational Transformation](https://en.wikipedia.org/wiki/Operational_transformation) (in short: OT), a technology enabling collaboration functionality. Since OT requires that a system is able to transform every operation by every other one (to figure out the result of concurrently applied operations), the set of operations needs to be small. CKEditor 5 features a non-linear model (normally, OT implementations use flat, array-like models while CKEditor 5 uses a tree structure), hence the set of potential semantic changes is more complex. Operations are grouped in {@link module:engine/model/batch~Batch batches}. A batch can be understood as a single undo step.
+	All changes made to the document structure are done by applying {@link module:engine/model/operation/operation~Operation operations}. The concept of operations comes from [Operational Transformation](https://en.wikipedia.org/wiki/Operational_transformation) (in short: OT), a technology enabling collaboration functionality. Since OT requires a system to be able to transform every operation by every other one (to figure out the result of concurrently applied operations), the set of operations needs to be small. CKEditor 5 features a non-linear model (normally, OT implementations use flat, array-like models while CKEditor 5 uses a tree structure), hence the set of potential semantic changes is more complex. Operations are grouped in {@link module:engine/model/batch~Batch batches}. A batch may be understood as a single undo step.
 </info-box>
 
 ### Text attributes
 
-Text styles such as "bold" and "italic" are not kept in the model as elements but as text attributes (think &mdash; like element attributes). The following DOM structure:
+Text styles such as "bold" and "italic" are kept in the model not as elements but as text attributes (think &mdash; like element attributes). The following DOM structure:
 
 ```html
 <p>
@@ -148,8 +148,8 @@ On the other hand, offset `x` in `<paragraph>` translates to:
 The engine also defines three levels of classes that operate on offsets:
 
 * A {@link module:engine/model/position~Position} instance contains an {@link module:engine/model/position~Position#path array of offsets} (which is called a "path"). See the examples in the {@link module:engine/model/position~Position#path `Position#path` API documentation} to better understand how paths work.
-* {@link module:engine/model/range~Range} contains two positions: {@link module:engine/model/range~Range#start start} and {@link module:engine/model/range~Range#end end} ones.
-* Finally, there is a {@link module:engine/model/selection~Selection} which contains one or more ranges, attributes, and has a direction (whether it was done from left to right or right to left). You can make as many instances of it as you need and you can freely modify it whenever you want.  Additionally, there is a single {@link module:engine/model/documentselection~DocumentSelection}. It represents the document's selection and can only be changed through the {@link module:engine/model/writer~Writer model writer}. It is automatically updated when the document's structure is changed.
+* A {@link module:engine/model/range~Range} contains two positions: {@link module:engine/model/range~Range#start start} and {@link module:engine/model/range~Range#end end} ones.
+* Finally, there is a {@link module:engine/model/selection~Selection} which contains one or more ranges, attributes, and has a direction (whether it was done from left to right or right to left). You can make as many instances of it as you need and you can freely modify it whenever you want. Additionally, there is a single {@link module:engine/model/documentselection~DocumentSelection}. It represents the document's selection and can only be changed through the {@link module:engine/model/writer~Writer model writer}. It is automatically updated when the document's structure is changed.
 
 ### Markers
 
@@ -159,11 +159,11 @@ Markers are a special type of ranges.
 * They can only be created and changed through the {@link module:engine/model/writer~Writer model writer}.
 * They can be synchronized over the network with other collaborating clients.
 * They are automatically updated when the document's structure is changed.
-* They can be converted to the editing view, to show them in the editor (as {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToHighlight highlights} or {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToElement elements}).
-* They can be {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToData converted to the data view}, to store them with the document data.
+* They can be converted to the editing view to show them in the editor (as {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToHighlight highlights} or {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToElement elements}).
+* They can be {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToData converted to the data view} to store them with the document data.
 * They can be {@link module:engine/conversion/upcasthelpers~UpcastHelpers#dataToMarker loaded with the document data}.
 
-Markers are ideal for storing and maintaining additional data related to portions of the document &mdash; such as comments or selections of other users.
+Markers are perfect for storing and maintaining additional data related to portions of the document such as comments or selections of other users.
 
 ### Schema
 
@@ -173,7 +173,7 @@ The {@link module:engine/model/schema~Schema model's schema} defines several asp
 * What attributes are allowed for a certain node (e.g. `image` can have the `src` and `alt` attributes).
 * Additional semantics of model nodes (e.g. `image` is of the "object" type and paragraph of the "block" type).
 
-This information is then used by features and the engine to make decisions how to process the model. For instance, the information from the schema will affect:
+This information is then used by the features and the engine to make decisions on how to process the model. For instance, the information from the schema will affect:
 
 * What happens with the pasted content and what is filtered out (note: in case of pasting the other important mechanism is the conversion. HTML elements and attributes which are not upcasted by any of the registered converters are filtered out before they even become model nodes, so the schema is not applied to them; the conversion will be covered later in this guide).
 * To which elements the heading feature can be applied (which blocks can be turned to headings and which elements are blocks in the first place).
@@ -196,7 +196,7 @@ Let's again take a look at the editing engine's architecture:
 
 [{@img assets/img/framework-architecture-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
 
-So far, we talked about the topmost layer of this diagram – the model. The role of the model layer is to create an abstraction over the data. Its format was designed to allow storing and modifying the data in the most convenient way, while enabling implementation of complex features. Most features operate (read from it and change it) on the model.
+So far, we talked about the topmost layer of this diagram &mdash; the model. The role of the model layer is to create an abstraction over the data. Its format was designed to allow storing and modifying the data in the most convenient way, while enabling implementation of complex features. Most features operate on the model (read from it and change it).
 
 The view, on the other hand, is an abstract representation of the DOM structure which should be presented to the user (for editing) and which should (in most cases) represent the editor's input and output (i.e. the data returned by `editor.getData()`, the data set by `editor.setData()`, pasted content, etc.).
 
@@ -221,23 +221,23 @@ editor.data;                    // The data pipeline (DataController).
 
 	It is much simpler than the editing pipeline and in the following part of this section we will be talking about the editing view.
 
-	Check out the {@link module:engine/controller/editingcontroller~EditingController}'s and {@link module:engine/controller/datacontroller~DataController}'s API.
+	Check out the {@link module:engine/controller/editingcontroller~EditingController}'s and {@link module:engine/controller/datacontroller~DataController}'s API for more details.
 </info-box>
 
 ### Element types and custom data
 
-The structure of the view resembles the structure in the DOM very closely. The semantics of HTML is defined in its specification. The view structure comes "DTD-free", so in order to provide additional information and better express the semantics of the content, the view structure implements 6 element types ({@link module:engine/view/containerelement~ContainerElement}, {@link module:engine/view/attributeelement~AttributeElement}, {@link module:engine/view/emptyelement~EmptyElement}, {@link module:engine/view/rawelement~RawElement}, {@link module:engine/view/uielement~UIElement}, and {@link module:engine/view/editableelement~EditableElement}) and so called {@link module:engine/view/element~Element#getCustomProperty "custom properties"} (i.e. custom element properties which are not rendered). This additional information provided by editor features is then used by the {@link module:engine/view/renderer~Renderer} and [converters](#conversion).
+The structure of the view resembles the structure in the DOM very closely. The semantics of HTML is defined in its specification. The view structure comes "DTD-free", so in order to provide additional information and to better express the semantics of the content, the view structure implements 6 element types ({@link module:engine/view/containerelement~ContainerElement}, {@link module:engine/view/attributeelement~AttributeElement}, {@link module:engine/view/emptyelement~EmptyElement}, {@link module:engine/view/rawelement~RawElement}, {@link module:engine/view/uielement~UIElement}, and {@link module:engine/view/editableelement~EditableElement}) and so called {@link module:engine/view/element~Element#getCustomProperty "custom properties"} (i.e. custom element properties which are not rendered). This additional information provided by editor features is then used by the {@link module:engine/view/renderer~Renderer} and [converters](#conversion).
 
 The element types can be defined as follows:
 
 * **Container element** &ndash; The elements that build the structure of the content. Used for block elements such as `<p>`, `<h1>`, `<blockQuote>`, `<li>`, etc.
-* **Attribute element** &ndash; The elements that cannot contain container elements inside them. Most model text attributes are converted to view attribute elements. They are used mostly for inline styling elements such as `<strong>`, `<i>`, `<a>`, `<code>`. Similar attribute elements are flattened by the view writer, so e.g. `<a href="..."><a class="bar">x</a></a>` would automatically be optimized to `<a href="..." class="bar">x</a>`.
+* **Attribute element** &ndash; The elements that cannot hold container elements inside them. Most model text attributes are converted to view attribute elements. They are used mostly for inline styling elements such as `<strong>`, `<i>`, `<a>`, `<code>`. Similar attribute elements are flattened by the view writer, so e.g. `<a href="..."><a class="bar">x</a></a>` would automatically be optimized to `<a href="..." class="bar">x</a>`.
 * **Empty element** &ndash; The elements that must not have any child nodes, for example `<img>`.
 * **UI elements** &ndash; The elements that are not a part of the "data" but need to be "inlined" in the content. They are ignored by the selection (it jumps over them) and the view writer in general. The contents of these elements and events coming from them are filtered out, too.
 * **Raw element** &ndash; The elements that work as data containers ("wrappers", "sandboxes") but their children are transparent to the editor. Useful when non-standard data must be rendered but the editor should not be concerned what it is and how it works. Users cannot put the selection inside a raw element, split it into smaller chunks or directly modify its content.
 * **Editable element** &ndash; The elements used as "nested editables" of non-editable fragments of the content, for example a caption in the image widget, where the `<figure>` wrapping the image is not editable (it is a widget) and the `<figcaption>` inside it is an editable element.
 
-Additionally, you can define {@link module:engine/view/element~Element#getCustomProperty custom properties} which can be used to store information like:
+Additionally, you can define {@link module:engine/view/element~Element#getCustomProperty custom properties} which may be used to store information like:
 
 * Whether an element is a widget (added by {@link module:widget/utils~toWidget `toWidget()`}).
 * How an element should be marked when a [marker](#markers) highlights it.
@@ -274,7 +274,7 @@ editor.data.view.change( writer => {
 
 ### Positions
 
-Just like [in the model](#positions-ranges-and-selections), in the view there are 3 levels of classes that describe points in the view structure: **positions**, **ranges** and **selections**. A position is a single point in the document. A range consists of two positions (start and end). And selection consists of one or more ranges and has a direction (whether it was done from left to right or from right to left).
+Just like [in the model](#positions-ranges-and-selections), there are 3 levels of classes in the view that describe points in the view structure: **positions**, **ranges** and **selections**. A position is a single point in the document. A range consists of two positions (start and end). A selection consists of one or more ranges and has a direction (whether it was done from left to right or from right to left).
 
 A view range is very similar to its [DOM counterpart](https://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html) as view positions are represented by a parent and an offset in that parent. This means that, unlike model offsets, view offsets describe:
 
@@ -372,4 +372,4 @@ Let's take a look at the diagram of the engine's MVC architecture and see where 
 -->
 ## Read next
 
-Once you learnt how to implement editing features, it is time to add a UI for them. You can read about the CKEditor 5 standard UI framework and UI library in the {@link framework/guides/architecture/ui-library UI library} guide.
+Once you have learnt how to implement editing features, it is time to add a UI for them. You can read about the CKEditor 5 standard UI framework and UI library in the {@link framework/guides/architecture/ui-library UI library} guide.

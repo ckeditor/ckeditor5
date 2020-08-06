@@ -103,6 +103,15 @@ export default class Clipboard extends Plugin {
 					return;
 				}
 
+				// While pasting plain text, apply selection attributes on the text.
+				if ( isPlainText( modelFragment ) ) {
+					const node = modelFragment.getChild( 0 );
+
+					model.change( writer => {
+						writer.setAttributes( modelDocument.selection.getAttributes(), node );
+					} );
+				}
+
 				model.insertContent( modelFragment );
 				evt.stop();
 			}
@@ -198,3 +207,17 @@ export default class Clipboard extends Plugin {
  *
  * @member {'copy'|'cut'} module:clipboard/clipboard~ClipboardOutputEventData#method
  */
+
+// Returns true if specified `documentFragment` represents a plain text.
+//
+// @param {module:engine/view/documentfragment~DocumentFragment} documentFragment
+// @returns {Boolean}
+function isPlainText( documentFragment ) {
+	if ( documentFragment.childCount > 1 ) {
+		return false;
+	}
+
+	const child = documentFragment.getChild( 0 );
+
+	return [ ...child.getAttributeKeys() ].length == 0;
+}

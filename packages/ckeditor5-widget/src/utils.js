@@ -48,7 +48,7 @@ export function isWidget( node ) {
 /**
  * Converts the given {@link module:engine/view/element~Element} to a widget in the following way:
  *
- * * sets the `contenteditable` attribute to `"true"`,
+ * * sets the `contenteditable` attribute to `"false"`,
  * * adds the `ck-widget` CSS class,
  * * adds a custom {@link module:engine/view/element~Element#getFillerOffset `getFillerOffset()`} method returning `null`,
  * * adds a custom property allowing to recognize widget elements by using {@link ~isWidget `isWidget()`},

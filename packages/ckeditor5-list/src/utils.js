@@ -26,8 +26,8 @@ export function createViewListItemElement( writer ) {
 
 /**
  * Helper function that creates a `<ul><li></li></ul>` or (`<ol>`) structure out of the given `modelItem` model `listItem` element.
- * Then, it binds the created view list item (<li>) with the model `listItem` element.
- * The function then returns the created view list item (<li>).
+ * Then, it binds the created view list item (`<li>`) with the model `listItem` element.
+ * The function then returns the created view list item (`<li>`).
  *
  * @param {module:engine/model/item~Item} modelItem Model list item.
  * @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface.

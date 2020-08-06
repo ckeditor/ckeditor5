@@ -29,16 +29,18 @@ export default function verticalNavigationHandler( editing ) {
 			return;
 		}
 
+		const isForward = arrowDownPressed;
+
 		// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
 		// Selection for sure will not approach any object.
-		if ( expandSelection && !selection.isCollapsed && selection.isBackward == arrowDownPressed ) {
+		if ( expandSelection && selectionWillShrink( selection, isForward ) ) {
 			return;
 		}
 
 		// Find a range between selection and closest limit element.
-		const range = findTextRangeFromSelection( editing, selection, arrowDownPressed );
+		const range = findTextRangeFromSelection( editing, selection, isForward );
 
-		if ( !range || range.start.isTouching( range.end ) ) {
+		if ( !range || range.isCollapsed ) {
 			return;
 		}
 
@@ -46,9 +48,9 @@ export default function verticalNavigationHandler( editing ) {
 		//
 		// We can't move the selection directly to the isObject element (eg. table cell) because of dual position at the end/beginning
 		// of wrapped line (it's at the same time at the end of one line and at the start of the next line).
-		if ( isSingleLineRange( editing, range, arrowDownPressed ) ) {
+		if ( isSingleLineRange( editing, range, isForward ) ) {
 			model.change( writer => {
-				const newPosition = arrowDownPressed ? range.end : range.start;
+				const newPosition = isForward ? range.end : range.start;
 
 				if ( expandSelection ) {
 					const newSelection = model.createSelection( selection.anchor );
@@ -128,13 +130,15 @@ function getNearestNonInlineLimit( model, startPosition, direction ) {
 	const schema = model.schema;
 	const range = model.createRangeIn( startPosition.root );
 
+	const walkerValueType = direction == 'forward' ? 'elementStart' : 'elementEnd';
+
 	for ( const { previousPosition, item, type } of range.getWalker( { startPosition, direction } ) ) {
 		if ( schema.isLimit( item ) && !schema.isInline( item ) ) {
 			return previousPosition;
 		}
 
 		// Stop looking for isLimit element if the next element is a block element (it is for sure not single line).
-		if ( type == ( direction == 'forward' ? 'elementStart' : 'elementEnd' ) && schema.isBlock( item ) ) {
+		if ( type == walkerValueType && schema.isBlock( item ) ) {
 			return null;
 		}
 	}
@@ -214,4 +218,8 @@ function isSingleLineRange( editing, modelRange, isForward ) {
 	}
 
 	return true;
+}
+
+function selectionWillShrink( selection, isForward ) {
+	return !selection.isCollapsed && selection.isBackward == isForward;
 }

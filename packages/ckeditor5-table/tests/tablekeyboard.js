@@ -139,7 +139,7 @@ describe( 'TableKeyboard', () => {
 				] ) );
 			} );
 
-			it( 'should not create another row and not move the caret if the "insertTableRowBelow" command is disabled', () => {
+			it( 'should select the whole table if the "insertTableRowBelow" command is disabled', () => {
 				setModelData( model, modelTable( [
 					[ '11', '12[]' ]
 				] ) );
@@ -150,9 +150,9 @@ describe( 'TableKeyboard', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				assertEqualMarkup( getModelData( model ), modelTable( [
-					[ '11', '12[]' ]
-				] ) );
+				assertEqualMarkup( getModelData( model ),
+					'[' + modelTable( [ [ '11', '12' ] ] ) + ']'
+				);
 			} );
 
 			it( 'should move to the first cell of the next row if at the end of a row', () => {
@@ -327,7 +327,7 @@ describe( 'TableKeyboard', () => {
 				] ) );
 			} );
 
-			it( 'should not move if the caret is in the first table cell', () => {
+			it( 'should select the whole table if the caret is in the first table cell', () => {
 				setModelData( model, '<paragraph>foo</paragraph>' + modelTable( [
 					[ '[]11', '12' ]
 				] ) );
@@ -335,7 +335,7 @@ describe( 'TableKeyboard', () => {
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				assertEqualMarkup( getModelData( model ),
-					'<paragraph>foo</paragraph>' + modelTable( [ [ '[]11', '12' ] ] )
+					'<paragraph>foo</paragraph>[' + modelTable( [ [ '11', '12' ] ] ) + ']'
 				);
 			} );
 

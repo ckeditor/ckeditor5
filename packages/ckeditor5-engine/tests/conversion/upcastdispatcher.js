@@ -275,7 +275,7 @@ describe( 'UpcastDispatcher', () => {
 				const modelElement = writer.createElement( data.viewItem.name );
 				writer.insert( modelElement, data.modelCursor );
 
-				const result = conversionApi.convertChildren( data.viewItem, writer.createPositionAt( modelElement, 0 ) );
+				const result = conversionApi.convertChildren( data.viewItem, modelElement );
 
 				data.modelRange = writer.createRange(
 					writer.createPositionBefore( modelElement ),
@@ -485,12 +485,39 @@ describe( 'UpcastDispatcher', () => {
 		} );
 
 		describe( 'convertChildren()', () => {
-			it( 'should fire conversion for all children of passed element and return conversion results ' +
-				'wrapped in document fragment', () => {
+			it( 'should fire conversion for all children of passed view element and return conversion results ' +
+				'wrapped in document fragment (using modelCursor)', () => {
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					spy();
 
-					const result = conversionApi.convertChildren( data.viewItem, ModelPosition._createAt( rootMock, 0 ) );
+					const modelCursor = ModelPosition._createAt( rootMock, 0 );
+					const result = conversionApi.convertChildren( data.viewItem, modelCursor );
+
+					expect( result.modelRange ).to.be.instanceof( ModelRange );
+					expect( result.modelRange.start.path ).to.deep.equal( [ 0 ] );
+					expect( result.modelRange.end.path ).to.deep.equal( [ 7 ] );
+					expect( Array.from( result.modelRange.getItems() ) ).to.length( 2 );
+					expect( Array.from( result.modelRange.getItems() )[ 0 ] ).to.equal( modelP );
+					expect( Array.from( result.modelRange.getItems() )[ 1 ] ).to.instanceof( ModelTextProxy );
+					expect( Array.from( result.modelRange.getItems() )[ 1 ].data ).to.equal( 'foobar' );
+
+					expect( result.modelCursor ).instanceof( ModelPosition );
+					expect( result.modelCursor.path ).to.deep.equal( [ 7 ] );
+				} );
+
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument, [ viewP, viewText ] ), writer ) );
+
+				expect( spy.calledOnce ).to.be.true;
+				expect( spyP.calledOnce ).to.be.true;
+				expect( spyText.calledOnce ).to.be.true;
+			} );
+
+			it( 'should fire conversion for all children of passed view element and return conversion results ' +
+				'wrapped in document fragment (using model element)', () => {
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
+					spy();
+
+					const result = conversionApi.convertChildren( data.viewItem, rootMock );
 
 					expect( result.modelRange ).to.be.instanceof( ModelRange );
 					expect( result.modelRange.start.path ).to.deep.equal( [ 0 ] );
@@ -680,7 +707,7 @@ describe( 'UpcastDispatcher', () => {
 					const modelElement = conversionApi.writer.createElement( 'paragraph' );
 
 					conversionApi.writer.insert( modelElement, data.modelCursor );
-					conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelElement, 0 ) );
+					conversionApi.convertChildren( data.viewItem, modelElement );
 
 					const parts = conversionApi.getSplitParts( modelElement );
 
@@ -709,6 +736,216 @@ describe( 'UpcastDispatcher', () => {
 				model.change( writer => dispatcher.convert( viewElement, writer, [ '$root' ] ) );
 
 				expect( spy.called ).to.be.true;
+			} );
+		} );
+
+		describe( 'safeInsert()', () => {
+			beforeEach( () => {
+				model.schema.register( 'paragraph', {
+					allowIn: '$root'
+				} );
+			} );
+
+			it( 'should return true when element was inserted on given position', done => {
+				model.schema.register( 'span', {
+					allowIn: 'paragraph'
+				} );
+
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
+					const span = conversionApi.writer.createElement( 'span' );
+					const position = conversionApi.writer.createPositionAt( modelP, 0 );
+
+					const wasInserted = conversionApi.safeInsert( span, position );
+
+					expect( wasInserted ).to.be.true;
+
+					expect( rootMock.getNodeByPath( [ 0, 0 ] ) ).to.equal( span );
+
+					done();
+				} );
+
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument ), writer ) );
+			} );
+
+			it( 'should return true on split to allowed ancestor if element is allowed in one of the ancestors', done => {
+				model.schema.register( 'section', {
+					allowIn: '$root'
+				} );
+				model.schema.register( 'span', {
+					allowIn: 'paragraph'
+				} );
+				model.schema.extend( 'paragraph', {
+					allowIn: 'section'
+				} );
+
+				// Insert "section > paragraph > span".
+				model.change( writer => {
+					const section = writer.createElement( 'section' );
+					const paragraph = writer.createElement( 'paragraph' );
+					const span = writer.createElement( 'span' );
+
+					writer.insert( section, writer.createPositionAt( rootMock, 0 ) );
+					writer.insert( paragraph, writer.createPositionAt( section, 0 ) );
+					writer.insert( span, writer.createPositionAt( paragraph, 0 ) );
+				} );
+
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
+					// Insert "paragraph" in "section > paragraph > span".
+					const span = rootMock.getNodeByPath( [ 0, 0, 0 ] );
+					const position = conversionApi.writer.createPositionAt( span, 0 );
+
+					const paragraph2 = conversionApi.writer.createElement( 'paragraph' );
+					const wasInserted = conversionApi.safeInsert( paragraph2, position );
+
+					expect( wasInserted ).to.be.true;
+
+					const section = rootMock.getNodeByPath( [ 0 ] );
+
+					// The "paragraph" should be split to 2 and 1 inserted paragraph.
+					expect( section.childCount ).to.equal( 3 );
+					expect( section.getChild( 1 ) ).to.equal( paragraph2 );
+					done();
+				} );
+
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument ), writer ) );
+			} );
+
+			it( 'should return false if element is not allowed in position and any of ancestors', done => {
+				model.schema.register( 'span' );
+
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
+					const paragraph = conversionApi.writer.createElement( 'paragraph' );
+					const span = conversionApi.writer.createElement( 'span' );
+					const position = conversionApi.writer.createPositionAt( paragraph, 0 );
+
+					const wasInserted = conversionApi.safeInsert( span, position );
+
+					expect( wasInserted ).to.be.false;
+					done();
+				} );
+
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument ), writer ) );
+			} );
+
+			it( 'should return false if element is not allowed in position and any of ancestors but is allowed in context tree', done => {
+				model.schema.register( 'div', {
+					allowIn: '$root'
+				} );
+
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
+					const code = conversionApi.writer.createElement( 'div' );
+					const wasInserted = conversionApi.safeInsert( code, data.modelCursor );
+
+					expect( wasInserted ).to.be.false;
+					done();
+				} );
+
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument ), writer, [ '$root', 'paragraph' ] ) );
+			} );
+		} );
+
+		describe( 'updateConversionResult()', () => {
+			beforeEach( () => {
+				model.schema.register( 'paragraph', {
+					allowIn: '$root'
+				} );
+			} );
+
+			it( 'should update the modelCursor and modelRange in data when element was inserted on given position', done => {
+				model.schema.register( 'span', {
+					allowIn: 'paragraph'
+				} );
+
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
+					const span = conversionApi.writer.createElement( 'span' );
+					const position = conversionApi.writer.createPositionAt( modelP, 0 );
+
+					conversionApi.safeInsert( span, position );
+
+					conversionApi.updateConversionResult( span, data );
+
+					const expectedPosition = conversionApi.writer.createPositionAfter( span );
+					expect( data.modelCursor.isEqual( expectedPosition ) ).to.be.true;
+
+					const expectedRange = conversionApi.writer.createRangeOn( span );
+					expect( data.modelRange.isEqual( expectedRange ) ).to.be.true;
+
+					done();
+				} );
+
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument ), writer ) );
+			} );
+
+			it( 'should update the modelCursor and modelRange in data when split to allowed ancestor occurred', done => {
+				model.schema.register( 'section', {
+					allowIn: '$root'
+				} );
+				model.schema.register( 'span', {
+					allowIn: 'paragraph'
+				} );
+				model.schema.extend( 'paragraph', {
+					allowIn: 'section'
+				} );
+
+				// Insert "section > paragraph > span".
+				model.change( writer => {
+					const section = writer.createElement( 'section' );
+					const paragraph = writer.createElement( 'paragraph' );
+					const span = writer.createElement( 'span' );
+
+					writer.insert( section, writer.createPositionAt( rootMock, 0 ) );
+					writer.insert( paragraph, writer.createPositionAt( section, 0 ) );
+					writer.insert( span, writer.createPositionAt( paragraph, 0 ) );
+				} );
+
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
+					// Insert "paragraph" in "section > paragraph > span".
+					const span = rootMock.getNodeByPath( [ 0, 0, 0 ] );
+					const position = conversionApi.writer.createPositionAt( span, 0 );
+
+					const paragraph2 = conversionApi.writer.createElement( 'paragraph' );
+					conversionApi.safeInsert( paragraph2, position );
+
+					conversionApi.updateConversionResult( paragraph2, data );
+
+					const expectedPosition = conversionApi.writer.createPositionAt( rootMock.getNodeByPath( [ 0, 2, 0 ] ), 0 );
+					expect( data.modelCursor.isEqual( expectedPosition ) ).to.be.true;
+
+					const expectedRange = conversionApi.writer.createRangeOn( paragraph2 );
+					expect( data.modelRange.isEqual( expectedRange ) ).to.be.true;
+
+					done();
+				} );
+
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument ), writer ) );
+			} );
+
+			it( 'should not update the modelRange if it was already set on data (complex converter case - e.g. list)', done => {
+				model.schema.register( 'span', {
+					allowIn: 'paragraph'
+				} );
+
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
+					const span = conversionApi.writer.createElement( 'span' );
+					const position = conversionApi.writer.createPositionAt( modelP, 0 );
+
+					conversionApi.safeInsert( span, position );
+
+					const start = conversionApi.writer.createPositionAt( span, 0 );
+					const end = conversionApi.writer.createPositionAt( span, 1 );
+					data.modelRange = conversionApi.writer.createRange( start, end );
+					conversionApi.updateConversionResult( span, data );
+
+					const expectedRange = conversionApi.writer.createRange( start, end );
+					expect( data.modelRange.isEqual( expectedRange ) ).to.be.true;
+
+					// Model cursor will be equal to range end - no split occurred.
+					expect( data.modelCursor.isEqual( end ) ).to.be.true;
+
+					done();
+				} );
+
+				model.change( writer => dispatcher.convert( new ViewDocumentFragment( viewDocument ), writer ) );
 			} );
 		} );
 	} );

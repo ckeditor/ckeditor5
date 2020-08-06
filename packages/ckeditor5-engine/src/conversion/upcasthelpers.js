@@ -4,12 +4,12 @@
  */
 
 import Matcher from '../view/matcher';
-import ModelRange from '../model/range';
 import ConversionHelpers from './conversionhelpers';
 
 import { cloneDeep } from 'lodash-es';
-import ModelSelection from '../model/selection';
 import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
+import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 /* global console */
 
@@ -338,7 +338,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	elementToMarker( config ) {
 		/**
 		 * The {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToMarker `UpcastHelpers#elementToMarker()`}
-		 * method has been deprecated and will be removed in the near future.
+		 * method was deprecated and will be removed in the near future.
 		 * Please use {@link module:engine/conversion/upcasthelpers~UpcastHelpers#dataToMarker `UpcastHelpers#dataToMarker()`} instead.
 		 *
 		 * @error upcast-helpers-element-to-marker-deprecated
@@ -346,7 +346,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 		console.warn(
 			attachLinkToDocumentation(
 				'upcast-helpers-element-to-marker-deprecated: ' +
-				'The UpcastHelpers#elementToMarker() method has been deprecated and will be removed in the near future. ' +
+				'The UpcastHelpers#elementToMarker() method was deprecated and will be removed in the near future. ' +
 				'Please use UpcastHelpers#dataToMarker() instead.'
 			)
 		);
@@ -355,7 +355,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	}
 
 	/**
-	 * View to model marker conversion helper.
+	 * View-to-model marker conversion helper.
 	 *
 	 * Converts view data created by {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToData `#markerToData()`}
 	 * back to a model marker.
@@ -366,7 +366,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *
 	 * The `config.view` property is equal to the marker group name to convert.
 	 *
-	 * By default, this converter creates markers with `group:name` name convention (to match the default `markerToData` conversion).
+	 * By default, this converter creates markers with the `group:name` name convention (to match the default `markerToData` conversion).
 	 *
 	 * The conversion configuration can take a function that will generate a marker name.
 	 * If such function is set as the `config.model` parameter, it is passed the `name` part from the view element or attribute and it is
@@ -375,7 +375,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * Basic usage:
 	 *
 	 *		// Using the default conversion.
-	 *		// In this case, all markers from `comment` group will be converted.
+	 *		// In this case, all markers from the `comment` group will be converted.
 	 *		// The conversion will look for `<comment-start>` and `<comment-end>` tags and
 	 *		// `data-comment-start-before`, `data-comment-start-after`,
 	 *		// `data-comment-end-before` and `data-comment-end-after` attributes.
@@ -393,17 +393,17 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *		<paragraph>Foo[bar</paragraph>
 	 *		<image src="abc.jpg"></image>]
 	 *
-	 * Where `[]` are boundaries of a marker that will receive `comment:commentId:uid` name.
+	 * Where `[]` are boundaries of a marker that will receive the `comment:commentId:uid` name.
 	 *
 	 * Other examples of usage:
 	 *
-	 *		// Using custom function which is the same as the default conversion:
+	 *		// Using a custom function which is the same as the default conversion:
 	 *		editor.conversion.for( 'upcast' ).dataToMarker( {
 	 *			view: 'comment',
 	 *			model: name => 'comment:' + name,
 	 *		} );
 	 *
-	 *		// Using converter priority:
+	 *		// Using the converter priority:
 	 *		editor.conversion.for( 'upcast' ).dataToMarker( {
 	 *			view: 'comment',
 	 *			model: name => 'comment:' + name,
@@ -415,8 +415,9 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *
 	 * @method #dataToMarker
 	 * @param {Object} config Conversion configuration.
-	 * @param {String} config.view Marker group name to convert.
-	 * @param {Function} [config.model] Function that takes `name` part from the view element or attribute and returns the marker name.
+	 * @param {String} config.view The marker group name to convert.
+	 * @param {Function} [config.model] A function that takes the `name` part from the view element or attribute and returns the marker
+	 * name.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
@@ -465,7 +466,10 @@ export function convertText() {
 
 				conversionApi.writer.insert( text, data.modelCursor );
 
-				data.modelRange = ModelRange._createFromPositionAndShift( data.modelCursor, text.offsetSize );
+				data.modelRange = conversionApi.writer.createRange(
+					data.modelCursor,
+					data.modelCursor.getShiftedBy( text.offsetSize )
+				);
 				data.modelCursor = data.modelRange.end;
 			}
 		}
@@ -489,7 +493,6 @@ export function convertText() {
 export function convertSelectionChange( model, mapper ) {
 	return ( evt, data ) => {
 		const viewSelection = data.newSelection;
-		const modelSelection = new ModelSelection();
 
 		const ranges = [];
 
@@ -497,7 +500,7 @@ export function convertSelectionChange( model, mapper ) {
 			ranges.push( mapper.toModelRange( viewRange ) );
 		}
 
-		modelSelection.setTo( ranges, { backward: viewSelection.isBackward } );
+		const modelSelection = model.createSelection( ranges, { backward: viewSelection.isBackward } );
 
 		if ( !modelSelection.isEqual( model.document.selection ) ) {
 			model.change( writer => {
@@ -634,8 +637,23 @@ function upcastDataToMarker( config ) {
 		dispatcher.on( 'element:' + config.view + '-start', converterStart, { priority: config.converterPriority || 'normal' } );
 		dispatcher.on( 'element:' + config.view + '-end', converterEnd, { priority: config.converterPriority || 'normal' } );
 
-		// This is attribute upcast so it has to be done after the element upcast.
-		dispatcher.on( 'element', upcastAttributeToMarker( config ), { priority: config.converterPriority || 'low' } );
+		// Below is a hack that is needed to properly handle `converterPriority` for both elements and attributes.
+		// Attribute conversion needs to be performed *after* element conversion.
+		// This converter handles both element conversion and attribute conversion, which means that if a single
+		// `config.converterPriority` is used, it will lead to problems. For example, if `'high'` priority is used,
+		// then attribute conversion will be performed before a lot of element upcast converters.
+		// On the other hand we want to support `config.converterPriority` and overwriting conveters.
+		//
+		// To have it work, we need to do some extra processing for priority for attribute converter.
+		// Priority `'low'` value should be the base value and then we will change it depending on `config.converterPriority` value.
+		//
+		// This hack probably would not be needed if attributes are upcasted separately.
+		//
+		const basePriority = priorities.get( 'low' );
+		const maxPriority = priorities.get( 'highest' );
+		const priorityFactor = priorities.get( config.converterPriority ) / maxPriority; // Number in range [ -1, 1 ].
+
+		dispatcher.on( 'element', upcastAttributeToMarker( config ), { priority: basePriority + priorityFactor } );
 	};
 }
 
@@ -652,6 +670,14 @@ function upcastDataToMarker( config ) {
 function upcastAttributeToMarker( config ) {
 	return ( evt, data, conversionApi ) => {
 		const attrName = `data-${ config.view }`;
+
+		// This converter wants to add a model element, marking a marker, before/after an element (or maybe even group of elements).
+		// To do that, we can use `data.modelRange` which is set on an element (or a group of elements) that has been upcasted.
+		// But, if the processed view element has not been upcasted yet (it does not have been converted), we need to
+		// fire conversion for its children first, then we will have `data.modelRange` available.
+		if ( !data.modelRange ) {
+			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+		}
 
 		if ( conversionApi.consumable.consume( data.viewItem, { attributes: attrName + '-end-after' } ) ) {
 			addMarkerElements( data.modelRange.end, data.viewItem.getAttribute( attrName + '-end-after' ).split( ',' ) );
@@ -710,80 +736,37 @@ function getViewElementNameFromConfig( viewConfig ) {
 // @param {Object} config Conversion configuration.
 // @returns {Function} View to model converter.
 function prepareToElementConverter( config ) {
-	const matcher = config.view ? new Matcher( config.view ) : null;
+	const matcher = new Matcher( config.view );
 
 	return ( evt, data, conversionApi ) => {
-		let match = {};
+		const matcherResult = matcher.match( data.viewItem );
 
-		// If `config.view` has not been passed do not try matching. In this case, the converter should fire for all elements.
-		if ( matcher ) {
-			// This will be usually just one pattern but we support matchers with many patterns too.
-			const matcherResult = matcher.match( data.viewItem );
-
-			// If there is no match, this callback should not do anything.
-			if ( !matcherResult ) {
-				return;
-			}
-
-			match = matcherResult.match;
+		if ( !matcherResult ) {
+			return;
 		}
+
+		const match = matcherResult.match;
 
 		// Force consuming element's name.
 		match.name = true;
 
-		// Create model element basing on config.
-		const modelElement = getModelElement( config.model, data.viewItem, conversionApi.writer );
-
-		// Do not convert if element building function returned falsy value.
-		if ( !modelElement ) {
-			return;
-		}
-
-		// When element was already consumed then skip it.
 		if ( !conversionApi.consumable.test( data.viewItem, match ) ) {
 			return;
 		}
 
-		// Find allowed parent for element that we are going to insert.
-		// If current parent does not allow to insert element but one of the ancestors does
-		// then split nodes to allowed parent.
-		const splitResult = conversionApi.splitToAllowedParent( modelElement, data.modelCursor );
+		const modelElement = getModelElement( config.model, data.viewItem, conversionApi.writer );
 
-		// When there is no split result it means that we can't insert element to model tree, so let's skip it.
-		if ( !splitResult ) {
+		if ( !modelElement ) {
 			return;
 		}
 
-		// Insert element on allowed position.
-		conversionApi.writer.insert( modelElement, splitResult.position );
-
-		// Convert children and insert to element.
-		conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelElement, 0 ) );
-
-		// Consume appropriate value from consumable values list.
-		conversionApi.consumable.consume( data.viewItem, match );
-
-		const parts = conversionApi.getSplitParts( modelElement );
-
-		// Set conversion result range.
-		data.modelRange = new ModelRange(
-			conversionApi.writer.createPositionBefore( modelElement ),
-			conversionApi.writer.createPositionAfter( parts[ parts.length - 1 ] )
-		);
-
-		// Now we need to check where the `modelCursor` should be.
-		if ( splitResult.cursorParent ) {
-			// If we split parent to insert our element then we want to continue conversion in the new part of the split parent.
-			//
-			// before: <allowed><notAllowed>foo[]</notAllowed></allowed>
-			// after:  <allowed><notAllowed>foo</notAllowed><converted></converted><notAllowed>[]</notAllowed></allowed>
-
-			data.modelCursor = conversionApi.writer.createPositionAt( splitResult.cursorParent, 0 );
-		} else {
-			// Otherwise just continue after inserted element.
-
-			data.modelCursor = data.modelRange.end;
+		if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
+			return;
 		}
+
+		conversionApi.consumable.consume( data.viewItem, match );
+		conversionApi.convertChildren( data.viewItem, modelElement );
+		conversionApi.updateConversionResult( modelElement, data );
 	};
 }
 

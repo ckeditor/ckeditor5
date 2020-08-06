@@ -67,6 +67,7 @@ export default class Paragraph extends Plugin {
 
 				return modelWriter.createElement( 'paragraph' );
 			},
+			view: /.+/,
 			converterPriority: 'low'
 		} );
 
