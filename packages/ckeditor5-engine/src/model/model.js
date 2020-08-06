@@ -122,6 +122,9 @@ export default class Model {
 
 		injectSelectionPostFixer( this );
 
+		// Post-fixer which takes care of adding empty paragraph elements to the empty roots.
+		this.document.registerPostFixer( writer => this._autoparagraphEmptyRoots( writer ) );
+
 		// @if CK_DEBUG_ENGINE // this.on( 'applyOperation', () => {
 		// @if CK_DEBUG_ENGINE // 	dumpTrees( this.document, this.document.version );
 		// @if CK_DEBUG_ENGINE // }, { priority: 'lowest' } );
@@ -803,6 +806,31 @@ export default class Model {
 	destroy() {
 		this.document.destroy();
 		this.stopListening();
+	}
+
+	/**
+	 * Fixes all empty roots.
+	 *
+	 * @protected
+	 * @returns {Boolean} `true` if any change has been applied, `false` otherwise.
+	 */
+	_autoparagraphEmptyRoots( writer ) {
+		const { schema, document } = writer.model;
+
+		for ( const rootName of document.getRootNames() ) {
+			const root = document.getRoot( rootName );
+
+			if ( root.isEmpty && !schema.checkChild( root, '$text' ) ) {
+				// If paragraph element is allowed in the root, create paragraph element.
+				if ( schema.checkChild( root, 'paragraph' ) ) {
+					writer.insertElement( 'paragraph', root );
+
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
