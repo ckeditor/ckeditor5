@@ -221,11 +221,11 @@ export default class MediaEmbedEditing extends Plugin {
 						url: true
 					}
 				},
-				model: ( viewMedia, modelWriter ) => {
+				model: ( viewMedia, { writer } ) => {
 					const url = viewMedia.getAttribute( 'url' );
 
 					if ( registry.hasMedia( url ) ) {
-						return modelWriter.createElement( 'media', { url } );
+						return writer.createElement( 'media', { url } );
 					}
 				}
 			} )
@@ -237,11 +237,11 @@ export default class MediaEmbedEditing extends Plugin {
 						'data-oembed-url': true
 					}
 				},
-				model: ( viewMedia, modelWriter ) => {
+				model: ( viewMedia, { writer } ) => {
 					const url = viewMedia.getAttribute( 'data-oembed-url' );
 
 					if ( registry.hasMedia( url ) ) {
-						return modelWriter.createElement( 'media', { url } );
+						return writer.createElement( 'media', { url } );
 					}
 				}
 			} );

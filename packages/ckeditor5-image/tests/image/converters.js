@@ -75,7 +75,7 @@ describe( 'Image converters', () => {
 							src: true
 						}
 					},
-					model: ( viewImage, writer ) => {
+					model: ( viewImage, { writer } ) => {
 						imgConverterCalled = true;
 
 						return writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } );

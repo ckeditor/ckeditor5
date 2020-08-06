@@ -82,7 +82,7 @@ export default class ImageEditing extends Plugin {
 						src: true
 					}
 				},
-				model: ( viewImage, modelWriter ) => modelWriter.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } )
+				model: ( viewImage, { writer } ) => writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } )
 			} )
 			.attributeToAttribute( {
 				view: {
