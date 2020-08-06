@@ -350,7 +350,7 @@ describe( 'Clipboard feature', () => {
 			beforeEach( () => {
 				model = editor.model;
 
-				editor.model.schema.extend( '$text', { allowAttributes: 'bold' } );
+				model.schema.extend( '$text', { allowAttributes: 'bold' } );
 			} );
 
 			it( 'should inherit selection attributes (collapsed selection)', () => {
@@ -399,6 +399,57 @@ describe( 'Clipboard feature', () => {
 
 				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded foo[]</$text></paragraph>' );
 				expect( insertedNode.getAttribute( 'bold' ) ).to.equal( true );
+			} );
+
+			it( 'should inherit selection attributes while pasting a plain text as text/html', () => {
+				setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
+
+				const dataTransferMock = createDataTransfer( {
+					'text/html': '<p>foo</p>',
+					'text/plain': 'foo'
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded foo[]text.</$text></paragraph>' );
+			} );
+
+			it( 'should inherit selection attributes while pasting a plain text as text/html (Chrome style)', () => {
+				setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
+
+				const dataTransferMock = createDataTransfer( {
+					'text/html': '<meta http-equiv="content-type" content="text/html; charset=utf-8">foo',
+					'text/plain': 'foo'
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded foo[]text.</$text></paragraph>' );
+			} );
+
+			it( 'should inherit selection attributes while pasting HTML with unsupported attributes', () => {
+				setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
+
+				const dataTransferMock = createDataTransfer( {
+					'text/html': '<i>foo</i>',
+					'text/plain': 'foo'
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded foo[]text.</$text></paragraph>' );
 			} );
 		} );
 
