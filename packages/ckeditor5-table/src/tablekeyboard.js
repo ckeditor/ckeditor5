@@ -58,11 +58,11 @@ export default class TableKeyboard extends Plugin {
 		// Note: This listener has the "high-10" priority because it should allow the Widget plugin to handle the default
 		// behavior first ("high") but it should not be "prevent–defaulted" by the Widget plugin ("high-20") because of
 		// the fake selection retention on the fully selected widget.
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( false, ...args ), { priority: priorityBelowWidget } );
+		this.listenTo( viewDocument, 'keydown', this._getKeydownInsideTableCellHandler(), { priority: priorityBelowWidget } );
 
 		// This listener is handling cases when table cells are selected from outside.
 		// Note: It must have greater priority than Widget plugin to properly override handling case of single cell selected.
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( true, ...args ), { priority: priorityAboveWidget } );
+		this.listenTo( viewDocument, 'keydown', this._getKeydownOutsideTableCellHandler(), { priority: priorityAboveWidget } );
 	}
 
 	/**
@@ -164,35 +164,25 @@ export default class TableKeyboard extends Plugin {
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events.
+	 * Returns the {@link module:engine/view/document~Document#event:keydown keydown} event handler for cases with
+	 * the selection outside a table cell.
 	 *
 	 * @private
-	 * @param {Boolean} highPriority
-	 * @param {module:utils/eventinfo~EventInfo} eventInfo
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
+	 * @return {Function}
 	 */
-	_onKeydown( highPriority, eventInfo, domEventData ) {
-		const editor = this.editor;
-		const keyCode = domEventData.keyCode;
+	_getKeydownOutsideTableCellHandler() {
+		return wrapKeydownHandler( this.editor, ( direction, shiftKey ) => this._handleArrowKeysOutsideTableCells( direction, shiftKey ) );
+	}
 
-		if ( !isArrowKeyCode( keyCode ) ) {
-			return;
-		}
-
-		const direction = getLocalizedArrowKeyCodeDirection( keyCode, editor.locale.contentLanguageDirection );
-		let wasHandled = false;
-
-		if ( highPriority ) {
-			wasHandled = this._handleArrowKeysOutsideTableCells( direction, domEventData.shiftKey );
-		} else {
-			wasHandled = this._handleArrowKeysInsideTableCell( direction, domEventData.shiftKey );
-		}
-
-		if ( wasHandled ) {
-			domEventData.preventDefault();
-			domEventData.stopPropagation();
-			eventInfo.stop();
-		}
+	/**
+	 * Returns the {@link module:engine/view/document~Document#event:keydown keydown} event handler cases with
+	 * the selection inside a table cell.
+	 *
+	 * @private
+	 * @return {Function}
+	 */
+	_getKeydownInsideTableCellHandler() {
+		return wrapKeydownHandler( this.editor, ( direction, shiftKey ) => this._handleArrowKeysInsideTableCell( direction, shiftKey ) );
 	}
 
 	/**
@@ -377,3 +367,22 @@ export default class TableKeyboard extends Plugin {
 	}
 }
 
+// Returns the keydown event handler wrapper.
+function wrapKeydownHandler( editor, callback ) {
+	return ( eventInfo, domEventData ) => {
+		const keyCode = domEventData.keyCode;
+
+		if ( !isArrowKeyCode( keyCode ) ) {
+			return;
+		}
+
+		const direction = getLocalizedArrowKeyCodeDirection( keyCode, editor.locale.contentLanguageDirection );
+		const wasHandled = callback( direction, domEventData.shiftKey );
+
+		if ( wasHandled ) {
+			domEventData.preventDefault();
+			domEventData.stopPropagation();
+			eventInfo.stop();
+		}
+	};
+}
