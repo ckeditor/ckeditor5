@@ -12,13 +12,13 @@ order: 10
 
 This guide extends the {@link framework/guides/architecture/editing-engine introduction to CKEditor 5 editing engine architecture}. Therefore, we highly recommend reading the former guide first.
 
-In this guide we will dive deeper into some of the conversion concepts.
+In this guide you will dive deeper into some of the conversion concepts.
 
 ## Inline and block content
 
-Generally speaking, there are two main types of the content in the editor view and data output: inline and block.
+Generally speaking, there are two main types of content in the editor view and data output: inline and block.
 
-The inline content means elements like `<strong>`, `<a>` or `<span>`. Unlike `<p>`, `<blockquote>` or `<div>`, inline elements do not structure the data. Instead, they mark some text in a specific (visual and semantical) way. These elements are a characteristic of a text. For instance, you could say that some part of the text is bold, or is linked, etc.. This concept has its reflection in the model of the rich-text editor where `<a>` or `<strong>` are not represented as elements. Instead, they are attributes of the text.
+The inline content means elements like `<strong>`, `<a>` or `<span>`. Unlike `<p>`, `<blockquote>` or `<div>`, inline elements do not structure the data. Instead, they format some text in a specific (visual and semantical) way. These elements are a characteristic of a text. For instance, you could say that some part of the text is bold, or is linked, etc. This concept has its reflection in the model of the rich-text editor where `<a>` or `<strong>` are not represented as elements. Instead, they are the attributes of the text.
 
 For example &mdash; in the model, you might have a `<paragraph>` element with the "Foo bar" text, where "bar" has the `bold` attribute set to `true`. A pseudo–code of this *model* data structure could look as follows:
 
@@ -30,7 +30,7 @@ For example &mdash; in the model, you might have a `<paragraph>` element with th
 ```
 
 <info-box>
-	Throughout the rest of this guide the following, shorter convention will be used to represent model text attributes:
+	Throughout the rest of this guide the following, shorter convention will be used to represent model text attributes for the sake of clarity:
 
 	```html
 	<paragraph>Foo <$text bold="true">bar</$text></paragraph>
@@ -39,11 +39,11 @@ For example &mdash; in the model, you might have a `<paragraph>` element with th
 
 Note that there is no `<strong>` or any other additional element there, it is just some text with an attribute.
 
-So, when does this text become wrapped with a `<strong>` element? This happens during the conversion to the view. It is also important to know which type of a view element needs to be used. In case of elements that represent inline formatting, this should be an {@link module:engine/view/attributeelement~AttributeElement}.
+So, when does this text become wrapped with a `<strong>` element? This happens during the conversion to the view. It is also important to know what type of a view element needs to be used. In the case of the elements that represent inline formatting, this should be an {@link module:engine/view/attributeelement~AttributeElement}.
 
 ## Conversion of multiple text attributes
 
-A model text node may have multiple attributes (e.g. be bolded and linked) and all of them are converted to their respective view elements by independent converters.
+A model text node may have multiple attributes (e.g. be bolded and linked) and all of them are converted into their respective view elements by independent converters.
 
 Keep in mind that in the model, attributes do not have any specific order. This is contrary to the editor view or HTML output, where inline elements are nested in one another. Fortunately, the nesting happens automatically during the conversion from the model to the view. This makes working in the model simpler, as features do not need to take care of breaking or rearranging elements in the model.
 
@@ -73,7 +73,7 @@ Note that the `<a>` element is converted in such way that it always becomes the 
 </p>
 ```
 
-There are two links with the same `href` attribute next to each other in the generated view (editor output), which is semantically wrong. To make sure that it never happens, the view element that represents a link must have a *priority* defined. Most elements, like for instance `<strong>`, do not care about it and stick to the default priority (`10`). The {@link features/link link feature} ensures that all view `<a>` elements have the priority set to `5` so they are kept outside other elements.
+There are two links with the same `href` attribute next to each other in the generated view (editor output), which is semantically wrong. To make sure that it never happens, the view element that represents a link must have a *priority* defined. Most elements, like for instance `<strong>`, do not care about it and stick to the default priority (`10`). The {@link features/link link feature} ensures that all `<a>` view elements have the priority set to `5` therefore they are kept outside other elements.
 
 ## Merging attribute elements during conversion
 
@@ -112,9 +112,9 @@ But this is not the most optimal output you can get from the rich-text editor. W
 </p>
 ```
 
-Obviously a single `<span>` makes more sense. And thanks to the merging mechanism built into the conversion process, this would be the actual result of the conversion.
+Obviously a single `<span>` makes more sense. And thanks to the merging mechanism built into the conversion process, this would be the actual output of the conversion.
 
-Why is it so? In the above scenario, two model attributes are converted to `<span>` elements. When the first attribute (say, `fontFamily`) is converted, there is no `<span>` in the view yet. So the first `<span>` is added with the `style` attribute. But then, when `fontSize` is converted, the `<span>` is already in the view. The {@link module:engine/view/downcastwriter~DowncastWriter downcast writer} recognizes it and checks whether the elements can be merged, following these 3 rules:
+Why is it so? In the above scenario, two model attributes are converted to `<span>` elements. When the first attribute (say, `fontFamily`) is converted, there is no `<span>` in the view yet. So the first `<span>` is added with the `style` attribute. But then, when `fontSize` is converted, the `<span>` is already in the view. The {@link module:engine/view/downcastwriter~DowncastWriter downcast writer} recognizes it and checks whether these elements can be merged, following these 3 rules:
 
 1. Both elements must have the same {@link module:engine/view/element~Element#name name}.
 2. Both elements must have the same {@link module:engine/view/attributeelement~AttributeElement#priority priority}.
