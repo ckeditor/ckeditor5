@@ -25,7 +25,7 @@ In addition to enabling mentions, you may want to check the following productivi
 
 * {@link features/text-transformation Automatic text transformation} &ndash; Allows to automatically turn snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
 * {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
-* {@link features/autoformat Autoformatting} &ndash; It allows to quickly apply formatting to the content you are writing.
+* {@link features/autoformat Autoformatting} &ndash; Allows to quickly apply formatting to the content you are writing.
 
 ## Configuration
 
