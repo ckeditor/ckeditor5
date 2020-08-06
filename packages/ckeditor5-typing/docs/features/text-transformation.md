@@ -56,7 +56,7 @@ In addition to enabling automatic text transformations, you may want to check th
 
 * {@link features/autoformat Autoformatting} &ndash; Allows to quickly apply formatting to the content you are writing.
 * {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
-* {@link features/mentions Mentions} &ndash; It brings support for smart autocompletion.
+* {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
 
 ## Configuring transformations
 
