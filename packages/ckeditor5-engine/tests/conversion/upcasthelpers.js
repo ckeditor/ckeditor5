@@ -108,8 +108,8 @@ describe( 'UpcastHelpers', () => {
 					name: 'p',
 					classes: 'heading'
 				},
-				model: ( viewElement, modelWriter ) => {
-					return modelWriter.createElement( 'heading', { level: viewElement.getAttribute( 'data-level' ) } );
+				model: ( viewElement, { writer } ) => {
+					return writer.createElement( 'heading', { level: viewElement.getAttribute( 'data-level' ) } );
 				}
 			} );
 
