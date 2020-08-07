@@ -464,7 +464,7 @@ export function convertText() {
 		let position = data.modelCursor;
 
 		// When node is already converted then do nothing.
-		if ( data.modelRange || !consumable.test( data.viewItem ) ) {
+		if ( !consumable.test( data.viewItem ) ) {
 			return;
 		}
 
