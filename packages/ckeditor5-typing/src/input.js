@@ -31,14 +31,79 @@ export default class Input extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const editingView = editor.editing.view;
 
 		// TODO The above default configuration value should be defined using editor.config.define() once it's fixed.
 		const inputCommand = new InputCommand( editor, editor.config.get( 'typing.undoStep' ) || 20 );
 
 		editor.commands.add( 'input', inputCommand );
 
-		injectUnsafeKeystrokesHandling( editor );
-		injectTypingMutationsHandling( editor );
+		// injectUnsafeKeystrokesHandling( editor );
+		// injectTypingMutationsHandling( editor );
+
+		// TODO: Events to consider
+		//
+		// * insertCompositionText -> ?
+		// * deleteCompositionText -> ?
+		// * insertFromPaste -> that would go as insertContent()?
+		// *
+		editingView.document.on( 'beforeinput', ( evt, data ) => {
+			const domEvent = data.domEvent;
+			const { inputType } = domEvent;
+
+			if ( !inputType.startsWith( 'insert' ) ) {
+				return;
+			}
+
+			// For some input types the data is in domEvent.data. For some in the data transfer.
+			const textData = domEvent.data || domEvent.dataTransfer && domEvent.dataTransfer.getData( 'text/plain' );
+			const targetRanges = Array.from( domEvent.getTargetRanges() );
+			const targetRange = targetRanges[ 0 ];
+			let wasHandled;
+
+			if ( inputType === 'insertText' ) {
+				// This one is used by Chrome when typing accented letter (Mac).
+				// This one is used by Safari when applying spell check (Mac).
+				if ( !targetRange.collapsed ) {
+					inputIntoTargetRange();
+					wasHandled = true;
+				}
+				// This one is a regular typing.
+				else {
+					editor.execute( 'input', {
+						text: textData
+					} );
+
+					wasHandled = true;
+				}
+			}
+			// This one is used by Safari when typing accented letter (Mac).
+			// This one is used by Chrome when applying spell check suggestion (Mac).
+			else if ( inputType === 'insertReplacementText' ) {
+				inputIntoTargetRange();
+				wasHandled = true;
+			}
+
+			function inputIntoTargetRange() {
+				const viewRange = editingView.domConverter.domRangeToView( targetRange );
+				const modelRange = editor.editing.mapper.toModelRange( viewRange );
+
+				editor.execute( 'input', {
+					text: textData,
+					range: modelRange
+				} );
+			}
+
+			if ( wasHandled ) {
+				evt.stop();
+
+				// Without it, typing accented characters on Chrome does not work – the second beforeInput event
+				// comes with a collapsed targetRange (should be expanded instead).
+				data.preventDefault();
+			}
+
+			console.groupEnd();
+		} );
 	}
 
 	/**

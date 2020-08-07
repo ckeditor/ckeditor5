@@ -56,5 +56,16 @@ export default class UnderlineEditing extends Plugin {
 
 		// Set the Ctrl+U keystroke.
 		editor.keystrokes.set( 'CTRL+U', 'underline' );
+
+		editor.editing.view.document.on( 'beforeinput', ( evt, data ) => {
+			const domEvent = data.domEvent;
+
+			if ( domEvent.inputType === 'formatUnderline' ) {
+				editor.execute( 'underline' );
+
+				evt.stop();
+				data.preventDefault();
+			}
+		} );
 	}
 }

@@ -33,7 +33,7 @@ export default class ShiftEnter extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const view = editor.editing.view;
-		const viewDocument = view.document;
+		// const viewDocument = view.document;
 
 		// Configure the schema.
 		schema.register( 'softBreak', {
@@ -58,16 +58,27 @@ export default class ShiftEnter extends Plugin {
 
 		editor.commands.add( 'shiftEnter', new ShiftEnterCommand( editor ) );
 
-		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
-			data.preventDefault();
+		// this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+		// 	data.preventDefault();
 
-			// The hard enter key is handled by the Enter plugin.
-			if ( !data.isSoft ) {
-				return;
+		// 	// The hard enter key is handled by the Enter plugin.
+		// 	if ( !data.isSoft ) {
+		// 		return;
+		// 	}
+
+		// 	editor.execute( 'shiftEnter' );
+		// 	view.scrollToTheSelection();
+		// }, { priority: 'low' } );
+
+		editor.editing.view.document.on( 'beforeinput', ( evt, data ) => {
+			const domEvent = data.domEvent;
+
+			if ( domEvent.inputType === 'insertLineBreak' ) {
+				editor.execute( 'shiftEnter' );
+
+				evt.stop();
+				data.preventDefault();
 			}
-
-			editor.execute( 'shiftEnter' );
-			view.scrollToTheSelection();
-		}, { priority: 'low' } );
+		} );
 	}
 }

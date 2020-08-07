@@ -184,10 +184,7 @@ export default class View {
 		this.addObserver( KeyObserver );
 		this.addObserver( FakeSelectionObserver );
 		this.addObserver( CompositionObserver );
-
-		if ( env.isAndroid ) {
-			this.addObserver( InputObserver );
-		}
+		this.addObserver( InputObserver );
 
 		// Inject quirks handlers.
 		injectQuirksHandling( this );

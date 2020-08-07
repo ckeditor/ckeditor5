@@ -69,5 +69,16 @@ export default class BoldEditing extends Plugin {
 
 		// Set the Ctrl+B keystroke.
 		editor.keystrokes.set( 'CTRL+B', BOLD );
+
+		editor.editing.view.document.on( 'beforeinput', ( evt, data ) => {
+			const domEvent = data.domEvent;
+
+			if ( domEvent.inputType === 'formatBold' ) {
+				editor.execute( 'bold' );
+
+				evt.stop();
+				data.preventDefault();
+			}
+		} );
 	}
 }

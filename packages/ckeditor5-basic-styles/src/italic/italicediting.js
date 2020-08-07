@@ -59,5 +59,16 @@ export default class ItalicEditing extends Plugin {
 
 		// Set the Ctrl+I keystroke.
 		editor.keystrokes.set( 'CTRL+I', ITALIC );
+
+		editor.editing.view.document.on( 'beforeinput', ( evt, data ) => {
+			const domEvent = data.domEvent;
+
+			if ( domEvent.inputType === 'formatItalic' ) {
+				editor.execute( 'italic' );
+
+				evt.stop();
+				data.preventDefault();
+			}
+		} );
 	}
 }

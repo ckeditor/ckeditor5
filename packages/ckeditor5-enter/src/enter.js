@@ -31,22 +31,33 @@ export default class Enter extends Plugin {
 	init() {
 		const editor = this.editor;
 		const view = editor.editing.view;
-		const viewDocument = view.document;
+		// const viewDocument = view.document;
 
 		view.addObserver( EnterObserver );
 
 		editor.commands.add( 'enter', new EnterCommand( editor ) );
 
-		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
-			data.preventDefault();
+		// this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+		// 	data.preventDefault();
 
-			// The soft enter key is handled by the ShiftEnter plugin.
-			if ( data.isSoft ) {
-				return;
+		// 	// The soft enter key is handled by the ShiftEnter plugin.
+		// 	if ( data.isSoft ) {
+		// 		return;
+		// 	}
+
+		// 	editor.execute( 'enter' );
+		// 	view.scrollToTheSelection();
+		// }, { priority: 'low' } );
+
+		editor.editing.view.document.on( 'beforeinput', ( evt, data ) => {
+			const domEvent = data.domEvent;
+
+			if ( domEvent.inputType === 'insertParagraph' ) {
+				editor.execute( 'enter' );
+
+				evt.stop();
+				data.preventDefault();
 			}
-
-			editor.execute( 'enter' );
-			view.scrollToTheSelection();
-		}, { priority: 'low' } );
+		} );
 	}
 }

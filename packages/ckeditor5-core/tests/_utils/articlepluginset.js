@@ -52,7 +52,7 @@ export default class ArticlePluginSet extends Plugin {
 			ImageToolbar,
 			Indent,
 			Italic,
-			Link,
+			// Link,
 			List,
 			MediaEmbed,
 			Paragraph,
