@@ -12,18 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Korean (https://www.transifex.com/ckeditor/teams/11143/ko/)\n"
-"Language: ko\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/ckeditor/teams/11143/zh_TW/)\n"
+"Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-msgctxt "Toolbar button tooltip for the Numbered List feature."
-msgid "Numbered List"
-msgstr "번호 목록"
-
-msgctxt "Toolbar button tooltip for the Bulleted List feature."
-msgid "Bulleted List"
-msgstr "불릿 목록"
-
-msgctxt "Toolbar button tooltip for the To-do List feature."
-msgid "To-do List"
-msgstr "확인 목록"
+msgctxt "Horizontal line"
+msgid "Horizontal line"
+msgstr "水平線"

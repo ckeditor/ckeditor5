@@ -12,42 +12,42 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Chinese (Taiwan) (https://www.transifex.com/ckeditor/teams/11143/zh_TW/)\n"
-"Language: zh_TW\n"
+"Language-Team: Korean (https://www.transifex.com/ckeditor/teams/11143/ko/)\n"
+"Language: ko\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Toolbar button tooltip for applying yellow marker (text highlight)."
 msgid "Yellow marker"
-msgstr "黃色標記"
+msgstr "노란색 마커"
 
 msgctxt "Toolbar button tooltip for applying green marker (text highlight)."
 msgid "Green marker"
-msgstr "綠色標記"
+msgstr "초록색 마커"
 
 msgctxt "Toolbar button tooltip for applying pink marker (text highlight)."
 msgid "Pink marker"
-msgstr "粉色標記"
+msgstr "분홍색 마커"
 
 msgctxt "Toolbar button tooltip for applying blue marker (text highlight)."
 msgid "Blue marker"
-msgstr "藍色標記"
+msgstr "파란색 마커"
 
 msgctxt "Toolbar button tooltip for applying red pen (text color)."
 msgid "Red pen"
-msgstr "紅色筆"
+msgstr "빨간색 펜"
 
 msgctxt "Toolbar button tooltip for applying green pen (text color)."
 msgid "Green pen"
-msgstr "綠色筆"
+msgstr "초록색 펜"
 
 msgctxt "Toolbar button tooltip for removing text highlight."
 msgid "Remove highlight"
-msgstr "清除高亮"
+msgstr "강조 제거"
 
 msgctxt "Toolbar button tooltip for the text highlight feature."
 msgid "Highlight"
-msgstr "高亮"
+msgstr "강조"
 
 msgctxt "Label used by assistive technologies describing the highlight feature toolbar."
 msgid "Text highlight toolbar"
-msgstr "高亮"
+msgstr "글자 강조 툴바"
