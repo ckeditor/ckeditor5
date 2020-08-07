@@ -94,11 +94,15 @@ class Container extends Plugin {
 		// Clicking in a nested editable (in the slot) does not put the selection there. Probably because it's
 		// mapped to a selection in a <container> element which is then non-editable in the view, so
 		// some mechanism makes it a widget selection. May be related to https://github.com/ckeditor/ckeditor5/issues/1331.
+
+		// # Step 5
+		//
+		// Use writer.createEditableElement() to create nested editable in widget.
 		editor.conversion.for( 'editingDowncast' ).add(
 			dispatcher => {
 				const insertViewElement = insertElement( ( modelElement, { writer } ) => {
 					const viewContainer = toWidget( writer.createContainerElement( 'div', { class: 'container' } ), writer );
-					const viewSlot = toWidgetEditable( writer.createContainerElement( 'div', { class: 'slot' } ), writer );
+					const viewSlot = toWidgetEditable( writer.createEditableElement( 'div', { class: 'slot' } ), writer );
 
 					writer.insert( writer.createPositionAt( viewContainer, 0 ), viewSlot );
 
