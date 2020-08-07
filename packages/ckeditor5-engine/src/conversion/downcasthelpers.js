@@ -55,7 +55,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			view: ( modelElement, conversionApi ) => {
 	 *				const { writer } = conversionApi;
 	 *
-	 *				return writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
+	 *				return writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) );
 	 *			}
 	 *		} );
 	 *
