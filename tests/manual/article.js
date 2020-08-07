@@ -6,21 +6,13 @@
 /* globals console, window, document, setInterval */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-import {
-	// downcastElementToElement,
-	insertElement
-} from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 
 import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcasthelpers';
 
 class Container extends Plugin {
 	init() {
@@ -43,11 +35,11 @@ class Container extends Plugin {
 		// editor.conversion.for( 'editingDowncast' ).add(
 		// 	downcastElementToElement( {
 		// 		model: 'container',
-		// 		view: ( modelElement, viewWriter ) => {
-		// 			const viewContainer = viewWriter.createContainerElement( 'div', { class: 'container' } );
-		// 			const viewSlot = viewWriter.createContainerElement( 'div', { class: 'slot' } );
+		// 		view: ( modelElement, { writer } ) => {
+		// 			const viewContainer = writer.createContainerElement( 'div', { class: 'container' } );
+		// 			const viewSlot = writer.createContainerElement( 'div', { class: 'slot' } );
 
-		// 			viewWriter.insert( ViewPosition.createAt( viewContainer, 0 ), viewSlot );
+		// 			writer.insert( ViewPosition.createAt( viewContainer, 0 ), viewSlot );
 
 		// 			return viewContainer;
 		// 		}
@@ -64,11 +56,11 @@ class Container extends Plugin {
 		// * div.container -> container (old)
 		// editor.conversion.for( 'editingDowncast' ).add(
 		// 	dispatcher => {
-		// 		const insertViewElement = insertElement( ( modelElement, viewWriter ) => {
-		// 			const viewContainer = viewWriter.createContainerElement( 'div', { class: 'container' } );
-		// 			const viewSlot = viewWriter.createContainerElement( 'div', { class: 'slot' } );
+		// 		const insertViewElement = insertElement( ( modelElement, { writer } ) => {
+		// 			const viewContainer = writer.createContainerElement( 'div', { class: 'container' } );
+		// 			const viewSlot = writer.createContainerElement( 'div', { class: 'slot' } );
 
-		// 			viewWriter.insert( ViewPosition.createAt( viewContainer, 0 ), viewSlot );
+		// 			writer.insert( ViewPosition.createAt( viewContainer, 0 ), viewSlot );
 
 		// 			return viewContainer;
 		// 		} );
@@ -104,11 +96,11 @@ class Container extends Plugin {
 		// some mechanism makes it a widget selection. May be related to https://github.com/ckeditor/ckeditor5/issues/1331.
 		editor.conversion.for( 'editingDowncast' ).add(
 			dispatcher => {
-				const insertViewElement = insertElement( ( modelElement, viewWriter ) => {
-					const viewContainer = toWidget( viewWriter.createContainerElement( 'div', { class: 'container' } ), viewWriter );
-					const viewSlot = toWidgetEditable( viewWriter.createContainerElement( 'div', { class: 'slot' } ), viewWriter );
+				const insertViewElement = insertElement( ( modelElement, { writer } ) => {
+					const viewContainer = toWidget( writer.createContainerElement( 'div', { class: 'container' } ), writer );
+					const viewSlot = toWidgetEditable( writer.createContainerElement( 'div', { class: 'slot' } ), writer );
 
-					viewWriter.insert( ViewPosition.createAt( viewContainer, 0 ), viewSlot );
+					writer.insert( writer.createPositionAt( viewContainer, 0 ), viewSlot );
 
 					return viewContainer;
 				} );
