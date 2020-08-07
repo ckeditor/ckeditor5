@@ -208,7 +208,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
 	 *			model: 'styled',
-	 *			view: ( modelAttributeValue, conversionApi ) => ( {
+	 *			view: modelAttributeValue => ( {
 	 *				key: 'class',
 	 *				value: 'styled-' + modelAttributeValue
 	 *			} )
@@ -218,7 +218,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
 	 *			model: 'lineHeight',
-	 *			view: ( modelAttributeValue, conversionApi ) => ( {
+	 *			view: modelAttributeValue => ( {
 	 *				key: 'style',
 	 *				value: {
 	 *					'line-height': modelAttributeValue,
@@ -458,7 +458,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		// Using a custom function which is the same as the default conversion:
 	 *		editor.conversion.for( 'dataDowncast' ).markerToData( {
 	 *			model: 'comment'
-	 *			view: ( markerName, conversionApi ) => ( {
+	 *			view: markerName => ( {
 	 *				group: 'comment',
 	 *				name: markerName.substr( 8 ) // Removes 'comment:' part.
 	 *			} )
@@ -467,7 +467,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		// Using the converter priority:
 	 *		editor.conversion.for( 'dataDowncast' ).markerToData( {
 	 *			model: 'comment'
-	 *			view: ( markerName, conversionApi ) => ( {
+	 *			view: markerName => ( {
 	 *				group: 'comment',
 	 *				name: markerName.substr( 8 ) // Removes 'comment:' part.
 	 *			} ),
