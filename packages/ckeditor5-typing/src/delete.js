@@ -45,7 +45,7 @@ export default class Delete extends Plugin {
 
 			let wasHandled;
 
-			// Note: Not sure how to trigger "deleteContent" but it feels generic so let's have it here.
+			// This happens in Safari on Mac when a widget is selected and Ctrl + K is pressed.
 			if ( inputType === 'deleteContent' ) {
 				editor.execute( 'delete', { unit: 'codePoint' } );
 				wasHandled = true;
@@ -71,8 +71,9 @@ export default class Delete extends Plugin {
 				editor.execute( 'forwardDelete', { unit: 'word' } );
 				wasHandled = true;
 			}
-			// On Mac: Ctrl + K
-			// (you have to disable the Link plugin first, though, because it uses the same keystroke)
+			// Chrome on Mac: Ctrl + K (you have to disable the Link plugin first, though, because it uses the same keystroke)
+			// This is weird that it does not work in Safari on Mac despite being listed in the official shortcuts listing
+			// on Apple's webpage.
 			else if ( inputType === 'deleteHardLineForward' ) {
 				const model = editor.model;
 

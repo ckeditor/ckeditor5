@@ -85,6 +85,9 @@ export default class Input extends Plugin {
 			}
 
 			function inputIntoTargetRange() {
+				// !!! TODO !!!
+				// This is totally broken when a widget is selected because the target range
+				// is anchored in the fake selection handler and the mapping does not make sense.
 				const viewRange = editingView.domConverter.domRangeToView( targetRange );
 				const modelRange = editor.editing.mapper.toModelRange( viewRange );
 
