@@ -25,6 +25,7 @@ import deleteContent from './utils/deletecontent';
 import modifySelection from './utils/modifyselection';
 import getSelectedContent from './utils/getselectedcontent';
 import { injectSelectionPostFixer } from './utils/selection-post-fixer';
+import { autoParagraphEmptyRoots } from './utils/autoparagraphing';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees } = require( '../dev-utils/utils' );
@@ -121,6 +122,9 @@ export default class Model {
 		} );
 
 		injectSelectionPostFixer( this );
+
+		// Post-fixer which takes care of adding empty paragraph elements to the empty roots.
+		this.document.registerPostFixer( autoParagraphEmptyRoots );
 
 		// @if CK_DEBUG_ENGINE // this.on( 'applyOperation', () => {
 		// @if CK_DEBUG_ENGINE // 	dumpTrees( this.document, this.document.version );

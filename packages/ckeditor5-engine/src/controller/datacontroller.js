@@ -24,6 +24,7 @@ import ViewDocument from '../view/document';
 import ViewDowncastWriter from '../view/downcastwriter';
 
 import ModelRange from '../model/range';
+import { autoParagraphEmptyRoots } from '../model/utils/autoparagraphing';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
@@ -139,6 +140,12 @@ export default class DataController {
 		// to plug into the initialization pipeline without interrupting the initialization flow.
 		this.on( 'init', () => {
 			this.fire( 'ready' );
+		}, { priority: 'lowest' } );
+
+		// Fix empty roots after DataController is 'ready' (note that init method could be decorated and stopped).
+		// We need to handle this event because initial data could be empty and post-fixer would not get triggered.
+		this.on( 'ready', () => {
+			this.model.enqueueChange( 'transparent', autoParagraphEmptyRoots );
 		}, { priority: 'lowest' } );
 	}
 
