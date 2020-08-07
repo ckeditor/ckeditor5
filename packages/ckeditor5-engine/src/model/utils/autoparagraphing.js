@@ -35,3 +35,43 @@ export function autoParagraphEmptyRoots( writer ) {
 
 	return false;
 }
+
+/**
+ * Checks if the given node wrapped with a paragraph would be accepted by the schema in the given position.
+ *
+ * @protected
+ * @param {module:engine/model/position~Position} position The position at which to check.
+ * @param {module:engine/model/node~Node|String} nodeOrType The child node or child type to check.
+ * @param {module:engine/model/schema~Schema} schema A schema instance used for element validation.
+ */
+export function isParagraphable( position, nodeOrType, schema ) {
+	const context = schema.createContext( position );
+
+	// When paragraph is allowed in this context...
+	if ( !schema.checkChild( context, 'paragraph' ) ) {
+		return false;
+	}
+
+	// And a node would be allowed in this paragraph...
+	if ( !schema.checkChild( context.push( 'paragraph' ), nodeOrType ) ) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Inserts a new paragraph at the given position and returns a position inside that paragraph.
+ *
+ * @protected
+ * @param {module:engine/model/position~Position} position The position where a paragraph should be inserted.
+ * @param {module:engine/model/writer~Writer} writer The model writer.
+ * @returns {module:engine/model/position~Position} Position inside the created paragraph.
+ */
+export function wrapInParagraph( position, writer ) {
+	const paragraph = writer.createElement( 'paragraph' );
+
+	writer.insert( paragraph, position );
+
+	return writer.createPositionAt( paragraph, 0 );
+}

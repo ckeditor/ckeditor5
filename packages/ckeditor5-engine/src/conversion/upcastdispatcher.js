@@ -11,6 +11,7 @@ import ViewConsumable from './viewconsumable';
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
 import { SchemaContext } from '../model/schema';
+import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
@@ -368,10 +369,12 @@ export default class UpcastDispatcher {
 
 		if ( !allowedParent ) {
 			// Check if the node wrapped with a paragraph would be accepted by the schema.
-			const paragraph = wrapWithParagraphIfPossible( node, modelCursor, writer, schema );
+			if ( !isParagraphable( modelCursor, node, schema ) ) {
+				return null;
+			}
 
-			return paragraph && {
-				position: writer.createPositionAt( paragraph, 0 )
+			return {
+				position: wrapInParagraph( modelCursor, writer )
 			};
 		}
 
@@ -576,24 +579,6 @@ function createContextTree( contextDefinition, writer ) {
 	}
 
 	return position;
-}
-
-// Auto-paragraphing
-function wrapWithParagraphIfPossible( node, position, writer, schema ) {
-	// Check if the node wrapped with a paragraph would be accepted by the schema.
-	const context = schema.createContext( position );
-
-	// If paragraph is not acceptable in the current position or the model node is not accepted in that context
-	// there is nothing more that can be done with it.
-	if ( !schema.checkChild( context, 'paragraph' ) || !schema.checkChild( context.push( 'paragraph' ), node ) ) {
-		return null;
-	}
-
-	const paragraph = writer.createElement( 'paragraph' );
-
-	writer.insert( paragraph, position );
-
-	return paragraph;
 }
 
 /**

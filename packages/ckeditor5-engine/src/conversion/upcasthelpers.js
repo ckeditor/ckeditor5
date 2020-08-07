@@ -10,6 +10,7 @@ import { cloneDeep } from 'lodash-es';
 import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing';
 
 /* global console */
 
@@ -468,17 +469,11 @@ export function convertText() {
 		}
 
 		if ( !schema.checkChild( position, '$text' ) ) {
-			// Check if this text node would be allowed if wrapped with a paragraph.
-			const context = schema.createContext( position );
-
-			if ( !schema.checkChild( context, 'paragraph' ) || !schema.checkChild( context.push( 'paragraph' ), '$text' ) ) {
+			if ( !isParagraphable( position, '$text', schema ) ) {
 				return;
 			}
 
-			const paragraph = writer.createElement( 'paragraph' );
-
-			writer.insert( paragraph, position );
-			position = writer.createPositionAt( paragraph, 0 );
+			position = wrapInParagraph( position, writer );
 		}
 
 		const text = writer.createText( data.viewItem.data );
