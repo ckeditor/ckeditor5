@@ -455,7 +455,7 @@ describe( 'DataController', () => {
 			}, /datacontroller-get-non-existent-root:/ );
 		} );
 
-		it( 'should allow to provide additional conversion options - insert conversion', () => {
+		it( 'should allow to provide additional options for retrieving data - insert conversion', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 			data.downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
@@ -472,11 +472,11 @@ describe( 'DataController', () => {
 
 			setData( model, '<paragraph>foo</paragraph>' );
 
-			expect( data.get( { conversionOptions: { attributeValue: 'foo' } } ) ).to.equal( '<p attribute="foo">foo</p>' );
-			expect( data.get( { conversionOptions: { attributeValue: 'bar' } } ) ).to.equal( '<p attribute="bar">foo</p>' );
+			expect( data.get( { attributeValue: 'foo' } ) ).to.equal( '<p attribute="foo">foo</p>' );
+			expect( data.get( { attributeValue: 'bar' } ) ).to.equal( '<p attribute="bar">foo</p>' );
 		} );
 
-		it( 'should allow to provide additional conversion options - attribute conversion', () => {
+		it( 'should allow to provide additional options for retrieving data - attribute conversion', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block', allowAttributes: [ 'foo' ] } );
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
@@ -494,11 +494,11 @@ describe( 'DataController', () => {
 			setData( model, '<paragraph>f<$text foo="a">o</$text>ob<$text foo="b">a</$text>r</paragraph>' );
 
 			expect( data.get() ).to.equal( '<p>f<a>o</a>ob<b>a</b>r</p>' );
-			expect( data.get( { conversionOptions: { skipAttribute: 'a' } } ) ).to.equal( '<p>foob<b>a</b>r</p>' );
-			expect( data.get( { conversionOptions: { skipAttribute: 'b' } } ) ).to.equal( '<p>f<a>o</a>obar</p>' );
+			expect( data.get( { skipAttribute: 'a' } ) ).to.equal( '<p>foob<b>a</b>r</p>' );
+			expect( data.get( { skipAttribute: 'b' } ) ).to.equal( '<p>f<a>o</a>obar</p>' );
 		} );
 
-		it( 'should allow to provide additional conversion options - addMarker conversion', () => {
+		it( 'should allow to provide additional options for retrieving data - addMarker conversion', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
@@ -527,8 +527,25 @@ describe( 'DataController', () => {
 				} );
 			} );
 
-			expect( data.get( { conversionOptions: { skipMarker: false } } ) ).to.equal( '<p>f<marker>o</marker>o</p>' );
-			expect( data.get( { conversionOptions: { skipMarker: true } } ) ).to.equal( '<p>foo</p>' );
+			expect( data.get( { skipMarker: false } ) ).to.equal( '<p>f<marker>o</marker>o</p>' );
+			expect( data.get( { skipMarker: true } ) ).to.equal( '<p>foo</p>' );
+		} );
+
+		it( 'should provide additional options for retrieving data without basic rootName and trim properties', () => {
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+			const spy = sinon.spy();
+
+			data.downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
+				spy( conversionApi.options );
+			}, { priority: 'high' } );
+
+			setData( model, '<paragraph>foo</paragraph>' );
+
+			data.get( { rootName: 'main', trim: 'empty', foo: 'bar' } );
+
+			expect( spy.lastCall.args[ 0 ] ).to.deep.equal( { foo: 'bar' } );
 		} );
 	} );
 

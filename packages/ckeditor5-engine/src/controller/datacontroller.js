@@ -146,16 +146,19 @@ export default class DataController {
 	 * Returns the model's data converted by downcast dispatchers attached to {@link #downcastDispatcher} and
 	 * formatted by the {@link #processor data processor}.
 	 *
-	 * @param {Object} [options]
+	 * @param {Object} [options] Additional configuration for the retrieved data. `DataController` provides two optional
+	 * properties: `root` and `trim`. Other properties of this object are specified by various editor features.
 	 * @param {String} [options.rootName='main'] Root name.
 	 * @param {String} [options.trim='empty'] Whether returned data should be trimmed. This option is set to `empty` by default,
 	 * which means whenever editor content is considered empty, an empty string will be returned. To turn off trimming completely
 	 * use `'none'`. In such cases exact content will be returned (for example `<p>&nbsp;</p>` for an empty editor).
-	 * @param {Object} [options.conversionOptions] Additional, custom configuration passed to the conversion process.
 	 * @returns {String} Output data.
 	 */
-	get( options ) {
-		const { rootName = 'main', trim = 'empty', conversionOptions } = options || {};
+	get( options = {} ) {
+		const { rootName = 'main', trim = 'empty' } = options;
+
+		delete options.rootName;
+		delete options.trim;
 
 		if ( !this._checkIfRootsExists( [ rootName ] ) ) {
 			/**
@@ -178,7 +181,7 @@ export default class DataController {
 			return '';
 		}
 
-		return this.stringify( root, conversionOptions );
+		return this.stringify( root, options );
 	}
 
 	/**
@@ -188,12 +191,12 @@ export default class DataController {
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
 	 * Element whose content will be stringified.
-	 * @param {Object} [conversionOptions] Additional, custom configuration passed to the conversion process.
+	 * @param {Object} [options] Additional configuration passed to the conversion process.
 	 * @returns {String} Output data.
 	 */
-	stringify( modelElementOrFragment, conversionOptions ) {
+	stringify( modelElementOrFragment, options ) {
 		// Model -> view.
-		const viewDocumentFragment = this.toView( modelElementOrFragment, conversionOptions );
+		const viewDocumentFragment = this.toView( modelElementOrFragment, options );
 
 		// View -> data.
 		return this.processor.toData( viewDocumentFragment );
@@ -207,10 +210,10 @@ export default class DataController {
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
 	 * Element or document fragment whose content will be converted.
-	 * @param {Object} [conversionOptions] Additional, custom configuration passed to the conversion process.
+	 * @param {Object} [options] Additional configuration passed to the conversion process.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Output view DocumentFragment.
 	 */
-	toView( modelElementOrFragment, conversionOptions ) {
+	toView( modelElementOrFragment, options ) {
 		const viewDocument = this.viewDocument;
 		const viewWriter = this._viewWriter;
 
@@ -224,7 +227,7 @@ export default class DataController {
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
 		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
-		this.downcastDispatcher.convertInsert( modelRange, viewWriter, conversionOptions );
+		this.downcastDispatcher.convertInsert( modelRange, viewWriter, options );
 
 		if ( !modelElementOrFragment.is( 'documentFragment' ) ) {
 			// Then, if a document element is converted, convert markers.
@@ -232,7 +235,7 @@ export default class DataController {
 			const markers = _getMarkersRelativeToElement( modelElementOrFragment );
 
 			for ( const [ name, range ] of markers ) {
-				this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter, conversionOptions );
+				this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter, options );
 			}
 		}
 
