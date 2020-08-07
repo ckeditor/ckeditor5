@@ -282,7 +282,13 @@ export default class Schema {
 	isObject( item ) {
 		const def = this.getDefinition( item );
 
-		return !!( def && def.isObject );
+		if ( !def ) {
+			return false;
+		}
+
+		// Note: Check out the implementation of #isLimit(), #isSelectable(), and #isContent()
+		// to understand why these three constitute an object.
+		return !!( def.isObject || ( def.isLimit && def.isSelectable && def.isContent ) );
 	}
 
 	/**
@@ -292,7 +298,7 @@ export default class Schema {
 	 *		schema.isInline( 'paragraph' ); // -> false
 	 *		schema.isInline( 'softBreak' ); // -> true
 	 *
-	 *		const text = writer.createText('foo' );
+	 *		const text = writer.createText( 'foo' );
 	 *		schema.isInline( text ); // -> true
 	 *
 	 * See the {@glink framework/guides/deep-dive/schema#inline-elements Inline elements} section of the Schema deep dive
@@ -304,6 +310,60 @@ export default class Schema {
 		const def = this.getDefinition( item );
 
 		return !!( def && def.isInline );
+	}
+
+	/**
+	 * Returns `true` if the given item is defined to be
+	 * a selectable element by the {@link module:engine/model/schema~SchemaItemDefinition}'s `isSelectable` property.
+	 *
+	 *		schema.isSelectable( 'paragraph' ); // -> false
+	 *		schema.isSelectable( 'heading1' ); // -> false
+	 *		schema.isSelectable( 'image' ); // -> true
+	 *		schema.isSelectable( 'tableCell' ); // -> true
+	 *
+	 *		const text = writer.createText( 'foo' );
+	 *		schema.isSelectable( text ); // -> false
+	 *
+	 * See the {@glink framework/guides/deep-dive/schema#selectable-elements Selectable elements} section of the Schema deep dive}
+	 * guide for more details.
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+	 */
+	isSelectable( item ) {
+		const def = this.getDefinition( item );
+
+		if ( !def ) {
+			return false;
+		}
+
+		return !!( def.isSelectable || def.isObject );
+	}
+
+	/**
+	 * Returns `true` if the given item is defined to be
+	 * a content by the {@link module:engine/model/schema~SchemaItemDefinition}'s `isContent` property.
+	 *
+	 *		schema.isContent( 'paragraph' ); // -> false
+	 *		schema.isContent( 'heading1' ); // -> false
+	 *		schema.isContent( 'image' ); // -> true
+	 *		schema.isContent( 'horizontalLine' ); // -> true
+	 *
+	 *		const text = writer.createText( 'foo' );
+	 *		schema.isContent( text ); // -> true
+	 *
+	 * See the {@glink framework/guides/deep-dive/schema#content-elements Content elements} section of the Schema deep dive}
+	 * guide for more details.
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+	 */
+	isContent( item ) {
+		const def = this.getDefinition( item );
+
+		if ( !def ) {
+			return false;
+		}
+
+		return !!( def.isContent || def.isObject );
 	}
 
 	/**
@@ -1185,6 +1245,25 @@ mix( Schema, ObservableMixin );
  *
  * Read more about the object elements in the
  * {@glink framework/guides/deep-dive/schema#object-elements Object elements} section of the Schema deep dive} guide.
+ *
+ * @property {Boolean} isSelectable
+ * `true` when an element should be selectable as a whole by the user. Examples of selectable elements: `image`, `table`, `tableCell`, etc.
+ *
+ * **Note:** An object is also a selectable element, so
+ * {@link module:engine/model/schema~Schema#isSelectable `isSelectable()`} returns `true` for object elements automatically.
+ *
+ * Read more about selectable elements in the
+ * {@glink framework/guides/deep-dive/schema#selectable-elements Selectable elements} section of the Schema deep dive} guide.
+ *
+ * @property {Boolean} isContent
+ * An item is a content when it always finds its way to editor data output regardless of the number and type of its descendants.
+ * Examples of content elements: `$text`, `image`, `table`, etc. (but not `paragraph`, `heading1` or `tableCell`).
+ *
+ * **Note:** An object is also a content element, so
+ * {@link module:engine/model/schema~Schema#isContent `isContent()`} returns `true` for object elements automatically.
+ *
+ * Read more about content elements in the
+ * {@glink framework/guides/deep-dive/schema#content-elements Content elements} section of the Schema deep dive} guide.
  */
 
 /**

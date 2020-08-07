@@ -177,7 +177,7 @@ getCkeditor5ModulePaths()
 
 		return Promise.all( promises )
 			.then( ( [ guideContent, newContentStyles ] ) => {
-				guideContent = guideContent.replace( /```css([^`]+)```/, newContentStyles );
+				guideContent = guideContent.replace( /```css([^`]+)```/, '```css\n' + newContentStyles + '\n```' );
 
 				return writeFile( CONTENT_STYLES_GUIDE_PATH, guideContent );
 			} )

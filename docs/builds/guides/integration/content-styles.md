@@ -46,6 +46,7 @@ The content in the front–end of your application should now look the same as w
 
 Below there is a full list of content styles used by the editor features. You can copy it and use straight in your project. **Make sure to add the `ck-content` class to your content container for the styles to work** ([see above](#sharing-content-styles-between-frontend-and-backend)).
 
+```css
 /*
  * CKEditor 5 (v21.0.0) content styles.
  * Generated on Wed, 29 Jul 2020 12:14:43 GMT.
@@ -373,3 +374,4 @@ Below there is a full list of content styles used by the editor features. You ca
 		display: none;
 	}
 }
+```

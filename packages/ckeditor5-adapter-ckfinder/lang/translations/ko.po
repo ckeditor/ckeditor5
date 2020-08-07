@@ -18,4 +18,4 @@ msgstr ""
 
 msgctxt "A generic error message displayed on upload failure. The file name is concatenated to this text."
 msgid "Cannot upload file:"
-msgstr "파일 업로드 불가"
+msgstr "파일 업로드할 수 없음: "

@@ -30,7 +30,7 @@ describe( 'inlineHighlight', () => {
 		model.schema.extend( '$text', { allowAttributes: 'linkHref' } );
 
 		editor.conversion.for( 'editingDowncast' )
-			.attributeToElement( { model: 'linkHref', view: ( href, writer ) => {
+			.attributeToElement( { model: 'linkHref', view: ( href, { writer } ) => {
 				return writer.createAttributeElement( 'a', { href } );
 			} } );
 

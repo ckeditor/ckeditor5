@@ -8,11 +8,11 @@ order: 10
 # For now, due to lack of content, it is called "advanced concepts".
 ---
 
-# Advanced conversion concepts
+# Advanced conversion concepts &mdash; attributes
 
 This guide extends the {@link framework/guides/architecture/editing-engine introduction to CKEditor 5 editing engine architecture}. Therefore, we highly recommend reading the former guide first.
 
-In this guide we will dive deeper into some of the conversion concepts.
+In this guide we will dive deeper into some of the conversion concepts related to model attributes.
 
 ## Inline and block content
 
