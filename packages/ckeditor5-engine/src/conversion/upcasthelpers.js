@@ -476,6 +476,8 @@ export function convertText() {
 			position = wrapInParagraph( position, writer );
 		}
 
+		consumable.consume( data.viewItem );
+
 		const text = writer.createText( data.viewItem.data );
 
 		writer.insert( text, position );
