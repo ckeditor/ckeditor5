@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ListEditing from './listediting';
 
-const DEFAULT_TYPE = 'default';
+const DEFAULT_LIST_TYPE = 'default';
 
 /**
  * The list styles engine feature.
@@ -67,12 +67,8 @@ export default class ListStylesEditing extends Plugin {
 function upcastListItem() {
 	return dispatcher => {
 		dispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
-			if ( !conversionApi.consumable.consume( data.viewItem, { attributes: [ 'style' ] } ) ) {
-				return;
-			}
-
 			const listParent = data.viewItem.parent;
-			const listStyle = listParent.getStyle( 'list-style-type' ) || DEFAULT_TYPE;
+			const listStyle = listParent.getStyle( 'list-style-type' ) || DEFAULT_LIST_TYPE;
 			const listItem = data.modelRange.start.nodeAfter;
 
 			conversionApi.writer.setAttribute( 'listStyle', listStyle, listItem );
@@ -154,7 +150,7 @@ function downcastListStyleAttribute() {
 	// @param {String} listStyle
 	// @param {module:engine/view/element~Element} element
 	function setListStyle( writer, listStyle, element ) {
-		if ( listStyle && listStyle !== DEFAULT_TYPE ) {
+		if ( listStyle && listStyle !== DEFAULT_LIST_TYPE ) {
 			writer.setStyle( 'list-style-type', listStyle, element );
 		} else {
 			writer.removeStyle( 'list-style-type', element );
