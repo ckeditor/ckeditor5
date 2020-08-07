@@ -55,7 +55,7 @@ export default class Paragraph extends Plugin {
 		// Handles element which has not been converted by any plugin and checks if it would be converted if
 		// we wrap it in a paragraph or change it to a paragraph.
 		editor.conversion.for( 'upcast' ).elementToElement( {
-			model: ( viewElement, modelWriter ) => {
+			model: ( viewElement, { writer } ) => {
 				if ( !Paragraph.paragraphLikeElements.has( viewElement.name ) ) {
 					return null;
 				}
@@ -65,7 +65,7 @@ export default class Paragraph extends Plugin {
 					return null;
 				}
 
-				return modelWriter.createElement( 'paragraph' );
+				return writer.createElement( 'paragraph' );
 			},
 			view: /.+/,
 			converterPriority: 'low'

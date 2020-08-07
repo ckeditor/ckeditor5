@@ -19,7 +19,7 @@ function BlockWidget( editor ) {
 
 	editor.conversion.for( 'downcast' ).elementToElement( {
 		model: 'div',
-		view: ( modelElement, writer ) => {
+		view: ( modelElement, { writer } ) => {
 			return toWidget(
 				writer.createContainerElement( 'div', {
 					class: 'widget'
@@ -108,10 +108,10 @@ class InlineWidget extends Plugin {
 
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'placeholder',
-			view: ( modelItem, viewWriter ) => {
-				const widgetElement = createPlaceholderView( modelItem, viewWriter );
+			view: ( modelItem, conversionApi ) => {
+				const widgetElement = createPlaceholderView( modelItem, conversionApi );
 
-				return toWidget( widgetElement, viewWriter );
+				return toWidget( widgetElement, conversionApi.writer );
 			}
 		} );
 
@@ -130,11 +130,11 @@ class InlineWidget extends Plugin {
 			viewToModelPositionOutsideModelElement( editor.model, viewElement => viewElement.name == 'placeholder' )
 		);
 
-		function createPlaceholderView( modelItem, viewWriter ) {
-			const widgetElement = viewWriter.createContainerElement( 'placeholder' );
-			const viewText = viewWriter.createText( '{placeholder}' );
+		function createPlaceholderView( modelItem, { writer } ) {
+			const widgetElement = writer.createContainerElement( 'placeholder' );
+			const viewText = writer.createText( '{placeholder}' );
 
-			viewWriter.insert( viewWriter.createPositionAt( widgetElement, 0 ), viewText );
+			writer.insert( writer.createPositionAt( widgetElement, 0 ), viewText );
 
 			return widgetElement;
 		}

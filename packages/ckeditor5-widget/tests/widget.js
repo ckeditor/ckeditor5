@@ -90,29 +90,29 @@ describe( 'Widget', () => {
 					.elementToElement( { model: 'div', view: 'div' } )
 					.elementToElement( {
 						model: 'widget',
-						view: ( modelItem, viewWriter ) => {
-							const b = viewWriter.createAttributeElement( 'b' );
-							const div = viewWriter.createContainerElement( 'div' );
-							viewWriter.insert( viewWriter.createPositionAt( div, 0 ), b );
+						view: ( modelItem, { writer } ) => {
+							const b = writer.createAttributeElement( 'b' );
+							const div = writer.createContainerElement( 'div' );
+							writer.insert( writer.createPositionAt( div, 0 ), b );
 
-							return toWidget( div, viewWriter, { label: 'element label' } );
+							return toWidget( div, writer, { label: 'element label' } );
 						}
 					} )
 					.elementToElement( {
 						model: 'inline-widget',
-						view: ( modelItem, viewWriter ) => {
-							const span = viewWriter.createContainerElement( 'span' );
+						view: ( modelItem, { writer } ) => {
+							const span = writer.createContainerElement( 'span' );
 
-							return toWidget( span, viewWriter );
+							return toWidget( span, writer );
 						}
 					} )
 					.elementToElement( {
 						model: 'nested',
-						view: ( modelItem, viewWriter ) => viewWriter.createEditableElement( 'figcaption', { contenteditable: true } )
+						view: ( modelItem, { writer } ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
 					} )
 					.elementToElement( {
 						model: 'editable',
-						view: ( modelItem, viewWriter ) => viewWriter.createEditableElement( 'figcaption', { contenteditable: true } )
+						view: ( modelItem, { writer } ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
 					} );
 			} );
 	} );
@@ -1288,15 +1288,15 @@ describe( 'Widget', () => {
 						.elementToElement( { model: 'paragraph', view: 'p' } )
 						.elementToElement( {
 							model: 'widget',
-							view: ( modelItem, viewWriter ) => {
-								const widget = viewWriter.createContainerElement( 'div' );
+							view: ( modelItem, { writer } ) => {
+								const widget = writer.createContainerElement( 'div' );
 
-								return toWidget( widget, viewWriter, { hasSelectionHandle: true } );
+								return toWidget( widget, writer, { hasSelectionHandle: true } );
 							}
 						} )
 						.elementToElement( {
 							model: 'nested',
-							view: ( modelItem, viewWriter ) => viewWriter.createEditableElement( 'figcaption', { contenteditable: true } )
+							view: ( modelItem, { writer } ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
 						} );
 				} );
 		} );
