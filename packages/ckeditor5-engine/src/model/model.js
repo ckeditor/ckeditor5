@@ -124,7 +124,7 @@ export default class Model {
 		injectSelectionPostFixer( this );
 
 		// Post-fixer which takes care of adding empty paragraph elements to the empty roots.
-		this.document.registerPostFixer( writer => autoParagraphEmptyRoots( writer ) );
+		this.document.registerPostFixer( autoParagraphEmptyRoots );
 
 		// @if CK_DEBUG_ENGINE // this.on( 'applyOperation', () => {
 		// @if CK_DEBUG_ENGINE // 	dumpTrees( this.document, this.document.version );

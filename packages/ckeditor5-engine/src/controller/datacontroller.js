@@ -145,7 +145,7 @@ export default class DataController {
 		// Fix empty roots after DataController is 'ready' (note that init method could be decorated and stopped).
 		// We need to handle this event because initial data could be empty and post-fixer would not get triggered.
 		this.on( 'ready', () => {
-			this.model.enqueueChange( 'transparent', writer => autoParagraphEmptyRoots( writer ) );
+			this.model.enqueueChange( 'transparent', autoParagraphEmptyRoots );
 		}, { priority: 'lowest' } );
 	}
 
