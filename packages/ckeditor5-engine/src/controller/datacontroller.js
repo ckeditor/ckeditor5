@@ -157,9 +157,6 @@ export default class DataController {
 	get( options = {} ) {
 		const { rootName = 'main', trim = 'empty' } = options;
 
-		delete options.rootName;
-		delete options.trim;
-
 		if ( !this._checkIfRootsExists( [ rootName ] ) ) {
 			/**
 			 * Cannot get data from a non-existing root. This error is thrown when {@link #get DataController#get() method}

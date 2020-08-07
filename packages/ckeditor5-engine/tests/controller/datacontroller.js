@@ -530,23 +530,6 @@ describe( 'DataController', () => {
 			expect( data.get( { skipMarker: false } ) ).to.equal( '<p>f<marker>o</marker>o</p>' );
 			expect( data.get( { skipMarker: true } ) ).to.equal( '<p>foo</p>' );
 		} );
-
-		it( 'should provide additional options for retrieving data without basic rootName and trim properties', () => {
-			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
-			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-
-			const spy = sinon.spy();
-
-			data.downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
-				spy( conversionApi.options );
-			}, { priority: 'high' } );
-
-			setData( model, '<paragraph>foo</paragraph>' );
-
-			data.get( { rootName: 'main', trim: 'empty', foo: 'bar' } );
-
-			expect( spy.lastCall.args[ 0 ] ).to.deep.equal( { foo: 'bar' } );
-		} );
 	} );
 
 	describe( 'stringify()', () => {
