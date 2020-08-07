@@ -605,7 +605,12 @@ describe( 'DowncastHelpers', () => {
 		it( 'config.view is a function', () => {
 			downcastHelpers.attributeToAttribute( {
 				model: 'styled',
-				view: attributeValue => ( { key: 'class', value: 'styled-' + attributeValue } )
+				view: ( attributeValue, conversionApi ) => {
+					// To ensure conversion API is provided.
+					expect( conversionApi.writer ).to.instanceof( DowncastWriter );
+
+					return { key: 'class', value: 'styled-' + attributeValue };
+				}
 			} );
 
 			model.change( writer => {
@@ -675,41 +680,6 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'should convert insert/change/remove with attribute generating function as a parameter', () => {
-			downcastHelpers.elementToElement( { model: 'div', view: 'div' } );
-			downcastHelpers.attributeToAttribute( {
-				model: 'theme',
-				view: ( value, data ) => {
-					if ( data.item instanceof ModelElement && data.item.childCount > 0 ) {
-						value += ' fix-content';
-					}
-
-					return { key: 'class', value };
-				}
-			} );
-
-			const modelParagraph = new ModelElement( 'paragraph', { theme: 'nice' }, new ModelText( 'foobar' ) );
-			const modelDiv = new ModelElement( 'div', { theme: 'nice' } );
-
-			model.change( writer => {
-				writer.insert( [ modelParagraph, modelDiv ], modelRootStart );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="nice fix-content">foobar</p><div class="nice"></div></div>' );
-
-			model.change( writer => {
-				writer.setAttribute( 'theme', 'awesome', modelParagraph );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="awesome fix-content">foobar</p><div class="nice"></div></div>' );
-
-			model.change( writer => {
-				writer.removeAttribute( 'theme', modelParagraph );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p><div class="nice"></div></div>' );
 		} );
 
 		it( 'should be possible to override setAttribute', () => {
@@ -1316,8 +1286,11 @@ describe( 'DowncastHelpers', () => {
 
 			downcastHelpers.markerToData( {
 				model: 'group',
-				view: markerName => {
+				view: ( markerName, conversionApi ) => {
 					const namePart = markerName.split( ':' )[ 1 ];
+
+					// To ensure conversion API is provided.
+					expect( conversionApi.writer ).to.instanceof( DowncastWriter );
 
 					return {
 						group: 'g',
@@ -1510,8 +1483,11 @@ describe( 'DowncastHelpers', () => {
 		it( 'config.view is a function', () => {
 			downcastHelpers.markerToHighlight( {
 				model: 'comment',
-				view: data => {
+				view: ( data, conversionApi ) => {
 					const commentType = data.markerName.split( ':' )[ 1 ];
+
+					// To ensure conversion API is provided.
+					expect( conversionApi.writer ).to.instanceof( DowncastWriter );
 
 					return {
 						classes: [ 'comment', 'comment-' + commentType ]

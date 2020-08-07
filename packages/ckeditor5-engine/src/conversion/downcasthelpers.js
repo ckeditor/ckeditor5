@@ -1055,8 +1055,8 @@ function removeMarkerData( viewCreator ) {
 // @returns {Function} Set/change attribute converter.
 function changeAttribute( attributeCreator ) {
 	return ( evt, data, conversionApi ) => {
-		const oldAttribute = attributeCreator( data.attributeOldValue, data );
-		const newAttribute = attributeCreator( data.attributeNewValue, data );
+		const oldAttribute = attributeCreator( data.attributeOldValue, conversionApi );
+		const newAttribute = attributeCreator( data.attributeNewValue, conversionApi );
 
 		if ( !oldAttribute && !newAttribute ) {
 			return;

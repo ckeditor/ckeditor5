@@ -702,7 +702,7 @@ function upcastAttributeToMarker( config ) {
 
 		function addMarkerElements( position, markerViewNames ) {
 			for ( const markerViewName of markerViewNames ) {
-				const markerName = config.model( markerViewName );
+				const markerName = config.model( markerViewName, conversionApi );
 				const element = conversionApi.writer.createElement( '$marker', { 'data-name': markerName } );
 
 				conversionApi.writer.insert( element, position );
@@ -945,10 +945,10 @@ function setAttributeOn( modelRange, modelAttribute, shallow, conversionApi ) {
 function normalizeElementToMarkerConfig( config ) {
 	const oldModel = config.model;
 
-	config.model = ( viewElement, { writer } ) => {
-		const markerName = typeof oldModel == 'string' ? oldModel : oldModel( viewElement );
+	config.model = ( viewElement, conversionApi ) => {
+		const markerName = typeof oldModel == 'string' ? oldModel : oldModel( viewElement, conversionApi );
 
-		return writer.createElement( '$marker', { 'data-name': markerName } );
+		return conversionApi.writer.createElement( '$marker', { 'data-name': markerName } );
 	};
 }
 
@@ -962,11 +962,11 @@ function normalizeDataToMarkerConfig( config, type ) {
 	// Upcast <markerGroup-start> and <markerGroup-end> elements.
 	configForElements.view = config.view + '-' + type;
 
-	configForElements.model = ( viewElement, { writer } ) => {
+	configForElements.model = ( viewElement, conversionApi ) => {
 		const viewName = viewElement.getAttribute( 'name' );
-		const markerName = config.model( viewName );
+		const markerName = config.model( viewName, conversionApi );
 
-		return writer.createElement( '$marker', { 'data-name': markerName } );
+		return conversionApi.writer.createElement( '$marker', { 'data-name': markerName } );
 	};
 
 	return configForElements;
