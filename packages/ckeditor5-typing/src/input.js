@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import InputCommand from './inputcommand';
+import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
 import injectUnsafeKeystrokesHandling from './utils/injectunsafekeystrokeshandling';
 import injectTypingMutationsHandling from './utils/injecttypingmutationshandling';
@@ -85,11 +86,18 @@ export default class Input extends Plugin {
 			}
 
 			function inputIntoTargetRange() {
-				// !!! TODO !!!
-				// This is totally broken when a widget is selected because the target range
-				// is anchored in the fake selection handler and the mapping does not make sense.
-				const viewRange = editingView.domConverter.domRangeToView( targetRange );
-				const modelRange = editor.editing.mapper.toModelRange( viewRange );
+				let modelRange;
+
+				// There's no way to map the targetRange anchored in the DOM fake selection container to a view range.
+				// Fake selection container is not a view element. But, at the same time, if the selection is fake,
+				// it means that some object is selected and the input range should simply surround it.
+				if ( editingView.document.selection.isFake ) {
+					modelRange = editor.model.document.selection.getFirstRange();
+				} else {
+					const viewRangeFromTargetRange = editingView.domConverter.domRangeToView( targetRange );
+
+					modelRange = editor.editing.mapper.toModelRange( viewRangeFromTargetRange );
+				}
 
 				editor.execute( 'input', {
 					text: textData,
