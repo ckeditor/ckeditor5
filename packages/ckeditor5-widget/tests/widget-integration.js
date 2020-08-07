@@ -68,27 +68,27 @@ describe( 'Widget - integration', () => {
 					.elementToElement( { model: 'image', view: 'img' } )
 					.elementToElement( {
 						model: 'widget',
-						view: ( modelItem, viewWriter ) => {
-							const div = viewWriter.createContainerElement( 'div' );
+						view: ( modelItem, { writer } ) => {
+							const div = writer.createContainerElement( 'div' );
 
-							return toWidget( div, viewWriter, { label: 'element label' } );
+							return toWidget( div, writer, { label: 'element label' } );
 						}
 					} )
 					.elementToElement( {
 						model: 'inline-widget',
-						view: ( modelItem, viewWriter ) => {
-							const span = viewWriter.createContainerElement( 'span' );
+						view: ( modelItem, { writer } ) => {
+							const span = writer.createContainerElement( 'span' );
 
-							return toWidget( span, viewWriter );
+							return toWidget( span, writer );
 						}
 					} )
 					.elementToElement( {
 						model: 'nested',
-						view: ( modelItem, viewWriter ) => viewWriter.createEditableElement( 'figcaption', { contenteditable: true } )
+						view: ( modelItem, { writer } ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
 					} )
 					.elementToElement( {
 						model: 'editable',
-						view: ( modelItem, viewWriter ) => viewWriter.createEditableElement( 'figcaption', { contenteditable: true } )
+						view: ( modelItem, { writer } ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
 					} );
 			} );
 	} );

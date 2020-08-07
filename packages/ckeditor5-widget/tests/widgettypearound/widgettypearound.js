@@ -1600,20 +1600,20 @@ describe( 'WidgetTypeAround', () => {
 		editor.conversion.for( 'downcast' )
 			.elementToElement( {
 				model: 'blockWidget',
-				view: ( modelItem, viewWriter ) => {
-					const container = viewWriter.createContainerElement( 'div' );
-					const viewText = viewWriter.createText( 'block-widget' );
+				view: ( modelItem, { writer } ) => {
+					const container = writer.createContainerElement( 'div' );
+					const viewText = writer.createText( 'block-widget' );
 
-					viewWriter.insert( viewWriter.createPositionAt( container, 0 ), viewText );
+					writer.insert( writer.createPositionAt( container, 0 ), viewText );
 
-					return toWidget( container, viewWriter, {
+					return toWidget( container, writer, {
 						label: 'block widget'
 					} );
 				}
 			} )
 			.elementToElement( {
 				model: 'nested',
-				view: ( modelItem, viewWriter ) => viewWriter.createEditableElement( 'nested', { contenteditable: true } )
+				view: ( modelItem, { writer } ) => writer.createEditableElement( 'nested', { contenteditable: true } )
 			} );
 	}
 
@@ -1627,13 +1627,13 @@ describe( 'WidgetTypeAround', () => {
 		editor.conversion.for( 'downcast' )
 			.elementToElement( {
 				model: 'inlineWidget',
-				view: ( modelItem, viewWriter ) => {
-					const container = viewWriter.createContainerElement( 'inlineWidget' );
-					const viewText = viewWriter.createText( 'inline-widget' );
+				view: ( modelItem, { writer } ) => {
+					const container = writer.createContainerElement( 'inlineWidget' );
+					const viewText = writer.createText( 'inline-widget' );
 
-					viewWriter.insert( viewWriter.createPositionAt( container, 0 ), viewText );
+					writer.insert( writer.createPositionAt( container, 0 ), viewText );
 
-					return toWidget( container, viewWriter, {
+					return toWidget( container, writer, {
 						label: 'inline widget'
 					} );
 				}
