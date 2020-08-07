@@ -25,6 +25,7 @@ import deleteContent from './utils/deletecontent';
 import modifySelection from './utils/modifyselection';
 import getSelectedContent from './utils/getselectedcontent';
 import { injectSelectionPostFixer } from './utils/selection-post-fixer';
+import { autoParagraphEmptyRoots } from './utils/autoparagraphing';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees } = require( '../dev-utils/utils' );
@@ -123,7 +124,7 @@ export default class Model {
 		injectSelectionPostFixer( this );
 
 		// Post-fixer which takes care of adding empty paragraph elements to the empty roots.
-		this.document.registerPostFixer( writer => this._autoparagraphEmptyRoots( writer ) );
+		this.document.registerPostFixer( writer => autoParagraphEmptyRoots( writer ) );
 
 		// @if CK_DEBUG_ENGINE // this.on( 'applyOperation', () => {
 		// @if CK_DEBUG_ENGINE // 	dumpTrees( this.document, this.document.version );
@@ -806,35 +807,6 @@ export default class Model {
 	destroy() {
 		this.document.destroy();
 		this.stopListening();
-	}
-
-	/**
-	 * Fixes all empty roots.
-	 *
-	 * @protected
-	 * @param {module:engine/model/writer~Writer} writer The model writer.
-	 * @returns {Boolean} `true` if any change has been applied, `false` otherwise.
-	 */
-	_autoparagraphEmptyRoots( writer ) {
-		const { schema, document } = writer.model;
-
-		for ( const rootName of document.getRootNames() ) {
-			const root = document.getRoot( rootName );
-
-			if ( root.isEmpty && !schema.checkChild( root, '$text' ) ) {
-				// If paragraph element is allowed in the root, create paragraph element.
-				if ( schema.checkChild( root, 'paragraph' ) ) {
-					writer.insertElement( 'paragraph', root );
-
-					// Other roots will get fixed in the next post-fixer round. Those will be triggered
-					// in the same batch no matter if this method was triggered by the post-fixing or not
-					// (the above insertElement call will trigger the post-fixers).
-					return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 	/**
