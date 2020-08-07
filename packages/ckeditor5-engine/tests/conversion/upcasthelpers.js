@@ -969,7 +969,7 @@ describe( 'upcast-converters', () => {
 			expect( conversionResult.getChild( 0 ).data ).to.equal( 'foobar' );
 		} );
 
-		it( 'should wrap text with paragraph if it would allow conversion', () => {
+		it( 'should auto-paragraph a text if it is not allowed at the insertion position but would be inserted if auto-paragraphed', () => {
 			schema.addChildCheck( ( ctx, childDef ) => {
 				if ( childDef.name == '$text' && ctx.endsWith( '$root' ) ) {
 					return false;
