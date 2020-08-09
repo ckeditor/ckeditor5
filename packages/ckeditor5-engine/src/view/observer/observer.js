@@ -94,6 +94,12 @@ export default class Observer {
 	 * @returns {Boolean} Whether this event should be ignored by the observer.
 	 */
 	checkShouldIgnoreEvent( domEvt ) {
+		// The event's target could be the document itself and possibly other objects (that implement the native EventTarget interface).
+		// The data-cke-ignore-events attribute can only be used on elements, so skip other objects.
+		if ( domEvt.target.nodeType !== 1 ) {
+			return false;
+		}
+
 		return domEvt.target.matches( '[data-cke-ignore-events], [data-cke-ignore-events] *' );
 	}
 
