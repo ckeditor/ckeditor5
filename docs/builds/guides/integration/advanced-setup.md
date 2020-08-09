@@ -13,8 +13,8 @@ In this guide, we would like to show you ways to closer integrate CKEditor 5 wit
 
 In order to start developing CKEditor 5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 6.9.0+
-* npm 4+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
+* [Node.js](https://nodejs.org/en/) 12.0.0+
+* npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 * [Git](https://git-scm.com/)
 
 ## Bundler
@@ -66,7 +66,7 @@ This scenario allows you to fully control the building process of CKEditor. This
 	Similar results to what this method allows can be achieved by {@link builds/guides/development/custom-builds customizing an existing build} and integrating your custom build like in scenario 1. This will give faster build times (since CKEditor will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository into your project (e.g. by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
 </info-box>
 
-First of all, you need to install source packages that you will use. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5-build-classic/tree/master/package.json)). At this moment you can choose the editor creator and the features you want.
+First of all, you need to install source packages that you will use. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json)). At this moment you can choose the editor creator and the features you want.
 
 Copy these dependencies to your `package.json` and call `npm install` to install them. The `dependencies` (or `devDependencies`) section of `package.json` should look more or less like this:
 
@@ -376,7 +376,7 @@ Webpack 4 introduced the [concept of modes](https://webpack.js.org/concepts/mode
 
 <info-box>
 	Prior to version 1.2.7 `uglifyjs-webpack-plugin` had a bug which caused webpack to crash with the following error: `TypeError: Assignment to constant variable.`. If you experienced this error, make sure that your `node_modules` contains an up-to-date version of this package (and that webpack uses this version).
-	
+
 	CKEditor 5 Builds use [`Terser`](https://github.com/terser/terser) instead of `uglifyjs-webpack-plugin` because [the later one seems to be unsupported anymore](https://github.com/ckeditor/ckeditor5/issues/1353).
 </info-box>
 
@@ -513,11 +513,11 @@ If you want to load two different editors on one page you need to make sure that
 
 There is no limit for how many editor classes a single build can export. By default, the official builds export a single editor class only. However, they can easily import more.
 
-You can start from forking (or copying) an existing build like in the {@link builds/guides/development/custom-builds "Creating custom builds"} guide. Let's say you forked and cloned the [`ckeditor5-build-classic`](http://github.com/ckeditor/ckeditor5-build-classic) repository and want to add {@link module:editor-inline/inlineeditor~InlineEditor} to it:
+You can start from forking (or copying) an existing build like in the {@link builds/guides/development/custom-builds "Creating custom builds"} guide. Let's say you forked and cloned the [`ckeditor5`](http://github.com/ckeditor/ckeditor5) repository and want to add {@link module:editor-inline/inlineeditor~InlineEditor} to the classic build:
 
 ```bash
-git clone -b stable git@github.com:<your-username>/ckeditor5-build-classic.git
-cd ckeditor5-build-classic
+git clone -b stable git@github.com:<your-username>/ckeditor5.git
+cd ckeditor5/packages/ckeditor5-build-classic
 npm install
 ```
 

@@ -75,12 +75,6 @@ export function isMediaWidget( viewElement ) {
 export function createMediaFigureElement( writer, registry, url, options ) {
 	const figure = writer.createContainerElement( 'figure', { class: 'media' } );
 
-	// TODO: This is a hack. Without it, the figure in the data pipeline will contain &nbsp; because
-	// its only child is the UIElement (wrapper).
-	//
-	// Note: The hack is a copy&paste from widget utils; it makes the figure act like it's a widget.
-	figure.getFillerOffset = getFillerOffset;
-
 	writer.insert( writer.createPositionAt( figure, 0 ), registry.getMediaViewElement( writer, url, options ) );
 
 	return figure;
@@ -95,7 +89,7 @@ export function createMediaFigureElement( writer, registry, url, options ) {
 export function getSelectedMediaModelWidget( selection ) {
 	const selectedElement = selection.getSelectedElement();
 
-	if ( selectedElement && selectedElement.is( 'media' ) ) {
+	if ( selectedElement && selectedElement.is( 'element', 'media' ) ) {
 		return selectedElement;
 	}
 
@@ -122,8 +116,4 @@ export function insertMedia( model, url, insertPosition ) {
 
 		writer.setSelection( mediaElement, 'on' );
 	} );
-}
-
-function getFillerOffset() {
-	return null;
 }

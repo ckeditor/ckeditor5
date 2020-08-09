@@ -4284,9 +4284,7 @@ describe( 'ListEditing', () => {
 
 				// Use split to allowed parent logic to simulate a non-standard use of `modelCursor` after split.
 				const splitBlock = conversionApi.writer.createElement( 'splitBlock' );
-				const splitResult = conversionApi.splitToAllowedParent( splitBlock, data.modelCursor );
-
-				conversionApi.writer.insert( splitBlock, splitResult.position );
+				conversionApi.safeInsert( splitBlock, data.modelCursor );
 
 				data.modelRange = conversionApi.writer.createRangeOn( splitBlock );
 				data.modelCursor = conversionApi.writer.createPositionAfter( splitBlock );

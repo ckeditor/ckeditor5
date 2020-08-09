@@ -62,4 +62,24 @@ msgstr "上傳失敗"
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"
-msgstr ""
+msgstr "圖片工具"
+
+msgctxt "The label used for the dropdown in the image toolbar containing defined resize options"
+msgid "Resize image"
+msgstr "縮放圖片"
+
+msgctxt "The label used for the standalone resize options buttons in the image toolbar"
+msgid "Resize image to %0"
+msgstr "縮放圖片到 %0"
+
+msgctxt "The accessibility label of the standalone image resize reset option button in the image toolbar for the screen readers"
+msgid "Resize image to the original size"
+msgstr "縮放圖片到原始尺寸"
+
+msgctxt "Default label for the resize option that resets the size of the image."
+msgid "Original"
+msgstr "原始圖片"
+
+msgctxt "The accessibility label of the image resize dropdown list for the screen readers."
+msgid "Image resize list"
+msgstr "圖片縮放清單"

@@ -20,8 +20,8 @@ import linkIcon from '../theme/icons/link.svg';
 /**
  * The link image UI plugin.
  *
- * This plugin brings a `'linkImage'` button that can be displayed in the {@link module:image/imagetoolbar~ImageToolbar}
- * and used to wrap images in links.
+ * This plugin provides the `'linkImage'` button that can be displayed in the {@link module:image/imagetoolbar~ImageToolbar}.
+ * It can be used to wrap images in links.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -63,7 +63,7 @@ export default class LinkImageUI extends Plugin {
 	 *
 	 * Clicking this button shows a {@link module:link/linkui~LinkUI#_balloon} attached to the selection.
 	 * When an image is already linked, the view shows {@link module:link/linkui~LinkUI#actionsView} or
-	 * {@link module:link/linkui~LinkUI#formView} if it's not.
+	 * {@link module:link/linkui~LinkUI#formView} if it is not.
 	 *
 	 * @private
 	 */
@@ -116,5 +116,5 @@ function isImageLinked( element ) {
 		return false;
 	}
 
-	return element.getChild( 0 ).is( 'a' );
+	return element.getChild( 0 ).is( 'element', 'a' );
 }

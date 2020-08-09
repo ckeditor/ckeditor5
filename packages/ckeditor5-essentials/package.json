@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-essentials",
-  "version": "19.0.1",
+  "version": "21.0.0",
   "description": "Essential editing features for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -10,16 +10,16 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-clipboard": "^19.0.1",
-    "@ckeditor/ckeditor5-core": "^19.0.1",
-    "@ckeditor/ckeditor5-enter": "^19.0.1",
-    "@ckeditor/ckeditor5-select-all": "^19.0.1",
-    "@ckeditor/ckeditor5-typing": "^19.0.1",
-    "@ckeditor/ckeditor5-undo": "^19.0.1"
+    "@ckeditor/ckeditor5-clipboard": "^21.0.0",
+    "@ckeditor/ckeditor5-core": "^21.0.0",
+    "@ckeditor/ckeditor5-enter": "^21.0.0",
+    "@ckeditor/ckeditor5-select-all": "^21.0.0",
+    "@ckeditor/ckeditor5-typing": "^21.0.0",
+    "@ckeditor/ckeditor5-undo": "^21.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-editor-classic": "^19.0.1",
-    "@ckeditor/ckeditor5-paragraph": "^19.1.0"
+    "@ckeditor/ckeditor5-editor-classic": "^21.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^21.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

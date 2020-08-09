@@ -131,6 +131,36 @@ describe( 'Resizer', () => {
 			// Cleanup.
 			renderedElement.remove();
 		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/7633
+		it( 'should not cause changes in the view unless the host size actually changed', () => {
+			const resizerInstance = createResizer( {
+				getHandleHost: widgetWrapper => widgetWrapper
+			} );
+
+			resizerInstance.attach();
+			const renderedElement = resizerInstance._viewResizerWrapper.render( document );
+
+			document.body.appendChild( renderedElement );
+
+			const viewChangeSpy = sinon.spy( editor.editing.view, 'change' );
+
+			resizerInstance.redraw();
+			sinon.assert.calledOnce( viewChangeSpy );
+
+			resizerInstance.redraw();
+			sinon.assert.calledOnce( viewChangeSpy );
+
+			const host = resizerInstance._getHandleHost();
+
+			host.style.width = '123px';
+
+			resizerInstance.redraw();
+			sinon.assert.calledTwice( viewChangeSpy );
+
+			// Cleanup.
+			renderedElement.remove();
+		} );
 	} );
 
 	describe( '_proposeNewSize()', () => {

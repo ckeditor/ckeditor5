@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-autoformat",
-  "version": "19.0.1",
+  "version": "21.0.0",
   "description": "Autoformatting feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -10,20 +10,21 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^19.0.1",
-    "@ckeditor/ckeditor5-typing": "^19.0.1"
+    "@ckeditor/ckeditor5-core": "^21.0.0",
+    "@ckeditor/ckeditor5-typing": "^21.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^19.0.1",
-    "@ckeditor/ckeditor5-block-quote": "^19.0.1",
-    "@ckeditor/ckeditor5-code-block": "^19.0.1",
-    "@ckeditor/ckeditor5-editor-classic": "^19.0.1",
-    "@ckeditor/ckeditor5-engine": "^19.0.1",
-    "@ckeditor/ckeditor5-enter": "^19.0.1",
-    "@ckeditor/ckeditor5-heading": "^19.0.1",
-    "@ckeditor/ckeditor5-list": "^19.0.1",
-    "@ckeditor/ckeditor5-paragraph": "^19.1.0",
-    "@ckeditor/ckeditor5-undo": "^19.0.1"
+    "@ckeditor/ckeditor5-basic-styles": "^21.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^21.0.0",
+    "@ckeditor/ckeditor5-code-block": "^21.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^21.0.0",
+    "@ckeditor/ckeditor5-engine": "^21.0.0",
+    "@ckeditor/ckeditor5-enter": "^21.0.0",
+    "@ckeditor/ckeditor5-heading": "^21.0.0",
+    "@ckeditor/ckeditor5-list": "^21.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^21.0.0",
+    "@ckeditor/ckeditor5-undo": "^21.0.0",
+    "@ckeditor/ckeditor5-utils": "^21.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

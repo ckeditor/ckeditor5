@@ -312,8 +312,7 @@ export default class Node {
 	 *
 	 * By using this method it is also possible to check a name of an element:
 	 *
-	 *		imgElement.is( 'img' ); // -> true
-	 *		imgElement.is( 'element', 'img' ); // -> same as above
+	 *		imgElement.is( 'element', 'img' ); // -> true
 	 *		imgElement.is( 'view:element', 'img' ); // -> same as above, but more precise
 	 *
 	 * The list of view objects which implement the `is()` method:
@@ -335,7 +334,7 @@ export default class Node {
 	 * * {@link module:engine/view/uielement~UIElement#is `UIElement#is()`}
 	 *
 	 * @method #is
-	 * @param {String} type
+	 * @param {String} type Type to check.
 	 * @returns {Boolean}
 	 */
 	is( type ) {

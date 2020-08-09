@@ -112,7 +112,7 @@ function preventPartialMentionDowncast( dispatcher ) {
 	dispatcher.on( 'attribute:mention', ( evt, data, conversionApi ) => {
 		const mention = data.attributeNewValue;
 
-		if ( !data.item.is( 'textProxy' ) || !mention ) {
+		if ( !data.item.is( '$textProxy' ) || !mention ) {
 			return;
 		}
 
@@ -129,9 +129,9 @@ function preventPartialMentionDowncast( dispatcher ) {
 // Creates a mention element from the mention data.
 //
 // @param {Object} mention
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @returns {module:engine/view/attributeelement~AttributeElement}
-function createViewMentionElement( mention, viewWriter ) {
+function createViewMentionElement( mention, { writer } ) {
 	if ( !mention ) {
 		return;
 	}
@@ -146,7 +146,7 @@ function createViewMentionElement( mention, viewWriter ) {
 		priority: 20
 	};
 
-	return viewWriter.createAttributeElement( 'span', attributes, options );
+	return writer.createAttributeElement( 'span', attributes, options );
 }
 
 // Model post-fixer that disallows typing with selection when the selection is placed after the text node with the mention attribute or
@@ -174,7 +174,7 @@ function selectionMentionAttributePostFixer( writer, doc ) {
 // b) the position is at parents start - the selection will set attributes from node after.
 function shouldNotTypeWithMentionAt( position ) {
 	const isAtStart = position.isAtStart;
-	const isAfterAMention = position.nodeBefore && position.nodeBefore.is( 'text' );
+	const isAfterAMention = position.nodeBefore && position.nodeBefore.is( '$text' );
 
 	return isAfterAMention || isAtStart;
 }
@@ -263,7 +263,7 @@ function extendAttributeOnMentionPostFixer( writer, doc ) {
 // @param {module:engine/model/node~Node} node The node to check.
 // @returns {Boolean}
 function isBrokenMentionNode( node ) {
-	if ( !node || !( node.is( 'text' ) || node.is( 'textProxy' ) ) || !node.hasAttribute( 'mention' ) ) {
+	if ( !node || !( node.is( '$text' ) || node.is( '$textProxy' ) ) || !node.hasAttribute( 'mention' ) ) {
 		return false;
 	}
 

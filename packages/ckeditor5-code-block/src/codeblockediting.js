@@ -136,7 +136,7 @@ export default class CodeBlockEditing extends Plugin {
 		this.listenTo( editor.editing.view.document, 'clipboardInput', ( evt, data ) => {
 			const modelSelection = model.document.selection;
 
-			if ( !modelSelection.anchor.parent.is( 'codeBlock' ) ) {
+			if ( !modelSelection.anchor.parent.is( 'element', 'codeBlock' ) ) {
 				return;
 			}
 
@@ -156,7 +156,7 @@ export default class CodeBlockEditing extends Plugin {
 		this.listenTo( model, 'getSelectedContent', ( evt, [ selection ] ) => {
 			const anchor = selection.anchor;
 
-			if ( selection.isCollapsed || !anchor.parent.is( 'codeBlock' ) || !anchor.hasSameParentAs( selection.focus ) ) {
+			if ( selection.isCollapsed || !anchor.parent.is( 'element', 'codeBlock' ) || !anchor.hasSameParentAs( selection.focus ) ) {
 				return;
 			}
 
@@ -210,7 +210,7 @@ export default class CodeBlockEditing extends Plugin {
 		this.listenTo( editor.editing.view.document, 'enter', ( evt, data ) => {
 			const positionParent = editor.model.document.selection.getLastPosition().parent;
 
-			if ( !positionParent.is( 'codeBlock' ) ) {
+			if ( !positionParent.is( 'element', 'codeBlock' ) ) {
 				return;
 			}
 
@@ -248,7 +248,7 @@ function breakLineOnEnter( editor ) {
 	let leadingWhiteSpaces;
 
 	// Figure out the indentation (white space chars) at the beginning of the line.
-	if ( node && node.is( 'text' ) ) {
+	if ( node && node.is( '$text' ) ) {
 		leadingWhiteSpaces = getLeadingWhiteSpaces( node );
 	}
 
@@ -287,7 +287,7 @@ function leaveBlockStartOnEnter( editor, isSoftEnter ) {
 		return false;
 	}
 
-	if ( !nodeAfter || !nodeAfter.is( 'softBreak' ) ) {
+	if ( !nodeAfter || !nodeAfter.is( 'element', 'softBreak' ) ) {
 		return false;
 	}
 
@@ -350,7 +350,7 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 	//
 	//		<codeBlock>foo[<softBreak></softBreak>]</codeBlock>
 	//
-	if ( nodeBefore.is( 'softBreak' ) ) {
+	if ( nodeBefore.is( 'element', 'softBreak' ) ) {
 		emptyLineRangeToRemoveOnEnter = model.createRangeOn( nodeBefore );
 	}
 
@@ -367,10 +367,10 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 	//		<codeBlock>foo[<softBreak></softBreak>    ]</codeBlock>
 	//
 	else if (
-		nodeBefore.is( 'text' ) &&
+		nodeBefore.is( '$text' ) &&
 		!nodeBefore.data.match( /\S/ ) &&
 		nodeBefore.previousSibling &&
-		nodeBefore.previousSibling.is( 'softBreak' )
+		nodeBefore.previousSibling.is( 'element', 'softBreak' )
 	) {
 		emptyLineRangeToRemoveOnEnter = model.createRange(
 			model.createPositionBefore( nodeBefore.previousSibling ), model.createPositionAfter( nodeBefore )

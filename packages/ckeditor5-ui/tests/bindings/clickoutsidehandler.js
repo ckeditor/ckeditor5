@@ -13,6 +13,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'clickOutsideHandler', () => {
 	let activator, actionSpy, contextElement1, contextElement2;
+	let shadowRootContainer, shadowContextElement1, shadowContextElement2;
 
 	testUtils.createSinonSandbox();
 
@@ -20,15 +21,22 @@ describe( 'clickOutsideHandler', () => {
 		activator = testUtils.sinon.stub().returns( false );
 		contextElement1 = document.createElement( 'div' );
 		contextElement2 = document.createElement( 'div' );
+		shadowRootContainer = document.createElement( 'div' );
+		shadowRootContainer.attachShadow( { mode: 'open' } );
+		shadowContextElement1 = document.createElement( 'div' );
+		shadowContextElement2 = document.createElement( 'div' );
 		actionSpy = testUtils.sinon.spy();
 
 		document.body.appendChild( contextElement1 );
 		document.body.appendChild( contextElement2 );
+		shadowRootContainer.shadowRoot.appendChild( shadowContextElement1 );
+		shadowRootContainer.shadowRoot.appendChild( shadowContextElement2 );
+		document.body.appendChild( shadowRootContainer );
 
 		clickOutsideHandler( {
 			emitter: Object.create( DomEmitterMixin ),
 			activator,
-			contextElements: [ contextElement1, contextElement2 ],
+			contextElements: [ contextElement1, contextElement2, shadowContextElement1, shadowContextElement2 ],
 			callback: actionSpy
 		} );
 	} );
@@ -36,6 +44,7 @@ describe( 'clickOutsideHandler', () => {
 	afterEach( () => {
 		document.body.removeChild( contextElement1 );
 		document.body.removeChild( contextElement2 );
+		document.body.removeChild( shadowRootContainer );
 	} );
 
 	it( 'should execute upon #mousedown outside of the contextElements (activator is active)', () => {
@@ -46,10 +55,48 @@ describe( 'clickOutsideHandler', () => {
 		sinon.assert.calledOnce( actionSpy );
 	} );
 
+	it( 'should execute upon #mousedown outside of the contextElements (activator is active, unsupported shadow DOM)', () => {
+		activator.returns( true );
+
+		const event = new Event( 'mousedown', { bubbles: true } );
+		event.composedPath = undefined;
+
+		document.body.dispatchEvent( event );
+
+		sinon.assert.calledOnce( actionSpy );
+	} );
+
+	it( 'should execute upon #mousedown in the shadow root but outside the contextElements (activator is active)', () => {
+		activator.returns( true );
+
+		shadowRootContainer.shadowRoot.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+
+		sinon.assert.notCalled( actionSpy );
+	} );
+
 	it( 'should not execute upon #mousedown outside of the contextElements (activator is inactive)', () => {
 		activator.returns( false );
 
 		document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+
+		sinon.assert.notCalled( actionSpy );
+	} );
+
+	it( 'should not execute upon #mousedown outside of the contextElements (activator is inactive, unsupported shadow DOM)', () => {
+		activator.returns( false );
+
+		const event = new Event( 'mousedown', { bubbles: true } );
+		event.composedPath = undefined;
+
+		document.body.dispatchEvent( event );
+
+		sinon.assert.notCalled( actionSpy );
+	} );
+
+	it( 'should not execute upon #mousedown in the shadow root but outside of the contextElements (activator is inactive)', () => {
+		activator.returns( false );
+
+		shadowRootContainer.shadowRoot.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 		sinon.assert.notCalled( actionSpy );
 	} );
@@ -62,6 +109,12 @@ describe( 'clickOutsideHandler', () => {
 
 		contextElement2.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 		sinon.assert.notCalled( actionSpy );
+
+		shadowContextElement1.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+		sinon.assert.notCalled( actionSpy );
+
+		shadowContextElement2.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+		sinon.assert.notCalled( actionSpy );
 	} );
 
 	it( 'should not execute upon #mousedown from one of the contextElements (activator is inactive)', () => {
@@ -71,6 +124,12 @@ describe( 'clickOutsideHandler', () => {
 		sinon.assert.notCalled( actionSpy );
 
 		contextElement2.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+		sinon.assert.notCalled( actionSpy );
+
+		shadowContextElement1.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+		sinon.assert.notCalled( actionSpy );
+
+		shadowContextElement2.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 		sinon.assert.notCalled( actionSpy );
 	} );
 
@@ -135,6 +194,26 @@ describe( 'clickOutsideHandler', () => {
 		activator.returns( true );
 
 		contextElement2.appendChild( target );
+		target.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+
+		sinon.assert.notCalled( actionSpy );
+	} );
+
+	it( 'should not execute if one of contextElements in the shadow root contains the DOM event target', () => {
+		const target = document.createElement( 'div' );
+		activator.returns( true );
+
+		shadowContextElement1.appendChild( target );
+		target.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+
+		sinon.assert.notCalled( actionSpy );
+	} );
+
+	it( 'should not execute if one of contextElements in the shadow root is the DOM event target', () => {
+		const target = document.createElement( 'div' );
+		activator.returns( true );
+
+		shadowRootContainer.shadowRoot.appendChild( target );
 		target.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 		sinon.assert.notCalled( actionSpy );

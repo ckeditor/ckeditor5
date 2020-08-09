@@ -29,22 +29,29 @@ Some of the reasons for creating custom builds are:
 
 In order to start developing CKEditor 5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 6.9.0+
-* npm 4+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
+* [Node.js](https://nodejs.org/en/) 12.0.0+
+* npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 * [Git](https://git-scm.com/)
 
 ## Forking an existing build
 
-Start with [forking](https://help.github.com/articles/fork-a-repo/) one of the official builds (it will serve as the starting point for your custom one) and then clone your fork:
+Start with [forking](https://help.github.com/articles/fork-a-repo/) [the main `ckeditor5` repository](https://github.com/ckeditor/ckeditor5) (it will serve as the starting point for your customizations) and then clone your fork:
 
 ```bash
-git clone -b stable git@github.com:<your-username>/ckeditor5-build-classic.git
+git clone -b stable git@github.com:<your-username>/ckeditor5.git
+```
+
+Builds are available in the `packages/` directory. The directories are named `ckeditor5-build-*`.
+For example, use the following command to get to the classic build:
+
+```bash
+cd packages/ckeditor5-build-classic
 ```
 
 To make updating easier you may optionally add the original build repository to your Git remotes:
 
 ```bash
-git remote add upstream https://github.com/ckeditor/ckeditor5-build-classic.git
+git remote add upstream https://github.com/ckeditor/ckeditor5.git
 ```
 
 <info-box hint>

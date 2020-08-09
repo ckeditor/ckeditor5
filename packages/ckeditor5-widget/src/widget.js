@@ -19,6 +19,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../theme/widget.css';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+import verticalNavigationHandler from './verticalnavigation';
 
 /**
  * The widget plugin. It enables base support for widgets.
@@ -119,6 +120,8 @@ export default class Widget extends Plugin {
 			this._preventDefaultOnArrowKeyPress( ...args );
 		}, { priority: priorities.get( 'high' ) - 20 } );
 
+		this.listenTo( viewDocument, 'keydown', verticalNavigationHandler( this.editor.editing ) );
+
 		// Handle custom delete behaviour.
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
 			if ( this._handleDelete( data.direction == 'forward' ) ) {
@@ -146,12 +149,15 @@ export default class Widget extends Plugin {
 			// But at least triple click inside nested editable causes broken selection in Safari.
 			// For such event, we select the entire nested editable element.
 			// See: https://github.com/ckeditor/ckeditor5/issues/1463.
-			if ( env.isSafari && domEventData.domEvent.detail >= 3 ) {
+			if ( ( env.isSafari || env.isGecko ) && domEventData.domEvent.detail >= 3 ) {
 				const mapper = editor.editing.mapper;
-				const modelElement = mapper.toModelElement( element );
+				const viewElement = element.is( 'attributeElement' ) ?
+					element.findAncestor( element => !element.is( 'attributeElement' ) ) : element;
+				const modelElement = mapper.toModelElement( viewElement );
+
+				domEventData.preventDefault();
 
 				this.editor.model.change( writer => {
-					domEventData.preventDefault();
 					writer.setSelection( modelElement, 'in' );
 				} );
 			}

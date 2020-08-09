@@ -716,7 +716,7 @@ function hasExistingMention( position ) {
 
 	const nodeBefore = position.nodeBefore;
 
-	return hasMention || nodeBefore && nodeBefore.is( 'text' ) && nodeBefore.hasAttribute( 'mention' );
+	return hasMention || nodeBefore && nodeBefore.is( '$text' ) && nodeBefore.hasAttribute( 'mention' );
 }
 
 // Checks if string is a valid mention marker.

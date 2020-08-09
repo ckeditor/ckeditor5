@@ -21,8 +21,8 @@ In this guide you can learn how to add plugins to your editor in the two most co
 
 In order to start developing CKEditor 5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 6.9.0+
-* npm 4+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
+* [Node.js](https://nodejs.org/en/) 12.0.0+
+* npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 
 ## Adding a plugin to a build
 
@@ -34,8 +34,9 @@ Adding plugins to existing builds is done through their customization. Editor bu
 4. Bundle the build.
 
 ```bash
-git clone -b stable https://github.com/ckeditor/ckeditor5-build-classic.git
-cd ckeditor5-build-classic
+git clone -b stable https://github.com/ckeditor/ckeditor5
+
+cd ckeditor5/packages/ckeditor5-build-classic
 npm install
 ```
 

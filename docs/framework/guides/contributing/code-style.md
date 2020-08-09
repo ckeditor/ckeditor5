@@ -510,6 +510,19 @@ There are some special rules and tips for tests.
 
 	Think about this &mdash; when you fix a bug by adding a parameter to an existing function call you do not affect code coverage (that line was called anyway). However, you had a bug, meaning that your test suite did not cover it. Therefore, a test must be created for that code change.
 * It should be `expect( x ).to.equal( y )`. **NOT**: ~~`expect( x ).to.be.equal( y )`~~.
+* When using Sinon spies, pay attention to the readability of assertions and failure messages.
+   * Use named spies, for example:
+
+		```js
+		const someCallbackSpy = sinon.spy().named( 'someCallback' );
+		const myMethodSpy = sinon.spy( obj, 'myMethod' );
+		```
+   * Use [sinon-chai assertions](https://www.chaijs.com/plugins/sinon-chai/)
+
+		```js
+		expect( myMethodSpy ).to.be.calledOnce 
+		// expected myMethod to be called once but was called twice
+		```
 
 ## Naming
 

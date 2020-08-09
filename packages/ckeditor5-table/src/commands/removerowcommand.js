@@ -10,7 +10,6 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import { getRowIndexes, getSelectionAffectedTableCells } from '../utils/selection';
-import { findAncestor } from '../utils/common';
 
 /**
  * The remove row command.
@@ -32,7 +31,7 @@ export default class RemoveRowCommand extends Command {
 		const firstCell = selectedCells[ 0 ];
 
 		if ( firstCell ) {
-			const table = findAncestor( 'table', firstCell );
+			const table = firstCell.findAncestor( 'table' );
 			const tableRowCount = this.editor.plugins.get( 'TableUtils' ).getRows( table );
 			const lastRowIndex = tableRowCount - 1;
 
@@ -56,27 +55,18 @@ export default class RemoveRowCommand extends Command {
 		const removedRowIndexes = getRowIndexes( referenceCells );
 
 		const firstCell = referenceCells[ 0 ];
-		const table = findAncestor( 'table', firstCell );
+		const table = firstCell.findAncestor( 'table' );
 
 		const columnIndexToFocus = this.editor.plugins.get( 'TableUtils' ).getCellLocation( firstCell ).column;
 
-		// Use single batch to modify table in steps but in one undo step.
-		const batch = model.createBatch();
-
-		model.enqueueChange( batch, writer => {
-			// This prevents the "model-selection-range-intersects" error, caused by removing row selected cells.
-			writer.setSelection( writer.createSelection( table, 'on' ) );
-
+		model.change( writer => {
 			const rowsToRemove = removedRowIndexes.last - removedRowIndexes.first + 1;
 
 			this.editor.plugins.get( 'TableUtils' ).removeRows( table, {
 				at: removedRowIndexes.first,
-				rows: rowsToRemove,
-				batch
+				rows: rowsToRemove
 			} );
-		} );
 
-		model.enqueueChange( batch, writer => {
 			const cellToFocus = getCellToFocus( table, removedRowIndexes.first, columnIndexToFocus );
 
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );

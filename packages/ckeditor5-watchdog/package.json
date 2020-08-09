@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-watchdog",
-  "version": "19.0.1",
+  "version": "21.0.0",
   "description": "A watchdog feature for CKEditor 5 editors. It keeps a CKEditor 5 editor instance running.",
   "keywords": [
     "ckeditor",
@@ -12,11 +12,11 @@
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-core": "^19.0.1",
-    "@ckeditor/ckeditor5-editor-classic": "^19.0.1",
-    "@ckeditor/ckeditor5-engine": "^19.0.1",
-    "@ckeditor/ckeditor5-paragraph": "^19.1.0",
-    "@ckeditor/ckeditor5-utils": "^19.0.1"
+    "@ckeditor/ckeditor5-core": "^21.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^21.0.0",
+    "@ckeditor/ckeditor5-engine": "^21.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^21.0.0",
+    "@ckeditor/ckeditor5-utils": "^21.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

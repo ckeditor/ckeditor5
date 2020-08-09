@@ -90,7 +90,7 @@ They allow for "stringifying" the {@link framework/guides/architecture/editing-e
 	Both tools are designed for prototyping, debugging, and testing purposes. Do not use them in production-grade code.
 </info-box>
 
-For instance, to take a peek at the editor model, you could use the {@link module:engine/dev-utils/model#static-function-getData `getData()`} helper:
+For instance, to take a peek at the editor model, you could use the {@link module:engine/dev-utils/model~getData `getData()`} helper:
 
 ```js
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';

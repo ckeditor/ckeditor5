@@ -14,7 +14,7 @@
  * @returns {String} Plain text representing the model's data.
  */
 export function modelElementToPlainText( element ) {
-	if ( element.is( 'text' ) || element.is( 'textProxy' ) ) {
+	if ( element.is( '$text' ) || element.is( '$textProxy' ) ) {
 		return element.data;
 	}
 

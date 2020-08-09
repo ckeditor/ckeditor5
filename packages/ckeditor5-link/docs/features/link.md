@@ -7,6 +7,8 @@ category: features
 
 The {@link module:link/link~Link} feature brings support for link editing to the rich-text editor. It allows for inserting hyperlinks into the edited content and offers the UI to create and edit them.
 
+After you enable the optional [autolink](#autolink-feature) plugin, typed or pasted URL and e-mail addresses will be automatically turned into working links as you type.
+
 ## Demo
 
 You can edit existing links by clicking them and using the balloon. Use the Link toolbar button or press <kbd>Ctrl/⌘</kbd>+<kbd>K</kbd> to create a new link.
@@ -147,11 +149,13 @@ ClassicEditor
 	.catch( ... );
 ```
 
-#### Adding default link protocol for the external links
+#### Adding default link protocol to external links
 
-Default link protocol can be usefull when user forget to type a full URL address to an external source, site etc. Sometimes copying the text, like for example `ckeditor.com` and converting it to a link may cause some issues. When you do this, the created link will direct you to `yourdomain.com/ckeditor.com`, because you forgot to pass the right protocol which makes the link relative to the site where it appears.
+A default link protocol can be useful when the user forgets to type the full URL address to an external source or website. Sometimes copying the text, like for example `ckeditor.com`, and converting it to a link may cause some issues. As a result, the created link will direct you to `yourdomain.com/ckeditor.com` because of the missing protocol. This makes the link relative to the site where it appears.
 
-Enabling the `{@link module:link/link~LinkConfig#defaultProtocol config.link.defaultProtocol}`, the {@link module:link/link~Link} feature will handle this issue for you. By default it doesn't fix the passed link value, but when you set `{@link module:link/link~LinkConfig#defaultProtocol config.link.defaultProtocol}` to — for example — `http://`, the plugin will add the given protocol to the every link that may need it (like `ckeditor.com`, `example.com` etc. where `[protocol://]example.com` is missing). Here's the basic configuration example:
+After you enable the {@link module:link/link~LinkConfig#defaultProtocol `config.link.defaultProtocol`} configuration option, the link feature will be able to handle this issue for you. By default it does not fix the passed link value, but when you set {@link module:link/link~LinkConfig#defaultProtocol `config.link.defaultProtocol`} to, for example, `http://`, the plugin will add the given protocol to every link that may need it (like `ckeditor.com`, `example.com`, etc. where `[protocol://]example.com` is missing).
+
+See a basic configuration example:
 
 ```js
 ClassicEditor
@@ -166,9 +170,9 @@ ClassicEditor
 ```
 
 <info-box>
-	Having `config.link.defaultProtocol` enabled you are still able to link things locally using `#` or `/`. Protocol won't be added to those links.
+	With the `config.link.defaultProtocol` option enabled, you are still able to link things locally using `#` or `/`. The protocol will not be added to these links.
 
-	Enabled feature also gives you an **email addresses auto-detection** feature. When you submit `hello@example.com`, the plugin will change it automatically to `mailto:hello@example.com`.
+	When enabled, this feature also provides the **email address auto-detection** feature. When you submit `hello@example.com` in your content, the plugin will automatically change it to `mailto:hello@example.com`.
 </info-box>
 
 #### Adding attributes to links based on pre–defined rules (automatic decorators)
@@ -236,10 +240,26 @@ ClassicEditor
 	.catch( ... );
 ```
 
+## Autolink feature
+
+You can enable automatic linking of URLs typed or pasted into the editor. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically turn URLs or e-mail addresses into real, working links.
+
+To use the autolink function simply press <kbd>Space</kbd>, <kbd>Enter</kbd> or <kbd>Shift</kbd>+<kbd>Enter</kbd> after a link.
+
+<info-box>
+	Autolink action can always be reverted by the undo feature (<kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd>).
+</info-box>
+
+{@snippet features/autolink}
+
+Unlike the base link feature, the autolink plugin is not available in any of the builds. Refer to the [Installation](#installation) section to learn how to enable it.
+
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom rich text editor.
+	This base link feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom rich text editor.
+
+	The autolink feature is not available in any of the builds and needs to be installed first. Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package:
@@ -248,14 +268,15 @@ To add this feature to your editor, install the [`@ckeditor/ckeditor5-link`](htt
 npm install --save @ckeditor/ckeditor5-link
 ```
 
-Then add the `Link` plugin to your plugin list:
+Then add the `Link` and `AutoLink` plugins to your plugin list:
 
 ```js
 import Link from '@ckeditor/ckeditor5-link/src/link';
+import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Link, ... ],
+		plugins: [ Link, AutoLink, ... ],
 		toolbar: [ 'link', ... ],
 	} )
 	.then( ... )
