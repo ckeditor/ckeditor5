@@ -9,6 +9,7 @@
 
 import { getFillerOffset } from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 
 /**
  * Creates a list item {@link module:engine/view/containerelement~ContainerElement}.
@@ -277,6 +278,54 @@ export function findNestedList( viewElement ) {
 	}
 
 	return null;
+}
+
+export function getSiblingNodes( fromOrBoundaries, direction ) {
+	const items = [];
+	const walkerOptions = {
+		ignoreElementEnd: true,
+		shallow: true,
+		direction
+	};
+	let parentElement;
+
+	if ( fromOrBoundaries.is( 'range' ) ) {
+		walkerOptions.boundaries = fromOrBoundaries;
+		parentElement = fromOrBoundaries.start.parent;
+	} else {
+		walkerOptions.startPosition = fromOrBoundaries;
+		parentElement = fromOrBoundaries.parent;
+	}
+
+	const nodes = [ ...new TreeWalker( walkerOptions ) ]
+		.filter( value => value.item.is( 'element' ) )
+		.map( value => value.item );
+
+	for ( const element of nodes ) {
+		if ( !element.is( 'element', 'listItem' ) ) {
+			break;
+		}
+
+		if ( element.getAttribute( 'listIndent' ) !== parentElement.getAttribute( 'listIndent' ) ) {
+			break;
+		}
+
+		if ( element.getAttribute( 'listType' ) !== parentElement.getAttribute( 'listType' ) ) {
+			break;
+		}
+
+		if ( element.getAttribute( 'listStyle' ) !== parentElement.getAttribute( 'listStyle' ) ) {
+			break;
+		}
+
+		if ( direction === 'backward' ) {
+			items.unshift( element );
+		} else {
+			items.push( element );
+		}
+	}
+
+	return items;
 }
 
 // Implementation of getFillerOffset for view list item element.
