@@ -90,17 +90,20 @@ export default class Observer {
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `DowncastWriter#createUIElement()`} to ignore events
 	 * fired within a UI that should be excluded from CKEditor 5's realms.
 	 *
-	 * @param {Event} domEvent The DOM event to check.
+	 * @param {Node} domTarget The DOM event target to check (usually an element, sometimes a text node and
+	 * potentially sometimes a document too).
 	 * @returns {Boolean} Whether this event should be ignored by the observer.
 	 */
-	checkShouldIgnoreEvent( domEvt ) {
-		// The event's target could be the document itself and possibly other objects (that implement the native EventTarget interface).
-		// The data-cke-ignore-events attribute can only be used on elements, so skip other objects.
-		if ( domEvt.target.nodeType !== 1 ) {
+	checkShouldIgnoreEventFromTarget( domTarget ) {
+		if ( domTarget.nodeType === 3 ) {
+			domTarget = domTarget.parentNode;
+		}
+
+		if ( !domTarget || domTarget.nodeType !== 1 ) {
 			return false;
 		}
 
-		return domEvt.target.matches( '[data-cke-ignore-events], [data-cke-ignore-events] *' );
+		return domTarget.matches( '[data-cke-ignore-events], [data-cke-ignore-events] *' );
 	}
 
 	/**

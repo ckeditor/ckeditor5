@@ -131,7 +131,9 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		if ( this.checkShouldIgnoreEvent( domEvent ) ) {
+		const domSelection = domDocument.defaultView.getSelection();
+
+		if ( this.checkShouldIgnoreEventFromTarget( domSelection.anchorNode ) ) {
 			return;
 		}
 
@@ -140,7 +142,6 @@ export default class SelectionObserver extends Observer {
 
 		// If there were mutations then the view will be re-rendered by the mutation observer and selection
 		// will be updated, so selections will equal and event will not be fired, as expected.
-		const domSelection = domDocument.defaultView.getSelection();
 		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 
 		// Do not convert selection change if the new view selection has no ranges in it.
