@@ -207,7 +207,8 @@ export default class DataController {
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
 	 * Element or document fragment whose content will be converted.
-	 * @param {Object} [options] Additional configuration passed to the conversion process.
+	 * @param {Object} [options] Additional configuration that will be available through
+	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi#options} during the conversion process.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Output view DocumentFragment.
 	 */
 	toView( modelElementOrFragment, options ) {
@@ -223,8 +224,11 @@ export default class DataController {
 
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
+		// Make additional options available during conversion process through conversionSpi.
+		this.downcastDispatcher.conversionApi.options = options;
+
 		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
-		this.downcastDispatcher.convertInsert( modelRange, viewWriter, options );
+		this.downcastDispatcher.convertInsert( modelRange, viewWriter );
 
 		if ( !modelElementOrFragment.is( 'documentFragment' ) ) {
 			// Then, if a document element is converted, convert markers.
@@ -232,9 +236,12 @@ export default class DataController {
 			const markers = _getMarkersRelativeToElement( modelElementOrFragment );
 
 			for ( const [ name, range ] of markers ) {
-				this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter, options );
+				this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter );
 			}
 		}
+
+		// Remove options from conversionApi.
+		delete this.downcastDispatcher.conversionApi.options;
 
 		return viewDocumentFragment;
 	}

@@ -564,11 +564,13 @@ describe( 'DataController', () => {
 
 			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
 
-			data.stringify( modelDocumentFragment );
-			expect( spy.lastCall.args[ 0 ] ).to.deep.equal( {} );
+			const options = { foo: 'bar' };
 
-			data.stringify( modelDocumentFragment, { foo: 'bar' } );
-			expect( spy.lastCall.args[ 0 ] ).to.deep.equal( { foo: 'bar' } );
+			data.stringify( modelDocumentFragment );
+			expect( spy.lastCall.args[ 0 ] ).to.not.equal( options );
+
+			data.stringify( modelDocumentFragment, options );
+			expect( spy.lastCall.args[ 0 ] ).to.equal( options );
 		} );
 	} );
 
@@ -684,19 +686,33 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should allow to provide additional options to the conversion process', () => {
+			const root = model.document.getRoot();
 			const spy = sinon.spy();
 
 			data.downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
 				spy( conversionApi.options );
 			}, { priority: 'high' } );
 
-			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
+			data.downcastDispatcher.on( 'addMarker:marker', ( evt, data, conversionApi ) => {
+				spy( conversionApi.options );
+			}, { priority: 'high' } );
 
-			data.toView( modelDocumentFragment );
-			expect( spy.lastCall.args[ 0 ] ).to.deep.equal( {} );
+			setData( model, '<paragraph>foo</paragraph>' );
 
-			data.toView( modelDocumentFragment, { foo: 'bar' } );
-			expect( spy.lastCall.args[ 0 ] ).to.deep.equal( { foo: 'bar' } );
+			model.change( writer => {
+				writer.addMarker( 'marker', {
+					range: model.createRange( model.createPositionFromPath( root, [ 0, 1 ] ) ),
+					usingOperation: false
+				} );
+			} );
+
+			const options = { foo: 'bar' };
+
+			data.toView( root, options );
+
+			sinon.assert.calledTwice( spy );
+			expect( spy.firstCall.args[ 0 ] ).to.equal( options );
+			expect( spy.lastCall.args[ 0 ] ).to.equal( options );
 		} );
 	} );
 

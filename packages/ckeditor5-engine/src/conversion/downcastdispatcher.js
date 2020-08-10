@@ -165,12 +165,10 @@ export default class DowncastDispatcher {
 	 * @fires attribute
 	 * @param {module:engine/model/range~Range} range The inserted range.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
-	 * @param {Object} [options={}] Additional, custom configuration passed to the converters through
 	 * {module:engine/conversion/downcastdispatcher~DowncastConversionApi conversion api}. Used only with `dataDowncast` group.
 	 */
-	convertInsert( range, writer, options = {} ) {
+	convertInsert( range, writer ) {
 		this.conversionApi.writer = writer;
-		this.conversionApi.options = options;
 
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
 		this.conversionApi.consumable = this._createInsertConsumable( range );
@@ -321,17 +319,15 @@ export default class DowncastDispatcher {
 	 * @param {String} markerName Marker name.
 	 * @param {module:engine/model/range~Range} markerRange Marker range.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
-	 * @param {Object} [options={}] Additional, custom configuration passed to the converters through
 	 * {module:engine/conversion/downcastdispatcher~DowncastConversionApi conversion api}. Used only with `dataDowncast` group.
 	 */
-	convertMarkerAdd( markerName, markerRange, writer, options = {} ) {
+	convertMarkerAdd( markerName, markerRange, writer ) {
 		// Do not convert if range is in graveyard or not in the document (e.g. in DocumentFragment).
 		if ( !markerRange.root.document || markerRange.root.rootName == '$graveyard' ) {
 			return;
 		}
 
 		this.conversionApi.writer = writer;
-		this.conversionApi.options = options;
 
 		// In markers' case, event name == consumable name.
 		const eventName = 'addMarker:' + markerName;
@@ -487,7 +483,6 @@ export default class DowncastDispatcher {
 	_clearConversionApi() {
 		delete this.conversionApi.writer;
 		delete this.conversionApi.consumable;
-		delete this.conversionApi.options;
 	}
 
 	/**
