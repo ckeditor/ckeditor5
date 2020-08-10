@@ -670,7 +670,7 @@ function shouldMarkerChangeBeConverted( modelPosition, marker, mapper ) {
  */
 
 /**
- * An object with an additional, custom configuration used during conversion process. Available only for `dataDowncast` group.
+ * An object with an additional configuration which can be used during conversion process. Available only for data downcast conversion.
  *
  * @member {Object} #options
  */
