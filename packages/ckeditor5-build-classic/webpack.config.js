@@ -6,6 +6,7 @@
 'use strict';
 
 /* eslint-env node */
+/* global window, document */
 
 const path = require( 'path' );
 const webpack = require( 'webpack' );
@@ -73,14 +74,16 @@ module.exports = {
 							attributes: {
 								'data-cke': true
 							},
+							// In order to support CKEditor running in a shadow root, save all of the style elements into an
+							// array so that they can be added to a shadow root by accessing the array. If the style elements
+							// were only added to the document head (the default behavior of style-loader), the styles would
+							// not get applied to an editor in a shadow root due to style encapsulation.
 							insert: function addToStyles( styleElement ) {
-								/* eslint-disable no-undef */ // TODO: figure out why window & document are undefined
-								if ( !window.stylesToInject ) {
-									window.stylesToInject = [];
+								if ( !window.ckeStylesToInject ) {
+									window.ckeStylesToInject = [];
 								}
-								window.stylesToInject.push( styleElement );
+								window.ckeStylesToInject.push( styleElement );
 								document.head.prepend( styleElement );
-								/* eslint-eanble no-undef */
 							}
 						}
 					},
