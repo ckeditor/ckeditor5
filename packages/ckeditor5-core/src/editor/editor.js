@@ -7,6 +7,8 @@
  * @module core/editor/editor
  */
 
+/* global document */
+
 import Context from '../context';
 import Config from '@ckeditor/ckeditor5-utils/src/config';
 import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
@@ -175,6 +177,8 @@ export default class Editor {
 		 */
 		this.data = new DataController( this.model, stylesProcessor );
 
+		const sourceElementRoot = config.sourceElementRoot ? config.sourceElementRoot : document;
+
 		/**
 		 * The {@link module:engine/controller/editingcontroller~EditingController editing controller}.
 		 * Controls user input and rendering the content for editing.
@@ -182,7 +186,6 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:engine/controller/editingcontroller~EditingController}
 		 */
-		const sourceElementRoot = config.sourceElementRoot ? config.sourceElementRoot : document; // eslint-disable-line no-undef
 		this.editing = new EditingController( this.model, stylesProcessor, sourceElementRoot );
 		this.editing.view.document.bind( 'isReadOnly' ).to( this );
 

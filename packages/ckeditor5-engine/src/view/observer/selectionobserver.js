@@ -7,7 +7,7 @@
  * @module engine/view/observer/selectionobserver
  */
 
-/* global setInterval, clearInterval */
+/* global setInterval, clearInterval, document */
 
 import Observer from './observer';
 import MutationObserver from './mutationobserver';
@@ -26,7 +26,7 @@ import { debounce } from 'lodash-es';
  * @extends module:engine/view/observer/observer~Observer
  */
 export default class SelectionObserver extends Observer {
-	constructor( view, sourceElementRoot = document ) { // eslint-disable-line no-undef
+	constructor( view, sourceElementRoot = document ) {
 		super( view );
 
 		/**
@@ -137,7 +137,6 @@ export default class SelectionObserver extends Observer {
 
 		// If there were mutations then the view will be re-rendered by the mutation observer and selection
 		// will be updated, so selections will equal and event will not be fired, as expected.
-		// const domSelection = domDocument.defaultView.getSelection();
 		let domSelection;
 		if ( this.sourceElementRoot === domDocument ) {
 			domSelection = domDocument.defaultView.getSelection();
