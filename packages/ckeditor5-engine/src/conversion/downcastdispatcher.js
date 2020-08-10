@@ -165,7 +165,6 @@ export default class DowncastDispatcher {
 	 * @fires attribute
 	 * @param {module:engine/model/range~Range} range The inserted range.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
-	 * {module:engine/conversion/downcastdispatcher~DowncastConversionApi conversion api}. Used only with `dataDowncast` group.
 	 */
 	convertInsert( range, writer ) {
 		this.conversionApi.writer = writer;
@@ -319,7 +318,6 @@ export default class DowncastDispatcher {
 	 * @param {String} markerName Marker name.
 	 * @param {module:engine/model/range~Range} markerRange Marker range.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
-	 * {module:engine/conversion/downcastdispatcher~DowncastConversionApi conversion api}. Used only with `dataDowncast` group.
 	 */
 	convertMarkerAdd( markerName, markerRange, writer ) {
 		// Do not convert if range is in graveyard or not in the document (e.g. in DocumentFragment).

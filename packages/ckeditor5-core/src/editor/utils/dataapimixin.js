@@ -71,11 +71,11 @@ export default DataApiMixin;
  * the right format for you.
  *
  * @method #getData
- * @param {Object} [options]
+ * @param {Object} [options] Additional configuration for the retrieved data. By default two optional
+ * properties: `rootName` and `trim` are provided. Other properties of this object are specified by various editor features.
  * @param {String} [options.rootName='main'] Root name.
  * @param {String} [options.trim='empty'] Whether returned data should be trimmed. This option is set to `'empty'` by default,
  * which means that whenever editor content is considered empty, an empty string is returned. To turn off trimming
  * use `'none'`. In such cases exact content will be returned (for example `'<p>&nbsp;</p>'` for an empty editor).
- * @param {Object} [options.conversionOptions] Additional, custom configuration passed to the conversion process.
  * @returns {String} Output data.
  */

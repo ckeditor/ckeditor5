@@ -147,7 +147,7 @@ export default class DataController {
 	 * formatted by the {@link #processor data processor}.
 	 *
 	 * @param {Object} [options] Additional configuration for the retrieved data. `DataController` provides two optional
-	 * properties: `root` and `trim`. Other properties of this object are specified by various editor features.
+	 * properties: `rootName` and `trim`. Other properties of this object are specified by various editor features.
 	 * @param {String} [options.rootName='main'] Root name.
 	 * @param {String} [options.trim='empty'] Whether returned data should be trimmed. This option is set to `empty` by default,
 	 * which means whenever editor content is considered empty, an empty string will be returned. To turn off trimming completely
@@ -224,7 +224,7 @@ export default class DataController {
 
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
-		// Make additional options available during conversion process through conversionSpi.
+		// Make additional options available during conversion process through `conversionApi`.
 		this.downcastDispatcher.conversionApi.options = options;
 
 		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
@@ -240,7 +240,7 @@ export default class DataController {
 			}
 		}
 
-		// Remove options from conversionApi.
+		// Clean `conversionApi`.
 		delete this.downcastDispatcher.conversionApi.options;
 
 		return viewDocumentFragment;
