@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ListEditing from './listediting';
+import ListStylesCommand from './liststylescommand';
 
 const DEFAULT_LIST_TYPE = 'default';
 
@@ -43,6 +44,15 @@ export default class ListStylesEditing extends Plugin {
 		model.schema.extend( 'listItem', {
 			allowAttributes: [ 'listStyle' ]
 		} );
+
+		editor.commands.add( 'listStyles', new ListStylesCommand( editor ) );
+
+		// Fix list attributes when modifying their nesting levels (the `listIndent` attribute).
+		this.listenTo( editor.commands.get( 'indentList' ), 'execute', fixListAfterIndentListCommand( editor ) );
+		this.listenTo( editor.commands.get( 'outdentList' ), 'execute', fixListAfterOutdentListCommand( editor ) );
+
+		// Register a post-fix that ensures that the `listStyle` attribute is specified in each `listItem` element.
+		model.document.registerPostFixer( fixListStyleAttributeOnListItemElements( editor ) );
 
 		// Disallow the `listStyle` attribute on to-do lists.
 		model.schema.addAttributeCheck( ( context, attributeName ) => {
@@ -156,4 +166,215 @@ function downcastListStyleAttribute() {
 			writer.removeStyle( 'list-style-type', element );
 		}
 	}
+}
+
+// When indenting list, nested list should clear its value for the `listStyle` attribute.
+//
+// ■ List item 1.
+// ■ List item 2.[]
+// ■ List item 3.
+// editor.execute( 'indentList' );
+//
+// ■ List item 1.
+//     ○ List item 2.[]
+// ■ List item 3.
+//
+// @private
+// @param {module:core/editor/editor~Editor} editor
+// @returns {Function}
+function fixListAfterIndentListCommand( editor ) {
+	return () => { // evt
+		return editor;
+		// This function must be re-written since it does not work correctly.
+		// const changedItems = evt.return;
+		// const previousSibling = changedItems[ 0 ].previousSibling;
+		//
+		// const indent = changedItems[ 0 ].getAttribute( 'listIndent' );
+		// let listItem = changedItems[ 0 ];
+		//
+		// console.log( 'looking for indent = ', indent );
+		// console.log( 'before do while' );
+		//
+		// // ■ List item 1.
+		// //     ⬤ List item 2.
+		// // ■ List item 3.[]
+		// // ■ List item 4.
+		// //
+		// // After indenting the list, `List item 3` should inherit the `listStyle` attribute from `List item 2`.
+		// //
+		// // ■ List item 1.
+		// //     ⬤ List item 2.
+		// //     ⬤ List item 3.[]
+		// // ■ List item 4.
+		//
+		// while ( listItem.getAttribute( 'listIndent' ) === indent ) {
+		// 	listItem = listItem.previousSibling;
+		//
+		// 	console.log( listItem.getChild( 0 )._data, 'indent = ', listItem.getAttribute( 'listIndent' ) );
+		// }
+		//
+		// console.log( 'after do while' );
+		// console.log( listItem, listItem.getChild( 0 )._data );
+		//
+		// const itemsToUpdate = changedItems.filter( item => {
+		// 	return item.getAttribute( 'listIndent' ) === previousSibling.getAttribute( 'listIndent' ) + 1;
+		// } );
+		//
+		// editor.model.change( writer => {
+		// 	for ( const item of itemsToUpdate ) {
+		// 		writer.setAttribute( 'listStyle', DEFAULT_LIST_TYPE, item );
+		// 	}
+		// } );
+	};
+}
+
+// When outdenting a list, a nested list should copy its value for the `listStyle` attribute
+// from the previous sibling list item including the same value for the `listIndent` value.
+//
+// ■ List item 1.
+//     ○ List item 2.[]
+// ■ List item 3.
+//
+// editor.execute( 'outdentList' );
+//
+// ■ List item 1.
+// ■ List item 2.[]
+// ■ List item 3.
+//
+// @private
+// @param {module:core/editor/editor~Editor} editor
+// @returns {Function}
+function fixListAfterOutdentListCommand( editor ) {
+	return evt => {
+		const changedItems = evt.return.reverse()
+			.filter( item => item.is( 'element', 'listItem' ) );
+
+		if ( !changedItems.length ) {
+			return;
+		}
+
+		const indent = changedItems[ 0 ].getAttribute( 'listIndent' );
+		let listItem = changedItems[ 0 ].previousSibling;
+
+		// ■ List item 1.
+		//     ○ List item 2.
+		//     ○ List item 3.[]
+		// ■ List item 4.
+		//
+		// After outdenting a list, `List item 3` should inherit the `listStyle` attribute from `List item 1`.
+		//
+		// ■ List item 1.
+		//     ○ List item 2.
+		// ■ List item 3.[]
+		// ■ List item 4.
+		if ( listItem.is( 'element', 'listItem' ) ) {
+			while ( listItem.getAttribute( 'listIndent' ) !== indent ) {
+				listItem = listItem.previousSibling;
+			}
+		} else {
+			listItem = null;
+		}
+
+		// Outdenting such a list should restore values based on `List item 4`.
+		// ■ List item 1.[]
+		//     ○ List item 2.
+		//     ○ List item 3.
+		// ■ List item 4.
+		if ( !listItem ) {
+			listItem = changedItems[ 0 ].nextSibling;
+
+			while ( changedItems.includes( listItem ) && listItem.getAttribute( 'listIndent' ) === indent ) {
+				listItem = listItem.nextSibling;
+			}
+		}
+
+		// And such a list should not modify anything.
+		// ■ List item 1.[]
+		//     ○ List item 2.
+		//     ○ List item 3.
+		// "The later if check."
+		if ( !listItem || !listItem.is( 'element', 'listItem' ) ) {
+			return;
+		}
+
+		editor.model.change( writer => {
+			const itemsToUpdate = changedItems.filter( item => item.getAttribute( 'listIndent' ) === indent );
+
+			for ( const item of itemsToUpdate ) {
+				writer.setAttribute( 'listStyle', listItem.getAttribute( 'listStyle' ), item );
+			}
+		} );
+	};
+}
+
+// Each `listItem` element must have specified the `listStyle` attribute.
+// This post-fixer checks whether inserted elements `listItem` elements should inherit the `listStyle` value from
+// their sibling nodes or should use the default value.
+//
+// Paragraph[]
+// ■ List item 1. // [listStyle="square", listType="bulleted"]
+// ■ List item 2. // ...
+// ■ List item 3. // ...
+//
+// editor.execute( 'bulletedList' )
+//
+// ■ Paragraph[]  // [listStyle="square", listType="bulleted"]
+// ■ List item 1. // [listStyle="square", listType="bulleted"]
+// ■ List item 2.
+// ■ List item 3.
+//
+// It also covers a such change:
+//
+// [Paragraph 1
+// Paragraph 2]
+// ■ List item 1. // [listStyle="square", listType="bulleted"]
+// ■ List item 2. // ...
+// ■ List item 3. // ...
+//
+// editor.execute( 'numberedList' )
+//
+// 1. [Paragraph 1 // [listStyle="default", listType="numbered"]
+// 2. Paragraph 2] // [listStyle="default", listType="numbered"]
+// ■ List item 1.  // [listStyle="square", listType="bulleted"]
+// ■ List item 2.  // ...
+// ■ List item 3.  // ...
+//
+// @private
+// @param {module:core/editor/editor~Editor} editor
+// @returns {Function}
+function fixListStyleAttributeOnListItemElements( editor ) {
+	return writer => {
+		let wasFixed = false;
+		const insertedListItems = [];
+
+		for ( const change of editor.model.document.differ.getChanges() ) {
+			if ( change.type == 'insert' && change.name == 'listItem' ) {
+				insertedListItems.push( change.position.nodeAfter );
+			}
+		}
+
+		if ( !insertedListItems.length ) {
+			return wasFixed;
+		}
+
+		const existingListItem = insertedListItems[ insertedListItems.length - 1 ].nextSibling;
+
+		if ( !existingListItem ) {
+			return wasFixed;
+		}
+
+		for ( const item of insertedListItems ) {
+			if ( !item.hasAttribute( 'listStyle' ) ) {
+				if ( existingListItem.getAttribute( 'listType' ) === item.getAttribute( 'listType' ) ) {
+					writer.setAttribute( 'listStyle', existingListItem.getAttribute( 'listStyle' ), item );
+				} else {
+					writer.setAttribute( 'listStyle', DEFAULT_LIST_TYPE, item );
+				}
+
+				wasFixed = true;
+			}
+		}
+
+		return wasFixed;
+	};
 }
