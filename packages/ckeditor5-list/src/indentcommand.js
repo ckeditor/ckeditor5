@@ -53,7 +53,7 @@ export default class IndentCommand extends Command {
 		const doc = model.document;
 		let itemsToChange = Array.from( doc.selection.getSelectedBlocks() );
 
-		model.change( writer => {
+		return model.change( writer => {
 			const lastItem = itemsToChange[ itemsToChange.length - 1 ];
 
 			// Indenting a list item should also indent all the items that are already sub-items of indented item.
@@ -90,6 +90,8 @@ export default class IndentCommand extends Command {
 					writer.setAttribute( 'listIndent', indent, item );
 				}
 			}
+
+			return itemsToChange;
 		} );
 	}
 
