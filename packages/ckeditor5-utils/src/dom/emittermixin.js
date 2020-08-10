@@ -187,10 +187,15 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 			return;
 		}
 
-		const domListener = this._createDomListener( event, !!options.useCapture );
+		const listenerOptions = options.useCapture || options.usePassive ? {
+			capture: !!options.useCapture,
+			passive: !!options.usePassive
+		} : false;
+
+		const domListener = this._createDomListener( event, listenerOptions );
 
 		// Attach the native DOM listener to DOM Node.
-		this._domNode.addEventListener( event, domListener, !!options.useCapture );
+		this._domNode.addEventListener( event, domListener, listenerOptions );
 
 		if ( !this._domListeners ) {
 			this._domListeners = {};
