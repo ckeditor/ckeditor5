@@ -87,6 +87,8 @@ export default class InputCommand extends Command {
 		const resultRange = options.resultRange;
 
 		model.enqueueChange( this._buffer.batch, writer => {
+			const selectionAttributes = doc.selection.getAttributes();
+
 			this._buffer.lock();
 
 			// Store the batch as an 'input' batch for the Input.isInput( batch ) check.
@@ -95,7 +97,7 @@ export default class InputCommand extends Command {
 			model.deleteContent( selection );
 
 			if ( text ) {
-				model.insertContent( writer.createText( text, doc.selection.getAttributes() ), selection );
+				model.insertContent( writer.createText( text, selectionAttributes ), selection );
 			}
 
 			if ( resultRange ) {
