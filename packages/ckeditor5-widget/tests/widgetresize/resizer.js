@@ -173,8 +173,8 @@ describe( 'Resizer', () => {
 				originalWidthPercents: 10,
 				aspectRatio: 1,
 				_referenceCoordinates: {
-					x: 0,
-					y: 0
+					x: 40,
+					y: 40
 				},
 				activeHandlePosition: 'bottom-right'
 			};

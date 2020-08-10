@@ -331,61 +331,43 @@ export default class Resizer {
 		const currentCoordinates = extractCoordinates( domEventData );
 		const isCentered = this._options.isCentered ? this._options.isCentered( this ) : true;
 
-		// Enlargement defines how much the resize host has changed in a given axis. Naturally it could be a negative number
-		// meaning that it has been shrunk.
+		// When we resize an image on a web page, we only need to adjust the width.
+		// The height will be adjusted automatically.
+		// Although the current calculations are very scientific, complex calculations are not good for the user.
+		// User just want the image to be bigger, bigger to where his mouse is pointing,
+		// and not more confused by such subtle calculations of displacement, doubling or absolute value, behind it.
+
 		//
-		// +----------------+--+
-		// |                |  |
-		// |       img      |  |
-		// |  /handle host  |  |
-		// +----------------+  | ^
-		// |                   | | - enlarge y
+		// +----------------+--+ ^
+		// |                |  | |
+		// |       img      |  | |
+		// |  /handle host  |  | | - proposed height (calculated by width * aspectRatio)
+		// +----------------+  | |
+		// |                   | |
 		// +-------------------+ v
 		// 					<-->
-		// 					 enlarge x
-		const enlargement = {
-			x: state._referenceCoordinates.x - ( currentCoordinates.x + state.originalWidth ),
-			y: ( currentCoordinates.y - state.originalHeight ) - state._referenceCoordinates.y
-		};
+		// 					 enlarge x (enlarge width)
 
-		if ( isCentered && state.activeHandlePosition.endsWith( '-right' ) ) {
-			enlargement.x = currentCoordinates.x - ( state._referenceCoordinates.x + state.originalWidth );
+		const minWidth = 50;
+		let enlargementX = state._referenceCoordinates.x - currentCoordinates.x;
+
+		if ( state.activeHandlePosition.endsWith( '-right' ) ) {
+			enlargementX = -enlargementX;
 		}
 
 		// Objects needs to be resized twice as much in horizontal axis if centered, since enlargement is counted from
 		// one resized corner to your cursor. It needs to be duplicated to compensate for the other side too.
 		if ( isCentered ) {
-			enlargement.x *= 2;
+			enlargementX *= 2;
 		}
 
-		// const resizeHost = this._getResizeHost();
-
-		// The size proposed by the user. It does not consider the aspect ratio.
-		const proposedSize = {
-			width: Math.abs( state.originalWidth + enlargement.x ),
-			height: Math.abs( state.originalHeight + enlargement.y )
-		};
-
-		// Dominant determination must take the ratio into account.
-		proposedSize.dominant = proposedSize.width / state.aspectRatio > proposedSize.height ? 'width' : 'height';
-		proposedSize.max = proposedSize[ proposedSize.dominant ];
-
-		// Proposed size, respecting the aspect ratio.
-		const targetSize = {
-			width: proposedSize.width,
-			height: proposedSize.height
-		};
-
-		if ( proposedSize.dominant == 'width' ) {
-			targetSize.height = targetSize.width / state.aspectRatio;
-		} else {
-			targetSize.width = targetSize.height * state.aspectRatio;
-		}
+		const proposedWidth = Math.max( state.originalWidth + enlargementX, minWidth );
+		const proposedHeight = proposedWidth / state.aspectRatio;
 
 		return {
-			width: Math.round( targetSize.width ),
-			height: Math.round( targetSize.height ),
-			widthPercents: Math.min( Math.round( state.originalWidthPercents / state.originalWidth * targetSize.width * 100 ) / 100, 100 )
+			width: Math.round( proposedWidth ),
+			height: Math.round( proposedHeight ),
+			widthPercents: Math.min( Math.round( state.originalWidthPercents / state.originalWidth * proposedWidth * 100 ) / 100, 100 )
 		};
 	}
 
