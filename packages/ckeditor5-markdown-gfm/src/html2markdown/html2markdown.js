@@ -13,12 +13,43 @@ import { gfm } from 'turndown-plugin-gfm';
 {
 	const originalEscape = TurndownService.prototype.escape;
 	TurndownService.prototype.escape = function( string ) {
-		string = originalEscape( string );
+		// Urls should not be escaped. Our strategy is using a regex to find them and escape everything
+		// which is out of the matches parts.
 
-		// Escape "<".
-		string = string.replace( /</g, '\\<' );
+		// eslint-disable-next-line max-len
+		const regex = /\b(?:https?:\/\/|www\.)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()[\]{};:'".,<>?«»“”‘’])/g;
 
-		return string;
+		let escaped = '';
+		let lastIndex = 0;
+		let m;
+		do {
+			m = regex.exec( string );
+
+			// The substring should to to the matched index or, if nothing found, the end of the string.
+			const index = m ? m.index : string.length;
+
+			// Append the substring between the last match and the current one (if anything).
+			if ( index > lastIndex ) {
+				escaped += escape( string.substring( lastIndex, index ) );
+			}
+
+			// Append the match itself now, if anything.
+			m && ( escaped += m[ 0 ] );
+
+			lastIndex = regex.lastIndex;
+		}
+		while ( m );
+
+		return escaped;
+
+		function escape( string ) {
+			string = originalEscape( string );
+
+			// Escape "<".
+			string = string.replace( /</g, '\\<' );
+
+			return string;
+		}
 	};
 }
 
