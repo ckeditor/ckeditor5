@@ -6,3 +6,11 @@
 .ck.ck-image-upload__panel {
 	padding: var(--ck-spacing-standard);
 }
+
+.ck.ck-image-upload__ck-finder-button {
+	display: block;
+	width: 100%;
+	margin: var(--ck-spacing-standard) auto;
+	border: 1px solid hsl(0, 0%, 80%);
+	border-radius: var(--ck-border-radius);
+}
