@@ -17,6 +17,7 @@ import ImageUploadFormRowView from './imageuploadformrowview';
 import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
@@ -31,9 +32,14 @@ import '../../../theme/imageupload.css';
 
 export default class ImageUploadPanelView extends View {
 	/**
-	 * @inheritDoc
+	 * Creates a view for the dropdown panel of {@link module:image/imageupload/imageuploadui~ImageUploadUI}.
+	 *
+	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
+	 * @param {Object} [options] Options for the panel view.
+	 * @param {Object} [options.integrations={insertImageViaUrl:'insertImageViaUrl'}] Integrations object that contain
+	 * components (or tokens for components) to be shown in the panel view. By default it has `insertImageViaUrl` view.
 	 */
-	constructor( locale ) {
+	constructor( locale, options = { integrations: { insertImageViaUrl: 'insertImageViaUrl' } } ) {
 		super( locale );
 
 		/**
@@ -119,6 +125,24 @@ export default class ImageUploadPanelView extends View {
 			}
 		} );
 
+		/**
+		 * Collection of the defined integrations for inserting the images.
+		 *
+		 * @private
+		 * @member {module:utils/collection~Collection}
+		 */
+		this.set( '_integrations', new Collection() );
+
+		for ( const integration of Object.values( options.integrations ) ) {
+			if ( integration === 'insertImageViaUrl' ) {
+				this._integrations.add( this.labeledInputView );
+
+				continue;
+			}
+
+			this._integrations.add( integration );
+		}
+
 		this.setTemplate( {
 			tag: 'form',
 
@@ -132,7 +156,7 @@ export default class ImageUploadPanelView extends View {
 			},
 
 			children: [
-				this.labeledInputView,
+				...this._integrations,
 				new ImageUploadFormRowView( locale, {
 					children: [
 						this.insertButtonView,
@@ -200,7 +224,7 @@ export default class ImageUploadPanelView extends View {
 		const labeledInputView = new LabeledFieldView( locale, createLabeledInputText );
 
 		labeledInputView.set( {
-			label: t( 'Insert image' )
+			label: t( 'Insert image via URL' )
 		} );
 		labeledInputView.fieldView.placeholder = t( 'Image source URL...' );
 		labeledInputView.fieldView.bind( 'value' ).to( this, 'imageURLInputValue' );
