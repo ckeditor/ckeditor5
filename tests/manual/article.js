@@ -6,14 +6,232 @@
 /* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+
+const byClassName = className => element => element.hasClass( className );
+
+const getRandom = () => parseInt( Math.random() * 1000 );
+let renderId = 0;
+const getNextRenderId = () => renderId++;
+
+function mapMeta( editor ) {
+	return metaElement => {
+		if ( metaElement.hasClass( 'box-meta-header' ) ) {
+			const title = getChildren( editor, metaElement )
+				.filter( byClassName( 'box-meta-header-title' ) )
+				.pop().getChild( 0 ).getChild( 0 ).data;
+
+			return {
+				header: {
+					title
+				}
+			};
+		}
+
+		if ( metaElement.hasClass( 'box-meta-author' ) ) {
+			const link = metaElement.getChild( 0 );
+
+			return {
+				author: {
+					name: link.getChild( 0 ).data,
+					website: link.getAttribute( 'href' )
+				}
+			};
+		}
+	};
+}
+
+function boxRefresh( model ) {
+	const differ = model.document.differ;
+
+	const boxElements = [ ...differ.getChanges() ]
+		.filter( ( { type } ) => type === 'attribute' || type === 'insert' || type === 'remove' )
+		.map( ( { range, position } ) => range && range.start.nodeAfter || position && position.parent )
+		.filter( element => element && element.is( 'element', 'box' ) );
+
+	const boxToRefresh = new Set( boxElements );
+
+	[ ...boxToRefresh.values() ].forEach( box => differ.refreshItem( box ) );
+
+	return boxToRefresh.size > 1;
+}
+
+function getChildren( editor, viewElement ) {
+	return [ ...( editor.editing.view.createRangeIn( viewElement ) ) ]
+		.filter( ( { type } ) => type === 'elementStart' )
+		.map( ( { item } ) => item );
+}
+
+function getBoxUpcastConverter( editor ) {
+	return dispatcher => dispatcher.on( 'element:div', ( event, data, conversionApi ) => {
+		const viewElement = data.viewItem;
+		const writer = conversionApi.writer;
+
+		if ( !viewElement.hasClass( 'box' ) ) {
+			return;
+		}
+
+		const box = writer.createElement( 'box' );
+
+		if ( !conversionApi.safeInsert( box, data.modelCursor ) ) {
+			return;
+		}
+
+		const elements = getChildren( editor, viewElement );
+
+		const fields = elements.filter( byClassName( 'box-content-field' ) );
+		const metaElements = elements.filter( byClassName( 'box-meta' ) );
+
+		const meta = metaElements.map( mapMeta( editor ) ).reduce( ( prev, current ) => Object.assign( prev, current ), {} );
+
+		writer.setAttribute( 'meta', meta, box );
+
+		for ( const field of fields ) {
+			const boxField = writer.createElement( 'boxField' );
+
+			conversionApi.safeInsert( boxField, writer.createPositionAt( box, field.index ) );
+			conversionApi.convertChildren( field, boxField );
+		}
+
+		conversionApi.consumable.consume( viewElement, { name: true } );
+		elements.map( element => {
+			conversionApi.consumable.consume( element, { name: true } );
+		} );
+
+		conversionApi.updateConversionResult( box, data );
+	} );
+}
+
+function downcastBox( modelElement, conversionApi ) {
+	console.log( 'downcastBox' );
+
+	const { writer } = conversionApi;
+	const viewBox = writer.createContainerElement( 'div', { class: 'box' } );
+
+	const contentWrap = writer.createContainerElement( 'div', { class: 'box-content' } );
+	writer.insert( writer.createPositionAt( viewBox, 0 ), contentWrap );
+
+	for ( const [ meta, metaValue ] of Object.entries( modelElement.getAttribute( 'meta' ) ) ) {
+		if ( meta === 'header' ) {
+			const header = writer.createRawElement( 'div', {
+				class: 'box-meta box-meta-header'
+			}, function( domElement ) {
+				domElement.innerHTML = `<div class="box-meta-header-title"><h2>${ metaValue.title }</h2></div>`;
+			} );
+
+			writer.insert( writer.createPositionBefore( contentWrap ), header );
+		}
+
+		if ( meta === 'author' ) {
+			const author = writer.createRawElement( 'div', {
+				class: 'box-meta box-meta-author'
+			}, domElement => {
+				domElement.innerHTML = `<a href="${ metaValue.website }">${ metaValue.name }</a>`;
+			} );
+
+			writer.insert( writer.createPositionAfter( contentWrap ), author );
+		}
+	}
+
+	for ( const field of modelElement.getChildren() ) {
+		const viewField = writer.createContainerElement( 'div', { class: 'box-content-field' } );
+
+		writer.insert( writer.createPositionAt( contentWrap, field.index ), viewField );
+
+		conversionApi.mapper.bindElements( field, viewField );
+	}
+
+	conversionApi.mapper.bindElements( modelElement, viewBox );
+
+	return viewBox;
+}
+
+function addButton( editor, uiName, label, callback ) {
+	editor.ui.componentFactory.add( uiName, locale => {
+		const view = new ButtonView( locale );
+
+		view.set( { label, withText: true } );
+
+		view.listenTo( view, 'execute', () => {
+			const parent = editor.model.document.selection.getFirstPosition().parent;
+			const boxField = parent.findAncestor( 'boxField' );
+
+			if ( !boxField ) {
+				return;
+			}
+
+			editor.model.change( writer => callback( writer, boxField.findAncestor( 'box' ), boxField ) );
+		} );
+
+		return view;
+	} );
+}
+
+function addBoxMetaButton( editor, uiName, label, updateWith ) {
+	addButton( editor, uiName, label, ( writer, box ) => {
+		writer.setAttribute( 'meta', {
+			...box.getAttribute( 'meta' ),
+			...updateWith()
+		}, box );
+	} );
+}
+
+function Box( editor ) {
+	editor.model.schema.register( 'box', {
+		allowIn: '$root',
+		isObject: true,
+		isSelectable: true,
+		allowAttributes: [ 'infoBoxMeta' ]
+	} );
+
+	editor.model.schema.register( 'boxField', {
+		allowContentOf: '$root',
+		allowIn: 'box',
+		isLimit: true
+	} );
+
+	editor.conversion.for( 'upcast' ).add( getBoxUpcastConverter( editor ) );
+
+	editor.conversion.for( 'downcast' ).elementToElement( {
+		model: 'box',
+		view: downcastBox
+	} );
+
+	editor.model.document.registerPostFixer( () => boxRefresh( editor.model ) );
+
+	addBoxMetaButton( editor, 'boxTitle', 'Box title', () => ( {
+		header: { title: `Random title no. ${ getRandom() }.` }
+	} ) );
+
+	addBoxMetaButton( editor, 'boxAuthor', 'Box author', () => ( {
+		author: {
+			website: `www.example.com/${ getRandom() }`,
+			name: `Random author no. ${ getRandom() }`
+		}
+	} ) );
+
+	addButton( editor, 'addBoxField', '+', ( writer, box, boxField ) => {
+		const newBoxField = writer.createElement( 'boxField' );
+		writer.insert( newBoxField, box, boxField.index );
+		writer.insert( writer.createElement( 'paragraph' ), newBoxField, 0 );
+	} );
+
+	addButton( editor, 'removeBoxField', '-', ( writer, box, boxField ) => {
+		writer.remove( boxField );
+	} );
+}
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet ],
+		plugins: [ ArticlePluginSet, Box, DecorateViewItems ],
 		toolbar: [
 			'heading',
+			'|',
+			'boxTitle',
+			'boxAuthor',
+			'addBoxField',
+			'removeBoxField',
 			'|',
 			'bold',
 			'italic',
@@ -47,3 +265,12 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+function DecorateViewItems( editor ) {
+	editor.conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'insert', ( evt, data, conversionApi ) => {
+		if ( data.item.is( 'element' ) ) {
+			const viewItem = editor.editing.mapper.toViewElement( data.item );
+			conversionApi.writer.setAttribute( 'data-rendered-id', getNextRenderId(), viewItem );
+		}
+	}, { priority: 'lowest' } ) );
+}

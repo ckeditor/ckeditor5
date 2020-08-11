@@ -4,30 +4,63 @@
 			max-width: 800px;
 			margin: 20px auto;
 		}
+
+		.box {
+			border: 1px solid hsl(0, 0%, 20%);
+			padding: 2px;
+			background: hsl(0, 0%, 40%);
+		}
+
+		.box-meta {
+			border: 1px solid hsl(0, 0%, 80%);
+			background: hsl(0, 0%, 60%);
+		}
+
+		.box-content-field {
+			padding: .5em;
+			background: hsl(0, 0%, 100%);
+			border: 1px solid hsl(0, 0%, 80%)
+		}
 	</style>
 </head>
+
 <div id="editor">
-	<h2>Heading 1</h2>
-	<p>Paragraph</p>
-	<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
-	<ul>
-		<li>UL List item 1</li>
-		<li>UL List item 2</li>
-	</ul>
-	<ol>
-		<li>OL List item 1</li>
-		<li>OL List item 2</li>
-	</ol>
-	<figure class="image image-style-side">
-		<img alt="bar" src="sample.jpg">
-		<figcaption>Caption</figcaption>
-	</figure>
-	<blockquote>
-		<p>Quote</p>
-		<ul>
-			<li>Quoted UL List item 1</li>
-			<li>Quoted UL List item 2</li>
-		</ul>
-		<p>Quote</p>
-	</blockquote>
+	<div class="box">
+		<div class="box__wrapper">
+			<div class="box-meta box-meta-header">
+				<div class="box-meta-header-icon"></div>
+				<div class="box-meta-header-title">
+					<h2>I'm a title</h2>
+				</div>
+			</div>
+			<div class="box-content">
+				<div class="box-content-field"><p>Foo</p></div>
+				<div class="box-content-field">
+					<ul>
+						<li>Bar</li>
+					</ul>
+				</div>
+				<div class="box-content-field"><p>Baz</p></div>
+			</div>
+			<div class="box-meta box-meta-author">
+				<a href="www.example.com">@john</a>
+			</div>
+		</div>
+	</div>
 </div>
+
+
+<!--
+
+<box type="foo" icon="icon.png" author="@john" authorWebsite="www.example.com">
+	<boxField>
+		<p>Foo bar</p>
+		<ul>
+			<li>baz</li>
+		</ul>
+	</boxField>
+	...
+	<boxField></boxField>
+</box>
+
+-->
