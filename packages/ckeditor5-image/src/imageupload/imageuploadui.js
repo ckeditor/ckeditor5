@@ -103,6 +103,8 @@ export default class ImageUploadUI extends Plugin {
 			if ( selectedElement && isImage( selectedElement ) ) {
 				editor.model.enqueueChange( writer => {
 					writer.setAttribute( 'src', imageUploadView.imageURLInputValue, selectedElement );
+					writer.removeAttribute( 'srcset', selectedElement );
+					writer.removeAttribute( 'sizes', selectedElement );
 				} );
 			} else {
 				editor.execute( 'imageInsert', { source: this.imageURLInputValue } );
