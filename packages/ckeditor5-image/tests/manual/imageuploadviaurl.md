@@ -10,3 +10,9 @@
 1. Click on the arrow button in `imageUpload` plugin to reveal the image upload panel.
 1. Edit the value of the input.
 1. Click `Update` button.
+
+## Image upload via integrations
+
+1. In the **Editor 2** click on the arrow button in `imageUpload` plugin to reveal the image upload panel.
+1. Click on the **CKFinder** button.
+1. Choose image and confirm.

@@ -8,6 +8,7 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import ImageUpload from '../../src/imageupload';
+import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 
 import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 
@@ -33,6 +34,55 @@ ClassicEditor
 		],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+
+		// Register fake adapter.
+		editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
+			const adapterMock = new UploadAdapterMock( loader );
+			createProgressButton( loader, adapterMock );
+
+			return adapterMock;
+		};
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor2' ), {
+		plugins: [ ArticlePluginSet, ImageUpload, CKFinder ],
+		toolbar: [
+			'heading',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'imageUpload',
+			'insertTable',
+			'mediaEmbed',
+			'undo',
+			'redo'
+		],
+		image: {
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ],
+			upload: {
+				panel: {
+					items: [
+						'insertImageViaUrl',
+						'openCKFinder'
+					]
+				}
+			}
+		},
+		ckfinder: {
+			// eslint-disable-next-line max-len
+			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
 		}
 	} )
 	.then( editor => {
@@ -101,4 +151,3 @@ function createProgressButton( loader, adapterMock ) {
 		}
 	} );
 }
-
