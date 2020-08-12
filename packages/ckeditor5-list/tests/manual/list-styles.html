@@ -12,16 +12,183 @@
 <br>
 
 <div id="editor">
-    <ul style="list-style-type: square">
-        <li>UL List item 1</li>
-        <li>UL List item 2</li>
-        <li>UL List item 3</li>
-    </ul>
-    <p>A</p>
-    <ul style="list-style-type: disc">
-        <li>UL List item 1</li>
-        <li>UL List item 2</li>
-        <li>UL List item 3</li>
-    </ul>
+    <h2>Default styles</h2>
+    <figure class="table">
+        <table style="width: 600px;">
+            <tbody>
+            <tr>
+                <td colspan="2" style="text-align: center">
+                    <span class="text-big" style="font-weight: bold">Default styles</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Bulleted</span></td>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Numbered</span></td>
+            </tr>
+            <tr>
+                <td style="vertical-align:top; width: 50%">
+                    <ul>
+                        <li>UL List item 1</li>
+                        <li>UL List item 2</li>
+                        <li>UL List item 3</li>
+                    </ul>
+                </td>
+                <td style="vertical-align:top; width: 50%">
+                    <ol>
+                        <li>OL List item 1</li>
+                        <li>OL List item 2</li>
+                        <li>OL List item 3</li>
+                    </ol>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </figure>
+
+    <h2>Bulleted lists</h2>
+    <figure class="table">
+        <table style="width: 600px;">
+            <tbody>
+            <tr>
+                <td colspan="4" style="text-align: center">
+                    <span class="text-big" style="font-weight: bold">Type of list</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Circle</span></td>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Disc</span></td>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Square</span></td>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">'👉'</span></td>
+            </tr>
+            <tr>
+                <td style="vertical-align:top; width: 25%">
+                    <ul style="list-style-type: circle;">
+                        <li>UL List item 1</li>
+                        <li>UL List item 2</li>
+                        <li>UL List item 3</li>
+                    </ul>
+                </td>
+                <td style="vertical-align:top; width: 25%">
+                    <ul style="list-style-type: disc;">
+                        <li>UL List item 1</li>
+                        <li>UL List item 2</li>
+                        <li>UL List item 3</li>
+                    </ul>
+                </td>
+                <td style="vertical-align:top; width: 25%">
+                    <ul style="list-style-type: square;">
+                        <li>UL List item 1</li>
+                        <li>UL List item 2</li>
+                        <li>UL List item 3</li>
+                    </ul>
+                </td>
+                <td style="vertical-align:top; width: 25%">
+                    <ul style="list-style-type: '👉';">
+                        <li>UL List item 1</li>
+                        <li>UL List item 2</li>
+                        <li>UL List item 3</li>
+                    </ul>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </figure>
+
+    <h2>Numbered lists</h2>
+    <figure class="table">
+        <table style="width: 800px;">
+            <tbody>
+            <tr>
+                <td colspan="4" style="text-align: center">
+                    <span class="text-big" style="font-weight: bold">Type of list</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Decimal</span></td>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Decimal-leading-zero</span></td>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Lower-latin</span></td>
+                <td style="text-align: center"><span class="text-big" style="font-weight: bold">Lower-roman</span></td>
+            </tr>
+            <tr>
+                <td style="vertical-align:top; width: 25%">
+                    <ol style="list-style-type: decimal;">
+                        <li>OL List item 1</li>
+                        <li>OL List item 2</li>
+                        <li>OL List item 3</li>
+                    </ol>
+                </td>
+                <td style="vertical-align:top; width: 25%">
+                    <ol style="list-style-type: decimal-leading-zero;">
+                        <li>OL List item 1</li>
+                        <li>OL List item 2</li>
+                        <li>OL List item 3</li>
+                    </ol>
+                </td>
+                <td style="vertical-align:top; width: 25%">
+                    <ol style="list-style-type: lower-latin;">
+                        <li>OL List item 1</li>
+                        <li>OL List item 2</li>
+                        <li>OL List item 3</li>
+                    </ol>
+                </td>
+                <td style="vertical-align:top; width: 25%">
+                    <ol style="list-style-type: lower-roman;">
+                        <li>OL List item 1</li>
+                        <li>OL List item 2</li>
+                        <li>OL List item 3</li>
+                    </ol>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </figure>
+
+    <h2>Nested/mixed lists (numbered and bulleted)</h2>
+    <figure class="table">
+        <table style="width: 1200px;">
+            <tr>
+                <td style="width: 50%">
+                    <ol style="list-style-type: lower-roman;">
+                        <li>OL 1.1 <code>OL[style: lower-roman]</code></li>
+                        <li>OL 1.2 <code>OL[style: lower-roman]</code>
+                            <ul style="list-style-type: square;">
+                                <li>UL 1.2.1 <code>OL[style: lower-roman] &gt; UL[style: square]</code></li>
+                                <li>UL 1.2.2 <code>OL[style: lower-roman] &gt; UL[style: square]</code></li>
+                                <li>UL 1.2.3 <code>OL[style: lower-roman] &gt; UL[style: square]</code></li>
+                            </ul>
+                        </li>
+                        <li>OL 1.3 <code>OL[style: lower-roman]</code></li>
+                        <li>OL 1.4 <code>OL[style: lower-roman]</code></li>
+                        <ol style="list-style-type: lower-alpha;">
+                            <li>OL 1.4.1 <code>OL[style: lower-roman] &gt; OL[style: lower-alpha]</code></li>
+                            <li>OL 1.4.2 <code>OL[style: lower-roman] &gt; OL[style: lower-alpha]</code></li>
+                            <li>OL 1.4.3 <code>OL[style: lower-roman] &gt; OL[style: lower-alpha]</code></li>
+                        </ol>
+                        </li>
+                        <li>OL 1.5 <code>OL[style: lower-roman]</code></li>
+                        <li>OL 1.6 <code>OL[style: lower-roman]</code></li>
+                    </ol>
+                </td>
+                <td style="width: 50%">
+                    <ol style="list-style-type: upper-alpha;">
+                        <li>OL 2.1 <code>OL[style: upper-alpha]</code>
+                            <ol style="list-style-type: lower-greek;">
+                                <li>OL 2.2.1 <code>OL[style: lower-alpha] &gt; OL[style: lower-greek]</code>
+                                    <ul style="list-style-type: circle;">
+                                        <li>UL 2.2.1.1 <code>... &gt; OL[style: lower-greek] &gt; UL[style: circle]</code></li>
+                                        <li>UL 2.2.1.2 <code>... &gt; OL[style: lower-greek] &gt; UL[style: circle]</code></li>
+                                        <li>UL 2.2.1.3 <code>... &gt; OL[style: lower-greek] &gt; UL[style: circle]</code></li>
+                                    </ul>
+                                </li>
+                                <li>OL 2.2.2 <code>OL[style: lower-alpha] &gt; OL[style: lower-greek]</code></li>
+                                <li>OL 2.2.3 <code>OL[style: lower-alpha] &gt; OL[style: lower-greek]</code></li>
+                            </ol>
+                        </li>
+                        <li>OL 2.2 <code>OL[style: upper-alpha]</code></li>
+                    </ol>
+                </td>
+            </tr>
+        </table>
+    </figure>
 </div>
 
