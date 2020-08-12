@@ -40,13 +40,13 @@ ClassicEditor
 		editor.conversion.for( 'dataDowncast' )
 			.elementToElement( {
 				model: 'widget',
-				view: ( modelItem, writer ) => {
+				view: ( modelItem, { writer } ) => {
 					return writer.createContainerElement( 'div', { class: 'widget' } );
 				}
 			} )
 			.elementToElement( {
 				model: 'nested',
-				view: ( modelItem, writer ) => {
+				view: ( modelItem, { writer } ) => {
 					return writer.createContainerElement( 'div', { class: 'nested' } );
 				}
 			} );
@@ -54,7 +54,7 @@ ClassicEditor
 		editor.conversion.for( 'editingDowncast' )
 			.elementToElement( {
 				model: 'widget',
-				view: ( modelItem, writer ) => {
+				view: ( modelItem, { writer } ) => {
 					const div = writer.createContainerElement( 'div', { class: 'widget' } );
 
 					return toWidget( div, writer, { label: 'widget label' } );
@@ -62,7 +62,7 @@ ClassicEditor
 			} )
 			.elementToElement( {
 				model: 'nested',
-				view: ( modelItem, writer ) => {
+				view: ( modelItem, { writer } ) => {
 					const nested = writer.createEditableElement( 'div', { class: 'nested' } );
 
 					return toWidgetEditable( nested, writer );

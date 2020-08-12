@@ -167,7 +167,7 @@ describe( 'blockAutoformatEditing', () => {
 			editor.conversion.for( 'downcast' )
 				.elementToElement( {
 					model: 'softBreak',
-					view: ( modelElement, viewWriter ) => viewWriter.createEmptyElement( 'br' )
+					view: ( modelElement, { writer } ) => writer.createEmptyElement( 'br' )
 				} );
 
 			const spy = testUtils.sinon.spy();
@@ -207,7 +207,7 @@ describe( 'blockAutoformatEditing', () => {
 			editor.conversion.for( 'downcast' )
 				.elementToElement( {
 					model: 'softBreak',
-					view: ( modelElement, viewWriter ) => viewWriter.createEmptyElement( 'br' )
+					view: ( modelElement, { writer } ) => writer.createEmptyElement( 'br' )
 				} );
 
 			const spy = testUtils.sinon.spy();

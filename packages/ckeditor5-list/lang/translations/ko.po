@@ -18,12 +18,12 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the Numbered List feature."
 msgid "Numbered List"
-msgstr "번호매기기"
+msgstr "번호 목록"
 
 msgctxt "Toolbar button tooltip for the Bulleted List feature."
 msgid "Bulleted List"
-msgstr "글머리기호"
+msgstr "불릿 목록"
 
 msgctxt "Toolbar button tooltip for the To-do List feature."
 msgid "To-do List"
-msgstr "할일 목록"
+msgstr "확인 목록"
