@@ -146,7 +146,7 @@ function downcastBox( modelElement, conversionApi ) {
 		const viewField = writer.createContainerElement( 'div', { class: 'box-content-field' } );
 
 		writer.insert( writer.createPositionAt( contentWrap, field.index ), viewField );
-		conversionApi.mapper.bindElements( field, viewField );
+		conversionApi.mapper.bindSlotElements( field, viewField );
 	}
 
 	// At this point we're inserting whole "component". Equivalent to (JSX-like notation):

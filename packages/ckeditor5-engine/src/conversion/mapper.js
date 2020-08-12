@@ -49,6 +49,9 @@ export default class Mapper {
 		 */
 		this._modelToViewMapping = new WeakMap();
 
+		// @todo POC
+		this._temporalModelToView = new WeakMap();
+
 		/**
 		 * View element to model element mapping.
 		 *
@@ -133,6 +136,13 @@ export default class Mapper {
 	bindElements( modelElement, viewElement ) {
 		this._modelToViewMapping.set( modelElement, viewElement );
 		this._viewToModelMapping.set( viewElement, modelElement );
+	}
+
+	bindSlotElements( modelElement, viewElement ) {
+		const oldView = this.toViewElement( modelElement );
+
+		this._temporalModelToView.set( modelElement, oldView );
+		this.bindElements( modelElement, viewElement );
 	}
 
 	/**

@@ -785,6 +785,10 @@ export function wrap( elementCreator ) {
  */
 export function insertElement( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
+		// Cache current view element of a converted element, might be undefined if first insert.
+		const currentView = conversionApi.mapper.toViewElement( data.item );
+
+		// Create view structure:
 		const viewElement = elementCreator( data.item, conversionApi );
 
 		if ( !viewElement ) {
@@ -797,6 +801,42 @@ export function insertElement( elementCreator ) {
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
+		// A flag was the simplest way of changing default insertElement behavior.
+		if ( data.isRefresh ) {
+			// Because of lack of a better API...
+
+			// Iterate over new view elements to find "interesting" points - those elements that are mapped to the model.
+			for ( const { item } of conversionApi.writer.createRangeIn( viewElement ) ) {
+				const modelItem = conversionApi.mapper.toModelElement( item );
+
+				// At this stage we get the update view element, so any mapped model item might be a potential "slot".
+				if ( modelItem ) {
+					const currentViewItem = conversionApi.mapper._temporalModelToView.get( modelItem );
+
+					// This of course needs better API, but for now it works.
+					// Mapper.bindSlot() creates mappings as mapper.bindElements() but also binds view element from view to the model item.
+					if ( currentViewItem ) {
+						// This allows to have a map: updatedView - model - oldView and to retain previously rendered children
+						// from the "slot" element. Those children can be moved to a newly created slot.
+						conversionApi.writer.move(
+							conversionApi.writer.createRangeIn( currentViewItem ),
+							conversionApi.writer.createPositionAt( item, 0 )
+						);
+					}
+
+					// @todo should be done by conversion API...
+					// Again, no API for this, so we need to stop conversion beneath "slot" by simply consuming whole tree under it.
+					for ( const inner of ModelRange._createOn( modelItem ) ) {
+						conversionApi.consumable.consume( inner.item, 'insert' );
+					}
+				}
+			}
+
+			// At this stage old view can be safely removed.
+			conversionApi.writer.remove( currentView );
+		}
+
+		// Rest of standard insertElement converter.
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
 	};

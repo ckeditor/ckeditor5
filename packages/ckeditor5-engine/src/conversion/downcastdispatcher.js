@@ -146,7 +146,8 @@ export default class DowncastDispatcher {
 			} else if ( entry.type == 'remove' ) {
 				this.convertRemove( entry.position, entry.length, entry.name, writer );
 			} else if ( entry.type == 'refresh' ) {
-				// @if CK_DEBUG // console.warn( 'convertRemove' );
+				// @if CK_DEBUG console.warn( 'convert refresh' );
+				this.convertRefresh( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
 			} else if ( entry.type == 'attribute' ) {
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
 			} else {
@@ -257,6 +258,27 @@ export default class DowncastDispatcher {
 			};
 
 			this._testAndFire( `attribute:${ key }`, data );
+		}
+
+		this._clearConversionApi();
+	}
+
+	convertRefresh( range, writer ) {
+		this.conversionApi.writer = writer;
+
+		// Create a list of things that can be consumed, consisting of nodes and their attributes.
+		this.conversionApi.consumable = this._createInsertConsumable( range );
+
+		for ( const value of range ) {
+			const item = value.item;
+			const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
+			const data = {
+				item,
+				range: itemRange,
+				isRefresh: true
+			};
+
+			this._testAndFire( 'insert', data );
 		}
 
 		this._clearConversionApi();
