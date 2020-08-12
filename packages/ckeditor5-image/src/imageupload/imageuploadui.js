@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageUploadPanelView from './ui/imageuploadpanelview';
 
 import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
-import { createImageTypeRegExp } from './utils';
+import { createImageTypeRegExp, prepareIntegrations } from './utils';
 
 import { isImage } from '../image/utils';
 
@@ -40,7 +40,7 @@ export default class ImageUploadUI extends Plugin {
 		const command = editor.commands.get( 'imageUpload' );
 
 		editor.ui.componentFactory.add( 'imageUpload', locale => {
-			const integrations = this._prepareIntegrations();
+			const integrations = prepareIntegrations( editor );
 
 			const imageUploadView = new ImageUploadPanelView( locale, integrations && { integrations } );
 			const dropdownView = imageUploadView.dropdownView;
@@ -149,50 +149,5 @@ export default class ImageUploadUI extends Plugin {
 		} );
 
 		return fileDialogButtonView;
-	}
-
-	/**
-	 * Creates integrations object that will be passed to the
-	 * {@link module:image/imageupload/ui/imageuploadpanelview~ImageUploadPanelView}.
-	 *
-	 * @private
-	 * @returns {Object}
-	 */
-	_prepareIntegrations() {
-		const editor = this.editor;
-		const panelItems = editor.config.get( 'image.upload.panel.items' );
-
-		if ( !panelItems ) {
-			return;
-		}
-
-		const PREDEFINED_INTEGRATIONS = {
-			'insertImageViaUrl': 'insertImageViaUrl'
-		};
-
-		// Prepares ckfinder component.
-		if ( editor.ui.componentFactory.has( 'ckfinder' ) ) {
-			const ckFinderButton = editor.ui.componentFactory.create( 'ckfinder' );
-			ckFinderButton.set( {
-				withText: true,
-				class: 'ck-image-upload__ck-finder-button'
-			} );
-
-			// We want to close the dropdown panel view when user clicks the ckFinderButton.
-			ckFinderButton.delegate( 'execute' ).to( this, 'cancel' );
-
-			PREDEFINED_INTEGRATIONS.openCKFinder = ckFinderButton;
-		}
-
-		// Creates integrations object of valid views to pass it to the ImageUploadPanelView.
-		const integrations = panelItems.reduce( ( object, key ) => {
-			if ( PREDEFINED_INTEGRATIONS[ key ] ) {
-				object[ key ] = PREDEFINED_INTEGRATIONS[ key ];
-			}
-
-			return object;
-		}, {} );
-
-		return Object.keys( integrations ).length ? integrations : null;
 	}
 }

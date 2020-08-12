@@ -82,3 +82,47 @@ function getImageMimeType( blob, src ) {
 		return 'image/jpeg';
 	}
 }
+
+/**
+ * Creates integrations object that will be passed to the
+ * {@link module:image/imageupload/ui/imageuploadpanelview~ImageUploadPanelView}.
+ *
+ * @returns {Object}
+ */
+export function prepareIntegrations( editor ) {
+	const panelItems = editor.config.get( 'image.upload.panel.items' );
+	const imageUploadUIPlugin = editor.plugins.get( 'ImageUploadUI' );
+
+	if ( !panelItems ) {
+		return;
+	}
+
+	const PREDEFINED_INTEGRATIONS = {
+		'insertImageViaUrl': 'insertImageViaUrl'
+	};
+
+	// Prepares ckfinder component for the `openCKFinder` integration token.
+	if ( editor.ui.componentFactory.has( 'ckfinder' ) ) {
+		const ckFinderButton = editor.ui.componentFactory.create( 'ckfinder' );
+		ckFinderButton.set( {
+			withText: true,
+			class: 'ck-image-upload__ck-finder-button'
+		} );
+
+		// We want to close the dropdown panel view when user clicks the ckFinderButton.
+		ckFinderButton.delegate( 'execute' ).to( imageUploadUIPlugin, 'cancel' );
+
+		PREDEFINED_INTEGRATIONS.openCKFinder = ckFinderButton;
+	}
+
+	// Creates integrations object of valid views to pass it to the ImageUploadPanelView.
+	const integrations = panelItems.reduce( ( object, key ) => {
+		if ( PREDEFINED_INTEGRATIONS[ key ] ) {
+			object[ key ] = PREDEFINED_INTEGRATIONS[ key ];
+		}
+
+		return object;
+	}, {} );
+
+	return Object.keys( integrations ).length ? integrations : null;
+}
