@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ListEditing from './listediting';
 import ListStylesCommand from './liststylescommand';
+import { getSiblingListItem } from './utils';
 
 const DEFAULT_LIST_TYPE = 'default';
 
@@ -36,6 +37,9 @@ export default class ListStylesEditing extends Plugin {
 		return 'ListStylesEditing';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const model = editor.model;
@@ -45,27 +49,31 @@ export default class ListStylesEditing extends Plugin {
 			allowAttributes: [ 'listStyle' ]
 		} );
 
-		editor.commands.add( 'listStyles', new ListStylesCommand( editor ) );
+		editor.commands.add( 'listStyles', new ListStylesCommand( editor, DEFAULT_LIST_TYPE ) );
 
 		// Fix list attributes when modifying their nesting levels (the `listIndent` attribute).
-		this.listenTo( editor.commands.get( 'indentList' ), 'execute', fixListAfterIndentListCommand( editor ) );
-		this.listenTo( editor.commands.get( 'outdentList' ), 'execute', fixListAfterOutdentListCommand( editor ) );
+		this.listenTo( editor.commands.get( 'indentList' ), 'executeCleanup', fixListAfterIndentListCommand( editor ) );
+		this.listenTo( editor.commands.get( 'outdentList' ), 'executeCleanup', fixListAfterOutdentListCommand( editor ) );
 
-		// Register a post-fix that ensures that the `listStyle` attribute is specified in each `listItem` element.
+		// Register a post-fixer that ensures that the `listStyle` attribute is specified in each `listItem` element.
 		model.document.registerPostFixer( fixListStyleAttributeOnListItemElements( editor ) );
-
-		// Disallow the `listStyle` attribute on to-do lists.
-		model.schema.addAttributeCheck( ( context, attributeName ) => {
-			const item = context.last;
-
-			if ( attributeName == 'listStyle' && item.name == 'listItem' && item.getAttribute( 'listType' ) == 'todo' ) {
-				return false;
-			}
-		} );
 
 		// Set up conversion.
 		editor.conversion.for( 'upcast' ).add( upcastListItem() );
 		editor.conversion.for( 'downcast' ).add( downcastListStyleAttribute() );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	afterInit() {
+		const editor = this.editor;
+
+		// Enable post-fixer that removes the `listStyle` attribute from to-do list items only if the "TodoList" plugin is on.
+		// We need to registry the hook here since the `TodoList` plugin can be added after the `ListStylesEditing`.
+		if ( editor.commands.get( 'todoList' ) ) {
+			editor.model.document.registerPostFixer( removeListStyleAttributeFromTodoList( editor ) );
+		}
 	}
 }
 
@@ -94,6 +102,7 @@ function upcastListItem() {
 function downcastListStyleAttribute() {
 	return dispatcher => {
 		dispatcher.on( 'attribute:listStyle:listItem', ( evt, data, conversionApi ) => {
+			// TODO: This converter is a little buggy. I know. The things could be done better.
 			const viewWriter = conversionApi.writer;
 			const currentItem = data.item;
 			const previousItem = currentItem.previousSibling;
@@ -168,7 +177,7 @@ function downcastListStyleAttribute() {
 	}
 }
 
-// When indenting list, nested list should clear its value for the `listStyle` attribute.
+// When indenting list, nested list should clear its value for the `listStyle` attribute or inherit from nested lists.
 //
 // ■ List item 1.
 // ■ List item 2.[]
@@ -183,48 +192,38 @@ function downcastListStyleAttribute() {
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Function}
 function fixListAfterIndentListCommand( editor ) {
-	return () => { // evt
-		return editor;
-		// This function must be re-written since it does not work correctly.
-		// const changedItems = evt.return;
-		// const previousSibling = changedItems[ 0 ].previousSibling;
+	return ( evt, changedItems ) => {
+		let valueToSet;
+
+		const root = changedItems[ 0 ];
+		const rootIndent = root.getAttribute( 'listIndent' );
+
+		const itemsToUpdate = changedItems.filter( item => item.getAttribute( 'listIndent' ) === rootIndent );
+
+		// A case where a few list items are intended must be checked separately
+		// since `getSiblingListItem()` returns the first changed element.
+		// ■ List item 1.
+		//     ○ [List item 2.
+		//     ○ List item 3.]
+		// ■ List item 4.
 		//
-		// const indent = changedItems[ 0 ].getAttribute( 'listIndent' );
-		// let listItem = changedItems[ 0 ];
-		//
-		// console.log( 'looking for indent = ', indent );
-		// console.log( 'before do while' );
-		//
-		// // ■ List item 1.
-		// //     ⬤ List item 2.
-		// // ■ List item 3.[]
-		// // ■ List item 4.
-		// //
-		// // After indenting the list, `List item 3` should inherit the `listStyle` attribute from `List item 2`.
-		// //
-		// // ■ List item 1.
-		// //     ⬤ List item 2.
-		// //     ⬤ List item 3.[]
-		// // ■ List item 4.
-		//
-		// while ( listItem.getAttribute( 'listIndent' ) === indent ) {
-		// 	listItem = listItem.previousSibling;
-		//
-		// 	console.log( listItem.getChild( 0 )._data, 'indent = ', listItem.getAttribute( 'listIndent' ) );
-		// }
-		//
-		// console.log( 'after do while' );
-		// console.log( listItem, listItem.getChild( 0 )._data );
-		//
-		// const itemsToUpdate = changedItems.filter( item => {
-		// 	return item.getAttribute( 'listIndent' ) === previousSibling.getAttribute( 'listIndent' ) + 1;
-		// } );
-		//
-		// editor.model.change( writer => {
-		// 	for ( const item of itemsToUpdate ) {
-		// 		writer.setAttribute( 'listStyle', DEFAULT_LIST_TYPE, item );
-		// 	}
-		// } );
+		// List items: `2` and `3` should be adjusted.
+		if ( root.previousSibling.getAttribute( 'listIndent' ) + 1 === rootIndent ) {
+			// valueToSet = root.previousSibling.getAttribute( 'listStyle' ) || DEFAULT_LIST_TYPE;
+			valueToSet = DEFAULT_LIST_TYPE;
+		} else {
+			const previousSibling = getSiblingListItem( root.previousSibling, {
+				sameIndent: true, direction: 'backward', listIndent: rootIndent
+			} );
+
+			valueToSet = previousSibling.getAttribute( 'listStyle' );
+		}
+
+		editor.model.change( writer => {
+			for ( const item of itemsToUpdate ) {
+				writer.setAttribute( 'listStyle', valueToSet, item );
+			}
+		} );
 	};
 }
 
@@ -245,15 +244,15 @@ function fixListAfterIndentListCommand( editor ) {
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Function}
 function fixListAfterOutdentListCommand( editor ) {
-	return evt => {
-		const changedItems = evt.return.reverse()
-			.filter( item => item.is( 'element', 'listItem' ) );
+	return ( evt, changedItems ) => {
+		changedItems = changedItems.reverse().filter( item => item.is( 'element', 'listItem' ) );
 
 		if ( !changedItems.length ) {
 			return;
 		}
 
 		const indent = changedItems[ 0 ].getAttribute( 'listIndent' );
+		const listType = changedItems[ 0 ].getAttribute( 'listType' );
 		let listItem = changedItems[ 0 ].previousSibling;
 
 		// ■ List item 1.
@@ -281,19 +280,21 @@ function fixListAfterOutdentListCommand( editor ) {
 		//     ○ List item 3.
 		// ■ List item 4.
 		if ( !listItem ) {
-			listItem = changedItems[ 0 ].nextSibling;
-
-			while ( changedItems.includes( listItem ) && listItem.getAttribute( 'listIndent' ) === indent ) {
-				listItem = listItem.nextSibling;
-			}
+			listItem = changedItems[ changedItems.length - 1 ].nextSibling;
 		}
 
 		// And such a list should not modify anything.
+		// However, `listItem` can indicate a node below the list. Be sure that we have the `listItem` element.
 		// ■ List item 1.[]
 		//     ○ List item 2.
 		//     ○ List item 3.
-		// "The later if check."
+		// <paragraph>The later if check.</paragraph>
 		if ( !listItem || !listItem.is( 'element', 'listItem' ) ) {
+			return;
+		}
+
+		// Do not modify the list if found `listItem` represents other type of list than outdented list items.
+		if ( listItem.getAttribute( 'listType' ) !== listType ) {
 			return;
 		}
 
@@ -345,7 +346,7 @@ function fixListAfterOutdentListCommand( editor ) {
 function fixListStyleAttributeOnListItemElements( editor ) {
 	return writer => {
 		let wasFixed = false;
-		const insertedListItems = [];
+		let insertedListItems = [];
 
 		for ( const change of editor.model.document.differ.getChanges() ) {
 			if ( change.type == 'insert' && change.name == 'listItem' ) {
@@ -353,19 +354,44 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 			}
 		}
 
+		// Don't touch todo lists.
+		insertedListItems = insertedListItems.filter( item => item.getAttribute( 'listType' ) !== 'todo' );
+
 		if ( !insertedListItems.length ) {
 			return wasFixed;
 		}
 
-		const existingListItem = insertedListItems[ insertedListItems.length - 1 ].nextSibling;
+		// Check whether the last inserted element is next to the `listItem` element.
+		//
+		// ■ Paragraph[]  // <-- The inserted item.
+		// ■ List item 1.
+		let existingListItem = insertedListItems[ insertedListItems.length - 1 ].nextSibling;
 
-		if ( !existingListItem ) {
-			return wasFixed;
+		// If doesn't, maybe the `listItem` was inserted at the end of the list.
+		//
+		// ■ List item 1.
+		// ■ Paragraph[]  // <-- The inserted item.
+		if ( !existingListItem || !existingListItem.is( 'element', 'listItem' ) ) {
+			existingListItem = insertedListItems[ insertedListItems.length - 1 ].previousSibling;
+
+			if ( existingListItem ) {
+				const indent = insertedListItems[ 0 ].getAttribute( 'listIndent' );
+
+				// But we need to find a `listItem` with the `listIndent=0` attribute.
+				// If doesn't, maybe the `listItem` was inserted at the end of the list.
+				//
+				// ■ List item 1.
+				//     ○ List item 2.
+				// ■ Paragraph[]  // <-- The inserted item.
+				while ( existingListItem.is( 'element', 'listItem' ) && existingListItem.getAttribute( 'listIndent' ) !== indent ) {
+					existingListItem = existingListItem.previousSibling;
+				}
+			}
 		}
 
 		for ( const item of insertedListItems ) {
 			if ( !item.hasAttribute( 'listStyle' ) ) {
-				if ( existingListItem.getAttribute( 'listType' ) === item.getAttribute( 'listType' ) ) {
+				if ( shouldInheritListType( existingListItem ) ) {
 					writer.setAttribute( 'listStyle', existingListItem.getAttribute( 'listStyle' ), item );
 				} else {
 					writer.setAttribute( 'listStyle', DEFAULT_LIST_TYPE, item );
@@ -377,4 +403,72 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 
 		return wasFixed;
 	};
+
+	// Checks whether the `listStyle` attribute should be copied from the `baseItem` element.
+	//
+	// The attribute should be copied if the inserted element does not have defined it and
+	// the value for the element is other than default in the base element.
+	//
+	// @param {module:engine/model/element~Element|null} baseItem
+	// @returns {Boolean}
+	function shouldInheritListType( baseItem ) {
+		if ( !baseItem ) {
+			return false;
+		}
+
+		const baseListStyle = baseItem.getAttribute( 'listStyle' );
+
+		if ( !baseListStyle ) {
+			return false;
+		}
+
+		if ( baseListStyle === DEFAULT_LIST_TYPE ) {
+			return false;
+		}
+
+		return true;
+	}
+}
+
+// Removes the `listStyle` attribute from "todo" list items.
+//
+// @private
+// @param {module:core/editor/editor~Editor} editor
+// @returns {Function}
+function removeListStyleAttributeFromTodoList( editor ) {
+	return writer => {
+		let todoListItems = [];
+
+		for ( const change of editor.model.document.differ.getChanges() ) {
+			const item = getItemFromChange( change );
+
+			if ( item && item.is( 'element', 'listItem' ) && item.getAttribute( 'listType' ) === 'todo' ) {
+				todoListItems.push( item );
+			}
+		}
+
+		todoListItems = todoListItems.filter( item => item.hasAttribute( 'listStyle' ) );
+
+		if ( !todoListItems.length ) {
+			return false;
+		}
+
+		for ( const item of todoListItems ) {
+			writer.removeAttribute( 'listStyle', item );
+		}
+
+		return true;
+	};
+
+	function getItemFromChange( change ) {
+		if ( change.type === 'attribute' ) {
+			return change.range.start.nodeAfter;
+		}
+
+		if ( change.type === 'insert' ) {
+			return change.position.nodeAfter;
+		}
+
+		return null;
+	}
 }

@@ -20,6 +20,7 @@
     "@ckeditor/ckeditor5-basic-styles": "^21.0.0",
     "@ckeditor/ckeditor5-block-quote": "^21.0.0",
     "@ckeditor/ckeditor5-clipboard": "^21.0.0",
+    "@ckeditor/ckeditor5-essential": "^21.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^21.0.0",
     "@ckeditor/ckeditor5-enter": "^21.0.0",
     "@ckeditor/ckeditor5-font": "^21.0.0",

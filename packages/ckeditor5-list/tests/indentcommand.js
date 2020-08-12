@@ -193,6 +193,26 @@ describe( 'IndentCommand', () => {
 					'<listItem listIndent="0" listType="bulleted">g</listItem>'
 				);
 			} );
+
+			it( 'should fire "executeCleanup" event after finish all operations with all changed items', done => {
+				model.change( writer => {
+					writer.setSelection( root.getChild( 1 ), 0 );
+				} );
+
+				command.on( 'executeCleanup', ( evt, data ) => {
+					expect( data ).to.deep.equal( [
+						root.getChild( 1 ),
+						root.getChild( 2 ),
+						root.getChild( 3 ),
+						root.getChild( 4 ),
+						root.getChild( 5 )
+					] );
+
+					done();
+				} );
+
+				command.execute();
+			} );
 		} );
 	} );
 

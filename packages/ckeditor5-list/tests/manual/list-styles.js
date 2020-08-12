@@ -15,6 +15,9 @@ import TablePropertiesEditing from '@ckeditor/ckeditor5-table/src/tablepropertie
 import TableCellPropertiesEditing from '@ckeditor/ckeditor5-table/src/tablecellproperties/tablecellpropertiesediting';
 import List from '../../src/list';
 import ListStyles from '../../src/liststyles';
+import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
+import TodoList from '../../src/todolist';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -23,22 +26,35 @@ ClassicEditor
 			Code,
 			Heading,
 			List,
+			TodoList,
 			Paragraph,
 			ListStyles,
 			Table,
 			TablePropertiesEditing,
-			TableCellPropertiesEditing
+			TableCellPropertiesEditing,
+			Indent,
+			IndentBlock
 		],
 		toolbar: [
 			'heading',
 			'|',
-			'bulletedList', 'numberedList',
+			'bulletedList', 'numberedList', 'todoList',
+			'|',
+			'outdent',
+			'indent',
 			'|',
 			'undo', 'redo'
 		]
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		// TODO: Remove.
+		for ( const button of [ ...document.querySelectorAll( '.list-styles-ui button' ) ] ) {
+			button.addEventListener( 'click', () => {
+				editor.execute( 'listStyles', { type: button.getAttribute( 'data-list' ) } );
+			} );
+		}
 	} )
 	.catch( err => {
 		console.error( err.stack );

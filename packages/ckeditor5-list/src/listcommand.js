@@ -65,7 +65,7 @@ export default class ListCommand extends Command {
 		const turnOff = this.value === true;
 		// If we are turning off items, we are going to rename them to paragraphs.
 
-		model.change( writer => {
+		return model.change( writer => {
 			// If part of a list got turned off, we need to handle (outdent) all of sub-items of the last turned-off item.
 			// To be sure that model is all the time in a good state, we first fix items below turned-off item.
 			if ( turnOff ) {
@@ -211,6 +211,8 @@ export default class ListCommand extends Command {
 					writer.setAttribute( 'listType', this.type, element );
 				}
 			}
+
+			return blocks;
 		} );
 	}
 
