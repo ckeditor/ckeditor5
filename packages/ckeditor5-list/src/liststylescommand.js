@@ -20,17 +20,17 @@ export default class ListStylesCommand extends Command {
 	 * Creates an instance of the command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {String} defaultType The List type that will be used by default if the value was not specified during
+	 * @param {String} defaultType The list type that will be used by default if the value was not specified during
 	 * the command execution.
 	 */
 	constructor( editor, defaultType ) {
 		super( editor );
 
 		/**
-		 * The type of the list created by the command.
+		 * The default type of the list style.
 		 *
 		 * @private
-		 * @member {'numbered'|'bulleted'|'todo'}
+		 * @member {String}
 		 */
 		this._defaultType = defaultType;
 	}
@@ -172,7 +172,7 @@ function getSiblingNodes( position, direction ) {
 		// ■ List item 4.       [listIndent=0]
 		//
 		// Ignore nested lists.
-		if ( element.getAttribute( 'listIndent' ) !== limitIndent ) {
+		if ( element.getAttribute( 'listIndent' ) > limitIndent ) {
 			continue;
 		}
 
