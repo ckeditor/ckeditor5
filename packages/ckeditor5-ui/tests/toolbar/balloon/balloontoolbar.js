@@ -361,6 +361,18 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
+		it( 'should update the balloon position whenever #toolbarView fires the #groupedItemsUpdate (it changed its geometry)', () => {
+			setData( model, '<paragraph>b[a]r</paragraph>' );
+
+			const spy = sinon.spy( balloon, 'updatePosition' );
+
+			balloonToolbar.show();
+			sinon.assert.notCalled( spy );
+
+			balloonToolbar.toolbarView.fire( 'groupedItemsUpdate' );
+			sinon.assert.calledOnce( spy );
+		} );
+
 		it( 'should not add #toolbarView to the #_balloon more than once', () => {
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 

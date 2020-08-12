@@ -42,15 +42,15 @@ msgstr "%0/%1"
 
 msgctxt "Label used by assistive technologies describing a generic editor toolbar."
 msgid "Editor toolbar"
-msgstr ""
+msgstr "編輯器工具"
 
 msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
 msgid "Dropdown toolbar"
-msgstr ""
+msgstr "下拉選單"
 
 msgctxt "Label of a toolbar button which reveals more toolbar items."
 msgid "Show more items"
-msgstr ""
+msgstr "顯示更多"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"

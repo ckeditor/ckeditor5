@@ -229,8 +229,8 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 	downcastDispatcher.on( 'insert:$text', insertText() );
 	downcastDispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
 		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection || data.item.is( '$textProxy' ) ) {
-			const converter = wrap( ( modelAttributeValue, viewWriter ) => {
-				return viewWriter.createAttributeElement(
+			const converter = wrap( ( modelAttributeValue, { writer } ) => {
+				return writer.createAttributeElement(
 					'model-text-with-attributes',
 					{ [ data.attributeKey ]: stringifyAttributeValue( modelAttributeValue ) }
 				);
@@ -248,7 +248,7 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 
 	downcastDispatcher.on( 'selection', convertRangeSelection() );
 	downcastDispatcher.on( 'selection', convertCollapsedSelection() );
-	downcastDispatcher.on( 'addMarker', insertUIElement( ( data, writer ) => {
+	downcastDispatcher.on( 'addMarker', insertUIElement( ( data, { writer } ) => {
 		const name = data.markerName + ':' + ( data.isOpening ? 'start' : 'end' );
 
 		return writer.createUIElement( name );

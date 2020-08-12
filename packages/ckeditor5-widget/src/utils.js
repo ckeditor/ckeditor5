@@ -65,7 +65,7 @@ export function isWidget( node ) {
  *		editor.conversion.for( 'editingDowncast' )
  *			.elementToElement( {
  *				model: 'widget',
- *				view: ( modelItem, writer ) => {
+ *				view: ( modelItem, { writer } ) => {
  *					const div = writer.createContainerElement( 'div', { class: 'widget' } );
  *
  *					return toWidget( div, writer, { label: 'some widget' } );
@@ -75,7 +75,7 @@ export function isWidget( node ) {
  *		editor.conversion.for( 'dataDowncast' )
  *			.elementToElement( {
  *				model: 'widget',
- *				view: ( modelItem, writer ) => {
+ *				view: ( modelItem, { writer } ) => {
  *					return writer.createContainerElement( 'div', { class: 'widget' } );
  *				}
  *			} );
@@ -208,7 +208,7 @@ export function getLabel( element ) {
  *		editor.conversion.for( 'editingDowncast' )
  *			.elementToElement( {
  *				model: 'nested',
- *				view: ( modelItem, writer ) => {
+ *				view: ( modelItem, { writer } ) => {
  *					const div = writer.createEditableElement( 'div', { class: 'nested' } );
  *
  *					return toWidgetEditable( nested, writer );
@@ -218,7 +218,7 @@ export function getLabel( element ) {
  *		editor.conversion.for( 'dataDowncast' )
  *			.elementToElement( {
  *				model: 'nested',
- *				view: ( modelItem, writer ) => {
+ *				view: ( modelItem, { writer } ) => {
  *					return writer.createContainerElement( 'div', { class: 'nested' } );
  *				}
  *			} );

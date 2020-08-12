@@ -188,12 +188,12 @@ describe( 'MentionEditing', () => {
 
 			editor.conversion.for( 'downcast' ).attributeToElement( {
 				model: 'mention',
-				view: ( modelAttributeValue, viewWriter ) => {
+				view: ( modelAttributeValue, { writer } ) => {
 					if ( !modelAttributeValue ) {
 						return;
 					}
 
-					return viewWriter.createAttributeElement( 'a', {
+					return writer.createAttributeElement( 'a', {
 						class: 'mention',
 						'data-mention': modelAttributeValue.id,
 						'href': modelAttributeValue.link
@@ -672,12 +672,12 @@ function addCustomMentionConverters( editor ) {
 
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
-		view: ( modelAttributeValue, viewWriter ) => {
+		view: ( modelAttributeValue, { writer } ) => {
 			if ( !modelAttributeValue ) {
 				return;
 			}
 
-			return viewWriter.createAttributeElement( 'b', {
+			return writer.createAttributeElement( 'b', {
 				class: 'mention',
 				'data-mention': modelAttributeValue.id
 			}, {
