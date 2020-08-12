@@ -45,14 +45,20 @@ function mapMeta( editor ) {
 function boxRefresh( model ) {
 	const differ = model.document.differ;
 
-	const boxElements = [ ...differ.getChanges() ]
+	const changes = differ.getChanges();
+
+	console.log( `boxRefresh() size: ${ changes.length }` );
+
+	const boxElements = [ ...changes ]
 		.filter( ( { type } ) => type === 'attribute' || type === 'insert' || type === 'remove' )
 		.map( ( { range, position } ) => range && range.start.nodeAfter || position && position.parent )
 		.filter( element => element && element.is( 'element', 'box' ) );
 
 	const boxToRefresh = new Set( boxElements );
 
+	console.group( 'refreshItem' );
 	[ ...boxToRefresh.values() ].forEach( box => differ.refreshItem( box ) );
+	console.groupEnd();
 
 	return boxToRefresh.size > 1;
 }
@@ -107,7 +113,9 @@ function downcastBox( modelElement, conversionApi ) {
 	console.log( 'downcastBox' );
 
 	const { writer } = conversionApi;
+
 	const viewBox = writer.createContainerElement( 'div', { class: 'box' } );
+	conversionApi.mapper.bindElements( modelElement, viewBox );
 
 	const contentWrap = writer.createContainerElement( 'div', { class: 'box-content' } );
 	writer.insert( writer.createPositionAt( viewBox, 0 ), contentWrap );
@@ -138,11 +146,22 @@ function downcastBox( modelElement, conversionApi ) {
 		const viewField = writer.createContainerElement( 'div', { class: 'box-content-field' } );
 
 		writer.insert( writer.createPositionAt( contentWrap, field.index ), viewField );
-
 		conversionApi.mapper.bindElements( field, viewField );
 	}
 
-	conversionApi.mapper.bindElements( modelElement, viewBox );
+	// At this point we're inserting whole "component". Equivalent to (JSX-like notation):
+	//
+	//	"rendered" view																					Mapping/source
+	//
+	//	<div:container class="box">												<-- top-level			box
+	//		<div:raw class="box-meta box-meta-header">...</div:raw>										box[meta.header]
+	//		<div:container class="box-content">
+	//			<div:container class="box-content-field">...</div:container>	<-- this is "slot"		boxField
+	//			... many
+	//			<div:container class="box-content-field">...</div:container>	<-- this is "slot"		boxField
+	//		</div:container>
+	//		<div:raw class="box-meta box-meta-author">...</div:raw>										box[meta.author]
+	//	</div:container>
 
 	return viewBox;
 }
