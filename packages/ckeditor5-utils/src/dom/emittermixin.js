@@ -179,6 +179,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * @param {Object} [options={}] Additional options.
 	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered
 	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
+	 * @param {Boolean} [options.usePassive=false] Indicates that the function specified by listener will never call preventDefault().
 	 */
 	attach( event, callback, options = {} ) {
 		// If the DOM Listener for given event already exist it is pointless
@@ -232,10 +233,12 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * @private
 	 * @method module:utils/dom/emittermixin~ProxyEmitter#_createDomListener
 	 * @param {String} event The name of the event.
-	 * @param {Boolean} useCapture Indicates whether the listener was created for capturing event.
+	 * @param {Object} [options] Additional options.
+	 * @param {Boolean} [options.capture=false] Indicates whether the listener was created for capturing event.
+	 * @param {Boolean} [options.passive=false] Indicates that the function specified by listener will never call preventDefault().
 	 * @returns {Function} The DOM listener callback.
 	 */
-	_createDomListener( event, useCapture ) {
+	_createDomListener( event, options ) {
 		const domListener = domEvt => {
 			this.fire( event, domEvt );
 		};
@@ -244,7 +247,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 		// detach it from the DOM Node, when it is no longer necessary.
 		// See: {@link detach}.
 		domListener.removeListener = () => {
-			this._domNode.removeEventListener( event, domListener, useCapture );
+			this._domNode.removeEventListener( event, domListener, options );
 			delete this._domListeners[ event ];
 		};
 
