@@ -131,15 +131,26 @@ export default class DowncastDispatcher {
 			this.convertMarkerRemove( change.name, change.range, writer );
 		}
 
+		const changes = differ.getChanges();
+
+		if ( changes.length ) {
+			// @if CK_DEBUG // console.log( `convertChanges() size: ${ changes.length }` );
+		}
+
 		// Convert changes that happened on model tree.
-		for ( const entry of differ.getChanges() ) {
+		for ( const entry of changes ) {
+			// @if CK_DEBUG // console.log( `differ: ${ entry.type }` );
+
 			if ( entry.type == 'insert' ) {
 				this.convertInsert( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
 			} else if ( entry.type == 'remove' ) {
 				this.convertRemove( entry.position, entry.length, entry.name, writer );
-			} else {
-				// entry.type == 'attribute'.
+			} else if ( entry.type == 'refresh' ) {
+				// @if CK_DEBUG // console.warn( 'convertRemove' );
+			} else if ( entry.type == 'attribute' ) {
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
+			} else {
+				// todo warning
 			}
 		}
 

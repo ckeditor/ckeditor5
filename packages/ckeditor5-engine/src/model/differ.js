@@ -136,6 +136,26 @@ export default class Differ {
 		this._cachedChanges = null;
 	}
 
+	_pocRefreshItem( item ) {
+		if ( this._isInInsertedElement( item.parent ) ) {
+			return;
+		}
+
+		this._markRefresh( item.parent, item.startOffset, item.offsetSize );
+
+		// @todo: Probably makes sense - check later.
+		const range = Range._createOn( item );
+
+		for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
+			const markerRange = marker.getRange();
+
+			this.bufferMarkerChange( marker.name, markerRange, markerRange, marker.affectsData );
+		}
+
+		// Clear cache after each buffered operation as it is no longer valid.
+		this._cachedChanges = null;
+	}
+
 	/**
 	 * Buffers the given operation. An operation has to be buffered before it is executed.
 	 *
@@ -455,6 +475,12 @@ export default class Differ {
 
 					i++;
 					j++;
+				} else if ( action === 'x' ) {
+					// Swap action - similar to 'equal'
+					diffSet.push( this._getRefreshDiff( element, i, elementChildren[ i ].name ) );
+
+					i++;
+					j++;
 				} else {
 					// `action` is 'equal'. Child not changed.
 					i++;
@@ -583,6 +609,16 @@ export default class Differ {
 		this._markChange( parent, changeItem );
 
 		this._removeAllNestedChanges( parent, offset, howMany );
+	}
+
+	_markRefresh( parent, offset, howMany ) {
+		const changeItem = { type: 'refresh', offset, howMany, count: this._changeCount++ };
+
+		this._markChange( parent, changeItem );
+
+		// Needed to remove "attribute" change or other.
+		// @todo: might need to retain "slot" changes.
+		this._removeAllNestedAttributeChanges( parent, offset, howMany );
 	}
 
 	/**
@@ -982,6 +1018,16 @@ export default class Differ {
 		return diffs;
 	}
 
+	_getRefreshDiff( parent, offset, name ) {
+		return {
+			type: 'refresh',
+			position: Position._createAt( parent, offset ),
+			name,
+			length: 1,
+			changeCount: this._changeCount++
+		};
+	}
+
 	/**
 	 * Checks whether given element or any of its parents is an element that is buffered as an inserted element.
 	 *
@@ -1029,6 +1075,16 @@ export default class Differ {
 
 				this._removeAllNestedChanges( item, 0, item.maxOffset );
 			}
+		}
+	}
+
+	_removeAllNestedAttributeChanges( parent, offset, howMany ) {
+		const parentChanges = this._changesInElement.get( parent );
+
+		const notAttributeChange = change => change.type !== 'attribute' || change.offset !== offset || change.howMany !== howMany;
+
+		if ( parentChanges ) {
+			this._changesInElement.set( parent, parentChanges.filter( notAttributeChange ) );
 		}
 	}
 }
@@ -1136,13 +1192,18 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 			offset = change.offset;
 			// We removed `howMany` old nodes, update `oldChildrenHandled`.
 			oldChildrenHandled += change.howMany;
-		} else {
+		} else if ( change.type == 'attribute' ) {
 			actions.push( ...'a'.repeat( change.howMany ).split( '' ) );
 
 			// The last handled offset is at the position after the changed range.
 			offset = change.offset + change.howMany;
 			// We changed `howMany` old nodes, update `oldChildrenHandled`.
 			oldChildrenHandled += change.howMany;
+		} else {
+			actions.push( 'x' );
+
+			// The last handled offset is after inserted range.
+			offset = change.offset + change.howMany;
 		}
 	}
 

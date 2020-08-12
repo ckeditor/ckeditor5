@@ -32,7 +32,8 @@ function tableCellRefreshPostFixer( model ) {
 	let insertCount = 0;
 
 	for ( const change of differ.getChanges() ) {
-		const parent = change.type == 'insert' || change.type == 'remove' ? change.position.parent : change.range.start.parent;
+		// @todo port to main
+		const parent = change.type == 'attribute' ? change.range.start.parent : change.position.parent;
 
 		if ( !parent.is( 'element', 'tableCell' ) ) {
 			continue;

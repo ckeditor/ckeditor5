@@ -57,7 +57,7 @@ function boxRefresh( model ) {
 	const boxToRefresh = new Set( boxElements );
 
 	console.group( 'refreshItem' );
-	[ ...boxToRefresh.values() ].forEach( box => differ.refreshItem( box ) );
+	[ ...boxToRefresh.values() ].forEach( box => differ._pocRefreshItem( box ) );
 	console.groupEnd();
 
 	return boxToRefresh.size > 1;
