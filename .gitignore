@@ -7,3 +7,6 @@ external/
 lerna-debug.log
 .idea
 .vscode
+
+# `yarn.lock` needs to be ommited from commited files because it might contain info about private repositories.
+yarn.lock
