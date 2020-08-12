@@ -941,10 +941,15 @@ describe( 'DataController utils', () => {
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContent( model, doc.selection, { doNotAutoparagraph: true } );
+				// This must be tested inside a change block to check results before the post-fixers get triggered.
+				model.change( () => {
+					deleteContent( model, doc.selection, { doNotAutoparagraph: true } );
 
-				expect( getData( model, { rootName: 'bodyRoot' } ) )
-					.to.equal( '[]' );
+					expect( getData( model, { rootName: 'bodyRoot' } ) ).to.equal( '[]' );
+				} );
+
+				// Note that auto-paragraphing post-fixer injected a paragraph into the empty root.
+				expect( getData( model, { rootName: 'bodyRoot' } ) ).to.equal( '<paragraph>[]</paragraph>' );
 			} );
 		} );
 

@@ -54,8 +54,8 @@ msgstr "標題 6"
 
 msgctxt "A default value of the placeholder for the content title."
 msgid "Type your title"
-msgstr ""
+msgstr "輸入你的標題"
 
 msgctxt "A default value of the placeholder for the content body."
 msgid "Type or paste your content here."
-msgstr ""
+msgstr "在此輸入或貼上你的內容。"

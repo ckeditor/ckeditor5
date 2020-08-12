@@ -161,8 +161,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		// Additionally the editing pipeline should always display a collapsed markers.
 		editor.conversion.for( 'editingDowncast' ).markerToElement( {
 			model: 'restrictedEditingException',
-			view: ( markerData, viewWriter ) => {
-				return viewWriter.createUIElement( 'span', {
+			view: ( markerData, { writer } ) => {
+				return writer.createUIElement( 'span', {
 					class: 'restricted-editing-exception restricted-editing-exception_collapsed'
 				} );
 			}
@@ -170,8 +170,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 
 		editor.conversion.for( 'dataDowncast' ).markerToElement( {
 			model: 'restrictedEditingException',
-			view: ( markerData, viewWriter ) => {
-				return viewWriter.createEmptyElement( 'span', {
+			view: ( markerData, { writer } ) => {
+				return writer.createEmptyElement( 'span', {
 					class: 'restricted-editing-exception'
 				} );
 			}

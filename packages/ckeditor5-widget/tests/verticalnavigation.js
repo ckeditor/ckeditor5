@@ -1258,13 +1258,13 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 		editor.conversion.for( 'dataDowncast' )
 			.elementToElement( {
 				model: 'widget',
-				view: ( modelItem, writer ) => {
+				view: ( modelItem, { writer } ) => {
 					return writer.createContainerElement( 'figure' );
 				}
 			} )
 			.elementToElement( {
 				model: 'nested',
-				view: ( modelItem, writer ) => {
+				view: ( modelItem, { writer } ) => {
 					return writer.createContainerElement( 'figcaption' );
 				}
 			} );
@@ -1272,7 +1272,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 		editor.conversion.for( 'editingDowncast' )
 			.elementToElement( {
 				model: 'widget',
-				view: ( modelItem, writer ) => {
+				view: ( modelItem, { writer } ) => {
 					const div = writer.createContainerElement( 'figure' );
 
 					return toWidget( div, writer, { label: 'widget label' } );
@@ -1280,7 +1280,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			} )
 			.elementToElement( {
 				model: 'nested',
-				view: ( modelItem, writer ) => {
+				view: ( modelItem, { writer } ) => {
 					const nested = writer.createEditableElement( 'figcaption' );
 
 					return toWidgetEditable( nested, writer );
