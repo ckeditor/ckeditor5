@@ -120,7 +120,7 @@ describe( 'DomEmitterMixin', () => {
 
 				domEmitter.listenTo( node, 'test', () => {} );
 
-				expect( spy.calledWith( 'test', sinon.match.func, sinon.match.falsy ) ).to.be.true;
+				expect( spy.calledWith( 'test', sinon.match.func, sinon.match( { capture: false, passive: false } ) ) ).to.be.true;
 			} );
 
 			it( 'should optionally use passive mode', () => {
@@ -128,7 +128,7 @@ describe( 'DomEmitterMixin', () => {
 
 				domEmitter.listenTo( node, 'test', () => {}, { usePassive: true } );
 
-				expect( spy.calledWith( 'test', sinon.match.func, sinon.match( { passive: true } ) ) ).to.be.true;
+				expect( spy.calledWith( 'test', sinon.match.func, sinon.match( { capture: false, passive: true } ) ) ).to.be.true;
 			} );
 
 			it( 'should not get activated for event capturing (if not desired)', () => {

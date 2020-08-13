@@ -49,6 +49,8 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 * order they were added.
 	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered
 	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
+	 * @param {Boolean} [options.usePassive=false] Indicates that the function specified by listener will never call preventDefault()
+	 * and prevents blocking browser's main thread by this event handler.
 	 */
 	listenTo( emitter, ...rest ) {
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with
@@ -179,7 +181,8 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * @param {Object} [options={}] Additional options.
 	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered
 	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
-	 * @param {Boolean} [options.usePassive=false] Indicates that the function specified by listener will never call preventDefault().
+	 * @param {Boolean} [options.usePassive=false] Indicates that the function specified by listener will never call preventDefault()
+	 * and prevents blocking browser's main thread by this event handler.
 	 */
 	attach( event, callback, options = {} ) {
 		// If the DOM Listener for given event already exist it is pointless
@@ -188,10 +191,10 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 			return;
 		}
 
-		const listenerOptions = options.useCapture || options.usePassive ? {
+		const listenerOptions = {
 			capture: !!options.useCapture,
 			passive: !!options.usePassive
-		} : false;
+		};
 
 		const domListener = this._createDomListener( event, listenerOptions );
 
@@ -235,7 +238,8 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * @param {String} event The name of the event.
 	 * @param {Object} [options] Additional options.
 	 * @param {Boolean} [options.capture=false] Indicates whether the listener was created for capturing event.
-	 * @param {Boolean} [options.passive=false] Indicates that the function specified by listener will never call preventDefault().
+	 * @param {Boolean} [options.passive=false] Indicates that the function specified by listener will never call preventDefault()
+	 * and prevents blocking browser's main thread by this event handler.
 	 * @returns {Function} The DOM listener callback.
 	 */
 	_createDomListener( event, options ) {
