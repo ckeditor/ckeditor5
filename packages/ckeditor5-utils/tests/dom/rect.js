@@ -91,23 +91,6 @@ describe( 'Rect', () => {
 			assertRect( new Rect( range ), expectedGeometry );
 		} );
 
-		it( 'should calculate rect of a range with multiple inline elements correctly (integration)', () => {
-			const wrapper = document.createElement( 'p' );
-			wrapper.innerHTML = 'aa<a href="url">b<span>cccccc</span>dd</a>ee';
-			document.body.appendChild( wrapper );
-
-			const domRange = document.createRange();
-			// aa[bccccccdd]ee
-			domRange.setStart( wrapper.childNodes[ 0 ], 2 );
-			domRange.setEnd( wrapper.childNodes[ 2 ], 0 );
-
-			const rect = new Rect( domRange );
-			const expectedWidth = domRange.getBoundingClientRect().width;
-
-			expect( expectedWidth, 'expected width is valid' ).to.be.greaterThan( 0 );
-			expect( rect.width ).to.eql( expectedWidth );
-		} );
-
 		// https://github.com/ckeditor/ckeditor5-utils/issues/153
 		it( 'should accept Range (collapsed)', () => {
 			const range = document.createRange();
