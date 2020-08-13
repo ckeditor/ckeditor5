@@ -394,6 +394,10 @@ export default class LinkUI extends Plugin {
 	_showUI( forceVisible = false ) {
 		// When there's no link under the selection, go straight to the editing UI.
 		if ( !this._getSelectedLinkElement() ) {
+			// Show visual selection on a text without a link when the contextual balloon is displayed.
+			// See https://github.com/ckeditor/ckeditor5/issues/4721.
+			this._showFakeVisualSelection();
+
 			this._addActionsView();
 
 			// Be sure panel with link is visible.
@@ -402,9 +406,6 @@ export default class LinkUI extends Plugin {
 			}
 
 			this._addFormView();
-			// Show visual selection on a text without a link when the contextual balloon is displayed.
-			// See https://github.com/ckeditor/ckeditor5/issues/4721.
-			this._showFakeVisualSelection();
 		}
 		// If there's a link under the selection...
 		else {
@@ -589,14 +590,16 @@ export default class LinkUI extends Plugin {
 		const viewDocument = view.document;
 		const targetLink = this._getSelectedLinkElement();
 		const model = this.editor.model;
-		const range = model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ?
-			model.markers.get( VISUAL_SELECTION_MARKER_NAME ) : viewDocument.selection.getFirstRange();
+		// const range = model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ?
+		// 	model.markers.get( VISUAL_SELECTION_MARKER_NAME ).getRange() : viewDocument.selection.getFirstRange();
+		let range;
 
-		// console.log( '_getBalloonPositionData() to', targetLink ? targetLink : range ); // this bit seems to be fine
-
-		// if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
-		//	console.log( 'there is a marker' );
-		// }
+		if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
+			range = model.markers.get( VISUAL_SELECTION_MARKER_NAME ).getRange();
+			range = this.editor.editing.mapper.toViewRange( range );
+		} else {
+			range = viewDocument.selection.getFirstRange();
+		}
 
 		const target = targetLink ?
 			// When selection is inside link element, then attach panel to this element.
@@ -653,8 +656,6 @@ export default class LinkUI extends Plugin {
 	 */
 	_showFakeVisualSelection() {
 		const model = this.editor.model;
-
-		// console.log( '_showFakeVisualSelection()' );
 
 		model.change( writer => {
 			if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
