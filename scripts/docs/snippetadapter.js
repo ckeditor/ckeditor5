@@ -197,7 +197,7 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 				}
 
 				const cssImportsHTML = getHTMLImports( cssFiles, importPath => {
-					return `    <link rel="stylesheet" href="${ importPath }" type="text/css">`;
+					return `    <link rel="stylesheet" href="${ importPath }" type="text/css" data-cke="true">`;
 				} );
 
 				const jsImportsHTML = getHTMLImports( jsFiles, importPath => {
