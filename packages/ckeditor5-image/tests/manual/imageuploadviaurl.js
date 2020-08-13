@@ -37,7 +37,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		window.editor = editor;
+		window.editor1 = editor;
 
 		// Register fake adapter.
 		editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
@@ -86,7 +86,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		window.editor = editor;
+		window.editor2 = editor;
 
 		// Register fake adapter.
 		editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
