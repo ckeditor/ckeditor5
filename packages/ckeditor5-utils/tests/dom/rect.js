@@ -52,6 +52,62 @@ describe( 'Rect', () => {
 			assertRect( new Rect( range ), geometry );
 		} );
 
+		it( 'should accept Range (non–collapsed, sequenced horizontally)', () => {
+			const firstGeometry = geometry;
+			const secondGeometry = Object.assign( {}, geometry, {
+				right: 50,
+				left: 40,
+				width: 10
+			} );
+
+			const range = document.createRange();
+			range.selectNode( document.body );
+			sinon.stub( range, 'getClientRects' ).returns( [ firstGeometry, secondGeometry ] );
+
+			const expectedGeometry = Object.assign( {}, geometry, {
+				width: 30,
+				right: 50
+			} );
+
+			assertRect( new Rect( range ), expectedGeometry );
+		} );
+
+		it( 'should accept Range (non–collapsed, sequenced vertically)', () => {
+			const firstGeometry = geometry;
+			const secondGeometry = Object.assign( {}, geometry, {
+				top: 30,
+				bottom: 40
+			} );
+
+			const range = document.createRange();
+			range.selectNode( document.body );
+			sinon.stub( range, 'getClientRects' ).returns( [ firstGeometry, secondGeometry ] );
+
+			const expectedGeometry = Object.assign( {}, geometry, {
+				height: 30,
+				bottom: 40
+			} );
+
+			assertRect( new Rect( range ), expectedGeometry );
+		} );
+
+		it( 'should calculate rect of a range with multiple inline elements correctly (integration)', () => {
+			const wrapper = document.createElement( 'p' );
+			wrapper.innerHTML = 'aa<a href="url">b<span>cccccc</span>dd</a>ee';
+			document.body.appendChild( wrapper );
+
+			const domRange = document.createRange();
+			// aa[bccccccdd]ee
+			domRange.setStart( wrapper.childNodes[ 0 ], 2 );
+			domRange.setEnd( wrapper.childNodes[ 2 ], 0 );
+
+			const rect = new Rect( domRange );
+			const expectedWidth = domRange.getBoundingClientRect().width;
+
+			expect( expectedWidth, 'expected width is valid' ).to.be.greaterThan( 0 );
+			expect( rect.width ).to.eql( expectedWidth );
+		} );
+
 		// https://github.com/ckeditor/ckeditor5-utils/issues/153
 		it( 'should accept Range (collapsed)', () => {
 			const range = document.createRange();
