@@ -91,6 +91,8 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 
 	const groupedSnippetsByLanguage = {};
 
+	const constantDefinitions = getConstantDefinitions( snippets );
+
 	// Group snippets by language. There is no way to build different languages in a single Webpack process.
 	// Webpack must be called as many times as different languages are being used in snippets.
 	for ( const snippetData of snippets ) {
@@ -113,7 +115,10 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 			return getWebpackConfig( groupedSnippetsByLanguage[ language ], {
 				language,
 				production: options.production,
-				definitions: options.definitions || {}
+				definitions: {
+					...( options.definitions || {} ),
+					...constantDefinitions
+				}
 			} );
 		} );
 
@@ -252,6 +257,51 @@ function filterAllowedSnippets( snippets, allowedSnippets ) {
 			snippets.delete( snippetData );
 		}
 	}
+}
+
+function getConstantDefinitions( snippets ) {
+	const knownPaths = new Set();
+	const constantDefinitions = {};
+	const constantOrigins = new Map();
+
+	for ( const snippet of snippets ) {
+		if ( !snippet.pageSourcePath ) {
+			continue;
+		}
+
+		let directory = path.dirname( snippet.pageSourcePath );
+
+		while ( !knownPaths.has( directory ) ) {
+			knownPaths.add( directory );
+
+			const absolutePathToConstants = path.join( directory, 'docs', 'constants.js' );
+			const importPathToConstants = path.posix.relative( __dirname, absolutePathToConstants );
+
+			if ( fs.existsSync( absolutePathToConstants ) ) {
+				const packageConstantDefinitions = require( './' + importPathToConstants );
+
+				for ( const constantName in packageConstantDefinitions ) {
+					const constantValue = packageConstantDefinitions[ constantName ];
+
+					if ( constantDefinitions[ constantName ] && constantDefinitions[ constantName ] !== constantValue ) {
+						throw new Error(
+							`Definition for the '${ constantName }' constant is duplicated` +
+							` (${ importPathToConstants }, ${ constantOrigins.get( constantName ) }).`
+						);
+					}
+
+					constantDefinitions[ constantName ] = constantValue;
+					constantOrigins.set( constantName, importPathToConstants );
+				}
+
+				Object.assign( constantDefinitions, packageConstantDefinitions );
+			}
+
+			directory = path.dirname( directory );
+		}
+	}
+
+	return constantDefinitions;
 }
 
 /**
