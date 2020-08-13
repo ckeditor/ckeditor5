@@ -588,12 +588,21 @@ export default class LinkUI extends Plugin {
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
 		const targetLink = this._getSelectedLinkElement();
+		const model = this.editor.model;
+		const range = model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ?
+			model.markers.get( VISUAL_SELECTION_MARKER_NAME ) : viewDocument.selection.getFirstRange();
+
+		// console.log( '_getBalloonPositionData() to', targetLink ? targetLink : range ); // this bit seems to be fine
+
+		// if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
+		//	console.log( 'there is a marker' );
+		// }
 
 		const target = targetLink ?
 			// When selection is inside link element, then attach panel to this element.
 			view.domConverter.mapViewToDom( targetLink ) :
 			// Otherwise attach panel to the selection.
-			view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
+			view.domConverter.viewRangeToDom( range );
 
 		return { target };
 	}
@@ -644,6 +653,8 @@ export default class LinkUI extends Plugin {
 	 */
 	_showFakeVisualSelection() {
 		const model = this.editor.model;
+
+		// console.log( '_showFakeVisualSelection()' );
 
 		model.change( writer => {
 			if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
