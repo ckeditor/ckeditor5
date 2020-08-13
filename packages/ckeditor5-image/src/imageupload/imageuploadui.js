@@ -68,7 +68,7 @@ export default class ImageUploadUI extends Plugin {
 	 *
 	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdownView.
 	 * @param {module:image/imageupload/ui/imageuploadpanelview~ImageUploadPanelView} imageUploadView An imageUploadView.
-	 * @param {module:core/command} command An imageUpload command
+	 * @param {module:core/command~Command} command An imageUpload command
 	 *
 	 * @private
 	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
