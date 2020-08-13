@@ -208,13 +208,15 @@ export default class ImageUploadPanelView extends View {
 		// Intercept the "selectstart" event, which is blocked by default because of the default behavior
 		// of the DropdownView#panelView.
 		// TODO: blocking "selectstart" in the #panelView should be configurable per–drop–down instance.
-		this.listenTo( this.labeledInputView.fieldView.element, 'selectstart', ( evt, domEvt ) => {
+		this.listenTo( this.labeledInputView.element, 'selectstart', ( evt, domEvt ) => {
 			domEvt.stopPropagation();
 		}, { priority: 'high' } );
 	}
 
 	/**
 	 * Creates labeled field view.
+	 *
+	 * @param {module:utils/locale~Locale} locale The localization services instance.
 	 *
 	 * @private
 	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
@@ -226,11 +228,12 @@ export default class ImageUploadPanelView extends View {
 		labeledInputView.set( {
 			label: t( 'Insert image via URL' )
 		} );
-		labeledInputView.fieldView.placeholder = t( 'Image source URL...' );
-		labeledInputView.fieldView.bind( 'value' ).to( this, 'imageURLInputValue' );
+		labeledInputView.fieldView.placeholder = t( 'https://example.com/src/image.png' );
+		labeledInputView.infoText = t( 'Paste the image source URL' );
+		labeledInputView.fieldView.bind( 'value' ).to( this, 'imageURLInputValue', value => value || '' );
 
-		labeledInputView.fieldView.on( 'input', ( evtInfo, evtData ) => {
-			this.imageURLInputValue = evtData.target.value;
+		labeledInputView.fieldView.on( 'input', () => {
+			this.imageURLInputValue = labeledInputView.fieldView.element.value;
 		} );
 
 		return labeledInputView;
@@ -238,6 +241,8 @@ export default class ImageUploadPanelView extends View {
 
 	/**
 	 * Creates dropdown view.
+	 *
+	 * @param {module:utils/locale~Locale} locale The localization services instance.
 	 *
 	 * @private
 	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
@@ -268,6 +273,8 @@ export default class ImageUploadPanelView extends View {
 	 *
 	 * * {@link #insertButtonView},
 	 * * {@link #cancelButtonView}.
+	 *
+	 * @param {module:utils/locale~Locale} locale The localization services instance.
 	 *
 	 * @private
 	 * @returns {Object.<String,module:ui/view~View>}
