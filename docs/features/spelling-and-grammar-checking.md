@@ -44,9 +44,15 @@ ClassicEditor
 		plugins: [ ..., WProofreader ],
 		// ...
 	} )
+	.then( ... )
+	.catch( ... );
 ```
 
-At this step, it's required to provide a proper configuration. The proofreader can be used either as a [cloud solution](#wproofreader-cloud) or [hosted on your own server](#wproofreader-server).
+<info-box info>
+	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+</info-box>
+
+At this step, it is required to provide a proper configuration. The proofreader can be used either as a [cloud solution](#wproofreader-cloud) or [hosted on your own server](#wproofreader-server).
 
 ### WProofreader Cloud
 
