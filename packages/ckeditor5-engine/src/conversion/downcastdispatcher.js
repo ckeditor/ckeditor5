@@ -116,6 +116,8 @@ export default class DowncastDispatcher {
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastConversionApi}
 		 */
 		this.conversionApi = extend( { dispatcher: this }, conversionApi );
+
+		this._map = new Map();
 	}
 
 	/**
@@ -166,6 +168,42 @@ export default class DowncastDispatcher {
 		for ( const change of differ.getMarkersToAdd() ) {
 			this.convertMarkerAdd( change.name, change.range, writer );
 		}
+	}
+
+	mapRefreshEvents( modelName, events = [] ) {
+		for ( const eventName of events ) {
+			this._map.set( eventName, modelName );
+		}
+	}
+
+	pocCheckChangesForRefresh( differ ) {
+		const changes = differ.getChanges();
+
+		const found = [ ...changes ]
+			.filter( ( { type } ) => type === 'attribute' || type === 'insert' || type === 'remove' )
+			.map( entry => {
+				const { range, position, type } = entry;
+				const element = range && range.start.nodeAfter || position && position.parent;
+
+				let eventName;
+
+				if ( type === 'attribute' ) {
+					eventName = `attribute:${ entry.attributeKey }:${ element.name }`;
+				} else {
+					eventName = `${ type }:${ element.name }`;
+				}
+
+				if ( this._map.has( eventName ) ) {
+					const expectedElement = this._map.get( eventName );
+
+					return element.is( 'element', expectedElement ) ? element : element.findAncestor( expectedElement );
+				}
+			} )
+			.filter( element => !!element );
+
+		const elementsToRefresh = new Set( found );
+
+		[ ...elementsToRefresh.values() ].forEach( box => differ._pocRefreshItem( box ) );
 	}
 
 	/**

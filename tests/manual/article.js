@@ -40,27 +40,6 @@ function mapMeta( editor ) {
 	};
 }
 
-function boxRefresh( model ) {
-	const differ = model.document.differ;
-
-	const changes = differ.getChanges();
-
-	console.log( `boxRefresh() size: ${ changes.length }` );
-
-	const boxElements = [ ...changes ]
-		.filter( ( { type } ) => type === 'attribute' || type === 'insert' || type === 'remove' )
-		.map( ( { range, position } ) => range && range.start.nodeAfter || position && position.parent )
-		.filter( element => element && element.is( 'element', 'box' ) );
-
-	const boxToRefresh = new Set( boxElements );
-
-	console.group( 'refreshItem' );
-	[ ...boxToRefresh.values() ].forEach( box => differ._pocRefreshItem( box ) );
-	console.groupEnd();
-
-	return boxToRefresh.size > 1;
-}
-
 function getChildren( editor, viewElement ) {
 	return [ ...( editor.editing.view.createRangeIn( viewElement ) ) ]
 		.filter( ( { type } ) => type === 'elementStart' )
@@ -108,8 +87,6 @@ function getBoxUpcastConverter( editor ) {
 }
 
 function downcastBox( modelElement, conversionApi ) {
-	console.log( 'downcastBox' );
-
 	const { writer } = conversionApi;
 
 	const viewBox = writer.createContainerElement( 'div', { class: 'box' } );
@@ -122,7 +99,7 @@ function downcastBox( modelElement, conversionApi ) {
 		if ( meta === 'header' ) {
 			const header = writer.createRawElement( 'div', {
 				class: 'box-meta box-meta-header'
-			}, function( domElement ) {
+			}, domElement => {
 				domElement.innerHTML = `<div class="box-meta-header-title"><h2>${ metaValue.title }</h2></div>`;
 			} );
 
@@ -145,6 +122,17 @@ function downcastBox( modelElement, conversionApi ) {
 
 		writer.insert( writer.createPositionAt( contentWrap, field.index ), viewField );
 		conversionApi.mapper.bindSlotElements( field, viewField );
+
+		// Might be simplified to:
+		//
+		// writer.defineSlot( field, viewField, field.index );
+		//
+		// but would require a converter:
+		//
+		// editor.conversion.for( 'downcast' ).elementToElement( {	// .slotToElement()?
+		// 		model: 'viewField',
+		// 		view: { name: 'div', class: 'box-content-field' }
+		// 	} );
 	}
 
 	// At this point we're inserting whole "component". Equivalent to (JSX-like notation):
@@ -212,10 +200,13 @@ function Box( editor ) {
 
 	editor.conversion.for( 'downcast' ).elementToElement( {
 		model: 'box',
-		view: downcastBox
+		view: downcastBox,
+		triggerBy: [
+			'attribute:meta:box',
+			'insert:boxField',
+			'remove:boxField'
+		]
 	} );
-
-	editor.model.document.registerPostFixer( () => boxRefresh( editor.model ) );
 
 	addBoxMetaButton( editor, 'boxTitle', 'Box title', () => ( {
 		header: { title: `Random title no. ${ getRandom() }.` }

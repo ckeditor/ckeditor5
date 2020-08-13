@@ -1387,6 +1387,10 @@ function downcastElementToElement( config ) {
 
 	return dispatcher => {
 		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
+
+		if ( config.triggerBy ) {
+			dispatcher.mapRefreshEvents( config.model, config.triggerBy );
+		}
 	};
 }
 
