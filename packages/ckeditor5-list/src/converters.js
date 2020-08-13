@@ -379,30 +379,16 @@ export function viewModelConverter( evt, data, conversionApi ) {
 		const type = data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted';
 		writer.setAttribute( 'listType', type, listItem );
 
-		// Try to find allowed parent for list item.
-		const splitResult = conversionApi.splitToAllowedParent( listItem, data.modelCursor );
-
-		// When there is no allowed parent it means that list item cannot be converted at current model position
-		// and in any of position ancestors.
-		if ( !splitResult ) {
+		if ( !conversionApi.safeInsert( listItem, data.modelCursor ) ) {
 			return;
 		}
-
-		writer.insert( listItem, splitResult.position );
 
 		const nextPosition = viewToModelListItemChildrenConverter( listItem, data.viewItem.getChildren(), conversionApi );
 
 		// Result range starts before the first item and ends after the last.
 		data.modelRange = writer.createRange( data.modelCursor, nextPosition );
 
-		// When `data.modelCursor` parent had to be split to insert list item...
-		if ( splitResult.cursorParent ) {
-			// Continue conversion in the split element.
-			data.modelCursor = writer.createPositionAt( splitResult.cursorParent, 0 );
-		} else {
-			// Otherwise continue conversion after the last list item.
-			data.modelCursor = data.modelRange.end;
-		}
+		conversionApi.updateConversionResult( listItem, data );
 	}
 }
 

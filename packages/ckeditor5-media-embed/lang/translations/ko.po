@@ -26,19 +26,19 @@ msgstr "미디어 URL"
 
 msgctxt "The help text displayed under the media URL input helping users to discover the interface."
 msgid "Paste the media URL in the input."
-msgstr "미디어 URL을 입력해주세요."
+msgstr "미디어의 URL을 입력해주세요."
 
 msgctxt "The tip displayed next to the media URL input informing about an easier way of embedding."
 msgid "Tip: Paste the URL into the content to embed faster."
-msgstr "Tip: URL을 복사 후 붙여넣기하면 더 빠릅니다."
+msgstr "팁: URL을 붙여넣기하면 더 빨리 삽입할 수 있습니다."
 
 msgctxt "An error message that informs about an empty value in the URL input."
 msgid "The URL must not be empty."
-msgstr "URL이 비어있습니다."
+msgstr "URL이 비어있을 수 없습니다."
 
 msgctxt "An error message that informs about unsupported media URL."
 msgid "This media URL is not supported."
-msgstr "이 URL은 지원되지 않습니다."
+msgstr "이 미디어 URL은 지원되지 않습니다."
 
 msgctxt "Toolbar button tooltip for the Media Embed feature."
 msgid "Insert media"

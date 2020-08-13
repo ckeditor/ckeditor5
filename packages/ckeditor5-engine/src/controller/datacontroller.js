@@ -24,6 +24,7 @@ import ViewDocument from '../view/document';
 import ViewDowncastWriter from '../view/downcastwriter';
 
 import ModelRange from '../model/range';
+import { autoParagraphEmptyRoots } from '../model/utils/autoparagraphing';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
@@ -126,8 +127,8 @@ export default class DataController {
 		// Define default converters for text and elements.
 		//
 		// Note that if there is no default converter for the element it will be skipped, for instance `<b>foo</b>` will be
-		// converted to nothing. We add `convertToModelFragment` as a last converter so it converts children of that
-		// element to the document fragment so `<b>foo</b>` will be converted to `foo` if there is no converter for `<b>`.
+		// converted to nothing. We therefore add `convertToModelFragment` as a last converter so it converts children of that
+		// element to the document fragment and so `<b>foo</b>` will be converted to `foo` if there is no converter for `<b>`.
 		this.upcastDispatcher.on( 'text', convertText(), { priority: 'lowest' } );
 		this.upcastDispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		this.upcastDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
@@ -135,10 +136,16 @@ export default class DataController {
 		this.decorate( 'init' );
 		this.decorate( 'set' );
 
-		// Fire `ready` event when initialisation has completed. Such low level listener gives possibility
-		// to plug into initialisation pipeline without interrupting the initialisation flow.
+		// Fire the `ready` event when the initialization has completed. Such low-level listener gives possibility
+		// to plug into the initialization pipeline without interrupting the initialization flow.
 		this.on( 'init', () => {
 			this.fire( 'ready' );
+		}, { priority: 'lowest' } );
+
+		// Fix empty roots after DataController is 'ready' (note that init method could be decorated and stopped).
+		// We need to handle this event because initial data could be empty and post-fixer would not get triggered.
+		this.on( 'ready', () => {
+			this.model.enqueueChange( 'transparent', autoParagraphEmptyRoots );
 		}, { priority: 'lowest' } );
 	}
 
@@ -146,15 +153,16 @@ export default class DataController {
 	 * Returns the model's data converted by downcast dispatchers attached to {@link #downcastDispatcher} and
 	 * formatted by the {@link #processor data processor}.
 	 *
-	 * @param {Object} [options]
+	 * @param {Object} [options] Additional configuration for the retrieved data. `DataController` provides two optional
+	 * properties: `rootName` and `trim`. Other properties of this object are specified by various editor features.
 	 * @param {String} [options.rootName='main'] Root name.
 	 * @param {String} [options.trim='empty'] Whether returned data should be trimmed. This option is set to `empty` by default,
 	 * which means whenever editor content is considered empty, an empty string will be returned. To turn off trimming completely
 	 * use `'none'`. In such cases exact content will be returned (for example `<p>&nbsp;</p>` for an empty editor).
 	 * @returns {String} Output data.
 	 */
-	get( options ) {
-		const { rootName = 'main', trim = 'empty' } = options || {};
+	get( options = {} ) {
+		const { rootName = 'main', trim = 'empty' } = options;
 
 		if ( !this._checkIfRootsExists( [ rootName ] ) ) {
 			/**
@@ -177,7 +185,7 @@ export default class DataController {
 			return '';
 		}
 
-		return this.stringify( root );
+		return this.stringify( root, options );
 	}
 
 	/**
@@ -187,11 +195,12 @@ export default class DataController {
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
 	 * Element whose content will be stringified.
+	 * @param {Object} [options] Additional configuration passed to the conversion process.
 	 * @returns {String} Output data.
 	 */
-	stringify( modelElementOrFragment ) {
+	stringify( modelElementOrFragment, options ) {
 		// Model -> view.
-		const viewDocumentFragment = this.toView( modelElementOrFragment );
+		const viewDocumentFragment = this.toView( modelElementOrFragment, options );
 
 		// View -> data.
 		return this.processor.toData( viewDocumentFragment );
@@ -205,9 +214,11 @@ export default class DataController {
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
 	 * Element or document fragment whose content will be converted.
+	 * @param {Object} [options] Additional configuration that will be available through
+	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi#options} during the conversion process.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Output view DocumentFragment.
 	 */
-	toView( modelElementOrFragment ) {
+	toView( modelElementOrFragment, options ) {
 		const viewDocument = this.viewDocument;
 		const viewWriter = this._viewWriter;
 
@@ -220,7 +231,10 @@ export default class DataController {
 
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
-		// We have no view controller and rendering do DOM in DataController so view.change() block is not used here.
+		// Make additional options available during conversion process through `conversionApi`.
+		this.downcastDispatcher.conversionApi.options = options;
+
+		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
 		this.downcastDispatcher.convertInsert( modelRange, viewWriter );
 
 		if ( !modelElementOrFragment.is( 'documentFragment' ) ) {
@@ -232,6 +246,9 @@ export default class DataController {
 				this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter );
 			}
 		}
+
+		// Clean `conversionApi`.
+		delete this.downcastDispatcher.conversionApi.options;
 
 		return viewDocumentFragment;
 	}
@@ -439,17 +456,17 @@ export default class DataController {
 	}
 
 	/**
-	 * Event fired once data initialisation has finished.
+	 * Event fired once the data initialization has finished.
 	 *
 	 * @event ready
 	 */
 
 	/**
-	 * Event fired after {@link #init init() method} has been run. It can be {@link #listenTo listened to} to adjust/modify
-	 * the initialisation flow. However, if the `init` event is stopped or prevented, the {@link #event:ready ready event}
+	 * Event fired after the {@link #init `init()` method} was run. It can be {@link #listenTo listened to} in order to adjust or modify
+	 * the initialization flow. However, if the `init` event is stopped or prevented, the {@link #event:ready `ready` event}
 	 * should be fired manually.
 	 *
-	 * The `init` event is fired by decorated {@link #init} method.
+	 * The `init` event is fired by the decorated {@link #init} method.
 	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
 	 *
 	 * @event init

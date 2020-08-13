@@ -13,8 +13,8 @@ In this guide, we would like to show you ways to closer integrate CKEditor 5 wit
 
 In order to start developing CKEditor 5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 6.9.0+
-* npm 4+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
+* [Node.js](https://nodejs.org/en/) 12.0.0+
+* npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 * [Git](https://git-scm.com/)
 
 ## Bundler
@@ -513,7 +513,7 @@ If you want to load two different editors on one page you need to make sure that
 
 There is no limit for how many editor classes a single build can export. By default, the official builds export a single editor class only. However, they can easily import more.
 
-You can start from forking (or copying) an existing build like in the {@link builds/guides/development/custom-builds "Creating custom builds"} guide. Let's say you forked and cloned the [`ckeditor5`](http://github.com/ckeditor /ckeditor5) repository and want to add {@link module:editor-inline/inlineeditor~InlineEditor} to the classic build:
+You can start from forking (or copying) an existing build like in the {@link builds/guides/development/custom-builds "Creating custom builds"} guide. Let's say you forked and cloned the [`ckeditor5`](http://github.com/ckeditor/ckeditor5) repository and want to add {@link module:editor-inline/inlineeditor~InlineEditor} to the classic build:
 
 ```bash
 git clone -b stable git@github.com:<your-username>/ckeditor5.git

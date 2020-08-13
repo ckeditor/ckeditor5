@@ -99,7 +99,7 @@ export default class MarkerCollection {
 			 *
 			 * @error markercollection-incorrect-marker-name
 			 */
-			throw new CKEditorError( 'markercollection-incorrect-marker-name: Marker name cannot contain "," character.', this );
+			throw new CKEditorError( 'markercollection-incorrect-marker-name: Marker name cannot contain the "," character.', this );
 		}
 
 		const oldMarker = this._markers.get( markerName );
