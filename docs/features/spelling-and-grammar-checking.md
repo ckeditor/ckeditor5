@@ -5,8 +5,6 @@ menu-title: Spelling and grammar checking
 
 # Proofreading, spelling and grammar checking
 
-{@snippet build-classic-source}
-
 <info-box>
 	The spell checker for CKEditor 5 is a commercial solution provided by our partner, [WebSpellChecker](https://webspellchecker.com/). You can report any issues in its [GitHub repository](https://github.com/WebSpellChecker/wproofreader). The license can be purchased [here](https://ckeditor.com/contact/).
 </info-box>
@@ -29,63 +27,84 @@ There are also over 150 additional languages and specialized dictionaries such a
 
 ## Installation
 
-WProofreader is installed separately from CKEditor 5 and does not need to be combined into an editor build as other features. To use this tool, it is necessary to load the WProofreader script on your page and provide the configuration.
+WProofreader is delivered as a CKEditor 5 plugin, so it could be combined into an editor build as other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
 
-The proofreader can be used either as a [cloud solution](#wproofreader-cloud) or [hosted on your own server](#wproofreader-server).
+```bash
+npm install --save @webspellchecker/wproofreader-ckeditor5
+```
+
+Then, add it to your plugin list:
+
+```js
+import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
+// ...
+
+ClassicEditor
+	.create( editorElement, {
+		plugins: [ ..., WProofreader ],
+		// ...
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+<info-box info>
+	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+</info-box>
+
+At this step, it is required to provide a proper configuration. The proofreader can be used either as a [cloud solution](#wproofreader-cloud) or [hosted on your own server](#wproofreader-server).
 
 ### WProofreader Cloud
 
 After signing up for a [trial or paid version](https://ckeditor.com/contact/), you will receive your service ID which is used to activate the service.
 
-Add the following configuration to your page:
+Add the following configuration to your editor:
 
-```html
-<script>
-	window.WEBSPELLCHECKER_CONFIG = {
-		autoSearch: true,
-		enableGrammar: true,
-		serviceId: 'your-service-ID'
-	};
-</script>
+```js
+import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
+// ...
+
+ClassicEditor
+	.create( editorElement, {
+		plugins: [ ..., WProofreader ],
+		wproofreader: {
+			serviceId: 'your-service-ID',
+			srcUrl: 'https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js'
+		}
+	} )
 ```
 
-And then load the proofreader script:
-
-```html
-<script src="https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js"></script>
-```
-
-Refer to the [official documentation](https://github.com/WebSpellChecker/wproofreader#wproofreader-cloud) for more details about the cloud setup and available configuration options.
+Refer to the [official documentation](https://github.com/WebSpellChecker/wproofreader-ckeditor5#install-instructions) for more details about the cloud setup and available configuration options.
 
 ### WProofreader Server
 
 After signing up for a [trial or paid version](https://ckeditor.com/contact/), you will receive access to the WebSpellChecker Server package to install on your own server.
 
-You will need to add the following configuration to your page:
+You will need to add the following configuration to your editor:
 
-```html
-<script>
-	window.WEBSPELLCHECKER_CONFIG = {
-		autoSearch: true,
-		enableGrammar: true,
-		servicePort: '2880',
-		servicePath: '/'
-	};
-</script>
+```js
+import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
+// ...
+
+ClassicEditor
+	.create( editorElement, {
+		plugins: [ ..., WProofreader ],
+		wproofreader: {
+			serviceProtocol: 'https',
+			serviceHost: 'localhost',
+			servicePort: '2880',
+			servicePath: '/',
+			srcUrl: 'https://host_name/virtual_directory/wscbundle/wscbundle.js'
+		}
+	} )
 ```
 
-Then specify the path to the service on your page:
-
-```html
-<script src="http(s)://your_host_name/spellcheck/wscbundle/wscbundle.js"></script>
-```
-
-Refer to the [official documentation](https://github.com/WebSpellChecker/wproofreader#wproofreader-server) for more details about the server setup and available configuration options.
+Refer to the [official documentation](https://github.com/WebSpellChecker/wproofreader-ckeditor5#install-instructions) for more details about the server setup and available configuration options.
 
 ## Configuration
 
-WProofreader configuration is set outside the CKEditor 5 configuration. Refer to the [WProofreader API](http://dev.webspellchecker.net/api/wscbundle/) for further information.
+WProofreader configuration is set inside the CKEditor 5 configuration in `wproofreader` object. Refer to the [WProofreader API](https://webspellchecker.com/docs/api/wscbundle/Options.html) for further information.
 
 ## Contribute
 
-You can report issues and request features in the [official WProofreader repository](https://github.com/WebSpellChecker/wproofreader/issues).
+You can report issues and request features in the [official WProofreader for CKEditor 5 repository](https://github.com/WebSpellChecker/wproofreader-ckeditor5/issues).
