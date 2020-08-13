@@ -78,7 +78,7 @@ export default class Rect {
 			// @if CK_DEBUG // }
 
 			if ( isSourceRange ) {
-				copyRectProperties( this, Rect.getDomRangeRects( source )[ 0 ] );
+				copyRangeRectProperties( this, source );
 			} else {
 				copyRectProperties( this, source.getBoundingClientRect() );
 			}
@@ -405,4 +405,26 @@ function isBody( elementOrRange ) {
 	}
 
 	return elementOrRange === elementOrRange.ownerDocument.body;
+}
+
+// Copies size properties from the `source` to the `rect`.
+//
+// @private
+// @param {module:utils/dom/rect~Rect} rect Target rect.
+// @param {Range} source
+function copyRangeRectProperties( rect, source ) {
+	const rangeRects = Rect.getDomRangeRects( source );
+	const combinedRect = rangeRects[ 0 ];
+
+	for ( let i = 1; i < rangeRects.length; i++ ) {
+		combinedRect.right = Math.max( combinedRect.right, rangeRects[ i ].right );
+		combinedRect.left = Math.min( combinedRect.left, rangeRects[ i ].left );
+		combinedRect.bottom = Math.max( combinedRect.bottom, rangeRects[ i ].bottom );
+		combinedRect.top = Math.min( combinedRect.top, rangeRects[ i ].top );
+	}
+
+	combinedRect.width = combinedRect.right - combinedRect.left;
+	combinedRect.height = combinedRect.bottom - combinedRect.top;
+
+	copyRectProperties( rect, combinedRect );
 }
