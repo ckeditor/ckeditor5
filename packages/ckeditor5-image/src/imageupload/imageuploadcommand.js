@@ -45,7 +45,7 @@ export default class ImageUploadCommand extends Command {
 	 */
 	refresh() {
 		const imageElement = this.editor.model.document.selection.getSelectedElement();
-		const isImage = imageElement && imageElement.name === 'image';
+		const isImage = imageElement && imageElement.name === 'image' || false;
 
 		this.isEnabled = isImageAllowed( this.editor.model ) || isImage;
 	}
