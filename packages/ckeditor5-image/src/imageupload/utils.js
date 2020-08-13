@@ -87,14 +87,17 @@ function getImageMimeType( blob, src ) {
  * Creates integrations object that will be passed to the
  * {@link module:image/imageupload/ui/imageuploadpanelview~ImageUploadPanelView}.
  *
+ * @param {module:core/editor/editor~Editor} editor Editor instance.
+ *
  * @returns {Object}
  */
+
 export function prepareIntegrations( editor ) {
 	const panelItems = editor.config.get( 'image.upload.panel.items' );
 	const imageUploadUIPlugin = editor.plugins.get( 'ImageUploadUI' );
 
 	if ( !panelItems ) {
-		return;
+		return null;
 	}
 
 	const PREDEFINED_INTEGRATIONS = {
@@ -119,10 +122,12 @@ export function prepareIntegrations( editor ) {
 	const integrations = panelItems.reduce( ( object, key ) => {
 		if ( PREDEFINED_INTEGRATIONS[ key ] ) {
 			object[ key ] = PREDEFINED_INTEGRATIONS[ key ];
+		} else if ( editor.ui.componentFactory.has( key ) ) {
+			object[ key ] = editor.ui.componentFactory.create( key );
 		}
 
 		return object;
 	}, {} );
 
-	return Object.keys( integrations ).length ? integrations : null;
+	return integrations;
 }
