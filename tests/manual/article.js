@@ -12,8 +12,6 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 const byClassName = className => element => element.hasClass( className );
 
 const getRandom = () => parseInt( Math.random() * 1000 );
-let renderId = 0;
-const getNextRenderId = () => renderId++;
 
 function mapMeta( editor ) {
 	return metaElement => {
@@ -243,7 +241,7 @@ function Box( editor ) {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Box, DecorateViewItems ],
+		plugins: [ ArticlePluginSet, Box ],
 		toolbar: [
 			'heading',
 			'|',
@@ -284,12 +282,3 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
-function DecorateViewItems( editor ) {
-	editor.conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'insert', ( evt, data, conversionApi ) => {
-		if ( data.item.is( 'element' ) ) {
-			const viewItem = editor.editing.mapper.toViewElement( data.item );
-			conversionApi.writer.setAttribute( 'data-rendered-id', getNextRenderId(), viewItem );
-		}
-	}, { priority: 'lowest' } ) );
-}
