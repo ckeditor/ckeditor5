@@ -2,14 +2,14 @@
  * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  */
 
-:root {
+:root, :host {
 	/* This custom property is read by the JS and passed to editor configurations
 	as config.toolbar.viewportTopOffset. */
 	--ck-snippet-viewport-top-offset: 100
 }
 
 @media (max-width: 960px) {
-	:root {
+	:root, :host {
 		/* The mobile layout of Umberto is different and the toolbar offset must be
 		smaller (https://github.com/ckeditor/ckeditor5/issues/1348). */
 		--ck-snippet-viewport-top-offset: 55;
