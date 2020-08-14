@@ -1,5 +1,25 @@
 {
 	"Numbered List": "Toolbar button tooltip for the Numbered List feature.",
 	"Bulleted List": "Toolbar button tooltip for the Bulleted List feature.",
-	"To-do List": "Toolbar button tooltip for the To-do List feature."
+	"To-do List": "Toolbar button tooltip for the To-do List feature.",
+	"Bulleted list styles toolbar": "The ARIA label of the toolbar displaying buttons allowing users to change the bulleted list style.",
+	"Numbered list styles toolbar": "The ARIA label of the toolbar displaying buttons allowing users to change the numbered list style.",
+	"Toggle the disc list style": "The ARIA label of the button that toggles the \"disc\" list style.",
+	"Toggle the circle list style": "The ARIA label of the button that toggles the \"circle\" list style.",
+	"Toggle the square list style": "The ARIA label of the button that toggles the \"square\" list style.",
+	"Toggle the decimal list style": "The ARIA label of the button that toggles the \"decimal\" list style.",
+	"Toggle the decimal with leading zero list style": "The ARIA label of the button that toggles the \"decimal with leading zero\" list style.",
+	"Toggle the lower–roman list style": "The ARIA label of the button that toggles the \"lower–roman\" list style.",
+	"Toggle the upper–roman list style": "The ARIA label of the button that toggles the \"upper–roman\" list style.",
+	"Toggle the lower–latin list style": "The ARIA label of the button that toggles the \"lower–latin\" list style.",
+	"Toggle the upper–latin list style": "The ARIA label of the button that toggles the \"upper–latin\" list style.",
+	"Disc": "The tooltip text of the button that toggles the \"disc\" list style.",
+	"Circle": "The tooltip text of the button that toggles the \"circle\" list style.",
+	"Square": "The tooltip text of the button that toggles the \"square\" list style.",
+	"Decimal": "The tooltip text of the button that toggles the \"decimal\" list style.",
+	"Decimal with leading zero": "The tooltip text of the button that toggles the \"decimal with leading zero\" list style.",
+	"Lower–roman": "The tooltip text of the button that toggles the \"lower–roman\" list style.",
+	"Upper-roman": "The tooltip text of the button that toggles the \"upper–roman\" list style.",
+	"Lower-latin": "The tooltip text of the button that toggles the \"lower–latin\" list style.",
+	"Upper-latin": "The tooltip text of the button that toggles the \"upper–latin\" list style."
 }
