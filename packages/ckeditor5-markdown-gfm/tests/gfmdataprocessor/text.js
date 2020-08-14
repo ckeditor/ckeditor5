@@ -15,6 +15,13 @@ describe( 'GFMDataProcessor', () => {
 				);
 			} );
 
+			it( 'should not escape urls (data escaped between urls)', () => {
+				testDataProcessor(
+					'escape\\_this https://test.com/do_[not]-escape escape\\_this https://test.com/do_[not]-escape',
+					'<p>escape_this https://test.com/do_[not]-escape escape_this https://test.com/do_[not]-escape</p>'
+				);
+			} );
+
 			it( 'should not escape urls (at start)', () => {
 				testDataProcessor(
 					'https://test.com/do_[not]-escape escape\\_this',
