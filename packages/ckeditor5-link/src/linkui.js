@@ -587,19 +587,14 @@ export default class LinkUI extends Plugin {
 	 */
 	_getBalloonPositionData() {
 		const view = this.editor.editing.view;
+		const model = this.editor.model;
 		const viewDocument = view.document;
 		const targetLink = this._getSelectedLinkElement();
-		const model = this.editor.model;
-		// const range = model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ?
-		// 	model.markers.get( VISUAL_SELECTION_MARKER_NAME ).getRange() : viewDocument.selection.getFirstRange();
-		let range;
-
-		if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
-			range = model.markers.get( VISUAL_SELECTION_MARKER_NAME ).getRange();
-			range = this.editor.editing.mapper.toViewRange( range );
-		} else {
-			range = viewDocument.selection.getFirstRange();
-		}
+		const range = model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ?
+			// There are cases when we highlight selection using a marker (#7705, #4721).
+			this.editor.editing.mapper.toViewRange( model.markers.get( VISUAL_SELECTION_MARKER_NAME ).getRange() ) :
+			// If no markers are available refer to a regular selection.
+			viewDocument.selection.getFirstRange();
 
 		const target = targetLink ?
 			// When selection is inside link element, then attach panel to this element.
