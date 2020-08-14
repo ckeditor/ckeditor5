@@ -30,28 +30,27 @@ TurndownService.prototype.escape = function( string ) {
 	// which is out of the matches parts.
 
 	let escaped = '';
-	let lastIndex = 0;
-	let m;
+	let lastLinkEnd = 0;
 
-	do {
-		m = regex.exec( string );
-
-		// The substring should to the matched index or, if nothing found, the end of the string.
-		const index = m ? m.index : string.length;
+	for ( const match of string.matchAll( regex ) ) {
+		const index = match.index;
 
 		// Append the substring between the last match and the current one (if anything).
-		if ( index > lastIndex ) {
-			escaped += escape( string.substring( lastIndex, index ) );
+		if ( index >= lastLinkEnd ) {
+			escaped += escape( string.substring( lastLinkEnd, index ) );
 		}
 
-		// Append the match itself now, if anything.
-		if ( m ) {
-			escaped += m[ 0 ];
-		}
+		const matchedURL = match[ 0 ];
 
-		lastIndex = regex.lastIndex;
+		escaped += matchedURL;
+
+		lastLinkEnd = index + matchedURL.length;
 	}
-	while ( m );
+
+	// Add text after the last link or at the string start if no matches.
+	if ( lastLinkEnd < string.length ) {
+		escaped += escape( string.substring( lastLinkEnd, string.length ) );
+	}
 
 	return escaped;
 };
