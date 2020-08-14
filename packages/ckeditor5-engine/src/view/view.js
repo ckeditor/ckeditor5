@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
 /**
  * @module engine/view/view
  */
@@ -65,7 +67,7 @@ export default class View {
 	/**
 	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance.
 	 */
-	constructor( stylesProcessor, sourceElementRoot = document ) { // eslint-disable-line no-undef
+	constructor( stylesProcessor, sourceElementRoot = document ) {
 		/**
 		 * Instance of the {@link module:engine/view/document~Document} associated with this view controller.
 		 *

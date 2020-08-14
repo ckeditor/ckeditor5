@@ -851,7 +851,7 @@ export default class DomConverter {
 	 */
 	isDomSelectionBackward( selection ) {
 		// Due to a bug with .isCollapsed always returning true when the selection is from a shadowRoot, also check that the selection
-		// has no ranges or its range is collapsed.
+		// has no ranges or its range is collapsed. More info: https://bugs.chromium.org/p/chromium/issues/detail?id=447523
 		if ( selection.isCollapsed && ( selection.rangeCount === 0 || selection.getRangeAt( 0 ).collapsed ) ) {
 			return false;
 		}
