@@ -148,21 +148,24 @@ describe( 'ListStylesUI', () => {
 				it( 'should bring the "disc" list style button', () => {
 					const buttonView = toolbarView.items.get( 0 );
 
-					expect( buttonView.label ).to.equal( 'Toggle the "disc" list style' );
+					expect( buttonView.label ).to.equal( 'Toggle the disc list style' );
+					expect( buttonView.tooltip ).to.equal( 'Disc' );
 					expect( buttonView.icon ).to.equal( listStyleDiscIcon );
 				} );
 
 				it( 'should bring the "circle" list style button', () => {
 					const buttonView = toolbarView.items.get( 1 );
 
-					expect( buttonView.label ).to.equal( 'Toggle the "circle" list style' );
+					expect( buttonView.label ).to.equal( 'Toggle the circle list style' );
+					expect( buttonView.tooltip ).to.equal( 'Circle' );
 					expect( buttonView.icon ).to.equal( listStyleCircleIcon );
 				} );
 
 				it( 'should bring the "square" list style button', () => {
 					const buttonView = toolbarView.items.get( 2 );
 
-					expect( buttonView.label ).to.equal( 'Toggle the "square" list style' );
+					expect( buttonView.label ).to.equal( 'Toggle the square list style' );
+					expect( buttonView.tooltip ).to.equal( 'Square' );
 					expect( buttonView.icon ).to.equal( listStyleSquareIcon );
 				} );
 
@@ -326,6 +329,7 @@ describe( 'ListStylesUI', () => {
 					const buttonView = toolbarView.items.get( 0 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the decimal list style' );
+					expect( buttonView.tooltip ).to.equal( 'Decimal' );
 					expect( buttonView.icon ).to.equal( listStyleDecimalIcon );
 				} );
 
@@ -333,6 +337,7 @@ describe( 'ListStylesUI', () => {
 					const buttonView = toolbarView.items.get( 1 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the decimal with leading zero list style' );
+					expect( buttonView.tooltip ).to.equal( 'Decimal with leading zero' );
 					expect( buttonView.icon ).to.equal( listStyleDecimalWithLeadingZeroIcon );
 				} );
 
@@ -340,6 +345,7 @@ describe( 'ListStylesUI', () => {
 					const buttonView = toolbarView.items.get( 2 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the lower–roman list style' );
+					expect( buttonView.tooltip ).to.equal( 'Lower–roman' );
 					expect( buttonView.icon ).to.equal( listStyleLowerRomanIcon );
 				} );
 
@@ -347,6 +353,7 @@ describe( 'ListStylesUI', () => {
 					const buttonView = toolbarView.items.get( 3 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the upper–roman list style' );
+					expect( buttonView.tooltip ).to.equal( 'Upper-roman' );
 					expect( buttonView.icon ).to.equal( listStyleUpperRomanIcon );
 				} );
 
@@ -354,6 +361,7 @@ describe( 'ListStylesUI', () => {
 					const buttonView = toolbarView.items.get( 4 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the lower–latin list style' );
+					expect( buttonView.tooltip ).to.equal( 'Lower-latin' );
 					expect( buttonView.icon ).to.equal( listStyleLowerLatinIcon );
 				} );
 
@@ -361,6 +369,7 @@ describe( 'ListStylesUI', () => {
 					const buttonView = toolbarView.items.get( 5 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the upper–latin list style' );
+					expect( buttonView.tooltip ).to.equal( 'Upper-latin' );
 					expect( buttonView.icon ).to.equal( listStyleUpperLatinIcon );
 				} );
 

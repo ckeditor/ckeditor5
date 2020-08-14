@@ -59,17 +59,20 @@ export default class ListStylesUI extends Plugin {
 			toolbarAriaLabel: t( 'Bulleted list styles toolbar' ),
 			styleDefinitions: [
 				{
-					label: t( 'Toggle the "disc" list style' ),
+					label: t( 'Toggle the disc list style' ),
+					tooltip: t( 'Disc' ),
 					type: 'disc',
 					icon: listStyleDiscIcon
 				},
 				{
-					label: t( 'Toggle the "circle" list style' ),
+					label: t( 'Toggle the circle list style' ),
+					tooltip: t( 'Circle' ),
 					type: 'circle',
 					icon: listStyleCircleIcon
 				},
 				{
-					label: t( 'Toggle the "square" list style' ),
+					label: t( 'Toggle the square list style' ),
+					tooltip: t( 'Square' ),
 					type: 'square',
 					icon: listStyleSquareIcon
 				}
@@ -85,31 +88,37 @@ export default class ListStylesUI extends Plugin {
 			styleDefinitions: [
 				{
 					label: t( 'Toggle the decimal list style' ),
+					tooltip: t( 'Decimal' ),
 					type: 'decimal',
 					icon: listStyleDecimalIcon
 				},
 				{
 					label: t( 'Toggle the decimal with leading zero list style' ),
+					tooltip: t( 'Decimal with leading zero' ),
 					type: 'decimal-leading-zero',
 					icon: listStyleDecimalWithLeadingZeroIcon
 				},
 				{
 					label: t( 'Toggle the lower–roman list style' ),
+					tooltip: t( 'Lower–roman' ),
 					type: 'lower-roman',
 					icon: listStyleLowerRomanIcon
 				},
 				{
 					label: t( 'Toggle the upper–roman list style' ),
+					tooltip: t( 'Upper-roman' ),
 					type: 'upper-roman',
 					icon: listStyleUpperRomanIcon
 				},
 				{
 					label: t( 'Toggle the lower–latin list style' ),
+					tooltip: t( 'Lower-latin' ),
 					type: 'lower-latin',
 					icon: listStyleLowerLatinIcon
 				},
 				{
 					label: t( 'Toggle the upper–latin list style' ),
+					tooltip: t( 'Upper-latin' ),
 					type: 'upper-latin',
 					icon: listStyleUpperLatinIcon
 				}
@@ -181,11 +190,12 @@ function getStyleButtonCreator( { editor, listStylesCommand, parentCommandName }
 	// @param {String} label The label of the style button.
 	// @param {String} type The type of the style button (e.g. "roman" or "circle").
 	// @param {String} icon The SVG string of an icon of the style button.
+	// @param {String} tooltip The tooltip text of the button (shorter than verbose label).
 	// @returns {module:ui/button/buttonview~ButtonView}
-	return ( { label, type, icon } ) => {
+	return ( { label, type, icon, tooltip } ) => {
 		const button = new ButtonView( locale );
 
-		button.set( { label, icon } );
+		button.set( { label, icon, tooltip } );
 
 		listStylesCommand.on( 'change:value', () => {
 			button.isOn = listStylesCommand.value === type;
