@@ -22,8 +22,10 @@ export function testDataProcessor( markdown, viewString, normalizedMarkdown, opt
 	const viewDocument = new ViewDocument( new StylesProcessor() );
 
 	const dataProcessor = new MarkdownDataProcessor( viewDocument );
-	options && options.setup && options.setup( dataProcessor );
 
+	if ( options && options.setup ) {
+		options.setup( dataProcessor );
+	}
 	const viewFragment = dataProcessor.toView( markdown );
 
 	const html = cleanHtml( stringify( viewFragment ) );
