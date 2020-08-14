@@ -8,9 +8,12 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
-import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
+import {
+	createDropdown,
+	addToolbarToDropdown
+} from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import bulletedListIcon from '../theme/icons/bulletedlist.svg';
 import numberedListIcon from '../theme/icons/numberedlist.svg';
@@ -53,7 +56,7 @@ export default class ListStylesUI extends Plugin {
 			parentCommandName: 'bulletedList',
 			buttonLabel: t( 'Bulleted List' ),
 			buttonIcon: bulletedListIcon,
-			toolbarAriaLabel: t( 'Bulleted List styles toolbar' ),
+			toolbarAriaLabel: t( 'Bulleted list styles toolbar' ),
 			styleDefinitions: [
 				{
 					label: t( 'Toggle the "disc" list style' ),
@@ -78,7 +81,7 @@ export default class ListStylesUI extends Plugin {
 			parentCommandName: 'numberedList',
 			buttonLabel: t( 'Numbered List' ),
 			buttonIcon: numberedListIcon,
-			toolbarAriaLabel: t( 'Numbered List styles toolbar' ),
+			toolbarAriaLabel: t( 'Numbered list styles toolbar' ),
 			styleDefinitions: [
 				{
 					label: t( 'Toggle the decimal list style' ),
@@ -91,24 +94,24 @@ export default class ListStylesUI extends Plugin {
 					icon: listStyleDecimalWithLeadingZeroIcon
 				},
 				{
-					label: t( 'Toggle the lower roman list style' ),
+					label: t( 'Toggle the lower–roman list style' ),
 					type: 'lower-roman',
 					icon: listStyleLowerRomanIcon
 				},
 				{
-					label: t( 'Toggle the upper roman list style' ),
+					label: t( 'Toggle the upper–roman list style' ),
 					type: 'upper-roman',
 					icon: listStyleUpperRomanIcon
 				},
 				{
-					label: t( 'Toggle the upper latin list style' ),
-					type: 'upper-latin',
-					icon: listStyleUpperLatinIcon
-				},
-				{
-					label: t( 'Toggle the lower latin list style' ),
+					label: t( 'Toggle the lower–latin list style' ),
 					type: 'lower-latin',
 					icon: listStyleLowerLatinIcon
+				},
+				{
+					label: t( 'Toggle the upper–latin list style' ),
+					type: 'upper-latin',
+					icon: listStyleUpperLatinIcon
 				}
 			]
 		} ) );
