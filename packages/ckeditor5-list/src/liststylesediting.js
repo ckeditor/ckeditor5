@@ -49,11 +49,19 @@ export default class ListStylesEditing extends Plugin {
 			allowAttributes: [ 'listStyle' ]
 		} );
 
+		// TODO: Is it correct?
+		editor.model.schema.setAttributeProperties( 'listStyle', {
+			isFormatting: true
+		} );
+
 		editor.commands.add( 'listStyles', new ListStylesCommand( editor, DEFAULT_LIST_TYPE ) );
 
 		// Fix list attributes when modifying their nesting levels (the `listIndent` attribute).
 		this.listenTo( editor.commands.get( 'indentList' ), 'executeCleanup', fixListAfterIndentListCommand( editor ) );
 		this.listenTo( editor.commands.get( 'outdentList' ), 'executeCleanup', fixListAfterOutdentListCommand( editor ) );
+
+		this.listenTo( editor.commands.get( 'bulletedList' ), 'executeCleanup', restoreDefaultListStyle( editor ) );
+		this.listenTo( editor.commands.get( 'numberedList' ), 'executeCleanup', restoreDefaultListStyle( editor ) );
 
 		// Register a post-fixer that ensures that the `listStyle` attribute is specified in each `listItem` element.
 		model.document.registerPostFixer( fixListStyleAttributeOnListItemElements( editor ) );
@@ -101,66 +109,77 @@ function upcastListItem() {
 // @returns {Function}
 function downcastListStyleAttribute() {
 	return dispatcher => {
+		// TODO: The idea seems to be OK. Unfortunately, it does not work.
+		// 	dispatcher.on( 'insert:listItem', ( evt, data, conversionApi ) => {
+		// 		const modelItem = data.item;
+		//
+		// 		// Do not update anything for "todo" `listItem`.
+		// 		if ( modelItem.getAttribute( 'listType' ) === 'todo' ) {
+		// 			return;
+		// 		}
+		//
+		// 		// Also, no changes are required if the style is already defined.
+		// 		if ( modelItem.hasAttribute( 'listStyle' ) ) {
+		// 			return;
+		// 		}
+		//
+		// 		const nextElement = getSiblingListItem( modelItem.nextSibling, {
+		// 			sameIndent: true,
+		// 			listIndent: modelItem.getAttribute( 'listIndent' ),
+		// 			direction: 'forward'
+		// 		} );
+		//
+		// 		const previousElement = getSiblingListItem( modelItem.previousSibling, {
+		// 			sameIndent: true,
+		// 			listIndent: modelItem.getAttribute( 'listIndent' ),
+		// 			direction: 'backward'
+		// 		} );
+		//
+		// 		if ( nextElement ) {
+		// 			// Insert at the beginning of the list.
+		// 			conversionApi.writer.setAttribute( 'listStyle', nextElement.getAttribute( 'listStyle' ), modelItem );
+		// 		} else if ( previousElement ) {
+		// 			// Insert at the end of the list.
+		// 			conversionApi.writer.setAttribute( 'listStyle', previousElement.getAttribute( 'listStyle' ), modelItem );
+		// 		}
+		//
+		// 		// We don't need to check whether `previousElement` or `nextElement` and `modelItem` belong to the same list.
+		// 	}, { priority: 'low' } );
+
 		dispatcher.on( 'attribute:listStyle:listItem', ( evt, data, conversionApi ) => {
-			// TODO: This converter is a little buggy. I know. The things could be done better.
 			const viewWriter = conversionApi.writer;
-			const currentItem = data.item;
-			const previousItem = currentItem.previousSibling;
-			const viewItem = conversionApi.mapper.toViewElement( currentItem );
+			const currentElement = data.item;
 			const listStyle = data.attributeNewValue;
 
-			// Parsing the first element in a list. Just set the attribute.
-			if ( !previousItem || !previousItem.is( 'element', 'listItem' ) ) {
-				return setListStyle( viewWriter, listStyle, viewItem.parent );
+			const previousElement = getSiblingListItem( currentElement.previousSibling, {
+				sameIndent: true,
+				listIndent: currentElement.getAttribute( 'listIndent' ),
+				direction: 'backward'
+			} );
+
+			const viewItem = conversionApi.mapper.toViewElement( currentElement );
+
+			// Single item list.
+			if ( !previousElement ) {
+				setListStyle( viewWriter, listStyle, viewItem.parent );
+			} else if ( !areRepresentingSameList( previousElement, currentElement ) ) {
+				viewWriter.breakContainer( viewWriter.createPositionBefore( viewItem ) );
+				viewWriter.breakContainer( viewWriter.createPositionAfter( viewItem ) );
+
+				setListStyle( viewWriter, listStyle, viewItem.parent );
 			}
-
-			// But if previous element is the list item, we must be sure that those two items belong to the same list.
-			// So, we should check whether the values of the `listType`, `listIndent` and `listStyle` attributes are equal.
-			//
-			// If the current parsed list item does not belong to the same list that the previous element,
-			// the `listStyle` attribute must be set once again since another list is being processed.
-			//
-			// Note: We ignore the check of the `listStyle` attribute since that case must be handled another way.
-			// If two items have the same values for `listType` and `listIndent` but not for `listStyle`,
-			// we must split the list container (`<ol>` or `<ul>`) since we're processing two different lists.
-			if ( !areRepresentingSameList( previousItem, currentItem ) ) {
-				return setListStyle( viewWriter, listStyle, viewItem.parent );
-			}
-
-			const previousListStyle = previousItem.getAttribute( 'listStyle' );
-
-			// Since we were ignoring the `listStyle` check, it must be checked before splitting the list container.
-			// No change is needed if previous element has the same value of the `listStyle` attribute.
-			if ( previousListStyle === listStyle ) {
-				return;
-			}
-
-			// But if those attributes are different, we must split the parent element
-			// and set the attribute for the new created container.
-			viewWriter.breakContainer( viewWriter.createPositionBefore( viewItem ) );
-			viewWriter.breakContainer( viewWriter.createPositionAfter( viewItem ) );
-
-			setListStyle( viewWriter, listStyle, viewItem.parent );
 		}, { priority: 'low' } );
 	};
 
 	// Checks whether specified list items belong to the same list.
 	//
-	// Comparing the `listStyle` attribute is by design since it requires additional actions.
-	//
 	// @param {module:engine/model/element~Element} listItem1 The first list item to check.
 	// @param {module:engine/model/element~Element} listItem2 The second list item to check.
 	// @returns {Boolean}
 	function areRepresentingSameList( listItem1, listItem2 ) {
-		if ( listItem1.getAttribute( 'listType' ) !== listItem2.getAttribute( 'listType' ) ) {
-			return false;
-		}
-
-		if ( listItem1.getAttribute( 'listIndent' ) !== listItem2.getAttribute( 'listIndent' ) ) {
-			return false;
-		}
-
-		return true;
+		return listItem1.getAttribute( 'listType' ) === listItem2.getAttribute( 'listType' ) &&
+			listItem1.getAttribute( 'listIndent' ) === listItem2.getAttribute( 'listIndent' ) &&
+			listItem1.getAttribute( 'listStyle' ) === listItem2.getAttribute( 'listStyle' );
 	}
 
 	// Updates or removes the `list-style-type` from the `element`.
@@ -367,7 +386,7 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 		// ■ List item 1.
 		let existingListItem = insertedListItems[ insertedListItems.length - 1 ].nextSibling;
 
-		// If doesn't, maybe the `listItem` was inserted at the end of the list.
+		// If it doesn't, maybe the `listItem` was inserted at the end of the list.
 		//
 		// ■ List item 1.
 		// ■ Paragraph[]  // <-- The inserted item.
@@ -471,4 +490,22 @@ function removeListStyleAttributeFromTodoList( editor ) {
 
 		return null;
 	}
+}
+
+// Restores the `listStyle` attribute after changing the list type.
+//
+// @private
+// @param {module:core/editor/editor~Editor} editor
+// @returns {Function}
+function restoreDefaultListStyle( editor ) {
+	return ( evt, changedItems ) => {
+		changedItems = changedItems.filter( item => item.is( 'element', 'listItem' ) );
+
+		editor.model.change( writer => {
+			for ( const item of changedItems ) {
+				// Remove the attribute. Post-fixer will restore the proper value.
+				writer.removeAttribute( 'listStyle', item );
+			}
+		} );
+	};
 }

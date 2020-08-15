@@ -18,6 +18,7 @@ import ListStyles from '../../src/liststyles';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import TodoList from '../../src/todolist';
+import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -33,10 +34,13 @@ ClassicEditor
 			TablePropertiesEditing,
 			TableCellPropertiesEditing,
 			Indent,
-			IndentBlock
+			IndentBlock,
+			RemoveFormat
 		],
 		toolbar: [
 			'heading',
+			'|',
+			'removeFormat',
 			'|',
 			'bulletedList', 'numberedList', 'todoList',
 			'|',

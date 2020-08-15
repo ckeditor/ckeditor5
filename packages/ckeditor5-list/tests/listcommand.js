@@ -454,6 +454,35 @@ describe( 'ListCommand', () => {
 					expect( getData( model ) ).to.equal( expectedData );
 				} );
 			} );
+
+			it( 'should fire "executeCleanup" event after finish all operations with all changed items', done => {
+				setData( model,
+					'<paragraph>Foo 1.</paragraph>' +
+					'<paragraph>[Foo 2.</paragraph>' +
+					'<paragraph>Foo 3.]</paragraph>' +
+					'<paragraph>Foo 4.</paragraph>'
+				);
+
+				command.execute();
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>Foo 1.</paragraph>' +
+					'<listItem listIndent="0" listType="bulleted">[Foo 2.</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">Foo 3.]</listItem>' +
+					'<paragraph>Foo 4.</paragraph>'
+				);
+
+				command.on( 'executeCleanup', ( evt, data ) => {
+					expect( data ).to.deep.equal( [
+						root.getChild( 2 ),
+						root.getChild( 1 )
+					] );
+
+					done();
+				} );
+
+				command.execute();
+			} );
 		} );
 	} );
 } );

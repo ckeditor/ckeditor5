@@ -43,6 +43,12 @@ describe( 'ListStylesEditing', () => {
 		it( 'should allow set `listStyle` on the `listItem`', () => {
 			expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStyle' ) ).to.be.true;
 		} );
+
+		it( 'should be marked with a formatting property', () => {
+			expect( model.schema.getAttributeProperties( 'listStyle' ) ).to.include( {
+				isFormatting: true
+			} );
+		} );
 	} );
 
 	describe( 'command', () => {

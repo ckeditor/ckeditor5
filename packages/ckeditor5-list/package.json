@@ -28,6 +28,7 @@
     "@ckeditor/ckeditor5-highlight": "^21.0.0",
     "@ckeditor/ckeditor5-indent": "^21.0.0",
     "@ckeditor/ckeditor5-link": "^21.0.0",
+    "@ckeditor/ckeditor5-remove-format": "^21.0.0",
     "@ckeditor/ckeditor5-table": "^21.0.0",
     "@ckeditor/ckeditor5-typing": "^21.0.0",
     "@ckeditor/ckeditor5-undo": "^21.0.0"
