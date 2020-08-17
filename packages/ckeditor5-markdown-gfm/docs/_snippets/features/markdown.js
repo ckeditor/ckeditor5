@@ -11,7 +11,7 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-import Markdown from 'ckeditor/ckeditor5-markdown-gfm/src/markdown';
+import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
