@@ -1133,6 +1133,11 @@ describe( 'Rect', () => {
 			const rectangles = new Set( [ new Rect( geometry ) ] );
 			assertRect( Rect.getBoundingRect( rectangles ), geometry );
 		} );
+
+		it( 'should return proper type', () => {
+			const rectangles = new Set( [ new Rect( geometry ) ] );
+			expect( Rect.getBoundingRect( rectangles ) ).to.be.instanceOf( Rect );
+		} );
 	} );
 } );
 

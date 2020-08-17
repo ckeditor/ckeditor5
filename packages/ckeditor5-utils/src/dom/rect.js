@@ -414,7 +414,7 @@ export default class Rect {
 		boundingRectData.width = boundingRectData.right - boundingRectData.left;
 		boundingRectData.height = boundingRectData.bottom - boundingRectData.top;
 
-		return boundingRectData;
+		return new Rect( boundingRectData );
 	}
 }
 
