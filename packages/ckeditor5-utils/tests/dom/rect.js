@@ -1092,6 +1092,48 @@ describe( 'Rect', () => {
 			assertRect( rects[ 0 ], expectedGeometry );
 		} );
 	} );
+
+	describe( 'getBoundingRect()', () => {
+		it( 'should not return a rect instance when no rectangles were given', () => {
+			expect( Rect.getBoundingRect( [] ) ).to.be.null;
+		} );
+
+		it( 'should calculate proper rectangle when multiple rectangles were given', () => {
+			const rects = [
+				new Rect( geometry ),
+				new Rect( {
+					top: 10,
+					right: 100,
+					bottom: 20,
+					left: 80,
+					width: 20,
+					height: 10
+				} ),
+				new Rect( {
+					top: 50,
+					right: 50,
+					bottom: 60,
+					left: 30,
+					width: 20,
+					height: 10
+				} )
+			];
+
+			assertRect( Rect.getBoundingRect( rects ), {
+				top: 10,
+				right: 100,
+				bottom: 60,
+				left: 20,
+				width: 80,
+				height: 50
+			} );
+		} );
+
+		it( 'should calculate proper rectangle when a single rectangles was given', () => {
+			const rectangles = new Set( [ new Rect( geometry ) ] );
+			assertRect( Rect.getBoundingRect( rectangles ), geometry );
+		} );
+	} );
 } );
 
 function assertRect( rect, expected ) {
