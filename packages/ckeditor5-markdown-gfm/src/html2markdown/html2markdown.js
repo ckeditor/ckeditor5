@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-// JSDoc validation fails without the following line for an unknown reason.
-/** @module */
+/**
+ * @module markdown-gfm/html2markdown
+ */
 
 import TurndownService from 'turndown';
 import { gfm } from 'turndown-plugin-gfm';
 
-// Overrides the escape() method, enlarging it.
-
+// Override the original escape method by not escaping links.
 const originalEscape = TurndownService.prototype.escape;
 
 function escape( string ) {
@@ -66,6 +66,12 @@ turndownService.use( [
 	todoList
 ] );
 
+/**
+ * Parses HTML to a markdown.
+ *
+ * @param {String} html
+ * @returns {String}
+ */
 export default function html2markdown( html ) {
 	return turndownService.turndown( html );
 }

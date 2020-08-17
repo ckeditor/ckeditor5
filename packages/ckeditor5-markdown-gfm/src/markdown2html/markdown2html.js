@@ -3,8 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module markdown-gfm/markdown2html
+ */
+
 import marked from 'marked';
 
+/**
+ * Parses markdown string to an HTML.
+ *
+ * @param {String} markdown
+ * @returns {String}
+ */
 export default function markdown2html( markdown ) {
 	return marked.parse( markdown, {
 		gfm: true,
@@ -16,8 +26,6 @@ export default function markdown2html( markdown ) {
 }
 
 export { marked };
-
-// Overrides.
 
 // Disable the autolink rule in the lexer (point it to a regex that always fail).
 marked.InlineLexer.rules.breaks.autolink = /^\b$/;
