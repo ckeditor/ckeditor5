@@ -23,7 +23,8 @@ export default class Markdown extends Plugin {
 	 */
 	constructor( editor ) {
 		super( editor );
-		editor.data.processor = new GFMDataProcessor();
+
+		editor.data.processor = new GFMDataProcessor( editor.data.viewDocument );
 	}
 
 	/**
