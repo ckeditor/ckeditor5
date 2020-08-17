@@ -23,9 +23,9 @@ describe( 'GFMDataProcessor', () => {
 		it( 'should process nested blockquotes', () => {
 			testDataProcessor(
 				'> foo\n' +
-				'> \n' +
+				'>\n' +
 				'> > bar\n' +
-				'> \n' +
+				'>\n' +
 				'> foo',
 
 				// GitHub is rendering as:
@@ -51,7 +51,7 @@ describe( 'GFMDataProcessor', () => {
 		it( 'should process list within a blockquote', () => {
 			testDataProcessor(
 				'> A list within a blockquote:\n' +
-				'> \n' +
+				'>\n' +
 				'> *   asterisk 1\n' +
 				'> *   asterisk 2\n' +
 				'> *   asterisk 3',
@@ -80,13 +80,13 @@ describe( 'GFMDataProcessor', () => {
 		it( 'should process blockquotes with code inside with ```', () => {
 			testDataProcessor(
 				'> Example 1:\n' +
-				'> \n' +
+				'>\n' +
 				'> ```\n' +
 				'> code 1\n' +
 				'> ```\n' +
-				'> \n' +
+				'>\n' +
 				'> Example 2:\n' +
-				'> \n' +
+				'>\n' +
 				'> ```\n' +
 				'> code 2\n' +
 				'> ```',
@@ -159,13 +159,13 @@ describe( 'GFMDataProcessor', () => {
 
 				// When converting back to data, DataProcessor will normalize tabs to ```.
 				'> Example 1:\n' +
-				'> \n' +
+				'>\n' +
 				'> ```\n' +
 				'> code 1\n' +
 				'> ```\n' +
-				'> \n' +
+				'>\n' +
 				'> Example 2:\n' +
-				'> \n' +
+				'>\n' +
 				'> ```\n' +
 				'> code 2\n' +
 				'> ```'
