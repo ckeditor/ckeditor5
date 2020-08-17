@@ -30,6 +30,13 @@ import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 import '../../../theme/imageupload.css';
 
+/**
+ * The insert an image via URL view controller class.
+ *
+ * See {@link module:image/imageupload/ui/imageuploadpanelview~ImageUploadPanelView}.
+ *
+ * @extends module:ui/view~View
+ */
 export default class ImageUploadPanelView extends View {
 	/**
 	 * Creates a view for the dropdown panel of {@link module:image/imageupload/imageuploadui~ImageUploadUI}.
