@@ -207,7 +207,6 @@ export function positionAfterUiElements( viewPosition ) {
  * @param {Boolean} [options.sameIndent=false] Whether the sought sibling should have the same indentation.
  * @param {Boolean} [options.smallerIndent=false] Whether the sought sibling should have a smaller indentation.
  * @param {Number} [options.listIndent] The reference indentation.
- * @param {'forward'|'backward'} [options.direction='backward'] Walking direction.
  * @returns {module:engine/model/item~Item|null}
  */
 export function getSiblingListItem( modelItem, options ) {
@@ -224,11 +223,7 @@ export function getSiblingListItem( modelItem, options ) {
 			return item;
 		}
 
-		if ( options.direction === 'forward' ) {
-			item = item.nextSibling;
-		} else {
-			item = item.previousSibling;
-		}
+		item = item.previousSibling;
 	}
 
 	return null;
