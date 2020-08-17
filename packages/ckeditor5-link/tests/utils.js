@@ -15,7 +15,8 @@ import { createLinkElement, isLinkElement, ensureSafeUrl, normalizeDecorators, i
 describe( 'utils', () => {
 	describe( 'isLinkElement()', () => {
 		it( 'should return true for elements created by createLinkElement', () => {
-			const element = createLinkElement( 'http://ckeditor.com', new ViewDowncastWriter( new ViewDocument() ) );
+			const writer = new ViewDowncastWriter( new ViewDocument() );
+			const element = createLinkElement( 'http://ckeditor.com', { writer } );
 
 			expect( isLinkElement( element ) ).to.be.true;
 		} );
@@ -35,7 +36,8 @@ describe( 'utils', () => {
 
 	describe( 'createLinkElement()', () => {
 		it( 'should create link AttributeElement', () => {
-			const element = createLinkElement( 'http://cksource.com', new ViewDowncastWriter( new ViewDocument() ) );
+			const writer = new ViewDowncastWriter( new ViewDocument() );
+			const element = createLinkElement( 'http://cksource.com', { writer } );
 
 			expect( isLinkElement( element ) ).to.be.true;
 			expect( element.priority ).to.equal( 5 );

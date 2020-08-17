@@ -19,6 +19,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../theme/widget.css';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+import verticalNavigationHandler from './verticalnavigation';
 
 /**
  * The widget plugin. It enables base support for widgets.
@@ -118,6 +119,8 @@ export default class Widget extends Plugin {
 		this.listenTo( viewDocument, 'keydown', ( ...args ) => {
 			this._preventDefaultOnArrowKeyPress( ...args );
 		}, { priority: priorities.get( 'high' ) - 20 } );
+
+		this.listenTo( viewDocument, 'keydown', verticalNavigationHandler( this.editor.editing ) );
 
 		// Handle custom delete behaviour.
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {

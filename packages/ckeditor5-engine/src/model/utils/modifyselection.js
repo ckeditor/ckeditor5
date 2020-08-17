@@ -92,41 +92,44 @@ export default function modifySelection( model, selection, options = {} ) {
 // @param {{ walker, unit, isForward, schema }} data
 // @param {module:engine/view/treewalker~TreeWalkerValue} value
 function tryExtendingTo( data, value ) {
+	const { isForward, walker, unit, schema } = data;
+	const { type, item, nextPosition } = value;
+
 	// If found text, we can certainly put the focus in it. Let's just find a correct position
 	// based on the unit.
-	if ( value.type == 'text' ) {
+	if ( type == 'text' ) {
 		if ( data.unit === 'word' ) {
-			return getCorrectWordBreakPosition( data.walker, data.isForward );
+			return getCorrectWordBreakPosition( walker, isForward );
 		}
 
-		return getCorrectPosition( data.walker, data.unit, data.isForward );
+		return getCorrectPosition( walker, unit, isForward );
 	}
 
 	// Entering an element.
-	if ( value.type == ( data.isForward ? 'elementStart' : 'elementEnd' ) ) {
-		// If it's an object, we can select it now.
-		if ( data.schema.isObject( value.item ) ) {
-			return Position._createAt( value.item, data.isForward ? 'after' : 'before' );
+	if ( type == ( isForward ? 'elementStart' : 'elementEnd' ) ) {
+		// If it's a selectable, we can select it now.
+		if ( schema.isSelectable( item ) ) {
+			return Position._createAt( item, isForward ? 'after' : 'before' );
 		}
 
 		// If text allowed on this position, extend to this place.
-		if ( data.schema.checkChild( value.nextPosition, '$text' ) ) {
-			return value.nextPosition;
+		if ( schema.checkChild( nextPosition, '$text' ) ) {
+			return nextPosition;
 		}
 	}
 	// Leaving an element.
 	else {
 		// If leaving a limit element, stop.
-		if ( data.schema.isLimit( value.item ) ) {
+		if ( schema.isLimit( item ) ) {
 			// NOTE: Fast-forward the walker until the end.
-			data.walker.skip( () => true );
+			walker.skip( () => true );
 
 			return;
 		}
 
 		// If text allowed on this position, extend to this place.
-		if ( data.schema.checkChild( value.nextPosition, '$text' ) ) {
-			return value.nextPosition;
+		if ( schema.checkChild( nextPosition, '$text' ) ) {
+			return nextPosition;
 		}
 	}
 }

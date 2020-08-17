@@ -84,7 +84,7 @@ describe( 'PageBreakCommand', () => {
 		it( 'should be true when the selection is inside block element inside isLimit element which allows page break', () => {
 			model.schema.register( 'table', { allowWhere: '$block', isLimit: true, isObject: true, isBlock: true } );
 			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
-			model.schema.register( 'tableCell', { allowIn: 'tableRow', isLimit: true } );
+			model.schema.register( 'tableCell', { allowIn: 'tableRow', isLimit: true, isSelectable: true } );
 			model.schema.extend( '$block', { allowIn: 'tableCell' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'table', view: 'table' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableRow', view: 'tableRow' } );
