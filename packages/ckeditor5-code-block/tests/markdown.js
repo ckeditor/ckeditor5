@@ -28,21 +28,20 @@ function getEditor( initialData = '' ) {
 }
 
 describe( 'Markdown', () => {
-	it( 'should be loaded and returned from the editor', () => {
+	it( 'should be loaded and returned from the editor', async () => {
 		const markdown =
 			'```\n' +
 			'test()\n' +
 			'```';
 
-		return getEditor( markdown ).then( editor => {
-			// This is to account to the new behavior of the markdown plugin after its code revamp.
-			// This cleanup could be removed later on, once the revamp is merged.
-			let data = editor.getData();
-			data = data.replace( 'plaintext', '' );
+		const editor = await getEditor( markdown );
+		// This is to account to the new behavior of the markdown plugin after its code revamp.
+		// This cleanup could be removed later on, once the revamp is merged.
+		let data = editor.getData();
+		data = data.replace( 'plaintext', '' );
 
-			expect( data ).to.equal( markdown );
+		expect( data ).to.equal( markdown );
 
-			editor.destroy(); // Tests cleanup.
-		} );
+		await editor.destroy();
 	} );
 } );
