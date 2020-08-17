@@ -12,7 +12,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^21.0.0",
     "@ckeditor/ckeditor5-engine": "^21.0.0",
-    "marked": "^0.7.0",
+    "marked": "^1.1.1",
     "turndown": "^6.0.0",
     "turndown-plugin-gfm": "^1.0.2"
   },
