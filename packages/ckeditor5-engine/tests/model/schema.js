@@ -401,9 +401,52 @@ describe( 'Schema', () => {
 			expect( schema.isObject( 'foo' ) ).to.be.true;
 		} );
 
+		it( 'returns true if an item is a limit, selectable, and a content at once (but not explicitely an object)', () => {
+			schema.register( 'foo', {
+				isLimit: true,
+				isSelectable: true,
+				isContent: true
+			} );
+
+			expect( schema.isObject( 'foo' ) ).to.be.true;
+		} );
+
 		it( 'returns false if an item was registered as a limit (because not all limits are objects)', () => {
 			schema.register( 'foo', {
 				isLimit: true
+			} );
+
+			expect( schema.isObject( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'returns false if an item is a limit and a selectable but not a content ' +
+			'(because an object must always find its way into data regardless of its children)',
+		() => {
+			schema.register( 'foo', {
+				isLimit: true,
+				isSelectable: true
+			} );
+
+			expect( schema.isObject( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'returns false if an item is a limit and content but not a selectable ' +
+			'(because the user must always be able to select an object)',
+		() => {
+			schema.register( 'foo', {
+				isLimit: true,
+				isContent: true
+			} );
+
+			expect( schema.isObject( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'returns false if an item is a selectable and a content but not a limit ' +
+			'(because an object should never be split or crossed by the selection)',
+		() => {
+			schema.register( 'foo', {
+				isSelectable: true,
+				isContent: true
 			} );
 
 			expect( schema.isObject( 'foo' ) ).to.be.false;
@@ -458,6 +501,76 @@ describe( 'Schema', () => {
 			const stub = sinon.stub( schema, 'getDefinition' ).returns( { isInline: true } );
 
 			expect( schema.isInline( 'foo' ) ).to.be.true;
+			expect( stub.calledOnce ).to.be.true;
+		} );
+	} );
+
+	describe( 'isSelectable()', () => {
+		it( 'should return true if an item was registered as a selectable', () => {
+			schema.register( 'foo', {
+				isSelectable: true
+			} );
+
+			expect( schema.isSelectable( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'should return true if an item was registered as an object (because all objects are selectables)', () => {
+			schema.register( 'foo', {
+				isObject: true
+			} );
+
+			expect( schema.isSelectable( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'should return false if an item was not registered as an object or selectable', () => {
+			schema.register( 'foo' );
+
+			expect( schema.isSelectable( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'should return false if an item was not registered at all', () => {
+			expect( schema.isSelectable( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'uses getDefinition()\'s item to definition normalization', () => {
+			const stub = sinon.stub( schema, 'getDefinition' ).returns( { isSelectable: true } );
+
+			expect( schema.isSelectable( 'foo' ) ).to.be.true;
+			expect( stub.calledOnce ).to.be.true;
+		} );
+	} );
+
+	describe( 'isContent()', () => {
+		it( 'should return true if an item was registered as a content', () => {
+			schema.register( 'foo', {
+				isContent: true
+			} );
+
+			expect( schema.isContent( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'should return true if an item was registered as an object (because all objects are content)', () => {
+			schema.register( 'foo', {
+				isObject: true
+			} );
+
+			expect( schema.isContent( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'should return false if an item was not registered as an object or a content', () => {
+			schema.register( 'foo' );
+
+			expect( schema.isContent( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'should return false if an item was not registered at all', () => {
+			expect( schema.isContent( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'uses getDefinition()\'s item to definition normalization', () => {
+			const stub = sinon.stub( schema, 'getDefinition' ).returns( { isContent: true } );
+
+			expect( schema.isContent( 'foo' ) ).to.be.true;
 			expect( stub.calledOnce ).to.be.true;
 		} );
 	} );

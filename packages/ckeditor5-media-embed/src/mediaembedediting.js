@@ -177,10 +177,10 @@ export default class MediaEmbedEditing extends Plugin {
 		// Model -> Data
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'media',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer } ) => {
 				const url = modelElement.getAttribute( 'url' );
 
-				return createMediaFigureElement( viewWriter, registry, url, {
+				return createMediaFigureElement( writer, registry, url, {
 					renderMediaPreview: url && renderMediaPreview
 				} );
 			}
@@ -195,13 +195,13 @@ export default class MediaEmbedEditing extends Plugin {
 		// Model -> View (element)
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'media',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer } ) => {
 				const url = modelElement.getAttribute( 'url' );
-				const figure = createMediaFigureElement( viewWriter, registry, url, {
+				const figure = createMediaFigureElement( writer, registry, url, {
 					renderForEditingView: true
 				} );
 
-				return toMediaWidget( figure, viewWriter, t( 'media widget' ) );
+				return toMediaWidget( figure, writer, t( 'media widget' ) );
 			}
 		} );
 
@@ -221,11 +221,11 @@ export default class MediaEmbedEditing extends Plugin {
 						url: true
 					}
 				},
-				model: ( viewMedia, modelWriter ) => {
+				model: ( viewMedia, { writer } ) => {
 					const url = viewMedia.getAttribute( 'url' );
 
 					if ( registry.hasMedia( url ) ) {
-						return modelWriter.createElement( 'media', { url } );
+						return writer.createElement( 'media', { url } );
 					}
 				}
 			} )
@@ -237,11 +237,11 @@ export default class MediaEmbedEditing extends Plugin {
 						'data-oembed-url': true
 					}
 				},
-				model: ( viewMedia, modelWriter ) => {
+				model: ( viewMedia, { writer } ) => {
 					const url = viewMedia.getAttribute( 'data-oembed-url' );
 
 					if ( registry.hasMedia( url ) ) {
-						return modelWriter.createElement( 'media', { url } );
+						return writer.createElement( 'media', { url } );
 					}
 				}
 			} );

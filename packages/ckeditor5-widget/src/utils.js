@@ -48,7 +48,7 @@ export function isWidget( node ) {
 /**
  * Converts the given {@link module:engine/view/element~Element} to a widget in the following way:
  *
- * * sets the `contenteditable` attribute to `"true"`,
+ * * sets the `contenteditable` attribute to `"false"`,
  * * adds the `ck-widget` CSS class,
  * * adds a custom {@link module:engine/view/element~Element#getFillerOffset `getFillerOffset()`} method returning `null`,
  * * adds a custom property allowing to recognize widget elements by using {@link ~isWidget `isWidget()`},
@@ -65,7 +65,7 @@ export function isWidget( node ) {
  *		editor.conversion.for( 'editingDowncast' )
  *			.elementToElement( {
  *				model: 'widget',
- *				view: ( modelItem, writer ) => {
+ *				view: ( modelItem, { writer } ) => {
  *					const div = writer.createContainerElement( 'div', { class: 'widget' } );
  *
  *					return toWidget( div, writer, { label: 'some widget' } );
@@ -75,7 +75,7 @@ export function isWidget( node ) {
  *		editor.conversion.for( 'dataDowncast' )
  *			.elementToElement( {
  *				model: 'widget',
- *				view: ( modelItem, writer ) => {
+ *				view: ( modelItem, { writer } ) => {
  *					return writer.createContainerElement( 'div', { class: 'widget' } );
  *				}
  *			} );
@@ -208,7 +208,7 @@ export function getLabel( element ) {
  *		editor.conversion.for( 'editingDowncast' )
  *			.elementToElement( {
  *				model: 'nested',
- *				view: ( modelItem, writer ) => {
+ *				view: ( modelItem, { writer } ) => {
  *					const div = writer.createEditableElement( 'div', { class: 'nested' } );
  *
  *					return toWidgetEditable( nested, writer );
@@ -218,7 +218,7 @@ export function getLabel( element ) {
  *		editor.conversion.for( 'dataDowncast' )
  *			.elementToElement( {
  *				model: 'nested',
- *				view: ( modelItem, writer ) => {
+ *				view: ( modelItem, { writer } ) => {
  *					return writer.createContainerElement( 'div', { class: 'nested' } );
  *				}
  *			} );

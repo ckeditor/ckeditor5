@@ -25,6 +25,7 @@ import deleteContent from './utils/deletecontent';
 import modifySelection from './utils/modifyselection';
 import getSelectedContent from './utils/getselectedcontent';
 import { injectSelectionPostFixer } from './utils/selection-post-fixer';
+import { autoParagraphEmptyRoots } from './utils/autoparagraphing';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees } = require( '../dev-utils/utils' );
@@ -100,7 +101,8 @@ export default class Model {
 		} );
 		this.schema.register( '$text', {
 			allowIn: '$block',
-			isInline: true
+			isInline: true,
+			isContent: true
 		} );
 		this.schema.register( '$clipboardHolder', {
 			allowContentOf: '$root',
@@ -120,6 +122,9 @@ export default class Model {
 		} );
 
 		injectSelectionPostFixer( this );
+
+		// Post-fixer which takes care of adding empty paragraph elements to the empty roots.
+		this.document.registerPostFixer( autoParagraphEmptyRoots );
 
 		// @if CK_DEBUG_ENGINE // this.on( 'applyOperation', () => {
 		// @if CK_DEBUG_ENGINE // 	dumpTrees( this.document, this.document.version );
@@ -540,7 +545,7 @@ export default class Model {
 	 *
 	 * * any text node (`options.ignoreWhitespaces` allows controlling whether this text node must also contain
 	 * any non-whitespace characters),
-	 * * or any {@link module:engine/model/schema~Schema#isObject object element},
+	 * * or any {@link module:engine/model/schema~Schema#isContent content element},
 	 * * or any {@link module:engine/model/markercollection~Marker marker} which
 	 * {@link module:engine/model/markercollection~Marker#_affectsData affects data}.
 	 *
@@ -573,14 +578,16 @@ export default class Model {
 		}
 
 		for ( const item of range.getItems() ) {
-			if ( item.is( '$textProxy' ) ) {
-				if ( !ignoreWhitespaces ) {
-					return true;
-				} else if ( item.data.search( /\S/ ) !== -1 ) {
+			if ( this.schema.isContent( item ) ) {
+				if ( item.is( '$textProxy' ) ) {
+					if ( !ignoreWhitespaces ) {
+						return true;
+					} else if ( item.data.search( /\S/ ) !== -1 ) {
+						return true;
+					}
+				} else {
 					return true;
 				}
-			} else if ( this.schema.isObject( item ) ) {
-				return true;
 			}
 		}
 

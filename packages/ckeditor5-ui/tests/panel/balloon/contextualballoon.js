@@ -127,12 +127,12 @@ describe( 'ContextualBalloon', () => {
 
 				editor.conversion.for( 'downcast' ).elementToElement( {
 					model: 'widget',
-					view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'figure', { contenteditable: 'false' } )
+					view: ( modelElement, { writer } ) => writer.createContainerElement( 'figure', { contenteditable: 'false' } )
 				} );
 
 				editor.conversion.for( 'downcast' ).elementToElement( {
 					model: 'nestedEditable',
-					view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'figcaption', { contenteditable: 'true' } )
+					view: ( modelElement, { writer } ) => writer.createContainerElement( 'figcaption', { contenteditable: 'true' } )
 				} );
 
 				setModelData( model, '<widget><nestedEditable>[]foo</nestedEditable></widget>' );
