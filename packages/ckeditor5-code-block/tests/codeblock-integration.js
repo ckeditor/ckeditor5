@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals document */
+
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -27,6 +29,17 @@ function getEditor( initialData = '' ) {
 }
 
 describe( 'CodeBlock - integration', () => {
+	let element;
+
+	beforeEach( () => {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+	} );
+
+	afterEach( () => {
+		element.remove();
+	} );
+
 	describe( 'with Markdown GFM', () => {
 		it( 'should be loaded and returned from the editor', async () => {
 			const markdown =
