@@ -28,17 +28,33 @@ function getEditor( initialData = '' ) {
 
 describe( 'CodeBlock - integration', () => {
 	describe( 'with Markdown GFM', () => {
-		it( 'should be loaded and returned from the editor', async () => {
-			const markdown =
+		it( 'should be loaded and returned from the editor (for plain text)', async () => {
+			const editor = await getEditor(
 				'```\n' +
 				'test()\n' +
-				'```';
+				'```'
+			);
 
-			const editor = await getEditor( markdown );
+			expect( editor.getData() ).to.equal(
+				'```plaintext\n' +
+				'test()\n' +
+				'```'
+			);
 
-			expect( editor.getData() ).to.equal( markdown );
+			await editor.destroy();
+		} );
+		it( 'should be loaded and returned from the editor (for defined language)', async () => {
+			const editor = await getEditor(
+				'```javascript\n' +
+				'test()\n' +
+				'```'
+			);
 
-			editor.ui.view.editable.element.remove();
+			expect( editor.getData() ).to.equal(
+				'```javascript\n' +
+				'test()\n' +
+				'```'
+			);
 
 			await editor.destroy();
 		} );
