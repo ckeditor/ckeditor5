@@ -36,7 +36,7 @@ TurndownService.prototype.escape = function( string ) {
 		const index = match.index;
 
 		// Append the substring between the last match and the current one (if anything).
-		if ( index >= lastLinkEnd ) {
+		if ( index > lastLinkEnd ) {
 			escaped += escape( string.substring( lastLinkEnd, index ) );
 		}
 
