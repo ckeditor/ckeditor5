@@ -304,6 +304,19 @@ export default class ToolbarView extends View {
 			}
 		} ).filter( item => item !== undefined ) );
 	}
+
+	/**
+	 * Fired when some toolbar {@link #items} were grouped or ungrouped as a result of some change
+	 * in the toolbar geometry.
+	 *
+	 * **Note**: This event is always fired **once** regardless of the number of items that were be
+	 * grouped or ungrouped at a time.
+	 *
+	 * **Note**: This event is fired only if the items grouping functionality was enabled in
+	 * the first place (see {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull}).
+	 *
+	 * @event groupedItemsUpdate
+	 */
 }
 
 /**
@@ -418,6 +431,14 @@ class DynamicGrouping {
 	 * is added to.
 	 */
 	constructor( view ) {
+		/**
+		 * A toolbar view this behavior belongs to.
+		 *
+		 * @readonly
+		 * @member {module:ui/toolbar~ToolbarView}
+		 */
+		this.view = view;
+
 		/**
 		 * A collection of toolbar children.
 		 *
@@ -644,6 +665,9 @@ class DynamicGrouping {
 			return;
 		}
 
+		// Remember how many items were initially grouped so at the it is possible to figure out if the number
+		// of grouped items has changed. If the number has changed, geometry of the toolbar has also changed.
+		const initialGroupedItemsCount = this.groupedItems.length;
 		let wereItemsGrouped;
 
 		// Group #items as long as some wrap to the next row. This will happen, for instance,
@@ -671,6 +695,10 @@ class DynamicGrouping {
 			if ( this._areItemsOverflowing ) {
 				this._groupLastItem();
 			}
+		}
+
+		if ( this.groupedItems.length !== initialGroupedItemsCount ) {
+			this.view.fire( 'groupedItemsUpdate' );
 		}
 	}
 

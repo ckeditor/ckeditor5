@@ -42,8 +42,8 @@ export default class PageBreakEditing extends Plugin {
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'pageBreak',
-			view: ( modelElement, viewWriter ) => {
-				const divElement = viewWriter.createContainerElement( 'div', {
+			view: ( modelElement, { writer } ) => {
+				const divElement = writer.createContainerElement( 'div', {
 					class: 'page-break',
 					// If user has no `.ck-content` styles, it should always break a page during print.
 					style: 'page-break-after: always'
@@ -51,11 +51,11 @@ export default class PageBreakEditing extends Plugin {
 
 				// For a rationale of using span inside a div see:
 				// https://github.com/ckeditor/ckeditor5-page-break/pull/1#discussion_r328934062.
-				const spanElement = viewWriter.createContainerElement( 'span', {
+				const spanElement = writer.createContainerElement( 'span', {
 					style: 'display: none'
 				} );
 
-				viewWriter.insert( viewWriter.createPositionAt( divElement, 0 ), spanElement );
+				writer.insert( writer.createPositionAt( divElement, 0 ), spanElement );
 
 				return divElement;
 			}
@@ -63,21 +63,21 @@ export default class PageBreakEditing extends Plugin {
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'pageBreak',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer } ) => {
 				const label = t( 'Page break' );
-				const viewWrapper = viewWriter.createContainerElement( 'div' );
-				const viewLabelElement = viewWriter.createContainerElement( 'span' );
-				const innerText = viewWriter.createText( t( 'Page break' ) );
+				const viewWrapper = writer.createContainerElement( 'div' );
+				const viewLabelElement = writer.createContainerElement( 'span' );
+				const innerText = writer.createText( t( 'Page break' ) );
 
-				viewWriter.addClass( 'page-break', viewWrapper );
-				viewWriter.setCustomProperty( 'pageBreak', true, viewWrapper );
+				writer.addClass( 'page-break', viewWrapper );
+				writer.setCustomProperty( 'pageBreak', true, viewWrapper );
 
-				viewWriter.addClass( 'page-break__label', viewLabelElement );
+				writer.addClass( 'page-break__label', viewLabelElement );
 
-				viewWriter.insert( viewWriter.createPositionAt( viewWrapper, 0 ), viewLabelElement );
-				viewWriter.insert( viewWriter.createPositionAt( viewLabelElement, 0 ), innerText );
+				writer.insert( writer.createPositionAt( viewWrapper, 0 ), viewLabelElement );
+				writer.insert( writer.createPositionAt( viewLabelElement, 0 ), innerText );
 
-				return toPageBreakWidget( viewWrapper, viewWriter, label );
+				return toPageBreakWidget( viewWrapper, writer, label );
 			}
 		} );
 
