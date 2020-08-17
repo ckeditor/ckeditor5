@@ -11,11 +11,7 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor';
-
-function Markdown( editor ) {
-	editor.data.processor = new GFMDataProcessor( editor.editing.view.document );
-}
+import Markdown from 'ckeditor/ckeditor5-markdown-gfm/src/markdown';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
