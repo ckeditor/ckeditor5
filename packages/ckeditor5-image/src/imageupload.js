@@ -83,3 +83,55 @@ export default class ImageUpload extends Plugin {
  * @member {Array.<String>} module:image/imageupload~ImageUploadConfig#types
  * @default [ 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff' ]
  */
+
+/**
+ * Image upload panel view configuration.
+ *
+ * @member {module:image/imageupload~ImageUploadPanelConfig} module:image/imageupload~ImageUploadConfig#panel
+ */
+
+/**
+ * The configuration of the image upload dropdown panel view. Used by the image upload feature in the `@ckeditor/ckeditor5-image` package.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ * 				image: {
+ * 					upload: {
+ * 						panel: ... // panel settings goes here
+ * 					}
+ * 				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface module:image/imageupload~ImageUploadPanelConfig
+ */
+
+/**
+ * The list of {@link module:image/imageupload~ImageUpload} integrations.
+ *
+ * The option accepts string tokens.
+ * * for predefined integrations, we have two special strings: `insertImageViaUrl` and `openCKFinder`.
+ * The former adds **Insert image via URL** feature, but the latter adds built-in **CKFinder** integration.
+ * * for custom integrations, each string should be a name of the already registered component.
+ * If you have a plugin `PluginX` that registers `pluginXButton` component, then the integration token
+ * in that case should be `pluginXButton`.
+ *
+ *		// Add `insertImageViaUrl`, `openCKFinder` and custom `pluginXButton` integrations.
+ *		const imageUploadConfig = {
+ *			upload: {
+ *				panel: {
+ *					items: [
+ *						'insertImageViaUrl',
+ *						'openCKFinder',
+ *						'pluginXButton'
+ *					]
+ *				}
+ *			}
+ *		};
+ *
+ * @member {Array.<String>} module:image/imageupload~ImageUploadPanelConfig#items
+ * @default [ 'insertImageViaUrl' ]
+ */

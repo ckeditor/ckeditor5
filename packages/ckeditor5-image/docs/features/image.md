@@ -82,6 +82,97 @@ By default, if the image caption is empty, the `<figcaption>` element is not vis
 
 See the {@link features/image-upload Image upload} guide.
 
+## Insert image via URL
+
+Another great feature is an ability to insert an image via URL address. The feature is available under the dropdown of the **Image Upload** feature. When you click on the arrow button, you will see a small panel view containing the form for an image source URL. Once you fill it, you will be able to insert the image into the editor's content.
+
+### Replace image via URL
+
+Yet, another cool thing that the feature introduces is an ability to replace previously inserted image without loosing its styling and custom attributes (if it has ones). When you click on image and open the `{@link module:image/imageupload/ui/imageuploadpanelview~ImageUploadPanelView#dropdownView ImageUpload dropdown}` you will see that the **Insert image via url** form is already filled. This is the value of the selected image. You can easily edit it and update through the form.
+
+<info-box>
+<strong>Bonus tip</strong>: You can even edit the URL of an image inserted from the native file system or from — for example — `{@link module:ckfinder/ckfinder~CKFinder}`.
+</info-box>
+
+Here's the short demo:
+
+{@snippet features/image-insert-via-url}
+
+### How to add integrations
+
+By default, this feature doesn't need any configuration. You will get a dropdown button, where the main action (icon button) will open a native file dialog and the arrow button will open a dropdown with **Insert image via url** feature.
+
+#### CKFinder
+
+We also support the integration with {@link module:ckfinder/ckfinder~CKFinder} in that dropdown, but that's something that needs to be configured.
+
+Here's how you can do this:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ...
+		image: {
+			// ...
+			upload: {
+				panel: {
+					items: [
+						'insertImageViaUrl',
+						// Add CKFinder predefined token.
+						'openCKFinder'
+					]
+				}
+			}
+		},
+		ckfinder: {
+			uploadUrl: ... // CKFinder upload URL.
+		}
+	})
+```
+
+As you can see, we added here a new `{@link module:image/imageupload~ImageUploadPanelConfig#items image.upload.panel.items}` configuration, where we defined our desired built-in integrations. Both strings (`insertImageViaUrl` and `openCKFinder`) are special tokens that `{@link module:image/imageupload~ImageUpload}` plugin understands.
+
+Below you can see the demo with built-in CKFinder integration:
+
+{@snippet features/image-insert-via-url-integrations}
+
+#### Custom integrations
+
+If you would want to add your own integration, based on your own plugin ({@link framework/guides/creating-simple-plugin see how to create one}), you have to add that plugin to the editor first and then — like in the configuration from the previous section — you should add your integration component's name (the same you used in the `{@link module:ui/componentfactory~ComponentFactory#add}` when you registered the button) to the `{@link module:image/imageupload~ImageUploadPanelConfig#items}` array.
+
+Here's an example:
+
+```js
+// Import your custom plugin.
+import PluginX from 'pluginX'
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// Add your custom plugin to the editor's plugins.
+		plugins: [ Image, ImageToolbar, ImageUpload, PluginX ],
+		image: {
+			upload: {
+				panel: {
+					items: [
+						'insertImageViaUrl',
+						'openCKFinder',
+						// Use the plugin's registered component.
+						'pluginXButton'
+					]
+				}
+			}
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+<info-box>
+Keep in mind that the order of the integrations in configuration equals the order of those views in the `{@link module:image/imageupload/ui/imageuploadpanelview~ImageUploadPanelView#dropdownView}`. So in the dropdown panel view you will have: **Insert image via URL** form, next **CKFinder** button and then your custom component for **PluginX**.
+
+You can always change that order if you need.
+</info-box>
+
 ## Responsive images
 
 Support for responsive images in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Refer to the {@link features/easy-image#responsive-images Easy Image integration} guide to learn how to use the feature in your project.
