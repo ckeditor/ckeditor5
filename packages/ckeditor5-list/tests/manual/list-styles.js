@@ -52,13 +52,6 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-
-		// TODO: Remove.
-		for ( const button of [ ...document.querySelectorAll( '.list-styles-ui button' ) ] ) {
-			button.addEventListener( 'click', () => {
-				editor.execute( 'listStyles', { type: button.getAttribute( 'data-list' ) } );
-			} );
-		}
 	} )
 	.catch( err => {
 		console.error( err.stack );
