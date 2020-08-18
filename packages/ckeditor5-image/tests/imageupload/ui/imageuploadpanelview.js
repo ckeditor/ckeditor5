@@ -21,21 +21,25 @@ import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
+import { createLabeledInputView } from '../../../src/imageupload/utils';
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ImageUploadPanelView', () => {
 	let view;
 
 	beforeEach( () => {
-		view = new ImageUploadPanelView( { t: val => val } );
+		view = new ImageUploadPanelView( { t: val => val }, {
+			'insertImageViaUrl': createLabeledInputView( { t: val => val } )
+		} );
 		view.render();
 	} );
 
-	describe( 'constructor()', () => {
-		it( 'should contain instance of LabeledInputView as #labeledInputView', () => {
-			expect( view.labeledInputView ).to.be.instanceOf( LabeledFieldView );
-		} );
+	afterEach( () => {
+		sinon.restore();
+	} );
 
+	describe( 'constructor()', () => {
 		it( 'should contain instance of ButtonView as #insertButtonView', () => {
 			expect( view.insertButtonView ).to.be.instanceOf( ButtonView );
 			expect( view.insertButtonView.label ).to.equal( 'Insert' );
@@ -64,7 +68,7 @@ describe( 'ImageUploadPanelView', () => {
 		} );
 
 		describe( 'integrations', () => {
-			it( 'should contain 2 integrations when they were passed to the ImageUloadPanelView as options.integrations', () => {
+			it( 'should contain 2 integrations when they were passed to the ImageUploadPanelView as integrations object', () => {
 				const view = new ImageUploadPanelView( { t: val => val }, {
 					'integration1': new View(),
 					'integration2': new ButtonView()
@@ -74,9 +78,9 @@ describe( 'ImageUploadPanelView', () => {
 				expect( view._integrations.length ).to.equal( 2 );
 			} );
 
-			it( 'should contain insertImageViaUrl view when "insertImageViaUrl" token is passed via options.integrations', () => {
+			it( 'should contain insertImageViaUrl view when it is passed via integrations object', () => {
 				const view = new ImageUploadPanelView( { t: val => val }, {
-					'insertImageViaUrl': 'insertImageViaUrl',
+					'insertImageViaUrl': createLabeledInputView( { t: val => val } ),
 					'integration1': new View(),
 					'integration2': new ButtonView()
 				} );
@@ -84,6 +88,13 @@ describe( 'ImageUploadPanelView', () => {
 				expect( view._integrations ).to.be.instanceOf( Collection );
 				expect( view._integrations.length ).to.equal( 3 );
 				expect( view._integrations.first ).to.be.instanceOf( LabeledFieldView );
+			} );
+
+			it( 'should contain no integrations when they were not provided', () => {
+				const view = new ImageUploadPanelView( { t: val => val } );
+
+				expect( view._integrations ).to.be.instanceOf( Collection );
+				expect( view._integrations.length ).to.equal( 0 );
 			} );
 		} );
 
@@ -126,25 +137,11 @@ describe( 'ImageUploadPanelView', () => {
 		} );
 	} );
 
-	describe( 'image URL input view', () => {
-		it( 'should have placeholder', () => {
-			expect( view.labeledInputView.fieldView.placeholder ).to.equal( 'https://example.com/src/image.png' );
-		} );
-
-		it( 'should have info text', () => {
-			expect( view.labeledInputView.infoText ).to.match( /^Paste the image source URL/ );
-		} );
-	} );
-
 	describe( 'template', () => {
 		it( 'should create element from the template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
 			expect( view.element.classList.contains( 'ck-image-upload-form' ) ).to.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
-		} );
-
-		it( 'should have URL input view', () => {
-			expect( view.template.children[ 0 ] ).to.equal( view.labeledInputView );
 		} );
 
 		it( 'should have form row view with buttons', () => {
@@ -157,19 +154,31 @@ describe( 'ImageUploadPanelView', () => {
 	describe( 'render()', () => {
 		it( 'should register child views in #_focusables', () => {
 			expect( view._focusables.map( f => f ) ).to.have.members( [
-				view.labeledInputView,
+				...view._integrations,
 				view.insertButtonView,
 				view.cancelButtonView
 			] );
 		} );
 
-		it( 'should register child views\' #element in #focusTracker', () => {
+		it( 'should register child views\' #element in #focusTracker with no integrations', () => {
 			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
 
 			view = new ImageUploadPanelView( { t: () => {} } );
 			view.render();
 
-			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.labeledInputView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.insertButtonView.element );
+			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.cancelButtonView.element );
+		} );
+
+		it( 'should register child views\' #element in #focusTracker with "insertImageViaUrl" integration', () => {
+			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
+
+			view = new ImageUploadPanelView( { t: () => {} }, {
+				'insertImageViaUrl': createLabeledInputView( { t: val => val } )
+			} );
+			view.render();
+
+			sinon.assert.calledWithExactly( spy.getCall( 0 ), view._integrations.get( 0 ).element );
 			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.insertButtonView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.cancelButtonView.element );
 		} );
@@ -206,7 +215,7 @@ describe( 'ImageUploadPanelView', () => {
 			sinon.assert.callCount( keyEvtData.stopPropagation, 4 );
 		} );
 
-		it( 'intercepts the "selectstart" event of the #labeledInputView with the high priority', () => {
+		it( 'intercepts the "selectstart" event of the first integration element with the high priority', () => {
 			const spy = sinon.spy();
 			const event = new Event( 'selectstart', {
 				bubbles: true,
@@ -215,7 +224,7 @@ describe( 'ImageUploadPanelView', () => {
 
 			event.stopPropagation = spy;
 
-			view.labeledInputView.element.dispatchEvent( event );
+			view._integrations.get( 0 ).element.dispatchEvent( event );
 			sinon.assert.calledOnce( spy );
 		} );
 
@@ -229,7 +238,7 @@ describe( 'ImageUploadPanelView', () => {
 
 				// Mock the url input is focused.
 				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.labeledInputView.element;
+				view.focusTracker.focusedElement = view._integrations.get( 0 ).element;
 
 				const spy = sinon.spy( view.insertButtonView, 'focus' );
 
@@ -262,8 +271,8 @@ describe( 'ImageUploadPanelView', () => {
 	} );
 
 	describe( 'focus()', () => {
-		it( 'should focus on the #labeledInputView', () => {
-			const spy = sinon.spy( view.labeledInputView, 'focus' );
+		it( 'should focus on the first integration', () => {
+			const spy = sinon.spy( view._integrations.get( 0 ), 'focus' );
 
 			view.focus();
 
@@ -271,15 +280,17 @@ describe( 'ImageUploadPanelView', () => {
 		} );
 	} );
 
-	describe( 'URL input', () => {
+	describe( 'Insert image via URL integration input', () => {
 		it( 'should be bound with #imageURLInputValue', () => {
-			view.labeledInputView.fieldView.element.value = 'abc';
-			view.labeledInputView.fieldView.fire( 'input' );
+			const form = view._integrations.get( 0 );
+
+			form.fieldView.element.value = 'abc';
+			form.fieldView.fire( 'input' );
 
 			expect( view.imageURLInputValue ).to.equal( 'abc' );
 
-			view.labeledInputView.fieldView.element.value = 'xyz';
-			view.labeledInputView.fieldView.fire( 'input' );
+			form.fieldView.element.value = 'xyz';
+			form.fieldView.fire( 'input' );
 
 			expect( view.imageURLInputValue ).to.equal( 'xyz' );
 		} );

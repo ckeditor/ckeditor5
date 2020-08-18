@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals document, console */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
@@ -14,9 +14,9 @@ import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
-import { createImageTypeRegExp, prepareIntegrations } from '../../src/imageupload/utils';
+import { createImageTypeRegExp, prepareIntegrations, createLabeledInputView } from '../../src/imageupload/utils';
 
-describe( 'upload utils', () => {
+describe( 'Upload utils', () => {
 	describe( 'createImageTypeRegExp()', () => {
 		it( 'should return RegExp for testing regular mime type', () => {
 			expect( createImageTypeRegExp( [ 'png' ] ).test( 'image/png' ) ).to.be.true;
@@ -79,9 +79,11 @@ describe( 'upload utils', () => {
 			editorElement.remove();
 		} );
 
-		it( 'should return only "inserImageViaUrl" integration', async () => {
+		it( 'should return only "insertImageViaUrl" integration and throw warning about missing integration', async () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
+
+			const consoleWarn = sinon.stub( console, 'warn' );
 
 			const editor = await ClassicEditor
 				.create( editorElement, {
@@ -104,6 +106,9 @@ describe( 'upload utils', () => {
 				} );
 
 			expect( Object.values( prepareIntegrations( editor ) ).length ).to.equal( 1 );
+
+			sinon.assert.calledOnce( consoleWarn );
+			expect( /Integration "openCKFinder" doesn't exist/gmi.test( consoleWarn.args[ 0 ][ 0 ] ) ).to.be.true;
 
 			editor.destroy();
 			editorElement.remove();
@@ -141,7 +146,7 @@ describe( 'upload utils', () => {
 			editorElement.remove();
 		} );
 
-		it( 'should not return any integrations, should return "undefined" instead', async () => {
+		it( 'should return "insertImageViaUrl" integration, when no integrations were configured', async () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
@@ -155,10 +160,24 @@ describe( 'upload utils', () => {
 					]
 				} );
 
-			expect( prepareIntegrations( editor ) ).to.equal( undefined );
+			expect( Object.keys( prepareIntegrations( editor ) ).length ).to.equal( 1 );
 
 			editor.destroy();
 			editorElement.remove();
+		} );
+	} );
+
+	describe( 'createLabeledInputView()', () => {
+		describe( 'image URL input view', () => {
+			it( 'should have placeholder', () => {
+				const view = createLabeledInputView( { t: val => val } );
+				expect( view.fieldView.placeholder ).to.equal( 'https://example.com/src/image.png' );
+			} );
+
+			it( 'should have info text', () => {
+				const view = createLabeledInputView( { t: val => val } );
+				expect( view.infoText ).to.match( /^Paste the image source URL/ );
+			} );
 		} );
 	} );
 } );

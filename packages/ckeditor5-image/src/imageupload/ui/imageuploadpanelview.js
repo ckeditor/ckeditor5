@@ -11,10 +11,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
 import ImageUploadFormRowView from './imageuploadformrowview';
-
-import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -42,18 +39,11 @@ export default class ImageUploadPanelView extends View {
 	 * Creates a view for the dropdown panel of {@link module:image/imageupload/imageuploadui~ImageUploadUI}.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance..
-	 * @param {Object} [integrations={insertImageViaUrl:'insertImageViaUrl'}] Integrations object that contain
-	 * components (or tokens for components) to be shown in the panel view. By default it has `insertImageViaUrl` view.
+	 * @param {Object} [integrations] Integrations object that contain
+	 * components (or tokens for components) to be shown in the panel view.
 	 */
-	constructor( locale, integrations = { insertImageViaUrl: 'insertImageViaUrl' } ) {
+	constructor( locale, integrations ) {
 		super( locale );
-
-		/**
-		 * The labeled URL input view.
-		 *
-		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
-		 */
-		this.labeledInputView = this._createLabeledInputView( locale );
 
 		const { insertButtonView, cancelButtonView } = this._createActionButtons( locale );
 
@@ -139,14 +129,18 @@ export default class ImageUploadPanelView extends View {
 		 */
 		this.set( '_integrations', new Collection() );
 
-		for ( const integration of Object.values( integrations ) ) {
-			if ( integration === 'insertImageViaUrl' ) {
-				this._integrations.add( this.labeledInputView );
+		if ( integrations ) {
+			for ( const [ integration, integrationView ] of Object.entries( integrations ) ) {
+				if ( integration === 'insertImageViaUrl' ) {
+					integrationView.fieldView.bind( 'value' ).to( this, 'imageURLInputValue', value => value || '' );
 
-				continue;
+					integrationView.fieldView.on( 'input', () => {
+						this.imageURLInputValue = integrationView.fieldView.element.value;
+					} );
+				}
+
+				this._integrations.add( integrationView );
 			}
-
-			this._integrations.add( integration );
 		}
 
 		this.setTemplate( {
@@ -185,7 +179,7 @@ export default class ImageUploadPanelView extends View {
 		} );
 
 		const childViews = [
-			this.labeledInputView,
+			...this._integrations,
 			this.insertButtonView,
 			this.cancelButtonView
 		];
@@ -214,35 +208,9 @@ export default class ImageUploadPanelView extends View {
 		// Intercept the "selectstart" event, which is blocked by default because of the default behavior
 		// of the DropdownView#panelView.
 		// TODO: blocking "selectstart" in the #panelView should be configurable per–drop–down instance.
-		this.listenTo( this.labeledInputView.element, 'selectstart', ( evt, domEvt ) => {
+		this.listenTo( childViews[ 0 ].element, 'selectstart', ( evt, domEvt ) => {
 			domEvt.stopPropagation();
 		}, { priority: 'high' } );
-	}
-
-	/**
-	 * Creates labeled field view.
-	 *
-	 * @param {module:utils/locale~Locale} locale The localization services instance.
-	 *
-	 * @private
-	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
-	 */
-	_createLabeledInputView( locale ) {
-		const t = locale.t;
-		const labeledInputView = new LabeledFieldView( locale, createLabeledInputText );
-
-		labeledInputView.set( {
-			label: t( 'Insert image via URL' )
-		} );
-		labeledInputView.fieldView.placeholder = 'https://example.com/src/image.png';
-		labeledInputView.infoText = t( 'Paste the image source URL' );
-		labeledInputView.fieldView.bind( 'value' ).to( this, 'imageURLInputValue', value => value || '' );
-
-		labeledInputView.fieldView.on( 'input', () => {
-			this.imageURLInputValue = labeledInputView.fieldView.element.value;
-		} );
-
-		return labeledInputView;
 	}
 
 	/**
