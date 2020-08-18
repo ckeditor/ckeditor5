@@ -41,12 +41,11 @@ export default class ImageUploadPanelView extends View {
 	/**
 	 * Creates a view for the dropdown panel of {@link module:image/imageupload/imageuploadui~ImageUploadUI}.
 	 *
-	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
-	 * @param {Object} [options] Options for the panel view.
-	 * @param {Object} [options.integrations={insertImageViaUrl:'insertImageViaUrl'}] Integrations object that contain
+	 * @param {module:utils/locale~Locale} [locale] The localization services instance..
+	 * @param {Object} [integrations={insertImageViaUrl:'insertImageViaUrl'}] Integrations object that contain
 	 * components (or tokens for components) to be shown in the panel view. By default it has `insertImageViaUrl` view.
 	 */
-	constructor( locale, options = { integrations: { insertImageViaUrl: 'insertImageViaUrl' } } ) {
+	constructor( locale, integrations = { insertImageViaUrl: 'insertImageViaUrl' } ) {
 		super( locale );
 
 		/**
@@ -140,7 +139,7 @@ export default class ImageUploadPanelView extends View {
 		 */
 		this.set( '_integrations', new Collection() );
 
-		for ( const integration of Object.values( options.integrations ) ) {
+		for ( const integration of Object.values( integrations ) ) {
 			if ( integration === 'insertImageViaUrl' ) {
 				this._integrations.add( this.labeledInputView );
 
@@ -235,7 +234,7 @@ export default class ImageUploadPanelView extends View {
 		labeledInputView.set( {
 			label: t( 'Insert image via URL' )
 		} );
-		labeledInputView.fieldView.placeholder = t( 'https://example.com/src/image.png' );
+		labeledInputView.fieldView.placeholder = 'https://example.com/src/image.png';
 		labeledInputView.infoText = t( 'Paste the image source URL' );
 		labeledInputView.fieldView.bind( 'value' ).to( this, 'imageURLInputValue', value => value || '' );
 
