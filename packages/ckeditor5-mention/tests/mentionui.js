@@ -1573,6 +1573,30 @@ describe( 'MentionUI', () => {
 
 				testExecuteKey( 'tab', keyCodes.tab, feedItems );
 			} );
+
+			describe( 'on other keys', () => {
+				it( 'should do nothing on space', async () => {
+					setData( model, '<paragraph>foo []</paragraph>' );
+
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
+					} );
+
+					const command = editor.commands.get( 'mention' );
+					const spy = testUtils.sinon.spy( command, 'execute' );
+
+					await waitForDebounce();
+					expectChildViewsIsOnState( [ true, false, false, false, false ] );
+
+					fireKeyDownEvent( {
+						keyCodes: keyCodes.space,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					} );
+
+					sinon.assert.notCalled( spy );
+				} );
+			} );
 		} );
 
 		describe( 'default list item with custom feed', () => {
