@@ -29,6 +29,7 @@ import Mapper from '../../src/conversion/mapper';
 import ViewSelection from '../../src/view/selection';
 import ViewRange from '../../src/view/range';
 import { StylesProcessor } from '../../src/view/stylesmap';
+import Writer from '../../src/model/writer';
 
 /* globals console */
 
@@ -108,8 +109,8 @@ describe( 'UpcastHelpers', () => {
 					name: 'p',
 					classes: 'heading'
 				},
-				model: ( viewElement, modelWriter ) => {
-					return modelWriter.createElement( 'heading', { level: viewElement.getAttribute( 'data-level' ) } );
+				model: ( viewElement, { writer } ) => {
+					return writer.createElement( 'heading', { level: viewElement.getAttribute( 'data-level' ) } );
 				}
 			} );
 
@@ -250,9 +251,12 @@ describe( 'UpcastHelpers', () => {
 				},
 				model: {
 					key: 'fontSize',
-					value: viewElement => {
+					value: ( viewElement, conversionApi ) => {
 						const fontSize = viewElement.getStyle( 'font-size' );
 						const value = fontSize.substr( 0, fontSize.length - 2 );
+
+						// To ensure conversion API is provided.
+						expect( conversionApi.writer ).to.instanceof( Writer );
 
 						if ( value <= 10 ) {
 							return 'small';
@@ -504,9 +508,12 @@ describe( 'UpcastHelpers', () => {
 				},
 				model: {
 					key: 'styled',
-					value: viewElement => {
+					value: ( viewElement, conversionApi ) => {
 						const regexp = /styled-([\S]+)/;
 						const match = viewElement.getAttribute( 'class' ).match( regexp );
+
+						// To ensure conversion API is provided.
+						expect( conversionApi.writer ).to.instanceof( Writer );
 
 						return match[ 1 ];
 					}
@@ -660,7 +667,12 @@ describe( 'UpcastHelpers', () => {
 		it( 'config.model is a function', () => {
 			upcastHelpers.elementToMarker( {
 				view: 'comment',
-				model: viewElement => 'comment:' + viewElement.getAttribute( 'data-comment-id' )
+				model: ( viewElement, conversionApi ) => {
+					// To ensure conversion API is provided.
+					expect( conversionApi.writer ).to.instanceof( Writer );
+
+					return 'comment:' + viewElement.getAttribute( 'data-comment-id' );
+				}
 			} );
 
 			const frag = new ViewDocumentFragment( viewDocument, [
@@ -837,7 +849,14 @@ describe( 'UpcastHelpers', () => {
 		} );
 
 		it( 'conversion callback, mixed, multiple markers, name', () => {
-			upcastHelpers.dataToMarker( { view: 'g', model: name => 'group:' + name.split( '_' )[ 0 ] } );
+			upcastHelpers.dataToMarker( {
+				view: 'g',
+				model: ( name, conversionApi ) => {
+					// To ensure conversion API is provided.
+					expect( conversionApi.writer ).to.instanceof( Writer );
+
+					return 'group:' + name.split( '_' )[ 0 ];
+				} } );
 
 			expectResult(
 				viewParse(
@@ -949,7 +968,7 @@ describe( 'upcast-converters', () => {
 
 		it( 'should not convert text if it is wrong with schema', () => {
 			schema.addChildCheck( ( ctx, childDef ) => {
-				if ( childDef.name == '$text' && ctx.endsWith( '$root' ) ) {
+				if ( ( childDef.name == '$text' || childDef.name == 'paragraph' ) && ctx.endsWith( '$root' ) ) {
 					return false;
 				}
 			} );
@@ -960,6 +979,31 @@ describe( 'upcast-converters', () => {
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.childCount ).to.equal( 0 );
+
+			conversionResult = model.change( writer => dispatcher.convert( viewText, writer, [ '$block' ] ) );
+
+			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
+			expect( conversionResult.childCount ).to.equal( 1 );
+			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
+			expect( conversionResult.getChild( 0 ).data ).to.equal( 'foobar' );
+		} );
+
+		it( 'should auto-paragraph a text if it is not allowed at the insertion position but would be inserted if auto-paragraphed', () => {
+			schema.addChildCheck( ( ctx, childDef ) => {
+				if ( childDef.name == '$text' && ctx.endsWith( '$root' ) ) {
+					return false;
+				}
+			} );
+
+			const viewText = new ViewText( viewDocument, 'foobar' );
+			dispatcher.on( 'text', convertText() );
+			let conversionResult = model.change( writer => dispatcher.convert( viewText, writer, context ) );
+
+			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
+			expect( conversionResult.childCount ).to.equal( 1 );
+			expect( conversionResult.getChild( 0 ).name ).to.equal( 'paragraph' );
+			expect( conversionResult.getNodeByPath( [ 0, 0 ] ) ).to.be.instanceof( ModelText );
+			expect( conversionResult.getNodeByPath( [ 0, 0 ] ).data ).to.equal( 'foobar' );
 
 			conversionResult = model.change( writer => dispatcher.convert( viewText, writer, [ '$block' ] ) );
 

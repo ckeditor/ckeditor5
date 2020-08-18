@@ -209,7 +209,7 @@ describe( 'ImageUploadUI', () => {
 			const dropdown = editor.ui.componentFactory.create( 'imageUpload' );
 			const viewDocument = editor.editing.view.document;
 
-			editor.setData( '<figure><img src="image-url.png" /></figure>' );
+			editor.setData( '<figure><img src="/assets/sample.png" /></figure>' );
 
 			editor.editing.view.change( writer => {
 				writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'on' );
@@ -228,7 +228,7 @@ describe( 'ImageUploadUI', () => {
 			const inputValue = dropdown.panelView.children.first.imageURLInputValue;
 
 			expect( dropdown.isOpen ).to.be.true;
-			expect( inputValue ).to.equal( 'image-url.png' );
+			expect( inputValue ).to.equal( '/assets/sample.png' );
 			expect( dropdown.panelView.children.first.insertButtonView.label ).to.equal( 'Update' );
 		} );
 
@@ -283,7 +283,7 @@ describe( 'ImageUploadUI', () => {
 		expect( selectedElement.getAttribute( 'src' ) ).to.equal( 'image-url-800w.jpg' );
 		expect( selectedElement.hasAttribute( 'srcset' ) ).to.be.true;
 
-		dropdown.panelView.children.first.imageURLInputValue = 'new-url.png';
+		dropdown.panelView.children.first.imageURLInputValue = '/assets/sample3.png';
 
 		dropdown.on( 'submit', submitSpy );
 
@@ -292,7 +292,7 @@ describe( 'ImageUploadUI', () => {
 		sinon.assert.notCalled( commandSpy );
 		sinon.assert.calledOnce( submitSpy );
 		expect( dropdown.isOpen ).to.be.false;
-		expect( selectedElement.getAttribute( 'src' ) ).to.equal( 'new-url.png' );
+		expect( selectedElement.getAttribute( 'src' ) ).to.equal( '/assets/sample3.png' );
 		expect( selectedElement.hasAttribute( 'srcset' ) ).to.be.false;
 		expect( selectedElement.hasAttribute( 'sizes' ) ).to.be.false;
 	} );

@@ -11,6 +11,7 @@ import ViewConsumable from './viewconsumable';
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
 import { SchemaContext } from '../model/schema';
+import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
@@ -349,22 +350,32 @@ export default class UpcastDispatcher {
 	 * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#splitToAllowedParent
 	 */
 	_splitToAllowedParent( node, modelCursor ) {
+		const { schema, writer } = this.conversionApi;
+
 		// Try to find allowed parent.
-		const allowedParent = this.conversionApi.schema.findAllowedParent( modelCursor, node );
+		let allowedParent = schema.findAllowedParent( modelCursor, node );
 
-		// When there is no parent that allows to insert node then return `null`.
+		if ( allowedParent ) {
+			// When current position parent allows to insert node then return this position.
+			if ( allowedParent === modelCursor.parent ) {
+				return { position: modelCursor };
+			}
+
+			// When allowed parent is in context tree (it's outside the converted tree).
+			if ( this._modelCursor.parent.getAncestors().includes( allowedParent ) ) {
+				allowedParent = null;
+			}
+		}
+
 		if ( !allowedParent ) {
-			return null;
-		}
+			// Check if the node wrapped with a paragraph would be accepted by the schema.
+			if ( !isParagraphable( modelCursor, node, schema ) ) {
+				return null;
+			}
 
-		// When current position parent allows to insert node then return this position.
-		if ( allowedParent === modelCursor.parent ) {
-			return { position: modelCursor };
-		}
-
-		// When allowed parent is in context tree.
-		if ( this._modelCursor.parent.getAncestors().includes( allowedParent ) ) {
-			return null;
+			return {
+				position: wrapInParagraph( modelCursor, writer )
+			};
 		}
 
 		// Split element to allowed parent.

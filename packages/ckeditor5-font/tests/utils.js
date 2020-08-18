@@ -60,7 +60,7 @@ describe( 'utils', () => {
 			const fake = testUtils.sinon.fake();
 			const fakeViewWriter = { createAttributeElement: fake };
 
-			downcastViewConverterFn( 'blue', fakeViewWriter );
+			downcastViewConverterFn( 'blue', { writer: fakeViewWriter } );
 
 			sinon.assert.calledWithExactly( fake, 'span', { style: 'color:blue' }, { priority: 7 } );
 		} );

@@ -7,7 +7,10 @@
  * @module image/imageupload/utils
  */
 
-/* global fetch, File */
+/* global fetch, File, console */
+
+import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
+import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
 
 /**
  * Creates a regular expression used to test for image files.
@@ -89,23 +92,23 @@ function getImageMimeType( blob, src ) {
  *
  * @param {module:core/editor/editor~Editor} editor Editor instance.
  *
- * @returns {Object}
+ * @returns {Object.<String, module:ui/view~View>} Integrations object.
  */
 
 export function prepareIntegrations( editor ) {
 	const panelItems = editor.config.get( 'image.upload.panel.items' );
 	const imageUploadUIPlugin = editor.plugins.get( 'ImageUploadUI' );
 
-	if ( !panelItems ) {
-		return null;
-	}
-
 	const PREDEFINED_INTEGRATIONS = {
-		'insertImageViaUrl': 'insertImageViaUrl'
+		'insertImageViaUrl': createLabeledInputView( editor.locale )
 	};
 
+	if ( !panelItems ) {
+		return PREDEFINED_INTEGRATIONS;
+	}
+
 	// Prepares ckfinder component for the `openCKFinder` integration token.
-	if ( editor.ui.componentFactory.has( 'ckfinder' ) ) {
+	if ( panelItems.find( item => item === 'openCKFinder' ) && editor.ui.componentFactory.has( 'ckfinder' ) ) {
 		const ckFinderButton = editor.ui.componentFactory.create( 'ckfinder' );
 		ckFinderButton.set( {
 			withText: true,
@@ -124,10 +127,39 @@ export function prepareIntegrations( editor ) {
 			object[ key ] = PREDEFINED_INTEGRATIONS[ key ];
 		} else if ( editor.ui.componentFactory.has( key ) ) {
 			object[ key ] = editor.ui.componentFactory.create( key );
+		} else {
+			// Console.warn should be enough because missing integration doesn't break the editor.
+			console.warn(
+				'It looks like integration "' + key + '" doesn\'t exist. ' +
+				'What may have happened: ' +
+				'\n- you passed the invalid integration name in the `image.upload.panel.items`,' +
+				'\n- integration component wasn\'t properly registered by the plugin,' +
+				'\n- the plugin that registers the component wasn\'t installed in the editor.'
+			);
 		}
 
 		return object;
 	}, {} );
 
 	return integrations;
+}
+
+/**
+ * Creates labeled field view.
+ *
+ * @param {module:utils/locale~Locale} locale The localization services instance.
+ *
+ * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
+ */
+export function createLabeledInputView( locale ) {
+	const t = locale.t;
+	const labeledInputView = new LabeledFieldView( locale, createLabeledInputText );
+
+	labeledInputView.set( {
+		label: t( 'Insert image via URL' )
+	} );
+	labeledInputView.fieldView.placeholder = 'https://example.com/src/image.png';
+	labeledInputView.infoText = t( 'Paste the image source URL' );
+
+	return labeledInputView;
 }

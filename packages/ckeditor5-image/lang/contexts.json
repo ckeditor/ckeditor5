@@ -15,5 +15,10 @@
 	"Resize image to %0": "The label used for the standalone resize options buttons in the image toolbar",
 	"Resize image to the original size": "The accessibility label of the standalone image resize reset option button in the image toolbar for the screen readers",
 	"Original": "Default label for the resize option that resets the size of the image.",
-	"Image resize list": "The accessibility label of the image resize dropdown list for the screen readers."
+	"Image resize list": "The accessibility label of the image resize dropdown list for the screen readers.",
+	"Insert": "The label of submit form button if image src URL input has no value",
+	"Update": "The label of submit form button if image src URL input has value",
+	"Cancel": "The label of cancel form button",
+	"Insert image via URL": "The input label for the Insert image via URL form",
+	"Paste the image source URL": "The tip label below the Insert image via URL form"
 }

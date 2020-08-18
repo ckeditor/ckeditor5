@@ -119,7 +119,7 @@ describe( 'GFMDataProcessor', () => {
 			testDataProcessor(
 				'Header 1|Header 2|Header 3|Header 4\n' +
 				':-------|:------:|-------:|--------\n' +
-				'*Cell 1*  |**Cell 2**  |~~Cell 3~~  |Cell 4',
+				'*Cell 1*  |**Cell 2**  |~Cell 3~  |Cell 4',
 
 				'<table>' +
 					'<thead>' +
@@ -151,7 +151,7 @@ describe( 'GFMDataProcessor', () => {
 				// After converting back it will be normalized.
 				'| Header 1 | Header 2 | Header 3 | Header 4 |\n' +
 				'| :-- | :-: | --: | --- |\n' +
-				'| _Cell 1_ | **Cell 2** | ~~Cell 3~~ | Cell 4 |'
+				'| _Cell 1_ | **Cell 2** | ~Cell 3~ | Cell 4 |'
 			);
 		} );
 	} );

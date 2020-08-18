@@ -14,41 +14,41 @@ import Node from './node';
 /**
  * The raw element class.
  *
- * Raw elements work as data containers ("wrappers", "sandboxes") but their children are not managed or
+ * The raw elements work as data containers ("wrappers", "sandboxes") but their children are not managed or
  * even recognized by the editor. This encapsulation allows integrations to maintain custom DOM structures
  * in the editor content without, for instance, worrying about compatibility with other editor features.
- * Raw elements make a perfect tool for integration with external frameworks and data sources.
+ * Raw elements are a perfect tool for integration with external frameworks and data sources.
  *
- * Unlike {@link module:engine/view/uielement~UIElement ui elements}, raw elements act like a real editor
+ * Unlike {@link module:engine/view/uielement~UIElement UI elements}, raw elements act like real editor
  * content (similar to {@link module:engine/view/containerelement~ContainerElement} or
  * {@link module:engine/view/emptyelement~EmptyElement}), they are considered by the editor selection and
  * {@link module:widget/utils~toWidget they can work as widgets}.
  *
- * To create a new raw element use the
+ * To create a new raw element, use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createRawElement `downcastWriter#createRawElement()`} method.
  *
  * @extends module:engine/view/element~Element
  */
 export default class RawElement extends Element {
 	/**
-	 * Creates new instance of RawElement.
+	 * Creates a new instance of a raw element.
 	 *
-	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-rawelement-cannot-add` when `children` parameter
-	 * is passed, to inform that usage of `RawElement` is incorrect (adding child nodes to `RawElement` is forbidden).
+	 * Throws the `view-rawelement-cannot-add` {@link module:utils/ckeditorerror~CKEditorError CKEditorError} when the `children`
+	 * parameter is passed to inform that the usage of `RawElement` is incorrect (adding child nodes to `RawElement` is forbidden).
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#createRawElement
 	 * @protected
 	 * @param {module:engine/view/document~Document} document The document instance to which this element belongs.
-	 * @param {String} name Node name.
-	 * @param {Object|Iterable} [attrs] Collection of attributes.
+	 * @param {String} name A node name.
+	 * @param {Object|Iterable} [attrs] The collection of attributes.
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
-	 * A list of nodes to be inserted into created element.
+	 * A list of nodes to be inserted into the created element.
 	 */
 	constructor( document, name, attrs, children ) {
 		super( document, name, attrs, children );
 
 		/**
-		 * Returns `null` because filler is not needed for RawElements.
+		 * Returns `null` because filler is not needed for raw elements.
 		 *
 		 * @method #getFillerOffset
 		 * @returns {null} Always returns null.
@@ -72,15 +72,15 @@ export default class RawElement extends Element {
 	 * Assuming that the object being checked is a raw element, you can also check its
 	 * {@link module:engine/view/rawelement~RawElement#name name}:
 	 *
-	 *		rawElement.is( 'img' ); // -> true if this is a img element
+	 *		rawElement.is( 'img' ); // -> true if this is an img element
 	 *		rawElement.is( 'rawElement', 'img' ); // -> same as above
 	 *		text.is( 'img' ); -> false
 	 *
 	 * {@link module:engine/view/node~Node#is Check the entire list of view objects} which implement the `is()` method.
 	 *
-	 * @param {String} type Type to check when `name` parameter is present.
+	 * @param {String} type The type to check when the `name` parameter is present.
 	 * Otherwise, it acts like the `name` parameter.
-	 * @param {String} [name] Element name.
+	 * @param {String} [name] The element name.
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
@@ -99,9 +99,9 @@ export default class RawElement extends Element {
 	}
 
 	/**
-	 * Overrides {@link module:engine/view/element~Element#_insertChild} method.
-	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-rawelement-cannot-add` to prevent
-	 * adding any child nodes to a `RawElement`.
+	 * Overrides the {@link module:engine/view/element~Element#_insertChild} method.
+	 * Throws the `view-rawelement-cannot-add` {@link module:utils/ckeditorerror~CKEditorError CKEditorError} to prevent
+	 * adding any child nodes to a raw element.
 	 *
 	 * @protected
 	 */
@@ -120,11 +120,11 @@ export default class RawElement extends Element {
 	}
 
 	/**
-	 * Allows rendering the children of a {@link module:engine/view/rawelement~RawElement} on the DOM level.
+	 * This allows rendering the children of a {@link module:engine/view/rawelement~RawElement} on the DOM level.
 	 * This method is called by the {@link module:engine/view/domconverter~DomConverter} with the raw DOM element
-	 * passed as an argument leaving the number and shape of the children up to the integrator.
+	 * passed as an argument, leaving the number and shape of the children up to the integrator.
 	 *
-	 * This method **must be defined** for the `RawElement` to work:
+	 * This method **must be defined** for the raw element to work:
 	 *
 	 *		const myRawElement = downcastWriter.createRawElement( 'div' );
 	 *
@@ -137,7 +137,7 @@ export default class RawElement extends Element {
 	 */
 }
 
-// Returns `null` because block filler is not needed for RawElements.
+// Returns `null` because block filler is not needed for raw elements.
 //
 // @returns {null}
 function getFillerOffset() {

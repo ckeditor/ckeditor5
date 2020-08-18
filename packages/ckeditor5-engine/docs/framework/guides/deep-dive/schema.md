@@ -11,9 +11,9 @@ This article assumes that you have already read the {@link framework/guides/arch
 
 The editor's schema is available in the {@link module:engine/model/model~Model#schema `editor.model.schema`} property. It defines allowed model structures (how model elements can be nested), allowed attributes (of both elements and text nodes), and other characteristics (inline vs. block, atomicity in regards of external actions). This information is later used by editing features and the editing engine to decide how to process the model, where to enable features, etc.
 
-Schema rules can be defined by using the {@link module:engine/model/schema~Schema#register `Schema#register()`} or {@link module:engine/model/schema~Schema#extend `Schema#extend()`} methods. The former can be used only once for a given item name which ensures that only a single editing feature can introduce this item. Similarly, `extend()` can only be used for defined items.
+Schema rules can be defined by using the {@link module:engine/model/schema~Schema#register `Schema#register()`} or the {@link module:engine/model/schema~Schema#extend `Schema#extend()`} methods. The former can be used only once for a given item name which ensures that only a single editing feature can introduce this item. Similarly, `extend()` can only be used for defined items.
 
-Elements and attributes are checked by features separately by using the {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} and {@link module:engine/model/schema~Schema#checkAttribute `Schema#checkAttribute()`} methods.
+Elements and attributes are checked by features separately by using the {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} and the {@link module:engine/model/schema~Schema#checkAttribute `Schema#checkAttribute()`} methods.
 
 ## Defining allowed structures
 
@@ -47,7 +47,7 @@ While this would be incorrect:
 
 ## Defining additional semantics
 
-In addition to setting allowed structures, the schema can also define additional traits of model elements. By using the `is*` properties, a feature author may declare how a certain element should be treated by other features and the engine.
+In addition to setting allowed structures, the schema can also define additional traits of model elements. By using the `is*` properties, a feature author may declare how a certain element should be treated by other features and by the engine.
 
 Here is a table listing various model elements and their properties registered in the schema:
 
@@ -292,7 +292,7 @@ The engine and various features then check it via {@link module:engine/model/sch
 
 For an image caption like in the example above it does not make much sense to select the caption box, then copy or drag it somewhere else.
 
-A caption without the image that it describes makes little sense. However, the image is more self-sufficient. Most likely users should be able to select the entire image (with all its internals), then copy or move it around. The {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} property should be used to mark such behavior.
+A caption without the image it describes makes little sense. The image, however, is more self-sufficient. Most likely users should be able to select the entire image (with all its internals), then copy or move it around. The {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} property should be used to mark such behavior.
 
 ```js
 schema.register( 'myImage', {
@@ -324,7 +324,7 @@ It is important to remember that a block should not allow another block inside. 
 
 In the editor, all HTML formatting elements such as `<strong>` or `<code>` are represented by text attributes. Therefore, inline model elements are not supposed to be used for these scenarios.
 
-Currently, the {@link module:engine/model/schema~SchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>` or placeholder elements such as in the {@link framework/guides/tutorials/implementing-an-inline-widget Implementing an inline widget} tutorial.
+Currently, the {@link module:engine/model/schema~SchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>` or placeholder elements such as described in the {@link framework/guides/tutorials/implementing-an-inline-widget Implementing an inline widget} tutorial.
 
 The support for inline elements in CKEditor 5 is so far limited to self-contained elements. Because of this, all elements marked with `isInline` should also be marked with `isObject`.
 
@@ -401,7 +401,7 @@ schema.register( 'paragraph', {
 } );
 ```
 
-Which can be read as:
+And this can be read as:
 
 * The `<paragraph>` element will be allowed in elements in which `<$block>` is allowed (e.g. in `<$root>`).
 * The `<paragraph>` element will allow all nodes that are allowed in `<$block>` (e.g. `$text`).
@@ -427,7 +427,7 @@ The side effect of such a definition inheritance is that now `<blockQuote>` is a
 
 ## Defining advanced rules in `checkChild()` callbacks
 
-The {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} method which is the base method used to check whether some element is allowed in a given structure is {@link module:utils/observablemixin~ObservableMixin#decorate a decorated method}. It means that you can add listeners to implement your specific rules which are not limited by the {@link module:engine/model/schema~SchemaItemDefinition declarative `SchemaItemDefinition` API}.
+The {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} method which is the a base method used to check whether some element is allowed in a given structure is {@link module:utils/observablemixin~ObservableMixin#decorate a decorated method}. It means that you can add listeners to implement your specific rules which are not limited by the {@link module:engine/model/schema~SchemaItemDefinition declarative `SchemaItemDefinition` API}.
 
 These listeners can be added either by listening directly to the {@link module:engine/model/schema~Schema#event:checkChild} event or by using the handy {@link module:engine/model/schema~Schema#addChildCheck `Schema#addChildCheck()`} method.
 
@@ -485,7 +485,7 @@ While this is a relatively simple scenario (unlike most real-time collaborative 
 
 Therefore, if your editor needs to implement such rules, you should do that through {@link module:engine/model/document~Document#registerPostFixer model's post-fixers} fixing incorrect content or actively prevent such situations (e.g. by disabling certain features). It means that these constraints will be defined specifically for your scenario by your code which makes their implementation much easier.
 
-To sum up, the answer to who and how should implement additional constraints is: Your features or your editor through the CKEditor 5 API.
+To sum up, the answer to who and how should implement additional constraints is: your features or your editor through the CKEditor 5 API.
 
 ## Who checks the schema?
 
