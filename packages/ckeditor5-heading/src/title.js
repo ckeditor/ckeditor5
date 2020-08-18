@@ -445,10 +445,9 @@ function dataViewModelH1Insertion( evt, data, conversionApi ) {
 	modelWriter.append( titleContent, title );
 	modelWriter.insert( title, modelCursor );
 
-	conversionApi.convertChildren( viewItem, modelWriter.createPositionAt( titleContent, 0 ) );
+	conversionApi.convertChildren( viewItem, titleContent );
 
-	data.modelRange = modelWriter.createRangeOn( title );
-	data.modelCursor = modelWriter.createPositionAt( data.modelRange.end );
+	conversionApi.updateConversionResult( title, data );
 }
 
 // Maps position from the beginning of the model `title` element to the beginning of the view `h1` element.

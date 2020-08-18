@@ -24,7 +24,8 @@ describe( 'RemoveFormatCommand', () => {
 				editor.commands.add( 'removeFormat', command );
 
 				model.schema.register( 'p', {
-					inheritAllFrom: '$block'
+					inheritAllFrom: '$block',
+					allowAttributes: 'someBlockFormatting'
 				} );
 
 				model.schema.addAttributeCheck( ( ctx, attributeName ) => {
@@ -43,6 +44,10 @@ describe( 'RemoveFormatCommand', () => {
 				} );
 
 				model.schema.setAttributeProperties( 'bold', {
+					isFormatting: true
+				} );
+
+				model.schema.setAttributeProperties( 'someBlockFormatting', {
 					isFormatting: true
 				} );
 			} );
@@ -94,6 +99,16 @@ describe( 'RemoveFormatCommand', () => {
 					}
 				},
 				assert: () => expectEnabledPropertyToBe( true )
+			},
+
+			'state with block formatting': {
+				input: '<p someBlockFormatting="foo">f[oo</p><p>]bar</p>',
+				assert: () => expectEnabledPropertyToBe( true )
+			},
+
+			'state with block formatting (collapsed selection)': {
+				input: '<p someBlockFormatting="foo">f[]oo</p>',
+				assert: () => expectEnabledPropertyToBe( true )
 			}
 		};
 
@@ -140,7 +155,18 @@ describe( 'RemoveFormatCommand', () => {
 					expect( model.document.selection.hasAttribute( 'bold' ) ).to.equal( false );
 					expect( model.document.selection.hasAttribute( 'irrelevant' ) ).to.equal( true );
 				}
+			},
+
+			'state with block formatting': {
+				input: '<p someBlockFormatting="foo">f[oo</p><p someBlockFormatting="bar">]bar</p>',
+				assert: () => expectModelToBeEqual( '<p>f[oo</p><p someBlockFormatting="bar">]bar</p>' )
+			},
+
+			'state with block formatting (collapsed selection)': {
+				input: '<p someBlockFormatting="foo">f[]oo</p><p someBlockFormatting="bar">bar</p>',
+				assert: () => expectModelToBeEqual( '<p>f[]oo</p><p someBlockFormatting="bar">bar</p>' )
 			}
+
 		};
 
 		generateTypicalUseCases( cases, {

@@ -155,7 +155,7 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * Creates new {@link module:engine/view/attributeelement~AttributeElement}.
+	 * Creates a new {@link module:engine/view/attributeelement~AttributeElement}.
 	 *
 	 *		writer.createAttributeElement( 'strong' );
 	 *		writer.createAttributeElement( 'a', { href: 'foo.bar' } );
@@ -188,7 +188,7 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * Creates new {@link module:engine/view/containerelement~ContainerElement}.
+	 * Creates a new {@link module:engine/view/containerelement~ContainerElement}.
 	 *
 	 *		writer.createContainerElement( 'p' );
 	 *
@@ -210,7 +210,7 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * Creates new {@link module:engine/view/editableelement~EditableElement}.
+	 * Creates a new {@link module:engine/view/editableelement~EditableElement}.
 	 *
 	 *		writer.createEditableElement( 'div' );
 	 *		writer.createEditableElement( 'div', { id: 'foo-1234' } );
@@ -230,7 +230,7 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * Creates new {@link module:engine/view/emptyelement~EmptyElement}.
+	 * Creates a new {@link module:engine/view/emptyelement~EmptyElement}.
 	 *
 	 *		writer.createEmptyElement( 'img' );
 	 *		writer.createEmptyElement( 'img', { id: 'foo-1234' } );
@@ -244,12 +244,12 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * Creates new {@link module:engine/view/uielement~UIElement}.
+	 * Creates a new {@link module:engine/view/uielement~UIElement}.
 	 *
 	 *		writer.createUIElement( 'span' );
 	 *		writer.createUIElement( 'span', { id: 'foo-1234' } );
 	 *
-	 * Custom render function can be provided as third parameter:
+	 * A custom render function can be provided as the third parameter:
 	 *
 	 *		writer.createUIElement( 'span', null, function( domDocument ) {
 	 *			const domElement = this.toDomElement( domDocument );
@@ -263,10 +263,10 @@ export default class DowncastWriter {
 	 *
 	 * You should not use UI elements as data containers. Check out {@link #createRawElement} instead.
 	 *
-	 * @param {String} name Name of the element.
-	 * @param {Object} [attributes] Elements attributes.
-	 * @param {Function} [renderFunction] Custom render function.
-	 * @returns {module:engine/view/uielement~UIElement} Created element.
+	 * @param {String} name The name of the element.
+	 * @param {Object} [attributes] Element attributes.
+	 * @param {Function} [renderFunction] A custom render function.
+	 * @returns {module:engine/view/uielement~UIElement} The created element.
 	 */
 	createUIElement( name, attributes, renderFunction ) {
 		const uiElement = new UIElement( this.document, name, attributes );
@@ -288,18 +288,19 @@ export default class DowncastWriter {
 	 * Raw elements work as data containers ("wrappers", "sandboxes") but their children are not managed or
 	 * even recognized by the editor. This encapsulation allows integrations to maintain custom DOM structures
 	 * in the editor content without, for instance, worrying about compatibility with other editor features.
-	 * Raw elements make a perfect tool for integration with external frameworks and data sources.
+	 * Raw elements are a perfect tool for integration with external frameworks and data sources.
 	 *
-	 * Unlike {@link #createUIElement ui elements}, raw elements act like a "real" editor content (similar to
+	 * Unlike {@link #createUIElement UI elements}, raw elements act like "real" editor content (similar to
 	 * {@link module:engine/view/containerelement~ContainerElement} or {@link module:engine/view/emptyelement~EmptyElement}),
 	 * and they are considered by the editor selection.
 	 *
-	 * You should not use raw elements to render UI in the editor content. Check out {@link #createUIElement `#createUIElement()`} instead.
+	 * You should not use raw elements to render the UI in the editor content. Check out {@link #createUIElement `#createUIElement()`}
+	 * instead.
 	 *
-	 * @param {String} name Name of the element.
-	 * @param {Object} [attributes] Elements attributes.
-	 * @param {Function} [renderFunction] Custom render function.
-	 * @returns {module:engine/view/rawelement~RawElement} Created element.
+	 * @param {String} name The name of the element.
+	 * @param {Object} [attributes] Element attributes.
+	 * @param {Function} [renderFunction] A custom render function.
+	 * @returns {module:engine/view/rawelement~RawElement} The created element.
 	 */
 	createRawElement( name, attributes, renderFunction ) {
 		const rawElement = new RawElement( this.document, name, attributes );
@@ -310,12 +311,12 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * Adds or overwrite element's attribute with a specified key and value.
+	 * Adds or overwrites the element's attribute with a specified key and value.
 	 *
 	 *		writer.setAttribute( 'href', 'http://ckeditor.com', linkElement );
 	 *
-	 * @param {String} key Attribute key.
-	 * @param {String} value Attribute value.
+	 * @param {String} key The attribute key.
+	 * @param {String} value The attribute value.
 	 * @param {module:engine/view/element~Element} element
 	 */
 	setAttribute( key, value, element ) {

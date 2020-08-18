@@ -78,6 +78,18 @@ describe( 'GFMDataProcessor', () => {
 			testDataProcessor(
 				'This should_not_be_emp.',
 
+				'<p>This should_not_be_emp.</p>',
+
+				// Turndow escape markdown markup characters used inside text.
+				'This should\\_not\\_be\\_emp.'
+			);
+		} );
+
+		it( 'should not render escape marks', () => {
+			testDataProcessor(
+				// Following the previous test.
+				'This should\\_not\\_be\\_emp.',
+
 				'<p>This should_not_be_emp.</p>'
 			);
 		} );

@@ -83,10 +83,9 @@ describe( 'ImageToolbar', () => {
 
 			setData( model, '[<image src=""></image>]' );
 
-			sinon.assert.calledWithMatch( spy, {
-				view: toolbar,
-				balloonClassName: 'ck-toolbar-container'
-			} );
+			sinon.assert.calledWithMatch( spy, sinon.match( ( { balloonClassName, view } ) => {
+				return view === toolbar && balloonClassName === 'ck-toolbar-container';
+			} ) );
 		} );
 
 		it( 'should set aria-label attribute', () => {

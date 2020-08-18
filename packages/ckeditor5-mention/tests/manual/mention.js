@@ -30,10 +30,10 @@ class InlineWidget extends Plugin {
 
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'placeholder',
-			view: ( modelItem, viewWriter ) => {
-				const widgetElement = createPlaceholderView( modelItem, viewWriter );
+			view: ( modelItem, conversionApi ) => {
+				const widgetElement = createPlaceholderView( modelItem, conversionApi );
 
-				return toWidget( widgetElement, viewWriter );
+				return toWidget( widgetElement, conversionApi.writer );
 			}
 		} );
 
@@ -66,11 +66,11 @@ class InlineWidget extends Plugin {
 
 		this._createToolbarButton();
 
-		function createPlaceholderView( modelItem, viewWriter ) {
-			const widgetElement = viewWriter.createContainerElement( 'placeholder' );
-			const viewText = viewWriter.createText( '{' + modelItem.getAttribute( 'type' ) + '}' );
+		function createPlaceholderView( modelItem, { writer } ) {
+			const widgetElement = writer.createContainerElement( 'placeholder' );
+			const viewText = writer.createText( '{' + modelItem.getAttribute( 'type' ) + '}' );
 
-			viewWriter.insert( viewWriter.createPositionAt( widgetElement, 0 ), viewText );
+			writer.insert( writer.createPositionAt( widgetElement, 0 ), viewText );
 
 			return widgetElement;
 		}

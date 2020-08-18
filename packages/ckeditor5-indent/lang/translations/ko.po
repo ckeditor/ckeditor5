@@ -18,8 +18,8 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the increase indentation feature."
 msgid "Increase indent"
-msgstr "들여쓰기"
+msgstr "들여쓰기 늘리기"
 
 msgctxt "Toolbar button tooltip for the decrease indentation feature."
 msgid "Decrease indent"
-msgstr "내어쓰기"
+msgstr "들여쓰기 줄이기"
