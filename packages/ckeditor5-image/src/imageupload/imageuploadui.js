@@ -37,7 +37,7 @@ export default class ImageUploadUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	afterInit() {
+	init() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'imageUpload' );
 
