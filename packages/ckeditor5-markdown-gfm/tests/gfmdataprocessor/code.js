@@ -27,11 +27,11 @@ describe( 'GFMDataProcessor', () => {
 			testDataProcessor(
 				'regular text and` inline code`',
 
-				'<p>regular text and<code>inline code</code></p>',
+				'<p>regular text and<code> inline code</code></p>',
 
 				// When converting back it will be normalized and spaces
 				// at the beginning of inline code will be removed.
-				'regular text and`inline code`'
+				'regular text and `inline code`'
 			);
 		} );
 
