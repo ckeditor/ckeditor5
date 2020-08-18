@@ -92,7 +92,7 @@ function getImageMimeType( blob, src ) {
  *
  * @param {module:core/editor/editor~Editor} editor Editor instance.
  *
- * @returns {Object}
+ * @returns {Object.<String, module:ui/view~View>} Integrations object.
  */
 
 export function prepareIntegrations( editor ) {
