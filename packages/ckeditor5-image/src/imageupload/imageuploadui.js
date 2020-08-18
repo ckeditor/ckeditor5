@@ -42,14 +42,7 @@ export default class ImageUploadUI extends Plugin {
 		const command = editor.commands.get( 'imageUpload' );
 
 		editor.ui.componentFactory.add( 'imageUpload', locale => {
-			let imageUploadView;
-			const integrations = prepareIntegrations( editor );
-
-			if ( integrations ) {
-				imageUploadView = new ImageUploadPanelView( locale, { integrations } );
-			} else {
-				imageUploadView = new ImageUploadPanelView( locale );
-			}
+			const imageUploadView = new ImageUploadPanelView( locale, prepareIntegrations( editor ) );
 
 			const dropdownView = imageUploadView.dropdownView;
 			const panelView = dropdownView.panelView;
@@ -86,7 +79,7 @@ export default class ImageUploadUI extends Plugin {
 			if ( dropdownView.isOpen ) {
 				imageUploadView.focus();
 
-				if ( isImage( selectedElement ) && selectedElement.getAttribute( 'src' ) ) {
+				if ( isImage( selectedElement ) ) {
 					imageUploadView.imageURLInputValue = selectedElement.getAttribute( 'src' );
 					insertButtonView.label = t( 'Update' );
 				} else {
@@ -112,7 +105,7 @@ export default class ImageUploadUI extends Plugin {
 			const selectedElement = editor.model.document.selection.getSelectedElement();
 
 			if ( selectedElement && isImage( selectedElement ) ) {
-				editor.model.enqueueChange( writer => {
+				editor.model.change( writer => {
 					writer.setAttribute( 'src', imageUploadView.imageURLInputValue, selectedElement );
 					writer.removeAttribute( 'srcset', selectedElement );
 					writer.removeAttribute( 'sizes', selectedElement );
