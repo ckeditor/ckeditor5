@@ -10,8 +10,13 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
+    "@ckeditor/ckeditor5-basic-styles": "^21.0.0",
+    "@ckeditor/ckeditor5-code-block": "^21.0.0",
     "@ckeditor/ckeditor5-core": "^21.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^21.0.0",
     "@ckeditor/ckeditor5-engine": "^21.0.0",
+    "@ckeditor/ckeditor5-list": "^21.0.0",
+    "@ckeditor/ckeditor5-table": "^21.0.0",
     "marked": "^1.1.1",
     "turndown": "^6.0.0",
     "turndown-plugin-gfm": "^1.0.2"
