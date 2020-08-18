@@ -20,7 +20,7 @@ const testCases = {
 	'right paren': { test: '\\)', result: ')' },
 	'greater than': { test: '\\>', result: '>' },
 	'hash': { test: '\\#', result: '#' },
-	'peroid': { test: '\\.', result: '.' },
+	'period': { test: '\\.', result: '.' },
 	'exclamation mark': { test: '\\!', result: '!' },
 	'plus': { test: '\\+', result: '+' },
 	'minus': { test: '\\-', result: '-' }
