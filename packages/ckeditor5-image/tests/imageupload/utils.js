@@ -141,7 +141,7 @@ describe( 'upload utils', () => {
 			editorElement.remove();
 		} );
 
-		it( 'should not return any integrations, should return "null" instead', async () => {
+		it( 'should not return any integrations, should return "undefined" instead', async () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
@@ -155,7 +155,7 @@ describe( 'upload utils', () => {
 					]
 				} );
 
-			expect( prepareIntegrations( editor ) ).to.equal( null );
+			expect( prepareIntegrations( editor ) ).to.equal( undefined );
 
 			editor.destroy();
 			editorElement.remove();

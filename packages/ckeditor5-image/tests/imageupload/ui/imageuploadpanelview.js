@@ -66,10 +66,8 @@ describe( 'ImageUploadPanelView', () => {
 		describe( 'integrations', () => {
 			it( 'should contain 2 integrations when they were passed to the ImageUloadPanelView as options.integrations', () => {
 				const view = new ImageUploadPanelView( { t: val => val }, {
-					integrations: {
-						'integration1': new View(),
-						'integration2': new ButtonView()
-					}
+					'integration1': new View(),
+					'integration2': new ButtonView()
 				} );
 
 				expect( view._integrations ).to.be.instanceOf( Collection );
@@ -78,11 +76,9 @@ describe( 'ImageUploadPanelView', () => {
 
 			it( 'should contain insertImageViaUrl view when "insertImageViaUrl" token is passed via options.integrations', () => {
 				const view = new ImageUploadPanelView( { t: val => val }, {
-					integrations: {
-						'insertImageViaUrl': 'insertImageViaUrl',
-						'integration1': new View(),
-						'integration2': new ButtonView()
-					}
+					'insertImageViaUrl': 'insertImageViaUrl',
+					'integration1': new View(),
+					'integration2': new ButtonView()
 				} );
 
 				expect( view._integrations ).to.be.instanceOf( Collection );
