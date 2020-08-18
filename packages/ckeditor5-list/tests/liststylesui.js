@@ -40,8 +40,6 @@ describe( 'ListStylesUI', () => {
 				model = editor.model;
 
 				listStylesCommand = editor.commands.get( 'listStyles' );
-				// numberedListCommand = editor.commands.get( 'numberedList' );
-				// numberedListDropdown = editor.ui.componentFactory.create( 'numberedList' );
 			} );
 	} );
 
