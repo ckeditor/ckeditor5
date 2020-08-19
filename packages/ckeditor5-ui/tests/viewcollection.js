@@ -100,9 +100,6 @@ describe( 'ViewCollection', () => {
 					children: collection
 				} );
 
-				// Render view#template along with collection of children.
-				view.element;
-
 				const viewC = getView( 'C' );
 
 				// Modify the collection, while the view#element has already

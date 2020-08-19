@@ -214,9 +214,9 @@ export default class CodeBlockEditing extends Plugin {
 				return;
 			}
 
-			leaveBlockStartOnEnter( editor, data.isSoft ) ||
-			leaveBlockEndOnEnter( editor, data.isSoft ) ||
-			breakLineOnEnter( editor );
+			if ( !leaveBlockStartOnEnter( editor, data.isSoft ) && !leaveBlockEndOnEnter( editor, data.isSoft ) ) {
+				breakLineOnEnter( editor );
+			}
 
 			data.preventDefault();
 			evt.stop();

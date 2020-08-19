@@ -120,7 +120,7 @@ export default class WordCount extends Plugin {
 		 * @readonly
 		 * @type {module:ui/view~View}
 		 */
-		this._outputView;
+		this._outputView = undefined;
 
 		/**
 		 * A regular expression used to recognize words in the editor's content.
