@@ -15,7 +15,7 @@ import ListStylesUI from './liststylesui';
  * The list styles feature.
  *
  * This is a "glue" plugin that loads the {@link module:list/liststylesediting~ListStylesEditing list styles editing feature}
- * and the {@link module:list/liststylesolistui~ListStylesUI list styles UI feature}.
+ * and the {@link module:list/liststylesui~ListStylesUI list styles UI feature}.
  *
  * @extends module:core/plugin~Plugin
  */
