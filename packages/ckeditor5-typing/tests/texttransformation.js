@@ -234,6 +234,67 @@ describe( 'Text transformation feature', () => {
 			} );
 		} );
 
+		it( 'should allow updating rules', () => {
+			return createEditorInstance( {
+				typing: {
+					include: [ 'symbols' ],
+					transformations: {
+						extra: [
+							{ from: 'CKE', to: 'CKEditor' }
+						]
+					}
+				}
+			} ).then( () => {
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				simulateTyping( 'CKE' );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
+
+				const plugin = editor.plugins.get( 'TextTransformation' );
+				plugin.transformations = {
+					include: [ 'symbols' ],
+					extra: [
+						{ from: 'CKE', to: 'CKEd' }
+					]
+				};
+
+				simulateTyping( ' CKE' );
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor CKEd</paragraph>' );
+			} );
+		} );
+
+		it( 'should allow adding new rules', () => {
+			return createEditorInstance( {
+				typing: {
+					include: [ 'symbols' ],
+					transformations: {
+						extra: [
+							{ from: 'CKE', to: 'CKEditor' }
+						]
+					}
+				}
+			} ).then( () => {
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				simulateTyping( 'CKE' );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
+
+				const plugin = editor.plugins.get( 'TextTransformation' );
+				plugin.transformations = {
+					include: [ 'symbols' ],
+					extra: [
+						{ from: 'CKE', to: 'CKEditor' },
+						{ from: 'foo', to: 'bar' }
+					]
+				};
+
+				simulateTyping( ' foo' );
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor bar</paragraph>' );
+			} );
+		} );
+
 		it( 'should allow adding own rules with RegExp object', () => {
 			return createEditorInstance( {
 				typing: {

@@ -106,6 +106,11 @@ export default class TextTransformation extends Plugin {
 			this.isEnabled = !modelSelection.anchor.parent.is( 'element', 'codeBlock' );
 		} );
 
+		this.on( 'change:transformations', ( evt, propertyName, newValue ) => {
+			this.normalizedTransformations = normalizeTransformations( newValue ) || [];
+		} );
+		this.set( 'transformations', this.editor.config.get( 'typing.transformations' ) );
+
 		this._enableTransformationWatchers();
 	}
 
@@ -118,10 +123,9 @@ export default class TextTransformation extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const input = editor.plugins.get( 'Input' );
-		const normalizedTransformations = normalizeTransformations( editor.config.get( 'typing.transformations' ) );
 
 		const testCallback = text => {
-			for ( const normalizedTransformation of normalizedTransformations ) {
+			for ( const normalizedTransformation of this.normalizedTransformations ) {
 				const from = normalizedTransformation.from;
 				const match = from.test( text );
 
