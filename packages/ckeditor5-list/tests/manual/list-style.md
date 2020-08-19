@@ -1,4 +1,4 @@
-# List Styles feature
+# List Style feature
 
 The editor should display 4 headers and tables.
 

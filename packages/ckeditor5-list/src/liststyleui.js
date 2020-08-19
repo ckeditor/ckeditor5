@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/liststylesui
+ * @module list/liststyleui
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -39,12 +39,12 @@ import '../theme/liststyles.css';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ListStylesUI extends Plugin {
+export default class ListStyleUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'ListStylesUI';
+		return 'ListStyleUI';
 	}
 
 	init() {
@@ -141,14 +141,14 @@ export default class ListStylesUI extends Plugin {
 // @returns {Function} A function that can be passed straight into {@link module:ui/componentfactory~ComponentFactory#add}.
 function getSplitButtonCreator( { editor, parentCommandName, buttonLabel, buttonIcon, toolbarAriaLabel, styleDefinitions } ) {
 	const parentCommand = editor.commands.get( parentCommandName );
-	const listStylesCommand = editor.commands.get( 'listStyles' );
+	const listStyleCommand = editor.commands.get( 'listStyle' );
 
 	// @param {module:utils/locale~Locale} locale
 	// @returns {module:ui/dropdown/dropdownview~DropdownView}
 	return locale => {
 		const dropdownView = createDropdown( locale, SplitButtonView );
 		const splitButtonView = dropdownView.buttonView;
-		const styleButtonCreator = getStyleButtonCreator( { editor, parentCommandName, listStylesCommand } );
+		const styleButtonCreator = getStyleButtonCreator( { editor, parentCommandName, listStyleCommand } );
 
 		addToolbarToDropdown( dropdownView, styleDefinitions.map( styleButtonCreator ) );
 
@@ -179,11 +179,11 @@ function getSplitButtonCreator( { editor, parentCommandName, buttonLabel, button
 //
 // @param {Object} options
 // @param {module:core/editor/editor~Editor} options.editor
-// @param {module:list/liststylescommand~ListStylesCommand} options.listStylesCommand The instance of the `ListStylesCommand` class.
+// @param {module:list/liststylecommand~ListStylesCommand} options.listStyleCommand The instance of the `ListStylesCommand` class.
 // @param {'bulletedList'|'numberedList'} options.parentCommandName The name of the higher-order command associated with a
 // particular list style (e.g. "bulletedList" is associated with "square" and "numberedList" is associated with "roman").
 // @returns {Function} A function that can be passed straight into {@link module:ui/componentfactory~ComponentFactory#add}.
-function getStyleButtonCreator( { editor, listStylesCommand, parentCommandName } ) {
+function getStyleButtonCreator( { editor, listStyleCommand, parentCommandName } ) {
 	const locale = editor.locale;
 	const parentCommand = editor.commands.get( parentCommandName );
 
@@ -197,8 +197,8 @@ function getStyleButtonCreator( { editor, listStylesCommand, parentCommandName }
 
 		button.set( { label, icon, tooltip } );
 
-		listStylesCommand.on( 'change:value', () => {
-			button.isOn = listStylesCommand.value === type;
+		listStyleCommand.on( 'change:value', () => {
+			button.isOn = listStyleCommand.value === type;
 		} );
 
 		button.on( 'execute', () => {
@@ -206,18 +206,18 @@ function getStyleButtonCreator( { editor, listStylesCommand, parentCommandName }
 			if ( parentCommand.value ) {
 				// If the current list style is not set in the model or the style is different than the
 				// one to be applied, simply apply the new style.
-				if ( listStylesCommand.value !== type ) {
-					editor.execute( 'listStyles', { type } );
+				if ( listStyleCommand.value !== type ) {
+					editor.execute( 'listStyle', { type } );
 				}
 				// If the style was the same, remove it (the button works as an off toggle).
 				else {
-					editor.execute( 'listStyles', { type: 'default' } );
+					editor.execute( 'listStyle', { type: 'default' } );
 				}
 			}
 			// If the content the selection is anchored to is not a list, let's create a list of a desired style.
 			else {
 				editor.execute( parentCommandName );
-				editor.execute( 'listStyles', { type } );
+				editor.execute( 'listStyle', { type } );
 			}
 
 			editor.editing.view.focus();

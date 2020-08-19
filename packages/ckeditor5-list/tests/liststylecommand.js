@@ -6,15 +6,15 @@
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ListStylesEditing from '../src/liststylesediting';
+import ListStyleEditing from '../src/liststyleediting';
 
-describe( 'ListStylesCommand', () => {
-	let editor, model, bulletedListCommand, numberedListCommand, listStylesCommand;
+describe( 'ListStyleCommand', () => {
+	let editor, model, bulletedListCommand, numberedListCommand, listStyleCommand;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ListStylesEditing ]
+				plugins: [ Paragraph, ListStyleEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -22,7 +22,7 @@ describe( 'ListStylesCommand', () => {
 
 				bulletedListCommand = editor.commands.get( 'bulletedList' );
 				numberedListCommand = editor.commands.get( 'numberedList' );
-				listStylesCommand = editor.commands.get( 'listStyles' );
+				listStyleCommand = editor.commands.get( 'listStyle' );
 			} );
 	} );
 
@@ -34,24 +34,24 @@ describe( 'ListStylesCommand', () => {
 		it( 'should be true if bulletedList or numberedList is enabled', () => {
 			bulletedListCommand.isEnabled = true;
 			numberedListCommand.isEnabled = false;
-			listStylesCommand.refresh();
+			listStyleCommand.refresh();
 
-			expect( listStylesCommand.isEnabled ).to.equal( true );
+			expect( listStyleCommand.isEnabled ).to.equal( true );
 
 			bulletedListCommand.isEnabled = false;
 			numberedListCommand.isEnabled = true;
-			listStylesCommand.refresh();
+			listStyleCommand.refresh();
 
-			expect( listStylesCommand.isEnabled ).to.equal( true );
+			expect( listStyleCommand.isEnabled ).to.equal( true );
 		} );
 
 		it( 'should be false if bulletedList and numberedList are enabled', () => {
 			bulletedListCommand.isEnabled = false;
 			numberedListCommand.isEnabled = false;
 
-			listStylesCommand.refresh();
+			listStyleCommand.refresh();
 
-			expect( listStylesCommand.isEnabled ).to.equal( false );
+			expect( listStyleCommand.isEnabled ).to.equal( false );
 		} );
 	} );
 
@@ -59,7 +59,7 @@ describe( 'ListStylesCommand', () => {
 		it( 'should return null if selected a paragraph', () => {
 			setData( model, '<paragraph>Foo[]</paragraph>' );
 
-			expect( listStylesCommand.value ).to.equal( null );
+			expect( listStyleCommand.value ).to.equal( null );
 		} );
 
 		it( 'should return null if selection starts in a paragraph and ends in a list item', () => {
@@ -68,19 +68,19 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="0" listType="bulleted" listStyle="default">Foo]</listItem>'
 			);
 
-			expect( listStylesCommand.value ).to.equal( null );
+			expect( listStyleCommand.value ).to.equal( null );
 		} );
 
 		it( 'should return the value of `listStyle` attribute if selection is inside a listItem (collapsed selection)', () => {
 			setData( model, '<listItem listIndent="0" listType="bulleted" listStyle="default">Foo[]</listItem>' );
 
-			expect( listStylesCommand.value ).to.equal( 'default' );
+			expect( listStyleCommand.value ).to.equal( 'default' );
 		} );
 
 		it( 'should return the value of `listStyle` attribute if selection is inside a listItem (non-collapsed selection)', () => {
 			setData( model, '<listItem listIndent="0" listType="bulleted" listStyle="default">[Foo]</listItem>' );
 
-			expect( listStylesCommand.value ).to.equal( 'default' );
+			expect( listStyleCommand.value ).to.equal( 'default' );
 		} );
 
 		it( 'should return the value of `listStyle` attribute if selected more elements in the same list', () => {
@@ -90,7 +90,7 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="0" listType="bulleted" listStyle="square">3.</listItem>'
 			);
 
-			expect( listStylesCommand.value ).to.equal( 'square' );
+			expect( listStyleCommand.value ).to.equal( 'square' );
 		} );
 
 		it( 'should return the value of `listStyle` attribute for the selection inside a nested list', () => {
@@ -100,7 +100,7 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="0" listType="bulleted" listStyle="square">2.</listItem>'
 			);
 
-			expect( listStylesCommand.value ).to.equal( 'disc' );
+			expect( listStyleCommand.value ).to.equal( 'disc' );
 		} );
 
 		it( 'should return the value of `listStyle` attribute from a list where the selection starts (selection over nested list)', () => {
@@ -110,7 +110,7 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="0" listType="bulleted" listStyle="square">2.]</listItem>'
 			);
 
-			expect( listStylesCommand.value ).to.equal( 'disc' );
+			expect( listStyleCommand.value ).to.equal( 'disc' );
 		} );
 	} );
 
@@ -120,7 +120,7 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.[]</listItem>'
 			);
 
-			listStylesCommand.execute( { type: 'circle' } );
+			listStyleCommand.execute( { type: 'circle' } );
 
 			expect( getData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>'
@@ -132,7 +132,7 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">[1.]</listItem>'
 			);
 
-			listStylesCommand.execute( { type: 'circle' } );
+			listStyleCommand.execute( { type: 'circle' } );
 
 			expect( getData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">[1.]</listItem>'
@@ -146,7 +146,7 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">3.</listItem>'
 			);
 
-			listStylesCommand.execute( { type: 'circle' } );
+			listStyleCommand.execute( { type: 'circle' } );
 
 			expect( getData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
@@ -165,7 +165,7 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="1" listStyle="default" listType="bulleted">3.1.</listItem>'
 			);
 
-			listStylesCommand.execute( { type: 'circle' } );
+			listStyleCommand.execute( { type: 'circle' } );
 
 			expect( getData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
@@ -187,7 +187,7 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="1" listStyle="default" listType="bulleted">3.1.</listItem>'
 			);
 
-			listStylesCommand.execute( { type: 'disc' } );
+			listStyleCommand.execute( { type: 'disc' } );
 
 			expect( getData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.</listItem>' +
@@ -207,7 +207,7 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">3.</listItem>'
 			);
 
-			listStylesCommand.execute( { type: 'circle' } );
+			listStyleCommand.execute( { type: 'circle' } );
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>Foo.</paragraph>' +
@@ -225,7 +225,7 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="0" listStyle="default" listType="numbered">1.</listItem>'
 			);
 
-			listStylesCommand.execute( { type: 'circle' } );
+			listStyleCommand.execute( { type: 'circle' } );
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>Foo.</paragraph>' +
@@ -243,7 +243,7 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="0" listStyle="disc" listType="bulleted">1.</listItem>'
 			);
 
-			listStylesCommand.execute( { type: 'circle' } );
+			listStyleCommand.execute( { type: 'circle' } );
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>Foo.</paragraph>' +
@@ -261,7 +261,7 @@ describe( 'ListStylesCommand', () => {
 				'<paragraph>Foo.]</paragraph>'
 			);
 
-			listStylesCommand.execute( { type: 'circle' } );
+			listStyleCommand.execute( { type: 'circle' } );
 
 			expect( getData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
@@ -279,7 +279,7 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">3.</listItem>'
 			);
 
-			listStylesCommand.execute( { type: 'circle' } );
+			listStyleCommand.execute( { type: 'circle' } );
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>[Foo.</paragraph>' +
@@ -294,7 +294,7 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>'
 			);
 
-			listStylesCommand.execute();
+			listStyleCommand.execute();
 
 			expect( getData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.[]</listItem>'
@@ -306,7 +306,7 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>'
 			);
 
-			listStylesCommand.execute( {} );
+			listStyleCommand.execute( {} );
 
 			expect( getData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.[]</listItem>'
@@ -318,7 +318,7 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>'
 			);
 
-			listStylesCommand.execute( { type: null } );
+			listStyleCommand.execute( { type: null } );
 
 			expect( getData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.[]</listItem>'
@@ -331,7 +331,7 @@ describe( 'ListStylesCommand', () => {
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.</listItem>'
 			);
 
-			listStylesCommand.execute( { type: 'circle' } );
+			listStyleCommand.execute( { type: 'circle' } );
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>[Foo.]</paragraph>' +

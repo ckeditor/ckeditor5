@@ -10,8 +10,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import ListStyles from '../src/liststyles';
-import ListStylesUI from '../src/liststylesui';
+import ListStyle from '../src/liststyle';
+import ListStyleUI from '../src/liststyleui';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 
 import bulletedListIcon from '../theme/icons/bulletedlist.svg';
@@ -27,19 +27,19 @@ import listStyleUpperRomanIcon from '../theme/icons/liststyleupperroman.svg';
 import listStyleLowerLatinIcon from '../theme/icons/liststylelowerlatin.svg';
 import listStyleUpperLatinIcon from '../theme/icons/liststyleupperlatin.svg';
 
-describe( 'ListStylesUI', () => {
-	let editorElement, editor, model, listStylesCommand;
+describe( 'ListStyleUI', () => {
+	let editorElement, editor, model, listStyleCommand;
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, BlockQuote, ListStyles ] } )
+		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, BlockQuote, ListStyle ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
 
-				listStylesCommand = editor.commands.get( 'listStyles' );
+				listStyleCommand = editor.commands.get( 'listStyle' );
 			} );
 	} );
 
@@ -50,11 +50,11 @@ describe( 'ListStylesUI', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( ListStylesUI.pluginName ).to.equal( 'ListStylesUI' );
+		expect( ListStyleUI.pluginName ).to.equal( 'ListStyleUI' );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ListStylesUI ) ).to.be.instanceOf( ListStylesUI );
+		expect( editor.plugins.get( ListStyleUI ) ).to.be.instanceOf( ListStyleUI );
 	} );
 
 	describe( 'init()', () => {
@@ -182,16 +182,16 @@ describe( 'ListStylesUI', () => {
 						expect( styleButtonView ).to.be.instanceOf( ButtonView );
 					} );
 
-					it( 'should change its #isOn state when the value of the "listStylesCommand" command changes', () => {
+					it( 'should change its #isOn state when the value of the "listStyleCommand" command changes', () => {
 						expect( styleButtonView.isOn ).to.be.false;
 
-						listStylesCommand.value = 'foo';
+						listStyleCommand.value = 'foo';
 						expect( styleButtonView.isOn ).to.be.false;
 
-						listStylesCommand.value = 'circle';
+						listStyleCommand.value = 'circle';
 						expect( styleButtonView.isOn ).to.be.true;
 
-						listStylesCommand.value = null;
+						listStyleCommand.value = null;
 						expect( styleButtonView.isOn ).to.be.false;
 					} );
 
@@ -200,7 +200,7 @@ describe( 'ListStylesUI', () => {
 
 						styleButtonView.fire( 'execute' );
 
-						sinon.assert.calledWithExactly( editor.execute, 'listStyles', { type: 'circle' } );
+						sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'circle' } );
 						sinon.assert.calledOnce( editor.editing.view.focus );
 						sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
 					} );
@@ -210,7 +210,7 @@ describe( 'ListStylesUI', () => {
 
 						styleButtonView.fire( 'execute' );
 
-						sinon.assert.calledWithExactly( editor.execute, 'listStyles', { type: 'circle' } );
+						sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'circle' } );
 						sinon.assert.calledOnce( editor.editing.view.focus );
 						sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
 					} );
@@ -220,7 +220,7 @@ describe( 'ListStylesUI', () => {
 
 						styleButtonView.fire( 'execute' );
 
-						sinon.assert.calledWithExactly( editor.execute, 'listStyles', { type: 'default' } );
+						sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'default' } );
 						sinon.assert.calledOnce( editor.editing.view.focus );
 						sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
 					} );
@@ -230,7 +230,7 @@ describe( 'ListStylesUI', () => {
 
 						styleButtonView.fire( 'execute' );
 
-						sinon.assert.calledWithExactly( editor.execute, 'listStyles', { type: 'circle' } );
+						sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'circle' } );
 						sinon.assert.calledOnce( editor.editing.view.focus );
 						sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
 					} );
@@ -386,16 +386,16 @@ describe( 'ListStylesUI', () => {
 						expect( styleButtonView ).to.be.instanceOf( ButtonView );
 					} );
 
-					it( 'should change its #isOn state when the value of the "listStylesCommand" command changes', () => {
+					it( 'should change its #isOn state when the value of the "listStyleCommand" command changes', () => {
 						expect( styleButtonView.isOn ).to.be.false;
 
-						listStylesCommand.value = 'foo';
+						listStyleCommand.value = 'foo';
 						expect( styleButtonView.isOn ).to.be.false;
 
-						listStylesCommand.value = 'decimal-leading-zero';
+						listStyleCommand.value = 'decimal-leading-zero';
 						expect( styleButtonView.isOn ).to.be.true;
 
-						listStylesCommand.value = null;
+						listStyleCommand.value = null;
 						expect( styleButtonView.isOn ).to.be.false;
 					} );
 
@@ -404,7 +404,7 @@ describe( 'ListStylesUI', () => {
 
 						styleButtonView.fire( 'execute' );
 
-						sinon.assert.calledWithExactly( editor.execute, 'listStyles', { type: 'decimal-leading-zero' } );
+						sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'decimal-leading-zero' } );
 						sinon.assert.calledOnce( editor.editing.view.focus );
 						sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
 					} );
@@ -414,7 +414,7 @@ describe( 'ListStylesUI', () => {
 
 						styleButtonView.fire( 'execute' );
 
-						sinon.assert.calledWithExactly( editor.execute, 'listStyles', { type: 'decimal-leading-zero' } );
+						sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'decimal-leading-zero' } );
 						sinon.assert.calledOnce( editor.editing.view.focus );
 						sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
 					} );
@@ -424,7 +424,7 @@ describe( 'ListStylesUI', () => {
 
 						styleButtonView.fire( 'execute' );
 
-						sinon.assert.calledWithExactly( editor.execute, 'listStyles', { type: 'default' } );
+						sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'default' } );
 						sinon.assert.calledOnce( editor.editing.view.focus );
 						sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
 					} );
@@ -434,7 +434,7 @@ describe( 'ListStylesUI', () => {
 
 						styleButtonView.fire( 'execute' );
 
-						sinon.assert.calledWithExactly( editor.execute, 'listStyles', { type: 'decimal-leading-zero' } );
+						sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'decimal-leading-zero' } );
 						sinon.assert.calledOnce( editor.editing.view.focus );
 						sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
 					} );

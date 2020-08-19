@@ -8,17 +8,17 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import ListStylesEditing from '../src/liststylesediting';
+import ListStyleEditing from '../src/liststyleediting';
 import TodoListEditing from '../src/todolistediting';
-import ListStylesCommand from '../src/liststylescommand';
+import ListStyleCommand from '../src/liststylecommand';
 
-describe( 'ListStylesEditing', () => {
+describe( 'ListStyleEditing', () => {
 	let editor, model, view;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ListStylesEditing, UndoEditing ]
+				plugins: [ Paragraph, ListStyleEditing, UndoEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -32,11 +32,11 @@ describe( 'ListStylesEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( ListStylesEditing.pluginName ).to.equal( 'ListStylesEditing' );
+		expect( ListStyleEditing.pluginName ).to.equal( 'ListStyleEditing' );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ListStylesEditing ) ).to.be.instanceOf( ListStylesEditing );
+		expect( editor.plugins.get( ListStyleEditing ) ).to.be.instanceOf( ListStyleEditing );
 	} );
 
 	describe( 'schema rules', () => {
@@ -53,9 +53,9 @@ describe( 'ListStylesEditing', () => {
 
 	describe( 'command', () => {
 		it( 'should register listStyle command', () => {
-			const command = editor.commands.get( 'listStyles' );
+			const command = editor.commands.get( 'listStyle' );
 
-			expect( command ).to.be.instanceOf( ListStylesCommand );
+			expect( command ).to.be.instanceOf( ListStyleCommand );
 		} );
 	} );
 
@@ -842,8 +842,8 @@ describe( 'ListStylesEditing', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						// TodoListEditing is at the end by design. Check `ListStylesEditing.afterInit()` call.
-						plugins: [ Paragraph, ListStylesEditing, TodoListEditing ]
+						// TodoListEditing is at the end by design. Check `ListStyleEditing.afterInit()` call.
+						plugins: [ Paragraph, ListStyleEditing, TodoListEditing ]
 					} )
 					.then( newEditor => {
 						editor = newEditor;

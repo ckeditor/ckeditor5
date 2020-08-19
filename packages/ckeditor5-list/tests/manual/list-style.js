@@ -14,7 +14,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TablePropertiesEditing from '@ckeditor/ckeditor5-table/src/tableproperties/tablepropertiesediting';
 import TableCellPropertiesEditing from '@ckeditor/ckeditor5-table/src/tablecellproperties/tablecellpropertiesediting';
 import List from '../../src/list';
-import ListStyles from '../../src/liststyles';
+import ListStyle from '../../src/liststyle';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import TodoList from '../../src/todolist';
@@ -29,7 +29,7 @@ ClassicEditor
 			List,
 			TodoList,
 			Paragraph,
-			ListStyles,
+			ListStyle,
 			Table,
 			TablePropertiesEditing,
 			TableCellPropertiesEditing,

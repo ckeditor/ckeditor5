@@ -4,12 +4,12 @@
  */
 
 /**
- * @module list/liststylesediting
+ * @module list/liststyleediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ListEditing from './listediting';
-import ListStylesCommand from './liststylescommand';
+import ListStyleCommand from './liststylecommand';
 import { getSiblingListItem } from './utils';
 
 const DEFAULT_LIST_TYPE = 'default';
@@ -20,9 +20,11 @@ const DEFAULT_LIST_TYPE = 'default';
  * It sets value for the `listItem` attribute for the {@link module:list/list~List `<listItem>`} element that
  * allows modifying list style type.
  *
+ * It registers the `'listStyle'` command.
+ *
  * @extends module:core/plugin~Plugin
  */
-export default class ListStylesEditing extends Plugin {
+export default class ListStyleEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -34,7 +36,7 @@ export default class ListStylesEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'ListStylesEditing';
+		return 'ListStyleEditing';
 	}
 
 	/**
@@ -54,7 +56,7 @@ export default class ListStylesEditing extends Plugin {
 			isFormatting: true
 		} );
 
-		editor.commands.add( 'listStyles', new ListStylesCommand( editor, DEFAULT_LIST_TYPE ) );
+		editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
 
 		// Fix list attributes when modifying their nesting levels (the `listIndent` attribute).
 		this.listenTo( editor.commands.get( 'indentList' ), 'executeCleanup', fixListAfterIndentListCommand( editor ) );
@@ -78,7 +80,7 @@ export default class ListStylesEditing extends Plugin {
 		const editor = this.editor;
 
 		// Enable post-fixer that removes the `listStyle` attribute from to-do list items only if the "TodoList" plugin is on.
-		// We need to registry the hook here since the `TodoList` plugin can be added after the `ListStylesEditing`.
+		// We need to registry the hook here since the `TodoList` plugin can be added after the `ListStyleEditing`.
 		if ( editor.commands.get( 'todoList' ) ) {
 			editor.model.document.registerPostFixer( removeListStyleAttributeFromTodoList( editor ) );
 		}

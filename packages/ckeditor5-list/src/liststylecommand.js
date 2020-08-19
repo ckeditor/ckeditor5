@@ -4,18 +4,18 @@
  */
 
 /**
- * @module list/liststylescommand
+ * @module list/liststylecommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 
 /**
- * The list style command. It is used by the {@link module:list/liststyles~ListStyles list styles feature}.
+ * The list style command. It is used by the {@link module:list/liststyle~ListStyle list styles feature}.
  *
  * @extends module:core/command~Command
  */
-export default class ListStylesCommand extends Command {
+export default class ListStyleCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
