@@ -29,7 +29,7 @@ export default class ListStyleCommand extends Command {
 		/**
 		 * The default type of the list style.
 		 *
-		 * @private
+		 * @protected
 		 * @member {String}
 		 */
 		this._defaultType = defaultType;
