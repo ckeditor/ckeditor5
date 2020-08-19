@@ -27,7 +27,7 @@ export default class ImageUploadFormRowView extends View {
 	 *
 	 * @param {module:utils/locale~Locale} locale The locale instance.
 	 * @param {Object} options
-	 * @param {Array.<module:ui/view~View>} options.children
+	 * @param {Array.<module:ui/view~View>} [options.children]
 	 * @param {String} [options.class]
 	 * @param {module:ui/view~View} [options.labelView] When passed, the row gets the `group` and `aria-labelledby`
 	 * DOM attributes and gets described by the label.
