@@ -11,6 +11,7 @@
 
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
 import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
+import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Creates a regular expression used to test for image files.
@@ -127,14 +128,21 @@ export function prepareIntegrations( editor ) {
 		} else if ( editor.ui.componentFactory.has( key ) ) {
 			object[ key ] = editor.ui.componentFactory.create( key );
 		} else {
-			// Console.warn should be enough because missing integration doesn't break the editor.
-			console.warn(
-				'It looks like integration "' + key + '" doesn\'t exist. ' +
-				'What may have happened: ' +
-				'\n- you passed the invalid integration name in the `image.upload.panel.items`,' +
-				'\n- integration component wasn\'t properly registered by the plugin,' +
-				'\n- the plugin that registers the component wasn\'t installed in the editor.'
-			);
+			/**
+			 * The specified name of the view cannot be created by the
+			 * {@link module:ui/componentfactory~ComponentFactory component factory}.
+			 *
+			 * Check whether:
+			 * * you passed the proper integration name as the
+			 *    `{@link module:image/imageupload~ImageUploadPanelConfig#items image.upload.panel.items}`,
+			 * * the plugin that registers the component was loaded to the editor,
+			 * * integration component was properly registered by the plugin.
+			 *
+			 * @error image-upload-integrations-invalid-view
+			 */
+			console.warn( attachLinkToDocumentation(
+				'image-upload-integrations-invalid-view: Trying to use a view that does not exist.'
+			), { key } );
 		}
 
 		return object;
@@ -156,7 +164,7 @@ export function createLabeledInputView( locale ) {
 		label: t( 'Insert image via URL' )
 	} );
 	labeledInputView.fieldView.placeholder = 'https://example.com/src/image.png';
-	labeledInputView.infoText = t( 'Paste the image source URL' );
+	labeledInputView.infoText = t( 'Paste the image source URL.' );
 
 	return labeledInputView;
 }

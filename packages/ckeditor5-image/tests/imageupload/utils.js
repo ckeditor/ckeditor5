@@ -79,7 +79,8 @@ describe( 'Upload utils', () => {
 			editorElement.remove();
 		} );
 
-		it( 'should return only "insertImageViaUrl" integration and throw warning about missing integration', async () => {
+		it( 'should return only "insertImageViaUrl" integration and throw warning' +
+			'for "image-upload-integrations-invalid-view" error', async () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
@@ -108,7 +109,7 @@ describe( 'Upload utils', () => {
 			expect( Object.values( prepareIntegrations( editor ) ).length ).to.equal( 1 );
 
 			sinon.assert.calledOnce( consoleWarn );
-			expect( /Integration "openCKFinder" doesn't exist/gmi.test( consoleWarn.args[ 0 ][ 0 ] ) ).to.be.true;
+			expect( /image-upload-integrations-invalid-view/gmi.test( consoleWarn.args[ 0 ][ 0 ] ) ).to.be.true;
 
 			editor.destroy();
 			editorElement.remove();
