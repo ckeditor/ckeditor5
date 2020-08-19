@@ -69,7 +69,7 @@ export default class ListStyleEditing extends Plugin {
 		model.document.registerPostFixer( fixListStyleAttributeOnListItemElements( editor ) );
 
 		// Set up conversion.
-		editor.conversion.for( 'upcast' ).add( upcastListItem() );
+		editor.conversion.for( 'upcast' ).add( upcastListItemStyle() );
 		editor.conversion.for( 'downcast' ).add( downcastListStyleAttribute() );
 	}
 
@@ -92,7 +92,7 @@ export default class ListStyleEditing extends Plugin {
 //
 // @private
 // @returns {Function}
-function upcastListItem() {
+function upcastListItemStyle() {
 	return dispatcher => {
 		dispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
 			const listParent = data.viewItem.parent;
