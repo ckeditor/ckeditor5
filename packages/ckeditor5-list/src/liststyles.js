@@ -12,7 +12,7 @@ import ListStylesEditing from './liststylesediting';
 import ListStylesUI from './liststylesui';
 
 /**
- * The to-do list feature.
+ * The list styles feature.
  *
  * This is a "glue" plugin that loads the {@link module:list/liststylesediting~ListStylesEditing list styles editing feature}
  * and the {@link module:list/liststylesolistui~ListStylesUI list styles UI feature}.
