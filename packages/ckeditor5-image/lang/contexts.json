@@ -20,5 +20,5 @@
 	"Update": "The label of submit form button if image src URL input has value",
 	"Cancel": "The label of cancel form button",
 	"Insert image via URL": "The input label for the Insert image via URL form",
-	"Paste the image source URL": "The tip label below the Insert image via URL form"
+	"Paste the image source URL.": "The tip label below the Insert image via URL form"
 }
