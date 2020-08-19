@@ -8,5 +8,8 @@ lerna-debug.log
 .idea
 .vscode
 
-# `yarn.lock` needs to be ommited from commited files because it might contain info about private repositories.
+# Ignore `yarn.lock` - this file might contain info from external repositories.
 yarn.lock
+
+# Ignore `mrgit.json` this file contains info about external repositories.
+mrgit.json
