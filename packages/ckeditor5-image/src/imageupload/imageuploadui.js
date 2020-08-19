@@ -104,7 +104,7 @@ export default class ImageUploadUI extends Plugin {
 		function onSubmit() {
 			const selectedElement = editor.model.document.selection.getSelectedElement();
 
-			if ( selectedElement && isImage( selectedElement ) ) {
+			if ( isImage( selectedElement ) ) {
 				editor.model.change( writer => {
 					writer.setAttribute( 'src', imageUploadView.imageURLInputValue, selectedElement );
 					writer.removeAttribute( 'srcset', selectedElement );
