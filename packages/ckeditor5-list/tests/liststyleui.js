@@ -9,10 +9,11 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import ListStyle from '../src/liststyle';
 import ListStyleUI from '../src/liststyleui';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 import bulletedListIcon from '../theme/icons/bulletedlist.svg';
 import numberedListIcon from '../theme/icons/numberedlist.svg';
@@ -34,7 +35,7 @@ describe( 'ListStyleUI', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, BlockQuote, ListStyle ] } )
+		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, BlockQuote, ListStyle, UndoEditing ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
@@ -230,9 +231,26 @@ describe( 'ListStyleUI', () => {
 
 						styleButtonView.fire( 'execute' );
 
+						sinon.assert.calledWithExactly( editor.execute, 'bulletedList' );
 						sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'circle' } );
 						sinon.assert.calledOnce( editor.editing.view.focus );
 						sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+					} );
+
+					it( 'should create the single undo step while selection was not anchored in a list', () => {
+						setData( model, '<paragraph>foo[]</paragraph>' );
+
+						styleButtonView.fire( 'execute' );
+
+						expect( getData( model ) ).to.equal(
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">foo[]</listItem>'
+						);
+
+						editor.execute( 'undo' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>foo[]</paragraph>'
+						);
 					} );
 				} );
 			} );
@@ -434,9 +452,26 @@ describe( 'ListStyleUI', () => {
 
 						styleButtonView.fire( 'execute' );
 
+						sinon.assert.calledWithExactly( editor.execute, 'numberedList' );
 						sinon.assert.calledWithExactly( editor.execute, 'listStyle', { type: 'decimal-leading-zero' } );
 						sinon.assert.calledOnce( editor.editing.view.focus );
 						sinon.assert.callOrder( editor.execute, editor.editing.view.focus );
+					} );
+
+					it( 'should create the single undo step while selection was not anchored in a list', () => {
+						setData( model, '<paragraph>foo[]</paragraph>' );
+
+						styleButtonView.fire( 'execute' );
+
+						expect( getData( model ) ).to.equal(
+							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">foo[]</listItem>'
+						);
+
+						editor.execute( 'undo' );
+
+						expect( getData( model ) ).to.equal(
+							'<paragraph>foo[]</paragraph>'
+						);
 					} );
 				} );
 			} );
