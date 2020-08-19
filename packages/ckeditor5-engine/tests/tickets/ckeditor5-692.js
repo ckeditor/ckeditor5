@@ -41,7 +41,7 @@ describe( 'Bug ckeditor5#692', () => {
 
 	describe( 'DomConverter', () => {
 		// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 1.
-		it( 'should handle space after inline filler at the end of container', () => {
+		it( 'should handle space after inline filler at the end of container (scenario 1)', () => {
 			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			// Create Bold attribute at the end of paragraph.
@@ -63,7 +63,7 @@ describe( 'Bug ckeditor5#692', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 2.
-		it( 'should handle space after inline filler at the end of container', () => {
+		it( 'should handle space after inline filler at the end of container (scenario 2)', () => {
 			setModelData( editor.model, '<paragraph>[]foo</paragraph>' );
 
 			// Create Bold attribute at the end of paragraph.

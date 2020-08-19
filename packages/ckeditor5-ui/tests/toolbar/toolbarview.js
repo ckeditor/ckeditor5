@@ -64,7 +64,7 @@ describe( 'ToolbarView', () => {
 				expect( view.options ).to.deep.equal( {} );
 			} );
 
-			it( 'should be an empty object if none were passed', () => {
+			it( 'should be an empty object if other options were passed', () => {
 				const options = {
 					foo: 'bar'
 				};

@@ -486,7 +486,7 @@ describe( 'Autoformat', () => {
 		} );
 
 		describe( 'with code element', () => {
-			describe( 'should not format', () => {
+			describe( 'should not format (inside)', () => {
 				it( '* inside', () => {
 					setData( model, '<paragraph><$text code="true">fo*obar[]</$text></paragraph>' );
 
@@ -532,7 +532,7 @@ describe( 'Autoformat', () => {
 				} );
 			} );
 
-			describe( 'should not format', () => {
+			describe( 'should not format (across)', () => {
 				it( '* across', () => {
 					setData( model, '<paragraph><$text code="true">fo*o</$text>bar[]</paragraph>' );
 

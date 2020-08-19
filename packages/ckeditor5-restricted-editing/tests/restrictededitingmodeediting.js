@@ -656,7 +656,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]ar baz</paragraph>' );
 		} );
 
-		it( 'should prevent changing text before exception marker', () => {
+		it( 'should prevent changing text before exception marker (native spell-check simulation)', () => {
 			addExceptionMarker( 4, 7, firstParagraph );
 
 			model.change( writer => {

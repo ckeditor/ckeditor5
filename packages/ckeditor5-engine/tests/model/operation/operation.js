@@ -39,7 +39,7 @@ describe( 'Operation', () => {
 			} );
 		} );
 
-		it( 'should create proper json object #1', () => {
+		it( 'should create proper json object #2', () => {
 			const op = new Operation( 4 );
 			const batch = new Batch();
 			batch.addOperation( op );

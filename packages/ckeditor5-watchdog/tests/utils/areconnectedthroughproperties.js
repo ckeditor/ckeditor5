@@ -285,16 +285,5 @@ describe( 'areConnectedThroughProperties()', () => {
 
 			expect( areConnectedThroughProperties( editor1, editor2 ) ).to.be.false;
 		} );
-
-		it( 'should return false for two different editors sharing builtin plugins', () => {
-			Editor.builtinPlugins = [
-				class Foo {}
-			];
-
-			const editor1 = new Editor();
-			const editor2 = new Editor();
-
-			expect( areConnectedThroughProperties( editor1, editor2 ) ).to.be.false;
-		} );
 	} );
 } );

@@ -63,7 +63,7 @@ describe( 'diff', () => {
 		testUtils.sinon.assert.called( fastDiffSpy );
 	} );
 
-	it( 'should use fastDiff() internally for strings with length sum of 2000+', () => {
+	it( 'should use fastDiff() internally for strings with length sum of exaclty 2000', () => {
 		diff( getLongText( 10 ), getLongText( 1990 ) );
 		testUtils.sinon.assert.called( fastDiffSpy );
 	} );
