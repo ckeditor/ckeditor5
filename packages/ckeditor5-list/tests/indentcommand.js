@@ -194,12 +194,12 @@ describe( 'IndentCommand', () => {
 				);
 			} );
 
-			it( 'should fire "executeCleanup" event after finish all operations with all changed items', done => {
+			it( 'should fire "_executeCleanup" event after finish all operations with all changed items', done => {
 				model.change( writer => {
 					writer.setSelection( root.getChild( 1 ), 0 );
 				} );
 
-				command.on( 'executeCleanup', ( evt, data ) => {
+				command.on( '_executeCleanup', ( evt, data ) => {
 					expect( data ).to.deep.equal( [
 						root.getChild( 1 ),
 						root.getChild( 2 ),

@@ -59,11 +59,11 @@ export default class ListStyleEditing extends Plugin {
 		editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
 
 		// Fix list attributes when modifying their nesting levels (the `listIndent` attribute).
-		this.listenTo( editor.commands.get( 'indentList' ), 'executeCleanup', fixListAfterIndentListCommand( editor ) );
-		this.listenTo( editor.commands.get( 'outdentList' ), 'executeCleanup', fixListAfterOutdentListCommand( editor ) );
+		this.listenTo( editor.commands.get( 'indentList' ), '_executeCleanup', fixListAfterIndentListCommand( editor ) );
+		this.listenTo( editor.commands.get( 'outdentList' ), '_executeCleanup', fixListAfterOutdentListCommand( editor ) );
 
-		this.listenTo( editor.commands.get( 'bulletedList' ), 'executeCleanup', restoreDefaultListStyle( editor ) );
-		this.listenTo( editor.commands.get( 'numberedList' ), 'executeCleanup', restoreDefaultListStyle( editor ) );
+		this.listenTo( editor.commands.get( 'bulletedList' ), '_executeCleanup', restoreDefaultListStyle( editor ) );
+		this.listenTo( editor.commands.get( 'numberedList' ), '_executeCleanup', restoreDefaultListStyle( editor ) );
 
 		// Register a post-fixer that ensures that the `listStyle` attribute is specified in each `listItem` element.
 		model.document.registerPostFixer( fixListStyleAttributeOnListItemElements( editor ) );
