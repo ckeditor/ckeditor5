@@ -95,7 +95,11 @@ describe( 'GFMDataProcessor', () => {
 				'# header\n' +
 				'# header',
 
-				'<h1>header</h1><h1>header</h1>'
+				'<h1>header</h1><h1>header</h1>',
+
+				'# header\n' +
+				'\n' +
+				'# header'
 			);
 		} );
 
@@ -105,7 +109,13 @@ describe( 'GFMDataProcessor', () => {
 				'## header\n' +
 				'### header',
 
-				'<h1>header</h1><h2>header</h2><h3>header</h3>'
+				'<h1>header</h1><h2>header</h2><h3>header</h3>',
+
+				'# header\n' +
+				'\n' +
+				'## header\n' +
+				'\n' +
+				'### header'
 			);
 		} );
 
