@@ -87,6 +87,7 @@ export default class ImageUpload extends Plugin {
 /**
  * Image upload panel view configuration.
  *
+ * @protected
  * @member {module:image/imageupload~ImageUploadPanelConfig} module:image/imageupload~ImageUploadConfig#panel
  */
 
@@ -106,6 +107,7 @@ export default class ImageUpload extends Plugin {
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  *
+ * @protected
  * @interface module:image/imageupload~ImageUploadPanelConfig
  */
 
