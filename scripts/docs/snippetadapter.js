@@ -259,6 +259,12 @@ function filterAllowedSnippets( snippets, allowedSnippets ) {
 	}
 }
 
+/**
+ * Adds constants to the webpack process from external repositories containing `docs/constants.js` files.
+ *
+ * @param {Array.<Object>} snippets
+ * @returns {Object}
+ */
 function getConstantDefinitions( snippets ) {
 	const knownPaths = new Set();
 	const constantDefinitions = {};
