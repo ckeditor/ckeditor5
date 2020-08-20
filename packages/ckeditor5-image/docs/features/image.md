@@ -82,18 +82,16 @@ By default, if the image caption is empty, the `<figcaption>` element is not vis
 
 See the {@link features/image-upload Image upload} guide.
 
-## Insert image via URL
+## Inserting images via source URL
 
-Another great feature is the ability to insert an image via a URL address. This feature is available under the **Image Upload** feature dropdown. Once it's enabled, when you click on the arrow button, you will see a small panel view containing the form for an image source URL. Once you fill it, you will be able to insert the image into the editor's content.
+Besides the ability to insert images by uploading them directly from your disk or via CKFinder, you can also configure the editor to allow inserting images via source URL.
 
-### Enable inserting an image via URL
-
-Currently, if you want to use the feature, you have to enable it through the editor's configuration. You can do it by setting the special token `insertImageViaUrl` in the `image.upload.panel.items`:
+In order to enable this option configure `image.upload.panel.items` like below:
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [Image, ImageUpload],
+		// ...
 		image: {
 			// ...
 			upload: {
@@ -105,17 +103,7 @@ ClassicEditor
 	} )
 ```
 
-This will extend the standalone **Insert image** button in the toolbar by adding the dropdown panel with the new feature. To see how it works, please take a look at the demo in the [next section](/replace-image-via-url).
-
-### Replace image via URL
-
-Yet another cool function that the feature introduces is the ability to replace a previously inserted image without loosing its styling and custom attributes (if it has ones). If you click on the image and open the `{@link module:image/imageupload/ui/imageuploadpanelview~ImageUploadPanelView#dropdownView ImageUpload dropdown}` you will see that the **Insert image via URL** form is already filled. This is the URL of the current image. You can easily edit it and update it through the form.
-
-<info-box>
-<strong>Bonus tip</strong>: You can even edit the URL of an image inserted from the native file system or from — for example — `{@link module:ckfinder/ckfinder~CKFinder}`.
-</info-box>
-
-Check it out in this short demo:
+This will extend the standalone **Insert image** button in the toolbar by adding the dropdown panel with the new feature (click the arrow next to the button). To see how it works, please take a look at the demo below:
 
 {@snippet features/image-insert-via-url}
 
