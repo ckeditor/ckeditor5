@@ -1,0 +1,29 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-form__row {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+
+	/* Ignore labels that work as fieldset legends */
+	& > *:not(.ck-label) {
+		flex-grow: 1;
+	}
+
+	&.ck-image-upload-form__action-row {
+		margin-top: var(--ck-spacing-standard);
+
+		& .ck-button-save,
+		& .ck-button-cancel {
+			justify-content: center;
+		}
+
+		& .ck-button .ck-button__label {
+			color: var(--ck-color-text);
+		}
+	}
+}
