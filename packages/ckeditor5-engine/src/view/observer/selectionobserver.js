@@ -101,6 +101,12 @@ export default class SelectionObserver extends Observer {
 		}
 
 		this.listenTo( domDocument, 'selectionchange', () => {
+			if ( this.document.isComposing ) {
+				console.info( '[SelectiobObserver] Don\'t fire selection change because composing.' );
+
+				return;
+			}
+
 			this._handleSelectionChange( domDocument );
 		} );
 

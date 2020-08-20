@@ -35,18 +35,15 @@ export default class Typing extends Plugin {
 		let biCount = 0;
 
 		this.editor.editing.view.document.on( 'beforeinput', ( evt, data ) => {
-			console.group( 'beforeInput debug #' + biCount++ );
-
 			const domEvent = data.domEvent;
 			const { inputType, isComposing, data: eventData } = domEvent;
 			const targetRanges = Array.from( domEvent.getTargetRanges() );
 			const dataTransferText = domEvent.dataTransfer && domEvent.dataTransfer.getData( 'text/plain' );
 
-			console.log( 'domEvent:', domEvent );
+			console.group( `#${ biCount++ } beforeInput (%c"${ inputType }"%c)`, 'color: blue', 'color: default' );
+
+			console.log( `data="${ eventData || dataTransferText }"` );
 			console.log( 'targetRanges:', targetRanges );
-			console.log( 'inputType:', inputType );
-			console.log( `data: "${ eventData }"` );
-			console.log( `dataTransferText: "${ dataTransferText }"` );
 			console.log( 'isComposing:', isComposing );
 
 			console.groupEnd();

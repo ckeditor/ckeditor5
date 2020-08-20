@@ -169,6 +169,11 @@ export default class Renderer {
 	 * removed as long as the selection is in the text node which needed it at first.
 	 */
 	render() {
+		if ( this.isComposing ) {
+			console.info( '[Renderer] Don\'t render because composing.' );
+			return;
+		}
+
 		let inlineFillerPosition;
 
 		// Refresh mappings.

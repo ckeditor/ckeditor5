@@ -33,6 +33,7 @@ export default class Input extends Plugin {
 	init() {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
+		let compositionText;
 
 		// TODO The above default configuration value should be defined using editor.config.define() once it's fixed.
 		const inputCommand = new InputCommand( editor, editor.config.get( 'typing.undoStep' ) || 20 );
@@ -62,6 +63,10 @@ export default class Input extends Plugin {
 			const targetRange = targetRanges[ 0 ];
 			let wasHandled;
 
+			if ( inputType === 'insertCompositionText' ) {
+				compositionText = textData;
+				wasHandled = true;
+			}
 			if ( inputType === 'insertText' ) {
 				// This one is used by Chrome when typing accented letter (Mac).
 				// This one is used by Safari when applying spell check (Mac).
@@ -112,8 +117,23 @@ export default class Input extends Plugin {
 				// comes with a collapsed targetRange (should be expanded instead).
 				data.preventDefault();
 			}
+		} );
 
-			console.groupEnd();
+		editingView.document.on( 'compositionstart', ( evt, data ) => {
+			console.log( '%c----------------------- <Compositionstart> ----------------------------', 'font-weight: bold; color: green' );
+
+			compositionText = '';
+		} );
+
+		editingView.document.on( 'compositionend', ( evt, data ) => {
+			console.log( '%c----------------------- </Compositionend> ----------------------------', 'font-weight: bold; color: red' );
+
+			// The user may have left the composition and nothing should be inserted.
+			if ( compositionText ) {
+				editor.execute( 'input', {
+					text: compositionText
+				} );
+			}
 		} );
 	}
 

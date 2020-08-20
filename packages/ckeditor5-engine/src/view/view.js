@@ -115,7 +115,7 @@ export default class View {
 		 * @type {module:engine/view/renderer~Renderer}
 		 */
 		this._renderer = new Renderer( this.domConverter, this.document.selection );
-		this._renderer.bind( 'isFocused' ).to( this.document );
+		this._renderer.bind( 'isFocused', 'isComposing' ).to( this.document );
 
 		/**
 		 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
