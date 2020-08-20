@@ -300,8 +300,6 @@ function getWebpackConfig( snippets, config ) {
 	const webpackConfig = {
 		mode: config.production ? 'production' : 'development',
 
-		devtool: 'source-map',
-
 		entry: {},
 
 		output: {
