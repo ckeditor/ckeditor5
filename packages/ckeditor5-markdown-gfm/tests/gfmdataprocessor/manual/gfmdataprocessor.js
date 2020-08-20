@@ -5,17 +5,20 @@
 
 /* globals document */
 
-import MarkdownDataProcessor from '../../../src/gfmdataprocessor';
+import Document from '@ckeditor/ckeditor5-engine/src/view/document';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 import { stringify, parse } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+
+import MarkdownDataProcessor from '../../../src/gfmdataprocessor';
 
 const markdownTextArea = document.getElementById( 'markdown' );
 const viewTextArea = document.getElementById( 'view' );
-const dataProcessor = new MarkdownDataProcessor();
+const dataProcessor = new MarkdownDataProcessor( new Document( new StylesProcessor() ) );
 
 document.getElementById( 'button_to_view' ).addEventListener( 'click', convertToView );
 document.getElementById( 'button_to_md' ).addEventListener( 'click', convertToMarkdown );
 
-markdownTextArea.value = '### Header\n\nFoo bar baz biz.';
+markdownTextArea.value = '### Header 3\n\nTodo:\n\n* [ ] Test me';
 convertToView();
 
 function convertToView() {

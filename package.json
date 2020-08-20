@@ -86,6 +86,7 @@
     "@ckeditor/ckeditor5-react": "^2.1.0",
     "@ckeditor/ckeditor5-real-time-collaboration": "^21.0.0",
     "@ckeditor/ckeditor5-track-changes": "^21.0.0",
+    "@webspellchecker/wproofreader-ckeditor5": "^1.0.5",
     "@wiris/mathtype-ckeditor5": "7.20.0",
     "babel-standalone": "^6.26.0",
     "coveralls": "^3.1.0",

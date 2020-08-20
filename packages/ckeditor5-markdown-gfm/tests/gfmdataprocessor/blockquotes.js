@@ -23,9 +23,9 @@ describe( 'GFMDataProcessor', () => {
 		it( 'should process nested blockquotes', () => {
 			testDataProcessor(
 				'> foo\n' +
-				'> \n' +
+				'>\n' +
 				'> > bar\n' +
-				'> \n' +
+				'>\n' +
 				'> foo',
 
 				// GitHub is rendering as:
@@ -51,7 +51,7 @@ describe( 'GFMDataProcessor', () => {
 		it( 'should process list within a blockquote', () => {
 			testDataProcessor(
 				'> A list within a blockquote:\n' +
-				'> \n' +
+				'>\n' +
 				'> *   asterisk 1\n' +
 				'> *   asterisk 2\n' +
 				'> *   asterisk 3',
@@ -80,13 +80,13 @@ describe( 'GFMDataProcessor', () => {
 		it( 'should process blockquotes with code inside with ```', () => {
 			testDataProcessor(
 				'> Example 1:\n' +
-				'> \n' +
+				'>\n' +
 				'> ```\n' +
 				'> code 1\n' +
 				'> ```\n' +
-				'> \n' +
+				'>\n' +
 				'> Example 2:\n' +
-				'> \n' +
+				'>\n' +
 				'> ```\n' +
 				'> code 2\n' +
 				'> ```',
@@ -115,8 +115,23 @@ describe( 'GFMDataProcessor', () => {
 						'<code>' +
 							'code 2' +
 						'</code>' +
-					'</pre>' +
-				'</blockquote>'
+					// Space after `</pre>` might be due to bug in engine. See: https://github.com/ckeditor/ckeditor5/issues/7863.
+					'</pre> ' +
+				'</blockquote>',
+
+				'> Example 1:\n' +
+				'>\n' +
+				'> ```\n' +
+				'> code 1\n' +
+				'> ```\n' +
+				'>\n' +
+				'> Example 2:\n' +
+				'>\n' +
+				'> ```\n' +
+				'> code 2\n' +
+				'> ```' +
+				// The below is an artefact of space after `</pre>`. See comment above & https://github.com/ckeditor/ckeditor5/issues/7863.
+				'\n>\n>'
 			);
 		} );
 
@@ -154,21 +169,24 @@ describe( 'GFMDataProcessor', () => {
 						'<code>' +
 							'code 2' +
 						'</code>' +
-					'</pre>' +
+					// Space after `</pre>` might be due to bug in engine. See: https://github.com/ckeditor/ckeditor5/issues/7863.
+					'</pre> ' +
 				'</blockquote>',
 
 				// When converting back to data, DataProcessor will normalize tabs to ```.
 				'> Example 1:\n' +
-				'> \n' +
+				'>\n' +
 				'> ```\n' +
 				'> code 1\n' +
 				'> ```\n' +
-				'> \n' +
+				'>\n' +
 				'> Example 2:\n' +
-				'> \n' +
+				'>\n' +
 				'> ```\n' +
 				'> code 2\n' +
-				'> ```'
+				'> ```' +
+				// The below is an artefact of space after `</pre>`. See comment above & https://github.com/ckeditor/ckeditor5/issues/7863.
+				'\n>\n>'
 			);
 		} );
 	} );
