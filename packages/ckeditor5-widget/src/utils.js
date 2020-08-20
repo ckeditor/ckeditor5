@@ -101,7 +101,7 @@ export function toWidget( element, writer, options = {} ) {
 		 * @param {String} element The view element passed to `toWidget()`.
 		 */
 		throw new CKEditorError(
-			'widget-to-widget-wrong-element-type: The element passed to toWidget() must be a container element instance.',
+			'widget-to-widget-wrong-element-type',
 			null,
 			{ element }
 		);

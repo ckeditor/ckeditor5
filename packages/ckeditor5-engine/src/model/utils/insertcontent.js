@@ -324,7 +324,7 @@ class Insertion {
 			 * @param {module:engine/model/position~Position} position Position to insert the node at.
 			 */
 			throw new CKEditorError(
-				'insertcontent-wrong-position: Given node cannot be inserted on the given position.',
+				'insertcontent-wrong-position',
 				this,
 				{ node, position: this.position }
 			);
@@ -452,8 +452,7 @@ class Insertion {
 				 *
 				 * @error insertcontent-invalid-insertion-position
 				 */
-				throw new CKEditorError( 'insertcontent-invalid-insertion-position: ' +
-					'An internal error occurred during insertContent().', this );
+				throw new CKEditorError( 'insertcontent-invalid-insertion-position', this );
 			}
 
 			// Move the position to the previous node, so it isn't moved to the graveyard on merge.

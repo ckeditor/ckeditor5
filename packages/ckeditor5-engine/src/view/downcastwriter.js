@@ -506,7 +506,7 @@ export default class DowncastWriter {
 			 * @error view-writer-break-non-container-element
 			 */
 			throw new CKEditorError(
-				'view-writer-break-non-container-element: Trying to break an element which is not a container element.',
+				'view-writer-break-non-container-element',
 				this.document
 			);
 		}
@@ -517,7 +517,7 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-break-root
 			 */
-			throw new CKEditorError( 'view-writer-break-root: Trying to break root element.', this.document );
+			throw new CKEditorError( 'view-writer-break-root', this.document );
 		}
 
 		if ( position.isAtStart ) {
@@ -639,8 +639,7 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-merge-containers-invalid-position
 			 */
-			throw new CKEditorError( 'view-writer-merge-containers-invalid-position: ' +
-				'Element before and after given position cannot be merged.', this.document );
+			throw new CKEditorError( 'view-writer-merge-containers-invalid-position', this.document );
 		}
 
 		const lastChild = prev.getChild( prev.childCount - 1 );
@@ -686,7 +685,7 @@ export default class DowncastWriter {
 			 * @error view-writer-invalid-position-container
 			 */
 			throw new CKEditorError(
-				'view-writer-invalid-position-container: Position\'s parent container cannot be found.',
+				'view-writer-invalid-position-container',
 				this.document
 			);
 		}
@@ -876,7 +875,7 @@ export default class DowncastWriter {
 	wrap( range, attribute ) {
 		if ( !( attribute instanceof AttributeElement ) ) {
 			throw new CKEditorError(
-				'view-writer-wrap-invalid-attribute: DowncastWriter#wrap() must be called with an attribute element.',
+				'view-writer-wrap-invalid-attribute',
 				this.document
 			);
 		}
@@ -925,7 +924,7 @@ export default class DowncastWriter {
 			 * @error view-writer-unwrap-invalid-attribute
 			 */
 			throw new CKEditorError(
-				'view-writer-unwrap-invalid-attribute: DowncastWriter#unwrap() must be called with an attribute element.',
+				'view-writer-unwrap-invalid-attribute',
 				this.document
 			);
 		}
@@ -1611,7 +1610,7 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-cannot-break-empty-element
 			 */
-			throw new CKEditorError( 'view-writer-cannot-break-empty-element: Cannot break an EmptyElement instance.', this.document );
+			throw new CKEditorError( 'view-writer-cannot-break-empty-element', this.document );
 		}
 
 		// If position is placed inside UIElement - throw an exception as we cannot break inside.
@@ -1625,7 +1624,7 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-cannot-break-ui-element
 			 */
-			throw new CKEditorError( 'view-writer-cannot-break-ui-element: Cannot break a UIElement instance.', this.document );
+			throw new CKEditorError( 'view-writer-cannot-break-ui-element', this.document );
 		}
 
 		// If position is placed inside RawElement - throw an exception as we cannot break inside.
@@ -1639,7 +1638,7 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-cannot-break-raw-element
 			 */
-			throw new CKEditorError( 'view-writer-cannot-break-raw-element: Cannot break a RawElement instance.', this.document );
+			throw new CKEditorError( 'view-writer-cannot-break-raw-element', this.document );
 		}
 
 		// There are no attributes to break and text nodes breaking is not forced.
@@ -1942,7 +1941,7 @@ function validateNodesToInsert( nodes, errorContext ) {
 			 * @error view-writer-insert-invalid-node-type
 			 */
 			throw new CKEditorError(
-				'view-writer-insert-invalid-node-type: One of the nodes to be inserted is of invalid type.',
+				'view-writer-insert-invalid-node-type',
 				errorContext
 			);
 		}
@@ -1990,7 +1989,7 @@ function validateRangeContainer( range, errorContext ) {
 		 *
 		 * @error view-writer-invalid-range-container
 		 */
-		throw new CKEditorError( 'view-writer-invalid-range-container: The container of the given range is invalid.', errorContext );
+		throw new CKEditorError( 'view-writer-invalid-range-container', errorContext );
 	}
 }
 

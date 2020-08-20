@@ -62,7 +62,7 @@ const ObservableMixin = {
 			 *
 			 * @error observable-set-cannot-override
 			 */
-			throw new CKEditorError( 'observable-set-cannot-override: Cannot override an existing property.', this );
+			throw new CKEditorError( 'observable-set-cannot-override', this );
 		}
 
 		Object.defineProperty( this, name, {
@@ -107,7 +107,7 @@ const ObservableMixin = {
 			 *
 			 * @error observable-bind-wrong-properties
 			 */
-			throw new CKEditorError( 'observable-bind-wrong-properties: All properties must be strings.', this );
+			throw new CKEditorError( 'observable-bind-wrong-properties', this );
 		}
 
 		if ( ( new Set( bindProperties ) ).size !== bindProperties.length ) {
@@ -116,7 +116,7 @@ const ObservableMixin = {
 			 *
 			 * @error observable-bind-duplicate-properties
 			 */
-			throw new CKEditorError( 'observable-bind-duplicate-properties: Properties must be unique.', this );
+			throw new CKEditorError( 'observable-bind-duplicate-properties', this );
 		}
 
 		initObservable( this );
@@ -130,7 +130,7 @@ const ObservableMixin = {
 				 *
 				 * @error observable-bind-rebind
 				 */
-				throw new CKEditorError( 'observable-bind-rebind: Cannot bind the same property more than once.', this );
+				throw new CKEditorError( 'observable-bind-rebind', this );
 			}
 		} );
 
@@ -186,7 +186,7 @@ const ObservableMixin = {
 				 *
 				 * @error observable-unbind-wrong-properties
 				 */
-				throw new CKEditorError( 'observable-unbind-wrong-properties: Properties must be strings.', this );
+				throw new CKEditorError( 'observable-unbind-wrong-properties', this );
 			}
 
 			unbindProperties.forEach( propertyName => {
@@ -245,7 +245,7 @@ const ObservableMixin = {
 			 * @param {String} methodName Name of the method which does not exist.
 			 */
 			throw new CKEditorError(
-				'observablemixin-cannot-decorate-undefined: Cannot decorate an undefined method.',
+				'observablemixin-cannot-decorate-undefined',
 				this,
 				{ object: this, methodName }
 			);
@@ -383,7 +383,7 @@ function bindTo( ...args ) {
 		 * @error observable-bind-no-callback
 		 */
 		throw new CKEditorError(
-			'observable-bind-to-no-callback: Binding multiple observables only possible with callback.',
+			'observable-bind-to-no-callback',
 			this
 		);
 	}
@@ -396,7 +396,7 @@ function bindTo( ...args ) {
 		 * @error observable-bind-to-extra-callback
 		 */
 		throw new CKEditorError(
-			'observable-bind-to-extra-callback: Cannot bind multiple properties and use a callback in one binding.',
+			'observable-bind-to-extra-callback',
 			this
 		);
 	}
@@ -409,7 +409,7 @@ function bindTo( ...args ) {
 			 *
 			 * @error observable-bind-to-properties-length
 			 */
-			throw new CKEditorError( 'observable-bind-to-properties-length: The number of properties must match.', this );
+			throw new CKEditorError( 'observable-bind-to-properties-length', this );
 		}
 
 		// When no to.properties specified, observing source properties instead i.e.
@@ -450,7 +450,7 @@ function bindToMany( observables, attribute, callback ) {
 		 *
 		 * @error observable-bind-to-many-not-one-binding
 		 */
-		throw new CKEditorError( 'observable-bind-to-many-not-one-binding: Cannot bind multiple properties with toMany().', this );
+		throw new CKEditorError( 'observable-bind-to-many-not-one-binding', this );
 	}
 
 	this.to(
@@ -509,7 +509,7 @@ function parseBindToArgs( ...args ) {
 		 *
 		 * @error observable-bind-to-parse-error
 		 */
-		throw new CKEditorError( 'observable-bind-to-parse-error: Invalid argument syntax in `to()`.', null );
+		throw new CKEditorError( 'observable-bind-to-parse-error', null );
 	}
 
 	const parsed = { to: [] };
@@ -526,7 +526,7 @@ function parseBindToArgs( ...args ) {
 			lastObservable = { observable: a, properties: [] };
 			parsed.to.push( lastObservable );
 		} else {
-			throw new CKEditorError( 'observable-bind-to-parse-error: Invalid argument syntax in `to()`.', null );
+			throw new CKEditorError( 'observable-bind-to-parse-error', null );
 		}
 	} );
 

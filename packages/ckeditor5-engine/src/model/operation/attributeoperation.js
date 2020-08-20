@@ -128,7 +128,7 @@ export default class AttributeOperation extends Operation {
 			 *
 			 * @error attribute-operation-range-not-flat
 			 */
-			throw new CKEditorError( 'attribute-operation-range-not-flat: The range to change is not flat.', this );
+			throw new CKEditorError( 'attribute-operation-range-not-flat', this );
 		}
 
 		for ( const item of this.range.getItems( { shallow: true } ) ) {
@@ -142,8 +142,7 @@ export default class AttributeOperation extends Operation {
 				 * @param {*} value
 				 */
 				throw new CKEditorError(
-					'attribute-operation-wrong-old-value: Changed node has different attribute value than operation\'s ' +
-					'old attribute value.',
+					'attribute-operation-wrong-old-value',
 					this,
 					{ item, key: this.key, value: this.oldValue }
 				);
@@ -158,7 +157,7 @@ export default class AttributeOperation extends Operation {
 				 * @param {String} key
 				 */
 				throw new CKEditorError(
-					'attribute-operation-attribute-exists: The attribute with given key already exists.',
+					'attribute-operation-attribute-exists',
 					this,
 					{ node: item, key: this.key }
 				);

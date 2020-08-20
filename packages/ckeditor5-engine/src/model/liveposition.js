@@ -46,7 +46,7 @@ export default class LivePosition extends Position {
 			 * @error liveposition-root-not-rootelement
 			 */
 			throw new CKEditorError(
-				'model-liveposition-root-not-rootelement: LivePosition\'s root has to be an instance of RootElement.',
+				'model-liveposition-root-not-rootelement',
 				root
 			);
 		}

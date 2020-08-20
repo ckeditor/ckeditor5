@@ -124,7 +124,7 @@ export default class NodeList {
 			 *
 			 * @error nodelist-index-out-of-bounds
 			 */
-			throw new CKEditorError( 'model-nodelist-index-out-of-bounds: Given index cannot be found in the node list.', this );
+			throw new CKEditorError( 'model-nodelist-index-out-of-bounds', this );
 		}
 
 		return this.getNodeStartOffset( node );
@@ -158,7 +158,7 @@ export default class NodeList {
 			 * @param {Number} offset
 			 * @param {module:engine/model/nodelist~NodeList} nodeList Stringified node list.
 			 */
-			throw new CKEditorError( 'model-nodelist-offset-out-of-bounds: Given offset cannot be found in the node list.',
+			throw new CKEditorError( 'model-nodelist-offset-out-of-bounds',
 				this,
 				{
 					offset,
@@ -187,7 +187,7 @@ export default class NodeList {
 				 * @error nodelist-insertNodes-not-node
 				 */
 				throw new CKEditorError(
-					'model-nodelist-insertNodes-not-node: Trying to insert an object which is not a Node instance.',
+					'model-nodelist-insertnodes-not-node',
 					this
 				);
 			}

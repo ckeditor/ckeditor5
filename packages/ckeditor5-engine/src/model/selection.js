@@ -393,8 +393,7 @@ export default class Selection {
 				 * @error model-selection-setTo-required-second-parameter
 				 */
 				throw new CKEditorError(
-					'model-selection-setTo-required-second-parameter: ' +
-					'selection.setTo requires the second parameter when the first parameter is a node.',
+					'model-selection-setto-required-second-parameter',
 					[ this, selectable ]
 				);
 			}
@@ -417,7 +416,7 @@ export default class Selection {
 			 * @error model-selection-setTo-not-selectable
 			 */
 			throw new CKEditorError(
-				'model-selection-setTo-not-selectable: Cannot set the selection to the given place.',
+				'model-selection-setto-not-selectable',
 				[ this, selectable ]
 			);
 		}
@@ -452,8 +451,7 @@ export default class Selection {
 				 * @error model-selection-set-ranges-not-range
 				 */
 				throw new CKEditorError(
-					'model-selection-set-ranges-not-range: ' +
-					'Selection range set to an object that is not an instance of model.Range.',
+					'model-selection-set-ranges-not-range',
 					[ this, newRanges ]
 				);
 			}
@@ -498,7 +496,7 @@ export default class Selection {
 			 * @error model-selection-setFocus-no-ranges
 			 */
 			throw new CKEditorError(
-				'model-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.',
+				'model-selection-setfocus-no-ranges',
 				[ this, itemOrPosition ]
 			);
 		}
@@ -756,7 +754,7 @@ export default class Selection {
 				 * @param {module:engine/model/range~Range} intersectingRange Range in the selection that intersects with `addedRange`.
 				 */
 				throw new CKEditorError(
-					'model-selection-range-intersects: Trying to add a range that intersects with another range in the selection.',
+					'model-selection-range-intersects',
 					[ this, range ],
 					{ addedRange: range, intersectingRange: this._ranges[ i ] }
 				);

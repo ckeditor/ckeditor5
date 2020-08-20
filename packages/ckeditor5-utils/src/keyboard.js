@@ -61,7 +61,7 @@ export function getCode( key ) {
 			 * @param {String} key
 			 */
 			throw new CKEditorError(
-				'keyboard-unknown-key: Unknown key name.',
+				'keyboard-unknown-key',
 				null, { key }
 			);
 		}

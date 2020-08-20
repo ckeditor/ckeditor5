@@ -1107,8 +1107,7 @@ function changeAttribute( attributeCreator ) {
 			 * @error conversion-attribute-to-attribute-on-text
 			 */
 			throw new CKEditorError(
-				'conversion-attribute-to-attribute-on-text: ' +
-				'Trying to convert text node\'s attribute with attribute-to-attribute converter.',
+				'conversion-attribute-to-attribute-on-text',
 				[ data, conversionApi ]
 			);
 		}

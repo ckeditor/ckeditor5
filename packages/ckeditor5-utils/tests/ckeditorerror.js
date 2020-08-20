@@ -62,7 +62,7 @@ describe( 'CKEditorError', () => {
 	} );
 
 	it( 'contains a link which leads to the documentation', () => {
-		const error = new CKEditorError( 'model-schema-no-item: Specified item cannot be found.', null );
+		const error = new CKEditorError( 'model-schema-no-item', null );
 
 		const errorMessage = 'model-schema-no-item: Specified item cannot be found. ' +
 			`Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n`;
@@ -71,7 +71,7 @@ describe( 'CKEditorError', () => {
 	} );
 
 	it( 'link to documentation is added before the additional data message', () => {
-		const error = new CKEditorError( 'model-schema-no-item: Specified item cannot be found.', null, { foo: 1, bar: 2 } );
+		const error = new CKEditorError( 'model-schema-no-item', null, { foo: 1, bar: 2 } );
 
 		const errorMessage = 'model-schema-no-item: Specified item cannot be found. ' +
 			`Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n ` +

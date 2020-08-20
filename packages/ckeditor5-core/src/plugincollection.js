@@ -295,7 +295,7 @@ export default class PluginCollection {
 							 * @param {String} requiredBy The name of the parent plugin.
 							 */
 							throw new CKEditorError(
-								'plugincollection-context-required: Context plugin can not require plugin which is not a context plugin',
+								'plugincollection-context-required',
 								null,
 								{ plugin: RequiredPluginConstructor.name, requiredBy: PluginConstructor.name }
 							);
@@ -310,8 +310,7 @@ export default class PluginCollection {
 							 * @param {String} requiredBy The name of the parent plugin.
 							 */
 							throw new CKEditorError(
-								'plugincollection-required: Cannot load a plugin because one of its dependencies is listed in' +
-								'the `removePlugins` option.',
+								'plugincollection-required',
 								context,
 								{ plugin: RequiredPluginConstructor.name, requiredBy: PluginConstructor.name }
 							);
@@ -421,7 +420,7 @@ export default class PluginCollection {
 			 * @param {Function} plugin2 The second plugin constructor.
 			 */
 			throw new CKEditorError(
-				'plugincollection-plugin-name-conflict: Two plugins with the same name were loaded.',
+				'plugincollection-plugin-name-conflict',
 				null,
 				{ pluginName, plugin1: this._plugins.get( pluginName ).constructor, plugin2: PluginConstructor }
 			);

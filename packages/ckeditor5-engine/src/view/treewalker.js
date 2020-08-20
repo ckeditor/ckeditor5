@@ -43,14 +43,14 @@ export default class TreeWalker {
 			 * @error view-tree-walker-no-start-position
 			 */
 			throw new CKEditorError(
-				'view-tree-walker-no-start-position: Neither boundaries nor starting position have been defined.',
+				'view-tree-walker-no-start-position',
 				null
 			);
 		}
 
 		if ( options.direction && options.direction != 'forward' && options.direction != 'backward' ) {
 			throw new CKEditorError(
-				'view-tree-walker-unknown-direction: Only `backward` and `forward` direction allowed.',
+				'view-tree-walker-unknown-direction',
 				options.startPosition,
 				{ direction: options.direction }
 			);

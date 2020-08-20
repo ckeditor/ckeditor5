@@ -70,8 +70,7 @@ export function _remove( range ) {
 		 * @error operation-utils-remove-range-not-flat
 		 */
 		throw new CKEditorError(
-			'operation-utils-remove-range-not-flat: ' +
-			'Trying to remove a range which starts and ends in different element.',
+			'operation-utils-remove-range-not-flat',
 			this
 		);
 	}
@@ -109,8 +108,7 @@ export function _move( sourceRange, targetPosition ) {
 		 * @error operation-utils-move-range-not-flat
 		 */
 		throw new CKEditorError(
-			'operation-utils-move-range-not-flat: ' +
-			'Trying to move a range which starts and ends in different element.',
+			'operation-utils-move-range-not-flat',
 			this
 		);
 	}

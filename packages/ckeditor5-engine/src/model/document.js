@@ -127,7 +127,7 @@ export default class Document {
 				 * @param {module:engine/model/operation/operation~Operation} operation
 				 */
 				throw new CKEditorError(
-					'model-document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
+					'model-document-applyoperation-wrong-version',
 					this,
 					{ operation }
 				);
@@ -202,7 +202,7 @@ export default class Document {
 			 * @param {String} name
 			 */
 			throw new CKEditorError(
-				'model-document-createRoot-name-exists: Root with specified name already exists.',
+				'model-document-createroot-name-exists',
 				this,
 				{ name: rootName }
 			);

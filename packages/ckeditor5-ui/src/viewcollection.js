@@ -146,7 +146,7 @@ export default class ViewCollection extends Collection {
 			 * @error ui-viewcollection-delegate-wrong-events
 			 */
 			throw new CKEditorError(
-				'ui-viewcollection-delegate-wrong-events: All event names must be strings.',
+				'ui-viewcollection-delegate-wrong-events',
 				this
 			);
 		}

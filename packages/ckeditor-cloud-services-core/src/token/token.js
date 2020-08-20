@@ -41,7 +41,7 @@ class Token {
 			 * @error token-missing-token-url
 			 */
 			throw new CKEditorError(
-				'token-missing-token-url: A `tokenUrl` must be provided as the first constructor argument.',
+				'token-missing-token-url',
 				this
 			);
 		}
@@ -185,7 +185,7 @@ function defaultRefreshToken( tokenUrl ) {
 				 * @error token-cannot-download-new-token
 				 */
 				return reject(
-					new CKEditorError( 'token-cannot-download-new-token: Cannot download new token from the provided url.', null )
+					new CKEditorError( 'token-cannot-download-new-token', null )
 				);
 			}
 

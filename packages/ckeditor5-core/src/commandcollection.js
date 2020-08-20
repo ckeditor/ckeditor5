@@ -63,7 +63,7 @@ export default class CommandCollection {
 			 * @error commandcollection-command-not-found
 			 * @param {String} commandName Name of the command.
 			 */
-			throw new CKEditorError( 'commandcollection-command-not-found: Command does not exist.', this, { commandName } );
+			throw new CKEditorError( 'commandcollection-command-not-found', this, { commandName } );
 		}
 
 		return command.execute( ...args );

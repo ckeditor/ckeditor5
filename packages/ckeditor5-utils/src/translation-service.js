@@ -144,7 +144,7 @@ export function _translate( language, message, quantity = 1 ) {
 		 *
 		 * @error translation-service-quantity-not-a-number
 		 */
-		throw new CKEditorError( 'translation-service-quantity-not-a-number: Expecting `quantity` to be a number.', null, { quantity } );
+		throw new CKEditorError( 'translation-service-quantity-not-a-number', null, { quantity } );
 	}
 
 	const numberOfLanguages = getNumberOfLanguages();

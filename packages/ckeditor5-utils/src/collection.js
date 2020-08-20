@@ -206,7 +206,7 @@ export default class Collection {
 			 *
 			 * @error collection-add-item-bad-index
 			 */
-			throw new CKEditorError( 'collection-add-item-invalid-index: The index passed to Collection#addMany() is invalid.', this );
+			throw new CKEditorError( 'collection-add-item-invalid-index', this );
 		}
 
 		for ( let offset = 0; offset < items.length; offset++ ) {
@@ -248,7 +248,7 @@ export default class Collection {
 			 *
 			 * @error collection-get-invalid-arg
 			 */
-			throw new CKEditorError( 'collection-get-invalid-arg: Index or id must be given.', this );
+			throw new CKEditorError( 'collection-get-invalid-arg', this );
 		}
 
 		return item || null;
@@ -479,7 +479,7 @@ export default class Collection {
 			 *
 			 * @error collection-bind-to-rebind
 			 */
-			throw new CKEditorError( 'collection-bind-to-rebind: The collection cannot be bound more than once.', this );
+			throw new CKEditorError( 'collection-bind-to-rebind', this );
 		}
 
 		this._bindToCollection = externalCollection;
@@ -646,7 +646,7 @@ export default class Collection {
 				 *
 				 * @error collection-add-invalid-id
 				 */
-				throw new CKEditorError( 'collection-add-invalid-id: This item\'s id should be a string.', this );
+				throw new CKEditorError( 'collection-add-invalid-id', this );
 			}
 
 			if ( this.get( itemId ) ) {
@@ -655,7 +655,7 @@ export default class Collection {
 				 *
 				 * @error collection-add-item-already-exists
 				 */
-				throw new CKEditorError( 'collection-add-item-already-exists: This item already exists in the collection.', this );
+				throw new CKEditorError( 'collection-add-item-already-exists', this );
 			}
 		} else {
 			item[ idProperty ] = itemId = uid();
@@ -708,7 +708,7 @@ export default class Collection {
 			 *
 			 * @error collection-remove-404
 			 */
-			throw new CKEditorError( 'collection-remove-404: Item not found.', this );
+			throw new CKEditorError( 'collection-remove-404', this );
 		}
 
 		this._items.splice( index, 1 );

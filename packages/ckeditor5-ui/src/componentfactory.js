@@ -85,7 +85,7 @@ export default class ComponentFactory {
 			 * @param {String} name The name of the component.
 			 */
 			throw new CKEditorError(
-				'componentfactory-item-exists: The item already exists in the component factory.',
+				'componentfactory-item-exists',
 				this,
 				{ name }
 			);
@@ -115,7 +115,7 @@ export default class ComponentFactory {
 			 * @param {String} name The name of the missing component.
 			 */
 			throw new CKEditorError(
-				'componentfactory-item-missing: The required component is not registered in the factory.',
+				'componentfactory-item-missing',
 				this,
 				{ name }
 			);

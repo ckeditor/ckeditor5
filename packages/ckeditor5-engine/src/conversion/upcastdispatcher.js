@@ -262,7 +262,7 @@ export default class UpcastDispatcher {
 			 *
 			 * @error view-conversion-dispatcher-incorrect-result
 			 */
-			throw new CKEditorError( 'view-conversion-dispatcher-incorrect-result: Incorrect conversion result was dropped.', this );
+			throw new CKEditorError( 'view-conversion-dispatcher-incorrect-result', this );
 		}
 
 		return { modelRange: data.modelRange, modelCursor: data.modelCursor };

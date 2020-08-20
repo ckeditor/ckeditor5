@@ -158,7 +158,7 @@ describe( 'EmitterMixin', () => {
 
 		it( 'should rethrow the CKEditorError error', () => {
 			emitter.on( 'test', () => {
-				throw new CKEditorError( 'Foo', null );
+				throw new CKEditorError( 'foo', null );
 			} );
 
 			expectToThrowCKEditorError( () => {

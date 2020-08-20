@@ -27,7 +27,7 @@ export default class UploadGateway {
 			 *
 			 * @error uploadgateway-missing-token
 			 */
-			throw new CKEditorError( 'uploadgateway-missing-token: Token must be provided.', null );
+			throw new CKEditorError( 'uploadgateway-missing-token', null );
 		}
 
 		if ( !apiAddress ) {
@@ -36,7 +36,7 @@ export default class UploadGateway {
 			 *
 			 * @error uploadgateway-missing-api-address
 			 */
-			throw new CKEditorError( 'uploadgateway-missing-api-address: Api address must be provided.', null );
+			throw new CKEditorError( 'uploadgateway-missing-api-address', null );
 		}
 
 		/**

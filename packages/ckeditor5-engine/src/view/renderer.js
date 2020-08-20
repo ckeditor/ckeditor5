@@ -152,7 +152,7 @@ export default class Renderer {
 				 *
 				 * @error renderer-unknown-type
 				 */
-				throw new CKEditorError( 'view-renderer-unknown-type: Unknown type passed to Renderer.markToSync.', this );
+				throw new CKEditorError( 'view-renderer-unknown-type', this );
 			}
 		}
 	}
@@ -387,7 +387,7 @@ export default class Renderer {
 			 *
 			 * @error view-renderer-filler-was-lost
 			 */
-			throw new CKEditorError( 'view-renderer-filler-was-lost: The inline filler node was lost.', this );
+			throw new CKEditorError( 'view-renderer-filler-was-lost', this );
 		}
 
 		if ( isInlineFiller( domFillerNode ) ) {

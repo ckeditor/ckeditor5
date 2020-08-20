@@ -154,7 +154,7 @@ export default class WidgetToolbarRepository extends Plugin {
 			 * @error widget-toolbar-duplicated
 			 * @param toolbarId Toolbar id.
 			 */
-			throw new CKEditorError( 'widget-toolbar-duplicated: Toolbar with the given id was already added.', this, { toolbarId } );
+			throw new CKEditorError( 'widget-toolbar-duplicated', this, { toolbarId } );
 		}
 
 		toolbarView.fillFromConfig( items, editor.ui.componentFactory );

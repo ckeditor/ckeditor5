@@ -460,9 +460,7 @@ export default class View {
 			 * @error cannot-change-view-tree
 			 */
 			throw new CKEditorError(
-				'cannot-change-view-tree: ' +
-				'Attempting to make changes to the view when it is in an incorrect state: rendering or post-fixers are in progress. ' +
-				'This may cause some unexpected behavior and inconsistency between the DOM and the view.',
+				'undefinedthis-may-cause-some-unexpected-behavior-and-inconsistency-between-the-dom-and-the-view.',
 				this
 			);
 		}

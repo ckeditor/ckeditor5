@@ -208,7 +208,7 @@ export default class Template {
 			 * @error ui-template-revert-not-applied
 			 */
 			throw new CKEditorError(
-				'ui-template-revert-not-applied: Attempting to revert a template which has not been applied yet.',
+				'ui-template-revert-not-applied',
 				[ this, node ]
 			);
 		}
@@ -381,7 +381,7 @@ export default class Template {
 			 * @error template-extend-render
 			 */
 			throw new CKEditorError(
-				'template-extend-render: Attempting to extend a template which has already been rendered.',
+				'template-extend-render',
 				[ this, template ]
 			);
 		}
@@ -414,7 +414,7 @@ export default class Template {
 			 * @error ui-template-wrong-syntax
 			 */
 			throw new CKEditorError(
-				'ui-template-wrong-syntax: Node definition must have either "tag" or "text" when rendering a new Node.',
+				'ui-template-wrong-syntax',
 				this
 			);
 		}
@@ -1392,7 +1392,7 @@ function extendTemplate( template, def ) {
 			 * @error ui-template-extend-children-mismatch
 			 */
 			throw new CKEditorError(
-				'ui-template-extend-children-mismatch: The number of children in extended definition does not match.',
+				'ui-template-extend-children-mismatch',
 				template
 			);
 		}
