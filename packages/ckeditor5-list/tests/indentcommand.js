@@ -37,7 +37,7 @@ describe( 'IndentCommand', () => {
 		);
 	} );
 
-	describe( 'IndentCommand', () => {
+	describe( 'IndentCommand - forward (indent)', () => {
 		let command;
 
 		beforeEach( () => {
