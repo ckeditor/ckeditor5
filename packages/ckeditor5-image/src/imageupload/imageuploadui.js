@@ -39,20 +39,14 @@ export default class ImageUploadUI extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const command = editor.commands.get( 'imageUpload' );
+		const isImageUploadPanelViewEnabled = !!editor.config.get( 'image.upload.panel.items' );
 
 		editor.ui.componentFactory.add( 'imageUpload', locale => {
-			const imageUploadView = new ImageUploadPanelView( locale, prepareIntegrations( editor ) );
-
-			const dropdownView = imageUploadView.dropdownView;
-			const panelView = dropdownView.panelView;
-			const splitButtonView = dropdownView.buttonView;
-
-			splitButtonView.actionView = this._createFileDialogButtonView( locale );
-
-			panelView.children.add( imageUploadView );
-
-			return this._setUpDropdown( dropdownView, imageUploadView, command );
+			if ( isImageUploadPanelViewEnabled ) {
+				return this._createDropdownView( locale );
+			} else {
+				return this._createFileDialogButtonView( locale );
+			}
 		} );
 	}
 
@@ -124,6 +118,30 @@ export default class ImageUploadUI extends Plugin {
 	}
 
 	/**
+	 * Creates the dropdown view.
+	 *
+	 * @param {module:utils/locale~Locale} locale The localization services instance.
+	 *
+	 * @private
+	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
+	 */
+	_createDropdownView( locale ) {
+		const editor = this.editor;
+		const imageUploadView = new ImageUploadPanelView( locale, prepareIntegrations( editor ) );
+		const command = editor.commands.get( 'imageUpload' );
+
+		const dropdownView = imageUploadView.dropdownView;
+		const panelView = dropdownView.panelView;
+		const splitButtonView = dropdownView.buttonView;
+
+		splitButtonView.actionView = this._createFileDialogButtonView( locale );
+
+		panelView.children.add( imageUploadView );
+
+		return this._setUpDropdown( dropdownView, imageUploadView, command );
+	}
+
+	/**
 	 * Creates and sets up file dialog button view.
 	 *
 	 * @param {module:utils/locale~Locale} locale The localization services instance.
@@ -137,6 +155,7 @@ export default class ImageUploadUI extends Plugin {
 		const imageTypes = editor.config.get( 'image.upload.types' );
 		const fileDialogButtonView = new FileDialogButtonView( locale );
 		const imageTypesRegExp = createImageTypeRegExp( imageTypes );
+		const command = editor.commands.get( 'imageUpload' );
 
 		fileDialogButtonView.set( {
 			acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
@@ -148,6 +167,8 @@ export default class ImageUploadUI extends Plugin {
 			icon: imageIcon,
 			tooltip: true
 		} );
+
+		fileDialogButtonView.buttonView.bind( 'isEnabled' ).to( command );
 
 		fileDialogButtonView.on( 'done', ( evt, files ) => {
 			const imagesToUpload = Array.from( files ).filter( file => imageTypesRegExp.test( file.type ) );

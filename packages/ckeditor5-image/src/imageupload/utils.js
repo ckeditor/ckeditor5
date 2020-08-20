@@ -7,11 +7,10 @@
  * @module image/imageupload/utils
  */
 
-/* global fetch, File, console */
+/* global fetch, File */
 
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
 import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
-import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Creates a regular expression used to test for image files.
@@ -127,22 +126,6 @@ export function prepareIntegrations( editor ) {
 			object[ key ] = PREDEFINED_INTEGRATIONS[ key ];
 		} else if ( editor.ui.componentFactory.has( key ) ) {
 			object[ key ] = editor.ui.componentFactory.create( key );
-		} else {
-			/**
-			 * The specified name of the view cannot be created by the
-			 * {@link module:ui/componentfactory~ComponentFactory component factory}.
-			 *
-			 * Check whether:
-			 * * you passed the proper integration name as the
-			 *    `{@link module:image/imageupload~ImageUploadPanelConfig#items image.upload.panel.items}`,
-			 * * the plugin that registers the component was loaded to the editor,
-			 * * integration component was properly registered by the plugin.
-			 *
-			 * @error image-upload-integrations-invalid-view
-			 */
-			console.warn( attachLinkToDocumentation(
-				'image-upload-integrations-invalid-view: Trying to use a view that does not exist.'
-			), { key } );
 		}
 
 		return object;

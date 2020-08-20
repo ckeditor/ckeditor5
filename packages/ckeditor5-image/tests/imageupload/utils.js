@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, console */
+/* globals document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
@@ -84,8 +84,6 @@ describe( 'Upload utils', () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
-			const consoleWarn = sinon.stub( console, 'warn' );
-
 			const editor = await ClassicEditor
 				.create( editorElement, {
 					plugins: [
@@ -107,9 +105,6 @@ describe( 'Upload utils', () => {
 				} );
 
 			expect( Object.values( prepareIntegrations( editor ) ).length ).to.equal( 1 );
-
-			sinon.assert.calledOnce( consoleWarn );
-			expect( /image-upload-integrations-invalid-view/gmi.test( consoleWarn.args[ 0 ][ 0 ] ) ).to.be.true;
 
 			editor.destroy();
 			editorElement.remove();
