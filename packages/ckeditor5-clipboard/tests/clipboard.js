@@ -173,7 +173,7 @@ describe( 'Clipboard feature', () => {
 
 		it( 'inserts content to the editor', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
-			const spy = sinon.stub( editor.model, 'insertContent' );
+			const spy = sinon.stub( editor.model, 'insertContent' ).returns( editor.model.document.selection.getFirstRange() );
 
 			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
@@ -351,6 +351,16 @@ describe( 'Clipboard feature', () => {
 				model = editor.model;
 
 				model.schema.extend( '$text', { allowAttributes: 'bold' } );
+
+				model.schema.register( 'softBreak', {
+					allowWhere: '$text',
+					isInline: true
+				} );
+				editor.conversion.for( 'upcast' )
+					.elementToElement( {
+						model: 'softBreak',
+						view: 'br'
+					} );
 			} );
 
 			it( 'should inherit selection attributes (collapsed selection)', () => {
@@ -450,6 +460,44 @@ describe( 'Clipboard feature', () => {
 				} );
 
 				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded foo[]text.</$text></paragraph>' );
+			} );
+
+			it( 'should inherit selection attributes with data.asPlainText switch set', () => {
+				setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
+
+				const dataTransferMock = createDataTransfer( {
+					'text/html': 'foo',
+					'text/plain': 'foo'
+				} );
+
+				viewDocument.fire( 'clipboardInput', {
+					dataTransfer: dataTransferMock,
+					asPlainText: true,
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded foo[]text.</$text></paragraph>' );
+			} );
+
+			it( 'should discard selection attributes with data.asPlainText switch set to false', () => {
+				setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
+
+				const dataTransferMock = createDataTransfer( {
+					'text/html': 'foo<br>bar',
+					'text/plain': 'foo\nbar'
+				} );
+
+				viewDocument.fire( 'clipboardInput', {
+					dataTransfer: dataTransferMock,
+					asPlainText: false,
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded </$text>' +
+					'foo<softBreak></softBreak>bar[]' +
+					'<$text bold="true">text.</$text></paragraph>' );
 			} );
 		} );
 

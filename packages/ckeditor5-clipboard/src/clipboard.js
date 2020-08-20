@@ -77,7 +77,11 @@ export default class Clipboard extends Plugin {
 			content = this._htmlDataProcessor.toView( content );
 
 			const eventInfo = new EventInfo( this, 'inputTransformation' );
-			this.fire( eventInfo, { content, dataTransfer } );
+			this.fire( eventInfo, {
+				content,
+				dataTransfer,
+				asPlainText: data.asPlainText
+			} );
 
 			// If CKEditor handled the input, do not bubble the original event any further.
 			// This helps external integrations recognize that fact and act accordingly.
@@ -93,6 +97,7 @@ export default class Clipboard extends Plugin {
 			if ( !data.content.isEmpty ) {
 				const dataController = this.editor.data;
 				const model = this.editor.model;
+				const initialAttributes = new Map( modelDocument.selection.getAttributes() );
 
 				// Convert the pasted content to a model document fragment.
 				// Conversion is contextual, but in this case we need an "all allowed" context and for that
@@ -103,16 +108,19 @@ export default class Clipboard extends Plugin {
 					return;
 				}
 
-				// While pasting plain text, apply selection attributes on the text.
-				if ( isPlainText( modelFragment ) ) {
-					const node = modelFragment.getChild( 0 );
+				// Plain text can be determined based on event flag (#7799) or auto detection (#1006).
+				const isPlainText = data.asPlainText || isPlainTextFragment( modelFragment );
 
-					model.change( writer => {
-						writer.setAttributes( modelDocument.selection.getAttributes(), node );
-					} );
-				}
+				model.change( writer => {
+					const insertedRange = model.insertContent( modelFragment );
 
-				model.insertContent( modelFragment );
+					if ( isPlainText ) {
+						for ( const item of insertedRange.getItems() ) {
+							writer.setAttributes( initialAttributes, item );
+						}
+					}
+				} );
+
 				evt.stop();
 			}
 		}, { priority: 'low' } );
@@ -212,7 +220,7 @@ export default class Clipboard extends Plugin {
 //
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment
 // @returns {Boolean}
-function isPlainText( documentFragment ) {
+function isPlainTextFragment( documentFragment ) {
 	if ( documentFragment.childCount > 1 ) {
 		return false;
 	}
