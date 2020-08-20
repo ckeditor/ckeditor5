@@ -173,7 +173,7 @@ describe( 'Clipboard feature', () => {
 
 		it( 'inserts content to the editor', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
-			const spy = sinon.stub( editor.model, 'insertContent' ).returns( editor.model.document.selection.getFirstRange() );
+			const spy = sinon.stub( editor.model, 'insertContent' );
 
 			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
@@ -498,6 +498,29 @@ describe( 'Clipboard feature', () => {
 				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded </$text>' +
 					'foo<softBreak></softBreak>bar[]' +
 					'<$text bold="true">text.</$text></paragraph>' );
+			} );
+
+			it( 'should work if insertContent event is cancelled', () => {
+				// (#7887).
+				setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
+
+				const dataTransferMock = createDataTransfer( {
+					'text/html': 'foo',
+					'text/plain': 'foo'
+				} );
+
+				model.on( 'insertContent', event => {
+					event.stop();
+				}, { priority: 'high' } );
+
+				viewDocument.fire( 'clipboardInput', {
+					dataTransfer: dataTransferMock,
+					asPlainText: false,
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
 			} );
 		} );
 

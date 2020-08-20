@@ -114,7 +114,8 @@ export default class Clipboard extends Plugin {
 				model.change( writer => {
 					const insertedRange = model.insertContent( modelFragment );
 
-					if ( isPlainText ) {
+					// The insertedRange needs to be verified, as the return value might easily be discarded like in #7887.
+					if ( isPlainText && insertedRange ) {
 						for ( const item of insertedRange.getItems() ) {
 							writer.setAttributes( initialAttributes, item );
 						}
@@ -176,6 +177,7 @@ export default class Clipboard extends Plugin {
  * It can be modified by the event listeners. Read more about the clipboard pipelines in
  * {@glink framework/guides/deep-dive/clipboard "Clipboard" deep dive}.
  * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
+ * @param {Boolean} data.asPlainText If set to `true` content is pasted as plain text.
  */
 
 /**
