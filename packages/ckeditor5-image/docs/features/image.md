@@ -84,7 +84,28 @@ See the {@link features/image-upload Image upload} guide.
 
 ## Insert image via URL
 
-Another great feature is the ability to insert an image via a URL address. This feature is available under the **Image Upload** feature dropdown. When you click on the arrow button, you will see a small panel view containing the form for an image source URL. Once you fill it, you will be able to insert the image into the editor's content.
+Another great feature is the ability to insert an image via a URL address. This feature is available under the **Image Upload** feature dropdown. Once it's enabled, when you click on the arrow button, you will see a small panel view containing the form for an image source URL. Once you fill it, you will be able to insert the image into the editor's content.
+
+### Enable inserting an image via URL
+
+Currently, if you want to use the feature, you have to enable it through the editor's configuration. You can do it by setting the special token `insertImageViaUrl` in the `image.upload.panel.items`:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [Image, ImageUpload],
+		image: {
+			// ...
+			upload: {
+				panel: {
+					items: [ 'insertImageViaUrl' ]
+				}
+			}
+		}
+	} )
+```
+
+This will extend the standalone **Insert image** button in the toolbar by adding the dropdown panel with the new feature. To see how it works, please take a look at the demo in the [next section](/replace-image-via-url).
 
 ### Replace image via URL
 
