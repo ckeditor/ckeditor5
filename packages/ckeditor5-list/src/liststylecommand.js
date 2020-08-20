@@ -54,20 +54,28 @@ export default class ListStyleCommand extends Command {
 	execute( options = {} ) {
 		const model = this.editor.model;
 		const document = model.document;
-		const position = findPositionInsideList( document.selection );
 
-		if ( !position ) {
-			return;
-		}
+		// For all selected blocks find all list items that are being selected
+		// and update the `listStyle` attribute in those lists.
+		let listItems = [ ...document.selection.getSelectedBlocks() ]
+			.filter( element => element.is( 'element', 'listItem' ) )
+			.map( element => {
+				const position = model.change( writer => writer.createPositionAt( element, 0 ) );
 
-		const listItems = [
-			...getSiblingNodes( position, 'backward' ),
-			...getSiblingNodes( position, 'forward' )
-		];
+				return [
+					...getSiblingNodes( position, 'backward' ),
+					...getSiblingNodes( position, 'forward' )
+				];
+			} )
+			.flat();
+
+		// Since `getSelectedBlocks()` can return items that belong to the same list, and
+		// `getSiblingNodes()` returns the entire list, we need to remove duplicated items.
+		listItems = [ ...new Set( listItems ) ];
 
 		model.change( writer => {
 			for ( const item of listItems ) {
-				writer.setAttribute( 'listStyle', options.type || 'default', item );
+				writer.setAttribute( 'listStyle', options.type || this._defaultType, item );
 			}
 		} );
 	}
@@ -102,27 +110,6 @@ export default class ListStyleCommand extends Command {
 
 		return numberedList.isEnabled || bulletedList.isEnabled;
 	}
-}
-
-// Returns a position that is hooked in the `listItem` element.
-// It can be the selection starting position or end.
-//
-// @param {module:engine/model/selection~Selection} selection
-// @returns {module:engine/model/position~Position|null}
-function findPositionInsideList( selection ) {
-	const startPosition = selection.getFirstPosition();
-
-	if ( startPosition.parent.is( 'element', 'listItem' ) ) {
-		return startPosition;
-	}
-
-	const lastPosition = selection.getLastPosition();
-
-	if ( lastPosition.parent.is( 'element', 'listItem' ) ) {
-		return lastPosition;
-	}
-
-	return null;
 }
 
 // Returns an array with all `listItem` elements that represents the same list.
