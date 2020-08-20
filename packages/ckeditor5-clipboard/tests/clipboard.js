@@ -500,7 +500,7 @@ describe( 'Clipboard feature', () => {
 					'<$text bold="true">text.</$text></paragraph>' );
 			} );
 
-			it( 'should work if insertContent event is cancelled', () => {
+			it( 'should work if the insertContent event is cancelled', () => {
 				// (#7887).
 				setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
 
