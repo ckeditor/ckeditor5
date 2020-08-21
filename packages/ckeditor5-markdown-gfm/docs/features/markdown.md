@@ -31,7 +31,7 @@ To enable this data processor in your editor install the [`@ckeditor/ckeditor5-m
 npm install --save @ckeditor/ckeditor5-markdown-gfm
 ```
 
-Then, you can enable this data processor by creating a simple plugin which will load it:
+Then, you can enable this data processor by using {@link module:markdown-gfm/markdown~Markdown} plugin which will change default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} with {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor}:
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -41,12 +41,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 // ...
 
-import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor';
-
-// Simple plugin which loads the data processor.
-function Markdown( editor ) {
-	editor.data.processor = new GFMDataProcessor( editor.editing.view.document );
-}
+import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {

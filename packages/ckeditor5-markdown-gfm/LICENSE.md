@@ -11,6 +11,12 @@ Sources of Intellectual Property Included in CKEditor
 
 Where not otherwise indicated, all CKEditor content is authored by CKSource engineers and consists of CKSource-owned intellectual property. In some specific instances, CKEditor will incorporate work done by developers outside of CKSource with their express permission.
 
+The following libraries are included in CKEditor under the [MIT license](https://opensource.org/licenses/MIT):
+
+* Marked - Copyright (c) 2011-2018, Christopher Jeffrey (https://github.com/chjj/).
+* Turndown - Copyright (c) 2017 Dom Christie.
+* Turndown-plugin-gfm - Copyright (c) 2017 Dom Christie.
+
 Trademarks
 ----------
 

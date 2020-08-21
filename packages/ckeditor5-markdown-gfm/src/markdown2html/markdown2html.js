@@ -9,6 +9,15 @@
 
 import marked from 'marked';
 
+// Overrides.
+marked.use( {
+	tokenizer: {
+		// Disable the autolink rule in the lexer.
+		autolink: () => null,
+		url: () => null
+	}
+} );
+
 /**
  * Parses markdown string to an HTML.
  *
@@ -26,7 +35,3 @@ export default function markdown2html( markdown ) {
 }
 
 export { marked };
-
-// Disable the autolink rule in the lexer (point it to a regex that always fail).
-marked.InlineLexer.rules.breaks.autolink = /^\b$/;
-marked.InlineLexer.rules.breaks.url = /^\b$/;

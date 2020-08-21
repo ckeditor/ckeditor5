@@ -39,26 +39,24 @@ describe( 'ComponentFactory', () => {
 	} );
 
 	describe( 'add()', () => {
-		it( 'throws when trying to override already registered component', () => {
-			factory.add( 'foo', () => {} );
-
-			expectToThrowCKEditorError( () => {
-				factory.add( 'foo', () => {} );
-			}, /^componentfactory-item-exists/, editor );
-		} );
-
-		it( 'throws when trying to override already registered component added with different case', () => {
-			factory.add( 'Foo', () => {} );
-
-			expectToThrowCKEditorError( () => {
-				factory.add( 'foo', () => {} );
-			}, /^componentfactory-item-exists/, editor );
-		} );
-
 		it( 'does not normalize component names', () => {
 			factory.add( 'FoO', () => {} );
 
 			expect( Array.from( factory.names() ) ).to.have.members( [ 'FoO' ] );
+		} );
+
+		it( 'should allow overriding already registered components', () => {
+			factory.add( 'foo', () => 'old' );
+			factory.add( 'foo', () => 'new' );
+
+			expect( factory.create( 'foo' ) ).to.equal( 'new' );
+		} );
+
+		it( 'should allow overriding already registered components (same name, different case)', () => {
+			factory.add( 'foo', () => 'old' );
+			factory.add( 'Foo', () => 'new' );
+
+			expect( factory.create( 'foo' ) ).to.equal( 'new' );
 		} );
 	} );
 

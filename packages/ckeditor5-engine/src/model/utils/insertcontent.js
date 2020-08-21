@@ -443,12 +443,17 @@ class Insertion {
 				// At this point the insertion position should be after the node we'll merge. If it isn't,
 				// it should need to be secured as in the left merge case.
 				/**
-				 * An internal error occured during merging insertion content with siblings.
+				 * An internal error occurred during merging inserted content with its siblings.
 				 * The insertion position should equal to the merge position.
+				 *
+				 * If you encountered this error, report it back to the CKEditor 5 team
+				 * with as many details regarding the content being inserted and the insertion position
+				 * as possible.
 				 *
 				 * @error insertcontent-invalid-insertion-position
 				 */
-				throw new CKEditorError( 'insertcontent-invalid-insertion-position', this );
+				throw new CKEditorError( 'insertcontent-invalid-insertion-position: ' +
+					'An internal error occurred during insertContent().', this );
 			}
 
 			// Move the position to the previous node, so it isn't moved to the graveyard on merge.
