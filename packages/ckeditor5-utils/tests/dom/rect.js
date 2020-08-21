@@ -52,6 +52,45 @@ describe( 'Rect', () => {
 			assertRect( new Rect( range ), geometry );
 		} );
 
+		it( 'should accept Range (non–collapsed, sequenced horizontally)', () => {
+			const firstGeometry = geometry;
+			const secondGeometry = Object.assign( {}, geometry, {
+				right: 50,
+				left: 40,
+				width: 10
+			} );
+
+			const range = document.createRange();
+			range.selectNode( document.body );
+			sinon.stub( range, 'getClientRects' ).returns( [ firstGeometry, secondGeometry ] );
+
+			const expectedGeometry = Object.assign( {}, geometry, {
+				width: 30,
+				right: 50
+			} );
+
+			assertRect( new Rect( range ), expectedGeometry );
+		} );
+
+		it( 'should accept Range (non–collapsed, sequenced vertically)', () => {
+			const firstGeometry = geometry;
+			const secondGeometry = Object.assign( {}, geometry, {
+				top: 30,
+				bottom: 40
+			} );
+
+			const range = document.createRange();
+			range.selectNode( document.body );
+			sinon.stub( range, 'getClientRects' ).returns( [ firstGeometry, secondGeometry ] );
+
+			const expectedGeometry = Object.assign( {}, geometry, {
+				height: 30,
+				bottom: 40
+			} );
+
+			assertRect( new Rect( range ), expectedGeometry );
+		} );
+
 		// https://github.com/ckeditor/ckeditor5-utils/issues/153
 		it( 'should accept Range (collapsed)', () => {
 			const range = document.createRange();
@@ -1051,6 +1090,53 @@ describe( 'Rect', () => {
 			const rects = Rect.getDomRangeRects( range );
 			expect( rects ).to.have.length( 1 );
 			assertRect( rects[ 0 ], expectedGeometry );
+		} );
+	} );
+
+	describe( 'getBoundingRect()', () => {
+		it( 'should not return a rect instance when no rectangles were given', () => {
+			expect( Rect.getBoundingRect( [] ) ).to.be.null;
+		} );
+
+		it( 'should calculate proper rectangle when multiple rectangles were given', () => {
+			const rects = [
+				new Rect( geometry ),
+				new Rect( {
+					top: 10,
+					right: 100,
+					bottom: 20,
+					left: 80,
+					width: 20,
+					height: 10
+				} ),
+				new Rect( {
+					top: 50,
+					right: 50,
+					bottom: 60,
+					left: 30,
+					width: 20,
+					height: 10
+				} )
+			];
+
+			assertRect( Rect.getBoundingRect( rects ), {
+				top: 10,
+				right: 100,
+				bottom: 60,
+				left: 20,
+				width: 80,
+				height: 50
+			} );
+		} );
+
+		it( 'should calculate proper rectangle when a single rectangles was given', () => {
+			const rectangles = new Set( [ new Rect( geometry ) ] );
+			assertRect( Rect.getBoundingRect( rectangles ), geometry );
+		} );
+
+		it( 'should return proper type', () => {
+			const rectangles = new Set( [ new Rect( geometry ) ] );
+			expect( Rect.getBoundingRect( rectangles ) ).to.be.instanceOf( Rect );
 		} );
 	} );
 } );

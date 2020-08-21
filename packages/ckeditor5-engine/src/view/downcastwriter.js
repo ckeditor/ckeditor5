@@ -427,10 +427,10 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * Breaks attribute nodes at provided position or at boundaries of provided range. It breaks attribute elements inside
-	 * up to a container element.
+	 * Breaks attribute elements at provided position or at boundaries of a provided range. It breaks attribute elements
+	 * up to their first ancestor that is a container element.
 	 *
-	 * In following examples `<p>` is a container, `<b>` and `<u>` are attribute nodes:
+	 * In following examples `<p>` is a container, `<b>` and `<u>` are attribute elements:
 	 *
 	 *		<p>foo<b><u>bar{}</u></b></p> -> <p>foo<b><u>bar</u></b>[]</p>
 	 *		<p>foo<b><u>{}bar</u></b></p> -> <p>foo{}<b><u>bar</u></b></p>
@@ -685,7 +685,10 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-invalid-position-container
 			 */
-			throw new CKEditorError( 'view-writer-invalid-position-container', this.document );
+			throw new CKEditorError(
+				'view-writer-invalid-position-container: Position\'s parent container cannot be found.',
+				this.document
+			);
 		}
 
 		const insertionPosition = this._breakAttributes( position, true );
@@ -872,7 +875,10 @@ export default class DowncastWriter {
 	 */
 	wrap( range, attribute ) {
 		if ( !( attribute instanceof AttributeElement ) ) {
-			throw new CKEditorError( 'view-writer-wrap-invalid-attribute', this.document );
+			throw new CKEditorError(
+				'view-writer-wrap-invalid-attribute: DowncastWriter#wrap() must be called with an attribute element.',
+				this.document
+			);
 		}
 
 		validateRangeContainer( range, this.document );
@@ -913,11 +919,15 @@ export default class DowncastWriter {
 	unwrap( range, attribute ) {
 		if ( !( attribute instanceof AttributeElement ) ) {
 			/**
-			 * Attribute element need to be instance of attribute element.
+			 * The `attribute` passed to {@link module:engine/view/downcastwriter~DowncastWriter#unwrap `DowncastWriter#unwrap()`}
+			 * must be an instance of {@link module:engine/view/attributeelement~AttributeElement `AttributeElement`}.
 			 *
 			 * @error view-writer-unwrap-invalid-attribute
 			 */
-			throw new CKEditorError( 'view-writer-unwrap-invalid-attribute', this.document );
+			throw new CKEditorError(
+				'view-writer-unwrap-invalid-attribute: DowncastWriter#unwrap() must be called with an attribute element.',
+				this.document
+			);
 		}
 
 		validateRangeContainer( range, this.document );
@@ -1593,31 +1603,43 @@ export default class DowncastWriter {
 		// If position is placed inside EmptyElement - throw an exception as we cannot break inside.
 		if ( position.parent.is( 'emptyElement' ) ) {
 			/**
-			 * Cannot break inside EmptyElement instance.
+			 * Cannot break an `EmptyElement` instance.
+			 *
+			 * This error is thrown if
+			 * {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes `DowncastWriter#breakAttributes()`}
+			 * was executed in an incorrect position.
 			 *
 			 * @error view-writer-cannot-break-empty-element
 			 */
-			throw new CKEditorError( 'view-writer-cannot-break-empty-element', this.document );
+			throw new CKEditorError( 'view-writer-cannot-break-empty-element: Cannot break an EmptyElement instance.', this.document );
 		}
 
 		// If position is placed inside UIElement - throw an exception as we cannot break inside.
 		if ( position.parent.is( 'uiElement' ) ) {
 			/**
-			 * Cannot break inside UIElement instance.
+			 * Cannot break a `UIElement` instance.
+			 *
+			 * This error is thrown if
+			 * {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes `DowncastWriter#breakAttributes()`}
+			 * was executed in an incorrect position.
 			 *
 			 * @error view-writer-cannot-break-ui-element
 			 */
-			throw new CKEditorError( 'view-writer-cannot-break-ui-element', this.document );
+			throw new CKEditorError( 'view-writer-cannot-break-ui-element: Cannot break a UIElement instance.', this.document );
 		}
 
 		// If position is placed inside RawElement - throw an exception as we cannot break inside.
 		if ( position.parent.is( 'rawElement' ) ) {
 			/**
-			 * Cannot break inside RawElement instance.
+			 * Cannot break a `RawElement` instance.
+			 *
+			 * This error is thrown if
+			 * {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes `DowncastWriter#breakAttributes()`}
+			 * was executed in an incorrect position.
 			 *
 			 * @error view-writer-cannot-break-raw-element
 			 */
-			throw new CKEditorError( 'view-writer-cannot-break-raw-element: Cannot break inside a RawElement instance.', this.document );
+			throw new CKEditorError( 'view-writer-cannot-break-raw-element: Cannot break a RawElement instance.', this.document );
 		}
 
 		// There are no attributes to break and text nodes breaking is not forced.
@@ -1770,7 +1792,8 @@ function _hasNonUiChildren( parent ) {
 }
 
 /**
- * Attribute element need to be instance of attribute element.
+ * The `attribute` passed to {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#wrap()`}
+ * must be an instance of {@link module:engine/view/attributeelement~AttributeElement `AttributeElement`}.
  *
  * @error view-writer-wrap-invalid-attribute
  */
@@ -1904,14 +1927,24 @@ function validateNodesToInsert( nodes, errorContext ) {
 	for ( const node of nodes ) {
 		if ( !validNodesToInsert.some( ( validNode => node instanceof validNode ) ) ) { // eslint-disable-line no-use-before-define
 			/**
-			 * Inserted nodes should be valid to insert. of {@link module:engine/view/attributeelement~AttributeElement AttributeElement},
-			 * {@link module:engine/view/containerelement~ContainerElement ContainerElement},
-			 * {@link module:engine/view/emptyelement~EmptyElement EmptyElement},
-			 * {@link module:engine/view/uielement~UIElement UIElement}, {@link module:engine/view/text~Text Text}.
+			 * One of the nodes to be inserted is of invalid type.
 			 *
-			 * @error view-writer-insert-invalid-node
+			 * Nodes to be inserted with {@link module:engine/view/downcastwriter~DowncastWriter#insert `DowncastWriter#insert()`} should be
+			 * of the following types:
+			 *
+			 * * {@link module:engine/view/attributeelement~AttributeElement AttributeElement},
+			 * * {@link module:engine/view/containerelement~ContainerElement ContainerElement},
+			 * * {@link module:engine/view/emptyelement~EmptyElement EmptyElement},
+			 * * {@link module:engine/view/uielement~UIElement UIElement},
+			 * * {@link module:engine/view/rawelement~RawElement RawElement},
+			 * * {@link module:engine/view/text~Text Text}.
+			 *
+			 * @error view-writer-insert-invalid-node-type
 			 */
-			throw new CKEditorError( 'view-writer-insert-invalid-node', errorContext );
+			throw new CKEditorError(
+				'view-writer-insert-invalid-node-type: One of the nodes to be inserted is of invalid type.',
+				errorContext
+			);
 		}
 
 		if ( !node.is( '$text' ) ) {
@@ -1942,14 +1975,22 @@ function validateRangeContainer( range, errorContext ) {
 
 	if ( !startContainer || !endContainer || startContainer !== endContainer ) {
 		/**
-		 * Range container is invalid. This can happen if {@link module:engine/view/range~Range#start range start} and
-		 * {@link module:engine/view/range~Range#end range end} positions are not placed inside same container or
-		 * parent container for these positions cannot be found.
+		 * The container of the given range is invalid.
+		 *
+		 * This may happen if {@link module:engine/view/range~Range#start range start} and
+		 * {@link module:engine/view/range~Range#end range end} positions are not placed inside the same container element or
+		 * a parent container for these positions cannot be found.
+		 *
+		 * Methods like {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#remove()`},
+		 * {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#clean()`},
+		 * {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#wrap()`},
+		 * {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#unwrap()`} need to be called
+		 * on a range that have its start and end positions located in the same container element. Both positions can be
+		 * nested within other elements (e.g. an attribute element) but the closest container ancestor must be the same.
 		 *
 		 * @error view-writer-invalid-range-container
 		 */
-
-		throw new CKEditorError( 'view-writer-invalid-range-container', errorContext );
+		throw new CKEditorError( 'view-writer-invalid-range-container: The container of the given range is invalid.', errorContext );
 	}
 }
 

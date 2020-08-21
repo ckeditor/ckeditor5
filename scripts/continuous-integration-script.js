@@ -91,7 +91,15 @@ for ( const fullPackageName of packages ) {
 }
 
 console.log( 'Uploading combined code coverage report…' );
-childProcess.execSync( 'npx coveralls < .out/combined_lcov.info' );
+
+// Comparing "organization/ckeditor5" and "ckeditor/ckeditor5".
+if ( process.env.TRAVIS_PULL_REQUEST_SLUG === process.env.TRAVIS_REPO_SLUG ) {
+	childProcess.execSync( 'npx coveralls < .out/combined_lcov.info' );
+} else {
+	console.log( 'Since the PR comes from the community, we do not upload code coverage report.' );
+	console.log( 'Read more why: https://github.com/ckeditor/ckeditor5/issues/7745.' );
+}
+
 console.log( 'Done' );
 
 if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {

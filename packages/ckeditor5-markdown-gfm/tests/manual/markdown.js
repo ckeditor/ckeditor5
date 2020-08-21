@@ -8,20 +8,30 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-
-import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
+import Markdown from '../../src/markdown';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-markdown' ), {
-		plugins: [ ArticlePluginSet, EasyImage, Markdown ],
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Markdown, ArticlePluginSet, Code, CodeBlock, Strikethrough, TodoList, TableProperties, TableCellProperties ],
 		toolbar: [
 			'heading',
 			'|',
 			'bold',
 			'italic',
+			'strikethrough',
+			'underline',
 			'link',
+			'|',
+			'code',
+			'codeBlock',
+			'|',
+			'todoList',
 			'bulletedList',
 			'numberedList',
 			'|',
@@ -29,18 +39,23 @@ ClassicEditor
 			'indent',
 			'|',
 			'blockQuote',
+			'insertTable',
+			'|',
 			'undo',
 			'redo'
 		],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},
-		cloudServices: CS_CONFIG
+		table: {
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
+			tableToolbar: [ 'bold', 'italic' ]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
 
-		const outputElement = document.querySelector( '#snippet-markdown-output' );
+		const outputElement = document.querySelector( '#markdown-output' );
 
 		editor.model.document.on( 'change', () => {
 			outputElement.innerText = editor.getData();

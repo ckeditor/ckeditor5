@@ -157,7 +157,7 @@ describe( 'ImageUploadEditing', () => {
 
 		const command = editor.commands.get( 'imageUpload' );
 
-		expect( command.isEnabled ).to.be.false;
+		expect( command.isEnabled ).to.be.true;
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 0 ), model.createPositionAt( doc.getRoot(), 0 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
