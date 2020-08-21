@@ -119,6 +119,7 @@ export default class ListStyleEditing extends Plugin {
 		// and it' also a starting point when searching for items in the second list.
 		let firstMostOuterItem;
 
+		// Check whether the removed content is between two lists.
 		this.listenTo( model, 'deleteContent', ( evt, [ selection ] ) => {
 			const firstPosition = selection.getFirstPosition();
 			const lastPosition = selection.getLastPosition();
@@ -150,6 +151,7 @@ export default class ListStyleEditing extends Plugin {
 			}
 		}, { priority: 'high' } );
 
+		// If so, update the `listStyle` attribute for the second list.
 		this.listenTo( model, 'deleteContent', () => {
 			if ( !firstMostOuterItem ) {
 				return;
