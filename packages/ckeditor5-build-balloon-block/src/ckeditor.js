@@ -27,7 +27,6 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
-import PastePlainText from '@ckeditor/ckeditor5-clipboard/src/pasteplaintext';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
@@ -59,7 +58,6 @@ BalloonEditor.builtinPlugins = [
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,
-	PastePlainText,
 	Table,
 	TableToolbar,
 	TextTransformation
