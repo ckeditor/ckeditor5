@@ -91,7 +91,7 @@ export default class DowncastWriter {
 	 *		writer.setSelection( paragraph, offset );
 	 *
 	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
- 	 * that element and ends after the last child of that element.
+	 * that element and ends after the last child of that element.
 	 *
 	 * 		writer.setSelection( paragraph, 'in' );
 	 *

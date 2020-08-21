@@ -8,5 +8,18 @@
 'use strict';
 
 module.exports = {
-	extends: 'ckeditor5'
+	extends: 'ckeditor5',
+	parserOptions: {
+		ecmaFeatures: {
+			jsx: true
+		}
+	},
+	overrides: [
+		{
+			files: [ '*.ckx' ],
+			rules: {
+				'no-unused-expressions': 'off'
+			}
+		}
+	]
 };

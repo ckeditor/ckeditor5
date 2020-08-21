@@ -77,6 +77,8 @@
     "@ckeditor/ckeditor5-word-count": "^24.0.0"
   },
   "devDependencies": {
+    "@babel/plugin-syntax-jsx": "^7.10.4",
+    "@babel/plugin-transform-react-jsx": "^7.10.4",
     "@ckeditor/ckeditor5-comments": ">=23.0.0",
     "@ckeditor/ckeditor5-dev-docs": "^23.2.0",
     "@ckeditor/ckeditor5-dev-env": "^23.2.0",
