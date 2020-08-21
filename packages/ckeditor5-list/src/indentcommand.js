@@ -98,7 +98,7 @@ export default class IndentCommand extends Command {
 			 * It allows to execute an action after executing the {@link ~IndentCommand#execute} method, e.g. adjusting
 			 * attributes of changed list items.
 			 *
-			 * @private
+			 * @protected
 			 * @event _executeCleanup
 			 */
 			this.fire( '_executeCleanup', itemsToChange );
