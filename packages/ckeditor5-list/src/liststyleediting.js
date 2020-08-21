@@ -111,43 +111,6 @@ function upcastListItemStyle() {
 // @returns {Function}
 function downcastListStyleAttribute() {
 	return dispatcher => {
-		// TODO: The idea seems to be OK. Unfortunately, it does not work.
-		// 	dispatcher.on( 'insert:listItem', ( evt, data, conversionApi ) => {
-		// 		const modelItem = data.item;
-		//
-		// 		// Do not update anything for "todo" `listItem`.
-		// 		if ( modelItem.getAttribute( 'listType' ) === 'todo' ) {
-		// 			return;
-		// 		}
-		//
-		// 		// Also, no changes are required if the style is already defined.
-		// 		if ( modelItem.hasAttribute( 'listStyle' ) ) {
-		// 			return;
-		// 		}
-		//
-		// 		const nextElement = getSiblingListItem( modelItem.nextSibling, {
-		// 			sameIndent: true,
-		// 			listIndent: modelItem.getAttribute( 'listIndent' ),
-		// 			direction: 'forward'
-		// 		} );
-		//
-		// 		const previousElement = getSiblingListItem( modelItem.previousSibling, {
-		// 			sameIndent: true,
-		// 			listIndent: modelItem.getAttribute( 'listIndent' ),
-		// 			direction: 'backward'
-		// 		} );
-		//
-		// 		if ( nextElement ) {
-		// 			// Insert at the beginning of the list.
-		// 			conversionApi.writer.setAttribute( 'listStyle', nextElement.getAttribute( 'listStyle' ), modelItem );
-		// 		} else if ( previousElement ) {
-		// 			// Insert at the end of the list.
-		// 			conversionApi.writer.setAttribute( 'listStyle', previousElement.getAttribute( 'listStyle' ), modelItem );
-		// 		}
-		//
-		// 		// We don't need to check whether `previousElement` or `nextElement` and `modelItem` belong to the same list.
-		// 	}, { priority: 'low' } );
-
 		dispatcher.on( 'attribute:listStyle:listItem', ( evt, data, conversionApi ) => {
 			const viewWriter = conversionApi.writer;
 			const currentElement = data.item;

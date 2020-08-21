@@ -126,14 +126,14 @@ describe( 'ListStyleEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<ul style="list-style-type:circle;">' +
-					'<li>Foo 1' +
-					'<ul style="list-style-type:disc;">' +
-					'<li>Bar 1</li>' +
-					'<li>Bar 2</li>' +
-					'</ul>' +
-					'</li>' +
-					'<li>Foo 2</li>' +
-					'<li>Foo 3</li>' +
+						'<li>Foo 1' +
+							'<ul style="list-style-type:disc;">' +
+								'<li>Bar 1</li>' +
+								'<li>Bar 2</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>Foo 2</li>' +
+						'<li>Foo 3</li>' +
 					'</ul>'
 				);
 			} );
@@ -149,14 +149,14 @@ describe( 'ListStyleEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<ol style="list-style-type:decimal-leading-zero;">' +
-					'<li>Foo 1' +
-					'<ol style="list-style-type:lower-latin;">' +
-					'<li>Bar 1</li>' +
-					'<li>Bar 2</li>' +
-					'</ol>' +
-					'</li>' +
-					'<li>Foo 2</li>' +
-					'<li>Foo 3</li>' +
+						'<li>Foo 1' +
+							'<ol style="list-style-type:lower-latin;">' +
+								'<li>Bar 1</li>' +
+								'<li>Bar 2</li>' +
+							'</ol>' +
+						'</li>' +
+						'<li>Foo 2</li>' +
+						'<li>Foo 3</li>' +
 					'</ol>'
 				);
 			} );
@@ -172,14 +172,14 @@ describe( 'ListStyleEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<ul style="list-style-type:square;">' +
-					'<li>Foo 1' +
-					'<ol style="list-style-type:lower-roman;">' +
-					'<li>Bar 1</li>' +
-					'<li>Bar 2</li>' +
-					'</ol>' +
-					'</li>' +
-					'<li>Foo 2</li>' +
-					'<li>Foo 3</li>' +
+						'<li>Foo 1' +
+							'<ol style="list-style-type:lower-roman;">' +
+								'<li>Bar 1</li>' +
+								'<li>Bar 2</li>' +
+							'</ol>' +
+						'</li>' +
+						'<li>Foo 2</li>' +
+						'<li>Foo 3</li>' +
 					'</ul>'
 				);
 			} );
@@ -194,13 +194,13 @@ describe( 'ListStyleEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<ol style="list-style-type:decimal;">' +
-					'<li>Foo 1</li>' +
-					'<li>Foo 2' +
-					'<ol style="list-style-type:decimal;">' +
-					'<li>Bar 1</li>' +
-					'<li>Bar 2</li>' +
-					'</ol>' +
-					'</li>' +
+						'<li>Foo 1</li>' +
+						'<li>Foo 2' +
+							'<ol style="list-style-type:decimal;">' +
+								'<li>Bar 1</li>' +
+								'<li>Bar 2</li>' +
+							'</ol>' +
+						'</li>' +
 					'</ol>'
 				);
 			} );
@@ -215,12 +215,12 @@ describe( 'ListStyleEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<ol style="list-style-type:decimal;">' +
-					'<li>Foo 1</li>' +
-					'<li>Foo 2</li>' +
+						'<li>Foo 1</li>' +
+						'<li>Foo 2</li>' +
 					'</ol>' +
 					'<ul style="list-style-type:disc;">' +
-					'<li>Bar 1</li>' +
-					'<li>Bar 2</li>' +
+						'<li>Bar 1</li>' +
+						'<li>Bar 2</li>' +
 					'</ul>'
 				);
 			} );
@@ -235,12 +235,12 @@ describe( 'ListStyleEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<ul style="list-style-type:disc;">' +
-					'<li>Foo 1</li>' +
-					'<li>Foo 2</li>' +
+						'<li>Foo 1</li>' +
+						'<li>Foo 2</li>' +
 					'</ul>' +
 					'<ul style="list-style-type:circle;">' +
-					'<li>Bar 1</li>' +
-					'<li>Bar 2</li>' +
+						'<li>Bar 1</li>' +
+						'<li>Bar 2</li>' +
 					'</ul>'
 				);
 			} );
@@ -300,14 +300,14 @@ describe( 'ListStyleEditing', () => {
 			it( 'should convert nested and mixed lists', () => {
 				editor.setData(
 					'<ol style="list-style-type:upper-alpha;">' +
-					'<li>OL 1</li>' +
-					'<li>OL 2' +
-					'<ul style="list-style-type:circle;">' +
-					'<li>UL 1</li>' +
-					'<li>UL 2</li>' +
-					'</ul>' +
-					'</li>' +
-					'<li>OL 3</li>' +
+						'<li>OL 1</li>' +
+						'<li>OL 2' +
+							'<ul style="list-style-type:circle;">' +
+								'<li>UL 1</li>' +
+								'<li>UL 2</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>OL 3</li>' +
 					'</ol>'
 				);
 
@@ -323,7 +323,10 @@ describe( 'ListStyleEditing', () => {
 			it( 'should convert when the list is in the middle of the content', () => {
 				editor.setData(
 					'<p>Paragraph.</p>' +
-					'<ol style="list-style-type:upper-alpha;"><li>Foo</li><li>Bar</li></ol>' +
+					'<ol style="list-style-type:upper-alpha;">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>' +
 					'<p>Paragraph.</p>'
 				);
 
@@ -374,14 +377,14 @@ describe( 'ListStyleEditing', () => {
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<ul style="list-style-type:circle">' +
-					'<li>Foo 1' +
-					'<ul style="list-style-type:disc">' +
-					'<li>Bar 1</li>' +
-					'<li>Bar 2</li>' +
-					'</ul>' +
-					'</li>' +
-					'<li>Foo 2</li>' +
-					'<li>Foo 3</li>' +
+						'<li>Foo 1' +
+							'<ul style="list-style-type:disc">' +
+								'<li>Bar 1</li>' +
+								'<li>Bar 2</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>Foo 2</li>' +
+						'<li>Foo 3</li>' +
 					'</ul>'
 				);
 			} );
