@@ -92,7 +92,7 @@ function upcastListItemStyle() {
 		dispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
 			const listParent = data.viewItem.parent;
 			const listStyle = listParent.getStyle( 'list-style-type' ) || DEFAULT_LIST_TYPE;
-			const listItem = data.modelRange.end.nodeBefore;
+			const listItem = data.modelRange.start.nodeAfter;
 
 			conversionApi.writer.setAttribute( 'listStyle', listStyle, listItem );
 		}, { priority: 'low' } );
