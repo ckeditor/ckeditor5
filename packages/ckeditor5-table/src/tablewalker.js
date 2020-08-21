@@ -516,8 +516,23 @@ class TableSlot {
 		return model.createPositionAt( this._table.getChild( this.row ), this._cellIndex );
 	}
 
-	// @if CK_DEBUG // get isSpanned() { throw new CKEditorError( 'tablewalker-improper-api-usage', this ); }
-	// @if CK_DEBUG // get colspan() { throw new CKEditorError( 'tablewalker-improper-api-usage', this ); }
-	// @if CK_DEBUG // get rowspan() { throw new CKEditorError( 'tablewalker-improper-api-usage', this ); }
-	// @if CK_DEBUG // get cellIndex() { throw new CKEditorError( 'tablewalker-improper-api-usage', this ); }
+	// @if CK_DEBUG // get isSpanned() { throwMissingGetterError( 'isSpanned' ); }
+	// @if CK_DEBUG // get colspan() { throwMissingGetterError( 'colspan' ); }
+	// @if CK_DEBUG // get rowspan() { throwMissingGetterError( 'rowspan' ); }
+	// @if CK_DEBUG // get cellIndex() { throwMissingGetterError( 'cellIndex' ); }
 }
+
+/**
+ * This `TableSlot`'s getter (property) was removed in CKEditor 5 v20.0.0.
+ *
+ * Check out the new `TableWalker`'s API in the documentation.
+ *
+ * @error tableslot-getter-removed
+ * @param {String} getterName
+ */
+
+// @if CK_DEBUG // function throwMissingGetterError( getterName ) {
+// @if CK_DEBUG //		throw new CKEditorError( 'tableslot-getter-removed: This TableSlot getter does not exist any more.', this, {
+// @if CK_DEBUG //			getterName
+// @if CK_DEBUG //		} );
+// @if CK_DEBUG // }

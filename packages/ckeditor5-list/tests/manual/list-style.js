@@ -19,11 +19,15 @@ import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import TodoList from '../../src/todolist';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Essentials,
+			Bold,
+			Italic,
 			Code,
 			Heading,
 			List,
@@ -39,6 +43,9 @@ ClassicEditor
 		],
 		toolbar: [
 			'heading',
+			'|',
+			'bold',
+			'italic',
 			'|',
 			'removeFormat',
 			'|',
