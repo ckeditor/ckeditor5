@@ -196,7 +196,7 @@ export default class Writer {
 					 * @error model-writer-insert-forbidden-move
 					 */
 					throw new CKEditorError(
-						'undefinedit-is-forbidden-to-move-a-node-that-was-already-in-a-document-outside-of-it.',
+						'model-writer-insert-forbidden-move',
 						this
 					);
 				} else {

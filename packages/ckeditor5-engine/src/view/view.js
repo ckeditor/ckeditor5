@@ -460,7 +460,7 @@ export default class View {
 			 * @error cannot-change-view-tree
 			 */
 			throw new CKEditorError(
-				'undefinedthis-may-cause-some-unexpected-behavior-and-inconsistency-between-the-dom-and-the-view.',
+				'cannot-change-view-tree',
 				this
 			);
 		}
