@@ -6,4 +6,5 @@
 :root {
 	--ck-z-default: 1;
 	--ck-z-modal: calc( var(--ck-z-default) + 999 );
+	--ck-z-toolbar-dropdown-panel: calc( var(--ck-z-modal) + 1 );
 }

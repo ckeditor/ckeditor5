@@ -65,3 +65,11 @@
 		}
 	}
 }
+
+/*
+ * Toolbar dropdown panels should be always above the UI (eg. other dropdown panels) from the editor's content.
+ * See https://github.com/ckeditor/ckeditor5/issues/7874
+ */
+.ck.ck-toolbar .ck-dropdown__panel {
+	z-index: var(--ck-z-toolbar-dropdown-panel);
+}
