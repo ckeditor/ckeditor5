@@ -73,6 +73,10 @@ export default class ListStyleCommand extends Command {
 		// `getSiblingNodes()` returns the entire list, we need to remove duplicated items.
 		listItems = [ ...new Set( listItems ) ];
 
+		if ( !listItems.length ) {
+			return;
+		}
+
 		model.change( writer => {
 			for ( const item of listItems ) {
 				writer.setAttribute( 'listStyle', options.type || this._defaultType, item );
