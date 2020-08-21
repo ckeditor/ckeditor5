@@ -292,7 +292,7 @@ export function findNestedList( viewElement ) {
  *
  * @param {module:engine/model/position~Position} position Starting position.
  * @param {'forward'|'backward'} direction Walking direction.
- * @returns {Array.<module:engine/model/element~Element>
+ * @returns {Array.<module:engine/model/element~Element>}
  */
 export function getSiblingNodes( position, direction ) {
 	const items = [];
