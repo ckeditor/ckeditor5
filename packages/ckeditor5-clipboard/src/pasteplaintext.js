@@ -8,7 +8,8 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Clipboard from './clipboard';
+
+import ClipboardObserver from './clipboardobserver';
 
 /**
  * The plugin detects user intentions for pasting plain text.
@@ -28,16 +29,12 @@ export default class PastePlainText extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
-		return [ Clipboard ];
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	init() {
-		const viewDocument = this.editor.editing.view.document;
+		const view = this.editor.editing.view;
+		const viewDocument = view.document;
 		let shiftPressed = false;
+
+		view.addObserver( ClipboardObserver );
 
 		this.listenTo( viewDocument, 'keydown', ( evt, data ) => {
 			shiftPressed = data.shiftKey;

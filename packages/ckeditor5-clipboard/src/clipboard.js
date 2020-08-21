@@ -8,6 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import PastePlainText from './pasteplaintext';
 
 import ClipboardObserver from './clipboardobserver';
 
@@ -33,6 +34,13 @@ export default class Clipboard extends Plugin {
 	 */
 	static get pluginName() {
 		return 'Clipboard';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ PastePlainText ];
 	}
 
 	/**
