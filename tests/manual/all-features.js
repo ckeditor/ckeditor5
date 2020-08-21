@@ -96,7 +96,14 @@ ClassicEditor
 				'imageTextAlternative', '|',
 				'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|',
 				'imageResize'
-			]
+			],
+			upload: {
+				panel: {
+					items: [
+						'insertImageViaUrl'
+					]
+				}
+			}
 		},
 		placeholder: 'Type the content here!',
 		mention: {
