@@ -71,5 +71,5 @@
  * See https://github.com/ckeditor/ckeditor5/issues/7874
  */
 .ck.ck-toolbar .ck-dropdown__panel {
-	z-index: var(--ck-z-toolbar-dropdown-panel);
+	z-index: calc( var(--ck-z-modal) + 1 );
 }
