@@ -455,7 +455,7 @@ describe( 'ListCommand', () => {
 				} );
 			} );
 
-			it( 'should fire "executeCleanup" event after finish all operations with all changed items', done => {
+			it( 'should fire "_executeCleanup" event after finish all operations with all changed items', done => {
 				setData( model,
 					'<paragraph>Foo 1.</paragraph>' +
 					'<paragraph>[Foo 2.</paragraph>' +
@@ -472,7 +472,7 @@ describe( 'ListCommand', () => {
 					'<paragraph>Foo 4.</paragraph>'
 				);
 
-				command.on( 'executeCleanup', ( evt, data ) => {
+				command.on( '_executeCleanup', ( evt, data ) => {
 					expect( data ).to.deep.equal( [
 						root.getChild( 2 ),
 						root.getChild( 1 )

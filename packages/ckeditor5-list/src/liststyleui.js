@@ -211,13 +211,15 @@ function getStyleButtonCreator( { editor, listStyleCommand, parentCommandName } 
 				}
 				// If the style was the same, remove it (the button works as an off toggle).
 				else {
-					editor.execute( 'listStyle', { type: 'default' } );
+					editor.execute( 'listStyle', { type: listStyleCommand._defaultType } );
 				}
 			}
 			// If the content the selection is anchored to is not a list, let's create a list of a desired style.
 			else {
-				editor.execute( parentCommandName );
-				editor.execute( 'listStyle', { type } );
+				editor.model.change( () => {
+					editor.execute( parentCommandName );
+					editor.execute( 'listStyle', { type } );
+				} );
 			}
 
 			editor.editing.view.focus();

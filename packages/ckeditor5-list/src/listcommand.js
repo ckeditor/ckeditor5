@@ -218,9 +218,10 @@ export default class ListCommand extends Command {
 			 * It allows to execute an action after executing the {@link ~ListCommand#execute} method, e.g. adjusting
 			 * attributes of changed blocks.
 			 *
-			 * @event executeCleanup
+			 * @protected
+			 * @event _executeCleanup
 			 */
-			this.fire( 'executeCleanup', blocks );
+			this.fire( '_executeCleanup', blocks );
 		} );
 	}
 

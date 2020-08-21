@@ -51,25 +51,20 @@ export default class ListStyleEditing extends Plugin {
 			allowAttributes: [ 'listStyle' ]
 		} );
 
-		// TODO: Is it correct?
-		editor.model.schema.setAttributeProperties( 'listStyle', {
-			isFormatting: true
-		} );
-
 		editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
 
 		// Fix list attributes when modifying their nesting levels (the `listIndent` attribute).
-		this.listenTo( editor.commands.get( 'indentList' ), 'executeCleanup', fixListAfterIndentListCommand( editor ) );
-		this.listenTo( editor.commands.get( 'outdentList' ), 'executeCleanup', fixListAfterOutdentListCommand( editor ) );
+		this.listenTo( editor.commands.get( 'indentList' ), '_executeCleanup', fixListAfterIndentListCommand( editor ) );
+		this.listenTo( editor.commands.get( 'outdentList' ), '_executeCleanup', fixListAfterOutdentListCommand( editor ) );
 
-		this.listenTo( editor.commands.get( 'bulletedList' ), 'executeCleanup', restoreDefaultListStyle( editor ) );
-		this.listenTo( editor.commands.get( 'numberedList' ), 'executeCleanup', restoreDefaultListStyle( editor ) );
+		this.listenTo( editor.commands.get( 'bulletedList' ), '_executeCleanup', restoreDefaultListStyle( editor ) );
+		this.listenTo( editor.commands.get( 'numberedList' ), '_executeCleanup', restoreDefaultListStyle( editor ) );
 
 		// Register a post-fixer that ensures that the `listStyle` attribute is specified in each `listItem` element.
 		model.document.registerPostFixer( fixListStyleAttributeOnListItemElements( editor ) );
 
 		// Set up conversion.
-		editor.conversion.for( 'upcast' ).add( upcastListItem() );
+		editor.conversion.for( 'upcast' ).add( upcastListItemStyle() );
 		editor.conversion.for( 'downcast' ).add( downcastListStyleAttribute() );
 	}
 
@@ -92,7 +87,7 @@ export default class ListStyleEditing extends Plugin {
 //
 // @private
 // @returns {Function}
-function upcastListItem() {
+function upcastListItemStyle() {
 	return dispatcher => {
 		dispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
 			const listParent = data.viewItem.parent;
@@ -111,43 +106,6 @@ function upcastListItem() {
 // @returns {Function}
 function downcastListStyleAttribute() {
 	return dispatcher => {
-		// TODO: The idea seems to be OK. Unfortunately, it does not work.
-		// 	dispatcher.on( 'insert:listItem', ( evt, data, conversionApi ) => {
-		// 		const modelItem = data.item;
-		//
-		// 		// Do not update anything for "todo" `listItem`.
-		// 		if ( modelItem.getAttribute( 'listType' ) === 'todo' ) {
-		// 			return;
-		// 		}
-		//
-		// 		// Also, no changes are required if the style is already defined.
-		// 		if ( modelItem.hasAttribute( 'listStyle' ) ) {
-		// 			return;
-		// 		}
-		//
-		// 		const nextElement = getSiblingListItem( modelItem.nextSibling, {
-		// 			sameIndent: true,
-		// 			listIndent: modelItem.getAttribute( 'listIndent' ),
-		// 			direction: 'forward'
-		// 		} );
-		//
-		// 		const previousElement = getSiblingListItem( modelItem.previousSibling, {
-		// 			sameIndent: true,
-		// 			listIndent: modelItem.getAttribute( 'listIndent' ),
-		// 			direction: 'backward'
-		// 		} );
-		//
-		// 		if ( nextElement ) {
-		// 			// Insert at the beginning of the list.
-		// 			conversionApi.writer.setAttribute( 'listStyle', nextElement.getAttribute( 'listStyle' ), modelItem );
-		// 		} else if ( previousElement ) {
-		// 			// Insert at the end of the list.
-		// 			conversionApi.writer.setAttribute( 'listStyle', previousElement.getAttribute( 'listStyle' ), modelItem );
-		// 		}
-		//
-		// 		// We don't need to check whether `previousElement` or `nextElement` and `modelItem` belong to the same list.
-		// 	}, { priority: 'low' } );
-
 		dispatcher.on( 'attribute:listStyle:listItem', ( evt, data, conversionApi ) => {
 			const viewWriter = conversionApi.writer;
 			const currentElement = data.item;

@@ -177,7 +177,7 @@ describe( 'ListStyleCommand', () => {
 			);
 		} );
 
-		it( 'should set the `listStyle` attribute for all the same list items and ignores nested lists (selection in nested list)', () => {
+		it( 'should set the `listStyle` attribute for all the same list items and ignores "parent" list (selection in nested list)', () => {
 			setData( model,
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.</listItem>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">2.</listItem>' +
@@ -331,11 +331,60 @@ describe( 'ListStyleCommand', () => {
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.</listItem>'
 			);
 
+			const modelChangeStub = sinon.stub( model, 'change' ).named( 'model#change' );
+
 			listStyleCommand.execute( { type: 'circle' } );
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>[Foo.]</paragraph>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.</listItem>'
+			);
+
+			expect( modelChangeStub.called ).to.equal( false );
+		} );
+
+		it( 'should update all items that belong to selected elements', () => {
+			// [x] = items that should be updated.
+			// All list items that belong to the same lists that selected items should be updated.
+			// "2." is the most outer list (listIndent=0)
+			// "2.1" a child list of the "2." element (listIndent=1)
+			// "2.1.1" a child list of the "2.1" element (listIndent=2)
+			//
+			// [x] ■ 1.
+			// [x] ■ [2.
+			// [x]     ○ 2.1.
+			// [x]         ▶ 2.1.1.]
+			// [x]         ▶ 2.1.2.
+			// [x]     ○ 2.2.
+			// [x] ■ 3.
+			// [ ]     ○ 3.1.
+			// [ ]         ▶ 3.1.1.
+			//
+			// "3.1" is not selected and this list should not be updated.
+			setData( model,
+				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.</listItem>' +
+				'<listItem listIndent="0" listStyle="default" listType="bulleted">[2.</listItem>' +
+				'<listItem listIndent="1" listStyle="default" listType="bulleted">2.1.</listItem>' +
+				'<listItem listIndent="2" listStyle="default" listType="bulleted">2.1.1.]</listItem>' +
+				'<listItem listIndent="2" listStyle="default" listType="bulleted">2.1.2.</listItem>' +
+				'<listItem listIndent="1" listStyle="default" listType="bulleted">2.2.</listItem>' +
+				'<listItem listIndent="0" listStyle="default" listType="bulleted">3.</listItem>' +
+				'<listItem listIndent="1" listStyle="default" listType="bulleted">3.1.</listItem>' +
+				'<listItem listIndent="2" listStyle="default" listType="bulleted">3.1.1.</listItem>'
+			);
+
+			listStyleCommand.execute( { type: 'disc' } );
+
+			expect( getData( model ) ).to.equal(
+				'<listItem listIndent="0" listStyle="disc" listType="bulleted">1.</listItem>' +
+				'<listItem listIndent="0" listStyle="disc" listType="bulleted">[2.</listItem>' +
+				'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.1.</listItem>' +
+				'<listItem listIndent="2" listStyle="disc" listType="bulleted">2.1.1.]</listItem>' +
+				'<listItem listIndent="2" listStyle="disc" listType="bulleted">2.1.2.</listItem>' +
+				'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.2.</listItem>' +
+				'<listItem listIndent="0" listStyle="disc" listType="bulleted">3.</listItem>' +
+				'<listItem listIndent="1" listStyle="default" listType="bulleted">3.1.</listItem>' +
+				'<listItem listIndent="2" listStyle="default" listType="bulleted">3.1.1.</listItem>'
 			);
 		} );
 	} );
