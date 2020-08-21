@@ -211,6 +211,17 @@ export default class ListCommand extends Command {
 					writer.setAttribute( 'listType', this.type, element );
 				}
 			}
+
+			/**
+			 * Event fired by the {@link #execute} method.
+			 *
+			 * It allows to execute an action after executing the {@link ~ListCommand#execute} method, e.g. adjusting
+			 * attributes of changed blocks.
+			 *
+			 * @protected
+			 * @event _executeCleanup
+			 */
+			this.fire( '_executeCleanup', blocks );
 		} );
 	}
 

@@ -611,6 +611,12 @@ export function modelChangePostFixer( model, writer ) {
 					applied = true;
 				}
 
+				if ( item.hasAttribute( 'listStyle' ) ) {
+					writer.removeAttribute( 'listStyle', item );
+
+					applied = true;
+				}
+
 				for ( const innerItem of Array.from( model.createRangeIn( item ) ).filter( e => e.item.is( 'element', 'listItem' ) ) ) {
 					_addListToFix( innerItem.previousPosition );
 				}
