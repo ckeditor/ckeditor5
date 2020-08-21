@@ -97,7 +97,6 @@ export default class Clipboard extends Plugin {
 			if ( !data.content.isEmpty ) {
 				const dataController = this.editor.data;
 				const model = this.editor.model;
-				const initialAttributes = new Map( modelDocument.selection.getAttributes() );
 
 				// Convert the pasted content to a model document fragment.
 				// Conversion is contextual, but in this case we need an "all allowed" context and for that
@@ -108,19 +107,26 @@ export default class Clipboard extends Plugin {
 					return;
 				}
 
-				// Plain text can be determined based on event flag (#7799) or auto detection (#1006).
-				const isPlainText = data.asPlainText || isPlainTextFragment( modelFragment );
+				// Plain text can be determined based on event flag (#7799) or auto detection (#1006). If detected
+				// preserve selection attributes on pasted items.
+				if ( data.asPlainText || isPlainTextFragment( modelFragment ) ) {
+					// Consider only formatting attributes.
+					const textAttributes = new Map( Array.from( modelDocument.selection.getAttributes() ).filter(
+						keyValuePair => editor.model.schema.getAttributeProperties( keyValuePair[ 0 ] ).isFormatting
+					) );
 
-				model.change( writer => {
-					const insertedRange = model.insertContent( modelFragment );
+					model.change( writer => {
+						const range = writer.createRangeIn( modelFragment );
 
-					// The insertedRange needs to be verified, as the return value might easily be discarded like in #7887.
-					if ( isPlainText && insertedRange ) {
-						for ( const item of insertedRange.getItems() ) {
-							writer.setAttributes( initialAttributes, item );
+						for ( const item of range.getItems() ) {
+							if ( item.is( '$text' ) || item.is( '$textProxy' ) ) {
+								writer.setAttributes( textAttributes, item );
+							}
 						}
-					}
-				} );
+					} );
+				}
+
+				model.insertContent( modelFragment );
 
 				evt.stop();
 			}
