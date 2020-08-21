@@ -51,11 +51,6 @@ export default class ListStyleEditing extends Plugin {
 			allowAttributes: [ 'listStyle' ]
 		} );
 
-		// TODO: Is it correct?
-		editor.model.schema.setAttributeProperties( 'listStyle', {
-			isFormatting: true
-		} );
-
 		editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
 
 		// Fix list attributes when modifying their nesting levels (the `listIndent` attribute).
