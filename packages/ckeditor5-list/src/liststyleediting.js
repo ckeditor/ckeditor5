@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ListEditing from './listediting';
 import ListStyleCommand from './liststylecommand';
-import { getSiblingListItem } from './utils';
+import { getSiblingListItem, getSiblingNodes } from './utils';
 
 const DEFAULT_LIST_TYPE = 'default';
 
@@ -66,6 +66,9 @@ export default class ListStyleEditing extends Plugin {
 		// Set up conversion.
 		editor.conversion.for( 'upcast' ).add( upcastListItemStyle() );
 		editor.conversion.for( 'downcast' ).add( downcastListStyleAttribute() );
+
+		// Handle merging two separated lists into the single oen.
+		this._mergeListStyleAttributeWhileMergingLists();
 	}
 
 	/**
@@ -79,6 +82,105 @@ export default class ListStyleEditing extends Plugin {
 		if ( editor.commands.get( 'todoList' ) ) {
 			editor.model.document.registerPostFixer( removeListStyleAttributeFromTodoList( editor ) );
 		}
+	}
+
+	/**
+	 * Starts listening to {@link module:engine/model/model~Model#deleteContent} checks whether two lists will be merged into a single one
+	 * after deleting the content.
+	 *
+	 * The purpose of this action is to adjust the `listStyle` value for the list that was merged.
+	 *
+	 * Consider the following model's content:
+	 *
+	 *     <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 1</listItem>
+	 *     <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 2</listItem>
+	 *     <paragraph>[A paragraph.]</paragraph>
+	 *     <listItem listIndent="0" listType="bulleted" listStyle="circle">UL List item 1</listItem>
+	 *     <listItem listIndent="0" listType="bulleted" listStyle="circle">UL List item 2</listItem>
+	 *
+	 * After removing the paragraph element, the second list will be merged into the first one.
+	 * We want to inherit the `listStyle` attribute for the second list from the first one.
+	 *
+	 *     <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 1</listItem>
+	 *     <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 2</listItem>
+	 *     <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 1</listItem>
+	 *     <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 2</listItem>
+	 *
+	 * See https://github.com/ckeditor/ckeditor5/issues/7879.
+	 *
+	 * @private
+	 */
+	_mergeListStyleAttributeWhileMergingLists() {
+		const editor = this.editor;
+		const model = editor.model;
+
+		// First the most-outer `listItem` in the first list reference.
+		// If found, lists should be merged and this `listItem` provides the `listStyle` attribute
+		// and it' also a starting point when searching for items in the second list.
+		let firstMostOuterItem;
+
+		this.listenTo( model, 'deleteContent', ( evt, [ selection ] ) => {
+			const firstPosition = selection.getFirstPosition();
+			const lastPosition = selection.getLastPosition();
+
+			// Typing or removing content in a single item. Aborting.
+			if ( firstPosition.parent === lastPosition.parent ) {
+				return;
+			}
+
+			// An element before the content that will be removed is not a list.
+			if ( !firstPosition.parent.is( 'element', 'listItem' ) ) {
+				return;
+			}
+
+			const nextSibling = lastPosition.parent.nextSibling;
+
+			// An element after the content that will be removed is not a list.
+			if ( !nextSibling || !nextSibling.is( 'element', 'listItem' ) ) {
+				return;
+			}
+
+			const mostOuterItemList = getSiblingListItem( firstPosition.parent, {
+				sameIndent: true,
+				listIndent: 0
+			} );
+
+			if ( mostOuterItemList.getAttribute( 'listType' ) === nextSibling.getAttribute( 'listType' ) ) {
+				firstMostOuterItem = mostOuterItemList;
+			}
+		}, { priority: 'high' } );
+
+		this.listenTo( model, 'deleteContent', () => {
+			if ( !firstMostOuterItem ) {
+				return;
+			}
+
+			model.change( writer => {
+				// Find the first most-outer item list in the merged list.
+				// A case when the first list item in the second list was merged into the last item in the first list.
+				//
+				// <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 1</listItem>
+				// <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 2</listItem>
+				// <listItem listIndent="0" listType="bulleted" listStyle="circle">[]UL List item 1</listItem>
+				// <listItem listIndent="0" listType="bulleted" listStyle="circle">UL List item 2</listItem>
+				const secondListMostOuterItem = getSiblingListItem( firstMostOuterItem.nextSibling, {
+					sameIndent: true,
+					listIndent: 0,
+					direction: 'forward'
+				} );
+
+				const items = [
+					secondListMostOuterItem,
+					...getSiblingNodes( writer.createPositionAt( secondListMostOuterItem, 0 ), 'forward' )
+				];
+
+				for ( const listItem of items ) {
+					writer.setAttribute( 'listStyle', firstMostOuterItem.getAttribute( 'listStyle' ), listItem );
+				}
+			} );
+
+			firstMostOuterItem = null;
+		}, { priority: 'low' } );
 	}
 }
 
