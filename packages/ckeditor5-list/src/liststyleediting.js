@@ -67,7 +67,7 @@ export default class ListStyleEditing extends Plugin {
 		editor.conversion.for( 'upcast' ).add( upcastListItemStyle() );
 		editor.conversion.for( 'downcast' ).add( downcastListStyleAttribute() );
 
-		// Handle merging two separated lists into the single oen.
+		// Handle merging two separated lists into the single one.
 		this._mergeListStyleAttributeWhileMergingLists();
 	}
 
