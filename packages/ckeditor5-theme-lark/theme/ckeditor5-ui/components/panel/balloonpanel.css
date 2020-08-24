@@ -10,6 +10,7 @@
 	--ck-balloon-arrow-offset: 2px;
 	--ck-balloon-arrow-height: 10px;
 	--ck-balloon-arrow-half-width: 8px;
+	--ck-balloon-arrow-drop-shadow: 0 2px 2px var(--ck-color-shadow-drop);
 }
 
 .ck.ck-balloon-panel {
@@ -53,7 +54,8 @@
 		}
 
 		&::before {
-			border-color: var(--ck-color-panel-border) transparent  transparent;
+			border-color: var(--ck-color-panel-border) transparent transparent;
+			filter: drop-shadow(var(--ck-balloon-arrow-drop-shadow));
 		}
 
 		&::after {
