@@ -10,7 +10,7 @@ The {@link module:media-embed/mediaembed~MediaEmbed} feature brings support for 
 
 ## Demo
 
-You can use the "Insert media" button in the toolbar to embed media like the following examples. You can also paste the media URL directly into the editor content and it will be [automatically embedded](#automatic-media-embed-on-paste).
+You can use the "Insert media" button in the toolbar to embed media like in the following examples. You can also paste the media URL directly into the editor content and it will be [automatically embedded](#automatic-media-embed-on-paste).
 
 * <input class="example-input" type="text" value="https://www.youtube.com/watch?v=H08tGjXNHO4">
 * <input class="example-input" type="text" value="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA">
@@ -74,7 +74,7 @@ Thanks to the ability to hardcode this URL to HTML transformation, the media emb
 
 ### Non-previewable media
 
-Unfortunately, to show previews of media such as tweets, Instagram photos or Facebook posts, the editor would need to retrieve the content of those from an external service. Some of these media providers expose [oEmbed endpoints](https://oembed.com/) but not all and those endpoint responses often require further processing to be embeddable. Most importantly, though, the media embed feature is often not able to request those services due to [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy).
+Unfortunately, to show previews of media such as tweets, Instagram photos or Facebook posts, the editor would need to retrieve the content of these from an external service. Some of these media providers expose [oEmbed endpoints](https://oembed.com/) but not all and those endpoint responses often require further processing to be embeddable. Most importantly, though, the media embed feature is often not able to request those services due to [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy).
 
 The above limitations can be overcome with the help of proxy services like Iframely or Embedly. However, the media embed feature [does not support asynchronous preview providers](https://github.com/ckeditor/ckeditor5-media-embed/issues/16) yet. Therefore, to still allow embedding tweets or Instagram photos, we chose to:
 
@@ -145,7 +145,7 @@ Names of providers **without previews**:
 * `'facebook'`.
 
 <info-box notice>
-	The default media provider configuration does not support all possible media URLs, only the most common are included. Services like Iframely or Embedly support thousands of media providers and it is up to you to define which you want to allow.
+	The default media provider configuration does not support all possible media URLs &mdash; only the most common are included. Services like Iframely or Embedly support thousands of media providers and it is up to you to define which you want to allow.
 </info-box>
 
 #### Extending media providers

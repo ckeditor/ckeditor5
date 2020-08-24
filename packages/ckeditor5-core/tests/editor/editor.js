@@ -486,6 +486,25 @@ describe( 'Editor', () => {
 			expect( command.execute.calledOnce ).to.be.true;
 		} );
 
+		it( 'should return the result of command\'s execute()', () => {
+			class SomeCommand extends Command {
+				execute() {}
+			}
+
+			const editor = new TestEditor();
+			const command = new SomeCommand( editor );
+
+			const commandResult = { foo: 'bar' };
+			sinon.stub( command, 'execute' ).returns( commandResult );
+
+			editor.commands.add( 'someCommand', command );
+
+			const editorResult = editor.execute( 'someCommand' );
+
+			expect( editorResult, 'editor.execute()' ).to.equal( commandResult );
+			expect( editorResult, 'editor.execute()' ).to.deep.equal( { foo: 'bar' } );
+		} );
+
 		it( 'should throw an error if specified command has not been added', () => {
 			const editor = new TestEditor();
 

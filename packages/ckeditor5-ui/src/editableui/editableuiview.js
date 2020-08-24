@@ -59,7 +59,7 @@ export default class EditableUIView extends View {
 		 * The element which is the main editable element (usually the one with `contentEditable="true"`).
 		 *
 		 * @private
-		 * @member {HTMLElement} #_editableElement
+		 * @type {HTMLElement}
 		 */
 		this._editableElement = editableElement;
 
@@ -68,7 +68,7 @@ export default class EditableUIView extends View {
 		 * the view will not render its {@link #template}.
 		 *
 		 * @private
-		 * @member {Boolean} #_hasExternalElement
+		 * @type {Boolean}
 		 */
 		this._hasExternalElement = !!this._editableElement;
 
@@ -81,7 +81,7 @@ export default class EditableUIView extends View {
 		 * the editable DOM element must remain under the full control of the engine to work properly.
 		 *
 		 * @protected
-		 * @member {module:engine/view/view~View} #isFocused
+		 * @type {module:engine/view/view~View}
 		 */
 		this._editingView = editingView;
 	}

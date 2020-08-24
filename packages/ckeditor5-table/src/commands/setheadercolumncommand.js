@@ -10,7 +10,6 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import {
-	findAncestor,
 	isHeadingColumnCell,
 	updateNumericAttribute
 } from '../utils/common';
@@ -74,7 +73,7 @@ export default class SetHeaderColumnCommand extends Command {
 
 		const model = this.editor.model;
 		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
-		const table = findAncestor( 'table', selectedCells[ 0 ] );
+		const table = selectedCells[ 0 ].findAncestor( 'table' );
 
 		const { first, last } = getColumnIndexes( selectedCells );
 		const headingColumnsToSet = this.value ? first : last + 1;

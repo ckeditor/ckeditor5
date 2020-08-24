@@ -151,17 +151,17 @@ describe( 'AutoLink', () => {
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>' +
-					'<$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>' +
+				'<$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>' +
 				'</paragraph>' +
 				'<paragraph>[]</paragraph>'
 			);
 		} );
 
-		it( 'adds "mailto://" to link of detected email addresses', () => {
+		it( 'adds "mailto:" to link of detected email addresses', () => {
 			simulateTyping( 'newsletter@cksource.com ' );
 
 			expect( getData( model ) ).to.equal(
-				'<paragraph><$text linkHref="mailto://newsletter@cksource.com">newsletter@cksource.com</$text> []</paragraph>'
+				'<paragraph><$text linkHref="mailto:newsletter@cksource.com">newsletter@cksource.com</$text> []</paragraph>'
 			);
 		} );
 

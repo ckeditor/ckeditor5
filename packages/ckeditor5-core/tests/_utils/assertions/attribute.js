@@ -54,8 +54,8 @@ chai.Assertion.addMethod( 'attribute', function attributeAssertion( key, value, 
 			attributeValue === value,
 			`expected #{this} to have attribute '${ key }' of #{exp}, but got #{act}`,
 			`expected #{this} to not have attribute '${ key }' of #{exp}`,
-			attributeValue,
-			value
+			value,
+			attributeValue
 		);
 	}
 } );

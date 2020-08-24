@@ -37,8 +37,6 @@ describe( 'RootElement', () => {
 			expect( root.is( 'model:element', '$root' ) ).to.be.true;
 			expect( root.is( 'element' ) ).to.be.true;
 			expect( root.is( 'model:element' ) ).to.be.true;
-			expect( root.is( '$root' ) ).to.be.true;
-			expect( root.is( 'model:$root' ) ).to.be.true;
 			expect( root.is( 'rootElement', '$root' ) ).to.be.true;
 			expect( root.is( 'model:rootElement', '$root' ) ).to.be.true;
 			expect( root.is( 'rootElement' ) ).to.be.true;
@@ -53,10 +51,14 @@ describe( 'RootElement', () => {
 			expect( root.is( 'rootElement', '$graveyard' ) ).to.be.false;
 			expect( root.is( 'model:rootElement', '$graveyard' ) ).to.be.false;
 			expect( root.is( '$graveyard' ) ).to.be.false;
-			expect( root.is( 'text' ) ).to.be.false;
-			expect( root.is( 'textProxy' ) ).to.be.false;
+			expect( root.is( '$text' ) ).to.be.false;
+			expect( root.is( '$textProxy' ) ).to.be.false;
 			expect( root.is( 'documentFragment' ) ).to.be.false;
 			expect( root.is( 'view:element' ) ).to.be.false;
+			expect( root.is( '$root' ) ).to.be.false;
+			expect( root.is( 'model:$root' ) ).to.be.false;
+			expect( root.is( 'node', '$root' ) ).to.be.false;
+			expect( root.is( 'model:node', '$root' ) ).to.be.false;
 		} );
 	} );
 } );

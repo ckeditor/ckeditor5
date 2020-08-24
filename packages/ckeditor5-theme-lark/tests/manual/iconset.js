@@ -37,6 +37,10 @@ import objectLeft from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
 import objectCenter from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 import objectRight from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
 import objectFullWidth from '@ckeditor/ckeditor5-core/theme/icons/object-full-width.svg';
+import objectSizeFull from '@ckeditor/ckeditor5-core/theme/icons/object-size-full.svg';
+import objectSizeLarge from '@ckeditor/ckeditor5-core/theme/icons/object-size-large.svg';
+import objectSizeSmall from '@ckeditor/ckeditor5-core/theme/icons/object-size-small.svg';
+import objectSizeMedium from '@ckeditor/ckeditor5-core/theme/icons/object-size-medium.svg';
 import pencil from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
 import pilcrow from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
 import quote from '@ckeditor/ckeditor5-core/theme/icons/quote.svg';
@@ -110,8 +114,8 @@ const icons = {
 	// core
 	alignTop, alignBottom, alignMiddle, alignLeft, alignCenter, alignRight,
 	alignJustify, cancel, check, eraser, image, lowVision, objectCenter,
-	objectFullWidth, objectLeft, objectRight, pencil, pilcrow, quote,
-	threeVerticalDots,
+	objectFullWidth, objectLeft, objectRight, objectSizeFull, objectSizeLarge,
+	objectSizeSmall, objectSizeMedium, pencil, pilcrow, quote, threeVerticalDots,
 
 	// font
 	fontFamily, fontSize, fontColor, fontBackground,

@@ -147,7 +147,7 @@ export function dataViewToModelCodeBlockInsertion( editingView, languageDefs ) {
 		const viewItem = data.viewItem;
 		const viewChild = viewItem.getChild( 0 );
 
-		if ( !viewChild || !viewChild.is( 'code' ) ) {
+		if ( !viewChild || !viewChild.is( 'element', 'code' ) ) {
 			return;
 		}
 
@@ -193,48 +193,14 @@ export function dataViewToModelCodeBlockInsertion( editingView, languageDefs ) {
 
 		writer.append( fragment, codeBlock );
 
-		// Let's see if the codeBlock can be inserted the current modelCursor.
-		const splitResult = conversionApi.splitToAllowedParent( codeBlock, data.modelCursor );
-
-		// When there is no split result it means that we can't insert element to model tree,
-		// so let's skip it.
-		if ( !splitResult ) {
+		// Let's try to insert code block.
+		if ( !conversionApi.safeInsert( codeBlock, data.modelCursor ) ) {
 			return;
 		}
-
-		// Insert element on allowed position.
-		writer.insert( codeBlock, splitResult.position );
 
 		consumable.consume( viewItem, { name: true } );
 		consumable.consume( viewChild, { name: true } );
 
-		const parts = conversionApi.getSplitParts( codeBlock );
-
-		// Set conversion result range.
-		data.modelRange = writer.createRange(
-			conversionApi.writer.createPositionBefore( codeBlock ),
-			conversionApi.writer.createPositionAfter( parts[ parts.length - 1 ] )
-		);
-
-		// If we had to split parent to insert our element then we want to continue conversion inside
-		// the split parent.
-		//
-		// before split:
-		//
-		//		<allowed><notAllowed>[]</notAllowed></allowed>
-		//
-		// after split:
-		//
-		//		<allowed>
-		//			<notAllowed></notAllowed>
-		//			<converted></converted>
-		//			<notAllowed>[]</notAllowed>
-		//		</allowed>
-		if ( splitResult.cursorParent ) {
-			data.modelCursor = writer.createPositionAt( splitResult.cursorParent, 0 );
-		} else {
-			// Otherwise just continue after the inserted element.
-			data.modelCursor = data.modelRange.end;
-		}
+		conversionApi.updateConversionResult( codeBlock, data );
 	};
 }

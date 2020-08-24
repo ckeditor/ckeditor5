@@ -8,10 +8,11 @@ import WidgetResize from '../../../src/widgetresize';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 export const resizerMouseSimulator = {
-	down( editor, domTarget ) {
-		this._getPlugin( editor )._mouseDownListener( {}, {
-			target: domTarget
-		} );
+	down( editor, domTarget, options = {} ) {
+		const preventDefault = options.preventDefault || sinon.spy().named( 'preventDefault' );
+		const stop = options.stop || sinon.spy().named( 'stop' );
+
+		this._getPlugin( editor )._mouseDownListener( { stop }, { domTarget, preventDefault } );
 	},
 
 	/**

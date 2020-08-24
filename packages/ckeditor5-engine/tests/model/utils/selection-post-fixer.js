@@ -41,7 +41,8 @@ describe( 'Selection post-fixer', () => {
 			model.schema.register( 'tableCell', {
 				allowIn: 'tableRow',
 				allowAttributes: [ 'colspan', 'rowspan' ],
-				isObject: true
+				isLimit: true,
+				isSelectable: true
 			} );
 
 			model.schema.extend( '$block', { allowIn: 'tableCell' } );
@@ -74,7 +75,8 @@ describe( 'Selection post-fixer', () => {
 		it( 'should not crash if there is no correct position for model selection', () => {
 			setModelData( model, '' );
 
-			expect( getModelData( model ) ).to.equal( '[]' );
+			// Note that auto-paragraphing post-fixer injected a paragraph into the empty root.
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'should react to structure changes', () => {
@@ -1205,6 +1207,30 @@ describe( 'Selection post-fixer', () => {
 
 				expect( getModelData( model ) ).to.equal( '<div>[<div></div>]</div>' );
 			} );
+
+			it( 'should not fix #5 (selection starts before a selectable, which is not an object)', () => {
+				model.schema.register( 'div', { allowIn: '$root' } );
+				model.schema.register( 'selectable', { isSelectable: true, allowIn: 'div' } );
+				model.schema.extend( '$text', { allowIn: 'selectable' } );
+
+				setModelData( model,
+					'<div>[<selectable>foo]</selectable></div>'
+				);
+
+				expect( getModelData( model ) ).to.equal( '<div>[<selectable>foo]</selectable></div>' );
+			} );
+
+			it( 'should not fix #6 (selection ends after before a selectable, which is not an object)', () => {
+				model.schema.register( 'div', { allowIn: '$root' } );
+				model.schema.register( 'selectable', { isSelectable: true, allowIn: 'div' } );
+				model.schema.extend( '$text', { allowIn: 'selectable' } );
+
+				setModelData( model,
+					'<div><selectable>[foo</selectable>]</div>'
+				);
+
+				expect( getModelData( model ) ).to.equal( '<div><selectable>[foo</selectable>]</div>' );
+			} );
 		} );
 
 		describe( 'non-collapsed selection - inline widget scenarios', () => {
@@ -1274,7 +1300,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
-							'[<tableCell><paragraph>aaa</paragraph></tableCell>]' +
+							'<tableCell><paragraph>[]aaa</paragraph></tableCell>' +
 							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>' +
@@ -1296,7 +1322,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
-							'[<tableCell><paragraph>aaa</paragraph></tableCell>]' +
+							'<tableCell><paragraph>[]aaa</paragraph></tableCell>' +
 							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>' +

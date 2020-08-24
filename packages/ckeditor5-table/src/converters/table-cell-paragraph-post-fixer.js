@@ -109,7 +109,7 @@ function fixTableCellContent( tableCell, writer ) {
 
 	// Check table cell children for directly placed text nodes.
 	// Temporary solution. See https://github.com/ckeditor/ckeditor5/issues/1464.
-	const textNodes = Array.from( tableCell.getChildren() ).filter( child => child.is( 'text' ) );
+	const textNodes = Array.from( tableCell.getChildren() ).filter( child => child.is( '$text' ) );
 
 	// @if CK_DEBUG_TABLE // textNodes.length && console.log( 'Post-fixing table: wrap cell content with paragraph.' );
 
@@ -128,7 +128,7 @@ function fixTableCellContent( tableCell, writer ) {
 // @param {Object} differ change entry
 // @returns {Boolean}
 function checkTableCellChange( entry ) {
-	if ( !entry.position || !entry.position.parent.is( 'tableCell' ) ) {
+	if ( !entry.position || !entry.position.parent.is( 'element', 'tableCell' ) ) {
 		return false;
 	}
 

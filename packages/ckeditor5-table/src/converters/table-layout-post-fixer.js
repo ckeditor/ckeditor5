@@ -8,7 +8,7 @@
  */
 
 import TableWalker from './../tablewalker';
-import { createEmptyTableCell, findAncestor, updateNumericAttribute } from '../utils/common';
+import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
 
 /**
  * Injects a table layout post-fixer into the model.
@@ -238,12 +238,12 @@ function tableLayoutPostFixer( writer, model ) {
 
 		// Fix table on adding/removing table cells and rows.
 		if ( entry.name == 'tableRow' || entry.name == 'tableCell' ) {
-			table = findAncestor( 'table', entry.position );
+			table = entry.position.findAncestor( 'table' );
 		}
 
 		// Fix table on any table's attribute change - including attributes of table cells.
 		if ( isTableAttributeEntry( entry ) ) {
-			table = findAncestor( 'table', entry.range.start );
+			table = entry.range.start.findAncestor( 'table' );
 		}
 
 		if ( table && !analyzedTables.has( table ) ) {

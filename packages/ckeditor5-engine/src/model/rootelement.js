@@ -68,14 +68,11 @@ export default class RootElement extends Element {
 	 * Assuming that the object being checked is an element, you can also check its
 	 * {@link module:engine/model/element~Element#name name}:
 	 *
-	 *		rootElement.is( '$root' ); // -> true if this is a $root element
 	 *		rootElement.is( 'rootElement', '$root' ); // -> same as above
-	 *		text.is( '$root' ); -> false
 	 *
 	 * {@link module:engine/model/node~Node#is Check the entire list of model objects} which implement the `is()` method.
 	 *
-	 * @param {String} type Type to check when `name` parameter is present.
-	 * Otherwise, it acts like the `name` parameter.
+	 * @param {String} type Type to check.
 	 * @param {String} [name] Element name.
 	 * @returns {Boolean}
 	 */
@@ -84,7 +81,6 @@ export default class RootElement extends Element {
 			return type === 'rootElement' || type === 'model:rootElement' ||
 				// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 				type === 'element' || type === 'model:element' ||
-				type === this.name || type === 'model:' + this.name ||
 				type === 'node' || type === 'model:node';
 		}
 

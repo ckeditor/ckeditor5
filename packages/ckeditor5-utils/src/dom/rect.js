@@ -78,7 +78,8 @@ export default class Rect {
 			// @if CK_DEBUG // }
 
 			if ( isSourceRange ) {
-				copyRectProperties( this, Rect.getDomRangeRects( source )[ 0 ] );
+				const rangeRects = Rect.getDomRangeRects( source );
+				copyRectProperties( this, Rect.getBoundingRect( rangeRects ) );
 			} else {
 				copyRectProperties( this, source.getBoundingClientRect() );
 			}
@@ -380,6 +381,40 @@ export default class Rect {
 		}
 
 		return rects;
+	}
+
+	/**
+	 * Returns a bounding rectangle that contains all the given `rects`.
+	 *
+	 * @param {Iterable.<module:utils/dom/rect~Rect>} rects A list of rectangles that should be contained in the result rectangle.
+	 * @returns {module:utils/dom/rect~Rect|null} Bounding rectangle or `null` if no `rects` were given.
+	 */
+	static getBoundingRect( rects ) {
+		const boundingRectData = {
+			left: Number.POSITIVE_INFINITY,
+			top: Number.POSITIVE_INFINITY,
+			right: Number.NEGATIVE_INFINITY,
+			bottom: Number.NEGATIVE_INFINITY
+		};
+		let rectangleCount = 0;
+
+		for ( const rect of rects ) {
+			rectangleCount++;
+
+			boundingRectData.left = Math.min( boundingRectData.left, rect.left );
+			boundingRectData.top = Math.min( boundingRectData.top, rect.top );
+			boundingRectData.right = Math.max( boundingRectData.right, rect.right );
+			boundingRectData.bottom = Math.max( boundingRectData.bottom, rect.bottom );
+		}
+
+		if ( rectangleCount == 0 ) {
+			return null;
+		}
+
+		boundingRectData.width = boundingRectData.right - boundingRectData.left;
+		boundingRectData.height = boundingRectData.bottom - boundingRectData.top;
+
+		return new Rect( boundingRectData );
 	}
 }
 

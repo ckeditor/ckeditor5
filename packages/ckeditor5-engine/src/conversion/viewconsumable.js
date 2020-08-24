@@ -80,7 +80,7 @@ export default class ViewConsumable {
 		let elementConsumables;
 
 		// For text nodes and document fragments just mark them as consumable.
-		if ( element.is( 'text' ) || element.is( 'documentFragment' ) ) {
+		if ( element.is( '$text' ) || element.is( 'documentFragment' ) ) {
 			this._consumables.set( element, true );
 
 			return;
@@ -134,7 +134,7 @@ export default class ViewConsumable {
 		}
 
 		// For text nodes and document fragments return stored boolean value.
-		if ( element.is( 'text' ) || element.is( 'documentFragment' ) ) {
+		if ( element.is( '$text' ) || element.is( 'documentFragment' ) ) {
 			return elementConsumables;
 		}
 
@@ -172,7 +172,7 @@ export default class ViewConsumable {
 	 */
 	consume( element, consumables ) {
 		if ( this.test( element, consumables ) ) {
-			if ( element.is( 'text' ) || element.is( 'documentFragment' ) ) {
+			if ( element.is( '$text' ) || element.is( 'documentFragment' ) ) {
 				// For text nodes and document fragments set value to false.
 				this._consumables.set( element, false );
 			} else {
@@ -218,7 +218,7 @@ export default class ViewConsumable {
 		const elementConsumables = this._consumables.get( element );
 
 		if ( elementConsumables !== undefined ) {
-			if ( element.is( 'text' ) || element.is( 'documentFragment' ) ) {
+			if ( element.is( '$text' ) || element.is( 'documentFragment' ) ) {
 				// For text nodes and document fragments - set consumable to true.
 				this._consumables.set( element, true );
 			} else {
@@ -287,7 +287,7 @@ export default class ViewConsumable {
 			instance = new ViewConsumable( from );
 		}
 
-		if ( from.is( 'text' ) ) {
+		if ( from.is( '$text' ) ) {
 			instance.add( from );
 
 			return instance;

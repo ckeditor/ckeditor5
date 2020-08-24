@@ -38,7 +38,7 @@ export default function getLastTextLine( range, model ) {
 
 	const text = Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
 		// Trim text to a last occurrence of an inline element and update range start.
-		if ( !( node.is( 'text' ) || node.is( 'textProxy' ) ) ) {
+		if ( !( node.is( '$text' ) || node.is( '$textProxy' ) ) ) {
 			start = model.createPositionAfter( node );
 
 			return '';

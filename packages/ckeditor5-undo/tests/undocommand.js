@@ -347,5 +347,13 @@ describe( 'UndoCommand', () => {
 			expect( getCaseText( root ) ).to.equal( 'adbcef' );
 			expect( editor.model.document.selection.getFirstRange().isEqual( r( 1, 4 ) ) ).to.be.true;
 		} );
+
+		it( 'should clear stack on DataController set()', () => {
+			const spy = sinon.stub( undo, 'clearStack' );
+
+			editor.setData( 'foo' );
+
+			sinon.assert.called( spy );
+		} );
 	} );
 } );

@@ -168,12 +168,6 @@ export default class ResizeObserver {
 
 		ResizeObserver._observerInstance = new ObserverConstructor( entries => {
 			for ( const entry of entries ) {
-				// Do not execute callbacks for elements that are invisible.
-				// https://github.com/ckeditor/ckeditor5/issues/6570
-				if ( !entry.target.offsetParent ) {
-					continue;
-				}
-
 				const callbacks = ResizeObserver._getElementCallbacks( entry.target );
 
 				if ( callbacks ) {

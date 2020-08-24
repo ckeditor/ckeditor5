@@ -11,7 +11,6 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import TableWalker from '../tablewalker';
 import { getSelectionAffectedTableCells } from '../utils/selection';
-import { findAncestor } from '../utils/common';
 
 /**
  * The select column command.
@@ -42,7 +41,7 @@ export default class SelectColumnCommand extends Command {
 		const referenceCells = getSelectionAffectedTableCells( model.document.selection );
 		const firstCell = referenceCells[ 0 ];
 		const lastCell = referenceCells.pop();
-		const table = findAncestor( 'table', firstCell );
+		const table = firstCell.findAncestor( 'table' );
 
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const startLocation = tableUtils.getCellLocation( firstCell );

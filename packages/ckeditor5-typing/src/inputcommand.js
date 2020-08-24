@@ -89,6 +89,9 @@ export default class InputCommand extends Command {
 		model.enqueueChange( this._buffer.batch, writer => {
 			this._buffer.lock();
 
+			// Store the batch as an 'input' batch for the Input.isInput( batch ) check.
+			this._batches.add( this._buffer.batch );
+
 			model.deleteContent( selection );
 
 			if ( text ) {
@@ -104,9 +107,6 @@ export default class InputCommand extends Command {
 			this._buffer.unlock();
 
 			this._buffer.input( textInsertions );
-
-			// Store the batch as an 'input' batch for the Input.isInput( batch ) check.
-			this._batches.add( this._buffer.batch );
 		} );
 	}
 }

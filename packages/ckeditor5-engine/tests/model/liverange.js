@@ -201,7 +201,7 @@ describe( 'LiveRange', () => {
 		it( 'should return false for incorrect values', () => {
 			expect( live.is( 'model' ) ).to.be.false;
 			expect( live.is( 'model:node' ) ).to.be.false;
-			expect( live.is( 'text' ) ).to.be.false;
+			expect( live.is( '$text' ) ).to.be.false;
 			expect( live.is( 'element', 'paragraph' ) ).to.be.false;
 		} );
 	} );

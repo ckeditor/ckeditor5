@@ -66,8 +66,6 @@ describe( 'RootEditableElement', () => {
 			expect( el.is( 'view:element' ) ).to.be.true;
 			expect( el.is( 'element', 'div' ) ).to.be.true;
 			expect( el.is( 'view:element', 'div' ) ).to.be.true;
-			expect( el.is( 'div' ) ).to.be.true;
-			expect( el.is( 'view:div' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
@@ -77,16 +75,20 @@ describe( 'RootEditableElement', () => {
 			expect( el.is( 'view:containerElement', 'p' ) ).to.be.false;
 			expect( el.is( 'element', 'p' ) ).to.be.false;
 			expect( el.is( 'view:element', 'p' ) ).to.be.false;
-			expect( el.is( 'p' ) ).to.be.false;
+			expect( el.is( 'element', 'p' ) ).to.be.false;
 			expect( el.is( 'view:p' ) ).to.be.false;
-			expect( el.is( 'text' ) ).to.be.false;
-			expect( el.is( 'view:text' ) ).to.be.false;
-			expect( el.is( 'textProxy' ) ).to.be.false;
+			expect( el.is( '$text' ) ).to.be.false;
+			expect( el.is( 'view:$text' ) ).to.be.false;
+			expect( el.is( '$textProxy' ) ).to.be.false;
 			expect( el.is( 'attributeElement' ) ).to.be.false;
 			expect( el.is( 'uiElement' ) ).to.be.false;
 			expect( el.is( 'emptyElement' ) ).to.be.false;
 			expect( el.is( 'documentFragment' ) ).to.be.false;
 			expect( el.is( 'model:rootElement' ) ).to.be.false;
+			expect( el.is( 'div' ) ).to.be.false;
+			expect( el.is( 'view:div' ) ).to.be.false;
+			expect( el.is( 'node', 'div' ) ).to.be.false;
+			expect( el.is( 'view:node', 'div' ) ).to.be.false;
 		} );
 	} );
 

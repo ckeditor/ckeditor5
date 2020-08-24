@@ -162,6 +162,23 @@ describe( 'LinkUI', () => {
 			} );
 		} );
 
+		it( 'should pass a proper position target to the balloon toolbar', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+
+			const markerModelRange = editor.model.markers.get( 'link-ui' ).getRange();
+			const markerViewRange = editor.editing.mapper.toViewRange( markerModelRange );
+			const domRange = editor.editing.view.domConverter.viewRangeToDom( markerViewRange );
+
+			expect( balloonAddSpy.calledWithExactly( {
+				view: formView,
+				position: {
+					target: domRange
+				}
+			} ), 'spy arguments' ).to.be.true;
+		} );
+
 		it( 'should add #actionsView to the balloon and attach the balloon to the link element when collapsed selection is inside ' +
 			'that link',
 		() => {
@@ -481,6 +498,9 @@ describe( 'LinkUI', () => {
 			const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
 
 			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+			expect( getViewData( editor.editing.view ) ).to.equal( '<p>f{<span class="ck-fake-link-selection">o</span>}o</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo</p>' );
 		} );
 
 		it( 'should display a fake visual selection on a collapsed selection', () => {
@@ -498,6 +518,11 @@ describe( 'LinkUI', () => {
 			const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
 
 			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+			expect( getViewData( editor.editing.view ) ).to.equal(
+				'<p>f{}<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span>o</p>'
+			);
+			expect( editor.getData() ).to.equal( '<p>fo</p>' );
 		} );
 	} );
 

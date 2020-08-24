@@ -123,16 +123,17 @@ export default class Autoformat extends Plugin {
 		if ( command ) {
 			command.modelElements
 				.filter( name => name.match( /^heading[1-6]$/ ) )
-				.forEach( commandValue => {
-					const level = commandValue[ 7 ];
+				.forEach( modelName => {
+					const level = modelName[ 7 ];
 					const pattern = new RegExp( `^(#{${ level }})\\s$` );
 
 					blockAutoformatEditing( this.editor, this, pattern, () => {
-						if ( !command.isEnabled ) {
+						// Should only be active if command is enabled and heading style associated with pattern is inactive.
+						if ( !command.isEnabled || command.value === modelName ) {
 							return false;
 						}
 
-						this.editor.execute( 'heading', { value: commandValue } );
+						this.editor.execute( 'heading', { value: modelName } );
 					} );
 				} );
 		}

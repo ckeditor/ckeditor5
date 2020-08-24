@@ -42,24 +42,24 @@ export default class HorizontalLineEditing extends Plugin {
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'horizontalLine',
-			view: ( modelElement, viewWriter ) => {
-				return viewWriter.createEmptyElement( 'hr' );
+			view: ( modelElement, { writer } ) => {
+				return writer.createEmptyElement( 'hr' );
 			}
 		} );
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'horizontalLine',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer } ) => {
 				const label = t( 'Horizontal line' );
-				const viewWrapper = viewWriter.createContainerElement( 'div' );
-				const viewHrElement = viewWriter.createEmptyElement( 'hr' );
+				const viewWrapper = writer.createContainerElement( 'div' );
+				const viewHrElement = writer.createEmptyElement( 'hr' );
 
-				viewWriter.addClass( 'ck-horizontal-line', viewWrapper );
-				viewWriter.setCustomProperty( 'hr', true, viewWrapper );
+				writer.addClass( 'ck-horizontal-line', viewWrapper );
+				writer.setCustomProperty( 'hr', true, viewWrapper );
 
-				viewWriter.insert( viewWriter.createPositionAt( viewWrapper, 0 ), viewHrElement );
+				writer.insert( writer.createPositionAt( viewWrapper, 0 ), viewHrElement );
 
-				return toHorizontalLineWidget( viewWrapper, viewWriter, label );
+				return toHorizontalLineWidget( viewWrapper, writer, label );
 			}
 		} );
 

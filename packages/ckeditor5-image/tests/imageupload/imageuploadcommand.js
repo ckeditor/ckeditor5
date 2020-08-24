@@ -81,9 +81,9 @@ describe( 'ImageUploadCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection is on other image', () => {
+		it( 'should be true when the selection is on other image', () => {
 			setModelData( model, '[<image></image>]' );
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be false when the selection is inside other image', () => {
@@ -94,6 +94,7 @@ describe( 'ImageUploadCommand', () => {
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'caption', view: 'figcaption' } );
 			setModelData( model, '<image><caption>[]</caption></image>' );
+
 			expect( command.isEnabled ).to.be.false;
 		} );
 
@@ -108,7 +109,7 @@ describe( 'ImageUploadCommand', () => {
 		it( 'should be true when the selection is inside block element inside isLimit element which allows image', () => {
 			model.schema.register( 'table', { allowWhere: '$block', isLimit: true, isObject: true, isBlock: true } );
 			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
-			model.schema.register( 'tableCell', { allowIn: 'tableRow', isLimit: true } );
+			model.schema.register( 'tableCell', { allowIn: 'tableRow', isLimit: true, isSelectable: true } );
 			model.schema.extend( '$block', { allowIn: 'tableCell' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'table', view: 'table' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableRow', view: 'tableRow' } );

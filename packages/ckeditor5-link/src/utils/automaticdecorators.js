@@ -7,9 +7,11 @@
  * @module link/utils
  */
 
+import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
+
 /**
  * Helper class that ties together all {@link module:link/link~LinkDecoratorAutomaticDefinition} and provides
- * a {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement downcast dispatcher} for them.
+ * the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement downcast dispatchers} for them.
  */
 export default class AutomaticDecorators {
 	constructor() {
@@ -83,6 +85,44 @@ export default class AutomaticDecorators {
 					}
 				}
 			}, { priority: 'high' } );
+		};
+	}
+
+	/**
+	 * Provides the conversion helper used in the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add} method
+	 * when linking images.
+	 *
+	 * @returns {Function} A dispatcher function used as conversion helper
+	 * in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add}.
+	 */
+	getDispatcherForLinkedImage() {
+		return dispatcher => {
+			dispatcher.on( 'attribute:linkHref:image', ( evt, data, conversionApi ) => {
+				const viewFigure = conversionApi.mapper.toViewElement( data.item );
+				const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
+
+				for ( const item of this._definitions ) {
+					const attributes = toMap( item.attributes );
+
+					if ( item.callback( data.attributeNewValue ) ) {
+						for ( const [ key, val ] of attributes ) {
+							if ( key === 'class' ) {
+								conversionApi.writer.addClass( val, linkInImage );
+							} else {
+								conversionApi.writer.setAttribute( key, val, linkInImage );
+							}
+						}
+					} else {
+						for ( const [ key, val ] of attributes ) {
+							if ( key === 'class' ) {
+								conversionApi.writer.removeClass( val, linkInImage );
+							} else {
+								conversionApi.writer.removeAttribute( key, linkInImage );
+							}
+						}
+					}
+				}
+			} );
 		};
 	}
 }

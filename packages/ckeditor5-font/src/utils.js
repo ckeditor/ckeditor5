@@ -82,7 +82,7 @@ export function renderUpcastAttribute( styleAttr ) {
  * @param {String} styleAttr
  */
 export function renderDowncastElement( styleAttr ) {
-	return ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'span', {
+	return ( modelAttributeValue, { writer } ) => writer.createAttributeElement( 'span', {
 		style: `${ styleAttr }:${ modelAttributeValue }`
 	}, { priority: 7 } );
 }

@@ -18,8 +18,8 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the Undo feature."
 msgid "Undo"
-msgstr "قالدۇرۇش"
+msgstr "يېنىۋېلىش"
 
 msgctxt "Toolbar button tooltip for the Redo feature."
 msgid "Redo"
-msgstr "قايتا قىلىش"
+msgstr "تەكرارلاش"

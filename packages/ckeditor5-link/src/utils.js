@@ -31,9 +31,10 @@ export function isLinkElement( node ) {
  * Creates link {@link module:engine/view/attributeelement~AttributeElement} with the provided `href` attribute.
  *
  * @param {String} href
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
  * @returns {module:engine/view/attributeelement~AttributeElement}
  */
-export function createLinkElement( href, writer ) {
+export function createLinkElement( href, { writer } ) {
 	// Priority 5 - https://github.com/ckeditor/ckeditor5-link/issues/121.
 	const linkElement = writer.createAttributeElement( 'a', { href }, { priority: 5 } );
 	writer.setCustomProperty( 'link', true, linkElement );
@@ -118,4 +119,19 @@ export function normalizeDecorators( decorators ) {
 	}
 
 	return retArray;
+}
+
+/**
+ * Returns `true` if the specified `element` is an image and it can be linked (the element allows having the `linkHref` attribute).
+ *
+ * @params {module:engine/model/element~Element|null} element
+ * @params {module:engine/model/schema~Schema} schema
+ * @returns {Boolean}
+ */
+export function isImageAllowed( element, schema ) {
+	if ( !element ) {
+		return false;
+	}
+
+	return element.is( 'element', 'image' ) && schema.checkAttribute( 'image', 'linkHref' );
 }

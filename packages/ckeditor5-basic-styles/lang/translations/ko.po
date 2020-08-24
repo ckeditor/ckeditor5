@@ -30,7 +30,7 @@ msgstr "밑줄"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
-msgstr "소스"
+msgstr "코드"
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"

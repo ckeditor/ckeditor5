@@ -224,7 +224,7 @@ export default class DocumentFragment {
 	// @if CK_DEBUG_ENGINE //	let string = 'ViewDocumentFragment: [';
 
 	// @if CK_DEBUG_ENGINE //	for ( const child of this.getChildren() ) {
-	// @if CK_DEBUG_ENGINE //		if ( child.is( 'text' ) ) {
+	// @if CK_DEBUG_ENGINE //		if ( child.is( '$text' ) ) {
 	// @if CK_DEBUG_ENGINE //			string += '\n' + '\t'.repeat( 1 ) + child.data;
 	// @if CK_DEBUG_ENGINE //		} else {
 	// @if CK_DEBUG_ENGINE //			string += '\n' + child.printTree( 1 );

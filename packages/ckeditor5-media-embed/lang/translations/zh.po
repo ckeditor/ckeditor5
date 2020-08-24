@@ -22,23 +22,23 @@ msgstr "影音小工具"
 
 msgctxt "Label for the URL input in the Media Embed URL editing balloon."
 msgid "Media URL"
-msgstr "影音URL"
+msgstr "影音網址"
 
 msgctxt "The help text displayed under the media URL input helping users to discover the interface."
 msgid "Paste the media URL in the input."
-msgstr "在輸入框貼上影音URL。"
+msgstr "在輸入框貼上影音網址。"
 
 msgctxt "The tip displayed next to the media URL input informing about an easier way of embedding."
 msgid "Tip: Paste the URL into the content to embed faster."
-msgstr "提示：在內容貼上URL更快崁入。"
+msgstr "提示：在內容貼上網址更快崁入。"
 
 msgctxt "An error message that informs about an empty value in the URL input."
 msgid "The URL must not be empty."
-msgstr "URL不能空白。"
+msgstr "網址不能空白。"
 
 msgctxt "An error message that informs about unsupported media URL."
 msgid "This media URL is not supported."
-msgstr "影音URL不支援。"
+msgstr "不支援此影音網址。"
 
 msgctxt "Toolbar button tooltip for the Media Embed feature."
 msgid "Insert media"
@@ -46,4 +46,4 @@ msgstr "插入影音"
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Media toolbar"
-msgstr ""
+msgstr "影音工具"

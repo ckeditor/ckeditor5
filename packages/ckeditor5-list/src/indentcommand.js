@@ -47,6 +47,7 @@ export default class IndentCommand extends Command {
 	 * Indents or outdents (depending on the {@link #constructor}'s `indentDirection` parameter) selected list items.
 	 *
 	 * @fires execute
+	 * @fires _executeCleanup
 	 */
 	execute() {
 		const model = this.editor.model;
@@ -90,6 +91,17 @@ export default class IndentCommand extends Command {
 					writer.setAttribute( 'listIndent', indent, item );
 				}
 			}
+
+			/**
+			 * Event fired by the {@link #execute} method.
+			 *
+			 * It allows to execute an action after executing the {@link ~IndentCommand#execute} method, e.g. adjusting
+			 * attributes of changed list items.
+			 *
+			 * @protected
+			 * @event _executeCleanup
+			 */
+			this.fire( '_executeCleanup', itemsToChange );
 		} );
 	}
 
@@ -104,7 +116,7 @@ export default class IndentCommand extends Command {
 		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
 
 		// If selection is not in a list item, the command is disabled.
-		if ( !listItem || !listItem.is( 'listItem' ) ) {
+		if ( !listItem || !listItem.is( 'element', 'listItem' ) ) {
 			return false;
 		}
 
@@ -116,7 +128,7 @@ export default class IndentCommand extends Command {
 
 			let prev = listItem.previousSibling;
 
-			while ( prev && prev.is( 'listItem' ) && prev.getAttribute( 'listIndent' ) >= indent ) {
+			while ( prev && prev.is( 'element', 'listItem' ) && prev.getAttribute( 'listIndent' ) >= indent ) {
 				if ( prev.getAttribute( 'listIndent' ) == indent ) {
 					// The item is on the same level.
 					// If it has same type, it means that we found a preceding sibling from the same list.

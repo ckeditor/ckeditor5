@@ -410,5 +410,5 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
 /**
  * Tree walking directions.
  *
- * @typedef {'forward'|'backward'} module:engine/view/treewalker~TreeWalkerDirection
+ * @typedef {'forward'|'backward'} module:engine/model/treewalker~TreeWalkerDirection
  */

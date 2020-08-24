@@ -52,13 +52,13 @@ export function isMediaWidget( viewElement ) {
 }
 
 /**
- * Creates a view element representing the media. Either "semantic" one for the data pipeline:
+ * Creates a view element representing the media. Either a "semantic" one for the data pipeline:
  *
  *		<figure class="media">
  *			<oembed url="foo"></oembed>
  *		</figure>
  *
- * or "non-semantic" (for the editing view pipeline):
+ * or a "non-semantic" (for the editing view pipeline):
  *
  *		<figure class="media">
  *			<div data-oembed-url="foo">[ non-semantic media preview for "foo" ]</div>
@@ -75,12 +75,6 @@ export function isMediaWidget( viewElement ) {
 export function createMediaFigureElement( writer, registry, url, options ) {
 	const figure = writer.createContainerElement( 'figure', { class: 'media' } );
 
-	// TODO: This is a hack. Without it, the figure in the data pipeline will contain &nbsp; because
-	// its only child is the UIElement (wrapper).
-	//
-	// Note: The hack is a copy&paste from widget utils; it makes the figure act like it's a widget.
-	figure.getFillerOffset = getFillerOffset;
-
 	writer.insert( writer.createPositionAt( figure, 0 ), registry.getMediaViewElement( writer, url, options ) );
 
 	return figure;
@@ -95,7 +89,7 @@ export function createMediaFigureElement( writer, registry, url, options ) {
 export function getSelectedMediaModelWidget( selection ) {
 	const selectedElement = selection.getSelectedElement();
 
-	if ( selectedElement && selectedElement.is( 'media' ) ) {
+	if ( selectedElement && selectedElement.is( 'element', 'media' ) ) {
 		return selectedElement;
 	}
 
@@ -110,7 +104,7 @@ export function getSelectedMediaModelWidget( selection ) {
  *
  * @param {module:engine/model/model~Model} model
  * @param {String} url An URL of an embeddable media.
- * @param {module:engine/model/position~Position} [insertPosition] Position to insert media. If not specified,
+ * @param {module:engine/model/position~Position} [insertPosition] Position to insert the media. If not specified,
  * the default behavior of {@link module:engine/model/model~Model#insertContent `model.insertContent()`} will
  * be applied.
  */
@@ -122,8 +116,4 @@ export function insertMedia( model, url, insertPosition ) {
 
 		writer.setSelection( mediaElement, 'on' );
 	} );
-}
-
-function getFillerOffset() {
-	return null;
 }

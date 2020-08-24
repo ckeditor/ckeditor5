@@ -9,6 +9,7 @@ import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
 import EmptyElement from '../../../src/view/emptyelement';
 import UIElement from '../../../src/view/uielement';
+import RawElement from '../../../src/view/rawelement';
 import Position from '../../../src/view/position';
 import Range from '../../../src/view/range';
 import Text from '../../../src/view/text';
@@ -424,6 +425,25 @@ describe( 'DowncastWriter', () => {
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( range, attribute );
 			}, 'view-writer-cannot-break-ui-element', document );
+		} );
+
+		it( 'should unwrap a RawElement', () => {
+			testUnwrap(
+				'<container:p>[<attribute:b><raw:span></raw:span></attribute:b>]</container:p>',
+				'<attribute:b></attribute:b>',
+				'<container:p>[<raw:span></raw:span>]</container:p>'
+			);
+		} );
+
+		it( 'should throw if a range is placed inside a RawElement', () => {
+			const rawElement = new RawElement( document, 'span' );
+			const attribute = new AttributeElement( document, 'b' );
+			const container = new ContainerElement( document, 'p', null, [ rawElement, attribute ] );
+			const range = Range._createFromParentsAndOffsets( rawElement, 0, container, 2 );
+
+			expectToThrowCKEditorError( () => {
+				writer.unwrap( range, attribute );
+			}, 'view-writer-cannot-break-raw-element', document );
 		} );
 
 		it( 'should unwrap if both elements have same id', () => {

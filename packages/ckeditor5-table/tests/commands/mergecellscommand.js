@@ -706,6 +706,53 @@ describe( 'MergeCellsCommand', () => {
 					]
 				] ) );
 			} );
+
+			it( 'should remove all empty rows and columns', () => {
+				setData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ],
+					[ '20', '21', '22' ]
+				] ) );
+
+				tableSelection.setCellSelection(
+					root.getNodeByPath( [ 0, 0, 0 ] ),
+					root.getNodeByPath( [ 0, 2, 2 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[
+						'<paragraph>[00</paragraph><paragraph>01</paragraph><paragraph>02</paragraph>' +
+						'<paragraph>10</paragraph><paragraph>11</paragraph><paragraph>12</paragraph>' +
+						'<paragraph>20</paragraph><paragraph>21</paragraph><paragraph>22]</paragraph>'
+					]
+				] ) );
+			} );
+
+			it( 'should remove all empty rows and columns (asymmetrical case)', () => {
+				setData( model, modelTable( [
+					[ '00', '01', { contents: '02', rowspan: 3 } ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				] ) );
+
+				tableSelection.setCellSelection(
+					root.getNodeByPath( [ 0, 0, 0 ] ),
+					root.getNodeByPath( [ 0, 2, 1 ] )
+				);
+
+				command.execute();
+
+				assertEqualMarkup( getData( model ), modelTable( [
+					[
+						'<paragraph>[00</paragraph><paragraph>01</paragraph>' +
+						'<paragraph>10</paragraph><paragraph>11</paragraph>' +
+						'<paragraph>20</paragraph><paragraph>21]</paragraph>',
+						'02'
+					]
+				] ) );
+			} );
 		} );
 	} );
 

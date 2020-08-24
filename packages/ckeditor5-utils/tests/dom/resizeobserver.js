@@ -114,61 +114,6 @@ describe( 'ResizeObserver()', () => {
 			observerA.destroy();
 		} );
 
-		it( 'should not react to resizing of an element if element is invisible', () => {
-			const callbackA = sinon.spy();
-			let resizeCallback;
-
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
-				resizeCallback = callback;
-
-				return {
-					observe() {},
-					unobserve() {}
-				};
-			} );
-
-			const observerA = new ResizeObserver( elementA, callbackA );
-
-			elementA.style.display = 'none';
-
-			resizeCallback( [
-				{ target: elementA }
-			] );
-
-			sinon.assert.notCalled( callbackA );
-
-			observerA.destroy();
-		} );
-
-		it( 'should not react to resizing of an element if element\'s parent is invisible', () => {
-			const callbackA = sinon.spy();
-			let resizeCallback;
-
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
-				resizeCallback = callback;
-
-				return {
-					observe() {},
-					unobserve() {}
-				};
-			} );
-
-			const observerA = new ResizeObserver( elementA, callbackA );
-			const parent = document.createElement( 'div' );
-			document.body.appendChild( parent );
-			parent.appendChild( elementA );
-			parent.style.display = 'none';
-
-			resizeCallback( [
-				{ target: elementA }
-			] );
-
-			sinon.assert.notCalled( callbackA );
-
-			parent.remove();
-			observerA.destroy();
-		} );
-
 		it( 'should be able to observe the same element along with other observers', () => {
 			const callbackA = sinon.spy();
 			const callbackB = sinon.spy();

@@ -50,7 +50,7 @@ export function isCaption( viewElement ) {
  */
 export function getCaptionFromImage( imageModelElement ) {
 	for ( const node of imageModelElement.getChildren() ) {
-		if ( !!node && node.is( 'caption' ) ) {
+		if ( !!node && node.is( 'element', 'caption' ) ) {
 			return node;
 		}
 	}

@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import { isImage } from '../image/utils';
 
 /**
- * The image resize command. Currently, it supports only the width attribute.
+ * The image resize command. Currently, it only supports the width attribute.
  *
  * @extends module:core/command~Command
  */
@@ -51,8 +51,15 @@ export default class ImageResizeCommand extends Command {
 		const model = this.editor.model;
 		const imageElement = model.document.selection.getSelectedElement();
 
-		model.change( writer => {
-			writer.setAttribute( 'width', options.width, imageElement );
-		} );
+		this.value = {
+			width: options.width,
+			height: null
+		};
+
+		if ( imageElement ) {
+			model.change( writer => {
+				writer.setAttribute( 'width', options.width, imageElement );
+			} );
+		}
 	}
 }

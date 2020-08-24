@@ -49,7 +49,7 @@ export default class Watchdog {
 		 * * `destroyed` &ndash; A state when the item is manually destroyed by the user after calling `watchdog.destroy()`.
 		 *
 		 * @public
-		 * @member {'initializing'|'ready'|'crashed'|'crashedPermanently'|'destroyed'} #state
+		 * @type {'initializing'|'ready'|'crashed'|'crashedPermanently'|'destroyed'}
 		 */
 		this.state = 'initializing';
 

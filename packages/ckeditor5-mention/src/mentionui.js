@@ -34,7 +34,6 @@ const handledKeyCodes = [
 	keyCodes.arrowdown,
 	keyCodes.enter,
 	keyCodes.tab,
-	keyCodes.space,
 	keyCodes.esc
 ];
 
@@ -121,7 +120,7 @@ export default class MentionUI extends Plugin {
 					this._mentionsView.selectPrevious();
 				}
 
-				if ( data.keyCode == keyCodes.enter || data.keyCode == keyCodes.tab || data.keyCode == keyCodes.space ) {
+				if ( data.keyCode == keyCodes.enter || data.keyCode == keyCodes.tab ) {
 					this._mentionsView.executeSelected();
 				}
 
@@ -716,7 +715,7 @@ function hasExistingMention( position ) {
 
 	const nodeBefore = position.nodeBefore;
 
-	return hasMention || nodeBefore && nodeBefore.is( 'text' ) && nodeBefore.hasAttribute( 'mention' );
+	return hasMention || nodeBefore && nodeBefore.is( '$text' ) && nodeBefore.hasAttribute( 'mention' );
 }
 
 // Checks if string is a valid mention marker.

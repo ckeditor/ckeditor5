@@ -2,7 +2,9 @@
  * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
 import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
+import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
  * The block autoformatting engine. It allows to format various block patterns. For example,
@@ -43,7 +45,8 @@ import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
  *
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  * @param {module:autoformat/autoformat~Autoformat} plugin The autoformat plugin instance.
- * @param {RegExp} pattern The regular expression to execute on just inserted text.
+ * @param {RegExp} pattern The regular expression to execute on just inserted text. The regular expression is tested against the text
+ * from the beginning until the caret position.
  * @param {Function|String} callbackOrCommand The callback to execute or the command to run when the text is matched.
  * In case of providing the callback, it receives the following parameter:
  * * {Object} match RegExp.exec() result of matching the pattern to inserted text.
@@ -68,6 +71,12 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 			return;
 		}
 
+		const range = first( editor.model.document.selection.getRanges() );
+
+		if ( !range.isCollapsed ) {
+			return;
+		}
+
 		if ( batch.type == 'transparent' ) {
 			return;
 		}
@@ -82,12 +91,26 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 
 		const blockToFormat = entry.position.parent;
 
-		// Block formatting should trigger only if the entire content of a paragraph is a single text node... (see ckeditor5#5671).
-		if ( !blockToFormat.is( 'paragraph' ) || blockToFormat.childCount !== 1 ) {
+		// Block formatting should be disabled in codeBlocks (#5800).
+		if ( blockToFormat.is( 'element', 'codeBlock' ) ) {
 			return;
 		}
 
-		const match = pattern.exec( blockToFormat.getChild( 0 ).data );
+		// In case a command is bound, do not re-execute it over an existing block style which would result with a style removal.
+		// Instead just drop processing so that autoformat trigger text is not lost. E.g. writing "# " in a level 1 heading.
+		if ( command && command.value === true ) {
+			return;
+		}
+
+		const firstNode = blockToFormat.getChild( 0 );
+		const firstNodeRange = editor.model.createRangeOn( firstNode );
+
+		// Range is only expected to be within or at the very end of the first text node.
+		if ( !firstNodeRange.containsRange( range ) && !range.end.isEqual( firstNodeRange.end ) ) {
+			return;
+		}
+
+		const match = pattern.exec( firstNode.data.substr( 0, range.end.offset ) );
 
 		// ...and this text node's data match the pattern.
 		if ( !match ) {

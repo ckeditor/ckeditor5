@@ -115,7 +115,7 @@ export function downcastTableAttribute( conversion, modelAttribute, styleName ) 
 			return;
 		}
 
-		const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'table' ) );
+		const table = [ ...mapper.toViewElement( item ).getChildren() ].find( child => child.is( 'element', 'table' ) );
 
 		if ( attributeNewValue ) {
 			writer.setStyle( styleName, attributeNewValue, table );

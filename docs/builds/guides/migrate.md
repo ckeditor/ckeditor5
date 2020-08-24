@@ -118,7 +118,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-autolink_commitKeystrokes">autolink_commitKeystrokes</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-autolink_emailRegex">autolink_emailRegex</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-autolink_urlRegex">autolink_urlRegex</a></td>
-			<td>N/A</td>
+			<td>Refer to the {@link features/link#autolink-feature Autolink section} of the Link guide to learn more about support for automatic linking in CKEditor 5.</td>
 		</tr>
 		<tr>
 			<td><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-baseFloatZIndex">baseFloatZIndex</a></td>

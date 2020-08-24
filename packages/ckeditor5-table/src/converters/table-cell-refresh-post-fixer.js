@@ -34,7 +34,7 @@ function tableCellRefreshPostFixer( model ) {
 	for ( const change of differ.getChanges() ) {
 		const parent = change.type == 'insert' || change.type == 'remove' ? change.position.parent : change.range.start.parent;
 
-		if ( !parent.is( 'tableCell' ) ) {
+		if ( !parent.is( 'element', 'tableCell' ) ) {
 			continue;
 		}
 
@@ -75,7 +75,7 @@ function tableCellRefreshPostFixer( model ) {
 // @param {String} type Type of change.
 // @param {Number} insertCount The number of inserts in differ.
 function checkRefresh( tableCell, type, insertCount ) {
-	const hasInnerParagraph = Array.from( tableCell.getChildren() ).some( child => child.is( 'paragraph' ) );
+	const hasInnerParagraph = Array.from( tableCell.getChildren() ).some( child => child.is( 'element', 'paragraph' ) );
 
 	// If there is no paragraph in table cell then the view doesn't require refreshing.
 	//

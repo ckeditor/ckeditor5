@@ -12,7 +12,7 @@ import ChangeBuffer from '../src/utils/changebuffer';
 import Input from '../src/input';
 
 describe( 'InputCommand', () => {
-	let editor, model, doc, buffer;
+	let editor, model, doc, buffer, inputCommand;
 
 	testUtils.createSinonSandbox();
 
@@ -23,7 +23,7 @@ describe( 'InputCommand', () => {
 				model = editor.model;
 				doc = model.document;
 
-				const inputCommand = new InputCommand( editor, 20 );
+				inputCommand = new InputCommand( editor, 20 );
 				editor.commands.add( 'input', inputCommand );
 
 				buffer = inputCommand.buffer;
@@ -259,7 +259,7 @@ describe( 'InputCommand', () => {
 				model.change( writer => {
 					let rangeSelection;
 
-					for ( const range of selection.getRanges() ) {
+					for ( const range of Array.from( selection.getRanges() ) ) {
 						rangeSelection = writer.createSelection( range );
 
 						model.deleteContent( rangeSelection );
@@ -280,6 +280,28 @@ describe( 'InputCommand', () => {
 				'<paragraph>foo[]</paragraph>' +
 				'<paragraph>z</paragraph>'
 			);
+		} );
+
+		it( 'uses typing batch while removing and inserting the content', () => {
+			expect( inputCommand._batches.has( getCurrentBatch() ), 'batch before typing' ).to.equal( false );
+
+			model.on( 'deleteContent', () => {
+				expect( inputCommand._batches.has( getCurrentBatch() ), 'batch when deleting content' ).to.equal( true );
+			}, { priority: 'highest' } );
+
+			model.on( 'insertContent', () => {
+				expect( inputCommand._batches.has( getCurrentBatch() ), 'batch when inserting content' ).to.equal( true );
+			}, { priority: 'lowest' } );
+
+			setData( model, '<paragraph>[foo]</paragraph>' );
+
+			editor.execute( 'input', { text: 'bar' } );
+
+			expect( getData( model ) ).to.equal( '<paragraph>bar[]</paragraph>' );
+
+			function getCurrentBatch() {
+				return editor.model.change( writer => writer.batch );
+			}
 		} );
 	} );
 

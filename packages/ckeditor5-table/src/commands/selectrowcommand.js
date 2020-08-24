@@ -10,7 +10,6 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import { getRowIndexes, getSelectionAffectedTableCells } from '../utils/selection';
-import { findAncestor } from '../utils/common';
 
 /**
  * The select row command.
@@ -41,7 +40,7 @@ export default class SelectRowCommand extends Command {
 		const referenceCells = getSelectionAffectedTableCells( model.document.selection );
 		const rowIndexes = getRowIndexes( referenceCells );
 
-		const table = findAncestor( 'table', referenceCells[ 0 ] );
+		const table = referenceCells[ 0 ].findAncestor( 'table' );
 		const rangesToSelect = [];
 
 		for ( let rowIndex = rowIndexes.first; rowIndex <= rowIndexes.last; rowIndex++ ) {

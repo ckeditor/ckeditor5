@@ -1,0 +1,101 @@
+# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Bulgarian (https://www.transifex.com/ckeditor/teams/11143/bg/)\n"
+"Language: bg\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Label for the image widget."
+msgid "image widget"
+msgstr "Компонент за изображение"
+
+msgctxt "Label for the Side image option."
+msgid "Side image"
+msgstr ""
+
+msgctxt "Label for the Full size image option."
+msgid "Full size image"
+msgstr ""
+
+msgctxt "Label for the Left aligned image option"
+msgid "Left aligned image"
+msgstr ""
+
+msgctxt "Label for the Centered image option"
+msgid "Centered image"
+msgstr ""
+
+msgctxt "Label for the Right aligned image option"
+msgid "Right aligned image"
+msgstr ""
+
+msgctxt "Label for the Change image text alternative button."
+msgid "Change image text alternative"
+msgstr ""
+
+msgctxt "Label for the image text alternative input."
+msgid "Text alternative"
+msgstr ""
+
+msgctxt "Placeholder text for image caption displayed when caption is empty."
+msgid "Enter image caption"
+msgstr ""
+
+msgctxt "Label for the insert image toolbar button."
+msgid "Insert image"
+msgstr "Вмъкни изображение"
+
+msgctxt "Title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr ""
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Image toolbar"
+msgstr ""
+
+msgctxt "The label used for the dropdown in the image toolbar containing defined resize options"
+msgid "Resize image"
+msgstr ""
+
+msgctxt "The label used for the standalone resize options buttons in the image toolbar"
+msgid "Resize image to %0"
+msgstr ""
+
+msgctxt "The accessibility label of the standalone image resize reset option button in the image toolbar for the screen readers"
+msgid "Resize image to the original size"
+msgstr ""
+
+msgctxt "Default label for the resize option that resets the size of the image."
+msgid "Original"
+msgstr ""
+
+msgctxt "The accessibility label of the image resize dropdown list for the screen readers."
+msgid "Image resize list"
+msgstr ""
+
+msgctxt "The label of submit form button if image src URL input has no value"
+msgid "Insert"
+msgstr ""
+
+msgctxt "The label of submit form button if image src URL input has value"
+msgid "Update"
+msgstr ""
+
+msgctxt "The input label for the Insert image via URL form"
+msgid "Insert image via URL"
+msgstr ""
+
+msgctxt "The tip label below the Insert image via URL form"
+msgid "Paste the image source URL."
+msgstr ""

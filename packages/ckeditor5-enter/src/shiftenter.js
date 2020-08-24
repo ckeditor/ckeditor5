@@ -51,7 +51,7 @@ export default class ShiftEnter extends Plugin {
 		conversion.for( 'downcast' )
 			.elementToElement( {
 				model: 'softBreak',
-				view: ( modelElement, viewWriter ) => viewWriter.createEmptyElement( 'br' )
+				view: ( modelElement, { writer } ) => writer.createEmptyElement( 'br' )
 			} );
 
 		view.addObserver( EnterObserver );

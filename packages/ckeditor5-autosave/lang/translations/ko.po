@@ -18,4 +18,4 @@ msgstr ""
 
 msgctxt "A message that the data is being saved."
 msgid "Saving changes"
-msgstr "변경사항 저장"
+msgstr "변경된 내용을 저장하고 있습니다"

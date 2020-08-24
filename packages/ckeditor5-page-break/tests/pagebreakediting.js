@@ -113,11 +113,39 @@ describe( 'PageBreakEditing', () => {
 					.to.equal( '' );
 			} );
 
-			it( 'should not convert if outer div has no children', () => {
+			it( 'should convert if outer div has no children', () => {
 				editor.setData( '<div class="page-break" style="page-break-after:always;"></div>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '' );
+					.to.equal( '<pageBreak></pageBreak>' );
+			} );
+
+			it( 'should convert if outer div has page-break-before style', () => {
+				editor.setData( '<div class="page-break" style="page-break-before:always;"></div>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<pageBreak></pageBreak>' );
+			} );
+
+			it( 'should convert if outer div has page-break-after style', () => {
+				editor.setData( '<div class="page-break" style="page-break-after:always;"></div>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<pageBreak></pageBreak>' );
+			} );
+
+			it( 'should convert if page-break-after style is on br element', () => {
+				editor.setData( '<br style="page-break-after:always;"/>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<pageBreak></pageBreak>' );
+			} );
+
+			it( 'should convert if page-break-before style is on br element', () => {
+				editor.setData( '<br style="page-break-after:always;"/>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<pageBreak></pageBreak>' );
 			} );
 
 			it( 'should not convert if outer div has too many children', () => {

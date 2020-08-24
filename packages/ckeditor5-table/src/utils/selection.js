@@ -8,7 +8,6 @@
  */
 
 import TableWalker from '../tablewalker';
-import { findAncestor } from './common';
 
 /**
  * Returns all model table cells that are fully selected (from the outside)
@@ -26,7 +25,7 @@ export function getSelectedTableCells( selection ) {
 	for ( const range of sortRanges( selection.getRanges() ) ) {
 		const element = range.getContainedElement();
 
-		if ( element && element.is( 'tableCell' ) ) {
+		if ( element && element.is( 'element', 'tableCell' ) ) {
 			cells.push( element );
 		}
 	}
@@ -48,7 +47,7 @@ export function getTableCellsContainingSelection( selection ) {
 	const cells = [];
 
 	for ( const range of selection.getRanges() ) {
-		const cellWithSelection = findAncestor( 'tableCell', range.start );
+		const cellWithSelection = range.start.findAncestor( 'tableCell' );
 
 		if ( cellWithSelection ) {
 			cells.push( cellWithSelection );
@@ -110,7 +109,7 @@ export function getRowIndexes( tableCells ) {
  * @returns {Object} Returns an object with the `first` and `last` table column indexes.
  */
 export function getColumnIndexes( tableCells ) {
-	const table = findAncestor( 'table', tableCells[ 0 ] );
+	const table = tableCells[ 0 ].findAncestor( 'table' );
 	const tableMap = [ ...new TableWalker( table ) ];
 
 	const indexes = tableMap
@@ -188,6 +187,16 @@ export function isSelectionRectangular( selectedTableCells, tableUtils ) {
 	return areaOfValidSelection == areaOfSelectedCells;
 }
 
+/**
+ * Returns array of sorted ranges.
+ *
+ * @param {Iterable.<module:engine/model/range~Range>} ranges
+ * @return {Array.<module:engine/model/range~Range>}
+ */
+export function sortRanges( ranges ) {
+	return Array.from( ranges ).sort( compareRangeOrder );
+}
+
 // Helper method to get an object with `first` and `last` indexes from an unsorted array of indexes.
 function getFirstLastIndexesObject( indexes ) {
 	const allIndexesSorted = indexes.sort( ( indexA, indexB ) => indexA - indexB );
@@ -196,10 +205,6 @@ function getFirstLastIndexesObject( indexes ) {
 	const last = allIndexesSorted[ allIndexesSorted.length - 1 ];
 
 	return { first, last };
-}
-
-function sortRanges( rangesIterator ) {
-	return Array.from( rangesIterator ).sort( compareRangeOrder );
 }
 
 function compareRangeOrder( rangeA, rangeB ) {
@@ -245,7 +250,7 @@ function getBiggestRectangleArea( rows, columns ) {
 //		│ c │ c │ d │ d │
 //		└───┴───┴───┴───┘
 function areCellInTheSameTableSection( tableCells ) {
-	const table = findAncestor( 'table', tableCells[ 0 ] );
+	const table = tableCells[ 0 ].findAncestor( 'table' );
 
 	const rowIndexes = getRowIndexes( tableCells );
 	const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );

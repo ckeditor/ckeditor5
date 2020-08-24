@@ -116,5 +116,5 @@ function isImageLinked( element ) {
 		return false;
 	}
 
-	return element.getChild( 0 ).is( 'a' );
+	return element.getChild( 0 ).is( 'element', 'a' );
 }

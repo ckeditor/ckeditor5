@@ -742,18 +742,18 @@ class FakeWidget extends Plugin {
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'fake-widget',
-			view: ( modelElement, viewWriter ) => {
-				return viewWriter.createContainerElement( 'div' );
+			view: ( modelElement, { writer } ) => {
+				return writer.createContainerElement( 'div' );
 			}
 		} );
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'fake-widget',
-			view: ( modelElement, viewWriter ) => {
-				const fakeWidget = viewWriter.createContainerElement( 'div' );
-				viewWriter.setCustomProperty( 'fakeWidget', true, fakeWidget );
+			view: ( modelElement, { writer } ) => {
+				const fakeWidget = writer.createContainerElement( 'div' );
+				writer.setCustomProperty( 'fakeWidget', true, fakeWidget );
 
-				return toWidget( fakeWidget, viewWriter, { label: 'fake-widget' } );
+				return toWidget( fakeWidget, writer, { label: 'fake-widget' } );
 			}
 		} );
 
@@ -794,18 +794,18 @@ class FakeChildWidget extends Plugin {
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'fake-child-widget',
-			view: ( modelElement, viewWriter ) => {
-				return viewWriter.createContainerElement( 'div' );
+			view: ( modelElement, { writer } ) => {
+				return writer.createContainerElement( 'div' );
 			}
 		} );
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'fake-child-widget',
-			view: ( modelElement, viewWriter ) => {
-				const fakeWidget = viewWriter.createContainerElement( 'div' );
-				viewWriter.setCustomProperty( 'fakeChildWidget', true, fakeWidget );
+			view: ( modelElement, { writer } ) => {
+				const fakeWidget = writer.createContainerElement( 'div' );
+				writer.setCustomProperty( 'fakeChildWidget', true, fakeWidget );
 
-				return toWidget( fakeWidget, viewWriter, { label: 'fake-child-widget' } );
+				return toWidget( fakeWidget, writer, { label: 'fake-child-widget' } );
 			}
 		} );
 

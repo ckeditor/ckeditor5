@@ -66,7 +66,7 @@ describe( 'table utils', () => {
 			it( 'should return an empty array when a non-cell node is selected', () => {
 				const paragraph = modelRoot.getNodeByPath( [ 0, 0, 0, 0 ] );
 
-				expect( paragraph.is( 'paragraph' ) ).to.be.true;
+				expect( paragraph.is( 'element', 'paragraph' ) ).to.be.true;
 
 				model.change( writer => {
 					writer.setSelection( writer.createRangeOn( paragraph ) );

@@ -76,7 +76,7 @@ export default class HeadingCommand extends Command {
 				} );
 
 			for ( const block of blocks ) {
-				if ( !block.is( modelElement ) ) {
+				if ( !block.is( 'element', modelElement ) ) {
 					writer.rename( block, modelElement );
 				}
 			}

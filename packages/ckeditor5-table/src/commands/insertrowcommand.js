@@ -9,7 +9,6 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { getRowIndexes, getSelectionAffectedTableCells } from '../utils/selection';
-import { findAncestor } from '../utils/common';
 
 /**
  * The insert row command.
@@ -54,7 +53,7 @@ export default class InsertRowCommand extends Command {
 	refresh() {
 		const selection = this.editor.model.document.selection;
 
-		const tableParent = findAncestor( 'table', selection.getFirstPosition() );
+		const tableParent = selection.getFirstPosition().findAncestor( 'table' );
 
 		this.isEnabled = !!tableParent;
 	}
@@ -76,7 +75,7 @@ export default class InsertRowCommand extends Command {
 		const rowIndexes = getRowIndexes( affectedTableCells );
 
 		const row = insertAbove ? rowIndexes.first : rowIndexes.last;
-		const table = findAncestor( 'table', affectedTableCells[ 0 ] );
+		const table = affectedTableCells[ 0 ].findAncestor( 'table' );
 
 		tableUtils.insertRows( table, { at: insertAbove ? row : row + 1, copyStructureFromAbove: !insertAbove } );
 	}

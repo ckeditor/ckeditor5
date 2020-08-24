@@ -23,3 +23,15 @@
 		display: block;
 	}
 }
+
+[dir="ltr"] .ck.ck-button.ck-button_with-text.ck-resize-image-button .ck-button__icon {
+	margin-right: var(--ck-spacing-standard);
+}
+
+[dir="rtl"] .ck.ck-button.ck-button_with-text.ck-resize-image-button .ck-button__icon {
+	margin-left: var(--ck-spacing-standard);
+}
+
+.ck.ck-dropdown .ck-button.ck-resize-image-button .ck-button__label {
+	width: 4em;
+}

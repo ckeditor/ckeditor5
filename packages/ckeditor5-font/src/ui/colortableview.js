@@ -197,7 +197,7 @@ export default class ColorTableView extends View {
 			const range = model.createRangeIn( root );
 
 			for ( const node of range.getItems() ) {
-				if ( node.is( 'textProxy' ) && node.hasAttribute( attributeName ) ) {
+				if ( node.is( '$textProxy' ) && node.hasAttribute( attributeName ) ) {
 					this._addColorToDocumentColors( node.getAttribute( attributeName ) );
 
 					if ( this.documentColors.length >= maxCount ) {

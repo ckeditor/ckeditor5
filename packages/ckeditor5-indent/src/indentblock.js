@@ -88,6 +88,8 @@ export default class IndentBlock extends Plugin {
 			}
 		} );
 
+		schema.setAttributeProperties( 'blockIndent', { isFormatting: true } );
+
 		indentCommand.registerChildCommand( editor.commands.get( 'indentBlock' ) );
 		outdentCommand.registerChildCommand( editor.commands.get( 'outdentBlock' ) );
 	}

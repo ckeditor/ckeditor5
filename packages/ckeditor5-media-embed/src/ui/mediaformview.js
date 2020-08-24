@@ -210,20 +210,12 @@ export default class MediaFormView extends View {
 	 * **Note**: Do not confuse it with the {@link module:ui/inputtext/inputtextview~InputTextView#value}
 	 * which works one way only and may not represent the actual state of the component in the DOM.
 	 *
-	 * @type {Number}
+	 * @type {String}
 	 */
 	get url() {
 		return this.urlInputView.fieldView.element.value.trim();
 	}
 
-	/**
-	 * Sets the native DOM `value` of the {@link #urlInputView} element.
-	 *
-	 * **Note**: Do not confuse it with the {@link module:ui/inputtext/inputtextview~InputTextView#value}
-	 * which works one way only and may not represent the actual state of the component in the DOM.
-	 *
-	 * @param {String} url
-	 */
 	set url( url ) {
 		this.urlInputView.fieldView.element.value = url.trim();
 	}

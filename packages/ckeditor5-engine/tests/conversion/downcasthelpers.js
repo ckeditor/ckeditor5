@@ -104,7 +104,7 @@ describe( 'DowncastHelpers', () => {
 		it( 'config.view is a function', () => {
 			downcastHelpers.elementToElement( {
 				model: 'heading',
-				view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
+				view: ( modelElement, { writer } ) => writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
 			} );
 
 			model.change( writer => {
@@ -225,8 +225,8 @@ describe( 'DowncastHelpers', () => {
 		it( 'config.view is a function', () => {
 			downcastHelpers.attributeToElement( {
 				model: 'bold',
-				view: ( modelAttributeValue, viewWriter ) => {
-					return viewWriter.createAttributeElement( 'span', { style: 'font-weight:' + modelAttributeValue } );
+				view: ( modelAttributeValue, { writer } ) => {
+					return writer.createAttributeElement( 'span', { style: 'font-weight:' + modelAttributeValue } );
 				}
 			} );
 
@@ -243,15 +243,15 @@ describe( 'DowncastHelpers', () => {
 					key: 'color',
 					name: '$text'
 				},
-				view: ( modelAttributeValue, viewWriter ) => {
-					return viewWriter.createAttributeElement( 'span', { style: 'color:' + modelAttributeValue } );
+				view: ( modelAttributeValue, { writer } ) => {
+					return writer.createAttributeElement( 'span', { style: 'color:' + modelAttributeValue } );
 				}
 			} );
 
 			downcastHelpers.elementToElement( {
 				model: 'smiley',
-				view: ( modelElement, viewWriter ) => {
-					return viewWriter.createEmptyElement( 'img', {
+				view: ( modelElement, { writer } ) => {
+					return writer.createEmptyElement( 'img', {
 						src: 'smile.jpg',
 						class: 'smiley'
 					} );
@@ -283,7 +283,7 @@ describe( 'DowncastHelpers', () => {
 
 			downcastHelpers.attributeToElement( {
 				model: 'bold',
-				view: ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'b' )
+				view: ( modelAttributeValue, { writer } ) => writer.createAttributeElement( 'b' )
 			} );
 
 			model.change( writer => {
@@ -304,9 +304,9 @@ describe( 'DowncastHelpers', () => {
 
 			downcastHelpers.attributeToElement( {
 				model: 'style',
-				view: ( modelAttributeValue, viewWriter ) => {
+				view: ( modelAttributeValue, { writer } ) => {
 					if ( modelAttributeValue == 'bold' ) {
-						return viewWriter.createAttributeElement( 'b' );
+						return writer.createAttributeElement( 'b' );
 					}
 				}
 			} );
@@ -333,8 +333,8 @@ describe( 'DowncastHelpers', () => {
 
 			downcastHelpers.attributeToElement( {
 				model: 'link',
-				view: ( modelAttributeValue, viewWriter ) => {
-					return viewWriter.createAttributeElement( 'a', { href: modelAttributeValue } );
+				view: ( modelAttributeValue, { writer } ) => {
+					return writer.createAttributeElement( 'a', { href: modelAttributeValue } );
 				}
 			} );
 
@@ -357,7 +357,7 @@ describe( 'DowncastHelpers', () => {
 
 			downcastHelpers.attributeToElement( {
 				model: 'bold',
-				view: ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'b' )
+				view: ( modelAttributeValue, { writer } ) => writer.createAttributeElement( 'b' )
 			} );
 
 			model.change( writer => {
@@ -378,11 +378,11 @@ describe( 'DowncastHelpers', () => {
 
 			downcastHelpers.attributeToElement( {
 				model: 'bold',
-				view: ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'b' )
+				view: ( modelAttributeValue, { writer } ) => writer.createAttributeElement( 'b' )
 			} );
 			downcastHelpers.attributeToElement( {
 				model: 'bold',
-				view: ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'strong' ),
+				view: ( modelAttributeValue, { writer } ) => writer.createAttributeElement( 'strong' ),
 				converterPriority: 'high'
 			} );
 
@@ -423,7 +423,7 @@ describe( 'DowncastHelpers', () => {
 			downcastHelpers.elementToElement( { model: 'image', view: 'img' } );
 			downcastHelpers.elementToElement( {
 				model: 'paragraph',
-				view: ( modelItem, viewWriter ) => viewWriter.createContainerElement( 'p' )
+				view: ( modelItem, { writer } ) => writer.createContainerElement( 'p' )
 			} );
 
 			downcastHelpers.attributeToAttribute( {
@@ -605,7 +605,12 @@ describe( 'DowncastHelpers', () => {
 		it( 'config.view is a function', () => {
 			downcastHelpers.attributeToAttribute( {
 				model: 'styled',
-				view: attributeValue => ( { key: 'class', value: 'styled-' + attributeValue } )
+				view: ( attributeValue, conversionApi ) => {
+					// To ensure conversion API is provided.
+					expect( conversionApi.writer ).to.instanceof( DowncastWriter );
+
+					return { key: 'class', value: 'styled-' + attributeValue };
+				}
 			} );
 
 			model.change( writer => {
@@ -675,41 +680,6 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'should convert insert/change/remove with attribute generating function as a parameter', () => {
-			downcastHelpers.elementToElement( { model: 'div', view: 'div' } );
-			downcastHelpers.attributeToAttribute( {
-				model: 'theme',
-				view: ( value, data ) => {
-					if ( data.item instanceof ModelElement && data.item.childCount > 0 ) {
-						value += ' fix-content';
-					}
-
-					return { key: 'class', value };
-				}
-			} );
-
-			const modelParagraph = new ModelElement( 'paragraph', { theme: 'nice' }, new ModelText( 'foobar' ) );
-			const modelDiv = new ModelElement( 'div', { theme: 'nice' } );
-
-			model.change( writer => {
-				writer.insert( [ modelParagraph, modelDiv ], modelRootStart );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="nice fix-content">foobar</p><div class="nice"></div></div>' );
-
-			model.change( writer => {
-				writer.setAttribute( 'theme', 'awesome', modelParagraph );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="awesome fix-content">foobar</p><div class="nice"></div></div>' );
-
-			model.change( writer => {
-				writer.removeAttribute( 'theme', modelParagraph );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p><div class="nice"></div></div>' );
 		} );
 
 		it( 'should be possible to override setAttribute', () => {
@@ -807,8 +777,8 @@ describe( 'DowncastHelpers', () => {
 		it( 'config.view is a function', () => {
 			downcastHelpers.markerToElement( {
 				model: 'search',
-				view: ( data, viewWriter ) => {
-					return viewWriter.createUIElement( 'span', { 'data-marker': 'search', 'data-start': data.isOpening } );
+				view: ( data, { writer } ) => {
+					return writer.createUIElement( 'span', { 'data-marker': 'search', 'data-start': data.isOpening } );
 				}
 			} );
 
@@ -838,7 +808,7 @@ describe( 'DowncastHelpers', () => {
 			it( 'should insert and remove ui element', () => {
 				downcastHelpers.markerToElement( {
 					model: 'marker',
-					view: ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } )
+					view: ( data, { writer } ) => writer.createUIElement( 'span', { 'class': 'marker' } )
 				} );
 
 				model.change( writer => {
@@ -859,7 +829,7 @@ describe( 'DowncastHelpers', () => {
 
 				downcastHelpers.markerToElement( {
 					model: 'marker',
-					view: ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } )
+					view: ( data, { writer } ) => writer.createUIElement( 'span', { 'class': 'marker' } )
 				} );
 
 				controller.downcastDispatcher.on( 'addMarker:marker', ( evt, data, conversionApi ) => {
@@ -911,7 +881,7 @@ describe( 'DowncastHelpers', () => {
 			it( 'should insert and remove ui element - element as a creator', () => {
 				downcastHelpers.markerToElement( {
 					model: 'marker',
-					view: ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } )
+					view: ( data, { writer } ) => writer.createUIElement( 'span', { 'class': 'marker' } )
 				} );
 
 				model.change( writer => {
@@ -931,7 +901,7 @@ describe( 'DowncastHelpers', () => {
 			it( 'should insert and remove ui element - function as a creator', () => {
 				downcastHelpers.markerToElement( {
 					model: 'marker',
-					view: ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': data.markerName } )
+					view: ( data, { writer } ) => writer.createUIElement( 'span', { 'class': data.markerName } )
 				} );
 
 				model.change( writer => {
@@ -951,12 +921,12 @@ describe( 'DowncastHelpers', () => {
 			it( 'should insert and remove different opening and ending element', () => {
 				downcastHelpers.markerToElement( {
 					model: 'marker',
-					view: ( data, viewWriter ) => {
+					view: ( data, { writer } ) => {
 						if ( data.isOpening ) {
-							return viewWriter.createUIElement( 'span', { 'class': data.markerName, 'data-start': true } );
+							return writer.createUIElement( 'span', { 'class': data.markerName, 'data-start': true } );
 						}
 
-						return viewWriter.createUIElement( 'span', { 'class': data.markerName, 'data-end': true } );
+						return writer.createUIElement( 'span', { 'class': data.markerName, 'data-end': true } );
 					}
 				} );
 
@@ -980,7 +950,7 @@ describe( 'DowncastHelpers', () => {
 
 				downcastHelpers.markerToElement( {
 					model: 'marker',
-					view: ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } )
+					view: ( data, { writer } ) => writer.createUIElement( 'span', { 'class': 'marker' } )
 				} );
 				controller.downcastDispatcher.on( 'addMarker:marker', ( evt, data, conversionApi ) => {
 					conversionApi.consumable.consume( data.item, 'addMarker:marker' );
@@ -993,6 +963,490 @@ describe( 'DowncastHelpers', () => {
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 				expect( controller.downcastDispatcher.fire.calledWith( 'addMarker:marker' ) );
 			} );
+		} );
+	} );
+
+	describe( 'markerToData()', () => {
+		let root;
+
+		beforeEach( () => {
+			root = model.document.getRoot();
+
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+		} );
+
+		it( 'should be chainable', () => {
+			expect( downcastHelpers.markerToData( { model: 'search' } ) ).to.equal( downcastHelpers );
+		} );
+
+		it( 'default conversion, inside text, non-collapsed, no name', () => {
+			downcastHelpers.markerToData( { model: 'search' } );
+
+			setModelData( model, '<paragraph>Fo[ob]ar</paragraph>' );
+
+			model.change( writer => {
+				writer.addMarker( 'search', { range: model.document.selection.getFirstRange(), usingOperation: false } );
+			} );
+
+			expectResult( '<p>Fo<search-start></search-start>ob<search-end></search-end>ar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'search' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'default conversion, inside text, non-collapsed, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Fo[ob]ar</paragraph>' );
+
+			model.change( writer => {
+				writer.addMarker( 'group:foo:bar:baz', { range: model.document.selection.getFirstRange(), usingOperation: false } );
+			} );
+
+			expectResult( '<p>Fo<group-start name="foo:bar:baz"></group-start>ob<group-end name="foo:bar:baz"></group-end>ar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar:baz' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'default conversion, inside text, collapsed, no name', () => {
+			downcastHelpers.markerToData( { model: 'search' } );
+
+			setModelData( model, '<paragraph>Foo[]bar</paragraph>' );
+
+			model.change( writer => {
+				writer.addMarker( 'search', { range: model.document.selection.getFirstRange(), usingOperation: false } );
+			} );
+
+			expectResult( '<p>Foo<search-start></search-start><search-end></search-end>bar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'search' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'default conversion, inside text, collapsed, multiple markers, no name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foo[]bar</paragraph>' );
+
+			model.change( writer => {
+				writer.addMarker( 'group:foo', { range: model.document.selection.getFirstRange(), usingOperation: false } );
+				writer.addMarker( 'group:abc', { range: model.document.selection.getFirstRange(), usingOperation: false } );
+			} );
+
+			expectResult(
+				'<p>' +
+					'Foo' +
+					'<group-start name="abc"></group-start><group-end name="abc"></group-end>' +
+					'<group-start name="foo"></group-start><group-end name="foo"></group-end>' +
+					'bar' +
+				'</p>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo' );
+				writer.removeMarker( 'group:abc' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'default conversion, on two elements, no name', () => {
+			downcastHelpers.markerToData( { model: 'search' } );
+
+			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRangeIn( root );
+				writer.addMarker( 'search', { range, usingOperation: false } );
+			} );
+
+			expectResult( '<p data-search-start-before="">Foo</p><p data-search-end-after="">Bar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'search' );
+			} );
+
+			expectResult( '<p>Foo</p><p>Bar</p>' );
+		} );
+
+		it( 'default conversion, on two elements, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRangeIn( root );
+				writer.addMarker( 'group:foo:bar:baz', { range, usingOperation: false } );
+			} );
+
+			expectResult( '<p data-group-start-before="foo:bar:baz">Foo</p><p data-group-end-after="foo:bar:baz">Bar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar:baz' );
+			} );
+
+			expectResult( '<p>Foo</p><p>Bar</p>' );
+		} );
+
+		it( 'default conversion, on one element, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foobar</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRangeIn( root );
+				writer.addMarker( 'group:foo:bar:baz', { range, usingOperation: false } );
+			} );
+
+			expectResult( '<p data-group-end-after="foo:bar:baz" data-group-start-before="foo:bar:baz">Foobar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar:baz' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'default conversion, collapsed before element, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foobar</paragraph>' );
+
+			model.change( writer => {
+				// Collapsed before <paragraph>.
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0 ] )
+				);
+
+				writer.addMarker( 'group:foo:bar:baz', { range, usingOperation: false } );
+			} );
+
+			expectResult( '<p data-group-end-before="foo:bar:baz" data-group-start-before="foo:bar:baz">Foobar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar:baz' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'default conversion, collapsed after element, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foobar</paragraph>' );
+
+			model.change( writer => {
+				// Collapsed before <paragraph>.
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 1 ] )
+				);
+
+				writer.addMarker( 'group:foo:bar:baz', { range, usingOperation: false } );
+			} );
+
+			expectResult( '<p data-group-end-after="foo:bar:baz" data-group-start-after="foo:bar:baz">Foobar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar:baz' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'default conversion, mixed, multiple markers, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0 ] ),
+					writer.createPositionFromPath( root, [ 1, 2 ] )
+				);
+
+				writer.addMarker( 'group:foo:bar', { range, usingOperation: false } );
+				writer.addMarker( 'group:abc:xyz', { range, usingOperation: false } );
+			} );
+
+			expectResult(
+				'<p data-group-start-before="abc:xyz,foo:bar">Foo</p>' +
+				'<p>Ba<group-end name="abc:xyz"></group-end><group-end name="foo:bar"></group-end>r</p>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar' );
+				writer.removeMarker( 'group:abc:xyz' );
+			} );
+
+			expectResult( '<p>Foo</p><p>Bar</p>' );
+		} );
+
+		it( 'default conversion, mixed #2, multiple markers, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0, 1 ] ),
+					writer.createPositionFromPath( root, [ 2 ] )
+				);
+
+				writer.addMarker( 'group:foo:bar', { range, usingOperation: false } );
+				writer.addMarker( 'group:abc:xyz', { range, usingOperation: false } );
+			} );
+
+			expectResult(
+				'<p>F<group-start name="abc:xyz"></group-start><group-start name="foo:bar"></group-start>oo</p>' +
+				'<p data-group-end-after="abc:xyz,foo:bar">Bar</p>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar' );
+				writer.removeMarker( 'group:abc:xyz' );
+			} );
+
+			expectResult( '<p>Foo</p><p>Bar</p>' );
+		} );
+
+		it( 'default conversion, mixed #3, multiple markers, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foo</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0 ] ),
+					writer.createPositionFromPath( root, [ 0, 2 ] )
+				);
+
+				writer.addMarker( 'group:foo:bar', { range, usingOperation: false } );
+				writer.addMarker( 'group:abc:xyz', { range, usingOperation: false } );
+			} );
+
+			expectResult(
+				'<p data-group-start-before="abc:xyz,foo:bar">' +
+					'Fo<group-end name="abc:xyz"></group-end><group-end name="foo:bar"></group-end>o' +
+				'</p>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar' );
+				writer.removeMarker( 'group:abc:xyz' );
+			} );
+
+			expectResult( '<p>Foo</p>' );
+		} );
+
+		it( 'default conversion, mixed #4, multiple markers, name', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			setModelData( model, '<paragraph>Foo</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0, 2 ] ),
+					writer.createPositionFromPath( root, [ 1 ] )
+				);
+
+				writer.addMarker( 'group:foo:bar', { range, usingOperation: false } );
+				writer.addMarker( 'group:abc:xyz', { range, usingOperation: false } );
+			} );
+
+			expectResult(
+				'<p data-group-end-after="abc:xyz,foo:bar">' +
+					'Fo<group-start name="abc:xyz"></group-start><group-start name="foo:bar"></group-start>o' +
+				'</p>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar' );
+				writer.removeMarker( 'group:abc:xyz' );
+			} );
+
+			expectResult( '<p>Foo</p>' );
+		} );
+
+		it( 'conversion callback, mixed, multiple markers, name', () => {
+			const customData = {
+				foo: 'bar',
+				abc: 'xyz'
+			};
+
+			downcastHelpers.markerToData( {
+				model: 'group',
+				view: ( markerName, conversionApi ) => {
+					const namePart = markerName.split( ':' )[ 1 ];
+
+					// To ensure conversion API is provided.
+					expect( conversionApi.writer ).to.instanceof( DowncastWriter );
+
+					return {
+						group: 'g',
+						name: namePart + '_' + customData[ namePart ]
+					};
+				}
+			} );
+
+			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0 ] ),
+					writer.createPositionFromPath( root, [ 1, 2 ] )
+				);
+
+				writer.addMarker( 'group:foo', { range, usingOperation: false } );
+				writer.addMarker( 'group:abc', { range, usingOperation: false } );
+			} );
+
+			expectResult(
+				'<p data-g-start-before="abc_xyz,foo_bar">Foo</p>' +
+				'<p>Ba<g-end name="abc_xyz"></g-end><g-end name="foo_bar"></g-end>r</p>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo' );
+				writer.removeMarker( 'group:abc' );
+			} );
+
+			expectResult( '<p>Foo</p><p>Bar</p>' );
+		} );
+
+		it( 'conversion callback, mixed #2, multiple markers, name', () => {
+			const customData = {
+				foo: 'bar',
+				abc: 'xyz'
+			};
+
+			downcastHelpers.markerToData( {
+				model: 'group',
+				view: markerName => {
+					const namePart = markerName.split( ':' )[ 1 ];
+
+					return {
+						group: 'g',
+						name: namePart + '_' + customData[ namePart ]
+					};
+				}
+			} );
+
+			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+			model.change( writer => {
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0, 1 ] ),
+					writer.createPositionFromPath( root, [ 2 ] )
+				);
+
+				writer.addMarker( 'group:foo', { range, usingOperation: false } );
+				writer.addMarker( 'group:abc', { range, usingOperation: false } );
+			} );
+
+			expectResult(
+				'<p>F<g-start name="abc_xyz"></g-start><g-start name="foo_bar"></g-start>oo</p>' +
+				'<p data-g-end-after="abc_xyz,foo_bar">Bar</p>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo' );
+				writer.removeMarker( 'group:abc' );
+			} );
+
+			expectResult( '<p>Foo</p><p>Bar</p>' );
+		} );
+
+		it( 'can be overwritten using converterPriority', () => {
+			downcastHelpers.markerToData( {
+				model: 'group'
+			} );
+
+			downcastHelpers.markerToData( {
+				model: 'group',
+				view: markerName => {
+					const name = markerName.split( ':' )[ 1 ];
+
+					return {
+						group: 'g',
+						name
+					};
+				},
+				converterPriority: 'high'
+			} );
+
+			setModelData( model, '<paragraph>F[ooba]r</paragraph>' );
+
+			model.change( writer => {
+				writer.addMarker( 'group:foo', { range: model.document.selection.getFirstRange(), usingOperation: false } );
+			} );
+
+			expectResult(
+				'<p>F<g-start name="foo"></g-start>ooba<g-end name="foo"></g-end>r</p>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'can be overwritten by custom callback', () => {
+			downcastHelpers.markerToData( {
+				model: 'group'
+			} );
+
+			downcastHelpers.add( dispatcher => {
+				dispatcher.on( 'addMarker:group', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.markerRange, evt.name );
+				}, { priority: 'high' } );
+			} );
+
+			setModelData( model, '<paragraph>Foo[]bar</paragraph>' );
+
+			model.change( writer => {
+				writer.addMarker( 'group:foo', { range: model.document.selection.getFirstRange(), usingOperation: false } );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+		} );
+
+		it( 'should not perform conversion if the callback returned falsy value', () => {
+			downcastHelpers.markerToData( {
+				model: 'group',
+				view: () => false
+			} );
+
+			setModelData( model, '<paragraph>F[ooba]r</paragraph>' );
+
+			model.change( writer => {
+				writer.addMarker( 'group:foo', { range: model.document.selection.getFirstRange(), usingOperation: false } );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo' );
+			} );
+
+			expectResult( '<p>Foobar</p>' );
 		} );
 	} );
 
@@ -1029,8 +1483,11 @@ describe( 'DowncastHelpers', () => {
 		it( 'config.view is a function', () => {
 			downcastHelpers.markerToHighlight( {
 				model: 'comment',
-				view: data => {
+				view: ( data, conversionApi ) => {
 					const commentType = data.markerName.split( ':' )[ 1 ];
+
+					// To ensure conversion API is provided.
+					expect( conversionApi.writer ).to.instanceof( DowncastWriter );
 
 					return {
 						classes: [ 'comment', 'comment-' + commentType ]
@@ -2277,7 +2734,7 @@ describe( 'downcast selection converters', () => {
 				for ( const range of selection.getRanges() ) {
 					const node = range.start.parent;
 
-					if ( !!node && node.is( 'td' ) ) {
+					if ( !!node && node.is( 'element', 'td' ) ) {
 						conversionApi.consumable.consume( selection, 'selection' );
 
 						const viewNode = conversionApi.mapper.toViewElement( node );

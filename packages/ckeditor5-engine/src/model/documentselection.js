@@ -567,7 +567,6 @@ mix( DocumentSelection, EmitterMixin );
 //
 // @extends module:engine/model/selection~Selection
 //
-
 class LiveSelection extends Selection {
 	// Creates an empty live selection for given {@link module:engine/model/document~Document}.
 	// @param {module:engine/model/document~Document} doc Document which owns this selection.
@@ -602,10 +601,10 @@ class LiveSelection extends Selection {
 		// @member {Map} module:engine/model/liveselection~LiveSelection#_attributePriority
 		this._attributePriority = new Map();
 
-		// Contains data required to fix ranges which have been moved to the graveyard.
+		// Position to which the selection should be set if the last selection range was moved to the graveyard.
 		// @private
-		// @member {Array} module:engine/model/liveselection~LiveSelection#_fixGraveyardRangesData
-		this._fixGraveyardRangesData = [];
+		// @member {module:engine/model/position~Position} module:engine/model/liveselection~LiveSelection#_selectionRestorePosition
+		this._selectionRestorePosition = null;
 
 		// Flag that informs whether the selection ranges have changed. It is changed on true when `LiveRange#change:range` event is fired.
 		// @private
@@ -628,11 +627,13 @@ class LiveSelection extends Selection {
 				return;
 			}
 
-			while ( this._fixGraveyardRangesData.length ) {
-				const { liveRange, sourcePosition } = this._fixGraveyardRangesData.shift();
-
-				this._fixGraveyardSelection( liveRange, sourcePosition );
+			// Fix selection if the last range was removed from it and we have a position to which we can restore the selection.
+			if ( this._ranges.length == 0 && this._selectionRestorePosition ) {
+				this._fixGraveyardSelection( this._selectionRestorePosition );
 			}
+
+			// "Forget" the restore position even if it was not "used".
+			this._selectionRestorePosition = null;
 
 			if ( this._hasChangedRange ) {
 				this._hasChangedRange = false;
@@ -827,15 +828,17 @@ class LiveSelection extends Selection {
 
 		const liveRange = LiveRange.fromRange( range );
 
+		// If selection range is moved to the graveyard remove it from the selection object.
+		// Also, save some data that can be used to restore selection later, on `Model#applyOperation` event.
 		liveRange.on( 'change:range', ( evt, oldRange, data ) => {
 			this._hasChangedRange = true;
 
-			// If `LiveRange` is in whole moved to the graveyard, save necessary data. It will be fixed on `Model#applyOperation` event.
 			if ( liveRange.root == this._document.graveyard ) {
-				this._fixGraveyardRangesData.push( {
-					liveRange,
-					sourcePosition: data.deletionPosition
-				} );
+				this._selectionRestorePosition = data.deletionPosition;
+
+				const index = this._ranges.indexOf( liveRange );
+				this._ranges.splice( index, 1 );
+				liveRange.detach();
 			}
 		} );
 
@@ -1092,7 +1095,7 @@ class LiveSelection extends Selection {
 			if ( !this.isGravityOverridden && !attrs ) {
 				let node = nodeBefore;
 
-				while ( node && !attrs ) {
+				while ( node && !schema.isInline( node ) && !attrs ) {
 					node = node.previousSibling;
 					attrs = getAttrsIfCharacter( node );
 				}
@@ -1102,7 +1105,7 @@ class LiveSelection extends Selection {
 			if ( !attrs ) {
 				let node = nodeAfter;
 
-				while ( node && !attrs ) {
+				while ( node && !schema.isInline( node ) && !attrs ) {
 					node = node.nextSibling;
 					attrs = getAttrsIfCharacter( node );
 				}
@@ -1117,36 +1120,20 @@ class LiveSelection extends Selection {
 		return attrs;
 	}
 
-	// Fixes a selection range after it ends up in graveyard root.
+	// Fixes the selection after all its ranges got removed.
 	//
 	// @private
-	// @param {module:engine/model/liverange~LiveRange} liveRange The range from selection, that ended up in the graveyard root.
-	// @param {module:engine/model/position~Position} removedRangeStart Start position of a range which was removed.
-	_fixGraveyardSelection( liveRange, removedRangeStart ) {
-		// The start of the removed range is the closest position to the `liveRange` - the original selection range.
-		// This is a good candidate for a fixed selection range.
-		const positionCandidate = removedRangeStart.clone();
-
-		// Find a range that is a correct selection range and is closest to the start of removed range.
-		const selectionRange = this._model.schema.getNearestSelectionRange( positionCandidate );
-
-		// Remove the old selection range before preparing and adding new selection range. This order is important,
-		// because new range, in some cases, may intersect with old range (it depends on `getNearestSelectionRange()` result).
-		const index = this._ranges.indexOf( liveRange );
-		this._ranges.splice( index, 1 );
-		liveRange.detach();
+	// @param {module:engine/model/position~Position} deletionPosition Position where the deletion happened.
+	_fixGraveyardSelection( deletionPosition ) {
+		// Find a range that is a correct selection range and is closest to the position where the deletion happened.
+		const selectionRange = this._model.schema.getNearestSelectionRange( deletionPosition );
 
 		// If nearest valid selection range has been found - add it in the place of old range.
-		// If range is equal to any other selection ranges then it is probably due to contents
-		// of a multi-range selection being removed. See ckeditor/ckeditor5#6501.
-		if ( selectionRange && !isRangeCollidingWithSelection( selectionRange, this ) ) {
+		if ( selectionRange ) {
 			// Check the range, convert it to live range, bind events, etc.
-			const newRange = this._prepareRange( selectionRange );
-
-			// Add new range in the place of old range.
-			this._ranges.splice( index, 0, newRange );
+			this._pushRange( selectionRange );
 		}
-		// If nearest valid selection range cannot be found or is intersecting with other selection ranges removing the old range is fine.
+		// If nearest valid selection range cannot be found don't add any range. Selection will be set to the default range.
 	}
 }
 
@@ -1190,9 +1177,4 @@ function clearAttributesStoredInElement( model, batch ) {
 			} );
 		}
 	}
-}
-
-// Checks if range collides with any of selection ranges.
-function isRangeCollidingWithSelection( range, selection ) {
-	return !selection._ranges.every( selectionRange => !range.isEqual( selectionRange ) );
 }

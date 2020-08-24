@@ -216,7 +216,10 @@ module.exports = {
 			// CKEditor needs its own plugin to be built using webpack.
 			new CKEditorWebpackPlugin( {
 				// See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
-				language: 'en'
+				language: 'en',
+
+				// Append translations to the file matching the `app` name.
+				translationsOutputFile: /app/
 			} )
 		]
 	},
@@ -455,7 +458,10 @@ module.exports = {
 			// CKEditor needs its own plugin to be built using webpack.
 			new CKEditorWebpackPlugin( {
 				// The UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
-				language: 'de'
+				language: 'de',
+
+				// Append translations to the file matching the `app` name.
+				translationsOutputFile: /app/
 			} )
 		]
 	},

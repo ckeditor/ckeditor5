@@ -44,6 +44,8 @@ describe( 'IndentBlock', () => {
 				expect( model.schema.checkAttribute( [ 'heading1' ], 'blockIndent' ) ).to.be.true;
 				expect( model.schema.checkAttribute( [ 'heading2' ], 'blockIndent' ) ).to.be.true;
 				expect( model.schema.checkAttribute( [ 'heading3' ], 'blockIndent' ) ).to.be.true;
+
+				expect( model.schema.getAttributeProperties( 'blockIndent' ) ).to.deep.equal( { isFormatting: true } );
 			} );
 	} );
 

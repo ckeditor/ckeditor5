@@ -43,7 +43,7 @@ export default class DeleteCommand extends Command {
 		 *
 		 * @readonly
 		 * @private
-		 * @member {typing.ChangeBuffer} #buffer
+		 * @type {module:typing/utils/changebuffer~ChangeBuffer}
 		 */
 		this._buffer = new ChangeBuffer( editor.model, editor.config.get( 'typing.undoStep' ) );
 	}

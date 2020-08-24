@@ -8,7 +8,6 @@
  */
 
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import { findAncestor } from '../common';
 
 /**
  * Returns a table widget editing view element if one is selected.
@@ -48,4 +47,16 @@ export function getTableWidgetAncestor( selection ) {
 // @returns {Boolean}
 function isTableWidget( viewElement ) {
 	return !!viewElement.getCustomProperty( 'table' ) && isWidget( viewElement );
+}
+
+function findAncestor( parentName, positionOrElement ) {
+	let parent = positionOrElement.parent;
+
+	while ( parent ) {
+		if ( parent.name === parentName ) {
+			return parent;
+		}
+
+		parent = parent.parent;
+	}
 }

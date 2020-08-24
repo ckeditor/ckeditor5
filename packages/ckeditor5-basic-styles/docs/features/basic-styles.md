@@ -47,6 +47,18 @@ By default, each feature can upcast more than one type of the content. Here's th
 | {@link module:basic-styles/subscript~Subscript} | `<sub>`, `<* style="vertical-align: sub">` |
 | {@link module:basic-styles/superscript~Superscript} | `<sup>`, `<* style="vertical-align: super">` |
 
+## Typing around inline code
+
+CKEditor 5 allows for typing both at inner and outer boundaries of code to make the editing easier for the users.
+
+**To type inside a code element**, move the caret to its (start or end) boundary. As long as the code remains highlighted (by default: less transparent gray), typing and applying formatting will be done within its boundaries:
+
+{@img assets/img/typing-inside-code.gif 770 The animation showing typing inside the code element in CKEditor 5 rich text editor.}
+
+**To type before or after a code element**, move the caret to its boundary, then press the Arrow key (<kbd>→</kbd> or <kbd>←</kbd>) once. The code is no longer highlighted and whatever text you type or formatting you apply will not be enclosed by the code element:
+
+{@img assets/img/typing-after-code.gif 770 The animation showing typing after the code element in CKEditor 5 rich text editor.}
+
 ## Installation
 
 To add the basic styles features to your editor install the [`@ckeditor/ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package:

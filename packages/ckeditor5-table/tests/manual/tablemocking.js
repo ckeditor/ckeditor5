@@ -15,7 +15,6 @@ import { debounce } from 'lodash-es';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import TableWalker from '../../src/tablewalker';
 import { getSelectionAffectedTableCells } from '../../src/utils/selection';
-import { findAncestor } from '../../src/utils/common';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -32,6 +31,10 @@ ClassicEditor
 
 		const asciiOut = document.getElementById( 'ascii-art' );
 		const modelData = document.getElementById( 'model-data' );
+
+		editor.editing.view.document.on( 'paste', ( evt, data ) => {
+			document.getElementById( 'clipboard' ).innerText = data.dataTransfer.getData( 'text/html' ).replace( />(?=<)/g, '>\n' );
+		} );
 
 		document.getElementById( 'clear-content' ).addEventListener( 'click', () => {
 			editor.setData( '' );
@@ -120,12 +123,12 @@ ClassicEditor
 			const tableCells = getSelectionAffectedTableCells( selection );
 
 			if ( tableCells.length ) {
-				return findAncestor( 'table', tableCells[ 0 ] );
+				return tableCells[ 0 ].findAncestor( 'table' );
 			}
 
 			const element = selection.getSelectedElement();
 
-			if ( element && element.is( 'table' ) ) {
+			if ( element && element.is( 'element', 'table' ) ) {
 				return element;
 			}
 
@@ -133,7 +136,7 @@ ClassicEditor
 				const range = editor.model.createRangeIn( editor.model.document.getRoot() );
 
 				for ( const element of range.getItems() ) {
-					if ( element.is( 'table' ) ) {
+					if ( element.is( 'element', 'table' ) ) {
 						return element;
 					}
 				}
@@ -147,7 +150,7 @@ ClassicEditor
 			const tables = [];
 
 			for ( const element of range.getItems() ) {
-				if ( element.is( 'table' ) ) {
+				if ( element.is( 'element', 'table' ) ) {
 					tables.push( element );
 				}
 			}

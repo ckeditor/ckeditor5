@@ -139,7 +139,7 @@ export default class Autosave extends Plugin {
 		 * Editor's pending actions manager.
 		 *
 		 * @private
-		 * @member {@module:core/pendingactions~PendingActions} #_pendingActions
+		 * @member {module:core/pendingactions~PendingActions} #_pendingActions
 		 */
 	}
 

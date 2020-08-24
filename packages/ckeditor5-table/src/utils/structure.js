@@ -138,6 +138,7 @@ export function getVerticallyOverlappingCells( table, overlapRow, startRow = 0 )
  * @param {module:engine/model/element~Element} tableCell
  * @param {Number} splitRow
  * @param {module:engine/model/writer~Writer} writer
+ * @returns {module:engine/model/element~Element} Created table cell.
  */
 export function splitHorizontally( tableCell, splitRow, writer ) {
 	const tableRow = tableCell.parent;
@@ -164,6 +165,7 @@ export function splitHorizontally( tableCell, splitRow, writer ) {
 	const endRow = startRow + newRowspan;
 	const tableMap = [ ...new TableWalker( table, { startRow, endRow, includeAllSlots: true } ) ];
 
+	let newCell = null;
 	let columnIndex;
 
 	for ( const tableSlot of tableMap ) {
@@ -174,12 +176,14 @@ export function splitHorizontally( tableCell, splitRow, writer ) {
 		}
 
 		if ( columnIndex !== undefined && columnIndex === column && row === endRow ) {
-			createEmptyTableCell( writer, tableSlot.getPositionBefore(), newCellAttributes );
+			newCell = createEmptyTableCell( writer, tableSlot.getPositionBefore(), newCellAttributes );
 		}
 	}
 
 	// Update the rowspan attribute after updating table.
 	updateNumericAttribute( 'rowspan', newRowspan, tableCell, writer );
+
+	return newCell;
 }
 
 /**
@@ -232,6 +236,7 @@ export function getHorizontallyOverlappingCells( table, overlapColumn ) {
  * @param {Number} columnIndex The table cell column index.
  * @param {Number} splitColumn The index of column to split cell on.
  * @param {module:engine/model/writer~Writer} writer
+ * @returns {module:engine/model/element~Element} Created table cell.
  */
 export function splitVertically( tableCell, columnIndex, splitColumn, writer ) {
 	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) );
@@ -250,9 +255,12 @@ export function splitVertically( tableCell, columnIndex, splitColumn, writer ) {
 		newCellAttributes.rowspan = rowspan;
 	}
 
-	createEmptyTableCell( writer, writer.createPositionAfter( tableCell ), newCellAttributes );
+	const newCell = createEmptyTableCell( writer, writer.createPositionAfter( tableCell ), newCellAttributes );
+
 	// Update the colspan attribute after updating table.
 	updateNumericAttribute( 'colspan', newColspan, tableCell, writer );
+
+	return newCell;
 }
 
 /**
@@ -342,13 +350,17 @@ export function removeEmptyColumns( table, tableUtils ) {
 		return cellsCount ? result : [ ...result, column ];
 	}, [] );
 
-	// @if CK_DEBUG_TABLE // emptyColumns.length > 0 && console.log( `Removing empty columns: ${ emptyColumns.join( ', ' ) }.` );
+	if ( emptyColumns.length > 0 ) {
+		// Remove only last empty column because it will recurrently trigger removing empty rows.
+		const emptyColumn = emptyColumns[ emptyColumns.length - 1 ];
 
-	emptyColumns.reverse().forEach( column => {
-		tableUtils.removeColumns( table, { at: column } );
-	} );
+		// @if CK_DEBUG_TABLE // console.log( `Removing empty column: ${ emptyColumn }.` );
+		tableUtils.removeColumns( table, { at: emptyColumn } );
 
-	return emptyColumns.length > 0;
+		return true;
+	}
+
+	return false;
 }
 
 /**
@@ -380,10 +392,9 @@ export function removeEmptyColumns( table, tableUtils ) {
  * @protected
  * @param {module:engine/model/element~Element} table
  * @param {module:table/tableutils~TableUtils} tableUtils
- * @param {module:engine/model/batch~Batch|null} [batch] Batch that should be used for removing empty rows.
  * @returns {Boolean} True if removed some rows.
  */
-export function removeEmptyRows( table, tableUtils, batch ) {
+export function removeEmptyRows( table, tableUtils ) {
 	const emptyRows = [];
 
 	for ( let rowIndex = 0; rowIndex < table.childCount; rowIndex++ ) {
@@ -394,13 +405,17 @@ export function removeEmptyRows( table, tableUtils, batch ) {
 		}
 	}
 
-	// @if CK_DEBUG_TABLE // emptyRows.length > 0 && console.log( `Removing empty rows: ${ emptyRows.join( ', ' ) }.` );
+	if ( emptyRows.length > 0 ) {
+		// Remove only last empty row because it will recurrently trigger removing empty columns.
+		const emptyRow = emptyRows[ emptyRows.length - 1 ];
 
-	emptyRows.reverse().forEach( row => {
-		tableUtils.removeRows( table, { at: row, batch } );
-	} );
+		// @if CK_DEBUG_TABLE // console.log( `Removing empty row: ${ emptyRow }.` );
+		tableUtils.removeRows( table, { at: emptyRow } );
 
-	return emptyRows.length > 0;
+		return true;
+	}
+
+	return false;
 }
 
 /**
@@ -428,14 +443,13 @@ export function removeEmptyRows( table, tableUtils, batch ) {
  * @protected
  * @param {module:engine/model/element~Element} table
  * @param {module:table/tableutils~TableUtils} tableUtils
- * @param {module:engine/model/batch~Batch|null} [batch] Batch that should be used for removing empty rows.
  */
-export function removeEmptyRowsColumns( table, tableUtils, batch ) {
+export function removeEmptyRowsColumns( table, tableUtils ) {
 	const removedColumns = removeEmptyColumns( table, tableUtils );
 
 	// If there was some columns removed then cleaning empty rows was already triggered.
 	if ( !removedColumns ) {
-		removeEmptyRows( table, tableUtils, batch );
+		removeEmptyRows( table, tableUtils );
 	}
 }
 

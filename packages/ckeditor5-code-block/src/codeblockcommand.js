@@ -72,7 +72,7 @@ export default class CodeBlockCommand extends Command {
 	_getValue() {
 		const selection = this.editor.model.document.selection;
 		const firstBlock = first( selection.getSelectedBlocks() );
-		const isCodeBlock = !!( firstBlock && firstBlock.is( 'codeBlock' ) );
+		const isCodeBlock = !!( firstBlock && firstBlock.is( 'element', 'codeBlock' ) );
 
 		return isCodeBlock ? firstBlock.getAttribute( 'language' ) : false;
 	}
@@ -132,13 +132,13 @@ export default class CodeBlockCommand extends Command {
 	 * @param {Array.<module:engine/model/element~Element>} blocks
 	 */
 	_removeCodeBlock( writer, blocks ) {
-		const codeBlocks = blocks.filter( block => block.is( 'codeBlock' ) );
+		const codeBlocks = blocks.filter( block => block.is( 'element', 'codeBlock' ) );
 
 		for ( const block of codeBlocks ) {
 			const range = writer.createRangeOn( block );
 
 			for ( const item of Array.from( range.getItems() ).reverse() ) {
-				if ( item.is( 'softBreak' ) && item.parent.is( 'codeBlock' ) ) {
+				if ( item.is( 'element', 'softBreak' ) && item.parent.is( 'element', 'codeBlock' ) ) {
 					const { position } = writer.split( writer.createPositionBefore( item ) );
 
 					writer.rename( position.nodeAfter, 'paragraph' );

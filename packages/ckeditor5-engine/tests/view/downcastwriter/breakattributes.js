@@ -10,6 +10,7 @@ import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
 import EmptyElement from '../../../src/view/emptyelement';
 import UIElement from '../../../src/view/uielement';
+import RawElement from '../../../src/view/rawelement';
 import Range from '../../../src/view/range';
 import Position from '../../../src/view/position';
 
@@ -281,6 +282,27 @@ describe( 'DowncastWriter', () => {
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( range );
 				}, 'view-writer-cannot-break-ui-element', writer );
+			} );
+
+			it( 'should throw if breaking inside a RawElement #1', () => {
+				const span = new RawElement( document, 'span' );
+				new ContainerElement( document, 'p', null, span ); // eslint-disable-line no-new
+				const position = new Position( span, 0 );
+
+				expectToThrowCKEditorError( () => {
+					writer.breakAttributes( position );
+				}, 'view-writer-cannot-break-raw-element', writer );
+			} );
+
+			it( 'should throw if breaking inside a RawElement #2', () => {
+				const span = new RawElement( document, 'span' );
+				const b = new AttributeElement( document, 'b' );
+				new ContainerElement( document, 'p', null, [ span, b ] ); // eslint-disable-line no-new
+				const range = Range._createFromParentsAndOffsets( span, 0, b, 0 );
+
+				expectToThrowCKEditorError( () => {
+					writer.breakAttributes( range );
+				}, 'view-writer-cannot-break-raw-element', writer );
 			} );
 		} );
 	} );

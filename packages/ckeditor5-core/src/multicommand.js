@@ -57,11 +57,13 @@ export default class MultiCommand extends Command {
 
 	/**
 	 * Executes the first of it registered child commands.
+	 *
+	 * @returns {*} The value returned by the {@link module:core/command~Command#execute `command.execute()`}.
 	 */
 	execute( ...args ) {
 		const command = this._getFirstEnabledCommand();
 
-		command.execute( args );
+		return command.execute( args );
 	}
 
 	/**

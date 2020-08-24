@@ -126,6 +126,24 @@ describe( 'widget utils', () => {
 			expect( icon.classList.contains( 'ck' ) ).to.be.true;
 			expect( icon.classList.contains( 'ck-icon' ) ).to.be.true;
 		} );
+
+		it( 'should throw when attempting to create a widget out of anything but ContainerElement', () => {
+			expect( () => {
+				toWidget( writer.createRawElement( 'div' ), writer );
+			}, 'raw element' ).to.throw( /^widget-to-widget-wrong-element-type/ );
+
+			expect( () => {
+				toWidget( writer.createEmptyElement( 'img' ), writer );
+			}, 'empty element' ).to.throw( /^widget-to-widget-wrong-element-type/ );
+
+			expect( () => {
+				toWidget( writer.createAttributeElement( 'a' ), writer );
+			}, 'attribute element' ).to.throw( /^widget-to-widget-wrong-element-type/ );
+
+			expect( () => {
+				toWidget( writer.createUIElement( 'span' ), writer );
+			}, 'UI element' ).to.throw( /^widget-to-widget-wrong-element-type/ );
+		} );
 	} );
 
 	describe( 'isWidget()', () => {

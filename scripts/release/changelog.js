@@ -15,6 +15,7 @@ Promise.resolve()
 	.then( () => devEnv.generateChangelogForMonoRepository( {
 		cwd: process.cwd(),
 		packages: 'packages',
+		releaseBranch: 'release',
 		highlightsPlaceholder: true,
 		collaborationFeatures: true,
 		transformScope: name => {

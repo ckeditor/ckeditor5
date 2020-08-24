@@ -25,13 +25,17 @@
  * @param {Function} options.callback An action executed by the handler.
  */
 export default function clickOutsideHandler( { emitter, activator, callback, contextElements } ) {
-	emitter.listenTo( document, 'mousedown', ( evt, { target } ) => {
+	emitter.listenTo( document, 'mousedown', ( evt, domEvt ) => {
 		if ( !activator() ) {
 			return;
 		}
 
+		// Check if `composedPath` is `undefined` in case the browser does not support native shadow DOM.
+		// Can be removed when all supported browsers support native shadow DOM.
+		const path = typeof domEvt.composedPath == 'function' ? domEvt.composedPath() : [];
+
 		for ( const contextElement of contextElements ) {
-			if ( contextElement.contains( target ) ) {
+			if ( contextElement.contains( domEvt.target ) || path.includes( contextElement ) ) {
 				return;
 			}
 		}

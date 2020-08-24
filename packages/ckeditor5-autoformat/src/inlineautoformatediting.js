@@ -201,7 +201,7 @@ function getTextAfterCode( range, model ) {
 
 	const text = Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
 		// Trim text to a last occurrence of an inline element and update range start.
-		if ( !( node.is( 'text' ) || node.is( 'textProxy' ) ) || node.getAttribute( 'code' ) ) {
+		if ( !( node.is( '$text' ) || node.is( '$textProxy' ) ) || node.getAttribute( 'code' ) ) {
 			start = model.createPositionAfter( node );
 
 			return '';

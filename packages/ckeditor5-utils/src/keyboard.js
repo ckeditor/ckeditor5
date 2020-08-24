@@ -77,7 +77,7 @@ export function getCode( key ) {
 
 /**
  * Parses keystroke and returns a keystroke code that will match the code returned by
- * link {@link module:utils/keyboard.getCode} for a corresponding {@link module:utils/keyboard~KeystrokeInfo keystroke info}.
+ * link {@link module:utils/keyboard~getCode} for a corresponding {@link module:utils/keyboard~KeystrokeInfo keystroke info}.
  *
  * The keystroke can be passed in two formats:
  *

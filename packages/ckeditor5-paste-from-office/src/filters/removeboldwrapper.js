@@ -15,7 +15,7 @@
  */
 export default function removeBoldWrapper( documentFragment, writer ) {
 	for ( const child of documentFragment.getChildren() ) {
-		if ( child.is( 'b' ) && child.getStyle( 'font-weight' ) === 'normal' ) {
+		if ( child.is( 'element', 'b' ) && child.getStyle( 'font-weight' ) === 'normal' ) {
 			const childIndex = documentFragment.getChildIndex( child );
 
 			writer.remove( child );

@@ -10,6 +10,7 @@ import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
 import EmptyElement from '../../../src/view/emptyelement';
 import UIElement from '../../../src/view/uielement';
+import RawElement from '../../../src/view/rawelement';
 
 import Document from '../../../src/view/document';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -162,6 +163,16 @@ describe( 'DowncastWriter', () => {
 			testDowncast(
 				elementToRemove,
 				'<container:p>f{oo<ui:span></ui:span>ba}r</container:p>',
+				'<container:p>foobar</container:p>'
+			);
+		} );
+
+		it( 'should remove a RawElement', () => {
+			const elementToRemove = new RawElement( document, 'span' );
+
+			testDowncast(
+				elementToRemove,
+				'<container:p>f{oo<raw:span></raw:span>ba}r</container:p>',
 				'<container:p>foobar</container:p>'
 			);
 		} );

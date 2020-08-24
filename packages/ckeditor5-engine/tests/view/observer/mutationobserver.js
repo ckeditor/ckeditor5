@@ -8,6 +8,7 @@
 import View from '../../../src/view/view';
 import MutationObserver from '../../../src/view/observer/mutationobserver';
 import UIElement from '../../../src/view/uielement';
+import RawElement from '../../../src/view/rawelement';
 import createViewRoot from '../_utils/createroot';
 import { parse } from '../../../src/dev-utils/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
@@ -300,7 +301,7 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].type ).to.equal( 'children' );
 		expect( lastMutations[ 0 ].oldChildren.length ).to.equal( 0 );
 		expect( lastMutations[ 0 ].newChildren.length ).to.equal( 1 );
-		expect( lastMutations[ 0 ].newChildren[ 0 ].is( 'text' ) ).to.be.true;
+		expect( lastMutations[ 0 ].newChildren[ 0 ].is( '$text' ) ).to.be.true;
 		expect( lastMutations[ 0 ].newChildren[ 0 ].data ).to.equal( ' ' );
 		expect( lastMutations[ 0 ].node ).to.equal( selection.getFirstPosition().parent );
 	} );
@@ -334,9 +335,9 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].newChildren.length ).to.equal( 3 );
 
 		// Foo and attribute is removed and reinserted.
-		expect( lastMutations[ 0 ].oldChildren[ 0 ].is( 'text' ) ).to.be.true;
+		expect( lastMutations[ 0 ].oldChildren[ 0 ].is( '$text' ) ).to.be.true;
 		expect( lastMutations[ 0 ].oldChildren[ 0 ].data ).to.equal( 'foo' );
-		expect( lastMutations[ 0 ].newChildren[ 0 ].is( 'text' ) ).to.be.true;
+		expect( lastMutations[ 0 ].newChildren[ 0 ].is( '$text' ) ).to.be.true;
 		expect( lastMutations[ 0 ].newChildren[ 0 ].data ).to.equal( 'foo' );
 
 		expect( lastMutations[ 0 ].oldChildren[ 1 ].is( 'attributeElement' ) ).to.be.true;
@@ -344,7 +345,7 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].newChildren[ 1 ].is( 'attributeElement' ) ).to.be.true;
 		expect( lastMutations[ 0 ].newChildren[ 1 ].name ).to.equal( 'b' );
 
-		expect( lastMutations[ 0 ].newChildren[ 2 ].is( 'text' ) ).to.be.true;
+		expect( lastMutations[ 0 ].newChildren[ 2 ].is( '$text' ) ).to.be.true;
 		expect( lastMutations[ 0 ].newChildren[ 2 ].data ).to.equal( ' ' );
 		expect( lastMutations[ 0 ].node ).to.equal( selection.getFirstPosition().parent );
 	} );
@@ -375,7 +376,7 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].type ).to.equal( 'children' );
 		expect( lastMutations[ 0 ].oldChildren.length ).to.equal( 0 );
 		expect( lastMutations[ 0 ].newChildren.length ).to.equal( 1 );
-		expect( lastMutations[ 0 ].newChildren[ 0 ].is( 'text' ) ).to.be.true;
+		expect( lastMutations[ 0 ].newChildren[ 0 ].is( '$text' ) ).to.be.true;
 		expect( lastMutations[ 0 ].newChildren[ 0 ].data ).to.equal( ' ' );
 		expect( lastMutations[ 0 ].node ).to.equal( selection.getFirstPosition().parent );
 	} );
@@ -582,6 +583,62 @@ describe( 'MutationObserver', () => {
 		} );
 
 		it( 'should not cause a render when UIElement gets a child', () => {
+			const span = document.createElement( 'span' );
+			domEditor.childNodes[ 2 ].appendChild( span );
+
+			mutationObserver.flush();
+
+			expect( renderStub.callCount ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'RawElement integration', () => {
+		const renderStub = sinon.stub();
+		function createRawElement( name ) {
+			const element = new RawElement( name );
+
+			element.render = function( domElement ) {
+				domElement.innerHTML = 'foo bar';
+			};
+
+			return element;
+		}
+
+		beforeEach( () => {
+			const rawElement = createRawElement( 'div' );
+			viewRoot._appendChild( rawElement );
+
+			view.forceRender();
+			renderStub.reset();
+			view.on( 'render', renderStub );
+		} );
+
+		it( 'should not collect text mutations from RawElement', () => {
+			domEditor.childNodes[ 2 ].childNodes[ 0 ].data = 'foom';
+
+			mutationObserver.flush();
+
+			expect( lastMutations ).to.be.null;
+		} );
+
+		it( 'should not cause a render from RawElement', () => {
+			domEditor.childNodes[ 2 ].childNodes[ 0 ].data = 'foom';
+
+			mutationObserver.flush();
+
+			expect( renderStub.callCount ).to.equal( 0 );
+		} );
+
+		it( 'should not collect child mutations from RawElement', () => {
+			const span = document.createElement( 'span' );
+			domEditor.childNodes[ 2 ].appendChild( span );
+
+			mutationObserver.flush();
+
+			expect( lastMutations ).to.be.null;
+		} );
+
+		it( 'should not cause a render when RawElement gets a child', () => {
 			const span = document.createElement( 'span' );
 			domEditor.childNodes[ 2 ].appendChild( span );
 

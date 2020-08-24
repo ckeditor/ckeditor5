@@ -7,6 +7,7 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import LinkCommand from '../src/linkcommand';
 import ManualDecorator from '../src/utils/manualdecorator';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import AutomaticDecorators from '../src/utils/automaticdecorators';
 
 describe( 'LinkCommand', () => {
 	let editor, model, command;
@@ -440,6 +441,13 @@ describe( 'LinkCommand', () => {
 						allowAttributes: [ 'linkHref', 'linkIsFoo', 'linkIsBar', 'linkIsSth' ]
 					} );
 
+					model.schema.register( 'image', {
+						allowIn: '$root',
+						isObject: true,
+						isBlock: true,
+						allowAttributes: [ 'linkHref', 'linkIsFoo', 'linkIsBar', 'linkIsSth' ]
+					} );
+
 					model.schema.register( 'p', { inheritAllFrom: '$block' } );
 				} );
 		} );
@@ -565,6 +573,19 @@ describe( 'LinkCommand', () => {
 				expect( command._getDecoratorStateFromModel( 'linkIsFoo' ) ).to.be.undefined;
 				expect( command._getDecoratorStateFromModel( 'linkIsBar' ) ).to.be.true;
 			} );
+
+			it( 'obtain current values from the image element', () => {
+				setData( model, '[<image linkHref="url" linkIsBar="true"></image>]' );
+
+				expect( command._getDecoratorStateFromModel( 'linkIsFoo' ) ).to.be.undefined;
+				expect( command._getDecoratorStateFromModel( 'linkIsBar' ) ).to.be.true;
+			} );
+		} );
+	} );
+
+	describe( '#automaticDecorators', () => {
+		it( 'is defined', () => {
+			expect( command.automaticDecorators ).to.be.an.instanceOf( AutomaticDecorators );
 		} );
 	} );
 } );

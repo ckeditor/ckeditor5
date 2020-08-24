@@ -6,12 +6,12 @@
 		}
 
 		.ck-content .widget {
-			background: rgba( 0, 0, 0, 0.1 );
+			background: hsl(0, 0%, 90%);
 			min-height: 50px;
 		}
 
 		.ck-content placeholder {
-			background: #ffff00;
+			background: hsl(60, 100%, 50%);
 			padding: 4px 2px;
 			outline-offset: -2px;
 			line-height: 1em;
@@ -24,16 +24,38 @@
 		.ck-content placeholder::selection {
 			display: none;
 		}
+
+		.ck-content figure {
+			background: hsl(0, 0%, 90%);
+			padding: 10px;
+			margin: 0;
+		}
+
+		.ck-content figcaption {
+			background: hsl(0, 0%, 100%);
+			padding: 10px;
+		}
 	</style>
 </head>
+
+WidgetTypeAround: <button id="wta-enable">Enable</button> <button id="wta-disable">Disable</button>
 
 <h2>LTR content</h2>
 
 <div id="editor-ltr">
 	<h2>Heading 1</h2>
-	<p>Para<placeholder>inline widget</placeholder>graph</p>
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis in ullamcorper purus. Nam vel neque non augue semper aliquet. Morbi suscipit in massa vitae iaculis. In pulvinar eros non scelerisque sagittis. Fusce dictum vel odio vel molestie. Sed scelerisque turpis dolor, laoreet semper nibh fermentum id. Nullam at diam volutpat, porta mi vitae, varius ex.</p>
+	<p>Nulla volutpat est eget euismod cursus. Praesent quis ligula hendrerit lacus consectetur viverra eget sed lectus. Aenean non condimentum dolor. <placeholder>inline widget</placeholder> Aliquam bibendum leo sed luctus semper. Praesent est libero, aliquam id varius congue, feugiat finibus tellus. Sed non lectus eros. Fusce viverra commodo ligula, eget eleifend purus aliquet et.</p>
 	<div class="widget"></div>
-	<p>Paragraph</p>
+	<p>Pellentesque nec rhoncus turpis. Quisque quis sagittis est, sed luctus turpis. Ut et nulla efficitur urna convallis rhoncus vel ut ipsum. Phasellus pharetra hendrerit eros, ac ultrices lorem tincidunt eu. </p>
+	<p>Aliquam bibendum leo sed luctus semper.</p>
+	<figure>
+		<figcaption>
+			<p>Sed in ante libero. Aliquam dignissim magna non mollis tempor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin orci erat, consectetur sit amet lacinia non, dictum sit amet nibh. Maecenas congue urna justo, ut ultricies lectus lobortis nec. Sed porta, ex a hendrerit ultrices, massa nunc sollicitudin augue, ut mollis purus leo vel dolor.</p>
+			<p>Suspendisse ultricies leo eget quam pulvinar, ut auctor mauris luctus. Quisque id nisi sed augue vestibulum auctor tempus quis sapien. Etiam neque risus, congue sit amet dapibus at, faucibus vel mauris. Aliquam eu mauris est. Cras egestas, nunc nec dapibus pellentesque, lorem ante fringilla erat, eu elementum nulla tellus at massa. Aenean turpis elit, molestie a porttitor in, auctor in urna.</p>
+		</figcaption>
+	</figure>
+	<p>Aenean ullamcorper, libero id efficitur lobortis, lacus turpis rhoncus ex, eu scelerisque ipsum risus et neque. Etiam faucibus, metus pharetra pharetra aliquet, ipsum nulla lobortis lectus, ut feugiat nulla nibh et ex. Aliquam finibus ex sed augue accumsan gravida. Cras tempor justo vel tincidunt sagittis. </p>
 </div>
 
 <h2>RTL content</h2>
@@ -42,5 +64,7 @@
 	<h2>مرحبا</h2>
 	<p>مرحبا<placeholder>inline widget</placeholder>مرحبا</p>
 	<div class="widget"></div>
+	<p>مرحبا</p>
+	<figure><figcaption><p>مرحبا</p><p>مرحبا</p></figcaption></figure>
 	<p>مرحبا</p>
 </div>

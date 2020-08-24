@@ -334,7 +334,7 @@ describe( 'Conversion', () => {
 						},
 						// Duplicates the `x-bold` from above to test if only one attribute would be converted.
 						// It should not convert to both bold & x-bold.
-						viewElement => viewElement.is( 'x-bold' ) ? { name: 'x-bold' } : null
+						viewElement => viewElement.is( 'element', 'x-bold' ) ? { name: 'x-bold' } : null
 					]
 				} );
 
@@ -426,7 +426,7 @@ describe( 'Conversion', () => {
 
 							const size = Number( match[ 1 ] );
 
-							if ( viewElement.is( 'span' ) && size > 10 ) {
+							if ( viewElement.is( 'element', 'span' ) && size > 10 ) {
 								return { name: true, style: [ 'font-size' ] };
 							}
 
@@ -447,7 +447,7 @@ describe( 'Conversion', () => {
 
 							const size = Number( match[ 1 ] );
 
-							if ( viewElement.is( 'span' ) && size < 10 ) {
+							if ( viewElement.is( 'element', 'span' ) && size < 10 ) {
 								return { name: true, style: [ 'font-size' ] };
 							}
 

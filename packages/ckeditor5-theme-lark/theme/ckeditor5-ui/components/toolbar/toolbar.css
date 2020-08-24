@@ -17,9 +17,14 @@
 		align-self: stretch;
 		width: 1px;
 		min-width: 1px;
-		margin-top: 0;
-		margin-bottom: 0;
 		background: var(--ck-color-toolbar-border);
+
+		/*
+		 * These margins make the separators look better in balloon toolbars (when aligned with the "tip").
+		 * See https://github.com/ckeditor/ckeditor5/issues/7493.
+		 */
+		margin-top: var(--ck-spacing-small);
+		margin-bottom: var(--ck-spacing-small);
 	}
 
 	& > .ck-toolbar__items {

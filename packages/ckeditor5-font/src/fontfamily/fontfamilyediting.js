@@ -92,7 +92,7 @@ export default class FontFamilyEditing extends Plugin {
 
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: FONT_FAMILY,
-			view: ( attributeValue, writer ) => {
+			view: ( attributeValue, { writer } ) => {
 				return writer.createAttributeElement( 'span', { style: 'font-family:' + attributeValue }, { priority: 7 } );
 			}
 		} );

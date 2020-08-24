@@ -10,10 +10,11 @@ import ViewElement from '../../src/view/element';
 import ViewEditableElement from '../../src/view/editableelement';
 import ViewContainerElement from '../../src/view/containerelement';
 import ViewAttributeElement from '../../src/view/attributeelement';
+import ViewRawElement from '../../src/view/rawelement';
+import ViewUIElement from '../../src/view/uielement';
 import ViewText from '../../src/view/text';
 import ViewRange from '../../src/view/range';
 import ViewPosition from '../../src/view/position';
-import UIElement from '../../src/view/uielement';
 import DocumentSelection from '../../src/view/documentselection';
 import DomConverter from '../../src/view/domconverter';
 import Renderer from '../../src/view/renderer';
@@ -3264,7 +3265,7 @@ describe( 'Renderer', () => {
 
 			it( 'should handle uiElement rendering', () => {
 				function createUIElement( id, text ) {
-					const element = new UIElement( viewDocument, 'span' );
+					const element = new ViewUIElement( viewDocument, 'span' );
 					element.render = function( domDocument ) {
 						const domElement = this.toDomElement( domDocument );
 						domElement.innerText = `<span id="${ id }"><b>${ text }</b></span>`;
@@ -3298,6 +3299,72 @@ describe( 'Renderer', () => {
 
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
 					'<p>Foo<span><span id="id2"><b>UI2</b></span></span> Bar</p>' ) );
+			} );
+
+			it( 'should handle RawElement rendering', () => {
+				function createRawElement( id, text ) {
+					const element = new ViewRawElement( viewDocument, 'span' );
+					element.render = function( domElement ) {
+						domElement.innerText = `<span id="${ id }"><b>${ text }</b></span>`;
+					};
+
+					return element;
+				}
+
+				const raw1 = createRawElement( 'id1', 'RAW1' );
+				const raw2 = createRawElement( 'id2', 'RAW2' );
+				const viewP = new ViewContainerElement( viewDocument, 'p', null, [
+					new ViewText( viewDocument, 'Foo ' ),
+					raw1,
+					new ViewText( viewDocument, 'Bar' )
+				] );
+				viewRoot._appendChild( viewP );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<p>Foo <span><span id="id1"><b>RAW1</b></span></span>Bar</p>' ) );
+
+				viewP._removeChildren( 0, viewP.childCount );
+				viewP._insertChild( 0, [ new ViewText( viewDocument, 'Foo' ), raw2, new ViewText( viewDocument, ' Bar' ) ] );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewP );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<p>Foo<span><span id="id2"><b>RAW2</b></span></span> Bar</p>' ) );
+			} );
+
+			it( 'should manage RawElement attributes', () => {
+				const rawElement = new ViewRawElement( viewDocument, 'span', {
+					foo: 'foo1',
+					baz: 'baz1'
+				} );
+
+				rawElement.render = function( domElement ) {
+					domElement.innerHTML = '<b>foo</b>';
+				};
+
+				const viewP = new ViewContainerElement( viewDocument, 'p', null, [ rawElement ] );
+				viewRoot._appendChild( viewP );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<p><span baz="baz1" foo="foo1"><b>foo</b></span></p>' ) );
+
+				rawElement._setAttribute( 'foo', 'foo2' );
+				rawElement._setAttribute( 'new', 'new-value' );
+				rawElement._removeAttribute( 'baz' );
+
+				renderer.markToSync( 'attributes', rawElement );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<p><span foo="foo2" new="new-value"><b>foo</b></span></p>' ) );
 			} );
 
 			it( 'should handle linking entire content', () => {

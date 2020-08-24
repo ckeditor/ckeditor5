@@ -52,24 +52,25 @@ describe( 'Element', () => {
 			expect( element.is( 'model:element' ) ).to.be.true;
 			expect( element.is( 'element', 'paragraph' ) ).to.be.true;
 			expect( element.is( 'model:element', 'paragraph' ) ).to.be.true;
-			expect( element.is( 'paragraph' ) ).to.be.true;
-			expect( element.is( 'model:paragraph' ) ).to.be.true;
+			expect( element.is( 'element', 'paragraph' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
 			expect( element.is( 'element', 'image' ) ).to.be.false;
 			expect( element.is( 'model:element', 'image' ) ).to.be.false;
-			expect( element.is( 'image' ) ).to.be.false;
+			expect( element.is( 'element', 'image' ) ).to.be.false;
 			expect( element.is( 'model:image' ) ).to.be.false;
-			expect( element.is( 'text' ) ).to.be.false;
-			expect( element.is( 'model:text' ) ).to.be.false;
-			expect( element.is( 'textProxy' ) ).to.be.false;
+			expect( element.is( '$text' ) ).to.be.false;
+			expect( element.is( 'model:$text' ) ).to.be.false;
+			expect( element.is( '$textProxy' ) ).to.be.false;
 			expect( element.is( 'documentFragment' ) ).to.be.false;
 			expect( element.is( 'rootElement' ) ).to.be.false;
 			expect( element.is( 'model:rootElement' ) ).to.be.false;
 			expect( element.is( 'view:node' ) ).to.be.false;
 			expect( element.is( 'view:element' ) ).to.be.false;
 			expect( element.is( 'view:element' ) ).to.be.false;
+			expect( element.is( 'node', 'paragraph' ) ).to.be.false;
+			expect( element.is( 'model:node', 'paragraph' ) ).to.be.false;
 		} );
 	} );
 
@@ -244,6 +245,33 @@ describe( 'Element', () => {
 			expect( paragraph.getNodeByPath( [ 5 ] ) ).to.equal( bom );
 			expect( paragraph.getNodeByPath( [ 6 ] ) ).to.equal( bom );
 			expect( paragraph.getNodeByPath( [ 7 ] ) ).to.equal( null );
+		} );
+	} );
+
+	describe( 'findAncestor', () => {
+		let p, td, tr, table;
+
+		beforeEach( () => {
+			p = new Element( 'p', [], [ new Text( 'foo' ) ] );
+			td = new Element( 'td', [], [ p ] );
+			tr = new Element( 'tr', [], [ td ] );
+			table = new Element( 'table', [], [ tr ] );
+		} );
+
+		it( 'should return ancestor', () => {
+			expect( p.findAncestor( 'p' ) ).to.be.null;
+			expect( p.findAncestor( 'td' ) ).to.equal( td );
+			expect( p.findAncestor( 'tr' ) ).to.equal( tr );
+			expect( p.findAncestor( 'table' ) ).to.equal( table );
+			expect( p.findAncestor( 'abc' ) ).to.be.null;
+		} );
+
+		it( 'should return ancestor or self (includeSelf = true)', () => {
+			expect( p.findAncestor( 'p', { includeSelf: true } ) ).to.equal( p );
+			expect( p.findAncestor( 'td', { includeSelf: true } ) ).to.equal( td );
+			expect( p.findAncestor( 'tr', { includeSelf: true } ) ).to.equal( tr );
+			expect( p.findAncestor( 'table', { includeSelf: true } ) ).to.equal( table );
+			expect( p.findAncestor( 'abc', { includeSelf: true } ) ).to.be.null;
 		} );
 	} );
 

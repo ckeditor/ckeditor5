@@ -406,7 +406,7 @@ export default class Node {
 	 *
 	 * By using this method it is also possible to check a name of an element:
 	 *
-	 *		imageElement.is( 'image' ); // -> true
+	 *		imageElement.is( 'element', 'image' ); // -> true
 	 *		imageElement.is( 'element', 'image' ); // -> same as above
 	 *		imageElement.is( 'model:element', 'image' ); // -> same as above, but more precise
 	 *
@@ -427,7 +427,7 @@ export default class Node {
 	 * * {@link module:engine/model/textproxy~TextProxy#is `TextProxy#is()`}
 	 *
 	 * @method #is
-	 * @param {String} type
+	 * @param {String} type Type to check.
 	 * @returns {Boolean}
 	 */
 	is( type ) {

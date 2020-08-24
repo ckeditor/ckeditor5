@@ -13,6 +13,8 @@ import TodoListCheckCommand from '../src/todolistcheckcommand';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -29,7 +31,7 @@ describe( 'TodoListEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TodoListEditing, Typing, BoldEditing, BlockQuoteEditing, LinkEditing ]
+				plugins: [ TodoListEditing, Typing, BoldEditing, BlockQuoteEditing, LinkEditing, Enter, ShiftEnter ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -87,7 +89,9 @@ describe( 'TodoListEditing', () => {
 			assertEqualMarkup( getModelData( model ), '<listItem listIndent="0" listType="todo">[]</listItem>' );
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>[]</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">[]</span>' +
+					'</li>' +
 				'</ul>'
 			);
 
@@ -96,7 +100,9 @@ describe( 'TodoListEditing', () => {
 			assertEqualMarkup( getModelData( model ), '<listItem listIndent="0" listType="todo">a[]</listItem>' );
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>a{}</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">a{}</span>' +
+					'</li>' +
 				'</ul>'
 			);
 
@@ -105,7 +111,9 @@ describe( 'TodoListEditing', () => {
 			assertEqualMarkup( getModelData( model ), '<listItem listIndent="0" listType="todo">ab[]</listItem>' );
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>ab{}</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">ab{}</span>' +
+					'</li>' +
 				'</ul>'
 			);
 
@@ -129,8 +137,12 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>{}1</li>' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>2</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">{}1</span>' +
+					'</li>' +
+					'<li><label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">2</span>' +
+					'</li>' +
 				'</ul>'
 			);
 		} );
@@ -148,17 +160,31 @@ describe( 'TodoListEditing', () => {
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
 					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>{}1.0' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">{}1.0</span>' +
 						'<ul class="todo-list">' +
-							'<li><label class="todo-list__label" contenteditable="false"></label>2.1</li>' +
 							'<li>' +
-								'<label class="todo-list__label" contenteditable="false"></label>3.1' +
+								'<label class="todo-list__label" contenteditable="false"></label>' +
+								'<span class="todo-list__label__description">2.1</span>' +
+							'</li>' +
+							'<li>' +
+								'<label class="todo-list__label" contenteditable="false"></label>' +
+								'<span class="todo-list__label__description">3.1</span>' +
 								'<ul class="todo-list">' +
-									'<li><label class="todo-list__label" contenteditable="false"></label>4.2</li>' +
-									'<li><label class="todo-list__label" contenteditable="false"></label>5.2</li>' +
+									'<li>' +
+										'<label class="todo-list__label" contenteditable="false"></label>' +
+										'<span class="todo-list__label__description">4.2</span>' +
+									'</li>' +
+									'<li>' +
+										'<label class="todo-list__label" contenteditable="false"></label>' +
+										'<span class="todo-list__label__description">5.2</span>' +
+									'</li>' +
 								'</ul>' +
 							'</li>' +
-							'<li><label class="todo-list__label" contenteditable="false"></label>6.1</li>' +
+							'<li>' +
+								'<label class="todo-list__label" contenteditable="false"></label>' +
+								'<span class="todo-list__label__description">6.1</span>' +
+							'</li>' +
 						'</ul>' +
 					'</li>' +
 				'</ul>'
@@ -176,18 +202,25 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>{}1.0</li>' +
+					'<li>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">{}1.0</span>' +
+					'</li>' +
 				'</ul>' +
 				'<ul>' +
 					'<li>2.0' +
 						'<ul class="todo-list">' +
 							'<li>' +
-								'<label class="todo-list__label" contenteditable="false"></label>3.1' +
+								'<label class="todo-list__label" contenteditable="false"></label>' +
+								'<span class="todo-list__label__description">3.1</span>' +
 								'<ul>' +
 									'<li>4.2</li>' +
 								'</ul>' +
 							'</li>' +
-							'<li><label class="todo-list__label" contenteditable="false"></label>5.1</li>' +
+							'<li>' +
+								'<label class="todo-list__label" contenteditable="false"></label>' +
+								'<span class="todo-list__label__description">5.1</span>' +
+							'</li>' +
 						'</ul>' +
 					'</li>' +
 				'</ul>'
@@ -205,18 +238,25 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>{}1.0</li>' +
+					'<li>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">{}1.0</span>' +
+					'</li>' +
 				'</ul>' +
 				'<ol>' +
 					'<li>2.0' +
 						'<ul class="todo-list">' +
 							'<li>' +
-								'<label class="todo-list__label" contenteditable="false"></label>3.1' +
+								'<label class="todo-list__label" contenteditable="false"></label>' +
+								'<span class="todo-list__label__description">3.1</span>' +
 								'<ol>' +
 									'<li>4.2</li>' +
 								'</ol>' +
 							'</li>' +
-							'<li><label class="todo-list__label" contenteditable="false"></label>5.1</li>' +
+							'<li>' +
+								'<label class="todo-list__label" contenteditable="false"></label>' +
+								'<span class="todo-list__label__description">5.1</span>' +
+							'</li>' +
 						'</ul>' +
 					'</li>' +
 				'</ol>'
@@ -237,7 +277,10 @@ describe( 'TodoListEditing', () => {
 					'<li>1.0</li>' +
 				'</ol>' +
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>{}2.0</li>' +
+					'<li>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">{}2.0</span>' +
+					'</li>' +
 				'</ul>' +
 				'<ol>' +
 					'<li>3.0</li>' +
@@ -256,13 +299,19 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>1.0</li>' +
+					'<li>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">1.0</span>' +
+					'</li>' +
 				'</ul>' +
 				'<ol>' +
 					'<li>{}2.0</li>' +
 				'</ol>' +
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>3.0</li>' +
+					'<li>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">3.0</span>' +
+					'</li>' +
 				'</ul>'
 			);
 		} );
@@ -278,17 +327,71 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>1.0</li>' +
+					'<li>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">1.0</span>' +
+					'</li>' +
 				'</ul>' +
 				'<ul>' +
 					'<li>{}2.0</li>' +
 				'</ul>' +
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>3.0</li>' +
+					'<li>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">3.0</span>' +
+					'</li>' +
 				'</ul>'
 			);
 		} );
 
+		it( 'should properly convert list type change (when next list item is nested)', () => {
+			setModelData( model,
+				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
+				'<listItem listType="numbered" listIndent="0">[]2.0</listItem>' +
+				'<listItem listType="todo" listIndent="1">3.0</listItem>'
+			);
+
+			assertEqualMarkup( getViewData( view ),
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">1.0</span>' +
+					'</li>' +
+				'</ul>' +
+				'<ol>' +
+					'<li>' +
+						'{}2.0' +
+						'<ul class="todo-list">' +
+							'<li>' +
+								'<label class="todo-list__label" contenteditable="false"></label>' +
+								'<span class="todo-list__label__description">3.0</span>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ol>'
+			);
+
+			editor.execute( 'todoList' );
+
+			assertEqualMarkup( getViewData( view ),
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">1.0</span>' +
+					'</li>' +
+					'<li>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">{}2.0</span>' +
+						'<ul class="todo-list">' +
+							'<li>' +
+								'<label class="todo-list__label" contenteditable="false"></label>' +
+								'<span class="todo-list__label__description">3.0</span>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
 		it( 'should properly convert list type change - inner text with attribute', () => {
 			setModelData( model,
 				'<listItem listType="todo" listIndent="0">1[.0</listItem>' +
@@ -330,7 +433,10 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>{}1.0</li>' +
+					'<li>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">{}1.0</span>' +
+					'</li>' +
 				'</ul>'
 			);
 
@@ -340,7 +446,10 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>{}1.0</li>' +
+					'<li>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">{}1.0</span>' +
+					'</li>' +
 				'</ul>'
 			);
 
@@ -350,7 +459,10 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>{}1.0</li>' +
+					'<li>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">{}1.0</span>' +
+					'</li>' +
 				'</ul>'
 			);
 		} );
@@ -418,7 +530,10 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>{}Foo</li>' +
+					'<li>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">{}Foo</span>' +
+					'</li>' +
 				'</ul>'
 			);
 		} );
@@ -428,7 +543,10 @@ describe( 'TodoListEditing', () => {
 
 			assertEqualMarkup( getViewData( view ),
 				'<ul class="todo-list">' +
-					'<li><label class="todo-list__label" contenteditable="false"></label>[]</li>' +
+					'<li>' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">[]</span>' +
+					'</li>' +
 				'</ul>'
 			);
 		} );
@@ -441,12 +559,12 @@ describe( 'TodoListEditing', () => {
 
 			editor.conversion.for( 'downcast' ).markerToElement( {
 				model: 'element1',
-				view: ( data, writer ) => writer.createUIElement( 'element1' )
+				view: ( data, { writer } ) => writer.createUIElement( 'element1' )
 			} );
 
 			editor.conversion.for( 'downcast' ).markerToElement( {
 				model: 'element2',
-				view: ( data, writer ) => writer.createUIElement( 'element2' )
+				view: ( data, { writer } ) => writer.createUIElement( 'element2' )
 			} );
 
 			editor.conversion.for( 'downcast' ).markerToHighlight( {
@@ -474,14 +592,17 @@ describe( 'TodoListEditing', () => {
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'[]<span class="highlight">' +
-							'<element2></element2>' +
-							'<element1></element1>' +
-							'foo' +
+						'<span class="todo-list__label__description">' +
+							'[]<span class="highlight">' +
+								'<element2></element2>' +
+								'<element1></element1>' +
+								'foo' +
+							'</span>' +
 						'</span>' +
 					'</li>' +
 					'<li>' +
-						'<label class="todo-list__label" contenteditable="false"></label>bar' +
+						'<label class="todo-list__label" contenteditable="false"></label>' +
+						'<span class="todo-list__label__description">bar</span>' +
 					'</li>' +
 				'</ul>'
 			);
@@ -503,7 +624,9 @@ describe( 'TodoListEditing', () => {
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<strong>b{}foo</strong>' +
+						'<span class="todo-list__label__description">' +
+							'<strong>b{}foo</strong>' +
+						'</span>' +
 					'</li>' +
 				'</ul>'
 			);
@@ -524,9 +647,22 @@ describe( 'TodoListEditing', () => {
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
-						'<a href="foo"><strong>b{}foo</strong></a>' +
+						'<span class="todo-list__label__description">' +
+							'<a class="ck-link_selected" href="foo"><strong>b{}foo</strong></a>' +
+						'</span>' +
 					'</li>' +
 				'</ul>'
+			);
+		} );
+
+		it( 'should properly handle enter key in list item containing soft-breaks', () => {
+			setModelData( model, '<listItem listType="todo" listIndent="0">[]Foo<softBreak></softBreak>bar</listItem>' );
+
+			editor.execute( 'enter' );
+
+			assertEqualMarkup( getModelData( model ),
+				'<listItem listIndent="0" listType="todo"></listItem>' +
+				'<listItem listIndent="0" listType="todo">[]Foo<softBreak></softBreak>bar</listItem>'
 			);
 		} );
 	} );
@@ -696,6 +832,21 @@ describe( 'TodoListEditing', () => {
 			setModelData( model, '<listItem listType="todo" listIndent="0">Foo</listItem>' );
 
 			expect( editor.getData() ).to.equal( '<test>Foo</test>' );
+		} );
+
+		it( 'should handle links inside to-do list item', () => {
+			setModelData( model, '<listItem listType="todo" listIndent="0"><$text linkHref="foo">Foo</$text> Bar</listItem>' );
+
+			expect( editor.getData() ).to.equal(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<label class="todo-list__label">' +
+							'<input type="checkbox" disabled="disabled">' +
+							'<span class="todo-list__label__description"><a href="foo">Foo</a> Bar</span>' +
+						'</label>' +
+					'</li>' +
+				'</ul>'
+			);
 		} );
 	} );
 
@@ -970,13 +1121,13 @@ describe( 'TodoListEditing', () => {
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 			} );
 
-			it( 'should do nothing when list item is a first block element in the root', () => {
+			it( 'should prevent default handler when list item is a first block element in the root', () => {
 				setModelData( model, '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
 
 				viewDoc.fire( 'keydown', domEvtDataStub );
 
-				sinon.assert.notCalled( domEvtDataStub.preventDefault );
-				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
 				assertEqualMarkup( getModelData( model ), '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
 			} );

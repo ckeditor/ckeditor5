@@ -59,7 +59,7 @@ export default class MediaRegistry {
 			} );
 
 		/**
-		 * The locale {@link module:utils/locale~Locale} instance.
+		 * The {@link module:utils/locale~Locale} instance.
 		 *
 		 * @member {module:utils/locale~Locale}
 		 */
@@ -234,12 +234,8 @@ class Media {
 
 			const mediaHtml = this._getPreviewHtml( options );
 
-			viewElement = writer.createUIElement( 'div', attributes, function( domDocument ) {
-				const domElement = this.toDomElement( domDocument );
-
+			viewElement = writer.createRawElement( 'div', attributes, function( domElement ) {
 				domElement.innerHTML = mediaHtml;
-
-				return domElement;
 			} );
 		} else {
 			if ( this.url ) {

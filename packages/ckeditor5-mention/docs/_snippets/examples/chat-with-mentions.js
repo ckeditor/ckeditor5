@@ -127,7 +127,7 @@ function MentionLinks( editor ) {
 	// element.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
-		view: ( modelAttributeValue, viewWriter ) => {
+		view: ( modelAttributeValue, { writer } ) => {
 			// Do not convert empty attributes (lack of value means no mention).
 			if ( !modelAttributeValue ) {
 				return;
@@ -142,7 +142,7 @@ function MentionLinks( editor ) {
 				href = `https://example.com/social/${ modelAttributeValue.id.slice( 1 ) }`;
 			}
 
-			return viewWriter.createAttributeElement( 'a', {
+			return writer.createAttributeElement( 'a', {
 				class: 'mention',
 				'data-mention': modelAttributeValue.id,
 				href

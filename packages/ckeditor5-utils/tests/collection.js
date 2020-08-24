@@ -365,6 +365,277 @@ describe( 'Collection', () => {
 		} );
 	} );
 
+	describe( 'addMany()', () => {
+		it( 'should be chainable', () => {
+			expect( collection.addMany( [ {} ] ) ).to.equal( collection );
+		} );
+
+		it( 'should change the length', () => {
+			expect( collection ).to.have.length( 0 );
+
+			collection.addMany( [ {}, {} ] );
+			expect( collection ).to.have.length( 2 );
+
+			collection.addMany( [ {} ] );
+			expect( collection ).to.have.length( 3 );
+		} );
+
+		it( 'should enable get( index )', () => {
+			const item1 = {};
+			const item2 = {};
+
+			collection.addMany( [ item1, item2 ] );
+			expect( collection.get( 0 ) ).to.equal( item1 );
+			expect( collection.get( 1 ) ).to.equal( item2 );
+		} );
+
+		it( 'should enable get( id )', () => {
+			const item1 = getItem( 'foo' );
+			const item2 = getItem( 'bar' );
+
+			collection.addMany( [ item1, item2 ] );
+
+			expect( collection.get( 'foo' ) ).to.equal( item1 );
+			expect( collection.get( 'bar' ) ).to.equal( item2 );
+		} );
+
+		it( 'should enable get( id ) - custom id property', () => {
+			const collection = new Collection( { idProperty: 'name' } );
+			const item1 = getItem( 'foo', 'name' );
+			const item2 = getItem( 'bar', 'name' );
+
+			collection.add( item1 );
+			collection.add( item2 );
+
+			expect( collection.get( 'foo' ) ).to.equal( item1 );
+			expect( collection.get( 'bar' ) ).to.equal( item2 );
+		} );
+
+		it( 'should generate an id when not defined', () => {
+			const item = {};
+
+			collection.addMany( [ item ] );
+
+			expect( item.id ).to.be.a( 'string' );
+			expect( collection.get( item.id ) ).to.equal( item );
+		} );
+
+		it( 'should generate an id when not defined - custom id property', () => {
+			const collection = new Collection( { idProperty: 'name' } );
+			const item = {};
+
+			collection.addMany( [ item ] );
+
+			expect( item.name ).to.be.a( 'string' );
+			expect( collection.get( item.name ) ).to.equal( item );
+		} );
+
+		it( 'should not change an existing id of an item', () => {
+			const item = getItem( 'foo' );
+
+			collection.addMany( [ item ] );
+
+			expect( item.id ).to.equal( 'foo' );
+		} );
+
+		it( 'should throw when item with this id already exists - single call', () => {
+			const item1 = getItem( 'foo' );
+
+			expectToThrowCKEditorError( () => {
+				collection.addMany( [ item1, item1 ] );
+			}, /^collection-add-item-already-exists/ );
+		} );
+
+		it( 'should throw when item with this id already exists - multiple calls', () => {
+			const item1 = getItem( 'foo' );
+			const item2 = getItem( 'foo' );
+
+			collection.addMany( [ item1 ] );
+
+			expectToThrowCKEditorError( () => {
+				collection.addMany( [ item2 ] );
+			}, /^collection-add-item-already-exists/ );
+		} );
+
+		it( 'should throw when item\'s id is not a string', () => {
+			const item = { id: 1 };
+
+			expectToThrowCKEditorError( () => {
+				collection.addMany( [ item ] );
+			}, /^collection-add-invalid-id/ );
+		} );
+
+		it(
+			'should generate an id when not defined, which is globally unique ' +
+			'so it is possible to move items between collections and avoid id collisions',
+			() => {
+				const collectionA = new Collection();
+				const collectionB = new Collection();
+				const itemA = {};
+				const itemB = {};
+
+				collectionA.addMany( [ itemA ] );
+				collectionB.addMany( [ itemB ] );
+				collectionB.addMany( [ collectionA.remove( itemA ) ] );
+
+				expect( collectionA.length ).to.equal( 0 );
+				expect( collectionB.length ).to.equal( 2 );
+				expect( collectionB.get( 0 ) ).to.equal( itemB );
+				expect( collectionB.get( 1 ) ).to.equal( itemA );
+
+				expect( itemA.id ).to.not.equal( itemB.id );
+			}
+		);
+
+		it(
+			'should generate an id when not defined, which is globally unique ' +
+			'so it is possible to move items between collections and avoid id collisions ' +
+			'– custom id property',
+			() => {
+				const collectionA = new Collection( { idProperty: 'foo' } );
+				const collectionB = new Collection( { idProperty: 'foo' } );
+				const itemA = {};
+				const itemB = {};
+
+				collectionA.addMany( [ itemA ] );
+				collectionB.addMany( [ itemB ] );
+				collectionB.addMany( [ collectionA.remove( itemA ) ] );
+
+				expect( collectionA.length ).to.equal( 0 );
+				expect( collectionB.length ).to.equal( 2 );
+				expect( collectionB.get( 0 ) ).to.equal( itemB );
+				expect( collectionB.get( 1 ) ).to.equal( itemA );
+
+				expect( itemA.foo ).to.not.equal( itemB.foo );
+			}
+		);
+
+		it( 'should allow an item which is already in some other collection', () => {
+			const collectionA = new Collection();
+			const collectionB = new Collection();
+			const item = {};
+
+			collectionA.addMany( [ item ] );
+			collectionB.addMany( [ item ] );
+
+			expect( collectionA.length ).to.equal( 1 );
+			expect( collectionB.length ).to.equal( 1 );
+			expect( collectionA.get( item.id ) ).to.equal( collectionB.get( 0 ) );
+		} );
+
+		it( 'should fire the "add" event', () => {
+			const spy = sinon.spy();
+			const item = {};
+
+			collection.on( 'add', spy );
+
+			collection.addMany( [ item ] );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item, 0 );
+		} );
+
+		it( 'should fire the "add" event for each item', () => {
+			const spy = sinon.spy();
+			const items = [ {}, {} ];
+
+			collection.on( 'add', spy );
+
+			collection.addMany( items );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), items[ 0 ], 0 );
+			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), items[ 1 ], 1 );
+
+			expect( spy.callCount ).to.equal( 2 );
+		} );
+
+		it( 'should fire the "add" event with the index argument', () => {
+			const spy = sinon.spy();
+
+			collection.addMany( [ {} ] );
+			collection.addMany( [ {} ] );
+
+			collection.on( 'add', spy );
+
+			const item = {};
+			collection.addMany( [ item ], 1 );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item, 1 );
+		} );
+
+		it( 'should fire the "change" event', () => {
+			const spy = sinon.spy();
+			const items = [ {}, {} ];
+
+			collection.on( 'change', spy );
+
+			collection.addMany( items );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.eql( {
+				added: items,
+				removed: [],
+				index: 0
+			} );
+		} );
+
+		it( 'should fire the "change" event with the index argument', () => {
+			const spy = sinon.spy();
+			const firstBatch = [ {}, {} ];
+			const secondBatch = [ {}, {} ];
+
+			collection.addMany( firstBatch );
+
+			collection.on( 'change', spy );
+
+			collection.addMany( secondBatch, 1 );
+
+			expect( spy.callCount, 'call count' ).to.equal( 1 );
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.eql( {
+				added: secondBatch,
+				removed: [],
+				index: 1
+			} );
+		} );
+
+		it( 'should support an optional index argument', () => {
+			const item1 = getItem( 'foo' );
+			const item2 = getItem( 'bar' );
+			const item3 = getItem( 'baz' );
+			const item4 = getItem( 'abc' );
+
+			collection.addMany( [ item1 ] );
+			collection.addMany( [ item2 ], 0 );
+			collection.addMany( [ item3 ], 1 );
+			collection.addMany( [ item4 ], 3 );
+
+			expect( collection.get( 0 ) ).to.equal( item2 );
+			expect( collection.get( 1 ) ).to.equal( item3 );
+			expect( collection.get( 2 ) ).to.equal( item1 );
+			expect( collection.get( 3 ) ).to.equal( item4 );
+		} );
+
+		it( 'should throw when index argument is invalid', () => {
+			const item1 = getItem( 'foo' );
+			const item2 = getItem( 'bar' );
+			const item3 = getItem( 'baz' );
+
+			collection.addMany( [ item1 ] );
+
+			expectToThrowCKEditorError( () => {
+				collection.addMany( [ item2 ], -1 );
+			}, /^collection-add-item-invalid-index/ );
+
+			expectToThrowCKEditorError( () => {
+				collection.addMany( [ item2 ], 2 );
+			}, /^collection-add-item-invalid-index/ );
+
+			collection.addMany( [ item2 ], 1 );
+			collection.addMany( [ item3 ], 0 );
+
+			expect( collection.length ).to.equal( 3 );
+		} );
+	} );
+
 	describe( 'get()', () => {
 		it( 'should return an item', () => {
 			const item = getItem( 'foo' );
@@ -546,6 +817,23 @@ describe( 'Collection', () => {
 			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item3, 0 );
 		} );
 
+		it( 'should fire the "change" event', () => {
+			const item = getItem( 'foo' );
+			const spy = sinon.spy();
+
+			collection.add( item );
+			collection.on( 'change', spy );
+
+			collection.remove( item );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.eql( {
+				added: [],
+				removed: [ item ],
+				index: 0
+			} );
+		} );
+
 		it( 'should throw an error on invalid index', () => {
 			collection.add( getItem( 'foo' ) );
 
@@ -655,6 +943,24 @@ describe( 'Collection', () => {
 			expect( collection ).to.have.length( 0 );
 
 			expect( collection._bindToCollection ).to.be.null;
+		} );
+
+		it( 'should fire the "change" event', () => {
+			const items = [ {}, {}, {} ];
+			const spy = sinon.spy();
+
+			collection.addMany( items );
+			collection.on( 'change', spy );
+
+			collection.clear();
+
+			sinon.assert.calledOnce( spy );
+
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.eql( {
+				added: [],
+				removed: items,
+				index: 0
+			} );
 		} );
 	} );
 

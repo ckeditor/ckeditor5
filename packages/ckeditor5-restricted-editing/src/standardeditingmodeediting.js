@@ -45,10 +45,10 @@ export default class StandardEditingModeEditing extends Plugin {
 
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: 'restrictedEditingException',
-			view: ( modelAttributeValue, viewWriter ) => {
+			view: ( modelAttributeValue, { writer } ) => {
 				if ( modelAttributeValue ) {
 					// Make the restricted editing <span> outer-most in the view.
-					return viewWriter.createAttributeElement( 'span', { class: 'restricted-editing-exception' }, { priority: -10 } );
+					return writer.createAttributeElement( 'span', { class: 'restricted-editing-exception' }, { priority: -10 } );
 				}
 			}
 		} );

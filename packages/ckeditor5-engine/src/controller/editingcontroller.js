@@ -65,14 +65,15 @@ export default class EditingController {
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastDispatcher} #downcastDispatcher
 		 */
 		this.downcastDispatcher = new DowncastDispatcher( {
-			mapper: this.mapper
+			mapper: this.mapper,
+			schema: model.schema
 		} );
 
 		const doc = this.model.document;
 		const selection = doc.selection;
 		const markers = this.model.markers;
 
-		// When plugins listen on model changes (on selection change, post fixers, etc) and change the view as a result of
+		// When plugins listen on model changes (on selection change, post fixers, etc.) and change the view as a result of
 		// model's change, they might trigger view rendering before the conversion is completed (e.g. before the selection
 		// is converted). We disable rendering for the length of the outermost model change() block to prevent that.
 		//

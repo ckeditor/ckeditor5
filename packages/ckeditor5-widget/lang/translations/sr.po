@@ -22,8 +22,8 @@ msgstr "Widget traka sa alatkama"
 
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph before a block."
 msgid "Insert paragraph before block"
-msgstr ""
+msgstr "Umetnite odlomak pre bloka"
 
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph after a block."
 msgid "Insert paragraph after block"
-msgstr ""
+msgstr "Umetnite odlomak posle bloka"

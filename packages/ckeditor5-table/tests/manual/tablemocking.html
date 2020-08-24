@@ -12,9 +12,15 @@
 		box-sizing: border-box;
 		margin: 10px 0;
 	}
-	pre,code {
+	pre, code {
 		font-size: 11px;
 		font-family: Menlo, Consolas, Lucida Console, Courier New, dejavu sans mono, monospace;
+	}
+	#table-tools pre {
+		background: hsl( 0, 0%, 95% );
+		max-height:300px;
+		overflow: auto;
+		padding: 10px;
 	}
 	.diff-add {
 		color: hsl( 120, 70%, 35% );
@@ -61,4 +67,9 @@
 <div id="editor">
 </div>
 
-<pre id="ascii-art"></pre>
+<div id="table-tools">
+	<pre id="ascii-art"></pre>
+
+	<h3>Clipboard preview:</h3>
+	<pre id="clipboard"></pre>
+</div>

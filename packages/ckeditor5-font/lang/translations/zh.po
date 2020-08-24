@@ -54,4 +54,4 @@ msgstr "前景顏色"
 
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
-msgstr ""
+msgstr "文件顏色"

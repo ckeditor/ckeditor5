@@ -60,7 +60,7 @@ export function getSingleTextNodeChange( mutation ) {
 	const change = changes[ 0 ];
 
 	// Which is text.
-	if ( !( !!change.values[ 0 ] && change.values[ 0 ].is( 'text' ) ) ) {
+	if ( !( !!change.values[ 0 ] && change.values[ 0 ].is( '$text' ) ) ) {
 		return;
 	}
 
@@ -77,7 +77,7 @@ export function getSingleTextNodeChange( mutation ) {
  * @returns {Boolean}
  */
 export function compareChildNodes( oldChild, newChild ) {
-	if ( !!oldChild && oldChild.is( 'text' ) && !!newChild && newChild.is( 'text' ) ) {
+	if ( !!oldChild && oldChild.is( '$text' ) && !!newChild && newChild.is( '$text' ) ) {
 		return oldChild.data === newChild.data;
 	} else {
 		return oldChild === newChild;

@@ -98,6 +98,21 @@ describe( 'MultiCommand', () => {
 			sinon.assert.calledOnce( spyC );
 		} );
 
+		it( 'returns the result of command\'s execute()', () => {
+			const command = new Command( editor );
+			const commandResult = { foo: 'bar' };
+			sinon.stub( command, 'execute' ).returns( commandResult );
+
+			multiCommand.registerChildCommand( command );
+
+			command.isEnabled = true;
+
+			const multiCommandResult = multiCommand.execute();
+
+			expect( multiCommandResult, 'multiCommand.execute()' ).to.equal( commandResult );
+			expect( multiCommandResult, 'multiCommand.execute()' ).to.deep.equal( { foo: 'bar' } );
+		} );
+
 		it( 'executes first registered command if many are enabled', () => {
 			const commandA = new Command( editor );
 			const commandB = new Command( editor );

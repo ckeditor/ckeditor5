@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FontBackgroundColorCommand from './fontbackgroundcolorcommand';
 import { FONT_BACKGROUND_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils';
+import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
 
 /**
  * The font background color editing feature.
@@ -102,6 +103,7 @@ export default class FontBackgroundColorEditing extends Plugin {
 			columns: 5
 		} );
 
+		editor.data.addStyleProcessorRules( addBackgroundRules );
 		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			view: {
 				name: 'span',

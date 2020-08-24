@@ -30,7 +30,7 @@ msgstr "URL adresa"
 
 msgctxt "Label for the image link button."
 msgid "Link image"
-msgstr ""
+msgstr "Adresa obrázku"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"

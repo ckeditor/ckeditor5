@@ -232,6 +232,12 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	display: table;
 }
 
+/* https://github.com/ckeditor/ckeditor5/issues/7310 */
+.live-snippet .ck.ck-content .table td,
+.live-snippet .ck.ck-content .table th {
+	vertical-align: middle;
+}
+
 /* https://github.com/ckeditor/ckeditor5/issues/1282 */
 .live-snippet .ck.ck-content .table p:first-child {
 	padding-top: 0;

@@ -18,4 +18,4 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the Block quote feature."
 msgid "Block quote"
-msgstr "قىسمەن قوللىنىش"
+msgstr "نەقىل"

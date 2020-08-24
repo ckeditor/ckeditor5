@@ -277,6 +277,63 @@ export default class Range {
 	}
 
 	/**
+	 * Returns a range created by joining this {@link ~Range range} with the given {@link ~Range range}.
+	 * If ranges have no common part, returns `null`.
+	 *
+	 * Examples:
+	 *
+	 *		let range = model.createRange(
+	 *			model.createPositionFromPath( root, [ 2, 7 ] ),
+	 *			model.createPositionFromPath( root, [ 4, 0, 1 ] )
+	 *		);
+	 *		let otherRange = model.createRange(
+	 *			model.createPositionFromPath( root, [ 1 ] ),
+	 *			model.createPositionFromPath( root, [ 2 ] )
+ 	 *		);
+	 *		let transformed = range.getJoined( otherRange ); // null - ranges have no common part
+	 *
+	 *		otherRange = model.createRange(
+	 *			model.createPositionFromPath( root, [ 3 ] ),
+	 *			model.createPositionFromPath( root, [ 5 ] )
+	 *		);
+	 *		transformed = range.getJoined( otherRange ); // range from [ 2, 7 ] to [ 5 ]
+	 *
+	 * @param {module:engine/model/range~Range} otherRange Range to be joined.
+	 * @param {Boolean} [loose=false] Whether the intersection check is loose or strict. If the check is strict (`false`),
+	 * ranges are tested for intersection or whether start/end positions are equal. If the check is loose (`true`),
+	 * compared range is also checked if it's {@link module:engine/model/position~Position#isTouching touching} current range.
+	 * @returns {module:engine/model/range~Range|null} A sum of given ranges or `null` if ranges have no common part.
+	 */
+	getJoined( otherRange, loose = false ) {
+		let shouldJoin = this.isIntersecting( otherRange );
+
+		if ( !shouldJoin ) {
+			if ( this.start.isBefore( otherRange.start ) ) {
+				shouldJoin = loose ? this.end.isTouching( otherRange.start ) : this.end.isEqual( otherRange.start );
+			} else {
+				shouldJoin = loose ? otherRange.end.isTouching( this.start ) : otherRange.end.isEqual( this.start );
+			}
+		}
+
+		if ( !shouldJoin ) {
+			return null;
+		}
+
+		let startPosition = this.start;
+		let endPosition = this.end;
+
+		if ( otherRange.start.isBefore( startPosition ) ) {
+			startPosition = otherRange.start;
+		}
+
+		if ( otherRange.end.isAfter( endPosition ) ) {
+			endPosition = otherRange.end;
+		}
+
+		return new Range( startPosition, endPosition );
+	}
+
+	/**
 	 * Computes and returns the smallest set of {@link #isFlat flat} ranges, that covers this range in whole.
 	 *
 	 * See an example of a model structure (`[` and `]` are range boundaries):

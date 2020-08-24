@@ -103,7 +103,7 @@ export default class TextTransformation extends Plugin {
 
 		modelSelection.on( 'change:range', () => {
 			// Disable plugin when selection is inside a code block.
-			this.isEnabled = !modelSelection.anchor.parent.is( 'codeBlock' );
+			this.isEnabled = !modelSelection.anchor.parent.is( 'element', 'codeBlock' );
 		} );
 
 		this._enableTransformationWatchers();
