@@ -8,6 +8,7 @@
 
 	& .ck-form__row {
 		&.ck-table-cell-properties-form__padding-row {
+			align-self: flex-end;
 			padding: 0;
 			width: 35%;
 		}

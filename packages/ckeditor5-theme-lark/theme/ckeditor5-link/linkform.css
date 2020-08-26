@@ -7,7 +7,7 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 .ck.ck-link-form {
-	padding: var(--ck-spacing-standard);
+	padding: var(--ck-spacing-large);
 
 	&:focus {
 		/* https://github.com/ckeditor/ckeditor5-link/issues/90 */

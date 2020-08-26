@@ -52,6 +52,9 @@ export function createLabeledInputText( labeledFieldView, viewUid, statusUid ) {
 		labeledFieldView.errorText = null;
 	} );
 
+	// TODO
+	labeledFieldView.bind( 'isEmpty', 'isFocused', 'hasError', 'placeholder' ).to( inputView );
+
 	return inputView;
 }
 

@@ -13,7 +13,9 @@
 
 		&:active,
 		&:focus {
-			z-index: var(--ck-z-default);
+			& + .ck.ck-dropdown {
+				z-index: -1;
+			}
 		}
 	}
 

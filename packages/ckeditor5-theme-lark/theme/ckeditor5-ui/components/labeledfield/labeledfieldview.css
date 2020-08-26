@@ -3,21 +3,98 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-labeled-field-view .ck-labeled-field-view__status {
-	font-size: var(--ck-font-size-small);
-	margin-top: var(--ck-spacing-small);
+@import "../../../mixins/_rounded.css";
 
-	/* Let the info wrap to the next line to avoid stretching the layout horizontally.
-	The status could be very long. */
-	white-space: normal;
-}
+.ck.ck-labeled-field-view {
+	@mixin ck-rounded-corners;
 
-.ck.ck-labeled-field-view .ck-labeled-field-view__status_error {
-	color: var(--ck-color-base-error);
-}
+	& > .ck.ck-labeled-field-view__input-wrapper {
+		position: relative;
+		width: 100%;
 
-.ck.ck-labeled-field-view > .ck.ck-label {
-	width: 100%;
-	text-overflow: ellipsis;
-	overflow: hidden;
+		& > .ck-dropdown > .ck.ck-button {
+			background: transparent;
+		}
+	}
+
+	&.ck-labeled-field-view_empty > .ck.ck-labeled-field-view__input-wrapper > .ck-dropdown > .ck-button > .ck-button__label {
+		opacity: 0;
+	}
+
+	&.ck-error > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
+		color: var(--ck-color-base-error);
+	}
+
+	& .ck-labeled-input__wrapper {
+		position: relative;
+	}
+
+	& .ck.ck-input {
+		width: 100%;
+	}
+
+	& .ck.ck-label {
+		display: block;
+		position: absolute;
+		top: calc(-1 * var(--ck-spacing-large));
+		left: var(--ck-spacing-medium);
+		right: auto;
+
+		pointer-events: none;
+
+		background: var(--ck-color-base-background);
+		font-size: var(--ck-font-size-small);
+		padding: 0 calc(.75 * var(--ck-font-size-tiny));
+		line-height: initial;
+		font-weight: normal;
+		transform: none;
+
+		transition:
+			top .1s ease-in-out,
+			transform .1s ease-in-out,
+			padding .1s ease-in-out,
+			background .1s ease-in-out,
+			font-size .1s ease-in-out;
+	}
+
+	&.ck-labeled-input_focused {
+		& .ck-input:not([readonly]) + .ck.ck-label {
+			color: hsl(207.9,69.4%,44.9%);
+		}
+	}
+
+	&.ck-error {
+		& .ck-input:not([readonly]) + .ck.ck-label {
+			color: var(--ck-color-base-error);
+		}
+	}
+
+	& .ck-labeled-field-view__status {
+		font-size: var(--ck-font-size-small);
+		margin-top: var(--ck-spacing-small);
+
+		/* Let the info wrap to the next line to avoid stretching the layout horizontally.
+		The status could be very long. */
+		white-space: normal;
+	}
+
+	& .ck-labeled-field-view__status_error {
+		color: var(--ck-color-base-error);
+	}
+
+	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
+	&.ck-disabled > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
+		background: transparent;
+		font-size: var(--ck-font-size-normal);
+		right: var(--ck-spacing-medium);
+		top: 50%;
+		padding: 0;
+		transform: translateY(-50%);
+		bottom: 0;
+	}
+
+	&.ck-disabled > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
+	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
+		color: var(--ck-color-input-disabled-text);
+	}
 }

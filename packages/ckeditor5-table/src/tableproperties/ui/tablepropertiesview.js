@@ -502,7 +502,7 @@ export default class TablePropertiesView extends View {
 		const backgroundInput = new LabeledFieldView( locale, backgroundInputCreator );
 
 		backgroundInput.set( {
-			label: t( 'Background' ),
+			label: t( 'Background color' ),
 			class: 'ck-table-properties-form__background'
 		} );
 

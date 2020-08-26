@@ -486,6 +486,8 @@ export default class TableCellPropertiesView extends View {
 			this.borderStyle = evt.source._borderStyleValue;
 		} );
 
+		borderStyleDropdown.bind( 'isEmpty' ).to( this, 'borderStyle', value => !value );
+
 		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this ) );
 
 		// -- Width ---------------------------------------------------
@@ -555,7 +557,7 @@ export default class TableCellPropertiesView extends View {
 		const backgroundInput = new LabeledFieldView( locale, colorInputCreator );
 
 		backgroundInput.set( {
-			label: t( 'Background' ),
+			label: t( 'Background color' ),
 			class: 'ck-table-cell-properties-form__background'
 		} );
 
