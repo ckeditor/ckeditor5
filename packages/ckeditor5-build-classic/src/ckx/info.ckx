@@ -3,8 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+const INFO_STYLES = 'background: hsl(234, 100%, 94%);padding: 1em;border: 2px solid hsl(240, 100%, 50%);';
+
 const customRawElementContents = domElement => {
-	domElement.innerHTML = '<span>Inner HTML</span>';
+	domElement.innerHTML = '<span>Inner HTML of a raw element.</span>';
 };
 
 /**
@@ -18,13 +20,11 @@ const customRawElementContents = domElement => {
  */
 // eslint-disable-next-line no-unused-vars
 const downcastInfo = ( modelElement, { writer } ) => (
-	<div class="info foo bar" style="background:blue;color:white;" data-foo={ modelElement.getAttribute( 'foo' ) }>
-		Foo bar
-		<div class="inner-info">
-			<attribute:em>🍔</attribute:em>
-			<attribute:strong>It works!</attribute:strong>
-		</div>
-		<empty:img href="../tests/manual/sample.jpg" />
+	<div class="info" style={ INFO_STYLES } data-info-id={ modelElement.getAttribute( 'infoId' ) }>
+		<p class="info-message">
+			<attribute:strong>It works! <attribute:em>🍔</attribute:em></attribute:strong>
+		</p>
+		<empty:img src="../tests/manual/sample.jpg" style="width:120px"/>
 		<raw:p renderFunction={ customRawElementContents }></raw:p>
 	</div>
 );
@@ -86,16 +86,19 @@ function Info( editor ) {
 	editor.model.schema.register( 'info', {
 		allowIn: '$root',
 		isObject: true,
-		isSelectable: true
+		isSelectable: true,
+		allowAttributes: [ 'infoId' ]
 	} );
 
-	editor.conversion.for( 'upcast' ).elementToElement( {
-		view: {
-			name: 'div',
-			classes: 'info'
-		},
-		model: 'info'
-	} );
+	editor.conversion.for( 'upcast' )
+		.elementToElement( {
+			view: { name: 'div', classes: 'info' },
+			model: 'info'
+		} )
+		.attributeToAttribute( {
+			view: 'data-info-id',
+			model: 'infoId'
+		} );
 
 	editor.conversion.for( 'downcast' ).elementToElement( {
 		model: 'info',
