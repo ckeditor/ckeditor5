@@ -25,8 +25,8 @@ class Link extends Plugin {
 
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: 'link',
-			view: ( modelAttributeValue, viewWriter ) => {
-				return viewWriter.createAttributeElement( 'a', { href: modelAttributeValue } );
+			view: ( modelAttributeValue, { writer } ) => {
+				return writer.createAttributeElement( 'a', { href: modelAttributeValue } );
 			}
 		} );
 
