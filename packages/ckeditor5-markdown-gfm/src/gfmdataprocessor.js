@@ -7,11 +7,10 @@
  * @module markdown-gfm/gfmdataprocessor
  */
 
-import marked from './lib/marked/marked';
-import toMarkdown from './lib/to-markdown/to-markdown';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import GFMRenderer from './lib/marked/renderer';
-import converters from './lib/to-markdown/converters';
+
+import markdown2html from './markdown2html/markdown2html';
+import html2markdown, { turndownService } from './html2markdown/html2markdown';
 
 /**
  * This data processor implementation uses GitHub Flavored Markdown as input/output data.
@@ -37,20 +36,25 @@ export default class GFMDataProcessor {
 	}
 
 	/**
+	 * Keeps the specified element in the output as HTML. This is useful if the editor contains
+	 * features that produce HTML that are not part of the markdon standards.
+	 *
+	 * By default, all HTML tags are removed.
+	 *
+	 * @param element {String} The element name to be kept.
+	 */
+	keepHtml( element ) {
+		turndownService.keep( [ element ] );
+	}
+
+	/**
 	 * Converts the provided Markdown string to view tree.
 	 *
 	 * @param {String} data A Markdown string.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} The converted view element.
 	 */
 	toView( data ) {
-		const html = marked.parse( data, {
-			gfm: true,
-			breaks: true,
-			tables: true,
-			xhtml: true,
-			renderer: new GFMRenderer()
-		} );
-
+		const html = markdown2html( data );
 		return this._htmlDP.toView( html );
 	}
 
@@ -63,7 +67,6 @@ export default class GFMDataProcessor {
 	 */
 	toData( viewFragment ) {
 		const html = this._htmlDP.toData( viewFragment );
-
-		return toMarkdown( html, { gfm: true, converters } );
+		return html2markdown( html );
 	}
 }

@@ -89,10 +89,9 @@ describe( 'TableToolbar', () => {
 
 				setData( model, '<table><tableRow><tableCell>[]</tableCell></tableRow></table>' );
 
-				sinon.assert.calledWithMatch( spy, {
-					view: toolbar,
-					balloonClassName: 'ck-toolbar-container'
-				} );
+				sinon.assert.calledWithMatch( spy, sinon.match( ( { balloonClassName, view } ) => {
+					return view === toolbar && balloonClassName === 'ck-toolbar-container';
+				} ) );
 			} );
 
 			it( 'should set aria-label attribute', () => {
@@ -301,10 +300,9 @@ describe( 'TableToolbar', () => {
 
 				setData( model, '[<table><tableRow><tableCell></tableCell></tableRow></table>]' );
 
-				sinon.assert.calledWithMatch( spy, {
-					view: toolbar,
-					balloonClassName: 'ck-toolbar-container'
-				} );
+				sinon.assert.calledWithMatch( spy, sinon.match( ( { balloonClassName, view } ) => {
+					return view === toolbar && balloonClassName === 'ck-toolbar-container';
+				} ) );
 			} );
 		} );
 

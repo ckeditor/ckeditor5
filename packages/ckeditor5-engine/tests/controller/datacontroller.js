@@ -155,8 +155,8 @@ describe( 'DataController', () => {
 
 			const viewFragment = new ViewDocumentFragment( viewDocument, [ parseView( 'foo' ) ] );
 
-			// Model fragment in root.
-			expect( stringify( data.toModel( viewFragment ) ) ).to.equal( '' );
+			// Model fragment in root (note that it is auto-paragraphed because $text is not allowed directly in $root).
+			expect( stringify( data.toModel( viewFragment ) ) ).to.equal( '<paragraph>foo</paragraph>' );
 
 			// Model fragment in inline root.
 			expect( stringify( data.toModel( viewFragment, [ 'inlineRoot' ] ) ) ).to.equal( 'foo' );
@@ -454,6 +454,82 @@ describe( 'DataController', () => {
 				data.get( { rootName: 'nonexistent' } );
 			}, /datacontroller-get-non-existent-root:/ );
 		} );
+
+		it( 'should allow to provide additional options for retrieving data - insert conversion', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+			data.downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, 'insert' );
+
+				const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+				const viewElement = conversionApi.writer.createContainerElement( 'p', {
+					attribute: conversionApi.options.attributeValue
+				} );
+
+				conversionApi.mapper.bindElements( data.item, viewElement );
+				conversionApi.writer.insert( viewPosition, viewElement );
+			}, { priority: 'high' } );
+
+			setData( model, '<paragraph>foo</paragraph>' );
+
+			expect( data.get( { attributeValue: 'foo' } ) ).to.equal( '<p attribute="foo">foo</p>' );
+			expect( data.get( { attributeValue: 'bar' } ) ).to.equal( '<p attribute="bar">foo</p>' );
+		} );
+
+		it( 'should allow to provide additional options for retrieving data - attribute conversion', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block', allowAttributes: [ 'foo' ] } );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+
+			data.downcastDispatcher.on( 'attribute:foo', ( evt, data, conversionApi ) => {
+				if ( data.attributeNewValue === conversionApi.options.skipAttribute ) {
+					return;
+				}
+
+				const viewRange = conversionApi.mapper.toViewRange( data.range );
+				const viewElement = conversionApi.writer.createAttributeElement( data.attributeNewValue );
+
+				conversionApi.writer.wrap( viewRange, viewElement );
+			} );
+
+			setData( model, '<paragraph>f<$text foo="a">o</$text>ob<$text foo="b">a</$text>r</paragraph>' );
+
+			expect( data.get() ).to.equal( '<p>f<a>o</a>ob<b>a</b>r</p>' );
+			expect( data.get( { skipAttribute: 'a' } ) ).to.equal( '<p>foob<b>a</b>r</p>' );
+			expect( data.get( { skipAttribute: 'b' } ) ).to.equal( '<p>f<a>o</a>obar</p>' );
+		} );
+
+		it( 'should allow to provide additional options for retrieving data - addMarker conversion', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+
+			data.downcastDispatcher.on( 'addMarker', ( evt, data, conversionApi ) => {
+				if ( conversionApi.options.skipMarker ) {
+					return;
+				}
+
+				const viewElement = conversionApi.writer.createAttributeElement( 'marker' );
+				const viewRange = conversionApi.mapper.toViewRange( data.markerRange );
+
+				conversionApi.writer.wrap( viewRange, viewElement );
+			} );
+
+			setData( model, '<paragraph>foo</paragraph>' );
+
+			const root = model.document.getRoot();
+
+			model.change( writer => {
+				const start = writer.createPositionFromPath( root, [ 0, 1 ] );
+				const end = writer.createPositionFromPath( root, [ 0, 2 ] );
+
+				writer.addMarker( 'marker', {
+					range: writer.createRange( start, end ),
+					usingOperation: false
+				} );
+			} );
+
+			expect( data.get( { skipMarker: false } ) ).to.equal( '<p>f<marker>o</marker>o</p>' );
+			expect( data.get( { skipMarker: true } ) ).to.equal( '<p>foo</p>' );
+		} );
 	} );
 
 	describe( 'stringify()', () => {
@@ -477,6 +553,24 @@ describe( 'DataController', () => {
 			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
 
 			expect( data.stringify( modelDocumentFragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
+		} );
+
+		it( 'should allow to provide additional options to the conversion process', () => {
+			const spy = sinon.spy();
+
+			data.downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
+				spy( conversionApi.options );
+			}, { priority: 'high' } );
+
+			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
+
+			const options = { foo: 'bar' };
+
+			data.stringify( modelDocumentFragment );
+			expect( spy.lastCall.args[ 0 ] ).to.not.equal( options );
+
+			data.stringify( modelDocumentFragment, options );
+			expect( spy.lastCall.args[ 0 ] ).to.equal( options );
 		} );
 	} );
 
@@ -589,6 +683,36 @@ describe( 'DataController', () => {
 			expect( mappedModelRange.end.nodeAfter ).to.equal( modelDocumentFragment.getChild( 1 ) );
 			expect( mappedViewRange.end.nodeBefore ).to.equal( firstViewElement );
 			expect( mappedViewRange.end.nodeAfter ).to.equal( viewDocumentFragment.getChild( 1 ) );
+		} );
+
+		it( 'should allow to provide additional options to the conversion process', () => {
+			const root = model.document.getRoot();
+			const spy = sinon.spy();
+
+			data.downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
+				spy( conversionApi.options );
+			}, { priority: 'high' } );
+
+			data.downcastDispatcher.on( 'addMarker:marker', ( evt, data, conversionApi ) => {
+				spy( conversionApi.options );
+			}, { priority: 'high' } );
+
+			setData( model, '<paragraph>foo</paragraph>' );
+
+			model.change( writer => {
+				writer.addMarker( 'marker', {
+					range: model.createRange( model.createPositionFromPath( root, [ 0, 1 ] ) ),
+					usingOperation: false
+				} );
+			} );
+
+			const options = { foo: 'bar' };
+
+			data.toView( root, options );
+
+			sinon.assert.calledTwice( spy );
+			expect( spy.firstCall.args[ 0 ] ).to.equal( options );
+			expect( spy.lastCall.args[ 0 ] ).to.equal( options );
 		} );
 	} );
 

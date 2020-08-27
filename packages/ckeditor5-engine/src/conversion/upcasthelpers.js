@@ -10,6 +10,7 @@ import { cloneDeep } from 'lodash-es';
 import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing';
 
 /* global console */
 
@@ -464,20 +465,33 @@ export function convertToModelFragment() {
  * @returns {Function} {@link module:engine/view/text~Text View text} converter.
  */
 export function convertText() {
-	return ( evt, data, conversionApi ) => {
-		if ( conversionApi.schema.checkChild( data.modelCursor, '$text' ) ) {
-			if ( conversionApi.consumable.consume( data.viewItem ) ) {
-				const text = conversionApi.writer.createText( data.viewItem.data );
+	return ( evt, data, { schema, consumable, writer } ) => {
+		let position = data.modelCursor;
 
-				conversionApi.writer.insert( text, data.modelCursor );
-
-				data.modelRange = conversionApi.writer.createRange(
-					data.modelCursor,
-					data.modelCursor.getShiftedBy( text.offsetSize )
-				);
-				data.modelCursor = data.modelRange.end;
-			}
+		// When node is already converted then do nothing.
+		if ( !consumable.test( data.viewItem ) ) {
+			return;
 		}
+
+		if ( !schema.checkChild( position, '$text' ) ) {
+			if ( !isParagraphable( position, '$text', schema ) ) {
+				return;
+			}
+
+			position = wrapInParagraph( position, writer );
+		}
+
+		consumable.consume( data.viewItem );
+
+		const text = writer.createText( data.viewItem.data );
+
+		writer.insert( text, position );
+
+		data.modelRange = writer.createRange(
+			position,
+			position.getShiftedBy( text.offsetSize )
+		);
+		data.modelCursor = data.modelRange.end;
 	};
 }
 

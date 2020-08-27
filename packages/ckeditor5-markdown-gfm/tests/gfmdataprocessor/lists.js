@@ -4,6 +4,10 @@
  */
 
 import { testDataProcessor } from '../_utils/utils';
+import MarkdownDataProcessor from '../../src/gfmdataprocessor';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 
 describe( 'GFMDataProcessor', () => {
 	describe( 'lists', () => {
@@ -337,6 +341,44 @@ describe( 'GFMDataProcessor', () => {
 				'*   test\n' +
 				'*   test\n' +
 				'*   test'
+			);
+		} );
+	} );
+
+	describe( 'todo lists', () => {
+		it( 'should process todo lists', () => {
+			testDataProcessor(
+				'*   [ ] Item 1\n' +
+				'*   [x] Item 2',
+
+				'<ul>' +
+					'<li><input disabled="" type="checkbox"></input>Item 1</li>' +
+					'<li><input checked="" disabled="" type="checkbox"></input>Item 2</li>' +
+				'</ul>' );
+		} );
+
+		it( 'should process the HTML produced by the todo list feature', () => {
+			const viewDocument = new ViewDocument( new StylesProcessor() );
+
+			const htmlDataProcessor = new HtmlDataProcessor( viewDocument );
+			const mdDataProcessor = new MarkdownDataProcessor( viewDocument );
+
+			const viewFragment = htmlDataProcessor.toView(
+				'<ul class="todo-list">' +
+					'<li><label class="todo-list__label">' +
+						'<input type="checkbox" disabled="disabled">' +
+						'<span class="todo-list__label__description">Item 1</span>' +
+					'</label></li>' +
+					'<li><label class="todo-list__label">' +
+						'<input type="checkbox" disabled="disabled" checked="checked">' +
+						'<span class="todo-list__label__description">Item 2</span>' +
+					'</label></li>' +
+				'</ul>'
+			);
+
+			expect( mdDataProcessor.toData( viewFragment ) ).to.equal(
+				'*   [ ] Item 1\n' +
+				'*   [x] Item 2'
 			);
 		} );
 	} );

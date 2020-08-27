@@ -75,7 +75,8 @@ describe( 'Selection post-fixer', () => {
 		it( 'should not crash if there is no correct position for model selection', () => {
 			setModelData( model, '' );
 
-			expect( getModelData( model ) ).to.equal( '[]' );
+			// Note that auto-paragraphing post-fixer injected a paragraph into the empty root.
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'should react to structure changes', () => {

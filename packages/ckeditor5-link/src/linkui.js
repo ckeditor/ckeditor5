@@ -394,6 +394,10 @@ export default class LinkUI extends Plugin {
 	_showUI( forceVisible = false ) {
 		// When there's no link under the selection, go straight to the editing UI.
 		if ( !this._getSelectedLinkElement() ) {
+			// Show visual selection on a text without a link when the contextual balloon is displayed.
+			// See https://github.com/ckeditor/ckeditor5/issues/4721.
+			this._showFakeVisualSelection();
+
 			this._addActionsView();
 
 			// Be sure panel with link is visible.
@@ -402,9 +406,6 @@ export default class LinkUI extends Plugin {
 			}
 
 			this._addFormView();
-			// Show visual selection on a text without a link when the contextual balloon is displayed.
-			// See https://github.com/ckeditor/ckeditor5/issues/4721.
-			this._showFakeVisualSelection();
 		}
 		// If there's a link under the selection...
 		else {
@@ -586,14 +587,20 @@ export default class LinkUI extends Plugin {
 	 */
 	_getBalloonPositionData() {
 		const view = this.editor.editing.view;
+		const model = this.editor.model;
 		const viewDocument = view.document;
 		const targetLink = this._getSelectedLinkElement();
+		const range = model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ?
+			// There are cases when we highlight selection using a marker (#7705, #4721).
+			this.editor.editing.mapper.toViewRange( model.markers.get( VISUAL_SELECTION_MARKER_NAME ).getRange() ) :
+			// If no markers are available refer to a regular selection.
+			viewDocument.selection.getFirstRange();
 
 		const target = targetLink ?
 			// When selection is inside link element, then attach panel to this element.
 			view.domConverter.mapViewToDom( targetLink ) :
 			// Otherwise attach panel to the selection.
-			view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
+			view.domConverter.viewRangeToDom( range );
 
 		return { target };
 	}

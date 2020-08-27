@@ -24,7 +24,7 @@ function ConvertDivAttributes( editor ) {
 	// View-to-model converter converting a view <div> with all its attributes to the model.
 	editor.conversion.for( 'upcast' ).elementToElement( {
 		view: 'div',
-		model: ( viewElement, modelWriter ) => {
+		model: ( viewElement, { writer: modelWriter } ) => {
 			return modelWriter.createElement( 'div', viewElement.getAttributes() );
 		}
 	} );

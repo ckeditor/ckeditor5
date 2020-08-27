@@ -59,7 +59,7 @@ export default class MediaRegistry {
 			} );
 
 		/**
-		 * The locale {@link module:utils/locale~Locale} instance.
+		 * The {@link module:utils/locale~Locale} instance.
 		 *
 		 * @member {module:utils/locale~Locale}
 		 */

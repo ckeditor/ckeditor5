@@ -52,13 +52,13 @@ export function isMediaWidget( viewElement ) {
 }
 
 /**
- * Creates a view element representing the media. Either "semantic" one for the data pipeline:
+ * Creates a view element representing the media. Either a "semantic" one for the data pipeline:
  *
  *		<figure class="media">
  *			<oembed url="foo"></oembed>
  *		</figure>
  *
- * or "non-semantic" (for the editing view pipeline):
+ * or a "non-semantic" (for the editing view pipeline):
  *
  *		<figure class="media">
  *			<div data-oembed-url="foo">[ non-semantic media preview for "foo" ]</div>
@@ -104,7 +104,7 @@ export function getSelectedMediaModelWidget( selection ) {
  *
  * @param {module:engine/model/model~Model} model
  * @param {String} url An URL of an embeddable media.
- * @param {module:engine/model/position~Position} [insertPosition] Position to insert media. If not specified,
+ * @param {module:engine/model/position~Position} [insertPosition] Position to insert the media. If not specified,
  * the default behavior of {@link module:engine/model/model~Model#insertContent `model.insertContent()`} will
  * be applied.
  */

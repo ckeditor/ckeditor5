@@ -322,7 +322,7 @@ export default class ProductPreviewEditing extends Plugin {
 				name: 'section',
 				classes: 'product'
 			},
-			model: ( viewElement, modelWriter ) => {
+			model: ( viewElement, { writer: modelWriter } ) => {
 				// Read the "data-id" attribute from the view and set it as the "id" in the model.
 				return modelWriter.createElement( 'productPreview', {
 					id: parseInt( viewElement.getAttribute( 'data-id' ) )
@@ -333,7 +333,7 @@ export default class ProductPreviewEditing extends Plugin {
 		// <productPreview> converters (model → data view)
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'productPreview',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				// In the data view, the model <productPreview> corresponds to:
 				//
 				// <section class="product" data-id="..."></section>
@@ -347,7 +347,7 @@ export default class ProductPreviewEditing extends Plugin {
 		// <productPreview> converters (model → editing view)
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'productPreview',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				// In the editing view, the model <productPreview> corresponds to:
 				//
 				// <section class="product" data-id="...">
@@ -1137,7 +1137,7 @@ export default class ProductPreviewEditing extends Plugin {
 				name: 'section',
 				classes: 'product'
 			},
-			model: ( viewElement, modelWriter ) => {
+			model: ( viewElement, { writer: modelWriter } ) => {
 				// Read the "data-id" attribute from the view and set it as the "id" in the model.
 				return modelWriter.createElement( 'productPreview', {
 					id: parseInt( viewElement.getAttribute( 'data-id' ) )
@@ -1148,7 +1148,7 @@ export default class ProductPreviewEditing extends Plugin {
 		// <productPreview> converters (model → data view)
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'productPreview',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				// In the data view, the model <productPreview> corresponds to:
 				//
 				// <section class="product" data-id="..."></section>
@@ -1162,7 +1162,7 @@ export default class ProductPreviewEditing extends Plugin {
 		// <productPreview> converters (model → editing view)
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'productPreview',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				// In the editing view, the model <productPreview> corresponds to:
 				//
 				// <section class="product" data-id="...">

@@ -162,6 +162,23 @@ describe( 'LinkUI', () => {
 			} );
 		} );
 
+		it( 'should pass a proper position target to the balloon toolbar', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			linkUIFeature._showUI();
+
+			const markerModelRange = editor.model.markers.get( 'link-ui' ).getRange();
+			const markerViewRange = editor.editing.mapper.toViewRange( markerModelRange );
+			const domRange = editor.editing.view.domConverter.viewRangeToDom( markerViewRange );
+
+			expect( balloonAddSpy.calledWithExactly( {
+				view: formView,
+				position: {
+					target: domRange
+				}
+			} ), 'spy arguments' ).to.be.true;
+		} );
+
 		it( 'should add #actionsView to the balloon and attach the balloon to the link element when collapsed selection is inside ' +
 			'that link',
 		() => {

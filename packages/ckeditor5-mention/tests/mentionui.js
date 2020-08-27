@@ -1572,8 +1572,30 @@ describe( 'MentionUI', () => {
 				testExecuteKey( 'enter', keyCodes.enter, feedItems );
 
 				testExecuteKey( 'tab', keyCodes.tab, feedItems );
+			} );
 
-				testExecuteKey( 'space', keyCodes.space, feedItems );
+			describe( 'on other keys', () => {
+				it( 'should do nothing on space', async () => {
+					setData( model, '<paragraph>foo []</paragraph>' );
+
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
+					} );
+
+					const command = editor.commands.get( 'mention' );
+					const spy = testUtils.sinon.spy( command, 'execute' );
+
+					await waitForDebounce();
+					expectChildViewsIsOnState( [ true, false, false, false, false ] );
+
+					fireKeyDownEvent( {
+						keyCodes: keyCodes.space,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					} );
+
+					sinon.assert.notCalled( spy );
+				} );
 			} );
 		} );
 
@@ -1724,8 +1746,6 @@ describe( 'MentionUI', () => {
 					testExecuteKey( 'enter', keyCodes.enter, issues );
 
 					testExecuteKey( 'tab', keyCodes.tab, issues );
-
-					testExecuteKey( 'space', keyCodes.space, issues );
 				} );
 			} );
 		} );
@@ -1849,8 +1869,6 @@ describe( 'MentionUI', () => {
 					testExecuteKey( 'enter', keyCodes.enter, issues );
 
 					testExecuteKey( 'tab', keyCodes.tab, issues );
-
-					testExecuteKey( 'space', keyCodes.space, issues );
 				} );
 
 				describe( 'mouse', () => {

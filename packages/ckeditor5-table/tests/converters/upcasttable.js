@@ -500,6 +500,48 @@ describe( 'upcastTable()', () => {
 		} );
 	} );
 
+	describe( 'inline contents', () => {
+		it( 'should upcast inline element inside a table cell', () => {
+			model.schema.register( 'inline', { allowWhere: '$text', isInline: true } );
+			model.schema.extend( '$text', { allowIn: 'inline' } );
+			editor.conversion.elementToElement( { model: 'inline', view: 'span' } );
+
+			editor.setData(
+				'<table>' +
+					'<tr>' +
+						'<td>' +
+							'<span>foo</span>' +
+						'</td>' +
+					'</tr>' +
+				'</table>'
+			);
+
+			expectModel( modelTable( [
+				[ '<paragraph><inline>foo</inline></paragraph>' ]
+			] ) );
+		} );
+
+		it( 'should upcast inline object inside a table cell', () => {
+			model.schema.register( 'inline', { allowWhere: '$text', isInline: true, isObject: true } );
+			model.schema.extend( '$text', { allowIn: 'inline' } );
+			editor.conversion.elementToElement( { model: 'inline', view: 'span' } );
+
+			editor.setData(
+				'<table>' +
+					'<tr>' +
+						'<td>' +
+							'<span>foo</span>' +
+						'</td>' +
+					'</tr>' +
+				'</table>'
+			);
+
+			expectModel( modelTable( [
+				[ '<paragraph><inline>foo</inline></paragraph>' ]
+			] ) );
+		} );
+	} );
+
 	describe( 'handling redundant whitespacing between table elements', () => {
 		it( 'table without thead/tbody/tfoot', () => {
 			editor.setData(

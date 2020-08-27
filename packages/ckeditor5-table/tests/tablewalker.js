@@ -629,9 +629,9 @@ describe( 'TableWalker', () => {
 
 		const { value } = walker.next();
 
-		expect( () => value.isSpanned ).to.throw( CKEditorError, 'tablewalker-improper-api-usage' );
-		expect( () => value.colspan ).to.throw( CKEditorError, 'tablewalker-improper-api-usage' );
-		expect( () => value.rowspan ).to.throw( CKEditorError, 'tablewalker-improper-api-usage' );
-		expect( () => value.cellIndex ).to.throw( CKEditorError, 'tablewalker-improper-api-usage' );
+		expect( () => value.isSpanned ).to.throw( CKEditorError, 'tableslot-getter-removed' );
+		expect( () => value.colspan ).to.throw( CKEditorError, 'tableslot-getter-removed' );
+		expect( () => value.rowspan ).to.throw( CKEditorError, 'tableslot-getter-removed' );
+		expect( () => value.cellIndex ).to.throw( CKEditorError, 'tableslot-getter-removed' );
 	} );
 } );

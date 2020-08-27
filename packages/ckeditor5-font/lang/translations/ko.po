@@ -38,7 +38,7 @@ msgstr "매우 큰"
 
 msgctxt "Tooltip for the font family dropdown."
 msgid "Font Family"
-msgstr "글꼴"
+msgstr "글꼴 집합"
 
 msgctxt "Dropdown option label for the default font family."
 msgid "Default"
@@ -46,12 +46,12 @@ msgstr "기본"
 
 msgctxt "Label of a button that allows selecting a font color."
 msgid "Font Color"
-msgstr "글자 색상"
+msgstr "글자 색깔"
 
 msgctxt "Label of a button that allows selecting a font background color."
 msgid "Font Background Color"
-msgstr "글자 배경색"
+msgstr "글자 배경 색깔"
 
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
-msgstr "문서 색상들"
+msgstr "문서 색깔들"

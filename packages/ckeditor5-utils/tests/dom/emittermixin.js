@@ -113,6 +113,32 @@ describe( 'DomEmitterMixin', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 		} );
+
+		describe( 'event passive handling', () => {
+			it( 'should not use passive mode by default', () => {
+				const spy = sinon.spy( node, 'addEventListener' );
+
+				domEmitter.listenTo( node, 'test', () => {} );
+
+				expect( spy.calledWith( 'test', sinon.match.func, sinon.match( { capture: false, passive: false } ) ) ).to.be.true;
+			} );
+
+			it( 'should optionally use passive mode', () => {
+				const spy = sinon.spy( node, 'addEventListener' );
+
+				domEmitter.listenTo( node, 'test', () => {}, { usePassive: true } );
+
+				expect( spy.calledWith( 'test', sinon.match.func, sinon.match( { capture: false, passive: true } ) ) ).to.be.true;
+			} );
+
+			it( 'should not get activated for event capturing (if not desired)', () => {
+				const spy = sinon.spy( node, 'addEventListener' );
+
+				domEmitter.listenTo( node, 'test', () => {}, { useCapture: true } );
+
+				expect( spy.calledWith( 'test', sinon.match.func, sinon.match( { capture: true, passive: false } ) ) ).to.be.true;
+			} );
+		} );
 	} );
 
 	describe( 'stopListening', () => {

@@ -201,11 +201,12 @@ export default class Collection {
 			index = this._items.length;
 		} else if ( index > this._items.length || index < 0 ) {
 			/**
-			 * The index number has invalid value.
+			 * The `index` passed to {@link module:utils/collection~Collection#addMany `Collection#addMany()`}
+			 * is invalid. It must be a number between 0 and the the collection's length.
 			 *
 			 * @error collection-add-item-bad-index
 			 */
-			throw new CKEditorError( 'collection-add-item-invalid-index', this );
+			throw new CKEditorError( 'collection-add-item-invalid-index: The index passed to Collection#addMany() is invalid.', this );
 		}
 
 		for ( let offset = 0; offset < items.length; offset++ ) {
@@ -645,7 +646,7 @@ export default class Collection {
 				 *
 				 * @error collection-add-invalid-id
 				 */
-				throw new CKEditorError( 'collection-add-invalid-id', this );
+				throw new CKEditorError( 'collection-add-invalid-id: This item\'s id should be a string.', this );
 			}
 
 			if ( this.get( itemId ) ) {
@@ -654,7 +655,7 @@ export default class Collection {
 				 *
 				 * @error collection-add-item-already-exists
 				 */
-				throw new CKEditorError( 'collection-add-item-already-exists', this );
+				throw new CKEditorError( 'collection-add-item-already-exists: This item already exists in the collection.', this );
 			}
 		} else {
 			item[ idProperty ] = itemId = uid();
