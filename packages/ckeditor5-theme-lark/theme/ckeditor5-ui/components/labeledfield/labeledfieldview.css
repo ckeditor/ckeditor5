@@ -36,7 +36,7 @@
 	& .ck.ck-label {
 		display: block;
 		position: absolute;
-		top: calc(-1 * var(--ck-spacing-large));
+		top: calc(-1 * var(--ck-spacing-standard) - 1px);
 		left: var(--ck-spacing-medium);
 		right: auto;
 
@@ -48,6 +48,11 @@
 		line-height: initial;
 		font-weight: normal;
 		transform: none;
+
+		/* Prevent overflow when the label is longer than the input */
+		text-overflow: ellipsis;
+		overflow: hidden;
+		max-width: 100%;
 
 		transition:
 			top .1s ease-in-out,

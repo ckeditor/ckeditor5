@@ -144,7 +144,7 @@ export function createLabeledInputView( locale ) {
 	const labeledInputView = new LabeledFieldView( locale, createLabeledInputText );
 
 	labeledInputView.set( {
-		label: t( 'Insert image via URL' )
+		label: t( 'Image URL' )
 	} );
 	labeledInputView.fieldView.placeholder = 'https://example.com/src/image.png';
 	labeledInputView.infoText = t( 'Paste the image source URL.' );
