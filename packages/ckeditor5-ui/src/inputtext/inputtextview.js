@@ -87,8 +87,6 @@ export default class InputTextView extends View {
 		 *
 		 * @member {Boolean} #isFocused
 		 */
-		this.set( 'isFocused', false );
-
 		this.bind( 'isFocused' ).to( this.focusTracker );
 
 		/**
