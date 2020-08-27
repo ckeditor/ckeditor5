@@ -128,8 +128,8 @@ export default class ColorInputView extends View {
 				'aria-describedby': bind.to( 'ariaDescribedById' )
 			},
 			children: [
-				this._inputView,
-				this._dropdownView
+				this._dropdownView,
+				this._inputView
 			]
 		} );
 
