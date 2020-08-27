@@ -53,9 +53,9 @@ export default class Input extends Plugin {
 			const domEvent = data.domEvent;
 			const { inputType } = domEvent;
 
-			if ( !inputType.startsWith( 'insert' ) ) {
-				return;
-			}
+			// if ( !inputType.startsWith( 'insert' ) ) {
+			// 	return;
+			// }
 
 			// For some input types the data is in domEvent.data. For some in the data transfer.
 			const textData = domEvent.data || domEvent.dataTransfer && domEvent.dataTransfer.getData( 'text/plain' );
@@ -67,7 +67,19 @@ export default class Input extends Plugin {
 				compositionText = textData;
 				wasHandled = true;
 			}
-			if ( inputType === 'insertText' ) {
+			// Safari on Mac does that when it ends the composition and wants to replace the entire content
+			// and enter another composition. E.g. Using Hiragana, start with "Paragraph[]",
+			// then type "z", "x", "c", left arrow, left arrow.
+			else if ( inputType === 'deleteByComposition' ) {
+				const viewRangeFromTargetRange = editor.editing.view.domConverter.domRangeToView( targetRange );
+				const modelRange = editor.editing.mapper.toModelRange( viewRangeFromTargetRange );
+				const selection = editor.model.createSelection( modelRange );
+
+				editor.execute( 'delete', { selection } );
+
+				wasHandled = true;
+			}
+			else if ( inputType === 'insertText' ) {
 				// This one is used by Chrome when typing accented letter (Mac).
 				// This one is used by Safari when applying spell check (Mac).
 				if ( !targetRange.collapsed ) {
