@@ -54,7 +54,12 @@ module.exports = {
 		new webpack.BannerPlugin( {
 			banner: bundler.getLicenseBanner(),
 			raw: true
-		} )
+		} ),
+		// POC: Replace DowncastWriter (1 usage) with enhanced implementation.
+		new webpack.NormalModuleReplacementPlugin(
+			/\.\/downcastwriter$/,
+			'./../../../../packages/ckeditor5-build-classic/src/ckx/ckxwriter'
+		)
 	],
 
 	module: {
@@ -83,6 +88,29 @@ module.exports = {
 							},
 							minify: true
 						} )
+					}
+				]
+			},
+			{
+				// POC: Add support for ".ckx" file type.
+				test: /\.ckx$/,
+				use: [
+					{
+						loader: 'babel-loader',
+						options: {
+							plugins: [
+								'@babel/plugin-syntax-jsx',
+								[
+									'@babel/plugin-transform-react-jsx',
+									{
+										runtime: 'classic',
+										pragma: 'writer.createNestedElement',
+										pragmaFrag: '"DocumentFragment"',
+										throwIfNamespace: false
+									}
+								]
+							]
+						}
 					}
 				]
 			}
