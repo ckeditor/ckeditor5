@@ -21,9 +21,10 @@ const downcastInfo = ( modelElement, { writer } ) => (
 	<div class="info foo bar" style="background:blue;color:white;" data-foo={ modelElement.getAttribute( 'foo' ) }>
 		Foo bar
 		<div class="inner-info">
+			<attribute:em>🍔</attribute:em>
 			<attribute:strong>It works!</attribute:strong>
 		</div>
-		<empty:img/>
+		<empty:img href="../tests/manual/sample.jpg" />
 		<raw:p renderFunction={ customRawElementContents }></raw:p>
 	</div>
 );
