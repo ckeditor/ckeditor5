@@ -5,13 +5,14 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+
 import ListStyleEditing from '../src/liststyleediting';
 import TodoListEditing from '../src/todolistediting';
 import ListStyleCommand from '../src/liststylecommand';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 
 describe( 'ListStyleEditing', () => {
 	let editor, model, view;

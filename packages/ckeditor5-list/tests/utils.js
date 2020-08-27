@@ -5,11 +5,13 @@
 
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import { createViewListItemElement, getSiblingListItem, getSiblingNodes } from '../src/utils';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+
 import ListEditing from '../src/listediting';
 import ListStyleEditing from '../src/liststyleediting';
+
+import { createViewListItemElement, getSiblingListItem, getSiblingNodes } from '../src/utils';
 
 describe( 'utils', () => {
 	let writer;
