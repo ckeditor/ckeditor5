@@ -9,6 +9,8 @@ const customRawElementContents = domElement => {
 	domElement.innerHTML = '<span>Inner HTML of a raw element.</span>';
 };
 
+const message = 'It works!';
+
 /**
  * The downcast definition of the "info" model element.
  *
@@ -22,7 +24,9 @@ const customRawElementContents = domElement => {
 const downcastInfo = ( modelElement, { writer } ) => (
 	<div class="info" style={ INFO_STYLES } data-info-id={ modelElement.getAttribute( 'infoId' ) }>
 		<p class="info-message">
-			<attribute:strong>It works! <attribute:em>🍔</attribute:em></attribute:strong>
+			<attribute:strong>{ message }
+				<attribute:em>🍔</attribute:em>
+			</attribute:strong>
 		</p>
 		<empty:img src="../tests/manual/sample.jpg" style="width:120px"/>
 		<raw:p renderFunction={ customRawElementContents }></raw:p>

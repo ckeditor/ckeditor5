@@ -6,13 +6,9 @@
 import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 
 export default class CKXWriter extends DowncastWriter {
-	createNestedElement( name, attributes, ...children ) {
-		let [ elementType, elementName ] = name.split( ':' );
-
-		if ( !elementName ) {
-			elementName = elementType;
-			elementType = 'container';
-		}
+	createElementWithChildren( name, attributes, ...children ) {
+		// Handles both "div" and "container:div" notations.
+		const { elementType, elementName } = getTypeAndName( name );
 
 		const parent = this._createElementOfType( elementType, elementName, attributes );
 
@@ -43,4 +39,15 @@ export default class CKXWriter extends DowncastWriter {
 			}
 		}
 	}
+}
+
+function getTypeAndName( name ) {
+	let [ elementType, elementName ] = name.split( ':' );
+
+	if ( !elementName ) {
+		elementName = elementType;
+		elementType = 'container';
+	}
+
+	return { elementType, elementName };
 }

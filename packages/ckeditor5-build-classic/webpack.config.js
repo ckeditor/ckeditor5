@@ -104,7 +104,7 @@ module.exports = {
 									'@babel/plugin-transform-react-jsx',
 									{
 										runtime: 'classic',
-										pragma: 'writer.createNestedElement',
+										pragma: 'writer.createElementWithChildren',
 										pragmaFrag: '"DocumentFragment"',
 										throwIfNamespace: false
 									}
