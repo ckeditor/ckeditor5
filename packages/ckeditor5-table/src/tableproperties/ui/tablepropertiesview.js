@@ -433,6 +433,8 @@ export default class TablePropertiesView extends View {
 			this.borderStyle = evt.source._borderStyleValue;
 		} );
 
+		borderStyleDropdown.bind( 'isEmpty' ).to( this, 'borderStyle', value => !value );
+
 		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this ) );
 
 		// -- Width ---------------------------------------------------
