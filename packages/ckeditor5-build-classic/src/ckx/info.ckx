@@ -1,0 +1,105 @@
+/**
+ * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+const customRawElementContents = domElement => {
+	domElement.innerHTML = '<span>Inner HTML</span>';
+};
+
+/**
+ * The downcast definition of the "info" model element.
+ *
+ * It returns view structure in JSX syntax.
+ *
+ * @param modelElement
+ * @param writer
+ * @returns {JSX.Element}
+ */
+// eslint-disable-next-line no-unused-vars
+const downcastInfo = ( modelElement, { writer } ) => (
+	<div class="info foo bar" style="background:blue;color:white;" data-foo={ modelElement.getAttribute( 'foo' ) }>
+		Foo bar
+		<div class="inner-info">
+			<attribute:strong>It works!</attribute:strong>
+		</div>
+		<empty:img/>
+		<raw:p renderFunction={ customRawElementContents }></raw:p>
+	</div>
+);
+
+/**
+ * CKX Info plugin.
+ *
+ * This requires babel plugins in webpack config:
+
+ *	const webpackConfig = {
+ *		// ... other configuration
+ *
+ *		plugins: [
+ *			// ... other plugins
+ *
+ *			// Include CKX-ready writer.
+ *			new webpack.NormalModuleReplacementPlugin(
+ *				/\.\/downcastwriter$/,
+ *				'./../../../../packages/ckeditor5-build-classic/src/ckx/ckxwriter'
+ *			)
+ *		],
+ *
+ *		module: {
+ *			rules: [
+ *				// ... other rules
+ *				{
+ *					// Added support for ".ckx" file type.
+ *					test: /\.ckx$/,
+ *					use: [
+ *						{
+ *							loader: 'babel-loader',
+ *							options: {
+ *								plugins: [
+ *									'@babel/plugin-syntax-jsx',
+ *									[
+ *										'@babel/plugin-transform-react-jsx',
+ *										{
+ *											runtime: 'classic',
+ *											pragma: 'writer.createNestedElement',
+ *											pragmaFrag: '"DocumentFragment"',
+ *											throwIfNamespace: false
+ *										}
+ *									]
+ *								]
+ *							}
+ *						}
+ *					]
+ *				}
+ *			]
+ *		}
+ *	};
+ *
+ * with mentioned plugins to be installed. Pragma fragment is not added.
+ *
+ * @param editor
+ * @constructor
+ */
+function Info( editor ) {
+	editor.model.schema.register( 'info', {
+		allowIn: '$root',
+		isObject: true,
+		isSelectable: true
+	} );
+
+	editor.conversion.for( 'upcast' ).elementToElement( {
+		view: {
+			name: 'div',
+			classes: 'info'
+		},
+		model: 'info'
+	} );
+
+	editor.conversion.for( 'downcast' ).elementToElement( {
+		model: 'info',
+		view: downcastInfo
+	} );
+}
+
+export default Info;
