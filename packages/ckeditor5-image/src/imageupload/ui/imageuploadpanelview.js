@@ -216,7 +216,7 @@ export default class ImageUploadPanelView extends View {
 	}
 
 	/**
-	 * Returns a view for the integration.
+	 * Returns a view of the integration.
 	 *
 	 * @param {string} name The name of the integration.
 	 *
