@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-adapter-ckfinder",
-  "version": "21.0.0",
+  "version": "22.0.0",
   "description": "CKFinder adapter for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -10,20 +10,20 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^21.0.0",
-    "@ckeditor/ckeditor5-upload": "^21.0.0"
+    "@ckeditor/ckeditor5-core": "^22.0.0",
+    "@ckeditor/ckeditor5-upload": "^22.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^21.0.0",
-    "@ckeditor/ckeditor5-clipboard": "^21.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^21.0.0",
-    "@ckeditor/ckeditor5-enter": "^21.0.0",
-    "@ckeditor/ckeditor5-heading": "^21.0.0",
-    "@ckeditor/ckeditor5-image": "^21.0.0",
-    "@ckeditor/ckeditor5-list": "^21.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^21.0.0",
-    "@ckeditor/ckeditor5-typing": "^21.0.0",
-    "@ckeditor/ckeditor5-undo": "^21.0.0"
+    "@ckeditor/ckeditor5-basic-styles": "^22.0.0",
+    "@ckeditor/ckeditor5-clipboard": "^22.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^22.0.0",
+    "@ckeditor/ckeditor5-enter": "^22.0.0",
+    "@ckeditor/ckeditor5-heading": "^22.0.0",
+    "@ckeditor/ckeditor5-image": "^22.0.0",
+    "@ckeditor/ckeditor5-list": "^22.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^22.0.0",
+    "@ckeditor/ckeditor5-typing": "^22.0.0",
+    "@ckeditor/ckeditor5-undo": "^22.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-clipboard",
-  "version": "21.0.0",
+  "version": "22.0.0",
   "description": "Clipboard integration for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -10,16 +10,16 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^21.0.0",
-    "@ckeditor/ckeditor5-engine": "^21.0.0",
-    "@ckeditor/ckeditor5-utils": "^21.0.0"
+    "@ckeditor/ckeditor5-core": "^22.0.0",
+    "@ckeditor/ckeditor5-engine": "^22.0.0",
+    "@ckeditor/ckeditor5-utils": "^22.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^21.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^21.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^21.0.0",
-    "@ckeditor/ckeditor5-link": "^21.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^21.0.0"
+    "@ckeditor/ckeditor5-basic-styles": "^22.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^22.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^22.0.0",
+    "@ckeditor/ckeditor5-link": "^22.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^22.0.0"
   },
   "engines": {
     "node": ">=12.0.0",
