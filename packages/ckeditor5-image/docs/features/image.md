@@ -82,6 +82,31 @@ By default, if the image caption is empty, the `<figcaption>` element is not vis
 
 See the {@link features/image-upload Image upload} guide.
 
+## Inserting images via source URL
+
+Besides the ability to insert images by uploading them directly from your disk or via CKFinder, you can also configure the editor to allow inserting images via source URL.
+
+In order to enable this option configure `image.upload.panel.items` like below:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ...
+		image: {
+			// ...
+			upload: {
+				panel: {
+					items: [ 'insertImageViaUrl' ]
+				}
+			}
+		}
+	} )
+```
+
+This will extend the standalone **Insert image** button in the toolbar by adding the dropdown panel with the new feature (click the arrow next to the button). To see how it works, please take a look at the demo below:
+
+{@snippet features/image-insert-via-url}
+
 ## Responsive images
 
 Support for responsive images in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Refer to the {@link features/easy-image#responsive-images Easy Image integration} guide to learn how to use the feature in your project.

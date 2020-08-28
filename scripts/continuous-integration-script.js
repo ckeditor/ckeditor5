@@ -91,7 +91,14 @@ for ( const fullPackageName of packages ) {
 }
 
 console.log( 'Uploading combined code coverage report…' );
-childProcess.execSync( 'npx coveralls < .out/combined_lcov.info' );
+
+if ( shouldUploadCoverageReport() ) {
+	childProcess.execSync( 'npx coveralls < .out/combined_lcov.info' );
+} else {
+	console.log( 'Since the PR comes from the community, we do not upload code coverage report.' );
+	console.log( 'Read more why: https://github.com/ckeditor/ckeditor5/issues/7745.' );
+}
+
 console.log( 'Done' );
 
 if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
@@ -149,4 +156,10 @@ function appendCoverageReport() {
 			flag: 'as'
 		} );
 	} );
+}
+
+function shouldUploadCoverageReport() {
+	// If the repository slugs are different, the pull request comes from the community (forked repository).
+	// For such builds, sending the CC report will be disabled.
+	return ( process.env.TRAVIS_EVENT_TYPE !== 'pull_request' || process.env.TRAVIS_PULL_REQUEST_SLUG === process.env.TRAVIS_REPO_SLUG );
 }

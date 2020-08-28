@@ -47,6 +47,7 @@ export default class IndentCommand extends Command {
 	 * Indents or outdents (depending on the {@link #constructor}'s `indentDirection` parameter) selected list items.
 	 *
 	 * @fires execute
+	 * @fires _executeCleanup
 	 */
 	execute() {
 		const model = this.editor.model;
@@ -90,6 +91,17 @@ export default class IndentCommand extends Command {
 					writer.setAttribute( 'listIndent', indent, item );
 				}
 			}
+
+			/**
+			 * Event fired by the {@link #execute} method.
+			 *
+			 * It allows to execute an action after executing the {@link ~IndentCommand#execute} method, e.g. adjusting
+			 * attributes of changed list items.
+			 *
+			 * @protected
+			 * @event _executeCleanup
+			 */
+			this.fire( '_executeCleanup', itemsToChange );
 		} );
 	}
 

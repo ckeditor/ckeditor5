@@ -8,16 +8,21 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ImageUploadPanelView from './ui/imageuploadpanelview';
+
 import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
+import { createImageTypeRegExp, prepareIntegrations } from './utils';
+
 import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
-import { createImageTypeRegExp } from './utils';
+
+import { isImage } from '../image/utils';
 
 /**
  * The image upload button plugin.
  *
  * For a detailed overview, check the {@glink features/image-upload/image-upload Image upload feature} documentation.
  *
- * Adds the `'imageUpload'` button to the {@link module:ui/componentfactory~ComponentFactory UI component factory}.
+ * Adds the `'imageUpload'` dropdown to the {@link module:ui/componentfactory~ComponentFactory UI component factory}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -25,39 +30,154 @@ export default class ImageUploadUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'ImageUploadUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
-		const t = editor.t;
+		const isImageUploadPanelViewEnabled = !!editor.config.get( 'image.upload.panel.items' );
 
-		// Setup `imageUpload` button.
 		editor.ui.componentFactory.add( 'imageUpload', locale => {
-			const view = new FileDialogButtonView( locale );
-			const command = editor.commands.get( 'imageUpload' );
-			const imageTypes = editor.config.get( 'image.upload.types' );
-			const imageTypesRegExp = createImageTypeRegExp( imageTypes );
-
-			view.set( {
-				acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
-				allowMultipleFiles: true
-			} );
-
-			view.buttonView.set( {
-				label: t( 'Insert image' ),
-				icon: imageIcon,
-				tooltip: true
-			} );
-
-			view.buttonView.bind( 'isEnabled' ).to( command );
-
-			view.on( 'done', ( evt, files ) => {
-				const imagesToUpload = Array.from( files ).filter( file => imageTypesRegExp.test( file.type ) );
-
-				if ( imagesToUpload.length ) {
-					editor.execute( 'imageUpload', { file: imagesToUpload } );
-				}
-			} );
-
-			return view;
+			if ( isImageUploadPanelViewEnabled ) {
+				return this._createDropdownView( locale );
+			} else {
+				return this._createFileDialogButtonView( locale );
+			}
 		} );
+	}
+
+	/**
+	 * Sets up the dropdown view.
+	 *
+	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdownView.
+	 * @param {module:image/imageupload/ui/imageuploadpanelview~ImageUploadPanelView} imageUploadView An imageUploadView.
+	 * @param {module:core/command~Command} command An imageUpload command
+	 *
+	 * @private
+	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
+	 */
+	_setUpDropdown( dropdownView, imageUploadView, command ) {
+		const editor = this.editor;
+		const t = editor.t;
+		const insertButtonView = imageUploadView.insertButtonView;
+
+		dropdownView.bind( 'isEnabled' ).to( command );
+
+		dropdownView.on( 'change:isOpen', () => {
+			const selectedElement = editor.model.document.selection.getSelectedElement();
+
+			if ( dropdownView.isOpen ) {
+				imageUploadView.focus();
+
+				if ( isImage( selectedElement ) ) {
+					imageUploadView.imageURLInputValue = selectedElement.getAttribute( 'src' );
+					insertButtonView.label = t( 'Update' );
+				} else {
+					imageUploadView.imageURLInputValue = '';
+					insertButtonView.label = t( 'Insert' );
+				}
+			}
+		} );
+
+		imageUploadView.delegate( 'submit', 'cancel' ).to( dropdownView );
+		this.delegate( 'cancel' ).to( dropdownView );
+
+		dropdownView.on( 'submit', () => {
+			closePanel();
+			onSubmit();
+		} );
+
+		dropdownView.on( 'cancel', () => {
+			closePanel();
+		} );
+
+		function onSubmit() {
+			const selectedElement = editor.model.document.selection.getSelectedElement();
+
+			if ( isImage( selectedElement ) ) {
+				editor.model.change( writer => {
+					writer.setAttribute( 'src', imageUploadView.imageURLInputValue, selectedElement );
+					writer.removeAttribute( 'srcset', selectedElement );
+					writer.removeAttribute( 'sizes', selectedElement );
+				} );
+			} else {
+				editor.execute( 'imageInsert', { source: imageUploadView.imageURLInputValue } );
+			}
+		}
+
+		function closePanel() {
+			editor.editing.view.focus();
+			dropdownView.isOpen = false;
+		}
+
+		return dropdownView;
+	}
+
+	/**
+	 * Creates the dropdown view.
+	 *
+	 * @param {module:utils/locale~Locale} locale The localization services instance.
+	 *
+	 * @private
+	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
+	 */
+	_createDropdownView( locale ) {
+		const editor = this.editor;
+		const imageUploadView = new ImageUploadPanelView( locale, prepareIntegrations( editor ) );
+		const command = editor.commands.get( 'imageUpload' );
+
+		const dropdownView = imageUploadView.dropdownView;
+		const panelView = dropdownView.panelView;
+		const splitButtonView = dropdownView.buttonView;
+
+		splitButtonView.actionView = this._createFileDialogButtonView( locale );
+
+		panelView.children.add( imageUploadView );
+
+		return this._setUpDropdown( dropdownView, imageUploadView, command );
+	}
+
+	/**
+	 * Creates and sets up file dialog button view.
+	 *
+	 * @param {module:utils/locale~Locale} locale The localization services instance.
+	 *
+	 * @private
+	 * @returns {module:upload/ui/filedialogbuttonview~FileDialogButtonView}
+	 */
+	_createFileDialogButtonView( locale ) {
+		const editor = this.editor;
+		const t = locale.t;
+		const imageTypes = editor.config.get( 'image.upload.types' );
+		const fileDialogButtonView = new FileDialogButtonView( locale );
+		const imageTypesRegExp = createImageTypeRegExp( imageTypes );
+		const command = editor.commands.get( 'imageUpload' );
+
+		fileDialogButtonView.set( {
+			acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
+			allowMultipleFiles: true
+		} );
+
+		fileDialogButtonView.buttonView.set( {
+			label: t( 'Insert image' ),
+			icon: imageIcon,
+			tooltip: true
+		} );
+
+		fileDialogButtonView.buttonView.bind( 'isEnabled' ).to( command );
+
+		fileDialogButtonView.on( 'done', ( evt, files ) => {
+			const imagesToUpload = Array.from( files ).filter( file => imageTypesRegExp.test( file.type ) );
+
+			if ( imagesToUpload.length ) {
+				editor.execute( 'imageUpload', { file: imagesToUpload } );
+			}
+		} );
+
+		return fileDialogButtonView;
 	}
 }
