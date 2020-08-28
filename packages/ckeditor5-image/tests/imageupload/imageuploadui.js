@@ -438,6 +438,67 @@ describe( 'ImageUploadUI', () => {
 			} );
 		} );
 
+		describe( 'dropdown panel integrations', () => {
+			describe( 'insert image via URL form', () => {
+				it( 'should have "Insert image via URL" label on inserting new image', () => {
+					const dropdown = editor.ui.componentFactory.create( 'imageUpload' );
+					const viewDocument = editor.editing.view.document;
+
+					editor.setData( '<p>test</p>' );
+
+					editor.editing.view.change( writer => {
+						writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'end' );
+					} );
+
+					const el = viewDocument.selection.getSelectedElement();
+
+					const data = fakeEventData();
+					const eventInfo = new EventInfo( el, 'click' );
+					const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
+
+					viewDocument.fire( 'click', domEventDataMock );
+
+					dropdown.isOpen = true;
+
+					const inputValue = dropdown.panelView.children.first.imageURLInputValue;
+
+					const insertImageViaUrlForm = dropdown.panelView.children.first.getIntegration( 'insertImageViaUrl' );
+
+					expect( dropdown.isOpen ).to.be.true;
+					expect( inputValue ).to.equal( '' );
+					expect( insertImageViaUrlForm.label ).to.equal( 'Insert image via URL' );
+				} );
+
+				it( 'should have "Update image URL" label on updating the image source URL', () => {
+					const dropdown = editor.ui.componentFactory.create( 'imageUpload' );
+					const viewDocument = editor.editing.view.document;
+
+					editor.setData( '<figure><img src="/assets/sample.png" /></figure>' );
+
+					editor.editing.view.change( writer => {
+						writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'on' );
+					} );
+
+					const el = viewDocument.selection.getSelectedElement();
+
+					const data = fakeEventData();
+					const eventInfo = new EventInfo( el, 'click' );
+					const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
+
+					viewDocument.fire( 'click', domEventDataMock );
+
+					dropdown.isOpen = true;
+
+					const inputValue = dropdown.panelView.children.first.imageURLInputValue;
+					const insertImageViaUrlForm = dropdown.panelView.children.first.getIntegration( 'insertImageViaUrl' );
+
+					expect( dropdown.isOpen ).to.be.true;
+					expect( inputValue ).to.equal( '/assets/sample.png' );
+					expect( insertImageViaUrlForm.label ).to.equal( 'Update image URL' );
+				} );
+			} );
+		} );
+
 		it( 'should remove all attributes from model except "src" when updating the image source URL', () => {
 			const viewDocument = editor.editing.view.document;
 			const dropdown = editor.ui.componentFactory.create( 'imageUpload' );
