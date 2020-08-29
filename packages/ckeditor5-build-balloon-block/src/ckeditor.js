@@ -31,6 +31,9 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 
+import Title from '@ckeditor/ckeditor5-heading/src/title.js';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
+
 import '../theme/theme.css';
 
 export default class BalloonEditor extends BalloonEditorBase {}
@@ -60,41 +63,22 @@ BalloonEditor.builtinPlugins = [
 	PasteFromOffice,
 	Table,
 	TableToolbar,
-	TextTransformation
+	TextTransformation,
+	Title,
+	Underline
 ];
 
 // Editor configuration.
 BalloonEditor.defaultConfig = {
 	blockToolbar: [
-		'heading',
-		'|',
-		'bulletedList',
-		'numberedList',
-		'|',
-		'indent',
-		'outdent',
-		'|',
 		'imageUpload',
-		'blockQuote',
-		'insertTable',
-		'mediaEmbed',
-		'|',
-		'undo',
-		'redo'
 	],
 	toolbar: {
 		items: [
 			'bold',
 			'italic',
+			'underline',
 			'link'
-		]
-	},
-	image: {
-		toolbar: [
-			'imageStyle:full',
-			'imageStyle:side',
-			'|',
-			'imageTextAlternative'
 		]
 	},
 	table: {
