@@ -219,7 +219,6 @@ export default class ImageUploadPanelView extends View {
 	 * Returns a view of the integration.
 	 *
 	 * @param {string} name The name of the integration.
-	 *
 	 * @returns {module:ui/view~View}
 	 */
 	getIntegration( name ) {
