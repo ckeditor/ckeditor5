@@ -47,16 +47,16 @@ class SelectionTest extends Plugin {
 
 		editor.conversion.for( 'downcast' ).elementToElement( {
 			model: 'table',
-			view: ( modelItem, viewWriter ) => {
-				return toWidget( viewWriter.createContainerElement( 'table' ), viewWriter );
+			view: ( modelItem, { writer } ) => {
+				return toWidget( writer.createContainerElement( 'table' ), writer );
 			}
 		} );
 		editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
 
 		editor.conversion.for( 'downcast' ).elementToElement( {
 			model: 'tableCell',
-			view: ( modelItem, viewWriter ) => {
-				return toWidgetEditable( viewWriter.createEditableElement( 'td' ), viewWriter );
+			view: ( modelItem, { writer } ) => {
+				return toWidgetEditable( writer.createEditableElement( 'td' ), writer );
 			}
 		} );
 	}
