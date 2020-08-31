@@ -187,7 +187,8 @@ export default class DowncastDispatcher {
 				let eventName;
 
 				if ( type === 'attribute' ) {
-					eventName = `attribute:${ entry.attributeKey }:${ element.name }`;
+					// TODO: enhance event name retrieval.
+					eventName = `attribute:${ entry.attributeKey }:${ element && element.name }`;
 				} else {
 					eventName = `${ type }:${ element.name }`;
 				}
