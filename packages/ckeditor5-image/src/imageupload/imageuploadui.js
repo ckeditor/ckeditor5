@@ -142,7 +142,7 @@ export default class ImageUploadUI extends Plugin {
 	}
 
 	/**
-	 * Creates and sets up file dialog button view.
+	 * Creates and sets up the file dialog button view.
 	 *
 	 * @param {module:utils/locale~Locale} locale The localization services instance.
 	 *

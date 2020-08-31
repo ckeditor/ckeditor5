@@ -87,12 +87,12 @@ function getImageMimeType( blob, src ) {
 }
 
 /**
- * Creates integrations object that will be passed to the
+ * Creates an integrations object that will be passed to the
  * {@link module:image/imageupload/ui/imageuploadpanelview~ImageUploadPanelView}.
  *
- * @param {module:core/editor/editor~Editor} editor Editor instance.
+ * @param {module:core/editor/editor~Editor} editor The editor instance.
  *
- * @returns {Object.<String, module:ui/view~View>} Integrations object.
+ * @returns {Object.<String, module:ui/view~View>} The integrations object.
  */
 export function prepareIntegrations( editor ) {
 	const panelItems = editor.config.get( 'image.upload.panel.items' );
@@ -133,7 +133,7 @@ export function prepareIntegrations( editor ) {
 }
 
 /**
- * Creates labeled field view.
+ * Creates a labeled field view.
  *
  * @param {module:utils/locale~Locale} locale The localization services instance.
  *
