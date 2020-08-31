@@ -117,7 +117,7 @@ describe( 'DowncastHelpers', () => {
 		describe( 'config.triggerBy', () => {
 			beforeEach( () => {
 				model.schema.register( 'complex', {
-					inheritAllFrom: '$block',
+					allowIn: '$root',
 					allowAttributes: [ 'toStyle', 'toClass' ]
 				} );
 				downcastHelpers.elementToElement( {
@@ -132,13 +132,24 @@ describe( 'DowncastHelpers', () => {
 							...toClass
 						};
 
-						return writer.createContainerElement( 'complex', attributes );
+						const outter = writer.createContainerElement( 'c-outter' );
+						const inner = writer.createContainerElement( 'c-inner', attributes );
+
+						writer.insert( writer.createPositionAt( outter, 0 ), inner );
+
+						return outter;
 					},
 					triggerBy: [
 						'attribute:toStyle:complex',
 						'attribute:toClass:complex'
 					]
 				} );
+
+				model.schema.register( 'paragraph', {
+					inheritAllFrom: '$block',
+					allowIn: 'complex'
+				} );
+				downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 			} );
 
 			it( 'should convert to view as normal', () => {
@@ -146,7 +157,7 @@ describe( 'DowncastHelpers', () => {
 					writer.insertElement( 'complex', modelRoot, 0 );
 				} );
 
-				expectResult( '<complex></complex>' );
+				expectResult( '<c-outter><c-inner></c-inner></c-outter>' );
 			} );
 
 			it( 'should use main converter for attribute set', () => {
@@ -156,7 +167,7 @@ describe( 'DowncastHelpers', () => {
 					writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
 				} );
 
-				expectResult( '<complex style="display:block"></complex>' );
+				expectResult( '<c-outter><c-inner style="display:block"></c-inner></c-outter>' );
 			} );
 
 			it( 'should use main converter for attribute remove', () => {
@@ -166,7 +177,7 @@ describe( 'DowncastHelpers', () => {
 					writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
 				} );
 
-				expectResult( '<complex></complex>' );
+				expectResult( '<c-outter><c-inner></c-inner></c-outter>' );
 			} );
 
 			it( 'should use main converter for attribute add & remove', () => {
@@ -177,7 +188,7 @@ describe( 'DowncastHelpers', () => {
 					writer.setAttribute( 'toClass', true, modelRoot.getChild( 0 ) );
 				} );
 
-				expectResult( '<complex class="complex-other"></complex>' );
+				expectResult( '<c-outter><c-inner class="complex-other"></c-inner></c-outter>' );
 			} );
 
 			it( 'should do nothing if other attribute changed', () => {
@@ -187,7 +198,38 @@ describe( 'DowncastHelpers', () => {
 					writer.setAttribute( 'notTriggered', true, modelRoot.getChild( 0 ) );
 				} );
 
-				expectResult( '<complex></complex>' );
+				expectResult( '<c-outter><c-inner></c-inner></c-outter>' );
+			} );
+
+			describe( 'memoization', () => {
+				it( 'should create new element on re-converting element', () => {
+					setModelData( model, '<complex></complex>' );
+
+					const renderedView = viewRoot.getChild( 0 );
+
+					model.change( writer => {
+						writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
+					} );
+
+					const viewAfterReRender = viewRoot.getChild( 0 );
+
+					expect( viewAfterReRender ).to.not.equal( renderedView );
+				} );
+
+				it( 'should not re-create child elements on re-converting element', () => {
+					setModelData( model, '<complex><paragraph>Foo bar baz</paragraph></complex>' );
+
+					expectResult( '<complex><p>Foo bar baz</p></complex>' );
+					const renderedViewView = viewRoot.getChild( 0 ).getChild( 0 );
+
+					model.change( writer => {
+						writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
+					} );
+
+					const viewAfterReRender = viewRoot.getChild( 0 ).getChild( 0 );
+
+					expect( viewAfterReRender ).to.equal( renderedViewView );
+				} );
 			} );
 		} );
 	} );
