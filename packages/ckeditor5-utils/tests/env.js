@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import env, { isMac, isGecko, isSafari, isAndroid, isRegExpUnicodePropertySupported } from '../src/env';
+import env, { isMac, isGecko, isSafari, isAndroid, isRegExpUnicodePropertySupported, isBlink } from '../src/env';
 
 function toLowerCase( str ) {
 	return str.toLowerCase();
@@ -35,6 +35,12 @@ describe( 'Env', () => {
 	describe( 'isAndroid', () => {
 		it( 'is a boolean', () => {
 			expect( env.isAndroid ).to.be.a( 'boolean' );
+		} );
+	} );
+
+	describe( 'isBlink', () => {
+		it( 'is a boolean', () => {
+			expect( env.isBlink ).to.be.a( 'boolean' );
 		} );
 	} );
 
@@ -142,6 +148,42 @@ describe( 'Env', () => {
 
 			expect( isAndroid( toLowerCase(
 				'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko'
+			) ) ).to.be.false;
+		} );
+		/* eslint-enable max-len */
+	} );
+
+	describe( 'isBlink()', () => {
+		/* eslint-disable max-len */
+		it( 'returns true for Blink UA strings', () => {
+			expect( isBlink( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36'
+			) ) ).to.be.true;
+
+			expect( isBlink( toLowerCase(
+				'Mozilla/5.0 (Linux; Android 7.1; Mi A1 Build/N2G47H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Mobile Safari/537.36'
+			) ) ).to.be.true;
+
+			expect( isBlink( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36 Edg/84.0.522.52'
+			) ) ).to.be.true;
+		} );
+
+		it( 'returns false for non-Blink UA strings', () => {
+			expect( isBlink( toLowerCase(
+				'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15'
+			) ) ).to.be.false;
+
+			expect( isBlink( toLowerCase(
+				'Mozilla/5.0 (iPhone; CPU iPhone OS 12_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1'
+			) ) ).to.be.false;
+
+			expect( isBlink( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0'
+			) ) ).to.be.false;
+
+			expect( isBlink( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134'
 			) ) ).to.be.false;
 		} );
 		/* eslint-enable max-len */
