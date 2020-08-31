@@ -113,6 +113,83 @@ describe( 'DowncastHelpers', () => {
 
 			expectResult( '<h2></h2>' );
 		} );
+
+		describe( 'config.triggerBy', () => {
+			beforeEach( () => {
+				model.schema.register( 'complex', {
+					inheritAllFrom: '$block',
+					allowAttributes: [ 'toStyle', 'toClass' ]
+				} );
+				downcastHelpers.elementToElement( {
+					model: 'complex',
+					view: ( modelElement, { writer } ) => {
+						// TODO decide whether below is readable:
+						const toStyle = modelElement.hasAttribute( 'toStyle' ) && { style: modelElement.getAttribute( 'toStyle' ) };
+						const toClass = modelElement.hasAttribute( 'toClass' ) && { class: 'complex-other' };
+
+						const attributes = {
+							...toStyle,
+							...toClass
+						};
+
+						return writer.createContainerElement( 'complex', attributes );
+					},
+					triggerBy: [
+						'attribute:toStyle:complex',
+						'attribute:toClass:complex'
+					]
+				} );
+			} );
+
+			it( 'should convert to view as normal', () => {
+				model.change( writer => {
+					writer.insertElement( 'complex', modelRoot, 0 );
+				} );
+
+				expectResult( '<complex></complex>' );
+			} );
+
+			it( 'should use main converter for attribute set', () => {
+				setModelData( model, '<complex></complex>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<complex style="display:block"></complex>' );
+			} );
+
+			it( 'should use main converter for attribute remove', () => {
+				setModelData( model, '<complex toStyle="display:block"></complex>' );
+
+				model.change( writer => {
+					writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<complex></complex>' );
+			} );
+
+			it( 'should use main converter for attribute add & remove', () => {
+				setModelData( model, '<complex toStyle="display:block"></complex>' );
+
+				model.change( writer => {
+					writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
+					writer.setAttribute( 'toClass', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<complex class="complex-other"></complex>' );
+			} );
+
+			it( 'should do nothing if other attribute changed', () => {
+				setModelData( model, '<complex></complex>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'notTriggered', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<complex></complex>' );
+			} );
+		} );
 	} );
 
 	describe( 'attributeToElement()', () => {
@@ -1046,10 +1123,10 @@ describe( 'DowncastHelpers', () => {
 
 			expectResult(
 				'<p>' +
-					'Foo' +
-					'<group-start name="abc"></group-start><group-end name="abc"></group-end>' +
-					'<group-start name="foo"></group-start><group-end name="foo"></group-end>' +
-					'bar' +
+				'Foo' +
+				'<group-start name="abc"></group-start><group-end name="abc"></group-end>' +
+				'<group-start name="foo"></group-start><group-end name="foo"></group-end>' +
+				'bar' +
 				'</p>'
 			);
 
@@ -1237,7 +1314,7 @@ describe( 'DowncastHelpers', () => {
 
 			expectResult(
 				'<p data-group-start-before="abc:xyz,foo:bar">' +
-					'Fo<group-end name="abc:xyz"></group-end><group-end name="foo:bar"></group-end>o' +
+				'Fo<group-end name="abc:xyz"></group-end><group-end name="foo:bar"></group-end>o' +
 				'</p>'
 			);
 
@@ -1266,7 +1343,7 @@ describe( 'DowncastHelpers', () => {
 
 			expectResult(
 				'<p data-group-end-after="abc:xyz,foo:bar">' +
-					'Fo<group-start name="abc:xyz"></group-start><group-start name="foo:bar"></group-start>o' +
+				'Fo<group-start name="abc:xyz"></group-start><group-start name="foo:bar"></group-start>o' +
 				'</p>'
 			);
 
