@@ -139,6 +139,8 @@ export default class ImageUploadPanelView extends View {
 					} );
 				}
 
+				integrationView.name = integration;
+
 				this._integrations.add( integrationView );
 			}
 		}
@@ -211,6 +213,16 @@ export default class ImageUploadPanelView extends View {
 		this.listenTo( childViews[ 0 ].element, 'selectstart', ( evt, domEvt ) => {
 			domEvt.stopPropagation();
 		}, { priority: 'high' } );
+	}
+
+	/**
+	 * Returns a view of the integration.
+	 *
+	 * @param {string} name The name of the integration.
+	 * @returns {module:ui/view~View}
+	 */
+	getIntegration( name ) {
+		return this._integrations.find( integration => integration.name === name );
 	}
 
 	/**

@@ -19,5 +19,6 @@
 	"Insert": "The label of submit form button if image src URL input has no value",
 	"Update": "The label of submit form button if image src URL input has value",
 	"Insert image via URL": "The input label for the Insert image via URL form",
+	"Update image URL": "The alternative input label for the Insert image via URL form",
 	"Paste the image source URL.": "The tip label below the Insert image via URL form"
 }
