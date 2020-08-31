@@ -17,10 +17,6 @@ import StylesMap from './stylesmap';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToTags } = require( '../dev-utils/utils' );
 
-let renderId = 0;
-
-const getRenderId = () => renderId++;
-
 /**
  * View element.
  *
@@ -81,8 +77,6 @@ export default class Element extends Node {
 		 * @member {Map} #_attrs
 		 */
 		this._attrs = parseAttributes( attrs );
-
-		this._attrs.set( 'data-render-id', getRenderId() );
 
 		/**
 		 * Array of child nodes.
