@@ -40,7 +40,7 @@ export default class ImageInsertUI extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		editor.ui.componentFactory.add( 'imageInsert', locale => {
+		editor.ui.componentFactory.add( 'imageUpload', locale => {
 			return this._createDropdownView( locale );
 		} );
 	}
