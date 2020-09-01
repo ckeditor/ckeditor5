@@ -14,7 +14,7 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
-import ImageUploadCommand from '../../src/imageinsert/imageinsertcommand';
+import ImageInsertCommand from '../../src/imageinsert/imageinsertcommand';
 import { fetchLocalImage, isLocalImage } from '../../src/imageinsert/utils';
 import { createImageTypeRegExp } from './utils';
 import { getViewImgFromWidget } from '../image/utils';
@@ -24,7 +24,7 @@ import { getViewImgFromWidget } from '../image/utils';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ImageUploadEditing extends Plugin {
+export default class ImageInsertEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -33,7 +33,7 @@ export default class ImageUploadEditing extends Plugin {
 	}
 
 	static get pluginName() {
-		return 'ImageUploadEditing';
+		return 'ImageInsertEditing';
 	}
 
 	/**
@@ -66,8 +66,8 @@ export default class ImageUploadEditing extends Plugin {
 			allowAttributes: [ 'uploadId', 'uploadStatus' ]
 		} );
 
-		// Register imageUpload command.
-		editor.commands.add( 'imageUpload', new ImageUploadCommand( editor ) );
+		// Register imageInsert command.
+		editor.commands.add( 'imageUpload', new ImageInsertCommand( editor ) );
 
 		// Register upcast converter for uploadId.
 		conversion.for( 'upcast' )

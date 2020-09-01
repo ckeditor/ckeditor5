@@ -11,7 +11,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
-import ImageUploadFormRowView from './imageinsertformrowview';
+import ImageInsertFormRowView from './imageinsertformrowview';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -30,13 +30,13 @@ import '../../../theme/imageinsert.css';
 /**
  * The insert an image via URL view controller class.
  *
- * See {@link module:image/imageinsert/ui/imageinsertpanelview~ImageUploadPanelView}.
+ * See {@link module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView}.
  *
  * @extends module:ui/view~View
  */
-export default class ImageUploadPanelView extends View {
+export default class ImageInsertPanelView extends View {
 	/**
-	 * Creates a view for the dropdown panel of {@link module:image/imageinsert/imageinsert/ui~ImageUploadUI}.
+	 * Creates a view for the dropdown panel of {@link module:image/imageinsert/imageinsert/ui~ImageInsertUI}.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance..
 	 * @param {Object} [integrations] Integrations object that contain
@@ -159,7 +159,7 @@ export default class ImageUploadPanelView extends View {
 
 			children: [
 				...this._integrations,
-				new ImageUploadFormRowView( locale, {
+				new ImageInsertFormRowView( locale, {
 					children: [
 						this.insertButtonView,
 						this.cancelButtonView

@@ -96,7 +96,7 @@ function getImageMimeType( blob, src ) {
  */
 export function prepareIntegrations( editor ) {
 	const panelItems = editor.config.get( 'image.upload.panel.items' );
-	const imageUploadUIPlugin = editor.plugins.get( 'ImageUploadUI' );
+	const imageUploadUIPlugin = editor.plugins.get( 'ImageInsertUI' );
 
 	const PREDEFINED_INTEGRATIONS = {
 		'insertImageViaUrl': createLabeledInputView( editor.locale )

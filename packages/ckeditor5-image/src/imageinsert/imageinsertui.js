@@ -4,11 +4,11 @@
  */
 
 /**
- * @module image/imageinsert/imageinsert/ui
+ * @module image/imageinsert/imageinsertui
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageUploadPanelView from './ui/imageinsertpanelview';
+import ImageInsertPanelView from './ui/imageinsertpanelview';
 
 import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
 import { createImageTypeRegExp, prepareIntegrations } from './utils';
@@ -26,12 +26,12 @@ import { isImage } from '../image/utils';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ImageUploadUI extends Plugin {
+export default class ImageInsertUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'ImageUploadUI';
+		return 'ImageInsertUI';
 	}
 
 	/**
@@ -39,14 +39,9 @@ export default class ImageUploadUI extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const isImageUploadPanelViewEnabled = !!editor.config.get( 'image.upload.panel.items' );
 
-		editor.ui.componentFactory.add( 'imageUpload', locale => {
-			if ( isImageUploadPanelViewEnabled ) {
-				return this._createDropdownView( locale );
-			} else {
-				return this._createFileDialogButtonView( locale );
-			}
+		editor.ui.componentFactory.add( 'imageInsert', locale => {
+			return this._createDropdownView( locale );
 		} );
 	}
 
@@ -54,17 +49,17 @@ export default class ImageUploadUI extends Plugin {
 	 * Sets up the dropdown view.
 	 *
 	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdownView.
-	 * @param {module:image/imageinsert/ui/imageinsertpanelview~ImageUploadPanelView} imageUploadView An imageUploadView.
-	 * @param {module:core/command~Command} command An imageUpload command
+	 * @param {module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView} imageInsertView An imageInsertView.
+	 * @param {module:core/command~Command} command An imageInsert command
 	 *
 	 * @private
 	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
 	 */
-	_setUpDropdown( dropdownView, imageUploadView, command ) {
+	_setUpDropdown( dropdownView, imageInsertView, command ) {
 		const editor = this.editor;
 		const t = editor.t;
-		const insertButtonView = imageUploadView.insertButtonView;
-		const insertImageViaUrlForm = imageUploadView.getIntegration( 'insertImageViaUrl' );
+		const insertButtonView = imageInsertView.insertButtonView;
+		const insertImageViaUrlForm = imageInsertView.getIntegration( 'insertImageViaUrl' );
 
 		dropdownView.bind( 'isEnabled' ).to( command );
 
@@ -72,21 +67,21 @@ export default class ImageUploadUI extends Plugin {
 			const selectedElement = editor.model.document.selection.getSelectedElement();
 
 			if ( dropdownView.isOpen ) {
-				imageUploadView.focus();
+				imageInsertView.focus();
 
 				if ( isImage( selectedElement ) ) {
-					imageUploadView.imageURLInputValue = selectedElement.getAttribute( 'src' );
+					imageInsertView.imageURLInputValue = selectedElement.getAttribute( 'src' );
 					insertButtonView.label = t( 'Update' );
 					insertImageViaUrlForm.label = t( 'Update image URL' );
 				} else {
-					imageUploadView.imageURLInputValue = '';
+					imageInsertView.imageURLInputValue = '';
 					insertButtonView.label = t( 'Insert' );
 					insertImageViaUrlForm.label = t( 'Insert image via URL' );
 				}
 			}
 		} );
 
-		imageUploadView.delegate( 'submit', 'cancel' ).to( dropdownView );
+		imageInsertView.delegate( 'submit', 'cancel' ).to( dropdownView );
 		this.delegate( 'cancel' ).to( dropdownView );
 
 		dropdownView.on( 'submit', () => {
@@ -103,12 +98,12 @@ export default class ImageUploadUI extends Plugin {
 
 			if ( isImage( selectedElement ) ) {
 				editor.model.change( writer => {
-					writer.setAttribute( 'src', imageUploadView.imageURLInputValue, selectedElement );
+					writer.setAttribute( 'src', imageInsertView.imageURLInputValue, selectedElement );
 					writer.removeAttribute( 'srcset', selectedElement );
 					writer.removeAttribute( 'sizes', selectedElement );
 				} );
 			} else {
-				editor.execute( 'imageInsert', { source: imageUploadView.imageURLInputValue } );
+				editor.execute( 'imageInsert', { source: imageInsertView.imageURLInputValue } );
 			}
 		}
 
@@ -130,18 +125,18 @@ export default class ImageUploadUI extends Plugin {
 	 */
 	_createDropdownView( locale ) {
 		const editor = this.editor;
-		const imageUploadView = new ImageUploadPanelView( locale, prepareIntegrations( editor ) );
+		const imageInsertView = new ImageInsertPanelView( locale, prepareIntegrations( editor ) );
 		const command = editor.commands.get( 'imageUpload' );
 
-		const dropdownView = imageUploadView.dropdownView;
+		const dropdownView = imageInsertView.dropdownView;
 		const panelView = dropdownView.panelView;
 		const splitButtonView = dropdownView.buttonView;
 
 		splitButtonView.actionView = this._createFileDialogButtonView( locale );
 
-		panelView.children.add( imageUploadView );
+		panelView.children.add( imageInsertView );
 
-		return this._setUpDropdown( dropdownView, imageUploadView, command );
+		return this._setUpDropdown( dropdownView, imageInsertView, command );
 	}
 
 	/**
@@ -166,7 +161,7 @@ export default class ImageUploadUI extends Plugin {
 		} );
 
 		fileDialogButtonView.buttonView.set( {
-			label: t( 'Insert image' ),
+			label: t( 'Upload image' ),
 			icon: imageIcon,
 			tooltip: true
 		} );
