@@ -190,7 +190,7 @@ export default class DowncastDispatcher {
 					// TODO: enhance event name retrieval.
 					eventName = `attribute:${ entry.attributeKey }:${ element && element.name }`;
 				} else {
-					eventName = `${ type }:${ element.name }`;
+					eventName = `${ type }:${ entry.name }`;
 				}
 
 				if ( this._map.has( eventName ) ) {
