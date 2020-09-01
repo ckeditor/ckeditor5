@@ -141,7 +141,7 @@ describe( 'DowncastHelpers', () => {
 					expectResult( '<div></div>' );
 				} );
 
-				it( 'should converter on attribute set', () => {
+				it( 'should convert on attribute set', () => {
 					setModelData( model, '<simpleBlock></simpleBlock>' );
 
 					model.change( writer => {
@@ -151,7 +151,7 @@ describe( 'DowncastHelpers', () => {
 					expectResult( '<div style="display:block"></div>' );
 				} );
 
-				it( 'should converter on attribute change', () => {
+				it( 'should convert on attribute change', () => {
 					setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 					model.change( writer => {
@@ -224,7 +224,7 @@ describe( 'DowncastHelpers', () => {
 					expectResult( '<div class="complex-outter"><div></div></div>' );
 				} );
 
-				it( 'should converter on attribute set', () => {
+				it( 'should convert on attribute set', () => {
 					setModelData( model, '<complex></complex>' );
 
 					model.change( writer => {
@@ -234,7 +234,7 @@ describe( 'DowncastHelpers', () => {
 					expectResult( '<div class="complex-outter"><div style="display:block"></div></div>' );
 				} );
 
-				it( 'should converter on attribute change', () => {
+				it( 'should convert on attribute change', () => {
 					setModelData( model, '<complex toStyle="display:block"></complex>' );
 
 					model.change( writer => {
@@ -276,7 +276,7 @@ describe( 'DowncastHelpers', () => {
 				} );
 			} );
 
-			describe.skip( 'with complex view structure (slot conversion)', () => {
+			describe( 'with complex view structure (without slots)', () => {
 				beforeEach( () => {
 					model.schema.register( 'complex', {
 						allowIn: '$root',
@@ -287,11 +287,10 @@ describe( 'DowncastHelpers', () => {
 						view: ( modelElement, conversionApi ) => {
 							const { writer, mapper } = conversionApi;
 							const outter = writer.createContainerElement( 'c-outter' );
-							mapper.bindElements( modelElement, outter );
 							const inner = writer.createContainerElement( 'c-inner', getViewAttributes( modelElement ) );
 
 							writer.insert( writer.createPositionAt( outter, 0 ), inner );
-							mapper.bindSlotElements( modelElement, inner );
+							mapper.bindElements( modelElement, inner );
 
 							return outter;
 						},
@@ -308,7 +307,7 @@ describe( 'DowncastHelpers', () => {
 					downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 				} );
 
-				it( 'should convert to view on insert', () => {
+				it( 'should view on insert', () => {
 					model.change( writer => {
 						writer.insertElement( 'complex', modelRoot, 0 );
 					} );
@@ -316,7 +315,7 @@ describe( 'DowncastHelpers', () => {
 					expectResult( '<c-outter><c-inner></c-inner></c-outter>' );
 				} );
 
-				it( 'should use main converter for attribute set', () => {
+				it( 'should convert on attribute set', () => {
 					setModelData( model, '<complex></complex>' );
 
 					model.change( writer => {
@@ -326,7 +325,7 @@ describe( 'DowncastHelpers', () => {
 					expectResult( '<c-outter><c-inner style="display:block"></c-inner></c-outter>' );
 				} );
 
-				it( 'should use main converter for attribute remove', () => {
+				it( 'should convert on attribute remove', () => {
 					setModelData( model, '<complex toStyle="display:block"></complex>' );
 
 					model.change( writer => {
@@ -336,7 +335,7 @@ describe( 'DowncastHelpers', () => {
 					expectResult( '<c-outter><c-inner></c-inner></c-outter>' );
 				} );
 
-				it( 'should use main converter for attribute add & remove', () => {
+				it( 'should convert on one attribute add and other remove', () => {
 					setModelData( model, '<complex toStyle="display:block"></complex>' );
 
 					model.change( writer => {
