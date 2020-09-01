@@ -513,7 +513,7 @@ describe( 'DowncastHelpers', () => {
 						const paragraph = writer.createElement( 'paragraph' );
 						writer.insertText( 'baz', paragraph, 0 );
 						writer.insert( paragraph, slot, 0 );
-						writer.insert( slot, modelRoot.getChild( 0 ), 0 );
+						writer.insert( slot, modelRoot.getChild( 0 ), 'end' );
 					} );
 
 					expectResult(
@@ -546,7 +546,7 @@ describe( 'DowncastHelpers', () => {
 						expect( viewAfterReRender ).to.not.equal( complexView );
 					} );
 
-					it( 'should not re-create slot\'s child elements on re-converting main element', () => {
+					it( 'should not re-create slot\'s child elements on re-converting main element (attribute changed)', () => {
 						setModelData( model, '<complex>' +
 								'<slot><paragraph>foo</paragraph></slot>' +
 								'<slot><paragraph>bar</paragraph></slot>' +
@@ -566,18 +566,56 @@ describe( 'DowncastHelpers', () => {
 						expect( slotTwoAfter, 'second slot view' ).to.not.equal( slotTwo );
 						expect( slotOneChildAfter, 'first slot paragraph view' ).to.equal( slotOneChild );
 						expect( slotTwoChildAfter, 'second slot paragraph view' ).to.equal( slotTwoChild );
-
-						function getNodes() {
-							const main = viewRoot.getChild( 0 );
-							const slotWrap = main.getChild( 0 );
-							const slotOne = slotWrap.getChild( 0 );
-							const slotOneChild = slotOne.getChild( 0 );
-							const slotTwo = slotWrap.getChild( 1 );
-							const slotTwoChild = slotTwo.getChild( 0 );
-
-							return [ main, slotOne, slotOneChild, slotTwo, slotTwoChild ];
-						}
 					} );
+
+					it( 'should not re-create slot\'s child elements on re-converting main element (slot added)', () => {
+						setModelData( model, '<complex>' +
+								'<slot><paragraph>foo</paragraph></slot>' +
+								'<slot><paragraph>bar</paragraph></slot>' +
+							'</complex>'
+						);
+
+						const [ main, slotOne, slotOneChild, slotTwo, slotTwoChild ] = getNodes();
+
+						model.change( writer => {
+							const slot = writer.createElement( 'slot' );
+							const paragraph = writer.createElement( 'paragraph' );
+							writer.insertText( 'baz', paragraph, 0 );
+							writer.insert( paragraph, slot, 0 );
+							writer.insert( slot, modelRoot.getChild( 0 ), 'end' );
+						} );
+
+						const [
+							mainAfter,
+							slotOneAfter, slotOneChildAfter,
+							slotTwoAfter, slotTwoChildAfter,
+							slot3, slot3Child
+						] = getNodes();
+
+						expect( mainAfter, 'main view' ).to.not.equal( main );
+						expect( slotOneAfter, 'first slot view' ).to.not.equal( slotOne );
+						expect( slotTwoAfter, 'second slot view' ).to.not.equal( slotTwo );
+						expect( slotOneChildAfter, 'first slot paragraph view' ).to.equal( slotOneChild );
+						expect( slotTwoChildAfter, 'second slot paragraph view' ).to.equal( slotTwoChild );
+						expect( slot3, 'third slot view' ).to.not.be.undefined;
+						expect( slot3Child, 'third slot paragraph view' ).to.not.be.undefined;
+					} );
+
+					/**
+					 * Returns a generator that yields elements as [ mainView, slot1, childOfSlot1, slot2, childOfSlot2, ... ].
+					 */
+					function* getNodes() {
+						const main = viewRoot.getChild( 0 );
+						yield main;
+						const slotWrap = main.getChild( 0 );
+
+						for ( const slot of slotWrap.getChildren() ) {
+							const slotOneChild = slot.getChild( 0 );
+
+							yield slot;
+							yield slotOneChild;
+						}
+					}
 				} );
 			} );
 
