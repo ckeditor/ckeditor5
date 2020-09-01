@@ -84,9 +84,9 @@ See the {@link features/image-upload Image upload} guide.
 
 ## Inserting images via source URL
 
-Besides the ability to insert images by uploading them directly from your disk or via CKFinder, you can also configure the editor to allow inserting images via source URL.
+Besides the ability to insert images by uploading them directly from your disk or via CKFinder, you can also configure CKEditor 5 to allow inserting images via source URL.
 
-In order to enable this option configure `image.upload.panel.items` like below:
+In order to enable this option, configure {@link module:image/imageupload~ImageUploadPanelConfig#items `image.upload.panel.items`} like below:
 
 ```js
 ClassicEditor
@@ -103,7 +103,7 @@ ClassicEditor
 	} )
 ```
 
-This will extend the standalone **Insert image** button in the toolbar by adding the dropdown panel with the new feature (click the arrow next to the button). To see how it works, please take a look at the demo below:
+This will extend the standalone **Insert image** button in the toolbar by adding a dropdown panel with the new feature. To open the panel and add the image URL, click the arrow next to the image button. Check the demo below to insert a new image via URL or update an existing image by selecting it, opening the dropdown panel and pasting a new URL.
 
 {@snippet features/image-insert-via-url}
 

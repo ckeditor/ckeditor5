@@ -64,6 +64,7 @@ export default class ImageUploadUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const insertButtonView = imageUploadView.insertButtonView;
+		const insertImageViaUrlForm = imageUploadView.getIntegration( 'insertImageViaUrl' );
 
 		dropdownView.bind( 'isEnabled' ).to( command );
 
@@ -76,9 +77,11 @@ export default class ImageUploadUI extends Plugin {
 				if ( isImage( selectedElement ) ) {
 					imageUploadView.imageURLInputValue = selectedElement.getAttribute( 'src' );
 					insertButtonView.label = t( 'Update' );
+					insertImageViaUrlForm.label = t( 'Update image URL' );
 				} else {
 					imageUploadView.imageURLInputValue = '';
 					insertButtonView.label = t( 'Insert' );
+					insertImageViaUrlForm.label = t( 'Insert image via URL' );
 				}
 			}
 		} );
@@ -142,7 +145,7 @@ export default class ImageUploadUI extends Plugin {
 	}
 
 	/**
-	 * Creates and sets up file dialog button view.
+	 * Creates and sets up the file dialog button view.
 	 *
 	 * @param {module:utils/locale~Locale} locale The localization services instance.
 	 *

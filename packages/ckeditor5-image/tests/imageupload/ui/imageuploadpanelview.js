@@ -178,7 +178,7 @@ describe( 'ImageUploadPanelView', () => {
 			} );
 			view.render();
 
-			sinon.assert.calledWithExactly( spy.getCall( 0 ), view._integrations.get( 0 ).element );
+			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.getIntegration( 'insertImageViaUrl' ).element );
 			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.insertButtonView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.cancelButtonView.element );
 		} );
@@ -224,7 +224,7 @@ describe( 'ImageUploadPanelView', () => {
 
 			event.stopPropagation = spy;
 
-			view._integrations.get( 0 ).element.dispatchEvent( event );
+			view.getIntegration( 'insertImageViaUrl' ).element.dispatchEvent( event );
 			sinon.assert.calledOnce( spy );
 		} );
 
@@ -238,7 +238,7 @@ describe( 'ImageUploadPanelView', () => {
 
 				// Mock the url input is focused.
 				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view._integrations.get( 0 ).element;
+				view.focusTracker.focusedElement = view.getIntegration( 'insertImageViaUrl' ).element;
 
 				const spy = sinon.spy( view.insertButtonView, 'focus' );
 
@@ -272,7 +272,7 @@ describe( 'ImageUploadPanelView', () => {
 
 	describe( 'focus()', () => {
 		it( 'should focus on the first integration', () => {
-			const spy = sinon.spy( view._integrations.get( 0 ), 'focus' );
+			const spy = sinon.spy( view.getIntegration( 'insertImageViaUrl' ), 'focus' );
 
 			view.focus();
 
@@ -282,7 +282,7 @@ describe( 'ImageUploadPanelView', () => {
 
 	describe( 'Insert image via URL integration input', () => {
 		it( 'should be bound with #imageURLInputValue', () => {
-			const form = view._integrations.get( 0 );
+			const form = view.getIntegration( 'insertImageViaUrl' );
 
 			form.fieldView.element.value = 'abc';
 			form.fieldView.fire( 'input' );
