@@ -182,7 +182,7 @@ describe( 'DowncastHelpers', () => {
 					expectResult( '<div class="is-classy"></div>' );
 				} );
 
-				it( 'should do nothing if other attribute changed', () => {
+				it( 'should do nothing if non-triggerBy attribute has changed', () => {
 					setModelData( model, '<simpleBlock></simpleBlock>' );
 
 					model.change( writer => {
@@ -193,7 +193,90 @@ describe( 'DowncastHelpers', () => {
 				} );
 			} );
 
-			describe.skip( 'with complex view structure', () => {
+			describe( 'with complex view structure - no children allowed', () => {
+				beforeEach( () => {
+					model.schema.register( 'complex', {
+						allowIn: '$root',
+						allowAttributes: [ 'toStyle', 'toClass' ]
+					} );
+					downcastHelpers.elementToElement( {
+						model: 'complex',
+						view: ( modelElement, { writer } ) => {
+							const outter = writer.createContainerElement( 'div', { class: 'complex-outter' } );
+							const inner = writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
+
+							writer.insert( writer.createPositionAt( outter, 0 ), inner );
+
+							return outter;
+						},
+						triggerBy: [
+							'attribute:toStyle:complex',
+							'attribute:toClass:complex'
+						]
+					} );
+				} );
+
+				it( 'should convert on insert', () => {
+					model.change( writer => {
+						writer.insertElement( 'complex', modelRoot, 0 );
+					} );
+
+					expectResult( '<div class="complex-outter"><div></div></div>' );
+				} );
+
+				it( 'should converter on attribute set', () => {
+					setModelData( model, '<complex></complex>' );
+
+					model.change( writer => {
+						writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
+					} );
+
+					expectResult( '<div class="complex-outter"><div style="display:block"></div></div>' );
+				} );
+
+				it( 'should converter on attribute change', () => {
+					setModelData( model, '<complex toStyle="display:block"></complex>' );
+
+					model.change( writer => {
+						writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
+					} );
+
+					expectResult( '<div class="complex-outter"><div style="display:inline"></div></div>' );
+				} );
+
+				it( 'should convert on attribute remove', () => {
+					setModelData( model, '<complex toStyle="display:block"></complex>' );
+
+					model.change( writer => {
+						writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
+					} );
+
+					expectResult( '<div class="complex-outter"><div></div></div>' );
+				} );
+
+				it( 'should convert on one attribute add and other remove', () => {
+					setModelData( model, '<complex toStyle="display:block"></complex>' );
+
+					model.change( writer => {
+						writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
+						writer.setAttribute( 'toClass', true, modelRoot.getChild( 0 ) );
+					} );
+
+					expectResult( '<div class="complex-outter"><div class="is-classy"></div></div>' );
+				} );
+
+				it( 'should do nothing if non-triggerBy attribute has changed', () => {
+					setModelData( model, '<complex></complex>' );
+
+					model.change( writer => {
+						writer.setAttribute( 'notTriggered', true, modelRoot.getChild( 0 ) );
+					} );
+
+					expectResult( '<div class="complex-outter"><div></div></div>' );
+				} );
+			} );
+
+			describe.skip( 'with complex view structure (slot conversion)', () => {
 				beforeEach( () => {
 					model.schema.register( 'complex', {
 						allowIn: '$root',
@@ -264,7 +347,7 @@ describe( 'DowncastHelpers', () => {
 					expectResult( '<c-outter><c-inner class="is-classy"></c-inner></c-outter>' );
 				} );
 
-				it( 'should do nothing if other attribute changed', () => {
+				it( 'should do nothing if non-triggerBy attribute has changed', () => {
 					setModelData( model, '<complex></complex>' );
 
 					model.change( writer => {
