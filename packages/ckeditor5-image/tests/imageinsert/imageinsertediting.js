@@ -10,8 +10,8 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ImageEditing from '../../src/image/imageediting';
-import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
-import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
+import ImageUploadEditing from '../../src/imageinsert/imageinsertediting';
+import ImageUploadCommand from '../../src/imageinsert/imageinsertcommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import DataTransfer from '@ckeditor/ckeditor5-clipboard/src/datatransfer';
@@ -157,7 +157,7 @@ describe( 'ImageUploadEditing', () => {
 
 		const command = editor.commands.get( 'imageUpload' );
 
-		expect( command.isEnabled ).to.be.false;
+		expect( command.isEnabled ).to.be.true;
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 0 ), model.createPositionAt( doc.getRoot(), 0 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );

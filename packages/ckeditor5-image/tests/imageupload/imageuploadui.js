@@ -182,22 +182,5 @@ describe( 'ImageUploadUI', () => {
 			expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
 			expect( executeStub.firstCall.args[ 1 ].file ).to.deep.equal( [ files[ 0 ] ] );
 		} );
-
-		it( 'should add the new image after the selected one, without replacing the selected image', () => {
-			const button = editor.ui.componentFactory.create( 'imageUpload' );
-			const files = [ createNativeFileMock() ];
-
-			setModelData( model, '[<image src="/assets/sample.png"></image>]<paragraph>bar</paragraph>' );
-
-			button.fire( 'done', files );
-
-			const id1 = fileRepository.getLoader( files[ 0 ] ).id;
-
-			expect( getModelData( model ) ).to.equal(
-				'<image src="/assets/sample.png"></image>' +
-				`[<image uploadId="${ id1 }" uploadStatus="reading"></image>]` +
-				'<paragraph>bar</paragraph>'
-			);
-		} );
 	} );
 } );

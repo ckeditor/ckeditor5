@@ -9,7 +9,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
+import ImageUploadCommand from '../../src/imageinsert/imageinsertcommand';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 
 import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
@@ -81,9 +81,9 @@ describe( 'ImageUploadCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection is on other image', () => {
+		it( 'should be true when the selection is on other image', () => {
 			setModelData( model, '[<image></image>]' );
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be false when the selection is inside other image', () => {
