@@ -5,7 +5,13 @@
 
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import { createViewListItemElement } from '../src/utils';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+
+import ListEditing from '../src/listediting';
+import ListStyleEditing from '../src/liststyleediting';
+
+import { createViewListItemElement, getSiblingListItem, getSiblingNodes } from '../src/utils';
 
 describe( 'utils', () => {
 	let writer;
@@ -131,6 +137,315 @@ describe( 'utils', () => {
 					expect( item.getFillerOffset() ).to.be.null;
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'getSiblingListItem()', () => {
+		let editor, model, document;
+
+		beforeEach( () => {
+			return VirtualTestEditor.create( { plugins: [ ListEditing ] } )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					document = model.document;
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should return the passed element if it matches the criteria (sameIndent, listIndent=0)', () => {
+			setData( model,
+				'<listItem listType="bulleted" listIndent="0">0.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">1.</listItem>' + // Starting item, wanted item.
+				'<listItem listType="bulleted" listIndent="0">2.</listItem>'
+			);
+
+			const listItem = document.getRoot().getChild( 1 );
+			const foundElement = getSiblingListItem( listItem, {
+				sameIndent: true,
+				listIndent: 0
+			} );
+
+			expect( foundElement ).to.equal( document.getRoot().getChild( 1 ) );
+		} );
+
+		it( 'should return the passed element if it matches the criteria (sameIndent, listIndent=0, direction="forward")', () => {
+			setData( model,
+				'<listItem listType="bulleted" listIndent="0">0.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">1.</listItem>' + // Starting item, wanted item.
+				'<listItem listType="bulleted" listIndent="0">2.</listItem>'
+			);
+
+			const listItem = document.getRoot().getChild( 1 );
+			const foundElement = getSiblingListItem( listItem, {
+				sameIndent: true,
+				listIndent: 0,
+				direction: 'forward'
+			} );
+
+			expect( foundElement ).to.equal( document.getRoot().getChild( 1 ) );
+		} );
+
+		it( 'should return the first listItem that matches criteria (sameIndent, listIndent=1)', () => {
+			setData( model,
+				'<listItem listType="bulleted" listIndent="0">0.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">1.</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">1.1</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">1.2</listItem>' + // Wanted item.
+				'<listItem listType="bulleted" listIndent="0">2.</listItem>' + // Starting item.
+				'<listItem listType="bulleted" listIndent="1">2.1.</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">2.2.</listItem>'
+			);
+
+			const listItem = document.getRoot().getChild( 5 );
+			const foundElement = getSiblingListItem( listItem.previousSibling, {
+				sameIndent: true,
+				listIndent: 1
+			} );
+
+			expect( foundElement ).to.equal( document.getRoot().getChild( 3 ) );
+		} );
+
+		it( 'should return the first listItem that matches criteria (sameIndent, listIndent=1, direction="forward")', () => {
+			setData( model,
+				'<listItem listType="bulleted" listIndent="0">0.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">1.</listItem>' + // Starting item.
+				'<listItem listType="bulleted" listIndent="0">2.</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">2.1.</listItem>' + // Wanted item.
+				'<listItem listType="bulleted" listIndent="1">2.2.</listItem>'
+			);
+
+			const listItem = document.getRoot().getChild( 1 );
+			const foundElement = getSiblingListItem( listItem.nextSibling, {
+				sameIndent: true,
+				listIndent: 1,
+				direction: 'forward'
+			} );
+
+			expect( foundElement ).to.equal( document.getRoot().getChild( 3 ) );
+		} );
+
+		it( 'should return the first listItem that matches criteria (smallerIndent, listIndent=1)', () => {
+			setData( model,
+				'<listItem listType="bulleted" listIndent="0">0.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">1.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">2.</listItem>' + // Wanted item.
+				'<listItem listType="bulleted" listIndent="1">2.1.</listItem>' + // Starting item.
+				'<listItem listType="bulleted" listIndent="1">2.2.</listItem>'
+			);
+
+			const listItem = document.getRoot().getChild( 4 );
+			const foundElement = getSiblingListItem( listItem, {
+				smallerIndent: true,
+				listIndent: 1
+			} );
+
+			expect( foundElement ).to.equal( document.getRoot().getChild( 2 ) );
+		} );
+
+		it( 'should return the first listItem that matches criteria (smallerIndent, listIndent=1, direction="forward")', () => {
+			setData( model,
+				'<listItem listType="bulleted" listIndent="0">0.</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">0.1.</listItem>' + // Starting item.
+				'<listItem listType="bulleted" listIndent="1">0.2.</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">0.3.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">1.</listItem>' // Wanted item.
+			);
+
+			const listItem = document.getRoot().getChild( 1 );
+			const foundElement = getSiblingListItem( listItem, {
+				smallerIndent: true,
+				listIndent: 1,
+				direction: 'forward'
+			} );
+
+			expect( foundElement ).to.equal( document.getRoot().getChild( 4 ) );
+		} );
+	} );
+
+	describe( 'getSiblingNodes()', () => {
+		let editor, model, document;
+
+		beforeEach( () => {
+			return VirtualTestEditor.create( { plugins: [ ListStyleEditing ] } )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					document = model.document;
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should return all listItems above the current selection position (direction="backward")', () => {
+			setData( model,
+				'<listItem listType="bulleted" listIndent="0">0.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">1.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">[]2.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">3.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">4.</listItem>'
+			);
+
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).to.deep.equal( [
+				document.getRoot().getChild( 0 ),
+				document.getRoot().getChild( 1 ),
+				document.getRoot().getChild( 2 )
+			] );
+		} );
+
+		it( 'should return all listItems below the current selection position (direction="forward")', () => {
+			setData( model,
+				'<listItem listType="bulleted" listIndent="0">0.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">1.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">[]2.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">3.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">4.</listItem>'
+			);
+
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+				document.getRoot().getChild( 3 ),
+				document.getRoot().getChild( 4 )
+			] );
+		} );
+
+		it( 'should break searching when spotted a non-listItem element (direction="backward")', () => {
+			setData( model,
+				'<listItem listType="bulleted" listIndent="0">0.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">1.</listItem>' +
+				'<paragraph>Foo</paragraph>' +
+				'<listItem listType="bulleted" listIndent="0">2.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">3.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">4.[].</listItem>'
+			);
+
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).to.deep.equal( [
+				document.getRoot().getChild( 3 ),
+				document.getRoot().getChild( 4 ),
+				document.getRoot().getChild( 5 )
+			] );
+		} );
+
+		it( 'should break searching when spotted a non-listItem element (direction="forward")', () => {
+			setData( model,
+				'<listItem listType="bulleted" listIndent="0">[]0.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">1.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">2.</listItem>' +
+				'<paragraph>Foo</paragraph>' +
+				'<listItem listType="bulleted" listIndent="0">3.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">4.</listItem>'
+			);
+
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+				document.getRoot().getChild( 1 ),
+				document.getRoot().getChild( 2 )
+			] );
+		} );
+
+		it( 'should break searching when spotted a different value for the `listType` attribute (direction="backward")', () => {
+			setData( model,
+				'<listItem listType="bulleted" listIndent="0">0.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">1.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">2.</listItem>' +
+				'<listItem listType="numbered" listIndent="0">Numbered item.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">3.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">[]4.</listItem>'
+			);
+
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).to.deep.equal( [
+				document.getRoot().getChild( 4 ),
+				document.getRoot().getChild( 5 )
+			] );
+		} );
+
+		it( 'should break searching when spotted a different value for the `listType` attribute (direction="forward")', () => {
+			setData( model,
+				'<listItem listType="bulleted" listIndent="0">[]0.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">1.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">2.</listItem>' +
+				'<listItem listType="numbered" listIndent="0">Numbered item.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">3.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">4.</listItem>'
+			);
+
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+				document.getRoot().getChild( 1 ),
+				document.getRoot().getChild( 2 )
+			] );
+		} );
+
+		it( 'should break searching when spotted a different value for the `listStyle` attribute (direction="backward")', () => {
+			setData( model,
+				'<listItem listType="bulleted" listStyle="disc" listIndent="0">0.</listItem>' +
+				'<listItem listType="bulleted" listStyle="disc" listIndent="0">1.</listItem>' +
+				'<listItem listType="bulleted" listStyle="disc" listIndent="0">2.</listItem>' +
+				'<listItem listType="bulleted" listStyle="square" listIndent="0">Broken item.</listItem>' +
+				'<listItem listType="bulleted" listStyle="disc" listIndent="0">3.</listItem>' +
+				'<listItem listType="bulleted" listStyle="disc" listIndent="0">[]4.</listItem>'
+			);
+
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'backward' ) ).to.deep.equal( [
+				document.getRoot().getChild( 4 ),
+				document.getRoot().getChild( 5 )
+			] );
+		} );
+
+		it( 'should break searching when spotted a different value for the `listStyle` attribute (direction="forward")', () => {
+			setData( model,
+				'<listItem listType="bulleted" listStyle="disc" listIndent="0">[]0.</listItem>' +
+				'<listItem listType="bulleted" listStyle="disc" listIndent="0">1.</listItem>' +
+				'<listItem listType="bulleted" listStyle="disc" listIndent="0">2.</listItem>' +
+				'<listItem listType="bulleted" listStyle="square" listIndent="0">Broken item.</listItem>' +
+				'<listItem listType="bulleted" listStyle="disc" listIndent="0">3.</listItem>' +
+				'<listItem listType="bulleted" listStyle="disc" listIndent="0">4.</listItem>'
+			);
+
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+				document.getRoot().getChild( 1 ),
+				document.getRoot().getChild( 2 )
+			] );
+		} );
+
+		it( 'should ignore nested items (looking for listIndent=0)', () => {
+			setData( model,
+				'<listItem listType="bulleted" listIndent="0">[]0.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">1.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">2.</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">2.1.</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">2.2.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">3.</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">3.1.</listItem>' +
+				'<listItem listType="bulleted" listIndent="2">3.1.1.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">4.</listItem>'
+			);
+
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+				document.getRoot().getChild( 1 ),
+				document.getRoot().getChild( 2 ),
+				document.getRoot().getChild( 5 ),
+				document.getRoot().getChild( 8 )
+			] );
+		} );
+
+		it( 'should break when spotted an outer list (looking for listIndent=1)', () => {
+			setData( model,
+				'<listItem listType="bulleted" listIndent="0">0.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">1.</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">[]1.1.</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">1.2.</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">1.3.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">2.</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">3.</listItem>'
+			);
+
+			expect( getSiblingNodes( document.selection.getFirstPosition(), 'forward' ) ).to.deep.equal( [
+				document.getRoot().getChild( 3 ),
+				document.getRoot().getChild( 4 )
+			] );
 		} );
 	} );
 } );
