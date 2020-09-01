@@ -430,7 +430,8 @@ describe( 'DowncastHelpers', () => {
 						triggerBy: [
 							'attribute:classForMain:complex',
 							'attribute:classForWrap:complex',
-							'attribute:attributeToElement:complex'
+							'attribute:attributeToElement:complex',
+							'insert:slot'
 						]
 					} );
 
@@ -481,6 +482,102 @@ describe( 'DowncastHelpers', () => {
 					} );
 
 					expectResult( '<div class="complex-slots"><div class="optional"></div><div class="slots"></div></div>' );
+				} );
+
+				it( 'should convert element with slots', () => {
+					setModelData( model,
+						'<complex>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
+						'</complex>' );
+
+					expectResult(
+						'<div class="complex-slots">' +
+							'<div class="slots">' +
+								'<div class="slot"><p>foo</p></div>' +
+								'<div class="slot"><p>bar</p></div>' +
+							'</div>' +
+						'</div>'
+					);
+				} );
+
+				it( 'should convert element on adding slot', () => {
+					setModelData( model,
+						'<complex>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
+						'</complex>' );
+
+					model.change( writer => {
+						const slot = writer.createElement( 'slot' );
+						const paragraph = writer.createElement( 'paragraph' );
+						writer.insertText( 'baz', paragraph, 0 );
+						writer.insert( paragraph, slot, 0 );
+						writer.insert( slot, modelRoot.getChild( 0 ), 0 );
+					} );
+
+					expectResult(
+						'<div class="complex-slots">' +
+							'<div class="slots">' +
+								'<div class="slot"><p>foo</p></div>' +
+								'<div class="slot"><p>bar</p></div>' +
+								'<div class="slot"><p>baz</p></div>' +
+							'</div>' +
+						'</div>'
+					);
+				} );
+
+				describe( 'memoization', () => {
+					it( 'should create new element on re-converting element', () => {
+						setModelData( model, '<complex>' +
+								'<slot><paragraph>foo</paragraph></slot>' +
+								'<slot><paragraph>bar</paragraph></slot>' +
+							'</complex>'
+						);
+
+						const complexView = viewRoot.getChild( 0 );
+
+						model.change( writer => {
+							writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
+						} );
+
+						const viewAfterReRender = viewRoot.getChild( 0 );
+
+						expect( viewAfterReRender ).to.not.equal( complexView );
+					} );
+
+					it( 'should not re-create slot\'s child elements on re-converting main element', () => {
+						setModelData( model, '<complex>' +
+								'<slot><paragraph>foo</paragraph></slot>' +
+								'<slot><paragraph>bar</paragraph></slot>' +
+							'</complex>'
+						);
+
+						const [ main, slotOne, slotOneChild, slotTwo, slotTwoChild ] = getNodes();
+
+						model.change( writer => {
+							writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
+						} );
+
+						const [ mainAfter, slotOneAfter, slotOneChildAfter, slotTwoAfter, slotTwoChildAfter ] = getNodes();
+
+						expect( mainAfter, 'main view' ).to.not.equal( main );
+						expect( slotOneAfter, 'first slot view' ).to.not.equal( slotOne );
+						expect( slotTwoAfter, 'second slot view' ).to.not.equal( slotTwo );
+						expect( slotOneChildAfter, 'first slot paragraph view' ).to.equal( slotOneChild );
+						expect( slotTwoChildAfter, 'second slot paragraph view' ).to.equal( slotTwoChild );
+
+						function getNodes() {
+							const main = viewRoot.getChild( 0 );
+							const slotWrap = main.getChild( 0 );
+							const slotOne = slotWrap.getChild( 0 );
+							const slotOneChild = slotOne.getChild( 0 );
+							const slotTwo = slotWrap.getChild( 1 );
+							const slotTwoChild = slotTwo.getChild( 0 );
+
+							return [ main, slotOne, slotOneChild, slotTwo, slotTwoChild ];
+						}
+					} );
 				} );
 			} );
 
