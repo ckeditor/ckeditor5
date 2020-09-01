@@ -50,6 +50,14 @@ const env = {
 	isAndroid: isAndroid( userAgent ),
 
 	/**
+	 * Indicates that the application is running in a browser using the Blink engine.
+	 *
+	 * @static
+	 * @type {Boolean}
+	 */
+	isBlink: isBlink( userAgent ),
+
+	/**
 	 * Environment features information.
 	 *
 	 * @memberOf module:utils/env~env
@@ -107,6 +115,18 @@ export function isSafari( userAgent ) {
  */
 export function isAndroid( userAgent ) {
 	return userAgent.indexOf( 'android' ) > -1;
+}
+
+/**
+ * Checks if User Agent represented by the string is Blink engine.
+ *
+ * @param {String} userAgent **Lowercase** `navigator.userAgent` string.
+ * @returns {Boolean} Whether User Agent is Blink engine or not.
+ */
+export function isBlink( userAgent ) {
+	// The Edge browser before switching to the Blink engine used to report itself as Chrome (and "Edge/")
+	// but after switching to the Blink it replaced "Edge/" with "Edg/".
+	return userAgent.indexOf( 'chrome/' ) > -1 && userAgent.indexOf( 'edge/' ) < 0;
 }
 
 /**
