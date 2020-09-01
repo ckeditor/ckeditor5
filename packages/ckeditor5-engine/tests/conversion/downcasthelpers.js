@@ -202,12 +202,12 @@ describe( 'DowncastHelpers', () => {
 					downcastHelpers.elementToElement( {
 						model: 'complex',
 						view: ( modelElement, { writer } ) => {
-							const outter = writer.createContainerElement( 'div', { class: 'complex-outter' } );
+							const outer = writer.createContainerElement( 'div', { class: 'complex-outer' } );
 							const inner = writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
 
-							writer.insert( writer.createPositionAt( outter, 0 ), inner );
+							writer.insert( writer.createPositionAt( outer, 0 ), inner );
 
-							return outter;
+							return outer;
 						},
 						triggerBy: [
 							'attribute:toStyle:complex',
@@ -221,7 +221,7 @@ describe( 'DowncastHelpers', () => {
 						writer.insertElement( 'complex', modelRoot, 0 );
 					} );
 
-					expectResult( '<div class="complex-outter"><div></div></div>' );
+					expectResult( '<div class="complex-outer"><div></div></div>' );
 				} );
 
 				it( 'should convert on attribute set', () => {
@@ -231,7 +231,7 @@ describe( 'DowncastHelpers', () => {
 						writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
 					} );
 
-					expectResult( '<div class="complex-outter"><div style="display:block"></div></div>' );
+					expectResult( '<div class="complex-outer"><div style="display:block"></div></div>' );
 				} );
 
 				it( 'should convert on attribute change', () => {
@@ -241,7 +241,7 @@ describe( 'DowncastHelpers', () => {
 						writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
 					} );
 
-					expectResult( '<div class="complex-outter"><div style="display:inline"></div></div>' );
+					expectResult( '<div class="complex-outer"><div style="display:inline"></div></div>' );
 				} );
 
 				it( 'should convert on attribute remove', () => {
@@ -251,7 +251,7 @@ describe( 'DowncastHelpers', () => {
 						writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
 					} );
 
-					expectResult( '<div class="complex-outter"><div></div></div>' );
+					expectResult( '<div class="complex-outer"><div></div></div>' );
 				} );
 
 				it( 'should convert on one attribute add and other remove', () => {
@@ -262,7 +262,7 @@ describe( 'DowncastHelpers', () => {
 						writer.setAttribute( 'toClass', true, modelRoot.getChild( 0 ) );
 					} );
 
-					expectResult( '<div class="complex-outter"><div class="is-classy"></div></div>' );
+					expectResult( '<div class="complex-outer"><div class="is-classy"></div></div>' );
 				} );
 
 				it( 'should do nothing if non-triggerBy attribute has changed', () => {
@@ -272,7 +272,7 @@ describe( 'DowncastHelpers', () => {
 						writer.setAttribute( 'notTriggered', true, modelRoot.getChild( 0 ) );
 					} );
 
-					expectResult( '<div class="complex-outter"><div></div></div>' );
+					expectResult( '<div class="complex-outer"><div></div></div>' );
 				} );
 			} );
 
@@ -286,13 +286,13 @@ describe( 'DowncastHelpers', () => {
 						model: 'complex',
 						view: ( modelElement, conversionApi ) => {
 							const { writer, mapper } = conversionApi;
-							const outter = writer.createContainerElement( 'c-outter' );
+							const outer = writer.createContainerElement( 'c-outer' );
 							const inner = writer.createContainerElement( 'c-inner', getViewAttributes( modelElement ) );
 
-							writer.insert( writer.createPositionAt( outter, 0 ), inner );
+							writer.insert( writer.createPositionAt( outer, 0 ), inner );
 							mapper.bindElements( modelElement, inner );
 
-							return outter;
+							return outer;
 						},
 						triggerBy: [
 							'attribute:toStyle:complex',
@@ -312,7 +312,7 @@ describe( 'DowncastHelpers', () => {
 						writer.insertElement( 'complex', modelRoot, 0 );
 					} );
 
-					expectResult( '<c-outter><c-inner></c-inner></c-outter>' );
+					expectResult( '<c-outer><c-inner></c-inner></c-outer>' );
 				} );
 
 				it( 'should convert on attribute set', () => {
@@ -322,7 +322,7 @@ describe( 'DowncastHelpers', () => {
 						writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
 					} );
 
-					expectResult( '<c-outter><c-inner style="display:block"></c-inner></c-outter>' );
+					expectResult( '<c-outer><c-inner style="display:block"></c-inner></c-outer>' );
 				} );
 
 				it( 'should convert on attribute remove', () => {
@@ -332,7 +332,7 @@ describe( 'DowncastHelpers', () => {
 						writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
 					} );
 
-					expectResult( '<c-outter><c-inner></c-inner></c-outter>' );
+					expectResult( '<c-outer><c-inner></c-inner></c-outer>' );
 				} );
 
 				it( 'should convert on one attribute add and other remove', () => {
@@ -343,7 +343,7 @@ describe( 'DowncastHelpers', () => {
 						writer.setAttribute( 'toClass', true, modelRoot.getChild( 0 ) );
 					} );
 
-					expectResult( '<c-outter><c-inner class="is-classy"></c-inner></c-outter>' );
+					expectResult( '<c-outer><c-inner class="is-classy"></c-inner></c-outer>' );
 				} );
 
 				it( 'should do nothing if non-triggerBy attribute has changed', () => {
@@ -353,7 +353,7 @@ describe( 'DowncastHelpers', () => {
 						writer.setAttribute( 'notTriggered', true, modelRoot.getChild( 0 ) );
 					} );
 
-					expectResult( '<c-outter><c-inner></c-inner></c-outter>' );
+					expectResult( '<c-outer><c-inner></c-inner></c-outer>' );
 				} );
 
 				describe( 'memoization', () => {
@@ -374,7 +374,7 @@ describe( 'DowncastHelpers', () => {
 					it.skip( 'should not re-create child elements on re-converting element', () => {
 						setModelData( model, '<complex><paragraph>Foo bar baz</paragraph></complex>' );
 
-						expectResult( '<c-outter><c-inner><p>Foo bar baz</p></c-inner></c-outter>' );
+						expectResult( '<c-outer><c-inner><p>Foo bar baz</p></c-inner></c-outer>' );
 						const renderedViewView = viewRoot.getChild( 0 ).getChild( 0 );
 
 						model.change( writer => {
@@ -403,7 +403,7 @@ describe( 'DowncastHelpers', () => {
 							const classForWrap = !!modelElement.getAttribute( 'classForWrap' );
 							const attributeToElement = !!modelElement.getAttribute( 'attributeToElement' );
 
-							const outter = writer.createContainerElement( 'div', {
+							const outer = writer.createContainerElement( 'div', {
 								class: `complex-slots${ classForMain ? ' with-class' : '' }`
 							} );
 							const inner = writer.createContainerElement( 'div', {
@@ -412,10 +412,10 @@ describe( 'DowncastHelpers', () => {
 
 							if ( attributeToElement ) {
 								const optional = writer.createEmptyElement( 'div', { class: 'optional' } );
-								writer.insert( writer.createPositionAt( outter, 0 ), optional );
+								writer.insert( writer.createPositionAt( outer, 0 ), optional );
 							}
 
-							writer.insert( writer.createPositionAt( outter, 'end' ), inner );
+							writer.insert( writer.createPositionAt( outer, 'end' ), inner );
 							mapper.bindElements( modelElement, inner );
 
 							for ( const slot of modelElement.getChildren() ) {
@@ -425,7 +425,7 @@ describe( 'DowncastHelpers', () => {
 								conversionApi.mapper.bindSlotElements( slot, viewSlot );
 							}
 
-							return outter;
+							return outer;
 						},
 						triggerBy: [
 							'attribute:classForMain:complex',
