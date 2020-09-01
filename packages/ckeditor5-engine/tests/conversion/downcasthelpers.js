@@ -431,7 +431,8 @@ describe( 'DowncastHelpers', () => {
 							'attribute:classForMain:complex',
 							'attribute:classForWrap:complex',
 							'attribute:attributeToElement:complex',
-							'insert:slot'
+							'insert:slot',
+							'remove:slot'
 						]
 					} );
 
@@ -522,6 +523,26 @@ describe( 'DowncastHelpers', () => {
 								'<div class="slot"><p>foo</p></div>' +
 								'<div class="slot"><p>bar</p></div>' +
 								'<div class="slot"><p>baz</p></div>' +
+							'</div>' +
+						'</div>'
+					);
+				} );
+
+				it( 'should convert element on removing slot', () => {
+					setModelData( model,
+						'<complex>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
+						'</complex>' );
+
+					model.change( writer => {
+						writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
+					} );
+
+					expectResult(
+						'<div class="complex-slots">' +
+							'<div class="slots">' +
+								'<div class="slot"><p>foo</p></div>' +
 							'</div>' +
 						'</div>'
 					);
