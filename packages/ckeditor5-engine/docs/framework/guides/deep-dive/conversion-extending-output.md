@@ -357,4 +357,4 @@ Add some CSS styles for `.my-heading` to see the customization in action:
 
 If you would like to read more about how to make CKEditor 5 accept more content, refer to the {@link framework/guides/deep-dive/conversion-preserving-custom-content Preserving custom content} guide.
 
-If you would like to read about how to create complex view structures or how to move from {@link module:engine/conversion/conversion~Conversion two-way} or {@link module:engine/conversion/conversion~Conversion#for one-way} converters to an event-based ones, refer to the {@link framework/guides/deep-dive/custom-element-conversion Custom element conversion} guide.
+If you want to learn how to create complex view structures or how to move from {@link module:engine/conversion/conversion~Conversion two-way} or {@link module:engine/conversion/conversion~Conversion#for one-way} converters to event-based ones, refer to the {@link framework/guides/deep-dive/custom-element-conversion Custom element conversion} guide.
