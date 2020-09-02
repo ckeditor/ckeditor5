@@ -10,7 +10,7 @@ We are happy to announce the release of CKEditor 5 v22.0.0.
 This release brings a few new features:
 
 * [List styles plugin](https://github.com/ckeditor/ckeditor5/issues/7801).
-* [Makrdown plugin](https://github.com/ckeditor/ckeditor5/issues/6007).
+* [Markdown plugin](https://github.com/ckeditor/ckeditor5/issues/6007).
 * [Inserting image with URL](https://github.com/ckeditor/ckeditor5/issues/7794).
 * [New event-based conversion api](https://github.com/ckeditor/ckeditor5/issues/7336).
 
