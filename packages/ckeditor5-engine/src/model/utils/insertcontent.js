@@ -443,12 +443,11 @@ class Insertion {
 				// At this point the insertion position should be after the node we'll merge. If it isn't,
 				// it should need to be secured as in the left merge case.
 				/**
-				 * An internal error occurred during merging inserted content with its siblings.
-				 * The insertion position should equal to the merge position.
+				 * An internal error occurred when merging inserted content with its siblings.
+				 * The insertion position should equal the merge position.
 				 *
 				 * If you encountered this error, report it back to the CKEditor 5 team
-				 * with as many details regarding the content being inserted and the insertion position
-				 * as possible.
+				 * with as many details as possible regarding the content being inserted and the insertion position.
 				 *
 				 * @error insertcontent-invalid-insertion-position
 				 */

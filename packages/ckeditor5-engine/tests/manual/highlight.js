@@ -38,11 +38,11 @@ class FancyWidget extends Plugin {
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'fancywidget',
-			view: ( modelItem, viewWriter ) => {
-				const widgetElement = viewWriter.createContainerElement( 'figure', { class: 'fancy-widget' } );
-				viewWriter.insert( viewWriter.createPositionAt( widgetElement, 0 ), viewWriter.createText( 'widget' ) );
+			view: ( modelItem, { writer } ) => {
+				const widgetElement = writer.createContainerElement( 'figure', { class: 'fancy-widget' } );
+				writer.insert( writer.createPositionAt( widgetElement, 0 ), writer.createText( 'widget' ) );
 
-				return toWidget( widgetElement, viewWriter );
+				return toWidget( widgetElement, writer );
 			}
 		} );
 

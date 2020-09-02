@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-core",
-  "version": "21.0.0",
+  "version": "22.0.0",
   "description": "The core architecture of CKEditor 5 – the best browser-based rich text editor.",
   "keywords": [
     "ckeditor5-lib",
@@ -21,25 +21,25 @@
     "framework"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-engine": "^21.0.0",
-    "@ckeditor/ckeditor5-utils": "^21.0.0",
+    "@ckeditor/ckeditor5-engine": "^22.0.0",
+    "@ckeditor/ckeditor5-utils": "^22.0.0",
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-autoformat": "^21.0.0",
-    "@ckeditor/ckeditor5-basic-styles": "^21.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^21.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^21.0.0",
-    "@ckeditor/ckeditor5-essentials": "^21.0.0",
-    "@ckeditor/ckeditor5-heading": "^21.0.0",
-    "@ckeditor/ckeditor5-image": "^21.0.0",
-    "@ckeditor/ckeditor5-indent": "^21.0.0",
-    "@ckeditor/ckeditor5-link": "^21.0.0",
-    "@ckeditor/ckeditor5-list": "^21.0.0",
-    "@ckeditor/ckeditor5-media-embed": "^21.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^21.0.0",
-    "@ckeditor/ckeditor5-table": "^21.0.0",
-    "@ckeditor/ckeditor5-ui": "^21.0.0"
+    "@ckeditor/ckeditor5-autoformat": "^22.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "^22.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^22.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^22.0.0",
+    "@ckeditor/ckeditor5-essentials": "^22.0.0",
+    "@ckeditor/ckeditor5-heading": "^22.0.0",
+    "@ckeditor/ckeditor5-image": "^22.0.0",
+    "@ckeditor/ckeditor5-indent": "^22.0.0",
+    "@ckeditor/ckeditor5-link": "^22.0.0",
+    "@ckeditor/ckeditor5-list": "^22.0.0",
+    "@ckeditor/ckeditor5-media-embed": "^22.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^22.0.0",
+    "@ckeditor/ckeditor5-table": "^22.0.0",
+    "@ckeditor/ckeditor5-ui": "^22.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

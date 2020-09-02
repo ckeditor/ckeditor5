@@ -83,3 +83,19 @@ msgstr ""
 msgctxt "The accessibility label of the image resize dropdown list for the screen readers."
 msgid "Image resize list"
 msgstr ""
+
+msgctxt "The label of submit form button if image src URL input has no value"
+msgid "Insert"
+msgstr ""
+
+msgctxt "The label of submit form button if image src URL input has value"
+msgid "Update"
+msgstr ""
+
+msgctxt "The input label for the Insert image via URL form"
+msgid "Insert image via URL"
+msgstr ""
+
+msgctxt "The tip label below the Insert image via URL form"
+msgid "Paste the image source URL."
+msgstr ""
