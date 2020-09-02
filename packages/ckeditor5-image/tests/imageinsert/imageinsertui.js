@@ -12,8 +12,8 @@ import Image from '../../src/image';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
+import ImageInsert from '../../src/imageinsert';
 import ImageInsertUI from '../../src/imageinsert/imageinsertui';
-import ImageUploadEditing from '../../src/imageinsert/imageinsertediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
@@ -45,7 +45,7 @@ describe( 'ImageInsertUI', () => {
 
 			return ClassicEditor
 				.create( editorElement, {
-					plugins: [ Paragraph, Image, ImageUploadEditing, ImageInsertUI, FileRepository, UploadAdapterPluginMock, Clipboard ],
+					plugins: [ Paragraph, Image, ImageInsert, ImageInsertUI, FileRepository, UploadAdapterPluginMock, Clipboard ],
 					image: {
 						upload: {
 							panel: {
@@ -72,7 +72,7 @@ describe( 'ImageInsertUI', () => {
 			return editor.destroy();
 		} );
 		it( 'should register imageUpload dropdown', () => {
-			const button = editor.ui.componentFactory.create( 'imageUpload' );
+			const button = editor.ui.componentFactory.create( 'imageInsert' );
 
 			expect( button ).to.be.instanceOf( DropdownView );
 		} );
@@ -87,7 +87,7 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		it( 'should be disabled while ImageUploadCommand is disabled', () => {
-			const button = editor.ui.componentFactory.create( 'imageUpload' );
+			const button = editor.ui.componentFactory.create( 'imageInsert' );
 			const command = editor.commands.get( 'imageUpload' );
 
 			command.isEnabled = true;
@@ -101,7 +101,7 @@ describe( 'ImageInsertUI', () => {
 
 		// ckeditor5-upload/#77
 		it( 'should be properly bound with ImageUploadCommand', () => {
-			const dropdown = editor.ui.componentFactory.create( 'imageUpload' );
+			const dropdown = editor.ui.componentFactory.create( 'imageInsert' );
 			const command = editor.commands.get( 'imageUpload' );
 			const spy = sinon.spy();
 
@@ -207,7 +207,7 @@ describe( 'ImageInsertUI', () => {
 
 		describe( 'dropdown action button', () => {
 			it( 'should be an instance of FileDialogButtonView', () => {
-				const dropdown = editor.ui.componentFactory.create( 'imageUpload' );
+				const dropdown = editor.ui.componentFactory.create( 'imageInsert' );
 
 				expect( dropdown.buttonView.actionView ).to.be.instanceOf( FileDialogButtonView );
 			} );
@@ -215,7 +215,7 @@ describe( 'ImageInsertUI', () => {
 
 		describe( 'dropdown panel buttons', () => {
 			it( 'should have "Update" label on submit button when URL input is already filled', () => {
-				const dropdown = editor.ui.componentFactory.create( 'imageUpload' );
+				const dropdown = editor.ui.componentFactory.create( 'imageInsert' );
 				const viewDocument = editor.editing.view.document;
 
 				editor.setData( '<figure><img src="/assets/sample.png" /></figure>' );
@@ -242,7 +242,7 @@ describe( 'ImageInsertUI', () => {
 			} );
 
 			it( 'should have "Insert" label on submit button on uploading a new image', () => {
-				const dropdown = editor.ui.componentFactory.create( 'imageUpload' );
+				const dropdown = editor.ui.componentFactory.create( 'imageInsert' );
 				const viewDocument = editor.editing.view.document;
 
 				editor.setData( '<p>test</p>' );
@@ -272,7 +272,7 @@ describe( 'ImageInsertUI', () => {
 		describe( 'dropdown panel integrations', () => {
 			describe( 'insert image via URL form', () => {
 				it( 'should have "Insert image via URL" label on inserting new image', () => {
-					const dropdown = editor.ui.componentFactory.create( 'imageUpload' );
+					const dropdown = editor.ui.componentFactory.create( 'imageInsert' );
 					const viewDocument = editor.editing.view.document;
 
 					editor.setData( '<p>test</p>' );
@@ -301,7 +301,7 @@ describe( 'ImageInsertUI', () => {
 				} );
 
 				it( 'should have "Update image URL" label on updating the image source URL', () => {
-					const dropdown = editor.ui.componentFactory.create( 'imageUpload' );
+					const dropdown = editor.ui.componentFactory.create( 'imageInsert' );
 					const viewDocument = editor.editing.view.document;
 
 					editor.setData( '<figure><img src="/assets/sample.png" /></figure>' );
@@ -332,7 +332,7 @@ describe( 'ImageInsertUI', () => {
 
 		it( 'should remove all attributes from model except "src" when updating the image source URL', () => {
 			const viewDocument = editor.editing.view.document;
-			const dropdown = editor.ui.componentFactory.create( 'imageUpload' );
+			const dropdown = editor.ui.componentFactory.create( 'imageInsert' );
 			const insertButtonView = dropdown.panelView.children.first.insertButtonView;
 			const commandSpy = sinon.spy( editor.commands.get( 'imageInsert' ), 'execute' );
 			const submitSpy = sinon.spy();
@@ -369,7 +369,7 @@ describe( 'ImageInsertUI', () => {
 
 		describe( 'events', () => {
 			it( 'should emit "submit" event when clicking on submit button', () => {
-				const dropdown = editor.ui.componentFactory.create( 'imageUpload' );
+				const dropdown = editor.ui.componentFactory.create( 'imageInsert' );
 				const insertButtonView = dropdown.panelView.children.first.insertButtonView;
 				const commandSpy = sinon.spy( editor.commands.get( 'imageInsert' ), 'execute' );
 				const submitSpy = sinon.spy();
@@ -386,7 +386,7 @@ describe( 'ImageInsertUI', () => {
 			} );
 
 			it( 'should emit "cancel" event when clicking on cancel button', () => {
-				const dropdown = editor.ui.componentFactory.create( 'imageUpload' );
+				const dropdown = editor.ui.componentFactory.create( 'imageInsert' );
 				const cancelButtonView = dropdown.panelView.children.first.cancelButtonView;
 				const commandSpy = sinon.spy( editor.commands.get( 'imageInsert' ), 'execute' );
 				const cancelSpy = sinon.spy();
@@ -410,7 +410,7 @@ describe( 'ImageInsertUI', () => {
 						CKFinder,
 						Paragraph,
 						Image,
-						ImageUploadEditing,
+						ImageInsert,
 						ImageInsertUI,
 						FileRepository,
 						UploadAdapterPluginMock,
@@ -428,7 +428,7 @@ describe( 'ImageInsertUI', () => {
 					}
 				} );
 
-			const dropdown = editor.ui.componentFactory.create( 'imageUpload' );
+			const dropdown = editor.ui.componentFactory.create( 'imageInsert' );
 
 			expect( dropdown.panelView.children.first._integrations.length ).to.equal( 2 );
 			expect( dropdown.panelView.children.first._integrations.first ).to.be.instanceOf( LabeledFieldView );

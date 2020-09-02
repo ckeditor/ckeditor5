@@ -7,13 +7,12 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ImageUpload from '../../src/imageupload';
 import ImageInsert from '../../src/imageinsert';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, ImageUpload, ImageInsert, CKFinder ],
+		plugins: [ ArticlePluginSet, ImageInsert, CKFinder ],
 		toolbar: [
 			'heading',
 			'|',
@@ -23,7 +22,7 @@ ClassicEditor
 			'bulletedList',
 			'numberedList',
 			'blockQuote',
-			'imageUpload',
+			'imageInsert',
 			'insertTable',
 			'mediaEmbed',
 			'undo',

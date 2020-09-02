@@ -10,7 +10,6 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Image from '../../src/image';
 import ImageUploadUI from '../../src/imageinsert/imageinsertui';
-import ImageUploadEditing from '../../src/imageinsert/imageinsertediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
@@ -54,7 +53,6 @@ describe( 'Upload utils', () => {
 						CKFinder,
 						Paragraph,
 						Image,
-						ImageUploadEditing,
 						ImageUploadUI
 					],
 					image: {
@@ -79,7 +77,7 @@ describe( 'Upload utils', () => {
 			editorElement.remove();
 		} );
 
-		it( 'should return only "insertImageViaUrl" integration and throw warning' +
+		it( 'should return only "insertImageViaUrl" integration and throw warning ' +
 			'for "image-upload-integrations-invalid-view" error', async () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
@@ -89,7 +87,6 @@ describe( 'Upload utils', () => {
 					plugins: [
 						Paragraph,
 						Image,
-						ImageUploadEditing,
 						ImageUploadUI
 					],
 					image: {
@@ -120,7 +117,6 @@ describe( 'Upload utils', () => {
 						Paragraph,
 						Link,
 						Image,
-						ImageUploadEditing,
 						ImageUploadUI
 					],
 					image: {
@@ -151,7 +147,6 @@ describe( 'Upload utils', () => {
 					plugins: [
 						Paragraph,
 						Image,
-						ImageUploadEditing,
 						ImageUploadUI
 					]
 				} );

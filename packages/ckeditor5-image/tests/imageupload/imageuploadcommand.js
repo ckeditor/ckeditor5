@@ -81,9 +81,9 @@ describe( 'ImageUploadCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection is on other image', () => {
+		it( 'should be true when the selection is on other image', () => {
 			setModelData( model, '[<image></image>]' );
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be false when the selection is inside other image', () => {
