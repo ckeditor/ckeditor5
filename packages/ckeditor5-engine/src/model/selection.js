@@ -390,12 +390,9 @@ export default class Selection {
 				/**
 				 * selection.setTo requires the second parameter when the first parameter is a node.
 				 *
-				 * @error model-selection-setTo-required-second-parameter
+				 * @error model-selection-setto-required-second-parameter
 				 */
-				throw new CKEditorError(
-					'model-selection-setto-required-second-parameter',
-					[ this, selectable ]
-				);
+				throw new CKEditorError( 'model-selection-setto-required-second-parameter', [ this, selectable ] );
 			}
 
 			this._setRanges( [ range ], backward );
@@ -413,12 +410,9 @@ export default class Selection {
 			 * * View nodes were passed instead of model nodes.
 			 * * `null`/`undefined` was passed.
 			 *
-			 * @error model-selection-setTo-not-selectable
+			 * @error model-selection-setto-not-selectable
 			 */
-			throw new CKEditorError(
-				'model-selection-setto-not-selectable',
-				[ this, selectable ]
-			);
+			throw new CKEditorError( 'model-selection-setto-not-selectable', [ this, selectable ] );
 		}
 	}
 
@@ -493,12 +487,9 @@ export default class Selection {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.
 			 *
-			 * @error model-selection-setFocus-no-ranges
+			 * @error model-selection-setfocus-no-ranges
 			 */
-			throw new CKEditorError(
-				'model-selection-setfocus-no-ranges',
-				[ this, itemOrPosition ]
-			);
+			throw new CKEditorError( 'model-selection-setfocus-no-ranges', [ this, itemOrPosition ] );
 		}
 
 		const newFocus = Position._createAt( itemOrPosition, offset );

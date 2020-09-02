@@ -49,11 +49,12 @@ export default class TreeWalker {
 		}
 
 		if ( options.direction && options.direction != 'forward' && options.direction != 'backward' ) {
-			throw new CKEditorError(
-				'view-tree-walker-unknown-direction',
-				options.startPosition,
-				{ direction: options.direction }
-			);
+			/**
+			 * Only `backward` and `forward` direction allowed.
+			 *
+			 * @error view-tree-walker-unknown-direction
+			 */
+			throw new CKEditorError( 'view-tree-walker-unknown-direction', options.startPosition, { direction: options.direction } );
 		}
 
 		/**

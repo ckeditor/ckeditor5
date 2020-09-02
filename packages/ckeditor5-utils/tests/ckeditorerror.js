@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* eslint-disable ckeditor5-rules/ckeditor-error-message */
+
 import { default as CKEditorError, DOCUMENTATION_URL } from '../src/ckeditorerror';
 import { expectToThrowCKEditorError } from './_utils/utils';
 

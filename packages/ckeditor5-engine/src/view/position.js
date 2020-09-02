@@ -356,12 +356,9 @@ export default class Position {
 				 * {@link module:engine/view/view~View#createPositionAt `View#createPositionAt()`}
 				 * requires the offset to be specified when the first parameter is a view item.
 				 *
-				 * @error view-createPositionAt-offset-required
+				 * @error view-createpositionat-offset-required
 				 */
-				throw new CKEditorError(
-					'view-createpositionat-offset-required',
-					node
-				);
+				throw new CKEditorError( 'view-createpositionat-offset-required', node );
 			}
 
 			return new Position( node, offset );

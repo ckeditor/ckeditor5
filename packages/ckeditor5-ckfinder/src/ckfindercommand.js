@@ -60,6 +60,11 @@ export default class CKFinderCommand extends Command {
 		const openerMethod = this.editor.config.get( 'ckfinder.openerMethod' ) || 'modal';
 
 		if ( openerMethod != 'popup' && openerMethod != 'modal' ) {
+			/**
+			 * The `ckfinder.openerMethod` must be one of: "popup" or "modal".
+			 *
+			 * @error ckfinder-unknown-openermethod
+			 */
 			throw new CKEditorError( 'ckfinder-unknown-openermethod', editor );
 		}
 

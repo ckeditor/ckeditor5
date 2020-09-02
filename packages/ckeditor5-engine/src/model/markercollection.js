@@ -177,6 +177,11 @@ export default class MarkerCollection {
 		const marker = this._markers.get( markerName );
 
 		if ( !marker ) {
+			/**
+			 * Marker with provided name does not exists.
+			 *
+			 * @error markercollection-refresh-marker-not-exists
+			 */
 			throw new CKEditorError( 'markercollection-refresh-marker-not-exists', this );
 		}
 

@@ -150,7 +150,7 @@ export default class Renderer {
 				/**
 				 * Unknown type passed to Renderer.markToSync.
 				 *
-				 * @error renderer-unknown-type
+				 * @error view-renderer-unknown-type
 				 */
 				throw new CKEditorError( 'view-renderer-unknown-type', this );
 			}

@@ -203,10 +203,8 @@ export default class BalloonEditor extends Editor {
 
 			if ( isHTMLElement && sourceElementOrData.tagName === 'TEXTAREA' ) {
 				// Documented in core/editor/editor.js
-				throw new CKEditorError(
-					'editor-wrong-element',
-					null
-				);
+				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+				throw new CKEditorError( 'editor-wrong-element', null );
 			}
 
 			const editor = new this( sourceElementOrData, config );
@@ -219,10 +217,8 @@ export default class BalloonEditor extends Editor {
 					.then( () => {
 						if ( !isHTMLElement && config.initialData ) {
 							// Documented in core/editor/editorconfig.jdoc.
-							throw new CKEditorError(
-								'editor-create-initial-data',
-								null
-							);
+							// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+							throw new CKEditorError( 'editor-create-initial-data', null );
 						}
 
 						const initialData = config.initialData || getInitialData( sourceElementOrData );

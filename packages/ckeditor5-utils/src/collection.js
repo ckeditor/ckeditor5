@@ -204,7 +204,7 @@ export default class Collection {
 			 * The `index` passed to {@link module:utils/collection~Collection#addMany `Collection#addMany()`}
 			 * is invalid. It must be a number between 0 and the the collection's length.
 			 *
-			 * @error collection-add-item-bad-index
+			 * @error collection-add-item-invalid-index
 			 */
 			throw new CKEditorError( 'collection-add-item-invalid-index', this );
 		}

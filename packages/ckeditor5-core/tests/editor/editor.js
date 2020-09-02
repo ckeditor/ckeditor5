@@ -543,6 +543,7 @@ describe( 'Editor', () => {
 					this.isEnabled = true;
 				}
 				execute() {
+					// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 					throw new CKEditorError( 'foo', editor );
 				}
 			}

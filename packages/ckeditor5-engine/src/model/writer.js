@@ -768,6 +768,11 @@ export default class Writer {
 		}
 
 		if ( !position.parent.getAncestors( { includeSelf: true } ).includes( limitElement ) ) {
+			/**
+			 * Limit element is not a position ancestor.
+			 *
+			 * @error writer-split-invalid-limit-element
+			 */
 			throw new CKEditorError( 'writer-split-invalid-limit-element', this );
 		}
 
@@ -917,12 +922,9 @@ export default class Writer {
 			/**
 			 * The `options.usingOperation` parameter is required when adding a new marker.
 			 *
-			 * @error writer-addMarker-no-usingOperation
+			 * @error writer-addmarker-no-usingoperation
 			 */
-			throw new CKEditorError(
-				'writer-addmarker-no-usingoperation',
-				this
-			);
+			throw new CKEditorError( 'writer-addmarker-no-usingoperation', this );
 		}
 
 		const usingOperation = options.usingOperation;
@@ -933,7 +935,7 @@ export default class Writer {
 			/**
 			 * Marker with provided name already exists.
 			 *
-			 * @error writer-addMarker-marker-exists
+			 * @error writer-addmarker-marker-exists
 			 */
 			throw new CKEditorError( 'writer-addmarker-marker-exists', this );
 		}
@@ -942,12 +944,9 @@ export default class Writer {
 			/**
 			 * Range parameter is required when adding a new marker.
 			 *
-			 * @error writer-addMarker-no-range
+			 * @error writer-addmarker-no-range
 			 */
-			throw new CKEditorError(
-				'writer-addmarker-no-range',
-				this
-			);
+			throw new CKEditorError( 'writer-addmarker-no-range', this );
 		}
 
 		if ( !usingOperation ) {
@@ -1038,7 +1037,7 @@ export default class Writer {
 			/**
 			 * Marker with provided name does not exists.
 			 *
-			 * @error writer-updateMarker-marker-not-exists
+			 * @error writer-updatemarker-marker-not-exists
 			 */
 			throw new CKEditorError( 'writer-updatemarker-marker-not-exists', this );
 		}
@@ -1059,12 +1058,9 @@ export default class Writer {
 			/**
 			 * One of the options is required - provide range, usingOperations or affectsData.
 			 *
-			 * @error writer-updateMarker-wrong-options
+			 * @error writer-updatemarker-wrong-options
 			 */
-			throw new CKEditorError(
-				'writer-updatemarker-wrong-options',
-				this
-			);
+			throw new CKEditorError( 'writer-updatemarker-wrong-options', this );
 		}
 
 		const currentRange = currentMarker.getRange();
@@ -1112,7 +1108,7 @@ export default class Writer {
 			/**
 			 * Trying to remove marker which does not exist.
 			 *
-			 * @error writer-removeMarker-no-marker
+			 * @error writer-removemarker-no-marker
 			 */
 			throw new CKEditorError( 'writer-removemarker-no-marker', this );
 		}

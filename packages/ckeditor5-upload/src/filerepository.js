@@ -432,6 +432,11 @@ class FileLoader {
 	 */
 	read() {
 		if ( this.status != 'idle' ) {
+			/**
+			 * You cannot call read if the status is different than idle.
+			 *
+			 * @error filerepository-read-wrong-status
+			 */
 			throw new CKEditorError( 'filerepository-read-wrong-status', this );
 		}
 
@@ -483,10 +488,12 @@ class FileLoader {
 	 */
 	upload() {
 		if ( this.status != 'idle' ) {
-			throw new CKEditorError(
-				'filerepository-upload-wrong-status',
-				this
-			);
+			/**
+			 * You cannot call upload if the status is different than idle.
+			 *
+			 * @error filerepository-upload-wrong-status
+			 */
+			throw new CKEditorError( 'filerepository-upload-wrong-status', this );
 		}
 
 		this.status = 'uploading';

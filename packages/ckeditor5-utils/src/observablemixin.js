@@ -380,12 +380,9 @@ function bindTo( ...args ) {
 		/**
 		 * Binding multiple observables only possible with callback.
 		 *
-		 * @error observable-bind-no-callback
+		 * @error observable-bind-to-no-callback
 		 */
-		throw new CKEditorError(
-			'observable-bind-to-no-callback',
-			this
-		);
+		throw new CKEditorError( 'observable-bind-to-no-callback', this );
 	}
 
 	// Eliminate A.bind( 'x', 'y' ).to( B, callback )

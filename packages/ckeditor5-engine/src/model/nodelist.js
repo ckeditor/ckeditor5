@@ -122,7 +122,7 @@ export default class NodeList {
 			/**
 			 * Given index cannot be found in the node list.
 			 *
-			 * @error nodelist-index-out-of-bounds
+			 * @error model-nodelist-index-out-of-bounds
 			 */
 			throw new CKEditorError( 'model-nodelist-index-out-of-bounds', this );
 		}
@@ -184,12 +184,9 @@ export default class NodeList {
 				/**
 				 * Trying to insert an object which is not a Node instance.
 				 *
-				 * @error nodelist-insertNodes-not-node
+				 * @error model-nodelist-insertnodes-not-node
 				 */
-				throw new CKEditorError(
-					'model-nodelist-insertnodes-not-node',
-					this
-				);
+				throw new CKEditorError( 'model-nodelist-insertnodes-not-node', this );
 			}
 		}
 

@@ -158,6 +158,7 @@ describe( 'EmitterMixin', () => {
 
 		it( 'should rethrow the CKEditorError error', () => {
 			emitter.on( 'test', () => {
+				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 				throw new CKEditorError( 'foo', null );
 			} );
 

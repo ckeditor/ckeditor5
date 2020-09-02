@@ -177,11 +177,9 @@ export default class Context {
 			/**
 			 * Cannot add multiple editors to the context which is created by the editor.
 			 *
-			 * @error context-addEditor-private-context
+			 * @error context-addeditor-private-context
 			 */
-			throw new CKEditorError(
-				'context-addeditor-private-context'
-			);
+			throw new CKEditorError( 'context-addeditor-private-context' );
 		}
 
 		this.editors.add( editor );

@@ -497,12 +497,9 @@ export default class Selection {
 				/**
 				 * selection.setTo requires the second parameter when the first parameter is a node.
 				 *
-				 * @error view-selection-setTo-required-second-parameter
+				 * @error view-selection-setto-required-second-parameter
 				 */
-				throw new CKEditorError(
-					'view-selection-setto-required-second-parameter',
-					this
-				);
+				throw new CKEditorError( 'view-selection-setto-required-second-parameter', this );
 			} else if ( placeOrOffset == 'in' ) {
 				range = Range._createIn( selectable );
 			} else if ( placeOrOffset == 'on' ) {
@@ -522,7 +519,7 @@ export default class Selection {
 			/**
 			 * Cannot set selection to given place.
 			 *
-			 * @error view-selection-setTo-not-selectable
+			 * @error view-selection-setto-not-selectable
 			 */
 			throw new CKEditorError( 'view-selection-setto-not-selectable', this );
 		}
@@ -546,12 +543,9 @@ export default class Selection {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.
 			 *
-			 * @error view-selection-setFocus-no-ranges
+			 * @error view-selection-setfocus-no-ranges
 			 */
-			throw new CKEditorError(
-				'view-selection-setfocus-no-ranges',
-				this
-			);
+			throw new CKEditorError( 'view-selection-setfocus-no-ranges', this );
 		}
 
 		const newFocus = Position._createAt( itemOrPosition, offset );

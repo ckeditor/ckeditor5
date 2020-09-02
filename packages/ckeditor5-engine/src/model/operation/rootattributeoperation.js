@@ -194,14 +194,10 @@ export default class RootAttributeOperation extends Operation {
 			/**
 			 * Cannot create RootAttributeOperation for document. Root with specified name does not exist.
 			 *
-			 * @error rootattributeoperation-fromjson-no-root
+			 * @error rootattribute-operation-fromjson-no-root
 			 * @param {String} rootName
 			 */
-			throw new CKEditorError(
-				'rootattribute-operation-fromjson-no-root',
-				this,
-				{ rootName: json.root }
-			);
+			throw new CKEditorError( 'rootattribute-operation-fromjson-no-root', this, { rootName: json.root } );
 		}
 
 		return new RootAttributeOperation( document.getRoot( json.root ), json.key, json.oldValue, json.newValue, json.baseVersion );

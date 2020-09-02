@@ -77,10 +77,8 @@ export default class ClassicTestEditor extends Editor {
 					.then( () => {
 						if ( !isElement( sourceElementOrData ) && config.initialData ) {
 							// Documented in core/editor/editorconfig.jsdoc.
-							throw new CKEditorError(
-								'editor-create-initial-data',
-								null
-							);
+							// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+							throw new CKEditorError( 'editor-create-initial-data', null );
 						}
 
 						editor.data.init( config.initialData || getInitialData( sourceElementOrData ) );

@@ -499,3 +499,9 @@ export default class Node {
 		this._attrs.clear();
 	}
 }
+
+/**
+ * The node's parent does not contain this node.
+ *
+ * @error model-node-not-found-in-parent
+ */
