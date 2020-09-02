@@ -62,6 +62,9 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
+	 * You can read more about element to element conversion in the
+	 * {@glink framework/guides/deep-dive/conversion/custom-element-conversion Custom element conversion} guide.
+	 *
 	 * @method #elementToElement
 	 * @param {Object} config Conversion configuration.
 	 * @param {String} config.model The name of the model element to convert.
