@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
@@ -23,11 +23,10 @@ import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 
 describe( 'ImageInsertUI', () => {
-	let editor, model, editorElement, fileRepository;
+	let editor, editorElement, fileRepository;
 
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
@@ -58,7 +57,6 @@ describe( 'ImageInsertUI', () => {
 				} )
 				.then( newEditor => {
 					editor = newEditor;
-					model = editor.model;
 
 					// Hide all notifications (prevent alert() calls).
 					const notification = editor.plugins.get( Notification );
@@ -75,134 +73,6 @@ describe( 'ImageInsertUI', () => {
 			const button = editor.ui.componentFactory.create( 'imageInsert' );
 
 			expect( button ).to.be.instanceOf( DropdownView );
-		} );
-
-		it( 'should set proper accepted mime-types for imageUpload button as defined in configuration', () => {
-			editor.config.set( 'image.upload.types', [ 'svg+xml', 'jpeg', 'vnd.microsoft.icon', 'x-xbitmap' ] );
-
-			const plugin = editor.plugins.get( 'ImageInsertUI' );
-			const fileDialogButton = plugin._createFileDialogButtonView( editor.locale );
-
-			expect( fileDialogButton.acceptedType ).to.equal( 'image/svg+xml,image/jpeg,image/vnd.microsoft.icon,image/x-xbitmap' );
-		} );
-
-		it( 'should be disabled while ImageUploadCommand is disabled', () => {
-			const button = editor.ui.componentFactory.create( 'imageInsert' );
-			const command = editor.commands.get( 'imageUpload' );
-
-			command.isEnabled = true;
-
-			expect( button.buttonView.isEnabled ).to.true;
-
-			command.isEnabled = false;
-
-			expect( button.buttonView.isEnabled ).to.false;
-		} );
-
-		// ckeditor5-upload/#77
-		it( 'should be properly bound with ImageUploadCommand', () => {
-			const dropdown = editor.ui.componentFactory.create( 'imageInsert' );
-			const command = editor.commands.get( 'imageUpload' );
-			const spy = sinon.spy();
-
-			dropdown.render();
-
-			dropdown.buttonView.on( 'execute', spy );
-
-			command.isEnabled = false;
-
-			dropdown.buttonView.element.dispatchEvent( new Event( 'click' ) );
-
-			sinon.assert.notCalled( spy );
-		} );
-
-		it( 'should execute imageUpload command', () => {
-			const executeStub = sinon.stub( editor, 'execute' );
-			const plugin = editor.plugins.get( 'ImageInsertUI' );
-			const fileDialogButton = plugin._createFileDialogButtonView( editor.locale );
-			const files = [ createNativeFileMock() ];
-
-			fileDialogButton.fire( 'done', files );
-			sinon.assert.calledOnce( executeStub );
-			expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
-			expect( executeStub.firstCall.args[ 1 ].file ).to.deep.equal( files );
-		} );
-
-		it( 'should execute imageUpload command with multiple files', () => {
-			const executeStub = sinon.stub( editor, 'execute' );
-			const plugin = editor.plugins.get( 'ImageInsertUI' );
-			const fileDialogButton = plugin._createFileDialogButtonView( editor.locale );
-			const files = [ createNativeFileMock(), createNativeFileMock(), createNativeFileMock() ];
-
-			fileDialogButton.fire( 'done', files );
-			sinon.assert.calledOnce( executeStub );
-			expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
-			expect( executeStub.firstCall.args[ 1 ].file ).to.deep.equal( files );
-		} );
-
-		it( 'should optimize the insertion position', () => {
-			const plugin = editor.plugins.get( 'ImageInsertUI' );
-			const fileDialogButton = plugin._createFileDialogButtonView( editor.locale );
-			const files = [ createNativeFileMock() ];
-
-			setModelData( model, '<paragraph>f[]oo</paragraph>' );
-
-			fileDialogButton.fire( 'done', files );
-
-			const id = fileRepository.getLoader( files[ 0 ] ).id;
-
-			expect( getModelData( model ) ).to.equal(
-				`[<image uploadId="${ id }" uploadStatus="reading"></image>]` +
-			'<paragraph>foo</paragraph>'
-			);
-		} );
-
-		it( 'should correctly insert multiple files', () => {
-			const plugin = editor.plugins.get( 'ImageInsertUI' );
-			const fileDialogButton = plugin._createFileDialogButtonView( editor.locale );
-			const files = [ createNativeFileMock(), createNativeFileMock() ];
-
-			setModelData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
-
-			fileDialogButton.fire( 'done', files );
-
-			const id1 = fileRepository.getLoader( files[ 0 ] ).id;
-			const id2 = fileRepository.getLoader( files[ 1 ] ).id;
-
-			expect( getModelData( model ) ).to.equal(
-				'<paragraph>foo</paragraph>' +
-			`<image uploadId="${ id1 }" uploadStatus="reading"></image>` +
-			`[<image uploadId="${ id2 }" uploadStatus="reading"></image>]` +
-			'<paragraph>bar</paragraph>'
-			);
-		} );
-
-		it( 'should not execute imageUpload if the file is not an image', () => {
-			const executeStub = sinon.stub( editor, 'execute' );
-			const plugin = editor.plugins.get( 'ImageInsertUI' );
-			const fileDialogButton = plugin._createFileDialogButtonView( editor.locale );
-			const file = {
-				type: 'media/mp3',
-				size: 1024
-			};
-
-			fileDialogButton.fire( 'done', [ file ] );
-			sinon.assert.notCalled( executeStub );
-		} );
-
-		it( 'should work even if the FileList does not support iterators', () => {
-			const executeStub = sinon.stub( editor, 'execute' );
-			const plugin = editor.plugins.get( 'ImageInsertUI' );
-			const fileDialogButton = plugin._createFileDialogButtonView( editor.locale );
-			const files = {
-				0: createNativeFileMock(),
-				length: 1
-			};
-
-			fileDialogButton.fire( 'done', files );
-			sinon.assert.calledOnce( executeStub );
-			expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
-			expect( executeStub.firstCall.args[ 1 ].file ).to.deep.equal( [ files[ 0 ] ] );
 		} );
 
 		describe( 'dropdown action button', () => {

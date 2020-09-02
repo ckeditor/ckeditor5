@@ -9,11 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageInsertPanelView from './ui/imageinsertpanelview';
-
-import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
-import { createImageTypeRegExp, prepareIntegrations } from './utils';
-
-import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
+import { prepareIntegrations } from './utils';
 
 import { isImage } from '../image/utils';
 
@@ -137,45 +133,5 @@ export default class ImageInsertUI extends Plugin {
 		panelView.children.add( imageInsertView );
 
 		return this._setUpDropdown( dropdownView, imageInsertView, command );
-	}
-
-	/**
-	 * Creates and sets up file dialog button view.
-	 *
-	 * @param {module:utils/locale~Locale} locale The localization services instance.
-	 *
-	 * @private
-	 * @returns {module:upload/ui/filedialogbuttonview~FileDialogButtonView}
-	 */
-	_createFileDialogButtonView( locale ) {
-		const editor = this.editor;
-		const t = locale.t;
-		const imageTypes = editor.config.get( 'image.upload.types' );
-		const fileDialogButtonView = new FileDialogButtonView( locale );
-		const imageTypesRegExp = createImageTypeRegExp( imageTypes );
-		const command = editor.commands.get( 'imageUpload' );
-
-		fileDialogButtonView.set( {
-			acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
-			allowMultipleFiles: true
-		} );
-
-		fileDialogButtonView.buttonView.set( {
-			label: t( 'Upload image' ),
-			icon: imageIcon,
-			tooltip: true
-		} );
-
-		fileDialogButtonView.buttonView.bind( 'isEnabled' ).to( command );
-
-		fileDialogButtonView.on( 'done', ( evt, files ) => {
-			const imagesToUpload = Array.from( files ).filter( file => imageTypesRegExp.test( file.type ) );
-
-			if ( imagesToUpload.length ) {
-				editor.execute( 'imageUpload', { file: imagesToUpload } );
-			}
-		} );
-
-		return fileDialogButtonView;
 	}
 }

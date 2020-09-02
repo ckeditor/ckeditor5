@@ -11,23 +11,6 @@ import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfie
 import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
 
 /**
- * Creates a regular expression used to test for image files.
- *
- *		const imageType = createImageTypeRegExp( [ 'png', 'jpeg', 'svg+xml', 'vnd.microsoft.icon' ] );
- *
- *		console.log( 'is supported image', imageType.test( file.type ) );
- *
- * @param {Array.<String>} types
- * @returns {RegExp}
- */
-export function createImageTypeRegExp( types ) {
-	// Sanitize the MIME type name which may include: "+", "-" or ".".
-	const regExpSafeNames = types.map( type => type.replace( '+', '\\+' ) );
-
-	return new RegExp( `^image\\/(${ regExpSafeNames.join( '|' ) })$` );
-}
-
-/**
  * Creates integrations object that will be passed to the
  * {@link module:image/imageinsert/ui/imageinsertpanelview~ImageUploadPanelView}.
  *
