@@ -5,9 +5,11 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+
 import ListStyleEditing from '../src/liststyleediting';
 import TodoListEditing from '../src/todolistediting';
 import ListStyleCommand from '../src/liststylecommand';
@@ -891,6 +893,266 @@ describe( 'ListStyleEditing', () => {
 					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 				);
 			} );
+		} );
+
+		describe( 'removing content between two lists', () => {
+			let editor, model;
+
+			beforeEach( () => {
+				return VirtualTestEditor
+					.create( {
+						plugins: [ Paragraph, ListStyleEditing, Typing ]
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+					} );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			it( 'should not do anything while removing a letter inside a listItem', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
+					'<paragraph></paragraph>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+				);
+
+				editor.execute( 'delete' );
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">2[]</listItem>' +
+					'<paragraph></paragraph>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+				);
+			} );
+
+			it( 'should not do anything if there is a non-listItem before the removed content', () => {
+				setModelData( model,
+					'<paragraph>Foo</paragraph>' +
+					'<paragraph>[]</paragraph>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+				);
+
+				editor.execute( 'delete' );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>Foo[]</paragraph>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+				);
+			} );
+
+			it( 'should not do anything if there is a non-listItem after the removed content', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
+					'<paragraph>[]</paragraph>' +
+					'<paragraph>Foo</paragraph>'
+				);
+
+				editor.execute( 'delete' );
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
+					'<paragraph>Foo</paragraph>'
+				);
+			} );
+
+			it( 'should not do anything if there is no element after the removed content', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
+					'<paragraph>[]</paragraph>'
+				);
+
+				editor.execute( 'delete' );
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>'
+				);
+			} );
+
+			it(
+				'should modify the the `listStyle` attribute for the merged (second) list when removing content between those lists',
+				() => {
+					setModelData( model,
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+						'<paragraph>[]</paragraph>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+					);
+
+					editor.execute( 'delete' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
+					);
+				}
+			);
+
+			it( 'should read the `listStyle` attribute from the most outer list', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+					'<listItem listIndent="1" listStyle="numbered" listType="decimal">2.1.</listItem>' +
+					'<listItem listIndent="2" listStyle="default" listType="default">2.1.1</listItem>' +
+					'<paragraph>[]</paragraph>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+				);
+
+				editor.execute( 'delete' );
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+					'<listItem listIndent="1" listStyle="numbered" listType="decimal">2.1.</listItem>' +
+					'<listItem listIndent="2" listStyle="default" listType="default">2.1.1[]</listItem>' +
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
+				);
+			} );
+
+			it(
+				'should not modify the the `listStyle` attribute for the merged (second) list if merging different `listType` attribute',
+				() => {
+					setModelData( model,
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+						'<paragraph>[]</paragraph>' +
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">2.</listItem>'
+					);
+
+					editor.execute( 'delete' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">2.</listItem>'
+					);
+				}
+			);
+
+			it(
+				'should modify the the `listStyle` attribute for the merged (second) list when removing content from both lists',
+				() => {
+					setModelData( model,
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">[3.</listItem>' +
+						'<paragraph>Foo</paragraph>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+					);
+
+					editor.execute( 'delete' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">[]</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
+					);
+				}
+			);
+
+			it(
+				'should modify the the `listStyle` attribute for the merged (second) list when typing over content from both lists',
+				() => {
+					setModelData( model,
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">[3.</listItem>' +
+						'<paragraph>Foo</paragraph>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+					);
+
+					editor.execute( 'input', { text: 'Foo' } );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">Foo[]</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
+					);
+				}
+			);
+
+			it(
+				'should not modify the the `listStyle` if lists were not merged but the content was partially removed',
+				() => {
+					setModelData( model,
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">111.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">222.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">[333.</listItem>' +
+						'<paragraph>Foo</paragraph>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1]11.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+					);
+
+					editor.execute( 'delete' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">111.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">222.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">[]11.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+					);
+				}
+			);
+
+			it( 'should not do anything while typing in a list item', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">3.</listItem>' +
+					'<paragraph></paragraph>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+				);
+
+				const modelChangeStub = sinon.stub( model, 'change' ).callThrough();
+
+				simulateTyping( ' Foo' );
+
+				// Each character calls `editor.model.change()`.
+				expect( modelChangeStub.callCount ).to.equal( 4 );
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">2. Foo[]</listItem>' +
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">3.</listItem>' +
+					'<paragraph></paragraph>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+				);
+			} );
+
+			function simulateTyping( text ) {
+				// While typing, every character is an atomic change.
+				text.split( '' ).forEach( character => {
+					editor.execute( 'input', {
+						text: character
+					} );
+				} );
+			}
 		} );
 	} );
 } );

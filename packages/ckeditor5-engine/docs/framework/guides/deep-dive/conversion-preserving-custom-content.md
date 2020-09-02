@@ -64,7 +64,7 @@ function AllowLinkTarget( editor ) {
 	// Tell the editor that the model "linkTarget" attribute converts into <a target="..."></a>
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'linkTarget',
-		view: ( attributeValue, writer ) => {
+		view: ( attributeValue, { writer } ) => {
 			const linkElement = writer.createAttributeElement( 'a', { target: attributeValue }, { priority: 5 } );
 			writer.setCustomProperty( 'link', true, linkElement );
 
@@ -152,7 +152,7 @@ function ConvertDivAttributes( editor ) {
 	// The view-to-model converter converting a view <div> with all its attributes to the model.
 	editor.conversion.for( 'upcast' ).elementToElement( {
 		view: 'div',
-		model: ( viewElement, modelWriter ) => {
+		model: ( viewElement, { writer: modelWriter } ) => {
 			return modelWriter.createElement( 'div', viewElement.getAttributes() );
 		}
 	} );
@@ -246,7 +246,7 @@ function HandleFontSizeValue( editor ) {
 		model: {
 			key: 'fontSize'
 		},
-		view: ( modelValue, viewWriter ) => {
+		view: ( modelValue, { writer: viewWriter } ) => {
 			return viewWriter.createAttributeElement( 'span', {
 				style: `font-size:${ modelValue }px`
 			} );

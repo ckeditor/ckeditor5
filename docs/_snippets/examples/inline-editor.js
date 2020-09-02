@@ -13,8 +13,29 @@ const inlineInjectElements = document.querySelectorAll( '#snippet-inline-editor 
 
 Array.from( inlineInjectElements ).forEach( inlineElement => {
 	const config = {
-		extraPlugins: [ ImageResize ],
-		image: {
+		toolbar: {
+			viewportTopOffset: window.getViewportTopOffsetConfig()
+		},
+		cloudServices: CS_CONFIG
+	};
+
+	if ( inlineElement.tagName.toLowerCase() == 'header' ) {
+		config.removePlugins = [
+			'Blockquote',
+			'Image',
+			'ImageCaption',
+			'ImageStyle',
+			'ImageToolbar',
+			'ImageUpload',
+			'List',
+			'EasyImage',
+			'CKFinder',
+			'CKFinderUploadAdapter'
+		];
+		config.toolbar.items = [ 'heading', '|', 'bold', 'italic', 'link' ];
+	} else {
+		config.extraPlugins = [ ImageResize ];
+		config.image = {
 			resizeOptions: [
 				{
 					name: 'imageResize:original',
@@ -42,27 +63,7 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 				'|',
 				'imageTextAlternative'
 			]
-		},
-		toolbar: {
-			viewportTopOffset: window.getViewportTopOffsetConfig()
-		},
-		cloudServices: CS_CONFIG
-	};
-
-	if ( inlineElement.tagName.toLowerCase() == 'header' ) {
-		config.removePlugins = [
-			'Blockquote',
-			'Image',
-			'ImageCaption',
-			'ImageStyle',
-			'ImageToolbar',
-			'ImageUpload',
-			'List',
-			'EasyImage',
-			'CKFinder',
-			'CKFinderUploadAdapter'
-		];
-		config.toolbar.items = [ 'heading', '|', 'bold', 'italic', 'link' ];
+		};
 	}
 
 	InlineEditor
