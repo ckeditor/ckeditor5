@@ -36,7 +36,7 @@ import '../../../theme/imageinsert.css';
  */
 export default class ImageInsertPanelView extends View {
 	/**
-	 * Creates a view for the dropdown panel of {@link module:image/imageinsert/imageinsert/ui~ImageInsertUI}.
+	 * Creates a view for the dropdown panel of {@link module:image/imageinsert/imageinsertui~ImageInsertUI}.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 * @param {Object} [integrations] An integrations object that contains
@@ -218,7 +218,7 @@ export default class ImageInsertPanelView extends View {
 	/**
 	 * Returns a view of the integration.
 	 *
-	 * @param {string} name The name of the integration.
+	 * @param {String} name The name of the integration.
 	 * @returns {module:ui/view~View}
 	 */
 	getIntegration( name ) {

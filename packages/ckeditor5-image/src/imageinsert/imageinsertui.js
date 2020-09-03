@@ -14,11 +14,12 @@ import { prepareIntegrations } from './utils';
 import { isImage } from '../image/utils';
 
 /**
- * The image upload button plugin.
+ * The image insert dropdown plugin.
  *
- * For a detailed overview, check the {@glink features/image-upload/image-upload Image upload feature} documentation.
+ * For a detailed overview, check the {@glink features/image-upload/image-upload Image upload feature}
+ * and {@glink features/image#inserting-images-via-source-url Insert images via source URL} documentation.
  *
- * Adds the `'imageUpload'` dropdown to the {@link module:ui/componentfactory~ComponentFactory UI component factory}.
+ * Adds the `'imageInsert'` dropdown to the {@link module:ui/componentfactory~ComponentFactory UI component factory}.
  *
  * @extends module:core/plugin~Plugin
  */

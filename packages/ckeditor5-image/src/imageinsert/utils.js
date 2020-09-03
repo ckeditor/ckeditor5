@@ -12,7 +12,7 @@ import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/
 
 /**
  * Creates integrations object that will be passed to the
- * {@link module:image/imageinsert/ui/imageinsertpanelview~ImageUploadPanelView}.
+ * {@link module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView}.
  *
  * @param {module:core/editor/editor~Editor} editor Editor instance.
  *
@@ -20,7 +20,7 @@ import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/
  */
 export function prepareIntegrations( editor ) {
 	const panelItems = editor.config.get( 'image.upload.panel.items' );
-	const imageUploadUIPlugin = editor.plugins.get( 'ImageInsertUI' );
+	const imageInsertUIPlugin = editor.plugins.get( 'ImageInsertUI' );
 
 	const PREDEFINED_INTEGRATIONS = {
 		'insertImageViaUrl': createLabeledInputView( editor.locale )
@@ -39,12 +39,12 @@ export function prepareIntegrations( editor ) {
 		} );
 
 		// We want to close the dropdown panel view when user clicks the ckFinderButton.
-		ckFinderButton.delegate( 'execute' ).to( imageUploadUIPlugin, 'cancel' );
+		ckFinderButton.delegate( 'execute' ).to( imageInsertUIPlugin, 'cancel' );
 
 		PREDEFINED_INTEGRATIONS.openCKFinder = ckFinderButton;
 	}
 
-	// Creates integrations object of valid views to pass it to the ImageUploadPanelView.
+	// Creates integrations object of valid views to pass it to the ImageInsertPanelView.
 	return panelItems.reduce( ( object, key ) => {
 		if ( PREDEFINED_INTEGRATIONS[ key ] ) {
 			object[ key ] = PREDEFINED_INTEGRATIONS[ key ];
