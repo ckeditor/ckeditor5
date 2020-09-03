@@ -140,7 +140,7 @@ describe( 'ImageUploadPanelView', () => {
 	describe( 'template', () => {
 		it( 'should create element from the template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-image-upload-form' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-image-insert-form' ) ).to.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 

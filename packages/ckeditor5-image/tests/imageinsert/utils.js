@@ -43,7 +43,7 @@ describe( 'Upload utils', () => {
 
 			const openCKFinderExtendedView = Object.values( prepareIntegrations( editor ) )[ 1 ];
 
-			expect( openCKFinderExtendedView.class ).contains( 'ck-image-upload__ck-finder-button' );
+			expect( openCKFinderExtendedView.class ).contains( 'ck-image-insert__ck-finder-button' );
 			expect( openCKFinderExtendedView.label ).to.equal( 'Insert image or file' );
 			expect( openCKFinderExtendedView.withText ).to.be.true;
 

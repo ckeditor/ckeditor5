@@ -35,7 +35,7 @@ export function prepareIntegrations( editor ) {
 		const ckFinderButton = editor.ui.componentFactory.create( 'ckfinder' );
 		ckFinderButton.set( {
 			withText: true,
-			class: 'ck-image-upload__ck-finder-button'
+			class: 'ck-image-insert__ck-finder-button'
 		} );
 
 		// We want to close the dropdown panel view when user clicks the ckFinderButton.

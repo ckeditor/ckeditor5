@@ -151,7 +151,7 @@ export default class ImageInsertPanelView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-image-upload-form'
+					'ck-image-insert-form'
 				],
 
 				tabindex: '-1'
@@ -164,7 +164,7 @@ export default class ImageInsertPanelView extends View {
 						this.insertButtonView,
 						this.cancelButtonView
 					],
-					class: 'ck-image-upload-form__action-row'
+					class: 'ck-image-insert-form__action-row'
 				} )
 			]
 		} );
@@ -247,7 +247,7 @@ export default class ImageInsertPanelView extends View {
 
 		panelView.extendTemplate( {
 			attributes: {
-				class: 'ck-image-upload__panel'
+				class: 'ck-image-insert__panel'
 			}
 		} );
 
