@@ -3,7 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import env, { isMac, isGecko, isSafari, isAndroid, isRegExpUnicodePropertySupported, isBlink } from '../src/env';
+import env, {
+	isMac,
+	isGecko,
+	isSafari,
+	isAndroid,
+	isBlink,
+	isRegExpUnicodePropertySupported,
+	areInputEventsLevel1Supported
+} from '../src/env';
 
 function toLowerCase( str ) {
 	return str.toLowerCase();
@@ -52,6 +60,12 @@ describe( 'Env', () => {
 		describe( 'isRegExpUnicodePropertySupported', () => {
 			it( 'is a boolean', () => {
 				expect( env.features.isRegExpUnicodePropertySupported ).to.be.a( 'boolean' );
+			} );
+		} );
+
+		describe( 'areInputEventsLevel1Supported', () => {
+			it( 'is a boolean', () => {
+				expect( env.features.areInputEventsLevel1Supported ).to.be.a( 'boolean' );
 			} );
 		} );
 	} );
@@ -199,6 +213,29 @@ describe( 'Env', () => {
 			} else {
 				expect( testFn ).to.throw();
 			}
+		} );
+	} );
+
+	describe( 'areInputEventsLevel1Supported()', () => {
+		it( 'should detect the Input Events Level 1 support', () => {
+			class InputEventStubWhenSupported {
+				constructor() {
+					this.inputType = '';
+					this.getTargetRanges = () => {};
+				}
+			}
+
+			const DOMWindowStubWhenSupported = {
+				InputEvent: InputEventStubWhenSupported
+			};
+
+			const DOMWindowStubWhenUnsupported = {
+				// eslint-disable-next-line
+				InputEvent: function () {}
+			};
+
+			expect( areInputEventsLevel1Supported( DOMWindowStubWhenSupported ) ).to.be.true;
+			expect( areInputEventsLevel1Supported( DOMWindowStubWhenUnsupported ) ).to.be.false;
 		} );
 	} );
 } );
