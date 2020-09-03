@@ -42,7 +42,7 @@ export default class ImageUpload extends Plugin {
 }
 
 /**
- * Image upload configuration.
+ * The image upload configuration.
  *
  * @member {module:image/imageupload~ImageUploadConfig} module:image/image~ImageConfig#upload
  */
@@ -75,7 +75,7 @@ export default class ImageUpload extends Plugin {
  *		};
  *
  * The type string should match [one of the sub-types](https://www.iana.org/assignments/media-types/media-types.xhtml#image)
- * of the image MIME type. E.g. for the `image/jpeg` MIME type, add `'jpeg'` to your image upload configuration.
+ * of the image MIME type. For example, for the `image/jpeg` MIME type, add `'jpeg'` to your image upload configuration.
  *
  * **Note:** This setting only restricts some image types to be selected and uploaded through the CKEditor UI and commands. Image type
  * recognition and filtering should also be implemented on the server which accepts image uploads.
