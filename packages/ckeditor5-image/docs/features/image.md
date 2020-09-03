@@ -13,6 +13,7 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link module:image/imagestyle~ImageStyle} adds support for [image styles](#image-styles).
 * {@link module:image/imagetextalternative~ImageTextAlternative} adds support for adding text alternative.
 * {@link module:image/imageupload~ImageUpload} adds support for {@link features/image-upload uploading dropped or pasted images}.
+* {@link module:image/imageinsert~ImageInsert} adds support for for [inserting images via URL](#inserting-images-via-source-url) and other custom integrations.
 * {@link module:image/imageresize~ImageResize} adds support for [resizing images](#resizing-images).
 * {@link module:link/linkimage~LinkImage} adds support for [linking images](#linking-images).
 

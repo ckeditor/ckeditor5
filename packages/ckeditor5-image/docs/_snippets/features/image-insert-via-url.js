@@ -11,6 +11,25 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-image-insert-via-url' ), {
 		removePlugins: [ 'ImageToolbar', 'ImageCaption', 'ImageStyle', 'ImageResize', 'LinkImage' ],
 		toolbar: {
+			items: [
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'|',
+				'indent',
+				'outdent',
+				'|',
+				'imageInsert',
+				'blockQuote',
+				'insertTable',
+				'mediaEmbed',
+				'undo',
+				'redo'
+			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		image: {
@@ -24,7 +43,7 @@ ClassicEditor
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
-		window.imageViaUrl = editor;
+		window.editorInsertImageViaUrl = editor;
 	} )
 	.catch( err => {
 		console.error( err );
