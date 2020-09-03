@@ -127,6 +127,8 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
 	convertChanges( differ, markers, writer ) {
+		this.pocCheckChangesForRefresh( differ, writer );
+
 		// Before the view is updated, remove markers which have changed.
 		for ( const change of differ.getMarkersToRemove() ) {
 			this.convertMarkerRemove( change.name, change.range, writer );
@@ -134,20 +136,13 @@ export default class DowncastDispatcher {
 
 		const changes = differ.getChanges();
 
-		if ( changes.length ) {
-			// @if CK_DEBUG // console.log( `convertChanges() size: ${ changes.length }` );
-		}
-
 		// Convert changes that happened on model tree.
 		for ( const entry of changes ) {
-			// @if CK_DEBUG // console.log( `differ: ${ entry.type }` );
-
 			if ( entry.type == 'insert' ) {
 				this.convertInsert( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
 			} else if ( entry.type == 'remove' ) {
 				this.convertRemove( entry.position, entry.length, entry.name, writer );
 			} else if ( entry.type == 'refresh' ) {
-				// @if CK_DEBUG console.warn( 'convert refresh' );
 				this.convertRefresh( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
 			} else if ( entry.type == 'attribute' ) {
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
