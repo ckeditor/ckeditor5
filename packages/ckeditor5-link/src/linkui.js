@@ -589,18 +589,22 @@ export default class LinkUI extends Plugin {
 		const view = this.editor.editing.view;
 		const model = this.editor.model;
 		const viewDocument = view.document;
-		const targetLink = this._getSelectedLinkElement();
-		const range = model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ?
-			// There are cases when we highlight selection using a marker (#7705, #4721).
-			this.editor.editing.mapper.toViewRange( model.markers.get( VISUAL_SELECTION_MARKER_NAME ).getRange() ) :
-			// If no markers are available refer to a regular selection.
-			viewDocument.selection.getFirstRange();
+		let target = null;
 
-		const target = targetLink ?
-			// When selection is inside link element, then attach panel to this element.
-			view.domConverter.mapViewToDom( targetLink ) :
-			// Otherwise attach panel to the selection.
-			view.domConverter.viewRangeToDom( range );
+		if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
+			// There are cases when we highlight selection using a marker (#7705, #4721).
+			const markerViewElement = Array.from( this.editor.editing.mapper.markerNameToElements( VISUAL_SELECTION_MARKER_NAME ) )[ 0 ];
+			target = view.domConverter.mapViewToDom( markerViewElement );
+		} else {
+			const targetLink = this._getSelectedLinkElement();
+			const range = viewDocument.selection.getFirstRange();
+
+			target = targetLink ?
+				// When selection is inside link element, then attach panel to this element.
+				view.domConverter.mapViewToDom( targetLink ) :
+				// Otherwise attach panel to the selection.
+				view.domConverter.viewRangeToDom( range );
+		}
 
 		return { target };
 	}

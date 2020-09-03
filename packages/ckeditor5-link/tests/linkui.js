@@ -134,30 +134,33 @@ describe( 'LinkUI', () => {
 
 		it( 'should add #formView to the balloon and attach the balloon to the selection when text fragment is selected', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
-			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
 
 			linkUIFeature._showUI();
+
+			const markerElement = editor.ui.view.element.querySelector( '.ck-fake-link-selection' );
 
 			expect( balloon.visibleView ).to.equal( formView );
 			sinon.assert.calledWithExactly( balloonAddSpy, {
 				view: formView,
 				position: {
-					target: selectedRange
+					target: markerElement
 				}
 			} );
 		} );
 
-		it( 'should add #formView to the balloon and attach the balloon to the selection when selection is collapsed', () => {
+		it( 'should add #formView to the balloon and attach the balloon to the marker element when selection is collapsed', () => {
+			// (#7926)
 			setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
-			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
-
 			linkUIFeature._showUI();
 
+			const markerElement = editor.ui.view.element.querySelector( '.ck-fake-link-selection_collapsed' );
+
+			expect( markerElement ).not.to.be.null;
 			expect( balloon.visibleView ).to.equal( formView );
 			sinon.assert.calledWithExactly( balloonAddSpy, {
 				view: formView,
 				position: {
-					target: selectedRange
+					target: markerElement
 				}
 			} );
 		} );
@@ -167,14 +170,13 @@ describe( 'LinkUI', () => {
 
 			linkUIFeature._showUI();
 
-			const markerModelRange = editor.model.markers.get( 'link-ui' ).getRange();
-			const markerViewRange = editor.editing.mapper.toViewRange( markerModelRange );
-			const domRange = editor.editing.view.domConverter.viewRangeToDom( markerViewRange );
+			const markerElement = editor.ui.view.element.querySelector( '.ck-fake-link-selection' );
 
+			expect( markerElement ).not.to.be.null;
 			expect( balloonAddSpy.calledWithExactly( {
 				view: formView,
 				position: {
-					target: domRange
+					target: markerElement
 				}
 			} ), 'spy arguments' ).to.be.true;
 		} );
@@ -380,9 +382,11 @@ describe( 'LinkUI', () => {
 					writer.setSelection( text, 1, true );
 				} );
 
+				const markerElement = editor.ui.view.element.querySelector( '.ck-fake-link-selection' );
+
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, {
-					target: editorElement.ownerDocument.getSelection().getRangeAt( 0 )
+					target: markerElement
 				} );
 			} );
 
