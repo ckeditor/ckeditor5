@@ -127,7 +127,34 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
 	convertChanges( differ, markers, writer ) {
-		this.pocCheckChangesForRefresh( differ, writer );
+		const changes1 = differ.getChanges();
+
+		const found = [ ...changes1 ]
+			.filter( ( { type } ) => type === 'attribute' || type === 'insert' || type === 'remove' )
+			.map( entry => {
+				const { range, position, type } = entry;
+				const element = range && range.start.nodeAfter || position && position.parent;
+
+				let eventName;
+
+				if ( type === 'attribute' ) {
+					// TODO: enhance event name retrieval.
+					eventName = `attribute:${ entry.attributeKey }:${ element && element.name }`;
+				} else {
+					eventName = `${ type }:${ entry.name }`;
+				}
+
+				if ( this._map.has( eventName ) ) {
+					const expectedElement = this._map.get( eventName );
+
+					return element.is( 'element', expectedElement ) ? element : element.findAncestor( expectedElement );
+				}
+			} )
+			.filter( element => !!element );
+
+		const elementsToRefresh = new Set( found );
+
+		[ ...elementsToRefresh.values() ].forEach( box => differ._pocRefreshItem( box ) );
 
 		// Before the view is updated, remove markers which have changed.
 		for ( const change of differ.getMarkersToRemove() ) {
@@ -168,37 +195,6 @@ export default class DowncastDispatcher {
 		for ( const eventName of events ) {
 			this._map.set( eventName, modelName );
 		}
-	}
-
-	pocCheckChangesForRefresh( differ ) {
-		const changes = differ.getChanges();
-
-		const found = [ ...changes ]
-			.filter( ( { type } ) => type === 'attribute' || type === 'insert' || type === 'remove' )
-			.map( entry => {
-				const { range, position, type } = entry;
-				const element = range && range.start.nodeAfter || position && position.parent;
-
-				let eventName;
-
-				if ( type === 'attribute' ) {
-					// TODO: enhance event name retrieval.
-					eventName = `attribute:${ entry.attributeKey }:${ element && element.name }`;
-				} else {
-					eventName = `${ type }:${ entry.name }`;
-				}
-
-				if ( this._map.has( eventName ) ) {
-					const expectedElement = this._map.get( eventName );
-
-					return element.is( 'element', expectedElement ) ? element : element.findAncestor( expectedElement );
-				}
-			} )
-			.filter( element => !!element );
-
-		const elementsToRefresh = new Set( found );
-
-		[ ...elementsToRefresh.values() ].forEach( box => differ._pocRefreshItem( box ) );
 	}
 
 	/**
