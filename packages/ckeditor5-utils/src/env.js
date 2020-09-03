@@ -77,7 +77,7 @@ const env = {
 
 		/**
 		 * Indicates that the environment supports at least [Input Events Level 1](https://www.w3.org/TR/input-events-1/)
-		 * (that includes `input` and `beforeinput` events).
+		 * (`input` and `beforeinput` events).
 		 *
 		 * @type {Boolean}
 		 */
@@ -164,7 +164,7 @@ export function isRegExpUnicodePropertySupported() {
 
 /**
  * Checks if the current environment supports at least [Input Events Level 1](https://www.w3.org/TR/input-events-1/)
- * (that includes `input` and `beforeinput` events).
+ * (`input` and `beforeinput` events).
  *
  * @param {Window} domWindow The DOM Window interface.
  * @returns {Boolean}
