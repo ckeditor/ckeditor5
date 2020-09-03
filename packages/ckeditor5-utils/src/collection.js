@@ -201,11 +201,12 @@ export default class Collection {
 			index = this._items.length;
 		} else if ( index > this._items.length || index < 0 ) {
 			/**
-			 * The index number has invalid value.
+			 * The `index` passed to {@link module:utils/collection~Collection#addMany `Collection#addMany()`}
+			 * is invalid. It must be a number between 0 and the collection's length.
 			 *
 			 * @error collection-add-item-bad-index
 			 */
-			throw new CKEditorError( 'collection-add-item-invalid-index', this );
+			throw new CKEditorError( 'collection-add-item-invalid-index: The index passed to Collection#addMany() is invalid.', this );
 		}
 
 		for ( let offset = 0; offset < items.length; offset++ ) {
@@ -229,9 +230,9 @@ export default class Collection {
 	}
 
 	/**
-	 * Gets item by its id or index.
+	 * Gets an item by its ID or index.
 	 *
-	 * @param {String|Number} idOrIndex The item id or index in the collection.
+	 * @param {String|Number} idOrIndex The item ID or index in the collection.
 	 * @returns {Object|null} The requested item or `null` if such item does not exist.
 	 */
 	get( idOrIndex ) {
@@ -243,20 +244,20 @@ export default class Collection {
 			item = this._items[ idOrIndex ];
 		} else {
 			/**
-			 * Index or id must be given.
+			 * An index or ID must be given.
 			 *
 			 * @error collection-get-invalid-arg
 			 */
-			throw new CKEditorError( 'collection-get-invalid-arg: Index or id must be given.', this );
+			throw new CKEditorError( 'collection-get-invalid-arg: An index or ID must be given.', this );
 		}
 
 		return item || null;
 	}
 
 	/**
-	 * Returns a boolean indicating whether the collection contains an item.
+	 * Returns a Boolean indicating whether the collection contains an item.
 	 *
-	 * @param {Object|String} itemOrId The item or its id in the collection.
+	 * @param {Object|String} itemOrId The item or its ID in the collection.
 	 * @returns {Boolean} `true` if the collection contains the item, `false` otherwise.
 	 */
 	has( itemOrId ) {
@@ -271,11 +272,11 @@ export default class Collection {
 	}
 
 	/**
-	 * Gets index of item in the collection.
-	 * When item is not defined in the collection then index will be equal -1.
+	 * Gets an index of an item in the collection.
+	 * When an item is not defined in the collection, the index will equal -1.
 	 *
-	 * @param {Object|String} itemOrId The item or its id in the collection.
-	 * @returns {Number} Index of given item.
+	 * @param {Object|String} itemOrId The item or its ID in the collection.
+	 * @returns {Number} The index of a given item.
 	 */
 	getIndex( itemOrId ) {
 		let item;
@@ -292,7 +293,7 @@ export default class Collection {
 	/**
 	 * Removes an item from the collection.
 	 *
-	 * @param {Object|Number|String} subject The item to remove, its id or index in the collection.
+	 * @param {Object|Number|String} subject The item to remove, its ID or index in the collection.
 	 * @returns {Object} The removed item.
 	 * @fires remove
 	 * @fires change
@@ -641,11 +642,11 @@ export default class Collection {
 
 			if ( typeof itemId != 'string' ) {
 				/**
-				 * This item's id should be a string.
+				 * This item's ID should be a string.
 				 *
 				 * @error collection-add-invalid-id
 				 */
-				throw new CKEditorError( 'collection-add-invalid-id', this );
+				throw new CKEditorError( 'collection-add-invalid-id: This item\'s ID should be a string.', this );
 			}
 
 			if ( this.get( itemId ) ) {
@@ -654,7 +655,7 @@ export default class Collection {
 				 *
 				 * @error collection-add-item-already-exists
 				 */
-				throw new CKEditorError( 'collection-add-item-already-exists', this );
+				throw new CKEditorError( 'collection-add-item-already-exists: This item already exists in the collection.', this );
 			}
 		} else {
 			item[ idProperty ] = itemId = uid();

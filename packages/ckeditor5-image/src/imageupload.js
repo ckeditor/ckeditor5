@@ -42,7 +42,7 @@ export default class ImageUpload extends Plugin {
 }
 
 /**
- * Image upload configuration.
+ * The image upload configuration.
  *
  * @member {module:image/imageupload~ImageUploadConfig} module:image/image~ImageConfig#upload
  */
@@ -75,11 +75,66 @@ export default class ImageUpload extends Plugin {
  *		};
  *
  * The type string should match [one of the sub-types](https://www.iana.org/assignments/media-types/media-types.xhtml#image)
- * of the image MIME type. E.g. for the `image/jpeg` MIME type, add `'jpeg'` to your image upload configuration.
+ * of the image MIME type. For example, for the `image/jpeg` MIME type, add `'jpeg'` to your image upload configuration.
  *
  * **Note:** This setting only restricts some image types to be selected and uploaded through the CKEditor UI and commands. Image type
  * recognition and filtering should also be implemented on the server which accepts image uploads.
  *
  * @member {Array.<String>} module:image/imageupload~ImageUploadConfig#types
  * @default [ 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff' ]
+ */
+
+/**
+ * The image upload panel view configuration.
+ *
+ * @protected
+ * @member {module:image/imageupload~ImageUploadPanelConfig} module:image/imageupload~ImageUploadConfig#panel
+ */
+
+/**
+ * The configuration of the image upload dropdown panel view. Used by the image upload feature in the `@ckeditor/ckeditor5-image` package.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ * 				image: {
+ * 					upload: {
+ * 						panel: ... // Panel settings go here.
+ * 					}
+ * 				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @protected
+ * @interface module:image/imageupload~ImageUploadPanelConfig
+ */
+
+/**
+ * The list of {@link module:image/imageupload~ImageUpload} integrations.
+ *
+ * This option accepts string tokens:
+ * * For predefined integrations, there are two special strings: `insertImageViaUrl` and `openCKFinder`.
+ * The former adds the {@glink features/image#inserting-images-via-source-url Insert image via URL} feature, while the latter adds the
+ * built-in {@glink features/image-upload/ckfinder CKFinder} integration.
+ * * For custom integrations, each string should be a name of the already registered component.
+ * If you have a plugin `PluginX` that registers the `pluginXButton` component, then in that case the integration token
+ * should be `pluginXButton`.
+ *
+ *		// Add `insertImageViaUrl`, `openCKFinder` and custom `pluginXButton` integrations.
+ *		const imageUploadConfig = {
+ *			upload: {
+ *				panel: {
+ *					items: [
+ *						'insertImageViaUrl',
+ *						'openCKFinder',
+ *						'pluginXButton'
+ *					]
+ *				}
+ *			}
+ *		};
+ *
+ * @member {Array.<String>} module:image/imageupload~ImageUploadPanelConfig#items
+ * @default [ 'insertImageViaUrl' ]
  */

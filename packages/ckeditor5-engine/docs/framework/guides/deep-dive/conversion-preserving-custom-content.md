@@ -64,7 +64,7 @@ function AllowLinkTarget( editor ) {
 	// Tell the editor that the model "linkTarget" attribute converts into <a target="..."></a>
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'linkTarget',
-		view: ( attributeValue, writer ) => {
+		view: ( attributeValue, { writer } ) => {
 			const linkElement = writer.createAttributeElement( 'a', { target: attributeValue }, { priority: 5 } );
 			writer.setCustomProperty( 'link', true, linkElement );
 
@@ -152,7 +152,7 @@ function ConvertDivAttributes( editor ) {
 	// The view-to-model converter converting a view <div> with all its attributes to the model.
 	editor.conversion.for( 'upcast' ).elementToElement( {
 		view: 'div',
-		model: ( viewElement, modelWriter ) => {
+		model: ( viewElement, { writer: modelWriter } ) => {
 			return modelWriter.createElement( 'div', viewElement.getAttributes() );
 		}
 	} );
@@ -246,7 +246,7 @@ function HandleFontSizeValue( editor ) {
 		model: {
 			key: 'fontSize'
 		},
-		view: ( modelValue, viewWriter ) => {
+		view: ( modelValue, { writer: viewWriter } ) => {
 			return viewWriter.createAttributeElement( 'span', {
 				style: `font-size:${ modelValue }px`
 			} );
@@ -487,3 +487,5 @@ ClassicEditor
 ## What's next?
 
 If you would like to read more about how to extend the output of existing CKEditor 5 features, refer to the {@link framework/guides/deep-dive/conversion-extending-output Extending the editor output} guide.
+
+If you want to learn how to create complex view structures or how to move from {@link module:engine/conversion/conversion~Conversion two-way} or {@link module:engine/conversion/conversion~Conversion#for one-way} converters to event-based ones, refer to the {@link framework/guides/deep-dive/custom-element-conversion Custom element conversion} guide.

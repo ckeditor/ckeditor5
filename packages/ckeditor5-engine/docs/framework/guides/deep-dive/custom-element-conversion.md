@@ -8,28 +8,31 @@ order: 40
 
 There are three levels on which elements can be converted:
 
-* By using the two-way converter: {@link module:engine/conversion/conversion~Conversion#elementToElement `conversion.elementToElement()`}. It is a fully declarative API. It is the least powerful option but it is the easiest one to use.
-* By using one-way converters: for example {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `conversion.for( 'downcast' ).elementToElement()`} and {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToElement `conversion.for( 'upcast' ).elementToElement()`}. In this case, you need to define at least two converters (for upcast and downcast), but the "how" part becomes a callback, and hence you gain more control over it.
-* Finally, by using event-based converters. In this case, you need to listen to events fired by {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} and {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher}. This method has the full access to every bit of logic that a converter needs to implement and therefore it can be used to write the most complex conversion methods.
+* By using the two-way converter: {@link module:engine/conversion/conversion~Conversion#elementToElement `conversion.elementToElement()`}.
+  This is a fully declarative API. It is the least powerful option but it is the easiest one to use.
+* By using one-way converters: for example {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `conversion.for( 'downcast' ).elementToElement()`} and {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToElement `conversion.for( 'upcast' ).elementToElement()`}.
+  In this case, you need to define at least two converters (for upcast and downcast), but the "how" part becomes a callback, and hence you gain more control over it.
+* Finally, by using event-based converters.
+  In this case, you need to listen to events fired by {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} and {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher}. This method has full access to every bit of logic that a converter needs to implement and therefore it can be used to write the most complex conversion methods.
 
-In this guide, we will show you how to migrate from a simple two-way converter to an event-based converters as the requirements regarding the feature get more complex.
+This guide explains how to migrate from a simple two-way converter to an event-based converter as the requirements regarding the feature get more complex.
 
 ## Introduction
 
-Let's assume that content in your application contains "info boxes". As for now, it was only required to wrap part of a content in a `<div>` element that would look in the data and editing views like this:
+Let us assume that the content in your application contains "info boxes". As for now, it was only required to wrap a part of the content in a `<div>` element that would look like this in the data and editing views:
 
 ```html
 <div class="info-box">
-	<!-- any editable content -->
+	<!-- Any editable content. -->
 	<p>This is <strong>important!</strong></p>
 </div>
 ```
 
-This data is represented in the model as the following structure:
+The data is represented in the model as the following structure:
 
 ```html
 <infoBox>
-	<!-- any $block content: -->
+	<!-- Any $block content. -->
 	<paragraph><$text>This is </$text><$text bold="true">important!</$text></paragraph>
 </infoBox>
 ```
@@ -39,14 +42,14 @@ This can be easily done with the below schema and converters in a simple `InfoBo
 ```js
 class InfoBox {
 	constructor( editor ) {
-		// 1. Define infoBox as an object that can be contained any other content.
+		// 1. Define infoBox as an object that can contain any other content.
 		editor.model.schema.register( 'infoBox', {
 			allowWhere: '$block',
 			allowContentOf: '$root',
 			isObject: true
 		} );
 
-		// 2. Conversion is straight forward:
+		// 2. The conversion is straightforward:
 		editor.conversion.elementToElement( {
 			model: 'infoBox',
 			view: {
@@ -60,7 +63,7 @@ class InfoBox {
 
 ## Migrating to an event-based converter
 
-Let's now assume that the requirements have changed and there is a need for adding an additional element in the data and editing views that will display the type of the info box (warning, error, info, etc.).
+Let us now assume that the requirements have changed and there is a need for adding an additional element in the data and editing views that will display the type of the info box (warning, error, info, etc.).
 
 The new info box structure:
 
@@ -68,56 +71,56 @@ The new info box structure:
 <div class="info-box info-box-warning">
 	<div class="info-box-title">Warning</div>
 	<div class="info-box-content">
-		<!-- any editable content -->
+		<!-- Any editable content. -->
 		<p>This is <strong>important!</strong></p>
 	</div>
 </div>
 ```
 
-The "Warning" part should not be editable. It defines a type of the info box so we can store this  bit of information as an attribute of the `<infoBox>` element:
+The "Warning" part should not be editable. It defines the type of the info box so you can store this bit of information as an attribute of the `<infoBox>` element:
 
 ```html
 <infoBox infoBoxType="warning">
-	<!-- any $block content: -->
+	<!-- Any $block content. -->
 	<paragraph><$text>This is </$text><$text bold="true">important!</$text></paragraph>
 </infoBox>
 ```
 
-Let's see how to update our basic implementation to cover these requirements.
+Let us see how to update the basic implementation to cover these requirements.
 
 ### Demo
 
-Below is a demo of the editor with the example info box.
+Below is a demo of the editor with a sample info box.
 
 {@snippet framework/extending-content-custom-element-converter}
 
 ### Schema
 
-The type of the box is defined by the additional class on the main `<div>` but it is also represented as text in `<div class="info-box-title">`. All the info box content must be now placed inside `<div class="info-box-content">` instead of the main wrapper.
+The type of the box is defined by an additional class on the main `<div>` but it is also represented as text in `<div class="info-box-title">`. All the info box content must now be placed inside `<div class="info-box-content">` instead of the main wrapper.
 
-For the above requirements we can see that the model structure of the `infoBox` does not need to change much. We can still use a single element in the model. The only addition to the model is an attribute that will hold information about the info box type:
+For the above requirements you can see that the model structure of the `infoBox` does not need to change much. You can still use a single element in the model. The only addition to the model is an attribute that will store information about the info box type:
 
 ```js
 editor.model.schema.register( 'infoBox', {
 	allowWhere: '$block',
 	allowContentOf: '$root',
 	isObject: true,
-	allowAttributes: [ 'infoBoxType' ] // Added
+	allowAttributes: [ 'infoBoxType' ] // Added.
 } );
 ```
 
 ### Event-based upcast converter
 
-The conversion of the type of the box itself could be achieved by using {@link module:engine/conversion/conversion~Conversion#attributeToAttribute `attributeToAttribute()`} (`info-box-*` CSS classes to the `infoBoxType` model attribute). However, two more changes were made to the data format that we need to handle:
+The conversion of the type of the box itself can be achieved by using {@link module:engine/conversion/conversion~Conversion#attributeToAttribute `attributeToAttribute()`} (`info-box-*` CSS classes to the `infoBoxType` model attribute). However, two more changes were made to the data format that you need to handle:
 
-* There is the new `<div class="info-box-title">` element that should be ignored during upcast conversion as it duplicates the information conveyed by the main element's CSS class.
-* The content of the info box is now located inside another element (previously it was located directly in the main wrapper).
+* There is a new `<div class="info-box-title">` element that should be ignored during the upcast conversion as it duplicates the information conveyed by the main element's CSS class.
+* The content of the info box is now located inside another element. Previously it was located directly in the main wrapper.
 
-Neither two-way nor one-way converters can handle such conversion. Therefore, we need to use an event-based converter with the following behavior:
+Neither two-way nor one-way converters can handle such conversion. Therefore, you need to use an event-based converter with the following behavior:
 
-1. Create model `<infoBox>` element with `infoBoxType` attribute.
-1. Skip conversion of `<div class="info-box-title">` as the information about type can be obtained from the wrapper's CSS classes.
-1. Convert children of `<div class="info-box-content">` and insert them directly into `<infoBox>`.
+1. Create a model `<infoBox>` element with the `infoBoxType` attribute.
+1. Skip the conversion of `<div class="info-box-title">` as the information about type can be obtained from the wrapper's CSS classes.
+1. Convert the children of `<div class="info-box-content">` and insert them directly into `<infoBox>`.
 
 ```js
 function upcastConverter( event, data, conversionApi ) {
@@ -129,16 +132,16 @@ function upcastConverter( event, data, conversionApi ) {
 		return;
 	}
 
-	// Create a model structure.
+	// Create the model structure.
 	const modelElement = conversionApi.writer.createElement( 'infoBox', {
 		infoBoxType: getTypeFromViewElement( viewInfoBox )
 	} );
 
 	// Try to safely insert the element into the model structure.
-	// If `safeInsert()` returns `false` the element cannot be safely inserted
-	// into the content, and the conversion process must stop.
-	// This may happen if the data that we are converting has incorrect structure
-	// (e.g. was copied from an external website).
+	// If `safeInsert()` returns `false`, the element cannot be safely inserted
+	// into the content and the conversion process must stop.
+	// This may happen if the data that you are converting has an incorrect structure
+	// (e.g. it was copied from an external website).
 	if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
 		return;
 	}
@@ -146,8 +149,8 @@ function upcastConverter( event, data, conversionApi ) {
 	// Mark the info box <div> as handled by this converter.
 	conversionApi.consumable.consume( viewInfoBox, { name: true } );
 
-	// Let's assume that the HTML structure is always the same.
-	// Note: for full bulletproofing this converter we should also check
+	// Let us assume that the HTML structure is always the same.
+	// Note: For full bulletproofing this converter, you should also check
 	// whether these elements are the right ones.
 	const viewInfoBoxTitle = viewInfoBox.getChild( 0 );
 	const viewInfoBoxContent = viewInfoBox.getChild( 1 );
@@ -156,14 +159,14 @@ function upcastConverter( event, data, conversionApi ) {
 	conversionApi.consumable.consume( viewInfoBoxTitle, { name: true } );
 	conversionApi.consumable.consume( viewInfoBoxContent, { name: true } );
 
-	// Let the editor handle children of <div class="info-box-content">.
+	// Let the editor handle the children of <div class="info-box-content">.
 	conversionApi.convertChildren( viewInfoBoxContent, modelElement );
 
 	// Finally, update the conversion's modelRange and modelCursor.
 	conversionApi.updateConversionResult( modelElement, data );
 }
 
-// Helper function to read the type from the view classes.
+// A helper function to read the type from the view classes.
 function getTypeFromViewElement( viewElement ) {
 	if ( viewElement.hasClass( 'info-box-info' ) ) {
 		return 'Info';
@@ -177,7 +180,7 @@ function getTypeFromViewElement( viewElement ) {
 }
 ```
 
-This upcast converter callback can now be plugged by adding a listener to the {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher#element `UpcastDispatcher#element` event}. We will listen to `element:div` to ensure that the callback is called only for `<div>` elements.
+This upcast converter callback can now be plugged by adding a listener to the {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher#element `UpcastDispatcher#element` event}. You will listen to `element:div` to ensure that the callback is called only for `<div>` elements.
 
 ```js
 editor.conversion.for( 'upcast' )
@@ -186,10 +189,12 @@ editor.conversion.for( 'upcast' )
 
 ### Event-based downcast converter
 
-The missing bit are the downcast converters for the editing and data pipelines. We want to use the widget system to make the info box behave like an "object". The other aspect that we need to take care of is the fact that the view structure has more elements than the model structure. In this case, we could actually use one-way converters. However, we will showcase how an event-based converter would look.
+The missing bits are the downcast converters for the editing and data pipelines.
+
+You will want to use the widget system to make the info box behave like an "object". Another aspect that you need to take care of is the fact that the view structure has more elements than the model structure. In this case, you could actually use one-way converters. However, this tutorial will showcase how an event-based converter would look.
 
 <info-box>
-	See the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} to learn about the widget system.
+	See the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} guide to learn about the widget system.
 </info-box>
 
 The remaining downcast converters:
@@ -248,9 +253,9 @@ function insertViewElements( data, conversionApi, infoBox, infoBoxTitle, infoBox
 
 	// The default mapping between the model <infoBox> and its view representation.
 	conversionApi.mapper.bindElements( data.item, infoBox );
-	// However, since the model <infoBox> content need to end up in the inner
-	// <div class="info-box-content"> we need to bind one with another overriding
-	// part of the default binding.
+	// However, since the model <infoBox> content needs to end up in the inner
+	// <div class="info-box-content">, you need to bind one with another overriding
+	// a part of the default binding.
 	conversionApi.mapper.bindElements( data.item, infoBoxContent );
 
 	conversionApi.writer.insert(
@@ -271,12 +276,12 @@ editor.conversion.for( 'dataDowncast' )
 
 ### Updated plugin code
 
-The updated `InfoBox` plugin that glues all this together:
+The updated `InfoBox` plugin that glues the event-based converters together:
 
 ```js
 class InfoBox {
 	constructor( editor ) {
-		// Schema definition
+		// Schema definition.
 		editor.model.schema.register( 'infoBox', {
 			allowWhere: '$block',
 			allowContentOf: '$root',
@@ -288,7 +293,7 @@ class InfoBox {
 		editor.conversion.for( 'upcast' )
 			.add( dispatcher => dispatcher.on( 'element:div', upcastConverter ) );
 
-		// The downcast conversion must be split as we need a widget in the editing pipeline.
+		// The downcast conversion must be split as you need a widget in the editing pipeline.
 		editor.conversion.for( 'editingDowncast' )
 			.add( dispatcher => dispatcher.on( 'insert:infoBox', editingDowncastConverter ) );
 		editor.conversion.for( 'dataDowncast' )
