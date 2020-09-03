@@ -476,7 +476,7 @@ export default class Differ {
 					i++;
 					j++;
 				} else if ( action === 'x' ) {
-					// Swap action - similar to 'equal'
+					// Swap action - similar to 'equal'.
 					diffSet.push( this._getRefreshDiff( element, i, elementChildren[ i ].name ) );
 
 					i++;
@@ -561,13 +561,13 @@ export default class Differ {
 		this._changeCount = 0;
 
 		// Cache changes.
-		this._cachedChangesWithGraveyard = diffSet.slice();
-		this._cachedChanges = diffSet.slice().filter( _changesInGraveyardFilter );
+		this._cachedChangesWithGraveyard = diffSet;
+		this._cachedChanges = diffSet.filter( _changesInGraveyardFilter );
 
 		if ( options.includeChangesInGraveyard ) {
-			return this._cachedChangesWithGraveyard;
+			return this._cachedChangesWithGraveyard.slice();
 		} else {
-			return this._cachedChanges;
+			return this._cachedChanges.slice();
 		}
 	}
 
