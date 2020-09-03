@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
 import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
 import { createImageTypeRegExp } from './utils';
 
@@ -19,7 +18,7 @@ import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
  *
  * For a detailed overview, check the {@glink features/image-upload/image-upload Image upload feature} documentation.
  *
- * Adds the `'imageUpload'` dropdown to the {@link module:ui/componentfactory~ComponentFactory UI component factory}.
+ * Adds the `'imageUpload'` button to the {@link module:ui/componentfactory~ComponentFactory UI component factory}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -36,49 +35,37 @@ export default class ImageUploadUI extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const t = editor.t;
 
+		// Setup `imageUpload` button.
 		editor.ui.componentFactory.add( 'imageUpload', locale => {
-			return this._createFileDialogButtonView( locale );
+			const view = new FileDialogButtonView( locale );
+			const command = editor.commands.get( 'imageUpload' );
+			const imageTypes = editor.config.get( 'image.upload.types' );
+			const imageTypesRegExp = createImageTypeRegExp( imageTypes );
+
+			view.set( {
+				acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
+				allowMultipleFiles: true
+			} );
+
+			view.buttonView.set( {
+				label: t( 'Insert image' ),
+				icon: imageIcon,
+				tooltip: true
+			} );
+
+			view.buttonView.bind( 'isEnabled' ).to( command );
+
+			view.on( 'done', ( evt, files ) => {
+				const imagesToUpload = Array.from( files ).filter( file => imageTypesRegExp.test( file.type ) );
+
+				if ( imagesToUpload.length ) {
+					editor.execute( 'imageUpload', { file: imagesToUpload } );
+				}
+			} );
+
+			return view;
 		} );
-	}
-
-	/**
-	 * Creates and sets up the file dialog button view.
-	 *
-	 * @param {module:utils/locale~Locale} locale The localization services instance.
-	 *
-	 * @private
-	 * @returns {module:upload/ui/filedialogbuttonview~FileDialogButtonView}
-	 */
-	_createFileDialogButtonView( locale ) {
-		const editor = this.editor;
-		const t = locale.t;
-		const imageTypes = editor.config.get( 'image.upload.types' );
-		const fileDialogButtonView = new FileDialogButtonView( locale );
-		const imageTypesRegExp = createImageTypeRegExp( imageTypes );
-		const command = editor.commands.get( 'imageUpload' );
-
-		fileDialogButtonView.set( {
-			acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
-			allowMultipleFiles: true
-		} );
-
-		fileDialogButtonView.buttonView.set( {
-			label: t( 'Upload image' ),
-			icon: imageIcon,
-			tooltip: true
-		} );
-
-		fileDialogButtonView.buttonView.bind( 'isEnabled' ).to( command );
-
-		fileDialogButtonView.on( 'done', ( evt, files ) => {
-			const imagesToUpload = Array.from( files ).filter( file => imageTypesRegExp.test( file.type ) );
-
-			if ( imagesToUpload.length ) {
-				editor.execute( 'imageUpload', { file: imagesToUpload } );
-			}
-		} );
-
-		return fileDialogButtonView;
 	}
 }
