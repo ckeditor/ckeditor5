@@ -284,8 +284,7 @@ describe( 'DowncastHelpers', () => {
 					} );
 					downcastHelpers.elementToElement( {
 						model: 'complex',
-						view: ( modelElement, conversionApi ) => {
-							const { writer, mapper } = conversionApi;
+						view: ( modelElement, { writer, mapper } ) => {
 							const outer = writer.createContainerElement( 'c-outer' );
 							const inner = writer.createContainerElement( 'c-inner', getViewAttributes( modelElement ) );
 
@@ -396,9 +395,7 @@ describe( 'DowncastHelpers', () => {
 					} );
 					downcastHelpers.elementToElement( {
 						model: 'complex',
-						view: ( modelElement, conversionApi ) => {
-							const { writer, mapper } = conversionApi;
-
+						view: ( modelElement, { writer, mapper } ) => {
 							const classForMain = !!modelElement.getAttribute( 'classForMain' );
 							const classForWrap = !!modelElement.getAttribute( 'classForWrap' );
 							const attributeToElement = !!modelElement.getAttribute( 'attributeToElement' );
@@ -422,7 +419,7 @@ describe( 'DowncastHelpers', () => {
 								const viewSlot = writer.createContainerElement( 'div', { class: 'slot' } );
 
 								writer.insert( writer.createPositionAt( inner, slot.index ), viewSlot );
-								conversionApi.mapper.bindSlotElements( slot, viewSlot );
+								mapper.bindSlotElements( slot, viewSlot );
 							}
 
 							return outer;
