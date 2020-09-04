@@ -22,7 +22,7 @@ jobs:
           WORKFLOW_REPOSITORY: ${{ secrets.INTEGRATION_CI_REPOSITORY }}
           WORKFLOW_TRAVIS_TOKEN: ${{ secrets.INTEGRATION_CI_TRAVIS_TOKEN }}
         run: |
-          export BUILD_MESSAGE="Repository: $WORKFLOW_TRIGGER_REPOSITORY\nCommit: https://github.com/$WORKFLOW_TRIGGER_REPOSITORY/commit/$WORKFLOW_TRIGGER_COMMIT."
+          export BUILD_MESSAGE="Repository: $WORKFLOW_TRIGGER_REPOSITORY\n\nCommit: https://github.com/$WORKFLOW_TRIGGER_REPOSITORY/commit/$WORKFLOW_TRIGGER_COMMIT."
           export REQUEST_BODY="{\"request\": { \"branch\": \"master\", \"message\": \"$BUILD_MESSAGE\" } }"
           curl -s -X POST \
             -H "Content-Type: application/json" \
