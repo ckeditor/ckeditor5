@@ -74,7 +74,7 @@ export default class ImageInsert extends Plugin {
  *
  * The option accepts string tokens.
  * * for predefined integrations, we have two special strings: `insertImageViaUrl` and `openCKFinder`.
- * The former adds **Insert image via URL** feature, while the latter adds built-in **CKFinder** integration.
+ * The former adds the **Insert image via URL** feature, while the latter adds the built-in **CKFinder** integration.
  * * for custom integrations, each string should be a name of the already registered component.
  * If you have a plugin `PluginX` that registers `pluginXButton` component, then the integration token
  * in that case should be `pluginXButton`.
