@@ -206,12 +206,14 @@ export default class Differ {
 
 				const sourceParentInserted = this._isInInsertedElement( operation.sourcePosition.parent );
 				const targetParentInserted = this._isInInsertedElement( operation.targetPosition.parent );
+				const sourceParentRefreshed = this._isInRefreshedElement( operation.sourcePosition.parent );
+				const targetParentRefreshed = this._isInRefreshedElement( operation.sourcePosition.parent );
 
-				if ( !sourceParentInserted ) {
+				if ( !sourceParentInserted && !sourceParentRefreshed ) {
 					this._markRemove( operation.sourcePosition.parent, operation.sourcePosition.offset, operation.howMany );
 				}
 
-				if ( !targetParentInserted ) {
+				if ( !targetParentInserted && !targetParentRefreshed ) {
 					this._markInsert( operation.targetPosition.parent, operation.getMovedRangeStart().offset, operation.howMany );
 				}
 
@@ -1054,6 +1056,28 @@ export default class Differ {
 		}
 
 		return this._isInInsertedElement( parent );
+	}
+
+	// TODO: copy-paste of above _isInInsertedElement.
+	_isInRefreshedElement( element ) {
+		const parent = element.parent;
+
+		if ( !parent ) {
+			return false;
+		}
+
+		const changes = this._changesInElement.get( parent );
+		const offset = element.startOffset;
+
+		if ( changes ) {
+			for ( const change of changes ) {
+				if ( change.type == 'refresh' && offset >= change.offset && offset < change.offset + change.howMany ) {
+					return true;
+				}
+			}
+		}
+
+		return this._isInRefreshedElement( parent );
 	}
 
 	/**
