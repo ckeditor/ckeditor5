@@ -69,7 +69,7 @@ describe( 'ImageInsertUI', () => {
 
 			return editor.destroy();
 		} );
-		it( 'should register imageUpload dropdown', () => {
+		it( 'should register the "imageInsert" dropdown', () => {
 			const button = editor.ui.componentFactory.create( 'imageInsert' );
 
 			expect( button ).to.be.instanceOf( DropdownView );
