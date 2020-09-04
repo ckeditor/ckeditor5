@@ -24,8 +24,8 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `config.view` callback of `DowncastHelpers` takes a `DowncastConversionApi` instance instead of a `DowncastWriter`. An example migration snippet can be found in a [GitHub comment](https://github.com/ckeditor/ckeditor5/issues/7334#issuecomment-670450941). See [#7334](https://github.com/ckeditor/ckeditor5/issues/7334).
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `config.model` callback of `UpcastHelpers` takes a `UpcastConversionApi` instance instead of a `ModelWriter`. An example migration snippet can be found in a [GitHub comment](https://github.com/ckeditor/ckeditor5/issues/7334#issuecomment-670450941). See [#7334](https://github.com/ckeditor/ckeditor5/issues/7334).
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `view` and `model` callbacks of all one-way converter helpers (such as `editor.conversion.for( 'upcast' ).elementToElement()`, `editor.conversion.for( 'downcast' ).attributeToElement()`) now takes the `conversionApi` as their second parameter. Previously, the second param was the downcast/upcast writer instance. Now, the writer has to be retrieved from `conversionApi.writer`.<br><br>
+An example migration snippet can be found in a [GitHub comment](https://github.com/ckeditor/ckeditor5/issues/7334#issuecomment-670450941).
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `config.view` parameter for upcast element-to-element conversion helpers configurations is now mandatory. You can retain previous "catch-all" behavior for upcast converter using `config.view = /[\s\S]+/` value.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
