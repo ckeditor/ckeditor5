@@ -485,16 +485,16 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element with slots', () => {
 					setModelData( model,
 						'<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					expectResult(
 						'<div class="complex-slots">' +
-							'<div class="slots">' +
-								'<div class="slot"><p>foo</p></div>' +
-								'<div class="slot"><p>bar</p></div>' +
-							'</div>' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'<div class="slot"><p>bar</p></div>' +
+						'</div>' +
 						'</div>'
 					);
 				} );
@@ -502,8 +502,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on adding slot', () => {
 					setModelData( model,
 						'<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -516,11 +516,11 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots">' +
-							'<div class="slots">' +
-								'<div class="slot"><p>foo</p></div>' +
-								'<div class="slot"><p>bar</p></div>' +
-								'<div class="slot"><p>baz</p></div>' +
-							'</div>' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'<div class="slot"><p>bar</p></div>' +
+						'<div class="slot"><p>baz</p></div>' +
+						'</div>' +
 						'</div>'
 					);
 				} );
@@ -528,8 +528,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on removing slot', () => {
 					setModelData( model,
 						'<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -538,9 +538,72 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots">' +
-							'<div class="slots">' +
-								'<div class="slot"><p>foo</p></div>' +
-							'</div>' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'</div>' +
+						'</div>'
+					);
+				} );
+
+				it( 'should convert element on multiple triggers (remove + insert)', () => {
+					setModelData( model,
+						'<complex>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
+						'</complex>' );
+
+					model.change( writer => {
+						writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
+						writer.insert( modelRoot.getChild( 0 ).getChild( 0 ) );
+					} );
+
+					expectResult(
+						'<div class="complex-slots">' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'</div>' +
+						'</div>'
+					);
+				} );
+
+				it( 'should convert element on multiple triggers (remove + attribute)', () => {
+					setModelData( model,
+						'<complex>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
+						'</complex>' );
+
+					model.change( writer => {
+						writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
+						writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
+					} );
+
+					expectResult(
+						'<div class="complex-slots with-class">' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'</div>' +
+						'</div>'
+					);
+				} );
+
+				it( 'should convert element on multiple triggers (insert + attribute)', () => {
+					setModelData( model,
+						'<complex>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
+						'</complex>' );
+
+					model.change( writer => {
+						writer.insert( modelRoot.getChild( 0 ).getChild( 0 ) );
+						writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
+					} );
+
+					expectResult(
+						'<div class="complex-slots with-class">' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'</div>' +
 						'</div>'
 					);
 				} );
@@ -548,8 +611,8 @@ describe( 'DowncastHelpers', () => {
 				describe( 'memoization', () => {
 					it( 'should create new element on re-converting element', () => {
 						setModelData( model, '<complex>' +
-								'<slot><paragraph>foo</paragraph></slot>' +
-								'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 							'</complex>'
 						);
 
@@ -566,8 +629,8 @@ describe( 'DowncastHelpers', () => {
 
 					it( 'should not re-create slot\'s child elements on re-converting main element (attribute changed)', () => {
 						setModelData( model, '<complex>' +
-								'<slot><paragraph>foo</paragraph></slot>' +
-								'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 							'</complex>'
 						);
 
@@ -588,8 +651,8 @@ describe( 'DowncastHelpers', () => {
 
 					it( 'should not re-create slot\'s child elements on re-converting main element (slot added)', () => {
 						setModelData( model, '<complex>' +
-								'<slot><paragraph>foo</paragraph></slot>' +
-								'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 							'</complex>'
 						);
 
@@ -634,6 +697,220 @@ describe( 'DowncastHelpers', () => {
 							yield slotOneChild;
 						}
 					}
+				} );
+			} );
+
+			describe( 'with complex view structure (slot conversion atomic converters for some changes)', () => {
+				beforeEach( () => {
+					model.schema.register( 'complex', {
+						allowIn: '$root',
+						allowAttributes: [ 'classForMain', 'classForWrap', 'attributeToElement' ]
+					} );
+
+					function createViewSlot( slot, { writer, mapper } ) {
+						const viewSlot = writer.createContainerElement( 'div', { class: 'slot' } );
+
+						mapper.bindSlotElements( slot, viewSlot );
+
+						return viewSlot;
+					}
+
+					downcastHelpers.elementToElement( {
+						model: 'complex',
+						view: ( modelElement, { writer, mapper } ) => {
+							const classForMain = !!modelElement.getAttribute( 'classForMain' );
+							const classForWrap = !!modelElement.getAttribute( 'classForWrap' );
+							const attributeToElement = !!modelElement.getAttribute( 'attributeToElement' );
+
+							const outer = writer.createContainerElement( 'div', {
+								class: `complex-slots${ classForMain ? ' with-class' : '' }`
+							} );
+							const inner = writer.createContainerElement( 'div', {
+								class: `slots${ classForWrap ? ' with-class' : '' }`
+							} );
+
+							if ( attributeToElement ) {
+								const optional = writer.createEmptyElement( 'div', { class: 'optional' } );
+								writer.insert( writer.createPositionAt( outer, 0 ), optional );
+							}
+
+							writer.insert( writer.createPositionAt( outer, 'end' ), inner );
+							mapper.bindElements( modelElement, inner );
+
+							for ( const slot of modelElement.getChildren() ) {
+								writer.insert(
+									writer.createPositionAt( inner, slot.index ),
+									createViewSlot( slot, { writer, mapper } )
+								);
+							}
+
+							return outer;
+						},
+						triggerBy: [
+							'attribute:classForMain:complex',
+							'attribute:classForWrap:complex',
+							'attribute:attributeToElement:complex'
+							// Contrary to the previous test - do not act on slot insert/remove: 'insert:slot', 'remove:slot'.
+						]
+					} );
+					downcastHelpers.elementToElement( {
+						model: 'slot',
+						view: createViewSlot
+					} );
+
+					model.schema.register( 'slot', {
+						allowIn: 'complex'
+					} );
+
+					model.schema.register( 'paragraph', {
+						inheritAllFrom: '$block',
+						allowIn: 'slot'
+					} );
+					downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+				} );
+
+				it( 'should convert on insert', () => {
+					model.change( writer => {
+						writer.insertElement( 'complex', modelRoot, 0 );
+					} );
+
+					expectResult( '<div class="complex-slots"><div class="slots"></div></div>' );
+				} );
+
+				// TODO: add memoization check - as this is need.
+				it( 'should convert on attribute set (main element)', () => {
+					setModelData( model, '<complex></complex>' );
+
+					model.change( writer => {
+						writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
+					} );
+
+					expectResult( '<div class="complex-slots with-class"><div class="slots"></div></div>' );
+				} );
+
+				it( 'should convert on attribute set (other element)', () => {
+					setModelData( model, '<complex></complex>' );
+
+					model.change( writer => {
+						writer.setAttribute( 'classForWrap', true, modelRoot.getChild( 0 ) );
+					} );
+
+					expectResult( '<div class="complex-slots"><div class="slots with-class"></div></div>' );
+				} );
+
+				it( 'should convert on attribute set (insert new view element)', () => {
+					setModelData( model, '<complex></complex>' );
+
+					model.change( writer => {
+						writer.setAttribute( 'attributeToElement', true, modelRoot.getChild( 0 ) );
+					} );
+
+					expectResult( '<div class="complex-slots"><div class="optional"></div><div class="slots"></div></div>' );
+				} );
+
+				it( 'should convert element with slots', () => {
+					setModelData( model,
+						'<complex>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
+						'</complex>' );
+
+					expectResult(
+						'<div class="complex-slots">' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'<div class="slot"><p>bar</p></div>' +
+						'</div>' +
+						'</div>'
+					);
+				} );
+
+				it( 'should not convert element on adding slot', () => {
+					setModelData( model,
+						'<complex>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
+						'</complex>' );
+
+					model.change( writer => {
+						const slot = writer.createElement( 'slot' );
+						const paragraph = writer.createElement( 'paragraph' );
+						writer.insertText( 'baz', paragraph, 0 );
+						writer.insert( paragraph, slot, 0 );
+						writer.insert( slot, modelRoot.getChild( 0 ), 'end' );
+					} );
+
+					expectResult(
+						'<div class="complex-slots">' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'<div class="slot"><p>bar</p></div>' +
+						'<div class="slot"><p>baz</p></div>' +
+						'</div>' +
+						'</div>'
+					);
+				} );
+
+				it( 'should not convert element on removing slot', () => {
+					setModelData( model,
+						'<complex>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
+						'</complex>' );
+
+					model.change( writer => {
+						writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
+					} );
+
+					expectResult(
+						'<div class="complex-slots">' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'</div>' +
+						'</div>'
+					);
+				} );
+
+				it( 'should convert element on a trigger and block atomic convrters (remove + attribute)', () => {
+					setModelData( model,
+						'<complex>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
+						'</complex>' );
+
+					model.change( writer => {
+						writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
+						writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
+					} );
+
+					expectResult(
+						'<div class="complex-slots with-class">' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'</div>' +
+						'</div>'
+					);
+				} );
+
+				it( 'should convert element on a trigger and block atomic convrters (insert + attribute)', () => {
+					setModelData( model,
+						'<complex>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
+						'</complex>' );
+
+					model.change( writer => {
+						writer.insert( modelRoot.getChild( 0 ).getChild( 0 ) );
+						writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
+					} );
+
+					expectResult(
+						'<div class="complex-slots with-class">' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'</div>' +
+						'</div>'
+					);
 				} );
 			} );
 
