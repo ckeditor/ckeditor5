@@ -56,7 +56,6 @@ export default class ImageInsertUI extends Plugin {
 		const command = editor.commands.get( 'imageUpload' );
 
 		const dropdownView = imageInsertView.dropdownView;
-		const panelView = dropdownView.panelView;
 		const splitButtonView = dropdownView.buttonView;
 
 		splitButtonView.actionView = editor.ui.componentFactory.create( 'imageUpload' );
@@ -68,12 +67,6 @@ export default class ImageInsertUI extends Plugin {
 			attributes: {
 				class: 'ck ck-button ck-splitbutton__action'
 			}
-		} );
-
-		// Defer the children injection to improve initial performance.
-		// See https://github.com/ckeditor/ckeditor5/pull/8019#discussion_r484069652.
-		dropdownView.buttonView.once( 'open', () => {
-			panelView.children.add( imageInsertView );
 		} );
 
 		return this._setUpDropdown( dropdownView, imageInsertView, command );
@@ -94,8 +87,15 @@ export default class ImageInsertUI extends Plugin {
 		const t = editor.t;
 		const insertButtonView = imageInsertView.insertButtonView;
 		const insertImageViaUrlForm = imageInsertView.getIntegration( 'insertImageViaUrl' );
+		const panelView = dropdownView.panelView;
 
 		dropdownView.bind( 'isEnabled' ).to( command );
+
+		// Defer the children injection to improve initial performance.
+		// See https://github.com/ckeditor/ckeditor5/pull/8019#discussion_r484069652.
+		dropdownView.buttonView.once( 'open', () => {
+			panelView.children.add( imageInsertView );
+		} );
 
 		dropdownView.on( 'change:isOpen', () => {
 			const selectedElement = editor.model.document.selection.getSelectedElement();
