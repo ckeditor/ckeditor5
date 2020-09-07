@@ -452,18 +452,37 @@ describe( 'ListStyleEditing', () => {
 			it( 'should not inherit the list style attribute when merging different kind of lists (from top, merge a single item)', () => {
 				setModelData( model,
 					'<paragraph>Foo Bar.[]</paragraph>' +
-					'<listItem listIndent="0" listStyle="default"  listType="numbered">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="default"  listType="numbered">Bar</listItem>'
+					'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
+					'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>'
 				);
 
 				editor.execute( 'bulletedList' );
 
 				expect( getModelData( model ) ).to.equal(
 					'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="default" listType="numbered">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="default" listType="numbered">Bar</listItem>'
+					'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
+					'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>'
 				);
 			} );
+
+			it(
+				'should not inherit the list style attribute when merging different kind of lists (from bottom, merge a single item)',
+				() => {
+					setModelData( model,
+						'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>' +
+						'<paragraph>Foo Bar.[]</paragraph>'
+					);
+
+					editor.execute( 'bulletedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>' +
+						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>'
+					);
+				}
+			);
 
 			it( 'should inherit the list style attribute when merging the same kind of lists (from bottom, merge a single item)', () => {
 				setModelData( model,

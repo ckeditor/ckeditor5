@@ -474,7 +474,7 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 
 		for ( const item of insertedListItems ) {
 			if ( !item.hasAttribute( 'listStyle' ) ) {
-				if ( shouldInheritListType( existingListItem ) ) {
+				if ( shouldInheritListType( existingListItem, item ) ) {
 					writer.setAttribute( 'listStyle', existingListItem.getAttribute( 'listStyle' ), item );
 				} else {
 					writer.setAttribute( 'listStyle', DEFAULT_LIST_TYPE, item );
@@ -494,7 +494,7 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 	//
 	// @param {module:engine/model/element~Element|null} baseItem
 	// @returns {Boolean}
-	function shouldInheritListType( baseItem ) {
+	function shouldInheritListType( baseItem, itemToChange ) {
 		if ( !baseItem ) {
 			return false;
 		}
@@ -506,6 +506,10 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 		}
 
 		if ( baseListStyle === DEFAULT_LIST_TYPE ) {
+			return false;
+		}
+
+		if ( baseItem.getAttribute( 'listType' ) !== itemToChange.getAttribute( 'listType' ) ) {
 			return false;
 		}
 
