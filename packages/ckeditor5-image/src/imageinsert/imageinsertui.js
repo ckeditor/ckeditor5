@@ -43,6 +43,43 @@ export default class ImageInsertUI extends Plugin {
 	}
 
 	/**
+	 * Creates the dropdown view.
+	 *
+	 * @param {module:utils/locale~Locale} locale The localization services instance.
+	 *
+	 * @private
+	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
+	 */
+	_createDropdownView( locale ) {
+		const editor = this.editor;
+		const imageInsertView = new ImageInsertPanelView( locale, prepareIntegrations( editor ) );
+		const command = editor.commands.get( 'imageUpload' );
+
+		const dropdownView = imageInsertView.dropdownView;
+		const panelView = dropdownView.panelView;
+		const splitButtonView = dropdownView.buttonView;
+
+		splitButtonView.actionView = editor.ui.componentFactory.create( 'imageUpload' );
+		// After we replaced action button with `imageUpload` component,
+		// we have lost a proper styling and some minor visual quirks have appeared.
+		// Brining back original split button classes helps fix the button styling
+		// See https://github.com/ckeditor/ckeditor5/issues/7986.
+		splitButtonView.actionView.extendTemplate( {
+			attributes: {
+				class: 'ck ck-button ck-splitbutton__action'
+			}
+		} );
+
+		// Defer the children injection to improve initial performance.
+		// See https://github.com/ckeditor/ckeditor5/pull/8019#discussion_r484069652.
+		dropdownView.buttonView.once( 'open', () => {
+			panelView.children.add( imageInsertView );
+		} );
+
+		return this._setUpDropdown( dropdownView, imageInsertView, command );
+	}
+
+	/**
 	 * Sets up the dropdown view.
 	 *
 	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdownView.
@@ -110,38 +147,5 @@ export default class ImageInsertUI extends Plugin {
 		}
 
 		return dropdownView;
-	}
-
-	/**
-	 * Creates the dropdown view.
-	 *
-	 * @param {module:utils/locale~Locale} locale The localization services instance.
-	 *
-	 * @private
-	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
-	 */
-	_createDropdownView( locale ) {
-		const editor = this.editor;
-		const imageInsertView = new ImageInsertPanelView( locale, prepareIntegrations( editor ) );
-		const command = editor.commands.get( 'imageUpload' );
-
-		const dropdownView = imageInsertView.dropdownView;
-		const panelView = dropdownView.panelView;
-		const splitButtonView = dropdownView.buttonView;
-
-		splitButtonView.actionView = editor.ui.componentFactory.create( 'imageUpload' );
-		// After we replaced action button with `imageUpload` component,
-		// we have lost a proper styling and some minor visual quirks have appeared.
-		// Brining back original split button classes helps fix the button styling
-		// See https://github.com/ckeditor/ckeditor5/issues/7986.
-		splitButtonView.actionView.extendTemplate( {
-			attributes: {
-				class: 'ck ck-button ck-splitbutton__action'
-			}
-		} );
-
-		panelView.children.add( imageInsertView );
-
-		return this._setUpDropdown( dropdownView, imageInsertView, command );
 	}
 }
