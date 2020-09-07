@@ -429,16 +429,12 @@ function fixListAfterOutdentListCommand( editor ) {
 function fixListStyleAttributeOnListItemElements( editor ) {
 	return writer => {
 		let wasFixed = false;
-		let insertedListItems = [];
 
-		for ( const change of editor.model.document.differ.getChanges() ) {
-			if ( change.type == 'insert' && change.name == 'listItem' ) {
-				insertedListItems.push( change.position.nodeAfter );
-			}
-		}
-
-		// Don't touch todo lists.
-		insertedListItems = insertedListItems.filter( item => item.getAttribute( 'listType' ) !== 'todo' );
+		const insertedListItems = getChangedListItems( editor.model.document.differ.getChanges() )
+			.filter( item => {
+				// Don't touch todo lists. They are handled in another post-fixer.
+				return item.getAttribute( 'listType' ) !== 'todo';
+			} );
 
 		if ( !insertedListItems.length ) {
 			return wasFixed;
@@ -524,17 +520,11 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 // @returns {Function}
 function removeListStyleAttributeFromTodoList( editor ) {
 	return writer => {
-		let todoListItems = [];
-
-		for ( const change of editor.model.document.differ.getChanges() ) {
-			const item = getItemFromChange( change );
-
-			if ( item && item.is( 'element', 'listItem' ) && item.getAttribute( 'listType' ) === 'todo' ) {
-				todoListItems.push( item );
-			}
-		}
-
-		todoListItems = todoListItems.filter( item => item.hasAttribute( 'listStyle' ) );
+		const todoListItems = getChangedListItems( editor.model.document.differ.getChanges() )
+			.filter( item => {
+				// Handle the todo lists only. The rest is handled in another post-fixer.
+				return item.getAttribute( 'listType' ) === 'todo' && item.hasAttribute( 'listStyle' );
+			} );
 
 		if ( !todoListItems.length ) {
 			return false;
@@ -546,18 +536,6 @@ function removeListStyleAttributeFromTodoList( editor ) {
 
 		return true;
 	};
-
-	function getItemFromChange( change ) {
-		if ( change.type === 'attribute' ) {
-			return change.range.start.nodeAfter;
-		}
-
-		if ( change.type === 'insert' ) {
-			return change.position.nodeAfter;
-		}
-
-		return null;
-	}
 }
 
 // Restores the `listStyle` attribute after changing the list type.
@@ -576,4 +554,35 @@ function restoreDefaultListStyle( editor ) {
 			}
 		} );
 	};
+}
+
+// Returns `listItem` that were inserted or changed.
+//
+// @private
+// @param {Array.<Object>} changes The changes list returned by the differ.
+// @returns {Array.<module:engine/model/element~Element>}
+function getChangedListItems( changes ) {
+	const items = [];
+
+	for ( const change of changes ) {
+		const item = getItemFromChange( change );
+
+		if ( item && item.is( 'element', 'listItem' ) ) {
+			items.push( item );
+		}
+	}
+
+	return items;
+
+	function getItemFromChange( change ) {
+		if ( change.type === 'attribute' ) {
+			return change.range.start.nodeAfter;
+		}
+
+		if ( change.type === 'insert' ) {
+			return change.position.nodeAfter;
+		}
+
+		return null;
+	}
 }
