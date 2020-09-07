@@ -171,7 +171,7 @@ export default class Differ {
 		//
 		switch ( operation.type ) {
 			case 'insert': {
-				if ( this._isInInsertedElement( operation.position.parent ) ) {
+				if ( this._isInInsertedElement( operation.position.parent ) || this._isInRefreshedElement( operation.position.parent ) ) {
 					return;
 				}
 
@@ -183,7 +183,8 @@ export default class Differ {
 			case 'removeAttribute':
 			case 'changeAttribute': {
 				for ( const item of operation.range.getItems( { shallow: true } ) ) {
-					if ( this._isInInsertedElement( item.parent ) ) {
+					// Attribute change on refreshed element is ignored
+					if ( this._isInInsertedElement( item.parent ) || this._isInRefreshedElement( item ) ) {
 						continue;
 					}
 

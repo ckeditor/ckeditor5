@@ -1835,6 +1835,32 @@ describe( 'Differ', () => {
 				], true );
 			} );
 		} );
+
+		it( 'an element with child added', () => {
+			const complex = root.getChild( 2 );
+
+			model.change( () => {
+				differ._pocRefreshItem( complex );
+				insert( new Element( 'slot' ), model.createPositionAt( complex, 2 ) );
+
+				expectChanges( [
+					{ type: 'refresh', name: 'complex', length: 1, position: model.createPositionBefore( complex ) }
+				], true );
+			} );
+		} );
+
+		it( 'an element with attribute set', () => {
+			const complex = root.getChild( 2 );
+
+			model.change( () => {
+				differ._pocRefreshItem( complex );
+				attribute( model.createRangeOn( complex ), 'foo', undefined, true );
+
+				expectChanges( [
+					{ type: 'refresh', name: 'complex', length: 1, position: model.createPositionBefore( complex ) }
+				], true );
+			} );
+		} );
 	} );
 
 	describe( 'refreshItem()', () => {
