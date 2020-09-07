@@ -149,6 +149,9 @@ export default class DowncastDispatcher {
 
 					return element.is( 'element', expectedElement ) ? element : element.findAncestor( expectedElement );
 				}
+				// TODO: lacking API - handle inner change of given event. Either by:
+				// - a) differ API (mark change as invalid)
+				// - b) skip given event.
 			} )
 			.filter( element => !!element );
 

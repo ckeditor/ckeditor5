@@ -528,8 +528,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on removing slot', () => {
 					setModelData( model,
 						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {

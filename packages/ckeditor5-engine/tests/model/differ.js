@@ -1823,7 +1823,7 @@ describe( 'Differ', () => {
 			], true );
 		} );
 
-		it( 'an element with child removed', () => {
+		it( 'an element with child removed (refresh + remove)', () => {
 			const complex = root.getChild( 2 );
 
 			model.change( () => {
@@ -1836,7 +1836,21 @@ describe( 'Differ', () => {
 			} );
 		} );
 
-		it( 'an element with child added', () => {
+		it( 'an element with child removed (remove + refresh)', () => {
+			const complex = root.getChild( 2 );
+
+			model.change( () => {
+				remove( model.createPositionAt( complex, 1 ), 1 );
+				differ._pocRefreshItem( complex );
+
+				expectChanges( [
+					{ type: 'refresh', name: 'complex', length: 1, position: model.createPositionBefore( complex ) },
+					{ type: 'remove', name: 'slot', length: 1, position: model.createPositionAfter( complex.getChild( 0 ) ) }
+				], false );
+			} );
+		} );
+
+		it( 'an element with child added (refresh + add)', () => {
 			const complex = root.getChild( 2 );
 
 			model.change( () => {
@@ -1849,7 +1863,33 @@ describe( 'Differ', () => {
 			} );
 		} );
 
-		it( 'an element with attribute set', () => {
+		it( 'an element with child added (add + refresh)', () => {
+			const complex = root.getChild( 2 );
+
+			model.change( () => {
+				differ._pocRefreshItem( complex );
+				insert( new Element( 'slot' ), model.createPositionAt( complex, 2 ) );
+
+				expectChanges( [
+					{ type: 'refresh', name: 'complex', length: 1, position: model.createPositionBefore( complex ) }
+				], true );
+			} );
+		} );
+
+		it( 'an element with attribute set (refresh + attribute)', () => {
+			const complex = root.getChild( 2 );
+
+			model.change( () => {
+				differ._pocRefreshItem( complex );
+				attribute( model.createRangeOn( complex ), 'foo', undefined, true );
+
+				expectChanges( [
+					{ type: 'refresh', name: 'complex', length: 1, position: model.createPositionBefore( complex ) }
+				], true );
+			} );
+		} );
+
+		it( 'an element with attribute set (attribute + refresh)', () => {
 			const complex = root.getChild( 2 );
 
 			model.change( () => {
