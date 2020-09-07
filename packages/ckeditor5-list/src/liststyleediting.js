@@ -489,6 +489,7 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 	// the value for the element is other than default in the base element.
 	//
 	// @param {module:engine/model/element~Element|null} baseItem
+	// @param {module:engine/model/element~Element} itemToChange
 	// @returns {Boolean}
 	function shouldInheritListType( baseItem, itemToChange ) {
 		if ( !baseItem ) {
