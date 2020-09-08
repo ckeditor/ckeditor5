@@ -31,7 +31,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'view', () => {
-	const DEFAULT_OBSERVERS_COUNT = 6;
+	const DEFAULT_OBSERVERS_COUNT = 7;
 	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
 
 	beforeEach( () => {
@@ -87,17 +87,7 @@ describe( 'view', () => {
 		expect( view.getObserver( KeyObserver ) ).to.be.instanceof( KeyObserver );
 		expect( view.getObserver( FakeSelectionObserver ) ).to.be.instanceof( FakeSelectionObserver );
 		expect( view.getObserver( CompositionObserver ) ).to.be.instanceof( CompositionObserver );
-	} );
-
-	it( 'should add InputObserver on Android devices', () => {
-		const oldEnvIsAndroid = env.isAndroid;
-		env.isAndroid = true;
-
-		const newView = new View( new StylesProcessor() );
-		expect( newView.getObserver( InputObserver ) ).to.be.instanceof( InputObserver );
-
-		env.isAndroid = oldEnvIsAndroid;
-		newView.destroy();
+		expect( view.getObserver( InputObserver ) ).to.be.instanceof( InputObserver );
 	} );
 
 	describe( 'attachDomRoot()', () => {
