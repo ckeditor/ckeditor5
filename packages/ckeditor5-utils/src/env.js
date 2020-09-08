@@ -172,5 +172,5 @@ export function isRegExpUnicodePropertySupported() {
 export function areInputEventsLevel1Supported( domWindow ) {
 	const inputEvent = new domWindow.InputEvent( 'input' );
 
-	return ( 'inputType' in inputEvent ) && ( 'getTargetRanges' in inputEvent );
+    return 'inputType' in inputEvent && 'getTargetRanges' in inputEvent;
 }
