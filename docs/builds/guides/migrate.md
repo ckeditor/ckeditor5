@@ -299,7 +299,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html##cfg-editorplaceholder">editorplaceholder</a></td>
-			<td>Refer to the {@link features/editor-placeholder Editor placeholder} to learn more about configuring this feature in CKEditor 5.</td>
+			<td>Refer to the {@link features/editor-placeholder Editor placeholder} feature guide to learn more about configuring this feature in CKEditor 5.</td>
 		</tr>
 		<tr>
 			<td><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-emailProtection">emailProtection</a></td>
