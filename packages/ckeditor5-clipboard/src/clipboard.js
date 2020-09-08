@@ -167,7 +167,7 @@ export default class Clipboard extends Plugin {
  * @param {module:engine/view/documentfragment~DocumentFragment} data.content Event data. Content to be inserted into the editor.
  * It can be modified by the event listeners. Read more about the clipboard pipelines in
  * {@glink framework/guides/deep-dive/clipboard "Clipboard" deep dive}.
- * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
+ * @param {module:engine/view/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
  */
 
 /**
@@ -192,7 +192,7 @@ export default class Clipboard extends Plugin {
  * Data transfer instance.
  *
  * @readonly
- * @member {module:clipboard/datatransfer~DataTransfer} module:clipboard/clipboard~ClipboardOutputEventData#dataTransfer
+ * @member {module:engine/view/datatransfer~DataTransfer} module:clipboard/clipboard~ClipboardOutputEventData#dataTransfer
  */
 
 /**

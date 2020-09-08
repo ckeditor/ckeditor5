@@ -21,7 +21,7 @@ When the user pastes or drops content into the editor, the browser fires an even
 
 1. {@link module:clipboard/clipboardobserver~ClipboardObserver} turns that event into a synthetic {@link module:engine/view/document~Document#event:paste `view.Document#paste`} or {@link module:engine/view/document~Document#event:drop `view.Document#drop`}.
 2. Since the content to be inserted by both actions (paste and drop) should usually be processed in the same way and both actions have a very simillar effect, both events are turned into a single {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} event for easier handling.
-3. Next, the clipboard feature listens to the `view.Document#clipboardInput` event, retrieves and pre-processes the `text/html` or `text/plain` content which it finds in the {@link module:clipboard/datatransfer~DataTransfer event's `dataTransfer`} and fires the {@link module:clipboard/clipboard~Clipboard#event:inputTransformation `Clipboard#inputTransformation`} event with the retrieved content.
+3. Next, the clipboard feature listens to the `view.Document#clipboardInput` event, retrieves and pre-processes the `text/html` or `text/plain` content which it finds in the {@link module:engine/view/datatransfer~DataTransfer event's `dataTransfer`} and fires the {@link module:clipboard/clipboard~Clipboard#event:inputTransformation `Clipboard#inputTransformation`} event with the retrieved content.
 4. Finally, the clipboard feature listens to the `Clipboard#inputTransformation` event, takes the processed content and {@link module:engine/model/model~Model#insertContent inserts} it into the editor.
 
 The clipboard feature listens to the `view.Document#clipboardInput` and `Clipboard#inputTransformation` events using low priority listeners. This means that adding a normal listener and calling `evt.stop()` allows overriding the behavior implemented by the clipboard feature. It is a similar mechanism to DOM's `evt.preventDefault()` that lets you override the default browser behavior.
@@ -34,7 +34,7 @@ The {@link module:engine/view/document~Document#event:clipboardInput `view.Docum
 
 * Handle pasted or droppped files (that you can retrieve from the `dataTransfer`).
 
-	Handling file upload requires, however, a lot more than reading {@link module:clipboard/datatransfer~DataTransfer#files `dataTransfer.files`} so for a complete code example we recommend checking the source code of plugins like [`ImageUploadEditing`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/src/imageupload/imageuploadediting.js).
+	Handling file upload requires, however, a lot more than reading {@link module:engine/view/datatransfer~DataTransfer#files `dataTransfer.files`} so for a complete code example we recommend checking the source code of plugins like [`ImageUploadEditing`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/src/imageupload/imageuploadediting.js).
 * Change the type of data that the clipboard feature reads from the clipboard. For instance, you may want to use `application/rtf` if it is present in the `dataTransfer` (and ignore `text/html` in that case).
 
 	```js

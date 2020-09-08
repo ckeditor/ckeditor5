@@ -4,11 +4,11 @@
  */
 
 /**
- * @module clipboard/datatransfer
+ * @module engine/view/datatransfer
  */
 
 /**
- * Facade over the native [`DataTransfer`](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer) object.
+ * A facade over the native [`DataTransfer`](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer) object.
  */
 export default class DataTransfer {
 	constructor( nativeDataTransfer ) {

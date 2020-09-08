@@ -8,7 +8,7 @@
 import ClipboardObserver from '../src/clipboardobserver';
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import DataTransfer from '../src/datatransfer';
+import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 
 describe( 'ClipboardObserver', () => {

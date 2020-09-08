@@ -9,7 +9,7 @@
 
 import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domeventobserver';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import DataTransfer from './datatransfer';
+import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
 
 /**
  * Clipboard events observer.
@@ -115,7 +115,7 @@ function getDropViewRange( view, domEvent ) {
  * @see module:clipboard/clipboard~Clipboard
  * @event module:engine/view/document~Document#event:clipboardInput
  * @param {Object} data Event data.
- * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
+ * @param {module:engine/view/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
  * @param {Array.<module:engine/view/range~Range>} data.targetRanges Ranges which are the target of the operation
  * (usually – into which the content should be inserted).
  * If clipboard input was triggered by a paste operation, then these are the selection ranges. If by a drop operation,
@@ -207,5 +207,5 @@ function getDropViewRange( view, domEvent ) {
  * Data transfer instance.
  *
  * @readonly
- * @member {module:clipboard/datatransfer~DataTransfer} module:clipboard/clipboardobserver~ClipboardEventData#dataTransfer
+ * @member {module:engine/view/datatransfer~DataTransfer} module:clipboard/clipboardobserver~ClipboardEventData#dataTransfer
  */

@@ -14,7 +14,7 @@ import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import DataTransfer from '@ckeditor/ckeditor5-clipboard/src/datatransfer';
+import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
@@ -1014,7 +1014,7 @@ function tryExpect( doneFn, expectFn ) {
 // Creates data transfer object with predefined data.
 //
 // @param {String} content The content returned as `text/html` when queried.
-// @returns {module:clipboard/datatransfer~DataTransfer} DataTransfer object.
+// @returns {module:engine/view/datatransfer~DataTransfer} DataTransfer object.
 function mockDataTransfer( content ) {
 	return new DataTransfer( {
 		types: [ 'text/html' ],
