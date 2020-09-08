@@ -10,16 +10,34 @@ describe( 'plainTextToHtml()', () => {
 		expect( plainTextToHtml( 'x y <z>' ) ).to.equal( 'x y &lt;z&gt;' );
 	} );
 
-	it( 'turns a single line break into paragraphs', () => {
-		expect( plainTextToHtml( 'x\ny\nz' ) ).to.equal( '<p>x</p><p>y</p><p>z</p>' );
+	it( 'turns double line breaks into paragraphs (Linux/Mac EOL style)', () => {
+		expect( plainTextToHtml( 'x\n\ny\n\nz' ) ).to.equal( '<p>x</p><p>y</p><p>z</p>' );
 	} );
 
-	it( 'turns double line breaks into paragraphs', () => {
-		expect( plainTextToHtml( 'x\n\ny\n\nz' ) ).to.equal( '<p>x</p><p></p><p>y</p><p></p><p>z</p>' );
+	it( 'turns double line breaks into paragraphs (Windows EOL style)', () => {
+		expect( plainTextToHtml( 'x\r\n\r\ny\r\n\r\nz' ) ).to.equal( '<p>x</p><p>y</p><p>z</p>' );
+	} );
+
+	it( 'turns single line breaks into soft breaks (Linux/Mac EOL style)', () => {
+		expect( plainTextToHtml( 'x\ny\nz' ) ).to.equal( '<p>x<br>y<br>z</p>' );
+	} );
+
+	it( 'turns single line breaks into soft breaks (Windows EOL style)', () => {
+		expect( plainTextToHtml( 'x\r\ny\r\nz' ) ).to.equal( '<p>x<br>y<br>z</p>' );
 	} );
 
 	it( 'turns combination of different amount of line breaks to paragraphs', () => {
-		expect( plainTextToHtml( 'a\nb\n\nc\n\n\nd' ) ).to.equal( '<p>a</p><p>b</p><p></p><p>c</p><p></p><p></p><p>d</p>' );
+		const input = `a
+
+b
+c
+
+
+
+d
+e`;
+
+		expect( plainTextToHtml( input ) ).to.equal( '<p>a</p><p>b<br>c</p><p></p><p>d<br>e</p>' );
 	} );
 
 	it( 'preserves trailing spaces', () => {
