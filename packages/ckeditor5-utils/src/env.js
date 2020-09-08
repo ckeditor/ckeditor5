@@ -5,6 +5,8 @@
 
 /* globals navigator:false */
 
+import global from './dom/global';
+
 /**
  * @module utils/env
  */
@@ -71,7 +73,15 @@ const env = {
 		 *
 		 * @type {Boolean}
 		 */
-		isRegExpUnicodePropertySupported: isRegExpUnicodePropertySupported()
+		isRegExpUnicodePropertySupported: isRegExpUnicodePropertySupported(),
+
+		/**
+		 * Indicates that the environment supports at least [Input Events Level 1](https://www.w3.org/TR/input-events-1/)
+		 * (`input` and `beforeinput` events).
+		 *
+		 * @type {Boolean}
+		 */
+		isInputEventsLevel1Supported: isInputEventsLevel1Supported( global.window )
 	}
 };
 
@@ -150,4 +160,17 @@ export function isRegExpUnicodePropertySupported() {
 	}
 
 	return isSupported;
+}
+
+/**
+ * Checks if the current environment supports at least [Input Events Level 1](https://www.w3.org/TR/input-events-1/)
+ * (`input` and `beforeinput` events).
+ *
+ * @param {Window} domWindow The DOM Window interface.
+ * @returns {Boolean}
+ */
+export function isInputEventsLevel1Supported( domWindow ) {
+	const inputEvent = new domWindow.InputEvent( 'input' );
+
+	return 'inputType' in inputEvent && 'getTargetRanges' in inputEvent;
 }
