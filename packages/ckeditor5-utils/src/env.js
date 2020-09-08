@@ -81,7 +81,7 @@ const env = {
 		 *
 		 * @type {Boolean}
 		 */
-		areInputEventsLevel1Supported: areInputEventsLevel1Supported( global.window )
+		isInputEventsLevel1Supported: isInputEventsLevel1Supported( global.window )
 	}
 };
 
@@ -169,8 +169,8 @@ export function isRegExpUnicodePropertySupported() {
  * @param {Window} domWindow The DOM Window interface.
  * @returns {Boolean}
  */
-export function areInputEventsLevel1Supported( domWindow ) {
+export function isInputEventsLevel1Supported( domWindow ) {
 	const inputEvent = new domWindow.InputEvent( 'input' );
 
-    return 'inputType' in inputEvent && 'getTargetRanges' in inputEvent;
+	return 'inputType' in inputEvent && 'getTargetRanges' in inputEvent;
 }

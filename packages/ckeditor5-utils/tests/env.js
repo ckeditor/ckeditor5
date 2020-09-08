@@ -10,7 +10,7 @@ import env, {
 	isAndroid,
 	isBlink,
 	isRegExpUnicodePropertySupported,
-	areInputEventsLevel1Supported
+	isInputEventsLevel1Supported
 } from '../src/env';
 
 function toLowerCase( str ) {
@@ -63,9 +63,9 @@ describe( 'Env', () => {
 			} );
 		} );
 
-		describe( 'areInputEventsLevel1Supported', () => {
+		describe( 'isInputEventsLevel1Supported', () => {
 			it( 'is a boolean', () => {
-				expect( env.features.areInputEventsLevel1Supported ).to.be.a( 'boolean' );
+				expect( env.features.isInputEventsLevel1Supported ).to.be.a( 'boolean' );
 			} );
 		} );
 	} );
@@ -216,7 +216,7 @@ describe( 'Env', () => {
 		} );
 	} );
 
-	describe( 'areInputEventsLevel1Supported()', () => {
+	describe( 'isInputEventsLevel1Supported()', () => {
 		it( 'should detect the Input Events Level 1 support', () => {
 			class InputEventStubWhenSupported {
 				constructor() {
@@ -234,8 +234,8 @@ describe( 'Env', () => {
 				InputEvent: function () {}
 			};
 
-			expect( areInputEventsLevel1Supported( DOMWindowStubWhenSupported ) ).to.be.true;
-			expect( areInputEventsLevel1Supported( DOMWindowStubWhenUnsupported ) ).to.be.false;
+			expect( isInputEventsLevel1Supported( DOMWindowStubWhenSupported ) ).to.be.true;
+			expect( isInputEventsLevel1Supported( DOMWindowStubWhenUnsupported ) ).to.be.false;
 		} );
 	} );
 } );
