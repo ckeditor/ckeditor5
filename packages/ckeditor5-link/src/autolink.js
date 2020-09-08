@@ -147,6 +147,10 @@ export default class AutoLink extends Plugin {
 		enterCommand.on( 'execute', () => {
 			const position = model.document.selection.getFirstPosition();
 
+			if ( !position.parent.previousSibling ) {
+				return;
+			}
+
 			const rangeToCheck = model.createRange(
 				model.createPositionAt( position.parent.previousSibling, 0 ),
 				model.createPositionAt( position.parent.previousSibling, 'end' )

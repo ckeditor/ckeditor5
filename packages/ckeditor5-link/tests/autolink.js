@@ -110,6 +110,26 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
+		it( 'does not add linkHref attribute on enter when the link is selected', () => {
+			setData( model, '<paragraph>[https://www.cksource.com]</paragraph>' );
+
+			editor.execute( 'enter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'does not add linkHref attribute on enter when the whole paragraph containing the link is selected', () => {
+			setData( model, '<paragraph>[This feature also works with e-mail addresses: https://www.cksource.com]</paragraph>' );
+
+			editor.execute( 'enter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>[]</paragraph>'
+			);
+		} );
+
 		it( 'adds linkHref attribute to a text link after space (inside paragraph)', () => {
 			setData( model, '<paragraph>Foo Bar [] Baz</paragraph>' );
 
