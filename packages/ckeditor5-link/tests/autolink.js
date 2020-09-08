@@ -130,6 +130,26 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
+		it( 'does not add linkHref attribute on enter when the link is partially selected (beginning)', () => {
+			setData( model, '<paragraph>[https://www.ckso]urce.com</paragraph>' );
+
+			editor.execute( 'enter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'does not add linkHref attribute on enter when the link is partially selected (end)', () => {
+			setData( model, '<paragraph>https://www.ckso[urce.com]</paragraph>' );
+
+			editor.execute( 'enter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>[]</paragraph>'
+			);
+		} );
+
 		it( 'adds linkHref attribute to a text link after space (inside paragraph)', () => {
 			setData( model, '<paragraph>Foo Bar [] Baz</paragraph>' );
 
