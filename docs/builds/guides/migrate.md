@@ -298,6 +298,10 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td>Refer to the {@link features/easy-image Easy Image} and {@link features/image Images} feature guides to learn more about image-related features and Easy Image integration in CKEditor 5.</td>
 		</tr>
 		<tr>
+			<td><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html##cfg-editorplaceholder">editorplaceholder</a></td>
+			<td>Refer to the {@link features/editor-placeholder Editor placeholder} to learn more about configuring this feature in CKEditor 5.</td>
+		</tr>
+		<tr>
 			<td><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-emailProtection">emailProtection</a></td>
 			<td>N/A</td>
 		</tr>
