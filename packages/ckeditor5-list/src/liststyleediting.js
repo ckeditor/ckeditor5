@@ -566,16 +566,17 @@ function getChangedListItems( changes ) {
 	}
 
 	return items;
-
-	function getItemFromChange( change ) {
-		if ( change.type === 'attribute' ) {
-			return change.range.start.nodeAfter;
-		}
-
-		if ( change.type === 'insert' ) {
-			return change.position.nodeAfter;
-		}
-
-		return null;
-	}
 }
+
+function getItemFromChange( change ) {
+	if ( change.type === 'attribute' ) {
+		return change.range.start.nodeAfter;
+	}
+
+	if ( change.type === 'insert' ) {
+		return change.position.nodeAfter;
+	}
+
+	return null;
+}
+
