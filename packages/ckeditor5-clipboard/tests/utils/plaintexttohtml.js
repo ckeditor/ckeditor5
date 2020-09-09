@@ -27,17 +27,7 @@ describe( 'plainTextToHtml()', () => {
 	} );
 
 	it( 'turns combination of different amount of line breaks to paragraphs', () => {
-		const input = `a
-
-b
-c
-
-
-
-d
-e`;
-
-		expect( plainTextToHtml( input ) ).to.equal( '<p>a</p><p>b<br>c</p><p></p><p>d<br>e</p>' );
+		expect( plainTextToHtml( 'a\n\nb\nc\n\n\n\nd\ne' ) ).to.equal( '<p>a</p><p>b<br>c</p><p></p><p>d<br>e</p>' );
 	} );
 
 	it( 'preserves trailing spaces', () => {
