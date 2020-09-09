@@ -130,23 +130,33 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
+		it( 'adds linkHref attribute on enter when the link (that contains www) is partially selected (end)', () => {
+			setData( model, '<paragraph>https://www.ckso[urce.com]</paragraph>' );
+
+			editor.execute( 'enter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><$text linkHref="https://www.ckso">https://www.ckso</$text></paragraph><paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'does not add linkHref attribute on enter when the link (that does not contain www) is partially selected (end)', () => {
+			setData( model, '<paragraph>https://ckso[urce.com]</paragraph>' );
+
+			editor.execute( 'enter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>https://ckso</paragraph><paragraph>[]</paragraph>'
+			);
+		} );
+
 		it( 'does not add linkHref attribute on enter when the link is partially selected (beginning)', () => {
 			setData( model, '<paragraph>[https://www.ckso]urce.com</paragraph>' );
 
 			editor.execute( 'enter' );
 
 			expect( getData( model ) ).to.equal(
-				'<paragraph>[]</paragraph>'
-			);
-		} );
-
-		it( 'does not add linkHref attribute on enter when the link is partially selected (end)', () => {
-			setData( model, '<paragraph>https://www.ckso[urce.com]</paragraph>' );
-
-			editor.execute( 'enter' );
-
-			expect( getData( model ) ).to.equal(
-				'<paragraph>[]</paragraph>'
+				'<paragraph></paragraph><paragraph>[]urce.com</paragraph>'
 			);
 		} );
 
