@@ -135,6 +135,8 @@ export default class DowncastDispatcher {
 	convertChanges( differ, markers, writer ) {
 		const changes1 = differ.getChanges();
 
+		const mapRefreshedBy = new Map();
+
 		const found = [ ...changes1 ]
 			.filter( ( { type } ) => type === 'attribute' || type === 'insert' || type === 'remove' )
 			.map( entry => {
@@ -150,10 +152,22 @@ export default class DowncastDispatcher {
 					eventName = `${ type }:${ entry.name }`;
 				}
 
+				// @if CK_DEBUG console.log( 'expected event', eventName );
+
 				if ( this._map.has( eventName ) ) {
 					const expectedElement = this._map.get( eventName );
 
-					return element.is( 'element', expectedElement ) ? element : element.findAncestor( expectedElement );
+					const handledByParent = element.is( 'element', expectedElement ) ? element : element.findAncestor( expectedElement );
+
+					// @if CK_DEBUG console.log( `return: ${ handledByParent.name }` );
+
+					if ( handledByParent ) {
+						mapRefreshedBy.set( element, handledByParent );
+					}
+
+					return handledByParent;
+				} else {
+					// @if CK_DEBUG console.log( 'no event in map' );
 				}
 				// TODO: lacking API - handle inner change of given event. Either by:
 				// - a) differ API (mark change as invalid)
@@ -170,10 +184,16 @@ export default class DowncastDispatcher {
 			this.convertMarkerRemove( change.name, change.range, writer );
 		}
 
-		const changes = differ.getChanges();
+		const changes = differ.getChanges().filter( entry => {
+			const { range, position } = entry;
+			const element = range && range.start.nodeAfter || position && position.parent;
+
+			return !mapRefreshedBy.has( element );
+		} );
 
 		// Convert changes that happened on model tree.
 		for ( const entry of changes ) {
+			// @if CK_DEBUG console.log( `ENTRY: ${ entry.type }` );
 			if ( entry.type == 'insert' ) {
 				this.convertInsert( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
 			} else if ( entry.type == 'remove' ) {
@@ -316,6 +336,7 @@ export default class DowncastDispatcher {
 				isRefresh: true
 			};
 
+			// @if CK_DEBUG console.log( 'converting refresh -> insert', item.name );
 			this._testAndFire( 'insert', data );
 		}
 
@@ -536,13 +557,18 @@ export default class DowncastDispatcher {
 	 */
 	_testAndFire( type, data ) {
 		if ( !this.conversionApi.consumable.test( data.item, type ) ) {
+			// @if CK_DEBUG console.log( ' > already consumed' );
 			// Do not fire event if the item was consumed.
 			return;
 		}
 
 		const name = data.item.name || '$text';
 
-		this.fire( type + ':' + name, data, this.conversionApi );
+		const eventName = `${ type }:${ name }`;
+
+		// @if CK_DEBUG console.log( 'Firing event', eventName );
+
+		this.fire( eventName, data, this.conversionApi );
 	}
 
 	/**

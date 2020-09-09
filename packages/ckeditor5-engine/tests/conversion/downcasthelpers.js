@@ -38,6 +38,14 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../src/view/stylesmap';
 import DowncastWriter from '../../src/view/downcastwriter';
 
+function insertBazSlot( writer, modelRoot ) {
+	const slot = writer.createElement( 'slot' );
+	const paragraph = writer.createElement( 'paragraph' );
+	writer.insertText( 'baz', paragraph, 0 );
+	writer.insert( paragraph, slot, 0 );
+	writer.insert( slot, modelRoot.getChild( 0 ), 'end' );
+}
+
 describe( 'DowncastHelpers', () => {
 	let model, modelRoot, viewRoot, downcastHelpers, controller, modelRootStart;
 
@@ -502,25 +510,21 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on adding slot', () => {
 					setModelData( model,
 						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
-						const slot = writer.createElement( 'slot' );
-						const paragraph = writer.createElement( 'paragraph' );
-						writer.insertText( 'baz', paragraph, 0 );
-						writer.insert( paragraph, slot, 0 );
-						writer.insert( slot, modelRoot.getChild( 0 ), 'end' );
+						insertBazSlot( writer, modelRoot );
 					} );
 
 					expectResult(
 						'<div class="complex-slots">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'<div class="slot"><p>bar</p></div>' +
-						'<div class="slot"><p>baz</p></div>' +
-						'</div>' +
+							'<div class="slots">' +
+								'<div class="slot"><p>foo</p></div>' +
+								'<div class="slot"><p>bar</p></div>' +
+								'<div class="slot"><p>baz</p></div>' +
+							'</div>' +
 						'</div>'
 					);
 				} );
@@ -532,15 +536,17 @@ describe( 'DowncastHelpers', () => {
 							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
+					console.log( '---- change:' );
+
 					model.change( writer => {
 						writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
 					} );
 
 					expectResult(
 						'<div class="complex-slots">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'</div>' +
+							'<div class="slots">' +
+								'<div class="slot"><p>bar</p></div>' +
+							'</div>' +
 						'</div>'
 					);
 				} );
@@ -548,20 +554,21 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on multiple triggers (remove + insert)', () => {
 					setModelData( model,
 						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
 						writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
-						writer.insert( modelRoot.getChild( 0 ).getChild( 0 ) );
+						insertBazSlot( writer, modelRoot );
 					} );
 
 					expectResult(
 						'<div class="complex-slots">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'</div>' +
+							'<div class="slots">' +
+								'<div class="slot"><p>foo</p></div>' +
+								'<div class="slot"><p>baz</p></div>' +
+							'</div>' +
 						'</div>'
 					);
 				} );
@@ -569,8 +576,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on multiple triggers (remove + attribute)', () => {
 					setModelData( model,
 						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -580,9 +587,9 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots with-class">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'</div>' +
+							'<div class="slots">' +
+								'<div class="slot"><p>foo</p></div>' +
+							'</div>' +
 						'</div>'
 					);
 				} );
@@ -590,20 +597,21 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on multiple triggers (insert + attribute)', () => {
 					setModelData( model,
 						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
-						writer.insert( modelRoot.getChild( 0 ).getChild( 0 ) );
+						insertBazSlot( writer, modelRoot );
 						writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
 					} );
 
 					expectResult(
 						'<div class="complex-slots with-class">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'</div>' +
+							'<div class="slots">' +
+								'<div class="slot"><p>foo</p></div>' +
+								'<div class="slot"><p>baz</p></div>' +
+							'</div>' +
 						'</div>'
 					);
 				} );
