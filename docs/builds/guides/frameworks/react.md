@@ -72,12 +72,57 @@ The `<CKEditor>` component supports the following properties:
 * `onChange` &ndash; A function called when the editor data has changed. See the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
 * `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
 * `onFocus` &ndash; A function called when the editor was focused. See the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
-* `onError` &ndash; A function called when the editor has crashed during the initialization. It receives the error object as a parameter.
+* `onError` &ndash; A function called when the editor has crashed during the initialization or during the runtime. It receives the error object as a parameter.
 
 The editor events callbacks (`onChange`, `onBlur`, `onFocus`) receive two parameters:
 
 1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object.
 2. An {@link module:core/editor/editor~Editor `Editor`} instance.
+
+### Context feature
+
+The `ckeditor5-react` integration comes with a ready-to-use component for the [Context feature](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/context-and-collaboration-features.html) that is often used when using real-time collaboration features.
+
+```jsx
+import React, { Component } from 'react';
+import { CKEditor, Context as ContextComponent } from '@ckeditor/ckeditor5-react';
+
+// Assuming that we build the editor from source
+import Context from '@ckeditor/ckeditor5-core/src/context';
+import ClassicEditor from './ckeditor';
+
+class App extends Component {
+	render() {
+		return (
+			<div className="App">
+				<ContextComponent context={ Context }>
+					<h2>Using CKeditor 5 Context feature in React</h2>
+					<CKEditor
+						editor={ ClassicEditor }
+						data="<p>Hello from the first editor working with the context!</p>"
+						onInit={ editor => {
+							// You can store the "editor" and use when it is needed.
+							console.log( 'Editor1 is ready to use!', editor );
+						} }
+					/>
+
+					<CKEditor
+						editor={ ClassicEditor }
+						data="<p>Hello from the second editor working with the context!</p>"
+						onInit={ editor => {
+							// You can store the "editor" and use when it is needed.
+							console.log( 'Editor2 is ready to use!', editor );
+						} }
+					/>
+			</div>
+		);
+	}
+}
+```
+
+<info-box>
+	A build that exposes both Context and Classic Editor can be found in a [CKEditor 5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/comments-outside-of-editor).
+</info-box>
 
 ### Customizing the builds
 
@@ -93,6 +138,10 @@ There are two main ways to do that.
 	In this approach you will include CKEditor 5 built from source &mdash; so you will choose the editor creator you want and the list of plugins, etc. It is more powerful and creates a tighter integration between your application and the WYSIWYG editor, however, it requires adjusting your `webpack.config.js` to CKEditor 5 needs.
 
 	Read more about this option in [Integrating CKEditor 5 from source](#integrating-ckeditor-5-built-from-source).
+
+<info-box>
+	If you want to use the [Online builder](https://ckeditor.com/ckeditor-5/online-builder/), make sure that the Watchdog feature is not selected. The React integration comes with the Watchdog feature already integrated into the core.
+</info-box>
 
 ### Building for production
 
