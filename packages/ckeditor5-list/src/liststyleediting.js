@@ -189,7 +189,6 @@ export default class ListStyleEditing extends Plugin {
 // Returns a converter that consumes the `style` attribute and search for `list-style-type` definition.
 // If not found, the `"default"` value will be used.
 //
-// @private
 // @returns {Function}
 function upcastListItemStyle() {
 	return dispatcher => {
@@ -206,7 +205,6 @@ function upcastListItemStyle() {
 // Returns a converter that adds the `list-style-type` definition as a value for the `style` attribute.
 // The `"default"` value is removed and not present in the view/data.
 //
-// @private
 // @returns {Function}
 function downcastListStyleAttribute() {
 	return dispatcher => {
@@ -271,7 +269,6 @@ function downcastListStyleAttribute() {
 //     ○ List item 2.[]
 // ■ List item 3.
 //
-// @private
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Function}
 function fixListAfterIndentListCommand( editor ) {
@@ -323,7 +320,6 @@ function fixListAfterIndentListCommand( editor ) {
 // ■ List item 2.[]
 // ■ List item 3.
 //
-// @private
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Function}
 function fixListAfterOutdentListCommand( editor ) {
@@ -423,7 +419,6 @@ function fixListAfterOutdentListCommand( editor ) {
 // ■ List item 2.  // ...
 // ■ List item 3.  // ...
 //
-// @private
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Function}
 function fixListStyleAttributeOnListItemElements( editor ) {
@@ -516,7 +511,6 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 
 // Removes the `listStyle` attribute from "todo" list items.
 //
-// @private
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Function}
 function removeListStyleAttributeFromTodoList( editor ) {
@@ -541,7 +535,6 @@ function removeListStyleAttributeFromTodoList( editor ) {
 
 // Restores the `listStyle` attribute after changing the list type.
 //
-// @private
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Function}
 function restoreDefaultListStyle( editor ) {
@@ -559,7 +552,6 @@ function restoreDefaultListStyle( editor ) {
 
 // Returns `listItem` that were inserted or changed.
 //
-// @private
 // @param {Array.<Object>} changes The changes list returned by the differ.
 // @returns {Array.<module:engine/model/element~Element>}
 function getChangedListItems( changes ) {
