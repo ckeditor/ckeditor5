@@ -27,12 +27,7 @@ function buildDocs() {
 	if ( skipApi ) {
 		promise = Promise.resolve();
 	} else {
-		promise = buildApiDocs()
-			.catch( err => {
-				console.error( err );
-
-				process.exitCode = 1;
-			} );
+		promise = buildApiDocs();
 	}
 
 	promise
@@ -45,6 +40,11 @@ function buildDocs() {
 				watch,
 				verbose
 			} );
+		} )
+		.catch( err => {
+			console.error( err );
+
+			process.exitCode = 1;
 		} );
 }
 

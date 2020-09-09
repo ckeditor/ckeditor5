@@ -85,7 +85,7 @@ export function skipEmptyTableRow() {
 }
 
 /**
- * Converter that ensures empty paragraph is inserted in a table cell if no other content was converted.
+ * A converter that ensures an empty paragraph is inserted in a table cell if no other content was converted.
  *
  * @returns {Function} Conversion helper.
  */

@@ -487,3 +487,5 @@ ClassicEditor
 ## What's next?
 
 If you would like to read more about how to extend the output of existing CKEditor 5 features, refer to the {@link framework/guides/deep-dive/conversion-extending-output Extending the editor output} guide.
+
+If you want to learn how to create complex view structures or how to move from {@link module:engine/conversion/conversion~Conversion two-way} or {@link module:engine/conversion/conversion~Conversion#for one-way} converters to event-based ones, refer to the {@link framework/guides/deep-dive/custom-element-conversion Custom element conversion} guide.
