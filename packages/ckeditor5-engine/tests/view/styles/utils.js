@@ -232,15 +232,6 @@ describe( 'Styles utils', () => {
 			} );
 		} );
 
-		it( 'should parse one value', () => {
-			expect( getBoxSidesValues( 'foo' ) ).to.deep.equal( {
-				top: 'foo',
-				right: 'foo',
-				bottom: 'foo',
-				left: 'foo'
-			} );
-		} );
-
 		it( 'should parse two value', () => {
 			expect( getBoxSidesValues( 'foo bar' ) ).to.deep.equal( {
 				top: 'foo',

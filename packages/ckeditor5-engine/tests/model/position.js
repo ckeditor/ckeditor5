@@ -615,7 +615,7 @@ describe( 'Position', () => {
 			expect( positionB.isTouching( positionA ) ).to.be.false;
 		} );
 
-		it( 'should return false if there are whole nodes between positions', () => {
+		it( 'should return false if there are whole nodes between positions (same depth, but deeper)', () => {
 			const positionA = new Position( root, [ 1, 0, 3 ] );
 			const positionB = new Position( root, [ 1, 1, 1 ] );
 

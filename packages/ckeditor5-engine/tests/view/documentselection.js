@@ -80,16 +80,6 @@ describe( 'DocumentSelection', () => {
 			expect( selection.isBackward ).to.be.false;
 		} );
 
-		it( 'should be able to create a collapsed selection at the given position', () => {
-			const position = range1.start;
-			const selection = new DocumentSelection( position );
-
-			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
-			expect( selection.getFirstRange().start ).to.deep.equal( position );
-			expect( selection.getFirstRange().end ).to.deep.equal( position );
-			expect( selection.isBackward ).to.be.false;
-		} );
-
 		it( 'should be able to create a selection from the other document selection', () => {
 			const otherSelection = new DocumentSelection( [ range2, range3 ], { backward: true } );
 			const selection = new DocumentSelection( otherSelection );
@@ -543,12 +533,6 @@ describe( 'DocumentSelection', () => {
 			documentSelection._setTo( range1 );
 
 			const otherSelection = new Selection( [ range1 ], { backward: true } );
-
-			expect( documentSelection.isEqual( otherSelection ) ).to.be.false;
-		} );
-
-		it( 'should return false if one selection is fake', () => {
-			const otherSelection = new DocumentSelection( null, { fake: true } );
 
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.false;
 		} );
