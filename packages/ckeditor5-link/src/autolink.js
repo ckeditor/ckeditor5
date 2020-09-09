@@ -151,10 +151,7 @@ export default class AutoLink extends Plugin {
 				return;
 			}
 
-			const rangeToCheck = model.createRange(
-				model.createPositionAt( position.parent.previousSibling, 0 ),
-				model.createPositionAt( position.parent.previousSibling, 'end' )
-			);
+			const rangeToCheck = model.createRangeIn( position.parent.previousSibling );
 
 			this._checkAndApplyAutoLinkOnRange( rangeToCheck );
 		} );
