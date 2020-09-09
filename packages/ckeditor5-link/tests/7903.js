@@ -31,6 +31,7 @@ describe( 'Regression 7903', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
+		element.remove();
 	} );
 
 	it( 'should not crash', done => {
@@ -42,18 +43,14 @@ describe( 'Regression 7903', () => {
 
 		editor.ui.getEditableElement().focus();
 
-		setTimeout( () => {
-			simulateExternalInsertText( 'foobar' );
-			// simulateExternalInsertText( 'foobar' );
-			setTimeout( () => {
-				editor.plugins.get( 'LinkUI' )._showUI( true );
-				setTimeout( () => {
-					document.execCommand( 'undo' );
+		simulateExternalInsertText( 'foobar' );
 
-					setTimeout( done, 2000 );
-				} );
-			}, 200 );
-		}, 200 );
+		setTimeout( () => {
+			editor.plugins.get( 'LinkUI' )._showUI( true );
+			document.execCommand( 'undo' ); // undo causes a mutation, which triggers the exception
+
+			setTimeout( done, 0 );
+		}, 0 );
 	} );
 
 	function simulateExternalInsertText( text ) {
