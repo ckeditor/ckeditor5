@@ -72,7 +72,7 @@ export default class DataController {
 		 *
 		 * @member {module:engine/dataprocessor/dataprocessor~DataProcessor} #processor
 		 */
-		this.processor;
+		this.processor = undefined;
 
 		/**
 		 * Mapper used for the conversion. It has no permanent bindings, because they are created when getting data and

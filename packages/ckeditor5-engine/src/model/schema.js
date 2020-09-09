@@ -1256,7 +1256,7 @@ mix( Schema, ObservableMixin );
  * {@glink framework/guides/deep-dive/schema#selectable-elements Selectable elements} section of the Schema deep dive} guide.
  *
  * @property {Boolean} isContent
- * An item is a content when it always finds its way to editor data output regardless of the number and type of its descendants.
+ * An item is a content when it always finds its way to the editor data output regardless of the number and type of its descendants.
  * Examples of content elements: `$text`, `image`, `table`, etc. (but not `paragraph`, `heading1` or `tableCell`).
  *
  * **Note:** An object is also a content element, so

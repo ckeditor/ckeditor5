@@ -143,7 +143,12 @@ describe( 'Selection', () => {
 			expect( selection.is( 'model' ) ).to.be.false;
 			expect( selection.is( 'model:node' ) ).to.be.false;
 			expect( selection.is( '$text' ) ).to.be.false;
+			expect( selection.is( '$textProxy' ) ).to.be.false;
+			expect( selection.is( 'element' ) ).to.be.false;
 			expect( selection.is( 'element', 'paragraph' ) ).to.be.false;
+			expect( selection.is( 'documentSelection' ) ).to.be.false;
+			expect( selection.is( 'node' ) ).to.be.false;
+			expect( selection.is( 'rootElement' ) ).to.be.false;
 		} );
 	} );
 
@@ -823,21 +828,6 @@ describe( 'Selection', () => {
 			const otherSelection = new Selection( [ range1 ], { backward: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
-		} );
-	} );
-
-	describe( 'is()', () => {
-		it( 'should return true for selection', () => {
-			expect( selection.is( 'selection' ) ).to.be.true;
-		} );
-
-		it( 'should return false for other values', () => {
-			expect( selection.is( 'documentSelection' ) ).to.be.false;
-			expect( selection.is( 'node' ) ).to.be.false;
-			expect( selection.is( '$text' ) ).to.be.false;
-			expect( selection.is( '$textProxy' ) ).to.be.false;
-			expect( selection.is( 'element' ) ).to.be.false;
-			expect( selection.is( 'rootElement' ) ).to.be.false;
 		} );
 	} );
 

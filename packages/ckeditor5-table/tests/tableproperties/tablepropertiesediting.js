@@ -293,7 +293,7 @@ describe( 'table properties', () => {
 					model.change( writer => writer.setAttribute( 'borderStyle', 'solid', table ) );
 				} );
 
-				it( 'should be overridable', () => {
+				it( 'should be overridable for borderStyle', () => {
 					editor.conversion.for( 'downcast' )
 						.add( dispatcher => dispatcher.on( 'attribute:borderStyle:table', ( evt, data, conversionApi ) => {
 							conversionApi.consumable.consume( data.item, evt.name );
@@ -335,7 +335,7 @@ describe( 'table properties', () => {
 					model.change( writer => writer.setAttribute( 'borderWidth', '2px', table ) );
 				} );
 
-				it( 'should be overridable', () => {
+				it( 'should be overridable for borderWidth', () => {
 					editor.conversion.for( 'downcast' )
 						.add( dispatcher => dispatcher.on( 'attribute:borderWidth:table', ( evt, data, conversionApi ) => {
 							conversionApi.consumable.consume( data.item, evt.name );

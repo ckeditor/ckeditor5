@@ -214,7 +214,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'getIndex()', () => {
+	describe( '#index getter', () => {
 		it( 'should return null if the parent is null', () => {
 			expect( root.index ).to.be.null;
 		} );
