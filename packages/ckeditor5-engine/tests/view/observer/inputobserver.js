@@ -3,12 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import InputObserver from '../../../src/view/observer/inputobserver';
-import View from '../../../src/view/view';
-import createViewRoot from '../_utils/createroot';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+
+import InputObserver from '../../../src/view/observer/inputobserver';
 import DataTransfer from '../../../src/view/datatransfer';
+import View from '../../../src/view/view';
+import { StylesProcessor } from '../../../src/view/stylesmap';
+
+import createViewRoot from '../_utils/createroot';
 
 describe( 'InputObserver', () => {
 	let domEditable, view, viewRoot, viewDocument, observer, evtData, beforeInputSpy;
