@@ -15,10 +15,10 @@ import { getSiblingListItem, getSiblingNodes } from './utils';
 const DEFAULT_LIST_TYPE = 'default';
 
 /**
- * The list styles engine feature.
+ * The list style engine feature.
  *
- * It sets value for the `listItem` attribute for the {@link module:list/list~List `<listItem>`} element that
- * allows modifying list style type.
+ * It sets the value for the `listItem` attribute of the {@link module:list/list~List `<listItem>`} element that
+ * allows modifying the list style type.
  *
  * It registers the `'listStyle'` command.
  *
@@ -186,7 +186,7 @@ export default class ListStyleEditing extends Plugin {
 	}
 }
 
-// Returns a converter that consumes the `style` attribute and search for `list-style-type` definition.
+// Returns a converter that consumes the `style` attribute and searches for the `list-style-type` definition.
 // If not found, the `"default"` value will be used.
 //
 // @returns {Function}

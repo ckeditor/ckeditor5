@@ -31,10 +31,10 @@ import listStyleUpperLatinIcon from '../theme/icons/liststyleupperlatin.svg';
 import '../theme/liststyles.css';
 
 /**
- * The list styles UI plugin. It introduces the extended `'bulletedList'` and `'numberedList'` toolbar
- * buttons that allow users change styles of individual lists in the content.
+ * The list style UI plugin. It introduces the extended `'bulletedList'` and `'numberedList'` toolbar
+ * buttons that allow users to change styles of individual lists in the content.
  *
- * **Note**: Buttons introduces by this plugin override implementations from the {@link module:list/listui~ListUI}
+ * **Note**: Buttons introduced by this plugin override implementations from the {@link module:list/listui~ListUI}
  * (because they share the same names).
  *
  * @extends module:core/plugin~Plugin
