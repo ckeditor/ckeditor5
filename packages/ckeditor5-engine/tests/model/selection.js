@@ -123,7 +123,7 @@ describe( 'Selection', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new Selection( {} );
-			}, /model-selection-setTo-not-selectable/ );
+			}, 'model-selection-setto-not-selectable' );
 		} );
 	} );
 
@@ -307,13 +307,13 @@ describe( 'Selection', () => {
 		it( 'should throw an error when trying to set selection to not selectable', () => {
 			expectToThrowCKEditorError( () => {
 				selection.setTo( {} );
-			}, /model-selection-setTo-not-selectable/ );
+			}, 'model-selection-setto-not-selectable' );
 		} );
 
 		it( 'should throw an error when trying to set selection to not selectable #2', () => {
 			expectToThrowCKEditorError( () => {
 				selection.setTo();
-			}, /model-selection-setTo-not-selectable/ );
+			}, 'model-selection-setto-not-selectable' );
 		} );
 
 		it( 'should allow setting selection inside an element', () => {
@@ -379,7 +379,7 @@ describe( 'Selection', () => {
 			it( 'should throw if second parameter is not passed', () => {
 				expectToThrowCKEditorError( () => {
 					selection.setTo( root );
-				}, /model-selection-setTo-required-second-parameter/, model );
+				}, 'model-selection-setto-required-second-parameter', model );
 			} );
 
 			it( 'should set selection at given offset in given parent', () => {
@@ -465,7 +465,7 @@ describe( 'Selection', () => {
 
 			expectToThrowCKEditorError( () => {
 				selection.setFocus( endPos );
-			}, /model-selection-setFocus-no-ranges/, model );
+			}, 'model-selection-setfocus-no-ranges', model );
 		} );
 
 		it( 'modifies existing collapsed selection', () => {

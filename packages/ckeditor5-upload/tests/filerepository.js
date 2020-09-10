@@ -484,7 +484,7 @@ describe( 'FileRepository', () => {
 
 				expect( () => {
 					loader.read();
-				} ).to.throw( 'filerepository-read-wrong-status: You cannot call read if the status is different than idle.' );
+				} ).to.throw( 'filerepository-read-wrong-status' );
 			} );
 
 			it( 'should return a promise', () => {
@@ -614,7 +614,7 @@ describe( 'FileRepository', () => {
 
 				expect( () => {
 					loader.upload();
-				} ).to.throw( 'filerepository-upload-wrong-status: You cannot call upload if the status is different than idle.' );
+				} ).to.throw( 'filerepository-upload-wrong-status' );
 			} );
 
 			it( 'should return a promise', () => {

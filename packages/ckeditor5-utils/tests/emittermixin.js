@@ -164,7 +164,7 @@ describe( 'EmitterMixin', () => {
 
 			expectToThrowCKEditorError( () => {
 				emitter.fire( 'test' );
-			}, /Foo/, null );
+			}, /foo/, null );
 		} );
 
 		it( 'should rethrow the native errors as they are in the dubug=true mode', () => {
