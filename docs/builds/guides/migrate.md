@@ -334,7 +334,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 				<tr>
 			<td>
-			<a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_fileName">exportPdf_fileName</a> <br><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_options">exportPdf_options</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_service">exportPdf_service</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_stylesheet">exportPdf_stylesheet</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_tokenUrl">exportPdf_tokenUrl</a> <br>
+			<a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_fileName">exportPdf_fileName</a> <br><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_options">exportPdf_options</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_service">exportPdf_service</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_stylesheets">exportPdf_stylesheets</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_tokenUrl">exportPdf_tokenUrl</a> <br>
 			</td>
 			<td>
 				Refer to the {@link features/export-pdf Export to PDF feature} guide to learn more about about configuring the HTML to PDF converter in CKEditor 5.
