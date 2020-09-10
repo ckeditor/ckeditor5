@@ -26,7 +26,7 @@ export default class InputObserver extends DomEventObserver {
 	}
 
 	onDomEvent( domEvent ) {
-		const domTargetRanges = Array.from( domEvent.getTargetRanges() );
+		const domTargetRanges = domEvent.getTargetRanges();
 		const view = this.view;
 
 		let dataTransfer = null;
