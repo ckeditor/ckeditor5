@@ -175,7 +175,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			</td>
 		</tr>
 		<tr>
-			<td><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_backStyle">colorButton_backStyle</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_colors">colorButton_colors</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_colorsPerRow">colorButton_colorsPerRow</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_enableAutomatic">colorButton_enableAutomatic</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_enableMore">colorButton_enableMore</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_foreStyle">colorButton_foreStyle</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_normalizeBackground">colorButton_normalizeBackground</a></td>
+			<td><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_backStyle">colorButton_backStyle</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_colors">colorButton_colors</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_colorsPerRow">colorButton_colorsPerRow</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_enableAutomatic">colorButton_enableAutomatic</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_enableMore">colorButton_enableMore</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_foreStyle">colorButton_foreStyle</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_historyRowLimit">colorButton_historyRowLimit</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-colorButton_normalizeBackground">colorButton_normalizeBackground</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-config.colorButton_renderContentColors">config.colorButton_renderContentColors</a></td>
 			<td>
 				<p>Refer to the {@link features/font#configuring-the-font-color-and-font-background-color-features Font feature} guide to learn more about configuring font and background color in CKEditor 5.</p>
 				<p>At the same time, we also provide a new highlight plugin which allows for highlighting parts of the text with the <code>&lt;mark&gt;</code> element with different CSS classes that can be easily styled. See the {@link features/highlight Highlight feature guide} for more information .</p>
@@ -331,6 +331,14 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-entities">entities</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-entities_additional">entities_additional</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-entities_greek">entities_greek</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-entities_latin">entities_latin</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-entities_processNumerical">entities_processNumerical</a></td>
 			<td>N/A</td>
+		</tr>
+				<tr>
+			<td>
+			<a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_fileName">exportPdf_fileName</a> <br><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_options">exportPdf_options</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_service">exportPdf_service</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_stylesheet">exportPdf_stylesheet</a> <br> <a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_tokenUrl">exportPdf_tokenUrl</a> <br>
+			</td>
+			<td>
+				Refer to the {@link features/export-pdf Export to PDF feature} guide to learn more about about configuring PDF converter in CKEditor 5.
+			</td>
 		</tr>
 		<tr>
 			<td><a href="../../../../ckeditor4/latest/api/CKEDITOR_config.html#cfg-extraAllowedContent">extraAllowedContent</a></td>
