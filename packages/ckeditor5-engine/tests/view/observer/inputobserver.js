@@ -7,6 +7,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import InputObserver from '../../../src/view/observer/inputobserver';
 import DataTransfer from '../../../src/view/datatransfer';
+import Range from '../../../src/view/range';
 import View from '../../../src/view/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
@@ -139,6 +140,9 @@ describe( 'InputObserver', () => {
 
 				const viewRange1 = evtData.targetRanges[ 0 ];
 				const viewRange2 = evtData.targetRanges[ 1 ];
+
+				expect( viewRange1 ).to.be.instanceOf( Range );
+				expect( viewRange2 ).to.be.instanceOf( Range );
 
 				expect( viewRange1.start.parent ).to.equal( viewRoot );
 				expect( viewRange1.start.offset ).to.equal( 0 );
