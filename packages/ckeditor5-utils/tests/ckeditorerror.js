@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* eslint-disable ckeditor5-rules/ckeditor-error-message */
+
 import { default as CKEditorError, DOCUMENTATION_URL } from '../src/ckeditorerror';
 import { expectToThrowCKEditorError } from './_utils/utils';
 
@@ -23,7 +25,7 @@ describe( 'CKEditorError', () => {
 	it( 'sets the message', () => {
 		const error = new CKEditorError( 'foo', null );
 
-		expect( error ).to.have.property( 'message', 'foo' );
+		expect( error ).to.have.property( 'message' ).that.matches( /^foo/ );
 		expect( error.data ).to.be.undefined;
 	} );
 
@@ -62,18 +64,18 @@ describe( 'CKEditorError', () => {
 	} );
 
 	it( 'contains a link which leads to the documentation', () => {
-		const error = new CKEditorError( 'model-schema-no-item: Specified item cannot be found.', null );
+		const error = new CKEditorError( 'model-schema-no-item', null );
 
-		const errorMessage = 'model-schema-no-item: Specified item cannot be found. ' +
-			`Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n`;
+		const errorMessage = 'model-schema-no-item' +
+			` Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n`;
 
 		expect( error ).to.have.property( 'message', errorMessage );
 	} );
 
 	it( 'link to documentation is added before the additional data message', () => {
-		const error = new CKEditorError( 'model-schema-no-item: Specified item cannot be found.', null, { foo: 1, bar: 2 } );
+		const error = new CKEditorError( 'model-schema-no-item', null, { foo: 1, bar: 2 } );
 
-		const errorMessage = 'model-schema-no-item: Specified item cannot be found. ' +
+		const errorMessage = 'model-schema-no-item ' +
 			`Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n ` +
 			'{"foo":1,"bar":2}';
 

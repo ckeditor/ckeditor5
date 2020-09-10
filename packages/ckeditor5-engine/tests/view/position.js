@@ -417,7 +417,7 @@ describe( 'Position', () => {
 
 				expectToThrowCKEditorError( () => {
 					Position._createAt( element );
-				}, /view-createPositionAt-offset-required/ );
+				}, 'view-createpositionat-offset-required' );
 			} );
 
 			it( 'should create positions from positions', () => {
