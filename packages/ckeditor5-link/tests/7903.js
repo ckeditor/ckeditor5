@@ -3,21 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Link from '../src/link';
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import Input from '@ckeditor/ckeditor5-typing/src/input';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-
-import '@ckeditor/ckeditor5-core/tests/_utils/assertions/attribute';
 
 /* global document, setTimeout */
 
 describe( 'Regression 7903', () => {
+	const MARKER_NAME = 'marker-name';
+
 	let element, editor;
 
 	beforeEach( async () => {
@@ -25,7 +20,19 @@ describe( 'Regression 7903', () => {
 		document.body.appendChild( element );
 
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ Paragraph, Link, Enter, ItalicEditing, ImageEditing, Undo ]
+			plugins: [ Paragraph, Input ]
+		} );
+
+		editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
+			model: MARKER_NAME,
+			view: {}
+		} );
+
+		editor.conversion.for( 'editingDowncast' ).markerToElement( {
+			model: MARKER_NAME,
+			view: {
+				name: 'span'
+			}
 		} );
 	} );
 
@@ -41,23 +48,24 @@ describe( 'Regression 7903', () => {
 			'</paragraph>'
 		);
 
+		const model = editor.model;
+
 		editor.ui.getEditableElement().focus();
 
-		simulateExternalInsertText( 'foobar' );
+		document.execCommand( 'insertText', false, 'foobar' );
 
 		setTimeout( () => {
-			editor.plugins.get( 'LinkUI' )._showUI( true );
+			model.change( writer => {
+				writer.addMarker( MARKER_NAME, {
+					usingOperation: false,
+					affectsData: false,
+					range: model.document.selection.getFirstRange()
+				} );
+			} );
+
 			document.execCommand( 'undo' ); // undo causes a mutation, which triggers the exception
 
 			setTimeout( done, 0 );
 		}, 0 );
 	} );
-
-	function simulateExternalInsertText( text ) {
-		document.execCommand( 'insertText', false, text );
-
-		// Undo&redo to force undo snapshot in browser's contenteditable handler.
-		document.execCommand( 'undo' );
-		document.execCommand( 'redo' );
-	}
 } );
