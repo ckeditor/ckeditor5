@@ -25,7 +25,7 @@ describe( 'CKEditorError', () => {
 	it( 'sets the message', () => {
 		const error = new CKEditorError( 'foo', null );
 
-		expect( error ).to.have.property( 'message', 'foo' );
+		expect( error ).to.have.property( 'message' ).that.matches( /^foo/ );
 		expect( error.data ).to.be.undefined;
 	} );
 
@@ -66,8 +66,8 @@ describe( 'CKEditorError', () => {
 	it( 'contains a link which leads to the documentation', () => {
 		const error = new CKEditorError( 'model-schema-no-item', null );
 
-		const errorMessage = 'model-schema-no-item: Specified item cannot be found. ' +
-			`Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n`;
+		const errorMessage = 'model-schema-no-item' +
+			` Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n`;
 
 		expect( error ).to.have.property( 'message', errorMessage );
 	} );
@@ -75,7 +75,7 @@ describe( 'CKEditorError', () => {
 	it( 'link to documentation is added before the additional data message', () => {
 		const error = new CKEditorError( 'model-schema-no-item', null, { foo: 1, bar: 2 } );
 
-		const errorMessage = 'model-schema-no-item: Specified item cannot be found. ' +
+		const errorMessage = 'model-schema-no-item ' +
 			`Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n ` +
 			'{"foo":1,"bar":2}';
 

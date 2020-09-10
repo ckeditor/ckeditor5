@@ -143,7 +143,8 @@ export default class CKEditorError extends Error {
  * @returns {String}
  */
 export function attachLinkToDocumentation( message ) {
-	const matchedErrorName = message.match( /^([^:]+):/ );
+	// The link to documentation should work with console.warn format: "message-id: Explanation message." and single error id.
+	const matchedErrorName = message.match( /^([a-z0-9]+-[a-z-0-9]+):?/ );
 
 	if ( !matchedErrorName ) {
 		return message;
