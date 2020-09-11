@@ -178,7 +178,7 @@ describe( 'CKFinderCommand', () => {
 
 			expectToThrowCKEditorError( () => {
 				command.execute();
-			}, /ckfinder-unknown-openerMethod/, editor );
+			}, 'ckfinder-unknown-openermethod', editor );
 		} );
 
 		it( 'should insert single chosen image', () => {

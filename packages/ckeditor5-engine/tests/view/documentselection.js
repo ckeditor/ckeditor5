@@ -80,16 +80,6 @@ describe( 'DocumentSelection', () => {
 			expect( selection.isBackward ).to.be.false;
 		} );
 
-		it( 'should be able to create a collapsed selection at the given position', () => {
-			const position = range1.start;
-			const selection = new DocumentSelection( position );
-
-			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
-			expect( selection.getFirstRange().start ).to.deep.equal( position );
-			expect( selection.getFirstRange().end ).to.deep.equal( position );
-			expect( selection.isBackward ).to.be.false;
-		} );
-
 		it( 'should be able to create a selection from the other document selection', () => {
 			const otherSelection = new DocumentSelection( [ range2, range3 ], { backward: true } );
 			const selection = new DocumentSelection( otherSelection );
@@ -135,7 +125,7 @@ describe( 'DocumentSelection', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new DocumentSelection( {} );
-			}, /view-selection-setTo-not-selectable/ );
+			}, 'view-selection-setto-not-selectable' );
 		} );
 	} );
 
@@ -207,7 +197,7 @@ describe( 'DocumentSelection', () => {
 
 			expectToThrowCKEditorError( () => {
 				documentSelection._setFocus( endPos );
-			}, /view-selection-setFocus-no-ranges/, documentSelection );
+			}, 'view-selection-setfocus-no-ranges', documentSelection );
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
@@ -553,12 +543,6 @@ describe( 'DocumentSelection', () => {
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
-		it( 'should return false if one selection is fake', () => {
-			const otherSelection = new DocumentSelection( null, { fake: true } );
-
-			expect( documentSelection.isEqual( otherSelection ) ).to.be.false;
-		} );
-
 		it( 'should return true if both selection are fake - DocumentSelection and Selection', () => {
 			const otherSelection = new Selection( range1, { fake: true } );
 			documentSelection._setTo( range1, { fake: true } );
@@ -818,7 +802,7 @@ describe( 'DocumentSelection', () => {
 
 				expectToThrowCKEditorError( () => {
 					otherSelection._setTo( {} );
-				}, /view-selection-setTo-not-selectable/ );
+				}, 'view-selection-setto-not-selectable' );
 			} );
 
 			it( 'should throw an error when trying to set to not selectable #2', () => {
@@ -826,7 +810,7 @@ describe( 'DocumentSelection', () => {
 
 				expectToThrowCKEditorError( () => {
 					otherSelection._setTo();
-				}, /view-selection-setTo-not-selectable/ );
+				}, 'view-selection-setto-not-selectable' );
 			} );
 		} );
 
@@ -870,7 +854,7 @@ describe( 'DocumentSelection', () => {
 
 				expectToThrowCKEditorError( () => {
 					documentSelection._setTo( foo );
-				}, /view-selection-setTo-required-second-parameter/, documentSelection );
+				}, 'view-selection-setto-required-second-parameter', documentSelection );
 			} );
 
 			it( 'should collapse selection at node and flag', () => {

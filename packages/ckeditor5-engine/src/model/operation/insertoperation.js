@@ -115,7 +115,7 @@ export default class InsertOperation extends Operation {
 			 * @error insert-operation-position-invalid
 			 */
 			throw new CKEditorError(
-				'insert-operation-position-invalid: Insertion position is invalid.',
+				'insert-operation-position-invalid',
 				this
 			);
 		}

@@ -4,7 +4,7 @@ category: features
 
 # To-do lists
 
-The {@link module:list/todolist~TodoList to-do list} feature lets you create a list of interactive checkboxes with labels. It supports all features of regular lists so you can nest a to-do list together with bulleted and numbered lists in any combination.
+The {@link module:list/todolist~TodoList to-do list} feature lets you create a list of interactive checkboxes with labels. It supports all features of regular lists so you can nest a to-do list together with {@link features/lists bulleted and numbered lists} in any combination.
 
 ## Demo
 
@@ -90,7 +90,7 @@ From the technical point of view, to-do lists are built on top of the {@link mod
 
 ## Ordered and unordered lists
 
-You can read more about those features in the {@link features/lists Lists} feature guide.
+You can read more about these features in the {@link features/lists Lists} feature guide.
 
 ## Contribute
 

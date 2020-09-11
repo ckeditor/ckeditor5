@@ -132,7 +132,7 @@ export default class MoveOperation extends Operation {
 			 * @error move-operation-nodes-do-not-exist
 			 */
 			throw new CKEditorError(
-				'move-operation-nodes-do-not-exist: The nodes which should be moved do not exist.', this
+				'move-operation-nodes-do-not-exist', this
 			);
 		} else if ( sourceElement === targetElement && sourceOffset < targetOffset && targetOffset < sourceOffset + this.howMany ) {
 			/**
@@ -141,7 +141,7 @@ export default class MoveOperation extends Operation {
 			 * @error move-operation-range-into-itself
 			 */
 			throw new CKEditorError(
-				'move-operation-range-into-itself: Trying to move a range of nodes to the inside of that range.', this
+				'move-operation-range-into-itself', this
 			);
 		} else if ( this.sourcePosition.root == this.targetPosition.root ) {
 			if ( compareArrays( this.sourcePosition.getParentPath(), this.targetPosition.getParentPath() ) == 'prefix' ) {
@@ -154,7 +154,7 @@ export default class MoveOperation extends Operation {
 					 * @error move-operation-node-into-itself
 					 */
 					throw new CKEditorError(
-						'move-operation-node-into-itself: Trying to move a range of nodes into one of nodes from that range.', this
+						'move-operation-node-into-itself', this
 					);
 				}
 			}

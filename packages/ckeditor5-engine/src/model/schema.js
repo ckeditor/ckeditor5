@@ -92,7 +92,7 @@ export default class Schema {
 			 * @error schema-cannot-register-item-twice
 			 */
 			throw new CKEditorError(
-				'schema-cannot-register-item-twice: A single item cannot be registered twice in the schema.',
+				'schema-cannot-register-item-twice',
 				this,
 				{
 					itemName
@@ -142,7 +142,7 @@ export default class Schema {
 			 * @param itemName The name of the model element which is being extended.
 			 * @error schema-cannot-extend-missing-item
 			 */
-			throw new CKEditorError( 'schema-cannot-extend-missing-item: Cannot extend an item which was not registered yet.', this, {
+			throw new CKEditorError( 'schema-cannot-extend-missing-item', this, {
 				itemName
 			} );
 		}
@@ -447,7 +447,7 @@ export default class Schema {
 				 * @error schema-check-merge-no-element-before
 				 */
 				throw new CKEditorError(
-					'schema-check-merge-no-element-before: The node before the merge position must be an element.',
+					'schema-check-merge-no-element-before',
 					this
 				);
 			}
@@ -459,7 +459,7 @@ export default class Schema {
 				 * @error schema-check-merge-no-element-after
 				 */
 				throw new CKEditorError(
-					'schema-check-merge-no-element-after: The node after the merge position must be an element.',
+					'schema-check-merge-no-element-after',
 					this
 				);
 			}
@@ -1256,7 +1256,7 @@ mix( Schema, ObservableMixin );
  * {@glink framework/guides/deep-dive/schema#selectable-elements Selectable elements} section of the Schema deep dive} guide.
  *
  * @property {Boolean} isContent
- * An item is a content when it always finds its way to editor data output regardless of the number and type of its descendants.
+ * An item is a content when it always finds its way to the editor data output regardless of the number and type of its descendants.
  * Examples of content elements: `$text`, `image`, `table`, etc. (but not `paragraph`, `heading1` or `tableCell`).
  *
  * **Note:** An object is also a content element, so

@@ -189,7 +189,7 @@ describe( 'DataController', () => {
 
 			expectToThrowCKEditorError( () => {
 				data.init( '<p>Bar</p>' );
-			}, /datacontroller-init-document-not-empty:/, model );
+			}, /datacontroller-init-document-not-empty/, model );
 		} );
 
 		it( 'should set data to default main root', () => {
@@ -243,7 +243,7 @@ describe( 'DataController', () => {
 		it( 'should throw an error when non-existent root is used (single)', () => {
 			expectToThrowCKEditorError( () => {
 				data.init( { nonexistent: '<p>Bar</p>' } );
-			}, /^datacontroller-init-non-existent-root:/ );
+			}, 'datacontroller-init-non-existent-root' );
 		} );
 
 		it( 'should throw an error when non-existent root is used (one of many)', () => {
@@ -251,7 +251,7 @@ describe( 'DataController', () => {
 
 			expectToThrowCKEditorError( () => {
 				data.init( { main: 'bar', nonexistent: '<p>Bar</p>' } );
-			}, /^datacontroller-init-non-existent-root:/, model );
+			}, /^datacontroller-init-non-existent-root/, model );
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( '' );
 		} );
@@ -332,7 +332,7 @@ describe( 'DataController', () => {
 		it( 'should throw an error when non-existent root is used (single)', () => {
 			expectToThrowCKEditorError( () => {
 				data.set( { nonexistent: '<p>Bar</p>' } );
-			}, /datacontroller-set-non-existent-root:/, model );
+			}, /datacontroller-set-non-existent-root/, model );
 		} );
 
 		it( 'should throw an error when non-existent root is used (one of many) without touching any roots data', () => {
@@ -341,7 +341,7 @@ describe( 'DataController', () => {
 
 			expectToThrowCKEditorError( () => {
 				data.set( { main: 'bar', nonexistent: '<p>Bar</p>' } );
-			}, /datacontroller-set-non-existent-root:/, model );
+			}, /datacontroller-set-non-existent-root/, model );
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
@@ -452,7 +452,7 @@ describe( 'DataController', () => {
 		it( 'should throw an error when non-existent root is used', () => {
 			expectToThrowCKEditorError( () => {
 				data.get( { rootName: 'nonexistent' } );
-			}, /datacontroller-get-non-existent-root:/ );
+			}, 'datacontroller-get-non-existent-root' );
 		} );
 
 		it( 'should allow to provide additional options for retrieving data - insert conversion', () => {
