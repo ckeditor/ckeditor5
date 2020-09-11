@@ -107,7 +107,7 @@ ClassicEditor
 	} )
 ```
 
-This will add a new **Insert image** dropdown in the toolbar, that contains the `ImageUpload` feature with additional panel view for custom integrations. To open the panel and add the image URL, click the arrow next to the image button. Check the demo below to insert a new image via URL or update an existing image by selecting it, opening the dropdown panel and pasting a new URL.
+This will add a new **Insert image** dropdown in the toolbar. To open the panel and add the image URL, click the arrow next to the image button. Check the demo below to insert a new image via URL or update an existing image by selecting it, opening the dropdown panel and pasting a new URL.
 
 {@snippet features/image-insert-via-url}
 
