@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import { getSiblingNodes } from './utils';
 
 /**
- * The list style command. It is used by the {@link module:list/liststyle~ListStyle list styles feature}.
+ * The list style command. It is used by the {@link module:list/liststyle~ListStyle list style feature}.
  *
  * @extends module:core/command~Command
  */
@@ -47,7 +47,7 @@ export default class ListStyleCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @param {Object} options
-	 * @param {String|null} options.type The type of the list styles, e.g. 'disc' or 'square'. If `null` specified, the default
+	 * @param {String|null} options.type The type of the list style, e.g. `'disc'` or `'square'`. If `null` is specified, the default
 	 * style will be applied.
 	 * @protected
 	 */

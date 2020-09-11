@@ -14,7 +14,7 @@
 		flex-grow: 1;
 	}
 
-	&.ck-image-upload-form__action-row {
+	&.ck-image-insert-form__action-row {
 		margin-top: var(--ck-spacing-standard);
 
 		& .ck-button-save,

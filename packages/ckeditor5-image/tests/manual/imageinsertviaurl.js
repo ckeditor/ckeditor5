@@ -7,14 +7,12 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ImageUpload from '../../src/imageupload';
+import ImageInsert from '../../src/imageinsert';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 
-import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
-
 ClassicEditor
-	.create( document.querySelector( '#editor2' ), {
-		plugins: [ ArticlePluginSet, ImageUpload, CKFinder ],
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ ArticlePluginSet, ImageInsert, CKFinder ],
 		toolbar: [
 			'heading',
 			'|',
@@ -24,7 +22,7 @@ ClassicEditor
 			'bulletedList',
 			'numberedList',
 			'blockQuote',
-			'imageUpload',
+			'imageInsert',
 			'insertTable',
 			'mediaEmbed',
 			'undo',
@@ -48,13 +46,6 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-
-		// Register fake adapter.
-		editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
-			const adapterMock = new UploadAdapterMock( loader );
-
-			return adapterMock;
-		};
 	} )
 	.catch( err => {
 		console.error( err.stack );

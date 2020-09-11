@@ -452,18 +452,37 @@ describe( 'ListStyleEditing', () => {
 			it( 'should not inherit the list style attribute when merging different kind of lists (from top, merge a single item)', () => {
 				setModelData( model,
 					'<paragraph>Foo Bar.[]</paragraph>' +
-					'<listItem listIndent="0" listStyle="default"  listType="numbered">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="default"  listType="numbered">Bar</listItem>'
+					'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
+					'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>'
 				);
 
 				editor.execute( 'bulletedList' );
 
 				expect( getModelData( model ) ).to.equal(
 					'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="default" listType="numbered">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="default" listType="numbered">Bar</listItem>'
+					'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
+					'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>'
 				);
 			} );
+
+			it(
+				'should not inherit the list style attribute when merging different kind of lists (from bottom, merge a single item)',
+				() => {
+					setModelData( model,
+						'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>' +
+						'<paragraph>Foo Bar.[]</paragraph>'
+					);
+
+					editor.execute( 'bulletedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>' +
+						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>'
+					);
+				}
+			);
 
 			it( 'should inherit the list style attribute when merging the same kind of lists (from bottom, merge a single item)', () => {
 				setModelData( model,
@@ -498,6 +517,75 @@ describe( 'ListStyleEditing', () => {
 						'<listItem listIndent="1" listStyle="square" listType="bulleted">Bar</listItem>' +
 						'<listItem listIndent="2" listStyle="disc" listType="bulleted">Foo Bar</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>'
+					);
+				}
+			);
+		} );
+
+		describe( 'modifying "listType" attribute', () => {
+			it( 'should inherit the list style attribute when the modified list is the same kind of the list as next sibling', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="default" listType="numbered">Foo Bar.[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+
+				editor.execute( 'bulletedList' );
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+			} );
+
+			it( 'should inherit the list style attribute when the modified list is the same kind of the list as previous sibling', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
+					'<listItem listIndent="0" listStyle="default" listType="numbered">Foo Bar.[]</listItem>'
+				);
+
+				editor.execute( 'bulletedList' );
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>'
+				);
+			} );
+
+			it( 'should not inherit the list style attribute when the modified list already has defined it (next sibling check)', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+
+				editor.execute( 'listStyle', { type: 'disc' } );
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="disc" listType="bulleted">Foo Bar.[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+			} );
+
+			it(
+				'should not inherit the list style attribute when the modified list already has defined it (previous sibling check)',
+				() => {
+					setModelData( model,
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
+						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>'
+					);
+
+					editor.execute( 'listStyle', { type: 'disc' } );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
+						'<listItem listIndent="0" listStyle="disc" listType="bulleted">Foo Bar.[]</listItem>'
 					);
 				}
 			);

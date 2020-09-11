@@ -260,8 +260,8 @@ Here is a table listing various model elements and their properties registered i
 </table>
 
 <info-box>
-	* <span id="inherited1">[1]</span> The value of `isLimit` is `true` for this element because all [objects](#object-elements) are automatically [limit elements](#limit-elements),
-	* <span id="inherited2">[2]</span> The value of `isSelectable` is `true` for this element because all [objects](#object-elements) are automatically [selectable elements](#selectable-elements),
+	* <span id="inherited1">[1]</span> The value of `isLimit` is `true` for this element because all [objects](#object-elements) are automatically [limit elements](#limit-elements).
+	* <span id="inherited2">[2]</span> The value of `isSelectable` is `true` for this element because all [objects](#object-elements) are automatically [selectable elements](#selectable-elements).
 	* <span id="inherited3">[3]</span> The value of `isContent` is `true` for this element because all [objects](#object-elements) are automatically [content elements](#content-elements).
 </info-box>
 
@@ -303,11 +303,11 @@ schema.register( 'myImage', {
 The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can later be used to check this property.
 
 <info-box>
-	Every "object" is automatically also:
+	Every object is automatically also:
 
-	* a [limit element](#limit-elements) – for every element with `isObject` set `true`, {@link module:engine/model/schema~Schema#isLimit `Schema#isLimit( element )`} will always return `true`.
-	* a [selectable element](#selectable-elements) – for every element with `isObject` set `true`, {@link module:engine/model/schema~Schema#isSelectable `Schema#isSelectable( element )`} will always return `true`.
-	* a [content element](#content-elements) – for every element with `isObject` set `true`, {@link module:engine/model/schema~Schema#isContent `Schema#isContent( element )`} will always return `true`.
+	* A [limit element](#limit-elements) &ndash; For every element with `isObject` set to `true`, {@link module:engine/model/schema~Schema#isLimit `Schema#isLimit( element )`} will always return `true`.
+	* A [selectable element](#selectable-elements) &ndash; For every element with `isObject` set to `true`, {@link module:engine/model/schema~Schema#isSelectable `Schema#isSelectable( element )`} will always return `true`.
+	* A [content element](#content-elements) &ndash; For every element with `isObject` set to `true`, {@link module:engine/model/schema~Schema#isContent `Schema#isContent( element )`} will always return `true`.
 </info-box>
 
 ### Block elements
@@ -341,14 +341,14 @@ schema.register( 'mySelectable', {
 The {@link module:engine/model/schema~Schema#isSelectable `Schema#isSelectable()`} method can later be used to check this property.
 
 <info-box>
-	All [object elements](#object-elements) are selectable by default. There are other selectable elements registered in the editor, though. For instance, there is also the `tableCell` model element (rendered as a `<td>` in the editing view) that is selectable while **not** registered as an object. The {@link features/table#table-selection table selection} plugin takes advantage of this fact and allows users create rectangular selections made of multiple table cells.
+	All [object elements](#object-elements) are selectable by default. There are other selectable elements registered in the editor, though. For instance, there is also the `tableCell` model element (rendered as a `<td>` in the editing view) that is selectable while **not** registered as an object. The {@link features/table#table-selection table selection} plugin takes advantage of this fact and allows users to create rectangular selections made of multiple table cells.
 </info-box>
 
 ### Content elements
 
 You can tell content model elements from other elements by looking at their representation in the editor data (you can use {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} or {@link module:engine/model/model~Model#hasContent Model#hasContent()} to check this out).
 
-Elements such as images or media will **always** find their way into editor data and this is what makes them content elements. They are marked with the {@link module:engine/model/schema~SchemaItemDefinition#isContent `isContent`} property in the schema:
+Elements such as images or media will **always** find their way into the editor data and this is what makes them content elements. They are marked with the {@link module:engine/model/schema~SchemaItemDefinition#isContent `isContent`} property in the schema:
 
 ```js
 schema.register( 'myImage', {

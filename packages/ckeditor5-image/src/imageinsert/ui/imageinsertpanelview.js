@@ -4,14 +4,14 @@
  */
 
 /**
- * @module image/imageupload/ui/imageuploadpanelview
+ * @module image/imageinsert/ui/imageinsertpanelview
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
-import ImageUploadFormRowView from './imageuploadformrowview';
+import ImageInsertFormRowView from './imageinsertformrowview';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -25,21 +25,21 @@ import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
-import '../../../theme/imageupload.css';
+import '../../../theme/imageinsert.css';
 
 /**
  * The insert an image via URL view controller class.
  *
- * See {@link module:image/imageupload/ui/imageuploadpanelview~ImageUploadPanelView}.
+ * See {@link module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView}.
  *
  * @extends module:ui/view~View
  */
-export default class ImageUploadPanelView extends View {
+export default class ImageInsertPanelView extends View {
 	/**
-	 * Creates a view for the dropdown panel of {@link module:image/imageupload/imageuploadui~ImageUploadUI}.
+	 * Creates a view for the dropdown panel of {@link module:image/imageinsert/imageinsertui~ImageInsertUI}.
 	 *
-	 * @param {module:utils/locale~Locale} [locale] The localization services instance..
-	 * @param {Object} [integrations] Integrations object that contain
+	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
+	 * @param {Object} [integrations] An integrations object that contains
 	 * components (or tokens for components) to be shown in the panel view.
 	 */
 	constructor( locale, integrations ) {
@@ -69,7 +69,7 @@ export default class ImageUploadPanelView extends View {
 		this.dropdownView = this._createDropdownView( locale );
 
 		/**
-		 * Value of the URL input.
+		 * The value of the URL input.
 		 *
 		 * @member {String} #imageURLInputValue
 		 * @observable
@@ -122,7 +122,7 @@ export default class ImageUploadPanelView extends View {
 		} );
 
 		/**
-		 * Collection of the defined integrations for inserting the images.
+		 * A collection of the defined integrations for inserting the images.
 		 *
 		 * @private
 		 * @member {module:utils/collection~Collection}
@@ -151,7 +151,7 @@ export default class ImageUploadPanelView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-image-upload-form'
+					'ck-image-insert-form'
 				],
 
 				tabindex: '-1'
@@ -159,12 +159,12 @@ export default class ImageUploadPanelView extends View {
 
 			children: [
 				...this._integrations,
-				new ImageUploadFormRowView( locale, {
+				new ImageInsertFormRowView( locale, {
 					children: [
 						this.insertButtonView,
 						this.cancelButtonView
 					],
-					class: 'ck-image-upload-form__action-row'
+					class: 'ck-image-insert-form__action-row'
 				} )
 			]
 		} );
@@ -218,7 +218,7 @@ export default class ImageUploadPanelView extends View {
 	/**
 	 * Returns a view of the integration.
 	 *
-	 * @param {string} name The name of the integration.
+	 * @param {String} name The name of the integration.
 	 * @returns {module:ui/view~View}
 	 */
 	getIntegration( name ) {
@@ -226,7 +226,7 @@ export default class ImageUploadPanelView extends View {
 	}
 
 	/**
-	 * Creates dropdown view.
+	 * Creates the dropdown view.
 	 *
 	 * @param {module:utils/locale~Locale} locale The localization services instance.
 	 *
@@ -247,7 +247,7 @@ export default class ImageUploadPanelView extends View {
 
 		panelView.extendTemplate( {
 			attributes: {
-				class: 'ck-image-upload__panel'
+				class: 'ck-image-insert__panel'
 			}
 		} );
 
@@ -294,7 +294,7 @@ export default class ImageUploadPanelView extends View {
 	}
 
 	/**
-	 * Focuses the fist {@link #_focusables} in the form.
+	 * Focuses the first {@link #_focusables focusable} in the form.
 	 */
 	focus() {
 		this._focusCycler.focusFirst();
@@ -303,13 +303,13 @@ export default class ImageUploadPanelView extends View {
 
 /**
  * Fired when the form view is submitted (when one of the children triggered the submit event),
- * e.g. click on {@link #insertButtonView}.
+ * e.g. by a click on {@link #insertButtonView}.
  *
  * @event submit
  */
 
 /**
- * Fired when the form view is canceled, e.g. click on {@link #cancelButtonView}.
+ * Fired when the form view is canceled, e.g. by a click on {@link #cancelButtonView}.
  *
  * @event cancel
  */

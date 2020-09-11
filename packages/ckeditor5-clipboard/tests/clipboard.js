@@ -112,7 +112,7 @@ describe( 'Clipboard feature', () => {
 				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
 					expect( data.content ).is.instanceOf( ViewDocumentFragment );
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
-					expect( stringifyView( data.content ) ).to.equal( '<p>x</p><p></p><p>y  z</p>' );
+					expect( stringifyView( data.content ) ).to.equal( '<p>x</p><p>y  z</p>' );
 
 					done();
 				} );
@@ -351,6 +351,19 @@ describe( 'Clipboard feature', () => {
 				model = editor.model;
 
 				model.schema.extend( '$text', { allowAttributes: 'bold' } );
+				model.schema.extend( '$text', { allowAttributes: 'test' } );
+
+				editor.model.schema.setAttributeProperties( 'bold', { isFormatting: true } );
+
+				model.schema.register( 'softBreak', {
+					allowWhere: '$text',
+					isInline: true
+				} );
+				editor.conversion.for( 'upcast' )
+					.elementToElement( {
+						model: 'softBreak',
+						view: 'br'
+					} );
 			} );
 
 			it( 'should inherit selection attributes (collapsed selection)', () => {
@@ -450,6 +463,86 @@ describe( 'Clipboard feature', () => {
 				} );
 
 				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded foo[]text.</$text></paragraph>' );
+			} );
+
+			it( 'should inherit selection attributes with data.asPlainText switch set', () => {
+				setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
+
+				const dataTransferMock = createDataTransfer( {
+					'text/html': 'foo',
+					'text/plain': 'foo'
+				} );
+
+				viewDocument.fire( 'clipboardInput', {
+					dataTransfer: dataTransferMock,
+					asPlainText: true,
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded foo[]text.</$text></paragraph>' );
+			} );
+
+			it( 'should discard selection attributes with data.asPlainText switch set to false', () => {
+				setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
+
+				const dataTransferMock = createDataTransfer( {
+					'text/html': 'foo<br>bar',
+					'text/plain': 'foo\nbar'
+				} );
+
+				viewDocument.fire( 'clipboardInput', {
+					dataTransfer: dataTransferMock,
+					asPlainText: false,
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded </$text>' +
+					'foo<softBreak></softBreak>bar[]' +
+					'<$text bold="true">text.</$text></paragraph>' );
+			} );
+
+			it( 'should work if the insertContent event is cancelled', () => {
+				// (#7887).
+				setModelData( model, '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
+
+				const dataTransferMock = createDataTransfer( {
+					'text/html': 'foo',
+					'text/plain': 'foo'
+				} );
+
+				model.on( 'insertContent', event => {
+					event.stop();
+				}, { priority: 'high' } );
+
+				viewDocument.fire( 'clipboardInput', {
+					dataTransfer: dataTransferMock,
+					asPlainText: false,
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
+			} );
+
+			it( 'ignores non-formatting text attributes', () => {
+				setModelData( model, '<paragraph><$text test="true">Bolded []text.</$text></paragraph>' );
+
+				const dataTransferMock = createDataTransfer( {
+					'text/html': 'foo',
+					'text/plain': 'foo'
+				} );
+
+				viewDocument.fire( 'clipboardInput', {
+					dataTransfer: dataTransferMock,
+					asPlainText: false,
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph><$text test="true">Bolded </$text>foo[]<$text test="true">text.</$text></paragraph>' );
 			} );
 		} );
 

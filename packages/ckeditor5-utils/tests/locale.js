@@ -204,11 +204,11 @@ describe( 'Locale', () => {
 
 			expectToThrowCKEditorError( () => {
 				t( { string: 'Add space', plural: 'Add %0 spaces' }, 'space' );
-			}, /translation-service-quantity-not-a-number:/, null, { quantity: 'space' } );
+			}, 'translation-service-quantity-not-a-number', null, { quantity: 'space' } );
 
 			expectToThrowCKEditorError( () => {
 				t( { string: 'Add space', plural: 'Add %0 spaces' }, [ 'space' ] );
-			}, /translation-service-quantity-not-a-number:/, null, { quantity: 'space' } );
+			}, 'translation-service-quantity-not-a-number', null, { quantity: 'space' } );
 
 			expect( () => {
 				t( { string: 'Add space', plural: 'Add %0 spaces' }, [ 3 ] );
