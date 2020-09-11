@@ -232,7 +232,7 @@ describe( 'ClassicTestEditor', () => {
 				.then( () => {
 					throw new Error( 'It should throw an error' );
 				}, err => {
-					assertCKEditorError( err, /^editor-create-initial-data:/, null );
+					assertCKEditorError( err, 'editor-create-initial-data', null );
 					removeEditorBodyOrphans();
 				} );
 		} );

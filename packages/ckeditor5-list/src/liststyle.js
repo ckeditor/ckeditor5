@@ -12,10 +12,10 @@ import ListStyleEditing from './liststyleediting';
 import ListStyleUI from './liststyleui';
 
 /**
- * The list styles feature.
+ * The list style feature.
  *
- * This is a "glue" plugin that loads the {@link module:list/liststyleediting~ListStyleEditing list styles editing feature}
- * and the {@link module:list/liststyleui~ListStyleUI list styles UI feature}.
+ * This is a "glue" plugin that loads the {@link module:list/liststyleediting~ListStyleEditing list style editing feature}
+ * and the {@link module:list/liststyleui~ListStyleUI list style UI feature}.
  *
  * @extends module:core/plugin~Plugin
  */

@@ -15,10 +15,10 @@ import { getSiblingListItem, getSiblingNodes } from './utils';
 const DEFAULT_LIST_TYPE = 'default';
 
 /**
- * The list styles engine feature.
+ * The list style engine feature.
  *
- * It sets value for the `listItem` attribute for the {@link module:list/list~List `<listItem>`} element that
- * allows modifying list style type.
+ * It sets the value for the `listItem` attribute of the {@link module:list/list~List `<listItem>`} element that
+ * allows modifying the list style type.
  *
  * It registers the `'listStyle'` command.
  *
@@ -186,10 +186,9 @@ export default class ListStyleEditing extends Plugin {
 	}
 }
 
-// Returns a converter that consumes the `style` attribute and search for `list-style-type` definition.
+// Returns a converter that consumes the `style` attribute and searches for the `list-style-type` definition.
 // If not found, the `"default"` value will be used.
 //
-// @private
 // @returns {Function}
 function upcastListItemStyle() {
 	return dispatcher => {
@@ -206,7 +205,6 @@ function upcastListItemStyle() {
 // Returns a converter that adds the `list-style-type` definition as a value for the `style` attribute.
 // The `"default"` value is removed and not present in the view/data.
 //
-// @private
 // @returns {Function}
 function downcastListStyleAttribute() {
 	return dispatcher => {
@@ -271,7 +269,6 @@ function downcastListStyleAttribute() {
 //     ○ List item 2.[]
 // ■ List item 3.
 //
-// @private
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Function}
 function fixListAfterIndentListCommand( editor ) {
@@ -323,7 +320,6 @@ function fixListAfterIndentListCommand( editor ) {
 // ■ List item 2.[]
 // ■ List item 3.
 //
-// @private
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Function}
 function fixListAfterOutdentListCommand( editor ) {
@@ -423,22 +419,17 @@ function fixListAfterOutdentListCommand( editor ) {
 // ■ List item 2.  // ...
 // ■ List item 3.  // ...
 //
-// @private
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Function}
 function fixListStyleAttributeOnListItemElements( editor ) {
 	return writer => {
 		let wasFixed = false;
-		let insertedListItems = [];
 
-		for ( const change of editor.model.document.differ.getChanges() ) {
-			if ( change.type == 'insert' && change.name == 'listItem' ) {
-				insertedListItems.push( change.position.nodeAfter );
-			}
-		}
-
-		// Don't touch todo lists.
-		insertedListItems = insertedListItems.filter( item => item.getAttribute( 'listType' ) !== 'todo' );
+		const insertedListItems = getChangedListItems( editor.model.document.differ.getChanges() )
+			.filter( item => {
+				// Don't touch todo lists. They are handled in another post-fixer.
+				return item.getAttribute( 'listType' ) !== 'todo';
+			} );
 
 		if ( !insertedListItems.length ) {
 			return wasFixed;
@@ -474,7 +465,7 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 
 		for ( const item of insertedListItems ) {
 			if ( !item.hasAttribute( 'listStyle' ) ) {
-				if ( shouldInheritListType( existingListItem ) ) {
+				if ( shouldInheritListType( existingListItem, item ) ) {
 					writer.setAttribute( 'listStyle', existingListItem.getAttribute( 'listStyle' ), item );
 				} else {
 					writer.setAttribute( 'listStyle', DEFAULT_LIST_TYPE, item );
@@ -493,8 +484,9 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 	// the value for the element is other than default in the base element.
 	//
 	// @param {module:engine/model/element~Element|null} baseItem
+	// @param {module:engine/model/element~Element} itemToChange
 	// @returns {Boolean}
-	function shouldInheritListType( baseItem ) {
+	function shouldInheritListType( baseItem, itemToChange ) {
 		if ( !baseItem ) {
 			return false;
 		}
@@ -509,28 +501,25 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 			return false;
 		}
 
+		if ( baseItem.getAttribute( 'listType' ) !== itemToChange.getAttribute( 'listType' ) ) {
+			return false;
+		}
+
 		return true;
 	}
 }
 
 // Removes the `listStyle` attribute from "todo" list items.
 //
-// @private
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Function}
 function removeListStyleAttributeFromTodoList( editor ) {
 	return writer => {
-		let todoListItems = [];
-
-		for ( const change of editor.model.document.differ.getChanges() ) {
-			const item = getItemFromChange( change );
-
-			if ( item && item.is( 'element', 'listItem' ) && item.getAttribute( 'listType' ) === 'todo' ) {
-				todoListItems.push( item );
-			}
-		}
-
-		todoListItems = todoListItems.filter( item => item.hasAttribute( 'listStyle' ) );
+		const todoListItems = getChangedListItems( editor.model.document.differ.getChanges() )
+			.filter( item => {
+				// Handle the todo lists only. The rest is handled in another post-fixer.
+				return item.getAttribute( 'listType' ) === 'todo' && item.hasAttribute( 'listStyle' );
+			} );
 
 		if ( !todoListItems.length ) {
 			return false;
@@ -542,23 +531,10 @@ function removeListStyleAttributeFromTodoList( editor ) {
 
 		return true;
 	};
-
-	function getItemFromChange( change ) {
-		if ( change.type === 'attribute' ) {
-			return change.range.start.nodeAfter;
-		}
-
-		if ( change.type === 'insert' ) {
-			return change.position.nodeAfter;
-		}
-
-		return null;
-	}
 }
 
 // Restores the `listStyle` attribute after changing the list type.
 //
-// @private
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Function}
 function restoreDefaultListStyle( editor ) {
@@ -573,3 +549,34 @@ function restoreDefaultListStyle( editor ) {
 		} );
 	};
 }
+
+// Returns `listItem` that were inserted or changed.
+//
+// @param {Array.<Object>} changes The changes list returned by the differ.
+// @returns {Array.<module:engine/model/element~Element>}
+function getChangedListItems( changes ) {
+	const items = [];
+
+	for ( const change of changes ) {
+		const item = getItemFromChange( change );
+
+		if ( item && item.is( 'element', 'listItem' ) ) {
+			items.push( item );
+		}
+	}
+
+	return items;
+}
+
+function getItemFromChange( change ) {
+	if ( change.type === 'attribute' ) {
+		return change.range.start.nodeAfter;
+	}
+
+	if ( change.type === 'insert' ) {
+		return change.position.nodeAfter;
+	}
+
+	return null;
+}
+

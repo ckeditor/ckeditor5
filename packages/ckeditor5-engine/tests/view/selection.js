@@ -82,16 +82,6 @@ describe( 'Selection', () => {
 			expect( selection.isBackward ).to.be.false;
 		} );
 
-		it( 'should be able to create a collapsed selection at the given position', () => {
-			const position = range1.start;
-			const selection = new Selection( position );
-
-			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
-			expect( selection.getFirstRange().start ).to.deep.equal( position );
-			expect( selection.getFirstRange().end ).to.deep.equal( position );
-			expect( selection.isBackward ).to.be.false;
-		} );
-
 		it( 'should be able to create a selection from the other selection', () => {
 			const otherSelection = new Selection( [ range2, range3 ], { backward: true } );
 			const selection = new Selection( otherSelection );
@@ -137,7 +127,7 @@ describe( 'Selection', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new Selection( {} );
-			}, /view-selection-setTo-not-selectable/ );
+			}, 'view-selection-setto-not-selectable' );
 		} );
 	} );
 
@@ -209,7 +199,7 @@ describe( 'Selection', () => {
 
 			expectToThrowCKEditorError( () => {
 				selection.setFocus( endPos );
-			}, /view-selection-setFocus-no-ranges/ );
+			}, 'view-selection-setfocus-no-ranges' );
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
@@ -688,7 +678,7 @@ describe( 'Selection', () => {
 
 				expectToThrowCKEditorError( () => {
 					otherSelection.setTo( {} );
-				}, /view-selection-setTo-not-selectable/ );
+				}, 'view-selection-setto-not-selectable' );
 			} );
 
 			it( 'should throw an error when trying to set to not selectable #2', () => {
@@ -696,7 +686,7 @@ describe( 'Selection', () => {
 
 				expectToThrowCKEditorError( () => {
 					otherSelection.setTo();
-				}, /view-selection-setTo-not-selectable/ );
+				}, 'view-selection-setto-not-selectable' );
 			} );
 		} );
 
@@ -740,7 +730,7 @@ describe( 'Selection', () => {
 
 				expectToThrowCKEditorError( () => {
 					selection.setTo( foo );
-				}, /view-selection-setTo-required-second-parameter/ );
+				}, 'view-selection-setto-required-second-parameter' );
 			} );
 
 			it( 'should collapse selection at node and flag', () => {

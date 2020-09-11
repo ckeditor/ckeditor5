@@ -339,6 +339,7 @@ describe( 'Model', () => {
 		it( 'should throw the original CKEditorError error if it was thrown inside the `change()` block', () => {
 			expectToThrowCKEditorError( () => {
 				model.change( () => {
+					// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 					throw new CKEditorError( 'foo', null, { foo: 1 } );
 				} );
 			}, /foo/, null, { foo: 1 } );
@@ -355,6 +356,7 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should throw the original CKEditorError error if it was thrown inside the `enqueueChange()` block', () => {
+			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 			const err = new CKEditorError( 'foo', null, { foo: 1 } );
 
 			expectToThrowCKEditorError( () => {

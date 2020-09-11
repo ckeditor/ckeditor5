@@ -158,7 +158,7 @@ describe( 'Position', () => {
 			it( 'should throw if no offset is passed', () => {
 				expectToThrowCKEditorError( () => {
 					Position._createAt( ul );
-				}, /model-createPositionAt-offset-required/, model );
+				}, 'model-createpositionat-offset-required', model );
 			} );
 
 			it( 'should create positions from positions', () => {
@@ -321,7 +321,7 @@ describe( 'Position', () => {
 
 			expectToThrowCKEditorError( () => {
 				position.parent;
-			}, /^model-position-path-incorrect:/, position, { position } );
+			}, 'model-position-path-incorrect', position, { position } );
 		} );
 
 		it( 'should throw when based on a path, the parent would be a text node', () => {
@@ -330,7 +330,7 @@ describe( 'Position', () => {
 
 			expectToThrowCKEditorError( () => {
 				position.parent;
-			}, /^model-position-path-incorrect:/, position, { position } );
+			}, 'model-position-path-incorrect', position, { position } );
 		} );
 	} );
 
@@ -388,7 +388,7 @@ describe( 'Position', () => {
 
 			expectToThrowCKEditorError( () => {
 				position.index;
-			}, /^model-position-path-incorrect:/, position, { position } );
+			}, 'model-position-path-incorrect', position, { position } );
 		} );
 	} );
 
@@ -419,7 +419,7 @@ describe( 'Position', () => {
 
 			expectToThrowCKEditorError( () => {
 				position.nodeBefore;
-			}, /^model-nodelist-offset-out-of-bounds:/, position );
+			}, 'model-nodelist-offset-out-of-bounds', position );
 		} );
 	} );
 
@@ -450,7 +450,7 @@ describe( 'Position', () => {
 
 			expectToThrowCKEditorError( () => {
 				position.nodeAfter;
-			}, /^model-nodelist-offset-out-of-bounds:/, position );
+			}, 'model-nodelist-offset-out-of-bounds', position );
 		} );
 	} );
 
@@ -486,7 +486,7 @@ describe( 'Position', () => {
 
 			expectToThrowCKEditorError( () => {
 				position.textNode;
-			}, /^model-nodelist-offset-out-of-bounds:/, position );
+			}, 'model-nodelist-offset-out-of-bounds', position );
 		} );
 	} );
 
@@ -615,7 +615,7 @@ describe( 'Position', () => {
 			expect( positionB.isTouching( positionA ) ).to.be.false;
 		} );
 
-		it( 'should return false if there are whole nodes between positions', () => {
+		it( 'should return false if there are whole nodes between positions (same depth, but deeper)', () => {
 			const positionA = new Position( root, [ 1, 0, 3 ] );
 			const positionB = new Position( root, [ 1, 1, 1 ] );
 
@@ -1255,9 +1255,9 @@ describe( 'Position', () => {
 
 			root._appendChild( p );
 
-			const postion = new Position( root, [ 0, 3 ] ); // <p>foo^bar</p>
+			const position = new Position( root, [ 0, 3 ] ); // <p>foo^bar</p>
 
-			testAncestor( postion, postion, p );
+			testAncestor( position, position, p );
 		} );
 
 		it( 'for two positions in the same element returns the element', () => {
@@ -1284,9 +1284,9 @@ describe( 'Position', () => {
 
 			root._appendChild( p );
 
-			const postion = new Position( root, [ 0, 0 ] ); // <p>^<a></a></p>
+			const position = new Position( root, [ 0, 0 ] ); // <p>^<a></a></p>
 
-			testAncestor( postion, postion, p );
+			testAncestor( position, position, p );
 		} );
 
 		it( 'works fine with positions located in DocumentFragment', () => {

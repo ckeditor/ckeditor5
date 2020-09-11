@@ -43,12 +43,9 @@ export default class LivePosition extends Position {
 			/**
 			 * LivePosition's root has to be an instance of RootElement.
 			 *
-			 * @error liveposition-root-not-rootelement
+			 * @error model-liveposition-root-not-rootelement
 			 */
-			throw new CKEditorError(
-				'model-liveposition-root-not-rootelement: LivePosition\'s root has to be an instance of RootElement.',
-				root
-			);
+			throw new CKEditorError( 'model-liveposition-root-not-rootelement', root );
 		}
 
 		bindWithDocument.call( this );
