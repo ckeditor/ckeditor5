@@ -826,12 +826,6 @@ export function insertElement( elementCreator ) {
 							conversionApi.writer.createPositionAt( item, 0 )
 						);
 					}
-
-					// @todo should be done by conversion API...
-					// Again, no API for this, so we need to stop conversion beneath "slot" by simply consuming whole tree under it.
-					for ( const inner of ModelRange._createOn( modelItem ) ) {
-						conversionApi.consumable.consume( inner.item, 'insert' );
-					}
 				}
 			}
 

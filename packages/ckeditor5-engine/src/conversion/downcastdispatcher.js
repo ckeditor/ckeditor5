@@ -122,7 +122,7 @@ export default class DowncastDispatcher {
 		 */
 		this.conversionApi = Object.assign( { dispatcher: this }, conversionApi );
 
-		this._map = new Map();
+		this._refreshEventMap = new Map();
 	}
 
 	/**
@@ -152,14 +152,14 @@ export default class DowncastDispatcher {
 					eventName = `${ type }:${ entry.name }`;
 				}
 
-				// @if CK_DEBUG console.log( 'expected event', eventName );
+				// @if CK_DEBUG // console.log( 'expected event', eventName );
 
-				if ( this._map.has( eventName ) ) {
-					const expectedElement = this._map.get( eventName );
+				if ( this._refreshEventMap.has( eventName ) ) {
+					const expectedElement = this._refreshEventMap.get( eventName );
 
 					const handledByParent = element.is( 'element', expectedElement ) ? element : element.findAncestor( expectedElement );
 
-					// @if CK_DEBUG console.log( `return: ${ handledByParent.name }` );
+					// @if CK_DEBUG // console.log( `return: ${ handledByParent.name }` );
 
 					if ( handledByParent ) {
 						mapRefreshedBy.set( element, handledByParent );
@@ -167,7 +167,7 @@ export default class DowncastDispatcher {
 
 					return handledByParent;
 				} else {
-					// @if CK_DEBUG console.log( 'no event in map' );
+					// @if CK_DEBUG // console.log( 'no event in map' );
 				}
 				// TODO: lacking API - handle inner change of given event. Either by:
 				// - a) differ API (mark change as invalid)
@@ -177,7 +177,7 @@ export default class DowncastDispatcher {
 
 		const elementsToRefresh = new Set( found );
 
-		[ ...elementsToRefresh.values() ].forEach( box => differ._pocRefreshItem( box ) );
+		[ ...elementsToRefresh.values() ].forEach( element => differ._pocRefreshItem( element ) );
 
 		// Before the view is updated, remove markers which have changed.
 		for ( const change of differ.getMarkersToRemove() ) {
@@ -193,13 +193,13 @@ export default class DowncastDispatcher {
 
 		// Convert changes that happened on model tree.
 		for ( const entry of changes ) {
-			// @if CK_DEBUG console.log( `ENTRY: ${ entry.type }` );
+			// @if CK_DEBUG // console.log( `ENTRY: ${ entry.type }` );
 			if ( entry.type == 'insert' ) {
 				this.convertInsert( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
 			} else if ( entry.type == 'remove' ) {
 				this.convertRemove( entry.position, entry.length, entry.name, writer );
 			} else if ( entry.type == 'refresh' ) {
-				this.convertRefresh( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
+				this.convertRefresh( Range._createFromPositionAndShift( entry.position, entry.length ), entry.name, writer );
 			} else if ( entry.type == 'attribute' ) {
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
 			} else {
@@ -222,7 +222,7 @@ export default class DowncastDispatcher {
 
 	mapRefreshEvents( modelName, events = [] ) {
 		for ( const eventName of events ) {
-			this._map.set( eventName, modelName );
+			this._refreshEventMap.set( eventName, modelName );
 		}
 	}
 
@@ -321,13 +321,16 @@ export default class DowncastDispatcher {
 		this._clearConversionApi();
 	}
 
-	convertRefresh( range, writer ) {
+	convertRefresh( range, name, writer ) {
 		this.conversionApi.writer = writer;
+		// @if CK_DEBUG // console.log( `\n ====> convert:: REFRESH:${ name }` );
 
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
 		this.conversionApi.consumable = this._createInsertConsumable( range );
 
-		for ( const value of range ) {
+		const values = [ ...range ];
+
+		for ( const value of values ) {
 			const item = value.item;
 			const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
 			const data = {
@@ -336,8 +339,19 @@ export default class DowncastDispatcher {
 				isRefresh: true
 			};
 
-			// @if CK_DEBUG console.log( 'converting refresh -> insert', item.name );
-			this._testAndFire( 'insert', data );
+			const expectedEventName = getEventName( 'insert', data );
+
+			// Main element refresh
+			if ( expectedEventName === 'insert:' + name ) {
+				// @if CK_DEBUG // console.log( '  converting refresh -> insert', item.name );
+				this._testAndFire( 'insert', data );
+			}
+
+			if ( this._refreshEventMap.has( expectedEventName ) ) {
+				// @if CK_DEBUG // console.log( '  >> skip', expectedEventName );
+			} else {
+				// @if CK_DEBUG // console.log( '  >> check further', expectedEventName );
+			}
 		}
 
 		this._clearConversionApi();
@@ -557,16 +571,14 @@ export default class DowncastDispatcher {
 	 */
 	_testAndFire( type, data ) {
 		if ( !this.conversionApi.consumable.test( data.item, type ) ) {
-			// @if CK_DEBUG console.log( ' > already consumed' );
+			// @if CK_DEBUG // console.log( ' > already consumed' );
 			// Do not fire event if the item was consumed.
 			return;
 		}
 
-		const name = data.item.name || '$text';
+		const eventName = getEventName( type, data );
 
-		const eventName = `${ type }:${ name }`;
-
-		// @if CK_DEBUG console.log( 'Firing event', eventName );
+		// @if CK_DEBUG // console.log( 'Firing event', eventName );
 
 		this.fire( eventName, data, this.conversionApi );
 	}
@@ -726,6 +738,12 @@ function shouldMarkerChangeBeConverted( modelPosition, marker, mapper ) {
 	} );
 
 	return !hasCustomHandling;
+}
+
+function getEventName( type, data ) {
+	const name = data.item.name || '$text';
+
+	return `${ type }:${ name }`;
 }
 
 /**
