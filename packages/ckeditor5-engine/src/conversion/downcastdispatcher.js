@@ -209,7 +209,22 @@ export default class DowncastDispatcher {
 		}
 	}
 
-	mapRefreshEvents( modelName, events = [] ) {
+	/**
+	 * Maps model element "insert" reconversion for given event names. The event names must be fully specified:
+	 *
+	 * * For "attribute" change event it should include main element name, ie: `'attribute:attributeName:main'`.
+	 * * For child nodes change events, those should use child event name as well, ie:
+	 *     * For adding a node: `'insert:child'`.
+	 *     * For removing a node: `'remove:child'`.
+	 *
+	 * **Note**: This method should not be used directly. A reconversion is defined by `triggerBy` attribute of the `elementToElement()`
+	 * conversion helper.
+	 *
+	 * @protected
+	 * @param {String} modelName Main model element name for which events will trigger reconversion.
+	 * @param {Array<String>} events Array of inner events that would trigger conversion for this model.
+	 */
+	mapRefreshEvents( modelName, events ) {
 		for ( const eventName of events ) {
 			this._refreshEventMap.set( eventName, modelName );
 		}
@@ -310,6 +325,17 @@ export default class DowncastDispatcher {
 		this._clearConversionApi();
 	}
 
+	/**
+	 * Starts a refresh conversion - depending on a configuration it would:
+	 *
+	 * - fire a {@link #event:insert `insert` event} for the element to refresh.
+	 * - handle conversion of a range insert for nodes under the refreshed item which are not bound as slots.
+	 *
+	 * @fires insert
+	 * @param {module:engine/model/range~Range} range The inserted range.
+	 * @param {String} name Name of main item to refresh. TODO - a whole item might be enough here.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
+	 */
 	convertRefresh( range, name, writer ) {
 		this.conversionApi.writer = writer;
 

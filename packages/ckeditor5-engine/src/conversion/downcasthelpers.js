@@ -59,6 +59,21 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			}
 	 *		} );
 	 *
+	 * The element-to-element conversion supports a reconversion mechanism. This is helpful in conversion to complex view structures where
+	 * multiple atomic element-to-element and attribute-to-attribute or attribute-to-element could be used. By specifying `triggerBy`
+	 * events you can trigger reconverting model to a full view tree structures at once.
+	 *
+	 *		editor.conversion.for( 'downcast' ).elementToElement( {
+	 *			model: 'complex',
+	 *			view: ( modelElement, conversionApi ) => createComplexViewFromModel( modelElement, conversionApi ),
+	 *			triggerBy: [
+	 *				'attribute:foo:complex',
+	 *				'attribute:bar:complex',
+	 *				'insert:slot',
+	 *				'remove:slot'
+	 *			]
+	 *		} );
+	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
@@ -1386,7 +1401,7 @@ function downcastElementToElement( config ) {
 	return dispatcher => {
 		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
 
-		if ( config.triggerBy ) {
+		if ( Array.isArray( config.triggerBy ) ) {
 			dispatcher.mapRefreshEvents( config.model, config.triggerBy );
 		}
 	};
