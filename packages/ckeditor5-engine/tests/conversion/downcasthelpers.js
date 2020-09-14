@@ -566,7 +566,7 @@ describe( 'DowncastHelpers', () => {
 					expectResult(
 						'<div class="complex-slots">' +
 							'<div class="slots">' +
-								'<div class="slot"><p>foo</p></div>' +
+								'<div class="slot"><p>bar</p></div>' +
 								'<div class="slot"><p>baz</p></div>' +
 							'</div>' +
 						'</div>'
@@ -588,7 +588,7 @@ describe( 'DowncastHelpers', () => {
 					expectResult(
 						'<div class="complex-slots with-class">' +
 							'<div class="slots">' +
-								'<div class="slot"><p>foo</p></div>' +
+								'<div class="slot"><p>bar</p></div>' +
 							'</div>' +
 						'</div>'
 					);
@@ -610,6 +610,7 @@ describe( 'DowncastHelpers', () => {
 						'<div class="complex-slots with-class">' +
 							'<div class="slots">' +
 								'<div class="slot"><p>foo</p></div>' +
+								'<div class="slot"><p>bar</p></div>' +
 								'<div class="slot"><p>baz</p></div>' +
 							'</div>' +
 						'</div>'
