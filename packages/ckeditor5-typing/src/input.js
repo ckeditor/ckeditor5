@@ -11,9 +11,9 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import InputCommand from './inputcommand';
 
-import injectBeforeInputHandling from './utils/beforeinput/injectbeforeinputhandling';
-import injectUnsafeKeystrokesHandling from './utils/mutations/injectunsafekeystrokeshandling';
-import injectTypingMutationsHandling from './utils/mutations/injecttypingmutationshandling';
+import injectBeforeInputTypingHandling from './utils/input/injectbeforeinputtypinghandling';
+import injectUnsafeKeystrokesHandling from './utils/input/injectunsafekeystrokeshandling';
+import injectTypingMutationsHandling from './utils/input/injecttypingmutationshandling';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
@@ -40,8 +40,8 @@ export default class Input extends Plugin {
 		editor.commands.add( 'input', inputCommand );
 
 		// Use the beforeinput DOM event to handle input when supported by the browser.
-		if ( env.isInputEventsLevel1Supported ) {
-			injectBeforeInputHandling( editor );
+		if ( env.features.isInputEventsLevel1Supported ) {
+			injectBeforeInputTypingHandling( editor );
 		}
 		// Fall back to the MutationObserver if beforeinput is not supported by the browser.
 		else {

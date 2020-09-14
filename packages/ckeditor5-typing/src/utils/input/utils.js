@@ -4,7 +4,7 @@
  */
 
 /**
- * @module typing/utils/utils
+ * @module typing/utils/input/utils
  */
 
 import diff from '@ckeditor/ckeditor5-utils/src/diff';

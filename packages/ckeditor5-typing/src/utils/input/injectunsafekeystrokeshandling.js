@@ -4,7 +4,7 @@
  */
 
 /**
- * @module typing/utils/injectunsafekeystrokeshandling
+ * @module typing/utils/input/injectunsafekeystrokeshandling
  */
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
