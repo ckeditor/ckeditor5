@@ -141,10 +141,28 @@ export default class ListStyleEditing extends Plugin {
 				return;
 			}
 
+			// Find the most outer item list based on the `listIndent` attribute. We can't assume that `listIndent=0`
+			// because the selection can be hooked in nested lists.
+			//
+			// <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 1</listItem>
+			// <listItem listIndent="1" listType="bulleted" listStyle="square">UL List [item 1.1</listItem>
+			// <listItem listIndent="0" listType="bulleted" listStyle="circle">[]UL List item 1.</listItem>
+			// <listItem listIndent="1" listType="bulleted" listStyle="circle">UL List ]item 1.1</listItem>
+			//
+			// After deleting the content, we would like to inherit the "square" attribute for the last element:
+			//
+			// <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 1</listItem>
+			// <listItem listIndent="1" listType="bulleted" listStyle="square">UL List []item 1.1</listItem>
 			const mostOuterItemList = getSiblingListItem( firstPosition.parent, {
 				sameIndent: true,
-				listIndent: 0
+				listIndent: nextSibling.getAttribute( 'listIndent' )
 			} );
+
+			// The most outer list item may not exist while removing elements between lists with different value
+			// of the `listIndent` attribute. In such a case we don't want to update anything. See: #8073.
+			if ( !mostOuterItemList ) {
+				return;
+			}
 
 			if ( mostOuterItemList.getAttribute( 'listType' ) === nextSibling.getAttribute( 'listType' ) ) {
 				firstMostOuterItem = mostOuterItemList;
@@ -167,7 +185,7 @@ export default class ListStyleEditing extends Plugin {
 				// <listItem listIndent="0" listType="bulleted" listStyle="circle">UL List item 2</listItem>
 				const secondListMostOuterItem = getSiblingListItem( firstMostOuterItem.nextSibling, {
 					sameIndent: true,
-					listIndent: 0,
+					listIndent: firstMostOuterItem.getAttribute( 'listIndent' ),
 					direction: 'forward'
 				} );
 
@@ -459,6 +477,11 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 				// ■ Paragraph[]  // <-- The inserted item.
 				while ( existingListItem.is( 'element', 'listItem' ) && existingListItem.getAttribute( 'listIndent' ) !== indent ) {
 					existingListItem = existingListItem.previousSibling;
+
+					// If the item does not exist, most probably there is no other content in the editor. See: #8072.
+					if ( !existingListItem ) {
+						break;
+					}
 				}
 			}
 		}
