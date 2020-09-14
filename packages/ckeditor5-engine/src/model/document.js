@@ -299,8 +299,6 @@ export default class Document {
 	 * @param {module:engine/model/writer~Writer} writer The writer on which post-fixers will be called.
 	 */
 	_handleChangeBlock( writer ) {
-		// @if CK_DEBUG // console.group( 'changeBlock' );
-
 		if ( this._hasDocumentChangedFromTheLastChangeBlock() ) {
 			this._callPostFixers( writer );
 
@@ -319,8 +317,6 @@ export default class Document {
 
 			this.differ.reset();
 		}
-
-		// @if CK_DEBUG // console.groupEnd();
 
 		this._hasSelectionChangedFromTheLastChangeBlock = false;
 	}

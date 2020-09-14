@@ -152,26 +152,17 @@ export default class DowncastDispatcher {
 					eventName = `${ type }:${ entry.name }`;
 				}
 
-				// @if CK_DEBUG // console.log( 'expected event', eventName );
-
 				if ( this._refreshEventMap.has( eventName ) ) {
 					const expectedElement = this._refreshEventMap.get( eventName );
 
 					const handledByParent = element.is( 'element', expectedElement ) ? element : element.findAncestor( expectedElement );
-
-					// @if CK_DEBUG // console.log( `return: ${ handledByParent.name }` );
 
 					if ( handledByParent ) {
 						mapRefreshedBy.set( element, handledByParent );
 					}
 
 					return handledByParent;
-				} else {
-					// @if CK_DEBUG // console.log( 'no event in map' );
 				}
-				// TODO: lacking API - handle inner change of given event. Either by:
-				// - a) differ API (mark change as invalid)
-				// - b) skip given event.
 			} )
 			.filter( element => !!element );
 
@@ -193,17 +184,15 @@ export default class DowncastDispatcher {
 
 		// Convert changes that happened on model tree.
 		for ( const entry of changes ) {
-			// @if CK_DEBUG // console.log( `ENTRY: ${ entry.type }` );
-			if ( entry.type == 'insert' ) {
+			if ( entry.type === 'insert' ) {
 				this.convertInsert( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
-			} else if ( entry.type == 'remove' ) {
+			} else if ( entry.type === 'remove' ) {
 				this.convertRemove( entry.position, entry.length, entry.name, writer );
-			} else if ( entry.type == 'refresh' ) {
+			} else if ( entry.type === 'refresh' ) {
 				this.convertRefresh( Range._createFromPositionAndShift( entry.position, entry.length ), entry.name, writer );
-			} else if ( entry.type == 'attribute' ) {
-				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
 			} else {
-				// todo warning
+				// Defaults to 'attribute' change.
+				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
 			}
 		}
 
@@ -323,7 +312,6 @@ export default class DowncastDispatcher {
 
 	convertRefresh( range, name, writer ) {
 		this.conversionApi.writer = writer;
-		// @if CK_DEBUG // console.log( `\n ====> convert:: REFRESH:${ name }` );
 
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
 		this.conversionApi.consumable = this._createInsertConsumable( range );
@@ -341,17 +329,17 @@ export default class DowncastDispatcher {
 
 			const expectedEventName = getEventName( 'insert', data );
 
-			// Main element refresh
+			// Main element refresh - kinda ugly as we have all items in the range.
+			// TODO: Maybe, an inner range would be better (check children, etc).
 			if ( expectedEventName === 'insert:' + name ) {
-				// @if CK_DEBUG // console.log( '  converting refresh -> insert', item.name );
 				this._testAndFire( 'insert', data );
 			}
 
-			if ( this._refreshEventMap.has( expectedEventName ) ) {
-				// @if CK_DEBUG // console.log( '  >> skip', expectedEventName );
-			} else {
+			// If the map has given event it _must_ be converted by main "insert" converter.
+			if ( !this._refreshEventMap.has( expectedEventName ) ) {
 				// The below check if every node was converted before - if not it triggers the conversion again.
 				// Below optimal solution - todo refactor or introduce inner API for that.
+				// Other option is to use convertInsert() and skip range.
 				if ( value.type === 'text' ) {
 					const mappedPosition = this.conversionApi.mapper.toViewPosition( itemRange.start );
 
@@ -360,7 +348,7 @@ export default class DowncastDispatcher {
 					}
 				} else {
 					const viewElement = this.conversionApi.mapper.toViewElement( item );
-					// @if CK_DEBUG // console.log( '  >> check further', expectedEventName, !!viewElement );
+
 					if ( !viewElement ) {
 						this._testAndFire( 'insert', data );
 					}
@@ -585,16 +573,11 @@ export default class DowncastDispatcher {
 	 */
 	_testAndFire( type, data ) {
 		if ( !this.conversionApi.consumable.test( data.item, type ) ) {
-			// @if CK_DEBUG // console.log( ' > already consumed' );
 			// Do not fire event if the item was consumed.
 			return;
 		}
 
-		const eventName = getEventName( type, data );
-
-		// @if CK_DEBUG // console.log( 'Firing event', eventName );
-
-		this.fire( eventName, data, this.conversionApi );
+		this.fire( getEventName( type, data ), data, this.conversionApi );
 	}
 
 	/**
