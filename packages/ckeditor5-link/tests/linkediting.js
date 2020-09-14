@@ -1326,8 +1326,9 @@ describe( 'LinkEditing', () => {
 			);
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
-				preventDefault: () => {}
+				direction: 'backward',
+				preventDefault: () => {},
+				inputType: 'deleteContentBackward'
 			} ) );
 
 			editor.execute( 'input', {
@@ -1344,9 +1345,10 @@ describe( 'LinkEditing', () => {
 				'<paragraph>This is [<$text linkHref="foo">Foo</$text>] from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
 
-			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.delete,
-				preventDefault: () => {}
+			view.document.fire( 'delete', new DomEventData( view.document, {}, {
+				direction: 'forward',
+				preventDefault: () => {},
+				inputType: 'deleteContentForward'
 			} ) );
 
 			editor.execute( 'input', {
@@ -1453,16 +1455,18 @@ describe( 'LinkEditing', () => {
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( false );
 
-			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
-				preventDefault: () => {}
+			view.document.fire( 'delete', new DomEventData( view.document, {}, {
+				preventDefault: () => {},
+				direction: 'backward',
+				inputType: 'deleteContentBackward'
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( false );
 
-			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
-				preventDefault: () => {}
+			view.document.fire( 'delete', new DomEventData( view.document, {}, {
+				preventDefault: () => {},
+				direction: 'backward',
+				inputType: 'deleteContentBackward'
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character in the link' ).to.equal( false );
@@ -1484,18 +1488,20 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkIsFoo' ), 'initial "linkIsFoo" state' ).to.equal( false );
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial "linkHref" state' ).to.equal( false );
 
-			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
-				preventDefault: () => {}
+			view.document.fire( 'delete', new DomEventData( view.document, {}, {
+				direction: 'backward',
+				preventDefault: () => {},
+				inputType: 'deleteContentBackward'
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link ("linkHref")' ).to.equal( false );
 			expect( model.document.selection.hasAttribute( 'linkIsFoo' ), 'removing space after the link ("linkIsFoo")' ).to.equal( false );
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link ("linkHref")' ).to.equal( false );
 
-			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
-				preventDefault: () => {}
+			view.document.fire( 'delete', new DomEventData( view.document, {}, {
+				direction: 'backward',
+				preventDefault: () => {},
+				inputType: 'deleteContentBackward'
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character the link ("linkHref")' ).to.equal( false );
@@ -1518,16 +1524,18 @@ describe( 'LinkEditing', () => {
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( true );
 
-			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
-				preventDefault: () => {}
+			view.document.fire( 'delete', new DomEventData( view.document, {}, {
+				direction: 'backward',
+				preventDefault: () => {},
+				inputType: 'deleteContentBackward'
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
 
-			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
-				preventDefault: () => {}
+			view.document.fire( 'delete', new DomEventData( view.document, {}, {
+				direction: 'backward',
+				preventDefault: () => {},
+				inputType: 'deleteContentBackward'
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character in the link' ).to.equal( true );
@@ -1539,16 +1547,18 @@ describe( 'LinkEditing', () => {
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( true );
 
-			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
-				preventDefault: () => {}
+			view.document.fire( 'delete', new DomEventData( view.document, {}, {
+				direction: 'backward',
+				preventDefault: () => {},
+				inputType: 'deleteContentBackward'
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
 
-			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
-				preventDefault: () => {}
+			view.document.fire( 'delete', new DomEventData( view.document, {}, {
+				direction: 'backward',
+				preventDefault: () => {},
+				inputType: 'deleteContentBackward'
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character in the link' ).to.equal( true );
@@ -1558,14 +1568,16 @@ describe( 'LinkEditing', () => {
 		it( 'should do nothing if there is no `linkHref` attribute', () => {
 			setModelData( model, '<paragraph>Foo <$text bold="true">Bolded.</$text> []Bar</paragraph>' );
 
-			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
-				preventDefault: () => {}
+			view.document.fire( 'delete', new DomEventData( view.document, {}, {
+				direction: 'backward',
+				preventDefault: () => {},
+				inputType: 'deleteContentBackward'
 			} ) );
 
-			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
-				preventDefault: () => {}
+			view.document.fire( 'delete', new DomEventData( view.document, {}, {
+				direction: 'backward',
+				preventDefault: () => {},
+				inputType: 'deleteContentBackward'
 			} ) );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>Foo <$text bold="true">Bolded[]</$text>Bar</paragraph>' );
@@ -1576,9 +1588,10 @@ describe( 'LinkEditing', () => {
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( false );
 
-			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.delete,
-				preventDefault: () => {}
+			view.document.fire( 'delete', new DomEventData( view.document, {}, {
+				direction: 'forward',
+				preventDefault: () => {},
+				inputType: 'deleteContentForward'
 			}, { direction: 'forward' } ) );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>Foo <$text linkHref="url">Bar[]</$text></paragraph>' );
