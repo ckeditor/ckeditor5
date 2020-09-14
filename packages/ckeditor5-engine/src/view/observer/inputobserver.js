@@ -28,6 +28,7 @@ export default class InputObserver extends DomEventObserver {
 	onDomEvent( domEvent ) {
 		const domTargetRanges = domEvent.getTargetRanges();
 		const view = this.view;
+		const viewDocument = view.document;
 
 		let dataTransfer = null;
 		let data = null;
@@ -46,7 +47,18 @@ export default class InputObserver extends DomEventObserver {
 			data,
 			dataTransfer,
 			domTargetRanges,
-			targetRanges: domTargetRanges.map( domRange => view.domConverter.domRangeToView( domRange ) ),
+			isComposing: domEvent.isComposing,
+			targetRanges: domTargetRanges.map( domRange => {
+				// There's no way a DOM range anchored in the fake selection container (and this is the only thing the event "knows")
+				// can be mapped correctly to an editing view range. Fake selection container is not an editing view element, that's it.
+				// Luckily, at the same time, if the selection is fake, it means that some object is selected and the input range
+				// should simply surround it, so here it goes:
+				if ( viewDocument.selection.isFake ) {
+					return viewDocument.selection.getFirstRange();
+				} else {
+					return view.domConverter.domRangeToView( domRange );
+				}
+			} ),
 			inputType: domEvent.inputType
 		} );
 	}
@@ -86,6 +98,18 @@ export default class InputObserver extends DomEventObserver {
  *
  * @readonly
  * @member {Array.<Range>} module:engine/view/observer/inputobserver~InputEventData#domTargetRanges
+ */
+
+/**
+ * A flag indicating that the `beforeinput` event was fired during composition.
+ *
+ * Corresponds to the
+ * {@link module:engine/view/document~Document#event:compositionstart},
+ * {@link module:engine/view/document~Document#event:compositionupdate},
+ * and {@link module:engine/view/document~Document#event:compositionend } trio.
+ *
+ * @readonly
+ * @member {Boolean} module:engine/view/observer/inputobserver~InputEventData#isComposing
  */
 
 /**

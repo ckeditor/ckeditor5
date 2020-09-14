@@ -154,6 +154,20 @@ describe( 'InputObserver', () => {
 				expect( viewRange2.end.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
 				expect( viewRange2.end.offset ).to.equal( 2 );
 			} );
+
+			it( 'should provide a range encompassing the selected object when selection is fake', () => {
+				const domRange = global.document.createRange();
+
+				sinon.stub( viewDocument.selection, 'isFake' ).get( () => true );
+				sinon.stub( viewDocument.selection, 'getFirstRange' ).returns( 'foo' );
+
+				fireMockNativeBeforeInput( {
+					getTargetRanges: () => [ domRange ]
+				} );
+
+				expect( evtData.targetRanges ).to.have.length( 1 );
+				expect( evtData.targetRanges[ 0 ] ).to.equal( 'foo' );
+			} );
 		} );
 
 		describe( '#data', () => {
@@ -187,6 +201,30 @@ describe( 'InputObserver', () => {
 				} );
 
 				expect( evtData.data ).to.be.null;
+			} );
+		} );
+
+		describe( '#isComposing', () => {
+			it( 'should reflect InputEvent#isComposing when true', () => {
+				fireMockNativeBeforeInput( {
+					isComposing: true
+				} );
+
+				expect( evtData.isComposing ).to.be.true;
+			} );
+
+			it( 'should reflect InputEvent#isComposing when false', () => {
+				fireMockNativeBeforeInput( {
+					isComposing: false
+				} );
+
+				expect( evtData.isComposing ).to.be.false;
+			} );
+
+			it( 'should reflect InputEvent#isComposing when not set', () => {
+				fireMockNativeBeforeInput();
+
+				expect( evtData.isComposing ).to.be.undefined;
 			} );
 		} );
 	} );
