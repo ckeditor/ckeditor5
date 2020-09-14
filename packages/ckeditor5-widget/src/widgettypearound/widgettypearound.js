@@ -29,7 +29,7 @@ import {
 
 import {
 	isNonTypingKeystroke
-} from '@ckeditor/ckeditor5-typing/src/utils/injectunsafekeystrokeshandling';
+} from '@ckeditor/ckeditor5-typing/src/utils/input/injectunsafekeystrokeshandling';
 
 import returnIcon from '../../theme/icons/return-arrow.svg';
 import '../../theme/widgettypearound.css';
@@ -574,7 +574,7 @@ export default class WidgetTypeAround extends Plugin {
 	 * and another one for actual typing. It is not a disaster but this may need to be fixed
 	 * sooner or later.
 	 *
-	 * Learn more in {@link module:typing/utils/injectunsafekeystrokeshandling}.
+	 * Learn more in {@link module:typing/utils/mutations/injectunsafekeystrokeshandling}.
 	 *
 	 * @private
 	 */
