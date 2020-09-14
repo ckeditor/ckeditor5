@@ -350,7 +350,21 @@ export default class DowncastDispatcher {
 			if ( this._refreshEventMap.has( expectedEventName ) ) {
 				// @if CK_DEBUG // console.log( '  >> skip', expectedEventName );
 			} else {
-				// @if CK_DEBUG // console.log( '  >> check further', expectedEventName );
+				// The below check if every node was converted before - if not it triggers the conversion again.
+				// Below optimal solution - todo refactor or introduce inner API for that.
+				if ( value.type === 'text' ) {
+					const mappedPosition = this.conversionApi.mapper.toViewPosition( itemRange.start );
+
+					if ( !mappedPosition.parent.is( '$text' ) ) {
+						this._testAndFire( 'insert', data );
+					}
+				} else {
+					const viewElement = this.conversionApi.mapper.toViewElement( item );
+					// @if CK_DEBUG // console.log( '  >> check further', expectedEventName, !!viewElement );
+					if ( !viewElement ) {
+						this._testAndFire( 'insert', data );
+					}
+				}
 			}
 		}
 

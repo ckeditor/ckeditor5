@@ -830,7 +830,9 @@ export function insertElement( elementCreator ) {
 			}
 
 			// At this stage old view can be safely removed.
-			conversionApi.writer.remove( currentView );
+			if ( currentView ) {
+				conversionApi.writer.remove( currentView );
+			}
 		}
 
 		// Rest of standard insertElement converter.
