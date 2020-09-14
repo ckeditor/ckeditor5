@@ -114,4 +114,6 @@ export default class DeleteObserver extends Observer {
  * If it's 2 or more it means that the key was pressed and hold.
  * @param {module:engine/view/selection~Selection} [data.selectionToRemove] View selection which content should be removed. If not set,
  * current selection should be used.
+ * @param {String} [data.inputType] The `beforeinput` event type that caused the deletion. Note that this property is only available
+ * if the browser supports Input Events.
  */
