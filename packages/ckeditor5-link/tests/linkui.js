@@ -477,72 +477,53 @@ describe( 'LinkUI', () => {
 			} );
 		} );
 
-		it( 'should display a fake visual selection when a text fragment is selected', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
-
-			linkUIFeature._showUI();
-
-			expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
-
-			const paragraph = editor.model.document.getRoot().getChild( 0 );
-			const expectedRange = editor.model.createRange(
-				editor.model.createPositionAt( paragraph, 1 ),
-				editor.model.createPositionAt( paragraph, 2 )
-			);
-			const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
-
-			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
-
-			expect( getViewData( editor.editing.view ) ).to.equal( '<p>f{<span class="ck-fake-link-selection">o</span>}o</p>' );
-			expect( editor.getData() ).to.equal( '<p>foo</p>' );
-		} );
-
-		it( 'should display a fake visual selection on a collapsed selection', () => {
-			setModelData( editor.model, '<paragraph>f[]o</paragraph>' );
-
-			linkUIFeature._showUI();
-
-			expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
-
-			const paragraph = editor.model.document.getRoot().getChild( 0 );
-			const expectedRange = editor.model.createRange(
-				editor.model.createPositionAt( paragraph, 1 ),
-				editor.model.createPositionAt( paragraph, 1 )
-			);
-			const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
-
-			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
-
-			expect( getViewData( editor.editing.view ) ).to.equal(
-				'<p>f{}<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span>o</p>'
-			);
-			expect( editor.getData() ).to.equal( '<p>fo</p>' );
-		} );
-
-		it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
-		'of the first block in the multiline selection', () => {
-			setModelData( editor.model, '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
-
-			linkUIFeature._showUI();
-
-			expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
-
-			const secondParagraph = editor.model.document.getRoot().getChild( 1 );
-			const expectedRange = editor.model.createRange(
-				editor.model.createPositionAt( secondParagraph, 0 ),
-				editor.model.createPositionAt( secondParagraph, 3 )
-			);
-
-			const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
-
-			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
-
-			expect( getViewData( editor.editing.view ) ).to.equal( '<p>foo{</p><p><span class="ck-fake-link-selection">bar</span>]</p>' );
-			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
-		} );
-
 		describe( 'fake visual selection', () => {
 			describe( 'non-collapsed', () => {
+				it( 'should be displayed when a text fragment is selected', () => {
+					setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+					linkUIFeature._showUI();
+
+					expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+					const paragraph = editor.model.document.getRoot().getChild( 0 );
+					const expectedRange = editor.model.createRange(
+						editor.model.createPositionAt( paragraph, 1 ),
+						editor.model.createPositionAt( paragraph, 2 )
+					);
+					const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+					expect( getViewData( editor.editing.view ) ).to.equal( '<p>f{<span class="ck-fake-link-selection">o</span>}o</p>' );
+					expect( editor.getData() ).to.equal( '<p>foo</p>' );
+				} );
+
+				it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
+					'of the first block in the multiline selection', () => {
+					setModelData( editor.model, '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
+
+					linkUIFeature._showUI();
+
+					expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+					const secondParagraph = editor.model.document.getRoot().getChild( 1 );
+					const expectedRange = editor.model.createRange(
+						editor.model.createPositionAt( secondParagraph, 0 ),
+						editor.model.createPositionAt( secondParagraph, 3 )
+					);
+
+					const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+					expect( getViewData( editor.editing.view ) ).to.equal(
+						'<p>foo{</p>' +
+						'<p><span class="ck-fake-link-selection">bar</span>]</p>'
+					);
+					expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
+				} );
+
 				it( 'should be displayed on first text node in non-empty element when selection contains few empty elements', () => {
 					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
 						'<paragraph></paragraph>' +
@@ -587,6 +568,28 @@ describe( 'LinkUI', () => {
 			} );
 
 			describe( 'collapsed', () => {
+				it( 'should be displayed on a collapsed selection', () => {
+					setModelData( editor.model, '<paragraph>f[]o</paragraph>' );
+
+					linkUIFeature._showUI();
+
+					expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+					const paragraph = editor.model.document.getRoot().getChild( 0 );
+					const expectedRange = editor.model.createRange(
+						editor.model.createPositionAt( paragraph, 1 ),
+						editor.model.createPositionAt( paragraph, 1 )
+					);
+					const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+					expect( getViewData( editor.editing.view ) ).to.equal(
+						'<p>f{}<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span>o</p>'
+					);
+					expect( editor.getData() ).to.equal( '<p>fo</p>' );
+				} );
+
 				it( 'should be displayed on selection focus when selection contains only one empty element ' +
 					'(selection focus is at the beginning of the first non-empty element)', () => {
 					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
