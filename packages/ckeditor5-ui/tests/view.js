@@ -228,7 +228,7 @@ describe( 'View', () => {
 				throw new Error( 'This should not be executed.' );
 			} catch ( err ) {
 				// TODO
-				assertCKEditorError( err, /^ui-view-render-already-rendered:/, view );
+				assertCKEditorError( err, 'ui-view-render-already-rendered', view );
 			}
 		} );
 

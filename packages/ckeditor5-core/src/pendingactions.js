@@ -99,7 +99,7 @@ export default class PendingActions extends ContextPlugin {
 			 *
 			 * @error pendingactions-add-invalid-message
 			 */
-			throw new CKEditorError( 'pendingactions-add-invalid-message: The message must be a string.', this );
+			throw new CKEditorError( 'pendingactions-add-invalid-message', this );
 		}
 
 		const action = Object.create( ObservableMixin );

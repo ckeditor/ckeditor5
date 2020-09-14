@@ -1180,7 +1180,7 @@ describe( 'TodoListEditing', () => {
 	} );
 } );
 
-describe( 'TodoListEditing', () => {
+describe( 'TodoListEditing - checkbox rendering', () => {
 	let editorElement, editor, model, modelDoc, view, viewDoc, viewRoot;
 
 	beforeEach( () => {

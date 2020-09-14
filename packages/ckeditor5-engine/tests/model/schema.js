@@ -62,7 +62,7 @@ describe( 'Schema', () => {
 
 			expectToThrowCKEditorError( () => {
 				schema.register( 'foo' );
-			}, /^schema-cannot-register-item-twice:/, schema );
+			}, 'schema-cannot-register-item-twice', schema );
 		} );
 	} );
 
@@ -91,7 +91,7 @@ describe( 'Schema', () => {
 		it( 'throws when trying to extend a not yet registered item', () => {
 			expectToThrowCKEditorError( () => {
 				schema.extend( 'foo' );
-			}, /^schema-cannot-extend-missing-item:/, schema );
+			}, 'schema-cannot-extend-missing-item', schema );
 		} );
 	} );
 
@@ -960,7 +960,7 @@ describe( 'Schema', () => {
 
 			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
-			}, /^schema-check-merge-no-element-before:/, schema );
+			}, 'schema-check-merge-no-element-before', schema );
 		} );
 
 		it( 'throws an error if the node before the position is not the element', () => {
@@ -978,7 +978,7 @@ describe( 'Schema', () => {
 
 			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
-			}, /^schema-check-merge-no-element-before:/, schema );
+			}, 'schema-check-merge-no-element-before', schema );
 		} );
 
 		it( 'throws an error if there is no element after the position', () => {
@@ -995,7 +995,7 @@ describe( 'Schema', () => {
 
 			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
-			}, /^schema-check-merge-no-element-after:/, schema );
+			}, 'schema-check-merge-no-element-after', schema );
 		} );
 
 		it( 'throws an error if the node after the position is not the element', () => {
@@ -1013,7 +1013,7 @@ describe( 'Schema', () => {
 
 			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
-			}, /^schema-check-merge-no-element-before:/, schema );
+			}, 'schema-check-merge-no-element-before', schema );
 		} );
 
 		// This is an invalid case by definition – the baseElement should not contain disallowed elements
@@ -2509,7 +2509,7 @@ describe( 'Schema', () => {
 				expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
 			} );
 
-			it( 'passes $root>paragraph>$text – paragraph inherits allowIn from $block through $block\'s allowWhere', () => {
+			it( 'passes $root>paragraph>$text – paragraph inherits allowed content from $block through $block\'s allowContentOf', () => {
 				schema.register( '$root' );
 				schema.register( '$blockProto' );
 				schema.register( '$block', {
@@ -2524,6 +2524,31 @@ describe( 'Schema', () => {
 				} );
 
 				expect( schema.checkChild( r1p1, r1p1.getChild( 0 ) ) ).to.be.true;
+			} );
+
+			it( 'passes paragraph[align] – paragraph inherits attributes of $block', () => {
+				schema.register( '$block', {
+					allowAttributes: 'align'
+				} );
+				schema.register( 'paragraph', {
+					inheritAllFrom: '$block'
+				} );
+
+				expect( schema.checkAttribute( r1p1, 'align' ) ).to.be.true;
+			} );
+
+			it( 'passes paragraph[align] – paragraph inherits attributes of $block through allowAttributesOf', () => {
+				schema.register( '$blockProto', {
+					allowAttributes: 'align'
+				} );
+				schema.register( '$block', {
+					allowAttributesOf: '$blockProto'
+				} );
+				schema.register( 'paragraph', {
+					inheritAllFrom: '$block'
+				} );
+
+				expect( schema.checkAttribute( r1p1, 'align' ) ).to.be.true;
 			} );
 		} );
 
@@ -2667,33 +2692,6 @@ describe( 'Schema', () => {
 
 			// The support for allowAttributesOf is broken in the similar way as for allowContentOf (see the comment above).
 			// However, those situations are rather theoretical, so we're not going to waste time on them now.
-		} );
-
-		describe( 'inheritAllFrom', () => {
-			it( 'passes paragraph[align] – paragraph inherits attributes of $block', () => {
-				schema.register( '$block', {
-					allowAttributes: 'align'
-				} );
-				schema.register( 'paragraph', {
-					inheritAllFrom: '$block'
-				} );
-
-				expect( schema.checkAttribute( r1p1, 'align' ) ).to.be.true;
-			} );
-
-			it( 'passes paragraph[align] – paragraph inherits attributes of $block through allowAttributesOf', () => {
-				schema.register( '$blockProto', {
-					allowAttributes: 'align'
-				} );
-				schema.register( '$block', {
-					allowAttributesOf: '$blockProto'
-				} );
-				schema.register( 'paragraph', {
-					inheritAllFrom: '$block'
-				} );
-
-				expect( schema.checkAttribute( r1p1, 'align' ) ).to.be.true;
-			} );
 		} );
 
 		describe( 'missing attribute definitions', () => {

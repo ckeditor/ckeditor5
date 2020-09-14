@@ -201,7 +201,7 @@ describe( 'Editor', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new TestEditor( { context: editor._context } );
-			}, /^context-addEditor-private-context/ );
+			}, 'context-addeditor-private-context' );
 		} );
 
 		it( 'should destroy context created by the editor at the end of the editor destroy chain', async () => {
@@ -510,7 +510,7 @@ describe( 'Editor', () => {
 
 			expectToThrowCKEditorError( () => {
 				editor.execute( 'command' );
-			}, /^commandcollection-command-not-found:/, editor );
+			}, /^commandcollection-command-not-found/, editor );
 		} );
 
 		it( 'should rethrow native errors as they are in the debug=true mode', () => {
@@ -543,6 +543,7 @@ describe( 'Editor', () => {
 					this.isEnabled = true;
 				}
 				execute() {
+					// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 					throw new CKEditorError( 'foo', editor );
 				}
 			}

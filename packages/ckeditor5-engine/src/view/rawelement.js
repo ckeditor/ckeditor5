@@ -113,7 +113,7 @@ export default class RawElement extends Element {
 			 * @error view-rawelement-cannot-add
 			 */
 			throw new CKEditorError(
-				'view-rawelement-cannot-add: Cannot add child nodes to a RawElement instance.',
+				'view-rawelement-cannot-add',
 				[ this, nodes ]
 			);
 		}

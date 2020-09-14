@@ -36,8 +36,7 @@ export default function secureSourceElement( editor ) {
 		 * @param {HTMLElement} element DOM element that caused the collision.
 		 */
 		throw new CKEditorError(
-			'editor-source-element-already-used: ' +
-			'The DOM element cannot be used to create multiple editor instances.',
+			'editor-source-element-already-used',
 			editor
 		);
 	}

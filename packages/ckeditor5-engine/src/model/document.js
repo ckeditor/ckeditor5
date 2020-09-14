@@ -57,7 +57,7 @@ export default class Document {
 		 * operations are applied on a proper document version.
 		 *
 		 * If the {@link module:engine/model/operation/operation~Operation#baseVersion base version} does not match the document version,
-		 * a {@link module:utils/ckeditorerror~CKEditorError model-document-applyOperation-wrong-version} error is thrown.
+		 * a {@link module:utils/ckeditorerror~CKEditorError model-document-applyoperation-wrong-version} error is thrown.
 		 *
 		 * @type {Number}
 		 */
@@ -123,14 +123,10 @@ export default class Document {
 				/**
 				 * Only operations with matching versions can be applied.
 				 *
-				 * @error document-applyOperation-wrong-version
+				 * @error model-document-applyoperation-wrong-version
 				 * @param {module:engine/model/operation/operation~Operation} operation
 				 */
-				throw new CKEditorError(
-					'model-document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
-					this,
-					{ operation }
-				);
+				throw new CKEditorError( 'model-document-applyoperation-wrong-version', this, { operation } );
 			}
 		}, { priority: 'highest' } );
 
@@ -197,15 +193,11 @@ export default class Document {
 			/**
 			 * A root with the specified name already exists.
 			 *
-			 * @error model-document-createRoot-name-exists
+			 * @error model-document-createroot-name-exists
 			 * @param {module:engine/model/document~Document} doc
 			 * @param {String} name
 			 */
-			throw new CKEditorError(
-				'model-document-createRoot-name-exists: Root with specified name already exists.',
-				this,
-				{ name: rootName }
-			);
+			throw new CKEditorError( 'model-document-createroot-name-exists', this, { name: rootName } );
 		}
 
 		const root = new RootElement( this, elementName, rootName );
