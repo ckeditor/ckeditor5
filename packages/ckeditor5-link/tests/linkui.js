@@ -519,6 +519,161 @@ describe( 'LinkUI', () => {
 			expect( editor.getData() ).to.equal( '<p>fo</p>' );
 		} );
 
+		it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
+		'of the first block in the multiline selection', () => {
+			setModelData( editor.model, '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
+
+			linkUIFeature._showUI();
+
+			expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+			const secondParagraph = editor.model.document.getRoot().getChild( 1 );
+			const expectedRange = editor.model.createRange(
+				editor.model.createPositionAt( secondParagraph, 0 ),
+				editor.model.createPositionAt( secondParagraph, 3 )
+			);
+
+			const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+			expect( getViewData( editor.editing.view ) ).to.equal( '<p>foo{</p><p><span class="ck-fake-link-selection">bar</span>]</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
+		} );
+
+		describe( 'fake visual selection', () => {
+			describe( 'non-collapsed', () => {
+				it( 'should be displayed on first text node in non-empty element when selection contains few empty elements', () => {
+					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
+						'<paragraph></paragraph>' +
+						'<paragraph></paragraph>' +
+						'<paragraph>bar</paragraph>' +
+						'<paragraph></paragraph>' +
+						'<paragraph></paragraph>' +
+						'<paragraph>]baz</paragraph>' );
+
+					linkUIFeature._showUI();
+
+					expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+					const firstNonEmptyElementInTheSelection = editor.model.document.getRoot().getChild( 3 );
+					const rangeEnd = editor.model.document.selection.getFirstRange().end;
+					const expectedRange = editor.model.createRange(
+						editor.model.createPositionAt( firstNonEmptyElementInTheSelection, 0 ),
+						editor.model.createPositionAt( rangeEnd, 0 )
+					);
+
+					const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+					const expectedViewData = '<p>foo{</p>' +
+						'<p></p>' +
+						'<p></p>' +
+						'<p><span class="ck-fake-link-selection">bar</span></p>' +
+						'<p></p>' +
+						'<p></p>' +
+						'<p>}baz</p>';
+
+					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( editor.getData() ).to.equal(
+						'<p>foo</p>' +
+						'<p>&nbsp;</p><p>&nbsp;</p>' +
+						'<p>bar</p>' +
+						'<p>&nbsp;</p><p>&nbsp;</p>' +
+						'<p>baz</p>'
+					);
+				} );
+			} );
+
+			describe( 'collapsed', () => {
+				it( 'should be displayed on selection focus when selection contains only one empty element ' +
+					'(selection focus is at the beginning of the first non-empty element)', () => {
+					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
+						'<paragraph></paragraph>' +
+						'<paragraph>]bar</paragraph>' );
+
+					linkUIFeature._showUI();
+
+					expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+					const focus = editor.model.document.selection.focus;
+					const expectedRange = editor.model.createRange(
+						editor.model.createPositionAt( focus, 0 )
+					);
+
+					const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+					const expectedViewData = '<p>foo{</p>' +
+						'<p></p>' +
+						'<p>]<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span>bar</p>';
+
+					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>bar</p>' );
+				} );
+
+				it( 'should be displayed on selection focus when selection contains few empty elements ' +
+					'(selection focus is at the beginning of the first non-empty element)', () => {
+					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
+						'<paragraph></paragraph>' +
+						'<paragraph></paragraph>' +
+						'<paragraph>]bar</paragraph>' );
+
+					linkUIFeature._showUI();
+
+					expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+					const focus = editor.model.document.selection.focus;
+					const expectedRange = editor.model.createRange(
+						editor.model.createPositionAt( focus, 0 )
+					);
+
+					const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+					const expectedViewData = '<p>foo{</p>' +
+						'<p></p>' +
+						'<p></p>' +
+						'<p>]<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span>bar</p>';
+
+					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
+				} );
+
+				it( 'should be displayed on selection focus when selection contains few empty elements ' +
+					'(selection focus is inside an empty element)', () => {
+					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
+						'<paragraph></paragraph>' +
+						'<paragraph>]</paragraph>' +
+						'<paragraph>bar</paragraph>' );
+
+					linkUIFeature._showUI();
+
+					expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+					const focus = editor.model.document.selection.focus;
+					const expectedRange = editor.model.createRange(
+						editor.model.createPositionAt( focus, 0 )
+					);
+
+					const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+					const expectedViewData = '<p>foo{</p>' +
+						'<p></p>' +
+						'<p>]<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span></p>' +
+						'<p>bar</p>';
+
+					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
+				} );
+			} );
+		} );
+
 		function getMarkersRange( editor ) {
 			const markerElements = editor.ui.view.element.querySelectorAll( '.ck-fake-link-selection' );
 			const lastMarkerElement = markerElements[ markerElements.length - 1 ];
