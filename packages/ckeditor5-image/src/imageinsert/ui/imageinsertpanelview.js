@@ -4,14 +4,14 @@
  */
 
 /**
- * @module image/imageupload/ui/imageuploadpanelview
+ * @module image/imageinsert/ui/imageinsertpanelview
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
-import ImageUploadFormRowView from './imageuploadformrowview';
+import ImageInsertFormRowView from './imageinsertformrowview';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -25,18 +25,18 @@ import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
-import '../../../theme/imageupload.css';
+import '../../../theme/imageinsert.css';
 
 /**
  * The insert an image via URL view controller class.
  *
- * See {@link module:image/imageupload/ui/imageuploadpanelview~ImageUploadPanelView}.
+ * See {@link module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView}.
  *
  * @extends module:ui/view~View
  */
-export default class ImageUploadPanelView extends View {
+export default class ImageInsertPanelView extends View {
 	/**
-	 * Creates a view for the dropdown panel of {@link module:image/imageupload/imageuploadui~ImageUploadUI}.
+	 * Creates a view for the dropdown panel of {@link module:image/imageinsert/imageinsertui~ImageInsertUI}.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 * @param {Object} [integrations] An integrations object that contains
@@ -151,7 +151,7 @@ export default class ImageUploadPanelView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-image-upload-form'
+					'ck-image-insert-form'
 				],
 
 				tabindex: '-1'
@@ -159,12 +159,12 @@ export default class ImageUploadPanelView extends View {
 
 			children: [
 				...this._integrations,
-				new ImageUploadFormRowView( locale, {
+				new ImageInsertFormRowView( locale, {
 					children: [
 						this.insertButtonView,
 						this.cancelButtonView
 					],
-					class: 'ck-image-upload-form__action-row'
+					class: 'ck-image-insert-form__action-row'
 				} )
 			]
 		} );
@@ -247,7 +247,7 @@ export default class ImageUploadPanelView extends View {
 
 		panelView.extendTemplate( {
 			attributes: {
-				class: 'ck-image-upload__panel'
+				class: 'ck-image-insert__panel'
 			}
 		} );
 
