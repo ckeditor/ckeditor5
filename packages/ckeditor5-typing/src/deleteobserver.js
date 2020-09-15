@@ -168,7 +168,7 @@ export default class DeleteObserver extends Observer {
 					}
 				}
 
-				viewDocument.fire( 'delete', new DomEventData( editingView, domEvent, {
+				this._fireDeleteEvent( domEvent, evt.stop, {
 					// Standard "delete" event data.
 					direction: deleteEventSpec.direction,
 					sequence: deleteSequence,
@@ -177,11 +177,8 @@ export default class DeleteObserver extends Observer {
 
 					// beforeinput data extension.
 					inputType
-				} ) );
+				} );
 
-				// If this listener handled the event, there's no point in propagating it any further
-				// to other callbacks.
-				evt.stop();
 				data.preventDefault();
 			}
 		} );
@@ -191,21 +188,20 @@ export default class DeleteObserver extends Observer {
 	 * TODO
 	 */
 	_enableKeyEventsBasedObserver() {
-		const view = this.view;
-		const document = view.document;
+		const editingView = this.view;
+		const viewDocument = editingView.document;
 		let sequence = 0;
 
-		document.on( 'keyup', ( evt, data ) => {
+		viewDocument.on( 'keyup', ( evt, data ) => {
 			if ( data.keyCode === keyCodes.delete || data.keyCode === keyCodes.backspace ) {
 				sequence = 0;
 			}
 		} );
 
-		document.on( 'keydown', ( evt, data ) => {
-			const isForwardDelete = data.keyCode === keyCodes.delete;
-			const isBackwardDelete = data.keyCode === keyCodes.backspace;
-			// Save the event object to check later if it was stopped or not.
-			let event;
+		viewDocument.on( 'keydown', ( evt, data ) => {
+			const { keyCode, altKey, ctrlKey, domEvent } = data;
+			const isForwardDelete = keyCode === keyCodes.delete;
+			const isBackwardDelete = keyCode === keyCodes.backspace;
 
 			if ( !isForwardDelete && !isBackwardDelete ) {
 				return;
@@ -218,19 +214,31 @@ export default class DeleteObserver extends Observer {
 			};
 
 			// Checking if the entire word should be removed.
-			if ( env.isMac ? data.altKey : data.ctrlKey ) {
+			if ( env.isMac ? altKey : ctrlKey ) {
 				deleteData.unit = 'word';
 			}
 
-			document.once( 'delete', evt => ( event = evt ), { priority: Number.POSITIVE_INFINITY } );
-			document.fire( 'delete', new DomEventData( document, data.domEvent, deleteData ) );
-
-			// Stop the original event if `delete` event was stopped.
-			// https://github.com/ckeditor/ckeditor5/issues/753
-			if ( event && event.stop.called ) {
-				evt.stop();
-			}
+			this._fireDeleteEvent( domEvent, evt.stop, deleteData );
 		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	_fireDeleteEvent( domEvent, stop, deleteData ) {
+		const viewDocument = this.view.document;
+
+		// Save the event object to check later if it was stopped or not.
+		let event;
+
+		viewDocument.once( 'delete', evt => ( event = evt ), { priority: Number.POSITIVE_INFINITY } );
+		viewDocument.fire( 'delete', new DomEventData( viewDocument, domEvent, deleteData ) );
+
+		// Stop the original event if `delete` event was stopped.
+		// https://github.com/ckeditor/ckeditor5/issues/753
+		if ( event && event.stop.called ) {
+			stop();
+		}
 	}
 
 	/**
