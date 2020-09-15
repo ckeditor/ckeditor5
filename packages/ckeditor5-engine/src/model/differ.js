@@ -184,7 +184,8 @@ export default class Differ {
 			case 'changeAttribute': {
 				for ( const item of operation.range.getItems( { shallow: true } ) ) {
 					// Attribute change on refreshed element is ignored
-					if ( this._isInInsertedElement( item.parent ) || this._isInRefreshedElement( item ) ) {
+					// TODO: this is wrong if attribute would be handled elsewhere: || this._isInRefreshedElement( item )
+					if ( this._isInInsertedElement( item.parent ) ) {
 						continue;
 					}
 
@@ -446,6 +447,9 @@ export default class Differ {
 
 			let i = 0; // Iterator in `elementChildren` array -- iterates through current children of element.
 			let j = 0; // Iterator in `snapshotChildren` array -- iterates through old children of element.
+
+			// console.log( changes.map( change => change.type ) );
+			// console.log( 'actions', actions, elementChildren.length );
 
 			// Process every action.
 			for ( const action of actions ) {
@@ -731,6 +735,10 @@ export default class Differ {
 			const incEnd = inc.offset + inc.howMany;
 			const oldEnd = old.offset + old.howMany;
 
+			// if ( changes.length > 100 ) {
+			// 	debugger;
+			// }
+
 			if ( inc.type == 'insert' ) {
 				if ( old.type == 'insert' ) {
 					if ( inc.offset <= old.offset ) {
@@ -775,6 +783,10 @@ export default class Differ {
 						} );
 					}
 				}
+				//
+				// if ( old.type == 'refresh' ) {
+				// 	// console.log( '...      old refresh, incoming insert' );
+				// }
 			}
 
 			if ( inc.type == 'remove' ) {
@@ -832,18 +844,20 @@ export default class Differ {
 							// Attribute change needs to be split.
 							const howMany = old.howMany;
 
-							old.howMany = inc.offset - old.offset;
+							// old.howMany = inc.offset - old.offset;
 
 							const howManyAfter = howMany - old.howMany - inc.nodesToHandle;
 
-							// Add the second part of attribute change to the beginning of processed array so it won't
-							// be processed again in this loop.
-							changes.unshift( {
-								type: 'attribute',
-								offset: inc.offset,
-								howMany: howManyAfter,
-								count: this._changeCount++
-							} );
+							if ( howManyAfter > 0 ) {
+								// Add the second part of attribute change to the beginning of processed array so it won't
+								// be processed again in this loop.
+								changes.unshift( {
+									type: 'attribute',
+									offset: inc.offset,
+									howMany: howManyAfter,
+									count: this._changeCount++
+								} );
+							}
 						} else {
 							old.howMany -= oldEnd - inc.offset;
 						}
@@ -916,6 +930,22 @@ export default class Differ {
 					} else if ( inc.offset <= old.offset && incEnd >= oldEnd ) {
 						// `inc` change includes `old` change.
 						old.howMany = 0;
+					}
+				}
+			}
+
+			if ( inc.type == 'refresh' ) {
+				if ( old.type == 'insert' ) {
+					if ( inc.offset === old.offset && inc.howMany === old.howMany ) {
+						// console.log( '...      old INSERT, incoming REFRESH --- HANDLED!' );
+						old.howMany = 0;
+					}
+				}
+
+				if ( old.type == 'remove' ) {
+					if ( inc.offset === old.offset && inc.howMany === old.howMany ) {
+						// console.log( '...      old REMOVE, incoming REFRESH --- HANDLED!' );
+						inc.nodesToHandle = 0;
 					}
 				}
 			}
@@ -1202,6 +1232,7 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 
 		// Then, fill up actions accordingly to change type.
 		if ( change.type == 'insert' ) {
+			// console.log( 'change type of INSERT', change.offset, change.howMany );
 			for ( let i = 0; i < change.howMany; i++ ) {
 				actions.push( 'i' );
 			}
@@ -1225,6 +1256,7 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 			// We changed `howMany` old nodes, update `oldChildrenHandled`.
 			oldChildrenHandled += change.howMany;
 		} else {
+			// console.log( 'change type of REFRESH', change.offset, change.howMany );
 			actions.push( 'x' );
 
 			// The last handled offset is after inserted range.
@@ -1239,6 +1271,8 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 			actions.push( 'e' );
 		}
 	}
+
+	// console.log( 'Changes', Array.from( changes ).map( change => change.type ), 'actions', actions );
 
 	return actions;
 }

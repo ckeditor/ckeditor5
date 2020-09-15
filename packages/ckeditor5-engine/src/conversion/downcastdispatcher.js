@@ -359,6 +359,17 @@ export default class DowncastDispatcher {
 			// TODO: Maybe, an inner range would be better (check children, etc).
 			if ( expectedEventName === 'insert:' + name ) {
 				this._testAndFire( 'insert', data );
+
+				// Fire a separate addAttribute event for each attribute that was set on inserted items.
+				// This is important because most attributes converters will listen only to add/change/removeAttribute events.
+				// If we would not add this part, attributes on inserted nodes would not be converted.
+				for ( const key of item.getAttributeKeys() ) {
+					data.attributeKey = key;
+					data.attributeOldValue = null;
+					data.attributeNewValue = item.getAttribute( key );
+
+					this._testAndFire( `attribute:${ key }`, data );
+				}
 			}
 
 			// If the map has given event it _must_ be converted by main "insert" converter.
@@ -371,12 +382,16 @@ export default class DowncastDispatcher {
 
 					if ( !mappedPosition.parent.is( '$text' ) ) {
 						this._testAndFire( 'insert', data );
+
+						// TODO: attributes...
 					}
 				} else {
 					const viewElement = this.conversionApi.mapper.toViewElement( item );
 
 					if ( !viewElement ) {
 						this._testAndFire( 'insert', data );
+
+						// TODO: attributes...
 					}
 				}
 			}
