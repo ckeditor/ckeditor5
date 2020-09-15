@@ -9,10 +9,11 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import DeleteCommand from './deletecommand';
+import DeleteObserver from './deleteobserver';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import injectBeforeInputDeleteHandling from './utils/delete/injectbeforeinputdeletehandling';
-import injectDeleteMutationsHandling from './utils/delete/injectdeletemutationshandling.js';
+import injectKeyEventsDeleteHandling from './utils/delete/injectkeyeventsdeletehandling.js';
 
 /**
  * The delete and backspace feature. Handles the <kbd>Delete</kbd> and <kbd>Backspace</kbd> keys in the editor.
@@ -33,13 +34,16 @@ export default class Delete extends Plugin {
 		editor.commands.add( 'forwardDelete', new DeleteCommand( editor, 'forward' ) );
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
+		// Note: DeleteObserver has different implementations for browsers supporting and not supporting
+		// Input Events.
+		editor.editing.view.addObserver( DeleteObserver );
+
 		// Use the beforeinput DOM event to handle delete when supported by the browser.
+		// Fall back to the keyup and keydown events if beforeinput is not supported by the browser.
 		if ( env.features.isInputEventsLevel1Supported ) {
 			injectBeforeInputDeleteHandling( editor );
-		}
-		// Fall back to the DeleteObserver if beforeinput is not supported by the browser.
-		else {
-			injectDeleteMutationsHandling( editor );
+		} else {
+			injectKeyEventsDeleteHandling( editor );
 		}
 	}
 }

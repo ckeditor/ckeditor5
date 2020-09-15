@@ -9,15 +9,15 @@
 
 const TYPING_INPUT_TYPES = [
 	// For collapsed range:
-	//	- This one is a regular typing.
+	//	- This one is a regular typing (all browsers, all systems).
 	//	- This one is used by Chrome when typing accented letter – 2nd step when the user selects the accent (Mac).
 	// For non-collapsed range:
 	//	- This one is used by Chrome when typing accented letter – when the selection box first appears (Mac).
-	//	- This one is used by Safari when applying a spell check suggestion (Mac).
+	//	- This one is used by Safari when accepting spell check suggestions from the context menu (Mac).
 	'insertText',
 
 	// This one is used by Safari when typing accented letter (Mac).
-	// This one is used by Chrome when applying spell check suggestion (Mac).
+	// This one is used by Safari when accepting spell check suggestions from the autocorrection pop-up (Mac).
 	'insertReplacementText'
 ];
 
