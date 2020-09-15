@@ -75,7 +75,7 @@ describe( 'CommandCollection', () => {
 
 			expectToThrowCKEditorError( () => {
 				collection.execute( 'foo' );
-			}, /^commandcollection-command-not-found:/, editor );
+			}, 'commandcollection-command-not-found', editor );
 		} );
 	} );
 

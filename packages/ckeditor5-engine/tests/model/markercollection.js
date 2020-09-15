@@ -127,7 +127,7 @@ describe( 'MarkerCollection', () => {
 		it( 'should throw if marker name with "," is added', () => {
 			expectToThrowCKEditorError( () => {
 				markers._set( 'foo,bar', range );
-			}, /^markercollection-incorrect-marker-name:/, markers );
+			}, 'markercollection-incorrect-marker-name', markers );
 		} );
 	} );
 
@@ -215,7 +215,7 @@ describe( 'MarkerCollection', () => {
 		it( 'should throw if marker does not exist', () => {
 			expectToThrowCKEditorError( () => {
 				markers._refresh( 'name' );
-			}, /^markercollection-refresh-marker-not-exists:/, markers );
+			}, 'markercollection-refresh-marker-not-exists', markers );
 		} );
 	} );
 
