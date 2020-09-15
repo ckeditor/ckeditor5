@@ -183,7 +183,7 @@ function isNumericalDefinition( definition ) {
 			 *
 			 * @error font-size-invalid-definition
 			 */
-			throw new CKEditorError( 'font-size-invalid-definition: Provided font size definition is invalid.', null, definition );
+			throw new CKEditorError( 'font-size-invalid-definition', null, definition );
 		} else {
 			numberValue = parseFloat( definition.model );
 		}

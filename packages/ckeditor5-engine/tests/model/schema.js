@@ -62,7 +62,7 @@ describe( 'Schema', () => {
 
 			expectToThrowCKEditorError( () => {
 				schema.register( 'foo' );
-			}, /^schema-cannot-register-item-twice:/, schema );
+			}, 'schema-cannot-register-item-twice', schema );
 		} );
 	} );
 
@@ -91,7 +91,7 @@ describe( 'Schema', () => {
 		it( 'throws when trying to extend a not yet registered item', () => {
 			expectToThrowCKEditorError( () => {
 				schema.extend( 'foo' );
-			}, /^schema-cannot-extend-missing-item:/, schema );
+			}, 'schema-cannot-extend-missing-item', schema );
 		} );
 	} );
 
@@ -960,7 +960,7 @@ describe( 'Schema', () => {
 
 			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
-			}, /^schema-check-merge-no-element-before:/, schema );
+			}, 'schema-check-merge-no-element-before', schema );
 		} );
 
 		it( 'throws an error if the node before the position is not the element', () => {
@@ -978,7 +978,7 @@ describe( 'Schema', () => {
 
 			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
-			}, /^schema-check-merge-no-element-before:/, schema );
+			}, 'schema-check-merge-no-element-before', schema );
 		} );
 
 		it( 'throws an error if there is no element after the position', () => {
@@ -995,7 +995,7 @@ describe( 'Schema', () => {
 
 			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
-			}, /^schema-check-merge-no-element-after:/, schema );
+			}, 'schema-check-merge-no-element-after', schema );
 		} );
 
 		it( 'throws an error if the node after the position is not the element', () => {
@@ -1013,7 +1013,7 @@ describe( 'Schema', () => {
 
 			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
-			}, /^schema-check-merge-no-element-before:/, schema );
+			}, 'schema-check-merge-no-element-before', schema );
 		} );
 
 		// This is an invalid case by definition – the baseElement should not contain disallowed elements

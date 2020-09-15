@@ -125,7 +125,7 @@ describe( 'DocumentSelection', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new DocumentSelection( {} );
-			}, /view-selection-setTo-not-selectable/ );
+			}, 'view-selection-setto-not-selectable' );
 		} );
 	} );
 
@@ -197,7 +197,7 @@ describe( 'DocumentSelection', () => {
 
 			expectToThrowCKEditorError( () => {
 				documentSelection._setFocus( endPos );
-			}, /view-selection-setFocus-no-ranges/, documentSelection );
+			}, 'view-selection-setfocus-no-ranges', documentSelection );
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
@@ -802,7 +802,7 @@ describe( 'DocumentSelection', () => {
 
 				expectToThrowCKEditorError( () => {
 					otherSelection._setTo( {} );
-				}, /view-selection-setTo-not-selectable/ );
+				}, 'view-selection-setto-not-selectable' );
 			} );
 
 			it( 'should throw an error when trying to set to not selectable #2', () => {
@@ -810,7 +810,7 @@ describe( 'DocumentSelection', () => {
 
 				expectToThrowCKEditorError( () => {
 					otherSelection._setTo();
-				}, /view-selection-setTo-not-selectable/ );
+				}, 'view-selection-setto-not-selectable' );
 			} );
 		} );
 
@@ -854,7 +854,7 @@ describe( 'DocumentSelection', () => {
 
 				expectToThrowCKEditorError( () => {
 					documentSelection._setTo( foo );
-				}, /view-selection-setTo-required-second-parameter/, documentSelection );
+				}, 'view-selection-setto-required-second-parameter', documentSelection );
 			} );
 
 			it( 'should collapse selection at node and flag', () => {

@@ -67,7 +67,7 @@ ClassicEditor
 
 			// Headers sent along with the XMLHttpRequest to the upload server.
 			headers: {
-				'X-CSRF-TOKEN': 'CSFR-Token',
+				'X-CSRF-TOKEN': 'CSRF-Token',
 				Authorization: 'Bearer <JSON Web Token>'
 			}
 		}

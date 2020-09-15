@@ -160,7 +160,7 @@ describe( 'NodeList', () => {
 		it( 'should throw if not a Node is inserted', () => {
 			expectToThrowCKEditorError( () => {
 				nodes._insertNodes( 0, [ 'foo' ] );
-			}, /nodelist-insertNodes-not-node/, nodes );
+			}, 'nodelist-insertnodes-not-node', nodes );
 		} );
 	} );
 

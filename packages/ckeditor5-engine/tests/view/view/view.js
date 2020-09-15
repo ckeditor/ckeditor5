@@ -894,6 +894,7 @@ describe( 'view', () => {
 		it( 'should rethrow custom CKEditorError errors', () => {
 			expectToThrowCKEditorError( () => {
 				view.change( () => {
+					// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 					throw new CKEditorError( 'foo', view );
 				} );
 			}, /foo/, view );
