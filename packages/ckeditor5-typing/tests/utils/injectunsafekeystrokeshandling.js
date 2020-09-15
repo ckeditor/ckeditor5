@@ -6,11 +6,16 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import { keyCodes, getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { isNonTypingKeystroke } from '../../src/utils/injectunsafekeystrokeshandling';
+import { isNonTypingKeystroke } from '../../src/utils/input/injectunsafekeystrokeshandling';
 import Typing from '../../src/typing';
 
 describe( 'unsafe keystroke handling utils', () => {
+	beforeEach( () => {
+		sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
+	} );
+
 	describe( 'isNonTypingKeystroke()', () => {
 		it( 'should return "true" for any keystroke with the Ctrl key', () => {
 			expect( isNonTypingKeystroke( { keyCode: keyCodes.a, ctrlKey: true } ), 'Ctrl+a' ).to.be.true;
