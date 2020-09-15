@@ -112,8 +112,6 @@ class Token {
 				if ( this._options.autoRefresh ) {
 					this._registerRefreshTokenTimeout();
 				}
-
-				return this;
 			} )
 			.then( () => this );
 	}
