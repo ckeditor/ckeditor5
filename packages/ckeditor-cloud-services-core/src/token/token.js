@@ -7,13 +7,14 @@
  * @module cloud-services-core/token
  */
 
-/* globals XMLHttpRequest, setInterval, clearInterval */
+/* globals XMLHttpRequest, setTimeout, clearTimeout, atob */
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-const DEFAULT_OPTIONS = { refreshInterval: 3600000, autoRefresh: true };
+const DEFAULT_OPTIONS = { autoRefresh: true };
+const DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME = 3600000;
 
 /**
  * Class representing the token used for communication with CKEditor Cloud Services.
@@ -30,7 +31,6 @@ class Token {
 	 * value is a function it has to match the {@link module:cloud-services-core/token~refreshToken} interface.
 	 * @param {Object} options
 	 * @param {String} [options.initValue] Initial value of the token.
-	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
 	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
 	 */
 	constructor( tokenUrlOrRefreshToken, options = DEFAULT_OPTIONS ) {
@@ -84,16 +84,16 @@ class Token {
 	 */
 	init() {
 		return new Promise( ( resolve, reject ) => {
-			if ( this._options.autoRefresh ) {
-				this._startRefreshing();
-			}
-
 			if ( !this.value ) {
 				this.refreshToken()
 					.then( resolve )
 					.catch( reject );
 
 				return;
+			}
+
+			if ( this._options.autoRefresh ) {
+				this._registerRefreshTokenTimeout();
 			}
 
 			resolve( this );
@@ -106,7 +106,15 @@ class Token {
 	 */
 	refreshToken() {
 		return this._refresh()
-			.then( value => this.set( 'value', value ) )
+			.then( value => {
+				this.set( 'value', value );
+
+				if ( this._options.autoRefresh ) {
+					this._registerRefreshTokenTimeout();
+				}
+
+				return this;
+			} )
 			.then( () => this );
 	}
 
@@ -114,25 +122,39 @@ class Token {
 	 * Destroys token instance. Stops refreshing.
 	 */
 	destroy() {
-		this._stopRefreshing();
+		clearTimeout( this._tokenRefreshTimeout );
 	}
 
 	/**
-	 * Starts value refreshing every `refreshInterval` time.
+	 * Registers refresh token timeout for time taken from token.
 	 *
 	 * @protected
 	 */
-	_startRefreshing() {
-		this._refreshInterval = setInterval( () => this.refreshToken(), this._options.refreshInterval );
+	_registerRefreshTokenTimeout() {
+		const tokenRefreshTimeoutTime = this._getTokenRefreshTimeoutTime();
+
+		this._tokenRefreshTimeout = setTimeout( () => {
+			this.refreshToken();
+		}, tokenRefreshTimeoutTime );
 	}
 
 	/**
-	 * Stops value refreshing.
+	 * Returns token refresh timeout time calculated from expire time in token payload.
+	 * If token parse fails, the default DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME is returned.
 	 *
+	 * @returns {Number}
 	 * @protected
 	 */
-	_stopRefreshing() {
-		clearInterval( this._refreshInterval );
+	_getTokenRefreshTimeoutTime() {
+		try {
+			const [ , binaryTokenPayload ] = this.value.split( '.' );
+			const { exp: tokenExpireTime } = JSON.parse( atob( binaryTokenPayload ) );
+			const tokenRefreshTimeoutTime = Math.floor( ( tokenExpireTime - Date.now() ) / 2 );
+
+			return tokenRefreshTimeoutTime;
+		} catch ( err ) {
+			return DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME;
+		}
 	}
 
 	/**
@@ -142,7 +164,6 @@ class Token {
 	 * value is a function it has to match the {@link module:cloud-services-core/token~refreshToken} interface.
 	 * @param {Object} options
 	 * @param {String} [options.initValue] Initial value of the token.
-	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
 	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
 	 * @returns {Promise.<module:cloud-services-core/token~Token>}
 	 */

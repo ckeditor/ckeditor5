@@ -84,48 +84,61 @@ describe( 'Token', () => {
 				} );
 		} );
 
-		it( 'should start token refresh every 1 hour', done => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setInterval' ] } );
+		it( 'should refresh token with time specified in token `exp` payload property', async () => {
+			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const tokenInitValue = `header.${ btoa( JSON.stringify( { exp: Date.now() + 3600000 } ) ) }.signature`;
 
-			const token = new Token( 'http://token-endpoint', { initValue: 'initValue' } );
+			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue } );
 
-			token.init()
-				.then( () => {
-					clock.tick( 3600000 );
-					clock.tick( 3600000 );
-					clock.tick( 3600000 );
-					clock.tick( 3600000 );
-					clock.tick( 3600000 );
+			await token.init();
 
-					expect( requests.length ).to.equal( 5 );
+			await clock.tickAsync( 1800000 );
+			requests[ 0 ].respond( 200, '', `header.${ btoa( JSON.stringify( { exp: Date.now() + 150000 } ) ) }.signature` );
 
-					clock.restore();
+			await clock.tickAsync( 75000 );
+			requests[ 1 ].respond( 200, '', `header.${ btoa( JSON.stringify( { exp: Date.now() + 10000 } ) ) }.signature` );
 
-					done();
-				} );
+			await clock.tickAsync( 5000 );
+			requests[ 2 ].respond( 200, '', `header.${ btoa( JSON.stringify( { exp: Date.now() + 2000 } ) ) }.signature` );
+
+			await clock.tickAsync( 1000 );
+			requests[ 3 ].respond( 200, '', `header.${ btoa( JSON.stringify( { exp: Date.now() + 300 } ) ) }.signature` );
+
+			await clock.tickAsync( 150 );
+			requests[ 4 ].respond( 200, '', `header.${ btoa( JSON.stringify( { exp: Date.now() + 300 } ) ) }.signature` );
+
+			expect( requests.length ).to.equal( 5 );
+
+			clock.restore();
 		} );
 	} );
 
 	describe( 'destroy', () => {
-		it( 'should stop refreshing the token', () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setInterval', 'clearInterval' ] } );
-			const token = new Token( 'http://token-endpoint', { initValue: 'initValue' } );
+		it( 'should stop refreshing the token', async () => {
+			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout', 'clearTimeout' ] } );
+			const tokenInitValue = `header.${ btoa( JSON.stringify( { exp: Date.now() + 3600000 } ) ) }.signature`;
 
-			return token.init()
-				.then( () => {
-					clock.tick( 3600000 );
-					clock.tick( 3600000 );
+			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue } );
 
-					expect( requests.length ).to.equal( 2 );
+			await token.init();
 
-					token.destroy();
+			await clock.tickAsync( 1800000 );
+			requests[ 0 ].respond( 200, '', `header.${ btoa( JSON.stringify( { exp: Date.now() + 150000 } ) ) }.signature` );
+			await clock.tickAsync( 100 );
 
-					clock.tick( 3600000 );
-					clock.tick( 3600000 );
-					clock.tick( 3600000 );
+			await clock.tickAsync( 75000 );
+			requests[ 1 ].respond( 200, '', `header.${ btoa( JSON.stringify( { exp: Date.now() + 10000 } ) ) }.signature` );
+			await clock.tickAsync( 100 );
 
-					expect( requests.length ).to.equal( 2 );
-				} );
+			token.destroy();
+
+			await clock.tickAsync( 3600000 );
+			await clock.tickAsync( 3600000 );
+			await clock.tickAsync( 3600000 );
+
+			expect( requests.length ).to.equal( 2 );
+
+			clock.restore();
 		} );
 	} );
 
@@ -202,49 +215,39 @@ describe( 'Token', () => {
 		} );
 	} );
 
-	describe( '_startRefreshing()', () => {
-		it( 'should start refreshing', () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setInterval' ] } );
+	describe( '_registerRefreshTokenTimeout()', () => {
+		it( 'should register refresh token timeout and run refresh after that time', async () => {
+			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const tokenInitValue = `header.${ btoa( JSON.stringify( { exp: Date.now() + 3600000 } ) ) }.signature`;
 
-			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
+			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
 
-			token._startRefreshing();
+			token._registerRefreshTokenTimeout();
 
-			clock.tick( 3600000 );
-			clock.tick( 3600000 );
-			clock.tick( 3600000 );
-			clock.tick( 3600000 );
-			clock.tick( 3600000 );
+			await clock.tickAsync( 1800000 );
 
-			expect( requests.length ).to.equal( 5 );
+			expect( requests.length ).to.equal( 1 );
 
 			clock.restore();
 		} );
 	} );
 
-	describe( '_stopRefreshing()', () => {
-		it( 'should stop refreshing', done => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setInterval', 'clearInterval' ] } );
+	describe( '_getTokenRefreshTimeoutTime', () => {
+		it( 'should return timeout time based on expiration time in token for valid token', () => {
+			const tokenInitValue = `header.${ btoa( JSON.stringify( { exp: Date.now() + 3600000 } ) ) }.signature`;
+			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
 
-			const token = new Token( 'http://token-endpoint', { initValue: 'initValue' } );
+			const timeoutTime = token._getTokenRefreshTimeoutTime();
 
-			token.init()
-				.then( () => {
-					clock.tick( 3600000 );
-					clock.tick( 3600000 );
-					clock.tick( 3600000 );
+			expect( timeoutTime ).to.eq( 1800000 );
+		} );
 
-					token._stopRefreshing();
+		it( 'should return default refresh timeout time if token parse fails', () => {
+			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
 
-					clock.tick( 3600000 );
-					clock.tick( 3600000 );
+			const timeoutTime = token._getTokenRefreshTimeoutTime();
 
-					expect( requests.length ).to.equal( 3 );
-
-					clock.restore();
-
-					done();
-				} );
+			expect( timeoutTime ).to.eq( 3600000 );
 		} );
 	} );
 
@@ -253,19 +256,6 @@ describe( 'Token', () => {
 			Token.create( 'http://token-endpoint', { autoRefresh: false } )
 				.then( token => {
 					expect( token.value ).to.equal( 'token-value' );
-
-					done();
-				} );
-
-			requests[ 0 ].respond( 200, '', 'token-value' );
-		} );
-
-		it( 'should use default options when none passed', done => {
-			const intervalSpy = sinon.spy( window, 'setInterval' );
-
-			Token.create( 'http://token-endpoint' )
-				.then( () => {
-					expect( intervalSpy.args[ 0 ][ 1 ] ).to.equal( 3600000 );
 
 					done();
 				} );
