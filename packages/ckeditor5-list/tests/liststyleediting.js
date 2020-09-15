@@ -384,6 +384,41 @@ describe( 'ListStyleEditing', () => {
 					'</ul>'
 				);
 			} );
+
+			// See: #8081.
+			it( 'should convert properly nested list styles', () => {
+				// ■ Level 0
+				//     ▶ Level 0.1
+				//         ○ Level 0.1.1
+				//     ▶ Level 0.2
+				//         ○ Level 0.2.1
+				setModelData( model,
+					'<listItem listIndent="0" listType="bulleted" listStyle="default">Level 0</listItem>' +
+					'<listItem listIndent="1" listType="bulleted" listStyle="default">Level 0.1</listItem>' +
+					'<listItem listIndent="2" listType="bulleted" listStyle="circle">Level 0.1.1</listItem>' +
+					'<listItem listIndent="1" listType="bulleted" listStyle="default">Level 0.2</listItem>' +
+					'<listItem listIndent="2" listType="bulleted" listStyle="circle">Level 0.2.1</listItem>'
+				);
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<ul>' +
+						'<li>Level 0' +
+							'<ul>' +
+								'<li>Level 0.1' +
+									'<ul style="list-style-type:circle">' +
+										'<li>Level 0.1.1</li>' +
+									'</ul>' +
+								'</li>' +
+								'<li>Level 0.2' +
+									'<ul style="list-style-type:circle">' +
+										'<li>Level 0.2.1</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>'
+				);
+			} );
 		} );
 	} );
 
@@ -934,6 +969,97 @@ describe( 'ListStyleEditing', () => {
 					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 					'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
 					'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
+				);
+			} );
+		} );
+
+		describe( 'delete + undo', () => {
+			let editor, model, view;
+
+			beforeEach( () => {
+				return VirtualTestEditor
+					.create( {
+						plugins: [ Paragraph, ListStyleEditing, Typing, UndoEditing ]
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+						view = editor.editing.view;
+					} );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			// See: #7930.
+			it( 'should restore proper list style attribute after undo merging lists', () => {
+				// ○ 1.
+				// ○ 2.
+				// ○ 3.
+				// <paragraph>
+				// ■ 1.
+				// ■ 2.
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>' +
+					'<paragraph>[]</paragraph>' +
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+					'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
+				);
+
+				expect( getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
+					'<ul style="list-style-type:circle">' +
+						'<li>1.</li>' +
+						'<li>2.</li>' +
+						'<li>3.</li>' +
+					'</ul>' +
+					'<p></p>' +
+					'<ul style="list-style-type:square">' +
+						'<li>1.</li>' +
+						'<li>2.</li>' +
+					'</ul>'
+				);
+
+				// After removing the paragraph.
+				// ○ 1.
+				// ○ 2.
+				// ○ 3.
+				// ○ 1.
+				// ○ 2.
+				editor.execute( 'delete' );
+
+				expect( getViewData( view, { withoutSelection: true } ), 'executing delete' ).to.equal(
+					'<ul style="list-style-type:circle">' +
+						'<li>1.</li>' +
+						'<li>2.</li>' +
+						'<li>3.</li>' +
+						'<li>1.</li>' +
+						'<li>2.</li>' +
+					'</ul>'
+				);
+
+				// After undo.
+				// ○ 1.
+				// ○ 2.
+				// ○ 3.
+				// <paragraph>
+				// ■ 1.
+				// ■ 2.
+				editor.execute( 'undo' );
+
+				expect( getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
+					'<ul style="list-style-type:circle">' +
+						'<li>1.</li>' +
+						'<li>2.</li>' +
+						'<li>3.</li>' +
+					'</ul>' +
+					'<p></p>' +
+					'<ul style="list-style-type:square">' +
+						'<li>1.</li>' +
+						'<li>2.</li>' +
+					'</ul>'
 				);
 			} );
 		} );

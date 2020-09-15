@@ -229,7 +229,6 @@ function downcastListStyleAttribute() {
 		dispatcher.on( 'attribute:listStyle:listItem', ( evt, data, conversionApi ) => {
 			const viewWriter = conversionApi.writer;
 			const currentElement = data.item;
-			const listStyle = data.attributeNewValue;
 
 			const previousElement = getSiblingListItem( currentElement.previousSibling, {
 				sameIndent: true,
@@ -239,25 +238,23 @@ function downcastListStyleAttribute() {
 
 			const viewItem = conversionApi.mapper.toViewElement( currentElement );
 
-			// Single item list.
-			if ( !previousElement ) {
-				setListStyle( viewWriter, listStyle, viewItem.parent );
-			} else if ( !areRepresentingSameList( previousElement, currentElement ) ) {
+			// A case when elements represent different lists. We need to separate their container.
+			if ( !areRepresentingSameList( currentElement, previousElement ) ) {
 				viewWriter.breakContainer( viewWriter.createPositionBefore( viewItem ) );
-				viewWriter.breakContainer( viewWriter.createPositionAfter( viewItem ) );
-
-				setListStyle( viewWriter, listStyle, viewItem.parent );
 			}
+
+			setListStyle( viewWriter, data.attributeNewValue, viewItem.parent );
 		}, { priority: 'low' } );
 	};
 
 	// Checks whether specified list items belong to the same list.
 	//
 	// @param {module:engine/model/element~Element} listItem1 The first list item to check.
-	// @param {module:engine/model/element~Element} listItem2 The second list item to check.
+	// @param {module:engine/model/element~Element|null} listItem2 The second list item to check.
 	// @returns {Boolean}
 	function areRepresentingSameList( listItem1, listItem2 ) {
-		return listItem1.getAttribute( 'listType' ) === listItem2.getAttribute( 'listType' ) &&
+		return listItem2 &&
+			listItem1.getAttribute( 'listType' ) === listItem2.getAttribute( 'listType' ) &&
 			listItem1.getAttribute( 'listIndent' ) === listItem2.getAttribute( 'listIndent' ) &&
 			listItem1.getAttribute( 'listStyle' ) === listItem2.getAttribute( 'listStyle' );
 	}
