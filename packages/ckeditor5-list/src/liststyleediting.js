@@ -141,7 +141,7 @@ export default class ListStyleEditing extends Plugin {
 				return;
 			}
 
-			// Find the most outer item list based on the `listIndent` attribute. We can't assume that `listIndent=0`
+			// Find the outermost list item based on the `listIndent` attribute. We can't assume that `listIndent=0`
 			// because the selection can be hooked in nested lists.
 			//
 			// <listItem listIndent="0" listType="bulleted" listStyle="square">UL List item 1</listItem>
@@ -158,7 +158,7 @@ export default class ListStyleEditing extends Plugin {
 				listIndent: nextSibling.getAttribute( 'listIndent' )
 			} );
 
-			// The most outer list item may not exist while removing elements between lists with different value
+			// The outermost list item may not exist while removing elements between lists with different value
 			// of the `listIndent` attribute. In such a case we don't want to update anything. See: #8073.
 			if ( !mostOuterItemList ) {
 				return;
