@@ -25,80 +25,83 @@ export default function injectTableCellRefreshPostFixer( model ) {
 function tableCellRefreshPostFixer( model ) {
 	const differ = model.document.differ;
 
-	// Stores cells to be refreshed so the table cell will be refreshed once for multiple changes.
-	const cellsToRefresh = new Set();
+	const changesForCells = new Map();
+	const changes = [ ...differ.getChanges() ];
 
-	// Counting the paragraph inserts to verify if it increased to more than one paragraph in the current differ.
-	let insertCount = 0;
-
-	for ( const change of differ.getChanges() ) {
-		// @todo port to main
+	// Updated refresh algorithm.
+	// 1. Gather all changes inside table cell.
+	changes.forEach( change => {
 		const parent = change.type == 'attribute' ? change.range.start.parent : change.position.parent;
 
 		if ( !parent.is( 'element', 'tableCell' ) ) {
-			continue;
+			return;
 		}
 
-		if ( change.type == 'insert' ) {
-			insertCount++;
+		if ( !changesForCells.has( parent ) ) {
+			changesForCells.set( parent, [] );
 		}
 
-		if ( checkRefresh( parent, change.type, insertCount ) ) {
-			cellsToRefresh.add( parent );
+		changesForCells.get( parent ).push( change );
+	} );
+
+	// Stores cells to be refreshed, so the table cell will be refreshed once for multiple changes.
+	const cellsToRefresh = new Set();
+
+	// 2. For each table cell:
+	for ( const [ tableCell, changes ] of changesForCells.entries() ) {
+		// 2a. Count inserts/removes as diff and marks any attribute change.
+		const { childDiff, attribute } = changes.reduce( ( summary, change ) => {
+			if ( change.type === 'remove' ) {
+				summary.childDiff--;
+			}
+
+			if ( change.type === 'insert' ) {
+				summary.childDiff++;
+			}
+
+			if ( change.type === 'attribute' ) {
+				summary.attribute = true;
+			}
+
+			return summary;
+		}, { childDiff: 0, attribute: false } );
+
+		// 2b. If we detect that number of children has changed...
+		if ( childDiff !== 0 ) {
+			const prevChildren = tableCell.childCount - childDiff;
+			const currentChildren = tableCell.childCount;
+
+			// Might need refresh if previous children was different from 1. Eg.: it was 2 before, now is 1.
+			if ( currentChildren === 1 && prevChildren !== 1 ) {
+				cellsToRefresh.add( tableCell );
+			}
+
+			// Might need refresh if previous children was 1. Eg.: it was 1 before, now is 5.
+			if ( currentChildren !== 1 && prevChildren === 1 ) {
+				cellsToRefresh.add( tableCell );
+			}
+		}
+
+		// ... 2c or some attribute has changed.
+		if ( attribute ) {
+			cellsToRefresh.add( tableCell );
 		}
 	}
 
+	// Having cells to refresh we need to
 	if ( cellsToRefresh.size ) {
-		// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: refreshing cells (${ cellsToRefresh.size }).` );
+		// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: Checking table cell to refresh (${ cellsToRefresh.size }).` );
+		// @if CK_DEBUG_TABLE // let paragraphsRefreshed = 0;
 
 		for ( const tableCell of cellsToRefresh.values() ) {
-			differ.refreshItem( tableCell );
+			for ( const paragraph of [ ...tableCell.getChildren() ].filter( child => child.is( 'element', 'paragraph' ) ) ) {
+				// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: refreshing paragraph in table cell (${++paragraphsRefreshed}).` );
+				differ._pocRefreshItem( paragraph );
+			}
 		}
 
-		return true;
+		return false; // TODO tmp
 	}
 
 	return false;
-}
-
-// Checks if the model table cell requires refreshing to be re-rendered to a proper state in the view.
-//
-// This method detects changes that will require renaming `<span>` to `<p>` (or vice versa) in the view.
-//
-// This method is a simple heuristic that checks only a single change and will sometimes give a false positive result when multiple changes
-// will result in a state that does not require renaming in the view (but will be seen as requiring a refresh).
-//
-// For instance: A `<span>` should be renamed to `<p>` when adding an attribute to a `<paragraph>`.
-// But adding one attribute and removing another one will result in a false positive: the check for an added attribute will see one
-// attribute on a paragraph and will falsely qualify such change as adding an attribute to a paragraph without any attribute.
-//
-// @param {module:engine/model/element~Element} tableCell The table cell to check.
-// @param {String} type Type of change.
-// @param {Number} insertCount The number of inserts in differ.
-function checkRefresh( tableCell, type, insertCount ) {
-	const hasInnerParagraph = Array.from( tableCell.getChildren() ).some( child => child.is( 'element', 'paragraph' ) );
-
-	// If there is no paragraph in table cell then the view doesn't require refreshing.
-	//
-	// Why? What we really want to achieve is to make all the old paragraphs (which weren't added in this batch) to be
-	// converted once again, so that the paragraph-in-table-cell converter can correctly create a `<p>` or a `<span>` element.
-	// If there are no paragraphs in the table cell, we don't care.
-	if ( !hasInnerParagraph ) {
-		return false;
-	}
-
-	// For attribute change we only refresh if there is a single paragraph as in this case we may want to change existing `<span>` to `<p>`.
-	if ( type == 'attribute' ) {
-		const attributesCount = Array.from( tableCell.getChild( 0 ).getAttributeKeys() ).length;
-
-		return tableCell.childCount === 1 && attributesCount < 2;
-	}
-
-	// For other changes (insert, remove) the `<span>` to `<p>` change is needed when:
-	//
-	// - another element is added to a single paragraph (childCount becomes >= 2)
-	// - another element is removed and a single paragraph is left (childCount == 1)
-	//
-	// Change is not needed if there were multiple blocks before change.
-	return tableCell.childCount <= ( type == 'insert' ? insertCount + 1 : 1 );
 }
