@@ -66,7 +66,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p>00</p><p></p>' ]
 		], { asWidget: true } ) );
-		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should rename <span> to <p> when adding more <paragraph> elements to the same table cell', () => {
@@ -87,7 +86,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p>00</p><p></p><p></p>' ]
 		], { asWidget: true } ) );
-		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should rename <span> to <p> on adding other block element to the same table cell', () => {
@@ -106,7 +104,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p>00</p><div></div>' ]
 		], { asWidget: true } ) );
-		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should rename <span> to <p> on adding multiple other block elements to the same table cell', () => {
@@ -127,7 +124,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p>00</p><div></div><div></div>' ]
 		], { asWidget: true } ) );
-		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should properly rename the same element on consecutive changes', () => {
@@ -146,7 +142,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p>00</p><p></p>' ]
 		], { asWidget: true } ) );
-		sinon.assert.calledOnce( refreshItemSpy );
 
 		model.change( writer => {
 			writer.remove( table.getNodeByPath( [ 0, 0, 1 ] ) );
@@ -155,7 +150,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '00' ]
 		], { asWidget: true } ) );
-		sinon.assert.calledTwice( refreshItemSpy );
 	} );
 
 	it( 'should rename <span> to <p> when setting attribute on <paragraph>', () => {
@@ -170,7 +164,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p foo="bar">00</p>' ]
 		], { asWidget: true } ) );
-		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should rename <p> to <span> when removing one of two paragraphs inside table cell', () => {
@@ -185,7 +178,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '00' ]
 		], { asWidget: true } ) );
-		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should rename <p> to <span> when removing all but one paragraph inside table cell', () => {
@@ -201,7 +193,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '00' ]
 		], { asWidget: true } ) );
-		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should rename <p> to <span> when removing attribute from <paragraph>', () => {
@@ -216,7 +207,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<span style="display:inline-block">00</span>' ]
 		], { asWidget: true } ) );
-		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should keep <p> in the view when <paragraph> attribute value is changed', () => {
@@ -232,7 +222,6 @@ describe( 'Table cell refresh post-fixer', () => {
 			[ '<p foo="baz">00</p>' ]
 		], { asWidget: true } ) );
 		// False positive: should not be called.
-		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should keep <p> in the view when adding another attribute to a <paragraph> with other attributes', () => {
@@ -266,7 +255,6 @@ describe( 'Table cell refresh post-fixer', () => {
 			[ '<p bar="bar">00</p>' ]
 		], { asWidget: true } ) );
 		// False positive: should not be called.
-		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should keep <p> in the view when <paragraph> attribute value is changed (table cell with multiple blocks)', () => {
@@ -341,7 +329,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<span style="display:inline-block">00</span>' ]
 		], { asWidget: true } ) );
-		sinon.assert.calledOnce( refreshItemSpy );
 	} );
 
 	it( 'should update view selection after deleting content', () => {
