@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals console, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
@@ -21,6 +21,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
+import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
@@ -42,6 +43,7 @@ ClassicEditor
 			Link,
 			List,
 			MediaEmbed,
+			Mention,
 			Paragraph,
 			Table,
 			TableToolbar
@@ -73,10 +75,31 @@ ClassicEditor
 				'tableRow',
 				'mergeTableCells'
 			]
+		},
+		mention: {
+			feeds: [
+				{
+					marker: '@',
+					feed: [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ]
+				},
+				{
+					marker: '#',
+					feed: [
+						'#a01', '#a02', '#a03', '#a04', '#a05', '#a06', '#a07', '#a08', '#a09', '#a10',
+						'#a11', '#a12', '#a13', '#a14', '#a15', '#a16', '#a17', '#a18', '#a19', '#a20'
+					]
+				},
+				{
+					marker: ':',
+					feed: [
+						':+1:', ':-1:', ':@(at-sign):', ':$(dollar-sign):', ':#(hash-sign):'
+					]
+				}
+			]
 		}
 	} )
 	.then( editor => {
-		window.editor = editor;
+		// window.editor = editor;
 
 		let beforeInputEventCount = 0;
 		let compositionEventCount = 0;
