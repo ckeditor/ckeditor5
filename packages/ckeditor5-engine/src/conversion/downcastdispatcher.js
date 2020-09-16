@@ -349,8 +349,7 @@ export default class DowncastDispatcher {
 			const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
 			const data = {
 				item,
-				range: itemRange,
-				isRefresh: true
+				range: itemRange
 			};
 
 			const expectedEventName = getEventName( 'insert', data );
@@ -358,6 +357,15 @@ export default class DowncastDispatcher {
 			// Main element refresh - kinda ugly as we have all items in the range.
 			// TODO: Maybe, an inner range would be better (check children, etc).
 			if ( expectedEventName === 'insert:' + name ) {
+				// Cache current view element of a converted element, might be undefined if first insert.
+				const currentView = this.conversionApi.mapper.toViewElement( data.item );
+
+				if ( currentView ) {
+					// Remove the old view (but hold the reference as it will be used to bring back view items not needed to re-render.
+					// Thanks to the mapper that holds references nothing should blow up.
+					this.conversionApi.writer.remove( currentView );
+				}
+
 				this._testAndFire( 'insert', data );
 
 				// Fire a separate addAttribute event for each attribute that was set on inserted items.
@@ -369,6 +377,35 @@ export default class DowncastDispatcher {
 					data.attributeNewValue = item.getAttribute( key );
 
 					this._testAndFire( `attribute:${ key }`, data );
+				}
+
+				// Handle reviving removed view items on refreshing main view.
+				if ( currentView ) {
+					const viewElement = this.conversionApi.mapper.toViewElement( data.item );
+
+					// Iterate over new view elements to find "interesting" points - those elements that are mapped to the model.
+					for ( const { item } of this.conversionApi.writer.createRangeIn( viewElement ) ) {
+						const modelItem = this.conversionApi.mapper.toModelElement( item );
+
+						// At this stage we get the update view element, so any mapped model item might be a potential "slot".
+						if ( modelItem ) {
+							const currentViewItem = this.conversionApi.mapper._temporalModelToView.get( modelItem );
+
+							// This of course needs better API, but for now it works.
+							// Mapper.bindSlot() creates mappings as mapper.bindElements() but also binds view element
+							// from view to the model item.
+							if ( currentViewItem ) {
+								// This allows to have a map: updatedView - model - oldView and to retain previously rendered children
+								// from the "slot" element. Those children can be moved to a newly created slot.
+								this.conversionApi.writer.move(
+									this.conversionApi.writer.createRangeIn( currentViewItem ),
+									this.conversionApi.writer.createPositionAt( item, 0 )
+								);
+							}
+						}
+					}
+					// // At this stage old view can be safely removed.
+					//
 				}
 			}
 
@@ -383,7 +420,7 @@ export default class DowncastDispatcher {
 					if ( !mappedPosition.parent.is( '$text' ) ) {
 						this._testAndFire( 'insert', data );
 
-						// TODO: attributes...
+						// TODO: attributes ? Try to re-use convertInsert() here.
 					}
 				} else {
 					const viewElement = this.conversionApi.mapper.toViewElement( item );
@@ -391,7 +428,7 @@ export default class DowncastDispatcher {
 					if ( !viewElement ) {
 						this._testAndFire( 'insert', data );
 
-						// TODO: attributes...
+						// TODO: attributes ? Try to re-use convertInsert() here.
 					}
 				}
 			}
