@@ -715,10 +715,10 @@ function findLinkElementAncestor( position ) {
 // Returns next valid range for the fake visual selection marker.
 //
 // @private
-// @param {module:engine/model/range~Range} range Current range
-// @param {module:engine/model/position~Position} focus Selection focus
-// @param {module:engine/model/writer~Writer} writer Writer
-// @returns {module:engine/model/range~Range} New valid range for the fake visual selection marker
+// @param {module:engine/model/range~Range} range Current range.
+// @param {module:engine/model/position~Position} focus Selection focus.
+// @param {module:engine/model/writer~Writer} writer Writer.
+// @returns {module:engine/model/range~Range} New valid range for the fake visual selection marker.
 function getNextValidRange( range, focus, writer ) {
 	const nextStartPath = [ range.start.path[ 0 ] + 1, 0 ];
 	const nextStartPosition = writer.createPositionFromPath( range.start.root, nextStartPath, 'toNext' );
