@@ -185,7 +185,7 @@ export default class Differ {
 				for ( const item of operation.range.getItems( { shallow: true } ) ) {
 					// Attribute change on refreshed element is ignored
 					// TODO: this is wrong if attribute would be handled elsewhere: || this._isInRefreshedElement( item )
-					if ( this._isInInsertedElement( item.parent ) ) {
+					if ( this._isInInsertedElement( item.parent ) || this._isInRefreshedElement( item ) ) {
 						continue;
 					}
 
@@ -735,10 +735,6 @@ export default class Differ {
 			const incEnd = inc.offset + inc.howMany;
 			const oldEnd = old.offset + old.howMany;
 
-			// if ( changes.length > 100 ) {
-			// 	debugger;
-			// }
-
 			if ( inc.type == 'insert' ) {
 				if ( old.type == 'insert' ) {
 					if ( inc.offset <= old.offset ) {
@@ -783,10 +779,6 @@ export default class Differ {
 						} );
 					}
 				}
-				//
-				// if ( old.type == 'refresh' ) {
-				// 	// console.log( '...      old refresh, incoming insert' );
-				// }
 			}
 
 			if ( inc.type == 'remove' ) {
@@ -844,7 +836,7 @@ export default class Differ {
 							// Attribute change needs to be split.
 							const howMany = old.howMany;
 
-							// old.howMany = inc.offset - old.offset;
+							old.howMany = inc.offset - old.offset;
 
 							const howManyAfter = howMany - old.howMany - inc.nodesToHandle;
 
@@ -937,14 +929,12 @@ export default class Differ {
 			if ( inc.type == 'refresh' ) {
 				if ( old.type == 'insert' ) {
 					if ( inc.offset === old.offset && inc.howMany === old.howMany ) {
-						// console.log( '...      old INSERT, incoming REFRESH --- HANDLED!' );
 						old.howMany = 0;
 					}
 				}
 
 				if ( old.type == 'remove' ) {
 					if ( inc.offset === old.offset && inc.howMany === old.howMany ) {
-						// console.log( '...      old REMOVE, incoming REFRESH --- HANDLED!' );
 						inc.nodesToHandle = 0;
 					}
 				}
@@ -1232,7 +1222,6 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 
 		// Then, fill up actions accordingly to change type.
 		if ( change.type == 'insert' ) {
-			// console.log( 'change type of INSERT', change.offset, change.howMany );
 			for ( let i = 0; i < change.howMany; i++ ) {
 				actions.push( 'i' );
 			}
@@ -1256,7 +1245,6 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 			// We changed `howMany` old nodes, update `oldChildrenHandled`.
 			oldChildrenHandled += change.howMany;
 		} else {
-			// console.log( 'change type of REFRESH', change.offset, change.howMany );
 			actions.push( 'x' );
 
 			// The last handled offset is after inserted range.
@@ -1271,8 +1259,6 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 			actions.push( 'e' );
 		}
 	}
-
-	// console.log( 'Changes', Array.from( changes ).map( change => change.type ), 'actions', actions );
 
 	return actions;
 }
