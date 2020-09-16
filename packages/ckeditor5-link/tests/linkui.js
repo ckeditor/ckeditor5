@@ -500,6 +500,31 @@ describe( 'LinkUI', () => {
 				} );
 
 				it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
+					'of the empty block in the multiline selection', () => {
+					setModelData( editor.model, '<paragraph>[</paragraph><paragraph>foo]</paragraph>' );
+
+					linkUIFeature._showUI();
+
+					expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+					const secondParagraph = editor.model.document.getRoot().getChild( 1 );
+					const expectedRange = editor.model.createRange(
+						editor.model.createPositionAt( secondParagraph, 0 ),
+						editor.model.createPositionAt( secondParagraph, 3 )
+					);
+
+					const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+					expect( getViewData( editor.editing.view ) ).to.equal(
+						'<p>[</p>' +
+						'<p><span class="ck-fake-link-selection">foo</span>]</p>'
+					);
+					expect( editor.getData() ).to.equal( '<p>&nbsp;</p><p>foo</p>' );
+				} );
+
+				it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
 					'of the first block in the multiline selection', () => {
 					setModelData( editor.model, '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
 
