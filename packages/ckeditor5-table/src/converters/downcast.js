@@ -324,27 +324,14 @@ function createViewTableCellElement( tableSlot, tableAttributes, insertPosition,
 
 	conversionApi.writer.insert( insertPosition, cellElement );
 
-	if ( isSingleParagraph && !hasAnyAttribute( firstChild ) ) {
+	conversionApi.mapper.bindSlotElements( tableCell, cellElement );
+
+	if ( isSingleParagraph && !hasAnyAttribute( firstChild ) && !asWidget ) {
 		const innerParagraph = tableCell.getChild( 0 );
-		const paragraphInsertPosition = conversionApi.writer.createPositionAt( cellElement, 'end' );
 
 		conversionApi.consumable.consume( innerParagraph, 'insert' );
 
-		if ( asWidget ) {
-			// Use display:inline-block to force Chrome/Safari to limit text mutations to this element.
-			// See #6062.
-			const fakeParagraph = conversionApi.writer.createContainerElement( 'span', { style: 'display:inline-block' } );
-
-			conversionApi.mapper.bindElements( innerParagraph, fakeParagraph );
-			conversionApi.writer.insert( paragraphInsertPosition, fakeParagraph );
-
-			conversionApi.mapper.bindSlotElements( tableCell, cellElement );
-		} else {
-			conversionApi.mapper.bindElements( tableCell, cellElement );
-			conversionApi.mapper.bindElements( innerParagraph, cellElement );
-		}
-	} else {
-		conversionApi.mapper.bindSlotElements( tableCell, cellElement );
+		conversionApi.mapper.bindElements( innerParagraph, cellElement );
 	}
 }
 
