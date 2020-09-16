@@ -1803,7 +1803,7 @@ describe( 'Differ', () => {
 			] );
 		} );
 
-		it( 'an element (block)', () => {
+		it( 'a refreshed element (block)', () => {
 			const p = root.getChild( 0 );
 
 			differ.refreshItem( p );
@@ -1813,7 +1813,7 @@ describe( 'Differ', () => {
 			], true );
 		} );
 
-		it( 'an element (complex)', () => {
+		it( 'a refreshed element (complex)', () => {
 			const complex = root.getChild( 2 );
 
 			differ.refreshItem( complex );
@@ -1823,7 +1823,7 @@ describe( 'Differ', () => {
 			], true );
 		} );
 
-		it( 'an element with child removed (refresh + remove)', () => {
+		it( 'a refreshed element with a child removed (refresh + remove)', () => {
 			const complex = root.getChild( 2 );
 
 			model.change( () => {
@@ -1836,7 +1836,7 @@ describe( 'Differ', () => {
 			} );
 		} );
 
-		it( 'an element with child removed (remove + refresh)', () => {
+		it( 'a refreshed element with a child removed (remove + refresh)', () => {
 			const complex = root.getChild( 2 );
 
 			model.change( () => {
@@ -1850,7 +1850,7 @@ describe( 'Differ', () => {
 			} );
 		} );
 
-		it( 'an element with child added (refresh + add)', () => {
+		it( 'a refreshed element with a child added (refresh + insert)', () => {
 			const complex = root.getChild( 2 );
 
 			model.change( () => {
@@ -1863,20 +1863,22 @@ describe( 'Differ', () => {
 			} );
 		} );
 
-		it( 'an element with child added (add + refresh)', () => {
+		it( 'a refreshed element with a child added (insert + refresh)', () => {
 			const complex = root.getChild( 2 );
 
 			model.change( () => {
+				const slot = new Element( 'slot' );
+				insert( slot, model.createPositionAt( complex, 2 ) );
 				differ.refreshItem( complex );
-				insert( new Element( 'slot' ), model.createPositionAt( complex, 2 ) );
 
 				expectChanges( [
-					{ type: 'refresh', name: 'complex', length: 1, position: model.createPositionBefore( complex ) }
+					{ type: 'refresh', name: 'complex', length: 1, position: model.createPositionBefore( complex ) },
+					{ type: 'insert', name: 'slot', length: 1, position: model.createPositionBefore( slot ) }
 				], true );
 			} );
 		} );
 
-		it( 'an element with attribute set (refresh + attribute)', () => {
+		it( 'a refreshed element with attribute set (refresh + attribute)', () => {
 			const complex = root.getChild( 2 );
 
 			model.change( () => {
@@ -1889,16 +1891,72 @@ describe( 'Differ', () => {
 			} );
 		} );
 
-		it( 'an element with attribute set (attribute + refresh)', () => {
+		it( 'a refreshed element with attribute set (attribute + refresh)', () => {
 			const complex = root.getChild( 2 );
 
 			model.change( () => {
-				differ.refreshItem( complex );
 				attribute( model.createRangeOn( complex ), 'foo', undefined, true );
+				differ.refreshItem( complex );
 
 				expectChanges( [
 					{ type: 'refresh', name: 'complex', length: 1, position: model.createPositionBefore( complex ) }
 				], true );
+			} );
+		} );
+
+		it( 'an element added and refreshed', () => {
+			const complex = root.getChild( 2 );
+
+			model.change( () => {
+				const slot = new Element( 'slot' );
+				insert( slot, model.createPositionAt( complex, 2 ) );
+				differ.refreshItem( slot );
+
+				expectChanges( [
+					{ type: 'refresh', name: 'slot', length: 1, position: model.createPositionBefore( slot ) }
+				], true );
+			} );
+		} );
+
+		it( 'an element added and other refreshed', () => {
+			const complex = root.getChild( 2 );
+
+			model.change( () => {
+				const slot = new Element( 'slot' );
+				insert( slot, model.createPositionAt( complex, 2 ) );
+				differ.refreshItem( complex.getChild( 0 ) );
+
+				expectChanges( [
+					{ type: 'refresh', name: 'slot', length: 1, position: model.createPositionAt( complex, 0 ) },
+					{ type: 'insert', name: 'slot', length: 1, position: model.createPositionAt( complex, 2 ) }
+				], true );
+			} );
+		} );
+
+		it( 'an element refreshed and removed', () => {
+			const complex = root.getChild( 2 );
+
+			model.change( () => {
+				const slot = complex.getChild( 1 );
+				remove( model.createPositionAt( complex, 1 ), 1 );
+				differ.refreshItem( slot );
+
+				expectChanges( [
+					{ type: 'remove', name: 'slot', length: 1, position: model.createPositionAt( complex, 1 ) }
+				] );
+			} );
+		} );
+
+		it( 'inside a new element', () => {
+			// Since the refreshed element is inside a new element, it should not be listed on changes list.
+			model.change( () => {
+				insert( new Element( 'blockQuote', null, new Element( 'paragraph' ) ), new Position( root, [ 2 ] ) );
+
+				differ.refreshItem( root.getChild( 2 ).getChild( 0 ) );
+
+				expectChanges( [
+					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 2 ] ) }
+				] );
 			} );
 		} );
 
@@ -2105,7 +2163,7 @@ describe( 'Differ', () => {
 	function expectChanges( expected, includeChangesInGraveyard = false ) {
 		const changes = differ.getChanges( { includeChangesInGraveyard } );
 
-		// expect( changes.length ).to.equal( expected.length );
+		expect( changes.length ).to.equal( expected.length );
 
 		for ( let i = 0; i < expected.length; i++ ) {
 			for ( const key in expected[ i ] ) {

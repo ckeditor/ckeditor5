@@ -600,18 +600,22 @@ export default class Differ {
 		this._removeAllNestedChanges( parent, offset, howMany );
 	}
 
+	/**
+	 * Saves and handles a remove change.
+	 *
+	 * @private
+	 * @param {module:engine/model/element~Element} parent
+	 * @param {Number} offset
+	 * @param {Number} howMany
+	 */
 	_markRefresh( parent, offset, howMany ) {
 		const changeItem = { type: 'refresh', offset, howMany, count: this._changeCount++ };
 
 		this._markChange( parent, changeItem );
-
-		// Needed to remove "attribute" change or other.
-		// @todo: might need to retain "slot" changes.
-		this._removeAllNestedAttributeChanges( parent, offset, howMany );
 	}
 
 	/**
-	 * Saves and handles an attribute change.
+	 * Saves and handles a refresh change.
 	 *
 	 * @private
 	 * @param {module:engine/model/item~Item} item
@@ -908,16 +912,17 @@ export default class Differ {
 				}
 			}
 
-			if ( inc.type == 'refresh' ) {
-				if ( old.type == 'insert' ) {
+			if ( inc.type === 'refresh' ) {
+				// TOOD: This might be handled on other level.
+				if ( old.type === 'insert' ) {
 					if ( inc.offset === old.offset && inc.howMany === old.howMany ) {
 						old.howMany = 0;
 					}
 				}
 
-				if ( old.type == 'remove' ) {
+				if ( old.type === 'attribute' ) {
 					if ( inc.offset === old.offset && inc.howMany === old.howMany ) {
-						inc.nodesToHandle = 0;
+						old.howMany = 0;
 					}
 				}
 			}
@@ -1061,7 +1066,13 @@ export default class Differ {
 		return this._isInInsertedElement( parent );
 	}
 
-	// TODO: copy-paste of above _isInInsertedElement.
+	/**
+	 * Checks whether given element or any of its parents is an element that is buffered as a refreshed element.
+	 *
+	 * @private
+	 * @param {module:engine/model/element~Element} element Element to check.
+	 * @returns {Boolean}
+	 */
 	_isInRefreshedElement( element ) {
 		const parent = element.parent;
 
@@ -1074,7 +1085,7 @@ export default class Differ {
 
 		if ( changes ) {
 			for ( const change of changes ) {
-				if ( change.type == 'refresh' && offset >= change.offset && offset < change.offset + change.howMany ) {
+				if ( change.type === 'refresh' && offset >= change.offset && offset < change.offset + change.howMany ) {
 					return true;
 				}
 			}
@@ -1102,16 +1113,6 @@ export default class Differ {
 
 				this._removeAllNestedChanges( item, 0, item.maxOffset );
 			}
-		}
-	}
-
-	_removeAllNestedAttributeChanges( parent, offset, howMany ) {
-		const parentChanges = this._changesInElement.get( parent );
-
-		const notAttributeChange = change => change.type !== 'attribute' || change.offset !== offset || change.howMany !== howMany;
-
-		if ( parentChanges ) {
-			this._changesInElement.set( parent, parentChanges.filter( notAttributeChange ) );
 		}
 	}
 }
