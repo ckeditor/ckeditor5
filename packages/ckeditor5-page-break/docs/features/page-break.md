@@ -13,6 +13,10 @@ Use the editor to see the {@link module:page-break/pagebreak~PageBreak} plugin i
 
 {@snippet features/page-break}
 
+## Pagination feature
+
+There is a complementary {@link features/pagination Pagination feature}, that will provide live preview of the document's page breaks ensuring the output document looks correct.
+
 ## Installation
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-page-break`](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break) package:
