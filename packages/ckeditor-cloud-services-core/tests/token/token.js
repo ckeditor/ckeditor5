@@ -95,6 +95,8 @@ describe( 'Token', () => {
 			await clock.tickAsync( 1800000 );
 
 			expect( requests ).to.be.empty;
+
+			clock.restore();
 		} );
 
 		it( 'should refresh token with time specified in token `exp` payload property', async () => {
