@@ -297,6 +297,7 @@ describe( 'DowncastHelpers', () => {
 							const inner = writer.createContainerElement( 'c-inner', getViewAttributes( modelElement ) );
 
 							writer.insert( writer.createPositionAt( outer, 0 ), inner );
+							mapper.bindElements( modelElement, outer ); // Need for nested mapping
 							mapper.bindElements( modelElement, inner );
 
 							return outer;
@@ -379,6 +380,7 @@ describe( 'DowncastHelpers', () => {
 					} );
 
 					// Skipped, as it would require two-level mapping. See https://github.com/ckeditor/ckeditor5/issues/1589.
+					// Doable as a similar case works in table scenario for table cells (table is refreshed).
 					it.skip( 'should not re-create child elements on re-converting element', () => {
 						setModelData( model, '<complex><paragraph>Foo bar baz</paragraph></complex>' );
 
@@ -821,16 +823,16 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element with slots', () => {
 					setModelData( model,
 						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					expectResult(
 						'<div class="complex-slots">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'<div class="slot"><p>bar</p></div>' +
-						'</div>' +
+							'<div class="slots">' +
+								'<div class="slot"><p>foo</p></div>' +
+								'<div class="slot"><p>bar</p></div>' +
+							'</div>' +
 						'</div>'
 					);
 				} );
@@ -838,8 +840,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should not convert element on adding slot', () => {
 					setModelData( model,
 						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -852,11 +854,11 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'<div class="slot"><p>bar</p></div>' +
-						'<div class="slot"><p>baz</p></div>' +
-						'</div>' +
+							'<div class="slots">' +
+								'<div class="slot"><p>foo</p></div>' +
+								'<div class="slot"><p>bar</p></div>' +
+								'<div class="slot"><p>baz</p></div>' +
+							'</div>' +
 						'</div>'
 					);
 				} );
@@ -864,8 +866,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should not convert element on removing slot', () => {
 					setModelData( model,
 						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -874,9 +876,9 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>bar</p></div>' +
-						'</div>' +
+							'<div class="slots">' +
+								'<div class="slot"><p>bar</p></div>' +
+							'</div>' +
 						'</div>'
 					);
 				} );
@@ -884,8 +886,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on a trigger and block atomic converters (remove + attribute)', () => {
 					setModelData( model,
 						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -895,9 +897,9 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots with-class">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>bar</p></div>' +
-						'</div>' +
+							'<div class="slots">' +
+								'<div class="slot"><p>bar</p></div>' +
+							'</div>' +
 						'</div>'
 					);
 				} );
@@ -905,8 +907,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on a trigger and block atomic converters (insert + attribute)', () => {
 					setModelData( model,
 						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -916,11 +918,11 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots with-class">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'<div class="slot"><p>bar</p></div>' +
-						'<div class="slot"><p>baz</p></div>' +
-						'</div>' +
+							'<div class="slots">' +
+								'<div class="slot"><p>foo</p></div>' +
+								'<div class="slot"><p>bar</p></div>' +
+								'<div class="slot"><p>baz</p></div>' +
+							'</div>' +
 						'</div>'
 					);
 				} );
