@@ -58,6 +58,10 @@ class Token {
 		 */
 		this.set( 'value', options.initValue );
 
+		if ( options.initValue ) {
+			this._validateTokenValue();
+		}
+
 		/**
 		 * Base refreshing function.
 		 *
@@ -92,6 +96,8 @@ class Token {
 				return;
 			}
 
+			this._validateTokenValue();
+
 			if ( this._options.autoRefresh ) {
 				this._registerRefreshTokenTimeout();
 			}
@@ -108,6 +114,7 @@ class Token {
 		return this._refresh()
 			.then( value => {
 				this.set( 'value', value );
+				this._validateTokenValue();
 
 				if ( this._options.autoRefresh ) {
 					this._registerRefreshTokenTimeout();
@@ -123,13 +130,30 @@ class Token {
 		clearTimeout( this._tokenRefreshTimeout );
 	}
 
+	_validateTokenValue() {
+		if (
+			typeof this.value !== 'string' ||
+			/^".*"$/.test( this.value ) ||
+			this.value.split( '.' ).length !== 3
+		) {
+			/**
+			 * A token value must be in JWT format.
+			 *
+			 * @error token-not-in-jwt-format
+			 */
+			throw new CKEditorError( 'token-not-in-jwt-format', this );
+		}
+	}
+
 	/**
-	 * Registers refresh token timeout for time taken from token.
+	 * Registers a refresh token timeout for the time taken from token.
 	 *
 	 * @protected
 	 */
 	_registerRefreshTokenTimeout() {
 		const tokenRefreshTimeoutTime = this._getTokenRefreshTimeoutTime();
+
+		clearTimeout( this._tokenRefreshTimeout );
 
 		this._tokenRefreshTimeout = setTimeout( () => {
 			this.refreshToken();
@@ -137,8 +161,9 @@ class Token {
 	}
 
 	/**
-	 * Returns token refresh timeout time calculated from expire time in token payload.
-	 * If token parse fails, the default DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME is returned.
+	 * Returns token refresh timeout time calculated from expire time in the token payload.
+	 *
+	 * If the token parse fails, the default DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME is returned.
 	 *
 	 * @returns {Number}
 	 * @protected

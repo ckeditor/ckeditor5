@@ -26,31 +26,56 @@ describe( 'Token', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should throw error when no tokenUrl provided', () => {
+		it( 'should throw an error when no tokenUrl provided', () => {
 			expect( () => new Token() ).to.throw(
 				CKEditorError,
 				'token-missing-token-url'
 			);
 		} );
 
-		it( 'should set a init token value', () => {
-			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
+		it( 'should throw an error if the token passed in options is not a string', () => {
+			expect( () => new Token( 'http://token-endpoint', { initValue: 123456 } ) ).to.throw(
+				CKEditorError,
+				'token-not-in-jwt-format'
+			);
+		} );
 
-			expect( token.value ).to.equal( 'initValue' );
+		it( 'should throw an error if the token passed in options is wrapped in additional quotes', () => {
+			const tokenInitValue = getTestTokenValue();
+
+			expect( () => new Token( 'http://token-endpoint', { initValue: `"${ tokenInitValue }"` } ) ).to.throw(
+				CKEditorError,
+				'token-not-in-jwt-format'
+			);
+		} );
+
+		it( 'should throw an error if the token passed in options is not a valid JWT token', () => {
+			expect( () => new Token( 'http://token-endpoint', { initValue: 'token' } ) ).to.throw(
+				CKEditorError,
+				'token-not-in-jwt-format'
+			);
+		} );
+
+		it( 'should set token value if the token passed in options is valid', () => {
+			const tokenInitValue = getTestTokenValue();
+			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue } );
+
+			expect( token.value ).to.equal( tokenInitValue );
 		} );
 
 		it( 'should fire `change:value` event if the value of the token has changed', done => {
+			const tokenValue = getTestTokenValue();
 			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
 
 			token.on( 'change:value', ( event, name, newValue ) => {
-				expect( newValue ).to.equal( 'token-value' );
+				expect( newValue ).to.equal( tokenValue );
 
 				done();
 			} );
 
 			token.init();
 
-			requests[ 0 ].respond( 200, '', 'token-value' );
+			requests[ 0 ].respond( 200, '', tokenValue );
 		} );
 
 		it( 'should accept the callback in the constructor', () => {
@@ -62,67 +87,88 @@ describe( 'Token', () => {
 	} );
 
 	describe( 'init()', () => {
-		it( 'should get a token value from endpoint', done => {
+		it( 'should get a token value from the endpoint', done => {
+			const tokenValue = getTestTokenValue();
 			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
 
 			token.init()
 				.then( () => {
-					expect( token.value ).to.equal( 'token-value' );
+					expect( token.value ).to.equal( tokenValue );
 
 					done();
 				} );
 
-			requests[ 0 ].respond( 200, '', 'token-value' );
+			requests[ 0 ].respond( 200, '', tokenValue );
 		} );
 
 		it( 'should get a token from the refreshToken function when is provided', () => {
-			const token = new Token( () => Promise.resolve( 'token-value' ), { autoRefresh: false } );
+			const tokenValue = getTestTokenValue();
+			const token = new Token( () => Promise.resolve( tokenValue ), { autoRefresh: false } );
 
 			return token.init()
 				.then( () => {
-					expect( token.value ).to.equal( 'token-value' );
+					expect( token.value ).to.equal( tokenValue );
 				} );
 		} );
 
 		it( 'should not refresh token if autoRefresh is disabled in options', async () => {
 			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
-			const tokenInitValue = `header.${ btoa( JSON.stringify( { exp: Date.now() + 3600000 } ) ) }.signature`;
+			const tokenInitValue = getTestTokenValue();
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
 
 			await token.init();
 
-			await clock.tickAsync( 1800000 );
+			await clock.tickAsync( 3600000 );
 
 			expect( requests ).to.be.empty;
 
 			clock.restore();
 		} );
 
-		it( 'should refresh token with time specified in token `exp` payload property', async () => {
+		it( 'should refresh token with the time specified in token `exp` payload property', async () => {
 			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
-			const tokenInitValue = `header.${ btoa( JSON.stringify( { exp: Date.now() + 3600000 } ) ) }.signature`;
+			const tokenInitValue = getTestTokenValue();
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue } );
 
 			await token.init();
 
 			await clock.tickAsync( 1800000 );
-			requests[ 0 ].respond( 200, '', `header.${ btoa( JSON.stringify( { exp: Date.now() + 150000 } ) ) }.signature` );
+			requests[ 0 ].respond( 200, '', getTestTokenValue( 150000 ) );
 
 			await clock.tickAsync( 75000 );
-			requests[ 1 ].respond( 200, '', `header.${ btoa( JSON.stringify( { exp: Date.now() + 10000 } ) ) }.signature` );
+			requests[ 1 ].respond( 200, '', getTestTokenValue( 10000 ) );
 
 			await clock.tickAsync( 5000 );
-			requests[ 2 ].respond( 200, '', `header.${ btoa( JSON.stringify( { exp: Date.now() + 2000 } ) ) }.signature` );
+			requests[ 2 ].respond( 200, '', getTestTokenValue( 2000 ) );
 
 			await clock.tickAsync( 1000 );
-			requests[ 3 ].respond( 200, '', `header.${ btoa( JSON.stringify( { exp: Date.now() + 300 } ) ) }.signature` );
+			requests[ 3 ].respond( 200, '', getTestTokenValue( 300 ) );
 
 			await clock.tickAsync( 150 );
-			requests[ 4 ].respond( 200, '', `header.${ btoa( JSON.stringify( { exp: Date.now() + 300 } ) ) }.signature` );
+			requests[ 4 ].respond( 200, '', getTestTokenValue( 300 ) );
 
 			expect( requests.length ).to.equal( 5 );
+
+			clock.restore();
+		} );
+
+		it( 'should refresh the token with the default time if getting token expiration time failed', async () => {
+			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const tokenValue = 'header.test.signature';
+
+			const token = new Token( 'http://token-endpoint', { initValue: tokenValue } );
+
+			await token.init();
+
+			await clock.tickAsync( 3600000 );
+			requests[ 0 ].respond( 200, '', tokenValue );
+
+			await clock.tickAsync( 3600000 );
+			requests[ 1 ].respond( 200, '', tokenValue );
+
+			expect( requests.length ).to.equal( 2 );
 
 			clock.restore();
 		} );
@@ -131,18 +177,18 @@ describe( 'Token', () => {
 	describe( 'destroy', () => {
 		it( 'should stop refreshing the token', async () => {
 			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout', 'clearTimeout' ] } );
-			const tokenInitValue = `header.${ btoa( JSON.stringify( { exp: Date.now() + 3600000 } ) ) }.signature`;
+			const tokenInitValue = getTestTokenValue();
 
 			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue } );
 
 			await token.init();
 
 			await clock.tickAsync( 1800000 );
-			requests[ 0 ].respond( 200, '', `header.${ btoa( JSON.stringify( { exp: Date.now() + 150000 } ) ) }.signature` );
+			requests[ 0 ].respond( 200, '', getTestTokenValue( 150000 ) );
 			await clock.tickAsync( 100 );
 
 			await clock.tickAsync( 75000 );
-			requests[ 1 ].respond( 200, '', `header.${ btoa( JSON.stringify( { exp: Date.now() + 10000 } ) ) }.signature` );
+			requests[ 1 ].respond( 200, '', getTestTokenValue( 10000 ) );
 			await clock.tickAsync( 100 );
 
 			token.destroy();
@@ -159,29 +205,65 @@ describe( 'Token', () => {
 
 	describe( 'refreshToken()', () => {
 		it( 'should get a token from the specified address', done => {
-			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
+			const tokenValue = getTestTokenValue();
+			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
 
 			token.refreshToken()
 				.then( newToken => {
-					expect( newToken.value ).to.equal( 'token-value' );
+					expect( newToken.value ).to.equal( tokenValue );
 
 					done();
 				} );
 
-			requests[ 0 ].respond( 200, '', 'token-value' );
+			requests[ 0 ].respond( 200, '', tokenValue );
+		} );
+
+		it( 'should throw an error if the returned token is wrapped in additional quotes', done => {
+			const tokenValue = getTestTokenValue();
+			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
+
+			token.refreshToken()
+				.then( () => {
+					done( new Error( 'Promise should be rejected' ) );
+				} )
+				.catch( error => {
+					expect( error.constructor ).to.equal( CKEditorError );
+					expect( error ).to.match( /token-not-in-jwt-format/ );
+					done();
+				} );
+
+			requests[ 0 ].respond( 200, '', `"${ tokenValue }"` );
+		} );
+
+		it( 'should throw an error if the returned token is not a valid JWT token', done => {
+			const token = new Token( 'http://token-endpoint', { autoRefresh: false } );
+
+			token.refreshToken()
+				.then( () => {
+					done( new Error( 'Promise should be rejected' ) );
+				} )
+				.catch( error => {
+					expect( error.constructor ).to.equal( CKEditorError );
+					expect( error ).to.match( /token-not-in-jwt-format/ );
+					done();
+				} );
+
+			requests[ 0 ].respond( 200, '', 'token' );
 		} );
 
 		it( 'should get a token from the specified callback function', () => {
-			const token = new Token( () => Promise.resolve( 'token-value' ), { initValue: 'initValue', autoRefresh: false } );
+			const tokenValue = getTestTokenValue();
+			const token = new Token( () => Promise.resolve( tokenValue ), { autoRefresh: false } );
 
 			return token.refreshToken()
 				.then( newToken => {
-					expect( newToken.value ).to.equal( 'token-value' );
+					expect( newToken.value ).to.equal( tokenValue );
 				} );
 		} );
 
-		it( 'should throw an error when cannot download new token', () => {
-			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
+		it( 'should throw an error when cannot download a new token', () => {
+			const tokenInitValue = getTestTokenValue();
+			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
 			const promise = token._refresh();
 
 			requests[ 0 ].respond( 401 );
@@ -195,7 +277,8 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should throw an error when the response is aborted', () => {
-			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
+			const tokenInitValue = getTestTokenValue();
+			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
 			const promise = token._refresh();
 
 			requests[ 0 ].abort();
@@ -208,7 +291,8 @@ describe( 'Token', () => {
 		} );
 
 		it( 'should throw an error when network error occurs', () => {
-			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
+			const tokenInitValue = getTestTokenValue();
+			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
 			const promise = token._refresh();
 
 			requests[ 0 ].error();
@@ -220,8 +304,9 @@ describe( 'Token', () => {
 			} );
 		} );
 
-		it( 'should throw an error when the callback throws error', () => {
-			const token = new Token( () => Promise.reject( 'Custom error occurred' ), { initValue: 'initValue', autoRefresh: false } );
+		it( 'should throw an error when the callback throws an error', () => {
+			const tokenInitValue = getTestTokenValue();
+			const token = new Token( () => Promise.reject( 'Custom error occurred' ), { initValue: tokenInitValue, autoRefresh: false } );
 
 			token.refreshToken()
 				.catch( error => {
@@ -230,55 +315,23 @@ describe( 'Token', () => {
 		} );
 	} );
 
-	describe( '_registerRefreshTokenTimeout()', () => {
-		it( 'should register refresh token timeout and run refresh after that time', async () => {
-			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
-			const tokenInitValue = `header.${ btoa( JSON.stringify( { exp: Date.now() + 3600000 } ) ) }.signature`;
-
-			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
-
-			token._registerRefreshTokenTimeout();
-
-			await clock.tickAsync( 1800000 );
-
-			expect( requests.length ).to.equal( 1 );
-
-			clock.restore();
-		} );
-	} );
-
-	describe( '_getTokenRefreshTimeoutTime', () => {
-		it( 'should return timeout time based on expiration time in token for valid token', () => {
-			const tokenInitValue = `header.${ btoa( JSON.stringify( { exp: Date.now() + 3600000 } ) ) }.signature`;
-			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
-
-			const timeoutTime = token._getTokenRefreshTimeoutTime();
-
-			expect( timeoutTime ).to.eq( 1800000 );
-		} );
-
-		it( 'should return default refresh timeout time if token parse fails', () => {
-			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
-
-			const timeoutTime = token._getTokenRefreshTimeoutTime();
-
-			expect( timeoutTime ).to.eq( 3600000 );
-		} );
-	} );
-
 	describe( 'static create()', () => {
-		it( 'should return a initialized token', done => {
+		it( 'should return an initialized token', done => {
+			const tokenValue = getTestTokenValue();
+
 			Token.create( 'http://token-endpoint', { autoRefresh: false } )
 				.then( token => {
-					expect( token.value ).to.equal( 'token-value' );
+					expect( token.value ).to.equal( tokenValue );
 
 					done();
 				} );
 
-			requests[ 0 ].respond( 200, '', 'token-value' );
+			requests[ 0 ].respond( 200, '', tokenValue );
 		} );
 
 		it( 'should use default options when none passed', done => {
+			const tokenValue = getTestTokenValue();
+
 			Token.create( 'http://token-endpoint' )
 				.then( token => {
 					expect( token._options ).to.eql( { autoRefresh: true } );
@@ -286,7 +339,17 @@ describe( 'Token', () => {
 					done();
 				} );
 
-			requests[ 0 ].respond( 200, '', 'token-value' );
+			requests[ 0 ].respond( 200, '', tokenValue );
 		} );
 	} );
 } );
+
+/**
+ * Returns valid token for tests with given expiration time offset.
+ *
+ * @param timeOffset {Number}
+ * @returns {String}
+ */
+function getTestTokenValue( timeOffset = 3600000 ) {
+	return `header.${ btoa( JSON.stringify( { exp: Date.now() + timeOffset } ) ) }.signature`;
+}
