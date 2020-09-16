@@ -836,7 +836,7 @@ export default class Differ {
 									count: this._changeCount++
 								} );
 							} else {
-								throw new Error( 'foo-bar' );
+								throw new Error( 'Unshifting negative howMany -> infinite differ.getChanges()' );
 							}
 						} else {
 							old.howMany -= oldEnd - inc.offset;
