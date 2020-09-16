@@ -84,6 +84,19 @@ describe( 'Token', () => {
 				} );
 		} );
 
+		it( 'should not refresh token if autoRefresh is disabled in options', async () => {
+			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const tokenInitValue = `header.${ btoa( JSON.stringify( { exp: Date.now() + 3600000 } ) ) }.signature`;
+
+			const token = new Token( 'http://token-endpoint', { initValue: tokenInitValue, autoRefresh: false } );
+
+			await token.init();
+
+			await clock.tickAsync( 1800000 );
+
+			expect( requests ).to.be.empty;
+		} );
+
 		it( 'should refresh token with time specified in token `exp` payload property', async () => {
 			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
 			const tokenInitValue = `header.${ btoa( JSON.stringify( { exp: Date.now() + 3600000 } ) ) }.signature`;
@@ -256,6 +269,17 @@ describe( 'Token', () => {
 			Token.create( 'http://token-endpoint', { autoRefresh: false } )
 				.then( token => {
 					expect( token.value ).to.equal( 'token-value' );
+
+					done();
+				} );
+
+			requests[ 0 ].respond( 200, '', 'token-value' );
+		} );
+
+		it( 'should use default options when none passed', done => {
+			Token.create( 'http://token-endpoint' )
+				.then( token => {
+					expect( token._options ).to.eql( { autoRefresh: true } );
 
 					done();
 				} );
