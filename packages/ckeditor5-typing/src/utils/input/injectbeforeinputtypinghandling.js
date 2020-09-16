@@ -39,6 +39,7 @@ export default function injectBeforeInputTypingHandling( editor ) {
 				text,
 				range: modelRange
 			} );
+
 			// If this listener handled the event, there's no point in propagating it any further
 			// to other callbacks.
 			evt.stop();

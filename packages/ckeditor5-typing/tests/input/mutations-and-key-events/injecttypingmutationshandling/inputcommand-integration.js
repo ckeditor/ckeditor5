@@ -7,78 +7,82 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
-import Typing from '../src/typing';
+import Typing from '../../../../src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-describe( 'Typing – InputCommand integration', () => {
-	let editor, model, doc, viewDocument, boldView, italicView, editorElement;
+describe( 'Typing text using mutations and key events', () => {
+	describe( 'Input feature: InputCommand integration', () => {
+		let editor, model, doc, viewDocument, boldView, italicView, editorElement;
 
-	beforeEach( () => {
-		editorElement = document.createElement( 'div' );
-		document.body.appendChild( editorElement );
+		beforeEach( () => {
+			// Force the browser to not use the beforeinput event.
+			sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
 
-		return ClassicTestEditor
-			.create( editorElement, {
-				plugins: [ Typing, Paragraph, Undo, Bold, Italic, Enter ],
-				typing: { undoStep: 3 }
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				doc = model.document;
-				viewDocument = editor.editing.view;
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
 
-				boldView = editor.ui.componentFactory.create( 'bold' );
-				italicView = editor.ui.componentFactory.create( 'italic' );
-			} );
-	} );
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Typing, Paragraph, Undo, Bold, Italic, Enter ],
+					typing: { undoStep: 3 }
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+					viewDocument = editor.editing.view;
 
-	afterEach( () => {
-		editorElement.remove();
-
-		return editor.destroy();
-	} );
-
-	function expectOutput( modelOutput, viewOutput ) {
-		expect( getModelData( model ) ).to.equal( modelOutput );
-		expect( getViewData( viewDocument ) ).to.equal( viewOutput );
-	}
-
-	function simulateTyping( text ) {
-		// While typing, every character is an atomic change.
-		text.split( '' ).forEach( character => {
-			editor.execute( 'input', {
-				text: character
-			} );
+					boldView = editor.ui.componentFactory.create( 'bold' );
+					italicView = editor.ui.componentFactory.create( 'italic' );
+				} );
 		} );
-	}
 
-	function simulateBatches( batches ) {
-		// Use longer text at once in input command.
-		batches.forEach( batch => {
-			editor.execute( 'input', {
-				text: batch
+		afterEach( () => {
+			editorElement.remove();
+
+			return editor.destroy();
+		} );
+
+		function expectOutput( modelOutput, viewOutput ) {
+			expect( getModelData( model ) ).to.equal( modelOutput );
+			expect( getViewData( viewDocument ) ).to.equal( viewOutput );
+		}
+
+		function simulateTyping( text ) {
+			// While typing, every character is an atomic change.
+			text.split( '' ).forEach( character => {
+				editor.execute( 'input', {
+					text: character
+				} );
 			} );
-		} );
-	}
+		}
 
-	function setSelection( pathA, pathB ) {
-		model.change( writer => {
-			writer.setSelection( writer.createRange(
-				writer.createPositionFromPath( doc.getRoot(), pathA ),
-				writer.createPositionFromPath( doc.getRoot(), pathB )
-			) );
-		} );
-	}
+		function simulateBatches( batches ) {
+			// Use longer text at once in input command.
+			batches.forEach( batch => {
+				editor.execute( 'input', {
+					text: batch
+				} );
+			} );
+		}
 
-	describe( 'InputCommand integration', () => {
+		function setSelection( pathA, pathB ) {
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( doc.getRoot(), pathA ),
+					writer.createPositionFromPath( doc.getRoot(), pathB )
+				) );
+			} );
+		}
+
 		it( 'resets the buffer on typing respecting typing.undoStep', () => {
 			setModelData( model, '<paragraph>0[]</paragraph>' );
 

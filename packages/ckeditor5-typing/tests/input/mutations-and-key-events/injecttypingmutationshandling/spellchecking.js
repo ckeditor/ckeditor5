@@ -7,41 +7,45 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '../src/typing';
+import Typing from '../../../../src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-describe( 'Typing – spellchecking integration', () => {
-	let editor, container;
+describe( 'Typing text using mutations and key events', () => {
+	describe( 'Input feature: Plain text spellchecking support', () => {
+		let editor, container;
 
-	beforeEach( () => {
-		container = document.createElement( 'div' );
-		document.body.appendChild( container );
+		beforeEach( () => {
+			// Force the browser to not use the beforeinput event.
+			sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
 
-		return ClassicEditor
-			.create( container, {
-				plugins: [ Enter, Typing, Paragraph, Bold, Undo ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
+			container = document.createElement( 'div' );
+			document.body.appendChild( container );
 
-				editor.setData(
-					'<p>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>' +
-					'<p>Banana, orenge, appfle and the new comppputer</p>' );
-			} );
-	} );
+			return ClassicEditor
+				.create( container, {
+					plugins: [ Enter, Typing, Paragraph, Bold, Undo ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
 
-	afterEach( () => {
-		container.remove();
+					editor.setData(
+						'<p>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>' +
+						'<p>Banana, orenge, appfle and the new comppputer</p>' );
+				} );
+		} );
 
-		return editor.destroy();
-	} );
+		afterEach( () => {
+			container.remove();
 
-	describe( 'Plain text spellchecking (mutations)', () => {
+			return editor.destroy();
+		} );
+
 		// This tests emulates spellchecker correction on non-styled text by firing proper mutations.
 
 		it( 'should replace with longer word (collapsed)', () => {
@@ -174,33 +178,33 @@ describe( 'Typing – spellchecking integration', () => {
 				'<p>Banana, orenge, appfle and the new {computer}</p>' );
 		} );
 	} );
+
+	function emulateSpellcheckerMutation( editor, nodeIndex, rangeStart, rangeEnd, oldText, newText ) {
+		const view = editor.editing.view;
+		const viewRoot = view.document.getRoot();
+		const viewSelection = view.createSelection();
+		const node = viewRoot.getChild( nodeIndex ).getChild( 0 );
+
+		viewSelection.setTo( view.createRange(
+			view.createPositionAt( node, rangeStart ),
+			view.createPositionAt( node, rangeEnd )
+		) );
+
+		view.document.fire( 'mutations',
+			[
+				{
+					type: 'text',
+					oldText,
+					newText,
+					node
+				}
+			],
+			viewSelection
+		);
+	}
+
+	function expectContent( editor, expectedModel, expectedView ) {
+		expect( getModelData( editor.model ) ).to.equal( expectedModel );
+		expect( getViewData( editor.editing.view ) ).to.equal( expectedView );
+	}
 } );
-
-function emulateSpellcheckerMutation( editor, nodeIndex, rangeStart, rangeEnd, oldText, newText ) {
-	const view = editor.editing.view;
-	const viewRoot = view.document.getRoot();
-	const viewSelection = view.createSelection();
-	const node = viewRoot.getChild( nodeIndex ).getChild( 0 );
-
-	viewSelection.setTo( view.createRange(
-		view.createPositionAt( node, rangeStart ),
-		view.createPositionAt( node, rangeEnd )
-	) );
-
-	view.document.fire( 'mutations',
-		[
-			{
-				type: 'text',
-				oldText,
-				newText,
-				node
-			}
-		],
-		viewSelection
-	);
-}
-
-function expectContent( editor, expectedModel, expectedView ) {
-	expect( getModelData( editor.model ) ).to.equal( expectedModel );
-	expect( getViewData( editor.editing.view ) ).to.equal( expectedView );
-}

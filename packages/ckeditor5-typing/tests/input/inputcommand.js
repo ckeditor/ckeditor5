@@ -7,9 +7,9 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import InputCommand from '../src/inputcommand';
-import ChangeBuffer from '../src/utils/changebuffer';
-import Input from '../src/input';
+import InputCommand from '../../src/inputcommand';
+import ChangeBuffer from '../../src/utils/changebuffer';
+import Input from '../../src/input';
 
 describe( 'InputCommand', () => {
 	let editor, model, doc, buffer, inputCommand;
