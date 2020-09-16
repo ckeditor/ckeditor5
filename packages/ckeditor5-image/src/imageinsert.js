@@ -69,7 +69,7 @@ export default class ImageInsert extends Plugin {
  */
 
 /**
- * Image insert panel view configuration contains a list of {@link module:image/imageinsert~ImageInsert} integrations.
+ * The image insert panel view configuration contains a list of {@link module:image/imageinsert~ImageInsert} integrations.
  *
  * The option accepts string tokens.
  * * for predefined integrations, we have two special strings: `insertImageViaUrl` and `openCKFinder`.
