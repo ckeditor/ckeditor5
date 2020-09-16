@@ -1933,6 +1933,31 @@ describe( 'Differ', () => {
 			} );
 		} );
 
+		it( 'an element added attribute and other refreshed', () => {
+			const complex = root.getChild( 2 );
+
+			model.change( () => {
+				const attributeChild = complex.getChild( 1 );
+				const refreshChild = complex.getChild( 0 );
+				attribute( model.createRangeOn( attributeChild ), 'foo', undefined, true );
+				differ.refreshItem( refreshChild );
+
+				expectChanges( [
+					{ type: 'refresh', name: 'slot', length: 1, position: model.createPositionBefore( refreshChild ) },
+					{
+						type: 'attribute',
+						range: model.createRange(
+							model.createPositionBefore( attributeChild ),
+							model.createPositionAt( attributeChild, 0 )
+						),
+						attributeKey: 'foo',
+						attributeOldValue: null,
+						attributeNewValue: true
+					}
+				], true );
+			} );
+		} );
+
 		it( 'an element refreshed and removed', () => {
 			const complex = root.getChild( 2 );
 

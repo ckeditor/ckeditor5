@@ -835,6 +835,8 @@ export default class Differ {
 									howMany: howManyAfter,
 									count: this._changeCount++
 								} );
+							} else {
+								throw new Error( 'foo-bar' );
 							}
 						} else {
 							old.howMany -= oldEnd - inc.offset;
