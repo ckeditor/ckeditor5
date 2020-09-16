@@ -16,7 +16,7 @@ import TableEditing from '../../src/tableediting';
 import { viewTable } from '../_utils/utils';
 
 describe( 'Table cell refresh post-fixer', () => {
-	let editor, model, doc, root, view, refreshItemSpy, element;
+	let editor, model, doc, root, view, element;
 
 	testUtils.createSinonSandbox();
 
@@ -40,8 +40,6 @@ describe( 'Table cell refresh post-fixer', () => {
 				model.schema.extend( '$block', { allowAttributes: [ 'foo', 'bar' ] } );
 				editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
 				editor.conversion.attributeToAttribute( { model: 'bar', view: 'bar' } );
-
-				refreshItemSpy = sinon.spy( model.document.differ, 'refreshItem' );
 			} );
 	} );
 
@@ -236,9 +234,7 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p bar="bar" foo="bar">00</p>' ]
 		], { asWidget: true } ) );
-
-		// False positive
-		sinon.assert.notCalled( refreshItemSpy );
+		// False positive: should not be called.
 	} );
 
 	it( 'should keep <p> in the view when adding another attribute to a <paragraph> and removing attribute that is already set', () => {
@@ -269,7 +265,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p foo="baz">00</p><p>00</p>' ]
 		], { asWidget: true } ) );
-		sinon.assert.notCalled( refreshItemSpy );
 	} );
 
 	it( 'should do nothing on rename <paragraph> to other block', () => {
@@ -284,7 +279,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<div>00</div>' ]
 		], { asWidget: true } ) );
-		sinon.assert.notCalled( refreshItemSpy );
 	} );
 
 	it( 'should do nothing on adding <paragraph> to existing paragraphs', () => {
@@ -299,7 +293,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p>a</p><p>b</p><p></p>' ]
 		], { asWidget: true } ) );
-		sinon.assert.notCalled( refreshItemSpy );
 	} );
 
 	it( 'should do nothing when setting attribute on block item other then <paragraph>', () => {
@@ -314,7 +307,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<div foo="bar">foo</div>' ]
 		], { asWidget: true } ) );
-		sinon.assert.notCalled( refreshItemSpy );
 	} );
 
 	it( 'should rename <p> in to <span> when removing <paragraph> (table cell with 2 paragraphs)', () => {
