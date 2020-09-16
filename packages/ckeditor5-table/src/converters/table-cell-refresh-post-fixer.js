@@ -96,7 +96,7 @@ function tableCellRefreshPostFixer( model ) {
 		for ( const tableCell of cellsToRefresh.values() ) {
 			for ( const paragraph of [ ...tableCell.getChildren() ].filter( child => child.is( 'element', 'paragraph' ) ) ) {
 				// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: refreshing paragraph in table cell (${++paragraphsRefreshed}).` );
-				differ._pocRefreshItem( paragraph );
+				differ.refreshItem( paragraph );
 			}
 		}
 

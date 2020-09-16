@@ -1789,7 +1789,7 @@ describe( 'Differ', () => {
 		} );
 	} );
 
-	describe( '_pocRefreshItem()', () => {
+	describe( 'refreshItem()', () => {
 		beforeEach( () => {
 			root._appendChild( [
 				new Element( 'complex', null, [
@@ -1806,7 +1806,7 @@ describe( 'Differ', () => {
 		it( 'an element (block)', () => {
 			const p = root.getChild( 0 );
 
-			differ._pocRefreshItem( p );
+			differ.refreshItem( p );
 
 			expectChanges( [
 				{ type: 'refresh', name: 'paragraph', length: 1, position: model.createPositionBefore( p ) }
@@ -1816,7 +1816,7 @@ describe( 'Differ', () => {
 		it( 'an element (complex)', () => {
 			const complex = root.getChild( 2 );
 
-			differ._pocRefreshItem( complex );
+			differ.refreshItem( complex );
 
 			expectChanges( [
 				{ type: 'refresh', name: 'complex', length: 1, position: model.createPositionBefore( complex ) }
@@ -1827,7 +1827,7 @@ describe( 'Differ', () => {
 			const complex = root.getChild( 2 );
 
 			model.change( () => {
-				differ._pocRefreshItem( complex );
+				differ.refreshItem( complex );
 				remove( model.createPositionAt( complex, 1 ), 1 );
 
 				expectChanges( [
@@ -1841,7 +1841,7 @@ describe( 'Differ', () => {
 
 			model.change( () => {
 				remove( model.createPositionAt( complex, 1 ), 1 );
-				differ._pocRefreshItem( complex );
+				differ.refreshItem( complex );
 
 				expectChanges( [
 					{ type: 'refresh', name: 'complex', length: 1, position: model.createPositionBefore( complex ) },
@@ -1854,7 +1854,7 @@ describe( 'Differ', () => {
 			const complex = root.getChild( 2 );
 
 			model.change( () => {
-				differ._pocRefreshItem( complex );
+				differ.refreshItem( complex );
 				insert( new Element( 'slot' ), model.createPositionAt( complex, 2 ) );
 
 				expectChanges( [
@@ -1867,7 +1867,7 @@ describe( 'Differ', () => {
 			const complex = root.getChild( 2 );
 
 			model.change( () => {
-				differ._pocRefreshItem( complex );
+				differ.refreshItem( complex );
 				insert( new Element( 'slot' ), model.createPositionAt( complex, 2 ) );
 
 				expectChanges( [
@@ -1880,7 +1880,7 @@ describe( 'Differ', () => {
 			const complex = root.getChild( 2 );
 
 			model.change( () => {
-				differ._pocRefreshItem( complex );
+				differ.refreshItem( complex );
 				attribute( model.createRangeOn( complex ), 'foo', undefined, true );
 
 				expectChanges( [
@@ -1893,51 +1893,12 @@ describe( 'Differ', () => {
 			const complex = root.getChild( 2 );
 
 			model.change( () => {
-				differ._pocRefreshItem( complex );
+				differ.refreshItem( complex );
 				attribute( model.createRangeOn( complex ), 'foo', undefined, true );
 
 				expectChanges( [
 					{ type: 'refresh', name: 'complex', length: 1, position: model.createPositionBefore( complex ) }
 				], true );
-			} );
-		} );
-	} );
-
-	describe( 'refreshItem()', () => {
-		it( 'should mark given element to be removed and added again', () => {
-			const p = root.getChild( 0 );
-
-			differ.refreshItem( p );
-
-			expectChanges( [
-				{ type: 'remove', name: 'paragraph', length: 1, position: model.createPositionBefore( p ) },
-				{ type: 'insert', name: 'paragraph', length: 1, position: model.createPositionBefore( p ) }
-			], true );
-		} );
-
-		it( 'should mark given text proxy to be removed and added again', () => {
-			const p = root.getChild( 0 );
-			const range = model.createRangeIn( p );
-			const textProxy = [ ...range.getItems() ][ 0 ];
-
-			differ.refreshItem( textProxy );
-
-			expectChanges( [
-				{ type: 'remove', name: '$text', length: 3, position: model.createPositionAt( p, 0 ) },
-				{ type: 'insert', name: '$text', length: 3, position: model.createPositionAt( p, 0 ) }
-			], true );
-		} );
-
-		it( 'inside a new element', () => {
-			// Since the refreshed element is inside a new element, it should not be listed on changes list.
-			model.change( () => {
-				insert( new Element( 'blockQuote', null, new Element( 'paragraph' ) ), new Position( root, [ 2 ] ) );
-
-				differ.refreshItem( root.getChild( 2 ).getChild( 0 ) );
-
-				expectChanges( [
-					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 2 ] ) }
-				] );
 			} );
 		} );
 
@@ -1961,8 +1922,7 @@ describe( 'Differ', () => {
 			differ.refreshItem( root.getChild( 1 ) );
 
 			expectChanges( [
-				{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) },
-				{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) }
+				{ type: 'refresh', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) }
 			] );
 
 			const markersToRemove = differ.getMarkersToRemove().map( entry => entry.name );

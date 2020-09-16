@@ -168,7 +168,7 @@ export default class DowncastDispatcher {
 
 		const elementsToRefresh = new Set( found );
 
-		[ ...elementsToRefresh.values() ].forEach( element => differ._pocRefreshItem( element ) );
+		[ ...elementsToRefresh.values() ].forEach( element => differ.refreshItem( element ) );
 
 		// Before the view is updated, remove markers which have changed.
 		for ( const change of differ.getMarkersToRemove() ) {
