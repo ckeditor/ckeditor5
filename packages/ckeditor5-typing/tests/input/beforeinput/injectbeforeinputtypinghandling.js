@@ -19,6 +19,7 @@ describe( 'Typing text using beforeinput event', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
+		// Force the browser to use the beforeinput event.
 		testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => true );
 
 		domElement = document.createElement( 'div' );

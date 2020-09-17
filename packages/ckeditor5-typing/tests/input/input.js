@@ -44,6 +44,7 @@ describe( 'Input plugin', () => {
 		} );
 
 		it( 'should enable mutations-based input when the Input Events are not supported by the browser', async () => {
+			// Force the browser to not use the beforeinput event.
 			testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
 
 			const editor = await ClassicTestEditor.create( domElement, {
@@ -82,6 +83,7 @@ describe( 'Input plugin', () => {
 		} );
 
 		it( 'should enable beforeinput-based input when the Input Events are supported by the browser', async () => {
+			// Force the browser to use the beforeinput event.
 			testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => true );
 
 			const editor = await ClassicTestEditor.create( domElement, {

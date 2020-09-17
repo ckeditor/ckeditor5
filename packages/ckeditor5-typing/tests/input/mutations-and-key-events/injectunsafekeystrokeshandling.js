@@ -14,6 +14,7 @@ import Typing from '../../../src/typing';
 describe( 'Typing text using mutations and key events', () => {
 	describe( 'Input feature: injectUnsafeKeystrokesHandling() and utils', () => {
 		beforeEach( () => {
+			// Force the browser to not use the beforeinput event.
 			sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
 		} );
 
