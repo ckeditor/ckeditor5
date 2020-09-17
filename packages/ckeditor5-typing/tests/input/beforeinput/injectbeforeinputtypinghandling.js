@@ -90,6 +90,24 @@ describe( 'Input', () => {
 					expect( firstCallArgs.text ).to.equal( 'bar' );
 					expect( firstCallArgs.range.isEqual( modelRange ) ).to.be.true;
 				} );
+
+				it( 'should ignore other input types', () => {
+					const inputCommandSpy = testUtils.sinon.spy( editor.commands.get( 'input' ), 'execute' );
+
+					const domRange1 = document.createRange();
+					const domRange2 = document.createRange();
+					domRange1.selectNodeContents( editableElement.firstChild );
+					domRange2.setStart( editableElement.firstChild, 0 );
+					domRange2.setEnd( editableElement.firstChild, 0 );
+
+					fireBeforeInputDomEvent( editableElement, {
+						inputType: 'justAnyInputType',
+						ranges: [ domRange1, domRange2 ],
+						data: 'bar'
+					} );
+
+					sinon.assert.notCalled( inputCommandSpy );
+				} );
 			} );
 
 			it( 'should stop() the beforeinput event', () => {
