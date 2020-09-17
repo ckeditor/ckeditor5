@@ -135,19 +135,19 @@ describe( 'Token', () => {
 			await token.init();
 
 			await clock.tickAsync( 1800000 );
-			requests[ 0 ].respond( 200, '', getTestTokenValue( 150000 ) );
+			requests[ 0 ].respond( 200, '', getTestTokenValue( 1500 ) );
 
-			await clock.tickAsync( 75000 );
-			requests[ 1 ].respond( 200, '', getTestTokenValue( 10000 ) );
+			await clock.tickAsync( 750000 );
+			requests[ 1 ].respond( 200, '', getTestTokenValue( 900 ) );
 
-			await clock.tickAsync( 5000 );
-			requests[ 2 ].respond( 200, '', getTestTokenValue( 2000 ) );
+			await clock.tickAsync( 450000 );
+			requests[ 2 ].respond( 200, '', getTestTokenValue( 450 ) );
 
-			await clock.tickAsync( 1000 );
-			requests[ 3 ].respond( 200, '', getTestTokenValue( 300 ) );
+			await clock.tickAsync( 225000 );
+			requests[ 3 ].respond( 200, '', getTestTokenValue( 20 ) );
 
-			await clock.tickAsync( 150 );
-			requests[ 4 ].respond( 200, '', getTestTokenValue( 300 ) );
+			await clock.tickAsync( 10000 );
+			requests[ 4 ].respond( 200, '', getTestTokenValue( 20 ) );
 
 			expect( requests.length ).to.equal( 5 );
 
@@ -172,6 +172,28 @@ describe( 'Token', () => {
 
 			clock.restore();
 		} );
+
+		it( 'should refresh the token with the default time if the token payload does not contain `exp` property', async () => {
+			const clock = sinon.useFakeTimers( { toFake: [ 'setTimeout' ] } );
+			const tokenValue = `header.${ btoa( JSON.stringify( {} ) ) }.signature`;
+
+			const token = new Token( 'http://token-endpoint', { initValue: tokenValue } );
+
+			await token.init();
+
+			await clock.tickAsync( 3600000 );
+			requests[ 0 ].respond( 200, '', tokenValue );
+
+			await clock.tickAsync( 3600000 );
+			requests[ 1 ].respond( 200, '', tokenValue );
+
+			await clock.tickAsync( 3600000 );
+			requests[ 2 ].respond( 200, '', tokenValue );
+
+			expect( requests.length ).to.equal( 3 );
+
+			clock.restore();
+		} );
 	} );
 
 	describe( 'destroy', () => {
@@ -184,11 +206,11 @@ describe( 'Token', () => {
 			await token.init();
 
 			await clock.tickAsync( 1800000 );
-			requests[ 0 ].respond( 200, '', getTestTokenValue( 150000 ) );
+			requests[ 0 ].respond( 200, '', getTestTokenValue( 1500 ) );
 			await clock.tickAsync( 100 );
 
-			await clock.tickAsync( 75000 );
-			requests[ 1 ].respond( 200, '', getTestTokenValue( 10000 ) );
+			await clock.tickAsync( 750000 );
+			requests[ 1 ].respond( 200, '', getTestTokenValue( 900 ) );
 			await clock.tickAsync( 100 );
 
 			token.destroy();
@@ -348,6 +370,6 @@ describe( 'Token', () => {
 //
 // @param {Number} [timeOffset=3600000]
 // @returns {String}
-function getTestTokenValue( timeOffset = 3600000 ) {
-	return `header.${ btoa( JSON.stringify( { exp: Date.now() + timeOffset } ) ) }.signature`;
+function getTestTokenValue( timeOffset = 3600 ) {
+	return `header.${ btoa( JSON.stringify( { exp: ( Math.floor( Date.now() / 1000 ) ) + timeOffset } ) ) }.signature`;
 }

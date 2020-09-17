@@ -173,7 +173,7 @@ class Token {
 	/**
 	 * Returns token refresh timeout time calculated from expire time in the token payload.
 	 *
-	 * If the token parse fails, the default DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME is returned.
+	 * If the token parse fails or the token payload doesn't contain, the default DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME is returned.
 	 *
 	 * @protected
 	 * @returns {Number}
@@ -182,7 +182,12 @@ class Token {
 		try {
 			const [ , binaryTokenPayload ] = this.value.split( '.' );
 			const { exp: tokenExpireTime } = JSON.parse( atob( binaryTokenPayload ) );
-			const tokenRefreshTimeoutTime = Math.floor( ( tokenExpireTime - Date.now() ) / 2 );
+
+			if ( !tokenExpireTime ) {
+				return DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME;
+			}
+
+			const tokenRefreshTimeoutTime = Math.floor( ( ( tokenExpireTime * 1000 ) - Date.now() ) / 2 );
 
 			return tokenRefreshTimeoutTime;
 		} catch ( err ) {
