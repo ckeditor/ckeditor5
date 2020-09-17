@@ -6,7 +6,7 @@
 /* global document */
 
 import Input from '../../../src/input';
-import { fireBeforeInputEvent } from '../../_utils/utils';
+import { fireBeforeInputDomEvent } from '../../_utils/utils';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -14,7 +14,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'Typing text using beforeinput event', () => {
-	let domElement, editor;
+	let domElement, editor, editableElement;
 
 	testUtils.createSinonSandbox();
 
@@ -29,6 +29,8 @@ describe( 'Typing text using beforeinput event', () => {
 			plugins: [ Input, Paragraph ],
 			initialData: '<p>foo</p>'
 		} );
+
+		editableElement = editor.ui.getEditableElement();
 	} );
 
 	afterEach( async () => {
@@ -44,13 +46,13 @@ describe( 'Typing text using beforeinput event', () => {
 
 				const domRange1 = document.createRange();
 				const domRange2 = document.createRange();
-				domRange1.selectNodeContents( editor.ui.getEditableElement().firstChild );
-				domRange2.setStart( editor.ui.getEditableElement().firstChild, 0 );
-				domRange2.setEnd( editor.ui.getEditableElement().firstChild, 0 );
+				domRange1.selectNodeContents( editableElement.firstChild );
+				domRange2.setStart( editableElement.firstChild, 0 );
+				domRange2.setEnd( editableElement.firstChild, 0 );
 
 				const modelRange = editor.model.createRangeIn( editor.model.document.getRoot().getChild( 0 ) );
 
-				fireBeforeInputEvent( editor, {
+				fireBeforeInputDomEvent( editableElement, {
 					inputType: 'insertText',
 					ranges: [ domRange1, domRange2 ],
 					data: 'bar'
@@ -69,12 +71,12 @@ describe( 'Typing text using beforeinput event', () => {
 
 				const domRange1 = document.createRange();
 				const domRange2 = document.createRange();
-				domRange1.selectNodeContents( editor.ui.getEditableElement().firstChild );
-				domRange2.setStart( editor.ui.getEditableElement().firstChild, 0 );
-				domRange2.setEnd( editor.ui.getEditableElement().firstChild, 0 );
+				domRange1.selectNodeContents( editableElement.firstChild );
+				domRange2.setStart( editableElement.firstChild, 0 );
+				domRange2.setEnd( editableElement.firstChild, 0 );
 				const modelRange = editor.model.createRangeIn( editor.model.document.getRoot().getChild( 0 ) );
 
-				fireBeforeInputEvent( editor, {
+				fireBeforeInputDomEvent( editableElement, {
 					inputType: 'insertReplacementText',
 					ranges: [ domRange1, domRange2 ],
 					data: 'bar'
@@ -91,7 +93,7 @@ describe( 'Typing text using beforeinput event', () => {
 
 		it( 'should stop() the beforeinput event', () => {
 			const domRange = document.createRange();
-			domRange.selectNodeContents( editor.ui.getEditableElement().firstChild );
+			domRange.selectNodeContents( editableElement.firstChild );
 
 			let interceptedEventInfo;
 
@@ -99,7 +101,7 @@ describe( 'Typing text using beforeinput event', () => {
 				interceptedEventInfo = evt;
 			}, { priority: Number.POSITIVE_INFINITY } );
 
-			fireBeforeInputEvent( editor, {
+			fireBeforeInputDomEvent( editableElement, {
 				inputType: 'insertText',
 				ranges: [ domRange ],
 				data: 'bar'
@@ -110,7 +112,7 @@ describe( 'Typing text using beforeinput event', () => {
 
 		it( 'should preventDefault() the DOM beforeinput event', () => {
 			const domRange = document.createRange();
-			domRange.selectNodeContents( editor.ui.getEditableElement().firstChild );
+			domRange.selectNodeContents( editableElement.firstChild );
 
 			let interceptedEventData;
 
@@ -119,7 +121,7 @@ describe( 'Typing text using beforeinput event', () => {
 				sinon.spy( interceptedEventData, 'preventDefault' );
 			}, { priority: Number.POSITIVE_INFINITY } );
 
-			fireBeforeInputEvent( editor, {
+			fireBeforeInputDomEvent( editableElement, {
 				inputType: 'insertText',
 				ranges: [ domRange ],
 				data: 'bar'

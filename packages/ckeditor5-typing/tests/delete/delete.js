@@ -8,7 +8,7 @@
 import Delete from '../../src/delete';
 import DeleteCommand from '../../src/deletecommand';
 import DeleteObserver from '../../src/deleteobserver';
-import { fireBeforeInputEvent } from '../_utils/utils';
+import { fireBeforeInputDomEvent } from '../_utils/utils';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
@@ -87,7 +87,7 @@ describe( 'Delete plugin', () => {
 			domRange.setEnd( editor.ui.getEditableElement().firstChild.firstChild, 2 );
 
 			// Then, let's make sure beforeinput is not supported.
-			fireBeforeInputEvent( editor, {
+			fireBeforeInputDomEvent( domElement, {
 				inputType: 'deleteContentBackward',
 				ranges: [ domRange ]
 			} );
@@ -115,7 +115,7 @@ describe( 'Delete plugin', () => {
 			const deleteCommandSpy = testUtils.sinon.spy( editor.commands.get( 'delete' ), 'execute' );
 
 			// First, let's try if the beforeinput delete work.
-			fireBeforeInputEvent( editor, {
+			fireBeforeInputDomEvent( domElement, {
 				inputType: 'deleteContentBackward',
 				ranges: [ domRange ]
 			} );

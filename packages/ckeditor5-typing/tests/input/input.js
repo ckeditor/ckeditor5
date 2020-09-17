@@ -7,7 +7,7 @@
 
 import Input from '../../src/input';
 import InputCommand from '../../src/inputcommand';
-import { fireBeforeInputEvent } from '../_utils/utils';
+import { fireBeforeInputDomEvent } from '../_utils/utils';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -71,7 +71,7 @@ describe( 'Input plugin', () => {
 			domRange.selectNodeContents( editor.ui.getEditableElement().firstChild );
 
 			// Then, let's make sure beforeinput is not supported.
-			fireBeforeInputEvent( editor, {
+			fireBeforeInputDomEvent( editor.ui.getEditableElement(), {
 				inputType: 'insertText',
 				ranges: [ domRange ],
 				data: 'bar'
@@ -97,7 +97,7 @@ describe( 'Input plugin', () => {
 			domRange.selectNodeContents( editor.ui.getEditableElement().firstChild );
 
 			// First, let's try if the beforeinput works.
-			fireBeforeInputEvent( editor, {
+			fireBeforeInputDomEvent( editor.ui.getEditableElement(), {
 				inputType: 'insertText',
 				ranges: [ domRange ],
 				data: 'bar'

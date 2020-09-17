@@ -3,31 +3,30 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals InputEvent */
+/* globals Event */
 
 /**
  * Fires the `beforeinput` DOM event on the editor's editing root DOM
  * element with given data.
  *
- * @param {module:core/editor/editor~Editor} editor
+ * @param {HTMLElement} domRoot
  * @param {Object} evtData
  * @param {String} evtData.inputType
  * @param {String} [ evtData.data ]
  * @param {DataTransfer} [ evtData.dataTransfer ]
  * @param {Array.<DOMRange>} [ evtData.ranges ]
  */
-export function fireBeforeInputEvent( editor, evtData ) {
+export function fireBeforeInputDomEvent( domRoot, evtData ) {
 	const { inputType, data, dataTransfer, ranges } = evtData;
 
-	const event = new InputEvent( 'beforeinput', {
+	const event = new Event( 'beforeinput' );
+
+	Object.assign( event, {
 		data,
+		dataTransfer,
 		inputType,
-		dataTransfer
+		getTargetRanges: () => ranges || []
 	} );
 
-	if ( ranges ) {
-		event.getTargetRanges = () => ranges;
-	}
-
-	editor.ui.getEditableElement().dispatchEvent( event );
+	domRoot.dispatchEvent( event );
 }
