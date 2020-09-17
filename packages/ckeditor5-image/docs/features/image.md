@@ -87,7 +87,7 @@ See the {@link features/image-upload Image upload} guide.
 
 Besides the ability to insert images by uploading them directly from your disk or via CKFinder, you can also configure CKEditor 5 to allow inserting images via source URL.
 
-In order to enable this option, install the `ImageInsert` plugin and adding the `imageInsert` button to the toolbar (it replaces the standard `imageUpload` button).
+In order to enable this option, install the `ImageInsert` plugin and add the `imageInsert` button to the toolbar (it replaces the standard `imageUpload` button).
 
 ```js
 import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
