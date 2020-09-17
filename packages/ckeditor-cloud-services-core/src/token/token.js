@@ -128,6 +128,12 @@ class Token {
 		clearTimeout( this._tokenRefreshTimeout );
 	}
 
+	/**
+	 * Checks whether the provided token follows the JSON Web Tokens (JWT) format.
+	 *
+	 * @protected
+	 * @param {String} tokenValue The token to validate.
+	 */
 	_validateTokenValue( tokenValue ) {
 		// The token must be a string.
 		const isString = typeof tokenValue === 'string';
