@@ -26,15 +26,19 @@ export default function injectBeforeInputDeleteHandling( editor ) {
 		// This is related to the multi-byte characters decomposition (like complex emojis). Check out
 		// the comments in DeleteObserver's DELETE_EVENT_TYPES to learn more.
 		if ( inputType === 'deleteContentBackward' ) {
-			editor.execute( 'delete', {
+			const deleteCommandData = {
 				sequence,
-				unit,
+				unit
+			};
 
-				// Android IMEs have a quirk which is addressed by passing a complete selection in case of
-				// the 'deleteContentBackward' event type. See DeleteObserver#_enableBeforeInputBasedObserver()
-				// to learn more.
-				selection: env.isAndroid ? selectionToRemove : undefined
-			} );
+			// Android IMEs have a quirk which is addressed by passing a complete selection in case of
+			// the 'deleteContentBackward' event type. See DeleteObserver#_enableBeforeInputBasedObserver()
+			// to learn more.
+			if ( env.isAndroid ) {
+				deleteCommandData.selection = selectionToRemove;
+			}
+
+			editor.execute( 'delete', deleteCommandData );
 		} else if ( inputType === 'deleteContentForward' ) {
 			editor.execute( 'forwardDelete', {
 				unit,
