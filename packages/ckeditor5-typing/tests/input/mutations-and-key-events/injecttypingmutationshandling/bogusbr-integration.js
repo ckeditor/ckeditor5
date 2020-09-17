@@ -13,6 +13,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'Input', () => {
@@ -20,9 +21,11 @@ describe( 'Input', () => {
 		describe( 'Bogus BR integration', () => {
 			let editor, domRoot, mutationObserver, editorElement;
 
+			testUtils.createSinonSandbox();
+
 			beforeEach( () => {
 				// Force the browser to not use the beforeinput event.
-				sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
+				testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
 
 				editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );

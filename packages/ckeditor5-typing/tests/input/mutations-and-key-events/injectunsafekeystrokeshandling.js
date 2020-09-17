@@ -9,14 +9,17 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes, getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { isNonTypingKeystroke } from '../../../src/utils/input/injectunsafekeystrokeshandling';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Typing from '../../../src/typing';
 
 describe( 'Input', () => {
 	describe( 'Typing text using mutations and key events', () => {
 		describe( 'injectUnsafeKeystrokesHandling() and utils', () => {
+			testUtils.createSinonSandbox();
+
 			beforeEach( () => {
 				// Force the browser to not use the beforeinput event.
-				sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
+				testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
 			} );
 
 			describe( 'isNonTypingKeystroke()', () => {

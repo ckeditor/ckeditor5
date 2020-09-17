@@ -13,6 +13,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
@@ -21,9 +22,11 @@ describe( 'Input', () => {
 		describe( 'Plain text spellchecking support', () => {
 			let editor, container;
 
+			testUtils.createSinonSandbox();
+
 			beforeEach( () => {
 				// Force the browser to not use the beforeinput event.
-				sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
+				testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
 
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );

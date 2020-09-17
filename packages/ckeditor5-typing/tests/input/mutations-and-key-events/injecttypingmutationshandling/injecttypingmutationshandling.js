@@ -38,7 +38,7 @@ describe( 'Input', () => {
 
 			beforeEach( () => {
 				// Force the browser to not use the beforeinput event.
-				sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
+				testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
 
 				listenter = Object.create( EmitterMixin );
 
