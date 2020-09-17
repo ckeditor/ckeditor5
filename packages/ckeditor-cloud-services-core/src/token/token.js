@@ -46,6 +46,10 @@ class Token {
 			);
 		}
 
+		if ( options.initValue ) {
+			this._validateTokenValue( options.initValue );
+		}
+
 		/**
 		 * Value of the token.
 		 * The value of the token is null if `initValue` is not provided or `init` method was not called.
@@ -57,10 +61,6 @@ class Token {
 		 * @readonly
 		 */
 		this.set( 'value', options.initValue );
-
-		if ( options.initValue ) {
-			this._validateTokenValue();
-		}
 
 		/**
 		 * Base refreshing function.
@@ -96,8 +96,6 @@ class Token {
 				return;
 			}
 
-			this._validateTokenValue();
-
 			if ( this._options.autoRefresh ) {
 				this._registerRefreshTokenTimeout();
 			}
@@ -113,8 +111,8 @@ class Token {
 	refreshToken() {
 		return this._refresh()
 			.then( value => {
+				this._validateTokenValue( value );
 				this.set( 'value', value );
-				this._validateTokenValue();
 
 				if ( this._options.autoRefresh ) {
 					this._registerRefreshTokenTimeout();
@@ -130,12 +128,15 @@ class Token {
 		clearTimeout( this._tokenRefreshTimeout );
 	}
 
-	_validateTokenValue() {
-		if (
-			typeof this.value !== 'string' ||
-			/^".*"$/.test( this.value ) ||
-			this.value.split( '.' ).length !== 3
-		) {
+	_validateTokenValue( tokenValue ) {
+		// the token must be a string
+		const isString = typeof tokenValue === 'string';
+		// the token must be a plain string without ""
+		const isPlainString = !/^".*"$/.test( tokenValue );
+		// the token must be in the correct format - has 3 parts joined by dots
+		const isJWTFormat = isString && tokenValue.split( '.' ).length === 3;
+
+		if ( !( isString && isPlainString && isJWTFormat ) ) {
 			/**
 			 * A token value must be in JWT format.
 			 *
