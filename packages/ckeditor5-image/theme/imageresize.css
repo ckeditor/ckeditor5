@@ -24,6 +24,21 @@
 	}
 }
 
+/* .ck-content .image .ck-widget__resizer {
+} */
+
+.ck-focused .ck-widget_with-resizer.ck-widget_selected.image > .ck-widget__resizer {
+	display: none;
+}
+
+.ck-focused .ck-widget_with-resizer.ck-widget_selected.image.image_resizer_loaded > .ck-widget__resizer {
+	display: block;
+}
+
+/* .ck-content .image.image_resizer_loaded .ck-widget__resizer {
+	display: block;
+} */
+
 [dir="ltr"] .ck.ck-button.ck-button_with-text.ck-resize-image-button .ck-button__icon {
 	margin-right: var(--ck-spacing-standard);
 }

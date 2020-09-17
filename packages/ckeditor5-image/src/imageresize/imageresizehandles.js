@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
+import ImageLoadObserver from './../image/imageloadobserver';
 
 /**
  * The image resize by handles feature.
@@ -39,11 +40,19 @@ export default class ImageResizeHandles extends Plugin {
 	init() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'imageResize' );
+		const editingView = editor.editing.view;
+
+		editingView.addObserver( ImageLoadObserver );
 
 		this.bind( 'isEnabled' ).to( command );
 
 		editor.editing.downcastDispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
 			const widget = conversionApi.mapper.toViewElement( data.item );
+
+			// @todo: check if can be cleaned up
+			editingView.change( writer => {
+				writer.addClass( 'image_resizer_loading', widget );
+			} );
 
 			const resizer = editor.plugins
 				.get( WidgetResize )
@@ -74,13 +83,51 @@ export default class ImageResizeHandles extends Plugin {
 
 			resizer.on( 'updateSize', () => {
 				if ( !widget.hasClass( 'image_resized' ) ) {
-					editor.editing.view.change( writer => {
+					editingView.change( writer => {
 						writer.addClass( 'image_resized', widget );
 					} );
 				}
 			} );
 
+			this._hideResizerUntilImageIsLoaded( resizer, widget );
+
 			resizer.bind( 'isEnabled' ).to( this );
 		}, { priority: 'low' } );
+	}
+
+	/**
+	 * @private
+	 * @param {*} widget
+	 */
+	_hideResizerUntilImageIsLoaded( resizer, widget ) {
+		// Mitigation logic for #8088 (which is caused by a more complex problem #7548).
+		const editingView = this.editor.editing.view;
+
+		editingView.change( writer => {
+			writer.addClass( 'image_resizer_loading', widget );
+		} );
+
+		editingView.document.on( 'imageLoaded', imageLoadCallback );
+
+		function imageLoadCallback( evt, domEvent ) {
+			const handleHost = resizer._getHandleHost();
+
+			if ( domEvent.target.isSameNode( handleHost ) ) {
+				editingView.change( writer => {
+					writer.removeClass( 'image_resizer_loading', widget );
+					resizer.redraw();
+					writer.addClass( 'image_resizer_loaded', widget );
+				} );
+
+				editingView.document.off( 'imageLoaded', imageLoadCallback ); // Listener is no longer needed.
+			}
+		}
+
+		// setTimeout( () => {
+		// 	console.log( 'timeout1' );
+		// 	setTimeout( () => {
+		// 		console.log( 'timeout2' );
+		// 	}, 0 );
+		// }, 0 );
 	}
 }

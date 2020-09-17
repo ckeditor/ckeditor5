@@ -5,7 +5,7 @@
 
 :root {
 	--ck-color-resizer: var(--ck-color-focus-border);
-	--ck-resizer-size: 10px;
+	--ck-resizer-size: 80px;
 	--ck-resizer-border-width: 1px;
 	--ck-resizer-border-radius: 2px;
 
