@@ -129,16 +129,19 @@ class Token {
 	}
 
 	_validateTokenValue( tokenValue ) {
-		// the token must be a string
+		// The token must be a string.
 		const isString = typeof tokenValue === 'string';
-		// the token must be a plain string without ""
+
+		// The token must be a plain string without quotes ("").
 		const isPlainString = !/^".*"$/.test( tokenValue );
-		// the token must be in the correct format - has 3 parts joined by dots
+
+		// JWT token contains 3 parts: header, payload, and signature.
+		// Each part is separated by a dot.
 		const isJWTFormat = isString && tokenValue.split( '.' ).length === 3;
 
-		if ( !( isString && isPlainString && isJWTFormat ) ) {
+		if ( !( isPlainString && isJWTFormat ) ) {
 			/**
-			 * A token value must be in JWT format.
+			 * The provided token must follow the [JSON Web Tokens](https://jwt.io/introduction/) format.
 			 *
 			 * @error token-not-in-jwt-format
 			 */
