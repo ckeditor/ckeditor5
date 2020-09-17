@@ -14,7 +14,8 @@ const BASE_64_FILE = 'data:image/gif;base64,R0lGODlhCQAJAPIAAGFhYZXK/1FRUf///' +
 	'9ra2gD/AAAAAAAAACH5BAEAAAUALAAAAAAJAAkAAAMYWFqwru2xERcYJLSNNWNBVimC5wjfaTkJADs=';
 
 describe( 'FileUploader', () => {
-	const token = new Token( 'url', { initValue: 'token', autoRefresh: false } );
+	const tokenInitValue = `header.${ btoa( JSON.stringify( { exp: Date.now() + 3600000 } ) ) }.signature`;
+	const token = new Token( 'url', { initValue: tokenInitValue, autoRefresh: false } );
 
 	let fileUploader;
 
@@ -116,9 +117,12 @@ describe( 'FileUploader', () => {
 					expect( request.url ).to.equal( API_ADDRESS );
 					expect( request.method ).to.equal( 'POST' );
 					expect( request.responseType ).to.equal( 'json' );
-					expect( request.requestHeaders ).to.be.deep.equal( { Authorization: 'token' } );
+					expect( request.requestHeaders ).to.be.deep.equal( { Authorization: tokenInitValue } );
 
 					done();
+				} )
+				.catch( err => {
+					console.log( err );
 				} );
 
 			request.respond( 200, { 'Content-Type': 'application/json' },
