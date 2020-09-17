@@ -356,7 +356,8 @@ export default class DowncastDispatcher {
 
 			// Main element refresh - kinda ugly as we have all items in the range.
 			// TODO: Maybe, an inner range would be better (check children, etc).
-			if ( expectedEventName === 'insert:' + name ) {
+			const mainEvent = 'insert:' + name;
+			if ( expectedEventName === mainEvent ) {
 				// Cache current view element of a converted element, might be undefined if first insert.
 				const currentView = this.conversionApi.mapper.toViewElement( data.item );
 
@@ -404,13 +405,11 @@ export default class DowncastDispatcher {
 							}
 						}
 					}
-					// // At this stage old view can be safely removed.
-					//
 				}
 			}
 
 			// If the map has given event it _must_ be converted by main "insert" converter.
-			if ( !this._refreshEventMap.has( expectedEventName ) ) {
+			if ( !this._refreshEventMap.has( expectedEventName ) && expectedEventName !== mainEvent ) {
 				// The below check if every node was converted before - if not it triggers the conversion again.
 				// Below optimal solution - todo refactor or introduce inner API for that.
 				// Other option is to use convertInsert() and skip range.
