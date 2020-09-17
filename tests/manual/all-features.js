@@ -97,12 +97,10 @@ ClassicEditor
 				'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|',
 				'imageResize'
 			],
-			upload: {
-				panel: {
-					items: [
-						'insertImageViaUrl'
-					]
-				}
+			insert: {
+				integrations: [
+					'insertImageViaUrl'
+				]
 			}
 		},
 		placeholder: 'Type the content here!',
