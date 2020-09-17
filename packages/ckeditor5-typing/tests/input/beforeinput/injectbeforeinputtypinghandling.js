@@ -15,32 +15,32 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'Input', () => {
 	describe( 'Typing text using beforeinput event', () => {
-		let domElement, editor, editableElement;
+		describe( 'injectBeforeInputTypingHandling()', () => {
+			let domElement, editor, editableElement;
 
-		testUtils.createSinonSandbox();
+			testUtils.createSinonSandbox();
 
-		beforeEach( async () => {
-			// Force the browser to use the beforeinput event.
-			testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => true );
+			beforeEach( async () => {
+				// Force the browser to use the beforeinput event.
+				testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => true );
 
-			domElement = document.createElement( 'div' );
-			document.body.appendChild( domElement );
+				domElement = document.createElement( 'div' );
+				document.body.appendChild( domElement );
 
-			editor = await ClassicTestEditor.create( domElement, {
-				plugins: [ Input, Paragraph ],
-				initialData: '<p>foo</p>'
+				editor = await ClassicTestEditor.create( domElement, {
+					plugins: [ Input, Paragraph ],
+					initialData: '<p>foo</p>'
+				} );
+
+				editableElement = editor.ui.getEditableElement();
 			} );
 
-			editableElement = editor.ui.getEditableElement();
-		} );
+			afterEach( async () => {
+				await editor.destroy();
 
-		afterEach( async () => {
-			await editor.destroy();
+				domElement.remove();
+			} );
 
-			domElement.remove();
-		} );
-
-		describe( 'injectBeforeInputTypingHandling()', () => {
 			describe( 'beforeinput event types handling', () => {
 				it( 'should handle the insertText input type and execute the input command', () => {
 					const inputCommandSpy = testUtils.sinon.spy( editor.commands.get( 'input' ), 'execute' );
