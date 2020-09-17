@@ -17,132 +17,134 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-describe( 'Delete plugin', () => {
-	let domElement;
+describe( 'Delete', () => {
+	describe( 'Delete plugin', () => {
+		let domElement;
 
-	testUtils.createSinonSandbox();
+		testUtils.createSinonSandbox();
 
-	beforeEach( () => {
-		domElement = document.createElement( 'div' );
-		document.body.appendChild( domElement );
-	} );
-
-	afterEach( () => {
-		domElement.remove();
-	} );
-
-	describe( 'init()', () => {
-		it( 'should register two editor commands', async () => {
-			const editor = await ClassicTestEditor.create( domElement, {
-				plugins: [ Delete ]
-			} );
-
-			expect( editor.commands.get( 'delete' ) ).to.have.property( 'direction', 'backward' );
-			expect( editor.commands.get( 'forwardDelete' ) ).to.have.property( 'direction', 'forward' );
-
-			expect( editor.commands.get( 'delete' ) ).to.be.instanceOf( DeleteCommand );
-			expect( editor.commands.get( 'forwardDelete' ) ).to.be.instanceOf( DeleteCommand );
-
-			await editor.destroy();
+		beforeEach( () => {
+			domElement = document.createElement( 'div' );
+			document.body.appendChild( domElement );
 		} );
 
-		it( 'should add the DeleteObserver to the editing view', async () => {
-			const editor = await ClassicTestEditor.create( domElement, {
-				plugins: [ Delete ]
-			} );
-
-			expect( editor.editing.view.getObserver( DeleteObserver ) ).to.be.instanceOf( DeleteObserver );
-
-			await editor.destroy();
+		afterEach( () => {
+			domElement.remove();
 		} );
 
-		it( 'should enable key events-based delete when the Input Events are not supported by the browser', async () => {
-			// Force the browser to not use the beforeinput event.
-			testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
+		describe( 'init()', () => {
+			it( 'should register two editor commands', async () => {
+				const editor = await ClassicTestEditor.create( domElement, {
+					plugins: [ Delete ]
+				} );
 
-			const editor = await ClassicTestEditor.create( domElement, {
-				plugins: [ Delete, Paragraph ],
-				initialData: '<p>foo</p>'
+				expect( editor.commands.get( 'delete' ) ).to.have.property( 'direction', 'backward' );
+				expect( editor.commands.get( 'forwardDelete' ) ).to.have.property( 'direction', 'forward' );
+
+				expect( editor.commands.get( 'delete' ) ).to.be.instanceOf( DeleteCommand );
+				expect( editor.commands.get( 'forwardDelete' ) ).to.be.instanceOf( DeleteCommand );
+
+				await editor.destroy();
 			} );
 
-			// "foo[]"
-			editor.model.change( writer => {
-				writer.setSelection( editor.model.document.getRoot(), 'end' );
+			it( 'should add the DeleteObserver to the editing view', async () => {
+				const editor = await ClassicTestEditor.create( domElement, {
+					plugins: [ Delete ]
+				} );
+
+				expect( editor.editing.view.getObserver( DeleteObserver ) ).to.be.instanceOf( DeleteObserver );
+
+				await editor.destroy();
 			} );
 
-			const viewDocument = editor.editing.view.document;
-			const deleteCommandSpy = testUtils.sinon.spy( editor.commands.get( 'delete' ), 'execute' );
+			it( 'should enable key events-based delete when the Input Events are not supported by the browser', async () => {
+				// Force the browser to not use the beforeinput event.
+				testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
 
-			// First, let's try if the key events work.
-			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-				keyCode: getCode( 'backspace' )
-			} ) );
+				const editor = await ClassicTestEditor.create( domElement, {
+					plugins: [ Delete, Paragraph ],
+					initialData: '<p>foo</p>'
+				} );
 
-			sinon.assert.calledOnce( deleteCommandSpy );
-			sinon.assert.calledWith( deleteCommandSpy.firstCall, sinon.match( { sequence: 1, unit: 'codePoint' } ) );
+				// "foo[]"
+				editor.model.change( writer => {
+					writer.setSelection( editor.model.document.getRoot(), 'end' );
+				} );
 
-			// "fo[]"
-			const domRange = document.createRange();
-			domRange.setStart( editor.ui.getEditableElement().firstChild.firstChild, 2 );
-			domRange.setEnd( editor.ui.getEditableElement().firstChild.firstChild, 2 );
+				const viewDocument = editor.editing.view.document;
+				const deleteCommandSpy = testUtils.sinon.spy( editor.commands.get( 'delete' ), 'execute' );
 
-			// Then, let's make sure beforeinput is not supported.
-			fireBeforeInputDomEvent( domElement, {
-				inputType: 'deleteContentBackward',
-				ranges: [ domRange ]
+				// First, let's try if the key events work.
+				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: getCode( 'backspace' )
+				} ) );
+
+				sinon.assert.calledOnce( deleteCommandSpy );
+				sinon.assert.calledWith( deleteCommandSpy.firstCall, sinon.match( { sequence: 1, unit: 'codePoint' } ) );
+
+				// "fo[]"
+				const domRange = document.createRange();
+				domRange.setStart( editor.ui.getEditableElement().firstChild.firstChild, 2 );
+				domRange.setEnd( editor.ui.getEditableElement().firstChild.firstChild, 2 );
+
+				// Then, let's make sure beforeinput is not supported.
+				fireBeforeInputDomEvent( editor.ui.getEditableElement(), {
+					inputType: 'deleteContentBackward',
+					ranges: [ domRange ]
+				} );
+
+				sinon.assert.calledOnce( deleteCommandSpy );
+
+				await editor.destroy();
 			} );
 
-			sinon.assert.calledOnce( deleteCommandSpy );
+			it( 'should enable beforeinput-based delete when the Input Events are supported by the browser', async () => {
+				// Force the browser to not use the beforeinput event.
+				testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => true );
 
-			await editor.destroy();
+				const editor = await ClassicTestEditor.create( domElement, {
+					plugins: [ Delete, Paragraph ],
+					initialData: '<p>foo</p>'
+				} );
+
+				// "foo[]"
+				const domRange = document.createRange();
+				domRange.setStart( editor.ui.getEditableElement().firstChild.firstChild, 3 );
+				domRange.setEnd( editor.ui.getEditableElement().firstChild.firstChild, 3 );
+
+				const viewDocument = editor.editing.view.document;
+				const deleteCommandSpy = testUtils.sinon.spy( editor.commands.get( 'delete' ), 'execute' );
+
+				// First, let's try if the beforeinput delete work.
+				fireBeforeInputDomEvent( editor.ui.getEditableElement(), {
+					inputType: 'deleteContentBackward',
+					ranges: [ domRange ]
+				} );
+
+				sinon.assert.calledOnce( deleteCommandSpy );
+				// Note: Sequence is 0 because only beforeinput was fired without preceding keydown.
+				sinon.assert.calledWith( deleteCommandSpy.firstCall, sinon.match( { sequence: 0, unit: 'codePoint' } ) );
+
+				// "fo[]"
+				editor.model.change( writer => {
+					writer.setSelection( editor.model.document.getRoot(), 'end' );
+				} );
+
+				// Then, let's make sure key event are not supported.
+				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: getCode( 'backspace' )
+				} ) );
+
+				sinon.assert.calledOnce( deleteCommandSpy );
+
+				await editor.destroy();
+			} );
+
+			function getDomEvent() {
+				return {
+					preventDefault: sinon.spy()
+				};
+			}
 		} );
-
-		it( 'should enable beforeinput-based delete when the Input Events are supported by the browser', async () => {
-			// Force the browser to not use the beforeinput event.
-			testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => true );
-
-			const editor = await ClassicTestEditor.create( domElement, {
-				plugins: [ Delete, Paragraph ],
-				initialData: '<p>foo</p>'
-			} );
-
-			// "foo[]"
-			const domRange = document.createRange();
-			domRange.setStart( editor.ui.getEditableElement().firstChild.firstChild, 3 );
-			domRange.setEnd( editor.ui.getEditableElement().firstChild.firstChild, 3 );
-
-			const viewDocument = editor.editing.view.document;
-			const deleteCommandSpy = testUtils.sinon.spy( editor.commands.get( 'delete' ), 'execute' );
-
-			// First, let's try if the beforeinput delete work.
-			fireBeforeInputDomEvent( domElement, {
-				inputType: 'deleteContentBackward',
-				ranges: [ domRange ]
-			} );
-
-			sinon.assert.calledOnce( deleteCommandSpy );
-			// Note: Sequence is 0 because only beforeinput was fired without preceding keydown.
-			sinon.assert.calledWith( deleteCommandSpy.firstCall, sinon.match( { sequence: 0, unit: 'codePoint' } ) );
-
-			// "fo[]"
-			editor.model.change( writer => {
-				writer.setSelection( editor.model.document.getRoot(), 'end' );
-			} );
-
-			// Then, let's make sure key event are not supported.
-			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-				keyCode: getCode( 'backspace' )
-			} ) );
-
-			sinon.assert.calledOnce( deleteCommandSpy );
-
-			await editor.destroy();
-		} );
-
-		function getDomEvent() {
-			return {
-				preventDefault: sinon.spy()
-			};
-		}
 	} );
 } );
