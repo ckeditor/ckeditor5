@@ -662,16 +662,27 @@ export default class LinkUI extends Plugin {
 		const model = this.editor.model;
 
 		model.change( writer => {
+			const range = model.document.selection.getFirstRange();
+
 			if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
-				writer.updateMarker( VISUAL_SELECTION_MARKER_NAME, {
-					range: model.document.selection.getFirstRange()
-				} );
+				writer.updateMarker( VISUAL_SELECTION_MARKER_NAME, { range } );
 			} else {
-				writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
-					usingOperation: false,
-					affectsData: false,
-					range: model.document.selection.getFirstRange()
-				} );
+				if ( range.start.isAtEnd ) {
+					const focus = model.document.selection.focus;
+					const nextValidRange = getNextValidRange( range, focus, writer );
+
+					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+						usingOperation: false,
+						affectsData: false,
+						range: nextValidRange
+					} );
+				} else {
+					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+						usingOperation: false,
+						affectsData: false,
+						range
+					} );
+				}
 			}
 		} );
 	}
@@ -699,4 +710,28 @@ export default class LinkUI extends Plugin {
 // @returns {module:engine/view/attributeelement~AttributeElement|null} Link element at the position or null.
 function findLinkElementAncestor( position ) {
 	return position.getAncestors().find( ancestor => isLinkElement( ancestor ) );
+}
+
+// Returns next valid range for the fake visual selection marker.
+//
+// @private
+// @param {module:engine/model/range~Range} range Current range.
+// @param {module:engine/model/position~Position} focus Selection focus.
+// @param {module:engine/model/writer~Writer} writer Writer.
+// @returns {module:engine/model/range~Range} New valid range for the fake visual selection marker.
+function getNextValidRange( range, focus, writer ) {
+	const nextStartPath = [ range.start.path[ 0 ] + 1, 0 ];
+	const nextStartPosition = writer.createPositionFromPath( range.start.root, nextStartPath, 'toNext' );
+	const nextRange = writer.createRange( nextStartPosition, range.end );
+
+	// Block creating a potential next valid range over the current range end.
+	if ( nextRange.start.path[ 0 ] > range.end.path[ 0 ] ) {
+		return writer.createRange( focus );
+	}
+
+	if ( nextStartPosition.isAtStart && nextStartPosition.isAtEnd ) {
+		return getNextValidRange( nextRange, focus, writer );
+	}
+
+	return nextRange;
 }
