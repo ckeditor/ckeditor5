@@ -344,12 +344,10 @@ describe( 'Token', () => {
 	} );
 } );
 
-/**
- * Returns valid token for tests with given expiration time offset.
- *
- * @param timeOffset {Number}
- * @returns {String}
- */
+// Returns valid token for tests with given expiration time offset.
+//
+// @param {Number} [timeOffset=3600000]
+// @returns {String}
 function getTestTokenValue( timeOffset = 3600000 ) {
 	return `header.${ btoa( JSON.stringify( { exp: Date.now() + timeOffset } ) ) }.signature`;
 }
