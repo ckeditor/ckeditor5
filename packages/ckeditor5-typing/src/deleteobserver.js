@@ -134,53 +134,60 @@ export default class DeleteObserver extends Observer {
 		// wanted to clean it up, not remove it, it's about UX). Check out the DeleteCommand implementation to learn more.
 		//
 		// Fun fact: Safari on Mac won't fire beforeinput for backspace in an empty heading (only content).
-		let deleteSequence = 0;
+		let sequence = 0;
 
 		viewDocument.on( 'keydown', () => {
-			deleteSequence++;
+			sequence++;
 		} );
 
 		viewDocument.on( 'keyup', () => {
-			deleteSequence = 0;
+			sequence = 0;
 		} );
 
 		viewDocument.on( 'beforeinput', ( evt, data ) => {
 			const { targetRanges, domEvent, inputType } = data;
 			const deleteEventSpec = DELETE_EVENT_TYPES[ inputType ];
 
-			if ( deleteEventSpec ) {
-				let selectionToRemove = editingView.createSelection( targetRanges[ 0 ] );
-
-				// Android IMEs have a quirk. Sometimes it may change the DOM selection on `beforeinput` event so that
-				// the selection contains all the text that the IME wants to remove. But sometimes it is only expanding
-				// it by a single character (in case of the collapsed selection).
-				//
-				// The code below checks if the former scenario occurred (the latter is fine, needs no correction) and it
-				// uses this information to correct the "delete" event so it knows the proper part of the content to be removed.
-				//
-				// **Note**: See injectBeforeInputDeleteHandling() for the second part of this quirk.
-				if ( env.isAndroid && inputType === 'deleteContentBackward' ) {
-					const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
-					const { focusNode, anchorNode, anchorOffset, focusOffset } = domSelection;
-
-					if ( anchorNode == focusNode && anchorOffset + 1 !== focusOffset ) {
-						selectionToRemove = editingView.domConverter.domSelectionToView( domSelection );
-					}
-				}
-
-				this._fireDeleteEvent( domEvent, evt.stop, {
-					// Standard "delete" event data.
-					direction: deleteEventSpec.direction,
-					sequence: deleteSequence,
-					unit: deleteEventSpec.unit,
-					selectionToRemove,
-
-					// beforeinput data extension.
-					inputType
-				} );
-
-				data.preventDefault();
+			if ( !deleteEventSpec ) {
+				return;
 			}
+
+			const deleteData = {
+				// Standard "delete" event data.
+				direction: deleteEventSpec.direction,
+				unit: deleteEventSpec.unit,
+				sequence,
+
+				// beforeinput data extension.
+				inputType
+			};
+
+			// Android IMEs have a quirk. Sometimes it may change the DOM selection on `beforeinput` event so that
+			// the selection contains all the text that the IME wants to remove. But sometimes it is only expanding
+			// it by a single character (in case of the collapsed selection).
+			//
+			// The code below checks if the former scenario occurred (the latter is fine, needs no correction) and it
+			// uses this information to correct the "delete" event so it knows the proper part of the content to be removed.
+			//
+			// **Note**: See injectBeforeInputDeleteHandling() for the second part of this quirk.
+			if ( env.isAndroid && inputType === 'deleteContentBackward' ) {
+				const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+				const { focusNode, anchorNode, anchorOffset, focusOffset } = domSelection;
+
+				// On Android, deleteContentBackward has sequence 1 by default.
+				deleteData.sequence = 1;
+
+				// This is the former scenario when the IME wants more than a single character to be removed.
+				if ( anchorNode === focusNode && anchorOffset + 1 !== focusOffset ) {
+					deleteData.selectionToRemove = editingView.domConverter.domSelectionToView( domSelection );
+				}
+			} else {
+				deleteData.selectionToRemove = editingView.createSelection( targetRanges[ 0 ] );
+			}
+
+			this._fireDeleteEvent( domEvent, evt.stop, deleteData );
+
+			data.preventDefault();
 		} );
 	}
 
@@ -256,7 +263,7 @@ export default class DeleteObserver extends Observer {
  * @event module:engine/view/document~Document#event:delete
  * @param {module:engine/view/observer/domeventdata~DomEventData} data
  * @param {'forward'|'delete'} data.direction The direction in which the deletion should happen.
- * @param {'character'|'word'} data.unit The "amount" of content that should be deleted.
+ * @param {'character'|'word'|'line'} data.unit The "amount" of content that should be deleted.
  * @param {Number} data.sequence A number describing which subsequent delete event it is without the key being released.
  * If it's 2 or more it means that the key was pressed and hold.
  * @param {module:engine/view/selection~Selection} [data.selectionToRemove] View selection which content should be removed. If not set,
