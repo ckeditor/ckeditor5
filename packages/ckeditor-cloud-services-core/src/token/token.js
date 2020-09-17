@@ -175,8 +175,8 @@ class Token {
 	 *
 	 * If the token parse fails, the default DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME is returned.
 	 *
-	 * @returns {Number}
 	 * @protected
+	 * @returns {Number}
 	 */
 	_getTokenRefreshTimeoutTime() {
 		try {
