@@ -20,10 +20,10 @@ import { toWidget, toWidgetEditable, setHighlightHandling } from '@ckeditor/cked
  * @returns {Function} Conversion helper.
  */
 export function downcastInsertTable( options = {} ) {
-	return ( modelElement, conversionApi ) => {
-		const table = modelElement;
+	return dispatcher => dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
+		const table = data.item;
 
-		if ( !conversionApi.consumable.test( table, 'insert' ) ) {
+		if ( !conversionApi.consumable.consume( table, 'insert' ) ) {
 			return;
 		}
 
@@ -78,8 +78,11 @@ export function downcastInsertTable( options = {} ) {
 			}
 		}
 
-		return asWidget ? tableWidget : figureElement;
-	};
+		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+
+		conversionApi.mapper.bindElements( table, asWidget ? tableWidget : figureElement );
+		conversionApi.writer.insert( viewPosition, asWidget ? tableWidget : figureElement );
+	} );
 }
 
 /**
@@ -324,7 +327,7 @@ function createViewTableCellElement( tableSlot, tableAttributes, insertPosition,
 
 	conversionApi.writer.insert( insertPosition, cellElement );
 
-	conversionApi.mapper.bindSlotElements( tableCell, cellElement );
+	conversionApi.mapper.bindElements( tableCell, cellElement );
 
 	if ( isSingleParagraph && !hasAnyAttribute( firstChild ) && !asWidget ) {
 		const innerParagraph = tableCell.getChild( 0 );

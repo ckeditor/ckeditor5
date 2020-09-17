@@ -110,6 +110,26 @@ export default class Differ {
 		return this._changesInElement.size == 0 && this._changedMarkers.size == 0;
 	}
 
+	reInsertItem( item ) {
+		if ( this._isInInsertedElement( item.parent ) ) {
+			return;
+		}
+
+		this._markRemove( item.parent, item.startOffset, item.offsetSize );
+		this._markInsert( item.parent, item.startOffset, item.offsetSize );
+
+		const range = Range._createOn( item );
+
+		for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
+			const markerRange = marker.getRange();
+
+			this.bufferMarkerChange( marker.name, markerRange, markerRange, marker.affectsData );
+		}
+
+		// Clear cache after each buffered operation as it is no longer valid.
+		this._cachedChanges = null;
+	}
+
 	/**
 	 * Marks given `item` in differ to be "refreshed".
 	 *
@@ -826,18 +846,14 @@ export default class Differ {
 
 							const howManyAfter = howMany - old.howMany - inc.nodesToHandle;
 
-							if ( howManyAfter > 0 ) {
-								// Add the second part of attribute change to the beginning of processed array so it won't
-								// be processed again in this loop.
-								changes.unshift( {
-									type: 'attribute',
-									offset: inc.offset,
-									howMany: howManyAfter,
-									count: this._changeCount++
-								} );
-							} else {
-								throw new Error( 'Unshifting negative howMany -> infinite differ.getChanges()' );
-							}
+							// Add the second part of attribute change to the beginning of processed array so it won't
+							// be processed again in this loop.
+							changes.unshift( {
+								type: 'attribute',
+								offset: inc.offset,
+								howMany: howManyAfter,
+								count: this._changeCount++
+							} );
 						} else {
 							old.howMany -= oldEnd - inc.offset;
 						}

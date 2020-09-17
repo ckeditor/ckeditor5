@@ -2128,8 +2128,7 @@ describe( 'table clipboard', () => {
 					] ) );
 				} );
 
-				// TODO: fix needed for infinite differ.getChanges() - something is messing with the attribute changes.
-				it.skip( 'should split cells inside the selected area before pasting (rowspan ends after the selection)', () => {
+				it( 'should split cells inside the selected area before pasting (rowspan ends after the selection)', () => {
 					// +----+----+----+
 					// | 00 | 01 | 02 |
 					// +----+    +----+
@@ -2260,8 +2259,7 @@ describe( 'table clipboard', () => {
 					] ) );
 				} );
 
-				// TODO: fix needed for infinite differ.getChanges() - something is messing with the attribute changes.
-				it.skip( 'should split cells inside the selected area before pasting (colspan ends after the selection)', () => {
+				it( 'should split cells inside the selected area before pasting (colspan ends after the selection)', () => {
 					// +----+----+----+----+----+
 					// | 00 | 01 | 02 | 03 | 04 |
 					// +----+----+----+----+----+
@@ -2379,8 +2377,7 @@ describe( 'table clipboard', () => {
 					] ) );
 				} );
 
-				// TODO: fix needed for infinite differ.getChanges() - something is messing with the attribute changes.
-				it.skip( 'should properly handle complex case', () => {
+				it( 'should properly handle complex case', () => {
 					// +----+----+----+----+----+----+----+
 					// | 00           | 03 | 04           |
 					// +              +    +----+----+----+
@@ -2939,8 +2936,7 @@ describe( 'table clipboard', () => {
 				} );
 			} );
 
-			// TODO: fix needed for infinite differ.getChanges() - something is messing with the attribute changes.
-			describe.skip( 'content table has spans', () => {
+			describe( 'content table has spans', () => {
 				beforeEach( () => {
 					// +----+----+----+----+----+----+
 					// | 00 | 01 | 02 | 03 | 04 | 05 |
