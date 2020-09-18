@@ -222,6 +222,7 @@ describe( 'BlockQuote integration', () => {
 		function fakeEventData() {
 			return {
 				preventDefault: sinon.spy(),
+				inputType: 'deleteContentBackward',
 				direction: 'backward',
 				unit: 'character'
 			};
