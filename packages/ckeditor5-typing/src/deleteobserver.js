@@ -15,7 +15,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 const DELETE_CHARACTER = 'character';
 const DELETE_WORD = 'word';
 const DELETE_CODE_POINT = 'codePoint';
-const DELETE_LINE = 'line';
+const DELETE_SELECTION = 'selection';
 const DELETE_BACKWARD = 'backward';
 const DELETE_FORWARD = 'forward';
 
@@ -58,12 +58,12 @@ const DELETE_EVENT_TYPES = {
 	},
 	// Safari on Mac: Cmd + Backspace
 	deleteHardLineBackward: {
-		unit: DELETE_LINE,
+		unit: DELETE_SELECTION,
 		direction: DELETE_BACKWARD
 	},
 	// Chrome on Mac: Cmd + Backspace.
 	deleteSoftLineBackward: {
-		unit: DELETE_LINE,
+		unit: DELETE_SELECTION,
 		direction: DELETE_BACKWARD
 	},
 
@@ -93,12 +93,12 @@ const DELETE_EVENT_TYPES = {
 	// This is weird that it does not work in Safari on Mac despite being listed in the official shortcuts listing
 	// on Apple's webpage.
 	deleteHardLineForward: {
-		unit: DELETE_LINE,
+		unit: DELETE_SELECTION,
 		direction: DELETE_FORWARD
 	},
 	// ???
 	deleteSoftLineForward: {
-		unit: DELETE_LINE,
+		unit: DELETE_SELECTION,
 		direction: DELETE_FORWARD
 	}
 };
@@ -262,8 +262,8 @@ export default class DeleteObserver extends Observer {
  *
  * @event module:engine/view/document~Document#event:delete
  * @param {module:engine/view/observer/domeventdata~DomEventData} data
- * @param {'forward'|'delete'} data.direction The direction in which the deletion should happen.
- * @param {'character'|'word'|'line'} data.unit The "amount" of content that should be deleted.
+ * @param {'forward'|'backward'} data.direction The direction in which the deletion should happen.
+ * @param {'character'|'word'|'codePoint'|'selection'} data.unit The "amount" of content that should be deleted.
  * @param {Number} data.sequence A number describing which subsequent delete event it is without the key being released.
  * If it's 2 or more it means that the key was pressed and hold.
  * @param {module:engine/view/selection~Selection} [data.selectionToRemove] View selection which content should be removed. If not set,

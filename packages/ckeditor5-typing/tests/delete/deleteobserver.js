@@ -449,7 +449,7 @@ describe( 'Delete', () => {
 
 						sinon.assert.calledOnce( deleteSpy );
 						sinon.assert.calledWithMatch( deleteSpy, {}, {
-							unit: 'line',
+							unit: 'selection',
 							direction: 'backward',
 							sequence: 0,
 							inputType: 'deleteHardLineBackward'
@@ -473,7 +473,7 @@ describe( 'Delete', () => {
 
 						sinon.assert.calledOnce( deleteSpy );
 						sinon.assert.calledWithMatch( deleteSpy, {}, {
-							unit: 'line',
+							unit: 'selection',
 							direction: 'backward',
 							sequence: 0,
 							inputType: 'deleteSoftLineBackward'
@@ -547,7 +547,7 @@ describe( 'Delete', () => {
 
 						sinon.assert.calledOnce( deleteSpy );
 						sinon.assert.calledWithMatch( deleteSpy, {}, {
-							unit: 'line',
+							unit: 'selection',
 							direction: 'forward',
 							sequence: 0,
 							inputType: 'deleteHardLineForward'
@@ -571,7 +571,7 @@ describe( 'Delete', () => {
 
 						sinon.assert.calledOnce( deleteSpy );
 						sinon.assert.calledWithMatch( deleteSpy, {}, {
-							unit: 'line',
+							unit: 'selection',
 							direction: 'forward',
 							sequence: 0,
 							inputType: 'deleteSoftLineForward'

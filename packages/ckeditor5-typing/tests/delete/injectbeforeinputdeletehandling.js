@@ -128,7 +128,7 @@ describe( 'Delete', () => {
 						viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
 							inputType: 'deleteSoftLineForward',
 							direction: 'forward',
-							unit: 'line',
+							unit: 'selection',
 							sequence: 1,
 							selectionToRemove: view.createSelection( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 1 )
 						} ) );
