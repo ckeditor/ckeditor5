@@ -97,7 +97,8 @@ export default class ImageResizeHandles extends Plugin {
 
 	/**
 	 * @private
-	 * @param {*} widget
+	 * @param {module:widget/widgetresize/resizer~Resizer} resizer
+	 * @param {module:engine/view/containerelement~ContainerElement} widget
 	 */
 	_hideResizerUntilImageIsLoaded( resizer, widget ) {
 		// Mitigation logic for #8088 (which is caused by a more complex problem #7548).
@@ -114,20 +115,13 @@ export default class ImageResizeHandles extends Plugin {
 
 			if ( domEvent.target.isSameNode( handleHost ) ) {
 				editingView.change( writer => {
-					writer.removeClass( 'image_resizer_loading', widget );
 					resizer.redraw();
-					writer.addClass( 'image_resizer_loaded', widget );
+					writer.removeClass( 'image_resizer_loading', widget );
 				} );
 
-				editingView.document.off( 'imageLoaded', imageLoadCallback ); // Listener is no longer needed.
+				// Remove image load listener for optimization, as it is no longer needed.
+				editingView.document.off( 'imageLoaded', imageLoadCallback );
 			}
 		}
-
-		// setTimeout( () => {
-		// 	console.log( 'timeout1' );
-		// 	setTimeout( () => {
-		// 		console.log( 'timeout2' );
-		// 	}, 0 );
-		// }, 0 );
 	}
 }
