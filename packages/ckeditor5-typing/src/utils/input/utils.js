@@ -48,6 +48,28 @@ for ( let code = 112; code <= 135; code++ ) {
 }
 
 /**
+ * Returns `true` if a keystroke will **not** result in "typing".
+ *
+ * For instance, keystrokes that result in typing are letters "a-zA-Z", numbers "0-9", delete, backspace, etc.
+ *
+ * Keystrokes that do not cause typing are, for instance, Fn keys (F5, F8, etc.), arrow keys (←, →, ↑, ↓),
+ * Tab (↹), "Windows logo key" (⊞ Win), etc.
+ *
+ * Note: This implementation is very simple and will need to be refined with time.
+ *
+ * @param {module:engine/view/observer/keyobserver~KeyEventData} keyData
+ * @returns {Boolean}
+ */
+export function isNonTypingKeystroke( keyData ) {
+	// Keystrokes which contain Ctrl don't represent typing.
+	if ( keyData.ctrlKey ) {
+		return true;
+	}
+
+	return NON_TYPING_KEY_CODES.includes( keyData.keyCode );
+}
+
+/**
  * Returns true if container children have mutated or more than a single text node was changed.
  *
  * @private
@@ -119,26 +141,4 @@ export function compareChildNodes( oldChild, newChild ) {
 	} else {
 		return oldChild === newChild;
 	}
-}
-
-/**
- * Returns `true` if a keystroke will **not** result in "typing".
- *
- * For instance, keystrokes that result in typing are letters "a-zA-Z", numbers "0-9", delete, backspace, etc.
- *
- * Keystrokes that do not cause typing are, for instance, Fn keys (F5, F8, etc.), arrow keys (←, →, ↑, ↓),
- * Tab (↹), "Windows logo key" (⊞ Win), etc.
- *
- * Note: This implementation is very simple and will need to be refined with time.
- *
- * @param {module:engine/view/observer/keyobserver~KeyEventData} keyData
- * @returns {Boolean}
- */
-export function isNonTypingKeystroke( keyData ) {
-	// Keystrokes which contain Ctrl don't represent typing.
-	if ( keyData.ctrlKey ) {
-		return true;
-	}
-
-	return NON_TYPING_KEY_CODES.includes( keyData.keyCode );
 }
