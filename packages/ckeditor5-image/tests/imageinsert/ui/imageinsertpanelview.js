@@ -8,8 +8,8 @@
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
 
-import ImageUploadPanelView from '../../../src/imageupload/ui/imageuploadpanelview';
-import ImageUploadFormRowView from '../../../src/imageupload/ui/imageuploadformrowview';
+import ImageUploadPanelView from '../../../src/imageinsert/ui/imageinsertpanelview';
+import ImageUploadFormRowView from '../../../src/imageinsert/ui/imageinsertformrowview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -21,7 +21,7 @@ import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
-import { createLabeledInputView } from '../../../src/imageupload/utils';
+import { createLabeledInputView } from '../../../src/imageinsert/utils';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -140,7 +140,7 @@ describe( 'ImageUploadPanelView', () => {
 	describe( 'template', () => {
 		it( 'should create element from the template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-image-upload-form' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-image-insert-form' ) ).to.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
