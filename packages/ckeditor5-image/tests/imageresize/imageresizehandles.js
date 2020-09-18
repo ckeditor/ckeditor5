@@ -238,6 +238,64 @@ describe( 'ImageResizeHandles', () => {
 		} );
 	} );
 
+	describe( 'image load detection', () => {
+		it( 'loading image is marked with a proper class', async () => {
+			editor = await createEditor();
+
+			setData( editor.model, `[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+			const widget = viewDocument.getRoot().getChild( 0 );
+			const domWidget = getWidgetDomParts( editor, widget, 'bottom-right' ).widget;
+			const image = domWidget.querySelector( 'img' );
+
+			// Before image is loaded there should be the loading class.
+			expect( Array.from( widget.getClassNames() ) ).to.include( 'image_resizer_loading' );
+
+			viewDocument.fire( 'imageLoaded', { target: image } );
+
+			// Now class should be removed.
+			expect( Array.from( widget.getClassNames() ) ).to.not.include( 'image_resizer_loading' );
+		} );
+
+		it( 'loaded image has the loading class removed', async () => {
+			editor = await createEditor();
+
+			setData( editor.model, `[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+			const widget = viewDocument.getRoot().getChild( 0 );
+			const domWidget = getWidgetDomParts( editor, widget, 'bottom-right' ).widget;
+			const image = domWidget.querySelector( 'img' );
+
+			viewDocument.fire( 'imageLoaded', { target: image } );
+
+			// Now the class should be removed.
+			expect( Array.from( widget.getClassNames() ) ).to.not.include( 'image_resizer_loading' );
+		} );
+
+		it( 'loading another image doesn\'t affect another', async () => {
+			editor = await createEditor();
+
+			setData( editor.model, `[<image src="${ IMAGE_SRC_FIXTURE }"></image><image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+			const widgets = {
+				loading: viewDocument.getRoot().getChild( 0 ),
+				finished: viewDocument.getRoot().getChild( 1 )
+			};
+
+			const domWidgets = {
+				loading: getWidgetDomParts( editor, widgets.loading, 'bottom-right' ).widget,
+				finished: getWidgetDomParts( editor, widgets.finished, 'bottom-right' ).widget
+			};
+
+			// Marking other image as loaded.
+			const finishedImage = domWidgets.finished.querySelector( 'img' );
+			viewDocument.fire( 'imageLoaded', { target: finishedImage } );
+
+			// But the former is still considered as not loaded.
+			expect( Array.from( widgets.loading.getClassNames() ) ).to.include( 'image_resizer_loading' );
+		} );
+	} );
+
 	describe( 'srcset integration', () => {
 		// The image is 96x96 pixels.
 		const imageBaseUrl = '/assets/sample.png';
