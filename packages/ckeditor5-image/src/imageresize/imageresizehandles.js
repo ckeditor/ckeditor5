@@ -49,11 +49,6 @@ export default class ImageResizeHandles extends Plugin {
 		editor.editing.downcastDispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
 			const widget = conversionApi.mapper.toViewElement( data.item );
 
-			// @todo: check if can be cleaned up
-			editingView.change( writer => {
-				writer.addClass( 'image_resizer_loading', widget );
-			} );
-
 			const resizer = editor.plugins
 				.get( WidgetResize )
 				.attachTo( {
