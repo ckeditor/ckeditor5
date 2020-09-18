@@ -91,12 +91,15 @@ export default class ImageResizeHandles extends Plugin {
 	}
 
 	/**
+	 * Function to add listeners that will hide the resizer frame until the image is loaded,
+	 * to avoid [resize frame flashing when the image is not yet loaded](https://github.com/ckeditor/ckeditor5/issues/8088).
+	 *
 	 * @private
 	 * @param {module:widget/widgetresize/resizer~Resizer} resizer
 	 * @param {module:engine/view/containerelement~ContainerElement} widget
 	 */
 	_hideResizerUntilImageIsLoaded( resizer, widget ) {
-		// Mitigation logic for #8088 (which is caused by a more complex problem #7548).
+		// Given that #7548 is fixed, this logic might no longer be needed.
 		const editingView = this.editor.editing.view;
 
 		editingView.change( writer => {
