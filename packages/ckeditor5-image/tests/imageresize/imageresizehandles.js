@@ -181,6 +181,10 @@ describe( 'ImageResizeHandles', () => {
 			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
+
+			const domWidget = getWidgetDomParts( editor, widget, 'bottom-right' ).widget;
+
+			viewDocument.fire( 'imageLoaded', { target: domWidget.querySelector( 'img' ) } );
 		} );
 
 		it( 'has correct border size after undo', async () => {
