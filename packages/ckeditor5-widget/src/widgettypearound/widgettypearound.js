@@ -574,7 +574,7 @@ export default class WidgetTypeAround extends Plugin {
 	 * and another one for actual typing. It is not a disaster but this may need to be fixed
 	 * sooner or later.
 	 *
-	 * Learn more in {@link module:typing/utils/mutations/injectunsafekeystrokeshandling}.
+	 * Learn more in {@link module:typing/utils/input/injectunsafekeystrokeshandling}.
 	 *
 	 * @private
 	 */
