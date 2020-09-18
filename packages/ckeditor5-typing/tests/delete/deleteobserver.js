@@ -55,190 +55,188 @@ describe( 'Delete', () => {
 				viewDocument.on( 'delete', deleteSpy );
 			} );
 
-			describe( 'delete event', () => {
-				it( 'should be fired on keydown', () => {
-					viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-						keyCode: getCode( 'delete' )
-					} ) );
+			it( 'should fire delete on keydown', () => {
+				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: getCode( 'delete' )
+				} ) );
 
-					expect( deleteSpy.calledOnce ).to.be.true;
+				expect( deleteSpy.calledOnce ).to.be.true;
 
-					const data = deleteSpy.args[ 0 ][ 1 ];
-					expect( data ).to.have.property( 'direction', 'forward' );
-					expect( data ).to.have.property( 'unit', 'character' );
-					expect( data ).to.have.property( 'sequence', 1 );
-				} );
+				const data = deleteSpy.args[ 0 ][ 1 ];
+				expect( data ).to.have.property( 'direction', 'forward' );
+				expect( data ).to.have.property( 'unit', 'character' );
+				expect( data ).to.have.property( 'sequence', 1 );
+			} );
 
-				it( 'should be fired with a proper direction and unit (on Mac)', () => {
-					const spy = sinon.spy();
+			it( 'should fire delete with a proper direction and unit (on Mac)', () => {
+				const spy = sinon.spy();
 
-					testUtils.sinon.stub( env, 'isMac' ).value( true );
+				testUtils.sinon.stub( env, 'isMac' ).value( true );
 
-					viewDocument.on( 'delete', spy );
+				viewDocument.on( 'delete', spy );
 
-					viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-						keyCode: getCode( 'backspace' ),
-						altKey: true
-					} ) );
+				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: getCode( 'backspace' ),
+					altKey: true
+				} ) );
 
-					expect( spy.calledOnce ).to.be.true;
+				expect( spy.calledOnce ).to.be.true;
 
-					const data = spy.args[ 0 ][ 1 ];
-					expect( data ).to.have.property( 'direction', 'backward' );
-					expect( data ).to.have.property( 'unit', 'word' );
-					expect( data ).to.have.property( 'sequence', 1 );
-				} );
+				const data = spy.args[ 0 ][ 1 ];
+				expect( data ).to.have.property( 'direction', 'backward' );
+				expect( data ).to.have.property( 'unit', 'word' );
+				expect( data ).to.have.property( 'sequence', 1 );
+			} );
 
-				it( 'should be fired with a proper direction and unit (on non-Mac)', () => {
-					testUtils.sinon.stub( env, 'isMac' ).value( false );
+			it( 'should fire delete with a proper direction and unit (on non-Mac)', () => {
+				testUtils.sinon.stub( env, 'isMac' ).value( false );
 
-					viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-						keyCode: getCode( 'backspace' ),
-						ctrlKey: true
-					} ) );
+				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: getCode( 'backspace' ),
+					ctrlKey: true
+				} ) );
 
-					expect( deleteSpy.calledOnce ).to.be.true;
+				expect( deleteSpy.calledOnce ).to.be.true;
 
-					const data = deleteSpy.args[ 0 ][ 1 ];
-					expect( data ).to.have.property( 'direction', 'backward' );
-					expect( data ).to.have.property( 'unit', 'word' );
-					expect( data ).to.have.property( 'sequence', 1 );
-				} );
+				const data = deleteSpy.args[ 0 ][ 1 ];
+				expect( data ).to.have.property( 'direction', 'backward' );
+				expect( data ).to.have.property( 'unit', 'word' );
+				expect( data ).to.have.property( 'sequence', 1 );
+			} );
 
-				it( 'should not be fired on keydown when keyCode does not match backspace or delete', () => {
-					viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-						keyCode: 1
-					} ) );
+			it( 'should not fire delete on keydown when keyCode does not match backspace or delete', () => {
+				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: 1
+				} ) );
 
-					expect( deleteSpy.calledOnce ).to.be.false;
-				} );
+				expect( deleteSpy.calledOnce ).to.be.false;
+			} );
 
-				it( 'should be fired with a proper sequence number', () => {
-					// Simulate that a user keeps the "Delete" key.
-					for ( let i = 0; i < 5; ++i ) {
-						viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-							keyCode: getCode( 'delete' )
-						} ) );
-
-						viewDocument.fire( 'input', getDomEvent() );
-					}
-
-					sinon.assert.callCount( deleteSpy, 5 );
-					sinon.assert.calledWithMatch( deleteSpy.getCall( 0 ), {}, { sequence: 1 } );
-					sinon.assert.calledWithMatch( deleteSpy.getCall( 1 ), {}, { sequence: 2 } );
-					sinon.assert.calledWithMatch( deleteSpy.getCall( 2 ), {}, { sequence: 3 } );
-					sinon.assert.calledWithMatch( deleteSpy.getCall( 3 ), {}, { sequence: 4 } );
-					sinon.assert.calledWithMatch( deleteSpy.getCall( 4 ), {}, { sequence: 5 } );
-				} );
-
-				it( 'should clear the sequence when the key was released', () => {
-					// Simulate that a user keeps the "Delete" key.
-					for ( let i = 0; i < 3; ++i ) {
-						viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-							keyCode: getCode( 'delete' )
-						} ) );
-
-						viewDocument.fire( 'input', getDomEvent() );
-					}
-
-					// Then the user has released the key.
-					viewDocument.fire( 'keyup', new DomEventData( viewDocument, getDomEvent(), {
-						keyCode: getCode( 'delete' )
-					} ) );
-
-					// And pressed it once again.
+			it( 'should fire delete with a proper sequence number', () => {
+				// Simulate that a user keeps the "Delete" key.
+				for ( let i = 0; i < 5; ++i ) {
 					viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
 						keyCode: getCode( 'delete' )
 					} ) );
 
 					viewDocument.fire( 'input', getDomEvent() );
+				}
 
-					sinon.assert.callCount( deleteSpy, 4 );
-					sinon.assert.calledWithMatch( deleteSpy.getCall( 0 ), {}, { sequence: 1 } );
-					sinon.assert.calledWithMatch( deleteSpy.getCall( 1 ), {}, { sequence: 2 } );
-					sinon.assert.calledWithMatch( deleteSpy.getCall( 2 ), {}, { sequence: 3 } );
-					sinon.assert.calledWithMatch( deleteSpy.getCall( 3 ), {}, { sequence: 1 } );
-				} );
+				sinon.assert.callCount( deleteSpy, 5 );
+				sinon.assert.calledWithMatch( deleteSpy.getCall( 0 ), {}, { sequence: 1 } );
+				sinon.assert.calledWithMatch( deleteSpy.getCall( 1 ), {}, { sequence: 2 } );
+				sinon.assert.calledWithMatch( deleteSpy.getCall( 2 ), {}, { sequence: 3 } );
+				sinon.assert.calledWithMatch( deleteSpy.getCall( 3 ), {}, { sequence: 4 } );
+				sinon.assert.calledWithMatch( deleteSpy.getCall( 4 ), {}, { sequence: 5 } );
+			} );
 
-				it( 'should work fine with the Backspace key', () => {
-					viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-						keyCode: getCode( 'backspace' )
-					} ) );
-
-					viewDocument.fire( 'input', getDomEvent() );
-
-					viewDocument.fire( 'keyup', new DomEventData( viewDocument, getDomEvent(), {
-						keyCode: getCode( 'backspace' )
-					} ) );
-
-					viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-						keyCode: getCode( 'backspace' )
-					} ) );
-
-					viewDocument.fire( 'input', getDomEvent() );
-
-					sinon.assert.callCount( deleteSpy, 2 );
-					sinon.assert.calledWithMatch( deleteSpy.getCall( 0 ), {}, { sequence: 1 } );
-					sinon.assert.calledWithMatch( deleteSpy.getCall( 1 ), {}, { sequence: 1 } );
-				} );
-
-				it( 'should not reset the sequence if other than Backspace or Delete key was released', () => {
+			it( 'should clear the sequence when the key was released', () => {
+				// Simulate that a user keeps the "Delete" key.
+				for ( let i = 0; i < 3; ++i ) {
 					viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
 						keyCode: getCode( 'delete' )
 					} ) );
 
 					viewDocument.fire( 'input', getDomEvent() );
+				}
 
-					viewDocument.fire( 'keyup', new DomEventData( viewDocument, getDomEvent(), {
-						keyCode: getCode( 'A' )
-					} ) );
+				// Then the user has released the key.
+				viewDocument.fire( 'keyup', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: getCode( 'delete' )
+				} ) );
 
-					viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-						keyCode: getCode( 'delete' )
-					} ) );
+				// And pressed it once again.
+				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: getCode( 'delete' )
+				} ) );
 
-					viewDocument.fire( 'input', getDomEvent() );
+				viewDocument.fire( 'input', getDomEvent() );
 
-					sinon.assert.calledWithMatch( deleteSpy.getCall( 0 ), {}, { sequence: 1 } );
-					sinon.assert.calledWithMatch( deleteSpy.getCall( 1 ), {}, { sequence: 2 } );
-				} );
+				sinon.assert.callCount( deleteSpy, 4 );
+				sinon.assert.calledWithMatch( deleteSpy.getCall( 0 ), {}, { sequence: 1 } );
+				sinon.assert.calledWithMatch( deleteSpy.getCall( 1 ), {}, { sequence: 2 } );
+				sinon.assert.calledWithMatch( deleteSpy.getCall( 2 ), {}, { sequence: 3 } );
+				sinon.assert.calledWithMatch( deleteSpy.getCall( 3 ), {}, { sequence: 1 } );
+			} );
 
-				it( 'should stop keydown event when delete event is stopped', () => {
-					const keydownSpy = sinon.spy();
-					viewDocument.on( 'keydown', keydownSpy );
-					viewDocument.on( 'delete', evt => evt.stop() );
+			it( 'should work fine with the Backspace key', () => {
+				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: getCode( 'backspace' )
+				} ) );
 
-					viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-						keyCode: getCode( 'delete' )
-					} ) );
+				viewDocument.fire( 'input', getDomEvent() );
 
-					sinon.assert.notCalled( keydownSpy );
-				} );
+				viewDocument.fire( 'keyup', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: getCode( 'backspace' )
+				} ) );
 
-				// https://github.com/ckeditor/ckeditor5-typing/issues/186
-				it( 'should stop keydown event when delete event is stopped (delete event with highest priority)', () => {
-					const keydownSpy = sinon.spy();
-					viewDocument.on( 'keydown', keydownSpy );
-					viewDocument.on( 'delete', evt => evt.stop(), { priority: 'highest' } );
+				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: getCode( 'backspace' )
+				} ) );
 
-					viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-						keyCode: getCode( 'delete' )
-					} ) );
+				viewDocument.fire( 'input', getDomEvent() );
 
-					sinon.assert.notCalled( keydownSpy );
-				} );
+				sinon.assert.callCount( deleteSpy, 2 );
+				sinon.assert.calledWithMatch( deleteSpy.getCall( 0 ), {}, { sequence: 1 } );
+				sinon.assert.calledWithMatch( deleteSpy.getCall( 1 ), {}, { sequence: 1 } );
+			} );
 
-				it( 'should not stop keydown event when delete event is not stopped', () => {
-					const keydownSpy = sinon.spy();
-					viewDocument.on( 'keydown', keydownSpy );
-					viewDocument.on( 'delete', evt => evt.stop() );
+			it( 'should not reset the sequence if other than Backspace or Delete key was released', () => {
+				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: getCode( 'delete' )
+				} ) );
 
-					viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-						keyCode: getCode( 'x' )
-					} ) );
+				viewDocument.fire( 'input', getDomEvent() );
 
-					sinon.assert.calledOnce( keydownSpy );
-				} );
+				viewDocument.fire( 'keyup', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: getCode( 'A' )
+				} ) );
+
+				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: getCode( 'delete' )
+				} ) );
+
+				viewDocument.fire( 'input', getDomEvent() );
+
+				sinon.assert.calledWithMatch( deleteSpy.getCall( 0 ), {}, { sequence: 1 } );
+				sinon.assert.calledWithMatch( deleteSpy.getCall( 1 ), {}, { sequence: 2 } );
+			} );
+
+			it( 'should stop the keydown event when delete event is stopped', () => {
+				const keydownSpy = sinon.spy();
+				viewDocument.on( 'keydown', keydownSpy );
+				viewDocument.on( 'delete', evt => evt.stop() );
+
+				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: getCode( 'delete' )
+				} ) );
+
+				sinon.assert.notCalled( keydownSpy );
+			} );
+
+			// https://github.com/ckeditor/ckeditor5-typing/issues/186
+			it( 'should stop the keydown event when delete event is stopped (delete event with highest priority)', () => {
+				const keydownSpy = sinon.spy();
+				viewDocument.on( 'keydown', keydownSpy );
+				viewDocument.on( 'delete', evt => evt.stop(), { priority: 'highest' } );
+
+				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: getCode( 'delete' )
+				} ) );
+
+				sinon.assert.notCalled( keydownSpy );
+			} );
+
+			it( 'should not stop the keydown event when delete event is not stopped', () => {
+				const keydownSpy = sinon.spy();
+				viewDocument.on( 'keydown', keydownSpy );
+				viewDocument.on( 'delete', evt => evt.stop() );
+
+				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+					keyCode: getCode( 'x' )
+				} ) );
+
+				sinon.assert.calledOnce( keydownSpy );
 			} );
 
 			function getDomEvent() {
@@ -347,7 +345,21 @@ describe( 'Delete', () => {
 				expect( interceptedEventInfo.stop.called ).to.be.true;
 			} );
 
-			it( 'should preventDefault() the beforeinput event', () => {
+			it( 'should not stop the beforeinput event propagation if delete event was not stopped', () => {
+				let interceptedEventInfo;
+
+				viewDocument.on( 'beforeinput', evt => {
+					interceptedEventInfo = evt;
+				}, { priority: Number.POSITIVE_INFINITY } );
+
+				fireBeforeInputDomEvent( domRoot, {
+					inputType: 'deleteContentBackward'
+				} );
+
+				expect( interceptedEventInfo.stop.called ).to.be.undefined;
+			} );
+
+			it( 'should always preventDefault() the beforeinput event', () => {
 				let interceptedEventData;
 
 				viewDocument.on( 'beforeinput', ( evt, data ) => {
@@ -364,7 +376,7 @@ describe( 'Delete', () => {
 
 			describe( 'beforeinput event types handling', () => {
 				describe( 'backward delete event types', () => {
-					it( 'should handle the deleteContent event type and execute the delete command', () => {
+					it( 'should handle the deleteContent event type and fire the delete event', () => {
 						viewSetData( view, '<p>fo{}o</p>' );
 
 						const viewRange = view.document.selection.getFirstRange();
@@ -388,7 +400,7 @@ describe( 'Delete', () => {
 						expect( range.isEqual( viewRange ) ).to.be.true;
 					} );
 
-					it( 'should handle the deleteContentBackward event type and execute the delete command', () => {
+					it( 'should handle the deleteContentBackward event type and fire the delete event', () => {
 						viewSetData( view, '<p>fo{}o</p>' );
 
 						const viewRange = view.document.selection.getFirstRange();
@@ -412,7 +424,7 @@ describe( 'Delete', () => {
 						expect( range.isEqual( viewRange ) ).to.be.true;
 					} );
 
-					it( 'should handle the deleteWordBackward event type and execute the delete command', () => {
+					it( 'should handle the deleteWordBackward event type and fire the delete event', () => {
 						viewSetData( view, '<p>fo{}o</p>' );
 
 						const viewRange = view.document.selection.getFirstRange();
@@ -436,7 +448,7 @@ describe( 'Delete', () => {
 						expect( range.isEqual( viewRange ) ).to.be.true;
 					} );
 
-					it( 'should handle the deleteHardLineBackward event type and execute the delete command', () => {
+					it( 'should handle the deleteHardLineBackward event type and fire the delete event', () => {
 						viewSetData( view, '<p>fo{}o</p>' );
 
 						const viewRange = view.document.selection.getFirstRange();
@@ -460,7 +472,7 @@ describe( 'Delete', () => {
 						expect( range.isEqual( viewRange ) ).to.be.true;
 					} );
 
-					it( 'should handle the deleteSoftLineBackward event type and execute the delete command', () => {
+					it( 'should handle the deleteSoftLineBackward event type and fire the delete event', () => {
 						viewSetData( view, '<p>fo{}o</p>' );
 
 						const viewRange = view.document.selection.getFirstRange();
@@ -486,7 +498,7 @@ describe( 'Delete', () => {
 				} );
 
 				describe( 'forward delete event types', () => {
-					it( 'should handle the deleteContentForward event type and execute the forwardDelete command', () => {
+					it( 'should handle the deleteContentForward event type and fire the delete event', () => {
 						viewSetData( view, '<p>fo{}o</p>' );
 
 						const viewRange = view.document.selection.getFirstRange();
@@ -510,7 +522,7 @@ describe( 'Delete', () => {
 						expect( range.isEqual( viewRange ) ).to.be.true;
 					} );
 
-					it( 'should handle the deleteWordForward event type and execute the forwardDelete command', () => {
+					it( 'should handle the deleteWordForward event type and fire the delete event', () => {
 						viewSetData( view, '<p>fo{}o</p>' );
 
 						const viewRange = view.document.selection.getFirstRange();
@@ -534,7 +546,7 @@ describe( 'Delete', () => {
 						expect( range.isEqual( viewRange ) ).to.be.true;
 					} );
 
-					it( 'should handle the deleteHardLineForward event type and execute the forwardDelete command', () => {
+					it( 'should handle the deleteHardLineForward event type and fire the delete event', () => {
 						viewSetData( view, '<p>fo{}o</p>' );
 
 						const viewRange = view.document.selection.getFirstRange();
@@ -558,7 +570,7 @@ describe( 'Delete', () => {
 						expect( range.isEqual( viewRange ) ).to.be.true;
 					} );
 
-					it( 'should handle the deleteSoftLineForward event type and execute the forwardDelete command', () => {
+					it( 'should handle the deleteSoftLineForward event type and fire the delete event', () => {
 						viewSetData( view, '<p>fo{}o</p>' );
 
 						const viewRange = view.document.selection.getFirstRange();
