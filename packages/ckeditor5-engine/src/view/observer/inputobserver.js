@@ -32,6 +32,7 @@ export default class InputObserver extends DomEventObserver {
 
 		let dataTransfer = null;
 		let data = null;
+		let targetRanges;
 
 		if ( domEvent.dataTransfer ) {
 			dataTransfer = new DataTransfer( domEvent.dataTransfer );
@@ -43,22 +44,24 @@ export default class InputObserver extends DomEventObserver {
 			data = dataTransfer.getData( 'text/plain' );
 		}
 
+		// There's no way a DOM range anchored in the fake selection container (and this is the only thing the event "knows")
+		// can be mapped correctly to an editing view range. Fake selection container is not an editing view element, that's it.
+		// Luckily, at the same time, if the selection is fake, it means that some object is selected and the input range
+		// should simply surround it, so here it goes:
+		if ( viewDocument.selection.isFake ) {
+			targetRanges = [ viewDocument.selection.getFirstRange() ];
+		} else {
+			targetRanges = domTargetRanges.map( domRange => {
+				return view.domConverter.domRangeToView( domRange );
+			} );
+		}
+
 		this.fire( domEvent.type, domEvent, {
 			data,
 			dataTransfer,
 			domTargetRanges,
 			isComposing: domEvent.isComposing,
-			targetRanges: domTargetRanges.map( domRange => {
-				// There's no way a DOM range anchored in the fake selection container (and this is the only thing the event "knows")
-				// can be mapped correctly to an editing view range. Fake selection container is not an editing view element, that's it.
-				// Luckily, at the same time, if the selection is fake, it means that some object is selected and the input range
-				// should simply surround it, so here it goes:
-				if ( viewDocument.selection.isFake ) {
-					return viewDocument.selection.getFirstRange();
-				} else {
-					return view.domConverter.domRangeToView( domRange );
-				}
-			} ),
+			targetRanges,
 			inputType: domEvent.inputType
 		} );
 	}
