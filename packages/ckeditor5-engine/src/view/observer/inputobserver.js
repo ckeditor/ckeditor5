@@ -49,7 +49,8 @@ export default class InputObserver extends DomEventObserver {
 		// Luckily, at the same time, if the selection is fake, it means that some object is selected and the input range
 		// should simply surround it, so here it goes:
 		if ( viewDocument.selection.isFake ) {
-			targetRanges = [ viewDocument.selection.getFirstRange() ];
+			// Future proof: in case of multi-range fake selections being possible.
+			targetRanges = [ ...viewDocument.selection.getRanges() ];
 		} else {
 			targetRanges = domTargetRanges.map( domRange => {
 				return view.domConverter.domRangeToView( domRange );
