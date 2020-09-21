@@ -711,4 +711,155 @@ describe( 'LinkImageEditing', () => {
 			} );
 		} );
 	} );
+
+	describe( 'integration', () => {
+		let editor, model;
+
+		beforeEach( () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ Paragraph, LinkImageEditing ],
+					link: {
+						decorators: {
+							isExternal: {
+								mode: 'manual',
+								label: 'Open in a new tab',
+								attributes: {
+									target: '_blank',
+									rel: 'noopener noreferrer'
+								}
+							},
+							isDownloadable: {
+								mode: 'manual',
+								label: 'Downloadable',
+								attributes: {
+									download: 'download'
+								}
+							},
+							isGallery: {
+								mode: 'manual',
+								label: 'Gallery link',
+								attributes: {
+									class: 'gallery'
+								}
+							}
+						}
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		// See: #7975.
+		describe( 'manual decorators: linked text and linked image', () => {
+			it( 'should upcast the decorators when linked image (figure > a > img)', () => {
+				editor.setData(
+					'<figure class="image">' +
+						'<a class="gallery" href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
+							'<img src="sample.jpg" alt="bar">' +
+						'</a>' +
+						'<figcaption>Caption</figcaption>' +
+					'</figure>' +
+					'<p>' +
+						'<a href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
+							'https://cksource.com' +
+						'</a>' +
+					'</p>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<image alt="bar" ' +
+						'linkHref="https://cksource.com" ' +
+						'linkIsDownloadable="true" ' +
+						'linkIsExternal="true" ' +
+						'linkIsGallery="true" ' +
+						'src="sample.jpg">' +
+					'</image>' +
+					'<paragraph>' +
+						'<$text linkHref="https://cksource.com" linkIsDownloadable="true" linkIsExternal="true">' +
+							'https://cksource.com' +
+						'</$text>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should upcast the decorators when linked image (a > img)', () => {
+				editor.setData(
+					'<a class="gallery" href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
+						'<img src="sample.jpg" alt="bar">' +
+					'</a>' +
+					'<p>' +
+						'<a href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
+							'https://cksource.com' +
+						'</a>' +
+					'</p>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<image alt="bar" ' +
+						'linkHref="https://cksource.com" ' +
+						'linkIsDownloadable="true" ' +
+						'linkIsExternal="true" ' +
+						'linkIsGallery="true" ' +
+						'src="sample.jpg">' +
+					'</image>' +
+					'<paragraph>' +
+						'<$text linkHref="https://cksource.com" linkIsDownloadable="true" linkIsExternal="true">' +
+							'https://cksource.com' +
+						'</$text>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should downcast the decorators after applying a change', () => {
+				setModelData( model,
+					'<image alt="bar" src="sample.jpg"></image>' +
+					'<paragraph>' +
+						'<$text>https://cksource.com</$text>' +
+					'</paragraph>'
+				);
+
+				model.change( writer => {
+					// <image>
+					writer.setSelection( model.document.getRoot().getChild( 0 ), 'on' );
+				} );
+
+				editor.execute( 'link', 'https://cksource.com', {
+					linkIsDownloadable: true,
+					linkIsExternal: true,
+					linkIsGallery: true
+				} );
+
+				model.change( writer => {
+					// <$text>
+					writer.setSelection( model.document.getRoot().getChild( 1 ).getChild( 0 ), 'on' );
+				} );
+
+				editor.execute( 'link', 'https://cksource.com', {
+					linkIsDownloadable: true,
+					linkIsExternal: true,
+					linkIsGallery: true
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="image">' +
+						'<a class="gallery" href="https://cksource.com" download="download" target="_blank" rel="noopener noreferrer">' +
+							'<img src="sample.jpg" alt="bar">' +
+						'</a>' +
+					'</figure>' +
+					'<p>' +
+						'<a class="gallery" href="https://cksource.com" download="download" target="_blank" rel="noopener noreferrer">' +
+							'https://cksource.com' +
+						'</a>' +
+					'</p>'
+				);
+			} );
+		} );
+	} );
 } );
