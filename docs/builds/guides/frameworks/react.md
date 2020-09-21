@@ -26,7 +26,7 @@ Use the `<CKEditor>` component inside your project:
 
 ```jsx
 import React, { Component } from 'react';
-import CKEditor from '@ckeditor/ckeditor5-react';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 class App extends Component {
@@ -37,7 +37,7 @@ class App extends Component {
 				<CKEditor
 					editor={ ClassicEditor }
 					data="<p>Hello from CKEditor 5!</p>"
-					onInit={ editor => {
+					onReady={ editor => {
 						// You can store the "editor" and use when it is needed.
 						console.log( 'Editor is ready to use!', editor );
 					} }
@@ -67,7 +67,7 @@ The `<CKEditor>` component supports the following properties:
 * `editor` (required) &ndash; The {@link module:core/editor/editor~Editor `Editor`} constructor to use.
 * `data` &ndash; The initial data for the created editor. See the {@link builds/guides/integration/basic-api#interacting-with-the-editor Basic API} guide.
 * `config` &ndash; The editor configuration. See the {@link builds/guides/integration/configuration Configuration} guide.
-* `onInit` &ndash; A function called when the editor was initialized. It receives the initialized {@link module:core/editor/editor~Editor `editor`} as a parameter.
+* `onReady` &ndash; A function called when the editor is ready. It receives the {@link module:core/editor/editor~Editor `editor`} as a parameter. This callback can be called after the initialization and after restarts of the editor.
 * `disabled` &ndash; A Boolean value. The {@link module:core/editor/editor~Editor `editor`} is being switched to read-only mode if the property is set to `true`.
 * `onChange` &ndash; A function called when the editor data has changed. See the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
 * `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
@@ -85,7 +85,7 @@ The `ckeditor5-react` integration comes with a ready-to-use component for the [C
 
 ```jsx
 import React, { Component } from 'react';
-import { CKEditor, Context as ContextComponent } from '@ckeditor/ckeditor5-react';
+import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
 
 // Assuming that we build the editor from source
 import Context from '@ckeditor/ckeditor5-core/src/context';
@@ -95,12 +95,12 @@ class App extends Component {
 	render() {
 		return (
 			<div className="App">
-				<ContextComponent context={ Context }>
+				<CKEditorContext context={ Context }>
 					<h2>Using CKeditor 5 Context feature in React</h2>
 					<CKEditor
 						editor={ ClassicEditor }
 						data="<p>Hello from the first editor working with the context!</p>"
-						onInit={ editor => {
+						onReady={ editor => {
 							// You can store the "editor" and use when it is needed.
 							console.log( 'Editor1 is ready to use!', editor );
 						} }
@@ -109,7 +109,7 @@ class App extends Component {
 					<CKEditor
 						editor={ ClassicEditor }
 						data="<p>Hello from the second editor working with the context!</p>"
-						onInit={ editor => {
+						onReady={ editor => {
 							// You can store the "editor" and use when it is needed.
 							console.log( 'Editor2 is ready to use!', editor );
 						} }
@@ -119,6 +119,13 @@ class App extends Component {
 	}
 }
 ```
+
+The `CKEditorContext` component supports the following properties:
+
+* `config` &ndash; The CKEditor5's context configuration.
+* `isLayoutReady` &ndash;
+* `onReady` &ndash; A function called when the context is ready and all editors inside were initialized. It receives the `context` as a parameter. This callback can be called after the initialization and after restarts of editors or the context.
+* `onError` &ndash; A function called when the editor has crashed during the initialization or during the runtime. It receives the error object as a parameter.
 
 <info-box>
 	A build that exposes both Context and Classic Editor can be found in a [CKEditor 5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/comments-outside-of-editor).
@@ -163,12 +170,14 @@ If you use the {@link framework/guides/document-editor Document editor}, you nee
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 class App extends Component {
+	editor = null;
+
 	render() {
 		return (
 			<div className="App">
 				<h2>CKEditor 5 using a custom build - DecoupledEditor</h2>
 				<CKEditor
-					onInit={ editor => {
+					onReady={ editor => {
 						console.log( 'Editor is ready to use!', editor );
 
 						// Insert the toolbar before the editable area.
@@ -176,6 +185,11 @@ class App extends Component {
 							editor.ui.view.toolbar.element,
 							editor.ui.getEditableElement()
 						);
+
+						this.editor = editor;
+					} }
+					onError={ () => {
+						editor.ui.view.toolbar.element.remove();
 					} }
 					onChange={ ( event, editor ) => console.log( { event, editor } ) }
 					editor={ DecoupledEditor }
@@ -375,7 +389,7 @@ class App extends Component {
 					editor={ ClassicEditor }
 					config={ editorConfiguration }
 					data="<p>Hello from CKEditor 5!</p>"
-					onInit={ editor => {
+					onReady={ editor => {
 						// You can store the "editor" and use when it is needed.
 						console.log( 'Editor is ready to use!', editor );
 					} }
@@ -616,7 +630,7 @@ class App extends Component {
 			<div className="App">
 				<h2>Using CKEditor 5 Framework in React</h2>
 				<CKEditor
-					onInit={ editor => console.log( 'Editor is ready to use!', editor ) }
+					onReady={ editor => console.log( 'Editor is ready to use!', editor ) }
 					onChange={ ( event, editor ) => console.log( { event, editor } ) }
 					config={ {
 						plugins: [ Essentials, Paragraph, Bold, Italic, Heading ],
