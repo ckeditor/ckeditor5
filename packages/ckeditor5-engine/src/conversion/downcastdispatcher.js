@@ -206,26 +206,8 @@ export default class DowncastDispatcher {
 		this.conversionApi.consumable = this._createInsertConsumable( range );
 
 		// Fire a separate insert event for each node and text fragment contained in the range.
-		for ( const value of range ) {
-			const item = value.item;
-			const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
-			const data = {
-				item,
-				range: itemRange
-			};
-
-			this._testAndFire( 'insert', data );
-
-			// Fire a separate addAttribute event for each attribute that was set on inserted items.
-			// This is important because most attributes converters will listen only to add/change/removeAttribute events.
-			// If we would not add this part, attributes on inserted nodes would not be converted.
-			for ( const key of item.getAttributeKeys() ) {
-				data.attributeKey = key;
-				data.attributeOldValue = null;
-				data.attributeNewValue = item.getAttribute( key );
-
-				this._testAndFire( `attribute:${ key }`, data );
-			}
+		for ( const data of Array.from( range ).map( valueToEventData ) ) {
+			this._convertInsertAndElementAttributes( data );
 		}
 
 		this._clearConversionApi();
@@ -300,93 +282,14 @@ export default class DowncastDispatcher {
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
 		this.conversionApi.consumable = this._createInsertConsumable( range );
 
-		for ( const value of range ) {
-			const item = value.item;
-			const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
-			const data = {
-				item,
-				range: itemRange
-			};
+		const values = Array.from( range );
+		const topElementValue = values.shift();
 
-			const expectedEventName = getEventName( 'insert', data );
+		this._reconvertElement( writer, topElementValue.item );
 
-			// Main element refresh - kinda ugly as we have all items in the range.
-			// TODO: Maybe, an inner range would be better (check children, etc).
-			const mainEvent = 'insert:' + name;
-
-			if ( expectedEventName === mainEvent ) {
-				// Cache current view element of a converted element, might be undefined if first insert.
-				const currentView = this.conversionApi.mapper.toViewElement( data.item );
-
-				if ( currentView ) {
-					// Remove the old view (but hold the reference as it will be used to bring back view items not needed to re-render.
-					// Thanks to the mapper that holds references nothing should blow up.
-					this.conversionApi.writer.remove( currentView );
-				}
-
-				this._testAndFire( 'insert', data );
-
-				// Fire a separate addAttribute event for each attribute that was set on inserted items.
-				// This is important because most attributes converters will listen only to add/change/removeAttribute events.
-				// If we would not add this part, attributes on inserted nodes would not be converted.
-				for ( const key of item.getAttributeKeys() ) {
-					data.attributeKey = key;
-					data.attributeOldValue = null;
-					data.attributeNewValue = item.getAttribute( key );
-
-					this._testAndFire( `attribute:${ key }`, data );
-				}
-
-				// Handle reviving removed view items on refreshing main view.
-				if ( currentView ) {
-					const viewElement = this.conversionApi.mapper.toViewElement( data.item );
-
-					// Iterate over new view elements to find "interesting" points - those elements that are mapped to the model.
-					for ( const { item } of this.conversionApi.writer.createRangeIn( viewElement ) ) {
-						const modelItem = this.conversionApi.mapper.toModelElement( item );
-
-						// At this stage we get the update view element, so any mapped model item might be a potential "slot".
-						if ( modelItem ) {
-							const currentViewItem = this.conversionApi.mapper._temporalModelToView.get( modelItem );
-
-							// This of course needs better API, but for now it works.
-							// Mapper.bindSlot() creates mappings as mapper.bindElements() but also binds view element
-							// from view to the model item.
-							if ( currentViewItem ) {
-								// This allows to have a map: updatedView - model - oldView and to retain previously rendered children
-								// from the "slot" element. Those children can be moved to a newly created slot.
-								this.conversionApi.writer.move(
-									this.conversionApi.writer.createRangeIn( currentViewItem ),
-									this.conversionApi.writer.createPositionAt( item, 0 )
-								);
-							}
-						}
-					}
-				}
-			}
-
-			// If the map has given event it _must_ be converted by main "insert" converter.
-			if ( !this._refreshEventMap.has( expectedEventName ) && expectedEventName !== mainEvent ) {
-				// The below check if every node was converted before - if not it triggers the conversion again.
-				// Below optimal solution - todo refactor or introduce inner API for that.
-				// Other option is to use convertInsert() and skip range.
-				if ( value.type === 'text' ) {
-					const mappedPosition = this.conversionApi.mapper.toViewPosition( itemRange.start );
-
-					if ( !mappedPosition.parent.is( '$text' ) ) {
-						this._testAndFire( 'insert', data );
-
-						// TODO: attributes ? Try to re-use convertInsert() here.
-					}
-				} else {
-					const viewElement = this.conversionApi.mapper.toViewElement( item );
-
-					if ( !viewElement ) {
-						this._testAndFire( 'insert', data );
-
-						// TODO: attributes ? Try to re-use convertInsert() here.
-					}
-				}
+		for ( const data of values.map( valueToEventData ) ) {
+			if ( !this._isRefreshTriggerEvent( data ) && !elementWasMemoized( data, this.conversionApi.mapper ) ) {
+				this._convertInsertAndElementAttributes( data );
 			}
 		}
 
@@ -624,6 +527,29 @@ export default class DowncastDispatcher {
 		delete this.conversionApi.consumable;
 	}
 
+	/**
+	 * Internal method for converting element insert. It will fire events for the inserted element and events for its attributes.
+	 *
+	 * @private
+	 * @fires insert
+	 * @fires attribute
+	 * @param {Object} data Event data.
+	 */
+	_convertInsertAndElementAttributes( data ) {
+		this._testAndFire( 'insert', data );
+
+		// Fire a separate addAttribute event for each attribute that was set on inserted items.
+		// This is important because most attributes converters will listen only to add/change/removeAttribute events.
+		// If we would not add this part, attributes on inserted nodes would not be converted.
+		for ( const key of data.item.getAttributeKeys() ) {
+			data.attributeKey = key;
+			data.attributeOldValue = null;
+			data.attributeNewValue = data.item.getAttribute( key );
+
+			this._testAndFire( `attribute:${ key }`, data );
+		}
+	}
+
 	_getChangesAfterAutomaticRefreshing( differ ) {
 		const elementsToRefresh = this._getElementsForAutomaticRefresh( differ );
 
@@ -655,6 +581,72 @@ export default class DowncastDispatcher {
 			.filter( element => !!element );
 
 		return new Set( found );
+	}
+
+	_reconvertElement( writer, item ) {
+		const itemRange = writer.createRangeOn( item );
+		const data = {
+			item,
+			range: itemRange
+		};
+
+		// Main element refresh - kinda ugly as we have all items in the range.
+		// TODO: Maybe, an inner range would be better (check children, etc).
+
+		// Cache current view element of a converted element, might be undefined if first insert.
+		const currentView = this.conversionApi.mapper.toViewElement( data.item );
+
+		if ( currentView ) {
+			// Remove the old view (but hold the reference as it will be used to bring back view items not needed to re-render.
+			// Thanks to the mapper that holds references nothing should blow up.
+			this.conversionApi.writer.remove( currentView );
+		}
+
+		this._testAndFire( 'insert', data );
+
+		// Fire a separate addAttribute event for each attribute that was set on inserted items.
+		// This is important because most attributes converters will listen only to add/change/removeAttribute events.
+		// If we would not add this part, attributes on inserted nodes would not be converted.
+		for ( const key of item.getAttributeKeys() ) {
+			data.attributeKey = key;
+			data.attributeOldValue = null;
+			data.attributeNewValue = item.getAttribute( key );
+
+			this._testAndFire( `attribute:${ key }`, data );
+		}
+
+		// Handle reviving removed view items on refreshing main view.
+		if ( currentView ) {
+			const viewElement = this.conversionApi.mapper.toViewElement( data.item );
+
+			// Iterate over new view elements to find "interesting" points - those elements that are mapped to the model.
+			for ( const { item } of this.conversionApi.writer.createRangeIn( viewElement ) ) {
+				const modelItem = this.conversionApi.mapper.toModelElement( item );
+
+				// At this stage we get the update view element, so any mapped model item might be a potential "slot".
+				if ( modelItem ) {
+					const currentViewItem = this.conversionApi.mapper._temporalModelToView.get( modelItem );
+
+					// This of course needs better API, but for now it works.
+					// Mapper.bindSlot() creates mappings as mapper.bindElements() but also binds view element
+					// from view to the model item.
+					if ( currentViewItem ) {
+						// This allows to have a map: updatedView - model - oldView and to retain previously rendered children
+						// from the "slot" element. Those children can be moved to a newly created slot.
+						this.conversionApi.writer.move(
+							this.conversionApi.writer.createRangeIn( currentViewItem ),
+							this.conversionApi.writer.createPositionAt( item, 0 )
+						);
+					}
+				}
+			}
+		}
+	}
+
+	_isRefreshTriggerEvent( data ) {
+		const expectedEventName = getEventName( 'insert', data );
+
+		return this._refreshEventMap.has( expectedEventName );
 	}
 
 	/**
@@ -814,6 +806,30 @@ function getElementFromChange( entry ) {
 	const { range, position, type } = entry;
 
 	return type === 'attribute' ? range.start.nodeAfter : position.parent;
+}
+
+function valueToEventData( value ) {
+	const item = value.item;
+	const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
+
+	const data = {
+		item,
+		range: itemRange
+	};
+
+	return data;
+}
+
+function elementWasMemoized( data, mapper ) {
+	if ( data.item.is( 'textProxy' ) ) {
+		const mappedPosition = mapper.toViewPosition( data.range.start );
+
+		return !!mappedPosition.parent.is( '$text' );
+	}
+
+	const viewElement = mapper.toViewElement( data.item );
+
+	return !!viewElement;
 }
 
 /**
