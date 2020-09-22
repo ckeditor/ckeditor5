@@ -214,6 +214,29 @@ describe( 'ImageResizeHandles', () => {
 			expect( shadowBoundingRect.width ).to.equal( 100 );
 			expect( shadowBoundingRect.height ).to.equal( 50 );
 		} );
+
+		it( 'doesn\'t show resizers when undoing to multiple images', async () => {
+			// Based on https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-695949745.
+			setData( editor.model, `[<image src="${ IMAGE_SRC_FIXTURE }"></image><image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+
+			const paragraph = editor.model.change( writer => {
+				return writer.createElement( 'paragraph' );
+			} );
+			editor.model.insertContent( paragraph );
+
+			// Undo to go back to two, selected images.
+			editor.commands.get( 'undo' ).execute();
+
+			for ( let i = 0; i < 2; i++ ) {
+				widget = viewDocument.getRoot().getChild( i );
+				const domImage = getWidgetDomParts( editor, widget, 'bottom-right' ).widget.querySelector( 'img' );
+				viewDocument.fire( 'imageLoaded', { target: domImage } );
+
+				const domResizeWrapper = getWidgetDomParts( editor, widget, 'bottom-left' ).resizeWrapper;
+
+				expect( domResizeWrapper.getBoundingClientRect().height ).to.equal( 0 );
+			}
+		} );
 	} );
 
 	describe( 'table integration', () => {

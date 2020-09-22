@@ -100,7 +100,8 @@ export default class ImageResizeHandles extends Plugin {
 	 */
 	_hideResizerUntilImageIsLoaded( resizer, widget ) {
 		// Given that #7548 is fixed, this logic might no longer be needed.
-		const editingView = this.editor.editing.view;
+		const editor = this.editor;
+		const editingView = editor.editing.view;
 
 		editingView.change( writer => {
 			writer.addClass( 'image_resizer_loading', widget );
@@ -113,7 +114,11 @@ export default class ImageResizeHandles extends Plugin {
 
 			if ( domEvent.target.isSameNode( handleHost ) ) {
 				editingView.change( writer => {
-					resizer.redraw();
+					if ( editor.plugins.get( WidgetResize )._visibleResizer == resizer ) {
+						// Small optimization to redraw only a resizer that is visible/focused. Hidden resizers should remain
+						// unaffected. It also fixes https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-695949745.
+						resizer.redraw();
+					}
 					writer.removeClass( 'image_resizer_loading', widget );
 				} );
 
