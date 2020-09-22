@@ -25,7 +25,10 @@ There should be "two pages" with two sections per each page. Pages should be sep
 **Horizontal line** - There is the `<hr>` in the source HTML. It should be displayed in the editor.
 
 **Link images + Link decorators** - in the table (3x2), there are a linked text and two linked images that uses the manual decorators feature:
-  
+  - Left column: the text with two decorators enabled: `Open in a new tab`, `Downloadable`
+  - Middle column: an image with the caption that is a `Gallery link`
+  - Right column: an image without the caption with enabled all decorators (listed above)
+
 ---
 
 ## Action buttons
