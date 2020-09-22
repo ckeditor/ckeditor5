@@ -19,12 +19,7 @@ ClassicEditor
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ],
-			upload: {
-				panel: {
-					items: [ 'insertImageViaUrl' ]
-				}
-			}
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},
 		cloudServices: CS_CONFIG
 	} )

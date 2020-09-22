@@ -30,13 +30,11 @@ describe( 'Upload utils', () => {
 						ImageUploadUI
 					],
 					image: {
-						upload: {
-							panel: {
-								items: [
-									'insertImageViaUrl',
-									'openCKFinder'
-								]
-							}
+						insert: {
+							integrations: [
+								'insertImageViaUrl',
+								'openCKFinder'
+							]
 						}
 					}
 				} );
@@ -64,13 +62,11 @@ describe( 'Upload utils', () => {
 						ImageUploadUI
 					],
 					image: {
-						upload: {
-							panel: {
-								items: [
-									'insertImageViaUrl',
-									'openCKFinder'
-								]
-							}
+						insert: {
+							integrations: [
+								'insertImageViaUrl',
+								'openCKFinder'
+							]
 						}
 					}
 				} );
@@ -94,12 +90,10 @@ describe( 'Upload utils', () => {
 						ImageUploadUI
 					],
 					image: {
-						upload: {
-							panel: {
-								items: [
-									'link'
-								]
-							}
+						insert: {
+							integrations: [
+								'link'
+							]
 						}
 					}
 				} );

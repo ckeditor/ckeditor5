@@ -30,13 +30,11 @@ ClassicEditor
 		],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ],
-			upload: {
-				panel: {
-					items: [
-						'insertImageViaUrl',
-						'openCKFinder'
-					]
-				}
+			insert: {
+				integrations: [
+					'insertImageViaUrl',
+					'openCKFinder'
+				]
 			}
 		},
 		ckfinder: {
