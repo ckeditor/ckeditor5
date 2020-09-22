@@ -133,54 +133,12 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
 	convertChanges( differ, markers, writer ) {
-		const changes1 = differ.getChanges();
-
-		const mapRefreshedBy = new Map();
-
-		const found = [ ...changes1 ]
-			.filter( ( { type } ) => type === 'attribute' || type === 'insert' || type === 'remove' )
-			.map( entry => {
-				const { range, position, type } = entry;
-				const element = range && range.start.nodeAfter || position && position.parent;
-
-				let eventName;
-
-				if ( type === 'attribute' ) {
-					// TODO: enhance event name retrieval.
-					eventName = `attribute:${ entry.attributeKey }:${ element && element.name }`;
-				} else {
-					eventName = `${ type }:${ entry.name }`;
-				}
-
-				if ( this._refreshEventMap.has( eventName ) ) {
-					const expectedElement = this._refreshEventMap.get( eventName );
-
-					const handledByParent = element.is( 'element', expectedElement ) ? element : element.findAncestor( expectedElement );
-
-					if ( handledByParent ) {
-						mapRefreshedBy.set( element, handledByParent );
-					}
-
-					return handledByParent;
-				}
-			} )
-			.filter( element => !!element );
-
-		const elementsToRefresh = new Set( found );
-
-		[ ...elementsToRefresh.values() ].forEach( element => differ.refreshItem( element ) );
-
 		// Before the view is updated, remove markers which have changed.
 		for ( const change of differ.getMarkersToRemove() ) {
 			this.convertMarkerRemove( change.name, change.range, writer );
 		}
 
-		const changes = differ.getChanges().filter( entry => {
-			const { range, position } = entry;
-			const element = range && range.start.nodeAfter || position && position.parent;
-
-			return !mapRefreshedBy.has( element );
-		} );
+		const changes = this._getChangesAfterAutomaticRefreshing( differ );
 
 		// Convert changes that happened on model tree.
 		for ( const entry of changes ) {
@@ -342,9 +300,7 @@ export default class DowncastDispatcher {
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
 		this.conversionApi.consumable = this._createInsertConsumable( range );
 
-		const values = [ ...range ];
-
-		for ( const value of values ) {
+		for ( const value of range ) {
 			const item = value.item;
 			const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
 			const data = {
@@ -357,6 +313,7 @@ export default class DowncastDispatcher {
 			// Main element refresh - kinda ugly as we have all items in the range.
 			// TODO: Maybe, an inner range would be better (check children, etc).
 			const mainEvent = 'insert:' + name;
+
 			if ( expectedEventName === mainEvent ) {
 				// Cache current view element of a converted element, might be undefined if first insert.
 				const currentView = this.conversionApi.mapper.toViewElement( data.item );
@@ -667,6 +624,39 @@ export default class DowncastDispatcher {
 		delete this.conversionApi.consumable;
 	}
 
+	_getChangesAfterAutomaticRefreshing( differ ) {
+		const elementsToRefresh = this._getElementsForAutomaticRefresh( differ );
+
+		for ( const element of elementsToRefresh.values() ) {
+			differ.refreshItem( element );
+		}
+
+		return differ.getChanges().filter( entry => !elementsToRefresh.has( getElementFromChange( entry ) ) );
+	}
+
+	_getElementsForAutomaticRefresh( differ ) {
+		const found = differ.getChanges()
+			.filter( ( { type } ) => type === 'attribute' || type === 'insert' || type === 'remove' )
+			.map( entry => {
+				const element = getElementFromChange( entry );
+
+				let eventName;
+
+				if ( entry.type === 'attribute' ) {
+					eventName = `attribute:${ entry.attributeKey }:${ element && element.name }`;
+				} else {
+					eventName = `${ entry.type }:${ entry.name }`;
+				}
+
+				if ( this._refreshEventMap.has( eventName ) ) {
+					return element;
+				}
+			} )
+			.filter( element => !!element );
+
+		return new Set( found );
+	}
+
 	/**
 	 * Fired for inserted nodes.
 	 *
@@ -818,6 +808,12 @@ function getEventName( type, data ) {
 	const name = data.item.name || '$text';
 
 	return `${ type }:${ name }`;
+}
+
+function getElementFromChange( entry ) {
+	const { range, position, type } = entry;
+
+	return type === 'attribute' ? range.start.nodeAfter : position.parent;
 }
 
 /**
