@@ -99,7 +99,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should enable beforeinput-based delete when the Input Events are supported by the browser', async () => {
-				// Force the browser to not use the beforeinput event.
+				// Force the browser to use the beforeinput event.
 				testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => true );
 
 				const editor = await ClassicTestEditor.create( domElement, {
