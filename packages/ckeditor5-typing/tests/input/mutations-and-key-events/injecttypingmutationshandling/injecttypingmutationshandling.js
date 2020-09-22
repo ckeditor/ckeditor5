@@ -898,7 +898,7 @@ describe( 'Input', () => {
 				} );
 
 				it( 'should lock buffer if selection is not collapsed', () => {
-					const buffer = editor.commands.get( 'input' )._buffer;
+					const buffer = editor.commands.get( 'insertText' )._buffer;
 					const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
 					const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
 
@@ -918,7 +918,7 @@ describe( 'Input', () => {
 				} );
 
 				it( 'should not lock buffer on non printable keys', () => {
-					const buffer = editor.commands.get( 'input' )._buffer;
+					const buffer = editor.commands.get( 'insertText' )._buffer;
 					const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
 					const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
 
@@ -931,7 +931,7 @@ describe( 'Input', () => {
 				} );
 
 				it( 'should not lock buffer on collapsed selection', () => {
-					const buffer = editor.commands.get( 'input' )._buffer;
+					const buffer = editor.commands.get( 'insertText' )._buffer;
 					const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
 					const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
 
@@ -943,20 +943,20 @@ describe( 'Input', () => {
 					expect( unlockSpy.callCount ).to.equal( 0 );
 				} );
 
-				it( 'should not modify document when input command is disabled and selection is collapsed', () => {
+				it( 'should not modify document when insert text command is disabled and selection is collapsed', () => {
 					setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
-					editor.commands.get( 'input' ).isEnabled = false;
+					editor.commands.get( 'insertText' ).isEnabled = false;
 
 					viewDocument.fire( 'keydown', { keyCode: getCode( 'b' ) } );
 
 					expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 				} );
 
-				it( 'should not modify document when input command is disabled and selection is non-collapsed', () => {
+				it( 'should not modify document when insert text command is disabled and selection is non-collapsed', () => {
 					setModelData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
-					editor.commands.get( 'input' ).isEnabled = false;
+					editor.commands.get( 'insertText' ).isEnabled = false;
 
 					viewDocument.fire( 'keydown', { keyCode: getCode( 'b' ) } );
 
@@ -1184,7 +1184,7 @@ describe( 'Input', () => {
 		// 		it( 'should not modify document when input command is disabled and selection is collapsed', () => {
 		// 			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
-		// 			editor.commands.get( 'input' ).isEnabled = false;
+		// 			editor.commands.get( 'insertText' ).isEnabled = false;
 
 		// 			// On Android, `keycode` is set to `229` (in scenarios when `keydown` event is not send).
 		// 			viewDocument.fire( 'beforeinput', { keyCode: 229 } );
@@ -1195,7 +1195,7 @@ describe( 'Input', () => {
 		// 		it( 'should not modify document when input command is disabled and selection is non-collapsed', () => {
 		// 			setModelData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
-		// 			editor.commands.get( 'input' ).isEnabled = false;
+		// 			editor.commands.get( 'insertText' ).isEnabled = false;
 
 		// 			// On Android, `keycode` is set to `229` (in scenarios when `keydown` event is not send).
 		// 			viewDocument.fire( 'beforeinput', { keyCode: 229 } );

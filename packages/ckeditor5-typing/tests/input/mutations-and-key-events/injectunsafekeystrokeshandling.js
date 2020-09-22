@@ -32,13 +32,13 @@ describe( 'Input', () => {
 				await editor.destroy();
 			} );
 
-			it( 'uses typing batch while removing the content', () => {
-				const inputCommand = editor.commands.get( 'input' );
+			it( 'should use typing batch while removing the content', () => {
+				const insertTextCommand = editor.commands.get( 'insertText' );
 
-				expect( inputCommand._batches.has( getCurrentBatch() ), 'batch before typing' ).to.equal( false );
+				expect( insertTextCommand._batches.has( getCurrentBatch() ), 'batch before typing' ).to.equal( false );
 
 				model.on( 'deleteContent', () => {
-					expect( inputCommand._batches.has( getCurrentBatch() ), 'batch when deleting content' ).to.equal( true );
+					expect( insertTextCommand._batches.has( getCurrentBatch() ), 'batch when deleting content' ).to.equal( true );
 				}, { priority: 'highest' } );
 
 				setData( model, '<paragraph>[foo]</paragraph>' );

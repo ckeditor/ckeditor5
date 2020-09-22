@@ -13,6 +13,7 @@ import { isNonTypingKeystroke } from './utils';
  * Handles keystrokes which are unsafe for typing. This handler's logic is explained
  * in https://github.com/ckeditor/ckeditor5-typing/issues/83#issuecomment-398690251.
  *
+ * @protected
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  */
 export default function injectUnsafeKeystrokesHandling( editor ) {
@@ -20,7 +21,7 @@ export default function injectUnsafeKeystrokesHandling( editor ) {
 
 	const model = editor.model;
 	const view = editor.editing.view;
-	const inputCommand = editor.commands.get( 'input' );
+	const insertTextCommand = editor.commands.get( 'insertText' );
 
 	view.document.on( 'keydown', ( evt, evtData ) => handleUnsafeKeystroke( evtData ), { priority: 'lowest' } );
 
@@ -50,12 +51,12 @@ export default function injectUnsafeKeystrokesHandling( editor ) {
 		// Reset stored composition selection.
 		latestCompositionSelection = null;
 
-		// By relying on the state of the input command we allow disabling the entire input easily
-		// by just disabling the input command. We could’ve used here the delete command but that
+		// By relying on the state of the insert text command we allow disabling the entire text insertion
+		// easily by just disabling the insert text command. We could’ve used here the delete command but that
 		// would mean requiring the delete feature which would block loading one without the other.
 		// We could also check the editor.isReadOnly property, but that wouldn't allow to block
-		// the input without blocking other features.
-		if ( !inputCommand.isEnabled ) {
+		// the text insertion without blocking other features.
+		if ( !insertTextCommand.isEnabled ) {
 			return;
 		}
 
@@ -100,12 +101,12 @@ export default function injectUnsafeKeystrokesHandling( editor ) {
 	}
 
 	function deleteSelectionContent() {
-		const buffer = inputCommand.buffer;
+		const buffer = insertTextCommand.buffer;
 
 		buffer.lock();
 
 		const batch = buffer.batch;
-		inputCommand._batches.add( batch );
+		insertTextCommand._batches.add( batch );
 
 		model.enqueueChange( batch, () => {
 			model.deleteContent( model.document.selection );
