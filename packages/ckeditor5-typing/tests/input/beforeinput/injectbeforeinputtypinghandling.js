@@ -16,11 +16,13 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 describe( 'Input', () => {
 	describe( 'Typing text using beforeinput event', () => {
 		describe( 'injectBeforeInputTypingHandling()', () => {
-			let domElement, editor, editableElement;
+			let domElement, editor, editableElement, view, viewDocument, insertTextEventSpy;
 
 			testUtils.createSinonSandbox();
 
 			beforeEach( async () => {
+				insertTextEventSpy = sinon.spy();
+
 				// Force the browser to use the beforeinput event.
 				testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => true );
 
@@ -33,6 +35,10 @@ describe( 'Input', () => {
 				} );
 
 				editableElement = editor.ui.getEditableElement();
+
+				view = editor.editing.view;
+				viewDocument = view.document;
+				viewDocument.on( 'insertText', insertTextEventSpy );
 			} );
 
 			afterEach( async () => {
@@ -41,17 +47,59 @@ describe( 'Input', () => {
 				domElement.remove();
 			} );
 
+			it( 'should stop() the beforeinput event', () => {
+				const domRange = document.createRange();
+				domRange.selectNodeContents( editableElement.firstChild );
+
+				let interceptedEventInfo;
+
+				viewDocument.on( 'beforeinput', evt => {
+					interceptedEventInfo = evt;
+				}, { priority: Number.POSITIVE_INFINITY } );
+
+				fireBeforeInputDomEvent( editableElement, {
+					inputType: 'insertText',
+					ranges: [ domRange ],
+					data: 'bar'
+				} );
+
+				expect( interceptedEventInfo.stop.called ).to.be.true;
+			} );
+
+			it( 'should preventDefault() the DOM beforeinput event', () => {
+				const domRange = document.createRange();
+				domRange.selectNodeContents( editableElement.firstChild );
+
+				let interceptedEventData;
+
+				viewDocument.on( 'beforeinput', ( evt, data ) => {
+					interceptedEventData = data;
+					sinon.spy( interceptedEventData, 'preventDefault' );
+				}, { priority: Number.POSITIVE_INFINITY } );
+
+				fireBeforeInputDomEvent( editableElement, {
+					inputType: 'insertText',
+					ranges: [ domRange ],
+					data: 'bar'
+				} );
+
+				sinon.assert.calledOnce( interceptedEventData.preventDefault );
+			} );
+
 			describe( 'beforeinput event types handling', () => {
 				it( 'should handle the insertText input type and execute the input command', () => {
-					const inputCommandSpy = testUtils.sinon.spy( editor.commands.get( 'input' ), 'execute' );
-
 					const domRange1 = document.createRange();
 					const domRange2 = document.createRange();
 					domRange1.selectNodeContents( editableElement.firstChild );
 					domRange2.setStart( editableElement.firstChild, 0 );
 					domRange2.setEnd( editableElement.firstChild, 0 );
 
-					const modelRange = editor.model.createRangeIn( editor.model.document.getRoot().getChild( 0 ) );
+					const viewSelection = view.createSelection( [
+						view.createRangeIn( viewDocument.getRoot().getChild( 0 ) ),
+						view.createRange(
+							view.createPositionAt( viewDocument.getRoot().getChild( 0 ), 0 )
+						)
+					] );
 
 					fireBeforeInputDomEvent( editableElement, {
 						inputType: 'insertText',
@@ -59,23 +107,27 @@ describe( 'Input', () => {
 						data: 'bar'
 					} );
 
-					sinon.assert.calledOnce( inputCommandSpy );
+					sinon.assert.calledOnce( insertTextEventSpy );
 
-					const firstCallArgs = inputCommandSpy.firstCall.args[ 0 ];
+					const firstCallArgs = insertTextEventSpy.firstCall.args[ 1 ];
 
 					expect( firstCallArgs.text ).to.equal( 'bar' );
-					expect( firstCallArgs.range.isEqual( modelRange ) ).to.be.true;
+					expect( firstCallArgs.selection.isEqual( viewSelection ) ).to.be.true;
 				} );
 
 				it( 'should handle the insertReplacementText input type and execute the input command', () => {
-					const inputCommandSpy = testUtils.sinon.spy( editor.commands.get( 'input' ), 'execute' );
-
 					const domRange1 = document.createRange();
 					const domRange2 = document.createRange();
 					domRange1.selectNodeContents( editableElement.firstChild );
 					domRange2.setStart( editableElement.firstChild, 0 );
 					domRange2.setEnd( editableElement.firstChild, 0 );
-					const modelRange = editor.model.createRangeIn( editor.model.document.getRoot().getChild( 0 ) );
+
+					const viewSelection = view.createSelection( [
+						view.createRangeIn( viewDocument.getRoot().getChild( 0 ) ),
+						view.createRange(
+							view.createPositionAt( viewDocument.getRoot().getChild( 0 ), 0 )
+						)
+					] );
 
 					fireBeforeInputDomEvent( editableElement, {
 						inputType: 'insertReplacementText',
@@ -83,12 +135,12 @@ describe( 'Input', () => {
 						data: 'bar'
 					} );
 
-					sinon.assert.calledOnce( inputCommandSpy );
+					sinon.assert.calledOnce( insertTextEventSpy );
 
-					const firstCallArgs = inputCommandSpy.firstCall.args[ 0 ];
+					const firstCallArgs = insertTextEventSpy.firstCall.args[ 1 ];
 
 					expect( firstCallArgs.text ).to.equal( 'bar' );
-					expect( firstCallArgs.range.isEqual( modelRange ) ).to.be.true;
+					expect( firstCallArgs.selection.isEqual( viewSelection ) ).to.be.true;
 				} );
 
 				it( 'should ignore other input types', () => {
@@ -108,45 +160,6 @@ describe( 'Input', () => {
 
 					sinon.assert.notCalled( inputCommandSpy );
 				} );
-			} );
-
-			it( 'should stop() the beforeinput event', () => {
-				const domRange = document.createRange();
-				domRange.selectNodeContents( editableElement.firstChild );
-
-				let interceptedEventInfo;
-
-				editor.editing.view.document.on( 'beforeinput', evt => {
-					interceptedEventInfo = evt;
-				}, { priority: Number.POSITIVE_INFINITY } );
-
-				fireBeforeInputDomEvent( editableElement, {
-					inputType: 'insertText',
-					ranges: [ domRange ],
-					data: 'bar'
-				} );
-
-				expect( interceptedEventInfo.stop.called ).to.be.true;
-			} );
-
-			it( 'should preventDefault() the DOM beforeinput event', () => {
-				const domRange = document.createRange();
-				domRange.selectNodeContents( editableElement.firstChild );
-
-				let interceptedEventData;
-
-				editor.editing.view.document.on( 'beforeinput', ( evt, data ) => {
-					interceptedEventData = data;
-					sinon.spy( interceptedEventData, 'preventDefault' );
-				}, { priority: Number.POSITIVE_INFINITY } );
-
-				fireBeforeInputDomEvent( editableElement, {
-					inputType: 'insertText',
-					ranges: [ domRange ],
-					data: 'bar'
-				} );
-
-				sinon.assert.calledOnce( interceptedEventData.preventDefault );
 			} );
 		} );
 	} );

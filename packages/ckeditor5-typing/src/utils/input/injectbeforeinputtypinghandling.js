@@ -22,33 +22,36 @@ const TYPING_INPUT_TYPES = [
 ];
 
 /**
- * Handles `beforeinput` editing view events caused by typing or spell checking.
+ * This helper handles `beforeinput` editing view events caused by typing or spell checking.
  *
- * @param {module:core/editor/editor~Editor} editor The editor instance.
+ * It fires the {@link module:engine/view/document~Document#event:insertText} event.
+ *
+ * @protected
+ * @param {module:core/editor/view/view~View} view The editor editing view instance.
  */
-export default function injectBeforeInputTypingHandling( editor ) {
-	const viewDocument = editor.editing.view.document;
+export default function injectBeforeInputTypingHandling( view ) {
+	const viewDocument = view.document;
 
 	viewDocument.on( 'beforeinput', ( evt, data ) => {
 		const { data: text, targetRanges, inputType } = data;
 
-		if ( TYPING_INPUT_TYPES.includes( inputType ) ) {
-			const modelRange = editor.editing.mapper.toModelRange( targetRanges[ 0 ] );
-
-			editor.execute( 'input', {
-				text,
-				range: modelRange
-			} );
-
-			// If this listener handled the event, there's no point in propagating it any further
-			// to other callbacks.
-			evt.stop();
-
-			// Without this preventDefault(), typing accented characters in Chrome on Mac does not work (inserts 2 characters).
-			// The **second** beforeInput event (the one when user accepts the choice) comes with a collapsed DOM range
-			// (should be expanded instead to replace the character from the first step). That's why this particular input must
-			// be preventDefaulted().
-			data.preventDefault();
+		if ( !TYPING_INPUT_TYPES.includes( inputType ) ) {
+			return;
 		}
+
+		viewDocument.fire( 'insertText', {
+			text,
+			selection: view.createSelection( targetRanges )
+		} );
+
+		// If this listener handled the event, there's no point in propagating it any further
+		// to other callbacks.
+		evt.stop();
+
+		// Without this preventDefault(), typing accented characters in Chrome on Mac does not work (inserts 2 characters).
+		// The **second** beforeInput event (the one when user accepts the choice) comes with a collapsed DOM range
+		// (should be expanded instead to replace the character from the first step). That's why this particular input must
+		// be preventDefaulted().
+		data.preventDefault();
 	} );
 }
