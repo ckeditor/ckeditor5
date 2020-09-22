@@ -191,7 +191,7 @@ class App extends Component {
 						this.editor = editor;
 					} }
 					onError={ () => {
-						editor.ui.view.toolbar.element.remove();
+						this.editor.ui.view.toolbar.element.remove();
 					} }
 					onChange={ ( event, editor ) => console.log( { event, editor } ) }
 					editor={ DecoupledEditor }
