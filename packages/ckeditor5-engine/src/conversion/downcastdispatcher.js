@@ -291,7 +291,7 @@ export default class DowncastDispatcher {
 		const values = Array.from( range );
 		const topElementValue = values.shift();
 
-		this._reconvertElement( writer, topElementValue.item );
+		this._reconvertElement( rangeIteratorValueToEventData( topElementValue ) );
 
 		for ( const data of values.map( rangeIteratorValueToEventData ) ) {
 			if ( !this._isRefreshTriggerEvent( data ) && !elementWasMemoized( data, this.conversionApi.mapper ) ) {
@@ -589,13 +589,7 @@ export default class DowncastDispatcher {
 		return new Set( found );
 	}
 
-	_reconvertElement( writer, item ) {
-		const itemRange = writer.createRangeOn( item );
-		const data = {
-			item,
-			range: itemRange
-		};
-
+	_reconvertElement( data ) {
 		// Cache current view element of a converted element, might be undefined if first insert.
 		const currentView = this.conversionApi.mapper.toViewElement( data.item );
 
@@ -608,10 +602,10 @@ export default class DowncastDispatcher {
 		// Fire a separate addAttribute event for each attribute that was set on inserted items.
 		// This is important because most attributes converters will listen only to add/change/removeAttribute events.
 		// If we would not add this part, attributes on inserted nodes would not be converted.
-		for ( const key of item.getAttributeKeys() ) {
+		for ( const key of data.item.getAttributeKeys() ) {
 			data.attributeKey = key;
 			data.attributeOldValue = null;
-			data.attributeNewValue = item.getAttribute( key );
+			data.attributeNewValue = data.item.getAttribute( key );
 
 			this._testAndFire( `attribute:${ key }`, data );
 		}
