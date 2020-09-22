@@ -56,7 +56,7 @@ describe( 'Input', () => {
 			function simulateTyping( text ) {
 				// While typing, every character is an atomic change.
 				text.split( '' ).forEach( character => {
-					editor.execute( 'input', {
+					editor.execute( 'insertText', {
 						text: character
 					} );
 				} );
@@ -65,7 +65,7 @@ describe( 'Input', () => {
 			function simulateBatches( batches ) {
 				// Use longer text at once in input command.
 				batches.forEach( batch => {
-					editor.execute( 'input', {
+					editor.execute( 'insertText', {
 						text: batch
 					} );
 				} );
