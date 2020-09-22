@@ -1172,7 +1172,7 @@ describe( 'ListStyleEditing', () => {
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
 					);
 
-					editor.execute( 'input', { text: 'Foo' } );
+					editor.execute( 'insertText', { text: 'Foo' } );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
@@ -1236,7 +1236,7 @@ describe( 'ListStyleEditing', () => {
 			function simulateTyping( text ) {
 				// While typing, every character is an atomic change.
 				text.split( '' ).forEach( character => {
-					editor.execute( 'input', {
+					editor.execute( 'insertText', {
 						text: character
 					} );
 				} );
