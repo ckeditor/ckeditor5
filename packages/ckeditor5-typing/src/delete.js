@@ -34,12 +34,11 @@ export default class Delete extends Plugin {
 		editor.commands.add( 'forwardDelete', new DeleteCommand( editor, 'forward' ) );
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
-		// Note: DeleteObserver has different implementations for browsers supporting and not supporting
-		// Input Events.
 		editor.editing.view.addObserver( DeleteObserver );
 
-		// Use the beforeinput DOM event to handle delete when supported by the browser.
-		// Fall back to the keyup and keydown events if beforeinput is not supported by the browser.
+		// Although DeleteObserver always fires the #delete event on editing view document,
+		// depending on whether the browser supports Input Events or not, the event must be
+		// handled in a slightly different way (it carries slightly different information).
 		if ( env.features.isInputEventsLevel1Supported ) {
 			injectBeforeInputDeleteHandling( editor );
 		} else {
