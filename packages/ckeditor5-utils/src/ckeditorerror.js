@@ -136,19 +136,11 @@ export default class CKEditorError extends Error {
  *		  * @error toolbarview-item-unavailable
  *		  * @param {String} name The name of the component.
  *		  * /
- *		 console.warn( attachLinkToDocumentation(
- *		 	'toolbarview-item-unavailable: The requested toolbar item is unavailable.' ), { name } );
+ *		 console.warn( attachLinkToDocumentation( 'toolbarview-item-unavailable' ), { name } );
  *
- * @param {String} message Message to be logged.
+ * @param {String} id Error id to be linked.
  * @returns {String}
  */
-export function attachLinkToDocumentation( message ) {
-	// The link to documentation should work with console.warn format: "message-id: Explanation message." and single error id.
-	const matchedErrorName = message.match( /^([a-z0-9]+-[a-z-0-9]+):?/ );
-
-	if ( !matchedErrorName ) {
-		return message;
-	}
-
-	return message + ` Read more: ${ DOCUMENTATION_URL }#error-${ matchedErrorName[ 1 ] }\n`;
+export function attachLinkToDocumentation( id ) {
+	return id + ` Read more: ${ DOCUMENTATION_URL }#error-${ id }\n`;
 }

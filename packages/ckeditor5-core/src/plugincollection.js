@@ -206,12 +206,12 @@ export default class PluginCollection {
 			 * @error plugincollection-plugin-not-found
 			 * @param {Array.<String>} plugins The name of the plugins which could not be loaded.
 			 */
-			const errorMsg = 'plugincollection-plugin-not-found: Some plugins are not available and could not be loaded.';
+			const errorId = 'plugincollection-plugin-not-found';
 
-			// Log the error so it's more visible on the console. Hopefully, for better DX.
-			console.error( attachLinkToDocumentation( errorMsg ), { plugins: missingPlugins } );
+			// Log the error, so it's more visible on the console. Hopefully, for better DX.
+			console.error( attachLinkToDocumentation( errorId ), { plugins: missingPlugins } );
 
-			return Promise.reject( new CKEditorError( errorMsg, context, { plugins: missingPlugins } ) );
+			return Promise.reject( new CKEditorError( errorId, context, { plugins: missingPlugins } ) );
 		}
 
 		return Promise.all( pluginConstructors.map( loadPlugin ) )
@@ -251,9 +251,7 @@ export default class PluginCollection {
 					 * @error plugincollection-load
 					 * @param {String} plugin The name of the plugin that could not be loaded.
 					 */
-					console.error( attachLinkToDocumentation(
-						'plugincollection-load: It was not possible to load the plugin.'
-					), { plugin: PluginConstructor } );
+					console.error( attachLinkToDocumentation( 'plugincollection-load' ), { plugin: PluginConstructor } );
 
 					throw err;
 				} );

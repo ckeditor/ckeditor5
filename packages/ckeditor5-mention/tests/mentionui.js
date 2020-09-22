@@ -1249,7 +1249,7 @@ describe( 'MentionUI', () => {
 						expect( panelView.isVisible, 'panel is hidden' ).to.be.false;
 						expect( editor.model.markers.has( 'mention' ), 'there is no marker' ).to.be.false;
 
-						sinon.assert.calledWithExactly( warnSpy, sinon.match( /^mention-feed-callback-error:/ ) );
+						sinon.assert.calledWithExactly( warnSpy, sinon.match( /^mention-feed-callback-error/ ) );
 						sinon.assert.calledOnce( eventSpy );
 					} );
 			} );

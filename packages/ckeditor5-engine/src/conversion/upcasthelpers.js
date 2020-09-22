@@ -349,13 +349,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 		 *
 		 * @error upcast-helpers-element-to-marker-deprecated
 		 */
-		console.warn(
-			attachLinkToDocumentation(
-				'upcast-helpers-element-to-marker-deprecated: ' +
-				'The UpcastHelpers#elementToMarker() method was deprecated and will be removed in the near future. ' +
-				'Please use UpcastHelpers#dataToMarker() instead.'
-			)
-		);
+		console.warn( attachLinkToDocumentation( 'upcast-helpers-element-to-marker-deprecated' ) );
 
 		return this.add( upcastElementToMarker( config ) );
 	}

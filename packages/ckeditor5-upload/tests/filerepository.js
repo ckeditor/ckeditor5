@@ -178,7 +178,7 @@ describe( 'FileRepository', () => {
 			sinon.assert.calledOnce( consoleWarnStub );
 			sinon.assert.calledWithExactly(
 				consoleWarnStub,
-				sinon.match( 'filerepository-no-upload-adapter: Upload adapter is not defined.' )
+				sinon.match( /^filerepository-no-upload-adapter/ )
 			);
 		} );
 
