@@ -42,11 +42,10 @@ export default class ImageInsert extends Plugin {
 }
 
 /**
- * Image insert panel view configuration.
- * **NOTE:** Currently the panel settings are configurable through the `image.upload` property.
+ * The image insert configuration.
  *
  * @protected
- * @member {module:image/imageupload~ImageUploadPanelConfig} module:image/imageupload~ImageUploadConfig#panel
+ * @member {module:image/imageinsert~ImageInsertConfig} module:image/image~ImageConfig#insert
  */
 
 /**
@@ -55,8 +54,8 @@ export default class ImageInsert extends Plugin {
  *		ClassicEditor
  *			.create( editorElement, {
  * 				image: {
- * 					upload: {
- * 						panel: ... // panel settings for "imageInsert" view goes here
+ * 					insert: {
+ *						... // settings for "imageInsert" view goes here
  * 					}
  * 				}
  *			} )
@@ -66,11 +65,11 @@ export default class ImageInsert extends Plugin {
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  *
  * @protected
- * @interface module:image/imageupload~ImageUploadPanelConfig
+ * @interface module:image/imageinsert~ImageInsertConfig
  */
 
 /**
- * The list of {@link module:image/imageinsert~ImageInsert} integrations.
+ * The image insert panel view configuration contains a list of {@link module:image/imageinsert~ImageInsert} integrations.
  *
  * The option accepts string tokens.
  * * for predefined integrations, we have two special strings: `insertImageViaUrl` and `openCKFinder`.
@@ -81,18 +80,16 @@ export default class ImageInsert extends Plugin {
  * in that case should be `pluginXButton`.
  *
  *		// Add `insertImageViaUrl`, `openCKFinder` and custom `pluginXButton` integrations.
- *		const imageUploadConfig = {
- *			upload: {
- *				panel: {
- *					items: [
- *						'insertImageViaUrl',
- *						'openCKFinder',
- *						'pluginXButton'
- *					]
- *				}
+ *		const imageInsertConfig = {
+ *			insert: {
+ *				integrations: [
+ *					'insertImageViaUrl',
+ *					'openCKFinder',
+ *					'pluginXButton'
+ *				]
  *			}
  *		};
  *
- * @member {Array.<String>} module:image/imageupload~ImageUploadPanelConfig#items
+ * @member {Array.<String>} module:image/imageinsert~ImageInsertConfig#integrations
  * @default [ 'insertImageViaUrl' ]
  */
