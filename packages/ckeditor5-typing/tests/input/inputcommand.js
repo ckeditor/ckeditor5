@@ -6,6 +6,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import InputCommand from '../../src/inputcommand';
 import ChangeBuffer from '../../src/utils/changebuffer';
@@ -63,6 +64,23 @@ describe( 'Input', () => {
 		} );
 
 		describe( 'execute()', () => {
+			let warnSpy;
+
+			beforeEach( () => {
+				warnSpy = testUtils.sinon.stub( global.window.console, 'warn' );
+			} );
+
+			it( 'should warn about deprecation', () => {
+				setData( model, '<paragraph>foo[]bar</paragraph>' );
+
+				editor.execute( 'input', {
+					text: ''
+				} );
+
+				sinon.assert.calledOnce( warnSpy );
+				sinon.assert.calledWithExactly( warnSpy, 'typing-input-command-deprecated', { editor } );
+			} );
+
 			it( 'uses enqueueChange', () => {
 				setData( model, '<paragraph>foo[]bar</paragraph>' );
 

@@ -7,13 +7,18 @@
  * @module typing/inputcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+/* global console */
 
+import Command from '@ckeditor/ckeditor5-core/src/command';
 import ChangeBuffer from './utils/changebuffer';
 
 /**
  * The input command. Used by the {@link module:typing/input~Input input feature} to handle typing.
  *
+ * **Note**: This command is deprecated and replaced by the
+ * {@link module:typing/inserttextcommand~InsertTextCommand 'insertText'} command.
+ *
+ * @deprecated
  * @extends module:core/command~Command
  */
 export default class InputCommand extends Command {
@@ -79,6 +84,23 @@ export default class InputCommand extends Command {
 	 * the inserted text.
 	 */
 	execute( options = {} ) {
+		/**
+		 * The {@link module:typing/inputcommand~InputCommand 'input'} command has been deprecated and will be removed
+		 * in the near future. Please use the {@link module:typing/inserttextcommand~InsertTextCommand 'insertText'}
+		 * command instead. Check out the {@link module:typing/inserttextcommand~InsertTextCommand#execute documentation}
+		 * of the new command to learn more about possible configuration options.
+		 *
+		 *	// ⚠️ This command is deprecated.
+		 *	editor.execute( 'input', options );
+		 *
+		 *	// ✅ OK
+		 *	editor.execute( 'insertText', options );
+		 *
+		 * @error editor-ui-deprecated-editable-elements
+		 * @param {module:core/editor/editor~Editor} editor Editor instance the deprecated input command belongs to.
+		 */
+		console.warn( 'typing-input-command-deprecated', { editor: this.editor } );
+
 		const model = this.editor.model;
 		const doc = model.document;
 		const text = options.text || '';
