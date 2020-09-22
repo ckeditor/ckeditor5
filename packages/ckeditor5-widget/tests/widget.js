@@ -17,6 +17,7 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'Widget', () => {
@@ -842,19 +843,22 @@ describe( 'Widget', () => {
 	} );
 
 	describe( 'delete integration', () => {
+		beforeEach( () => {
+			// Force the browser to use the beforeinput event.
+			testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => true );
+		} );
+
 		function test( name, input, direction, expected ) {
 			it( name, () => {
 				setModelData( model, input );
 				const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
-				const domEventDataMock = {
-					keyCode: direction == 'backward' ? keyCodes.backspace : keyCodes.delete
-				};
 
-				viewDocument.fire( 'keydown', new DomEventData(
-					viewDocument,
-					{ target: document.createElement( 'div' ), preventDefault() {} },
-					domEventDataMock
-				) );
+				viewDocument.fire( 'delete', new DomEventData( viewDocument, {
+					preventDefault: () => {}
+				}, {
+					direction,
+					inputType: direction == 'backward' ? 'deleteContentBackward' : 'deleteContentForward'
+				} ) );
 
 				expect( getModelData( model ) ).to.equal( expected );
 				scrollStub.restore();
@@ -1208,13 +1212,12 @@ describe( 'Widget', () => {
 
 			editor.isReadOnly = true;
 
-			const domEventDataMock = { target: document.createElement( 'div' ), preventDefault: sinon.spy() };
-
-			viewDocument.fire( 'delete', new DomEventData(
-				viewDocument,
-				domEventDataMock,
-				{ direction: 'backward', unit: 'character', sequence: 0 }
-			) );
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, {
+				preventDefault: () => {}
+			}, {
+				direction: 'backward',
+				inputType: 'deleteContentBackward'
+			} ) );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
@@ -1236,13 +1239,12 @@ describe( 'Widget', () => {
 
 			editor.isReadOnly = true;
 
-			const domEventDataMock = { target: document.createElement( 'div' ), preventDefault: sinon.spy() };
-
-			viewDocument.fire( 'delete', new DomEventData(
-				viewDocument,
-				domEventDataMock,
-				{ direction: 'forward', unit: 'character', sequence: 0 }
-			) );
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, {
+				preventDefault: () => {}
+			}, {
+				direction: 'forward',
+				inputType: 'deleteContentForward'
+			} ) );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
