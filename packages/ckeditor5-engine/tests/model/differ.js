@@ -1983,7 +1983,7 @@ describe( 'Differ', () => {
 				differ.refreshItem( slot );
 
 				expectChanges( [
-					{ type: 'refresh', name: 'slot', length: 1, position: model.createPositionBefore( slot ) }
+					{ type: 'insert', name: 'slot', length: 1, position: model.createPositionBefore( slot ) }
 				], true );
 			} );
 		} );

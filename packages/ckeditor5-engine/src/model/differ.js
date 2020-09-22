@@ -931,10 +931,10 @@ export default class Differ {
 			}
 
 			if ( inc.type === 'refresh' ) {
-				// TOOD: This might be handled on other level.
 				if ( old.type === 'insert' ) {
+					// Refreshing newly inserted element makes no sense and should not be processed.
 					if ( inc.offset === old.offset && inc.howMany === old.howMany ) {
-						old.howMany = 0;
+						inc.nodesToHandle = 0;
 					}
 				}
 
