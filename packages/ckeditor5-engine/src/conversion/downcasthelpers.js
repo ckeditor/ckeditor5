@@ -1368,7 +1368,7 @@ function downcastElementToElement( config ) {
 		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
 
 		if ( Array.isArray( config.triggerBy ) ) {
-			dispatcher.mapRefreshEvents( config.model, config.triggerBy );
+			dispatcher.mapRefreshTriggerEvent( config.model, config.triggerBy );
 		}
 	};
 }

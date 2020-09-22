@@ -122,7 +122,13 @@ export default class DowncastDispatcher {
 		 */
 		this.conversionApi = Object.assign( { dispatcher: this }, conversionApi );
 
-		this._refreshEventMap = new Map();
+		/**
+		 * Maps conversion event names that will trigger refresh conversion for given element name.
+		 *
+		 * @type {Map<String, String>}
+		 * @private
+		 */
+		this._refreshTriggerEventToElementNameMapping = new Map();
 	}
 
 	/**
@@ -182,9 +188,9 @@ export default class DowncastDispatcher {
 	 * @param {String} modelName Main model element name for which events will trigger reconversion.
 	 * @param {Array<String>} events Array of inner events that would trigger conversion for this model.
 	 */
-	mapRefreshEvents( modelName, events ) {
+	mapRefreshTriggerEvent( modelName, events ) {
 		for ( const eventName of events ) {
-			this._refreshEventMap.set( eventName, modelName );
+			this._refreshTriggerEventToElementNameMapping.set( eventName, modelName );
 		}
 	}
 
@@ -206,7 +212,7 @@ export default class DowncastDispatcher {
 		this.conversionApi.consumable = this._createInsertConsumable( range );
 
 		// Fire a separate insert event for each node and text fragment contained in the range.
-		for ( const data of Array.from( range ).map( valueToEventData ) ) {
+		for ( const data of Array.from( range ).map( rangeIteratorValueToEventData ) ) {
 			this._convertInsertAndElementAttributes( data );
 		}
 
@@ -273,7 +279,7 @@ export default class DowncastDispatcher {
 	 *
 	 * @fires insert
 	 * @param {module:engine/model/range~Range} range The inserted range.
-	 * @param {String} name Name of main item to refresh. TODO - a whole item might be enough here.
+	 * @param {String} name Name of main item to refresh.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
 	convertRefresh( range, name, writer ) {
@@ -287,7 +293,7 @@ export default class DowncastDispatcher {
 
 		this._reconvertElement( writer, topElementValue.item );
 
-		for ( const data of values.map( valueToEventData ) ) {
+		for ( const data of values.map( rangeIteratorValueToEventData ) ) {
 			if ( !this._isRefreshTriggerEvent( data ) && !elementWasMemoized( data, this.conversionApi.mapper ) ) {
 				this._convertInsertAndElementAttributes( data );
 			}
@@ -574,7 +580,7 @@ export default class DowncastDispatcher {
 					eventName = `${ entry.type }:${ entry.name }`;
 				}
 
-				if ( this._refreshEventMap.has( eventName ) ) {
+				if ( this._refreshTriggerEventToElementNameMapping.has( eventName ) ) {
 					return element;
 				}
 			} )
@@ -646,7 +652,7 @@ export default class DowncastDispatcher {
 	_isRefreshTriggerEvent( data ) {
 		const expectedEventName = getEventName( 'insert', data );
 
-		return this._refreshEventMap.has( expectedEventName );
+		return this._refreshTriggerEventToElementNameMapping.has( expectedEventName );
 	}
 
 	/**
@@ -808,16 +814,14 @@ function getElementFromChange( entry ) {
 	return type === 'attribute' ? range.start.nodeAfter : position.parent;
 }
 
-function valueToEventData( value ) {
+function rangeIteratorValueToEventData( value ) {
 	const item = value.item;
 	const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
 
-	const data = {
+	return {
 		item,
 		range: itemRange
 	};
-
-	return data;
 }
 
 function elementWasMemoized( data, mapper ) {
