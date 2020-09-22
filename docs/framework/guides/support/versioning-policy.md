@@ -5,16 +5,18 @@ order: 50
 
 # Versioning policy
 
-CKEditor 5 consists of multiple npm packages (over 40, at the moment of writing this guide). When releasing them, we use the following rules:
+CKEditor 5 consists of multiple npm packages (over 50, at the moment of writing this guide). When releasing them, we use the following rules:
 
 * We use the `MAJOR.MINOR.PATCH` version identifiers.
-* Each package is versioned independently, with one exception &mdash; all packages are always in the same `MAJOR` version.
-* A major release of CKEditor 5 (i.e. of all its packages) is published when at least one of its packages must have a major release. This is to ensure the previous rule.
+* All packages are always in the same version.
+* A major release of CKEditor 5 (i.e. of all its packages) is published when at least one of its packages must have a major release.
+* A minor version of CKEditor 5 (i.e. of all its packages) is published when at least one of its packages must have a minor release and none of them require a major release.
 * A package must have a major release when it contains a *major breaking change*.
 * If none of the packages contain any *major breaking change*, the following rules are used to determine the new version of each package:
 	* If a package contains a *minor breaking change*, a `MINOR` version is increased.
 	* If a package contains a new feature, a `MINOR` version is increased.
 	* If a package contains only bug fixes, unrelated changes (e.g. updated translations), documentation or other internal changes, a `PATCH` version is increased.
+* In order to ensure that all packages are in the same version, some releases of certain packages may be empty (no changes).
 
 ## Major and minor breaking changes
 
@@ -34,4 +36,4 @@ The ecosystem of CKEditor 5 consists of multiple layers. Our approach to breakin
 
 Prior to version 15.0.0 each package was versioned independently and followed the [semantic versioning (semver)](https://semver.org/). Following semver as close as possible was useful as it allowed to quickly identify what changed in each release of a certain package. However, it lead to [problems with building old versions of the editor](https://github.com/ckeditor/ckeditor5/issues/1746).
 
-Therefore, we switched to a more commonly used practice for an ecosystem of packages, which is to treat a single breaking change as a major release of all packages. It automatically fixed the aforementioned problem in all projects that use caret ranges in their `package.json` files.
+Therefore, we switched to a more commonly used practice for an ecosystem of packages, which is to treat a single breaking change as a major release of all packages. It automatically fixed the aforementioned problem in all projects that use caret ranges in their `package.json` files. Later on, we decided that it will be even most convenient for integrators if all packages are in the exact same version, which is also not uncommon (e.g. [Angular](https://github.com/angular/angular) follows this practice).
