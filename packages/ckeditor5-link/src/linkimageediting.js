@@ -95,7 +95,7 @@ function upcastLink() {
 	return dispatcher => {
 		dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
 			const viewLink = data.viewItem;
-			const imageInLink = Array.from( viewLink.getChildren() ).find( child => child.name === 'img' );
+			const imageInLink = getFirstImage( viewLink );
 
 			if ( !imageInLink ) {
 				return;
@@ -229,7 +229,7 @@ function upcastImageLinkManualDecorator( manualDecorators, decorator ) {
 	return dispatcher => {
 		dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
 			const viewLink = data.viewItem;
-			const imageInLink = Array.from( viewLink.getChildren() ).find( child => child.name === 'img' );
+			const imageInLink = getFirstImage( viewLink );
 
 			// We need to check whether an image is inside a link because the converter handles
 			// only manual decorators for linked images. See #7975.
@@ -257,11 +257,20 @@ function upcastImageLinkManualDecorator( manualDecorators, decorator ) {
 			// At this stage we can assume that we have the `<image>` element.
 			// `nodeBefore` comes after conversion: `<a><img></a>`.
 			// `parent` comes with full image definition: `<figure><a><img></a></figure>.
-			// See a body of the `upcastLink()` function.
+			// See the body of the `upcastLink()` function.
 			const modelElement = data.modelCursor.nodeBefore || data.modelCursor.parent;
 
 			conversionApi.writer.setAttribute( decorator.id, true, modelElement );
 		}, { priority: 'high' } );
 		// Using the same priority that `upcastLink()` converter guarantees that the linked image was properly converted.
 	};
+}
+
+// Returns the first image in a given view element.
+//
+// @private
+// @param {module:engine/view/element~Element}
+// @returns {module:engine/view/element~Element|undefined}
+function getFirstImage( viewElement ) {
+	return Array.from( viewElement.getChildren() ).find( child => child.name === 'img' );
 }
