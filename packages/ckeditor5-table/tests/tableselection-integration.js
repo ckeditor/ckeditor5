@@ -169,7 +169,9 @@ describe( 'TableSelection - integration', () => {
 			] ) );
 		} );
 
-		it( 'should not interfere with default key handler if no table selection', async () => {
+		it( 'should not interfere with default key handler if no table selection (beforeinput-based typing)', async () => {
+			testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => true );
+
 			await setupEditor( [ Input ] );
 
 			const view = editor.editing.view;
@@ -179,6 +181,33 @@ describe( 'TableSelection - integration', () => {
 				text: 'x',
 				selection: view.createSelection( view.createPositionAt( viewCell.getChild( 0 ), 0 ) )
 			} );
+
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ 'x[]11', '12', '13' ],
+				[ '21', '22', '23' ],
+				[ '31', '32', '33' ]
+			] ) );
+		} );
+
+		it( 'should not interfere with default key handler if no table selection (mutations-based typing)', async () => {
+			testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
+
+			await setupEditor( [ Input ] );
+
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'x' ) } );
+
+			// Mutate at the place where the document selection was put; it's more realistic
+			// than mutating at some arbitrary position.
+			const placeOfMutation = viewDocument.selection.getFirstRange().start.parent;
+
+			viewDocument.fire( 'mutations', [
+				{
+					type: 'children',
+					oldChildren: [],
+					newChildren: [ new ViewText( viewDocument, 'x' ) ],
+					node: placeOfMutation
+				}
+			] );
 
 			assertEqualMarkup( getModelData( model ), modelTable( [
 				[ 'x[]11', '12', '13' ],
