@@ -95,7 +95,7 @@ function upcastLink() {
 	return dispatcher => {
 		dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
 			const viewLink = data.viewItem;
-			const imageInLink = Array.from( viewLink.getChildren() ).find( child => child.name === 'img' );
+			const imageInLink = getFirstImage( viewLink );
 
 			if ( !imageInLink ) {
 				return;
@@ -118,11 +118,11 @@ function upcastLink() {
 			}
 
 			// A full definition of the image feature.
-			// figure > a > img: parent of the link element is an image element.
+			// figure > a > img: parent of the view link element is an image element (figure).
 			let modelElement = data.modelCursor.parent;
 
 			if ( !modelElement.is( 'element', 'image' ) ) {
-				// a > img: parent of the link is not the image element. We need to convert it manually.
+				// a > img: parent of the view link is not the image (figure) element. We need to convert it manually.
 				const conversionResult = conversionApi.convertItem( imageInLink, data.modelCursor );
 
 				// Set image range as conversion result.
@@ -229,6 +229,13 @@ function upcastImageLinkManualDecorator( manualDecorators, decorator ) {
 	return dispatcher => {
 		dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
 			const viewLink = data.viewItem;
+			const imageInLink = getFirstImage( viewLink );
+
+			// We need to check whether an image is inside a link because the converter handles
+			// only manual decorators for linked images. See #7975.
+			if ( !imageInLink ) {
+				return;
+			}
 
 			const consumableAttributes = {
 				attributes: manualDecorators.get( decorator.id ).attributes
@@ -248,10 +255,22 @@ function upcastImageLinkManualDecorator( manualDecorators, decorator ) {
 			}
 
 			// At this stage we can assume that we have the `<image>` element.
-			const modelElement = data.modelCursor.parent;
+			// `nodeBefore` comes after conversion: `<a><img></a>`.
+			// `parent` comes with full image definition: `<figure><a><img></a></figure>.
+			// See the body of the `upcastLink()` function.
+			const modelElement = data.modelCursor.nodeBefore || data.modelCursor.parent;
 
 			conversionApi.writer.setAttribute( decorator.id, true, modelElement );
 		}, { priority: 'high' } );
 		// Using the same priority that `upcastLink()` converter guarantees that the linked image was properly converted.
 	};
+}
+
+// Returns the first image in a given view element.
+//
+// @private
+// @param {module:engine/view/element~Element}
+// @returns {module:engine/view/element~Element|undefined}
+function getFirstImage( viewElement ) {
+	return Array.from( viewElement.getChildren() ).find( child => child.name === 'img' );
 }
