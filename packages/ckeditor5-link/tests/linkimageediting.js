@@ -684,6 +684,7 @@ describe( 'LinkImageEditing', () => {
 			} );
 
 			it( 'should upcast the decorators when linked image (figure > a > img)', () => {
+				// (#7975)
 				editor.setData(
 					'<figure class="image">' +
 						'<a class="gallery" href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
@@ -715,6 +716,7 @@ describe( 'LinkImageEditing', () => {
 			} );
 
 			it( 'should upcast the decorators when linked image (a > img)', () => {
+				// (#7975)
 				editor.setData(
 					'<a class="gallery" href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
 						'<img src="sample.jpg" alt="bar">' +
