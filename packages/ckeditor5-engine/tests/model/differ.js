@@ -1905,6 +1905,18 @@ describe( 'Differ', () => {
 			], true );
 		} );
 
+		it( 'a multiple elements refreshed', () => {
+			const complex = root.getChild( 2 );
+
+			differ.refreshItem( complex.getChild( 0 ) );
+			differ.refreshItem( complex.getChild( 1 ) );
+
+			expectChanges( [
+				{ type: 'refresh', name: 'slot', length: 1, position: model.createPositionAt( complex, 0 ) },
+				{ type: 'refresh', name: 'slot', length: 1, position: model.createPositionAt( complex, 1 ) }
+			], true );
+		} );
+
 		it( 'a refreshed element with a child removed (refresh + remove)', () => {
 			const complex = root.getChild( 2 );
 
