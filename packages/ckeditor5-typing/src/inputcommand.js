@@ -96,7 +96,7 @@ export default class InputCommand extends Command {
 		 *	// ✅ OK
 		 *	editor.execute( 'insertText', options );
 		 *
-		 * @error editor-ui-deprecated-editable-elements
+		 * @error typing-input-command-deprecated
 		 * @param {module:core/editor/editor~Editor} editor Editor instance the deprecated input command belongs to.
 		 */
 		console.warn( 'typing-input-command-deprecated', { editor: this.editor } );

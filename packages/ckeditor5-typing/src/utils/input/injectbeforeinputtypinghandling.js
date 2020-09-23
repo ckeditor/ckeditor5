@@ -27,7 +27,7 @@ const TYPING_INPUT_TYPES = [
  * It fires the {@link module:engine/view/document~Document#event:insertText} event.
  *
  * @protected
- * @param {module:core/editor/view/view~View} view The editor editing view instance.
+ * @param {module:engine/view/view~View} view The editor editing view instance.
  */
 export default function injectBeforeInputTypingHandling( view ) {
 	const viewDocument = view.document;
