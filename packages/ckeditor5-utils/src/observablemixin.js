@@ -16,7 +16,7 @@ const boundObservablesSymbol = Symbol( 'boundObservables' );
 const boundPropertiesSymbol = Symbol( 'boundProperties' );
 
 /**
- * Mixin that injects the "observable properties" and data binding functionality described in the
+ * A mixin that injects the "observable properties" and data binding functionality described in the
  * {@link ~Observable} interface.
  *
  * Read more about the concept of observables in the:
@@ -50,7 +50,7 @@ const ObservableMixin = {
 			/**
 			 * Cannot override an existing property.
 			 *
-			 * This error is thrown when trying to {@link ~Observable#set set} an property with
+			 * This error is thrown when trying to {@link ~Observable#set set} a property with
 			 * a name of an already existing property. For example:
 			 *
 			 *		let observable = new Model();
@@ -265,7 +265,7 @@ extend( ObservableMixin, EmitterMixin );
 
 export default ObservableMixin;
 
-// Init symbol properties needed to for the observable mechanism to work.
+// Init symbol properties needed for the observable mechanism to work.
 //
 // @private
 // @param {module:utils/observablemixin~ObservableMixin} observable
@@ -667,7 +667,7 @@ function attachBindToListeners( observable, toBindings ) {
 }
 
 /**
- * Interface which adds "observable properties" and data binding functionality.
+ * An interface which adds "observable properties" and data binding functionality.
  *
  * Can be easily implemented by a class by mixing the {@link module:utils/observablemixin~ObservableMixin} mixin.
  *
@@ -721,7 +721,7 @@ function attachBindToListeners( observable, toBindings ) {
  *		                     // -> 'Current property value is 1'
  *		                     // -> 'Value has changed from 1 to 3'
  *
- * **Note:** Event is fired even when the new value is the same as the old value.
+ * **Note:** The event is fired even when the new value is the same as the old value.
  *
  * @event set:{property}
  * @param {String} name The property name.
@@ -730,13 +730,13 @@ function attachBindToListeners( observable, toBindings ) {
  */
 
 /**
- * Creates and sets the value of an observable property of this object. Such an property becomes a part
- * of the state and is be observable.
+ * Creates and sets the value of an observable property of this object. Such a property becomes a part
+ * of the state and is observable.
  *
  * It accepts also a single object literal containing key/value pairs with properties to be set.
  *
  * This method throws the `observable-set-cannot-override` error if the observable instance already
- * have a property with the given property name. This prevents from mistakenly overriding existing
+ * has a property with the given property name. This prevents from mistakenly overriding existing
  * properties and methods, but means that `foo.set( 'bar', 1 )` may be slightly slower than `foo.bar = 1`.
  *
  * @method #set
