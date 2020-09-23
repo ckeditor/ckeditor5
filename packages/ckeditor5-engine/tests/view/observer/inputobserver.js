@@ -159,14 +159,13 @@ describe( 'InputObserver', () => {
 				const domRange = global.document.createRange();
 
 				sinon.stub( viewDocument.selection, 'isFake' ).get( () => true );
-				sinon.stub( viewDocument.selection, 'getFirstRange' ).returns( 'foo' );
+				sinon.stub( viewDocument.selection, 'getRanges' ).returns( [ 'fakeRange1', 'fakeRange2' ] );
 
 				fireMockNativeBeforeInput( {
 					getTargetRanges: () => [ domRange ]
 				} );
 
-				expect( evtData.targetRanges ).to.have.length( 1 );
-				expect( evtData.targetRanges[ 0 ] ).to.equal( 'foo' );
+				expect( evtData.targetRanges ).to.have.ordered.members( [ 'fakeRange1', 'fakeRange2' ] );
 			} );
 		} );
 
