@@ -11,13 +11,19 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import { getData as getViewData } from '../../src/dev-utils/view';
 import { isInlineFiller } from '../../src/view/filler';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
+import env from '@ckeditor/ckeditor5-utils/src/env';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 /* globals document */
 
 describe( 'Bug ckeditor5#692', () => {
 	let editorElement, editor, mutationObserver, view, domEditor;
 
+	testUtils.createSinonSandbox();
+
 	beforeEach( () => {
+		testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
+
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
