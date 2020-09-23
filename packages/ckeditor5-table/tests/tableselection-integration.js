@@ -30,6 +30,8 @@ import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 describe( 'TableSelection - integration', () => {
 	let editor, model, tableSelection, modelRoot, element, viewDocument;
 
+	testUtils.createSinonSandbox();
+
 	afterEach( async () => {
 		element.remove();
 		await editor.destroy();
@@ -190,6 +192,7 @@ describe( 'TableSelection - integration', () => {
 		} );
 
 		it( 'should not interfere with default key handler if no table selection (mutations-based typing)', async () => {
+			// Force the browser to not use the beforeinput event.
 			testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
 
 			await setupEditor( [ Input ] );
