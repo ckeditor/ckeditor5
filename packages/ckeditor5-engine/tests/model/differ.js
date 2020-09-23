@@ -1988,6 +1988,75 @@ describe( 'Differ', () => {
 			} );
 		} );
 
+		it( 'multiple elements added and one of them refreshed (first)', () => {
+			const complexSource = root.getChild( 2 );
+			complexSource._appendChild( new Element( 'slot' ) );
+			root._appendChild( [ new Element( 'complex' ) ] );
+
+			const complexTarget = root.getChild( 3 );
+
+			model.change( () => {
+				move( model.createPositionAt( complexSource, 0 ), 3, model.createPositionAt( complexTarget, 0 ) );
+				const slot = complexTarget.getChild( 0 );
+				differ.refreshItem( slot );
+
+				expectChanges( [
+					{ type: 'remove', name: 'slot', length: 1, position: model.createPositionAt( complexSource, 0 ) },
+					{ type: 'remove', name: 'slot', length: 1, position: model.createPositionAt( complexSource, 0 ) },
+					{ type: 'remove', name: 'slot', length: 1, position: model.createPositionAt( complexSource, 0 ) },
+					{ type: 'insert', name: 'slot', length: 1, position: model.createPositionAt( complexTarget, 0 ) },
+					{ type: 'insert', name: 'slot', length: 1, position: model.createPositionAt( complexTarget, 1 ) },
+					{ type: 'insert', name: 'slot', length: 1, position: model.createPositionAt( complexTarget, 2 ) }
+				], false );
+			} );
+		} );
+
+		it( 'multiple elements added and one of them refreshed (last)', () => {
+			const complexSource = root.getChild( 2 );
+			complexSource._appendChild( new Element( 'slot' ) );
+			root._appendChild( [ new Element( 'complex' ) ] );
+
+			const complexTarget = root.getChild( 3 );
+
+			model.change( () => {
+				move( model.createPositionAt( complexSource, 0 ), 3, model.createPositionAt( complexTarget, 0 ) );
+				const slot = complexTarget.getChild( 2 );
+				differ.refreshItem( slot );
+
+				expectChanges( [
+					{ type: 'remove', name: 'slot', length: 1, position: model.createPositionAt( complexSource, 0 ) },
+					{ type: 'remove', name: 'slot', length: 1, position: model.createPositionAt( complexSource, 0 ) },
+					{ type: 'remove', name: 'slot', length: 1, position: model.createPositionAt( complexSource, 0 ) },
+					{ type: 'insert', name: 'slot', length: 1, position: model.createPositionAt( complexTarget, 0 ) },
+					{ type: 'insert', name: 'slot', length: 1, position: model.createPositionAt( complexTarget, 1 ) },
+					{ type: 'insert', name: 'slot', length: 1, position: model.createPositionAt( complexTarget, 2 ) }
+				], false );
+			} );
+		} );
+
+		it( 'multiple elements added and one of them refreshed (inner)', () => {
+			const complexSource = root.getChild( 2 );
+			complexSource._appendChild( new Element( 'slot' ) );
+			root._appendChild( [ new Element( 'complex' ) ] );
+
+			const complexTarget = root.getChild( 3 );
+
+			model.change( () => {
+				move( model.createPositionAt( complexSource, 0 ), 3, model.createPositionAt( complexTarget, 0 ) );
+				const slot = complexTarget.getChild( 1 );
+				differ.refreshItem( slot );
+
+				expectChanges( [
+					{ type: 'remove', name: 'slot', length: 1, position: model.createPositionAt( complexSource, 0 ) },
+					{ type: 'remove', name: 'slot', length: 1, position: model.createPositionAt( complexSource, 0 ) },
+					{ type: 'remove', name: 'slot', length: 1, position: model.createPositionAt( complexSource, 0 ) },
+					{ type: 'insert', name: 'slot', length: 1, position: model.createPositionAt( complexTarget, 0 ) },
+					{ type: 'insert', name: 'slot', length: 1, position: model.createPositionAt( complexTarget, 1 ) },
+					{ type: 'insert', name: 'slot', length: 1, position: model.createPositionAt( complexTarget, 2 ) }
+				], false );
+			} );
+		} );
+
 		it( 'an element added and other refreshed', () => {
 			const complex = root.getChild( 2 );
 
