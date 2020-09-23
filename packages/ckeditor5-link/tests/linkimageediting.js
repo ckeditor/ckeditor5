@@ -686,30 +686,30 @@ describe( 'LinkImageEditing', () => {
 			it( 'should upcast the decorators when linked image (figure > a > img)', () => {
 				editor.setData(
 					'<figure class="image">' +
-					'<a class="gallery" href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
-					'<img src="sample.jpg" alt="bar">' +
-					'</a>' +
-					'<figcaption>Caption</figcaption>' +
+						'<a class="gallery" href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
+							'<img src="sample.jpg" alt="bar">' +
+						'</a>' +
+						'<figcaption>Caption</figcaption>' +
 					'</figure>' +
 					'<p>' +
-					'<a href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
-					'https://cksource.com' +
-					'</a>' +
+						'<a href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
+							'https://cksource.com' +
+						'</a>' +
 					'</p>'
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<image alt="bar" ' +
-					'linkHref="https://cksource.com" ' +
-					'linkIsDownloadable="true" ' +
-					'linkIsExternal="true" ' +
-					'linkIsGallery="true" ' +
-					'src="sample.jpg">' +
+						'linkHref="https://cksource.com" ' +
+						'linkIsDownloadable="true" ' +
+						'linkIsExternal="true" ' +
+						'linkIsGallery="true" ' +
+						'src="sample.jpg">' +
 					'</image>' +
 					'<paragraph>' +
-					'<$text linkHref="https://cksource.com" linkIsDownloadable="true" linkIsExternal="true">' +
-					'https://cksource.com' +
-					'</$text>' +
+						'<$text linkHref="https://cksource.com" linkIsDownloadable="true" linkIsExternal="true">' +
+							'https://cksource.com' +
+						'</$text>' +
 					'</paragraph>'
 				);
 			} );
@@ -717,27 +717,27 @@ describe( 'LinkImageEditing', () => {
 			it( 'should upcast the decorators when linked image (a > img)', () => {
 				editor.setData(
 					'<a class="gallery" href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
-					'<img src="sample.jpg" alt="bar">' +
+						'<img src="sample.jpg" alt="bar">' +
 					'</a>' +
 					'<p>' +
-					'<a href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
-					'https://cksource.com' +
-					'</a>' +
+						'<a href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
+							'https://cksource.com' +
+						'</a>' +
 					'</p>'
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<image alt="bar" ' +
-					'linkHref="https://cksource.com" ' +
-					'linkIsDownloadable="true" ' +
-					'linkIsExternal="true" ' +
-					'linkIsGallery="true" ' +
-					'src="sample.jpg">' +
+						'linkHref="https://cksource.com" ' +
+						'linkIsDownloadable="true" ' +
+						'linkIsExternal="true" ' +
+						'linkIsGallery="true" ' +
+						'src="sample.jpg">' +
 					'</image>' +
 					'<paragraph>' +
-					'<$text linkHref="https://cksource.com" linkIsDownloadable="true" linkIsExternal="true">' +
-					'https://cksource.com' +
-					'</$text>' +
+						'<$text linkHref="https://cksource.com" linkIsDownloadable="true" linkIsExternal="true">' +
+							'https://cksource.com' +
+						'</$text>' +
 					'</paragraph>'
 				);
 			} );
