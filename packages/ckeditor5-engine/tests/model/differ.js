@@ -1883,6 +1883,18 @@ describe( 'Differ', () => {
 			], true );
 		} );
 
+		it( 'an element refreshed multiple times', () => {
+			const p = root.getChild( 0 );
+
+			differ.refreshItem( p );
+			differ.refreshItem( p );
+			differ.refreshItem( p );
+
+			expectChanges( [
+				{ type: 'refresh', name: 'paragraph', length: 1, position: model.createPositionBefore( p ) }
+			], true );
+		} );
+
 		it( 'a refreshed element (complex)', () => {
 			const complex = root.getChild( 2 );
 

@@ -943,6 +943,12 @@ export default class Differ {
 						old.howMany = 0;
 					}
 				}
+
+				if ( old.type === 'refresh' ) {
+					if ( inc.offset === old.offset && inc.howMany === old.howMany ) {
+						inc.nodesToHandle = 0;
+					}
+				}
 			}
 		}
 

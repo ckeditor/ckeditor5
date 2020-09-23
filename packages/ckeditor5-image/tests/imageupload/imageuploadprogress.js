@@ -75,8 +75,8 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-widget image" contenteditable="false">' +
-				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
-				'<div class="ck-upload-placeholder-loader"></div>' +
+			`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+			'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]<p>foo</p>'
 		);
 	} );
@@ -104,6 +104,7 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	// See https://github.com/ckeditor/ckeditor5/issues/1985.
+	// Might be obsolete after changes in table refreshing (now it refreshes siblings of an image and not its parent).
 	it( 'should work if image parent is refreshed by the differ', function( done ) {
 		model.schema.register( 'outerBlock', {
 			allowWhere: '$block',
@@ -125,7 +126,7 @@ describe( 'ImageUploadProgress', () => {
 				if ( change.type == 'insert' && change.name == 'image' ) {
 					doc.differ.refreshItem( change.position.parent );
 
-					return true;
+					return false; // Refreshing item should not trigger calling post-fixer again.
 				}
 			}
 		} );
@@ -137,10 +138,14 @@ describe( 'ImageUploadProgress', () => {
 		model.document.once( 'change', () => {
 			try {
 				expect( getViewData( view ) ).to.equal(
-					'<outerBlock><innerBlock>[<figure class="ck-appear ck-widget image" contenteditable="false">' +
+					'<outerBlock>' +
+					'<innerBlock>' +
+					'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
 					`<img src="${ base64Sample }"></img>` +
 					'<div class="ck-progress-bar"></div>' +
-					'</figure>]</innerBlock></outerBlock>'
+					'</figure>]' +
+					'</innerBlock>' +
+					'</outerBlock>'
 				);
 
 				done();
@@ -169,8 +174,8 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
-				'<img src="image.png"></img>' +
-				'<div class="ck-progress-bar"></div>' +
+			'<img src="image.png"></img>' +
+			'<div class="ck-progress-bar"></div>' +
 			'</figure>]'
 		);
 	} );
@@ -187,8 +192,8 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-widget image" contenteditable="false">' +
-				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
-				'<div class="ck-upload-placeholder-loader"></div>' +
+			`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+			'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]'
 		);
 	} );
@@ -210,7 +215,7 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false">' +
-				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+			`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]'
 		);
 	} );
@@ -284,8 +289,8 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-widget image" contenteditable="false">' +
-				`<img src="${ base64Sample }"></img>` +
-				'<div class="ck-upload-placeholder-loader"></div>' +
+			`<img src="${ base64Sample }"></img>` +
+			'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]<p>foo</p>'
 		);
 	} );
@@ -314,8 +319,8 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-widget image" contenteditable="false">' +
-				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
-				'<div class="ck-upload-placeholder-loader"></div>' +
+			`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+			'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]'
 		);
 
@@ -325,7 +330,7 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false">' +
-				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+			`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]'
 		);
 	} );
