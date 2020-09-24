@@ -50,21 +50,7 @@ function tableCellRefreshPostFixer( model ) {
 	// 2. For each table cell:
 	for ( const [ tableCell, changes ] of changesForCells.entries() ) {
 		// 2a. Count inserts/removes as diff and marks any attribute change.
-		const { childDiff, attribute } = changes.reduce( ( summary, change ) => {
-			if ( change.type === 'remove' ) {
-				summary.childDiff--;
-			}
-
-			if ( change.type === 'insert' ) {
-				summary.childDiff++;
-			}
-
-			if ( change.type === 'attribute' ) {
-				summary.attribute = true;
-			}
-
-			return summary;
-		}, { childDiff: 0, attribute: false } );
+		const { childDiff, attribute } = getChangesSummary( changes );
 
 		// 2b. If we detect that number of children has changed...
 		if ( childDiff !== 0 ) {
@@ -99,9 +85,29 @@ function tableCellRefreshPostFixer( model ) {
 				differ.refreshItem( paragraph );
 			}
 		}
-
-		return false; // TODO tmp
 	}
 
+	// Always return false to prevent the refresh post-fixer from re-running on the same set of changes and going into an infinite loop.
+	// See https://github.com/ckeditor/ckeditor5/issues/1936.
 	return false;
+}
+
+function updateSummaryFromChange( summary, change ) {
+	if ( change.type === 'remove' ) {
+		summary.childDiff--;
+	}
+
+	if ( change.type === 'insert' ) {
+		summary.childDiff++;
+	}
+
+	if ( change.type === 'attribute' ) {
+		summary.attribute = true;
+	}
+
+	return summary;
+}
+
+function getChangesSummary( changes ) {
+	return changes.reduce( updateSummaryFromChange, { childDiff: 0, attribute: false } );
 }
