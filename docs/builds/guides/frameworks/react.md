@@ -85,7 +85,7 @@ The editor events callbacks (`onChange`, `onBlur`, `onFocus`) receive two argume
 
 ### Context feature
 
-The `ckeditor5-react` integration comes with a ready-to-use component for the [Context feature](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/context-and-collaboration-features.html) that is useful when used together with some [CKEditor 5 collaboration features](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html).
+The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the [Context feature](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/context-and-collaboration-features.html) that is useful when used together with some [CKEditor 5 collaboration features](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html).
 
 ```jsx
 import React, { Component } from 'react';
@@ -127,8 +127,8 @@ class App extends Component {
 
 The `CKEditorContext` component supports the following properties:
 
+* `context` (required) &ndash; {@link module:core/context~Context The CKEditor 5 context class}.
 * `config` &ndash; The CKEditor 5 context configuration.
-* `context` &ndash; {@link module:core/context~Context The CKEditor 5 context class}.
 * `isLayoutReady` &ndash; A property that delays the editor creation when set to true. Useful when the CKEditor 5 annotations or a presence list is used.
 * `id` &ndash; The context ID. When that property changes the component restarts the context with its editor and reinitialize it based on the current configuration.
 * `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance. This callback can be called after the initialization and after restarts of editors or the context.
