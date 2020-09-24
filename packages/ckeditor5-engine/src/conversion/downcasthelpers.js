@@ -803,7 +803,6 @@ export function wrap( elementCreator ) {
  */
 export function insertElement( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
-		// Create view structure:
 		const viewElement = elementCreator( data.item, conversionApi );
 
 		if ( !viewElement ) {
@@ -816,7 +815,6 @@ export function insertElement( elementCreator ) {
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
-		// Rest of standard insertElement converter.
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
 	};

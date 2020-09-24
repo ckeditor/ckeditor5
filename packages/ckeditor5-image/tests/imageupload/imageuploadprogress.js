@@ -75,8 +75,8 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-widget image" contenteditable="false">' +
-			`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
-			'<div class="ck-upload-placeholder-loader"></div>' +
+				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+				'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]<p>foo</p>'
 		);
 	} );
@@ -139,12 +139,12 @@ describe( 'ImageUploadProgress', () => {
 			try {
 				expect( getViewData( view ) ).to.equal(
 					'<outerBlock>' +
-					'<innerBlock>' +
-					'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
-					`<img src="${ base64Sample }"></img>` +
-					'<div class="ck-progress-bar"></div>' +
-					'</figure>]' +
-					'</innerBlock>' +
+						'<innerBlock>' +
+							'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
+								`<img src="${ base64Sample }"></img>` +
+								'<div class="ck-progress-bar"></div>' +
+							'</figure>]' +
+						'</innerBlock>' +
 					'</outerBlock>'
 				);
 
@@ -174,8 +174,8 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
-			'<img src="image.png"></img>' +
-			'<div class="ck-progress-bar"></div>' +
+				'<img src="image.png"></img>' +
+				'<div class="ck-progress-bar"></div>' +
 			'</figure>]'
 		);
 	} );
@@ -192,8 +192,8 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-widget image" contenteditable="false">' +
-			`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
-			'<div class="ck-upload-placeholder-loader"></div>' +
+				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+				'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]'
 		);
 	} );
@@ -215,7 +215,7 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false">' +
-			`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]'
 		);
 	} );
@@ -289,8 +289,8 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-widget image" contenteditable="false">' +
-			`<img src="${ base64Sample }"></img>` +
-			'<div class="ck-upload-placeholder-loader"></div>' +
+				`<img src="${ base64Sample }"></img>` +
+				'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]<p>foo</p>'
 		);
 	} );
@@ -319,8 +319,8 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-widget image" contenteditable="false">' +
-			`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
-			'<div class="ck-upload-placeholder-loader"></div>' +
+				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+				'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]'
 		);
 
@@ -330,7 +330,7 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false">' +
-			`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]'
 		);
 	} );

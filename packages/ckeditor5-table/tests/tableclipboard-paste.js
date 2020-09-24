@@ -2731,8 +2731,8 @@ describe( 'table clipboard', () => {
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1, 1, 1 ],
-						[ 1, 1 ],
-						[ 1, 1 ],
+						[ 1,       1 ],
+						[       1, 1 ],
 						[ 0, 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */

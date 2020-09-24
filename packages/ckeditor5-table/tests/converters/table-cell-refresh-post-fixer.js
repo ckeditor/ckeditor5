@@ -219,7 +219,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p foo="baz">00</p>' ]
 		], { asWidget: true } ) );
-		// False positive: should not be called.
 	} );
 
 	it( 'should keep <p> in the view when adding another attribute to a <paragraph> with other attributes', () => {
@@ -234,7 +233,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p bar="bar" foo="bar">00</p>' ]
 		], { asWidget: true } ) );
-		// False positive: should not be called.
 	} );
 
 	it( 'should keep <p> in the view when adding another attribute to a <paragraph> and removing attribute that is already set', () => {
@@ -250,7 +248,6 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p bar="bar">00</p>' ]
 		], { asWidget: true } ) );
-		// False positive: should not be called.
 	} );
 
 	it( 'should keep <p> in the view when <paragraph> attribute value is changed (table cell with multiple blocks)', () => {

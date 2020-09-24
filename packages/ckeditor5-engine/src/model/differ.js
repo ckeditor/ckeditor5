@@ -933,7 +933,6 @@ export default class Differ {
 			if ( inc.type === 'refresh' ) {
 				if ( old.type === 'insert' ) {
 					if ( inc.offset >= old.offset && inc.offset < oldEnd ) {
-						// if ( inc.offset === old.offset && inc.howMany === old.howMany ) {
 						inc.nodesToHandle = 0;
 					}
 				}
