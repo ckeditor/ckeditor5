@@ -115,6 +115,7 @@ class App extends Component {
 							console.log( 'Editor2 is ready to use!', editor );
 						} }
 					/>
+				</CKEditorContext>
 			</div>
 		);
 	}
