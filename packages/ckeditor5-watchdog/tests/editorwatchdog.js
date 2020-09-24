@@ -817,7 +817,7 @@ describe( 'EditorWatchdog', () => {
 						expect( watchdog.crashes[ 0 ].lineno ).to.be.a( 'number' );
 						expect( watchdog.crashes[ 0 ].colno ).to.be.a( 'number' );
 
-						expect( watchdog.crashes[ 1 ].message ).to.equal( 'bar' );
+						expect( watchdog.crashes[ 1 ].message ).to.match( /^bar/ );
 
 						watchdog.destroy().then( res );
 					} );
