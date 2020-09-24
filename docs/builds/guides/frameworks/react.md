@@ -82,7 +82,7 @@ The editor events callbacks (`onChange`, `onBlur`, `onFocus`) receive two argume
 
 ### Context feature
 
-The `ckeditor5-react` integration comes with a ready-to-use component for the {@link features/context-and-collaboration-features Context feature} that is useful when used together with some {@link features/collaboration CKEditor 5 collaboration features}.
+The `ckeditor5-react` integration comes with a ready-to-use component for the [Context feature](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/context-and-collaboration-features.html) that is useful when used together with some [CKEditor 5 collaboration features](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html).
 
 ```jsx
 import React, { Component } from 'react';
