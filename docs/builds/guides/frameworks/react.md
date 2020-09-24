@@ -198,8 +198,10 @@ class App extends Component {
 
 						this.editor = editor;
 					} }
-					onError={ () => {
-						this.editor.ui.view.toolbar.element.remove();
+					onError={ ( { willEditorRestart } ) => {
+						if ( willEditorRestart ) {
+							this.editor.ui.view.toolbar.element.remove();
+						}
 					} }
 					onChange={ ( event, editor ) => console.log( { event, editor } ) }
 					editor={ DecoupledEditor }
