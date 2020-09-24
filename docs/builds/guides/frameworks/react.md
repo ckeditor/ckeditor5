@@ -131,8 +131,11 @@ The `CKEditorContext` component supports the following properties:
 * `config` &ndash; The CKEditor 5 context configuration.
 * `isLayoutReady` &ndash; A property that delays the editor creation when set to true. Useful when the CKEditor 5 annotations or a presence list is used.
 * `id` &ndash; The context ID. When that property changes the component restarts the context with its editor and reinitialize it based on the current configuration.
-* `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance. This callback can be called after the initialization and after restarts of editors or the context.
-* `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives the error instance and the error details (`phase` and `willContextRestart`) as arguments.
+* `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance. This callback will be called after the initialization and after restarts of editors or the context.
+* `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
+    Error details is an object that contains two properties:
+    * `{String} phase`: `'initialization'|'runtime'` - Informs when the error has occurred (during the editor/context initialization or after the initialization).
+     * `{Boolean} willContextRestart` - When `true`, it means that the context component will restart itself.
 
 <info-box>
 	A build that exposes both Context and Classic Editor can be found in a [CKEditor 5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/comments-outside-of-editor).
