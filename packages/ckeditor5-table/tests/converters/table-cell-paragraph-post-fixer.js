@@ -122,8 +122,7 @@ describe( 'Table cell paragraph post-fixer', () => {
 		);
 	} );
 
-	// #TODO: Looks like invalid case - however it needs more investigation.
-	it.skip( 'should wrap in paragraph $text nodes placed directly in tableCell (on table cell modification) ', () => {
+	it( 'should wrap in a paragraph $text nodes placed directly in tableCell (on table cell modification) ', () => {
 		setModelData( model,
 			'<table>' +
 				'<tableRow>' +
