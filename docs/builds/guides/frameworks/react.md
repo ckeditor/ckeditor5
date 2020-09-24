@@ -68,12 +68,15 @@ The `<CKEditor>` component supports the following properties:
 * `data` &ndash; The initial data for the created editor. See the {@link builds/guides/integration/basic-api#interacting-with-the-editor Basic API} guide.
 * `config` &ndash; The editor configuration. See the {@link builds/guides/integration/configuration Configuration} guide.
 * `id` &ndash; The editor ID. When that property changes the component restarts the editor with new data instead of setting it on an initialized editor.
-* `onReady` &ndash; A function called when the editor is ready with an {@link module:core/editor/editor~Editor `editor`} instance. This callback can be called after the initialization and after restarts of the editor.
+* `onReady` &ndash; A function called when the editor is ready with an {@link module:core/editor/editor~Editor `editor`} instance. This callback will be called after the editor initialization and after restarting the editor (e.g. when the editor crashed).
 * `disabled` &ndash; A Boolean value. The {@link module:core/editor/editor~Editor `editor`} is being switched to read-only mode if the property is set to `true`.
 * `onChange` &ndash; A function called when the editor data has changed. See the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
 * `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
 * `onFocus` &ndash; A function called when the editor was focused. See the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
-* `onError` &ndash; A function called when the editor has crashed during the initialization or during the runtime. It receives the error instance and the error details (`phase` and `willEditorRestart`) as arguments.
+* `onError` &ndash; A function called when the editor has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
+    Error details is an object that contains two properties:
+    * `{String} phase`: `'initialization'|'runtime'` - Informs when the error has occurred (during the editor/context initialization or after the initialization).
+     * `{Boolean} willEditorRestart` - When `true`, it means that the editor component will restart itself.
 
 The editor events callbacks (`onChange`, `onBlur`, `onFocus`) receive two arguments:
 
