@@ -86,16 +86,16 @@ msgstr "Lista veličine slike"
 
 msgctxt "The label of submit form button if image src URL input has no value"
 msgid "Insert"
-msgstr ""
+msgstr "Ubaci"
 
 msgctxt "The label of submit form button if image src URL input has value"
 msgid "Update"
-msgstr ""
+msgstr "Ažuriraj"
 
 msgctxt "The input label for the Insert image via URL form"
 msgid "Insert image via URL"
-msgstr ""
+msgstr "Ubaci sliku preko URL-a"
 
 msgctxt "The tip label below the Insert image via URL form"
 msgid "Paste the image source URL."
-msgstr ""
+msgstr "Nalepi URL izvora slike"
