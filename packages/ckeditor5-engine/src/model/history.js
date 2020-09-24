@@ -60,29 +60,37 @@ export default class History {
 	/**
 	 * Returns operations added to the history.
 	 *
-	 * @param {Number} [from=0] Base version from which operations should be returned (inclusive). Defaults to `0`, which means
-	 * that operations from the first one will be returned.
+	 * @param {Number} [from=Number.NEGATIVE_INFINITY] Base version from which operations should be returned (inclusive).
+	 * Defaults to `Number.NEGATIVE_INFINITY`, which means that operations from the first one will be returned.
 	 * @param {Number} [to=Number.POSITIVE_INFINITY] Base version up to which operations should be returned (exclusive).
 	 * Defaults to `Number.POSITIVE_INFINITY` which means that operations up to the last one will be returned.
-	 * @returns {Iterable.<module:engine/model/operation/operation~Operation>} Operations added to the history.
+	 * @returns {Array.<module:engine/model/operation/operation~Operation>} Operations added to the history.
 	 */
-	getOperations( from = 0, to = Number.POSITIVE_INFINITY ) {
-		if ( from < 0 ) {
-			return [];
+	getOperations( from = Number.NEGATIVE_INFINITY, to = Number.POSITIVE_INFINITY ) {
+		const operations = [];
+
+		for ( const operation of this._operations ) {
+			if ( operation.baseVersion >= from && operation.baseVersion < to ) {
+				operations.push( operation );
+			}
 		}
 
-		return this._operations.slice( from, to );
+		return operations;
 	}
 
 	/**
 	 * Returns operation from the history that bases on given `baseVersion`.
 	 *
 	 * @param {Number} baseVersion Base version of the operation to get.
-	 * @returns {module:engine/model/operation/operation~Operation|null} Operation with given base version or `null` if
+	 * @returns {module:engine/model/operation/operation~Operation|undefined} Operation with given base version or `undefined` if
 	 * there is no such operation in history.
 	 */
 	getOperation( baseVersion ) {
-		return this._operations[ baseVersion ];
+		for ( const operation of this._operations ) {
+			if ( operation.baseVersion == baseVersion ) {
+				return operation;
+			}
+		}
 	}
 
 	/**
