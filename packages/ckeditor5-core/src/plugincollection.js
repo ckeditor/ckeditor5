@@ -117,6 +117,12 @@ export default class PluginCollection {
 		const plugin = this._plugins.get( key );
 
 		if ( !plugin ) {
+			let pluginName = key;
+
+			if ( typeof key == 'function' ) {
+				pluginName = key.pluginName || key.name;
+			}
+
 			/**
 			 * The plugin is not loaded and could not be obtained.
 			 *
@@ -131,15 +137,7 @@ export default class PluginCollection {
 			 * @error plugincollection-plugin-not-loaded
 			 * @param {String} plugin The name of the plugin which is not loaded.
 			 */
-			const errorMsg = 'plugincollection-plugin-not-loaded: The requested plugin is not loaded.';
-
-			let pluginName = key;
-
-			if ( typeof key == 'function' ) {
-				pluginName = key.pluginName || key.name;
-			}
-
-			throw new CKEditorError( errorMsg, this._context, { plugin: pluginName } );
+			throw new CKEditorError( 'plugincollection-plugin-not-loaded', this._context, { plugin: pluginName } );
 		}
 
 		return plugin;
