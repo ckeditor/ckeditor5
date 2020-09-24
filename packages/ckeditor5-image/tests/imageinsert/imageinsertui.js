@@ -48,12 +48,10 @@ describe( 'ImageInsertUI', () => {
 					plugins: [ Paragraph, Image, ImageInsert, ImageInsertUI, FileRepository, UploadAdapterPluginMock, Clipboard ],
 					toolbar: [ 'imageInsert' ],
 					image: {
-						upload: {
-							panel: {
-								items: [
-									'insertImageViaUrl'
-								]
-							}
+						insert: {
+							integrations: [
+								'insertImageViaUrl'
+							]
 						}
 					}
 				} )
@@ -296,13 +294,11 @@ describe( 'ImageInsertUI', () => {
 						Clipboard
 					],
 					image: {
-						upload: {
-							panel: {
-								items: [
-									'insertImageViaUrl',
-									'openCKFinder'
-								]
-							}
+						insert: {
+							integrations: [
+								'insertImageViaUrl',
+								'openCKFinder'
+							]
 						}
 					}
 				} );

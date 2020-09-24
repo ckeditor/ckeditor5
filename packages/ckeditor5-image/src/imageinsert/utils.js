@@ -19,7 +19,7 @@ import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/
  * @returns {Object.<String, module:ui/view~View>} Integrations object.
  */
 export function prepareIntegrations( editor ) {
-	const panelItems = editor.config.get( 'image.upload.panel.items' );
+	const panelItems = editor.config.get( 'image.insert.integrations' );
 	const imageInsertUIPlugin = editor.plugins.get( 'ImageInsertUI' );
 
 	const PREDEFINED_INTEGRATIONS = {
