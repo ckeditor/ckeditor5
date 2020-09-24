@@ -145,7 +145,6 @@ export default class Differ {
 
 		this._markRefresh( item.parent, item.startOffset, item.offsetSize );
 
-		// @todo: Probably makes sense - check later.
 		const range = Range._createOn( item );
 
 		for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
@@ -185,8 +184,6 @@ export default class Differ {
 			case 'removeAttribute':
 			case 'changeAttribute': {
 				for ( const item of operation.range.getItems( { shallow: true } ) ) {
-					// Attribute change on refreshed element is ignored
-					// TODO: this is wrong if attribute would be handled elsewhere: || this._isInRefreshedElement( item )
 					if ( this._isInInsertedElement( item.parent ) || this._isInRefreshedElement( item ) ) {
 						continue;
 					}
@@ -449,9 +446,6 @@ export default class Differ {
 
 			let i = 0; // Iterator in `elementChildren` array -- iterates through current children of element.
 			let j = 0; // Iterator in `snapshotChildren` array -- iterates through old children of element.
-
-			// console.log( changes.map( change => change.type ) );
-			// console.log( 'actions', actions, elementChildren.length );
 
 			// Process every action.
 			for ( const action of actions ) {
