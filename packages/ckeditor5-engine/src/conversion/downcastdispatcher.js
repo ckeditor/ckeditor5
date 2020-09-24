@@ -619,7 +619,7 @@ export default class DowncastDispatcher {
 
 			// At this stage we get the update view element, so any mapped model item might be a potential "slot".
 			if ( modelItem ) {
-				const currentViewItem = this.conversionApi.mapper._temporalModelToView.get( modelItem );
+				const currentViewItem = this.conversionApi.mapper.getExistingViewForSlot( modelItem );
 
 				// This of course needs better API, but for now it works.
 				// Mapper.bindSlot() creates mappings as mapper.bindElements() but also binds view element
