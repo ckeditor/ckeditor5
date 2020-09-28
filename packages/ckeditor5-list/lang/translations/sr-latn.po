@@ -22,7 +22,7 @@ msgstr "Lista sa brojevima"
 
 msgctxt "Toolbar button tooltip for the Bulleted List feature."
 msgid "Bulleted List"
-msgstr "Lista sa tačkama"
+msgstr "Nabrajane liste"
 
 msgctxt "Toolbar button tooltip for the To-do List feature."
 msgid "To-do List"
@@ -30,80 +30,80 @@ msgstr "Lista obaveza"
 
 msgctxt "The ARIA label of the toolbar displaying buttons allowing users to change the bulleted list style."
 msgid "Bulleted list styles toolbar"
-msgstr ""
+msgstr "Traka sa alatkama za nabrajane liste"
 
 msgctxt "The ARIA label of the toolbar displaying buttons allowing users to change the numbered list style."
 msgid "Numbered list styles toolbar"
-msgstr ""
+msgstr "Traka sa altakama za liste sa brojevima"
 
 msgctxt "The ARIA label of the button that toggles the \"disc\" list style."
 msgid "Toggle the disc list style"
-msgstr ""
+msgstr "Uključite / isključite stil liste diskova"
 
 msgctxt "The ARIA label of the button that toggles the \"circle\" list style."
 msgid "Toggle the circle list style"
-msgstr ""
+msgstr "Uključite / isključite stil liste krugova"
 
 msgctxt "The ARIA label of the button that toggles the \"square\" list style."
 msgid "Toggle the square list style"
-msgstr ""
+msgstr "Uključite / isključite stil liste kvadrata"
 
 msgctxt "The ARIA label of the button that toggles the \"decimal\" list style."
 msgid "Toggle the decimal list style"
-msgstr ""
+msgstr "Uključi / isključi stil dekadne liste"
 
 msgctxt "The ARIA label of the button that toggles the \"decimal with leading zero\" list style."
 msgid "Toggle the decimal with leading zero list style"
-msgstr ""
+msgstr "Prebaci decimalni znak sa vodećim stilom liste nula"
 
 msgctxt "The ARIA label of the button that toggles the \"lower–roman\" list style."
 msgid "Toggle the lower–roman list style"
-msgstr ""
+msgstr "Uključite / isključite stil donje rimske liste"
 
 msgctxt "The ARIA label of the button that toggles the \"upper–roman\" list style."
 msgid "Toggle the upper–roman list style"
-msgstr ""
+msgstr "Uključite / isključite stil gornje rimske liste"
 
 msgctxt "The ARIA label of the button that toggles the \"lower–latin\" list style."
 msgid "Toggle the lower–latin list style"
-msgstr ""
+msgstr "Uključite / isključite stil donje liste latinice"
 
 msgctxt "The ARIA label of the button that toggles the \"upper–latin\" list style."
 msgid "Toggle the upper–latin list style"
-msgstr ""
+msgstr "Uključite / isključite stil gornje liste latinice"
 
 msgctxt "The tooltip text of the button that toggles the \"disc\" list style."
 msgid "Disc"
-msgstr ""
+msgstr "Disk"
 
 msgctxt "The tooltip text of the button that toggles the \"circle\" list style."
 msgid "Circle"
-msgstr ""
+msgstr "Krug"
 
 msgctxt "The tooltip text of the button that toggles the \"square\" list style."
 msgid "Square"
-msgstr ""
+msgstr "Kvadrat"
 
 msgctxt "The tooltip text of the button that toggles the \"decimal\" list style."
 msgid "Decimal"
-msgstr ""
+msgstr "Decimala"
 
 msgctxt "The tooltip text of the button that toggles the \"decimal with leading zero\" list style."
 msgid "Decimal with leading zero"
-msgstr ""
+msgstr "Decimalni broj sa nulom na početku"
 
 msgctxt "The tooltip text of the button that toggles the \"lower–roman\" list style."
 msgid "Lower–roman"
-msgstr ""
+msgstr "Donji - rimski"
 
 msgctxt "The tooltip text of the button that toggles the \"upper–roman\" list style."
 msgid "Upper-roman"
-msgstr ""
+msgstr "Gornji - rimski"
 
 msgctxt "The tooltip text of the button that toggles the \"lower–latin\" list style."
 msgid "Lower-latin"
-msgstr ""
+msgstr "Donji - latinski"
 
 msgctxt "The tooltip text of the button that toggles the \"upper–latin\" list style."
 msgid "Upper-latin"
-msgstr ""
+msgstr "Gornji - latinski"
