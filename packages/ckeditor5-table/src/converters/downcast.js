@@ -8,7 +8,7 @@
  */
 
 import TableWalker from './../tablewalker';
-import { toWidget, toWidgetEditable, setHighlightHandling } from '@ckeditor/ckeditor5-widget/src/utils';
+import { setHighlightHandling, toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
  * Model table element to view table element conversion helper.
@@ -235,6 +235,38 @@ export function downcastRemoveRow() {
 	}, { priority: 'higher' } );
 }
 
+/**
+ * Overrides paragraph inside table cell conversion.
+ *
+ * This converter:
+ * * should be used to override default paragraph conversion in the editing view.
+ * * It will only convert <paragraph> placed directly inside <tableCell>.
+ * * For a single paragraph without attributes it returns `<span>` to simulate data table.
+ * * For all other cases it returns `<p>` element.
+ *
+ * @param {module:engine/model/element~Element} modelElement
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+ * @returns {module:engine/view/containerelement~ContainerElement|undefined}
+ */
+export function convertParagraphInTableCell( modelElement, conversionApi ) {
+	const { writer } = conversionApi;
+
+	if ( !modelElement.parent.is( 'element', 'tableCell' ) ) {
+		return;
+	}
+
+	const tableCell = modelElement.parent;
+	const isSingleParagraph = tableCell.childCount === 1;
+
+	if ( isSingleParagraph && !hasAnyAttribute( modelElement ) ) {
+		// Use display:inline-block to force Chrome/Safari to limit text mutations to this element.
+		// See #6062.
+		return writer.createContainerElement( 'span', { style: 'display:inline-block' } );
+	} else {
+		return writer.createContainerElement( 'p' );
+	}
+}
+
 // Converts a given {@link module:engine/view/element~Element} to a table widget:
 // * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the table widget element.
 // * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
@@ -329,7 +361,8 @@ function createViewTableCellElement( tableSlot, tableAttributes, insertPosition,
 
 	conversionApi.mapper.bindElements( tableCell, cellElement );
 
-	if ( isSingleParagraph && !hasAnyAttribute( firstChild ) && !asWidget ) {
+	// Additional requirement for data pipeline to have backward compatible data tables.
+	if ( !asWidget && !hasAnyAttribute( firstChild ) && isSingleParagraph ) {
 		const innerParagraph = tableCell.getChild( 0 );
 
 		conversionApi.consumable.consume( innerParagraph, 'insert' );

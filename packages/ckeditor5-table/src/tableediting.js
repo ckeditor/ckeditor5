@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow } from './converters/upcasttable';
 import {
+	convertParagraphInTableCell,
 	downcastInsertCell,
 	downcastInsertRow,
 	downcastInsertTable,
@@ -114,30 +115,9 @@ export default class TableEditing extends Plugin {
 		// Duplicates code - needed to properly refresh paragraph inside table cell.
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'paragraph',
-			view: ( modelElement, conversionApi ) => {
-				const { writer } = conversionApi;
-
-				if ( !modelElement.parent.is( 'element', 'tableCell' ) ) {
-					return;
-				}
-
-				const tableCell = modelElement.parent;
-				const isSingleParagraph = tableCell.childCount === 1;
-
-				if ( isSingleParagraph && !hasAnyAttribute( modelElement ) ) {
-					// Use display:inline-block to force Chrome/Safari to limit text mutations to this element.
-					// See #6062.
-					return writer.createContainerElement( 'span', { style: 'display:inline-block' } );
-				} else {
-					return writer.createContainerElement( 'p' );
-				}
-			},
+			view: convertParagraphInTableCell,
 			converterPriority: 'high'
 		} );
-
-		function hasAnyAttribute( element ) {
-			return !![ ...element.getAttributeKeys() ].length;
-		}
 
 		// Table attributes conversion.
 		conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
