@@ -4,15 +4,22 @@
  */
 
 /**
- * @module typing/utils/delete/injectbeforeinputhandling
+ * @module typing/utils/delete/injectlegacykeyeventsdeletehandling
  */
 
 /**
- * TODO
+ * A handler that responds to the {@link TODO `delete`} event fired on view document and executes
+ * the `delete` or `forwardDelete` commands in web browsers that fall back to the legacy `keydown` delete
+ * handling (as opposed to
+ * {@link module:typing/utils/delete/injectbeforeinputdeletehandling~injectBeforeInputDeleteHandling delete
+ * handling based on `beforeinput`}).
+ *
+ * **Note**: This is a legacy handler for browsers that do **not** support Input Events. Others use
+ * {@link module:typing/utils/delete/injectbeforeinputdeletehandling~injectBeforeInputDeleteHandling} instead.
  *
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  */
-export default function injectKeyEventsDeleteHandling( editor ) {
+export default function injectLegacyKeyEventsDeleteHandling( editor ) {
 	const editingView = editor.editing.view;
 	const viewDocument = editingView.document;
 

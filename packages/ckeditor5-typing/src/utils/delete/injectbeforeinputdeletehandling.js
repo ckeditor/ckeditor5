@@ -4,13 +4,14 @@
  */
 
 /**
- * @module typing/utils/delete/injectbeforeinputhandling
+ * @module typing/utils/delete/injectbeforeinputdeletehandling
  */
 
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
- * TODO
+ * A handler that responds to the {@link TODO `delete`} event fired on view document and executes
+ * the `delete` or `forwardDelete` commands in web browsers that support Input Events (`beforeinput`).
  *
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  */
@@ -22,7 +23,7 @@ export default function injectBeforeInputDeleteHandling( editor ) {
 		const { direction, sequence, selectionToRemove, inputType, unit } = data;
 
 		// Both "deleteContentBackward" and "deleteContentForward" must operate on the unit-level despite the
-		// editing view range available and used efficiently to delete content in case of other input types.
+		// editing view range available and, in case of other input types, used efficiently to delete content.
 		// This is related to the multi-byte characters decomposition (like complex emojis). Check out
 		// the comments in DeleteObserver's DELETE_EVENT_TYPES to learn more.
 		if ( inputType === 'deleteContentBackward' ) {
@@ -47,8 +48,10 @@ export default function injectBeforeInputDeleteHandling( editor ) {
 		}
 		// In case of other delete (beforeinput) types, use the range provided by the beforeinput event.
 		else {
-			const modelRange = editor.editing.mapper.toModelRange( selectionToRemove.getFirstRange() );
-			const selection = editor.model.createSelection( modelRange );
+			const modelRanges = [ ...selectionToRemove.getRanges() ].map( viewRange => {
+				return editor.editing.mapper.toModelRange( viewRange );
+			} );
+			const selection = editor.model.createSelection( modelRanges );
 			const isForwardDelete = direction === 'forward';
 
 			editor.execute( isForwardDelete ? 'forwardDelete' : 'delete', {

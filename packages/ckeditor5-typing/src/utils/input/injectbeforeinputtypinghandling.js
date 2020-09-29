@@ -4,7 +4,7 @@
  */
 
 /**
- * @module typing/utils/input/injectbeforeinputhandling
+ * @module typing/utils/input/injectbeforeinputtypinghandling
  */
 
 const TYPING_INPUT_TYPES = [
@@ -22,7 +22,8 @@ const TYPING_INPUT_TYPES = [
 ];
 
 /**
- * This helper handles `beforeinput` editing view events caused by typing or spell checking.
+ * This helper handles `beforeinput` editing view events caused by typing or spell checking in browsers
+ * that support Input Events.
  *
  * It fires the {@link module:engine/view/document~Document#event:insertText} event.
  *

@@ -14,7 +14,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 describe( 'Delete', () => {
 	describe( 'Delete plugin', () => {
 		describe( 'Delete using keydown and keyup events', () => {
-			describe( 'injectKeyEventsDeleteHandling()', () => {
+			describe( 'injectLegacyKeyEventsDeleteHandling()', () => {
 				let element, editor, viewDocument;
 
 				testUtils.createSinonSandbox();

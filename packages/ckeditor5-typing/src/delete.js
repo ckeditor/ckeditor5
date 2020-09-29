@@ -13,10 +13,11 @@ import DeleteObserver from './deleteobserver';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import injectBeforeInputDeleteHandling from './utils/delete/injectbeforeinputdeletehandling';
-import injectKeyEventsDeleteHandling from './utils/delete/injectkeyeventsdeletehandling.js';
+import injectLegacyKeyEventsDeleteHandling from './utils/delete/injectlegacykeyeventsdeletehandling.js';
 
 /**
- * The delete and backspace feature. Handles the <kbd>Delete</kbd> and <kbd>Backspace</kbd> keys in the editor.
+ * The delete and backspace feature. Handles keys such as <kbd>Delete</kbd> and <kbd>Backspace</kbd>, other
+ * keystrokes and user actions that result in deleting content in the editor.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -36,13 +37,61 @@ export default class Delete extends Plugin {
 
 		editor.editing.view.addObserver( DeleteObserver );
 
-		// Although DeleteObserver always fires the #delete event on editing view document,
-		// depending on whether the browser supports Input Events or not, the event must be
-		// handled in a slightly different way (it carries slightly different information).
+		// Although DeleteObserver always fires the #delete event on editing view document, depending on whether
+		// the browser supports Input Events or not, the event must be handled in a slightly different way
+		// (it carries slightly different information).
 		if ( env.features.isInputEventsLevel1Supported ) {
 			injectBeforeInputDeleteHandling( editor );
 		} else {
-			injectKeyEventsDeleteHandling( editor );
+			injectLegacyKeyEventsDeleteHandling( editor );
 		}
 	}
 }
+
+// The delete system is made of the following blocks (data/action flow):
+//
+//                                   ┌──────────────────────┐
+//                                   │     User action      │
+//                                   └───────────┬──────────┘
+//                  ┌─────────────────┐          │
+//               ┌──┤ DeleteObserver  ├──────────┼───────────────────────────────┐
+//               │  └─────────────────┘          ▼                               │
+//               │                               │                               │
+//               │              ┌────────────────┴────────────────┐              │
+//               │              │                                 │              │
+//               │ ┌────────────▼─────────────┐     ┌─────────────▼────────────┐ │
+//               │ │ Legacy key-based delete  │     │ Beforeinput-based delete │ │
+//               │ ├──────────────────────────┤     ├──────────────────────────┤ │
+//               │ │ ┌──────────────────────┐ │     │ ┌──────────────────────┐ │ │
+//               │ │ │   keydown listener   │ │     │ │   keydown listener   │ │ │
+//               │ │ ├──────────────────────┤ │     │ ├──────────────────────┤ │ │
+//               │ │ │    keyup listener    │ │     │ │    keyup listener    │ │ │
+//               │ │ └──────────────────────┘ │     │ ├──────────────────────┤ │ │
+//               │ └────────────┬─────────────┘     │ │ beforeinput listener │ │ │
+//               │              │                   │ └──────────────────────┘ │ │
+//               │              │                   └─────────────┬────────────┘ │
+//               │              │                                 │              │
+//               │              └────────────────┌────────────────┘              │
+//               │                               │                               │
+//               └───────────────────────────────┼───────────────────────────────┘
+//                                               │
+//                                      ┌────────▼────────┐
+//                                      │  delete event   │
+//                                      └────────┬────────┘
+//                                               │
+//                          ┌────────────────────┴────────────────────┐
+//                          │                                         │
+//    ┌─────────────────────▼────────────────────┐┌───────────────────▼──────────────────┐
+//    │         Legacy key-based delete          ││       Beforeinput-based delete       │
+//    ├──────────────────────────────────────────┤├──────────────────────────────────────┤
+//    │ ┌──────────────────────────────────────┐ ││ ┌──────────────────────────────────┐ │
+//    │ │injectLegacyKeyEventsDeleteHandling() │ ││ │injectBeforeInputDeleteHandling() │ │
+//    │ └──────────────────────────────────────┘ ││ └──────────────────────────────────┘ │
+//    └─────────────────────┬────────────────────┘└───────────────────┬──────────────────┘
+//                          │                                         │
+//                          └────────────────────┌────────────────────┘
+//                                               │
+//                                               │
+//                                      ┌────────▼────────┐
+//                                      │  DeleteCommand  │
+//                                      └─────────────────┘

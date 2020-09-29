@@ -117,12 +117,15 @@ export default class DeleteObserver extends Observer {
 		if ( env.features.isInputEventsLevel1Supported ) {
 			this._enableBeforeInputBasedObserver();
 		} else {
-			this._enableKeyEventsBasedObserver();
+			this._enableLegacyKeyEventsBasedObserver();
 		}
 	}
 
 	/**
-	 * TODO
+	 * Enables the delete observer that translates the `beforeinput` events fired by the browser (with different input types)
+	 * to the view document {@link module:engine/view/document~Document#event:delete `delete`} events.
+	 *
+	 * @protected
 	 */
 	_enableBeforeInputBasedObserver() {
 		const editingView = this.view;
@@ -192,9 +195,12 @@ export default class DeleteObserver extends Observer {
 	}
 
 	/**
-	 * TODO
+	 * Enables the legacy delete observer that translates `keyup` and `keydown` events fired by the browser
+	 * to the view document {@link module:engine/view/document~Document#event:delete `delete`} events.
+	 *
+	 * @protected
 	 */
-	_enableKeyEventsBasedObserver() {
+	_enableLegacyKeyEventsBasedObserver() {
 		const editingView = this.view;
 		const viewDocument = editingView.document;
 		let sequence = 0;
@@ -230,7 +236,13 @@ export default class DeleteObserver extends Observer {
 	}
 
 	/**
-	 * TODO
+	 * A helper method which fires the {@link module:engine/view/document~Document#event:delete `delete`} event
+	 * on the view document and unifies the event stopping logic.
+	 *
+	 * @protected
+	 * @member {module:engine/view/observer/observer~Observer.DomEvent#domEvent} domEvent DOM event the `delete` event is fired for.
+	 * @member {Function} stop The stop function that stops propagation of the DOM event when `delete` event was stopped.
+	 * @member {module:engine/view/observer/domeventdata~DomEventData} deleteData The data passed along the `delete` event.
 	 */
 	_fireDeleteEvent( domEvent, stop, deleteData ) {
 		const viewDocument = this.view.document;

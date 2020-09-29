@@ -31,7 +31,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'Input', () => {
 	describe( 'Typing text using mutations and key events', () => {
-		describe( 'injectTypingMutationsHandling()', () => {
+		describe( 'injectLegacyTypingMutationsHandling()', () => {
 			let editor, model, modelRoot, view, viewDocument, viewRoot, listenter, domElement;
 
 			testUtils.createSinonSandbox();

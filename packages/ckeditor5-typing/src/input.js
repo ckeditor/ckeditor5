@@ -13,8 +13,8 @@ import InsertTextCommand from './inserttextcommand';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import injectBeforeInputTypingHandling from './utils/input/injectbeforeinputtypinghandling';
-import injectUnsafeKeystrokesHandling from './utils/input/injectunsafekeystrokeshandling';
-import injectTypingMutationsHandling from './utils/input/injecttypingmutationshandling';
+import injectLegacyUnsafeKeystrokesHandling from './utils/input/injectlegacyunsafekeystrokeshandling';
+import injectLegacyTypingMutationsHandling from './utils/input/injectlegacytypingmutationshandling';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
@@ -71,8 +71,8 @@ export default class Input extends Plugin {
 		}
 		// Fall back to the MutationObserver if beforeinput is not supported by the browser.
 		else {
-			injectUnsafeKeystrokesHandling( editor );
-			injectTypingMutationsHandling( editor );
+			injectLegacyUnsafeKeystrokesHandling( editor );
+			injectLegacyTypingMutationsHandling( editor );
 		}
 
 		viewDocument.on( 'insertText', ( evt, data ) => {

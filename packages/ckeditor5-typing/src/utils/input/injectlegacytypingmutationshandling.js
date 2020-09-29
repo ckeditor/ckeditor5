@@ -4,7 +4,7 @@
  */
 
 /**
- * @module typing/utils/input/injecttypingmutationshandling
+ * @module typing/utils/input/injectlegacytypingmutationshandling
  */
 
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
@@ -19,6 +19,9 @@ import {
  * Handles mutations caused by normal typing, for instance when the user presses <kbd>A</kbd> or <kbd>?</kbd>
  * in the editing view document.
  *
+ * **Note**: This is a legacy typing handler for browsers that do **not** support Input Events. Others use
+ * {@link module:typing/utils/input/injectbeforeinputtypinghandling~injectBeforeInputTypingHandling} instead.
+ *
  * **Note**: Keystrokes such as <kbd>Delete</kbd> or <kbd>Enter</kbd> are handled by dedicated observers,
  * see {@link module:typing/deleteobserver~DeleteObserver} and {@link module:enter/enterobserver~EnterObserver}
  * to learn more.
@@ -29,7 +32,7 @@ import {
  * @protected
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  */
-export default function injectTypingMutationsHandling( editor ) {
+export default function injectLegacyTypingMutationsHandling( editor ) {
 	editor.editing.view.document.on( 'mutations', ( evt, mutations, viewSelection ) => {
 		new MutationHandler( editor ).handle( mutations, viewSelection );
 	} );

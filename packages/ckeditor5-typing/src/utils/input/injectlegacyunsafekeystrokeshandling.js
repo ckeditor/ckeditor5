@@ -4,7 +4,7 @@
  */
 
 /**
- * @module typing/utils/input/injectunsafekeystrokeshandling
+ * @module typing/utils/input/injectlegacyunsafekeystrokeshandling
  */
 
 import { isNonTypingKeystroke } from './utils';
@@ -13,10 +13,13 @@ import { isNonTypingKeystroke } from './utils';
  * Handles keystrokes which are unsafe for typing. This handler's logic is explained
  * in https://github.com/ckeditor/ckeditor5-typing/issues/83#issuecomment-398690251.
  *
+ * **Note**: This is a legacy handler for browsers that do **not** support Input Events. Others use
+ * {@link module:typing/utils/input/injectbeforeinputtypinghandling~injectBeforeInputTypingHandling} instead.
+ *
  * @protected
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  */
-export default function injectUnsafeKeystrokesHandling( editor ) {
+export default function injectLegacyUnsafeKeystrokesHandling( editor ) {
 	let latestCompositionSelection = null;
 
 	const model = editor.model;

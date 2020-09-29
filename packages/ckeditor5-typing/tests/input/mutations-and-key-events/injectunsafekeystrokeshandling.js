@@ -13,7 +13,7 @@ import Typing from '../../../src/typing';
 
 describe( 'Input', () => {
 	describe( 'Typing text using mutations and key events', () => {
-		describe( 'injectUnsafeKeystrokesHandling()', () => {
+		describe( 'injectLegacyUnsafeKeystrokesHandling()', () => {
 			let editor, model;
 
 			testUtils.createSinonSandbox();
