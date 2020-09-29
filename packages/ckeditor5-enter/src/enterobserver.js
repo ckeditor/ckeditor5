@@ -31,7 +31,10 @@ export default class EnterObserver extends Observer {
 	}
 
 	/**
-	 * TODO
+	 * Enables the enter observer that translates the `beforeinput` events fired by the browser (with different input types)
+	 * to the view document {@link module:engine/view/document~Document#event:enter `enter`} events.
+	 *
+	 * @protected
 	 */
 	_enableBeforeInputBasedObserver() {
 		const viewDocument = this.view.document;
@@ -55,7 +58,10 @@ export default class EnterObserver extends Observer {
 	}
 
 	/**
-	 * TODO
+	 * Enables the legacy enter observer that translates `keydown` events fired by the browser
+	 * to the view document {@link module:engine/view/document~Document#event:enter `enter`} events.
+	 *
+	 * @protected
 	 */
 	_enableKeyEventsBasedObserver() {
 		const viewDocument = this.view.document;
@@ -74,7 +80,13 @@ export default class EnterObserver extends Observer {
 	}
 
 	/**
-	 * TODO
+	 * A helper method which fires the {@link module:engine/view/document~Document#event:enter `enter`} event
+	 * on the view document and unifies the event stopping logic.
+	 *
+	 * @protected
+	 * @member {module:engine/view/observer/observer~Observer.DomEvent#domEvent} domEvent DOM event the `enter` event is fired for.
+	 * @member {Function} stop The stop function that stops propagation of the DOM event when `enter` event was stopped.
+	 * @member {Boolean} isSoft A flag indicating this is a "soft" enter (a.k.a shift enter).
 	 */
 	_fireEnterEvent( domEvent, stop, isSoft ) {
 		const viewDocument = this.view.document;
