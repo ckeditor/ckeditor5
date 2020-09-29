@@ -12,11 +12,15 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import {
+	setData as setModelData,
+	getData as getModelData
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'Input', () => {
 	describe( 'Typing text using beforeinput event', () => {
 		describe( 'injectBeforeInputTypingHandling()', () => {
-			let domElement, editor, editableElement, view, viewDocument, insertTextEventSpy;
+			let domElement, editor, editableElement, model, view, viewDocument, insertTextEventSpy;
 
 			testUtils.createSinonSandbox();
 
@@ -39,6 +43,7 @@ describe( 'Input', () => {
 				view = editor.editing.view;
 				viewDocument = view.document;
 				viewDocument.on( 'insertText', insertTextEventSpy );
+				model = editor.model;
 			} );
 
 			afterEach( async () => {
@@ -159,6 +164,68 @@ describe( 'Input', () => {
 					} );
 
 					sinon.assert.notCalled( inputCommandSpy );
+				} );
+			} );
+
+			describe( 'insert text command integration', () => {
+				it( 'should remove contents', () => {
+					setModelData( model, '<paragraph>foo[baz]bar</paragraph>' );
+
+					const domRange = view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
+
+					fireBeforeInputDomEvent( editableElement, {
+						inputType: 'insertText',
+						ranges: [ domRange ],
+						data: 'X'
+					} );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>fooX[]bar</paragraph>' );
+				} );
+
+				it( 'should remove contents and merge blocks', () => {
+					setModelData( model, '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
+
+					const domRange = view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
+
+					fireBeforeInputDomEvent( editableElement, {
+						inputType: 'insertText',
+						ranges: [ domRange ],
+						data: 'X'
+					} );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>foX[]ar</paragraph>' );
+				} );
+
+				it( 'should not modify document when the insert text command is disabled and selection is collapsed', () => {
+					setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+					editor.commands.get( 'insertText' ).isEnabled = false;
+
+					const domRange = view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
+
+					fireBeforeInputDomEvent( editableElement, {
+						inputType: 'insertText',
+						ranges: [ domRange ],
+						data: 'X'
+					} );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+				} );
+
+				it( 'should not modify document when the insert text command is disabled and selection is non-collapsed', () => {
+					setModelData( model, '<paragraph>foo[baz]bar</paragraph>' );
+
+					editor.commands.get( 'insertText' ).isEnabled = false;
+
+					const domRange = view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
+
+					fireBeforeInputDomEvent( editableElement, {
+						inputType: 'insertText',
+						ranges: [ domRange ],
+						data: 'X'
+					} );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo[baz]bar</paragraph>' );
 				} );
 			} );
 		} );
