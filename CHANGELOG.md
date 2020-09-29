@@ -5,6 +5,17 @@ Changelog
 
 ### Release highlights
 
+We are happy to announce the release of CKEditor 5 v23.0.0.
+
+This release was focused on bug fixes and stability improvements. Some highlights are listed below:
+
+* [Five bug fixes for list and list style plugins](https://github.com/ckeditor/ckeditor5/issues?q=is%3Aissue+milestone%3A%22iteration+36%22+label%3Atype%3Abug+label%3Apackage%3Alist).
+* [Extracted the "Image upload via URL" feature to a separate image insert plugin](https://github.com/ckeditor/ckeditor5/issues/7890).
+* [Improvements for pasting as plain text using <kbd>ctrl/cmd</kbd> + <kbd>shift</kbd> + <kbd>v</kbd>](https://github.com/ckeditor/ckeditor5/issues/7799).
+* Fixed [a case where the link balloon toolbar would be mispositioned](https://github.com/ckeditor/ckeditor5/issues/7926) in some rare cases.
+
+Please note that there are some **major breaking changes**. Be sure to review them before upgrading.
+
 <!-- TODO: Add a link to the blog post. -->
 
 ### Collaboration features
@@ -13,7 +24,7 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: In order to use the "insert image via URL" feature you now need to load the `ImageInsert` plugin and use the `imageInsert` button instead of the `imageUpload` button that implemented that functionality previously previously.
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: In order to use the "insert image via URL" feature you now need to load the `ImageInsert` plugin and use the `imageInsert` button instead of the `imageUpload` button that implemented that functionality previously.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
@@ -21,25 +32,25 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 
 ### Features
 
-* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Improved line to paragraph/soft break retention when pasting from plain text. Closes [#7884](https://github.com/ckeditor/ckeditor5/issues/7884). ([commit](https://github.com/ckeditor/ckeditor5/commit/a4b89965e8b156ee4ed67df9d4a634c0e6deac01))
+* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Improved line to paragraph/soft break retention when pasting as plain text. Closes [#7884](https://github.com/ckeditor/ckeditor5/issues/7884). ([commit](https://github.com/ckeditor/ckeditor5/commit/a4b89965e8b156ee4ed67df9d4a634c0e6deac01))
 * **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Added a user-agent check for the Blink engine to the [`env`](https://ckeditor.com/docs/ckeditor5/latest/api/module_utils_env-env.html) module. ([commit](https://github.com/ckeditor/ckeditor5/commit/a5a4b933e8ecef2b25ddbf03d371b89f26490025))
-* Introduced the `PastePlainText` feature that detects pasting with <kbd>ctrl/cmd</kbd> + <kbd>shift</kbd> + <kbd>ctrl/v</kbd> keystroke. Closes [#7799](https://github.com/ckeditor/ckeditor5/issues/7799). ([commit](https://github.com/ckeditor/ckeditor5/commit/ab7bce94ebb7b6d59c5f3ea2d9433f71ddd864d2))
+* Introduced the `PastePlainText` feature that detects pasting with <kbd>ctrl/cmd</kbd> + <kbd>shift</kbd> + <kbd>v</kbd> keystroke. Closes [#7799](https://github.com/ckeditor/ckeditor5/issues/7799). ([commit](https://github.com/ckeditor/ckeditor5/commit/ab7bce94ebb7b6d59c5f3ea2d9433f71ddd864d2))
 
 ### Bug fixes
 
-* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Soft breaks are now properly placed in plain text clipboard data representation by the editor. Closes [#8045](https://github.com/ckeditor/ckeditor5/issues/8045). ([commit](https://github.com/ckeditor/ckeditor5/commit/92ace8d7f3abe4c8247ca18697984eb538f3f5ec))
+* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Soft breaks are now properly placed in the plain text clipboard data representation by the editor. Closes [#8045](https://github.com/ckeditor/ckeditor5/issues/8045). ([commit](https://github.com/ckeditor/ckeditor5/commit/92ace8d7f3abe4c8247ca18697984eb538f3f5ec))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `model.History#getOperations` was returning incorrect values if history had operations with negative version numbers or version numbers differing by more than one. Closes [#8143](https://github.com/ckeditor/ckeditor5/issues/8143). ([commit](https://github.com/ckeditor/ckeditor5/commit/3433e9a8ad64cc971cdfa4658a84585b4e23f19e))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Aligned and fixed the styling for the split button in the `ImageInsert` dropdown. Closes [#7986](https://github.com/ckeditor/ckeditor5/issues/7986), [#7927](https://github.com/ckeditor/ckeditor5/issues/7927). ([commit](https://github.com/ckeditor/ckeditor5/commit/4671ed10a4af4c507abd594414771b714ff31cf7))
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Manual decorators will no longer be corrupted by the link image plugin. Closes [#7975](https://github.com/ckeditor/ckeditor5/issues/7975). ([commit](https://github.com/ckeditor/ckeditor5/commit/73eacd641f38ee261cd43ddfdf98df5e22eb2fdd))
-* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Prevented throwing an error during creating a link from the multi-block selection. Closes [#7907](https://github.com/ckeditor/ckeditor5/issues/7907). ([commit](https://github.com/ckeditor/ckeditor5/commit/eb92cfb7377fa066a4cb08163ade33a73639aab1))
+* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Prevented throwing an error when creating a link from a multi-block selection. Closes [#7907](https://github.com/ckeditor/ckeditor5/issues/7907). ([commit](https://github.com/ckeditor/ckeditor5/commit/eb92cfb7377fa066a4cb08163ade33a73639aab1))
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Pressing the <kbd>Enter</kbd> key should not throw an error when a non-collapsed selection ends with a valid URL. Closes [#7983](https://github.com/ckeditor/ckeditor5/issues/7983). ([commit](https://github.com/ckeditor/ckeditor5/commit/bcf3af6bee1edbd3a6d0c6874e0ad0518f73f518))
-* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: The link balloon positioning should be correct when the selection is collapsed in certain scenarios. Closes [#7926](https://github.com/ckeditor/ckeditor5/issues/7926). ([commit](https://github.com/ckeditor/ckeditor5/commit/b532a8ec55e1e1506b6f8030f944559b1cf0761d))
+* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: The link balloon positioning should be correct when the selection is collapsed in some rare cases. Closes [#7926](https://github.com/ckeditor/ckeditor5/issues/7926). ([commit](https://github.com/ckeditor/ckeditor5/commit/b532a8ec55e1e1506b6f8030f944559b1cf0761d))
 * **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: List styles plugin will no longer cause the editor to crash when indenting a list item that is the last element in the editor. Closes [#8072](https://github.com/ckeditor/ckeditor5/issues/8072). ([commit](https://github.com/ckeditor/ckeditor5/commit/3e6ea99fe28225c52092b621c3593748bb1c168e))
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Undo will restore the proper value of the list-style-type attribute in the View element after undoing merging different lists. Closes [#7930](https://github.com/ckeditor/ckeditor5/issues/7930). ([commit](https://github.com/ckeditor/ckeditor5/commit/3e6ea99fe28225c52092b621c3593748bb1c168e))
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Fixed a bug that prevented using the same value of the List style feature for nested lists. Closes [#8081](https://github.com/ckeditor/ckeditor5/issues/8081). ([commit](https://github.com/ckeditor/ckeditor5/commit/3e6ea99fe28225c52092b621c3593748bb1c168e))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Undo will restore a proper value of the `list-style-type` attribute in the view element after undoing list merge. Closes [#7930](https://github.com/ckeditor/ckeditor5/issues/7930). ([commit](https://github.com/ckeditor/ckeditor5/commit/3e6ea99fe28225c52092b621c3593748bb1c168e))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Fixed a bug that prevented using the same list style for nested lists. Closes [#8081](https://github.com/ckeditor/ckeditor5/issues/8081). ([commit](https://github.com/ckeditor/ckeditor5/commit/3e6ea99fe28225c52092b621c3593748bb1c168e))
 * **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The `listStyle` attribute should be inherited when inserting or replacing a `listItem` with the same kind of the list (the `listType` attribute for the inserted/modified item is equal to next/previous sibling list). Closes [#7932](https://github.com/ckeditor/ckeditor5/issues/7932). ([commit](https://github.com/ckeditor/ckeditor5/commit/03bf7211b1efc94ba087750f77006d534fdbaa5d))
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: When removing the content between two lists items, the lists will be merged into a single list. The second list should adjust its value for the `listStyle` attribute based on the most outer `listItem` in the first list. Closes [#7879](https://github.com/ckeditor/ckeditor5/issues/7879). ([commit](https://github.com/ckeditor/ckeditor5/commit/7aa952823a8b182dc41075fa8cf4cc3a452eb78b))
-* **[paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)**: Fix list paste from Google Docs with an empty item. Closes [#7958](https://github.com/ckeditor/ckeditor5/issues/7958). ([commit](https://github.com/ckeditor/ckeditor5/commit/ebf6bb798cb274c840df86de073cf511c66d876c))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: When removing the content between two lists items, the lists will be merged into a single list. The second list should adjust its `listStyle` attribute to the first list. Closes [#7879](https://github.com/ckeditor/ckeditor5/issues/7879). ([commit](https://github.com/ckeditor/ckeditor5/commit/7aa952823a8b182dc41075fa8cf4cc3a452eb78b))
+* **[paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)**: Fixed pasting a list with an empty item from Google Docs. Closes [#7958](https://github.com/ckeditor/ckeditor5/issues/7958). ([commit](https://github.com/ckeditor/ckeditor5/commit/ebf6bb798cb274c840df86de073cf511c66d876c))
 
 ### Other changes
 
@@ -48,9 +59,8 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Introduced `ImageInsert` as a standalone plugin that contains `ImageUpload` functionality. Closes [#7890](https://github.com/ckeditor/ckeditor5/issues/7890). ([commit](https://github.com/ckeditor/ckeditor5/commit/4671ed10a4af4c507abd594414771b714ff31cf7))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `ImageUploadPanelView` form label should change depending on whether the image is selected or not. Closes [#7878](https://github.com/ckeditor/ckeditor5/issues/7878). ([commit](https://github.com/ckeditor/ckeditor5/commit/288fb97e00181a130dd2833d6e3aa74bdab5b7cc))
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: The link plugin now comes with the autolink feature enabled by default. Closes [#7682](https://github.com/ckeditor/ckeditor5/issues/7682). ([commit](https://github.com/ckeditor/ckeditor5/commit/c9533f1752057fd833998a356282f8a625f4e39c))
+* **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Balloon panel arrows pointing south should have realistic shadows. Closes [#7928](https://github.com/ckeditor/ckeditor5/issues/7928). ([commit](https://github.com/ckeditor/ckeditor5/commit/1c0b5c978fc23f3ca5cccba7b89711469838c315))
 * Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/9256cbee9dc2173e1f1756fa566ba92a2d4bd6bc), [commit](https://github.com/ckeditor/ckeditor5/commit/08fc2a54b8953fe6000c900d8f1270b86edc1590))
-* Reworded a breaking change note related to conversion API callback parameter change. ([commit](https://github.com/ckeditor/ckeditor5/commit/7493039057a205092420eaea21c92a8107151e4f))
-* Balloon panel arrows pointing south should have realistic shadows. Closes [#7928](https://github.com/ckeditor/ckeditor5/issues/7928). ([commit](https://github.com/ckeditor/ckeditor5/commit/1c0b5c978fc23f3ca5cccba7b89711469838c315))
 
 ### Released packages
 
