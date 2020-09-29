@@ -23,6 +23,7 @@ import FocusObserver from './observer/focusobserver';
 import CompositionObserver from './observer/compositionobserver';
 import InputObserver from './observer/inputobserver';
 
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
@@ -177,13 +178,16 @@ export default class View {
 		this._writer = new DowncastWriter( this.document );
 
 		// Add default observers.
-		this.addObserver( MutationObserver );
+		if ( env.features.isInputEventsLevel1Supported ) {
+			this.addObserver( InputObserver );
+		} else {
+			this.addObserver( MutationObserver );
+		}
 		this.addObserver( SelectionObserver );
 		this.addObserver( FocusObserver );
 		this.addObserver( KeyObserver );
 		this.addObserver( FakeSelectionObserver );
 		this.addObserver( CompositionObserver );
-		this.addObserver( InputObserver );
 
 		// Inject quirks handlers.
 		injectQuirksHandling( this );

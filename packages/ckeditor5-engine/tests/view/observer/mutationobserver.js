@@ -12,11 +12,18 @@ import RawElement from '../../../src/view/rawelement';
 import createViewRoot from '../_utils/createroot';
 import { parse } from '../../../src/dev-utils/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
+import env from '@ckeditor/ckeditor5-utils/src/env';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'MutationObserver', () => {
 	let view, domEditor, viewDocument, viewRoot, mutationObserver, lastMutations, domRoot;
 
+	testUtils.createSinonSandbox();
+
 	beforeEach( () => {
+		// Force the browser to not use the beforeinput event.
+		testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
+
 		domRoot = document.createElement( 'div' );
 		domRoot.innerHTML = '<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>';
 		document.body.appendChild( domRoot );

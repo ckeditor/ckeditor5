@@ -29,10 +29,13 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'view', () => {
-	const DEFAULT_OBSERVERS_COUNT = 7;
+	const DEFAULT_OBSERVERS_COUNT = 6;
 	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		domRoot = createElement( document, 'div', {
@@ -81,13 +84,33 @@ describe( 'view', () => {
 
 	it( 'should add default observers', () => {
 		expect( count( view._observers ) ).to.equal( DEFAULT_OBSERVERS_COUNT );
-		expect( view.getObserver( MutationObserver ) ).to.be.instanceof( MutationObserver );
 		expect( view.getObserver( SelectionObserver ) ).to.be.instanceof( SelectionObserver );
 		expect( view.getObserver( FocusObserver ) ).to.be.instanceof( FocusObserver );
 		expect( view.getObserver( KeyObserver ) ).to.be.instanceof( KeyObserver );
 		expect( view.getObserver( FakeSelectionObserver ) ).to.be.instanceof( FakeSelectionObserver );
 		expect( view.getObserver( CompositionObserver ) ).to.be.instanceof( CompositionObserver );
+	} );
+
+	it( 'should add the mutation observer if browser does not support Input Events', () => {
+		testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
+
+		const view = new View( new StylesProcessor() );
+
+		expect( view.getObserver( MutationObserver ) ).to.be.instanceof( MutationObserver );
+		expect( view.getObserver( InputObserver ) ).to.be.undefined;
+
+		view.destroy();
+	} );
+
+	it( 'should add the input observer if browser supports Input Events', () => {
+		testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => true );
+
+		const view = new View( new StylesProcessor() );
+
 		expect( view.getObserver( InputObserver ) ).to.be.instanceof( InputObserver );
+		expect( view.getObserver( MutationObserver ) ).to.be.undefined;
+
+		view.destroy();
 	} );
 
 	describe( 'attachDomRoot()', () => {

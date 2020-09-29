@@ -30,12 +30,19 @@ export default class SelectionObserver extends Observer {
 		super( view );
 
 		/**
-		 * Instance of the mutation observer. Selection observer calls
-		 * {@link module:engine/view/observer/mutationobserver~MutationObserver#flush} to ensure that the mutations will be handled
-		 * before the {@link module:engine/view/document~Document#event:selectionChange} event is fired.
+		 * Instance of the mutation observer.
+		 *
+		 * The selection observer calls {@link module:engine/view/observer/mutationobserver~MutationObserver#flush} to ensure that the
+		 * mutations will be handled before the {@link module:engine/view/document~Document#event:selectionChange} event is fired.
+		 * This is a legacy handling for browsers that do not support Input Events (`beforeinput`).
+		 *
+		 * **Note**: This reference is `undefined` in web browsers that implement typing on top of the `beforeinput` event because
+		 * {@link module:engine/view/observer/mutationobserver~MutationObserver} is not used by the the editing view in such case.
+		 *
+		 * See the {@link module:typing/input~Input} plugin to learn more.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/observer/mutationobserver~MutationObserver}
+		 * @member {module:engine/view/observer/mutationobserver~MutationObserver|undefined}
 		 * module:engine/view/observer/selectionobserver~SelectionObserver#mutationObserver
 		 */
 		this.mutationObserver = view.getObserver( MutationObserver );
@@ -131,7 +138,9 @@ export default class SelectionObserver extends Observer {
 		}
 
 		// Ensure the mutation event will be before selection event on all browsers.
-		this.mutationObserver.flush();
+		if ( this.mutationObserver ) {
+			this.mutationObserver.flush();
+		}
 
 		// If there were mutations then the view will be re-rendered by the mutation observer and selection
 		// will be updated, so selections will equal and event will not be fired, as expected.
