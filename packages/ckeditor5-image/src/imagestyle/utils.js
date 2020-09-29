@@ -116,8 +116,14 @@ function _normalizeStyle( style ) {
 		}
 		// If it's just a name but none of the defaults, warn because probably it's a mistake.
 		else {
+			/**
+			 * There is no such image style of given name.
+			 *
+			 * @error image-style-not-found
+		 	 * @param {String} name Name of a missing style name.
+			 */
 			console.warn(
-				attachLinkToDocumentation( 'image-style-not-found: There is no such image style of given name.' ),
+				attachLinkToDocumentation( 'image-style-not-found' ),
 				{ name: styleName }
 			);
 

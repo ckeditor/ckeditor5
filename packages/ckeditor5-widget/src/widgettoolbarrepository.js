@@ -135,7 +135,7 @@ export default class WidgetToolbarRepository extends Plugin {
 			 * @error widget-toolbar-no-items
 			 */
 			console.warn(
-				attachLinkToDocumentation( 'widget-toolbar-no-items: Trying to register a toolbar without items.' ), { toolbarId }
+				attachLinkToDocumentation( 'widget-toolbar-no-items' ), { toolbarId }
 			);
 
 			return;

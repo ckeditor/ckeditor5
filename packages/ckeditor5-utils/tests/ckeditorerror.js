@@ -33,7 +33,10 @@ describe( 'CKEditorError', () => {
 		const data = { bar: 1 };
 		const error = new CKEditorError( 'foo', null, data );
 
-		expect( error ).to.have.property( 'message', 'foo {"bar":1}' );
+		expect( error ).to.have.property(
+			'message',
+			`foo Read more: ${ DOCUMENTATION_URL }#error-foo\n {"bar":1}`
+		);
 		expect( error ).to.have.property( 'data', data );
 	} );
 
@@ -59,7 +62,10 @@ describe( 'CKEditorError', () => {
 		};
 		const error = new CKEditorError( 'foo', null, data );
 
-		expect( error ).to.have.property( 'message', 'foo {"bar":"a","bom":{"x":1},"bim":10}' );
+		expect( error ).to.have.property(
+			'message',
+			`foo Read more: ${ DOCUMENTATION_URL }#error-foo\n {"bar":"a","bom":{"x":1},"bim":10}`
+		);
 		expect( error ).to.have.property( 'data', data );
 	} );
 

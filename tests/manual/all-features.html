@@ -157,6 +157,38 @@ function bar() {
 			</tbody>
 		</table>
 	</figure>
+
+	<hr>
+
+	<h2>Link images + Link decorators</h2>
+
+	<table>
+		<tr>
+			<td>Linked text</td>
+			<td>Linked image (<code>figure > a > img</code>)</td>
+			<td>Linked image (<code>a > img</code>)</td>
+		</tr>
+		<tr>
+			<td>
+				<p>
+					<a href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">https://cksource.com</a>
+				</p>
+			</td>
+			<td>
+				<figure class="image">
+					<a class="gallery" href="https://cksource.com">
+						<img src="sample.jpg" alt="bar">
+					</a>
+					<figcaption>Caption</figcaption>
+				</figure>
+			</td>
+			<td>
+				<a class="gallery" href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">
+					<img src="sample.jpg" alt="bar">
+				</a>
+			</td>
+		</tr>
+	</table>
 </div>
 
 <style>

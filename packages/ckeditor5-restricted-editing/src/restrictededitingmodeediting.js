@@ -126,8 +126,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		const model = editor.model;
 		const doc = model.document;
 
-		// The restricted editing does not attach additional data to the zones so there's no need for smarter markers management.
-		// Also, the markers will only be created when  when loading the data.
+		// The restricted editing does not attach additional data to the zones so there's no need for smarter markers managing.
+		// Also, the markers will only be created when loading the data.
 		let markerNumber = 0;
 
 		editor.conversion.for( 'upcast' ).add( upcastHighlightToMarker( {
@@ -142,7 +142,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			}
 		} ) );
 
-		// Currently the marker helpers are tied to other use-cases and do not render collapsed marker as highlight.
+		// Currently the marker helpers are tied to other use-cases and do not render a collapsed marker as highlight.
 		// That's why there are 2 downcast converters for them:
 		// 1. The default marker-to-highlight will wrap selected text with `<span>`.
 		editor.conversion.for( 'downcast' ).markerToHighlight( {
@@ -158,7 +158,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		} );
 
 		// 2. But for collapsed marker we need to render it as an element.
-		// Additionally the editing pipeline should always display a collapsed markers.
+		// Additionally the editing pipeline should always display a collapsed marker.
 		editor.conversion.for( 'editingDowncast' ).markerToElement( {
 			model: 'restrictedEditingException',
 			view: ( markerData, { writer } ) => {
