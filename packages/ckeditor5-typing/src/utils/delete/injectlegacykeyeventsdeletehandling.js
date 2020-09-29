@@ -8,9 +8,9 @@
  */
 
 /**
- * A handler that responds to the {@link TODO `delete`} event fired on view document and executes
- * the `delete` or `forwardDelete` commands in web browsers that fall back to the legacy `keydown` delete
- * handling (as opposed to
+ * A handler that responds to the {@link module:engine/view/document~Document#event:delete `delete`} event fired on
+ * {@link module:engine/view/document~Document view document} and executes the `delete` or `forwardDelete` commands
+ * in web browsers that fall back to the legacy `keydown` delete handling (as opposed to
  * {@link module:typing/utils/delete/injectbeforeinputdeletehandling~injectBeforeInputDeleteHandling delete
  * handling based on `beforeinput`}).
  *

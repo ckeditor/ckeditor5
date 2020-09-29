@@ -10,8 +10,9 @@
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
- * A handler that responds to the {@link TODO `delete`} event fired on view document and executes
- * the `delete` or `forwardDelete` commands in web browsers that support Input Events (`beforeinput`).
+ * A handler that responds to the {@link module:engine/view/document~Document#event:delete `delete`} event fired
+ * on {@link module:engine/view/document~Document view document} and executes the `delete` or `forwardDelete` commands
+ * in web browsers that support Input Events (`beforeinput`).
  *
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  */
