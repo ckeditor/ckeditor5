@@ -69,11 +69,9 @@ export default class SimpleUploadAdapter extends Plugin {
 			 * configuration required by the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter `SimpleUploadAdapter`}
 			 * is missing. Make sure the correct URL is specified for the image upload to work properly.
 			 *
-			 * @error simple-upload-adapter-missing-uploadUrl
+			 * @error simple-upload-adapter-missing-uploadurl
 			 */
-			console.warn( attachLinkToDocumentation(
-				'simple-upload-adapter-missing-uploadUrl: Missing the "uploadUrl" property in the "simpleUpload" editor configuration.'
-			) );
+			console.warn( attachLinkToDocumentation( 'simple-upload-adapter-missing-uploadurl' ) );
 
 			return;
 		}

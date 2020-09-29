@@ -349,7 +349,7 @@ export default class MentionUI extends Plugin {
 				 *
 				 * @error mention-feed-callback-error
 				 */
-				console.warn( attachLinkToDocumentation( 'mention-feed-callback-error: Could not obtain mention autocomplete feed.' ) );
+				console.warn( attachLinkToDocumentation( 'mention-feed-callback-error' ) );
 			} );
 	}
 

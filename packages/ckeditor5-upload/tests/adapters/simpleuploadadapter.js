@@ -120,7 +120,7 @@ describe( 'SimpleUploadAdapter', () => {
 				} )
 				.then( editor => {
 					expect( consoleWarnStub.callCount ).to.equal( 1 );
-					expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^simple-upload-adapter-missing-uploadUrl/ );
+					expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^simple-upload-adapter-missing-uploadurl/ );
 
 					const fileRepository = editor.plugins.get( FileRepository );
 
