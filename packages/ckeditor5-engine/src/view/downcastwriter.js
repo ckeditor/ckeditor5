@@ -1904,7 +1904,7 @@ function mergeTextNodes( t1, t2 ) {
 	return new Position( t1, nodeBeforeLength );
 }
 
-// Checks if provided nodes are valid to insert. Checks if each node is an instance of a valid node.
+// Checks if provided nodes are valid to insert.
 //
 // Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
 // contains instances that are not supported ones (see error description for valid ones.
