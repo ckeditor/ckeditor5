@@ -22,10 +22,8 @@ const TYPING_INPUT_TYPES = [
 ];
 
 /**
- * This helper handles `beforeinput` editing view events caused by typing or spell checking in browsers
- * that support Input Events.
- *
- * It fires the {@link module:engine/view/document~Document#event:insertText} event.
+ * This helper handles `beforeinput` editing view events caused by typing or spell checking and translates them into
+ * {@link module:engine/view/document~Document#event:insertText `insertText`} view events.
  *
  * @protected
  * @param {module:engine/view/view~View} view The editor editing view instance.

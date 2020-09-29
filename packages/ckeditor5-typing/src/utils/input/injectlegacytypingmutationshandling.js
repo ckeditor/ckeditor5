@@ -17,17 +17,15 @@ import {
 
 /**
  * Handles mutations caused by normal typing, for instance when the user presses <kbd>A</kbd> or <kbd>?</kbd>
- * in the editing view document.
+ * in the editing view document. It translates these mutations into
+ * {@link module:engine/view/document~Document#event:insertText `insertText`} view events.
  *
- * **Note**: This is a legacy typing handler for browsers that do **not** support Input Events. Others use
+ * **Note**: This is a legacy typing handler for browsers that do **not** support Input Events. Other browsers use
  * {@link module:typing/utils/input/injectbeforeinputtypinghandling~injectBeforeInputTypingHandling} instead.
  *
  * **Note**: Keystrokes such as <kbd>Delete</kbd> or <kbd>Enter</kbd> are handled by dedicated observers,
  * see {@link module:typing/deleteobserver~DeleteObserver} and {@link module:enter/enterobserver~EnterObserver}
  * to learn more.
- *
- * It fires the {@link module:engine/view/document~Document#event:insertText} event when the text should be inserted
- * into view document.
  *
  * @protected
  * @param {module:core/editor/editor~Editor} editor The editor instance.

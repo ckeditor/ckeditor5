@@ -16,6 +16,44 @@ import injectBeforeInputTypingHandling from './utils/input/injectbeforeinputtypi
 import injectLegacyUnsafeKeystrokesHandling from './utils/input/injectlegacyunsafekeystrokeshandling';
 import injectLegacyTypingMutationsHandling from './utils/input/injectlegacytypingmutationshandling';
 
+// The input system is made of the following blocks (data/action flow):
+//
+//                                     ┌──────────────────────┐
+//                                     │     User action      │
+//                                     └───────────┬──────────┘
+//      ┌─────────────────┐                        │
+//    ┌─┤  Input plugin   ├────────────────────────┼──────────────────────────────────────────┐
+//    │ └─────────────────┘                        ▼                                          │
+//    │                                            │                                          │
+//    │                       ┌────────────────────┴─────────────────────┐                    │
+//    │                       │                                          │                    │
+//    │ ┌─────────────────────▼────────────────────┐ ┌───────────────────▼──────────────────┐ │
+//    │ │       Legacy mutations-based input       │ │       Beforeinput-based input        │ │
+//    │ ├──────────────────────────────────────────┤ ├──────────────────────────────────────┤ │
+//    │ │ ┌──────────────────────────────────────┐ │ │ ┌──────────────────────────────────┐ │ │
+//    │ │ │injectLegacyTypingMutationsHandling() │ │ │ │injectBeforeInputTypingHandling() │ │ │
+//    │ │ ├──────────────────────────────────────┤ │ │ └──────────────────────────────────┘ │ │
+//    │ │ │injectLegacyUnsafeKeystrokesHandling()│ │ └───────────────────┬──────────────────┘ │
+//    │ │ └──────────────────────────────────────┘ │                     │                    │
+//    │ └─────────────────────┬────────────────────┘                     │                    │
+//    │                       │                                          │                    │
+//    │                       │                                          │                    │
+//    │                       │                                          │                    │
+//    │                       └────────────────────┌─────────────────────┘                    │
+//    │                                            │                                          │
+//    │                                            │                                          │
+//    │                                            │                                          │
+//    │                                   ┌────────▼────────┐                                 │
+//    │                                   │insertText event │                                 │
+//    │                                   └────────┬────────┘                                 │
+//    │                                            │                                          │
+//    │                                            │                                          │
+//    │                                  ┌─────────▼─────────┐                                │
+//    │                                  │ InsertTextCommand │                                │
+//    │                                  └───────────────────┘                                │
+//    │                                                                                       │
+//    └───────────────────────────────────────────────────────────────────────────────────────┘
+
 /**
  * Handles text input coming from the keyboard or other input methods.
  *
@@ -112,8 +150,8 @@ export default class Input extends Plugin {
 	 *		} );
 	 *
 	 * **Note:** This method checks if the batch was created using {@link module:typing/inputcommand~InputCommand 'input'}
-	 * and {@link module:typing/inserttextcommand~InsertTextCommand 'insertText'} commands as typing changes coming from
-	 * user input are inserted to the document using these commands.
+	 * (deprecated) or {@link module:typing/inserttextcommand~InsertTextCommand 'insertText'} commands as typing changes
+	 * coming from user input are inserted to the document using these commands.
 	 *
 	 * @param {module:engine/model/batch~Batch} batch A batch to check.
 	 * @returns {Boolean}
