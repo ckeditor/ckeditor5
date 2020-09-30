@@ -5,7 +5,7 @@
 
 /* global window */
 
-import Babel from 'babel-standalone';
+import Babel from '@babel/standalone';
 
 // Imports necessary to run a React application.
 import React from 'react';
