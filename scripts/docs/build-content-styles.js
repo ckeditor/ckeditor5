@@ -10,7 +10,6 @@ const fs = require( 'fs' );
 const chalk = require( 'chalk' );
 const glob = require( 'glob' );
 const mkdirp = require( 'mkdirp' );
-const postcss = require( 'postcss' );
 const webpack = require( 'webpack' );
 const { tools, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { version } = require( '../../package.json' );
@@ -325,10 +324,12 @@ function getWebpackConfig() {
 				{
 					test: /\.css$/,
 					use: [
-						'style-loader',
+						'css-loader',
 						{
 							loader: 'postcss-loader',
-							options: postCssConfig
+							options: {
+								postcssOptions: postCssConfig
+							}
 						}
 					]
 				}
@@ -347,11 +348,12 @@ function getWebpackConfig() {
  * @returns {Function}
  */
 function postCssContentStylesPlugin( contentRules ) {
-	return postcss.plugin( 'list-content-styles', function() {
-		const selectorStyles = contentRules.selector;
-		const variables = contentRules.variables;
+	return {
+		postcssPlugin: 'list-content-styles',
+		Once( root ) {
+			const selectorStyles = contentRules.selector;
+			const variables = contentRules.variables;
 
-		return root => {
 			root.walkRules( rule => {
 				for ( const selector of rule.selectors ) {
 					const data = {
@@ -374,8 +376,8 @@ function postCssContentStylesPlugin( contentRules ) {
 					}
 				}
 			} );
-		};
-	} );
+		}
+	};
 
 	/**
 	 * @param {Object} collection
