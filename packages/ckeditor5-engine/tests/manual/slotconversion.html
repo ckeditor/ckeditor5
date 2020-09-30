@@ -22,13 +22,15 @@
 			border: 1px solid hsl(0, 0%, 80%)
 		}
 
+		.ck.ck-content [data-insert-count] {
+			position: relative;
+		}
 		.ck.ck-content [data-insert-count]:after {
 			content: attr(data-insert-count);
-			position: relative;
+			position: absolute;
 			font-size: 10px;
-			top: -5px;
-			right: 0;
-			float: right;
+			top: 2px;
+			right: 2px;
 			border: 1px solid hsl(219, 86%, 31%);
 			background: hsl(219, 100%, 91%);
 			padding: 0 2px;

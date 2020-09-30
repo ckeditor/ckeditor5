@@ -7,6 +7,6 @@ An additional converter adds `"data-insert-count"` attribute to view elements to
 Observe which view elements are re-rendered when using UI-buttons:
 
 * `Box title` - updates title attribute which triggers re-rendering of a "box".
-* `Box title` - updates author attribute which triggers re-rendering of a "box".
+* `Box author` - updates author attribute which triggers re-rendering of a "box".
 * `+` - adds "slot" to box"  which triggers re-rendering of a "box".
 * `-` - removes "slot" from box" which triggers re-rendering of a "box".
