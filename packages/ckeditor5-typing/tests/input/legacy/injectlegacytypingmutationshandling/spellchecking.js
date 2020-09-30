@@ -18,7 +18,7 @@ import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'Input', () => {
-	describe( 'Typing text using mutations and key events', () => {
+	describe( 'Legacy typing using mutations and key events', () => {
 		describe( 'Plain text spellchecking support', () => {
 			let editor, container;
 

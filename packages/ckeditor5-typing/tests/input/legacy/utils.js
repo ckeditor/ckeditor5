@@ -7,7 +7,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { isNonTypingKeystroke } from '../../../src/utils/input/utils';
 
 describe( 'Input', () => {
-	describe( 'Typing text using mutations and key events', () => {
+	describe( 'Legacy typing using mutations and key events', () => {
 		describe( 'isNonTypingKeystroke()', () => {
 			it( 'should return "true" for any keystroke with the Ctrl key', () => {
 				expect( isNonTypingKeystroke( { keyCode: keyCodes.a, ctrlKey: true } ), 'Ctrl+a' ).to.be.true;

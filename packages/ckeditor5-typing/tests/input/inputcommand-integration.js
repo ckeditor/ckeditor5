@@ -18,7 +18,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'Input', () => {
-	describe( 'InputCommand', () => {
+	describe( 'InputCommand (deprecated)', () => {
 		describe( 'Integration with undo and selection change', () => {
 			let editor, model, doc, viewDocument, boldView, italicView, editorElement;
 

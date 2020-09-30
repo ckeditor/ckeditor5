@@ -12,7 +12,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Typing from '../../../src/typing';
 
 describe( 'Input', () => {
-	describe( 'Typing text using mutations and key events', () => {
+	describe( 'Legacy typing using mutations and key events', () => {
 		describe( 'injectLegacyUnsafeKeystrokesHandling()', () => {
 			let editor, model;
 

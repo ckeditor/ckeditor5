@@ -17,7 +17,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'Input', () => {
-	describe( 'Typing text using mutations and key events', () => {
+	describe( 'Legacy typing using mutations and key events', () => {
 		describe( 'Bogus BR integration', () => {
 			let editor, domRoot, mutationObserver, editorElement;
 

@@ -13,7 +13,7 @@ import ChangeBuffer from '../../src/utils/changebuffer';
 import Input from '../../src/input';
 
 describe( 'Input', () => {
-	describe( 'InputCommand', () => {
+	describe( 'InputCommand (deprecated)', () => {
 		let editor, model, doc, buffer, inputCommand;
 
 		testUtils.createSinonSandbox();

@@ -30,7 +30,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'Input', () => {
-	describe( 'Typing text using mutations and key events', () => {
+	describe( 'Legacy typing using mutations and key events', () => {
 		describe( 'injectLegacyTypingMutationsHandling()', () => {
 			let editor, model, modelRoot, view, viewDocument, viewRoot, listenter, domElement;
 
