@@ -93,7 +93,7 @@
     "@wiris/mathtype-ckeditor5": "7.20.0",
     "@babel/standalone": "^7.10.2",
     "coveralls": "^3.1.0",
-    "css-loader": "^3.5.3",
+    "css-loader": "4.3.0",
     "eslint": "^7.1.0",
     "eslint-config-ckeditor5": "^3.0.0",
     "glob": "^7.1.6",
