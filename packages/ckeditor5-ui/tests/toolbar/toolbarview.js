@@ -421,7 +421,8 @@ describe( 'ToolbarView', () => {
 			sinon.assert.calledOnce( consoleWarnStub );
 			sinon.assert.calledWithExactly( consoleWarnStub,
 				sinon.match( /^toolbarview-item-unavailable/ ),
-				{ name: 'baz' }
+				sinon.match( { name: 'baz' } ),
+				sinon.match.string // Link to the documentation.
 			);
 		} );
 	} );
