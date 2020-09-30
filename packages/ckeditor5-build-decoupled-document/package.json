@@ -50,6 +50,7 @@
     "@ckeditor/ckeditor5-table": "^22.0.0",
     "@ckeditor/ckeditor5-typing": "^22.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^22.0.0",
+    "css-loader": "4.3.0",
     "postcss": "^8.1.1",
     "postcss-loader": "^4.0.2",
     "raw-loader": "^4.0.1",
