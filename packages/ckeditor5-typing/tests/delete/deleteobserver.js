@@ -40,7 +40,7 @@ describe( 'Delete', () => {
 			} ).to.not.throw();
 		} );
 
-		describe( 'key events-based', () => {
+		describe( 'key events-based (legacy)', () => {
 			let deleteSpy;
 
 			beforeEach( () => {

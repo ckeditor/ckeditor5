@@ -37,7 +37,7 @@ describe( 'EnterObserver', () => {
 		} ).to.not.throw();
 	} );
 
-	describe( 'key events-based', () => {
+	describe( 'key events-based (legacy)', () => {
 		beforeEach( () => {
 			// Force the browser to not use the beforeinput event.
 			testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
