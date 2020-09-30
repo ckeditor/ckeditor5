@@ -74,7 +74,7 @@ describe( 'MediaEmbedEditing', () => {
 						providers: [ provider ]
 					} ).then( () => {
 						expect( consoleWarnStub.calledOnce ).to.equal( true );
-						expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^media-embed-no-provider-name:/ );
+						expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^media-embed-no-provider-name/ );
 						expect( consoleWarnStub.firstCall.args[ 1 ].provider ).to.deep.equal( provider );
 					} );
 				} );
@@ -333,7 +333,7 @@ describe( 'MediaEmbedEditing', () => {
 						extraProviders: [ provider ]
 					} ).then( () => {
 						expect( consoleWarnStub.calledOnce ).to.equal( true );
-						expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^media-embed-no-provider-name:/ );
+						expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^media-embed-no-provider-name/ );
 						expect( consoleWarnStub.firstCall.args[ 1 ].provider ).to.deep.equal( provider );
 					} );
 				} );

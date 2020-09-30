@@ -810,14 +810,14 @@ describe( 'EditorWatchdog', () => {
 					setTimeout( () => {
 						window.onerror = originalErrorHandler;
 
-						expect( watchdog.crashes[ 0 ].message ).to.equal( 'foo' );
+						expect( watchdog.crashes[ 0 ].message ).to.match( /^foo/ );
 						expect( watchdog.crashes[ 0 ].stack ).to.be.a( 'string' );
 						expect( watchdog.crashes[ 0 ].date ).to.be.a( 'number' );
 						expect( watchdog.crashes[ 0 ].filename ).to.be.a( 'string' );
 						expect( watchdog.crashes[ 0 ].lineno ).to.be.a( 'number' );
 						expect( watchdog.crashes[ 0 ].colno ).to.be.a( 'number' );
 
-						expect( watchdog.crashes[ 1 ].message ).to.equal( 'bar' );
+						expect( watchdog.crashes[ 1 ].message ).to.match( /^bar/ );
 
 						watchdog.destroy().then( res );
 					} );
@@ -846,7 +846,7 @@ describe( 'EditorWatchdog', () => {
 						setTimeout( () => {
 							window.onerror = originalErrorHandler;
 
-							expect( watchdog.crashes[ 0 ].message ).to.equal( 'foo' );
+							expect( watchdog.crashes[ 0 ].message ).to.match( /^foo/ );
 							expect( watchdog.crashes[ 0 ].stack ).to.be.a( 'string' );
 							expect( watchdog.crashes[ 0 ].date ).to.be.a( 'number' );
 							expect( watchdog.crashes[ 0 ].filename ).to.be.an( 'undefined' );

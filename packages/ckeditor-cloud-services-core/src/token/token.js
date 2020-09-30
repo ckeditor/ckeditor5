@@ -7,13 +7,14 @@
  * @module cloud-services-core/token
  */
 
-/* globals XMLHttpRequest, setInterval, clearInterval */
+/* globals XMLHttpRequest, setTimeout, clearTimeout, atob */
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-const DEFAULT_OPTIONS = { refreshInterval: 3600000, autoRefresh: true };
+const DEFAULT_OPTIONS = { autoRefresh: true };
+const DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME = 3600000;
 
 /**
  * Class representing the token used for communication with CKEditor Cloud Services.
@@ -30,7 +31,6 @@ class Token {
 	 * value is a function it has to match the {@link module:cloud-services-core/token~refreshToken} interface.
 	 * @param {Object} options
 	 * @param {String} [options.initValue] Initial value of the token.
-	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
 	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
 	 */
 	constructor( tokenUrlOrRefreshToken, options = DEFAULT_OPTIONS ) {
@@ -41,9 +41,13 @@ class Token {
 			 * @error token-missing-token-url
 			 */
 			throw new CKEditorError(
-				'token-missing-token-url: A `tokenUrl` must be provided as the first constructor argument.',
+				'token-missing-token-url',
 				this
 			);
+		}
+
+		if ( options.initValue ) {
+			this._validateTokenValue( options.initValue );
 		}
 
 		/**
@@ -84,16 +88,16 @@ class Token {
 	 */
 	init() {
 		return new Promise( ( resolve, reject ) => {
-			if ( this._options.autoRefresh ) {
-				this._startRefreshing();
-			}
-
 			if ( !this.value ) {
 				this.refreshToken()
 					.then( resolve )
 					.catch( reject );
 
 				return;
+			}
+
+			if ( this._options.autoRefresh ) {
+				this._registerRefreshTokenTimeout();
 			}
 
 			resolve( this );
@@ -106,7 +110,14 @@ class Token {
 	 */
 	refreshToken() {
 		return this._refresh()
-			.then( value => this.set( 'value', value ) )
+			.then( value => {
+				this._validateTokenValue( value );
+				this.set( 'value', value );
+
+				if ( this._options.autoRefresh ) {
+					this._registerRefreshTokenTimeout();
+				}
+			} )
 			.then( () => this );
 	}
 
@@ -114,25 +125,74 @@ class Token {
 	 * Destroys token instance. Stops refreshing.
 	 */
 	destroy() {
-		this._stopRefreshing();
+		clearTimeout( this._tokenRefreshTimeout );
 	}
 
 	/**
-	 * Starts value refreshing every `refreshInterval` time.
+	 * Checks whether the provided token follows the JSON Web Tokens (JWT) format.
 	 *
 	 * @protected
+	 * @param {String} tokenValue The token to validate.
 	 */
-	_startRefreshing() {
-		this._refreshInterval = setInterval( () => this.refreshToken(), this._options.refreshInterval );
+	_validateTokenValue( tokenValue ) {
+		// The token must be a string.
+		const isString = typeof tokenValue === 'string';
+
+		// The token must be a plain string without quotes ("").
+		const isPlainString = !/^".*"$/.test( tokenValue );
+
+		// JWT token contains 3 parts: header, payload, and signature.
+		// Each part is separated by a dot.
+		const isJWTFormat = isString && tokenValue.split( '.' ).length === 3;
+
+		if ( !( isPlainString && isJWTFormat ) ) {
+			/**
+			 * The provided token must follow the [JSON Web Tokens](https://jwt.io/introduction/) format.
+			 *
+			 * @error token-not-in-jwt-format
+			 */
+			throw new CKEditorError( 'token-not-in-jwt-format', this );
+		}
 	}
 
 	/**
-	 * Stops value refreshing.
+	 * Registers a refresh token timeout for the time taken from token.
 	 *
 	 * @protected
 	 */
-	_stopRefreshing() {
-		clearInterval( this._refreshInterval );
+	_registerRefreshTokenTimeout() {
+		const tokenRefreshTimeoutTime = this._getTokenRefreshTimeoutTime();
+
+		clearTimeout( this._tokenRefreshTimeout );
+
+		this._tokenRefreshTimeout = setTimeout( () => {
+			this.refreshToken();
+		}, tokenRefreshTimeoutTime );
+	}
+
+	/**
+	 * Returns token refresh timeout time calculated from expire time in the token payload.
+	 *
+	 * If the token parse fails or the token payload doesn't contain, the default DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME is returned.
+	 *
+	 * @protected
+	 * @returns {Number}
+	 */
+	_getTokenRefreshTimeoutTime() {
+		try {
+			const [ , binaryTokenPayload ] = this.value.split( '.' );
+			const { exp: tokenExpireTime } = JSON.parse( atob( binaryTokenPayload ) );
+
+			if ( !tokenExpireTime ) {
+				return DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME;
+			}
+
+			const tokenRefreshTimeoutTime = Math.floor( ( ( tokenExpireTime * 1000 ) - Date.now() ) / 2 );
+
+			return tokenRefreshTimeoutTime;
+		} catch ( err ) {
+			return DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME;
+		}
 	}
 
 	/**
@@ -142,7 +202,6 @@ class Token {
 	 * value is a function it has to match the {@link module:cloud-services-core/token~refreshToken} interface.
 	 * @param {Object} options
 	 * @param {String} [options.initValue] Initial value of the token.
-	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
 	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
 	 * @returns {Promise.<module:cloud-services-core/token~Token>}
 	 */
@@ -185,7 +244,7 @@ function defaultRefreshToken( tokenUrl ) {
 				 * @error token-cannot-download-new-token
 				 */
 				return reject(
-					new CKEditorError( 'token-cannot-download-new-token: Cannot download new token from the provided url.', null )
+					new CKEditorError( 'token-cannot-download-new-token', null )
 				);
 			}
 

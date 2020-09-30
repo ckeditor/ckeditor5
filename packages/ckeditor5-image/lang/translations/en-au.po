@@ -16,47 +16,47 @@ msgstr ""
 "Language: en_AU\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "Label for the image widget."
+msgctxt "The label for the image widget."
 msgid "image widget"
 msgstr "image widget"
 
-msgctxt "Label for the Side image option."
+msgctxt "The label for the Side image option."
 msgid "Side image"
 msgstr "Side image"
 
-msgctxt "Label for the Full size image option."
+msgctxt "The label for the Full size image option."
 msgid "Full size image"
 msgstr "Full size image"
 
-msgctxt "Label for the Left aligned image option"
+msgctxt "The label for the Left aligned image option."
 msgid "Left aligned image"
 msgstr "Left aligned image"
 
-msgctxt "Label for the Centered image option"
+msgctxt "The label for the Centered image option."
 msgid "Centered image"
 msgstr "Centred image"
 
-msgctxt "Label for the Right aligned image option"
+msgctxt "The label for the Right aligned image option."
 msgid "Right aligned image"
 msgstr "Right aligned image"
 
-msgctxt "Label for the Change image text alternative button."
+msgctxt "The label for the Change image text alternative button."
 msgid "Change image text alternative"
 msgstr "Change image text alternative"
 
-msgctxt "Label for the image text alternative input."
+msgctxt "The label for the image text alternative input."
 msgid "Text alternative"
 msgstr "Text alternative"
 
-msgctxt "Placeholder text for image caption displayed when caption is empty."
+msgctxt "The placeholder text for the image caption displayed when the caption is empty."
 msgid "Enter image caption"
 msgstr "Enter image caption"
 
-msgctxt "Label for the insert image toolbar button."
+msgctxt "The label for the insert image toolbar button."
 msgid "Insert image"
 msgstr "Insert image"
 
-msgctxt "Title of the notification displayed when upload fails."
+msgctxt "The title of the notification displayed when upload fails."
 msgid "Upload failed"
 msgstr "Upload failed"
 
@@ -64,38 +64,42 @@ msgctxt "The label used by assistive technologies describing an image toolbar at
 msgid "Image toolbar"
 msgstr "Image toolbar"
 
-msgctxt "The label used for the dropdown in the image toolbar containing defined resize options"
+msgctxt "The label used for the dropdown in the image toolbar containing defined resize options."
 msgid "Resize image"
 msgstr ""
 
-msgctxt "The label used for the standalone resize options buttons in the image toolbar"
+msgctxt "The label used for the standalone resize options buttons in the image toolbar."
 msgid "Resize image to %0"
 msgstr ""
 
-msgctxt "The accessibility label of the standalone image resize reset option button in the image toolbar for the screen readers"
+msgctxt "The accessibility label of the standalone image resize reset option button in the image toolbar for screen readers."
 msgid "Resize image to the original size"
 msgstr ""
 
-msgctxt "Default label for the resize option that resets the size of the image."
+msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
 msgstr ""
 
-msgctxt "The accessibility label of the image resize dropdown list for the screen readers."
+msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
 msgstr ""
 
-msgctxt "The label of submit form button if image src URL input has no value"
+msgctxt "The label of the form submit button if the image source URL input has no value."
 msgid "Insert"
 msgstr ""
 
-msgctxt "The label of submit form button if image src URL input has value"
+msgctxt "The label of the form submit button if the image source URL input has a value."
 msgid "Update"
 msgstr ""
 
-msgctxt "The input label for the Insert image via URL form"
+msgctxt "The input label for the Insert image via URL form."
 msgid "Insert image via URL"
 msgstr ""
 
-msgctxt "The tip label below the Insert image via URL form"
+msgctxt "The input label for the Insert image via URL form for a pre-existing image."
+msgid "Update image URL"
+msgstr ""
+
+msgctxt "The content of the tip below the Insert image via URL form."
 msgid "Paste the image source URL."
 msgstr ""

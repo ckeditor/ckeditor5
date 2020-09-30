@@ -34,6 +34,22 @@ describe( 'viewToPlainText()', () => {
 		);
 	} );
 
+	it( 'should turn a soft break into a single empty line', () => {
+		testViewToPlainText(
+			'<container:p>Foo<empty:br />Bar</container:p>',
+
+			'Foo\nBar'
+		);
+	} );
+
+	it( 'should turn multiple soft breaks into empty lines', () => {
+		testViewToPlainText(
+			'<container:p>Foo<empty:br /><empty:br />Bar</container:p>',
+
+			'Foo\n\nBar'
+		);
+	} );
+
 	it( 'should output alt attribute of image elements', () => {
 		testViewToPlainText(
 			'<container:p>Foo</container:p>' +

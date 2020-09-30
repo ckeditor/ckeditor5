@@ -4,6 +4,8 @@
 
 It should contain as many features as we developed. By resizing your viewport you can observe whether grouping toolbar items work.
 
+---
+
 ## Editor
 
 There should be "two pages" with two sections per each page. Pages should be separated by the page break feature.
@@ -20,15 +22,28 @@ There should be "two pages" with two sections per each page. Pages should be sep
 
 **Code blocks in the table** - in the table (4x3), in the second and fourth columns should be visible code snippets.
 
+**Horizontal line** - There is the `<hr>` in the source HTML. It should be displayed in the editor.
+
+**Link images + Link decorators** - in the table (3x2), there are a linked text and two linked images that uses the manual decorators feature:
+  - Left column: the text with two decorators enabled: `Open in a new tab`, `Downloadable`
+  - Middle column: an image with the caption that is a `Gallery link`
+  - Right column: an image without the caption with enabled all decorators (listed above)
+
+---
+
 ## Action buttons
 
 - Clear editor - calls `editor.setData( '' )`
 - Open print preview - opens the print preview window
 - Turn on/off read-only mode - toggle read-only mode
 
+---
+
 ## Console
 
 Wordcount plugin logs into the console number of characters and words in the editor's data.
+
+---
 
 ## Additional
 

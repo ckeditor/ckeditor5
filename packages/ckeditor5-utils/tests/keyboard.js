@@ -65,7 +65,7 @@ describe( 'Keyboard', () => {
 		it( 'throws when passed unknown key name', () => {
 			expectToThrowCKEditorError( () => {
 				getCode( 'foo' );
-			}, /^keyboard-unknown-key:/, null );
+			}, 'keyboard-unknown-key', null );
 		} );
 
 		it( 'gets code of a keystroke info', () => {
@@ -106,7 +106,7 @@ describe( 'Keyboard', () => {
 		it( 'throws on unknown name', () => {
 			expectToThrowCKEditorError( () => {
 				parseKeystroke( 'foo' );
-			}, /^keyboard-unknown-key:/, null );
+			}, 'keyboard-unknown-key', null );
 		} );
 	} );
 

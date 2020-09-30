@@ -172,9 +172,7 @@ export default class FileRepository extends Plugin {
 			 *
 			 * @error filerepository-no-upload-adapter
 			 */
-			console.warn( attachLinkToDocumentation(
-				'filerepository-no-upload-adapter: Upload adapter is not defined.'
-			) );
+			console.warn( attachLinkToDocumentation( 'filerepository-no-upload-adapter' ) );
 
 			return null;
 		}
@@ -432,7 +430,12 @@ class FileLoader {
 	 */
 	read() {
 		if ( this.status != 'idle' ) {
-			throw new CKEditorError( 'filerepository-read-wrong-status: You cannot call read if the status is different than idle.', this );
+			/**
+			 * You cannot call read if the status is different than idle.
+			 *
+			 * @error filerepository-read-wrong-status
+			 */
+			throw new CKEditorError( 'filerepository-read-wrong-status', this );
 		}
 
 		this.status = 'reading';
@@ -483,10 +486,12 @@ class FileLoader {
 	 */
 	upload() {
 		if ( this.status != 'idle' ) {
-			throw new CKEditorError(
-				'filerepository-upload-wrong-status: You cannot call upload if the status is different than idle.',
-				this
-			);
+			/**
+			 * You cannot call upload if the status is different than idle.
+			 *
+			 * @error filerepository-upload-wrong-status
+			 */
+			throw new CKEditorError( 'filerepository-upload-wrong-status', this );
 		}
 
 		this.status = 'uploading';

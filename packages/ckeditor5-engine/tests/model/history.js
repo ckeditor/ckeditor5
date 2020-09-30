@@ -42,7 +42,11 @@ describe( 'History', () => {
 		} );
 
 		it( 'should save multiple operations and keep their order', () => {
-			const ops = getOperations();
+			const ops = [];
+
+			ops.push( new Operation( 0 ) );
+			ops.push( new Operation( 1 ) );
+			ops.push( new Operation( 2 ) );
 
 			for ( const op of ops ) {
 				history.addOperation( op );
@@ -78,31 +82,55 @@ describe( 'History', () => {
 	} );
 
 	describe( 'getOperations', () => {
-		let ops;
-
-		beforeEach( () => {
-			ops = getOperations();
-
-			for ( const op of ops ) {
-				history.addOperation( op );
-			}
-		} );
-
 		it( 'should return only operations from given base version', () => {
-			const historyOperations = Array.from( history.getOperations( 1 ) );
+			history.addOperation( new Operation( 0 ) );
+			history.addOperation( new Operation( 1 ) );
+			history.addOperation( new Operation( 2 ) );
 
-			expect( historyOperations ).to.deep.equal( ops.slice( 1 ) );
+			const ops = history.getOperations( 1 );
+
+			expect( ops.length ).to.equal( 2 );
+			expect( ops[ 0 ].baseVersion ).to.equal( 1 );
+			expect( ops[ 1 ].baseVersion ).to.equal( 2 );
 		} );
 
 		it( 'should return only operations up to given base version', () => {
-			const historyOperations = Array.from( history.getOperations( 1, 2 ) );
+			history.addOperation( new Operation( 0 ) );
+			history.addOperation( new Operation( 1 ) );
+			history.addOperation( new Operation( 2 ) );
 
-			expect( historyOperations ).to.deep.equal( ops.slice( 1, 2 ) );
+			const ops = history.getOperations( 1, 2 );
+
+			expect( ops.length ).to.equal( 1 );
+			expect( ops[ 0 ].baseVersion ).to.equal( 1 );
 		} );
 
 		it( 'should return empty array if no operations match', () => {
-			expect( Array.from( history.getOperations( 20 ) ).length ).to.equal( 0 );
-			expect( Array.from( history.getOperations( -1 ) ).length ).to.equal( 0 );
+			history.addOperation( new Operation( 0 ) );
+			history.addOperation( new Operation( 1 ) );
+
+			expect( history.getOperations( 20 ).length ).to.equal( 0 );
+			expect( history.getOperations( -3, 0 ).length ).to.equal( 0 );
+		} );
+
+		it( 'should return correct values if history holds operations with negative base version', () => {
+			history.addOperation( new Operation( -2 ) );
+			history.addOperation( new Operation( -1 ) );
+			history.addOperation( new Operation( 0 ) );
+			history.addOperation( new Operation( 1 ) );
+			history.addOperation( new Operation( 2 ) );
+
+			expect( history.getOperations( -1, 2 ).map( op => op.baseVersion ) ).to.deep.equal( [ -1, 0, 1 ] );
+		} );
+
+		it( 'should return correct values if history holds operations with base versions that differ by more than one', () => {
+			history.addOperation( new Operation( 0 ) );
+			history.addOperation( new Operation( 4 ) );
+			history.addOperation( new Operation( 6 ) );
+			history.addOperation( new Operation( 9 ) );
+			history.addOperation( new Operation( 13 ) );
+
+			expect( history.getOperations( 2, 11 ).map( op => op.baseVersion ) ).to.deep.equal( [ 4, 6, 9 ] );
 		} );
 	} );
 
@@ -179,13 +207,3 @@ describe( 'History', () => {
 		} );
 	} );
 } );
-
-function getOperations() {
-	const ops = [];
-
-	ops.push( new Operation( 0 ) );
-	ops.push( new Operation( 1 ) );
-	ops.push( new Operation( 2 ) );
-
-	return ops;
-}
