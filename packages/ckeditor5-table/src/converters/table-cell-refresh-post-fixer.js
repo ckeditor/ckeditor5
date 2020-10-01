@@ -54,8 +54,8 @@ function tableCellRefreshPostFixer( model ) {
 
 		// 2b. If we detect that number of children has changed...
 		if ( childDiff !== 0 ) {
-			const prevChildren = tableCell.childCount - childDiff;
 			const currentChildren = tableCell.childCount;
+			const prevChildren = currentChildren - childDiff;
 
 			// Might need refresh if previous children was different from 1. Eg.: it was 2 before, now is 1.
 			if ( currentChildren === 1 && prevChildren !== 1 ) {

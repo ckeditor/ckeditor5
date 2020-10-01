@@ -615,7 +615,7 @@ export default class Differ {
 	}
 
 	/**
-	 * Saves and handles a remove change.
+	 * Saves and handles a refresh change.
 	 *
 	 * @private
 	 * @param {module:engine/model/element~Element} parent
@@ -629,7 +629,7 @@ export default class Differ {
 	}
 
 	/**
-	 * Saves and handles a refresh change.
+	 * Saves and handles an attribute change.
 	 *
 	 * @private
 	 * @param {module:engine/model/item~Item} item

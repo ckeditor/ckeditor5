@@ -186,7 +186,7 @@ export default class DowncastDispatcher {
 	 *
 	 * @protected
 	 * @param {String} modelName Main model element name for which events will trigger reconversion.
-	 * @param {Array<String>} events Array of inner events that would trigger conversion for this model.
+	 * @param {Array.<String>} events Array of inner events that would trigger conversion for this model.
 	 */
 	mapRefreshTriggerEvent( modelName, events ) {
 		for ( const eventName of events ) {
