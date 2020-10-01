@@ -86,6 +86,8 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
 	 * that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
 	 * as parameters and returns a view container element.
+	 * @param {Array.<String>} [config.triggerBy] Events which will trigger element reconversion. Reconversion can be triggered by
+	 * attribute change (eg. `'attribute:foo:complex'` for the main element) or by adding or removing children (eg. `'insert:child'`).
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	elementToElement( config ) {
@@ -1349,13 +1351,12 @@ function removeHighlight( highlightDescriptor ) {
 
 // Model element to view element conversion helper.
 //
-// See {@link ~DowncastHelpers#elementToElement `.elementToElement()` downcast helper} for examples.
+// See {@link ~DowncastHelpers#elementToElement `.elementToElement()` downcast helper} for examples and config params description.
 //
 // @param {Object} config Conversion configuration.
-// @param {String} config.model The name of the model element to convert.
-// @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
-// that takes the model element and {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}
-// as parameters and returns a view container element.
+// @param {String} config.model
+// @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view
+// @param {Array.<String>} [config.triggerBy]
 // @returns {Function} Conversion helper.
 function downcastElementToElement( config ) {
 	config = cloneDeep( config );
