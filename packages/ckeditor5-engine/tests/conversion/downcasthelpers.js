@@ -38,14 +38,6 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../src/view/stylesmap';
 import DowncastWriter from '../../src/view/downcastwriter';
 
-function insertBazSlot( writer, modelRoot ) {
-	const slot = writer.createElement( 'slot' );
-	const paragraph = writer.createElement( 'paragraph' );
-	writer.insertText( 'baz', paragraph, 0 );
-	writer.insert( paragraph, slot, 0 );
-	writer.insert( slot, modelRoot.getChild( 0 ), 'end' );
-}
-
 describe( 'DowncastHelpers', () => {
 	let model, modelRoot, viewRoot, downcastHelpers, controller, modelRootStart;
 
@@ -929,15 +921,21 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			function getViewAttributes( modelElement ) {
-				// TODO decide whether below is readable:
 				const toStyle = modelElement.hasAttribute( 'toStyle' ) && { style: modelElement.getAttribute( 'toStyle' ) };
 				const toClass = modelElement.hasAttribute( 'toClass' ) && { class: 'is-classy' };
 
-				const attributes = {
+				return {
 					...toStyle,
 					...toClass
 				};
-				return attributes;
+			}
+
+			function insertBazSlot( writer, modelRoot ) {
+				const slot = writer.createElement( 'slot' );
+				const paragraph = writer.createElement( 'paragraph' );
+				writer.insertText( 'baz', paragraph, 0 );
+				writer.insert( paragraph, slot, 0 );
+				writer.insert( slot, modelRoot.getChild( 0 ), 'end' );
 			}
 		} );
 	} );
