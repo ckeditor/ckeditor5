@@ -29,21 +29,13 @@ function tableCellRefreshPostFixer( differ, mapper ) {
 	// Stores cells to be refreshed, so the table cell will be refreshed once for multiple changes.
 
 	// 1. Gather all changes inside table cell.
-	const alreadyRefreshed = new Set();
 	const cellsToCheck = new Set();
 
 	for ( const change of differ.getChanges() ) {
 		const parent = change.type == 'attribute' ? change.range.start.parent : change.position.parent;
 
 		if ( parent.is( 'element', 'tableCell' ) ) {
-			if ( change.type === 'refresh' ) {
-				// Cached already refreshed paragraphs to prevent infinite post-fix loop...
-				// ... which do not work if other post-fixers are also run.
-				// See https://github.com/ckeditor/ckeditor5/issues/1936.
-				alreadyRefreshed.add( change.position.nodeAfter );
-			} else {
-				cellsToCheck.add( parent );
-			}
+			cellsToCheck.add( parent );
 		}
 	}
 
@@ -51,7 +43,7 @@ function tableCellRefreshPostFixer( differ, mapper ) {
 	// @if CK_DEBUG_TABLE // let paragraphsRefreshed = 0;
 
 	for ( const tableCell of cellsToCheck.values() ) {
-		for ( const paragraph of [ ...tableCell.getChildren() ].filter( child => shouldRefresh( child, alreadyRefreshed, mapper ) ) ) {
+		for ( const paragraph of [ ...tableCell.getChildren() ].filter( child => shouldRefresh( child, mapper ) ) ) {
 			// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: refreshing paragraph in table cell (${++paragraphsRefreshed}).` );
 			differ.refreshItem( paragraph );
 		}
@@ -67,12 +59,8 @@ function tableCellRefreshPostFixer( differ, mapper ) {
 // @param {module:engine/model/element~Element} modelElement
 // @param {module:engine/conversion/mapper~Mapper} mapper
 // @returns {Boolean}
-function shouldRefresh( child, alreadyRefreshed, mapper ) {
+function shouldRefresh( child, mapper ) {
 	if ( !child.is( 'element', 'paragraph' ) ) {
-		return false;
-	}
-
-	if ( alreadyRefreshed.has( child ) ) {
 		return false;
 	}
 
