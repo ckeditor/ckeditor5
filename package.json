@@ -76,6 +76,7 @@
     "@ckeditor/ckeditor5-word-count": "^23.0.0"
   },
   "devDependencies": {
+    "@babel/standalone": "^7.10.2",
     "@ckeditor/ckeditor5-comments": "^23.0.0",
     "@ckeditor/ckeditor5-dev-docs": "^23.2.0",
     "@ckeditor/ckeditor5-dev-env": "^23.2.0",
@@ -91,7 +92,6 @@
     "@ckeditor/ckeditor5-track-changes": "^23.0.0",
     "@webspellchecker/wproofreader-ckeditor5": "^1.0.5",
     "@wiris/mathtype-ckeditor5": "7.20.0",
-    "@babel/standalone": "^7.10.2",
     "coveralls": "^3.1.0",
     "css-loader": "4.3.0",
     "eslint": "^7.1.0",
