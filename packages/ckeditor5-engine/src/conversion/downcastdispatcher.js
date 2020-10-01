@@ -213,7 +213,7 @@ export default class DowncastDispatcher {
 
 		// Fire a separate insert event for each node and text fragment contained in the range.
 		for ( const data of Array.from( range ).map( rangeIteratorValueToEventData ) ) {
-			this._convertInsertAndElementAttributes( data );
+			this._convertInsertWithAttributes( data );
 		}
 
 		this._clearConversionApi();
@@ -302,7 +302,7 @@ export default class DowncastDispatcher {
 
 		for ( const data of values.map( rangeIteratorValueToEventData ) ) {
 			if ( !this._isRefreshTriggerEvent( data ) && !elementWasMemoized( data, this.conversionApi.mapper ) ) {
-				this._convertInsertAndElementAttributes( data );
+				this._convertInsertWithAttributes( data );
 			}
 		}
 
@@ -548,7 +548,7 @@ export default class DowncastDispatcher {
 	 * @fires attribute
 	 * @param {Object} data Event data.
 	 */
-	_convertInsertAndElementAttributes( data ) {
+	_convertInsertWithAttributes( data ) {
 		this._testAndFire( 'insert', data );
 
 		// Fire a separate addAttribute event for each attribute that was set on inserted items.
@@ -634,18 +634,7 @@ export default class DowncastDispatcher {
 		// Thanks to the mapper that holds references nothing should blow up.
 		this.conversionApi.writer.remove( currentView );
 
-		this._testAndFire( 'insert', data );
-
-		// Fire a separate addAttribute event for each attribute that was set on inserted items.
-		// This is important because most attributes converters will listen only to add/change/removeAttribute events.
-		// If we would not add this part, attributes on inserted nodes would not be converted.
-		for ( const key of data.item.getAttributeKeys() ) {
-			data.attributeKey = key;
-			data.attributeOldValue = null;
-			data.attributeNewValue = data.item.getAttribute( key );
-
-			this._testAndFire( `attribute:${ key }`, data );
-		}
+		this._convertInsertWithAttributes( data );
 
 		// Bring back removed child views on refreshing the parent view.
 		const viewElement = this.conversionApi.mapper.toViewElement( data.item );
