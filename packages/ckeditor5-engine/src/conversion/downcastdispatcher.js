@@ -274,10 +274,17 @@ export default class DowncastDispatcher {
 	/**
 	 * Starts a refresh conversion - depending on a configuration it would:
 	 *
-	 * - fire a {@link #event:insert `insert` event} for the element to refresh.
-	 * - handle conversion of a range insert for nodes under the refreshed item which are not bound as slots.
+	 * * Fire a {@link #event:insert `insert` event} for the element to refresh.
+	 * * Handle conversion of a range insert for nodes under the refreshed item which are not bound as slots.
+	 *
+	 * The refresh change is created by either:
+	 *
+	 * * A `triggerBy` configuration for
+	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
+	 * * After using {@link module:engine/model/differ~Differ#refreshItem `differ.refreshItem()`}.
 	 *
 	 * @fires insert
+	 * @fires attribute
 	 * @param {module:engine/model/range~Range} range The inserted range.
 	 * @param {String} name Name of main item to refresh.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
@@ -556,6 +563,14 @@ export default class DowncastDispatcher {
 		}
 	}
 
+	/**
+	 * Get changes without those that needs to be converted using {@link #convertRefresh} defined by a `triggerBy` configuration for
+	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
+	 *
+	 * @param {module:engine/model/differ~Differ} differ The differ object with buffered changes.
+	 * @returns {Array.<Object>}
+	 * @private
+	 */
 	_getChangesAfterAutomaticRefreshing( differ ) {
 		const elementsToRefresh = this._getElementsForAutomaticRefresh( differ );
 
@@ -566,6 +581,19 @@ export default class DowncastDispatcher {
 		return differ.getChanges().filter( entry => !elementsToRefresh.has( getElementFromChange( entry ) ) );
 	}
 
+	/**
+	 * Returns elements that should be converted using {@link #convertRefresh} defined by a `triggerBy` configuration for
+	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
+	 *
+	 * This will return:
+	 *
+	 * * Element which attributes changed for an 'attribute' change.
+	 * * Parent of inserted or removed element for matched 'insert' or 'remove' changes.
+	 *
+	 * @param {module:engine/model/differ~Differ} differ The differ object with buffered changes.
+	 * @returns {Set.<Object>}
+	 * @private
+	 */
 	_getElementsForAutomaticRefresh( differ ) {
 		const found = differ.getChanges()
 			.filter( ( { type } ) => type === 'attribute' || type === 'insert' || type === 'remove' )
@@ -589,6 +617,15 @@ export default class DowncastDispatcher {
 		return new Set( found );
 	}
 
+	/**
+	 * Handles reconverting a model element that has an existing model-to-view mapping.
+	 *
+	 * It performs a shallow conversion for the element and its attributes. All children that already have a converted view
+	 * will not be converted again. Their existing view elements will be used instead.
+	 *
+	 * @private
+	 * @param {Object} data Event data.
+	 */
 	_reconvertElement( data ) {
 		// Cache current view element of a converted element, might be undefined if first insert.
 		const currentView = this.conversionApi.mapper.toViewElement( data.item );
@@ -636,6 +673,16 @@ export default class DowncastDispatcher {
 		}
 	}
 
+	/**
+	 * Checks if resulting change should trigger element reconversion.
+	 *
+	 * Those are defined by a `triggerBy` configuration for
+	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
+	 *
+	 * @private
+	 * @param {Object} data Event data.
+	 * @returns {Boolean}
+	 */
 	_isRefreshTriggerEvent( data ) {
 		const expectedEventName = getEventName( 'insert', data );
 
