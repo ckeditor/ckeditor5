@@ -599,11 +599,15 @@ export default class DowncastDispatcher {
 			.filter( ( { type } ) => type === 'attribute' || type === 'insert' || type === 'remove' )
 			.map( entry => {
 				const element = getElementFromChange( entry );
-
 				let eventName;
 
 				if ( entry.type === 'attribute' ) {
-					eventName = `attribute:${ entry.attributeKey }:${ element && element.name }`;
+					if ( !element ) {
+						// Refreshing is done only on elements so skip text attribute changes.
+						return;
+					}
+
+					eventName = `attribute:${ entry.attributeKey }:${ element.name }`;
 				} else {
 					eventName = `${ entry.type }:${ entry.name }`;
 				}
