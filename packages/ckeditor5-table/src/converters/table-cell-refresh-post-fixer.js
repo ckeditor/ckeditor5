@@ -7,6 +7,8 @@
  * @module table/converters/table-cell-refresh-post-fixer
  */
 
+import { isSingleParagraphWithoutAttributes } from './downcast';
+
 /**
  * Injects a table cell post-fixer into the model which marks the table cell in the differ to have it re-rendered.
  *
@@ -17,66 +19,33 @@
  * re-rendered so it changes from `<span>` to `<p>`. The easiest way to do it is to re-render the entire table cell.
  *
  * @param {module:engine/model/model~Model} model
+ * @param {module:engine/conversion/mapper~Mapper} mapper
  */
-export default function injectTableCellRefreshPostFixer( model ) {
-	model.document.registerPostFixer( () => tableCellRefreshPostFixer( model ) );
+export default function injectTableCellRefreshPostFixer( model, mapper ) {
+	model.document.registerPostFixer( () => tableCellRefreshPostFixer( model.document.differ, mapper ) );
 }
 
-function tableCellRefreshPostFixer( model ) {
-	const differ = model.document.differ;
-
-	const changesForCells = new Map();
+function tableCellRefreshPostFixer( differ, mapper ) {
+	// Stores cells to be refreshed, so the table cell will be refreshed once for multiple changes.
 
 	// 1. Gather all changes inside table cell.
-	differ.getChanges().forEach( change => {
-		const parent = change.type == 'attribute' ? change.range.start.parent : change.position.parent;
+	const changedCells = differ.getChanges()
+		.map( change => change.type == 'attribute' ? change.range.start.parent : change.position.parent )
+		.filter( parent => parent.is( 'element', 'tableCell' ) );
 
-		if ( !parent.is( 'element', 'tableCell' ) ) {
-			return;
-		}
-
-		if ( !changesForCells.has( parent ) ) {
-			changesForCells.set( parent, [] );
-		}
-
-		changesForCells.get( parent ).push( change );
-	} );
-
-	// Stores cells to be refreshed, so the table cell will be refreshed once for multiple changes.
-	const cellsToRefresh = new Set();
-
-	// 2. For each table cell:
-	for ( const [ tableCell, changes ] of changesForCells.entries() ) {
-		// 2a. Count inserts/removes as diff and marks any attribute change.
-		const { childDiff, attribute } = getChangesSummary( changes );
-
-		// 2b. If we detect that number of children has changed...
-		if ( childDiff !== 0 ) {
-			const currentChildren = tableCell.childCount;
-			const prevChildren = currentChildren - childDiff;
-
-			// Might need refresh if previous children was different from 1. Eg.: it was 2 before, now is 1 (or the opposite).
-			if ( currentChildren === 1 || prevChildren === 1 ) {
-				cellsToRefresh.add( tableCell );
-			}
-		}
-
-		// ... 2c or some attribute has changed.
-		if ( attribute ) {
-			cellsToRefresh.add( tableCell );
-		}
+	if ( !changedCells.length ) {
+		return false;
 	}
 
-	// Having cells to refresh we need to
-	if ( cellsToRefresh.size ) {
-		// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: Checking table cell to refresh (${ cellsToRefresh.size }).` );
-		// @if CK_DEBUG_TABLE // let paragraphsRefreshed = 0;
+	const cellsToCheck = new Set( changedCells );
 
-		for ( const tableCell of cellsToRefresh.values() ) {
-			for ( const paragraph of [ ...tableCell.getChildren() ].filter( child => child.is( 'element', 'paragraph' ) ) ) {
-				// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: refreshing paragraph in table cell (${++paragraphsRefreshed}).` );
-				differ.refreshItem( paragraph );
-			}
+	// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: Checking table cell to refresh (${ cellsToCheck.size }).` );
+	// @if CK_DEBUG_TABLE // let paragraphsRefreshed = 0;
+
+	for ( const tableCell of cellsToCheck.values() ) {
+		for ( const paragraph of [ ...tableCell.getChildren() ].filter( child => shouldRefresh( child, mapper ) ) ) {
+			// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: refreshing paragraph in table cell (${++paragraphsRefreshed}).` );
+			differ.refreshItem( paragraph );
 		}
 	}
 
@@ -85,22 +54,21 @@ function tableCellRefreshPostFixer( model ) {
 	return false;
 }
 
-function updateSummaryFromChange( summary, change ) {
-	if ( change.type === 'remove' ) {
-		summary.childDiff--;
+// Check if given model element needs refreshing.
+//
+// @param {module:engine/model/element~Element} modelElement
+// @param {module:engine/conversion/mapper~Mapper} mapper
+// @returns {Boolean}
+function shouldRefresh( child, mapper ) {
+	if ( !child.is( 'element', 'paragraph' ) ) {
+		return false;
 	}
 
-	if ( change.type === 'insert' ) {
-		summary.childDiff++;
+	const viewElement = mapper.toViewElement( child );
+
+	if ( !viewElement ) {
+		return false;
 	}
 
-	if ( change.type === 'attribute' ) {
-		summary.attribute = true;
-	}
-
-	return summary;
-}
-
-function getChangesSummary( changes ) {
-	return changes.reduce( updateSummaryFromChange, { childDiff: 0, attribute: false } );
+	return isSingleParagraphWithoutAttributes( child ) !== viewElement.is( 'element', 'span' );
 }

@@ -255,16 +255,32 @@ export function convertParagraphInTableCell( modelElement, conversionApi ) {
 		return;
 	}
 
-	const tableCell = modelElement.parent;
-	const isSingleParagraph = tableCell.childCount === 1;
-
-	if ( isSingleParagraph && !hasAnyAttribute( modelElement ) ) {
+	if ( isSingleParagraphWithoutAttributes( modelElement ) ) {
 		// Use display:inline-block to force Chrome/Safari to limit text mutations to this element.
 		// See #6062.
 		return writer.createContainerElement( 'span', { style: 'display:inline-block' } );
 	} else {
 		return writer.createContainerElement( 'p' );
 	}
+}
+
+/**
+ * Checks if given model `<paragraph>` is an only child of a parent (`<tableCell>`) and if it has any attribute set.
+ *
+ * The paragraph should be converted in the editing view to:
+ *
+ * * If returned `true` - to a `<span style="display:inline-block">`
+ * * If returned `false` - to a `<p>`
+ *
+ * @param {module:engine/model/element~Element} modelElement
+ * @returns {Boolean}
+ */
+export function isSingleParagraphWithoutAttributes( modelElement ) {
+	const tableCell = modelElement.parent;
+
+	const isSingleParagraph = tableCell.childCount === 1;
+
+	return isSingleParagraph && !hasAnyAttribute( modelElement );
 }
 
 // Converts a given {@link module:engine/view/element~Element} to a table widget:

@@ -154,7 +154,7 @@ export default class TableEditing extends Plugin {
 
 		injectTableHeadingRowsRefreshPostFixer( model );
 		injectTableLayoutPostFixer( model );
-		injectTableCellRefreshPostFixer( model );
+		injectTableCellRefreshPostFixer( model, editor.editing.mapper );
 		injectTableCellParagraphPostFixer( model );
 	}
 

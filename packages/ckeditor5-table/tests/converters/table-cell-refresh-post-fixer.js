@@ -52,7 +52,7 @@ describe( 'Table cell refresh post-fixer', () => {
 		return editor.editing.mapper.toViewElement( table.getNodeByPath( [ 0, 0, 0 ] ) );
 	}
 
-	it( 'should rename <span> to <p> when adding <paragraph> element to the same table cell', () => {
+	it( 'should rename <span> to <p> when adding <paragraph> element to the same table cell (append)', () => {
 		editor.setData( viewTable( [ [ '<p>00</p>' ] ] ) );
 
 		const table = root.getChild( 0 );
@@ -68,6 +68,25 @@ describe( 'Table cell refresh post-fixer', () => {
 
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p>00</p><p></p>' ]
+		], { asWidget: true } ) );
+		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+	} );
+
+	it( 'should rename <span> to <p> when adding <paragraph> element to the same table cell (prepend)', () => {
+		editor.setData( viewTable( [ [ '<p>00</p>' ] ] ) );
+
+		const table = root.getChild( 0 );
+		const previousView = getViewForParagraph( table );
+
+		model.change( writer => {
+			const nodeByPath = table.getNodeByPath( [ 0, 0, 0 ] );
+			const paragraph = writer.createElement( 'paragraph' );
+
+			writer.insert( paragraph, nodeByPath, 'before' );
+		} );
+
+		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+			[ '<p></p><p>00</p>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
 	} );
@@ -262,7 +281,7 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p foo="baz">00</p>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+		expect( getViewForParagraph( table ) ).to.equal( previousView );
 	} );
 
 	it( 'should keep <p> in the view when adding another attribute to a <paragraph> with other attributes', () => {
@@ -278,7 +297,7 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p bar="bar" foo="bar">00</p>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+		expect( getViewForParagraph( table ) ).to.equal( previousView );
 	} );
 
 	it( 'should keep <p> in the view when adding another attribute to a <paragraph> and removing attribute that is already set', () => {
@@ -295,7 +314,7 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p bar="bar">00</p>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+		expect( getViewForParagraph( table ) ).to.equal( previousView );
 	} );
 
 	it( 'should keep <p> in the view when <paragraph> attribute value is changed (table cell with multiple blocks)', () => {
@@ -311,7 +330,7 @@ describe( 'Table cell refresh post-fixer', () => {
 		assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 			[ '<p foo="baz">00</p><p>00</p>' ]
 		], { asWidget: true } ) );
-		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+		expect( getViewForParagraph( table ) ).to.equal( previousView );
 	} );
 
 	it( 'should do nothing on rename <paragraph> to other block', () => {
