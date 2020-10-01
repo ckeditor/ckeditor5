@@ -572,13 +572,21 @@ export default class DowncastDispatcher {
 	 * @private
 	 */
 	_getChangesAfterAutomaticRefreshing( differ ) {
-		const elementsToRefresh = this._getElementsForAutomaticRefresh( differ );
+		const changes = differ.getChanges();
+		const elementsToRefresh = this._getElementsForAutomaticRefresh( changes );
+
+		if ( !elementsToRefresh.size ) {
+			return changes;
+		}
 
 		for ( const element of elementsToRefresh.values() ) {
 			differ.refreshItem( element );
 		}
 
-		return differ.getChanges().filter( entry => !elementsToRefresh.has( getElementFromChange( entry ) ) );
+		// The `differ.refreshItem()` invalidates differ cache - we can't re-use previous changes.
+		const changesAfterRefresh = differ.getChanges();
+
+		return changesAfterRefresh.filter( entry => !elementsToRefresh.has( getElementFromChange( entry ) ) );
 	}
 
 	/**
@@ -590,12 +598,12 @@ export default class DowncastDispatcher {
 	 * * Element which attributes changed for an 'attribute' change.
 	 * * Parent of inserted or removed element for matched 'insert' or 'remove' changes.
 	 *
-	 * @param {module:engine/model/differ~Differ} differ The differ object with buffered changes.
-	 * @returns {Set.<Object>}
+	 * @param {Array.<Object>} changes The changes diff set from the differ.
+	 * @returns {Set.<module:engine/model/element~Element>}
 	 * @private
 	 */
-	_getElementsForAutomaticRefresh( differ ) {
-		const found = differ.getChanges()
+	_getElementsForAutomaticRefresh( changes ) {
+		const found = changes
 			.filter( ( { type } ) => type === 'attribute' || type === 'insert' || type === 'remove' )
 			.map( entry => {
 				const element = getElementFromChange( entry );
