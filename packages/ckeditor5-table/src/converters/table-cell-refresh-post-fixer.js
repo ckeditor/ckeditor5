@@ -55,13 +55,8 @@ function tableCellRefreshPostFixer( model ) {
 			const currentChildren = tableCell.childCount;
 			const prevChildren = currentChildren - childDiff;
 
-			// Might need refresh if previous children was different from 1. Eg.: it was 2 before, now is 1.
-			if ( currentChildren === 1 && prevChildren !== 1 ) {
-				cellsToRefresh.add( tableCell );
-			}
-
-			// Might need refresh if previous children was 1. Eg.: it was 1 before, now is 5.
-			if ( currentChildren !== 1 && prevChildren === 1 ) {
+			// Might need refresh if previous children was different from 1. Eg.: it was 2 before, now is 1 (or the opposite).
+			if ( currentChildren === 1 || prevChildren === 1 ) {
 				cellsToRefresh.add( tableCell );
 			}
 		}
