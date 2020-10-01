@@ -110,6 +110,14 @@ export default class Differ {
 		return this._changesInElement.size == 0 && this._changedMarkers.size == 0;
 	}
 
+	/**
+	 * Marks given `item` in differ to be re-inserted. It means that the item will be marked as removed and inserted in the differ changes
+	 * set. The `item` and all its children will be effectively re-converted when differ changes will be handled by a dispatcher.
+	 *
+	 * *Note*: To reconvert only `item` without reconverting children use {@link #refreshItem `differ.refreshItem()`}.
+	 *
+	 * @param {module:engine/model/item~Item} item Item to refresh.
+	 */
 	reInsertItem( item ) {
 		if ( this._isInInsertedElement( item.parent ) ) {
 			return;

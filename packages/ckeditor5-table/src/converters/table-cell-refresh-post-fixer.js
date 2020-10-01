@@ -26,11 +26,9 @@ function tableCellRefreshPostFixer( model ) {
 	const differ = model.document.differ;
 
 	const changesForCells = new Map();
-	const changes = [ ...differ.getChanges() ];
 
-	// Updated refresh algorithm.
 	// 1. Gather all changes inside table cell.
-	changes.forEach( change => {
+	differ.getChanges().forEach( change => {
 		const parent = change.type == 'attribute' ? change.range.start.parent : change.position.parent;
 
 		if ( !parent.is( 'element', 'tableCell' ) ) {
