@@ -29,21 +29,29 @@ function tableCellRefreshPostFixer( differ, mapper ) {
 	// Stores cells to be refreshed, so the table cell will be refreshed once for multiple changes.
 
 	// 1. Gather all changes inside table cell.
-	const changedCells = differ.getChanges()
-		.map( change => change.type == 'attribute' ? change.range.start.parent : change.position.parent )
-		.filter( parent => parent.is( 'element', 'tableCell' ) );
+	const alreadyRefreshed = new Set();
+	const cellsToCheck = new Set();
 
-	if ( !changedCells.length ) {
-		return false;
+	for ( const change of differ.getChanges() ) {
+		const parent = change.type == 'attribute' ? change.range.start.parent : change.position.parent;
+
+		if ( parent.is( 'element', 'tableCell' ) ) {
+			if ( change.type === 'refresh' ) {
+				// Cached already refreshed paragraphs to prevent infinite post-fix loop...
+				// ... which do not work if other post-fixers are also run.
+				// See https://github.com/ckeditor/ckeditor5/issues/1936.
+				alreadyRefreshed.add( change.position.nodeAfter );
+			} else {
+				cellsToCheck.add( parent );
+			}
+		}
 	}
-
-	const cellsToCheck = new Set( changedCells );
 
 	// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: Checking table cell to refresh (${ cellsToCheck.size }).` );
 	// @if CK_DEBUG_TABLE // let paragraphsRefreshed = 0;
 
 	for ( const tableCell of cellsToCheck.values() ) {
-		for ( const paragraph of [ ...tableCell.getChildren() ].filter( child => shouldRefresh( child, mapper ) ) ) {
+		for ( const paragraph of [ ...tableCell.getChildren() ].filter( child => shouldRefresh( child, alreadyRefreshed, mapper ) ) ) {
 			// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: refreshing paragraph in table cell (${++paragraphsRefreshed}).` );
 			differ.refreshItem( paragraph );
 		}
@@ -59,8 +67,12 @@ function tableCellRefreshPostFixer( differ, mapper ) {
 // @param {module:engine/model/element~Element} modelElement
 // @param {module:engine/conversion/mapper~Mapper} mapper
 // @returns {Boolean}
-function shouldRefresh( child, mapper ) {
+function shouldRefresh( child, alreadyRefreshed, mapper ) {
 	if ( !child.is( 'element', 'paragraph' ) ) {
+		return false;
+	}
+
+	if ( alreadyRefreshed.has( child ) ) {
 		return false;
 	}
 
