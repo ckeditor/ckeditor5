@@ -346,7 +346,7 @@ export default class Mapper {
 	}
 
 	/**
-	 * Marks model and view elements as corresponding "slot". Similar to {@link #bindElements} but it memoizes existing view element
+	 * Marks model and view elements as corresponding "slot". Similar to {@link #bindElements} but it memorizes existing view element
 	 * during re-conversion of complex elements with slots.
 	 *
 	 * @param {module:engine/model/element~Element} modelElement Model element.
@@ -355,6 +355,7 @@ export default class Mapper {
 	bindSlotElements( modelElement, viewElement ) {
 		const existingView = this.toViewElement( modelElement );
 
+		// Slot memorization - we need to keep this on a slot reconversion because bindElements() would overwrite previous binding.
 		this._slotToViewMapping.set( modelElement, existingView );
 
 		this.bindElements( modelElement, viewElement );
