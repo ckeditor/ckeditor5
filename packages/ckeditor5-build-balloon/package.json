@@ -49,12 +49,12 @@
     "@ckeditor/ckeditor5-theme-lark": "^23.0.0",
     "css-loader": "4.3.0",
     "postcss": "^8.1.1",
-    "postcss-loader": "^3.0.0",
+    "postcss-loader": "^4.0.2",
     "raw-loader": "^4.0.1",
     "style-loader": "^1.2.1",
     "terser-webpack-plugin": "^3.0.2",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "webpack": "^5.0.0-rc.2",
+    "webpack-cli": "^4.0.0-alpha-5"
   },
   "engines": {
     "node": ">=12.0.0",
