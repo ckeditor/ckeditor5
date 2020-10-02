@@ -50,7 +50,8 @@ function tableCellRefreshPostFixer( differ, mapper ) {
 	}
 
 	// Always return false to prevent the refresh post-fixer from re-running on the same set of changes and going into an infinite loop.
-	// See https://github.com/ckeditor/ckeditor5/issues/1936.
+	// This "post-fixer" does not change the model structure so there shouldn't be need to run other post-fixers again.
+	// See https://github.com/ckeditor/ckeditor5/issues/1936 & https://github.com/ckeditor/ckeditor5/issues/8200.
 	return false;
 }
 

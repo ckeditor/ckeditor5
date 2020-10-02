@@ -285,7 +285,7 @@ export default class DowncastDispatcher {
 	 *
 	 * @fires insert
 	 * @fires attribute
-	 * @param {module:engine/model/range~Range} range The inserted range.
+	 * @param {module:engine/model/range~Range} range The inserted range (must contain only one element).
 	 * @param {String} name Name of main item to refresh.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
