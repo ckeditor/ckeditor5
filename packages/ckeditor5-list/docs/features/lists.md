@@ -26,7 +26,7 @@ Use the editor below to see the list feature plugin in action.
 
 ## List styles
 
-The {@link module:list/liststyle~ListStyle list style} feature allows customizing the list item markers. When enabled, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The styles can be changed via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
+The {@link module:list/liststyle~ListStyle list style} feature introduces some more styles for the list item markers. When enabled, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The styles can be changed via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
 
 ### Demo
 
