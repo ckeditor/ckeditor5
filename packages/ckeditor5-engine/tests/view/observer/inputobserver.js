@@ -86,33 +86,6 @@ describe( 'InputObserver', () => {
 			} );
 		} );
 
-		describe( '#domTargetRanges', () => {
-			it( 'should be an array of native DOM ranges', () => {
-				const domRange1 = global.document.createRange();
-				const domRange2 = global.document.createRange();
-
-				// [<p>foo</p>]
-				domRange1.selectNodeContents( domEditable );
-				// <p>[fo]o</p>
-				domRange2.setStart( domEditable.firstChild.firstChild, 0 );
-				domRange2.setEnd( domEditable.firstChild.firstChild, 2 );
-
-				fireMockNativeBeforeInput( {
-					getTargetRanges: () => [ domRange1, domRange2 ]
-				} );
-
-				expect( evtData.domTargetRanges ).to.have.ordered.members( [ domRange1, domRange2 ] );
-			} );
-
-			it( 'should be an empty array if there are no native DOM ranges', () => {
-				fireMockNativeBeforeInput( {
-					getTargetRanges: () => []
-				} );
-
-				expect( evtData.domTargetRanges ).to.be.empty;
-			} );
-		} );
-
 		describe( '#targetRanges', () => {
 			it( 'should be an empty array if there are no native DOM ranges', () => {
 				fireMockNativeBeforeInput( {

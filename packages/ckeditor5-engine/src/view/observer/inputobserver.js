@@ -44,10 +44,8 @@ export default class InputObserver extends DomEventObserver {
 			data = dataTransfer.getData( 'text/plain' );
 		}
 
-		// There's no way a DOM range anchored in the fake selection container (and this is the only thing the event "knows")
-		// can be mapped correctly to an editing view range. Fake selection container is not an editing view element, that's it.
-		// Luckily, at the same time, if the selection is fake, it means that some object is selected and the input range
-		// should simply surround it, so here it goes:
+		// If the editor selection is fake (an object is selected), the DOM range does not make sense because it is anchored
+		// in the fake selection container.
 		if ( viewDocument.selection.isFake ) {
 			// Future proof: in case of multi-range fake selections being possible.
 			targetRanges = [ ...viewDocument.selection.getRanges() ];
@@ -60,7 +58,6 @@ export default class InputObserver extends DomEventObserver {
 		this.fire( domEvent.type, domEvent, {
 			data,
 			dataTransfer,
-			domTargetRanges,
 			isComposing: domEvent.isComposing,
 			targetRanges,
 			inputType: domEvent.inputType
@@ -95,13 +92,6 @@ export default class InputObserver extends DomEventObserver {
  *
  * @readonly
  * @member {module:engine/view/datatransfer~DataTransfer|null} module:engine/view/observer/inputobserver~InputEventData#dataTransfer
- */
-
-/**
- * An array of target ranges passed along with the input event. Corresponds to the output of native `InputEvent#getTargetRanges()`.
- *
- * @readonly
- * @member {Array.<Range>} module:engine/view/observer/inputobserver~InputEventData#domTargetRanges
  */
 
 /**
