@@ -963,7 +963,7 @@ export default class Differ {
 	 * @private
 	 * @param {module:engine/model/element~Element} parent The element in which the change happened.
 	 * @param {Number} offset The offset at which change happened.
-	 * @param {String} name The name of the removed element or `'$text'` for a character.
+	 * @param {String} name The name of the inserted element or `'$text'` for a character.
 	 * @returns {Object} The diff item.
 	 */
 	_getInsertDiff( parent, offset, name ) {
@@ -1053,6 +1053,15 @@ export default class Differ {
 		return diffs;
 	}
 
+	/**
+	 * Returns an object with a single refresh change description.
+	 *
+	 * @private
+	 * @param {module:engine/model/element~Element} parent The element in which the change happened.
+	 * @param {Number} offset The offset at which change happened.
+	 * @param {String} name The name of the refreshed element.
+	 * @returns {Object} The diff item.
+	 */
 	_getRefreshDiff( parent, offset, name ) {
 		return {
 			type: 'refresh',
