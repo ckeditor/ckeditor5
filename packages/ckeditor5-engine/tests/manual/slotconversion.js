@@ -122,6 +122,7 @@ function downcastBox( modelElement, conversionApi ) {
 
 		writer.insert( writer.createPositionAt( contentWrap, field.index ), viewField );
 		conversionApi.mapper.bindSlotElements( field, viewField );
+		conversionApi.consumable.consume( field, 'insert' );
 
 		// Might be simplified to:
 		//
