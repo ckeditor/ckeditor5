@@ -49,7 +49,7 @@ export default class EnterObserver extends Observer {
 			const { inputType } = domEvent;
 			const isSoftEnter = inputType === 'insertLineBreak';
 
-			if ( !( inputType === 'insertParagraph' || inputType === 'insertLineBreak' ) ) {
+			if ( inputType !== 'insertParagraph' && inputType !== 'insertLineBreak' ) {
 				return;
 			}
 
