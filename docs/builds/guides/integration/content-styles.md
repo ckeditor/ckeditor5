@@ -48,8 +48,8 @@ Below there is a full list of content styles used by the editor features. You ca
 
 ```css
 /*
- * CKEditor 5 (v22.0.0) content styles.
- * Generated on Thu, 27 Aug 2020 12:13:06 GMT.
+ * CKEditor 5 (v23.0.0) content styles.
+ * Generated on Wed, 30 Sep 2020 10:17:57 GMT.
  * For more information, check out https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/content-styles.html
  */
 
@@ -113,6 +113,28 @@ Below there is a full list of content styles used by the editor features. You ca
 	float: right;
 	margin-left: var(--ck-image-style-spacing);
 }
+/* ckeditor5-block-quote/theme/blockquote.css */
+.ck-content blockquote {
+	overflow: hidden;
+	padding-right: 1.5em;
+	padding-left: 1.5em;
+	margin-left: 0;
+	margin-right: 0;
+	font-style: italic;
+	border-left: solid 5px hsl(0, 0%, 80%);
+}
+/* ckeditor5-block-quote/theme/blockquote.css */
+.ck-content[dir="rtl"] blockquote {
+	border-left: 0;
+	border-right: solid 5px hsl(0, 0%, 80%);
+}
+/* ckeditor5-horizontal-line/theme/horizontalline.css */
+.ck-content hr {
+	margin: 15px 0;
+	height: 4px;
+	background: hsl(0, 0%, 87%);
+	border: 0;
+}
 /* ckeditor5-image/theme/image.css */
 .ck-content .image {
 	display: table;
@@ -173,21 +195,6 @@ Below there is a full list of content styles used by the editor features. You ca
 /* ckeditor5-font/theme/fontsize.css */
 .ck-content .text-huge {
 	font-size: 1.8em;
-}
-/* ckeditor5-block-quote/theme/blockquote.css */
-.ck-content blockquote {
-	overflow: hidden;
-	padding-right: 1.5em;
-	padding-left: 1.5em;
-	margin-left: 0;
-	margin-right: 0;
-	font-style: italic;
-	border-left: solid 5px hsl(0, 0%, 80%);
-}
-/* ckeditor5-block-quote/theme/blockquote.css */
-.ck-content[dir="rtl"] blockquote {
-	border-left: 0;
-	border-right: solid 5px hsl(0, 0%, 80%);
 }
 /* ckeditor5-table/theme/table.css */
 .ck-content .table {
@@ -331,13 +338,6 @@ Below there is a full list of content styles used by the editor features. You ca
 /* ckeditor5-list/theme/todolist.css */
 .ck-content .todo-list .todo-list__label .todo-list__label__description {
 	vertical-align: middle;
-}
-/* ckeditor5-horizontal-line/theme/horizontalline.css */
-.ck-content hr {
-	margin: 15px 0;
-	height: 4px;
-	background: hsl(0, 0%, 87%);
-	border: 0;
 }
 /* ckeditor5-code-block/theme/codeblock.css */
 .ck-content pre {
