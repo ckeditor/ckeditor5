@@ -77,7 +77,9 @@ The {@link module:image/imagecaption~ImageCaption} plugin adds support for image
 
 By default, if the image caption is empty, the `<figcaption>` element is not visible to the user. You can click the image to reveal the caption field and write one. See the demo below:
 
-{@snippet features/image-caption}
+<info-box hint>
+	You can change the placement of the image caption by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link builds/guides/integration/content-styles content styles} for the `.ck-content .image > figcaption` style. Changing it to `caption-side: top` will display the caption above the image.
+</info-box>
 
 ## Image upload
 
