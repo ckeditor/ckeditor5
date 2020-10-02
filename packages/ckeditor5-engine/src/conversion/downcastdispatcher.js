@@ -212,7 +212,7 @@ export default class DowncastDispatcher {
 		this.conversionApi.consumable = this._createInsertConsumable( range );
 
 		// Fire a separate insert event for each node and text fragment contained in the range.
-		for ( const data of Array.from( range ).map( rangeIteratorValueToEventData ) ) {
+		for ( const data of Array.from( range ).map( walkerValueToEventData ) ) {
 			this._convertInsertWithAttributes( data );
 		}
 
@@ -304,17 +304,17 @@ export default class DowncastDispatcher {
 		const walkerValues = Array.from( range );
 		const topElementValue = walkerValues.shift();
 
-		this._reconvertElement( rangeIteratorValueToEventData( topElementValue ) );
+		this._reconvertElement( walkerValueToEventData( topElementValue ) );
 
 		// All other values are top element's children - we need to check only those that are not handled by a "triggerBy".
 		// For instance if a "<slot>" insertion triggers reconversion, their events should be filtered out while <slot>'s children,
 		// like "<paragraph>", should be converted if they were newly inserted.
-		const eventsData = walkerValues.map( rangeIteratorValueToEventData )
+		const eventsData = walkerValues.map( walkerValueToEventData )
 			.filter( eventData => !this._isRefreshTriggerEvent( getEventName( 'insert', eventData ), name ) );
 
 		for ( const eventData of eventsData ) {
 			// convert only non-memoized elements, like "<paragraph>" inside newly inserted "<slot>".
-			if ( !elementWasMemoized( eventData, this.conversionApi.mapper ) ) {
+			if ( !elementHasViewMapping( eventData, this.conversionApi.mapper ) ) {
 				this._convertInsertWithAttributes( eventData );
 			}
 		}
@@ -653,11 +653,9 @@ export default class DowncastDispatcher {
 	 * @param {Object} data Event data.
 	 */
 	_reconvertElement( data ) {
-		// Cache current view element of a converted element, might be undefined if first insert.
 		const currentView = this.conversionApi.mapper.toViewElement( data.item );
 
-		// Remove the old view (but hold the reference as it will be used to bring back view items not needed to re-render.
-		// Thanks to the mapper that holds references nothing should blow up.
+		// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
 		this.conversionApi.writer.remove( currentView );
 
 		this._convertInsertWithAttributes( data );
@@ -863,7 +861,7 @@ function getElementFromChange( entry ) {
 	return type === 'attribute' ? range.start.nodeAfter : position.parent;
 }
 
-function rangeIteratorValueToEventData( value ) {
+function walkerValueToEventData( value ) {
 	const item = value.item;
 	const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
 
@@ -873,7 +871,7 @@ function rangeIteratorValueToEventData( value ) {
 	};
 }
 
-function elementWasMemoized( data, mapper ) {
+function elementHasViewMapping( data, mapper ) {
 	if ( data.item.is( 'textProxy' ) ) {
 		const mappedPosition = mapper.toViewPosition( data.range.start );
 
