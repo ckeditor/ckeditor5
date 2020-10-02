@@ -9,6 +9,7 @@
 
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
@@ -37,7 +38,7 @@ export default class EnterObserver extends Observer {
 	 * @protected
 	 */
 	_enableBeforeInputBasedObserver() {
-		const viewDocument = this.view.document;
+		const viewDocument = this.document;
 
 		viewDocument.on( 'beforeinput', ( evt, data ) => {
 			if ( !this.isEnabled ) {
@@ -64,7 +65,7 @@ export default class EnterObserver extends Observer {
 	 * @protected
 	 */
 	_enableKeyEventsBasedObserver() {
-		const viewDocument = this.view.document;
+		const viewDocument = this.document;
 
 		viewDocument.on( 'keydown', ( evt, data ) => {
 			if ( !this.isEnabled ) {
@@ -89,17 +90,16 @@ export default class EnterObserver extends Observer {
 	 * @member {Boolean} isSoft A flag indicating this is a "soft" enter (a.k.a shift enter).
 	 */
 	_fireEnterEvent( domEvent, stop, isSoft ) {
-		const viewDocument = this.view.document;
+		const viewDocument = this.document;
 
-		// Save the event object to check later if it was stopped or not.
-		let event;
+		const eventInfo = new EventInfo( viewDocument, 'enter' );
+		const data = new DomEventData( viewDocument, domEvent, { isSoft } );
 
-		viewDocument.once( 'enter', evt => ( event = evt ), { priority: Number.POSITIVE_INFINITY } );
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvent, { isSoft } ) );
+		viewDocument.fire( eventInfo, data );
 
-		// Stop `keydown` event if `enter` event was stopped.
+		// Stop `keydown` or `beforeinput` event if `enter` event was stopped.
 		// https://github.com/ckeditor/ckeditor5/issues/753
-		if ( event && event.stop.called ) {
+		if ( eventInfo.stop.called ) {
 			stop();
 		}
 	}
