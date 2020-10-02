@@ -610,11 +610,57 @@ describe( 'DowncastHelpers', () => {
 					);
 				} );
 
+				it( 'should not trigger refresh  on adding a slot to an element without triggerBy conversion', () => {
+					model.schema.register( 'other', {
+						allowIn: '$root'
+					} );
+					model.schema.extend( 'slot', {
+						allowIn: 'other'
+					} );
+					downcastHelpers.elementToElement( {
+						model: 'other',
+						view: {
+							name: 'div',
+							classes: 'other'
+						}
+					} );
+					downcastHelpers.elementToElement( {
+						model: 'slot',
+						view: {
+							name: 'div',
+							classes: 'slot'
+						}
+					} );
+
+					setModelData( model,
+						'<other>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
+						'</other>'
+					);
+					const otherView = viewRoot.getChild( 0 );
+
+					model.change( writer => {
+						insertBazSlot( writer, modelRoot );
+					} );
+
+					expectResult(
+						'<div class="other">' +
+							'<div class="slot"><p>foo</p></div>' +
+							'<div class="slot"><p>bar</p></div>' +
+							'<div class="slot"><p>baz</p></div>' +
+						'</div>'
+					);
+					const otherViewAfter = viewRoot.getChild( 0 );
+
+					expect( otherView, 'the view should not be refreshed' ).to.equal( otherViewAfter );
+				} );
+
 				describe( 'memoization', () => {
 					it( 'should create new element on re-converting element', () => {
 						setModelData( model, '<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+								'<slot><paragraph>foo</paragraph></slot>' +
+								'<slot><paragraph>bar</paragraph></slot>' +
 							'</complex>'
 						);
 
@@ -626,13 +672,13 @@ describe( 'DowncastHelpers', () => {
 
 						const viewAfterReRender = viewRoot.getChild( 0 );
 
-						expect( viewAfterReRender ).to.not.equal( complexView );
+						expect( viewAfterReRender, 'the view should be refreshed' ).to.not.equal( complexView );
 					} );
 
 					it( 'should not re-create slot\'s child elements on re-converting main element (attribute changed)', () => {
 						setModelData( model, '<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+								'<slot><paragraph>foo</paragraph></slot>' +
+								'<slot><paragraph>bar</paragraph></slot>' +
 							'</complex>'
 						);
 
@@ -653,8 +699,8 @@ describe( 'DowncastHelpers', () => {
 
 					it( 'should not re-create slot\'s child elements on re-converting main element (slot added)', () => {
 						setModelData( model, '<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+								'<slot><paragraph>foo</paragraph></slot>' +
+								'<slot><paragraph>bar</paragraph></slot>' +
 							'</complex>'
 						);
 
@@ -781,7 +827,6 @@ describe( 'DowncastHelpers', () => {
 					expectResult( '<div class="complex-slots"><div class="slots"></div></div>' );
 				} );
 
-				// TODO: add memoization check - as this is need.
 				it( 'should convert on attribute set (main element)', () => {
 					setModelData( model, '<complex></complex>' );
 

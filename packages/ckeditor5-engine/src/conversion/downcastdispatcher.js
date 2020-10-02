@@ -295,14 +295,27 @@ export default class DowncastDispatcher {
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
 		this.conversionApi.consumable = this._createInsertConsumable( range );
 
-		const values = Array.from( range );
-		const topElementValue = values.shift();
+		// The first tree walker value will be for the element marked to be refreshed.
+		// For instance, in the below model structure it will be "<complex>" element:
+		// <complex>
+		//     <slot><paragraph>foo</paragraph></slot>
+		//     <slot><paragraph>bar</paragraph></slot>
+		// </complex>
+		const walkerValues = Array.from( range );
+		const topElementValue = walkerValues.shift();
 
 		this._reconvertElement( rangeIteratorValueToEventData( topElementValue ) );
 
-		for ( const data of values.map( rangeIteratorValueToEventData ) ) {
-			if ( !this._isRefreshTriggerEvent( data ) && !elementWasMemoized( data, this.conversionApi.mapper ) ) {
-				this._convertInsertWithAttributes( data );
+		// All other values are top element's children - we need to check only those that are not handled by a "triggerBy".
+		// For instance if a "<slot>" insertion triggers reconversion, their events should be filtered out while <slot>'s children,
+		// like "<paragraph>", should be converted if they were newly inserted.
+		const eventsData = walkerValues.map( rangeIteratorValueToEventData )
+			.filter( eventData => !this._isRefreshTriggerEvent( getEventName( 'insert', eventData ), name ) );
+
+		for ( const eventData of eventsData ) {
+			// convert only non-memoized elements, like "<paragraph>" inside newly inserted "<slot>".
+			if ( !elementWasMemoized( eventData, this.conversionApi.mapper ) ) {
+				this._convertInsertWithAttributes( eventData );
 			}
 		}
 
@@ -607,6 +620,7 @@ export default class DowncastDispatcher {
 			.filter( ( { type } ) => type === 'attribute' || type === 'insert' || type === 'remove' )
 			.map( entry => {
 				const element = getElementFromChange( entry );
+
 				let eventName;
 
 				if ( entry.type === 'attribute' ) {
@@ -620,7 +634,7 @@ export default class DowncastDispatcher {
 					eventName = `${ entry.type }:${ entry.name }`;
 				}
 
-				if ( this._refreshTriggerEventToElementNameMapping.has( eventName ) ) {
+				if ( this._isRefreshTriggerEvent( eventName, element.name ) ) {
 					return element;
 				}
 			} )
@@ -681,13 +695,13 @@ export default class DowncastDispatcher {
 	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
 	 *
 	 * @private
-	 * @param {Object} data Event data.
+	 * @param {String} eventName Event name to check.
+	 * @param {String} elementName Element name to check.
 	 * @returns {Boolean}
 	 */
-	_isRefreshTriggerEvent( data ) {
-		const expectedEventName = getEventName( 'insert', data );
-
-		return this._refreshTriggerEventToElementNameMapping.has( expectedEventName );
+	_isRefreshTriggerEvent( eventName, elementName ) {
+		return this._refreshTriggerEventToElementNameMapping.has( eventName ) &&
+			this._refreshTriggerEventToElementNameMapping.get( eventName ) === elementName;
 	}
 
 	/**
