@@ -58,8 +58,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		/**
 		 * Commands allowed in non-restricted areas.
 		 *
-		 * Commands always enabled combine typing feature commands: `'typing'`, `'delete'` and `'forwardDelete'` with commands defined
-		 * in the feature configuration.
+		 * Commands always enabled combine typing feature commands: `'input'`, `'insertText'`, `'delete'`, and `'forwardDelete'`
+		 * with commands defined in the feature configuration.
 		 *
 		 * @type {Set<string>}
 		 * @private
