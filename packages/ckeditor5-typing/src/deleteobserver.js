@@ -8,6 +8,7 @@
  */
 
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
@@ -245,17 +246,16 @@ export default class DeleteObserver extends Observer {
 	 * @member {module:engine/view/observer/domeventdata~DomEventData} deleteData The data passed along the `delete` event.
 	 */
 	_fireDeleteEvent( domEvent, stop, deleteData ) {
-		const viewDocument = this.view.document;
+		const viewDocument = this.document;
 
-		// Save the event object to check later if it was stopped or not.
-		let event;
+		const eventInfo = new EventInfo( viewDocument, 'delete' );
+		const data = new DomEventData( viewDocument, domEvent, deleteData );
 
-		viewDocument.once( 'delete', evt => ( event = evt ), { priority: Number.POSITIVE_INFINITY } );
-		viewDocument.fire( 'delete', new DomEventData( viewDocument, domEvent, deleteData ) );
+		viewDocument.fire( eventInfo, data );
 
 		// Stop the original event if `delete` event was stopped.
 		// https://github.com/ckeditor/ckeditor5/issues/753
-		if ( event && event.stop.called ) {
+		if ( eventInfo.stop.called ) {
 			stop();
 		}
 	}
