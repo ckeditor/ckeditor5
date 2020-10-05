@@ -114,8 +114,8 @@ export default class InputObserver extends DomEventObserver {
  */
 
 /**
- * Editing view ranges corresponding to
- * {@link module:engine/view/observer/inputobserver~InputEventData#domTargetRanges DOM ranges} passed along with the input event.
+ * Editing {@link module:engine/view/range~Range view ranges} corresponding to DOM ranges provided by the web browser
+ * (as returned by `InputEvent#getTargetRanges()`).
  *
  * @readonly
  * @member {Array.<module:engine/view/range~Range>} module:engine/view/observer/inputobserver~InputEventData#targetRanges
