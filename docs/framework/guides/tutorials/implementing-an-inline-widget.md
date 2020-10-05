@@ -25,11 +25,11 @@ First, install required dependencies:
 
 ```bash
 npm install --save \
-	postcss-loader@3 \
-	raw-loader@3 \
+	postcss-loader@4 \
+	raw-loader@4 \
 	style-loader@1 \
-	webpack@4 \
-	webpack-cli@3 \
+	webpack@5.0.0-rc.2 \
+	webpack-cli@4.0.0-alpha-5 \
 	@ckeditor/ckeditor5-basic-styles \
 	@ckeditor/ckeditor5-core \
 	@ckeditor/ckeditor5-dev-utils \
@@ -81,15 +81,18 @@ module.exports = {
 							}
 						}
 					},
+                    'css-loader',
 					{
 						loader: 'postcss-loader',
-						options: styles.getPostCssConfig( {
-							themeImporter: {
-								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-							},
-							minify: true
-						} )
-					},
+						options: { 
+						    postcssOptions: styles.getPostCssConfig( {
+                                themeImporter: {
+                                    themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+                                },
+                                minify: true
+                            } )
+                        }
+					}
 				]
 			}
 		]

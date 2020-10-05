@@ -26,10 +26,10 @@ First, install packages needed to build CKEditor 5:
 
 ```bash
 npm install --save \
-	postcss-loader@3 \
-	raw-loader@3 \
+	postcss-loader@4 \
+	raw-loader@4 \
 	style-loader@1 \
-	webpack@4 \
+	webpack@5.0.0-rc.2 \
 	webpack-cli@3
 ```
 
@@ -73,15 +73,18 @@ module.exports = {
 							}
 						}
 					},
-					{
-						loader: 'postcss-loader',
-						options: styles.getPostCssConfig( {
-							themeImporter: {
-								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-							},
-							minify: true
-						} )
-					}
+                    'css-loader',
+                    {
+                        loader: 'postcss-loader',
+                        options: { 
+                            postcssOptions: styles.getPostCssConfig( {
+                                themeImporter: {
+                                    themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+                                },
+                                minify: true
+                            } )
+                        }
+                    }
 				]
 			}
 		]

@@ -53,12 +53,12 @@ yarn add --dev \
 	@ckeditor/ckeditor5-widget \
 	babel-loader \
 	css-loader \
-	postcss-loader@3 \
-	raw-loader@3 \
+	postcss-loader@4 \
+	raw-loader@4 \
 	react \
 	react-dom \
 	style-loader@1 \
-	webpack@4 \
+	webpack@5.0.0-rc.2 \
 	webpack-cli@3
 ```
 
@@ -105,14 +105,17 @@ module.exports = {
 							}
 						}
 					},
+					'css-loader',
 					{
 						loader: 'postcss-loader',
-						options: styles.getPostCssConfig( {
-							themeImporter: {
-								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-							},
-							minify: true
-						} )
+						options: {
+							postcssOptions: styles.getPostCssConfig( {
+                                themeImporter: {
+                                    themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+                                },
+                                minify: true
+                            } )
+						}
 					}
 				]
 			}

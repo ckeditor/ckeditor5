@@ -99,11 +99,11 @@ The second step is to install dependencies needed to build the editor. The list 
 npm install --save \
 	@ckeditor/ckeditor5-dev-webpack-plugin \
 	@ckeditor/ckeditor5-dev-utils \
-	postcss-loader@3 \
-	raw-loader@3 \
+	postcss-loader@4 \
+	raw-loader@4 \
 	style-loader@1 \
-	webpack@4 \
-	webpack-cli@3 \
+	webpack@5.0.0-rc.2 \
+	webpack-cli@4.0.0-alpha-5
 ```
 
 ### Webpack configuration
@@ -148,15 +148,18 @@ module.exports = {
 							}
 						}
 					},
+					'css-loader',
 					{
 						loader: 'postcss-loader',
-						options: styles.getPostCssConfig( {
-							themeImporter: {
-								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-							},
-							minify: true
-						} )
-					},
+						options: { 
+						    postcssOptions: styles.getPostCssConfig( {
+                                themeImporter: {
+                                    themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+                                },
+                                minify: true
+                            } )
+                        }
+					}
 				]
 			}
 		]
@@ -195,11 +198,14 @@ Encore.
 	.addLoader({
 		test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
 		loader: 'postcss-loader',
-		options: styles.getPostCssConfig( {
-			themeImporter: {
-				themePath: require.resolve('@ckeditor/ckeditor5-theme-lark')
-			}
-		} )
+		options: {
+		    postcssOptions: styles.getPostCssConfig( {
+                themeImporter: {
+                    themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+                },
+                minify: true
+            } )
+	    }
 	} )
 ```
 
@@ -419,12 +425,14 @@ module.exports = {
 					'css-loader',
 					{
 						loader: 'postcss-loader',
-						options: styles.getPostCssConfig( {
-							themeImporter: {
-								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-							},
-							minify: true
-						} )
+						options: {
+                            postcssOptions: styles.getPostCssConfig( {
+                                themeImporter: {
+                                    themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+                                },
+                                minify: true
+                            } )
+                        }
 					}
 				]
 			}

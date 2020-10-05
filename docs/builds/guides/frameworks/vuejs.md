@@ -192,7 +192,7 @@ npm install --save \
     @ckeditor/ckeditor5-vue \
     @ckeditor/ckeditor5-dev-webpack-plugin \
     @ckeditor/ckeditor5-dev-utils \
-    postcss-loader@3 \
+    postcss-loader@4 \
     raw-loader@0.5.1
 ```
 
@@ -261,12 +261,14 @@ module.exports = {
 			.use( 'postcss-loader' )
 			.loader( 'postcss-loader' )
 			.tap( () => {
-				return styles.getPostCssConfig( {
-					themeImporter: {
-						themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
-					},
-					minify: true
-				} );
+				return {
+	                postcssOptions: styles.getPostCssConfig( {
+                        themeImporter: {
+                            themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
+                        },
+                        minify: true
+                    } )
+				};
 			} );
 	}
 };

@@ -194,7 +194,7 @@ Before you start modifying the webpack configuration, first install some CKEdito
 
 ```bash
 yarn add \
-	raw-loader@3 \
+	raw-loader@4 \
 	@ckeditor/ckeditor5-dev-utils \
 	@ckeditor/ckeditor5-theme-lark \
 	@ckeditor/ckeditor5-react \
@@ -216,6 +216,8 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 Then, add two new elements to the exported object under the `module.rules` array (as new items of the `oneOf` array). These are SVG and CSS loaders required to handle the CKEditor 5 source:
 
+If you use the `postcss-loader` package in version 4+, use the snippet below:
+
 ```js
 {
 	test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
@@ -233,14 +235,50 @@ Then, add two new elements to the exported object under the `module.rules` array
 				}
 			}
 		},
+		'css-loader',
+		{
+			loader: 'postcss-loader',
+			options: {
+                postcssOptions: styles.getPostCssConfig( {
+                    themeImporter: {
+                        themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+                    },
+                    minify: true
+                } )
+            }
+		}
+	]
+},
+```
+
+For older versions, use the snippet below:
+
+```js
+{
+	test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+	use: [ 'raw-loader' ]
+},
+{
+	test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
+	use: [
+		{
+			loader: 'style-loader',
+			options: {
+				injectType: 'singletonStyleTag',
+				attributes: {
+					'data-cke': true
+				}
+			}
+		},
+		'css-loader',
 		{
 			loader: 'postcss-loader',
 			options: styles.getPostCssConfig( {
-				themeImporter: {
-					themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-				},
-				minify: true
-			} )
+                themeImporter: {
+                    themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+                },
+                minify: true
+            } )
 		}
 	]
 },
@@ -481,14 +519,17 @@ Then add two new elements to the exported object under the `module.rules` array 
 				}
 			}
 		},
+		'css-loader',
 		{
 			loader: 'postcss-loader',
-			options: styles.getPostCssConfig( {
-				themeImporter: {
-					themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-				},
-				minify: true
-			} )
+			options: {
+                postcssOptions: styles.getPostCssConfig( {
+                    themeImporter: {
+                        themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+                    },
+                    minify: true
+                } )
+            }
 		}
 	]
 },
