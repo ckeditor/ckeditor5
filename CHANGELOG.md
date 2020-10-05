@@ -13,7 +13,7 @@ Other than that, we focused on bug fixes and stability improvements. Some highli
 
 * [Five bug fixes for list and list style plugins](https://github.com/ckeditor/ckeditor5/issues?q=is%3Aissue+milestone%3A%22iteration+36%22+label%3Atype%3Abug+label%3Apackage%3Alist).
 * [The "upload image via URL" feature was extracted into a separate image insert plugin](https://github.com/ckeditor/ckeditor5/issues/7890).
-* [Improvements for pasting as plain text using <kbd>Ctrl/cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd>](https://github.com/ckeditor/ckeditor5/issues/7799).
+* [Improvements for pasting as plain text using <kbd>Ctrl/Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd>](https://github.com/ckeditor/ckeditor5/issues/7799).
 * Fixed [a case where the link balloon toolbar would be mispositioned](https://github.com/ckeditor/ckeditor5/issues/7926) in some rare cases.
 
 Please note that there are some **major breaking changes**. Be sure to review them before upgrading.
