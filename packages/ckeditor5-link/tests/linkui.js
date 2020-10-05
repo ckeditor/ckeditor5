@@ -795,6 +795,20 @@ describe( 'LinkUI', () => {
 			sinon.assert.calledWithExactly( spy, true );
 		} );
 
+		it( 'should not show the UI on Ctrl+K keystroke on content with LinkCommand disabled', () => {
+			const spy = testUtils.sinon.stub( linkUIFeature, '_showUI' ).returns( {} );
+			const command = editor.commands.get( 'link' );
+			command.isEnabled = false;
+
+			editor.keystrokes.press( {
+				keyCode: keyCodes.k,
+				ctrlKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+			sinon.assert.notCalled( spy );
+		} );
+
 		it( 'should prevent default action on Ctrl+K keystroke', () => {
 			const preventDefaultSpy = sinon.spy();
 			const stopPropagationSpy = sinon.spy();
