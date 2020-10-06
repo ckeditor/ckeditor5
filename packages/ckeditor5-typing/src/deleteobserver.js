@@ -96,7 +96,8 @@ const DELETE_EVENT_TYPES = {
 		unit: DELETE_SELECTION,
 		direction: DELETE_FORWARD
 	},
-	// ???
+	// At this moment there is no known way to trigger this event type but let's keep it for the symmetry with
+	// deleteSoftLineBackward.
 	deleteSoftLineForward: {
 		unit: DELETE_SELECTION,
 		direction: DELETE_FORWARD
