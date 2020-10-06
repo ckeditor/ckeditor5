@@ -26,7 +26,7 @@ export default function injectBeforeInputDeleteHandling( editor ) {
 		const commandData = { unit, sequence };
 
 		// * First of all, make sure that the "selectionToRemove" is used only for units other than "codePoint" or
-		//  "character". This is related to the multi-byte characters decomposition (like complex emojis) and
+		//   "character". This is related to the multi-byte characters decomposition (like complex emojis) and
 		//   in these two cases, it is expected that the command will figure everything out from the unit type only
 		//   even though the selection could be provided. Check out comments in DeleteObserver's DELETE_EVENT_TYPES
 		//   to learn more.
