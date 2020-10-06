@@ -101,6 +101,21 @@ const DELETE_EVENT_TYPES = {
 	deleteSoftLineForward: {
 		unit: DELETE_SELECTION,
 		direction: DELETE_FORWARD
+	},
+
+	// -------------------------------------- Composition-related event types ------------------------------------------
+
+	// Safari on Mac does that when it ends the composition and wants to replace the entire content
+	// and enter another composition. E.g. Using Hiragana, start with "Paragraph[]",
+	// then type "z", "x", "c", left arrow, left arrow.
+	deleteByComposition: {
+		unit: DELETE_SELECTION,
+		direction: DELETE_BACKWARD
+	},
+
+	deleteCompositionText: {
+		unit: DELETE_SELECTION,
+		direction: DELETE_BACKWARD
 	}
 };
 

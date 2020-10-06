@@ -18,7 +18,13 @@ const TYPING_INPUT_TYPES = [
 
 	// This one is used by Safari when typing accented letter (Mac).
 	// This one is used by Safari when accepting spell check suggestions from the autocorrection pop-up (Mac).
-	'insertReplacementText'
+	'insertReplacementText',
+
+	// TODO
+	'insertCompositionText',
+
+	// TODO
+	'insertFromComposition'
 ];
 
 /**
@@ -31,6 +37,8 @@ const TYPING_INPUT_TYPES = [
 export default function injectBeforeInputTypingHandling( view ) {
 	const viewDocument = view.document;
 
+	let currentCompositionStartPosition;
+
 	viewDocument.on( 'beforeinput', ( evt, data ) => {
 		const { data: text, targetRanges, inputType } = data;
 
@@ -38,10 +46,27 @@ export default function injectBeforeInputTypingHandling( view ) {
 			return;
 		}
 
-		viewDocument.fire( 'insertText', {
-			text,
-			selection: view.createSelection( targetRanges )
-		} );
+		if ( inputType === 'insertCompositionText' || inputType === 'insertFromComposition' ) {
+			let insertRange = targetRanges[ 0 ];
+
+			if ( !insertRange ) {
+				insertRange = view.createRange(
+					currentCompositionStartPosition,
+					viewDocument.selection.getLastPosition()
+				);
+			}
+
+			viewDocument.fire( 'insertText', {
+				text,
+				selection: view.createSelection( insertRange )
+			} );
+		}
+		else {
+			viewDocument.fire( 'insertText', {
+				text,
+				selection: view.createSelection( targetRanges )
+			} );
+		}
 
 		// If this listener handled the event, there's no point in propagating it any further
 		// to other callbacks.
@@ -52,5 +77,12 @@ export default function injectBeforeInputTypingHandling( view ) {
 		// (should be expanded instead to replace the character from the first step). That's why this particular input must
 		// be preventDefaulted().
 		data.preventDefault();
+	} );
+
+	viewDocument.on( 'compositionstart', () => {
+		currentCompositionStartPosition = viewDocument.selection.getFirstPosition();
+	} );
+
+	viewDocument.on( 'compositionend', () => {
 	} );
 }

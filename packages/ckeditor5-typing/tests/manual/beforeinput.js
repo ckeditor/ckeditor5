@@ -43,7 +43,7 @@ ClassicEditor
 			Link,
 			List,
 			MediaEmbed,
-			Mention,
+			// Mention,
 			Paragraph,
 			Table,
 			TableToolbar
@@ -99,19 +99,31 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		// window.editor = editor;
+		window.editor = editor;
 
 		let beforeInputEventCount = 0;
 		let compositionEventCount = 0;
 
 		editor.editing.view.document.on( 'beforeinput', ( evt, evtData ) => {
-			const { targetRanges, data, inputType, isComposing } = evtData;
+			let { targetRanges, data, inputType, isComposing } = evtData;
+
+			if ( isComposing === undefined ) {
+				isComposing = inputType.toLowerCase().indexOf( 'compos' ) > -1;
+			}
+
+			const fgColor = 'color: ' + ( isComposing ? 'white;' : 'black;' );
+			const bgColor = 'background: ' + ( isComposing ? 'green;' : 'white;' );
+			const separatorStyles = fgColor + bgColor;
 
 			console.group(
 				`#${ ++beforeInputEventCount } ` +
-				'beforeInput ' +
-				`(%c"${ inputType }"%c${ isComposing ? ',%c isComposing' : '%c' }%c)`,
-				'color: blue', 'color: default', 'color: green', 'color: default'
+				`%c${ inputType }` +
+				'%c ' +
+				`%c${ isComposing ? ' in composition #' + compositionEventCount : '' }`,
+
+				'color: ' + ( isComposing ? 'white;' : 'blue;' ) + '; background: ' + ( isComposing ? 'blue;' : 'white;' ),
+				separatorStyles,
+				fgColor + bgColor
 			);
 
 			if ( data ) {
@@ -119,7 +131,7 @@ ClassicEditor
 			} else {
 				console.log( '%cdata:', 'font-weight: bold', data );
 			}
-			console.log( '%ctargetRanges:', 'font-weight: bold', targetRanges );
+			console.log( '%ctargetRanges:', 'font-weight: bold', targetRanges.length ? targetRanges : 'no ranges' );
 
 			if ( targetRanges.length ) {
 				console.group( 'first range' );
