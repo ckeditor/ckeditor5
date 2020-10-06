@@ -171,6 +171,7 @@ export default class MediaEmbedEditing extends Plugin {
 			isObject: true,
 			isBlock: true,
 			allowWhere: '$block',
+			allowIn: 'tableRow',
 			allowAttributes: [ 'url' ]
 		} );
 
