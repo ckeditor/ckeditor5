@@ -54,7 +54,7 @@
     "style-loader": "^1.2.1",
     "terser-webpack-plugin": "^4.2.2",
     "webpack": "^5.0.0-rc.2",
-    "webpack-cli": "^4.0.0-alpha-5"
+    "webpack-cli": "^4.0.0-rc.0"
   },
   "engines": {
     "node": ">=12.0.0",

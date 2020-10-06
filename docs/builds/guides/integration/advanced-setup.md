@@ -102,8 +102,8 @@ npm install --save \
 	postcss-loader@4 \
 	raw-loader@4 \
 	style-loader@1 \
-	webpack@5.0.0-rc.2 \
-	webpack-cli@4.0.0-alpha-5
+	webpack@5.0.0-rc.3 \
+	webpack-cli@4.0.0-rc.0
 ```
 
 ### Webpack configuration
