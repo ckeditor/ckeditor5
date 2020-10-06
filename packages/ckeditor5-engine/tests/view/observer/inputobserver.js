@@ -86,33 +86,6 @@ describe( 'InputObserver', () => {
 			} );
 		} );
 
-		describe( '#domTargetRanges', () => {
-			it( 'should be an array of native DOM ranges', () => {
-				const domRange1 = global.document.createRange();
-				const domRange2 = global.document.createRange();
-
-				// [<p>foo</p>]
-				domRange1.selectNodeContents( domEditable );
-				// <p>[fo]o</p>
-				domRange2.setStart( domEditable.firstChild.firstChild, 0 );
-				domRange2.setEnd( domEditable.firstChild.firstChild, 2 );
-
-				fireMockNativeBeforeInput( {
-					getTargetRanges: () => [ domRange1, domRange2 ]
-				} );
-
-				expect( evtData.domTargetRanges ).to.have.ordered.members( [ domRange1, domRange2 ] );
-			} );
-
-			it( 'should be an empty array if there are no native DOM ranges', () => {
-				fireMockNativeBeforeInput( {
-					getTargetRanges: () => []
-				} );
-
-				expect( evtData.domTargetRanges ).to.be.empty;
-			} );
-		} );
-
 		describe( '#targetRanges', () => {
 			it( 'should be an empty array if there are no native DOM ranges', () => {
 				fireMockNativeBeforeInput( {
@@ -154,6 +127,19 @@ describe( 'InputObserver', () => {
 				expect( viewRange2.end.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
 				expect( viewRange2.end.offset ).to.equal( 2 );
 			} );
+
+			it( 'should provide a range encompassing the selected object when selection is fake', () => {
+				const domRange = global.document.createRange();
+
+				sinon.stub( viewDocument.selection, 'isFake' ).get( () => true );
+				sinon.stub( viewDocument.selection, 'getRanges' ).returns( [ 'fakeRange1', 'fakeRange2' ] );
+
+				fireMockNativeBeforeInput( {
+					getTargetRanges: () => [ domRange ]
+				} );
+
+				expect( evtData.targetRanges ).to.have.ordered.members( [ 'fakeRange1', 'fakeRange2' ] );
+			} );
 		} );
 
 		describe( '#data', () => {
@@ -187,6 +173,30 @@ describe( 'InputObserver', () => {
 				} );
 
 				expect( evtData.data ).to.be.null;
+			} );
+		} );
+
+		describe( '#isComposing', () => {
+			it( 'should reflect InputEvent#isComposing when true', () => {
+				fireMockNativeBeforeInput( {
+					isComposing: true
+				} );
+
+				expect( evtData.isComposing ).to.be.true;
+			} );
+
+			it( 'should reflect InputEvent#isComposing when false', () => {
+				fireMockNativeBeforeInput( {
+					isComposing: false
+				} );
+
+				expect( evtData.isComposing ).to.be.false;
+			} );
+
+			it( 'should reflect InputEvent#isComposing when not set', () => {
+				fireMockNativeBeforeInput();
+
+				expect( evtData.isComposing ).to.be.undefined;
 			} );
 		} );
 	} );

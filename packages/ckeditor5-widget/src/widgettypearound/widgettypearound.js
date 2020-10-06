@@ -17,6 +17,7 @@ import {
 	keyCodes
 } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import {
 	isTypeAroundWidget,
@@ -29,7 +30,7 @@ import {
 
 import {
 	isNonTypingKeystroke
-} from '@ckeditor/ckeditor5-typing/src/utils/injectunsafekeystrokeshandling';
+} from '@ckeditor/ckeditor5-typing/src/utils/input/utils';
 
 import returnIcon from '../../theme/icons/return-arrow.svg';
 import '../../theme/widgettypearound.css';
@@ -574,27 +575,47 @@ export default class WidgetTypeAround extends Plugin {
 	 * and another one for actual typing. It is not a disaster but this may need to be fixed
 	 * sooner or later.
 	 *
-	 * Learn more in {@link module:typing/utils/injectunsafekeystrokeshandling}.
+	 * Learn more in {@link module:typing/utils/input/injectlegacyunsafekeystrokeshandling}.
 	 *
 	 * @private
 	 */
 	_enableInsertingParagraphsOnTypingKeystroke() {
 		const editor = this.editor;
-		const editingView = editor.editing.view;
-		const keyCodesHandledSomewhereElse = [
-			keyCodes.enter,
-			keyCodes.delete,
-			keyCodes.backspace
-		];
+		const viewDocument = editor.editing.view.document;
 
-		// Note: The priority must precede the default Widget class keydown handler ("high") and the
-		// TableKeyboard keydown handler ("high + 1").
-		this._listenToIfEnabled( editingView.document, 'keydown', ( evt, domEventData ) => {
-			// Don't handle enter/backspace/delete here. They are handled in dedicated listeners.
-			if ( !keyCodesHandledSomewhereElse.includes( domEventData.keyCode ) && !isNonTypingKeystroke( domEventData ) ) {
-				this._insertParagraphAccordingToFakeCaretPosition();
-			}
-		}, { priority: priorities.get( 'high' ) + 1 } );
+		// The implementation on top of a beforeinput-based typing is easier and comes down to
+		// intercepting the insertText event before the default Input plugin handled kicks in.
+		//
+		// When it comes to mutation-based typing, things get complicated. This kind of typing
+		// uses not only mutations but also keydown events so paragraph insertion must happen
+		// at precise moment between other keydown handlers.
+		if ( env.features.isInputEventsLevel1Supported ) {
+			// Note: The priority must precede the default Input plugin insertText handler.
+			this._listenToIfEnabled( viewDocument, 'insertText', ( evt, data ) => {
+				if ( this._insertParagraphAccordingToFakeCaretPosition() ) {
+					// The view selection in the event data contains the widget. If the new paragraph
+					// was inserted, modify the view selection passed along with the insertText event
+					// so the default event handler in the Input plugin starts typing inside the paragraph.
+					// Otherwise, the typing would be over the widget.
+					data.selection = viewDocument.selection;
+				}
+			}, { priority: 'high' } );
+		} else {
+			const keyCodesHandledSomewhereElse = [
+				keyCodes.enter,
+				keyCodes.delete,
+				keyCodes.backspace
+			];
+
+			// Note: The priority must precede the default Widget class keydown handler ("high") and the
+			// TableKeyboard keydown handler ("high - 10").
+			this._listenToIfEnabled( viewDocument, 'keydown', ( evt, domEventData ) => {
+				// Don't handle enter/backspace/delete here. They are handled in dedicated listeners.
+				if ( !keyCodesHandledSomewhereElse.includes( domEventData.keyCode ) && !isNonTypingKeystroke( domEventData ) ) {
+					this._insertParagraphAccordingToFakeCaretPosition();
+				}
+			}, { priority: priorities.get( 'high' ) + 1 } );
+		}
 	}
 
 	/**

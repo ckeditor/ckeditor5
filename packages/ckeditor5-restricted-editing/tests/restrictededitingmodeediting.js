@@ -16,6 +16,7 @@ import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethr
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
 import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand';
@@ -344,7 +345,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 		it( 'should block user typing outside exception markers', () => {
 			setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
 
-			editor.execute( 'input', { text: 'X' } );
+			editor.execute( 'insertText', { text: 'X' } );
 
 			assertEqualMarkup( getModelData( model ), '<paragraph>foo []bar baz</paragraph>' );
 		} );
@@ -364,7 +365,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			model.change( writer => {
 				writer.setSelection( firstParagraph, 5 );
 			} );
-			editor.execute( 'input', { text: 'X' } );
+			editor.execute( 'insertText', { text: 'X' } );
 
 			assertEqualMarkup( getModelData( model ), '<paragraph>foo bX[]ar baz</paragraph>' );
 		} );
@@ -381,7 +382,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 			} );
 
-			editor.execute( 'input', { text: 'X' } );
+			editor.execute( 'insertText', { text: 'X' } );
 
 			assertEqualMarkup( getModelData( model ), '<paragraph>foo barX[] baz</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
@@ -405,7 +406,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 			} );
 
-			editor.execute( 'input', { text: 'X' } );
+			editor.execute( 'insertText', { text: 'X' } );
 
 			assertEqualMarkup( getModelData( model ), '<paragraph>foo X[]bar baz</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
@@ -434,7 +435,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				writer.setSelection( writer.createPositionAt( firstParagraph, 4 ) );
 			} );
 
-			editor.execute( 'input', { text: 'X' } );
+			editor.execute( 'insertText', { text: 'X' } );
 
 			assertEqualMarkup( getModelData( model ), '<paragraph>foo X[]bar baz</paragraph>' );
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
@@ -459,7 +460,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						writer.createPositionAt( firstParagraph, 6 )
 					) )
 				} );
-				editor.execute( 'input', {
+				editor.execute( 'insertText', {
 					text: 'XX',
 					range: writer.createRange( writer.createPositionAt( firstParagraph, 4 ) )
 				} );
@@ -488,7 +489,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 						writer.createPositionAt( firstParagraph, 7 )
 					) )
 				} );
-				editor.execute( 'input', {
+				editor.execute( 'insertText', {
 					text: 'XX',
 					range: writer.createRange( writer.createPositionAt( firstParagraph, 5 ) )
 				} );
@@ -625,6 +626,8 @@ describe( 'RestrictedEditingModeEditing', () => {
 		let firstParagraph;
 
 		beforeEach( async () => {
+			testUtils.sinon.stub( global.window.console, 'warn' );
+
 			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
 			model = editor.model;
 
@@ -709,6 +712,100 @@ describe( 'RestrictedEditingModeEditing', () => {
 					model.createPositionAt( firstParagraph, 2 ),
 					model.createPositionAt( firstParagraph, 8 )
 				)
+			} );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foxxxxxxx[]baz</paragraph>' );
+		} );
+	} );
+
+	describe( 'enforcing restrictions on insert text command', () => {
+		let firstParagraph;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing ] } );
+			model = editor.model;
+
+			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+
+			firstParagraph = model.document.getRoot().getChild( 0 );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should prevent changing text before exception marker', () => {
+			addExceptionMarker( 4, 7, firstParagraph );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 5 );
+			} );
+
+			// Simulate native spell-check action.
+			editor.execute( 'insertText', {
+				text: 'xxxxxxx',
+				range: model.createRange(
+					model.createPositionAt( firstParagraph, 0 ),
+					model.createPositionAt( firstParagraph, 7 )
+				)
+			} );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]ar baz</paragraph>' );
+		} );
+
+		it( 'should prevent changing text before exception marker (native spell-check simulation)', () => {
+			addExceptionMarker( 4, 7, firstParagraph );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 5 );
+			} );
+
+			// Simulate native spell-check action.
+			editor.execute( 'insertText', {
+				text: 'xxxxxxx',
+				range: model.createRange(
+					model.createPositionAt( firstParagraph, 4 ),
+					model.createPositionAt( firstParagraph, 9 )
+				)
+			} );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>foo b[]ar baz</paragraph>' );
+		} );
+
+		it( 'should prevent changing text before (change crossing different markers)', () => {
+			addExceptionMarker( 0, 4, firstParagraph );
+			addExceptionMarker( 7, 9, firstParagraph, 2 );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 2 );
+			} );
+
+			// Simulate native spell-check action.
+			editor.execute( 'insertText', {
+				text: 'xxxxxxx',
+				range: model.createRange(
+					model.createPositionAt( firstParagraph, 2 ),
+					model.createPositionAt( firstParagraph, 8 )
+				)
+			} );
+
+			assertEqualMarkup( getModelData( model ), '<paragraph>fo[]o bar baz</paragraph>' );
+		} );
+
+		it( 'should allow changing text inside single marker', () => {
+			addExceptionMarker( 0, 9, firstParagraph );
+
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 2 );
+			} );
+
+			// Simulate native spell-check action.
+			editor.execute( 'insertText', {
+				text: 'xxxxxxx',
+				selection: model.createSelection( model.createRange(
+					model.createPositionAt( firstParagraph, 2 ),
+					model.createPositionAt( firstParagraph, 8 )
+				) )
 			} );
 
 			assertEqualMarkup( getModelData( model ), '<paragraph>foxxxxxxx[]baz</paragraph>' );

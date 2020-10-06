@@ -10,12 +10,19 @@ import Typing from '../../src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'Bug ckeditor5-typing#59', () => {
 	let editor;
 	let container;
 
+	testUtils.createSinonSandbox();
+
 	beforeEach( () => {
+		// Force the browser to not use the beforeinput event.
+		testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
+
 		container = document.createElement( 'div' );
 		document.body.appendChild( container );
 

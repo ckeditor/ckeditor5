@@ -416,7 +416,7 @@ describe( 'AutoLink', () => {
 		const letters = text.split( '' );
 
 		for ( const letter of letters ) {
-			editor.execute( 'input', { text: letter } );
+			editor.execute( 'insertText', { text: letter } );
 		}
 	}
 } );

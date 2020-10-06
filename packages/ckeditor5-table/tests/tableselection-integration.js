@@ -11,13 +11,14 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import TableEditing from '../src/tableediting';
 import TableSelection from '../src/tableselection';
 import TableClipboard from '../src/tableclipboard';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { assertSelectedCells, modelTable } from './_utils/utils';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
@@ -28,6 +29,8 @@ import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 describe( 'TableSelection - integration', () => {
 	let editor, model, tableSelection, modelRoot, element, viewDocument;
+
+	testUtils.createSinonSandbox();
 
 	afterEach( async () => {
 		element.remove();
@@ -50,6 +53,7 @@ describe( 'TableSelection - integration', () => {
 			}, {
 				direction: 'backward',
 				unit: 'character',
+				inputType: 'deleteContentBackward',
 				sequence: 1
 			} );
 			viewDocument.fire( 'delete', domEventData );
@@ -72,6 +76,7 @@ describe( 'TableSelection - integration', () => {
 			}, {
 				direction: 'forward',
 				unit: 'character',
+				inputType: 'deleteContentForward',
 				sequence: 1
 			} );
 			viewDocument.fire( 'delete', domEventData );
@@ -95,6 +100,7 @@ describe( 'TableSelection - integration', () => {
 			}, {
 				direction: 'backward',
 				unit: 'character',
+				inputType: 'deleteContentBackward',
 				sequence: 1
 			} );
 			viewDocument.fire( 'delete', domEventData );
@@ -108,11 +114,36 @@ describe( 'TableSelection - integration', () => {
 	} );
 
 	describe( 'on user input', () => {
-		beforeEach( async () => {
+		it( 'should clear contents of the selected table cells and put selection in last cell on user input ' +
+			'(beforeinput-based typing)', async () => {
 			await setupEditor( [ Input ] );
+
+			const view = editor.editing.view;
+			const viewCell = editor.editing.mapper.toViewElement( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			viewDocument.fire( 'insertText', {
+				text: 'x',
+				selection: view.createSelection( view.createPositionAt( viewCell.getChild( 0 ), 0 ) )
+			} );
+
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ '', '', '13' ],
+				[ '', 'x[]', '23' ],
+				[ '31', '32', '33' ]
+			] ) );
 		} );
 
-		it( 'should clear contents of the selected table cells and put selection in last cell on user input', () => {
+		it( 'should clear contents of the selected table cells and put selection in last cell on user input ' +
+			'(mutations-based typing)', async () => {
+			testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
+
+			await setupEditor( [ Input ] );
+
 			tableSelection.setCellSelection(
 				modelRoot.getNodeByPath( [ 0, 0, 0 ] ),
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
@@ -140,7 +171,32 @@ describe( 'TableSelection - integration', () => {
 			] ) );
 		} );
 
-		it( 'should not interfere with default key handler if no table selection', () => {
+		it( 'should not interfere with default key handler if no table selection (beforeinput-based typing)', async () => {
+			testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => true );
+
+			await setupEditor( [ Input ] );
+
+			const view = editor.editing.view;
+			const viewCell = editor.editing.mapper.toViewElement( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
+
+			viewDocument.fire( 'insertText', {
+				text: 'x',
+				selection: view.createSelection( view.createPositionAt( viewCell.getChild( 0 ), 0 ) )
+			} );
+
+			assertEqualMarkup( getModelData( model ), modelTable( [
+				[ 'x[]11', '12', '13' ],
+				[ '21', '22', '23' ],
+				[ '31', '32', '33' ]
+			] ) );
+		} );
+
+		it( 'should not interfere with default key handler if no table selection (mutations-based typing)', async () => {
+			// Force the browser to not use the beforeinput event.
+			testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
+
+			await setupEditor( [ Input ] );
+
 			viewDocument.fire( 'keydown', { keyCode: getCode( 'x' ) } );
 
 			// Mutate at the place where the document selection was put; it's more realistic

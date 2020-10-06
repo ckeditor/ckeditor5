@@ -1154,7 +1154,7 @@ describe( 'UndoEditing integration', () => {
 
 	function type( path, text ) {
 		setSelection( path.slice(), path.slice() );
-		editor.execute( 'input', { text } );
+		editor.execute( 'insertText', { text } );
 	}
 
 	function remove( path ) {

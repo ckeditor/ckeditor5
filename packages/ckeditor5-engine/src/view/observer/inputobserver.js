@@ -28,9 +28,11 @@ export default class InputObserver extends DomEventObserver {
 	onDomEvent( domEvent ) {
 		const domTargetRanges = domEvent.getTargetRanges();
 		const view = this.view;
+		const viewDocument = view.document;
 
 		let dataTransfer = null;
 		let data = null;
+		let targetRanges;
 
 		if ( domEvent.dataTransfer ) {
 			dataTransfer = new DataTransfer( domEvent.dataTransfer );
@@ -42,11 +44,22 @@ export default class InputObserver extends DomEventObserver {
 			data = dataTransfer.getData( 'text/plain' );
 		}
 
+		// If the editor selection is fake (an object is selected), the DOM range does not make sense because it is anchored
+		// in the fake selection container.
+		if ( viewDocument.selection.isFake ) {
+			// Future proof: in case of multi-range fake selections being possible.
+			targetRanges = [ ...viewDocument.selection.getRanges() ];
+		} else {
+			targetRanges = domTargetRanges.map( domRange => {
+				return view.domConverter.domRangeToView( domRange );
+			} );
+		}
+
 		this.fire( domEvent.type, domEvent, {
 			data,
 			dataTransfer,
-			domTargetRanges,
-			targetRanges: domTargetRanges.map( domRange => view.domConverter.domRangeToView( domRange ) ),
+			isComposing: domEvent.isComposing,
+			targetRanges,
 			inputType: domEvent.inputType
 		} );
 	}
@@ -82,10 +95,15 @@ export default class InputObserver extends DomEventObserver {
  */
 
 /**
- * An array of target ranges passed along with the input event. Corresponds to the output of native `InputEvent#getTargetRanges()`.
+ * A flag indicating that the `beforeinput` event was fired during composition.
+ *
+ * Corresponds to the
+ * {@link module:engine/view/document~Document#event:compositionstart},
+ * {@link module:engine/view/document~Document#event:compositionupdate},
+ * and {@link module:engine/view/document~Document#event:compositionend } trio.
  *
  * @readonly
- * @member {Array.<Range>} module:engine/view/observer/inputobserver~InputEventData#domTargetRanges
+ * @member {Boolean} module:engine/view/observer/inputobserver~InputEventData#isComposing
  */
 
 /**
@@ -96,8 +114,8 @@ export default class InputObserver extends DomEventObserver {
  */
 
 /**
- * Editing view ranges corresponding to
- * {@link module:engine/view/observer/inputobserver~InputEventData#domTargetRanges DOM ranges} passed along with the input event.
+ * Editing {@link module:engine/view/range~Range view ranges} corresponding to DOM ranges provided by the web browser
+ * (as returned by `InputEvent#getTargetRanges()`).
  *
  * @readonly
  * @member {Array.<module:engine/view/range~Range>} module:engine/view/observer/inputobserver~InputEventData#targetRanges

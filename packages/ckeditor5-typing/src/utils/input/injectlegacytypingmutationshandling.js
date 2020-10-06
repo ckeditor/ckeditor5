@@ -4,20 +4,33 @@
  */
 
 /**
- * @module typing/utils/injecttypingmutationshandling
+ * @module typing/utils/input/injectlegacytypingmutationshandling
  */
 
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
 import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
 
-import { getSingleTextNodeChange, containerChildrenMutated } from './utils';
+import {
+	getSingleTextNodeChange,
+	containerChildrenMutated
+} from './utils';
 
 /**
- * Handles mutations caused by normal typing.
+ * Handles mutations caused by normal typing, for instance when the user presses <kbd>A</kbd> or <kbd>?</kbd>
+ * in the editing view document. It translates these mutations into
+ * {@link module:engine/view/document~Document#event:insertText `insertText`} view events.
  *
+ * **Note**: This is a legacy typing handler for browsers that do **not** support Input Events. Other browsers use
+ * {@link module:typing/utils/input/injectbeforeinputtypinghandling~injectBeforeInputTypingHandling} instead.
+ *
+ * **Note**: Keystrokes such as <kbd>Delete</kbd> or <kbd>Enter</kbd> are handled by dedicated observers,
+ * see {@link module:typing/deleteobserver~DeleteObserver} and {@link module:enter/enterobserver~EnterObserver}
+ * to learn more.
+ *
+ * @protected
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  */
-export default function injectTypingMutationsHandling( editor ) {
+export default function injectLegacyTypingMutationsHandling( editor ) {
 	editor.editing.view.document.on( 'mutations', ( evt, mutations, viewSelection ) => {
 		new MutationHandler( editor ).handle( mutations, viewSelection );
 	} );
@@ -81,7 +94,7 @@ class MutationHandler {
 	 * To handle such situations, the common DOM ancestor of all mutations is converted to the model representation
 	 * and then compared with the current model to calculate the proper text change.
 	 *
-	 * Note: Single text node insertion is handled in {@link #_handleTextNodeInsertion} and text node mutation is handled
+	 * **Note**: Single text node insertion is handled in {@link #_handleTextNodeInsertion} and text node mutation is handled
 	 * in {@link #_handleTextMutation}).
 	 *
 	 * @private
@@ -158,27 +171,24 @@ class MutationHandler {
 			return;
 		}
 
-		const diffResult = diff( oldText, newText );
-
-		const { firstChangeAt, insertions, deletions } = calculateChanges( diffResult );
-
-		// Try setting new model selection according to passed view selection.
-		let modelSelectionRange = null;
+		let resultRange;
 
 		if ( viewSelection ) {
-			modelSelectionRange = this.editing.mapper.toModelRange( viewSelection.getFirstRange() );
+			resultRange = viewSelection.getFirstRange();
 		}
 
+		const diffResult = diff( oldText, newText );
+		const { firstChangeAt, insertions, deletions } = calculateChanges( diffResult );
 		const insertText = newText.substr( firstChangeAt, insertions );
 		const removeRange = this.editor.model.createRange(
 			this.editor.model.createPositionAt( currentModel, firstChangeAt ),
 			this.editor.model.createPositionAt( currentModel, firstChangeAt + deletions )
 		);
 
-		this.editor.execute( 'input', {
+		this.editing.view.document.fire( 'insertText', {
 			text: insertText,
-			range: removeRange,
-			resultRange: modelSelectionRange
+			selection: this.editing.view.createSelection( this.editing.mapper.toViewRange( removeRange ) ),
+			resultRange
 		} );
 	}
 
@@ -211,12 +221,10 @@ class MutationHandler {
 		const diffResult = diff( oldText, newText );
 
 		const { firstChangeAt, insertions, deletions } = calculateChanges( diffResult );
-
-		// Try setting new model selection according to passed view selection.
-		let modelSelectionRange = null;
+		let resultRange;
 
 		if ( viewSelection ) {
-			modelSelectionRange = this.editing.mapper.toModelRange( viewSelection.getFirstRange() );
+			resultRange = viewSelection.getFirstRange();
 		}
 
 		// Get the position in view and model where the changes will happen.
@@ -225,10 +233,10 @@ class MutationHandler {
 		const removeRange = this.editor.model.createRange( modelPos, modelPos.getShiftedBy( deletions ) );
 		const insertText = newText.substr( firstChangeAt, insertions );
 
-		this.editor.execute( 'input', {
+		this.editing.view.document.fire( 'insertText', {
 			text: insertText,
-			range: removeRange,
-			resultRange: modelSelectionRange
+			selection: this.editing.view.createSelection( this.editing.mapper.toViewRange( removeRange ) ),
+			resultRange
 		} );
 	}
 
@@ -242,16 +250,15 @@ class MutationHandler {
 
 		const change = getSingleTextNodeChange( mutation );
 		const viewPos = this.editing.view.createPositionAt( mutation.node, change.index );
-		const modelPos = this.editing.mapper.toModelPosition( viewPos );
 		const insertedText = change.values[ 0 ].data;
 
-		this.editor.execute( 'input', {
+		this.editing.view.document.fire( 'insertText', {
 			// Replace &nbsp; inserted by the browser with normal space.
 			// See comment in `_handleTextMutation`.
 			// In this case we don't need to do this before `diff` because we diff whole nodes.
 			// Just change &nbsp; in case there are some.
 			text: insertedText.replace( /\u00A0/g, ' ' ),
-			range: this.editor.model.createRange( modelPos )
+			selection: this.editor.editing.view.createSelection( viewPos )
 		} );
 	}
 }

@@ -7,13 +7,20 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Input from '../../src/input';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'Bug ckeditor5-typing#188', () => {
 	let editor;
 
+	testUtils.createSinonSandbox();
+
 	beforeEach( () => {
+		// Force the browser to not use the beforeinput event.
+		testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
+
 		return VirtualTestEditor.create( {
 			plugins: [ Input, Paragraph, BoldEditing ]
 		} ).then( newEditor => {

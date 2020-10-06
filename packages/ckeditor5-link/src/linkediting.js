@@ -17,7 +17,6 @@ import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import ManualDecorator from './utils/manualdecorator';
 import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattributerange';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { createLinkElement, ensureSafeUrl, getLocalizedDecorators, normalizeDecorators } from './utils';
 
 import '../theme/link.css';
@@ -460,12 +459,12 @@ export default class LinkEditing extends Plugin {
 		// A flag whether attributes `linkHref` attribute should be preserved.
 		let shouldPreserveAttributes = false;
 
-		// A flag whether the `Backspace` key was pressed.
-		let hasBackspacePressed = false;
+		// A flag indicating that the delete direction was "backward".
+		let wasBackwardDelete = false;
 
-		// Detect pressing `Backspace`.
+		// Detect backward delete.
 		this.listenTo( view.document, 'delete', ( evt, data ) => {
-			hasBackspacePressed = data.domEvent.keyCode === keyCodes.backspace;
+			wasBackwardDelete = data.direction === 'backward';
 		}, { priority: 'high' } );
 
 		// Before removing the content, check whether the selection is inside a link or at the end of link but with 2-SCM enabled.
@@ -490,12 +489,12 @@ export default class LinkEditing extends Plugin {
 
 		// After removing the content, check whether the current selection should preserve the `linkHref` attribute.
 		this.listenTo( model, 'deleteContent', () => {
-			// If didn't press `Backspace`.
-			if ( !hasBackspacePressed ) {
+			// Do not respond to forward delete.
+			if ( !wasBackwardDelete ) {
 				return;
 			}
 
-			hasBackspacePressed = false;
+			wasBackwardDelete = false;
 
 			// Disable the mechanism if inside a link (`<$text url="foo">F[]oo</$text>` or <$text url="foo">Foo[]</$text>`).
 			if ( shouldPreserveAttributes ) {

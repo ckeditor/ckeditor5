@@ -3,11 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import Input from '../../src/input';
 
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
@@ -17,8 +21,6 @@ import MutationObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mutat
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-
-/* global document */
 
 // NOTE: In all these tests we need to simulate the mutations. However, it's really tricky to tell what
 // should be in "newChildren" because we don't have yet access to these nodes. We pass new instances,
@@ -31,7 +33,12 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 describe( 'Bug ckeditor5-typing#100', () => {
 	let domElement, domRoot, editor, model, view, viewDocument, viewRoot;
 
+	testUtils.createSinonSandbox();
+
 	beforeEach( () => {
+		// Force the browser to not use the beforeinput event.
+		testUtils.sinon.stub( env.features, 'isInputEventsLevel1Supported' ).get( () => false );
+
 		domElement = document.createElement( 'div' );
 		document.body.appendChild( domElement );
 

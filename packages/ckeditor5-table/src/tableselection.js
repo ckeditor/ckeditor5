@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import first from '@ckeditor/ckeditor5-utils/src/first';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
@@ -45,8 +46,14 @@ export default class TableSelection extends Plugin {
 	init() {
 		const editor = this.editor;
 		const model = editor.model;
+		const view = editor.editing.view;
 
 		this.listenTo( model, 'deleteContent', ( evt, args ) => this._handleDeleteContent( evt, args ), { priority: 'high' } );
+
+		// Check out the handler docs to learn more.
+		if ( env.features.isInputEventsLevel1Supported ) {
+			this.listenTo( view.document, 'insertText', ( evt, data ) => this._handleInsertTextEvent( evt, data ), { priority: 'high' } );
+		}
 
 		this._defineSelectionConverter();
 		this._enablePluginDisabling(); // sic!
@@ -300,6 +307,40 @@ export default class TableSelection extends Plugin {
 				selection.setTo( rangeToSelect );
 			}
 		} );
+	}
+
+	/**
+	 * This handler makes it possible to remove the content of all selected cells by starting to type
+	 * in browsers that use beforeinput–based typing. If you take a look at {@link #_defineSelectionConverter}
+	 * you will find out that despite the multi-cell selection being set in the model, the view selection
+	 * is collapsed in the last cell (because most browsers are unable to render multi-cell selections; yes, it's a hack).
+	 * When multiple cells are selected in the model and the user starts to type, the
+	 * {@link module:engine/view/document~Document#event:insertText} event carries information provided by the
+	 * DOM beforeinput event, that in turn only knows about this collapsed DOM selection in the last cell.
+	 * As a result, the selected cells have no chance to be cleaned up. To fix this, this listener intercepts
+	 * the event and inject the custom view selection in the data that translates correctly to the actual state
+	 * of the multi-cell selection in the model.
+	 *
+	 * FYI: The mutations-based input does `deleteContent()` (based on the correct model selection) on its own upon
+	 * every keydown so this whole scenario does not apply. Selected table cells are cleaned up by that `deleteContent()`.
+	 *
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} event
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} data Insert text event data.
+	 */
+	_handleInsertTextEvent( evt, data ) {
+		const editor = this.editor;
+		const model = editor.model;
+		const view = editor.editing.view;
+		const mapper = editor.editing.mapper;
+		const modelSelection = model.document.selection;
+		const selectedCells = getSelectedTableCells( modelSelection );
+
+		if ( selectedCells.length ) {
+			const viewRanges = selectedCells.map( tableCell => view.createRangeOn( mapper.toViewElement( tableCell ) ) );
+
+			data.selection = view.createSelection( viewRanges );
+		}
 	}
 
 	/**

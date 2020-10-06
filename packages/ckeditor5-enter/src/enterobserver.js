@@ -9,7 +9,9 @@
 
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * Enter observer introduces the {@link module:engine/view/document~Document#event:enter} event.
@@ -20,25 +22,86 @@ export default class EnterObserver extends Observer {
 	constructor( view ) {
 		super( view );
 
-		const doc = this.document;
+		// Use the beforeinput DOM event to handle enter when supported by the browser.
+		// Fall back to the keydown event if beforeinput is not supported by the browser.
+		if ( env.features.isInputEventsLevel1Supported ) {
+			this._enableBeforeInputBasedObserver();
+		} else {
+			this._enableKeyEventsBasedObserver();
+		}
+	}
 
-		doc.on( 'keydown', ( evt, data ) => {
-			if ( this.isEnabled && data.keyCode == keyCodes.enter ) {
-				// Save the event object to check later if it was stopped or not.
-				let event;
-				doc.once( 'enter', evt => ( event = evt ), { priority: 'highest' } );
+	/**
+	 * Enables the enter observer that translates the `beforeinput` events fired by the browser (with different input types)
+	 * to the view document {@link module:engine/view/document~Document#event:enter `enter`} events.
+	 *
+	 * @protected
+	 */
+	_enableBeforeInputBasedObserver() {
+		const viewDocument = this.document;
 
-				doc.fire( 'enter', new DomEventData( doc, data.domEvent, {
-					isSoft: data.shiftKey
-				} ) );
+		viewDocument.on( 'beforeinput', ( evt, data ) => {
+			if ( !this.isEnabled ) {
+				return;
+			}
 
-				// Stop `keydown` event if `enter` event was stopped.
-				// https://github.com/ckeditor/ckeditor5/issues/753
-				if ( event && event.stop.called ) {
-					evt.stop();
-				}
+			const domEvent = data.domEvent;
+			const { inputType } = domEvent;
+			const isSoftEnter = inputType === 'insertLineBreak';
+
+			if ( inputType !== 'insertParagraph' && inputType !== 'insertLineBreak' ) {
+				return;
+			}
+
+			this._fireEnterEvent( domEvent, evt.stop, isSoftEnter );
+			data.preventDefault();
+		} );
+	}
+
+	/**
+	 * Enables the legacy enter observer that translates `keydown` events fired by the browser
+	 * to the view document {@link module:engine/view/document~Document#event:enter `enter`} events.
+	 *
+	 * @protected
+	 */
+	_enableKeyEventsBasedObserver() {
+		const viewDocument = this.document;
+
+		viewDocument.on( 'keydown', ( evt, data ) => {
+			if ( !this.isEnabled ) {
+				return;
+			}
+
+			const { domEvent, shiftKey, keyCode } = data;
+
+			if ( keyCode === keyCodes.enter ) {
+				this._fireEnterEvent( domEvent, evt.stop, shiftKey );
 			}
 		} );
+	}
+
+	/**
+	 * A helper method which fires the {@link module:engine/view/document~Document#event:enter `enter`} event
+	 * on the view document and unifies the event stopping logic.
+	 *
+	 * @protected
+	 * @member {module:engine/view/observer/observer~Observer.DomEvent#domEvent} domEvent DOM event the `enter` event is fired for.
+	 * @member {Function} stop The stop function that stops propagation of the DOM event when `enter` event was stopped.
+	 * @member {Boolean} isSoft A flag indicating this is a "soft" enter (a.k.a shift enter).
+	 */
+	_fireEnterEvent( domEvent, stop, isSoft ) {
+		const viewDocument = this.document;
+
+		const eventInfo = new EventInfo( viewDocument, 'enter' );
+		const data = new DomEventData( viewDocument, domEvent, { isSoft } );
+
+		viewDocument.fire( eventInfo, data );
+
+		// Stop `keydown` or `beforeinput` event if `enter` event was stopped.
+		// https://github.com/ckeditor/ckeditor5/issues/753
+		if ( eventInfo.stop.called ) {
+			stop();
+		}
 	}
 
 	/**

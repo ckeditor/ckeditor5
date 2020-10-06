@@ -212,7 +212,7 @@ describe( 'table clipboard', () => {
 
 			setModelData( model, '<paragraph>foo[]</paragraph>' );
 
-			editor.execute( 'input', { text: 'bar' } );
+			editor.execute( 'insertText', { text: 'bar' } );
 
 			assertEqualMarkup( getModelData( model ), '<paragraph>foobar[]</paragraph>' );
 		} );
