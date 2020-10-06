@@ -61,8 +61,8 @@ describe( 'Delete', () => {
 					sinon.assert.callOrder( executeSpy, scrollSpy );
 				} );
 
-				describe( 'for deleteContentBackward and deleteContentForward input types', () => {
-					it( 'should always use the #unit despite #selectionToRemove available for the deleteContentBackward input type', () => {
+				describe( 'for "codePoint" and "character" delete units', () => {
+					it( 'should always use the #unit despite #selectionToRemove available next to "codePoint" (non-Android)', () => {
 						viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
 							inputType: 'deleteContentBackward',
 							direction: 'backward',
@@ -74,11 +74,31 @@ describe( 'Delete', () => {
 						sinon.assert.calledOnce( executeSpy );
 						sinon.assert.calledWithMatch( executeSpy, 'delete', {
 							sequence: 3,
-							unit: 'codePoint'
+							unit: 'codePoint',
+							selection: undefined
 						} );
 					} );
 
-					it( 'should always use the #unit despite #selectionToRemove available for the deleteContentForward input type', () => {
+					it( 'should use the #selectionToRemove for the "codePoint" unit on Android', () => {
+						testUtils.sinon.stub( env, 'isAndroid' ).get( () => true );
+
+						viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
+							inputType: 'deleteContentBackward',
+							direction: 'backward',
+							unit: 'codePoint',
+							sequence: 3,
+							selectionToRemove: view.createSelection( viewDocument.getRoot(), 'in' )
+						} ) );
+
+						sinon.assert.calledOnce( executeSpy );
+						sinon.assert.calledWithMatch( executeSpy, 'delete', {
+							sequence: 3,
+							unit: 'selection',
+							selection: sinon.match.object
+						} );
+					} );
+
+					it( 'should always use the #unit despite #selectionToRemove available next to "character" (non-Android)', () => {
 						viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
 							inputType: 'deleteContentForward',
 							direction: 'forward',
@@ -90,7 +110,27 @@ describe( 'Delete', () => {
 						sinon.assert.calledOnce( executeSpy );
 						sinon.assert.calledWithMatch( executeSpy, 'forwardDelete', {
 							sequence: 5,
-							unit: 'character'
+							unit: 'character',
+							selection: undefined
+						} );
+					} );
+
+					it( 'should always use the #unit despite #selectionToRemove available next to "character" (Android)', () => {
+						testUtils.sinon.stub( env, 'isAndroid' ).get( () => true );
+
+						viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
+							inputType: 'deleteContentForward',
+							direction: 'forward',
+							unit: 'character',
+							sequence: 5,
+							selectionToRemove: view.createSelection( viewDocument.getRoot(), 'in' )
+						} ) );
+
+						sinon.assert.calledOnce( executeSpy );
+						sinon.assert.calledWithMatch( executeSpy, 'forwardDelete', {
+							sequence: 5,
+							unit: 'character',
+							selection: undefined
 						} );
 					} );
 				} );
@@ -143,16 +183,19 @@ describe( 'Delete', () => {
 						sinon.assert.calledThrice( executeSpy );
 						sinon.assert.calledWithMatch( executeSpy.firstCall, 'delete', {
 							sequence: 1,
+							unit: 'selection',
 							selection: sinon.match.object
 						} );
 
 						sinon.assert.calledWithMatch( executeSpy.secondCall, 'forwardDelete', {
 							sequence: 1,
+							unit: 'selection',
 							selection: sinon.match.object
 						} );
 
 						sinon.assert.calledWithMatch( executeSpy.thirdCall, 'forwardDelete', {
 							sequence: 1,
+							unit: 'selection',
 							selection: sinon.match.object
 						} );
 

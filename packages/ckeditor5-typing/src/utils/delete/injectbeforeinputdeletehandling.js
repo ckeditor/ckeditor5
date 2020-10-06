@@ -21,45 +21,27 @@ export default function injectBeforeInputDeleteHandling( editor ) {
 	const viewDocument = editingView.document;
 
 	viewDocument.on( 'delete', ( evt, data ) => {
-		const { direction, sequence, selectionToRemove, inputType, unit } = data;
+		const { direction, sequence, selectionToRemove, unit } = data;
+		const commandName = direction === 'forward' ? 'forwardDelete' : 'delete';
+		const commandData = { unit, sequence };
 
-		// Both "deleteContentBackward" and "deleteContentForward" must operate on the unit-level despite the
-		// editing view range available and, in case of other input types, used efficiently to delete content.
-		// This is related to the multi-byte characters decomposition (like complex emojis). Check out
-		// the comments in DeleteObserver's DELETE_EVENT_TYPES to learn more.
-		if ( inputType === 'deleteContentBackward' ) {
-			const deleteCommandData = {
-				sequence,
-				unit
-			};
-
-			// Android IMEs have a quirk which is addressed by passing a complete selection in case of
-			// the 'deleteContentBackward' event type. See DeleteObserver#_enableBeforeInputBasedObserver()
-			// to learn more.
-			if ( env.isAndroid ) {
-				deleteCommandData.selection = selectionToRemove;
-			}
-
-			editor.execute( 'delete', deleteCommandData );
-		} else if ( inputType === 'deleteContentForward' ) {
-			editor.execute( 'forwardDelete', {
-				unit,
-				sequence
-			} );
-		}
-		// In case of other delete (beforeinput) types, use the range provided by the beforeinput event.
-		else {
+		// * First of all, make sure that the "selectionToRemove" is used only for units other than "codePoint" or
+		//  "character". This is related to the multi-byte characters decomposition (like complex emojis) and
+		//   in these two cases, it is expected that the command will figure everything out from the unit type only
+		//   even though the selection could be provided. Check out comments in DeleteObserver's DELETE_EVENT_TYPES
+		//   to learn more.
+		// * Android IMEs have a quirk which is addressed by passing a complete selection in case of
+		//   the "codePoint" unit. See DeleteObserver#_enableBeforeInputBasedObserver() to learn more.
+		if ( ( unit !== 'codePoint' && unit !== 'character' ) || ( env.isAndroid && unit === 'codePoint' ) ) {
 			const modelRanges = [ ...selectionToRemove.getRanges() ].map( viewRange => {
 				return editor.editing.mapper.toModelRange( viewRange );
 			} );
-			const selection = editor.model.createSelection( modelRanges );
-			const isForwardDelete = direction === 'forward';
 
-			editor.execute( isForwardDelete ? 'forwardDelete' : 'delete', {
-				selection,
-				sequence
-			} );
+			commandData.unit = 'selection';
+			commandData.selection = editor.model.createSelection( modelRanges );
 		}
+
+		editor.execute( commandName, commandData );
 
 		editingView.scrollToTheSelection();
 	} );
