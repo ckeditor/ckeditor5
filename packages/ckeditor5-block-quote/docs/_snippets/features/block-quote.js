@@ -6,9 +6,6 @@
 /* globals window, document, console */
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
-
-ClassicEditor.builtinPlugins.push( Alignment );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-block-quote' ), {
@@ -18,8 +15,10 @@ ClassicEditor
 				'|',
 				'bold',
 				'italic',
+				'link',
 				'|',
-				'alignment',
+				'bulletedList',
+				'numberedList',
 				'|',
 				'blockQuote',
 				'outdent',
@@ -33,28 +32,7 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-
-		// The "Print editor data" button logic.
-		document.querySelector( '#print-data-action' ).addEventListener( 'click', () => {
-			const snippetCSSElement = [ ...document.querySelectorAll( 'link' ) ]
-				.find( linkElement => linkElement.href.endsWith( 'snippet.css' ) );
-
-			const iframeElement = document.querySelector( '#print-data-container' );
-
-			iframeElement.srcdoc = '<html>' +
-				'<head>' +
-					`<title>${ document.title }</title>` +
-					`<link rel="stylesheet" href="${ snippetCSSElement.href }" type="text/css">` +
-				'</head>' +
-				'<body class="ck-content">' +
-					editor.getData() +
-					'<script>' +
-						'window.addEventListener( \'DOMContentLoaded\', () => { window.print(); } );' +
-					'</script>' +
-				'</body>' +
-				'</html>';
-		} );
 	} )
 	.catch( err => {
-		console.error( err.stack );
+		console.error( err );
 	} );
