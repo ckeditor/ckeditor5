@@ -806,6 +806,7 @@ describe( 'LinkUI', () => {
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			} );
+
 			sinon.assert.notCalled( spy );
 		} );
 
