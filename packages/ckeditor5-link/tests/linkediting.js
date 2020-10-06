@@ -1327,6 +1327,7 @@ describe( 'LinkEditing', () => {
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
 				direction: 'backward',
+				unit: 'codePoint',
 				preventDefault: () => {},
 				inputType: 'deleteContentBackward'
 			} ) );
@@ -1347,6 +1348,7 @@ describe( 'LinkEditing', () => {
 
 			view.document.fire( 'delete', new DomEventData( view.document, {}, {
 				direction: 'forward',
+				unit: 'character',
 				preventDefault: () => {},
 				inputType: 'deleteContentForward'
 			} ) );
@@ -1458,6 +1460,7 @@ describe( 'LinkEditing', () => {
 			view.document.fire( 'delete', new DomEventData( view.document, {}, {
 				preventDefault: () => {},
 				direction: 'backward',
+				unit: 'codePoint',
 				inputType: 'deleteContentBackward'
 			} ) );
 
@@ -1466,6 +1469,7 @@ describe( 'LinkEditing', () => {
 			view.document.fire( 'delete', new DomEventData( view.document, {}, {
 				preventDefault: () => {},
 				direction: 'backward',
+				unit: 'codePoint',
 				inputType: 'deleteContentBackward'
 			} ) );
 
@@ -1490,6 +1494,7 @@ describe( 'LinkEditing', () => {
 
 			view.document.fire( 'delete', new DomEventData( view.document, {}, {
 				direction: 'backward',
+				unit: 'codePoint',
 				preventDefault: () => {},
 				inputType: 'deleteContentBackward'
 			} ) );
@@ -1500,6 +1505,7 @@ describe( 'LinkEditing', () => {
 
 			view.document.fire( 'delete', new DomEventData( view.document, {}, {
 				direction: 'backward',
+				unit: 'codePoint',
 				preventDefault: () => {},
 				inputType: 'deleteContentBackward'
 			} ) );
@@ -1526,6 +1532,7 @@ describe( 'LinkEditing', () => {
 
 			view.document.fire( 'delete', new DomEventData( view.document, {}, {
 				direction: 'backward',
+				unit: 'codePoint',
 				preventDefault: () => {},
 				inputType: 'deleteContentBackward'
 			} ) );
@@ -1534,6 +1541,7 @@ describe( 'LinkEditing', () => {
 
 			view.document.fire( 'delete', new DomEventData( view.document, {}, {
 				direction: 'backward',
+				unit: 'codePoint',
 				preventDefault: () => {},
 				inputType: 'deleteContentBackward'
 			} ) );
@@ -1549,6 +1557,7 @@ describe( 'LinkEditing', () => {
 
 			view.document.fire( 'delete', new DomEventData( view.document, {}, {
 				direction: 'backward',
+				unit: 'codePoint',
 				preventDefault: () => {},
 				inputType: 'deleteContentBackward'
 			} ) );
@@ -1557,6 +1566,7 @@ describe( 'LinkEditing', () => {
 
 			view.document.fire( 'delete', new DomEventData( view.document, {}, {
 				direction: 'backward',
+				unit: 'codePoint',
 				preventDefault: () => {},
 				inputType: 'deleteContentBackward'
 			} ) );
@@ -1570,12 +1580,14 @@ describe( 'LinkEditing', () => {
 
 			view.document.fire( 'delete', new DomEventData( view.document, {}, {
 				direction: 'backward',
+				unit: 'codePoint',
 				preventDefault: () => {},
 				inputType: 'deleteContentBackward'
 			} ) );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {}, {
 				direction: 'backward',
+				unit: 'codePoint',
 				preventDefault: () => {},
 				inputType: 'deleteContentBackward'
 			} ) );
@@ -1590,6 +1602,7 @@ describe( 'LinkEditing', () => {
 
 			view.document.fire( 'delete', new DomEventData( view.document, {}, {
 				direction: 'forward',
+				unit: 'character',
 				preventDefault: () => {},
 				inputType: 'deleteContentForward'
 			}, { direction: 'forward' } ) );
