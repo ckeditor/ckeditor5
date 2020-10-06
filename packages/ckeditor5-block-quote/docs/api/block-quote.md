@@ -8,13 +8,17 @@ category: api-reference
 
 This package implements block quote support for CKEditor 5.
 
+## Demo
+
+Check out the {@link features/block-quote#demo demo in the Block quote feature} guide.
+
 ## Documentation
 
-See the {@link module:block-quote/blockquote~BlockQuote} plugin documentation.
+See the {@link features/block-quote Block quote feature} guide and the {@link module:block-quote/blockquote~BlockQuote} plugin documentation.
 
 ## Installation
 
-```bash
+```
 npm install --save @ckeditor/ckeditor5-block-quote
 ```
 
