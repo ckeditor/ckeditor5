@@ -5,11 +5,11 @@ menu-title: Block quote
 
 # Block quote
 
-The {@link module:block-quote/blockquote~BlockQuote} feature implements block quote support to easily include quotations and passages in the rich-text content. This provides attractive ways to draw the readers' attention to selected parts of text, help organize the content in a structured, elegant way and manage the flow better.
+The {@link module:block-quote/blockquote~BlockQuote} feature allows you to easily include block quotations or pull quotes in the rich-text content. This provides an attractive way to draw the readers' attention to selected parts of text. It also helps organize the content in a structured, elegant way and to manage the flow better.
 
 ## Demo
 
-Use the editor to see the {@link module:block-quote/blockquote~BlockQuote} plugin in action.
+Use the editor below to see the block quote plugin in action.
 
 {@snippet features/block-quote}
 
@@ -29,7 +29,7 @@ import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ BlockQuote, ... ],
-		toolbar: [ 'blockQuote', ... ],
+		toolbar: [ 'blockQuote', ... ]
 	} )
 	.then( ... )
 	.catch( ... );
@@ -41,17 +41,17 @@ ClassicEditor
 
 ## Related features
 
-Here are some other CKEditor 5 features that you can use similarly to the block quote plugin for an all-around paged editing experience:
+Here are some other CKEditor 5 features that you can use similarly to the block quote plugin to structure your text better:
 
-* The {@link features/indent indentation feature} allows you to control the text position in a similar manner.
-* The {@link features/code-blocks code blocks} allow for insertion of various code listings.
+* The {@link features/indent block indentation feature} allows you to set indentation for text blocks such as paragraphs or lists.
+* The {@link features/code-blocks code block feature} allows for insertion of various code listings.
 
-## Common API - TODO: check correctness
+## Common API
  
 The {@link module:block-quote/blockquote~BlockQuote} plugin registers:
 
-* the UI button component (`'blockQuote'`) implemented by {@link module:block-quote/blockquoteui~BlockQuoteUI block quote UI feature},
-* the `'blockQuote'` command implemented by {@link module:block-quote/blockquoteediting~BlockQuoteEditing block quote editing feature}.
+* the `'blockQuote'` UI button component implemented by the {@link module:block-quote/blockquoteui~BlockQuoteUI block quote UI feature},
+* the `'blockQuote'` command implemented by the {@link module:block-quote/blockquoteediting~BlockQuoteEditing block quote editing feature}.
 
 The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
