@@ -32,7 +32,7 @@ export default function injectBeforeInputDeleteHandling( editor ) {
 		//   to learn more.
 		// * Android IMEs have a quirk which is addressed by passing a complete selection in case of
 		//   the "codePoint" unit. See DeleteObserver#_enableBeforeInputBasedObserver() to learn more.
-		if ( ( unit !== 'codePoint' && unit !== 'character' ) || ( env.isAndroid && unit === 'codePoint' ) ) {
+		if ( unit !== 'codePoint' && unit !== 'character' || env.isAndroid && unit === 'codePoint' ) {
 			const modelRanges = [ ...selectionToRemove.getRanges() ].map( viewRange => {
 				return editor.editing.mapper.toModelRange( viewRange );
 			} );
