@@ -30,6 +30,9 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
+
 export default class ClassicEditor extends ClassicEditorBase {}
 
 // Plugins to include in the build.
@@ -56,7 +59,9 @@ ClassicEditor.builtinPlugins = [
 	PasteFromOffice,
 	Table,
 	TableToolbar,
-	TextTransformation
+	TextTransformation,
+	Alignment,
+	HorizontalLine
 ];
 
 // Editor configuration.
@@ -65,6 +70,7 @@ ClassicEditor.defaultConfig = {
 		items: [
 			'heading',
 			'|',
+			'alignment',
 			'bold',
 			'italic',
 			'link',
@@ -79,7 +85,8 @@ ClassicEditor.defaultConfig = {
 			'insertTable',
 			'mediaEmbed',
 			'undo',
-			'redo'
+			'redo',
+			'horizontalline'
 		]
 	},
 	image: {
