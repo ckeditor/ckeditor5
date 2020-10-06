@@ -389,7 +389,7 @@ describe( 'Delete', () => {
 
 						sinon.assert.calledOnce( deleteSpy );
 						sinon.assert.calledWithMatch( deleteSpy, {}, {
-							unit: 'character',
+							unit: 'selection',
 							direction: 'backward',
 							sequence: 0,
 							inputType: 'deleteContent'
