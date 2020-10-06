@@ -857,6 +857,8 @@ describe( 'Widget', () => {
 					preventDefault: () => {}
 				}, {
 					direction,
+					unit: 'selection',
+					selectionToRemove: view.createSelection( view.document.selection ),
 					inputType: direction == 'backward' ? 'deleteContentBackward' : 'deleteContentForward'
 				} ) );
 
@@ -1216,6 +1218,8 @@ describe( 'Widget', () => {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
+				unit: 'selection',
+				selectionToRemove: view.createSelection( view.document.selection ),
 				inputType: 'deleteContentBackward'
 			} ) );
 
@@ -1243,6 +1247,8 @@ describe( 'Widget', () => {
 				preventDefault: () => {}
 			}, {
 				direction: 'forward',
+				unit: 'selection',
+				selectionToRemove: view.createSelection( view.document.selection ),
 				inputType: 'deleteContentForward'
 			} ) );
 
