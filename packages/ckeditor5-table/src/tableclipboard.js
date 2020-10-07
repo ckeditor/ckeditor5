@@ -313,6 +313,58 @@ export default class TableClipboard extends Plugin {
 	}
 }
 
+/**
+ * Extract table for pasting into table.
+ *
+ * @private
+ * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
+ * @param {module:engine/model/model~Model} model The editor model.
+ * @returns {module:engine/model/element~Element|null}
+ */
+export function getTableIfOnlyTableInContent( content, model ) {
+	if ( !content.is( 'documentFragment' ) && !content.is( 'element' ) ) {
+		return null;
+	}
+
+	// Table passed directly.
+	if ( content.is( 'element', 'table' ) ) {
+		return content;
+	}
+
+	// We do not support mixed content when pasting table into table.
+	// See: https://github.com/ckeditor/ckeditor5/issues/6817.
+	if ( content.childCount == 1 && content.getChild( 0 ).is( 'element', 'table' ) ) {
+		return content.getChild( 0 );
+	}
+
+	// If there are only whitespaces around a table then use that table for pasting.
+
+	const contentRange = model.createRangeIn( content );
+
+	for ( const element of contentRange.getItems() ) {
+		if ( element.is( 'element', 'table' ) ) {
+			// Stop checking if there is some content before table.
+			const rangeBefore = model.createRange( contentRange.start, model.createPositionBefore( element ) );
+
+			if ( model.hasContent( rangeBefore, { ignoreWhitespaces: true } ) ) {
+				return null;
+			}
+
+			// Stop checking if there is some content after table.
+			const rangeAfter = model.createRange( model.createPositionAfter( element ), contentRange.end );
+
+			if ( model.hasContent( rangeAfter, { ignoreWhitespaces: true } ) ) {
+				return null;
+			}
+
+			// There wasn't any content neither before nor after.
+			return element;
+		}
+	}
+
+	return null;
+}
+
 // Prepares a table for pasting and returns adjusted selection dimensions.
 //
 // @param {Array.<module:engine/model/element~Element>} selectedTableCells
@@ -397,58 +449,6 @@ function expandTableSize( table, expectedHeight, expectedWidth, tableUtils ) {
 			rows: expectedHeight - tableHeight
 		} );
 	}
-}
-
-/**
- * Extract table for pasting into table.
- *
- * @private
- * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
- * @param {module:engine/model/model~Model} model The editor model.
- * @returns {module:engine/model/element~Element|null}
- */
-export function getTableIfOnlyTableInContent( content, model ) {
-	if ( !content.is( 'documentFragment' ) && !content.is( 'element' ) ) {
-		return null;
-	}
-
-	// Table passed directly.
-	if ( content.is( 'element', 'table' ) ) {
-		return content;
-	}
-
-	// We do not support mixed content when pasting table into table.
-	// See: https://github.com/ckeditor/ckeditor5/issues/6817.
-	if ( content.childCount == 1 && content.getChild( 0 ).is( 'element', 'table' ) ) {
-		return content.getChild( 0 );
-	}
-
-	// If there are only whitespaces around a table then use that table for pasting.
-
-	const contentRange = model.createRangeIn( content );
-
-	for ( const element of contentRange.getItems() ) {
-		if ( element.is( 'element', 'table' ) ) {
-			// Stop checking if there is some content before table.
-			const rangeBefore = model.createRange( contentRange.start, model.createPositionBefore( element ) );
-
-			if ( model.hasContent( rangeBefore, { ignoreWhitespaces: true } ) ) {
-				return null;
-			}
-
-			// Stop checking if there is some content after table.
-			const rangeAfter = model.createRange( model.createPositionAfter( element ), contentRange.end );
-
-			if ( model.hasContent( rangeAfter, { ignoreWhitespaces: true } ) ) {
-				return null;
-			}
-
-			// There wasn't any content neither before nor after.
-			return element;
-		}
-	}
-
-	return null;
 }
 
 // Returns two-dimensional array that is addressed by [ row ][ column ] that stores cells anchored at given location.
