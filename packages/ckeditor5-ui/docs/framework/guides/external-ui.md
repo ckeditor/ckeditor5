@@ -255,7 +255,8 @@ class BootstrapEditorUI extends EditorUI {
 
 		// References to the toolbar buttons for further usage. See #_setupBootstrapToolbarButtons.
 		view.toolbarButtons = {};
-
+		// Render the view to the body.
+		this._view.render();
 		[ 'bold', 'italic', 'underline', 'undo', 'redo' ].forEach( name => {
 			// Retrieve the jQuery object corresponding with the button in the DOM.
 			view.toolbarButtons[ name ] = view.element.find( `#${ name }` );
