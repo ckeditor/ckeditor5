@@ -399,7 +399,15 @@ function expandTableSize( table, expectedHeight, expectedWidth, tableUtils ) {
 	}
 }
 
-function getTableIfOnlyTableInContent( content, model ) {
+/**
+ * Extract table for pasting into table.
+ *
+ * @private
+ * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
+ * @param {module:engine/model/model~Model} model The editor model.
+ * @returns {module:engine/model/element~Element|null}
+ */
+export function getTableIfOnlyTableInContent( content, model ) {
 	if ( !content.is( 'documentFragment' ) && !content.is( 'element' ) ) {
 		return null;
 	}
