@@ -28,6 +28,9 @@ const MULTI_LANGUAGE = 'multi-language';
  * @returns {Promise}
  */
 module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
+	const cwd = process.cwd();
+	const ckeditor5path = path.resolve( __dirname, '..', '..' );
+
 	const { getSnippetPlaceholder, getSnippetSourcePaths } = umbertoHelpers;
 	const snippetsDependencies = new Map();
 
@@ -129,6 +132,9 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 		return promise;
 	}
 
+	// Change the current work directory in order to avoid issues with importing invalid versions of packages.
+	process.chdir( ckeditor5path );
+
 	for ( const config of webpackConfigs ) {
 		promise = promise.then( () => runWebpack( config ) );
 	}
@@ -216,7 +222,13 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 			}
 		} )
 		.then( () => {
+			process.chdir( cwd );
 			console.log( 'Finished building snippets.' );
+		} )
+		.catch( err => {
+			process.chdir( cwd );
+
+			return Promise.reject( err );
 		} );
 };
 
