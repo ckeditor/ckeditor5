@@ -57,7 +57,7 @@ describe( 'MediaEmbedCommand', () => {
 			model.schema.extend( 'p', { allowIn: 'tableCell' } );
 			model.schema.extend( 'media', { allowIn: 'p' } );
 
-			setData( model, '<table><tableRow><tableCell><p>[<media></media>]</p></tableCell></tableRow></table>' );
+			setData( model, '<table><tableRow><tableCell>[<media></media>]</tableCell></tableRow></table>' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
