@@ -489,9 +489,8 @@ function getPackageDependenciesPaths() {
 		absolute: true
 	};
 
-	return glob.sync( 'packages/*/', globOptions )
-		.concat( glob.sync( 'external/*/packages/*/', globOptions ) )
-		.map( packagePath => path.join( packagePath, 'node_modules' ) );
+	return glob.sync( 'packages/*/node_modules', globOptions )
+		.concat( glob.sync( 'external/*/packages/*/node_modules', globOptions ) );
 }
 
 /**
