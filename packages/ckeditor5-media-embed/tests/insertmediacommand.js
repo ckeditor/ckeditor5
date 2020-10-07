@@ -54,8 +54,7 @@ describe( 'MediaEmbedCommand', () => {
 			model.schema.register( 'table', { allowIn: '$root', isLimit: true, isObject: true, isBlock: true } );
 			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
 			model.schema.register( 'tableCell', { allowIn: 'tableRow', isLimit: true, isSelectable: true } );
-			model.schema.extend( 'p', { allowIn: 'tableCell' } );
-			model.schema.extend( 'media', { allowIn: 'p' } );
+			model.schema.extend( 'media', { allowIn: 'tableCell' } );
 
 			setData( model, '<table><tableRow><tableCell>[<media></media>]</tableCell></tableRow></table>' );
 
