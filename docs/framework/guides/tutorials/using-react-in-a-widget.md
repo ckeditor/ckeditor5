@@ -55,6 +55,7 @@ yarn add --dev \
 	css-loader \
 	postcss-loader@4 \
 	raw-loader@4 \
+	css-loader@4 \
 	react \
 	react-dom \
 	style-loader@1 \

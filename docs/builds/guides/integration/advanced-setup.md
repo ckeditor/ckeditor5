@@ -96,11 +96,12 @@ Copy these dependencies to your `package.json` and call `npm install` to install
 The second step is to install dependencies needed to build the editor. The list may differ if you want to customize the webpack configuration, but this is a typical setup:
 
 ```bash
-npm install --save \
+npm install --save-dev \
 	@ckeditor/ckeditor5-dev-webpack-plugin \
 	@ckeditor/ckeditor5-dev-utils \
 	postcss-loader@4 \
 	raw-loader@4 \
+	css-loader@4 \
 	style-loader@1 \
 	webpack@5.0.0-rc.3 \
 	webpack-cli@4.0.0-rc.0
