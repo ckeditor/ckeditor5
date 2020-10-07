@@ -35,7 +35,8 @@ export default class MediaEmbedCommand extends Command {
 
 		let parent = insertPosition.parent;
 
-		if ( parent.isEmpty && model.schema.isBlock( parent ) ) {
+		// The model.insertContent() will remove empty parent (unless it is a $root or a limit).
+		if ( parent.isEmpty && !model.schema.isLimit( parent ) ) {
 			parent = parent.parent;
 		}
 
@@ -68,4 +69,3 @@ export default class MediaEmbedCommand extends Command {
 		}
 	}
 }
-
