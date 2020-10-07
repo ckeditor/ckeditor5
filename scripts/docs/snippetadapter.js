@@ -14,6 +14,7 @@ const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' 
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const ProgressBarPlugin = require( 'progress-bar-webpack-plugin' );
+const glob = require( 'glob' );
 
 const DEFAULT_LANGUAGE = 'en';
 const MULTI_LANGUAGE = 'multi-language';
@@ -483,10 +484,15 @@ function getModuleResolvePaths() {
  * @returns {Array.<String>}
  */
 function getPackageDependenciesPaths() {
-	const packagesDirectory = path.resolve( __dirname, '..', '..', 'packages' );
+	const globOptions = {
+		cwd: path.resolve( __dirname, '..', '..' ),
+		absolute: true
+	};
 
-	return fs.readdirSync( packagesDirectory )
-		.map( directory => path.join( packagesDirectory, directory, 'node_modules' ) );
+	return [].concat(
+		glob.sync( 'packages/*/', globOptions ),
+		glob.sync( 'external/*/packages/*/', globOptions )
+	);
 }
 
 /**
