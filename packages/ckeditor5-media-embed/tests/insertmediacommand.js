@@ -50,7 +50,7 @@ describe( 'MediaEmbedCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be true if a media is selected in table cell', () => {
+		it( 'should be true if a media is selected in a table cell', () => {
 			model.schema.register( 'table', { allowIn: '$root', isLimit: true, isObject: true, isBlock: true } );
 			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
 			model.schema.register( 'tableCell', { allowIn: 'tableRow', isLimit: true, isSelectable: true } );
