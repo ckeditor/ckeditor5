@@ -28,9 +28,6 @@ const MULTI_LANGUAGE = 'multi-language';
  * @returns {Promise}
  */
 module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
-	const cwd = process.cwd();
-	const ckeditor5path = path.resolve( __dirname, '..', '..' );
-
 	const { getSnippetPlaceholder, getSnippetSourcePaths } = umbertoHelpers;
 	const snippetsDependencies = new Map();
 
@@ -132,9 +129,6 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 		return promise;
 	}
 
-	// Change the current work directory in order to avoid issues with importing invalid versions of packages.
-	process.chdir( ckeditor5path );
-
 	for ( const config of webpackConfigs ) {
 		promise = promise.then( () => runWebpack( config ) );
 	}
@@ -222,13 +216,7 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 			}
 		} )
 		.then( () => {
-			process.chdir( cwd );
 			console.log( 'Finished building snippets.' );
-		} )
-		.catch( err => {
-			process.chdir( cwd );
-
-			return Promise.reject( err );
 		} );
 };
 
@@ -402,11 +390,17 @@ function getWebpackConfig( snippets, config ) {
 			} )
 		],
 
-		resolveLoader: {
+		// Configure the paths so building CKEditor 5 snippets work even if the script
+		// is triggered from a directory outside ckeditor5 (e.g. multi-project case).
+		resolve: {
 			modules: [
-				path.resolve( __dirname, '..', '..', 'node_modules' ),
-				'node_modules'
+				...getPackageDependenciesPaths(),
+				...getModuleResolvePaths()
 			]
+		},
+
+		resolveLoader: {
+			modules: getModuleResolvePaths()
 		},
 
 		module: {
@@ -468,6 +462,31 @@ function runWebpack( webpackConfig ) {
 			}
 		} );
 	} );
+}
+
+/**
+ * @returns {Array.<String>}
+ */
+function getModuleResolvePaths() {
+	return [
+		path.resolve( __dirname, '..', '..', 'node_modules' ),
+		'node_modules'
+	];
+}
+
+/**
+ * Returns an array that contains paths to packages' dependencies.
+ * The snippet adapter should use packages' dependencies instead of the documentation builder dependencies.
+ *
+ * See #7916.
+ *
+ * @returns {Array.<String>}
+ */
+function getPackageDependenciesPaths() {
+	const packagesDirectory = path.resolve( __dirname, '..', '..', 'packages' );
+
+	return fs.readdirSync( packagesDirectory )
+		.map( directory => path.join( packagesDirectory, directory, 'node_modules' ) );
 }
 
 /**
