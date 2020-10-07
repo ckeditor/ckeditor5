@@ -66,6 +66,9 @@ ClassicEditor.builtinPlugins = [
 
 // Editor configuration.
 ClassicEditor.defaultConfig = {
+	alignment: {
+		options: [ 'left', 'center', 'right', 'justify']
+	},
 	toolbar: {
 		items: [
 			'heading',

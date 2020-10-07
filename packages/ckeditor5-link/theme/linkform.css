@@ -6,10 +6,11 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 .ck.ck-link-form {
+	z-index: 100;
 	display: flex;
 
 	& .ck-label {
-		display: none;
+		display: block;
 	}
 
 	@mixin ck-media-phone {
