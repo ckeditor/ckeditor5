@@ -13,6 +13,13 @@ Use the editor below to see the block quote plugin in action.
 
 {@snippet features/block-quote}
 
+## Related features
+
+Here are some other CKEditor 5 features that you can use similarly to the block quote plugin to structure your text better:
+
+* The {@link features/indent block indentation feature} allows you to set indentation for text blocks such as paragraphs or lists.
+* The {@link features/code-blocks code block feature} allows for insertion of various code listings.
+
 ## Installation
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-block-quote`](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote) package:
@@ -39,15 +46,8 @@ ClassicEditor
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
-## Related features
-
-Here are some other CKEditor 5 features that you can use similarly to the block quote plugin to structure your text better:
-
-* The {@link features/indent block indentation feature} allows you to set indentation for text blocks such as paragraphs or lists.
-* The {@link features/code-blocks code block feature} allows for insertion of various code listings.
-
 ## Common API
- 
+
 The {@link module:block-quote/blockquote~BlockQuote} plugin registers:
 
 * the `'blockQuote'` UI button component implemented by the {@link module:block-quote/blockquoteui~BlockQuoteUI block quote UI feature},
