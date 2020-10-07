@@ -5,6 +5,8 @@
 
 // The editor creator to use.
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+// import DecoupledEditorBase from "../../ckeditor5-editor-decoupled/src/decouplededitor";
+import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
@@ -30,10 +32,13 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 
-export default class ClassicEditor extends ClassicEditorBase {}
+class ClassicEditor extends ClassicEditorBase {
+}
 
-// Plugins to include in the build.
-ClassicEditor.builtinPlugins = [
+class DecoupledEditor extends InlineEditorBase {
+}
+
+const plugins = [
 	Essentials,
 	UploadAdapter,
 	Autoformat,
@@ -58,9 +63,11 @@ ClassicEditor.builtinPlugins = [
 	TableToolbar,
 	TextTransformation
 ];
+// Plugins to include in the build.
+ClassicEditor.builtinPlugins = plugins;
+DecoupledEditor.builtinPlugins = plugins;
 
-// Editor configuration.
-ClassicEditor.defaultConfig = {
+const config = {
 	toolbar: {
 		items: [
 			'heading',
@@ -99,4 +106,12 @@ ClassicEditor.defaultConfig = {
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en'
+};
+
+// Editor configuration.
+ClassicEditor.defaultConfig = config;
+DecoupledEditor.defaultConfig = config;
+
+export default {
+	ClassicEditor, DecoupledEditor
 };
