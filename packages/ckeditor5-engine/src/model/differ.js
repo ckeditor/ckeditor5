@@ -111,38 +111,8 @@ export default class Differ {
 	}
 
 	/**
-	 * Marks given `item` in differ to be re-inserted. It means that the item will be marked as removed and inserted in the differ changes
-	 * set. The `item` and all its children will be effectively re-converted when differ changes will be handled by a dispatcher.
-	 *
-	 * *Note*: To reconvert only `item` without reconverting children use {@link #refreshItem `differ.refreshItem()`}.
-	 *
-	 * @param {module:engine/model/item~Item} item Item to refresh.
-	 */
-	reInsertItem( item ) {
-		if ( this._isInInsertedElement( item.parent ) ) {
-			return;
-		}
-
-		this._markRemove( item.parent, item.startOffset, item.offsetSize );
-		this._markInsert( item.parent, item.startOffset, item.offsetSize );
-
-		const range = Range._createOn( item );
-
-		for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
-			const markerRange = marker.getRange();
-
-			this.bufferMarkerChange( marker.name, markerRange, markerRange, marker.affectsData );
-		}
-
-		// Clear cache after each buffered operation as it is no longer valid.
-		this._cachedChanges = null;
-	}
-
-	/**
-	 * Marks given `item` in differ to be "refreshed".
-	 *
-	 * It means that the item will be marked as a "refreshed" inserted in the differ changes. It will be then re-converted
-	 * when differ changes will be handled by a dispatcher.
+	 * Marks given `item` in differ to be "refreshed". It means that the item will be marked as removed and inserted in the differ changes
+	 * set, so it will be effectively re-converted when differ changes will be handled by a dispatcher.
 	 *
 	 * @param {module:engine/model/item~Item} item Item to refresh.
 	 */
@@ -151,7 +121,8 @@ export default class Differ {
 			return;
 		}
 
-		this._markRefresh( item.parent, item.startOffset, item.offsetSize );
+		this._markRemove( item.parent, item.startOffset, item.offsetSize );
+		this._markInsert( item.parent, item.startOffset, item.offsetSize );
 
 		const range = Range._createOn( item );
 
@@ -180,7 +151,7 @@ export default class Differ {
 		//
 		switch ( operation.type ) {
 			case 'insert': {
-				if ( this._isInInsertedElement( operation.position.parent ) || this._isInRefreshedElement( operation.position.parent ) ) {
+				if ( this._isInInsertedElement( operation.position.parent ) ) {
 					return;
 				}
 
@@ -192,7 +163,7 @@ export default class Differ {
 			case 'removeAttribute':
 			case 'changeAttribute': {
 				for ( const item of operation.range.getItems( { shallow: true } ) ) {
-					if ( this._isInInsertedElement( item.parent ) || this._isInRefreshedElement( item ) ) {
+					if ( this._isInInsertedElement( item.parent ) ) {
 						continue;
 					}
 
@@ -215,14 +186,12 @@ export default class Differ {
 
 				const sourceParentInserted = this._isInInsertedElement( operation.sourcePosition.parent );
 				const targetParentInserted = this._isInInsertedElement( operation.targetPosition.parent );
-				const sourceParentRefreshed = this._isInRefreshedElement( operation.sourcePosition.parent );
-				const targetParentRefreshed = this._isInRefreshedElement( operation.sourcePosition.parent );
 
-				if ( !sourceParentInserted && !sourceParentRefreshed ) {
+				if ( !sourceParentInserted ) {
 					this._markRemove( operation.sourcePosition.parent, operation.sourcePosition.offset, operation.howMany );
 				}
 
-				if ( !targetParentInserted && !targetParentRefreshed ) {
+				if ( !targetParentInserted ) {
 					this._markInsert( operation.targetPosition.parent, operation.getMovedRangeStart().offset, operation.howMany );
 				}
 
@@ -486,12 +455,6 @@ export default class Differ {
 
 					i++;
 					j++;
-				} else if ( action === 'x' ) {
-					// Swap action - similar to 'equal'.
-					diffSet.push( this._getRefreshDiff( element, i, elementChildren[ i ].name ) );
-
-					i++;
-					j++;
 				} else {
 					// `action` is 'equal'. Child not changed.
 					i++;
@@ -572,13 +535,13 @@ export default class Differ {
 		this._changeCount = 0;
 
 		// Cache changes.
-		this._cachedChangesWithGraveyard = diffSet;
-		this._cachedChanges = diffSet.filter( _changesInGraveyardFilter );
+		this._cachedChangesWithGraveyard = diffSet.slice();
+		this._cachedChanges = diffSet.slice().filter( _changesInGraveyardFilter );
 
 		if ( options.includeChangesInGraveyard ) {
-			return this._cachedChangesWithGraveyard.slice();
+			return this._cachedChangesWithGraveyard;
 		} else {
-			return this._cachedChanges.slice();
+			return this._cachedChanges;
 		}
 	}
 
@@ -620,20 +583,6 @@ export default class Differ {
 		this._markChange( parent, changeItem );
 
 		this._removeAllNestedChanges( parent, offset, howMany );
-	}
-
-	/**
-	 * Saves and handles a refresh change.
-	 *
-	 * @private
-	 * @param {module:engine/model/element~Element} parent
-	 * @param {Number} offset
-	 * @param {Number} howMany
-	 */
-	_markRefresh( parent, offset, howMany ) {
-		const changeItem = { type: 'refresh', offset, howMany, count: this._changeCount++ };
-
-		this._markChange( parent, changeItem );
 	}
 
 	/**
@@ -931,26 +880,6 @@ export default class Differ {
 					}
 				}
 			}
-
-			if ( inc.type === 'refresh' ) {
-				if ( old.type === 'insert' ) {
-					if ( inc.offset >= old.offset && inc.offset < oldEnd ) {
-						inc.nodesToHandle = 0;
-					}
-				}
-
-				if ( old.type === 'attribute' ) {
-					if ( inc.offset === old.offset && inc.howMany === old.howMany ) {
-						old.howMany = 0;
-					}
-				}
-
-				if ( old.type === 'refresh' ) {
-					if ( inc.offset === old.offset && inc.howMany === old.howMany ) {
-						inc.nodesToHandle = 0;
-					}
-				}
-			}
 		}
 
 		inc.howMany = inc.nodesToHandle;
@@ -963,7 +892,7 @@ export default class Differ {
 	 * @private
 	 * @param {module:engine/model/element~Element} parent The element in which the change happened.
 	 * @param {Number} offset The offset at which change happened.
-	 * @param {String} name The name of the inserted element or `'$text'` for a character.
+	 * @param {String} name The name of the removed element or `'$text'` for a character.
 	 * @returns {Object} The diff item.
 	 */
 	_getInsertDiff( parent, offset, name ) {
@@ -1054,25 +983,6 @@ export default class Differ {
 	}
 
 	/**
-	 * Returns an object with a single refresh change description.
-	 *
-	 * @private
-	 * @param {module:engine/model/element~Element} parent The element in which the change happened.
-	 * @param {Number} offset The offset at which change happened.
-	 * @param {String} name The name of the refreshed element.
-	 * @returns {Object} The diff item.
-	 */
-	_getRefreshDiff( parent, offset, name ) {
-		return {
-			type: 'refresh',
-			position: Position._createAt( parent, offset ),
-			name,
-			length: 1,
-			changeCount: this._changeCount++
-		};
-	}
-
-	/**
 	 * Checks whether given element or any of its parents is an element that is buffered as an inserted element.
 	 *
 	 * @private
@@ -1098,34 +1008,6 @@ export default class Differ {
 		}
 
 		return this._isInInsertedElement( parent );
-	}
-
-	/**
-	 * Checks whether given element or any of its parents is an element that is buffered as a refreshed element.
-	 *
-	 * @private
-	 * @param {module:engine/model/element~Element} element Element to check.
-	 * @returns {Boolean}
-	 */
-	_isInRefreshedElement( element ) {
-		const parent = element.parent;
-
-		if ( !parent ) {
-			return false;
-		}
-
-		const changes = this._changesInElement.get( parent );
-		const offset = element.startOffset;
-
-		if ( changes ) {
-			for ( const change of changes ) {
-				if ( change.type === 'refresh' && offset >= change.offset && offset < change.offset + change.howMany ) {
-					return true;
-				}
-			}
-		}
-
-		return this._isInRefreshedElement( parent );
 	}
 
 	/**
@@ -1254,19 +1136,13 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 			offset = change.offset;
 			// We removed `howMany` old nodes, update `oldChildrenHandled`.
 			oldChildrenHandled += change.howMany;
-		} else if ( change.type == 'attribute' ) {
+		} else {
 			actions.push( ...'a'.repeat( change.howMany ).split( '' ) );
 
 			// The last handled offset is at the position after the changed range.
 			offset = change.offset + change.howMany;
 			// We changed `howMany` old nodes, update `oldChildrenHandled`.
 			oldChildrenHandled += change.howMany;
-		} else {
-			// In order to properly handle item refreshing we do not merge "x" action nor do we allow range refreshing.
-			actions.push( 'x' );
-
-			// The last handled offset is after inserted item (singular see above comment).
-			offset = change.offset + 1;
 		}
 	}
 

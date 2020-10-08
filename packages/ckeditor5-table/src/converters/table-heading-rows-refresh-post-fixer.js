@@ -45,7 +45,7 @@ function tableHeadingRowsRefreshPostFixer( model ) {
 
 		for ( const table of tablesToRefresh.values() ) {
 			// Should be handled by a `triggerBy` configuration. See: https://github.com/ckeditor/ckeditor5/issues/8138.
-			differ.reInsertItem( table );
+			differ.refreshItem( table );
 		}
 
 		return true;
