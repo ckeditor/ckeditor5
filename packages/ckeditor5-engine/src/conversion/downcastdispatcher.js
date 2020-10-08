@@ -11,6 +11,7 @@ import Consumable from './modelconsumable';
 import Range from '../model/range';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import Position from '../model/position';
 
 /**
  * Downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting to changes
@@ -586,38 +587,10 @@ export default class DowncastDispatcher {
 	 */
 	_getChangesAfterAutomaticRefreshing( differ ) {
 		const changes = differ.getChanges();
-		const elementsToRefresh = this._getElementsForAutomaticRefresh( changes );
 
-		if ( !elementsToRefresh.size ) {
-			return changes;
-		}
+		const refreshedItems = new Set();
 
-		for ( const element of elementsToRefresh.values() ) {
-			differ.refreshItem( element );
-		}
-
-		// The `differ.refreshItem()` invalidates differ cache - we can't re-use previous changes.
-		const changesAfterRefresh = differ.getChanges();
-
-		return changesAfterRefresh.filter( entry => !elementsToRefresh.has( getElementFromChange( entry ) ) );
-	}
-
-	/**
-	 * Returns elements that should be converted using {@link #convertRefresh} defined by a `triggerBy` configuration for
-	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
-	 *
-	 * This will return:
-	 *
-	 * * Element which attributes changed for an 'attribute' change.
-	 * * Parent of inserted or removed element for matched 'insert' or 'remove' changes.
-	 *
-	 * @param {Array.<Object>} changes The changes diff set from the differ.
-	 * @returns {Set.<module:engine/model/element~Element>}
-	 * @private
-	 */
-	_getElementsForAutomaticRefresh( changes ) {
-		const found = changes
-			.filter( ( { type } ) => type === 'attribute' || type === 'insert' || type === 'remove' )
+		const updated = changes
 			.map( entry => {
 				const element = getElementFromChange( entry );
 
@@ -626,7 +599,7 @@ export default class DowncastDispatcher {
 				if ( entry.type === 'attribute' ) {
 					if ( !element ) {
 						// Refreshing is done only on elements so skip text attribute changes.
-						return;
+						return entry;
 					}
 
 					eventName = `attribute:${ entry.attributeKey }:${ element.name }`;
@@ -635,12 +608,26 @@ export default class DowncastDispatcher {
 				}
 
 				if ( this._isRefreshTriggerEvent( eventName, element.name ) ) {
-					return element;
-				}
-			} )
-			.filter( element => !!element );
+					if ( refreshedItems.has( element ) ) {
+						return null;
+					}
 
-		return new Set( found );
+					refreshedItems.add( element );
+
+					return {
+						type: 'refresh',
+						position: Position._createBefore( element ),
+						name: element.name,
+						length: 1
+					};
+				}
+
+				return entry;
+			} )
+			// TODO: could be done in for...of loop or using reduce to not run double loop on big diffsets.
+			.filter( entry => !!entry );
+
+		return updated;
 	}
 
 	/**
