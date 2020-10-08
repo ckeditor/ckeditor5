@@ -176,10 +176,10 @@ export default class DowncastDispatcher {
 	/**
 	 * Maps model element "insert" reconversion for given event names. The event names must be fully specified:
 	 *
-	 * * For "attribute" change event it should include main element name, ie: `'attribute:attributeName:main'`.
+	 * * For "attribute" change event it should include main element name, ie: `'attribute:attributeName:elementName'`.
 	 * * For child nodes change events, those should use child event name as well, ie:
-	 *     * For adding a node: `'insert:child'`.
-	 *     * For removing a node: `'remove:child'`.
+	 *     * For adding a node: `'insert:childElementName'`.
+	 *     * For removing a node: `'remove:childElementName'`.
 	 *
 	 * **Note**: This method should not be used directly. A reconversion is defined by `triggerBy` attribute of the `elementToElement()`
 	 * conversion helper.
@@ -672,7 +672,7 @@ export default class DowncastDispatcher {
 				const currentViewItem = this.conversionApi.mapper.getExistingViewForSlot( modelItem );
 
 				// This of course needs better API, but for now it works.
-				// Mapper.bindSlot() creates mappings as mapper.bindElements() but also binds view element
+				// Mapper.bindSlotElements() creates mappings as mapper.bindElements() but also binds view element
 				// from view to the model item.
 				if ( currentViewItem ) {
 					// This allows to have a map: updatedView - model - oldView and to retain previously rendered children

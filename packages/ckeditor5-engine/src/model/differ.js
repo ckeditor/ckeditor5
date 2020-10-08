@@ -1262,7 +1262,7 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 			// We changed `howMany` old nodes, update `oldChildrenHandled`.
 			oldChildrenHandled += change.howMany;
 		} else {
-			// In order to properly handle item refreshing we do not merge "x" action nor do we allow renge refreshing.
+			// In order to properly handle item refreshing we do not merge "x" action nor do we allow range refreshing.
 			actions.push( 'x' );
 
 			// The last handled offset is after inserted item (singular see above comment).
