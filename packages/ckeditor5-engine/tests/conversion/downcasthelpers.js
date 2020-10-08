@@ -115,7 +115,7 @@ describe( 'DowncastHelpers', () => {
 		} );
 
 		describe( 'config.triggerBy', () => {
-			describe( 'with simple block view structure', () => {
+			describe( 'with simple block view structure (without children)', () => {
 				beforeEach( () => {
 					model.schema.register( 'simpleBlock', {
 						allowIn: '$root',
@@ -144,21 +144,32 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert on attribute set', () => {
 					setModelData( model, '<simpleBlock></simpleBlock>' );
 
+					const [ viewBefore ] = getNodes();
+
 					model.change( writer => {
 						writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
 					} );
 
+					const [ viewAfter ] = getNodes();
+
 					expectResult( '<div style="display:block"></div>' );
+					expect( viewAfter ).to.not.equal( viewBefore );
 				} );
 
 				it( 'should convert on attribute change', () => {
 					setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
+					const [ viewBefore ] = getNodes();
+
 					model.change( writer => {
 						writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
 					} );
 
+					const [ viewAfter ] = getNodes();
+
 					expectResult( '<div style="display:inline"></div>' );
+
+					expect( viewAfter ).to.not.equal( viewBefore );
 				} );
 
 				it( 'should convert on attribute remove', () => {
@@ -185,11 +196,131 @@ describe( 'DowncastHelpers', () => {
 				it( 'should do nothing if non-triggerBy attribute has changed', () => {
 					setModelData( model, '<simpleBlock></simpleBlock>' );
 
+					const [ viewBefore ] = getNodes();
+
 					model.change( writer => {
 						writer.setAttribute( 'notTriggered', true, modelRoot.getChild( 0 ) );
 					} );
 
+					const [ viewAfter ] = getNodes();
+
 					expectResult( '<div></div>' );
+
+					expect( viewAfter ).to.equal( viewBefore );
+				} );
+			} );
+
+			describe( 'with simple block view structure (with children)', () => {
+				beforeEach( () => {
+					model.schema.register( 'simpleBlock', {
+						allowIn: '$root',
+						allowAttributes: [ 'toStyle', 'toClass' ]
+					} );
+					downcastHelpers.elementToElement( {
+						model: 'simpleBlock',
+						view: ( modelElement, { writer } ) => {
+							return writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
+						},
+						triggerBy: [
+							'attribute:toStyle:simpleBlock',
+							'attribute:toClass:simpleBlock'
+						]
+					} );
+
+					model.schema.register( 'paragraph', {
+						inheritAllFrom: '$block',
+						allowIn: 'simpleBlock'
+					} );
+					downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+				} );
+
+				it( 'should convert on insert', () => {
+					model.change( writer => {
+						const simpleBlock = writer.createElement( 'simpleBlock' );
+						const paragraph = writer.createElement( 'paragraph' );
+
+						writer.insert( simpleBlock, modelRoot, 0 );
+						writer.insert( paragraph, simpleBlock, 0 );
+						writer.insertText( 'foo', paragraph, 0 );
+					} );
+
+					expectResult( '<div><p>foo</p></div>' );
+				} );
+
+				it( 'should convert on attribute set', () => {
+					setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+
+					const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+					model.change( writer => {
+						writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
+					} );
+
+					const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+					expectResult( '<div style="display:block"><p>foo</p></div>' );
+
+					expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+					expect( paraAfter, 'para' ).to.equal( paraBefore );
+					expect( textAfter, 'text' ).to.equal( textBefore );
+				} );
+
+				it( 'should convert on attribute change', () => {
+					setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+					const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+					model.change( writer => {
+						writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
+					} );
+
+					const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+					expectResult( '<div style="display:inline"><p>foo</p></div>' );
+
+					expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+					expect( paraAfter, 'para' ).to.equal( paraBefore );
+					expect( textAfter, 'text' ).to.equal( textBefore );
+				} );
+
+				it( 'should convert on attribute remove', () => {
+					setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+					model.change( writer => {
+						writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
+					} );
+
+					expectResult( '<div><p>foo</p></div>' );
+				} );
+
+				it( 'should convert on one attribute add and other remove', () => {
+					setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+					model.change( writer => {
+						writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
+						writer.setAttribute( 'toClass', true, modelRoot.getChild( 0 ) );
+					} );
+
+					expectResult( '<div class="is-classy"><p>foo</p></div>' );
+				} );
+
+				it( 'should do nothing if non-triggerBy attribute has changed', () => {
+					setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+
+					const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+					model.change( writer => {
+						writer.setAttribute( 'notTriggered', true, modelRoot.getChild( 0 ) );
+					} );
+
+					const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+					expectResult( '<div><p>foo</p></div>' );
+
+					expect( viewAfter, 'simpleBlock' ).to.equal( viewBefore );
+					expect( paraAfter, 'para' ).to.equal( paraBefore );
+					// TODO - is text always re-converted?
+					expect( textAfter, 'text' ).to.equal( textBefore );
 				} );
 			} );
 
@@ -227,11 +358,17 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert on attribute set', () => {
 					setModelData( model, '<complex></complex>' );
 
+					const [ outerDivBefore, innerDivBefore ] = getNodes();
+
 					model.change( writer => {
 						writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
 					} );
 
+					const [ outerDivAfter, innerDivAfter ] = getNodes();
+
 					expectResult( '<div class="complex-outer"><div style="display:block"></div></div>' );
+					expect( outerDivAfter, 'outer div' ).to.not.equal( outerDivBefore );
+					expect( innerDivAfter, 'inner div' ).to.not.equal( innerDivBefore );
 				} );
 
 				it( 'should convert on attribute change', () => {
@@ -268,11 +405,18 @@ describe( 'DowncastHelpers', () => {
 				it( 'should do nothing if non-triggerBy attribute has changed', () => {
 					setModelData( model, '<complex></complex>' );
 
+					const [ outerDivBefore, innerDivBefore ] = getNodes();
+
 					model.change( writer => {
 						writer.setAttribute( 'notTriggered', true, modelRoot.getChild( 0 ) );
 					} );
 
+					const [ outerDivAfter, innerDivAfter ] = getNodes();
+
 					expectResult( '<div class="complex-outer"><div></div></div>' );
+
+					expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
+					expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
 				} );
 			} );
 
@@ -360,15 +504,16 @@ describe( 'DowncastHelpers', () => {
 					it( 'should create new element on re-converting element', () => {
 						setModelData( model, '<complex></complex>' );
 
-						const renderedView = viewRoot.getChild( 0 );
+						const [ outerBefore, innerBefore ] = getNodes();
 
 						model.change( writer => {
 							writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
 						} );
 
-						const viewAfterReRender = viewRoot.getChild( 0 );
+						const [ outerAfter, innerAfter ] = getNodes();
 
-						expect( viewAfterReRender ).to.not.equal( renderedView );
+						expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
+						expect( innerAfter, 'inner' ).to.not.equal( innerBefore );
 					} );
 
 					// Skipped, as it would require two-level mapping. See https://github.com/ckeditor/ckeditor5/issues/1589.
@@ -505,8 +650,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on adding slot', () => {
 					setModelData( model,
 						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -515,11 +660,11 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'<div class="slot"><p>bar</p></div>' +
-						'<div class="slot"><p>baz</p></div>' +
-						'</div>' +
+							'<div class="slots">' +
+								'<div class="slot"><p>foo</p></div>' +
+								'<div class="slot"><p>bar</p></div>' +
+								'<div class="slot"><p>baz</p></div>' +
+							'</div>' +
 						'</div>'
 					);
 				} );
@@ -981,6 +1126,15 @@ describe( 'DowncastHelpers', () => {
 				writer.insertText( 'baz', paragraph, 0 );
 				writer.insert( paragraph, slot, 0 );
 				writer.insert( slot, modelRoot.getChild( 0 ), 'end' );
+			}
+
+			function* getNodes() {
+				const main = viewRoot.getChild( 0 );
+				yield main;
+
+				for ( const value of controller.view.createRangeIn( main ) ) {
+					yield value.item;
+				}
 			}
 		} );
 	} );
@@ -2768,6 +2922,62 @@ describe( 'DowncastHelpers', () => {
 				} );
 			} );
 		} );
+	} );
+
+	describe( 'reconversion', () => {
+		it( 'should foo', () => {
+			model.schema.register( 'paragraph', {
+				inheritAllFrom: '$block'
+			} );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+			setModelData( model, '<paragraph>foo</paragraph>' );
+
+			const para = modelRoot.getChild( 0 );
+			const [ pBefore, textBefore ] = getNodes();
+
+			model.change( () => {
+				model.document.differ.refreshItem( para );
+			} );
+
+			const [ pAfter, textAfter ] = getNodes();
+
+			expectResult( '<p>foo</p>' );
+
+			expect( pAfter, '<p>' ).to.not.equal( pBefore );
+			expect( textAfter, 'foo' ).to.equal( textBefore );
+		} );
+
+		it( 'should bar', () => {
+			model.schema.register( 'paragraph', {
+				inheritAllFrom: '$block'
+			} );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+			setModelData( model, '<paragraph>foo</paragraph>' );
+
+			const para = modelRoot.getChild( 0 );
+			const [ pBefore, textBefore ] = getNodes();
+
+			model.change( writer => {
+				model.document.differ.refreshItem( para );
+				writer.insertText( 'bar', para, 'end' );
+			} );
+
+			const [ pAfter, textAfter ] = getNodes();
+
+			expectResult( '<p>foobar</p>' );
+
+			expect( pAfter, '<p>' ).to.not.equal( pBefore );
+			expect( textAfter, 'foobar' ).to.not.equal( textBefore );
+		} );
+
+		function* getNodes() {
+			const main = viewRoot.getChild( 0 );
+			yield main;
+
+			for ( const value of controller.view.createRangeIn( main ) ) {
+				yield value.item;
+			}
+		}
 	} );
 
 	function expectResult( string ) {
