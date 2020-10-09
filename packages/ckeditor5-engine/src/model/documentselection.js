@@ -653,7 +653,7 @@ class LiveSelection extends Selection {
 					 * @param {module:engine/model/range~Range} range
 					 */
 					throw new CKEditorError(
-						'document-selection-wrong-position: Range from document selection starts or ends at incorrect position.',
+						'document-selection-wrong-position',
 						this,
 						{ range }
 					);
@@ -784,7 +784,7 @@ class LiveSelection extends Selection {
 			 * {@link module:engine/model/documentselection~DocumentSelection#_overrideGravity}.
 			 */
 			throw new CKEditorError(
-				'document-selection-gravity-wrong-restore: Attempting to restore the selection gravity for an unknown UID.',
+				'document-selection-gravity-wrong-restore',
 				this,
 				{ uid }
 			);

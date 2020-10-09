@@ -50,7 +50,7 @@ class InlineWidget extends Plugin {
 
 		editor.conversion.for( 'upcast' ).elementToElement( {
 			view: 'placeholder',
-			model: ( viewElement, modelWriter ) => {
+			model: ( viewElement, { writer } ) => {
 				let type = 'general';
 
 				if ( viewElement.childCount ) {
@@ -61,7 +61,7 @@ class InlineWidget extends Plugin {
 					}
 				}
 
-				return modelWriter.createElement( 'placeholder', { type } );
+				return writer.createElement( 'placeholder', { type } );
 			}
 		} );
 

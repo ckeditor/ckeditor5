@@ -7,24 +7,24 @@
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
+const toolbarItems = [ ...ClassicEditor.defaultConfig.toolbar.items ];
+
+toolbarItems.splice( toolbarItems.indexOf( 'imageUpload' ), 1, 'imageInsert' );
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-insert-via-url' ), {
 		removePlugins: [ 'ImageToolbar', 'ImageCaption', 'ImageStyle', 'ImageResize', 'LinkImage' ],
 		toolbar: {
+			items: toolbarItems,
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ],
-			upload: {
-				panel: {
-					items: [ 'insertImageViaUrl' ]
-				}
-			}
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
-		window.imageViaUrl = editor;
+		window.editorInsertImageViaUrl = editor;
 	} )
 	.catch( err => {
 		console.error( err );

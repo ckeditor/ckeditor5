@@ -135,7 +135,7 @@ export default class WidgetToolbarRepository extends Plugin {
 			 * @error widget-toolbar-no-items
 			 */
 			console.warn(
-				attachLinkToDocumentation( 'widget-toolbar-no-items: Trying to register a toolbar without items.' ), { toolbarId }
+				attachLinkToDocumentation( 'widget-toolbar-no-items' ), { toolbarId }
 			);
 
 			return;
@@ -154,7 +154,7 @@ export default class WidgetToolbarRepository extends Plugin {
 			 * @error widget-toolbar-duplicated
 			 * @param toolbarId Toolbar id.
 			 */
-			throw new CKEditorError( 'widget-toolbar-duplicated: Toolbar with the given id was already added.', this, { toolbarId } );
+			throw new CKEditorError( 'widget-toolbar-duplicated', this, { toolbarId } );
 		}
 
 		toolbarView.fillFromConfig( items, editor.ui.componentFactory );

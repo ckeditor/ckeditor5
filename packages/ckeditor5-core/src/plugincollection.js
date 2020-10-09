@@ -117,6 +117,12 @@ export default class PluginCollection {
 		const plugin = this._plugins.get( key );
 
 		if ( !plugin ) {
+			let pluginName = key;
+
+			if ( typeof key == 'function' ) {
+				pluginName = key.pluginName || key.name;
+			}
+
 			/**
 			 * The plugin is not loaded and could not be obtained.
 			 *
@@ -131,15 +137,7 @@ export default class PluginCollection {
 			 * @error plugincollection-plugin-not-loaded
 			 * @param {String} plugin The name of the plugin which is not loaded.
 			 */
-			const errorMsg = 'plugincollection-plugin-not-loaded: The requested plugin is not loaded.';
-
-			let pluginName = key;
-
-			if ( typeof key == 'function' ) {
-				pluginName = key.pluginName || key.name;
-			}
-
-			throw new CKEditorError( errorMsg, this._context, { plugin: pluginName } );
+			throw new CKEditorError( 'plugincollection-plugin-not-loaded', this._context, { plugin: pluginName } );
 		}
 
 		return plugin;
@@ -206,12 +204,12 @@ export default class PluginCollection {
 			 * @error plugincollection-plugin-not-found
 			 * @param {Array.<String>} plugins The name of the plugins which could not be loaded.
 			 */
-			const errorMsg = 'plugincollection-plugin-not-found: Some plugins are not available and could not be loaded.';
+			const errorId = 'plugincollection-plugin-not-found';
 
-			// Log the error so it's more visible on the console. Hopefully, for better DX.
-			console.error( attachLinkToDocumentation( errorMsg ), { plugins: missingPlugins } );
+			// Log the error, so it's more visible on the console. Hopefully, for better DX.
+			console.error( attachLinkToDocumentation( errorId ), { plugins: missingPlugins } );
 
-			return Promise.reject( new CKEditorError( errorMsg, context, { plugins: missingPlugins } ) );
+			return Promise.reject( new CKEditorError( errorId, context, { plugins: missingPlugins } ) );
 		}
 
 		return Promise.all( pluginConstructors.map( loadPlugin ) )
@@ -251,9 +249,7 @@ export default class PluginCollection {
 					 * @error plugincollection-load
 					 * @param {String} plugin The name of the plugin that could not be loaded.
 					 */
-					console.error( attachLinkToDocumentation(
-						'plugincollection-load: It was not possible to load the plugin.'
-					), { plugin: PluginConstructor } );
+					console.error( attachLinkToDocumentation( 'plugincollection-load' ), { plugin: PluginConstructor } );
 
 					throw err;
 				} );
@@ -295,7 +291,7 @@ export default class PluginCollection {
 							 * @param {String} requiredBy The name of the parent plugin.
 							 */
 							throw new CKEditorError(
-								'plugincollection-context-required: Context plugin can not require plugin which is not a context plugin',
+								'plugincollection-context-required',
 								null,
 								{ plugin: RequiredPluginConstructor.name, requiredBy: PluginConstructor.name }
 							);
@@ -310,8 +306,7 @@ export default class PluginCollection {
 							 * @param {String} requiredBy The name of the parent plugin.
 							 */
 							throw new CKEditorError(
-								'plugincollection-required: Cannot load a plugin because one of its dependencies is listed in' +
-								'the `removePlugins` option.',
+								'plugincollection-required',
 								context,
 								{ plugin: RequiredPluginConstructor.name, requiredBy: PluginConstructor.name }
 							);
@@ -421,7 +416,7 @@ export default class PluginCollection {
 			 * @param {Function} plugin2 The second plugin constructor.
 			 */
 			throw new CKEditorError(
-				'plugincollection-plugin-name-conflict: Two plugins with the same name were loaded.',
+				'plugincollection-plugin-name-conflict',
 				null,
 				{ pluginName, plugin1: this._plugins.get( pluginName ).constructor, plugin2: PluginConstructor }
 			);

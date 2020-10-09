@@ -68,7 +68,7 @@ describe( 'FocusTracker', () => {
 
 			expectToThrowCKEditorError( () => {
 				focusTracker.add( containerFirstInput );
-			}, /focusTracker-add-element-already-exist/, focusTracker );
+			}, 'focustracker-add-element-already-exist', focusTracker );
 		} );
 
 		describe( 'single element', () => {

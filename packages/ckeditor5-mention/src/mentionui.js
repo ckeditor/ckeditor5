@@ -158,7 +158,7 @@ export default class MentionUI extends Plugin {
 				 * @error mentionconfig-incorrect-marker
 				 */
 				throw new CKEditorError(
-					'mentionconfig-incorrect-marker: The marker must be provided and it must be a single character.',
+					'mentionconfig-incorrect-marker',
 					null
 				);
 			}
@@ -349,7 +349,7 @@ export default class MentionUI extends Plugin {
 				 *
 				 * @error mention-feed-callback-error
 				 */
-				console.warn( attachLinkToDocumentation( 'mention-feed-callback-error: Could not obtain mention autocomplete feed.' ) );
+				console.warn( attachLinkToDocumentation( 'mention-feed-callback-error' ) );
 			} );
 	}
 

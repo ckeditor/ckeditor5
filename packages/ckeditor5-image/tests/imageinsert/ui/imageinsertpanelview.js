@@ -8,8 +8,8 @@
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
 
-import ImageUploadPanelView from '../../../src/imageupload/ui/imageuploadpanelview';
-import ImageUploadFormRowView from '../../../src/imageupload/ui/imageuploadformrowview';
+import ImageUploadPanelView from '../../../src/imageinsert/ui/imageinsertpanelview';
+import ImageUploadFormRowView from '../../../src/imageinsert/ui/imageinsertformrowview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -21,7 +21,7 @@ import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
-import { createLabeledInputView } from '../../../src/imageupload/utils';
+import { createLabeledInputView } from '../../../src/imageinsert/utils';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -140,7 +140,7 @@ describe( 'ImageUploadPanelView', () => {
 	describe( 'template', () => {
 		it( 'should create element from the template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			expect( view.element.classList.contains( 'ck-image-upload-form' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-image-insert-form' ) ).to.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
@@ -178,7 +178,7 @@ describe( 'ImageUploadPanelView', () => {
 			} );
 			view.render();
 
-			sinon.assert.calledWithExactly( spy.getCall( 0 ), view._integrations.get( 0 ).element );
+			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.getIntegration( 'insertImageViaUrl' ).element );
 			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.insertButtonView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.cancelButtonView.element );
 		} );
@@ -224,7 +224,7 @@ describe( 'ImageUploadPanelView', () => {
 
 			event.stopPropagation = spy;
 
-			view._integrations.get( 0 ).element.dispatchEvent( event );
+			view.getIntegration( 'insertImageViaUrl' ).element.dispatchEvent( event );
 			sinon.assert.calledOnce( spy );
 		} );
 
@@ -238,7 +238,7 @@ describe( 'ImageUploadPanelView', () => {
 
 				// Mock the url input is focused.
 				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view._integrations.get( 0 ).element;
+				view.focusTracker.focusedElement = view.getIntegration( 'insertImageViaUrl' ).element;
 
 				const spy = sinon.spy( view.insertButtonView, 'focus' );
 
@@ -272,7 +272,7 @@ describe( 'ImageUploadPanelView', () => {
 
 	describe( 'focus()', () => {
 		it( 'should focus on the first integration', () => {
-			const spy = sinon.spy( view._integrations.get( 0 ), 'focus' );
+			const spy = sinon.spy( view.getIntegration( 'insertImageViaUrl' ), 'focus' );
 
 			view.focus();
 
@@ -282,7 +282,7 @@ describe( 'ImageUploadPanelView', () => {
 
 	describe( 'Insert image via URL integration input', () => {
 		it( 'should be bound with #imageURLInputValue', () => {
-			const form = view._integrations.get( 0 );
+			const form = view.getIntegration( 'insertImageViaUrl' );
 
 			form.fieldView.element.value = 'abc';
 			form.fieldView.fire( 'input' );

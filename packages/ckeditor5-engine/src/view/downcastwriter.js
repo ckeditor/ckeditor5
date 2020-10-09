@@ -427,7 +427,7 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * Breaks attribute elements at provided position or at boundaries of a provided range. It breaks attribute elements
+	 * Breaks attribute elements at the provided position or at the boundaries of a provided range. It breaks attribute elements
 	 * up to their first ancestor that is a container element.
 	 *
 	 * In following examples `<p>` is a container, `<b>` and `<u>` are attribute elements:
@@ -439,31 +439,29 @@ export default class DowncastWriter {
 	 *
 	 * **Note:** {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} is treated like a container.
 	 *
-	 * **Note:** Difference between {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes} and
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#breakContainer breakContainer} is that `breakAttributes` breaks all
-	 * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that are ancestors of given `position`,
+	 * **Note:** The difference between {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes()} and
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#breakContainer breakContainer()} is that `breakAttributes()` breaks all
+	 * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that are ancestors of a given `position`,
 	 * up to the first encountered {@link module:engine/view/containerelement~ContainerElement container element}.
-	 * `breakContainer` assumes that given `position` is directly in container element and breaks that container element.
+	 * `breakContainer()` assumes that a given `position` is directly in the container element and breaks that container element.
 	 *
-	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container`
-	 * when {@link module:engine/view/range~Range#start start}
+	 * Throws the `view-writer-invalid-range-container` {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
+	 * when the {@link module:engine/view/range~Range#start start}
 	 * and {@link module:engine/view/range~Range#end end} positions of a passed range are not placed inside same parent container.
 	 *
-	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-empty-element`
-	 * when trying to break attributes
-	 * inside {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
+	 * Throws the `view-writer-cannot-break-empty-element` {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
+	 * when trying to break attributes inside an {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
 	 *
-	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-ui-element`
-	 * when trying to break attributes
-	 * inside {@link module:engine/view/uielement~UIElement UIElement}.
+	 * Throws the `view-writer-cannot-break-ui-element` {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
+	 * when trying to break attributes inside a {@link module:engine/view/uielement~UIElement UIElement}.
 	 *
 	 * @see module:engine/view/attributeelement~AttributeElement
 	 * @see module:engine/view/containerelement~ContainerElement
 	 * @see module:engine/view/downcastwriter~DowncastWriter#breakContainer
-	 * @param {module:engine/view/position~Position|module:engine/view/range~Range} positionOrRange Position where
+	 * @param {module:engine/view/position~Position|module:engine/view/range~Range} positionOrRange The position where
 	 * to break attribute elements.
-	 * @returns {module:engine/view/position~Position|module:engine/view/range~Range} New position or range, after breaking the attribute
-	 * elements.
+	 * @returns {module:engine/view/position~Position|module:engine/view/range~Range} The new position or range, after breaking the
+	 * attribute elements.
 	 */
 	breakAttributes( positionOrRange ) {
 		if ( positionOrRange instanceof Position ) {
@@ -474,27 +472,27 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * Breaks {@link module:engine/view/containerelement~ContainerElement container view element} into two, at the given position. Position
-	 * has to be directly inside container element and cannot be in root. Does not break if position is at the beginning
-	 * or at the end of it's parent element.
+	 * Breaks a {@link module:engine/view/containerelement~ContainerElement container view element} into two, at the given position.
+	 * The position has to be directly inside the container element and cannot be in the root. It does not break the conrainer view element
+	 * if the position is at the beginning or at the end of its parent element.
 	 *
 	 *		<p>foo^bar</p> -> <p>foo</p><p>bar</p>
 	 *		<div><p>foo</p>^<p>bar</p></div> -> <div><p>foo</p></div><div><p>bar</p></div>
 	 *		<p>^foobar</p> -> ^<p>foobar</p>
 	 *		<p>foobar^</p> -> <p>foobar</p>^
 	 *
-	 * **Note:** Difference between {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes} and
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#breakContainer breakContainer} is that `breakAttributes` breaks all
-	 * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that are ancestors of given `position`,
+	 * **Note:** The difference between {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes()} and
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#breakContainer breakContainer()} is that `breakAttributes()` breaks all
+	 * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that are ancestors of a given `position`,
 	 * up to the first encountered {@link module:engine/view/containerelement~ContainerElement container element}.
-	 * `breakContainer` assumes that given `position` is directly in container element and breaks that container element.
+	 * `breakContainer()` assumes that the given `position` is directly in the container element and breaks that container element.
 	 *
 	 * @see module:engine/view/attributeelement~AttributeElement
 	 * @see module:engine/view/containerelement~ContainerElement
 	 * @see module:engine/view/downcastwriter~DowncastWriter#breakAttributes
-	 * @param {module:engine/view/position~Position} position Position where to break element.
-	 * @returns {module:engine/view/position~Position} Position between broken elements. If element has not been broken,
-	 * the returned position is placed either before it or after it.
+	 * @param {module:engine/view/position~Position} position The position where to break the element.
+	 * @returns {module:engine/view/position~Position} The position between broken elements. If an element has not been broken,
+	 * the returned position is placed either before or after it.
 	 */
 	breakContainer( position ) {
 		const element = position.parent;
@@ -505,10 +503,7 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-break-non-container-element
 			 */
-			throw new CKEditorError(
-				'view-writer-break-non-container-element: Trying to break an element which is not a container element.',
-				this.document
-			);
+			throw new CKEditorError( 'view-writer-break-non-container-element', this.document );
 		}
 
 		if ( !element.parent ) {
@@ -517,7 +512,7 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-break-root
 			 */
-			throw new CKEditorError( 'view-writer-break-root: Trying to break root element.', this.document );
+			throw new CKEditorError( 'view-writer-break-root', this.document );
 		}
 
 		if ( position.isAtStart ) {
@@ -639,8 +634,7 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-merge-containers-invalid-position
 			 */
-			throw new CKEditorError( 'view-writer-merge-containers-invalid-position: ' +
-				'Element before and after given position cannot be merged.', this.document );
+			throw new CKEditorError( 'view-writer-merge-containers-invalid-position', this.document );
 		}
 
 		const lastChild = prev.getChild( prev.childCount - 1 );
@@ -653,22 +647,25 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * Insert node or nodes at specified position. Takes care about breaking attributes before insertion
+	 * Inserts a node or nodes at specified position. Takes care about breaking attributes before insertion
 	 * and merging them afterwards.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
 	 * contains instances that are not {@link module:engine/view/text~Text Texts},
 	 * {@link module:engine/view/attributeelement~AttributeElement AttributeElements},
 	 * {@link module:engine/view/containerelement~ContainerElement ContainerElements},
-	 * {@link module:engine/view/emptyelement~EmptyElement EmptyElements} or
+	 * {@link module:engine/view/emptyelement~EmptyElement EmptyElements},
+	 * {@link module:engine/view/rawelement~RawElement RawElements} or
 	 * {@link module:engine/view/uielement~UIElement UIElements}.
 	 *
 	 * @param {module:engine/view/position~Position} position Insertion position.
 	 * @param {module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement|
 	 * module:engine/view/containerelement~ContainerElement|module:engine/view/emptyelement~EmptyElement|
-	 * module:engine/view/uielement~UIElement|Iterable.<module:engine/view/text~Text|
+	 * module:engine/view/rawelement~RawElement|module:engine/view/uielement~UIElement|
+	 * Iterable.<module:engine/view/text~Text|
 	 * module:engine/view/attributeelement~AttributeElement|module:engine/view/containerelement~ContainerElement|
-	 * module:engine/view/emptyelement~EmptyElement|module:engine/view/uielement~UIElement>} nodes Node or nodes to insert.
+	 * module:engine/view/emptyelement~EmptyElement|module:engine/view/rawelement~RawElement|
+	 * module:engine/view/uielement~UIElement>} nodes Node or nodes to insert.
 	 * @returns {module:engine/view/range~Range} Range around inserted nodes.
 	 */
 	insert( position, nodes ) {
@@ -686,7 +683,7 @@ export default class DowncastWriter {
 			 * @error view-writer-invalid-position-container
 			 */
 			throw new CKEditorError(
-				'view-writer-invalid-position-container: Position\'s parent container cannot be found.',
+				'view-writer-invalid-position-container',
 				this.document
 			);
 		}
@@ -876,7 +873,7 @@ export default class DowncastWriter {
 	wrap( range, attribute ) {
 		if ( !( attribute instanceof AttributeElement ) ) {
 			throw new CKEditorError(
-				'view-writer-wrap-invalid-attribute: DowncastWriter#wrap() must be called with an attribute element.',
+				'view-writer-wrap-invalid-attribute',
 				this.document
 			);
 		}
@@ -925,7 +922,7 @@ export default class DowncastWriter {
 			 * @error view-writer-unwrap-invalid-attribute
 			 */
 			throw new CKEditorError(
-				'view-writer-unwrap-invalid-attribute: DowncastWriter#unwrap() must be called with an attribute element.',
+				'view-writer-unwrap-invalid-attribute',
 				this.document
 			);
 		}
@@ -1611,7 +1608,7 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-cannot-break-empty-element
 			 */
-			throw new CKEditorError( 'view-writer-cannot-break-empty-element: Cannot break an EmptyElement instance.', this.document );
+			throw new CKEditorError( 'view-writer-cannot-break-empty-element', this.document );
 		}
 
 		// If position is placed inside UIElement - throw an exception as we cannot break inside.
@@ -1625,7 +1622,7 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-cannot-break-ui-element
 			 */
-			throw new CKEditorError( 'view-writer-cannot-break-ui-element: Cannot break a UIElement instance.', this.document );
+			throw new CKEditorError( 'view-writer-cannot-break-ui-element', this.document );
 		}
 
 		// If position is placed inside RawElement - throw an exception as we cannot break inside.
@@ -1639,7 +1636,7 @@ export default class DowncastWriter {
 			 *
 			 * @error view-writer-cannot-break-raw-element
 			 */
-			throw new CKEditorError( 'view-writer-cannot-break-raw-element: Cannot break a RawElement instance.', this.document );
+			throw new CKEditorError( 'view-writer-cannot-break-raw-element', this.document );
 		}
 
 		// There are no attributes to break and text nodes breaking is not forced.
@@ -1907,27 +1904,18 @@ function mergeTextNodes( t1, t2 ) {
 	return new Position( t1, nodeBeforeLength );
 }
 
-// Checks if provided nodes are valid to insert. Checks if each node is an instance of
-// {@link module:engine/view/text~Text Text} or {@link module:engine/view/attributeelement~AttributeElement AttributeElement},
-// {@link module:engine/view/containerelement~ContainerElement ContainerElement},
-// {@link module:engine/view/emptyelement~EmptyElement EmptyElement} or
-// {@link module:engine/view/uielement~UIElement UIElement}.
+// Checks if provided nodes are valid to insert.
 //
 // Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
-// contains instances that are not {@link module:engine/view/text~Text Texts},
-// {@link module:engine/view/emptyelement~EmptyElement EmptyElements},
-// {@link module:engine/view/uielement~UIElement UIElements},
-// {@link module:engine/view/attributeelement~AttributeElement AttributeElements} or
-// {@link module:engine/view/containerelement~ContainerElement ContainerElements}.
+// contains instances that are not supported ones (see error description for valid ones.
 //
-// @param Iterable.<module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement
-// |module:engine/view/containerelement~ContainerElement> nodes
+// @param Iterable.<module:engine/view/text~Text|module:engine/view/element~Element> nodes
 // @param {Object} errorContext
 function validateNodesToInsert( nodes, errorContext ) {
 	for ( const node of nodes ) {
 		if ( !validNodesToInsert.some( ( validNode => node instanceof validNode ) ) ) { // eslint-disable-line no-use-before-define
 			/**
-			 * One of the nodes to be inserted is of invalid type.
+			 * One of the nodes to be inserted is of an invalid type.
 			 *
 			 * Nodes to be inserted with {@link module:engine/view/downcastwriter~DowncastWriter#insert `DowncastWriter#insert()`} should be
 			 * of the following types:
@@ -1941,10 +1929,7 @@ function validateNodesToInsert( nodes, errorContext ) {
 			 *
 			 * @error view-writer-insert-invalid-node-type
 			 */
-			throw new CKEditorError(
-				'view-writer-insert-invalid-node-type: One of the nodes to be inserted is of invalid type.',
-				errorContext
-			);
+			throw new CKEditorError( 'view-writer-insert-invalid-node-type', errorContext );
 		}
 
 		if ( !node.is( '$text' ) ) {
@@ -1985,12 +1970,12 @@ function validateRangeContainer( range, errorContext ) {
 		 * {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#clean()`},
 		 * {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#wrap()`},
 		 * {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#unwrap()`} need to be called
-		 * on a range that have its start and end positions located in the same container element. Both positions can be
+		 * on a range that has its start and end positions located in the same container element. Both positions can be
 		 * nested within other elements (e.g. an attribute element) but the closest container ancestor must be the same.
 		 *
 		 * @error view-writer-invalid-range-container
 		 */
-		throw new CKEditorError( 'view-writer-invalid-range-container: The container of the given range is invalid.', errorContext );
+		throw new CKEditorError( 'view-writer-invalid-range-container', errorContext );
 	}
 }
 

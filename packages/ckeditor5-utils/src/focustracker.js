@@ -80,9 +80,9 @@ export default class FocusTracker {
 			/**
 			 * This element is already tracked by {@link module:utils/focustracker~FocusTracker}.
 			 *
-			 * @error focusTracker-add-element-already-exist
+			 * @error focustracker-add-element-already-exist
 			 */
-			throw new CKEditorError( 'focusTracker-add-element-already-exist: This element is already tracked by FocusTracker.', this );
+			throw new CKEditorError( 'focustracker-add-element-already-exist', this );
 		}
 
 		this.listenTo( element, 'focus', () => this._focus( element ), { useCapture: true } );

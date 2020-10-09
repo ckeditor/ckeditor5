@@ -4,7 +4,7 @@ category: features
 
 # Lists
 
-The {@link module:list/list~List list} feature allows creating ordered and unordered lists in the editor.
+The {@link module:list/list~List list} feature allows creating ordered (numbered) and unordered (bulleted) lists in the editor.
 
 <info-box info>
 	The feature is enabled by default in all CKEditor 5 WYSIWYG editor builds.
@@ -14,6 +14,10 @@ The {@link module:list/list~List list} feature allows creating ordered and unord
 
 ## Ordered and unordered lists
 
+An unordered (bulleted) list can represent items where the order is not important, for example, a list of ingredients required for preparing a dish or a drink.
+
+An ordered (numbered) list can be used if the order of the items matters, for example, when creating an instruction. Here, the sequence of steps that must be done is important.
+
 Use the editor below to see the list feature plugin in action.
 
 ### Demo
@@ -22,11 +26,11 @@ Use the editor below to see the list feature plugin in action.
 
 ## List styles
 
-The {@link module:list/liststyle~ListStyle list styles} feature allows customizing the list's marker.
+The {@link module:list/liststyle~ListStyle list style} feature introduces some more styles for the list item markers. When enabled, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The styles can be changed via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
 
 ### Demo
 
-Use the editor below to see the list styles feature plugin in action.
+Use the editor below to see the list style plugin in action.
 
 {@snippet features/lists-style}
 
@@ -34,7 +38,7 @@ Use the editor below to see the list styles feature plugin in action.
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
 
-```bash
+```
 npm install --save @ckeditor/ckeditor5-list
 ```
 
@@ -60,6 +64,10 @@ ClassicEditor
 	The {@link module:list/liststyle~ListStyle} feature overrides UI button implementations from the {@link module:list/listui~ListUI}.
 </info-box>
 
+## List indentation
+
+Refer to the {@link features/indent Indenting lists} section of the Block indentation feature guide.
+
 ## To-do list
 
 You can read more about the feature in the {@link features/todo-lists To-do lists} feature guide.
@@ -72,12 +80,12 @@ The {@link module:list/list~List} plugin registers:
 * The {@link module:list/listcommand~ListCommand `'bulletedList'`} command.
 * The {@link module:list/indentcommand~IndentCommand `'indentList'`} command.
 * The {@link module:list/indentcommand~IndentCommand `'outdentList'`} command.
-* The `'numberedList'` ui button.
-* The `'bulletedList'` ui button.
+* The `'numberedList'` UI button.
+* The `'bulletedList'` UI button.
 
 The {@link module:list/liststyle~ListStyle} plugin registers:
 
-* The {@link module:list/liststylecommand~ListStyleCommand `'listStyle'`} command that accepts a `type` of a list style to set.
+* The {@link module:list/liststylecommand~ListStyleCommand `'listStyle'`} command that accepts a `type` of the list style to set.
     ```js
     editor.execute( 'listStyle', { type: 'decimal' } );
     ```
@@ -85,8 +93,8 @@ The {@link module:list/liststyle~ListStyle} plugin registers:
 
     * For bulleted lists: `'disc'`, `'circle'`, and `'square'`.
     * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'`, and `'upper-latin'`.
-* The `'numberedList'` ui split button (it overrides UI button registered by the `List` plguin.
-* The `'bulletedList'` ui split button (it overrides UI button registered by the `List` plguin.
+* The `'numberedList'` UI split button (it overrides the UI button registered by the `List` plguin.
+* The `'bulletedList'` UI split button (it overrides the UI button registered by the `List` plguin.
 
 ## Contribute
 

@@ -12,7 +12,7 @@ function AllowLinkTarget( editor ) {
 
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'linkTarget',
-		view: ( attributeValue, writer ) => {
+		view: ( attributeValue, { writer } ) => {
 			const linkElement = writer.createAttributeElement( 'a', { target: attributeValue }, { priority: 5 } );
 			writer.setCustomProperty( 'link', true, linkElement );
 

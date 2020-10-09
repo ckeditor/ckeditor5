@@ -4,19 +4,19 @@
  */
 
 /**
- * @module image/imageupload/ui/imageuploadformrowview
+ * @module image/imageinsert/ui/imageinsertformrowview
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
-import '../../../theme/imageuploadformrowview.css';
+import '../../../theme/imageinsertformrowview.css';
 
 /**
  * The class representing a single row in a complex form,
- * used by {@link module:image/imageupload/ui/imageuploadpanelview~ImageUploadPanelView}.
+ * used by {@link module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView}.
  *
- * **Note**: For now this class is private. When more use cases arrive (beyond ckeditor5-table and ckeditor5-image),
- * it will become a component in ckeditor5-ui.
+ * **Note**: For now this class is private. When more use cases appear (beyond `ckeditor5-table` and `ckeditor5-image`),
+ * it will become a component in `ckeditor5-ui`.
  *
  * @private
  * @extends module:ui/view~View

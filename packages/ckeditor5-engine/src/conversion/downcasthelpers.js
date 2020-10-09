@@ -62,6 +62,9 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
+	 * You can read more about element-to-element conversion in the
+	 * {@glink framework/guides/deep-dive/conversion/custom-element-conversion Custom element conversion} guide.
+	 *
 	 * @method #elementToElement
 	 * @param {Object} config Conversion configuration.
 	 * @param {String} config.model The name of the model element to convert.
@@ -710,8 +713,8 @@ export function clearAttributes() {
  * The converter automatically consumes the corresponding value from the consumables list and stops the event (see
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
  *
- *		modelDispatcher.on( 'attribute:bold', wrap( ( modelAttributeValue, viewWriter ) => {
- *			return viewWriter.createAttributeElement( 'strong' );
+ *		modelDispatcher.on( 'attribute:bold', wrap( ( modelAttributeValue, { writer } ) => {
+ *			return writer.createAttributeElement( 'strong' );
  *		} );
  *
  * @protected
@@ -769,9 +772,9 @@ export function wrap( elementCreator ) {
  *
  *		downcastDispatcher.on(
  *			'insert:myElem',
- *			insertElement( ( modelItem, viewWriter ) => {
- *				const text = viewWriter.createText( 'myText' );
- *				const myElem = viewWriter.createElement( 'myElem', { myAttr: 'my-' + modelItem.getAttribute( 'myAttr' ) }, text );
+ *			insertElement( ( modelItem, { writer } ) => {
+ *				const text = writer.createText( 'myText' );
+ *				const myElem = writer.createElement( 'myElem', { myAttr: 'my-' + modelItem.getAttribute( 'myAttr' ) }, text );
  *
  *				// Do something fancy with `myElem` using `modelItem` or other parameters.
  *
@@ -1098,7 +1101,7 @@ function changeAttribute( attributeCreator ) {
 			 *				key: 'attribute-name',
 			 *				name: '$text'
 			 *			},
-			 *			view: ( value, writer ) => {
+			 *			view: ( value, { writer } ) => {
 			 *				return writer.createAttributeElement( 'span', { 'attribute-name': value } );
 			 *			},
 			 *			converterPriority: 'high'
@@ -1107,8 +1110,7 @@ function changeAttribute( attributeCreator ) {
 			 * @error conversion-attribute-to-attribute-on-text
 			 */
 			throw new CKEditorError(
-				'conversion-attribute-to-attribute-on-text: ' +
-				'Trying to convert text node\'s attribute with attribute-to-attribute converter.',
+				'conversion-attribute-to-attribute-on-text',
 				[ data, conversionApi ]
 			);
 		}
