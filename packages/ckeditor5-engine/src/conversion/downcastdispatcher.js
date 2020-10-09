@@ -642,31 +642,34 @@ export default class DowncastDispatcher {
 	_reconvertElement( data ) {
 		const currentView = this.conversionApi.mapper.toViewElement( data.item );
 
+		const currentModelViewMapping = new Map();
+		const currentViewModelMapping = new Map();
+
+		for ( const { item } of Range._createIn( data.item ) ) {
+			const currentView = this.conversionApi.mapper.toViewElement( item );
+
+			if ( currentView ) {
+				currentModelViewMapping.set( item, currentView );
+				currentViewModelMapping.set( currentView, item );
+			}
+		}
+
 		// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
 		this.conversionApi.writer.remove( currentView );
 
 		this._convertInsertWithAttributes( data );
 
 		// Bring back removed child views on refreshing the parent view.
-		const viewElement = this.conversionApi.mapper.toViewElement( data.item );
+		const convertedViewElement = this.conversionApi.mapper.toViewElement( data.item );
 
-		// Iterate over new view elements to find "interesting" points - those elements that are mapped to the model.
-		for ( const { item } of this.conversionApi.writer.createRangeIn( viewElement ) ) {
-			const modelItem = this.conversionApi.mapper.toModelElement( item );
+		for ( const { item } of Range._createIn( data.item ) ) {
+			const view = this.conversionApi.mapper.toViewElement( item );
 
-			// At this stage we get the update view element, so any mapped model item might be a potential "slot".
-			if ( modelItem ) {
-				const currentViewItem = this.conversionApi.mapper.getExistingViewForSlot( modelItem );
-
-				// This of course needs better API, but for now it works.
-				// Mapper.bindSlotElements() creates mappings as mapper.bindElements() but also binds view element
-				// from view to the model item.
-				if ( currentViewItem ) {
-					// This allows to have a map: updatedView - model - oldView and to retain previously rendered children
-					// from the "slot" element. Those children can be moved to a newly created slot.
+			if ( view ) {
+				if ( view.root !== convertedViewElement.root ) {
 					this.conversionApi.writer.move(
-						this.conversionApi.writer.createRangeIn( currentViewItem ),
-						this.conversionApi.writer.createPositionAt( item, 0 )
+						this.conversionApi.writer.createRangeOn( view ),
+						this.conversionApi.mapper.toViewPosition( Position._createAt( item.parent, item.startOffset ) )
 					);
 				}
 			}

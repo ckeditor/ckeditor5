@@ -633,16 +633,16 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element with slots', () => {
 					setModelData( model,
 						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					expectResult(
 						'<div class="complex-slots">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'<div class="slot"><p>bar</p></div>' +
-						'</div>' +
+							'<div class="slots">' +
+								'<div class="slot"><p>foo</p></div>' +
+								'<div class="slot"><p>bar</p></div>' +
+							'</div>' +
 						'</div>'
 					);
 				} );
@@ -672,8 +672,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on removing slot', () => {
 					setModelData( model,
 						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -682,9 +682,9 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>bar</p></div>' +
-						'</div>' +
+							'<div class="slots">' +
+								'<div class="slot"><p>bar</p></div>' +
+							'</div>' +
 						'</div>'
 					);
 				} );
@@ -692,8 +692,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on multiple triggers (remove + insert)', () => {
 					setModelData( model,
 						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -704,9 +704,9 @@ describe( 'DowncastHelpers', () => {
 					expectResult(
 						'<div class="complex-slots">' +
 						'<div class="slots">' +
-						'<div class="slot"><p>bar</p></div>' +
-						'<div class="slot"><p>baz</p></div>' +
-						'</div>' +
+								'<div class="slot"><p>bar</p></div>' +
+								'<div class="slot"><p>baz</p></div>' +
+							'</div>' +
 						'</div>'
 					);
 				} );
@@ -714,8 +714,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on multiple triggers (remove + attribute)', () => {
 					setModelData( model,
 						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -725,9 +725,9 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots with-class">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>bar</p></div>' +
-						'</div>' +
+							'<div class="slots">' +
+								'<div class="slot"><p>bar</p></div>' +
+							'</div>' +
 						'</div>'
 					);
 				} );
@@ -735,8 +735,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on multiple triggers (insert + attribute)', () => {
 					setModelData( model,
 						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -746,11 +746,11 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots with-class">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'<div class="slot"><p>bar</p></div>' +
-						'<div class="slot"><p>baz</p></div>' +
-						'</div>' +
+							'<div class="slots">' +
+								'<div class="slot"><p>foo</p></div>' +
+								'<div class="slot"><p>bar</p></div>' +
+								'<div class="slot"><p>baz</p></div>' +
+							'</div>' +
 						'</div>'
 					);
 				} );
@@ -809,13 +809,13 @@ describe( 'DowncastHelpers', () => {
 							'</complex>'
 						);
 
-						const complexView = viewRoot.getChild( 0 );
+						const [ complexView ] = getNodes();
 
 						model.change( writer => {
 							writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
 						} );
 
-						const viewAfterReRender = viewRoot.getChild( 0 );
+						const [ viewAfterReRender ] = getNodes();
 
 						expect( viewAfterReRender, 'the view should be refreshed' ).to.not.equal( complexView );
 					} );
@@ -827,19 +827,25 @@ describe( 'DowncastHelpers', () => {
 							'</complex>'
 						);
 
-						const [ main, slotOne, slotOneChild, slotTwo, slotTwoChild ] = getNodes();
+						const [ main, /* unused */,
+							slotOne, paraOne, textNodeOne,
+							slotTwo, paraTwo, textNodeTwo ] = getNodes();
 
 						model.change( writer => {
 							writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
 						} );
 
-						const [ mainAfter, slotOneAfter, slotOneChildAfter, slotTwoAfter, slotTwoChildAfter ] = getNodes();
+						const [ mainAfter, /* unused */,
+							slotOneAfter, paraOneAfter, textNodeOneAfter,
+							slotTwoAfter, paraTwoAfter, textNodeTwoAfter ] = getNodes();
 
 						expect( mainAfter, 'main view' ).to.not.equal( main );
 						expect( slotOneAfter, 'first slot view' ).to.not.equal( slotOne );
 						expect( slotTwoAfter, 'second slot view' ).to.not.equal( slotTwo );
-						expect( slotOneChildAfter, 'first slot paragraph view' ).to.equal( slotOneChild );
-						expect( slotTwoChildAfter, 'second slot paragraph view' ).to.equal( slotTwoChild );
+						expect( paraOneAfter, 'first slot paragraph view' ).to.equal( paraOne );
+						expect( textNodeOneAfter, 'first slot text node view' ).to.equal( textNodeOne );
+						expect( paraTwoAfter, 'second slot paragraph view' ).to.equal( paraTwo );
+						expect( textNodeTwoAfter, 'second slot text node view' ).to.equal( textNodeTwo );
 					} );
 
 					it( 'should not re-create slot\'s child elements on re-converting main element (slot added)', () => {
@@ -849,7 +855,9 @@ describe( 'DowncastHelpers', () => {
 							'</complex>'
 						);
 
-						const [ main, slotOne, slotOneChild, slotTwo, slotTwoChild ] = getNodes();
+						const [ main, /* unused */,
+							slotOne, paraOne, textNodeOne,
+							slotTwo, paraTwo, textNodeTwo ] = getNodes();
 
 						model.change( writer => {
 							const slot = writer.createElement( 'slot' );
@@ -859,37 +867,23 @@ describe( 'DowncastHelpers', () => {
 							writer.insert( slot, modelRoot.getChild( 0 ), 'end' );
 						} );
 
-						const [
-							mainAfter,
-							slotOneAfter, slotOneChildAfter,
-							slotTwoAfter, slotTwoChildAfter,
-							slot3, slot3Child
+						const [ mainAfter, /* unused */,
+							slotOneAfter, paraOneAfter, textNodeOneAfter,
+							slotTwoAfter, paraTwoAfter, textNodeTwoAfter,
+							slotThreeAfter, paraThreeAfter, textNodeThreeAfter
 						] = getNodes();
 
 						expect( mainAfter, 'main view' ).to.not.equal( main );
 						expect( slotOneAfter, 'first slot view' ).to.not.equal( slotOne );
 						expect( slotTwoAfter, 'second slot view' ).to.not.equal( slotTwo );
-						expect( slotOneChildAfter, 'first slot paragraph view' ).to.equal( slotOneChild );
-						expect( slotTwoChildAfter, 'second slot paragraph view' ).to.equal( slotTwoChild );
-						expect( slot3, 'third slot view' ).to.not.be.undefined;
-						expect( slot3Child, 'third slot paragraph view' ).to.not.be.undefined;
+						expect( paraOneAfter, 'first slot paragraph view' ).to.equal( paraOne );
+						expect( textNodeOneAfter, 'first slot text node view' ).to.equal( textNodeOne );
+						expect( paraTwoAfter, 'second slot paragraph view' ).to.equal( paraTwo );
+						expect( textNodeTwoAfter, 'second slot text node view' ).to.equal( textNodeTwo );
+						expect( slotThreeAfter, 'third slot view' ).to.not.be.undefined;
+						expect( paraThreeAfter, 'third slot paragraph view' ).to.not.be.undefined;
+						expect( textNodeThreeAfter, 'third slot text node view' ).to.not.be.undefined;
 					} );
-
-					/**
-					 * Returns a generator that yields elements as [ mainView, slot1, childOfSlot1, slot2, childOfSlot2, ... ].
-					 */
-					function* getNodes() {
-						const main = viewRoot.getChild( 0 );
-						yield main;
-						const slotWrap = main.getChild( 0 );
-
-						for ( const slot of slotWrap.getChildren() ) {
-							const slotOneChild = slot.getChild( 0 );
-
-							yield slot;
-							yield slotOneChild;
-						}
-					}
 				} );
 			} );
 
@@ -1132,8 +1126,13 @@ describe( 'DowncastHelpers', () => {
 				const main = viewRoot.getChild( 0 );
 				yield main;
 
-				for ( const value of controller.view.createRangeIn( main ) ) {
-					yield value.item;
+				for ( const { item } of controller.view.createRangeIn( main ) ) {
+					if ( item.is( 'textProxy' ) ) {
+						// TreeWalker always create a new instance of a TextProxy so use referenced textNode.
+						yield item.textNode;
+					} else {
+						yield item;
+					}
 				}
 			}
 		} );
@@ -2922,62 +2921,6 @@ describe( 'DowncastHelpers', () => {
 				} );
 			} );
 		} );
-	} );
-
-	describe( 'reconversion', () => {
-		it( 'should foo', () => {
-			model.schema.register( 'paragraph', {
-				inheritAllFrom: '$block'
-			} );
-			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
-			setModelData( model, '<paragraph>foo</paragraph>' );
-
-			const para = modelRoot.getChild( 0 );
-			const [ pBefore, textBefore ] = getNodes();
-
-			model.change( () => {
-				model.document.differ.refreshItem( para );
-			} );
-
-			const [ pAfter, textAfter ] = getNodes();
-
-			expectResult( '<p>foo</p>' );
-
-			expect( pAfter, '<p>' ).to.not.equal( pBefore );
-			expect( textAfter, 'foo' ).to.equal( textBefore );
-		} );
-
-		it( 'should bar', () => {
-			model.schema.register( 'paragraph', {
-				inheritAllFrom: '$block'
-			} );
-			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
-			setModelData( model, '<paragraph>foo</paragraph>' );
-
-			const para = modelRoot.getChild( 0 );
-			const [ pBefore, textBefore ] = getNodes();
-
-			model.change( writer => {
-				model.document.differ.refreshItem( para );
-				writer.insertText( 'bar', para, 'end' );
-			} );
-
-			const [ pAfter, textAfter ] = getNodes();
-
-			expectResult( '<p>foobar</p>' );
-
-			expect( pAfter, '<p>' ).to.not.equal( pBefore );
-			expect( textAfter, 'foobar' ).to.not.equal( textBefore );
-		} );
-
-		function* getNodes() {
-			const main = viewRoot.getChild( 0 );
-			yield main;
-
-			for ( const value of controller.view.createRangeIn( main ) ) {
-				yield value.item;
-			}
-		}
 	} );
 
 	function expectResult( string ) {
