@@ -24,6 +24,7 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import '../../theme/linkform.css';
+import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
 
 /**
  * The link form view controller class.
@@ -84,6 +85,8 @@ export default class LinkFormView extends View {
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button-cancel', 'cancel' );
+
+		this.separatorView = new ToolbarSeparatorView();
 
 		/**
 		 * A collection of {@link module:ui/button/switchbuttonview~SwitchButtonView},
@@ -331,6 +334,7 @@ export default class LinkFormView extends View {
 		}
 
 		children.add( this.saveButtonView );
+		children.add( this.separatorView );
 		children.add( this.cancelButtonView );
 
 		return children;

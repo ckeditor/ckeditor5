@@ -45,14 +45,17 @@ describe( 'LinkFormView', () => {
 		it( 'should create child views', () => {
 			expect( view.urlInputView ).to.be.instanceOf( View );
 			expect( view.saveButtonView ).to.be.instanceOf( View );
+			expect( view.separatorView ).to.be.instanceOf( View );
 			expect( view.cancelButtonView ).to.be.instanceOf( View );
 
 			expect( view.saveButtonView.element.classList.contains( 'ck-button-save' ) ).to.be.true;
+			expect( view.separatorView.element.classList.contains( 'ck-toolbar__separator' ) ).to.be.true;
 			expect( view.cancelButtonView.element.classList.contains( 'ck-button-cancel' ) ).to.be.true;
 
 			expect( view.children.get( 0 ) ).to.equal( view.urlInputView );
 			expect( view.children.get( 1 ) ).to.equal( view.saveButtonView );
-			expect( view.children.get( 2 ) ).to.equal( view.cancelButtonView );
+			expect( view.children.get( 2 ) ).to.equal( view.separatorView );
+			expect( view.children.get( 3 ) ).to.equal( view.cancelButtonView );
 		} );
 
 		it( 'should create #focusTracker instance', () => {
@@ -94,7 +97,8 @@ describe( 'LinkFormView', () => {
 
 			it( 'has button views', () => {
 				expect( view.template.children[ 0 ].get( 1 ) ).to.equal( view.saveButtonView );
-				expect( view.template.children[ 0 ].get( 2 ) ).to.equal( view.cancelButtonView );
+				expect( view.template.children[ 0 ].get( 2 ) ).to.equal( view.separatorView );
+				expect( view.template.children[ 0 ].get( 3 ) ).to.equal( view.cancelButtonView );
 			} );
 		} );
 	} );

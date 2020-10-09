@@ -20,7 +20,32 @@
 		}
 
 		& .ck-button {
-			flex-basis: 50%;
+			flex-grow: 1;
+		}
+
+		& .ck-toolbar__separator {
+			align-self: stretch;
+			width: 1px;
+			min-width: 1px;
+			background: var(--ck-color-toolbar-border);
+
+			/*
+			 * These margins make the separators look better in balloon toolbars (when aligned with the "tip").
+			 * See https://github.com/ckeditor/ckeditor5/issues/7493.
+			 */
+			margin-top: calc(var(--ck-spacing-large) + var(--ck-spacing-extra-tiny));
+			margin-bottom: var(--ck-spacing-small);
+
+			&::before {
+				content: ".";
+				display: inline-block;
+				position: relative;
+				top: -5px;
+				width: 1px;
+				height: 1px;
+				color: var(--ck-color-base-background);
+				background-color: var(--ck-color-toolbar-border);
+			}
 		}
 	}
 }
