@@ -59,8 +59,8 @@ yarn add --dev \
 	react \
 	react-dom \
 	style-loader@1 \
-	webpack@5.0.0-rc.3 \
-	webpack-cli@4.0.0-rc.0
+	webpack@5 \
+	webpack-cli@4
 ```
 
 Create a minimal [webpack](https://webpack.js.org) configuration and save it as `webpack.config.js` in the root of the application. To learn more about using webpack with CKEditor 5 and React, check out the {@link builds/guides/frameworks/react#integrating-ckeditor-5-built-from-source Integrating CKEditor 5 built from source} section of the CKEditor 5 React component guide.

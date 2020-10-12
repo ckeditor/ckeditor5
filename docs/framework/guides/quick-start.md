@@ -29,8 +29,8 @@ npm install --save \
 	postcss-loader@4 \
 	raw-loader@4 \
 	style-loader@1 \
-	webpack@5.0.0-rc.3 \
-	webpack-cli@4.0.0-rc.0
+	webpack@5 \
+	webpack-cli@4
 ```
 
 The minimal webpack configuration needed to enable building CKEditor 5 is:

@@ -103,8 +103,8 @@ npm install --save-dev \
 	raw-loader@4 \
 	css-loader@4 \
 	style-loader@1 \
-	webpack@5.0.0-rc.3 \
-	webpack-cli@4.0.0-rc.0
+	webpack@5 \
+	webpack-cli@4
 ```
 
 ### Webpack configuration
