@@ -589,44 +589,44 @@ export default class DowncastDispatcher {
 	 * @private
 	 */
 	_mapChangesWithAutomaticReconversion( differ ) {
-		const changes = differ.getChanges();
-
 		const itemsToReconvert = new Set();
+		const updated = [];
 
-		const updated = changes
-			.map( entry => {
-				const element = getParentElementFromChange( entry );
+		for ( const entry of differ.getChanges() ) {
+			const element = getParentElementFromChange( entry );
 
-				if ( !element ) {
-					// Reconversion is done only on elements so skip text attribute changes.
-					return entry;
+			if ( !element ) {
+				// Reconversion is done only on elements so skip text attribute changes.
+				updated.push( entry );
+
+				continue;
+			}
+
+			let eventName;
+
+			if ( entry.type === 'attribute' ) {
+				eventName = `attribute:${ entry.attributeKey }:${ element.name }`;
+			} else {
+				eventName = `${ entry.type }:${ entry.name }`;
+			}
+
+			if ( this._isReconvertTriggerEvent( eventName, element.name ) ) {
+				if ( itemsToReconvert.has( element ) ) {
+					// Element is already reconverted, so skip this change.
+					continue;
 				}
 
-				let eventName;
+				itemsToReconvert.add( element );
 
-				if ( entry.type === 'attribute' ) {
-					eventName = `attribute:${ entry.attributeKey }:${ element.name }`;
-				} else {
-					eventName = `${ entry.type }:${ entry.name }`;
-				}
-
-				if ( this._isReconvertTriggerEvent( eventName, element.name ) ) {
-					if ( itemsToReconvert.has( element ) ) {
-						return null;
-					}
-
-					itemsToReconvert.add( element );
-
-					return {
-						type: 'reconvert',
-						element
-					};
-				}
-
-				return entry;
-			} )
-			// TODO: could be done in for...of loop or using reduce to not run double loop on big diffsets.
-			.filter( entry => !!entry );
+				// Add special "reconvert" change.
+				updated.push( {
+					type: 'reconvert',
+					element
+				} );
+			} else {
+				updated.push( entry );
+			}
+		}
 
 		return updated;
 	}
