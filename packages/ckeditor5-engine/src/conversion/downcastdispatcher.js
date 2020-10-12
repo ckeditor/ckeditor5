@@ -253,10 +253,13 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Starts a reconversion of an element. It can:
+	 * Starts a reconversion of an element. It will:
 	 *
 	 * * Fire a {@link #event:insert `insert` event} for the element to reconvert.
-	 * * Handle conversion of a range insert for nodes under the reconverted item which are not bound as slots.
+	 * * Fire an {@link #event:attribute `attribute` event} for element attributes.
+	 *
+	 * This will not reconvert children of the element if they have existing (already converted) views. For newly inserted child elements
+	 * it will behave the same as {@link #convertInsert}.
 	 *
 	 * Element reconversion is defined by a `triggerBy` configuration for
 	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
