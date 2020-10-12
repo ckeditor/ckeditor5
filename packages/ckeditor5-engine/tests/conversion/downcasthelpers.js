@@ -567,7 +567,7 @@ describe( 'DowncastHelpers', () => {
 								const viewSlot = writer.createContainerElement( 'div', { class: 'slot' } );
 
 								writer.insert( writer.createPositionAt( inner, slot.index ), viewSlot );
-								mapper.bindSlotElements( slot, viewSlot );
+								mapper.bindElements( slot, viewSlot );
 							}
 
 							return outer;
@@ -898,7 +898,7 @@ describe( 'DowncastHelpers', () => {
 					function createViewSlot( slot, { writer, mapper } ) {
 						const viewSlot = writer.createContainerElement( 'div', { class: 'slot' } );
 
-						mapper.bindSlotElements( slot, viewSlot );
+						mapper.bindElements( slot, viewSlot );
 
 						return viewSlot;
 					}

@@ -50,14 +50,6 @@ export default class Mapper {
 		this._modelToViewMapping = new WeakMap();
 
 		/**
-		 * Model element to existing view slot element mapping.
-		 *
-		 * @private
-		 * @member {WeakMap}
-		 */
-		this._slotToViewMapping = new WeakMap();
-
-		/**
 		 * View element to model element mapping.
 		 *
 		 * @private
@@ -260,7 +252,6 @@ export default class Mapper {
 		this._markerNameToElements = new Map();
 		this._elementToMarkerNames = new Map();
 		this._unboundMarkerNames = new Set();
-		this._slotToViewMapping = new WeakMap();
 	}
 
 	/**
@@ -343,32 +334,6 @@ export default class Mapper {
 		this.fire( 'modelToViewPosition', data );
 
 		return data.viewPosition;
-	}
-
-	/**
-	 * Marks model and view elements as corresponding "slot". Similar to {@link #bindElements} but it memorizes existing view element
-	 * during re-conversion of complex elements with slots.
-	 *
-	 * @param {module:engine/model/element~Element} modelElement Model element.
-	 * @param {module:engine/view/element~Element} viewElement View element.
-	 */
-	bindSlotElements( modelElement, viewElement ) {
-		const existingView = this.toViewElement( modelElement );
-
-		// Slot memorization - we need to keep this on a slot reconversion because bindElements() would overwrite previous binding.
-		this._slotToViewMapping.set( modelElement, existingView );
-
-		this.bindElements( modelElement, viewElement );
-	}
-
-	/**
-	 * Gets the previously converted view element.
-	 *
-	 * @param {module:engine/model/element~Element} modelElement Model element.
-	 * @returns {module:engine/view/element~Element|undefined} Corresponding view element or `undefined` if not found.
-	 */
-	getExistingViewForSlot( modelElement ) {
-		return this._slotToViewMapping.get( modelElement );
 	}
 
 	/**
