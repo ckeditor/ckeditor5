@@ -16,7 +16,7 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { insertMedia } from './utils';
 
-const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=]+$/;
+const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=%]+$/;
 
 /**
  * The auto-media embed plugin. It recognizes media links in the pasted content and embeds
