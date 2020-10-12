@@ -77,4 +77,4 @@ Let's see it in an short example:
 	<button>Click!</button>
 </div>
 ```
-In the above template events dispatched from the button, which is placed inside `<div>` containing `data-cke-ignore-events` attribute, will be ignored in default event handlers.
+In the above template events dispatched from the button, which is placed inside `<div>` containing `data-cke-ignore-events` attribute, will be ignored by default event handlers.
