@@ -187,12 +187,10 @@ export default class DowncastDispatcher {
 	 *
 	 * @protected
 	 * @param {String} modelName Main model element name for which events will trigger reconversion.
-	 * @param {Array.<String>} events Array of inner events that would trigger conversion for this model.
+	 * @param {String} eventName Name of an event that would trigger conversion for given model element.
 	 */
-	mapRefreshTriggerEvent( modelName, events ) {
-		for ( const eventName of events ) {
-			this._refreshTriggerEventToElementNameMapping.set( eventName, modelName );
-		}
+	mapRefreshTriggerEvent( modelName, eventName ) {
+		this._refreshTriggerEventToElementNameMapping.set( eventName, modelName );
 	}
 
 	/**
@@ -305,18 +303,30 @@ export default class DowncastDispatcher {
 		const walkerValues = Array.from( range );
 		const topElementValue = walkerValues.shift();
 
-		this._reconvertElement( walkerValueToEventData( topElementValue ) );
+		const currentView = this.conversionApi.mapper.toViewElement( walkerValueToEventData( topElementValue ).item );
 
-		// All other values are top element's children - we need to check only those that are not handled by a "triggerBy".
-		// For instance if a "<slot>" insertion triggers reconversion, their events should be filtered out while <slot>'s children,
-		// like "<paragraph>", should be converted if they were newly inserted.
-		const eventsData = walkerValues.map( walkerValueToEventData )
-			.filter( eventData => !this._isRefreshTriggerEvent( getEventName( 'insert', eventData ), name ) );
+		// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
+		this.conversionApi.writer.remove( currentView );
 
-		for ( const eventData of eventsData ) {
-			// convert only non-memoized elements, like "<paragraph>" inside newly inserted "<slot>".
-			if ( !elementHasViewMapping( eventData, this.conversionApi.mapper ) ) {
-				this._convertInsertWithAttributes( eventData );
+		this._convertInsertWithAttributes( walkerValueToEventData( topElementValue ) );
+
+		// Bring back removed child views on refreshing the parent view or convert insert for new elements.
+		const convertedViewElement = this.conversionApi.mapper.toViewElement( walkerValueToEventData( topElementValue ).item );
+
+		for ( const value of Range._createIn( walkerValueToEventData( topElementValue ).item ) ) {
+			const { item } = value;
+
+			const view = elementOrTextProxyToView( item, this.conversionApi.mapper );
+
+			if ( view ) {
+				if ( view.root !== convertedViewElement.root ) {
+					this.conversionApi.writer.move(
+						this.conversionApi.writer.createRangeOn( view ),
+						this.conversionApi.mapper.toViewPosition( Position._createAt( item.parent, item.startOffset ) )
+					);
+				}
+			} else {
+				this._convertInsertWithAttributes( walkerValueToEventData( value ) );
 			}
 		}
 
@@ -631,52 +641,6 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Handles reconverting a model element that has an existing model-to-view mapping.
-	 *
-	 * It performs a shallow conversion for the element and its attributes. All children that already have a converted view
-	 * will not be converted again. Their existing view elements will be used instead.
-	 *
-	 * @private
-	 * @param {Object} data Event data.
-	 */
-	_reconvertElement( data ) {
-		const currentView = this.conversionApi.mapper.toViewElement( data.item );
-
-		const currentModelViewMapping = new Map();
-		const currentViewModelMapping = new Map();
-
-		for ( const { item } of Range._createIn( data.item ) ) {
-			const currentView = this.conversionApi.mapper.toViewElement( item );
-
-			if ( currentView ) {
-				currentModelViewMapping.set( item, currentView );
-				currentViewModelMapping.set( currentView, item );
-			}
-		}
-
-		// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
-		this.conversionApi.writer.remove( currentView );
-
-		this._convertInsertWithAttributes( data );
-
-		// Bring back removed child views on refreshing the parent view.
-		const convertedViewElement = this.conversionApi.mapper.toViewElement( data.item );
-
-		for ( const { item } of Range._createIn( data.item ) ) {
-			const view = this.conversionApi.mapper.toViewElement( item );
-
-			if ( view ) {
-				if ( view.root !== convertedViewElement.root ) {
-					this.conversionApi.writer.move(
-						this.conversionApi.writer.createRangeOn( view ),
-						this.conversionApi.mapper.toViewPosition( Position._createAt( item.parent, item.startOffset ) )
-					);
-				}
-			}
-		}
-	}
-
-	/**
 	 * Checks if resulting change should trigger element reconversion.
 	 *
 	 * Those are defined by a `triggerBy` configuration for
@@ -861,16 +825,14 @@ function walkerValueToEventData( value ) {
 	};
 }
 
-function elementHasViewMapping( data, mapper ) {
-	if ( data.item.is( 'textProxy' ) ) {
-		const mappedPosition = mapper.toViewPosition( data.range.start );
+function elementOrTextProxyToView( item, mapper ) {
+	if ( item.is( 'textProxy' ) ) {
+		const mappedPosition = mapper.toViewPosition( Position._createAt( item.parent, item.startOffset ) );
 
-		return !!mappedPosition.parent.is( '$text' );
+		return mappedPosition.parent.is( '$text' ) ? mappedPosition.parent : null;
 	}
 
-	const viewElement = mapper.toViewElement( data.item );
-
-	return !!viewElement;
+	return mapper.toViewElement( item );
 }
 
 /**

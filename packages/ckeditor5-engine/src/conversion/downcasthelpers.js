@@ -66,12 +66,10 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		editor.conversion.for( 'downcast' ).elementToElement( {
 	 *			model: 'complex',
 	 *			view: ( modelElement, conversionApi ) => createComplexViewFromModel( modelElement, conversionApi ),
-	 *			triggerBy: [
-	 *				'attribute:foo:complex',
-	 *				'attribute:bar:complex',
-	 *				'insert:slot',
-	 *				'remove:slot'
-	 *			]
+	 *			triggerBy: {
+	 *				attributes: [ 'foo', 'bar' ],
+	 *				children: [ 'slot' ]
+	 *			}
 	 *		} );
 	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
@@ -86,8 +84,9 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
 	 * that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
 	 * as parameters and returns a view container element.
-	 * @param {Array.<String>} [config.triggerBy] Events which will trigger element reconversion. Reconversion can be triggered by
-	 * attribute change (eg. `'attribute:foo:complex'` for the main element) or by adding or removing children (eg. `'insert:child'`).
+	 * @param {Object} [config.triggerBy] Re-conversion triggers. At least one trigger must be defined.
+	 * @param {Array.<String>} config.triggerBy.attributes Name of element's attributes which change will trigger element reconversion.
+	 * @param {Array.<String>} config.triggerBy.children Name of direct children that adding or removing will trigger element reconversion.
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	elementToElement( config ) {
@@ -1356,7 +1355,9 @@ function removeHighlight( highlightDescriptor ) {
 // @param {Object} config Conversion configuration.
 // @param {String} config.model
 // @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view
-// @param {Array.<String>} [config.triggerBy]
+// @param {Object} [config.triggerBy]
+// @param {Array.<String>} [config.triggerBy.attributes]
+// @param {Array.<String>} [config.triggerBy.children]
 // @returns {Function} Conversion helper.
 function downcastElementToElement( config ) {
 	config = cloneDeep( config );
@@ -1366,8 +1367,19 @@ function downcastElementToElement( config ) {
 	return dispatcher => {
 		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
 
-		if ( Array.isArray( config.triggerBy ) ) {
-			dispatcher.mapRefreshTriggerEvent( config.model, config.triggerBy );
+		if ( config.triggerBy ) {
+			if ( Array.isArray( config.triggerBy.attributes ) ) {
+				for ( const attributeKey of config.triggerBy.attributes ) {
+					dispatcher.mapRefreshTriggerEvent( config.model, `attribute:${ attributeKey }:${ config.model }` );
+				}
+			}
+
+			if ( Array.isArray( config.triggerBy.children ) ) {
+				for ( const childName of config.triggerBy.children ) {
+					dispatcher.mapRefreshTriggerEvent( config.model, `insert:${ childName }` );
+					dispatcher.mapRefreshTriggerEvent( config.model, `remove:${ childName }` );
+				}
+			}
 		}
 	};
 }

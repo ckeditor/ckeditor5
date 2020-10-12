@@ -126,10 +126,9 @@ describe( 'DowncastHelpers', () => {
 						view: ( modelElement, { writer } ) => {
 							return writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
 						},
-						triggerBy: [
-							'attribute:toStyle:simpleBlock',
-							'attribute:toClass:simpleBlock'
-						]
+						triggerBy: {
+							attributes: [ 'toStyle', 'toClass' ]
+						}
 					} );
 				} );
 
@@ -221,10 +220,9 @@ describe( 'DowncastHelpers', () => {
 						view: ( modelElement, { writer } ) => {
 							return writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
 						},
-						triggerBy: [
-							'attribute:toStyle:simpleBlock',
-							'attribute:toClass:simpleBlock'
-						]
+						triggerBy: {
+							attributes: [ 'toStyle', 'toClass' ]
+						}
 					} );
 
 					model.schema.register( 'paragraph', {
@@ -324,6 +322,132 @@ describe( 'DowncastHelpers', () => {
 				} );
 			} );
 
+			describe( 'with simple block view structure (with children - reconvert on child add)', () => {
+				beforeEach( () => {
+					model.schema.register( 'simpleBlock', {
+						allowIn: '$root'
+					} );
+					downcastHelpers.elementToElement( {
+						model: 'simpleBlock',
+						view: 'div',
+						triggerBy: {
+							children: [ 'paragraph' ]
+						}
+					} );
+
+					model.schema.register( 'paragraph', {
+						inheritAllFrom: '$block',
+						allowIn: 'simpleBlock'
+					} );
+					downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+				} );
+
+				it( 'should convert on insert', () => {
+					model.change( writer => {
+						const simpleBlock = writer.createElement( 'simpleBlock' );
+						const paragraph = writer.createElement( 'paragraph' );
+
+						writer.insert( simpleBlock, modelRoot, 0 );
+						writer.insert( paragraph, simpleBlock, 0 );
+						writer.insertText( 'foo', paragraph, 0 );
+					} );
+
+					expectResult( '<div><p>foo</p></div>' );
+				} );
+
+				it( 'should convert on adding a child (at the beginning)', () => {
+					setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+					const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+					model.change( writer => {
+						const paragraph = writer.createElement( 'paragraph' );
+						const text = writer.createText( 'bar' );
+
+						writer.insert( paragraph, modelRoot.getChild( 0 ), 0 );
+						writer.insert( text, paragraph, 0 );
+					} );
+
+					const [ viewAfter, /* insertedPara */, /* insertedText */, paraAfter, textAfter ] = getNodes();
+
+					expectResult( '<div><p>bar</p><p>foo</p></div>' );
+
+					expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+					expect( paraAfter, 'para' ).to.equal( paraBefore );
+					expect( textAfter, 'text' ).to.equal( textBefore );
+				} );
+
+				it( 'should convert on adding a child (in the middle)', () => {
+					setModelData( model,
+						'<simpleBlock toStyle="display:block">' +
+							'<paragraph>foo</paragraph><paragraph>bar</paragraph>' +
+						'</simpleBlock>' );
+
+					const [ viewBefore, paraFooBefore, textFooBefore, paraBarBefore, textBarBefore ] = getNodes();
+
+					model.change( writer => {
+						const paragraph = writer.createElement( 'paragraph' );
+						const text = writer.createText( 'baz' );
+
+						writer.insert( paragraph, modelRoot.getChild( 0 ), 1 );
+						writer.insert( text, paragraph, 0 );
+					} );
+
+					const [ viewAfter,
+						paraFooAfter, textFooAfter, /* insertedPara */, /* insertedText */, paraBarAfter, textBarAfter
+					] = getNodes();
+
+					expectResult( '<div><p>foo</p><p>baz</p><p>bar</p></div>' );
+
+					expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+					expect( paraFooAfter, 'para foo' ).to.equal( paraFooBefore );
+					expect( textFooAfter, 'text foo' ).to.equal( textFooBefore );
+					expect( paraBarAfter, 'para bar' ).to.equal( paraBarBefore );
+					expect( textBarAfter, 'text bar' ).to.equal( textBarBefore );
+				} );
+
+				it( 'should convert on adding a child (at the end)', () => {
+					setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+					const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+					model.change( writer => {
+						const paragraph = writer.createElement( 'paragraph' );
+						const text = writer.createText( 'bar' );
+
+						writer.insert( paragraph, modelRoot.getChild( 0 ), 1 );
+						writer.insert( text, paragraph, 0 );
+					} );
+
+					const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+					expectResult( '<div><p>foo</p><p>bar</p></div>' );
+
+					expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+					expect( paraAfter, 'para' ).to.equal( paraBefore );
+					expect( textAfter, 'text' ).to.equal( textBefore );
+				} );
+
+				it( 'should convert on removing a child', () => {
+					setModelData( model,
+						'<simpleBlock><paragraph>foo</paragraph><paragraph>bar</paragraph></simpleBlock>' );
+
+					const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+					model.change( writer => {
+						writer.remove( modelRoot.getNodeByPath( [ 0, 1 ] ) );
+					} );
+
+					const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+					expectResult( '<div><p>foo</p></div>' );
+
+					expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+					expect( paraAfter, 'para' ).to.equal( paraBefore );
+					expect( textAfter, 'text' ).to.equal( textBefore );
+				} );
+			} );
+
 			describe( 'with complex view structure - no children allowed', () => {
 				beforeEach( () => {
 					model.schema.register( 'complex', {
@@ -340,10 +464,9 @@ describe( 'DowncastHelpers', () => {
 
 							return outer;
 						},
-						triggerBy: [
-							'attribute:toStyle:complex',
-							'attribute:toClass:complex'
-						]
+						triggerBy: {
+							attributes: [ 'toStyle', 'toClass' ]
+						}
 					} );
 				} );
 
@@ -438,10 +561,9 @@ describe( 'DowncastHelpers', () => {
 
 							return outer;
 						},
-						triggerBy: [
-							'attribute:toStyle:complex',
-							'attribute:toClass:complex'
-						]
+						triggerBy: {
+							attributes: [ 'toStyle', 'toClass' ]
+						}
 					} );
 
 					model.schema.register( 'paragraph', {
@@ -572,13 +694,10 @@ describe( 'DowncastHelpers', () => {
 
 							return outer;
 						},
-						triggerBy: [
-							'attribute:classForMain:complex',
-							'attribute:classForWrap:complex',
-							'attribute:attributeToElement:complex',
-							'insert:slot',
-							'remove:slot'
-						]
+						triggerBy: {
+							attributes: [ 'classForMain', 'classForWrap', 'attributeToElement' ],
+							children: [ 'slot' ]
+						}
 					} );
 
 					model.schema.register( 'slot', {
@@ -935,12 +1054,11 @@ describe( 'DowncastHelpers', () => {
 
 							return outer;
 						},
-						triggerBy: [
-							'attribute:classForMain:complex',
-							'attribute:classForWrap:complex',
-							'attribute:attributeToElement:complex'
-							// Contrary to the previous test - do not act on slot insert/remove: 'insert:slot', 'remove:slot'.
-						]
+						triggerBy: {
+							attributes: [ 'classForMain', 'classForWrap', 'attributeToElement' ]
+							// Contrary to the previous test - do not act on child changes.
+							// children: [ 'slot' ]
+						}
 					} );
 					downcastHelpers.elementToElement( {
 						model: 'slot',
