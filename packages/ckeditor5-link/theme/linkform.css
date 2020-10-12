@@ -36,9 +36,6 @@
 			margin-top: calc(var(--ck-spacing-large) + var(--ck-spacing-extra-tiny));
 			margin-bottom: var(--ck-spacing-small);
 
-			/*
-			 * To fill empty space between top border created by adjacent buttons
-			 */
 			&::before {
 				content: ".";
 				display: inline-block;
