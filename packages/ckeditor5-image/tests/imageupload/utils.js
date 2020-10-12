@@ -5,7 +5,7 @@
 
 import { createImageTypeRegExp } from '../../src/imageupload/utils';
 
-describe( 'upload utils', () => {
+describe( 'Upload utils', () => {
 	describe( 'createImageTypeRegExp()', () => {
 		it( 'should return RegExp for testing regular mime type', () => {
 			expect( createImageTypeRegExp( [ 'png' ] ).test( 'image/png' ) ).to.be.true;

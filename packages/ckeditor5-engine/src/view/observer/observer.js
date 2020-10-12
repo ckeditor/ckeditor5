@@ -95,7 +95,7 @@ export default class Observer {
 	 * @returns {Boolean} Whether this event should be ignored by the observer.
 	 */
 	checkShouldIgnoreEventFromTarget( domTarget ) {
-		if ( domTarget.nodeType === 3 ) {
+		if ( domTarget && domTarget.nodeType === 3 ) {
 			domTarget = domTarget.parentNode;
 		}
 

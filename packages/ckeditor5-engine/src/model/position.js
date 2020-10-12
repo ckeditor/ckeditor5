@@ -60,7 +60,7 @@ export default class Position {
 			 * @error model-position-root-invalid
 			 */
 			throw new CKEditorError(
-				'model-position-root-invalid: Position root invalid.',
+				'model-position-root-invalid',
 				root
 			);
 		}
@@ -73,7 +73,7 @@ export default class Position {
 			 * @param path
 			 */
 			throw new CKEditorError(
-				'model-position-path-incorrect-format: Position path must be an array with at least one item.',
+				'model-position-path-incorrect-format',
 				root,
 				{ path }
 			);
@@ -169,27 +169,27 @@ export default class Position {
 			parent = parent.getChild( parent.offsetToIndex( this.path[ i ] ) );
 
 			if ( !parent ) {
-				throw new CKEditorError( 'model-position-path-incorrect: The position\'s path is incorrect.', this, { position: this } );
+				/**
+				 * The position's path is incorrect. This means that a position does not point to
+				 * a correct place in the tree and hence, some of its methods and getters cannot work correctly.
+				 *
+				 * **Note**: Unlike DOM and view positions, in the model, the
+				 * {@link module:engine/model/position~Position#parent position's parent} is always an element or a document fragment.
+				 * The last offset in the {@link module:engine/model/position~Position#path position's path} is the point in this element
+				 * where this position points.
+				 *
+				 * Read more about model positions and offsets in
+				 * the {@glink framework/guides/architecture/editing-engine#indexes-and-offsets Editing engine architecture guide}.
+				 *
+				 * @error model-position-path-incorrect
+				 * @param {module:engine/model/position~Position} position The incorrect position.
+				 */
+				throw new CKEditorError( 'model-position-path-incorrect', this, { position: this } );
 			}
 		}
 
 		if ( parent.is( '$text' ) ) {
-			/**
-			 * The position's path is incorrect. This means that a position does not point to
-			 * a correct place in the tree and hence, some of its methods and getters cannot work correctly.
-			 *
-			 * **Note**: Unlike DOM and view positions, in the model, the
-			 * {@link module:engine/model/position~Position#parent position's parent} is always an element or a document fragment.
-			 * The last offset in the {@link module:engine/model/position~Position#path position's path} is the point in this element where
-			 * this position points.
-			 *
-			 * Read more about model positions and offsets in
-			 * the {@glink framework/guides/architecture/editing-engine#indexes-and-offsets Editing engine architecture guide}.
-			 *
-			 * @error position-incorrect-path
-			 * @param {module:engine/model/position~Position} position The incorrect position.
-			 */
-			throw new CKEditorError( 'model-position-path-incorrect: The position\'s path is incorrect.', this, { position: this } );
+			throw new CKEditorError( 'model-position-path-incorrect', this, { position: this } );
 		}
 
 		return parent;
@@ -923,13 +923,9 @@ export default class Position {
 				 * {@link module:engine/model/model~Model#createPositionAt `Model#createPositionAt()`}
 				 * requires the offset to be specified when the first parameter is a model item.
 				 *
-				 * @error model-createPositionAt-offset-required
+				 * @error model-createpositionat-offset-required
 				 */
-				throw new CKEditorError(
-					'model-createPositionAt-offset-required: ' +
-					'Model#createPositionAt() requires the offset when the first parameter is a model item.',
-					[ this, itemOrPosition ]
-				);
+				throw new CKEditorError( 'model-createpositionat-offset-required', [ this, itemOrPosition ] );
 			}
 
 			if ( !node.is( 'element' ) && !node.is( 'documentFragment' ) ) {
@@ -939,7 +935,7 @@ export default class Position {
 				 * @error model-position-parent-incorrect
 				 */
 				throw new CKEditorError(
-					'model-position-parent-incorrect: Position parent have to be a element or document fragment.',
+					'model-position-parent-incorrect',
 					[ this, itemOrPosition ]
 				);
 			}
@@ -969,7 +965,7 @@ export default class Position {
 			 * @param {module:engine/model/item~Item} root
 			 */
 			throw new CKEditorError(
-				'model-position-after-root: You cannot make a position after root.',
+				'model-position-after-root',
 				[ this, item ],
 				{ root: item }
 			);
@@ -995,7 +991,7 @@ export default class Position {
 			 * @param {module:engine/model/item~Item} root
 			 */
 			throw new CKEditorError(
-				'model-position-before-root: You cannot make a position before root.',
+				'model-position-before-root',
 				item,
 				{ root: item }
 			);
@@ -1027,7 +1023,7 @@ export default class Position {
 			 * @param {String} rootName
 			 */
 			throw new CKEditorError(
-				'model-position-fromjson-no-root: Cannot create position for document. Root with specified name does not exist.',
+				'model-position-fromjson-no-root',
 				doc,
 				{ rootName: json.root }
 			);

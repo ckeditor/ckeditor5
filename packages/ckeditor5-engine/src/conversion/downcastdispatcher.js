@@ -11,7 +11,6 @@ import Consumable from './modelconsumable';
 import Range from '../model/range';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import { extend } from 'lodash-es';
 
 /**
  * Downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting to changes
@@ -76,6 +75,12 @@ import { extend } from 'lodash-es';
  * When providing custom listeners for downcast dispatcher, remember to use the provided
  * {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer} to apply changes to the view document.
  *
+ * You can read more about conversion in the following guides:
+ *
+ * * {@glink framework/guides/deep-dive/conversion/conversion-introduction Advanced conversion concepts &mdash; attributes}
+ * * {@glink framework/guides/deep-dive/conversion/conversion-extending-output Extending the editor output }
+ * * {@glink framework/guides/deep-dive/conversion/custom-element-conversion Custom element conversion}
+ *
  * An example of a custom converter for the downcast dispatcher:
  *
  *		// You will convert inserting a "paragraph" model element into the model.
@@ -115,7 +120,7 @@ export default class DowncastDispatcher {
 		 *
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastConversionApi}
 		 */
-		this.conversionApi = extend( { dispatcher: this }, conversionApi );
+		this.conversionApi = Object.assign( { dispatcher: this }, conversionApi );
 	}
 
 	/**
@@ -668,4 +673,10 @@ function shouldMarkerChangeBeConverted( modelPosition, marker, mapper ) {
  * The {@link module:engine/view/downcastwriter~DowncastWriter} instance used to manipulate data during conversion.
  *
  * @member {module:engine/view/downcastwriter~DowncastWriter} #writer
+ */
+
+/**
+ * An object with an additional configuration which can be used during conversion process. Available only for data downcast conversion.
+ *
+ * @member {Object} #options
  */

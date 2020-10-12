@@ -122,6 +122,28 @@ describe( 'DomEventObserver', () => {
 		expect( evtSpy.called ).to.be.false;
 	} );
 
+	it( 'should not fire event if target is ignored', () => {
+		const domElement = document.createElement( 'p' );
+		const domEvent = new MouseEvent( 'click' );
+		const evtSpy = sinon.spy();
+
+		const ignoreEventFromTargetStub = sinon
+			.stub( Observer.prototype, 'checkShouldIgnoreEventFromTarget' )
+			.returns( true );
+
+		createViewRoot( viewDocument );
+		view.attachDomRoot( domElement );
+		view.addObserver( ClickObserver );
+		viewDocument.on( 'click', evtSpy );
+
+		domElement.dispatchEvent( domEvent );
+
+		expect( ignoreEventFromTargetStub.called ).to.be.true;
+		expect( evtSpy.called ).to.be.false;
+
+		ignoreEventFromTargetStub.restore();
+	} );
+
 	it( 'should fire event if observer is disabled and re-enabled', () => {
 		const domElement = document.createElement( 'p' );
 		const domEvent = new MouseEvent( 'click' );

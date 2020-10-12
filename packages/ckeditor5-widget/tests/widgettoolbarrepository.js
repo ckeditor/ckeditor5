@@ -138,7 +138,7 @@ describe( 'WidgetToolbarRepository', () => {
 			expect( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ) ).to.be.undefined;
 
 			expect( consoleWarnStub.calledOnce ).to.equal( true );
-			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^widget-toolbar-no-items:/ );
+			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^widget-toolbar-no-items/ );
 		} );
 	} );
 
@@ -761,8 +761,8 @@ class FakeWidget extends Plugin {
 			view: {
 				name: 'div'
 			},
-			model: ( view, modelWriter ) => {
-				return modelWriter.createElement( 'fake-widget' );
+			model: ( view, { writer } ) => {
+				return writer.createElement( 'fake-widget' );
 			}
 		} );
 	}
@@ -813,8 +813,8 @@ class FakeChildWidget extends Plugin {
 			view: {
 				name: 'div'
 			},
-			model: ( view, modelWriter ) => {
-				return modelWriter.createElement( 'fake-child-widget' );
+			model: ( view, { writer } ) => {
+				return writer.createElement( 'fake-child-widget' );
 			}
 		} );
 	}

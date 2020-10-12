@@ -22,7 +22,7 @@ jobs:
       - uses: rtCamp/action-slack-notify@v2.0.2
         id: error_message_slack
         name: Slack notification
-        if: (steps.merge_action.outputs.status != 201) && (steps.merge_action.outputs.status != 204)
+        if: ((steps.merge_action.outputs.status != 201) && (steps.merge_action.outputs.status != 204)) || failure()
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_CHANNEL: "cke5-ci"

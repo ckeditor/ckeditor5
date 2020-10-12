@@ -46,11 +46,9 @@ export default class MediaRegistry {
 					 * has no name and will not be used by the editor. In order to get this media
 					 * provider working, double check your editor configuration.
 					 *
-					 * @warning media-embed-no-provider-name
+					 * @error media-embed-no-provider-name
 					 */
-					console.warn( attachLinkToDocumentation(
-						'media-embed-no-provider-name: The configured media provider has no name and cannot be used.'
-					), { provider } );
+					console.warn( attachLinkToDocumentation( 'media-embed-no-provider-name' ), { provider } );
 
 					return false;
 				}
@@ -59,7 +57,7 @@ export default class MediaRegistry {
 			} );
 
 		/**
-		 * The locale {@link module:utils/locale~Locale} instance.
+		 * The {@link module:utils/locale~Locale} instance.
 		 *
 		 * @member {module:utils/locale~Locale}
 		 */

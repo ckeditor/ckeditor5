@@ -96,7 +96,12 @@ ClassicEditor
 				'imageTextAlternative', '|',
 				'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|',
 				'imageResize'
-			]
+			],
+			insert: {
+				integrations: [
+					'insertImageViaUrl'
+				]
+			}
 		},
 		placeholder: 'Type the content here!',
 		mention: {
@@ -112,6 +117,32 @@ ClassicEditor
 					minimumCharacters: 1
 				}
 			]
+		},
+		link: {
+			decorators: {
+				isExternal: {
+					mode: 'manual',
+					label: 'Open in a new tab',
+					attributes: {
+						target: '_blank',
+						rel: 'noopener noreferrer'
+					}
+				},
+				isDownloadable: {
+					mode: 'manual',
+					label: 'Downloadable',
+					attributes: {
+						download: 'download'
+					}
+				},
+				isGallery: {
+					mode: 'manual',
+					label: 'Gallery link',
+					attributes: {
+						class: 'gallery'
+					}
+				}
+			}
 		}
 	} )
 	.then( editor => {

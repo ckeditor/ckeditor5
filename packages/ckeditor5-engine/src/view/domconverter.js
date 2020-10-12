@@ -32,20 +32,21 @@ const BR_FILLER_REF = BR_FILLER( document );
  * `DomConverter` is a set of tools to do transformations between DOM nodes and view nodes. It also handles
  * {@link module:engine/view/domconverter~DomConverter#bindElements bindings} between these nodes.
  *
- * The instance of `DOMConverter` is available under {@link module:engine/view/view~View#domConverter `editor.editing.view.domConverter`}.
+ * An instance of the DOM converter is available under
+ * {@link module:engine/view/view~View#domConverter `editor.editing.view.domConverter`}.
  *
- * `DomConverter` does not check which nodes should be rendered (use {@link module:engine/view/renderer~Renderer}), does not keep a
- * state of a tree nor keeps synchronization between tree view and DOM tree (use {@link module:engine/view/document~Document}).
+ * The DOM converter does not check which nodes should be rendered (use {@link module:engine/view/renderer~Renderer}), does not keep the
+ * state of a tree nor keeps the synchronization between the tree view and the DOM tree (use {@link module:engine/view/document~Document}).
  *
- * `DomConverter` keeps DOM elements to View element bindings, so when the converter gets destroyed, the bindings are lost.
+ * The DOM converter keeps DOM elements to view element bindings, so when the converter gets destroyed, the bindings are lost.
  * Two converters will keep separate binding maps, so one tree view can be bound with two DOM trees.
  */
 export default class DomConverter {
 	/**
-	 * Creates DOM converter.
+	 * Creates a DOM converter.
 	 *
 	 * @param {module:engine/view/document~Document} document The view document instance.
-	 * @param {Object} options Object with configuration options.
+	 * @param {Object} options An object with configuration options.
 	 * @param {module:engine/view/filler~BlockFillerMode} [options.blockFillerMode='br'] The type of the block filler to use.
 	 */
 	constructor( document, options = {} ) {
@@ -56,7 +57,7 @@ export default class DomConverter {
 		this.document = document;
 
 		/**
-		 * The mode of a block filler used by DOM converter.
+		 * The mode of a block filler used by the DOM converter.
 		 *
 		 * @readonly
 		 * @member {'br'|'nbsp'} module:engine/view/domconverter~DomConverter#blockFillerMode
@@ -86,7 +87,7 @@ export default class DomConverter {
 
 		/**
 		 * Block {@link module:engine/view/filler filler} creator, which is used to create all block fillers during the
-		 * view to DOM conversion and to recognize block fillers during the DOM to view conversion.
+		 * view-to-DOM conversion and to recognize block fillers during the DOM-to-view conversion.
 		 *
 		 * @readonly
 		 * @private
@@ -95,7 +96,7 @@ export default class DomConverter {
 		this._blockFiller = this.blockFillerMode == 'br' ? BR_FILLER : NBSP_FILLER;
 
 		/**
-		 * DOM to View mapping.
+		 * The DOM-to-view mapping.
 		 *
 		 * @private
 		 * @member {WeakMap} module:engine/view/domconverter~DomConverter#_domToViewMapping
@@ -103,7 +104,7 @@ export default class DomConverter {
 		this._domToViewMapping = new WeakMap();
 
 		/**
-		 * View to DOM mapping.
+		 * The view-to-DOM mapping.
 		 *
 		 * @private
 		 * @member {WeakMap} module:engine/view/domconverter~DomConverter#_viewToDomMapping
@@ -111,7 +112,7 @@ export default class DomConverter {
 		this._viewToDomMapping = new WeakMap();
 
 		/**
-		 * Holds mapping between fake selection containers and corresponding view selections.
+		 * Holds the mapping between fake selection containers and corresponding view selections.
 		 *
 		 * @private
 		 * @member {WeakMap} module:engine/view/domconverter~DomConverter#_fakeSelectionMapping
@@ -894,15 +895,15 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Checks if given selection's boundaries are at correct places.
+	 * Checks if the given selection's boundaries are at correct places.
 	 *
 	 * The following places are considered as incorrect for selection boundaries:
 	 *
-	 * * before or in the middle of the inline filler sequence,
+	 * * before or in the middle of an inline filler sequence,
 	 * * inside a DOM element which represents {@link module:engine/view/uielement~UIElement a view UI element},
 	 * * inside a DOM element which represents {@link module:engine/view/rawelement~RawElement a view raw element}.
 	 *
-	 * @param {Selection} domSelection DOM Selection object to be checked.
+	 * @param {Selection} domSelection The DOM selection object to be checked.
 	 * @returns {Boolean} `true` if the given selection is at a correct place, `false` otherwise.
 	 */
 	isDomSelectionCorrect( domSelection ) {

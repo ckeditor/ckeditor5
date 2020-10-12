@@ -95,6 +95,18 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
+	it( 'should not fire selectionChange for ignored target', done => {
+		viewDocument.on( 'selectionChange', () => {
+			throw 'selectionChange fired in ignored elements';
+		} );
+
+		domMain.childNodes[ 1 ].setAttribute( 'data-cke-ignore-events', 'true' );
+
+		changeDomSelection();
+
+		setTimeout( done, 100 );
+	} );
+
 	it( 'should not fire selectionChange on render', done => {
 		viewDocument.on( 'selectionChange', () => {
 			throw 'selectionChange on render';

@@ -9,7 +9,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 class InfoBox {
 	constructor( editor ) {
-		// Schema definition
+		// Schema definition.
 		editor.model.schema.register( 'infoBox', {
 			allowWhere: '$block',
 			allowContentOf: '$root',
@@ -21,7 +21,7 @@ class InfoBox {
 		editor.conversion.for( 'upcast' )
 			.add( dispatcher => dispatcher.on( 'element:div', upcastConverter ) );
 
-		// The downcast conversion must be split as we need a widget in the editing pipeline.
+		// The downcast conversion must be split as you need a widget in the editing pipeline.
 		editor.conversion.for( 'editingDowncast' )
 			.add( dispatcher => dispatcher.on( 'insert:infoBox', editingDowncastConverter ) );
 		editor.conversion.for( 'dataDowncast' )
@@ -32,46 +32,51 @@ class InfoBox {
 function upcastConverter( event, data, conversionApi ) {
 	const viewInfoBox = data.viewItem;
 
-	// Detect that view element is an info-box div.
+	// Detect that a view element is an info box <div>.
 	// Otherwise, it should be handled by another converter.
 	if ( !viewInfoBox.hasClass( 'info-box' ) ) {
 		return;
 	}
 
-	// Create a model structure.
+	// Create the model structure.
 	const modelElement = conversionApi.writer.createElement( 'infoBox', {
 		infoBoxType: getTypeFromViewElement( viewInfoBox )
 	} );
 
-	// Try to safely insert element - if it returns false the element can't be safely inserted
-	// into the content, and the conversion process must stop.
+	// Try to safely insert the element into the model structure.
+	// If `safeInsert()` returns `false`, the element cannot be safely inserted
+	// into the content and the conversion process must stop.
+	// This may happen if the data that you are converting has an incorrect structure
+	// (e.g. it was copied from an external website).
 	if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
 		return;
 	}
 
-	// Mark info-box div as handled by this converter.
+	// Mark the info box <div> as handled by this converter.
 	conversionApi.consumable.consume( viewInfoBox, { name: true } );
 
-	// Let's assume that the HTML structure is always the same.
+	// Let us assume that the HTML structure is always the same.
+	// Note: For full bulletproofing this converter, you should also check
+	// whether these elements are the right ones.
 	const viewInfoBoxTitle = viewInfoBox.getChild( 0 );
 	const viewInfoBoxContent = viewInfoBox.getChild( 1 );
 
-	// Mark info-box inner elements as handled by this converter.
+	// Mark info box inner elements (title and content <div>s) as handled by this converter.
 	conversionApi.consumable.consume( viewInfoBoxTitle, { name: true } );
 	conversionApi.consumable.consume( viewInfoBoxContent, { name: true } );
 
-	// Let the editor handle children of the info-box content conversion.
+	// Let the editor handle the children of <div class="info-box-content">.
 	conversionApi.convertChildren( viewInfoBoxContent, modelElement );
 
-	// Conversion requires updating result data structure properly.
+	// Finally, update the conversion's modelRange and modelCursor.
 	conversionApi.updateConversionResult( modelElement, data );
 }
 
 function editingDowncastConverter( event, data, conversionApi ) {
 	let { infoBox, infoBoxContent, infoBoxTitle } = createViewElements( data, conversionApi );
 
-	// Decorate view items as widgets.
-	infoBox = toWidget( infoBox, conversionApi.writer, { label: 'simple box widget' } );
+	// Decorate view items as a widget and widget editable area.
+	infoBox = toWidget( infoBox, conversionApi.writer, { label: 'info box widget' } );
 	infoBoxContent = toWidgetEditable( infoBoxContent, conversionApi.writer );
 
 	insertViewElements( data, conversionApi, infoBox, infoBoxTitle, infoBoxContent );
@@ -118,7 +123,11 @@ function insertViewElements( data, conversionApi, infoBox, infoBoxTitle, infoBox
 		infoBoxContent
 	);
 
+	// The default mapping between the model <infoBox> and its view representation.
 	conversionApi.mapper.bindElements( data.item, infoBox );
+	// However, since the model <infoBox> content needs to end up in the inner
+	// <div class="info-box-content">, you need to bind one with another overriding
+	// a part of the default binding.
 	conversionApi.mapper.bindElements( data.item, infoBoxContent );
 
 	conversionApi.writer.insert(

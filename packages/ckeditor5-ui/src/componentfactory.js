@@ -77,20 +77,6 @@ export default class ComponentFactory {
 	 * @param {Function} callback The callback that returns the component.
 	 */
 	add( name, callback ) {
-		if ( this.has( name ) ) {
-			/**
-			 * The item already exists in the component factory.
-			 *
-			 * @error componentfactory-item-exists
-			 * @param {String} name The name of the component.
-			 */
-			throw new CKEditorError(
-				'componentfactory-item-exists: The item already exists in the component factory.',
-				this,
-				{ name }
-			);
-		}
-
 		this._components.set( getNormalized( name ), { callback, originalName: name } );
 	}
 
@@ -115,7 +101,7 @@ export default class ComponentFactory {
 			 * @param {String} name The name of the missing component.
 			 */
 			throw new CKEditorError(
-				'componentfactory-item-missing: The required component is not registered in the factory.',
+				'componentfactory-item-missing',
 				this,
 				{ name }
 			);

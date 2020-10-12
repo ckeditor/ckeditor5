@@ -87,7 +87,7 @@ describe( 'Document', () => {
 
 			expectToThrowCKEditorError( () => {
 				model.applyOperation( operation );
-			}, /^model-document-applyOperation-wrong-version/, model );
+			}, 'model-document-applyoperation-wrong-version', model );
 		} );
 	} );
 
@@ -130,7 +130,7 @@ describe( 'Document', () => {
 
 			expectToThrowCKEditorError( () => {
 				doc.createRoot( '$root', 'rootName' );
-			}, /model-document-createRoot-name-exists/, model );
+			}, 'model-document-createroot-name-exists', model );
 		} );
 	} );
 

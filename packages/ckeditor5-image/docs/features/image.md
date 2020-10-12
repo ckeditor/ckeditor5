@@ -13,6 +13,7 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link module:image/imagestyle~ImageStyle} adds support for [image styles](#image-styles).
 * {@link module:image/imagetextalternative~ImageTextAlternative} adds support for adding text alternative.
 * {@link module:image/imageupload~ImageUpload} adds support for {@link features/image-upload uploading dropped or pasted images}.
+* {@link module:image/imageinsert~ImageInsert} adds support for [inserting images via URL](#inserting-images-via-source-url) and other custom integrations.
 * {@link module:image/imageresize~ImageResize} adds support for [resizing images](#resizing-images).
 * {@link module:link/linkimage~LinkImage} adds support for [linking images](#linking-images).
 
@@ -76,11 +77,33 @@ The {@link module:image/imagecaption~ImageCaption} plugin adds support for image
 
 By default, if the image caption is empty, the `<figcaption>` element is not visible to the user. You can click the image to reveal the caption field and write one. See the demo below:
 
-{@snippet features/image-caption}
+<info-box hint>
+	You can change the placement of the image caption by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link builds/guides/integration/content-styles content styles} for the `.ck-content .image > figcaption` style. Changing it to `caption-side: top` will display the caption above the image.
+</info-box>
 
 ## Image upload
 
 See the {@link features/image-upload Image upload} guide.
+
+## Inserting images via source URL
+
+Besides the ability to insert images by uploading them directly from your disk or via CKFinder, you can also configure CKEditor 5 to allow inserting images via source URL.
+
+In order to enable this option, install the `ImageInsert` plugin and add the `imageInsert` button to the toolbar (it replaces the standard `imageUpload` button).
+
+```js
+import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ ... , ImageInsert ],
+		toolbar: [ ... , 'imageInsert' ]
+	} )
+```
+
+This will add a new **Insert image** dropdown in the toolbar. To open the panel and add the image URL, click the arrow next to the image button. Check the demo below to insert a new image via URL or update an existing image by selecting it, opening the dropdown panel and pasting a new URL.
+
+{@snippet features/image-insert-via-url}
 
 ## Responsive images
 

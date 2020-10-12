@@ -255,7 +255,7 @@ describe( 'PluginCollection', () => {
 					expect( err ).to.have.property( 'message', 'Some error inside a plugin' );
 
 					sinon.assert.calledOnce( consoleErrorStub );
-					expect( consoleErrorStub.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
+					expect( consoleErrorStub.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load/ );
 				} );
 		} );
 
@@ -270,10 +270,10 @@ describe( 'PluginCollection', () => {
 					throw new Error( 'Test error: this promise should not be resolved successfully' );
 				} )
 				.catch( err => {
-					assertCKEditorError( err, /^plugincollection-plugin-not-found/, editor );
+					assertCKEditorError( err, 'plugincollection-plugin-not-found', editor );
 
 					sinon.assert.calledOnce( consoleErrorStub );
-					expect( consoleErrorStub.args[ 0 ][ 0 ] ).to.match( /^plugincollection-plugin-not-found:/ );
+					expect( consoleErrorStub.args[ 0 ][ 0 ] ).to.match( /^plugincollection-plugin-not-found/ );
 				} );
 		} );
 
@@ -409,7 +409,7 @@ describe( 'PluginCollection', () => {
 					throw new Error( 'The `init()` method should fail.' );
 				} )
 				.catch( err => {
-					assertCKEditorError( err, /^plugincollection-plugin-name-conflict:/, null, {
+					assertCKEditorError( err, /^plugincollection-plugin-name-conflict/, null, {
 						pluginName: 'Foo',
 						plugin1: PluginFoo,
 						plugin2: AnotherPluginFoo
@@ -429,7 +429,7 @@ describe( 'PluginCollection', () => {
 					throw new Error( 'The `init()` method should fail.' );
 				} )
 				.catch( err => {
-					assertCKEditorError( err, /^plugincollection-plugin-name-conflict:/, null );
+					assertCKEditorError( err, /^plugincollection-plugin-name-conflict/, null );
 
 					sinon.assert.calledOnce( consoleErrorStub );
 				} );
@@ -447,7 +447,7 @@ describe( 'PluginCollection', () => {
 					throw new Error( 'The `init()` method should fail.' );
 				} )
 				.catch( err => {
-					assertCKEditorError( err, /^plugincollection-plugin-name-conflict:/, null );
+					assertCKEditorError( err, /^plugincollection-plugin-name-conflict/, null );
 					sinon.assert.calledOnce( consoleErrorStub );
 				} );
 		} );
@@ -521,7 +521,7 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [] ).then( () => {
 				expectToThrowCKEditorError( () => plugins.get( 'foo' ),
-					/^plugincollection-plugin-not-loaded:/, editor, { plugin: 'foo' }
+					/^plugincollection-plugin-not-loaded/, editor, { plugin: 'foo' }
 				);
 			} );
 		} );
@@ -534,7 +534,7 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [] ).then( () => {
 				expectToThrowCKEditorError( () => plugins.get( SomePlugin ),
-					/^plugincollection-plugin-not-loaded:/, editor, { plugin: 'foo' } );
+					/^plugincollection-plugin-not-loaded/, editor, { plugin: 'foo' } );
 			} );
 		} );
 
@@ -545,7 +545,7 @@ describe( 'PluginCollection', () => {
 
 			return plugins.init( [] ).then( () => {
 				expectToThrowCKEditorError( () => plugins.get( SomePlugin ),
-					/^plugincollection-plugin-not-loaded:/,
+					/^plugincollection-plugin-not-loaded/,
 					editor, { plugin: 'SomePlugin' }
 				);
 			} );

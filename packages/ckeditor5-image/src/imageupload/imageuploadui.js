@@ -9,8 +9,9 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
-import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
 import { createImageTypeRegExp } from './utils';
+
+import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
 
 /**
  * The image upload button plugin.
@@ -22,6 +23,13 @@ import { createImageTypeRegExp } from './utils';
  * @extends module:core/plugin~Plugin
  */
 export default class ImageUploadUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'ImageUploadUI';
+	}
+
 	/**
 	 * @inheritDoc
 	 */

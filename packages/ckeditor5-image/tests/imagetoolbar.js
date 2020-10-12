@@ -63,7 +63,7 @@ describe( 'ImageToolbar', () => {
 			.then( editor => {
 				expect( editor.plugins.get( ImageToolbar )._toolbar ).to.be.undefined;
 				expect( consoleWarnStub.calledOnce ).to.equal( true );
-				expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^widget-toolbar-no-items:/ );
+				expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /widget-toolbar-no-items/ );
 
 				editorElement.remove();
 				return editor.destroy();
@@ -83,10 +83,9 @@ describe( 'ImageToolbar', () => {
 
 			setData( model, '[<image src=""></image>]' );
 
-			sinon.assert.calledWithMatch( spy, {
-				view: toolbar,
-				balloonClassName: 'ck-toolbar-container'
-			} );
+			sinon.assert.calledWithMatch( spy, sinon.match( ( { balloonClassName, view } ) => {
+				return view === toolbar && balloonClassName === 'ck-toolbar-container';
+			} ) );
 		} );
 
 		it( 'should set aria-label attribute', () => {

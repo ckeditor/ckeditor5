@@ -51,9 +51,9 @@ const allowedTypes = {
  * the default `main` name will be used.
  * @param {Boolean} [options.showType=false] When set to `true`, the type of elements will be printed (`<container:p>`
  * instead of `<p>`, `<attribute:b>` instead of `<b>` and `<empty:img>` instead of `<img>`).
- * @param {Boolean} [options.showPriority=false] When set to `true`, attribute element's priority will be printed
+ * @param {Boolean} [options.showPriority=false] When set to `true`, the attribute element's priority will be printed
  * (`<span view-priority="12">`, `<b view-priority="10">`).
- * @param {Boolean} [options.showAttributeElementId=false] When set to `true`, attribute element's id will be printed
+ * @param {Boolean} [options.showAttributeElementId=false] When set to `true`, the attribute element's ID will be printed
  * (`<span id="marker:foo">`).
  * @param {Boolean} [options.renderUIElements=false] When set to `true`, the inner content of each
  * {@link module:engine/view/uielement~UIElement} will be printed.

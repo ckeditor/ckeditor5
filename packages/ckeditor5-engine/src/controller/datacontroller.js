@@ -72,7 +72,7 @@ export default class DataController {
 		 *
 		 * @member {module:engine/dataprocessor/dataprocessor~DataProcessor} #processor
 		 */
-		this.processor;
+		this.processor = undefined;
 
 		/**
 		 * Mapper used for the conversion. It has no permanent bindings, because they are created when getting data and
@@ -153,15 +153,16 @@ export default class DataController {
 	 * Returns the model's data converted by downcast dispatchers attached to {@link #downcastDispatcher} and
 	 * formatted by the {@link #processor data processor}.
 	 *
-	 * @param {Object} [options]
+	 * @param {Object} [options] Additional configuration for the retrieved data. `DataController` provides two optional
+	 * properties: `rootName` and `trim`. Other properties of this object are specified by various editor features.
 	 * @param {String} [options.rootName='main'] Root name.
 	 * @param {String} [options.trim='empty'] Whether returned data should be trimmed. This option is set to `empty` by default,
 	 * which means whenever editor content is considered empty, an empty string will be returned. To turn off trimming completely
 	 * use `'none'`. In such cases exact content will be returned (for example `<p>&nbsp;</p>` for an empty editor).
 	 * @returns {String} Output data.
 	 */
-	get( options ) {
-		const { rootName = 'main', trim = 'empty' } = options || {};
+	get( options = {} ) {
+		const { rootName = 'main', trim = 'empty' } = options;
 
 		if ( !this._checkIfRootsExists( [ rootName ] ) ) {
 			/**
@@ -175,7 +176,7 @@ export default class DataController {
 			 *
 			 * @error datacontroller-get-non-existent-root
 			 */
-			throw new CKEditorError( 'datacontroller-get-non-existent-root: Attempting to get data from a non-existing root.', this );
+			throw new CKEditorError( 'datacontroller-get-non-existent-root', this );
 		}
 
 		const root = this.model.document.getRoot( rootName );
@@ -184,7 +185,7 @@ export default class DataController {
 			return '';
 		}
 
-		return this.stringify( root );
+		return this.stringify( root, options );
 	}
 
 	/**
@@ -194,11 +195,12 @@ export default class DataController {
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
 	 * Element whose content will be stringified.
+	 * @param {Object} [options] Additional configuration passed to the conversion process.
 	 * @returns {String} Output data.
 	 */
-	stringify( modelElementOrFragment ) {
+	stringify( modelElementOrFragment, options ) {
 		// Model -> view.
-		const viewDocumentFragment = this.toView( modelElementOrFragment );
+		const viewDocumentFragment = this.toView( modelElementOrFragment, options );
 
 		// View -> data.
 		return this.processor.toData( viewDocumentFragment );
@@ -212,9 +214,11 @@ export default class DataController {
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
 	 * Element or document fragment whose content will be converted.
+	 * @param {Object} [options] Additional configuration that will be available through
+	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi#options} during the conversion process.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Output view DocumentFragment.
 	 */
-	toView( modelElementOrFragment ) {
+	toView( modelElementOrFragment, options ) {
 		const viewDocument = this.viewDocument;
 		const viewWriter = this._viewWriter;
 
@@ -226,6 +230,9 @@ export default class DataController {
 		const viewDocumentFragment = new ViewDocumentFragment( viewDocument );
 
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
+
+		// Make additional options available during conversion process through `conversionApi`.
+		this.downcastDispatcher.conversionApi.options = options;
 
 		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
 		this.downcastDispatcher.convertInsert( modelRange, viewWriter );
@@ -239,6 +246,9 @@ export default class DataController {
 				this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter );
 			}
 		}
+
+		// Clean `conversionApi`.
+		delete this.downcastDispatcher.conversionApi.options;
 
 		return viewDocumentFragment;
 	}
@@ -273,7 +283,7 @@ export default class DataController {
 			 *
 			 * @error datacontroller-init-document-not-empty
 			 */
-			throw new CKEditorError( 'datacontroller-init-document-not-empty: Trying to set initial data to not empty document.', this );
+			throw new CKEditorError( 'datacontroller-init-document-not-empty', this );
 		}
 
 		let initialData = {};
@@ -295,7 +305,7 @@ export default class DataController {
 			 *
 			 * @error datacontroller-init-non-existent-root
 			 */
-			throw new CKEditorError( 'datacontroller-init-non-existent-root: Attempting to init data on a non-existing root.', this );
+			throw new CKEditorError( 'datacontroller-init-non-existent-root', this );
 		}
 
 		this.model.enqueueChange( 'transparent', writer => {
@@ -350,7 +360,7 @@ export default class DataController {
 			 *
 			 * @error datacontroller-set-non-existent-root
 			 */
-			throw new CKEditorError( 'datacontroller-set-non-existent-root: Attempting to set data on a non-existing root.', this );
+			throw new CKEditorError( 'datacontroller-set-non-existent-root', this );
 		}
 
 		this.model.enqueueChange( 'transparent', writer => {

@@ -1,27 +1,45 @@
 <style>
 	.info-box {
+		background: hsl(0, 0%, 45%);
 		border: 1px solid hsl(0, 0%, 80%);
 		padding: 1em;
-		background: hsl(0, 0%, 45%);
-	}
-
-	.info-box-warning {
-		background: hsl(64, 74%, 85%);
-	}
-
-	.info-box-info {
-		background: hsl(205, 100%, 90%);
+		border-radius: 8px;
 	}
 
 	.info-box-title {
-		margin-bottom: 1em;
+		margin-bottom: 0.5em;
+		font-size: 1.4em;
 		font-weight: bold;
 		color: inherit;
 	}
 
+	.info-box-warning {
+		background: hsl(48, 100%, 87%);
+		border: 1px solid hsl(47, 100%, 62%);
+	}
+
+	.info-box-warning .info-box-title  {
+		color: hsl(47, 100%, 32%)
+	}
+
+	.info-box-info {
+		background: hsl(205, 100%, 95%);
+		border: 1px solid hsl(205, 91%, 82%);
+	}
+
+	.info-box-info .info-box-title  {
+		color: hsl(204, 79%, 41%)
+	}
+
 	.info-box-content {
-		padding: 0 1em;
+		padding: 8px 10px;
 		background: hsl(0, 0%, 100%);
+		border-radius: 6px;
+	}
+
+	.info-box-content p:only-child,
+	.info-box-content p:last-child {
+		margin-bottom: 0;
 	}
 </style>
 
