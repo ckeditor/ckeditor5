@@ -286,10 +286,11 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
 	reconvertElement( element, writer ) {
+		const elementRange = Range._createOn( element );
+
 		this.conversionApi.writer = writer;
 
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
-		const elementRange = Range._createOn( element );
 		this.conversionApi.consumable = this._createInsertConsumable( elementRange );
 
 		const mapper = this.conversionApi.mapper;
@@ -298,27 +299,33 @@ export default class DowncastDispatcher {
 		// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
 		this.conversionApi.writer.remove( currentView );
 
+		// Convert the element - without converting children.
 		this._convertInsertWithAttributes( {
 			item: element,
 			range: elementRange
 		} );
 
-		// Bring back removed child views on reconverting the parent view or convert insert for new elements.
 		const convertedViewElement = mapper.toViewElement( element );
 
+		// Iterate over children of reconverted element in order to...
 		for ( const value of Range._createIn( element ) ) {
 			const { item } = value;
 
 			const view = elementOrTextProxyToView( item, mapper );
 
+			// ...either bring back previously converted view...
 			if ( view ) {
+				// Do not move views that are already in converted element - those might be created by the main element converter in case
+				// when main element converts also its direct children.
 				if ( view.root !== convertedViewElement.root ) {
 					writer.move(
 						writer.createRangeOn( view ),
 						mapper.toViewPosition( Position._createAt( item.parent, item.startOffset ) )
 					);
 				}
-			} else {
+			}
+			// ... or by converting newly inserted elements.
+			else {
 				this._convertInsertWithAttributes( walkerValueToEventData( value ) );
 			}
 		}
