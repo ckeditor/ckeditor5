@@ -9,9 +9,10 @@
 
 import Consumable from './modelconsumable';
 import Range from '../model/range';
+import Position from '../model/position';
+
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import Position from '../model/position';
 
 /**
  * Downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting to changes
@@ -124,12 +125,12 @@ export default class DowncastDispatcher {
 		this.conversionApi = Object.assign( { dispatcher: this }, conversionApi );
 
 		/**
-		 * Maps conversion event names that will trigger refresh conversion for given element name.
+		 * Maps conversion event names that will trigger element reconversion for given element name.
 		 *
 		 * @type {Map<String, String>}
 		 * @private
 		 */
-		this._refreshTriggerEventToElementNameMapping = new Map();
+		this._reconversionTriggerEventToElementNameMapping = new Map();
 	}
 
 	/**
@@ -145,7 +146,7 @@ export default class DowncastDispatcher {
 			this.convertMarkerRemove( change.name, change.range, writer );
 		}
 
-		const changes = this._getChangesAfterAutomaticRefreshing( differ );
+		const changes = this._mapChangesWithAutomaticReconversion( differ );
 
 		// Convert changes that happened on model tree.
 		for ( const entry of changes ) {
@@ -153,8 +154,8 @@ export default class DowncastDispatcher {
 				this.convertInsert( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
 			} else if ( entry.type === 'remove' ) {
 				this.convertRemove( entry.position, entry.length, entry.name, writer );
-			} else if ( entry.type === 'refresh' ) {
-				this.convertRefresh( Range._createFromPositionAndShift( entry.position, entry.length ), entry.name, writer );
+			} else if ( entry.type === 'reconvert' ) {
+				this.reconvertElement( entry.element, writer );
 			} else {
 				// Defaults to 'attribute' change.
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
@@ -189,8 +190,8 @@ export default class DowncastDispatcher {
 	 * @param {String} modelName Main model element name for which events will trigger reconversion.
 	 * @param {String} eventName Name of an event that would trigger conversion for given model element.
 	 */
-	mapRefreshTriggerEvent( modelName, eventName ) {
-		this._refreshTriggerEventToElementNameMapping.set( eventName, modelName );
+	mapReconversionTriggerEvent( modelName, eventName ) {
+		this._reconversionTriggerEventToElementNameMapping.set( eventName, modelName );
 	}
 
 	/**
@@ -271,58 +272,50 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Starts a refresh conversion - depending on a configuration it would:
+	 * Starts a reconversion of an element. It can:
 	 *
-	 * * Fire a {@link #event:insert `insert` event} for the element to refresh.
-	 * * Handle conversion of a range insert for nodes under the refreshed item which are not bound as slots.
+	 * * Fire a {@link #event:insert `insert` event} for the element to reconvert.
+	 * * Handle conversion of a range insert for nodes under the reconverted item which are not bound as slots.
 	 *
-	 * The refresh change is created by either:
-	 *
-	 * * A `triggerBy` configuration for
+	 * Element reconversion is defined by a `triggerBy` configuration for
 	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
-	 * * After using {@link module:engine/model/differ~Differ#refreshItem `differ.refreshItem()`}.
 	 *
 	 * @fires insert
 	 * @fires attribute
-	 * @param {module:engine/model/range~Range} range The inserted range (must contain only one element).
-	 * @param {String} name Name of main item to refresh.
+	 * @param {module:engine/model/element~Element} element The element to be reconverted.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
-	convertRefresh( range, name, writer ) {
+	reconvertElement( element, writer ) {
 		this.conversionApi.writer = writer;
 
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
-		this.conversionApi.consumable = this._createInsertConsumable( range );
+		const elementRange = Range._createOn( element );
+		this.conversionApi.consumable = this._createInsertConsumable( elementRange );
 
-		// The first tree walker value will be for the element marked to be refreshed.
-		// For instance, in the below model structure it will be "<complex>" element:
-		// <complex>
-		//     <slot><paragraph>foo</paragraph></slot>
-		//     <slot><paragraph>bar</paragraph></slot>
-		// </complex>
-		const walkerValues = Array.from( range );
-		const topElementValue = walkerValues.shift();
-
-		const currentView = this.conversionApi.mapper.toViewElement( walkerValueToEventData( topElementValue ).item );
+		const mapper = this.conversionApi.mapper;
+		const currentView = mapper.toViewElement( element );
 
 		// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
 		this.conversionApi.writer.remove( currentView );
 
-		this._convertInsertWithAttributes( walkerValueToEventData( topElementValue ) );
+		this._convertInsertWithAttributes( {
+			item: element,
+			range: elementRange
+		} );
 
-		// Bring back removed child views on refreshing the parent view or convert insert for new elements.
-		const convertedViewElement = this.conversionApi.mapper.toViewElement( walkerValueToEventData( topElementValue ).item );
+		// Bring back removed child views on reconverting the parent view or convert insert for new elements.
+		const convertedViewElement = mapper.toViewElement( element );
 
-		for ( const value of Range._createIn( walkerValueToEventData( topElementValue ).item ) ) {
+		for ( const value of Range._createIn( element ) ) {
 			const { item } = value;
 
-			const view = elementOrTextProxyToView( item, this.conversionApi.mapper );
+			const view = elementOrTextProxyToView( item, mapper );
 
 			if ( view ) {
 				if ( view.root !== convertedViewElement.root ) {
-					this.conversionApi.writer.move(
-						this.conversionApi.writer.createRangeOn( view ),
-						this.conversionApi.mapper.toViewPosition( Position._createAt( item.parent, item.startOffset ) )
+					writer.move(
+						writer.createRangeOn( view ),
+						mapper.toViewPosition( Position._createAt( item.parent, item.startOffset ) )
 					);
 				}
 			} else {
@@ -588,47 +581,45 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Get changes without those that needs to be converted using {@link #convertRefresh} defined by a `triggerBy` configuration for
+	 * Get changes without those that needs to be converted using {@link #reconvertElement} defined by a `triggerBy` configuration for
 	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
 	 *
 	 * @param {module:engine/model/differ~Differ} differ The differ object with buffered changes.
 	 * @returns {Array.<Object>}
 	 * @private
 	 */
-	_getChangesAfterAutomaticRefreshing( differ ) {
+	_mapChangesWithAutomaticReconversion( differ ) {
 		const changes = differ.getChanges();
 
-		const refreshedItems = new Set();
+		const itemsToReconvert = new Set();
 
 		const updated = changes
 			.map( entry => {
-				const element = getElementFromChange( entry );
+				const element = getParentElementFromChange( entry );
+
+				if ( !element ) {
+					// Reconversion is done only on elements so skip text attribute changes.
+					return entry;
+				}
 
 				let eventName;
 
 				if ( entry.type === 'attribute' ) {
-					if ( !element ) {
-						// Refreshing is done only on elements so skip text attribute changes.
-						return entry;
-					}
-
 					eventName = `attribute:${ entry.attributeKey }:${ element.name }`;
 				} else {
 					eventName = `${ entry.type }:${ entry.name }`;
 				}
 
-				if ( this._isRefreshTriggerEvent( eventName, element.name ) ) {
-					if ( refreshedItems.has( element ) ) {
+				if ( this._isReconvertTriggerEvent( eventName, element.name ) ) {
+					if ( itemsToReconvert.has( element ) ) {
 						return null;
 					}
 
-					refreshedItems.add( element );
+					itemsToReconvert.add( element );
 
 					return {
-						type: 'refresh',
-						position: Position._createBefore( element ),
-						name: element.name,
-						length: 1
+						type: 'reconvert',
+						element
 					};
 				}
 
@@ -651,9 +642,9 @@ export default class DowncastDispatcher {
 	 * @param {String} elementName Element name to check.
 	 * @returns {Boolean}
 	 */
-	_isRefreshTriggerEvent( eventName, elementName ) {
-		return this._refreshTriggerEventToElementNameMapping.has( eventName ) &&
-			this._refreshTriggerEventToElementNameMapping.get( eventName ) === elementName;
+	_isReconvertTriggerEvent( eventName, elementName ) {
+		return this._reconversionTriggerEventToElementNameMapping.has( eventName ) &&
+			this._reconversionTriggerEventToElementNameMapping.get( eventName ) === elementName;
 	}
 
 	/**
@@ -809,7 +800,7 @@ function getEventName( type, data ) {
 	return `${ type }:${ name }`;
 }
 
-function getElementFromChange( entry ) {
+function getParentElementFromChange( entry ) {
 	const { range, position, type } = entry;
 
 	return type === 'attribute' ? range.start.nodeAfter : position.parent;
