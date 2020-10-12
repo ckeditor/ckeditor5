@@ -168,6 +168,11 @@ module.exports = {
 };
 ```
 
+<info-box>
+    Recently the new version of [webpack was released](https://webpack.js.org/blog/2020-10-10-webpack-5-release/). The guide uses webpack 5 but all of the configuration snippets will also work with webpack 4.
+    Including the `CKEditorWebpackPlugin` plugin that can be found in the  [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) package.
+</info-box>
+
 #### Webpack Encore
 
 If you use [Webpack Encore](https://github.com/symfony/webpack-encore), you can use the following configuration:
