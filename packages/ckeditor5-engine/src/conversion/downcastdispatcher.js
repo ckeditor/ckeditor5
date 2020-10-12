@@ -176,25 +176,6 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Maps model element "insert" reconversion for given event names. The event names must be fully specified:
-	 *
-	 * * For "attribute" change event it should include main element name, ie: `'attribute:attributeName:elementName'`.
-	 * * For child nodes change events, those should use child event name as well, ie:
-	 *     * For adding a node: `'insert:childElementName'`.
-	 *     * For removing a node: `'remove:childElementName'`.
-	 *
-	 * **Note**: This method should not be used directly. A reconversion is defined by `triggerBy` attribute of the `elementToElement()`
-	 * conversion helper.
-	 *
-	 * @protected
-	 * @param {String} modelName Main model element name for which events will trigger reconversion.
-	 * @param {String} eventName Name of an event that would trigger conversion for given model element.
-	 */
-	mapReconversionTriggerEvent( modelName, eventName ) {
-		this._reconversionTriggerEventToElementNameMapping.set( eventName, modelName );
-	}
-
-	/**
 	 * Starts a conversion of a range insertion.
 	 *
 	 * For each node in the range, {@link #event:insert `insert` event is fired}. For each attribute on each node,
@@ -468,6 +449,25 @@ export default class DowncastDispatcher {
 		this.fire( 'removeMarker:' + markerName, { markerName, markerRange }, this.conversionApi );
 
 		this._clearConversionApi();
+	}
+
+	/**
+	 * Maps model element "insert" reconversion for given event names. The event names must be fully specified:
+	 *
+	 * * For "attribute" change event it should include main element name, ie: `'attribute:attributeName:elementName'`.
+	 * * For child nodes change events, those should use child event name as well, ie:
+	 *     * For adding a node: `'insert:childElementName'`.
+	 *     * For removing a node: `'remove:childElementName'`.
+	 *
+	 * **Note**: This method should not be used directly. A reconversion is defined by `triggerBy` configuration of the `elementToElement()`
+	 * conversion helper.
+	 *
+	 * @protected
+	 * @param {String} modelName Main model element name for which events will trigger reconversion.
+	 * @param {String} eventName Name of an event that would trigger conversion for given model element.
+	 */
+	_mapReconversionTriggerEvent( modelName, eventName ) {
+		this._reconversionTriggerEventToElementNameMapping.set( eventName, modelName );
 	}
 
 	/**

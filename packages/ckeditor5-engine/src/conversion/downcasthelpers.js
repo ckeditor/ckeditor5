@@ -1370,14 +1370,14 @@ function downcastElementToElement( config ) {
 		if ( config.triggerBy ) {
 			if ( Array.isArray( config.triggerBy.attributes ) ) {
 				for ( const attributeKey of config.triggerBy.attributes ) {
-					dispatcher.mapReconversionTriggerEvent( config.model, `attribute:${ attributeKey }:${ config.model }` );
+					dispatcher._mapReconversionTriggerEvent( config.model, `attribute:${ attributeKey }:${ config.model }` );
 				}
 			}
 
 			if ( Array.isArray( config.triggerBy.children ) ) {
 				for ( const childName of config.triggerBy.children ) {
-					dispatcher.mapReconversionTriggerEvent( config.model, `insert:${ childName }` );
-					dispatcher.mapReconversionTriggerEvent( config.model, `remove:${ childName }` );
+					dispatcher._mapReconversionTriggerEvent( config.model, `insert:${ childName }` );
+					dispatcher._mapReconversionTriggerEvent( config.model, `remove:${ childName }` );
 				}
 			}
 		}
