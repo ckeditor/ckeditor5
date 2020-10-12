@@ -12,13 +12,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
-import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
-import CompositionObserver from '@ckeditor/ckeditor5-engine/src/view/observer/compositionobserver';
-import FocusObserver from '@ckeditor/ckeditor5-engine/src/view/observer/focusobserver';
-import InputObserver from '@ckeditor/ckeditor5-engine/src/view/observer/inputobserver';
-import KeyObserver from '@ckeditor/ckeditor5-engine/src/view/observer/keyobserver';
+import ClickObserver from '../../../../src/view/observer/clickobserver';
+import CompositionObserver from '../../../../src/view/observer/compositionobserver';
+import FocusObserver from '../../../../src/view/observer/focusobserver';
+import InputObserver from '../../../../src/view/observer/inputobserver';
+import KeyObserver from '../../../../src/view/observer/keyobserver';
+import MouseObserver from '../../../../src/view/observer/mouseobserver';
 import MouseEventsObserver from '@ckeditor/ckeditor5-table/src/tablemouse/mouseeventsobserver';
-import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 
 class SimpleWidgetEditing extends Plugin {
 	static get requires() {
