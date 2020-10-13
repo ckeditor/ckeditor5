@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow } from './converters/upcasttable';
+import upcastTable, { skipEmptyTableRow } from './converters/upcasttable';
 import {
 	downcastInsertCell,
 	downcastInsertRow,
@@ -106,8 +106,6 @@ export default class TableEditing extends Plugin {
 		// Table cell conversion.
 		conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'td' } );
 		conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'th' } );
-		conversion.for( 'upcast' ).add( ensureParagraphInTableCell( 'td' ) );
-		conversion.for( 'upcast' ).add( ensureParagraphInTableCell( 'th' ) );
 
 		conversion.for( 'editingDowncast' ).add( downcastInsertCell() );
 
