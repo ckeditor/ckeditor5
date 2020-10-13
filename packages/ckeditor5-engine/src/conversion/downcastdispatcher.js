@@ -9,7 +9,7 @@
 
 import Consumable from './modelconsumable';
 import Range from '../model/range';
-import Position from '../model/position';
+import Position, { getNodeAfterPosition, getTextNodeAtPosition } from '../model/position';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -130,7 +130,7 @@ export default class DowncastDispatcher {
 		 * @type {Map<String, String>}
 		 * @private
 		 */
-		this._reconversionTriggerEventToElementNameMapping = new Map();
+		this._reconversionEventsMapping = new Map();
 	}
 
 	/**
@@ -304,7 +304,7 @@ export default class DowncastDispatcher {
 				if ( view.root !== convertedViewElement.root ) {
 					writer.move(
 						writer.createRangeOn( view ),
-						mapper.toViewPosition( Position._createAt( item.parent, item.startOffset ) )
+						mapper.toViewPosition( Position._createBefore( item ) )
 					);
 				}
 			}
@@ -470,7 +470,7 @@ export default class DowncastDispatcher {
 	 * @param {String} eventName Name of an event that would trigger conversion for given model element.
 	 */
 	_mapReconversionTriggerEvent( modelName, eventName ) {
-		this._reconversionTriggerEventToElementNameMapping.set( eventName, modelName );
+		this._reconversionEventsMapping.set( eventName, modelName );
 	}
 
 	/**
@@ -603,10 +603,23 @@ export default class DowncastDispatcher {
 		const updated = [];
 
 		for ( const entry of differ.getChanges() ) {
-			const element = getParentElementFromChange( entry );
+			const position = entry.position || entry.range.start;
+			// Cached parent - just in case. See https://github.com/ckeditor/ckeditor5/issues/6579.
+			const positionParent = position.parent;
+			const textNode = getTextNodeAtPosition( position, positionParent );
 
-			if ( !element ) {
-				// Reconversion is done only on elements so skip text attribute changes.
+			// Reconversion is done only on elements so skip text changes.
+			if ( textNode ) {
+				updated.push( entry );
+
+				continue;
+			}
+
+			const element = entry.type === 'attribute' ? getNodeAfterPosition( position, positionParent, textNode ) : positionParent;
+
+			// Case of text node set directly in root. For now used only in tests but can be possible when enabled in paragraph-like roots.
+			// See: https://github.com/ckeditor/ckeditor5/issues/762.
+			if ( element.is( '$text' ) ) {
 				updated.push( entry );
 
 				continue;
@@ -629,10 +642,7 @@ export default class DowncastDispatcher {
 				itemsToReconvert.add( element );
 
 				// Add special "reconvert" change.
-				updated.push( {
-					type: 'reconvert',
-					element
-				} );
+				updated.push( { type: 'reconvert', element } );
 			} else {
 				updated.push( entry );
 			}
@@ -653,8 +663,7 @@ export default class DowncastDispatcher {
 	 * @returns {Boolean}
 	 */
 	_isReconvertTriggerEvent( eventName, elementName ) {
-		return this._reconversionTriggerEventToElementNameMapping.has( eventName ) &&
-			this._reconversionTriggerEventToElementNameMapping.get( eventName ) === elementName;
+		return this._reconversionEventsMapping.get( eventName ) === elementName;
 	}
 
 	/**
@@ -810,12 +819,6 @@ function getEventName( type, data ) {
 	return `${ type }:${ name }`;
 }
 
-function getParentElementFromChange( entry ) {
-	const { range, position, type } = entry;
-
-	return type === 'attribute' ? range.start.nodeAfter : position.parent;
-}
-
 function walkerValueToEventData( value ) {
 	const item = value.item;
 	const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
@@ -828,9 +831,10 @@ function walkerValueToEventData( value ) {
 
 function elementOrTextProxyToView( item, mapper ) {
 	if ( item.is( 'textProxy' ) ) {
-		const mappedPosition = mapper.toViewPosition( Position._createAt( item.parent, item.startOffset ) );
+		const mappedPosition = mapper.toViewPosition( Position._createBefore( item ) );
+		const positionParent = mappedPosition.parent;
 
-		return mappedPosition.parent.is( '$text' ) ? mappedPosition.parent : null;
+		return positionParent.is( '$text' ) ? positionParent : null;
 	}
 
 	return mapper.toViewElement( item );
