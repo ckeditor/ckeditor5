@@ -148,6 +148,15 @@ export default class WidgetResize extends Plugin {
 
 		this._resizers.set( options.viewElement, resizer );
 
+		const viewSelection = this.editor.editing.view.document.selection;
+		const selectedElement = viewSelection.getSelectedElement();
+
+		// It could be that the element the resizer is created for is currently focused. In that
+		// case it should become visible.
+		if ( this._getResizerByViewElement( selectedElement ) == resizer ) {
+			this.visibleResizer = resizer;
+		}
+
 		return resizer;
 	}
 

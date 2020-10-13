@@ -56,10 +56,9 @@ export default class ImageResizeHandles extends Plugin {
 
 		editingView.document.on( 'imageLoaded', ( evt, domEvent ) => {
 			const imageView = editor.editing.view.domConverter.domToView( domEvent.target );
-			const widgetView = imageView.parent;
+			const widgetView = imageView.findAncestor( 'figure' );
 			const mapper = editor.editing.mapper;
 
-			// const imageModel = mapper.toModelElement( imageView ) || mapper.toModelElement( imageView.parent );
 			const imageModel = mapper.toModelElement( widgetView );
 
 			if ( imageModel.name != 'image' ) {

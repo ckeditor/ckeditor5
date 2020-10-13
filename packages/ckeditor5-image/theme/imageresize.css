@@ -24,11 +24,6 @@
 	}
 }
 
-.ck-focused .ck-widget_with-resizer.ck-widget_selected.image.image_resizer_loading > .ck-widget__resizer {
-	/* Style to avoid resizer border flicker when the image is not yet uploaded (#8088). */
-	display: none;
-}
-
 [dir="ltr"] .ck.ck-button.ck-button_with-text.ck-resize-image-button .ck-button__icon {
 	margin-right: var(--ck-spacing-standard);
 }
