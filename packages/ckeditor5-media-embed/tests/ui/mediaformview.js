@@ -78,10 +78,6 @@ describe( 'MediaFormView', () => {
 		} );
 
 		describe( 'url input view', () => {
-			it( 'has placeholder', () => {
-				expect( view.urlInputView.fieldView.placeholder ).to.equal( 'https://example.com' );
-			} );
-
 			it( 'has info text', () => {
 				expect( view.urlInputView.infoText ).to.match( /^Paste the media URL/ );
 			} );
@@ -121,9 +117,10 @@ describe( 'MediaFormView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker', () => {
-			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
-
 			view = new MediaFormView( [], { t: () => {} } );
+
+			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
+
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
