@@ -1,6 +1,6 @@
 {
-  "name": "@ckeditor/ckeditor5-build-balloon-block",
-  "version": "23.0.0",
+  "name": "@tictrac/ckeditor5-build-balloon-block",
+  "version": "23.0.1",
   "description": "The balloon editor build of CKEditor 5 with a block toolbar – the best browser-based rich text editor.",
   "keywords": [
     "wysiwyg",
@@ -61,13 +61,12 @@
     "node": ">=12.0.0",
     "npm": ">=5.7.1"
   },
-  "author": "CKSource (http://cksource.com/)",
+  "author": "developer@tictrac.com",
   "license": "GPL-2.0-or-later",
-  "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "homepage": "https://github.com/Tictrac/ckeditor5",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "url": "https://github.com/Tictrac/ckeditor5.git",
     "directory": "packages/ckeditor5-build-balloon-block"
   },
   "scripts": {
