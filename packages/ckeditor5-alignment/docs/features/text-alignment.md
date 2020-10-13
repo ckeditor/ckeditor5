@@ -17,7 +17,7 @@ There are more CKEditor 5 features that can help you organize your content:
 * {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
 * {@link features/headings Headings} &ndash; Divide your content into sections.
 * {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
-* {@ features/indent Block indentation} &ndash; Organize your contents into clearly visually divided blocks, indent crucial paragraphs etc.
+* {@link features/indent Block indentation} &ndash; Organize your contents into clearly visually divided blocks, indent crucial paragraphs etc.
 * {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in the rich-text content.
 
 
