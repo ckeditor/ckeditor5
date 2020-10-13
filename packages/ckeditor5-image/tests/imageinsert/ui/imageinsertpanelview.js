@@ -161,9 +161,9 @@ describe( 'ImageUploadPanelView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker with no integrations', () => {
-			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
-
 			view = new ImageUploadPanelView( { t: () => {} } );
+
+			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.insertButtonView.element );
@@ -171,11 +171,12 @@ describe( 'ImageUploadPanelView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker with "insertImageViaUrl" integration', () => {
-			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
-
 			view = new ImageUploadPanelView( { t: () => {} }, {
 				'insertImageViaUrl': createLabeledInputView( { t: val => val } )
 			} );
+
+			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
+
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.getIntegration( 'insertImageViaUrl' ).element );
