@@ -14,6 +14,7 @@ const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' 
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const ProgressBarPlugin = require( 'progress-bar-webpack-plugin' );
+const glob = require( 'glob' );
 
 const DEFAULT_LANGUAGE = 'en';
 const MULTI_LANGUAGE = 'multi-language';
@@ -393,7 +394,10 @@ function getWebpackConfig( snippets, config ) {
 		// Configure the paths so building CKEditor 5 snippets work even if the script
 		// is triggered from a directory outside ckeditor5 (e.g. multi-project case).
 		resolve: {
-			modules: getModuleResolvePaths()
+			modules: [
+				...getPackageDependenciesPaths(),
+				...getModuleResolvePaths()
+			]
 		},
 
 		resolveLoader: {
@@ -469,6 +473,24 @@ function getModuleResolvePaths() {
 		path.resolve( __dirname, '..', '..', 'node_modules' ),
 		'node_modules'
 	];
+}
+
+/**
+ * Returns an array that contains paths to packages' dependencies.
+ * The snippet adapter should use packages' dependencies instead of the documentation builder dependencies.
+ *
+ * See #7916.
+ *
+ * @returns {Array.<String>}
+ */
+function getPackageDependenciesPaths() {
+	const globOptions = {
+		cwd: path.resolve( __dirname, '..', '..' ),
+		absolute: true
+	};
+
+	return glob.sync( 'packages/*/node_modules', globOptions )
+		.concat( glob.sync( 'external/*/packages/*/node_modules', globOptions ) );
 }
 
 /**
