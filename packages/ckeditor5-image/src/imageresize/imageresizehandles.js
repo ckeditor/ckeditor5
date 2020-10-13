@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
-import ImageLoadObserver from './../image/imageloadobserver';
+import ImageLoadObserver from '../image/imageloadobserver';
 
 /**
  * The image resize by handles feature.
