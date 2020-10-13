@@ -20,10 +20,10 @@ import { setHighlightHandling, toWidget, toWidgetEditable } from '@ckeditor/cked
  * @returns {Function} Conversion helper.
  */
 export function downcastInsertTable( options = {} ) {
-	return dispatcher => dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
-		const table = data.item;
+	return ( modelElement, conversionApi ) => {
+		const table = modelElement;
 
-		if ( !conversionApi.consumable.consume( table, 'insert' ) ) {
+		if ( !conversionApi.consumable.test( table, 'insert' ) ) {
 			return;
 		}
 
@@ -78,11 +78,8 @@ export function downcastInsertTable( options = {} ) {
 			}
 		}
 
-		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-
-		conversionApi.mapper.bindElements( table, asWidget ? tableWidget : figureElement );
-		conversionApi.writer.insert( viewPosition, asWidget ? tableWidget : figureElement );
-	} );
+		return asWidget ? tableWidget : figureElement;
+	};
 }
 
 /**

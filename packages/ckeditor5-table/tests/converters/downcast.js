@@ -956,10 +956,16 @@ describe( 'downcast converters', () => {
 					writer.setAttribute( 'headingRows', 2, table );
 
 					const tableRow = writer.createElement( 'tableRow' );
+					const tableCellA = writer.createElement( 'tableCell' );
+					const tableCellB = writer.createElement( 'tableCell' );
+
+					writer.insertElement( 'paragraph', tableCellA, 0 );
+					writer.insert( tableCellA, tableRow, 0 );
+
+					writer.insertElement( 'paragraph', tableCellB, 0 );
+					writer.insert( tableCellB, tableRow, 1 );
 
 					writer.insert( tableRow, table, 0 );
-					writer.insertElement( 'tableCell', tableRow, 'end' );
-					writer.insertElement( 'tableCell', tableRow, 'end' );
 				} );
 
 				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [

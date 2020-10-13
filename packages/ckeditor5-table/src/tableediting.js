@@ -36,7 +36,6 @@ import TableUtils from '../src/tableutils';
 import injectTableLayoutPostFixer from './converters/table-layout-post-fixer';
 import injectTableCellParagraphPostFixer from './converters/table-cell-paragraph-post-fixer';
 import injectTableCellRefreshPostFixer from './converters/table-cell-refresh-post-fixer';
-import injectTableHeadingRowsRefreshPostFixer from './converters/table-heading-rows-refresh-post-fixer';
 
 import '../theme/tableediting.css';
 
@@ -94,8 +93,17 @@ export default class TableEditing extends Plugin {
 		// Table conversion.
 		conversion.for( 'upcast' ).add( upcastTable() );
 
-		conversion.for( 'editingDowncast' ).add( downcastInsertTable( { asWidget: true } ) );
-		conversion.for( 'dataDowncast' ).add( downcastInsertTable() );
+		conversion.for( 'editingDowncast' ).elementToElement( {
+			model: 'table',
+			view: downcastInsertTable( { asWidget: true } ),
+			triggerBy: {
+				attributes: [ 'headingRows' ]
+			}
+		} );
+		conversion.for( 'dataDowncast' ).elementToElement( {
+			model: 'table',
+			view: downcastInsertTable()
+		} );
 
 		// Table row conversion.
 		conversion.for( 'upcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
@@ -150,7 +158,6 @@ export default class TableEditing extends Plugin {
 		editor.commands.add( 'selectTableRow', new SelectRowCommand( editor ) );
 		editor.commands.add( 'selectTableColumn', new SelectColumnCommand( editor ) );
 
-		injectTableHeadingRowsRefreshPostFixer( model );
 		injectTableLayoutPostFixer( model );
 		injectTableCellRefreshPostFixer( model, editor.editing.mapper );
 		injectTableCellParagraphPostFixer( model );
