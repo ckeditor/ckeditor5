@@ -88,4 +88,4 @@ CKEditor 5 provides an open API that allows you to develop your own upload adapt
 
 ## Quick feature overview
 
-Read our comprehensive blog post about [Managing images with CKEditor 5](https://ckeditor.com/blog/managing-images-with-ckeditor-5/) to find out more details about image upload and management and compare the features.
+Read our comprehensive blog post about [Managing images with CKEditor 5](https://ckeditor.com/blog/managing-images-with-ckeditor-5/) to find out more details about image upload and management and to compare the available options.
