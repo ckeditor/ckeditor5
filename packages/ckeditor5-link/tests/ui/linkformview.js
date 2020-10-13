@@ -81,12 +81,6 @@ describe( 'LinkFormView', () => {
 			expect( spy.calledOnce ).to.true;
 		} );
 
-		describe( 'url input view', () => {
-			it( 'has placeholder', () => {
-				expect( view.urlInputView.fieldView.placeholder ).to.equal( 'https://example.com' );
-			} );
-		} );
-
 		describe( 'template', () => {
 			it( 'has url input view', () => {
 				expect( view.template.children[ 0 ].get( 0 ) ).to.equal( view.urlInputView );
@@ -109,9 +103,10 @@ describe( 'LinkFormView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker', () => {
-			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
-
 			view = new LinkFormView( { t: () => {} }, { manualDecorators: [] } );
+
+			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
+
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );

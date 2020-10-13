@@ -42,7 +42,7 @@ export default class LinkFormView extends View {
 	 * @param {module:link/linkcommand~LinkCommand} linkCommand Reference to {@link module:link/linkcommand~LinkCommand}.
 	 * @param {String} [protocol] A value of a protocol to be displayed in the input's placeholder.
 	 */
-	constructor( locale, linkCommand, protocol ) {
+	constructor( locale, linkCommand ) {
 		super( locale );
 
 		const t = locale.t;
@@ -68,7 +68,7 @@ export default class LinkFormView extends View {
 		 *
 		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
-		this.urlInputView = this._createUrlInput( protocol );
+		this.urlInputView = this._createUrlInput();
 
 		/**
 		 * The Save button view.
@@ -208,15 +208,13 @@ export default class LinkFormView extends View {
 	 * Creates a labeled input view.
 	 *
 	 * @private
-	 * @param {String} [protocol=http://] A value of a protocol to be displayed in the input's placeholder.
 	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView} Labeled field view instance.
 	 */
-	_createUrlInput( protocol = 'https://' ) {
+	_createUrlInput() {
 		const t = this.locale.t;
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
 		labeledInput.label = t( 'Link URL' );
-		// labeledInput.fieldView.placeholder = protocol + 'example.com';
 
 		return labeledInput;
 	}
