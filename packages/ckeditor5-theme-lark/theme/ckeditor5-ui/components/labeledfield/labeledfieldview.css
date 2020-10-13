@@ -5,6 +5,10 @@
 
 @import "../../../mixins/_rounded.css";
 
+:root {
+	--ck-labeled-field-view-transition: .1s cubic-bezier(0, 0, 0.24, 0.95);
+}
+
 .ck.ck-labeled-field-view {
 	@mixin ck-rounded-corners;
 
@@ -21,10 +25,6 @@
 		opacity: 0;
 	}
 
-	&.ck-error > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
-		color: var(--ck-color-base-error);
-	}
-
 	& .ck-labeled-input__wrapper {
 		position: relative;
 	}
@@ -36,30 +36,35 @@
 	& .ck.ck-label {
 		display: block;
 		position: absolute;
-		top: calc(-1 * var(--ck-spacing-standard) - 1px);
-		left: var(--ck-spacing-medium);
-		right: auto;
+		top: 0px;
+		left: 0px;
 
 		pointer-events: none;
 
+		transform-origin: 0 0;
+
+		/* By default, display the label scaled down above the field. */
+		transform: translate(var(--ck-spacing-medium), -6px) scale(.75);
+
 		background: var(--ck-color-base-background);
-		font-size: var(--ck-font-size-small);
-		padding: 0 calc(.75 * var(--ck-font-size-tiny));
+		padding: 0 calc(.5 * var(--ck-font-size-tiny));
 		line-height: initial;
 		font-weight: normal;
-		transform: none;
 
 		/* Prevent overflow when the label is longer than the input */
 		text-overflow: ellipsis;
 		overflow: hidden;
+
 		max-width: 100%;
 
 		transition:
-			top .1s ease-in-out,
-			transform .1s ease-in-out,
-			padding .1s ease-in-out,
-			background .1s ease-in-out,
-			font-size .1s ease-in-out;
+			transform var(--ck-labeled-field-view-transition),
+			padding var(--ck-labeled-field-view-transition),
+			background var(--ck-labeled-field-view-transition);
+	}
+
+	&.ck-error > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
+		color: var(--ck-color-base-error);
 	}
 
 	&.ck-labeled-input_focused {
@@ -87,19 +92,22 @@
 		color: var(--ck-color-base-error);
 	}
 
-	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
-	&.ck-disabled > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
-		background: transparent;
-		font-size: var(--ck-font-size-normal);
-		right: var(--ck-spacing-medium);
-		top: 50%;
-		padding: 0;
-		transform: translateY(-50%);
-		bottom: 0;
-	}
-
+	/* Disabled fields and fields that have no focus should fade out. */
 	&.ck-disabled > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
 	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
 		color: var(--ck-color-input-disabled-text);
+	}
+
+	/* Fields that are disabled or not focused and without a placeholder should have full-sized labels. */
+	/* stylelint-disable-next-line no-descending-specificity */
+	&.ck-disabled > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
+	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
+		transform: translate(var(--ck-spacing-medium), calc(0.6 * var(--ck-font-size-base))) scale(1);
+
+		/* Compensate for the default translate position */
+		max-width: calc(100% - 2 * var(--ck-spacing-medium));
+
+		background: transparent;
+		padding: 0;
 	}
 }

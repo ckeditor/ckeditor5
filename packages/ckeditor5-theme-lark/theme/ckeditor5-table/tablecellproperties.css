@@ -16,6 +16,9 @@
 		&.ck-table-cell-properties-form__alignment-row {
 			& .ck.ck-toolbar {
 				background: none;
+
+				/* Compensate for missing input label that would push the margin (toolbar has no inputs). */
+				margin-top: var(--ck-spacing-standard);
 			}
 		}
 	}

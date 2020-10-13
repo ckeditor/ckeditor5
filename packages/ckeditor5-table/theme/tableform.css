@@ -26,6 +26,10 @@
 			}
 		}
 
+		&.ck-table-form__background-row {
+			flex-wrap: wrap;
+		}
+
 		&.ck-table-form__dimensions-row {
 			flex-wrap: wrap;
 			align-items: center;
