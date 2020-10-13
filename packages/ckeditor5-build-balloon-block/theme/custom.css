@@ -1,0 +1,37 @@
+.ck.ck-content {
+	font-family: "Times New Roman", Times, serif;
+	font-size: 16px;
+	color: #000000;
+}
+
+.ck.ck-content.ck-editor__editable.ck-focused {
+    border: 1px solid transparent;
+    box-shadow: none;
+}
+
+.ck.ck-content > h1[data-placeholder] {
+	display: block;
+	font-size: 2em;
+	margin-block-start: 0.67em;
+	margin-block-end: 0.67em;
+	margin-inline-start: 0px;
+	margin-inline-end: 0px;
+	font-weight: bold;
+}
+
+.ck.ck-content > p[data-placeholder] {
+	display: block;
+	margin-block-start: 1em;
+	margin-block-end: 1em;
+	margin-inline-start: 0px;
+	margin-inline-end: 0px;
+}
+
+.ck.ck-content ul {
+	list-style: initial;
+}
+
+.ck.ck-content ol {
+	list-style: decimal;
+}
+

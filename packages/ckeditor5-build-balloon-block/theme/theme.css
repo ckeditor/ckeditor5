@@ -8,6 +8,7 @@
 	transform: translateX(calc(-1 * var(--ck-spacing-large)));
 }
 
+/* Add an animation to the block toolbar button */
 .ck.ck-block-toolbar-button > .ck-icon {
 	transition: transform 0.3s ease-in-out;
 }
