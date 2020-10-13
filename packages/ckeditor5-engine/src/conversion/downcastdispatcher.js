@@ -281,7 +281,7 @@ export default class DowncastDispatcher {
 		const currentView = mapper.toViewElement( element );
 
 		// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
-		this.conversionApi.writer.remove( currentView );
+		writer.remove( currentView );
 
 		// Convert the element - without converting children.
 		this._convertInsertWithAttributes( {
@@ -615,7 +615,7 @@ export default class DowncastDispatcher {
 				continue;
 			}
 
-			const element = entry.type === 'attribute' ? getNodeAfterPosition( position, positionParent, textNode ) : positionParent;
+			const element = entry.type === 'attribute' ? getNodeAfterPosition( position, positionParent, null ) : positionParent;
 
 			// Case of text node set directly in root. For now used only in tests but can be possible when enabled in paragraph-like roots.
 			// See: https://github.com/ckeditor/ckeditor5/issues/762.
