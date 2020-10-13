@@ -6,7 +6,7 @@ category: features
 
 {@snippet build-classic-source}
 
-The {@link module:heading/heading~Heading} feature enables support for headings.
+The {@link module:heading/heading~Heading} feature enables support for headings. These are used by the creators to structure their documents and aid both the readers amking the reading easier and more organized and the search indexers scanning for crucial information.
 
 <info-box info>
 	This feature is enabled by default in all builds.
@@ -28,7 +28,7 @@ By default, when your editor build does not include the title plugin, a `<h1>` e
 
 ## Demo
 
-{@snippet features/custom-heading-levels}
+{@snippet features/default-headings}
 
 ## Related features
 
@@ -36,6 +36,8 @@ There are more CKEditor 5 features that can help you format your content:
 * {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 * {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
+
+## Configuration
 
 ### Configuring heading levels
 

@@ -18,9 +18,9 @@ Use the editor below to create a document with clearly separated title and body 
 ## Related features
 
 There are more CKEditor 5 features that can help you control your document:
-* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
-* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 * {@link features/headings Headings} &ndash; Divide your content into sections.
+* {@link features/indent Block indentation} &ndash; Organize your contents into visually separated blocks, indent crucial paragraphs etc.
+* {@link features/editor-placeholder Editor placeholder} &ndash; A configurable placeholder text to display when the content is empty. It helps users locate the editor in the application and prompts to input the content.
 
 ## Keyboard navigation
 

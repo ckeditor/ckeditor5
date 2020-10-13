@@ -22,10 +22,6 @@ Check out also these CKEditor 5 features to gain better control over your conten
 * {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered or justified.
 * {@link features/code-blocks Code block feature}  &ndash; Allows for insertion of longer, multiline code listings, expanding the inline code style greatly.
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
-
-And be sure to get familiar with these, too:
-* {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
-* {@link features/headings Headings} &ndash; Divide your content into sections.
 * {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of content.
 
 ## Available text styles
@@ -72,7 +68,7 @@ CKEditor 5 allows for typing both at inner and outer boundaries of code to make 
 
 {@img assets/img/typing-after-code.gif 770 The animation showing typing after the code element in CKEditor 5 rich text editor.}
 
-## Installations
+## Installation
 
 To add the basic styles features to your editor install the [`@ckeditor/ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package:
 
