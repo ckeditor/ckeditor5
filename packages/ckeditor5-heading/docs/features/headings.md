@@ -6,7 +6,7 @@ category: features
 
 {@snippet build-classic-source}
 
-The {@link module:heading/heading~Heading} feature enables support for headings. These are used by the creators to structure their documents and aid both the readers amking the reading easier and more organized and the search indexers scanning for crucial information.
+The {@link module:heading/heading~Heading} feature enables support for headings. These are used by the creators to structure their documents and aid both the readers making the reading easier and more organized and the search indexers scanning for crucial information.
 
 <info-box info>
 	This feature is enabled by default in all builds.
