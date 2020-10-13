@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import upcastTable, { skipEmptyTableRow } from './converters/upcasttable';
 import {
+	convertParagraphInTableCell,
 	downcastInsertCell,
 	downcastInsertRow,
 	downcastInsertTable,
@@ -109,6 +110,13 @@ export default class TableEditing extends Plugin {
 
 		conversion.for( 'editingDowncast' ).add( downcastInsertCell() );
 
+		// Duplicates code - needed to properly refresh paragraph inside table cell.
+		editor.conversion.for( 'editingDowncast' ).elementToElement( {
+			model: 'paragraph',
+			view: convertParagraphInTableCell,
+			converterPriority: 'high'
+		} );
+
 		// Table attributes conversion.
 		conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 		conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
@@ -144,7 +152,7 @@ export default class TableEditing extends Plugin {
 
 		injectTableHeadingRowsRefreshPostFixer( model );
 		injectTableLayoutPostFixer( model );
-		injectTableCellRefreshPostFixer( model );
+		injectTableCellRefreshPostFixer( model, editor.editing.mapper );
 		injectTableCellParagraphPostFixer( model );
 	}
 
