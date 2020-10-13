@@ -38,24 +38,41 @@ export default class ImageResizeHandles extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		const command = this.editor.commands.get( 'imageResize' );
+		this.bind( 'isEnabled' ).to( command );
+
+		this._addResizerCreationListener();
+	}
+
+	/**
+	 *
+	 * @private
+	 */
+	_addResizerCreationListener() {
 		const editor = this.editor;
-		const command = editor.commands.get( 'imageResize' );
 		const editingView = editor.editing.view;
 
 		editingView.addObserver( ImageLoadObserver );
 
-		this.bind( 'isEnabled' ).to( command );
+		editingView.document.on( 'imageLoaded', ( evt, domEvent ) => {
+			const imageView = editor.editing.view.domConverter.domToView( domEvent.target );
+			const widgetView = imageView.parent;
+			const mapper = editor.editing.mapper;
 
-		editor.editing.downcastDispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
-			const widget = conversionApi.mapper.toViewElement( data.item );
+			// const imageModel = mapper.toModelElement( imageView ) || mapper.toModelElement( imageView.parent );
+			const imageModel = mapper.toModelElement( widgetView );
+
+			if ( imageModel.name != 'image' ) {
+				return;
+			}
 
 			const resizer = editor.plugins
 				.get( WidgetResize )
 				.attachTo( {
 					unit: editor.config.get( 'image.resizeUnit' ),
 
-					modelElement: data.item,
-					viewElement: widget,
+					modelElement: imageModel,
+					viewElement: widgetView,
 					editor,
 
 					getHandleHost( domWidgetElement ) {
@@ -66,7 +83,7 @@ export default class ImageResizeHandles extends Plugin {
 					},
 					// TODO consider other positions.
 					isCentered() {
-						const imageStyle = data.item.getAttribute( 'imageStyle' );
+						const imageStyle = imageModel.getAttribute( 'imageStyle' );
 
 						return !imageStyle || imageStyle == 'full' || imageStyle == 'alignCenter';
 					},
@@ -77,54 +94,14 @@ export default class ImageResizeHandles extends Plugin {
 				} );
 
 			resizer.on( 'updateSize', () => {
-				if ( !widget.hasClass( 'image_resized' ) ) {
+				if ( !widgetView.hasClass( 'image_resized' ) ) {
 					editingView.change( writer => {
-						writer.addClass( 'image_resized', widget );
+						writer.addClass( 'image_resized', widgetView );
 					} );
 				}
 			} );
 
-			this._hideResizerUntilImageIsLoaded( resizer, widget );
-
 			resizer.bind( 'isEnabled' ).to( this );
-		}, { priority: 'low' } );
-	}
-
-	/**
-	 * Function to add listeners that will hide the resizer frame until the image is loaded,
-	 * to avoid [resize frame flashing when the image is not yet loaded](https://github.com/ckeditor/ckeditor5/issues/8088).
-	 *
-	 * @private
-	 * @param {module:widget/widgetresize/resizer~Resizer} resizer
-	 * @param {module:engine/view/containerelement~ContainerElement} widget
-	 */
-	_hideResizerUntilImageIsLoaded( resizer, widget ) {
-		// Given that #7548 is fixed, this logic might no longer be needed.
-		const editor = this.editor;
-		const editingView = editor.editing.view;
-
-		editingView.change( writer => {
-			writer.addClass( 'image_resizer_loading', widget );
 		} );
-
-		editingView.document.on( 'imageLoaded', imageLoadCallback );
-
-		function imageLoadCallback( evt, domEvent ) {
-			const handleHost = resizer._getHandleHost();
-
-			if ( domEvent.target.isSameNode( handleHost ) ) {
-				editingView.change( writer => {
-					if ( editor.plugins.get( WidgetResize ).visibleResizer == resizer ) {
-						// Small optimization to redraw only a resizer that is visible/focused. Hidden resizers should remain
-						// unaffected. It also fixes https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-695949745.
-						resizer.redraw();
-					}
-					writer.removeClass( 'image_resizer_loading', widget );
-				} );
-
-				// Remove image load listener for optimization, as it is no longer needed.
-				editingView.document.off( 'imageLoaded', imageLoadCallback );
-			}
-		}
 	}
 }
