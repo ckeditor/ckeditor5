@@ -37,7 +37,7 @@ This feature can be used in the rich-text editor in two different ways:
 
 ### Image upload only
 
-This demo shows the integration where the file manager's server connector handles [the image upload](#configuring-the-full-integration) only:
+This demo shows the integration where the file manager's server connector handles [the image upload](#configuring-the-image-upload-only) only:
 
 * Paste the image directly into the rich-text editor content and it will be automatically uploaded using the server-side connector.
 * Use the "Insert image" button in the toolbar to insert an image.
