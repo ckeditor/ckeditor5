@@ -1368,13 +1368,13 @@ function downcastElementToElement( config ) {
 		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
 
 		if ( config.triggerBy ) {
-			if ( Array.isArray( config.triggerBy.attributes ) ) {
+			if ( config.triggerBy.attributes ) {
 				for ( const attributeKey of config.triggerBy.attributes ) {
 					dispatcher._mapReconversionTriggerEvent( config.model, `attribute:${ attributeKey }:${ config.model }` );
 				}
 			}
 
-			if ( Array.isArray( config.triggerBy.children ) ) {
+			if ( config.triggerBy.children ) {
 				for ( const childName of config.triggerBy.children ) {
 					dispatcher._mapReconversionTriggerEvent( config.model, `insert:${ childName }` );
 					dispatcher._mapReconversionTriggerEvent( config.model, `remove:${ childName }` );
