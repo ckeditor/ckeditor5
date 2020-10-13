@@ -142,6 +142,8 @@ export default class DowncastDispatcher {
 	 */
 	convertChanges( differ, markers, writer ) {
 		// Before the view is updated, remove markers which have changed.
+		this.conversionApi.consumable = new Consumable();
+
 		for ( const change of differ.getMarkersToRemove() ) {
 			this.convertMarkerRemove( change.name, change.range, writer );
 		}
@@ -190,7 +192,7 @@ export default class DowncastDispatcher {
 		this.conversionApi.writer = writer;
 
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
-		this.conversionApi.consumable = this._createInsertConsumable( range );
+		this._createInsertConsumable( range );
 
 		// Fire a separate insert event for each node and text fragment contained in the range.
 		for ( const data of Array.from( range ).map( walkerValueToEventData ) ) {
@@ -232,7 +234,7 @@ export default class DowncastDispatcher {
 		this.conversionApi.writer = writer;
 
 		// Create a list with attributes to consume.
-		this.conversionApi.consumable = this._createConsumableForRange( range, `attribute:${ key }` );
+		this._createConsumableForRange( range, `attribute:${ key }` );
 
 		// Create a separate attribute event for each node in the range.
 		for ( const value of range ) {
@@ -275,7 +277,7 @@ export default class DowncastDispatcher {
 		this.conversionApi.writer = writer;
 
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
-		this.conversionApi.consumable = this._createInsertConsumable( elementRange );
+		this._createInsertConsumable( elementRange );
 
 		const mapper = this.conversionApi.mapper;
 		const currentView = mapper.toViewElement( element );
@@ -333,7 +335,7 @@ export default class DowncastDispatcher {
 		const markersAtSelection = Array.from( markers.getMarkersAtPosition( selection.getFirstPosition() ) );
 
 		this.conversionApi.writer = writer;
-		this.conversionApi.consumable = this._createSelectionConsumable( selection, markersAtSelection );
+		this._createSelectionConsumable( selection, markersAtSelection );
 
 		this.fire( 'selection', { selection }, this.conversionApi );
 
@@ -400,24 +402,24 @@ export default class DowncastDispatcher {
 		//
 		// First, fire an event for the whole marker.
 		//
-		const consumable = new Consumable();
-		consumable.add( markerRange, eventName );
-
-		this.conversionApi.consumable = consumable;
+		// const consumable = new Consumable();
+		// this.conversionApi.consumable = consumable;
+		this.conversionApi.consumable.add( markerRange, eventName );
+		// TODO: check if the above makes sense - maybe new consumable is needed.
 
 		this.fire( eventName, { markerName, markerRange }, this.conversionApi );
 
 		//
 		// Do not fire events for each item inside the range if the range got consumed.
 		//
-		if ( !consumable.test( markerRange, eventName ) ) {
+		if ( !this.conversionApi.consumable.test( markerRange, eventName ) ) {
 			return;
 		}
 
 		//
 		// Then, fire an event for each item inside the marker range.
 		//
-		this.conversionApi.consumable = this._createConsumableForRange( markerRange, eventName );
+		this._createConsumableForRange( markerRange, eventName );
 
 		for ( const item of markerRange.getItems() ) {
 			// Do not fire event for already consumed items.
@@ -482,7 +484,8 @@ export default class DowncastDispatcher {
 	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} Values to consume.
 	 */
 	_createInsertConsumable( range ) {
-		const consumable = new Consumable();
+		// const consumable = new Consumable();
+		const consumable = this.conversionApi.consumable;
 
 		for ( const value of range ) {
 			const item = value.item;
@@ -506,7 +509,8 @@ export default class DowncastDispatcher {
 	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} Values to consume.
 	 */
 	_createConsumableForRange( range, type ) {
-		const consumable = new Consumable();
+		// const consumable = new Consumable();
+		const consumable = this.conversionApi.consumable;
 
 		for ( const item of range.getItems() ) {
 			consumable.add( item, type );
@@ -524,7 +528,9 @@ export default class DowncastDispatcher {
 	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} Values to consume.
 	 */
 	_createSelectionConsumable( selection, markers ) {
-		const consumable = new Consumable();
+		// const consumable = new Consumable();
+		// TODO: this might be reverted.
+		const consumable = this.conversionApi.consumable;
 
 		consumable.add( selection, 'selection' );
 
@@ -564,7 +570,7 @@ export default class DowncastDispatcher {
 	 */
 	_clearConversionApi() {
 		delete this.conversionApi.writer;
-		delete this.conversionApi.consumable;
+		// delete this.conversionApi.consumable;
 	}
 
 	/**

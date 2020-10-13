@@ -40,6 +40,7 @@ import {
 import { isPlainObject } from 'lodash-es';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import { StylesProcessor } from '../view/stylesmap';
+import ModelConsumable from '../conversion/modelconsumable';
 
 /**
  * Writes the content of a model {@link module:engine/model/document~Document document} to an HTML-like string.
@@ -256,6 +257,7 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 
 	// Convert model to view.
 	const writer = view._writer;
+	downcastDispatcher.conversionApi.consumable = new ModelConsumable();
 	downcastDispatcher.convertInsert( range, writer );
 
 	// Convert model selection to view selection.

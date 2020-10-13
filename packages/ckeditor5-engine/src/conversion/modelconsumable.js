@@ -139,7 +139,9 @@ export default class ModelConsumable {
 			this._consumable.set( item, new Map() );
 		}
 
-		this._consumable.get( item ).set( type, true );
+		if ( !this._consumable.get( item ).has( type ) ) {
+			this._consumable.get( item ).set( type, true );
+		}
 	}
 
 	/**

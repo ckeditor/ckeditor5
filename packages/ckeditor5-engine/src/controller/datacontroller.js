@@ -25,6 +25,7 @@ import ViewDowncastWriter from '../view/downcastwriter';
 
 import ModelRange from '../model/range';
 import { autoParagraphEmptyRoots } from '../model/utils/autoparagraphing';
+import ModelConsumable from '../conversion/modelconsumable';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
@@ -232,6 +233,7 @@ export default class DataController {
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
 		// Make additional options available during conversion process through `conversionApi`.
+		this.downcastDispatcher.conversionApi.consumable = new ModelConsumable();
 		this.downcastDispatcher.conversionApi.options = options;
 
 		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
