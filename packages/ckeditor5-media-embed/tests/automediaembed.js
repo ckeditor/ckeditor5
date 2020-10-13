@@ -398,6 +398,17 @@ describe( 'AutoMediaEmbed - integration', () => {
 					return newEditor.destroy();
 				} );
 		} );
+
+		it( 'works for URL with %-symbols', () => {
+			setData( editor.model, '<paragraph>[]</paragraph>' );
+			pasteHtml( editor, 'http://youtube.com/watch?v=H08tGjXNHO4%2' );
+
+			clock.tick( 100 );
+
+			expect( getData( editor.model ) ).to.equal(
+				'[<media url="http://youtube.com/watch?v=H08tGjXNHO4%2"></media>]'
+			);
+		} );
 	} );
 
 	describe( 'use real timers', () => {

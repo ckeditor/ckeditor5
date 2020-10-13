@@ -84,8 +84,8 @@ export default function deleteContent( model, selection, options = {} ) {
 		const [ startPosition, endPosition ] = getLivePositionsForSelectedBlocks( selRange );
 
 		// 2. Remove the content if there is any.
-		if ( !selRange.start.isTouching( selRange.end ) ) {
-			writer.remove( selRange );
+		if ( !startPosition.isTouching( endPosition ) ) {
+			writer.remove( writer.createRange( startPosition, endPosition ) );
 		}
 
 		// 3. Merge elements in the right branch to the elements in the left branch.

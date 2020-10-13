@@ -3917,6 +3917,36 @@ describe( 'table clipboard', () => {
 				[ '02', '21', '22' ]
 			] ) );
 		} );
+
+		it( 'should not blow up when pasting unsupported element in table', async () => {
+			await createEditor( [ TableCellPropertiesEditing ] );
+
+			pasteHtml( editor,
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>' +
+								'<div>' +
+									'<table>' +
+										'<tbody>' +
+											'<tr>' +
+												'<td style="border: 2px solid rgb(242, 242, 242);">' +
+													'<p>Test</p>' +
+												'</td>' +
+											'</tr>' +
+										'</tbody>' +
+									'</table>' +
+								'</div>' +
+							'</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+				[ '<paragraph>Test</paragraph><paragraph></paragraph>' ]
+			] ) );
+		} );
 	} );
 
 	async function createEditor( extraPlugins = [] ) {
@@ -3928,6 +3958,17 @@ describe( 'table clipboard', () => {
 		modelRoot = model.document.getRoot();
 		viewDocument = editor.editing.view.document;
 		tableSelection = editor.plugins.get( 'TableSelection' );
+	}
+
+	function pasteHtml( editor, html ) {
+		const data = {
+			dataTransfer: createDataTransfer(),
+			stopPropagation() {},
+			preventDefault() {}
+		};
+
+		data.dataTransfer.setData( 'text/html', html );
+		editor.editing.view.document.fire( 'paste', data );
 	}
 
 	function pasteTable( tableData, attributes = {} ) {

@@ -250,7 +250,7 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 
 			expect( widgetToolbarRepository._toolbarDefinitions.get( 'mediaEmbed' ) ).to.be.undefined;
 			expect( consoleWarnStub.calledOnce ).to.equal( true );
-			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^widget-toolbar-no-items:/ );
+			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^widget-toolbar-no-items/ );
 
 			element.remove();
 			return editor.destroy();

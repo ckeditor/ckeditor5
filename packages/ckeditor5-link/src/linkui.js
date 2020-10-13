@@ -219,7 +219,9 @@ export default class LinkUI extends Plugin {
 			// Prevent focusing the search bar in FF, Chrome and Edge. See https://github.com/ckeditor/ckeditor5/issues/4811.
 			cancel();
 
-			this._showUI( true );
+			if ( linkCommand.isEnabled ) {
+				this._showUI( true );
+			}
 		} );
 
 		editor.ui.componentFactory.add( 'link', locale => {

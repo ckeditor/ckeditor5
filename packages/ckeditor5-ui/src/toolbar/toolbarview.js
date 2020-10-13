@@ -299,8 +299,7 @@ export default class ToolbarView extends View {
 				 * @error toolbarview-item-unavailable
 				 * @param {String} name The name of the component.
 				 */
-				console.warn( attachLinkToDocumentation(
-					'toolbarview-item-unavailable: The requested toolbar item is unavailable.' ), { name } );
+				console.warn( attachLinkToDocumentation( 'toolbarview-item-unavailable' ), { name } );
 			}
 		} ).filter( item => item !== undefined ) );
 	}
