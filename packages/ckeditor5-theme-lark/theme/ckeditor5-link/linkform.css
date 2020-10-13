@@ -98,6 +98,17 @@
 				border-right: 1px solid var(--ck-color-base-border);
 			}
 		}
+
+		&::after {
+			border-right: 1px solid var(--ck-color-base-border);
+			content: "";
+			width: 0;
+			position: absolute;
+			right: -1px;
+			top: var(--ck-spacing-small);
+			bottom: var(--ck-spacing-small);
+			z-index: 1;
+		}
 	}
 
 	/* Using additional `.ck` class for stronger CSS specificity than `.ck.ck-link-form > :not(:first-child)`. */
