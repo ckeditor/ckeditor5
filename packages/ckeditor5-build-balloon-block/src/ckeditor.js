@@ -25,7 +25,7 @@ import Italic from "@ckeditor/ckeditor5-basic-styles/src/italic";
 import Link from "@ckeditor/ckeditor5-link/src/link";
 import List from "@ckeditor/ckeditor5-list/src/list";
 import MediaEmbed from "@ckeditor/ckeditor5-media-embed/src/mediaembed";
-import MediaEmbedToolbar from "@ckeditor/ckeditor5-media-embed/src/mediaembedtoolbar";
+// import MediaEmbedToolbar from "@ckeditor/ckeditor5-media-embed/src/mediaembedtoolbar";
 import Paragraph from "@ckeditor/ckeditor5-paragraph/src/paragraph";
 import PasteFromOffice from "@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice";
 import Superscript from "@ckeditor/ckeditor5-basic-styles/src/superscript";
@@ -37,6 +37,7 @@ import UploadAdapter from "@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapte
 import WordCount from "@ckeditor/ckeditor5-word-count/src/wordcount";
 
 import "../theme/theme.css";
+import "../theme/custom.css";
 
 export default class BalloonEditor extends BalloonEditorBase {}
 
