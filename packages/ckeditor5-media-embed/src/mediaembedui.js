@@ -54,6 +54,12 @@ export default class MediaEmbedUI extends Plugin {
 		} );
 	}
 
+	/**
+	 * @private
+	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
+	 * @param {module:ui/view~View} form
+	 * @param {module:media-embed/mediaembedcommand~MediaEmbedCommand} command
+	 */
 	_setUpDropdown( dropdown, form, command ) {
 		const editor = this.editor;
 		const t = editor.t;
@@ -98,6 +104,12 @@ export default class MediaEmbedUI extends Plugin {
 		}
 	}
 
+	/**
+	 * @private
+	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
+	 * @param {module:ui/view~View} form
+	 * @param {module:media-embed/mediaembedcommand~MediaEmbedCommand} command
+	 */
 	_setUpForm( dropdown, form, command ) {
 		form.delegate( 'submit', 'cancel' ).to( dropdown );
 		form.urlInputView.bind( 'value' ).to( command, 'value' );
