@@ -61,6 +61,12 @@ ClassicEditor
 
 From now on, the the "Remove Format" button should also remove links in the content. {@link module:engine/model/schema~Schema#setAttributeProperties Learn more about attribute properties.}
 
+## Related features
+
+There are more CKEditor 5 features that can help you control your content:
+* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+
 ## Installation
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-remove-format`](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format) package:

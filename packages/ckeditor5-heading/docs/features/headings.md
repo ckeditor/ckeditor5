@@ -109,6 +109,14 @@ ClassicEditor
 
 {@snippet features/custom-heading-elements}
 
+## Related features
+
+There are more CKEditor 5 features that can help you control your content:
+* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
+* {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
+
+
 ## Installation
 
 <info-box info>

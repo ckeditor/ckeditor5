@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-basic-styles-source}
 
-The {@link api/basic-styles basic styles} package provides text formatting features such as bold, italic, underline, strikethrough, subscript, superscript, and code.
+The {@link api/basic-styles basic styles} package provides text essential formatting features such as bold, italic, underline, strikethrough, subscript, superscript, and code. Thi set allows you to start editing right away with all the most used formatting styles inevitable for content creation. Coupled with more formatting features, these serve as a base for any WYSIWYG editor tool set.
 
 <info-box info>
 	All basic text styles can be removed with the {@link features/remove-format remove format} feature.
@@ -59,7 +59,18 @@ CKEditor 5 allows for typing both at inner and outer boundaries of code to make 
 
 {@img assets/img/typing-after-code.gif 770 The animation showing typing after the code element in CKEditor 5 rich text editor.}
 
-## Installation
+## Related features
+
+* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+* {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered or justified.
+* {@link features/headings Headings} &ndash; Divide your content into sections.
+* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
+
+And be sure to get familiar with these, too:
+* {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
+* {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of content.
+
+## Installations
 
 To add the basic styles features to your editor install the [`@ckeditor/ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package:
 

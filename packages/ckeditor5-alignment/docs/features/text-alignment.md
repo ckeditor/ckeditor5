@@ -54,6 +54,13 @@ ClassicEditor
 
 {@snippet features/custom-text-alignment-toolbar}
 
+## Related features
+
+There are more CKEditor 5 features that can help you control your content:
+* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/headings Headings} &ndash; Divide your content into sections.
+* {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
+
 ## Installation
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-alignment`](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment) package:

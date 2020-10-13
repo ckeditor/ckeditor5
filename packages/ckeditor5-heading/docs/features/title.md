@@ -38,6 +38,15 @@ ClassicEditor
     .catch( ... );
 ```
 
+## Related features
+
+There are more CKEditor 5 features that can help you control your content:
+* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
+* {@link features/headings Headings} &ndash; Divide your content into sections.
+
+
+
 ## Installation
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-heading`](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading) package:

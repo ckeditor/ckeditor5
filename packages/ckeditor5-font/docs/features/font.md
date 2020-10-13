@@ -335,6 +335,15 @@ ClassicEditor
 	.catch( ... );
 ```
 
+## Related features
+
+There are more CKEditor 5 features that can help you control your content:
+* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered or justified.
+* {@link features/headings Headings} &ndash; Divide your content into sections.
+* {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of content.
+* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
+
 ## Installation
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-font`](https://www.npmjs.com/package/@ckeditor/ckeditor5-font) package:
