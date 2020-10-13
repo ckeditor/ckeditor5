@@ -18,7 +18,7 @@ Other than that, we focused on bug fixes and stability improvements. Some highli
 
 Please note that there are some **major breaking changes**. Be sure to review them before upgrading.
 
-<!-- TODO: Add a link to the blog post. -->
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v23.0.0-with-pagination-feature-list-styles-and-improved-image-upload/
 
 ### Collaboration features
 
