@@ -16,6 +16,12 @@ Select the content you want to clean up and press the "Remove Format" button in 
 
 {@snippet features/remove-format}
 
+## Related features
+
+There are more CKEditor 5 features that can help you format your content:
+* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+
 ## Configuring the remove format feature
 
 This feature has no integration–level configuration. Once enabled, it works out–of–the–box with all {@link features/index core editor features}.
@@ -60,12 +66,6 @@ ClassicEditor
 ```
 
 From now on, the the "Remove Format" button should also remove links in the content. {@link module:engine/model/schema~Schema#setAttributeProperties Learn more about attribute properties.}
-
-## Related features
-
-There are more CKEditor 5 features that can help you control your content:
-* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
-* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
 
 ## Installation
 

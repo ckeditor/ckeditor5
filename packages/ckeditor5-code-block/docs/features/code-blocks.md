@@ -16,6 +16,10 @@ The {@link module:code-block/codeblock~CodeBlock} feature allows inserting and e
 
 {@snippet features/code-block}
 
+Here are some features that you may find helpfully similar:
+* {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
+* {@link features/indent Block indentation feature} &ndash; Allows you to set indentation for text blocks such as paragraphs or lists.
+
 ## Configuring code block languages
 
 Each code block can be assigned a programming language. The language of the code block is represented as a CSS class of the `<code>` element, both when editing and in the editor data:

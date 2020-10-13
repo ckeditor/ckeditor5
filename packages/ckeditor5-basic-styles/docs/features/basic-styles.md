@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-basic-styles-source}
 
-The {@link api/basic-styles basic styles} package provides text essential formatting features such as bold, italic, underline, strikethrough, subscript, superscript, and code. Thi set allows you to start editing right away with all the most used formatting styles inevitable for content creation. Coupled with more formatting features, these serve as a base for any WYSIWYG editor tool set.
+The {@link api/basic-styles basic styles} allows you to start editing right away with all the most used formatting styles inevitable for content creation. This package provides essential text formatting features such as bold, italic, underline, strikethrough, subscript, superscript, and code. Coupled with more [formatting features](#related-features), these serve as a base for any WYSIWYG editor tool set.
 
 <info-box info>
 	All basic text styles can be removed with the {@link features/remove-format remove format} feature.
@@ -14,6 +14,19 @@ The {@link api/basic-styles basic styles} package provides text essential format
 ## Demo
 
 {@snippet features/basic-styles}
+
+## Related features
+
+Check out also these CKEditor 5 features to gain better control over your content style and format:
+* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+* {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered or justified.
+* {@link features/code-blocks Code block feature}  &ndash; Allows for insertion of various code listings, expanding the 'code' style greatly.
+* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
+
+And be sure to get familiar with these, too:
+* {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
+* {@link features/headings Headings} &ndash; Divide your content into sections.
+* {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of content.
 
 ## Available text styles
 
@@ -58,17 +71,6 @@ CKEditor 5 allows for typing both at inner and outer boundaries of code to make 
 **To type before or after a code element**, move the caret to its boundary, then press the Arrow key (<kbd>→</kbd> or <kbd>←</kbd>) once. The code is no longer highlighted and whatever text you type or formatting you apply will not be enclosed by the code element:
 
 {@img assets/img/typing-after-code.gif 770 The animation showing typing after the code element in CKEditor 5 rich text editor.}
-
-## Related features
-
-* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
-* {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered or justified.
-* {@link features/headings Headings} &ndash; Divide your content into sections.
-* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
-
-And be sure to get familiar with these, too:
-* {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
-* {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of content.
 
 ## Installations
 

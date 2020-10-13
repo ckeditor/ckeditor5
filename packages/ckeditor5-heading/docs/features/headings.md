@@ -26,6 +26,17 @@ By default, when your editor build does not include the title plugin, a `<h1>` e
 	You can read more about why the editor should not create `<h1>` elements for content headings in the [Headings section of Editor Recommendations](http://ckeditor.github.io/editor-recommendations/features/headings.html).
 </info-box>
 
+## Demo
+
+{@snippet features/custom-heading-levels}
+
+## Related features
+
+There are more CKEditor 5 features that can help you format your content:
+* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
+* {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
+
 ### Configuring heading levels
 
 It is, of course, possible to configure which heading levels the editor should support and how they should be named in the Headings dropdown. Use the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option to do so.
@@ -108,14 +119,6 @@ ClassicEditor
 ```
 
 {@snippet features/custom-heading-elements}
-
-## Related features
-
-There are more CKEditor 5 features that can help you control your content:
-* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
-* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
-* {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
-
 
 ## Installation
 

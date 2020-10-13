@@ -11,6 +11,16 @@ The {@link module:alignment/alignment~Alignment} feature enables support for tex
 
 {@snippet features/text-alignment}
 
+## Related features
+
+There are more CKEditor 5 features that can help you organize your content:
+* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/headings Headings} &ndash; Divide your content into sections.
+* {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
+* {@ features/indent Block indentation} &ndash; Organize your contents into clearly visually divided blocks, indent crucial paragraphs etc.
+* {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in the rich-text content.
+
+
 ## Configuring alignment options
 
 It is possible to configure which alignment options are available in the editor by setting the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option. You can choose from `'left'`, `'right'`, `'center'` and `'justify'`.
@@ -53,13 +63,6 @@ ClassicEditor
 ```
 
 {@snippet features/custom-text-alignment-toolbar}
-
-## Related features
-
-There are more CKEditor 5 features that can help you control your content:
-* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
-* {@link features/headings Headings} &ndash; Divide your content into sections.
-* {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
 
 ## Installation
 

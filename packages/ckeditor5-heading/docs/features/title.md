@@ -15,6 +15,13 @@ Use the editor below to create a document with clearly separated title and body 
 
 {@snippet features/title}
 
+## Related features
+
+There are more CKEditor 5 features that can help you control your document:
+* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
+* {@link features/headings Headings} &ndash; Divide your content into sections.
+
 ## Keyboard navigation
 
 The title plugin lets you move from the title to the body element using the <kbd>Tab</kbd> key, providing form-like experience. When the selection is at the beginning of the first body element, you can go back to the title element using <kbd>Shift</kbd>+<kbd>Tab</kbd>. You can also use <kbd>Enter</kbd> and <kbd>Backspace</kbd> keys to move the caret between the title and the body.
@@ -37,15 +44,6 @@ ClassicEditor
     .then( ... )
     .catch( ... );
 ```
-
-## Related features
-
-There are more CKEditor 5 features that can help you control your content:
-* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
-* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
-* {@link features/headings Headings} &ndash; Divide your content into sections.
-
-
 
 ## Installation
 
