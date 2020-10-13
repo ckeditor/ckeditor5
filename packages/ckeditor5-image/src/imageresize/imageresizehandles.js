@@ -114,7 +114,7 @@ export default class ImageResizeHandles extends Plugin {
 
 			if ( domEvent.target.isSameNode( handleHost ) ) {
 				editingView.change( writer => {
-					if ( editor.plugins.get( WidgetResize )._visibleResizer == resizer ) {
+					if ( editor.plugins.get( WidgetResize ).visibleResizer == resizer ) {
 						// Small optimization to redraw only a resizer that is visible/focused. Hidden resizers should remain
 						// unaffected. It also fixes https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-695949745.
 						resizer.redraw();
