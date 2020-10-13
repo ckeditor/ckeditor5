@@ -157,9 +157,9 @@ describe( 'Locale', () => {
 		it( 'should translate a message supporting plural forms', () => {
 			const t = locale.t;
 
-			expect( t( { string: 'bar', plural: '%0 bars' }, [ 1 ] ), 1 ).to.equal( 'bar_pl_0' );
-			expect( t( { string: 'bar', plural: '%0 bars' }, [ 2 ] ), 2 ).to.equal( '2 bar_pl_1' );
-			expect( t( { string: 'bar', plural: '%0 bars' }, [ 5 ] ), 3 ).to.equal( '5 bar_pl_2' );
+			expect( t( { string: 'bar', plural: '%0 bars' }, 1 ), 1 ).to.equal( 'bar_pl_0' );
+			expect( t( { string: 'bar', plural: '%0 bars' }, 2 ), 2 ).to.equal( '2 bar_pl_1' );
+			expect( t( { string: 'bar', plural: '%0 bars' }, 5 ), 3 ).to.equal( '5 bar_pl_2' );
 		} );
 
 		it( 'should translate a message supporting plural forms with a message id if it was passed', () => {
@@ -181,13 +181,13 @@ describe( 'Locale', () => {
 		it( 'should interpolate a message with provided values', () => {
 			const t = locale.t;
 
-			expect( t( '%0 - %0', [ 'foo' ] ) ).to.equal( 'foo - foo' );
+			expect( t( '%0 - %0', 'foo' ) ).to.equal( 'foo - foo' );
 			expect( t( '%1 - %0 - %2', [ 'a', 'b', 'c' ] ) ).to.equal( 'b - a - c' );
 
 			// Those test make sure that if %0 is really to be used, then it's going to work.
 			// It'd be a super rare case if one would need to use %0 and at the same time interpolate something.
 			expect( t( '%1 - %0 - %2' ) ).to.equal( '%1 - %0 - %2' );
-			expect( t( '%1 - %0 - %2', [ 'a' ] ) ).to.equal( '%1 - a - %2' );
+			expect( t( '%1 - %0 - %2', 'a' ) ).to.equal( '%1 - a - %2' );
 		} );
 
 		it( 'should interpolate a message with a provided value (shorthand version)', () => {
