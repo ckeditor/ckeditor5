@@ -45,6 +45,7 @@ export default class ImageResizeHandles extends Plugin {
 	}
 
 	/**
+	 * Attaches the listeners responsible for creating a resizer for each editor image.
 	 *
 	 * @private
 	 */
