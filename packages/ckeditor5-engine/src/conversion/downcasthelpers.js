@@ -59,6 +59,19 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			}
 	 *		} );
 	 *
+	 * The element-to-element conversion supports a reconversion mechanism. This is helpful in conversion to complex view structures where
+	 * multiple atomic element-to-element and attribute-to-attribute or attribute-to-element could be used. By specifying `triggerBy`
+	 * events you can trigger reconverting model to a full view tree structures at once.
+	 *
+	 *		editor.conversion.for( 'downcast' ).elementToElement( {
+	 *			model: 'complex',
+	 *			view: ( modelElement, conversionApi ) => createComplexViewFromModel( modelElement, conversionApi ),
+	 *			triggerBy: {
+	 *				attributes: [ 'foo', 'bar' ],
+	 *				children: [ 'slot' ]
+	 *			}
+	 *		} );
+	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
@@ -71,6 +84,9 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
 	 * that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
 	 * as parameters and returns a view container element.
+	 * @param {Object} [config.triggerBy] Re-conversion triggers. At least one trigger must be defined.
+	 * @param {Array.<String>} config.triggerBy.attributes Name of element's attributes which change will trigger element reconversion.
+	 * @param {Array.<String>} config.triggerBy.children Name of direct children that adding or removing will trigger element reconversion.
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	elementToElement( config ) {
@@ -1334,13 +1350,14 @@ function removeHighlight( highlightDescriptor ) {
 
 // Model element to view element conversion helper.
 //
-// See {@link ~DowncastHelpers#elementToElement `.elementToElement()` downcast helper} for examples.
+// See {@link ~DowncastHelpers#elementToElement `.elementToElement()` downcast helper} for examples and config params description.
 //
 // @param {Object} config Conversion configuration.
-// @param {String} config.model The name of the model element to convert.
-// @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
-// that takes the model element and {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}
-// as parameters and returns a view container element.
+// @param {String} config.model
+// @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view
+// @param {Object} [config.triggerBy]
+// @param {Array.<String>} [config.triggerBy.attributes]
+// @param {Array.<String>} [config.triggerBy.children]
 // @returns {Function} Conversion helper.
 function downcastElementToElement( config ) {
 	config = cloneDeep( config );
@@ -1349,6 +1366,21 @@ function downcastElementToElement( config ) {
 
 	return dispatcher => {
 		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
+
+		if ( config.triggerBy ) {
+			if ( config.triggerBy.attributes ) {
+				for ( const attributeKey of config.triggerBy.attributes ) {
+					dispatcher._mapReconversionTriggerEvent( config.model, `attribute:${ attributeKey }:${ config.model }` );
+				}
+			}
+
+			if ( config.triggerBy.children ) {
+				for ( const childName of config.triggerBy.children ) {
+					dispatcher._mapReconversionTriggerEvent( config.model, `insert:${ childName }` );
+					dispatcher._mapReconversionTriggerEvent( config.model, `remove:${ childName }` );
+				}
+			}
+		}
 	};
 }
 
