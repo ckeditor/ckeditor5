@@ -38,7 +38,7 @@ Use the editor below to see the list style plugin in action.
 
 These features also provide similar functionality:
 * {@link features/todo-lists To-do lists} &ndash; Create a list of interactive checkboxes with labels.
-* {@link features/indent Block indentation feature} &ndash; Set indentation for text blocks such as paragraphs or headings and lists.
+* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or headings and lists.
 
 ### Installation
 
