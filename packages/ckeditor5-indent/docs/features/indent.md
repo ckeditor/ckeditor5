@@ -20,7 +20,7 @@ The block indentation feature allows you to set indentation for text blocks such
 Here are some features that may aid structuring your content better:
 * {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
 * {@link features/headings Headings} &ndash; Divide your content into sections.
-* {@link features/code-blocks Code block feature} &ndash; Allows for insertion of various code listings.
+* {@link features/code-blocks Code block feature} &ndash; Insert longer, multiline code listings.
 * {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered or justified.
 
 ## Configuring the block indentation feature
