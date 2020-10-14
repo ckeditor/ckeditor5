@@ -34,8 +34,10 @@ By default, when your editor build does not include the title plugin, a `<h1>` e
 
 There are more CKEditor 5 features that can help you format your content:
 * {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
-* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 * {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
+* {@link features/indent Block indentation feature}  &ndash; Set indentation for text blocks such as paragraphs or lists.
+* {@link features/lists Lists}  &ndash; Organize your content better with ordered and unordered list you can style.
+* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 
 ## Configuration
 

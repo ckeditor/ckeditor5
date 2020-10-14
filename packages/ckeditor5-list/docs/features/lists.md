@@ -4,7 +4,7 @@ category: features
 
 # Lists
 
-The {@link module:list/list~List list} feature allows creating ordered (numbered) and unordered (bulleted) lists in the editor aimed at better structuring and presenting specific content such as enumerating elements, creating *tables of content* or {@link features/todo-lists to-do lists}.
+The {@link module:list/list~List list} feature allows creating ordered (numbered) and unordered (bulleted) lists. This allows for better structuring and presenting specific content such as enumerating elements, creating tables of content or {@link features/todo-lists to-do lists}.
 
 <info-box info>
 	The feature is enabled by default in all CKEditor 5 WYSIWYG editor builds.

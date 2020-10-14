@@ -17,8 +17,9 @@ The {@link module:code-block/codeblock~CodeBlock} feature allows inserting and e
 {@snippet features/code-block}
 
 Here are some features that you may find helpfully similar:
+* {@link features/basic-styles Basic text styles feature} &ndash; Use the `code` formatting command for short inline code chunks.
 * {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
-* {@link features/indent Block indentation feature} &ndash; Allows you to set indentation for text blocks such as paragraphs or lists.
+* {@link features/indent Block indentation feature} &ndash; Set indentation for text blocks such as paragraphs or lists.
 
 ## Configuring code block languages
 
