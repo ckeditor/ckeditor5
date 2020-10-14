@@ -21,6 +21,7 @@ Select the content you want to clean up and press the "Remove Format" button in 
 There are more CKEditor 5 features that can help you format your content:
 * {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
 * {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+* {@link features/text-alignment Text alignment} &ndash; Align your content left, align it right, center it or justify.
 
 ## Configuring the remove format feature
 
