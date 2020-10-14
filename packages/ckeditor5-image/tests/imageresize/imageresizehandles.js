@@ -30,13 +30,9 @@ import {
 } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
-import ImageLoadObserver from '../../src/image/imageloadobserver';
+import { IMAGE_SRC_FIXTURE, waitForAllImagesLoaded } from './_utils/utils';
 
 describe( 'ImageResizeHandles', () => {
-	// 100x50 black png image
-	const IMAGE_SRC_FIXTURE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +
-		'aM3g14MGNJMXKiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiJysRFNMgH0RpujAAAAAElFTkSuQmCC';
-
 	let widget, editor, view, viewDocument, editorElement;
 
 	beforeEach( () => {
@@ -443,33 +439,6 @@ describe( 'ImageResizeHandles', () => {
 			focusEditor( newEditor );
 
 			return newEditor;
-		} );
-	}
-
-	async function waitForAllImagesLoaded( editor ) {
-		// Returns a promise that waits for all the images in editor to be loaded.
-		// This is needed because resizers are created only after images are loaded.
-		const root = editor.model.document.getRoot();
-		const editingView = editor.editing.view;
-		const images = new Set();
-
-		for ( const curModel of root.getChildren() ) {
-			if ( curModel.is( 'element', 'image' ) ) {
-				const imageView = editor.editing.mapper.toViewElement( curModel );
-				images.add( editingView.domConverter.viewToDom( imageView ).querySelector( 'img' ) );
-			}
-		}
-
-		editingView.addObserver( ImageLoadObserver );
-
-		return new Promise( resolve => {
-			editingView.document.on( 'imageLoaded', ( evt, domEvent ) => {
-				images.delete( domEvent.target );
-
-				if ( images.size === 0 ) {
-					resolve();
-				}
-			} );
 		} );
 	}
 
