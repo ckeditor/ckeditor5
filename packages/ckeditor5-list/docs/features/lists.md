@@ -40,7 +40,7 @@ These features also provide similar functionality:
 * {@link features/todo-lists To-do lists} &ndash; Create a list of interactive checkboxes with labels.
 * {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or headings and lists.
 
-### Installation
+## Installation
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
 
