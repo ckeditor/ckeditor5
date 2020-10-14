@@ -62,10 +62,6 @@ export default class ImageResizeHandles extends Plugin {
 
 			const imageModel = mapper.toModelElement( widgetView );
 
-			if ( imageModel.name != 'image' ) {
-				return;
-			}
-
 			const resizer = editor.plugins
 				.get( WidgetResize )
 				.attachTo( {
