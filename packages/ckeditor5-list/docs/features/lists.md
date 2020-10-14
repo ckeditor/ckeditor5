@@ -4,7 +4,7 @@ category: features
 
 # Lists
 
-The {@link module:list/list~List list} feature allows creating ordered (numbered) and unordered (bulleted) lists in the editor.
+The {@link module:list/list~List list} feature allows creating ordered (numbered) and unordered (bulleted) lists. This allows for better structuring and presenting specific content such as enumerating elements, creating tables of content or {@link features/todo-lists to-do lists}.
 
 <info-box info>
 	The feature is enabled by default in all CKEditor 5 WYSIWYG editor builds.
@@ -33,6 +33,12 @@ The {@link module:list/liststyle~ListStyle list style} feature introduces some m
 Use the editor below to see the list style plugin in action.
 
 {@snippet features/lists-style}
+
+## Related features
+
+These features also provide similar functionality:
+* {@link features/todo-lists To-do lists} &ndash; Create a list of interactive checkboxes with labels.
+* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or headings and lists.
 
 ### Installation
 
@@ -67,10 +73,6 @@ ClassicEditor
 ## List indentation
 
 Refer to the {@link features/indent Indenting lists} section of the Block indentation feature guide.
-
-## To-do list
-
-You can read more about the feature in the {@link features/todo-lists To-do lists} feature guide.
 
 ## Common API
 

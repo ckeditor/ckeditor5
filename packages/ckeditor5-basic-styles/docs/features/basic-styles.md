@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-basic-styles-source}
 
-The {@link api/basic-styles basic styles} package provides text formatting features such as bold, italic, underline, strikethrough, subscript, superscript, and code.
+The {@link api/basic-styles basic styles} feature allows you to apply the most frequently used formatting indispensable for content creation. This package provides essential text styling features such as bold, italic, underline, strikethrough, subscript, superscript, and code. Coupled with more [formatting features](#related-features), these serve as a base for any WYSIWYG editor toolset.
 
 <info-box info>
 	All basic text styles can be removed with the {@link features/remove-format remove format} feature.
@@ -14,6 +14,15 @@ The {@link api/basic-styles basic styles} package provides text formatting featu
 ## Demo
 
 {@snippet features/basic-styles}
+
+## Related features
+
+Check out also these CKEditor 5 features to gain better control over your content style and format:
+* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+* {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered or justified.
+* {@link features/code-blocks Code blocks}  &ndash; Insert longer, multiline code listings, expanding the inline code style greatly.
+* {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of content.
+* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 
 ## Available text styles
 
