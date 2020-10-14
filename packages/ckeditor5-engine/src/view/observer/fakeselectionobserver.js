@@ -9,7 +9,7 @@
 
 import Observer from './observer';
 import ViewSelection from '../selection';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { keyCodes, isArrowKeyCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { debounce } from 'lodash-es';
 
 /**
@@ -49,7 +49,7 @@ export default class FakeSelectionObserver extends Observer {
 		document.on( 'keydown', ( eventInfo, data ) => {
 			const selection = document.selection;
 
-			if ( selection.isFake && _isArrowKeyCode( data.keyCode ) && this.isEnabled ) {
+			if ( selection.isFake && isArrowKeyCode( data.keyCode ) && this.isEnabled ) {
 				// Prevents default key down handling - no selection change will occur.
 				data.preventDefault();
 
@@ -110,16 +110,3 @@ export default class FakeSelectionObserver extends Observer {
 		this._fireSelectionChangeDoneDebounced( data );
 	}
 }
-
-// Checks if one of the arrow keys is pressed.
-//
-// @private
-// @param {Number} keyCode
-// @returns {Boolean}
-function _isArrowKeyCode( keyCode ) {
-	return keyCode == keyCodes.arrowright ||
-		keyCode == keyCodes.arrowleft ||
-		keyCode == keyCodes.arrowup ||
-		keyCode == keyCodes.arrowdown;
-}
-

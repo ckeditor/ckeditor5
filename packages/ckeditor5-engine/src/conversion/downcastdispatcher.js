@@ -283,7 +283,7 @@ export default class DowncastDispatcher {
 		const currentView = mapper.toViewElement( element );
 
 		// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
-		this.conversionApi.writer.remove( currentView );
+		writer.remove( currentView );
 
 		// Convert the element - without converting children.
 		this._convertInsertWithAttributes( {
@@ -597,11 +597,32 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Get changes without those that needs to be converted using {@link #reconvertElement} defined by a `triggerBy` configuration for
+	 * Returns differ changes together with added "reconvert" type changes for {@link #reconvertElement}. Those are defined by
+	 * a `triggerBy` configuration for
 	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
 	 *
+	 * This method will remove every mapped insert or remove change with a single "reconvert" changes.
+	 *
+	 * For instance: Having a `triggerBy` configuration defined for `<complex>` element that issues this element reconversion on
+	 * `foo` and `bar` attributes change, and a set of changes for this element:
+	 *
+	 *		const differChanges = [
+	 *			{ type: 'attribute', attributeKey: 'foo', ... },
+	 *			{ type: 'attribute', attributeKey: 'bar', ... },
+	 *			{ type: 'attribute', attributeKey: 'baz', ... }
+	 *		];
+	 *
+	 * This method will return:
+	 *
+	 *		const updatedChanges = [
+	 *			{ type: 'reconvert', element: complexElementInstance },
+	 *			{ type: 'attribute', attributeKey: 'baz', ... }
+	 *		];
+	 *
+	 * In the example above the `'baz'` attribute change will fire an {@link #event:attribute attribute event}
+	 *
 	 * @param {module:engine/model/differ~Differ} differ The differ object with buffered changes.
-	 * @returns {Array.<Object>}
+	 * @returns {Array.<Object>} Updated set of changes.
 	 * @private
 	 */
 	_mapChangesWithAutomaticReconversion( differ ) {
@@ -621,7 +642,7 @@ export default class DowncastDispatcher {
 				continue;
 			}
 
-			const element = entry.type === 'attribute' ? getNodeAfterPosition( position, positionParent, textNode ) : positionParent;
+			const element = entry.type === 'attribute' ? getNodeAfterPosition( position, positionParent, null ) : positionParent;
 
 			// Case of text node set directly in root. For now used only in tests but can be possible when enabled in paragraph-like roots.
 			// See: https://github.com/ckeditor/ckeditor5/issues/762.

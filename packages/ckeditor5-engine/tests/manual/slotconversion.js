@@ -202,11 +202,10 @@ function Box( editor ) {
 	editor.conversion.for( 'downcast' ).elementToElement( {
 		model: 'box',
 		view: downcastBox,
-		triggerBy: [
-			'attribute:meta:box',
-			'insert:boxField',
-			'remove:boxField'
-		]
+		triggerBy: {
+			attributes: [ 'meta' ],
+			children: [ 'boxField' ]
+		}
 	} );
 
 	addBoxMetaButton( editor, 'boxTitle', 'Box title', () => ( {
