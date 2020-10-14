@@ -30,6 +30,7 @@ import {
 } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
+import ImageLoadObserver from '../../src/image/imageloadobserver';
 
 describe( 'ImageResizeHandles', () => {
 	// 100x50 black png image
@@ -62,7 +63,7 @@ describe( 'ImageResizeHandles', () => {
 
 		const attachToSpy = sinon.spy( localEditor.plugins.get( WidgetResize ), 'attachTo' );
 
-		setData( localEditor.model, `[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+		await setModelAndWaitForImages( localEditor, `[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 		expect( attachToSpy.args[ 0 ][ 0 ] ).to.have.a.property( 'unit', '%' );
 
@@ -79,7 +80,7 @@ describe( 'ImageResizeHandles', () => {
 		it( 'uses the command on commit', async () => {
 			const spy = sinon.spy( editor.commands.get( 'imageResize' ), 'execute' );
 
-			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 			widget = viewDocument.getRoot().getChild( 1 );
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-left' );
 
@@ -92,7 +93,7 @@ describe( 'ImageResizeHandles', () => {
 		} );
 
 		it( 'disables the resizer if the command is disabled', async () => {
-			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			const resizer = getSelectedImageResizer( editor );
 
@@ -124,6 +125,8 @@ describe( 'ImageResizeHandles', () => {
 				editor.model.insertContent( writer.createElement( 'image', { src: IMAGE_SRC_FIXTURE } ) );
 			} );
 
+			await waitForAllImagesLoaded( editor );
+
 			const resizer = getSelectedImageResizer( editor );
 			const resizerWrapper = editor.ui.getEditableElement().querySelector( '.ck-widget__resizer' );
 
@@ -136,7 +139,8 @@ describe( 'ImageResizeHandles', () => {
 		beforeEach( async () => {
 			editor = await createEditor();
 
-			setData( editor.model, `<paragraph>foo</paragraph>[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			await setModelAndWaitForImages( editor,
+				`<paragraph>foo</paragraph>[<image imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
 		} );
@@ -178,13 +182,9 @@ describe( 'ImageResizeHandles', () => {
 		beforeEach( async () => {
 			editor = await createEditor();
 
-			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
-
-			const domWidget = getWidgetDomParts( editor, widget, 'bottom-right' ).widget;
-
-			viewDocument.fire( 'imageLoaded', { target: domWidget.querySelector( 'img' ) } );
 		} );
 
 		it( 'has correct border size after undo', async () => {
@@ -204,9 +204,9 @@ describe( 'ImageResizeHandles', () => {
 
 			// Toggle _visibleResizer to force synchronous redraw. Otherwise you'd need to wait ~200ms for
 			// throttled redraw to take place, making tests slower.
-			const visibleResizer = plugin._visibleResizer;
-			plugin._visibleResizer = null;
-			plugin._visibleResizer = visibleResizer;
+			for ( const [ , resizer ] of plugin._resizers.entries() ) {
+				resizer.redraw();
+			}
 
 			const resizerWrapper = document.querySelector( '.ck-widget__resizer' );
 			const shadowBoundingRect = resizerWrapper.getBoundingClientRect();
@@ -217,7 +217,8 @@ describe( 'ImageResizeHandles', () => {
 
 		it( 'doesn\'t show resizers when undoing to multiple images', async () => {
 			// Based on https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-695949745.
-			setData( editor.model, `[<image src="${ IMAGE_SRC_FIXTURE }"></image><image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			await setModelAndWaitForImages( editor,
+				`[<image src="${ IMAGE_SRC_FIXTURE }"></image><image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			const paragraph = editor.model.change( writer => {
 				return writer.createElement( 'paragraph' );
@@ -243,7 +244,7 @@ describe( 'ImageResizeHandles', () => {
 		it( 'works when resizing in a table', async () => {
 			editor = await createEditor();
 
-			setData( editor.model,
+			await setModelAndWaitForImages( editor,
 				'<table>' +
 					`<tableRow><tableCell>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]</tableCell></tableRow>` +
 				'</table>'
@@ -262,64 +263,6 @@ describe( 'ImageResizeHandles', () => {
 			} );
 
 			expect( model.getAttribute( 'width' ) ).to.equal( '60px' );
-		} );
-	} );
-
-	describe( 'image load detection', () => {
-		it( 'loading image is marked with a proper class', async () => {
-			editor = await createEditor();
-
-			setData( editor.model, `[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
-
-			const widget = viewDocument.getRoot().getChild( 0 );
-			const domWidget = getWidgetDomParts( editor, widget, 'bottom-right' ).widget;
-			const image = domWidget.querySelector( 'img' );
-
-			// Before image is loaded there should be the loading class.
-			expect( Array.from( widget.getClassNames() ) ).to.include( 'image_resizer_loading' );
-
-			viewDocument.fire( 'imageLoaded', { target: image } );
-
-			// Now class should be removed.
-			expect( Array.from( widget.getClassNames() ) ).to.not.include( 'image_resizer_loading' );
-		} );
-
-		it( 'loaded image has the loading class removed', async () => {
-			editor = await createEditor();
-
-			setData( editor.model, `[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
-
-			const widget = viewDocument.getRoot().getChild( 0 );
-			const domWidget = getWidgetDomParts( editor, widget, 'bottom-right' ).widget;
-			const image = domWidget.querySelector( 'img' );
-
-			viewDocument.fire( 'imageLoaded', { target: image } );
-
-			// Now the class should be removed.
-			expect( Array.from( widget.getClassNames() ) ).to.not.include( 'image_resizer_loading' );
-		} );
-
-		it( 'loading another image doesn\'t affect another', async () => {
-			editor = await createEditor();
-
-			setData( editor.model, `[<image src="${ IMAGE_SRC_FIXTURE }"></image><image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
-
-			const widgets = {
-				loading: viewDocument.getRoot().getChild( 0 ),
-				finished: viewDocument.getRoot().getChild( 1 )
-			};
-
-			const domWidgets = {
-				loading: getWidgetDomParts( editor, widgets.loading, 'bottom-right' ).widget,
-				finished: getWidgetDomParts( editor, widgets.finished, 'bottom-right' ).widget
-			};
-
-			// Marking other image as loaded.
-			const finishedImage = domWidgets.finished.querySelector( 'img' );
-			viewDocument.fire( 'imageLoaded', { target: finishedImage } );
-
-			// But the former is still considered as not loaded.
-			expect( Array.from( widgets.loading.getClassNames() ) ).to.include( 'image_resizer_loading' );
 		} );
 	} );
 
@@ -357,11 +300,13 @@ describe( 'ImageResizeHandles', () => {
 				</figure>`
 			);
 
+			await waitForAllImagesLoaded( editor );
+
 			widget = viewDocument.getRoot().getChild( 0 );
 			model = editor.model.document.getRoot().getChild( 0 );
 		} );
 
-		it( 'works with images containing srcset', () => {
+		it( 'works with images containing srcset', async () => {
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
 			const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-right' );
 			const finalPointerPosition = initialPosition.clone().moveBy( -20, -20 );
@@ -374,7 +319,7 @@ describe( 'ImageResizeHandles', () => {
 			expect( model.getAttribute( 'width' ) ).to.equal( '76px' );
 		} );
 
-		it( 'retains width after removing srcset', () => {
+		it( 'retains width after removing srcset', async () => {
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
 			const initialPosition = getHandleCenterPoint( domParts.widget, 'bottom-right' );
 			const finalPointerPosition = initialPosition.clone().moveBy( -16, -16 );
@@ -424,7 +369,7 @@ describe( 'ImageResizeHandles', () => {
 				}
 			} );
 
-			setData( editor.model, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+			await setModelAndWaitForImages( editor, `<paragraph>foo</paragraph>[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
 
 			widget = viewDocument.getRoot().getChild( 1 );
 
@@ -499,5 +444,37 @@ describe( 'ImageResizeHandles', () => {
 
 			return newEditor;
 		} );
+	}
+
+	async function waitForAllImagesLoaded( editor ) {
+		// Returns a promise that waits for all the images in editor to be loaded.
+		// This is needed because resizers are created only after images are loaded.
+		const root = editor.model.document.getRoot();
+		const editingView = editor.editing.view;
+		const images = new Set();
+
+		for ( const curModel of root.getChildren() ) {
+			if ( curModel.is( 'element', 'image' ) ) {
+				const imageView = editor.editing.mapper.toViewElement( curModel );
+				images.add( editingView.domConverter.viewToDom( imageView ).querySelector( 'img' ) );
+			}
+		}
+
+		editingView.addObserver( ImageLoadObserver );
+
+		return new Promise( resolve => {
+			editingView.document.on( 'imageLoaded', ( evt, domEvent ) => {
+				images.delete( domEvent.target );
+
+				if ( images.size === 0 ) {
+					resolve();
+				}
+			} );
+		} );
+	}
+
+	async function setModelAndWaitForImages( editor, data ) {
+		setData( editor.model, data );
+		return waitForAllImagesLoaded( editor );
 	}
 } );
