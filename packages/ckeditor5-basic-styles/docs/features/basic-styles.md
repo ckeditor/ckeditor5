@@ -20,7 +20,7 @@ The {@link api/basic-styles basic styles} feature allows you to apply the most f
 Check out also these CKEditor 5 features to gain better control over your content style and format:
 * {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
 * {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered or justified.
-* {@link features/code-blocks Code block feature}  &ndash; Allows for insertion of longer, multiline code listings, expanding the inline code style greatly.
+* {@link features/code-blocks Code blocks}  &ndash; Allow for insertion of longer, multiline code listings, expanding the inline code style greatly.
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 * {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of content.
 
