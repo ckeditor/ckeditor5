@@ -27,7 +27,7 @@ export const DOCUMENTATION_URL =
  * stop editor initialization (like missing upload adapter, wrong name of a toolbar component) we use
  * {@link module:utils/ckeditorerror~logWarning `logWarning()`} and
  * {@link module:utils/ckeditorerror~logError `logError()`}
- * to improve developers experience and let them see the working editor as soon as possible.
+ * to improve developers experience and let them see the a working editor as soon as possible.
  *
  *		/**
  *		 * Error thrown when a plugin cannot be loaded due to JavaScript errors, lack of plugins with a given name, etc.
@@ -91,11 +91,12 @@ export default class CKEditorError extends Error {
 	}
 
 	/**
-	 * A utility that ensures the the thrown error is a {@link module:utils/ckeditorerror~CKEditorError} one.
+	 * A utility that ensures that the thrown error is a {@link module:utils/ckeditorerror~CKEditorError} one.
 	 * It is useful when combined with the {@link module:watchdog/watchdog~Watchdog} feature, which can restart the editor in case
 	 * of a {@link module:utils/ckeditorerror~CKEditorError} error.
 	 *
-	 * @param {Error} err An error.
+	 * @static
+	 * @param {Error} err The error to rethrow.
 	 * @param {Object} context An object connected through properties with the editor instance. This context will be used
 	 * by the watchdog to verify which editor should be restarted.
 	 */
@@ -124,8 +125,8 @@ export default class CKEditorError extends Error {
 }
 
 /**
- * Logs a warning to a console with proper message formatting and adds the link to the documentation.
- * Use whenever you want to log a warning on the console.
+ * Logs a warning to the console with a properly formatted message and adds a link to the documentation.
+ * Use whenever you want to log a warning to the console.
  *
  *		/**
  *		 * There was a problem processing the configuration of the toolbar. The item with the given
@@ -136,6 +137,9 @@ export default class CKEditorError extends Error {
  *		 * /
  *		logWarning( 'toolbarview-item-unavailable', { name } );
  *
+ * See also {@link module:utils/ckeditorerror~CKEditorError} for an explanation when to throw an error and when to log
+ * a warning or an error to the console.
+ *
  * @param {String} errorName Error name to be logged.
  * @param {Object} [data] Additional data to be logged.
  * @returns {String}
@@ -145,8 +149,8 @@ export function logWarning( errorName, data ) {
 }
 
 /**
- * Logs an error to a console with proper message formatting and adds the link to the documentation.
- * Use whenever you want to log a error on the console.
+ * Logs an error to the console with properly formatted message and adds a link to the documentation.
+ * Use whenever you want to log a error to the console.
  *
  *		/**
  *		 * There was a problem processing the configuration of the toolbar. The item with the given
@@ -157,7 +161,9 @@ export function logWarning( errorName, data ) {
  *		 * /
  *		 logError( 'toolbarview-item-unavailable', { name } );
  *
- * *Note*: In most cases logging a warning using {@link module:utils/ckeditorerror~logWarning} is enough.
+ * **Note**: In most cases logging a warning using {@link module:utils/ckeditorerror~logWarning} is enough.
+ *
+ * See also {@link module:utils/ckeditorerror~CKEditorError} for an explanation when to use each method.
  *
  * @param {String} errorName Error name to be logged.
  * @param {Object} [data] Additional data to be logged.
