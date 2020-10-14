@@ -433,7 +433,7 @@ export default class Differ {
 					i++;
 				} else if ( action === 'r' ) {
 					// Generate diff item for this element and insert it into the diff set.
-					diffSet.push( this._getRemoveDiff( element, i, snapshotChildren[ j ].name ) );
+					diffSet.push( this._getRemoveDiff( element, i, snapshotChildren[ j ] ) );
 
 					j++;
 				} else if ( action === 'a' ) {
@@ -914,11 +914,12 @@ export default class Differ {
 	 * @param {String} name The name of the removed element or `'$text'` for a character.
 	 * @returns {Object} The diff item.
 	 */
-	_getRemoveDiff( parent, offset, name ) {
+	_getRemoveDiff( parent, offset, child ) {
 		return {
 			type: 'remove',
 			position: Position._createAt( parent, offset ),
-			name,
+			name: child.name,
+			item: child.child,
 			length: 1,
 			changeCount: this._changeCount++
 		};
@@ -1049,7 +1050,8 @@ function _getChildrenSnapshot( children ) {
 		} else {
 			snapshot.push( {
 				name: child.name,
-				attributes: new Map( child.getAttributes() )
+				attributes: new Map( child.getAttributes() ),
+				child
 			} );
 		}
 	}

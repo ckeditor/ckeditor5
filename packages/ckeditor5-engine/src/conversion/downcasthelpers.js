@@ -545,13 +545,25 @@ export function insertText() {
  */
 export function remove() {
 	return ( evt, data, conversionApi ) => {
-		// Find view range start position by mapping model position at which the remove happened.
-		const viewStart = conversionApi.mapper.toViewPosition( data.position );
+		if ( !conversionApi.consumable.consume( data.item, 'remove' ) ) {
+			return;
+		}
 
-		const modelEnd = data.position.getShiftedBy( data.length );
-		const viewEnd = conversionApi.mapper.toViewPosition( modelEnd, { isPhantom: true } );
+		let viewRange;
 
-		const viewRange = conversionApi.writer.createRange( viewStart, viewEnd );
+		const viewItem = conversionApi.mapper.toViewElement( data.item );
+
+		if ( !viewItem ) {
+			// Find view range start position by mapping model position at which the remove happened.
+			const viewStart = conversionApi.mapper.toViewPosition( data.position );
+
+			const modelEnd = data.position.getShiftedBy( data.length );
+			const viewEnd = conversionApi.mapper.toViewPosition( modelEnd, { isPhantom: true } );
+
+			viewRange = conversionApi.writer.createRange( viewStart, viewEnd );
+		} else {
+			viewRange = conversionApi.writer.createRangeOn( viewItem );
+		}
 
 		// Trim the range to remove in case some UI elements are on the view range boundaries.
 		const removed = conversionApi.writer.remove( viewRange.getTrimmed() );

@@ -209,12 +209,23 @@ export function downcastTableHeadingColumnsChange() {
 export function downcastRemoveRow() {
 	return dispatcher => dispatcher.on( 'remove:tableRow', ( evt, data, conversionApi ) => {
 		// Prevent default remove converter.
-		evt.stop();
+		// evt.stop();
+
+		const removedRow = data.item;
+
+		const removedView = conversionApi.mapper.toViewElement( removedRow );
+
+		if ( !removedView ) {
+			return;
+		}
+
+		conversionApi.consumable.consume( removedRow, 'remove' );
+
 		const viewWriter = conversionApi.writer;
 		const mapper = conversionApi.mapper;
 
-		const viewStart = mapper.toViewPosition( data.position ).getLastMatchingPosition( value => !value.item.is( 'element', 'tr' ) );
-		const viewItem = viewStart.nodeAfter;
+		// const viewStart = mapper.toViewPosition( data.position ).getLastMatchingPosition( value => !value.item.is( 'element', 'tr' ) );
+		const viewItem = removedView;
 		const tableSection = viewItem.parent;
 		const viewTable = tableSection.parent;
 

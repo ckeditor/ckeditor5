@@ -155,7 +155,7 @@ export default class DowncastDispatcher {
 			if ( entry.type === 'insert' ) {
 				this.convertInsert( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
 			} else if ( entry.type === 'remove' ) {
-				this.convertRemove( entry.position, entry.length, entry.name, writer );
+				this.convertRemove( entry.position, entry.length, entry.name, entry.item, writer );
 			} else if ( entry.type === 'reconvert' ) {
 				this.reconvertElement( entry.element, writer );
 			} else {
@@ -210,10 +210,12 @@ export default class DowncastDispatcher {
 	 * @param {String} name Name of removed node.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
 	 */
-	convertRemove( position, length, name, writer ) {
+	convertRemove( position, length, name, item, writer ) {
 		this.conversionApi.writer = writer;
 
-		this.fire( 'remove:' + name, { position, length }, this.conversionApi );
+		this._createRemoveConsumable( item );
+
+		this.fire( 'remove:' + name, { position, length, item }, this.conversionApi );
 
 		this._clearConversionApi();
 	}
@@ -296,18 +298,17 @@ export default class DowncastDispatcher {
 		// Iterate over children of reconverted element in order to...
 		for ( const value of Range._createIn( element ) ) {
 			const { item } = value;
-
 			const view = elementOrTextProxyToView( item, mapper );
 
 			// ...either bring back previously converted view...
 			if ( view ) {
-				// Do not move views that are already in converted element - those might be created by the main element converter in case
 				// when main element converts also its direct children.
 				if ( view.root !== convertedViewElement.root ) {
 					writer.move(
 						writer.createRangeOn( view ),
 						mapper.toViewPosition( Position._createBefore( item ) )
 					);
+					// Do not move views that are already in converted element - those might be created by the main element converter
 				}
 			}
 			// ... or by converting newly inserted elements.
@@ -496,6 +497,15 @@ export default class DowncastDispatcher {
 				consumable.add( item, 'attribute:' + key );
 			}
 		}
+
+		return consumable;
+	}
+
+	_createRemoveConsumable( item ) {
+		// const consumable = new Consumable();
+		const consumable = this.conversionApi.consumable;
+
+		consumable.add( item, 'remove' );
 
 		return consumable;
 	}
