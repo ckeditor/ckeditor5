@@ -22,6 +22,8 @@ The software that makes the image upload possible is called an **upload adapter*
 * [**Official upload adapters**](#official-upload-adapters) &ndash; There are several features providing upload adapters developed and maintained by the CKEditor team. Pick the best one for your integration and let it handle the image upload in your project.
 * [**Custom upload adapters**](#implementing-your-own-upload-adapter) &ndash; Create your own upload adapter from scratch using the open API architecture of CKEditor 5.
 
+Read our comprehensive blog post about [Managing images with CKEditor 5](https://ckeditor.com/blog/managing-images-with-ckeditor-5/) to find out more details about image upload and management and to compare the available options.
+
 <info-box>
 	If you want to get a better look under the hood and learn more about the upload process, you can check out the {@link framework/guides/deep-dive/upload-adapter "Custom image upload adapter" deep dive guide} covering that topic.
 </info-box>
@@ -85,7 +87,3 @@ The {@link features/base64-upload-adapter Base64 upload feature} converts images
 CKEditor 5 provides an open API that allows you to develop your own upload adapters. Tailored to your project, a custom adapter will allow you to take the **full control** over the process of sending the files to the server as well as passing the response from the server (e.g. the URL to the saved file) back to the WYSIWYG editor.
 
 {@link framework/guides/deep-dive/upload-adapter **Learn how to develop your own upload adapter for CKEditor 5**}.
-
-## Quick feature overview
-
-Read our comprehensive blog post about [Managing images with CKEditor 5](https://ckeditor.com/blog/managing-images-with-ckeditor-5/) to find out more details about image upload and management and to compare the available options.
