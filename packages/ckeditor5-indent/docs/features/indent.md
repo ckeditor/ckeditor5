@@ -20,11 +20,7 @@ The block indentation feature allows you to set indentation for text blocks such
 Here are some CKEditor 5 features that may aid structuring your content better:
 * {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
 * {@link features/headings Headings} &ndash; Divide your content into sections.
-<<<<<<< HEAD
-* {@link features/code-blocks Code block feature} &ndash; Insert longer, multiline code listings.
-=======
 * {@link features/code-blocks Code block} &ndash; Insert longer, multiline code listings.
->>>>>>> Docs: related features tier 3.9. [skip ci]
 * {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered or justified.
 
 ## Configuring the block indentation feature
