@@ -262,6 +262,23 @@ describe( 'ImageResizeHandles', () => {
 		} );
 	} );
 
+	it( 'doesn\'t create multiple resizers for a single image widget', async () => {
+		// https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-708302992
+		editor = await createEditor();
+		await setModelAndWaitForImages( editor, `[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+		widget = viewDocument.getRoot().getChild( 0 );
+
+		const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
+		const alternativeImageFixture =
+			'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+
+		// Change the image so that load event triggers for the same img element again.
+		domParts.widget.querySelector( 'img' ).src = alternativeImageFixture;
+		await waitForAllImagesLoaded( editor );
+
+		expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).to.equal( 1 );
+	} );
+
 	describe( 'srcset integration', () => {
 		// The image is 96x96 pixels.
 		const imageBaseUrl = '/assets/sample.png';

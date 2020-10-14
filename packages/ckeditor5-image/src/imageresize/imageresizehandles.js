@@ -58,11 +58,19 @@ export default class ImageResizeHandles extends Plugin {
 		editingView.document.on( 'imageLoaded', ( evt, domEvent ) => {
 			const imageView = editor.editing.view.domConverter.domToView( domEvent.target );
 			const widgetView = imageView.findAncestor( 'figure' );
-			const mapper = editor.editing.mapper;
+			let resizer = this.editor.plugins.get( WidgetResize )._getResizerByViewElement( widgetView );
 
+			if ( resizer ) {
+				// There are rare cases when image will be triggered multiple times for the same widget, e.g. when
+				// image's src was changed after upload (https://github.com/ckeditor/ckeditor5/pull/8108#issuecomment-708302992).
+				resizer.redraw();
+				return;
+			}
+
+			const mapper = editor.editing.mapper;
 			const imageModel = mapper.toModelElement( widgetView );
 
-			const resizer = editor.plugins
+			resizer = editor.plugins
 				.get( WidgetResize )
 				.attachTo( {
 					unit: editor.config.get( 'image.resizeUnit' ),
