@@ -16,6 +16,8 @@ The {@link module:code-block/codeblock~CodeBlock} feature allows inserting and e
 
 {@snippet features/code-block}
 
+## Related features
+
 Here are some features that you may find helpfully similar:
 * {@link features/basic-styles Basic text styles feature} &ndash; Use the `code` formatting command for short inline code chunks.
 * {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
