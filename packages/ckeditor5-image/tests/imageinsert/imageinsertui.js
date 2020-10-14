@@ -278,6 +278,18 @@ describe( 'ImageInsertUI', () => {
 				sinon.assert.notCalled( commandSpy );
 				sinon.assert.calledOnce( cancelSpy );
 			} );
+
+			it( 'should focus on "insert image via URL" input after opening', () => {
+				let spy;
+
+				dropdown.on( 'change:isOpen', () => {
+					const first = dropdown.panelView.children.first;
+					spy = sinon.spy( first, 'focus' );
+				}, { priority: 'highest' } );
+
+				dropdown.buttonView.fire( 'open' );
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 
 		it( 'should inject integrations to the dropdown panel view from the config', async () => {

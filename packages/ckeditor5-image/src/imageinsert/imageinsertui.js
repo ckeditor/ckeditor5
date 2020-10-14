@@ -113,7 +113,7 @@ export default class ImageInsertUI extends Plugin {
 					insertImageViaUrlForm.label = t( 'Insert image via URL' );
 				}
 			}
-		} );
+		}, { priority: 'low' } );
 
 		imageInsertView.delegate( 'submit', 'cancel' ).to( dropdownView );
 		this.delegate( 'cancel' ).to( dropdownView );
