@@ -83,18 +83,26 @@ export default class InputTextView extends View {
 		this.focusTracker = new FocusTracker();
 
 		/**
-		 * TODO
+		 * An observable flag set to `true` when the input is currently focused by the user.
+		 * `false` otherwise.
 		 *
+		 * @readonly
+		 * @observable
 		 * @member {Boolean} #isFocused
+		 * @default false
 		 */
 		this.bind( 'isFocused' ).to( this.focusTracker );
 
 		/**
-		 * TODO
+		 * An observable flag set to `true` when the input contains no text, i.e.
+		 * when {@link #value} is `''`, `null`, or `false`.
 		 *
+		 * @readonly
+		 * @observable
 		 * @member {Boolean} #isEmpty
+		 * @default true
 		 */
-		this.set( 'isEmpty', false );
+		this.set( 'isEmpty', true );
 
 		const bind = this.bindTemplate;
 
@@ -117,10 +125,7 @@ export default class InputTextView extends View {
 				'aria-describedby': bind.to( 'ariaDescribedById' )
 			},
 			on: {
-				input: bind.to( 'input' ),
-				change: bind.to( () => {
-					this.isEmpty = isInputElementEmpty( this.element );
-				} )
+				input: bind.to( 'input' )
 			}
 		} );
 
@@ -140,22 +145,14 @@ export default class InputTextView extends View {
 
 		this.focusTracker.add( this.element );
 
-		const setValue = value => {
-			this.element.value = ( !value && value !== 0 ) ? '' : value;
-		};
-
-		const setIsEmpty = () => {
-			this.isEmpty = isInputElementEmpty( this.element );
-		};
-
-		setValue( this.value );
-		setIsEmpty();
+		this._setDomElementValue( this.value );
+		this._updateIsEmpty();
 
 		// Bind `this.value` to the DOM element's value.
 		// We cannot use `value` DOM attribute because removing it on Edge does not clear the DOM element's value property.
 		this.on( 'change:value', ( evt, name, value ) => {
-			setValue( value );
-			setIsEmpty();
+			this._setDomElementValue( value );
+			this._updateIsEmpty();
 		} );
 	}
 
@@ -172,11 +169,26 @@ export default class InputTextView extends View {
 	focus() {
 		this.element.focus();
 	}
+
+	/**
+	 * Updates the {@link #isEmpty} property value on demand.
+	 *
+	 * @private
+	 */
+	_updateIsEmpty() {
+		this.isEmpty = isInputElementEmpty( this.element );
+	}
+
+	/**
+	 * Sets the `value` property of the {@link #element DOM element} on demand.
+	 *
+	 * @private
+	 */
+	_setDomElementValue( value ) {
+		this.element.value = ( !value && value !== 0 ) ? '' : value;
+	}
 }
 
-/**
- * TODO
- */
-function isInputElementEmpty( element ) {
-	return element.value === '';
+function isInputElementEmpty( domElement ) {
+	return !domElement.value;
 }
