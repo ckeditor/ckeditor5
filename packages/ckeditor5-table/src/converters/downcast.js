@@ -37,95 +37,23 @@ export function downcastInsertTable( options = {} ) {
 		const tableElement = conversionApi.writer.createContainerElement( 'table' );
 		conversionApi.writer.insert( conversionApi.writer.createPositionAt( figureElement, 0 ), tableElement );
 
-		let tableWidget;
-
 		if ( asWidget ) {
-			tableWidget = toTableWidget( figureElement, conversionApi.writer );
+			toTableWidget( figureElement, conversionApi.writer );
 		}
-
-		const tableWalker = new TableWalker( table );
 
 		const tableAttributes = {
 			headingRows: table.getAttribute( 'headingRows' ) || 0,
 			headingColumns: table.getAttribute( 'headingColumns' ) || 0
 		};
-
-		// Cache for created table rows.
-		const viewRows = new Map();
-
-		for ( const tableSlot of tableWalker ) {
-			const { row, cell } = tableSlot;
-
-			const tableRow = table.getChild( row );
-			const trElement = viewRows.get( row ) || createTr( tableElement, tableRow, row, tableAttributes, conversionApi );
-			viewRows.set( row, trElement );
-
-			// Consume table cell - it will be always consumed as we convert whole table at once.
-			conversionApi.consumable.consume( cell, 'insert' );
-
-			const insertPosition = conversionApi.writer.createPositionAt( trElement, 'end' );
-
-			createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, options );
-		}
 
 		// Insert empty TR elements if there are any rows without anchored cells. Since the model is always normalized
 		// this can happen only in the document fragment that only part of the table is down-casted.
 		for ( const tableRow of table.getChildren() ) {
-			const rowIndex = tableRow.index;
-
-			if ( !viewRows.has( rowIndex ) ) {
-				viewRows.set( rowIndex, createTr( tableElement, tableRow, rowIndex, tableAttributes, conversionApi ) );
-			}
+			createTr( tableElement, tableRow, tableRow.index, tableAttributes, conversionApi );
 		}
 
-		return asWidget ? tableWidget : figureElement;
+		return figureElement;
 	};
-}
-
-/**
- * Model row element to view `<tr>` element conversion helper.
- *
- * This conversion helper creates the whole `<tr>` element with child elements.
- *
- * @returns {Function} Conversion helper.
- */
-export function downcastInsertRow() {
-	return dispatcher => dispatcher.on( 'insert:tableRow', ( evt, data, conversionApi ) => {
-		const tableRow = data.item;
-
-		if ( !conversionApi.consumable.consume( tableRow, 'insert' ) ) {
-			return;
-		}
-
-		const table = tableRow.parent;
-
-		const figureElement = conversionApi.mapper.toViewElement( table );
-		const tableElement = getViewTable( figureElement );
-
-		const row = table.getChildIndex( tableRow );
-
-		const tableWalker = new TableWalker( table, { row } );
-
-		const tableAttributes = {
-			headingRows: table.getAttribute( 'headingRows' ) || 0,
-			headingColumns: table.getAttribute( 'headingColumns' ) || 0
-		};
-
-		// Cache for created table rows.
-		const viewRows = new Map();
-
-		for ( const tableSlot of tableWalker ) {
-			const trElement = viewRows.get( row ) || createTr( tableElement, tableRow, row, tableAttributes, conversionApi );
-			viewRows.set( row, trElement );
-
-			// Consume table cell - it will be always consumed as we convert whole row at once.
-			conversionApi.consumable.consume( tableSlot.cell, 'insert' );
-
-			const insertPosition = conversionApi.writer.createPositionAt( trElement, 'end' );
-
-			createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, { asWidget: true } );
-		}
-	} );
 }
 
 /**
@@ -136,7 +64,7 @@ export function downcastInsertRow() {
  *
  * @returns {Function} Conversion helper.
  */
-export function downcastInsertCell() {
+export function downcastInsertCell( options ) {
 	return dispatcher => dispatcher.on( 'insert:tableCell', ( evt, data, conversionApi ) => {
 		const tableCell = data.item;
 
@@ -161,7 +89,7 @@ export function downcastInsertCell() {
 				const trElement = conversionApi.mapper.toViewElement( tableRow );
 				const insertPosition = conversionApi.writer.createPositionAt( trElement, tableRow.getChildIndex( tableCell ) );
 
-				createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, { asWidget: true } );
+				createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, options );
 
 				// No need to iterate further.
 				return;
@@ -199,48 +127,6 @@ export function downcastTableHeadingColumnsChange() {
 			renameViewTableCellIfRequired( tableSlot, tableAttributes, conversionApi );
 		}
 	} );
-}
-
-/**
- * Conversion helper that acts on a removed row.
- *
- * @returns {Function} Conversion helper.
- */
-export function downcastRemoveRow() {
-	return dispatcher => dispatcher.on( 'remove:tableRow', ( evt, data, conversionApi ) => {
-		// Prevent default remove converter.
-		// evt.stop();
-
-		const removedRow = data.item;
-
-		const removedView = conversionApi.mapper.toViewElement( removedRow );
-
-		if ( !removedView ) {
-			return;
-		}
-
-		conversionApi.consumable.consume( removedRow, 'remove' );
-
-		const viewWriter = conversionApi.writer;
-		const mapper = conversionApi.mapper;
-
-		// const viewStart = mapper.toViewPosition( data.position ).getLastMatchingPosition( value => !value.item.is( 'element', 'tr' ) );
-		const viewItem = removedView;
-		const tableSection = viewItem.parent;
-		const viewTable = tableSection.parent;
-
-		// Remove associated <tr> from the view.
-		const removeRange = viewWriter.createRangeOn( viewItem );
-		const removed = viewWriter.remove( removeRange );
-
-		for ( const child of viewWriter.createRangeIn( removed ).getItems() ) {
-			mapper.unbindViewElement( child );
-		}
-
-		// Cleanup: Ensure that thead & tbody sections are removed if left empty after removing rows. See #6437, #6391.
-		removeTableSectionIfEmpty( 'thead', viewTable, conversionApi );
-		removeTableSectionIfEmpty( 'tbody', viewTable, conversionApi );
-	}, { priority: 'higher' } );
 }
 
 /**
@@ -496,30 +382,6 @@ function createTableSection( sectionName, tableElement, conversionApi ) {
 	conversionApi.writer.insert( insertPosition, tableChildElement );
 
 	return tableChildElement;
-}
-
-// Removes an existing `<tbody>` or `<thead>` element if it is empty.
-//
-// @param {String} sectionName
-// @param {module:engine/view/element~Element} tableElement
-// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
-	const tableSection = getExistingTableSectionElement( sectionName, tableElement );
-
-	if ( tableSection && tableSection.childCount === 0 ) {
-		conversionApi.writer.remove( conversionApi.writer.createRangeOn( tableSection ) );
-	}
-}
-
-// Finds a '<table>' element inside the `<figure>` widget.
-//
-// @param {module:engine/view/element~Element} viewFigure
-function getViewTable( viewFigure ) {
-	for ( const child of viewFigure.getChildren() ) {
-		if ( child.name === 'table' ) {
-			return child;
-		}
-	}
 }
 
 // Checks if an element has any attributes set.

@@ -13,9 +13,7 @@ import upcastTable, { skipEmptyTableRow } from './converters/upcasttable';
 import {
 	convertParagraphInTableCell,
 	downcastInsertCell,
-	downcastInsertRow,
 	downcastInsertTable,
-	downcastRemoveRow,
 	downcastTableHeadingColumnsChange
 } from './converters/downcast';
 
@@ -97,7 +95,8 @@ export default class TableEditing extends Plugin {
 			model: 'table',
 			view: downcastInsertTable( { asWidget: true } ),
 			triggerBy: {
-				attributes: [ 'headingRows' ]
+				attributes: [ 'headingRows' ],
+				children: [ 'tableRow' ]
 			}
 		} );
 		conversion.for( 'dataDowncast' ).elementToElement( {
@@ -109,14 +108,15 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'upcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
 		conversion.for( 'upcast' ).add( skipEmptyTableRow() );
 
-		conversion.for( 'editingDowncast' ).add( downcastInsertRow() );
-		conversion.for( 'editingDowncast' ).add( downcastRemoveRow() );
+		// conversion.for( 'editingDowncast' ).add( downcastInsertRow() );
+		// conversion.for( 'editingDowncast' ).add( downcastRemoveRow() );
 
 		// Table cell conversion.
 		conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'td' } );
 		conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'th' } );
 
-		conversion.for( 'editingDowncast' ).add( downcastInsertCell() );
+		conversion.for( 'dataDowncast' ).add( downcastInsertCell() );
+		conversion.for( 'editingDowncast' ).add( downcastInsertCell( { asWidget: true } ) );
 
 		// Duplicates code - needed to properly refresh paragraph inside table cell.
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {

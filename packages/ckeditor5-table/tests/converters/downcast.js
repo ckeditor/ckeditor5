@@ -184,7 +184,7 @@ describe( 'downcast converters', () => {
 				);
 			} );
 
-			it( 'should re-create table on reinsert', () => {
+			it( 'should re-create table on move', () => {
 				model.schema.register( 'wrapper', {
 					allowWhere: '$block',
 					allowContentOf: '$root'
@@ -205,7 +205,7 @@ describe( 'downcast converters', () => {
 
 				model.change( writer => {
 					const table = model.document.getRoot().getChild( 0 );
-					const range = writer.createRange( writer.createPositionBefore( table ), writer.createPositionAfter( table ) );
+					const range = writer.createRangeOn( table );
 					const wrapper = writer.createElement( 'wrapper' );
 
 					writer.wrap( range, wrapper );
@@ -401,7 +401,7 @@ describe( 'downcast converters', () => {
 				], { asWidget: true } ) );
 			} );
 
-			it( 'should insert row on proper index when table has heading rows defined - insert in body', () => {
+			it( 'should insert row at a proper index when table has heading rows defined - insert in body', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '21', '22' ],
@@ -427,7 +427,7 @@ describe( 'downcast converters', () => {
 				], { headingRows: 1, asWidget: true } ) );
 			} );
 
-			it( 'should insert row on proper index when table has heading rows defined - insert in heading', () => {
+			it( 'should insert row at a proper index when table has heading rows defined - insert in heading', () => {
 				setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '21', '22' ],
@@ -440,6 +440,7 @@ describe( 'downcast converters', () => {
 					const row = writer.createElement( 'tableRow' );
 
 					writer.insert( row, table, 1 );
+					writer.setAttribute( 'headingRows', 3, table );
 
 					writer.insertElement( 'tableCell', row, 'end' );
 					writer.insertElement( 'tableCell', row, 'end' );

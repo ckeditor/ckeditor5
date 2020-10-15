@@ -639,7 +639,9 @@ export default class DowncastDispatcher {
 		const itemsToReconvert = new Set();
 		const updated = [];
 
-		for ( const entry of differ.getChanges() ) {
+		const changes = [ ...differ.getChanges() ];
+
+		for ( const entry of changes ) {
 			const position = entry.position || entry.range.start;
 			// Cached parent - just in case. See https://github.com/ckeditor/ckeditor5/issues/6579.
 			const positionParent = position.parent;
