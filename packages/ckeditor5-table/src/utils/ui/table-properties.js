@@ -370,8 +370,7 @@ export function getLabeledColorInputCreator( options ) {
 			labeledFieldView.errorText = null;
 		} );
 
-		// TODO
-		labeledFieldView.bind( 'isEmpty', 'isFocused' ).to( inputView._inputView );
+		labeledFieldView.bind( 'isEmpty', 'isFocused' ).to( inputView );
 
 		return inputView;
 	};
