@@ -10,133 +10,178 @@ import LabelView from '../../src/label/labelview';
 describe( 'LabeledFieldView', () => {
 	const locale = {};
 
-	let labeledInput, view;
+	let labeledField, fieldView;
 
 	beforeEach( () => {
-		labeledInput = new LabeledFieldView( locale, ( labeledInput, viewUid, statusUid ) => {
-			view = new View( locale );
-			view.setTemplate( { tag: 'div' } );
-			view.focus = () => {};
-			view.viewUid = viewUid;
-			view.statusUid = statusUid;
+		labeledField = new LabeledFieldView( locale, ( labeledField, viewUid, statusUid ) => {
+			fieldView = new View( locale );
+			fieldView.setTemplate( { tag: 'div' } );
+			fieldView.focus = () => {};
+			fieldView.viewUid = viewUid;
+			fieldView.statusUid = statusUid;
 
-			return view;
+			return fieldView;
 		} );
 
-		labeledInput.render();
+		labeledField.render();
 	} );
 
 	afterEach( () => {
-		labeledInput.destroy();
+		labeledField.destroy();
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should set labeledInput#locale', () => {
-			expect( labeledInput.locale ).to.deep.equal( locale );
+		it( 'should set labeledField#locale', () => {
+			expect( labeledField.locale ).to.deep.equal( locale );
 		} );
 
-		it( 'should set labeledInput#fieldView', () => {
-			expect( labeledInput.fieldView ).to.equal( view );
+		it( 'should set labeledField#fieldView', () => {
+			expect( labeledField.fieldView ).to.equal( fieldView );
 		} );
 
-		it( 'should set labeledInput#label', () => {
-			expect( labeledInput.label ).to.be.undefined;
+		it( 'should set labeledField#label', () => {
+			expect( labeledField.label ).to.be.undefined;
 		} );
 
-		it( 'should set labeledInput#isEnabled', () => {
-			expect( labeledInput.isEnabled ).to.be.true;
+		it( 'should set labeledField#isEnabled', () => {
+			expect( labeledField.isEnabled ).to.be.true;
 		} );
 
-		it( 'should set labeledInput#errorText', () => {
-			expect( labeledInput.errorText ).to.be.null;
+		it( 'should set labeledField#errorText', () => {
+			expect( labeledField.errorText ).to.be.null;
 		} );
 
-		it( 'should set labeledInput#infoText', () => {
-			expect( labeledInput.infoText ).to.be.null;
+		it( 'should set labeledField#infoText', () => {
+			expect( labeledField.infoText ).to.be.null;
 		} );
 
-		it( 'should set labeledInput#class', () => {
-			expect( labeledInput.class ).to.be.undefined;
+		it( 'should set labeledField#class', () => {
+			expect( labeledField.class ).to.be.undefined;
 		} );
 
-		it( 'should create labeledInput#labelView', () => {
-			expect( labeledInput.labelView ).to.instanceOf( LabelView );
+		it( 'should set labeledField#isEmpty', () => {
+			expect( labeledField.isEmpty ).to.be.true;
 		} );
 
-		it( 'should create labeledInput#statusView', () => {
-			expect( labeledInput.statusView ).to.instanceOf( View );
+		it( 'should set labeledField#isFocused', () => {
+			expect( labeledField.isFocused ).to.be.false;
+		} );
 
-			expect( labeledInput.statusView.element.tagName ).to.equal( 'DIV' );
-			expect( labeledInput.statusView.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( labeledInput.statusView.element.classList.contains( 'ck-labeled-field-view__status' ) ).to.be.true;
+		it( 'should create labeledField#labelView', () => {
+			expect( labeledField.labelView ).to.instanceOf( LabelView );
+		} );
+
+		it( 'should create labeledField#statusView', () => {
+			expect( labeledField.statusView ).to.instanceOf( View );
+
+			expect( labeledField.statusView.element.tagName ).to.equal( 'DIV' );
+			expect( labeledField.statusView.element.classList.contains( 'ck' ) ).to.be.true;
+			expect( labeledField.statusView.element.classList.contains( 'ck-labeled-field-view__status' ) ).to.be.true;
 		} );
 
 		it( 'should allow pairing #view and #labelView by unique id', () => {
-			expect( labeledInput.labelView.for ).to.equal( view.viewUid );
+			expect( labeledField.labelView.for ).to.equal( fieldView.viewUid );
 		} );
 
 		it( 'should allow pairing #view and #statusView by unique id', () => {
-			expect( view.statusUid ).to.equal( labeledInput.statusView.element.id );
+			expect( fieldView.statusUid ).to.equal( labeledField.statusView.element.id );
 		} );
 	} );
 
 	describe( 'template', () => {
 		it( 'should have the CSS class', () => {
-			expect( labeledInput.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( labeledInput.element.classList.contains( 'ck-labeled-field-view' ) ).to.be.true;
+			expect( labeledField.element.classList.contains( 'ck' ) ).to.be.true;
+			expect( labeledField.element.classList.contains( 'ck-labeled-field-view' ) ).to.be.true;
 		} );
 
-		it( 'should have #labeledInput', () => {
-			expect( labeledInput.template.children[ 0 ] ).to.equal( labeledInput.labelView );
+		it( 'should have a wrapper for internals', () => {
+			expect( labeledField.element.firstChild.classList.contains( 'ck' ) ).to.be.true;
+			expect( labeledField.element.firstChild.classList.contains( 'ck-labeled-field-view__input-wrapper' ) ).to.be.true;
 		} );
 
-		it( 'should have #view', () => {
-			expect( labeledInput.template.children[ 1 ] ).to.equal( view );
+		it( 'should have #fieldView', () => {
+			expect( labeledField.template.children[ 0 ].children[ 0 ] ).to.equal( fieldView );
+		} );
+
+		it( 'should have #labelView', () => {
+			expect( labeledField.template.children[ 0 ].children[ 1 ] ).to.equal( labeledField.labelView );
 		} );
 
 		it( 'should have the #statusView container', () => {
-			expect( labeledInput.template.children[ 2 ] ).to.equal( labeledInput.statusView );
+			expect( labeledField.template.children[ 1 ] ).to.equal( labeledField.statusView );
 		} );
 
 		describe( 'DOM bindings', () => {
 			describe( 'class', () => {
-				it( 'should react on labeledInput#class', () => {
-					labeledInput.class = 'foo';
-					expect( labeledInput.element.classList.contains( 'foo' ) ).to.be.true;
+				it( 'should react on labeledField#class', () => {
+					labeledField.class = 'foo';
+					expect( labeledField.element.classList.contains( 'foo' ) ).to.be.true;
 
-					labeledInput.class = 'bar';
-					expect( labeledInput.element.classList.contains( 'foo' ) ).to.be.false;
-					expect( labeledInput.element.classList.contains( 'bar' ) ).to.be.true;
+					labeledField.class = 'bar';
+					expect( labeledField.element.classList.contains( 'foo' ) ).to.be.false;
+					expect( labeledField.element.classList.contains( 'bar' ) ).to.be.true;
+				} );
+
+				it( 'should react on labeledField#isEnabled', () => {
+					labeledField.isEnabled = true;
+					expect( labeledField.element.classList.contains( 'ck-disabled' ) ).to.be.false;
+
+					labeledField.isEnabled = false;
+					expect( labeledField.element.classList.contains( 'ck-disabled' ) ).to.be.true;
+				} );
+
+				it( 'should react on labeledField#isEmpty', () => {
+					labeledField.isEmpty = true;
+					expect( labeledField.element.classList.contains( 'ck-labeled-field-view_empty' ) ).to.be.true;
+
+					labeledField.isEmpty = false;
+					expect( labeledField.element.classList.contains( 'ck-labeled-field-view_empty' ) ).to.be.false;
+				} );
+
+				it( 'should react on labeledField#isFocused', () => {
+					labeledField.isFocused = true;
+					expect( labeledField.element.classList.contains( 'ck-labeled-field-view_focused' ) ).to.be.true;
+
+					labeledField.isFocused = false;
+					expect( labeledField.element.classList.contains( 'ck-labeled-field-view_focused' ) ).to.be.false;
+				} );
+
+				it( 'should react on labeledField#placeholder', () => {
+					labeledField.placeholder = 'asd';
+					expect( labeledField.element.classList.contains( 'ck-labeled-field-view_placeholder' ) ).to.be.true;
+
+					labeledField.placeholder = null;
+					expect( labeledField.element.classList.contains( 'ck-labeled-field-view_placeholder' ) ).to.be.false;
 				} );
 			} );
 
 			describe( 'status container', () => {
-				it( 'should react on labeledInput#errorText', () => {
-					const statusElement = labeledInput.statusView.element;
+				it( 'should react on labeledField#errorText', () => {
+					const statusElement = labeledField.statusView.element;
 
-					labeledInput.errorText = '';
+					labeledField.errorText = '';
 					expect( statusElement.classList.contains( 'ck-hidden' ) ).to.be.true;
 					expect( statusElement.classList.contains( 'ck-labeled-field-view__status_error' ) ).to.be.false;
 					expect( statusElement.hasAttribute( 'role' ) ).to.be.false;
 					expect( statusElement.innerHTML ).to.equal( '' );
 
-					labeledInput.errorText = 'foo';
+					labeledField.errorText = 'foo';
 					expect( statusElement.classList.contains( 'ck-hidden' ) ).to.be.false;
 					expect( statusElement.classList.contains( 'ck-labeled-field-view__status_error' ) ).to.be.true;
 					expect( statusElement.getAttribute( 'role' ) ).to.equal( 'alert' );
 					expect( statusElement.innerHTML ).to.equal( 'foo' );
 				} );
 
-				it( 'should react on labeledInput#infoText', () => {
-					const statusElement = labeledInput.statusView.element;
+				it( 'should react on labeledField#infoText', () => {
+					const statusElement = labeledField.statusView.element;
 
-					labeledInput.infoText = '';
+					labeledField.infoText = '';
 					expect( statusElement.classList.contains( 'ck-hidden' ) ).to.be.true;
 					expect( statusElement.classList.contains( 'ck-labeled-field-view__status_error' ) ).to.be.false;
 					expect( statusElement.hasAttribute( 'role' ) ).to.be.false;
 					expect( statusElement.innerHTML ).to.equal( '' );
 
-					labeledInput.infoText = 'foo';
+					labeledField.infoText = 'foo';
 					expect( statusElement.classList.contains( 'ck-hidden' ) ).to.be.false;
 					expect( statusElement.classList.contains( 'ck-labeled-field-view__status_error' ) ).to.be.false;
 					expect( statusElement.hasAttribute( 'role' ) ).to.be.false;
@@ -147,18 +192,18 @@ describe( 'LabeledFieldView', () => {
 	} );
 
 	describe( 'binding', () => {
-		it( 'should bind labeledInput#label to labeledInput.labelView#label', () => {
-			labeledInput.label = 'Foo bar';
+		it( 'should bind labeledField#label to labeledField.labelView#label', () => {
+			labeledField.label = 'Foo bar';
 
-			expect( labeledInput.labelView.text ).to.equal( 'Foo bar' );
+			expect( labeledField.labelView.text ).to.equal( 'Foo bar' );
 		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'should focus the #view in DOM', () => {
-			const spy = sinon.spy( view, 'focus' );
+			const spy = sinon.spy( fieldView, 'focus' );
 
-			labeledInput.focus();
+			labeledField.focus();
 
 			sinon.assert.calledOnce( spy );
 		} );

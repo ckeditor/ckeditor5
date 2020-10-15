@@ -93,16 +93,23 @@ export default class LabeledFieldView extends View {
 		this.set( 'isEnabled', true );
 
 		/**
-		 * TODO
+		 * An observable flag set `true` when {@link #fieldView} is empty (`false` otherwise).
 		 *
+		 * @readonly
+		 * @observable
 		 * @member {Boolean} #isEmpty
+		 * @default true
 		 */
-		this.set( 'isEmpty', false );
+		this.set( 'isEmpty', true );
 
 		/**
-		 * TODO
+		 * An observable flag set `true` when {@link #fieldView} is currently focused by
+		 * the user (`false` otherwise).
 		 *
+		 * @readonly
+		 * @observable
 		 * @member {Boolean} #isFocused
+		 * @default false
 		 */
 		this.set( 'isFocused', false );
 
@@ -131,6 +138,7 @@ export default class LabeledFieldView extends View {
 		 *
 		 * @observable
 		 * @member {String|null} #infoText
+		 * @default null
 		 */
 		this.set( 'infoText', null );
 
@@ -143,7 +151,7 @@ export default class LabeledFieldView extends View {
 		this.set( 'class' );
 
 		/**
-		 * TODO
+		 * The content of the `placeholder` attribute of the {@link #fieldView}.
 		 *
 		 * @observable
 		 * @member {String} #class
