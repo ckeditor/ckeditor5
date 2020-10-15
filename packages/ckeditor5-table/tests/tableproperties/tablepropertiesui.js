@@ -508,6 +508,20 @@ describe( 'table properties', () => {
 			} );
 
 			describe( 'initial data', () => {
+				it( 'should be set before adding the form to the the balloon to avoid unnecessary input animations', () => {
+					const balloonAddSpy = testUtils.sinon.spy( editor.plugins.get( ContextualBalloon ), 'add' );
+					const borderStyleChangeSpy = testUtils.sinon.spy();
+
+					tablePropertiesView.on( 'change:borderStyle', borderStyleChangeSpy );
+
+					editor.commands.get( 'tableBorderStyle' ).value = 'a';
+					tablePropertiesButton.fire( 'execute' );
+
+					sinon.assert.calledOnce( borderStyleChangeSpy );
+					sinon.assert.calledOnce( balloonAddSpy );
+					sinon.assert.callOrder( borderStyleChangeSpy, balloonAddSpy );
+				} );
+
 				it( 'should be set from the command values', () => {
 					editor.commands.get( 'tableBorderStyle' ).value = 'a';
 					editor.commands.get( 'tableBorderColor' ).value = 'b';
