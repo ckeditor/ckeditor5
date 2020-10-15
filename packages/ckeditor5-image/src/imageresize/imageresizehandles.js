@@ -55,7 +55,7 @@ export default class ImageResizeHandles extends Plugin {
 
 		editingView.addObserver( ImageLoadObserver );
 
-		editingView.document.on( 'imageLoaded', ( evt, domEvent ) => {
+		this.listenTo( editingView.document, 'imageLoaded', ( evt, domEvent ) => {
 			const imageView = editor.editing.view.domConverter.domToView( domEvent.target );
 			const widgetView = imageView.findAncestor( 'figure' );
 			let resizer = this.editor.plugins.get( WidgetResize ).getResizerByViewElement( widgetView );
