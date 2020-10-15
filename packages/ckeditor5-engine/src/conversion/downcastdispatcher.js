@@ -310,6 +310,8 @@ export default class DowncastDispatcher {
 					);
 					// Do not move views that are already in converted element - those might be created by the main element converter
 				}
+				// convert attributes????
+				this._convertItemAttributes( walkerValueToEventData( value ) );
 			}
 			// ... or by converting newly inserted elements.
 			else {
@@ -597,6 +599,10 @@ export default class DowncastDispatcher {
 		// Fire a separate addAttribute event for each attribute that was set on inserted items.
 		// This is important because most attributes converters will listen only to add/change/removeAttribute events.
 		// If we would not add this part, attributes on inserted nodes would not be converted.
+		this._convertItemAttributes( data );
+	}
+
+	_convertItemAttributes( data ) {
 		for ( const key of data.item.getAttributeKeys() ) {
 			data.attributeKey = key;
 			data.attributeOldValue = null;
@@ -682,6 +688,16 @@ export default class DowncastDispatcher {
 
 				// Add special "reconvert" change.
 				updated.push( { type: 'reconvert', element } );
+			} else if ( element.parent && this._isReconvertTriggerEvent( eventName, element.parent.name ) ) {
+				if ( itemsToReconvert.has( element.parent ) ) {
+					// Element is already reconverted, so skip this change.
+					continue;
+				}
+
+				itemsToReconvert.add( element.parent );
+
+				// Add special "reconvert" change.
+				updated.push( { type: 'reconvert', element: element.parent } );
 			} else {
 				updated.push( entry );
 			}

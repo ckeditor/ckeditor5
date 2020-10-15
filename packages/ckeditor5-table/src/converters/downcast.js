@@ -37,65 +37,49 @@ export function downcastInsertTable( options = {} ) {
 		const tableElement = conversionApi.writer.createContainerElement( 'table' );
 		conversionApi.writer.insert( conversionApi.writer.createPositionAt( figureElement, 0 ), tableElement );
 
+		let tableWidget;
+
 		if ( asWidget ) {
-			toTableWidget( figureElement, conversionApi.writer );
+			tableWidget = toTableWidget( figureElement, conversionApi.writer );
 		}
+
+		const tableWalker = new TableWalker( table );
 
 		const tableAttributes = {
 			headingRows: table.getAttribute( 'headingRows' ) || 0,
 			headingColumns: table.getAttribute( 'headingColumns' ) || 0
 		};
+
+		// Cache for created table rows.
+		const viewRows = new Map();
+
+		for ( const tableSlot of tableWalker ) {
+			const { row, cell } = tableSlot;
+
+			const tableRow = table.getChild( row );
+			const trElement = viewRows.get( row ) || createTr( tableElement, tableRow, row, tableAttributes, conversionApi );
+			viewRows.set( row, trElement );
+
+			// Consume table cell - it will be always consumed as we convert whole table at once.
+			conversionApi.consumable.consume( cell, 'insert' );
+
+			const insertPosition = conversionApi.writer.createPositionAt( trElement, 'end' );
+
+			createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, options );
+		}
 
 		// Insert empty TR elements if there are any rows without anchored cells. Since the model is always normalized
 		// this can happen only in the document fragment that only part of the table is down-casted.
 		for ( const tableRow of table.getChildren() ) {
-			createTr( tableElement, tableRow, tableRow.index, tableAttributes, conversionApi );
-		}
+			const rowIndex = tableRow.index;
 
-		return figureElement;
-	};
-}
-
-/**
- * Model table cell element to view `<td>` or `<th>` element conversion helper.
- *
- * This conversion helper will create proper `<th>` elements for table cells that are in the heading section (heading row or column)
- * and `<td>` otherwise.
- *
- * @returns {Function} Conversion helper.
- */
-export function downcastInsertCell( options ) {
-	return dispatcher => dispatcher.on( 'insert:tableCell', ( evt, data, conversionApi ) => {
-		const tableCell = data.item;
-
-		if ( !conversionApi.consumable.consume( tableCell, 'insert' ) ) {
-			return;
-		}
-
-		const tableRow = tableCell.parent;
-		const table = tableRow.parent;
-		const rowIndex = table.getChildIndex( tableRow );
-
-		const tableWalker = new TableWalker( table, { row: rowIndex } );
-
-		const tableAttributes = {
-			headingRows: table.getAttribute( 'headingRows' ) || 0,
-			headingColumns: table.getAttribute( 'headingColumns' ) || 0
-		};
-
-		// We need to iterate over a table in order to get proper row & column values from a walker
-		for ( const tableSlot of tableWalker ) {
-			if ( tableSlot.cell === tableCell ) {
-				const trElement = conversionApi.mapper.toViewElement( tableRow );
-				const insertPosition = conversionApi.writer.createPositionAt( trElement, tableRow.getChildIndex( tableCell ) );
-
-				createViewTableCellElement( tableSlot, tableAttributes, insertPosition, conversionApi, options );
-
-				// No need to iterate further.
-				return;
+			if ( !viewRows.has( rowIndex ) ) {
+				viewRows.set( rowIndex, createTr( tableElement, tableRow, rowIndex, tableAttributes, conversionApi ) );
 			}
 		}
-	} );
+
+		return asWidget ? tableWidget : figureElement;
+	};
 }
 
 /**
@@ -252,6 +236,18 @@ function createViewTableCellElement( tableSlot, tableAttributes, insertPosition,
 	const cellElement = asWidget ?
 		toWidgetEditable( conversionApi.writer.createEditableElement( cellElementName ), conversionApi.writer ) :
 		conversionApi.writer.createContainerElement( cellElementName );
+
+	const colspan = tableSlot.cellWidth;
+
+	if ( colspan > 1 ) {
+		conversionApi.writer.setAttribute( 'colspan', colspan, cellElement );
+	}
+
+	const rowspan = tableSlot.cellHeight;
+
+	if ( rowspan > 1 ) {
+		conversionApi.writer.setAttribute( 'rowspan', rowspan, cellElement );
+	}
 
 	if ( asWidget ) {
 		setHighlightHandling(

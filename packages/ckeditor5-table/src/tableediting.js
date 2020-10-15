@@ -12,7 +12,6 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import upcastTable, { skipEmptyTableRow } from './converters/upcasttable';
 import {
 	convertParagraphInTableCell,
-	downcastInsertCell,
 	downcastInsertTable,
 	downcastTableHeadingColumnsChange
 } from './converters/downcast';
@@ -96,7 +95,7 @@ export default class TableEditing extends Plugin {
 			view: downcastInsertTable( { asWidget: true } ),
 			triggerBy: {
 				attributes: [ 'headingRows' ],
-				children: [ 'tableRow' ]
+				children: [ 'tableRow', 'tableCell' ]
 			}
 		} );
 		conversion.for( 'dataDowncast' ).elementToElement( {
@@ -115,8 +114,8 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'td' } );
 		conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'th' } );
 
-		conversion.for( 'dataDowncast' ).add( downcastInsertCell() );
-		conversion.for( 'editingDowncast' ).add( downcastInsertCell( { asWidget: true } ) );
+		// conversion.for( 'dataDowncast' ).add( downcastInsertCell() );
+		// conversion.for( 'editingDowncast' ).add( downcastInsertCell( { asWidget: true } ) );
 
 		// Duplicates code - needed to properly refresh paragraph inside table cell.
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
