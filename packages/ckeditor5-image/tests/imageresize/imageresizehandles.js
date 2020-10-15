@@ -279,6 +279,19 @@ describe( 'ImageResizeHandles', () => {
 		expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).to.equal( 1 );
 	} );
 
+	it( 'only creates a resizer after the image is loaded', async () => {
+		// https://github.com/ckeditor/ckeditor5/issues/8088
+		editor = await createEditor();
+		setData( editor.model, `[<image src="${ IMAGE_SRC_FIXTURE }"></image>]` );
+		widget = viewDocument.getRoot().getChild( 0 );
+		const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
+
+		expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).to.equal( 0 );
+
+		await waitForAllImagesLoaded( editor );
+		expect( domParts.widget.querySelectorAll( '.ck-widget__resizer' ).length ).to.equal( 1 );
+	} );
+
 	describe( 'srcset integration', () => {
 		// The image is 96x96 pixels.
 		const imageBaseUrl = '/assets/sample.png';
