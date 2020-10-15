@@ -451,7 +451,7 @@ describe( 'ImageResizeHandles', () => {
 	}
 
 	function getSelectedImageResizer( editor ) {
-		return editor.plugins.get( 'WidgetResize' )._getResizerByViewElement(
+		return editor.plugins.get( 'WidgetResize' ).getResizerByViewElement(
 			editor.editing.view.document.selection.getSelectedElement()
 		);
 	}

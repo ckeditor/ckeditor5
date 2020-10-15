@@ -103,7 +103,7 @@ export default class WidgetResize extends Plugin {
 		viewSelection.on( 'change', () => {
 			const selectedElement = viewSelection.getSelectedElement();
 
-			this.visibleResizer = this._getResizerByViewElement( selectedElement ) || null;
+			this.visibleResizer = this.getResizerByViewElement( selectedElement ) || null;
 		} );
 	}
 
@@ -153,11 +153,21 @@ export default class WidgetResize extends Plugin {
 
 		// It could be that the element the resizer is created for is currently focused. In that
 		// case it should become visible.
-		if ( this._getResizerByViewElement( selectedElement ) == resizer ) {
+		if ( this.getResizerByViewElement( selectedElement ) == resizer ) {
 			this.visibleResizer = resizer;
 		}
 
 		return resizer;
+	}
+
+	/**
+	 * Returns a resizer created for a given view element (widget element).
+	 *
+	 * @param {module:engine/view/containerelement~ContainerElement} viewElement View element associated with the resizer.
+	 * @returns {module:widget/widgetresize/resizer~Resizer/undefined}
+	 */
+	getResizerByViewElement( viewElement ) {
+		return this._resizers.get( viewElement );
 	}
 
 	/**
@@ -173,17 +183,6 @@ export default class WidgetResize extends Plugin {
 				return resizer;
 			}
 		}
-	}
-
-	/**
-	 * Returns a resizer created for a given view element (widget element).
-	 *
-	 * @protected
-	 * @param {module:engine/view/containerelement~ContainerElement} viewElement
-	 * @returns {module:widget/widgetresize/resizer~Resizer}
-	 */
-	_getResizerByViewElement( viewElement ) {
-		return this._resizers.get( viewElement );
 	}
 
 	/**

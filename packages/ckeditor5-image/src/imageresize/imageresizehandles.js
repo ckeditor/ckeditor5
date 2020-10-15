@@ -58,7 +58,7 @@ export default class ImageResizeHandles extends Plugin {
 		editingView.document.on( 'imageLoaded', ( evt, domEvent ) => {
 			const imageView = editor.editing.view.domConverter.domToView( domEvent.target );
 			const widgetView = imageView.findAncestor( 'figure' );
-			let resizer = this.editor.plugins.get( WidgetResize )._getResizerByViewElement( widgetView );
+			let resizer = this.editor.plugins.get( WidgetResize ).getResizerByViewElement( widgetView );
 
 			if ( resizer ) {
 				// There are rare cases when image will be triggered multiple times for the same widget, e.g. when
