@@ -164,7 +164,7 @@ export default class WidgetResize extends Plugin {
 	 * Returns a resizer created for a given view element (widget element).
 	 *
 	 * @param {module:engine/view/containerelement~ContainerElement} viewElement View element associated with the resizer.
-	 * @returns {module:widget/widgetresize/resizer~Resizer/undefined}
+	 * @returns {module:widget/widgetresize/resizer~Resizer|undefined}
 	 */
 	getResizerByViewElement( viewElement ) {
 		return this._resizers.get( viewElement );
