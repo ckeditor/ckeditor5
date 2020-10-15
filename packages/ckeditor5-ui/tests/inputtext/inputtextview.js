@@ -8,7 +8,7 @@
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import InputTextView from '../../src/inputtext/inputtextview';
 
-describe.only( 'InputTextView', () => {
+describe( 'InputTextView', () => {
 	let view, ariaDescribedById;
 
 	beforeEach( () => {
