@@ -88,13 +88,6 @@ export default class LabeledInputView extends View {
 		this.set( 'infoText', null );
 
 		/**
-		 * TODO
-		 *
-		 * @observable
-		 */
-		this.set( 'isFocused', false );
-
-		/**
 		 * The label view.
 		 *
 		 * @member {module:ui/label/labelview~LabelView} #labelView
@@ -157,7 +150,7 @@ export default class LabeledInputView extends View {
 					},
 					children: [
 						this.inputView,
-						this.labelView,
+						this.labelView
 					]
 				},
 				this.statusView
