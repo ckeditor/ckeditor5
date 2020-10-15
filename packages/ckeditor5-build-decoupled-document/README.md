@@ -1,4 +1,4 @@
-CKEditor 5 document editor build
+CKEditor 5 document editor build with Table Properties and Table Cell Properties Plugins
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-build-decoupled-document.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document)
