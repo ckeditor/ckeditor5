@@ -154,7 +154,7 @@ export default class LabeledFieldView extends View {
 		 * The content of the `placeholder` attribute of the {@link #fieldView}.
 		 *
 		 * @observable
-		 * @member {String} #class
+		 * @member {String} #placeholder
 		 */
 		this.set( 'placeholder' );
 
