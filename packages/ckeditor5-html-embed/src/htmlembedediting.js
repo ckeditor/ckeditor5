@@ -110,7 +110,7 @@ function toRawHtmlWidget( viewElement, writer, label ) {
 	return toWidget( viewElement, writer, { label } );
 }
 
-// Modifies the `defaultConfig` in order to match our needs. See #8204.
+// Modifies the `defaultConfig` configuration and returns a new object that matches our needs. See #8204.
 //
 // @params {String} defaultConfig The default configuration that will be extended.
 // @returns {Object}
