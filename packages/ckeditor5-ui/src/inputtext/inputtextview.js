@@ -125,7 +125,8 @@ export default class InputTextView extends View {
 				'aria-describedby': bind.to( 'ariaDescribedById' )
 			},
 			on: {
-				input: bind.to( 'input' )
+				input: bind.to( 'input' ),
+				change: bind.to( this._updateIsEmpty.bind( this ) )
 			}
 		} );
 

@@ -173,6 +173,20 @@ describe( 'InputTextView', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 		} );
+
+		describe( 'change event', () => {
+			it( 'should trigger update of the #isEmpty property', () => {
+				view.element.value = 'foo';
+				view.element.dispatchEvent( new Event( 'change' ) );
+
+				expect( view.isEmpty ).to.be.false;
+
+				view.element.value = '';
+				view.element.dispatchEvent( new Event( 'change' ) );
+
+				expect( view.isEmpty ).to.be.true;
+			} );
+		} );
 	} );
 
 	describe( 'render()', () => {
