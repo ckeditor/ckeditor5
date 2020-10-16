@@ -36,7 +36,7 @@ export default class HTMLEmbedUI extends Plugin {
 
 			// Execute the command.
 			this.listenTo( view, 'execute', () => {
-				editor.execute( 'htmlEmbed', { html: '' } );
+				editor.execute( 'htmlEmbed' );
 				editor.editing.view.focus();
 			} );
 
