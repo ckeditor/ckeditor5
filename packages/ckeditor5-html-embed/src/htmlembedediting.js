@@ -109,13 +109,15 @@ export default class HTMLEmbedEditing extends Plugin {
 
 					// TODO: This event does not work.
 					this.listenTo( root, 'click', () => {
-						if ( isPreviewActive ) {
-							writer.removeClass( 'raw-html--active-preview', viewWrapper );
-						} else {
-							writer.addClass( 'raw-html--active-preview', viewWrapper );
-						}
+						editor.editing.view.change( writer => {
+							if ( isPreviewActive ) {
+								writer.removeClass( 'raw-html--active-preview', viewWrapper );
+							} else {
+								writer.addClass( 'raw-html--active-preview', viewWrapper );
+							}
 
-						isPreviewActive = !isPreviewActive;
+							isPreviewActive = !isPreviewActive;
+						} );
 					} );
 
 					// The icon is used a temporary placeholder. Thanks to https://www.freepik.com/free-icon/eye_775336.htm.
