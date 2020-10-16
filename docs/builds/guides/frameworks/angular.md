@@ -16,6 +16,13 @@ Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 
 	While there is no support to integrate CKEditor 5 from source yet, you can still {@link builds/guides/development/custom-builds create a custom build of CKEditor 5} and include it in your Angular application.
 </info-box>
 
+## Supported Angular versions
+
+Because of breaking changes in the Angular library output format, the `ckeditor5-angular` package is released in the following versions to support various Angular ecosystems:
+
+- `1.x.x` - for Angular 5-8 apps, the support will end when the official support for Angular 8 is dropped (November 2020),
+- `2.x.x` - for Angular 9+ apps, actively supported.
+
 ## Quick start
 
 In your existing Angular project, install the [CKEditor 5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
