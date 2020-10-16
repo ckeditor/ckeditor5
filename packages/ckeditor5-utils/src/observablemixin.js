@@ -786,7 +786,7 @@ function attachBindToListeners( observable, toBindings ) {
  *		button.bind( 'isEnabled' ).to( command, 'isEnabled', ui, 'isVisible',
  *			( isCommandEnabled, isUIVisible ) => isCommandEnabled && isUIVisible );
  *
- * Using custom callback allows to process the value before passing it to target property:
+ * Using custom callback allows to process the value before passing it to the target property:
  *
  *		button.bind( 'isEnabled' ).to( command, 'value', value => value === 'heading1' );
  *

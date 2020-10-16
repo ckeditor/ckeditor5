@@ -198,9 +198,9 @@ button.bind( 'isOn' ).to( command, 'value' );
 
 The property has been "renamed" in the binding and from now on, whenever `command.value` changes, the value of `button.isOn` will reflect it.
 
-#### Processing property value
+#### Processing a property value
 
-The other use case is processing bounded value. For instance, you may need to disable a button only when certain conditions are met. Passing a callback as the third parameter allows implementing custom logic.
+Another use case is processing a bounded value. For example: you may need to disable a button only if certain conditions are met. Passing a callback as the third parameter allows implementing custom logic.
 
 In the example below, a button's `isEnabled` property will be set to `true` only when `command.value` will be set to `'heading1`.
 
