@@ -23,7 +23,7 @@ Because of the breaking changes in the Angular library output format, the `ckedi
 * Version `1.x.x` &ndash; For **Angular 5-8** apps. Support for this version will end when the official support for Angular 8 is dropped (planned date: November 2020),
 * Version `2.x.x` &ndash; For **Angular 9+** apps. This version is currently actively supported.
 
-All versions are [listed on NPM](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), where they can be pulled from.
+All available versions are [listed on NPM](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), where they can be pulled from.
 
 ## Quick start
 
