@@ -135,7 +135,7 @@ export default class ImageInsertPanelView extends View {
 					integrationView.fieldView.bind( 'value' ).to( this, 'imageURLInputValue', value => value || '' );
 
 					integrationView.fieldView.on( 'input', () => {
-						this.imageURLInputValue = integrationView.fieldView.element.value;
+						this.imageURLInputValue = integrationView.fieldView.element.value.trim();
 					} );
 				}
 
