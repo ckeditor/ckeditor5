@@ -118,6 +118,7 @@ export default class Clipboard extends Plugin {
 				// Plain text can be determined based on event flag (#7799) or auto detection (#1006). If detected
 				// preserve selection attributes on pasted items.
 				if ( data.asPlainText || isPlainTextFragment( modelFragment ) ) {
+					data.asPlainText = true;
 					model.change( writer => {
 						const range = writer.createRangeIn( modelFragment );
 

@@ -453,7 +453,7 @@ export default class LinkEditing extends Plugin {
 			const model = editor.model;
 			const previousItem = model.document.selection.getFirstPosition().nodeBefore;
 
-			if ( !previousItem ) {
+			if ( !previousItem || !data.asPlainText ) {
 				return;
 			}
 
