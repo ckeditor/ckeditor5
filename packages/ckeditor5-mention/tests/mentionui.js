@@ -66,19 +66,19 @@ describe( 'MentionUI', () => {
 	describe( 'init()', () => {
 		it( 'should throw if marker was not provided for feed', () => {
 			return createClassicTestEditor( { feeds: [ { feed: [ 'a' ] } ] } ).catch( error => {
-				assertCKEditorError( error, /mentionconfig-incorrect-marker/, null );
+				assertCKEditorError( error, /mentionconfig-incorrect-marker/, null, { marker: undefined } );
 			} );
 		} );
 
 		it( 'should throw if marker is empty string', () => {
 			return createClassicTestEditor( { feeds: [ { marker: '', feed: [ 'a' ] } ] } ).catch( error => {
-				assertCKEditorError( error, /mentionconfig-incorrect-marker/, null );
+				assertCKEditorError( error, /mentionconfig-incorrect-marker/, null, { marker: '' } );
 			} );
 		} );
 
 		it( 'should throw if marker is longer then 1 character', () => {
 			return createClassicTestEditor( { feeds: [ { marker: '$$', feed: [ 'a' ] } ] } ).catch( error => {
-				assertCKEditorError( error, /mentionconfig-incorrect-marker/, null );
+				assertCKEditorError( error, /mentionconfig-incorrect-marker/, null, { marker: '$$' } );
 			} );
 		} );
 	} );
@@ -1249,7 +1249,12 @@ describe( 'MentionUI', () => {
 						expect( panelView.isVisible, 'panel is hidden' ).to.be.false;
 						expect( editor.model.markers.has( 'mention' ), 'there is no marker' ).to.be.false;
 
-						sinon.assert.calledWithExactly( warnSpy, sinon.match( /^mention-feed-callback-error/ ) );
+						sinon.assert.calledWithExactly(
+							warnSpy,
+							sinon.match( /^mention-feed-callback-error/ ),
+							sinon.match( { marker: '#' } ),
+							sinon.match.string // Link to the documentation
+						);
 						sinon.assert.calledOnce( eventSpy );
 					} );
 			} );
