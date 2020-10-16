@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
 /**
  * @module engine/controller/editingcontroller
  */
@@ -33,7 +35,7 @@ export default class EditingController {
 	 * @param {module:engine/model/model~Model} model Editing model.
 	 * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor The styles processor instance.
 	 */
-	constructor( model, stylesProcessor ) {
+	constructor( model, stylesProcessor, sourceElementRoot = document ) {
 		/**
 		 * Editor model.
 		 *
@@ -48,7 +50,7 @@ export default class EditingController {
 		 * @readonly
 		 * @member {module:engine/view/view~View}
 		 */
-		this.view = new View( stylesProcessor );
+		this.view = new View( stylesProcessor, sourceElementRoot );
 
 		/**
 		 * Mapper which describes the model-view binding.
