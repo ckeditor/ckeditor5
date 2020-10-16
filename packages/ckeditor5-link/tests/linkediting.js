@@ -283,6 +283,23 @@ describe( 'LinkEditing', () => {
 				'</paragraph>'
 			);
 		} );
+
+		it( 'doesn\'t affect attributes other than link', () => {
+			setModelData( model, '<paragraph><$text bold="true">[foo]</$text></paragraph>' );
+
+			view.document.fire( 'paste', {
+				dataTransfer: createDataTransfer( {
+					'text/html': '<p>bar</p>',
+					'text/plain': 'bar'
+				} ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph><$text bold="true">bar[]</$text></paragraph>'
+			);
+		} );
 	} );
 
 	describe( 'command', () => {
