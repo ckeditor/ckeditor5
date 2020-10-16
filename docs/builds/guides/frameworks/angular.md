@@ -18,10 +18,10 @@ Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 
 
 ## Supported Angular versions
 
-Because of breaking changes in the Angular library output format, the `ckeditor5-angular` package is released in the following versions to support various Angular ecosystems:
+Because of the breaking changes in the Angular library output format, the `ckeditor5-angular` package is released in the following versions to support various Angular ecosystems:
 
-- `1.x.x` - for Angular 5-8 apps, the support will end when the official support for Angular 8 is dropped (November 2020),
-- `2.x.x` - for Angular 9+ apps, actively supported.
+* Version `1.x.x` &ndash; For **Angular 5-8** apps. Support for this version will end when the official support for Angular 8 is dropped (planned date: November 2020),
+* Version `2.x.x` &ndash; For **Angular 9+** apps. This version is currently actively supported.
 
 ## Quick start
 
