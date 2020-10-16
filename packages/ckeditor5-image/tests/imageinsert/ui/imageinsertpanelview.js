@@ -313,7 +313,7 @@ describe( 'ImageUploadPanelView', () => {
 			const form = view.getIntegration( 'insertImageViaUrl' );
 			const saveButtonView = view.template.children[ 1 ].children.first;
 
-			expect( !!saveButtonView.isEnabled ).to.be.false;
+			expect( saveButtonView.isEnabled ).to.be.false;
 
 			form.fieldView.element.value = 'test';
 			form.fieldView.fire( 'input' );

@@ -224,12 +224,12 @@ describe( 'MediaEmbedUI', () => {
 		it( 'binds saveButtonView#isEnabled to trimmed URL input value', () => {
 			form.urlInputView.fieldView.fire( 'input' );
 
-			expect( !!form.saveButtonView.isEnabled ).to.be.false;
+			expect( form.saveButtonView.isEnabled ).to.be.false;
 
 			form.urlInputView.fieldView.element.value = 'test';
 			form.urlInputView.fieldView.fire( 'input' );
 
-			expect( !!form.saveButtonView.isEnabled ).to.be.true;
+			expect( form.saveButtonView.isEnabled ).to.be.true;
 		} );
 
 		describe( 'validators', () => {

@@ -79,7 +79,7 @@ export default class MediaFormView extends View {
 		 */
 		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon, 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
-		this.saveButtonView.bind( 'isEnabled' ).to( this, 'mediaURLInputValue' );
+		this.saveButtonView.bind( 'isEnabled' ).to( this, 'mediaURLInputValue', value => !!value );
 
 		/**
 		 * The Cancel button view.
