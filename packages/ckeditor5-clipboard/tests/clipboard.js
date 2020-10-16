@@ -231,6 +231,7 @@ describe( 'Clipboard feature', () => {
 
 			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
+				stopPropagation() {},
 				preventDefault() {}
 			} );
 
@@ -524,25 +525,6 @@ describe( 'Clipboard feature', () => {
 				} );
 
 				expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bolded []text.</$text></paragraph>' );
-			} );
-
-			it( 'ignores non-formatting text attributes', () => {
-				setModelData( model, '<paragraph><$text test="true">Bolded []text.</$text></paragraph>' );
-
-				const dataTransferMock = createDataTransfer( {
-					'text/html': 'foo',
-					'text/plain': 'foo'
-				} );
-
-				viewDocument.fire( 'clipboardInput', {
-					dataTransfer: dataTransferMock,
-					asPlainText: false,
-					stopPropagation() {},
-					preventDefault() {}
-				} );
-
-				expect( getModelData( model ) ).to.equal(
-					'<paragraph><$text test="true">Bolded </$text>foo[]<$text test="true">text.</$text></paragraph>' );
 			} );
 		} );
 

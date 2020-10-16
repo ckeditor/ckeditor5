@@ -118,27 +118,27 @@ export default class Clipboard extends Plugin {
 				// Plain text can be determined based on event flag (#7799) or auto detection (#1006). If detected
 				// preserve selection attributes on pasted items.
 				if ( data.asPlainText || isPlainTextFragment( modelFragment ) ) {
-					// Consider only formatting attributes.
-					const textAttributes = new Map( Array.from( modelDocument.selection.getAttributes() ).filter(
-						keyValuePair => editor.model.schema.getAttributeProperties( keyValuePair[ 0 ] ).isFormatting
-					) );
-
 					model.change( writer => {
 						const range = writer.createRangeIn( modelFragment );
 
 						for ( const item of range.getItems() ) {
 							if ( item.is( '$text' ) || item.is( '$textProxy' ) ) {
-								writer.setAttributes( textAttributes, item );
+								writer.setAttributes( modelDocument.selection.getAttributes(), item );
 							}
 						}
 					} );
 				}
 
 				model.insertContent( modelFragment );
-
-				evt.stop();
 			}
 		}, { priority: 'low' } );
+
+		this.listenTo( this, 'inputTransformation', ( evt, data ) => {
+			if ( !data.content.isEmpty ) {
+				// See: https://github.com/ckeditor/ckeditor5-upload/issues/92
+				evt.stop();
+			}
+		}, { priority: 'lowest' } );
 
 		// The clipboard copy/cut pipeline.
 
