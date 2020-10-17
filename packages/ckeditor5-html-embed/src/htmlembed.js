@@ -35,3 +35,26 @@ export default class HTMLEmbed extends Plugin {
 		return 'HTMLEmbed';
 	}
 }
+
+/**
+ * The configuration of the html embed feature.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ * 				htmlEmbed: ... // Html embed feature options.
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface MediaEmbedConfig
+ */
+
+/**
+ * @member {Boolean} [module:html-embed/htmlembed~MediaEmbedConfig#previewsInData=false]
+ */
+
+/**
+ * @member {Function} [module:html-embed/htmlembed~MediaEmbedConfig#sanitizeHtml]
+ */

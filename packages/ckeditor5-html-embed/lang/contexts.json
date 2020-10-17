@@ -1,4 +1,5 @@
 {
   "Insert HTML": "Toolbar button tooltip for the HTML embed feature.",
-  "HTML snippet": "The HTML snippet."
+  "HTML snippet": "The HTML snippet.",
+  "Paste the raw code here.": "A placeholder that will be displayed in the raw HTML textarea field."
 }

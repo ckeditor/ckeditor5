@@ -3,55 +3,116 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import sanitizeHtml from 'sanitize-html';
+import { clone } from 'lodash-es';
 import HTMLEmbed from '../../src/htmlembed';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		cloudServices: CS_CONFIG,
-		plugins: [ ArticlePluginSet, ImageUpload, EasyImage, HTMLEmbed ],
+const restrictedModeButton = document.getElementById( 'mode-enabled' );
+const standardModeButton = document.getElementById( 'mode-disabled' );
+
+restrictedModeButton.addEventListener( 'change', handleModeChange );
+standardModeButton.addEventListener( 'change', handleModeChange );
+
+startMode( document.querySelector( 'input[name="mode"]:checked' ).value );
+
+async function handleModeChange( evt ) {
+	await startMode( evt.target.value );
+}
+
+async function startMode( selectedMode ) {
+	if ( selectedMode === 'enabled' ) {
+		await startEnabledPreviewsMode();
+	} else {
+		await startDisabledPreviewsMode();
+	}
+}
+
+async function startEnabledPreviewsMode() {
+	await reloadEditor( {
+		htmlEmbed: {
+			previewsInData: true,
+			sanitizeHtml( rawHtml ) {
+				const config = getSanitizeHtmlConfig( sanitizeHtml.defaults );
+				const cleanHtml = sanitizeHtml( rawHtml, config );
+
+				return {
+					html: cleanHtml,
+					hasModified: rawHtml !== cleanHtml
+				};
+			}
+		}
+	} );
+}
+
+async function startDisabledPreviewsMode() {
+	await reloadEditor();
+}
+
+async function reloadEditor( config = {} ) {
+	if ( window.editor ) {
+		await window.editor.destroy();
+	}
+
+	config = Object.assign( config, {
+		plugins: [ ArticlePluginSet, HTMLEmbed ],
 		toolbar: [
-			'heading',
-			'|',
-			'bold', 'italic', 'numberedList', 'bulletedList',
-			'|',
-			'link', 'blockquote', 'imageUpload', 'insertTable', 'mediaEmbed',
-			'|',
-			'undo', 'redo',
-			'|',
-			'htmlEmbed'
+			'heading', '|', 'bold', 'italic', 'link', '|',
+			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
+			'undo', 'redo', '|', 'htmlEmbed'
 		],
 		image: {
-			styles: [
-				'full',
-				'alignLeft',
-				'alignRight'
-			],
-			toolbar: [
-				'imageStyle:alignLeft',
-				'imageStyle:full',
-				'imageStyle:alignRight',
-				'|',
-				'imageTextAlternative'
-			]
-		},
-		table: {
-			contentToolbar: [
-				'tableColumn',
-				'tableRow',
-				'mergeTableCells'
-			]
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		}
-	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
 	} );
+
+	window.editor = await ClassicEditor.create( document.querySelector( '#editor' ), config );
+}
+
+function getSanitizeHtmlConfig( defaultConfig ) {
+	const config = clone( defaultConfig );
+
+	config.allowedTags.push(
+		// Allows embedding iframes.
+		'iframe',
+
+		// Allows embedding media.
+		'audio',
+		'video',
+		'picture',
+		'source',
+		'img'
+	);
+
+	config.selfClosing.push( 'source' );
+
+	// Remove duplicates.
+	config.allowedTags = [ ...new Set( config.allowedTags ) ];
+
+	config.allowedSchemesAppliedToAttributes.push(
+		// Responsive images.
+		'srcset'
+	);
+
+	for ( const htmlTag of config.allowedTags ) {
+		if ( !Array.isArray( config.allowedAttributes[ htmlTag ] ) ) {
+			config.allowedAttributes[ htmlTag ] = [];
+		}
+
+		// Allow inlining styles for all elements.
+		config.allowedAttributes[ htmlTag ].push( 'style' );
+	}
+
+	// Should we allow the `controls` attribute?
+	config.allowedAttributes.video.push( 'width', 'height', 'controls' );
+	config.allowedAttributes.audio.push( 'controls' );
+
+	config.allowedAttributes.iframe.push( 'src' );
+	config.allowedAttributes.img.push( 'srcset', 'sizes', 'src' );
+	config.allowedAttributes.source.push( 'src', 'srcset', 'media', 'sizes', 'type' );
+
+	return config;
+}
