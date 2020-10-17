@@ -104,7 +104,6 @@ export default class MediaEmbedUI extends Plugin {
 
 		// Form elements should be read-only when corresponding commands are disabled.
 		form.urlInputView.bind( 'isReadOnly' ).to( command, 'isEnabled', value => !value );
-		form.saveButtonView.bind( 'isEnabled' ).to( command );
 	}
 }
 
