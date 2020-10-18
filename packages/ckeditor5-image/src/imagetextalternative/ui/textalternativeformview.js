@@ -23,6 +23,7 @@ import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import '../../../theme/textalternativeform.css';
+import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 
 /**
  * The TextAlternativeFormView class.
@@ -111,7 +112,8 @@ export default class TextAlternativeFormView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-text-alternative-form'
+					'ck-text-alternative-form',
+					'ck-responsive-form'
 				],
 
 				// https://github.com/ckeditor/ckeditor5-image/issues/40
