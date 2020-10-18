@@ -49,10 +49,6 @@
 
 			@mixin ck-dir ltr {
 				margin-left: 0;
-
-				&:first-of-type {
-					border-right: 1px solid var(--ck-color-base-border);
-				}
 			}
 
 			@mixin ck-dir rtl {
