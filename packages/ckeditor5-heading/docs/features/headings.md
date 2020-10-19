@@ -4,7 +4,7 @@ category: features
 
 # Headings
 
-{@snippet build-classic-source}
+{@snippet features/heading-source}
 
 The {@link module:heading/heading~Heading} feature enables support for headings. These are used by the creators to structure their documents. They also aid both the readers, making the content more organized and easier to read, and the search indexers scanning for crucial information.
 
