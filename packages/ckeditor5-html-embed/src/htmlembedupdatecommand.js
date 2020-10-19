@@ -15,9 +15,9 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  *
  * The command is registered by {@link module:html-embed/htmlembedediting~HTMLEmbedEditing} as `'htmlEmbedUpdate'`.
  *
- * To insert a page break at the current selection, execute the command:
+ * To update the value of the raw html element at the current selection, execute the command:
  *
- *		editor.execute( 'htmlEmbedUpdate', 'HTML.' );
+ *		editor.execute( 'htmlEmbedUpdate', '<b>HTML.</b>' );
  *
  * @extends module:core/command~Command
  */
@@ -31,7 +31,6 @@ export default class HTMLEmbedUpdateCommand extends Command {
 		const rawHtmlElement = getSelectedRawHtmlModelWidget( selection );
 
 		this.isEnabled = !!rawHtmlElement;
-		this.value = rawHtmlElement ? rawHtmlElement.getAttribute( 'value' ) : '';
 	}
 
 	/**
@@ -43,11 +42,11 @@ export default class HTMLEmbedUpdateCommand extends Command {
 	execute( value ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const selectedMedia = getSelectedRawHtmlModelWidget( selection );
+		const selectedRawHtmlElement = getSelectedRawHtmlModelWidget( selection );
 
-		if ( selectedMedia ) {
+		if ( selectedRawHtmlElement ) {
 			model.change( writer => {
-				writer.setAttribute( 'value', value, selectedMedia );
+				writer.setAttribute( 'value', value, selectedRawHtmlElement );
 			} );
 		}
 	}
