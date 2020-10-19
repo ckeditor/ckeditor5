@@ -10,13 +10,16 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import HTMLEmbedInsertCommand from './htmlembedinsertcommand';
 import HTMLEmbedUpdateCommand from './htmlembedupdatecommand';
-import { toRawHtmlWidget } from './utils';
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import htmlEmbedModeIcon from '../theme/icons/htmlembedmode.svg';
+
 import '../theme/htmlembed.css';
+
+const DISPLAY_PREVIEW_CLASS = 'raw-html--display-preview';
 
 /**
  * The HTML embed editing feature.
@@ -164,20 +167,16 @@ export default class HTMLEmbedEditing extends Plugin {
 
 					root.addEventListener( 'click', evt => {
 						view.change( writer => {
-							const isEditingSourceActive = rawHtmlContainer.getCustomProperty( 'isEditingSourceActive' );
-
 							if ( htmlEmbedConfig.previewsInData ) {
-								if ( !isEditingSourceActive ) {
-									writer.removeClass( 'raw-html--display-preview', widgetView );
+								if ( widgetView.hasClass( DISPLAY_PREVIEW_CLASS ) ) {
+									writer.removeClass( DISPLAY_PREVIEW_CLASS, widgetView );
 								} else {
-									writer.addClass( 'raw-html--display-preview', widgetView );
+									writer.addClass( DISPLAY_PREVIEW_CLASS, widgetView );
 								}
 							}
 
 							const textarea = sourceElement.getCustomProperty( 'domElement' );
 							textarea.disabled = !textarea.disabled;
-
-							writer.setCustomProperty( 'isEditingSourceActive', !isEditingSourceActive, rawHtmlContainer );
 						} );
 
 						evt.preventDefault();
@@ -192,8 +191,7 @@ export default class HTMLEmbedEditing extends Plugin {
 
 				// The container that renders the HTML should be created only when `htmlEmbed.previewsInData=true` in the config.
 				if ( htmlEmbedConfig.previewsInData ) {
-					writer.addClass( 'raw-html--preview-enabled', widgetView );
-					writer.addClass( 'raw-html--display-preview', widgetView );
+					writer.addClass( [ 'raw-html--preview-enabled', DISPLAY_PREVIEW_CLASS ], widgetView );
 
 					const previewContainer = writer.createRawElement( 'div', { class: 'raw-html__preview' }, function( domElement ) {
 						writer.setCustomProperty( 'domElement', domElement, previewContainer );
@@ -244,4 +242,18 @@ function downcastRawHtmlValueAttribute( htmlEmbedConfig ) {
 			}
 		} );
 	};
+}
+
+// Converts a given {@link module:engine/view/element~Element} to a html widget:
+// * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the html widget element.
+// * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
+//
+//  @param {module:engine/view/element~Element} viewElement
+//  @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
+//  @param {String} label The element's label.
+//  @returns {module:engine/view/element~Element}
+function toRawHtmlWidget( viewElement, writer, label ) {
+	writer.setCustomProperty( 'rawHtml', true, viewElement );
+
+	return toWidget( viewElement, writer, { label } );
 }

@@ -41,6 +41,7 @@ export default class HTMLEmbedInsertCommand extends Command {
 			const rawHtmlElement = writer.createElement( 'rawHtml' );
 
 			model.insertContent( rawHtmlElement );
+			writer.setSelection( rawHtmlElement, 'on' );
 		} );
 	}
 }

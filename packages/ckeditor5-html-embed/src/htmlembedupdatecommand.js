@@ -7,7 +7,6 @@
  * @module html-embed/htmlembedupdatecommand
  */
 
-import { getSelectedRawHtmlModelWidget } from './utils';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 /**
@@ -50,4 +49,18 @@ export default class HTMLEmbedUpdateCommand extends Command {
 			} );
 		}
 	}
+}
+
+// Returns a selected raw html element in the model, if any.
+//
+// @param {module:engine/model/selection~Selection} selection
+// @returns {module:engine/model/element~Element|null}
+function getSelectedRawHtmlModelWidget( selection ) {
+	const selectedElement = selection.getSelectedElement();
+
+	if ( selectedElement && selectedElement.is( 'element', 'rawHtml' ) ) {
+		return selectedElement;
+	}
+
+	return null;
 }

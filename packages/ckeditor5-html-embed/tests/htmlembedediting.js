@@ -11,7 +11,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import HTMLEmbedUpdateCommand from '../src/htmlembedupdatecommand';
 import HTMLEmbedInsertCommand from '../src/htmlembedinsertcommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { isRawHtmlWidget } from '../src/utils';
+import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
 describe( 'HTMLEMbedEditing', () => {
 	let element, editor, model, view, viewDocument;
@@ -261,9 +261,6 @@ describe( 'HTMLEMbedEditing', () => {
 			it.skip( 'should update the `value` attribute after applying changes in the edit source element', () => {
 			} );
 
-			it.skip( 'should remove DOM events when destroying the plugin', () => {
-			} );
-
 			it.skip( 'should show the preview element by default', () => {
 			} );
 		} );
@@ -337,11 +334,12 @@ describe( 'HTMLEMbedEditing', () => {
 			it.skip( 'should re-render the preview element after applying changes in the edit source element', () => {
 			} );
 
-			it.skip( 'should remove DOM events when destroying the plugin', () => {
-			} );
-
 			it.skip( 'should show the preview element by default', () => {
 			} );
 		} );
 	} );
 } );
+
+function isRawHtmlWidget( viewElement ) {
+	return !!viewElement.getCustomProperty( 'rawHtml' ) && isWidget( viewElement );
+}
