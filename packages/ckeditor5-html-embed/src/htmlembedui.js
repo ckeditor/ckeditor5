@@ -10,7 +10,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import htmlEmbedIcon from '../theme/icons/htmlembed.svg';
-import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
  * The HTML embed UI plugin.
@@ -40,7 +39,7 @@ export default class HtmlEmbedUI extends Plugin {
 				editor.execute( 'htmlEmbedInsert' );
 				editor.editing.view.focus();
 
-				const widgetWrapper = getSelectedRawHtmlViewWidget( editor.editing.view.document.selection );
+				const widgetWrapper = editor.editing.view.document.selection.getSelectedElement();
 				const rawHtmlContainer = widgetWrapper.getChild( 0 );
 
 				// After inserting a new element, switch to "Edit source" mode.
@@ -53,26 +52,4 @@ export default class HtmlEmbedUI extends Plugin {
 			return view;
 		} );
 	}
-}
-
-// Returns a raw html widget editing view element if one is selected.
-//
-// @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
-// @returns {module:engine/view/element~Element|null}
-function getSelectedRawHtmlViewWidget( selection ) {
-	const viewElement = selection.getSelectedElement();
-
-	if ( viewElement && isRawHtmlWidget( viewElement ) ) {
-		return viewElement;
-	}
-
-	return null;
-}
-
-// Checks if a given view element is a raw html widget.
-//
-// @param {module:engine/view/element~Element} viewElement
-// @returns {Boolean}
-function isRawHtmlWidget( viewElement ) {
-	return !!viewElement.getCustomProperty( 'rawHtml' ) && isWidget( viewElement );
 }
