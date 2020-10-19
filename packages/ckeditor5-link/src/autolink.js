@@ -52,6 +52,10 @@ const URL_GROUP_IN_MATCH = 2;
 // Simplified email test - should be run over previously found URL.
 const EMAIL_REG_EXP = /^[\S]+@((?![-_])(?:[-\w\u00a1-\uffff]{0,63}[^-_]\.))+(?:[a-z\u00a1-\uffff]{2,})$/i;
 
+// The regex checks for the protocol syntax ('xxxx://' or 'xxxx:')
+// or non-word characters at the beginning of the link ('/', '#' etc.).
+const PROTOCOL_REG_EXP = /^((\w+:(\/{2,})?)|(\W))/i;
+
 /**
  * The autolink plugin.
  *
@@ -222,9 +226,12 @@ export default class AutoLink extends Plugin {
 
 		// Enqueue change to make undo step.
 		model.enqueueChange( writer => {
-			const linkHrefValue = isEmail( url ) ? `mailto:${ url }` : url;
+			const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
+			const protocol = isEmail( url ) ? 'mailto:' : defaultProtocol;
+			const isProtocolNeeded = !!protocol && !PROTOCOL_REG_EXP.test( url );
+			const parsedValue = url && isProtocolNeeded ? protocol + url : url;
 
-			writer.setAttribute( 'linkHref', linkHrefValue, range );
+			writer.setAttribute( 'linkHref', parsedValue, range );
 		} );
 	}
 }
