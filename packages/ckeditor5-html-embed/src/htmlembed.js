@@ -8,8 +8,8 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import HTMLEmbedEditing from './htmlembedediting';
-import HTMLEmbedUI from './htmlembedui';
+import HtmlEmbedEditing from './htmlembedediting';
+import HtmlEmbedUI from './htmlembedui';
 
 /**
  * The HTML embed feature.
@@ -20,19 +20,19 @@ import HTMLEmbedUI from './htmlembedui';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class HTMLEmbed extends Plugin {
+export default class HtmlEmbed extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ HTMLEmbedEditing, HTMLEmbedUI ];
+		return [ HtmlEmbedEditing, HtmlEmbedUI ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'HTMLEmbed';
+		return 'HtmlEmbed';
 	}
 }
 

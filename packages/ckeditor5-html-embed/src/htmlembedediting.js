@@ -12,8 +12,8 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import HTMLEmbedInsertCommand from './htmlembedinsertcommand';
-import HTMLEmbedUpdateCommand from './htmlembedupdatecommand';
+import HtmlEmbedInsertCommand from './htmlembedinsertcommand';
+import HtmlEmbedUpdateCommand from './htmlembedupdatecommand';
 
 import htmlEmbedModeIcon from '../theme/icons/htmlembedmode.svg';
 
@@ -26,12 +26,12 @@ const DISPLAY_PREVIEW_CLASS = 'raw-html--display-preview';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class HTMLEmbedEditing extends Plugin {
+export default class HtmlEmbedEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'HTMLEmbedEditing';
+		return 'HtmlEmbedEditing';
 	}
 
 	/**
@@ -68,8 +68,8 @@ export default class HTMLEmbedEditing extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 
-		const htmlEmbedInsertCommand = new HTMLEmbedInsertCommand( editor );
-		const htmlEmbedUpdateCommand = new HTMLEmbedUpdateCommand( editor );
+		const htmlEmbedInsertCommand = new HtmlEmbedInsertCommand( editor );
+		const htmlEmbedUpdateCommand = new HtmlEmbedUpdateCommand( editor );
 
 		schema.register( 'rawHtml', {
 			isObject: true,

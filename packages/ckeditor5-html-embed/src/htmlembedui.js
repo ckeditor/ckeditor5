@@ -17,7 +17,7 @@ import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class HTMLEmbedUI extends Plugin {
+export default class HtmlEmbedUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;

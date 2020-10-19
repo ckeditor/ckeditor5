@@ -14,7 +14,7 @@ Check out the {@link features/html-embed#demo demo in the HTML embed feature} gu
 
 ## Documentation
 
-See the {@link features/html-embed HTML embed feature} guide and the {@link module:html-embed/htmlembed~HTMLEmbed} plugin documentation.
+See the {@link features/html-embed HTML embed feature} guide and the {@link module:html-embed/htmlembed~HtmlEmbed} plugin documentation.
 
 ## Installation
 

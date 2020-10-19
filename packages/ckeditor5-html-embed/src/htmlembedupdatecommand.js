@@ -12,7 +12,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 /**
  * The update raw html value command.
  *
- * The command is registered by {@link module:html-embed/htmlembedediting~HTMLEmbedEditing} as `'htmlEmbedUpdate'`.
+ * The command is registered by {@link module:html-embed/htmlembedediting~HtmlEmbedEditing} as `'htmlEmbedUpdate'`.
  *
  * To update the value of the raw html element at the current selection, execute the command:
  *
@@ -20,7 +20,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  *
  * @extends module:core/command~Command
  */
-export default class HTMLEmbedUpdateCommand extends Command {
+export default class HtmlEmbedUpdateCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

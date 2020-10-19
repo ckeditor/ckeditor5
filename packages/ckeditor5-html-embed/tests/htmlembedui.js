@@ -6,12 +6,12 @@
 /* global document */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import HTMLEmbedEditing from '../src/htmlembedediting';
+import HtmlEmbedEditing from '../src/htmlembedediting';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import HTMLEmbedUI from '../src/htmlembedui';
+import HtmlEmbedUI from '../src/htmlembedui';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-describe( 'HTMLEMbedEditing', () => {
+describe( 'HtmlEmbedEditing', () => {
 	let element, editor, view, viewDocument, htmlEmbedView;
 
 	testUtils.createSinonSandbox();
@@ -22,7 +22,7 @@ describe( 'HTMLEMbedEditing', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ HTMLEmbedUI, HTMLEmbedEditing ]
+				plugins: [ HtmlEmbedUI, HtmlEmbedEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

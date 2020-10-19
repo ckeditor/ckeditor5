@@ -9,7 +9,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import sanitizeHtml from 'sanitize-html';
 import { clone } from 'lodash-es';
-import HTMLEmbed from '../../src/htmlembed';
+import HtmlEmbed from '../../src/htmlembed';
 
 const restrictedModeButton = document.getElementById( 'mode-enabled' );
 const standardModeButton = document.getElementById( 'mode-disabled' );
@@ -58,7 +58,7 @@ async function reloadEditor( config = {} ) {
 	}
 
 	config = Object.assign( config, {
-		plugins: [ ArticlePluginSet, HTMLEmbed ],
+		plugins: [ ArticlePluginSet, HtmlEmbed ],
 		toolbar: [
 			'heading', '|', 'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',

@@ -6,14 +6,14 @@
 /* global console, document */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import HTMLEmbedEditing from '../src/htmlembedediting';
+import HtmlEmbedEditing from '../src/htmlembedediting';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import HTMLEmbedUpdateCommand from '../src/htmlembedupdatecommand';
-import HTMLEmbedInsertCommand from '../src/htmlembedinsertcommand';
+import HtmlEmbedUpdateCommand from '../src/htmlembedupdatecommand';
+import HtmlEmbedInsertCommand from '../src/htmlembedinsertcommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
-describe( 'HTMLEMbedEditing', () => {
+describe( 'HtmlEmbedEditing', () => {
 	let element, editor, model, view, viewDocument;
 
 	testUtils.createSinonSandbox();
@@ -24,7 +24,7 @@ describe( 'HTMLEMbedEditing', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ HTMLEmbedEditing ]
+				plugins: [ HtmlEmbedEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -42,11 +42,11 @@ describe( 'HTMLEMbedEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( HTMLEmbedEditing.pluginName ).to.equal( 'HTMLEmbedEditing' );
+		expect( HtmlEmbedEditing.pluginName ).to.equal( 'HtmlEmbedEditing' );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( HTMLEmbedEditing ) ).to.be.instanceOf( HTMLEmbedEditing );
+		expect( editor.plugins.get( HtmlEmbedEditing ) ).to.be.instanceOf( HtmlEmbedEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
@@ -61,11 +61,11 @@ describe( 'HTMLEMbedEditing', () => {
 
 	describe( 'commands', () => {
 		it( 'should register htmlEmbedUpdate command', () => {
-			expect( editor.commands.get( 'htmlEmbedUpdate' ) ).to.be.instanceOf( HTMLEmbedUpdateCommand );
+			expect( editor.commands.get( 'htmlEmbedUpdate' ) ).to.be.instanceOf( HtmlEmbedUpdateCommand );
 		} );
 
 		it( 'should register htmlEmbedInsert command', () => {
-			expect( editor.commands.get( 'htmlEmbedInsert' ) ).to.be.instanceOf( HTMLEmbedInsertCommand );
+			expect( editor.commands.get( 'htmlEmbedInsert' ) ).to.be.instanceOf( HtmlEmbedInsertCommand );
 		} );
 	} );
 
@@ -279,7 +279,7 @@ describe( 'HTMLEMbedEditing', () => {
 
 				return ClassicTestEditor
 					.create( element, {
-						plugins: [ HTMLEmbedEditing ],
+						plugins: [ HtmlEmbedEditing ],
 						htmlEmbed: {
 							previewsInData: true,
 							sanitizeHtml

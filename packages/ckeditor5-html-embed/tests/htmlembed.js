@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import HTMLEmbed from '../src/htmlembed';
-import HTMLEmbedUI from '../src/htmlembedui';
-import HTMLEmbedEditing from '../src/htmlembedediting';
+import HtmlEmbed from '../src/htmlembed';
+import HtmlEmbedUI from '../src/htmlembedui';
+import HtmlEmbedEditing from '../src/htmlembedediting';
 
-describe( 'HTMLEMbed', () => {
-	it( 'should require HTMLEmbedEditing and HTMLEmbedUI', () => {
-		expect( HTMLEmbed.requires ).to.deep.equal( [ HTMLEmbedEditing, HTMLEmbedUI ] );
+describe( 'HtmlEmbed', () => {
+	it( 'should require HtmlEmbedEditing and HtmlEmbedUI', () => {
+		expect( HtmlEmbed.requires ).to.deep.equal( [ HtmlEmbedEditing, HtmlEmbedUI ] );
 	} );
 
 	it( 'should be named', () => {
-		expect( HTMLEmbed.pluginName ).to.equal( 'HTMLEmbed' );
+		expect( HtmlEmbed.pluginName ).to.equal( 'HtmlEmbed' );
 	} );
 } );

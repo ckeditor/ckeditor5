@@ -5,11 +5,11 @@ menu-title: HTML embed
 
 # HTML embed
 
-The {@link module:html-embed/htmlembed~HTMLEmbed} plugin provides the possibility to insert a HTML codeinto the rich-text editor.
+The {@link module:html-embed/htmlembed~HtmlEmbed} plugin provides the possibility to insert a HTML codeinto the rich-text editor.
 
 ## Demo
 
-Use the editor below to see the {@link module:html-embed/htmlembed~HTMLEmbed} plugin in action.
+Use the editor below to see the {@link module:html-embed/htmlembed~HtmlEmbed} plugin in action.
 
 {@snippet features/html-embed}
 
@@ -24,11 +24,11 @@ npm install --save @ckeditor/ckeditor5-html-embed
 And add it to your plugin list configuration:
 
 ```js
-import HTMLEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
+import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ HTMLEmbed, ... ],
+		plugins: [ HtmlEmbed, ... ],
 		toolbar: [ 'htmlEmbed', ... ],
 	} )
 	.then( ... )
@@ -41,9 +41,9 @@ ClassicEditor
 
 ## Common API
 
-The {@link module:html-embed/htmlembed~HTMLEmbed} plugin registers:
+The {@link module:html-embed/htmlembed~HtmlEmbed} plugin registers:
 * the UI button component (`'htmlEmbed'`),
-* the `'htmlEmbed'` command implemented by {@link module:html-embed/htmlembedcommand~HTMLEmbedCommand}.
+* the `'htmlEmbed'` command implemented by {@link module:html-embed/htmlembedcommand~HtmlEmbedCommand}.
 
 The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 

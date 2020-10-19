@@ -7,9 +7,9 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-import HTMLEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
+import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
 
-ClassicEditor.builtinPlugins.push( HTMLEmbed );
+ClassicEditor.builtinPlugins.push( HtmlEmbed );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-html-embed' ), {
