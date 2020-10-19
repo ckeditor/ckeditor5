@@ -5,8 +5,11 @@
 
 /* eslint-disable ckeditor5-rules/ckeditor-error-message */
 
-import { default as CKEditorError, DOCUMENTATION_URL } from '../src/ckeditorerror';
+/* global console */
+
+import { default as CKEditorError, DOCUMENTATION_URL, logError, logWarning } from '../src/ckeditorerror';
 import { expectToThrowCKEditorError } from './_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'CKEditorError', () => {
 	it( 'inherits from Error', () => {
@@ -35,7 +38,7 @@ describe( 'CKEditorError', () => {
 
 		expect( error ).to.have.property(
 			'message',
-			`foo Read more: ${ DOCUMENTATION_URL }#error-foo\n {"bar":1}`
+			`foo {"bar":1}\nRead more: ${ DOCUMENTATION_URL }#error-foo`
 		);
 		expect( error ).to.have.property( 'data', data );
 	} );
@@ -64,7 +67,7 @@ describe( 'CKEditorError', () => {
 
 		expect( error ).to.have.property(
 			'message',
-			`foo Read more: ${ DOCUMENTATION_URL }#error-foo\n {"bar":"a","bom":{"x":1},"bim":10}`
+			`foo {"bar":"a","bom":{"x":1},"bim":10}\nRead more: ${ DOCUMENTATION_URL }#error-foo`
 		);
 		expect( error ).to.have.property( 'data', data );
 	} );
@@ -72,18 +75,15 @@ describe( 'CKEditorError', () => {
 	it( 'contains a link which leads to the documentation', () => {
 		const error = new CKEditorError( 'model-schema-no-item', null );
 
-		const errorMessage = 'model-schema-no-item' +
-			` Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n`;
+		const errorMessage = `model-schema-no-item\nRead more: ${ DOCUMENTATION_URL }#error-model-schema-no-item`;
 
 		expect( error ).to.have.property( 'message', errorMessage );
 	} );
 
-	it( 'link to documentation is added before the additional data message', () => {
+	it( 'link to documentation is added after the additional data message', () => {
 		const error = new CKEditorError( 'model-schema-no-item', null, { foo: 1, bar: 2 } );
 
-		const errorMessage = 'model-schema-no-item ' +
-			`Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n ` +
-			'{"foo":1,"bar":2}';
+		const errorMessage = `model-schema-no-item {"foo":1,"bar":2}\nRead more: ${ DOCUMENTATION_URL }#error-model-schema-no-item`;
 
 		expect( error ).to.have.property( 'message', errorMessage );
 	} );
@@ -115,6 +115,68 @@ describe( 'CKEditorError', () => {
 			expectToThrowCKEditorError( () => {
 				CKEditorError.rethrowUnexpectedError( error, context );
 			}, /foo/, context );
+		} );
+	} );
+
+	describe( 'logWarning()', () => {
+		beforeEach( () => {
+			testUtils.sinon.stub( console, 'warn' );
+		} );
+
+		afterEach( () => {
+			console.warn.restore();
+		} );
+
+		it( 'should log warning with data and link to the documentation', () => {
+			logWarning( 'foo', { name: 'foo' } );
+
+			sinon.assert.calledOnce( console.warn );
+			sinon.assert.calledWithExactly( console.warn,
+				sinon.match( 'foo' ),
+				{ name: 'foo' },
+				`\nRead more: ${ DOCUMENTATION_URL }#error-foo`
+			);
+		} );
+
+		it( 'should log warning without data and with a link to the documentation', () => {
+			logWarning( 'foo' );
+
+			sinon.assert.calledOnce( console.warn );
+			sinon.assert.calledWithExactly( console.warn,
+				sinon.match( 'foo' ),
+				`\nRead more: ${ DOCUMENTATION_URL }#error-foo`
+			);
+		} );
+	} );
+
+	describe( 'logError()', () => {
+		beforeEach( () => {
+			testUtils.sinon.stub( console, 'error' );
+		} );
+
+		afterEach( () => {
+			console.error.restore();
+		} );
+
+		it( 'should log error with data and link to the documentation', () => {
+			logError( 'foo', { name: 'foo' } );
+
+			sinon.assert.calledOnce( console.error );
+			sinon.assert.calledWithExactly( console.error,
+				sinon.match( 'foo' ),
+				{ name: 'foo' },
+				`\nRead more: ${ DOCUMENTATION_URL }#error-foo`
+			);
+		} );
+
+		it( 'should log error without data and with a link to the documentation', () => {
+			logError( 'foo' );
+
+			sinon.assert.calledOnce( console.error );
+			sinon.assert.calledWithExactly( console.error,
+				sinon.match( 'foo' ),
+				`\nRead more: ${ DOCUMENTATION_URL }#error-foo`
+			);
 		} );
 	} );
 } );

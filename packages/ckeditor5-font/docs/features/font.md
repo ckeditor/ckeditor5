@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-font-source}
 
-The {@link module:font/font~Font} plugin enables the following features in the rich-text editor:
+The {@link module:font/font~Font} plugin provides extended text formatting options for the document content. It enables the following features in the rich-text editor:
 * {@link module:font/fontfamily~FontFamily} &ndash; Allows to change the font family by applying inline `<span>` elements with a `font-family` in the `style` attribute.
 * {@link module:font/fontsize~FontSize} &ndash; Allows to control the font size by applying inline `<span>` elements that either have a CSS class or a `font-size` in the `style` attribute.
 * {@link module:font/fontcolor~FontColor} &ndash; Allows to control the font color by applying inline `<span>` elements with a `color` in the `style` attribute.
@@ -18,6 +18,15 @@ The {@link module:font/font~Font} plugin enables the following features in the r
 ## Demo
 
 {@snippet features/font}
+
+## Related features
+
+Here are some more CKEditor 5 features that can help you format your content:
+* {@link features/basic-styles Basic font styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered or justified.
+* {@link features/headings Headings} &ndash; Divide your content into sections.
+* {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of content.
+* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 
 ## Configuring the font family feature
 

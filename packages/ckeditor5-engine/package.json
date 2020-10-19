@@ -38,6 +38,7 @@
     "@ckeditor/ckeditor5-table": "^23.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^23.0.0",
     "@ckeditor/ckeditor5-typing": "^23.0.0",
+    "@ckeditor/ckeditor5-ui": "^23.0.0",
     "@ckeditor/ckeditor5-undo": "^23.0.0",
     "@ckeditor/ckeditor5-widget": "^23.0.0"
   },

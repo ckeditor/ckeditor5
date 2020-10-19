@@ -209,13 +209,27 @@ describe( 'MediaEmbedUI', () => {
 			expect( form.urlInputView.isReadOnly ).to.be.true;
 		} );
 
-		it( 'binds saveButtonView#isEnabled to command#isEnabled', () => {
-			const command = editor.commands.get( 'mediaEmbed' );
+		it( 'should trim URL input value', () => {
+			form.urlInputView.fieldView.element.value = '   ';
+			form.urlInputView.fieldView.fire( 'input' );
+
+			expect( form.mediaURLInputValue ).to.equal( '' );
+
+			form.urlInputView.fieldView.element.value = '   test   ';
+			form.urlInputView.fieldView.fire( 'input' );
+
+			expect( form.mediaURLInputValue ).to.equal( 'test' );
+		} );
+
+		it( 'binds saveButtonView#isEnabled to trimmed URL input value', () => {
+			form.urlInputView.fieldView.fire( 'input' );
+
+			expect( form.saveButtonView.isEnabled ).to.be.false;
+
+			form.urlInputView.fieldView.element.value = 'test';
+			form.urlInputView.fieldView.fire( 'input' );
 
 			expect( form.saveButtonView.isEnabled ).to.be.true;
-
-			command.isEnabled = false;
-			expect( form.saveButtonView.isEnabled ).to.be.false;
 		} );
 
 		describe( 'validators', () => {
