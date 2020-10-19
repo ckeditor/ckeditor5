@@ -206,7 +206,7 @@ In the example below, a button's `isEnabled` property will be set to `true` only
 
 ```js
 const command = editor.commands.get( 'heading' );
-button.bind( 'isOn', 'isEnabled' ).to( command, 'value', value => value === 'heading1' );
+button.bind( 'isOn' ).to( command, 'value', value => value === 'heading1' );
 ```
 
 ### Binding multiple properties
