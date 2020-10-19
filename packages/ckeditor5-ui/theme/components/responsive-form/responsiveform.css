@@ -1,8 +1,6 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-/* This one can be used here https://github.com/ckeditor/ckeditor5/blob/0706215c592edcf1b701b4af63298f4b77f8dd01/packages/ckeditor5-link/src/ui/linkformview.js#L139 */
-/* It simply enforces the mode when the class is set. */
-.ck-link-form_layout-vertical button.ck-button::after {
+.ck-vertical-form .ck-button::after {
 	content: "";
 	width: 0;
 	position: absolute;
@@ -12,10 +10,9 @@
 	z-index: 1;
 }
 
-/* This one is smart and works based on media queries. */
-@mixin ck-media-phone {
-	.ck-responsive-form {
-		button.ck-button::after {
+.ck.ck-responsive-form {
+	@mixin ck-media-phone {
+		& .ck-button::after {
 			content: "";
 			width: 0;
 			position: absolute;
