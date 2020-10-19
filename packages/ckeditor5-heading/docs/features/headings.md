@@ -30,6 +30,8 @@ By default, when your editor build does not include the title plugin, a `<h1>` e
 
 {@snippet features/default-headings}
 
+{@snippet features/heading-buttons}
+
 ## Related features
 
 There are more CKEditor 5 features that can help you format your content:
