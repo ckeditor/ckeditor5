@@ -196,11 +196,8 @@ export default class HtmlEmbedEditing extends Plugin {
 					const previewContainer = writer.createRawElement( 'div', { class: 'raw-html__preview' }, function( domElement ) {
 						writer.setCustomProperty( 'domElement', domElement, previewContainer );
 
-						if ( htmlEmbedConfig.previewsInData ) {
-							const sanitizeOutput = htmlEmbedConfig.sanitizeHtml( modelElement.getAttribute( 'value' ) || '' );
-
-							domElement.innerHTML = sanitizeOutput.html;
-						}
+						const sanitizeOutput = htmlEmbedConfig.sanitizeHtml( modelElement.getAttribute( 'value' ) || '' );
+						domElement.innerHTML = sanitizeOutput.html;
 					} );
 
 					writer.insert( writer.createPositionAt( rawHtmlContainer, 2 ), previewContainer );

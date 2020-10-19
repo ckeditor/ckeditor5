@@ -43,11 +43,9 @@ export default class HtmlEmbedUpdateCommand extends Command {
 		const selection = model.document.selection;
 		const selectedRawHtmlElement = getSelectedRawHtmlModelWidget( selection );
 
-		if ( selectedRawHtmlElement ) {
-			model.change( writer => {
-				writer.setAttribute( 'value', value, selectedRawHtmlElement );
-			} );
-		}
+		model.change( writer => {
+			writer.setAttribute( 'value', value, selectedRawHtmlElement );
+		} );
 	}
 }
 
