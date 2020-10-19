@@ -40,13 +40,14 @@ export default class HTMLEmbedUI extends Plugin {
 				editor.execute( 'htmlEmbedInsert' );
 				editor.editing.view.focus();
 
-				const rawHtmlWidget = getSelectedRawHtmlViewWidget( editor.editing.view.document.selection );
+				const widgetWrapper = getSelectedRawHtmlViewWidget( editor.editing.view.document.selection );
+				const rawHtmlContainer = widgetWrapper.getChild( 0 );
 
 				// After inserting a new element, switch to "Edit source" mode.
-				rawHtmlWidget.getChild( 0 ).getCustomProperty( 'DOMElement' ).click();
+				rawHtmlContainer.getChild( 0 ).getCustomProperty( 'domElement' ).click();
 
 				// And focus the edit source element (`textarea`).
-				rawHtmlWidget.getChild( 1 ).getCustomProperty( 'DOMElement' ).focus();
+				rawHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).focus();
 			} );
 
 			return view;

@@ -56,14 +56,6 @@ export default class HTMLEmbedEditing extends Plugin {
 				};
 			}
 		} );
-
-		/**
-		 * A collection that contains all events that must be attached directly to the DOM elements.
-		 *
-		 * @private
-		 * @type {Set.<Object>}
-		 */
-		this._domListeners = new Set();
 	}
 
 	/**
@@ -89,34 +81,16 @@ export default class HTMLEmbedEditing extends Plugin {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	destroy() {
-		for ( const item of this._domListeners ) {
-			item.element.removeEventListener( item.event, item.listener );
-		}
-
-		this._domListeners.clear();
-
-		return super.destroy();
-	}
-
-	/**
 	 * Set-ups converters for the feature.
 	 *
 	 * @private
 	 */
 	_setupConversion() {
-		// TODO: Typing around the widget does not work after adding the 'data-cke-ignore-events` attribute.
-		// TODO: Wrapping the inner views in another container with the attribute resolved WTA issue but events
-		// TODO: inside the views are not triggered.
 		const editor = this.editor;
 		const t = editor.t;
 		const view = editor.editing.view;
 
 		const htmlEmbedConfig = editor.config.get( 'htmlEmbed' );
-		const domListeners = this._domListeners;
-
 		const upcastWriter = new UpcastWriter( view.document );
 		const htmlProcessor = new HtmlDataProcessor( view.document );
 
@@ -150,23 +124,31 @@ export default class HTMLEmbedEditing extends Plugin {
 				const widgetLabel = t( 'HTML snippet' );
 				const placeholder = t( 'Paste the raw code here.' );
 
-				const viewWrapper = writer.createContainerElement( 'div', {
-					class: 'raw-html',
+				const widgetView = writer.createContainerElement( 'div', {
+					class: 'raw-html'
+				} );
+
+				const rawHtmlContainer = writer.createContainerElement( 'div', {
 					'data-cke-ignore-events': true
 				} );
 
 				// Whether to show a preview mode or editing area.
-				writer.setCustomProperty( 'isEditingSourceActive', false, viewWrapper );
+				writer.setCustomProperty( 'isEditingSourceActive', false, rawHtmlContainer );
+
+				const textareaAttributes = {
+					placeholder,
+					disabled: true,
+					class: 'raw-html__source'
+				};
 
 				// The editing raw HTML field.
-				const textarea = writer.createUIElement( 'textarea', { placeholder }, function( domDocument ) {
+				const sourceElement = writer.createUIElement( 'textarea', textareaAttributes, function( domDocument ) {
 					const root = this.toDomElement( domDocument );
 
-					writer.setCustomProperty( 'DOMElement', root, textarea );
-
+					writer.setCustomProperty( 'domElement', root, sourceElement );
 					root.value = modelElement.getAttribute( 'value' ) || '';
 
-					attachDomListener( root, 'input', () => {
+					root.addEventListener( 'input', () => {
 						editor.execute( 'htmlEmbedUpdate', root.value );
 					} );
 
@@ -177,85 +159,88 @@ export default class HTMLEmbedEditing extends Plugin {
 				const toggleButton = writer.createUIElement( 'div', { class: 'raw-html__switch-mode' }, function( domDocument ) {
 					const root = this.toDomElement( domDocument );
 
-					writer.setCustomProperty( 'DOMElement', root, toggleButton );
+					root.innerHTML = htmlEmbedModeIcon;
+					writer.setCustomProperty( 'domElement', root, toggleButton );
 
-					attachDomListener( root, 'click', evt => {
+					root.addEventListener( 'click', evt => {
 						view.change( writer => {
-							const isEditingSourceActive = viewWrapper.getCustomProperty( 'isEditingSourceActive' );
+							const isEditingSourceActive = rawHtmlContainer.getCustomProperty( 'isEditingSourceActive' );
 
-							if ( isEditingSourceActive ) {
-								writer.removeClass( 'raw-html--edit-source', viewWrapper );
-							} else {
-								writer.addClass( 'raw-html--edit-source', viewWrapper );
+							if ( htmlEmbedConfig.previewsInData ) {
+								if ( !isEditingSourceActive ) {
+									writer.removeClass( 'raw-html--display-preview', widgetView );
+								} else {
+									writer.addClass( 'raw-html--display-preview', widgetView );
+								}
 							}
 
-							writer.setCustomProperty( 'isEditingSourceActive', !isEditingSourceActive, viewWrapper );
-							evt.preventDefault();
-						} );
-					} );
+							const textarea = sourceElement.getCustomProperty( 'domElement' );
+							textarea.disabled = !textarea.disabled;
 
-					root.innerHTML = htmlEmbedModeIcon;
+							writer.setCustomProperty( 'isEditingSourceActive', !isEditingSourceActive, rawHtmlContainer );
+						} );
+
+						evt.preventDefault();
+					} );
 
 					return root;
 				} );
 
-				// The container that renders the HTML.
-				const previewContainer = writer.createRawElement( 'div', { class: 'raw-html__preview' }, function( domElement ) {
-					writer.setCustomProperty( 'DOMElement', domElement, previewContainer );
+				writer.insert( writer.createPositionAt( widgetView, 0 ), rawHtmlContainer );
+				writer.insert( writer.createPositionAt( rawHtmlContainer, 0 ), toggleButton );
+				writer.insert( writer.createPositionAt( rawHtmlContainer, 1 ), sourceElement );
 
-					if ( htmlEmbedConfig.previewsInData ) {
-						const sanitizeOutput = htmlEmbedConfig.sanitizeHtml( modelElement.getAttribute( 'value' ) || '' );
+				// The container that renders the HTML should be created only when `htmlEmbed.previewsInData=true` in the config.
+				if ( htmlEmbedConfig.previewsInData ) {
+					writer.addClass( 'raw-html--preview-enabled', widgetView );
+					writer.addClass( 'raw-html--display-preview', widgetView );
 
-						domElement.innerHTML = sanitizeOutput.html;
-					} else {
-						domElement.innerHTML = '<div class="raw-html__preview-placeholder">Raw HTML snippet.</div>';
-					}
-				} );
+					const previewContainer = writer.createRawElement( 'div', { class: 'raw-html__preview' }, function( domElement ) {
+						writer.setCustomProperty( 'domElement', domElement, previewContainer );
 
-				writer.insert( writer.createPositionAt( viewWrapper, 0 ), toggleButton );
-				writer.insert( writer.createPositionAt( viewWrapper, 1 ), textarea );
-				writer.insert( writer.createPositionAt( viewWrapper, 2 ), previewContainer );
+						if ( htmlEmbedConfig.previewsInData ) {
+							const sanitizeOutput = htmlEmbedConfig.sanitizeHtml( modelElement.getAttribute( 'value' ) || '' );
 
-				return toRawHtmlWidget( viewWrapper, writer, widgetLabel );
+							domElement.innerHTML = sanitizeOutput.html;
+						}
+					} );
+
+					writer.insert( writer.createPositionAt( rawHtmlContainer, 2 ), previewContainer );
+				}
+
+				return toRawHtmlWidget( widgetView, writer, widgetLabel );
 			}
 		} );
 
 		editor.conversion.for( 'editingDowncast' ).add( downcastRawHtmlValueAttribute( htmlEmbedConfig ) );
-
-		// Attaches an event listener to the specified element.
-		//
-		// @params {HTMLElement} element An element that the event will be attached.
-		// @params {String} event A name of the event.
-		// @params {Function} listener A listener that will be executed.
-		function attachDomListener( element, event, listener ) {
-			element.addEventListener( event, listener );
-			domListeners.add( { element, event, listener } );
-		}
 	}
 }
 
 // Returns a converter that handles the `value` attribute of the `rawHtml` element.
 //
-// It updates the source (`textarea`) value and passes an HTML to the preview element.
+// It updates the source (`textarea`) value and passes an HTML to the preview element in `htmlEmbed.previewsInData=true` mode.
 //
 // @params {module:html-embed/htmlembed~MediaEmbedConfig} htmlEmbedConfig
 // @returns {Function}
 function downcastRawHtmlValueAttribute( htmlEmbedConfig ) {
 	return dispatcher => {
 		dispatcher.on( 'attribute:value:rawHtml', ( evt, data, conversionApi ) => {
-			const viewWrapper = conversionApi.mapper.toViewElement( data.item );
+			const widgetView = conversionApi.mapper.toViewElement( data.item );
+			const rawHtmlContainer = widgetView.getChild( 0 );
 
-			const sourceDOMElement = viewWrapper.getChild( 1 ).getCustomProperty( 'DOMElement' );
-			const previewDOMElement = viewWrapper.getChild( 2 ).getCustomProperty( 'DOMElement' );
+			const textareaDomElement = rawHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' );
 
-			if ( sourceDOMElement ) {
-				sourceDOMElement.value = data.item.getAttribute( 'value' );
+			if ( textareaDomElement ) {
+				textareaDomElement.value = data.item.getAttribute( 'value' );
 			}
 
-			if ( htmlEmbedConfig.previewsInData && previewDOMElement ) {
-				const sanitizeOutput = htmlEmbedConfig.sanitizeHtml( data.item.getAttribute( 'value' ) );
+			if ( htmlEmbedConfig.previewsInData ) {
+				const previewDomElement = rawHtmlContainer.getChild( 2 ).getCustomProperty( 'domElement' );
 
-				previewDOMElement.innerHTML = sanitizeOutput.html;
+				if ( previewDomElement ) {
+					const sanitizeOutput = htmlEmbedConfig.sanitizeHtml( data.item.getAttribute( 'value' ) );
+					previewDomElement.innerHTML = sanitizeOutput.html;
+				}
 			}
 		} );
 	};

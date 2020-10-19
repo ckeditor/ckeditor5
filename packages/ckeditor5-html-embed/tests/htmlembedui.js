@@ -66,7 +66,7 @@ describe( 'HTMLEMbedEditing', () => {
 	it( 'should switch to edit source mode after inserting the element', () => {
 		htmlEmbedView.fire( 'execute' );
 
-		const editSourceView = viewDocument.getRoot().getChild( 0 ).getChild( 1 );
-		expect( document.activeElement ).to.equal( editSourceView.getCustomProperty( 'DOMElement' ) );
+		const editSourceView = viewDocument.getRoot().getChild( 0 ).getChild( 0 ).getChild( 1 );
+		expect( document.activeElement ).to.equal( editSourceView.getCustomProperty( 'domElement' ) );
 	} );
 } );

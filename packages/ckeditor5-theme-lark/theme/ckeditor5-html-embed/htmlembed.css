@@ -1,0 +1,54 @@
+/*
+ * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck-editor__editable {
+	/* The feature container. */
+	& .raw-html {
+		position: relative;
+
+		/* The switch mode button. */
+		& .raw-html__switch-mode {
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 5em;
+			height: 5em;
+			cursor: pointer;
+		}
+
+		/* The edit source element. */
+		& .raw-html__source {
+			width: 30em;
+			height: 5em;
+			resize: none;
+		}
+	}
+
+	/* Using the feature with enabled previews in data. */
+	& .raw-html--preview-enabled {
+		/* The preview data container. */
+		& .raw-html__preview {
+			min-height: 5em;
+			min-width: 30em;
+			width: calc(100% - 5em);
+		}
+
+		/* Mode: preview the HTML. */
+		&.raw-html--display-preview {
+			& .raw-html__source {
+				display: none;
+			}
+
+			& .raw-html__preview {
+				display: block;
+			}
+		}
+
+		/* Mode: edit the HTML source. */
+		&:not(.raw-html--display-preview) .raw-html__preview {
+			display: none;
+		}
+	}
+}
