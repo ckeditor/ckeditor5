@@ -6,7 +6,11 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
-.ck.ck-text-alternative-form {
+.ck-vertical-form .ck-button::after {
+	border-right: 1px solid var(--ck-color-base-border);
+}
+
+.ck.ck-responsive-form {
 	padding: var(--ck-spacing-standard);
 
 	&:focus {
@@ -37,9 +41,15 @@
 				min-width: 0;
 				width: 100%;
 			}
+
+			/* Let the long error messages wrap in the narrow form. */
+			& .ck-labeled-field-view__error {
+				white-space: normal;
+			}
 		}
 
-		& .ck-button {
+		/* 'button' selector must be used because those styles shouldn't be added to other elements, like 'a'. Example in LinkActionsView. */
+		& button.ck-button {
 			padding: var(--ck-spacing-standard);
 			margin-top: var(--ck-spacing-standard);
 
@@ -49,10 +59,6 @@
 
 			@mixin ck-dir ltr {
 				margin-left: 0;
-
-				&:first-of-type {
-					border-right: 1px solid var(--ck-color-base-border);
-				}
 			}
 
 			@mixin ck-dir rtl {
@@ -61,6 +67,10 @@
 				&:last-of-type {
 					border-right: 1px solid var(--ck-color-base-border);
 				}
+			}
+
+			&::after {
+				border-right: 1px solid var(--ck-color-base-border);
 			}
 		}
 	}
