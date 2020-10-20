@@ -20,14 +20,11 @@
 				}
 			}
 
-			& .ck-table-form__border-style {
-				width: 80px;
-				min-width: 80px;
-			}
-
+			& .ck-table-form__border-style,
 			& .ck-table-form__border-width {
 				width: 80px;
 				min-width: 80px;
+				max-width: 80px;
 			}
 		}
 

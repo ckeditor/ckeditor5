@@ -7,26 +7,16 @@
 
 :root {
 	--ck-labeled-field-view-transition: .1s cubic-bezier(0, 0, 0.24, 0.95);
+	--ck-labeled-field-empty-unfocused-max-width: 100% - 2 * var(--ck-spacing-medium);
 }
 
 .ck.ck-labeled-field-view {
 	@mixin ck-rounded-corners;
 
 	& > .ck.ck-labeled-field-view__input-wrapper {
+		display: flex;
 		position: relative;
 		width: 100%;
-
-		& > .ck-dropdown > .ck.ck-button {
-			background: transparent;
-		}
-	}
-
-	&.ck-labeled-field-view_empty > .ck.ck-labeled-field-view__input-wrapper > .ck-dropdown > .ck-button > .ck-button__label {
-		opacity: 0;
-	}
-
-	& .ck-labeled-input__wrapper {
-		position: relative;
 	}
 
 	& .ck.ck-input {
@@ -104,10 +94,27 @@
 	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
 		transform: translate(var(--ck-spacing-medium), calc(0.6 * var(--ck-font-size-base))) scale(1);
 
-		/* Compensate for the default translate position */
-		max-width: calc(100% - 2 * var(--ck-spacing-medium));
+		/* Compensate for the default translate position. */
+		max-width: calc(var(--ck-labeled-field-empty-unfocused-max-width));
 
 		background: transparent;
 		padding: 0;
+	}
+
+	/*------ DropdownView integration ----------------------------------------------------------------------------------- */
+
+	/* Make sure dropdown' background color in any of dropdown's state does not collide with labeled field. */
+	& > .ck.ck-labeled-field-view__input-wrapper > .ck-dropdown > .ck.ck-button {
+		background: transparent;
+	}
+
+	/* When the dropdown is "empty", the labeled field label replaces its label. */
+	&.ck-labeled-field-view_empty > .ck.ck-labeled-field-view__input-wrapper > .ck-dropdown > .ck-button > .ck-button__label {
+		opacity: 0;
+	}
+
+	/* Make sure the label of the empty, unfocused input does not cover the dropdown arrow. */
+	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck-dropdown + .ck-label {
+		max-width: calc(var(--ck-labeled-field-empty-unfocused-max-width) - var(--ck-dropdown-arrow-size) - var(--ck-spacing-standard));
 	}
 }
