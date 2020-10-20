@@ -16,7 +16,7 @@ import HtmlEmbedInsertCommand from './htmlembedinsertcommand';
 import HtmlEmbedUpdateCommand from './htmlembedupdatecommand';
 
 import pencilIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
-import vision from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
+import eyeIcon from '../theme/icons/eye.svg';
 
 import '../theme/htmlembed.css';
 
@@ -185,7 +185,7 @@ export default class HtmlEmbedEditing extends Plugin {
 							const textarea = sourceElement.getCustomProperty( 'domElement' );
 							textarea.disabled = !textarea.disabled;
 
-							root.innerHTML = textarea.disabled ? pencilIcon : vision;
+							root.innerHTML = textarea.disabled ? pencilIcon : eyeIcon;
 							root.firstChild.classList.add( 'ck', 'ck-icon', 'ck-button__icon' );
 						} );
 

@@ -9,7 +9,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import htmlEmbedIcon from '../theme/icons/htmlembed.svg';
+
+import htmlEmbedIcon from '../theme/icons/html.svg';
 
 /**
  * The HTML embed UI plugin.
