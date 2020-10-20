@@ -5,10 +5,11 @@
 
 /* globals window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import sanitizeHtml from 'sanitize-html';
 import { clone } from 'lodash-es';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import HtmlEmbed from '../../src/htmlembed';
 
 const restrictedModeButton = document.getElementById( 'mode-enabled' );
@@ -58,7 +59,7 @@ async function reloadEditor( config = {} ) {
 	}
 
 	config = Object.assign( config, {
-		plugins: [ ArticlePluginSet, HtmlEmbed ],
+		plugins: [ ArticlePluginSet, HtmlEmbed, Code ],
 		toolbar: [
 			'heading', '|', 'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
@@ -106,9 +107,8 @@ function getSanitizeHtmlConfig( defaultConfig ) {
 		config.allowedAttributes[ htmlTag ].push( 'style' );
 	}
 
-	// Should we allow the `controls` attribute?
-	config.allowedAttributes.video.push( 'width', 'height', 'controls' );
 	config.allowedAttributes.audio.push( 'controls' );
+	config.allowedAttributes.video.push( 'width', 'height', 'controls' );
 
 	config.allowedAttributes.iframe.push( 'src' );
 	config.allowedAttributes.img.push( 'srcset', 'sizes', 'src' );

@@ -14,7 +14,7 @@ import HtmlEmbedUI from './htmlembedui';
 /**
  * The HTML embed feature.
  *
- * @TODO: What does it allow doing?
+ * It allows inserting HTML snippets directly to the editor.
  *
  * For a detailed overview, check the {@glink features/html-embed HTML embed feature} documentation.
  *

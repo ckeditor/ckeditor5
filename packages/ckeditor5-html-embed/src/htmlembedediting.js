@@ -45,8 +45,9 @@ export default class HtmlEmbedEditing extends Plugin {
 			sanitizeHtml: rawHtml => {
 				/**
 				 * When using the HTML embed feature with `htmlEmbed.previewsInData=true` option, it's strongly recommended to
-				 * define a sanitize function that will clean an input HTML in order to avoid XSS vulnerability.
-				 * TODO: Add a link to the feature documentation.
+				 * define a sanitize function that will clean up an input HTML in order to avoid XSS vulnerability.
+				 *
+				 * For a detailed overview, check the {@glink features/html-embed HTML embed feature} documentation.
 				 *
 				 * @error html-embed-provide-sanitize-function
 				 * @param {String} name The name of the component.
@@ -84,7 +85,7 @@ export default class HtmlEmbedEditing extends Plugin {
 	}
 
 	/**
-	 * Set-ups converters for the feature.
+	 * Prepares converters for the feature.
 	 *
 	 * @private
 	 */
@@ -213,7 +214,7 @@ export default class HtmlEmbedEditing extends Plugin {
 
 // Returns a converter that handles the `value` attribute of the `rawHtml` element.
 //
-// It updates the source (`textarea`) value and passes an HTML to the preview element in `htmlEmbed.previewsInData=true` mode.
+// It updates the source (`textarea`) value and passes an HTML to the preview element if `htmlEmbed.previewsInData=true`.
 //
 // @params {module:html-embed/htmlembed~MediaEmbedConfig} htmlEmbedConfig
 // @returns {Function}
@@ -241,8 +242,8 @@ function downcastRawHtmlValueAttribute( htmlEmbedConfig ) {
 	};
 }
 
-// Converts a given {@link module:engine/view/element~Element} to a html widget:
-// * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the html widget element.
+// Converts a given {@link module:engine/view/element~Element} to a raw html widget:
+// * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the raw html widget element.
 // * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
 //
 //  @param {module:engine/view/element~Element} viewElement

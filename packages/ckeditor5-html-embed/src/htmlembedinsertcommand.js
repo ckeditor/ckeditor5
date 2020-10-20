@@ -15,7 +15,7 @@ import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/uti
  *
  * The command is registered by {@link module:html-embed/htmlembedediting~HtmlEmbedEditing} as `'htmlEmbedInsert'`.
  *
- * To insert a page break at the current selection, execute the command:
+ * To insert the raw html element at the current selection, execute the command:
  *
  *		editor.execute( 'htmlEmbedInsert' );
  *
