@@ -48,13 +48,13 @@ export default class HtmlEmbed extends Plugin {
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  *
- * @interface MediaEmbedConfig
+ * @interface HtmlEmbedConfig
  */
 
 /**
- * @member {Boolean} [module:html-embed/htmlembed~MediaEmbedConfig#previewsInData=false]
+ * @member {Boolean} [module:html-embed/htmlembed~HtmlEmbedConfig#previewsInData=false]
  */
 
 /**
- * @member {Function} [module:html-embed/htmlembed~MediaEmbedConfig#sanitizeHtml]
+ * @member {Function} [module:html-embed/htmlembed~HtmlEmbedConfig#sanitizeHtml]
  */

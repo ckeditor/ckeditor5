@@ -216,7 +216,7 @@ export default class HtmlEmbedEditing extends Plugin {
 //
 // It updates the source (`textarea`) value and passes an HTML to the preview element if `htmlEmbed.previewsInData=true`.
 //
-// @params {module:html-embed/htmlembed~MediaEmbedConfig} htmlEmbedConfig
+// @params {module:html-embed/htmlembed~HtmlEmbedConfig} htmlEmbedConfig
 // @returns {Function}
 function downcastRawHtmlValueAttribute( htmlEmbedConfig ) {
 	return dispatcher => {
