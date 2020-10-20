@@ -14,56 +14,41 @@
 	@mixin ck-rounded-corners;
 
 	& > .ck.ck-labeled-field-view__input-wrapper {
-		display: flex;
-		position: relative;
 		width: 100%;
-	}
 
-	& .ck.ck-input {
-		width: 100%;
-	}
+		& > .ck.ck-label {
+			top: 0px;
+			left: 0px;
 
-	& .ck.ck-label {
-		display: block;
-		position: absolute;
-		top: 0px;
-		left: 0px;
+			pointer-events: none;
+			transform-origin: 0 0;
 
-		pointer-events: none;
+			/* By default, display the label scaled down above the field. */
+			transform: translate(var(--ck-spacing-medium), -6px) scale(.75);
 
-		transform-origin: 0 0;
+			background: var(--ck-color-base-background);
+			padding: 0 calc(.5 * var(--ck-font-size-tiny));
+			line-height: initial;
+			font-weight: normal;
 
-		/* By default, display the label scaled down above the field. */
-		transform: translate(var(--ck-spacing-medium), -6px) scale(.75);
+			/* Prevent overflow when the label is longer than the input */
+			text-overflow: ellipsis;
+			overflow: hidden;
 
-		background: var(--ck-color-base-background);
-		padding: 0 calc(.5 * var(--ck-font-size-tiny));
-		line-height: initial;
-		font-weight: normal;
+			max-width: 100%;
 
-		/* Prevent overflow when the label is longer than the input */
-		text-overflow: ellipsis;
-		overflow: hidden;
-
-		max-width: 100%;
-
-		transition:
-			transform var(--ck-labeled-field-view-transition),
-			padding var(--ck-labeled-field-view-transition),
-			background var(--ck-labeled-field-view-transition);
-	}
-
-	&.ck-error > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
-		color: var(--ck-color-base-error);
-	}
-
-	&.ck-labeled-input_focused {
-		& .ck-input:not([readonly]) + .ck.ck-label {
-			color: hsl(207.9,69.4%,44.9%);
+			transition:
+				transform var(--ck-labeled-field-view-transition),
+				padding var(--ck-labeled-field-view-transition),
+				background var(--ck-labeled-field-view-transition);
 		}
 	}
 
 	&.ck-error {
+		& > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
+			color: var(--ck-color-base-error);
+		}
+
 		& .ck-input:not([readonly]) + .ck.ck-label {
 			color: var(--ck-color-base-error);
 		}
@@ -76,10 +61,10 @@
 		/* Let the info wrap to the next line to avoid stretching the layout horizontally.
 		The status could be very long. */
 		white-space: normal;
-	}
 
-	& .ck-labeled-field-view__status_error {
-		color: var(--ck-color-base-error);
+		&.ck-labeled-field-view__status_error {
+			color: var(--ck-color-base-error);
+		}
 	}
 
 	/* Disabled fields and fields that have no focus should fade out. */
