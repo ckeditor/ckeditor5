@@ -43,7 +43,8 @@ ClassicEditor
 
 The {@link module:html-embed/htmlembed~HtmlEmbed} plugin registers:
 * the UI button component (`'htmlEmbed'`),
-* the `'htmlEmbed'` command implemented by {@link module:html-embed/htmlembedcommand~HtmlEmbedCommand}.
+* the `'htmlEmbedUpdate'` command implemented by {@link module:html-embed/htmlembedupdatecommand~HtmlEmbedUpdateCommand}.
+* the `'htmlEmbedInsert'` command implemented by {@link module:html-embed/htmlembedinsertcommand~HtmlEmbedInsertCommand}.
 
 The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
