@@ -48,6 +48,7 @@
 			}
 		}
 
+		/* 'button' selector must be used because those styles shouldn't be added to other elements, like 'a'. Example in LinkActionsView. */
 		& button.ck-button {
 			padding: var(--ck-spacing-standard);
 			margin-top: var(--ck-spacing-standard);
