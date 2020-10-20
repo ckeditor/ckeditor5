@@ -7,21 +7,23 @@
 	/* The feature container. */
 	& .raw-html {
 		position: relative;
+		padding: var(--ck-spacing-standard);
 
 		/* The switch mode button. */
 		& .raw-html__switch-mode {
 			position: absolute;
-			top: 0;
-			right: 0;
-			width: 5em;
-			height: 5em;
-			cursor: pointer;
+			top: var(--ck-spacing-standard);
+			right: var(--ck-spacing-standard);
+
+			& svg {
+				fill: currentColor;
+			}
 		}
 
 		/* The edit source element. */
 		& .raw-html__source {
-			width: 30em;
-			height: 5em;
+			width: calc(100% - 37px - 3 * var(--ck-spacing-standard));
+			height: 10em;
 			resize: none;
 		}
 	}
@@ -30,13 +32,14 @@
 	& .raw-html--preview-enabled {
 		/* The preview data container. */
 		& .raw-html__preview {
-			min-height: 5em;
-			min-width: 30em;
-			width: calc(100% - 5em);
+			width: calc(100% - 37px - var(--ck-spacing-standard));
+			text-align: center;
 		}
 
 		/* Mode: preview the HTML. */
 		&.raw-html--display-preview {
+			background: #f0f0f0;
+
 			& .raw-html__source {
 				display: none;
 			}

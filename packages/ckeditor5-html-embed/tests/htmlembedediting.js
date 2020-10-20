@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console, document, HTMLTextAreaElement, HTMLDivElement, Event */
+/* global console, document, HTMLTextAreaElement, HTMLDivElement, HTMLButtonElement, Event */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import HtmlEmbedEditing from '../src/htmlembedediting';
@@ -13,7 +13,7 @@ import HtmlEmbedInsertCommand from '../src/htmlembedinsertcommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
-describe( 'HtmlEmbedEditing', () => {
+describe.only( 'HtmlEmbedEditing', () => {
 	let element, editor, model, view, viewDocument;
 
 	testUtils.createSinonSandbox();
@@ -261,7 +261,7 @@ describe( 'HtmlEmbedEditing', () => {
 				const toggleIconElement = viewHtmlContainer.getChild( 0 );
 
 				expect( toggleIconElement.is( 'uiElement' ) ).to.equal( true );
-				expect( toggleIconElement.getCustomProperty( 'domElement' ) ).to.be.an.instanceOf( HTMLDivElement );
+				expect( toggleIconElement.getCustomProperty( 'domElement' ) ).to.be.an.instanceOf( HTMLButtonElement );
 
 				const sourceElement = viewHtmlContainer.getChild( 1 );
 
@@ -328,12 +328,18 @@ describe( 'HtmlEmbedEditing', () => {
 				const viewHtmlContainer = widget.getChild( 0 );
 
 				const toggleIconElement = viewHtmlContainer.getChild( 0 );
-				toggleIconElement.getCustomProperty( 'domElement' ).click();
+				const toggleButton = toggleIconElement.getCustomProperty( 'domElement' );
+				const toggleIconBeforeClick = toggleButton.innerHTML;
+
+				toggleButton.click();
 
 				const sourceElement = viewHtmlContainer.getChild( 1 );
 
 				expect( sourceElement.is( 'uiElement' ) ).to.equal( true );
 				expect( sourceElement.getCustomProperty( 'domElement' ).disabled ).to.equal( false );
+
+				// Check whether the icon has been updated.
+				expect( toggleButton.innerHTML ).to.not.equal( toggleIconBeforeClick );
 			} );
 
 			it( 'should disable the source element after clicking the toggle icon when edit source mode is enabled', () => {
@@ -343,14 +349,27 @@ describe( 'HtmlEmbedEditing', () => {
 				const viewHtmlContainer = widget.getChild( 0 );
 
 				const toggleIconElement = viewHtmlContainer.getChild( 0 );
+				const toggleButton = toggleIconElement.getCustomProperty( 'domElement' );
+
+				// The icon before switching mode.
+				const toggleIconBeforeClick = toggleButton.innerHTML;
+
 				// Switch to edit source mode.
-				toggleIconElement.getCustomProperty( 'domElement' ).click();
+				toggleButton.click();
+
+				// The icon for edit source mode.
+				const toggleIconAfterFirstClick = toggleButton.innerHTML;
+
 				// Switch to preview mode.
-				toggleIconElement.getCustomProperty( 'domElement' ).click();
+				toggleButton.click();
 
-				const sourceElement = viewHtmlContainer.getChild( 1 );
+				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).disabled ).to.equal( true );
 
-				expect( sourceElement.getCustomProperty( 'domElement' ).disabled ).to.equal( true );
+				// The first click: the icon has been changed.
+				expect( toggleButton.innerHTML ).to.equal( toggleIconBeforeClick );
+
+				// The second click: the icon has been restored.
+				expect( toggleButton.innerHTML ).to.not.equal( toggleIconAfterFirstClick );
 			} );
 		} );
 
@@ -420,7 +439,7 @@ describe( 'HtmlEmbedEditing', () => {
 				const toggleIconElement = viewHtmlContainer.getChild( 0 );
 
 				expect( toggleIconElement.is( 'uiElement' ) ).to.equal( true );
-				expect( toggleIconElement.getCustomProperty( 'domElement' ) ).to.be.an.instanceOf( HTMLDivElement );
+				expect( toggleIconElement.getCustomProperty( 'domElement' ) ).to.be.an.instanceOf( HTMLButtonElement );
 
 				const sourceElement = viewHtmlContainer.getChild( 1 );
 
@@ -521,12 +540,22 @@ describe( 'HtmlEmbedEditing', () => {
 				const viewHtmlContainer = widget.getChild( 0 );
 
 				const toggleIconElement = viewHtmlContainer.getChild( 0 );
-				toggleIconElement.getCustomProperty( 'domElement' ).click();
+				const toggleButton = toggleIconElement.getCustomProperty( 'domElement' );
+
+				const toggleIconBeforeClick = toggleButton.innerHTML;
+
+				toggleButton.click();
+
+				const sourceElement = viewHtmlContainer.getChild( 1 );
+
+				expect( sourceElement.is( 'uiElement' ) ).to.equal( true );
+				expect( sourceElement.getCustomProperty( 'domElement' ).disabled ).to.equal( false );
 
 				expect( widget.hasClass( 'raw-html--display-preview' ) ).to.equal( false );
 
-				const sourceElement = viewHtmlContainer.getChild( 1 );
-				expect( sourceElement.getCustomProperty( 'domElement' ).disabled ).to.equal( false );
+				// Check whether the icon has been updated.
+				expect( toggleButton.innerHTML ).to.not.equal( toggleIconBeforeClick );
+
 			} );
 
 			it( 'should display preview element after clicking the toggle icon when displaying edit source mode', () => {
@@ -536,15 +565,28 @@ describe( 'HtmlEmbedEditing', () => {
 				const viewHtmlContainer = widget.getChild( 0 );
 
 				const toggleIconElement = viewHtmlContainer.getChild( 0 );
+				const toggleButton = toggleIconElement.getCustomProperty( 'domElement' );
+
+				// The icon before switching mode.
+				const toggleIconBeforeClick = toggleButton.innerHTML;
+
 				// Switch to edit source mode.
-				toggleIconElement.getCustomProperty( 'domElement' ).click();
+				toggleButton.click();
+
+				// The icon for edit source mode.
+				const toggleIconAfterFirstClick = toggleButton.innerHTML;
+
 				// Switch to preview mode.
-				toggleIconElement.getCustomProperty( 'domElement' ).click();
+				toggleButton.click();
 
 				expect( widget.hasClass( 'raw-html--display-preview' ) ).to.equal( true );
+				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).disabled ).to.equal( true );
 
-				const sourceElement = viewHtmlContainer.getChild( 1 );
-				expect( sourceElement.getCustomProperty( 'domElement' ).disabled ).to.equal( true );
+				// The first click: the icon has been changed.
+				expect( toggleButton.innerHTML ).to.equal( toggleIconBeforeClick );
+
+				// The second click: the icon has been restored.
+				expect( toggleButton.innerHTML ).to.not.equal( toggleIconAfterFirstClick );
 			} );
 		} );
 	} );

@@ -15,7 +15,8 @@ import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import HtmlEmbedInsertCommand from './htmlembedinsertcommand';
 import HtmlEmbedUpdateCommand from './htmlembedupdatecommand';
 
-import htmlEmbedModeIcon from '../theme/icons/htmlembedmode.svg';
+import pencilIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
+import vision from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
 
 import '../theme/htmlembed.css';
 
@@ -140,7 +141,7 @@ export default class HtmlEmbedEditing extends Plugin {
 				const textareaAttributes = {
 					placeholder,
 					disabled: true,
-					class: 'raw-html__source'
+					class: 'ck ck-input ck-input-text raw-html__source'
 				};
 
 				// The editing raw HTML field.
@@ -157,11 +158,17 @@ export default class HtmlEmbedEditing extends Plugin {
 					return root;
 				} );
 
+				const buttonAttributes = {
+					class: 'ck ck-button ck-on raw-html__switch-mode'
+				};
+
 				// The switch button between preview and editing HTML.
-				const toggleButton = writer.createUIElement( 'div', { class: 'raw-html__switch-mode' }, function( domDocument ) {
+				const toggleButton = writer.createUIElement( 'button', buttonAttributes, function( domDocument ) {
 					const root = this.toDomElement( domDocument );
 
-					root.innerHTML = htmlEmbedModeIcon;
+					root.innerHTML = pencilIcon;
+					root.firstChild.classList.add( 'ck', 'ck-icon', 'ck-button__icon' );
+
 					writer.setCustomProperty( 'domElement', root, toggleButton );
 
 					root.addEventListener( 'click', evt => {
@@ -176,6 +183,9 @@ export default class HtmlEmbedEditing extends Plugin {
 
 							const textarea = sourceElement.getCustomProperty( 'domElement' );
 							textarea.disabled = !textarea.disabled;
+
+							root.innerHTML = textarea.disabled ? pencilIcon : vision;
+							root.firstChild.classList.add( 'ck', 'ck-icon', 'ck-button__icon' );
 						} );
 
 						evt.preventDefault();
