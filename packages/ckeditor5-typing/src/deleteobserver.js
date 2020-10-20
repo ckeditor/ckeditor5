@@ -25,12 +25,20 @@ export default class DeleteObserver extends Observer {
 		let sequence = 0;
 
 		document.on( 'keyup', ( evt, data ) => {
+			if ( this.checkShouldIgnoreEventFromTarget( data.domEvent.target ) ) {
+				return;
+			}
+
 			if ( data.keyCode == keyCodes.delete || data.keyCode == keyCodes.backspace ) {
 				sequence = 0;
 			}
 		} );
 
 		document.on( 'keydown', ( evt, data ) => {
+			if ( this.checkShouldIgnoreEventFromTarget( data.domEvent.target ) ) {
+				return;
+			}
+
 			const deleteData = {};
 
 			if ( data.keyCode == keyCodes.delete ) {
@@ -53,6 +61,10 @@ export default class DeleteObserver extends Observer {
 		// `beforeinput` is handled only for Android devices. Desktop Chrome and iOS are skipped because they are working fine now.
 		if ( env.isAndroid ) {
 			document.on( 'beforeinput', ( evt, data ) => {
+				if ( this.checkShouldIgnoreEventFromTarget( data.domEvent.target ) ) {
+					return;
+				}
+
 				// If event type is other than `deleteContentBackward` then this is not deleting.
 				if ( data.domEvent.inputType != 'deleteContentBackward' ) {
 					return;
