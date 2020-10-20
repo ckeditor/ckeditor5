@@ -120,10 +120,14 @@ class App extends Component {
 
 					<CKEditor
 						editor={ ClassicEditor }
-						data="<p>Hello from the second editor working with the context!</p>"
+						config={ {
+							plugins: [ Paragraph, Bold, Italic, Essentials ],
+							toolbar: [ 'bold', 'italic' ]
+						} }
+						data="<p>Hello from the first editor working with the context!</p>"
 						onReady={ editor => {
 							// You can store the "editor" and use when it is needed.
-							console.log( 'Editor2 is ready to use!', editor );
+							console.log( 'Editor1 is ready to use!', editor );
 						} }
 					/>
 				</CKEditorContext>
