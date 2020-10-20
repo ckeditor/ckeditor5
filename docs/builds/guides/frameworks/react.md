@@ -68,7 +68,7 @@ The `<CKEditor>` component supports the following properties:
 * `data` &ndash; The initial data for the created editor. See the {@link builds/guides/integration/basic-api#interacting-with-the-editor Basic API} guide.
 * `config` &ndash; The editor configuration. See the {@link builds/guides/integration/configuration Configuration} guide.
 * `id` &ndash; The editor ID. When that property changes the component restarts the editor with new data instead of setting it on an initialized editor.
-* `onReady` &ndash; A function called when the editor is ready with an {@link module:core/editor/editor~Editor `editor`} instance. This callback will be called after the editor initialization and after restarting the editor (e.g. when the editor crashed).
+* `onReady` &ndash; A function called when the editor is ready with an {@link module:core/editor/editor~Editor `editor`} instance. This callback is also called after the reinitialization of the component if an error occurred.
 * `disabled` &ndash; A Boolean value. The {@link module:core/editor/editor~Editor `editor`} is being switched to read-only mode if the property is set to `true`.
 * `onChange` &ndash; A function called when the editor data has changed. See the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
 * `onBlur` &ndash; A function called when the editor was blurred. See the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
@@ -88,12 +88,16 @@ The editor events callbacks (`onChange`, `onBlur`, `onFocus`) receive two argume
 The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the [Context feature](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/context-and-collaboration-features.html) that is useful when used together with some [CKEditor 5 collaboration features](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html).
 
 ```jsx
+// This sample assumes that the application is using the CKEditor editor built from source.
 import React, { Component } from 'react';
 import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
 
-// Assuming that application builds the editor from source.
 import Context from '@ckeditor/ckeditor5-core/src/context';
-import ClassicEditor from './ckeditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 class App extends Component {
 	render() {
@@ -103,6 +107,10 @@ class App extends Component {
 					<h2>Using CKeditor 5 Context feature in React</h2>
 					<CKEditor
 						editor={ ClassicEditor }
+						config={ {
+							plugins: [ Paragraph, Bold, Italic, Essentials ],
+							toolbar: [ 'bold', 'italic' ]
+						} }
 						data="<p>Hello from the first editor working with the context!</p>"
 						onReady={ editor => {
 							// You can store the "editor" and use when it is needed.
@@ -131,7 +139,7 @@ The `CKEditorContext` component supports the following properties:
 * `config` &ndash; The CKEditor 5 context configuration.
 * `isLayoutReady` &ndash; A property that delays the context creation when set to `false`. It creates the context and the editor children once it's `true` or unset. Useful when the CKEditor 5 annotations or a presence list is used.
 * `id` &ndash; The context ID. When that property changes the component restarts the context with its editor and reinitialize it based on the current configuration.
-* `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance. This callback will be called after the initialization and after restarts of editors or the context.
+* `onReady` &ndash; A function called when the context is ready and all editors inside were initialized with the `context` instance. This callback is also called after the reinitialization of the component if an error has occurred.
 * `onError` &ndash; A function called when the context has crashed during the initialization or during the runtime. It receives two arguments: the error instance and the error details.
     Error details is an object that contains two properties:
     * `{String} phase`: `'initialization'|'runtime'` - Informs when the error has occurred (during the editor/context initialization or after the initialization).
