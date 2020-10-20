@@ -44,13 +44,12 @@ export default class HtmlEmbedEditing extends Plugin {
 			previewsInData: false,
 			sanitizeHtml: rawHtml => {
 				/**
-				 * When using the HTML embed feature with `htmlEmbed.previewsInData=true` option, it's strongly recommended to
+				 * When using the HTML embed feature with `htmlEmbed.previewsInData=true` option, it is strongly recommended to
 				 * define a sanitize function that will clean up an input HTML in order to avoid XSS vulnerability.
 				 *
 				 * For a detailed overview, check the {@glink features/html-embed HTML embed feature} documentation.
 				 *
 				 * @error html-embed-provide-sanitize-function
-				 * @param {String} name The name of the component.
 				 */
 				logWarning( 'html-embed-provide-sanitize-function' );
 
@@ -69,17 +68,14 @@ export default class HtmlEmbedEditing extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 
-		const htmlEmbedInsertCommand = new HtmlEmbedInsertCommand( editor );
-		const htmlEmbedUpdateCommand = new HtmlEmbedUpdateCommand( editor );
-
 		schema.register( 'rawHtml', {
 			isObject: true,
 			allowWhere: '$block',
 			allowAttributes: [ 'value' ]
 		} );
 
-		editor.commands.add( 'htmlEmbedUpdate', htmlEmbedUpdateCommand );
-		editor.commands.add( 'htmlEmbedInsert', htmlEmbedInsertCommand );
+		editor.commands.add( 'htmlEmbedUpdate', new HtmlEmbedUpdateCommand( editor ) );
+		editor.commands.add( 'htmlEmbedInsert', new HtmlEmbedInsertCommand( editor ) );
 
 		this._setupConversion();
 	}
@@ -104,6 +100,8 @@ export default class HtmlEmbedEditing extends Plugin {
 				classes: 'raw-html-embed'
 			},
 			model: ( viewElement, { writer } ) => {
+				// Note: The below line has a side-effect – the children are *moved* to the DF so
+				// viewElement becomes empty. It's fine here.
 				const fragment = upcastWriter.createDocumentFragment( viewElement.getChildren() );
 				const innerHtml = htmlProcessor.toData( fragment );
 

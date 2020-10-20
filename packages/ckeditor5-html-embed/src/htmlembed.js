@@ -37,11 +37,11 @@ export default class HtmlEmbed extends Plugin {
 }
 
 /**
- * The configuration of the html embed feature.
+ * The configuration of the HTML embed feature.
  *
  *		ClassicEditor
  *			.create( editorElement, {
- * 				htmlEmbed: ... // Html embed feature options.
+ * 				htmlEmbed: ... // HTML embed feature options.
  *			} )
  *			.then( ... )
  *			.catch( ... );
@@ -52,9 +52,13 @@ export default class HtmlEmbed extends Plugin {
  */
 
 /**
+ * TODO
+ *
  * @member {Boolean} [module:html-embed/htmlembed~HtmlEmbedConfig#previewsInData=false]
  */
 
 /**
+ * TODO
+ *
  * @member {Function} [module:html-embed/htmlembed~HtmlEmbedConfig#sanitizeHtml]
  */

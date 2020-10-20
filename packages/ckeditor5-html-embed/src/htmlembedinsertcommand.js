@@ -11,11 +11,11 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
- * The insert raw html element command.
+ * The insert raw HTML element command.
  *
  * The command is registered by {@link module:html-embed/htmlembedediting~HtmlEmbedEditing} as `'htmlEmbedInsert'`.
  *
- * To insert the raw html element at the current selection, execute the command:
+ * To insert the raw HTML element at the current selection, execute the command:
  *
  *		editor.execute( 'htmlEmbedInsert' );
  *
