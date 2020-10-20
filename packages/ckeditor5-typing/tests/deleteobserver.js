@@ -254,24 +254,22 @@ describe( 'DeleteObserver', () => {
 		} );
 
 		it( 'should not be fired for ignored target', () => {
+			const spy = sinon.spy();
+			const view = new View();
+			const viewDocument = view.document;
+
 			const div = document.createElement( 'div' );
 			const input = document.createElement( 'input' );
 
 			div.setAttribute( 'data-cke-ignore-events', 'true' );
 			div.appendChild( input );
-			document.body.appendChild( div );
-
-			const view = new View();
-			const viewDocument = view.document;
 
 			createViewRoot( viewDocument );
 
-			view.addObserver( DeleteObserver );
 			view.attachDomRoot( div );
-
-			const spy = sinon.spy();
-
+			view.addObserver( DeleteObserver );
 			viewDocument.on( 'delete', spy );
+
 			input.dispatchEvent( new KeyboardEvent( 'keydown', { bubbles: true, keyCode: getCode( 'delete' ) } ) );
 
 			sinon.assert.notCalled( spy );
