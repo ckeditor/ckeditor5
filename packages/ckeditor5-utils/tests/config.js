@@ -396,9 +396,8 @@ describe( 'Config', () => {
 
 		it( 'should not be possible to retrieve value directly from config object', () => {
 			expect( config.creator ).to.be.undefined;
-			expect( () => {
-				config.resize.maxHeight;
-			} ).to.throw();
+			// Check if 'resize.maxHeight' would be accessible;
+			expect( config.resize ).to.be.undefined;
 		} );
 
 		it( 'should not be possible to alter config object by altering returned value', () => {
@@ -430,7 +429,8 @@ describe( 'Config', () => {
 		} );
 
 		it( 'should return class & functions references from config array', () => {
-			class Foo {}
+			class Foo {
+			}
 
 			function bar() {
 				return 'bar';

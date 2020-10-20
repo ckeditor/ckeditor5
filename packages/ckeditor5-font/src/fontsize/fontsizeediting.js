@@ -109,8 +109,7 @@ export default class FontSizeEditing extends Plugin {
 			 * @param {Array.<String>} presets Invalid values.
 			 */
 			throw new CKEditorError(
-				'font-size-invalid-use-of-named-presets: ' +
-				'If config.fontSize.supportAllValues is set to true, you need to use numerical values as font size options.',
+				'font-size-invalid-use-of-named-presets',
 				null, { presets }
 			);
 		}

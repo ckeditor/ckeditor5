@@ -4,7 +4,7 @@
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import ImageUploadFormRowView from '../../../src/imageupload/ui/imageuploadformrowview';
+import ImageUploadFormRowView from '../../../src/imageinsert/ui/imageinsertformrowview';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
 describe( 'ImageUploadFormRowView', () => {

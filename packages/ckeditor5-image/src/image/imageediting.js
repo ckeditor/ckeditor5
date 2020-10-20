@@ -113,7 +113,6 @@ export default class ImageEditing extends Plugin {
 			} )
 			.add( viewFigureToModel() );
 
-		// Register imageUpload command.
 		editor.commands.add( 'imageInsert', new ImageInsertCommand( editor ) );
 	}
 }

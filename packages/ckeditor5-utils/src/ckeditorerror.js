@@ -33,7 +33,7 @@ export const DOCUMENTATION_URL =
  *		 * @param pluginName The name of the plugin that could not be loaded.
  *		 * @param moduleName The name of the module which tried to load this plugin.
  *		 * /
- *		throw new CKEditorError( 'plugin-load: It was not possible to load the "{$pluginName}" plugin in module "{$moduleName}', {
+ *		throw new CKEditorError( 'plugin-load', {
  *			pluginName: 'foo',
  *			moduleName: 'bar'
  *		} );
@@ -44,9 +44,8 @@ export default class CKEditorError extends Error {
 	/**
 	 * Creates an instance of the CKEditorError class.
 	 *
-	 * @param {String} message The error message in an `error-name: Error message.` format.
-	 * During the minification process the "Error message" part will be removed to limit the code size
-	 * and a link to this error documentation will be added to the `message`.
+	 * @param {String} errorName The error id in an `error-name` format. A link to this error documentation page will be added
+	 * to the thrown error's `message`.
 	 * @param {Object|null} context A context of the error by which the {@link module:watchdog/watchdog~Watchdog watchdog}
 	 * is able to determine which editor crashed. It should be an editor instance or a property connected to it. It can be also
 	 * a `null` value if the editor should not be restarted in case of the error (e.g. during the editor initialization).
@@ -56,8 +55,8 @@ export default class CKEditorError extends Error {
 	 * will be appended to the error message, so the data are quickly visible in the console. The original
 	 * data object will also be later available under the {@link #data} property.
 	 */
-	constructor( message, context, data ) {
-		message = attachLinkToDocumentation( message );
+	constructor( errorName, context, data ) {
+		let message = attachLinkToDocumentation( errorName );
 
 		if ( data ) {
 			message += ' ' + JSON.stringify( data );
@@ -136,18 +135,11 @@ export default class CKEditorError extends Error {
  *		  * @error toolbarview-item-unavailable
  *		  * @param {String} name The name of the component.
  *		  * /
- *		 console.warn( attachLinkToDocumentation(
- *		 	'toolbarview-item-unavailable: The requested toolbar item is unavailable.' ), { name } );
+ *		 console.warn( attachLinkToDocumentation( 'toolbarview-item-unavailable' ), { name } );
  *
- * @param {String} message Message to be logged.
+ * @param {String} errorName Error name to be linked.
  * @returns {String}
  */
-export function attachLinkToDocumentation( message ) {
-	const matchedErrorName = message.match( /^([^:]+):/ );
-
-	if ( !matchedErrorName ) {
-		return message;
-	}
-
-	return message + ` Read more: ${ DOCUMENTATION_URL }#error-${ matchedErrorName[ 1 ] }\n`;
+export function attachLinkToDocumentation( errorName ) {
+	return errorName + ` Read more: ${ DOCUMENTATION_URL }#error-${ errorName }\n`;
 }

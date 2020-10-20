@@ -113,7 +113,7 @@ export default class UIElement extends Element {
 			 *
 			 * @error view-uielement-cannot-add
 			 */
-			throw new CKEditorError( 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.', this );
+			throw new CKEditorError( 'view-uielement-cannot-add', this );
 		}
 	}
 

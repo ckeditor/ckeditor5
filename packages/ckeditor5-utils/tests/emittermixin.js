@@ -158,12 +158,13 @@ describe( 'EmitterMixin', () => {
 
 		it( 'should rethrow the CKEditorError error', () => {
 			emitter.on( 'test', () => {
-				throw new CKEditorError( 'Foo', null );
+				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+				throw new CKEditorError( 'foo', null );
 			} );
 
 			expectToThrowCKEditorError( () => {
 				emitter.fire( 'test' );
-			}, /Foo/, null );
+			}, /foo/, null );
 		} );
 
 		it( 'should rethrow the native errors as they are in the dubug=true mode', () => {

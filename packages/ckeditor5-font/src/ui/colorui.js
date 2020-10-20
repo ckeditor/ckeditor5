@@ -75,7 +75,7 @@ export default class ColorUI extends Plugin {
 		 *
 		 * @member {module:font/ui/colortableview~ColorTableView}
 		 */
-		this.colorTableView;
+		this.colorTableView = undefined;
 	}
 
 	/**

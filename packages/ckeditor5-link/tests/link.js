@@ -4,12 +4,13 @@
  */
 
 import Link from '../src/link';
+import AutoLink from '../src/autolink';
 import LinkEditing from '../src/linkediting';
 import LinkUI from '../src/linkui';
 
 describe( 'Link', () => {
-	it( 'should require LinkEditing and LinkUI', () => {
-		expect( Link.requires ).to.deep.equal( [ LinkEditing, LinkUI ] );
+	it( 'should require LinkEditing, LinkUI and AutoLink', () => {
+		expect( Link.requires ).to.deep.equal( [ LinkEditing, LinkUI, AutoLink ] );
 	} );
 
 	it( 'should be named', () => {
