@@ -141,6 +141,7 @@ export default class HtmlEmbedEditing extends Plugin {
 				const textareaAttributes = {
 					placeholder,
 					disabled: true,
+					readonly: editor.isReadOnly,
 					class: 'ck ck-input ck-input-text raw-html__source'
 				};
 
@@ -211,6 +212,11 @@ export default class HtmlEmbedEditing extends Plugin {
 
 					writer.insert( writer.createPositionAt( rawHtmlContainer, 2 ), previewContainer );
 				}
+
+				// Listen to read-only changes.
+				this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
+					sourceElement.getCustomProperty( 'domElement' ).readOnly = value;
+				} );
 
 				return toRawHtmlWidget( widgetView, writer, widgetLabel );
 			}

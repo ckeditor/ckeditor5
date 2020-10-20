@@ -397,6 +397,41 @@ describe( 'HtmlEmbedEditing', () => {
 				// The second click: the icon has been restored.
 				expect( toggleButton.innerHTML ).to.not.equal( toggleIconAfterFirstClick );
 			} );
+
+			it( 'should add the "readonly" attribute if updated content of the editor in read-only mode', () => {
+				editor.isReadOnly = true;
+
+				setModelData( model, '<rawHtml></rawHtml>' );
+
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 0 );
+
+				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).readOnly ).to.equal( true );
+			} );
+
+			it( 'should add the "readonly" attribute if editor switches itself to read-only mode', () => {
+				setModelData( model, '<rawHtml></rawHtml>' );
+
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 0 );
+
+				editor.isReadOnly = true;
+
+				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).readOnly ).to.equal( true );
+			} );
+
+			it( 'should remove the "readonly" attribute if editor switches itself to edit mode', () => {
+				editor.isReadOnly = true;
+
+				setModelData( model, '<rawHtml></rawHtml>' );
+
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 0 );
+
+				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).readOnly ).to.equal( true );
+
+				editor.isReadOnly = false;
+			} );
 		} );
 
 		describe( 'with previews (htmlEmbed.dataInPreviews=true)', () => {
@@ -434,18 +469,6 @@ describe( 'HtmlEmbedEditing', () => {
 					} );
 			} );
 
-			it( 'converted element should be widgetized', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-				const widget = viewDocument.getRoot().getChild( 0 );
-
-				expect( widget.name ).to.equal( 'div' );
-				expect( isRawHtmlWidget( widget ) ).to.be.true;
-
-				const rawHtmlContainer = widget.getChild( 0 );
-
-				expect( rawHtmlContainer ).to.not.be.undefined;
-			} );
-
 			it( 'widget should contain a class that informs about available preview mode', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
@@ -479,16 +502,6 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( previewElement.getCustomProperty( 'domElement' ) ).to.be.an.instanceOf( HTMLDivElement );
 			} );
 
-			it( 'source element should have a placeholder', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
-				const sourceElement = viewHtmlContainer.getChild( 1 );
-
-				expect( sourceElement.getAttribute( 'placeholder' ) ).to.equal( 'Paste the raw code here.' );
-			} );
-
 			it( 'should update the source and preview elements when the `value` attribute has changed', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
@@ -508,22 +521,23 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( previewElement.getCustomProperty( 'domElement' ).innerHTML ).to.equal( '<b>Foo.</b>' );
 			} );
 
-			it( 'should update the `value` attribute after applying changes in the edit source element', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const event = new Event( 'input' );
+			it( 'should render the HTML in the preview element by default', () => {
+				setModelData( model, '<rawHtml value="Foo"></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
+
+				expect( widget.hasClass( 'raw-html--display-preview' ) ).to.equal( true );
+
 				const viewHtmlContainer = widget.getChild( 0 );
 				const sourceElement = viewHtmlContainer.getChild( 1 );
 
 				const textarea = sourceElement.getCustomProperty( 'domElement' );
 
-				// The preview container should be empty.
-				textarea.value = '<b>Foo.</b>';
-				textarea.dispatchEvent( event );
+				expect( textarea.disabled ).to.equal( true );
+				expect( textarea.value ).to.equal( 'Foo' );
 
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'value' ) ).to.equal( '<b>Foo.</b>' );
+				const previewElement = viewHtmlContainer.getChild( 2 ).getCustomProperty( 'domElement' );
+				expect( previewElement.innerHTML ).to.equal( 'Foo' );
 			} );
 
 			it( 'should re-render the preview element after applying changes in the edit source element', () => {
@@ -547,25 +561,6 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( previewElement.getCustomProperty( 'domElement' ).innerHTML ).to.equal( '<b>Foo.</b>' );
 			} );
 
-			it( 'should render the HTML in the preview element by default', () => {
-				setModelData( model, '<rawHtml value="Foo"></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-
-				expect( widget.hasClass( 'raw-html--display-preview' ) ).to.equal( true );
-
-				const viewHtmlContainer = widget.getChild( 0 );
-				const sourceElement = viewHtmlContainer.getChild( 1 );
-
-				const textarea = sourceElement.getCustomProperty( 'domElement' );
-
-				expect( textarea.disabled ).to.equal( true );
-				expect( textarea.value ).to.equal( 'Foo' );
-
-				const previewElement = viewHtmlContainer.getChild( 2 ).getCustomProperty( 'domElement' );
-				expect( previewElement.innerHTML ).to.equal( 'Foo' );
-			} );
-
 			it( 'should allows modifying the source after clicking the toggle button', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
@@ -581,22 +576,6 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( sourceElement.getCustomProperty( 'domElement' ).disabled ).to.equal( false );
 
 				expect( widget.hasClass( 'raw-html--display-preview' ) ).to.equal( false );
-			} );
-
-			it( 'should update the toggle button icon after switching to "edit source mode"', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
-
-				const toggleIconElement = viewHtmlContainer.getChild( 0 );
-				const toggleButton = toggleIconElement.getCustomProperty( 'domElement' );
-				const toggleIconBeforeClick = toggleButton.innerHTML;
-
-				toggleButton.click();
-
-				// Check whether the icon has been updated.
-				expect( toggleButton.innerHTML ).to.not.equal( toggleIconBeforeClick );
 			} );
 
 			it( 'should display preview element after clicking the toggle button when displaying edit source mode', () => {
@@ -615,34 +594,6 @@ describe( 'HtmlEmbedEditing', () => {
 
 				expect( widget.hasClass( 'raw-html--display-preview' ) ).to.equal( true );
 				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).disabled ).to.equal( true );
-			} );
-
-			it( 'should disable the source element after clicking the toggle button when edit source mode is enabled', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
-
-				const toggleIconElement = viewHtmlContainer.getChild( 0 );
-				const toggleButton = toggleIconElement.getCustomProperty( 'domElement' );
-
-				// The icon before switching mode.
-				const toggleIconBeforeClick = toggleButton.innerHTML;
-
-				// Switch to edit source mode.
-				toggleButton.click();
-
-				// The icon for edit source mode.
-				const toggleIconAfterFirstClick = toggleButton.innerHTML;
-
-				// Switch to preview mode.
-				toggleButton.click();
-
-				// The first click: the icon has been changed.
-				expect( toggleButton.innerHTML ).to.equal( toggleIconBeforeClick );
-
-				// The second click: the icon has been restored.
-				expect( toggleButton.innerHTML ).to.not.equal( toggleIconAfterFirstClick );
 			} );
 		} );
 	} );
