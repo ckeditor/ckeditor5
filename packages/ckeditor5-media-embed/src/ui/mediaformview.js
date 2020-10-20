@@ -23,6 +23,7 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import '../../theme/mediaform.css';
+import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 
 /**
  * The media form view controller class.
@@ -132,7 +133,8 @@ export default class MediaFormView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-media-form'
+					'ck-media-form',
+					'ck-responsive-form'
 				],
 
 				tabindex: '-1'
