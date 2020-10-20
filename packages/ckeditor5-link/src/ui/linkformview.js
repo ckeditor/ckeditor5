@@ -15,6 +15,7 @@ import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview
 
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
 import { createLabeledInputText } from '@ckeditor/ckeditor5-ui/src/labeledfield/utils';
+import injectCSSTransitionDisabling from '@ckeditor/ckeditor5-ui/src/bindings/injecttransitiondisabling';
 
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
@@ -151,6 +152,8 @@ export default class LinkFormView extends View {
 
 			children: this.children
 		} );
+
+		injectCSSTransitionDisabling( this );
 	}
 
 	/**

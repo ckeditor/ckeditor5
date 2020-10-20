@@ -1107,6 +1107,18 @@ describe( 'LinkUI', () => {
 				sinon.assert.calledOnce( selectSpy );
 			} );
 
+			it( 'should disable CSS transitions before showing the form to avoid unnecessary animations' +
+				'(and then enable them again)', () => {
+				const addSpy = sinon.spy( balloon, 'add' );
+				const disableCSSTransitionsSpy = sinon.spy( formView, 'disableCSSTransitions' );
+				const enableCSSTransitionsSpy = sinon.spy( formView, 'enableCSSTransitions' );
+				const selectSpy = sinon.spy( formView.urlInputView.fieldView, 'select' );
+
+				actionsView.fire( 'edit' );
+
+				sinon.assert.callOrder( disableCSSTransitionsSpy, addSpy, selectSpy, enableCSSTransitionsSpy );
+			} );
+
 			it( 'should execute unlink command on actionsView#unlink event', () => {
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 

@@ -91,6 +91,10 @@ describe( 'LinkFormView', () => {
 				expect( view.template.children[ 0 ].get( 2 ) ).to.equal( view.cancelButtonView );
 			} );
 		} );
+
+		it( 'should implement the CSS transition disabling feature', () => {
+			expect( view.disableCSSTransitions ).to.be.a( 'function' );
+		} );
 	} );
 
 	describe( 'render()', () => {

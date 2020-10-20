@@ -19,6 +19,7 @@ import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import injectCSSTransitionDisabling from '@ckeditor/ckeditor5-ui/src/bindings/injecttransitiondisabling';
 
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
@@ -135,6 +136,8 @@ export default class MediaFormView extends View {
 				this.cancelButtonView
 			]
 		} );
+
+		injectCSSTransitionDisabling( this );
 
 		/**
 		 * The default info text for the {@link #urlInputView}.

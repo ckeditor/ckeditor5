@@ -96,6 +96,19 @@ describe( 'ImageTextAlternativeUI', () => {
 			sinon.assert.calledOnce( spy );
 			expect( form.labeledInput.fieldView.value ).equals( '' );
 		} );
+
+		it( 'should disable CSS transitions before showing the form to avoid unnecessary animations (and then enable them again)', () => {
+			const addSpy = sinon.spy( balloon, 'add' );
+			const disableCSSTransitionsSpy = sinon.spy( form, 'disableCSSTransitions' );
+			const enableCSSTransitionsSpy = sinon.spy( form, 'enableCSSTransitions' );
+			const selectSpy = sinon.spy( form.labeledInput.fieldView, 'select' );
+
+			setData( model, '[<image src="" alt="foo bar"></image>]' );
+
+			button.fire( 'execute' );
+
+			sinon.assert.callOrder( disableCSSTransitionsSpy, addSpy, selectSpy, enableCSSTransitionsSpy );
+		} );
 	} );
 
 	describe( 'balloon panel form', () => {

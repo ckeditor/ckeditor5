@@ -324,6 +324,8 @@ export default class LinkUI extends Plugin {
 		const editor = this.editor;
 		const linkCommand = editor.commands.get( 'link' );
 
+		this.formView.disableCSSTransitions();
+
 		this._balloon.add( {
 			view: this.formView,
 			position: this._getBalloonPositionData()
@@ -333,6 +335,8 @@ export default class LinkUI extends Plugin {
 		if ( this._balloon.visibleView === this.formView ) {
 			this.formView.urlInputView.fieldView.select();
 		}
+
+		this.formView.enableCSSTransitions();
 
 		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
 		// the command. If the user typed in the input, then canceled the balloon (`urlInputView.fieldView#value` stays
