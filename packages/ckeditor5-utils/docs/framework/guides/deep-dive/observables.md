@@ -202,7 +202,7 @@ The property has been "renamed" in the binding and from now on, whenever `comman
 
 Another use case is processing the bound property value, for instance, when a button should be disabled only if certain conditions are met. Passing a callback as the third parameter allows implementing a custom logic.
 
-In the example below, the `isEnabled` property will be set `true` only when `command.value` equals `'heading1`.
+In the example below, the `isEnabled` property will be set to `true` only when `command.value` equals `'heading1`.
 
 ```js
 const command = editor.commands.get( 'heading' );
