@@ -109,8 +109,6 @@ This task accepts the following arguments:
 * `--production` &ndash; Minifies the assets and performs other actions which are unnecessary during CKEditor 5 development.
 * `--verbose` &ndash; Prints out more information.
 
-Note: These arguments must be passed after additional `--`:
-
 ```
 yarn run docs --skip-api
 ```
