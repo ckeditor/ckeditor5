@@ -25,6 +25,10 @@ There are a couple of things you should know before you start:
 * Also, while it is not strictly necessary to read the {@link framework/guides/quick-start Quick start} guide before going through this tutorial, it may help you to get more comfortable with CKEditor 5 Framework before you dive into this tutorial.
 * Various parts of the {@link framework/guides/architecture/intro CKEditor 5 architecture} section will be referenced as you go. While reading them is not necessary to finish this tutorial, it is recommended to read those guides at some point to get a better understanding of the mechanisms used in this tutorial.
 
+<info-box>
+	If you want to use own event handler for events triggered by your React component then you must wrap it by a container that has a `data-cke-ignore-events` attribute to exclude it from editor's default handlers. Refer to {@link framework/guides/deep-dive/widget-internals#exclude-dom-events-from-default-handlers Exclude DOM events from default handlers} for more details.
+</info-box>
+
 ## Let's start
 
 This guide assumes that you are familiar with [yarn](https://yarnpkg.com) and your project uses yarn already. If not, see the [yarn documentation](https://yarnpkg.com/en/docs/getting-started). If you are using [npm](https://www.npmjs.com/get-npm) you do not have to worry — you can perform the same installation tasks just as easily using [corresponding npm commands](https://docs.npmjs.com/getting-packages-from-the-registry).

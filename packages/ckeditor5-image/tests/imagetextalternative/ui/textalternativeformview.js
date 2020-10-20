@@ -29,6 +29,7 @@ describe( 'TextAlternativeFormView', () => {
 
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-text-alternative-form' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-responsive-form' ) ).to.be.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
