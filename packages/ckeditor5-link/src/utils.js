@@ -12,6 +12,9 @@ import { upperFirst } from 'lodash-es';
 const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g; // eslint-disable-line no-control-regex
 const SAFE_URL = /^(?:(?:https?|ftps?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.:-]|$))/i;
 
+// Simplified email test - should be run over previously found URL.
+const EMAIL_REG_EXP = /^[\S]+@((?![-_])(?:[-\w\u00a1-\uffff]{0,63}[^-_]\.))+(?:[a-z\u00a1-\uffff]{2,})$/i;
+
 /**
  * A keystroke used by the {@link module:link/linkui~LinkUI link UI feature}.
  */
@@ -134,4 +137,8 @@ export function isImageAllowed( element, schema ) {
 	}
 
 	return element.is( 'element', 'image' ) && schema.checkAttribute( 'image', 'linkHref' );
+}
+
+export function isEmail( linkHref ) {
+	return EMAIL_REG_EXP.test( linkHref );
 }

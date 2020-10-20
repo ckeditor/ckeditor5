@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TextWatcher from '@ckeditor/ckeditor5-typing/src/textwatcher';
 import getLastTextLine from '@ckeditor/ckeditor5-typing/src/utils/getlasttextline';
+import { isEmail } from './utils';
 
 const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
 
@@ -48,9 +49,6 @@ const URL_REG_EXP = new RegExp(
 	')$', 'i' );
 
 const URL_GROUP_IN_MATCH = 2;
-
-// Simplified email test - should be run over previously found URL.
-const EMAIL_REG_EXP = /^[\S]+@((?![-_])(?:[-\w\u00a1-\uffff]{0,63}[^-_]\.))+(?:[a-z\u00a1-\uffff]{2,})$/i;
 
 // The regex checks for the protocol syntax ('xxxx://' or 'xxxx:')
 // or non-word characters at the beginning of the link ('/', '#' etc.).
@@ -245,10 +243,6 @@ function getUrlAtTextEnd( text ) {
 	const match = URL_REG_EXP.exec( text );
 
 	return match ? match[ URL_GROUP_IN_MATCH ] : null;
-}
-
-function isEmail( linkHref ) {
-	return EMAIL_REG_EXP.exec( linkHref );
 }
 
 function isLinkAllowedOnRange( range, model ) {

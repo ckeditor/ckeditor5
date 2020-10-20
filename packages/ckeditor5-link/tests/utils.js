@@ -10,7 +10,7 @@ import ContainerElement from '@ckeditor/ckeditor5-engine/src/view/containereleme
 import Text from '@ckeditor/ckeditor5-engine/src/view/text';
 import Schema from '@ckeditor/ckeditor5-engine/src/model/schema';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import { createLinkElement, isLinkElement, ensureSafeUrl, normalizeDecorators, isImageAllowed } from '../src/utils';
+import { createLinkElement, isLinkElement, ensureSafeUrl, normalizeDecorators, isImageAllowed, isEmail } from '../src/utils';
 
 describe( 'utils', () => {
 	describe( 'isLinkElement()', () => {
@@ -244,6 +244,18 @@ describe( 'utils', () => {
 			} );
 
 			expect( isImageAllowed( element, schema ) ).to.equal( true );
+		} );
+	} );
+
+	describe( 'isEmail()', () => {
+		it( 'should return true for email string', () => {
+			expect( isEmail( 'newsletter@cksource.com' ) ).to.be.true;
+		} );
+
+		it( 'should return false for not email string', () => {
+			expect( isEmail( 'test' ) ).to.be.false;
+			expect( isEmail( 'test.test' ) ).to.be.false;
+			expect( isEmail( 'test@test' ) ).to.be.false;
 		} );
 	} );
 } );

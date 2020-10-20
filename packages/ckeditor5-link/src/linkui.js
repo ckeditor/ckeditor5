@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
-import { isLinkElement, LINK_KEYSTROKE } from './utils';
+import { isEmail, isLinkElement, LINK_KEYSTROKE } from './utils';
 
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
@@ -24,7 +24,6 @@ import linkIcon from '../theme/icons/link.svg';
 // The regex checks for the protocol syntax ('xxxx://' or 'xxxx:')
 // or non-word characters at the beginning of the link ('/', '#' etc.).
 const protocolRegExp = /^((\w+:(\/{2,})?)|(\W))/i;
-const emailRegExp = /[\w-]+@[\w-]+\.+[\w-]+/i;
 const VISUAL_SELECTION_MARKER_NAME = 'link-ui';
 
 /**
@@ -179,7 +178,7 @@ export default class LinkUI extends Plugin {
 		this.listenTo( formView, 'submit', () => {
 			const { value } = formView.urlInputView.fieldView.element;
 
-			const protocol = emailRegExp.test( value ) ? 'mailto:' : defaultProtocol;
+			const protocol = isEmail( value ) ? 'mailto:' : defaultProtocol;
 			const isProtocolNeeded = !!protocol && !protocolRegExp.test( value );
 			const parsedValue = value && isProtocolNeeded ? protocol + value : value;
 
