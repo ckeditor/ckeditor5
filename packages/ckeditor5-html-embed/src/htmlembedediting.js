@@ -141,7 +141,6 @@ export default class HtmlEmbedEditing extends Plugin {
 				const textareaAttributes = {
 					placeholder,
 					disabled: true,
-					readonly: editor.isReadOnly,
 					class: 'ck ck-input ck-input-text raw-html__source'
 				};
 
@@ -151,6 +150,7 @@ export default class HtmlEmbedEditing extends Plugin {
 
 					writer.setCustomProperty( 'domElement', root, sourceElement );
 					root.value = modelElement.getAttribute( 'value' ) || '';
+					root.readOnly = editor.isReadOnly;
 
 					root.addEventListener( 'input', () => {
 						editor.execute( 'htmlEmbedUpdate', root.value );

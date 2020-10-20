@@ -7,6 +7,7 @@
 	/* The feature container. */
 	& .raw-html {
 		position: relative;
+		font-size: var(--ck-font-size-base);
 		padding: var(--ck-spacing-standard);
 
 		/* The switch mode button. */
@@ -22,8 +23,9 @@
 
 		/* The edit source element. */
 		& .raw-html__source {
-			width: calc(100% - 37px - 3 * var(--ck-spacing-standard));
+			box-sizing: border-box;
 			height: 10em;
+			width: calc(100% - 1.5 * var(--ck-icon-size));
 			resize: none;
 		}
 	}
@@ -32,7 +34,8 @@
 	& .raw-html--preview-enabled {
 		/* The preview data container. */
 		& .raw-html__preview {
-			width: calc(100% - 37px - var(--ck-spacing-standard));
+			box-sizing: border-box;
+			width: calc(100% - 1.5 * var(--ck-icon-size));
 			text-align: center;
 
 			& > table {
