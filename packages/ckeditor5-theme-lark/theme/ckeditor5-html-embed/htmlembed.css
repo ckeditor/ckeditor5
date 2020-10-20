@@ -34,11 +34,16 @@
 		& .raw-html__preview {
 			width: calc(100% - 37px - var(--ck-spacing-standard));
 			text-align: center;
+
+			& > table {
+				margin-left: auto;
+				margin-right: auto;
+			}
 		}
 
 		/* Mode: preview the HTML. */
 		&.raw-html--display-preview {
-			background: #f0f0f0;
+			background-color: var(--ck-color-base-foreground);
 
 			& .raw-html__source {
 				display: none;
