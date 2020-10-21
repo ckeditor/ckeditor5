@@ -10,8 +10,10 @@
 	position: relative;
 
 	/* The switch mode button wrapper. */
-	& .raw-html__mode-toggle-wrapper {
+	& .raw-html__buttons-wrapper {
 		position: absolute;
+		display: flex;
+		flex-direction: column;
 	}
 
 	/* Using the feature with enabled previews in data. */

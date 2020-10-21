@@ -18,9 +18,21 @@
 	}
 
 	/* The switch mode button wrapper. */
-	& .raw-html__mode-toggle-wrapper {
+	& .raw-html__buttons-wrapper {
 		top: var(--ck-spacing-standard);
 		right: var(--ck-spacing-standard);
+
+		& .ck-button.raw-html__save-button {
+			color: var(--ck-color-button-save);
+		}
+
+		& .ck-button.raw-html__cancel-button {
+			color: var(--ck-color-button-cancel);
+		}
+
+		& .ck-button:not(:first-child) {
+			margin-top: var(--ck-spacing-small);
+		}
 	}
 
 	/* The edit source element. */

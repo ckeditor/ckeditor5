@@ -17,7 +17,8 @@ import HtmlEmbedUpdateCommand from './htmlembedupdatecommand';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import pencilIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
-import eyeIcon from '../theme/icons/eye.svg';
+import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 import '../theme/htmlembed.css';
 
@@ -96,8 +97,9 @@ export default class HtmlEmbedEditing extends Plugin {
 		const upcastWriter = new UpcastWriter( view.document );
 		const htmlProcessor = new HtmlDataProcessor( view.document );
 
-		const editModeButtonDOMElement = getModeToggleButtonDOMElement( editor.locale );
-		const previewModeButtonDOMElement = getModeToggleButtonDOMElement( editor.locale, true );
+		const editButtonDOMElement = getButtonDOMElement( editor.locale, 'edit' );
+		const saveButtonDOMElement = getButtonDOMElement( editor.locale, 'save' );
+		const cancelButtonDOMElement = getButtonDOMElement( editor.locale, 'cancel' );
 
 		editor.conversion.for( 'upcast' ).elementToElement( {
 			view: {
@@ -173,19 +175,19 @@ export default class HtmlEmbedEditing extends Plugin {
 					return root;
 				} );
 
-				const toggleButtonWrapperAttributes = {
-					class: 'raw-html__mode-toggle-wrapper'
+				const buttonsWrapperAttributes = {
+					class: 'raw-html__buttons-wrapper'
 				};
 
 				// The switch button between preview and editing HTML.
-				const toggleButtonWrapper = writer.createUIElement( 'div', toggleButtonWrapperAttributes, function( domDocument ) {
-					const root = this.toDomElement( domDocument );
+				const buttonsWrapper = writer.createUIElement( 'div', buttonsWrapperAttributes, function( domDocument ) {
+					const buttonsWrapperDOMElement = this.toDomElement( domDocument );
 
-					root.appendChild( editModeButtonDOMElement.cloneNode( true ) );
+					buttonsWrapperDOMElement.appendChild( editButtonDOMElement.cloneNode( true ) );
 
-					writer.setCustomProperty( 'domElement', root, toggleButtonWrapper );
+					writer.setCustomProperty( 'domElement', buttonsWrapperDOMElement, buttonsWrapper );
 
-					root.addEventListener( 'click', evt => {
+					buttonsWrapperDOMElement.addEventListener( 'click', evt => {
 						view.change( writer => {
 							if ( htmlEmbedConfig.showPreviews ) {
 								if ( widgetView.hasClass( DISPLAY_PREVIEW_CLASS ) ) {
@@ -198,19 +200,26 @@ export default class HtmlEmbedEditing extends Plugin {
 							const textarea = sourceElement.getCustomProperty( 'domElement' );
 							textarea.disabled = !textarea.disabled;
 
-							const modeButtonToClone = textarea.disabled ? editModeButtonDOMElement : previewModeButtonDOMElement;
+							while ( buttonsWrapperDOMElement.firstChild ) {
+								buttonsWrapperDOMElement.firstChild.remove();
+							}
 
-							root.replaceChild( modeButtonToClone.cloneNode( true ), root.firstChild );
+							if ( textarea.disabled ) {
+								buttonsWrapperDOMElement.appendChild( editButtonDOMElement.cloneNode( true ) );
+							} else {
+								buttonsWrapperDOMElement.appendChild( saveButtonDOMElement.cloneNode( true ) );
+								buttonsWrapperDOMElement.appendChild( cancelButtonDOMElement.cloneNode( true ) );
+							}
 						} );
 
 						evt.preventDefault();
 					} );
 
-					return root;
+					return buttonsWrapperDOMElement;
 				} );
 
 				writer.insert( writer.createPositionAt( widgetView, 0 ), rawHtmlContainer );
-				writer.insert( writer.createPositionAt( rawHtmlContainer, 0 ), toggleButtonWrapper );
+				writer.insert( writer.createPositionAt( rawHtmlContainer, 0 ), buttonsWrapper );
 				writer.insert( writer.createPositionAt( rawHtmlContainer, 1 ), sourceElement );
 
 				// The container that renders the HTML should be created only when `htmlEmbed.showPreviews=true` in the config.
@@ -289,27 +298,38 @@ function toRawHtmlWidget( viewElement, writer, label ) {
 // Returns a toggle mode button DOM element that can be cloned and used in conversion.
 //
 //  @param {module:utils/locale~Locale} locale Editor locale.
-//  @param {module:utils/locale~Locale} forPreview `true` when the button should toggle to preview mode.
+//  @param {'edit'|'save'|'cancel'} type Type of button to create.
 //  @returns {HTMLElement}
-function getModeToggleButtonDOMElement( locale, forPreview ) {
+function getButtonDOMElement( locale, type ) {
 	const t = locale.t;
 	const buttonView = new ButtonView( locale );
 
 	buttonView.set( {
 		tooltipPosition: 'sw',
 		icon: pencilIcon,
-		class: 'raw-html__mode-toggle-button',
 		tooltip: true
 	} );
 
 	buttonView.render();
 
-	if ( forPreview ) {
-		buttonView.icon = eyeIcon;
-		buttonView.label = t( 'Show preview' );
+	if ( type === 'edit' ) {
+		buttonView.set( {
+			icon: pencilIcon,
+			label: t( 'Edit source' ),
+			class: 'raw-html__edit-button'
+		} );
+	} else if ( type === 'save' ) {
+		buttonView.set( {
+			icon: checkIcon,
+			label: t( 'Save changes' ),
+			class: 'raw-html__save-button'
+		} );
 	} else {
-		buttonView.icon = pencilIcon;
-		buttonView.label = t( 'Edit source' );
+		buttonView.set( {
+			icon: cancelIcon,
+			label: t( 'Cancel' ),
+			class: 'raw-html__cancel-button'
+		} );
 	}
 
 	buttonView.destroy();
