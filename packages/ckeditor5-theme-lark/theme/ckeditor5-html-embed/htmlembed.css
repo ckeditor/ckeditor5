@@ -28,6 +28,11 @@
 		resize: none;
 		min-width: 0;
 		padding: var(--ck-spacing-standard);
+
+		&[disabled] {
+			background: hsl(0deg 0% 97%);
+			color: hsl(0deg 0% 56%);
+		}
 	}
 
 	/* Using the feature with previews enabled. */
