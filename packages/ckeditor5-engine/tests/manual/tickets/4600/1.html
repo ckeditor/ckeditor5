@@ -1,41 +1,46 @@
 <style>
 	.simple-widget-container {
-		margin: 1em 0;
+		margin: 10px 0;
 		font-family: sans-serif;
 	}
 
 	.simple-widget-element {
 		display: flex;
-		height: 14em;
 	}
 
 	.simple-widget-element>fieldset {
-		display: flex;
-		align-items: center;
-		margin: 3em;
+		margin: 18px;
 		width: 50%;
-		border: 1px solid #ddd;
+		border: 1px solid #ccc;
 		border-radius: 4px;
 	}
 
+	.simple-widget-element>fieldset>* {
+		margin: 8px 0;
+	}
+
 	.simple-widget-element>fieldset>legend {
-		font-size: 0.85em;
-		padding: .2em 2em;
-		border: 1px solid #ddd;
+		font-size: 13px;
+		padding: 4px 16px;
+		border: 1px solid #ccc;
 		border-radius: 4px;
 		background: #fff;
 	}
 
 	.simple-widget-element>fieldset>input {
-		flex: 1;
-		margin: 1em 1em 1em 0;
+		width: 100%;
+		box-sizing: border-box;
 	}
 
 	.simple-widget-element>fieldset>button {
-		padding: .2em 3em;
+		padding: 4px 18px;
+	}
+
+	.simple-widget-element>fieldset>img {
+		display: block;
 	}
 </style>
 
 <div id="editor">
-	<section class="simple-widget-container" />
+	<section class="simple-widget-container"></section>
 </div>
