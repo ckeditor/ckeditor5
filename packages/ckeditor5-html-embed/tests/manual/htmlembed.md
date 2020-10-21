@@ -28,7 +28,7 @@ After the editor initialization, it should contain 5 widgets with embedded HTML:
 
 All resources are provided by the ["Sample Files for Development"](http://techslides.com/sample-files-for-development) article. Thanks!
 
-By default, the previews in data mode is enabled. It means that previews should be visible. 
+By default, the "previews in view" mode is enabled. It means that previews should be visible. 
 
 We use the [`sanitize-html`](https://www.npmjs.com/package/sanitize-html) package to clean up the input HTML. It means that some of the 
 elements or attributes may be not rendered in the editing view. However, they still will be returned in the editor's data.

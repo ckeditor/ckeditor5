@@ -35,7 +35,7 @@ async function startMode( selectedMode ) {
 async function startEnabledPreviewsMode() {
 	await reloadEditor( {
 		htmlEmbed: {
-			previewsInData: true,
+			showPreviews: true,
 			sanitizeHtml( rawHtml ) {
 				const config = getSanitizeHtmlConfig( sanitizeHtml.defaults );
 				const cleanHtml = sanitizeHtml( rawHtml, config );

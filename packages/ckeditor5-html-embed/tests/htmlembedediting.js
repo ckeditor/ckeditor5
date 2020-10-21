@@ -76,9 +76,9 @@ describe( 'HtmlEmbedEditing', () => {
 			htmlEmbed = editor.config.get( 'htmlEmbed' );
 		} );
 
-		describe( 'htmlEmbed.previewsInData', () => {
+		describe( 'htmlEmbed.showPreviews', () => {
 			it( 'should be set to `false` by default', () => {
-				expect( htmlEmbed.previewsInData ).to.equal( false );
+				expect( htmlEmbed.showPreviews ).to.equal( false );
 			} );
 		} );
 
@@ -229,7 +229,7 @@ describe( 'HtmlEmbedEditing', () => {
 	} );
 
 	describe( 'conversion in editing pipeline (model to view)', () => {
-		describe( 'without previews (htmlEmbed.dataInPreviews=false)', () => {
+		describe( 'without previews (htmlEmbed.showPreviews=false)', () => {
 			it( 'converted element should be widgetized', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 				const widget = viewDocument.getRoot().getChild( 0 );
@@ -434,7 +434,7 @@ describe( 'HtmlEmbedEditing', () => {
 			} );
 		} );
 
-		describe( 'with previews (htmlEmbed.dataInPreviews=true)', () => {
+		describe( 'with previews (htmlEmbed.showPreviews=true)', () => {
 			let element, editor, model, view, viewDocument, sanitizeHtml;
 
 			testUtils.createSinonSandbox();
@@ -450,7 +450,7 @@ describe( 'HtmlEmbedEditing', () => {
 					.create( element, {
 						plugins: [ HtmlEmbedEditing ],
 						htmlEmbed: {
-							previewsInData: true,
+							showPreviews: true,
 							sanitizeHtml
 						}
 					} )
@@ -559,6 +559,34 @@ describe( 'HtmlEmbedEditing', () => {
 				textarea.dispatchEvent( event );
 
 				expect( previewElement.getCustomProperty( 'domElement' ).innerHTML ).to.equal( '<b>Foo.</b>' );
+			} );
+
+			it( 'should pass an empty string if the `value` attribute is empty', () => {
+				setModelData( model, '<rawHtml value="Foo"></rawHtml>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'value', '', model.document.getRoot().getChild( 0 ) );
+				} );
+
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 0 );
+
+				const previewElement = viewHtmlContainer.getChild( 2 ).getCustomProperty( 'domElement' );
+				expect( previewElement.innerHTML ).to.equal( '' );
+			} );
+
+			it( 'should pass an empty string if the `value` attribute was removed', () => {
+				setModelData( model, '<rawHtml value="Foo"></rawHtml>' );
+
+				model.change( writer => {
+					writer.removeAttribute( 'value', model.document.getRoot().getChild( 0 ) );
+				} );
+
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 0 );
+
+				const previewElement = viewHtmlContainer.getChild( 2 ).getCustomProperty( 'domElement' );
+				expect( previewElement.innerHTML ).to.equal( '' );
 			} );
 
 			it( 'should allows modifying the source after clicking the toggle button', () => {

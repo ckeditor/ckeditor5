@@ -42,10 +42,10 @@ export default class HtmlEmbedEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'htmlEmbed', {
-			previewsInData: false,
+			showPreviews: false,
 			sanitizeHtml: rawHtml => {
 				/**
-				 * When using the HTML embed feature with `htmlEmbed.previewsInData=true` option, it is strongly recommended to
+				 * When using the HTML embed feature with `htmlEmbed.showPreviews=true` option, it is strongly recommended to
 				 * define a sanitize function that will clean up an input HTML in order to avoid XSS vulnerability.
 				 *
 				 * For a detailed overview, check the {@glink features/html-embed HTML embed feature} documentation.
@@ -174,7 +174,7 @@ export default class HtmlEmbedEditing extends Plugin {
 
 					root.addEventListener( 'click', evt => {
 						view.change( writer => {
-							if ( htmlEmbedConfig.previewsInData ) {
+							if ( htmlEmbedConfig.showPreviews ) {
 								if ( widgetView.hasClass( DISPLAY_PREVIEW_CLASS ) ) {
 									writer.removeClass( DISPLAY_PREVIEW_CLASS, widgetView );
 								} else {
@@ -199,8 +199,8 @@ export default class HtmlEmbedEditing extends Plugin {
 				writer.insert( writer.createPositionAt( rawHtmlContainer, 0 ), toggleButton );
 				writer.insert( writer.createPositionAt( rawHtmlContainer, 1 ), sourceElement );
 
-				// The container that renders the HTML should be created only when `htmlEmbed.previewsInData=true` in the config.
-				if ( htmlEmbedConfig.previewsInData ) {
+				// The container that renders the HTML should be created only when `htmlEmbed.showPreviews=true` in the config.
+				if ( htmlEmbedConfig.showPreviews ) {
 					writer.addClass( [ 'raw-html--preview-enabled', DISPLAY_PREVIEW_CLASS ], widgetView );
 
 					const previewContainer = writer.createRawElement( 'div', { class: 'raw-html__preview' }, function( domElement ) {
@@ -228,7 +228,7 @@ export default class HtmlEmbedEditing extends Plugin {
 
 // Returns a converter that handles the `value` attribute of the `rawHtml` element.
 //
-// It updates the source (`textarea`) value and passes an HTML to the preview element if `htmlEmbed.previewsInData=true`.
+// It updates the source (`textarea`) value and passes an HTML to the preview element if `htmlEmbed.showPreviews=true`.
 //
 // @params {module:html-embed/htmlembed~HtmlEmbedConfig} htmlEmbedConfig
 // @returns {Function}
@@ -244,11 +244,11 @@ function downcastRawHtmlValueAttribute( htmlEmbedConfig ) {
 				textareaDomElement.value = data.item.getAttribute( 'value' );
 			}
 
-			if ( htmlEmbedConfig.previewsInData ) {
+			if ( htmlEmbedConfig.showPreviews ) {
 				const previewDomElement = rawHtmlContainer.getChild( 2 ).getCustomProperty( 'domElement' );
 
 				if ( previewDomElement ) {
-					const sanitizeOutput = htmlEmbedConfig.sanitizeHtml( data.item.getAttribute( 'value' ) );
+					const sanitizeOutput = htmlEmbedConfig.sanitizeHtml( data.item.getAttribute( 'value' ) || '' );
 					previewDomElement.innerHTML = sanitizeOutput.html;
 				}
 			}
