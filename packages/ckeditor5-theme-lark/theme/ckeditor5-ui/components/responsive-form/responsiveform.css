@@ -69,7 +69,9 @@
 					border-right: 1px solid var(--ck-color-base-border);
 				}
 			}
+		}
 
+		& > .ck-button:nth-last-child(2) {
 			&::after {
 				border-right: 1px solid var(--ck-color-base-border);
 			}
