@@ -10,8 +10,6 @@ import Autoformat from "@ckeditor/ckeditor5-autoformat/src/autoformat";
 import BlockToolbar from "@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar";
 import BlockQuote from "@ckeditor/ckeditor5-block-quote/src/blockquote";
 import Bold from "@ckeditor/ckeditor5-basic-styles/src/bold";
-import CKFinder from "@ckeditor/ckeditor5-ckfinder/src/ckfinder";
-import EasyImage from "@ckeditor/ckeditor5-easy-image/src/easyimage";
 import Essentials from "@ckeditor/ckeditor5-essentials/src/essentials";
 import Heading from "@ckeditor/ckeditor5-heading/src/heading";
 import HorizontalLine from "@ckeditor/ckeditor5-horizontal-line/src/horizontalline";
@@ -25,7 +23,6 @@ import Italic from "@ckeditor/ckeditor5-basic-styles/src/italic";
 import Link from "@ckeditor/ckeditor5-link/src/link";
 import List from "@ckeditor/ckeditor5-list/src/list";
 import MediaEmbed from "@ckeditor/ckeditor5-media-embed/src/mediaembed";
-// import MediaEmbedToolbar from "@ckeditor/ckeditor5-media-embed/src/mediaembedtoolbar";
 import Paragraph from "@ckeditor/ckeditor5-paragraph/src/paragraph";
 import PasteFromOffice from "@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice";
 import Superscript from "@ckeditor/ckeditor5-basic-styles/src/superscript";
@@ -33,7 +30,6 @@ import Title from "@ckeditor/ckeditor5-heading/src/title";
 import Table from "@ckeditor/ckeditor5-table/src/table";
 import TableToolbar from "@ckeditor/ckeditor5-table/src/tabletoolbar";
 import TextTransformation from "@ckeditor/ckeditor5-typing/src/texttransformation";
-import UploadAdapter from "@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter";
 import WordCount from "@ckeditor/ckeditor5-word-count/src/wordcount";
 
 import "../theme/theme.css";
@@ -47,8 +43,6 @@ BalloonEditor.builtinPlugins = [
 	BlockToolbar,
 	BlockQuote,
 	Bold,
-	CKFinder,
-	EasyImage,
 	Essentials,
 	Heading,
 	HorizontalLine,
@@ -62,7 +56,6 @@ BalloonEditor.builtinPlugins = [
 	Link,
 	List,
 	MediaEmbed,
-	// MediaEmbedToolbar,
 	Paragraph,
 	PasteFromOffice,
 	Superscript,
@@ -70,7 +63,6 @@ BalloonEditor.builtinPlugins = [
 	Table,
 	TableToolbar,
 	TextTransformation,
-	UploadAdapter,
 	WordCount,
 ];
 
@@ -96,6 +88,8 @@ BalloonEditor.defaultConfig = {
 	],
 	toolbar: {
 		items: [
+			"heading",
+			"|",
 			"bold",
 			"italic",
 			"link",
@@ -111,6 +105,27 @@ BalloonEditor.defaultConfig = {
 			"imageStyle:side",
 			"|",
 			"imageTextAlternative",
+		],
+	},
+	heading: {
+		options: [
+			{
+				model: "paragraph",
+				title: "Paragraph",
+				class: "ck-heading_paragraph",
+			},
+			{
+				model: "heading2",
+				view: "h2",
+				title: "Big title",
+				class: "ck-heading_heading2",
+			},
+			{
+				model: "heading3",
+				view: "h3",
+				title: "Small title",
+				class: "ck-heading_heading3",
+			},
 		],
 	},
 	table: {
