@@ -494,7 +494,7 @@ describe( 'HtmlEmbedEditing', () => {
 
 				const widget = viewDocument.getRoot().getChild( 0 );
 
-				expect( widget.hasClass( 'raw-html_preview_enabled' ) ).to.equal( true );
+				expect( widget.hasClass( 'raw-html-embed_preview_enabled' ) ).to.equal( true );
 			} );
 
 			it( 'should render the toggle button, edit source and preview container elements', () => {
@@ -546,7 +546,7 @@ describe( 'HtmlEmbedEditing', () => {
 
 				const widget = viewDocument.getRoot().getChild( 0 );
 
-				expect( widget.hasClass( 'raw-html_preview_visible' ) ).to.equal( true );
+				expect( widget.hasClass( 'raw-html-embed_preview_visible' ) ).to.equal( true );
 
 				const viewHtmlContainer = widget.getChild( 1 );
 				const sourceElement = viewHtmlContainer.getChild( 1 );
@@ -640,7 +640,7 @@ describe( 'HtmlEmbedEditing', () => {
 				// Switch to preview mode.
 				toggleButton.click();
 
-				expect( widget.hasClass( 'raw-html_preview_visible' ) ).to.equal( true );
+				expect( widget.hasClass( 'raw-html-embed_preview_visible' ) ).to.equal( true );
 				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).disabled ).to.equal( true );
 			} );
 		} );
