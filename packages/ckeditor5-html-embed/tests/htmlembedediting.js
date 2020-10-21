@@ -370,7 +370,7 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).disabled ).to.equal( true );
 			} );
 
-			it( 'should disable the source element after clicking the toggle button when edit source mode is enabled', () => {
+			it( 'should restore the toggle button icon after leaving the "edit source mode"', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
