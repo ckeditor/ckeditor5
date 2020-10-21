@@ -15,6 +15,7 @@
 	margin: 0.67em 0;
 	font-weight: bold;
 	line-height: normal;
+	color: #000000;
 }
 
 .ck.ck-content h2 {
@@ -23,6 +24,7 @@
 	margin: 0.83em 0;
 	font-weight: bold;
 	line-height: normal;
+	color: #000000;
 }
 
 .ck.ck-content h3 {
@@ -31,6 +33,7 @@
 	margin: 1em 0;
 	font-weight: bold;
 	line-height: normal;
+	color: #000000;
 }
 
 .ck.ck-content p {
@@ -38,24 +41,19 @@
 	font-size: 18px;
 	margin: 1em 0;
 	line-height: normal;
+	color: #000000;
 }
 
 .ck.ck-content ul {
 	display: block;
 	list-style-type: disc;
-	margin-top: 1em;
-	margin-bottom: 1em;
-	margin-left: 0;
-	margin-right: 0;
+	margin: 1em 0;
 	padding-left: 40px;
 }
 
 .ck.ck-content ol {
 	display: block;
 	list-style-type: decimal;
-	margin-top: 1em;
-	margin-bottom: 1em;
-	margin-left: 0;
-	margin-right: 0;
+	margin: 1em 0;
 	padding-left: 40px;
 }
