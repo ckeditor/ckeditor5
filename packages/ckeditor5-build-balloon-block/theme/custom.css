@@ -12,40 +12,32 @@
 .ck.ck-content h1 {
 	display: block;
 	font-size: 40px;
-	margin-top: 0.67em;
-	margin-bottom: 0.67em;
-	margin-left: 0;
-	margin-right: 0;
+	margin: 0.67em 0;
 	font-weight: bold;
+	line-height: normal;
 }
 
 .ck.ck-content h2 {
 	display: block;
 	font-size: 34px;
-	margin-top: 0.83em;
-	margin-bottom: 0.83em;
-	margin-left: 0;
-	margin-right: 0;
+	margin: 0.83em 0;
 	font-weight: bold;
+	line-height: normal;
 }
 
 .ck.ck-content h3 {
 	display: block;
 	font-size: 24px;
-	margin-top: 1em;
-	margin-bottom: 1em;
-	margin-left: 0;
-	margin-right: 0;
+	margin: 1em 0;
 	font-weight: bold;
+	line-height: normal;
 }
 
 .ck.ck-content p {
 	display: block;
 	font-size: 18px;
-	margin-top: 1em;
-	margin-bottom: 1em;
-	margin-left: 0;
-	margin-right: 0;
+	margin: 1em 0;
+	line-height: normal;
 }
 
 .ck.ck-content ul {
