@@ -370,7 +370,7 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).disabled ).to.equal( true );
 			} );
 
-			it( 'should restore the toggle button icon after leaving the "edit source mode"', () => {
+			it( 'should restore the toggle button icon after leaving the "edit source" mode', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
@@ -428,9 +428,9 @@ describe( 'HtmlEmbedEditing', () => {
 				const widget = viewDocument.getRoot().getChild( 0 );
 				const viewHtmlContainer = widget.getChild( 0 );
 
-				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).readOnly ).to.equal( true );
-
 				editor.isReadOnly = false;
+
+				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).readOnly ).to.equal( false );
 			} );
 		} );
 
