@@ -52,65 +52,70 @@ export default class HtmlEmbed extends Plugin {
  */
 
 /**
- * Controls the view produced by the feature.
+ * Whether the feature should render previews of the the embedded HTML.
  *
- * When `false` (default), the feature produces the `<textarea>` element in the view.
+ * When set to `true`, the feature will produce a preview of the inserted HTML based on a sanitized
+ * version of the HTML provided by the user.
  *
- * When `true`, the inserted HTML will be injected directly to the editor.
+ * The function responsible for sanitizing the HTML needs to be specified in
+ * {@link module:html-embed/htmlembed~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml()`}.
  *
- * **Note:** If the option was set to `true`, do not forget about implementing
- * the {@link module:html-embed/htmlembed~HtmlEmbedConfig#sanitizeHtml `htmlEmbed.sanitizeHtml()`} function that will control
- * the output HTML.
+ * Read more about the security aspect of this feature in the {@glink features/html-embed#security "Security"} section of
+ * the {@glink features/html-embed HTML embed} feature guide.
  *
  * @member {Boolean} [module:html-embed/htmlembed~HtmlEmbedConfig#showPreviews=false]
  */
 
 /**
- * Allows modifying an input HTML before injecting it directly to the editor's view.
+ * Callback used to sanitize HTML provided by the user when generating previews of it in the editor.
  *
- * We strongly recommend to overwrite the default function to avoid XSS vulnerability.
+ * We strongly recommend to overwrite the default function to avoid XSS vulnerabilities.
  *
- * The function receives an input HTML (`String`), and should return an object
- * that match to the {@link module:html-embed/htmlembed~HtmlEmbedSanitizeOutput} interface.
+ * Read more about the security aspect of this feature in the {@glink features/html-embed#security "Security"} section of
+ * the {@glink features/html-embed HTML embed} feature guide.
+ *
+ * The function receives the input HTML (as a string), and should return an object
+ * that matches the {@link module:html-embed/htmlembed~HtmlEmbedSanitizeOutput} interface.
  *
  *  	ClassicEditor
- *			.create( editorElement, {
+ * 			.create( editorElement, {
  * 				htmlEmbed: {
- * 				    showPreviews: true,
- * 				    sanitizeHtml( inputHtml ) {
- * 				        // Strip dangerous elements and attributes, e.g.:
- * 				        // the `<script>` elements or `[on*]` attributes.
+ * 					showPreviews: true,
+ * 					sanitizeHtml( inputHtml ) {
+ * 						// Strip unsafe elements and attributes, e.g.:
+ * 						// the `<script>` elements and `on*` attributes.
+ * 						const outputHtml = sanitize( inputHtml );
  *
- * 				        return {
- * 				            html: ...,
- * 				            hasModified: ...
- * 				        }
- * 				    },
+ * 						return {
+ * 							html: outputHtml,
+ * 							hasChanged: ...
+ * 						}
+ * 					},
  * 				}
- *			} )
- *			.then( ... )
- *			.catch( ... );
+ * 			} )
+ * 			.then( ... )
+ * 			.catch( ... );
  *
- *	**Note:** The function is used only if the feature has enabled previews in the view
- *	({@link module:html-embed/htmlembed~HtmlEmbedConfig#showPreviews} is set to `true`).
+ * **Note:** The function is used only when the feature
+ * {@link module:html-embed/htmlembed~HtmlEmbedConfig#showPreviews is configured to render previews}.
  *
  * @member {Function} [module:html-embed/htmlembed~HtmlEmbedConfig#sanitizeHtml]
  */
 
 /**
- * An object returned by the {@link module:html-embed/htmlembed~HtmlEmbedConfig#sanitizeHtml} function should match to this interface.
+ * An object returned by the {@link module:html-embed/htmlembed~HtmlEmbedConfig#sanitizeHtml} function.
  *
  * @interface HtmlEmbedSanitizeOutput
  */
 
 /**
- * An output HTML that will be inserted into the {@glink framework/guides/architecture/editing-engine editing view}.
+ * An output (safe) HTML that will be inserted into the {@glink framework/guides/architecture/editing-engine editing view}.
  *
  * @member {String} module:html-embed/htmlembed~HtmlEmbedSanitizeOutput#html
  */
 
 /**
- * A flag that describes whether the output HTML is different that an input value.
+ * A flag that indicates whether the output HTML is different than the input value.
  *
- * @member {Boolean} [module:html-embed/htmlembed~HtmlEmbedSanitizeOutput#hasModified]
+ * @member {Boolean} [module:html-embed/htmlembed~HtmlEmbedSanitizeOutput#hasChanged]
  */

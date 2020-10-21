@@ -90,7 +90,7 @@ describe( 'HtmlEmbedEditing', () => {
 			it( 'should return an object with cleaned html and a note whether something has changed', () => {
 				expect( htmlEmbed.sanitizeHtml( 'foo' ) ).to.deep.equal( {
 					html: 'foo',
-					hasModified: false
+					hasChanged: false
 				} );
 			} );
 

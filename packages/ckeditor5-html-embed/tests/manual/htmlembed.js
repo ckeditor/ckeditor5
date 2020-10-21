@@ -42,7 +42,7 @@ async function startEnabledPreviewsMode() {
 
 				return {
 					html: cleanHtml,
-					hasModified: rawHtml !== cleanHtml
+					hasChanged: rawHtml !== cleanHtml
 				};
 			}
 		}

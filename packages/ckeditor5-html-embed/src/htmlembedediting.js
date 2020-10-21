@@ -58,7 +58,7 @@ export default class HtmlEmbedEditing extends Plugin {
 
 				return {
 					html: rawHtml,
-					hasModified: false
+					hasChanged: false
 				};
 			}
 		} );

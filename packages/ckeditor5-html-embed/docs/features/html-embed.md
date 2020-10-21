@@ -39,6 +39,11 @@ ClassicEditor
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
+### Security
+
+TODO
+Note: it's mentioned in the config.htmlEmbed.* options so if we'll decide to rename this section we'll need to change it there.
+
 ## Common API
 
 The {@link module:html-embed/htmlembed~HtmlEmbed} plugin registers:
