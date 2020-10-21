@@ -19,7 +19,6 @@ import FocusObserver from '../../../../src/view/observer/focusobserver';
 import InputObserver from '../../../../src/view/observer/inputobserver';
 import KeyObserver from '../../../../src/view/observer/keyobserver';
 import MouseObserver from '../../../../src/view/observer/mouseobserver';
-import MutationObserver from '../../../../src/view/observer/mutationobserver';
 import MouseEventsObserver from '@ckeditor/ckeditor5-table/src/tablemouse/mouseeventsobserver';
 import DeleteObserver from '@ckeditor/ckeditor5-typing/src/deleteobserver';
 import ClipboardObserver from '@ckeditor/ckeditor5-clipboard/src/clipboardobserver';
@@ -110,8 +109,7 @@ class SimpleWidgetEditing extends Plugin {
 			[ ClipboardObserver, [ 'paste', 'copy', 'cut', 'drop', 'dragover' ] ], // It's inheriting domEventObserver
 			[ DeleteObserver, [ 'delete' ] ], // Is ignored for some reason, even though there's no explicit support.
 			[ EnterObserver, [ 'enter' ] ], // Is ignored for some reason, even though there's no explicit support.
-			[ ImageLoadObserver, [ 'imageLoaded' ] ],
-			[ MutationObserver, [ 'mutations' ] ]
+			[ ImageLoadObserver, [ 'imageLoaded' ] ]
 		] );
 
 		observers.forEach( ( events, observer ) => {
