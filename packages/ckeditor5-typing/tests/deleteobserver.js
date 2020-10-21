@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, KeyboardEvent */
+/* globals window, document */
 
 import DeleteObserver from '../src/deleteobserver';
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
@@ -251,31 +251,6 @@ describe( 'DeleteObserver', () => {
 			} ) );
 
 			sinon.assert.calledOnce( keydownSpy );
-		} );
-
-		it( 'should not be fired for ignored target', () => {
-			const spy = sinon.spy();
-			const view = new View();
-			const viewDocument = view.document;
-
-			const div = document.createElement( 'div' );
-			const input = document.createElement( 'input' );
-
-			div.setAttribute( 'data-cke-ignore-events', 'true' );
-			div.appendChild( input );
-
-			createViewRoot( viewDocument );
-
-			view.attachDomRoot( div );
-			view.addObserver( DeleteObserver );
-			viewDocument.on( 'delete', spy );
-
-			input.dispatchEvent( new KeyboardEvent( 'keydown', { bubbles: true, keyCode: getCode( 'delete' ) } ) );
-
-			sinon.assert.notCalled( spy );
-
-			view.destroy();
-			div.remove();
 		} );
 	} );
 

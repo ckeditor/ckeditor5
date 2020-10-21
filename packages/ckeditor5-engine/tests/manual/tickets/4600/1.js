@@ -6,6 +6,7 @@
 /* globals console, document, window, Event */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -19,6 +20,11 @@ import InputObserver from '../../../../src/view/observer/inputobserver';
 import KeyObserver from '../../../../src/view/observer/keyobserver';
 import MouseObserver from '../../../../src/view/observer/mouseobserver';
 import MouseEventsObserver from '@ckeditor/ckeditor5-table/src/tablemouse/mouseeventsobserver';
+import DeleteObserver from '@ckeditor/ckeditor5-typing/src/deleteobserver';
+import ClipboardObserver from '@ckeditor/ckeditor5-clipboard/src/clipboardobserver';
+import EnterObserver from '@ckeditor/ckeditor5-enter/src/enterobserver';
+import ImageLoadObserver from '@ckeditor/ckeditor5-image/src/image/imageloadobserver';
+import MutationObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mutationobserver';
 
 class SimpleWidgetEditing extends Plugin {
 	static get requires() {
@@ -37,6 +43,10 @@ class SimpleWidgetEditing extends Plugin {
 		schema.register( 'simpleWidgetElement', {
 			inheritAllFrom: '$block',
 			isObject: true
+		} );
+
+		schema.register( 'ignoredParagraph', {
+			inheritAllFrom: 'paragraph'
 		} );
 	}
 
@@ -65,6 +75,25 @@ class SimpleWidgetEditing extends Plugin {
 			}
 		} );
 
+		conversion.for( 'downcast' ).elementToElement( {
+			model: 'ignoredParagraph',
+			view: {
+				name: 'section',
+				classes: 'ignored',
+				attributes: {
+					'data-cke-ignore-events': 'true'
+				}
+			}
+		} );
+
+		conversion.for( 'upcast' ).elementToElement( {
+			model: 'ignoredParagraph',
+			view: {
+				name: 'section',
+				classes: 'ignored'
+			}
+		} );
+
 		function createWidgetView( modelElement, { writer } ) {
 			const simpleWidgetContainer = writer.createContainerElement( 'section', { class: 'simple-widget-container' } );
 			const simpleWidgetElement = writer.createRawElement( 'div', { class: 'simple-widget-element' }, domElement => {
@@ -73,11 +102,13 @@ class SimpleWidgetEditing extends Plugin {
 						<legend>Ignored container with <strong>data-cke-ignore-events="true"</strong></legend>
 						<input>
 						<button>Click!</button>
+						<img src="https://placekitten.com/30/30" height="30">
 					</fieldset>
 					<fieldset>
 						<legend>Regular container</legend>
 						<input>
 						<button>Click!</button>
+						<img src="https://placekitten.com/30/30" height="30">
 					</fieldset>
 				`;
 			} );
@@ -98,15 +129,24 @@ class SimpleWidgetEditing extends Plugin {
 			[ InputObserver, [ 'beforeinput' ] ],
 			[ KeyObserver, [ 'keydown', 'keyup' ] ],
 			[ MouseEventsObserver, [ 'mousemove', 'mouseup', 'mouseleave' ] ],
-			[ MouseObserver, [ 'mousedown' ] ]
+			[ MouseObserver, [ 'mousedown' ] ],
+			[ ClipboardObserver, [ 'paste', 'copy', 'cut', 'drop', 'dragover' ] ], // It's inheriting domEventObserver
+			[ DeleteObserver, [ 'delete' ] ], // Is ignored for some reason, even though there's no explicit support.
+			[ EnterObserver, [ 'enter' ] ], // Is ignored for some reason, even though there's no explicit support.
+			[ ImageLoadObserver, [ 'imageLoaded' ] ],
+			[ MutationObserver, [ 'mutations' ] ]
 		] );
 
 		observers.forEach( ( events, observer ) => {
 			view.addObserver( observer );
 
 			events.forEach( eventName => {
-				this.listenTo( view.document, eventName, () => {
-					console.log( `Received ${ eventName } event.` );
+				this.listenTo( view.document, eventName, ( event, eventData ) => {
+					if ( eventName.startsWith( 'mouse' ) ) {
+						console.log( `Received ${ eventName } event.` );
+					} else {
+						console.log( `Received ${ eventName } event. Target:`, eventData.domTarget );
+					}
 				} );
 			} );
 		} );
@@ -123,7 +163,7 @@ class SimpleWidget extends Plugin {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, SimpleWidget ]
+		plugins: [ Essentials, Paragraph, SimpleWidget ]
 	} )
 	.then( editor => {
 		window.editor = editor;
