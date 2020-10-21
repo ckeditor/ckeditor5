@@ -186,11 +186,6 @@ export default class HtmlEmbedEditing extends Plugin {
 					writer.insert( writer.createPositionAt( viewRawHtmlContainer, 2 ), viewPreviewContainer );
 				}
 
-				// Listen to read-only changes.
-				this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
-					viewTextarea.getCustomProperty( 'domElement' ).readOnly = value;
-				} );
-
 				return toRawHtmlWidget( viewContainer, writer, widgetLabel );
 			}
 		} );
@@ -205,7 +200,6 @@ function createDomTextarea( { editor, writer, viewTextarea, modelElement, domDoc
 	writer.setCustomProperty( 'domElement', domTextarea, viewTextarea );
 
 	domTextarea.value = modelElement.getAttribute( 'value' ) || '';
-	domTextarea.readOnly = editor.isReadOnly;
 
 	// When focusing the "edit source" element, the model selection must be updated.
 	// If we do not do it, the `updateHtmlEmbed` command will fail because it
