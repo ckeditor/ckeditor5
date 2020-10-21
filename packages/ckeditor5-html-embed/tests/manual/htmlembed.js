@@ -12,11 +12,11 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import HtmlEmbed from '../../src/htmlembed';
 
-const restrictedModeButton = document.getElementById( 'mode-enabled' );
-const standardModeButton = document.getElementById( 'mode-disabled' );
+const previewsModeButton = document.getElementById( 'raw-html-previews-enabled' );
+const noPreviewsModeButton = document.getElementById( 'raw-html-previews-disabled' );
 
-restrictedModeButton.addEventListener( 'change', handleModeChange );
-standardModeButton.addEventListener( 'change', handleModeChange );
+previewsModeButton.addEventListener( 'change', handleModeChange );
+noPreviewsModeButton.addEventListener( 'change', handleModeChange );
 
 startMode( document.querySelector( 'input[name="mode"]:checked' ).value );
 
