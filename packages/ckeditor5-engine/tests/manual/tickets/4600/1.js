@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, document, window, Event */
+/* globals console, document, window */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -44,10 +44,6 @@ class SimpleWidgetEditing extends Plugin {
 			inheritAllFrom: '$block',
 			isObject: true
 		} );
-
-		schema.register( 'ignoredParagraph', {
-			inheritAllFrom: 'paragraph'
-		} );
 	}
 
 	_defineConverters() {
@@ -72,25 +68,6 @@ class SimpleWidgetEditing extends Plugin {
 			view: {
 				name: 'section',
 				classes: 'simple-widget-container'
-			}
-		} );
-
-		conversion.for( 'downcast' ).elementToElement( {
-			model: 'ignoredParagraph',
-			view: {
-				name: 'section',
-				classes: 'ignored',
-				attributes: {
-					'data-cke-ignore-events': 'true'
-				}
-			}
-		} );
-
-		conversion.for( 'upcast' ).elementToElement( {
-			model: 'ignoredParagraph',
-			view: {
-				name: 'section',
-				classes: 'ignored'
 			}
 		} );
 
@@ -145,7 +122,7 @@ class SimpleWidgetEditing extends Plugin {
 					if ( eventName.startsWith( 'mouse' ) ) {
 						console.log( `Received ${ eventName } event.` );
 					} else {
-						console.log( `Received ${ eventName } event. Target:`, eventData.domTarget );
+						console.log( `Received ${ eventName } event. Target: `, eventData.domTarget || eventData.target );
 					}
 				} );
 			} );
@@ -153,11 +130,9 @@ class SimpleWidgetEditing extends Plugin {
 	}
 }
 
-class SimpleWidgetUI extends Plugin {}
-
 class SimpleWidget extends Plugin {
 	static get requires() {
-		return [ SimpleWidgetEditing, SimpleWidgetUI ];
+		return [ SimpleWidgetEditing ];
 	}
 }
 
@@ -167,29 +142,7 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-		addEventDispatcherForButtons( editor, 'click' );
 	} )
 	.catch( error => {
 		console.error( error.stack );
 	} );
-
-function addEventDispatcherForButtons( editor, eventName ) {
-	const view = editor.editing.view;
-	const container = Array
-		.from( view.document.getRoot().getChildren() )
-		.find( element => element.hasClass( 'simple-widget-container' ) );
-
-	view.domConverter
-		.viewToDom( container )
-		.querySelectorAll( 'button' )
-		.forEach( button => {
-			button.addEventListener( 'click', event => {
-				if ( !event.isTrusted ) {
-					return;
-				}
-
-				console.log( `Dispatched ${ eventName } event.` );
-				button.dispatchEvent( new Event( eventName, { bubbles: true } ) );
-			} );
-		} );
-}
