@@ -154,16 +154,16 @@ export function isEmail( value ) {
 }
 
 /**
- * Returns an URL with protocol prefix (if applicable).
+ * Adds protocol prefix to the specified link if doesn't contain it already
+ * and there is 'defaultProtocol' config provided or link is an email.
  *
- * @params {String} url
- * @params {module:core/editor/editor~Editor} editor
+ * @params {String} link
+ * @params {String} defaultProtocol
  * @returns {Boolean}
  */
-export function addUrlProtocolIfApplicable( url, editor ) {
-	const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
-	const protocol = isEmail( url ) ? 'mailto:' : defaultProtocol;
-	const isProtocolNeeded = !!protocol && !PROTOCOL_REG_EXP.test( url );
+export function addLinkProtocolIfApplicable( link, defaultProtocol ) {
+	const protocol = isEmail( link ) ? 'mailto:' : defaultProtocol;
+	const isProtocolNeeded = !!protocol && !PROTOCOL_REG_EXP.test( link );
 
-	return url && isProtocolNeeded ? protocol + url : url;
+	return link && isProtocolNeeded ? protocol + link : link;
 }

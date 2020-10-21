@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TextWatcher from '@ckeditor/ckeditor5-typing/src/textwatcher';
 import getLastTextLine from '@ckeditor/ckeditor5-typing/src/utils/getlasttextline';
-import { addUrlProtocolIfApplicable } from './utils';
+import { addLinkProtocolIfApplicable } from './utils';
 
 const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
 
@@ -211,7 +211,7 @@ export default class AutoLink extends Plugin {
 	 * @param {module:engine/model/range~Range} range The text range to apply the link attribute to.
 	 * @private
 	 */
-	_applyAutoLink( url, range ) {
+	_applyAutoLink( link, range ) {
 		const model = this.editor.model;
 
 		if ( !this.isEnabled || !isLinkAllowedOnRange( range, model ) ) {
@@ -220,7 +220,8 @@ export default class AutoLink extends Plugin {
 
 		// Enqueue change to make undo step.
 		model.enqueueChange( writer => {
-			const parsedUrl = addUrlProtocolIfApplicable( url, this.editor );
+			const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
+			const parsedUrl = addLinkProtocolIfApplicable( link, defaultProtocol );
 			writer.setAttribute( 'linkHref', parsedUrl, range );
 		} );
 	}
