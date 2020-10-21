@@ -6,6 +6,7 @@
 :root {
 	--ck-html-embed-content-width: calc(100% - 1.5 * var(--ck-icon-size));
 	--ck-html-embed-source-height: 10em;
+	--ck-html-embed-content-min-height: calc(var(--ck-icon-size) + var(--ck-spacing-standard));
 }
 
 /* The feature container. */
@@ -35,6 +36,7 @@
 			overflow: hidden;
 			box-sizing: border-box;
 			width: var(--ck-html-embed-content-width);
+			min-height: var(--ck-html-embed-content-min-height);
 			text-align: center;
 
 			& > table {
