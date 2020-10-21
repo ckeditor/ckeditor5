@@ -20,7 +20,7 @@ import eyeIcon from '../theme/icons/eye.svg';
 
 import '../theme/htmlembed.css';
 
-const DISPLAY_PREVIEW_CLASS = 'raw-html--display-preview';
+const DISPLAY_PREVIEW_CLASS = 'raw-html_preview_visible';
 
 /**
  * The HTML embed editing feature.
@@ -160,7 +160,7 @@ export default class HtmlEmbedEditing extends Plugin {
 				} );
 
 				const buttonAttributes = {
-					class: 'ck ck-button ck-on raw-html__switch-mode'
+					class: 'ck ck-button ck-on raw-html__mode-toggle-button'
 				};
 
 				// The switch button between preview and editing HTML.
@@ -201,7 +201,7 @@ export default class HtmlEmbedEditing extends Plugin {
 
 				// The container that renders the HTML should be created only when `htmlEmbed.showPreviews=true` in the config.
 				if ( htmlEmbedConfig.showPreviews ) {
-					writer.addClass( [ 'raw-html--preview-enabled', DISPLAY_PREVIEW_CLASS ], widgetView );
+					writer.addClass( [ 'raw-html_preview_enabled', DISPLAY_PREVIEW_CLASS ], widgetView );
 
 					const previewContainer = writer.createRawElement( 'div', { class: 'raw-html__preview' }, function( domElement ) {
 						writer.setCustomProperty( 'domElement', domElement, previewContainer );
