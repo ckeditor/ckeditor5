@@ -41,7 +41,7 @@ export default class HtmlEmbedUI extends Plugin {
 				editor.editing.view.focus();
 
 				const widgetWrapper = editor.editing.view.document.selection.getSelectedElement();
-				const rawHtmlContainer = widgetWrapper.getChild( 0 );
+				const rawHtmlContainer = widgetWrapper.getChild( 1 );
 
 				// After inserting a new element, switch to "Edit source" mode.
 				rawHtmlContainer.getChild( 0 ).getCustomProperty( 'domElement' ).click();

@@ -237,7 +237,7 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( widget.name ).to.equal( 'div' );
 				expect( isRawHtmlWidget( widget ) ).to.be.true;
 
-				const rawHtmlContainer = widget.getChild( 0 );
+				const rawHtmlContainer = widget.getChild( 1 );
 
 				expect( rawHtmlContainer ).to.not.be.undefined;
 			} );
@@ -254,7 +254,7 @@ describe( 'HtmlEmbedEditing', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 
 				// Expecting two children: toggle button and editable textarea.
 				expect( viewHtmlContainer.childCount ).to.equal( 2 );
@@ -274,7 +274,7 @@ describe( 'HtmlEmbedEditing', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 				const sourceElement = viewHtmlContainer.getChild( 1 );
 
 				expect( sourceElement.getAttribute( 'placeholder' ) ).to.equal( 'Paste the raw code here.' );
@@ -288,7 +288,7 @@ describe( 'HtmlEmbedEditing', () => {
 				} );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 				const sourceElement = viewHtmlContainer.getChild( 1 );
 
 				expect( sourceElement.getCustomProperty( 'domElement' ).value ).to.equal( '<b>Foo.</b>' );
@@ -298,7 +298,7 @@ describe( 'HtmlEmbedEditing', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 				const sourceElement = viewHtmlContainer.getChild( 1 );
 
 				const textarea = sourceElement.getCustomProperty( 'domElement' );
@@ -313,7 +313,7 @@ describe( 'HtmlEmbedEditing', () => {
 				setModelData( model, '<rawHtml value="Foo"></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 				const sourceElement = viewHtmlContainer.getChild( 1 );
 
 				const textarea = sourceElement.getCustomProperty( 'domElement' );
@@ -326,7 +326,7 @@ describe( 'HtmlEmbedEditing', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 
 				const toggleButtonElement = viewHtmlContainer.getChild( 0 );
 				toggleButtonElement.getCustomProperty( 'domElement' ).click();
@@ -340,7 +340,7 @@ describe( 'HtmlEmbedEditing', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 
 				const toggleButtonElement = viewHtmlContainer.getChild( 0 );
 				const toggleButton = toggleButtonElement.getCustomProperty( 'domElement' );
@@ -356,7 +356,7 @@ describe( 'HtmlEmbedEditing', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 
 				const toggleIconElement = viewHtmlContainer.getChild( 0 );
 				const toggleButton = toggleIconElement.getCustomProperty( 'domElement' );
@@ -374,7 +374,7 @@ describe( 'HtmlEmbedEditing', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 
 				const toggleButtonElement = viewHtmlContainer.getChild( 0 );
 				const toggleButton = toggleButtonElement.getCustomProperty( 'domElement' );
@@ -404,7 +404,7 @@ describe( 'HtmlEmbedEditing', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 
 				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).readOnly ).to.equal( true );
 			} );
@@ -413,7 +413,7 @@ describe( 'HtmlEmbedEditing', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 
 				editor.isReadOnly = true;
 
@@ -426,7 +426,7 @@ describe( 'HtmlEmbedEditing', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 
 				editor.isReadOnly = false;
 
@@ -439,7 +439,7 @@ describe( 'HtmlEmbedEditing', () => {
 
 				setModelData( model, '<paragraph>Foo.[]</paragraph><rawHtml value="1"></rawHtml><rawHtml value="2"></rawHtml>' );
 
-				const secondHtmlContainer = viewDocument.getRoot().getChild( 2 ).getChild( 0 );
+				const secondHtmlContainer = viewDocument.getRoot().getChild( 2 ).getChild( 1 );
 				// Switch to edit mode.
 				secondHtmlContainer.getChild( 0 ).getCustomProperty( 'domElement' ).click();
 
@@ -501,7 +501,7 @@ describe( 'HtmlEmbedEditing', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 
 				// Expecting three children: toggle button, editable textarea, and the preview container.
 				expect( viewHtmlContainer.childCount ).to.equal( 3 );
@@ -526,7 +526,7 @@ describe( 'HtmlEmbedEditing', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 				const sourceElement = viewHtmlContainer.getChild( 1 );
 				const previewElement = viewHtmlContainer.getChild( 2 );
 
@@ -548,7 +548,7 @@ describe( 'HtmlEmbedEditing', () => {
 
 				expect( widget.hasClass( 'raw-html_preview_visible' ) ).to.equal( true );
 
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 				const sourceElement = viewHtmlContainer.getChild( 1 );
 
 				const textarea = sourceElement.getCustomProperty( 'domElement' );
@@ -566,7 +566,7 @@ describe( 'HtmlEmbedEditing', () => {
 				const event = new Event( 'input' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 				const sourceElement = viewHtmlContainer.getChild( 1 );
 				const previewElement = viewHtmlContainer.getChild( 2 );
 
@@ -589,7 +589,7 @@ describe( 'HtmlEmbedEditing', () => {
 				} );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 
 				const previewElement = viewHtmlContainer.getChild( 2 ).getCustomProperty( 'domElement' );
 				expect( previewElement.innerHTML ).to.equal( '' );
@@ -603,7 +603,7 @@ describe( 'HtmlEmbedEditing', () => {
 				} );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 
 				const previewElement = viewHtmlContainer.getChild( 2 ).getCustomProperty( 'domElement' );
 				expect( previewElement.innerHTML ).to.equal( '' );
@@ -613,7 +613,7 @@ describe( 'HtmlEmbedEditing', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 
 				const toggleIconElement = viewHtmlContainer.getChild( 0 );
 
@@ -630,7 +630,7 @@ describe( 'HtmlEmbedEditing', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 
 				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 0 );
+				const viewHtmlContainer = widget.getChild( 1 );
 
 				const toggleIconElement = viewHtmlContainer.getChild( 0 );
 				const toggleButton = toggleIconElement.getCustomProperty( 'domElement' );
