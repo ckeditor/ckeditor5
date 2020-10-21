@@ -44,6 +44,11 @@
 		min-width: 0;
 		padding: var(--ck-spacing-standard);
 
+		font-family: monospace;
+		tab-size: 4;
+		white-space: pre-wrap;
+		font-size: var(--ck-font-size-base); /* Safari needs this. */
+
 		&[disabled] {
 			background: hsl(0deg 0% 97%);
 			color: hsl(0deg 0% 56%);

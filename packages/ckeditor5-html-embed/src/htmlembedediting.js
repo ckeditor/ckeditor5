@@ -148,7 +148,7 @@ export default class HtmlEmbedEditing extends Plugin {
 				const textareaAttributes = {
 					placeholder,
 					disabled: true,
-					class: 'ck ck-input ck-input-text raw-html-embed__source'
+					class: 'ck ck-reset ck-input ck-input-text raw-html-embed__source'
 				};
 
 				// The editing raw HTML field.
