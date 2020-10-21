@@ -5,6 +5,8 @@
 
 /* The feature container. */
 .ck-widget.raw-html {
+	/* Give the embed some air. */
+	margin: 1em auto;
 	position: relative;
 
 	/* The switch mode button wrapper. */
@@ -29,4 +31,9 @@
 			display: none;
 		}
 	}
+}
+
+.ck-content .raw-html-embed {
+	/* Give the embed some air. */
+	margin: 1em auto;
 }
