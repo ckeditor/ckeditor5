@@ -298,17 +298,18 @@ function getModeToggleButtonDOMElement( locale, forPreview ) {
 	buttonView.set( {
 		tooltipPosition: 'sw',
 		icon: pencilIcon,
-		class: 'raw-html__mode-toggle-button'
+		class: 'raw-html__mode-toggle-button',
+		tooltip: true
 	} );
 
 	buttonView.render();
 
 	if ( forPreview ) {
 		buttonView.icon = eyeIcon;
-		buttonView.tooltip = t( 'Show preview' );
+		buttonView.label = t( 'Show preview' );
 	} else {
 		buttonView.icon = pencilIcon;
-		buttonView.tooltip = t( 'Edit source' );
+		buttonView.label = t( 'Edit source' );
 	}
 
 	buttonView.destroy();
