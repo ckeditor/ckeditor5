@@ -15,6 +15,10 @@ const SAFE_URL = /^(?:(?:https?|ftps?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.:-]|$))
 // Simplified email test - should be run over previously found URL.
 const EMAIL_REG_EXP = /^[\S]+@((?![-_])(?:[-\w\u00a1-\uffff]{0,63}[^-_]\.))+(?:[a-z\u00a1-\uffff]{2,})$/i;
 
+// The regex checks for the protocol syntax ('xxxx://' or 'xxxx:')
+// or non-word characters at the beginning of the link ('/', '#' etc.).
+const PROTOCOL_REG_EXP = /^((\w+:(\/{2,})?)|(\W))/i;
+
 /**
  * A keystroke used by the {@link module:link/linkui~LinkUI link UI feature}.
  */
@@ -139,6 +143,27 @@ export function isImageAllowed( element, schema ) {
 	return element.is( 'element', 'image' ) && schema.checkAttribute( 'image', 'linkHref' );
 }
 
-export function isEmail( linkHref ) {
-	return EMAIL_REG_EXP.test( linkHref );
+/**
+ * Returns `true` if the specified `value` is an email.
+ *
+ * @params {String} value
+ * @returns {Boolean}
+ */
+export function isEmail( value ) {
+	return EMAIL_REG_EXP.test( value );
+}
+
+/**
+ * Returns an URL with protocol prefix (if applicable).
+ *
+ * @params {String} url
+ * @params {module:core/editor/editor~Editor} editor
+ * @returns {Boolean}
+ */
+export function addUrlProtocolIfApplicable( url, editor ) {
+	const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
+	const protocol = isEmail( url ) ? 'mailto:' : defaultProtocol;
+	const isProtocolNeeded = !!protocol && !PROTOCOL_REG_EXP.test( url );
+
+	return url && isProtocolNeeded ? protocol + url : url;
 }

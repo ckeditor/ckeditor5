@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
-import { isEmail, isLinkElement, LINK_KEYSTROKE } from './utils';
+import { addUrlProtocolIfApplicable, isLinkElement, LINK_KEYSTROKE } from './utils';
 
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
@@ -21,9 +21,6 @@ import LinkActionsView from './ui/linkactionsview';
 
 import linkIcon from '../theme/icons/link.svg';
 
-// The regex checks for the protocol syntax ('xxxx://' or 'xxxx:')
-// or non-word characters at the beginning of the link ('/', '#' etc.).
-const protocolRegExp = /^((\w+:(\/{2,})?)|(\W))/i;
 const VISUAL_SELECTION_MARKER_NAME = 'link-ui';
 
 /**
@@ -177,12 +174,8 @@ export default class LinkUI extends Plugin {
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
 			const { value } = formView.urlInputView.fieldView.element;
-
-			const protocol = isEmail( value ) ? 'mailto:' : defaultProtocol;
-			const isProtocolNeeded = !!protocol && !protocolRegExp.test( value );
-			const parsedValue = value && isProtocolNeeded ? protocol + value : value;
-
-			editor.execute( 'link', parsedValue, formView.getDecoratorSwitchesState() );
+			const parsedUrl = addUrlProtocolIfApplicable( value, editor );
+			editor.execute( 'link', parsedUrl, formView.getDecoratorSwitchesState() );
 			this._closeFormView();
 		} );
 

@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TextWatcher from '@ckeditor/ckeditor5-typing/src/textwatcher';
 import getLastTextLine from '@ckeditor/ckeditor5-typing/src/utils/getlasttextline';
-import { isEmail } from './utils';
+import { addUrlProtocolIfApplicable } from './utils';
 
 const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
 
@@ -49,10 +49,6 @@ const URL_REG_EXP = new RegExp(
 	')$', 'i' );
 
 const URL_GROUP_IN_MATCH = 2;
-
-// The regex checks for the protocol syntax ('xxxx://' or 'xxxx:')
-// or non-word characters at the beginning of the link ('/', '#' etc.).
-const PROTOCOL_REG_EXP = /^((\w+:(\/{2,})?)|(\W))/i;
 
 /**
  * The autolink plugin.
@@ -224,12 +220,8 @@ export default class AutoLink extends Plugin {
 
 		// Enqueue change to make undo step.
 		model.enqueueChange( writer => {
-			const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
-			const protocol = isEmail( url ) ? 'mailto:' : defaultProtocol;
-			const isProtocolNeeded = !!protocol && !PROTOCOL_REG_EXP.test( url );
-			const parsedValue = url && isProtocolNeeded ? protocol + url : url;
-
-			writer.setAttribute( 'linkHref', parsedValue, range );
+			const parsedUrl = addUrlProtocolIfApplicable( url, this.editor );
+			writer.setAttribute( 'linkHref', parsedUrl, range );
 		} );
 	}
 }
