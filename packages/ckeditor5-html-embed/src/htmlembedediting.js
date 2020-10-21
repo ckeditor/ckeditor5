@@ -152,6 +152,15 @@ export default class HtmlEmbedEditing extends Plugin {
 					root.value = modelElement.getAttribute( 'value' ) || '';
 					root.readOnly = editor.isReadOnly;
 
+					// When focusing the "edit source" element, the model selection must be updated.
+					// If we do not do it, the `htmlEmbedUpdate` command will fail because it
+					// searches the `rawHtml` element based on selection.
+					root.addEventListener( 'focus', () => {
+						editor.model.change( writer => {
+							writer.setSelection( modelElement, 'on' );
+						} );
+					} );
+
 					root.addEventListener( 'input', () => {
 						editor.execute( 'htmlEmbedUpdate', root.value );
 					} );

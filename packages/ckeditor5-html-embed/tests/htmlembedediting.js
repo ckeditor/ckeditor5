@@ -432,6 +432,26 @@ describe( 'HtmlEmbedEditing', () => {
 
 				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).readOnly ).to.equal( false );
 			} );
+
+			it( 'should select the proper model element when editing source', () => {
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
+
+				setModelData( model, '<paragraph>Foo.[]</paragraph><rawHtml value="1"></rawHtml><rawHtml value="2"></rawHtml>' );
+
+				const secondHtmlContainer = viewDocument.getRoot().getChild( 2 ).getChild( 0 );
+				// Switch to edit mode.
+				secondHtmlContainer.getChild( 0 ).getCustomProperty( 'domElement' ).click();
+
+				const sourceElement = secondHtmlContainer.getChild( 1 );
+				const textarea = sourceElement.getCustomProperty( 'domElement' );
+
+				textarea.dispatchEvent( new Event( 'focus' ) );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>Foo.</paragraph><rawHtml value="1"></rawHtml>[<rawHtml value="2"></rawHtml>]'
+				);
+			} );
 		} );
 
 		describe( 'with previews (htmlEmbed.showPreviews=true)', () => {
