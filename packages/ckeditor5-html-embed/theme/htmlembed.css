@@ -15,24 +15,6 @@
 		display: flex;
 		flex-direction: column;
 	}
-
-	/* Using the feature with enabled previews in data. */
-	&.raw-html-embed_preview_enabled {
-		&.raw-html-embed_preview_visible {
-			& .raw-html-embed__source {
-				display: none;
-			}
-
-			& .raw-html-embed__preview {
-				display: block;
-			}
-		}
-
-		/* Mode: edit the HTML source. */
-		&:not(.raw-html-embed_preview_visible) .raw-html-embed__preview {
-			display: none;
-		}
-	}
 }
 
 .ck-content .raw-html-embed {

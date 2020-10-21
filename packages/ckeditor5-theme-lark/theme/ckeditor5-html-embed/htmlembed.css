@@ -12,6 +12,7 @@
 /* The feature container. */
 .ck-widget.raw-html-embed {
 	font-size: var(--ck-font-size-base);
+	background-color: var(--ck-color-base-foreground);
 
 	& .raw-html-embed__content-wrapper {
 		padding: var(--ck-spacing-standard);
@@ -55,30 +56,22 @@
 		}
 	}
 
-	/* Using the feature with previews enabled. */
-	&.raw-html-embed_preview_enabled {
-		/* The preview data container. */
-		& .raw-html-embed__preview {
-			overflow: hidden;
-			box-sizing: border-box;
-			width: var(--ck-html-embed-content-width);
-			min-height: var(--ck-html-embed-content-min-height);
-			text-align: center;
+	/* The preview data container. */
+	& .raw-html-embed__preview {
+		overflow: hidden;
+		box-sizing: border-box;
+		width: var(--ck-html-embed-content-width);
+		min-height: var(--ck-html-embed-content-min-height);
+		text-align: center;
 
-			& > table {
-				margin-left: auto;
-				margin-right: auto;
-			}
-
-			/* Disable all mouse interaction as long as the editor is not read–only. */
-			@nest .ck-editor__editable:not(.ck-read-only) & {
-				pointer-events: none;
-			}
+		& > table {
+			margin-left: auto;
+			margin-right: auto;
 		}
 
-		/* Mode: preview the HTML. */
-		&.raw-html-embed_preview_visible {
-			background-color: var(--ck-color-base-foreground);
+		/* Disable all mouse interaction as long as the editor is not read–only. */
+		@nest .ck-editor__editable:not(.ck-read-only) & {
+			pointer-events: none;
 		}
 	}
 }
