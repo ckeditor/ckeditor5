@@ -129,8 +129,6 @@ export default class HtmlEmbedEditing extends Plugin {
 			},
 			model: 'rawHtml',
 			view: ( modelElement, { writer } ) => {
-				const widgetLabel = t( 'HTML snippet' );
-
 				let domContentWrapper, state, props;
 
 				const viewContainer = writer.createContainerElement( 'div', {
@@ -146,6 +144,7 @@ export default class HtmlEmbedEditing extends Plugin {
 					renderContent( { domElement, editor, state, props } );
 				} );
 
+				// API exposed on each raw HTML embed widget so other features can control a particular widget.
 				const rawHtmlApi = {
 					makeEditable() {
 						state = Object.assign( {}, state, {
@@ -162,6 +161,8 @@ export default class HtmlEmbedEditing extends Plugin {
 						domContentWrapper.querySelector( 'textarea' ).focus();
 					},
 					save( newValue ) {
+						// If the value didn't change, we just cancel. If it changed,
+						// it's enough to update the model – the entire widget will be reconverted.
 						if ( newValue !== state.getRawHtmlValue() ) {
 							editor.execute( 'updateHtmlEmbed', newValue );
 						} else {
@@ -183,7 +184,6 @@ export default class HtmlEmbedEditing extends Plugin {
 
 				state = {
 					showPreviews: htmlEmbedConfig.showPreviews,
-
 					isEditable: false,
 					getRawHtmlValue: () => modelElement.getAttribute( 'value' ) || ''
 				};
@@ -209,7 +209,7 @@ export default class HtmlEmbedEditing extends Plugin {
 				writer.setCustomProperty( 'rawHtml', true, viewContainer );
 
 				return toWidget( viewContainer, writer, {
-					widgetLabel,
+					widgetLabel: t( 'HTML snippet' ),
 					hasSelectionHandle: true
 				} );
 			}
