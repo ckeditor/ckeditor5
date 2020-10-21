@@ -65,4 +65,9 @@
 			display: none;
 		}
 	}
+
+	/* Disable all mouse interaction as long as the editor is not read–only. */
+	&:not(.ck-read-only) .raw-html--preview-enabled .raw-html__preview {
+		pointer-events: none;
+	}
 }
