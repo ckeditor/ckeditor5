@@ -6,7 +6,7 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
-.ck-vertical-form .ck-button::after {
+.ck-vertical-form > .ck-button:nth-last-child(2)::after {
 	border-right: 1px solid var(--ck-color-base-border);
 }
 
@@ -48,8 +48,9 @@
 			}
 		}
 
-		/* 'button' selector must be used because those styles shouldn't be added to other elements, like 'a'. Example in LinkActionsView. */
-		& button.ck-button {
+		/* Styles for two last buttons in the form (save&cancel, edit&unlink, etc.). */
+		& > .ck-button:nth-last-child(1),
+		& > .ck-button:nth-last-child(2) {
 			padding: var(--ck-spacing-standard);
 			margin-top: var(--ck-spacing-standard);
 
@@ -68,7 +69,9 @@
 					border-right: 1px solid var(--ck-color-base-border);
 				}
 			}
+		}
 
+		& > .ck-button:nth-last-child(2) {
 			&::after {
 				border-right: 1px solid var(--ck-color-base-border);
 			}
