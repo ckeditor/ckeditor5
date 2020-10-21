@@ -31,6 +31,7 @@
 	&.raw-html_preview_enabled {
 		/* The preview data container. */
 		& .raw-html__preview {
+			overflow: hidden;
 			box-sizing: border-box;
 			width: var(--ck-html-embed-content-width);
 			text-align: center;
