@@ -19,12 +19,12 @@ import FocusObserver from '../../../../src/view/observer/focusobserver';
 import InputObserver from '../../../../src/view/observer/inputobserver';
 import KeyObserver from '../../../../src/view/observer/keyobserver';
 import MouseObserver from '../../../../src/view/observer/mouseobserver';
+import MutationObserver from '../../../../src/view/observer/mutationobserver';
 import MouseEventsObserver from '@ckeditor/ckeditor5-table/src/tablemouse/mouseeventsobserver';
 import DeleteObserver from '@ckeditor/ckeditor5-typing/src/deleteobserver';
 import ClipboardObserver from '@ckeditor/ckeditor5-clipboard/src/clipboardobserver';
 import EnterObserver from '@ckeditor/ckeditor5-enter/src/enterobserver';
 import ImageLoadObserver from '@ckeditor/ckeditor5-image/src/image/imageloadobserver';
-import MutationObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mutationobserver';
 
 class SimpleWidgetEditing extends Plugin {
 	static get requires() {
