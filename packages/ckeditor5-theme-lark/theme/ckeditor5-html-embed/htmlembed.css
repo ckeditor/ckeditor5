@@ -25,6 +25,7 @@
 		height: var(--ck-html-embed-source-height);
 		width: var(--ck-html-embed-content-width);
 		resize: none;
+		min-width: 0;
 	}
 
 	/* Using the feature with previews enabled. */
