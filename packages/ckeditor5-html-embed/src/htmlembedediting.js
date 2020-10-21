@@ -22,7 +22,7 @@ import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 import '../theme/htmlembed.css';
 
-const DISPLAY_PREVIEW_CLASS = 'raw-html_preview_visible';
+const DISPLAY_PREVIEW_CLASS = 'raw-html-embed_preview_visible';
 
 /**
  * The HTML embed editing feature.
@@ -134,12 +134,12 @@ export default class HtmlEmbedEditing extends Plugin {
 				const placeholder = t( 'Paste the raw code here.' );
 
 				const widgetView = writer.createContainerElement( 'div', {
-					class: 'raw-html'
+					class: 'raw-html-embed'
 				} );
 
 				const rawHtmlContainer = writer.createContainerElement( 'div', {
 					'data-cke-ignore-events': true,
-					class: 'raw-html__content-wrapper'
+					class: 'raw-html-embed__content-wrapper'
 				} );
 
 				// Whether to show a preview mode or editing area.
@@ -148,7 +148,7 @@ export default class HtmlEmbedEditing extends Plugin {
 				const textareaAttributes = {
 					placeholder,
 					disabled: true,
-					class: 'ck ck-input ck-input-text raw-html__source'
+					class: 'ck ck-input ck-input-text raw-html-embed__source'
 				};
 
 				// The editing raw HTML field.
@@ -176,7 +176,7 @@ export default class HtmlEmbedEditing extends Plugin {
 				} );
 
 				const buttonsWrapperAttributes = {
-					class: 'raw-html__buttons-wrapper'
+					class: 'raw-html-embed__buttons-wrapper'
 				};
 
 				// The switch button between preview and editing HTML.
@@ -224,9 +224,9 @@ export default class HtmlEmbedEditing extends Plugin {
 
 				// The container that renders the HTML should be created only when `htmlEmbed.showPreviews=true` in the config.
 				if ( htmlEmbedConfig.showPreviews ) {
-					writer.addClass( [ 'raw-html_preview_enabled', DISPLAY_PREVIEW_CLASS ], widgetView );
+					writer.addClass( [ 'raw-html-embed_preview_enabled', DISPLAY_PREVIEW_CLASS ], widgetView );
 
-					const previewContainer = writer.createRawElement( 'div', { class: 'raw-html__preview' }, function( domElement ) {
+					const previewContainer = writer.createRawElement( 'div', { class: 'raw-html-embed__preview' }, function( domElement ) {
 						writer.setCustomProperty( 'domElement', domElement, previewContainer );
 
 						const sanitizeOutput = htmlEmbedConfig.sanitizeHtml( modelElement.getAttribute( 'value' ) || '' );
@@ -316,19 +316,19 @@ function getButtonDOMElement( locale, type ) {
 		buttonView.set( {
 			icon: pencilIcon,
 			label: t( 'Edit source' ),
-			class: 'raw-html__edit-button'
+			class: 'raw-html-embed__edit-button'
 		} );
 	} else if ( type === 'save' ) {
 		buttonView.set( {
 			icon: checkIcon,
 			label: t( 'Save changes' ),
-			class: 'raw-html__save-button'
+			class: 'raw-html-embed__save-button'
 		} );
 	} else {
 		buttonView.set( {
 			icon: cancelIcon,
 			label: t( 'Cancel' ),
-			class: 'raw-html__cancel-button'
+			class: 'raw-html-embed__cancel-button'
 		} );
 	}
 

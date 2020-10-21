@@ -4,32 +4,32 @@
  */
 
 /* The feature container. */
-.ck-widget.raw-html {
+.ck-widget.raw-html-embed {
 	/* Give the embed some air. */
 	margin: 1em auto;
 	position: relative;
 
 	/* The switch mode button wrapper. */
-	& .raw-html__buttons-wrapper {
+	& .raw-html-embed__buttons-wrapper {
 		position: absolute;
 		display: flex;
 		flex-direction: column;
 	}
 
 	/* Using the feature with enabled previews in data. */
-	&.raw-html_preview_enabled {
-		&.raw-html_preview_visible {
-			& .raw-html__source {
+	&.raw-html-embed_preview_enabled {
+		&.raw-html-embed_preview_visible {
+			& .raw-html-embed__source {
 				display: none;
 			}
 
-			& .raw-html__preview {
+			& .raw-html-embed__preview {
 				display: block;
 			}
 		}
 
 		/* Mode: edit the HTML source. */
-		&:not(.raw-html_preview_visible) .raw-html__preview {
+		&:not(.raw-html-embed_preview_visible) .raw-html-embed__preview {
 			display: none;
 		}
 	}
