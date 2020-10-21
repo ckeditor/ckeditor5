@@ -14,6 +14,7 @@ import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import HtmlEmbedInsertCommand from './htmlembedinsertcommand';
 import HtmlEmbedUpdateCommand from './htmlembedupdatecommand';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import pencilIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
 import eyeIcon from '../theme/icons/eye.svg';
@@ -95,6 +96,9 @@ export default class HtmlEmbedEditing extends Plugin {
 		const upcastWriter = new UpcastWriter( view.document );
 		const htmlProcessor = new HtmlDataProcessor( view.document );
 
+		const editModeButtonDOMElement = getModeToggleButtonDOMElement( editor.locale );
+		const previewModeButtonDOMElement = getModeToggleButtonDOMElement( editor.locale, true );
+
 		editor.conversion.for( 'upcast' ).elementToElement( {
 			view: {
 				name: 'div',
@@ -168,18 +172,17 @@ export default class HtmlEmbedEditing extends Plugin {
 					return root;
 				} );
 
-				const buttonAttributes = {
-					class: 'ck ck-button ck-on raw-html__mode-toggle-button'
+				const toggleButtonWrapperAttributes = {
+					class: 'raw-html__mode-toggle-wrapper'
 				};
 
 				// The switch button between preview and editing HTML.
-				const toggleButton = writer.createUIElement( 'button', buttonAttributes, function( domDocument ) {
+				const toggleButtonWrapper = writer.createUIElement( 'div', toggleButtonWrapperAttributes, function( domDocument ) {
 					const root = this.toDomElement( domDocument );
 
-					root.innerHTML = pencilIcon;
-					root.firstChild.classList.add( 'ck', 'ck-icon', 'ck-button__icon' );
+					root.appendChild( editModeButtonDOMElement.cloneNode( true ) );
 
-					writer.setCustomProperty( 'domElement', root, toggleButton );
+					writer.setCustomProperty( 'domElement', root, toggleButtonWrapper );
 
 					root.addEventListener( 'click', evt => {
 						view.change( writer => {
@@ -194,8 +197,9 @@ export default class HtmlEmbedEditing extends Plugin {
 							const textarea = sourceElement.getCustomProperty( 'domElement' );
 							textarea.disabled = !textarea.disabled;
 
-							root.innerHTML = textarea.disabled ? pencilIcon : eyeIcon;
-							root.firstChild.classList.add( 'ck', 'ck-icon', 'ck-button__icon' );
+							const modeButtonToClone = textarea.disabled ? editModeButtonDOMElement : previewModeButtonDOMElement;
+
+							root.replaceChild( modeButtonToClone.cloneNode( true ), root.firstChild );
 						} );
 
 						evt.preventDefault();
@@ -205,7 +209,7 @@ export default class HtmlEmbedEditing extends Plugin {
 				} );
 
 				writer.insert( writer.createPositionAt( widgetView, 0 ), rawHtmlContainer );
-				writer.insert( writer.createPositionAt( rawHtmlContainer, 0 ), toggleButton );
+				writer.insert( writer.createPositionAt( rawHtmlContainer, 0 ), toggleButtonWrapper );
 				writer.insert( writer.createPositionAt( rawHtmlContainer, 1 ), sourceElement );
 
 				// The container that renders the HTML should be created only when `htmlEmbed.showPreviews=true` in the config.
@@ -277,4 +281,34 @@ function toRawHtmlWidget( viewElement, writer, label ) {
 	writer.setCustomProperty( 'rawHtml', true, viewElement );
 
 	return toWidget( viewElement, writer, { label } );
+}
+
+// Returns a toggle mode button DOM element that can be cloned and used in conversion.
+//
+//  @param {module:utils/locale~Locale} locale Editor locale.
+//  @param {module:utils/locale~Locale} forPreview `true` when the button should toggle to preview mode.
+//  @returns {HTMLElement}
+function getModeToggleButtonDOMElement( locale, forPreview ) {
+	const t = locale.t;
+	const buttonView = new ButtonView( locale );
+
+	buttonView.set( {
+		tooltipPosition: 'sw',
+		icon: pencilIcon,
+		class: 'raw-html__mode-toggle-button'
+	} );
+
+	buttonView.render();
+
+	if ( forPreview ) {
+		buttonView.icon = eyeIcon;
+		buttonView.tooltip = t( 'Show preview' );
+	} else {
+		buttonView.icon = pencilIcon;
+		buttonView.tooltip = t( 'Edit source' );
+	}
+
+	buttonView.destroy();
+
+	return buttonView.element.cloneNode( true );
 }

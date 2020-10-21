@@ -14,8 +14,8 @@
 	font-size: var(--ck-font-size-base);
 	padding: var(--ck-spacing-standard);
 
-	/* The switch mode button. */
-	& .raw-html__mode-toggle-button {
+	/* The switch mode button wrapper. */
+	& .raw-html__mode-toggle-wrapper {
 		top: var(--ck-spacing-standard);
 		right: var(--ck-spacing-standard);
 	}

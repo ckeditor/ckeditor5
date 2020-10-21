@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console, document, HTMLTextAreaElement, HTMLDivElement, HTMLButtonElement, Event */
+/* global console, document, HTMLTextAreaElement, HTMLDivElement, Event */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import HtmlEmbedEditing from '../src/htmlembedediting';
@@ -259,10 +259,10 @@ describe( 'HtmlEmbedEditing', () => {
 				// Expecting two children: toggle button and editable textarea.
 				expect( viewHtmlContainer.childCount ).to.equal( 2 );
 
-				const toggleIconElement = viewHtmlContainer.getChild( 0 );
+				const toggleWrapperElement = viewHtmlContainer.getChild( 0 );
 
-				expect( toggleIconElement.is( 'uiElement' ) ).to.equal( true );
-				expect( toggleIconElement.getCustomProperty( 'domElement' ) ).to.be.an.instanceOf( HTMLButtonElement );
+				expect( toggleWrapperElement.is( 'uiElement' ) ).to.equal( true );
+				expect( toggleWrapperElement.getCustomProperty( 'domElement' ) ).to.be.an.instanceOf( HTMLDivElement );
 
 				const sourceElement = viewHtmlContainer.getChild( 1 );
 
@@ -506,10 +506,10 @@ describe( 'HtmlEmbedEditing', () => {
 				// Expecting three children: toggle button, editable textarea, and the preview container.
 				expect( viewHtmlContainer.childCount ).to.equal( 3 );
 
-				const toggleIconElement = viewHtmlContainer.getChild( 0 );
+				const toggleWrapperElement = viewHtmlContainer.getChild( 0 );
 
-				expect( toggleIconElement.is( 'uiElement' ) ).to.equal( true );
-				expect( toggleIconElement.getCustomProperty( 'domElement' ) ).to.be.an.instanceOf( HTMLButtonElement );
+				expect( toggleWrapperElement.is( 'uiElement' ) ).to.equal( true );
+				expect( toggleWrapperElement.getCustomProperty( 'domElement' ) ).to.be.an.instanceOf( HTMLDivElement );
 
 				const sourceElement = viewHtmlContainer.getChild( 1 );
 
