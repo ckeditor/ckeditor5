@@ -12,7 +12,10 @@
 /* The feature container. */
 .ck-widget.raw-html {
 	font-size: var(--ck-font-size-base);
-	padding: var(--ck-spacing-standard);
+
+	& .raw-html__content-wrapper {
+		padding: var(--ck-spacing-standard);
+	}
 
 	/* The switch mode button wrapper. */
 	& .raw-html__mode-toggle-wrapper {

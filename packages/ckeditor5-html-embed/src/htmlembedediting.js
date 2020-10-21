@@ -136,7 +136,8 @@ export default class HtmlEmbedEditing extends Plugin {
 				} );
 
 				const rawHtmlContainer = writer.createContainerElement( 'div', {
-					'data-cke-ignore-events': true
+					'data-cke-ignore-events': true,
+					class: 'raw-html__content-wrapper'
 				} );
 
 				// Whether to show a preview mode or editing area.
@@ -249,8 +250,7 @@ function downcastRawHtmlValueAttribute( htmlEmbedConfig ) {
 	return dispatcher => {
 		dispatcher.on( 'attribute:value:rawHtml', ( evt, data, conversionApi ) => {
 			const widgetView = conversionApi.mapper.toViewElement( data.item );
-			const rawHtmlContainer = widgetView.getChild( 0 );
-
+			const rawHtmlContainer = widgetView.getChild( 1 );
 			const textareaDomElement = rawHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' );
 
 			if ( textareaDomElement ) {
@@ -280,7 +280,10 @@ function downcastRawHtmlValueAttribute( htmlEmbedConfig ) {
 function toRawHtmlWidget( viewElement, writer, label ) {
 	writer.setCustomProperty( 'rawHtml', true, viewElement );
 
-	return toWidget( viewElement, writer, { label } );
+	return toWidget( viewElement, writer, {
+		label,
+		hasSelectionHandle: true
+	} );
 }
 
 // Returns a toggle mode button DOM element that can be cloned and used in conversion.
