@@ -22,6 +22,7 @@
     "@ckeditor/ckeditor5-font": "^23.0.0",
     "@ckeditor/ckeditor5-heading": "^23.0.0",
     "@ckeditor/ckeditor5-highlight": "^23.0.0",
+    "@ckeditor/ckeditor5-html-embed": "^0.0.1",
     "@ckeditor/ckeditor5-indent": "^23.0.0",
     "@ckeditor/ckeditor5-link": "^23.0.0",
     "@ckeditor/ckeditor5-list": "^23.0.0",
