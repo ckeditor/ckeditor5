@@ -5,6 +5,7 @@
 
 .ck.ck-image-insert-form {
 	&:focus {
+		/* See: https://github.com/ckeditor/ckeditor5/issues/4773 */
 		outline: none;
 	}
 }
