@@ -124,6 +124,9 @@ export default class HtmlEmbedEditing extends Plugin {
 		} );
 
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
+			triggerBy: {
+				attributes: [ 'value' ]
+			},
 			model: 'rawHtml',
 			view: ( modelElement, { writer } ) => {
 				const widgetLabel = t( 'HTML snippet' );
@@ -159,17 +162,11 @@ export default class HtmlEmbedEditing extends Plugin {
 						domContentWrapper.querySelector( 'textarea' ).focus();
 					},
 					save( newValue ) {
-						state = Object.assign( {}, state, {
-							isEditable: false
-						} );
-
-						editor.execute( 'updateHtmlEmbed', newValue );
-
-						renderContent( { domElement: domContentWrapper, editor, state, props } );
-
-						view.change( writer => {
-							writer.removeAttribute( 'data-cke-ignore-events', viewContentWrapper );
-						} );
+						if ( newValue !== state.getRawHtmlValue() ) {
+							editor.execute( 'updateHtmlEmbed', newValue );
+						} else {
+							this.cancel();
+						}
 					},
 					cancel() {
 						state = Object.assign( {}, state, {
@@ -217,8 +214,6 @@ export default class HtmlEmbedEditing extends Plugin {
 				} );
 			}
 		} );
-
-		// editor.conversion.for( 'editingDowncast' ).add( downcastRawHtmlValueAttribute( htmlEmbedConfig ) );
 
 		function renderContent( { domElement, editor, state, props } ) {
 			// Remove all children;
