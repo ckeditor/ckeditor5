@@ -23,6 +23,7 @@ import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import '../theme/htmlembed.css';
 
 const DISPLAY_PREVIEW_CLASS = 'raw-html-embed_preview_visible';
+const IGNORE_EVENTS_ATTRIBUTE = 'data-cke-ignore-events';
 
 /**
  * The HTML embed editing feature.
@@ -138,12 +139,8 @@ export default class HtmlEmbedEditing extends Plugin {
 				} );
 
 				const rawHtmlContainer = writer.createContainerElement( 'div', {
-					'data-cke-ignore-events': true,
 					class: 'raw-html-embed__content-wrapper'
 				} );
-
-				// Whether to show a preview mode or editing area.
-				writer.setCustomProperty( 'isEditingSourceActive', false, rawHtmlContainer );
 
 				const textareaAttributes = {
 					placeholder,
@@ -191,9 +188,11 @@ export default class HtmlEmbedEditing extends Plugin {
 						view.change( writer => {
 							if ( htmlEmbedConfig.showPreviews ) {
 								if ( widgetView.hasClass( DISPLAY_PREVIEW_CLASS ) ) {
+									writer.setAttribute( IGNORE_EVENTS_ATTRIBUTE, 'true', rawHtmlContainer );
 									writer.removeClass( DISPLAY_PREVIEW_CLASS, widgetView );
 								} else {
 									writer.addClass( DISPLAY_PREVIEW_CLASS, widgetView );
+									writer.removeAttribute( IGNORE_EVENTS_ATTRIBUTE, rawHtmlContainer );
 								}
 							}
 
