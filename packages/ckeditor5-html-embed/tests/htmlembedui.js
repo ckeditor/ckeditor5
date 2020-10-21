@@ -45,17 +45,17 @@ describe( 'HtmlEmbedEditing', () => {
 		expect( htmlEmbedView.isToggleable ).to.be.false;
 	} );
 
-	it( 'should execute htmlEmbedInsert command on model execute event', () => {
+	it( 'should execute insertHtmlEmbed command on model execute event', () => {
 		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
 		htmlEmbedView.fire( 'execute' );
 
 		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'htmlEmbedInsert' );
+		sinon.assert.calledWithExactly( executeSpy, 'insertHtmlEmbed' );
 	} );
 
-	it( 'should bind model to htmlEmbedInsert command', () => {
-		const command = editor.commands.get( 'htmlEmbedInsert' );
+	it( 'should bind model to insertHtmlEmbed command', () => {
+		const command = editor.commands.get( 'insertHtmlEmbed' );
 
 		expect( htmlEmbedView.isEnabled ).to.be.true;
 

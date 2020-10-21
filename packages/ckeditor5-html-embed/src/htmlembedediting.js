@@ -12,8 +12,8 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import HtmlEmbedInsertCommand from './htmlembedinsertcommand';
-import HtmlEmbedUpdateCommand from './htmlembedupdatecommand';
+import InsertHtmlEmbedCommand from './inserthtmlembedcommand';
+import UpdateHtmlEmbedCommand from './updatehtmlembedcommand';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import pencilIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
@@ -77,8 +77,8 @@ export default class HtmlEmbedEditing extends Plugin {
 			allowAttributes: [ 'value' ]
 		} );
 
-		editor.commands.add( 'htmlEmbedUpdate', new HtmlEmbedUpdateCommand( editor ) );
-		editor.commands.add( 'htmlEmbedInsert', new HtmlEmbedInsertCommand( editor ) );
+		editor.commands.add( 'updateHtmlEmbed', new UpdateHtmlEmbedCommand( editor ) );
+		editor.commands.add( 'insertHtmlEmbed', new InsertHtmlEmbedCommand( editor ) );
 
 		this._setupConversion();
 	}
@@ -131,7 +131,7 @@ export default class HtmlEmbedEditing extends Plugin {
 			model: 'rawHtml',
 			view: ( modelElement, { writer } ) => {
 				const widgetLabel = t( 'HTML snippet' );
-				const placeholder = t( 'Paste the raw code here.' );
+				const placeholder = t( 'Paste raw HTML here...' );
 
 				const widgetView = writer.createContainerElement( 'div', {
 					class: 'raw-html-embed'
@@ -160,7 +160,7 @@ export default class HtmlEmbedEditing extends Plugin {
 					root.readOnly = editor.isReadOnly;
 
 					// When focusing the "edit source" element, the model selection must be updated.
-					// If we do not do it, the `htmlEmbedUpdate` command will fail because it
+					// If we do not do it, the `updateHtmlEmbed` command will fail because it
 					// searches the `rawHtml` element based on selection.
 					root.addEventListener( 'focus', () => {
 						editor.model.change( writer => {
@@ -169,7 +169,7 @@ export default class HtmlEmbedEditing extends Plugin {
 					} );
 
 					root.addEventListener( 'input', () => {
-						editor.execute( 'htmlEmbedUpdate', root.value );
+						editor.execute( 'updateHtmlEmbed', root.value );
 					} );
 
 					return root;

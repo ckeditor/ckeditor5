@@ -8,8 +8,8 @@
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import HtmlEmbedEditing from '../src/htmlembedediting';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import HtmlEmbedUpdateCommand from '../src/htmlembedupdatecommand';
-import HtmlEmbedInsertCommand from '../src/htmlembedinsertcommand';
+import UpdateHtmlEmbedCommand from '../src/updatehtmlembedcommand';
+import InsertHtmlEmbedCommand from '../src/inserthtmlembedcommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
@@ -60,12 +60,12 @@ describe( 'HtmlEmbedEditing', () => {
 	} );
 
 	describe( 'commands', () => {
-		it( 'should register htmlEmbedUpdate command', () => {
-			expect( editor.commands.get( 'htmlEmbedUpdate' ) ).to.be.instanceOf( HtmlEmbedUpdateCommand );
+		it( 'should register updateHtmlEmbed command', () => {
+			expect( editor.commands.get( 'updateHtmlEmbed' ) ).to.be.instanceOf( UpdateHtmlEmbedCommand );
 		} );
 
-		it( 'should register htmlEmbedInsert command', () => {
-			expect( editor.commands.get( 'htmlEmbedInsert' ) ).to.be.instanceOf( HtmlEmbedInsertCommand );
+		it( 'should register insertHtmlEmbed command', () => {
+			expect( editor.commands.get( 'insertHtmlEmbed' ) ).to.be.instanceOf( InsertHtmlEmbedCommand );
 		} );
 	} );
 
@@ -277,7 +277,7 @@ describe( 'HtmlEmbedEditing', () => {
 				const viewHtmlContainer = widget.getChild( 1 );
 				const sourceElement = viewHtmlContainer.getChild( 1 );
 
-				expect( sourceElement.getAttribute( 'placeholder' ) ).to.equal( 'Paste the raw code here.' );
+				expect( sourceElement.getAttribute( 'placeholder' ) ).to.equal( 'Paste raw HTML here...' );
 			} );
 
 			it( 'should update the edit source element when the `value` attribute has changed', () => {
