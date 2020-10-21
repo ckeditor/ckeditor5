@@ -2,3 +2,31 @@
  * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
+/* The feature container. */
+.ck-widget.raw-html {
+	position: relative;
+
+	/* The switch mode button. */
+	& .raw-html__mode-toggle-button {
+		position: absolute;
+	}
+
+	/* Using the feature with enabled previews in data. */
+	&.raw-html_preview_enabled {
+		&.raw-html_preview_visible {
+			& .raw-html__source {
+				display: none;
+			}
+
+			& .raw-html__preview {
+				display: block;
+			}
+		}
+
+		/* Mode: edit the HTML source. */
+		&:not(.raw-html_preview_visible) .raw-html__preview {
+			display: none;
+		}
+	}
+}

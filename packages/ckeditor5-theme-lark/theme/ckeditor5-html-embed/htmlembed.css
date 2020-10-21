@@ -3,44 +3,46 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck-editor__editable {
-	/* The feature container. */
-	& .raw-html {
-		position: relative;
-		font-size: var(--ck-font-size-base);
-		padding: var(--ck-spacing-standard);
+:root {
+	--ck-html-embed-content-width: calc(100% - 1.5 * var(--ck-icon-size));
+	--ck-html-embed-source-height: 10em;
+}
 
-		/* The switch mode button. */
-		& .raw-html__mode-toggle-button {
-			position: absolute;
-			top: var(--ck-spacing-standard);
-			right: var(--ck-spacing-standard);
+/* The feature container. */
+.ck-widget.raw-html {
+	font-size: var(--ck-font-size-base);
+	padding: var(--ck-spacing-standard);
 
-			& svg {
-				fill: currentColor;
-			}
-		}
-
-		/* The edit source element. */
-		& .raw-html__source {
-			box-sizing: border-box;
-			height: 10em;
-			width: calc(100% - 1.5 * var(--ck-icon-size));
-			resize: none;
-		}
+	/* The switch mode button. */
+	& .raw-html__mode-toggle-button {
+		top: var(--ck-spacing-standard);
+		right: var(--ck-spacing-standard);
 	}
 
-	/* Using the feature with enabled previews in data. */
-	& .raw-html_preview_enabled {
+	/* The edit source element. */
+	& .raw-html__source {
+		box-sizing: border-box;
+		height: var(--ck-html-embed-source-height);
+		width: var(--ck-html-embed-content-width);
+		resize: none;
+	}
+
+	/* Using the feature with previews enabled. */
+	&.raw-html_preview_enabled {
 		/* The preview data container. */
 		& .raw-html__preview {
 			box-sizing: border-box;
-			width: calc(100% - 1.5 * var(--ck-icon-size));
+			width: var(--ck-html-embed-content-width);
 			text-align: center;
 
 			& > table {
 				margin-left: auto;
 				margin-right: auto;
+			}
+
+			/* Disable all mouse interaction as long as the editor is not read–only. */
+			@nest .ck-editor__editable:not(.ck-read-only) & {
+				pointer-events: none;
 			}
 		}
 
@@ -50,24 +52,8 @@
 			background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTcuNDI0IDkuNzc3YS4yMi4yMiAwIDAgMCAuMTYuMDc0Yy4wNTggMCAuMTEtLjAyNS4xNTktLjA3NGEuMjI4LjIyOCAwIDAgMCAuMDY2LS4xNTguNzIxLjcyMSAwIDAgMC0uMDUyLS4yNTNsLS45NTQtMi41ODggMi41NzguOTY0YS42OC42OCAwIDAgMCAuMjUuMDU1LjIzMi4yMzIgMCAwIDAgLjE2MS0uMDcuMjEuMjEgMCAwIDAgLjA3LS4xNTMuMjI4LjIyOCAwIDAgMC0uMDc3LS4xNTguNDE0LjQxNCAwIDAgMC0uMDkzLS4wNjYgMS4wNDggMS4wNDggMCAwIDAtLjE1Ni0uMDY3bC0yLjgwMy0xLjA0Yy0uMDEtLjAwMi0uMDI1LS4wMDctLjA0NC0uMDE0LS4yMS0uMDgtLjM1NC0uMDgtLjQzNSAwLS4wOC4wODEtLjA4LjIzIDAgLjQ0NS4wMDUuMDE1LjAxLjAyNi4wMTQuMDM0bDEuMDI1IDIuODE4Yy4wMjYuMDc0LjA0OS4xMjkuMDY4LjE2NC4wMi4wMzYuMDQuMDY1LjA2My4wODd6bTEuMTYgMS44NDJjLjExNC4xMTQuMi4xNzYuMjYuMTg1LjA1OC4wMDkuMTItLjAyLjE4Ny0uMDg2LjA2LS4wNi4wODMtLjEyMi4wNy0uMTg2LS4wMTMtLjA2NC0uMDY3LS4xNDQtLjE2Mi0uMjRsLS4xNjItLjE2MSAxLjAwNi0xLjAwNiAxLjE1NyAxLjE1OC0xLjAwNSAxLjAwNS0uMTE5LS4xMThjLS4xMTctLjExOC0uMjA5LS4xODUtLjI3NS0uMjAzLS4wNjYtLjAxOC0uMTMuMDA1LS4xOTMuMDY4LS4wNjYuMDY2LS4wOTQuMTI5LS4wODQuMTkuMDEuMDYuMDgxLjE1NS4yMTIuMjg2bC41LjVjLjEyMi4xMjMuMjEzLjE4OC4yNzIuMTk3LjA1OS4wMDkuMTIxLS4wMi4xODctLjA4Ni4wNjEtLjA2LjA4Ny0uMTIyLjA3Ni0uMTgyLS4wMS0uMDYtLjA2NC0uMTQtLjE2LS4yMzZsLS4wNC0uMDM4IDIuMTc4LTIuMTc4LjA1OS4wNThjLjA4Ny4wODcuMTYuMTM0LjIyLjE0MS4wNjEuMDA4LjEyMy0uMDIuMTg2LS4wODMuMDU4LS4wNTguMDg2LS4xMTYuMDg1LS4xNzUgMC0uMDYtLjAzLS4xMTgtLjA4OC0uMTc2bC0uNTktLjU5Yy0uMTQxLS4xNDEtLjI0My0uMjE4LS4zMDQtLjIyOS0uMDYxLS4wMTEtLjEyNS4wMTYtLjE5MS4wODItLjA2MS4wNjItLjA4Ni4xMjYtLjA3NC4xOTIuMDEyLjA2Ny4wNjQuMTQ3LjE1Ni4yMzlsLjE2NC4xNjQtLjg0Ljg0MS0xLjE1OC0xLjE1OC44NC0uODQuMTEuMTA4Yy4xMi4xMi4yMTUuMTkuMjg1LjIwOC4wNjkuMDE4LjEzNi0uMDA2LjItLjA3LjA2Ni0uMDY2LjA5NS0uMTMuMDg1LS4xODktLjAxLS4wNi0uMDc5LS4xNTQtLjIwOC0uMjgzbC0uNjA5LS42MDljLS4wNjMtLjA2Mi0uMTIzLS4wOTUtLjE4MS0uMDk2LS4wNTgtLjAwMi0uMTE3LjAyNy0uMTc3LjA4Ny0uMDY0LjA2NC0uMDkxLjEyNy0uMDguMTkuMDEuMDYxLjA2My4xNC4xNi4yMzhsLjAzOS4wMzhMOC40IDEwLjc1NGwtLjA0My0uMDQ0Yy0uMDk3LS4wOTYtLjE3NS0uMTUtLjIzNC0uMTYtLjA1OC0uMDEtLjEyLjAxNS0uMTgyLjA3OC0uMDU4LjA1OC0uMDg3LjExNy0uMDg2LjE3NS4wMDEuMDYuMDMxLjExOC4wOS4xNzhsLjYzOS42Mzh6bTQuMDggNC4wOGMuMDU0LjA1NC4xMTEuMDgxLjE3LjA4LjA1OSAwIC4xMTYtLjAyOS4xNzMtLjA4NS4wNTgtLjA1OC4wODUtLjExNi4wOC0uMTczLS4wMDMtLjA1Ny0uMDQtLjEyLS4xMDctLjE4N2wtLjQ2Ni0uNDY3IDIuMTc3LTIuMTc3LjY5NC42OTMtLjYwNC42NTNjLS4xMTguMTI0LS4xODEuMjE1LS4xOS4yNzItLjAwOS4wNTcuMDE5LjExOC4wODMuMTgyLjA2Mi4wNjEuMTIyLjA5My4xOC4wOTYuMDYuMDAyLjExOC0uMDI2LjE3Ni0uMDg0YTEuOTcyIDEuOTcyIDAgMCAxIC4xMTMtLjEyM2wuNzcxLS44MjRjLjA1OC0uMDYxLjA4Ni0uMTIuMDg0LS4xNzUtLjAwMy0uMDU2LS4wMzUtLjExNC0uMDk2LS4xNzZsLTIuMS0yLjFjLS4wNjEtLjA2MS0uMTItLjA5My0uMTc1LS4wOTUtLjA1Ni0uMDAzLS4xMTUuMDI0LS4xNzguMDhsLS44MjIuNzc0LS4wNzguMDc0LS4wNC4wMzVjLS4wNTguMDU4LS4wODguMTE2LS4wOS4xNzQtLjAwMS4wNTguMDI2LjExNS4wODMuMTcxLjA3Mi4wNzMuMTM3LjEwNS4xOTUuMDk3LjA1OC0uMDA4LjE1LS4wNy4yNzMtLjE4OGwuNjUzLS42MDUuNjk0LjY5NC0yLjE3OCAyLjE3OC0uNDUyLS40NTJjLS4wNzYtLjA3Ni0uMTQyLS4xMTctLjItLjEyMi0uMDU2LS4wMDYtLjExNS4wMjEtLjE3NS4wOC0uMDU2LjA1Ny0uMDg1LjExNS0uMDg1LjE3My0uMDAxLjA2LjAyNi4xMTYuMDguMTdsMS4zNTcgMS4zNTd6bTEuNjgyIDEuNjgyYy4wOTUuMDk1LjE3Mi4xNDYuMjMyLjE1NS4wNi4wMDguMTIxLS4wMi4xODYtLjA4NS4wNi0uMDYuMDgzLS4xMjIuMDctLjE4Ni0uMDEzLS4wNjUtLjA2Ny0uMTQ0LS4xNjItLjI0bC0uMTYyLS4xNjEgMi4xMjItMi4wMzUtLjkwNCAxLjg3NWEuNC40IDAgMCAwLS4wNTIuMjI2LjM2LjM2IDAgMCAwIC4xMTUuMTk1Yy4wNy4wNy4xMzcuMTEuMTk4LjEyYS40MDguNDA4IDAgMCAwIC4yMy0uMDVsMS44NjgtLjkxMS0yLjAyOCAyLjEyOS0uMTA0LS4xMDRjLS4xMTQtLjExNC0uMjA0LS4xOC0uMjY4LS4xOTYtLjA2NC0uMDE2LS4xMjguMDA3LS4xOS4wNy0uMDY1LjA2NS0uMDk0LjEyNy0uMDg2LjE4Ni4wMDkuMDYuMDYuMTM2LjE1My4yM2wuNjc5LjY4Yy4wNTUuMDU0LjExMS4wOC4xNy4wOC4wNiAwIC4xMTctLjAzLjE3My0uMDg2LjA2NS0uMDY0LjA5LS4xMjYuMDc5LS4xODUtLjAxMi0uMDU4LS4wNy0uMTQtLjE3Ni0uMjQ1bC0uMDU1LS4wNTYgMi4xMzItMi4yNjcuMDM4LjA0Yy4wODkuMDg4LjE2MS4xMzcuMjE4LjE0Ny4wNTYuMDEuMTE1LS4wMTcuMTc2LS4wNzguMDUzLS4wNTMuMDgtLjEwNy4wODItLjE2Mi4wMDItLjA1NS0uMDIzLS4xMDgtLjA3NS0uMTZsLS4zOTYtLjM5NmEuNDQxLjQ0MSAwIDAgMC0uMjEtLjEzMS4zNTguMzU4IDAgMCAwLS4yMTguMDMybC0yLjAzMi45OTQuOTgzLTIuMDQzYS4zNDEuMzQxIDAgMCAwIC4wMzUtLjIxNi40NDEuNDQxIDAgMCAwLS4xMzEtLjIwOWwtLjM5Ny0uMzk2Yy0uMDUxLS4wNTItLjEwNS0uMDc3LS4xNi0uMDc3LS4wNTYuMDAxLS4xMS4wMjgtLjE2NC4wODEtLjA2LjA2Mi0uMDg2LjEyLS4wNzYuMTc4LjAxLjA1Ny4wNi4xMy4xNDkuMjE5bC4wMzkuMDM5LTIuMjcgMi4xMjktLjA1My0uMDUzYy0uMTA1LS4xMDUtLjE4Ny0uMTY0LS4yNDUtLjE3Ni0uMDYtLjAxMi0uMTIuMDE0LS4xODUuMDc5LS4wNTguMDU4LS4wODguMTE2LS4wODguMTczLS4wMDEuMDU3LjAyNy4xMTQuMDgzLjE3bC42NzcuNjc3em00LjY2NCA0LjY2NGEuMjQxLjI0MSAwIDAgMCAuMTc1LjA4MWMuMDYyIDAgLjEyMi0uMDI5LjE3OC0uMDg1bC45LS45Yy4wNjItLjA2Mi4wOTQtLjEyMy4wOTUtLjE4MiAwLS4wNTktLjAyOC0uMTE3LS4wODYtLjE3NS0uMDY4LS4wNjgtLjEzMi0uMDk2LS4xOTEtLjA4NS0uMDYuMDExLS4xNS4wNzgtLjI3LjE5OGwtLjYzNC42MzQtMS4yODYtMS4yODYgMi4xNzgtMi4xNzguNDA2LjQwNmMuMTIyLjEyMy4yMTQuMTkuMjc1LjIuMDYyLjAxMi4xMjUtLjAxNS4xOTEtLjA4MS4wNTgtLjA1OC4wODYtLjExNy4wODUtLjE3Ny0uMDAyLS4wNi0uMDMyLS4xMTgtLjA5LS4xNzZMMTkuNjMgMTYuOTNjLS4wNjMtLjA2My0uMTIzLS4wOTUtLjE4MS0uMDk2LS4wNTgtLjAwMi0uMTE3LjAyNy0uMTc3LjA4Ny0uMDY2LjA2Ni0uMDkzLjEzLS4wODIuMTkuMDExLjA2Mi4wNzcuMTUyLjE5Ni4yNzFsLjMwMi4zMDItMi4xNzggMi4xNzgtLjMwMi0uMzAyYy0uMTIyLS4xMjMtLjIxMi0uMTktLjI3LS4yLS4wNTgtLjAxMi0uMTIuMDE1LS4xODQuMDc5LS4wNTguMDU4LS4wODcuMTE2LS4wODcuMTc0IDAgLjA1OC4wMjkuMTE2LjA4Ny4xNzRsMi4yNTcgMi4yNTd6bTEuMDU5LjM3N2EuNzQ3Ljc0NyAwIDAgMCAuMjQuMTI5bC4wMTQuMDA0IDIuODE4IDEuMDI1Yy4wMS4wMDMuMDI1LjAxLjA0OC4wMi4yMDguMDc1LjM1MS4wNzQuNDMtLjAwNS4wOC0uMDgxLjA4LS4yMjYgMC0uNDM1bC0uMDA4LS4wMjYtLjAwNi0uMDE4LTEuMDQtMi44MDRhMS4yMjMgMS4yMjMgMCAwIDAtLjA2Ny0uMTU3LjQwNi40MDYgMCAwIDAtLjA2OC0uMDk0LjIyMy4yMjMgMCAwIDAtLjE1Ni0uMDc0LjIxLjIxIDAgMCAwLS4xNTMuMDcuMjI4LjIyOCAwIDAgMC0uMDY3LjE1OC43MS43MSAwIDAgMCAuMDU3LjI1N2wuOTYgMi41NzQtMi41ODQtLjk1YS43MS43MSAwIDAgMC0uMjU3LS4wNTcuMjI4LjIyOCAwIDAgMC0uMTU5LjA2Ny4yMjUuMjI1IDAgMCAwLS4wNzQuMTU4YzAgLjA1Ny4wMjMuMTEuMDcyLjE1OHoiIG9wYWNpdHk9Ii4wNDYiLz48L3N2Zz4=");
 			background-repeat: repeat;
 			background-size: 60px;
-
-			& .raw-html__source {
-				display: none;
-			}
-
-			& .raw-html__preview {
-				display: block;
-			}
+			background-position: 30px;
 		}
-
-		/* Mode: edit the HTML source. */
-		&:not(.raw-html_preview_visible) .raw-html__preview {
-			display: none;
-		}
-	}
-
-	/* Disable all mouse interaction as long as the editor is not read–only. */
-	&:not(.ck-read-only) .raw-html_preview_enabled .raw-html__preview {
-		pointer-events: none;
 	}
 }
+
