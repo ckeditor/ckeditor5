@@ -154,8 +154,12 @@ export function isEmail( value ) {
 }
 
 /**
- * Adds protocol prefix to the specified link if doesn't contain it already
- * and there is 'defaultProtocol' config provided or link is an email.
+ * Adds protocol prefix to the specified `link` when:
+ *
+ * * it doesn't contain it already, and there is a {@link module:link/link~LinkConfig#defaultProtocol `defaultProtocol` }
+ * config value provided
+ * * or the link is an email address
+ *
  *
  * @params {String} link
  * @params {String} defaultProtocol
