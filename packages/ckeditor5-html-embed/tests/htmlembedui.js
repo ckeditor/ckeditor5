@@ -12,7 +12,7 @@ import HtmlEmbedUI from '../src/htmlembedui';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 describe( 'HtmlEmbedEditing', () => {
-	let element, editor, view, viewDocument, htmlEmbedView;
+	let element, editor, htmlEmbedView;
 
 	testUtils.createSinonSandbox();
 
@@ -26,8 +26,6 @@ describe( 'HtmlEmbedEditing', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				view = editor.editing.view;
-				viewDocument = view.document;
 
 				htmlEmbedView = editor.ui.componentFactory.create( 'htmlEmbed' );
 			} );
@@ -66,7 +64,6 @@ describe( 'HtmlEmbedEditing', () => {
 	it( 'should switch to edit source mode after inserting the element', () => {
 		htmlEmbedView.fire( 'execute' );
 
-		const editSourceView = viewDocument.getRoot().getChild( 0 ).getChild( 1 ).getChild( 1 );
-		expect( document.activeElement ).to.equal( editSourceView.getCustomProperty( 'domElement' ) );
+		expect( document.activeElement.tagName ).to.equal( 'TEXTAREA' );
 	} );
 } );

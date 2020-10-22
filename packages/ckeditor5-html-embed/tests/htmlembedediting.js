@@ -109,7 +109,7 @@ describe( 'HtmlEmbedEditing', () => {
 		} );
 	} );
 
-	describe( 'conversion in data pipeline', () => {
+	describe( 'conversion in the data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert an empty `rawHtml` element', () => {
 				setModelData( model, '[<rawHtml></rawHtml>]' );
@@ -228,7 +228,161 @@ describe( 'HtmlEmbedEditing', () => {
 		} );
 	} );
 
-	describe( 'conversion in editing pipeline (model to view)', () => {
+	describe( 'conversion in the editing pipeline (model to view)', () => {
+		describe( 'without previews (htmlEmbed.showPreviews=false)', () => {
+			it( 'converted element should be widgetized', () => {
+				setModelData( model, '<rawHtml></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+
+				expect( widget.name ).to.equal( 'div' );
+				expect( isRawHtmlWidget( widget ) ).to.be.true;
+
+				const contentWrapper = widget.getChild( 1 );
+
+				expect( contentWrapper.hasClass( 'raw-html-embed__content-wrapper' ) );
+			} );
+
+			it( 'renders a disabled textarea as a preview', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).value ).to.equal( 'foo' );
+				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).to.be.true;
+			} );
+
+			it( 'updates the textarea preview once the model changes', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+
+				editor.model.change( writer => writer.setAttribute( 'value', 'bar', editor.model.document.getRoot().getChild( 0 ) ) );
+
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).value ).to.equal( 'bar' );
+				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).to.be.true;
+			} );
+
+			it( 'renders the "edit" button', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				// There's exactly this button, and nothing else.
+				expect( domContentWrapper.querySelectorAll( 'button' ) ).to.have.lengthOf( 1 );
+				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__edit-button' ) ).to.have.lengthOf( 1 );
+			} );
+
+			it( 'the main element should expose rawHtmlApi custom property', () => {
+				setModelData( model, '<rawHtml></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+
+				expect( widget.getCustomProperty( 'rawHtmlApi' ) ).has.keys( [ 'makeEditable', 'save', 'cancel' ] );
+			} );
+
+			describe( 'rawHtmlApi.makeEditable()', () => {
+				it( 'makes the textarea editable', () => {
+					setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+					const widget = viewDocument.getRoot().getChild( 0 );
+					const contentWrapper = widget.getChild( 1 );
+					const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+					widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+					expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).value ).to.equal( 'foo' );
+					expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).to.be.false;
+				} );
+			} );
+
+			describe( 'rawHtmlApi.save()', () => {
+				it( 'saves the new value to the model', () => {
+					setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+					const widget = viewDocument.getRoot().getChild( 0 );
+
+					widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+					widget.getCustomProperty( 'rawHtmlApi' ).save( 'bar' );
+
+					expect( getModelData( model ) ).to.equal( '[<rawHtml value="bar"></rawHtml>]' );
+				} );
+
+				it( 'turns back to the non-editable mode and updates the textarea value', () => {
+					setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+					const widget = viewDocument.getRoot().getChild( 0 );
+
+					widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+					widget.getCustomProperty( 'rawHtmlApi' ).save( 'bar' );
+
+					const newWidget = viewDocument.getRoot().getChild( 0 );
+					const contentWrapper = newWidget.getChild( 1 );
+					const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+					expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).value ).to.equal( 'bar' );
+					expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).to.be.true;
+				} );
+			} );
+		} );
+
+		describe( 'with previews (htmlEmbed.showPreviews=true)', () => {
+			let element, editor, model, view, viewDocument, sanitizeHtml;
+
+			testUtils.createSinonSandbox();
+
+			beforeEach( () => {
+				element = document.createElement( 'div' );
+				document.body.appendChild( element );
+
+				// The default sanitize function without `console.warn`.
+				sanitizeHtml = input => ( { html: input, hasChanged: false } );
+
+				return ClassicTestEditor
+					.create( element, {
+						plugins: [ HtmlEmbedEditing ],
+						htmlEmbed: {
+							showPreviews: true,
+							sanitizeHtml
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+						view = editor.editing.view;
+						viewDocument = view.document;
+					} );
+			} );
+
+			afterEach( () => {
+				return editor.destroy()
+					.then( () => {
+						element.remove();
+					} );
+			} );
+
+			it( 'renders a div with a preview', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview' ).innerHTML ).to.equal( 'foo' );
+			} );
+
+			it( 'updates the preview once the model changes', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+
+				editor.model.change( writer => writer.setAttribute( 'value', 'bar', editor.model.document.getRoot().getChild( 0 ) ) );
+
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview' ).innerHTML ).to.equal( 'bar' );
+			} );
+		} );
+	} );
+
+	describe.skip( 'conversion in editing pipeline (model to view)', () => {
 		describe( 'without previews (htmlEmbed.showPreviews=false)', () => {
 			it( 'converted element should be widgetized', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
