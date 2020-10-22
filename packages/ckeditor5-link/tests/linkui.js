@@ -1321,6 +1321,19 @@ describe( 'LinkUI', () => {
 				} );
 			} );
 
+			it( 'should detect an email on submitting the form and add "mailto:" protocol automatically to the provided value ' +
+				'even when defaultProtocol is undefined', () => {
+				setModelData( editor.model, '<paragraph>[email@example.com]</paragraph>' );
+
+				formView.urlInputView.fieldView.value = 'email@example.com';
+				formView.fire( 'submit' );
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:email@example.com' );
+				expect( getModelData( editor.model ) ).to.equal(
+					'<paragraph>[<$text linkHref="mailto:email@example.com">email@example.com</$text>]</paragraph>'
+				);
+			} );
+
 			it( 'should not add an email protocol when given provided within the value' +
 				'even when `config.link.defaultProtocol` configured', () => {
 				return createEditorWithDefaultProtocol( 'mailto:' ).then( ( { editor, formView } ) => {
