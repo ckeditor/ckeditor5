@@ -242,6 +242,13 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( contentWrapper.hasClass( 'raw-html-embed__content-wrapper' ) );
 			} );
 
+			it( 'the widget should have the data-html-embed-label attribute for the CSS label', () => {
+				setModelData( model, '<rawHtml></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+
+				expect( widget.getAttribute( 'data-html-embed-label' ) ).to.equal( 'HTML snippet' );
+			} );
+
 			it( 'the main element should expose rawHtmlApi custom property', () => {
 				setModelData( model, '<rawHtml></rawHtml>' );
 				const widget = viewDocument.getRoot().getChild( 0 );

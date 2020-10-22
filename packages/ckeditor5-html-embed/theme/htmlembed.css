@@ -9,6 +9,14 @@
 	margin: 1em auto;
 	position: relative;
 
+	/* ----- Emebed label in the upper left corner ----------------------------------------------- */
+
+	&::before {
+		position: absolute;
+	}
+
+	/* ----- Emebed internals --------------------------------------------------------------------- */
+
 	/* The switch mode button wrapper. */
 	& .raw-html-embed__buttons-wrapper {
 		position: absolute;

@@ -207,6 +207,7 @@ export default class HtmlEmbedEditing extends Plugin {
 
 				writer.setCustomProperty( 'rawHtmlApi', rawHtmlApi, viewContainer );
 				writer.setCustomProperty( 'rawHtml', true, viewContainer );
+				writer.setAttribute( 'data-html-embed-label', t( 'HTML snippet' ), viewContainer );
 
 				return toWidget( viewContainer, writer, {
 					widgetLabel: t( 'HTML snippet' ),
