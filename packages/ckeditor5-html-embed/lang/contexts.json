@@ -3,6 +3,5 @@
   "HTML snippet": "The HTML snippet.",
   "Paste raw HTML here...": "A placeholder that will be displayed in the raw HTML textarea field.",
   "Edit source": "A label of a button that switches the HTML embed to the source editing mode.",
-  "Save changes": "A label of a button that saves the HTML embed content and navigates back to the preview.",
-  "Cancel": "A label of a button that discards changes in the HTML embed content and navigates back to the preview."
+  "Save changes": "A label of a button that saves the HTML embed content and navigates back to the preview."
 }
