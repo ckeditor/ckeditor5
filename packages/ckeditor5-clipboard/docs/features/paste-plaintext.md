@@ -23,7 +23,7 @@ Paste plain text between the styled paragraphs below using the <kbd>Ctrl</kbd>/<
 ## Related features
 
 CKEditor 5 supports a wider range of paste features, including:
-* {@link features/paste-from-word Paste from Word} &ndash; Allows you to paste content from Microsoft Word and maintain the original structure and formatting
+* {@link features/paste-from-word Paste from Word} &ndash; Allows you to paste content from Microsoft Word and maintain the original structure and formatting.
 * {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Allows you to paste content from Google Docs maintaining the original formatting and structure.
 * Raw HTML embedding &ndash; Lets you paste HTML source into the edited content and keep the output.
 
