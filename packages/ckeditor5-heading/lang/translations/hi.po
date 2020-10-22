@@ -12,50 +12,50 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Persian (https://www.transifex.com/ckeditor/teams/11143/fa/)\n"
-"Language: fa\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: Hindi (https://www.transifex.com/ckeditor/teams/11143/hi/)\n"
+"Language: hi\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Dropdown option label for the paragraph format."
 msgid "Paragraph"
-msgstr "پاراگراف"
+msgstr "Paragraph"
 
 msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
-msgstr "عنوان"
+msgstr "Heading"
 
 msgctxt "Default label for the heading dropdown."
 msgid "Choose heading"
-msgstr "انتخاب عنوان"
+msgstr "Choose heading"
 
 msgctxt "Dropdown option label for the heading level 1 format."
 msgid "Heading 1"
-msgstr "عنوان 1"
+msgstr "Heading 1"
 
 msgctxt "Dropdown option label for the heading level 2 format."
 msgid "Heading 2"
-msgstr "عنوان 2"
+msgstr "Heading 2"
 
 msgctxt "Dropdown option label for the heading level 3 format."
 msgid "Heading 3"
-msgstr "عنوان 3"
+msgstr "Heading 3"
 
 msgctxt "Dropdown option label for the heading level 4 format."
 msgid "Heading 4"
-msgstr "عنوان 4"
+msgstr "Heading 4"
 
 msgctxt "Dropdown option label for the heading level 5 format."
 msgid "Heading 5"
-msgstr "عنوان 5"
+msgstr "Heading 5"
 
 msgctxt "Dropdown option label for the heading level 6 format."
 msgid "Heading 6"
-msgstr "عنوان 6"
+msgstr "Heading 6"
 
 msgctxt "A default value of the placeholder for the content title."
 msgid "Type your title"
-msgstr "عنوان خود را تایپ کنید"
+msgstr "Type your title"
 
 msgctxt "A default value of the placeholder for the content body."
 msgid "Type or paste your content here."
-msgstr "محتوای خود را در اینجا تایپ یا پیست کنید."
+msgstr "Type or paste your content here."

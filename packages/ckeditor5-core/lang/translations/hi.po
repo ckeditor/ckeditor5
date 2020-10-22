@@ -12,10 +12,18 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Uyghur (https://www.transifex.com/ckeditor/teams/11143/ug/)\n"
-"Language: ug\n"
+"Language-Team: Hindi (https://www.transifex.com/ckeditor/teams/11143/hi/)\n"
+"Language: hi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "A generic error message displayed on upload failure. The file name is concatenated to this text."
-msgid "Cannot upload file:"
-msgstr "يۈكلەشكە بولمايدىغان ھۆججەت:"
+msgctxt "Label for the Save button."
+msgid "Save"
+msgstr "Save"
+
+msgctxt "Label for the Cancel button."
+msgid "Cancel"
+msgstr "Cancel"
+
+msgctxt "The label used by a button next to the color palette in the color picker that removes the color (resets it to an empty value, example usages in font color or table properties)."
+msgid "Remove color"
+msgstr "Remove color"

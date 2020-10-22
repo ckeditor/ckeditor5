@@ -16,14 +16,6 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-msgctxt "The label used by assistive technologies describing a toolbar attached to a widget."
-msgid "Widget toolbar"
-msgstr "Barre d'outils du widget"
-
-msgctxt "The title displayed when a mouse is over a button that inserts a paragraph before a block."
-msgid "Insert paragraph before block"
-msgstr "Insérer du texte avant ce bloc"
-
-msgctxt "The title displayed when a mouse is over a button that inserts a paragraph after a block."
-msgid "Insert paragraph after block"
-msgstr "Insérer du texte après ce bloc"
+msgctxt "The label of the select all toolbar button."
+msgid "Select all"
+msgstr "Sélectionner tout"

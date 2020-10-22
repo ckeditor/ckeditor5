@@ -12,10 +12,14 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Uyghur (https://www.transifex.com/ckeditor/teams/11143/ug/)\n"
-"Language: ug\n"
+"Language-Team: Hindi (https://www.transifex.com/ckeditor/teams/11143/hi/)\n"
+"Language: hi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "A generic error message displayed on upload failure. The file name is concatenated to this text."
-msgid "Cannot upload file:"
-msgstr "يۈكلەشكە بولمايدىغان ھۆججەت:"
+msgctxt "Label showing the number of words in the editor content."
+msgid "Words: %0"
+msgstr "Words: %0"
+
+msgctxt "Label showing the number of characters in the editor content."
+msgid "Characters: %0"
+msgstr "Characters: %0"

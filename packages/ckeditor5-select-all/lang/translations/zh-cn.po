@@ -16,14 +16,6 @@ msgstr ""
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-msgctxt "The label used by assistive technologies describing a toolbar attached to a widget."
-msgid "Widget toolbar"
-msgstr "小部件工具栏"
-
-msgctxt "The title displayed when a mouse is over a button that inserts a paragraph before a block."
-msgid "Insert paragraph before block"
-msgstr "在前面插入段落"
-
-msgctxt "The title displayed when a mouse is over a button that inserts a paragraph after a block."
-msgid "Insert paragraph after block"
-msgstr "在后面插入段落"
+msgctxt "The label of the select all toolbar button."
+msgid "Select all"
+msgstr "全选"

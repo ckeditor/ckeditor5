@@ -12,10 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Uyghur (https://www.transifex.com/ckeditor/teams/11143/ug/)\n"
-"Language: ug\n"
+"Language-Team: Hindi (https://www.transifex.com/ckeditor/teams/11143/hi/)\n"
+"Language: hi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "A generic error message displayed on upload failure. The file name is concatenated to this text."
-msgid "Cannot upload file:"
-msgstr "يۈكلەشكە بولمايدىغان ھۆججەت:"
+msgctxt "The label of the remove format toolbar button."
+msgid "Remove Format"
+msgstr "Remove Format"
