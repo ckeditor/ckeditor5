@@ -13,6 +13,9 @@
 
 	&::before {
 		position: absolute;
+
+		/* Make sure the content does not cover the label. */
+		z-index: 1;
 	}
 
 	/* ----- Emebed internals --------------------------------------------------------------------- */
