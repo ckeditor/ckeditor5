@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals ClassicEditor, console, window, document */
+/* globals ClassicEditor, console, window, prompt, document */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 const getTypeFromViewElement = viewElement => {
 	for ( const type of [ 'info', 'warning' ] ) {
@@ -28,28 +29,69 @@ const upcastInfoBox = ( viewElement, { writer } ) => {
 	return complexInfoBox;
 };
 
-const downcastInfoBox = ( modelElement, { writer, consumable, mapper } ) => {
-	const complexInfoBoxView = writer.createContainerElement( 'div', { class: 'info-box' } );
+const renderActionsView = ( editor, modelElement ) => function( domElement ) {
+	const domDocument = domElement.ownerDocument;
+	const urlButton = createElement( domDocument, 'button', {}, 'Set URL' );
 
-	const type = modelElement.getAttribute( 'infoBoxType' ) || 'info';
+	urlButton.addEventListener( 'click', () => {
+		// eslint-disable-next-line no-alert
+		const newURL = prompt( 'Set URL', modelElement.getAttribute( 'infoBoxURL' ) || '' );
 
-	writer.addClass( `info-box-${ type }`, complexInfoBoxView );
+		editor.model.change( writer => {
+			writer.setAttribute( 'infoBoxURL', newURL, modelElement );
+		} );
+	} );
 
-	for ( const child of modelElement.getChildren() ) {
-		const childView = writer.createContainerElement( 'div' );
+	const currentType = modelElement.getAttribute( 'infoBoxType' );
+	const newType = currentType === 'info' ? 'warning' : 'info';
 
-		if ( child.is( 'element', 'complexInfoBoxTitle' ) ) {
-			writer.addClass( 'info-box-title', childView );
-		} else {
-			writer.addClass( 'info-box-content', childView );
+	const typeButton = createElement( domDocument, 'button', {}, `Change to ${ newType }` );
+
+	typeButton.addEventListener( 'click', () => {
+		editor.model.change( writer => {
+			writer.setAttribute( 'infoBoxType', newType, modelElement );
+		} );
+	} );
+
+	domElement.appendChild( urlButton );
+	domElement.appendChild( typeButton );
+};
+
+// TODO: simplify to hide complexity
+const downcastInfoBox = editor => {
+	return ( modelElement, { writer, consumable, mapper } ) => {
+		const complexInfoBoxView = writer.createContainerElement( 'div', {
+			class: 'info-box'
+		} );
+
+		const type = modelElement.getAttribute( 'infoBoxType' ) || 'info';
+
+		writer.addClass( `info-box-${ type }`, complexInfoBoxView );
+
+		const actionsView = writer.createRawElement( 'div', {
+			class: 'info-box-actions',
+			contenteditable: 'false', 			// Prevent editing of the element:
+			'data-cke-ignore-events': 'true'	// Allows using custom UI elements inside editing view.
+		}, renderActionsView( editor, modelElement ) );
+
+		writer.insert( writer.createPositionAt( complexInfoBoxView, 'end' ), actionsView );
+
+		for ( const child of modelElement.getChildren() ) {
+			const childView = writer.createContainerElement( 'div' );
+
+			if ( child.is( 'element', 'complexInfoBoxTitle' ) ) {
+				writer.addClass( 'info-box-title', childView );
+			} else {
+				writer.addClass( 'info-box-content', childView );
+			}
+
+			consumable.consume( child, 'insert' );
+			mapper.bindElements( child, childView );
+			writer.insert( writer.createPositionAt( complexInfoBoxView, 'end' ), childView );
 		}
 
-		consumable.consume( child, 'insert' );
-		mapper.bindElements( child, childView );
-		writer.insert( writer.createPositionAt( complexInfoBoxView, 'end' ), childView );
-	}
-
-	return complexInfoBoxView;
+		return complexInfoBoxView;
+	};
 };
 
 class ComplexInfoBox {
@@ -76,11 +118,16 @@ class ComplexInfoBox {
 		// The downcast conversion must be split as you need a widget in the editing pipeline.
 		editor.conversion.for( 'downcast' ).elementToElement( {
 			model: 'complexInfoBox',
-			view: downcastInfoBox
+			view: downcastInfoBox( editor ),
+			triggerBy: {
+				attributes: [ 'infoBoxType', 'infoBoxURL' ],
+				children: [ 'complexInfoBoxContent' ]
+			}
 		} );
 	}
 
 	_defineSchema( editor ) {
+		// The main element with attributes for type and URL:
 		editor.model.schema.register( 'complexInfoBox', {
 			allowWhere: '$block',
 			allowContentOf: '$root',
@@ -88,12 +135,14 @@ class ComplexInfoBox {
 			allowAttributes: [ 'infoBoxType', 'infoBoxURL' ]
 		} );
 
+		// A text-only title.
 		editor.model.schema.register( 'complexInfoBoxTitle', {
 			isLimit: true,
-			allowIn: 'complexInfoBox',
-			allowContentOf: '$block'
+			allowIn: 'complexInfoBox'
 		} );
+		editor.model.schema.extend( '$text', { allowIn: 'complexInfoBoxTitle' } );
 
+		// A content which can have any content allowed in $root.
 		editor.model.schema.register( 'complexInfoBoxContent', {
 			isLimit: true,
 			allowIn: 'complexInfoBox',
