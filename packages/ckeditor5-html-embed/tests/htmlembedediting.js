@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console, document, HTMLTextAreaElement, HTMLDivElement, Event */
+/* global console, document */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import HtmlEmbedEditing from '../src/htmlembedediting';
@@ -242,6 +242,13 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( contentWrapper.hasClass( 'raw-html-embed__content-wrapper' ) );
 			} );
 
+			it( 'the main element should expose rawHtmlApi custom property', () => {
+				setModelData( model, '<rawHtml></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+
+				expect( widget.getCustomProperty( 'rawHtmlApi' ) ).has.keys( [ 'makeEditable', 'save', 'cancel' ] );
+			} );
+
 			it( 'renders a disabled textarea as a preview', () => {
 				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
 				const widget = viewDocument.getRoot().getChild( 0 );
@@ -276,11 +283,70 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__edit-button' ) ).to.have.lengthOf( 1 );
 			} );
 
-			it( 'the main element should expose rawHtmlApi custom property', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
+			it( 'allows editing the source after clicking the "edit" button', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
 				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
-				expect( widget.getCustomProperty( 'rawHtmlApi' ) ).has.keys( [ 'makeEditable', 'save', 'cancel' ] );
+				const makeEditableStub = sinon.stub( widget.getCustomProperty( 'rawHtmlApi' ), 'makeEditable' );
+
+				domContentWrapper.querySelector( '.raw-html-embed__edit-button' ).click();
+
+				expect( makeEditableStub.callCount ).to.equal( 1 );
+			} );
+
+			it( 'renders the "save changes" and "cancel" button in edit source mode', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+				expect( domContentWrapper.querySelectorAll( 'button' ) ).to.have.lengthOf( 2 );
+				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__save-button' ) ).to.have.lengthOf( 1 );
+				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__cancel-button' ) ).to.have.lengthOf( 1 );
+			} );
+
+			it( 'updates the model state after clicking the "save changes" button', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+				domContentWrapper.querySelector( 'textarea' ).value = 'Foo Bar.';
+				domContentWrapper.querySelector( '.raw-html-embed__save-button' ).click();
+
+				expect( getModelData( model ) ).to.equal( '[<rawHtml value="Foo Bar."></rawHtml>]' );
+			} );
+
+			it( 'does not update the model state after saving the same changes', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				const executeStub = sinon.stub( editor.commands.get( 'updateHtmlEmbed' ), 'execute' );
+
+				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+				domContentWrapper.querySelector( '.raw-html-embed__save-button' ).click();
+
+				expect( executeStub.callCount ).to.equal( 0 );
+			} );
+
+			it( 'does not update the model state after clicking the "cancel" button', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+				domContentWrapper.querySelector( '.raw-html-embed__cancel-button' ).click();
+
+				expect( getModelData( model ) ).to.equal( '[<rawHtml value="foo"></rawHtml>]' );
 			} );
 
 			describe( 'rawHtmlApi.makeEditable()', () => {
@@ -378,424 +444,6 @@ describe( 'HtmlEmbedEditing', () => {
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
 				expect( domContentWrapper.querySelector( 'div.raw-html-embed__preview' ).innerHTML ).to.equal( 'bar' );
-			} );
-		} );
-	} );
-
-	describe.skip( 'conversion in editing pipeline (model to view)', () => {
-		describe( 'without previews (htmlEmbed.showPreviews=false)', () => {
-			it( 'converted element should be widgetized', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-				const widget = viewDocument.getRoot().getChild( 0 );
-
-				expect( widget.name ).to.equal( 'div' );
-				expect( isRawHtmlWidget( widget ) ).to.be.true;
-
-				const rawHtmlContainer = widget.getChild( 1 );
-
-				expect( rawHtmlContainer ).to.not.be.undefined;
-			} );
-
-			it( 'widget should not contain a class that informs about available preview mode', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-
-				expect( widget.hasClass( 'raw-html_preview_enabled' ) ).to.equal( false );
-			} );
-
-			it( 'should render the toggle button and edit source elements', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-
-				// Expecting two children: toggle button and editable textarea.
-				expect( viewHtmlContainer.childCount ).to.equal( 2 );
-
-				const toggleWrapperElement = viewHtmlContainer.getChild( 0 );
-
-				expect( toggleWrapperElement.is( 'uiElement' ) ).to.equal( true );
-				expect( toggleWrapperElement.getCustomProperty( 'domElement' ) ).to.be.an.instanceOf( HTMLDivElement );
-
-				const sourceElement = viewHtmlContainer.getChild( 1 );
-
-				expect( sourceElement.is( 'uiElement' ) ).to.equal( true );
-				expect( sourceElement.getCustomProperty( 'domElement' ) ).to.be.an.instanceOf( HTMLTextAreaElement );
-			} );
-
-			it( 'source element should have a placeholder', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-				const sourceElement = viewHtmlContainer.getChild( 1 );
-
-				expect( sourceElement.getAttribute( 'placeholder' ) ).to.equal( 'Paste raw HTML here...' );
-			} );
-
-			it( 'should update the edit source element when the `value` attribute has changed', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				model.change( writer => {
-					writer.setAttribute( 'value', '<b>Foo.</b>', model.document.getRoot().getChild( 0 ) );
-				} );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-				const sourceElement = viewHtmlContainer.getChild( 1 );
-
-				expect( sourceElement.getCustomProperty( 'domElement' ).value ).to.equal( '<b>Foo.</b>' );
-			} );
-
-			it( 'should update the `value` attribute after applying changes in the edit source element', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-				const sourceElement = viewHtmlContainer.getChild( 1 );
-
-				const textarea = sourceElement.getCustomProperty( 'domElement' );
-
-				textarea.value = '<b>Foo.</b>';
-				textarea.dispatchEvent( new Event( 'input' ) );
-
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'value' ) ).to.equal( '<b>Foo.</b>' );
-			} );
-
-			it( 'should show the HTML in the preview mode by default (source element should be disabled)', () => {
-				setModelData( model, '<rawHtml value="Foo"></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-				const sourceElement = viewHtmlContainer.getChild( 1 );
-
-				const textarea = sourceElement.getCustomProperty( 'domElement' );
-
-				expect( textarea.disabled ).to.equal( true );
-				expect( textarea.value ).to.equal( 'Foo' );
-			} );
-
-			it( 'should allows modifying the source after clicking the toggle button', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-
-				const toggleButtonElement = viewHtmlContainer.getChild( 0 );
-				toggleButtonElement.getCustomProperty( 'domElement' ).click();
-
-				const sourceElement = viewHtmlContainer.getChild( 1 );
-
-				expect( sourceElement.getCustomProperty( 'domElement' ).disabled ).to.equal( false );
-			} );
-
-			it( 'should update the toggle button icon after switching to "edit source mode"', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-
-				const toggleButtonElement = viewHtmlContainer.getChild( 0 );
-				const toggleButton = toggleButtonElement.getCustomProperty( 'domElement' );
-				const toggleIconBeforeClick = toggleButton.innerHTML;
-
-				toggleButton.click();
-
-				// Check whether the icon has been updated.
-				expect( toggleButton.innerHTML ).to.not.equal( toggleIconBeforeClick );
-			} );
-
-			it( 'should disable the source element after clicking the toggle button when edit source mode is enabled', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-
-				const toggleIconElement = viewHtmlContainer.getChild( 0 );
-				const toggleButton = toggleIconElement.getCustomProperty( 'domElement' );
-
-				// Switch to edit source mode.
-				toggleButton.click();
-
-				// Switch to preview mode.
-				toggleButton.click();
-
-				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).disabled ).to.equal( true );
-			} );
-
-			it( 'should restore the toggle button icon after leaving the "edit source" mode', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-
-				const toggleButtonElement = viewHtmlContainer.getChild( 0 );
-				const toggleButton = toggleButtonElement.getCustomProperty( 'domElement' );
-
-				// The icon before switching mode.
-				const toggleIconBeforeClick = toggleButton.innerHTML;
-
-				// Switch to edit source mode.
-				toggleButton.click();
-
-				// The icon for edit source mode.
-				const toggleIconAfterFirstClick = toggleButton.innerHTML;
-
-				// Switch to preview mode.
-				toggleButton.click();
-
-				// The first click: the icon has been changed.
-				expect( toggleButton.innerHTML ).to.equal( toggleIconBeforeClick );
-
-				// The second click: the icon has been restored.
-				expect( toggleButton.innerHTML ).to.not.equal( toggleIconAfterFirstClick );
-			} );
-
-			it( 'should add the "readonly" attribute if updated content of the editor in read-only mode', () => {
-				editor.isReadOnly = true;
-
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-
-				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).readOnly ).to.equal( true );
-			} );
-
-			it( 'should add the "readonly" attribute if editor switches itself to read-only mode', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-
-				editor.isReadOnly = true;
-
-				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).readOnly ).to.equal( true );
-			} );
-
-			it( 'should remove the "readonly" attribute if editor switches itself to edit mode', () => {
-				editor.isReadOnly = true;
-
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-
-				editor.isReadOnly = false;
-
-				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).readOnly ).to.equal( false );
-			} );
-
-			it( 'should select the proper model element when editing source', () => {
-				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-				editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
-
-				setModelData( model, '<paragraph>Foo.[]</paragraph><rawHtml value="1"></rawHtml><rawHtml value="2"></rawHtml>' );
-
-				const secondHtmlContainer = viewDocument.getRoot().getChild( 2 ).getChild( 1 );
-				// Switch to edit mode.
-				secondHtmlContainer.getChild( 0 ).getCustomProperty( 'domElement' ).click();
-
-				const sourceElement = secondHtmlContainer.getChild( 1 );
-				const textarea = sourceElement.getCustomProperty( 'domElement' );
-
-				textarea.dispatchEvent( new Event( 'focus' ) );
-
-				expect( getModelData( model ) ).to.equal(
-					'<paragraph>Foo.</paragraph><rawHtml value="1"></rawHtml>[<rawHtml value="2"></rawHtml>]'
-				);
-			} );
-		} );
-
-		describe( 'with previews (htmlEmbed.showPreviews=true)', () => {
-			let element, editor, model, view, viewDocument, sanitizeHtml;
-
-			testUtils.createSinonSandbox();
-
-			beforeEach( () => {
-				element = document.createElement( 'div' );
-				document.body.appendChild( element );
-
-				// The default sanitize function without `console.warn`.
-				sanitizeHtml = input => ( { html: input, hasChanged: false } );
-
-				return ClassicTestEditor
-					.create( element, {
-						plugins: [ HtmlEmbedEditing ],
-						htmlEmbed: {
-							showPreviews: true,
-							sanitizeHtml
-						}
-					} )
-					.then( newEditor => {
-						editor = newEditor;
-						model = editor.model;
-						view = editor.editing.view;
-						viewDocument = view.document;
-					} );
-			} );
-
-			afterEach( () => {
-				return editor.destroy()
-					.then( () => {
-						element.remove();
-					} );
-			} );
-
-			it( 'widget should contain a class that informs about available preview mode', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-
-				expect( widget.hasClass( 'raw-html-embed_preview_enabled' ) ).to.equal( true );
-			} );
-
-			it( 'should render the toggle button, edit source and preview container elements', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-
-				// Expecting three children: toggle button, editable textarea, and the preview container.
-				expect( viewHtmlContainer.childCount ).to.equal( 3 );
-
-				const toggleWrapperElement = viewHtmlContainer.getChild( 0 );
-
-				expect( toggleWrapperElement.is( 'uiElement' ) ).to.equal( true );
-				expect( toggleWrapperElement.getCustomProperty( 'domElement' ) ).to.be.an.instanceOf( HTMLDivElement );
-
-				const sourceElement = viewHtmlContainer.getChild( 1 );
-
-				expect( sourceElement.is( 'uiElement' ) ).to.equal( true );
-				expect( sourceElement.getCustomProperty( 'domElement' ) ).to.be.an.instanceOf( HTMLTextAreaElement );
-
-				const previewElement = viewHtmlContainer.getChild( 2 );
-
-				expect( previewElement.is( 'rawElement' ) ).to.equal( true );
-				expect( previewElement.getCustomProperty( 'domElement' ) ).to.be.an.instanceOf( HTMLDivElement );
-			} );
-
-			it( 'should update the source and preview elements when the `value` attribute has changed', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-				const sourceElement = viewHtmlContainer.getChild( 1 );
-				const previewElement = viewHtmlContainer.getChild( 2 );
-
-				// The preview container should be empty.
-				expect( previewElement.getCustomProperty( 'domElement' ).innerHTML ).to.equal( '' );
-
-				model.change( writer => {
-					writer.setAttribute( 'value', '<b>Foo.</b>', model.document.getRoot().getChild( 0 ) );
-				} );
-
-				expect( sourceElement.getCustomProperty( 'domElement' ).value ).to.equal( '<b>Foo.</b>' );
-				expect( previewElement.getCustomProperty( 'domElement' ).innerHTML ).to.equal( '<b>Foo.</b>' );
-			} );
-
-			it( 'should render the HTML in the preview element by default', () => {
-				setModelData( model, '<rawHtml value="Foo"></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-
-				expect( widget.hasClass( 'raw-html-embed_preview_visible' ) ).to.equal( true );
-
-				const viewHtmlContainer = widget.getChild( 1 );
-				const sourceElement = viewHtmlContainer.getChild( 1 );
-
-				const textarea = sourceElement.getCustomProperty( 'domElement' );
-
-				expect( textarea.disabled ).to.equal( true );
-				expect( textarea.value ).to.equal( 'Foo' );
-
-				const previewElement = viewHtmlContainer.getChild( 2 ).getCustomProperty( 'domElement' );
-				expect( previewElement.innerHTML ).to.equal( 'Foo' );
-			} );
-
-			it( 'should re-render the preview element after applying changes in the edit source element', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const event = new Event( 'input' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-				const sourceElement = viewHtmlContainer.getChild( 1 );
-				const previewElement = viewHtmlContainer.getChild( 2 );
-
-				// The preview container should be empty.
-				expect( previewElement.getCustomProperty( 'domElement' ).innerHTML ).to.equal( '' );
-
-				const textarea = sourceElement.getCustomProperty( 'domElement' );
-
-				textarea.value = '<b>Foo.</b>';
-				textarea.dispatchEvent( event );
-
-				expect( previewElement.getCustomProperty( 'domElement' ).innerHTML ).to.equal( '<b>Foo.</b>' );
-			} );
-
-			it( 'should pass an empty string if the `value` attribute is empty', () => {
-				setModelData( model, '<rawHtml value="Foo"></rawHtml>' );
-
-				model.change( writer => {
-					writer.setAttribute( 'value', '', model.document.getRoot().getChild( 0 ) );
-				} );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-
-				const previewElement = viewHtmlContainer.getChild( 2 ).getCustomProperty( 'domElement' );
-				expect( previewElement.innerHTML ).to.equal( '' );
-			} );
-
-			it( 'should pass an empty string if the `value` attribute was removed', () => {
-				setModelData( model, '<rawHtml value="Foo"></rawHtml>' );
-
-				model.change( writer => {
-					writer.removeAttribute( 'value', model.document.getRoot().getChild( 0 ) );
-				} );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-
-				const previewElement = viewHtmlContainer.getChild( 2 ).getCustomProperty( 'domElement' );
-				expect( previewElement.innerHTML ).to.equal( '' );
-			} );
-
-			it( 'should allows modifying the source after clicking the toggle button', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-
-				const toggleIconElement = viewHtmlContainer.getChild( 0 );
-
-				toggleIconElement.getCustomProperty( 'domElement' ).click();
-
-				const sourceElement = viewHtmlContainer.getChild( 1 );
-
-				expect( sourceElement.getCustomProperty( 'domElement' ).disabled ).to.equal( false );
-
-				expect( widget.hasClass( 'raw-html_preview_visible' ) ).to.equal( false );
-			} );
-
-			it( 'should display preview element after clicking the toggle button when displaying edit source mode', () => {
-				setModelData( model, '<rawHtml></rawHtml>' );
-
-				const widget = viewDocument.getRoot().getChild( 0 );
-				const viewHtmlContainer = widget.getChild( 1 );
-
-				const toggleIconElement = viewHtmlContainer.getChild( 0 );
-				const toggleButton = toggleIconElement.getCustomProperty( 'domElement' );
-
-				// Switch to edit source mode.
-				toggleButton.click();
-				// Switch to preview mode.
-				toggleButton.click();
-
-				expect( widget.hasClass( 'raw-html-embed_preview_visible' ) ).to.equal( true );
-				expect( viewHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).disabled ).to.equal( true );
 			} );
 		} );
 	} );
