@@ -16,7 +16,7 @@ Pasting plain text with a double line break will turn it into a paragraph. This 
 
 ## Demo
 
-Paste plain text between the styled paragraphs below using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd> to test the style inheritance. Paste without modifier to retain styleless text. You can copy this very paragraph for convenience.
+Paste plain text between the styled paragraphs below using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd> to test the style inheritance. Paste without modifier to retain styleless text. You can copy this very paragraph or one from the demo for convenience.
 
 {@snippet features/paste-plaintext}
 
