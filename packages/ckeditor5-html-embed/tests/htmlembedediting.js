@@ -323,6 +323,28 @@ describe( 'HtmlEmbedEditing', () => {
 				expect( getModelData( model ) ).to.equal( '[<rawHtml value="Foo Bar."></rawHtml>]' );
 			} );
 
+			it( 'switches to "preview mode" after saving changes', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+
+				let widget = viewDocument.getRoot().getChild( 0 );
+				let contentWrapper = widget.getChild( 1 );
+				let domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+				domContentWrapper.querySelector( 'textarea' ).value = 'Foo Bar.';
+				domContentWrapper.querySelector( '.raw-html-embed__save-button' ).click();
+
+				// The entire DOM has rendered once again. The references were invalid.
+				widget = viewDocument.getRoot().getChild( 0 );
+				contentWrapper = widget.getChild( 1 );
+				domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				// There's exactly this button, and nothing else.
+				expect( domContentWrapper.querySelectorAll( 'button' ) ).to.have.lengthOf( 1 );
+				expect( domContentWrapper.querySelectorAll( '.raw-html-embed__edit-button' ) ).to.have.lengthOf( 1 );
+			} );
+
 			it( 'does not update the model state after saving the same changes', () => {
 				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
 				const widget = viewDocument.getRoot().getChild( 0 );
@@ -347,6 +369,20 @@ describe( 'HtmlEmbedEditing', () => {
 				domContentWrapper.querySelector( '.raw-html-embed__cancel-button' ).click();
 
 				expect( getModelData( model ) ).to.equal( '[<rawHtml value="foo"></rawHtml>]' );
+			} );
+
+			it( 'switches to "preview mode" after canceling editing', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				widget.getCustomProperty( 'rawHtmlApi' ).makeEditable();
+
+				domContentWrapper.querySelector( '.raw-html-embed__cancel-button' ).click();
+
+				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).value ).to.equal( 'foo' );
+				expect( domContentWrapper.querySelector( 'textarea.raw-html-embed__source' ).disabled ).to.be.true;
 			} );
 
 			describe( 'rawHtmlApi.makeEditable()', () => {
