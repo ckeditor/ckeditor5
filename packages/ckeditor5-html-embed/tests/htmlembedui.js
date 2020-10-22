@@ -12,7 +12,7 @@ import HtmlEmbedUI from '../src/htmlembedui';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 describe( 'HtmlEmbedEditing', () => {
-	let element, editor, view, viewDocument, htmlEmbedView;
+	let element, editor, htmlEmbedView;
 
 	testUtils.createSinonSandbox();
 
@@ -26,8 +26,6 @@ describe( 'HtmlEmbedEditing', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				view = editor.editing.view;
-				viewDocument = view.document;
 
 				htmlEmbedView = editor.ui.componentFactory.create( 'htmlEmbed' );
 			} );
@@ -45,17 +43,17 @@ describe( 'HtmlEmbedEditing', () => {
 		expect( htmlEmbedView.isToggleable ).to.be.false;
 	} );
 
-	it( 'should execute htmlEmbedInsert command on model execute event', () => {
+	it( 'should execute insertHtmlEmbed command on model execute event', () => {
 		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
 		htmlEmbedView.fire( 'execute' );
 
 		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'htmlEmbedInsert' );
+		sinon.assert.calledWithExactly( executeSpy, 'insertHtmlEmbed' );
 	} );
 
-	it( 'should bind model to htmlEmbedInsert command', () => {
-		const command = editor.commands.get( 'htmlEmbedInsert' );
+	it( 'should bind model to insertHtmlEmbed command', () => {
+		const command = editor.commands.get( 'insertHtmlEmbed' );
 
 		expect( htmlEmbedView.isEnabled ).to.be.true;
 
@@ -66,7 +64,6 @@ describe( 'HtmlEmbedEditing', () => {
 	it( 'should switch to edit source mode after inserting the element', () => {
 		htmlEmbedView.fire( 'execute' );
 
-		const editSourceView = viewDocument.getRoot().getChild( 0 ).getChild( 0 ).getChild( 1 );
-		expect( document.activeElement ).to.equal( editSourceView.getCustomProperty( 'domElement' ) );
+		expect( document.activeElement.tagName ).to.equal( 'TEXTAREA' );
 	} );
 } );

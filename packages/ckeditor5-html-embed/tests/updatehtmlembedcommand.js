@@ -11,7 +11,7 @@ import HtmlEmbedEditing from '../src/htmlembedediting';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-describe( 'HtmlEmbedUpdateCommand', () => {
+describe( 'UpdateHtmlEmbedCommand', () => {
 	let editor, model, editorElement, command;
 
 	testUtils.createSinonSandbox();
@@ -27,7 +27,7 @@ describe( 'HtmlEmbedUpdateCommand', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				command = editor.commands.get( 'htmlEmbedUpdate' );
+				command = editor.commands.get( 'updateHtmlEmbed' );
 			} );
 	} );
 

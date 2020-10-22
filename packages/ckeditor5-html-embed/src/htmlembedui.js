@@ -9,7 +9,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import htmlEmbedIcon from '../theme/icons/htmlembed.svg';
+
+import htmlEmbedIcon from '../theme/icons/html.svg';
 
 /**
  * The HTML embed UI plugin.
@@ -23,7 +24,7 @@ export default class HtmlEmbedUI extends Plugin {
 
 		// Add the `htmlEmbed` button to feature components.
 		editor.ui.componentFactory.add( 'htmlEmbed', locale => {
-			const command = editor.commands.get( 'htmlEmbedInsert' );
+			const command = editor.commands.get( 'insertHtmlEmbed' );
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -36,17 +37,12 @@ export default class HtmlEmbedUI extends Plugin {
 
 			// Execute the command.
 			this.listenTo( view, 'execute', () => {
-				editor.execute( 'htmlEmbedInsert' );
+				editor.execute( 'insertHtmlEmbed' );
 				editor.editing.view.focus();
 
 				const widgetWrapper = editor.editing.view.document.selection.getSelectedElement();
-				const rawHtmlContainer = widgetWrapper.getChild( 0 );
 
-				// After inserting a new element, switch to "Edit source" mode.
-				rawHtmlContainer.getChild( 0 ).getCustomProperty( 'domElement' ).click();
-
-				// And focus the edit source element (`textarea`).
-				rawHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' ).focus();
+				widgetWrapper.getCustomProperty( 'rawHtmlApi' ).makeEditable();
 			} );
 
 			return view;

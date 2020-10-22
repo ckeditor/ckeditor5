@@ -2,3 +2,22 @@
  * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
+/* The feature container. */
+.ck-widget.raw-html-embed {
+	/* Give the embed some air. */
+	margin: 1em auto;
+	position: relative;
+
+	/* The switch mode button wrapper. */
+	& .raw-html-embed__buttons-wrapper {
+		position: absolute;
+		display: flex;
+		flex-direction: column;
+	}
+}
+
+.ck-content .raw-html-embed {
+	/* Give the embed some air. */
+	margin: 1em auto;
+}

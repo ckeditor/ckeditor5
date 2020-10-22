@@ -39,12 +39,17 @@ ClassicEditor
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
+### Security
+
+TODO
+Note: it's mentioned in the config.htmlEmbed.* options so if we'll decide to rename this section we'll need to change it there.
+
 ## Common API
 
 The {@link module:html-embed/htmlembed~HtmlEmbed} plugin registers:
 * the UI button component (`'htmlEmbed'`),
-* the `'htmlEmbedUpdate'` command implemented by {@link module:html-embed/htmlembedupdatecommand~HtmlEmbedUpdateCommand}.
-* the `'htmlEmbedInsert'` command implemented by {@link module:html-embed/htmlembedinsertcommand~HtmlEmbedInsertCommand}.
+* the `'updateHtmlEmbed'` command implemented by {@link module:html-embed/updatehtmlembedcommand~UpdateHtmlEmbedCommand}.
+* the `'insertHtmlEmbed'` command implemented by {@link module:html-embed/inserthtmlembedcommand~InsertHtmlEmbedCommand}.
 
 The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 

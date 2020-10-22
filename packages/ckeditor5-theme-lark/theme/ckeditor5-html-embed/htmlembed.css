@@ -3,52 +3,76 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck-editor__editable {
-	/* The feature container. */
-	& .raw-html {
-		position: relative;
+:root {
+	--ck-html-embed-content-width: calc(100% - 1.5 * var(--ck-icon-size));
+	--ck-html-embed-source-height: 10em;
+	--ck-html-embed-content-min-height: calc(var(--ck-icon-size) + var(--ck-spacing-standard));
+}
 
-		/* The switch mode button. */
-		& .raw-html__switch-mode {
-			position: absolute;
-			top: 0;
-			right: 0;
-			width: 5em;
-			height: 5em;
-			cursor: pointer;
+/* The feature container. */
+.ck-widget.raw-html-embed {
+	font-size: var(--ck-font-size-base);
+	background-color: var(--ck-color-base-foreground);
+
+	& .raw-html-embed__content-wrapper {
+		padding: var(--ck-spacing-standard);
+	}
+
+	/* The switch mode button wrapper. */
+	& .raw-html-embed__buttons-wrapper {
+		top: var(--ck-spacing-standard);
+		right: var(--ck-spacing-standard);
+
+		& .ck-button.raw-html-embed__save-button {
+			color: var(--ck-color-button-save);
 		}
 
-		/* The edit source element. */
-		& .raw-html__source {
-			width: 30em;
-			height: 5em;
-			resize: none;
+		& .ck-button.raw-html-embed__cancel-button {
+			color: var(--ck-color-button-cancel);
+		}
+
+		& .ck-button:not(:first-child) {
+			margin-top: var(--ck-spacing-small);
 		}
 	}
 
-	/* Using the feature with enabled previews in data. */
-	& .raw-html--preview-enabled {
-		/* The preview data container. */
-		& .raw-html__preview {
-			min-height: 5em;
-			min-width: 30em;
-			width: calc(100% - 5em);
+	/* The edit source element. */
+	& .raw-html-embed__source {
+		box-sizing: border-box;
+		height: var(--ck-html-embed-source-height);
+		width: var(--ck-html-embed-content-width);
+		resize: none;
+		min-width: 0;
+		padding: var(--ck-spacing-standard);
+
+		font-family: monospace;
+		tab-size: 4;
+		white-space: pre-wrap;
+		font-size: var(--ck-font-size-base); /* Safari needs this. */
+
+		&[disabled] {
+			background: hsl(0deg 0% 97%);
+			color: hsl(0deg 0% 56%);
+		}
+	}
+
+	/* The preview data container. */
+	& .raw-html-embed__preview {
+		overflow: hidden;
+		box-sizing: border-box;
+		width: var(--ck-html-embed-content-width);
+		min-height: var(--ck-html-embed-content-min-height);
+		text-align: center;
+
+		& > table {
+			margin-left: auto;
+			margin-right: auto;
 		}
 
-		/* Mode: preview the HTML. */
-		&.raw-html--display-preview {
-			& .raw-html__source {
-				display: none;
-			}
-
-			& .raw-html__preview {
-				display: block;
-			}
-		}
-
-		/* Mode: edit the HTML source. */
-		&:not(.raw-html--display-preview) .raw-html__preview {
-			display: none;
+		/* Disable all mouse interaction as long as the editor is not read–only. */
+		@nest .ck-editor__editable:not(.ck-read-only) & {
+			pointer-events: none;
 		}
 	}
 }
+

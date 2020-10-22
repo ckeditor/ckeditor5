@@ -12,14 +12,17 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import HtmlEmbedInsertCommand from './htmlembedinsertcommand';
-import HtmlEmbedUpdateCommand from './htmlembedupdatecommand';
+import InsertHtmlEmbedCommand from './inserthtmlembedcommand';
+import UpdateHtmlEmbedCommand from './updatehtmlembedcommand';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import htmlEmbedModeIcon from '../theme/icons/htmlembedmode.svg';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+
+import pencilIcon from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
+import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 import '../theme/htmlembed.css';
-
-const DISPLAY_PREVIEW_CLASS = 'raw-html--display-preview';
 
 /**
  * The HTML embed editing feature.
@@ -41,10 +44,10 @@ export default class HtmlEmbedEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'htmlEmbed', {
-			previewsInData: false,
+			showPreviews: false,
 			sanitizeHtml: rawHtml => {
 				/**
-				 * When using the HTML embed feature with `htmlEmbed.previewsInData=true` option, it is strongly recommended to
+				 * When using the HTML embed feature with `htmlEmbed.showPreviews=true` option, it is strongly recommended to
 				 * define a sanitize function that will clean up an input HTML in order to avoid XSS vulnerability.
 				 *
 				 * For a detailed overview, check the {@glink features/html-embed HTML embed feature} documentation.
@@ -55,7 +58,7 @@ export default class HtmlEmbedEditing extends Plugin {
 
 				return {
 					html: rawHtml,
-					hasModified: false
+					hasChanged: false
 				};
 			}
 		} );
@@ -74,8 +77,8 @@ export default class HtmlEmbedEditing extends Plugin {
 			allowAttributes: [ 'value' ]
 		} );
 
-		editor.commands.add( 'htmlEmbedUpdate', new HtmlEmbedUpdateCommand( editor ) );
-		editor.commands.add( 'htmlEmbedInsert', new HtmlEmbedInsertCommand( editor ) );
+		editor.commands.add( 'updateHtmlEmbed', new UpdateHtmlEmbedCommand( editor ) );
+		editor.commands.add( 'insertHtmlEmbed', new InsertHtmlEmbedCommand( editor ) );
 
 		this._setupConversion();
 	}
@@ -121,135 +124,240 @@ export default class HtmlEmbedEditing extends Plugin {
 		} );
 
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
+			triggerBy: {
+				attributes: [ 'value' ]
+			},
 			model: 'rawHtml',
 			view: ( modelElement, { writer } ) => {
-				const widgetLabel = t( 'HTML snippet' );
-				const placeholder = t( 'Paste the raw code here.' );
+				let domContentWrapper, state, props;
 
-				const widgetView = writer.createContainerElement( 'div', {
-					class: 'raw-html'
+				const viewContainer = writer.createContainerElement( 'div', {
+					class: 'raw-html-embed'
+				} );
+				// Widget cannot be a raw element because the widget system would not be able
+				// to add its UI to it. Thus, we need this wrapper.
+				const viewContentWrapper = writer.createRawElement( 'div', {
+					class: 'raw-html-embed__content-wrapper'
+				}, function( domElement ) {
+					domContentWrapper = domElement;
+
+					renderContent( { domElement, editor, state, props } );
 				} );
 
-				const rawHtmlContainer = writer.createContainerElement( 'div', {
-					'data-cke-ignore-events': true
-				} );
-
-				// Whether to show a preview mode or editing area.
-				writer.setCustomProperty( 'isEditingSourceActive', false, rawHtmlContainer );
-
-				const textareaAttributes = {
-					placeholder,
-					disabled: true,
-					class: 'raw-html__source'
-				};
-
-				// The editing raw HTML field.
-				const sourceElement = writer.createUIElement( 'textarea', textareaAttributes, function( domDocument ) {
-					const root = this.toDomElement( domDocument );
-
-					writer.setCustomProperty( 'domElement', root, sourceElement );
-					root.value = modelElement.getAttribute( 'value' ) || '';
-
-					root.addEventListener( 'input', () => {
-						editor.execute( 'htmlEmbedUpdate', root.value );
-					} );
-
-					return root;
-				} );
-
-				// The switch button between preview and editing HTML.
-				const toggleButton = writer.createUIElement( 'div', { class: 'raw-html__switch-mode' }, function( domDocument ) {
-					const root = this.toDomElement( domDocument );
-
-					root.innerHTML = htmlEmbedModeIcon;
-					writer.setCustomProperty( 'domElement', root, toggleButton );
-
-					root.addEventListener( 'click', evt => {
-						view.change( writer => {
-							if ( htmlEmbedConfig.previewsInData ) {
-								if ( widgetView.hasClass( DISPLAY_PREVIEW_CLASS ) ) {
-									writer.removeClass( DISPLAY_PREVIEW_CLASS, widgetView );
-								} else {
-									writer.addClass( DISPLAY_PREVIEW_CLASS, widgetView );
-								}
-							}
-
-							const textarea = sourceElement.getCustomProperty( 'domElement' );
-							textarea.disabled = !textarea.disabled;
+				// API exposed on each raw HTML embed widget so other features can control a particular widget.
+				const rawHtmlApi = {
+					makeEditable() {
+						state = Object.assign( {}, state, {
+							isEditable: true
 						} );
 
-						evt.preventDefault();
-					} );
+						renderContent( { domElement: domContentWrapper, editor, state, props } );
 
-					return root;
+						view.change( writer => {
+							writer.setAttribute( 'data-cke-ignore-events', 'true', viewContentWrapper );
+						} );
+
+						// This could be potentially pulled to a separate method called focusTextarea().
+						domContentWrapper.querySelector( 'textarea' ).focus();
+					},
+					save( newValue ) {
+						// If the value didn't change, we just cancel. If it changed,
+						// it's enough to update the model – the entire widget will be reconverted.
+						if ( newValue !== state.getRawHtmlValue() ) {
+							editor.execute( 'updateHtmlEmbed', newValue );
+						} else {
+							this.cancel();
+						}
+					},
+					cancel() {
+						state = Object.assign( {}, state, {
+							isEditable: false
+						} );
+
+						renderContent( { domElement: domContentWrapper, editor, state, props } );
+
+						view.change( writer => {
+							writer.removeAttribute( 'data-cke-ignore-events', viewContentWrapper );
+						} );
+					}
+				};
+
+				state = {
+					showPreviews: htmlEmbedConfig.showPreviews,
+					isEditable: false,
+					getRawHtmlValue: () => modelElement.getAttribute( 'value' ) || ''
+				};
+
+				props = {
+					sanitizeHtml: htmlEmbedConfig.sanitizeHtml,
+					textareaPlaceholder: t( 'Paste raw HTML here...' ),
+
+					onEditClick() {
+						rawHtmlApi.makeEditable();
+					},
+					onSaveClick( newValue ) {
+						rawHtmlApi.save( newValue );
+					},
+					onCancelClick() {
+						rawHtmlApi.cancel();
+					}
+				};
+
+				writer.insert( writer.createPositionAt( viewContainer, 0 ), viewContentWrapper );
+
+				writer.setCustomProperty( 'rawHtmlApi', rawHtmlApi, viewContainer );
+				writer.setCustomProperty( 'rawHtml', true, viewContainer );
+
+				return toWidget( viewContainer, writer, {
+					widgetLabel: t( 'HTML snippet' ),
+					hasSelectionHandle: true
 				} );
-
-				writer.insert( writer.createPositionAt( widgetView, 0 ), rawHtmlContainer );
-				writer.insert( writer.createPositionAt( rawHtmlContainer, 0 ), toggleButton );
-				writer.insert( writer.createPositionAt( rawHtmlContainer, 1 ), sourceElement );
-
-				// The container that renders the HTML should be created only when `htmlEmbed.previewsInData=true` in the config.
-				if ( htmlEmbedConfig.previewsInData ) {
-					writer.addClass( [ 'raw-html--preview-enabled', DISPLAY_PREVIEW_CLASS ], widgetView );
-
-					const previewContainer = writer.createRawElement( 'div', { class: 'raw-html__preview' }, function( domElement ) {
-						writer.setCustomProperty( 'domElement', domElement, previewContainer );
-
-						const sanitizeOutput = htmlEmbedConfig.sanitizeHtml( modelElement.getAttribute( 'value' ) || '' );
-						domElement.innerHTML = sanitizeOutput.html;
-					} );
-
-					writer.insert( writer.createPositionAt( rawHtmlContainer, 2 ), previewContainer );
-				}
-
-				return toRawHtmlWidget( widgetView, writer, widgetLabel );
 			}
 		} );
 
-		editor.conversion.for( 'editingDowncast' ).add( downcastRawHtmlValueAttribute( htmlEmbedConfig ) );
+		function renderContent( { domElement, editor, state, props } ) {
+			// Remove all children;
+			domElement.textContent = '';
+
+			const domDocument = domElement.ownerDocument;
+			let domTextarea;
+
+			if ( state.isEditable ) {
+				const textareaProps = {
+					isDisabled: false,
+					placeholder: props.textareaPlaceholder
+				};
+
+				domTextarea = createDomTextarea( { domDocument, state, props: textareaProps } );
+
+				domElement.append( domTextarea );
+			} else if ( state.showPreviews ) {
+				const previewContainerProps = {
+					sanitizeHtml: props.sanitizeHtml
+				};
+
+				domElement.append( createPreviewContainer( { domDocument, state, props: previewContainerProps } ) );
+			} else {
+				const textareaProps = {
+					isDisabled: true,
+					placeholder: props.textareaPlaceholder
+				};
+
+				domElement.append( createDomTextarea( { domDocument, state, props: textareaProps } ) );
+			}
+
+			const buttonsWrapperProps = {
+				onEditClick: props.onEditClick,
+				onSaveClick: () => {
+					props.onSaveClick( domTextarea.value );
+				},
+				onCancelClick: props.onCancelClick
+			};
+			domElement.prepend( createDomButtonsWrapper( { editor, domDocument, state, props: buttonsWrapperProps } ) );
+		}
+
+		function createDomButtonsWrapper( { editor, domDocument, state, props } ) {
+			const domButtonsWrapper = createElement( domDocument, 'div', {
+				class: 'raw-html-embed__buttons-wrapper'
+			} );
+			// TODO these should be cached and we should only clone here these cached nodes!
+			const domEditButton = createDomButton( editor.locale, 'edit' );
+			const domSaveButton = createDomButton( editor.locale, 'save' );
+			const domCancelButton = createDomButton( editor.locale, 'cancel' );
+
+			if ( state.isEditable ) {
+				const clonedDomSaveButton = domSaveButton.cloneNode( true );
+				const clonedDomCancelButton = domCancelButton.cloneNode( true );
+
+				clonedDomSaveButton.addEventListener( 'click', evt => {
+					evt.preventDefault();
+					props.onSaveClick( );
+				} );
+
+				clonedDomCancelButton.addEventListener( 'click', evt => {
+					evt.preventDefault();
+					props.onCancelClick( );
+				} );
+
+				domButtonsWrapper.appendChild( clonedDomSaveButton );
+				domButtonsWrapper.appendChild( clonedDomCancelButton );
+			} else {
+				const clonedDomEditButton = domEditButton.cloneNode( true );
+
+				clonedDomEditButton.addEventListener( 'click', evt => {
+					evt.preventDefault();
+					props.onEditClick();
+				} );
+
+				domButtonsWrapper.appendChild( clonedDomEditButton );
+			}
+
+			return domButtonsWrapper;
+		}
+
+		function createDomTextarea( { domDocument, state, props } ) {
+			const domTextarea = createElement( domDocument, 'textarea', {
+				placeholder: props.placeholder,
+				class: 'ck ck-reset ck-input ck-input-text raw-html-embed__source'
+			} );
+
+			domTextarea.disabled = props.isDisabled;
+			domTextarea.value = state.getRawHtmlValue();
+
+			return domTextarea;
+		}
+
+		function createPreviewContainer( { domDocument, state, props } ) {
+			const domPreviewContainer = createElement( domDocument, 'div', {
+				class: 'raw-html-embed__preview'
+			} );
+
+			const sanitizeOutput = props.sanitizeHtml( state.getRawHtmlValue() );
+			domPreviewContainer.innerHTML = sanitizeOutput.html;
+
+			return domPreviewContainer;
+		}
 	}
 }
 
-// Returns a converter that handles the `value` attribute of the `rawHtml` element.
+// Returns a toggle mode button DOM element that can be cloned and used in conversion.
 //
-// It updates the source (`textarea`) value and passes an HTML to the preview element if `htmlEmbed.previewsInData=true`.
-//
-// @params {module:html-embed/htmlembed~HtmlEmbedConfig} htmlEmbedConfig
-// @returns {Function}
-function downcastRawHtmlValueAttribute( htmlEmbedConfig ) {
-	return dispatcher => {
-		dispatcher.on( 'attribute:value:rawHtml', ( evt, data, conversionApi ) => {
-			const widgetView = conversionApi.mapper.toViewElement( data.item );
-			const rawHtmlContainer = widgetView.getChild( 0 );
+//  @param {module:utils/locale~Locale} locale Editor locale.
+//  @param {'edit'|'save'|'cancel'} type Type of button to create.
+//  @returns {HTMLElement}
+function createDomButton( locale, type ) {
+	const t = locale.t;
+	const buttonView = new ButtonView( locale );
 
-			const textareaDomElement = rawHtmlContainer.getChild( 1 ).getCustomProperty( 'domElement' );
+	buttonView.set( {
+		tooltipPosition: 'sw',
+		icon: pencilIcon,
+		tooltip: true
+	} );
 
-			if ( textareaDomElement ) {
-				textareaDomElement.value = data.item.getAttribute( 'value' );
-			}
+	buttonView.render();
 
-			if ( htmlEmbedConfig.previewsInData ) {
-				const previewDomElement = rawHtmlContainer.getChild( 2 ).getCustomProperty( 'domElement' );
-
-				if ( previewDomElement ) {
-					const sanitizeOutput = htmlEmbedConfig.sanitizeHtml( data.item.getAttribute( 'value' ) );
-					previewDomElement.innerHTML = sanitizeOutput.html;
-				}
-			}
+	if ( type === 'edit' ) {
+		buttonView.set( {
+			icon: pencilIcon,
+			label: t( 'Edit source' ),
+			class: 'raw-html-embed__edit-button'
 		} );
-	};
-}
+	} else if ( type === 'save' ) {
+		buttonView.set( {
+			icon: checkIcon,
+			label: t( 'Save changes' ),
+			class: 'raw-html-embed__save-button'
+		} );
+	} else {
+		buttonView.set( {
+			icon: cancelIcon,
+			label: t( 'Cancel' ),
+			class: 'raw-html-embed__cancel-button'
+		} );
+	}
 
-// Converts a given {@link module:engine/view/element~Element} to a raw html widget:
-// * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the raw html widget element.
-// * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
-//
-//  @param {module:engine/view/element~Element} viewElement
-//  @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
-//  @param {String} label The element's label.
-//  @returns {module:engine/view/element~Element}
-function toRawHtmlWidget( viewElement, writer, label ) {
-	writer.setCustomProperty( 'rawHtml', true, viewElement );
+	buttonView.destroy();
 
-	return toWidget( viewElement, writer, { label } );
+	return buttonView.element.cloneNode( true );
 }
