@@ -8,6 +8,7 @@
 	/* Give the embed some air. */
 	margin: 1em auto;
 	position: relative;
+	clear: both;
 
 	/* The switch mode button wrapper. */
 	& .raw-html-embed__buttons-wrapper {
