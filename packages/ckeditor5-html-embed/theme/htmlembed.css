@@ -8,6 +8,7 @@
 	/* Give the embed some air. */
 	margin: 1em auto;
 	position: relative;
+	clear: both;
 
 	/* ----- Emebed label in the upper left corner ----------------------------------------------- */
 
