@@ -23,6 +23,17 @@ editor.setData( 'This is **bold**.' );
 	And please do remember – using Markdown [does not automatically make your application/website secure](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues/16#issuecomment-375752994).
 </info-box>
 
+## Demo
+
+{@snippet features/markdown}
+
+## Related features
+
+Some other ways to output the edited content include:
+
+* {@link features/export-word Export to Word} &ndash; Allows you to generate editable `.docx` files out of your editor-created content.
+* {@link features/export-pdf Export to PDF} &ndash; Allows you to generate portable PDF files out of your editor-created content.
+
 ## Installation
 
 To enable this data processor in your editor install the [`@ckeditor/ckeditor5-markdown-gfm`](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm) package:
@@ -59,10 +70,6 @@ ClassicEditor
 	.catch( ... );
 
 ```
-
-## Demo
-
-{@snippet features/markdown}
 
 ## Contribute
 

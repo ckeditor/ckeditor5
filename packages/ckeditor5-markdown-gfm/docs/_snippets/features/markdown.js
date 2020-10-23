@@ -9,13 +9,15 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
-		plugins: [ ArticlePluginSet, EasyImage, Markdown ],
+		plugins: [ ArticlePluginSet, EasyImage, Markdown, Code, CodeBlock ],
 		toolbar: [
 			'heading',
 			'|',
@@ -24,6 +26,9 @@ ClassicEditor
 			'link',
 			'bulletedList',
 			'numberedList',
+			'|',
+			'code',
+			'codeBlock',
 			'|',
 			'outdent',
 			'indent',
@@ -34,6 +39,12 @@ ClassicEditor
 		],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		},
+		codeBlock: {
+			languages: [
+				{ language: 'css', label: 'CSS' },
+				{ language: 'html', label: 'HTML' }
+			]
 		},
 		cloudServices: CS_CONFIG
 	} )
