@@ -8,7 +8,7 @@ order: 30
 
 # Pasting plain text
 
-The Paste from Word feature is provided through the {@link module:clipboard/clipboard~Clipboard} plugin, which is responsible for the integration with the native clipboard and intercepts all native events like `copy`, `cut` or `drop` and handles them on its side. The goal is to not allow the browser to touch the content in the rich text editor which would lead to the browser messing it up.
+The plain text pasting feature is provided through the {@link module:clipboard/clipboard~Clipboard} plugin, which is responsible for the integration with the native clipboard and intercepts all native events like `copy`, `cut` or `drop` and handles them on its side. The goal is to not allow the browser to touch the content in the rich text editor which would lead to the browser messing it up.
 
 The plain text pasting itself is further aided by the {@link module:clipboard/clipboard~PastePlainText} plugin. It detects the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd> keystroke during the paste and causes the pasted plain text to inherit the styles of the content it was pasted into.
 
