@@ -619,7 +619,7 @@ function displayNewPluginsTable( newPlugins ) {
 		table.push( [ data.pluginName, modulePath ] );
 	}
 
-	console.log( table.toString() + '\n' );
+	console.log( table.toString() );
 }
 
 function normalizePath( modulePath ) {
