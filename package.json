@@ -93,6 +93,7 @@
     "@webspellchecker/wproofreader-ckeditor5": "^1.0.5",
     "@wiris/mathtype-ckeditor5": "^7.24.0",
     "babel-standalone": "^6.26.0",
+    "cli-table": "^0.3.1",
     "coveralls": "^3.1.0",
     "css-loader": "^3.5.3",
     "eslint": "^7.1.0",
