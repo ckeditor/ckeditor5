@@ -614,7 +614,9 @@ function displayNewPluginsTable( newPlugins ) {
 	} );
 
 	for ( const data of newPlugins ) {
-		table.push( [ data.pluginName, data.modulePath ] );
+		const modulePath = normalizePath( data.modulePath.replace( cwd + path.sep, '' ) );
+
+		table.push( [ data.pluginName, modulePath ] );
 	}
 
 	console.log( table.toString() + '\n' );
