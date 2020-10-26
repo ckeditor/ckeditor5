@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals ClassicEditor, console, window, prompt, document */
+/* globals ClassicEditor, toWidget, toWidgetEditable, console, window, prompt, document */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
@@ -88,7 +88,7 @@ const downcastInfoBox = editor => {
 		writer.addClass( `info-box-${ type }`, complexInfoBoxView );
 
 		for ( const child of modelElement.getChildren() ) {
-			const childView = writer.createContainerElement( 'div' );
+			const childView = writer.createEditableElement( 'div' );
 
 			if ( child.is( 'element', 'complexInfoBoxTitle' ) ) {
 				writer.addClass( 'info-box-title', childView );
@@ -98,6 +98,8 @@ const downcastInfoBox = editor => {
 
 			consumable.consume( child, 'insert' );
 			mapper.bindElements( child, childView );
+
+			toWidgetEditable( childView, writer );
 
 			writer.insert( writer.createPositionAt( complexInfoBoxView, 'end' ), childView );
 		}
@@ -118,7 +120,9 @@ const downcastInfoBox = editor => {
 
 		writer.insert( writer.createPositionAt( complexInfoBoxView, 'end' ), actionsView );
 
-		return complexInfoBoxView;
+		return toWidget( complexInfoBoxView, writer, {
+			widgetLabel: 'Complex Info Box'
+		} );
 	};
 };
 
