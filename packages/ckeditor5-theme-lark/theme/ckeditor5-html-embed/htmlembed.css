@@ -6,6 +6,7 @@
 :root {
 	--ck-html-embed-content-width: calc(100% - 1.5 * var(--ck-icon-size));
 	--ck-html-embed-source-height: 10em;
+	--ck-html-embed-unfocused-outline-width: 1px;
 	--ck-html-embed-content-min-height: calc(var(--ck-icon-size) + var(--ck-spacing-standard));
 }
 
@@ -13,6 +14,47 @@
 .ck-widget.raw-html-embed {
 	font-size: var(--ck-font-size-base);
 	background-color: var(--ck-color-base-foreground);
+
+	&:not(.ck-widget_selected):not(:hover) {
+		outline: var(--ck-html-embed-unfocused-outline-width) dashed var(--ck-color-widget-blurred-border);
+	}
+
+	& .ck-widget__type-around .ck-widget__type-around__button.ck-widget__type-around__button_before {
+		margin-left: 50px;
+	}
+
+	/* ----- Emebed label in the upper left corner ----------------------------------------------- */
+
+	&::before {
+		content: attr(data-html-embed-label);
+		top: calc(-1 * var(--ck-html-embed-unfocused-outline-width));
+		left: var(--ck-spacing-standard);
+		background: hsl(0deg 0% 60%);
+		transition: background var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
+		padding: calc(var(--ck-spacing-tiny) + var(--ck-html-embed-unfocused-outline-width)) var(--ck-spacing-small) var(--ck-spacing-tiny);
+		border-radius: 0 0 var(--ck-border-radius) var(--ck-border-radius);
+		color: var(--ck-color-base-background);
+		font-size: var(--ck-font-size-tiny);
+		font-family: var(--ck-font-face);
+	}
+
+	@nest .ck.ck-editor__editable.ck-blurred &.ck-widget_selected::before {
+		top: 0px;
+		padding: var(--ck-spacing-tiny) var(--ck-spacing-small);
+	}
+
+	@nest .ck.ck-editor__editable:not(.ck-blurred) &.ck-widget_selected::before {
+		top: 0;
+		padding: var(--ck-spacing-tiny) var(--ck-spacing-small);
+		background: var(--ck-color-focus-border);
+	}
+
+	@nest .ck.ck-editor__editable &:not(.ck-widget_selected):hover::before {
+		top: 0px;
+		padding: var(--ck-spacing-tiny) var(--ck-spacing-small);
+	}
+
+	/* ----- Emebed internals --------------------------------------------------------------------- */
 
 	& .raw-html-embed__content-wrapper {
 		padding: var(--ck-spacing-standard);
