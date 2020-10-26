@@ -132,7 +132,8 @@ export default class HtmlEmbedEditing extends Plugin {
 				let domContentWrapper, state, props;
 
 				const viewContainer = writer.createContainerElement( 'div', {
-					class: 'raw-html-embed'
+					class: 'raw-html-embed',
+					'data-html-embed-label': t( 'HTML snippet' )
 				} );
 				// Widget cannot be a raw element because the widget system would not be able
 				// to add its UI to it. Thus, we need this wrapper.
@@ -207,7 +208,6 @@ export default class HtmlEmbedEditing extends Plugin {
 
 				writer.setCustomProperty( 'rawHtmlApi', rawHtmlApi, viewContainer );
 				writer.setCustomProperty( 'rawHtml', true, viewContainer );
-				writer.setAttribute( 'data-html-embed-label', t( 'HTML snippet' ), viewContainer );
 
 				return toWidget( viewContainer, writer, {
 					widgetLabel: t( 'HTML snippet' ),
