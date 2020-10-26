@@ -29,10 +29,10 @@ Let's take a look at the below enhanced info box might behave:
 
 The above demo assumes that each box:
 
-- have 1 title
-- have multiple content-boxes
-- have a type ("info" or "warning")
-- have a URL
+- Always have a title.
+- Have 1 to 4 content-boxes.
+- Have "info" or "warning" type.
+- Have a URL.
 
 Those can be represented in the editor's {@link framework/guides/deep-dive/schema schema} as follows:
 
@@ -88,7 +88,7 @@ Note that, when using `children` configuration option the current implementation
 * will have a "flat" structure
 </info-box>
 
-A simplified model markup for the info box from the {@link #demo}:
+A simplified model markup for the info box from the {@link framework/guides/deep-dive/element-reconversion#demo}:
 
 ```html
 <complexInfoBox infoBoxType="info" infoBoxURL="http://cksource.com">
@@ -225,7 +225,8 @@ I think that an image here might be useful. To not loose the idea - it might be 
 
 ### Upcast conversion
 
-THe upcast conversion uses standard element-to-element converters for box & title and a custom converter for the info box to extract metadata from the data.
+The upcast conversion uses standard element-to-element converters for box & title and a custom converter for the info box to extract
+metadata from the data.
 
 ```js
 editor.conversion.for( 'upcast' )

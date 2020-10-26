@@ -29,35 +29,54 @@ const upcastInfoBox = ( viewElement, { writer } ) => {
 	return complexInfoBox;
 };
 
-const renderActionsView = ( editor, modelElement ) => function( domElement ) {
+function addActionButton( text, callback, domElement, editor ) {
 	const domDocument = domElement.ownerDocument;
-	const urlButton = createElement( domDocument, 'button', {}, 'Set URL' );
 
-	urlButton.addEventListener( 'click', () => {
+	const button = createElement( domDocument, 'button', {}, [ text ] );
+
+	button.addEventListener( 'click', () => {
+		editor.model.change( callback );
+	} );
+
+	domElement.appendChild( button );
+
+	return button;
+}
+
+const renderActionsView = ( editor, modelElement ) => function( domElement ) {
+	addActionButton( 'Set URL', writer => {
 		// eslint-disable-next-line no-alert
 		const newURL = prompt( 'Set URL', modelElement.getAttribute( 'infoBoxURL' ) || '' );
 
-		editor.model.change( writer => {
-			writer.setAttribute( 'infoBoxURL', newURL, modelElement );
-		} );
-	} );
+		writer.setAttribute( 'infoBoxURL', newURL, modelElement );
+	}, domElement, editor );
 
 	const currentType = modelElement.getAttribute( 'infoBoxType' );
 	const newType = currentType === 'info' ? 'warning' : 'info';
 
-	const typeButton = createElement( domDocument, 'button', {}, `Change to ${ newType }` );
+	addActionButton( `Change to ${ newType }`, writer => {
+		writer.setAttribute( 'infoBoxType', newType, modelElement );
+	}, domElement, editor );
 
-	typeButton.addEventListener( 'click', () => {
-		editor.model.change( writer => {
-			writer.setAttribute( 'infoBoxType', newType, modelElement );
-		} );
-	} );
+	const childCount = modelElement.childCount;
 
-	domElement.appendChild( urlButton );
-	domElement.appendChild( typeButton );
+	const addButton = addActionButton( 'Add content box', writer => {
+		writer.insertElement( 'complexInfoBoxContent', modelElement, 'end' );
+	}, domElement, editor );
+
+	if ( childCount > 4 ) {
+		addButton.setAttribute( 'disabled', 'disabled' );
+	}
+
+	const removeButton = addActionButton( 'Remove content box', writer => {
+		writer.remove( modelElement.getChild( childCount - 1 ) );
+	}, domElement, editor );
+
+	if ( childCount < 3 ) {
+		removeButton.setAttribute( 'disabled', 'disabled' );
+	}
 };
 
-// TODO: simplify to hide complexity
 const downcastInfoBox = editor => {
 	return ( modelElement, { writer, consumable, mapper } ) => {
 		const complexInfoBoxView = writer.createContainerElement( 'div', {
@@ -67,14 +86,6 @@ const downcastInfoBox = editor => {
 		const type = modelElement.getAttribute( 'infoBoxType' ) || 'info';
 
 		writer.addClass( `info-box-${ type }`, complexInfoBoxView );
-
-		const actionsView = writer.createRawElement( 'div', {
-			class: 'info-box-actions',
-			contenteditable: 'false', 			// Prevent editing of the element:
-			'data-cke-ignore-events': 'true'	// Allows using custom UI elements inside editing view.
-		}, renderActionsView( editor, modelElement ) );
-
-		writer.insert( writer.createPositionAt( complexInfoBoxView, 'end' ), actionsView );
 
 		for ( const child of modelElement.getChildren() ) {
 			const childView = writer.createContainerElement( 'div' );
@@ -87,8 +98,25 @@ const downcastInfoBox = editor => {
 
 			consumable.consume( child, 'insert' );
 			mapper.bindElements( child, childView );
+
 			writer.insert( writer.createPositionAt( complexInfoBoxView, 'end' ), childView );
 		}
+
+		const urlBox = writer.createRawElement( 'div', {
+			class: 'info-box-url'
+		}, function( domElement ) {
+			domElement.innerText = `URL: "${ modelElement.getAttribute( 'infoBoxURL' ) }"`;
+		} );
+
+		writer.insert( writer.createPositionAt( complexInfoBoxView, 'end' ), urlBox );
+
+		const actionsView = writer.createRawElement( 'div', {
+			class: 'info-box-actions',
+			contenteditable: 'false', 			// Prevent editing of the element:
+			'data-cke-ignore-events': 'true'	// Allows using custom UI elements inside editing view.
+		}, renderActionsView( editor, modelElement ) );
+
+		writer.insert( writer.createPositionAt( complexInfoBoxView, 'end' ), actionsView );
 
 		return complexInfoBoxView;
 	};
@@ -101,7 +129,9 @@ class ComplexInfoBox {
 	}
 
 	_defineConversion( editor ) {
-		editor.conversion.for( 'upcast' )
+		const conversion = editor.conversion;
+
+		conversion.for( 'upcast' )
 			.elementToElement( {
 				view: { name: 'div', classes: [ 'info-box' ] },
 				model: upcastInfoBox
@@ -116,7 +146,7 @@ class ComplexInfoBox {
 			} );
 
 		// The downcast conversion must be split as you need a widget in the editing pipeline.
-		editor.conversion.for( 'downcast' ).elementToElement( {
+		conversion.for( 'downcast' ).elementToElement( {
 			model: 'complexInfoBox',
 			view: downcastInfoBox( editor ),
 			triggerBy: {
@@ -127,8 +157,10 @@ class ComplexInfoBox {
 	}
 
 	_defineSchema( editor ) {
+		const schema = editor.model.schema;
+
 		// The main element with attributes for type and URL:
-		editor.model.schema.register( 'complexInfoBox', {
+		schema.register( 'complexInfoBox', {
 			allowWhere: '$block',
 			allowContentOf: '$root',
 			isObject: true,
@@ -136,14 +168,19 @@ class ComplexInfoBox {
 		} );
 
 		// A text-only title.
-		editor.model.schema.register( 'complexInfoBoxTitle', {
+		schema.register( 'complexInfoBoxTitle', {
 			isLimit: true,
 			allowIn: 'complexInfoBox'
 		} );
-		editor.model.schema.extend( '$text', { allowIn: 'complexInfoBoxTitle' } );
+		schema.extend( '$text', { allowIn: 'complexInfoBoxTitle' } );
+		schema.addAttributeCheck( context => {
+			if ( context.endsWith( 'complexInfoBoxTitle $text' ) ) {
+				return false;
+			}
+		} );
 
 		// A content which can have any content allowed in $root.
-		editor.model.schema.register( 'complexInfoBoxContent', {
+		schema.register( 'complexInfoBoxContent', {
 			isLimit: true,
 			allowIn: 'complexInfoBox',
 			allowContentOf: '$root'
