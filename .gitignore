@@ -13,3 +13,5 @@ yarn.lock
 
 # Ignore `mrgit.json` this file contains info about external repositories.
 mrgit.json
+
+package-lock.json
