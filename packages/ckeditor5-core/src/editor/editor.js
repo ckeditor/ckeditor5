@@ -297,6 +297,13 @@ export default class Editor {
 	}
 
 	/**
+	 * Shorthand for {@link module:engine/view/view~View#focus `this.editing.view.focus()`}.
+	 */
+	focus() {
+		this.editing.view.focus();
+	}
+
+	/**
 	 * Creates and initializes a new editor instance.
 	 *
 	 * This is an abstract method. Every editor type needs to implement its own initialization logic.
