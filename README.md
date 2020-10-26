@@ -1,5 +1,4 @@
-CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CKEditor%205%20on%20GitHub&url=https%3A%2F%2Fgithub.com%2Fckeditor%2Fckeditor5)
-===================================
+# CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CKEditor%205%20on%20GitHub&url=https%3A%2F%2Fgithub.com%2Fckeditor%2Fckeditor5)
 
 [![npm version](https://badge.fury.io/js/ckeditor5.svg)](https://www.npmjs.com/package/ckeditor5)
 
@@ -16,22 +15,22 @@ A set of ready-to-use rich text editors created with a powerful framework. Made 
 
 ## Table of contents
 
-* [Quick start](#quick-start)
-   * [CKEditor 5 Builds](#ckeditor-5-builds)
-   * [CKEditor 5 Framework](#ckeditor-5-framework)
-* [Documentation and FAQ](#documentation-and-faq)
-* [Contributing and project organization](#contributing-and-project-organization)
-   * [Ideas and discussions](#ideas-and-discussions)
-   * [Development](#development)
-   * [Reporting issues and feature requests](#reporting-issues-and-feature-requests)
-* [Releases](#releases)
-* [Packages](#packages)
-   * [Core libraries](#core-libraries)
-   * [Builds](#builds)
-   * [Features](#features)
-   * [Editors](#editors)
-   * [Themes](#themes)
-* [License](#license)
+-   [Quick start](#quick-start)
+    -   [CKEditor 5 Builds](#ckeditor-5-builds)
+    -   [CKEditor 5 Framework](#ckeditor-5-framework)
+-   [Documentation and FAQ](#documentation-and-faq)
+-   [Contributing and project organization](#contributing-and-project-organization)
+    -   [Ideas and discussions](#ideas-and-discussions)
+    -   [Development](#development)
+    -   [Reporting issues and feature requests](#reporting-issues-and-feature-requests)
+-   [Releases](#releases)
+-   [Packages](#packages)
+    -   [Core libraries](#core-libraries)
+    -   [Builds](#builds)
+    -   [Features](#features)
+    -   [Editors](#editors)
+    -   [Themes](#themes)
+-   [License](#license)
 
 ## Quick start
 
@@ -41,11 +40,11 @@ CKEditor 5 Builds are a set of ready-to-use rich text editors. Every "build" pro
 
 The following CKEditor 5 Builds are currently available:
 
-* [Classic editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#classic-editor)
-* [Inline editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#inline-editor)
-* [Balloon editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-editor)
-* [Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-block-editor)
-* [Document editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#document-editor)
+-   [Classic editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#classic-editor)
+-   [Inline editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#inline-editor)
+-   [Balloon editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-editor)
+-   [Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-block-editor)
+-   [Document editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#document-editor)
 
 #### Example
 
@@ -70,11 +69,9 @@ Call the [`ClassicEditor.create()`](https://ckeditor.com/docs/ckeditor5/latest/a
 
 ```html
 <script>
-    ClassicEditor
-        .create( document.querySelector( '#editor' ) )
-        .catch( error => {
-            console.error( error );
-        } );
+	ClassicEditor.create(document.querySelector("#editor")).catch((error) => {
+		console.error(error);
+	});
 </script>
 ```
 
@@ -92,11 +89,11 @@ To find out how to start building your own editor from scratch go to [CKEditor 5
 
 To find out more see the following [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/index.html) sections:
 
-* [API documentation](https://ckeditor.com/docs/ckeditor5/latest/api/index.html)
-* [CKEditor 5 Framework documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/index.html)
-* [CKEditor 5 Builds documentation](https://ckeditor.com/docs/ckeditor5/latest/builds/index.html)
-* [CKEditor 5 Features documentation](https://ckeditor.com/docs/ckeditor5/latest/features/index.html)
-* [CKEditor 5 Examples](https://ckeditor.com/docs/ckeditor5/latest/examples/index.html)
+-   [API documentation](https://ckeditor.com/docs/ckeditor5/latest/api/index.html)
+-   [CKEditor 5 Framework documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/index.html)
+-   [CKEditor 5 Builds documentation](https://ckeditor.com/docs/ckeditor5/latest/builds/index.html)
+-   [CKEditor 5 Features documentation](https://ckeditor.com/docs/ckeditor5/latest/features/index.html)
+-   [CKEditor 5 Examples](https://ckeditor.com/docs/ckeditor5/latest/examples/index.html)
 
 The documentation is far from being complete and will be constantly evolving (as will the editor) until it is ready for v1.0.0.
 
@@ -843,3 +840,4 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 ## License
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html). For full details about the license, please check the `LICENSE.md` file or [https://ckeditor.com/legal/ckeditor-oss-license](https://ckeditor.com/legal/ckeditor-oss-license).
+1
