@@ -104,7 +104,7 @@ console.log( 'Done' );
 if ( Object.values( failedChecks ).some( checksSet => checksSet.size > 0 ) ) {
 	console.log( '\n---\n' );
 
-	console.log( `🔥 ${ RED }Errors were detected by the CI.${ NO_COLOR }\n` );
+	console.log( `🔥 ${ RED }Errors were detected by the CI.${ NO_COLOR }\n\n` );
 
 	showFailedCheck( 'dependency', 'The following packages have dependencies that are not included in its package.json' );
 	showFailedCheck( 'unitTests', 'The following packages did not pass unit tests' );
