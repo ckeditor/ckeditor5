@@ -9,23 +9,21 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import ListStyleEditing from '../src/liststyleediting';
 import TodoListEditing from '../src/todolistediting';
 import ListStyleCommand from '../src/liststylecommand';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 describe( 'ListStyleEditing', () => {
-	let editor, model, view, element;
+	let editor, model, view;
 
 	beforeEach( () => {
-		element = document.createElement( 'div' );
-		document.body.append( element );
-
-		return ClassicTestEditor
-			.create( element, {
+		return VirtualTestEditor
+			.create( {
 				plugins: [ Paragraph, ListStyleEditing, UndoEditing ]
 			} )
 			.then( newEditor => {
@@ -36,10 +34,7 @@ describe( 'ListStyleEditing', () => {
 	} );
 
 	afterEach( () => {
-		return editor.destroy()
-			.then( () => {
-				element.remove();
-			} );
+		return editor.destroy();
 	} );
 
 	it( 'should have pluginName', () => {
@@ -1471,6 +1466,29 @@ describe( 'ListStyleEditing', () => {
 
 		// #8160
 		describe( 'pasting a into another list', () => {
+			let element;
+
+			beforeEach( () => {
+				element = document.createElement( 'div' );
+				document.body.append( element );
+
+				return ClassicTestEditor
+					.create( element, {
+						plugins: [ Paragraph, Clipboard, ListStyleEditing, UndoEditing ]
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+					} );
+			} );
+
+			afterEach( () => {
+				return editor.destroy()
+					.then( () => {
+						element.remove();
+					} );
+			} );
+
 			it( 'should inherit attributes from the previous sibling element (collapsed selection)', () => {
 				setModelData( model,
 					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +

@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ListEditing from './listediting';
 import ListStyleCommand from './liststylecommand';
 import { getSiblingListItem, getSiblingNodes } from './utils';
@@ -30,7 +29,7 @@ export default class ListStyleEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ListEditing, Clipboard ];
+		return [ ListEditing ];
 	}
 
 	/**
@@ -438,13 +437,6 @@ function fixListAfterOutdentListCommand( editor ) {
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Function}
 function fixListStyleAttributeOnListItemElements( editor ) {
-	// A flag that determines whether the inserted content comes from the clipboard.
-	let contentFromClipboard;
-
-	editor.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', () => {
-		contentFromClipboard = true;
-	} );
-
 	return writer => {
 		let wasFixed = false;
 
@@ -456,45 +448,6 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 
 		if ( !insertedListItems.length ) {
 			return wasFixed;
-		}
-
-		// Adjust the `listStyle` attribute for inserted (pasted) items. See #8160.
-		//
-		// ■ List item 1. // [listStyle="square", listType="bulleted"]
-		//     ○ List item 1.1. // [listStyle="circle", listType="bulleted"]
-		//     ○ [] (selection is here)
-		//
-		// Then, pasting a list with different attributes (listStyle, listType):
-		//
-		// 1. First. // [listStyle="decimal", listType="numbered"]
-		// 2. Second // [listStyle="decimal", listType="numbered"]
-		//
-		// The `listType` attribute will be corrected by the `ListEditing` converters.
-		// We need to adjust the `listStyle` attribute. Expected structure:
-		//
-		// ■ List item 1. // [listStyle="square", listType="bulleted"]
-		//     ○ List item 1.1. // [listStyle="circle", listType="bulleted"]
-		//     ○ First. // [listStyle="circle", listType="bulleted"]
-		//     ○ Second // [listStyle="circle", listType="bulleted"]
-		const firstPreviousSibling = insertedListItems[ 0 ].previousSibling;
-
-		if ( firstPreviousSibling && contentFromClipboard ) {
-			contentFromClipboard = false;
-
-			const listIndent = firstPreviousSibling.getAttribute( 'listIndent' );
-			const listStyle = firstPreviousSibling.getAttribute( 'listStyle' );
-
-			const itemsToUpdate = insertedListItems.filter( i => {
-				return i.getAttribute( 'listIndent' ) === listIndent && i.getAttribute( 'listStyle' ) !== listStyle;
-			} );
-
-			if ( itemsToUpdate.length ) {
-				for ( const item of itemsToUpdate ) {
-					writer.setAttribute( 'listStyle', listStyle, item );
-				}
-
-				return true;
-			}
 		}
 
 		// Check whether the last inserted element is next to the `listItem` element.
@@ -537,8 +490,35 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 				} else {
 					writer.setAttribute( 'listStyle', DEFAULT_LIST_TYPE, item );
 				}
-
 				wasFixed = true;
+			} else {
+				// Adjust the `listStyle` attribute for inserted (pasted) items. See #8160.
+				//
+				// ■ List item 1. // [listStyle="square", listType="bulleted"]
+				//     ○ List item 1.1. // [listStyle="circle", listType="bulleted"]
+				//     ○ [] (selection is here)
+				//
+				// Then, pasting a list with different attributes (listStyle, listType):
+				//
+				// 1. First. // [listStyle="decimal", listType="numbered"]
+				// 2. Second // [listStyle="decimal", listType="numbered"]
+				//
+				// The `listType` attribute will be corrected by the `ListEditing` converters.
+				// We need to adjust the `listStyle` attribute. Expected structure:
+				//
+				// ■ List item 1. // [listStyle="square", listType="bulleted"]
+				//     ○ List item 1.1. // [listStyle="circle", listType="bulleted"]
+				//     ○ First. // [listStyle="circle", listType="bulleted"]
+				//     ○ Second // [listStyle="circle", listType="bulleted"]
+				const prevSibling = item.previousSibling;
+
+				if ( prevSibling &&
+					prevSibling.getAttribute( 'listIndent' ) > 0 &&
+					prevSibling.getAttribute( 'listIndent' ) === item.getAttribute( 'listIndent' ) &&
+					shouldInheritListType( prevSibling, item )
+				) {
+					writer.setAttribute( 'listStyle', prevSibling.getAttribute( 'listStyle' ), item );
+				}
 			}
 		}
 
