@@ -6,13 +6,6 @@
 		border-radius: 8px;
 	}
 
-	.ck-content .info-box-actions button {
-		font-size: 0.8em;
-		border: 1px solid hsl(0, 0%, 80%);
-		padding: 2px 4px;
-		margin-right: 0.5em;
-	}
-
 	.ck-content .info-box-title {
 		margin-bottom: 0.5em;
 		font-size: 1.4em;
@@ -58,10 +51,22 @@
 		font-size: 0.8em;
 		color: hsl(0, 0%, 20%);
 	}
+
+	.ck-content .info-box-actions {
+		margin: 0.5em 0;
+	}
+
+	.ck-content .info-box-actions button {
+		font-size: 0.8em;
+		border: 1px solid hsl(0, 0%, 80%);
+		padding: 2px 4px;
+		margin-right: 0.5em;
+	}
 </style>
 
 <div id="editor-element-reconversion">
-	<p>Info:</p>
+	<p>Info box with two content fields:</p>
+
 	<div class="info-box info-box-info">
 		<div class="info-box-title">Hey! Did you know?</div>
 		<div class="info-box-content">
@@ -71,11 +76,14 @@
 			<p>Another content box.</p>
 		</div>
 	</div>
-	<p>Warning:</p>
+
+	<p>Warning box with URL attribute:</p>
+
 	<div class="info-box info-box-warning">
 		<div class="info-box-title">Watch out for <strong>this</strong>!</div>
 		<div class="info-box-content">
 			<p>Editable content of the <strong>info box</strong>.</p>
 		</div>
+					allowContentOf: '$root',<div class="info-box-url">http://cksource.com</div>
 	</div>
 </div>

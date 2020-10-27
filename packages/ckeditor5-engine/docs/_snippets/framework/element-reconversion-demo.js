@@ -22,9 +22,13 @@ const upcastInfoBox = ( viewElement, { writer } ) => {
 	const complexInfoBox = writer.createElement( 'complexInfoBox' );
 
 	const type = getTypeFromViewElement( viewElement );
-
 	writer.setAttribute( 'infoBoxType', type, complexInfoBox );
-	writer.setAttribute( 'infoBoxURL', 'https://ckeditor.com', complexInfoBox );
+
+	const urlWrapper = [ ...viewElement.getChildren() ].find( child => child.hasClass( 'info-box-url' ) );
+
+	if ( urlWrapper ) {
+		writer.setAttribute( 'infoBoxURL', urlWrapper.getChild( 0 ).data, complexInfoBox );
+	}
 
 	return complexInfoBox;
 };
@@ -104,13 +108,18 @@ const downcastInfoBox = editor => {
 			writer.insert( writer.createPositionAt( complexInfoBoxView, 'end' ), childView );
 		}
 
-		const urlBox = writer.createRawElement( 'div', {
-			class: 'info-box-url'
-		}, function( domElement ) {
-			domElement.innerText = `URL: "${ modelElement.getAttribute( 'infoBoxURL' ) }"`;
-		} );
+		const urlAttribute = modelElement.getAttribute( 'infoBoxURL' );
 
-		writer.insert( writer.createPositionAt( complexInfoBoxView, 'end' ), urlBox );
+		// Do not render empty URL field
+		if ( urlAttribute ) {
+			const urlBox = writer.createRawElement( 'div', {
+				class: 'info-box-url'
+			}, function( domElement ) {
+				domElement.innerText = `URL: "${ urlAttribute }"`;
+			} );
+
+			writer.insert( writer.createPositionAt( complexInfoBoxView, 'end' ), urlBox );
+		}
 
 		const actionsView = writer.createRawElement( 'div', {
 			class: 'info-box-actions',
@@ -166,7 +175,6 @@ class ComplexInfoBox {
 		// The main element with attributes for type and URL:
 		schema.register( 'complexInfoBox', {
 			allowWhere: '$block',
-			allowContentOf: '$root',
 			isObject: true,
 			allowAttributes: [ 'infoBoxType', 'infoBoxURL' ]
 		} );
@@ -176,14 +184,16 @@ class ComplexInfoBox {
 			isLimit: true,
 			allowIn: 'complexInfoBox'
 		} );
+		// Allow text in title...
 		schema.extend( '$text', { allowIn: 'complexInfoBoxTitle' } );
+		// ...but disallow any text attribute inside.
 		schema.addAttributeCheck( context => {
 			if ( context.endsWith( 'complexInfoBoxTitle $text' ) ) {
 				return false;
 			}
 		} );
 
-		// A content which can have any content allowed in $root.
+		// A content block which can have any content allowed in $root.
 		schema.register( 'complexInfoBoxContent', {
 			isLimit: true,
 			allowIn: 'complexInfoBox',
