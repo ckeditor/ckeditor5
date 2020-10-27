@@ -194,7 +194,7 @@ describe( 'DowncastHelpers', () => {
 					expectResult( '<div class="is-classy"></div>' );
 				} );
 
-				it( 'should properly re-bind mapper', () => {
+				it( 'should properly re-bind mapper mappings and retain markers', () => {
 					downcastHelpers.elementToElement( {
 						model: 'simpleBlock',
 						view: ( modelElement, { writer } ) => {
