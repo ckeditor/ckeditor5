@@ -28,7 +28,7 @@ When the plugin is enabled, it automatically detects Google Docs content and tra
 
 To test how Paste from Office works, open the [sample Google Docs document](https://docs.google.com/document/d/1a9YzJidjxRPrxY9BL4ZReNFkPAgd_ItnZoFxcjSiJ4U/edit?usp=sharing), open it, copy the content, and paste it into CKEditor 5 below.
 
-{@snippet features/paste-from-office}
+{@snippet features/paste-from-gdocs}
 
 ## Automatic content filtering
 
