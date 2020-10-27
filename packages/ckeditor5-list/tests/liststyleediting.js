@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
@@ -13,13 +15,17 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import ListStyleEditing from '../src/liststyleediting';
 import TodoListEditing from '../src/todolistediting';
 import ListStyleCommand from '../src/liststylecommand';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 describe( 'ListStyleEditing', () => {
-	let editor, model, view;
+	let editor, model, view, element;
 
 	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
+		element = document.createElement( 'div' );
+		document.body.append( element );
+
+		return ClassicTestEditor
+			.create( element, {
 				plugins: [ Paragraph, ListStyleEditing, UndoEditing ]
 			} )
 			.then( newEditor => {
@@ -30,7 +36,10 @@ describe( 'ListStyleEditing', () => {
 	} );
 
 	afterEach( () => {
-		return editor.destroy();
+		return editor.destroy()
+			.then( () => {
+				element.remove();
+			} );
 	} );
 
 	it( 'should have pluginName', () => {
@@ -1457,6 +1466,142 @@ describe( 'ListStyleEditing', () => {
 						text: character
 					} );
 				} );
+			}
+		} );
+
+		// #8160
+		describe( 'pasting a into another list', () => {
+			it( 'should inherit attributes from the previous sibling element (collapsed selection)', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+
+				pasteHtml( editor,
+					'<ul style="list-style-type: square">' +
+						'<li>Foo 1</li>' +
+						'<li>Foo 2</li>' +
+					'</ul>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 2[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+			} );
+
+			it( 'should inherit attributes from the previous sibling element (non-collapsed selection)', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">[Foo]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+
+				pasteHtml( editor,
+					'<ul style="list-style-type: square">' +
+						'<li>Foo 1</li>' +
+						'<li>Foo 2</li>' +
+					'</ul>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 2[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+			} );
+
+			it( 'should inherit attributes from the previous sibling element (non-collapsed selection over a few elements)', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">[Foo 1.</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 2.</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 3.]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+
+				pasteHtml( editor,
+					'<ul style="list-style-type: square">' +
+						'<li>Foo 1</li>' +
+						'<li>Foo 2</li>' +
+					'</ul>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 2[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+			} );
+
+			it( 'should do nothing when pasting the similar list', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+
+				pasteHtml( editor,
+					'<ol style="list-style-type: decimal">' +
+						'<li>Foo</li>' +
+					'</ol>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+			} );
+
+			it( 'should replace the entire list if selected', () => {
+				setModelData( model,
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="decimal" listType="numbered">[Foo Bar]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+
+				pasteHtml( editor,
+					'<ul style="list-style-type: square">' +
+						'<li>Foo</li>' +
+					'</ul>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+					'<listItem listIndent="1" listStyle="square" listType="bulleted">Foo[]</listItem>' +
+					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+				);
+			} );
+
+			function pasteHtml( editor, html ) {
+				editor.editing.view.document.fire( 'paste', {
+					dataTransfer: createDataTransfer( { 'text/html': html } ),
+					stopPropagation() {},
+					preventDefault() {}
+				} );
+			}
+
+			function createDataTransfer( data ) {
+				return {
+					getData( type ) {
+						return data[ type ];
+					},
+					setData() {}
+				};
 			}
 		} );
 	} );
