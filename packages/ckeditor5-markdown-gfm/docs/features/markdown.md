@@ -16,7 +16,7 @@ editor.setData( 'This is **bold**.' );
 </info-box>
 
 <info-box info>
-	This feature is still experimental but a stable form is coming soon.
+	This feature is still experimental but a stable version is coming soon.
 
 	While the CKEditor 5 architecture supports changing the data format, in most scenarios we do recommend sticking to the default format which is HTML (supported by the {@link module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}). HTML remains [the best standard for rich-text data](https://medium.com/content-uneditable/a-standard-for-rich-text-data-4b3a507af552).
 
@@ -31,8 +31,9 @@ editor.setData( 'This is **bold**.' );
 
 Some other ways to output the edited content include:
 
-* {@link features/export-word Export to Word} &ndash; Allows you to generate editable `.docx` files out of your editor-created content.
-* {@link features/export-pdf Export to PDF} &ndash; Allows you to generate portable PDF files out of your editor-created content.
+* {@link features/export-word Export to Word} &ndash; Generate editable `.docx` files out of your editor-created content.
+* {@link features/export-pdf Export to PDF} &ndash; Generate portable PDF files out of your editor-created content.
+* {@link features/autoformat Autoformatting} &ndash; Use markdown-like markers as you type and CKEditor 5 will automatically format your content!
 
 ## Installation
 
