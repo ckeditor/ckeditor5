@@ -36,6 +36,13 @@ With CKEditor 5 you do not need to worry about pasting messy content from Google
 
 This means that if you did not enable, for instance, {@link features/font font family and font size} features, this sort of formatting will be automatically stripped off when you paste content from Google Docs and other sources (e.g. other websites).
 
+## Related features
+
+CKEditor 5 supports a wider range of paste features, including:
+* {@link features/paste-plaintext Paste plain text} &ndash; Detects when a plain text is pasted and acts accordingly.
+* {@link features/paste-from-word Paste from Word} &ndash; Allows you to paste content from Microsoft Word and maintain the original structure and formatting.
+<!-- * {@link features/html-embed Raw HTML embedding} &ndash; Lets you paste HTML source into the edited content and keep the output. -->
+
 ## Installation
 
 <info-box info>
