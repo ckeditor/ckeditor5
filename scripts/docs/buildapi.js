@@ -12,6 +12,7 @@ module.exports = function buildApiDocs() {
 
 	return ckeditor5Docs
 		.build( {
+			// Patterns that do not start with '/' are mounted onto process.cwd() path by default.
 			readmePath: 'README.md',
 			sourceFiles: [
 				'packages/@(ckeditor|ckeditor5)-*/src/**/*.@(js|jsdoc)',
