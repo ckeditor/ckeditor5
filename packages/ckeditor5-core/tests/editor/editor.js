@@ -561,6 +561,7 @@ describe( 'Editor', () => {
 			const editor = new TestEditor();
 			const focusSpy = sinon.spy( editor.editing.view, 'focus' );
 
+			editor.editing.view.document.isFocused = true;
 			editor.focus();
 
 			expect( focusSpy.calledOnce ).to.be.true;
