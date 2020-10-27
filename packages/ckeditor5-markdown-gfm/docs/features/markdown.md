@@ -16,7 +16,7 @@ editor.setData( 'This is **bold**.' );
 </info-box>
 
 <info-box info>
-	**This feature is experimental!**
+	This feature is still experimental but a stable form is coming soon.
 
 	While the CKEditor 5 architecture supports changing the data format, in most scenarios we do recommend sticking to the default format which is HTML (supported by the {@link module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}). HTML remains [the best standard for rich-text data](https://medium.com/content-uneditable/a-standard-for-rich-text-data-4b3a507af552).
 
