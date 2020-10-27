@@ -15,3 +15,5 @@ yarn.lock
 mrgit.json
 
 package-lock.json
+
+packages/ckeditor5-build-balloon-block/build/*
