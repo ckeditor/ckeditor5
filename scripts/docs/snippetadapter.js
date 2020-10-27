@@ -282,7 +282,7 @@ function getConstantDefinitions( snippets ) {
 			knownPaths.add( directory );
 
 			const absolutePathToConstants = path.join( directory, 'docs', 'constants.js' );
-			const importPathToConstants = path.posix.relative( __dirname, absolutePathToConstants );
+			const importPathToConstants = path.relative( __dirname, absolutePathToConstants );
 
 			if ( fs.existsSync( absolutePathToConstants ) ) {
 				const packageConstantDefinitions = require( './' + importPathToConstants );
@@ -432,7 +432,7 @@ function getWebpackConfig( snippets, config ) {
 
 	for ( const snippetData of snippets ) {
 		if ( !webpackConfig.output.path ) {
-			webpackConfig.output.path = snippetData.outputPath;
+			webpackConfig.output.path = path.normalize( snippetData.outputPath );
 		}
 
 		if ( webpackConfig.entry[ snippetData.snippetName ] ) {
@@ -490,7 +490,8 @@ function getPackageDependenciesPaths() {
 	};
 
 	return glob.sync( 'packages/*/node_modules', globOptions )
-		.concat( glob.sync( 'external/*/packages/*/node_modules', globOptions ) );
+		.concat( glob.sync( 'external/*/packages/*/node_modules', globOptions ) )
+		.map( p => path.normalize( p ) );
 }
 
 /**
