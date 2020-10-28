@@ -67,7 +67,7 @@ export default class HtmlEmbed extends Plugin {
  */
 
 /**
- * Callback used to sanitize HTML provided by the user when generating previews of it in the editor.
+ * Callback used to sanitize the HTML provided by the user when generating previews of it in the editor.
  *
  * We strongly recommend overwriting the default function to avoid XSS vulnerabilities.
  *
