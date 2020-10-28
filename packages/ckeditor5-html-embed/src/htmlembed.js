@@ -88,8 +88,9 @@ export default class HtmlEmbed extends Plugin {
  *
  * 						return {
  * 							html: outputHtml,
+ *							// true or false depending on whether the sanitizer stripped anything.
  * 							hasChanged: ...
- * 						}
+ * 						};
  * 					},
  * 				}
  * 			} )
