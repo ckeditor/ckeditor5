@@ -510,14 +510,12 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 				//     ○ List item 1.1. // [listStyle="circle", listType="bulleted"]
 				//     ○ First. // [listStyle="circle", listType="bulleted"]
 				//     ○ Second // [listStyle="circle", listType="bulleted"]
-				const prevSibling = item.previousSibling;
+				const previousSibling = item.previousSibling;
 
-				if ( prevSibling &&
-					prevSibling.getAttribute( 'listIndent' ) > 0 &&
-					prevSibling.getAttribute( 'listIndent' ) === item.getAttribute( 'listIndent' ) &&
-					shouldInheritListType( prevSibling, item )
-				) {
-					writer.setAttribute( 'listStyle', prevSibling.getAttribute( 'listStyle' ), item );
+				if ( shouldInheritListTypeFromPreviousItem( previousSibling, item ) ) {
+					writer.setAttribute( 'listStyle', previousSibling.getAttribute( 'listStyle' ), item );
+
+					wasFixed = true;
 				}
 			}
 		}
@@ -549,6 +547,38 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 		}
 
 		if ( baseItem.getAttribute( 'listType' ) !== itemToChange.getAttribute( 'listType' ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	// Checks whether the `listStyle` attribute should be copied from previous list item.
+	//
+	// The attribute should be copied if there's a mismatch of styles of the pasted list into a nested list.
+	// Top-level lists are not normalized as we allow side-by-side list of different types.
+	//
+	// @param {module:engine/model/element~Element|null} previousItem
+	// @param {module:engine/model/element~Element} itemToChange
+	// @returns {Boolean}
+	function shouldInheritListTypeFromPreviousItem( previousItem, itemToChange ) {
+		if ( !previousItem || !previousItem.is( 'element', 'listItem' ) ) {
+			return false;
+		}
+
+		if ( itemToChange.getAttribute( 'listType' ) !== previousItem.getAttribute( 'listType' ) ) {
+			return false;
+		}
+
+		const previousItemIndent = previousItem.getAttribute( 'listIndent' );
+
+		if ( previousItemIndent < 1 || previousItemIndent !== itemToChange.getAttribute( 'listIndent' ) ) {
+			return false;
+		}
+
+		const previousItemListStyle = previousItem.getAttribute( 'listStyle' );
+
+		if ( !previousItemListStyle || previousItemListStyle === itemToChange.getAttribute( 'listStyle' ) ) {
 			return false;
 		}
 
