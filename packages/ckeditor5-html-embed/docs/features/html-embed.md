@@ -5,11 +5,11 @@ menu-title: HTML embed
 
 # HTML embed
 
-The {@link module:html-embed/htmlembed~HtmlEmbed} plugin allows embedding an arbitrary HTML snippet in the editor. The feature is targeted at more advanced users who want to directly interact with HTML fragments.
+The {@link module:html-embed/htmlembed~HtmlEmbed} plugin allows embedding an arbitrary HTML snippet in the editor. The feature is targeted at more advanced users who want to directly interact with HTML fragments; for less demanding needs the {@link features/media-embed Media embed} feature should suffice.
 
-This feature can be used to embed any HTML code and bypass CKEditor 5's filtering mechanisms. Thanks to that it is possible to enrich content produced by CKEditor 5 with fragments of HTML that are not supported by any other CKEditor 5 feature.
+This feature can be used to embed any HTML code and bypass the CKEditor 5's filtering mechanisms. Thanks to that it is possible to enrich content produced by CKEditor 5 with fragments of HTML that are not supported by any other CKEditor 5 feature.
 
-Example of content that can be embedded thanks to the HTML embed feature:
+Some examples of content that can be embedded thanks to the HTML embed feature:
 
 * analytics code (that usually require embedding `<script>` elements),
 * social page widgets (that also require embedding `<script>` elements),
@@ -31,6 +31,14 @@ It is recommended to use the {@link features/media-embed media embed} feature fo
 Use the editor below to see the plugin in action.
 
 {@snippet features/html-embed}
+
+## Related features
+
+CKEditor 5 supports a wider range of embed and paste features, including:
+* {@link features/media-embed Media embed} &ndash; Supports inserting embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
+<!-- * {@link features/paste-plaintext Paste plain text} &ndash; Detects when a plain text is pasted and acts accordingly. MUST BE COMMITED FIRST -->
+* {@link features/paste-from-word Paste from Word} &ndash; Allows you to paste content from Microsoft Word and maintain the original structure and formatting.
+* {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Allows you to paste content from Google Docs maintaining the original formatting and structure.
 
 ## Installation
 
@@ -64,7 +72,7 @@ ClassicEditor
 
 The feature is by default configured to not show previews of the HTML snippets. The previews can be enabled by setting the {@link module:html-embed/htmlembed~HtmlEmbedConfig#showPreviews `config.htmlEmbed.showPreviews`} option to `true`.
 
-However, by showing previews of embedded HTML snippets you expose the users of your system to the risk of executing malicious JavaScript code inside the editor. Therefore, it is highly recommended to plug an HTML sanitizier that will strip the malicious code from create snippets before rendering their previous. The sanitizer can be plugged by defining the {@link module:html-embed/htmlembed~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} option.
+However, by showing previews of the embedded HTML snippets you expose the users of your system to the risk of executing malicious JavaScript code inside the editor. Therefore, it is highly recommended to plug some HTML sanitizer that will strip the malicious code from the created snippets before rendering their previews. The sanitizer can be plugged by defining the {@link module:html-embed/htmlembed~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} option.
 
 ```js
 ClassicEditor
@@ -90,7 +98,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-Currently, the [feature does not execute `<script>` tags](https://github.com/ckeditor/ckeditor5/issues/8326) so content that requires executing JavaScript in order to generate a preview will not show in the editor. However, other JavaScript code – e.g. used in `on*` observers and `scr="javascript:..."` attributes will be executed and therefore a sanitizer still needs to be enabled.
+Currently, the [feature does not execute the `<script>` tags](https://github.com/ckeditor/ckeditor5/issues/8326) so the content that requires executing JavaScript in order to generate a preview will not show in the editor. However, other JavaScript code – e.g. used in `on*` observers and `scr="javascript:..."` attributes will be executed and therefore a sanitizer still needs to be enabled.
 
 Read more about the security aspect in the next section.
 
@@ -98,14 +106,14 @@ Read more about the security aspect in the next section.
 
 If the HTML embed feature is configured to [show content previews](#content-previews), the HTML that the user inserts into the HTML embed widget is then rendered back to the user. If the HTML was rendered as-is, any JavaScript code included in these HTML snippets would be executed by the browser in context of your website.
 
-This, in turn, is a plain security risk. The HTML provided by the user might be mistakenly copied from a malicious website or end up in the users clipboard (as it would usually be copied and pasted) by any other mean.
+This, in turn, is a plain security risk. The HTML provided by the user might be mistakenly copied from a malicious website or end up in the users clipboard (as it would usually be copied and pasted) by any other means.
 
 In some cases, advanced users can be instructed to never paste HTML code from untrusted sources. However, in most cases, it is highly recommended to properly secure the system by configuring the HTML embed feature to use an HTML sanitizer and, optionally, setting strict CSP rules.
 
 <info-box>
 	The HTML embed feature [does not currently execute code in `<script>` tags](https://github.com/ckeditor/ckeditor5/issues/8326). However, it will execute code in `on*` and `scr="javascript:..."` attributes.
 
-	The tricky part is that some HTML snippets require JavaScript to be executed to render any meaningful previews (e.g. Facebook embeds). Some, in turn, does not make sense to be executed (analytics code).
+	The tricky part is that some HTML snippets require JavaScript to be executed to render any meaningful previews (e.g. Facebook embeds). Some, in turn, do not make sense being executed (analytics code).
 
 	Therefore, when configuring the sanitizer and CSP rules, you can take those situations into consideration and for instance allow `<script>` tags pointing only to certain domains (e.g. a trusted external page that requires JavaScript).
 </info-box>
@@ -120,7 +128,7 @@ The default settings of these libraries usually strip all potentially malicious 
 
 #### CSP
 
-In addition to using a sanitizer you can use the built browser mechanism called [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). By using CSP you can let the browser know what sources and means to execute JavaScript code and include other resources such as stylesheets, images and fonts are allowed.
+In addition to using a sanitizer you can use the built-in browser mechanism called [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). By using CSP you can let the browser know what sources and means to execute JavaScript code and include other resources such as stylesheets, images and fonts are allowed.
 
 ## Common API
 
