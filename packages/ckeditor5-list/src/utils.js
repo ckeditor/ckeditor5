@@ -262,7 +262,7 @@ export function createUIComponent( editor, commandName, label, icon ) {
 		// Execute command.
 		buttonView.on( 'execute', () => {
 			editor.execute( commandName );
-			editor.editing.view.focus();
+			editor.focus();
 		} );
 
 		return buttonView;

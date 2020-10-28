@@ -49,7 +49,7 @@ export default class RemoveFormatUI extends Plugin {
 			// Execute the command.
 			this.listenTo( view, 'execute', () => {
 				editor.execute( REMOVE_FORMAT );
-				editor.editing.view.focus();
+				editor.focus();
 			} );
 
 			return view;

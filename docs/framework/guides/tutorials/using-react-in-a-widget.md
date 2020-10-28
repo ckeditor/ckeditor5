@@ -636,7 +636,7 @@ class App extends React.Component {
 				products={this.props.products}
 				onClick={( id ) => {
 					this.editor.execute( 'insertProduct', id );
-					this.editor.editing.view.focus();
+					this.editor.focus();
 				}}
 			/>
 		];
@@ -1047,7 +1047,7 @@ class App extends React.Component {
 				products={this.props.products}
 				onClick={( id ) => {
 					this.editor.execute( 'insertProduct', id );
-					this.editor.editing.view.focus();
+					this.editor.focus();
 				}}
 			/>
 		];

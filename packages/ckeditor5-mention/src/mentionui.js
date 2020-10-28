@@ -253,7 +253,7 @@ export default class MentionUI extends Plugin {
 				range
 			} );
 
-			editor.editing.view.focus();
+			editor.focus();
 		} );
 
 		return mentionsView;

@@ -158,7 +158,7 @@ function getSplitButtonCreator( { editor, parentCommandName, buttonLabel, button
 
 		splitButtonView.on( 'execute', () => {
 			editor.execute( parentCommandName );
-			editor.editing.view.focus();
+			editor.focus();
 		} );
 
 		splitButtonView.set( {
@@ -222,7 +222,7 @@ function getStyleButtonCreator( { editor, listStyleCommand, parentCommandName } 
 				} );
 			}
 
-			editor.editing.view.focus();
+			editor.focus();
 		} );
 
 		return button;

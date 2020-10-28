@@ -46,7 +46,7 @@ export default class CodeUI extends Plugin {
 			// Execute command.
 			this.listenTo( view, 'execute', () => {
 				editor.execute( CODE );
-				editor.editing.view.focus();
+				editor.focus();
 			} );
 
 			return view;
