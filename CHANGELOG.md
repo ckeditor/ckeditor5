@@ -23,7 +23,7 @@ Other than that, this release brings several bug fixes, to name a few:
 * [Validation for empty URL in the "Insert image via URL" dropdown](https://github.com/ckeditor/ckeditor5/issues/7917).
 * [URLs with a '%' character are not transformed into media embeds](https://github.com/ckeditor/ckeditor5/issues/7488).
 
-Please note that there are some **major breaking changes**. Be sure to review them before upgrading.
+Please note that there are some **minor breaking changes**. Be sure to review them before upgrading.
 
 <!-- TODO: Add a link to the blog post. -->
 
