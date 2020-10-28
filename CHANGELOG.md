@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [23.1.0](https://github.com/ckeditor/ckeditor5/compare/v23.0.0...v23.1.0) (2020-10-28)
+## [23.1.0](https://github.com/ckeditor/ckeditor5/compare/v23.0.0...v23.1.0) (2020-10-29)
 
 ### Release highlights
 
