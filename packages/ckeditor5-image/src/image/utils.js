@@ -78,11 +78,12 @@ export function isImage( modelElement ) {
  * @param {module:engine/model/writer~Writer} writer
  * @param {module:engine/model/model~Model} model
  * @param {Object} [attributes={}] Attributes of inserted image
+ * @param {module:engine/model/liveposition~LivePosition} insertPosition
  */
-export function insertImage( writer, model, attributes = {} ) {
+export function insertImage( writer, model, attributes = {}, insertPosition = null ) {
 	const imageElement = writer.createElement( 'image', attributes );
 
-	const insertAtSelection = findOptimalInsertionPosition( model.document.selection, model );
+	const insertAtSelection = insertPosition || findOptimalInsertionPosition( model.document.selection, model );
 
 	model.insertContent( imageElement, insertAtSelection );
 
