@@ -297,7 +297,7 @@ export default class Editor {
 	}
 
 	/**
-	 * Shorthand for {@link module:engine/view/view~View#focus `this.editing.view.focus()`}.
+	 * Puts the focus in the editor's editing view.
 	 */
 	focus() {
 		this.editing.view.focus();
