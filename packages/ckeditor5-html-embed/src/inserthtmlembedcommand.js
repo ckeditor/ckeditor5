@@ -58,7 +58,7 @@ function isHtmlEmbedAllowed( model ) {
 		!checkSelectionOnObject( selection, schema );
 }
 
-// Checks if a html embed is allowed by the schema in the optimal insertion parent.
+// Checks if the html embed is allowed by the schema in the optimal insertion parent.
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/schema~Schema} schema

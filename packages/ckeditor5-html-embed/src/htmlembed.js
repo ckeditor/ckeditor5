@@ -52,7 +52,7 @@ export default class HtmlEmbed extends Plugin {
  */
 
 /**
- * Whether the feature should render previews of the the embedded HTML.
+ * Whether the feature should render previews of the embedded HTML.
  *
  * When set to `true`, the feature will produce a preview of the inserted HTML based on a sanitized
  * version of the HTML provided by the user.
@@ -69,7 +69,7 @@ export default class HtmlEmbed extends Plugin {
 /**
  * Callback used to sanitize HTML provided by the user when generating previews of it in the editor.
  *
- * We strongly recommend to overwrite the default function to avoid XSS vulnerabilities.
+ * We strongly recommend overwriting the default function to avoid XSS vulnerabilities.
  *
  * Read more about the security aspect of this feature in the {@glink features/html-embed#security "Security"} section of
  * the {@glink features/html-embed HTML embed} feature guide.
