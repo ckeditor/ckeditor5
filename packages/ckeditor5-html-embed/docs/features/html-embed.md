@@ -28,7 +28,7 @@ It is recommended to use the {@link features/media-embed media embed} feature fo
 
 ## Demo
 
-Use the editor below to see the plugin in action.
+Use the editor below to see the plugin in action. Click the **"Preview editor data"** button below the editor to see a preview of the editor content, including embedded HTML.
 
 {@snippet features/html-embed}
 
