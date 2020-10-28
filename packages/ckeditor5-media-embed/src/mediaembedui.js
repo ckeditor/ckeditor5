@@ -65,7 +65,8 @@ export default class MediaEmbedUI extends Plugin {
 		button.set( {
 			label: t( 'Insert media' ),
 			icon: mediaIcon,
-			tooltip: true
+			tooltip: true,
+			class: "hidden__arrow"
 		} );
 
 		// Note: Use the low priority to make sure the following listener starts working after the

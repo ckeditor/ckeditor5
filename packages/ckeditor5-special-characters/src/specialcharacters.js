@@ -82,7 +82,8 @@ export default class SpecialCharacters extends Plugin {
 			dropdownView.buttonView.set( {
 				label: t( 'Special characters' ),
 				icon: specialCharactersIcon,
-				tooltip: true
+				tooltip: true,
+				class: "hidden__arrow"
 			} );
 
 			dropdownView.bind( 'isEnabled' ).to( inputCommand );

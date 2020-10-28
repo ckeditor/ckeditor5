@@ -2,6 +2,7 @@ node_modules/
 build/
 coverage/
 packages/*/node_modules/
+packages/ckeditor5-build-balloon-block/build/
 docs/api/output.json
 external/
 lerna-debug.log
@@ -15,5 +16,3 @@ yarn.lock
 mrgit.json
 
 package-lock.json
-
-packages/ckeditor5-build-balloon-block/build/*

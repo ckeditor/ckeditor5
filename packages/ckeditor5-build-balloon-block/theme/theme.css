@@ -5,5 +5,24 @@
 
 /* Give the block toolbar button some space, moving it a few pixels away from the editable area. */
 .ck.ck-block-toolbar-button {
-	transform: translateX( calc(-1 * var(--ck-spacing-large)) );
+	transform: translateX(calc(-1 * var(--ck-spacing-large)));
+}
+
+.ck.ck-block-toolbar-button svg {
+	width: 30px;
+	height: 30px;
+	color: #8080807a !important;
+}
+
+.ck button.ck-block-toolbar-button {
+	cursor: pointer;
+}
+.ck .ck-toolbar button {
+	cursor: pointer;
+}
+.ck button.ck-block-toolbar-button:hover > svg > .st0 {
+	fill: #57656e;
+}
+.hidden__arrow > .ck-dropdown__arrow{
+	display: none;
 }
