@@ -63,6 +63,15 @@ ClassicEditor
 						'#sugarfree', '#sweet', '#sweettooth', '#tasty', '#thai', '#vegan',
 						'#vegetarian', '#vietnamese', '#yum', '#yummy'
 					]
+				},
+				{
+					marker: ':',
+					feed: [
+						{ id: ':smile', text: '☺️', name: ':smile' },
+						{ id: ':sad', text: '😔', name: ':sad' },
+						{ id: ':imp', text: '👿', name: ':imp' }
+					],
+					itemRenderer: customEmojiRenderer
 				}
 			]
 		}
@@ -135,6 +144,13 @@ function MentionLinks( editor ) {
 
 			let href;
 
+			if ( modelAttributeValue.id[ 0 ] === ':' ) {
+				return writer.createAttributeElement( 'span', {
+					class: 'mention',
+					'data-mention': modelAttributeValue.id
+				}, { priority: 20, id: modelAttributeValue.uid } );
+			}
+
 			// User mentions are downcasted as mailto: links. Tags become normal URLs.
 			if ( modelAttributeValue.id[ 0 ] === '@' ) {
 				href = `mailto:${ modelAttributeValue.id.slice( 1 ) }@example.com`;
@@ -180,6 +196,23 @@ function customItemRenderer( item ) {
 	itemElement.appendChild( avatar );
 	itemElement.appendChild( userNameElement );
 	itemElement.appendChild( fullNameElement );
+
+	return itemElement;
+}
+
+/*
+ * Customizes the way the list of user suggestions is displayed.
+ * Each user has an @id, a name and an avatar.
+ */
+function customEmojiRenderer( item ) {
+	const itemElement = document.createElement( 'span' );
+
+	const name = document.createElement( 'span' );
+	name.textContent = item.id + ' ' + item.text;
+
+	itemElement.classList.add( 'mention__item' );
+
+	itemElement.appendChild( name );
 
 	return itemElement;
 }
