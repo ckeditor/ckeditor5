@@ -1465,7 +1465,7 @@ describe( 'ListStyleEditing', () => {
 		} );
 
 		// #8160
-		describe( 'pasting a into another list', () => {
+		describe( 'pasting a list into another list', () => {
 			let element;
 
 			beforeEach( () => {
