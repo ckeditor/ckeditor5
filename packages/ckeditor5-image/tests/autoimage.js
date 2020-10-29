@@ -5,19 +5,20 @@
 
 /* global setTimeout */
 
-import Image from '../src/image';
-import AutoImage from '../src/autoimage';
-import ImageCaption from '../src/imagecaption';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+
+import Image from '../src/image';
+import ImageCaption from '../src/imagecaption';
+import AutoImage from '../src/autoimage';
 
 describe( 'AutoImage - integration', () => {
 	let editorElement, editor;
