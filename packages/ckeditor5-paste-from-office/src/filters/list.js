@@ -51,26 +51,16 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 
 			if ( !currentList ) {
 				currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer );
-
-				// We do not support modifying the marker for particular list item.
-				// Set the value for the `list-style-type` property directly to the list container.
-				const parsedListStyleValue = mapListStyleDefinition( listStyle.style );
-
-				if ( parsedListStyleValue ) {
-					writer.setStyle( 'list-style-type', parsedListStyleValue, currentList );
-				}
 			} else if ( itemLikeElement.indent > currentIndentation ) {
 				const lastListItem = currentList.getChild( currentList.childCount - 1 );
 				const lastListItemChild = lastListItem.getChild( lastListItem.childCount - 1 );
 
 				currentList = insertNewEmptyList( listStyle, lastListItemChild, writer );
-
 				currentIndentation += 1;
 			} else if ( itemLikeElement.indent < currentIndentation ) {
 				const differentIndentation = currentIndentation - itemLikeElement.indent;
 
 				currentList = findParentListAtLevel( currentList, differentIndentation );
-
 				currentIndentation = parseInt( itemLikeElement.indent );
 			}
 
@@ -166,9 +156,9 @@ function findAllItemLikeElements( documentFragment, writer ) {
 // @param {String} stylesString CSS stylesheet.
 // @returns {Object} result
 // @returns {String} result.type List type, could be `ul` or `ol`.
-// @returns {String} result.style List style, for example: `decimal`, `lower-roman`, etc. It is extracted
-// directly from Word stylesheet without further processing and may be not compatible
-// with CSS `list-style-type` property accepted values.
+// @returns {String|null} result.style List style, for example: `decimal`, `lower-roman`, etc. It is extracted
+// directly from Word stylesheet and adjusted to represent proper values for the CSS `list-style-type` property.
+// If it cannot be adjusted, the `null` value is returned.
 function detectListStyle( listLikeItem, stylesString ) {
 	const listStyleRegexp = new RegExp( `@list l${ listLikeItem.id }:level${ listLikeItem.indent }\\s*({[^}]*)`, 'gi' );
 	const listStyleTypeRegex = /mso-level-number-format:([^;]*);/gi;
@@ -176,6 +166,8 @@ function detectListStyle( listLikeItem, stylesString ) {
 	const listStyleMatch = listStyleRegexp.exec( stylesString );
 
 	let listStyleType = 'decimal'; // Decimal is default one.
+	let type;
+
 	if ( listStyleMatch && listStyleMatch[ 1 ] ) {
 		const listStyleTypeMatch = listStyleTypeRegex.exec( listStyleMatch[ 1 ] );
 
@@ -183,31 +175,72 @@ function detectListStyle( listLikeItem, stylesString ) {
 			listStyleType = listStyleTypeMatch[ 1 ].trim();
 		}
 
+		type = listStyleType !== 'bullet' && listStyleType !== 'image' ? 'ol' : 'ul';
+
 		// Styles for the numbered lists are defined in Word CSS stylesheet.
 		// Bulleted lists are not described and we need to predict the list style value based on
-		// the list style marker.
+		// the list style marker element.
 		if ( listStyleType === 'bullet' ) {
-			const listMarker = listLikeItem.element.getChild( 0 ).getChild( 0 ).getChild( 0 )._data;
+			const bulletedStyle = findBulletedListStyle( listLikeItem.element );
 
-			if ( listMarker === 'o' ) {
-				listStyleType = 'circle';
-			} else if ( listMarker === '·' ) {
-				listStyleType = 'disc';
-			} else if ( listMarker === '§' ) {
-				listStyleType = 'square';
+			if ( bulletedStyle ) {
+				listStyleType = bulletedStyle;
 			}
 		}
 	}
 
 	return {
-		type: listStyleType !== 'bullet' && listStyleType !== 'image' ? 'ol' : 'ul',
-		style: listStyleType
+		type,
+		style: mapListStyleDefinition( listStyleType )
 	};
 }
 
-// An object returned by the `detectListStyle()` function contains a definition of the `list-style-type` that could be applied to
-// the created list container. However, it's extracted directly from Word stylesheet without further processing and may be not compatible
-// with the known values for the `list-style-type` property. This function modifies Word-styles to proper CSS definitions.
+// Tries extract the `list-style-type` value based on the marker element for bulleted list.
+//
+// @param {module:engine/view/element~Element} element
+// @returns {module:engine/view/element~Element|null}
+function findBulletedListStyle( element ) {
+	const listMarkerElement = findListMarkerNode( element );
+
+	if ( !listMarkerElement ) {
+		return null;
+	}
+
+	const listMarker = listMarkerElement._data;
+
+	if ( listMarker === 'o' ) {
+		return 'circle';
+	} else if ( listMarker === '·' ) {
+		return 'disc';
+	// Word returns '§' instead of '■' for the square list style.
+	} else if ( listMarker === '§' ) {
+		return 'square';
+	}
+
+	return null;
+}
+
+// Tries to find a text node that represents the marker element (list-style-type).
+//
+// @param {module:engine/view/element~Element} element
+// @returns {module:engine/view/text~Text|null}
+function findListMarkerNode( element ) {
+	let textNodeOrElement = element.getChild( 0 ).getChild( 0 );
+
+	if ( textNodeOrElement.is( '$text' ) ) {
+		return textNodeOrElement;
+	}
+
+	textNodeOrElement = textNodeOrElement.getChild( 0 );
+
+	if ( textNodeOrElement.is( '$text' ) ) {
+		return textNodeOrElement;
+	}
+
+	return null;
+}
+
+// Parses the `list-style-type` value extracted directly from the Word CSS stylesheet and returns proper CSS definition.
 //
 // @param {String|null} value
 // @returns {String|null}
@@ -246,6 +279,12 @@ function insertNewEmptyList( listStyle, element, writer ) {
 	const position = parent.getChildIndex( element ) + 1;
 
 	writer.insertChild( position, list, parent );
+
+	// We do not support modifying the marker for particular list item.
+	// Set the value for the `list-style-type` property directly to the list container.
+	if ( listStyle.style ) {
+		writer.setStyle( 'list-style-type', listStyle.style, list );
+	}
 
 	return list;
 }
