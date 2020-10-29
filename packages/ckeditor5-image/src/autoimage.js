@@ -158,7 +158,7 @@ export default class AutoImage extends Plugin {
 				let insertionPosition;
 
 				// Check if position where the element should be inserted is still valid.
-				// Otherwise leave it as undefined to use document.selection - default behavior of model.insertContent().
+				// Otherwise leave it as undefined to use the logic of insertImage().
 				if ( this._positionToInsert.root.rootName !== '$graveyard' ) {
 					insertionPosition = this._positionToInsert;
 				}
