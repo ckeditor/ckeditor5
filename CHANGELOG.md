@@ -12,16 +12,16 @@ This release introduces a new HTML embed feature.
 It also comes with new API features:
 
 * [The `data-cke-ignore-events` attribute in view element](https://github.com/ckeditor/ckeditor5/issues/4600) that prevents CKEditor from handling events fired in this element.
-* [A `triggerBy` option](https://github.com/ckeditor/ckeditor5/issues/7956) that triggers element re-render.
+* [The `triggerBy` option](https://github.com/ckeditor/ckeditor5/issues/7956) that triggers element re-render.
 
 Other than that, this release brings several bug fixes, to name a few:
 
-* [Unsupported element causes JavaScript error instead of being filtered out](https://github.com/ckeditor/ckeditor5/issues/8098).
-* [Backspace does not remove all blocks in rare cases](https://github.com/ckeditor/ckeditor5/issues/8145).
-* [The list conversion throws an error if the list element is surrounded with raw text nodes](https://github.com/ckeditor/ckeditor5/issues/8262).
+* [Unsupported element causes a JavaScript error instead of being filtered out](https://github.com/ckeditor/ckeditor5/issues/8098).
+* [<kbd>Backspace</kbd> does not remove all blocks in rare cases](https://github.com/ckeditor/ckeditor5/issues/8145).
+* [List conversion throws an error if the list element is surrounded by raw text nodes](https://github.com/ckeditor/ckeditor5/issues/8262).
 * [Opening the upload panel should focus the URL input](https://github.com/ckeditor/ckeditor5/issues/7896).
 * [Validation for empty URL in the "Insert image via URL" dropdown](https://github.com/ckeditor/ckeditor5/issues/7917).
-* [URLs with a '%' character are not transformed into media embeds](https://github.com/ckeditor/ckeditor5/issues/7488).
+* [URLs with a `%` character are not transformed into media embeds](https://github.com/ckeditor/ckeditor5/issues/7488).
 
 Please note that there are some **minor breaking changes**. Be sure to review them before upgrading.
 
@@ -34,33 +34,33 @@ The CKEditor 5 Collaboration features changelog can be found here: https://ckedi
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Removed the `ensureParagraphInTableCell()` converter that corrected the model state after the conversion process. Now the model will be fixed (if needed) by the post-fixer (`injectTableCellParagraphPostFixer()`).
-* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `attachLinkToDocumentation()` helper was removed. To log errors with attached documentation link to the console use `logWarning()` and `logError()`.
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `attachLinkToDocumentation()` helper was removed. To log errors with an attached documentation link to the console, use `logWarning()` and `logError()`.
 
 ### Features
 
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Elements with the `data-cke-ignore-events` attribute will not propagate it's events to CKEditor API. Closes [#4600](https://github.com/ckeditor/ckeditor5/issues/4600). ([commit](https://github.com/ckeditor/ckeditor5/commit/04207f93f00a668bbe031d70ae7230f892428115))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduce an automatic model-to-view reconversion by defining the `triggerBy` option for the `elementToElement()` conversion helper. Closes [#7956](https://github.com/ckeditor/ckeditor5/issues/7956). ([commit](https://github.com/ckeditor/ckeditor5/commit/a7c99732fd63008ada4f13c187df552a989291e1))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Elements with the `data-cke-ignore-events` attribute will not propagate their events to the CKEditor 5 API. Closes [#4600](https://github.com/ckeditor/ckeditor5/issues/4600). ([commit](https://github.com/ckeditor/ckeditor5/commit/04207f93f00a668bbe031d70ae7230f892428115))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced an automatic model-to-view reconversion by defining the `triggerBy` option for the `elementToElement()` conversion helper. Closes [#7956](https://github.com/ckeditor/ckeditor5/issues/7956). ([commit](https://github.com/ckeditor/ckeditor5/commit/a7c99732fd63008ada4f13c187df552a989291e1))
 * **[html-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed)**: Introduced the HTML embed feature. Closes [#8204](https://github.com/ckeditor/ckeditor5/issues/8204). ([commit](https://github.com/ckeditor/ckeditor5/commit/b529537086966ac908a163bf9373d67d43383586))
 
 ### Bug fixes
 
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `Model#deleteContent()` should properly remove content with multiple blocks selected. Closes [#8145](https://github.com/ckeditor/ckeditor5/issues/8145). ([commit](https://github.com/ckeditor/ckeditor5/commit/c4b3182722a8eea68d00b0250c8ac9388723a1b5))
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Removes focus outline in the "insert image via URL" form. Closes [#7973](https://github.com/ckeditor/ckeditor5/issues/7973). ([commit](https://github.com/ckeditor/ckeditor5/commit/d3975f8436cee3f0e4c4cd39b4ee8c7816f15784))
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The insert button in the insert image dropdown is now disabled when URL input is empty. Closes [#7917](https://github.com/ckeditor/ckeditor5/issues/7917). ([commit](https://github.com/ckeditor/ckeditor5/commit/608baa9be5a1c8ae5600e8df9627c4f5b2cecef7))
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Removed focus outline in the "insert image via URL" form. Closes [#7973](https://github.com/ckeditor/ckeditor5/issues/7973). ([commit](https://github.com/ckeditor/ckeditor5/commit/d3975f8436cee3f0e4c4cd39b4ee8c7816f15784))
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The insert button in the insert image dropdown is now disabled when the URL input is empty. Closes [#7917](https://github.com/ckeditor/ckeditor5/issues/7917). ([commit](https://github.com/ckeditor/ckeditor5/commit/608baa9be5a1c8ae5600e8df9627c4f5b2cecef7))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The URL input field is now focused when the image dropdown is opened. Closes [#7896](https://github.com/ckeditor/ckeditor5/issues/7896). ([commit](https://github.com/ckeditor/ckeditor5/commit/25b3aec03dae39cfd68b039b6704ef2670ccbfda))
-* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Improved link balloon buttons separators look on mobiles. Closes [#7704](https://github.com/ckeditor/ckeditor5/issues/7704). ([commit](https://github.com/ckeditor/ckeditor5/commit/6aecaf89c656f2fff126185833b8030618109f7d))
-* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Pressing <kbd>Ctrl/cmd</kbd>+<kbd>K</kbd> when `LinkCommand` is disabled no longer shows the link UI. Closes [#7919](https://github.com/ckeditor/ckeditor5/issues/7919). ([commit](https://github.com/ckeditor/ckeditor5/commit/242d21c67ecf71781beae4494472538d78c9636d))
-* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Auto link feature now uses `link.defaultProtocol` if set. Closes [#8079](https://github.com/ckeditor/ckeditor5/issues/8079). ([commit](https://github.com/ckeditor/ckeditor5/commit/9a9f9c3671f1427c0c32784e43a3b1e5c0a5e6b7))
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The list conversion does not throw an error if the list element is being surrounded with raw text nodes. Closes [#8262](https://github.com/ckeditor/ckeditor5/issues/8262). ([commit](https://github.com/ckeditor/ckeditor5/commit/e8b6f519d40bb0f18de988c82e72f023fba2ddfe))
-* **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: Disable the save button in insert media dropdown when the input is empty. See [#7917](https://github.com/ckeditor/ckeditor5/issues/7917). ([commit](https://github.com/ckeditor/ckeditor5/commit/608baa9be5a1c8ae5600e8df9627c4f5b2cecef7))
-* **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: Allow URL with the '%' character for embedding media. Closes [#7488](https://github.com/ckeditor/ckeditor5/issues/7488). ([commit](https://github.com/ckeditor/ckeditor5/commit/5f4c9b581c36bbe0c47782039f6d9376e408d638))
-* **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: Enable media embed command when the selected media is in a table cell. Closes [#7604](https://github.com/ckeditor/ckeditor5/issues/7604). ([commit](https://github.com/ckeditor/ckeditor5/commit/f36fcba2cfde0d97c481bbedbbfe6b3d49f0b74a))
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Pasting nested tables with content unsupported by the editor elements does not throw an exception. Closes [#8098](https://github.com/ckeditor/ckeditor5/issues/8098). ([commit](https://github.com/ckeditor/ckeditor5/commit/c8e3a9480fbe2d638ac986f8d723aa89e62a82bc))
+* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Improved the look of link balloon button separators on mobiles. Closes [#7704](https://github.com/ckeditor/ckeditor5/issues/7704). ([commit](https://github.com/ckeditor/ckeditor5/commit/6aecaf89c656f2fff126185833b8030618109f7d))
+* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Pressing <kbd>Ctrl/Cmd</kbd>+<kbd>K</kbd> when `LinkCommand` is disabled no longer shows the link UI. Closes [#7919](https://github.com/ckeditor/ckeditor5/issues/7919). ([commit](https://github.com/ckeditor/ckeditor5/commit/242d21c67ecf71781beae4494472538d78c9636d))
+* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: The autolink feature now uses `link.defaultProtocol` if set. Closes [#8079](https://github.com/ckeditor/ckeditor5/issues/8079). ([commit](https://github.com/ckeditor/ckeditor5/commit/9a9f9c3671f1427c0c32784e43a3b1e5c0a5e6b7))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: List conversion does not throw an error if the list element is being surrounded by raw text nodes. Closes [#8262](https://github.com/ckeditor/ckeditor5/issues/8262). ([commit](https://github.com/ckeditor/ckeditor5/commit/e8b6f519d40bb0f18de988c82e72f023fba2ddfe))
+* **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: Disabled the save button in the insert media dropdown when the input is empty. See [#7917](https://github.com/ckeditor/ckeditor5/issues/7917). ([commit](https://github.com/ckeditor/ckeditor5/commit/608baa9be5a1c8ae5600e8df9627c4f5b2cecef7))
+* **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: URLs with the `%` character are now allowed for embedding media. Closes [#7488](https://github.com/ckeditor/ckeditor5/issues/7488). ([commit](https://github.com/ckeditor/ckeditor5/commit/5f4c9b581c36bbe0c47782039f6d9376e408d638))
+* **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: Enabled the media embed command when the selected media is in a table cell. Closes [#7604](https://github.com/ckeditor/ckeditor5/issues/7604). ([commit](https://github.com/ckeditor/ckeditor5/commit/f36fcba2cfde0d97c481bbedbbfe6b3d49f0b74a))
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Pasting nested tables with content unsupported by the editor elements no longer throws an exception. Closes [#8098](https://github.com/ckeditor/ckeditor5/issues/8098). ([commit](https://github.com/ckeditor/ckeditor5/commit/c8e3a9480fbe2d638ac986f8d723aa89e62a82bc))
 
 ### Other changes
 
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Table cell's content refreshing for the editing view now makes fewer view updates. ([commit](https://github.com/ckeditor/ckeditor5/commit/a7c99732fd63008ada4f13c187df552a989291e1))
-* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Improved readability of custom errors in the console. Closes [#8140](https://github.com/ckeditor/ckeditor5/issues/8140). ([commit](https://github.com/ckeditor/ckeditor5/commit/40801bae032916b99e3ea838543ef95045a481a6))
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Improved the readability of custom errors in the console. Closes [#8140](https://github.com/ckeditor/ckeditor5/issues/8140). ([commit](https://github.com/ckeditor/ckeditor5/commit/40801bae032916b99e3ea838543ef95045a481a6))
 * Optimized icons. ([commit](https://github.com/ckeditor/ckeditor5/commit/dfc73c9875768d09ad1a64d68ec14ec15f9b0f66))
 * Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/6ec37b150ba09c3ad50a8e52fa1b594d58ae6d0d), [commit](https://github.com/ckeditor/ckeditor5/commit/445944d9b084c38a7366ce714017af8bea0ae70d))
 
