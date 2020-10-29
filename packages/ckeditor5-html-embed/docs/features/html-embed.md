@@ -35,6 +35,7 @@ Use the editor below to see the plugin in action.
 ## Related features
 
 CKEditor 5 supports a wider range of embed and paste features, including:
+
 * {@link features/media-embed Media embed} &ndash; Supports inserting embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
 * {@link features/paste-from-word Paste from Word} &ndash; Allows you to paste content from Microsoft Word and maintain the original structure and formatting.
 * {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Allows you to paste content from Google Docs maintaining the original formatting and structure.
