@@ -27,11 +27,13 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^23.0.0",
     "@ckeditor/ckeditor5-block-quote": "^23.0.0",
+    "@ckeditor/ckeditor5-clipboard": "^23.0.0",
     "@ckeditor/ckeditor5-core": "^23.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^23.0.0",
     "@ckeditor/ckeditor5-enter": "^23.0.0",
     "@ckeditor/ckeditor5-essentials": "^23.0.0",
     "@ckeditor/ckeditor5-heading": "^23.0.0",
+    "@ckeditor/ckeditor5-image": "^23.0.0",
     "@ckeditor/ckeditor5-link": "^23.0.0",
     "@ckeditor/ckeditor5-list": "^23.0.0",
     "@ckeditor/ckeditor5-paragraph": "^23.0.0",

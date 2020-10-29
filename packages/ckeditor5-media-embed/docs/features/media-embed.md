@@ -438,7 +438,7 @@ The {@link module:media-embed/mediaembed~MediaEmbed} plugin registers:
 	You can insert a new media element or update the selected media URL by executing the following code:
 
 	```js
-	editor.execute( 'mediaEmbed', { url: 'http://url.to.the/media' } );
+	editor.execute( 'mediaEmbed', 'http://url.to.the/media' );
 	```
 
 <info-box>

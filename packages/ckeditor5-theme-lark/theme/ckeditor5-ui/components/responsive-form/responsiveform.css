@@ -6,11 +6,15 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
-.ck.ck-text-alternative-form {
+.ck-vertical-form > .ck-button:nth-last-child(2)::after {
+	border-right: 1px solid var(--ck-color-base-border);
+}
+
+.ck.ck-responsive-form {
 	padding: var(--ck-spacing-standard);
 
 	&:focus {
-		/* https://github.com/ckeditor/ckeditor5-link/issues/90 */
+		/* See: https://github.com/ckeditor/ckeditor5/issues/4773 */
 		outline: none;
 	}
 
@@ -37,9 +41,16 @@
 				min-width: 0;
 				width: 100%;
 			}
+
+			/* Let the long error messages wrap in the narrow form. */
+			& .ck-labeled-field-view__error {
+				white-space: normal;
+			}
 		}
 
-		& .ck-button {
+		/* Styles for two last buttons in the form (save&cancel, edit&unlink, etc.). */
+		& > .ck-button:nth-last-child(1),
+		& > .ck-button:nth-last-child(2) {
 			padding: var(--ck-spacing-standard);
 			margin-top: var(--ck-spacing-standard);
 
@@ -49,10 +60,6 @@
 
 			@mixin ck-dir ltr {
 				margin-left: 0;
-
-				&:first-of-type {
-					border-right: 1px solid var(--ck-color-base-border);
-				}
 			}
 
 			@mixin ck-dir rtl {
@@ -61,6 +68,12 @@
 				&:last-of-type {
 					border-right: 1px solid var(--ck-color-base-border);
 				}
+			}
+		}
+
+		& > .ck-button:nth-last-child(2) {
+			&::after {
+				border-right: 1px solid var(--ck-color-base-border);
 			}
 		}
 	}

@@ -10,7 +10,9 @@ import ContainerElement from '@ckeditor/ckeditor5-engine/src/view/containereleme
 import Text from '@ckeditor/ckeditor5-engine/src/view/text';
 import Schema from '@ckeditor/ckeditor5-engine/src/model/schema';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import { createLinkElement, isLinkElement, ensureSafeUrl, normalizeDecorators, isImageAllowed } from '../src/utils';
+import {
+	createLinkElement, isLinkElement, ensureSafeUrl, normalizeDecorators, isImageAllowed, isEmail, addLinkProtocolIfApplicable
+} from '../src/utils';
 
 describe( 'utils', () => {
 	describe( 'isLinkElement()', () => {
@@ -244,6 +246,38 @@ describe( 'utils', () => {
 			} );
 
 			expect( isImageAllowed( element, schema ) ).to.equal( true );
+		} );
+	} );
+
+	describe( 'isEmail()', () => {
+		it( 'should return true for email string', () => {
+			expect( isEmail( 'newsletter@cksource.com' ) ).to.be.true;
+		} );
+
+		it( 'should return false for not email string', () => {
+			expect( isEmail( 'test' ) ).to.be.false;
+			expect( isEmail( 'test.test' ) ).to.be.false;
+			expect( isEmail( 'test@test' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'addLinkProtocolIfApplicable()', () => {
+		it( 'should return link with email protocol for email string', () => {
+			expect( addLinkProtocolIfApplicable( 'foo@bar.com' ) ).to.equal( 'mailto:foo@bar.com' );
+			expect( addLinkProtocolIfApplicable( 'foo@bar.com', 'http://' ) ).to.equal( 'mailto:foo@bar.com' );
+		} );
+
+		it( 'should return link with http protocol for url string if defaultProtocol is provided', () => {
+			expect( addLinkProtocolIfApplicable( 'www.ckeditor.com', 'http://' ) ).to.equal( 'http://www.ckeditor.com' );
+		} );
+
+		it( 'should return unmodified link if not applicable', () => {
+			expect( addLinkProtocolIfApplicable( 'test' ) ).to.equal( 'test' );
+			expect( addLinkProtocolIfApplicable( 'www.ckeditor.com' ) ).to.equal( 'www.ckeditor.com' );
+			expect( addLinkProtocolIfApplicable( 'http://www.ckeditor.com' ) ).to.equal( 'http://www.ckeditor.com' );
+			expect( addLinkProtocolIfApplicable( 'http://www.ckeditor.com', 'http://' ) ).to.equal( 'http://www.ckeditor.com' );
+			expect( addLinkProtocolIfApplicable( 'mailto:foo@bar.com' ) ).to.equal( 'mailto:foo@bar.com' );
+			expect( addLinkProtocolIfApplicable( 'mailto:foo@bar.com', 'http://' ) ).to.equal( 'mailto:foo@bar.com' );
 		} );
 	} );
 } );
