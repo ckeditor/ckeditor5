@@ -97,7 +97,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-Currently, the [feature does not execute the `<script>` tags](https://github.com/ckeditor/ckeditor5/issues/8326) so the content that requires executing JavaScript in order to generate a preview will not show in the editor. However, other JavaScript code – e.g. used in `on*` observers and `scr="javascript:..."` attributes will be executed and therefore a sanitizer still needs to be enabled.
+Currently, the [feature does not execute `<script>` tags](https://github.com/ckeditor/ckeditor5/issues/8326) so the content that requires executing JavaScript in order to generate a preview will not show in the editor. However, other JavaScript code – e.g. used in `on*` observers and `scr="javascript:..."` attributes will be executed and therefore a sanitizer still needs to be enabled.
 
 Read more about the security aspect in the next section.
 
