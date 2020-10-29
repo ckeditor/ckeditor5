@@ -51,6 +51,14 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 
 			if ( !currentList ) {
 				currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer );
+
+				// We do not support modifying the marker for particular list item.
+				// Set the value for the `list-style-type` property directly to the list container.
+				const parsedListStyleValue = mapListStyleDefinition( listStyle.style );
+
+				if ( parsedListStyleValue ) {
+					writer.setStyle( 'list-style-type', parsedListStyleValue, currentList );
+				}
 			} else if ( itemLikeElement.indent > currentIndentation ) {
 				const lastListItem = currentList.getChild( currentList.childCount - 1 );
 				const lastListItemChild = lastListItem.getChild( lastListItem.childCount - 1 );
@@ -174,12 +182,54 @@ function detectListStyle( listLikeItem, stylesString ) {
 		if ( listStyleTypeMatch && listStyleTypeMatch[ 1 ] ) {
 			listStyleType = listStyleTypeMatch[ 1 ].trim();
 		}
+
+		// Styles for the numbered lists are defined in Word CSS stylesheet.
+		// Bulleted lists are not described and we need to predict the list style value based on
+		// the list style marker.
+		if ( listStyleType === 'bullet' ) {
+			const listMarker = listLikeItem.element.getChild( 0 ).getChild( 0 ).getChild( 0 )._data;
+
+			if ( listMarker === 'o' ) {
+				listStyleType = 'circle';
+			} else if ( listMarker === '·' ) {
+				listStyleType = 'disc';
+			} else if ( listMarker === '§' ) {
+				listStyleType = 'square';
+			}
+		}
 	}
 
 	return {
 		type: listStyleType !== 'bullet' && listStyleType !== 'image' ? 'ol' : 'ul',
 		style: listStyleType
 	};
+}
+
+// An object returned by the `detectListStyle()` function contains a definition of the `list-style-type` that could be applied to
+// the created list container. However, it's extracted directly from Word stylesheet without further processing and may be not compatible
+// with the known values for the `list-style-type` property. This function modifies Word-styles to proper CSS definitions.
+//
+// @param {String|null} value
+// @returns {String|null}
+function mapListStyleDefinition( value ) {
+	switch ( value ) {
+		case 'arabic-leading-zero':
+			return 'decimal-leading-zero';
+		case 'alpha-upper':
+			return 'upper-alpha';
+		case 'alpha-lower':
+			return 'lower-alpha';
+		case 'roman-upper':
+			return 'upper-roman';
+		case 'roman-lower':
+			return 'lower-roman';
+		case 'circle':
+		case 'disc':
+		case 'square':
+			return value;
+		default:
+			return null;
+	}
 }
 
 // Creates empty list of a given type and inserts it after a specified element.
