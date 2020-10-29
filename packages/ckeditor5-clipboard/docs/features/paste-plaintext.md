@@ -8,15 +8,17 @@ order: 30
 
 # Pasting plain text
 
-The plain text pasting feature is provided through the {@link module:clipboard/clipboard~Clipboard} plugin, which is responsible for the integration with the native clipboard and intercepts all native events like `copy`, `cut` or `drop` and handles them on its side. The goal is to not allow the browser to touch the content in the rich text editor which would lead to the browser messing it up.
+The plain text pasting feature is provided through the {@link module:clipboard/clipboard~Clipboard} plugin, which is responsible for the integration with the native clipboard and intercepts all native events like `copy`, `cut` or `drop` and handles them on its side. The goal is to not allow the browser to touch the content in the rich text editor which would lead to unexpected results in handling the content.
+
+Pasting plain text with a double line break will turn the break into a paragraph. A single line break will instead be turned into a soft break upon pasting.
+
+## Keyboard shortcut
 
 The plain text pasting itself is further aided by the {@link module:clipboard/clipboard~PastePlainText} plugin. It detects the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd> keystroke during the paste and causes the pasted plain text to inherit the styles of the content it was pasted into.
 
-Pasting plain text with a double line break will turn it into a paragraph. This is a change from the previous behavior, when a single line break resulted in creating a paragraph. As of now, a single line break will be turned into a soft break upon pasting.
-
 ## Demo
 
-Paste plain text between the styled paragraphs below using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd> to test the style inheritance. Paste without modifier to retain styleless text. You can copy this very paragraph or one from the demo for convenience.
+Paste plain text between the styled paragraphs below using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd> to test the style inheritance. Paste without modifier to retain unstyled text. You can copy this very paragraph or one from the demo for convenience.
 
 {@snippet features/paste-plaintext}
 
