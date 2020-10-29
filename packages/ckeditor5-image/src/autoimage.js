@@ -142,6 +142,7 @@ export default class AutoImage extends Plugin {
 			// Don't do anything if image element cannot be inserted at the current position (#47).
 			// Condition must be checked after timeout - pasting may take place on an element, replacing it. The final position matters.
 			const imageCommand = editor.commands.get( 'imageInsert' );
+
 			if ( !imageCommand.isEnabled ) {
 				urlRange.detach();
 
